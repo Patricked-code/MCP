@@ -80,7 +80,8 @@ export async function startHttpServer(): Promise<void> {
   app.get('/mcp', handleSessionRequest);
   app.delete('/mcp', handleSessionRequest);
 
-  app.listen(env.PORT, '127.0.0.1', () => {
-    logger.info({ port: env.PORT }, 'wealthtech_ssh_bridge démarré');
+  const listenHost = '0.0.0.0';
+  app.listen(env.PORT, listenHost, () => {
+    logger.info({ port: env.PORT, host: listenHost }, 'wealthtech_ssh_bridge démarré');
   });
 }
