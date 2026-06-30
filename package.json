@@ -1,0 +1,36 @@
+{
+  "name": "wealthtech-mcp-ssh-bridge",
+  "version": "0.1.0",
+  "description": "MCP SSH Bridge sécurisé pour piloter les serveurs WealthTech S1/S2 avec des outils contrôlés, journalisés et documentés.",
+  "type": "module",
+  "private": false,
+  "license": "UNLICENSED",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint:secrets": "node scripts/check-no-secrets.mjs",
+    "docs:check": "node scripts/check-docs.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "pino": "latest",
+    "pino-pretty": "latest",
+    "ssh2": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/express": "latest",
+    "@types/node": "latest",
+    "@types/ssh2": "latest",
+    "tsx": "latest",
+    "typescript": "latest"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
