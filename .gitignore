@@ -1,0 +1,41 @@
+# Secrets
+.env
+.env.*
+!.env.example
+keys/
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+
+# Dependencies/build
+node_modules/
+dist/
+.next/
+.nuxt/
+build/
+coverage/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Backups / dumps / archives
+*.sql
+*.dump
+*.bak
+*.old
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+backup/
+backups/
+
+# System
+.DS_Store
+Thumbs.db
