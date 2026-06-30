@@ -1,0 +1,12 @@
+services:
+  wealthtech-mcp-ssh-bridge:
+    build: .
+    container_name: wealthtech_mcp_ssh_bridge
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:8787:8787"
+    volumes:
+      - ./keys:/app/keys:ro
+      - ./logs:/app/logs
