@@ -109,3 +109,29 @@ Aucun test serveur réel exécuté depuis cette compilation.
 ## Décision de reprise
 
 Installer la mémoire sur le serveur WEALTHTECH, puis exécuter un audit MCP non destructif avant toute suppression ou migration.
+
+---
+
+## Mise a jour Codex 20260701 - Loopback
+
+Codex a integre la synchronisation automatique MCP et cree les fichiers de reprise suivants :
+
+- `CONVERSATIONS_POUSSEES_20260701.md`
+- `INDEX_MEMOIRE_WEALTHTECH_20260701.md`
+- `INVENTAIRE_FICHIERS_CREES_20260701.md`
+- `CODEX_AUTO_ANALYSIS_RESPONSE_20260701.md`
+- `LOOP_ENGINEERING_WEALTHTECH_20260701.md`
+- `LOOPBACK_WEALTHTECH_CURRENT.md`
+
+Point de reprise :
+
+- memoire lue et classee ;
+- conversations poussees listees ;
+- loop engineering documentaire installe ;
+- aucune action dangereuse effectuee.
+
+Action suivante recommandee :
+
+- audit lecture seule Stablecoin 6BI-B si l'objectif est Stablecoin ;
+- audit global S1/S2 non destructif si l'objectif est serveur ;
+- audit OPCVM sans regression si l'objectif est FundAfrica/OPCVM.

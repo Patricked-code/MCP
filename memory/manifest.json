@@ -43,7 +43,13 @@
     "memory/SUIVI.md",
     "memory/AUDIT_GLOBAL_S1_S2_MCP_PROMPT.md",
     "memory/INSTALL_ON_WEALTHTECH_SERVER.md",
+    "memory/CONVERSATIONS_POUSSEES_20260701.md",
+    "memory/INDEX_MEMOIRE_WEALTHTECH_20260701.md",
+    "memory/INVENTAIRE_FICHIERS_CREES_20260701.md",
+    "memory/CODEX_AUTO_ANALYSIS_RESPONSE_20260701.md",
+    "memory/LOOP_ENGINEERING_WEALTHTECH_20260701.md",
+    "memory/LOOPBACK_WEALTHTECH_CURRENT.md",
     "memory/manifest.json"
   ],
-  "next_action": "Sync repository memory folder into /root/wealthtech_project_memory/memory/ on the WEALTHTECH server, then launch the non destructive MCP audit prompt."
+  "next_action": "Read LOOPBACK_WEALTHTECH_CURRENT.md, then run only a non destructive audit track: Stablecoin 6BI-B, global S1/S2, or OPCVM without regression."
 }

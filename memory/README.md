@@ -69,3 +69,23 @@ La priorité actuelle est l’audit OPCVM/FundAfrica sans régression :
 - affichages front-end ;
 - barres visuelles bleues ;
 - gestion propre des valeurs `null`, `NaN`, `Infinity` et non calculables.
+
+---
+
+## Ajouts Codex du 2026-07-01
+
+Codex a cree les fichiers de reprise suivants pour demarrer le Loop Engineering WEALTHTECH :
+
+- `CONVERSATIONS_POUSSEES_20260701.md`
+- `INDEX_MEMOIRE_WEALTHTECH_20260701.md`
+- `INVENTAIRE_FICHIERS_CREES_20260701.md`
+- `CODEX_AUTO_ANALYSIS_RESPONSE_20260701.md`
+- `LOOP_ENGINEERING_WEALTHTECH_20260701.md`
+- `LOOPBACK_WEALTHTECH_CURRENT.md`
+
+Pour reprendre sans contexte oral, lire d'abord :
+
+1. `INDEX_MEMOIRE_WEALTHTECH_20260701.md`
+2. `CONVERSATIONS_POUSSEES_20260701.md`
+3. `LOOPBACK_WEALTHTECH_CURRENT.md`
+4. `LOOP_ENGINEERING_WEALTHTECH_20260701.md`
