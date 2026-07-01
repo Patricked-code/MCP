@@ -1,8 +1,8 @@
-# Mémoire projet WealthTech / Stablecoin E-WARI
+# Mémoire projet WealthTech / MCP
 
 Ce dossier contient la mémoire persistante lisible par Codex, ChatGPT ou tout agent MCP intervenant sur les projets WealthTech.
 
-## Fichiers ajoutés
+## Fichiers déjà présents
 
 1. `2026-05-05-stablecoin-ewari-conversation-memory.md`  
    Mémoire consolidée de la conversation et du travail validé sur le projet Stablecoin E-WARI.
@@ -14,28 +14,58 @@ Ce dossier contient la mémoire persistante lisible par Codex, ChatGPT ou tout a
    Prompt de prochaine étape : audit métier pré-transaction Wallet / Relayer / Abonnement / Rôle / Commission, sans transaction.
 
 4. `INSTALL_MCP_WEALTHTECH_MEMORY.md`  
-   Instructions pour cloner ou synchroniser ce dépôt dans `/root/wealthtech_project_memory/memory/` sur le serveur.
+   Instructions historiques pour cloner ou synchroniser ce dépôt dans `/root/wealthtech_project_memory/memory/` sur le serveur.
+
+## Fichiers ajoutés pour OPCVM / FundAfrica / WealthTech
+
+5. `WEALTHTECH_PROJECT_MEMORY.md`  
+   Mémoire consolidée de la conversation et des règles projet WealthTech / OPCVM / MCP.
+
+6. `INSTALLATION_MCP_WEALTHTECH.md`  
+   Procédure actuelle pour synchroniser le dossier `memory/` vers `/root/wealthtech_project_memory/memory/` sur le serveur.
+
+7. `PROMPT_AUDIT_OPCVM_SANS_REGRESSION.md`  
+   Prompt d’audit OPCVM/FundAfrica sans régression : VL, crons, performances, ratios, classements, catégories, moyennes, affichages, devises et anomalies.
 
 ## Règle obligatoire
 
-Avant toute intervention sur Stablecoin E-WARI, lire au minimum :
+Avant toute intervention sur un projet WealthTech, lire au minimum ce README et les fichiers de mémoire correspondant au module concerné.
 
-- ce README ;
-- `2026-05-05-stablecoin-ewari-conversation-memory.md` ;
-- `CODEX_HANDOFF_STABLECOIN_EWARI.md` ;
-- `PROMPT_AUDIT_6BI_B.md`.
+Pour le module OPCVM/FundAfrica, lire impérativement :
 
-## Sécurité
+- `WEALTHTECH_PROJECT_MEMORY.md` ;
+- `PROMPT_AUDIT_OPCVM_SANS_REGRESSION.md` ;
+- la documentation applicative du projet réel : `CLAUDE.md`, `SUIVI.md`, `README_DEV.md`, `ROADMAP.md`, `TASKS.md`, `TODO.md`, `CODE_REVIEW.md`, `CHANGELOG.md`, `DEPLOYMENT_PRODUCTION.md` ;
+- le `POINT DE REPRISE COURANT` dans `SUIVI.md`.
 
-Ne jamais stocker dans ce dossier :
+## Règles de prudence
 
-- tokens Bearer ;
-- clés privées ;
-- `.env` complets ;
-- API keys ;
-- mots de passe ;
-- dumps SQL ;
-- sauvegardes serveur ;
-- secrets relayer.
+- Ne pas stocker de paramètres sensibles dans ce dossier.
+- Ne pas stocker de fichiers d’environnement réels.
+- Ne pas stocker de sauvegardes serveur ou de dumps de base.
+- Utiliser ces fichiers comme mémoire de travail, documentation et point de reprise.
+- Mettre à jour ces fichiers dès qu’une consigne structurante est ajoutée.
 
-Les adresses publiques, hashes de transaction, chemins de logs et commits Git peuvent être conservés pour traçabilité.
+## Emplacement serveur cible
+
+```text
+/root/wealthtech_project_memory/memory/
+```
+
+## Priorité actuelle OPCVM
+
+La priorité actuelle est l’audit OPCVM/FundAfrica sans régression :
+
+- exhaustivité des VL par pays de 2021 à 2026 au minimum ;
+- vérification des crons ;
+- validation des insertions ;
+- recalcul des performances ;
+- recalcul des ratios ;
+- recalcul des classements nationaux et régionaux ;
+- cohérence des catégories et positionnements ;
+- moyennes de catégories ;
+- comparaisons entre fonds ;
+- cohérence des onglets devise locale, EUR et USD ;
+- affichages front-end ;
+- barres visuelles bleues ;
+- gestion propre des valeurs `null`, `NaN`, `Infinity` et non calculables.
