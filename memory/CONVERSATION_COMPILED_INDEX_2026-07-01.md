@@ -15,7 +15,7 @@ Cet index organise la mémoire compilée de la conversation en plusieurs fichier
 - `memory/CONVERSATION_PART_02_ECOSYSTEM_LOOP_ENGINEERING_2026-07-01.md`
 - `memory/CONVERSATION_PART_03_EWARI_KOREE_STABLECOIN_2026-07-01.md`
 - `memory/MCP_INSTALLATION_AND_SERVER_SYNC_2026-07-01.md`
-- `memory/AUDIT_PROMPT_GLOBAL_S1_S2_2026-07-01.md`
+- `memory/RUNBOOK_GLOBAL_REVIEW_S1_S2_2026-07-01.md`
 
 ## Règle d’utilisation
 
