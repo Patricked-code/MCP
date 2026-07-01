@@ -58,6 +58,12 @@ L’agent IA travaille comme assistant technique expert pour le projet `wealthte
 9. Le MCP commence en read-only.
 10. Les outils destructifs ne seront ajoutés qu’après validation explicite.
 
-## Objectif d’architecture
+## Mémoire WealthTech / OPCVM ajoutée le 2026-07-01
 
-Le MCP est une brique de Loop Engineering. Il doit donner à l’IA une mémoire persistante, une capacité d’inventaire et une capacité de pilotage contrôlé, sans transformer l’IA en console root libre.
+Des fichiers de mémoire complémentaires ont été ajoutés dans `memory/` pour conserver les consignes de la conversation sur le module OPCVM/FundAfrica et les interventions sans régression :
+
+- `memory/WEALTHTECH_PROJECT_MEMORY.md` : mémoire consolidée WealthTech / OPCVM / MCP ;
+- `memory/INSTALLATION_MCP_WEALTHTECH.md` : procédure de synchronisation vers `/root/wealthtech_project_memory/memory/` ;
+- `memory/PROMPT_AUDIT_OPCVM_SANS_REGRESSION.md` : prompt d’audit OPCVM sans régression.
+
+Pour tout sujet OPCVM/FundAfrica, appliquer la compétence `expert-opcvm-fundafrica-developpement-sans-regression`, lire les fichiers `.md` du projet réel, vérifier l’état de production, éviter toute régression, ne pas intégrer ClickHouse maintenant, et documenter chaque action.
