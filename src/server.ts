@@ -7,6 +7,7 @@ import { env } from './config/env.js';
 import { requireBearerToken } from './auth.js';
 import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
+import { registerScopedWriteTools } from './tools/writeScoped.js';
 
 export function buildMcpServer(): McpServer {
   const server = new McpServer({
@@ -15,6 +16,9 @@ export function buildMcpServer(): McpServer {
   });
 
   registerReadOnlyTools(server);
+  if (env.ENABLE_WRITE_TOOLS) {
+    registerScopedWriteTools(server);
+  }
   return server;
 }
 
@@ -23,7 +27,12 @@ export async function startHttpServer(): Promise<void> {
   app.use(express.json({ limit: '2mb' }));
 
   app.get('/health', (_req, res) => {
-    res.json({ ok: true, service: 'wealthtech_ssh_bridge', mode: 'read-only-first' });
+    res.json({
+      ok: true,
+      service: 'wealthtech_ssh_bridge',
+      mode: env.ENABLE_WRITE_TOOLS ? 'read-only-plus-scoped-write' : 'read-only-first',
+      writeToolsEnabled: env.ENABLE_WRITE_TOOLS
+    });
   });
 
   app.use('/mcp', requireBearerToken);
@@ -82,6 +91,6 @@ export async function startHttpServer(): Promise<void> {
 
   const listenHost = '0.0.0.0';
   app.listen(env.PORT, listenHost, () => {
-    logger.info({ port: env.PORT, host: listenHost }, 'wealthtech_ssh_bridge démarré');
+    logger.info({ port: env.PORT, host: listenHost, writeToolsEnabled: env.ENABLE_WRITE_TOOLS }, 'wealthtech_ssh_bridge démarré');
   });
 }
