@@ -35,7 +35,7 @@ const projects: Record<ProjectKey, { label: string; path: string; note: string }
   },
   front_end_opcvm: {
     label: 'Frontend OPCVM / FundAfrica',
-    path: '/var/www/vhosts/chainsolutions.fr/africafunds.chainsolutions.fr',
+    path: '/var/www/vhosts/chainsolutions.fr/africafunds.chainsolutions.fr/frontend',
     note: 'Frontend OPCVM autorisé pour statut Git, pull contrôlé et build contrôlé.'
   },
   brvmchainsolution: {
