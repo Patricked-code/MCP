@@ -223,6 +223,16 @@ if [ -f package.json ]; then
   npm run build --if-present
 else
   echo 'Aucun package.json détecté: build ignoré.'
+fi
+if command -v pm2 >/dev/null 2>&1; then
+  if pm2 describe fundafrique-frontend >/dev/null 2>&1; then
+    pm2 restart fundafrique-frontend --update-env
+  else
+    echo 'Aucun process PM2 fundafrique-frontend trouvé: redémarrage PM2 ignoré.'
+    pm2 list || true
+  fi
+else
+  echo 'PM2 non disponible: redémarrage frontend ignoré.'
 fi`;
 }
 
