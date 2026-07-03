@@ -113,24 +113,61 @@ function buildGitPullCommand(project: ProjectKey): string {
   const config = projectFor(project);
   return `set -euo pipefail
 cd ${shellQuote(config.path)}
-printf 'Projet: ${config.label}\nChemin: ${config.path}\n\n'
+mkdir -p .mcp_logs
+LOG_FILE=".mcp_logs/mcp-autonomy-$(date +%Y%m%d).log"
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "════════════════════════════════════════"
+echo "MCP AUTONOMY — GIT UPDATE"
+echo "Projet: ${config.label}"
+echo "Chemin: ${config.path}"
+echo "Date: $(date -Is)"
+echo "════════════════════════════════════════"
+
 test -d .git
 git status -sb
-if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
-  echo 'ERREUR: arbre Git non propre sur les fichiers suivis. Pull refusé pour éviter d’écraser des changements locaux.'
-  git status --short --untracked-files=no
-  exit 12
+
+CURRENT_BRANCH="$(git branch --show-current)"
+echo "Branche courante: $CURRENT_BRANCH"
+
+case "$CURRENT_BRANCH" in
+  claude/*|main|master|server|production)
+    echo "Branche autorisée: $CURRENT_BRANCH"
+    ;;
+  *)
+    echo "ERREUR: branche non autorisée pour autonomie MCP: $CURRENT_BRANCH"
+    exit 13
+    ;;
+esac
+
+STASH_CREATED=0
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo "Changements suivis détectés: stash automatique avant rebase."
+  git stash push -m "mcp-autostash-${config.label}-$(date +%Y%m%d_%H%M%S)"
+  STASH_CREATED=1
+else
+  echo "Aucun changement suivi local à stasher."
 fi
+
 git fetch origin --prune
-UPSTREAM="$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null || true)"
-if [ -z "$UPSTREAM" ]; then
-  echo 'ERREUR: aucune branche upstream configurée. Pull refusé.'
-  exit 13
+git pull --rebase origin "$CURRENT_BRANCH"
+
+if [ "$STASH_CREATED" = "1" ]; then
+  echo "Restauration du stash MCP."
+  git stash pop || {
+    echo "ERREUR: conflit pendant stash pop. Intervention nécessaire."
+    git status -sb
+    exit 14
+  }
 fi
-git pull --ff-only
+
 echo
-echo 'Nouveau dernier commit:'
-git log -1 --oneline`;
+echo "Nouveau dernier commit:"
+git log -1 --oneline
+
+echo
+echo "État Git final:"
+git status -sb`;
 }
 
 function buildDeployCommand(project: ProjectKey): string {
@@ -167,12 +204,11 @@ if [ -f package.json ]; then
   npm run build --if-present
 fi
 if command -v pm2 >/dev/null 2>&1; then
-  if pm2 describe api_opcv >/dev/null 2>&1; then
-    pm2 restart api_opcv --update-env
-  elif pm2 describe africafunds-api >/dev/null 2>&1; then
-    pm2 restart africafunds-api --update-env
+  if pm2 describe api-monolith >/dev/null 2>&1; then
+    pm2 restart api-monolith --update-env
   else
-    echo 'Aucun process PM2 connu api_opcv/africafunds-api trouvé: redémarrage PM2 ignoré.'
+    echo 'Aucun process PM2 api-monolith trouvé: redémarrage PM2 ignoré.'
+    pm2 list || true
   fi
 else
   echo 'PM2 non disponible: redémarrage applicatif ignoré.'
@@ -220,9 +256,8 @@ mysql -N -B ${shellQuote(env.OPCVM_DB_NAME)} -e ${shellQuote(query.trim())}`;
   }, async ({ script, args, allow_write }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     assertSafeScriptArgs(args);
-    if (scriptArgsRequireWriteApproval(args) || scriptsRequiringWriteApproval.has(script)) {
-      assertWriteFlag(allow_write, `exec_repo_script_s2:${script}`);
-    }
+    // Mode autonomie projet : pas de validation manuelle allow_write.
+    // Les scripts restent limités aux projets et chemins déclarés dans scriptProjectMap.
     const scriptProject = scriptProjectMap[script];
     const scriptProjectConfig = projectFor(scriptProject);
     const quotedArgs = args.map(shellQuote).join(' ');
@@ -250,29 +285,22 @@ node ${shellQuote(script)} ${quotedArgs}`;
     return runS2(buildGitStatusCommand(project), `git_status_project_s2:${project}`, 30_000);
   });
 
-  server.tool('git_pull_project_s2', 'Met à jour un projet autorisé sur S2 par git pull --ff-only, uniquement si l’arbre Git est propre.', {
-    project: ProjectKeySchema,
-    allow_write: z.boolean().default(false)
-  }, async ({ project, allow_write }) => {
+  server.tool('git_pull_project_s2', 'Met à jour automatiquement un projet autorisé sur S2 avec stash, pull --rebase et restauration du stash.', {
+    project: ProjectKeySchema
+  }, async ({ project }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
-    assertWriteFlag(allow_write, `git_pull_project_s2:${project}`);
-    return runS2(buildGitPullCommand(project), `git_pull_project_s2:${project}`, 120_000);
+    return runS2(buildGitPullCommand(project), `git_pull_project_s2:${project}`, 300_000);
   });
 
-  server.tool('deploy_project_s2', 'Déploie un projet autorisé sur S2 avec une recette contrôlée, sans commande libre.', {
-    project: ProjectKeySchema,
-    allow_write: z.boolean().default(false)
-  }, async ({ project, allow_write }) => {
+  server.tool('deploy_project_s2', 'Déploie automatiquement un projet autorisé sur S2 avec logs, stash, rebase et recette projet.', {
+    project: ProjectKeySchema
+  }, async ({ project }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
-    assertWriteFlag(allow_write, `deploy_project_s2:${project}`);
     return runS2(buildDeployCommand(project), `deploy_project_s2:${project}`, 900_000);
   });
 
-  server.tool('deploy_brvm_s2', 'Alias sécurisé pour déployer uniquement BRVMCHAINSOLUTION sur S2.', {
-    allow_write: z.boolean().default(false)
-  }, async ({ allow_write }) => {
+  server.tool('deploy_brvm_s2', 'Déploie automatiquement BRVMCHAINSOLUTION sur S2 avec logs, stash, rebase et recette BRVM.', {}, async () => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
-    assertWriteFlag(allow_write, 'deploy_brvm_s2');
     return runS2(buildDeployCommand('brvmchainsolution'), 'deploy_brvm_s2', 900_000);
   });
 }
