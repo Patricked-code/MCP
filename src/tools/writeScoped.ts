@@ -20,7 +20,10 @@ const AllowedScriptSchema = z.enum([
   'scripts/scraper/fix_index_tail.js',
   'scripts/scraper/propagate_indref_range.js',
   'scripts/scraper/scrape_indices_daily.js',
-  'scripts/recalc/recalc_eur_usd_daily_rate.js'
+  'scripts/recalc/recalc_eur_usd_daily_rate.js',
+  'scripts/repair-ost.ts',
+  'scripts/align-dividend-years.ts',
+  'scripts/repair-dividends.ts'
 ]);
 type AllowedScript = z.infer<typeof AllowedScriptSchema>;
 
@@ -42,11 +45,27 @@ const projects: Record<ProjectKey, { label: string; path: string; note: string }
   }
 };
 
+
+const scriptProjectMap: Record<AllowedScript, ProjectKey> = {
+  'scripts/diag/diag_classement_ratios.js': 'api_opcv',
+  'scripts/scraper/indref_admin.js': 'api_opcv',
+  'scripts/scraper/fix_index_tail.js': 'api_opcv',
+  'scripts/scraper/propagate_indref_range.js': 'api_opcv',
+  'scripts/scraper/scrape_indices_daily.js': 'api_opcv',
+  'scripts/recalc/recalc_eur_usd_daily_rate.js': 'api_opcv',
+  'scripts/repair-ost.ts': 'brvmchainsolution',
+  'scripts/align-dividend-years.ts': 'brvmchainsolution',
+  'scripts/repair-dividends.ts': 'brvmchainsolution'
+};
+
 const scriptsRequiringWriteApproval = new Set<AllowedScript>([
   'scripts/scraper/fix_index_tail.js',
   'scripts/scraper/propagate_indref_range.js',
   'scripts/scraper/scrape_indices_daily.js',
-  'scripts/recalc/recalc_eur_usd_daily_rate.js'
+  'scripts/recalc/recalc_eur_usd_daily_rate.js',
+  'scripts/repair-ost.ts',
+  'scripts/align-dividend-years.ts',
+  'scripts/repair-dividends.ts'
 ]);
 
 function shellQuote(value: string): string {
@@ -97,9 +116,9 @@ cd ${shellQuote(config.path)}
 printf 'Projet: ${config.label}\nChemin: ${config.path}\n\n'
 test -d .git
 git status -sb
-if [ -n "$(git status --porcelain)" ]; then
-  echo 'ERREUR: arbre Git non propre. Pull refusé pour éviter d’écraser des changements locaux.'
-  git status --short
+if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+  echo 'ERREUR: arbre Git non propre sur les fichiers suivis. Pull refusé pour éviter d’écraser des changements locaux.'
+  git status --short --untracked-files=no
   exit 12
 fi
 git fetch origin --prune
@@ -204,12 +223,21 @@ mysql -N -B ${shellQuote(env.OPCVM_DB_NAME)} -e ${shellQuote(query.trim())}`;
     if (scriptArgsRequireWriteApproval(args) || scriptsRequiringWriteApproval.has(script)) {
       assertWriteFlag(allow_write, `exec_repo_script_s2:${script}`);
     }
-    const apiProject = projectFor('api_opcv');
+    const scriptProject = scriptProjectMap[script];
+    const scriptProjectConfig = projectFor(scriptProject);
     const quotedArgs = args.map(shellQuote).join(' ');
-    const command = `set -euo pipefail
-cd ${shellQuote(apiProject.path)}
+    const command = scriptProject === 'brvmchainsolution'
+      ? `set -euo pipefail
+cd ${shellQuote(scriptProjectConfig.path)}
 test -f ${shellQuote(script)}
-printf 'Script autorisé: ${script}\nChemin: ${apiProject.path}\nArguments: ${args.join(' ')}\n\n'
+printf 'Projet: ${scriptProjectConfig.label}\nScript autorisé: ${script}\nChemin: ${scriptProjectConfig.path}\nArguments: ${args.join(' ')}\n\n'
+git status -sb
+DOCKER_API_VERSION=1.44 docker ps --format '{{.Names}}' | grep -qx brvm_app
+DOCKER_API_VERSION=1.44 docker exec -w /app brvm_app npx tsx ${shellQuote(script)} ${quotedArgs}`
+      : `set -euo pipefail
+cd ${shellQuote(scriptProjectConfig.path)}
+test -f ${shellQuote(script)}
+printf 'Projet: ${scriptProjectConfig.label}\nScript autorisé: ${script}\nChemin: ${scriptProjectConfig.path}\nArguments: ${args.join(' ')}\n\n'
 git status -sb
 node ${shellQuote(script)} ${quotedArgs}`;
     return runS2(command, `exec_repo_script_s2:${script}`, 900_000);
