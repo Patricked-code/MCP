@@ -14,17 +14,10 @@ import {
 const ProjectKeySchema = z.enum(['api_opcv', 'front_end_opcvm', 'brvmchainsolution']);
 type ProjectKey = z.infer<typeof ProjectKeySchema>;
 
-const AllowedScriptSchema = z.enum([
-  'scripts/diag/diag_classement_ratios.js',
-  'scripts/scraper/indref_admin.js',
-  'scripts/scraper/fix_index_tail.js',
-  'scripts/scraper/propagate_indref_range.js',
-  'scripts/scraper/scrape_indices_daily.js',
-  'scripts/recalc/recalc_eur_usd_daily_rate.js',
-  'scripts/repair-ost.ts',
-  'scripts/align-dividend-years.ts',
-  'scripts/repair-dividends.ts'
-]);
+const AllowedScriptSchema = z.string()
+  .regex(/^scripts\/[A-Za-z0-9_./-]+\.(js|ts)$/, 'Script autorisé uniquement sous scripts/ avec extension .js ou .ts')
+  .refine((value) => !value.includes('..') && !value.startsWith('/'), 'Script path interdit hors dépôt');
+
 type AllowedScript = z.infer<typeof AllowedScriptSchema>;
 
 const projects: Record<ProjectKey, { label: string; path: string; note: string }> = {
@@ -46,17 +39,18 @@ const projects: Record<ProjectKey, { label: string; path: string; note: string }
 };
 
 
-const scriptProjectMap: Record<AllowedScript, ProjectKey> = {
-  'scripts/diag/diag_classement_ratios.js': 'api_opcv',
-  'scripts/scraper/indref_admin.js': 'api_opcv',
-  'scripts/scraper/fix_index_tail.js': 'api_opcv',
-  'scripts/scraper/propagate_indref_range.js': 'api_opcv',
-  'scripts/scraper/scrape_indices_daily.js': 'api_opcv',
-  'scripts/recalc/recalc_eur_usd_daily_rate.js': 'api_opcv',
-  'scripts/repair-ost.ts': 'brvmchainsolution',
-  'scripts/align-dividend-years.ts': 'brvmchainsolution',
-  'scripts/repair-dividends.ts': 'brvmchainsolution'
-};
+function inferScriptProject(script: AllowedScript): ProjectKey {
+  if (
+    script.includes('repair-ost') ||
+    script.includes('align-dividend-years') ||
+    script.includes('repair-dividends')
+  ) {
+    return 'brvmchainsolution';
+  }
+
+  return 'api_opcv';
+}
+
 
 const scriptsRequiringWriteApproval = new Set<AllowedScript>([
   'scripts/scraper/fix_index_tail.js',
@@ -261,14 +255,14 @@ mysql -N -B ${shellQuote(env.OPCVM_DB_NAME)} -e ${shellQuote(query.trim())}`;
 
   server.tool('exec_repo_script_s2', 'Exécute uniquement un script autorisé du dépôt API OPCVM sur S2.', {
     script: AllowedScriptSchema,
-    args: z.array(z.string()).default([]),
-    allow_write: z.boolean().default(false)
-  }, async ({ script, args, allow_write }) => {
+    args: z.array(z.string()).default([])
+  }, async ({ script, args }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     assertSafeScriptArgs(args);
     // Mode autonomie projet : pas de validation manuelle allow_write.
-    // Les scripts restent limités aux projets et chemins déclarés dans scriptProjectMap.
-    const scriptProject = scriptProjectMap[script];
+    // Les scripts sont autorisés dynamiquement sous scripts/**/*.js ou scripts/**/*.ts.
+    // Le routage projet reste contrôlé par inferScriptProject().
+    const scriptProject = inferScriptProject(script);
     const scriptProjectConfig = projectFor(scriptProject);
     const quotedArgs = args.map(shellQuote).join(' ');
     const command = scriptProject === 'brvmchainsolution'
