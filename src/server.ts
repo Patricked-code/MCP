@@ -15,7 +15,11 @@ const WEB_SESSION_COOKIE = 'mcp_web_session';
 const WEB_SESSION_MAX_AGE_SECONDS = Math.max(1, Number.parseInt(process.env.MCP_SESSION_TTL_HOURS || '8', 10)) * 60 * 60;
 
 function mcpAuthSecret(): string {
-  return (env as unknown as Record<string, string>)['MCP_' + 'AUTH_TOKEN'];
+  const value = (env as unknown as Record<string, string | undefined>)['MCP_' + 'AUTH_TOKEN'];
+  if (!value) {
+    throw new Error('MCP auth token is missing');
+  }
+  return value;
 }
 
 function escapeHtml(value: unknown): string {
@@ -387,7 +391,7 @@ export async function startHttpServer(): Promise<void> {
 
   app.get('/github/:account', requireWebLogin, async (req, res) => {
     try {
-      const account = normalizeAccountParam(req.params.account);
+      const account = normalizeAccountParam(String(req.params.account ?? ''));
       if (!account) {
         res.status(400).type('text').send('Compte GitHub invalide.');
         return;
