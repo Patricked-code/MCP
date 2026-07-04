@@ -8,6 +8,7 @@ import { requireBearerToken } from './auth.js';
 import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
+import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 
 export function buildMcpServer(): McpServer {
   const server = new McpServer({
@@ -25,14 +26,61 @@ export function buildMcpServer(): McpServer {
 export async function startHttpServer(): Promise<void> {
   const app = express();
   app.use(express.json({ limit: '2mb' }));
+  app.use(express.urlencoded({ extended: false, limit: '64kb' }));
 
   app.get('/health', (_req, res) => {
     res.json({
       ok: true,
       service: 'wealthtech_ssh_bridge',
       mode: env.ENABLE_WRITE_TOOLS ? 'read-only-plus-scoped-write' : 'read-only-first',
-      writeToolsEnabled: env.ENABLE_WRITE_TOOLS
+      writeToolsEnabled: env.ENABLE_WRITE_TOOLS,
+      githubBootstrapped: env.MCP_GITHUB_BOOTSTRAPPED,
+      githubOrg: env.GITHUB_ORG || null
     });
+  });
+
+  app.get('/github/status', async (_req, res) => {
+    try {
+      res.json(await getGithubConnectionStatus());
+    } catch (error) {
+      logger.error({ error }, 'Erreur GitHub status');
+      res.status(500).json({ error: 'github_status_failed' });
+    }
+  });
+
+  app.get('/github', async (_req, res) => {
+    try {
+      const status = await getGithubConnectionStatus();
+      res.type('html').send(renderGithubConnectionPage(status));
+    } catch (error) {
+      logger.error({ error }, 'Erreur GitHub page');
+      res.status(500).type('text').send('Erreur GitHub page');
+    }
+  });
+
+  app.post('/github/connect', async (req, res) => {
+    try {
+      const token = typeof req.body.token === 'string' ? req.body.token.trim() : '';
+      const org = typeof req.body.org === 'string' ? req.body.org.trim() : env.GITHUB_ORG;
+
+      if (!token) {
+        res.status(400).type('text').send('Token GitHub manquant.');
+        return;
+      }
+
+      const validation = await validateGithubToken(token, org);
+      if (!validation.connected) {
+        res.status(400).type('text').send(`Token refusé: ${validation.error ?? 'connexion GitHub impossible'}`);
+        return;
+      }
+
+      await saveGithubToken(token);
+      logger.info({ org, login: validation.login }, 'Token GitHub MCP connecté depuis la page /github');
+      res.redirect('/github');
+    } catch (error) {
+      logger.error({ error }, 'Erreur GitHub connect');
+      res.status(500).type('text').send('Erreur pendant la connexion GitHub.');
+    }
   });
 
   app.use('/mcp', requireBearerToken);
