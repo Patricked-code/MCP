@@ -1,6 +1,5 @@
 import { mkdir, readFile, writeFile, chmod } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import { env } from '../config/env.js';
 import type { GitHubConnectionStatus } from './connection.js';
 
 const DEFAULT_REGISTRY_FILE = '/app/data/mcp-git-registry.json';
@@ -59,7 +58,11 @@ export type GitRegistry = {
 };
 
 function registryFilePath(): string {
-  return env.MCP_GIT_REGISTRY_FILE || DEFAULT_REGISTRY_FILE;
+  return process.env.MCP_GIT_REGISTRY_FILE || DEFAULT_REGISTRY_FILE;
+}
+
+function configuredOrg(): string {
+  return process.env.GITHUB_ORG || 'chainsolutions-wealthtech';
 }
 
 function nowIso(): string {
@@ -290,7 +293,7 @@ export function renderGitSettingsPage(status: GitHubConnectionStatus, registry: 
       <p>Le MCP n'enregistre pas le mot de passe GitHub. Pour l'accès serveur/API, il utilise un token GitHub valide ou, plus tard, une GitHub App. Le token est stocké hors Git dans le fichier secret configuré.</p>
       <form method="post" action="/git/connect">
         <label>Organisation ou compte cible</label>
-        <input name="org" value="${escapeHtml(status.org || env.GITHUB_ORG || 'chainsolutions-wealthtech')}" />
+        <input name="org" value="${escapeHtml(status.org || configuredOrg())}" />
         <label>Token GitHub</label>
         <input name="token" type="password" autocomplete="off" required />
         <label>Droit demandé au MCP pour cet espace</label>
