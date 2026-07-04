@@ -53,6 +53,12 @@ Le contenu directement applicable au depot special `chainsolutions-wealthtech/.g
 Migration/github/chainsolutions-wealthtech/.github/profile/README.md
 ```
 
+Le runbook d'activation directe de l'organisation est prepare ici:
+
+```text
+Migration/github/chainsolutions-wealthtech/ORG_ACTIVATION_RUNBOOK.md
+```
+
 Quand l'app GitHub sera installee sur l'organisation, ce fichier devra etre copie dans le repository GitHub special:
 
 ```text
