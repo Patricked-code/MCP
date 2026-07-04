@@ -89,6 +89,12 @@ Faire de GitHub la source versionnee officielle, du serveur la source d'executio
 8. Ajouter progressivement le module `src/onboarding/` et les routes d'onboarding decrites dans le cadrage.
 9. Ouvrir une pull request; ne pas ecrire directement sur `main`.
 
+Runbook d'activation directe prepare:
+
+```text
+Migration/github/chainsolutions-wealthtech/ORG_ACTIVATION_RUNBOOK.md
+```
+
 ## Frontiere publique / privee
 
 A publier dans GitHub public:
