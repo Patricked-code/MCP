@@ -14,7 +14,13 @@ const required = [
   'docs/SECURITY.md',
   'docs/MCP_TOOLS.md',
   'docs/AGENTS_ARCHITECTURE.md',
-  'docs/AI_SKILLS.md'
+  'docs/AI_SKILLS.md',
+  'docs/MCP_ONBOARDING_ENGINE.md',
+  'docs/MCP_SECURITY_MODEL.md',
+  'docs/MCP_AGENT_ROLES.md',
+  'docs/MCP_REPO_FOOTPRINT.md',
+  'docs/MCP_SERVER_MAPPING.md',
+  'docs/MCP_AUDIT_LOGS.md'
 ];
 
 const missing = required.filter((file) => !existsSync(file));

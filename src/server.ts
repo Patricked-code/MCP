@@ -10,6 +10,18 @@ import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
+import {
+  buildOnboardingSnapshot,
+  createAndRecordAgent,
+  createOnboardingSession,
+  filterAuditEvents,
+  getAccountDetail,
+  getRepoDetail,
+  prepareRepoBootstrap,
+  recordOnboardingAnswer,
+  renderOnboardingSnapshotHtml
+} from './onboarding/index.js';
+import type { AgentType } from './onboarding/types.js';
 
 const WEB_SESSION_COOKIE = 'mcp_web_session';
 const WEB_SESSION_MAX_AGE_SECONDS = Math.max(1, Number.parseInt(process.env.MCP_SESSION_TTL_HOURS || '8', 10)) * 60 * 60;
@@ -155,10 +167,26 @@ function normalizeAccountParam(value: string): string {
   return value.trim().replace(/^@/, '').replace(/[^A-Za-z0-9_.-]/g, '');
 }
 
+function normalizeAgentType(value: unknown): AgentType | null {
+  const allowed: AgentType[] = [
+    'superadmin_mcp',
+    'human_admin',
+    'chatgpt',
+    'claude',
+    'codex',
+    'server_agent',
+    'readonly_agent',
+    'deployment_agent',
+    'audit_agent'
+  ];
+  return typeof value === 'string' && allowed.includes(value as AgentType) ? value as AgentType : null;
+}
+
 function nav(): string {
   return `<p>
     <a href="/dashboard">Dashboard</a> ·
     <a href="/git">Paramétrage Git</a> ·
+    <a href="/git/onboarding">Onboarding</a> ·
     <a href="/github">GitHub</a> ·
     <a href="/github/status">Statut JSON</a> ·
     <a href="/github/Patricked-code">Patricked-code</a> ·
@@ -340,6 +368,225 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/status');
       res.status(500).json({ error: 'git_status_failed' });
+    }
+  });
+
+  app.get('/git/onboarding', requireWebLogin, async (req, res) => {
+    try {
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      const snapshot = await buildOnboardingSnapshot({
+        status,
+        registry,
+        source: 'mcp-web:/git/onboarding',
+        userAgent: req.header('user-agent') ?? undefined
+      });
+
+      if (req.accepts('html')) {
+        res.type('html').send(renderOnboardingSnapshotHtml(snapshot));
+        return;
+      }
+      res.json(snapshot);
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding');
+      res.status(500).json({ error: 'git_onboarding_failed' });
+    }
+  });
+
+  app.post('/git/onboarding/start', requireWebLogin, async (req, res) => {
+    try {
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      const result = await createOnboardingSession({
+        status,
+        registry,
+        source: 'mcp-web:/git/onboarding/start',
+        userAgent: req.header('user-agent') ?? undefined
+      });
+      res.status(201).json({ session: result.session, snapshot: result.snapshot });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/start');
+      res.status(500).json({ error: 'git_onboarding_start_failed' });
+    }
+  });
+
+  app.post('/git/onboarding/answer', requireWebLogin, async (req, res) => {
+    try {
+      const sessionId = typeof req.body.sessionId === 'string' ? req.body.sessionId.trim() : '';
+      const questionId = typeof req.body.questionId === 'string' ? req.body.questionId.trim() : '';
+      const choiceId = typeof req.body.choiceId === 'string' ? req.body.choiceId.trim() : '';
+
+      if (!sessionId || !questionId || !choiceId) {
+        res.status(400).json({ error: 'sessionId_questionId_choiceId_required' });
+        return;
+      }
+
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      const result = await recordOnboardingAnswer({
+        status,
+        registry,
+        sessionId,
+        questionId,
+        choiceId,
+        source: 'mcp-web:/git/onboarding/answer'
+      });
+      res.status(result.accepted ? 200 : 403).json(result);
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/answer');
+      res.status(500).json({ error: 'git_onboarding_answer_failed' });
+    }
+  });
+
+  app.get('/git/accounts', requireWebLogin, async (_req, res) => {
+    try {
+      const registry = await readGitRegistry();
+      res.json({ accounts: registry.accounts });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/accounts');
+      res.status(500).json({ error: 'git_accounts_failed' });
+    }
+  });
+
+  app.get('/git/accounts/:account', requireWebLogin, async (req, res) => {
+    try {
+      const account = normalizeAccountParam(String(req.params.account ?? ''));
+      const registry = await readGitRegistry();
+      const detail = getAccountDetail(registry, account);
+      if (!detail) {
+        res.status(404).json({ error: 'git_account_not_found' });
+        return;
+      }
+      res.json({ account: detail });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/accounts/:account');
+      res.status(500).json({ error: 'git_account_failed' });
+    }
+  });
+
+  app.get('/git/repos', requireWebLogin, async (req, res) => {
+    try {
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      const snapshot = await buildOnboardingSnapshot({
+        status,
+        registry,
+        source: 'mcp-web:/git/repos',
+        userAgent: req.header('user-agent') ?? undefined
+      });
+      res.json({ repos: snapshot.repos });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/repos');
+      res.status(500).json({ error: 'git_repos_failed' });
+    }
+  });
+
+  app.get('/git/repos/:owner/:repo', requireWebLogin, async (req, res) => {
+    try {
+      const owner = normalizeAccountParam(String(req.params.owner ?? ''));
+      const repo = normalizeAccountParam(String(req.params.repo ?? ''));
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      const snapshot = await buildOnboardingSnapshot({
+        status,
+        registry,
+        source: 'mcp-web:/git/repos/detail',
+        userAgent: req.header('user-agent') ?? undefined
+      });
+      const detail = getRepoDetail(snapshot.repos, owner, repo);
+      if (!detail) {
+        res.status(404).json({ error: 'git_repo_not_found' });
+        return;
+      }
+      res.json({ repo: detail });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/repos/:owner/:repo');
+      res.status(500).json({ error: 'git_repo_failed' });
+    }
+  });
+
+  app.post('/git/repos/:owner/:repo/bootstrap', requireWebLogin, async (req, res) => {
+    try {
+      const owner = normalizeAccountParam(String(req.params.owner ?? ''));
+      const repo = normalizeAccountParam(String(req.params.repo ?? ''));
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      const snapshot = await buildOnboardingSnapshot({
+        status,
+        registry,
+        source: 'mcp-web:/git/repos/bootstrap',
+        userAgent: req.header('user-agent') ?? undefined
+      });
+      const detail = getRepoDetail(snapshot.repos, owner, repo);
+      if (!detail) {
+        res.status(404).json({ error: 'git_repo_not_found' });
+        return;
+      }
+      res.json({ bootstrap: prepareRepoBootstrap(detail) });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/repos/:owner/:repo/bootstrap');
+      res.status(500).json({ error: 'git_repo_bootstrap_failed' });
+    }
+  });
+
+  app.get('/git/agents', requireWebLogin, async (req, res) => {
+    try {
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      const snapshot = await buildOnboardingSnapshot({
+        status,
+        registry,
+        source: 'mcp-web:/git/agents',
+        userAgent: req.header('user-agent') ?? undefined
+      });
+      res.json({ agents: snapshot.agents });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/agents');
+      res.status(500).json({ error: 'git_agents_failed' });
+    }
+  });
+
+  app.post('/git/agents/create', requireWebLogin, async (req, res) => {
+    try {
+      const agentName = typeof req.body.agentName === 'string' ? req.body.agentName.trim() : '';
+      const role = typeof req.body.role === 'string' ? req.body.role.trim() : '';
+      const agentType = normalizeAgentType(req.body.agentType);
+
+      if (!agentName || !role || !agentType) {
+        res.status(400).json({ error: 'agentName_agentType_role_required' });
+        return;
+      }
+
+      const registry = await readGitRegistry();
+      const result = await createAndRecordAgent({
+        registry,
+        agentName,
+        agentType,
+        role,
+        actor: 'mcp-web:/git/agents/create'
+      });
+      res.status(201).json({ agent: result.agent });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'agent_create_failed';
+      if (message.includes('SuperAdmin MCP')) {
+        res.status(403).json({ error: 'superadmin_requires_master_mcp_token_validation' });
+        return;
+      }
+      logger.error({ error }, 'Erreur /git/agents/create');
+      res.status(500).json({ error: 'git_agent_create_failed' });
+    }
+  });
+
+  app.get('/git/audit', requireWebLogin, async (req, res) => {
+    try {
+      const registry = await readGitRegistry();
+      const limit = typeof req.query.limit === 'string' ? Number.parseInt(req.query.limit, 10) : 100;
+      const actor = typeof req.query.actor === 'string' ? req.query.actor : undefined;
+      const type = typeof req.query.type === 'string' ? req.query.type : undefined;
+      res.json({ events: filterAuditEvents(registry, { actor, type, limit: Number.isFinite(limit) ? limit : 100 }) });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/audit');
+      res.status(500).json({ error: 'git_audit_failed' });
     }
   });
 
