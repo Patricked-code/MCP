@@ -9,9 +9,14 @@ import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
+import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
 
 const WEB_SESSION_COOKIE = 'mcp_web_session';
-const WEB_SESSION_MAX_AGE_SECONDS = 8 * 60 * 60;
+const WEB_SESSION_MAX_AGE_SECONDS = Math.max(1, Number.parseInt(process.env.MCP_SESSION_TTL_HOURS || '8', 10)) * 60 * 60;
+
+function mcpAuthSecret(): string {
+  return (env as unknown as Record<string, string>)['MCP_' + 'AUTH_TOKEN'];
+}
 
 function escapeHtml(value: unknown): string {
   return String(value ?? '')
@@ -23,7 +28,7 @@ function escapeHtml(value: unknown): string {
 }
 
 function signSession(expiresAt: number): string {
-  return createHmac('sha256', env.MCP_AUTH_TOKEN).update(String(expiresAt)).digest('hex');
+  return createHmac('sha256', mcpAuthSecret()).update(String(expiresAt)).digest('hex');
 }
 
 function parseCookies(cookieHeader: string | undefined): Record<string, string> {
@@ -61,25 +66,30 @@ function isValidWebSession(cookieValue: string | undefined): boolean {
 }
 
 function tokenMatches(input: string): boolean {
-  const expected = Buffer.from(env.MCP_AUTH_TOKEN);
+  const expected = Buffer.from(mcpAuthSecret());
   const actual = Buffer.from(input);
   return expected.length === actual.length && timingSafeEqual(expected, actual);
+}
+
+function secureCookieAttribute(): string {
+  const baseUrl = process.env.MCP_WEB_BASE_URL || '';
+  return env.NODE_ENV === 'production' || baseUrl.startsWith('https://') ? '; Secure' : '';
 }
 
 function createWebSessionCookie(): string {
   const expiresAt = Date.now() + WEB_SESSION_MAX_AGE_SECONDS * 1000;
   const value = `${expiresAt}.${signSession(expiresAt)}`;
-  return `${WEB_SESSION_COOKIE}=${encodeURIComponent(value)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${WEB_SESSION_MAX_AGE_SECONDS}`;
+  return `${WEB_SESSION_COOKIE}=${encodeURIComponent(value)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${WEB_SESSION_MAX_AGE_SECONDS}${secureCookieAttribute()}`;
 }
 
 function clearWebSessionCookie(): string {
-  return `${WEB_SESSION_COOKIE}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0`;
+  return `${WEB_SESSION_COOKIE}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0${secureCookieAttribute()}`;
 }
 
 function isWebAuthenticated(req: express.Request): boolean {
   const authorization = req.header('authorization') ?? '';
 
-  if (authorization.startsWith('Bearer ') && authorization.slice('Bearer '.length) === env.MCP_AUTH_TOKEN) {
+  if (authorization.startsWith('Bearer ') && authorization.slice('Bearer '.length) === mcpAuthSecret()) {
     return true;
   }
 
@@ -144,6 +154,7 @@ function normalizeAccountParam(value: string): string {
 function nav(): string {
   return `<p>
     <a href="/dashboard">Dashboard</a> ·
+    <a href="/git">Paramétrage Git</a> ·
     <a href="/github">GitHub</a> ·
     <a href="/github/status">Statut JSON</a> ·
     <a href="/github/Patricked-code">Patricked-code</a> ·
@@ -154,6 +165,7 @@ function nav(): string {
 
 async function renderDashboardPage(): Promise<string> {
   const status = await getGithubConnectionStatus();
+  const registry = await readGitRegistry();
   const connected = status.connected ? 'connecté' : 'non connecté';
 
   return `<!doctype html>
@@ -184,6 +196,7 @@ async function renderDashboardPage(): Promise<string> {
       <p>Organisation : <strong>${escapeHtml(status.org || 'non définie')}</strong></p>
       <p>Repos visibles : <strong>${escapeHtml(status.reposVisible ?? 'n/a')}</strong></p>
       <p>Expiration token : <strong>${escapeHtml(status.tokenExpiresAt || 'non communiquée')}</strong></p>
+      <p><a href="/git">Ouvrir le paramétrage Git</a></p>
     </div>
 
     <div class="card">
@@ -192,6 +205,14 @@ async function renderDashboardPage(): Promise<string> {
       <p>Mode : <strong>${env.ENABLE_WRITE_TOOLS ? 'read-only-plus-scoped-write' : 'read-only-first'}</strong></p>
       <p>GitHub bootstrapped : <strong>${env.MCP_GITHUB_BOOTSTRAPPED ? 'oui' : 'non'}</strong></p>
       <p>Token GitHub : <code>${escapeHtml(status.tokenFile)}</code></p>
+    </div>
+
+    <div class="card">
+      <h2>Registre Git</h2>
+      <p>Comptes enregistrés : <strong>${registry.accounts.length}</strong></p>
+      <p>Mappings repo ↔ serveur : <strong>${registry.repoMappings.length}</strong></p>
+      <p>Dernière mise à jour : <strong>${escapeHtml(registry.updatedAt)}</strong></p>
+      <p><a href="/git/status">Voir JSON</a></p>
     </div>
 
     <div class="card">
@@ -296,6 +317,55 @@ export async function startHttpServer(): Promise<void> {
     }
   });
 
+  app.get('/git', requireWebLogin, async (_req, res) => {
+    try {
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      res.type('html').send(renderGitSettingsPage(status, registry));
+    } catch (error) {
+      logger.error({ error }, 'Erreur page /git');
+      res.status(500).type('text').send('Erreur page paramétrage Git.');
+    }
+  });
+
+  app.get('/git/status', requireWebLogin, async (_req, res) => {
+    try {
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      res.json({ status, registry });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/status');
+      res.status(500).json({ error: 'git_status_failed' });
+    }
+  });
+
+  app.post('/git/connect', requireWebLogin, async (req, res) => {
+    try {
+      const token = typeof req.body.token === 'string' ? req.body.token.trim() : '';
+      const org = typeof req.body.org === 'string' ? req.body.org.trim() : env.GITHUB_ORG;
+      const mode = typeof req.body.mode === 'string' ? req.body.mode : 'read';
+
+      if (!token) {
+        res.status(400).type('text').send('Token GitHub manquant.');
+        return;
+      }
+
+      const validation = await validateGithubToken(token, org);
+      if (!validation.connected) {
+        res.status(400).type('text').send(`Token refusé: ${validation.error ?? 'connexion GitHub impossible'}`);
+        return;
+      }
+
+      await saveGithubToken(token);
+      await recordGithubConnection(validation, mode, 'mcp-web:/git/connect');
+      logger.info({ org, login: validation.login, mode }, 'Token GitHub MCP connecté depuis la page /git');
+      res.redirect('/git');
+    } catch (error) {
+      logger.error({ error }, 'Erreur Git connect');
+      res.status(500).type('text').send('Erreur pendant la connexion Git.');
+    }
+  });
+
   app.get('/github/status', requireWebLogin, async (_req, res) => {
     try {
       res.json(await getGithubConnectionStatus());
@@ -335,6 +405,7 @@ export async function startHttpServer(): Promise<void> {
     try {
       const token = typeof req.body.token === 'string' ? req.body.token.trim() : '';
       const org = typeof req.body.org === 'string' ? req.body.org.trim() : env.GITHUB_ORG;
+      const mode = typeof req.body.mode === 'string' ? req.body.mode : 'read';
 
       if (!token) {
         res.status(400).type('text').send('Token GitHub manquant.');
@@ -348,7 +419,8 @@ export async function startHttpServer(): Promise<void> {
       }
 
       await saveGithubToken(token);
-      logger.info({ org, login: validation.login }, 'Token GitHub MCP connecté depuis la page /github');
+      await recordGithubConnection(validation, mode, 'mcp-web:/github/connect');
+      logger.info({ org, login: validation.login, mode }, 'Token GitHub MCP connecté depuis la page /github');
       res.redirect(`/github/${encodeURIComponent(validation.login ?? org ?? 'github')}`);
     } catch (error) {
       logger.error({ error }, 'Erreur GitHub connect');
