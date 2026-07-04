@@ -10,7 +10,6 @@ import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 
-
 const WEB_SESSION_COOKIE = 'mcp_web_session';
 const WEB_SESSION_MAX_AGE_SECONDS = 8 * 60 * 60;
 
@@ -50,11 +49,21 @@ function isValidWebSession(cookieValue: string | undefined): boolean {
     return false;
   }
 
+  if (!/^[a-f0-9]{64}$/i.test(signature)) {
+    return false;
+  }
+
   const expected = signSession(expiresAt);
   const expectedBuffer = Buffer.from(expected, 'hex');
   const actualBuffer = Buffer.from(signature, 'hex');
 
   return expectedBuffer.length === actualBuffer.length && timingSafeEqual(expectedBuffer, actualBuffer);
+}
+
+function tokenMatches(input: string): boolean {
+  const expected = Buffer.from(env.MCP_AUTH_TOKEN);
+  const actual = Buffer.from(input);
+  return expected.length === actual.length && timingSafeEqual(expected, actual);
 }
 
 function createWebSessionCookie(): string {
@@ -85,14 +94,14 @@ function requireWebLogin(req: express.Request, res: express.Response, next: expr
   }
 
   if (req.accepts('html')) {
-    res.redirect(`/login?next=${encodeURIComponent(req.originalUrl || '/github')}`);
+    res.redirect(`/login?next=${encodeURIComponent(req.originalUrl || '/dashboard')}`);
     return;
   }
 
   res.status(401).json({ error: 'mcp_web_login_required' });
 }
 
-function renderLoginPage(error?: string, next = '/github'): string {
+function renderLoginPage(error?: string, next = '/dashboard'): string {
   const safeError = error ? `<p class="error">${escapeHtml(error)}</p>` : '';
 
   return `<!doctype html>
@@ -107,21 +116,21 @@ function renderLoginPage(error?: string, next = '/github'): string {
     h1 { margin-top: 0; }
     label { display: block; margin: 14px 0 6px; font-weight: 700; }
     input { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 10px; box-sizing: border-box; }
-    button { margin-top: 16px; width: 100%; padding: 12px; border: 0; border-radius: 10px; background: #111827; color: white; font-weight: 800; }
+    button { margin-top: 16px; width: 100%; padding: 12px; border: 0; border-radius: 10px; background: #111827; color: white; font-weight: 800; cursor:pointer; }
     .error { color: #b91c1c; font-weight: 700; }
     .hint { color: #4b5563; font-size: .95rem; }
   </style>
 </head>
 <body>
   <main>
-    <h1>Connexion MCP</h1>
-    <p class="hint">Entre le token MCP pour accéder aux pages GitHub Guardian et aux paramètres par compte/repo.</p>
+    <h1>Connexion MCP WealthTech</h1>
+    <p class="hint">Entre le token MCP pour accéder au tableau de bord GitHub Guardian.</p>
     ${safeError}
     <form method="post" action="/login">
       <input type="hidden" name="next" value="${escapeHtml(next)}" />
       <label>Token MCP</label>
       <input name="token" type="password" autocomplete="current-password" required autofocus />
-      <button type="submit">Se connecter</button>
+      <button type="submit">Accéder au tableau de bord</button>
     </form>
   </main>
 </body>
@@ -132,17 +141,93 @@ function normalizeAccountParam(value: string): string {
   return value.trim().replace(/^@/, '').replace(/[^A-Za-z0-9_.-]/g, '');
 }
 
+function nav(): string {
+  return `<p>
+    <a href="/dashboard">Dashboard</a> ·
+    <a href="/github">GitHub</a> ·
+    <a href="/github/status">Statut JSON</a> ·
+    <a href="/github/Patricked-code">Patricked-code</a> ·
+    <a href="/github/chainsolutions-wealthtech">chainsolutions-wealthtech</a> ·
+    <a href="/logout">Déconnexion</a>
+  </p>`;
+}
+
+async function renderDashboardPage(): Promise<string> {
+  const status = await getGithubConnectionStatus();
+  const connected = status.connected ? 'connecté' : 'non connecté';
+
+  return `<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MCP WealthTech — Dashboard</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 32px; color: #111827; line-height: 1.45; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 16px; max-width: 1180px; }
+    .card { border: 1px solid #d1d5db; border-radius: 14px; padding: 18px; background: #fff; }
+    .ok { color: #047857; font-weight: 800; }
+    .ko { color: #b91c1c; font-weight: 800; }
+    code { background: #f3f4f6; padding: 2px 5px; border-radius: 4px; }
+    a { color: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <h1>MCP WealthTech — Tableau de bord</h1>
+  ${nav()}
+
+  <div class="grid">
+    <div class="card">
+      <h2>GitHub</h2>
+      <p>Connexion : <span class="${status.connected ? 'ok' : 'ko'}">${escapeHtml(connected)}</span></p>
+      <p>Compte : <strong>${escapeHtml(status.login || 'non détecté')}</strong></p>
+      <p>Organisation : <strong>${escapeHtml(status.org || 'non définie')}</strong></p>
+      <p>Repos visibles : <strong>${escapeHtml(status.reposVisible ?? 'n/a')}</strong></p>
+      <p>Expiration token : <strong>${escapeHtml(status.tokenExpiresAt || 'non communiquée')}</strong></p>
+    </div>
+
+    <div class="card">
+      <h2>MCP</h2>
+      <p>Service : <strong>wealthtech_ssh_bridge</strong></p>
+      <p>Mode : <strong>${env.ENABLE_WRITE_TOOLS ? 'read-only-plus-scoped-write' : 'read-only-first'}</strong></p>
+      <p>GitHub bootstrapped : <strong>${env.MCP_GITHUB_BOOTSTRAPPED ? 'oui' : 'non'}</strong></p>
+      <p>Token GitHub : <code>${escapeHtml(status.tokenFile)}</code></p>
+    </div>
+
+    <div class="card">
+      <h2>Projets connus</h2>
+      <ul>
+        <li>BRVMCHAINSOLUTION — <code>brvmchainsolution</code></li>
+        <li>FundAfrica API — <code>api_opcv</code></li>
+        <li>FundAfrica Frontend — <code>front_end_opcvm</code></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Prochaines étapes</h2>
+      <ul>
+        <li>inventaire comptes GitHub</li>
+        <li>paramétrage par repo</li>
+        <li>liaison repo ↔ serveur</li>
+        <li>loopback projet</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
 function addGithubNav(html: string): string {
   return html.replace(
     '<h1>WealthTech MCP — Connexion GitHub</h1>',
-    '<h1>WealthTech MCP — Connexion GitHub</h1><p><a href="/github/status">Statut JSON</a> · <a href="/logout">Déconnexion</a></p>'
+    `<h1>WealthTech MCP — Connexion GitHub</h1>${nav()}`
   );
 }
 
 function renderAccountPage(account: string, githubPageHtml: string): string {
   return githubPageHtml.replace(
     '<h1>WealthTech MCP — Connexion GitHub</h1>',
-    `<h1>WealthTech MCP — Compte GitHub ${escapeHtml(account)}</h1><p><a href="/github">Vue générale</a> · <a href="/github/status">Statut JSON</a> · <a href="/logout">Déconnexion</a></p>`
+    `<h1>WealthTech MCP — Compte GitHub ${escapeHtml(account)}</h1>${nav()}`
   );
 }
 
@@ -176,19 +261,19 @@ export async function startHttpServer(): Promise<void> {
   });
 
   app.get('/', (_req, res) => {
-    res.redirect(`/github/${encodeURIComponent(validation.login ?? org ?? 'github')}`);
+    res.redirect('/dashboard');
   });
 
   app.get('/login', (req, res) => {
-    const next = typeof req.query.next === 'string' ? req.query.next : '/github';
+    const next = typeof req.query.next === 'string' ? req.query.next : '/dashboard';
     res.type('html').send(renderLoginPage(undefined, next));
   });
 
   app.post('/login', (req, res) => {
     const token = typeof req.body.token === 'string' ? req.body.token : '';
-    const next = typeof req.body.next === 'string' && req.body.next.startsWith('/') ? req.body.next : '/github';
+    const next = typeof req.body.next === 'string' && req.body.next.startsWith('/') ? req.body.next : '/dashboard';
 
-    if (token !== env.MCP_AUTH_TOKEN) {
+    if (!tokenMatches(token)) {
       res.status(401).type('html').send(renderLoginPage('Token MCP invalide.', next));
       return;
     }
@@ -200,6 +285,15 @@ export async function startHttpServer(): Promise<void> {
   app.get('/logout', (_req, res) => {
     res.setHeader('Set-Cookie', clearWebSessionCookie());
     res.redirect('/login');
+  });
+
+  app.get('/dashboard', requireWebLogin, async (_req, res) => {
+    try {
+      res.type('html').send(await renderDashboardPage());
+    } catch (error) {
+      logger.error({ error }, 'Erreur dashboard');
+      res.status(500).type('text').send('Erreur dashboard MCP.');
+    }
   });
 
   app.get('/github/status', requireWebLogin, async (_req, res) => {
