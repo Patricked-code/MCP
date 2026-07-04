@@ -45,6 +45,22 @@ Le MCP est le noyau technique de gouvernance. Le dossier `Migration/` est le noy
 5. Appliquer le README de profil propose dans `docs/CHAINSOLUTIONS_WEALTHTECH_ORG_BOOTSTRAP.md`.
 6. Continuer le code uniquement sur branche dediee et via pull request.
 
+## Fichier pret pour le futur profil public
+
+Le contenu directement applicable au depot special `chainsolutions-wealthtech/.github` est prepare ici:
+
+```text
+Migration/github/chainsolutions-wealthtech/.github/profile/README.md
+```
+
+Quand l'app GitHub sera installee sur l'organisation, ce fichier devra etre copie dans le repository GitHub special:
+
+```text
+chainsolutions-wealthtech/.github
+└── profile/
+    └── README.md
+```
+
 ## Branche de travail
 
 La branche de cadrage creee est:
