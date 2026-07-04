@@ -1,0 +1,128 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+2 0 obj
+<< /Length 3243 >>
+stream
+BT
+/F1 10 Tf
+45 790 Td
+13 TL
+(Migration WealthTech - PDF GitHub - page 1/2) Tj T*
+(------------------------------------------------------------------------------) Tj T*
+() Tj T*
+(MIGRATION WEALTHTECH - PDF CONSOLIDE DISPONIBLE) Tj T*
+(Depot: Patricked-code/MCP) Tj T*
+(Dossier: Migration) Tj T*
+(Date: 2026-07-04) Tj T*
+() Tj T*
+(Ce PDF place dans GitHub accompagne les fichiers Markdown du dossier Migration.) Tj T*
+(Il reprend les points structurants disponibles dans la conversation et les sources chargees:) Tj T*
+() Tj T*
+(1. Serveurs) Tj T*
+(- S1: root@212.227.212.33, serveur principal, destination, nettoyage et consolidation.) Tj T*
+(- S2: root@217.160.249.254, serveur source, migration et nettoyage selectif.) Tj T*
+() Tj T*
+(2. Domaines S1 a conserver) Tj T*
+(niakara.com, www.niakara.com, api.niakara.com, wealthtechinnovations.com,) Tj T*
+(api.wealthtechinnovations.com, stablecoin.wealthtechinnovations.com,) Tj T*
+(api.stablecoin.wealthtechinnovations.com, blockchain.wealthtechinnovations.com,) Tj T*
+(tokenfactory.wealthtechinnovations.com, wealthtechinnovation.com, berebytours.com.) Tj T*
+() Tj T*
+(3. Domaines S2 proteges) Tj T*
+(africafunds.chainsolutions.fr, api.africafunds.chainsolutions.fr,) Tj T*
+(api.stablecoin.chainsolutions.fr, stablecoin.chainsolutions.fr,) Tj T*
+(brvm.chainsolutions.fr, bvmac.chainsolutions.fr, chainsolutions.fr,) Tj T*
+(Funds.chainsolutions.fr, api.funds.chainsolutions.fr.) Tj T*
+() Tj T*
+(4. Migrations prevues) Tj T*
+(- wealthtech.chainsolutions.fr -> V2.wealthtechinnovations.com) Tj T*
+(- evote.chainsolutions.fr + api.evote.chainsolutions.fr -> evote.wealthtechinnovations.com +) Tj T*
+(api.evote.wealthtechinnovations.com) Tj T*
+(- itic4fima.chainsolutions.fr + api.itic4fima.chainsolutions.fr ->) Tj T*
+(evaluations.wealthtechinnovations.com + api.evaluations.wealthtechinnovations.com) Tj T*
+(- stablecoin.chainsolutions.fr + api.stablecoin.chainsolutions.fr ->) Tj T*
+(stablecoin.wealthtechinnovations.com + api.stablecoin.wealthtechinnovations.com) Tj T*
+(Regle speciale Stablecoin: copier vers S1 sans supprimer l'original sur S2.) Tj T*
+() Tj T*
+(5. Vision ecosysteme) Tj T*
+(Les modules WealthTech, Stablecoin, Blockchain, TokenFactory, EVOTE et Evaluations doivent) Tj T*
+(progressivement devenir un seul ecosysteme applicatif coherent avec frontend commun, API) Tj T*
+(modulaire, MySQL, Redis, ClickHouse, Docker, monitoring, securite et trajectoire Kubernetes) Tj T*
+(future.) Tj T*
+() Tj T*
+(6. MCP) Tj T*
+(Nom: wealthtech_ssh_bridge.) Tj T*
+(Depot: Patricked-code/MCP.) Tj T*
+(Deploiement S1: /opt/apps/wealthtech-mcp-ssh-bridge.) Tj T*
+(URL: https://mcp.wealthtechinnovations.com/mcp.) Tj T*
+(Etat: health OK, initialize OK, tools/list OK, ping OK, Docker actif, port 8787 actif.) Tj T*
+() Tj T*
+(7. Audit disponible) Tj T*
+(L'audit disponible mentionne 21 depots GitHub, 46 branches GitHub, 20 Pull Requests,) Tj T*
+(14 branches Claude, 1 branche GPT/Codex/ChatGPT, 84 depots Git detectes sur serveurs,) Tj T*
+(326 branches Git detectees, 294 projets applicatifs sans Git, 13 projets serveur alignes,) Tj T*
+(4 projets alignes mais avec modifications locales et 71 projets avec remote absent ou depot) Tj T*
+(non retrouve.) Tj T*
+() Tj T*
+(8. Regles critiques) Tj T*
+ET
+endstream
+endobj
+3 0 obj
+<< /Length 1177 >>
+stream
+BT
+/F1 10 Tf
+45 790 Td
+13 TL
+(Migration WealthTech - PDF GitHub - page 2/2) Tj T*
+(------------------------------------------------------------------------------) Tj T*
+(Ne jamais supprimer sans inventaire.) Tj T*
+(Ne jamais toucher aux domaines proteges S2.) Tj T*
+(Ne jamais casser les domaines conserves S1.) Tj T*
+(Ne jamais supprimer stablecoin.chainsolutions.fr ni api.stablecoin.chainsolutions.fr sur S2.) Tj T*
+(Ne jamais publier de secrets reels dans GitHub.) Tj T*
+(Toujours tester apres action.) Tj T*
+(Toujours documenter apres action.) Tj T*
+(Toujours mettre a jour SUIVI.md et le POINT DE REPRISE COURANT.) Tj T*
+() Tj T*
+(9. Sources disponibles dans l'environnement de travail) Tj T*
+(Branche - Migration.txt; Branche - Branche - GIT chansolution welathtech.txt;) Tj T*
+(Migration comprehension.txt; 00_resume_global.txt; 21_22_resume_branch_links.txt;) Tj T*
+(RSULTATS COMMANDES.txt; raw_S2.txt; Audit.zip et ses fichiers d'audit extraits.) Tj T*
+() Tj T*
+(Limite: ce PDF GitHub est une version accompagnee et lisible. Le PDF local complet genere) Tj T*
+(dans l'espace de travail contient les sources textuelles disponibles et fait 269 pages.) Tj T*
+() Tj T*
+ET
+endstream
+endobj
+4 0 obj
+<< /Type /Page /Parent 6 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 2 0 R >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 6 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 3 0 R >>
+endobj
+6 0 obj
+<< /Type /Pages /Kids [4 0 R 5 0 R] /Count 2 >>
+endobj
+7 0 obj
+<< /Type /Catalog /Pages 6 0 R >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000077 00000 n 
+0000003372 00000 n 
+0000004601 00000 n 
+0000004727 00000 n 
+0000004853 00000 n 
+0000004916 00000 n 
+trailer
+<< /Size 8 /Root 7 0 R >>
+startxref
+4965
+%%EOF
