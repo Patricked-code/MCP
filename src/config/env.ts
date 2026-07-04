@@ -29,7 +29,11 @@ const EnvSchema = z.object({
   S2_KEY_PATH: z.string().min(1),
   PROTECTED_MODE: z.string().default('read_only_first'),
   ENABLE_WRITE_TOOLS: EnvBooleanSchema.default(false),
-  OPCVM_DB_NAME: z.string().min(1).default('fund_opcvm')
+  OPCVM_DB_NAME: z.string().min(1).default('fund_opcvm'),
+  GITHUB_ORG: z.string().default(''),
+  GITHUB_TOKEN_FILE: z.string().default(''),
+  GITHUB_API_BASE: z.string().url().default('https://api.github.com'),
+  MCP_GITHUB_BOOTSTRAPPED: EnvBooleanSchema.default(false)
 });
 
 export const env = EnvSchema.parse(process.env);
