@@ -59,8 +59,11 @@ Routes dediees:
 
 - `GET /git/organization` retourne le paquet organisation cible, les signaux d acces et les prochaines actions.
 - `POST /git/organization/bootstrap` retourne le plan de premiere integration directe pour `chainsolutions-wealthtech/.github`, incluant `profile/README.md`, le titre/body de PR proposes, la branche `mcp/org-profile-bootstrap`, et un blocage explicite tant que l organisation n est pas accessible.
+- `GET /git/organization/security` retourne la politique de securite organisation cible, dont la politique 2FA demandee.
+- `POST /git/organization/security/verify` enregistre l assertion manuelle d un owner indiquant si l obligation 2FA organisation est activee ou non. L evenement reste une trace d audit, pas une preuve automatique d acces owner GitHub.
 
 Chaque appel a `POST /git/organization/bootstrap` ajoute un evenement `onboarding.organization_bootstrap_prepared`, y compris quand l operation reste bloquee par absence d acces organisation.
+Chaque verification manuelle de securite ajoute `onboarding.organization_security_policy_verified`.
 
 ## Flux d ecriture controlee
 

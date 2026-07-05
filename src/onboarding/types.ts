@@ -215,6 +215,20 @@ export type OrganizationProfileBootstrapPlan = {
   warnings: string[];
 };
 
+export type OrganizationSecurityPolicyVerification = {
+  organization: string;
+  targetOrgAccessible: boolean;
+  desiredState: 'disabled';
+  reportedState: 'enabled_by_owner_report' | 'disabled_by_owner_report';
+  ownerConfirmed: boolean;
+  compliant: boolean;
+  changeMode: 'manual_owner_settings_required';
+  ownerActionRequired: boolean;
+  settingsUrl: string;
+  verifiedAt: string;
+  caveats: string[];
+};
+
 export type BootstrapPlan = {
   owner: string;
   repo: string;

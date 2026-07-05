@@ -9,7 +9,8 @@ import { identifyActor } from '../src/onboarding/identity.js';
 import {
   prepareAndRecordOrganizationProfileBootstrap,
   prepareAndRecordRepoBootstrap,
-  prepareRepoBootstrap
+  prepareRepoBootstrap,
+  recordOrganizationSecurityPolicyVerification
 } from '../src/onboarding/index.js';
 import { buildOrganizationBootstrapPackage, prepareOrganizationProfileBootstrap } from '../src/onboarding/organization.js';
 import { buildOnboardingQuestions, validateQuestionAnswer } from '../src/onboarding/questions.js';
@@ -250,6 +251,60 @@ test('bootstrap preparation is audited without generated file contents', async (
     assert.equal(writtenRegistry.auditEvents.length, 2);
     assert.ok(writtenRegistry.auditEvents[0]);
     assert.equal(writtenRegistry.auditEvents[0].type, 'onboarding.organization_bootstrap_prepared');
+  } finally {
+    if (previousRegistryFile === undefined) {
+      delete process.env.MCP_GIT_REGISTRY_FILE;
+    } else {
+      process.env.MCP_GIT_REGISTRY_FILE = previousRegistryFile;
+    }
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
+
+test('organization 2FA policy verification is audited as manual owner assertion', async () => {
+  const previousRegistryFile = process.env.MCP_GIT_REGISTRY_FILE;
+  const tempDir = await mkdtemp(join(tmpdir(), 'mcp-onboarding-'));
+  process.env.MCP_GIT_REGISTRY_FILE = join(tempDir, 'registry.json');
+
+  try {
+    const result = await recordOrganizationSecurityPolicyVerification({
+      status: githubStatus(),
+      registry: emptyRegistry(),
+      ownerConfirmed: true,
+      twoFactorRequirementEnabled: false,
+      source: 'unit:test:security-policy',
+      userAgent: 'node-test'
+    });
+
+    assert.equal(result.policy.organization, 'chainsolutions-wealthtech');
+    assert.equal(result.policy.desiredState, 'disabled');
+    assert.equal(result.policy.reportedState, 'disabled_by_owner_report');
+    assert.equal(result.policy.compliant, true);
+    assert.equal(result.registry.auditEvents.length, 1);
+
+    const event = result.registry.auditEvents[0];
+    assert.ok(event);
+    assert.equal(event.type, 'onboarding.organization_security_policy_verified');
+    assert.match(event.message, /ok/);
+    const metadata = event.metadata?.metadata as Record<string, unknown>;
+    assert.equal(metadata.policy, 'organization_required_2fa');
+    assert.equal(metadata.desiredState, 'disabled');
+    assert.equal(metadata.reportedState, 'disabled_by_owner_report');
+    assert.equal(metadata.compliant, true);
+    assert.equal(Object.hasOwn(metadata, 'screenshot'), false);
+    assert.equal(Object.hasOwn(metadata, 'recoveryCodes'), false);
+
+    const blocked = await recordOrganizationSecurityPolicyVerification({
+      status: githubStatus(),
+      registry: result.registry,
+      ownerConfirmed: true,
+      twoFactorRequirementEnabled: true,
+      source: 'unit:test:security-policy',
+      userAgent: 'node-test'
+    });
+    assert.equal(blocked.policy.compliant, false);
+    assert.equal(blocked.registry.auditEvents.length, 2);
+    assert.match(blocked.registry.auditEvents[1]?.message ?? '', /blocked/);
   } finally {
     if (previousRegistryFile === undefined) {
       delete process.env.MCP_GIT_REGISTRY_FILE;

@@ -20,6 +20,7 @@ import type {
   BootstrapFile,
   BootstrapPlan,
   OnboardingSnapshot,
+  OrganizationSecurityPolicyVerification,
   RepoFootprint
 } from './types.js';
 
@@ -70,6 +71,7 @@ async function recordOnboardingAudit(input: {
   action: string;
   result: 'ok' | 'warning' | 'blocked' | 'error';
   metadata?: Record<string, unknown>;
+  at?: string;
 }): Promise<GitRegistry> {
   const actor = identifyActor({
     source: input.source,
@@ -85,7 +87,7 @@ async function recordOnboardingAudit(input: {
     result: input.result,
     serverLinked: input.registry.repoMappings.length > 0,
     metadata: input.metadata
-  });
+  }, input.at);
 
   const nextRegistry: GitRegistry = {
     ...input.registry,
@@ -393,6 +395,57 @@ export async function prepareAndRecordOrganizationProfileBootstrap(input: {
   });
 
   return { bootstrap, registry: nextRegistry };
+}
+
+export async function recordOrganizationSecurityPolicyVerification(input: {
+  status: GitHubConnectionStatus;
+  registry: GitRegistry;
+  ownerConfirmed: boolean;
+  twoFactorRequirementEnabled: boolean;
+  source: string;
+  userAgent?: string;
+}): Promise<{ policy: OrganizationSecurityPolicyVerification; registry: GitRegistry }> {
+  const organization = buildOrganizationBootstrapPackage(input.status);
+  const twoFactorRequirement = organization.securitySettings.twoFactorRequirement;
+  const compliant = input.ownerConfirmed && input.twoFactorRequirementEnabled === false;
+  const verifiedAt = nowIso();
+  const policy: OrganizationSecurityPolicyVerification = {
+    organization: organization.organization,
+    targetOrgAccessible: organization.accessSignals.targetOrgAccessible,
+    desiredState: twoFactorRequirement.desiredState,
+    reportedState: input.twoFactorRequirementEnabled ? 'enabled_by_owner_report' : 'disabled_by_owner_report',
+    ownerConfirmed: input.ownerConfirmed,
+    compliant,
+    changeMode: twoFactorRequirement.changeMode,
+    ownerActionRequired: twoFactorRequirement.ownerActionRequired,
+    settingsUrl: twoFactorRequirement.settingsUrl,
+    verifiedAt,
+    caveats: twoFactorRequirement.caveats
+  };
+
+  const nextRegistry = await recordOnboardingAudit({
+    status: input.status,
+    registry: input.registry,
+    source: input.source,
+    userAgent: input.userAgent,
+    action: 'organization_security_policy_verified',
+    result: compliant ? 'ok' : 'blocked',
+    metadata: {
+      organization: organization.organization,
+      policy: 'organization_required_2fa',
+      desiredState: twoFactorRequirement.desiredState,
+      reportedState: policy.reportedState,
+      ownerConfirmed: input.ownerConfirmed,
+      compliant,
+      targetOrgAccessible: organization.accessSignals.targetOrgAccessible,
+      changeMode: twoFactorRequirement.changeMode,
+      settingsUrl: twoFactorRequirement.settingsUrl,
+      caveats: twoFactorRequirement.caveats
+    },
+    at: verifiedAt
+  });
+
+  return { policy, registry: nextRegistry };
 }
 
 export async function createAndRecordAgent(input: {

@@ -33,6 +33,11 @@ Ce que cela signifie:
 
 Statut actuel: non verifie en direct, car le connecteur GitHub ne voit pas encore `chainsolutions-wealthtech`.
 
+Routes MCP preparees:
+
+- `GET /git/organization/security` expose la politique attendue et les etapes owner.
+- `POST /git/organization/security/verify` enregistre l'assertion manuelle owner avec `ownerConfirmed: true` et `twoFactorRequirementEnabled: false`.
+
 ## Description courte proposee pour GitHub
 
 Centre de gouvernance GitHub/MCP pour l'ecosysteme ChainSolutions WealthTech: migration, documentation, agents IA, mappings repo-serveur et audit securise.

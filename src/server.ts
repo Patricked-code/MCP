@@ -19,6 +19,7 @@ import {
   getRepoDetail,
   prepareAndRecordOrganizationProfileBootstrap,
   prepareAndRecordRepoBootstrap,
+  recordOrganizationSecurityPolicyVerification,
   recordOnboardingAnswer,
   renderOnboardingSnapshotHtml
 } from './onboarding/index.js';
@@ -474,6 +475,55 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/organization/bootstrap');
       res.status(500).json({ error: 'git_organization_bootstrap_failed' });
+    }
+  });
+
+  app.get('/git/organization/security', requireWebLogin, async (req, res) => {
+    try {
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      const snapshot = await buildOnboardingSnapshot({
+        status,
+        registry,
+        source: 'mcp-web:/git/organization/security',
+        userAgent: req.header('user-agent') ?? undefined
+      });
+      res.json({
+        organization: snapshot.organization.organization,
+        security: snapshot.organization.securitySettings,
+        accessSignals: snapshot.organization.accessSignals,
+        nextActions: snapshot.organization.securitySettings.twoFactorRequirement.verificationSteps
+      });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/organization/security');
+      res.status(500).json({ error: 'git_organization_security_failed' });
+    }
+  });
+
+  app.post('/git/organization/security/verify', requireWebLogin, async (req, res) => {
+    try {
+      const ownerConfirmed = req.body.ownerConfirmed === true;
+      const twoFactorRequirementEnabled = req.body.twoFactorRequirementEnabled;
+
+      if (typeof twoFactorRequirementEnabled !== 'boolean' || !ownerConfirmed) {
+        res.status(400).json({ error: 'ownerConfirmed_true_and_twoFactorRequirementEnabled_boolean_required' });
+        return;
+      }
+
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      const { policy } = await recordOrganizationSecurityPolicyVerification({
+        status,
+        registry,
+        ownerConfirmed,
+        twoFactorRequirementEnabled,
+        source: 'mcp-web:/git/organization/security/verify',
+        userAgent: req.header('user-agent') ?? undefined
+      });
+      res.status(policy.compliant ? 200 : 409).json({ policy });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/organization/security/verify');
+      res.status(500).json({ error: 'git_organization_security_verify_failed' });
     }
   });
 
