@@ -18,7 +18,8 @@ Les evenements d audit sont stockes dans le registre local MCP/Git. Chaque evene
 - reponse au questionnaire;
 - choix bloque;
 - creation de profil agent;
-- generation ou proposition de bootstrap repo;
+- generation ou proposition de bootstrap repo via `onboarding.repo_bootstrap_prepared`;
+- generation ou blocage du bootstrap organisation via `onboarding.organization_bootstrap_prepared`;
 - future tentative d ecriture sur branche MCP.
 
 ## Exemple

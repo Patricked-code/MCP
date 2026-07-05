@@ -62,6 +62,7 @@ export function auditTraceToRegistryEvent(trace: AuditTrace): RegistryAuditEvent
       actorType: trace.actorType,
       githubLogin: trace.githubLogin,
       githubOrg: trace.githubOrg,
+      result: trace.result,
       rights: trace.rights,
       reposVisible: trace.reposVisible,
       reposWritable: trace.reposWritable,
@@ -81,6 +82,10 @@ export function listOnboardingAudit(registry: GitRegistry, limit = 50): AuditTra
     .reverse()
     .map((event) => {
       const metadata = event.metadata ?? {};
+      const rawResult = typeof metadata.result === 'string'
+        ? metadata.result
+        : String(event.message).match(/: (ok|warning|blocked|error)$/)?.[1];
+      const result = rawResult === 'warning' || rawResult === 'blocked' || rawResult === 'error' ? rawResult : 'ok';
       const rights = metadata.rights && typeof metadata.rights === 'object'
         ? metadata.rights as AuditTrace['rights']
         : { read: false, write: false, admin: false, orgAdmin: false };
@@ -91,7 +96,7 @@ export function listOnboardingAudit(registry: GitRegistry, limit = 50): AuditTra
         actorType: String(metadata.actorType ?? 'unknown') as AuditTrace['actorType'],
         mcpTokenId: 'mcp-session',
         action: event.type.replace(/^onboarding\./, ''),
-        result: String(event.message).endsWith('error') ? 'error' : 'ok',
+        result,
         githubLogin: typeof metadata.githubLogin === 'string' ? metadata.githubLogin : null,
         githubOrg: typeof metadata.githubOrg === 'string' ? metadata.githubOrg : null,
         rights,

@@ -1,9 +1,16 @@
 import assert from 'node:assert/strict';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import test from 'node:test';
 import { createAgentProfile } from '../src/onboarding/agents.js';
-import { createAuditTrace } from '../src/onboarding/audit.js';
+import { createAuditTrace, listOnboardingAudit } from '../src/onboarding/audit.js';
 import { identifyActor } from '../src/onboarding/identity.js';
-import { prepareRepoBootstrap } from '../src/onboarding/index.js';
+import {
+  prepareAndRecordOrganizationProfileBootstrap,
+  prepareAndRecordRepoBootstrap,
+  prepareRepoBootstrap
+} from '../src/onboarding/index.js';
 import { buildOrganizationBootstrapPackage, prepareOrganizationProfileBootstrap } from '../src/onboarding/organization.js';
 import { buildOnboardingQuestions, validateQuestionAnswer } from '../src/onboarding/questions.js';
 import { evaluateRights } from '../src/onboarding/rights.js';
@@ -170,4 +177,78 @@ test('audit trace redacts secret-like metadata keys', () => {
     privateKey: '[redacted]',
     safe: 'kept'
   });
+});
+
+test('bootstrap preparation is audited without generated file contents', async () => {
+  const previousRegistryFile = process.env.MCP_GIT_REGISTRY_FILE;
+  const tempDir = await mkdtemp(join(tmpdir(), 'mcp-onboarding-'));
+  process.env.MCP_GIT_REGISTRY_FILE = join(tempDir, 'registry.json');
+
+  try {
+    const repo: RepoFootprint = {
+      owner: 'chainsolutions-wealthtech',
+      name: 'example',
+      defaultBranch: 'main',
+      visibility: 'private',
+      permissions: { canRead: true, canWrite: false, canAdmin: false },
+      presentFiles: [],
+      missingFiles: ['.mcp/manifest.json', 'MCP_PROJECT.md'],
+      status: 'partial',
+      recommendations: [],
+      canCreateOnboardingBranch: false
+    };
+
+    const organizationResult = await prepareAndRecordOrganizationProfileBootstrap({
+      status: githubStatus(),
+      registry: emptyRegistry(),
+      source: 'unit:test:organization',
+      userAgent: 'node-test'
+    });
+    const repoResult = await prepareAndRecordRepoBootstrap({
+      status: githubStatus(),
+      registry: organizationResult.registry,
+      repo,
+      source: 'unit:test:repo',
+      userAgent: 'node-test'
+    });
+
+    assert.equal(organizationResult.bootstrap.mode, 'blocked_until_org_access');
+    assert.equal(repoResult.bootstrap.mode, 'ready_to_copy');
+    assert.equal(repoResult.registry.auditEvents.length, 2);
+
+    const [organizationEvent, repoEvent] = repoResult.registry.auditEvents;
+    assert.ok(organizationEvent);
+    assert.ok(repoEvent);
+    assert.equal(organizationEvent.type, 'onboarding.organization_bootstrap_prepared');
+    assert.equal(repoEvent.type, 'onboarding.repo_bootstrap_prepared');
+    assert.match(organizationEvent.message, /blocked/);
+    assert.match(repoEvent.message, /warning/);
+
+    const organizationMetadata = organizationEvent.metadata?.metadata as Record<string, unknown>;
+    assert.deepEqual(organizationMetadata.files, ['profile/README.md']);
+    assert.equal(organizationMetadata.repository, 'chainsolutions-wealthtech/.github');
+    assert.equal(Object.hasOwn(organizationMetadata, 'content'), false);
+
+    const repoMetadata = repoEvent.metadata?.metadata as Record<string, unknown>;
+    assert.deepEqual(repoMetadata.files, ['.mcp/manifest.json', 'MCP_PROJECT.md']);
+    assert.equal(Object.hasOwn(repoMetadata, 'content'), false);
+
+    const audit = listOnboardingAudit(repoResult.registry);
+    assert.ok(audit[0]);
+    assert.ok(audit[1]);
+    assert.equal(audit[0].result, 'warning');
+    assert.equal(audit[1].result, 'blocked');
+
+    const writtenRegistry = JSON.parse(await readFile(process.env.MCP_GIT_REGISTRY_FILE, 'utf8')) as GitRegistry;
+    assert.equal(writtenRegistry.auditEvents.length, 2);
+    assert.ok(writtenRegistry.auditEvents[0]);
+    assert.equal(writtenRegistry.auditEvents[0].type, 'onboarding.organization_bootstrap_prepared');
+  } finally {
+    if (previousRegistryFile === undefined) {
+      delete process.env.MCP_GIT_REGISTRY_FILE;
+    } else {
+      process.env.MCP_GIT_REGISTRY_FILE = previousRegistryFile;
+    }
+    await rm(tempDir, { recursive: true, force: true });
+  }
 });

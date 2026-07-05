@@ -45,6 +45,7 @@ Les tests d ecriture destructifs ou directs sont interdits. Les droits d ecritur
 - `MCP_SERVER_MAPPING.md`.
 
 La version actuelle prepare le contenu et signale la branche requise. Elle ne pousse pas encore automatiquement vers GitHub.
+Chaque generation ajoute un evenement `onboarding.repo_bootstrap_prepared` au registre MCP/Git. L evenement conserve les chemins, la branche, le mode et les avertissements, mais pas le contenu des fichiers generes.
 
 ## Paquet organisation cible
 
@@ -57,6 +58,8 @@ Routes dediees:
 
 - `GET /git/organization` retourne le paquet organisation cible, les signaux d acces et les prochaines actions.
 - `POST /git/organization/bootstrap` retourne le plan de premiere integration directe pour `chainsolutions-wealthtech/.github`, incluant `profile/README.md`, le titre/body de PR proposes, la branche `mcp/org-profile-bootstrap`, et un blocage explicite tant que l organisation n est pas accessible.
+
+Chaque appel a `POST /git/organization/bootstrap` ajoute un evenement `onboarding.organization_bootstrap_prepared`, y compris quand l operation reste bloquee par absence d acces organisation.
 
 ## Flux d ecriture controlee
 

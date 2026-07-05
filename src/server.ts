@@ -17,8 +17,8 @@ import {
   filterAuditEvents,
   getAccountDetail,
   getRepoDetail,
-  prepareOrganizationProfileBootstrap,
-  prepareRepoBootstrap,
+  prepareAndRecordOrganizationProfileBootstrap,
+  prepareAndRecordRepoBootstrap,
   recordOnboardingAnswer,
   renderOnboardingSnapshotHtml
 } from './onboarding/index.js';
@@ -460,10 +460,16 @@ export async function startHttpServer(): Promise<void> {
     }
   });
 
-  app.post('/git/organization/bootstrap', requireWebLogin, async (_req, res) => {
+  app.post('/git/organization/bootstrap', requireWebLogin, async (req, res) => {
     try {
       const status = await getGithubConnectionStatus();
-      const bootstrap = prepareOrganizationProfileBootstrap(status);
+      const registry = await readGitRegistry();
+      const { bootstrap } = await prepareAndRecordOrganizationProfileBootstrap({
+        status,
+        registry,
+        source: 'mcp-web:/git/organization/bootstrap',
+        userAgent: req.header('user-agent') ?? undefined
+      });
       res.status(bootstrap.blockedReason ? 409 : 200).json({ bootstrap });
     } catch (error) {
       logger.error({ error }, 'Erreur /git/organization/bootstrap');
@@ -555,7 +561,14 @@ export async function startHttpServer(): Promise<void> {
         res.status(404).json({ error: 'git_repo_not_found' });
         return;
       }
-      res.json({ bootstrap: prepareRepoBootstrap(detail) });
+      const { bootstrap } = await prepareAndRecordRepoBootstrap({
+        status,
+        registry,
+        repo: detail,
+        source: 'mcp-web:/git/repos/bootstrap',
+        userAgent: req.header('user-agent') ?? undefined
+      });
+      res.json({ bootstrap });
     } catch (error) {
       logger.error({ error }, 'Erreur /git/repos/:owner/:repo/bootstrap');
       res.status(500).json({ error: 'git_repo_bootstrap_failed' });

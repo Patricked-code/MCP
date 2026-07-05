@@ -62,6 +62,39 @@ function registryAgentToProfile(entry: RegistryAgentProfileEntry): AgentProfile 
   };
 }
 
+async function recordOnboardingAudit(input: {
+  status: GitHubConnectionStatus;
+  registry: GitRegistry;
+  source: string;
+  userAgent?: string;
+  action: string;
+  result: 'ok' | 'warning' | 'blocked' | 'error';
+  metadata?: Record<string, unknown>;
+}): Promise<GitRegistry> {
+  const actor = identifyActor({
+    source: input.source,
+    mcpTokenId: 'mcp-web-session',
+    userAgent: input.userAgent
+  }, input.registry);
+  const rights = evaluateRights(input.status, input.registry, actor);
+  const trace = createAuditTrace({
+    actor,
+    rights,
+    status: input.status,
+    action: input.action,
+    result: input.result,
+    serverLinked: input.registry.repoMappings.length > 0,
+    metadata: input.metadata
+  });
+
+  const nextRegistry: GitRegistry = {
+    ...input.registry,
+    auditEvents: [...input.registry.auditEvents, auditTraceToRegistryEvent(trace)]
+  };
+  await writeGitRegistry(nextRegistry);
+  return nextRegistry;
+}
+
 function nextActions(snapshot: Omit<OnboardingSnapshot, 'nextActions'>, status: GitHubConnectionStatus): string[] {
   const actions: string[] = [];
   if (snapshot.organization.directIntegrationMode === 'blocked_until_org_access') {
@@ -295,6 +328,68 @@ export function prepareRepoBootstrap(repo: RepoFootprint): BootstrapPlan {
       'Keep raw server inventories and secrets out of public repositories.'
     ]
   };
+}
+
+export async function prepareAndRecordRepoBootstrap(input: {
+  status: GitHubConnectionStatus;
+  registry: GitRegistry;
+  repo: RepoFootprint;
+  source: string;
+  userAgent?: string;
+}): Promise<{ bootstrap: BootstrapPlan; registry: GitRegistry }> {
+  const bootstrap = prepareRepoBootstrap(input.repo);
+  const nextRegistry = await recordOnboardingAudit({
+    status: input.status,
+    registry: input.registry,
+    source: input.source,
+    userAgent: input.userAgent,
+    action: 'repo_bootstrap_prepared',
+    result: bootstrap.canWrite ? 'ok' : 'warning',
+    metadata: {
+      repository: `${input.repo.owner}/${input.repo.name}`,
+      owner: input.repo.owner,
+      repo: input.repo.name,
+      branch: bootstrap.branch,
+      mode: bootstrap.mode,
+      canWrite: bootstrap.canWrite,
+      files: bootstrap.files.map((file) => file.path),
+      fileCount: bootstrap.files.length,
+      missingFileCount: input.repo.missingFiles.length,
+      warnings: bootstrap.warnings
+    }
+  });
+
+  return { bootstrap, registry: nextRegistry };
+}
+
+export async function prepareAndRecordOrganizationProfileBootstrap(input: {
+  status: GitHubConnectionStatus;
+  registry: GitRegistry;
+  source: string;
+  userAgent?: string;
+}): Promise<{ bootstrap: ReturnType<typeof prepareOrganizationProfileBootstrap>; registry: GitRegistry }> {
+  const bootstrap = prepareOrganizationProfileBootstrap(input.status);
+  const nextRegistry = await recordOnboardingAudit({
+    status: input.status,
+    registry: input.registry,
+    source: input.source,
+    userAgent: input.userAgent,
+    action: 'organization_bootstrap_prepared',
+    result: bootstrap.blockedReason ? 'blocked' : 'ok',
+    metadata: {
+      organization: bootstrap.organization.organization,
+      repository: bootstrap.repository,
+      branch: bootstrap.branch,
+      mode: bootstrap.mode,
+      files: bootstrap.files.map((file) => file.path),
+      fileCount: bootstrap.files.length,
+      targetOrgAccessible: bootstrap.organization.accessSignals.targetOrgAccessible,
+      blockedReason: bootstrap.blockedReason,
+      warnings: bootstrap.warnings
+    }
+  });
+
+  return { bootstrap, registry: nextRegistry };
 }
 
 export async function createAndRecordAgent(input: {
