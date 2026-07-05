@@ -179,6 +179,18 @@ export type OrganizationBootstrapPackage = {
     canWriteControlledBranches: boolean;
     canAdminOrganization: boolean;
   };
+  securitySettings: {
+    twoFactorRequirement: {
+      desiredState: 'disabled';
+      currentState: 'unknown_until_org_owner_access' | 'requires_owner_verification';
+      changeMode: 'manual_owner_settings_required';
+      ownerActionRequired: boolean;
+      settingsUrl: string;
+      rationale: string;
+      caveats: string[];
+      verificationSteps: string[];
+    };
+  };
   requiredSignals: string[];
   nextSteps: string[];
   safetyRules: string[];

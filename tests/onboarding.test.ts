@@ -111,6 +111,9 @@ test('organization bootstrap package blocks direct integration until target org 
   assert.equal(blocked.organization, 'chainsolutions-wealthtech');
   assert.equal(blocked.directIntegrationMode, 'blocked_until_org_access');
   assert.equal(blocked.accessSignals.targetOrgAccessible, false);
+  assert.equal(blocked.securitySettings.twoFactorRequirement.desiredState, 'disabled');
+  assert.equal(blocked.securitySettings.twoFactorRequirement.changeMode, 'manual_owner_settings_required');
+  assert.equal(blocked.securitySettings.twoFactorRequirement.currentState, 'unknown_until_org_owner_access');
   assert.match(blocked.shortDescription, /GitHub\/MCP/);
   assert.match(blocked.profileRepository, /chainsolutions-wealthtech\/\.github/);
 
@@ -126,6 +129,8 @@ test('organization bootstrap package blocks direct integration until target org 
   assert.equal(ready.directIntegrationMode, 'branch_pr_required');
   assert.equal(ready.accessSignals.canWriteControlledBranches, true);
   assert.equal(ready.directIntegrationBranch, 'mcp/org-profile-bootstrap');
+  assert.equal(ready.securitySettings.twoFactorRequirement.currentState, 'requires_owner_verification');
+  assert.match(ready.securitySettings.twoFactorRequirement.caveats.join(' '), /GitHub\.com account-level mandatory 2FA/);
 });
 
 test('organization profile bootstrap returns public-safe .github profile plan', () => {
@@ -227,6 +232,8 @@ test('bootstrap preparation is audited without generated file contents', async (
     const organizationMetadata = organizationEvent.metadata?.metadata as Record<string, unknown>;
     assert.deepEqual(organizationMetadata.files, ['profile/README.md']);
     assert.equal(organizationMetadata.repository, 'chainsolutions-wealthtech/.github');
+    assert.equal(organizationMetadata.twoFactorRequirement, 'disabled');
+    assert.equal(organizationMetadata.twoFactorRequirementChangeMode, 'manual_owner_settings_required');
     assert.equal(Object.hasOwn(organizationMetadata, 'content'), false);
 
     const repoMetadata = repoEvent.metadata?.metadata as Record<string, unknown>;

@@ -83,19 +83,43 @@ export function buildOrganizationBootstrapPackage(status: GitHubConnectionStatus
       canWriteControlledBranches,
       canAdminOrganization
     },
+    securitySettings: {
+      twoFactorRequirement: {
+        desiredState: 'disabled',
+        currentState: targetOrgAccessible ? 'requires_owner_verification' : 'unknown_until_org_owner_access',
+        changeMode: 'manual_owner_settings_required',
+        ownerActionRequired: true,
+        settingsUrl: `https://github.com/organizations/${TARGET_ORGANIZATION}/settings/security`,
+        rationale: 'Owner request: do not enforce organization-level two-factor authentication for direct users during the first integration.',
+        caveats: [
+          'This does not override GitHub.com account-level mandatory 2FA enrollment for users selected by GitHub.',
+          'This lowers organization access security and should be compensated with least-privilege roles, scoped tokens, pull requests, and audit logs.',
+          'The MCP connector cannot verify or change this setting until it has organization-owner access.'
+        ],
+        verificationSteps: [
+          'Open the organization settings as an owner.',
+          'Go to Authentication security.',
+          'Confirm that Require two-factor authentication for everyone in your organization is not enabled.',
+          'Record the verification in the MCP audit log without storing screenshots, tokens, or personal recovery codes.'
+        ]
+      }
+    },
     requiredSignals: [
       'GitHub App or explicit organization-scoped token is authorized on chainsolutions-wealthtech.',
       'The MCP connector can see chainsolutions-wealthtech as an organization account.',
       'The MCP connector can list or create chainsolutions-wealthtech/.github.',
-      'Writes are limited to mcp/org-profile-bootstrap and reviewed through a pull request.'
+      'Writes are limited to mcp/org-profile-bootstrap and reviewed through a pull request.',
+      'An organization owner has manually confirmed that organization-level required 2FA is disabled if this policy is still desired.'
     ],
     nextSteps: targetOrgAccessible ? [
       'Create or open chainsolutions-wealthtech/.github.',
+      'Have an organization owner verify Authentication security and leave organization-level required 2FA disabled if this policy is still desired.',
       'Create branch mcp/org-profile-bootstrap.',
       'Add profile/README.md from the prepared migration artifact.',
       'Open a pull request to the default branch with no direct main write.'
     ] : [
       'Install or authorize the GitHub App on chainsolutions-wealthtech.',
+      'Have an organization owner verify Authentication security and leave organization-level required 2FA disabled if this policy is still desired.',
       'Re-run MCP onboarding until targetOrgAccessible is true.',
       'Keep the prepared organization profile and runbook in Patricked-code/MCP until direct access exists.'
     ],
@@ -103,7 +127,8 @@ export function buildOrganizationBootstrapPackage(status: GitHubConnectionStatus
       'No raw token in Git, logs, audit events, or generated MCP files.',
       'No direct write to main or master.',
       'No SuperAdmin action without master MCP token validation.',
-      'No server secret or raw private path in the public organization profile.'
+      'No server secret or raw private path in the public organization profile.',
+      'Organization-level required 2FA must not be changed by automation without explicit owner validation and audit.'
     ]
   };
 }

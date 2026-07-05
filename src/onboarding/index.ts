@@ -384,6 +384,9 @@ export async function prepareAndRecordOrganizationProfileBootstrap(input: {
       files: bootstrap.files.map((file) => file.path),
       fileCount: bootstrap.files.length,
       targetOrgAccessible: bootstrap.organization.accessSignals.targetOrgAccessible,
+      twoFactorRequirement: bootstrap.organization.securitySettings.twoFactorRequirement.desiredState,
+      twoFactorRequirementCurrentState: bootstrap.organization.securitySettings.twoFactorRequirement.currentState,
+      twoFactorRequirementChangeMode: bootstrap.organization.securitySettings.twoFactorRequirement.changeMode,
       blockedReason: bootstrap.blockedReason,
       warnings: bootstrap.warnings
     }

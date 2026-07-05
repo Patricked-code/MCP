@@ -40,10 +40,17 @@ Le MCP est le noyau technique de gouvernance. Le dossier `Migration/` est le noy
 
 1. Installer ou autoriser l'app GitHub sur `chainsolutions-wealthtech`.
 2. Verifier que le connecteur MCP voit l'organisation.
-3. Confirmer si le repo MCP officiel doit etre transfere, miroite ou recrée dans `chainsolutions-wealthtech`.
-4. Creer le repo special `.github` dans l'organisation pour le profil public.
-5. Appliquer le README de profil propose dans `docs/CHAINSOLUTIONS_WEALTHTECH_ORG_BOOTSTRAP.md`.
-6. Continuer le code uniquement sur branche dediee et via pull request.
+3. Verifier manuellement dans `Authentication security` que l'organisation n'impose pas la double authentification si cette politique reste souhaitee.
+4. Confirmer si le repo MCP officiel doit etre transfere, miroite ou recrée dans `chainsolutions-wealthtech`.
+5. Creer le repo special `.github` dans l'organisation pour le profil public.
+6. Appliquer le README de profil propose dans `docs/CHAINSOLUTIONS_WEALTHTECH_ORG_BOOTSTRAP.md`.
+7. Continuer le code uniquement sur branche dediee et via pull request.
+
+## Decision 2FA demandee
+
+Pour la premiere integration, la politique demandee est de ne pas imposer la 2FA au niveau de l'organisation `chainsolutions-wealthtech`.
+
+Cette decision doit etre appliquee ou verifiee par un owner GitHub dans les parametres `Authentication security`. Elle ne peut pas etre confirmee par le connecteur MCP actuel, car l'organisation n'est pas encore visible. Elle ne contourne pas les obligations 2FA que GitHub.com pourrait imposer directement a certains comptes contributeurs.
 
 ## Fichier pret pour le futur profil public
 

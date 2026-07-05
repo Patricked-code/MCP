@@ -51,6 +51,7 @@ Chaque generation ajoute un evenement `onboarding.repo_bootstrap_prepared` au re
 
 L onboarding expose aussi un paquet de premiere integration pour `chainsolutions-wealthtech`.
 Ce paquet contient la description courte de l organisation, la description longue du projet, le repository special attendu `chainsolutions-wealthtech/.github`, le chemin du profil public prepare, le runbook d activation et la branche cible `mcp/org-profile-bootstrap`.
+Il contient aussi la politique 2FA demandee pour la premiere integration: ne pas imposer la double authentification au niveau de l organisation. Ce reglage reste une verification manuelle d owner dans GitHub `Authentication security`; le MCP ne le modifie pas tant que l organisation n est pas accessible et qu une validation explicite n est pas auditee.
 
 Tant que le connecteur ne voit pas l organisation cible, le mode reste `blocked_until_org_access`. Des que l organisation est accessible, le mode attendu devient `branch_pr_required`: creation ou ouverture du repository `.github`, ajout de `profile/README.md` sur branche MCP, puis pull request vers la branche par defaut.
 

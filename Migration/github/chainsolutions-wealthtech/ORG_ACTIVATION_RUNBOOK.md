@@ -45,6 +45,30 @@ https://github.com/organizations/chainsolutions-wealthtech/settings
    - administration organisation uniquement si l'objectif est de creer/configurer des depots organisationnels.
 5. Ne jamais copier un token personnel dans un fichier du repository.
 
+## Politique double authentification demandee
+
+Decision demandee pour la premiere integration: ne pas imposer la double authentification au niveau de l'organisation `chainsolutions-wealthtech`.
+
+Action owner requise:
+
+1. Ouvrir les parametres de securite de l'organisation:
+
+```text
+https://github.com/organizations/chainsolutions-wealthtech/settings/security
+```
+
+2. Aller dans `Authentication security`.
+3. Verifier que l'option `Require two-factor authentication for everyone in your organization` n'est pas activee.
+4. Enregistrer ou confirmer le changement si l'interface GitHub le demande.
+5. Ajouter une trace d'audit MCP indiquant que la politique organisationnelle 2FA a ete verifiee, sans publier de capture contenant des donnees personnelles, de recovery codes, de tokens ou d'informations sensibles.
+
+Limites:
+
+- Cette decision desactive seulement l'obligation 2FA imposee par l'organisation.
+- Elle ne contourne pas les obligations 2FA imposees directement par GitHub.com a certains comptes contributeurs.
+- Ce reglage reduit la securite d'acces; il doit etre compense par des droits minimaux, branches MCP, pull requests, audit et absence de secrets dans Git.
+- Le connecteur MCP actuel ne peut ni verifier ni changer ce reglage tant que `chainsolutions-wealthtech` n'est pas accessible avec droits owner/admin organisation.
+
 ## Verification attendue apres autorisation
 
 Apres installation de l'app sur l'organisation, le connecteur MCP doit montrer au moins un de ces signaux:
@@ -87,17 +111,18 @@ Ce fichier donne le profil public de l'organisation et resume:
 ## Premiere integration directe apres acces organisation
 
 1. Recontroler l'acces MCP a `chainsolutions-wealthtech`.
-2. Creer ou ouvrir `chainsolutions-wealthtech/.github`.
-3. Creer une branche dediee, par exemple:
+2. Verifier manuellement la politique 2FA demandee dans `Authentication security`.
+3. Creer ou ouvrir `chainsolutions-wealthtech/.github`.
+4. Creer une branche dediee, par exemple:
 
 ```text
 mcp/org-profile-bootstrap
 ```
 
-4. Ajouter `profile/README.md` depuis l'artefact prepare.
-5. Ouvrir une pull request vers la branche par defaut du repo `.github`.
-6. Ne pas pousser directement sur `main`.
-7. Ajouter dans la PR:
+5. Ajouter `profile/README.md` depuis l'artefact prepare.
+6. Ouvrir une pull request vers la branche par defaut du repo `.github`.
+7. Ne pas pousser directement sur `main`.
+8. Ajouter dans la PR:
    - resume de la configuration;
    - verification d'absence de secret;
    - lien vers le runbook;

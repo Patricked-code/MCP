@@ -19,6 +19,20 @@ Dans la session MCP actuelle:
 
 Conclusion: la premiere configuration officielle de l'organisation doit commencer par l'installation/autorisation de l'app GitHub sur `chainsolutions-wealthtech`, ou par un token GitHub explicitement fourni avec droits organisationnels adaptes. Aucun token brut ne doit etre stocke dans Git.
 
+## Politique 2FA demandee
+
+Decision ajoutee au cadrage: ne pas imposer la double authentification au niveau de l'organisation `chainsolutions-wealthtech` pour les utilisateurs directs pendant la premiere integration.
+
+Ce que cela signifie:
+
+- l'option organisationnelle `Require two-factor authentication for everyone in your organization` doit rester desactivee;
+- le reglage doit etre verifie manuellement par un owner dans `Settings` > `Authentication security`;
+- le MCP doit auditer la verification, mais ne doit pas publier de capture, recovery code, token ou information personnelle;
+- cette decision ne contourne pas une obligation 2FA globale imposee par GitHub.com a certains comptes contributeurs;
+- ce choix reduit la securite d'acces et doit etre compense par des droits minimaux, branches dediees, PR obligatoires et audit.
+
+Statut actuel: non verifie en direct, car le connecteur GitHub ne voit pas encore `chainsolutions-wealthtech`.
+
 ## Description courte proposee pour GitHub
 
 Centre de gouvernance GitHub/MCP pour l'ecosysteme ChainSolutions WealthTech: migration, documentation, agents IA, mappings repo-serveur et audit securise.
@@ -81,13 +95,14 @@ Faire de GitHub la source versionnee officielle, du serveur la source d'executio
 
 1. Installer l'app GitHub MCP/Codex sur `chainsolutions-wealthtech`.
 2. Confirmer que le connecteur liste l'organisation dans `list_user_orgs` ou `list_installations`.
-3. Creer le depot special `.github` dans l'organisation si absent.
-4. Ajouter `profile/README.md` avec le contenu public propose ci-dessus.
-5. Creer ou migrer le repo MCP officiel dans l'organisation, ou definir explicitement que `Patricked-code/MCP` reste temporairement le repo MCP source.
-6. Creer une branche dediee `mcp/migration-governance-setup` pour toute modification MCP.
-7. Ajouter la structure `Migration/` et les index assainis, sans publier les archives sensibles brutes.
-8. Ajouter progressivement le module `src/onboarding/` et les routes d'onboarding decrites dans le cadrage.
-9. Ouvrir une pull request; ne pas ecrire directement sur `main`.
+3. Verifier dans `Authentication security` que l'organisation n'impose pas la 2FA si cette politique reste souhaitee.
+4. Creer le depot special `.github` dans l'organisation si absent.
+5. Ajouter `profile/README.md` avec le contenu public propose ci-dessus.
+6. Creer ou migrer le repo MCP officiel dans l'organisation, ou definir explicitement que `Patricked-code/MCP` reste temporairement le repo MCP source.
+7. Creer une branche dediee `mcp/migration-governance-setup` pour toute modification MCP.
+8. Ajouter la structure `Migration/` et les index assainis, sans publier les archives sensibles brutes.
+9. Ajouter progressivement le module `src/onboarding/` et les routes d'onboarding decrites dans le cadrage.
+10. Ouvrir une pull request; ne pas ecrire directement sur `main`.
 
 Runbook d'activation directe prepare:
 
