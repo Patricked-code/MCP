@@ -18,6 +18,7 @@ import {
   getAccountDetail,
   getRepoDetail,
   buildSourceIngestionSnapshot,
+  loadBlockerResolutionRunbook,
   loadExecutionTaskIndex,
   loadObjectiveTraceabilityIndex,
   loadServerInventoryCardIndex,
@@ -26,6 +27,7 @@ import {
   recordOrganizationSecurityPolicyVerification,
   recordOnboardingAnswer,
   renderOnboardingSnapshotHtml,
+  summarizeBlockerResolutionRunbook,
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
   summarizeServerInventoryCardIndex
@@ -199,6 +201,7 @@ function nav(): string {
     <a href="/git/onboarding/sources">Sources</a> ·
     <a href="/git/onboarding/objectives">Objectifs</a> ·
     <a href="/git/onboarding/tasks">Tâches</a> ·
+    <a href="/git/onboarding/blockers">Blocages</a> ·
     <a href="/git/onboarding/server-cards">Serveur</a> ·
     <a href="/github">GitHub</a> ·
     <a href="/github/status">Statut JSON</a> ·
@@ -438,6 +441,19 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding/tasks');
       res.status(500).json({ error: 'execution_tasks_failed' });
+    }
+  });
+
+  app.get('/git/onboarding/blockers', requireWebLogin, async (_req, res) => {
+    try {
+      const runbook = await loadBlockerResolutionRunbook();
+      res.json({
+        summary: summarizeBlockerResolutionRunbook(runbook),
+        runbook
+      });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/blockers');
+      res.status(500).json({ error: 'blocker_resolution_failed' });
     }
   });
 

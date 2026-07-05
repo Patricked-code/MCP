@@ -46,6 +46,8 @@ const required = [
   'Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.md',
   'Migration/index/MCP_EXECUTION_TASKS.json',
   'Migration/index/MCP_EXECUTION_TASKS.md',
+  'Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json',
+  'Migration/index/BLOCKER_RESOLUTION_RUNBOOK.md',
   'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json',
   'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md',
   'Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json'

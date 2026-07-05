@@ -15,6 +15,10 @@ import { buildRegistryRepoFootprints, inspectLocalRepoFootprint } from './repoFo
 import { evaluateRights } from './rights.js';
 import { createServerMappingTemplate, renderServerMapJson } from './serverMapping.js';
 export {
+  loadBlockerResolutionRunbook,
+  summarizeBlockerResolutionRunbook
+} from './blockerResolution.js';
+export {
   loadExecutionTaskIndex,
   summarizeExecutionTaskIndex
 } from './executionTasks.js';

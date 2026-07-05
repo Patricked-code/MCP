@@ -11,6 +11,7 @@ import {
   prepareAndRecordRepoBootstrap,
   prepareRepoBootstrap,
   recordOrganizationSecurityPolicyVerification,
+  summarizeBlockerResolutionRunbook,
   summarizePdfTextAudit,
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
@@ -652,6 +653,77 @@ test('server inventory card summary keeps production action blocked', () => {
   assert.equal(summary.blockedCardCount, 1);
   assert.deepEqual(summary.scopes, ['S1', 'S1_S2']);
   assert.equal(summary.protectedDomainCount, 11);
+  assert.equal(summary.rawServerInventoryStored, false);
+  assert.equal(summary.rawSecretsStored, false);
+  assert.equal(summary.productionActionExecuted, false);
+});
+
+test('blocker resolution summary keeps external and private blockers explicit', () => {
+  const summary = summarizeBlockerResolutionRunbook({
+    version: 1,
+    generatedAt: '2026-07-05T00:00:00.000Z',
+    generator: 'unit',
+    purpose: 'unit',
+    safety: {
+      rawSourceTextStored: false,
+      rawPdfTextStored: false,
+      rawServerInventoryStored: false,
+      rawSecretsStored: false,
+      productionActionExecuted: false,
+      publicationMode: 'blocker_steps_acceptance_criteria_and_verification_only'
+    },
+    inputs: {},
+    summary: {
+      blockerCount: 2,
+      externalActionBlockerCount: 1,
+      privateInventoryBlockerCount: 1,
+      blockedTaskCount: 4,
+      blockedObjectiveCount: 4,
+      blockedServerCardCount: 4,
+      blockerIds: [
+        'github_connector_not_authorized_on_target_org',
+        'production_actions_require_private_inventory_and_approval'
+      ]
+    },
+    blockers: [
+      {
+        id: 'github_connector_not_authorized_on_target_org',
+        title: 'Connector GitHub non autorise sur chainsolutions-wealthtech',
+        ownerRoleRequired: 'GitHub organization owner',
+        resolutionStatus: 'blocked_external_authorization',
+        resolutionSteps: [],
+        acceptanceCriteria: [],
+        verificationCommands: [],
+        blockedObjectives: [],
+        blockedTasks: [],
+        blockedServerCards: []
+      },
+      {
+        id: 'production_actions_require_private_inventory_and_approval',
+        title: 'Actions serveur bloquees avant inventaire prive et accord operateur',
+        ownerRoleRequired: 'Production operator',
+        resolutionStatus: 'blocked_private_inventory_and_operator_approval',
+        resolutionSteps: [],
+        acceptanceCriteria: [],
+        verificationCommands: [],
+        blockedObjectives: [],
+        blockedTasks: [],
+        blockedServerCards: []
+      }
+    ],
+    resumeCommandsAfterResolution: ['test', 'typecheck']
+  });
+
+  assert.equal(summary.blockerCount, 2);
+  assert.equal(summary.externalActionBlockerCount, 1);
+  assert.equal(summary.privateInventoryBlockerCount, 1);
+  assert.deepEqual(summary.blockerIds, [
+    'github_connector_not_authorized_on_target_org',
+    'production_actions_require_private_inventory_and_approval'
+  ]);
+  assert.equal(summary.blockedTaskCount, 4);
+  assert.equal(summary.blockedServerCardCount, 4);
+  assert.equal(summary.resumeCommandCount, 2);
   assert.equal(summary.rawServerInventoryStored, false);
   assert.equal(summary.rawSecretsStored, false);
   assert.equal(summary.productionActionExecuted, false);
