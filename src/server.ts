@@ -20,13 +20,15 @@ import {
   buildSourceIngestionSnapshot,
   loadExecutionTaskIndex,
   loadObjectiveTraceabilityIndex,
+  loadServerInventoryCardIndex,
   prepareAndRecordOrganizationProfileBootstrap,
   prepareAndRecordRepoBootstrap,
   recordOrganizationSecurityPolicyVerification,
   recordOnboardingAnswer,
   renderOnboardingSnapshotHtml,
   summarizeExecutionTaskIndex,
-  summarizeObjectiveTraceabilityIndex
+  summarizeObjectiveTraceabilityIndex,
+  summarizeServerInventoryCardIndex
 } from './onboarding/index.js';
 import type { AgentType } from './onboarding/types.js';
 
@@ -197,6 +199,7 @@ function nav(): string {
     <a href="/git/onboarding/sources">Sources</a> ·
     <a href="/git/onboarding/objectives">Objectifs</a> ·
     <a href="/git/onboarding/tasks">Tâches</a> ·
+    <a href="/git/onboarding/server-cards">Serveur</a> ·
     <a href="/github">GitHub</a> ·
     <a href="/github/status">Statut JSON</a> ·
     <a href="/github/Patricked-code">Patricked-code</a> ·
@@ -435,6 +438,19 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding/tasks');
       res.status(500).json({ error: 'execution_tasks_failed' });
+    }
+  });
+
+  app.get('/git/onboarding/server-cards', requireWebLogin, async (_req, res) => {
+    try {
+      const index = await loadServerInventoryCardIndex();
+      res.json({
+        summary: summarizeServerInventoryCardIndex(index),
+        index
+      });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/server-cards');
+      res.status(500).json({ error: 'server_inventory_cards_failed' });
     }
   });
 

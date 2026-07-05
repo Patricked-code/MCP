@@ -14,6 +14,7 @@ import {
   summarizePdfTextAudit,
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
+  summarizeServerInventoryCardIndex,
   summarizeSourceRegistry
 } from '../src/onboarding/index.js';
 import { buildOrganizationBootstrapPackage, prepareOrganizationProfileBootstrap } from '../src/onboarding/organization.js';
@@ -610,4 +611,48 @@ test('execution task summary keeps ready and blocked work explicit', () => {
   assert.equal(summary.noRegressionCommandCount, 2);
   assert.equal(summary.productionActionExecuted, false);
   assert.equal(summary.rawSecretsStored, false);
+});
+
+test('server inventory card summary keeps production action blocked', () => {
+  const summary = summarizeServerInventoryCardIndex({
+    version: 1,
+    generatedAt: '2026-07-05T00:00:00.000Z',
+    generator: 'unit',
+    purpose: 'unit',
+    safety: {
+      rawServerInventoryStored: false,
+      rawSecretsStored: false,
+      productionActionExecuted: false,
+      publicationMode: 'templates_domains_public_safe_fields_and_gates_only'
+    },
+    inputs: {},
+    summary: {
+      cardCount: 2,
+      readyCardCount: 2,
+      blockedCardCount: 1,
+      byStatus: {
+        template_ready_private_inventory_required: 1,
+        ready_recurring_gate: 1
+      },
+      byScope: {
+        S1: 1,
+        S1_S2: 1
+      },
+      readyCardIds: ['s1_preservation_inventory', 'server_no_regression_gate'],
+      blockedCardIds: ['s1_preservation_inventory'],
+      protectedDomainCount: 11,
+      cleanupCandidateCount: 1,
+      backupReviewCandidateCount: 0
+    },
+    cards: []
+  });
+
+  assert.equal(summary.cardCount, 0);
+  assert.equal(summary.readyCardCount, 2);
+  assert.equal(summary.blockedCardCount, 1);
+  assert.deepEqual(summary.scopes, ['S1', 'S1_S2']);
+  assert.equal(summary.protectedDomainCount, 11);
+  assert.equal(summary.rawServerInventoryStored, false);
+  assert.equal(summary.rawSecretsStored, false);
+  assert.equal(summary.productionActionExecuted, false);
 });

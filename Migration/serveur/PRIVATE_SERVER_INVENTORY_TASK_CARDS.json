@@ -1,0 +1,608 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-05T19:29:52.852910Z",
+  "generator": "scripts/build-server-inventory-cards.py",
+  "purpose": "Public-safe private server inventory task-card templates for WealthTech MCP migration.",
+  "safety": {
+    "rawServerInventoryStored": false,
+    "rawSecretsStored": false,
+    "productionActionExecuted": false,
+    "publicationMode": "templates_domains_public_safe_fields_and_gates_only"
+  },
+  "inputs": {
+    "executionTasks": {
+      "path": "Migration/index/MCP_EXECUTION_TASKS.json",
+      "generatedAt": "2026-07-05T15:31:05.712911Z",
+      "summary": {
+        "taskCount": 8,
+        "readyTaskCount": 3,
+        "blockedTaskCount": 4,
+        "statusCounts": {
+          "ready_for_operator_review": 1,
+          "blocked_external_authorization": 1,
+          "blocked_by_connector_visibility": 2,
+          "ready_to_prepare_templates": 1,
+          "blocked_private_inventory_and_approval": 1,
+          "ready_recurring_gate": 1,
+          "pending_operator_review": 1
+        },
+        "kindCounts": {
+          "operator_review": 1,
+          "external_github_app_action": 1,
+          "mcp_regeneration": 1,
+          "repository_bootstrap": 1,
+          "server_preparation": 1,
+          "private_server_action": 1,
+          "quality_gate": 1,
+          "planning_to_delivery": 1
+        },
+        "readyTaskIds": [
+          "review_objective_traceability_matrix",
+          "prepare_private_server_inventory_cards",
+          "execute_no_regression_gate"
+        ],
+        "blockedTaskIds": [
+          "authorize_github_connector_on_chainsolutions",
+          "regenerate_ingestion_after_connector_access",
+          "bootstrap_visible_org_repositories",
+          "collect_private_server_inventory"
+        ],
+        "globalBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    },
+    "migrationSecurityPlan": {
+      "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md"
+    }
+  },
+  "summary": {
+    "cardCount": 6,
+    "readyCardCount": 6,
+    "blockedCardCount": 4,
+    "byStatus": {
+      "template_ready_private_inventory_required": 4,
+      "ready_recurring_gate": 1,
+      "template_ready": 1
+    },
+    "byScope": {
+      "S1": 1,
+      "S2": 2,
+      "S2_to_S1": 1,
+      "S1_S2": 2
+    },
+    "readyCardIds": [
+      "s1_preservation_inventory",
+      "s2_protected_domains_inventory",
+      "s2_cleanup_candidates_inventory",
+      "s2_to_s1_migration_candidate",
+      "server_no_regression_gate",
+      "operator_approval_record"
+    ],
+    "blockedCardIds": [
+      "s1_preservation_inventory",
+      "s2_protected_domains_inventory",
+      "s2_cleanup_candidates_inventory",
+      "s2_to_s1_migration_candidate"
+    ],
+    "protectedDomainCount": 20,
+    "cleanupCandidateCount": 6,
+    "backupReviewCandidateCount": 8
+  },
+  "cards": [
+    {
+      "id": "s1_preservation_inventory",
+      "title": "S1 preservation and cleanup inventory card",
+      "serverScope": "S1",
+      "status": "template_ready_private_inventory_required",
+      "purpose": "Inventory S1 while preserving the official whitelist and identifying cleanup candidates only after evidence review.",
+      "blockedBy": [
+        "production_actions_require_private_inventory_and_approval"
+      ],
+      "allowedActions": [
+        "Inventory Plesk domains, subdomains, vhosts, web roots, runtimes, databases, certs, crons and backups.",
+        "Classify each item as preserve, review, cleanup-candidate or unknown.",
+        "Do not delete or stop services during inventory."
+      ],
+      "forbiddenActions": [
+        "delete_without_inventory",
+        "publish_env_values",
+        "publish_private_keys",
+        "publish_raw_server_paths",
+        "stop_runtime_without_approval",
+        "modify_vhost_without_rollback",
+        "run_rm_rf_without_confirmed_scope",
+        "merge_databases_without_explicit_plan"
+      ],
+      "protectedDomains": [
+        "niakara.com",
+        "www.niakara.com",
+        "api.niakara.com",
+        "wealthtechinnovations.com",
+        "api.wealthtechinnovations.com",
+        "stablecoin.wealthtechinnovations.com",
+        "api.stablecoin.wealthtechinnovations.com",
+        "blockchain.wealthtechinnovations.com",
+        "tokenfactory.wealthtechinnovations.com",
+        "wealthtechinnovation.com",
+        "berebytours.com"
+      ],
+      "cleanupCandidates": [
+        "all_non_whitelisted_domains_after_inventory_only"
+      ],
+      "backupReviewCandidates": [],
+      "requiredInventoryFields": [
+        "domain_or_subdomain",
+        "public_url",
+        "repository_url_or_unknown",
+        "branch_or_unknown",
+        "runtime_node_passenger_docker_php_other",
+        "server_path_private_do_not_commit",
+        "vhost_private_do_not_commit",
+        "pm2_or_process_name_private_do_not_commit",
+        "docker_service_private_do_not_commit",
+        "port_private_do_not_commit",
+        "database_name_private_do_not_commit",
+        "env_file_presence_without_values",
+        "cron_presence_without_command_secrets",
+        "ssl_certificate_status",
+        "backup_location_private_do_not_commit",
+        "rollback_plan_private_do_not_commit",
+        "post_action_test_result",
+        "operator_approval_reference"
+      ],
+      "requiredPrivateEvidence": [
+        "operator_approval",
+        "private_live_inventory",
+        "backup_or_export_reference",
+        "rollback_plan",
+        "post_action_test_results"
+      ],
+      "publicEvidenceAllowed": [
+        "domain name",
+        "repository name or URL",
+        "runtime family",
+        "public-safe status",
+        "test status without secret output",
+        "approval reference without secret material"
+      ],
+      "postActionTests": [
+        "HTTP/HTTPS response check for every preserved domain.",
+        "Critical API endpoint smoke test.",
+        "Runtime status check for PM2, Docker, Passenger or equivalent.",
+        "Port/listener check in private context.",
+        "Error log check without publishing sensitive log content.",
+        "Disk usage check.",
+        "Documentation update check.",
+        "Rollback readiness check."
+      ]
+    },
+    {
+      "id": "s2_protected_domains_inventory",
+      "title": "S2 protected domains inventory card",
+      "serverScope": "S2",
+      "status": "template_ready_private_inventory_required",
+      "purpose": "Inventory S2 while explicitly protecting the domains that must not be modified.",
+      "blockedBy": [
+        "production_actions_require_private_inventory_and_approval"
+      ],
+      "allowedActions": [
+        "Inventory protected domains and confirm runtime health.",
+        "Record public-safe mapping to repositories when available.",
+        "Do not modify stablecoin, funds, BRVM/BVMAC or chainsolutions.fr protected surfaces."
+      ],
+      "forbiddenActions": [
+        "delete_without_inventory",
+        "publish_env_values",
+        "publish_private_keys",
+        "publish_raw_server_paths",
+        "stop_runtime_without_approval",
+        "modify_vhost_without_rollback",
+        "run_rm_rf_without_confirmed_scope",
+        "merge_databases_without_explicit_plan"
+      ],
+      "protectedDomains": [
+        "africafunds.chainsolutions.fr",
+        "api.africafunds.chainsolutions.fr",
+        "api.stablecoin.chainsolutions.fr",
+        "stablecoin.chainsolutions.fr",
+        "brvm.chainsolutions.fr",
+        "bvmac.chainsolutions.fr",
+        "chainsolutions.fr",
+        "Funds.chainsolutions.fr",
+        "api.funds.chainsolutions.fr"
+      ],
+      "cleanupCandidates": [],
+      "backupReviewCandidates": [],
+      "requiredInventoryFields": [
+        "domain_or_subdomain",
+        "public_url",
+        "repository_url_or_unknown",
+        "branch_or_unknown",
+        "runtime_node_passenger_docker_php_other",
+        "server_path_private_do_not_commit",
+        "vhost_private_do_not_commit",
+        "pm2_or_process_name_private_do_not_commit",
+        "docker_service_private_do_not_commit",
+        "port_private_do_not_commit",
+        "database_name_private_do_not_commit",
+        "env_file_presence_without_values",
+        "cron_presence_without_command_secrets",
+        "ssl_certificate_status",
+        "backup_location_private_do_not_commit",
+        "rollback_plan_private_do_not_commit",
+        "post_action_test_result",
+        "operator_approval_reference"
+      ],
+      "requiredPrivateEvidence": [
+        "operator_approval",
+        "private_live_inventory",
+        "backup_or_export_reference",
+        "rollback_plan",
+        "post_action_test_results"
+      ],
+      "publicEvidenceAllowed": [
+        "domain name",
+        "repository name or URL",
+        "runtime family",
+        "public-safe status",
+        "test status without secret output",
+        "approval reference without secret material"
+      ],
+      "postActionTests": [
+        "HTTP/HTTPS response check for every preserved domain.",
+        "Critical API endpoint smoke test.",
+        "Runtime status check for PM2, Docker, Passenger or equivalent.",
+        "Port/listener check in private context.",
+        "Error log check without publishing sensitive log content.",
+        "Disk usage check.",
+        "Documentation update check.",
+        "Rollback readiness check."
+      ]
+    },
+    {
+      "id": "s2_cleanup_candidates_inventory",
+      "title": "S2 cleanup candidates inventory card",
+      "serverScope": "S2",
+      "status": "template_ready_private_inventory_required",
+      "purpose": "Review cleanup and backup candidates without deleting anything before approval and rollback evidence.",
+      "blockedBy": [
+        "production_actions_require_private_inventory_and_approval"
+      ],
+      "allowedActions": [
+        "Inventory cleanup candidates and backup candidates.",
+        "Confirm repository and data ownership before any cleanup proposal.",
+        "Prepare cleanup proposal only after backup and rollback references exist."
+      ],
+      "forbiddenActions": [
+        "delete_without_inventory",
+        "publish_env_values",
+        "publish_private_keys",
+        "publish_raw_server_paths",
+        "stop_runtime_without_approval",
+        "modify_vhost_without_rollback",
+        "run_rm_rf_without_confirmed_scope",
+        "merge_databases_without_explicit_plan"
+      ],
+      "protectedDomains": [
+        "africafunds.chainsolutions.fr",
+        "api.africafunds.chainsolutions.fr",
+        "api.stablecoin.chainsolutions.fr",
+        "stablecoin.chainsolutions.fr",
+        "brvm.chainsolutions.fr",
+        "bvmac.chainsolutions.fr",
+        "chainsolutions.fr",
+        "Funds.chainsolutions.fr",
+        "api.funds.chainsolutions.fr"
+      ],
+      "cleanupCandidates": [
+        "api.pccet.wealthtechinnovations.ci",
+        "api.wealthtechinnovations.ci",
+        "evote.wealthtechinnovations.ci",
+        "pccet.wealthtechinnovations.ci",
+        "wealthtechinnovations.ci",
+        "opcvm.chainsolutions.fr"
+      ],
+      "backupReviewCandidates": [
+        "fantokenafrica.club",
+        "api.fantokenafrica.club",
+        "lysfc.fantokenafrica.club",
+        "iso20022.chainsolutions.fr",
+        "mutualfunds.chainsolutions.fr",
+        "opcvm.chainsolutions.fr",
+        "robot.funds.chainsolutions.fr",
+        "api-mutualfunds.chainsolutions.fr"
+      ],
+      "requiredInventoryFields": [
+        "domain_or_subdomain",
+        "public_url",
+        "repository_url_or_unknown",
+        "branch_or_unknown",
+        "runtime_node_passenger_docker_php_other",
+        "server_path_private_do_not_commit",
+        "vhost_private_do_not_commit",
+        "pm2_or_process_name_private_do_not_commit",
+        "docker_service_private_do_not_commit",
+        "port_private_do_not_commit",
+        "database_name_private_do_not_commit",
+        "env_file_presence_without_values",
+        "cron_presence_without_command_secrets",
+        "ssl_certificate_status",
+        "backup_location_private_do_not_commit",
+        "rollback_plan_private_do_not_commit",
+        "post_action_test_result",
+        "operator_approval_reference"
+      ],
+      "requiredPrivateEvidence": [
+        "operator_approval",
+        "private_live_inventory",
+        "backup_or_export_reference",
+        "rollback_plan",
+        "post_action_test_results"
+      ],
+      "publicEvidenceAllowed": [
+        "domain name",
+        "repository name or URL",
+        "runtime family",
+        "public-safe status",
+        "test status without secret output",
+        "approval reference without secret material"
+      ],
+      "postActionTests": [
+        "HTTP/HTTPS response check for every preserved domain.",
+        "Critical API endpoint smoke test.",
+        "Runtime status check for PM2, Docker, Passenger or equivalent.",
+        "Port/listener check in private context.",
+        "Error log check without publishing sensitive log content.",
+        "Disk usage check.",
+        "Documentation update check.",
+        "Rollback readiness check."
+      ]
+    },
+    {
+      "id": "s2_to_s1_migration_candidate",
+      "title": "S2 to S1 migration candidate card",
+      "serverScope": "S2_to_S1",
+      "status": "template_ready_private_inventory_required",
+      "purpose": "Prepare migration only after source inventory, Git alignment, backup/export, destination preparation, copy, tests and documentation.",
+      "blockedBy": [
+        "production_actions_require_private_inventory_and_approval"
+      ],
+      "allowedActions": [
+        "Identify source application, repo, runtime, domain, database and private env presence.",
+        "Confirm source remains intact during copy.",
+        "Prepare destination and post-copy tests before cleanup discussion.",
+        "Keep stablecoin.chainsolutions.fr and api.stablecoin.chainsolutions.fr on S2."
+      ],
+      "forbiddenActions": [
+        "delete_without_inventory",
+        "publish_env_values",
+        "publish_private_keys",
+        "publish_raw_server_paths",
+        "stop_runtime_without_approval",
+        "modify_vhost_without_rollback",
+        "run_rm_rf_without_confirmed_scope",
+        "merge_databases_without_explicit_plan"
+      ],
+      "protectedDomains": [
+        "africafunds.chainsolutions.fr",
+        "api.africafunds.chainsolutions.fr",
+        "api.stablecoin.chainsolutions.fr",
+        "stablecoin.chainsolutions.fr",
+        "brvm.chainsolutions.fr",
+        "bvmac.chainsolutions.fr",
+        "chainsolutions.fr",
+        "Funds.chainsolutions.fr",
+        "api.funds.chainsolutions.fr"
+      ],
+      "cleanupCandidates": [],
+      "backupReviewCandidates": [],
+      "requiredInventoryFields": [
+        "domain_or_subdomain",
+        "public_url",
+        "repository_url_or_unknown",
+        "branch_or_unknown",
+        "runtime_node_passenger_docker_php_other",
+        "server_path_private_do_not_commit",
+        "vhost_private_do_not_commit",
+        "pm2_or_process_name_private_do_not_commit",
+        "docker_service_private_do_not_commit",
+        "port_private_do_not_commit",
+        "database_name_private_do_not_commit",
+        "env_file_presence_without_values",
+        "cron_presence_without_command_secrets",
+        "ssl_certificate_status",
+        "backup_location_private_do_not_commit",
+        "rollback_plan_private_do_not_commit",
+        "post_action_test_result",
+        "operator_approval_reference"
+      ],
+      "requiredPrivateEvidence": [
+        "operator_approval",
+        "private_live_inventory",
+        "backup_or_export_reference",
+        "rollback_plan",
+        "post_action_test_results"
+      ],
+      "publicEvidenceAllowed": [
+        "domain name",
+        "repository name or URL",
+        "runtime family",
+        "public-safe status",
+        "test status without secret output",
+        "approval reference without secret material"
+      ],
+      "postActionTests": [
+        "HTTP/HTTPS response check for every preserved domain.",
+        "Critical API endpoint smoke test.",
+        "Runtime status check for PM2, Docker, Passenger or equivalent.",
+        "Port/listener check in private context.",
+        "Error log check without publishing sensitive log content.",
+        "Disk usage check.",
+        "Documentation update check.",
+        "Rollback readiness check."
+      ]
+    },
+    {
+      "id": "server_no_regression_gate",
+      "title": "Server no-regression gate",
+      "serverScope": "S1_S2",
+      "status": "ready_recurring_gate",
+      "purpose": "Reusable gate before any server-affecting action.",
+      "blockedBy": [],
+      "allowedActions": [
+        "Verify approval.",
+        "Verify inventory.",
+        "Verify backup/export.",
+        "Verify rollback.",
+        "Run post-action tests.",
+        "Update documentation."
+      ],
+      "forbiddenActions": [
+        "execute_production_change_without_all_gate_evidence"
+      ],
+      "protectedDomains": [
+        "niakara.com",
+        "www.niakara.com",
+        "api.niakara.com",
+        "wealthtechinnovations.com",
+        "api.wealthtechinnovations.com",
+        "stablecoin.wealthtechinnovations.com",
+        "api.stablecoin.wealthtechinnovations.com",
+        "blockchain.wealthtechinnovations.com",
+        "tokenfactory.wealthtechinnovations.com",
+        "wealthtechinnovation.com",
+        "berebytours.com",
+        "africafunds.chainsolutions.fr",
+        "api.africafunds.chainsolutions.fr",
+        "api.stablecoin.chainsolutions.fr",
+        "stablecoin.chainsolutions.fr",
+        "brvm.chainsolutions.fr",
+        "bvmac.chainsolutions.fr",
+        "chainsolutions.fr",
+        "Funds.chainsolutions.fr",
+        "api.funds.chainsolutions.fr"
+      ],
+      "cleanupCandidates": [
+        "api.pccet.wealthtechinnovations.ci",
+        "api.wealthtechinnovations.ci",
+        "evote.wealthtechinnovations.ci",
+        "pccet.wealthtechinnovations.ci",
+        "wealthtechinnovations.ci",
+        "opcvm.chainsolutions.fr"
+      ],
+      "backupReviewCandidates": [
+        "fantokenafrica.club",
+        "api.fantokenafrica.club",
+        "lysfc.fantokenafrica.club",
+        "iso20022.chainsolutions.fr",
+        "mutualfunds.chainsolutions.fr",
+        "opcvm.chainsolutions.fr",
+        "robot.funds.chainsolutions.fr",
+        "api-mutualfunds.chainsolutions.fr"
+      ],
+      "requiredInventoryFields": [
+        "domain_or_subdomain",
+        "public_url",
+        "repository_url_or_unknown",
+        "branch_or_unknown",
+        "runtime_node_passenger_docker_php_other",
+        "server_path_private_do_not_commit",
+        "vhost_private_do_not_commit",
+        "pm2_or_process_name_private_do_not_commit",
+        "docker_service_private_do_not_commit",
+        "port_private_do_not_commit",
+        "database_name_private_do_not_commit",
+        "env_file_presence_without_values",
+        "cron_presence_without_command_secrets",
+        "ssl_certificate_status",
+        "backup_location_private_do_not_commit",
+        "rollback_plan_private_do_not_commit",
+        "post_action_test_result",
+        "operator_approval_reference"
+      ],
+      "requiredPrivateEvidence": [
+        "operator_approval",
+        "backup_or_export_reference",
+        "rollback_plan",
+        "test_results"
+      ],
+      "publicEvidenceAllowed": [
+        "pass_fail_gate_status",
+        "domain name",
+        "public-safe service family"
+      ],
+      "postActionTests": [
+        "HTTP/HTTPS response check for every preserved domain.",
+        "Critical API endpoint smoke test.",
+        "Runtime status check for PM2, Docker, Passenger or equivalent.",
+        "Port/listener check in private context.",
+        "Error log check without publishing sensitive log content.",
+        "Disk usage check.",
+        "Documentation update check.",
+        "Rollback readiness check."
+      ]
+    },
+    {
+      "id": "operator_approval_record",
+      "title": "Operator approval record card",
+      "serverScope": "S1_S2",
+      "status": "template_ready",
+      "purpose": "Capture human approval references without storing secrets or private operational details in Git.",
+      "blockedBy": [],
+      "allowedActions": [
+        "Record approver role, date, scope and public-safe approval reference.",
+        "Link to private approval evidence outside Git.",
+        "Confirm exact forbidden actions remain forbidden until explicitly approved."
+      ],
+      "forbiddenActions": [
+        "store_password",
+        "store_token",
+        "store_private_key",
+        "store_private_server_path",
+        "store_raw_env"
+      ],
+      "protectedDomains": [
+        "niakara.com",
+        "www.niakara.com",
+        "api.niakara.com",
+        "wealthtechinnovations.com",
+        "api.wealthtechinnovations.com",
+        "stablecoin.wealthtechinnovations.com",
+        "api.stablecoin.wealthtechinnovations.com",
+        "blockchain.wealthtechinnovations.com",
+        "tokenfactory.wealthtechinnovations.com",
+        "wealthtechinnovation.com",
+        "berebytours.com",
+        "africafunds.chainsolutions.fr",
+        "api.africafunds.chainsolutions.fr",
+        "api.stablecoin.chainsolutions.fr",
+        "stablecoin.chainsolutions.fr",
+        "brvm.chainsolutions.fr",
+        "bvmac.chainsolutions.fr",
+        "chainsolutions.fr",
+        "Funds.chainsolutions.fr",
+        "api.funds.chainsolutions.fr"
+      ],
+      "cleanupCandidates": [],
+      "backupReviewCandidates": [],
+      "requiredInventoryFields": [
+        "approval_reference_public_safe",
+        "approver_role",
+        "approved_scope",
+        "approval_date",
+        "linked_private_evidence_location_not_in_git"
+      ],
+      "requiredPrivateEvidence": [
+        "human_approval"
+      ],
+      "publicEvidenceAllowed": [
+        "approval reference",
+        "scope label",
+        "date"
+      ],
+      "postActionTests": []
+    }
+  ]
+}

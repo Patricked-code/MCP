@@ -52,7 +52,9 @@ const generatedRelativePaths = new Set([
   'Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json',
   'Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.md',
   'Migration/index/MCP_EXECUTION_TASKS.json',
-  'Migration/index/MCP_EXECUTION_TASKS.md'
+  'Migration/index/MCP_EXECUTION_TASKS.md',
+  'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json',
+  'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md'
 ]);
 
 const textExtensions = new Set(['.md', '.txt', '.csv', '.json']);

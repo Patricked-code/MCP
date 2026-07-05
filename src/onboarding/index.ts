@@ -19,6 +19,10 @@ export {
   summarizeExecutionTaskIndex
 } from './executionTasks.js';
 export {
+  loadServerInventoryCardIndex,
+  summarizeServerInventoryCardIndex
+} from './serverInventoryCards.js';
+export {
   loadObjectiveTraceabilityIndex,
   summarizeObjectiveTraceabilityIndex
 } from './objectiveIndex.js';
