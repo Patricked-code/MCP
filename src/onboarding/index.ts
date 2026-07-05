@@ -10,6 +10,7 @@ import { getDefaultAgentProfiles, createAgentProfile } from './agents.js';
 import { createAuditTrace, auditTraceToRegistryEvent, listOnboardingAudit } from './audit.js';
 import { identifyActor } from './identity.js';
 import { buildOnboardingQuestions, validateQuestionAnswer } from './questions.js';
+import { buildOrganizationBootstrapPackage } from './organization.js';
 import { buildRegistryRepoFootprints, inspectLocalRepoFootprint } from './repoFootprint.js';
 import { evaluateRights } from './rights.js';
 import { createServerMappingTemplate, renderServerMapJson } from './serverMapping.js';
@@ -61,8 +62,11 @@ function registryAgentToProfile(entry: RegistryAgentProfileEntry): AgentProfile 
 
 function nextActions(snapshot: Omit<OnboardingSnapshot, 'nextActions'>, status: GitHubConnectionStatus): string[] {
   const actions: string[] = [];
-  if (!status.orgAccessible) {
+  if (snapshot.organization.directIntegrationMode === 'blocked_until_org_access') {
     actions.push('Install or authorize the GitHub app on chainsolutions-wealthtech before direct organization configuration.');
+  }
+  if (snapshot.organization.directIntegrationMode === 'branch_pr_required') {
+    actions.push('Prepare chainsolutions-wealthtech/.github on branch mcp/org-profile-bootstrap, then open a pull request.');
   }
   if (snapshot.repos.some((repo) => repo.status !== 'ready')) {
     actions.push('Prepare mcp/onboarding-setup branches for repos missing MCP governance files.');
@@ -89,11 +93,12 @@ export async function buildOnboardingSnapshot(input: {
   }, input.registry);
   const rights = evaluateRights(input.status, input.registry, actor);
   const questions = buildOnboardingQuestions(actor, rights);
+  const organization = buildOrganizationBootstrapPackage(input.status);
   const localRepo = await inspectLocalRepoFootprint();
   const repos = buildRegistryRepoFootprints(input.status, input.registry, localRepo);
   const agents = [...getDefaultAgentProfiles(), ...input.registry.agentProfiles.map(registryAgentToProfile)];
   const audit = listOnboardingAudit(input.registry);
-  const partial = { actor, rights, questions, repos, agents, audit };
+  const partial = { organization, actor, rights, questions, repos, agents, audit };
   return { ...partial, nextActions: nextActions(partial, input.status) };
 }
 
@@ -334,6 +339,7 @@ export function renderOnboardingSnapshotHtml(snapshot: OnboardingSnapshot): stri
   </tr>`).join('');
   const questionItems = snapshot.questions.map((question) => `<li><strong>${escapeHtml(question.title)}</strong> - default ${escapeHtml(question.defaultChoiceId)}</li>`).join('');
   const actionItems = snapshot.nextActions.map((action) => `<li>${escapeHtml(action)}</li>`).join('');
+  const orgSignals = snapshot.organization.accessSignals;
 
   return `<!doctype html>
 <html lang="fr">
@@ -368,6 +374,13 @@ export function renderOnboardingSnapshotHtml(snapshot: OnboardingSnapshot): stri
       <p>Ecriture branche: <strong>${snapshot.rights.canWriteBranch ? 'yes' : 'no'}</strong></p>
       <p>PR: <strong>${snapshot.rights.canOpenPullRequest ? 'yes' : 'no'}</strong></p>
       <p>Admin org: <strong>${snapshot.rights.isOrgAdmin ? 'yes' : 'no'}</strong></p>
+    </section>
+    <section class="card">
+      <h2>Organisation cible</h2>
+      <p><strong>${escapeHtml(snapshot.organization.organization)}</strong></p>
+      <p>Mode direct: <code>${escapeHtml(snapshot.organization.directIntegrationMode)}</code></p>
+      <p>Org accessible: <strong>${orgSignals.targetOrgAccessible ? 'yes' : 'no'}</strong></p>
+      <p>Branche prevue: <code>${escapeHtml(snapshot.organization.directIntegrationBranch)}</code></p>
     </section>
   </div>
   <section class="card">

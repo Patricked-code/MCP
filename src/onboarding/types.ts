@@ -159,6 +159,31 @@ export type AuditTrace = {
   metadata?: Record<string, unknown>;
 };
 
+export type OrganizationBootstrapPackage = {
+  organization: string;
+  url: string;
+  shortDescription: string;
+  longDescription: string;
+  profileRepository: string;
+  profileReadmePath: string;
+  activationRunbookPath: string;
+  firstIntegrationIndexPath: string;
+  bootstrapPackagePath: string;
+  directIntegrationBranch: string;
+  directIntegrationMode: 'blocked_until_org_access' | 'branch_pr_required';
+  accessSignals: {
+    configuredOrg: string | null;
+    connectedLogin: string | null;
+    targetOrgAccessible: boolean;
+    repositoriesVisible: boolean;
+    canWriteControlledBranches: boolean;
+    canAdminOrganization: boolean;
+  };
+  requiredSignals: string[];
+  nextSteps: string[];
+  safetyRules: string[];
+};
+
 export type BootstrapFile = {
   path: string;
   content: string;
@@ -175,6 +200,7 @@ export type BootstrapPlan = {
 };
 
 export type OnboardingSnapshot = {
+  organization: OrganizationBootstrapPackage;
   actor: ActorIdentity;
   rights: RightsReport;
   questions: OnboardingQuestion[];

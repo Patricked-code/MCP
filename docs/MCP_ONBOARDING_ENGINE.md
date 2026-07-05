@@ -46,6 +46,13 @@ Les tests d ecriture destructifs ou directs sont interdits. Les droits d ecritur
 
 La version actuelle prepare le contenu et signale la branche requise. Elle ne pousse pas encore automatiquement vers GitHub.
 
+## Paquet organisation cible
+
+L onboarding expose aussi un paquet de premiere integration pour `chainsolutions-wealthtech`.
+Ce paquet contient la description courte de l organisation, la description longue du projet, le repository special attendu `chainsolutions-wealthtech/.github`, le chemin du profil public prepare, le runbook d activation et la branche cible `mcp/org-profile-bootstrap`.
+
+Tant que le connecteur ne voit pas l organisation cible, le mode reste `blocked_until_org_access`. Des que l organisation est accessible, le mode attendu devient `branch_pr_required`: creation ou ouverture du repository `.github`, ajout de `profile/README.md` sur branche MCP, puis pull request vers la branche par defaut.
+
 ## Flux d ecriture controlee
 
 Toute ecriture future doit respecter ces invariants:

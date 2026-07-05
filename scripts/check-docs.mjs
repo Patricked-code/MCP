@@ -20,7 +20,16 @@ const required = [
   'docs/MCP_AGENT_ROLES.md',
   'docs/MCP_REPO_FOOTPRINT.md',
   'docs/MCP_SERVER_MAPPING.md',
-  'docs/MCP_AUDIT_LOGS.md'
+  'docs/MCP_AUDIT_LOGS.md',
+  'Migration/conversations-pdf/README.md',
+  'Migration/conversations-md/README.md',
+  'Migration/prompts/README.md',
+  'Migration/agents/README.md',
+  'Migration/decisions/README.md',
+  'Migration/serveur/README.md',
+  'Migration/github/README.md',
+  'Migration/index/README.md',
+  'Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json'
 ];
 
 const missing = required.filter((file) => !existsSync(file));

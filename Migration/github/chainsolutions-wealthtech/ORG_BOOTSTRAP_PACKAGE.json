@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "organization": "chainsolutions-wealthtech",
+  "url": "https://github.com/chainsolutions-wealthtech",
+  "status": "prepared_until_org_access",
+  "shortDescription": "Centre de gouvernance GitHub/MCP pour l ecosysteme ChainSolutions WealthTech: migration, documentation, agents IA, mappings repo-serveur et audit securise.",
+  "longDescription": "chainsolutions-wealthtech centralise, versionne, documente et gouverne l ecosysteme ChainSolutions / WealthTech. L organisation rassemble progressivement les repositories, documents, conversations utiles, prompts, consignes, profils d agents, mappings repo-serveur, historiques de decisions, audits et fichiers de suivi. Le MCP WealthTech est le superviseur central entre GitHub, les serveurs, les agents IA et la memoire projet. Il relie la source versionnee GitHub a la source d execution serveur, sans exposer de secrets ni donner d acces SSH libre aux agents.",
+  "profileRepository": "chainsolutions-wealthtech/.github",
+  "profileReadmePath": "Migration/github/chainsolutions-wealthtech/.github/profile/README.md",
+  "activationRunbookPath": "Migration/github/chainsolutions-wealthtech/ORG_ACTIVATION_RUNBOOK.md",
+  "firstIntegrationIndexPath": "Migration/index/CHAINSOLUTIONS_WEALTHTECH_FIRST_INTEGRATION.md",
+  "directIntegrationBranch": "mcp/org-profile-bootstrap",
+  "directIntegrationModeUntilOrgAccess": "blocked_until_org_access",
+  "requiredSignals": [
+    "GitHub App or explicit organization-scoped token is authorized on chainsolutions-wealthtech.",
+    "The MCP connector can see chainsolutions-wealthtech as an organization account.",
+    "The MCP connector can list or create chainsolutions-wealthtech/.github.",
+    "Writes are limited to mcp/org-profile-bootstrap and reviewed through a pull request."
+  ],
+  "firstDirectIntegrationSteps": [
+    "Create or open chainsolutions-wealthtech/.github.",
+    "Create branch mcp/org-profile-bootstrap.",
+    "Add profile/README.md from the prepared migration artifact.",
+    "Open a pull request to the default branch.",
+    "Do not write directly to main."
+  ],
+  "safetyRules": [
+    "No raw token in Git, logs, audit events, or generated MCP files.",
+    "No direct write to main or master.",
+    "No SuperAdmin action without master MCP token validation.",
+    "No server secret or raw private path in the public organization profile."
+  ]
+}

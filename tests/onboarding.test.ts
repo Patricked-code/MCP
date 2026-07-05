@@ -4,6 +4,7 @@ import { createAgentProfile } from '../src/onboarding/agents.js';
 import { createAuditTrace } from '../src/onboarding/audit.js';
 import { identifyActor } from '../src/onboarding/identity.js';
 import { prepareRepoBootstrap } from '../src/onboarding/index.js';
+import { buildOrganizationBootstrapPackage } from '../src/onboarding/organization.js';
 import { buildOnboardingQuestions, validateQuestionAnswer } from '../src/onboarding/questions.js';
 import { evaluateRights } from '../src/onboarding/rights.js';
 import type { GitHubConnectionStatus } from '../src/github/connection.js';
@@ -96,6 +97,28 @@ test('repo bootstrap prepares MCP branch files and forbids official branch write
   assert.ok(permissions);
   assert.match(permissions.content, /"directMainWrites": false/);
   assert.match(permissions.content, /"mcp\/onboarding-setup"/);
+});
+
+test('organization bootstrap package blocks direct integration until target org is accessible', () => {
+  const blocked = buildOrganizationBootstrapPackage(githubStatus());
+  assert.equal(blocked.organization, 'chainsolutions-wealthtech');
+  assert.equal(blocked.directIntegrationMode, 'blocked_until_org_access');
+  assert.equal(blocked.accessSignals.targetOrgAccessible, false);
+  assert.match(blocked.shortDescription, /GitHub\/MCP/);
+  assert.match(blocked.profileRepository, /chainsolutions-wealthtech\/\.github/);
+
+  const ready = buildOrganizationBootstrapPackage(githubStatus({
+    connected: true,
+    login: 'Patricked-code',
+    orgAccessible: true,
+    reposVisible: 1,
+    canReadReposHint: true,
+    canWriteReposHint: true,
+    canAdminOrgHint: false
+  }));
+  assert.equal(ready.directIntegrationMode, 'branch_pr_required');
+  assert.equal(ready.accessSignals.canWriteControlledBranches, true);
+  assert.equal(ready.directIntegrationBranch, 'mcp/org-profile-bootstrap');
 });
 
 test('audit trace redacts secret-like metadata keys', () => {
