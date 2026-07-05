@@ -46,7 +46,9 @@ const sourceRoots = [
 
 const generatedRelativePaths = new Set([
   'Migration/index/SOURCE_REGISTRY.json',
-  'Migration/index/SOURCE_INGESTION_STATUS.md'
+  'Migration/index/SOURCE_INGESTION_STATUS.md',
+  'Migration/index/PDF_TEXT_AUDIT.json',
+  'Migration/index/PDF_TEXT_AUDIT_STATUS.md'
 ]);
 
 const textExtensions = new Set(['.md', '.txt', '.csv', '.json']);
@@ -461,6 +463,7 @@ function summarizeDocuments(documents) {
 }
 
 function renderMarkdown(registry) {
+  const pdfAudit = loadPdfAuditSummary();
   const totals = registry.totals;
   const rootsTable = registry.roots
     .map((root) => `| ${root.label} | ${root.kind} | ${root.available ? 'yes' : 'no'} | ${root.fileCount} |`)
@@ -473,10 +476,7 @@ function renderMarkdown(registry) {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([extension, count]) => `| ${extension} | ${count} |`)
     .join('\n');
-  const pendingPdf = registry.documents
-    .filter((document) => document.extension === '.pdf' && document.readStatus === 'binary_indexed')
-    .map((document) => `- ${document.sourceRoot}/${document.sourcePath} (${document.extraction.pageCountEstimate ?? 'unknown'} pages estimated)`)
-    .join('\n');
+  const pdfAuditSection = renderPdfAuditSection(registry, pdfAudit);
 
   return `# Source ingestion status - Migration WealthTech
 
@@ -515,11 +515,9 @@ ${statusTable}
 |---|---:|
 ${extensionTable}
 
-## PDF follow-up gate
+## PDF text audit
 
-The PDF files are safely indexed by hash and estimated page count. Their raw text is not committed in this registry. Before declaring the full corpus completely ingested, run a dedicated local PDF text extraction pass and review the output for secrets.
-
-${pendingPdf || '- No pending PDF files.'}
+${pdfAuditSection}
 
 ## No-regression rules
 
@@ -528,6 +526,44 @@ ${pendingPdf || '- No pending PDF files.'}
 - Treat files with secret signals as review-required before any publication.
 - Use branch and pull request workflow for updates.
 `;
+}
+
+function loadPdfAuditSummary() {
+  const path = join(outputDir, 'PDF_TEXT_AUDIT.json');
+  if (!existsSync(path)) return null;
+  try {
+    const audit = JSON.parse(readFileSync(path, 'utf8'));
+    return {
+      generatedAt: audit.generatedAt,
+      totals: audit.totals,
+      documents: Array.isArray(audit.documents) ? audit.documents : []
+    };
+  } catch {
+    return null;
+  }
+}
+
+function renderPdfAuditSection(registry, pdfAudit) {
+  if (!pdfAudit) {
+    const pendingPdf = registry.documents
+      .filter((document) => document.extension === '.pdf' && document.readStatus === 'binary_indexed')
+      .map((document) => `- ${document.sourceRoot}/${document.sourcePath} (${document.extraction.pageCountEstimate ?? 'unknown'} pages estimated)`)
+      .join('\n');
+    return `The PDF files are safely indexed by hash and estimated page count. Their raw text is not committed in this registry. Before declaring the full corpus completely ingested, run \`scripts/build-pdf-text-audit.py\` and review the output for secrets.\n\n${pendingPdf || '- No pending PDF files.'}`;
+  }
+
+  const auditedRegistryPdfPaths = new Set(
+    pdfAudit.documents
+      .filter((document) => document.sourceKind === 'registry_pdf' && ['pdf_text_read', 'pdf_text_empty', 'pdf_duplicate'].includes(document.pdfAuditStatus))
+      .map((document) => `${document.sourceRoot}/${document.sourcePath}`)
+  );
+  const pendingPdf = registry.documents
+    .filter((document) => document.extension === '.pdf')
+    .filter((document) => !auditedRegistryPdfPaths.has(`${document.sourceRoot}/${document.sourcePath}`))
+    .map((document) => `- ${document.sourceRoot}/${document.sourcePath}`)
+    .join('\n');
+
+  return `PDF text audit generated at ${pdfAudit.generatedAt}.\n\n| Metric | Value |\n|---|---:|\n| PDF documents audited | ${pdfAudit.totals.pdfDocumentCount} |\n| Unique PDF contents | ${pdfAudit.totals.uniquePdfContentCount} |\n| Direct registry PDFs covered | ${auditedRegistryPdfPaths.size} |\n| Archive PDF entries covered | ${pdfAudit.totals.bySourceKind?.archive_pdf_entry ?? 0} |\n| PDF documents with extracted text | ${pdfAudit.totals.textReadDocumentCount} |\n| Missing/error PDF documents | ${pdfAudit.totals.errorDocumentCount} |\n| Documents with secret signals | ${pdfAudit.totals.secretSignalDocumentCount} |\n\nPending direct registry PDFs:\n\n${pendingPdf || '- None.'}`;
 }
 
 mkdirSync(outputDir, { recursive: true });

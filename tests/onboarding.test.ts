@@ -11,6 +11,7 @@ import {
   prepareAndRecordRepoBootstrap,
   prepareRepoBootstrap,
   recordOrganizationSecurityPolicyVerification,
+  summarizePdfTextAudit,
   summarizeSourceRegistry
 } from '../src/onboarding/index.js';
 import { buildOrganizationBootstrapPackage, prepareOrganizationProfileBootstrap } from '../src/onboarding/organization.js';
@@ -372,5 +373,52 @@ test('source registry summary keeps ingestion gaps and safety signals visible', 
   assert.deepEqual(summary.pdfTextExtractionPending, ['workspace-ressources/source.pdf']);
   assert.deepEqual(summary.filesRequiringSecretReview, ['workspace-ressources/source.md']);
   assert.equal(summary.rawSourceTextStored, false);
+  assert.equal(summary.rawSecretsStored, false);
+});
+
+test('PDF text audit summary exposes direct and archived PDF coverage', () => {
+  const summary = summarizePdfTextAudit({
+    version: 1,
+    generatedAt: '2026-07-05T00:00:00.000Z',
+    generator: 'unit',
+    sourceRegistry: 'Migration/index/SOURCE_REGISTRY.json',
+    purpose: 'unit',
+    safety: {
+      rawPdfTextStored: false,
+      rawSecretsStored: false,
+      publicationMode: 'hashes_counts_page_stats_and_keyword_counts_only'
+    },
+    totals: {
+      pdfDocumentCount: 3,
+      uniquePdfContentCount: 2,
+      duplicatePdfDocumentCount: 1,
+      textReadDocumentCount: 2,
+      errorDocumentCount: 0,
+      secretSignalDocumentCount: 0,
+      totalPagesExtracted: 10,
+      totalWordsExtracted: 2000,
+      totalCharsExtracted: 12000,
+      byStatus: {
+        pdf_text_read: 2,
+        pdf_duplicate: 1
+      },
+      bySourceKind: {
+        registry_pdf: 1,
+        archive_pdf_entry: 2
+      },
+      keywordTotals: {
+        MCP: 4,
+        GitHub: 2
+      }
+    },
+    documents: []
+  });
+
+  assert.equal(summary.pdfDocumentCount, 3);
+  assert.equal(summary.registryPdfCount, 1);
+  assert.equal(summary.archivePdfEntryCount, 2);
+  assert.equal(summary.totalPagesExtracted, 10);
+  assert.equal(summary.keywordTotals.MCP, 4);
+  assert.equal(summary.rawPdfTextStored, false);
   assert.equal(summary.rawSecretsStored, false);
 });

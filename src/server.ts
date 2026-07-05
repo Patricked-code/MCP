@@ -17,13 +17,12 @@ import {
   filterAuditEvents,
   getAccountDetail,
   getRepoDetail,
-  loadSourceRegistry,
+  buildSourceIngestionSnapshot,
   prepareAndRecordOrganizationProfileBootstrap,
   prepareAndRecordRepoBootstrap,
   recordOrganizationSecurityPolicyVerification,
   recordOnboardingAnswer,
-  renderOnboardingSnapshotHtml,
-  summarizeSourceRegistry
+  renderOnboardingSnapshotHtml
 } from './onboarding/index.js';
 import type { AgentType } from './onboarding/types.js';
 
@@ -400,11 +399,7 @@ export async function startHttpServer(): Promise<void> {
 
   app.get('/git/onboarding/sources', requireWebLogin, async (_req, res) => {
     try {
-      const registry = await loadSourceRegistry();
-      res.json({
-        summary: summarizeSourceRegistry(registry),
-        registry
-      });
+      res.json(await buildSourceIngestionSnapshot());
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding/sources');
       res.status(500).json({ error: 'source_registry_failed' });

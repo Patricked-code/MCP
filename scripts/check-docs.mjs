@@ -40,6 +40,8 @@ const required = [
   'Migration/index/README.md',
   'Migration/index/SOURCE_REGISTRY.json',
   'Migration/index/SOURCE_INGESTION_STATUS.md',
+  'Migration/index/PDF_TEXT_AUDIT.json',
+  'Migration/index/PDF_TEXT_AUDIT_STATUS.md',
   'Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json'
 ];
 
