@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-05T20:02:20.379743Z",
+  "generatedAt": "2026-07-05T20:10:17.676747Z",
   "generator": "scripts/build-completion-audit.py",
   "purpose": "Requirement-by-requirement completion audit for the full WealthTech MCP migration objective.",
   "safety": {
@@ -15,12 +15,12 @@
   "inputs": {
     "sourceRegistry": {
       "path": "Migration/index/SOURCE_REGISTRY.json",
-      "generatedAt": "2026-07-05T20:01:47.633Z",
+      "generatedAt": "2026-07-05T20:09:39.968Z",
       "totals": {
         "sourceFileCount": 102,
         "uniqueContentFileCount": 96,
         "duplicateFileCount": 6,
-        "totalBytes": 24472557,
+        "totalBytes": 24472811,
         "textReadFiles": 88,
         "archiveIndexedFiles": 5,
         "binaryIndexedFiles": 9,
@@ -43,7 +43,7 @@
     },
     "pdfTextAudit": {
       "path": "Migration/index/PDF_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-05T20:01:57.346771Z",
+      "generatedAt": "2026-07-05T20:09:54.496678Z",
       "totals": {
         "pdfDocumentCount": 43,
         "uniquePdfContentCount": 22,
@@ -85,7 +85,7 @@
     },
     "archiveTextAudit": {
       "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-05T20:01:58.334529Z",
+      "generatedAt": "2026-07-05T20:09:55.781875Z",
       "totals": {
         "archiveDocumentCount": 5,
         "archiveDocumentsScanned": 5,
@@ -147,7 +147,7 @@
     },
     "objectiveMatrix": {
       "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
-      "generatedAt": "2026-07-05T20:02:19.433013Z",
+      "generatedAt": "2026-07-05T20:10:17.100530Z",
       "summary": {
         "objectiveCount": 9,
         "statusCounts": {
@@ -167,7 +167,7 @@
     },
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-05T20:02:19.745034Z",
+      "generatedAt": "2026-07-05T20:10:17.235887Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,
@@ -210,7 +210,7 @@
     },
     "serverCards": {
       "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
-      "generatedAt": "2026-07-05T20:02:19.939156Z",
+      "generatedAt": "2026-07-05T20:10:17.357489Z",
       "summary": {
         "cardCount": 6,
         "readyCardCount": 6,
@@ -247,7 +247,7 @@
     },
     "blockerRunbook": {
       "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
-      "generatedAt": "2026-07-05T20:02:20.134642Z",
+      "generatedAt": "2026-07-05T20:10:17.487489Z",
       "summary": {
         "blockerCount": 2,
         "externalActionBlockerCount": 1,
@@ -308,13 +308,13 @@
         {
           "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
           "exists": true,
-          "sha256": "01b5398be09e547d52ee88af4fc45a77f0c2d9fcb81d2142afb5486f5e78fa44",
+          "sha256": "3804c6250d72b015d71e39aea3d6e21f38d2023d6c51879d554ca647a59ca15c",
           "note": "Generated objective matrix."
         },
         {
           "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.md",
           "exists": true,
-          "sha256": "9cb8fd082565c5c4384e139e4add3a27c9209f2927e4e3cbc36cfd6c26800346",
+          "sha256": "375cb0add757bcf46a351aea5cd774f7150437004d52a1e0eb1ae077fa624e99",
           "note": "Human-readable objective matrix."
         }
       ],
@@ -338,19 +338,19 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "f78504f2090570b2df275ccf5a3946aa5f2868f91c168b9105ed8328af515615",
+          "sha256": "40bb78a8b630ce93cc65db9d467e3a2132f96bb86056a49cd50c7ab0483f1572",
           "note": "Direct source inventory."
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "63fe66a5e89cc3d6275a4562776801cf6871996680fd517d83774f9f61245685",
+          "sha256": "547cf2cf1764fbcab5786bd9576deccb12269f25259e181a3eb3710916fe19ce",
           "note": "PDF text extraction audit."
         },
         {
           "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "0e4fa9719543e7b3ac09cd5b6b4fb4c4a2bf9eea2fb0a7a938951f22b5684d22",
+          "sha256": "d338bb9f6bfc3bb71b49c5f1b176f069a14e03ec368ef0c1bdf0cd9e59db12dc",
           "note": "ZIP archive text audit."
         }
       ],
@@ -406,7 +406,7 @@
         {
           "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
           "exists": true,
-          "sha256": "70a3a6849344428e4c0694971574a6367b78f5bedad266f1befcc4363fe4f692",
+          "sha256": "451d41e78c3ded3ad393d9e66a6344db28bb143ff3e18485fc75739f48ef2596",
           "note": "External connector authorization blocker."
         },
         {
@@ -437,19 +437,19 @@
         {
           "path": "src/onboarding/index.ts",
           "exists": true,
-          "sha256": "374c3df797e6bdb0b0da8773725dd9ab4456a6f1c77e0a933f9ea698cae7465b",
+          "sha256": "c35623dc56ecea9c3172905250742a35bbd10ea550202cff4b1f249863bd3ffb",
           "note": "MCP onboarding engine entrypoint."
         },
         {
           "path": "src/server.ts",
           "exists": true,
-          "sha256": "e14d42287482b1b574c80e3193bae89881bbbc009fedf1d11ad9bab2aba1f31f",
+          "sha256": "a4fa5f4161195266493b21c64fcdea8c6c40d1f3956540c1259a6e454e6842c3",
           "note": "Protected web/API routes."
         },
         {
           "path": "tests/onboarding.test.ts",
           "exists": true,
-          "sha256": "53bdfcfbc78f33931929dc867f31ee17b4af6e9c863eac3be551b807791282f4",
+          "sha256": "aec66974033c35a67814db5503e8c2df31ac5f602963a0d0d95c4db6fae84b2f",
           "note": "Onboarding safeguard tests."
         },
         {
@@ -477,7 +477,7 @@
         {
           "path": "Migration/index/MCP_EXECUTION_TASKS.json",
           "exists": true,
-          "sha256": "989e03bd127d3cde4ac84ed19630e95a132000e1087b87796bfd78afc19a96cc",
+          "sha256": "e2b486b360ee309de58434df2f314f6fd3412e71ebca3f543bc5c702ce80e4de",
           "note": "Repository bootstrap task is blocked by connector visibility."
         },
         {
@@ -507,7 +507,7 @@
         {
           "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
           "exists": true,
-          "sha256": "5d9cd7f938656a426c0e250540a48e2d31902adcc45ea23e382a949b0a51fde3",
+          "sha256": "bf15af347efaff66349e30b908226def016aa9db70ebf5c3617d262c9373ba7e",
           "note": "Public-safe private inventory task cards."
         },
         {
@@ -543,13 +543,13 @@
         {
           "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
           "exists": true,
-          "sha256": "70a3a6849344428e4c0694971574a6367b78f5bedad266f1befcc4363fe4f692",
+          "sha256": "451d41e78c3ded3ad393d9e66a6344db28bb143ff3e18485fc75739f48ef2596",
           "note": "Private inventory and approval blocker."
         },
         {
           "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md",
           "exists": true,
-          "sha256": "30fe8c40e92ee62754886f6aea936d285f1189c459e482aded3b5b0e1165fe3b",
+          "sha256": "81af2ddd385300d6953e0304426a846fd8ff6b02c5ab487071e3f1180187cb80",
           "note": "Server task cards and gates."
         },
         {
@@ -586,19 +586,19 @@
         {
           "path": "scripts/check-docs.mjs",
           "exists": true,
-          "sha256": "cdf78fb2bccb4d8dfe4de0a2113693d4e764968461da388b5139714c8dc172a1",
+          "sha256": "8cb4128bf4188e2ead7516627886127a67be7b2d3622b0bfdd950bf3edc95c1c",
           "note": "Required docs/index gate."
         },
         {
           "path": "Migration/index/MCP_EXECUTION_TASKS.json",
           "exists": true,
-          "sha256": "989e03bd127d3cde4ac84ed19630e95a132000e1087b87796bfd78afc19a96cc",
+          "sha256": "e2b486b360ee309de58434df2f314f6fd3412e71ebca3f543bc5c702ce80e4de",
           "note": "No-regression command list."
         },
         {
           "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
           "exists": true,
-          "sha256": "70a3a6849344428e4c0694971574a6367b78f5bedad266f1befcc4363fe4f692",
+          "sha256": "451d41e78c3ded3ad393d9e66a6344db28bb143ff3e18485fc75739f48ef2596",
           "note": "Remaining blockers and resume commands."
         }
       ],

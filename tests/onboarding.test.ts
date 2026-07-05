@@ -17,6 +17,7 @@ import {
   summarizePdfTextAudit,
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
+  summarizeOperatorActionPack,
   summarizeServerInventoryCardIndex,
   summarizeSourceRegistry
 } from '../src/onboarding/index.js';
@@ -969,6 +970,90 @@ test('completion audit summary refuses completion while blockers remain', () => 
   assert.deepEqual(summary.incompleteRequirementIds, [
     'authorize_connector_on_target_org',
     'execute_migration_steps_with_operator_approval'
+  ]);
+  assert.equal(summary.rawArchiveTextStored, false);
+  assert.equal(summary.rawServerInventoryStored, false);
+  assert.equal(summary.rawSecretsStored, false);
+  assert.equal(summary.productionActionExecuted, false);
+});
+
+test('operator action pack summary keeps external and private actions separate', () => {
+  const summary = summarizeOperatorActionPack({
+    version: 1,
+    generatedAt: '2026-07-05T00:00:00.000Z',
+    generator: 'unit',
+    purpose: 'unit',
+    safety: {
+      rawSourceTextStored: false,
+      rawPdfTextStored: false,
+      rawArchiveTextStored: false,
+      rawServerInventoryStored: false,
+      rawSecretsStored: false,
+      productionActionExecuted: false,
+      publicationMode: 'operator_checklists_issue_bodies_and_acceptance_criteria_only'
+    },
+    inputs: {},
+    summary: {
+      operatorActionCount: 2,
+      externalGithubActionCount: 1,
+      privateOperatorActionCount: 1,
+      issueReadyActionCount: 2,
+      unresolvedBlockerCount: 2,
+      unresolvedBlockerIds: [
+        'github_connector_not_authorized_on_target_org',
+        'production_actions_require_private_inventory_and_approval'
+      ],
+      actionIds: [
+        'authorize_github_connector_issue',
+        'private_server_inventory_issue'
+      ]
+    },
+    actions: [
+      {
+        id: 'authorize_github_connector_issue',
+        title: 'Authorize connector',
+        actionType: 'external_github_owner_action',
+        blockerId: 'github_connector_not_authorized_on_target_org',
+        ownerRoleRequired: 'GitHub organization owner',
+        status: 'ready_for_operator_tracking',
+        issueTitle: '[MCP blocker] Authorize connector',
+        labels: ['mcp-blocker'],
+        blockedTasks: [],
+        blockedRequirements: [],
+        checklist: [],
+        acceptanceCriteria: [],
+        verificationCommands: [],
+        safetyRules: [],
+        issueBodyMarkdown: 'body'
+      },
+      {
+        id: 'private_server_inventory_issue',
+        title: 'Collect inventory',
+        actionType: 'private_operator_action',
+        blockerId: 'production_actions_require_private_inventory_and_approval',
+        ownerRoleRequired: 'Production operator',
+        status: 'ready_for_operator_tracking',
+        issueTitle: '[MCP blocker] Collect inventory',
+        labels: ['mcp-blocker'],
+        blockedTasks: [],
+        blockedRequirements: [],
+        checklist: [],
+        acceptanceCriteria: [],
+        verificationCommands: [],
+        safetyRules: [],
+        issueBodyMarkdown: 'body'
+      }
+    ]
+  });
+
+  assert.equal(summary.operatorActionCount, 2);
+  assert.equal(summary.externalGithubActionCount, 1);
+  assert.equal(summary.privateOperatorActionCount, 1);
+  assert.equal(summary.issueReadyActionCount, 2);
+  assert.equal(summary.unresolvedBlockerCount, 2);
+  assert.deepEqual(summary.actionIds, [
+    'authorize_github_connector_issue',
+    'private_server_inventory_issue'
   ]);
   assert.equal(summary.rawArchiveTextStored, false);
   assert.equal(summary.rawServerInventoryStored, false);

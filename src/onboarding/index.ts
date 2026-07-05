@@ -39,6 +39,10 @@ export {
   summarizeObjectiveTraceabilityIndex
 } from './objectiveIndex.js';
 export {
+  loadOperatorActionPack,
+  summarizeOperatorActionPack
+} from './operatorActionPack.js';
+export {
   buildSourceIngestionSnapshot,
   loadPdfTextAudit,
   loadSourceRegistry,

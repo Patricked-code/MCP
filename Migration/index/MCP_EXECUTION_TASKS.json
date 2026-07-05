@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-05T20:02:19.745034Z",
+  "generatedAt": "2026-07-05T20:10:17.235887Z",
   "generator": "scripts/build-execution-tasks.py",
   "purpose": "Executable MCP task plan derived from the WealthTech objective traceability matrix.",
   "safety": {
@@ -13,7 +13,7 @@
   "inputs": {
     "objectiveTraceabilityMatrix": {
       "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
-      "generatedAt": "2026-07-05T20:02:19.433013Z",
+      "generatedAt": "2026-07-05T20:10:17.100530Z",
       "summary": {
         "objectiveCount": 9,
         "statusCounts": {
@@ -479,13 +479,15 @@
       "actions": [
         "Convert approved ready tasks into branch/PR work.",
         "Convert external or private prerequisites into clearly labeled tracking issues or checklist items.",
+        "Use OPERATOR_ACTION_PACK as the public-safe issue body source for unresolved blockers.",
         "Keep blocked tasks blocked until their evidence is present.",
         "Regenerate the completion audit after any task status or blocker status change."
       ],
       "expectedEvidence": [
         "Branch, PR or issue references for approved tasks.",
         "Updated MCP_EXECUTION_TASKS after task status changes.",
-        "Updated COMPLETION_AUDIT after task or blocker status changes."
+        "Updated COMPLETION_AUDIT after task or blocker status changes.",
+        "Updated OPERATOR_ACTION_PACK with current blocker issue bodies."
       ],
       "verificationCommands": [
         "gh pr view 1 --json state,isDraft,mergeable"

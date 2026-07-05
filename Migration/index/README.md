@@ -29,5 +29,7 @@ Il doit permettre a un agent ou a un humain de retrouver rapidement:
 - `BLOCKER_RESOLUTION_RUNBOOK.md` : synthese lisible des blocages, actions externes, preuves attendues et commandes apres resolution.
 - `COMPLETION_AUDIT.json` : audit genere de completude objectif par objectif, avec preuves, statuts, blocages et decision de cloture.
 - `COMPLETION_AUDIT.md` : synthese lisible de ce qui est prouve, partiel, bloque ou non encore clos.
+- `OPERATOR_ACTION_PACK.json` : paquet genere d actions operateur et corps d issues publics pour lever les blocages restants.
+- `OPERATOR_ACTION_PACK.md` : synthese lisible des actions operateur, checklists, criteres d acceptation et regles de securite.
 
 Ces fichiers ne publient pas les textes bruts ni les secrets. Ils servent de preuve de lecture/indexation et de garde-fou avant toute ingestion plus exhaustive.

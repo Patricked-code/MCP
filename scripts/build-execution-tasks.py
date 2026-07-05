@@ -230,6 +230,7 @@ TASK_DEFINITIONS = [
         "actions": [
             "Convert approved ready tasks into branch/PR work.",
             "Convert external or private prerequisites into clearly labeled tracking issues or checklist items.",
+            "Use OPERATOR_ACTION_PACK as the public-safe issue body source for unresolved blockers.",
             "Keep blocked tasks blocked until their evidence is present.",
             "Regenerate the completion audit after any task status or blocker status change.",
         ],
@@ -237,6 +238,7 @@ TASK_DEFINITIONS = [
             "Branch, PR or issue references for approved tasks.",
             "Updated MCP_EXECUTION_TASKS after task status changes.",
             "Updated COMPLETION_AUDIT after task or blocker status changes.",
+            "Updated OPERATOR_ACTION_PACK with current blocker issue bodies.",
         ],
         "verificationCommands": [
             "gh pr view 1 --json state,isDraft,mergeable",

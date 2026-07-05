@@ -20,6 +20,7 @@
     "server:cards": "python scripts/build-server-inventory-cards.py",
     "blockers:runbook": "python scripts/build-blocker-resolution-runbook.py",
     "completion:audit": "python scripts/build-completion-audit.py",
+    "operator:actions": "python scripts/build-operator-action-pack.py",
     "lint:secrets": "node scripts/check-no-secrets.mjs",
     "docs:check": "node scripts/check-docs.mjs"
   },

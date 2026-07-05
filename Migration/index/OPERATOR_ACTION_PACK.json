@@ -1,0 +1,221 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-05T20:10:17.822141Z",
+  "generator": "scripts/build-operator-action-pack.py",
+  "purpose": "Public-safe operator tracking actions for unresolved WealthTech MCP migration blockers.",
+  "safety": {
+    "rawSourceTextStored": false,
+    "rawPdfTextStored": false,
+    "rawArchiveTextStored": false,
+    "rawServerInventoryStored": false,
+    "rawSecretsStored": false,
+    "productionActionExecuted": false,
+    "publicationMode": "operator_checklists_issue_bodies_and_acceptance_criteria_only"
+  },
+  "inputs": {
+    "blockerRunbook": {
+      "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
+      "generatedAt": "2026-07-05T20:10:17.487489Z",
+      "summary": {
+        "blockerCount": 2,
+        "externalActionBlockerCount": 1,
+        "privateInventoryBlockerCount": 1,
+        "blockedTaskCount": 4,
+        "blockedObjectiveCount": 4,
+        "blockedServerCardCount": 4,
+        "blockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    },
+    "executionTasks": {
+      "path": "Migration/index/MCP_EXECUTION_TASKS.json",
+      "generatedAt": "2026-07-05T20:10:17.235887Z",
+      "summary": {
+        "taskCount": 8,
+        "readyTaskCount": 3,
+        "blockedTaskCount": 4,
+        "statusCounts": {
+          "ready_for_operator_review": 1,
+          "blocked_external_authorization": 1,
+          "blocked_by_connector_visibility": 2,
+          "ready_to_prepare_templates": 1,
+          "blocked_private_inventory_and_approval": 1,
+          "ready_recurring_gate": 1,
+          "pending_operator_review": 1
+        },
+        "kindCounts": {
+          "operator_review": 1,
+          "external_github_app_action": 1,
+          "mcp_regeneration": 1,
+          "repository_bootstrap": 1,
+          "server_preparation": 1,
+          "private_server_action": 1,
+          "quality_gate": 1,
+          "planning_to_delivery": 1
+        },
+        "readyTaskIds": [
+          "review_objective_traceability_matrix",
+          "prepare_private_server_inventory_cards",
+          "execute_no_regression_gate"
+        ],
+        "blockedTaskIds": [
+          "authorize_github_connector_on_chainsolutions",
+          "regenerate_ingestion_after_connector_access",
+          "bootstrap_visible_org_repositories",
+          "collect_private_server_inventory"
+        ],
+        "globalBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    },
+    "completionAudit": {
+      "path": "Migration/index/COMPLETION_AUDIT.json",
+      "generatedAt": "2026-07-05T20:10:17.676747Z",
+      "summary": {
+        "requirementCount": 9,
+        "completeRequirementCount": 5,
+        "blockedRequirementCount": 4,
+        "partialRequirementCount": 1,
+        "incompleteRequirementIds": [
+          "authorize_connector_on_target_org",
+          "bootstrap_visible_org_repositories",
+          "prepare_server_mapping_without_exposing_private_inventory",
+          "execute_migration_steps_with_operator_approval"
+        ],
+        "blockedRequirementIds": [
+          "authorize_connector_on_target_org",
+          "bootstrap_visible_org_repositories",
+          "prepare_server_mapping_without_exposing_private_inventory",
+          "execute_migration_steps_with_operator_approval"
+        ],
+        "partialRequirementIds": [
+          "prepare_server_mapping_without_exposing_private_inventory"
+        ],
+        "missingEvidence": [],
+        "unresolvedBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ],
+        "fullObjectiveAchieved": false
+      }
+    }
+  },
+  "summary": {
+    "operatorActionCount": 2,
+    "externalGithubActionCount": 1,
+    "privateOperatorActionCount": 1,
+    "issueReadyActionCount": 2,
+    "unresolvedBlockerCount": 2,
+    "unresolvedBlockerIds": [
+      "github_connector_not_authorized_on_target_org",
+      "production_actions_require_private_inventory_and_approval"
+    ],
+    "actionIds": [
+      "authorize_github_connector_issue",
+      "private_server_inventory_issue"
+    ]
+  },
+  "actions": [
+    {
+      "id": "authorize_github_connector_issue",
+      "title": "Authorize GitHub/Codex/MCP connector on chainsolutions-wealthtech",
+      "actionType": "external_github_owner_action",
+      "blockerId": "github_connector_not_authorized_on_target_org",
+      "ownerRoleRequired": "chainsolutions-wealthtech organization owner/admin",
+      "status": "ready_for_operator_tracking",
+      "issueTitle": "[MCP blocker] Authorize GitHub/Codex/MCP connector on chainsolutions-wealthtech",
+      "labels": [
+        "mcp-blocker",
+        "external-action",
+        "github-connector"
+      ],
+      "blockedTasks": [
+        "authorize_github_connector_on_chainsolutions",
+        "regenerate_ingestion_after_connector_access",
+        "bootstrap_visible_org_repositories"
+      ],
+      "blockedRequirements": [
+        "authorize_connector_on_target_org",
+        "bootstrap_visible_org_repositories"
+      ],
+      "checklist": [
+        "Open the chainsolutions-wealthtech organization settings as an owner/admin.",
+        "Install or authorize the GitHub app/connector used by Codex/MCP on the organization.",
+        "Grant only repository visibility, branch write and pull request permissions required by the MCP workflow.",
+        "Verify the connector sees chainsolutions-wealthtech as an installed or visible organization.",
+        "Verify MCP onboarding no longer reports target organization access as blocked."
+      ],
+      "acceptanceCriteria": [
+        "Connector installed accounts include chainsolutions-wealthtech.",
+        "MCP onboarding no longer reports organization access as blocked.",
+        "GET /git/repos can include organization repositories after authentication.",
+        "No raw token was copied into Git, logs, screenshots or generated artifacts."
+      ],
+      "verificationCommands": [
+        "gh api /orgs/chainsolutions-wealthtech",
+        "GET /git/onboarding",
+        "GET /git/onboarding/tasks",
+        "GET /git/onboarding/blockers"
+      ],
+      "safetyRules": [
+        "No raw token, `.env` value, private key, recovery code or private server inventory is pasted into the issue.",
+        "No production action is executed from this public tracking issue.",
+        "After evidence changes, regenerate source/PDF/archive/objective/task/blocker/completion/operator-action artifacts and run the no-regression gate."
+      ],
+      "issueBodyMarkdown": "## Context\n\nThe public organization bootstrap is applied, but the Codex/MCP GitHub connector still cannot list or manage chainsolutions-wealthtech repositories directly.\n\n## Blocker\n\n`github_connector_not_authorized_on_target_org`\n\n## Owner role\n\nchainsolutions-wealthtech organization owner/admin\n\n## Blocked tasks\n\n- authorize_github_connector_on_chainsolutions\n- regenerate_ingestion_after_connector_access\n- bootstrap_visible_org_repositories\n\n## Blocked full-objective requirements\n\n- authorize_connector_on_target_org\n- bootstrap_visible_org_repositories\n\n## Checklist\n\n- [ ] Open the chainsolutions-wealthtech organization settings as an owner/admin.\n- [ ] Install or authorize the GitHub app/connector used by Codex/MCP on the organization.\n- [ ] Grant only repository visibility, branch write and pull request permissions required by the MCP workflow.\n- [ ] Verify the connector sees chainsolutions-wealthtech as an installed or visible organization.\n- [ ] Verify MCP onboarding no longer reports target organization access as blocked.\n\n## Acceptance criteria\n\n- [ ] Connector installed accounts include chainsolutions-wealthtech.\n- [ ] MCP onboarding no longer reports organization access as blocked.\n- [ ] GET /git/repos can include organization repositories after authentication.\n- [ ] No raw token was copied into Git, logs, screenshots or generated artifacts.\n\n## Verification\n\n- [ ] gh api /orgs/chainsolutions-wealthtech\n- [ ] GET /git/onboarding\n- [ ] GET /git/onboarding/tasks\n- [ ] GET /git/onboarding/blockers\n\n## Safety\n\n- [ ] No raw token, `.env` value, private key, recovery code or private server inventory is pasted into the issue.\n- [ ] No production action is executed from this public tracking issue.\n- [ ] After evidence changes, regenerate source/PDF/archive/objective/task/blocker/completion/operator-action artifacts and run the no-regression gate.\n"
+    },
+    {
+      "id": "private_server_inventory_issue",
+      "title": "Collect private server inventory, backup, rollback and approval evidence",
+      "actionType": "private_operator_action",
+      "blockerId": "production_actions_require_private_inventory_and_approval",
+      "ownerRoleRequired": "server operator with explicit human approval",
+      "status": "ready_for_operator_tracking",
+      "issueTitle": "[MCP blocker] Collect private server inventory and operator approval evidence",
+      "labels": [
+        "mcp-blocker",
+        "private-inventory",
+        "operator-approval"
+      ],
+      "blockedTasks": [
+        "collect_private_server_inventory"
+      ],
+      "blockedRequirements": [
+        "prepare_server_mapping_without_exposing_private_inventory",
+        "execute_migration_steps_with_operator_approval"
+      ],
+      "checklist": [
+        "Use `Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md` as the public-safe template.",
+        "Collect live S1/S2 inventory in an approved private operational location outside Git.",
+        "Record backup/export references outside Git.",
+        "Record rollback plan references outside Git.",
+        "Record operator approval scope and date without secrets.",
+        "Prepare post-action tests before any cleanup, migration, vhost change or service stop.",
+        "Publish only reviewed public-safe summaries back to Git."
+      ],
+      "acceptanceCriteria": [
+        "Private inventory exists outside Git.",
+        "Backup or export reference exists outside Git.",
+        "Rollback plan exists outside Git.",
+        "Operator approval scope and date are recorded without secrets.",
+        "No production deletion, migration, service stop or vhost change has occurred before approval."
+      ],
+      "verificationCommands": [
+        "GET /git/onboarding/server-cards",
+        "GET /git/onboarding/tasks",
+        "node scripts/check-no-secrets.mjs",
+        "node scripts/check-docs.mjs"
+      ],
+      "safetyRules": [
+        "No raw token, `.env` value, private key, recovery code or private server inventory is pasted into the issue.",
+        "No production action is executed from this public tracking issue.",
+        "After evidence changes, regenerate source/PDF/archive/objective/task/blocker/completion/operator-action artifacts and run the no-regression gate."
+      ],
+      "issueBodyMarkdown": "## Context\n\nServer cleanup, migration and deployment actions are intentionally blocked until private S1/S2 inventory, backup, rollback, tests and operator approval exist outside Git.\n\n## Blocker\n\n`production_actions_require_private_inventory_and_approval`\n\n## Owner role\n\nserver operator with explicit human approval\n\n## Blocked tasks\n\n- collect_private_server_inventory\n\n## Blocked full-objective requirements\n\n- prepare_server_mapping_without_exposing_private_inventory\n- execute_migration_steps_with_operator_approval\n\n## Checklist\n\n- [ ] Use `Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md` as the public-safe template.\n- [ ] Collect live S1/S2 inventory in an approved private operational location outside Git.\n- [ ] Record backup/export references outside Git.\n- [ ] Record rollback plan references outside Git.\n- [ ] Record operator approval scope and date without secrets.\n- [ ] Prepare post-action tests before any cleanup, migration, vhost change or service stop.\n- [ ] Publish only reviewed public-safe summaries back to Git.\n\n## Acceptance criteria\n\n- [ ] Private inventory exists outside Git.\n- [ ] Backup or export reference exists outside Git.\n- [ ] Rollback plan exists outside Git.\n- [ ] Operator approval scope and date are recorded without secrets.\n- [ ] No production deletion, migration, service stop or vhost change has occurred before approval.\n\n## Verification\n\n- [ ] GET /git/onboarding/server-cards\n- [ ] GET /git/onboarding/tasks\n- [ ] node scripts/check-no-secrets.mjs\n- [ ] node scripts/check-docs.mjs\n\n## Safety\n\n- [ ] No raw token, `.env` value, private key, recovery code or private server inventory is pasted into the issue.\n- [ ] No production action is executed from this public tracking issue.\n- [ ] After evidence changes, regenerate source/PDF/archive/objective/task/blocker/completion/operator-action artifacts and run the no-regression gate.\n"
+    }
+  ]
+}
