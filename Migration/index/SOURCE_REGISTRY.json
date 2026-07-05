@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-05T15:30:15.174Z",
+  "generatedAt": "2026-07-05T19:53:38.484Z",
   "generator": "scripts/build-source-registry.mjs",
   "purpose": "MCP source inventory and safe ingestion evidence for the WealthTech migration corpus.",
   "safety": {
@@ -42,7 +42,7 @@
     "sourceFileCount": 102,
     "uniqueContentFileCount": 96,
     "duplicateFileCount": 6,
-    "totalBytes": 24471265,
+    "totalBytes": 24472322,
     "textReadFiles": 88,
     "archiveIndexedFiles": 5,
     "binaryIndexedFiles": 9,
@@ -1100,7 +1100,7 @@
       }
     },
     {
-      "sourceId": "repo-migration-index-readme.md-8ef6a1553235",
+      "sourceId": "repo-migration-index-readme.md-68ba36d100dd",
       "sourceRoot": "repo-migration",
       "sourceRootKind": "repository",
       "sourcePath": "index/README.md",
@@ -1109,17 +1109,17 @@
       "roles": [
         "reference"
       ],
-      "sizeBytes": 1646,
-      "sha256": "8ef6a15532353a2e8c6b809dd9d79deb9f0e5925f74b10c68a1d25738b45cddb",
+      "sizeBytes": 2204,
+      "sha256": "68ba36d100ddd610544d3c79b34401bbc21760cff8d16b0d3b2a9581bbf22679",
       "duplicateOf": null,
       "extension": ".md",
       "readStatus": "text_read",
       "extraction": {
         "method": "utf8_text_stats",
-        "textSha256": "8ef6a15532353a2e8c6b809dd9d79deb9f0e5925f74b10c68a1d25738b45cddb",
-        "charCount": 1646,
-        "lineCount": 28,
-        "wordCount": 238,
+        "textSha256": "68ba36d100ddd610544d3c79b34401bbc21760cff8d16b0d3b2a9581bbf22679",
+        "charCount": 2204,
+        "lineCount": 32,
+        "wordCount": 308,
         "secretSignalCount": 0
       }
     },
@@ -1264,7 +1264,7 @@
       }
     },
     {
-      "sourceId": "repo-migration-serveur-readme.md-f9906c4abdba",
+      "sourceId": "repo-migration-serveur-readme.md-803bd79bf536",
       "sourceRoot": "repo-migration",
       "sourceRootKind": "repository",
       "sourcePath": "serveur/README.md",
@@ -1273,17 +1273,17 @@
       "roles": [
         "server_mapping"
       ],
-      "sizeBytes": 432,
-      "sha256": "f9906c4abdbae6eebe758d3e85781d7bd3c4ec5b1ec7149c59bb1370c6509a85",
+      "sizeBytes": 931,
+      "sha256": "803bd79bf53627ae049cad87f40ea32069302ab51294244cff0dd2bdc61392c6",
       "duplicateOf": null,
       "extension": ".md",
       "readStatus": "text_read",
       "extraction": {
         "method": "utf8_text_stats",
-        "textSha256": "f9906c4abdbae6eebe758d3e85781d7bd3c4ec5b1ec7149c59bb1370c6509a85",
-        "charCount": 432,
-        "lineCount": 14,
-        "wordCount": 72,
+        "textSha256": "803bd79bf53627ae049cad87f40ea32069302ab51294244cff0dd2bdc61392c6",
+        "charCount": 931,
+        "lineCount": 21,
+        "wordCount": 137,
         "secretSignalCount": 0
       }
     },

@@ -16,6 +16,7 @@ REPO_ROOT = Path.cwd()
 INDEX_DIR = REPO_ROOT / "Migration" / "index"
 SOURCE_REGISTRY_PATH = INDEX_DIR / "SOURCE_REGISTRY.json"
 PDF_TEXT_AUDIT_PATH = INDEX_DIR / "PDF_TEXT_AUDIT.json"
+ARCHIVE_TEXT_AUDIT_PATH = INDEX_DIR / "ARCHIVE_TEXT_AUDIT.json"
 OUTPUT_JSON_PATH = INDEX_DIR / "OBJECTIVE_TRACEABILITY_MATRIX.json"
 OUTPUT_MD_PATH = INDEX_DIR / "OBJECTIVE_TRACEABILITY_MATRIX.md"
 
@@ -62,11 +63,13 @@ OBJECTIVES = [
             "Migration/index/SOURCE_INGESTION_STATUS.md",
             "Migration/index/PDF_TEXT_AUDIT.json",
             "Migration/index/PDF_TEXT_AUDIT_STATUS.md",
+            "Migration/index/ARCHIVE_TEXT_AUDIT.json",
+            "Migration/index/ARCHIVE_TEXT_AUDIT_STATUS.md",
         ],
-        "status": "inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress",
+        "status": "inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress",
         "blockers": [],
         "nextActions": [
-            "Keep source registry, PDF audit and objective matrix regenerated after any source change.",
+            "Keep source registry, PDF audit, archive text audit and objective matrix regenerated after any source change.",
             "Review any future secret signal before publication.",
             "Convert objective matrix items into executable MCP tasks only after evidence review.",
         ],
@@ -448,6 +451,7 @@ def status_counts(objectives: list[dict[str, Any]]) -> dict[str, int]:
 def build_index() -> dict[str, Any]:
     registry = load_json(SOURCE_REGISTRY_PATH)
     pdf_audit = load_json(PDF_TEXT_AUDIT_PATH)
+    archive_text_audit = load_json(ARCHIVE_TEXT_AUDIT_PATH)
     objective_entries = []
 
     for objective in OBJECTIVES:
@@ -507,6 +511,11 @@ def build_index() -> dict[str, Any]:
                 "generatedAt": pdf_audit.get("generatedAt"),
                 "totals": pdf_audit.get("totals", {}),
             },
+            "archiveTextAudit": {
+                "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
+                "generatedAt": archive_text_audit.get("generatedAt"),
+                "totals": archive_text_audit.get("totals", {}),
+            },
         },
         "summary": {
             "objectiveCount": len(objective_entries),
@@ -521,7 +530,7 @@ def build_index() -> dict[str, Any]:
         "nextExecutionOrder": [
             "Review OBJECTIVE_TRACEABILITY_MATRIX with the operator.",
             "Authorize the GitHub/Codex/MCP connector on chainsolutions-wealthtech.",
-            "Regenerate source registry, PDF audit and objective matrix after connector visibility changes.",
+            "Regenerate source registry, PDF audit, archive text audit and objective matrix after connector visibility changes.",
             "Bootstrap organization repositories with .mcp files through branch and PR workflow.",
             "Convert migration/server objectives into private inventory-backed task cards.",
             "Run no-regression gates before every push or production-affecting action.",

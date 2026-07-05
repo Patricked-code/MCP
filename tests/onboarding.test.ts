@@ -12,6 +12,7 @@ import {
   prepareRepoBootstrap,
   recordOrganizationSecurityPolicyVerification,
   summarizeBlockerResolutionRunbook,
+  summarizeArchiveTextAudit,
   summarizePdfTextAudit,
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
@@ -424,6 +425,159 @@ test('PDF text audit summary exposes direct and archived PDF coverage', () => {
   assert.equal(summary.totalPagesExtracted, 10);
   assert.equal(summary.keywordTotals.MCP, 4);
   assert.equal(summary.rawPdfTextStored, false);
+  assert.equal(summary.rawSecretsStored, false);
+});
+
+test('archive text audit summary exposes ZIP text coverage without raw text', () => {
+  const summary = summarizeArchiveTextAudit({
+    version: 1,
+    generatedAt: '2026-07-05T00:00:00.000Z',
+    generator: 'unit',
+    sourceRegistry: {
+      path: 'Migration/index/SOURCE_REGISTRY.json'
+    },
+    purpose: 'unit',
+    safety: {
+      rawArchiveTextStored: false,
+      rawSecretsStored: false,
+      publicationMode: 'archive_entry_hashes_stats_keywords_and_status_only'
+    },
+    totals: {
+      archiveDocumentCount: 2,
+      archiveDocumentsScanned: 2,
+      archiveDocumentsMissing: 0,
+      archiveEntryCount: 5,
+      uniqueArchiveEntryCount: 4,
+      duplicateArchiveEntryCount: 1,
+      textEntryCount: 2,
+      textReadEntryCount: 2,
+      pdfDelegatedEntryCount: 1,
+      nestedZipEntryCount: 1,
+      binaryIndexedEntryCount: 1,
+      errorEntryCount: 0,
+      secretSignalEntryCount: 0,
+      totalWordsExtracted: 1200,
+      totalCharsExtracted: 7800,
+      byStatus: {
+        archive_text_read: 2,
+        archive_pdf_delegated_to_pdf_audit: 1,
+        archive_nested_zip_indexed: 1,
+        archive_duplicate: 1
+      },
+      byExtension: {
+        '.md': 1,
+        '.csv': 1,
+        '.pdf': 1,
+        '.zip': 1,
+        '.txt': 1
+      }
+    },
+    archives: [],
+    entries: [
+      {
+        archiveEntryAuditId: 'entry-1',
+        sourceRoot: 'workspace-ressources',
+        sourcePath: 'source.zip',
+        sourceId: 'source-zip',
+        archivePath: 'doc.md',
+        archivePathSha256: 'hash',
+        archiveDepth: 0,
+        fileName: 'doc.md',
+        extension: '.md',
+        sizeBytes: 100,
+        sha256: 'sha',
+        duplicateOf: null,
+        archiveTextAuditStatus: 'archive_text_read',
+        extraction: {
+          rawArchiveTextStored: false
+        }
+      },
+      {
+        archiveEntryAuditId: 'entry-2',
+        sourceRoot: 'workspace-ressources',
+        sourcePath: 'source.zip',
+        sourceId: 'source-zip',
+        archivePath: 'table.csv',
+        archivePathSha256: 'hash-2',
+        archiveDepth: 0,
+        fileName: 'table.csv',
+        extension: '.csv',
+        sizeBytes: 120,
+        sha256: 'sha-2',
+        duplicateOf: null,
+        archiveTextAuditStatus: 'archive_text_read',
+        extraction: {
+          rawArchiveTextStored: false
+        }
+      },
+      {
+        archiveEntryAuditId: 'entry-3',
+        sourceRoot: 'workspace-ressources',
+        sourcePath: 'source.zip',
+        sourceId: 'source-zip',
+        archivePath: 'doc.pdf',
+        archivePathSha256: 'hash-3',
+        archiveDepth: 0,
+        fileName: 'doc.pdf',
+        extension: '.pdf',
+        sizeBytes: 400,
+        sha256: 'sha-3',
+        duplicateOf: null,
+        archiveTextAuditStatus: 'archive_pdf_delegated_to_pdf_audit',
+        extraction: {
+          rawArchiveTextStored: false
+        }
+      },
+      {
+        archiveEntryAuditId: 'entry-4',
+        sourceRoot: 'workspace-ressources',
+        sourcePath: 'source.zip',
+        sourceId: 'source-zip',
+        archivePath: 'nested.zip',
+        archivePathSha256: 'hash-4',
+        archiveDepth: 0,
+        fileName: 'nested.zip',
+        extension: '.zip',
+        sizeBytes: 300,
+        sha256: 'sha-4',
+        duplicateOf: null,
+        archiveTextAuditStatus: 'archive_nested_zip_indexed',
+        extraction: {
+          rawArchiveTextStored: false
+        }
+      },
+      {
+        archiveEntryAuditId: 'entry-5',
+        sourceRoot: 'workspace-ressources',
+        sourcePath: 'source.zip',
+        sourceId: 'source-zip',
+        archivePath: 'duplicate.txt',
+        archivePathSha256: 'hash-5',
+        archiveDepth: 1,
+        fileName: 'duplicate.txt',
+        extension: '.txt',
+        sizeBytes: 100,
+        sha256: 'sha',
+        duplicateOf: 'entry-1',
+        archiveTextAuditStatus: 'archive_duplicate',
+        extraction: {
+          rawArchiveTextStored: false
+        }
+      }
+    ]
+  });
+
+  assert.equal(summary.archiveDocumentCount, 2);
+  assert.equal(summary.archiveEntryCount, 5);
+  assert.equal(summary.uniqueArchiveEntryCount, 4);
+  assert.equal(summary.duplicateArchiveEntryCount, 1);
+  assert.equal(summary.textReadEntryCount, 2);
+  assert.equal(summary.pdfDelegatedEntryCount, 1);
+  assert.equal(summary.nestedZipEntryCount, 1);
+  assert.equal(summary.secretSignalEntryCount, 0);
+  assert.equal(summary.totalWordsExtracted, 1200);
+  assert.equal(summary.byStatus.archive_text_read, 2);
+  assert.equal(summary.rawArchiveTextStored, false);
   assert.equal(summary.rawSecretsStored, false);
 });
 

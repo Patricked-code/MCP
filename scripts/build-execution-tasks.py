@@ -35,7 +35,7 @@ TASK_DEFINITIONS = [
         "blockedBy": [],
         "entryCriteria": [
             "OBJECTIVE_TRACEABILITY_MATRIX.json exists and has no missing local evidence.",
-            "Source registry and PDF audit are generated.",
+            "Source registry, PDF audit and archive text audit are generated.",
         ],
         "actions": [
             "Review all 9 objectives with the operator.",
@@ -79,7 +79,7 @@ TASK_DEFINITIONS = [
     },
     {
         "id": "regenerate_ingestion_after_connector_access",
-        "title": "Regenerate source, PDF and objective indexes after connector access changes",
+        "title": "Regenerate source, PDF, archive text and objective indexes after connector access changes",
         "objectiveIds": ["complete_corpus_ingestion", "audit_and_traceability"],
         "status": "blocked_by_connector_visibility",
         "kind": "mcp_regeneration",
@@ -92,18 +92,21 @@ TASK_DEFINITIONS = [
         "actions": [
             "Run source registry generation.",
             "Run PDF text audit.",
+            "Run archive text audit.",
             "Run objective matrix generation.",
             "Run execution task generation.",
         ],
         "expectedEvidence": [
             "Migration/index/SOURCE_REGISTRY.json",
             "Migration/index/PDF_TEXT_AUDIT.json",
+            "Migration/index/ARCHIVE_TEXT_AUDIT.json",
             "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
             "Migration/index/MCP_EXECUTION_TASKS.json",
         ],
         "verificationCommands": [
             "node scripts/build-source-registry.mjs",
             "python scripts/build-pdf-text-audit.py",
+            "python scripts/build-archive-text-audit.py",
             "python scripts/build-objective-index.py",
             "python scripts/build-execution-tasks.py",
         ],

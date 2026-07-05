@@ -18,6 +18,7 @@ import {
   getAccountDetail,
   getRepoDetail,
   buildSourceIngestionSnapshot,
+  loadArchiveTextAudit,
   loadBlockerResolutionRunbook,
   loadExecutionTaskIndex,
   loadObjectiveTraceabilityIndex,
@@ -27,6 +28,7 @@ import {
   recordOrganizationSecurityPolicyVerification,
   recordOnboardingAnswer,
   renderOnboardingSnapshotHtml,
+  summarizeArchiveTextAudit,
   summarizeBlockerResolutionRunbook,
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
@@ -199,6 +201,7 @@ function nav(): string {
     <a href="/git">Paramétrage Git</a> ·
     <a href="/git/onboarding">Onboarding</a> ·
     <a href="/git/onboarding/sources">Sources</a> ·
+    <a href="/git/onboarding/archive-texts">Archives</a> ·
     <a href="/git/onboarding/objectives">Objectifs</a> ·
     <a href="/git/onboarding/tasks">Tâches</a> ·
     <a href="/git/onboarding/blockers">Blocages</a> ·
@@ -415,6 +418,16 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding/sources');
       res.status(500).json({ error: 'source_registry_failed' });
+    }
+  });
+
+  app.get('/git/onboarding/archive-texts', requireWebLogin, async (_req, res) => {
+    try {
+      const audit = await loadArchiveTextAudit();
+      res.json({ summary: summarizeArchiveTextAudit(audit), audit });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/archive-texts');
+      res.status(500).json({ error: 'archive_text_audit_failed' });
     }
   });
 

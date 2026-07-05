@@ -14,6 +14,7 @@
     "test:onboarding": "tsx --test tests/onboarding.test.ts",
     "sources:registry": "node scripts/build-source-registry.mjs",
     "pdf:audit": "python scripts/build-pdf-text-audit.py",
+    "archives:audit": "python scripts/build-archive-text-audit.py",
     "objectives:index": "python scripts/build-objective-index.py",
     "tasks:index": "python scripts/build-execution-tasks.py",
     "server:cards": "python scripts/build-server-inventory-cards.py",

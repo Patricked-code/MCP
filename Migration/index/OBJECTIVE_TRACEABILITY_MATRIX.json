@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-05T15:31:05.466546Z",
+  "generatedAt": "2026-07-05T19:54:02.820828Z",
   "generator": "scripts/build-objective-index.py",
   "purpose": "Objective traceability matrix for the WealthTech MCP migration corpus.",
   "safety": {
@@ -12,12 +12,12 @@
   "inputs": {
     "sourceRegistry": {
       "path": "Migration/index/SOURCE_REGISTRY.json",
-      "generatedAt": "2026-07-05T15:30:15.174Z",
+      "generatedAt": "2026-07-05T19:53:38.484Z",
       "totals": {
         "sourceFileCount": 102,
         "uniqueContentFileCount": 96,
         "duplicateFileCount": 6,
-        "totalBytes": 24471265,
+        "totalBytes": 24472322,
         "textReadFiles": 88,
         "archiveIndexedFiles": 5,
         "binaryIndexedFiles": 9,
@@ -40,7 +40,7 @@
     },
     "pdfTextAudit": {
       "path": "Migration/index/PDF_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-05T15:30:39.163617Z",
+      "generatedAt": "2026-07-05T19:50:59.772020Z",
       "totals": {
         "pdfDocumentCount": 43,
         "uniquePdfContentCount": 22,
@@ -79,13 +79,75 @@
           "deployment": 69
         }
       }
+    },
+    "archiveTextAudit": {
+      "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
+      "generatedAt": "2026-07-05T19:53:39.516679Z",
+      "totals": {
+        "archiveDocumentCount": 5,
+        "archiveDocumentsScanned": 5,
+        "archiveDocumentsMissing": 0,
+        "archiveEntryCount": 140,
+        "uniqueArchiveEntryCount": 50,
+        "duplicateArchiveEntryCount": 90,
+        "textEntryCount": 32,
+        "textReadEntryCount": 32,
+        "textEmptyEntryCount": 0,
+        "pdfDelegatedEntryCount": 17,
+        "nestedZipEntryCount": 1,
+        "binaryIndexedEntryCount": 0,
+        "errorEntryCount": 0,
+        "secretSignalEntryCount": 0,
+        "totalWordsExtracted": 115913,
+        "totalCharsExtracted": 2661587,
+        "byStatus": {
+          "archive_text_read": 32,
+          "archive_pdf_delegated_to_pdf_audit": 17,
+          "archive_duplicate": 90,
+          "archive_nested_zip_indexed": 1
+        },
+        "byExtension": {
+          ".txt": 34,
+          ".csv": 46,
+          ".docx": 2,
+          ".md": 20,
+          ".pdf": 34,
+          ".json": 2,
+          ".zip": 2
+        },
+        "bySourceArchive": {
+          "workspace-ressources/Audit.zip": 16,
+          "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip": 47,
+          "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip": 31,
+          "workspace-ressources/Migration_2026-07-04.zip": 23,
+          "downloads-migration-zip/Migration_2026-07-04.zip": 23
+        },
+        "keywordTotals": {
+          "MCP": 1203,
+          "chainsolutions-wealthtech": 25,
+          "GitHub": 2557,
+          "migration": 250,
+          "serveur": 714,
+          "server": 1267,
+          "agent": 265,
+          "audit": 710,
+          "regression": 15,
+          "Claude": 1490,
+          "Codex": 198,
+          "ChatGPT": 117,
+          "branche": 761,
+          "branch": 2679,
+          "deploiement": 0,
+          "deployment": 61
+        }
+      }
     }
   },
   "summary": {
     "objectiveCount": 9,
     "statusCounts": {
       "partial_external_connector_authorization_required": 1,
-      "inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress": 1,
+      "inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress": 1,
       "implemented_as_policy_and_tests_more_runtime_gates_needed": 1,
       "implemented_for_current_pr_flow": 1,
       "implemented_for_governance_profiles": 1,
@@ -219,10 +281,10 @@
       "id": "complete_corpus_ingestion",
       "title": "Read and index the complete migration corpus",
       "understanding": "All supplied PDFs, DOCX, Markdown, CSV, TXT and ZIP resources must be accounted for before execution decisions are treated as complete.",
-      "status": "inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress",
+      "status": "inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress",
       "sourceSignals": {
         "sourceHitCount": 178,
-        "totalPatternHits": 10784,
+        "totalPatternHits": 10788,
         "textUnitsScanned": 174,
         "secretSignalSourceCount": 0
       },
@@ -304,28 +366,38 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "3ac255e67062fb190082bfe7a38015498052123fb4e954cda7288863133b3421"
+          "sha256": "18e2da2345768116cbdec3ab115e7805c5109d4092b0b4730dcf6839180c677c"
         },
         {
           "path": "Migration/index/SOURCE_INGESTION_STATUS.md",
           "exists": true,
-          "sha256": "145736ac13042da45e8906d8db77c16af0825d8cc63792db4c324b79349d8ae5"
+          "sha256": "c96e332c06a12da955a4fc1fa86387b34ca5185a3fb6f9caeebaad2032de8691"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "ef45f9af0163422bc0751c05a6386cde828e7eee8f0cde8054173120e30f5a68"
+          "sha256": "5970502f7eaa09452d5d5838c0fca864e64f1f4a4421fb21defe440398b28456"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT_STATUS.md",
           "exists": true,
-          "sha256": "bb6f5c5df4e0483e45d4367006624ad5f343fd03cc388ed880c3e6ae057d4452"
+          "sha256": "b7537781196a0db4f8d965680e5347f834c2bd25a1687008219f7b28bccba395"
+        },
+        {
+          "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
+          "exists": true,
+          "sha256": "6ab354846ccc345185dab9cdace016707c8ccbbba9f73b3ceef697f0d3170064"
+        },
+        {
+          "path": "Migration/index/ARCHIVE_TEXT_AUDIT_STATUS.md",
+          "exists": true,
+          "sha256": "c26746623b02f83a0ee099068fddaa00d4938fed6625eea2793bc45fde8b644a"
         }
       ],
       "missingCurrentEvidence": [],
       "blockers": [],
       "nextActions": [
-        "Keep source registry, PDF audit and objective matrix regenerated after any source change.",
+        "Keep source registry, PDF audit, archive text audit and objective matrix regenerated after any source change.",
         "Review any future secret signal before publication.",
         "Convert objective matrix items into executable MCP tasks only after evidence review."
       ]
@@ -337,7 +409,7 @@
       "status": "implemented_as_policy_and_tests_more_runtime_gates_needed",
       "sourceSignals": {
         "sourceHitCount": 154,
-        "totalPatternHits": 9460,
+        "totalPatternHits": 9463,
         "textUnitsScanned": 174,
         "secretSignalSourceCount": 0
       },
@@ -429,12 +501,12 @@
         {
           "path": "scripts/check-docs.mjs",
           "exists": true,
-          "sha256": "542fa53f922e758ecda5570501fb35abcdf6a24c1039b9a828563021455eca1d"
+          "sha256": "788a9efa6efa7feb00c1627e586a076ef3f4bce88c8dee858a3e0068912c975d"
         },
         {
           "path": "tests/onboarding.test.ts",
           "exists": true,
-          "sha256": "9c60d4caa228f0d3d75f0893e004b7af3a7870109c2c32cea115e43375e114cb"
+          "sha256": "367a80ae3f89f4cd66d66c0337eedd67508a0f995cbdba0523f1d3fc9e107071"
         },
         {
           "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
@@ -695,7 +767,7 @@
       "status": "partial_sensitive_server_paths_not_published",
       "sourceSignals": {
         "sourceHitCount": 181,
-        "totalPatternHits": 127555,
+        "totalPatternHits": 127562,
         "textUnitsScanned": 174,
         "secretSignalSourceCount": 0
       },
@@ -797,7 +869,7 @@
         {
           "path": "Migration/serveur/README.md",
           "exists": true,
-          "sha256": "f9906c4abdbae6eebe758d3e85781d7bd3c4ec5b1ec7149c59bb1370c6509a85"
+          "sha256": "803bd79bf53627ae049cad87f40ea32069302ab51294244cff0dd2bdc61392c6"
         },
         {
           "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
@@ -823,7 +895,7 @@
       "status": "documented_not_executed_on_production",
       "sourceSignals": {
         "sourceHitCount": 179,
-        "totalPatternHits": 40651,
+        "totalPatternHits": 40660,
         "textUnitsScanned": 174,
         "secretSignalSourceCount": 0
       },
@@ -940,7 +1012,7 @@
       "status": "implemented_for_current_mcp_and_ingestion_flows",
       "sourceSignals": {
         "sourceHitCount": 165,
-        "totalPatternHits": 12190,
+        "totalPatternHits": 12195,
         "textUnitsScanned": 174,
         "secretSignalSourceCount": 0
       },
@@ -1037,12 +1109,12 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "3ac255e67062fb190082bfe7a38015498052123fb4e954cda7288863133b3421"
+          "sha256": "18e2da2345768116cbdec3ab115e7805c5109d4092b0b4730dcf6839180c677c"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "ef45f9af0163422bc0751c05a6386cde828e7eee8f0cde8054173120e30f5a68"
+          "sha256": "5970502f7eaa09452d5d5838c0fca864e64f1f4a4421fb21defe440398b28456"
         }
       ],
       "missingCurrentEvidence": [],
@@ -1059,7 +1131,7 @@
       "status": "in_progress_objective_matrix_added_this_turn",
       "sourceSignals": {
         "sourceHitCount": 137,
-        "totalPatternHits": 6074,
+        "totalPatternHits": 6078,
         "textUnitsScanned": 174,
         "secretSignalSourceCount": 0
       },
@@ -1141,22 +1213,22 @@
         {
           "path": "src/onboarding/index.ts",
           "exists": true,
-          "sha256": "b8e9cc44913db188842d5694ade72a685d37aafde227f0ffc420efebcd1c103f"
+          "sha256": "d91c8c1c3f400b27511d4be7768371d680a514003a1bf6982441e335309c33cb"
         },
         {
           "path": "src/server.ts",
           "exists": true,
-          "sha256": "c362894b1ab70088fdac3d1ab3b3d6e0b9825364b8fc3bb9601f6c53f4fbd89c"
+          "sha256": "66a658cb22c1265e56736deb832617f06a2521d9a63834eb306c0b94ba470a1c"
         },
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "3ac255e67062fb190082bfe7a38015498052123fb4e954cda7288863133b3421"
+          "sha256": "18e2da2345768116cbdec3ab115e7805c5109d4092b0b4730dcf6839180c677c"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "ef45f9af0163422bc0751c05a6386cde828e7eee8f0cde8054173120e30f5a68"
+          "sha256": "5970502f7eaa09452d5d5838c0fca864e64f1f4a4421fb21defe440398b28456"
         },
         {
           "path": "docs/MCP_ONBOARDING_ENGINE.md",
@@ -1196,7 +1268,7 @@
   "nextExecutionOrder": [
     "Review OBJECTIVE_TRACEABILITY_MATRIX with the operator.",
     "Authorize the GitHub/Codex/MCP connector on chainsolutions-wealthtech.",
-    "Regenerate source registry, PDF audit and objective matrix after connector visibility changes.",
+    "Regenerate source registry, PDF audit, archive text audit and objective matrix after connector visibility changes.",
     "Bootstrap organization repositories with .mcp files through branch and PR workflow.",
     "Convert migration/server objectives into private inventory-backed task cards.",
     "Run no-regression gates before every push or production-affecting action."

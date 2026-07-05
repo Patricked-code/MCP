@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 export type ObjectiveStatus =
   | 'partial_external_connector_authorization_required'
-  | 'inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress'
+  | 'inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress'
   | 'implemented_as_policy_and_tests_more_runtime_gates_needed'
   | 'implemented_for_current_pr_flow'
   | 'implemented_for_governance_profiles'

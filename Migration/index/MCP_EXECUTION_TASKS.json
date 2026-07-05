@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-05T15:31:05.712911Z",
+  "generatedAt": "2026-07-05T19:54:02.988067Z",
   "generator": "scripts/build-execution-tasks.py",
   "purpose": "Executable MCP task plan derived from the WealthTech objective traceability matrix.",
   "safety": {
@@ -13,12 +13,12 @@
   "inputs": {
     "objectiveTraceabilityMatrix": {
       "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
-      "generatedAt": "2026-07-05T15:31:05.466546Z",
+      "generatedAt": "2026-07-05T19:54:02.820828Z",
       "summary": {
         "objectiveCount": 9,
         "statusCounts": {
           "partial_external_connector_authorization_required": 1,
-          "inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress": 1,
+          "inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress": 1,
           "implemented_as_policy_and_tests_more_runtime_gates_needed": 1,
           "implemented_for_current_pr_flow": 1,
           "implemented_for_governance_profiles": 1,
@@ -85,7 +85,7 @@
       "blockedBy": [],
       "entryCriteria": [
         "OBJECTIVE_TRACEABILITY_MATRIX.json exists and has no missing local evidence.",
-        "Source registry and PDF audit are generated."
+        "Source registry, PDF audit and archive text audit are generated."
       ],
       "actions": [
         "Review all 9 objectives with the operator.",
@@ -109,7 +109,7 @@
         },
         {
           "id": "complete_corpus_ingestion",
-          "status": "inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress",
+          "status": "inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress",
           "sourceHitCount": 178,
           "missingCurrentEvidence": [],
           "blockerCount": 0
@@ -172,7 +172,7 @@
     },
     {
       "id": "regenerate_ingestion_after_connector_access",
-      "title": "Regenerate source, PDF and objective indexes after connector access changes",
+      "title": "Regenerate source, PDF, archive text and objective indexes after connector access changes",
       "objectiveIds": [
         "complete_corpus_ingestion",
         "audit_and_traceability"
@@ -192,25 +192,28 @@
       "actions": [
         "Run source registry generation.",
         "Run PDF text audit.",
+        "Run archive text audit.",
         "Run objective matrix generation.",
         "Run execution task generation."
       ],
       "expectedEvidence": [
         "Migration/index/SOURCE_REGISTRY.json",
         "Migration/index/PDF_TEXT_AUDIT.json",
+        "Migration/index/ARCHIVE_TEXT_AUDIT.json",
         "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
         "Migration/index/MCP_EXECUTION_TASKS.json"
       ],
       "verificationCommands": [
         "node scripts/build-source-registry.mjs",
         "python scripts/build-pdf-text-audit.py",
+        "python scripts/build-archive-text-audit.py",
         "python scripts/build-objective-index.py",
         "python scripts/build-execution-tasks.py"
       ],
       "objectiveEvidence": [
         {
           "id": "complete_corpus_ingestion",
-          "status": "inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress",
+          "status": "inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress",
           "sourceHitCount": 178,
           "missingCurrentEvidence": [],
           "blockerCount": 0

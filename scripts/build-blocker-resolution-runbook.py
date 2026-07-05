@@ -26,7 +26,7 @@ BLOCKER_STEPS = {
             "Install or authorize the GitHub app/connector used by Codex/MCP on the organization.",
             "Grant only the permissions required for repository visibility, branch writes and pull request creation.",
             "Verify the connector sees chainsolutions-wealthtech as an installed/visible organization.",
-            "Regenerate source registry, PDF audit, objective matrix, execution tasks and this blocker runbook.",
+            "Regenerate source registry, PDF audit, archive text audit, objective matrix, execution tasks and this blocker runbook.",
         ],
         "acceptanceCriteria": [
             "Connector installed accounts include chainsolutions-wealthtech.",
@@ -171,6 +171,7 @@ def build_runbook() -> dict[str, Any]:
         "resumeCommandsAfterResolution": [
             "node scripts/build-source-registry.mjs",
             "python scripts/build-pdf-text-audit.py",
+            "python scripts/build-archive-text-audit.py",
             "python scripts/build-objective-index.py",
             "python scripts/build-execution-tasks.py",
             "python scripts/build-server-inventory-cards.py",
