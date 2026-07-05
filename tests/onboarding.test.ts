@@ -12,6 +12,7 @@ import {
   prepareRepoBootstrap,
   recordOrganizationSecurityPolicyVerification,
   summarizePdfTextAudit,
+  summarizeObjectiveTraceabilityIndex,
   summarizeSourceRegistry
 } from '../src/onboarding/index.js';
 import { buildOrganizationBootstrapPackage, prepareOrganizationProfileBootstrap } from '../src/onboarding/organization.js';
@@ -419,6 +420,85 @@ test('PDF text audit summary exposes direct and archived PDF coverage', () => {
   assert.equal(summary.archivePdfEntryCount, 2);
   assert.equal(summary.totalPagesExtracted, 10);
   assert.equal(summary.keywordTotals.MCP, 4);
+  assert.equal(summary.rawPdfTextStored, false);
+  assert.equal(summary.rawSecretsStored, false);
+});
+
+test('objective traceability summary keeps partial goals visible', () => {
+  const summary = summarizeObjectiveTraceabilityIndex({
+    version: 1,
+    generatedAt: '2026-07-05T00:00:00.000Z',
+    generator: 'unit',
+    purpose: 'unit',
+    safety: {
+      rawSourceTextStored: false,
+      rawPdfTextStored: false,
+      rawSecretsStored: false,
+      publicationMode: 'objective_status_counts_evidence_paths_and_hashes_only'
+    },
+    inputs: {},
+    summary: {
+      objectiveCount: 2,
+      statusCounts: {
+        implemented_for_current_pr_flow: 1,
+        partial_external_connector_authorization_required: 1
+      },
+      blockedObjectiveCount: 1,
+      objectivesWithMissingCurrentEvidence: []
+    },
+    objectives: [
+      {
+        id: 'branch_pr_only_workflow',
+        title: 'Branch workflow',
+        understanding: 'Use branch workflow.',
+        status: 'implemented_for_current_pr_flow',
+        sourceSignals: {
+          sourceHitCount: 3,
+          totalPatternHits: 12,
+          textUnitsScanned: 5,
+          secretSignalSourceCount: 0
+        },
+        topEvidenceSources: [],
+        currentEvidence: [],
+        missingCurrentEvidence: [],
+        blockers: [],
+        nextActions: []
+      },
+      {
+        id: 'connect_chainsolutions_wealthtech_to_mcp',
+        title: 'Connector',
+        understanding: 'Authorize target org.',
+        status: 'partial_external_connector_authorization_required',
+        sourceSignals: {
+          sourceHitCount: 4,
+          totalPatternHits: 20,
+          textUnitsScanned: 5,
+          secretSignalSourceCount: 0
+        },
+        topEvidenceSources: [],
+        currentEvidence: [],
+        missingCurrentEvidence: [],
+        blockers: ['connector authorization required'],
+        nextActions: []
+      }
+    ],
+    globalBlockers: [
+      {
+        id: 'github_connector_not_authorized_on_target_org',
+        description: 'Connector authorization required.',
+        blocks: ['connect_chainsolutions_wealthtech_to_mcp']
+      }
+    ],
+    nextExecutionOrder: []
+  });
+
+  assert.equal(summary.objectiveCount, 2);
+  assert.equal(summary.blockedObjectiveCount, 1);
+  assert.equal(summary.globalBlockerCount, 1);
+  assert.deepEqual(summary.partialOrBlockedObjectiveIds, ['connect_chainsolutions_wealthtech_to_mcp']);
+  assert.equal(summary.totalSourceSignals, 7);
+  assert.equal(summary.totalPatternHits, 32);
+  assert.equal(summary.rawSourceTextStored, false);
   assert.equal(summary.rawPdfTextStored, false);
   assert.equal(summary.rawSecretsStored, false);
 });

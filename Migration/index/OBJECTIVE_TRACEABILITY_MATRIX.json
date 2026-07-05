@@ -1,0 +1,1204 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-05T15:24:01.850126Z",
+  "generator": "scripts/build-objective-index.py",
+  "purpose": "Objective traceability matrix for the WealthTech MCP migration corpus.",
+  "safety": {
+    "rawSourceTextStored": false,
+    "rawPdfTextStored": false,
+    "rawSecretsStored": false,
+    "publicationMode": "objective_status_counts_evidence_paths_and_hashes_only"
+  },
+  "inputs": {
+    "sourceRegistry": {
+      "path": "Migration/index/SOURCE_REGISTRY.json",
+      "generatedAt": "2026-07-05T15:23:24.114Z",
+      "totals": {
+        "sourceFileCount": 102,
+        "uniqueContentFileCount": 96,
+        "duplicateFileCount": 6,
+        "totalBytes": 24471018,
+        "textReadFiles": 88,
+        "archiveIndexedFiles": 5,
+        "binaryIndexedFiles": 9,
+        "secretSignalFiles": 0,
+        "byExtension": {
+          ".pdf": 9,
+          ".docx": 2,
+          ".md": 80,
+          ".csv": 3,
+          ".zip": 5,
+          ".txt": 1,
+          ".json": 2
+        },
+        "byReadStatus": {
+          "binary_indexed": 9,
+          "text_read": 88,
+          "archive_indexed": 5
+        }
+      }
+    },
+    "pdfTextAudit": {
+      "path": "Migration/index/PDF_TEXT_AUDIT.json",
+      "generatedAt": "2026-07-05T15:23:39.595173Z",
+      "totals": {
+        "pdfDocumentCount": 43,
+        "uniquePdfContentCount": 22,
+        "duplicatePdfDocumentCount": 21,
+        "textReadDocumentCount": 22,
+        "textEmptyDocumentCount": 0,
+        "errorDocumentCount": 0,
+        "secretSignalDocumentCount": 0,
+        "totalPagesExtracted": 623,
+        "totalCharsExtracted": 1975784,
+        "totalWordsExtracted": 124679,
+        "byStatus": {
+          "pdf_text_read": 22,
+          "pdf_duplicate": 21
+        },
+        "bySourceKind": {
+          "registry_pdf": 9,
+          "archive_pdf_entry": 34
+        },
+        "keywordTotals": {
+          "MCP": 1089,
+          "chainsolutions-wealthtech": 23,
+          "GitHub": 2125,
+          "migration": 752,
+          "serveur": 753,
+          "server": 1088,
+          "agent": 314,
+          "audit": 514,
+          "regression": 52,
+          "Claude": 1199,
+          "Codex": 249,
+          "ChatGPT": 140,
+          "branche": 770,
+          "branch": 2117,
+          "deploiement": 19,
+          "deployment": 69
+        }
+      }
+    }
+  },
+  "summary": {
+    "objectiveCount": 9,
+    "statusCounts": {
+      "partial_external_connector_authorization_required": 1,
+      "inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress": 1,
+      "implemented_as_policy_and_tests_more_runtime_gates_needed": 1,
+      "implemented_for_current_pr_flow": 1,
+      "implemented_for_governance_profiles": 1,
+      "partial_sensitive_server_paths_not_published": 1,
+      "documented_not_executed_on_production": 1,
+      "implemented_for_current_mcp_and_ingestion_flows": 1,
+      "in_progress_objective_matrix_added_this_turn": 1
+    },
+    "blockedObjectiveCount": 4,
+    "objectivesWithMissingCurrentEvidence": []
+  },
+  "objectives": [
+    {
+      "id": "connect_chainsolutions_wealthtech_to_mcp",
+      "title": "Link chainsolutions-wealthtech to MCP governance",
+      "understanding": "The target organization must be managed as a first-class MCP governance target, not just documented externally.",
+      "status": "partial_external_connector_authorization_required",
+      "sourceSignals": {
+        "sourceHitCount": 170,
+        "totalPatternHits": 7228,
+        "textUnitsScanned": 174,
+        "secretSignalSourceCount": 0
+      },
+      "topEvidenceSources": [
+        {
+          "source": "workspace-ressources/Migration_WealthTech_conversations_et_sources_disponibles.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 1933,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/MIGRATION - Branche · Branche · GIT chansolution welathtech.pdf_ Branche.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 473,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES (1).md",
+          "sourceKind": "external_workspace",
+          "hits": 393,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "external_workspace",
+          "hits": 393,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 393,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 393,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/wealthtech_sources_agregees_20260704.txt",
+          "sourceKind": "external_workspace",
+          "hits": 393,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH (1).pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 183,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/deep-research-report.md",
+          "sourceKind": "external_workspace",
+          "hits": 137,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/Tâche récurrente Claude.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 117,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/MIGRATION - Migration compréhension Objectif.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 80,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/Audit.zip::audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S1.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 64,
+          "evidenceType": "archive_text_source"
+        }
+      ],
+      "currentEvidence": [
+        {
+          "path": ".mcp/manifest.json",
+          "exists": true,
+          "sha256": "c033f330d65e93bc0e200a79b664f62fd394825ff78a3914b9b9a4d2fede67eb"
+        },
+        {
+          "path": "Migration/github/chainsolutions-wealthtech/DIRECT_CONFIGURATION_LOG.md",
+          "exists": true,
+          "sha256": "692a58acfae6603593e54647dbf8b397280396be9e221b6521d5b5ea7c9b193e"
+        },
+        {
+          "path": "Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json",
+          "exists": true,
+          "sha256": "0fa711ca25a841cfc54437711ab86ea0397c0110b12604572aff28d18b6499fc"
+        },
+        {
+          "path": "Migration/index/CHAINSOLUTIONS_WEALTHTECH_FIRST_INTEGRATION.md",
+          "exists": true,
+          "sha256": "b2fda4c77624a41714c2291710574ad78f9504a3c63236c1d45d2c4db7114714"
+        }
+      ],
+      "missingCurrentEvidence": [],
+      "blockers": [
+        "The GitHub/Codex/MCP connector still needs to be installed or authorized on chainsolutions-wealthtech before the MCP connector can list and manage organization repositories directly."
+      ],
+      "nextActions": [
+        "Authorize the GitHub app/connector on chainsolutions-wealthtech.",
+        "Re-run onboarding source/objective endpoints after connector access is visible.",
+        "Bootstrap each visible organization repository through branch and PR workflow."
+      ]
+    },
+    {
+      "id": "complete_corpus_ingestion",
+      "title": "Read and index the complete migration corpus",
+      "understanding": "All supplied PDFs, DOCX, Markdown, CSV, TXT and ZIP resources must be accounted for before execution decisions are treated as complete.",
+      "status": "inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress",
+      "sourceSignals": {
+        "sourceHitCount": 178,
+        "totalPatternHits": 10784,
+        "textUnitsScanned": 174,
+        "secretSignalSourceCount": 0
+      },
+      "topEvidenceSources": [
+        {
+          "source": "workspace-ressources/Migration_WealthTech_conversations_et_sources_disponibles.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 3164,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/MIGRATION - Branche · Branche · GIT chansolution welathtech.pdf_ Branche.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 688,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES (1).md",
+          "sourceKind": "external_workspace",
+          "hits": 444,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "external_workspace",
+          "hits": 444,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 444,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 444,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/wealthtech_sources_agregees_20260704.txt",
+          "sourceKind": "external_workspace",
+          "hits": 350,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH (1).pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 320,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/Tâche récurrente Claude.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 250,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/MIGRATION - Migration compréhension Objectif.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 198,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/Migration_2026-07-04.zip::Migration/conversation_migration_disponible_2026-07-04_full_accessible_safe.pdf",
+          "sourceKind": "archive_pdf_entry",
+          "hits": 133,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/Migration_2026-07-04.zip::Migration/conversation_migration_disponible_2026-07-04_full_accessible.pdf",
+          "sourceKind": "archive_pdf_entry",
+          "hits": 131,
+          "evidenceType": "pdf_text_audit_counts"
+        }
+      ],
+      "currentEvidence": [
+        {
+          "path": "Migration/index/SOURCE_REGISTRY.json",
+          "exists": true,
+          "sha256": "d2c6d4f923fa2b1747d04ccfa228c299ce9a60dd1a25b7982870ec8b0edbcbea"
+        },
+        {
+          "path": "Migration/index/SOURCE_INGESTION_STATUS.md",
+          "exists": true,
+          "sha256": "8632c468de069217fd2491e79435bad28029a1d9750788e084241dda35929a80"
+        },
+        {
+          "path": "Migration/index/PDF_TEXT_AUDIT.json",
+          "exists": true,
+          "sha256": "4d2bd28fcdacc0e3993b595c31befbef1bbe07088491745a18a2c1013c731a80"
+        },
+        {
+          "path": "Migration/index/PDF_TEXT_AUDIT_STATUS.md",
+          "exists": true,
+          "sha256": "794cd99c7f1e8e2126e5cc5b1f27aad4d7c4734a72c61bda71584240d52f55cb"
+        }
+      ],
+      "missingCurrentEvidence": [],
+      "blockers": [],
+      "nextActions": [
+        "Keep source registry, PDF audit and objective matrix regenerated after any source change.",
+        "Review any future secret signal before publication.",
+        "Convert objective matrix items into executable MCP tasks only after evidence review."
+      ]
+    },
+    {
+      "id": "no_regression_and_safety",
+      "title": "Guarantee no regression, no destructive action, no secret exposure",
+      "understanding": "Every migration or cleanup step must preserve production services, protect secrets, and include rollback/test evidence.",
+      "status": "implemented_as_policy_and_tests_more_runtime_gates_needed",
+      "sourceSignals": {
+        "sourceHitCount": 154,
+        "totalPatternHits": 9458,
+        "textUnitsScanned": 174,
+        "secretSignalSourceCount": 0
+      },
+      "topEvidenceSources": [
+        {
+          "source": "workspace-ressources/wealthtech_sources_agregees_20260704.txt",
+          "sourceKind": "external_workspace",
+          "hits": 1070,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES (1).md",
+          "sourceKind": "external_workspace",
+          "hits": 1068,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "external_workspace",
+          "hits": 1068,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 1068,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 1068,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/Migration_WealthTech_conversations_et_sources_disponibles.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 328,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/Audit.zip::audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S2.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 168,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S2.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 168,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_originales/raw_S2.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 168,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S2.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 168,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/sources_originales/raw_S2.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 168,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/Audit.zip::audit_alignement_github_mcp_s1_s2_20260704_041431/13_server_runtime_inventory.csv",
+          "sourceKind": "archive_text_entry",
+          "hits": 145,
+          "evidenceType": "archive_text_source"
+        }
+      ],
+      "currentEvidence": [
+        {
+          "path": ".mcp/permissions.json",
+          "exists": true,
+          "sha256": "60c39e8131f2de0af7ba21a5214a3598a9f05fb6121a75057e82b72302988954"
+        },
+        {
+          "path": "scripts/check-no-secrets.mjs",
+          "exists": true,
+          "sha256": "368240ddbf8df4a28956c50d47c301ed15b2c511ebdb59798671d1e8c4501bd7"
+        },
+        {
+          "path": "scripts/check-docs.mjs",
+          "exists": true,
+          "sha256": "51c6504900fea739b6597981d8f3f1b0f872ae27fbe8346e6b470e4dccaf8a92"
+        },
+        {
+          "path": "tests/onboarding.test.ts",
+          "exists": true,
+          "sha256": "5dd06e7588bf7c22e7de1ae8c20eaf02459dfdc8813a80de2909f1d6190e14fc"
+        },
+        {
+          "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
+          "exists": true,
+          "sha256": "f72bcf7eef9ea7a2707a6f5d9fb602d8b979c1c7214ae6bfff3810c5c1f54ad8"
+        },
+        {
+          "path": "docs/MCP_SECURITY_MODEL.md",
+          "exists": true,
+          "sha256": "bb6f5489e98d55b0810bab7c2e2c76d945c9474e2092286ee91433cc74430e31"
+        }
+      ],
+      "missingCurrentEvidence": [],
+      "blockers": [],
+      "nextActions": [
+        "Keep all writes on dedicated branches and PRs.",
+        "Run typecheck, build, onboarding tests, docs check and secrets check before each push.",
+        "Add runtime smoke tests before any production server action."
+      ]
+    },
+    {
+      "id": "branch_pr_only_workflow",
+      "title": "Use branch and pull-request workflow for all writes",
+      "understanding": "No direct main write is allowed; generated changes must be auditable and reviewable.",
+      "status": "implemented_for_current_pr_flow",
+      "sourceSignals": {
+        "sourceHitCount": 184,
+        "totalPatternHits": 37378,
+        "textUnitsScanned": 174,
+        "secretSignalSourceCount": 0
+      },
+      "topEvidenceSources": [
+        {
+          "source": "workspace-ressources/wealthtech_sources_agregees_20260704.txt",
+          "sourceKind": "external_workspace",
+          "hits": 4068,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES (1).md",
+          "sourceKind": "external_workspace",
+          "hits": 4045,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "external_workspace",
+          "hits": 4045,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 4045,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 4045,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/Migration_WealthTech_conversations_et_sources_disponibles.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 3292,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/MIGRATION - Branche · Branche · GIT chansolution welathtech.pdf_ Branche.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 956,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/Audit.zip::audit_alignement_github_mcp_s1_s2_20260704_041431/RSULTATS COMMANDES.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 495,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/RSULTATS COMMANDES.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 495,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_originales/RSULTATS COMMANDES.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 495,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/RSULTATS COMMANDES.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 495,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/sources_originales/RSULTATS COMMANDES.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 495,
+          "evidenceType": "archive_text_source"
+        }
+      ],
+      "currentEvidence": [
+        {
+          "path": ".mcp/permissions.json",
+          "exists": true,
+          "sha256": "60c39e8131f2de0af7ba21a5214a3598a9f05fb6121a75057e82b72302988954"
+        },
+        {
+          "path": "Migration/github/chainsolutions-wealthtech/DIRECT_CONFIGURATION_LOG.md",
+          "exists": true,
+          "sha256": "692a58acfae6603593e54647dbf8b397280396be9e221b6521d5b5ea7c9b193e"
+        },
+        {
+          "path": "src/onboarding/repoFootprint.ts",
+          "exists": true,
+          "sha256": "a171780bf167412f8600506c88accbcda0a09938ba236da62635a1858d83cc34"
+        },
+        {
+          "path": "src/onboarding/organization.ts",
+          "exists": true,
+          "sha256": "9ad44dad1f42d4cd74b8fd633ae9bc8fb4ec904160cffcaa53efa9585adaa8a0"
+        }
+      ],
+      "missingCurrentEvidence": [],
+      "blockers": [],
+      "nextActions": [
+        "Keep future generated repository bootstraps on mcp/onboarding-setup branches.",
+        "Open PRs for every repository touched by the MCP."
+      ]
+    },
+    {
+      "id": "agents_roles_and_rights",
+      "title": "Define agents, roles and controlled rights",
+      "understanding": "ChatGPT, Claude, Codex, server agents, audit agents and SuperAdmin MCP roles must be explicit, limited and auditable.",
+      "status": "implemented_for_governance_profiles",
+      "sourceSignals": {
+        "sourceHitCount": 172,
+        "totalPatternHits": 11904,
+        "textUnitsScanned": 174,
+        "secretSignalSourceCount": 0
+      },
+      "topEvidenceSources": [
+        {
+          "source": "workspace-ressources/Migration_WealthTech_conversations_et_sources_disponibles.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 1572,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES (1).md",
+          "sourceKind": "external_workspace",
+          "hits": 1028,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "external_workspace",
+          "hits": 1028,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 1028,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 1028,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/wealthtech_sources_agregees_20260704.txt",
+          "sourceKind": "external_workspace",
+          "hits": 1028,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/MIGRATION - Branche · Branche · GIT chansolution welathtech.pdf_ Branche.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 356,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/Tâche récurrente Claude.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 186,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH (1).pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 172,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/Audit.zip::audit_alignement_github_mcp_s1_s2_20260704_041431/22_server_branch_links.csv",
+          "sourceKind": "archive_text_entry",
+          "hits": 160,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/22_server_branch_links.csv",
+          "sourceKind": "archive_text_entry",
+          "hits": 160,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/22_server_branch_links.csv",
+          "sourceKind": "archive_text_entry",
+          "hits": 160,
+          "evidenceType": "archive_text_source"
+        }
+      ],
+      "currentEvidence": [
+        {
+          "path": ".mcp/agents.json",
+          "exists": true,
+          "sha256": "2f5f07a84246bd5b3ad25778b97940747322ed66564cc58219c8994c8151cac3"
+        },
+        {
+          "path": "src/onboarding/agents.ts",
+          "exists": true,
+          "sha256": "4671a24b295c42874ef337ae236b28f5a686513bfdde8c078a6f2121f8cabbb0"
+        },
+        {
+          "path": "src/onboarding/rights.ts",
+          "exists": true,
+          "sha256": "a8801227932c1178ad5cc7a4af602e7a1189fb80b4ba2152057d72dd9d7625ae"
+        },
+        {
+          "path": "docs/MCP_AGENT_ROLES.md",
+          "exists": true,
+          "sha256": "bb3c88226efd8043d7cd2721dcb5188397878d4b735147bc05ce5e09547491ba"
+        },
+        {
+          "path": "docs/AGENTS_ARCHITECTURE.md",
+          "exists": true,
+          "sha256": "7d933be555e7f401ea7ce44098eba9282f2edddc7f57390d1c58b364cce78bff"
+        }
+      ],
+      "missingCurrentEvidence": [],
+      "blockers": [],
+      "nextActions": [
+        "Bind new external agents to explicit MCP roles before any write action.",
+        "Reject SuperAdmin creation unless master MCP validation exists."
+      ]
+    },
+    {
+      "id": "repo_server_mapping",
+      "title": "Map repositories to servers, domains, runtimes and deployment gates",
+      "understanding": "The MCP must know which GitHub repositories correspond to which server paths, domains, runtimes and deployment checks without publishing secrets.",
+      "status": "partial_sensitive_server_paths_not_published",
+      "sourceSignals": {
+        "sourceHitCount": 181,
+        "totalPatternHits": 127555,
+        "textUnitsScanned": 174,
+        "secretSignalSourceCount": 0
+      },
+      "topEvidenceSources": [
+        {
+          "source": "workspace-ressources/wealthtech_sources_agregees_20260704.txt",
+          "sourceKind": "external_workspace",
+          "hits": 15950,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES (1).md",
+          "sourceKind": "external_workspace",
+          "hits": 15864,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "external_workspace",
+          "hits": 15864,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 15864,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 15864,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/Audit.zip::audit_alignement_github_mcp_s1_s2_20260704_041431/13_server_runtime_inventory.csv",
+          "sourceKind": "archive_text_entry",
+          "hits": 3800,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/13_server_runtime_inventory.csv",
+          "sourceKind": "archive_text_entry",
+          "hits": 3800,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/13_server_runtime_inventory.csv",
+          "sourceKind": "archive_text_entry",
+          "hits": 3800,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/Audit.zip::audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S2.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 1707,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S2.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 1707,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_originales/raw_S2.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 1707,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S2.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 1707,
+          "evidenceType": "archive_text_source"
+        }
+      ],
+      "currentEvidence": [
+        {
+          "path": ".mcp/server-map.json",
+          "exists": true,
+          "sha256": "4a508a33f03b3992d2477aebcb7010e7a3c3b08ebed0f43fce77c56b02a8cd54"
+        },
+        {
+          "path": "src/onboarding/serverMapping.ts",
+          "exists": true,
+          "sha256": "08537aa9f2566e5fdb86a48759bb8936d3777aa3d01b90bf08223c5e49a38661"
+        },
+        {
+          "path": "docs/MCP_SERVER_MAPPING.md",
+          "exists": true,
+          "sha256": "a072028b67873cbe9095a5018ad67cc024f2ffdf7ee04662cca3547278f022ad"
+        },
+        {
+          "path": "MCP_SERVER_MAPPING.md",
+          "exists": true,
+          "sha256": "7ce396ee67625d7fcf57a91da98490359a126d0ae011c712bf81174a99e778ba"
+        },
+        {
+          "path": "Migration/serveur/README.md",
+          "exists": true,
+          "sha256": "f9906c4abdbae6eebe758d3e85781d7bd3c4ec5b1ec7149c59bb1370c6509a85"
+        },
+        {
+          "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
+          "exists": true,
+          "sha256": "f72bcf7eef9ea7a2707a6f5d9fb602d8b979c1c7214ae6bfff3810c5c1f54ad8"
+        }
+      ],
+      "missingCurrentEvidence": [],
+      "blockers": [
+        "Exact production paths, credentials and private server inventories must stay in approved private operational context.",
+        "Connector organization access is needed before all organization repositories can be bootstrapped and mapped."
+      ],
+      "nextActions": [
+        "Maintain public-safe mapping templates in Git.",
+        "Complete private repo-server mapping from approved server inventory.",
+        "Add smoke tests before any deployment or cleanup."
+      ]
+    },
+    {
+      "id": "migration_execution_sequence",
+      "title": "Apply migration steps only after inventory, backup, copy, test and documentation",
+      "understanding": "Server cleanup and S2-to-S1 migration must follow the documented sequence with protected domains preserved.",
+      "status": "documented_not_executed_on_production",
+      "sourceSignals": {
+        "sourceHitCount": 179,
+        "totalPatternHits": 40651,
+        "textUnitsScanned": 174,
+        "secretSignalSourceCount": 0
+      },
+      "topEvidenceSources": [
+        {
+          "source": "workspace-ressources/wealthtech_sources_agregees_20260704.txt",
+          "sourceKind": "external_workspace",
+          "hits": 4683,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES (1).md",
+          "sourceKind": "external_workspace",
+          "hits": 4609,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "external_workspace",
+          "hits": 4609,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 4609,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 4609,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/Migration_WealthTech_conversations_et_sources_disponibles.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 1739,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/Audit.zip::audit_alignement_github_mcp_s1_s2_20260704_041431/13_server_runtime_inventory.csv",
+          "sourceKind": "archive_text_entry",
+          "hits": 972,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/13_server_runtime_inventory.csv",
+          "sourceKind": "archive_text_entry",
+          "hits": 972,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/13_server_runtime_inventory.csv",
+          "sourceKind": "archive_text_entry",
+          "hits": 972,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/Audit.zip::audit_alignement_github_mcp_s1_s2_20260704_041431/RSULTATS COMMANDES.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 568,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/RSULTATS COMMANDES.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 568,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_originales/RSULTATS COMMANDES.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 568,
+          "evidenceType": "archive_text_source"
+        }
+      ],
+      "currentEvidence": [
+        {
+          "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
+          "exists": true,
+          "sha256": "f72bcf7eef9ea7a2707a6f5d9fb602d8b979c1c7214ae6bfff3810c5c1f54ad8"
+        },
+        {
+          "path": "docs/MIGRATION.md",
+          "exists": true,
+          "sha256": "78b1ae01146c3371311437e8d9ee41b0d0e3eba893316a72752d033a15d3e622"
+        },
+        {
+          "path": "docs/DEPLOYMENT_PRODUCTION.md",
+          "exists": true,
+          "sha256": "342528aae4727784c70653570f381dadd8d4af5255dcf99e9b5d58d3a4fc182f"
+        },
+        {
+          "path": "memory/PLAN_EXECUTION_COMPLET_WEALTHTECH_ACTUALISE_20260702.md",
+          "exists": true,
+          "sha256": "520cc28ad869dd4808a6da78f882a9f06adfa01ad4d66bd27ede2a92282c1203"
+        }
+      ],
+      "missingCurrentEvidence": [],
+      "blockers": [
+        "No production cleanup or migration should run until live inventory, backups, rollback and post-action tests are confirmed."
+      ],
+      "nextActions": [
+        "Convert the migration sequence into server-specific task cards.",
+        "Require inventory and backup evidence before any cleanup.",
+        "Preserve S2 protected domains and S1 whitelist domains."
+      ]
+    },
+    {
+      "id": "audit_and_traceability",
+      "title": "Audit every sensitive MCP, GitHub and server action",
+      "understanding": "Every write, bootstrap, security assertion, agent creation and source-ingestion action must leave a trace without raw secret material.",
+      "status": "implemented_for_current_mcp_and_ingestion_flows",
+      "sourceSignals": {
+        "sourceHitCount": 165,
+        "totalPatternHits": 12189,
+        "textUnitsScanned": 174,
+        "secretSignalSourceCount": 0
+      },
+      "topEvidenceSources": [
+        {
+          "source": "workspace-ressources/Migration_WealthTech_conversations_et_sources_disponibles.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 2240,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/wealthtech_sources_agregees_20260704.txt",
+          "sourceKind": "external_workspace",
+          "hits": 978,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES (1).md",
+          "sourceKind": "external_workspace",
+          "hits": 941,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "external_workspace",
+          "hits": 941,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 941,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 941,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/MIGRATION - Branche · Branche · GIT chansolution welathtech.pdf_ Branche.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 518,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH (1).pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 248,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "repo-memory/INTEGRATION_RAPPORTS_LEGACY_ET_LOCAUX_20260702.md",
+          "sourceKind": "repository",
+          "hits": 119,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/Tâche récurrente Claude.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 118,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/Audit.zip::audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S2.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 112,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S2.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 112,
+          "evidenceType": "archive_text_source"
+        }
+      ],
+      "currentEvidence": [
+        {
+          "path": "src/onboarding/audit.ts",
+          "exists": true,
+          "sha256": "c6f389542e83c131ea691b8199507ff0239a991011a8cb20815d6808cfa22f61"
+        },
+        {
+          "path": "docs/MCP_AUDIT_LOGS.md",
+          "exists": true,
+          "sha256": "89577246119b96d99355c4bb01c41a1baa21ca4a6336870d2c0962476d0db158"
+        },
+        {
+          "path": "Migration/github/chainsolutions-wealthtech/DIRECT_CONFIGURATION_LOG.md",
+          "exists": true,
+          "sha256": "692a58acfae6603593e54647dbf8b397280396be9e221b6521d5b5ea7c9b193e"
+        },
+        {
+          "path": "Migration/index/SOURCE_REGISTRY.json",
+          "exists": true,
+          "sha256": "d2c6d4f923fa2b1747d04ccfa228c299ce9a60dd1a25b7982870ec8b0edbcbea"
+        },
+        {
+          "path": "Migration/index/PDF_TEXT_AUDIT.json",
+          "exists": true,
+          "sha256": "4d2bd28fcdacc0e3993b595c31befbef1bbe07088491745a18a2c1013c731a80"
+        }
+      ],
+      "missingCurrentEvidence": [],
+      "blockers": [],
+      "nextActions": [
+        "Record future connector authorization and repository bootstraps as audit events.",
+        "Keep generated source/objective matrices as reproducible audit evidence."
+      ]
+    },
+    {
+      "id": "apply_documented_requirements",
+      "title": "Turn documented requirements into executable MCP steps",
+      "understanding": "The MCP must not merely summarize; it must progressively create the missing governance files, routes, indexes, docs and review artifacts requested by the corpus.",
+      "status": "in_progress_objective_matrix_added_this_turn",
+      "sourceSignals": {
+        "sourceHitCount": 137,
+        "totalPatternHits": 6072,
+        "textUnitsScanned": 174,
+        "secretSignalSourceCount": 0
+      },
+      "topEvidenceSources": [
+        {
+          "source": "workspace-ressources/Migration_WealthTech_conversations_et_sources_disponibles.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 1380,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/wealthtech_sources_agregees_20260704.txt",
+          "sourceKind": "external_workspace",
+          "hits": 328,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES (1).md",
+          "sourceKind": "external_workspace",
+          "hits": 327,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "external_workspace",
+          "hits": 327,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 327,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "sourceKind": "archive_text_entry",
+          "hits": 327,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/MIGRATION - Migration compréhension Objectif.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 239,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/MIGRATION - Branche · Branche · GIT chansolution welathtech.pdf_ Branche.pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 190,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "workspace-ressources/00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH (1).pdf",
+          "sourceKind": "registry_pdf",
+          "hits": 166,
+          "evidenceType": "pdf_text_audit_counts"
+        },
+        {
+          "source": "repo-memory/LOOP_ENGINEERING_INSTRUCTIONS_DOCX_EXTRACT_20260702.md",
+          "sourceKind": "repository",
+          "hits": 118,
+          "evidenceType": "text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip::livrable_migration_wealthtech/sources_originales/Migration compréhension.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 103,
+          "evidenceType": "archive_text_source"
+        },
+        {
+          "source": "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip::livrable_migration_wealthtech/sources_originales/Migration compréhension.txt",
+          "sourceKind": "archive_text_entry",
+          "hits": 103,
+          "evidenceType": "archive_text_source"
+        }
+      ],
+      "currentEvidence": [
+        {
+          "path": "src/onboarding/index.ts",
+          "exists": true,
+          "sha256": "f0500109a7234b295cd021d7988e1e5ae652e9f326e7525bb209ff844053efa8"
+        },
+        {
+          "path": "src/server.ts",
+          "exists": true,
+          "sha256": "cf5ae46f5b6b51388cc26e808c7599b11231244f8bf6daff42da4aaf895e40fe"
+        },
+        {
+          "path": "Migration/index/SOURCE_REGISTRY.json",
+          "exists": true,
+          "sha256": "d2c6d4f923fa2b1747d04ccfa228c299ce9a60dd1a25b7982870ec8b0edbcbea"
+        },
+        {
+          "path": "Migration/index/PDF_TEXT_AUDIT.json",
+          "exists": true,
+          "sha256": "4d2bd28fcdacc0e3993b595c31befbef1bbe07088491745a18a2c1013c731a80"
+        },
+        {
+          "path": "docs/MCP_ONBOARDING_ENGINE.md",
+          "exists": true,
+          "sha256": "a06f728fbd9a807ea8abaad97550ab24f950239cb75a7101b4d43b6c3b6d5128"
+        }
+      ],
+      "missingCurrentEvidence": [],
+      "blockers": [
+        "The matrix still needs human/operator review before production-affecting actions are executed."
+      ],
+      "nextActions": [
+        "Review the objective matrix.",
+        "Promote approved next actions into MCP tasks or GitHub issues/PRs.",
+        "Keep no-regression gates mandatory for every implementation batch."
+      ]
+    }
+  ],
+  "globalBlockers": [
+    {
+      "id": "github_connector_not_authorized_on_target_org",
+      "description": "Codex/MCP GitHub connector must be installed or authorized on chainsolutions-wealthtech before direct connector-managed repository bootstrapping can be complete.",
+      "blocks": [
+        "connect_chainsolutions_wealthtech_to_mcp",
+        "repo_server_mapping"
+      ]
+    },
+    {
+      "id": "production_actions_require_private_inventory_and_approval",
+      "description": "Server cleanup, migration and deployment actions require private live inventory, backups, rollback plan and post-action tests.",
+      "blocks": [
+        "repo_server_mapping",
+        "migration_execution_sequence"
+      ]
+    }
+  ],
+  "nextExecutionOrder": [
+    "Review OBJECTIVE_TRACEABILITY_MATRIX with the operator.",
+    "Authorize the GitHub/Codex/MCP connector on chainsolutions-wealthtech.",
+    "Regenerate source registry, PDF audit and objective matrix after connector visibility changes.",
+    "Bootstrap organization repositories with .mcp files through branch and PR workflow.",
+    "Convert migration/server objectives into private inventory-backed task cards.",
+    "Run no-regression gates before every push or production-affecting action."
+  ]
+}

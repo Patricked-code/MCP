@@ -42,6 +42,8 @@ const required = [
   'Migration/index/SOURCE_INGESTION_STATUS.md',
   'Migration/index/PDF_TEXT_AUDIT.json',
   'Migration/index/PDF_TEXT_AUDIT_STATUS.md',
+  'Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json',
+  'Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.md',
   'Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json'
 ];
 

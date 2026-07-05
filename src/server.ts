@@ -18,11 +18,13 @@ import {
   getAccountDetail,
   getRepoDetail,
   buildSourceIngestionSnapshot,
+  loadObjectiveTraceabilityIndex,
   prepareAndRecordOrganizationProfileBootstrap,
   prepareAndRecordRepoBootstrap,
   recordOrganizationSecurityPolicyVerification,
   recordOnboardingAnswer,
-  renderOnboardingSnapshotHtml
+  renderOnboardingSnapshotHtml,
+  summarizeObjectiveTraceabilityIndex
 } from './onboarding/index.js';
 import type { AgentType } from './onboarding/types.js';
 
@@ -191,6 +193,7 @@ function nav(): string {
     <a href="/git">Paramétrage Git</a> ·
     <a href="/git/onboarding">Onboarding</a> ·
     <a href="/git/onboarding/sources">Sources</a> ·
+    <a href="/git/onboarding/objectives">Objectifs</a> ·
     <a href="/github">GitHub</a> ·
     <a href="/github/status">Statut JSON</a> ·
     <a href="/github/Patricked-code">Patricked-code</a> ·
@@ -403,6 +406,19 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding/sources');
       res.status(500).json({ error: 'source_registry_failed' });
+    }
+  });
+
+  app.get('/git/onboarding/objectives', requireWebLogin, async (_req, res) => {
+    try {
+      const index = await loadObjectiveTraceabilityIndex();
+      res.json({
+        summary: summarizeObjectiveTraceabilityIndex(index),
+        index
+      });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/objectives');
+      res.status(500).json({ error: 'objective_traceability_failed' });
     }
   });
 

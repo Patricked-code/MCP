@@ -48,7 +48,9 @@ const generatedRelativePaths = new Set([
   'Migration/index/SOURCE_REGISTRY.json',
   'Migration/index/SOURCE_INGESTION_STATUS.md',
   'Migration/index/PDF_TEXT_AUDIT.json',
-  'Migration/index/PDF_TEXT_AUDIT_STATUS.md'
+  'Migration/index/PDF_TEXT_AUDIT_STATUS.md',
+  'Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json',
+  'Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.md'
 ]);
 
 const textExtensions = new Set(['.md', '.txt', '.csv', '.json']);

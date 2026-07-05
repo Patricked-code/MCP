@@ -14,6 +14,7 @@
     "test:onboarding": "tsx --test tests/onboarding.test.ts",
     "sources:registry": "node scripts/build-source-registry.mjs",
     "pdf:audit": "python scripts/build-pdf-text-audit.py",
+    "objectives:index": "python scripts/build-objective-index.py",
     "lint:secrets": "node scripts/check-no-secrets.mjs",
     "docs:check": "node scripts/check-docs.mjs"
   },
