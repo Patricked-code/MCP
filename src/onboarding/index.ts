@@ -10,7 +10,7 @@ import { getDefaultAgentProfiles, createAgentProfile } from './agents.js';
 import { createAuditTrace, auditTraceToRegistryEvent, listOnboardingAudit } from './audit.js';
 import { identifyActor } from './identity.js';
 import { buildOnboardingQuestions, validateQuestionAnswer } from './questions.js';
-import { buildOrganizationBootstrapPackage } from './organization.js';
+import { buildOrganizationBootstrapPackage, prepareOrganizationProfileBootstrap } from './organization.js';
 import { buildRegistryRepoFootprints, inspectLocalRepoFootprint } from './repoFootprint.js';
 import { evaluateRights } from './rights.js';
 import { createServerMappingTemplate, renderServerMapJson } from './serverMapping.js';
@@ -22,6 +22,8 @@ import type {
   OnboardingSnapshot,
   RepoFootprint
 } from './types.js';
+
+export { prepareOrganizationProfileBootstrap };
 
 function nowIso(): string {
   return new Date().toISOString();

@@ -4,7 +4,7 @@ import { createAgentProfile } from '../src/onboarding/agents.js';
 import { createAuditTrace } from '../src/onboarding/audit.js';
 import { identifyActor } from '../src/onboarding/identity.js';
 import { prepareRepoBootstrap } from '../src/onboarding/index.js';
-import { buildOrganizationBootstrapPackage } from '../src/onboarding/organization.js';
+import { buildOrganizationBootstrapPackage, prepareOrganizationProfileBootstrap } from '../src/onboarding/organization.js';
 import { buildOnboardingQuestions, validateQuestionAnswer } from '../src/onboarding/questions.js';
 import { evaluateRights } from '../src/onboarding/rights.js';
 import type { GitHubConnectionStatus } from '../src/github/connection.js';
@@ -119,6 +119,31 @@ test('organization bootstrap package blocks direct integration until target org 
   assert.equal(ready.directIntegrationMode, 'branch_pr_required');
   assert.equal(ready.accessSignals.canWriteControlledBranches, true);
   assert.equal(ready.directIntegrationBranch, 'mcp/org-profile-bootstrap');
+});
+
+test('organization profile bootstrap returns public-safe .github profile plan', () => {
+  const blocked = prepareOrganizationProfileBootstrap(githubStatus());
+  assert.equal(blocked.repository, 'chainsolutions-wealthtech/.github');
+  assert.equal(blocked.branch, 'mcp/org-profile-bootstrap');
+  assert.equal(blocked.mode, 'blocked_until_org_access');
+  assert.ok(blocked.blockedReason);
+
+  const profile = blocked.files.find((file) => file.path === 'profile/README.md');
+  assert.ok(profile);
+  assert.match(profile.content, /# ChainSolutions WealthTech/);
+  assert.match(profile.content, /Aucun token brut dans Git/);
+  assert.doesNotMatch(profile.content, /BEGIN (RSA|OPENSSH|PRIVATE) KEY/);
+
+  const ready = prepareOrganizationProfileBootstrap(githubStatus({
+    connected: true,
+    login: 'Patricked-code',
+    orgAccessible: true,
+    reposVisible: 1,
+    canReadReposHint: true,
+    canWriteReposHint: true
+  }));
+  assert.equal(ready.mode, 'branch_pr_required');
+  assert.equal(ready.blockedReason, null);
 });
 
 test('audit trace redacts secret-like metadata keys', () => {

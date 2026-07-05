@@ -17,6 +17,7 @@ import {
   filterAuditEvents,
   getAccountDetail,
   getRepoDetail,
+  prepareOrganizationProfileBootstrap,
   prepareRepoBootstrap,
   recordOnboardingAnswer,
   renderOnboardingSnapshotHtml
@@ -435,6 +436,38 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding/answer');
       res.status(500).json({ error: 'git_onboarding_answer_failed' });
+    }
+  });
+
+  app.get('/git/organization', requireWebLogin, async (req, res) => {
+    try {
+      const status = await getGithubConnectionStatus();
+      const registry = await readGitRegistry();
+      const snapshot = await buildOnboardingSnapshot({
+        status,
+        registry,
+        source: 'mcp-web:/git/organization',
+        userAgent: req.header('user-agent') ?? undefined
+      });
+      res.json({
+        organization: snapshot.organization,
+        nextActions: snapshot.organization.nextSteps,
+        safetyRules: snapshot.organization.safetyRules
+      });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/organization');
+      res.status(500).json({ error: 'git_organization_failed' });
+    }
+  });
+
+  app.post('/git/organization/bootstrap', requireWebLogin, async (_req, res) => {
+    try {
+      const status = await getGithubConnectionStatus();
+      const bootstrap = prepareOrganizationProfileBootstrap(status);
+      res.status(bootstrap.blockedReason ? 409 : 200).json({ bootstrap });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/organization/bootstrap');
+      res.status(500).json({ error: 'git_organization_bootstrap_failed' });
     }
   });
 

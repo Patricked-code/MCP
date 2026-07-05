@@ -189,6 +189,20 @@ export type BootstrapFile = {
   content: string;
 };
 
+export type OrganizationProfileBootstrapPlan = {
+  organization: OrganizationBootstrapPackage;
+  repository: string;
+  branch: string;
+  mode: 'blocked_until_org_access' | 'branch_pr_required';
+  files: BootstrapFile[];
+  pullRequest: {
+    title: string;
+    body: string;
+  };
+  blockedReason: string | null;
+  warnings: string[];
+};
+
 export type BootstrapPlan = {
   owner: string;
   repo: string;

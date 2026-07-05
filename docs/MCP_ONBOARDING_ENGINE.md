@@ -53,6 +53,11 @@ Ce paquet contient la description courte de l organisation, la description longu
 
 Tant que le connecteur ne voit pas l organisation cible, le mode reste `blocked_until_org_access`. Des que l organisation est accessible, le mode attendu devient `branch_pr_required`: creation ou ouverture du repository `.github`, ajout de `profile/README.md` sur branche MCP, puis pull request vers la branche par defaut.
 
+Routes dediees:
+
+- `GET /git/organization` retourne le paquet organisation cible, les signaux d acces et les prochaines actions.
+- `POST /git/organization/bootstrap` retourne le plan de premiere integration directe pour `chainsolutions-wealthtech/.github`, incluant `profile/README.md`, le titre/body de PR proposes, la branche `mcp/org-profile-bootstrap`, et un blocage explicite tant que l organisation n est pas accessible.
+
 ## Flux d ecriture controlee
 
 Toute ecriture future doit respecter ces invariants:
