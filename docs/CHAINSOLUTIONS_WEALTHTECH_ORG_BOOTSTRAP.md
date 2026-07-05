@@ -7,7 +7,7 @@ Branche de travail: `mcp/migration-governance-setup`
 
 ## Statut verifie
 
-L'organisation GitHub `chainsolutions-wealthtech` existe publiquement, mais elle ne presente actuellement aucun depot public et aucun membre public visible.
+L'organisation GitHub `chainsolutions-wealthtech` existe publiquement. La premiere configuration directe a ete appliquee le 2026-07-05 via GitHub CLI authentifie comme `Wealthtechinnovations`.
 
 Dans la session MCP actuelle:
 
@@ -17,7 +17,15 @@ Dans la session MCP actuelle:
 - la recherche de repositories installes ne retourne aucun depot `chainsolutions-wealthtech`;
 - le connecteur peut ecrire dans `Patricked-code/MCP`, mais ne peut pas encore configurer directement l'organisation `chainsolutions-wealthtech`.
 
-Conclusion: la premiere configuration officielle de l'organisation doit commencer par l'installation/autorisation de l'app GitHub sur `chainsolutions-wealthtech`, ou par un token GitHub explicitement fourni avec droits organisationnels adaptes. Aucun token brut ne doit etre stocke dans Git.
+Etat direct verifie:
+
+- description GitHub appliquee;
+- obligation 2FA organisation desactivee: `two_factor_requirement_enabled=false`;
+- depot public `chainsolutions-wealthtech/.github` cree;
+- PR de profil public fusionnee: `https://github.com/chainsolutions-wealthtech/.github/pull/1`;
+- fichier publie: `https://github.com/chainsolutions-wealthtech/.github/blob/main/profile/README.md`.
+
+Conclusion: la configuration publique initiale de l'organisation est appliquee. La limite restante est l'installation/autorisation de l'app GitHub Codex/MCP sur `chainsolutions-wealthtech`, afin que le connecteur voie aussi directement l'organisation. Aucun token brut ne doit etre stocke dans Git.
 
 ## Politique 2FA demandee
 
@@ -31,7 +39,7 @@ Ce que cela signifie:
 - cette decision ne contourne pas une obligation 2FA globale imposee par GitHub.com a certains comptes contributeurs;
 - ce choix reduit la securite d'acces et doit etre compense par des droits minimaux, branches dediees, PR obligatoires et audit.
 
-Statut actuel: non verifie en direct, car le connecteur GitHub ne voit pas encore `chainsolutions-wealthtech`.
+Statut actuel: verifie via GitHub API le 2026-07-05, `two_factor_requirement_enabled=false`. Le connecteur Codex/MCP ne voit pas encore `chainsolutions-wealthtech`, donc la verification reste consignée dans le journal de configuration directe.
 
 Routes MCP preparees:
 
@@ -96,18 +104,21 @@ Le MCP WealthTech est le superviseur central entre GitHub, les serveurs et les a
 Faire de GitHub la source versionnee officielle, du serveur la source d'execution reelle, et du MCP le lien de gouvernance entre les deux.
 ```
 
-## Premiere integration directe attendue
+## Premiere integration directe appliquee
+
+1. Description appliquee sur l'organisation.
+2. 2FA organisation verifiee desactivee.
+3. Depot special `.github` cree.
+4. Branche `mcp/org-profile-bootstrap` creee.
+5. `profile/README.md` ajoute via pull request.
+6. PR `chainsolutions-wealthtech/.github#1` fusionnee.
+
+Suite restante:
 
 1. Installer l'app GitHub MCP/Codex sur `chainsolutions-wealthtech`.
 2. Confirmer que le connecteur liste l'organisation dans `list_user_orgs` ou `list_installations`.
-3. Verifier dans `Authentication security` que l'organisation n'impose pas la 2FA si cette politique reste souhaitee.
-4. Creer le depot special `.github` dans l'organisation si absent.
-5. Ajouter `profile/README.md` avec le contenu public propose ci-dessus.
-6. Creer ou migrer le repo MCP officiel dans l'organisation, ou definir explicitement que `Patricked-code/MCP` reste temporairement le repo MCP source.
-7. Creer une branche dediee `mcp/migration-governance-setup` pour toute modification MCP.
-8. Ajouter la structure `Migration/` et les index assainis, sans publier les archives sensibles brutes.
-9. Ajouter progressivement le module `src/onboarding/` et les routes d'onboarding decrites dans le cadrage.
-10. Ouvrir une pull request; ne pas ecrire directement sur `main`.
+3. Creer ou migrer le repo MCP officiel dans l'organisation, ou definir explicitement que `Patricked-code/MCP` reste temporairement le repo MCP source.
+4. Continuer toute modification MCP sur branche dediee et pull request.
 
 Runbook d'activation directe prepare:
 

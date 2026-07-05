@@ -2,7 +2,7 @@
   "version": 1,
   "organization": "chainsolutions-wealthtech",
   "url": "https://github.com/chainsolutions-wealthtech",
-  "status": "prepared_until_org_access",
+  "status": "direct_configuration_applied",
   "shortDescription": "Centre de gouvernance GitHub/MCP pour l ecosysteme ChainSolutions WealthTech: migration, documentation, agents IA, mappings repo-serveur et audit securise.",
   "longDescription": "chainsolutions-wealthtech centralise, versionne, documente et gouverne l ecosysteme ChainSolutions / WealthTech. L organisation rassemble progressivement les repositories, documents, conversations utiles, prompts, consignes, profils d agents, mappings repo-serveur, historiques de decisions, audits et fichiers de suivi. Le MCP WealthTech est le superviseur central entre GitHub, les serveurs, les agents IA et la memoire projet. Il relie la source versionnee GitHub a la source d execution serveur, sans exposer de secrets ni donner d acces SSH libre aux agents.",
   "profileRepository": "chainsolutions-wealthtech/.github",
@@ -10,11 +10,20 @@
   "activationRunbookPath": "Migration/github/chainsolutions-wealthtech/ORG_ACTIVATION_RUNBOOK.md",
   "firstIntegrationIndexPath": "Migration/index/CHAINSOLUTIONS_WEALTHTECH_FIRST_INTEGRATION.md",
   "directIntegrationBranch": "mcp/org-profile-bootstrap",
-  "directIntegrationModeUntilOrgAccess": "blocked_until_org_access",
+  "directIntegrationModeUntilOrgAccess": "applied_via_github_cli_until_codex_app_access",
+  "directConfiguration": {
+    "appliedAt": "2026-07-05T14:26:39Z",
+    "descriptionApplied": true,
+    "twoFactorRequirementEnabled": false,
+    "profileRepositoryCreated": true,
+    "profilePullRequest": "https://github.com/chainsolutions-wealthtech/.github/pull/1",
+    "profileMergeCommit": "893589b5aeb9b8d5ddc29c58efff7ea4af03e72d",
+    "profileReadmeUrl": "https://github.com/chainsolutions-wealthtech/.github/blob/main/profile/README.md"
+  },
   "securitySettings": {
     "twoFactorRequirement": {
       "desiredState": "disabled",
-      "currentState": "unknown_until_org_owner_access",
+      "currentState": "disabled_verified_via_github_api",
       "changeMode": "manual_owner_settings_required",
       "ownerActionRequired": true,
       "settingsUrl": "https://github.com/organizations/chainsolutions-wealthtech/settings/security",
@@ -40,12 +49,12 @@
     "An organization owner has manually confirmed that organization-level required 2FA is disabled if this policy is still desired."
   ],
   "firstDirectIntegrationSteps": [
-    "Create or open chainsolutions-wealthtech/.github.",
-    "Have an organization owner verify Authentication security and leave organization-level required 2FA disabled if this policy is still desired.",
-    "Create branch mcp/org-profile-bootstrap.",
-    "Add profile/README.md from the prepared migration artifact.",
-    "Open a pull request to the default branch.",
-    "Do not write directly to main."
+    "Done: create chainsolutions-wealthtech/.github.",
+    "Done: verify organization-level required 2FA is disabled.",
+    "Done: create branch mcp/org-profile-bootstrap.",
+    "Done: add profile/README.md from the prepared migration artifact.",
+    "Done: open and merge a pull request to the default branch.",
+    "Pending: install or authorize the Codex/MCP GitHub App on chainsolutions-wealthtech."
   ],
   "safetyRules": [
     "No raw token in Git, logs, audit events, or generated MCP files.",

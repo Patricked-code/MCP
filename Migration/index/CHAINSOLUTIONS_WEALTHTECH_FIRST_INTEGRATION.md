@@ -1,7 +1,8 @@
 # Premiere integration - chainsolutions-wealthtech
 
 Date: 2026-07-04
-Statut: preparation sur branche MCP, en attente d'installation GitHub App sur l'organisation cible.
+Mise a jour directe: 2026-07-05
+Statut: premiere integration directe appliquee sur `chainsolutions-wealthtech/.github`; connecteur Codex/MCP encore en attente d'installation sur l'organisation cible.
 
 ## Intention
 
@@ -29,9 +30,13 @@ Le MCP est le noyau technique de gouvernance. Le dossier `Migration/` est le noy
 ## Etat courant verifie
 
 - Organisation publique: `https://github.com/chainsolutions-wealthtech`.
-- Aucun depot public visible sur cette organisation au moment du controle.
-- Aucun membership organisation visible dans le connecteur MCP actuel.
-- Aucune installation GitHub App visible pour `chainsolutions-wealthtech` dans le connecteur MCP actuel.
+- Description organisation appliquee le 2026-07-05:
+  `Centre de gouvernance GitHub/MCP pour l ecosysteme ChainSolutions WealthTech: migration, documentation, agents IA, mappings repo-serveur et audit securise.`
+- Obligation 2FA organisation verifiee desactivee: `two_factor_requirement_enabled=false`.
+- Depot public special cree: `chainsolutions-wealthtech/.github`.
+- Pull request de profil public fusionnee: `https://github.com/chainsolutions-wealthtech/.github/pull/1`.
+- Fichier profil public publie: `https://github.com/chainsolutions-wealthtech/.github/blob/main/profile/README.md`.
+- Aucune installation GitHub App visible pour `chainsolutions-wealthtech` dans le connecteur Codex/MCP actuel.
 - Installation GitHub App visible uniquement pour `Patricked-code`.
 - Repo MCP actuel confirme: `Patricked-code/MCP`.
 - Routes deja presentes dans le repo MCP: `/login`, `/dashboard`, `/git`, `/git/status`, `/git/connect`, `/github`, `/github/status`, `/github/:account`, `/github/connect`.
@@ -40,17 +45,14 @@ Le MCP est le noyau technique de gouvernance. Le dossier `Migration/` est le noy
 
 1. Installer ou autoriser l'app GitHub sur `chainsolutions-wealthtech`.
 2. Verifier que le connecteur MCP voit l'organisation.
-3. Verifier manuellement dans `Authentication security` que l'organisation n'impose pas la double authentification si cette politique reste souhaitee.
-4. Confirmer si le repo MCP officiel doit etre transfere, miroite ou recrée dans `chainsolutions-wealthtech`.
-5. Creer le repo special `.github` dans l'organisation pour le profil public.
-6. Appliquer le README de profil propose dans `docs/CHAINSOLUTIONS_WEALTHTECH_ORG_BOOTSTRAP.md`.
-7. Continuer le code uniquement sur branche dediee et via pull request.
+3. Confirmer si le repo MCP officiel doit etre transfere, miroite ou recrée dans `chainsolutions-wealthtech`.
+4. Continuer le code uniquement sur branche dediee et via pull request.
 
 ## Decision 2FA demandee
 
 Pour la premiere integration, la politique demandee est de ne pas imposer la 2FA au niveau de l'organisation `chainsolutions-wealthtech`.
 
-Cette decision doit etre appliquee ou verifiee par un owner GitHub dans les parametres `Authentication security`. Elle ne peut pas etre confirmee par le connecteur MCP actuel, car l'organisation n'est pas encore visible. Elle ne contourne pas les obligations 2FA que GitHub.com pourrait imposer directement a certains comptes contributeurs.
+Cette decision a ete verifiee via GitHub API le 2026-07-05: `two_factor_requirement_enabled=false`. Elle ne contourne pas les obligations 2FA que GitHub.com pourrait imposer directement a certains comptes contributeurs.
 
 ## Fichier pret pour le futur profil public
 
@@ -66,12 +68,18 @@ Le runbook d'activation directe de l'organisation est prepare ici:
 Migration/github/chainsolutions-wealthtech/ORG_ACTIVATION_RUNBOOK.md
 ```
 
-Quand l'app GitHub sera installee sur l'organisation, ce fichier devra etre copie dans le repository GitHub special:
+Ce fichier a ete publie dans le repository GitHub special:
 
 ```text
 chainsolutions-wealthtech/.github
 └── profile/
     └── README.md
+```
+
+Journal detaille:
+
+```text
+Migration/github/chainsolutions-wealthtech/DIRECT_CONFIGURATION_LOG.md
 ```
 
 ## Branche de travail
