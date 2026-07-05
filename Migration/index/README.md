@@ -27,5 +27,7 @@ Il doit permettre a un agent ou a un humain de retrouver rapidement:
 - `MCP_EXECUTION_TASKS.md` : synthese lisible des taches pretes, bloquees et des gates de non-regression.
 - `BLOCKER_RESOLUTION_RUNBOOK.json` : runbook genere de resolution des blocages restants, criteres d acceptation et commandes de reprise.
 - `BLOCKER_RESOLUTION_RUNBOOK.md` : synthese lisible des blocages, actions externes, preuves attendues et commandes apres resolution.
+- `COMPLETION_AUDIT.json` : audit genere de completude objectif par objectif, avec preuves, statuts, blocages et decision de cloture.
+- `COMPLETION_AUDIT.md` : synthese lisible de ce qui est prouve, partiel, bloque ou non encore clos.
 
 Ces fichiers ne publient pas les textes bruts ni les secrets. Ils servent de preuve de lecture/indexation et de garde-fou avant toute ingestion plus exhaustive.

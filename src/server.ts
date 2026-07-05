@@ -20,6 +20,7 @@ import {
   buildSourceIngestionSnapshot,
   loadArchiveTextAudit,
   loadBlockerResolutionRunbook,
+  loadCompletionAudit,
   loadExecutionTaskIndex,
   loadObjectiveTraceabilityIndex,
   loadServerInventoryCardIndex,
@@ -30,6 +31,7 @@ import {
   renderOnboardingSnapshotHtml,
   summarizeArchiveTextAudit,
   summarizeBlockerResolutionRunbook,
+  summarizeCompletionAudit,
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
   summarizeServerInventoryCardIndex
@@ -205,6 +207,7 @@ function nav(): string {
     <a href="/git/onboarding/objectives">Objectifs</a> ·
     <a href="/git/onboarding/tasks">Tâches</a> ·
     <a href="/git/onboarding/blockers">Blocages</a> ·
+    <a href="/git/onboarding/completion">Complétude</a> ·
     <a href="/git/onboarding/server-cards">Serveur</a> ·
     <a href="/github">GitHub</a> ·
     <a href="/github/status">Statut JSON</a> ·
@@ -467,6 +470,16 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding/blockers');
       res.status(500).json({ error: 'blocker_resolution_failed' });
+    }
+  });
+
+  app.get('/git/onboarding/completion', requireWebLogin, async (_req, res) => {
+    try {
+      const audit = await loadCompletionAudit();
+      res.json({ summary: summarizeCompletionAudit(audit), audit });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/completion');
+      res.status(500).json({ error: 'completion_audit_failed' });
     }
   });
 

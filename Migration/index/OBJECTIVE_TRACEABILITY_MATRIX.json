@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-05T19:54:02.820828Z",
+  "generatedAt": "2026-07-05T20:02:19.433013Z",
   "generator": "scripts/build-objective-index.py",
   "purpose": "Objective traceability matrix for the WealthTech MCP migration corpus.",
   "safety": {
@@ -12,12 +12,12 @@
   "inputs": {
     "sourceRegistry": {
       "path": "Migration/index/SOURCE_REGISTRY.json",
-      "generatedAt": "2026-07-05T19:53:38.484Z",
+      "generatedAt": "2026-07-05T20:01:47.633Z",
       "totals": {
         "sourceFileCount": 102,
         "uniqueContentFileCount": 96,
         "duplicateFileCount": 6,
-        "totalBytes": 24472322,
+        "totalBytes": 24472557,
         "textReadFiles": 88,
         "archiveIndexedFiles": 5,
         "binaryIndexedFiles": 9,
@@ -40,7 +40,7 @@
     },
     "pdfTextAudit": {
       "path": "Migration/index/PDF_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-05T19:50:59.772020Z",
+      "generatedAt": "2026-07-05T20:01:57.346771Z",
       "totals": {
         "pdfDocumentCount": 43,
         "uniquePdfContentCount": 22,
@@ -82,7 +82,7 @@
     },
     "archiveTextAudit": {
       "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-05T19:53:39.516679Z",
+      "generatedAt": "2026-07-05T20:01:58.334529Z",
       "totals": {
         "archiveDocumentCount": 5,
         "archiveDocumentsScanned": 5,
@@ -366,32 +366,32 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "18e2da2345768116cbdec3ab115e7805c5109d4092b0b4730dcf6839180c677c"
+          "sha256": "f78504f2090570b2df275ccf5a3946aa5f2868f91c168b9105ed8328af515615"
         },
         {
           "path": "Migration/index/SOURCE_INGESTION_STATUS.md",
           "exists": true,
-          "sha256": "c96e332c06a12da955a4fc1fa86387b34ca5185a3fb6f9caeebaad2032de8691"
+          "sha256": "648be1fbf22d36364e6f3f6b0481e97abf920e606ed34a816633e76a4a296731"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "5970502f7eaa09452d5d5838c0fca864e64f1f4a4421fb21defe440398b28456"
+          "sha256": "63fe66a5e89cc3d6275a4562776801cf6871996680fd517d83774f9f61245685"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT_STATUS.md",
           "exists": true,
-          "sha256": "b7537781196a0db4f8d965680e5347f834c2bd25a1687008219f7b28bccba395"
+          "sha256": "a1291730900224b2847125ecfe35c385080051dd63669dc28df225d37b722025"
         },
         {
           "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "6ab354846ccc345185dab9cdace016707c8ccbbba9f73b3ceef697f0d3170064"
+          "sha256": "0e4fa9719543e7b3ac09cd5b6b4fb4c4a2bf9eea2fb0a7a938951f22b5684d22"
         },
         {
           "path": "Migration/index/ARCHIVE_TEXT_AUDIT_STATUS.md",
           "exists": true,
-          "sha256": "c26746623b02f83a0ee099068fddaa00d4938fed6625eea2793bc45fde8b644a"
+          "sha256": "a2171facc0ec601e63cfaf979e5d6ffdca5a0de925889718afda6e25a974c94b"
         }
       ],
       "missingCurrentEvidence": [],
@@ -501,12 +501,12 @@
         {
           "path": "scripts/check-docs.mjs",
           "exists": true,
-          "sha256": "788a9efa6efa7feb00c1627e586a076ef3f4bce88c8dee858a3e0068912c975d"
+          "sha256": "cdf78fb2bccb4d8dfe4de0a2113693d4e764968461da388b5139714c8dc172a1"
         },
         {
           "path": "tests/onboarding.test.ts",
           "exists": true,
-          "sha256": "367a80ae3f89f4cd66d66c0337eedd67508a0f995cbdba0523f1d3fc9e107071"
+          "sha256": "53bdfcfbc78f33931929dc867f31ee17b4af6e9c863eac3be551b807791282f4"
         },
         {
           "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
@@ -1012,7 +1012,7 @@
       "status": "implemented_for_current_mcp_and_ingestion_flows",
       "sourceSignals": {
         "sourceHitCount": 165,
-        "totalPatternHits": 12195,
+        "totalPatternHits": 12199,
         "textUnitsScanned": 174,
         "secretSignalSourceCount": 0
       },
@@ -1109,12 +1109,12 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "18e2da2345768116cbdec3ab115e7805c5109d4092b0b4730dcf6839180c677c"
+          "sha256": "f78504f2090570b2df275ccf5a3946aa5f2868f91c168b9105ed8328af515615"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "5970502f7eaa09452d5d5838c0fca864e64f1f4a4421fb21defe440398b28456"
+          "sha256": "63fe66a5e89cc3d6275a4562776801cf6871996680fd517d83774f9f61245685"
         }
       ],
       "missingCurrentEvidence": [],
@@ -1131,7 +1131,7 @@
       "status": "in_progress_objective_matrix_added_this_turn",
       "sourceSignals": {
         "sourceHitCount": 137,
-        "totalPatternHits": 6078,
+        "totalPatternHits": 6080,
         "textUnitsScanned": 174,
         "secretSignalSourceCount": 0
       },
@@ -1213,22 +1213,22 @@
         {
           "path": "src/onboarding/index.ts",
           "exists": true,
-          "sha256": "d91c8c1c3f400b27511d4be7768371d680a514003a1bf6982441e335309c33cb"
+          "sha256": "374c3df797e6bdb0b0da8773725dd9ab4456a6f1c77e0a933f9ea698cae7465b"
         },
         {
           "path": "src/server.ts",
           "exists": true,
-          "sha256": "66a658cb22c1265e56736deb832617f06a2521d9a63834eb306c0b94ba470a1c"
+          "sha256": "e14d42287482b1b574c80e3193bae89881bbbc009fedf1d11ad9bab2aba1f31f"
         },
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "18e2da2345768116cbdec3ab115e7805c5109d4092b0b4730dcf6839180c677c"
+          "sha256": "f78504f2090570b2df275ccf5a3946aa5f2868f91c168b9105ed8328af515615"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "5970502f7eaa09452d5d5838c0fca864e64f1f4a4421fb21defe440398b28456"
+          "sha256": "63fe66a5e89cc3d6275a4562776801cf6871996680fd517d83774f9f61245685"
         },
         {
           "path": "docs/MCP_ONBOARDING_ENGINE.md",

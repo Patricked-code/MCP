@@ -13,6 +13,7 @@ import {
   recordOrganizationSecurityPolicyVerification,
   summarizeBlockerResolutionRunbook,
   summarizeArchiveTextAudit,
+  summarizeCompletionAudit,
   summarizePdfTextAudit,
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
@@ -878,6 +879,98 @@ test('blocker resolution summary keeps external and private blockers explicit', 
   assert.equal(summary.blockedTaskCount, 4);
   assert.equal(summary.blockedServerCardCount, 4);
   assert.equal(summary.resumeCommandCount, 2);
+  assert.equal(summary.rawServerInventoryStored, false);
+  assert.equal(summary.rawSecretsStored, false);
+  assert.equal(summary.productionActionExecuted, false);
+});
+
+test('completion audit summary refuses completion while blockers remain', () => {
+  const summary = summarizeCompletionAudit({
+    version: 1,
+    generatedAt: '2026-07-05T00:00:00.000Z',
+    generator: 'unit',
+    purpose: 'unit',
+    safety: {
+      rawSourceTextStored: false,
+      rawPdfTextStored: false,
+      rawArchiveTextStored: false,
+      rawServerInventoryStored: false,
+      rawSecretsStored: false,
+      productionActionExecuted: false,
+      publicationMode: 'requirement_status_evidence_paths_hashes_and_blockers_only'
+    },
+    inputs: {},
+    summary: {
+      requirementCount: 3,
+      completeRequirementCount: 1,
+      blockedRequirementCount: 2,
+      partialRequirementCount: 1,
+      incompleteRequirementIds: [
+        'authorize_connector_on_target_org',
+        'execute_migration_steps_with_operator_approval'
+      ],
+      blockedRequirementIds: [
+        'authorize_connector_on_target_org',
+        'execute_migration_steps_with_operator_approval'
+      ],
+      partialRequirementIds: ['prepare_server_mapping_without_exposing_private_inventory'],
+      missingEvidence: [],
+      unresolvedBlockerIds: [
+        'github_connector_not_authorized_on_target_org',
+        'production_actions_require_private_inventory_and_approval'
+      ],
+      fullObjectiveAchieved: false
+    },
+    completionDecision: {
+      fullObjectiveAchieved: false,
+      status: 'not_complete_blockers_remain',
+      reason: 'unit'
+    },
+    requirements: [
+      {
+        id: 'read_complete_supplied_corpus',
+        title: 'Read corpus',
+        status: 'verified_complete_current_scope',
+        acceptanceCriteria: [],
+        evidence: [],
+        blockedBy: [],
+        nextActions: []
+      },
+      {
+        id: 'authorize_connector_on_target_org',
+        title: 'Authorize connector',
+        status: 'blocked_external_action_required',
+        acceptanceCriteria: [],
+        evidence: [],
+        blockedBy: ['github_connector_not_authorized_on_target_org'],
+        nextActions: []
+      },
+      {
+        id: 'execute_migration_steps_with_operator_approval',
+        title: 'Approve server work',
+        status: 'blocked_private_inventory_and_approval',
+        acceptanceCriteria: [],
+        evidence: [],
+        blockedBy: ['production_actions_require_private_inventory_and_approval'],
+        nextActions: []
+      }
+    ]
+  });
+
+  assert.equal(summary.requirementCount, 3);
+  assert.equal(summary.completeRequirementCount, 1);
+  assert.equal(summary.blockedRequirementCount, 2);
+  assert.equal(summary.fullObjectiveAchieved, false);
+  assert.equal(summary.decisionStatus, 'not_complete_blockers_remain');
+  assert.deepEqual(summary.unresolvedBlockerIds, [
+    'github_connector_not_authorized_on_target_org',
+    'production_actions_require_private_inventory_and_approval'
+  ]);
+  assert.deepEqual(summary.incompleteRequirementIds, [
+    'authorize_connector_on_target_org',
+    'execute_migration_steps_with_operator_approval'
+  ]);
+  assert.equal(summary.rawArchiveTextStored, false);
   assert.equal(summary.rawServerInventoryStored, false);
   assert.equal(summary.rawSecretsStored, false);
   assert.equal(summary.productionActionExecuted, false);

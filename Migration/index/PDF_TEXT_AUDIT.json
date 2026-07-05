@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-05T19:50:59.772020Z",
+  "generatedAt": "2026-07-05T20:01:57.346771Z",
   "generator": "scripts/build-pdf-text-audit.py",
   "sourceRegistry": "Migration/index/SOURCE_REGISTRY.json",
   "purpose": "Safe PDF text extraction audit for the WealthTech migration corpus.",

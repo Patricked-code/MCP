@@ -45,6 +45,7 @@ TASK_DEFINITIONS = [
         "expectedEvidence": [
             "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.md",
             "Migration/index/MCP_EXECUTION_TASKS.md",
+            "Migration/index/COMPLETION_AUDIT.md",
         ],
         "verificationCommands": [
             "node scripts/check-docs.mjs",
@@ -230,10 +231,12 @@ TASK_DEFINITIONS = [
             "Convert approved ready tasks into branch/PR work.",
             "Convert external or private prerequisites into clearly labeled tracking issues or checklist items.",
             "Keep blocked tasks blocked until their evidence is present.",
+            "Regenerate the completion audit after any task status or blocker status change.",
         ],
         "expectedEvidence": [
             "Branch, PR or issue references for approved tasks.",
             "Updated MCP_EXECUTION_TASKS after task status changes.",
+            "Updated COMPLETION_AUDIT after task or blocker status changes.",
         ],
         "verificationCommands": [
             "gh pr view 1 --json state,isDraft,mergeable",

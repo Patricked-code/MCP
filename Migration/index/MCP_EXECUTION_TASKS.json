@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-05T19:54:02.988067Z",
+  "generatedAt": "2026-07-05T20:02:19.745034Z",
   "generator": "scripts/build-execution-tasks.py",
   "purpose": "Executable MCP task plan derived from the WealthTech objective traceability matrix.",
   "safety": {
@@ -13,7 +13,7 @@
   "inputs": {
     "objectiveTraceabilityMatrix": {
       "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
-      "generatedAt": "2026-07-05T19:54:02.820828Z",
+      "generatedAt": "2026-07-05T20:02:19.433013Z",
       "summary": {
         "objectiveCount": 9,
         "statusCounts": {
@@ -94,7 +94,8 @@
       ],
       "expectedEvidence": [
         "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.md",
-        "Migration/index/MCP_EXECUTION_TASKS.md"
+        "Migration/index/MCP_EXECUTION_TASKS.md",
+        "Migration/index/COMPLETION_AUDIT.md"
       ],
       "verificationCommands": [
         "node scripts/check-docs.mjs"
@@ -478,11 +479,13 @@
       "actions": [
         "Convert approved ready tasks into branch/PR work.",
         "Convert external or private prerequisites into clearly labeled tracking issues or checklist items.",
-        "Keep blocked tasks blocked until their evidence is present."
+        "Keep blocked tasks blocked until their evidence is present.",
+        "Regenerate the completion audit after any task status or blocker status change."
       ],
       "expectedEvidence": [
         "Branch, PR or issue references for approved tasks.",
-        "Updated MCP_EXECUTION_TASKS after task status changes."
+        "Updated MCP_EXECUTION_TASKS after task status changes.",
+        "Updated COMPLETION_AUDIT after task or blocker status changes."
       ],
       "verificationCommands": [
         "gh pr view 1 --json state,isDraft,mergeable"

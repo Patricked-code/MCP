@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-05T19:54:03.362525Z",
+  "generatedAt": "2026-07-05T20:02:20.134642Z",
   "generator": "scripts/build-blocker-resolution-runbook.py",
   "purpose": "Public-safe resolution runbook for the remaining MCP migration blockers.",
   "safety": {
@@ -14,7 +14,7 @@
   "inputs": {
     "objectiveTraceabilityMatrix": {
       "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
-      "generatedAt": "2026-07-05T19:54:02.820828Z",
+      "generatedAt": "2026-07-05T20:02:19.433013Z",
       "summary": {
         "objectiveCount": 9,
         "statusCounts": {
@@ -34,7 +34,7 @@
     },
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-05T19:54:02.988067Z",
+      "generatedAt": "2026-07-05T20:02:19.745034Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,
@@ -77,7 +77,7 @@
     },
     "serverInventoryCards": {
       "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
-      "generatedAt": "2026-07-05T19:54:03.150482Z",
+      "generatedAt": "2026-07-05T20:02:19.939156Z",
       "summary": {
         "cardCount": 6,
         "readyCardCount": 6,
@@ -209,6 +209,7 @@
     "python scripts/build-execution-tasks.py",
     "python scripts/build-server-inventory-cards.py",
     "python scripts/build-blocker-resolution-runbook.py",
+    "python scripts/build-completion-audit.py",
     "node node_modules/tsx/dist/cli.mjs --test tests/onboarding.test.ts",
     "node node_modules/typescript/lib/tsc.js --noEmit -p tsconfig.json",
     "node node_modules/typescript/lib/tsc.js -p tsconfig.json",

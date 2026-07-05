@@ -50,6 +50,8 @@ const required = [
   'Migration/index/MCP_EXECUTION_TASKS.md',
   'Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json',
   'Migration/index/BLOCKER_RESOLUTION_RUNBOOK.md',
+  'Migration/index/COMPLETION_AUDIT.json',
+  'Migration/index/COMPLETION_AUDIT.md',
   'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json',
   'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md',
   'Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json'

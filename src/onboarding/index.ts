@@ -23,6 +23,10 @@ export {
   summarizeBlockerResolutionRunbook
 } from './blockerResolution.js';
 export {
+  loadCompletionAudit,
+  summarizeCompletionAudit
+} from './completionAudit.js';
+export {
   loadExecutionTaskIndex,
   summarizeExecutionTaskIndex
 } from './executionTasks.js';
