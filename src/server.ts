@@ -17,11 +17,13 @@ import {
   filterAuditEvents,
   getAccountDetail,
   getRepoDetail,
+  loadSourceRegistry,
   prepareAndRecordOrganizationProfileBootstrap,
   prepareAndRecordRepoBootstrap,
   recordOrganizationSecurityPolicyVerification,
   recordOnboardingAnswer,
-  renderOnboardingSnapshotHtml
+  renderOnboardingSnapshotHtml,
+  summarizeSourceRegistry
 } from './onboarding/index.js';
 import type { AgentType } from './onboarding/types.js';
 
@@ -189,6 +191,7 @@ function nav(): string {
     <a href="/dashboard">Dashboard</a> ·
     <a href="/git">Paramétrage Git</a> ·
     <a href="/git/onboarding">Onboarding</a> ·
+    <a href="/git/onboarding/sources">Sources</a> ·
     <a href="/github">GitHub</a> ·
     <a href="/github/status">Statut JSON</a> ·
     <a href="/github/Patricked-code">Patricked-code</a> ·
@@ -392,6 +395,19 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding');
       res.status(500).json({ error: 'git_onboarding_failed' });
+    }
+  });
+
+  app.get('/git/onboarding/sources', requireWebLogin, async (_req, res) => {
+    try {
+      const registry = await loadSourceRegistry();
+      res.json({
+        summary: summarizeSourceRegistry(registry),
+        registry
+      });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/sources');
+      res.status(500).json({ error: 'source_registry_failed' });
     }
   });
 

@@ -10,7 +10,8 @@ import {
   prepareAndRecordOrganizationProfileBootstrap,
   prepareAndRecordRepoBootstrap,
   prepareRepoBootstrap,
-  recordOrganizationSecurityPolicyVerification
+  recordOrganizationSecurityPolicyVerification,
+  summarizeSourceRegistry
 } from '../src/onboarding/index.js';
 import { buildOrganizationBootstrapPackage, prepareOrganizationProfileBootstrap } from '../src/onboarding/organization.js';
 import { buildOnboardingQuestions, validateQuestionAnswer } from '../src/onboarding/questions.js';
@@ -313,4 +314,63 @@ test('organization 2FA policy verification is audited as manual owner assertion'
     }
     await rm(tempDir, { recursive: true, force: true });
   }
+});
+
+test('source registry summary keeps ingestion gaps and safety signals visible', () => {
+  const summary = summarizeSourceRegistry({
+    version: 1,
+    generatedAt: '2026-07-05T00:00:00.000Z',
+    generator: 'unit',
+    purpose: 'unit',
+    safety: {
+      rawSourceTextStored: false,
+      rawSecretsStored: false,
+      publicationMode: 'hashes_stats_and_archive_names_only'
+    },
+    roots: [
+      { label: 'workspace-ressources', kind: 'external_workspace', available: true, fileCount: 2 },
+      { label: 'downloads-migration-zip', kind: 'external_download', available: false, fileCount: 0 }
+    ],
+    totals: {},
+    documents: [
+      {
+        sourceId: 'doc-md',
+        sourceRoot: 'workspace-ressources',
+        sourceRootKind: 'external_workspace',
+        sourcePath: 'source.md',
+        repoPath: null,
+        fileName: 'source.md',
+        roles: ['source_corpus'],
+        sizeBytes: 10,
+        sha256: 'a',
+        duplicateOf: null,
+        extension: '.md',
+        readStatus: 'text_read',
+        extraction: { secretSignalCount: 1 }
+      },
+      {
+        sourceId: 'doc-pdf',
+        sourceRoot: 'workspace-ressources',
+        sourceRootKind: 'external_workspace',
+        sourcePath: 'source.pdf',
+        repoPath: null,
+        fileName: 'source.pdf',
+        roles: ['migration'],
+        sizeBytes: 20,
+        sha256: 'b',
+        duplicateOf: 'doc-md',
+        extension: '.pdf',
+        readStatus: 'binary_indexed',
+        extraction: {}
+      }
+    ]
+  });
+
+  assert.equal(summary.sourceFileCount, 2);
+  assert.equal(summary.uniqueContentFileCount, 1);
+  assert.deepEqual(summary.rootsUnavailable, ['downloads-migration-zip']);
+  assert.deepEqual(summary.pdfTextExtractionPending, ['workspace-ressources/source.pdf']);
+  assert.deepEqual(summary.filesRequiringSecretReview, ['workspace-ressources/source.md']);
+  assert.equal(summary.rawSourceTextStored, false);
+  assert.equal(summary.rawSecretsStored, false);
 });

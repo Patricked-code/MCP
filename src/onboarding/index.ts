@@ -14,6 +14,7 @@ import { buildOrganizationBootstrapPackage, prepareOrganizationProfileBootstrap 
 import { buildRegistryRepoFootprints, inspectLocalRepoFootprint } from './repoFootprint.js';
 import { evaluateRights } from './rights.js';
 import { createServerMappingTemplate, renderServerMapJson } from './serverMapping.js';
+export { loadSourceRegistry, summarizeSourceRegistry } from './sourceRegistry.js';
 import type {
   AgentProfile,
   AgentType,
