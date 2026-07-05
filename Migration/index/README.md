@@ -21,5 +21,7 @@ Il doit permettre a un agent ou a un humain de retrouver rapidement:
 - `PDF_TEXT_AUDIT_STATUS.md` : synthese lisible de l audit PDF, des pages/mots extraits, des doublons et des signaux d objectifs.
 - `OBJECTIVE_TRACEABILITY_MATRIX.json` : matrice generee des objectifs compris, preuves locales, signaux sources, blocages et prochaines actions.
 - `OBJECTIVE_TRACEABILITY_MATRIX.md` : synthese lisible de la matrice objectifs/actions pour revue humaine et reprise MCP.
+- `MCP_EXECUTION_TASKS.json` : plan genere de taches executables MCP, dependances, blocages, preuves attendues et commandes de verification.
+- `MCP_EXECUTION_TASKS.md` : synthese lisible des taches pretes, bloquees et des gates de non-regression.
 
 Ces fichiers ne publient pas les textes bruts ni les secrets. Ils servent de preuve de lecture/indexation et de garde-fou avant toute ingestion plus exhaustive.

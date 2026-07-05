@@ -44,6 +44,8 @@ const required = [
   'Migration/index/PDF_TEXT_AUDIT_STATUS.md',
   'Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json',
   'Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.md',
+  'Migration/index/MCP_EXECUTION_TASKS.json',
+  'Migration/index/MCP_EXECUTION_TASKS.md',
   'Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json'
 ];
 

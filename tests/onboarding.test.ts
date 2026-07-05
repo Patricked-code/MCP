@@ -12,6 +12,7 @@ import {
   prepareRepoBootstrap,
   recordOrganizationSecurityPolicyVerification,
   summarizePdfTextAudit,
+  summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
   summarizeSourceRegistry
 } from '../src/onboarding/index.js';
@@ -500,5 +501,113 @@ test('objective traceability summary keeps partial goals visible', () => {
   assert.equal(summary.totalPatternHits, 32);
   assert.equal(summary.rawSourceTextStored, false);
   assert.equal(summary.rawPdfTextStored, false);
+  assert.equal(summary.rawSecretsStored, false);
+});
+
+test('execution task summary keeps ready and blocked work explicit', () => {
+  const summary = summarizeExecutionTaskIndex({
+    version: 1,
+    generatedAt: '2026-07-05T00:00:00.000Z',
+    generator: 'unit',
+    purpose: 'unit',
+    safety: {
+      rawSourceTextStored: false,
+      rawPdfTextStored: false,
+      rawSecretsStored: false,
+      productionActionExecuted: false,
+      publicationMode: 'task_status_dependencies_gates_and_evidence_paths_only'
+    },
+    inputs: {},
+    summary: {
+      taskCount: 3,
+      readyTaskCount: 1,
+      blockedTaskCount: 1,
+      statusCounts: {
+        ready_recurring_gate: 1,
+        blocked_external_authorization: 1,
+        pending_operator_review: 1
+      },
+      kindCounts: {
+        quality_gate: 1,
+        external_github_app_action: 1,
+        planning_to_delivery: 1
+      },
+      readyTaskIds: ['execute_no_regression_gate'],
+      blockedTaskIds: ['authorize_github_connector_on_chainsolutions'],
+      globalBlockerIds: ['github_connector_not_authorized_on_target_org']
+    },
+    tasks: [
+      {
+        id: 'execute_no_regression_gate',
+        title: 'Gate',
+        objectiveIds: ['no_regression_and_safety'],
+        status: 'ready_recurring_gate',
+        kind: 'quality_gate',
+        dependsOn: [],
+        blockedBy: [],
+        entryCriteria: [],
+        actions: [],
+        expectedEvidence: [],
+        verificationCommands: [],
+        objectiveEvidence: [],
+        missingObjectiveIds: [],
+        noRegressionGateRequired: true
+      },
+      {
+        id: 'authorize_github_connector_on_chainsolutions',
+        title: 'Connector',
+        objectiveIds: ['connect_chainsolutions_wealthtech_to_mcp'],
+        status: 'blocked_external_authorization',
+        kind: 'external_github_app_action',
+        dependsOn: [],
+        blockedBy: ['github_connector_not_authorized_on_target_org'],
+        entryCriteria: [],
+        actions: [],
+        expectedEvidence: [],
+        verificationCommands: [],
+        objectiveEvidence: [],
+        missingObjectiveIds: [],
+        noRegressionGateRequired: true
+      },
+      {
+        id: 'promote_approved_tasks_to_prs_or_issues',
+        title: 'Promote',
+        objectiveIds: ['apply_documented_requirements'],
+        status: 'pending_operator_review',
+        kind: 'planning_to_delivery',
+        dependsOn: [],
+        blockedBy: [],
+        entryCriteria: [],
+        actions: [],
+        expectedEvidence: [],
+        verificationCommands: [],
+        objectiveEvidence: [],
+        missingObjectiveIds: [],
+        noRegressionGateRequired: true
+      }
+    ],
+    globalBlockers: [
+      {
+        id: 'github_connector_not_authorized_on_target_org',
+        description: 'Connector authorization required.',
+        blocks: ['connect_chainsolutions_wealthtech_to_mcp']
+      }
+    ],
+    noRegressionGate: {
+      requiredFor: 'unit',
+      commands: ['test', 'typecheck']
+    },
+    nextRecommendedTaskIds: ['execute_no_regression_gate']
+  });
+
+  assert.equal(summary.taskCount, 3);
+  assert.equal(summary.readyTaskCount, 1);
+  assert.equal(summary.blockedTaskCount, 1);
+  assert.equal(summary.pendingTaskCount, 1);
+  assert.equal(summary.globalBlockerCount, 1);
+  assert.deepEqual(summary.readyTaskIds, ['execute_no_regression_gate']);
+  assert.deepEqual(summary.blockedTaskIds, ['authorize_github_connector_on_chainsolutions']);
+  assert.equal(summary.noRegressionCommandCount, 2);
+  assert.equal(summary.productionActionExecuted, false);
   assert.equal(summary.rawSecretsStored, false);
 });

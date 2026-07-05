@@ -1,0 +1,542 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-05T15:31:05.712911Z",
+  "generator": "scripts/build-execution-tasks.py",
+  "purpose": "Executable MCP task plan derived from the WealthTech objective traceability matrix.",
+  "safety": {
+    "rawSourceTextStored": false,
+    "rawPdfTextStored": false,
+    "rawSecretsStored": false,
+    "productionActionExecuted": false,
+    "publicationMode": "task_status_dependencies_gates_and_evidence_paths_only"
+  },
+  "inputs": {
+    "objectiveTraceabilityMatrix": {
+      "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
+      "generatedAt": "2026-07-05T15:31:05.466546Z",
+      "summary": {
+        "objectiveCount": 9,
+        "statusCounts": {
+          "partial_external_connector_authorization_required": 1,
+          "inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress": 1,
+          "implemented_as_policy_and_tests_more_runtime_gates_needed": 1,
+          "implemented_for_current_pr_flow": 1,
+          "implemented_for_governance_profiles": 1,
+          "partial_sensitive_server_paths_not_published": 1,
+          "documented_not_executed_on_production": 1,
+          "implemented_for_current_mcp_and_ingestion_flows": 1,
+          "in_progress_objective_matrix_added_this_turn": 1
+        },
+        "blockedObjectiveCount": 4,
+        "objectivesWithMissingCurrentEvidence": []
+      }
+    }
+  },
+  "summary": {
+    "taskCount": 8,
+    "readyTaskCount": 3,
+    "blockedTaskCount": 4,
+    "statusCounts": {
+      "ready_for_operator_review": 1,
+      "blocked_external_authorization": 1,
+      "blocked_by_connector_visibility": 2,
+      "ready_to_prepare_templates": 1,
+      "blocked_private_inventory_and_approval": 1,
+      "ready_recurring_gate": 1,
+      "pending_operator_review": 1
+    },
+    "kindCounts": {
+      "operator_review": 1,
+      "external_github_app_action": 1,
+      "mcp_regeneration": 1,
+      "repository_bootstrap": 1,
+      "server_preparation": 1,
+      "private_server_action": 1,
+      "quality_gate": 1,
+      "planning_to_delivery": 1
+    },
+    "readyTaskIds": [
+      "review_objective_traceability_matrix",
+      "prepare_private_server_inventory_cards",
+      "execute_no_regression_gate"
+    ],
+    "blockedTaskIds": [
+      "authorize_github_connector_on_chainsolutions",
+      "regenerate_ingestion_after_connector_access",
+      "bootstrap_visible_org_repositories",
+      "collect_private_server_inventory"
+    ],
+    "globalBlockerIds": [
+      "github_connector_not_authorized_on_target_org",
+      "production_actions_require_private_inventory_and_approval"
+    ]
+  },
+  "tasks": [
+    {
+      "id": "review_objective_traceability_matrix",
+      "title": "Review objective traceability matrix",
+      "objectiveIds": [
+        "apply_documented_requirements",
+        "complete_corpus_ingestion"
+      ],
+      "status": "ready_for_operator_review",
+      "kind": "operator_review",
+      "dependsOn": [],
+      "blockedBy": [],
+      "entryCriteria": [
+        "OBJECTIVE_TRACEABILITY_MATRIX.json exists and has no missing local evidence.",
+        "Source registry and PDF audit are generated."
+      ],
+      "actions": [
+        "Review all 9 objectives with the operator.",
+        "Confirm which ready tasks may be promoted to repository changes or server-side preparation.",
+        "Do not mark blocked objectives complete until blockers are removed."
+      ],
+      "expectedEvidence": [
+        "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.md",
+        "Migration/index/MCP_EXECUTION_TASKS.md"
+      ],
+      "verificationCommands": [
+        "node scripts/check-docs.mjs"
+      ],
+      "objectiveEvidence": [
+        {
+          "id": "apply_documented_requirements",
+          "status": "in_progress_objective_matrix_added_this_turn",
+          "sourceHitCount": 137,
+          "missingCurrentEvidence": [],
+          "blockerCount": 1
+        },
+        {
+          "id": "complete_corpus_ingestion",
+          "status": "inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress",
+          "sourceHitCount": 178,
+          "missingCurrentEvidence": [],
+          "blockerCount": 0
+        }
+      ],
+      "missingObjectiveIds": [],
+      "noRegressionGateRequired": false
+    },
+    {
+      "id": "authorize_github_connector_on_chainsolutions",
+      "title": "Authorize Codex/MCP GitHub connector on chainsolutions-wealthtech",
+      "objectiveIds": [
+        "connect_chainsolutions_wealthtech_to_mcp",
+        "repo_server_mapping"
+      ],
+      "status": "blocked_external_authorization",
+      "kind": "external_github_app_action",
+      "dependsOn": [
+        "review_objective_traceability_matrix"
+      ],
+      "blockedBy": [
+        "github_connector_not_authorized_on_target_org"
+      ],
+      "entryCriteria": [
+        "Organization owner can access chainsolutions-wealthtech settings.",
+        "Codex/MCP GitHub app installation or connector authorization is available for the organization."
+      ],
+      "actions": [
+        "Install or authorize the GitHub connector/app on chainsolutions-wealthtech.",
+        "Grant repository visibility required for governance onboarding.",
+        "Re-check connector installed accounts and visible repositories after authorization."
+      ],
+      "expectedEvidence": [
+        "Connector installed accounts include chainsolutions-wealthtech.",
+        "MCP onboarding snapshot no longer reports blocked_until_org_access for the target organization."
+      ],
+      "verificationCommands": [
+        "gh api /orgs/chainsolutions-wealthtech",
+        "GET /git/onboarding",
+        "GET /git/onboarding/objectives"
+      ],
+      "objectiveEvidence": [
+        {
+          "id": "connect_chainsolutions_wealthtech_to_mcp",
+          "status": "partial_external_connector_authorization_required",
+          "sourceHitCount": 170,
+          "missingCurrentEvidence": [],
+          "blockerCount": 1
+        },
+        {
+          "id": "repo_server_mapping",
+          "status": "partial_sensitive_server_paths_not_published",
+          "sourceHitCount": 181,
+          "missingCurrentEvidence": [],
+          "blockerCount": 2
+        }
+      ],
+      "missingObjectiveIds": [],
+      "noRegressionGateRequired": true
+    },
+    {
+      "id": "regenerate_ingestion_after_connector_access",
+      "title": "Regenerate source, PDF and objective indexes after connector access changes",
+      "objectiveIds": [
+        "complete_corpus_ingestion",
+        "audit_and_traceability"
+      ],
+      "status": "blocked_by_connector_visibility",
+      "kind": "mcp_regeneration",
+      "dependsOn": [
+        "authorize_github_connector_on_chainsolutions"
+      ],
+      "blockedBy": [
+        "github_connector_not_authorized_on_target_org"
+      ],
+      "entryCriteria": [
+        "Connector can see chainsolutions-wealthtech.",
+        "Local source corpus remains available."
+      ],
+      "actions": [
+        "Run source registry generation.",
+        "Run PDF text audit.",
+        "Run objective matrix generation.",
+        "Run execution task generation."
+      ],
+      "expectedEvidence": [
+        "Migration/index/SOURCE_REGISTRY.json",
+        "Migration/index/PDF_TEXT_AUDIT.json",
+        "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
+        "Migration/index/MCP_EXECUTION_TASKS.json"
+      ],
+      "verificationCommands": [
+        "node scripts/build-source-registry.mjs",
+        "python scripts/build-pdf-text-audit.py",
+        "python scripts/build-objective-index.py",
+        "python scripts/build-execution-tasks.py"
+      ],
+      "objectiveEvidence": [
+        {
+          "id": "complete_corpus_ingestion",
+          "status": "inventory_and_pdf_text_audit_complete_semantic_extraction_in_progress",
+          "sourceHitCount": 178,
+          "missingCurrentEvidence": [],
+          "blockerCount": 0
+        },
+        {
+          "id": "audit_and_traceability",
+          "status": "implemented_for_current_mcp_and_ingestion_flows",
+          "sourceHitCount": 165,
+          "missingCurrentEvidence": [],
+          "blockerCount": 0
+        }
+      ],
+      "missingObjectiveIds": [],
+      "noRegressionGateRequired": true
+    },
+    {
+      "id": "bootstrap_visible_org_repositories",
+      "title": "Bootstrap visible organization repositories with .mcp governance files",
+      "objectiveIds": [
+        "connect_chainsolutions_wealthtech_to_mcp",
+        "branch_pr_only_workflow",
+        "repo_server_mapping"
+      ],
+      "status": "blocked_by_connector_visibility",
+      "kind": "repository_bootstrap",
+      "dependsOn": [
+        "authorize_github_connector_on_chainsolutions",
+        "regenerate_ingestion_after_connector_access"
+      ],
+      "blockedBy": [
+        "github_connector_not_authorized_on_target_org"
+      ],
+      "entryCriteria": [
+        "MCP connector can list target organization repositories.",
+        "Repository owner/maintainer approves branch and PR creation."
+      ],
+      "actions": [
+        "Call repo bootstrap preparation for each visible repository missing MCP governance files.",
+        "Create branch mcp/onboarding-setup per repository.",
+        "Open pull requests instead of writing to main.",
+        "Keep generated server maps public-safe."
+      ],
+      "expectedEvidence": [
+        "Each target repository has a PR with .mcp/manifest.json, .mcp/permissions.json, .mcp/agents.json, .mcp/server-map.json and MCP docs.",
+        "Audit events record bootstrap preparation without generated file contents."
+      ],
+      "verificationCommands": [
+        "GET /git/repos",
+        "POST /git/repos/:owner/:repo/bootstrap",
+        "GET /git/audit?type=onboarding.repo_bootstrap_prepared"
+      ],
+      "objectiveEvidence": [
+        {
+          "id": "connect_chainsolutions_wealthtech_to_mcp",
+          "status": "partial_external_connector_authorization_required",
+          "sourceHitCount": 170,
+          "missingCurrentEvidence": [],
+          "blockerCount": 1
+        },
+        {
+          "id": "branch_pr_only_workflow",
+          "status": "implemented_for_current_pr_flow",
+          "sourceHitCount": 184,
+          "missingCurrentEvidence": [],
+          "blockerCount": 0
+        },
+        {
+          "id": "repo_server_mapping",
+          "status": "partial_sensitive_server_paths_not_published",
+          "sourceHitCount": 181,
+          "missingCurrentEvidence": [],
+          "blockerCount": 2
+        }
+      ],
+      "missingObjectiveIds": [],
+      "noRegressionGateRequired": true
+    },
+    {
+      "id": "prepare_private_server_inventory_cards",
+      "title": "Prepare private inventory-backed server task cards",
+      "objectiveIds": [
+        "repo_server_mapping",
+        "migration_execution_sequence",
+        "no_regression_and_safety"
+      ],
+      "status": "ready_to_prepare_templates",
+      "kind": "server_preparation",
+      "dependsOn": [
+        "review_objective_traceability_matrix"
+      ],
+      "blockedBy": [],
+      "entryCriteria": [
+        "No production change is executed.",
+        "Public-safe templates avoid raw server paths, credentials and .env values."
+      ],
+      "actions": [
+        "Create task-card templates for S1/S2 inventory, backup, copy, test and documentation.",
+        "Keep protected S2 domains and S1 whitelist visible in the task criteria.",
+        "Require rollback and post-action checks before any future server action."
+      ],
+      "expectedEvidence": [
+        "Migration/index/MCP_EXECUTION_TASKS.md",
+        "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
+        "docs/MCP_SERVER_MAPPING.md"
+      ],
+      "verificationCommands": [
+        "node scripts/check-docs.mjs"
+      ],
+      "objectiveEvidence": [
+        {
+          "id": "repo_server_mapping",
+          "status": "partial_sensitive_server_paths_not_published",
+          "sourceHitCount": 181,
+          "missingCurrentEvidence": [],
+          "blockerCount": 2
+        },
+        {
+          "id": "migration_execution_sequence",
+          "status": "documented_not_executed_on_production",
+          "sourceHitCount": 179,
+          "missingCurrentEvidence": [],
+          "blockerCount": 1
+        },
+        {
+          "id": "no_regression_and_safety",
+          "status": "implemented_as_policy_and_tests_more_runtime_gates_needed",
+          "sourceHitCount": 154,
+          "missingCurrentEvidence": [],
+          "blockerCount": 0
+        }
+      ],
+      "missingObjectiveIds": [],
+      "noRegressionGateRequired": true
+    },
+    {
+      "id": "collect_private_server_inventory",
+      "title": "Collect private live server inventory before cleanup or migration",
+      "objectiveIds": [
+        "repo_server_mapping",
+        "migration_execution_sequence"
+      ],
+      "status": "blocked_private_inventory_and_approval",
+      "kind": "private_server_action",
+      "dependsOn": [
+        "prepare_private_server_inventory_cards"
+      ],
+      "blockedBy": [
+        "production_actions_require_private_inventory_and_approval"
+      ],
+      "entryCriteria": [
+        "Human operator approves server access and scope.",
+        "Private inventory location is approved and not published in Git.",
+        "Rollback plan and backup target are defined."
+      ],
+      "actions": [
+        "Inventory domains, vhosts, PM2/Passenger/Docker, ports, databases, .env presence, certs, crons and logs.",
+        "Record only public-safe summaries in Git.",
+        "Do not delete, migrate, stop services or modify production config during inventory."
+      ],
+      "expectedEvidence": [
+        "Private inventory exists in approved operational context.",
+        "Public-safe server mapping summary exists without secrets.",
+        "Operator approval is recorded."
+      ],
+      "verificationCommands": [
+        "GET /git/onboarding/objectives"
+      ],
+      "objectiveEvidence": [
+        {
+          "id": "repo_server_mapping",
+          "status": "partial_sensitive_server_paths_not_published",
+          "sourceHitCount": 181,
+          "missingCurrentEvidence": [],
+          "blockerCount": 2
+        },
+        {
+          "id": "migration_execution_sequence",
+          "status": "documented_not_executed_on_production",
+          "sourceHitCount": 179,
+          "missingCurrentEvidence": [],
+          "blockerCount": 1
+        }
+      ],
+      "missingObjectiveIds": [],
+      "noRegressionGateRequired": true
+    },
+    {
+      "id": "execute_no_regression_gate",
+      "title": "Run no-regression gate before every commit, PR update or production-affecting action",
+      "objectiveIds": [
+        "no_regression_and_safety",
+        "audit_and_traceability",
+        "branch_pr_only_workflow"
+      ],
+      "status": "ready_recurring_gate",
+      "kind": "quality_gate",
+      "dependsOn": [],
+      "blockedBy": [],
+      "entryCriteria": [
+        "Code, docs or generated index changed."
+      ],
+      "actions": [
+        "Run tests, typecheck, build, docs check, secrets check and diff whitespace check.",
+        "Do not push when a gate fails.",
+        "Record verification commands in the PR body."
+      ],
+      "expectedEvidence": [
+        "Passing command output before push.",
+        "Updated PR verification section."
+      ],
+      "verificationCommands": [
+        "node node_modules/tsx/dist/cli.mjs --test tests/onboarding.test.ts",
+        "node node_modules/typescript/lib/tsc.js --noEmit -p tsconfig.json",
+        "node node_modules/typescript/lib/tsc.js -p tsconfig.json",
+        "node scripts/check-docs.mjs",
+        "node scripts/check-no-secrets.mjs",
+        "git diff --check"
+      ],
+      "objectiveEvidence": [
+        {
+          "id": "no_regression_and_safety",
+          "status": "implemented_as_policy_and_tests_more_runtime_gates_needed",
+          "sourceHitCount": 154,
+          "missingCurrentEvidence": [],
+          "blockerCount": 0
+        },
+        {
+          "id": "audit_and_traceability",
+          "status": "implemented_for_current_mcp_and_ingestion_flows",
+          "sourceHitCount": 165,
+          "missingCurrentEvidence": [],
+          "blockerCount": 0
+        },
+        {
+          "id": "branch_pr_only_workflow",
+          "status": "implemented_for_current_pr_flow",
+          "sourceHitCount": 184,
+          "missingCurrentEvidence": [],
+          "blockerCount": 0
+        }
+      ],
+      "missingObjectiveIds": [],
+      "noRegressionGateRequired": true
+    },
+    {
+      "id": "promote_approved_tasks_to_prs_or_issues",
+      "title": "Promote approved tasks to PRs or GitHub issues",
+      "objectiveIds": [
+        "apply_documented_requirements",
+        "audit_and_traceability"
+      ],
+      "status": "pending_operator_review",
+      "kind": "planning_to_delivery",
+      "dependsOn": [
+        "review_objective_traceability_matrix"
+      ],
+      "blockedBy": [],
+      "entryCriteria": [
+        "Operator has reviewed the objective and task matrices.",
+        "Task is either unblocked or explicitly marked as an external/private prerequisite."
+      ],
+      "actions": [
+        "Convert approved ready tasks into branch/PR work.",
+        "Convert external or private prerequisites into clearly labeled tracking issues or checklist items.",
+        "Keep blocked tasks blocked until their evidence is present."
+      ],
+      "expectedEvidence": [
+        "Branch, PR or issue references for approved tasks.",
+        "Updated MCP_EXECUTION_TASKS after task status changes."
+      ],
+      "verificationCommands": [
+        "gh pr view 1 --json state,isDraft,mergeable"
+      ],
+      "objectiveEvidence": [
+        {
+          "id": "apply_documented_requirements",
+          "status": "in_progress_objective_matrix_added_this_turn",
+          "sourceHitCount": 137,
+          "missingCurrentEvidence": [],
+          "blockerCount": 1
+        },
+        {
+          "id": "audit_and_traceability",
+          "status": "implemented_for_current_mcp_and_ingestion_flows",
+          "sourceHitCount": 165,
+          "missingCurrentEvidence": [],
+          "blockerCount": 0
+        }
+      ],
+      "missingObjectiveIds": [],
+      "noRegressionGateRequired": true
+    }
+  ],
+  "globalBlockers": [
+    {
+      "id": "github_connector_not_authorized_on_target_org",
+      "description": "Codex/MCP GitHub connector must be installed or authorized on chainsolutions-wealthtech before direct connector-managed repository bootstrapping can be complete.",
+      "blocks": [
+        "connect_chainsolutions_wealthtech_to_mcp",
+        "repo_server_mapping"
+      ]
+    },
+    {
+      "id": "production_actions_require_private_inventory_and_approval",
+      "description": "Server cleanup, migration and deployment actions require private live inventory, backups, rollback plan and post-action tests.",
+      "blocks": [
+        "repo_server_mapping",
+        "migration_execution_sequence"
+      ]
+    }
+  ],
+  "noRegressionGate": {
+    "requiredFor": "Every commit, PR update and production-affecting action.",
+    "commands": [
+      "node node_modules/tsx/dist/cli.mjs --test tests/onboarding.test.ts",
+      "node node_modules/typescript/lib/tsc.js --noEmit -p tsconfig.json",
+      "node node_modules/typescript/lib/tsc.js -p tsconfig.json",
+      "node scripts/check-docs.mjs",
+      "node scripts/check-no-secrets.mjs",
+      "git diff --check"
+    ]
+  },
+  "nextRecommendedTaskIds": [
+    "review_objective_traceability_matrix",
+    "prepare_private_server_inventory_cards",
+    "execute_no_regression_gate",
+    "authorize_github_connector_on_chainsolutions"
+  ]
+}

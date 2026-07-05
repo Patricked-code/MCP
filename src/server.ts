@@ -18,12 +18,14 @@ import {
   getAccountDetail,
   getRepoDetail,
   buildSourceIngestionSnapshot,
+  loadExecutionTaskIndex,
   loadObjectiveTraceabilityIndex,
   prepareAndRecordOrganizationProfileBootstrap,
   prepareAndRecordRepoBootstrap,
   recordOrganizationSecurityPolicyVerification,
   recordOnboardingAnswer,
   renderOnboardingSnapshotHtml,
+  summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex
 } from './onboarding/index.js';
 import type { AgentType } from './onboarding/types.js';
@@ -194,6 +196,7 @@ function nav(): string {
     <a href="/git/onboarding">Onboarding</a> ·
     <a href="/git/onboarding/sources">Sources</a> ·
     <a href="/git/onboarding/objectives">Objectifs</a> ·
+    <a href="/git/onboarding/tasks">Tâches</a> ·
     <a href="/github">GitHub</a> ·
     <a href="/github/status">Statut JSON</a> ·
     <a href="/github/Patricked-code">Patricked-code</a> ·
@@ -419,6 +422,19 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding/objectives');
       res.status(500).json({ error: 'objective_traceability_failed' });
+    }
+  });
+
+  app.get('/git/onboarding/tasks', requireWebLogin, async (_req, res) => {
+    try {
+      const index = await loadExecutionTaskIndex();
+      res.json({
+        summary: summarizeExecutionTaskIndex(index),
+        index
+      });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/tasks');
+      res.status(500).json({ error: 'execution_tasks_failed' });
     }
   });
 

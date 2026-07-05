@@ -15,6 +15,7 @@
     "sources:registry": "node scripts/build-source-registry.mjs",
     "pdf:audit": "python scripts/build-pdf-text-audit.py",
     "objectives:index": "python scripts/build-objective-index.py",
+    "tasks:index": "python scripts/build-execution-tasks.py",
     "lint:secrets": "node scripts/check-no-secrets.mjs",
     "docs:check": "node scripts/check-docs.mjs"
   },

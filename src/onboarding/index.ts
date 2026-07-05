@@ -15,6 +15,10 @@ import { buildRegistryRepoFootprints, inspectLocalRepoFootprint } from './repoFo
 import { evaluateRights } from './rights.js';
 import { createServerMappingTemplate, renderServerMapJson } from './serverMapping.js';
 export {
+  loadExecutionTaskIndex,
+  summarizeExecutionTaskIndex
+} from './executionTasks.js';
+export {
   loadObjectiveTraceabilityIndex,
   summarizeObjectiveTraceabilityIndex
 } from './objectiveIndex.js';
