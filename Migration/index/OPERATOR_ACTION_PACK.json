@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:14:07.789266Z",
+  "generatedAt": "2026-07-06T17:21:07.741254Z",
   "generator": "scripts/build-operator-action-pack.py",
   "purpose": "Public-safe operator tracking actions for unresolved WealthTech MCP migration blockers.",
   "safety": {
@@ -15,7 +15,7 @@
   "inputs": {
     "blockerRunbook": {
       "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
-      "generatedAt": "2026-07-06T17:09:51.128858Z",
+      "generatedAt": "2026-07-06T17:21:07.476869Z",
       "summary": {
         "blockerCount": 2,
         "externalActionBlockerCount": 1,
@@ -31,7 +31,7 @@
     },
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-06T17:09:50.823095Z",
+      "generatedAt": "2026-07-06T17:21:07.198105Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,
@@ -74,7 +74,7 @@
     },
     "completionAudit": {
       "path": "Migration/index/COMPLETION_AUDIT.json",
-      "generatedAt": "2026-07-06T17:09:51.313827Z",
+      "generatedAt": "2026-07-06T17:21:07.632788Z",
       "summary": {
         "requirementCount": 9,
         "completeRequirementCount": 5,
@@ -105,7 +105,7 @@
     },
     "operatorActionIssueLog": {
       "path": "Migration/index/OPERATOR_ACTION_ISSUE_LOG.json",
-      "updatedAt": "2026-07-06T17:14:07.683Z",
+      "updatedAt": "2026-07-06T17:20:43.232Z",
       "issueCount": 2
     }
   },

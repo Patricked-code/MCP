@@ -63,6 +63,8 @@ const generatedRelativePaths = new Set([
   'Migration/index/OPERATOR_ACTION_PACK.md',
   'Migration/index/OPERATOR_ACTION_ISSUE_LOG.json',
   'Migration/index/OPERATOR_ACTION_ISSUE_LOG.md',
+  'Migration/index/RESUME_GATE.json',
+  'Migration/index/RESUME_GATE.md',
   'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json',
   'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md'
 ]);

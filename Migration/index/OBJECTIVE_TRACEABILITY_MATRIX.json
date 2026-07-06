@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:09:50.646713Z",
+  "generatedAt": "2026-07-06T17:21:07.080856Z",
   "generator": "scripts/build-objective-index.py",
   "purpose": "Objective traceability matrix for the WealthTech MCP migration corpus.",
   "safety": {
@@ -12,12 +12,12 @@
   "inputs": {
     "sourceRegistry": {
       "path": "Migration/index/SOURCE_REGISTRY.json",
-      "generatedAt": "2026-07-06T17:09:24.851Z",
+      "generatedAt": "2026-07-06T17:20:43.507Z",
       "totals": {
         "sourceFileCount": 102,
         "uniqueContentFileCount": 96,
         "duplicateFileCount": 6,
-        "totalBytes": 24473035,
+        "totalBytes": 24473300,
         "textReadFiles": 88,
         "archiveIndexedFiles": 5,
         "binaryIndexedFiles": 9,
@@ -40,7 +40,7 @@
     },
     "pdfTextAudit": {
       "path": "Migration/index/PDF_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-06T17:09:34.545684Z",
+      "generatedAt": "2026-07-06T17:20:52.058025Z",
       "totals": {
         "pdfDocumentCount": 43,
         "uniquePdfContentCount": 22,
@@ -82,7 +82,7 @@
     },
     "archiveTextAudit": {
       "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-06T17:09:35.479500Z",
+      "generatedAt": "2026-07-06T17:20:52.834659Z",
       "totals": {
         "archiveDocumentCount": 5,
         "archiveDocumentsScanned": 5,
@@ -167,7 +167,7 @@
       "status": "partial_external_connector_authorization_required",
       "sourceSignals": {
         "sourceHitCount": 170,
-        "totalPatternHits": 7229,
+        "totalPatternHits": 7230,
         "textUnitsScanned": 174,
         "secretSignalSourceCount": 0
       },
@@ -366,32 +366,32 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "ae6d8427d7eedb61af42bcda1707e3c0d1c3b0f1529506fd77b204e5ea50f73f"
+          "sha256": "e0e37124e5b5386be7a18961b2f98737cf513d1d543b9e866d83e0f6231eecf7"
         },
         {
           "path": "Migration/index/SOURCE_INGESTION_STATUS.md",
           "exists": true,
-          "sha256": "308dc6172e1b2bcb82c5ab09c1898652285d6aa5519f6b95b5235e8122ca49ac"
+          "sha256": "f6b5e2d4dd1f817ce123003ba2727d48156a54d7334a4b38961ff1b3305ae595"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "aeab2fd30796ae967cbb2452bb115f1bcad6af2e3623f9226aae339abc08bd0b"
+          "sha256": "16f374f073ded2c862a76ff61e2f5b2970e725796b643b294a743c77d8d3d018"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT_STATUS.md",
           "exists": true,
-          "sha256": "9f1ad8af0738038d4f5e982398f904d58052825592c81af93c14b831feae7aec"
+          "sha256": "448f699e7fe0d8273aad7e1649a5133c67c7e7729fb97364dfc520a578bca8f8"
         },
         {
           "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "794d689241158050af772909e9974e5a087ad31b04a60745e168e0d4554857dd"
+          "sha256": "59917faa17c11d19bef8d24e85d4197ce519f5e2076b796f90273d236e39ac1c"
         },
         {
           "path": "Migration/index/ARCHIVE_TEXT_AUDIT_STATUS.md",
           "exists": true,
-          "sha256": "2c60075a08f89a9386836c4191bc435970a531fc68cc52500bde01901890bb2c"
+          "sha256": "d5a85168345bc558b3867d84f401e9b9bdc80f8547661e247d14ed453919d00c"
         }
       ],
       "missingCurrentEvidence": [],
@@ -501,12 +501,12 @@
         {
           "path": "scripts/check-docs.mjs",
           "exists": true,
-          "sha256": "1a2dc06c11a711151e10d461bae947a2153f20dba3c6310849c0b6ebc58fbcc4"
+          "sha256": "12ddb85fe30ca837d7d414f5648251266a455a757a6119878f97757efccd1a2f"
         },
         {
           "path": "tests/onboarding.test.ts",
           "exists": true,
-          "sha256": "bf2f41e6b0b4a600b24a027efed92b5eecb0ee28184b9059c2bdaaad4a072a7d"
+          "sha256": "3e9c7afefbe64b028134619a1bdad5e6ff843fb2bba49720784d475b17810ab3"
         },
         {
           "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
@@ -1109,12 +1109,12 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "ae6d8427d7eedb61af42bcda1707e3c0d1c3b0f1529506fd77b204e5ea50f73f"
+          "sha256": "e0e37124e5b5386be7a18961b2f98737cf513d1d543b9e866d83e0f6231eecf7"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "aeab2fd30796ae967cbb2452bb115f1bcad6af2e3623f9226aae339abc08bd0b"
+          "sha256": "16f374f073ded2c862a76ff61e2f5b2970e725796b643b294a743c77d8d3d018"
         }
       ],
       "missingCurrentEvidence": [],
@@ -1213,22 +1213,22 @@
         {
           "path": "src/onboarding/index.ts",
           "exists": true,
-          "sha256": "c35623dc56ecea9c3172905250742a35bbd10ea550202cff4b1f249863bd3ffb"
+          "sha256": "782121e4761d7a5e87494509880416345308c14183f0401e16bd406216890543"
         },
         {
           "path": "src/server.ts",
           "exists": true,
-          "sha256": "a4fa5f4161195266493b21c64fcdea8c6c40d1f3956540c1259a6e454e6842c3"
+          "sha256": "587bbebd5eee5a9e6d29425abd6d97ec921909eff7e83322bdca60229e622987"
         },
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "ae6d8427d7eedb61af42bcda1707e3c0d1c3b0f1529506fd77b204e5ea50f73f"
+          "sha256": "e0e37124e5b5386be7a18961b2f98737cf513d1d543b9e866d83e0f6231eecf7"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "aeab2fd30796ae967cbb2452bb115f1bcad6af2e3623f9226aae339abc08bd0b"
+          "sha256": "16f374f073ded2c862a76ff61e2f5b2970e725796b643b294a743c77d8d3d018"
         },
         {
           "path": "docs/MCP_ONBOARDING_ENGINE.md",

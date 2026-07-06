@@ -43,6 +43,10 @@ export {
   summarizeOperatorActionPack
 } from './operatorActionPack.js';
 export {
+  loadResumeGate,
+  summarizeResumeGate
+} from './resumeGate.js';
+export {
   buildSourceIngestionSnapshot,
   loadPdfTextAudit,
   loadSourceRegistry,

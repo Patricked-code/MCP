@@ -22,6 +22,7 @@
     "completion:audit": "python scripts/build-completion-audit.py",
     "operator:actions": "python scripts/build-operator-action-pack.py",
     "operator:issues:sync": "node scripts/sync-operator-issue-log.mjs",
+    "resume:gate": "python scripts/build-resume-gate.py",
     "lint:secrets": "node scripts/check-no-secrets.mjs",
     "docs:check": "node scripts/check-docs.mjs"
   },

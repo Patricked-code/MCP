@@ -24,6 +24,7 @@ import {
   loadExecutionTaskIndex,
   loadObjectiveTraceabilityIndex,
   loadOperatorActionPack,
+  loadResumeGate,
   loadServerInventoryCardIndex,
   prepareAndRecordOrganizationProfileBootstrap,
   prepareAndRecordRepoBootstrap,
@@ -36,6 +37,7 @@ import {
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
   summarizeOperatorActionPack,
+  summarizeResumeGate,
   summarizeServerInventoryCardIndex
 } from './onboarding/index.js';
 import type { AgentType } from './onboarding/types.js';
@@ -211,6 +213,7 @@ function nav(): string {
     <a href="/git/onboarding/blockers">Blocages</a> ·
     <a href="/git/onboarding/completion">Complétude</a> ·
     <a href="/git/onboarding/operator-actions">Actions</a> ·
+    <a href="/git/onboarding/resume-gate">Reprise</a> ·
     <a href="/git/onboarding/server-cards">Serveur</a> ·
     <a href="/github">GitHub</a> ·
     <a href="/github/status">Statut JSON</a> ·
@@ -493,6 +496,16 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding/operator-actions');
       res.status(500).json({ error: 'operator_action_pack_failed' });
+    }
+  });
+
+  app.get('/git/onboarding/resume-gate', requireWebLogin, async (_req, res) => {
+    try {
+      const gate = await loadResumeGate();
+      res.json({ summary: summarizeResumeGate(gate), gate });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/resume-gate');
+      res.status(500).json({ error: 'resume_gate_failed' });
     }
   });
 

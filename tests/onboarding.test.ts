@@ -18,6 +18,7 @@ import {
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
   summarizeOperatorActionPack,
+  summarizeResumeGate,
   summarizeServerInventoryCardIndex,
   summarizeSourceRegistry
 } from '../src/onboarding/index.js';
@@ -1070,6 +1071,69 @@ test('operator action pack summary keeps external and private actions separate',
   assert.deepEqual(summary.issueUrls, [
     'https://github.com/Patricked-code/MCP/issues/2',
     'https://github.com/Patricked-code/MCP/issues/3'
+  ]);
+  assert.equal(summary.rawArchiveTextStored, false);
+  assert.equal(summary.rawServerInventoryStored, false);
+  assert.equal(summary.rawSecretsStored, false);
+  assert.equal(summary.productionActionExecuted, false);
+});
+
+test('resume gate summary blocks resume while operator issues remain open', () => {
+  const summary = summarizeResumeGate({
+    version: 1,
+    generatedAt: '2026-07-06T00:00:00.000Z',
+    generator: 'unit',
+    purpose: 'unit',
+    safety: {
+      rawSourceTextStored: false,
+      rawPdfTextStored: false,
+      rawArchiveTextStored: false,
+      rawServerInventoryStored: false,
+      rawSecretsStored: false,
+      productionActionExecuted: false,
+      publicationMode: 'issue_states_blocker_ids_requirement_ids_and_resume_decision_only'
+    },
+    inputs: {},
+    summary: {
+      resumeAllowed: false,
+      status: 'resume_blocked_operator_actions_pending',
+      reasonCount: 4,
+      reasons: [
+        '2 operator blocker issue(s) are still open.',
+        '2 completion blocker(s) remain unresolved.',
+        '4 full-objective requirement(s) remain incomplete.',
+        '4 executable MCP task(s) remain blocked.'
+      ],
+      openIssueCount: 2,
+      closedIssueCount: 0,
+      unresolvedBlockerCount: 2,
+      incompleteRequirementCount: 4,
+      blockedTaskCount: 4,
+      unresolvedBlockerIds: [
+        'github_connector_not_authorized_on_target_org',
+        'production_actions_require_private_inventory_and_approval'
+      ],
+      incompleteRequirementIds: [
+        'authorize_connector_on_target_org'
+      ],
+      blockedTaskIds: [
+        'authorize_github_connector_on_chainsolutions'
+      ]
+    },
+    checks: [],
+    resumeCommandsWhenUnblocked: ['sync', 'test']
+  });
+
+  assert.equal(summary.resumeAllowed, false);
+  assert.equal(summary.status, 'resume_blocked_operator_actions_pending');
+  assert.equal(summary.openIssueCount, 2);
+  assert.equal(summary.unresolvedBlockerCount, 2);
+  assert.equal(summary.incompleteRequirementCount, 4);
+  assert.equal(summary.blockedTaskCount, 4);
+  assert.equal(summary.resumeCommandCount, 2);
+  assert.deepEqual(summary.unresolvedBlockerIds, [
+    'github_connector_not_authorized_on_target_org',
+    'production_actions_require_private_inventory_and_approval'
   ]);
   assert.equal(summary.rawArchiveTextStored, false);
   assert.equal(summary.rawServerInventoryStored, false);

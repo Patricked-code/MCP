@@ -1,6 +1,6 @@
 # Operator action issue log - Migration WealthTech
 
-Updated at: 2026-07-06T17:14:07.683Z
+Updated at: 2026-07-06T17:20:43.232Z
 
 This file records public-safe GitHub issue references for the operator actions that unblock the full WealthTech MCP migration objective. It does not store raw source text, raw PDF text, raw archive text, raw server inventory, tokens, private keys, `.env` values, recovery codes or production action output.
 
