@@ -19,6 +19,7 @@ OBJECTIVE_MATRIX_PATH = INDEX_DIR / "OBJECTIVE_TRACEABILITY_MATRIX.json"
 TASKS_PATH = INDEX_DIR / "MCP_EXECUTION_TASKS.json"
 SERVER_CARDS_PATH = SERVER_DIR / "PRIVATE_SERVER_INVENTORY_TASK_CARDS.json"
 BLOCKERS_PATH = INDEX_DIR / "BLOCKER_RESOLUTION_RUNBOOK.json"
+EVIDENCE_GATE_PATH = INDEX_DIR / "BLOCKER_EVIDENCE_GATE.json"
 OUTPUT_JSON_PATH = INDEX_DIR / "COMPLETION_AUDIT.json"
 OUTPUT_MD_PATH = INDEX_DIR / "COMPLETION_AUDIT.md"
 
@@ -30,6 +31,27 @@ def now_iso() -> str:
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def load_evidence_gate(blockers: dict[str, Any]) -> dict[str, Any]:
+    if EVIDENCE_GATE_PATH.exists():
+        return load_json(EVIDENCE_GATE_PATH)
+
+    blocker_ids = list(blockers.get("summary", {}).get("blockerIds", []))
+    return {
+        "version": 1,
+        "generatedAt": None,
+        "generator": "scripts/build-completion-audit.py:fallback",
+        "summary": {
+            "blockerCount": len(blocker_ids),
+            "resolutionReadyCount": 0,
+            "unresolvedBlockerCount": len(blocker_ids),
+            "allBlockersEvidenceReady": False,
+            "resolutionReadyBlockerIds": [],
+            "unresolvedBlockerIds": blocker_ids,
+        },
+        "blockers": [],
+    }
 
 
 def sha256_file(path: Path) -> str | None:
@@ -95,6 +117,7 @@ def build_requirements(inputs: dict[str, dict[str, Any]]) -> list[dict[str, Any]
     tasks = inputs["executionTasks"]
     server_cards = inputs["serverCards"]
     blockers = inputs["blockerRunbook"]
+    evidence_gate = inputs["blockerEvidenceGate"]
 
     source_totals = source.get("totals", {})
     pdf_totals = pdf.get("totals", {})
@@ -104,6 +127,13 @@ def build_requirements(inputs: dict[str, dict[str, Any]]) -> list[dict[str, Any]
     card_summary = server_cards.get("summary", {})
     blocker_summary = blockers.get("summary", {})
     blocker_ids = list(blocker_summary.get("blockerIds", []))
+    evidence_summary = evidence_gate.get("summary", {})
+    unresolved_blocker_ids = list(evidence_summary.get("unresolvedBlockerIds", blocker_ids))
+
+    github_blocker_id = "github_connector_not_authorized_on_target_org"
+    server_blocker_id = "production_actions_require_private_inventory_and_approval"
+    github_blocker_unresolved = github_blocker_id in unresolved_blocker_ids
+    server_blocker_unresolved = server_blocker_id in unresolved_blocker_ids
 
     return [
         requirement(
@@ -167,20 +197,22 @@ def build_requirements(inputs: dict[str, dict[str, Any]]) -> list[dict[str, Any]
         requirement(
             "authorize_connector_on_target_org",
             "Link chainsolutions-wealthtech to the Codex/MCP GitHub connector",
-            "blocked_external_action_required",
+            "blocked_external_action_required" if github_blocker_unresolved else "verified_complete_operator_evidenced",
             [
                 "Connector installed accounts must include chainsolutions-wealthtech.",
                 "MCP onboarding must no longer report target organization access as blocked.",
                 "GET /git/repos must be able to include organization repositories after authentication.",
+                "BLOCKER_EVIDENCE_GATE must mark github_connector_not_authorized_on_target_org ready for completion audit.",
             ],
             [
                 evidence("Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json", "External connector authorization blocker."),
+                evidence("Migration/index/BLOCKER_EVIDENCE_GATE.json", "Public-safe blocker evidence gate."),
                 evidence("Migration/github/chainsolutions-wealthtech/ORG_ACTIVATION_RUNBOOK.md", "Owner action runbook."),
             ],
-            ["github_connector_not_authorized_on_target_org"],
+            [github_blocker_id] if github_blocker_unresolved else [],
             [
-                "Install or authorize the Codex/MCP GitHub app on chainsolutions-wealthtech.",
-                "Regenerate all source/objective/task/blocker/completion indexes after connector visibility changes.",
+                "Install or authorize the Codex/MCP GitHub app on chainsolutions-wealthtech." if github_blocker_unresolved else "Keep connector evidence public-safe and regenerate indexes after repository visibility changes.",
+                "Regenerate all source/objective/task/blocker/evidence/completion indexes after connector visibility changes.",
             ],
         ),
         requirement(
@@ -206,7 +238,7 @@ def build_requirements(inputs: dict[str, dict[str, Any]]) -> list[dict[str, Any]
         requirement(
             "bootstrap_visible_org_repositories",
             "Bootstrap all visible organization repositories through branch and PR workflow",
-            "blocked_external_action_required",
+            "blocked_external_action_required" if github_blocker_unresolved else "pending_repository_bootstrap_after_connector_evidence",
             [
                 "Connector must list chainsolutions-wealthtech repositories.",
                 "Each visible repository missing MCP files must receive a dedicated onboarding branch and PR.",
@@ -216,34 +248,36 @@ def build_requirements(inputs: dict[str, dict[str, Any]]) -> list[dict[str, Any]
                 evidence("Migration/index/MCP_EXECUTION_TASKS.json", "Repository bootstrap task is blocked by connector visibility."),
                 evidence(".mcp/permissions.json", "Branch and PR safety policy."),
             ],
-            ["github_connector_not_authorized_on_target_org"],
+            [github_blocker_id] if github_blocker_unresolved else [],
             [
-                "Authorize connector access, then call repository bootstrap preparation for every visible target repo.",
+                "Authorize connector access, then call repository bootstrap preparation for every visible target repo." if github_blocker_unresolved else "Call repository bootstrap preparation for every visible target repo.",
             ],
         ),
         requirement(
             "prepare_server_mapping_without_exposing_private_inventory",
             "Prepare repo-server mapping without exposing private server inventory",
-            "partial_sensitive_server_paths_not_published",
+            "partial_sensitive_server_paths_not_published" if server_blocker_unresolved else "verified_complete_private_evidence_summary_available",
             [
                 "Public-safe server inventory cards exist.",
                 "Protected domains, cleanup candidates and backup-review candidates are tracked without raw private paths.",
                 "Private live inventory must stay outside Git.",
+                "BLOCKER_EVIDENCE_GATE must mark production_actions_require_private_inventory_and_approval ready for completion audit.",
             ],
             [
                 evidence("Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json", "Public-safe private inventory task cards."),
+                evidence("Migration/index/BLOCKER_EVIDENCE_GATE.json", "Public-safe blocker evidence gate."),
                 evidence("docs/MCP_SERVER_MAPPING.md", "Public-safe MCP server mapping documentation."),
                 evidence(".mcp/server-map.json", "Repository-local server map template."),
             ],
-            ["production_actions_require_private_inventory_and_approval"],
+            [server_blocker_id] if server_blocker_unresolved else [],
             [
-                "Collect private S1/S2 inventory in an approved non-Git operational location.",
+                "Collect private S1/S2 inventory in an approved non-Git operational location." if server_blocker_unresolved else "Keep private inventory outside Git and publish only reviewed public-safe summaries.",
             ],
         ),
         requirement(
             "execute_migration_steps_with_operator_approval",
             "Apply migration/cleanup steps only after inventory, backup, rollback, tests and approval",
-            "blocked_private_inventory_and_approval",
+            "blocked_private_inventory_and_approval" if server_blocker_unresolved else "pending_operator_approved_execution",
             [
                 "No production deletion, migration, vhost change, service stop or deployment is authorized by these public artifacts.",
                 "Private inventory, backup/export reference, rollback plan and operator approval must exist first.",
@@ -251,12 +285,13 @@ def build_requirements(inputs: dict[str, dict[str, Any]]) -> list[dict[str, Any]
             ],
             [
                 evidence("Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json", "Private inventory and approval blocker."),
+                evidence("Migration/index/BLOCKER_EVIDENCE_GATE.json", "Public-safe blocker evidence gate."),
                 evidence("Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md", "Server task cards and gates."),
                 evidence("Migration/02_PLAN_MIGRATION_ET_SECURITE.md", "Migration and safety plan."),
             ],
-            ["production_actions_require_private_inventory_and_approval"],
+            [server_blocker_id] if server_blocker_unresolved else [],
             [
-                "Complete private operational evidence outside Git, then publish only public-safe summaries.",
+                "Complete private operational evidence outside Git, then publish only public-safe summaries." if server_blocker_unresolved else "Execute only explicitly approved migration steps with rollback and post-action tests.",
             ],
         ),
         requirement(
@@ -274,6 +309,7 @@ def build_requirements(inputs: dict[str, dict[str, Any]]) -> list[dict[str, Any]
                 evidence("scripts/check-docs.mjs", "Required docs/index gate."),
                 evidence("Migration/index/MCP_EXECUTION_TASKS.json", "No-regression command list."),
                 evidence("Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json", "Remaining blockers and resume commands."),
+                evidence("Migration/index/BLOCKER_EVIDENCE_GATE.json", "Public-safe blocker evidence gate."),
             ],
             [],
             [
@@ -283,7 +319,11 @@ def build_requirements(inputs: dict[str, dict[str, Any]]) -> list[dict[str, Any]
     ]
 
 
-def summarize(requirements: list[dict[str, Any]], blockers: dict[str, Any]) -> dict[str, Any]:
+def summarize(
+    requirements: list[dict[str, Any]],
+    blockers: dict[str, Any],
+    evidence_gate: dict[str, Any],
+) -> dict[str, Any]:
     incomplete = [
         item["id"]
         for item in requirements
@@ -306,6 +346,7 @@ def summarize(requirements: list[dict[str, Any]], blockers: dict[str, Any]) -> d
         if not proof["exists"]
     ]
     blocker_ids = list(blockers.get("summary", {}).get("blockerIds", []))
+    unresolved_blocker_ids = list(evidence_gate.get("summary", {}).get("unresolvedBlockerIds", blocker_ids))
 
     return {
         "requirementCount": len(requirements),
@@ -316,12 +357,13 @@ def summarize(requirements: list[dict[str, Any]], blockers: dict[str, Any]) -> d
         "blockedRequirementIds": blocked,
         "partialRequirementIds": partial,
         "missingEvidence": missing_evidence,
-        "unresolvedBlockerIds": blocker_ids,
-        "fullObjectiveAchieved": len(blocked) == 0 and len(missing_evidence) == 0,
+        "unresolvedBlockerIds": unresolved_blocker_ids,
+        "fullObjectiveAchieved": len(incomplete) == 0 and len(missing_evidence) == 0 and len(unresolved_blocker_ids) == 0,
     }
 
 
 def build_audit() -> dict[str, Any]:
+    blocker_runbook = load_json(BLOCKERS_PATH)
     inputs = {
         "sourceRegistry": load_json(SOURCE_REGISTRY_PATH),
         "pdfTextAudit": load_json(PDF_TEXT_AUDIT_PATH),
@@ -329,10 +371,30 @@ def build_audit() -> dict[str, Any]:
         "objectiveMatrix": load_json(OBJECTIVE_MATRIX_PATH),
         "executionTasks": load_json(TASKS_PATH),
         "serverCards": load_json(SERVER_CARDS_PATH),
-        "blockerRunbook": load_json(BLOCKERS_PATH),
+        "blockerRunbook": blocker_runbook,
+        "blockerEvidenceGate": load_evidence_gate(blocker_runbook),
     }
     requirements = build_requirements(inputs)
-    summary = summarize(requirements, inputs["blockerRunbook"])
+    summary = summarize(requirements, inputs["blockerRunbook"], inputs["blockerEvidenceGate"])
+    unresolved = summary["unresolvedBlockerIds"]
+    incomplete = summary["incompleteRequirementIds"]
+    if unresolved:
+        reason = "Public-safe blocker evidence gate still reports unresolved blockers: {items}.".format(
+            items=", ".join(unresolved)
+        )
+    elif incomplete:
+        reason = "Some full-objective requirements remain incomplete after blocker evidence: {items}.".format(
+            items=", ".join(incomplete)
+        )
+    else:
+        reason = "All requirements are evidenced and unblocked."
+    decision_status = (
+        "complete"
+        if summary["fullObjectiveAchieved"]
+        else "not_complete_blockers_remain"
+        if unresolved
+        else "not_complete_requirements_remain"
+    )
 
     return {
         "version": 1,
@@ -384,16 +446,17 @@ def build_audit() -> dict[str, Any]:
                 "generatedAt": inputs["blockerRunbook"].get("generatedAt"),
                 "summary": inputs["blockerRunbook"].get("summary", {}),
             },
+            "blockerEvidenceGate": {
+                "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+                "generatedAt": inputs["blockerEvidenceGate"].get("generatedAt"),
+                "summary": inputs["blockerEvidenceGate"].get("summary", {}),
+            },
         },
         "summary": summary,
         "completionDecision": {
             "fullObjectiveAchieved": summary["fullObjectiveAchieved"],
-            "status": "not_complete_blockers_remain" if not summary["fullObjectiveAchieved"] else "complete",
-            "reason": (
-                "Codex/MCP connector authorization on chainsolutions-wealthtech and private server inventory/operator approval remain unresolved."
-                if not summary["fullObjectiveAchieved"]
-                else "All requirements are evidenced and unblocked."
-            ),
+            "status": decision_status,
+            "reason": reason,
         },
         "requirements": requirements,
     }

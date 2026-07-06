@@ -23,6 +23,10 @@ export {
   summarizeBlockerResolutionRunbook
 } from './blockerResolution.js';
 export {
+  loadBlockerEvidenceGate,
+  summarizeBlockerEvidenceGate
+} from './blockerEvidenceGate.js';
+export {
   loadCompletionAudit,
   summarizeCompletionAudit
 } from './completionAudit.js';

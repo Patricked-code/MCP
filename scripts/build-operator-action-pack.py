@@ -111,7 +111,7 @@ def build_actions(
     common_safety = [
         "No raw token, `.env` value, private key, recovery code or private server inventory is pasted into the issue.",
         "No production action is executed from this public tracking issue.",
-        "After evidence changes, regenerate source/PDF/archive/objective/task/blocker/completion/operator-action artifacts and run the no-regression gate.",
+        "After evidence changes, regenerate source/PDF/archive/objective/task/blocker/evidence/completion/operator-action artifacts and run the no-regression gate.",
     ]
 
     definitions = [

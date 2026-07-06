@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:28:21.913071Z",
+  "generatedAt": "2026-07-06T17:38:19.648422Z",
   "generator": "scripts/build-completion-audit.py",
   "purpose": "Requirement-by-requirement completion audit for the full WealthTech MCP migration objective.",
   "safety": {
@@ -15,12 +15,12 @@
   "inputs": {
     "sourceRegistry": {
       "path": "Migration/index/SOURCE_REGISTRY.json",
-      "generatedAt": "2026-07-06T17:27:56.381Z",
+      "generatedAt": "2026-07-06T17:37:54.218Z",
       "totals": {
         "sourceFileCount": 102,
         "uniqueContentFileCount": 96,
         "duplicateFileCount": 6,
-        "totalBytes": 24473549,
+        "totalBytes": 24473834,
         "textReadFiles": 88,
         "archiveIndexedFiles": 5,
         "binaryIndexedFiles": 9,
@@ -43,7 +43,7 @@
     },
     "pdfTextAudit": {
       "path": "Migration/index/PDF_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-06T17:28:05.181209Z",
+      "generatedAt": "2026-07-06T17:38:03.149467Z",
       "totals": {
         "pdfDocumentCount": 43,
         "uniquePdfContentCount": 22,
@@ -85,7 +85,7 @@
     },
     "archiveTextAudit": {
       "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-06T17:28:06.040895Z",
+      "generatedAt": "2026-07-06T17:38:04.012335Z",
       "totals": {
         "archiveDocumentCount": 5,
         "archiveDocumentsScanned": 5,
@@ -147,7 +147,7 @@
     },
     "objectiveMatrix": {
       "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
-      "generatedAt": "2026-07-06T17:28:21.381656Z",
+      "generatedAt": "2026-07-06T17:38:19.010469Z",
       "summary": {
         "objectiveCount": 9,
         "statusCounts": {
@@ -167,7 +167,7 @@
     },
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-06T17:28:21.516681Z",
+      "generatedAt": "2026-07-06T17:38:19.146849Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,
@@ -210,7 +210,7 @@
     },
     "serverCards": {
       "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
-      "generatedAt": "2026-07-06T17:28:21.627289Z",
+      "generatedAt": "2026-07-06T17:38:19.273793Z",
       "summary": {
         "cardCount": 6,
         "readyCardCount": 6,
@@ -247,7 +247,7 @@
     },
     "blockerRunbook": {
       "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
-      "generatedAt": "2026-07-06T17:28:21.754404Z",
+      "generatedAt": "2026-07-06T17:38:19.399656Z",
       "summary": {
         "blockerCount": 2,
         "externalActionBlockerCount": 1,
@@ -256,6 +256,32 @@
         "blockedObjectiveCount": 4,
         "blockedServerCardCount": 4,
         "blockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    },
+    "blockerEvidenceGate": {
+      "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+      "generatedAt": "2026-07-06T17:38:19.521651Z",
+      "summary": {
+        "blockerCount": 2,
+        "resolutionReadyCount": 0,
+        "unresolvedBlockerCount": 2,
+        "openIssueBlockerCount": 2,
+        "missingEvidenceRecordCount": 2,
+        "incompleteAcceptanceEvidenceCount": 2,
+        "allBlockersEvidenceReady": false,
+        "resolutionReadyBlockerIds": [],
+        "unresolvedBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ],
+        "openIssueBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ],
+        "missingEvidenceRecordBlockerIds": [
           "github_connector_not_authorized_on_target_org",
           "production_actions_require_private_inventory_and_approval"
         ]
@@ -292,7 +318,7 @@
   "completionDecision": {
     "fullObjectiveAchieved": false,
     "status": "not_complete_blockers_remain",
-    "reason": "Codex/MCP connector authorization on chainsolutions-wealthtech and private server inventory/operator approval remain unresolved."
+    "reason": "Public-safe blocker evidence gate still reports unresolved blockers: github_connector_not_authorized_on_target_org, production_actions_require_private_inventory_and_approval."
   },
   "requirements": [
     {
@@ -308,13 +334,13 @@
         {
           "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
           "exists": true,
-          "sha256": "b97ff98344a5e8338f0f222b622a6d29a9756d90c981293fcbced53d2fbfe4fc",
+          "sha256": "d4a9bc0f9afca9125dd605e07ec5fa13e816f656545538a464b978ba962f398a",
           "note": "Generated objective matrix."
         },
         {
           "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.md",
           "exists": true,
-          "sha256": "701384a704237ec1a4bbc6acc353b6e0077dced324bbbda4b03baef43d57f491",
+          "sha256": "a793c8be62b88973a329661bc6220e826bf41d0ab9937843fa56d99f2f335ac0",
           "note": "Human-readable objective matrix."
         }
       ],
@@ -338,19 +364,19 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "fc6a97daf66ae7756043ef09ad19cecead1d58b9b57862458bf0206f5fce45f9",
+          "sha256": "551d491ba4b717f39efae865b962965a5053be11561e92d4b0011d325bda5265",
           "note": "Direct source inventory."
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "1389c7903ec8c5b3ecdd9bee5724c2bb9dfe6f0343ed202b336cde4d04e853bd",
+          "sha256": "269c7682a8ce0f8cadfd9f78c86da8b93a421de091dbc75914e79b27b53f2184",
           "note": "PDF text extraction audit."
         },
         {
           "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "642fa1bc413009e37d0b76cc8dd684d4ffd23e4c315f6d5898345a55883f32b6",
+          "sha256": "4367538e73826b18b96532a048ed77c52bbb5c301004f0afce22b8bd209c6d6f",
           "note": "ZIP archive text audit."
         }
       ],
@@ -400,14 +426,21 @@
       "acceptanceCriteria": [
         "Connector installed accounts must include chainsolutions-wealthtech.",
         "MCP onboarding must no longer report target organization access as blocked.",
-        "GET /git/repos must be able to include organization repositories after authentication."
+        "GET /git/repos must be able to include organization repositories after authentication.",
+        "BLOCKER_EVIDENCE_GATE must mark github_connector_not_authorized_on_target_org ready for completion audit."
       ],
       "evidence": [
         {
           "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
           "exists": true,
-          "sha256": "456ae91f538edff58eeaac4862a2ceb1e233dcc8509a8a28e82d914d9bae2041",
+          "sha256": "7c1f0c1533b3ed759a1298adec0c94050db5f0e3f622e35fd2ba90cf413bffeb",
           "note": "External connector authorization blocker."
+        },
+        {
+          "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+          "exists": true,
+          "sha256": "a1b255c94c385ec020a35324adc68d5d55e3265232ac4dbca8d8f7cdee54846f",
+          "note": "Public-safe blocker evidence gate."
         },
         {
           "path": "Migration/github/chainsolutions-wealthtech/ORG_ACTIVATION_RUNBOOK.md",
@@ -421,7 +454,7 @@
       ],
       "nextActions": [
         "Install or authorize the Codex/MCP GitHub app on chainsolutions-wealthtech.",
-        "Regenerate all source/objective/task/blocker/completion indexes after connector visibility changes."
+        "Regenerate all source/objective/task/blocker/evidence/completion indexes after connector visibility changes."
       ]
     },
     {
@@ -437,19 +470,19 @@
         {
           "path": "src/onboarding/index.ts",
           "exists": true,
-          "sha256": "e0cc5e8c724f9e05f39fc3f35d7c3f83fcd76b92f5a0614c08c990af916f148d",
+          "sha256": "30b7692b91258cbd81804a60986800fbb45d2e6d1a6162ec75e8fe7845018795",
           "note": "MCP onboarding engine entrypoint."
         },
         {
           "path": "src/server.ts",
           "exists": true,
-          "sha256": "cdf633ef3e82fe8790c7550dbb56b31bea1b8a2f8c1f02bede2d7e88b5129e34",
+          "sha256": "6fa1f3fed811c3e14581bcd9372dccc152a2e6dd46a2f1f57f4a240f7fd8faa8",
           "note": "Protected web/API routes."
         },
         {
           "path": "tests/onboarding.test.ts",
           "exists": true,
-          "sha256": "1b5d79c9ae0ac98ef0aafb1914df6cd65f7542432da1b2c64bfa65abd308d8d5",
+          "sha256": "3a75630d2fa8254c657675820b502002b1cf0d983ebcaab9dcce9d2953bc0fcb",
           "note": "Onboarding safeguard tests."
         },
         {
@@ -477,7 +510,7 @@
         {
           "path": "Migration/index/MCP_EXECUTION_TASKS.json",
           "exists": true,
-          "sha256": "a661b009198199680a9758e5261310614174493fff41108356f60562a7ed5ea1",
+          "sha256": "2e7fb2aa0f9b74d6d62b3a2c56652d858c4170c4555b2f81a86d091ae6f5f1ca",
           "note": "Repository bootstrap task is blocked by connector visibility."
         },
         {
@@ -501,14 +534,21 @@
       "acceptanceCriteria": [
         "Public-safe server inventory cards exist.",
         "Protected domains, cleanup candidates and backup-review candidates are tracked without raw private paths.",
-        "Private live inventory must stay outside Git."
+        "Private live inventory must stay outside Git.",
+        "BLOCKER_EVIDENCE_GATE must mark production_actions_require_private_inventory_and_approval ready for completion audit."
       ],
       "evidence": [
         {
           "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
           "exists": true,
-          "sha256": "e79c300ea0441efd971e1f41e4777e528712de5d30a4cfe4656f83fc5928e99c",
+          "sha256": "5f7f843c8e70dca85491e7b0e9572c8473a9c7002953f908eba6cf44a6e6e14d",
           "note": "Public-safe private inventory task cards."
+        },
+        {
+          "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+          "exists": true,
+          "sha256": "a1b255c94c385ec020a35324adc68d5d55e3265232ac4dbca8d8f7cdee54846f",
+          "note": "Public-safe blocker evidence gate."
         },
         {
           "path": "docs/MCP_SERVER_MAPPING.md",
@@ -543,13 +583,19 @@
         {
           "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
           "exists": true,
-          "sha256": "456ae91f538edff58eeaac4862a2ceb1e233dcc8509a8a28e82d914d9bae2041",
+          "sha256": "7c1f0c1533b3ed759a1298adec0c94050db5f0e3f622e35fd2ba90cf413bffeb",
           "note": "Private inventory and approval blocker."
+        },
+        {
+          "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+          "exists": true,
+          "sha256": "a1b255c94c385ec020a35324adc68d5d55e3265232ac4dbca8d8f7cdee54846f",
+          "note": "Public-safe blocker evidence gate."
         },
         {
           "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md",
           "exists": true,
-          "sha256": "f12ef2e31b56437849ea59cbdb714e18849e57d4375b46a7aca618de7f36c208",
+          "sha256": "caf157980bf1be4395e6891674a8f4f1a28d8dabf58e732727545b9aafcaa9b5",
           "note": "Server task cards and gates."
         },
         {
@@ -586,20 +632,26 @@
         {
           "path": "scripts/check-docs.mjs",
           "exists": true,
-          "sha256": "868ff0b902635cd2eeef60197fb5ee8c1c0a5a24170eb5228d1b6248bb857bb0",
+          "sha256": "ce78adeaa815652addeefe56c0cb5a2ae6d2fb813676cefc6c9834bae02bb2e4",
           "note": "Required docs/index gate."
         },
         {
           "path": "Migration/index/MCP_EXECUTION_TASKS.json",
           "exists": true,
-          "sha256": "a661b009198199680a9758e5261310614174493fff41108356f60562a7ed5ea1",
+          "sha256": "2e7fb2aa0f9b74d6d62b3a2c56652d858c4170c4555b2f81a86d091ae6f5f1ca",
           "note": "No-regression command list."
         },
         {
           "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
           "exists": true,
-          "sha256": "456ae91f538edff58eeaac4862a2ceb1e233dcc8509a8a28e82d914d9bae2041",
+          "sha256": "7c1f0c1533b3ed759a1298adec0c94050db5f0e3f622e35fd2ba90cf413bffeb",
           "note": "Remaining blockers and resume commands."
+        },
+        {
+          "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+          "exists": true,
+          "sha256": "a1b255c94c385ec020a35324adc68d5d55e3265232ac4dbca8d8f7cdee54846f",
+          "note": "Public-safe blocker evidence gate."
         }
       ],
       "blockedBy": [],

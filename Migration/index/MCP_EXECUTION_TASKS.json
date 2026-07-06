@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:28:21.516681Z",
+  "generatedAt": "2026-07-06T17:38:19.146849Z",
   "generator": "scripts/build-execution-tasks.py",
   "purpose": "Executable MCP task plan derived from the WealthTech objective traceability matrix.",
   "safety": {
@@ -13,7 +13,7 @@
   "inputs": {
     "objectiveTraceabilityMatrix": {
       "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
-      "generatedAt": "2026-07-06T17:28:21.381656Z",
+      "generatedAt": "2026-07-06T17:38:19.010469Z",
       "summary": {
         "objectiveCount": 9,
         "statusCounts": {

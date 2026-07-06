@@ -15,6 +15,7 @@ COMPLETION_AUDIT_PATH = INDEX_DIR / "COMPLETION_AUDIT.json"
 TASKS_PATH = INDEX_DIR / "MCP_EXECUTION_TASKS.json"
 OPERATOR_ACTION_PACK_PATH = INDEX_DIR / "OPERATOR_ACTION_PACK.json"
 OPERATOR_ISSUE_LOG_PATH = INDEX_DIR / "OPERATOR_ACTION_ISSUE_LOG.json"
+BLOCKER_EVIDENCE_GATE_PATH = INDEX_DIR / "BLOCKER_EVIDENCE_GATE.json"
 OUTPUT_JSON_PATH = INDEX_DIR / "RESUME_GATE.json"
 OUTPUT_MD_PATH = INDEX_DIR / "RESUME_GATE.md"
 
@@ -50,6 +51,7 @@ def build_gate() -> dict[str, Any]:
     tasks = load_json(TASKS_PATH)
     actions = load_json(OPERATOR_ACTION_PACK_PATH)
     issue_log = load_json(OPERATOR_ISSUE_LOG_PATH)
+    evidence_gate = load_json(BLOCKER_EVIDENCE_GATE_PATH) if BLOCKER_EVIDENCE_GATE_PATH.exists() else {"summary": {}}
 
     open_items = open_issues(issue_log)
     closed_items = closed_issues(issue_log)
@@ -134,6 +136,11 @@ def build_gate() -> dict[str, Any]:
                 "updatedAt": issue_log.get("updatedAt"),
                 "issueCount": len(issue_log.get("issues", [])),
             },
+            "blockerEvidenceGate": {
+                "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+                "generatedAt": evidence_gate.get("generatedAt"),
+                "summary": evidence_gate.get("summary", {}),
+            },
         },
         "summary": {
             "resumeAllowed": resume_allowed,
@@ -153,6 +160,7 @@ def build_gate() -> dict[str, Any]:
         "resumeCommandsWhenUnblocked": [
             "node scripts/sync-operator-issue-log.mjs",
             "python scripts/build-operator-action-pack.py",
+            "python scripts/build-blocker-evidence-gate.py",
             "python scripts/build-completion-audit.py",
             "python scripts/build-resume-gate.py",
             "python scripts/build-execution-runway.py",

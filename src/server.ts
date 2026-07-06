@@ -19,6 +19,7 @@ import {
   getRepoDetail,
   buildSourceIngestionSnapshot,
   loadArchiveTextAudit,
+  loadBlockerEvidenceGate,
   loadBlockerResolutionRunbook,
   loadCompletionAudit,
   loadExecutionRunway,
@@ -33,6 +34,7 @@ import {
   recordOnboardingAnswer,
   renderOnboardingSnapshotHtml,
   summarizeArchiveTextAudit,
+  summarizeBlockerEvidenceGate,
   summarizeBlockerResolutionRunbook,
   summarizeCompletionAudit,
   summarizeExecutionRunway,
@@ -214,6 +216,7 @@ function nav(): string {
     <a href="/git/onboarding/tasks">Tâches</a> ·
     <a href="/git/onboarding/runway">Étapes</a> ·
     <a href="/git/onboarding/blockers">Blocages</a> ·
+    <a href="/git/onboarding/evidence">Preuves</a> ·
     <a href="/git/onboarding/completion">Complétude</a> ·
     <a href="/git/onboarding/operator-actions">Actions</a> ·
     <a href="/git/onboarding/resume-gate">Reprise</a> ·
@@ -492,6 +495,16 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding/blockers');
       res.status(500).json({ error: 'blocker_resolution_failed' });
+    }
+  });
+
+  app.get('/git/onboarding/evidence', requireWebLogin, async (_req, res) => {
+    try {
+      const gate = await loadBlockerEvidenceGate();
+      res.json({ summary: summarizeBlockerEvidenceGate(gate), gate });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/evidence');
+      res.status(500).json({ error: 'blocker_evidence_gate_failed' });
     }
   });
 

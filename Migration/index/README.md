@@ -27,6 +27,8 @@ Il doit permettre a un agent ou a un humain de retrouver rapidement:
 - `MCP_EXECUTION_TASKS.md` : synthese lisible des taches pretes, bloquees et des gates de non-regression.
 - `BLOCKER_RESOLUTION_RUNBOOK.json` : runbook genere de resolution des blocages restants, criteres d acceptation et commandes de reprise.
 - `BLOCKER_RESOLUTION_RUNBOOK.md` : synthese lisible des blocages, actions externes, preuves attendues et commandes apres resolution.
+- `BLOCKER_EVIDENCE_GATE.json` : gate public-safe des preuves de resolution des blocages, etat des issues, criteres couverts et raisons manquantes.
+- `BLOCKER_EVIDENCE_GATE.md` : synthese lisible des preuves attendues avant qu un blocage soit considere leve par l audit de completude.
 - `COMPLETION_AUDIT.json` : audit genere de completude objectif par objectif, avec preuves, statuts, blocages et decision de cloture.
 - `COMPLETION_AUDIT.md` : synthese lisible de ce qui est prouve, partiel, bloque ou non encore clos.
 - `OPERATOR_ACTION_PACK.json` : paquet genere d actions operateur et corps d issues publics pour lever les blocages restants.

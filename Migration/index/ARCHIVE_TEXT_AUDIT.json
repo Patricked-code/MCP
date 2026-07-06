@@ -1,15 +1,15 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:28:06.040895Z",
+  "generatedAt": "2026-07-06T17:38:04.012335Z",
   "generator": "scripts/build-archive-text-audit.py",
   "sourceRegistry": {
     "path": "Migration/index/SOURCE_REGISTRY.json",
-    "generatedAt": "2026-07-06T17:27:56.381Z",
+    "generatedAt": "2026-07-06T17:37:54.218Z",
     "totals": {
       "sourceFileCount": 102,
       "uniqueContentFileCount": 96,
       "duplicateFileCount": 6,
-      "totalBytes": 24473549,
+      "totalBytes": 24473834,
       "textReadFiles": 88,
       "archiveIndexedFiles": 5,
       "binaryIndexedFiles": 9,

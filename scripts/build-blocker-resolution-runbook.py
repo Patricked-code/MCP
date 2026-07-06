@@ -176,6 +176,7 @@ def build_runbook() -> dict[str, Any]:
             "python scripts/build-execution-tasks.py",
             "python scripts/build-server-inventory-cards.py",
             "python scripts/build-blocker-resolution-runbook.py",
+            "python scripts/build-blocker-evidence-gate.py",
             "python scripts/build-completion-audit.py",
             "python scripts/build-operator-action-pack.py",
             "python scripts/build-resume-gate.py",

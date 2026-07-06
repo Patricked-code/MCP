@@ -15,6 +15,7 @@ TASKS_PATH = INDEX_DIR / "MCP_EXECUTION_TASKS.json"
 COMPLETION_AUDIT_PATH = INDEX_DIR / "COMPLETION_AUDIT.json"
 OPERATOR_ACTION_PACK_PATH = INDEX_DIR / "OPERATOR_ACTION_PACK.json"
 RESUME_GATE_PATH = INDEX_DIR / "RESUME_GATE.json"
+BLOCKER_EVIDENCE_GATE_PATH = INDEX_DIR / "BLOCKER_EVIDENCE_GATE.json"
 SERVER_CARDS_PATH = SERVER_DIR / "PRIVATE_SERVER_INVENTORY_TASK_CARDS.json"
 OUTPUT_JSON_PATH = INDEX_DIR / "EXECUTION_RUNWAY.json"
 OUTPUT_MD_PATH = INDEX_DIR / "EXECUTION_RUNWAY.md"
@@ -104,6 +105,7 @@ def build_runway() -> dict[str, Any]:
     completion = load_json(COMPLETION_AUDIT_PATH)
     actions = load_json(OPERATOR_ACTION_PACK_PATH)
     resume_gate = load_json(RESUME_GATE_PATH)
+    evidence_gate = load_json(BLOCKER_EVIDENCE_GATE_PATH)
     server_cards = load_json(SERVER_CARDS_PATH)
 
     action_lookup = action_by_blocker(actions)
@@ -252,6 +254,7 @@ def build_runway() -> dict[str, Any]:
             ],
             [
                 "Run the resume commands listed by RESUME_GATE.md.",
+                "Confirm BLOCKER_EVIDENCE_GATE.json reports allBlockersEvidenceReady=true.",
                 "Regenerate all public-safe indexes after external/private evidence changes.",
                 "Run no-regression tests before each PR update, merge or production-affecting action.",
             ],
@@ -303,6 +306,11 @@ def build_runway() -> dict[str, Any]:
                 "path": "Migration/index/RESUME_GATE.json",
                 "generatedAt": resume_gate.get("generatedAt"),
                 "summary": resume_summary,
+            },
+            "blockerEvidenceGate": {
+                "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+                "generatedAt": evidence_gate.get("generatedAt"),
+                "summary": evidence_gate.get("summary", {}),
             },
             "serverCards": {
                 "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",

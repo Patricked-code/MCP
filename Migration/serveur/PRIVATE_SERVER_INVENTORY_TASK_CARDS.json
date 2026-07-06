@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:28:21.627289Z",
+  "generatedAt": "2026-07-06T17:38:19.273793Z",
   "generator": "scripts/build-server-inventory-cards.py",
   "purpose": "Public-safe private server inventory task-card templates for WealthTech MCP migration.",
   "safety": {
@@ -12,7 +12,7 @@
   "inputs": {
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-06T17:28:21.516681Z",
+      "generatedAt": "2026-07-06T17:38:19.146849Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,

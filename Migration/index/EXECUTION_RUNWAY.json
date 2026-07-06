@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:28:22.341931Z",
+  "generatedAt": "2026-07-06T17:38:19.988487Z",
   "generator": "scripts/build-execution-runway.py",
   "purpose": "Public-safe execution runway for applying the WealthTech MCP migration objective step by step without regression.",
   "safety": {
@@ -15,7 +15,7 @@
   "inputs": {
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-06T17:28:21.516681Z",
+      "generatedAt": "2026-07-06T17:38:19.146849Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,
@@ -58,7 +58,7 @@
     },
     "completionAudit": {
       "path": "Migration/index/COMPLETION_AUDIT.json",
-      "generatedAt": "2026-07-06T17:28:21.913071Z",
+      "generatedAt": "2026-07-06T17:38:19.648422Z",
       "summary": {
         "requirementCount": 9,
         "completeRequirementCount": 5,
@@ -89,12 +89,12 @@
       "completionDecision": {
         "fullObjectiveAchieved": false,
         "status": "not_complete_blockers_remain",
-        "reason": "Codex/MCP connector authorization on chainsolutions-wealthtech and private server inventory/operator approval remain unresolved."
+        "reason": "Public-safe blocker evidence gate still reports unresolved blockers: github_connector_not_authorized_on_target_org, production_actions_require_private_inventory_and_approval."
       }
     },
     "operatorActionPack": {
       "path": "Migration/index/OPERATOR_ACTION_PACK.json",
-      "generatedAt": "2026-07-06T17:28:22.054208Z",
+      "generatedAt": "2026-07-06T17:38:19.759422Z",
       "summary": {
         "operatorActionCount": 2,
         "externalGithubActionCount": 1,
@@ -118,7 +118,7 @@
     },
     "resumeGate": {
       "path": "Migration/index/RESUME_GATE.json",
-      "generatedAt": "2026-07-06T17:28:22.192455Z",
+      "generatedAt": "2026-07-06T17:38:19.864856Z",
       "summary": {
         "resumeAllowed": false,
         "status": "resume_blocked_operator_actions_pending",
@@ -152,9 +152,35 @@
         ]
       }
     },
+    "blockerEvidenceGate": {
+      "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+      "generatedAt": "2026-07-06T17:38:19.521651Z",
+      "summary": {
+        "blockerCount": 2,
+        "resolutionReadyCount": 0,
+        "unresolvedBlockerCount": 2,
+        "openIssueBlockerCount": 2,
+        "missingEvidenceRecordCount": 2,
+        "incompleteAcceptanceEvidenceCount": 2,
+        "allBlockersEvidenceReady": false,
+        "resolutionReadyBlockerIds": [],
+        "unresolvedBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ],
+        "openIssueBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ],
+        "missingEvidenceRecordBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    },
     "serverCards": {
       "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
-      "generatedAt": "2026-07-06T17:28:21.627289Z",
+      "generatedAt": "2026-07-06T17:38:19.273793Z",
       "summary": {
         "cardCount": 6,
         "readyCardCount": 6,
@@ -437,6 +463,7 @@
       ],
       "actions": [
         "Run the resume commands listed by RESUME_GATE.md.",
+        "Confirm BLOCKER_EVIDENCE_GATE.json reports allBlockersEvidenceReady=true.",
         "Regenerate all public-safe indexes after external/private evidence changes.",
         "Run no-regression tests before each PR update, merge or production-affecting action."
       ],
@@ -448,6 +475,7 @@
       "verificationCommands": [
         "node scripts/sync-operator-issue-log.mjs",
         "python scripts/build-operator-action-pack.py",
+        "python scripts/build-blocker-evidence-gate.py",
         "python scripts/build-completion-audit.py",
         "python scripts/build-resume-gate.py",
         "python scripts/build-execution-runway.py",

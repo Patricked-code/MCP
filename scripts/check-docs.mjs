@@ -50,6 +50,8 @@ const required = [
   'Migration/index/MCP_EXECUTION_TASKS.md',
   'Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json',
   'Migration/index/BLOCKER_RESOLUTION_RUNBOOK.md',
+  'Migration/index/BLOCKER_EVIDENCE_GATE.json',
+  'Migration/index/BLOCKER_EVIDENCE_GATE.md',
   'Migration/index/COMPLETION_AUDIT.json',
   'Migration/index/COMPLETION_AUDIT.md',
   'Migration/index/OPERATOR_ACTION_PACK.json',

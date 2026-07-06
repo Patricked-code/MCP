@@ -11,6 +11,7 @@ import {
   prepareAndRecordRepoBootstrap,
   prepareRepoBootstrap,
   recordOrganizationSecurityPolicyVerification,
+  summarizeBlockerEvidenceGate,
   summarizeBlockerResolutionRunbook,
   summarizeArchiveTextAudit,
   summarizeCompletionAudit,
@@ -882,6 +883,66 @@ test('blocker resolution summary keeps external and private blockers explicit', 
   assert.equal(summary.blockedTaskCount, 4);
   assert.equal(summary.blockedServerCardCount, 4);
   assert.equal(summary.resumeCommandCount, 2);
+  assert.equal(summary.rawServerInventoryStored, false);
+  assert.equal(summary.rawSecretsStored, false);
+  assert.equal(summary.productionActionExecuted, false);
+});
+
+test('blocker evidence gate summary refuses unresolved public-safe evidence', () => {
+  const summary = summarizeBlockerEvidenceGate({
+    version: 1,
+    generatedAt: '2026-07-06T00:00:00.000Z',
+    generator: 'unit',
+    purpose: 'unit',
+    safety: {
+      rawSourceTextStored: false,
+      rawPdfTextStored: false,
+      rawArchiveTextStored: false,
+      rawServerInventoryStored: false,
+      rawSecretsStored: false,
+      productionActionExecuted: false,
+      publicationMode: 'issue_states_evidence_counts_acceptance_counts_and_resolution_flags_only'
+    },
+    inputs: {},
+    summary: {
+      blockerCount: 2,
+      resolutionReadyCount: 0,
+      unresolvedBlockerCount: 2,
+      openIssueBlockerCount: 2,
+      missingEvidenceRecordCount: 2,
+      incompleteAcceptanceEvidenceCount: 2,
+      allBlockersEvidenceReady: false,
+      resolutionReadyBlockerIds: [],
+      unresolvedBlockerIds: [
+        'github_connector_not_authorized_on_target_org',
+        'production_actions_require_private_inventory_and_approval'
+      ],
+      openIssueBlockerIds: [
+        'github_connector_not_authorized_on_target_org',
+        'production_actions_require_private_inventory_and_approval'
+      ],
+      missingEvidenceRecordBlockerIds: [
+        'github_connector_not_authorized_on_target_org',
+        'production_actions_require_private_inventory_and_approval'
+      ]
+    },
+    blockers: [],
+    publicEvidenceSchema: {}
+  });
+
+  assert.equal(summary.blockerCount, 2);
+  assert.equal(summary.resolutionReadyCount, 0);
+  assert.equal(summary.unresolvedBlockerCount, 2);
+  assert.equal(summary.openIssueBlockerCount, 2);
+  assert.equal(summary.missingEvidenceRecordCount, 2);
+  assert.equal(summary.incompleteAcceptanceEvidenceCount, 2);
+  assert.equal(summary.allBlockersEvidenceReady, false);
+  assert.deepEqual(summary.resolutionReadyBlockerIds, []);
+  assert.deepEqual(summary.unresolvedBlockerIds, [
+    'github_connector_not_authorized_on_target_org',
+    'production_actions_require_private_inventory_and_approval'
+  ]);
+  assert.equal(summary.rawArchiveTextStored, false);
   assert.equal(summary.rawServerInventoryStored, false);
   assert.equal(summary.rawSecretsStored, false);
   assert.equal(summary.productionActionExecuted, false);

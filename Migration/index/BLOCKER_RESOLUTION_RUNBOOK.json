@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:28:21.754404Z",
+  "generatedAt": "2026-07-06T17:38:19.399656Z",
   "generator": "scripts/build-blocker-resolution-runbook.py",
   "purpose": "Public-safe resolution runbook for the remaining MCP migration blockers.",
   "safety": {
@@ -14,7 +14,7 @@
   "inputs": {
     "objectiveTraceabilityMatrix": {
       "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
-      "generatedAt": "2026-07-06T17:28:21.381656Z",
+      "generatedAt": "2026-07-06T17:38:19.010469Z",
       "summary": {
         "objectiveCount": 9,
         "statusCounts": {
@@ -34,7 +34,7 @@
     },
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-06T17:28:21.516681Z",
+      "generatedAt": "2026-07-06T17:38:19.146849Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,
@@ -77,7 +77,7 @@
     },
     "serverInventoryCards": {
       "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
-      "generatedAt": "2026-07-06T17:28:21.627289Z",
+      "generatedAt": "2026-07-06T17:38:19.273793Z",
       "summary": {
         "cardCount": 6,
         "readyCardCount": 6,
@@ -209,6 +209,7 @@
     "python scripts/build-execution-tasks.py",
     "python scripts/build-server-inventory-cards.py",
     "python scripts/build-blocker-resolution-runbook.py",
+    "python scripts/build-blocker-evidence-gate.py",
     "python scripts/build-completion-audit.py",
     "python scripts/build-operator-action-pack.py",
     "python scripts/build-resume-gate.py",
