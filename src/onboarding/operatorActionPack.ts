@@ -16,6 +16,9 @@ export type OperatorAction = {
   acceptanceCriteria: string[];
   verificationCommands: string[];
   safetyRules: string[];
+  issueNumber?: number | null;
+  issueUrl?: string | null;
+  issueState?: string | null;
   issueBodyMarkdown: string;
 };
 
@@ -39,9 +42,11 @@ export type OperatorActionPack = {
     externalGithubActionCount: number;
     privateOperatorActionCount: number;
     issueReadyActionCount: number;
+    publishedIssueCount: number;
     unresolvedBlockerCount: number;
     unresolvedBlockerIds: string[];
     actionIds: string[];
+    issueUrls: string[];
   };
   actions: OperatorAction[];
 };
@@ -52,9 +57,11 @@ export type OperatorActionPackSummary = {
   externalGithubActionCount: number;
   privateOperatorActionCount: number;
   issueReadyActionCount: number;
+  publishedIssueCount: number;
   unresolvedBlockerCount: number;
   unresolvedBlockerIds: string[];
   actionIds: string[];
+  issueUrls: string[];
   rawSourceTextStored: boolean;
   rawPdfTextStored: boolean;
   rawArchiveTextStored: boolean;
@@ -98,9 +105,11 @@ export function summarizeOperatorActionPack(pack: OperatorActionPack): OperatorA
     externalGithubActionCount: pack.summary.externalGithubActionCount,
     privateOperatorActionCount: pack.summary.privateOperatorActionCount,
     issueReadyActionCount: pack.summary.issueReadyActionCount,
+    publishedIssueCount: pack.summary.publishedIssueCount,
     unresolvedBlockerCount: pack.summary.unresolvedBlockerCount,
     unresolvedBlockerIds: pack.summary.unresolvedBlockerIds,
     actionIds: pack.summary.actionIds,
+    issueUrls: pack.summary.issueUrls,
     rawSourceTextStored: pack.safety.rawSourceTextStored,
     rawPdfTextStored: pack.safety.rawPdfTextStored,
     rawArchiveTextStored: pack.safety.rawArchiveTextStored,

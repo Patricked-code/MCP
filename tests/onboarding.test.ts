@@ -998,6 +998,7 @@ test('operator action pack summary keeps external and private actions separate',
       externalGithubActionCount: 1,
       privateOperatorActionCount: 1,
       issueReadyActionCount: 2,
+      publishedIssueCount: 2,
       unresolvedBlockerCount: 2,
       unresolvedBlockerIds: [
         'github_connector_not_authorized_on_target_org',
@@ -1006,6 +1007,10 @@ test('operator action pack summary keeps external and private actions separate',
       actionIds: [
         'authorize_github_connector_issue',
         'private_server_inventory_issue'
+      ],
+      issueUrls: [
+        'https://github.com/Patricked-code/MCP/issues/2',
+        'https://github.com/Patricked-code/MCP/issues/3'
       ]
     },
     actions: [
@@ -1024,6 +1029,9 @@ test('operator action pack summary keeps external and private actions separate',
         acceptanceCriteria: [],
         verificationCommands: [],
         safetyRules: [],
+        issueNumber: 2,
+        issueUrl: 'https://github.com/Patricked-code/MCP/issues/2',
+        issueState: 'open',
         issueBodyMarkdown: 'body'
       },
       {
@@ -1041,6 +1049,9 @@ test('operator action pack summary keeps external and private actions separate',
         acceptanceCriteria: [],
         verificationCommands: [],
         safetyRules: [],
+        issueNumber: 3,
+        issueUrl: 'https://github.com/Patricked-code/MCP/issues/3',
+        issueState: 'open',
         issueBodyMarkdown: 'body'
       }
     ]
@@ -1050,10 +1061,15 @@ test('operator action pack summary keeps external and private actions separate',
   assert.equal(summary.externalGithubActionCount, 1);
   assert.equal(summary.privateOperatorActionCount, 1);
   assert.equal(summary.issueReadyActionCount, 2);
+  assert.equal(summary.publishedIssueCount, 2);
   assert.equal(summary.unresolvedBlockerCount, 2);
   assert.deepEqual(summary.actionIds, [
     'authorize_github_connector_issue',
     'private_server_inventory_issue'
+  ]);
+  assert.deepEqual(summary.issueUrls, [
+    'https://github.com/Patricked-code/MCP/issues/2',
+    'https://github.com/Patricked-code/MCP/issues/3'
   ]);
   assert.equal(summary.rawArchiveTextStored, false);
   assert.equal(summary.rawServerInventoryStored, false);

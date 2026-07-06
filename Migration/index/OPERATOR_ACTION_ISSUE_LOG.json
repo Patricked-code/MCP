@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-06T17:07:43Z",
+  "purpose": "Public-safe issue references for operator actions that unblock the WealthTech MCP migration objective.",
+  "safety": {
+    "rawSourceTextStored": false,
+    "rawPdfTextStored": false,
+    "rawArchiveTextStored": false,
+    "rawServerInventoryStored": false,
+    "rawSecretsStored": false,
+    "productionActionExecuted": false,
+    "publicationMode": "issue_numbers_urls_labels_and_public_safe_status_only"
+  },
+  "repository": {
+    "nameWithOwner": "Patricked-code/MCP",
+    "url": "https://github.com/Patricked-code/MCP"
+  },
+  "issues": [
+    {
+      "actionId": "authorize_github_connector_issue",
+      "blockerId": "github_connector_not_authorized_on_target_org",
+      "issueNumber": 2,
+      "issueUrl": "https://github.com/Patricked-code/MCP/issues/2",
+      "issueTitle": "[MCP blocker] Authorize GitHub/Codex/MCP connector on chainsolutions-wealthtech",
+      "state": "open",
+      "labels": [
+        "mcp-blocker",
+        "external-action",
+        "github-connector"
+      ],
+      "recordedAt": "2026-07-06T17:07:43Z"
+    },
+    {
+      "actionId": "private_server_inventory_issue",
+      "blockerId": "production_actions_require_private_inventory_and_approval",
+      "issueNumber": 3,
+      "issueUrl": "https://github.com/Patricked-code/MCP/issues/3",
+      "issueTitle": "[MCP blocker] Collect private server inventory and operator approval evidence",
+      "state": "open",
+      "labels": [
+        "mcp-blocker",
+        "private-inventory",
+        "operator-approval"
+      ],
+      "recordedAt": "2026-07-06T17:07:43Z"
+    }
+  ]
+}

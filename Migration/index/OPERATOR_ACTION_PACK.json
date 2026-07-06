@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-05T20:10:17.822141Z",
+  "generatedAt": "2026-07-06T17:09:51.431074Z",
   "generator": "scripts/build-operator-action-pack.py",
   "purpose": "Public-safe operator tracking actions for unresolved WealthTech MCP migration blockers.",
   "safety": {
@@ -15,7 +15,7 @@
   "inputs": {
     "blockerRunbook": {
       "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
-      "generatedAt": "2026-07-05T20:10:17.487489Z",
+      "generatedAt": "2026-07-06T17:09:51.128858Z",
       "summary": {
         "blockerCount": 2,
         "externalActionBlockerCount": 1,
@@ -31,7 +31,7 @@
     },
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-05T20:10:17.235887Z",
+      "generatedAt": "2026-07-06T17:09:50.823095Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,
@@ -74,7 +74,7 @@
     },
     "completionAudit": {
       "path": "Migration/index/COMPLETION_AUDIT.json",
-      "generatedAt": "2026-07-05T20:10:17.676747Z",
+      "generatedAt": "2026-07-06T17:09:51.313827Z",
       "summary": {
         "requirementCount": 9,
         "completeRequirementCount": 5,
@@ -102,6 +102,11 @@
         ],
         "fullObjectiveAchieved": false
       }
+    },
+    "operatorActionIssueLog": {
+      "path": "Migration/index/OPERATOR_ACTION_ISSUE_LOG.json",
+      "updatedAt": "2026-07-06T17:07:43Z",
+      "issueCount": 2
     }
   },
   "summary": {
@@ -109,6 +114,7 @@
     "externalGithubActionCount": 1,
     "privateOperatorActionCount": 1,
     "issueReadyActionCount": 2,
+    "publishedIssueCount": 2,
     "unresolvedBlockerCount": 2,
     "unresolvedBlockerIds": [
       "github_connector_not_authorized_on_target_org",
@@ -117,6 +123,10 @@
     "actionIds": [
       "authorize_github_connector_issue",
       "private_server_inventory_issue"
+    ],
+    "issueUrls": [
+      "https://github.com/Patricked-code/MCP/issues/2",
+      "https://github.com/Patricked-code/MCP/issues/3"
     ]
   },
   "actions": [
@@ -166,6 +176,9 @@
         "No production action is executed from this public tracking issue.",
         "After evidence changes, regenerate source/PDF/archive/objective/task/blocker/completion/operator-action artifacts and run the no-regression gate."
       ],
+      "issueNumber": 2,
+      "issueUrl": "https://github.com/Patricked-code/MCP/issues/2",
+      "issueState": "open",
       "issueBodyMarkdown": "## Context\n\nThe public organization bootstrap is applied, but the Codex/MCP GitHub connector still cannot list or manage chainsolutions-wealthtech repositories directly.\n\n## Blocker\n\n`github_connector_not_authorized_on_target_org`\n\n## Owner role\n\nchainsolutions-wealthtech organization owner/admin\n\n## Blocked tasks\n\n- authorize_github_connector_on_chainsolutions\n- regenerate_ingestion_after_connector_access\n- bootstrap_visible_org_repositories\n\n## Blocked full-objective requirements\n\n- authorize_connector_on_target_org\n- bootstrap_visible_org_repositories\n\n## Checklist\n\n- [ ] Open the chainsolutions-wealthtech organization settings as an owner/admin.\n- [ ] Install or authorize the GitHub app/connector used by Codex/MCP on the organization.\n- [ ] Grant only repository visibility, branch write and pull request permissions required by the MCP workflow.\n- [ ] Verify the connector sees chainsolutions-wealthtech as an installed or visible organization.\n- [ ] Verify MCP onboarding no longer reports target organization access as blocked.\n\n## Acceptance criteria\n\n- [ ] Connector installed accounts include chainsolutions-wealthtech.\n- [ ] MCP onboarding no longer reports organization access as blocked.\n- [ ] GET /git/repos can include organization repositories after authentication.\n- [ ] No raw token was copied into Git, logs, screenshots or generated artifacts.\n\n## Verification\n\n- [ ] gh api /orgs/chainsolutions-wealthtech\n- [ ] GET /git/onboarding\n- [ ] GET /git/onboarding/tasks\n- [ ] GET /git/onboarding/blockers\n\n## Safety\n\n- [ ] No raw token, `.env` value, private key, recovery code or private server inventory is pasted into the issue.\n- [ ] No production action is executed from this public tracking issue.\n- [ ] After evidence changes, regenerate source/PDF/archive/objective/task/blocker/completion/operator-action artifacts and run the no-regression gate.\n"
     },
     {
@@ -215,6 +228,9 @@
         "No production action is executed from this public tracking issue.",
         "After evidence changes, regenerate source/PDF/archive/objective/task/blocker/completion/operator-action artifacts and run the no-regression gate."
       ],
+      "issueNumber": 3,
+      "issueUrl": "https://github.com/Patricked-code/MCP/issues/3",
+      "issueState": "open",
       "issueBodyMarkdown": "## Context\n\nServer cleanup, migration and deployment actions are intentionally blocked until private S1/S2 inventory, backup, rollback, tests and operator approval exist outside Git.\n\n## Blocker\n\n`production_actions_require_private_inventory_and_approval`\n\n## Owner role\n\nserver operator with explicit human approval\n\n## Blocked tasks\n\n- collect_private_server_inventory\n\n## Blocked full-objective requirements\n\n- prepare_server_mapping_without_exposing_private_inventory\n- execute_migration_steps_with_operator_approval\n\n## Checklist\n\n- [ ] Use `Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md` as the public-safe template.\n- [ ] Collect live S1/S2 inventory in an approved private operational location outside Git.\n- [ ] Record backup/export references outside Git.\n- [ ] Record rollback plan references outside Git.\n- [ ] Record operator approval scope and date without secrets.\n- [ ] Prepare post-action tests before any cleanup, migration, vhost change or service stop.\n- [ ] Publish only reviewed public-safe summaries back to Git.\n\n## Acceptance criteria\n\n- [ ] Private inventory exists outside Git.\n- [ ] Backup or export reference exists outside Git.\n- [ ] Rollback plan exists outside Git.\n- [ ] Operator approval scope and date are recorded without secrets.\n- [ ] No production deletion, migration, service stop or vhost change has occurred before approval.\n\n## Verification\n\n- [ ] GET /git/onboarding/server-cards\n- [ ] GET /git/onboarding/tasks\n- [ ] node scripts/check-no-secrets.mjs\n- [ ] node scripts/check-docs.mjs\n\n## Safety\n\n- [ ] No raw token, `.env` value, private key, recovery code or private server inventory is pasted into the issue.\n- [ ] No production action is executed from this public tracking issue.\n- [ ] After evidence changes, regenerate source/PDF/archive/objective/task/blocker/completion/operator-action artifacts and run the no-regression gate.\n"
     }
   ]
