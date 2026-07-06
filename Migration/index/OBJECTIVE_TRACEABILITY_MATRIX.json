@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:38:19.010469Z",
+  "generatedAt": "2026-07-06T17:44:33.159991Z",
   "generator": "scripts/build-objective-index.py",
   "purpose": "Objective traceability matrix for the WealthTech MCP migration corpus.",
   "safety": {
@@ -12,35 +12,35 @@
   "inputs": {
     "sourceRegistry": {
       "path": "Migration/index/SOURCE_REGISTRY.json",
-      "generatedAt": "2026-07-06T17:37:54.218Z",
+      "generatedAt": "2026-07-06T17:44:03.405Z",
       "totals": {
-        "sourceFileCount": 102,
-        "uniqueContentFileCount": 96,
+        "sourceFileCount": 104,
+        "uniqueContentFileCount": 98,
         "duplicateFileCount": 6,
-        "totalBytes": 24473834,
-        "textReadFiles": 88,
+        "totalBytes": 24479001,
+        "textReadFiles": 90,
         "archiveIndexedFiles": 5,
         "binaryIndexedFiles": 9,
         "secretSignalFiles": 0,
         "byExtension": {
           ".pdf": 9,
           ".docx": 2,
-          ".md": 80,
+          ".md": 81,
           ".csv": 3,
           ".zip": 5,
           ".txt": 1,
-          ".json": 2
+          ".json": 3
         },
         "byReadStatus": {
           "binary_indexed": 9,
-          "text_read": 88,
+          "text_read": 90,
           "archive_indexed": 5
         }
       }
     },
     "pdfTextAudit": {
       "path": "Migration/index/PDF_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-06T17:38:03.149467Z",
+      "generatedAt": "2026-07-06T17:44:13.617880Z",
       "totals": {
         "pdfDocumentCount": 43,
         "uniquePdfContentCount": 22,
@@ -82,7 +82,7 @@
     },
     "archiveTextAudit": {
       "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-06T17:38:04.012335Z",
+      "generatedAt": "2026-07-06T17:44:14.863607Z",
       "totals": {
         "archiveDocumentCount": 5,
         "archiveDocumentsScanned": 5,
@@ -166,9 +166,9 @@
       "understanding": "The target organization must be managed as a first-class MCP governance target, not just documented externally.",
       "status": "partial_external_connector_authorization_required",
       "sourceSignals": {
-        "sourceHitCount": 170,
-        "totalPatternHits": 7230,
-        "textUnitsScanned": 174,
+        "sourceHitCount": 172,
+        "totalPatternHits": 7236,
+        "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
       "topEvidenceSources": [
@@ -283,9 +283,9 @@
       "understanding": "All supplied PDFs, DOCX, Markdown, CSV, TXT and ZIP resources must be accounted for before execution decisions are treated as complete.",
       "status": "inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress",
       "sourceSignals": {
-        "sourceHitCount": 178,
-        "totalPatternHits": 10788,
-        "textUnitsScanned": 174,
+        "sourceHitCount": 179,
+        "totalPatternHits": 10790,
+        "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
       "topEvidenceSources": [
@@ -366,32 +366,32 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "551d491ba4b717f39efae865b962965a5053be11561e92d4b0011d325bda5265"
+          "sha256": "f107c02e298c3ba52e81c2cb0340b9b1b8be10758f7b011d79a0d9fceec10848"
         },
         {
           "path": "Migration/index/SOURCE_INGESTION_STATUS.md",
           "exists": true,
-          "sha256": "2c52e2b02880a720238086a6dd9e3f68ed3259ea5ac414455596cfd7ec910774"
+          "sha256": "d9012242f25931200a1f1d830f3962150d2f40d0e0287851625bfe2fbd3c5b14"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "269c7682a8ce0f8cadfd9f78c86da8b93a421de091dbc75914e79b27b53f2184"
+          "sha256": "4bedb87ee504da381aa8511348d7b50e49bdb38b807103db348083cd3c5b25ef"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT_STATUS.md",
           "exists": true,
-          "sha256": "4e0a1c88674c87fbe40649e6383f34e4f01234b2a03274ceaec0d8bf1dfffacb"
+          "sha256": "e77e6227cb1646f17b73c95c7b3cf3ba7c43bb792d86fb458fde2cf37cf4e1b8"
         },
         {
           "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "4367538e73826b18b96532a048ed77c52bbb5c301004f0afce22b8bd209c6d6f"
+          "sha256": "e8b3bfbf33a71012e88b7ab24df325f441b05a1a9d9cce9bd9f1d1334cf716e7"
         },
         {
           "path": "Migration/index/ARCHIVE_TEXT_AUDIT_STATUS.md",
           "exists": true,
-          "sha256": "cf0af3d350042236940f36f9528d3b88f05396f032a1c7ca881930bb06c64ba7"
+          "sha256": "e270531fc6ddca711bcebd41f7d49196e9ce4d28f3b19c1c0c4a545d21c89f24"
         }
       ],
       "missingCurrentEvidence": [],
@@ -408,9 +408,9 @@
       "understanding": "Every migration or cleanup step must preserve production services, protect secrets, and include rollback/test evidence.",
       "status": "implemented_as_policy_and_tests_more_runtime_gates_needed",
       "sourceSignals": {
-        "sourceHitCount": 154,
-        "totalPatternHits": 9463,
-        "textUnitsScanned": 174,
+        "sourceHitCount": 156,
+        "totalPatternHits": 9479,
+        "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
       "topEvidenceSources": [
@@ -501,7 +501,7 @@
         {
           "path": "scripts/check-docs.mjs",
           "exists": true,
-          "sha256": "ce78adeaa815652addeefe56c0cb5a2ae6d2fb813676cefc6c9834bae02bb2e4"
+          "sha256": "78e63f671eabcea90018100adb2fe6c6845e7ec21027b0a5cfd123bbfbcaa7f9"
         },
         {
           "path": "tests/onboarding.test.ts",
@@ -533,9 +533,9 @@
       "understanding": "No direct main write is allowed; generated changes must be auditable and reviewable.",
       "status": "implemented_for_current_pr_flow",
       "sourceSignals": {
-        "sourceHitCount": 184,
-        "totalPatternHits": 37379,
-        "textUnitsScanned": 174,
+        "sourceHitCount": 186,
+        "totalPatternHits": 37391,
+        "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
       "topEvidenceSources": [
@@ -649,7 +649,7 @@
       "sourceSignals": {
         "sourceHitCount": 172,
         "totalPatternHits": 11904,
-        "textUnitsScanned": 174,
+        "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
       "topEvidenceSources": [
@@ -766,9 +766,9 @@
       "understanding": "The MCP must know which GitHub repositories correspond to which server paths, domains, runtimes and deployment checks without publishing secrets.",
       "status": "partial_sensitive_server_paths_not_published",
       "sourceSignals": {
-        "sourceHitCount": 181,
-        "totalPatternHits": 127562,
-        "textUnitsScanned": 174,
+        "sourceHitCount": 183,
+        "totalPatternHits": 127566,
+        "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
       "topEvidenceSources": [
@@ -894,9 +894,9 @@
       "understanding": "Server cleanup and S2-to-S1 migration must follow the documented sequence with protected domains preserved.",
       "status": "documented_not_executed_on_production",
       "sourceSignals": {
-        "sourceHitCount": 179,
-        "totalPatternHits": 40660,
-        "textUnitsScanned": 174,
+        "sourceHitCount": 181,
+        "totalPatternHits": 40667,
+        "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
       "topEvidenceSources": [
@@ -1011,9 +1011,9 @@
       "understanding": "Every write, bootstrap, security assertion, agent creation and source-ingestion action must leave a trace without raw secret material.",
       "status": "implemented_for_current_mcp_and_ingestion_flows",
       "sourceSignals": {
-        "sourceHitCount": 165,
-        "totalPatternHits": 12210,
-        "textUnitsScanned": 174,
+        "sourceHitCount": 167,
+        "totalPatternHits": 12255,
+        "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
       "topEvidenceSources": [
@@ -1109,12 +1109,12 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "551d491ba4b717f39efae865b962965a5053be11561e92d4b0011d325bda5265"
+          "sha256": "f107c02e298c3ba52e81c2cb0340b9b1b8be10758f7b011d79a0d9fceec10848"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "269c7682a8ce0f8cadfd9f78c86da8b93a421de091dbc75914e79b27b53f2184"
+          "sha256": "4bedb87ee504da381aa8511348d7b50e49bdb38b807103db348083cd3c5b25ef"
         }
       ],
       "missingCurrentEvidence": [],
@@ -1130,9 +1130,9 @@
       "understanding": "The MCP must not merely summarize; it must progressively create the missing governance files, routes, indexes, docs and review artifacts requested by the corpus.",
       "status": "in_progress_objective_matrix_added_this_turn",
       "sourceSignals": {
-        "sourceHitCount": 137,
-        "totalPatternHits": 6088,
-        "textUnitsScanned": 174,
+        "sourceHitCount": 139,
+        "totalPatternHits": 6094,
+        "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
       "topEvidenceSources": [
@@ -1223,12 +1223,12 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "551d491ba4b717f39efae865b962965a5053be11561e92d4b0011d325bda5265"
+          "sha256": "f107c02e298c3ba52e81c2cb0340b9b1b8be10758f7b011d79a0d9fceec10848"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "269c7682a8ce0f8cadfd9f78c86da8b93a421de091dbc75914e79b27b53f2184"
+          "sha256": "4bedb87ee504da381aa8511348d7b50e49bdb38b807103db348083cd3c5b25ef"
         },
         {
           "path": "docs/MCP_ONBOARDING_ENGINE.md",

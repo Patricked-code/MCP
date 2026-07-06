@@ -20,6 +20,7 @@ NO_REGRESSION_COMMANDS = [
     "node node_modules/typescript/lib/tsc.js -p tsconfig.json",
     "node scripts/check-docs.mjs",
     "node scripts/check-no-secrets.mjs",
+    "node scripts/check-public-evidence.mjs",
     "git diff --check",
 ]
 

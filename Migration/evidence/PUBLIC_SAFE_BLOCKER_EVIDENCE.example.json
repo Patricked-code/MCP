@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "updatedAt": "YYYY-MM-DDTHH:MM:SSZ",
+  "purpose": "Public-safe evidence summaries for blocker resolution gates. Copy this file to PUBLIC_SAFE_BLOCKER_EVIDENCE.json only after operator evidence exists.",
+  "safety": {
+    "rawSourceTextStored": false,
+    "rawPdfTextStored": false,
+    "rawArchiveTextStored": false,
+    "rawServerInventoryStored": false,
+    "rawSecretsStored": false,
+    "productionActionExecuted": false,
+    "publicationMode": "public_safe_evidence_summaries_only"
+  },
+  "evidenceRecords": [
+    {
+      "blockerId": "github_connector_not_authorized_on_target_org",
+      "evidenceStatus": "draft_public_safe_template",
+      "criteriaEvidence": [
+        {
+          "criterion": "Connector installed accounts include chainsolutions-wealthtech.",
+          "publicSafeEvidence": "Summarize the owner-verified connector installation result without tokens or screenshots containing secrets.",
+          "evidenceReference": "GitHub issue #2 comment or PR note URL"
+        },
+        {
+          "criterion": "MCP onboarding no longer reports organization access as blocked.",
+          "publicSafeEvidence": "Summarize the MCP onboarding route result without raw auth headers or session material.",
+          "evidenceReference": "GitHub issue #2 comment or PR note URL"
+        },
+        {
+          "criterion": "GET /git/repos can include organization repositories after authentication.",
+          "publicSafeEvidence": "Summarize the repository visibility check without credentials.",
+          "evidenceReference": "GitHub issue #2 comment or PR note URL"
+        },
+        {
+          "criterion": "No raw token was copied into Git, logs, screenshots or generated artifacts.",
+          "publicSafeEvidence": "State that the operator reviewed the public artifacts and found no raw credential material.",
+          "evidenceReference": "GitHub issue #2 comment or PR note URL"
+        }
+      ],
+      "noSecretsPublished": true,
+      "productionActionExecuted": false
+    },
+    {
+      "blockerId": "production_actions_require_private_inventory_and_approval",
+      "evidenceStatus": "draft_public_safe_template",
+      "criteriaEvidence": [
+        {
+          "criterion": "Private inventory exists outside Git.",
+          "publicSafeEvidence": "State that private inventory exists in the approved operational location without naming private paths.",
+          "evidenceReference": "GitHub issue #3 comment or PR note URL"
+        },
+        {
+          "criterion": "Backup or export reference exists outside Git.",
+          "publicSafeEvidence": "State that backup/export references exist outside Git without publishing private locations.",
+          "evidenceReference": "GitHub issue #3 comment or PR note URL"
+        },
+        {
+          "criterion": "Rollback plan exists outside Git.",
+          "publicSafeEvidence": "State that rollback references exist outside Git without publishing raw commands or private paths.",
+          "evidenceReference": "GitHub issue #3 comment or PR note URL"
+        },
+        {
+          "criterion": "Operator approval scope and date are recorded without secrets.",
+          "publicSafeEvidence": "State the public-safe approval scope and date without identity secrets or private operational detail.",
+          "evidenceReference": "GitHub issue #3 comment or PR note URL"
+        },
+        {
+          "criterion": "No production deletion, migration, service stop or vhost change has occurred before approval.",
+          "publicSafeEvidence": "State that no production-affecting action occurred before approval.",
+          "evidenceReference": "GitHub issue #3 comment or PR note URL"
+        }
+      ],
+      "noSecretsPublished": true,
+      "privateMaterialStoredOutsideGit": true,
+      "productionActionExecuted": false
+    }
+  ]
+}

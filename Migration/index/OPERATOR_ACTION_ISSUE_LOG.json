@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-06T17:37:52.465Z",
+  "updatedAt": "2026-07-06T17:44:03.119Z",
   "generator": "scripts/sync-operator-issue-log.mjs",
   "purpose": "Public-safe issue references for operator actions that unblock the WealthTech MCP migration objective.",
   "safety": {

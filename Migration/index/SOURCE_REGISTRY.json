@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:37:54.218Z",
+  "generatedAt": "2026-07-06T17:44:03.405Z",
   "generator": "scripts/build-source-registry.mjs",
   "purpose": "MCP source inventory and safe ingestion evidence for the WealthTech migration corpus.",
   "safety": {
@@ -28,7 +28,7 @@
       "kind": "repository",
       "available": true,
       "recursive": true,
-      "fileCount": 23
+      "fileCount": 25
     },
     {
       "label": "repo-memory",
@@ -39,26 +39,26 @@
     }
   ],
   "totals": {
-    "sourceFileCount": 102,
-    "uniqueContentFileCount": 96,
+    "sourceFileCount": 104,
+    "uniqueContentFileCount": 98,
     "duplicateFileCount": 6,
-    "totalBytes": 24473834,
-    "textReadFiles": 88,
+    "totalBytes": 24479001,
+    "textReadFiles": 90,
     "archiveIndexedFiles": 5,
     "binaryIndexedFiles": 9,
     "secretSignalFiles": 0,
     "byExtension": {
       ".pdf": 9,
       ".docx": 2,
-      ".md": 80,
+      ".md": 81,
       ".csv": 3,
       ".zip": 5,
       ".txt": 1,
-      ".json": 2
+      ".json": 3
     },
     "byReadStatus": {
       "binary_indexed": 9,
-      "text_read": 88,
+      "text_read": 90,
       "archive_indexed": 5
     }
   },
@@ -956,6 +956,54 @@
       }
     },
     {
+      "sourceId": "repo-migration-evidence-public_safe_blocker_evidence.example.json-19f9d1ac9d01",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "evidence/PUBLIC_SAFE_BLOCKER_EVIDENCE.example.json",
+      "repoPath": "Migration/evidence/PUBLIC_SAFE_BLOCKER_EVIDENCE.example.json",
+      "fileName": "PUBLIC_SAFE_BLOCKER_EVIDENCE.example.json",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 3847,
+      "sha256": "19f9d1ac9d01ba8697e4a516edff046b5186d61d45e8ef74e31f05b316225d93",
+      "duplicateOf": null,
+      "extension": ".json",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "19f9d1ac9d01ba8697e4a516edff046b5186d61d45e8ef74e31f05b316225d93",
+        "charCount": 3847,
+        "lineCount": 79,
+        "wordCount": 369,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-evidence-readme.md-2355eb9518a0",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "evidence/README.md",
+      "repoPath": "Migration/evidence/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 1035,
+      "sha256": "2355eb9518a0204220c938e826394d2c06fbac2b5059730042be05e46d0cae49",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "2355eb9518a0204220c938e826394d2c06fbac2b5059730042be05e46d0cae49",
+        "charCount": 1035,
+        "lineCount": 14,
+        "wordCount": 131,
+        "secretSignalCount": 0
+      }
+    },
+    {
       "sourceId": "repo-migration-github-chainsolutions-wealthtech-.github-profile-readme.md-efced146efec",
       "sourceRoot": "repo-migration",
       "sourceRootKind": "repository",
@@ -1100,7 +1148,7 @@
       }
     },
     {
-      "sourceId": "repo-migration-index-readme.md-0f275ed60403",
+      "sourceId": "repo-migration-index-readme.md-5d8328876ec8",
       "sourceRoot": "repo-migration",
       "sourceRootKind": "repository",
       "sourcePath": "index/README.md",
@@ -1109,17 +1157,17 @@
       "roles": [
         "reference"
       ],
-      "sizeBytes": 3716,
-      "sha256": "0f275ed60403dacde5ad68f504d106e75b73031b14abadc77529158b363fd10e",
+      "sizeBytes": 4001,
+      "sha256": "5d8328876ec84f6acee845d322ceb17f488941674c2762ed719922fb27859121",
       "duplicateOf": null,
       "extension": ".md",
       "readStatus": "text_read",
       "extraction": {
         "method": "utf8_text_stats",
-        "textSha256": "0f275ed60403dacde5ad68f504d106e75b73031b14abadc77529158b363fd10e",
-        "charCount": 3716,
-        "lineCount": 44,
-        "wordCount": 514,
+        "textSha256": "5d8328876ec84f6acee845d322ceb17f488941674c2762ed719922fb27859121",
+        "charCount": 4001,
+        "lineCount": 46,
+        "wordCount": 544,
         "secretSignalCount": 0
       }
     },

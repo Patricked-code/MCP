@@ -35,6 +35,8 @@ const required = [
   'Migration/prompts/README.md',
   'Migration/agents/README.md',
   'Migration/decisions/README.md',
+  'Migration/evidence/README.md',
+  'Migration/evidence/PUBLIC_SAFE_BLOCKER_EVIDENCE.example.json',
   'Migration/serveur/README.md',
   'Migration/github/README.md',
   'Migration/index/README.md',

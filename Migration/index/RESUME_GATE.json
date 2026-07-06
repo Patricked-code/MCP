@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:38:19.864856Z",
+  "generatedAt": "2026-07-06T17:44:34.338288Z",
   "generator": "scripts/build-resume-gate.py",
   "purpose": "Public-safe gate that decides whether blocked WealthTech MCP migration work can resume.",
   "safety": {
@@ -15,7 +15,7 @@
   "inputs": {
     "blockerRunbook": {
       "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
-      "generatedAt": "2026-07-06T17:38:19.399656Z",
+      "generatedAt": "2026-07-06T17:44:33.663606Z",
       "summary": {
         "blockerCount": 2,
         "externalActionBlockerCount": 1,
@@ -31,7 +31,7 @@
     },
     "completionAudit": {
       "path": "Migration/index/COMPLETION_AUDIT.json",
-      "generatedAt": "2026-07-06T17:38:19.648422Z",
+      "generatedAt": "2026-07-06T17:44:34.063022Z",
       "summary": {
         "requirementCount": 9,
         "completeRequirementCount": 5,
@@ -67,7 +67,7 @@
     },
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-06T17:38:19.146849Z",
+      "generatedAt": "2026-07-06T17:44:33.314002Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,
@@ -110,7 +110,7 @@
     },
     "operatorActionPack": {
       "path": "Migration/index/OPERATOR_ACTION_PACK.json",
-      "generatedAt": "2026-07-06T17:38:19.759422Z",
+      "generatedAt": "2026-07-06T17:44:34.206136Z",
       "summary": {
         "operatorActionCount": 2,
         "externalGithubActionCount": 1,
@@ -134,12 +134,12 @@
     },
     "operatorActionIssueLog": {
       "path": "Migration/index/OPERATOR_ACTION_ISSUE_LOG.json",
-      "updatedAt": "2026-07-06T17:37:52.465Z",
+      "updatedAt": "2026-07-06T17:44:03.119Z",
       "issueCount": 2
     },
     "blockerEvidenceGate": {
       "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
-      "generatedAt": "2026-07-06T17:38:19.521651Z",
+      "generatedAt": "2026-07-06T17:44:33.878423Z",
       "summary": {
         "blockerCount": 2,
         "resolutionReadyCount": 0,
@@ -244,6 +244,7 @@
     "node node_modules/typescript/lib/tsc.js -p tsconfig.json",
     "node scripts/check-docs.mjs",
     "node scripts/check-no-secrets.mjs",
+    "node scripts/check-public-evidence.mjs",
     "git diff --check"
   ]
 }

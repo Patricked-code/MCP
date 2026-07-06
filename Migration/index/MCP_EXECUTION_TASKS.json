@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:38:19.146849Z",
+  "generatedAt": "2026-07-06T17:44:33.314002Z",
   "generator": "scripts/build-execution-tasks.py",
   "purpose": "Executable MCP task plan derived from the WealthTech objective traceability matrix.",
   "safety": {
@@ -13,7 +13,7 @@
   "inputs": {
     "objectiveTraceabilityMatrix": {
       "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
-      "generatedAt": "2026-07-06T17:38:19.010469Z",
+      "generatedAt": "2026-07-06T17:44:33.159991Z",
       "summary": {
         "objectiveCount": 9,
         "statusCounts": {
@@ -104,14 +104,14 @@
         {
           "id": "apply_documented_requirements",
           "status": "in_progress_objective_matrix_added_this_turn",
-          "sourceHitCount": 137,
+          "sourceHitCount": 139,
           "missingCurrentEvidence": [],
           "blockerCount": 1
         },
         {
           "id": "complete_corpus_ingestion",
           "status": "inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress",
-          "sourceHitCount": 178,
+          "sourceHitCount": 179,
           "missingCurrentEvidence": [],
           "blockerCount": 0
         }
@@ -156,14 +156,14 @@
         {
           "id": "connect_chainsolutions_wealthtech_to_mcp",
           "status": "partial_external_connector_authorization_required",
-          "sourceHitCount": 170,
+          "sourceHitCount": 172,
           "missingCurrentEvidence": [],
           "blockerCount": 1
         },
         {
           "id": "repo_server_mapping",
           "status": "partial_sensitive_server_paths_not_published",
-          "sourceHitCount": 181,
+          "sourceHitCount": 183,
           "missingCurrentEvidence": [],
           "blockerCount": 2
         }
@@ -215,14 +215,14 @@
         {
           "id": "complete_corpus_ingestion",
           "status": "inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress",
-          "sourceHitCount": 178,
+          "sourceHitCount": 179,
           "missingCurrentEvidence": [],
           "blockerCount": 0
         },
         {
           "id": "audit_and_traceability",
           "status": "implemented_for_current_mcp_and_ingestion_flows",
-          "sourceHitCount": 165,
+          "sourceHitCount": 167,
           "missingCurrentEvidence": [],
           "blockerCount": 0
         }
@@ -270,21 +270,21 @@
         {
           "id": "connect_chainsolutions_wealthtech_to_mcp",
           "status": "partial_external_connector_authorization_required",
-          "sourceHitCount": 170,
+          "sourceHitCount": 172,
           "missingCurrentEvidence": [],
           "blockerCount": 1
         },
         {
           "id": "branch_pr_only_workflow",
           "status": "implemented_for_current_pr_flow",
-          "sourceHitCount": 184,
+          "sourceHitCount": 186,
           "missingCurrentEvidence": [],
           "blockerCount": 0
         },
         {
           "id": "repo_server_mapping",
           "status": "partial_sensitive_server_paths_not_published",
-          "sourceHitCount": 181,
+          "sourceHitCount": 183,
           "missingCurrentEvidence": [],
           "blockerCount": 2
         }
@@ -327,21 +327,21 @@
         {
           "id": "repo_server_mapping",
           "status": "partial_sensitive_server_paths_not_published",
-          "sourceHitCount": 181,
+          "sourceHitCount": 183,
           "missingCurrentEvidence": [],
           "blockerCount": 2
         },
         {
           "id": "migration_execution_sequence",
           "status": "documented_not_executed_on_production",
-          "sourceHitCount": 179,
+          "sourceHitCount": 181,
           "missingCurrentEvidence": [],
           "blockerCount": 1
         },
         {
           "id": "no_regression_and_safety",
           "status": "implemented_as_policy_and_tests_more_runtime_gates_needed",
-          "sourceHitCount": 154,
+          "sourceHitCount": 156,
           "missingCurrentEvidence": [],
           "blockerCount": 0
         }
@@ -386,14 +386,14 @@
         {
           "id": "repo_server_mapping",
           "status": "partial_sensitive_server_paths_not_published",
-          "sourceHitCount": 181,
+          "sourceHitCount": 183,
           "missingCurrentEvidence": [],
           "blockerCount": 2
         },
         {
           "id": "migration_execution_sequence",
           "status": "documented_not_executed_on_production",
-          "sourceHitCount": 179,
+          "sourceHitCount": 181,
           "missingCurrentEvidence": [],
           "blockerCount": 1
         }
@@ -431,27 +431,28 @@
         "node node_modules/typescript/lib/tsc.js -p tsconfig.json",
         "node scripts/check-docs.mjs",
         "node scripts/check-no-secrets.mjs",
+        "node scripts/check-public-evidence.mjs",
         "git diff --check"
       ],
       "objectiveEvidence": [
         {
           "id": "no_regression_and_safety",
           "status": "implemented_as_policy_and_tests_more_runtime_gates_needed",
-          "sourceHitCount": 154,
+          "sourceHitCount": 156,
           "missingCurrentEvidence": [],
           "blockerCount": 0
         },
         {
           "id": "audit_and_traceability",
           "status": "implemented_for_current_mcp_and_ingestion_flows",
-          "sourceHitCount": 165,
+          "sourceHitCount": 167,
           "missingCurrentEvidence": [],
           "blockerCount": 0
         },
         {
           "id": "branch_pr_only_workflow",
           "status": "implemented_for_current_pr_flow",
-          "sourceHitCount": 184,
+          "sourceHitCount": 186,
           "missingCurrentEvidence": [],
           "blockerCount": 0
         }
@@ -496,14 +497,14 @@
         {
           "id": "apply_documented_requirements",
           "status": "in_progress_objective_matrix_added_this_turn",
-          "sourceHitCount": 137,
+          "sourceHitCount": 139,
           "missingCurrentEvidence": [],
           "blockerCount": 1
         },
         {
           "id": "audit_and_traceability",
           "status": "implemented_for_current_mcp_and_ingestion_flows",
-          "sourceHitCount": 165,
+          "sourceHitCount": 167,
           "missingCurrentEvidence": [],
           "blockerCount": 0
         }
@@ -538,6 +539,7 @@
       "node node_modules/typescript/lib/tsc.js -p tsconfig.json",
       "node scripts/check-docs.mjs",
       "node scripts/check-no-secrets.mjs",
+      "node scripts/check-public-evidence.mjs",
       "git diff --check"
     ]
   },

@@ -20,6 +20,7 @@
     "server:cards": "python scripts/build-server-inventory-cards.py",
     "blockers:runbook": "python scripts/build-blocker-resolution-runbook.py",
     "blockers:evidence": "python scripts/build-blocker-evidence-gate.py",
+    "blockers:evidence:check": "node scripts/check-public-evidence.mjs",
     "completion:audit": "python scripts/build-completion-audit.py",
     "operator:actions": "python scripts/build-operator-action-pack.py",
     "operator:issues:sync": "node scripts/sync-operator-issue-log.mjs",

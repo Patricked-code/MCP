@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:38:19.988487Z",
+  "generatedAt": "2026-07-06T17:44:34.489946Z",
   "generator": "scripts/build-execution-runway.py",
   "purpose": "Public-safe execution runway for applying the WealthTech MCP migration objective step by step without regression.",
   "safety": {
@@ -15,7 +15,7 @@
   "inputs": {
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-06T17:38:19.146849Z",
+      "generatedAt": "2026-07-06T17:44:33.314002Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,
@@ -58,7 +58,7 @@
     },
     "completionAudit": {
       "path": "Migration/index/COMPLETION_AUDIT.json",
-      "generatedAt": "2026-07-06T17:38:19.648422Z",
+      "generatedAt": "2026-07-06T17:44:34.063022Z",
       "summary": {
         "requirementCount": 9,
         "completeRequirementCount": 5,
@@ -94,7 +94,7 @@
     },
     "operatorActionPack": {
       "path": "Migration/index/OPERATOR_ACTION_PACK.json",
-      "generatedAt": "2026-07-06T17:38:19.759422Z",
+      "generatedAt": "2026-07-06T17:44:34.206136Z",
       "summary": {
         "operatorActionCount": 2,
         "externalGithubActionCount": 1,
@@ -118,7 +118,7 @@
     },
     "resumeGate": {
       "path": "Migration/index/RESUME_GATE.json",
-      "generatedAt": "2026-07-06T17:38:19.864856Z",
+      "generatedAt": "2026-07-06T17:44:34.338288Z",
       "summary": {
         "resumeAllowed": false,
         "status": "resume_blocked_operator_actions_pending",
@@ -154,7 +154,7 @@
     },
     "blockerEvidenceGate": {
       "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
-      "generatedAt": "2026-07-06T17:38:19.521651Z",
+      "generatedAt": "2026-07-06T17:44:33.878423Z",
       "summary": {
         "blockerCount": 2,
         "resolutionReadyCount": 0,
@@ -180,7 +180,7 @@
     },
     "serverCards": {
       "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
-      "generatedAt": "2026-07-06T17:38:19.273793Z",
+      "generatedAt": "2026-07-06T17:44:33.475756Z",
       "summary": {
         "cardCount": 6,
         "readyCardCount": 6,
@@ -280,6 +280,7 @@
         "node node_modules/typescript/lib/tsc.js --noEmit -p tsconfig.json",
         "node node_modules/typescript/lib/tsc.js -p tsconfig.json",
         "node scripts/check-no-secrets.mjs",
+        "node scripts/check-public-evidence.mjs",
         "git diff --check"
       ],
       "safeToExecuteNow": true,
@@ -484,6 +485,7 @@
         "node node_modules/typescript/lib/tsc.js -p tsconfig.json",
         "node scripts/check-docs.mjs",
         "node scripts/check-no-secrets.mjs",
+        "node scripts/check-public-evidence.mjs",
         "git diff --check"
       ],
       "safeToExecuteNow": false,
@@ -499,6 +501,7 @@
       "node node_modules/typescript/lib/tsc.js -p tsconfig.json",
       "node scripts/check-docs.mjs",
       "node scripts/check-no-secrets.mjs",
+      "node scripts/check-public-evidence.mjs",
       "git diff --check"
     ]
   }

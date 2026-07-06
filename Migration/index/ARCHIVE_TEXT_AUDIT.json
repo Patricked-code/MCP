@@ -1,31 +1,31 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:38:04.012335Z",
+  "generatedAt": "2026-07-06T17:44:14.863607Z",
   "generator": "scripts/build-archive-text-audit.py",
   "sourceRegistry": {
     "path": "Migration/index/SOURCE_REGISTRY.json",
-    "generatedAt": "2026-07-06T17:37:54.218Z",
+    "generatedAt": "2026-07-06T17:44:03.405Z",
     "totals": {
-      "sourceFileCount": 102,
-      "uniqueContentFileCount": 96,
+      "sourceFileCount": 104,
+      "uniqueContentFileCount": 98,
       "duplicateFileCount": 6,
-      "totalBytes": 24473834,
-      "textReadFiles": 88,
+      "totalBytes": 24479001,
+      "textReadFiles": 90,
       "archiveIndexedFiles": 5,
       "binaryIndexedFiles": 9,
       "secretSignalFiles": 0,
       "byExtension": {
         ".pdf": 9,
         ".docx": 2,
-        ".md": 80,
+        ".md": 81,
         ".csv": 3,
         ".zip": 5,
         ".txt": 1,
-        ".json": 2
+        ".json": 3
       },
       "byReadStatus": {
         "binary_indexed": 9,
-        "text_read": 88,
+        "text_read": 90,
         "archive_indexed": 5
       }
     }
