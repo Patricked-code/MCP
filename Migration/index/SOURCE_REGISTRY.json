@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:20:43.507Z",
+  "generatedAt": "2026-07-06T17:27:56.381Z",
   "generator": "scripts/build-source-registry.mjs",
   "purpose": "MCP source inventory and safe ingestion evidence for the WealthTech migration corpus.",
   "safety": {
@@ -42,7 +42,7 @@
     "sourceFileCount": 102,
     "uniqueContentFileCount": 96,
     "duplicateFileCount": 6,
-    "totalBytes": 24473300,
+    "totalBytes": 24473549,
     "textReadFiles": 88,
     "archiveIndexedFiles": 5,
     "binaryIndexedFiles": 9,
@@ -1100,7 +1100,7 @@
       }
     },
     {
-      "sourceId": "repo-migration-index-readme.md-87cff0b58cbe",
+      "sourceId": "repo-migration-index-readme.md-0c242c5ac391",
       "sourceRoot": "repo-migration",
       "sourceRootKind": "repository",
       "sourcePath": "index/README.md",
@@ -1109,17 +1109,17 @@
       "roles": [
         "reference"
       ],
-      "sizeBytes": 3182,
-      "sha256": "87cff0b58cbef36d1d46e1239837cf493af0493eb72c8de26ec3dd7e5f8040f1",
+      "sizeBytes": 3431,
+      "sha256": "0c242c5ac3915ef9e53adfddb6a3a3575c62b599e9f274303ca4eb570e2bac43",
       "duplicateOf": null,
       "extension": ".md",
       "readStatus": "text_read",
       "extraction": {
         "method": "utf8_text_stats",
-        "textSha256": "87cff0b58cbef36d1d46e1239837cf493af0493eb72c8de26ec3dd7e5f8040f1",
-        "charCount": 3182,
-        "lineCount": 40,
-        "wordCount": 443,
+        "textSha256": "0c242c5ac3915ef9e53adfddb6a3a3575c62b599e9f274303ca4eb570e2bac43",
+        "charCount": 3431,
+        "lineCount": 42,
+        "wordCount": 475,
         "secretSignalCount": 0
       }
     },

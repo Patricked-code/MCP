@@ -14,6 +14,7 @@ import {
   summarizeBlockerResolutionRunbook,
   summarizeArchiveTextAudit,
   summarizeCompletionAudit,
+  summarizeExecutionRunway,
   summarizePdfTextAudit,
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
@@ -1135,6 +1136,90 @@ test('resume gate summary blocks resume while operator issues remain open', () =
     'github_connector_not_authorized_on_target_org',
     'production_actions_require_private_inventory_and_approval'
   ]);
+  assert.equal(summary.rawArchiveTextStored, false);
+  assert.equal(summary.rawServerInventoryStored, false);
+  assert.equal(summary.rawSecretsStored, false);
+  assert.equal(summary.productionActionExecuted, false);
+});
+
+test('execution runway summary keeps blocked phases behind public-safe gates', () => {
+  const summary = summarizeExecutionRunway({
+    version: 1,
+    generatedAt: '2026-07-06T00:00:00.000Z',
+    generator: 'unit',
+    purpose: 'unit',
+    safety: {
+      rawSourceTextStored: false,
+      rawPdfTextStored: false,
+      rawArchiveTextStored: false,
+      rawServerInventoryStored: false,
+      rawSecretsStored: false,
+      productionActionExecuted: false,
+      publicationMode: 'phase_ids_task_ids_requirement_ids_issue_refs_and_public_safe_gates_only'
+    },
+    inputs: {},
+    summary: {
+      phaseCount: 5,
+      readyPhaseCount: 1,
+      blockedPhaseCount: 4,
+      safeNowPhaseCount: 1,
+      productionActionAllowed: false,
+      resumeAllowed: false,
+      openIssueCount: 2,
+      unresolvedBlockerCount: 2,
+      incompleteRequirementCount: 4,
+      blockedTaskCount: 4,
+      readyTaskIds: [
+        'review_objective_traceability_matrix',
+        'prepare_private_server_inventory_cards',
+        'execute_no_regression_gate'
+      ],
+      blockedTaskIds: [
+        'authorize_github_connector_on_chainsolutions',
+        'collect_private_server_inventory'
+      ],
+      currentRecommendedPhaseIds: [
+        'current_public_safe_review'
+      ]
+    },
+    phases: [
+      {
+        id: 'current_public_safe_review',
+        title: 'Review',
+        status: 'ready_now',
+        requirementIds: [],
+        taskIds: [],
+        blockedBy: [],
+        linkedIssues: [],
+        entryCriteria: [],
+        actions: [],
+        exitEvidence: [],
+        verificationCommands: [],
+        safeToExecuteNow: true,
+        productionActionAllowed: false,
+        noRegressionRequiredBeforePromotion: true
+      }
+    ],
+    noRegressionGate: {
+      requiredBeforeEveryPromotion: true,
+      commands: ['test', 'typecheck', 'secrets']
+    }
+  });
+
+  assert.equal(summary.phaseCount, 5);
+  assert.equal(summary.readyPhaseCount, 1);
+  assert.equal(summary.blockedPhaseCount, 4);
+  assert.equal(summary.safeNowPhaseCount, 1);
+  assert.equal(summary.productionActionAllowed, false);
+  assert.equal(summary.resumeAllowed, false);
+  assert.equal(summary.openIssueCount, 2);
+  assert.equal(summary.unresolvedBlockerCount, 2);
+  assert.equal(summary.incompleteRequirementCount, 4);
+  assert.equal(summary.blockedTaskCount, 4);
+  assert.deepEqual(summary.currentRecommendedPhaseIds, [
+    'current_public_safe_review'
+  ]);
+  assert.equal(summary.noRegressionCommandCount, 3);
   assert.equal(summary.rawArchiveTextStored, false);
   assert.equal(summary.rawServerInventoryStored, false);
   assert.equal(summary.rawSecretsStored, false);

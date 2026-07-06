@@ -21,6 +21,7 @@ import {
   loadArchiveTextAudit,
   loadBlockerResolutionRunbook,
   loadCompletionAudit,
+  loadExecutionRunway,
   loadExecutionTaskIndex,
   loadObjectiveTraceabilityIndex,
   loadOperatorActionPack,
@@ -34,6 +35,7 @@ import {
   summarizeArchiveTextAudit,
   summarizeBlockerResolutionRunbook,
   summarizeCompletionAudit,
+  summarizeExecutionRunway,
   summarizeExecutionTaskIndex,
   summarizeObjectiveTraceabilityIndex,
   summarizeOperatorActionPack,
@@ -210,6 +212,7 @@ function nav(): string {
     <a href="/git/onboarding/archive-texts">Archives</a> ·
     <a href="/git/onboarding/objectives">Objectifs</a> ·
     <a href="/git/onboarding/tasks">Tâches</a> ·
+    <a href="/git/onboarding/runway">Étapes</a> ·
     <a href="/git/onboarding/blockers">Blocages</a> ·
     <a href="/git/onboarding/completion">Complétude</a> ·
     <a href="/git/onboarding/operator-actions">Actions</a> ·
@@ -463,6 +466,19 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur /git/onboarding/tasks');
       res.status(500).json({ error: 'execution_tasks_failed' });
+    }
+  });
+
+  app.get('/git/onboarding/runway', requireWebLogin, async (_req, res) => {
+    try {
+      const runway = await loadExecutionRunway();
+      res.json({
+        summary: summarizeExecutionRunway(runway),
+        runway
+      });
+    } catch (error) {
+      logger.error({ error }, 'Erreur /git/onboarding/runway');
+      res.status(500).json({ error: 'execution_runway_failed' });
     }
   });
 

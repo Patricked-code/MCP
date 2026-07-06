@@ -23,6 +23,7 @@
     "operator:actions": "python scripts/build-operator-action-pack.py",
     "operator:issues:sync": "node scripts/sync-operator-issue-log.mjs",
     "resume:gate": "python scripts/build-resume-gate.py",
+    "execution:runway": "python scripts/build-execution-runway.py",
     "lint:secrets": "node scripts/check-no-secrets.mjs",
     "docs:check": "node scripts/check-docs.mjs"
   },

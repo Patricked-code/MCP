@@ -155,6 +155,7 @@ def build_gate() -> dict[str, Any]:
             "python scripts/build-operator-action-pack.py",
             "python scripts/build-completion-audit.py",
             "python scripts/build-resume-gate.py",
+            "python scripts/build-execution-runway.py",
             "node node_modules/tsx/dist/cli.mjs --test tests/onboarding.test.ts",
             "node node_modules/typescript/lib/tsc.js --noEmit -p tsconfig.json",
             "node node_modules/typescript/lib/tsc.js -p tsconfig.json",

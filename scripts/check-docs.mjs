@@ -58,6 +58,8 @@ const required = [
   'Migration/index/OPERATOR_ACTION_ISSUE_LOG.md',
   'Migration/index/RESUME_GATE.json',
   'Migration/index/RESUME_GATE.md',
+  'Migration/index/EXECUTION_RUNWAY.json',
+  'Migration/index/EXECUTION_RUNWAY.md',
   'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json',
   'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md',
   'Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json'

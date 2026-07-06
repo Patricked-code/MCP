@@ -35,5 +35,7 @@ Il doit permettre a un agent ou a un humain de retrouver rapidement:
 - `OPERATOR_ACTION_ISSUE_LOG.md` : synthese lisible des issues de suivi, etat, URLs et regles de securite.
 - `RESUME_GATE.json` : gate genere indiquant si les travaux MCP bloques peuvent reprendre selon issues, blocages, taches et completude.
 - `RESUME_GATE.md` : synthese lisible de la decision de reprise, raisons, checks et commandes lorsque les blocages seront leves.
+- `EXECUTION_RUNWAY.json` : sequence publique-safe des phases d application, taches, prerequis, preuves de sortie et blocages.
+- `EXECUTION_RUNWAY.md` : synthese lisible des etapes executables maintenant, bloquees ou dependantes du gate de reprise.
 
 Ces fichiers ne publient pas les textes bruts ni les secrets. Ils servent de preuve de lecture/indexation et de garde-fou avant toute ingestion plus exhaustive.
