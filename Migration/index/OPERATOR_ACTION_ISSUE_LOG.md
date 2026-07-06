@@ -1,6 +1,6 @@
 # Operator action issue log - Migration WealthTech
 
-Updated at: 2026-07-06T17:07:43Z
+Updated at: 2026-07-06T17:14:07.683Z
 
 This file records public-safe GitHub issue references for the operator actions that unblock the full WealthTech MCP migration objective. It does not store raw source text, raw PDF text, raw archive text, raw server inventory, tokens, private keys, `.env` values, recovery codes or production action output.
 
@@ -15,10 +15,10 @@ This file records public-safe GitHub issue references for the operator actions t
 
 ## Issues
 
-| Action | Blocker | Issue | State |
-|---|---|---|---|
-| authorize_github_connector_issue | github_connector_not_authorized_on_target_org | https://github.com/Patricked-code/MCP/issues/2 | open |
-| private_server_inventory_issue | production_actions_require_private_inventory_and_approval | https://github.com/Patricked-code/MCP/issues/3 | open |
+| Action | Blocker | Issue | State | GitHub updated at |
+|---|---|---|---|---|
+| authorize_github_connector_issue | github_connector_not_authorized_on_target_org | https://github.com/Patricked-code/MCP/issues/2 | open | 2026-07-06T17:07:18Z |
+| private_server_inventory_issue | production_actions_require_private_inventory_and_approval | https://github.com/Patricked-code/MCP/issues/3 | open | 2026-07-06T17:07:19Z |
 
 ## Safety
 

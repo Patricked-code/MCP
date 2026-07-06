@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:09:51.431074Z",
+  "generatedAt": "2026-07-06T17:14:07.789266Z",
   "generator": "scripts/build-operator-action-pack.py",
   "purpose": "Public-safe operator tracking actions for unresolved WealthTech MCP migration blockers.",
   "safety": {
@@ -105,7 +105,7 @@
     },
     "operatorActionIssueLog": {
       "path": "Migration/index/OPERATOR_ACTION_ISSUE_LOG.json",
-      "updatedAt": "2026-07-06T17:07:43Z",
+      "updatedAt": "2026-07-06T17:14:07.683Z",
       "issueCount": 2
     }
   },

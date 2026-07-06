@@ -1,6 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-06T17:07:43Z",
+  "updatedAt": "2026-07-06T17:14:07.683Z",
+  "generator": "scripts/sync-operator-issue-log.mjs",
   "purpose": "Public-safe issue references for operator actions that unblock the WealthTech MCP migration objective.",
   "safety": {
     "rawSourceTextStored": false,
@@ -9,7 +10,7 @@
     "rawServerInventoryStored": false,
     "rawSecretsStored": false,
     "productionActionExecuted": false,
-    "publicationMode": "issue_numbers_urls_labels_and_public_safe_status_only"
+    "publicationMode": "issue_numbers_urls_labels_states_and_public_safe_timestamps_only"
   },
   "repository": {
     "nameWithOwner": "Patricked-code/MCP",
@@ -25,10 +26,11 @@
       "state": "open",
       "labels": [
         "mcp-blocker",
-        "external-action",
-        "github-connector"
+        "github-connector",
+        "external-action"
       ],
-      "recordedAt": "2026-07-06T17:07:43Z"
+      "githubUpdatedAt": "2026-07-06T17:07:18Z",
+      "githubClosedAt": null
     },
     {
       "actionId": "private_server_inventory_issue",
@@ -42,7 +44,8 @@
         "private-inventory",
         "operator-approval"
       ],
-      "recordedAt": "2026-07-06T17:07:43Z"
+      "githubUpdatedAt": "2026-07-06T17:07:19Z",
+      "githubClosedAt": null
     }
   ]
 }
