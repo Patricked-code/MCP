@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "projectName": "wealthtech-mcp-ssh-bridge",
+  "repo": "MCP",
+  "owner": "Patricked-code",
+  "targetOrganization": "chainsolutions-wealthtech",
+  "defaultBranch": "main",
+  "serverPath": "not_published",
+  "environment": "governance-preparation",
+  "publicDomain": null,
+  "dockerService": null,
+  "deploymentFiles": [
+    "Dockerfile",
+    "docker-compose.yml"
+  ],
+  "criticalScripts": [
+    "npm run typecheck",
+    "npm run build",
+    "npm run test:onboarding",
+    "npm run lint:secrets",
+    "npm run docs:check"
+  ],
+  "syncStatus": "needs_review",
+  "lastCheckedAt": "2026-07-05T00:00:00.000Z",
+  "auditNotes": [
+    "No raw server path or secret is published in this file.",
+    "Exact production paths must be stored only in approved private operational context."
+  ]
+}

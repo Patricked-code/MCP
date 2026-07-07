@@ -1,0 +1,192 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-06T17:44:33.878423Z",
+  "generator": "scripts/build-blocker-evidence-gate.py",
+  "purpose": "Public-safe evidence gate for deciding whether unresolved WealthTech MCP blockers can be treated as resolved by the completion audit.",
+  "safety": {
+    "rawSourceTextStored": false,
+    "rawPdfTextStored": false,
+    "rawArchiveTextStored": false,
+    "rawServerInventoryStored": false,
+    "rawSecretsStored": false,
+    "productionActionExecuted": false,
+    "publicationMode": "issue_states_evidence_counts_acceptance_counts_and_resolution_flags_only"
+  },
+  "inputs": {
+    "blockerRunbook": {
+      "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
+      "generatedAt": "2026-07-06T17:44:33.663606Z",
+      "summary": {
+        "blockerCount": 2,
+        "externalActionBlockerCount": 1,
+        "privateInventoryBlockerCount": 1,
+        "blockedTaskCount": 4,
+        "blockedObjectiveCount": 4,
+        "blockedServerCardCount": 4,
+        "blockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    },
+    "operatorActionIssueLog": {
+      "path": "Migration/index/OPERATOR_ACTION_ISSUE_LOG.json",
+      "updatedAt": "2026-07-06T17:44:03.119Z",
+      "issueCount": 2
+    },
+    "publicEvidenceRecord": {
+      "path": "Migration/evidence/PUBLIC_SAFE_BLOCKER_EVIDENCE.json",
+      "exists": false,
+      "recordCount": 0
+    }
+  },
+  "summary": {
+    "blockerCount": 2,
+    "resolutionReadyCount": 0,
+    "unresolvedBlockerCount": 2,
+    "openIssueBlockerCount": 2,
+    "missingEvidenceRecordCount": 2,
+    "incompleteAcceptanceEvidenceCount": 2,
+    "allBlockersEvidenceReady": false,
+    "resolutionReadyBlockerIds": [],
+    "unresolvedBlockerIds": [
+      "github_connector_not_authorized_on_target_org",
+      "production_actions_require_private_inventory_and_approval"
+    ],
+    "openIssueBlockerIds": [
+      "github_connector_not_authorized_on_target_org",
+      "production_actions_require_private_inventory_and_approval"
+    ],
+    "missingEvidenceRecordBlockerIds": [
+      "github_connector_not_authorized_on_target_org",
+      "production_actions_require_private_inventory_and_approval"
+    ]
+  },
+  "blockers": [
+    {
+      "blockerId": "github_connector_not_authorized_on_target_org",
+      "title": "Authorize GitHub/Codex/MCP connector on chainsolutions-wealthtech",
+      "ownerRoleRequired": "chainsolutions-wealthtech organization owner/admin",
+      "issueNumber": 2,
+      "issueUrl": "https://github.com/Patricked-code/MCP/issues/2",
+      "issueState": "open",
+      "issueClosed": false,
+      "publicEvidenceRecordPath": "Migration/evidence/PUBLIC_SAFE_BLOCKER_EVIDENCE.json",
+      "publicEvidenceRecordPresent": false,
+      "publicEvidenceStatus": "missing",
+      "acceptanceCriteriaCount": 4,
+      "criteriaEvidenceCount": 0,
+      "criteriaEvidenceComplete": false,
+      "noSecretsPublished": false,
+      "privateMaterialStoredOutsideGit": true,
+      "productionActionExecuted": false,
+      "resolutionReadyForCompletionAudit": false,
+      "status": "waiting_for_public_safe_evidence",
+      "missingReasons": [
+        "linked_issue_not_closed",
+        "public_safe_evidence_record_missing"
+      ],
+      "acceptanceCriteria": [
+        "Connector installed accounts include chainsolutions-wealthtech.",
+        "MCP onboarding no longer reports organization access as blocked.",
+        "GET /git/repos can include organization repositories after authentication.",
+        "No raw token was copied into Git, logs, screenshots or generated artifacts."
+      ],
+      "verificationCommands": [
+        "gh api /orgs/chainsolutions-wealthtech",
+        "GET /git/onboarding",
+        "GET /git/onboarding/tasks",
+        "GET /git/onboarding/blockers"
+      ],
+      "blockedTasks": [
+        "authorize_github_connector_on_chainsolutions",
+        "regenerate_ingestion_after_connector_access",
+        "bootstrap_visible_org_repositories"
+      ],
+      "blockedObjectives": [
+        "connect_chainsolutions_wealthtech_to_mcp",
+        "repo_server_mapping"
+      ],
+      "blockedServerCards": []
+    },
+    {
+      "blockerId": "production_actions_require_private_inventory_and_approval",
+      "title": "Collect approved private server inventory, backup, rollback and test evidence",
+      "ownerRoleRequired": "server operator with explicit human approval",
+      "issueNumber": 3,
+      "issueUrl": "https://github.com/Patricked-code/MCP/issues/3",
+      "issueState": "open",
+      "issueClosed": false,
+      "publicEvidenceRecordPath": "Migration/evidence/PUBLIC_SAFE_BLOCKER_EVIDENCE.json",
+      "publicEvidenceRecordPresent": false,
+      "publicEvidenceStatus": "missing",
+      "acceptanceCriteriaCount": 5,
+      "criteriaEvidenceCount": 0,
+      "criteriaEvidenceComplete": false,
+      "noSecretsPublished": false,
+      "privateMaterialStoredOutsideGit": false,
+      "productionActionExecuted": false,
+      "resolutionReadyForCompletionAudit": false,
+      "status": "waiting_for_public_safe_evidence",
+      "missingReasons": [
+        "linked_issue_not_closed",
+        "public_safe_evidence_record_missing"
+      ],
+      "acceptanceCriteria": [
+        "Private inventory exists outside Git.",
+        "Backup or export reference exists outside Git.",
+        "Rollback plan exists outside Git.",
+        "Operator approval scope and date are recorded without secrets.",
+        "No production deletion, migration, service stop or vhost change has occurred before approval."
+      ],
+      "verificationCommands": [
+        "GET /git/onboarding/server-cards",
+        "GET /git/onboarding/tasks",
+        "node scripts/check-no-secrets.mjs",
+        "node scripts/check-docs.mjs"
+      ],
+      "blockedTasks": [
+        "collect_private_server_inventory"
+      ],
+      "blockedObjectives": [
+        "repo_server_mapping",
+        "migration_execution_sequence"
+      ],
+      "blockedServerCards": [
+        "s1_preservation_inventory",
+        "s2_protected_domains_inventory",
+        "s2_cleanup_candidates_inventory",
+        "s2_to_s1_migration_candidate"
+      ]
+    }
+  ],
+  "publicEvidenceSchema": {
+    "path": "Migration/evidence/PUBLIC_SAFE_BLOCKER_EVIDENCE.json",
+    "examplePath": "Migration/evidence/PUBLIC_SAFE_BLOCKER_EVIDENCE.example.json",
+    "validationCommand": "node scripts/check-public-evidence.mjs",
+    "requiredTopLevelKeys": [
+      "version",
+      "evidenceRecords"
+    ],
+    "requiredRecordKeys": [
+      "blockerId",
+      "evidenceStatus",
+      "criteriaEvidence",
+      "noSecretsPublished",
+      "productionActionExecuted"
+    ],
+    "privateBlockerAdditionalRequiredKeys": [
+      "privateMaterialStoredOutsideGit"
+    ],
+    "allowedEvidenceStatusForResolution": "public_safe_evidence_complete",
+    "doNotStore": [
+      "raw tokens",
+      ".env values",
+      "private keys",
+      "private server paths",
+      "raw inventory",
+      "raw command logs",
+      "recovery codes"
+    ]
+  }
+}

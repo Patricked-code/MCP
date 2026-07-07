@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "status": "prepared",
+  "actor": "mcp-onboarding-engine",
+  "targetOrganization": "chainsolutions-wealthtech",
+  "currentRepository": "Patricked-code/MCP",
+  "questionsAnswered": [],
+  "decisions": [
+    {
+      "at": "2026-07-05T00:00:00.000Z",
+      "decision": "Use Patricked-code/MCP as the staging repository until chainsolutions-wealthtech is visible to the GitHub connector."
+    },
+    {
+      "at": "2026-07-05T00:00:00.000Z",
+      "decision": "Prepare organization profile and MCP governance files on branch mcp/migration-governance-setup only."
+    }
+  ],
+  "nextStep": "Authorize the GitHub App or explicit organization-scoped token on chainsolutions-wealthtech, then create chainsolutions-wealthtech/.github on branch mcp/org-profile-bootstrap.",
+  "updatedAt": "2026-07-05T00:00:00.000Z"
+}

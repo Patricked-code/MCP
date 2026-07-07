@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "agents": [
+    {
+      "agentId": "superadmin-mcp",
+      "agentName": "SuperAdmin MCP",
+      "role": "Master MCP governance authority",
+      "requiresHumanApproval": true,
+      "canDeploy": false,
+      "restrictions": [
+        "Requires master MCP token validation.",
+        "Never derived automatically from GitHub token permissions."
+      ]
+    },
+    {
+      "agentId": "chatgpt-architect",
+      "agentName": "ChatGPT",
+      "role": "Architecture, planning, synthesis and project supervision",
+      "requiresHumanApproval": true,
+      "canDeploy": false
+    },
+    {
+      "agentId": "claude-docs",
+      "agentName": "Claude",
+      "role": "Long-form documentation, analysis and synthesis",
+      "requiresHumanApproval": true,
+      "canDeploy": false
+    },
+    {
+      "agentId": "codex-technical",
+      "agentName": "Codex",
+      "role": "Code, tests, integration and pull-request preparation",
+      "requiresHumanApproval": true,
+      "canDeploy": false
+    },
+    {
+      "agentId": "server-sync-agent",
+      "agentName": "Agent serveur",
+      "role": "Server mapping and synchronization support",
+      "requiresHumanApproval": true,
+      "canDeploy": false
+    },
+    {
+      "agentId": "audit-agent",
+      "agentName": "Agent audit",
+      "role": "Audit, compliance, inventory and trace review",
+      "requiresHumanApproval": false,
+      "canDeploy": false
+    }
+  ]
+}

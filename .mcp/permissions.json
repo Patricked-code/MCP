@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "directMainWrites": false,
+  "humanApprovalRequired": true,
+  "masterMcpTokenRequiredFor": [
+    "superadmin_mcp",
+    "organization_admin",
+    "deploy",
+    "official_branch_write"
+  ],
+  "allowedBranches": [
+    "mcp/migration-governance-setup",
+    "mcp/onboarding-setup",
+    "mcp/org-profile-bootstrap"
+  ],
+  "forbiddenBranches": [
+    "main",
+    "master"
+  ],
+  "allowedWriteModes": [
+    "read-only-plus-scoped-write",
+    "branch_pr_required"
+  ],
+  "forbiddenActions": [
+    "store_raw_token",
+    "write_directly_to_main",
+    "create_github_token_from_password",
+    "deploy_without_explicit_human_validation",
+    "grant_superadmin_from_github_token_only"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "projectName": "wealthtech-mcp-ssh-bridge",
+  "owner": "Patricked-code",
+  "repo": "MCP",
+  "targetOrganization": "chainsolutions-wealthtech",
+  "defaultBranch": "main",
+  "workingBranch": "mcp/migration-governance-setup",
+  "mcpStatus": "partial",
+  "createdAt": "2026-07-05T00:00:00.000Z",
+  "modules": [
+    "identity",
+    "rights",
+    "questions",
+    "repoFootprint",
+    "agents",
+    "serverMapping",
+    "audit",
+    "organizationBootstrap"
+  ],
+  "notes": [
+    "This repository is the current MCP governance staging repo.",
+    "Direct chainsolutions-wealthtech organization integration is blocked until the GitHub App or an explicitly scoped organization token is authorized."
+  ]
+}

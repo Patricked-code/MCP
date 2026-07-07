@@ -13,6 +13,6 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true
   },
-  "include": ["src/**/*.ts", "scripts/**/*.mjs"],
+  "include": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.mjs"],
   "exclude": ["node_modules", "dist"]
 }

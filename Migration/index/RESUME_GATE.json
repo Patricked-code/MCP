@@ -1,0 +1,250 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-06T17:44:34.338288Z",
+  "generator": "scripts/build-resume-gate.py",
+  "purpose": "Public-safe gate that decides whether blocked WealthTech MCP migration work can resume.",
+  "safety": {
+    "rawSourceTextStored": false,
+    "rawPdfTextStored": false,
+    "rawArchiveTextStored": false,
+    "rawServerInventoryStored": false,
+    "rawSecretsStored": false,
+    "productionActionExecuted": false,
+    "publicationMode": "issue_states_blocker_ids_requirement_ids_and_resume_decision_only"
+  },
+  "inputs": {
+    "blockerRunbook": {
+      "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
+      "generatedAt": "2026-07-06T17:44:33.663606Z",
+      "summary": {
+        "blockerCount": 2,
+        "externalActionBlockerCount": 1,
+        "privateInventoryBlockerCount": 1,
+        "blockedTaskCount": 4,
+        "blockedObjectiveCount": 4,
+        "blockedServerCardCount": 4,
+        "blockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    },
+    "completionAudit": {
+      "path": "Migration/index/COMPLETION_AUDIT.json",
+      "generatedAt": "2026-07-06T17:44:34.063022Z",
+      "summary": {
+        "requirementCount": 9,
+        "completeRequirementCount": 5,
+        "blockedRequirementCount": 4,
+        "partialRequirementCount": 1,
+        "incompleteRequirementIds": [
+          "authorize_connector_on_target_org",
+          "bootstrap_visible_org_repositories",
+          "prepare_server_mapping_without_exposing_private_inventory",
+          "execute_migration_steps_with_operator_approval"
+        ],
+        "blockedRequirementIds": [
+          "authorize_connector_on_target_org",
+          "bootstrap_visible_org_repositories",
+          "prepare_server_mapping_without_exposing_private_inventory",
+          "execute_migration_steps_with_operator_approval"
+        ],
+        "partialRequirementIds": [
+          "prepare_server_mapping_without_exposing_private_inventory"
+        ],
+        "missingEvidence": [],
+        "unresolvedBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ],
+        "fullObjectiveAchieved": false
+      },
+      "completionDecision": {
+        "fullObjectiveAchieved": false,
+        "status": "not_complete_blockers_remain",
+        "reason": "Public-safe blocker evidence gate still reports unresolved blockers: github_connector_not_authorized_on_target_org, production_actions_require_private_inventory_and_approval."
+      }
+    },
+    "executionTasks": {
+      "path": "Migration/index/MCP_EXECUTION_TASKS.json",
+      "generatedAt": "2026-07-06T17:44:33.314002Z",
+      "summary": {
+        "taskCount": 8,
+        "readyTaskCount": 3,
+        "blockedTaskCount": 4,
+        "statusCounts": {
+          "ready_for_operator_review": 1,
+          "blocked_external_authorization": 1,
+          "blocked_by_connector_visibility": 2,
+          "ready_to_prepare_templates": 1,
+          "blocked_private_inventory_and_approval": 1,
+          "ready_recurring_gate": 1,
+          "pending_operator_review": 1
+        },
+        "kindCounts": {
+          "operator_review": 1,
+          "external_github_app_action": 1,
+          "mcp_regeneration": 1,
+          "repository_bootstrap": 1,
+          "server_preparation": 1,
+          "private_server_action": 1,
+          "quality_gate": 1,
+          "planning_to_delivery": 1
+        },
+        "readyTaskIds": [
+          "review_objective_traceability_matrix",
+          "prepare_private_server_inventory_cards",
+          "execute_no_regression_gate"
+        ],
+        "blockedTaskIds": [
+          "authorize_github_connector_on_chainsolutions",
+          "regenerate_ingestion_after_connector_access",
+          "bootstrap_visible_org_repositories",
+          "collect_private_server_inventory"
+        ],
+        "globalBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    },
+    "operatorActionPack": {
+      "path": "Migration/index/OPERATOR_ACTION_PACK.json",
+      "generatedAt": "2026-07-06T17:44:34.206136Z",
+      "summary": {
+        "operatorActionCount": 2,
+        "externalGithubActionCount": 1,
+        "privateOperatorActionCount": 1,
+        "issueReadyActionCount": 2,
+        "publishedIssueCount": 2,
+        "unresolvedBlockerCount": 2,
+        "unresolvedBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ],
+        "actionIds": [
+          "authorize_github_connector_issue",
+          "private_server_inventory_issue"
+        ],
+        "issueUrls": [
+          "https://github.com/Patricked-code/MCP/issues/2",
+          "https://github.com/Patricked-code/MCP/issues/3"
+        ]
+      }
+    },
+    "operatorActionIssueLog": {
+      "path": "Migration/index/OPERATOR_ACTION_ISSUE_LOG.json",
+      "updatedAt": "2026-07-06T17:44:03.119Z",
+      "issueCount": 2
+    },
+    "blockerEvidenceGate": {
+      "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+      "generatedAt": "2026-07-06T17:44:33.878423Z",
+      "summary": {
+        "blockerCount": 2,
+        "resolutionReadyCount": 0,
+        "unresolvedBlockerCount": 2,
+        "openIssueBlockerCount": 2,
+        "missingEvidenceRecordCount": 2,
+        "incompleteAcceptanceEvidenceCount": 2,
+        "allBlockersEvidenceReady": false,
+        "resolutionReadyBlockerIds": [],
+        "unresolvedBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ],
+        "openIssueBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ],
+        "missingEvidenceRecordBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    }
+  },
+  "summary": {
+    "resumeAllowed": false,
+    "status": "resume_blocked_operator_actions_pending",
+    "reasonCount": 4,
+    "reasons": [
+      "2 operator blocker issue(s) are still open.",
+      "2 completion blocker(s) remain unresolved.",
+      "4 full-objective requirement(s) remain incomplete.",
+      "4 executable MCP task(s) remain blocked."
+    ],
+    "openIssueCount": 2,
+    "closedIssueCount": 0,
+    "unresolvedBlockerCount": 2,
+    "incompleteRequirementCount": 4,
+    "blockedTaskCount": 4,
+    "unresolvedBlockerIds": [
+      "github_connector_not_authorized_on_target_org",
+      "production_actions_require_private_inventory_and_approval"
+    ],
+    "incompleteRequirementIds": [
+      "authorize_connector_on_target_org",
+      "bootstrap_visible_org_repositories",
+      "prepare_server_mapping_without_exposing_private_inventory",
+      "execute_migration_steps_with_operator_approval"
+    ],
+    "blockedTaskIds": [
+      "authorize_github_connector_on_chainsolutions",
+      "regenerate_ingestion_after_connector_access",
+      "bootstrap_visible_org_repositories",
+      "collect_private_server_inventory"
+    ]
+  },
+  "checks": [
+    {
+      "blockerId": "github_connector_not_authorized_on_target_org",
+      "issueUrls": [
+        "https://github.com/Patricked-code/MCP/issues/2"
+      ],
+      "issueStates": [
+        "open"
+      ],
+      "acceptanceEvidenceStatus": "pending",
+      "resumeStatus": "blocked",
+      "requiredBeforeResume": [
+        "Complete the blocker acceptance criteria in the linked issue.",
+        "Do not close the issue unless the acceptance criteria are evidenced.",
+        "Run operator issue sync, regenerate operator actions, completion audit and this resume gate.",
+        "Run the no-regression gate before any follow-up push or production-affecting action."
+      ]
+    },
+    {
+      "blockerId": "production_actions_require_private_inventory_and_approval",
+      "issueUrls": [
+        "https://github.com/Patricked-code/MCP/issues/3"
+      ],
+      "issueStates": [
+        "open"
+      ],
+      "acceptanceEvidenceStatus": "pending",
+      "resumeStatus": "blocked",
+      "requiredBeforeResume": [
+        "Complete the blocker acceptance criteria in the linked issue.",
+        "Do not close the issue unless the acceptance criteria are evidenced.",
+        "Run operator issue sync, regenerate operator actions, completion audit and this resume gate.",
+        "Run the no-regression gate before any follow-up push or production-affecting action."
+      ]
+    }
+  ],
+  "resumeCommandsWhenUnblocked": [
+    "node scripts/sync-operator-issue-log.mjs",
+    "python scripts/build-operator-action-pack.py",
+    "python scripts/build-blocker-evidence-gate.py",
+    "python scripts/build-completion-audit.py",
+    "python scripts/build-resume-gate.py",
+    "python scripts/build-execution-runway.py",
+    "node node_modules/tsx/dist/cli.mjs --test tests/onboarding.test.ts",
+    "node node_modules/typescript/lib/tsc.js --noEmit -p tsconfig.json",
+    "node node_modules/typescript/lib/tsc.js -p tsconfig.json",
+    "node scripts/check-docs.mjs",
+    "node scripts/check-no-secrets.mjs",
+    "node scripts/check-public-evidence.mjs",
+    "git diff --check"
+  ]
+}

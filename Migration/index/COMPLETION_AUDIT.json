@@ -1,0 +1,663 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-06T17:44:34.063022Z",
+  "generator": "scripts/build-completion-audit.py",
+  "purpose": "Requirement-by-requirement completion audit for the full WealthTech MCP migration objective.",
+  "safety": {
+    "rawSourceTextStored": false,
+    "rawPdfTextStored": false,
+    "rawArchiveTextStored": false,
+    "rawServerInventoryStored": false,
+    "rawSecretsStored": false,
+    "productionActionExecuted": false,
+    "publicationMode": "requirement_status_evidence_paths_hashes_and_blockers_only"
+  },
+  "inputs": {
+    "sourceRegistry": {
+      "path": "Migration/index/SOURCE_REGISTRY.json",
+      "generatedAt": "2026-07-06T17:44:03.405Z",
+      "totals": {
+        "sourceFileCount": 104,
+        "uniqueContentFileCount": 98,
+        "duplicateFileCount": 6,
+        "totalBytes": 24479001,
+        "textReadFiles": 90,
+        "archiveIndexedFiles": 5,
+        "binaryIndexedFiles": 9,
+        "secretSignalFiles": 0,
+        "byExtension": {
+          ".pdf": 9,
+          ".docx": 2,
+          ".md": 81,
+          ".csv": 3,
+          ".zip": 5,
+          ".txt": 1,
+          ".json": 3
+        },
+        "byReadStatus": {
+          "binary_indexed": 9,
+          "text_read": 90,
+          "archive_indexed": 5
+        }
+      }
+    },
+    "pdfTextAudit": {
+      "path": "Migration/index/PDF_TEXT_AUDIT.json",
+      "generatedAt": "2026-07-06T17:44:13.617880Z",
+      "totals": {
+        "pdfDocumentCount": 43,
+        "uniquePdfContentCount": 22,
+        "duplicatePdfDocumentCount": 21,
+        "textReadDocumentCount": 22,
+        "textEmptyDocumentCount": 0,
+        "errorDocumentCount": 0,
+        "secretSignalDocumentCount": 0,
+        "totalPagesExtracted": 623,
+        "totalCharsExtracted": 1975784,
+        "totalWordsExtracted": 124679,
+        "byStatus": {
+          "pdf_text_read": 22,
+          "pdf_duplicate": 21
+        },
+        "bySourceKind": {
+          "registry_pdf": 9,
+          "archive_pdf_entry": 34
+        },
+        "keywordTotals": {
+          "MCP": 1089,
+          "chainsolutions-wealthtech": 23,
+          "GitHub": 2125,
+          "migration": 752,
+          "serveur": 753,
+          "server": 1088,
+          "agent": 314,
+          "audit": 514,
+          "regression": 52,
+          "Claude": 1199,
+          "Codex": 249,
+          "ChatGPT": 140,
+          "branche": 770,
+          "branch": 2117,
+          "deploiement": 19,
+          "deployment": 69
+        }
+      }
+    },
+    "archiveTextAudit": {
+      "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
+      "generatedAt": "2026-07-06T17:44:14.863607Z",
+      "totals": {
+        "archiveDocumentCount": 5,
+        "archiveDocumentsScanned": 5,
+        "archiveDocumentsMissing": 0,
+        "archiveEntryCount": 140,
+        "uniqueArchiveEntryCount": 50,
+        "duplicateArchiveEntryCount": 90,
+        "textEntryCount": 32,
+        "textReadEntryCount": 32,
+        "textEmptyEntryCount": 0,
+        "pdfDelegatedEntryCount": 17,
+        "nestedZipEntryCount": 1,
+        "binaryIndexedEntryCount": 0,
+        "errorEntryCount": 0,
+        "secretSignalEntryCount": 0,
+        "totalWordsExtracted": 115913,
+        "totalCharsExtracted": 2661587,
+        "byStatus": {
+          "archive_text_read": 32,
+          "archive_pdf_delegated_to_pdf_audit": 17,
+          "archive_duplicate": 90,
+          "archive_nested_zip_indexed": 1
+        },
+        "byExtension": {
+          ".txt": 34,
+          ".csv": 46,
+          ".docx": 2,
+          ".md": 20,
+          ".pdf": 34,
+          ".json": 2,
+          ".zip": 2
+        },
+        "bySourceArchive": {
+          "workspace-ressources/Audit.zip": 16,
+          "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip": 47,
+          "workspace-ressources/LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip": 31,
+          "workspace-ressources/Migration_2026-07-04.zip": 23,
+          "downloads-migration-zip/Migration_2026-07-04.zip": 23
+        },
+        "keywordTotals": {
+          "MCP": 1203,
+          "chainsolutions-wealthtech": 25,
+          "GitHub": 2557,
+          "migration": 250,
+          "serveur": 714,
+          "server": 1267,
+          "agent": 265,
+          "audit": 710,
+          "regression": 15,
+          "Claude": 1490,
+          "Codex": 198,
+          "ChatGPT": 117,
+          "branche": 761,
+          "branch": 2679,
+          "deploiement": 0,
+          "deployment": 61
+        }
+      }
+    },
+    "objectiveMatrix": {
+      "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
+      "generatedAt": "2026-07-06T17:44:33.159991Z",
+      "summary": {
+        "objectiveCount": 9,
+        "statusCounts": {
+          "partial_external_connector_authorization_required": 1,
+          "inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress": 1,
+          "implemented_as_policy_and_tests_more_runtime_gates_needed": 1,
+          "implemented_for_current_pr_flow": 1,
+          "implemented_for_governance_profiles": 1,
+          "partial_sensitive_server_paths_not_published": 1,
+          "documented_not_executed_on_production": 1,
+          "implemented_for_current_mcp_and_ingestion_flows": 1,
+          "in_progress_objective_matrix_added_this_turn": 1
+        },
+        "blockedObjectiveCount": 4,
+        "objectivesWithMissingCurrentEvidence": []
+      }
+    },
+    "executionTasks": {
+      "path": "Migration/index/MCP_EXECUTION_TASKS.json",
+      "generatedAt": "2026-07-06T17:44:33.314002Z",
+      "summary": {
+        "taskCount": 8,
+        "readyTaskCount": 3,
+        "blockedTaskCount": 4,
+        "statusCounts": {
+          "ready_for_operator_review": 1,
+          "blocked_external_authorization": 1,
+          "blocked_by_connector_visibility": 2,
+          "ready_to_prepare_templates": 1,
+          "blocked_private_inventory_and_approval": 1,
+          "ready_recurring_gate": 1,
+          "pending_operator_review": 1
+        },
+        "kindCounts": {
+          "operator_review": 1,
+          "external_github_app_action": 1,
+          "mcp_regeneration": 1,
+          "repository_bootstrap": 1,
+          "server_preparation": 1,
+          "private_server_action": 1,
+          "quality_gate": 1,
+          "planning_to_delivery": 1
+        },
+        "readyTaskIds": [
+          "review_objective_traceability_matrix",
+          "prepare_private_server_inventory_cards",
+          "execute_no_regression_gate"
+        ],
+        "blockedTaskIds": [
+          "authorize_github_connector_on_chainsolutions",
+          "regenerate_ingestion_after_connector_access",
+          "bootstrap_visible_org_repositories",
+          "collect_private_server_inventory"
+        ],
+        "globalBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    },
+    "serverCards": {
+      "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
+      "generatedAt": "2026-07-06T17:44:33.475756Z",
+      "summary": {
+        "cardCount": 6,
+        "readyCardCount": 6,
+        "blockedCardCount": 4,
+        "byStatus": {
+          "template_ready_private_inventory_required": 4,
+          "ready_recurring_gate": 1,
+          "template_ready": 1
+        },
+        "byScope": {
+          "S1": 1,
+          "S2": 2,
+          "S2_to_S1": 1,
+          "S1_S2": 2
+        },
+        "readyCardIds": [
+          "s1_preservation_inventory",
+          "s2_protected_domains_inventory",
+          "s2_cleanup_candidates_inventory",
+          "s2_to_s1_migration_candidate",
+          "server_no_regression_gate",
+          "operator_approval_record"
+        ],
+        "blockedCardIds": [
+          "s1_preservation_inventory",
+          "s2_protected_domains_inventory",
+          "s2_cleanup_candidates_inventory",
+          "s2_to_s1_migration_candidate"
+        ],
+        "protectedDomainCount": 20,
+        "cleanupCandidateCount": 6,
+        "backupReviewCandidateCount": 8
+      }
+    },
+    "blockerRunbook": {
+      "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
+      "generatedAt": "2026-07-06T17:44:33.663606Z",
+      "summary": {
+        "blockerCount": 2,
+        "externalActionBlockerCount": 1,
+        "privateInventoryBlockerCount": 1,
+        "blockedTaskCount": 4,
+        "blockedObjectiveCount": 4,
+        "blockedServerCardCount": 4,
+        "blockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    },
+    "blockerEvidenceGate": {
+      "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+      "generatedAt": "2026-07-06T17:44:33.878423Z",
+      "summary": {
+        "blockerCount": 2,
+        "resolutionReadyCount": 0,
+        "unresolvedBlockerCount": 2,
+        "openIssueBlockerCount": 2,
+        "missingEvidenceRecordCount": 2,
+        "incompleteAcceptanceEvidenceCount": 2,
+        "allBlockersEvidenceReady": false,
+        "resolutionReadyBlockerIds": [],
+        "unresolvedBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ],
+        "openIssueBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ],
+        "missingEvidenceRecordBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    }
+  },
+  "summary": {
+    "requirementCount": 9,
+    "completeRequirementCount": 5,
+    "blockedRequirementCount": 4,
+    "partialRequirementCount": 1,
+    "incompleteRequirementIds": [
+      "authorize_connector_on_target_org",
+      "bootstrap_visible_org_repositories",
+      "prepare_server_mapping_without_exposing_private_inventory",
+      "execute_migration_steps_with_operator_approval"
+    ],
+    "blockedRequirementIds": [
+      "authorize_connector_on_target_org",
+      "bootstrap_visible_org_repositories",
+      "prepare_server_mapping_without_exposing_private_inventory",
+      "execute_migration_steps_with_operator_approval"
+    ],
+    "partialRequirementIds": [
+      "prepare_server_mapping_without_exposing_private_inventory"
+    ],
+    "missingEvidence": [],
+    "unresolvedBlockerIds": [
+      "github_connector_not_authorized_on_target_org",
+      "production_actions_require_private_inventory_and_approval"
+    ],
+    "fullObjectiveAchieved": false
+  },
+  "completionDecision": {
+    "fullObjectiveAchieved": false,
+    "status": "not_complete_blockers_remain",
+    "reason": "Public-safe blocker evidence gate still reports unresolved blockers: github_connector_not_authorized_on_target_org, production_actions_require_private_inventory_and_approval."
+  },
+  "requirements": [
+    {
+      "id": "understand_documented_objectives",
+      "title": "Understand the objectives requested by the migration corpus",
+      "status": "verified_complete_current_scope",
+      "acceptanceCriteria": [
+        "9 objectives are derived from the audited corpus.",
+        "0 objectives have missing local evidence.",
+        "Objective matrix stores evidence paths and hashes, not raw source text."
+      ],
+      "evidence": [
+        {
+          "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
+          "exists": true,
+          "sha256": "23187eef039e02b888acb7aab2082f2f04b43e2bcfd1ed41a182fbcf58a641c5",
+          "note": "Generated objective matrix."
+        },
+        {
+          "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.md",
+          "exists": true,
+          "sha256": "2b75afbbe648232d68ce788b432f1da8d18c95d8db7afa6299f4d6661fc7ed0c",
+          "note": "Human-readable objective matrix."
+        }
+      ],
+      "blockedBy": [],
+      "nextActions": [
+        "Keep the objective matrix regenerated after any source or connector visibility change."
+      ]
+    },
+    {
+      "id": "read_complete_supplied_corpus",
+      "title": "Read and index all supplied direct and archived documents",
+      "status": "verified_complete_current_scope",
+      "acceptanceCriteria": [
+        "104 source files are inventoried.",
+        "90 direct text/doc files are text-read.",
+        "43 PDF documents are audited with 0 PDF errors.",
+        "5 ZIP archives are scanned with 0 archive entry errors.",
+        "Raw source text, raw PDF text and raw archive text are not committed."
+      ],
+      "evidence": [
+        {
+          "path": "Migration/index/SOURCE_REGISTRY.json",
+          "exists": true,
+          "sha256": "f107c02e298c3ba52e81c2cb0340b9b1b8be10758f7b011d79a0d9fceec10848",
+          "note": "Direct source inventory."
+        },
+        {
+          "path": "Migration/index/PDF_TEXT_AUDIT.json",
+          "exists": true,
+          "sha256": "4bedb87ee504da381aa8511348d7b50e49bdb38b807103db348083cd3c5b25ef",
+          "note": "PDF text extraction audit."
+        },
+        {
+          "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
+          "exists": true,
+          "sha256": "e8b3bfbf33a71012e88b7ab24df325f441b05a1a9d9cce9bd9f1d1334cf716e7",
+          "note": "ZIP archive text audit."
+        }
+      ],
+      "blockedBy": [],
+      "nextActions": [
+        "Regenerate source, PDF and archive audits whenever sources change."
+      ]
+    },
+    {
+      "id": "public_bootstrap_chainsolutions_org",
+      "title": "Apply the public chainsolutions-wealthtech organization bootstrap",
+      "status": "verified_complete_current_scope",
+      "acceptanceCriteria": [
+        "Organization description was applied directly via GitHub API/CLI.",
+        "Organization-level 2FA requirement was verified disabled for the first integration.",
+        "chainsolutions-wealthtech/.github profile PR was merged."
+      ],
+      "evidence": [
+        {
+          "path": "Migration/github/chainsolutions-wealthtech/DIRECT_CONFIGURATION_LOG.md",
+          "exists": true,
+          "sha256": "692a58acfae6603593e54647dbf8b397280396be9e221b6521d5b5ea7c9b193e",
+          "note": "Direct organization configuration evidence."
+        },
+        {
+          "path": "Migration/index/CHAINSOLUTIONS_WEALTHTECH_FIRST_INTEGRATION.md",
+          "exists": true,
+          "sha256": "b2fda4c77624a41714c2291710574ad78f9504a3c63236c1d45d2c4db7114714",
+          "note": "First integration status."
+        },
+        {
+          "path": "Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json",
+          "exists": true,
+          "sha256": "0fa711ca25a841cfc54437711ab86ea0397c0110b12604572aff28d18b6499fc",
+          "note": "Public bootstrap package."
+        }
+      ],
+      "blockedBy": [],
+      "nextActions": [
+        "Keep future organization changes audited and branch/PR based."
+      ]
+    },
+    {
+      "id": "authorize_connector_on_target_org",
+      "title": "Link chainsolutions-wealthtech to the Codex/MCP GitHub connector",
+      "status": "blocked_external_action_required",
+      "acceptanceCriteria": [
+        "Connector installed accounts must include chainsolutions-wealthtech.",
+        "MCP onboarding must no longer report target organization access as blocked.",
+        "GET /git/repos must be able to include organization repositories after authentication.",
+        "BLOCKER_EVIDENCE_GATE must mark github_connector_not_authorized_on_target_org ready for completion audit."
+      ],
+      "evidence": [
+        {
+          "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
+          "exists": true,
+          "sha256": "532967bd6ced68a6aa1da8821874e0b696453ff12dd36850e8a9ce92e913e6f4",
+          "note": "External connector authorization blocker."
+        },
+        {
+          "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+          "exists": true,
+          "sha256": "d306b370d350a5603dccddb29bf8679aa31388cf8564421ff2cff497001efd22",
+          "note": "Public-safe blocker evidence gate."
+        },
+        {
+          "path": "Migration/github/chainsolutions-wealthtech/ORG_ACTIVATION_RUNBOOK.md",
+          "exists": true,
+          "sha256": "3ec2fb4d6265ff92bdee37d7b3953d8311fcc6ccc21c39e4e363716f8ea71dd2",
+          "note": "Owner action runbook."
+        }
+      ],
+      "blockedBy": [
+        "github_connector_not_authorized_on_target_org"
+      ],
+      "nextActions": [
+        "Install or authorize the Codex/MCP GitHub app on chainsolutions-wealthtech.",
+        "Regenerate all source/objective/task/blocker/evidence/completion indexes after connector visibility changes."
+      ]
+    },
+    {
+      "id": "construct_mcp_governance_engine",
+      "title": "Construct the MCP governance engine, routes, agents and safeguards",
+      "status": "implemented_current_scope_recurring_gate_required",
+      "acceptanceCriteria": [
+        "Onboarding modules, routes, roles, audits, source/objective/task endpoints and tests exist.",
+        "SuperAdmin creation and unsafe write choices are guarded.",
+        "Branch and pull-request workflow is enforced for generated repository bootstraps."
+      ],
+      "evidence": [
+        {
+          "path": "src/onboarding/index.ts",
+          "exists": true,
+          "sha256": "30b7692b91258cbd81804a60986800fbb45d2e6d1a6162ec75e8fe7845018795",
+          "note": "MCP onboarding engine entrypoint."
+        },
+        {
+          "path": "src/server.ts",
+          "exists": true,
+          "sha256": "6fa1f3fed811c3e14581bcd9372dccc152a2e6dd46a2f1f57f4a240f7fd8faa8",
+          "note": "Protected web/API routes."
+        },
+        {
+          "path": "tests/onboarding.test.ts",
+          "exists": true,
+          "sha256": "3a75630d2fa8254c657675820b502002b1cf0d983ebcaab9dcce9d2953bc0fcb",
+          "note": "Onboarding safeguard tests."
+        },
+        {
+          "path": "docs/MCP_ONBOARDING_ENGINE.md",
+          "exists": true,
+          "sha256": "a06f728fbd9a807ea8abaad97550ab24f950239cb75a7101b4d43b6c3b6d5128",
+          "note": "Onboarding engine documentation."
+        }
+      ],
+      "blockedBy": [],
+      "nextActions": [
+        "Run the no-regression gate before every push or production-affecting change."
+      ]
+    },
+    {
+      "id": "bootstrap_visible_org_repositories",
+      "title": "Bootstrap all visible organization repositories through branch and PR workflow",
+      "status": "blocked_external_action_required",
+      "acceptanceCriteria": [
+        "Connector must list chainsolutions-wealthtech repositories.",
+        "Each visible repository missing MCP files must receive a dedicated onboarding branch and PR.",
+        "No direct main writes are allowed."
+      ],
+      "evidence": [
+        {
+          "path": "Migration/index/MCP_EXECUTION_TASKS.json",
+          "exists": true,
+          "sha256": "9212919f06d00b176d48f81e80a07632eeee46bb2ad798a9e7a530706a6c1663",
+          "note": "Repository bootstrap task is blocked by connector visibility."
+        },
+        {
+          "path": ".mcp/permissions.json",
+          "exists": true,
+          "sha256": "60c39e8131f2de0af7ba21a5214a3598a9f05fb6121a75057e82b72302988954",
+          "note": "Branch and PR safety policy."
+        }
+      ],
+      "blockedBy": [
+        "github_connector_not_authorized_on_target_org"
+      ],
+      "nextActions": [
+        "Authorize connector access, then call repository bootstrap preparation for every visible target repo."
+      ]
+    },
+    {
+      "id": "prepare_server_mapping_without_exposing_private_inventory",
+      "title": "Prepare repo-server mapping without exposing private server inventory",
+      "status": "partial_sensitive_server_paths_not_published",
+      "acceptanceCriteria": [
+        "Public-safe server inventory cards exist.",
+        "Protected domains, cleanup candidates and backup-review candidates are tracked without raw private paths.",
+        "Private live inventory must stay outside Git.",
+        "BLOCKER_EVIDENCE_GATE must mark production_actions_require_private_inventory_and_approval ready for completion audit."
+      ],
+      "evidence": [
+        {
+          "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
+          "exists": true,
+          "sha256": "15f50b89e5ab445c6872976e5ea32d0ce2c878a1dd38bf605f8dd13e3b4be39a",
+          "note": "Public-safe private inventory task cards."
+        },
+        {
+          "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+          "exists": true,
+          "sha256": "d306b370d350a5603dccddb29bf8679aa31388cf8564421ff2cff497001efd22",
+          "note": "Public-safe blocker evidence gate."
+        },
+        {
+          "path": "docs/MCP_SERVER_MAPPING.md",
+          "exists": true,
+          "sha256": "a072028b67873cbe9095a5018ad67cc024f2ffdf7ee04662cca3547278f022ad",
+          "note": "Public-safe MCP server mapping documentation."
+        },
+        {
+          "path": ".mcp/server-map.json",
+          "exists": true,
+          "sha256": "4a508a33f03b3992d2477aebcb7010e7a3c3b08ebed0f43fce77c56b02a8cd54",
+          "note": "Repository-local server map template."
+        }
+      ],
+      "blockedBy": [
+        "production_actions_require_private_inventory_and_approval"
+      ],
+      "nextActions": [
+        "Collect private S1/S2 inventory in an approved non-Git operational location."
+      ]
+    },
+    {
+      "id": "execute_migration_steps_with_operator_approval",
+      "title": "Apply migration/cleanup steps only after inventory, backup, rollback, tests and approval",
+      "status": "blocked_private_inventory_and_approval",
+      "acceptanceCriteria": [
+        "No production deletion, migration, vhost change, service stop or deployment is authorized by these public artifacts.",
+        "Private inventory, backup/export reference, rollback plan and operator approval must exist first.",
+        "Post-action tests are mandatory before cleanup or migration."
+      ],
+      "evidence": [
+        {
+          "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
+          "exists": true,
+          "sha256": "532967bd6ced68a6aa1da8821874e0b696453ff12dd36850e8a9ce92e913e6f4",
+          "note": "Private inventory and approval blocker."
+        },
+        {
+          "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+          "exists": true,
+          "sha256": "d306b370d350a5603dccddb29bf8679aa31388cf8564421ff2cff497001efd22",
+          "note": "Public-safe blocker evidence gate."
+        },
+        {
+          "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md",
+          "exists": true,
+          "sha256": "f15331d427f0e9e9b17d4ead96ebf82c44019d174c1ee0e62b8ff74ddab02bcf",
+          "note": "Server task cards and gates."
+        },
+        {
+          "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
+          "exists": true,
+          "sha256": "f72bcf7eef9ea7a2707a6f5d9fb602d8b979c1c7214ae6bfff3810c5c1f54ad8",
+          "note": "Migration and safety plan."
+        }
+      ],
+      "blockedBy": [
+        "production_actions_require_private_inventory_and_approval"
+      ],
+      "nextActions": [
+        "Complete private operational evidence outside Git, then publish only public-safe summaries."
+      ]
+    },
+    {
+      "id": "preserve_no_regression_and_secret_safety",
+      "title": "Preserve no-regression gates and avoid secret/raw text exposure",
+      "status": "implemented_current_scope_recurring_gate_required",
+      "acceptanceCriteria": [
+        "8 executable tasks and 4 blocked tasks are tracked.",
+        "6 server task cards and 4 private-inventory-blocked cards are tracked.",
+        "2 global blockers remain explicit: github_connector_not_authorized_on_target_org, production_actions_require_private_inventory_and_approval.",
+        "Generated registries store hashes, counts, statuses and safe metadata, not raw secrets or raw corpus text."
+      ],
+      "evidence": [
+        {
+          "path": "scripts/check-no-secrets.mjs",
+          "exists": true,
+          "sha256": "368240ddbf8df4a28956c50d47c301ed15b2c511ebdb59798671d1e8c4501bd7",
+          "note": "Secret scan gate."
+        },
+        {
+          "path": "scripts/check-docs.mjs",
+          "exists": true,
+          "sha256": "78e63f671eabcea90018100adb2fe6c6845e7ec21027b0a5cfd123bbfbcaa7f9",
+          "note": "Required docs/index gate."
+        },
+        {
+          "path": "Migration/index/MCP_EXECUTION_TASKS.json",
+          "exists": true,
+          "sha256": "9212919f06d00b176d48f81e80a07632eeee46bb2ad798a9e7a530706a6c1663",
+          "note": "No-regression command list."
+        },
+        {
+          "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
+          "exists": true,
+          "sha256": "532967bd6ced68a6aa1da8821874e0b696453ff12dd36850e8a9ce92e913e6f4",
+          "note": "Remaining blockers and resume commands."
+        },
+        {
+          "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
+          "exists": true,
+          "sha256": "d306b370d350a5603dccddb29bf8679aa31388cf8564421ff2cff497001efd22",
+          "note": "Public-safe blocker evidence gate."
+        }
+      ],
+      "blockedBy": [],
+      "nextActions": [
+        "Run tests, typecheck, build, docs check, secrets check and diff checks before every push."
+      ]
+    }
+  ]
+}

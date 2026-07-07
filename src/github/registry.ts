@@ -49,12 +49,43 @@ export type RegistryAuditEvent = {
   metadata?: Record<string, unknown>;
 };
 
+export type RegistryOnboardingAnswer = {
+  questionId: string;
+  choiceId: string;
+  answeredAt: string;
+  actorId: string;
+  accepted: boolean;
+  reason?: string;
+};
+
+export type RegistryOnboardingSession = {
+  id: string;
+  actorId: string;
+  source: string;
+  startedAt: string;
+  updatedAt: string;
+  status: 'started' | 'in_progress' | 'completed' | 'blocked';
+  answers: RegistryOnboardingAnswer[];
+};
+
+export type RegistryAgentProfileEntry = {
+  agentId: string;
+  agentName: string;
+  agentType: string;
+  role: string;
+  createdAt: string;
+  requiresHumanApproval: boolean;
+  allowedActions: string[];
+};
+
 export type GitRegistry = {
   version: 1;
   updatedAt: string;
   accounts: GitHubAccountRegistryEntry[];
   repoMappings: RepoMappingEntry[];
   auditEvents: RegistryAuditEvent[];
+  onboardingSessions: RegistryOnboardingSession[];
+  agentProfiles: RegistryAgentProfileEntry[];
 };
 
 function registryFilePath(): string {
@@ -82,7 +113,9 @@ function emptyRegistry(): GitRegistry {
     updatedAt: nowIso(),
     accounts: [],
     repoMappings: [],
-    auditEvents: []
+    auditEvents: [],
+    onboardingSessions: [],
+    agentProfiles: []
   };
 }
 
@@ -97,7 +130,9 @@ function normalizeRegistry(value: unknown): GitRegistry {
     updatedAt: typeof candidate.updatedAt === 'string' ? candidate.updatedAt : nowIso(),
     accounts: Array.isArray(candidate.accounts) ? candidate.accounts : [],
     repoMappings: Array.isArray(candidate.repoMappings) ? candidate.repoMappings : [],
-    auditEvents: Array.isArray(candidate.auditEvents) ? candidate.auditEvents : []
+    auditEvents: Array.isArray(candidate.auditEvents) ? candidate.auditEvents : [],
+    onboardingSessions: Array.isArray(candidate.onboardingSessions) ? candidate.onboardingSessions : [],
+    agentProfiles: Array.isArray(candidate.agentProfiles) ? candidate.agentProfiles : []
   };
 }
 
@@ -116,7 +151,9 @@ export async function writeGitRegistry(registry: GitRegistry): Promise<void> {
   const nextRegistry: GitRegistry = {
     ...registry,
     updatedAt: nowIso(),
-    auditEvents: registry.auditEvents.slice(-500)
+    auditEvents: registry.auditEvents.slice(-500),
+    onboardingSessions: registry.onboardingSessions.slice(-100),
+    agentProfiles: registry.agentProfiles.slice(-100)
   };
   await writeFile(file, `${JSON.stringify(nextRegistry, null, 2)}\n`, { encoding: 'utf8', mode: 0o600 });
   await chmod(file, 0o600);

@@ -1,0 +1,225 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-06T17:44:33.663606Z",
+  "generator": "scripts/build-blocker-resolution-runbook.py",
+  "purpose": "Public-safe resolution runbook for the remaining MCP migration blockers.",
+  "safety": {
+    "rawSourceTextStored": false,
+    "rawPdfTextStored": false,
+    "rawServerInventoryStored": false,
+    "rawSecretsStored": false,
+    "productionActionExecuted": false,
+    "publicationMode": "blocker_steps_acceptance_criteria_and_verification_only"
+  },
+  "inputs": {
+    "objectiveTraceabilityMatrix": {
+      "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
+      "generatedAt": "2026-07-06T17:44:33.159991Z",
+      "summary": {
+        "objectiveCount": 9,
+        "statusCounts": {
+          "partial_external_connector_authorization_required": 1,
+          "inventory_pdf_and_archive_text_audits_complete_semantic_extraction_in_progress": 1,
+          "implemented_as_policy_and_tests_more_runtime_gates_needed": 1,
+          "implemented_for_current_pr_flow": 1,
+          "implemented_for_governance_profiles": 1,
+          "partial_sensitive_server_paths_not_published": 1,
+          "documented_not_executed_on_production": 1,
+          "implemented_for_current_mcp_and_ingestion_flows": 1,
+          "in_progress_objective_matrix_added_this_turn": 1
+        },
+        "blockedObjectiveCount": 4,
+        "objectivesWithMissingCurrentEvidence": []
+      }
+    },
+    "executionTasks": {
+      "path": "Migration/index/MCP_EXECUTION_TASKS.json",
+      "generatedAt": "2026-07-06T17:44:33.314002Z",
+      "summary": {
+        "taskCount": 8,
+        "readyTaskCount": 3,
+        "blockedTaskCount": 4,
+        "statusCounts": {
+          "ready_for_operator_review": 1,
+          "blocked_external_authorization": 1,
+          "blocked_by_connector_visibility": 2,
+          "ready_to_prepare_templates": 1,
+          "blocked_private_inventory_and_approval": 1,
+          "ready_recurring_gate": 1,
+          "pending_operator_review": 1
+        },
+        "kindCounts": {
+          "operator_review": 1,
+          "external_github_app_action": 1,
+          "mcp_regeneration": 1,
+          "repository_bootstrap": 1,
+          "server_preparation": 1,
+          "private_server_action": 1,
+          "quality_gate": 1,
+          "planning_to_delivery": 1
+        },
+        "readyTaskIds": [
+          "review_objective_traceability_matrix",
+          "prepare_private_server_inventory_cards",
+          "execute_no_regression_gate"
+        ],
+        "blockedTaskIds": [
+          "authorize_github_connector_on_chainsolutions",
+          "regenerate_ingestion_after_connector_access",
+          "bootstrap_visible_org_repositories",
+          "collect_private_server_inventory"
+        ],
+        "globalBlockerIds": [
+          "github_connector_not_authorized_on_target_org",
+          "production_actions_require_private_inventory_and_approval"
+        ]
+      }
+    },
+    "serverInventoryCards": {
+      "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
+      "generatedAt": "2026-07-06T17:44:33.475756Z",
+      "summary": {
+        "cardCount": 6,
+        "readyCardCount": 6,
+        "blockedCardCount": 4,
+        "byStatus": {
+          "template_ready_private_inventory_required": 4,
+          "ready_recurring_gate": 1,
+          "template_ready": 1
+        },
+        "byScope": {
+          "S1": 1,
+          "S2": 2,
+          "S2_to_S1": 1,
+          "S1_S2": 2
+        },
+        "readyCardIds": [
+          "s1_preservation_inventory",
+          "s2_protected_domains_inventory",
+          "s2_cleanup_candidates_inventory",
+          "s2_to_s1_migration_candidate",
+          "server_no_regression_gate",
+          "operator_approval_record"
+        ],
+        "blockedCardIds": [
+          "s1_preservation_inventory",
+          "s2_protected_domains_inventory",
+          "s2_cleanup_candidates_inventory",
+          "s2_to_s1_migration_candidate"
+        ],
+        "protectedDomainCount": 20,
+        "cleanupCandidateCount": 6,
+        "backupReviewCandidateCount": 8
+      }
+    }
+  },
+  "summary": {
+    "blockerCount": 2,
+    "externalActionBlockerCount": 1,
+    "privateInventoryBlockerCount": 1,
+    "blockedTaskCount": 4,
+    "blockedObjectiveCount": 4,
+    "blockedServerCardCount": 4,
+    "blockerIds": [
+      "github_connector_not_authorized_on_target_org",
+      "production_actions_require_private_inventory_and_approval"
+    ]
+  },
+  "blockers": [
+    {
+      "id": "github_connector_not_authorized_on_target_org",
+      "title": "Authorize GitHub/Codex/MCP connector on chainsolutions-wealthtech",
+      "ownerRoleRequired": "chainsolutions-wealthtech organization owner/admin",
+      "resolutionStatus": "external_action_required",
+      "resolutionSteps": [
+        "Open chainsolutions-wealthtech organization settings in GitHub.",
+        "Install or authorize the GitHub app/connector used by Codex/MCP on the organization.",
+        "Grant only the permissions required for repository visibility, branch writes and pull request creation.",
+        "Verify the connector sees chainsolutions-wealthtech as an installed/visible organization.",
+        "Regenerate source registry, PDF audit, archive text audit, objective matrix, execution tasks and this blocker runbook."
+      ],
+      "acceptanceCriteria": [
+        "Connector installed accounts include chainsolutions-wealthtech.",
+        "MCP onboarding no longer reports organization access as blocked.",
+        "GET /git/repos can include organization repositories after authentication.",
+        "No raw token was copied into Git, logs, screenshots or generated artifacts."
+      ],
+      "verificationCommands": [
+        "gh api /orgs/chainsolutions-wealthtech",
+        "GET /git/onboarding",
+        "GET /git/onboarding/tasks",
+        "GET /git/onboarding/blockers"
+      ],
+      "blockedObjectives": [
+        "connect_chainsolutions_wealthtech_to_mcp",
+        "repo_server_mapping"
+      ],
+      "blockedTasks": [
+        "authorize_github_connector_on_chainsolutions",
+        "regenerate_ingestion_after_connector_access",
+        "bootstrap_visible_org_repositories"
+      ],
+      "blockedServerCards": []
+    },
+    {
+      "id": "production_actions_require_private_inventory_and_approval",
+      "title": "Collect approved private server inventory, backup, rollback and test evidence",
+      "ownerRoleRequired": "server operator with explicit human approval",
+      "resolutionStatus": "private_inventory_required",
+      "resolutionSteps": [
+        "Use the public-safe server inventory cards as templates only.",
+        "Collect live S1/S2 inventory in an approved private operational location outside Git.",
+        "Record backups/exports, rollback plan and operator approval references outside Git.",
+        "Run or prepare post-action tests before any cleanup, migration, vhost change or service stop.",
+        "Publish only public-safe summaries after review."
+      ],
+      "acceptanceCriteria": [
+        "Private inventory exists outside Git.",
+        "Backup or export reference exists outside Git.",
+        "Rollback plan exists outside Git.",
+        "Operator approval scope and date are recorded without secrets.",
+        "No production deletion, migration, service stop or vhost change has occurred before approval."
+      ],
+      "verificationCommands": [
+        "GET /git/onboarding/server-cards",
+        "GET /git/onboarding/tasks",
+        "node scripts/check-no-secrets.mjs",
+        "node scripts/check-docs.mjs"
+      ],
+      "blockedObjectives": [
+        "repo_server_mapping",
+        "migration_execution_sequence"
+      ],
+      "blockedTasks": [
+        "collect_private_server_inventory"
+      ],
+      "blockedServerCards": [
+        "s1_preservation_inventory",
+        "s2_protected_domains_inventory",
+        "s2_cleanup_candidates_inventory",
+        "s2_to_s1_migration_candidate"
+      ]
+    }
+  ],
+  "resumeCommandsAfterResolution": [
+    "node scripts/build-source-registry.mjs",
+    "python scripts/build-pdf-text-audit.py",
+    "python scripts/build-archive-text-audit.py",
+    "python scripts/build-objective-index.py",
+    "python scripts/build-execution-tasks.py",
+    "python scripts/build-server-inventory-cards.py",
+    "python scripts/build-blocker-resolution-runbook.py",
+    "python scripts/build-blocker-evidence-gate.py",
+    "python scripts/build-completion-audit.py",
+    "python scripts/build-operator-action-pack.py",
+    "python scripts/build-resume-gate.py",
+    "python scripts/build-execution-runway.py",
+    "node node_modules/tsx/dist/cli.mjs --test tests/onboarding.test.ts",
+    "node node_modules/typescript/lib/tsc.js --noEmit -p tsconfig.json",
+    "node node_modules/typescript/lib/tsc.js -p tsconfig.json",
+    "node scripts/check-docs.mjs",
+    "node scripts/check-no-secrets.mjs",
+    "node scripts/check-public-evidence.mjs",
+    "git diff --check"
+  ]
+}

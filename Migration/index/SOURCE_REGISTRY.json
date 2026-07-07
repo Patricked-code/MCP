@@ -1,0 +1,2764 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-06T17:44:03.405Z",
+  "generator": "scripts/build-source-registry.mjs",
+  "purpose": "MCP source inventory and safe ingestion evidence for the WealthTech migration corpus.",
+  "safety": {
+    "rawSourceTextStored": false,
+    "rawSecretsStored": false,
+    "publicationMode": "hashes_stats_and_archive_names_only"
+  },
+  "roots": [
+    {
+      "label": "workspace-ressources",
+      "kind": "external_workspace",
+      "available": true,
+      "recursive": false,
+      "fileCount": 19
+    },
+    {
+      "label": "downloads-migration-zip",
+      "kind": "external_download",
+      "available": true,
+      "recursive": false,
+      "fileCount": 1
+    },
+    {
+      "label": "repo-migration",
+      "kind": "repository",
+      "available": true,
+      "recursive": true,
+      "fileCount": 25
+    },
+    {
+      "label": "repo-memory",
+      "kind": "repository",
+      "available": true,
+      "recursive": true,
+      "fileCount": 59
+    }
+  ],
+  "totals": {
+    "sourceFileCount": 104,
+    "uniqueContentFileCount": 98,
+    "duplicateFileCount": 6,
+    "totalBytes": 24479001,
+    "textReadFiles": 90,
+    "archiveIndexedFiles": 5,
+    "binaryIndexedFiles": 9,
+    "secretSignalFiles": 0,
+    "byExtension": {
+      ".pdf": 9,
+      ".docx": 2,
+      ".md": 81,
+      ".csv": 3,
+      ".zip": 5,
+      ".txt": 1,
+      ".json": 3
+    },
+    "byReadStatus": {
+      "binary_indexed": 9,
+      "text_read": 90,
+      "archive_indexed": 5
+    }
+  },
+  "documents": [
+    {
+      "sourceId": "workspace-ressources-00_document_maitre_migration_wealthtech-1-.pdf-133520878f96",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH (1).pdf",
+      "repoPath": null,
+      "fileName": "00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH (1).pdf",
+      "roles": [
+        "migration"
+      ],
+      "sizeBytes": 523988,
+      "sha256": "133520878f962404bb55c89b49dd0ccc255f08a79c64ca177ec5557f9f4884ad",
+      "duplicateOf": null,
+      "extension": ".pdf",
+      "readStatus": "binary_indexed",
+      "extraction": {
+        "method": "sha256_pdf_binary_index",
+        "pageCountEstimate": 20,
+        "note": "PDF text is not stored in Git by this registry. Use a dedicated local PDF extractor before publishing raw text."
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-00_document_maitre_migration_wealthtech.docx-887c036791c1",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH.docx",
+      "repoPath": null,
+      "fileName": "00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH.docx",
+      "roles": [
+        "migration"
+      ],
+      "sizeBytes": 56272,
+      "sha256": "887c036791c120fa39f6773bf09414dd4d6f8b822417949133e31f61a5d8a775",
+      "duplicateOf": null,
+      "extension": ".docx",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "docx_word_document_xml",
+        "archiveEntryCount": 17,
+        "archiveEntriesSample": [
+          "[Content_Types].xml",
+          "_rels/.rels",
+          "docProps/core.xml",
+          "docProps/app.xml",
+          "word/document.xml",
+          "word/_rels/document.xml.rels",
+          "word/styles.xml",
+          "word/stylesWithEffects.xml",
+          "word/settings.xml",
+          "word/webSettings.xml",
+          "word/fontTable.xml",
+          "word/theme/theme1.xml",
+          "customXml/item1.xml",
+          "customXml/_rels/item1.xml.rels",
+          "customXml/itemProps1.xml",
+          "word/numbering.xml",
+          "docProps/thumbnail.jpeg"
+        ],
+        "textSha256": "66d5adc24bb6789ec74889644c4b3576c77ee3a61db2244150dc004348223fee",
+        "charCount": 55021,
+        "lineCount": 937,
+        "wordCount": 4895,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-00_document_maitre_migration_wealthtech.pdf-133520878f96",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH.pdf",
+      "repoPath": null,
+      "fileName": "00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH.pdf",
+      "roles": [
+        "migration"
+      ],
+      "sizeBytes": 523988,
+      "sha256": "133520878f962404bb55c89b49dd0ccc255f08a79c64ca177ec5557f9f4884ad",
+      "duplicateOf": "workspace-ressources-00_document_maitre_migration_wealthtech-1-.pdf-133520878f96",
+      "extension": ".pdf",
+      "readStatus": "binary_indexed",
+      "extraction": {
+        "method": "sha256_pdf_binary_index",
+        "pageCountEstimate": 20,
+        "note": "PDF text is not stored in Git by this registry. Use a dedicated local PDF extractor before publishing raw text."
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-01_sources_agregees_completes-1-.md-1ca91da5870f",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "01_SOURCES_AGREGEES_COMPLETES (1).md",
+      "repoPath": null,
+      "fileName": "01_SOURCES_AGREGEES_COMPLETES (1).md",
+      "roles": [
+        "source_corpus"
+      ],
+      "sizeBytes": 1487339,
+      "sha256": "1ca91da5870fc4a8dcefce417bbbb93f866c01ba2af722064ef3aa37803094a4",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "1ca91da5870fc4a8dcefce417bbbb93f866c01ba2af722064ef3aa37803094a4",
+        "charCount": 1480439,
+        "lineCount": 12992,
+        "wordCount": 61707,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-01_sources_agregees_completes.md-1ca91da5870f",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "01_SOURCES_AGREGEES_COMPLETES.md",
+      "repoPath": null,
+      "fileName": "01_SOURCES_AGREGEES_COMPLETES.md",
+      "roles": [
+        "source_corpus"
+      ],
+      "sizeBytes": 1487339,
+      "sha256": "1ca91da5870fc4a8dcefce417bbbb93f866c01ba2af722064ef3aa37803094a4",
+      "duplicateOf": "workspace-ressources-01_sources_agregees_completes-1-.md-1ca91da5870f",
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "1ca91da5870fc4a8dcefce417bbbb93f866c01ba2af722064ef3aa37803094a4",
+        "charCount": 1480439,
+        "lineCount": 12992,
+        "wordCount": 61707,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-21_github_branch_deployment_matrix-1-.csv-507ad0a6dd6d",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "21_github_branch_deployment_matrix (1).csv",
+      "repoPath": null,
+      "fileName": "21_github_branch_deployment_matrix (1).csv",
+      "roles": [
+        "github_mapping"
+      ],
+      "sizeBytes": 21283,
+      "sha256": "507ad0a6dd6dce07e439bec4435c484f776d3ac123d50ec5ad325a25683ff8e6",
+      "duplicateOf": null,
+      "extension": ".csv",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_csv_stats",
+        "textSha256": "5216f28f04cf98fc05a6b2daabc685b394b2faf4b9bdce69e1d924efefb534f9",
+        "charCount": 21234,
+        "lineCount": 48,
+        "wordCount": 217,
+        "secretSignalCount": 0,
+        "csvColumns": [
+          "\"FullName\";\"Branch\";\"Classification\";\"BranchUrl\";\"GitHubCommitSha\";\"DefaultBranch\";\"HasPullRequest\";\"PullRequestNumbers\";\"PullRequestStates\";\"PullRequestUrls\";\"IsCurrentOnServer\";\"CurrentServerCount\";\"CurrentServerPaths\";\"CurrentServerDirtyCounts\";\"ExistsAsServerBranchRef\";\"ServerBranchRefCount\";\"ServerBranchRefs\""
+        ]
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-21_github_branch_deployment_matrix-2-.csv-507ad0a6dd6d",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "21_github_branch_deployment_matrix (2).csv",
+      "repoPath": null,
+      "fileName": "21_github_branch_deployment_matrix (2).csv",
+      "roles": [
+        "github_mapping"
+      ],
+      "sizeBytes": 21283,
+      "sha256": "507ad0a6dd6dce07e439bec4435c484f776d3ac123d50ec5ad325a25683ff8e6",
+      "duplicateOf": "workspace-ressources-21_github_branch_deployment_matrix-1-.csv-507ad0a6dd6d",
+      "extension": ".csv",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_csv_stats",
+        "textSha256": "5216f28f04cf98fc05a6b2daabc685b394b2faf4b9bdce69e1d924efefb534f9",
+        "charCount": 21234,
+        "lineCount": 48,
+        "wordCount": 217,
+        "secretSignalCount": 0,
+        "csvColumns": [
+          "\"FullName\";\"Branch\";\"Classification\";\"BranchUrl\";\"GitHubCommitSha\";\"DefaultBranch\";\"HasPullRequest\";\"PullRequestNumbers\";\"PullRequestStates\";\"PullRequestUrls\";\"IsCurrentOnServer\";\"CurrentServerCount\";\"CurrentServerPaths\";\"CurrentServerDirtyCounts\";\"ExistsAsServerBranchRef\";\"ServerBranchRefCount\";\"ServerBranchRefs\""
+        ]
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-21_github_branch_deployment_matrix.csv-507ad0a6dd6d",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "21_github_branch_deployment_matrix.csv",
+      "repoPath": null,
+      "fileName": "21_github_branch_deployment_matrix.csv",
+      "roles": [
+        "github_mapping"
+      ],
+      "sizeBytes": 21283,
+      "sha256": "507ad0a6dd6dce07e439bec4435c484f776d3ac123d50ec5ad325a25683ff8e6",
+      "duplicateOf": "workspace-ressources-21_github_branch_deployment_matrix-1-.csv-507ad0a6dd6d",
+      "extension": ".csv",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_csv_stats",
+        "textSha256": "5216f28f04cf98fc05a6b2daabc685b394b2faf4b9bdce69e1d924efefb534f9",
+        "charCount": 21234,
+        "lineCount": 48,
+        "wordCount": 217,
+        "secretSignalCount": 0,
+        "csvColumns": [
+          "\"FullName\";\"Branch\";\"Classification\";\"BranchUrl\";\"GitHubCommitSha\";\"DefaultBranch\";\"HasPullRequest\";\"PullRequestNumbers\";\"PullRequestStates\";\"PullRequestUrls\";\"IsCurrentOnServer\";\"CurrentServerCount\";\"CurrentServerPaths\";\"CurrentServerDirtyCounts\";\"ExistsAsServerBranchRef\";\"ServerBranchRefCount\";\"ServerBranchRefs\""
+        ]
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-audit.zip-769148c384d9",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "Audit.zip",
+      "repoPath": null,
+      "fileName": "Audit.zip",
+      "roles": [
+        "audit"
+      ],
+      "sizeBytes": 113693,
+      "sha256": "769148c384d94aa6f524401d3c06c73e3538858c611e0092e9318a42c4ffe4a0",
+      "duplicateOf": null,
+      "extension": ".zip",
+      "readStatus": "archive_indexed",
+      "extraction": {
+        "method": "zip_central_directory",
+        "archiveEntryCount": 17,
+        "archiveExtensions": {
+          "[none]": 1,
+          ".txt": 5,
+          ".csv": 11
+        },
+        "archiveSensitiveNameSignals": 0,
+        "archiveEntriesSample": [
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/00_resume_global.txt",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/01_github_repositories.csv",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/02_github_branches.csv",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/03_github_pull_requests.csv",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/10_server_git_repositories.csv",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/11_server_git_branches.csv",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/12_server_projects_without_git.csv",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/13_server_runtime_inventory.csv",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/14_mcp_status.csv",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/20_alignment_github_server_report.csv",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/21_22_resume_branch_links.txt",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/21_github_branch_deployment_matrix.csv",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/22_server_branch_links.csv",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S1.txt",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S2.txt",
+          "audit_alignement_github_mcp_s1_s2_20260704_041431/RSULTATS COMMANDES.txt"
+        ]
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-deep-research-report.md-186789ee08df",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "deep-research-report.md",
+      "repoPath": null,
+      "fileName": "deep-research-report.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 43942,
+      "sha256": "186789ee08df2bde3fda0ed5eb18fb045c79cbac2657c7d737ebd842a122e11a",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "186789ee08df2bde3fda0ed5eb18fb045c79cbac2657c7d737ebd842a122e11a",
+        "charCount": 42011,
+        "lineCount": 736,
+        "wordCount": 6127,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-livrable_complet_migration_wealthtech-1-.zip-dcba94e376c0",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip",
+      "repoPath": null,
+      "fileName": "LIVRABLE_COMPLET_MIGRATION_WEALTHTECH (1).zip",
+      "roles": [
+        "migration"
+      ],
+      "sizeBytes": 678575,
+      "sha256": "dcba94e376c036a956c7cbd5b9b944acef232ec4810df32c0982e6dbb48f78bf",
+      "duplicateOf": null,
+      "extension": ".zip",
+      "readStatus": "archive_indexed",
+      "extraction": {
+        "method": "zip_central_directory",
+        "archiveEntryCount": 31,
+        "archiveExtensions": {
+          ".docx": 1,
+          ".md": 3,
+          ".pdf": 1,
+          ".csv": 12,
+          ".json": 1,
+          ".txt": 12,
+          ".zip": 1
+        },
+        "archiveSensitiveNameSignals": 0,
+        "archiveEntriesSample": [
+          "livrable_migration_wealthtech/00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH.docx",
+          "livrable_migration_wealthtech/00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH.md",
+          "livrable_migration_wealthtech/00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH.pdf",
+          "livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "livrable_migration_wealthtech/02_MANIFESTE_SOURCES.csv",
+          "livrable_migration_wealthtech/02_MANIFESTE_SOURCES.json",
+          "livrable_migration_wealthtech/README_LIVRABLE.md",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/00_resume_global.txt",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/01_github_repositories.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/02_github_branches.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/03_github_pull_requests.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/10_server_git_repositories.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/11_server_git_branches.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/12_server_projects_without_git.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/13_server_runtime_inventory.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/14_mcp_status.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/20_alignment_github_server_report.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/21_22_resume_branch_links.txt",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/21_github_branch_deployment_matrix.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/22_server_branch_links.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/RSULTATS COMMANDES.txt",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S1.txt",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S2.txt",
+          "livrable_migration_wealthtech/sources_originales/00_resume_global.txt",
+          "livrable_migration_wealthtech/sources_originales/21_22_resume_branch_links.txt",
+          "livrable_migration_wealthtech/sources_originales/Audit.zip",
+          "livrable_migration_wealthtech/sources_originales/Branche · Branche · GIT chansolution welathtech.txt",
+          "livrable_migration_wealthtech/sources_originales/Branche · Migration.txt",
+          "livrable_migration_wealthtech/sources_originales/Migration compréhension.txt",
+          "livrable_migration_wealthtech/sources_originales/RSULTATS COMMANDES.txt",
+          "livrable_migration_wealthtech/sources_originales/raw_S2.txt"
+        ]
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-livrable_complet_migration_wealthtech.zip-dcba94e376c0",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip",
+      "repoPath": null,
+      "fileName": "LIVRABLE_COMPLET_MIGRATION_WEALTHTECH.zip",
+      "roles": [
+        "migration"
+      ],
+      "sizeBytes": 678575,
+      "sha256": "dcba94e376c036a956c7cbd5b9b944acef232ec4810df32c0982e6dbb48f78bf",
+      "duplicateOf": "workspace-ressources-livrable_complet_migration_wealthtech-1-.zip-dcba94e376c0",
+      "extension": ".zip",
+      "readStatus": "archive_indexed",
+      "extraction": {
+        "method": "zip_central_directory",
+        "archiveEntryCount": 31,
+        "archiveExtensions": {
+          ".docx": 1,
+          ".md": 3,
+          ".pdf": 1,
+          ".csv": 12,
+          ".json": 1,
+          ".txt": 12,
+          ".zip": 1
+        },
+        "archiveSensitiveNameSignals": 0,
+        "archiveEntriesSample": [
+          "livrable_migration_wealthtech/00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH.docx",
+          "livrable_migration_wealthtech/00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH.md",
+          "livrable_migration_wealthtech/00_DOCUMENT_MAITRE_MIGRATION_WEALTHTECH.pdf",
+          "livrable_migration_wealthtech/01_SOURCES_AGREGEES_COMPLETES.md",
+          "livrable_migration_wealthtech/02_MANIFESTE_SOURCES.csv",
+          "livrable_migration_wealthtech/02_MANIFESTE_SOURCES.json",
+          "livrable_migration_wealthtech/README_LIVRABLE.md",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/00_resume_global.txt",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/01_github_repositories.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/02_github_branches.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/03_github_pull_requests.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/10_server_git_repositories.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/11_server_git_branches.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/12_server_projects_without_git.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/13_server_runtime_inventory.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/14_mcp_status.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/20_alignment_github_server_report.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/21_22_resume_branch_links.txt",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/21_github_branch_deployment_matrix.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/22_server_branch_links.csv",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/RSULTATS COMMANDES.txt",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S1.txt",
+          "livrable_migration_wealthtech/sources_audit_extraites/audit_alignement_github_mcp_s1_s2_20260704_041431/raw_S2.txt",
+          "livrable_migration_wealthtech/sources_originales/00_resume_global.txt",
+          "livrable_migration_wealthtech/sources_originales/21_22_resume_branch_links.txt",
+          "livrable_migration_wealthtech/sources_originales/Audit.zip",
+          "livrable_migration_wealthtech/sources_originales/Branche · Branche · GIT chansolution welathtech.txt",
+          "livrable_migration_wealthtech/sources_originales/Branche · Migration.txt",
+          "livrable_migration_wealthtech/sources_originales/Migration compréhension.txt",
+          "livrable_migration_wealthtech/sources_originales/RSULTATS COMMANDES.txt",
+          "livrable_migration_wealthtech/sources_originales/raw_S2.txt"
+        ]
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-loop-engineering-instructions-1-.docx-9fa6ba78f27d",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "Loop Engineering Instructions (1).docx",
+      "repoPath": null,
+      "fileName": "Loop Engineering Instructions (1).docx",
+      "roles": [
+        "loop_engineering"
+      ],
+      "sizeBytes": 26961,
+      "sha256": "9fa6ba78f27dff786682c75db598fd77f1ff6cea0ab6191af893cdf4667b6c0b",
+      "duplicateOf": null,
+      "extension": ".docx",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "docx_word_document_xml",
+        "archiveEntryCount": 16,
+        "archiveEntriesSample": [
+          "[Content_Types].xml",
+          "_rels/.rels",
+          "word/document.xml",
+          "word/_rels/document.xml.rels",
+          "word/_rels/footnotes.xml.rels",
+          "word/numbering.xml",
+          "word/styles.xml",
+          "word/footnotes.xml",
+          "word/comments.xml",
+          "docProps/core.xml",
+          "docProps/app.xml",
+          "docProps/custom.xml",
+          "word/theme/theme1.xml",
+          "word/settings.xml",
+          "word/webSettings.xml",
+          "word/fontTable.xml"
+        ],
+        "textSha256": "0e4d08cdd95b5f9da7007f330a60f5a5b211000b09b1f50452d81de4c90730a0",
+        "charCount": 29922,
+        "lineCount": 669,
+        "wordCount": 4066,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-migration---branche-branche-git-chansolution-welathtech.pdf_-branche.pdf-dd819e11b173",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "MIGRATION - Branche · Branche · GIT chansolution welathtech.pdf_ Branche.pdf",
+      "repoPath": null,
+      "fileName": "MIGRATION - Branche · Branche · GIT chansolution welathtech.pdf_ Branche.pdf",
+      "roles": [
+        "migration",
+        "github_mapping"
+      ],
+      "sizeBytes": 1908261,
+      "sha256": "dd819e11b17376363b0a5ab350ce9e8bd8346493b3687f6449f807d246beb175",
+      "duplicateOf": null,
+      "extension": ".pdf",
+      "readStatus": "binary_indexed",
+      "extraction": {
+        "method": "sha256_pdf_binary_index",
+        "pageCountEstimate": 82,
+        "note": "PDF text is not stored in Git by this registry. Use a dedicated local PDF extractor before publishing raw text."
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-migration---migration-compre-hension-objectif.pdf-d89eb82db0f4",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "MIGRATION - Migration compréhension Objectif.pdf",
+      "repoPath": null,
+      "fileName": "MIGRATION - Migration compréhension Objectif.pdf",
+      "roles": [
+        "migration"
+      ],
+      "sizeBytes": 10071130,
+      "sha256": "d89eb82db0f47218b05101e9d98bb9e208282efccc443e75aec21bcb954c254f",
+      "duplicateOf": null,
+      "extension": ".pdf",
+      "readStatus": "binary_indexed",
+      "extraction": {
+        "method": "sha256_pdf_binary_index",
+        "pageCountEstimate": 138,
+        "note": "PDF text is not stored in Git by this registry. Use a dedicated local PDF extractor before publishing raw text."
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-migration_2026-07-04.zip-1dbba1c89df9",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "Migration_2026-07-04.zip",
+      "repoPath": null,
+      "fileName": "Migration_2026-07-04.zip",
+      "roles": [
+        "migration"
+      ],
+      "sizeBytes": 110060,
+      "sha256": "1dbba1c89df9d27e2530040cb27ff9ce092cbba4b9a6508ecd36a0ba18b85135",
+      "duplicateOf": null,
+      "extension": ".zip",
+      "readStatus": "archive_indexed",
+      "extraction": {
+        "method": "zip_central_directory",
+        "archiveEntryCount": 29,
+        "archiveExtensions": {
+          "[none]": 6,
+          ".md": 7,
+          ".pdf": 16
+        },
+        "archiveSensitiveNameSignals": 0,
+        "archiveEntriesSample": [
+          "Migration/",
+          "Migration/README.md",
+          "Migration/INDEX_MIGRATION.md",
+          "Migration/manifests/",
+          "Migration/manifests/generation_manifest_2026-07-04.md",
+          "Migration/sources/",
+          "Migration/sources/README_SOURCES_A_COMPLETER.md",
+          "Migration/sources/archive_conversations_disponibles_2026-07-04.md",
+          "Migration/sources/competences_agents_instructions_2026-07-04.md",
+          "Migration/sources/plan_migration_mcp_github_2026-07-04.md",
+          "Migration/PDF/",
+          "Migration/PDF/01_archive_conversations_disponibles_2026-07-04.pdf",
+          "Migration/PDF/02_competences_agents_instructions_2026-07-04.pdf",
+          "Migration/PDF/03_plan_migration_mcp_github_2026-07-04.pdf",
+          "Migration/conversation_migration_disponible_2026-07-04_full_accessible.pdf",
+          "Migration/conversation_migration_disponible_2026-07-04_full_accessible_safe.pdf",
+          "Migration/conversation_migration_disponible_2026-07-04_full_accessible_hexflate.pdf",
+          "Migration/split/",
+          "Migration/split/conversation_migration_part_01_of_05_2026-07-04.pdf",
+          "Migration/split/conversation_migration_part_02_of_05_2026-07-04.pdf",
+          "Migration/split/conversation_migration_part_03_of_05_2026-07-04.pdf",
+          "Migration/split/conversation_migration_part_04_of_05_2026-07-04.pdf",
+          "Migration/split/conversation_migration_part_05_of_05_2026-07-04.pdf",
+          "Migration/plain_pdf/",
+          "Migration/plain_pdf/conversation_migration_plain_part_01_of_05_2026-07-04.pdf",
+          "Migration/plain_pdf/conversation_migration_plain_part_02_of_05_2026-07-04.pdf",
+          "Migration/plain_pdf/conversation_migration_plain_part_03_of_05_2026-07-04.pdf",
+          "Migration/plain_pdf/conversation_migration_plain_part_04_of_05_2026-07-04.pdf",
+          "Migration/plain_pdf/conversation_migration_plain_part_05_of_05_2026-07-04.pdf"
+        ]
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-migration_wealthtech_conversations_et_sources_disponibles.pdf-b2da1f4e57a7",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "Migration_WealthTech_conversations_et_sources_disponibles.pdf",
+      "repoPath": null,
+      "fileName": "Migration_WealthTech_conversations_et_sources_disponibles.pdf",
+      "roles": [
+        "migration",
+        "source_corpus",
+        "conversation_memory"
+      ],
+      "sizeBytes": 1787928,
+      "sha256": "b2da1f4e57a7cbca39beab2aeec4a7cec8f509b4d6cf6e4e9822a860069dbac2",
+      "duplicateOf": null,
+      "extension": ".pdf",
+      "readStatus": "binary_indexed",
+      "extraction": {
+        "method": "sha256_pdf_binary_index",
+        "pageCountEstimate": 269,
+        "note": "PDF text is not stored in Git by this registry. Use a dedicated local PDF extractor before publishing raw text."
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-ta-che-re-currente-claude.pdf-33bf3714e299",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "Tâche récurrente Claude.pdf",
+      "repoPath": null,
+      "fileName": "Tâche récurrente Claude.pdf",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 2808218,
+      "sha256": "33bf3714e2993de1546ec4bbc54ebfaac27b629017af9559fefea4f98faaeca5",
+      "duplicateOf": null,
+      "extension": ".pdf",
+      "readStatus": "binary_indexed",
+      "extraction": {
+        "method": "sha256_pdf_binary_index",
+        "pageCountEstimate": 37,
+        "note": "PDF text is not stored in Git by this registry. Use a dedicated local PDF extractor before publishing raw text."
+      }
+    },
+    {
+      "sourceId": "workspace-ressources-wealthtech_sources_agregees_20260704.txt-347e7df8ae9e",
+      "sourceRoot": "workspace-ressources",
+      "sourceRootKind": "external_workspace",
+      "sourcePath": "wealthtech_sources_agregees_20260704.txt",
+      "repoPath": null,
+      "fileName": "wealthtech_sources_agregees_20260704.txt",
+      "roles": [
+        "source_corpus"
+      ],
+      "sizeBytes": 1507094,
+      "sha256": "347e7df8ae9eb59a82ff6cbeb46c5b63d84044c15a8ac76c133a4a1ddf9fd6e9",
+      "duplicateOf": null,
+      "extension": ".txt",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "08fcd4b98960dd519f80042bd530949bc900e5f197b76a891c20eb1496fcbc52",
+        "charCount": 1490189,
+        "lineCount": 13064,
+        "wordCount": 62189,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "downloads-migration-zip-migration_2026-07-04.zip-1dbba1c89df9",
+      "sourceRoot": "downloads-migration-zip",
+      "sourceRootKind": "external_download",
+      "sourcePath": "Migration_2026-07-04.zip",
+      "repoPath": null,
+      "fileName": "Migration_2026-07-04.zip",
+      "roles": [
+        "migration"
+      ],
+      "sizeBytes": 110060,
+      "sha256": "1dbba1c89df9d27e2530040cb27ff9ce092cbba4b9a6508ecd36a0ba18b85135",
+      "duplicateOf": "workspace-ressources-migration_2026-07-04.zip-1dbba1c89df9",
+      "extension": ".zip",
+      "readStatus": "archive_indexed",
+      "extraction": {
+        "method": "zip_central_directory",
+        "archiveEntryCount": 29,
+        "archiveExtensions": {
+          "[none]": 6,
+          ".md": 7,
+          ".pdf": 16
+        },
+        "archiveSensitiveNameSignals": 0,
+        "archiveEntriesSample": [
+          "Migration/",
+          "Migration/README.md",
+          "Migration/INDEX_MIGRATION.md",
+          "Migration/manifests/",
+          "Migration/manifests/generation_manifest_2026-07-04.md",
+          "Migration/sources/",
+          "Migration/sources/README_SOURCES_A_COMPLETER.md",
+          "Migration/sources/archive_conversations_disponibles_2026-07-04.md",
+          "Migration/sources/competences_agents_instructions_2026-07-04.md",
+          "Migration/sources/plan_migration_mcp_github_2026-07-04.md",
+          "Migration/PDF/",
+          "Migration/PDF/01_archive_conversations_disponibles_2026-07-04.pdf",
+          "Migration/PDF/02_competences_agents_instructions_2026-07-04.pdf",
+          "Migration/PDF/03_plan_migration_mcp_github_2026-07-04.pdf",
+          "Migration/conversation_migration_disponible_2026-07-04_full_accessible.pdf",
+          "Migration/conversation_migration_disponible_2026-07-04_full_accessible_safe.pdf",
+          "Migration/conversation_migration_disponible_2026-07-04_full_accessible_hexflate.pdf",
+          "Migration/split/",
+          "Migration/split/conversation_migration_part_01_of_05_2026-07-04.pdf",
+          "Migration/split/conversation_migration_part_02_of_05_2026-07-04.pdf",
+          "Migration/split/conversation_migration_part_03_of_05_2026-07-04.pdf",
+          "Migration/split/conversation_migration_part_04_of_05_2026-07-04.pdf",
+          "Migration/split/conversation_migration_part_05_of_05_2026-07-04.pdf",
+          "Migration/plain_pdf/",
+          "Migration/plain_pdf/conversation_migration_plain_part_01_of_05_2026-07-04.pdf",
+          "Migration/plain_pdf/conversation_migration_plain_part_02_of_05_2026-07-04.pdf",
+          "Migration/plain_pdf/conversation_migration_plain_part_03_of_05_2026-07-04.pdf",
+          "Migration/plain_pdf/conversation_migration_plain_part_04_of_05_2026-07-04.pdf",
+          "Migration/plain_pdf/conversation_migration_plain_part_05_of_05_2026-07-04.pdf"
+        ]
+      }
+    },
+    {
+      "sourceId": "repo-migration-01_contexte_conversations.md-ef2babc2ace6",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "01_CONTEXTE_CONVERSATIONS.md",
+      "repoPath": "Migration/01_CONTEXTE_CONVERSATIONS.md",
+      "fileName": "01_CONTEXTE_CONVERSATIONS.md",
+      "roles": [
+        "conversation_memory"
+      ],
+      "sizeBytes": 7451,
+      "sha256": "ef2babc2ace623d140c1cf8872fe4359280766edaa926ebe05497f1b9c550593",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "ef2babc2ace623d140c1cf8872fe4359280766edaa926ebe05497f1b9c550593",
+        "charCount": 7358,
+        "lineCount": 213,
+        "wordCount": 896,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-02_plan_migration_et_securite.md-f72bcf7eef9e",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "02_PLAN_MIGRATION_ET_SECURITE.md",
+      "repoPath": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
+      "fileName": "02_PLAN_MIGRATION_ET_SECURITE.md",
+      "roles": [
+        "migration"
+      ],
+      "sizeBytes": 4222,
+      "sha256": "f72bcf7eef9ea7a2707a6f5d9fb602d8b979c1c7214ae6bfff3810c5c1f54ad8",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "f72bcf7eef9ea7a2707a6f5d9fb602d8b979c1c7214ae6bfff3810c5c1f54ad8",
+        "charCount": 4160,
+        "lineCount": 140,
+        "wordCount": 575,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-03_manifeste_sources.md-fe5db1d2c17c",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "03_MANIFESTE_SOURCES.md",
+      "repoPath": "Migration/03_MANIFESTE_SOURCES.md",
+      "fileName": "03_MANIFESTE_SOURCES.md",
+      "roles": [
+        "source_corpus"
+      ],
+      "sizeBytes": 2925,
+      "sha256": "fe5db1d2c17c78d8966ecc929f35f9e788bbdb292a476187a5bd87dbf5c9ab6d",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "fe5db1d2c17c78d8966ecc929f35f9e788bbdb292a476187a5bd87dbf5c9ab6d",
+        "charCount": 2925,
+        "lineCount": 62,
+        "wordCount": 392,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-04_github_publication_log.md-5ab9c9dc8bc5",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "04_GITHUB_PUBLICATION_LOG.md",
+      "repoPath": "Migration/04_GITHUB_PUBLICATION_LOG.md",
+      "fileName": "04_GITHUB_PUBLICATION_LOG.md",
+      "roles": [
+        "github_mapping"
+      ],
+      "sizeBytes": 1764,
+      "sha256": "5ab9c9dc8bc54bce6064c44defae4591ab064ff3e305b1e9a646ae68fd40f8c7",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "5ab9c9dc8bc54bce6064c44defae4591ab064ff3e305b1e9a646ae68fd40f8c7",
+        "charCount": 1764,
+        "lineCount": 36,
+        "wordCount": 200,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-agents-readme.md-41ddb157684b",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "agents/README.md",
+      "repoPath": "Migration/agents/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 413,
+      "sha256": "41ddb157684bfb3cf47284564abe290f99c72eb4549ab73cc1539281e94bd537",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "41ddb157684bfb3cf47284564abe290f99c72eb4549ab73cc1539281e94bd537",
+        "charCount": 413,
+        "lineCount": 18,
+        "wordCount": 69,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-conversation_migration_disponible.pdf-683985bc7c1c",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "conversation_migration_disponible.pdf",
+      "repoPath": "Migration/conversation_migration_disponible.pdf",
+      "fileName": "conversation_migration_disponible.pdf",
+      "roles": [
+        "migration",
+        "conversation_memory"
+      ],
+      "sizeBytes": 5189,
+      "sha256": "683985bc7c1c73c12163ff5e8e905c7d044fa993019eceefac9d64b9b7182ca8",
+      "duplicateOf": null,
+      "extension": ".pdf",
+      "readStatus": "binary_indexed",
+      "extraction": {
+        "method": "sha256_pdf_binary_index",
+        "pageCountEstimate": 2,
+        "note": "PDF text is not stored in Git by this registry. Use a dedicated local PDF extractor before publishing raw text."
+      }
+    },
+    {
+      "sourceId": "repo-migration-conversations-md-readme.md-47bd102e751b",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "conversations-md/README.md",
+      "repoPath": "Migration/conversations-md/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "conversation_memory"
+      ],
+      "sizeBytes": 440,
+      "sha256": "47bd102e751b5aafe55b2c51ccb2e60902d32f57ba7c5820770ac34d10128bcb",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "47bd102e751b5aafe55b2c51ccb2e60902d32f57ba7c5820770ac34d10128bcb",
+        "charCount": 440,
+        "lineCount": 12,
+        "wordCount": 62,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-conversations-pdf-readme.md-d12b9c043a49",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "conversations-pdf/README.md",
+      "repoPath": "Migration/conversations-pdf/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "conversation_memory"
+      ],
+      "sizeBytes": 562,
+      "sha256": "d12b9c043a490608a6faa09f29203ee71cbcc8ec3c85ad2831bd3ee28d32fc63",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "d12b9c043a490608a6faa09f29203ee71cbcc8ec3c85ad2831bd3ee28d32fc63",
+        "charCount": 562,
+        "lineCount": 13,
+        "wordCount": 81,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-decisions-readme.md-5c1259c82188",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "decisions/README.md",
+      "repoPath": "Migration/decisions/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 362,
+      "sha256": "5c1259c82188eb61bfafac8184f4803785159d3f6859472fbdcfd4a46d2d7cc9",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "5c1259c82188eb61bfafac8184f4803785159d3f6859472fbdcfd4a46d2d7cc9",
+        "charCount": 362,
+        "lineCount": 15,
+        "wordCount": 59,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-evidence-public_safe_blocker_evidence.example.json-19f9d1ac9d01",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "evidence/PUBLIC_SAFE_BLOCKER_EVIDENCE.example.json",
+      "repoPath": "Migration/evidence/PUBLIC_SAFE_BLOCKER_EVIDENCE.example.json",
+      "fileName": "PUBLIC_SAFE_BLOCKER_EVIDENCE.example.json",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 3847,
+      "sha256": "19f9d1ac9d01ba8697e4a516edff046b5186d61d45e8ef74e31f05b316225d93",
+      "duplicateOf": null,
+      "extension": ".json",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "19f9d1ac9d01ba8697e4a516edff046b5186d61d45e8ef74e31f05b316225d93",
+        "charCount": 3847,
+        "lineCount": 79,
+        "wordCount": 369,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-evidence-readme.md-2355eb9518a0",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "evidence/README.md",
+      "repoPath": "Migration/evidence/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 1035,
+      "sha256": "2355eb9518a0204220c938e826394d2c06fbac2b5059730042be05e46d0cae49",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "2355eb9518a0204220c938e826394d2c06fbac2b5059730042be05e46d0cae49",
+        "charCount": 1035,
+        "lineCount": 14,
+        "wordCount": 131,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-github-chainsolutions-wealthtech-.github-profile-readme.md-efced146efec",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "github/chainsolutions-wealthtech/.github/profile/README.md",
+      "repoPath": "Migration/github/chainsolutions-wealthtech/.github/profile/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "github_mapping"
+      ],
+      "sizeBytes": 1647,
+      "sha256": "efced146efec2366ccce02671efdd0dd4bc09cf0508ea8cc0d66d3f01ce1f6e1",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "efced146efec2366ccce02671efdd0dd4bc09cf0508ea8cc0d66d3f01ce1f6e1",
+        "charCount": 1647,
+        "lineCount": 42,
+        "wordCount": 249,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-github-chainsolutions-wealthtech-direct_configuration_log.md-692a58acfae6",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "github/chainsolutions-wealthtech/DIRECT_CONFIGURATION_LOG.md",
+      "repoPath": "Migration/github/chainsolutions-wealthtech/DIRECT_CONFIGURATION_LOG.md",
+      "fileName": "DIRECT_CONFIGURATION_LOG.md",
+      "roles": [
+        "github_mapping"
+      ],
+      "sizeBytes": 1552,
+      "sha256": "692a58acfae6603593e54647dbf8b397280396be9e221b6521d5b5ea7c9b193e",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "692a58acfae6603593e54647dbf8b397280396be9e221b6521d5b5ea7c9b193e",
+        "charCount": 1552,
+        "lineCount": 32,
+        "wordCount": 145,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-github-chainsolutions-wealthtech-org_activation_runbook.md-3ec2fb4d6265",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "github/chainsolutions-wealthtech/ORG_ACTIVATION_RUNBOOK.md",
+      "repoPath": "Migration/github/chainsolutions-wealthtech/ORG_ACTIVATION_RUNBOOK.md",
+      "fileName": "ORG_ACTIVATION_RUNBOOK.md",
+      "roles": [
+        "github_mapping"
+      ],
+      "sizeBytes": 6370,
+      "sha256": "3ec2fb4d6265ff92bdee37d7b3953d8311fcc6ccc21c39e4e363716f8ea71dd2",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "3ec2fb4d6265ff92bdee37d7b3953d8311fcc6ccc21c39e4e363716f8ea71dd2",
+        "charCount": 6370,
+        "lineCount": 156,
+        "wordCount": 778,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-github-chainsolutions-wealthtech-org_bootstrap_package.json-0fa711ca25a8",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json",
+      "repoPath": "Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json",
+      "fileName": "ORG_BOOTSTRAP_PACKAGE.json",
+      "roles": [
+        "github_mapping"
+      ],
+      "sizeBytes": 4501,
+      "sha256": "0fa711ca25a841cfc54437711ab86ea0397c0110b12604572aff28d18b6499fc",
+      "duplicateOf": null,
+      "extension": ".json",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "0fa711ca25a841cfc54437711ab86ea0397c0110b12604572aff28d18b6499fc",
+        "charCount": 4501,
+        "lineCount": 67,
+        "wordCount": 424,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-github-readme.md-dcfb2d92349b",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "github/README.md",
+      "repoPath": "Migration/github/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "github_mapping"
+      ],
+      "sizeBytes": 428,
+      "sha256": "dcfb2d92349bae56a43c1dd4b193ad2c00f8ae4e5b0ce8f3903bdd68aa507d2c",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "dcfb2d92349bae56a43c1dd4b193ad2c00f8ae4e5b0ce8f3903bdd68aa507d2c",
+        "charCount": 428,
+        "lineCount": 13,
+        "wordCount": 62,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-index-chainsolutions_wealthtech_first_integration.md-b2fda4c77624",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "index/CHAINSOLUTIONS_WEALTHTECH_FIRST_INTEGRATION.md",
+      "repoPath": "Migration/index/CHAINSOLUTIONS_WEALTHTECH_FIRST_INTEGRATION.md",
+      "fileName": "CHAINSOLUTIONS_WEALTHTECH_FIRST_INTEGRATION.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 4041,
+      "sha256": "b2fda4c77624a41714c2291710574ad78f9504a3c63236c1d45d2c4db7114714",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "b2fda4c77624a41714c2291710574ad78f9504a3c63236c1d45d2c4db7114714",
+        "charCount": 4028,
+        "lineCount": 94,
+        "wordCount": 470,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-index-readme.md-5d8328876ec8",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "index/README.md",
+      "repoPath": "Migration/index/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 4001,
+      "sha256": "5d8328876ec84f6acee845d322ceb17f488941674c2762ed719922fb27859121",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "5d8328876ec84f6acee845d322ceb17f488941674c2762ed719922fb27859121",
+        "charCount": 4001,
+        "lineCount": 46,
+        "wordCount": 544,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-pdf-conversation_migration_part_01_of_05_2026-07-04.pdf-de1cf136a4f6",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "PDF/conversation_migration_part_01_of_05_2026-07-04.pdf",
+      "repoPath": "Migration/PDF/conversation_migration_part_01_of_05_2026-07-04.pdf",
+      "fileName": "conversation_migration_part_01_of_05_2026-07-04.pdf",
+      "roles": [
+        "migration",
+        "conversation_memory"
+      ],
+      "sizeBytes": 6002,
+      "sha256": "de1cf136a4f618c6256611755a5ba2ee581dcbfffb608ef9b8d07b44733d87f8",
+      "duplicateOf": null,
+      "extension": ".pdf",
+      "readStatus": "binary_indexed",
+      "extraction": {
+        "method": "sha256_pdf_binary_index",
+        "pageCountEstimate": 2,
+        "note": "PDF text is not stored in Git by this registry. Use a dedicated local PDF extractor before publishing raw text."
+      }
+    },
+    {
+      "sourceId": "repo-migration-pdf-conversation_migration_part_02_of_05_2026-07-04.pdf-dfc3c84c3930",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "PDF/conversation_migration_part_02_of_05_2026-07-04.pdf",
+      "repoPath": "Migration/PDF/conversation_migration_part_02_of_05_2026-07-04.pdf",
+      "fileName": "conversation_migration_part_02_of_05_2026-07-04.pdf",
+      "roles": [
+        "migration",
+        "conversation_memory"
+      ],
+      "sizeBytes": 4592,
+      "sha256": "dfc3c84c39302340cad4add9ab33af0cf407b27f7e898d3c3e75e7b527a88d35",
+      "duplicateOf": null,
+      "extension": ".pdf",
+      "readStatus": "binary_indexed",
+      "extraction": {
+        "method": "sha256_pdf_binary_index",
+        "pageCountEstimate": 2,
+        "note": "PDF text is not stored in Git by this registry. Use a dedicated local PDF extractor before publishing raw text."
+      }
+    },
+    {
+      "sourceId": "repo-migration-pdf-readme.md-bf288242a4bd",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "PDF/README.md",
+      "repoPath": "Migration/PDF/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 1061,
+      "sha256": "bf288242a4bd37417d61043f5788433d78a5b60e2b9ebcbe00d65f42ab0d0460",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "bf288242a4bd37417d61043f5788433d78a5b60e2b9ebcbe00d65f42ab0d0460",
+        "charCount": 1061,
+        "lineCount": 25,
+        "wordCount": 131,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-pdf-upload_status_2026-07-04.md-d468671a412e",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "PDF/UPLOAD_STATUS_2026-07-04.md",
+      "repoPath": "Migration/PDF/UPLOAD_STATUS_2026-07-04.md",
+      "fileName": "UPLOAD_STATUS_2026-07-04.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 822,
+      "sha256": "d468671a412e1ef8dba809ca42f84386c9936d8c01e3561d473ec91b007a1a98",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "d468671a412e1ef8dba809ca42f84386c9936d8c01e3561d473ec91b007a1a98",
+        "charCount": 822,
+        "lineCount": 11,
+        "wordCount": 95,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-prompts-readme.md-6f9d24ed28bd",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "prompts/README.md",
+      "repoPath": "Migration/prompts/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 367,
+      "sha256": "6f9d24ed28bd1ab64f45db7a40dc12ab492fcc52423294fe4cbccae4a639cfb9",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "6f9d24ed28bd1ab64f45db7a40dc12ab492fcc52423294fe4cbccae4a639cfb9",
+        "charCount": 367,
+        "lineCount": 14,
+        "wordCount": 59,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-readme.md-c4552fce69e0",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "README.md",
+      "repoPath": "Migration/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 1247,
+      "sha256": "c4552fce69e0194d95eab5005435a267d0d05726a29b0eab6559068d8336bf37",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "c4552fce69e0194d95eab5005435a267d0d05726a29b0eab6559068d8336bf37",
+        "charCount": 1210,
+        "lineCount": 21,
+        "wordCount": 167,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-migration-serveur-readme.md-803bd79bf536",
+      "sourceRoot": "repo-migration",
+      "sourceRootKind": "repository",
+      "sourcePath": "serveur/README.md",
+      "repoPath": "Migration/serveur/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "server_mapping"
+      ],
+      "sizeBytes": 931,
+      "sha256": "803bd79bf53627ae049cad87f40ea32069302ab51294244cff0dd2bdc61392c6",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "803bd79bf53627ae049cad87f40ea32069302ab51294244cff0dd2bdc61392c6",
+        "charCount": 931,
+        "lineCount": 21,
+        "wordCount": 137,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-2026-05-05-stablecoin-ewari-conversation-memory.md-54edd04a804e",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "2026-05-05-stablecoin-ewari-conversation-memory.md",
+      "repoPath": "memory/2026-05-05-stablecoin-ewari-conversation-memory.md",
+      "fileName": "2026-05-05-stablecoin-ewari-conversation-memory.md",
+      "roles": [
+        "conversation_memory"
+      ],
+      "sizeBytes": 13339,
+      "sha256": "54edd04a804e8e80b834a7a2f2773569d1cd97c75d17b076e9b009072fd634fb",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "54edd04a804e8e80b834a7a2f2773569d1cd97c75d17b076e9b009072fd634fb",
+        "charCount": 13044,
+        "lineCount": 532,
+        "wordCount": 1643,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-action_requise_cloture_objectif_loop_engineering_20260703.md-a3525cdf5128",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "ACTION_REQUISE_CLOTURE_OBJECTIF_LOOP_ENGINEERING_20260703.md",
+      "repoPath": "memory/ACTION_REQUISE_CLOTURE_OBJECTIF_LOOP_ENGINEERING_20260703.md",
+      "fileName": "ACTION_REQUISE_CLOTURE_OBJECTIF_LOOP_ENGINEERING_20260703.md",
+      "roles": [
+        "loop_engineering"
+      ],
+      "sizeBytes": 2302,
+      "sha256": "a3525cdf5128f1f3518972c8450e5b9bd7fa3bd59d003fbf1363be91d4819de8",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "a3525cdf5128f1f3518972c8450e5b9bd7fa3bd59d003fbf1363be91d4819de8",
+        "charCount": 2301,
+        "lineCount": 78,
+        "wordCount": 314,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-audit_completude_objectif_loop_engineering_20260702.md-136395a89f5d",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "AUDIT_COMPLETUDE_OBJECTIF_LOOP_ENGINEERING_20260702.md",
+      "repoPath": "memory/AUDIT_COMPLETUDE_OBJECTIF_LOOP_ENGINEERING_20260702.md",
+      "fileName": "AUDIT_COMPLETUDE_OBJECTIF_LOOP_ENGINEERING_20260702.md",
+      "roles": [
+        "audit",
+        "loop_engineering"
+      ],
+      "sizeBytes": 7576,
+      "sha256": "136395a89f5dd6064b58a9e65dda0a29f9ce76e873fdca85177d23177bbb1a80",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "136395a89f5dd6064b58a9e65dda0a29f9ce76e873fdca85177d23177bbb1a80",
+        "charCount": 7576,
+        "lineCount": 113,
+        "wordCount": 934,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-audit_final_completude_et_ready_commit_mcp_20260702.md-907126cb3e3e",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "AUDIT_FINAL_COMPLETUDE_ET_READY_COMMIT_MCP_20260702.md",
+      "repoPath": "memory/AUDIT_FINAL_COMPLETUDE_ET_READY_COMMIT_MCP_20260702.md",
+      "fileName": "AUDIT_FINAL_COMPLETUDE_ET_READY_COMMIT_MCP_20260702.md",
+      "roles": [
+        "audit"
+      ],
+      "sizeBytes": 6204,
+      "sha256": "907126cb3e3e21805f4bc107cdd472cfdb4a97d0ab3958da0ccaea2788b70153",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "907126cb3e3e21805f4bc107cdd472cfdb4a97d0ab3958da0ccaea2788b70153",
+        "charCount": 6204,
+        "lineCount": 94,
+        "wordCount": 570,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-audit_final_objectif_actif_loop_engineering_20260703.md-42b2c051988c",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "AUDIT_FINAL_OBJECTIF_ACTIF_LOOP_ENGINEERING_20260703.md",
+      "repoPath": "memory/AUDIT_FINAL_OBJECTIF_ACTIF_LOOP_ENGINEERING_20260703.md",
+      "fileName": "AUDIT_FINAL_OBJECTIF_ACTIF_LOOP_ENGINEERING_20260703.md",
+      "roles": [
+        "audit",
+        "loop_engineering"
+      ],
+      "sizeBytes": 5295,
+      "sha256": "42b2c051988c26e8e5b3130a405a7809db1351e480e6f74c15e429d9d0148a82",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "42b2c051988c26e8e5b3130a405a7809db1351e480e6f74c15e429d9d0148a82",
+        "charCount": 5250,
+        "lineCount": 144,
+        "wordCount": 569,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-audit_global_s1_s2_mcp_prompt.md-0c297d056b0b",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "AUDIT_GLOBAL_S1_S2_MCP_PROMPT.md",
+      "repoPath": "memory/AUDIT_GLOBAL_S1_S2_MCP_PROMPT.md",
+      "fileName": "AUDIT_GLOBAL_S1_S2_MCP_PROMPT.md",
+      "roles": [
+        "audit"
+      ],
+      "sizeBytes": 5726,
+      "sha256": "0c297d056b0b4d6a34b65a96df52a56d9f58e62709672d0385626bbe8737cac6",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "0c297d056b0b4d6a34b65a96df52a56d9f58e62709672d0385626bbe8737cac6",
+        "charCount": 5667,
+        "lineCount": 275,
+        "wordCount": 739,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-audit_objectif_actif_loop_engineering_preuve_20260702.md-f68aa4ebbe39",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "AUDIT_OBJECTIF_ACTIF_LOOP_ENGINEERING_PREUVE_20260702.md",
+      "repoPath": "memory/AUDIT_OBJECTIF_ACTIF_LOOP_ENGINEERING_PREUVE_20260702.md",
+      "fileName": "AUDIT_OBJECTIF_ACTIF_LOOP_ENGINEERING_PREUVE_20260702.md",
+      "roles": [
+        "audit",
+        "loop_engineering"
+      ],
+      "sizeBytes": 8777,
+      "sha256": "f68aa4ebbe39ef148860487e76501eb470bd238b1917f3e79a259f7db0662e62",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "f68aa4ebbe39ef148860487e76501eb470bd238b1917f3e79a259f7db0662e62",
+        "charCount": 8772,
+        "lineCount": 165,
+        "wordCount": 872,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-cloture_documents_safe_non_lus_20260703.md-c113663c7649",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "CLOTURE_DOCUMENTS_SAFE_NON_LUS_20260703.md",
+      "repoPath": "memory/CLOTURE_DOCUMENTS_SAFE_NON_LUS_20260703.md",
+      "fileName": "CLOTURE_DOCUMENTS_SAFE_NON_LUS_20260703.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 1516,
+      "sha256": "c113663c7649c6adbafba219b765a61d494a6209fe3ac684f75c58aecc94963d",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "c113663c7649c6adbafba219b765a61d494a6209fe3ac684f75c58aecc94963d",
+        "charCount": 1509,
+        "lineCount": 38,
+        "wordCount": 180,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-codex_auto_analysis_request.md-95e6de151e51",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "CODEX_AUTO_ANALYSIS_REQUEST.md",
+      "repoPath": "memory/CODEX_AUTO_ANALYSIS_REQUEST.md",
+      "fileName": "CODEX_AUTO_ANALYSIS_REQUEST.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 1874,
+      "sha256": "95e6de151e511c44decf5e2f6a1fd8c113e7c3f20be39b44a104b2a362cd17b1",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "95e6de151e511c44decf5e2f6a1fd8c113e7c3f20be39b44a104b2a362cd17b1",
+        "charCount": 1848,
+        "lineCount": 75,
+        "wordCount": 216,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-codex_auto_analysis_response_20260701.md-92b9c4fb24b2",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "CODEX_AUTO_ANALYSIS_RESPONSE_20260701.md",
+      "repoPath": "memory/CODEX_AUTO_ANALYSIS_RESPONSE_20260701.md",
+      "fileName": "CODEX_AUTO_ANALYSIS_RESPONSE_20260701.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 2760,
+      "sha256": "92b9c4fb24b288c084f00013219d650f2f487598e5c1666497307b05df2b6bc0",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "92b9c4fb24b288c084f00013219d650f2f487598e5c1666497307b05df2b6bc0",
+        "charCount": 2760,
+        "lineCount": 75,
+        "wordCount": 410,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-codex_handoff_stablecoin_ewari.md-62febb3e8f1a",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "CODEX_HANDOFF_STABLECOIN_EWARI.md",
+      "repoPath": "memory/CODEX_HANDOFF_STABLECOIN_EWARI.md",
+      "fileName": "CODEX_HANDOFF_STABLECOIN_EWARI.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 3094,
+      "sha256": "62febb3e8f1a98aadc68362cb912bb395ec294ea67828510f5c8584f3f34de61",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "62febb3e8f1a98aadc68362cb912bb395ec294ea67828510f5c8584f3f34de61",
+        "charCount": 3044,
+        "lineCount": 161,
+        "wordCount": 400,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-conversation_20260701_loop_engineering.md-7d02ddd9a335",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "CONVERSATION_20260701_LOOP_ENGINEERING.md",
+      "repoPath": "memory/CONVERSATION_20260701_LOOP_ENGINEERING.md",
+      "fileName": "CONVERSATION_20260701_LOOP_ENGINEERING.md",
+      "roles": [
+        "conversation_memory",
+        "loop_engineering"
+      ],
+      "sizeBytes": 3740,
+      "sha256": "7d02ddd9a335a6b69e5abdebfdfcd693d9e179cc769988628ec745101fdb83bc",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "7d02ddd9a335a6b69e5abdebfdfcd693d9e179cc769988628ec745101fdb83bc",
+        "charCount": 3740,
+        "lineCount": 107,
+        "wordCount": 467,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-conversation_compiled_index_2026-07-01.md-56b0bc44baa7",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "CONVERSATION_COMPILED_INDEX_2026-07-01.md",
+      "repoPath": "memory/CONVERSATION_COMPILED_INDEX_2026-07-01.md",
+      "fileName": "CONVERSATION_COMPILED_INDEX_2026-07-01.md",
+      "roles": [
+        "conversation_memory"
+      ],
+      "sizeBytes": 1216,
+      "sha256": "56b0bc44baa7dc40c4fce92e0a1eda01e8a33a5d355eb2037af080c2a1de04cf",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "56b0bc44baa7dc40c4fce92e0a1eda01e8a33a5d355eb2037af080c2a1de04cf",
+        "charCount": 1193,
+        "lineCount": 27,
+        "wordCount": 135,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-conversation_compiled_wealthtech_ewari_mcp.md-a776d5554c91",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "CONVERSATION_COMPILED_WEALTHTECH_EWARI_MCP.md",
+      "repoPath": "memory/CONVERSATION_COMPILED_WEALTHTECH_EWARI_MCP.md",
+      "fileName": "CONVERSATION_COMPILED_WEALTHTECH_EWARI_MCP.md",
+      "roles": [
+        "conversation_memory"
+      ],
+      "sizeBytes": 16158,
+      "sha256": "a776d5554c91bc46e3e7fa8519c2798a738479c9d958e79995741f0a84b765bd",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "a776d5554c91bc46e3e7fa8519c2798a738479c9d958e79995741f0a84b765bd",
+        "charCount": 15785,
+        "lineCount": 582,
+        "wordCount": 2379,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-conversation_part_01_mcp_servers_migration_2026-07-01.md-10f5f9a9833f",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "CONVERSATION_PART_01_MCP_SERVERS_MIGRATION_2026-07-01.md",
+      "repoPath": "memory/CONVERSATION_PART_01_MCP_SERVERS_MIGRATION_2026-07-01.md",
+      "fileName": "CONVERSATION_PART_01_MCP_SERVERS_MIGRATION_2026-07-01.md",
+      "roles": [
+        "migration",
+        "conversation_memory",
+        "server_mapping"
+      ],
+      "sizeBytes": 3477,
+      "sha256": "10f5f9a9833ffb4333692fc60a4dbf60385484751e0db03395bfd9b073074bb2",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "10f5f9a9833ffb4333692fc60a4dbf60385484751e0db03395bfd9b073074bb2",
+        "charCount": 3409,
+        "lineCount": 151,
+        "wordCount": 388,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-conversation_part_02_ecosystem_loop_engineering_2026-07-01.md-abfbb7ea08ae",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "CONVERSATION_PART_02_ECOSYSTEM_LOOP_ENGINEERING_2026-07-01.md",
+      "repoPath": "memory/CONVERSATION_PART_02_ECOSYSTEM_LOOP_ENGINEERING_2026-07-01.md",
+      "fileName": "CONVERSATION_PART_02_ECOSYSTEM_LOOP_ENGINEERING_2026-07-01.md",
+      "roles": [
+        "conversation_memory",
+        "loop_engineering"
+      ],
+      "sizeBytes": 3491,
+      "sha256": "abfbb7ea08aef5ce0d8dc2167658f0fb9663b146ab49b8816c0991b3762c944f",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "abfbb7ea08aef5ce0d8dc2167658f0fb9663b146ab49b8816c0991b3762c944f",
+        "charCount": 3415,
+        "lineCount": 128,
+        "wordCount": 463,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-conversation_part_03_ewari_koree_stablecoin_2026-07-01.md-27930caaf841",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "CONVERSATION_PART_03_EWARI_KOREE_STABLECOIN_2026-07-01.md",
+      "repoPath": "memory/CONVERSATION_PART_03_EWARI_KOREE_STABLECOIN_2026-07-01.md",
+      "fileName": "CONVERSATION_PART_03_EWARI_KOREE_STABLECOIN_2026-07-01.md",
+      "roles": [
+        "conversation_memory"
+      ],
+      "sizeBytes": 5809,
+      "sha256": "27930caaf841da565e29dd9f2017c2a4b6f9fde9bd94e235ab057d1cb2fc7668",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "27930caaf841da565e29dd9f2017c2a4b6f9fde9bd94e235ab057d1cb2fc7668",
+        "charCount": 5622,
+        "lineCount": 220,
+        "wordCount": 865,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-conversations_poussees_20260701.md-9fb062819f41",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "CONVERSATIONS_POUSSEES_20260701.md",
+      "repoPath": "memory/CONVERSATIONS_POUSSEES_20260701.md",
+      "fileName": "CONVERSATIONS_POUSSEES_20260701.md",
+      "roles": [
+        "conversation_memory"
+      ],
+      "sizeBytes": 2423,
+      "sha256": "9fb062819f41bc3605c9c3353477263ef141e296ec64380e79853c2440bab027",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "9fb062819f41bc3605c9c3353477263ef141e296ec64380e79853c2440bab027",
+        "charCount": 2423,
+        "lineCount": 57,
+        "wordCount": 275,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-gpt.md-ab6c1c07035b",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "GPT.md",
+      "repoPath": "memory/GPT.md",
+      "fileName": "GPT.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 2627,
+      "sha256": "ab6c1c07035b14dd13c7befa6135e5fc13a55122eec749f83e825c7bf9970848",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "ab6c1c07035b14dd13c7befa6135e5fc13a55122eec749f83e825c7bf9970848",
+        "charCount": 2601,
+        "lineCount": 100,
+        "wordCount": 288,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-guide_import_conversation_chatgpt_externe_20260702.md-34d0a744cb0d",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "GUIDE_IMPORT_CONVERSATION_CHATGPT_EXTERNE_20260702.md",
+      "repoPath": "memory/GUIDE_IMPORT_CONVERSATION_CHATGPT_EXTERNE_20260702.md",
+      "fileName": "GUIDE_IMPORT_CONVERSATION_CHATGPT_EXTERNE_20260702.md",
+      "roles": [
+        "conversation_memory"
+      ],
+      "sizeBytes": 1801,
+      "sha256": "34d0a744cb0d7a994c9a64044de6912dfa2a67aee4baaae3d5893ea77700f84b",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "34d0a744cb0d7a994c9a64044de6912dfa2a67aee4baaae3d5893ea77700f84b",
+        "charCount": 1801,
+        "lineCount": 35,
+        "wordCount": 219,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-index_memoire_wealthtech_20260701.md-b161bd338855",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INDEX_MEMOIRE_WEALTHTECH_20260701.md",
+      "repoPath": "memory/INDEX_MEMOIRE_WEALTHTECH_20260701.md",
+      "fileName": "INDEX_MEMOIRE_WEALTHTECH_20260701.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 4228,
+      "sha256": "b161bd338855a996fdd0e7d9841b2ab853c3de4eaa47faf9d4f92da03e3873e2",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "b161bd338855a996fdd0e7d9841b2ab853c3de4eaa47faf9d4f92da03e3873e2",
+        "charCount": 4228,
+        "lineCount": 107,
+        "wordCount": 488,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-install_mcp_wealthtech_memory.md-363a3e93cba9",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INSTALL_MCP_WEALTHTECH_MEMORY.md",
+      "repoPath": "memory/INSTALL_MCP_WEALTHTECH_MEMORY.md",
+      "fileName": "INSTALL_MCP_WEALTHTECH_MEMORY.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 2787,
+      "sha256": "363a3e93cba9640331b313a4570c310490d58dffb387fb5e4c38d5287a66caf0",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "363a3e93cba9640331b313a4570c310490d58dffb387fb5e4c38d5287a66caf0",
+        "charCount": 2758,
+        "lineCount": 124,
+        "wordCount": 315,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-install_on_wealthtech_server.md-40c1342c9e45",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INSTALL_ON_WEALTHTECH_SERVER.md",
+      "repoPath": "memory/INSTALL_ON_WEALTHTECH_SERVER.md",
+      "fileName": "INSTALL_ON_WEALTHTECH_SERVER.md",
+      "roles": [
+        "server_mapping"
+      ],
+      "sizeBytes": 3879,
+      "sha256": "40c1342c9e45569c1a238bf7c778b5253671d72aeb23bfe9cf0254302b515c11",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "40c1342c9e45569c1a238bf7c778b5253671d72aeb23bfe9cf0254302b515c11",
+        "charCount": 3830,
+        "lineCount": 191,
+        "wordCount": 406,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-installation_mcp_memory.md-37294ec1ba89",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INSTALLATION_MCP_MEMORY.md",
+      "repoPath": "memory/INSTALLATION_MCP_MEMORY.md",
+      "fileName": "INSTALLATION_MCP_MEMORY.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 2366,
+      "sha256": "37294ec1ba89045dc3077fdea627d883c8b0d0e630f04b9f8dafb72251c454d2",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "37294ec1ba89045dc3077fdea627d883c8b0d0e630f04b9f8dafb72251c454d2",
+        "charCount": 2346,
+        "lineCount": 94,
+        "wordCount": 223,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-installation_mcp_wealthtech.md-1b7515d1a6be",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INSTALLATION_MCP_WEALTHTECH.md",
+      "repoPath": "memory/INSTALLATION_MCP_WEALTHTECH.md",
+      "fileName": "INSTALLATION_MCP_WEALTHTECH.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 4768,
+      "sha256": "1b7515d1a6be86ba306de8f70136b72a6691c231f0c49ee78bd633465283005c",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "1b7515d1a6be86ba306de8f70136b72a6691c231f0c49ee78bd633465283005c",
+        "charCount": 4681,
+        "lineCount": 170,
+        "wordCount": 582,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-integration_codex_workspace_recherche_elargie_20260702.md-b335d3fa8667",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INTEGRATION_CODEX_WORKSPACE_RECHERCHE_ELARGIE_20260702.md",
+      "repoPath": "memory/INTEGRATION_CODEX_WORKSPACE_RECHERCHE_ELARGIE_20260702.md",
+      "fileName": "INTEGRATION_CODEX_WORKSPACE_RECHERCHE_ELARGIE_20260702.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 4471,
+      "sha256": "b335d3fa8667ade93e7df4632bcfe1a252b7f20216d24b34469d96b7e3d250fa",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "b335d3fa8667ade93e7df4632bcfe1a252b7f20216d24b34469d96b7e3d250fa",
+        "charCount": 4471,
+        "lineCount": 68,
+        "wordCount": 566,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-integration_corpus_local_documents_downloads_20260702.md-895ed980de96",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INTEGRATION_CORPUS_LOCAL_DOCUMENTS_DOWNLOADS_20260702.md",
+      "repoPath": "memory/INTEGRATION_CORPUS_LOCAL_DOCUMENTS_DOWNLOADS_20260702.md",
+      "fileName": "INTEGRATION_CORPUS_LOCAL_DOCUMENTS_DOWNLOADS_20260702.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 10357,
+      "sha256": "895ed980de96da6a9652e86fdfdda9cc1bba0682354edb0e0616ada6d452dd98",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "895ed980de96da6a9652e86fdfdda9cc1bba0682354edb0e0616ada6d452dd98",
+        "charCount": 10350,
+        "lineCount": 209,
+        "wordCount": 968,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-integration_docs_agents_loop_engineering_20260702.md-507baa517d38",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INTEGRATION_DOCS_AGENTS_LOOP_ENGINEERING_20260702.md",
+      "repoPath": "memory/INTEGRATION_DOCS_AGENTS_LOOP_ENGINEERING_20260702.md",
+      "fileName": "INTEGRATION_DOCS_AGENTS_LOOP_ENGINEERING_20260702.md",
+      "roles": [
+        "loop_engineering"
+      ],
+      "sizeBytes": 3464,
+      "sha256": "507baa517d384b01b18b4ac5f8377445a895ba209b788153592e5a4a4487da29",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "507baa517d384b01b18b4ac5f8377445a895ba209b788153592e5a4a4487da29",
+        "charCount": 3464,
+        "lineCount": 61,
+        "wordCount": 536,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-integration_memoire_root_only_20260702.md-a6abfe53b357",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INTEGRATION_MEMOIRE_ROOT_ONLY_20260702.md",
+      "repoPath": "memory/INTEGRATION_MEMOIRE_ROOT_ONLY_20260702.md",
+      "fileName": "INTEGRATION_MEMOIRE_ROOT_ONLY_20260702.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 4571,
+      "sha256": "a6abfe53b3579b57c37bf936f6bdab478edfebf52966d1d56638a046831bd2c1",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "a6abfe53b3579b57c37bf936f6bdab478edfebf52966d1d56638a046831bd2c1",
+        "charCount": 4571,
+        "lineCount": 92,
+        "wordCount": 605,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-integration_oauth_chatgpt_claude_github_mcp_20260702.md-cda43cf21780",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INTEGRATION_OAUTH_CHATGPT_CLAUDE_GITHUB_MCP_20260702.md",
+      "repoPath": "memory/INTEGRATION_OAUTH_CHATGPT_CLAUDE_GITHUB_MCP_20260702.md",
+      "fileName": "INTEGRATION_OAUTH_CHATGPT_CLAUDE_GITHUB_MCP_20260702.md",
+      "roles": [
+        "github_mapping"
+      ],
+      "sizeBytes": 1702,
+      "sha256": "cda43cf21780334163e2723a6c4ab7018f43cf05d411e1f60b9694586a2c7554",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "cda43cf21780334163e2723a6c4ab7018f43cf05d411e1f60b9694586a2c7554",
+        "charCount": 1702,
+        "lineCount": 24,
+        "wordCount": 214,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-integration_rapports_legacy_et_locaux_20260702.md-73e3eac7780d",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INTEGRATION_RAPPORTS_LEGACY_ET_LOCAUX_20260702.md",
+      "repoPath": "memory/INTEGRATION_RAPPORTS_LEGACY_ET_LOCAUX_20260702.md",
+      "fileName": "INTEGRATION_RAPPORTS_LEGACY_ET_LOCAUX_20260702.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 13952,
+      "sha256": "73e3eac7780d82ec4690dda667fc5ef7aed38d60cd0c9a549faeead0a6d11871",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "73e3eac7780d82ec4690dda667fc5ef7aed38d60cd0c9a549faeead0a6d11871",
+        "charCount": 13932,
+        "lineCount": 130,
+        "wordCount": 1173,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-integration_sources_locales_site_chainsolutions_20260702.md-a081537f6dfd",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INTEGRATION_SOURCES_LOCALES_SITE_CHAINSOLUTIONS_20260702.md",
+      "repoPath": "memory/INTEGRATION_SOURCES_LOCALES_SITE_CHAINSOLUTIONS_20260702.md",
+      "fileName": "INTEGRATION_SOURCES_LOCALES_SITE_CHAINSOLUTIONS_20260702.md",
+      "roles": [
+        "source_corpus"
+      ],
+      "sizeBytes": 36887,
+      "sha256": "a081537f6dfda158236d0a4061555a08e9a56abcbc5ea41f0e38826088a6e9da",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "a081537f6dfda158236d0a4061555a08e9a56abcbc5ea41f0e38826088a6e9da",
+        "charCount": 36016,
+        "lineCount": 878,
+        "wordCount": 4780,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-integration_sources_mcp_serveur_synchronisation_20260703.md-ce2d8d3096c1",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INTEGRATION_SOURCES_MCP_SERVEUR_SYNCHRONISATION_20260703.md",
+      "repoPath": "memory/INTEGRATION_SOURCES_MCP_SERVEUR_SYNCHRONISATION_20260703.md",
+      "fileName": "INTEGRATION_SOURCES_MCP_SERVEUR_SYNCHRONISATION_20260703.md",
+      "roles": [
+        "source_corpus",
+        "server_mapping"
+      ],
+      "sizeBytes": 5519,
+      "sha256": "ce2d8d3096c1730e1c7a7f1bd35b1834f65c281dbc90a8b8380a1942c6b7b6ac",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "ce2d8d3096c1730e1c7a7f1bd35b1834f65c281dbc90a8b8380a1942c6b7b6ac",
+        "charCount": 5473,
+        "lineCount": 117,
+        "wordCount": 584,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-integration_workspace_local_wealthtech_20260702.md-8ec79b201b12",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INTEGRATION_WORKSPACE_LOCAL_WEALTHTECH_20260702.md",
+      "repoPath": "memory/INTEGRATION_WORKSPACE_LOCAL_WEALTHTECH_20260702.md",
+      "fileName": "INTEGRATION_WORKSPACE_LOCAL_WEALTHTECH_20260702.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 14513,
+      "sha256": "8ec79b201b12799660f5ba44d8810e810b34b149d48a8445e222497b5744adff",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "8ec79b201b12799660f5ba44d8810e810b34b149d48a8445e222497b5744adff",
+        "charCount": 14372,
+        "lineCount": 203,
+        "wordCount": 2056,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-inventaire_fichiers_crees_20260701.md-8ffa86743425",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "INVENTAIRE_FICHIERS_CREES_20260701.md",
+      "repoPath": "memory/INVENTAIRE_FICHIERS_CREES_20260701.md",
+      "fileName": "INVENTAIRE_FICHIERS_CREES_20260701.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 3077,
+      "sha256": "8ffa86743425261707303cfa56e58c22d6258b1105f7cc7faa8110c57186d547",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "8ffa86743425261707303cfa56e58c22d6258b1105f7cc7faa8110c57186d547",
+        "charCount": 3077,
+        "lineCount": 101,
+        "wordCount": 292,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-lecture_consolidee_sources_20260702.md-81c084b42217",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "LECTURE_CONSOLIDEE_SOURCES_20260702.md",
+      "repoPath": "memory/LECTURE_CONSOLIDEE_SOURCES_20260702.md",
+      "fileName": "LECTURE_CONSOLIDEE_SOURCES_20260702.md",
+      "roles": [
+        "source_corpus"
+      ],
+      "sizeBytes": 10771,
+      "sha256": "81c084b422173dcf40f5c8e8c4d7c96ffd95ab83ff08a9b32c808c00f2eca078",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "81c084b422173dcf40f5c8e8c4d7c96ffd95ab83ff08a9b32c808c00f2eca078",
+        "charCount": 10767,
+        "lineCount": 112,
+        "wordCount": 1309,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-loop_engineering_instructions_docx_extract_20260702.md-fcec56ba06f3",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "LOOP_ENGINEERING_INSTRUCTIONS_DOCX_EXTRACT_20260702.md",
+      "repoPath": "memory/LOOP_ENGINEERING_INSTRUCTIONS_DOCX_EXTRACT_20260702.md",
+      "fileName": "LOOP_ENGINEERING_INSTRUCTIONS_DOCX_EXTRACT_20260702.md",
+      "roles": [
+        "loop_engineering"
+      ],
+      "sizeBytes": 30447,
+      "sha256": "fcec56ba06f3d86012115e9760e89903bf28f4ea099dc5f1b79a8580299552d6",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "fcec56ba06f3d86012115e9760e89903bf28f4ea099dc5f1b79a8580299552d6",
+        "charCount": 29663,
+        "lineCount": 681,
+        "wordCount": 3729,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-loop_engineering_wealthtech_20260701.md-f6a2723b1f80",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "LOOP_ENGINEERING_WEALTHTECH_20260701.md",
+      "repoPath": "memory/LOOP_ENGINEERING_WEALTHTECH_20260701.md",
+      "fileName": "LOOP_ENGINEERING_WEALTHTECH_20260701.md",
+      "roles": [
+        "loop_engineering"
+      ],
+      "sizeBytes": 4457,
+      "sha256": "f6a2723b1f8094c799e03de32302c901a6c8106d3bcaafe729e491b46094bad7",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "f6a2723b1f8094c799e03de32302c901a6c8106d3bcaafe729e491b46094bad7",
+        "charCount": 4457,
+        "lineCount": 157,
+        "wordCount": 691,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-loop_engineering_wealthtech_master_plan_20260702.md-0cbe5fc8d72b",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "LOOP_ENGINEERING_WEALTHTECH_MASTER_PLAN_20260702.md",
+      "repoPath": "memory/LOOP_ENGINEERING_WEALTHTECH_MASTER_PLAN_20260702.md",
+      "fileName": "LOOP_ENGINEERING_WEALTHTECH_MASTER_PLAN_20260702.md",
+      "roles": [
+        "loop_engineering"
+      ],
+      "sizeBytes": 16507,
+      "sha256": "0cbe5fc8d72b79bec696228218636fd122967087aa76013311c24b4c99c99010",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "0cbe5fc8d72b79bec696228218636fd122967087aa76013311c24b4c99c99010",
+        "charCount": 16507,
+        "lineCount": 228,
+        "wordCount": 1839,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-loop_engineering_wealthtech_playbook_complet_20260702.md-44d5be17520a",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "LOOP_ENGINEERING_WEALTHTECH_PLAYBOOK_COMPLET_20260702.md",
+      "repoPath": "memory/LOOP_ENGINEERING_WEALTHTECH_PLAYBOOK_COMPLET_20260702.md",
+      "fileName": "LOOP_ENGINEERING_WEALTHTECH_PLAYBOOK_COMPLET_20260702.md",
+      "roles": [
+        "loop_engineering"
+      ],
+      "sizeBytes": 14940,
+      "sha256": "44d5be17520a74934a6b9dae5903225cfda40fe3013bc44cf72b39748dbfd210",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "44d5be17520a74934a6b9dae5903225cfda40fe3013bc44cf72b39748dbfd210",
+        "charCount": 14940,
+        "lineCount": 245,
+        "wordCount": 1873,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-loopback_wealthtech_current.md-8b5b2cfd5465",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "LOOPBACK_WEALTHTECH_CURRENT.md",
+      "repoPath": "memory/LOOPBACK_WEALTHTECH_CURRENT.md",
+      "fileName": "LOOPBACK_WEALTHTECH_CURRENT.md",
+      "roles": [
+        "loop_engineering"
+      ],
+      "sizeBytes": 16315,
+      "sha256": "8b5b2cfd5465c3a5cd9cf546db63f8d5b63489b318f2085d5e2e6aed03aa0bf1",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "8b5b2cfd5465c3a5cd9cf546db63f8d5b63489b318f2085d5e2e6aed03aa0bf1",
+        "charCount": 16310,
+        "lineCount": 333,
+        "wordCount": 1839,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-manifest.json-c318313d4718",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "manifest.json",
+      "repoPath": "memory/manifest.json",
+      "fileName": "manifest.json",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 10080,
+      "sha256": "c318313d4718f2896d5ef480ee39a1bc9b0c32f9d47a7c6a779c6c966c47df95",
+      "duplicateOf": null,
+      "extension": ".json",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "c318313d4718f2896d5ef480ee39a1bc9b0c32f9d47a7c6a779c6c966c47df95",
+        "charCount": 10080,
+        "lineCount": 177,
+        "wordCount": 283,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-matrice_tracabilite_sources_exigences_tracks_20260702.md-6f69ea84200a",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "MATRICE_TRACABILITE_SOURCES_EXIGENCES_TRACKS_20260702.md",
+      "repoPath": "memory/MATRICE_TRACABILITE_SOURCES_EXIGENCES_TRACKS_20260702.md",
+      "fileName": "MATRICE_TRACABILITE_SOURCES_EXIGENCES_TRACKS_20260702.md",
+      "roles": [
+        "source_corpus"
+      ],
+      "sizeBytes": 10649,
+      "sha256": "6f69ea84200a9bb00e3b97d61bc590203c058262056986a32bf85289079d808e",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "6f69ea84200a9bb00e3b97d61bc590203c058262056986a32bf85289079d808e",
+        "charCount": 10648,
+        "lineCount": 184,
+        "wordCount": 1365,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-mcp_installation_and_server_sync_2026-07-01.md-8c0a42c5dc62",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "MCP_INSTALLATION_AND_SERVER_SYNC_2026-07-01.md",
+      "repoPath": "memory/MCP_INSTALLATION_AND_SERVER_SYNC_2026-07-01.md",
+      "fileName": "MCP_INSTALLATION_AND_SERVER_SYNC_2026-07-01.md",
+      "roles": [
+        "server_mapping"
+      ],
+      "sizeBytes": 1877,
+      "sha256": "8c0a42c5dc6273f1b99b83a4d839299932cf4fe353c2e48c34f67c7d0f353b3b",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "8c0a42c5dc6273f1b99b83a4d839299932cf4fe353c2e48c34f67c7d0f353b3b",
+        "charCount": 1846,
+        "lineCount": 51,
+        "wordCount": 191,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-memo_mcp_github_server_access.md-707a392746a7",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "MEMO_MCP_GITHUB_SERVER_ACCESS.md",
+      "repoPath": "memory/MEMO_MCP_GITHUB_SERVER_ACCESS.md",
+      "fileName": "MEMO_MCP_GITHUB_SERVER_ACCESS.md",
+      "roles": [
+        "github_mapping",
+        "server_mapping"
+      ],
+      "sizeBytes": 3242,
+      "sha256": "707a392746a79375a3ca794ba66d47cc7a9ecf5da950903eb72ccf1120df5dba",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "707a392746a79375a3ca794ba66d47cc7a9ecf5da950903eb72ccf1120df5dba",
+        "charCount": 3190,
+        "lineCount": 113,
+        "wordCount": 388,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-memo_project_stablecoin_ewari.md-565a930f87ac",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "MEMO_PROJECT_STABLECOIN_EWARI.md",
+      "repoPath": "memory/MEMO_PROJECT_STABLECOIN_EWARI.md",
+      "fileName": "MEMO_PROJECT_STABLECOIN_EWARI.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 4536,
+      "sha256": "565a930f87acbf5ee66a96e75f00b09e6489939cd9d4f0ae79f8d9a565cbe464",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "565a930f87acbf5ee66a96e75f00b09e6489939cd9d4f0ae79f8d9a565cbe464",
+        "charCount": 4409,
+        "lineCount": 75,
+        "wordCount": 556,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-plan_execution_complet_wealthtech_actualise_20260702.md-520cc28ad869",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "PLAN_EXECUTION_COMPLET_WEALTHTECH_ACTUALISE_20260702.md",
+      "repoPath": "memory/PLAN_EXECUTION_COMPLET_WEALTHTECH_ACTUALISE_20260702.md",
+      "fileName": "PLAN_EXECUTION_COMPLET_WEALTHTECH_ACTUALISE_20260702.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 11026,
+      "sha256": "520cc28ad869dd4808a6da78f882a9f06adfa01ad4d66bd27ede2a92282c1203",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "520cc28ad869dd4808a6da78f882a9f06adfa01ad4d66bd27ede2a92282c1203",
+        "charCount": 11023,
+        "lineCount": 257,
+        "wordCount": 1479,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-preparation_commit_push_mcp_memoire_20260702.md-c584500eddce",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "PREPARATION_COMMIT_PUSH_MCP_MEMOIRE_20260702.md",
+      "repoPath": "memory/PREPARATION_COMMIT_PUSH_MCP_MEMOIRE_20260702.md",
+      "fileName": "PREPARATION_COMMIT_PUSH_MCP_MEMOIRE_20260702.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 4019,
+      "sha256": "c584500eddceb162b3564d3166638d4fb371d795ce6de1a3ab08bb940c8a3137",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "c584500eddceb162b3564d3166638d4fb371d795ce6de1a3ab08bb940c8a3137",
+        "charCount": 4017,
+        "lineCount": 128,
+        "wordCount": 407,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-prompt_audit_6bi_b.md-fab94698ec26",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "PROMPT_AUDIT_6BI_B.md",
+      "repoPath": "memory/PROMPT_AUDIT_6BI_B.md",
+      "fileName": "PROMPT_AUDIT_6BI_B.md",
+      "roles": [
+        "audit"
+      ],
+      "sizeBytes": 6123,
+      "sha256": "fab94698ec26125de88e3e4aab5d692c2bc48f2131b6c59bfc06133924051f94",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "fab94698ec26125de88e3e4aab5d692c2bc48f2131b6c59bfc06133924051f94",
+        "charCount": 5999,
+        "lineCount": 217,
+        "wordCount": 755,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-prompt_audit_opcvm_sans_regression.md-266d7089b751",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "PROMPT_AUDIT_OPCVM_SANS_REGRESSION.md",
+      "repoPath": "memory/PROMPT_AUDIT_OPCVM_SANS_REGRESSION.md",
+      "fileName": "PROMPT_AUDIT_OPCVM_SANS_REGRESSION.md",
+      "roles": [
+        "audit"
+      ],
+      "sizeBytes": 1996,
+      "sha256": "266d7089b7513ab97307b77cd0ab15e69c477ec2614d1923ae3d35a0c09b7ec4",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "266d7089b7513ab97307b77cd0ab15e69c477ec2614d1923ae3d35a0c09b7ec4",
+        "charCount": 1954,
+        "lineCount": 62,
+        "wordCount": 293,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-prompt_audit_wealthtech_mcp.md-bbe39be0847e",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "PROMPT_AUDIT_WEALTHTECH_MCP.md",
+      "repoPath": "memory/PROMPT_AUDIT_WEALTHTECH_MCP.md",
+      "fileName": "PROMPT_AUDIT_WEALTHTECH_MCP.md",
+      "roles": [
+        "audit"
+      ],
+      "sizeBytes": 1875,
+      "sha256": "bbe39be0847eb385522c7ed94dcc7aada448319413416db4d0dd86a87a7ac839",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "bbe39be0847eb385522c7ed94dcc7aada448319413416db4d0dd86a87a7ac839",
+        "charCount": 1818,
+        "lineCount": 79,
+        "wordCount": 276,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-readme.md-01afe15d213e",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "README.md",
+      "repoPath": "memory/README.md",
+      "fileName": "README.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 3568,
+      "sha256": "01afe15d213e2bb73b02ef4e5a39753df26291ceabbe8767ea108dd0d36ce4d8",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "01afe15d213e2bb73b02ef4e5a39753df26291ceabbe8767ea108dd0d36ce4d8",
+        "charCount": 3514,
+        "lineCount": 92,
+        "wordCount": 434,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-registre_complet_corpus_local_documents_downloads_20260702.md-449f9f28c90b",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "REGISTRE_COMPLET_CORPUS_LOCAL_DOCUMENTS_DOWNLOADS_20260702.md",
+      "repoPath": "memory/REGISTRE_COMPLET_CORPUS_LOCAL_DOCUMENTS_DOWNLOADS_20260702.md",
+      "fileName": "REGISTRE_COMPLET_CORPUS_LOCAL_DOCUMENTS_DOWNLOADS_20260702.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 9249,
+      "sha256": "449f9f28c90b2de06cc087b2c7a64797d3b05e2dd6dece45152ee534b780b665",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "449f9f28c90b2de06cc087b2c7a64797d3b05e2dd6dece45152ee534b780b665",
+        "charCount": 9064,
+        "lineCount": 168,
+        "wordCount": 957,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-runbook_global_review_s1_s2_2026-07-01.md-cee400f2270d",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "RUNBOOK_GLOBAL_REVIEW_S1_S2_2026-07-01.md",
+      "repoPath": "memory/RUNBOOK_GLOBAL_REVIEW_S1_S2_2026-07-01.md",
+      "fileName": "RUNBOOK_GLOBAL_REVIEW_S1_S2_2026-07-01.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 867,
+      "sha256": "cee400f2270d0cd2e1918084756aa54a8cd3e60f026d984401666d56512bfa2b",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "cee400f2270d0cd2e1918084756aa54a8cd3e60f026d984401666d56512bfa2b",
+        "charCount": 855,
+        "lineCount": 38,
+        "wordCount": 115,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-suivi_memory.md-92fd335ea817",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "SUIVI_MEMORY.md",
+      "repoPath": "memory/SUIVI_MEMORY.md",
+      "fileName": "SUIVI_MEMORY.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 16004,
+      "sha256": "92fd335ea817d6d968c5977d8b7a1d09adeee22aaf6765da0e68b3641cc2c237",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "92fd335ea817d6d968c5977d8b7a1d09adeee22aaf6765da0e68b3641cc2c237",
+        "charCount": 15985,
+        "lineCount": 269,
+        "wordCount": 1759,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-suivi.md-0a369bd0a2d3",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "SUIVI.md",
+      "repoPath": "memory/SUIVI.md",
+      "fileName": "SUIVI.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 3683,
+      "sha256": "0a369bd0a2d338a42eb694347453e8c96f5036c5c9e431fac3f7363d7ef259dc",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "0a369bd0a2d338a42eb694347453e8c96f5036c5c9e431fac3f7363d7ef259dc",
+        "charCount": 3645,
+        "lineCount": 138,
+        "wordCount": 412,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-verification_transcript_chatgpt_externe_20260702.md-cf0854fe0d8f",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "VERIFICATION_TRANSCRIPT_CHATGPT_EXTERNE_20260702.md",
+      "repoPath": "memory/VERIFICATION_TRANSCRIPT_CHATGPT_EXTERNE_20260702.md",
+      "fileName": "VERIFICATION_TRANSCRIPT_CHATGPT_EXTERNE_20260702.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 1496,
+      "sha256": "cf0854fe0d8f4e90287c0000b15548f4a3e362f4eb6d94a2cae19873af89ec9c",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "cf0854fe0d8f4e90287c0000b15548f4a3e362f4eb6d94a2cae19873af89ec9c",
+        "charCount": 1494,
+        "lineCount": 39,
+        "wordCount": 220,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-wealthtech_conversation_compiled.md-ae284ed66de1",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "WEALTHTECH_CONVERSATION_COMPILED.md",
+      "repoPath": "memory/WEALTHTECH_CONVERSATION_COMPILED.md",
+      "fileName": "WEALTHTECH_CONVERSATION_COMPILED.md",
+      "roles": [
+        "conversation_memory"
+      ],
+      "sizeBytes": 11184,
+      "sha256": "ae284ed66de1ff439b6fb6e83359e9d08d9bac795ffc826711d47edcbcce1e14",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "ae284ed66de1ff439b6fb6e83359e9d08d9bac795ffc826711d47edcbcce1e14",
+        "charCount": 10981,
+        "lineCount": 453,
+        "wordCount": 1443,
+        "secretSignalCount": 0
+      }
+    },
+    {
+      "sourceId": "repo-memory-wealthtech_project_memory.md-b9e93e890ca2",
+      "sourceRoot": "repo-memory",
+      "sourceRootKind": "repository",
+      "sourcePath": "WEALTHTECH_PROJECT_MEMORY.md",
+      "repoPath": "memory/WEALTHTECH_PROJECT_MEMORY.md",
+      "fileName": "WEALTHTECH_PROJECT_MEMORY.md",
+      "roles": [
+        "reference"
+      ],
+      "sizeBytes": 15300,
+      "sha256": "b9e93e890ca2488fb0037bea6370f49f52ebbe22cc3487764578f3637528c7d9",
+      "duplicateOf": null,
+      "extension": ".md",
+      "readStatus": "text_read",
+      "extraction": {
+        "method": "utf8_text_stats",
+        "textSha256": "b9e93e890ca2488fb0037bea6370f49f52ebbe22cc3487764578f3637528c7d9",
+        "charCount": 14771,
+        "lineCount": 456,
+        "wordCount": 2368,
+        "secretSignalCount": 0
+      }
+    }
+  ]
+}
