@@ -17,6 +17,43 @@ Le mode initial est volontairement **read-only first** : aucune suppression, auc
 https://mcp.wealthtechinnovations.com/mcp
 ```
 
+## Authentification ChatGPT / OAuth MCP
+
+Le serveur conserve l'authentification historique :
+
+```text
+Authorization: Bearer <MCP_AUTH_TOKEN>
+```
+
+Pour être découvrable par ChatGPT Apps SDK sans exposer `MCP_AUTH_TOKEN`, le serveur expose aussi une couche OAuth minimale compatible Authorization Code + PKCE :
+
+```text
+GET  /.well-known/oauth-protected-resource
+GET  /.well-known/oauth-authorization-server
+GET  /oauth/authorize
+POST /oauth/token
+```
+
+Principes de sécurité :
+
+- `/mcp` reste protégé ;
+- l'ancien `MCP_AUTH_TOKEN` reste accepté pour les tests administrateur et les scripts existants ;
+- ChatGPT reçoit uniquement des access tokens OAuth temporaires signés côté serveur ;
+- `MCP_AUTH_TOKEN` n'est jamais renvoyé dans les réponses OAuth ;
+- le login web existant `/login` sert d'écran d'autorisation administrateur ;
+- le serveur renvoie un header `WWW-Authenticate` sur les `401` MCP pour permettre à ChatGPT de découvrir `/.well-known/oauth-protected-resource`.
+
+Tests publics attendus :
+
+```bash
+curl -i https://mcp.wealthtechinnovations.com/health
+curl -i https://mcp.wealthtechinnovations.com/.well-known/oauth-protected-resource
+curl -i https://mcp.wealthtechinnovations.com/.well-known/oauth-authorization-server
+curl -i https://mcp.wealthtechinnovations.com/mcp
+```
+
+Le dernier test doit rester en `401 Unauthorized` sans token.
+
 ## Installation locale
 
 ```bash
@@ -72,7 +109,8 @@ Avant toute modification, lire :
 - Runtime initial : PM2 ou Docker Compose
 - Reverse proxy : Nginx/Plesk vers `127.0.0.1:8787`
 - HTTPS obligatoire
-- Authentification : header `Authorization: Bearer <MCP_AUTH_TOKEN>`
+- Authentification historique : header `Authorization: Bearer <MCP_AUTH_TOKEN>`
+- Authentification ChatGPT : OAuth minimal via les routes `.well-known` et `/oauth/*`
 
 ## Règle de sécurité
 
