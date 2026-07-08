@@ -3,6 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { env } from '../config/env.js';
 import { runGuardedCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
+import { registerMcpSelfWriteTools } from './selfManagement.js';
 import {
   assertScopedWriteToolsEnabled,
   assertSelectOnlyQuery,
@@ -307,4 +308,6 @@ node ${shellQuote(script)} ${quotedArgs}`;
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     return runS2(buildDeployCommand('brvmchainsolution'), 'deploy_brvm_s2', 900_000);
   });
+
+  registerMcpSelfWriteTools(server);
 }
