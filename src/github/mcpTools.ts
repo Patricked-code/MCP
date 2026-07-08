@@ -2,7 +2,18 @@ import { mkdir, readFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { env } from '../config/env.js';
 import { getGithubConnectionStatus } from './connection.js';
+import { GitHubToolError } from './errors.js';
 import { readGitRegistry, writeGitRegistry } from './registry.js';
+import {
+  assertPublicSafeFileContent,
+  assertSafeCommitMessage,
+  assertSafePullRequestBody,
+  assertSafePullRequestTitle,
+  detectSecretLikeContent,
+  isSensitiveGitHubPath
+} from './secretSafety.js';
+
+export { GitHubToolError } from './errors.js';
 
 const DEFAULT_TOKEN_FILE = '/app/secrets/github_token';
 const REQUIRED_GOVERNANCE_FILES = [
@@ -33,18 +44,6 @@ export type GitHubCommitFile = {
   path: string;
   content: string;
 };
-
-export class GitHubToolError extends Error {
-  readonly code: string;
-  readonly httpStatus: number | null;
-
-  constructor(code: string, message: string, httpStatus: number | null = null) {
-    super(message);
-    this.name = 'GitHubToolError';
-    this.code = code;
-    this.httpStatus = httpStatus;
-  }
-}
 
 function tokenFilePath(): string {
   return env.GITHUB_TOKEN_FILE || DEFAULT_TOKEN_FILE;
@@ -130,13 +129,12 @@ export function assertSafeCommitFiles(files: GitHubCommitFile[]): GitHubCommitFi
   return files.map((file) => {
     const path = file.path.trim();
     const contentBytes = Buffer.byteLength(file.content, 'utf8');
-    const basename = path.split('/').pop() ?? '';
 
     if (!path || path.startsWith('/') || path.includes('..') || path.includes('\\') || path.split('/').some((part) => part.length === 0)) {
       throw new GitHubToolError('unsafe_file_path', `Chemin de fichier interdit: ${path || '(vide)'}`);
     }
 
-    if (/^\.env($|\.)/i.test(basename) || /\.(pem|key|p12|pfx)$/i.test(basename) || /(^|\/)(id_rsa|id_ed25519|authorized_keys)$/i.test(path)) {
+    if (isSensitiveGitHubPath(path)) {
       throw new GitHubToolError('secret_like_file_blocked', `Fichier sensible interdit dans un commit MCP: ${path}`);
     }
 
@@ -144,7 +142,7 @@ export function assertSafeCommitFiles(files: GitHubCommitFile[]): GitHubCommitFi
       throw new GitHubToolError('file_too_large', `Fichier trop volumineux pour commit contrôlé: ${path}`);
     }
 
-    return { path, content: file.content };
+    return { path, content: assertPublicSafeFileContent(path, file.content) };
   });
 }
 
@@ -153,9 +151,7 @@ export function redactGitHubToolMetadata(value: unknown): unknown {
     return value.map((entry) => redactGitHubToolMetadata(entry));
   }
   if (!value || typeof value !== 'object') {
-    return typeof value === 'string' && /gh[pousr]_[A-Za-z0-9_]+|BEGIN (RSA|OPENSSH|PRIVATE) KEY/i.test(value)
-      ? '[redacted]'
-      : value;
+    return typeof value === 'string' && detectSecretLikeContent(value) ? '[redacted]' : value;
   }
 
   const output: JsonObject = {};
@@ -496,10 +492,7 @@ export async function githubCommitFilesOnBranchTool(input: { owner: string; repo
   const owner = assertRepoPart(input.owner, 'owner');
   const repo = assertRepoPart(input.repo, 'repo');
   const branch = assertMcpBranchName(input.branch);
-  const message = input.message.trim();
-  if (message.length < 8 || message.length > 240) {
-    throw new GitHubToolError('invalid_commit_message', 'Message de commit invalide ou trop court.');
-  }
+  const message = assertSafeCommitMessage(input.message);
   const files = assertSafeCommitFiles(input.files);
   const parentSha = await getRefSha(owner, repo, branch);
   const baseTreeSha = await getCommitTreeSha(owner, repo, parentSha);
@@ -571,15 +564,13 @@ export async function githubOpenPrTool(input: { owner: string; repo: string; hea
   const repo = assertRepoPart(input.repo, 'repo');
   const headBranch = assertMcpBranchName(input.headBranch);
   const baseBranch = assertBaseBranchName(input.baseBranch);
-  const title = input.title.trim();
-  if (title.length < 8 || title.length > 180) {
-    throw new GitHubToolError('invalid_pr_title', 'Titre de pull request invalide ou trop court.');
-  }
+  const title = assertSafePullRequestTitle(input.title);
+  const body = assertSafePullRequestBody(input.body);
   const response = await githubRequest(`/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls`, {
     method: 'POST',
     body: {
       title,
-      body: input.body ?? '',
+      body,
       head: headBranch,
       base: baseBranch,
       draft: input.draft ?? true,
