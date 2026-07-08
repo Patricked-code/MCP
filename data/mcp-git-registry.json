@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-08T04:55:00.000Z",
+  "accounts": [
+    {
+      "id": "github:org:chainsolutions-wealthtech",
+      "provider": "github",
+      "owner": "chainsolutions-wealthtech",
+      "account": "chainsolutions-wealthtech",
+      "type": "organization",
+      "authMode": "pat",
+      "role": "target",
+      "tokenFile": "/app/secrets/github_token",
+      "canCreateRepos": true,
+      "canWriteRepos": true,
+      "canOpenPullRequests": true,
+      "status": "active",
+      "notes": "Organisation cible principale du MCP. Tous les nouveaux repos doivent être créés ici."
+    },
+    {
+      "id": "github:user:Patricked-code",
+      "provider": "github",
+      "owner": "Patricked-code",
+      "account": "Patricked-code",
+      "type": "user",
+      "authMode": "pat",
+      "role": "source",
+      "tokenFile": "/app/secrets/github_token",
+      "canCreateRepos": true,
+      "canWriteRepos": true,
+      "canOpenPullRequests": true,
+      "status": "active",
+      "notes": "Compte source actuel contenant MCP, api, Front, Stablecoin, Investbourse et autres repos."
+    },
+    {
+      "id": "github:owner:Wealthtechinnovations",
+      "provider": "github",
+      "owner": "Wealthtechinnovations",
+      "account": "Wealthtechinnovations",
+      "type": "organization_or_user",
+      "authMode": "pat",
+      "role": "source_or_secondary_target",
+      "tokenFile": "/app/secrets/github_token_wealthtechinnovations",
+      "canCreateRepos": true,
+      "canWriteRepos": true,
+      "canOpenPullRequests": true,
+      "status": "pending_s2_token_sync",
+      "notes": "Compte à connecter via le token présent sur S2."
+    }
+  ],
+  "repoMappings": [
+    {
+      "sourceRepo": "Patricked-code/MCP",
+      "targetRepo": "chainsolutions-wealthtech/MCP",
+      "serverPath": "/opt/apps/wealthtech-mcp-ssh-bridge",
+      "status": "to_migrate_or_mirror",
+      "priority": "high"
+    },
+    {
+      "sourceRepo": "chainsolutions-wealthtech/.github",
+      "targetRepo": "chainsolutions-wealthtech/.github",
+      "serverPath": null,
+      "status": "governance_repo",
+      "priority": "high"
+    },
+    {
+      "sourceRepo": "Patricked-code/api",
+      "targetRepo": "chainsolutions-wealthtech/api",
+      "serverPath": null,
+      "status": "to_migrate_or_mirror",
+      "priority": "medium"
+    },
+    {
+      "sourceRepo": "Patricked-code/Front",
+      "targetRepo": "chainsolutions-wealthtech/Front",
+      "serverPath": null,
+      "status": "to_migrate_or_mirror",
+      "priority": "medium"
+    },
+    {
+      "sourceRepo": "Patricked-code/Stablecoin",
+      "targetRepo": "chainsolutions-wealthtech/Stablecoin",
+      "serverPath": null,
+      "status": "to_migrate_or_mirror",
+      "priority": "medium"
+    },
+    {
+      "sourceRepo": "Patricked-code/Investbourse",
+      "targetRepo": "chainsolutions-wealthtech/Investbourse",
+      "serverPath": null,
+      "status": "to_migrate_or_mirror",
+      "priority": "medium"
+    },
+    {
+      "sourceRepo": "Patricked-code/civitech-commune-saas",
+      "targetRepo": "chainsolutions-wealthtech/civitech-commune-saas",
+      "serverPath": "/var/www/vhosts/niakara.com/repo/civitech-commune-saas",
+      "status": "to_migrate_or_mirror",
+      "priority": "medium"
+    }
+  ],
+  "auditEvents": [
+    {
+      "at": "2026-07-08T04:55:00.000Z",
+      "event": "target_org_configured",
+      "owner": "chainsolutions-wealthtech",
+      "details": "chainsolutions-wealthtech configured as default MCP GitHub target organization."
+    }
+  ]
+}

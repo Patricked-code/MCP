@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "defaultTargetOwner": "chainsolutions-wealthtech",
+  "accounts": [
+    {
+      "owner": "chainsolutions-wealthtech",
+      "type": "organization",
+      "role": "target",
+      "tokenFile": "/app/secrets/github_token",
+      "status": "active"
+    },
+    {
+      "owner": "Patricked-code",
+      "type": "user",
+      "role": "source",
+      "tokenFile": "/app/secrets/github_token",
+      "status": "active"
+    },
+    {
+      "owner": "Wealthtechinnovations",
+      "type": "organization_or_user",
+      "role": "source_or_secondary_target",
+      "tokenFile": "/app/secrets/github_token_wealthtechinnovations",
+      "status": "pending_s2_token_sync"
+    }
+  ]
+}
