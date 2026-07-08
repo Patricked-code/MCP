@@ -1,0 +1,25 @@
+{
+  "name": "MCP Onboarding Engine - ChainSolutions WealthTech",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "GitHub.vscode-github-actions",
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
+      ]
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "remoteEnv": {
+    "MCP_GITHUB_DEFAULT_OWNER": "chainsolutions-wealthtech",
+    "MCP_GITHUB_MODE": "multi_account_governance",
+    "MCP_GIT_REGISTRY_FILE": "/workspaces/MCP/data/mcp-git-registry.json"
+  }
+}

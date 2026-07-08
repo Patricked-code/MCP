@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "servers": {
+    "S1": {
+      "role": "mcp_host_and_destination",
+      "mainPath": "/opt/apps/wealthtech-mcp-ssh-bridge",
+      "mcpDomain": "https://mcp.wealthtechinnovations.com"
+    },
+    "S2": {
+      "role": "source_migration_server",
+      "protectedApplications": [
+        "africafunds.chainsolutions.fr",
+        "api.africafunds.chainsolutions.fr",
+        "api.stablecoin.chainsolutions.fr",
+        "stablecoin.chainsolutions.fr",
+        "brvm.chainsolutions.fr",
+        "bvmac.chainsolutions.fr",
+        "chainsolutions.fr",
+        "Funds.chainsolutions.fr",
+        "api.funds.chainsolutions.fr"
+      ]
+    }
+  }
+}

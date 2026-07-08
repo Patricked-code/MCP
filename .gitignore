@@ -39,3 +39,7 @@ backups/
 # System
 .DS_Store
 Thumbs.db
+secrets/
+*.p12
+*.bak.*
+*.inspect.*

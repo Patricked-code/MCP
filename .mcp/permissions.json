@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "writePolicy": {
+    "directMainPush": false,
+    "branchRequired": true,
+    "pullRequestRequired": true,
+    "secretReadingForbidden": true
+  },
+  "allowedBranchPrefixes": [
+    "chatgpt/",
+    "claude/",
+    "codex/",
+    "agent/",
+    "mcp/"
+  ],
+  "forbiddenPaths": [
+    ".env",
+    ".env.*",
+    "secrets/",
+    "keys/",
+    "logs/",
+    "*.pem",
+    "*.key",
+    "*.p12",
+    "*.dump",
+    "*.sql"
+  ]
+}

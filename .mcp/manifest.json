@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "project": "MCP",
+  "organization": "chainsolutions-wealthtech",
+  "role": "mcp_server",
+  "description": "Serveur MCP WealthTech pour GitHub, ChatGPT, Claude, Codex, S1 et S2.",
+  "defaultBranch": "main",
+  "requiredFiles": [
+    "MCP_PROJECT.md",
+    "MCP_AGENT_RULES.md",
+    "MCP_REPO_INVENTORY.md",
+    "MCP_SERVER_MAPPING.md",
+    "CODESPACES.md"
+  ],
+  "onboardingEngine": true
+}

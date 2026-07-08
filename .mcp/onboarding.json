@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "status": "initialized",
+  "engine": "MCP Onboarding Engine",
+  "nextRoutes": [
+    "GET /git/onboarding",
+    "POST /git/onboarding/start",
+    "POST /git/onboarding/answer",
+    "GET /git/repos",
+    "GET /git/agents",
+    "GET /git/permissions",
+    "GET /git/audit"
+  ]
+}
