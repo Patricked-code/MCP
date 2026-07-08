@@ -1,4 +1,4 @@
-import { GitHubToolError } from './mcpTools.js';
+import { GitHubToolError } from './errors.js';
 
 const SECRET_CONTENT_PATTERNS: Array<{ code: string; pattern: RegExp; label: string }> = [
   {
