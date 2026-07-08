@@ -11,6 +11,7 @@ import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
+import { registerOnboardingRoutes } from './onboarding/http.js';
 
 const WEB_SESSION_COOKIE = 'mcp_web_session';
 const WEB_SESSION_MAX_AGE_SECONDS = Math.max(1, Number.parseInt(process.env.MCP_SESSION_TTL_HOURS || '8', 10)) * 60 * 60;
@@ -142,6 +143,7 @@ function nav(): string {
   return `<p>
     <a href="/dashboard">Dashboard</a> ·
     <a href="/git">Paramétrage Git</a> ·
+    <a href="/git/onboarding">Onboarding</a> ·
     <a href="/github">GitHub</a> ·
     <a href="/github/status">Statut JSON</a> ·
     <a href="/github/Patricked-code">Patricked-code</a> ·
@@ -319,6 +321,8 @@ export async function startHttpServer(): Promise<void> {
       res.status(500).type('text').send('Erreur pendant la connexion Git.');
     }
   });
+
+  registerOnboardingRoutes(app, requireWebLogin);
 
   app.get('/github/status', requireWebLogin, async (_req, res) => {
     try {
