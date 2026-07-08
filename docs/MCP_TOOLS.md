@@ -54,6 +54,31 @@ Ces outils ne sont enregistrés que lorsque `ENABLE_WRITE_TOOLS=true`. Même dan
 - Les métadonnées d’audit masquent les champs de type token, secret, password, private key, authorization, cookie ou `.env`.
 - Les commits contrôlés refusent les fichiers `.env`, `.pem`, `.key`, `.p12`, `.pfx`, `id_rsa`, `id_ed25519` et `authorized_keys`.
 
+## Durcissement secret-safety en cours
+
+Un module dédié `src/github/secretSafety.ts` ajoute une couche de détection public-safe pour empêcher l’envoi de signaux secrets dans les opérations GitHub MCP.
+
+Signaux bloqués par cette couche :
+
+- tokens GitHub classiques `ghp_`, `gho_`, `ghu_`, `ghs_`, `ghr_` ;
+- tokens GitHub fine-grained `github_pat_` ;
+- blocs de clés privées `BEGIN RSA PRIVATE KEY`, `BEGIN OPENSSH PRIVATE KEY`, `BEGIN PRIVATE KEY` ;
+- en-têtes `Authorization: Bearer ...` ;
+- affectations de type `.env` comme `TOKEN=`, `SECRET=`, `PASSWORD=`, `PRIVATE_KEY=`, `API_KEY=`, `JWT_SECRET=`.
+
+Fichiers sensibles supplémentaires détectés :
+
+- `.npmrc` ;
+- `.pypirc` ;
+- `.netrc` ;
+- `credentials.json` ;
+- `service-account.json` ;
+- `id_ecdsa` ;
+- `id_dsa` ;
+- `.ssh/config`.
+
+Statut : le module et les tests existent dans la branche `mcp/github-tools-implementation`. L’intégration complète dans les fonctions d’écriture GitHub reste à finaliser avant merge.
+
 ## Outils non actifs au départ
 
 - suppression de sauvegarde ;
