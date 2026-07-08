@@ -10,6 +10,12 @@ import {
   assertWriteFlag,
   scriptArgsRequireWriteApproval
 } from '../ssh/writeSafety.js';
+import {
+  githubCommitFilesOnBranchTool,
+  githubCreateBranchTool,
+  githubOpenPrTool,
+  publicSafeError
+} from '../github/mcpTools.js';
 
 const ProjectKeySchema = z.enum(['api_opcv', 'front_end_opcvm', 'brvmchainsolution']);
 type ProjectKey = z.infer<typeof ProjectKeySchema>;
@@ -38,7 +44,6 @@ const projects: Record<ProjectKey, { label: string; path: string; note: string }
   }
 };
 
-
 function inferScriptProject(script: AllowedScript): ProjectKey {
   if (
     script.includes('repair-ost') ||
@@ -50,7 +55,6 @@ function inferScriptProject(script: AllowedScript): ProjectKey {
 
   return 'api_opcv';
 }
-
 
 const scriptsRequiringWriteApproval = new Set<AllowedScript>([
   'scripts/scraper/fix_index_tail.js',
@@ -83,6 +87,19 @@ async function runS2(command: string, intent: string, timeoutMs = 30_000) {
     maxOutputBytes: 200_000
   });
   return asText(commandResultToText(result));
+}
+
+function asJson(value: unknown) {
+  return asText(JSON.stringify(value, null, 2));
+}
+
+async function safeGithubWriteTool(action: () => Promise<unknown>) {
+  try {
+    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
+    return asJson(await action());
+  } catch (error) {
+    return asJson(publicSafeError(error));
+  }
 }
 
 function buildGitStatusCommand(project: ProjectKey): string {
@@ -239,7 +256,13 @@ export function registerScopedWriteTools(server: McpServer): void {
       run_command_s1: false,
       run_command_s2: false,
       sql: 'SELECT uniquement',
-      projects: formatProjectCatalog()
+      projects: formatProjectCatalog(),
+      github: {
+        enabled: true,
+        directMainWrites: false,
+        controlledBranchPattern: 'mcp/*',
+        productionActionAllowed: false
+      }
     }, null, 2));
   });
 
@@ -307,4 +330,32 @@ node ${shellQuote(script)} ${quotedArgs}`;
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     return runS2(buildDeployCommand('brvmchainsolution'), 'deploy_brvm_s2', 900_000);
   });
+
+  server.tool('github_create_branch', 'Crée une branche GitHub contrôlée mcp/* depuis une branche de base. Ne cible jamais main directement.', {
+    owner: z.string().min(1).max(100).regex(/^[A-Za-z0-9_.-]+$/),
+    repo: z.string().min(1).max(100).regex(/^[A-Za-z0-9_.-]+$/),
+    branch: z.string().min(5).max(160),
+    baseBranch: z.string().min(1).max(160).optional()
+  }, async (input) => safeGithubWriteTool(() => githubCreateBranchTool(input)));
+
+  server.tool('github_commit_files_on_branch', 'Commit un lot de fichiers public-safe sur une branche mcp/* en un seul commit GitHub.', {
+    owner: z.string().min(1).max(100).regex(/^[A-Za-z0-9_.-]+$/),
+    repo: z.string().min(1).max(100).regex(/^[A-Za-z0-9_.-]+$/),
+    branch: z.string().min(5).max(160),
+    message: z.string().min(8).max(240),
+    files: z.array(z.object({
+      path: z.string().min(1).max(240),
+      content: z.string().max(200_000)
+    })).min(1).max(20)
+  }, async (input) => safeGithubWriteTool(() => githubCommitFilesOnBranchTool(input)));
+
+  server.tool('github_open_pr', 'Ouvre une pull request depuis une branche mcp/* vers une branche de base contrôlée.', {
+    owner: z.string().min(1).max(100).regex(/^[A-Za-z0-9_.-]+$/),
+    repo: z.string().min(1).max(100).regex(/^[A-Za-z0-9_.-]+$/),
+    headBranch: z.string().min(5).max(160),
+    baseBranch: z.string().min(1).max(160),
+    title: z.string().min(8).max(180),
+    body: z.string().max(20_000).optional(),
+    draft: z.boolean().default(true)
+  }, async (input) => safeGithubWriteTool(() => githubOpenPrTool(input)));
 }
