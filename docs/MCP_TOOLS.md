@@ -41,8 +41,8 @@ Ces outils ne sont enregistrés que lorsque `ENABLE_WRITE_TOOLS=true`. Même dan
 | Outil | Portée | Risque | Garde-fou |
 |---|---:|---:|---|
 | `github_create_branch` | GitHub/MCP | moyen contrôlé | Crée uniquement des branches `mcp/*`. |
-| `github_commit_files_on_branch` | GitHub/MCP | moyen contrôlé | Commit uniquement sur branche `mcp/*`, bloque `.env`, clés privées et chemins dangereux. |
-| `github_open_pr` | GitHub/MCP | moyen contrôlé | Ouvre une PR depuis une branche `mcp/*`, par défaut en draft. |
+| `github_commit_files_on_branch` | GitHub/MCP | moyen contrôlé | Commit uniquement sur branche `mcp/*`, bloque chemins dangereux, fichiers sensibles et contenus secret-like avant tout appel API. |
+| `github_open_pr` | GitHub/MCP | moyen contrôlé | Ouvre une PR depuis une branche `mcp/*`, par défaut en draft, après vérification public-safe du titre et du corps. |
 
 ## Règles de sécurité GitHub MCP
 
@@ -54,7 +54,7 @@ Ces outils ne sont enregistrés que lorsque `ENABLE_WRITE_TOOLS=true`. Même dan
 - Les métadonnées d’audit masquent les champs de type token, secret, password, private key, authorization, cookie ou `.env`.
 - Les commits contrôlés refusent les fichiers `.env`, `.pem`, `.key`, `.p12`, `.pfx`, `id_rsa`, `id_ed25519` et `authorized_keys`.
 
-## Durcissement secret-safety en cours
+## Durcissement secret-safety intégré
 
 Un module dédié `src/github/secretSafety.ts` ajoute une couche de détection public-safe pour empêcher l’envoi de signaux secrets dans les opérations GitHub MCP.
 
@@ -77,7 +77,7 @@ Fichiers sensibles supplémentaires détectés :
 - `id_dsa` ;
 - `.ssh/config`.
 
-Statut : le module et les tests existent dans la branche `mcp/github-tools-implementation`. L’intégration complète dans les fonctions d’écriture GitHub reste à finaliser avant merge.
+Statut : le module est intégré aux fonctions d’écriture GitHub contrôlées. `github_commit_files_on_branch` bloque désormais les fichiers sensibles et les contenus secret-like avant la création des blobs GitHub. `github_open_pr` bloque les titres et corps de PR contenant des signaux de secrets. `redactGitHubToolMetadata` utilise également la détection partagée pour masquer les signaux sensibles dans les métadonnées d’audit.
 
 ## Outils non actifs au départ
 
