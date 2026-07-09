@@ -1,0 +1,1752 @@
+added in remote
+  their  100644 b0c09c6903e88ca5242c8899c0851e49a80d774f docs/CODEX_PROMPT_MCP_ONBOARDING_ENGINE.md
+@@ -0,0 +1,127 @@
++# Prompt Codex — MCP GitHub Governance & Onboarding Engine
++
++Tu es Codex, agent technique principal du projet `chainsolutions-wealthtech`.
++
++Interviens sur le repo MCP/GitHub existant pour créer le module `MCP GitHub Governance & Onboarding Engine`.
++
++## Objectif
++
++Transformer le MCP en superviseur central GitHub + serveurs + agents IA.
++
++Le MCP doit :
++
++- identifier les acteurs connectés ;
++- vérifier les tokens MCP et GitHub sans jamais stocker de token brut ;
++- contrôler les droits ;
++- auditer chaque connexion ;
++- lister les repos visibles ;
++- détecter les fichiers MCP manquants ;
++- générer une documentation projet ;
++- créer les profils d'agents internes ;
++- lier les repos aux dossiers serveur ;
++- empêcher toute écriture directe sur `main`.
++
++## Inspection obligatoire avant modification
++
++Avant toute modification, inspecte entièrement le repo :
++
++- arborescence ;
++- routes existantes ;
++- modules GitHub ;
++- registre MCP/Git ;
++- fichiers Markdown ;
++- scripts de test ;
++- configuration ;
++- `package.json` ;
++- état actuel de `/login`, `/dashboard`, `/git`, `/git/status`, `/git/connect`, `/github`, `/github/status`, `/github/:account`, `/github/connect`.
++
++## Modules à créer ou compléter
++
++```text
++src/onboarding/identity.ts
++src/onboarding/rights.ts
++src/onboarding/questions.ts
++src/onboarding/repoFootprint.ts
++src/onboarding/agents.ts
++src/onboarding/serverMapping.ts
++src/onboarding/audit.ts
++src/onboarding/types.ts
++src/onboarding/index.ts
++```
++
++## Routes à ajouter ou compléter
++
++```text
++GET  /git/onboarding
++POST /git/onboarding/start
++POST /git/onboarding/answer
++GET  /git/accounts
++GET  /git/accounts/:account
++GET  /git/repos
++GET  /git/repos/:owner/:repo
++POST /git/repos/:owner/:repo/bootstrap
++GET  /git/agents
++POST /git/agents/create
++GET  /git/audit
++```
++
++## Fichiers à vérifier dans chaque repo
++
++```text
++.mcp/manifest.json
++.mcp/permissions.json
++.mcp/agents.json
++.mcp/server-map.json
++.mcp/onboarding.json
++MCP_PROJECT.md
++MCP_AGENT_RULES.md
++MCP_REPO_INVENTORY.md
++MCP_SERVER_MAPPING.md
++README.md
++SUIVI.md ou TASKS.md
++DEPLOYMENT.md
++SECURITY.md
++```
++
++## Règles impératives
++
++- Ne jamais stocker de token brut.
++- Ne jamais écrire directement sur `main`.
++- Ne jamais créer de token GitHub depuis un mot de passe.
++- Utiliser uniquement un token GitHub fourni ou une future GitHub App/OAuth.
++- Réserver le rôle SuperAdmin au token MCP maître.
++- Toute écriture doit passer par une branche MCP.
++- Toute action sensible doit être auditée.
++- Aucune régression des routes existantes.
++- Aucune suppression destructive.
++- Code typé, maintenable, testable et aligné avec l'architecture existante.
++
++## Première question obligatoire du portail
++
++Après connexion MCP, demander :
++
++```text
++Qui êtes-vous ?
++A. ChatGPT
++B. ConfigCloud
++C. Autre agent / service
++```
++
++Si ChatGPT : rôle de supervision, analyse, plan et documentation proposée.
++
++Si ConfigCloud : rôle de connexion de répertoire, détection remote GitHub, mapping repo ↔ serveur, contrôle `.mcp` et bootstrap.
++
++## Livrable attendu
++
++Une V1 propre, sécurisée et non destructive : documentation, typage, audit, détection des droits, création d'agents, inventaire repos, génération contrôlée des fichiers `.mcp`, branche MCP uniquement, puis rapport final.
++
++## Tests
++
++Lis d'abord les commandes disponibles dans `package.json`, puis exécute les commandes adaptées, typiquement :
++
++```bash
++npm run typecheck
++npm run build
++```
++
++N'invente pas de commande qui n'existe pas.
+added in remote
+  their  100644 a5e06ea24fabdb4e959cae3fd161555468bd0c83 docs/MCP_AGENT_ROLES.md
+@@ -0,0 +1,114 @@
++# MCP Agent Roles
++
++## Objectif
++
++Les agents MCP permettent d'identifier qui agit dans le portail ou via API : humain, ChatGPT, ConfigCloud, Claude, Codex ou service automatique. Chaque agent dispose de droits séparés et d'une stratégie d'approbation.
++
++## Agents par défaut
++
++### SuperAdmin MCP
++
++- Rôle : gouvernance globale.
++- Peut créer des agents.
++- Peut attribuer des rôles.
++- Peut valider les actions sensibles.
++- Requiert le token MCP maître.
++- Ne doit jamais être attribué automatiquement via un token GitHub.
++
++### Admin humain
++
++- Rôle : configuration et validation.
++- Peut lier repos ↔ serveurs.
++- Peut valider les PR d'onboarding.
++- Peut déclencher des déploiements si autorisé.
++
++### ChatGPT
++
++- Rôle : architecte superviseur.
++- Peut lire, analyser, documenter, proposer un plan.
++- Peut préparer des contenus de documentation.
++- Ne peut pas déployer.
++- Ne doit pas écrire sans validation humaine.
++
++### ConfigCloud
++
++- Rôle : connexion de répertoire/projet.
++- Peut identifier un dossier local ou serveur.
++- Peut détecter le remote Git.
++- Peut proposer le mapping repo ↔ serveur.
++- Peut déclencher l'inventaire du repository.
++- Écriture uniquement sur branche MCP si validée.
++
++### Claude
++
++- Rôle : rédaction longue, documentation projet, synthèse.
++- Peut proposer les fichiers Markdown MCP.
++- Peut préparer des corrections.
++- Écriture uniquement sur branche MCP avec validation.
++
++### Codex
++
++- Rôle : agent technique code/test.
++- Peut modifier du code sur branche MCP.
++- Peut créer des tests.
++- Peut corriger les erreurs de build.
++- Peut ouvrir une PR.
++- Ne déploie pas sans validation explicite.
++
++### Agent serveur
++
++- Rôle : inventaire et synchronisation serveur.
++- Peut lire les chemins serveur autorisés.
++- Peut produire des mappings.
++- Ne peut pas pousser en production sans validation.
++
++### Agent lecture seule
++
++- Rôle : audit documentaire.
++- Peut lire les repos et la documentation.
++- Ne peut pas écrire.
++
++### Agent déploiement
++
++- Rôle : préparation ou exécution de déploiement.
++- Préparation autorisée sur environnement contrôlé.
++- Exécution uniquement avec droit explicite et audit.
++
++### Agent audit
++
++- Rôle : conformité, logs, inventaire.
++- Lecture prioritaire.
++- Écriture limitée aux rapports d'audit si autorisée.
++
++## Structure d'un agent
++
++```json
++{
++  "agentId": "mcp_agent_chatgpt",
++  "agentName": "ChatGPT",
++  "agentType": "ai_agent",
++  "role": "architect_supervisor",
++  "mcpRights": ["mcp.read", "mcp.audit", "mcp.configure"],
++  "githubRightsAllowed": ["read", "branch_write_with_approval"],
++  "allowedRepos": [],
++  "allowedServers": [],
++  "allowedActions": ["read", "plan", "document", "propose"],
++  "requiresHumanApproval": true,
++  "canReadRepos": true,
++  "canWriteRepos": false,
++  "canCreatePlans": true,
++  "canCreateBranches": false,
++  "canOpenPullRequests": false,
++  "canDeploy": false,
++  "createdAt": "2026-07-08T00:00:00.000Z",
++  "expiresAt": null,
++  "history": []
++}
++```
++
++## Règle d'attribution
++
++- Un agent inconnu commence en lecture minimale.
++- Un agent IA doit être enregistré avant d'écrire.
++- Un agent ConfigCloud doit être associé à un répertoire ou repository.
++- Un agent déploiement ne peut être activé qu'après validation SuperAdmin.
+added in remote
+  their  100644 8070fa97faf377fd4a99ec6e55f4385fbc73d357 docs/MCP_AUDIT_LOGS.md
+@@ -0,0 +1,82 @@
++# MCP Audit Logs
++
++## Objectif
++
++Les journaux d'audit MCP doivent permettre de comprendre qui s'est connecté, quel compte GitHub a été utilisé, quels droits ont été détectés, quelles actions ont été proposées, exécutées ou refusées, et pourquoi.
++
++## Événements à tracer
++
++- connexion MCP ;
++- déconnexion MCP ;
++- identification acteur ;
++- création agent ;
++- modification rôle agent ;
++- connexion GitHub ;
++- remplacement token GitHub ;
++- vérification droits ;
++- inventaire repositories ;
++- analyse repo footprint ;
++- création mapping serveur ;
++- démarrage onboarding ;
++- réponse questionnaire ;
++- génération fichiers `.mcp` ;
++- création branche ;
++- préparation pull request ;
++- refus d'action ;
++- erreur technique ;
++- action de déploiement préparée ou exécutée.
++
++## Structure d'un événement
++
++```json
++{
++  "id": "audit_20260708_000001",
++  "at": "2026-07-08T00:00:00.000Z",
++  "actorId": "mcp_agent_chatgpt",
++  "actorName": "ChatGPT",
++  "actorType": "ai_agent",
++  "mcpTokenId": "hash_non_reversible",
++  "githubLogin": "Patricked-code",
++  "githubOrg": "chainsolutions-wealthtech",
++  "repo": "Patricked-code/MCP",
++  "action": "github.rights.checked",
++  "result": "success",
++  "rights": {
++    "read": true,
++    "write": true,
++    "admin": false,
++    "orgAdmin": false
++  },
++  "warnings": [],
++  "errors": [],
++  "metadata": {}
++}
++```
++
++## Règles de sécurité
++
++- Ne jamais stocker le token brut.
++- Ne jamais stocker de mot de passe.
++- Ne jamais stocker de clé privée.
++- Hasher les identifiants de tokens.
++- Limiter les métadonnées à ce qui est utile pour l'audit.
++- Les logs doivent être lisibles, structurés et exportables.
++
++## Rétention
++
++La V1 peut stocker l'audit dans le registre JSON local. Le fichier doit être limité par rotation logique, par exemple les 500 ou 1000 derniers événements. Une future version pourra migrer vers SQLite ou PostgreSQL.
++
++## Interface
++
++La route `GET /git/audit` doit afficher :
++
++- les événements récents ;
++- des filtres par acteur ;
++- des filtres par compte GitHub ;
++- des filtres par repo ;
++- des filtres par type d'action ;
++- des filtres par statut.
++
++## Comportement d'erreur
++
++Un échec d'audit ne doit jamais exposer un secret. Une action sensible ne doit pas continuer si l'audit obligatoire ne peut pas être écrit.
+added in remote
+  their  100644 b05b0422beb1ede2a4512337eb78536ef47bc9c5 docs/MCP_ONBOARDING_ENGINE.md
+@@ -0,0 +1,125 @@
++# MCP Onboarding Engine
++
++## Objectif
++
++Le **MCP Onboarding Engine** transforme le MCP en superviseur central entre GitHub, les serveurs S1/S2, les dossiers projet et les agents IA. Il ne se limite pas à vérifier qu'un token GitHub est valide : il doit identifier qui se connecte, vérifier les droits, tracer la connexion, documenter les repositories, lier les repositories aux dossiers serveur, créer les profils d'agents et proposer les prochaines actions.
++
++## Entrées principales
++
++- Token MCP validé via `/login`.
++- Identité déclarée au premier accès : `ChatGPT`, `ConfigCloud`, `Claude`, `Codex`, humain/admin, service automatique ou autre.
++- Token GitHub fourni explicitement par l'utilisateur ou par une future GitHub App/OAuth.
++- Dossier/repository connecté depuis ConfigCloud ou depuis le portail MCP.
++
++## Règle de première connexion
++
++Après validation du token MCP, le MCP doit demander :
++
++```text
++Qui êtes-vous ?
++A. ChatGPT
++B. ConfigCloud
++C. Autre agent / service
++```
++
++Le choix détermine le workflow :
++
++- **ChatGPT** : supervision, architecture, analyse, planification, documentation proposée, aucune écriture directe sans validation.
++- **ConfigCloud** : connexion d'un répertoire, détection du repository Git, mapping repo ↔ serveur, vérification des fichiers `.mcp`, proposition de bootstrap.
++- **Autre agent / service** : identification, droits minimaux par défaut, audit obligatoire, questions complémentaires.
++
++## Workflow global
++
++1. Vérifier le token MCP.
++2. Créer une session web privée signée.
++3. Identifier l'acteur connecté.
++4. Vérifier si l'acteur est déjà connu du registre MCP.
++5. Vérifier la présence d'un token GitHub.
++6. Valider le token GitHub sans l'écrire dans Git ni dans les logs.
++7. Détecter le compte GitHub, les organisations et les repositories visibles.
++8. Tester les droits lecture/écriture/admin par repository.
++9. Vérifier si chaque repository contient les fichiers de gouvernance MCP.
++10. Vérifier si chaque repository est lié à un dossier serveur.
++11. Créer ou mettre à jour le registre MCP local.
++12. Poser uniquement les questions manquantes.
++13. Générer les fichiers `.mcp` et Markdown sur une branche MCP dédiée si l'écriture est autorisée.
++14. Préparer ou ouvrir une pull request.
++15. Ne jamais écrire directement sur `main` sans validation.
++
++## Routes à créer ou compléter
++
++```text
++GET  /git/onboarding
++POST /git/onboarding/start
++POST /git/onboarding/answer
++GET  /git/accounts
++GET  /git/accounts/:account
++GET  /git/repos
++GET  /git/repos/:owner/:repo
++POST /git/repos/:owner/:repo/bootstrap
++GET  /git/agents
++POST /git/agents/create
++GET  /git/audit
++```
++
++## Modules à créer
++
++```text
++src/onboarding/types.ts
++src/onboarding/identity.ts
++src/onboarding/rights.ts
++src/onboarding/questions.ts
++src/onboarding/repoFootprint.ts
++src/onboarding/agents.ts
++src/onboarding/serverMapping.ts
++src/onboarding/audit.ts
++src/onboarding/index.ts
++```
++
++## Questionnaire minimal
++
++Chaque question doit avoir trois choix au maximum.
++
++1. Qui se connecte ?
++   - A. Humain / propriétaire
++   - B. Agent IA : ChatGPT, Claude, Codex
++   - C. Service automatique MCP
++
++2. Quel rôle donner ?
++   - A. Lecture seule
++   - B. Gestion projet avec écriture contrôlée
++   - C. SuperAdmin MCP
++
++3. Que faire avec ce compte GitHub ?
++   - A. Enregistrer seulement
++   - B. Lier aux repos visibles
++   - C. Lier repos + serveurs + agents
++
++4. Que faire avec les repos visibles ?
++   - A. Inventaire seulement
++   - B. Vérifier et documenter
++   - C. Vérifier, documenter et créer les mappings serveur
++
++5. Si le repo est incomplet ?
++   - A. Ne rien faire
++   - B. Créer une branche de proposition
++   - C. Corriger directement
++
++6. Si un dossier serveur n'a pas de repo lié ?
++   - A. Ignorer
++   - B. Proposer un repo existant
++   - C. Créer un nouveau repo GitHub
++
++7. Qui peut écrire ?
++   - A. Personne sans validation humaine
++   - B. Agents autorisés sur branche MCP uniquement
++   - C. Agents autorisés sur branche officielle
++
++8. Quel agent doit documenter le projet ?
++   - A. ChatGPT
++   - B. Claude
++   - C. Codex / agent technique
++
++## État attendu d'une V1
++
++La V1 doit être non destructive : elle doit lire, auditer, proposer, générer sur branche dédiée et demander validation humaine avant toute action sensible.
+added in remote
+  their  100644 961bcc8f9d844826747213451d9b3d2c4e3971d3 docs/MCP_REPO_FOOTPRINT.md
+@@ -0,0 +1,126 @@
++# MCP Repo Footprint
++
++## Objectif
++
++Le **Repo Footprint** définit les fichiers que le MCP doit vérifier et éventuellement générer dans chaque repository connecté. Ces fichiers permettent de savoir si un repo est connu, documenté, gouverné et lié à un serveur.
++
++## Fichiers JSON MCP obligatoires
++
++```text
++.mcp/manifest.json
++.mcp/permissions.json
++.mcp/agents.json
++.mcp/server-map.json
++.mcp/onboarding.json
++```
++
++### `.mcp/manifest.json`
++
++Contient :
++
++- nom du projet ;
++- owner/repo ;
++- branche officielle ;
++- statut MCP ;
++- version du manifeste ;
++- modules activés ;
++- date de création ;
++- date de dernière vérification.
++
++### `.mcp/permissions.json`
++
++Contient :
++
++- agents autorisés ;
++- droits par agent ;
++- branches autorisées ;
++- actions interdites ;
++- actions nécessitant validation humaine.
++
++### `.mcp/agents.json`
++
++Contient :
++
++- agents liés au repo ;
++- rôles ;
++- droits ;
++- restrictions ;
++- historique minimal.
++
++### `.mcp/server-map.json`
++
++Contient :
++
++- serveur cible ;
++- chemin projet ;
++- domaine public ;
++- service Docker/PM2 éventuel ;
++- environnement ;
++- scripts de build/test/deploy ;
++- aucune donnée secrète.
++
++### `.mcp/onboarding.json`
++
++Contient :
++
++- statut de l'onboarding ;
++- questions répondues ;
++- décisions prises ;
++- acteur ;
++- prochaine étape.
++
++## Fichiers Markdown MCP obligatoires
++
++```text
++MCP_PROJECT.md
++MCP_AGENT_RULES.md
++MCP_REPO_INVENTORY.md
++MCP_SERVER_MAPPING.md
++```
++
++## Fichiers projet standards à vérifier
++
++```text
++README.md
++SUIVI.md ou TASKS.md
++DEPLOYMENT.md
++SECURITY.md
++```
++
++## États possibles
++
++- `not_configured` : aucun fichier `.mcp` détecté.
++- `partial` : une partie de la structure existe.
++- `ready` : fichiers minimum présents et cohérents.
++- `needs_review` : fichiers présents mais incohérents, anciens ou incomplets.
++
++## Rapport attendu par repo
++
++```json
++{
++  "owner": "Patricked-code",
++  "repo": "MCP",
++  "defaultBranch": "main",
++  "visibility": "public",
++  "permissions": {
++    "pull": true,
++    "push": true,
++    "admin": true
++  },
++  "presentFiles": [],
++  "missingFiles": [],
++  "mcpStatus": "partial",
++  "recommendations": [],
++  "canBootstrapOnBranch": true
++}
++```
++
++## Stratégie de génération
++
++Si des fichiers manquent :
++
++1. créer une branche MCP dédiée ;
++2. générer les fichiers manquants ;
++3. ne jamais écrire directement sur `main` ;
++4. ouvrir ou préparer une pull request ;
++5. tracer l'action dans l'audit.
+added in remote
+  their  100644 e1965881042b2f9e6f2e84f95015bb1b11c3b9c9 docs/MCP_SECURITY_MODEL.md
+@@ -0,0 +1,115 @@
++# MCP Security Model
++
++## Principes non négociables
++
++1. Le token MCP maître porte le rôle SuperAdmin MCP.
++2. Un token GitHub ne devient jamais automatiquement SuperAdmin MCP.
++3. Le MCP ne demande pas de mot de passe GitHub.
++4. Le MCP accepte uniquement un token GitHub explicitement fourni ou une future GitHub App/OAuth.
++5. Aucun token brut ne doit être stocké dans Git, les logs, l'audit ou la documentation.
++6. Toute écriture Git doit passer par une branche MCP dédiée.
++7. `main` reste protégé par défaut.
++8. Toute action sensible est auditée.
++9. Les actions destructives sont interdites en V1.
++10. Le déploiement serveur exige une validation explicite.
++
++## Séparation des secrets
++
++- **Token MCP** : authentifie l'accès au portail MCP et aux API MCP.
++- **Token GitHub** : donne des droits GitHub au MCP pour lire, auditer, créer une branche ou proposer une pull request.
++- **Tokens internes d'agents** : identifient ChatGPT, Claude, Codex, ConfigCloud, agent serveur, agent audit, etc.
++
++Le registre MCP peut stocker :
++
++```json
++{
++  "tokenId": "hash_non_reversible",
++  "tokenFile": "/app/secrets/github_token",
++  "lastCheckedAt": "2026-07-08T00:00:00.000Z",
++  "expiresAt": null
++}
++```
++
++Il ne doit jamais stocker la valeur brute du token.
++
++## Modèle de droits
++
++Droits MCP :
++
++- `mcp.read`
++- `mcp.audit`
++- `mcp.configure`
++- `mcp.agent.create`
++- `mcp.repo.bootstrap`
++- `mcp.server.map`
++- `mcp.deploy.prepare`
++- `mcp.deploy.execute`
++- `mcp.superadmin`
++
++Droits GitHub détectés :
++
++- lecture compte ;
++- lecture organisations ;
++- lecture repositories ;
++- lecture branches ;
++- lecture fichiers ;
++- création branche ;
++- écriture branche MCP ;
++- ouverture pull request ;
++- lecture Actions ;
++- métadonnées secrets si autorisé ;
++- administration repo ;
++- administration organisation.
++
++## Branches autorisées
++
++Par défaut, les écritures sont limitées aux branches :
++
++```text
++mcp/onboarding-setup
++mcp/setup-<repo>
++mcp/docs-<repo>
++mcp/audit-<repo>
++```
++
++Toute écriture directe sur `main`, `master`, `production`, `prod` ou `release` doit être bloquée sauf validation SuperAdmin explicite.
++
++## Audit obligatoire
++
++Chaque événement doit être tracé :
++
++- connexion MCP ;
++- identification acteur ;
++- connexion GitHub ;
++- vérification de droits ;
++- liste de repos ;
++- onboarding ;
++- création agent ;
++- génération fichier ;
++- tentative d'écriture ;
++- création branche ;
++- création pull request ;
++- erreur ou refus.
++
++## Comportement sans session privée
++
++Sans session privée MCP valide :
++
++- exécution : non ;
++- écriture : non ;
++- déploiement : non ;
++- création agent : non ;
++- affichage public : minimal ;
++- redirection vers `/login`.
++
++## Comportement avec session privée
++
++Avec session privée MCP valide :
++
++- lire le registre ;
++- lister les droits ;
++- afficher les repos ;
++- connecter un token GitHub ;
++- créer un agent interne ;
++- préparer un onboarding ;
++- écrire seulement sur branche MCP si les droits sont confirmés.
+added in remote
+  their  100644 48ce707719a16b46c0352bf7d7c90c5842a4811c docs/MCP_SERVER_MAPPING.md
+@@ -0,0 +1,72 @@
++# MCP Server Mapping
++
++## Objectif
++
++Le mapping serveur relie un repository GitHub à un dossier déployé sur S1, S2 ou un autre serveur connu du MCP. Il permet à chaque agent de comprendre où se trouve le projet, comment il est exécuté et quelles actions sont autorisées.
++
++## Champs minimum
++
++```json
++{
++  "projectKey": "brvmchainsolution",
++  "githubOwner": "Patricked-code",
++  "githubRepo": "MCP",
++  "officialBranch": "main",
++  "serverId": "S1",
++  "serverName": "crazy-mendel",
++  "serverPath": "/opt/apps/wealthtech-mcp-ssh-bridge",
++  "environment": "production",
++  "publicDomain": "mcp.wealthtechinnovations.com",
++  "runtime": "node-docker",
++  "serviceName": "wealthtech_mcp_ssh_bridge",
++  "buildCommand": "npm run build",
++  "testCommand": "npm run typecheck",
++  "deployCommand": "docker build ... && docker run ...",
++  "allowedAgents": ["SuperAdmin MCP", "Codex", "Agent serveur"],
++  "requiresHumanApprovalForDeploy": true,
++  "lastCheckedAt": "2026-07-08T00:00:00.000Z",
++  "notes": []
++}
++```
++
++## Règles
++
++- Aucun secret dans `.mcp/server-map.json`.
++- Aucun mot de passe, token, clé privée ou variable sensible.
++- Le chemin serveur doit être explicite.
++- Le type de runtime doit être identifié : Node, Docker, PM2, static, API, database, autre.
++- Le mapping doit indiquer si le déploiement est seulement préparé ou exécuté.
++- Le déploiement exige une validation humaine sauf rôle explicitement autorisé.
++
++## Détection automatique
++
++Quand ConfigCloud connecte un répertoire, le MCP doit :
++
++1. détecter s'il s'agit d'un repo Git ;
++2. lire le remote GitHub ;
++3. identifier owner/repo ;
++4. identifier la branche active ;
++5. identifier le chemin local/serveur ;
++6. vérifier si le mapping existe déjà ;
++7. proposer de créer ou mettre à jour `.mcp/server-map.json` ;
++8. auditer la décision.
++
++## États du mapping
++
++- `unknown` : aucun mapping.
++- `candidate` : mapping proposé, non validé.
++- `linked` : repo et dossier serveur liés.
++- `stale` : mapping ancien ou incohérent.
++- `blocked` : mapping interdit ou sans droits suffisants.
++
++## Sortie attendue
++
++Le MCP doit afficher pour chaque repo :
++
++- serveur lié ;
++- chemin serveur ;
++- branche officielle ;
++- service ;
++- dernier check ;
++- agents autorisés ;
++- prochaines actions.
+added in remote
+  their  100644 5a0c86adb7e13087cec5c6ceb318347cf87b9c65 src/onboarding/agents.ts
+@@ -0,0 +1,112 @@
++import type { McpAgentProfile, OnboardingActorType, OnboardingRole } from './types.js';
++
++function nowIso(): string {
++  return new Date().toISOString();
++}
++
++function agent(
++  agentId: string,
++  agentName: string,
++  agentType: OnboardingActorType,
++  role: OnboardingRole,
++  overrides: Partial<McpAgentProfile>
++): McpAgentProfile {
++  return {
++    agentId,
++    agentName,
++    agentType,
++    role,
++    mcpRights: [],
++    githubRightsAllowed: [],
++    allowedRepos: [],
++    allowedServers: [],
++    allowedActions: [],
++    requiresHumanApproval: true,
++    canReadRepos: true,
++    canWriteRepos: false,
++    canCreatePlans: true,
++    canCreateBranches: false,
++    canOpenPullRequests: false,
++    canDeploy: false,
++    createdAt: nowIso(),
++    expiresAt: null,
++    history: [],
++    ...overrides
++  };
++}
++
++export function getDefaultAgentProfiles(): McpAgentProfile[] {
++  return [
++    agent('mcp_superadmin', 'SuperAdmin MCP', 'human_owner', 'superadmin', {
++      mcpRights: ['mcp.read', 'mcp.audit', 'mcp.configure', 'mcp.agent.create', 'mcp.repo.bootstrap', 'mcp.server.map', 'mcp.superadmin'],
++      githubRightsAllowed: ['read', 'write_branch', 'open_pull_request', 'admin_after_validation'],
++      allowedActions: ['read', 'audit', 'configure', 'create_agent', 'bootstrap_repo', 'map_server'],
++      canWriteRepos: true,
++      canCreateBranches: true,
++      canOpenPullRequests: true
++    }),
++    agent('mcp_admin_human', 'Admin humain', 'human_admin', 'project_manager_controlled_write', {
++      mcpRights: ['mcp.read', 'mcp.audit', 'mcp.configure', 'mcp.repo.bootstrap', 'mcp.server.map'],
++      githubRightsAllowed: ['read', 'write_branch', 'open_pull_request'],
++      allowedActions: ['read', 'audit', 'configure', 'bootstrap_repo', 'map_server'],
++      canWriteRepos: true,
++      canCreateBranches: true,
++      canOpenPullRequests: true
++    }),
++    agent('mcp_agent_chatgpt', 'ChatGPT', 'chatgpt', 'architect_supervisor', {
++      mcpRights: ['mcp.read', 'mcp.audit', 'mcp.configure'],
++      githubRightsAllowed: ['read', 'branch_write_with_approval'],
++      allowedActions: ['read', 'plan', 'document', 'propose'],
++      canWriteRepos: false,
++      canCreateBranches: false,
++      canOpenPullRequests: false,
++      canDeploy: false
++    }),
++    agent('mcp_agent_configcloud', 'ConfigCloud', 'configcloud', 'repo_connector', {
++      mcpRights: ['mcp.read', 'mcp.audit', 'mcp.configure', 'mcp.server.map'],
++      githubRightsAllowed: ['read', 'branch_write_with_approval'],
++      allowedActions: ['detect_remote', 'map_repo', 'inventory', 'propose_bootstrap'],
++      canWriteRepos: false,
++      canCreateBranches: false,
++      canOpenPullRequests: false
++    }),
++    agent('mcp_agent_claude', 'Claude', 'claude', 'documentation_agent', {
++      mcpRights: ['mcp.read', 'mcp.audit', 'mcp.configure'],
++      githubRightsAllowed: ['read', 'branch_write_with_approval'],
++      allowedActions: ['read', 'document', 'summarize', 'propose'],
++      canWriteRepos: false
++    }),
++    agent('mcp_agent_codex', 'Codex', 'codex', 'technical_executor', {
++      mcpRights: ['mcp.read', 'mcp.audit', 'mcp.configure', 'mcp.repo.bootstrap'],
++      githubRightsAllowed: ['read', 'write_branch', 'open_pull_request'],
++      allowedActions: ['read', 'code', 'test', 'fix', 'open_pull_request'],
++      canWriteRepos: true,
++      canCreateBranches: true,
++      canOpenPullRequests: true
++    }),
++    agent('mcp_agent_server', 'Agent serveur', 'server_agent', 'technical_executor', {
++      mcpRights: ['mcp.read', 'mcp.audit', 'mcp.server.map'],
++      githubRightsAllowed: ['read'],
++      allowedActions: ['read_server_path', 'map_server', 'report'],
++      canCreatePlans: false
++    }),
++    agent('mcp_agent_readonly', 'Agent lecture seule', 'readonly_agent', 'readonly', {
++      mcpRights: ['mcp.read', 'mcp.audit'],
++      githubRightsAllowed: ['read'],
++      allowedActions: ['read', 'audit'],
++      canCreatePlans: false
++    }),
++    agent('mcp_agent_deploy', 'Agent déploiement', 'deployment_agent', 'technical_executor', {
++      mcpRights: ['mcp.read', 'mcp.audit', 'mcp.deploy.prepare'],
++      githubRightsAllowed: ['read'],
++      allowedActions: ['prepare_deploy'],
++      canDeploy: false
++    }),
++    agent('mcp_agent_audit', 'Agent audit', 'audit_agent', 'audit', {
++      mcpRights: ['mcp.read', 'mcp.audit'],
++      githubRightsAllowed: ['read'],
++      allowedActions: ['audit', 'report'],
++      canCreatePlans: false
++    })
++  ];
++}
+added in remote
+  their  100644 936366e1724a653df1a5c0c96b0351952e398edd src/onboarding/audit.ts
+@@ -0,0 +1,54 @@
++import type { GitRegistry, RegistryAuditEvent } from '../github/registry.js';
++import type { OnboardingAuditEvent } from './types.js';
++
++function nowIso(): string {
++  return new Date().toISOString();
++}
++
++function auditId(): string {
++  return `audit_${Date.now()}_${Math.random().toString(16).slice(2)}`;
++}
++
++export function createOnboardingAuditEvent(input: Partial<OnboardingAuditEvent> & {
++  action: string;
++  result?: OnboardingAuditEvent['result'];
++}): OnboardingAuditEvent {
++  return {
++    id: input.id ?? auditId(),
++    at: input.at ?? nowIso(),
++    actorId: input.actorId ?? 'unknown',
++    actorName: input.actorName ?? 'unknown',
++    actorType: input.actorType ?? 'unknown',
++    githubLogin: input.githubLogin ?? null,
++    githubOrg: input.githubOrg ?? null,
++    repo: input.repo ?? null,
++    action: input.action,
++    result: input.result ?? 'success',
++    warnings: input.warnings ?? [],
++    errors: input.errors ?? [],
++    metadata: input.metadata ?? {}
++  };
++}
++
++export function appendOnboardingAuditEvent(registry: GitRegistry, event: OnboardingAuditEvent): GitRegistry {
++  const registryEvent: RegistryAuditEvent = {
++    id: event.id,
++    at: event.at,
++    type: event.action,
++    actor: `${event.actorName} (${event.actorType})`,
++    message: `${event.action}: ${event.result}`,
++    metadata: {
++      githubLogin: event.githubLogin,
++      githubOrg: event.githubOrg,
++      repo: event.repo,
++      warnings: event.warnings,
++      errors: event.errors,
++      ...event.metadata
++    }
++  };
++
++  return {
++    ...registry,
++    auditEvents: [...registry.auditEvents, registryEvent].slice(-500)
++  };
++}
+added in remote
+  their  100644 eddbbc930e4d2b82f7ee63a4f81fc051929e378e src/onboarding/http.ts
+@@ -0,0 +1,230 @@
++import express from 'express';
++import { getGithubConnectionStatus } from '../github/connection.js';
++import { readGitRegistry, writeGitRegistry } from '../github/registry.js';
++import { appendOnboardingAuditEvent, createOnboardingAuditEvent } from './audit.js';
++import { getDefaultAgentProfiles } from './agents.js';
++import { identifyActor } from './identity.js';
++import { getDefaultOnboardingQuestions } from './questions.js';
++import { summarizeGithubRights } from './rights.js';
++
++type WebGuard = (req: express.Request, res: express.Response, next: express.NextFunction) => void;
++
++function escapeHtml(value: unknown): string {
++  return String(value ?? '')
++    .replaceAll('&', '&amp;')
++    .replaceAll('<', '&lt;')
++    .replaceAll('>', '&gt;')
++    .replaceAll('"', '&quot;')
++    .replaceAll("'", '&#39;');
++}
++
++function renderOnboardingPage(snapshot: unknown): string {
++  const json = JSON.stringify(snapshot, null, 2);
++  return `<!doctype html>
++<html lang="fr">
++<head>
++  <meta charset="utf-8" />
++  <meta name="viewport" content="width=device-width,initial-scale=1" />
++  <title>MCP — Onboarding</title>
++  <style>
++    body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 32px; color: #111827; line-height: 1.45; }
++    a { color: #1d4ed8; }
++    .card { border: 1px solid #d1d5db; border-radius: 14px; padding: 18px; background: #fff; margin: 16px 0; }
++    button { margin-top: 12px; padding: 10px 16px; border: 0; border-radius: 8px; background: #111827; color: white; font-weight: 800; cursor: pointer; }
++    select, input { padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; min-width: 260px; }
++    pre { background: #f3f4f6; padding: 14px; border-radius: 10px; overflow: auto; }
++  </style>
++</head>
++<body>
++  <h1>MCP — Onboarding Engine</h1>
++  <p><a href="/dashboard">Dashboard</a> · <a href="/git">Paramétrage Git</a> · <a href="/git/accounts">Comptes</a> · <a href="/git/repos">Repos</a> · <a href="/git/agents">Agents</a> · <a href="/git/audit">Audit</a></p>
++
++  <section class="card">
++    <h2>Première question obligatoire</h2>
++    <form method="post" action="/git/onboarding/start">
++      <label>Qui êtes-vous ?</label>
++      <select name="actor">
++        <option value="ChatGPT">ChatGPT</option>
++        <option value="ConfigCloud">ConfigCloud</option>
++        <option value="Autre agent / service">Autre agent / service</option>
++      </select>
++      <button type="submit">Démarrer l’onboarding</button>
++    </form>
++  </section>
++
++  <section class="card">
++    <h2>État courant</h2>
++    <pre>${escapeHtml(json)}</pre>
++  </section>
++</body>
++</html>`;
++}
++
++function wantsHtml(req: express.Request): boolean {
++  return Boolean(req.accepts(['html', 'json']) === 'html');
++}
++
++async function onboardingSnapshot(actorInput?: unknown) {
++  const status = await getGithubConnectionStatus();
++  const registry = await readGitRegistry();
++  const knownActorIds = registry.auditEvents.map((event) => event.actor);
++  const actor = identifyActor({ actor: actorInput ?? 'ChatGPT', source: 'web', knownActorIds });
++  const rights = summarizeGithubRights(status);
++  const questions = getDefaultOnboardingQuestions();
++  const agents = getDefaultAgentProfiles();
++  const nextActions = [
++    'Identifier l’acteur : ChatGPT, ConfigCloud ou autre agent/service.',
++    'Vérifier les droits GitHub disponibles.',
++    'Lister les comptes et repositories visibles.',
++    'Détecter les fichiers MCP manquants.',
++    'Proposer un bootstrap sur branche MCP uniquement.',
++    'Créer une trace d’audit sans secret.'
++  ];
++
++  return { actor, status, rights, questions, agents, nextActions };
++}
++
++export function registerOnboardingRoutes(app: express.Express, requireWebLogin: WebGuard): void {
++  app.get('/git/onboarding', requireWebLogin, async (req, res) => {
++    const snapshot = await onboardingSnapshot(req.query.actor);
++    if (wantsHtml(req)) {
++      res.type('html').send(renderOnboardingPage(snapshot));
++      return;
++    }
++    res.json(snapshot);
++  });
++
++  app.post('/git/onboarding/start', requireWebLogin, async (req, res) => {
++    const actorInput = typeof req.body.actor === 'string' ? req.body.actor : 'unknown';
++    const registry = await readGitRegistry();
++    const snapshot = await onboardingSnapshot(actorInput);
++    const nextRegistry = appendOnboardingAuditEvent(
++      registry,
++      createOnboardingAuditEvent({
++        actorId: snapshot.actor.actorId,
++        actorName: snapshot.actor.actorName,
++        actorType: snapshot.actor.actorType,
++        githubLogin: snapshot.status.login,
++        githubOrg: snapshot.status.org,
++        action: 'onboarding.started',
++        result: 'success',
++        metadata: { source: 'web', firstConnection: snapshot.actor.firstConnection }
++      })
++    );
++    await writeGitRegistry(nextRegistry);
++
++    if (wantsHtml(req)) {
++      res.redirect(`/git/onboarding?actor=${encodeURIComponent(actorInput)}`);
++      return;
++    }
++    res.json(snapshot);
++  });
++
++  app.post('/git/onboarding/answer', requireWebLogin, async (req, res) => {
++    const registry = await readGitRegistry();
++    const questionId = typeof req.body.questionId === 'string' ? req.body.questionId : 'unknown';
++    const answer = typeof req.body.answer === 'string' ? req.body.answer : 'unknown';
++    const actorInput = typeof req.body.actor === 'string' ? req.body.actor : 'unknown';
++    const snapshot = await onboardingSnapshot(actorInput);
++    const nextRegistry = appendOnboardingAuditEvent(
++      registry,
++      createOnboardingAuditEvent({
++        actorId: snapshot.actor.actorId,
++        actorName: snapshot.actor.actorName,
++        actorType: snapshot.actor.actorType,
++        githubLogin: snapshot.status.login,
++        githubOrg: snapshot.status.org,
++        action: 'onboarding.answer.recorded',
++        result: 'success',
++        metadata: { questionId, answer }
++      })
++    );
++    await writeGitRegistry(nextRegistry);
++    res.json({ ok: true, questionId, answer, nextQuestions: snapshot.questions });
++  });
++
++  app.get('/git/accounts', requireWebLogin, async (_req, res) => {
++    const registry = await readGitRegistry();
++    res.json({ accounts: registry.accounts });
++  });
++
++  app.get('/git/accounts/:account', requireWebLogin, async (req, res) => {
++    const registry = await readGitRegistry();
++    const account = String(req.params.account ?? '').toLowerCase();
++    const found = registry.accounts.filter((entry) => entry.login.toLowerCase() === account || entry.id.toLowerCase() === account);
++    res.json({ account, matches: found });
++  });
++
++  app.get('/git/repos', requireWebLogin, async (_req, res) => {
++    const registry = await readGitRegistry();
++    res.json({ repoMappings: registry.repoMappings, note: 'V1: listing GitHub live à brancher sur le client GitHub interne.' });
++  });
++
++  app.get('/git/repos/:owner/:repo', requireWebLogin, async (req, res) => {
++    const registry = await readGitRegistry();
++    const owner = String(req.params.owner ?? '');
++    const repo = String(req.params.repo ?? '');
++    const mapping = registry.repoMappings.find((entry) => entry.githubOwner === owner && entry.githubRepo === repo) ?? null;
++    res.json({ owner, repo, mapping });
++  });
++
++  app.post('/git/repos/:owner/:repo/bootstrap', requireWebLogin, async (req, res) => {
++    const owner = String(req.params.owner ?? '');
++    const repo = String(req.params.repo ?? '');
++    const registry = await readGitRegistry();
++    const snapshot = await onboardingSnapshot(req.body.actor);
++    const nextRegistry = appendOnboardingAuditEvent(
++      registry,
++      createOnboardingAuditEvent({
++        actorId: snapshot.actor.actorId,
++        actorName: snapshot.actor.actorName,
++        actorType: snapshot.actor.actorType,
++        githubLogin: snapshot.status.login,
++        githubOrg: snapshot.status.org,
++        repo: `${owner}/${repo}`,
++        action: 'repo.bootstrap.requested',
++        result: 'warning',
++        warnings: ['V1 prépare la demande ; écriture Git réelle à implémenter sur branche MCP.']
++      })
++    );
++    await writeGitRegistry(nextRegistry);
++    res.json({ ok: true, owner, repo, mode: 'proposal_only', message: 'Bootstrap enregistré en audit. Écriture Git réelle non exécutée en V1.' });
++  });
++
++  app.get('/git/agents', requireWebLogin, async (_req, res) => {
++    res.json({ agents: getDefaultAgentProfiles() });
++  });
++
++  app.post('/git/agents/create', requireWebLogin, async (req, res) => {
++    const registry = await readGitRegistry();
++    const actorInput = typeof req.body.actor === 'string' ? req.body.actor : 'unknown';
++    const snapshot = await onboardingSnapshot(actorInput);
++    const nextRegistry = appendOnboardingAuditEvent(
++      registry,
++      createOnboardingAuditEvent({
++        actorId: snapshot.actor.actorId,
++        actorName: snapshot.actor.actorName,
++        actorType: snapshot.actor.actorType,
++        githubLogin: snapshot.status.login,
++        githubOrg: snapshot.status.org,
++        action: 'agent.create.requested',
++        result: 'warning',
++        warnings: ['V1 expose les profils par défaut ; persistance des agents personnalisés à finaliser.'],
++        metadata: { requestedAgent: req.body.agentName ?? null }
++      })
++    );
++    await writeGitRegistry(nextRegistry);
++    res.json({ ok: true, message: 'Demande de création agent enregistrée en audit.', agents: snapshot.agents });
++  });
++
++  app.get('/git/audit', requireWebLogin, async (req, res) => {
++    const registry = await readGitRegistry();
++    const auditEvents = registry.auditEvents.slice(-100).reverse();
++    if (wantsHtml(req)) {
++      const rows = auditEvents.map((event) => `<li><strong>${escapeHtml(event.at)}</strong> — ${escapeHtml(event.type)} — ${escapeHtml(event.actor)} — ${escapeHtml(event.message)}</li>`).join('');
++      res.type('html').send(`<!doctype html><html lang="fr"><head><meta charset="utf-8" /><title>MCP Audit</title></head><body><h1>MCP Audit</h1><p><a href="/git/onboarding">Onboarding</a> · <a href="/git">Paramétrage Git</a></p><ul>${rows || '<li>Aucun événement.</li>'}</ul></body></html>`);
++      return;
++    }
++    res.json({ auditEvents });
++  });
++}
+added in remote
+  their  100644 5a1089b316e00491d2f27a3d7228555e7cc336e5 src/onboarding/identity.ts
+@@ -0,0 +1,103 @@
++import type { OnboardingActor, OnboardingActorType, OnboardingRole } from './types.js';
++
++function nowIso(): string {
++  return new Date().toISOString();
++}
++
++function normalizeActorType(value: unknown): OnboardingActorType {
++  const raw = String(value ?? '').trim().toLowerCase();
++  if (raw.includes('chatgpt')) return 'chatgpt';
++  if (raw.includes('configcloud') || raw.includes('config')) return 'configcloud';
++  if (raw.includes('claude')) return 'claude';
++  if (raw.includes('codex')) return 'codex';
++  if (raw.includes('audit')) return 'audit_agent';
++  if (raw.includes('deploy')) return 'deployment_agent';
++  if (raw.includes('server') || raw.includes('serveur')) return 'server_agent';
++  if (raw.includes('readonly') || raw.includes('lecture')) return 'readonly_agent';
++  if (raw.includes('admin')) return 'human_admin';
++  if (raw.includes('owner') || raw.includes('proprietaire') || raw.includes('propriétaire')) return 'human_owner';
++  if (raw.includes('service') || raw.includes('cron') || raw.includes('auto')) return 'service';
++  return 'unknown';
++}
++
++function roleForActor(actorType: OnboardingActorType): OnboardingRole {
++  switch (actorType) {
++    case 'human_owner':
++      return 'superadmin';
++    case 'human_admin':
++      return 'project_manager_controlled_write';
++    case 'chatgpt':
++      return 'architect_supervisor';
++    case 'configcloud':
++      return 'repo_connector';
++    case 'claude':
++      return 'documentation_agent';
++    case 'codex':
++      return 'technical_executor';
++    case 'audit_agent':
++      return 'audit';
++    case 'readonly_agent':
++      return 'readonly';
++    case 'deployment_agent':
++    case 'server_agent':
++      return 'technical_executor';
++    default:
++      return 'readonly';
++  }
++}
++
++function displayName(actorType: OnboardingActorType): string {
++  switch (actorType) {
++    case 'chatgpt':
++      return 'ChatGPT';
++    case 'configcloud':
++      return 'ConfigCloud';
++    case 'claude':
++      return 'Claude';
++    case 'codex':
++      return 'Codex';
++    case 'human_owner':
++      return 'Propriétaire humain';
++    case 'human_admin':
++      return 'Admin humain';
++    case 'server_agent':
++      return 'Agent serveur';
++    case 'readonly_agent':
++      return 'Agent lecture seule';
++    case 'deployment_agent':
++      return 'Agent déploiement';
++    case 'audit_agent':
++      return 'Agent audit';
++    case 'service':
++      return 'Service automatique';
++    default:
++      return 'Acteur inconnu';
++  }
++}
++
++export function identifyActor(input: {
++  actor?: unknown;
++  source?: OnboardingActor['source'];
++  knownActorIds?: string[];
++  mcpTokenId?: string | null;
++}): OnboardingActor {
++  const actorType = normalizeActorType(input.actor);
++  const actorName = displayName(actorType);
++  const actorId = `mcp_actor_${actorType}`;
++  const known = Boolean(input.knownActorIds?.includes(actorId));
++  const at = nowIso();
++
++  return {
++    actorId,
++    actorName,
++    actorType,
++    role: roleForActor(actorType),
++    source: input.source ?? 'unknown',
++    mcpTokenId: input.mcpTokenId ?? null,
++    isKnown: known,
++    firstConnection: !known,
++    createdAt: at,
++    lastSeenAt: at,
++    requiresHumanApproval: actorType !== 'human_owner'
++  };
++}
+added in remote
+  their  100644 b55b33602310a84a49f2956eae9ec3f5de6ca9e6 src/onboarding/index.ts
+@@ -0,0 +1,8 @@
++export * from './types.js';
++export * from './questions.js';
++export * from './agents.js';
++export * from './identity.js';
++export * from './rights.js';
++export * from './repoFootprint.js';
++export * from './serverMapping.js';
++export * from './audit.js';
+added in remote
+  their  100644 b8b9fc892d3219dc6c9e11e9fa90e2afe0b10947 src/onboarding/questions.ts
+@@ -0,0 +1,96 @@
++import type { OnboardingQuestion } from './types.js';
++
++export const onboardingQuestions: OnboardingQuestion[] = [
++  {
++    id: 'actor.identity',
++    title: 'Qui se connecte ?',
++    body: 'Le MCP doit identifier le type d’acteur avant de proposer des droits ou des actions.',
++    defaultChoice: 'A',
++    choices: [
++      { key: 'A', label: 'Humain / propriétaire', recommended: true },
++      { key: 'B', label: 'Agent IA : ChatGPT, Claude, Codex' },
++      { key: 'C', label: 'Service automatique MCP / ConfigCloud' }
++    ]
++  },
++  {
++    id: 'actor.role',
++    title: 'Quel rôle donner ?',
++    body: 'Le rôle détermine les actions MCP autorisées.',
++    defaultChoice: 'B',
++    choices: [
++      { key: 'A', label: 'Lecture seule' },
++      { key: 'B', label: 'Gestion projet avec écriture contrôlée', recommended: true },
++      { key: 'C', label: 'SuperAdmin MCP', blockedWithoutSuperAdmin: true }
++    ]
++  },
++  {
++    id: 'github.account.action',
++    title: 'Que faire avec ce compte GitHub ?',
++    body: 'Le MCP peut seulement enregistrer le compte ou aller jusqu’au mapping complet.',
++    defaultChoice: 'C',
++    choices: [
++      { key: 'A', label: 'Enregistrer seulement' },
++      { key: 'B', label: 'Lier aux repos visibles' },
++      { key: 'C', label: 'Lier repos + serveurs + agents', recommended: true }
++    ]
++  },
++  {
++    id: 'repos.action',
++    title: 'Que faire avec les repos visibles ?',
++    body: 'Le MCP doit choisir entre inventaire, documentation et mapping serveur.',
++    defaultChoice: 'C',
++    choices: [
++      { key: 'A', label: 'Inventaire seulement' },
++      { key: 'B', label: 'Vérifier et documenter' },
++      { key: 'C', label: 'Vérifier, documenter et créer les mappings serveur', recommended: true }
++    ]
++  },
++  {
++    id: 'repo.incomplete',
++    title: 'Si le repo est incomplet ?',
++    body: 'Un repo incomplet ne doit jamais être modifié directement sur la branche officielle.',
++    defaultChoice: 'B',
++    choices: [
++      { key: 'A', label: 'Ne rien faire' },
++      { key: 'B', label: 'Créer une branche de proposition', recommended: true },
++      { key: 'C', label: 'Corriger directement', blockedWithoutSuperAdmin: true }
++    ]
++  },
++  {
++    id: 'server.unlinked',
++    title: 'Si un dossier serveur n’a pas de repo lié ?',
++    body: 'Le MCP doit proposer un lien plutôt que créer automatiquement sans validation.',
++    defaultChoice: 'B',
++    choices: [
++      { key: 'A', label: 'Ignorer' },
++      { key: 'B', label: 'Proposer un repo existant', recommended: true },
++      { key: 'C', label: 'Créer un nouveau repo GitHub' }
++    ]
++  },
++  {
++    id: 'write.policy',
++    title: 'Qui peut écrire ?',
++    body: 'La politique par défaut limite les écritures aux branches MCP.',
++    defaultChoice: 'B',
++    choices: [
++      { key: 'A', label: 'Personne sans validation humaine' },
++      { key: 'B', label: 'Agents autorisés sur branche MCP uniquement', recommended: true },
++      { key: 'C', label: 'Agents autorisés sur branche officielle', blockedWithoutSuperAdmin: true }
++    ]
++  },
++  {
++    id: 'documentation.agent',
++    title: 'Quel agent doit documenter le projet ?',
++    body: 'ChatGPT supervise, Claude rédige long, Codex modifie techniquement.',
++    defaultChoice: 'A',
++    choices: [
++      { key: 'A', label: 'ChatGPT', recommended: true },
++      { key: 'B', label: 'Claude' },
++      { key: 'C', label: 'Codex / agent technique' }
++    ]
++  }
++];
++
++export function getDefaultOnboardingQuestions(): OnboardingQuestion[] {
++  return onboardingQuestions;
++}
+added in remote
+  their  100644 fc0ead37e5e4fd4c4db349ac7fc4e56b2fcea4f7 src/onboarding/repoFootprint.ts
+@@ -0,0 +1,80 @@
++import type { RepoFootprintReport, RepoFootprintStatus } from './types.js';
++
++export const requiredMcpJsonFiles = [
++  '.mcp/manifest.json',
++  '.mcp/permissions.json',
++  '.mcp/agents.json',
++  '.mcp/server-map.json',
++  '.mcp/onboarding.json'
++] as const;
++
++export const requiredMcpMarkdownFiles = [
++  'MCP_PROJECT.md',
++  'MCP_AGENT_RULES.md',
++  'MCP_REPO_INVENTORY.md',
++  'MCP_SERVER_MAPPING.md'
++] as const;
++
++export const standardProjectFiles = ['README.md', 'DEPLOYMENT.md', 'SECURITY.md'] as const;
++
++export const alternativeTrackingFiles = ['SUIVI.md', 'TASKS.md'] as const;
++
++export const requiredRepoFootprintFiles = [
++  ...requiredMcpJsonFiles,
++  ...requiredMcpMarkdownFiles,
++  ...standardProjectFiles
++] as const;
++
++function statusFromCounts(present: number, missing: number): RepoFootprintStatus {
++  if (present === 0) return 'not_configured';
++  if (missing === 0) return 'ready';
++  return present >= missing ? 'needs_review' : 'partial';
++}
++
++export function buildRepoFootprintReport(input: {
++  owner: string;
++  repo: string;
++  defaultBranch?: string;
++  visibility?: 'public' | 'private' | 'internal' | 'unknown';
++  permissions?: { pull?: boolean; push?: boolean; admin?: boolean };
++  presentFiles?: string[];
++}): RepoFootprintReport {
++  const presentFiles = new Set(input.presentFiles ?? []);
++  const trackingPresent = alternativeTrackingFiles.some((file) => presentFiles.has(file));
++  const expectedFiles = [...requiredRepoFootprintFiles, ...(trackingPresent ? [] : ['SUIVI.md or TASKS.md'])];
++  const missingFiles = expectedFiles.filter((file) => {
++    if (file === 'SUIVI.md or TASKS.md') return !trackingPresent;
++    return !presentFiles.has(file);
++  });
++  const presentCount = expectedFiles.length - missingFiles.length;
++  const mcpStatus = statusFromCounts(presentCount, missingFiles.length);
++  const canBootstrapOnBranch = Boolean(input.permissions?.push);
++  const recommendations: string[] = [];
++
++  if (missingFiles.length > 0) {
++    recommendations.push('Créer les fichiers manquants sur une branche MCP dédiée.');
++  }
++  if (!canBootstrapOnBranch) {
++    recommendations.push('Écriture non confirmée : préparer les contenus sans écrire.');
++  }
++  if (mcpStatus === 'ready') {
++    recommendations.push('Repo prêt : maintenir les fichiers MCP à jour.');
++  }
++
++  return {
++    owner: input.owner,
++    repo: input.repo,
++    defaultBranch: input.defaultBranch ?? 'main',
++    visibility: input.visibility ?? 'unknown',
++    permissions: {
++      pull: Boolean(input.permissions?.pull),
++      push: Boolean(input.permissions?.push),
++      admin: Boolean(input.permissions?.admin)
++    },
++    presentFiles: [...presentFiles].sort(),
++    missingFiles,
++    mcpStatus,
++    recommendations,
++    canBootstrapOnBranch
++  };
++}
+added in remote
+  their  100644 a09d9263bb9e219ac9aac8e29b778c06c49fc13f src/onboarding/rights.ts
+@@ -0,0 +1,49 @@
++import type { GitHubRightsSummary } from './types.js';
++
++type MinimalGithubStatus = {
++  connected?: boolean;
++  orgAccessible?: boolean;
++  canReadReposHint?: boolean;
++  canWriteReposHint?: boolean;
++  canAdminOrgHint?: boolean;
++  warnings?: string[];
++  error?: string | null;
++};
++
++export function summarizeGithubRights(status: MinimalGithubStatus): GitHubRightsSummary {
++  const warnings = [...(status.warnings ?? [])];
++  const errors: string[] = [];
++
++  if (status.error) {
++    errors.push(status.error);
++  }
++
++  const canReadAccount = Boolean(status.connected);
++  const canReadOrgs = Boolean(status.orgAccessible || status.connected);
++  const canReadRepos = Boolean(status.canReadReposHint);
++  const canWriteBranch = Boolean(status.canWriteReposHint);
++  const isOrgAdmin = Boolean(status.canAdminOrgHint);
++
++  if (canWriteBranch) {
++    warnings.push('Écriture détectée comme possible/probable : limiter aux branches MCP et exiger validation humaine.');
++  }
++
++  return {
++    canReadAccount,
++    canReadOrgs,
++    canReadRepos,
++    canReadBranches: canReadRepos,
++    canReadFiles: canReadRepos,
++    canCreateBranch: canWriteBranch,
++    canWriteBranch,
++    canOpenPullRequest: canWriteBranch,
++    canReadActions: false,
++    canReadSecretsMetadata: false,
++    isRepoAdmin: false,
++    isOrgAdmin,
++    isWriteSafe: canWriteBranch,
++    requiresHumanApproval: true,
++    warnings,
++    errors
++  };
++}
+added in remote
+  their  100644 77b9c7e15f068009470165a9c9aee0c305fd654c src/onboarding/serverMapping.ts
+@@ -0,0 +1,27 @@
++import type { ServerMappingCandidate } from './types.js';
++
++export function createServerMappingCandidate(input: Partial<ServerMappingCandidate> & {
++  githubOwner: string;
++  githubRepo: string;
++}): ServerMappingCandidate {
++  return {
++    projectKey: input.projectKey ?? input.githubRepo.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
++    githubOwner: input.githubOwner,
++    githubRepo: input.githubRepo,
++    officialBranch: input.officialBranch ?? 'main',
++    serverId: input.serverId ?? 'S1',
++    serverName: input.serverName ?? 'unknown',
++    serverPath: input.serverPath ?? '',
++    environment: input.environment ?? 'unknown',
++    publicDomain: input.publicDomain ?? null,
++    runtime: input.runtime ?? 'unknown',
++    serviceName: input.serviceName ?? null,
++    requiresHumanApprovalForDeploy: input.requiresHumanApprovalForDeploy ?? true,
++    status: input.status ?? 'candidate',
++    notes: input.notes ?? []
++  };
++}
++
++export function isServerMappingComplete(mapping: ServerMappingCandidate): boolean {
++  return Boolean(mapping.githubOwner && mapping.githubRepo && mapping.serverId && mapping.serverPath && mapping.officialBranch);
++}
+added in remote
+  their  100644 96718303633ee7ff65bf6fb9734ff97f50b197b3 src/onboarding/types.ts
+@@ -0,0 +1,153 @@
++export type OnboardingActorType =
++  | 'human_owner'
++  | 'human_admin'
++  | 'chatgpt'
++  | 'configcloud'
++  | 'claude'
++  | 'codex'
++  | 'server_agent'
++  | 'readonly_agent'
++  | 'deployment_agent'
++  | 'audit_agent'
++  | 'service'
++  | 'unknown';
++
++export type OnboardingRole =
++  | 'readonly'
++  | 'project_manager_controlled_write'
++  | 'superadmin'
++  | 'architect_supervisor'
++  | 'repo_connector'
++  | 'technical_executor'
++  | 'documentation_agent'
++  | 'audit';
++
++export type OnboardingChoice = 'A' | 'B' | 'C';
++
++export type OnboardingQuestion = {
++  id: string;
++  title: string;
++  body: string;
++  choices: Array<{
++    key: OnboardingChoice;
++    label: string;
++    recommended?: boolean;
++    blockedWithoutSuperAdmin?: boolean;
++  }>;
++  defaultChoice: OnboardingChoice;
++};
++
++export type OnboardingActor = {
++  actorId: string;
++  actorName: string;
++  actorType: OnboardingActorType;
++  role: OnboardingRole;
++  source: 'web' | 'api' | 'configcloud' | 'cli' | 'unknown';
++  mcpTokenId: string | null;
++  isKnown: boolean;
++  firstConnection: boolean;
++  createdAt: string;
++  lastSeenAt: string;
++  requiresHumanApproval: boolean;
++};
++
++export type GitHubRightsSummary = {
++  canReadAccount: boolean;
++  canReadOrgs: boolean;
++  canReadRepos: boolean;
++  canReadBranches: boolean;
++  canReadFiles: boolean;
++  canCreateBranch: boolean;
++  canWriteBranch: boolean;
++  canOpenPullRequest: boolean;
++  canReadActions: boolean;
++  canReadSecretsMetadata: boolean;
++  isRepoAdmin: boolean;
++  isOrgAdmin: boolean;
++  isWriteSafe: boolean;
++  requiresHumanApproval: boolean;
++  warnings: string[];
++  errors: string[];
++};
++
++export type McpAgentProfile = {
++  agentId: string;
++  agentName: string;
++  agentType: OnboardingActorType;
++  role: OnboardingRole;
++  mcpRights: string[];
++  githubRightsAllowed: string[];
++  allowedRepos: string[];
++  allowedServers: string[];
++  allowedActions: string[];
++  requiresHumanApproval: boolean;
++  canReadRepos: boolean;
++  canWriteRepos: boolean;
++  canCreatePlans: boolean;
++  canCreateBranches: boolean;
++  canOpenPullRequests: boolean;
++  canDeploy: boolean;
++  createdAt: string;
++  expiresAt: string | null;
++  history: string[];
++};
++
++export type RepoFootprintStatus = 'not_configured' | 'partial' | 'ready' | 'needs_review';
++
++export type RepoFootprintReport = {
++  owner: string;
++  repo: string;
++  defaultBranch: string;
++  visibility: 'public' | 'private' | 'internal' | 'unknown';
++  permissions: {
++    pull: boolean;
++    push: boolean;
++    admin: boolean;
++  };
++  presentFiles: string[];
++  missingFiles: string[];
++  mcpStatus: RepoFootprintStatus;
++  recommendations: string[];
++  canBootstrapOnBranch: boolean;
++};
++
++export type ServerMappingCandidate = {
++  projectKey: string;
++  githubOwner: string;
++  githubRepo: string;
++  officialBranch: string;
++  serverId: string;
++  serverName: string;
++  serverPath: string;
++  environment: string;
++  publicDomain: string | null;
++  runtime: string;
++  serviceName: string | null;
++  requiresHumanApprovalForDeploy: boolean;
++  status: 'unknown' | 'candidate' | 'linked' | 'stale' | 'blocked';
++  notes: string[];
++};
++
++export type OnboardingAuditEvent = {
++  id: string;
++  at: string;
++  actorId: string;
++  actorName: string;
++  actorType: OnboardingActorType;
++  githubLogin: string | null;
++  githubOrg: string | null;
++  repo: string | null;
++  action: string;
++  result: 'success' | 'warning' | 'blocked' | 'error';
++  warnings: string[];
++  errors: string[];
++  metadata: Record<string, unknown>;
++};
++
++export type OnboardingSnapshot = {
++  actor: OnboardingActor;
++  rights: GitHubRightsSummary;
++  questions: OnboardingQuestion[];
++  agents: McpAgentProfile[];
++  nextActions: string[];
++};
+merged
+  result 100644 e2fd9d63beb57e2133cf705c2a36ddb7818d4841 src/server.ts
+  our    100644 505d5fddbc719bc17fe20c857617b6ecd6820e53 src/server.ts
+@@ -11,6 +11,7 @@
+ import { registerScopedWriteTools } from './tools/writeScoped.js';
+ import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
+ import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
++import { registerOnboardingRoutes } from './onboarding/http.js';
+
+ const WEB_SESSION_COOKIE = 'mcp_web_session';
+ const WEB_SESSION_MAX_AGE_SECONDS = Math.max(1, Number.parseInt(process.env.MCP_SESSION_TTL_HOURS || '8', 10)) * 60 * 60;
+@@ -142,6 +143,7 @@
+   return `<p>
+     <a href="/dashboard">Dashboard</a> ·
+     <a href="/git">Paramétrage Git</a> ·
++    <a href="/git/onboarding">Onboarding</a> ·
+     <a href="/github">GitHub</a> ·
+     <a href="/github/status">Statut JSON</a> ·
+     <a href="/github/Patricked-code">Patricked-code</a> ·
+@@ -320,6 +322,8 @@
+     }
+   });
+
++  registerOnboardingRoutes(app, requireWebLogin);
++
+   app.get('/github/status', requireWebLogin, async (_req, res) => {
+     try {
+       res.json(await getGithubConnectionStatus());

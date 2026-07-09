@@ -65,3 +65,17 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+---
+
+## 2026-07-09T21:02:39Z — Tâches après audit PR #1 #4 #5
+
+- [ ] Relire `docs/pr-audit/PR-1.md`.
+- [ ] Relire `docs/pr-audit/PR-4.md`.
+- [ ] Relire `docs/pr-audit/PR-5.md`.
+- [ ] Identifier les fichiers à garder.
+- [ ] Identifier les fichiers à déplacer.
+- [ ] Identifier les fichiers redondants avec la PR #6.
+- [ ] Décider si #4 doit être reconstruite depuis `main`.
+- [ ] Décider si #5 doit être transformée en documentation complémentaire.
+- [ ] Décider si #1 doit être découpée en plusieurs PR.
