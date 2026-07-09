@@ -24,5 +24,10 @@
     "*.p12",
     "*.dump",
     "*.sql"
+  ],
+  "rules": [
+    "no_secret_in_git",
+    "no_regression",
+    "no_destructive_action_without_backup"
   ]
 }

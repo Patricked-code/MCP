@@ -10,5 +10,11 @@
     "GET /git/agents",
     "GET /git/permissions",
     "GET /git/audit"
+  ],
+  "firstChecks": [
+    "git status",
+    "docker compose ps",
+    "curl /health",
+    "curl /mcp"
   ]
 }

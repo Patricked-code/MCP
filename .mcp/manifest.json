@@ -12,5 +12,10 @@
     "MCP_SERVER_MAPPING.md",
     "CODESPACES.md"
   ],
-  "onboardingEngine": true
+  "onboardingEngine": true,
+  "repository": "Patricked-code/MCP",
+  "serverPath": "/opt/apps/wealthtech-mcp-ssh-bridge",
+  "branch": "main",
+  "domain": "https://mcp.wealthtechinnovations.com",
+  "status": "À vérifier"
 }

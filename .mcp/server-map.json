@@ -20,5 +20,11 @@
         "api.funds.chainsolutions.fr"
       ]
     }
+  },
+  "production": {
+    "path": "/opt/apps/wealthtech-mcp-ssh-bridge",
+    "domain": "https://mcp.wealthtechinnovations.com",
+    "runtime": "docker compose",
+    "status": "À vérifier"
   }
 }
