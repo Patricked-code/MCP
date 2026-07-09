@@ -23,12 +23,51 @@ const {
   detectSecretLikeContent,
   isSensitiveGitHubPath
 } = await import('../src/github/secretSafety.js');
+const { McpServer } = await import('@modelcontextprotocol/sdk/server/mcp.js');
+const { registerReadOnlyTools } = await import('../src/tools/readOnly.js');
+const { registerScopedWriteTools } = await import('../src/tools/writeScoped.js');
 
 function mustDetectSecret(value: string): { code: string; label: string } {
   const detection = detectSecretLikeContent(value);
   assert.notEqual(detection, null);
   return detection as { code: string; label: string };
 }
+
+function registeredToolNames(server: unknown): string[] {
+  const registeredTools = (server as { _registeredTools?: Record<string, unknown> })._registeredTools;
+  assert.ok(registeredTools);
+  return Object.keys(registeredTools).sort();
+}
+
+test('GitHub MCP tools are registered without replacing existing MCP tools', () => {
+  const server = new McpServer({ name: 'github-tool-registration-test', version: '0.0.0' });
+  registerReadOnlyTools(server);
+  registerScopedWriteTools(server);
+  const names = registeredToolNames(server);
+
+  for (const expected of [
+    'ping',
+    'github_org_inventory',
+    'github_account_inventory',
+    'mcp_git_status_s1',
+    'github_status',
+    'github_list_orgs',
+    'github_list_repos',
+    'github_repo_status',
+    'github_list_prs',
+    'github_list_actions',
+    'github_audit_permissions',
+    'get_write_tools_context',
+    'patch_mcp_code_file_s1',
+    'github_create_branch',
+    'github_commit_files_on_branch',
+    'github_open_pr'
+  ]) {
+    assert.ok(names.includes(expected), `${expected} should be registered`);
+  }
+
+  assert.equal(new Set(names).size, names.length, 'tool names should not be duplicated');
+});
 
 test('GitHub MCP write helpers allow only mcp scoped branches', () => {
   assert.equal(assertMcpBranchName('mcp/onboarding-setup'), 'mcp/onboarding-setup');
