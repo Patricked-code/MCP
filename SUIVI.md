@@ -169,3 +169,31 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+---
+
+## 2026-07-09 — Complément audit PR avec issues blockers #2 et #3
+
+### Contexte
+
+La PR #8 synthétise l’audit des PR #1, #4 et #5 après intégration de la PR #6. Les issues #2 et #3 sont des blockers ouverts mentionnés par PR #1 et doivent être intégrés dans l’analyse.
+
+### Action
+
+Création de la branche `mcp/pr-unification-audit-summary-issues` depuis `main`, côté GitHub, pour documenter #2 et #3 sans merge, sans fermeture d’issue et sans fichier `*.merge-tree.txt`.
+
+### Résultat attendu
+
+Relire :
+
+- `docs/pr-audit/ISSUE-2.md`
+- `docs/pr-audit/ISSUE-3.md`
+- `docs/pr-audit/BLOCKERS-2-3.md`
+- `docs/pr-audit/UNIFICATION_STRATEGY.md`
+- `docs/pr-audit/NEXT_INTEGRATION_PLAN.md`
+
+### Point de reprise courant
+
+Ne pas merger #1, #4, #5, #7 ou #8 tant que les décisions d’intégration ne sont pas validées.
+
+Prochaine branche technique recommandée : `mcp/github-tools-after-governance`.
