@@ -43,3 +43,13 @@ secrets/
 *.p12
 *.bak.*
 *.inspect.*
+
+# MCP local backups / runtime-only folders
+.mcp_backups/
+mcp_safe_backups/
+wealthtech_project_memory/
+
+# Additional local-only sensitive/runtime files
+*.p8
+*.crt
+*.inspect.*

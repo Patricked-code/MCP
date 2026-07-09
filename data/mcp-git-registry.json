@@ -1,110 +1,140 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-08T04:55:00.000Z",
+  "updatedAt": "2026-07-08T20:10:00.000Z",
   "accounts": [
     {
-      "id": "github:org:chainsolutions-wealthtech",
-      "provider": "github",
-      "owner": "chainsolutions-wealthtech",
-      "account": "chainsolutions-wealthtech",
-      "type": "organization",
+      "id": "chainsolutions-wealthtech:chainsolutions-wealthtech",
+      "login": "chainsolutions-wealthtech",
+      "org": "chainsolutions-wealthtech",
+      "accountType": "organization",
       "authMode": "pat",
-      "role": "target",
-      "tokenFile": "/app/secrets/github_token",
-      "canCreateRepos": true,
-      "canWriteRepos": true,
-      "canOpenPullRequests": true,
-      "status": "active",
-      "notes": "Organisation cible principale du MCP. Tous les nouveaux repos doivent être créés ici."
+      "requestedMode": "org_admin",
+      "connectedAt": "2026-07-08T04:55:00.000Z",
+      "lastCheckedAt": "2026-07-08T20:10:00.000Z",
+      "tokenExpiresAt": null,
+      "reposVisible": null,
+      "orgAccessible": false,
+      "canReadReposHint": false,
+      "canWriteReposHint": false,
+      "canAdminOrgHint": false,
+      "enabledOnPublicMcpDomain": true,
+      "status": "warning",
+      "warnings": [
+        "Organisation cible configurée localement dans le registre MCP.",
+        "Validation live GitHub à effectuer via /git ou /github avec un token GitHub autorisé.",
+        "Ne pas considérer les droits write/admin comme confirmés tant que le token n'a pas été vérifié par GitHub."
+      ]
     },
     {
-      "id": "github:user:Patricked-code",
-      "provider": "github",
-      "owner": "Patricked-code",
-      "account": "Patricked-code",
-      "type": "user",
+      "id": "Patricked-code:Patricked-code",
+      "login": "Patricked-code",
+      "org": null,
+      "accountType": "user",
       "authMode": "pat",
-      "role": "source",
-      "tokenFile": "/app/secrets/github_token",
-      "canCreateRepos": true,
-      "canWriteRepos": true,
-      "canOpenPullRequests": true,
-      "status": "active",
-      "notes": "Compte source actuel contenant MCP, api, Front, Stablecoin, Investbourse et autres repos."
+      "requestedMode": "write",
+      "connectedAt": "2026-07-08T04:55:00.000Z",
+      "lastCheckedAt": "2026-07-08T20:10:00.000Z",
+      "tokenExpiresAt": null,
+      "reposVisible": null,
+      "orgAccessible": false,
+      "canReadReposHint": false,
+      "canWriteReposHint": false,
+      "canAdminOrgHint": false,
+      "enabledOnPublicMcpDomain": true,
+      "status": "warning",
+      "warnings": [
+        "Compte source historique configuré localement.",
+        "Le remote actif du dépôt MCP pointe encore vers Patricked-code/MCP."
+      ]
     },
     {
-      "id": "github:owner:Wealthtechinnovations",
-      "provider": "github",
-      "owner": "Wealthtechinnovations",
-      "account": "Wealthtechinnovations",
-      "type": "organization_or_user",
+      "id": "Wealthtechinnovations:Wealthtechinnovations",
+      "login": "Wealthtechinnovations",
+      "org": null,
+      "accountType": "unknown",
       "authMode": "pat",
-      "role": "source_or_secondary_target",
-      "tokenFile": "/app/secrets/github_token_wealthtechinnovations",
-      "canCreateRepos": true,
-      "canWriteRepos": true,
-      "canOpenPullRequests": true,
-      "status": "pending_s2_token_sync",
-      "notes": "Compte à connecter via le token présent sur S2."
+      "requestedMode": "write",
+      "connectedAt": "2026-07-08T04:55:00.000Z",
+      "lastCheckedAt": "2026-07-08T20:10:00.000Z",
+      "tokenExpiresAt": null,
+      "reposVisible": null,
+      "orgAccessible": false,
+      "canReadReposHint": false,
+      "canWriteReposHint": false,
+      "canAdminOrgHint": false,
+      "enabledOnPublicMcpDomain": false,
+      "status": "warning",
+      "warnings": [
+        "Compte secondaire présent dans l'ancien registre.",
+        "Statut maintenu en attente de synchronisation du token S2."
+      ]
     }
   ],
   "repoMappings": [
     {
-      "sourceRepo": "Patricked-code/MCP",
-      "targetRepo": "chainsolutions-wealthtech/MCP",
+      "id": "github:chainsolutions-wealthtech/MCP:s1:mcp_bridge",
+      "githubOwner": "chainsolutions-wealthtech",
+      "githubRepo": "MCP",
+      "projectKey": "mcp_bridge",
+      "serverId": "s1",
       "serverPath": "/opt/apps/wealthtech-mcp-ssh-bridge",
-      "status": "to_migrate_or_mirror",
-      "priority": "high"
+      "officialBranch": "main",
+      "allowedAccess": "admin",
+      "deployEnabled": true,
+      "createdAt": "2026-07-08T04:55:00.000Z",
+      "updatedAt": "2026-07-08T20:10:00.000Z"
     },
     {
-      "sourceRepo": "chainsolutions-wealthtech/.github",
-      "targetRepo": "chainsolutions-wealthtech/.github",
-      "serverPath": null,
-      "status": "governance_repo",
-      "priority": "high"
+      "id": "github:Patricked-code/MCP:s1:mcp_bridge_source",
+      "githubOwner": "Patricked-code",
+      "githubRepo": "MCP",
+      "projectKey": "mcp_bridge_source",
+      "serverId": "s1",
+      "serverPath": "/opt/apps/wealthtech-mcp-ssh-bridge",
+      "officialBranch": "main",
+      "allowedAccess": "write",
+      "deployEnabled": false,
+      "createdAt": "2026-07-08T04:55:00.000Z",
+      "updatedAt": "2026-07-08T20:10:00.000Z"
     },
     {
-      "sourceRepo": "Patricked-code/api",
-      "targetRepo": "chainsolutions-wealthtech/api",
-      "serverPath": null,
-      "status": "to_migrate_or_mirror",
-      "priority": "medium"
-    },
-    {
-      "sourceRepo": "Patricked-code/Front",
-      "targetRepo": "chainsolutions-wealthtech/Front",
-      "serverPath": null,
-      "status": "to_migrate_or_mirror",
-      "priority": "medium"
-    },
-    {
-      "sourceRepo": "Patricked-code/Stablecoin",
-      "targetRepo": "chainsolutions-wealthtech/Stablecoin",
-      "serverPath": null,
-      "status": "to_migrate_or_mirror",
-      "priority": "medium"
-    },
-    {
-      "sourceRepo": "Patricked-code/Investbourse",
-      "targetRepo": "chainsolutions-wealthtech/Investbourse",
-      "serverPath": null,
-      "status": "to_migrate_or_mirror",
-      "priority": "medium"
-    },
-    {
-      "sourceRepo": "Patricked-code/civitech-commune-saas",
-      "targetRepo": "chainsolutions-wealthtech/civitech-commune-saas",
+      "id": "github:chainsolutions-wealthtech/civitech-commune-saas:s1:civitech",
+      "githubOwner": "chainsolutions-wealthtech",
+      "githubRepo": "civitech-commune-saas",
+      "projectKey": "civitech_commune_saas",
+      "serverId": "s1",
       "serverPath": "/var/www/vhosts/niakara.com/repo/civitech-commune-saas",
-      "status": "to_migrate_or_mirror",
-      "priority": "medium"
+      "officialBranch": "main",
+      "allowedAccess": "write",
+      "deployEnabled": false,
+      "createdAt": "2026-07-08T04:55:00.000Z",
+      "updatedAt": "2026-07-08T20:10:00.000Z"
     }
   ],
   "auditEvents": [
     {
+      "id": "20260708-045500-target-org-configured",
       "at": "2026-07-08T04:55:00.000Z",
-      "event": "target_org_configured",
-      "owner": "chainsolutions-wealthtech",
-      "details": "chainsolutions-wealthtech configured as default MCP GitHub target organization."
+      "type": "github.target_org.configured",
+      "actor": "mcp-bootstrap",
+      "message": "chainsolutions-wealthtech configured as the default MCP GitHub target organization.",
+      "metadata": {
+        "owner": "chainsolutions-wealthtech",
+        "targetRepo": "chainsolutions-wealthtech/MCP",
+        "sourceRepo": "Patricked-code/MCP"
+      }
+    },
+    {
+      "id": "20260708-201000-registry-schema-aligned",
+      "at": "2026-07-08T20:10:00.000Z",
+      "type": "github.registry.schema_aligned",
+      "actor": "chatgpt",
+      "message": "MCP Git registry aligned with src/github/registry.ts and organization target kept as chainsolutions-wealthtech.",
+      "metadata": {
+        "defaultTargetOwner": "chainsolutions-wealthtech",
+        "writeToolVerifiedByPatch": true,
+        "liveGitHubTokenValidation": "pending_dashboard_or_github_route"
+      }
     }
   ]
 }
