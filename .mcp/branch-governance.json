@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-09T20:08:09Z",
+  "main": {
+    "role": "stable_reference_production_after_validation",
+    "directPushAllowed": false
+  },
+  "preferredMcpBranchPrefix": "mcp/",
+  "allowedPrefixes": [
+    "mcp/",
+    "claude/",
+    "codex/"
+  ],
+  "avoidForMcp": [
+    "docs/",
+    "feature/"
+  ],
+  "pullRequestRequired": true,
+  "draftPrByDefault": true,
+  "serverMustReturnToMainAfterPushingUnmergedBranch": true,
+  "dirtyCountRule": "if_dirty_count_gt_zero_no_pull_no_merge_no_reset_no_deploy_no_cleanup",
+  "doubleUpdateRule": "every_structural_change_must_be_reflected_in_github_and_server_memory",
+  "currentBranchForThisWork": "mcp/governance-anti-dispersion-manual"
+}
