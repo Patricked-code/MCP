@@ -115,3 +115,26 @@ Avant toute modification, lire :
 ## Règle de sécurité
 
 Le MCP ne doit pas devenir une console root libre. Il doit exposer uniquement des outils contrôlés, nommés, documentés, journalisés et validés.
+
+
+---
+
+## Règle permanente — double présence, non-régression et amélioration continue
+
+GitHub est la source versionnée.
+
+Le serveur MCP est la source exécutée.
+
+Les deux doivent toujours être vérifiés ensemble avant et après toute intervention.
+
+Aucune IA ne doit supposer que GitHub et le serveur sont synchronisés sans vérification.
+
+Toute intervention humaine, IA ou automatisée doit respecter :
+
+- non-régression obligatoire ;
+- amélioration continue obligatoire ;
+- aucune suppression destructive sans sauvegarde, justification et validation ;
+- aucun secret dans GitHub ;
+- vérification GitHub + serveur avant modification ;
+- documentation dans `SUIVI.md` après modification ;
+- vérification service, logs et endpoints après déploiement.

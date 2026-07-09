@@ -1,0 +1,29 @@
+{
+  "project": "wealthtech-mcp-ssh-bridge",
+  "repository": "Patricked-code/MCP",
+  "serverPath": "/opt/apps/wealthtech-mcp-ssh-bridge",
+  "branch": "main",
+  "domain": "https://mcp.wealthtechinnovations.com",
+  "container": "wealthtech_mcp_ssh_bridge",
+  "localPort": "127.0.0.1:8787",
+  "lastValidatedAt": "2026-07-09T18:27:39Z",
+  "lastKnownGoodCommits": [
+    "4619588 docs: record final MCP production validation",
+    "fbc7c97 docs: formalize MCP GitHub production governance and inventory"
+  ],
+  "requiredRules": [
+    "GitHub est la source versionnée.",
+    "Le serveur MCP est la source exécutée.",
+    "Les deux doivent toujours être vérifiés ensemble.",
+    "Non-régression obligatoire.",
+    "Amélioration continue obligatoire.",
+    "Aucun secret ne doit être commité.",
+    "Aucune action destructive sans sauvegarde, justification et validation."
+  ],
+  "expectedPublicChecks": {
+    "/health": "200 OK",
+    "/.well-known/oauth-protected-resource": "200 OK",
+    "/.well-known/oauth-authorization-server": "200 OK",
+    "/mcp_without_token": "401 Unauthorized"
+  }
+}
