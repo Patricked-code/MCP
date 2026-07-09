@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-09T20:08:09Z",
+  "goal": "link every MCP or Git intervention to actor, tool, server, project, branch, objective, risk, backup, tests, result and point de reprise",
+  "currentSignals": [
+    "mcp tool called",
+    "server id",
+    "intent",
+    "timestamp",
+    "git branch",
+    "git commit author",
+    "github pr author if available",
+    "ssh user"
+  ],
+  "limits": [
+    "human identity behind a client may require confirmation",
+    "github user to role mapping still to complete"
+  ],
+  "requiredSuiviFields": [
+    "date",
+    "actor",
+    "tool",
+    "server",
+    "project",
+    "branch",
+    "objective",
+    "risk",
+    "backup",
+    "tests",
+    "result",
+    "point_de_reprise"
+  ]
+}

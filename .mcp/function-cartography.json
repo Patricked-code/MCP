@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-09T20:08:09Z",
+  "manualsToReadOnConnection": [
+    "SUIVI.md",
+    "NO_REGRESSION_POLICY.md",
+    "SOURCE_OF_TRUTH.md",
+    "MCP_ANTI_DISPERSION_GOVERNANCE.md",
+    "MCP_FUNCTIONS_AND_TOOLS_MANUAL.md",
+    "MCP_FUNCTIONAL_CARTOGRAPHY.md",
+    "MCP_CONNECTION_IDENTITY_MODEL.md",
+    "MCP_INTELLIGENT_USAGE_MODE.md",
+    "MCP_TOOLS.md",
+    "MCP_AGENT_RULES.md",
+    ".mcp/branch-governance.json",
+    ".mcp/function-cartography.json",
+    ".mcp/identity-policy.json",
+    ".mcp/permissions.json",
+    ".mcp/agents.json",
+    ".mcp/server-map.json"
+  ],
+  "toolGroups": {
+    "readOnly": [
+      "ping",
+      "get_project_context",
+      "check_disk_s1",
+      "check_disk_s2",
+      "pm2_status_s1",
+      "pm2_status_s2",
+      "docker_status_s1",
+      "docker_status_s2",
+      "list_domains_s1",
+      "list_domains_s2",
+      "list_large_files_s1",
+      "list_large_files_s2",
+      "list_backups_s1",
+      "list_backups_s2",
+      "curl_domain"
+    ],
+    "mcpSelfReadOnly": [
+      "mcp_bridge",
+      "mcp_git_status_s1",
+      "mcp_git_diff_s1",
+      "list_mcp_code_files_s1",
+      "read_mcp_code_file_s1",
+      "search_mcp_code_s1",
+      "scan_mcp_secrets_s1",
+      "mcp_container_logs_s1"
+    ],
+    "mcpScopedWrite": [
+      "patch_mcp_code_file_s1",
+      "mcp_typecheck_s1",
+      "mcp_build_s1",
+      "restart_mcp_bridge_s1"
+    ],
+    "projectS2": [
+      "get_write_tools_context",
+      "git_status_project_s2",
+      "git_pull_project_s2",
+      "deploy_project_s2",
+      "deploy_brvm_s2",
+      "exec_repo_script_s2"
+    ],
+    "data": [
+      "run_sql_readonly_s2"
+    ]
+  }
+}
