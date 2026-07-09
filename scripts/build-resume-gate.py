@@ -158,6 +158,7 @@ def build_gate() -> dict[str, Any]:
         },
         "checks": checks,
         "resumeCommandsWhenUnblocked": [
+            "node scripts/run-migration-governance.mjs",
             "node scripts/sync-operator-issue-log.mjs",
             "python scripts/build-operator-action-pack.py",
             "python scripts/build-blocker-evidence-gate.py",

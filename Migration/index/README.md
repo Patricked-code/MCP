@@ -43,3 +43,8 @@ Il doit permettre a un agent ou a un humain de retrouver rapidement:
 - `EXECUTION_RUNWAY.md` : synthese lisible des etapes executables maintenant, bloquees ou dependantes du gate de reprise.
 
 Ces fichiers ne publient pas les textes bruts ni les secrets. Ils servent de preuve de lecture/indexation et de garde-fou avant toute ingestion plus exhaustive.
+
+## Commande de regeneration
+
+- `npm run migration:governance` : regenere les index publics, synchronise l etat des issues operateur, puis lance les tests et controles de non-regression.
+- `npm run migration:governance:list` : affiche l ordre exact des etapes sans les executer.

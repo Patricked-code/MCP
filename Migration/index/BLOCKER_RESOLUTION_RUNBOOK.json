@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:44:33.663606Z",
+  "generatedAt": "2026-07-09T22:19:32.723635Z",
   "generator": "scripts/build-blocker-resolution-runbook.py",
   "purpose": "Public-safe resolution runbook for the remaining MCP migration blockers.",
   "safety": {
@@ -14,7 +14,7 @@
   "inputs": {
     "objectiveTraceabilityMatrix": {
       "path": "Migration/index/OBJECTIVE_TRACEABILITY_MATRIX.json",
-      "generatedAt": "2026-07-06T17:44:33.159991Z",
+      "generatedAt": "2026-07-09T22:19:32.030650Z",
       "summary": {
         "objectiveCount": 9,
         "statusCounts": {
@@ -34,7 +34,7 @@
     },
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-06T17:44:33.314002Z",
+      "generatedAt": "2026-07-09T22:19:32.234649Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,
@@ -77,7 +77,7 @@
     },
     "serverInventoryCards": {
       "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
-      "generatedAt": "2026-07-06T17:44:33.475756Z",
+      "generatedAt": "2026-07-09T22:19:32.456782Z",
       "summary": {
         "cardCount": 6,
         "readyCardCount": 6,
@@ -202,6 +202,7 @@
     }
   ],
   "resumeCommandsAfterResolution": [
+    "node scripts/run-migration-governance.mjs",
     "node scripts/build-source-registry.mjs",
     "python scripts/build-pdf-text-audit.py",
     "python scripts/build-archive-text-audit.py",

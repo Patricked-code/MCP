@@ -26,6 +26,8 @@
     "operator:issues:sync": "node scripts/sync-operator-issue-log.mjs",
     "resume:gate": "python scripts/build-resume-gate.py",
     "execution:runway": "python scripts/build-execution-runway.py",
+    "migration:governance": "node scripts/run-migration-governance.mjs",
+    "migration:governance:list": "node scripts/run-migration-governance.mjs --list",
     "lint:secrets": "node scripts/check-no-secrets.mjs",
     "docs:check": "node scripts/check-docs.mjs"
   },

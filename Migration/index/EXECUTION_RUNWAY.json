@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:44:34.489946Z",
+  "generatedAt": "2026-07-09T22:19:34.237926Z",
   "generator": "scripts/build-execution-runway.py",
   "purpose": "Public-safe execution runway for applying the WealthTech MCP migration objective step by step without regression.",
   "safety": {
@@ -15,7 +15,7 @@
   "inputs": {
     "executionTasks": {
       "path": "Migration/index/MCP_EXECUTION_TASKS.json",
-      "generatedAt": "2026-07-06T17:44:33.314002Z",
+      "generatedAt": "2026-07-09T22:19:32.234649Z",
       "summary": {
         "taskCount": 8,
         "readyTaskCount": 3,
@@ -58,7 +58,7 @@
     },
     "completionAudit": {
       "path": "Migration/index/COMPLETION_AUDIT.json",
-      "generatedAt": "2026-07-06T17:44:34.063022Z",
+      "generatedAt": "2026-07-09T22:19:33.437284Z",
       "summary": {
         "requirementCount": 9,
         "completeRequirementCount": 5,
@@ -94,7 +94,7 @@
     },
     "operatorActionPack": {
       "path": "Migration/index/OPERATOR_ACTION_PACK.json",
-      "generatedAt": "2026-07-06T17:44:34.206136Z",
+      "generatedAt": "2026-07-09T22:19:33.707940Z",
       "summary": {
         "operatorActionCount": 2,
         "externalGithubActionCount": 1,
@@ -118,7 +118,7 @@
     },
     "resumeGate": {
       "path": "Migration/index/RESUME_GATE.json",
-      "generatedAt": "2026-07-06T17:44:34.338288Z",
+      "generatedAt": "2026-07-09T22:19:33.947471Z",
       "summary": {
         "resumeAllowed": false,
         "status": "resume_blocked_operator_actions_pending",
@@ -154,7 +154,7 @@
     },
     "blockerEvidenceGate": {
       "path": "Migration/index/BLOCKER_EVIDENCE_GATE.json",
-      "generatedAt": "2026-07-06T17:44:33.878423Z",
+      "generatedAt": "2026-07-09T22:19:33.091551Z",
       "summary": {
         "blockerCount": 2,
         "resolutionReadyCount": 0,
@@ -180,7 +180,7 @@
     },
     "serverCards": {
       "path": "Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json",
-      "generatedAt": "2026-07-06T17:44:33.475756Z",
+      "generatedAt": "2026-07-09T22:19:32.456782Z",
       "summary": {
         "cardCount": 6,
         "readyCardCount": 6,
@@ -474,6 +474,7 @@
         "No-regression gate output is captured in the PR body."
       ],
       "verificationCommands": [
+        "node scripts/run-migration-governance.mjs",
         "node scripts/sync-operator-issue-log.mjs",
         "python scripts/build-operator-action-pack.py",
         "python scripts/build-blocker-evidence-gate.py",

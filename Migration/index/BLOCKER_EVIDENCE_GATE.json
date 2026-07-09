@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:44:33.878423Z",
+  "generatedAt": "2026-07-09T22:19:33.091551Z",
   "generator": "scripts/build-blocker-evidence-gate.py",
   "purpose": "Public-safe evidence gate for deciding whether unresolved WealthTech MCP blockers can be treated as resolved by the completion audit.",
   "safety": {
@@ -15,7 +15,7 @@
   "inputs": {
     "blockerRunbook": {
       "path": "Migration/index/BLOCKER_RESOLUTION_RUNBOOK.json",
-      "generatedAt": "2026-07-06T17:44:33.663606Z",
+      "generatedAt": "2026-07-09T22:19:32.723635Z",
       "summary": {
         "blockerCount": 2,
         "externalActionBlockerCount": 1,
@@ -31,7 +31,7 @@
     },
     "operatorActionIssueLog": {
       "path": "Migration/index/OPERATOR_ACTION_ISSUE_LOG.json",
-      "updatedAt": "2026-07-06T17:44:03.119Z",
+      "updatedAt": "2026-07-09T22:18:47.239Z",
       "issueCount": 2
     },
     "publicEvidenceRecord": {

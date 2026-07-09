@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-06T17:44:03.119Z",
+  "updatedAt": "2026-07-09T22:18:47.239Z",
   "generator": "scripts/sync-operator-issue-log.mjs",
   "purpose": "Public-safe issue references for operator actions that unblock the WealthTech MCP migration objective.",
   "safety": {
@@ -29,7 +29,7 @@
         "github-connector",
         "external-action"
       ],
-      "githubUpdatedAt": "2026-07-06T17:07:18Z",
+      "githubUpdatedAt": "2026-07-08T00:45:16Z",
       "githubClosedAt": null
     },
     {

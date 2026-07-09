@@ -169,6 +169,7 @@ def build_runbook() -> dict[str, Any]:
         },
         "blockers": blockers,
         "resumeCommandsAfterResolution": [
+            "node scripts/run-migration-governance.mjs",
             "node scripts/build-source-registry.mjs",
             "python scripts/build-pdf-text-audit.py",
             "python scripts/build-archive-text-audit.py",

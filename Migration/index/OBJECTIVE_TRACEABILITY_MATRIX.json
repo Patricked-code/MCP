@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-06T17:44:33.159991Z",
+  "generatedAt": "2026-07-09T22:19:32.030650Z",
   "generator": "scripts/build-objective-index.py",
   "purpose": "Objective traceability matrix for the WealthTech MCP migration corpus.",
   "safety": {
@@ -12,12 +12,12 @@
   "inputs": {
     "sourceRegistry": {
       "path": "Migration/index/SOURCE_REGISTRY.json",
-      "generatedAt": "2026-07-06T17:44:03.405Z",
+      "generatedAt": "2026-07-09T22:18:47.686Z",
       "totals": {
         "sourceFileCount": 104,
         "uniqueContentFileCount": 98,
         "duplicateFileCount": 6,
-        "totalBytes": 24479001,
+        "totalBytes": 24479280,
         "textReadFiles": 90,
         "archiveIndexedFiles": 5,
         "binaryIndexedFiles": 9,
@@ -40,7 +40,7 @@
     },
     "pdfTextAudit": {
       "path": "Migration/index/PDF_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-06T17:44:13.617880Z",
+      "generatedAt": "2026-07-09T22:19:00.380418Z",
       "totals": {
         "pdfDocumentCount": 43,
         "uniquePdfContentCount": 22,
@@ -82,7 +82,7 @@
     },
     "archiveTextAudit": {
       "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
-      "generatedAt": "2026-07-06T17:44:14.863607Z",
+      "generatedAt": "2026-07-09T22:19:01.739872Z",
       "totals": {
         "archiveDocumentCount": 5,
         "archiveDocumentsScanned": 5,
@@ -366,32 +366,32 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "f107c02e298c3ba52e81c2cb0340b9b1b8be10758f7b011d79a0d9fceec10848"
+          "sha256": "4d1c52705252adc6d6062dd7ecfb16bd6fd4a9caf5959a477a7cb3984fd2d94c"
         },
         {
           "path": "Migration/index/SOURCE_INGESTION_STATUS.md",
           "exists": true,
-          "sha256": "d9012242f25931200a1f1d830f3962150d2f40d0e0287851625bfe2fbd3c5b14"
+          "sha256": "72d17cc76182ffb70930686608c1e2c4fcce4c07f2a0809ffe1b06f7479cf64b"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "4bedb87ee504da381aa8511348d7b50e49bdb38b807103db348083cd3c5b25ef"
+          "sha256": "1d13eff42f9ab77fce011a50574cd990122a886b9552437918b9e8ec5a2b43c0"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT_STATUS.md",
           "exists": true,
-          "sha256": "e77e6227cb1646f17b73c95c7b3cf3ba7c43bb792d86fb458fde2cf37cf4e1b8"
+          "sha256": "f25ff6c6f1f57e6d161e1f0399515c1645369629b5c1c71a19afb69d9ccd8c4f"
         },
         {
           "path": "Migration/index/ARCHIVE_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "e8b3bfbf33a71012e88b7ab24df325f441b05a1a9d9cce9bd9f1d1334cf716e7"
+          "sha256": "a906dcd772e6e3b00fff39e9044036ad9abb03d72cf68ca8a5942e8b4cbfc1f0"
         },
         {
           "path": "Migration/index/ARCHIVE_TEXT_AUDIT_STATUS.md",
           "exists": true,
-          "sha256": "e270531fc6ddca711bcebd41f7d49196e9ce4d28f3b19c1c0c4a545d21c89f24"
+          "sha256": "e30a8edae22393f42946ba8f5e9d5879bc3c9990fb7219323b5adca999001423"
         }
       ],
       "missingCurrentEvidence": [],
@@ -409,7 +409,7 @@
       "status": "implemented_as_policy_and_tests_more_runtime_gates_needed",
       "sourceSignals": {
         "sourceHitCount": 156,
-        "totalPatternHits": 9479,
+        "totalPatternHits": 9482,
         "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
@@ -501,7 +501,7 @@
         {
           "path": "scripts/check-docs.mjs",
           "exists": true,
-          "sha256": "78e63f671eabcea90018100adb2fe6c6845e7ec21027b0a5cfd123bbfbcaa7f9"
+          "sha256": "7ba3b20c5e0ec501dcc04cea62c2f4016256abe2fb0ce62d2b843f527c03d538"
         },
         {
           "path": "tests/onboarding.test.ts",
@@ -895,7 +895,7 @@
       "status": "documented_not_executed_on_production",
       "sourceSignals": {
         "sourceHitCount": 181,
-        "totalPatternHits": 40667,
+        "totalPatternHits": 40669,
         "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
@@ -1109,12 +1109,12 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "f107c02e298c3ba52e81c2cb0340b9b1b8be10758f7b011d79a0d9fceec10848"
+          "sha256": "4d1c52705252adc6d6062dd7ecfb16bd6fd4a9caf5959a477a7cb3984fd2d94c"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "4bedb87ee504da381aa8511348d7b50e49bdb38b807103db348083cd3c5b25ef"
+          "sha256": "1d13eff42f9ab77fce011a50574cd990122a886b9552437918b9e8ec5a2b43c0"
         }
       ],
       "missingCurrentEvidence": [],
@@ -1131,7 +1131,7 @@
       "status": "in_progress_objective_matrix_added_this_turn",
       "sourceSignals": {
         "sourceHitCount": 139,
-        "totalPatternHits": 6094,
+        "totalPatternHits": 6095,
         "textUnitsScanned": 176,
         "secretSignalSourceCount": 0
       },
@@ -1223,12 +1223,12 @@
         {
           "path": "Migration/index/SOURCE_REGISTRY.json",
           "exists": true,
-          "sha256": "f107c02e298c3ba52e81c2cb0340b9b1b8be10758f7b011d79a0d9fceec10848"
+          "sha256": "4d1c52705252adc6d6062dd7ecfb16bd6fd4a9caf5959a477a7cb3984fd2d94c"
         },
         {
           "path": "Migration/index/PDF_TEXT_AUDIT.json",
           "exists": true,
-          "sha256": "4bedb87ee504da381aa8511348d7b50e49bdb38b807103db348083cd3c5b25ef"
+          "sha256": "1d13eff42f9ab77fce011a50574cd990122a886b9552437918b9e8ec5a2b43c0"
         },
         {
           "path": "docs/MCP_ONBOARDING_ENGINE.md",

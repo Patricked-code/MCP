@@ -66,7 +66,8 @@ const required = [
   'Migration/index/EXECUTION_RUNWAY.md',
   'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.json',
   'Migration/serveur/PRIVATE_SERVER_INVENTORY_TASK_CARDS.md',
-  'Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json'
+  'Migration/github/chainsolutions-wealthtech/ORG_BOOTSTRAP_PACKAGE.json',
+  'scripts/run-migration-governance.mjs'
 ];
 
 const missing = required.filter((file) => !existsSync(file));
