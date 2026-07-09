@@ -64,3 +64,55 @@ Décision de reprise : limiter cette opération aux fichiers de documentation au
 ## 7. Historique
 
 - 2026-07-09 : création racine par écriture contrôlée MCP, sans secret, sans suppression et sans modification applicative.
+
+---
+
+## 2026-07-09 — Validation finale GitHub ↔ serveur MCP production
+
+### Résultat final
+
+La règle de double présence GitHub ↔ serveur MCP a été intégrée et validée.
+
+État validé :
+
+- dépôt GitHub de référence : `Patricked-code/MCP` ;
+- dossier serveur de référence : `/opt/apps/wealthtech-mcp-ssh-bridge` ;
+- branche serveur : `main` ;
+- dernier commit de gouvernance : `fbc7c97 docs: formalize MCP GitHub production governance and inventory` ;
+- état Git serveur : propre et synchronisé avec `origin/main` ;
+- conteneur Docker MCP : actif ;
+- port local : `127.0.0.1:8787`;
+- endpoint local `/health` : `200 OK` ;
+- endpoint public `/health` : `200 OK` ;
+- endpoint public `/.well-known/oauth-protected-resource` : `200 OK` ;
+- endpoint public `/.well-known/oauth-authorization-server` : `200 OK` ;
+- endpoint public `/mcp` sans token : `401 Unauthorized`, comportement attendu pour un MCP protégé.
+
+### Règle confirmée
+
+GitHub est la source versionnée.
+
+Le serveur MCP est la source exécutée.
+
+Les deux doivent toujours être contrôlés ensemble avant et après toute intervention.
+
+### Sécurité confirmée
+
+- aucun secret critique n’a été ajouté aux fichiers staged ;
+- aucun fichier `.env` réel n’a été commité ;
+- aucune clé privée SSH n’a été commitée ;
+- aucun fichier `keys/`, `logs/`, `.mcp_backups/` ou `wealthtech_project_memory/` sensible n’a été ajouté ;
+- aucune suppression destructive n’a été effectuée ;
+- aucun `git reset --hard`, `git clean` ou restauration destructive n’a été utilisé.
+
+### Point de reprise courant
+
+Le MCP est considéré comme opérationnel côté serveur et côté domaine public.
+
+Prochaine intervention obligatoire :
+
+1. vérifier `git status`;
+2. vérifier `docker compose ps`;
+3. vérifier `curl -i https://mcp.wealthtechinnovations.com/health`;
+4. vérifier `curl -i https://mcp.wealthtechinnovations.com/mcp`, qui doit rester protégé sans token ;
+5. documenter toute nouvelle action dans `SUIVI.md`.
