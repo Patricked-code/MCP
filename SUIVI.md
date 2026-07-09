@@ -169,3 +169,41 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+---
+
+## 2026-07-09T21:02:39Z — Audit d’unification des PR MCP #1 #4 #5
+
+### Contexte
+
+La PR #6 a été fusionnée dans `main` et constitue désormais la base de gouvernance anti-dispersion.
+
+### Action
+
+Création d’un audit documentaire en branche `mcp/pr-unification-audit`.
+
+### PR auditées
+
+- PR #1 : gouvernance onboarding historique ;
+- PR #4 : outils GitHub MCP contrôlés ;
+- PR #5 : spécification onboarding engine.
+
+### Règle
+
+Aucune fusion directe n’a été faite.
+
+Aucun déploiement n’a été fait.
+
+Aucun reset n’a été fait.
+
+### Point de reprise courant
+
+Relire :
+
+- `docs/pr-audit/README.md`
+- `docs/pr-audit/PR-1.md`
+- `docs/pr-audit/PR-4.md`
+- `docs/pr-audit/PR-5.md`
+- `docs/pr-audit/UNIFICATION_STRATEGY.md`
+
+Puis décider quelle PR doit être reconstruite en premier.

@@ -80,3 +80,12 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+---
+
+## 2026-07-09T21:02:39Z — Audit d’unification PR #1 #4 #5
+
+- Ajout d’un audit documentaire des PR ouvertes #1, #4 et #5.
+- Aucun merge direct effectué.
+- Aucun déploiement effectué.
+- Préparation d’une stratégie d’intégration sans régression après la PR #6.
