@@ -80,3 +80,12 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+## 2026-07-11 -- Phase 2 hardening read-only / CI / state docs
+
+- Durcissement du garde-fou read-only : la commande `cp` est détectée comme commande shell autonome, sans bloquer les chemins ou mots contenant `mcp`.
+- Ajout d'un test dédié `test:readonly-safety`.
+- Ajout d'une CI GitHub Actions minimale pour PR et branches `mcp/*`.
+- Mise à jour documentaire public-safe de l'état courant : `main` et S1 sont alignés sur `f92f621`.
+- Traçage de l'exception : `f92f621 fix(oauth): accept Claude and ChatGPT MCP resource aliases` contient aussi `durableAccounts` et semble être arrivé sur `main` sans PR visible. Ce chemin ne doit pas être répété.
+- Aucune action production, aucun redémarrage, aucun déploiement, aucun nettoyage, aucun merge de PR #10.

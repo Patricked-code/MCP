@@ -65,3 +65,14 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+## 2026-07-11 -- Phase 2 hardening read-only / CI / state docs
+
+- TASK-20260711-001 : corriger `src/ssh/safety.ts` pour détecter `cp` uniquement comme commande shell autonome.
+  - Précondition : partir de `main@f92f621` sur `mcp/hardening-readonly-ci-state-20260711`.
+  - Tests : `npm run test:readonly-safety`, `npm run typecheck`, `npm run build`.
+- TASK-20260711-002 : ajouter une CI GitHub Actions minimale.
+  - Commandes attendues : typecheck, build, docs check, secret scan si présent, test GitHub MCP si présent, test read-only safety, `git diff --check`.
+- TASK-20260711-003 : mettre à jour l'état public-safe après le commit direct `f92f621`.
+  - Fichiers : `SUIVI.md`, `TASKS.md`, `CHANGELOG.md`, `DECISIONS_LOG.md`, `PRODUCTION_STATE.json`, `MCP_MASTER_REFERENCE.md` brouillon si créé.
+- TASK-20260711-004 : préparer une PR draft vers `main`, sans merge, sans rebase PR #10, sans fermeture #2/#3.

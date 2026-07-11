@@ -6,6 +6,12 @@ Ce document ne contient aucun secret complet.
 
 ---
 
+## Mise à jour public-safe 2026-07-11
+
+Cette page a été générée le 2026-07-01 et contient des éléments historiques. L'état vérifié le 2026-07-11 est différent : le MCP expose maintenant un OAuth minimal compatible Authorization Code + PKCE. Les endpoints publics `/.well-known/oauth-protected-resource`, `/.well-known/oauth-authorization-server`, `/oauth/authorize` et `/oauth/token` sont actifs. Le chemin `/mcp` reste protégé et retourne `401 Unauthorized` sans token.
+
+Les sections ci-dessous doivent donc être lues comme historique ou comme cadrage initial lorsqu'elles disent que OAuth n'est pas encore implémenté.
+
 ## 1. État actuel du MCP
 
 | Élément | Valeur |
@@ -14,7 +20,7 @@ Ce document ne contient aucun secret complet.
 | URL MCP | https://mcp.wealthtechinnovations.com/mcp |
 | Healthcheck | https://mcp.wealthtechinnovations.com/health |
 | Auth actuelle | Bearer token statique |
-| OAuth 2.1 natif | Non implémenté actuellement |
+| OAuth minimal | Actif au 2026-07-11, compatible Authorization Code + PKCE |
 | Mode courant | read-only-first |
 
 Le serveur fonctionne aujourd’hui avec un token statique dans le header :
@@ -106,7 +112,7 @@ mcp:read
 
 ## 3. Endpoints OAuth futurs à implémenter
 
-Ces endpoints n’existent pas encore dans le code actuel. Ils devront être ajoutés si l’on veut une authentification OAuth complète.
+Ces endpoints sont actifs dans l’état vérifié au 2026-07-11 pour la couche OAuth minimale. Les extensions futures doivent rester compatibles avec cet existant.
 
 | Champ ChatGPT | Valeur future |
 |---|---|

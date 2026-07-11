@@ -169,3 +169,19 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+## 2026-07-11 -- Phase 2 hardening read-only / CI / state docs
+
+Point de reprise public-safe : audit Phase 1 validé par l'opérateur, puis ouverture autorisée d'une branche unique `mcp/hardening-readonly-ci-state-20260711` depuis `main`.
+
+État vérifié avant modification locale :
+- GitHub `main` : `f92f621fa495d5728df5fb5befcc3265ff3a1302` (`fix(oauth): accept Claude and ChatGPT MCP resource aliases`) ;
+- serveur S1 `/opt/apps/wealthtech-mcp-ssh-bridge` : branche `main`, dernier commit local `f92f621`, aligné avec `origin/main`, diff vide ;
+- conteneur `wealthtech_mcp_ssh_bridge` actif sur `127.0.0.1:8787` ;
+- `/health` public : `200 OK` ;
+- `/mcp` sans token : `401 Unauthorized`, comportement attendu ;
+- OAuth minimal actif via les endpoints `.well-known` et `/oauth/*`.
+
+Exception à tracer : le commit `f92f621` contient aussi l'ajout `src/tools/durableAccounts.ts` et `MCP_DURABLE_ACCOUNT_MANAGEMENT.md`. Il semble être arrivé sur `main` sans PR visible dans l'audit courant. Cette exception ne doit pas être répétée : les prochains changements doivent passer par branche `mcp/*`, PR draft, CI et revue humaine.
+
+Action locale Phase 2 : durcir la détection read-only pour ne plus confondre `.mcp` ou `MCP` avec la commande shell `cp`, ajouter une CI minimale, et mettre à jour uniquement l'état documentaire public-safe. Aucune action production, aucun restart, aucun déploiement, aucune suppression, aucun merge de PR #10.

@@ -76,23 +76,20 @@ npm run typecheck
 npm run build
 ```
 
-## Commande de commit/push recommandée
+## Mise à jour gouvernance 2026-07-11
+
+La procédure historique de push direct sur `main` est obsolète et ne doit plus être utilisée. Tout changement doit passer par une branche `mcp/*`, une PR draft vers `main`, les contrôles CI et une validation humaine. Le commit direct `f92f621` est tracé comme exception à ne pas répéter.
+
+## Procédure de commit/push autorisée
 
 ```bash
-cd /opt/apps/wealthtech-mcp-ssh-bridge
-
 git status -sb
 git diff --stat
-
-git add \
-  src/github/inventory.ts \
-  src/github/registry.ts \
-  src/tools/githubInventory.ts \
-  src/tools/readOnly.ts \
-  docs/GITHUB_AUTO_DISCOVERY.md
-
-git commit -m "feat(github): auto-discover repositories on MCP GitHub connection"
-git push origin main
+git switch -c mcp/<objectif-limite> origin/main
+git add <fichiers-valides>
+git commit -m "<message public-safe>"
+git push -u origin mcp/<objectif-limite>
+# ouvrir une PR draft vers main
 ```
 
 ## Règle d’alignement serveur / GitHub
@@ -102,9 +99,9 @@ Tout changement validé sur le serveur doit suivre cet ordre :
 1. vérifier l’état Git ;
 2. lire le diff ;
 3. exécuter typecheck/build ;
-4. committer uniquement les fichiers cohérents ;
-5. pousser vers GitHub ;
-6. redémarrer le MCP seulement après build valide ;
+4. committer uniquement les fichiers cohérents sur une branche `mcp/*` ;
+5. pousser la branche vers GitHub et ouvrir une PR draft ;
+6. redémarrer le MCP seulement après merge validé, build valide et autorisation explicite ;
 7. vérifier `/health` ;
 8. documenter le point d’arrêt.
 

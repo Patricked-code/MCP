@@ -1,0 +1,45 @@
+name: MCP CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'mcp/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Docs check
+        run: npm run docs:check
+
+      - name: Secret scan
+        run: npm run lint:secrets --if-present
+
+      - name: Read-only safety tests
+        run: npm run test:readonly-safety
+
+      - name: GitHub MCP tests if present
+        run: npm run test:github --if-present
+
+      - name: Whitespace diff check
+        run: git diff --check
