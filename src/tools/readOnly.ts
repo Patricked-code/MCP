@@ -5,6 +5,7 @@ import { runReadOnlyCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
 import { registerMcpSelfReadOnlyTools } from './selfManagement.js';
 import { registerGithubInventoryReadOnlyTools } from './githubInventory.js';
+import { registerDurableAccountReadOnlyTools } from './durableAccounts.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -41,5 +42,6 @@ export function registerReadOnlyTools(server: McpServer): void {
   server.tool('curl_domain', 'Exécute un curl -I HTTPS sur un domaine fourni depuis S1.', { domain: z.string().min(3).max(255).regex(/^[a-zA-Z0-9.-]+$/) }, async ({ domain }) => run('s1', `curl -I --max-time 15 https://${domain}`));
 
   registerGithubInventoryReadOnlyTools(server);
+  registerDurableAccountReadOnlyTools(server);
   registerMcpSelfReadOnlyTools(server);
 }

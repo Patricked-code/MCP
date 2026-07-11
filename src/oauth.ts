@@ -55,6 +55,21 @@ export function oauthIssuer(): string {
   return normalizeBaseUrl(process.env.MCP_WEB_BASE_URL || DEFAULT_ISSUER);
 }
 
+function normalizeResourceAlias(value: string): string {
+  const normalized = normalizeBaseUrl(value);
+  const issuer = oauthIssuer();
+
+  if (normalized === issuer || normalized === `${issuer}/mcp`) {
+    return issuer;
+  }
+
+  return normalized;
+}
+
+function isValidOAuthResource(value: string): boolean {
+  return normalizeResourceAlias(value) === oauthIssuer();
+}
+
 export function protectedResourceMetadataUrl(): string {
   return `${oauthIssuer()}/.well-known/oauth-protected-resource`;
 }
@@ -252,7 +267,7 @@ export function verifyOauthAccessToken(token: string, requiredScope = 'mcp:read'
     return false;
   }
 
-  if (payload.iss !== issuer || payload.aud !== issuer || payload.resource !== issuer) {
+  if (payload.iss !== issuer || payload.aud !== issuer || normalizeResourceAlias(payload.resource) !== issuer) {
     return false;
   }
 
@@ -286,7 +301,7 @@ function handleAuthorize(req: Request, res: Response, isAuthenticated: (req: Req
   const redirectUri = getSingleQueryParam(req, 'redirect_uri');
   const state = getSingleQueryParam(req, 'state');
   const scope = normalizeScopeString(getSingleQueryParam(req, 'scope'));
-  const resource = getSingleQueryParam(req, 'resource') || oauthIssuer();
+  const resource = normalizeResourceAlias(getSingleQueryParam(req, 'resource') || oauthIssuer());
   const codeChallenge = getSingleQueryParam(req, 'code_challenge');
   const codeChallengeMethod = getSingleQueryParam(req, 'code_challenge_method');
 
@@ -310,7 +325,7 @@ function handleAuthorize(req: Request, res: Response, isAuthenticated: (req: Req
     return;
   }
 
-  if (resource !== oauthIssuer()) {
+  if (!isValidOAuthResource(resource)) {
     sendOAuthError(res, 400, 'invalid_target', 'Le paramètre resource ne correspond pas au serveur MCP WealthTech.');
     return;
   }
@@ -347,7 +362,7 @@ function handleToken(req: Request, res: Response): void {
   const redirectUri = getSingleBodyParam(req, 'redirect_uri');
   const clientId = getSingleBodyParam(req, 'client_id');
   const codeVerifier = getSingleBodyParam(req, 'code_verifier');
-  const resource = getSingleBodyParam(req, 'resource') || oauthIssuer();
+  const resource = normalizeResourceAlias(getSingleBodyParam(req, 'resource') || oauthIssuer());
 
   if (grantType !== 'authorization_code') {
     sendOAuthError(res, 400, 'unsupported_grant_type', 'Seul grant_type=authorization_code est supporté.');

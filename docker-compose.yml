@@ -9,4 +9,6 @@ services:
       - "127.0.0.1:8787:8787"
     volumes:
       - ./keys:/app/keys:ro
+      - ./data:/app/data
+      - ./secrets:/app/secrets
       - ./logs:/app/logs
