@@ -80,3 +80,17 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+---
+
+## 2026-07-09 — Complément audit blockers #2 #3
+
+- Ajout de `docs/pr-audit/ISSUE-2.md`.
+- Ajout de `docs/pr-audit/ISSUE-3.md`.
+- Ajout de `docs/pr-audit/BLOCKERS-2-3.md`.
+- Ajout d’une stratégie d’unification enrichie avec les blockers #2/#3.
+- Aucun merge effectué.
+- Aucune issue fermée.
+- Aucun push direct sur `main`.
+- Aucun fichier `*.merge-tree.txt` ajouté.
+- Aucun secret ou inventaire privé ajouté.

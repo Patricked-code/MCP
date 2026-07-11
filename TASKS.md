@@ -65,3 +65,17 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+---
+
+## 2026-07-09 — Tâches complémentaires blockers #2 #3
+
+- [ ] Relire `docs/pr-audit/ISSUE-2.md`.
+- [ ] Relire `docs/pr-audit/ISSUE-3.md`.
+- [ ] Relire `docs/pr-audit/BLOCKERS-2-3.md`.
+- [ ] Vérifier que #2 reste ouvert jusqu’à validation runtime MCP de la visibilité `chainsolutions-wealthtech`.
+- [ ] Vérifier que #3 reste ouvert jusqu’à preuve privée hors Git : inventaire, backup, rollback, approbation opérateur.
+- [ ] Préparer `mcp/github-tools-after-governance` depuis `main`.
+- [ ] Reprendre uniquement les outils GitHub MCP contrôlés de PR #4.
+- [ ] Ne pas reprendre les fichiers `.mcp` historiques de PR #1/#4 s’ils écrasent la gouvernance de PR #6.
+- [ ] Ne pas déclencher d’action production tant que #3 est ouvert.
