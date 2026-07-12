@@ -15,7 +15,7 @@ Il ne remplace pas les sources canoniques. Il les indexe, indique leur statut et
 1. [Index des conversations](CONVERSATIONS_INDEX.md)
 2. [Connexion du MCP à Codex](CODEX_CONNECTION.md)
 3. [Inventaire et cartographie serveur](SERVER_INVENTORY_AND_CARTOGRAPHY.md)
-4. [Procédure d’import des conversations](imports/README.md)
+4. [Procédure d’import des conversations](imports/README.md) — guide uniquement ; les conversations sont enregistrées dans `memory/`
 
 ## Sources de vérité
 
@@ -68,4 +68,4 @@ Toute contradiction doit être inscrite dans `DECISIONS_LOG.md` avant une action
 
 ## Limite importante
 
-Le hub centralise les références disponibles dans GitHub et sur S1. Il ne peut pas aspirer automatiquement toutes les conversations privées ChatGPT ou Claude. Les conversations non exportées doivent être fournies en Markdown, texte ou PDF textuel puis intégrées avec la procédure du dossier `imports/`.
+Le hub centralise les références disponibles dans GitHub et sur S1. Il ne peut pas aspirer automatiquement toutes les conversations privées ChatGPT ou Claude. Les conversations non exportées doivent être fournies en Markdown, texte ou PDF textuel, puis enregistrées dans `memory/` selon la convention existante. Le dossier `docs/mcp-hub/imports/` ne contient qu’un guide d’import et n’est pas le dépôt des conversations.
