@@ -49,17 +49,17 @@ Ce fichier doit être enrichi au fur et à mesure de l’intégration des projet
 
 # POINT DE REPRISE COURANT
 
-Date : 2026-07-09
-Serveur : S1
-Dépôt : Patricked-code/MCP
-Branche : main
-Chemin serveur : /opt/apps/wealthtech-mcp-ssh-bridge
-État actuel : création progressive des fichiers Markdown racine MCP avec écriture contrôlée via wealthtech_ssh_bridge.
-Dernière action terminée : vérification du statut Git et inventaire des fichiers utiles du dépôt MCP.
-Action suivante recommandée : continuer la création des fichiers racine manquants, puis consolider docs/ et memory/ sans écrasement.
-Fichiers déjà présents à ne pas écraser sans lecture : README.md, MCP_PROJECT.md, MCP_AGENT_RULES.md, MCP_REPO_INVENTORY.md, MCP_SERVER_MAPPING.md, .mcp/*.json, docs/*.md, memory/*.md.
-Risques connus : deux modifications locales non commitées existent déjà dans data/mcp-git-registry.json et src/github/registry.ts ; ne pas toucher au code applicatif dans cette passe documentaire.
-Décision de reprise : limiter cette opération aux fichiers de documentation autorisés, sans secrets, sans suppression, sans déploiement.
+Date : 2026-07-12
+Statut : PR #11 en correction sur `mcp/hardening-readonly-ci-state-20260711`, toujours draft et non fusionnée.
+Dépôt GitHub : `Patricked-code/MCP` ; `main` vérifié au SHA complet `f92f621fa495d5728df5fb5befcc3265ff3a1302`.
+Serveur S1 : `/opt/apps/wealthtech-mcp-ssh-bridge`, branche `main`, commit restitué seulement sous le préfixe `f92f621`.
+État Git S1 : working tree suivi propre et diff suivi vide ; les fichiers ignorés n'ont pas été audités exhaustivement.
+Runtime : conteneur `wealthtech_mcp_ssh_bridge` observé actif sur `127.0.0.1:8787` ; le commit embarqué dans l'image Docker n'est pas attesté.
+Sécurité : le scanner de secrets et la recherche de code étaient bloqués avant correction par le faux positif `cp` ; leur validation serveur après fusion reste à faire ultérieurement avec autorisation séparée.
+Déploiement : PR #10 et PR #11 non déployées ; Onboarding Engine documenté/configuré mais non implémenté dans `main`.
+Dernière action terminée : correction locale contrôlée des constats de revue de la PR #11, sans action serveur.
+Seule prochaine action : nouvelle revue complète de la PR #11 et de sa CI ; aucune fusion automatique.
+Historique : le point de reprise du 2026-07-09 ci-dessous est conservé comme historique et remplacé par la présente section.
 
 ## 7. Historique
 
@@ -67,7 +67,7 @@ Décision de reprise : limiter cette opération aux fichiers de documentation au
 
 ---
 
-## 2026-07-09 — Validation finale GitHub ↔ serveur MCP production
+## 2026-07-09 — Validation historique GitHub ↔ serveur MCP production (remplacée)
 
 ### Résultat final
 

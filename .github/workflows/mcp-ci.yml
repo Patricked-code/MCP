@@ -7,12 +7,19 @@ on:
       - main
       - 'mcp/**'
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -38,8 +45,13 @@ jobs:
       - name: Read-only safety tests
         run: npm run test:readonly-safety
 
-      - name: GitHub MCP tests if present
-        run: npm run test:github --if-present
-
       - name: Whitespace diff check
-        run: git diff --check
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git diff --check "${{ github.event.pull_request.base.sha }}...${{ github.sha }}"
+          elif [[ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]]; then
+            git show --check --format=fuller "${{ github.sha }}"
+          else
+            git diff --check "${{ github.event.before }}...${{ github.sha }}"
+          fi

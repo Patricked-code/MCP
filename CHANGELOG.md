@@ -89,3 +89,14 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Mise à jour documentaire public-safe de l'état courant : `main` et S1 sont alignés sur `f92f621`.
 - Traçage de l'exception : `f92f621 fix(oauth): accept Claude and ChatGPT MCP resource aliases` contient aussi `durableAccounts` et semble être arrivé sur `main` sans PR visible. Ce chemin ne doit pas être répété.
 - Aucune action production, aucun redémarrage, aucun déploiement, aucun nettoyage, aucun merge de PR #10.
+
+## 2026-07-12 -- Phase 4 correction contrôlée de la PR #11
+
+- VÉRIFIÉ : renforcement du garde-fou read-only contre `cp`, les séparateurs, substitutions, wrappers et shells `-c`, sans bloquer les commandes MCP légitimes inventoriées.
+- VÉRIFIÉ : extension des tests à toutes les familles déclarées et aux commandes exactes de scan/recherche.
+- VÉRIFIÉ : CI limitée en permissions, temporisée, sans credentials persistants et avec contrôle effectif base/head.
+- VÉRIFIÉ : retrait de `MCP_MASTER_REFERENCE.md` pour éviter une nouvelle source documentaire concurrente.
+- PARTIELLEMENT VÉRIFIÉ : S1 a restitué le préfixe `f92f621`, pas le SHA complet ; le working tree suivi était propre, mais les fichiers ignorés n'ont pas été audités exhaustivement.
+- NON VÉRIFIÉ : identité du commit embarqué dans l'image Docker active.
+- NON EXÉCUTÉ : aucune fusion, aucun déploiement, aucun redémarrage et aucune modification serveur.
+- Prochaine action unique : nouvelle revue complète de la PR #11 et de sa CI.

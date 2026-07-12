@@ -28,18 +28,27 @@
     "/.well-known/oauth-authorization-server": "200 OK",
     "/mcp_without_token": "401 Unauthorized"
   },
-  "currentValidatedCommit": "f92f621fa495d5728df5fb5befcc3265ff3a1302",
-  "currentValidatedCommitMessage": "fix(oauth): accept Claude and ChatGPT MCP resource aliases",
-  "currentValidatedCommitNotes": [
-    "Includes durableAccounts additions observed in main after PR #6.",
-    "Appears to have arrived on main without a visible PR in the current audit.",
-    "Recorded as an exception; future changes must use mcp/* branches and draft PRs."
-  ],
+  "githubCommitFull": "f92f621fa495d5728df5fb5befcc3265ff3a1302",
   "serverGitState": {
     "branch": "main",
-    "localCommit": "f92f621fa495d5728df5fb5befcc3265ff3a1302",
-    "originMainCommit": "f92f621fa495d5728df5fb5befcc3265ff3a1302",
-    "dirtyDiff": false,
-    "verifiedAt": "2026-07-11T04:50:54Z"
-  }
+    "serverCommitPrefix": "f92f621",
+    "serverCommitFull": null,
+    "serverCommitFullVerifiedDirectly": false,
+    "originMainCommitPrefix": "f92f621",
+    "trackedWorkingTreeClean": true,
+    "ignoredFilesAudited": false,
+    "verifiedAt": "2026-07-12"
+  },
+  "runtimeState": {
+    "containerRuntimeObserved": true,
+    "containerImageCommitVerified": false
+  },
+  "securityState": {
+    "secretScannerStatus": "blocked_before_pr11_correction_due_to_cp_false_positive"
+  },
+  "deploymentState": {
+    "pr10Deployed": false,
+    "pr11Deployed": false
+  },
+  "onboardingEngineState": "documented_and_configured_but_not_implemented_in_main"
 }

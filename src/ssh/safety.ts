@@ -22,7 +22,10 @@ export function assertReadOnlyCommand(command: string): void {
     }
   }
 
-  const commandBoundary = String.raw`(?:^|[;&|()\n\r])\s*(?:sudo\s+)?`;
+  // Complementary denylist: fixed commands, separately validated arguments and
+  // the absence of a free shell remain the primary controls. A future structured
+  // allowlist should replace further growth of shell syntax handling here.
+  const commandBoundary = String.raw`(?:^|[;&|()\x60\n\r]|\b(?:then|do|else)\b)\s*(?:sudo\s+)?`;
   const writeLikePatterns: Array<{ label: string; pattern: RegExp }> = [
     { label: 'rm', pattern: new RegExp(`${commandBoundary}rm(?:\\s|$)`, 'i') },
     { label: 'mv', pattern: new RegExp(`${commandBoundary}mv(?:\\s|$)`, 'i') },
@@ -41,7 +44,16 @@ export function assertReadOnlyCommand(command: string): void {
     { label: 'docker stop', pattern: new RegExp(`${commandBoundary}docker\\s+stop(?:\\s|$)`, 'i') }
   ];
 
-  for (const { label, pattern } of writeLikePatterns) {
+  const wrappedWriteCommand = String.raw`(?:rm|mv|cp|truncate|tee|echo|mysql|psql)(?:\s|$)|sed\s+(?:-[a-z]*i[a-z]*\b|--in-place\b)|systemctl\s+restart(?:\s|$)|pm2\s+(?:restart|stop)(?:\s|$)|docker\s+(?:compose\s+down|stop)(?:\s|$)`;
+  const wrapperPrefix = String.raw`(?:env(?:\s+(?:-[^\s;&|()]+|[a-z_][a-z0-9_]*=[^\s;&|()]+))*|command|nohup)`;
+  const wrapperPatterns: Array<{ label: string; pattern: RegExp }> = [
+    { label: 'wrapped write command', pattern: new RegExp(`${commandBoundary}${wrapperPrefix}\\s+(?:${wrappedWriteCommand})`, 'i') },
+    { label: 'xargs write command', pattern: new RegExp(`${commandBoundary}xargs(?:\\s+[^\\s;&|()]+)*\\s+(?:${wrappedWriteCommand})`, 'i') },
+    { label: 'shell -c', pattern: new RegExp(`${commandBoundary}(?:bash|sh|dash|zsh)\\s+-[^\\s;&|()]*c[^\\s;&|()]*\\s+`, 'i') },
+    { label: 'find -exec write command', pattern: new RegExp(`${commandBoundary}find\\b[^\\n\\r;&|]*?-(?:exec|execdir)\\s+(?:${wrappedWriteCommand})`, 'i') }
+  ];
+
+  for (const { label, pattern } of [...writeLikePatterns, ...wrapperPatterns]) {
     if (pattern.test(normalized)) {
       throw new Error(`Commande non read-only bloquée: ${label}`);
     }

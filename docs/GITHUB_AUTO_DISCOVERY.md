@@ -82,6 +82,8 @@ La procédure historique de push direct sur `main` est obsolète et ne doit plus
 
 ## Procédure de commit/push autorisée
 
+Cette procédure est un exemple opérateur soumis à audit, branche dédiée et validation humaine. Elle ne constitue jamais une autorisation automatique d'écrire sur GitHub ou sur un serveur.
+
 ```bash
 git status -sb
 git diff --stat
@@ -94,7 +96,7 @@ git push -u origin mcp/<objectif-limite>
 
 ## Règle d’alignement serveur / GitHub
 
-Tout changement validé sur le serveur doit suivre cet ordre :
+Tout changement explicitement autorisé et validé sur le serveur doit suivre cet ordre :
 
 1. vérifier l’état Git ;
 2. lire le diff ;
