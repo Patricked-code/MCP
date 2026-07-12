@@ -46,6 +46,13 @@ Ce fichier liste les conversations et memoires conversationnelles poussees ou re
 - Statut : lien connu, contenu complet non extrait automatiquement.
 - Action requise : importer un export texte, PDF ou copier-coller pour integration exhaustive.
 
+## Conversation SERVEUR++++ intégrée en mémoire consolidée
+
+9. `CONVERSATION_SERVEUR_PLUS_6a519dc6_20260713.md`
+   - Source : `chatgpt-conversation://6a519dc6-4fec-83ed-a0f5-45916c992686`.
+   - Retrace la stabilisation du MCP, la gouvernance GitHub ↔ serveur, la non-régression, l’anti-dispersion, les PR #1 à #11, les blockers #2/#3 et les prochaines étapes.
+   - Import structuré sans reproduction de secrets ; le transcript source reste la référence conversationnelle complète.
+
 ## Regle d'utilisation
 
 Avant toute action sur serveur, application, migration, nettoyage, GitHub, Stablecoin ou OPCVM :
