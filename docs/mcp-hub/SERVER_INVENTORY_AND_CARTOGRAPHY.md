@@ -221,7 +221,8 @@ Principaux modules TypeScript :
 - droits du connecteur observés : admin, maintain, push, pull et triage ;
 - branche par défaut : `main` ;
 - 14 branches visibles lors de l’inventaire ;
-- 8 PR ouvertes connues : #1, #4, #5, #7, #8, #9, #10 et #11 ;
+- 8 PR étaient déjà ouvertes au début de l’inventaire : #1, #4, #5, #7, #8, #9, #10 et #11 ;
+- la présente PR documentaire #12 s’ajoute à cet état une fois le hub publié ;
 - PR #6 fusionnée ;
 - PR #11 est la prochaine revue technique prioritaire ;
 - aucune PR ouverte ne doit être fusionnée automatiquement.
