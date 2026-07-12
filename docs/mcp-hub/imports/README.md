@@ -1,28 +1,56 @@
-# Importer une conversation dans le hub MCP
+# Importer une conversation dans la mémoire MCP
+
+## Destination canonique
+
+Les conversations et mémoires conversationnelles du projet sont enregistrées dans :
+
+```text
+memory/
+```
+
+Ce dossier `docs/mcp-hub/imports/` contient uniquement le présent guide. Il ne doit pas recevoir les transcripts.
+
+Le dossier `Migration/` est réservé au contexte, au plan, au manifeste et au journal de publication de la migration.  
+Le dossier `wealthtech_project_memory/memory/` est une copie historique partielle et ne doit pas recevoir une seconde écriture automatique.
+
+## Fichiers de registre à mettre à jour
+
+Selon le contenu importé, vérifier et compléter :
+
+- `memory/CONVERSATIONS_POUSSEES_20260701.md` ;
+- `memory/INDEX_MEMOIRE_WEALTHTECH_20260701.md` ;
+- `memory/CONVERSATION_COMPILED_INDEX_2026-07-01.md` ;
+- `memory/manifest.json` si son schéma couvre le nouveau fichier ;
+- `docs/mcp-hub/CONVERSATIONS_INDEX.md` comme index de navigation ;
+- `SUIVI.md` pour le point de reprise, sans écraser les sections historiques.
 
 ## Formats acceptés
 
 - Markdown UTF-8 ;
-- texte brut UTF-8 ;
-- PDF textuel ;
+- texte brut UTF-8 converti en Markdown ;
+- PDF textuel, après extraction et vérification ;
 - export JSON lisible, après contrôle.
 
 ## Nommage
 
+Conserver les conventions déjà présentes dans `memory/` :
+
 ```text
-YYYY-MM-DD_<SOURCE>_<SUJET_COURT>_<IDENTIFIANT>.md
+CONVERSATION_YYYYMMDD_<SUJET>.md
+CONVERSATION_PART_<NN>_<SUJET>_YYYY-MM-DD.md
+CHATGPT_<IDENTIFIANT>_TRANSCRIPT_YYYYMMDD.md
 ```
 
 Exemples :
 
 ```text
-2026-07-12_CHATGPT_REVUE_PR11.md
-2026-07-08_CLAUDE_CONNEXION_MCP.md
+CONVERSATION_20260712_REVUE_PR11.md
+CHATGPT_6A448C60_TRANSCRIPT_20260702.md
 ```
 
-## Métadonnées obligatoires
+## Métadonnées recommandées
 
-Chaque fichier importé commence par :
+Chaque nouveau fichier doit identifier explicitement :
 
 ```yaml
 ---
@@ -38,30 +66,25 @@ contient_secrets: false
 
 ## Procédure
 
-1. exporter ou copier la conversation avec le compte autorisé ;
-2. conserver une copie brute hors Git si elle contient des informations privées non publiables ;
+1. relire toute la conversation accessible ;
+2. déterminer si le contenu est complet ou partiel ;
 3. retirer tout token, mot de passe, clé privée, seed phrase, `.env`, dump, cookie et URL signée ;
-4. calculer le SHA-256 de l’export assaini ;
-5. indiquer clairement s’il s’agit d’un transcript ou d’un résumé ;
-6. placer le fichier assaini dans ce dossier ;
-7. ajouter une ligne dans `../CONVERSATIONS_INDEX.md` ;
-8. vérifier les doublons par date, titre, URL et hash ;
-9. travailler sur une branche `mcp/*` ;
-10. ouvrir une PR draft ;
-11. faire relire avant fusion ;
-12. après fusion validée, synchroniser le serveur uniquement par le workflow GitHub ↔ S1 autorisé.
+4. ne jamais afficher les valeurs sensibles détectées ;
+5. vérifier les doublons dans `memory/`, `docs/`, `Migration/` et `wealthtech_project_memory/` ;
+6. compléter un fichier existant lorsqu’il représente déjà la même conversation ;
+7. sinon créer le fichier assaini dans `memory/` ;
+8. mettre à jour les index de mémoire pertinents ;
+9. mettre à jour `docs/mcp-hub/CONVERSATIONS_INDEX.md` ;
+10. travailler sur la branche `mcp/*` et la PR draft déjà actives pour cet objectif ;
+11. ne jamais pousser directement sur `main` ;
+12. ne pas fusionner, déployer ou synchroniser S1 automatiquement ;
+13. vérifier après écriture le fichier, les index, le diff et l’absence de secrets.
 
 ## Interdictions
 
-- ne jamais prétendre qu’un transcript est complet si seules des notes sont disponibles ;
-- ne jamais importer automatiquement une conversation privée sans export ou autorisation ;
+- ne jamais présenter un résumé comme un transcript complet ;
+- ne jamais créer une copie dans plusieurs dossiers ;
+- ne jamais utiliser `Migration/` comme stockage général des conversations ;
+- ne jamais écrire automatiquement dans `wealthtech_project_memory/memory/` ;
 - ne jamais publier de secrets ;
-- ne jamais pousser directement sur `main` ;
-- ne jamais synchroniser S1 avant revue et fusion ;
 - ne jamais supprimer une ancienne mémoire avant comparaison et décision documentée.
-
-## Registre minimal
-
-| Date | Source | Sujet | Fichier | Statut | SHA-256 |
-|---|---|---|---|---|---|
-| À compléter | | | | | |
