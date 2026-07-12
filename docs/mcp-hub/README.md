@@ -41,6 +41,7 @@ Toute contradiction doit être inscrite dans `DECISIONS_LOG.md` avant une action
 - URL : `https://mcp.wealthtechinnovations.com/mcp` ;
 - mode : lecture seule en premier, avec écritures strictement bornées et conditionnelles ;
 - PR #11 : ouverte, draft, non fusionnée et non déployée ;
+- PR #12 : présente PR documentaire du hub, ouverte en draft et non fusionnée ;
 - la correction du faux positif `cp` se trouve dans la PR #11 et n’est pas encore présente sur S1.
 
 ## Règles d’utilisation
