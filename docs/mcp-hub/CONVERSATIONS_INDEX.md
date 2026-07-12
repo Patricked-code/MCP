@@ -39,14 +39,14 @@ Ces chiffres décrivent les fichiers autorisés par l’outil d’inventaire : p
 | 2026-07-08 | Organisation GitHub, Codespaces, inventaires de code | fichiers `memory/CHAINSOLUTIONS_*` et `docs/reports/*` | RESUME_STRUCTURE |
 | 2026-07-09 | Gouvernance anti-dispersion et cartographie MCP | `MCP_ANTI_DISPERSION_GOVERNANCE.md`, `MCP_FUNCTIONAL_CARTOGRAPHY.md` | TRANSCRIPT_VERIFIE pour les documents, pas pour les chats |
 | 2026-07-11 | Durcissement read-only, CI et état documentaire | PR #11 | RESUME_STRUCTURE |
-| 2026-07-12 | Revue technique et documentaire de la PR #11 | conversation de travail non exportée dans le dépôt | A_IMPORTER |
+| 2026-07-12 | Revue technique et documentaire de la PR #11 | conversation de travail à importer dans `memory/` | A_IMPORTER |
 | 2026-07-13 | Hub central, connexion Codex, inventaire et cartographie | ce dossier | RESUME_STRUCTURE |
 
 ## Conversation externe connue mais non importée
 
 - référence : `https://chatgpt.com/share/6a448c60-5794-83ed-8558-f1f4871748e5` ;
 - état : lien connu, transcript intégral non disponible dans le dépôt ;
-- action : exporter le contenu avec le compte autorisé, scanner les secrets, calculer son SHA-256 et l’intégrer via `docs/mcp-hub/imports/`.
+- action : exporter le contenu avec le compte autorisé, scanner les secrets, calculer son SHA-256 et l’intégrer dans `memory/`, puis mettre à jour cet index central.
 
 ## Ordre de lecture recommandé
 
