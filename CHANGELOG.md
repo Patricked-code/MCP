@@ -14,6 +14,21 @@ Historique factuel des changements du depot MCP.
 ## Regle
 Chaque changement visible doit indiquer date, fichier, raison, impact, tests et rollback si applicable.
 
+## 2026-07-13 — Bootstrap documentaire vérifié, prêt pour revue
+
+- Ajout de `WEALTHTECH_CODEX_MASTER_INSTRUCTIONS.md`, seul fichier racine obligatoire absent au début de l’audit.
+- Ajout de `docs/projects/README.md` et d’un modèle enfant de 15 fichiers dans `docs/projects/_template/`.
+- Enrichissement des documents techniques courts et des documents de gouvernance MCP prioritaires sans suppression de leur contenu historique.
+- Ajout d’un état vérifié GitHub `main` ↔ S1, d’une matrice de rôles, de procédures, de risques et de critères de maintenance.
+- Ajout du rapport `docs/reports/MCP_DOCUMENTATION_BOOTSTRAP_20260713.md`.
+- Mise à jour de `README.md`, `ROADMAP.md`, `TASKS.md`, `TODO.md`, `DECISIONS_LOG.md` et `SUIVI.md`.
+- Publication contrôlée dans la PR draft GitHub `#13`, sans merge ni synchronisation serveur.
+- Aucun fichier applicatif ou JSON `.mcp` modifié ; aucun secret, déploiement, restart ou migration.
+
+Contrôles : couverture 49/49, structure des fichiers créés, JSON `.mcp`, documentation obligatoire, scan secrets et `git diff --check`.
+
+Rollback : retirer le commit documentaire proposé ou fermer la PR ; aucune restauration serveur n’est nécessaire tant que cette branche n’est ni mergée ni déployée.
+
 ---
 
 ## 2026-07-09 — Validation production MCP GitHub ↔ serveur

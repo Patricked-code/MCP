@@ -102,6 +102,18 @@ Avant toute modification, lire :
 7. `docs/AGENTS_ARCHITECTURE.md`
 8. `docs/AI_SKILLS.md`
 
+La gouvernance active est également disponible à la racine. Commencer par `SUIVI.md`, `AGENTS.md`, `SOURCE_OF_TRUTH.md`, `PROJECT_RULES.md`, `NO_REGRESSION_POLICY.md` et `WEALTHTECH_CODEX_MASTER_INSTRUCTIONS.md`.
+
+## Mémoire projet parent/enfant
+
+- fichiers racine : règles globales du MCP ;
+- `docs/projects/README.md` : procédure d’intégration ;
+- `docs/projects/_template/` : modèle complet à copier uniquement après audit d’un projet ;
+- `docs/projects/<slug>/` : faits vérifiés propres à un projet ;
+- `memory/` : historique et contexte, jamais substitut automatique à l’état courant.
+
+Les candidats historiques ne doivent pas recevoir un statut « intégré » tant que leur repo, branche, serveur, chemin, domaine, agents et permissions n’ont pas été vérifiés.
+
 ## Déploiement recommandé
 
 - Hébergement : S1
