@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint:secrets": "node scripts/check-no-secrets.mjs",
     "docs:check": "node scripts/check-docs.mjs",
-    "test:readonly-safety": "tsx --test tests/readOnlySafety.test.ts"
+    "test:readonly-safety": "tsx --test tests/readOnlySafety.test.ts tests/mcpGitSync.test.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "latest",

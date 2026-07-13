@@ -3,6 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { env } from '../config/env.js';
 import { runReadOnlyCommand, runGuardedCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
+import { buildMcpGitSyncCommand } from './mcpGitSync.js';
 import { assertScopedWriteToolsEnabled, assertWriteFlag } from '../ssh/writeSafety.js';
 
 const MCP_PROJECT_KEY = 'mcp_bridge';
@@ -185,6 +186,14 @@ printf '\\nScan terminé. Si aucune ligne sensible réelle ne sort, c’est bon 
 }
 
 export function registerMcpSelfWriteTools(server: McpServer): void {
+  server.tool('mcp_sync_from_github_s1', 'Synchronise le dépôt MCP S1 avec origin/main par fast-forward uniquement.', {
+    allow_write: z.boolean().default(false)
+  }, async ({ allow_write }) => {
+    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
+    assertWriteFlag(allow_write, 'mcp_sync_from_github_s1');
+    return runS1Write(buildMcpGitSyncCommand(), 'mcp_sync_from_github_s1', 120_000);
+  });
+
   server.tool('patch_mcp_code_file_s1', 'Écrit ou remplace un fichier texte autorisé du dépôt MCP sur S1 via contenu base64. Ne lit ni n’écrit les secrets.', {
     path: RelativePathSchema,
     content_base64: z.string().min(1).max(700_000).regex(/^[A-Za-z0-9+/=\\r\\n]+$/),
