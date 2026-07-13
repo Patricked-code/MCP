@@ -42,3 +42,27 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+## Fiche obligatoire par outil
+
+Nom, description, catégorie, arguments, sortie, serveur/projet, rôle requis, effets de bord, chemins autorisés, timeout, masquage, audit, tests, rollback et propriétaire.
+
+## Garde d’exécution
+
+Avant appel : vérifier rôle, périmètre, état Git, point de reprise et préconditions. Après appel : capturer résultat public sûr, code de sortie, effets, test et prochaine action.
+
+## Classification
+
+- `read_only` : observation sans mutation ;
+- `documentation_write` : fichiers autorisés sur branche contrôlée ;
+- `scoped_code_write` : périmètre de code explicite avec tests ;
+- `deploy_controlled` : procédure et approbation humaines ;
+- `admin_human_only` : jamais délégué implicitement.
+
+## Désactivation
+
+Un outil doit être désactivé ou repassé en lecture seule si son périmètre est ambigu, son masquage échoue, ses tests régressent ou les permissions divergent.
+
+## Historique
+
+- 2026-07-13 : ajout du contrat et des gardes d’exécution.

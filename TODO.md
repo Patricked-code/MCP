@@ -14,6 +14,16 @@ Liste large des idees, anomalies, points a verifier et besoins non encore ordonn
 ## Passage vers TASKS.md
 Lorsqu'un point devient executable, il doit etre transforme en entree dans TASKS.md.
 
+## Qualification au 2026-07-13
+
+- Couverture Markdown racine : traitée sur la branche de bootstrap, à revoir.
+- Cohérence `.mcp` : présence et syntaxe vérifiées ; revue sémantique/compatibilité encore à faire.
+- Structure enfants : modèle créé ; aucun projet réel déclaré intégré sans audit.
+- Rapport documentaire : créé dans `docs/reports/`.
+- Consolidation `docs/` et `memory/` : reste à planifier par thème ; aucune fusion massive n’a été faite.
+- Protections GitHub et permissions réelles : à vérifier avant merge.
+- Premier projet à onboarder : décision humaine requise après audit des candidats.
+
 
 ---
 

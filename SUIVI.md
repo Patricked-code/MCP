@@ -49,17 +49,51 @@ Ce fichier doit être enrichi au fur et à mesure de l’intégration des projet
 
 # POINT DE REPRISE COURANT
 
-Date : 2026-07-09
+Date : 2026-07-13
+Heure : 02:05 CEST
+Auteur / agent : Codex
+Projet : WealthTech MCP SSH Bridge
+Dépôt GitHub : Patricked-code/MCP
+Branche : `mcp/documentation-bootstrap-20260713` issue de `origin/main` à `f92f621fa495`
+Serveur : S1 ; checkout exécuté laissé sur `main`
+Chemin serveur : `/opt/apps/wealthtech-mcp-ssh-bridge`
+Domaine : `mcp.wealthtechinnovations.com` ; la racine HTTPS répond `302` vers `/dashboard` ; aucun appel de mutation ou déploiement
+État actuel : bootstrap documentaire préparé dans un worktree isolé ; GitHub `main` et S1 restent inchangés. Couverture racine 49/49, modèle enfant et rapport créés.
+Dernière action terminée : création/consolidation documentaire, mise à jour des registres et exécution des contrôles locaux.
+Action en cours : aucune action serveur, GitHub ou production ; diff local en attente de revue humaine.
+Action suivante recommandée : relire le diff, refaire les contrôles finaux, puis approuver ou corriger avant commit/push et PR draft.
+Fichiers lus : `AGENTS.md`, `SUIVI.md`, instructions IA, sources de vérité, pilotage, fichiers MCP, fichiers techniques, `.mcp/*.json`, `package.json`, Dockerfile, Compose, scripts de contrôle et état GitHub/S1.
+Fichiers créés : `WEALTHTECH_CODEX_MASTER_INSTRUCTIONS.md`, `docs/projects/README.md`, 15 fichiers dans `docs/projects/_template/`, `docs/reports/MCP_DOCUMENTATION_BOOTSTRAP_20260713.md`.
+Fichiers modifiés : documents techniques courts, gouvernance agents/MCP, `README.md`, `ROADMAP.md`, `TASKS.md`, `TODO.md`, `CHANGELOG.md`, `DECISIONS_LOG.md` et ce fichier.
+Fichiers à compléter : consolidation thématique de `docs/` et `memory/`, protections GitHub réelles, sémantique/compatibilité `.mcp`, puis dossiers des projets audités individuellement.
+Commandes exécutées : inventaire Git et Markdown, comparaison des branches/SHA, lectures GitHub/S1, contrôle Docker/HTTPS, validation JSON, contrôles documentation/secrets/diff.
+Résultats obtenus : S1 propre et aligné avec GitHub `main` avant modification ; conteneur MCP actif ; seul fichier obligatoire initialement absent créé ; aucun fichier applicatif ou JSON `.mcp` modifié.
+Tests effectués : couverture 49/49, 11 sections des fichiers créés, syntaxe de 8 JSON `.mcp`, `docs:check`, scan minimal de secrets, `git diff --check`.
+Résultat des tests : contrôles locaux réussis ; 37 fichiers Markdown suivis modifiés, 18 fichiers Markdown créés, aucun fichier staged. Le scanner de secrets S1 est indisponible car sa commande interne `cp` est bloquée par la politique read-only.
+Risques connus : sept PR historiques ouvertes, scanner S1 à réparer, documentation historique pouvant être obsolète, candidats projets non encore audités, droits/protections GitHub à confirmer.
+Éléments à ne pas toucher : `main`, S1/S2, domaines protégés, secrets, clés, `.env`, données, logs, sauvegardes, code applicatif et JSON `.mcp` sans tâche dédiée.
+Décisions prises : branche/worktree isolés ; modèle unique non spéculatif ; aucune modification `.mcp` ; aucun commit, push, PR, merge ou déploiement automatique.
+Questions ouvertes : qui valide le diff et quel projet doit être onboardé en premier après cette PR ?
+Prochaine étape : revue humaine, contrôles finaux, commit proposé `docs: bootstrap MCP operational documentation memory`, puis PR draft vers `main` si approuvé.
+
+## Point de reprise précédent — 2026-07-09
+
 Serveur : S1
+
 Dépôt : Patricked-code/MCP
+
 Branche : main
+
 Chemin serveur : /opt/apps/wealthtech-mcp-ssh-bridge
-État actuel : création progressive des fichiers Markdown racine MCP avec écriture contrôlée via wealthtech_ssh_bridge.
-Dernière action terminée : vérification du statut Git et inventaire des fichiers utiles du dépôt MCP.
-Action suivante recommandée : continuer la création des fichiers racine manquants, puis consolider docs/ et memory/ sans écrasement.
-Fichiers déjà présents à ne pas écraser sans lecture : README.md, MCP_PROJECT.md, MCP_AGENT_RULES.md, MCP_REPO_INVENTORY.md, MCP_SERVER_MAPPING.md, .mcp/*.json, docs/*.md, memory/*.md.
-Risques connus : deux modifications locales non commitées existent déjà dans data/mcp-git-registry.json et src/github/registry.ts ; ne pas toucher au code applicatif dans cette passe documentaire.
-Décision de reprise : limiter cette opération aux fichiers de documentation autorisés, sans secrets, sans suppression, sans déploiement.
+
+État : création progressive des fichiers Markdown racine.
+
+Dernière action : vérification du statut Git et inventaire.
+
+Prochaine action alors recommandée : créer les fichiers manquants et consolider `docs/` et `memory/` sans écrasement.
+
+Risque alors signalé : modifications applicatives locales historiques à ne pas mélanger avec la passe documentaire.
+Décision : documentation seulement, sans secret, suppression ni déploiement.
 
 ## 7. Historique
 

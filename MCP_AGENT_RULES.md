@@ -45,3 +45,36 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+## Matrice opérationnelle
+
+| Rôle | Lire | Branche contrôlée | Ouvrir une PR | Modifier S1 | Déployer | Secrets |
+|---|---:|---:|---:|---:|---:|---:|
+| ChatGPT | oui | oui | oui | non par défaut | non | interdit |
+| Claude | oui | oui | oui | non par défaut | non | interdit |
+| Codex | oui | oui | oui | non par défaut | non | interdit |
+| Agent audit | oui | non | non | lecture seule | non | interdit |
+| Agent serveur | selon outil | non | non | outil borné seulement | sur autorisation dédiée | interdit |
+| Humain approbateur | selon rôle | oui | oui | selon habilitation | oui si procédure validée | hors documentation/Git |
+
+Cette table résume la politique ; `.mcp/agents.json` et `.mcp/permissions.json` restent les déclarations machine. En cas de divergence, appliquer le droit le plus restrictif et ouvrir une décision.
+
+## Actions nécessitant une validation humaine
+
+- changement de permissions ou rôle ;
+- écriture sur S1/S2, déploiement, restart, migration ou rollback ;
+- accès à des données non publiques ou à un domaine protégé ;
+- merge, fermeture d’un conflit de source de vérité ou exception à la politique ;
+- création d’un outil d’écriture ou extension de son périmètre.
+
+## Actions strictement interdites
+
+Lecture ou publication de secret, push forcé, écriture directe sur `main`, suppression non inventoriée, commande arbitraire root, contournement de revue, falsification d’un test et marquage d’un onboarding comme terminé sans preuve.
+
+## Boucle agent obligatoire
+
+Identifier → lire → vérifier les droits → auditer → planifier → agir dans le périmètre → tester → journaliser → préparer la reprise → demander la revue.
+
+## Historique
+
+- 2026-07-13 : ajout de la matrice, des validations et interdictions explicites.

@@ -13,6 +13,25 @@ Plan operationnel executable du MCP.
 ## Regle
 Une tache executable doit indiquer objectif, fichiers concernes, risques, preconditions, tests et resultat attendu.
 
+## TASK-20260713-001 — Bootstrap de la mémoire documentaire MCP
+
+Statut : prêt pour revue humaine
+Priorité : haute
+Projet : WealthTech MCP SSH Bridge
+Dépôt : `Patricked-code/MCP`
+Serveur : S1
+Domaine : domaine MCP public, sans action de production
+Objectif : vérifier la double présence, combler le fichier racine manquant, enrichir les documents courts, créer le modèle enfant et produire le rapport.
+Contexte : audit initial effectué sur GitHub `main` et sur le checkout S1 propre et aligné.
+Fichiers concernés : documentation Markdown uniquement ; aucune modification applicative ou `.mcp`.
+Risques : information historique prise pour actuelle, modèle projet utilisé sans audit, mélange avec une branche existante.
+Préconditions : branche isolée issue de `origin/main`, état S1 propre, lecture des règles et du point de reprise.
+Étapes : audit, diagnostic, consolidation, modèle, validation, suivi, rapport.
+Tests : fichiers obligatoires, sections modèles, JSON `.mcp`, `docs:check`, scan secrets, `git diff --check`.
+Résultat attendu : 49/49 fichiers racine, modèle projet complet, rapport et point de reprise précis.
+Décision requise : approuver le diff avant commit/push/PR ; aucun merge ou déploiement automatique.
+Lien vers SUIVI.md : `SUIVI.md`
+
 
 ---
 
