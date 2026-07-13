@@ -4,7 +4,9 @@
 Plan operationnel executable du MCP.
 
 ## Taches immediates
-- TASK-20260712-001 — EN ATTENTE : effectuer une nouvelle revue complète de la PR #11 et de sa CI. C'est la seule prochaine action.
+- TASK-20260712-001 — TERMINÉE : revue complète, approbation et fusion de la PR #11 au commit `38c9990`.
+- TASK-20260713-001 — EN COURS : ajouter `mcp_sync_from_github_s1` avec branche `main`, remote autorisé, dépôt propre et fast-forward obligatoires.
+- TASK-20260713-002 — EN ATTENTE : publier une PR draft, effectuer le déploiement initial, puis vérifier sync, scanner, build, redémarrage, logs et endpoints.
 
 ## Taches futures separees
 - TASK-FUTURE-NODE — PLANIFIEE, NON EXECUTEE : préparer la migration du runtime Node dans une PR dédiée.

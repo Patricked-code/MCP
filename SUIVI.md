@@ -49,16 +49,16 @@ Ce fichier doit être enrichi au fur et à mesure de l’intégration des projet
 
 # POINT DE REPRISE COURANT
 
-Date : 2026-07-12
-Statut : PR #11 en correction sur `mcp/hardening-readonly-ci-state-20260711`, toujours draft et non fusionnée.
-Dépôt GitHub : `Patricked-code/MCP` ; `main` vérifié au SHA complet `f92f621fa495d5728df5fb5befcc3265ff3a1302`.
-Serveur S1 : `/opt/apps/wealthtech-mcp-ssh-bridge`, branche `main`, commit restitué seulement sous le préfixe `f92f621`.
+Date : 2026-07-13
+Statut : PR #11 fusionnée ; outil de synchronisation GitHub vers S1 en préparation sur `mcp/s1-git-sync-tool-20260713`.
+Dépôt GitHub : `Patricked-code/MCP` ; `main` vérifié au SHA complet `38c999087b0e93adc2beeba04733af182c92be9c`.
+Serveur S1 : `/opt/apps/wealthtech-mcp-ssh-bridge`, branche `main`, encore au commit `f92f621` avant déploiement.
 État Git S1 : working tree suivi propre et diff suivi vide ; les fichiers ignorés n'ont pas été audités exhaustivement.
 Runtime : conteneur `wealthtech_mcp_ssh_bridge` observé actif sur `127.0.0.1:8787` ; le commit embarqué dans l'image Docker n'est pas attesté.
-Sécurité : le scanner de secrets et la recherche de code étaient bloqués avant correction par le faux positif `cp` ; leur validation serveur après fusion reste à faire ultérieurement avec autorisation séparée.
-Déploiement : PR #10 et PR #11 non déployées ; Onboarding Engine documenté/configuré mais non implémenté dans `main`.
-Dernière action terminée : correction locale contrôlée des constats de revue de la PR #11, sans action serveur.
-Seule prochaine action : nouvelle revue complète de la PR #11 et de sa CI ; aucune fusion automatique.
+Sécurité : correction du faux positif `cp` fusionnée dans `main`, mais non encore déployée ni vérifiée sur S1.
+Déploiement : PR #11 fusionnée, S1 non synchronisé ; PR #10 non déployée ; Onboarding Engine non implémenté dans `main`.
+Dernière action terminée : revue, approbation et fusion contrôlée de la PR #11 après validations locales et CI réussies.
+Prochaine action : valider et publier la PR draft de l'outil `mcp_sync_from_github_s1`, puis effectuer son déploiement initial par le script serveur existant.
 Historique : le point de reprise du 2026-07-09 ci-dessous est conservé comme historique et remplacé par la présente section.
 
 ## 7. Historique

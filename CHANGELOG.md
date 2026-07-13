@@ -100,3 +100,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - NON VÉRIFIÉ : identité du commit embarqué dans l'image Docker active.
 - NON EXÉCUTÉ : aucune fusion, aucun déploiement, aucun redémarrage et aucune modification serveur.
 - Prochaine action unique : nouvelle revue complète de la PR #11 et de sa CI.
+
+## 2026-07-13 -- Outil de synchronisation GitHub vers S1
+
+- PR #11 revue, approuvée et fusionnée dans `main` au commit `38c9990`.
+- Ajout de l'outil contrôlé `mcp_sync_from_github_s1`.
+- Synchronisation limitée à `Patricked-code/MCP:main`, dépôt propre et fast-forward uniquement.
+- Ajout de tests de syntaxe et de garde-fous ; aucune commande destructive ou réécriture d'historique autorisée.
+- Build et redémarrage volontairement séparés de la synchronisation Git.
+- Aucun déploiement serveur exécuté dans cette branche.

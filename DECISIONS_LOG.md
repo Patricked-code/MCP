@@ -58,3 +58,11 @@ Limites : ne pas merger ou rebaser PR #10 dans cette branche ; ne pas fermer #2/
 - NON VÉRIFIÉ : commit embarqué dans l'image Docker active.
 - PLANIFIÉ HORS PR #11 : migration Node et modernisation des GitHub Actions dans des PR séparées.
 - Prochaine action unique : nouvelle revue complète de la PR #11 et de sa CI, sans fusion automatique.
+
+## 2026-07-13 -- Synchronisation MCP GitHub vers S1
+
+Contexte : après fusion de la PR #11, le MCP déployé ne disposait d'aucun outil autorisé pour synchroniser son propre dépôt depuis GitHub. Les outils existants permettaient seulement lecture, patch contrôlé, typecheck, build et redémarrage.
+
+Décision : ajouter `mcp_sync_from_github_s1` comme opération séparée exigeant `allow_write=true`. L'outil vérifie la branche `main`, le remote `Patricked-code/MCP`, un état totalement propre et l'ascendance avant tout fast-forward. Les hooks Git sont désactivés pendant la synchronisation.
+
+Interdictions : aucun reset, clean, checkout, switch, rebase, stash, push, build ou redémarrage dans l'outil de synchronisation. Les étapes de validation et de déploiement restent indépendantes.

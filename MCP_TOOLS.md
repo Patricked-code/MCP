@@ -13,6 +13,26 @@ Catalogue des outils MCP disponibles.
 ## Règle
 Chaque outil doit documenter arguments, résultat, droits requis, risques et interdictions.
 
+## `mcp_sync_from_github_s1`
+
+Objectif : synchroniser `/opt/apps/wealthtech-mcp-ssh-bridge` avec `Patricked-code/MCP:main` sans écraser ni réécrire l'historique.
+
+Argument obligatoire :
+
+- `allow_write=true` après validation explicite de l'opérateur.
+
+Garde-fous :
+
+- `ENABLE_WRITE_TOOLS` doit être actif ;
+- branche serveur obligatoirement `main` ;
+- remote `origin` limité au dépôt `Patricked-code/MCP` ;
+- dépôt totalement propre, y compris les fichiers non suivis ;
+- avance rapide uniquement après vérification d'ascendance ;
+- hooks Git désactivés pendant le fetch et le fast-forward ;
+- contrôle du commit final et nouvel état propre obligatoire.
+
+L'outil n'exécute ni build, ni redémarrage, ni reset, ni clean, ni rebase, ni stash, ni push. Le build et le redémarrage restent des opérations séparées afin de conserver des points de contrôle explicites.
+
 ---
 
 <!-- MCP-GOVERNANCE-MANUAL-REFERENCE -->
