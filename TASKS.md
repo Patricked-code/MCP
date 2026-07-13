@@ -4,11 +4,11 @@
 Plan operationnel executable du MCP.
 
 ## Taches immediates
-- TASK-20260709-001 : finaliser les fichiers Markdown racine manquants.
-- TASK-20260709-002 : comparer racine, docs/ et memory/ sans ecrasement.
-- TASK-20260709-003 : preparer docs/projects/<projet>/ pour les projets integres.
-- TASK-20260709-004 : auditer les fichiers .mcp/*.json.
-- TASK-20260709-005 : produire un rapport final et commit documentaire.
+- TASK-20260712-001 — EN ATTENTE : effectuer une nouvelle revue complète de la PR #11 et de sa CI. C'est la seule prochaine action.
+
+## Taches futures separees
+- TASK-FUTURE-NODE — PLANIFIEE, NON EXECUTEE : préparer la migration du runtime Node dans une PR dédiée.
+- TASK-FUTURE-ACTIONS — PLANIFIEE, NON EXECUTEE : moderniser et épingler les GitHub Actions dans une PR dédiée.
 
 ## Regle
 Une tache executable doit indiquer objectif, fichiers concernes, risques, preconditions, tests et resultat attendu.
@@ -65,3 +65,15 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+## 2026-07-11 -- Phase 2 hardening read-only / CI / state docs
+
+- TASK-20260711-001 — TERMINEE SUR BRANCHE, NON FUSIONNEE : corriger `src/ssh/safety.ts` pour détecter `cp` comme commande shell et via les wrappers inventoriés.
+  - Précondition : partir de `main@f92f621` sur `mcp/hardening-readonly-ci-state-20260711`.
+  - Tests : `npm run test:readonly-safety`, `npm run typecheck`, `npm run build`.
+- TASK-20260711-002 — TERMINEE SUR BRANCHE, NON FUSIONNEE : ajouter une CI GitHub Actions minimale.
+  - Commandes : typecheck, build, docs check, secret scan, test read-only safety et contrôle effectif base/head. Aucun test GitHub fictif n'est exécuté dans cette PR.
+- TASK-20260711-003 — TERMINEE SUR BRANCHE, NON FUSIONNEE : mettre à jour l'état public-safe après le commit direct `f92f621`.
+  - Fichiers canoniques : `SUIVI.md`, `TASKS.md`, `CHANGELOG.md`, `DECISIONS_LOG.md`, `PRODUCTION_STATE.json`.
+  - `MCP_MASTER_REFERENCE.md` a été retiré pour éviter une source concurrente.
+- TASK-20260711-004 — TERMINEE : préparer une PR draft vers `main`, sans merge, sans rebase PR #10, sans fermeture #2/#3.

@@ -6,6 +6,12 @@ Ce document ne contient aucun secret complet.
 
 ---
 
+## Mise à jour public-safe 2026-07-11
+
+Cette page a été générée le 2026-07-01 et contient des éléments historiques. L'état vérifié le 2026-07-11 est différent : le MCP expose maintenant un OAuth minimal compatible Authorization Code + PKCE. Les endpoints publics `/.well-known/oauth-protected-resource`, `/.well-known/oauth-authorization-server`, `/oauth/authorize` et `/oauth/token` sont actifs. Le chemin `/mcp` reste protégé et retourne `401 Unauthorized` sans token.
+
+Les sections explicitement marquées **Historique 2026-07-01** ci-dessous décrivent le cadrage initial et ne doivent pas être utilisées comme état courant.
+
 ## 1. État actuel du MCP
 
 | Élément | Valeur |
@@ -14,7 +20,7 @@ Ce document ne contient aucun secret complet.
 | URL MCP | https://mcp.wealthtechinnovations.com/mcp |
 | Healthcheck | https://mcp.wealthtechinnovations.com/health |
 | Auth actuelle | Bearer token statique |
-| OAuth 2.1 natif | Non implémenté actuellement |
+| OAuth minimal | Actif au 2026-07-11, compatible Authorization Code + PKCE |
 | Mode courant | read-only-first |
 
 Le serveur fonctionne aujourd’hui avec un token statique dans le header :
@@ -27,7 +33,9 @@ Cette méthode est suffisante pour certains clients MCP qui permettent de config
 
 ---
 
-## 2. Interprétation des paramètres OAuth ChatGPT
+## 2. Historique 2026-07-01 — interprétation initiale des paramètres OAuth ChatGPT
+
+Cette section est conservée uniquement comme historique. Les affirmations au futur qu'elle contient ne décrivent plus l'implémentation minimale actuelle.
 
 ### Méthode d’enregistrement
 
@@ -104,11 +112,11 @@ mcp:read
 
 ---
 
-## 3. Endpoints OAuth futurs à implémenter
+## 3. Endpoints OAuth minimaux actuels
 
-Ces endpoints n’existent pas encore dans le code actuel. Ils devront être ajoutés si l’on veut une authentification OAuth complète.
+Ces endpoints sont actifs dans l’état vérifié au 2026-07-11 pour la couche OAuth minimale. Les extensions futures doivent rester compatibles avec cet existant.
 
-| Champ ChatGPT | Valeur future |
+| Champ ChatGPT | Valeur actuelle ou statut |
 |---|---|
 | URL d’autorisation | https://mcp.wealthtechinnovations.com/oauth/authorize |
 | URL jeton | https://mcp.wealthtechinnovations.com/oauth/token |
@@ -135,7 +143,9 @@ OIDC ne sera utile que si l’on veut que ChatGPT récupère l’identité utili
 
 ---
 
-## 5. Valeurs exactes à saisir si OAuth est ajouté au serveur
+## 5. Historique 2026-07-01 — proposition de configuration antérieure
+
+Cette section est archivée pour traçabilité. Elle ne constitue ni l'état actuel, ni une autorisation de configuration, ni une source de secrets.
 
 ```text
 Méthode d’enregistrement :
@@ -258,4 +268,3 @@ Workflows: Write seulement si GitHub Actions doit être modifié
 ```
 
 Ne jamais stocker le token GitHub dans GitHub ni dans un fichier public.
-

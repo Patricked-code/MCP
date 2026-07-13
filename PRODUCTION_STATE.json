@@ -6,8 +6,10 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "lastValidatedAt": "2026-07-09T18:27:39Z",
+  "lastValidatedAt": "2026-07-11T04:50:54Z",
   "lastKnownGoodCommits": [
+    "f92f621 fix(oauth): accept Claude and ChatGPT MCP resource aliases",
+    "4ae1124 docs: add MCP anti-dispersion manual and function cartography",
     "4619588 docs: record final MCP production validation",
     "fbc7c97 docs: formalize MCP GitHub production governance and inventory"
   ],
@@ -25,5 +27,28 @@
     "/.well-known/oauth-protected-resource": "200 OK",
     "/.well-known/oauth-authorization-server": "200 OK",
     "/mcp_without_token": "401 Unauthorized"
-  }
+  },
+  "githubCommitFull": "f92f621fa495d5728df5fb5befcc3265ff3a1302",
+  "serverGitState": {
+    "branch": "main",
+    "serverCommitPrefix": "f92f621",
+    "serverCommitFull": null,
+    "serverCommitFullVerifiedDirectly": false,
+    "originMainCommitPrefix": "f92f621",
+    "trackedWorkingTreeClean": true,
+    "ignoredFilesAudited": false,
+    "verifiedAt": "2026-07-12"
+  },
+  "runtimeState": {
+    "containerRuntimeObserved": true,
+    "containerImageCommitVerified": false
+  },
+  "securityState": {
+    "secretScannerStatus": "blocked_before_pr11_correction_due_to_cp_false_positive"
+  },
+  "deploymentState": {
+    "pr10Deployed": false,
+    "pr11Deployed": false
+  },
+  "onboardingEngineState": "documented_and_configured_but_not_implemented_in_main"
 }

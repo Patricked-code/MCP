@@ -38,3 +38,23 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+## 2026-07-11 -- Phase 2 hardening read-only / CI / state docs
+
+Contexte : l'audit Phase 1 a confirmé `main@f92f621`, 7 PR ouvertes, issues #2/#3 ouvertes, absence de workflow GitHub Actions et un faux positif read-only autour de `cp`.
+
+Décision : ouvrir une branche unique `mcp/hardening-readonly-ci-state-20260711` depuis `main@f92f621` pour corriger les garde-fous read-only, ajouter la CI minimale et actualiser l'état documentaire public-safe avant toute reprise de PR #10.
+
+Décision complémentaire : le commit direct `f92f621` est documenté comme exception historique à tracer, car il inclut OAuth resource aliases et durable accounts. Les futurs changements doivent suivre branche `mcp/*`, PR draft, validations et revue humaine.
+
+Limites : ne pas merger ou rebaser PR #10 dans cette branche ; ne pas fermer #2/#3 ; ne pas supprimer de branche ; ne pas déclencher restart, déploiement, migration ou cleanup ; ne pas publier d'inventaire privé S1/S2.
+
+## 2026-07-12 -- Phase 4 correction contrôlée de la PR #11
+
+- DÉCIDÉ : conserver le correctif read-only et la CI dans la PR #11, avec les renforcements issus de la revue Phase 3.
+- DÉCIDÉ : retirer `MCP_MASTER_REFERENCE.md` sans remplacement ; `SOURCE_OF_TRUTH.md`, `SUIVI.md`, `PRODUCTION_STATE.json` et `DECISIONS_LOG.md` restent les sources canoniques existantes.
+- VÉRIFIÉ : le SHA GitHub complet est `f92f621fa495d5728df5fb5befcc3265ff3a1302` ; S1 a directement restitué uniquement `f92f621`.
+- PARTIELLEMENT VÉRIFIÉ : dépôt Git suivi S1 propre ; fichiers ignorés non audités.
+- NON VÉRIFIÉ : commit embarqué dans l'image Docker active.
+- PLANIFIÉ HORS PR #11 : migration Node et modernisation des GitHub Actions dans des PR séparées.
+- Prochaine action unique : nouvelle revue complète de la PR #11 et de sa CI, sans fusion automatique.
