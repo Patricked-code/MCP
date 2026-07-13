@@ -22,6 +22,7 @@ Chaque changement visible doit indiquer date, fichier, raison, impact, tests et 
 - Ajout d’un état vérifié GitHub `main` ↔ S1, d’une matrice de rôles, de procédures, de risques et de critères de maintenance.
 - Ajout du rapport `docs/reports/MCP_DOCUMENTATION_BOOTSTRAP_20260713.md`.
 - Mise à jour de `README.md`, `ROADMAP.md`, `TASKS.md`, `TODO.md`, `DECISIONS_LOG.md` et `SUIVI.md`.
+- Publication contrôlée dans la PR draft GitHub `#13`, sans merge ni synchronisation serveur.
 - Aucun fichier applicatif ou JSON `.mcp` modifié ; aucun secret, déploiement, restart ou migration.
 
 Contrôles : couverture 49/49, structure des fichiers créés, JSON `.mcp`, documentation obligatoire, scan secrets et `git diff --check`.

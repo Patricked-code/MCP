@@ -22,7 +22,7 @@ L’audit en lecture seule a confirmé que GitHub `main` et le checkout S1 étai
 - Fichiers modifiés sur S1 : aucun au moment de l’audit
 - Fichiers non suivis sur S1 : aucun signalé
 - Synchronisation initiale : S1 `main` = GitHub `main` = `f92f621fa495`
-Synchronisation après cette passe : changements locaux seulement, non committés, non poussés et non déployés
+Synchronisation après cette passe : commit `64409f0183a4` poussé sur `mcp/documentation-bootstrap-20260713`, PR draft `#13` ouverte ; aucun merge ni déploiement
 
 Le checkout local précédemment actif `mcp/import-conversation-serveur-plus` n’a pas été modifié.
 
@@ -159,17 +159,11 @@ Risques régression : une modification future des JSON `.mcp` peut casser un con
 ## 11. Mise à jour SUIVI.md
 
 - POINT DE REPRISE COURANT mis à jour : oui
-- Dernière action : bootstrap documentaire et contrôles locaux
-Prochaine action : revue humaine du diff, puis commit/push et PR draft si approuvés
+- Dernière action : commit documentaire, push de la branche et ouverture de la PR draft `#13`
+Prochaine action : revue humaine de `https://github.com/Patricked-code/MCP/pull/13`, sans merge ni synchronisation S1 automatique
 
 ## 12. Recommandation finale
 
-Action suivante recommandée : revoir le diff de `mcp/documentation-bootstrap-20260713`, exécuter une dernière fois les contrôles, puis créer un commit documentaire unique proposé :
+Action suivante recommandée : revoir la PR draft `#13`, demander les corrections utiles puis approuver explicitement le merge. Ne pas merger ni déployer automatiquement.
 
-```text
-docs: bootstrap MCP operational documentation memory
-```
-
-Ouvrir ensuite une PR draft vers `main`. Ne pas merger ni déployer automatiquement.
-
-Validation humaine requise : oui, avant commit/push/PR selon la gouvernance locale, et impérativement avant merge ou synchronisation S1.
+Validation humaine requise : oui, impérativement avant merge ou synchronisation S1.
