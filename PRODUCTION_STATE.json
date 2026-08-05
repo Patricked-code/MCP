@@ -53,5 +53,22 @@
     "pr11Deployed": false,
     "mcpSyncToolDeployed": false
   },
-  "onboardingEngineState": "documented_and_configured_but_not_implemented_in_main"
+  "onboardingEngineState": "documented_and_configured_but_not_implemented_in_main",
+  "alignmentRecovery": {
+    "recordedAt": "2026-08-05T04:06:10.567244+00:00",
+    "status": "forensic_branch_published_alignment_pending",
+    "repository": "Patricked-code/MCP",
+    "baselineMainCommit": "097dac93715c0af83fcfad82cd598bacec956125",
+    "recoveryBranch": "mcp/recover-runtime-drift-20260805",
+    "recoveryCommit": "7c8d9f782ae3195197345257f38fbc400504a848",
+    "runtimeBuildParityVerified": true,
+    "runtimeBuildDiffLines": 0,
+    "bundleSha256": "8a27a5814fb5fe688b42344cab770a1aee2ad059dc076b691df1e7900c43c4bd",
+    "activeDockerImageId": "sha256:b82969cbd5b840738b411ec99956075dcb40516501d8048883f95b529d2c03d0",
+    "productionModifiedDuringRecovery": false,
+    "githubMainAligned": false,
+    "serverWorkingTreeClean": false,
+    "runtimeRebuiltFromMergedCommit": false,
+    "nextStep": "strict_read_write_separation"
+  }
 }

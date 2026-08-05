@@ -109,3 +109,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Ajout de tests de syntaxe et de garde-fous ; aucune commande destructive ou réécriture d'historique autorisée.
 - Build et redémarrage volontairement séparés de la synchronisation Git.
 - Aucun déploiement serveur exécuté dans cette branche.
+
+## 2026-08-05 — Préservation du runtime MCP
+
+- Snapshot forensique créé et hashé.
+- Baseline `097dac9` testée avec succès.
+- Runtime récupéré dans la branche `mcp/recover-runtime-drift-20260805`.
+- Commit de récupération : `7c8d9f782ae3195197345257f38fbc400504a848`.
+- Build récupéré identique au runtime actif.
+- Branche publiée sans modification de main.
+- Aucun déploiement ni redémarrage effectué.
