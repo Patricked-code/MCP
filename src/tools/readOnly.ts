@@ -9,6 +9,7 @@ import { registerGithubAuthorizationReadOnlyTools } from './githubAuthorization.
 import { registerDurableAccountReadOnlyTools } from './durableAccounts.js';
 import { registerGitRegistryV2ReadOnlyTools } from './githubRegistryV2.js';
 import { registerScopedReadOnlyTools } from './writeScoped.js';
+import { registerRuntimeAttestationReadOnlyTools } from './runtimeAttestation.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -48,6 +49,7 @@ export function registerReadOnlyTools(server: McpServer): void {
   registerGithubAuthorizationReadOnlyTools(server);
   registerDurableAccountReadOnlyTools(server);
   registerGitRegistryV2ReadOnlyTools(server);
+  registerRuntimeAttestationReadOnlyTools(server);
   registerMcpSelfReadOnlyTools(server);
   registerScopedReadOnlyTools(server);
 }
