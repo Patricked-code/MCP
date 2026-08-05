@@ -7,9 +7,7 @@ import { registerMcpSelfWriteTools } from './selfManagement.js';
 import {
   assertScopedWriteToolsEnabled,
   assertSelectOnlyQuery,
-  assertSafeScriptArgs,
-  assertWriteFlag,
-  scriptArgsRequireWriteApproval
+  assertSafeScriptArgs
 } from '../ssh/writeSafety.js';
 
 const ProjectKeySchema = z.enum(['api_opcv', 'front_end_opcvm', 'brvmchainsolution']);
@@ -39,7 +37,6 @@ const projects: Record<ProjectKey, { label: string; path: string; note: string }
   }
 };
 
-
 function inferScriptProject(script: AllowedScript): ProjectKey {
   if (
     script.includes('repair-ost') ||
@@ -51,17 +48,6 @@ function inferScriptProject(script: AllowedScript): ProjectKey {
 
   return 'api_opcv';
 }
-
-
-const scriptsRequiringWriteApproval = new Set<AllowedScript>([
-  'scripts/scraper/fix_index_tail.js',
-  'scripts/scraper/propagate_indref_range.js',
-  'scripts/scraper/scrape_indices_daily.js',
-  'scripts/recalc/recalc_eur_usd_daily_rate.js',
-  'scripts/repair-ost.ts',
-  'scripts/align-dividend-years.ts',
-  'scripts/repair-dividends.ts'
-]);
 
 function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'"'"'`)}'`;
@@ -231,38 +217,41 @@ else
 fi`;
 }
 
-export function registerScopedWriteTools(server: McpServer): void {
-  server.tool('get_write_tools_context', 'Liste les projets et opérations d’écriture contrôlées disponibles. Aucun secret n’est exposé.', {}, async () => {
-    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
-    return asText(JSON.stringify({
-      mode: 'scoped-write-tools',
-      free_shell: false,
-      run_command_s1: false,
-      run_command_s2: false,
-      sql: 'SELECT uniquement',
-      projects: formatProjectCatalog()
-    }, null, 2));
-  });
+export function registerScopedReadOnlyTools(server: McpServer): void {
+  server.tool('get_write_tools_context', 'Liste les projets et opérations d’écriture contrôlées disponibles. Aucun secret n’est exposé.', {}, async () => asText(JSON.stringify({
+    mode: 'scoped-write-tools',
+    free_shell: false,
+    run_command_s1: false,
+    run_command_s2: false,
+    sql: 'SELECT uniquement',
+    projects: formatProjectCatalog()
+  }, null, 2)));
 
   server.tool('run_sql_readonly_s2', 'Exécute une requête SQL SELECT uniquement sur la base OPCVM S2.', {
     query: z.string().min(8).max(20_000)
   }, async ({ query }) => {
-    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     assertSelectOnlyQuery(query);
     const command = `set -euo pipefail
 mysql -N -B ${shellQuote(env.OPCVM_DB_NAME)} -e ${shellQuote(query.trim())}`;
     return runS2(command, 'run_sql_readonly_s2', 30_000);
   });
 
+  server.tool('git_status_project_s2', 'Affiche l’état Git d’un projet autorisé sur S2.', {
+    project: ProjectKeySchema
+  }, async ({ project }) => runS2(
+    buildGitStatusCommand(project),
+    `git_status_project_s2:${project}`,
+    30_000
+  ));
+}
+
+export function registerScopedWriteTools(server: McpServer): void {
   server.tool('exec_repo_script_s2', 'Exécute uniquement un script autorisé du dépôt API OPCVM sur S2.', {
     script: AllowedScriptSchema,
     args: z.array(z.string()).default([])
   }, async ({ script, args }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     assertSafeScriptArgs(args);
-    // Mode autonomie projet : pas de validation manuelle allow_write.
-    // Les scripts sont autorisés dynamiquement sous scripts/**/*.js ou scripts/**/*.ts.
-    // Le routage projet reste contrôlé par inferScriptProject().
     const scriptProject = inferScriptProject(script);
     const scriptProjectConfig = projectFor(scriptProject);
     const quotedArgs = args.map(shellQuote).join(' ');
@@ -281,13 +270,6 @@ printf 'Projet: ${scriptProjectConfig.label}\nScript autorisé: ${script}\nChemi
 git status -sb
 node ${shellQuote(script)} ${quotedArgs}`;
     return runS2(command, `exec_repo_script_s2:${script}`, 900_000);
-  });
-
-  server.tool('git_status_project_s2', 'Affiche l’état Git d’un projet autorisé sur S2.', {
-    project: ProjectKeySchema
-  }, async ({ project }) => {
-    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
-    return runS2(buildGitStatusCommand(project), `git_status_project_s2:${project}`, 30_000);
   });
 
   server.tool('git_pull_project_s2', 'Met à jour automatiquement un projet autorisé sur S2 avec stash, pull --rebase et restauration du stash.', {
