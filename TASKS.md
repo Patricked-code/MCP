@@ -79,3 +79,14 @@ Mise à jour : 2026-07-09T20:08:09Z
   - Fichiers canoniques : `SUIVI.md`, `TASKS.md`, `CHANGELOG.md`, `DECISIONS_LOG.md`, `PRODUCTION_STATE.json`.
   - `MCP_MASTER_REFERENCE.md` a été retiré pour éviter une source concurrente.
 - TASK-20260711-004 — TERMINEE : préparer une PR draft vers `main`, sans merge, sans rebase PR #10, sans fermeture #2/#3.
+
+## Tâche active — PR 1 état forensique
+
+Branche : `mcp/forensic-state-docs-20260805`
+
+Objectifs :
+- publier l’état attesté ;
+- conserver le document corrompu ;
+- publier sa version réparée ;
+- ne modifier aucun runtime ;
+- préparer PR 2.

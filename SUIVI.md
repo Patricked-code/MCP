@@ -185,3 +185,15 @@ Point de reprise public-safe : audit Phase 1 validé par l'opérateur, puis ouve
 Exception à tracer : le commit `f92f621` contient aussi l'ajout `src/tools/durableAccounts.ts` et `MCP_DURABLE_ACCOUNT_MANAGEMENT.md`. Il semble être arrivé sur `main` sans PR visible dans l'audit courant. Cette exception ne doit pas être répétée : les prochains changements doivent passer par branche `mcp/*`, PR draft, CI et revue humaine.
 
 Action locale Phase 2 : durcir la détection read-only pour ne plus confondre `.mcp` ou `MCP` avec la commande shell `cp`, ajouter une CI minimale, et mettre à jour uniquement l'état documentaire public-safe. Aucune action production, aucun restart, aucun déploiement, aucune suppression, aucun merge de PR #10.
+
+## 2026-08-05 — Récupération forensique et alignement en cours
+
+- Baseline main : `097dac93715c0af83fcfad82cd598bacec956125`.
+- Runtime récupéré sur : `mcp/recover-runtime-drift-20260805@7c8d9f782ae3195197345257f38fbc400504a848`.
+- Build récupéré identique au runtime : 0 différence.
+- Branche publiée sur `Patricked-code/MCP`.
+- Bundle Git vérifié : `8a27a5814fb5fe688b42344cab770a1aee2ad059dc076b691df1e7900c43c4bd`.
+- Production non modifiée.
+- Main GitHub non encore alignée.
+- Dossier Git actif S1 encore sale et préservé.
+- Prochaine action : PR 2, séparation stricte lecture / écriture.

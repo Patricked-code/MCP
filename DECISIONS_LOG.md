@@ -66,3 +66,20 @@ Contexte : après fusion de la PR #11, le MCP déployé ne disposait d'aucun out
 Décision : ajouter `mcp_sync_from_github_s1` comme opération séparée exigeant `allow_write=true`. L'outil vérifie la branche `main`, le remote `Patricked-code/MCP`, un état totalement propre et l'ascendance avant tout fast-forward. Les hooks Git sont désactivés pendant la synchronisation.
 
 Interdictions : aucun reset, clean, checkout, switch, rebase, stash, push, build ou redémarrage dans l'outil de synchronisation. Les étapes de validation et de déploiement restent indépendantes.
+
+## 2026-08-05 — Alignement serveur vers GitHub sans régression
+
+Contexte : le runtime S1 contenait des fonctions absentes de `Patricked-code/MCP:main`.
+
+Décision : préserver exactement le runtime dans une branche forensique, puis produire des PR indépendantes.
+
+Ordre validé :
+1. documentation et état attesté ;
+2. séparation lecture / écriture ;
+3. Registry V2 ;
+4. inventaires ;
+5. mappings ;
+6. cockpit read-only ;
+7. réintroduction progressive des actions.
+
+Interdiction : ne pas fusionner directement la branche forensique dans main.

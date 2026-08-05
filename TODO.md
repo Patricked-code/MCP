@@ -66,3 +66,16 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+## Alignement MCP — 2026-08-05
+
+- [x] Snapshot forensique.
+- [x] Baseline testée.
+- [x] Runtime récupéré dans GitHub.
+- [x] Bundle Git vérifié.
+- [ ] PR 1 documentation fusionnée.
+- [ ] PR 2 séparation lecture / écriture.
+- [ ] Main GitHub alignée.
+- [ ] Image reconstruite depuis le commit fusionné.
+- [ ] Dossier Git S1 remis dans un état propre.
+- [ ] PRODUCTION_STATE final attesté.
