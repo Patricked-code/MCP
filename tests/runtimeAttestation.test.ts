@@ -43,6 +43,16 @@ test('la commande Docker est compatible avec la politique read-only', () => {
   assert.match(command, /wealthtech_mcp_ssh_bridge/);
 });
 
+test('chaque inspection Docker utilise une sortie formatée', () => {
+  const command = buildMcpRuntimeImageAttestationCommand();
+  assert.equal(command.includes('docker inspect --type container "$CONTAINER"'), false);
+  assert.equal(command.includes('docker image inspect "$IMAGE_ID"'), false);
+
+  for (const line of command.split('\n').filter((value) => value.includes('docker ') && value.includes('inspect'))) {
+    assert.equal(line.includes('--format'), true, `Inspection Docker non formatée : ${line}`);
+  }
+});
+
 test('la sortie Docker exclut les surfaces sensibles ou non bornées', () => {
   const command = buildMcpRuntimeImageAttestationCommand();
   const forbidden = [
