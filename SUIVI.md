@@ -197,3 +197,14 @@ Action locale Phase 2 : durcir la détection read-only pour ne plus confondre `.
 - Main GitHub non encore alignée.
 - Dossier Git actif S1 encore sale et préservé.
 - Prochaine action : PR 2, séparation stricte lecture / écriture.
+
+## 2026-08-05 — Diagnostic GitHub PR reconstruit sur le main protégé
+
+- PR documentaire #18 fusionnée dans `main` au commit `3f79184eb6a647b39596ff408baa50c4a0c23c01`.
+- Ancienne PR #21 conservée comme historique et destinée à être fermée sans fusion.
+- Branche propre : `mcp/github-pr-auth-diagnostics-rebased-20260805` depuis le commit de fusion #18.
+- Outil ajouté : `github_pr_authorization_diagnostic`, strictement read-only.
+- Sécurité : HTTPS obligatoire, hôte GitHub allowlisté, timeout borné, arrêt des probes après échec et aucune fuite du credential.
+- Tests : classification des erreurs, `404` ciblé, timeout, allowlist, ordre des probes et absence de token dans les sorties.
+- Serveur S1, conteneur Docker et registre actif : non modifiés.
+- Prochaine action : ouvrir une PR draft, attendre la CI, effectuer une revue humaine et ne fusionner qu’avec SHA verrouillé.
