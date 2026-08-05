@@ -37,8 +37,10 @@ L’outil refuse l’exécution lorsque :
 - le chemin actif n’est pas un dépôt Git ;
 - le remote actif ne correspond pas à `Patricked-code/MCP` ;
 - le SHA demandé ne correspond pas au `main` distant lu avec `git ls-remote` ;
-- le répertoire de récupération est un lien symbolique ;
-- un dossier du même `run_id` existe déjà.
+- la racine, `snapshots/` ou `candidates/` est un lien symbolique ;
+- un dossier du même `run_id` existe déjà ;
+- les fichiers non suivis autorisés dépassent 2 Gio ;
+- l’espace disque ne permet pas de conserver au moins 1 Gio de réserve après leur taille estimée.
 
 ## Snapshot hors dépôt actif
 
@@ -55,12 +57,23 @@ Contenu :
 - bundle Git de tous les refs ;
 - patch binaire du working tree ;
 - archive des fichiers non suivis autorisés ;
+- nombre et taille des fichiers autorisés ;
 - compte des fichiers exclus ;
+- espace disponible constaté avant archivage ;
 - attestation Docker allowlistée ;
 - métadonnées du candidat ;
 - manifeste SHA-256.
 
 Les permissions sont restreintes avec `umask 077`, dossiers `0700` et retrait des droits groupe/autres.
+
+## Limites de volumétrie
+
+```text
+maximum fichiers non suivis autorisés : 2 147 483 648 octets
+réserve disque minimale               : 1 073 741 824 octets
+```
+
+La taille est calculée avant création de l’archive. L’outil s’arrête avant `tar` lorsque la limite ou la réserve n’est pas respectée.
 
 ## Exclusions
 
@@ -71,6 +84,7 @@ Ne sont pas archivés parmi les fichiers non suivis :
 - certificats et formats de clés ;
 - dumps SQL ;
 - bases SQLite et fichiers DB ;
+- ZIP, TAR, GZIP, sauvegardes `.bak` et `.old` ;
 - logs ;
 - `node_modules`, `dist`, `build`, `coverage` ;
 - sauvegardes MCP.
