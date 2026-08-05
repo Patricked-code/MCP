@@ -166,7 +166,7 @@ Règles permanentes :
 - double vérification GitHub vers serveur ;
 - documentation dans SUIVI.md ;
 - DirtyCount à zéro avant pull, merge, deploy, migration ou nettoyage ;
-- non-réression obligatoire.
+- non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
 
