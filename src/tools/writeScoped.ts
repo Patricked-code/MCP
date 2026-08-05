@@ -4,6 +4,9 @@ import { env } from '../config/env.js';
 import { runGuardedCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
 import { registerMcpSelfWriteTools } from './selfManagement.js';
+import { registerLegacyVhostsScopedTools } from './legacyVhostsScoped.js';
+import { registerAmfRegistryTools } from './amfRegistry.js';
+import { registerSadiaafScopedTools } from './sadiaafScoped.js';
 import {
   assertScopedWriteToolsEnabled,
   assertSelectOnlyQuery,
@@ -12,7 +15,13 @@ import {
   scriptArgsRequireWriteApproval
 } from '../ssh/writeSafety.js';
 
-const ProjectKeySchema = z.enum(['api_opcv', 'front_end_opcvm', 'brvmchainsolution']);
+const ProjectKeySchema = z.enum([
+  'api_opcv',
+  'front_end_opcvm',
+  'legacy_funds_frontend',
+  'legacy_funds_api',
+  'brvmchainsolution'
+]);
 type ProjectKey = z.infer<typeof ProjectKeySchema>;
 
 const AllowedScriptSchema = z.string()
@@ -31,6 +40,16 @@ const projects: Record<ProjectKey, { label: string; path: string; note: string }
     label: 'Frontend OPCVM / FundAfrica',
     path: '/var/www/vhosts/chainsolutions.fr/africafunds.chainsolutions.fr/frontend',
     note: 'Frontend OPCVM autorisé pour statut Git, pull contrôlé et build contrôlé.'
+  },
+  legacy_funds_frontend: {
+    label: 'Frontend historique Funds ChainSolutions',
+    path: '/var/www/vhosts/chainsolutions.fr/Funds.chainsolutions.fr',
+    note: 'Frontend historique autorisé pour audit Git, scripts contrôlés, modifications versionnées, build et redémarrage Passenger.'
+  },
+  legacy_funds_api: {
+    label: 'API historique Funds ChainSolutions',
+    path: '/var/www/vhosts/chainsolutions.fr/api.funds.chainsolutions.fr',
+    note: 'API historique autorisée pour audit Git, scripts contrôlés, modifications versionnées, tests, build et redémarrage Passenger.'
   },
   brvmchainsolution: {
     label: 'BRVM Chain Solution',
@@ -210,6 +229,42 @@ else
 fi`;
   }
 
+  if (project === 'legacy_funds_api') {
+    return `${common}
+echo
+echo 'Déploiement contrôlé de l API historique Funds'
+test -f package.json
+npm install
+npm run typecheck --if-present
+npm test --if-present
+npm run build --if-present
+
+mkdir -p tmp
+touch tmp/restart.txt
+
+echo
+echo 'Redémarrage Passenger demandé via tmp/restart.txt'
+curl -I --max-time 20 https://api.funds.chainsolutions.fr/ || true`;
+  }
+
+  if (project === 'legacy_funds_frontend') {
+    return `${common}
+echo
+echo 'Déploiement contrôlé du frontend historique Funds'
+test -f package.json
+npm install
+npm run typecheck --if-present
+npm test --if-present
+npm run build --if-present
+
+mkdir -p tmp
+touch tmp/restart.txt
+
+echo
+echo 'Redémarrage Passenger demandé via tmp/restart.txt'
+curl -I --max-time 20 https://funds.chainsolutions.fr/ || true`;
+  }
+
   return `${common}
 echo
 echo 'Déploiement Frontend OPCVM contrôlé'
@@ -254,16 +309,49 @@ mysql -N -B ${shellQuote(env.OPCVM_DB_NAME)} -e ${shellQuote(query.trim())}`;
     return runS2(command, 'run_sql_readonly_s2', 30_000);
   });
 
-  server.tool('exec_repo_script_s2', 'Exécute uniquement un script autorisé du dépôt API OPCVM sur S2.', {
+  // Lecture seule PostgreSQL du projet BRVM (conteneur brvm_db).
+  // Même garde-fou SELECT que l'outil OPCVM : assertSelectOnlyQuery interdit les
+  // mots-clés d'écriture, les séparateurs, les commentaires et les requêtes multiples.
+  // La requête transite par stdin (aucune interpolation shell) et les identifiants de
+  // connexion proviennent de l'environnement du conteneur : aucun secret n'est exposé.
+  server.tool('brvm_run_sql_readonly_s2', 'Exécute une requête SQL SELECT uniquement sur la base PostgreSQL BRVM (conteneur brvm_db) sur S2.', {
+    query: z.string().min(8).max(20_000)
+  }, async ({ query }) => {
+    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
+    assertSelectOnlyQuery(query);
+    const command = `set -euo pipefail
+DOCKER_API_VERSION=1.44 docker ps --format '{{.Names}}' | grep -qx brvm_db
+printf '%s' ${shellQuote(query.trim())} | DOCKER_API_VERSION=1.44 docker exec -i brvm_db sh -lc 'psql -X -A -F "|" --pset=footer=off -v ON_ERROR_STOP=1 -U "\${POSTGRES_USER:-postgres}" -d "\${POSTGRES_DB:-postgres}" -f -'`;
+    return runS2(command, 'brvm_run_sql_readonly_s2', 60_000);
+  });
+
+  // Logs applicatifs BRVM (conteneur brvm_app), en lecture seule et tronqués.
+  // Filtre optionnel restreint à des caractères sûrs. Masquage des secrets en sortie.
+  server.tool('brvm_container_logs_s2', 'Affiche les dernières lignes de logs Docker du conteneur brvm_app sur S2 (secrets masqués).', {
+    lines: z.number().int().min(20).max(500).default(150),
+    contains: z.string().min(2).max(60).regex(/^[A-Za-z0-9_.:\/\[\] -]+$/, 'Filtre limité aux caractères alphanumériques simples').optional()
+  }, async ({ lines, contains }) => {
+    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
+    // Accolades indispensables : sans elles, `|| true` capture le pipe suivant et le
+    // masquage des secrets ne s'applique plus quand le filtre trouve des lignes.
+    const filter = contains ? ` | { grep -i -F -- ${shellQuote(contains)} || true; }` : '';
+    const command = `set -euo pipefail
+DOCKER_API_VERSION=1.44 docker ps --format '{{.Names}}' | grep -qx brvm_app
+DOCKER_API_VERSION=1.44 docker logs --tail ${lines} brvm_app 2>&1${filter} | sed -E -e 's#(postgres|postgresql)://[^ ]+#\\1://***MASKED***#Ig' -e 's/(PASSWORD|PASS|SECRET|TOKEN|API_KEY|APIKEY)[^ ]*/\\1=***MASKED***/Ig'`;
+    return runS2(command, 'brvm_container_logs_s2', 60_000);
+  });
+
+  server.tool('exec_repo_script_s2', 'Exécute uniquement un script autorisé du dépôt API OPCVM ou BRVM sur S2. Le paramètre project force le dépôt cible.', {
     script: AllowedScriptSchema,
-    args: z.array(z.string()).default([])
-  }, async ({ script, args }) => {
+    args: z.array(z.string()).default([]),
+    project: ProjectKeySchema.optional()
+  }, async ({ script, args, project }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     assertSafeScriptArgs(args);
     // Mode autonomie projet : pas de validation manuelle allow_write.
     // Les scripts sont autorisés dynamiquement sous scripts/**/*.js ou scripts/**/*.ts.
-    // Le routage projet reste contrôlé par inferScriptProject().
-    const scriptProject = inferScriptProject(script);
+    // Routage : `project` explicite s'il est fourni, sinon inférence historique.
+    const scriptProject = project ?? inferScriptProject(script);
     const scriptProjectConfig = projectFor(scriptProject);
     const quotedArgs = args.map(shellQuote).join(' ');
     const command = scriptProject === 'brvmchainsolution'
@@ -309,5 +397,8 @@ node ${shellQuote(script)} ${quotedArgs}`;
     return runS2(buildDeployCommand('brvmchainsolution'), 'deploy_brvm_s2', 900_000);
   });
 
+  registerSadiaafScopedTools(server);
+  registerLegacyVhostsScopedTools(server);
+  registerAmfRegistryTools(server);
   registerMcpSelfWriteTools(server);
 }
