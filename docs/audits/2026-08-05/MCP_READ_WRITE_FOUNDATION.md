@@ -1,7 +1,7 @@
 # Fondation propre de séparation READ / WRITE
 
-Date : 2026-08-05  
-Branche : `mcp/read-write-foundation-20260805`  
+Date : 2026-08-05
+Branche : `mcp/read-write-foundation-20260805`
 Base : `main@097dac93715c0af83fcfad82cd598bacec956125`
 
 ## Objectif
