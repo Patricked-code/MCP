@@ -166,7 +166,7 @@ Règles permanentes :
 - double vérification GitHub vers serveur ;
 - documentation dans SUIVI.md ;
 - DirtyCount à zéro avant pull, merge, deploy, migration ou nettoyage ;
-- non-régression obligatoire.
+- non-réression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
 
@@ -185,3 +185,29 @@ Point de reprise public-safe : audit Phase 1 validé par l'opérateur, puis ouve
 Exception à tracer : le commit `f92f621` contient aussi l'ajout `src/tools/durableAccounts.ts` et `MCP_DURABLE_ACCOUNT_MANAGEMENT.md`. Il semble être arrivé sur `main` sans PR visible dans l'audit courant. Cette exception ne doit pas être répétée : les prochains changements doivent passer par branche `mcp/*`, PR draft, CI et revue humaine.
 
 Action locale Phase 2 : durcir la détection read-only pour ne plus confondre `.mcp` ou `MCP` avec la commande shell `cp`, ajouter une CI minimale, et mettre à jour uniquement l'état documentaire public-safe. Aucune action production, aucun restart, aucun déploiement, aucune suppression, aucun merge de PR #10.
+
+## 2026-08-05 -- Diagnostic d’autorisation GitHub PR
+
+Branche de travail : `mcp/github-pr-auth-diagnostics-20260805` depuis `main@097dac93715c0af83fcfad82cd598bacec956125`.
+
+Constat vérifié avant modification : le connecteur GitHub pouvait de nouveau lire le dépôt et les PR, tandis que S1 restait sur `mcp/scoped-access-20260729_051313@097dac9` avec son working tree volontairement sale. Aucun fichier S1 n’a été modifié.
+
+Travail versionné :
+
+- ajout de `src/github/authorizationDiagnostics.ts` ;
+- ajout de `src/tools/githubAuthorization.ts` ;
+- enregistrement de `github_pr_authorization_diagnostic` dans le catalogue read-only ;
+- ajout de `tests/githubAuthorization.test.ts` ;
+- ajout du runbook `docs/runbooks/GITHUB_PR_AUTHORIZATION_DIAGNOSTIC.md` ;
+- mise à jour de `MCP_TOOLS.md`, `CHANGELOG.md` et `DECISIONS_LOG.md`.
+
+Garanties :
+
+- requêtes GitHub `GET` uniquement ;
+- aucun token, secret ou en-tête `Authorization` dans les sorties ;
+- aucun verdict sur une PR lorsqu’une probe d’autorisation échoue ;
+- aucune modification des paramètres GitHub automatique ;
+- aucun merge, déploiement ou redémarrage ;
+- production S1 préservée.
+
+Point de reprise : ouvrir une PR draft vers `main`, attendre la CI et une revue humaine. Le diagnostic ne doit être déployé qu’après fusion explicitement validée et procédure séparée de synchronisation/build/restart.
