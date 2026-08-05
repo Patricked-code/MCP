@@ -13,6 +13,35 @@ Catalogue des outils MCP disponibles.
 ## Règle
 Chaque outil doit documenter arguments, résultat, droits requis, risques et interdictions.
 
+## `github_registry_v2_dry_run`
+
+Objectif : valider le registre Git existant et construire **uniquement en mémoire** un candidat GitRegistry v2.
+
+Argument :
+
+- `include_candidate=false` par défaut ; lorsque `true`, inclut le candidat validé dans la réponse pour revue.
+
+Résultat :
+
+- version du schéma source et cible ;
+- hash canonique de la source ;
+- hash canonique du candidat ;
+- compte des connexions, dépôts, mappings, migrations et événements ;
+- avertissements sur les chemins non vérifiés et les migrations en attente ;
+- candidat v2 facultatif.
+
+Garde-fous :
+
+- lecture du fichier registre uniquement ;
+- aucune écriture de fichier ;
+- aucun remplacement du registre actif ;
+- aucune activation automatique de mapping ou de capacité sensible ;
+- consolidation de `Patricked-code/MCP` comme dépôt actif et `chainsolutions-wealthtech/MCP` comme cible `migration_pending` ;
+- aucun token ou credential copié ;
+- validation des identifiants uniques et rejet des signaux de credential.
+
+Ce dry-run ne constitue ni une migration exécutée ni une autorisation de modifier un remote, un chemin serveur ou la production.
+
 ## `mcp_sync_from_github_s1`
 
 Objectif : synchroniser `/opt/apps/wealthtech-mcp-ssh-bridge` avec `Patricked-code/MCP:main` sans écraser ni réécrire l'historique.
@@ -61,4 +90,4 @@ Règles permanentes :
 - DirtyCount à zéro avant pull, merge, deploy, migration ou nettoyage ;
 - non-régression obligatoire.
 
-Mise à jour : 2026-07-09T20:08:09Z
+Mise à jour : 2026-08-05
