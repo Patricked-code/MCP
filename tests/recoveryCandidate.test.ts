@@ -11,9 +11,11 @@ process.env.ENABLE_WRITE_TOOLS ??= 'false';
 
 const { assertNoCatastrophicCommand } = await import('../src/ssh/writeSafety.js');
 const {
+  MAX_SAFE_UNTRACKED_BYTES,
   MCP_ACTIVE_ROOT,
   MCP_CANONICAL_REMOTE,
   MCP_RECOVERY_ROOT,
+  MIN_RECOVERY_FREE_RESERVE_BYTES,
   buildMcpRecoveryCandidatePreparationCommand,
   registerRecoveryCandidateWriteTools
 } = await import('../src/tools/recoveryCandidate.js');
@@ -58,6 +60,13 @@ test('la commande utilise uniquement les chemins et le remote canoniques', () =>
   assert.match(command, /git ls-remote .* refs\/heads\/main/);
 });
 
+test('les racines de récupération symboliques sont refusées', () => {
+  const command = buildMcpRecoveryCandidatePreparationCommand(EXPECTED_SHA);
+  assert.equal(command.includes('test ! -L "$RECOVERY_ROOT"'), true);
+  assert.equal(command.includes('test ! -L "$RECOVERY_ROOT/snapshots"'), true);
+  assert.equal(command.includes('test ! -L "$RECOVERY_ROOT/candidates"'), true);
+});
+
 test('le snapshot forensique et son manifeste sont obligatoires', () => {
   const command = buildMcpRecoveryCandidatePreparationCommand(EXPECTED_SHA);
   for (const fragment of [
@@ -66,6 +75,8 @@ test('le snapshot forensique et son manifeste sont obligatoires', () => {
     'diff --binary HEAD',
     'safe-untracked.list0',
     'safe-untracked.tar.gz',
+    'safe-untracked-bytes.txt',
+    'available-bytes-before-archive.txt',
     'docker-attestation.txt',
     'SHA256SUMS',
     'manifest_sha256=',
@@ -75,7 +86,7 @@ test('le snapshot forensique et son manifeste sont obligatoires', () => {
   }
 });
 
-test('les secrets, dumps et artefacts générés sont exclus des fichiers non suivis', () => {
+test('les secrets, archives, dumps et artefacts générés sont exclus', () => {
   const command = buildMcpRecoveryCandidatePreparationCommand(EXPECTED_SHA);
   for (const fragment of [
     '.env',
@@ -91,10 +102,29 @@ test('les secrets, dumps et artefacts générés sont exclus des fichiers non su
     '*.sql',
     '*.dump',
     '*.sqlite',
-    '*.db'
+    '*.db',
+    '*.zip',
+    '*.tar',
+    '*.tar.gz',
+    '*.tgz',
+    '*.bak',
+    '*.old'
   ]) {
     assert.equal(command.includes(fragment), true, `Exclusion absente : ${fragment}`);
   }
+});
+
+test('la taille et la réserve disque sont bornées avant archivage', () => {
+  const command = buildMcpRecoveryCandidatePreparationCommand(EXPECTED_SHA);
+  assert.equal(MAX_SAFE_UNTRACKED_BYTES, 2_147_483_648);
+  assert.equal(MIN_RECOVERY_FREE_RESERVE_BYTES, 1_073_741_824);
+  assert.equal(command.includes(`MAX_SAFE_UNTRACKED_BYTES=${MAX_SAFE_UNTRACKED_BYTES}`), true);
+  assert.equal(command.includes(`MIN_FREE_RESERVE_BYTES=${MIN_RECOVERY_FREE_RESERVE_BYTES}`), true);
+  assert.match(command, /du --bytes --total --files0-from/);
+  assert.match(command, /df -PB1/);
+  assert.match(command, /exit 24/);
+  assert.match(command, /exit 25/);
+  assert.ok(command.indexOf('if [ "$SAFE_BYTES" -gt') < command.indexOf('tar -C "$ACTIVE_ROOT"'));
 });
 
 test('le clone candidat est indépendant et verrouillé sur le SHA demandé', () => {
