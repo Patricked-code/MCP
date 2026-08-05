@@ -7,6 +7,7 @@ import { registerMcpSelfReadOnlyTools } from './selfManagement.js';
 import { registerGithubInventoryReadOnlyTools } from './githubInventory.js';
 import { registerGithubAuthorizationReadOnlyTools } from './githubAuthorization.js';
 import { registerDurableAccountReadOnlyTools } from './durableAccounts.js';
+import { registerScopedReadOnlyTools } from './writeScoped.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -46,4 +47,5 @@ export function registerReadOnlyTools(server: McpServer): void {
   registerGithubAuthorizationReadOnlyTools(server);
   registerDurableAccountReadOnlyTools(server);
   registerMcpSelfReadOnlyTools(server);
+  registerScopedReadOnlyTools(server);
 }
