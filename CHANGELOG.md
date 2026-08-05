@@ -119,3 +119,14 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Build récupéré identique au runtime actif.
 - Branche publiée sans modification de main.
 - Aucun déploiement ni redémarrage effectué.
+
+## 2026-08-05 — Diagnostic d’autorisation GitHub PR reconstruit
+
+- Ancienne PR #21 conservée comme historique, sans fusion.
+- Nouvelle branche : `mcp/github-pr-auth-diagnostics-rebased-20260805` depuis `main@3f79184eb6a647b39596ff408baa50c4a0c23c01`.
+- Ajout du module read-only `src/github/authorizationDiagnostics.ts` et de l’outil `github_pr_authorization_diagnostic`.
+- Probes séparées : utilisateur authentifié, dépôt, liste des PR et PR ciblée.
+- Durcissements : HTTPS obligatoire, allowlist d’hôte, timeout borné, classification correcte des `404` et aucune fuite du credential.
+- Tests `tests/githubAuthorization.test.ts` intégrés à `test:readonly-safety`.
+- Runbook ajouté sous `docs/runbooks/GITHUB_PR_AUTHORIZATION_DIAGNOSTIC.md`.
+- Aucun changement de production, aucun déploiement et aucun redémarrage S1.
