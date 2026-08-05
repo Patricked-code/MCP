@@ -1,104 +1,93 @@
 # TASKS.md
 
-## Role
-Plan operationnel executable du MCP.
+## Rôle
+Plan opérationnel exécutable du MCP.
 
-## Taches immediates
-- TASK-20260712-001 — TERMINÉE : revue complète, approbation et fusion de la PR #11 au commit `38c9990`.
+## Tâches immédiates
+
+- TASK-20260712-001 — TERMINÉE : revue et fusion de la PR #11.
 - TASK-20260713-001 — TERMINÉE DANS GITHUB, NON DÉPLOYÉE : outil `mcp_sync_from_github_s1` versionné avec garde-fous.
-- TASK-20260805-001 — TERMINÉE : documentation canonique de reprise fusionnée par la PR #18.
+- TASK-20260805-001 — TERMINÉE : documentation canonique fusionnée par la PR #18.
 - TASK-20260805-002 — TERMINÉE : diagnostic GitHub read-only fusionné par la PR #25.
-- TASK-20260805-003 — TERMINÉE : séparation stricte des catalogues READ et WRITE fusionnée par la PR #26.
-- TASK-20260805-004 — TERMINÉE : fondation GitRegistry v2 dry-run fusionnée par la PR #27.
-- TASK-20260805-005 — TERMINÉE : ruleset `protect-main` actif et issue #24 clôturée.
-- TASK-20260805-006 — BLOQUÉE PAR CONNECTEUR : reconnecter `wealthtech_ssh_bridge` et effectuer l’attestation S1 strictement read-only.
-- TASK-20260805-007 — EN ATTENTE DU VERDICT : préparer l’alignement GitHub ↔ S1 ↔ Docker dans une copie propre isolée, avec rollback.
-
-## Taches futures separees
-- TASK-FUTURE-NODE — PLANIFIEE, NON EXECUTEE : préparer la migration du runtime Node dans une PR dédiée.
-- TASK-FUTURE-ACTIONS — PLANIFIEE, NON EXECUTEE : moderniser et épingler les GitHub Actions dans une PR dédiée.
-- TASK-FUTURE-REGISTRY-WRITE — PLANIFIÉE, NON EXÉCUTÉE : implémenter backup, écriture atomique, rollback et audit v2 avant migration du registre actif.
-- TASK-FUTURE-FRONTEND — PLANIFIÉE, NON EXÉCUTÉE : construire le cockpit GitRegistry v2 read-only puis le CRUD gouverné.
-- TASK-FUTURE-MODULES — PLANIFIÉE, NON EXÉCUTÉE : réintroduire AMF-UMOA, BRVMDATA, SADIAAF, Nigeria, Funds et Vhosts par PR indépendantes.
+- TASK-20260805-003 — TERMINÉE : séparation READ/WRITE fusionnée par la PR #26.
+- TASK-20260805-004 — TERMINÉE : GitRegistry v2 dry-run fusionné par la PR #27.
+- TASK-20260805-005 — TERMINÉE : protection de `main`, issue #24 clôturée.
+- TASK-20260805-006 — TERMINÉE AVEC NO-GO : attestation S1 de l’issue #29 ; alignement direct interdit.
+- TASK-20260805-007 — TERMINÉE : correction P1 des logs OAuth fusionnée par la PR #30.
+- TASK-20260805-008 — TERMINÉE : outil d’attestation Docker read-only fusionné par la PR #31.
+- TASK-20260805-009 — EN COURS CÔTÉ GITHUB : préparer un snapshot externe et un clone candidat indépendant, issue #32.
+- TASK-20260805-010 — EN ATTENTE : exécuter la phase A sur S1 après déploiement contrôlé de l’outil et reconnexion du connecteur.
+- TASK-20260805-011 — EN ATTENTE : valider le candidat isolé par `npm ci`, typecheck, build, documentation, scan de secrets et tests.
+- TASK-20260805-012 — EN ATTENTE : démarrer un runtime candidat sur `127.0.0.1:8788`, sans remplacer la production.
+- TASK-20260805-013 — EN ATTENTE : comparer candidat, runtime actif et snapshot, puis produire un verdict.
 
 ## Tâche active unique
 
-### TASK-20260805-006 — Attestation S1 read-only
+### TASK-20260805-009 — Préparation contrôlée du candidat
 
-Précondition : connecteur `wealthtech_ssh_bridge` réellement invocable.
+Branche :
 
-Contrôles obligatoires :
+```text
+mcp/recovery-candidate-preparation-20260805
+```
 
-1. ping MCP ;
-2. `git status` complet avec fichiers non suivis ;
-3. branche, HEAD, remote et `origin/main` ;
-4. image Docker active, ID, digest, date et labels ;
-5. catalogue des outils réellement exposés ;
-6. health checks local et public ;
-7. comparaison avec `main@618f4020ac69801dd53f624e5cd188fc6d76cc24` ;
-8. rapport Go, Go avec corrections ou No-Go.
+Outil :
 
-Résultat attendu : preuve suffisante pour décider d’une procédure d’alignement séparée. Cette tâche n’autorise aucun changement serveur.
+```text
+mcp_prepare_recovery_candidate_s1
+```
 
-## Actions interdites avant clôture de TASK-20260805-006
+Objectifs :
 
-- pull, reset, clean, checkout, switch, rebase ou stash dans le working tree actif ;
-- build ou restart depuis le dossier actif sale ;
-- remplacement du registre ;
-- modification de remote ;
-- déploiement, migration, quarantaine, purge ou suppression.
+1. exiger `ENABLE_WRITE_TOOLS=true` et `allow_write=true` ;
+2. exiger un SHA complet identique au `main` distant ;
+3. vérifier le remote actif sans le modifier ;
+4. créer un snapshot sous `/opt/apps/wealthtech-mcp-recovery/snapshots/<run_id>` ;
+5. produire bundle Git, patch binaire, archive non suivie autorisée, attestation Docker et manifeste SHA-256 ;
+6. créer un dépôt candidat indépendant sous `/opt/apps/wealthtech-mcp-recovery/candidates/<run_id>` ;
+7. vérifier SHA, remote et état propre du candidat ;
+8. ne lancer aucun build, restart ou déploiement.
 
-## Regle
-Une tache executable doit indiquer objectif, fichiers concernes, risques, preconditions, tests et resultat attendu.
+Tests obligatoires :
 
----
+- SHA court refusé ;
+- catalogue WRITE exact ;
+- absence de reset, clean, stash, pull et checkout actif ;
+- absence de build, Docker Compose, stop, restart et suppression ;
+- exclusions de secrets, dumps, bases et artefacts ;
+- attestation Docker bornée ;
+- typecheck, build, docs, scan de secrets et suite de tests GitHub verts.
 
-## Règle permanente — double présence, non-régression et amélioration continue
+Résultat attendu côté GitHub : PR fusionnable avec CI verte.
 
-GitHub est la source versionnée.
+Résultat attendu côté S1, ultérieurement :
 
-Le serveur MCP est la source exécutée.
+```text
+status=prepared
+production_modified=false
+candidate_validated=false
+```
 
-Les deux doivent toujours être vérifiés ensemble avant et après toute intervention.
+## Actions interdites avant la phase B
 
-Aucune IA ne doit supposer que GitHub et le serveur sont synchronisés sans vérification.
+- modifier le working tree actif ;
+- pull, reset, clean, checkout, switch, rebase ou stash dans le dépôt actif ;
+- build ou restart depuis le dépôt actif ;
+- démarrer un candidat sur le port de production ;
+- remplacer le registre ou le remote ;
+- supprimer, purger ou déplacer la dérive ;
+- déclarer le candidat validé ou déployable après la seule phase A.
 
-Toute intervention humaine, IA ou automatisée doit respecter :
+## Tâches futures séparées
 
-- non-régression obligatoire ;
-- amélioration continue obligatoire ;
-- aucune suppression destructive sans sauvegarde, justification et validation ;
-- aucun secret dans GitHub ;
-- vérification GitHub + serveur avant modification ;
-- documentation dans `SUIVI.md` après modification ;
-- vérification service, logs et endpoints après déploiement.
+- TASK-FUTURE-NODE — PLANIFIÉE : migration du runtime Node dans une PR dédiée.
+- TASK-FUTURE-ACTIONS — PLANIFIÉE : modernisation et épinglage des GitHub Actions.
+- TASK-FUTURE-REGISTRY-WRITE — PLANIFIÉE : backup, écriture atomique, rollback et audit v2 avant migration du registre actif.
+- TASK-FUTURE-FRONTEND — PLANIFIÉE : cockpit GitRegistry v2 read-only puis CRUD gouverné.
+- TASK-FUTURE-MODULES — PLANIFIÉE : réintroduction progressive d’AMF-UMOA, BRVMDATA, SADIAAF, Nigeria, Funds et Vhosts.
 
----
+## Règle permanente
 
-<!-- MCP-GOVERNANCE-MANUAL-REFERENCE -->
+GitHub est la source versionnée. Le serveur est la source exécutée. Les deux doivent être vérifiés ensemble avant et après toute intervention.
 
-## Référence MCP anti-dispersion et manuel complet
-
-Cette documentation renvoie aux fichiers de gouvernance ajoutés :
-
-- MCP_ANTI_DISPERSION_GOVERNANCE.md
-- MCP_FUNCTIONS_AND_TOOLS_MANUAL.md
-- MCP_FUNCTIONAL_CARTOGRAPHY.md
-- MCP_CONNECTION_IDENTITY_MODEL.md
-- MCP_INTELLIGENT_USAGE_MODE.md
-- .mcp/branch-governance.json
-- .mcp/function-cartography.json
-- .mcp/identity-policy.json
-
-Règles permanentes :
-
-- pas de travail isolé ;
-- pas de push direct sur main ;
-- branches MCP sous mcp/* ;
-- PR draft obligatoire pour changement significatif ;
-- double vérification GitHub vers serveur ;
-- documentation dans SUIVI.md ;
-- DirtyCount à zéro avant pull, merge, deploy, migration ou nettoyage ;
-- non-régression obligatoire.
-
-Mise à jour : 2026-08-05
+Une tâche exécutable doit indiquer objectif, périmètre, risques, préconditions, tests, résultat attendu et rollback.
