@@ -1,8 +1,8 @@
 # Fondation GitRegistry v2 — lecture duale et dry-run
 
 Date : 2026-08-05
-Branche : `mcp/git-registry-v2-foundation-20260805`
-Base : `main@097dac93715c0af83fcfad82cd598bacec956125`
+Branche : `mcp/git-registry-v2-foundation-rebased-20260805`
+Base : `main@c4958d97ff67dbf4352b8a1f9c2716fe9cf25d7b`
 
 ## Objectif
 
@@ -42,24 +42,9 @@ Le mapping Civitech reste `proposed` et ne reçoit aucune capacité sensible.
 
 ## Capacités par défaut
 
-Autorisées dans le candidat :
+Autorisées dans le candidat : inventaire, lecture de fichiers, recherche et statut Git.
 
-- inventaire ;
-- lecture de fichiers ;
-- recherche ;
-- statut Git.
-
-Désactivées :
-
-- écriture ;
-- création de branche ;
-- commit ;
-- push ;
-- build ;
-- déploiement ;
-- rollback ;
-- quarantaine ;
-- purge.
+Désactivées : écriture, création de branche, commit, push, build, déploiement, rollback, quarantaine et purge.
 
 ## Sécurité
 
@@ -75,39 +60,23 @@ Désactivées :
 
 ## Déterminisme et idempotence
 
-La conversion trie les collections par identifiant et calcule un SHA-256 canonique.
-
-Les tests vérifient :
-
-- deux conversions v1 identiques produisent le même candidat ;
-- relire un candidat v2 produit le même contenu ;
-- le hash canonique reste stable ;
-- les doublons sont rejetés ;
-- une structure v1 invalide est rejetée.
+La conversion trie les collections par identifiant et calcule un SHA-256 canonique. Les tests vérifient deux conversions identiques, la relecture d’un candidat v2, la stabilité du hash, le rejet des doublons, des credentials et d’une structure v1 invalide.
 
 ## Hors périmètre
 
-Cette PR n’implémente pas :
+Cette fondation n’implémente pas l’écriture sur disque, le backup ou renommage atomique, le rapprochement avec `data/github-accounts.json`, la vérification SSH des realpaths et remotes, la validation des domaines, l’activation de mappings, le frontend CRUD, les mutations d’audit v2 ni le remplacement du lecteur v1.
 
-- l’écriture d’un candidat sur disque ;
-- le backup ou le renommage atomique ;
-- le rapprochement avec `data/github-accounts.json` ;
-- la vérification SSH des realpaths ;
-- la vérification des remotes Git ;
-- la validation des domaines et vhosts ;
-- l’activation de mappings ;
-- le frontend CRUD ;
-- les mutations d’audit v2 ;
-- le remplacement du lecteur v1 existant.
+## Relation avec les PR
 
-Ces étapes doivent rester dans des PR indépendantes après revue de cette fondation.
+- PR #23 est conservée comme historique et remplacée par cette reconstruction depuis le `main` protégé ;
+- les fondations diagnostic GitHub et séparation READ/WRITE restent présentes ;
+- aucune action serveur n’est exécutée par cette PR.
 
 ## Garanties
 
-- aucune modification de `main` directe ;
 - aucun changement du registre actif ;
 - aucun changement S1/S2 ;
 - aucun déploiement ;
 - aucun redémarrage ;
 - aucune suppression ;
-- aucun merge automatique.
+- fusion uniquement après CI verte et SHA verrouillé.
