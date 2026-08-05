@@ -1,10 +1,17 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {
+process.env.NODE_ENV = 'test';
+process.env.MCP_AUTH_TOKEN = 'test-only-mcp-auth-token-000000';
+process.env.S1_HOST = '127.0.0.1';
+process.env.S1_KEY_PATH = '/tmp/test-s1-key';
+process.env.S2_HOST = '127.0.0.1';
+process.env.S2_KEY_PATH = '/tmp/test-s2-key';
+
+const {
   buildGithubAuthorizationRemediations,
   classifyGithubAuthorizationFailure
-} from '../src/github/authorizationDiagnostics.js';
+} = await import('../src/github/authorizationDiagnostics.js');
 
 test('GitHub authorization diagnostic classifies successful responses', () => {
   assert.equal(classifyGithubAuthorizationFailure(200, null, 'repository'), 'none');
