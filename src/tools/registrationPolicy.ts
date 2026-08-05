@@ -13,7 +13,8 @@ export const WRITE_SCOPED_TOOL_NAMES = new Set<string>([
   'patch_mcp_code_file_s1',
   'mcp_typecheck_s1',
   'mcp_build_s1',
-  'restart_mcp_bridge_s1'
+  'restart_mcp_bridge_s1',
+  'mcp_prepare_recovery_candidate_s1'
 ]);
 
 export const ALL_SCOPED_TOOL_NAMES = new Set<string>([
