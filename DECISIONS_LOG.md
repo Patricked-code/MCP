@@ -83,3 +83,15 @@ Ordre validé :
 7. réintroduction progressive des actions.
 
 Interdiction : ne pas fusionner directement la branche forensique dans main.
+
+## 2026-08-05 — Diagnostic séparé des autorisations GitHub PR
+
+Contexte : une lecture de pull request peut renvoyer `401`, `403 FORBIDDEN` ou `404` alors qu’une création antérieure avait fonctionné. Un refus d’autorisation ne doit produire aucun verdict sur l’existence, l’état ou la fusion possible d’une PR.
+
+Décision : reconstruire depuis le `main` protégé un outil strictement read-only nommé `github_pr_authorization_diagnostic`. Il teste séparément l’utilisateur authentifié, la visibilité du dépôt, la liste des PR et une PR facultative.
+
+Périmètre : l’outil diagnostique uniquement le credential GitHub monté dans le runtime MCP. Il ne lit ni ne répare le credential interne du connecteur GitHub natif de ChatGPT.
+
+Sécurité : requêtes `GET` uniquement ; API HTTPS et hostname autorisé ; timeout borné ; aucun token, en-tête `Authorization`, secret ou objet d’erreur réseau retourné.
+
+Interdictions : aucun changement automatique de permissions GitHub, aucun élargissement de rôle, aucun déploiement et aucun redémarrage de production.
