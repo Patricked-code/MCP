@@ -73,6 +73,35 @@ Garde-fous :
 
 Ce dry-run ne constitue ni une migration exécutée ni une autorisation de modifier un remote, un chemin serveur ou la production.
 
+## `mcp_runtime_image_attestation_s1`
+
+Objectif : attester en lecture seule le conteneur MCP actif sur S1 et l’image Docker qu’il référence.
+
+Arguments : aucun. Le conteneur est fixé dans le code à `wealthtech_mcp_ssh_bridge`.
+
+Résultat borné :
+
+- nom et ID complet du conteneur ;
+- date de création et date de démarrage ;
+- statut et santé ;
+- référence et ID complet de l’image ;
+- date de création de l’image ;
+- tags et digests du dépôt ;
+- labels Docker Compose sélectionnés ;
+- labels OCI sélectionnés : création, révision, source et version.
+
+Garde-fous :
+
+- commandes `docker inspect` et `docker image inspect` avec `--format` uniquement ;
+- aucune variable d’environnement retournée ;
+- aucun mount, HostConfig, réseau, commande, entrypoint, argument ou path retourné ;
+- aucun log Docker lu ;
+- aucun label arbitraire ou objet JSON complet retourné ;
+- aucune commande `docker exec`, stop, restart, compose ou mutation ;
+- aucune écriture serveur.
+
+Cet outil fournit une preuve de provenance. Il n’autorise ni build, ni restart, ni déploiement, ni alignement GitHub → S1.
+
 ## `mcp_sync_from_github_s1`
 
 Objectif : synchroniser `/opt/apps/wealthtech-mcp-ssh-bridge` avec `Patricked-code/MCP:main` sans écraser ni réécrire l'historique.
