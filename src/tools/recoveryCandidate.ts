@@ -9,6 +9,8 @@ import { buildMcpRuntimeImageAttestationCommand } from './runtimeAttestation.js'
 export const MCP_ACTIVE_ROOT = '/opt/apps/wealthtech-mcp-ssh-bridge';
 export const MCP_RECOVERY_ROOT = '/opt/apps/wealthtech-mcp-recovery';
 export const MCP_CANONICAL_REMOTE = 'https://github.com/Patricked-code/MCP.git';
+export const MAX_SAFE_UNTRACKED_BYTES = 2_147_483_648;
+export const MIN_RECOVERY_FREE_RESERVE_BYTES = 1_073_741_824;
 
 const GitShaSchema = z.string().regex(/^[a-f0-9]{40}$/i, 'SHA Git complet de 40 caractères obligatoire.');
 
@@ -18,7 +20,7 @@ function shellQuote(value: string): string {
 
 function safeUntrackedFilterCase(): string {
   return `case "$FILE" in
-  .env|.env.*|*/.env|*/.env.*|*/.env/*|secrets/*|*/secrets/*|keys/*|*/keys/*|node_modules/*|*/node_modules/*|dist/*|*/dist/*|build/*|*/build/*|coverage/*|*/coverage/*|logs/*|*/logs/*|.mcp_backups/*|*/.mcp_backups/*|*.pem|*.key|*.crt|*.p12|*.pfx|*.sql|*.dump|*.sqlite|*.sqlite3|*.db)
+  .env|.env.*|*/.env|*/.env.*|*/.env/*|secrets/*|*/secrets/*|keys/*|*/keys/*|node_modules/*|*/node_modules/*|dist/*|*/dist/*|build/*|*/build/*|coverage/*|*/coverage/*|logs/*|*/logs/*|.mcp_backups/*|*/.mcp_backups/*|*.pem|*.key|*.crt|*.p12|*.pfx|*.sql|*.dump|*.sqlite|*.sqlite3|*.db|*.zip|*.tar|*.tar.gz|*.tgz|*.gz|*.bak|*.old)
     EXCLUDED_COUNT=$((EXCLUDED_COUNT + 1))
     ;;
   *)
@@ -37,11 +39,15 @@ ACTIVE_ROOT=${shellQuote(MCP_ACTIVE_ROOT)}
 RECOVERY_ROOT=${shellQuote(MCP_RECOVERY_ROOT)}
 CANONICAL_REMOTE=${shellQuote(MCP_CANONICAL_REMOTE)}
 EXPECTED_MAIN_SHA=${shellQuote(expected)}
+MAX_SAFE_UNTRACKED_BYTES=${MAX_SAFE_UNTRACKED_BYTES}
+MIN_FREE_RESERVE_BYTES=${MIN_RECOVERY_FREE_RESERVE_BYTES}
 
 printf 'MCP recovery preparation — no active-tree mutation\\n'
 
 test -d "$ACTIVE_ROOT/.git"
 test ! -L "$RECOVERY_ROOT"
+test ! -L "$RECOVERY_ROOT/snapshots"
+test ! -L "$RECOVERY_ROOT/candidates"
 CURRENT_REMOTE="$(git -C "$ACTIVE_ROOT" remote get-url origin)"
 case "$CURRENT_REMOTE" in
   https://github.com/Patricked-code/MCP|https://github.com/Patricked-code/MCP.git|git@github.com:Patricked-code/MCP.git)
@@ -96,8 +102,30 @@ while IFS= read -r -d '' FILE; do
 done < <(git -C "$ACTIVE_ROOT" ls-files --others --exclude-standard -z)
 
 SAFE_COUNT="$(tr -cd '\\0' < "$SAFE_LIST" | wc -c | tr -d ' ')"
+if [ "$SAFE_COUNT" -gt 0 ]; then
+  SAFE_BYTES="$(cd "$ACTIVE_ROOT" && du --bytes --total --files0-from="$SAFE_LIST" | tail -n 1 | awk '{ print $1 }')"
+else
+  SAFE_BYTES=0
+fi
+
+if [ "$SAFE_BYTES" -gt "$MAX_SAFE_UNTRACKED_BYTES" ]; then
+  printf 'ERREUR: fichiers non suivis autorisés trop volumineux pour la préparation automatique.\\n' >&2
+  printf 'safe_untracked_bytes=%s\\nlimit_bytes=%s\\n' "$SAFE_BYTES" "$MAX_SAFE_UNTRACKED_BYTES" >&2
+  exit 24
+fi
+
+AVAILABLE_BYTES="$(df -PB1 "$RECOVERY_ROOT" | awk 'NR == 2 { print $4 }')"
+REQUIRED_BYTES=$((SAFE_BYTES + MIN_FREE_RESERVE_BYTES))
+if [ "$AVAILABLE_BYTES" -lt "$REQUIRED_BYTES" ]; then
+  printf 'ERREUR: espace disque insuffisant pour préserver la réserve de sécurité.\\n' >&2
+  printf 'available_bytes=%s\\nrequired_bytes=%s\\n' "$AVAILABLE_BYTES" "$REQUIRED_BYTES" >&2
+  exit 25
+fi
+
 printf '%s\\n' "$SAFE_COUNT" > "$SNAPSHOT_ROOT/safe-untracked-count.txt"
+printf '%s\\n' "$SAFE_BYTES" > "$SNAPSHOT_ROOT/safe-untracked-bytes.txt"
 printf '%s\\n' "$EXCLUDED_COUNT" > "$SNAPSHOT_ROOT/excluded-untracked-count.txt"
+printf '%s\\n' "$AVAILABLE_BYTES" > "$SNAPSHOT_ROOT/available-bytes-before-archive.txt"
 
 if [ "$SAFE_COUNT" -gt 0 ]; then
   tar -C "$ACTIVE_ROOT" --null --verbatim-files-from --files-from="$SAFE_LIST" -czf "$SNAPSHOT_ROOT/safe-untracked.tar.gz"
@@ -141,6 +169,7 @@ printf 'expected_main_sha=%s\\n' "$EXPECTED_MAIN_SHA"
 printf 'source_head=%s\\n' "$SOURCE_HEAD"
 printf 'source_branch=%s\\n' "$SOURCE_BRANCH"
 printf 'safe_untracked_count=%s\\n' "$SAFE_COUNT"
+printf 'safe_untracked_bytes=%s\\n' "$SAFE_BYTES"
 printf 'excluded_untracked_count=%s\\n' "$EXCLUDED_COUNT"
 printf 'snapshot_root=%s\\n' "$SNAPSHOT_ROOT"
 printf 'candidate_root=%s\\n' "$CANDIDATE_ROOT"
