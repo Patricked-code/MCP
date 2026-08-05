@@ -6,6 +6,7 @@ import { asText, commandResultToText } from './format.js';
 import { registerMcpSelfReadOnlyTools } from './selfManagement.js';
 import { registerGithubInventoryReadOnlyTools } from './githubInventory.js';
 import { registerDurableAccountReadOnlyTools } from './durableAccounts.js';
+import { registerGitRegistryV2ReadOnlyTools } from './githubRegistryV2.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -43,5 +44,6 @@ export function registerReadOnlyTools(server: McpServer): void {
 
   registerGithubInventoryReadOnlyTools(server);
   registerDurableAccountReadOnlyTools(server);
+  registerGitRegistryV2ReadOnlyTools(server);
   registerMcpSelfReadOnlyTools(server);
 }
