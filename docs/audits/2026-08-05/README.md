@@ -33,6 +33,7 @@ Le runtime, le dossier Git S1 et `main` ne sont pas encore réalignés sur un co
 
 - `MCP_RUNTIME_RECOVERY_ATTESTATION.md`
 - `MCP_RUNTIME_TOOL_CATALOG_20260805.md`
+- `MCP_RUNTIME_MODULE_SELECTION.md`
 - `MCP_PRE29_RECOVERY_AUDIT.md`
 - `MCP_REGISTRY_UPDATE_SUMMARY.md`
 - `MCP_REGISTRY_UPDATE_WORKFLOW.md`
@@ -48,7 +49,7 @@ Le fichier `MCP_REGISTRY_UPDATE_WORKFLOW.corrupted-original.md` est conservé co
 
 - PR #19 : snapshot forensique uniquement, ne pas fusionner telle quelle ;
 - PR #20 : séparation READ/WRITE validée dans son principe, à reconstruire sur une base propre ;
-- PR #21 : diagnostic GitHub read-only, corrections de sécurité et de classification requises avant fusion.
+- PR #21 : diagnostic GitHub read-only corrigé au SHA `a648fdf8094fa5285b66af773aab5be16bf75bef`, CI #61 réussie, toujours en draft.
 
 ## Point de contrôle
 
