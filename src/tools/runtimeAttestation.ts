@@ -26,7 +26,7 @@ export function buildMcpRuntimeImageAttestationCommand(): string {
   return `set -euo pipefail
 CONTAINER='${MCP_RUNTIME_CONTAINER_NAME}'
 
-docker inspect --type container "$CONTAINER" >/dev/null
+docker inspect --type container --format '{{.Id}}' "$CONTAINER" >/dev/null
 CONTAINER_ID="$(docker inspect --type container --format '{{.Id}}' "$CONTAINER")"
 IMAGE_ID="$(docker inspect --type container --format '{{.Image}}' "$CONTAINER")"
 
@@ -40,7 +40,7 @@ printf 'container_image_ref=%s\\n' "$(docker inspect --type container --format '
 printf 'container_image_id=%s\\n' "$IMAGE_ID"
 ${containerLabels}
 
-docker image inspect "$IMAGE_ID" >/dev/null
+docker image inspect --format '{{.Id}}' "$IMAGE_ID" >/dev/null
 printf 'image_id=%s\\n' "$(docker image inspect --format '{{.Id}}' "$IMAGE_ID")"
 printf 'image_created=%s\\n' "$(docker image inspect --format '{{.Created}}' "$IMAGE_ID")"
 printf 'image_repo_digests=%s\\n' "$(docker image inspect --format '{{json .RepoDigests}}' "$IMAGE_ID")"
