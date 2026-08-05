@@ -66,3 +66,15 @@ Contexte : après fusion de la PR #11, le MCP déployé ne disposait d'aucun out
 Décision : ajouter `mcp_sync_from_github_s1` comme opération séparée exigeant `allow_write=true`. L'outil vérifie la branche `main`, le remote `Patricked-code/MCP`, un état totalement propre et l'ascendance avant tout fast-forward. Les hooks Git sont désactivés pendant la synchronisation.
 
 Interdictions : aucun reset, clean, checkout, switch, rebase, stash, push, build ou redémarrage dans l'outil de synchronisation. Les étapes de validation et de déploiement restent indépendantes.
+
+## 2026-08-05 -- Diagnostic séparé des autorisations GitHub PR
+
+Contexte : une lecture de pull request peut renvoyer `FORBIDDEN` alors que la création antérieure de PR avait fonctionné. Un refus d’autorisation ne doit produire aucun verdict sur l’existence, l’état, la qualité ou la fusion possible de la PR.
+
+Décision : ajouter un outil MCP strictement read-only nommé `github_pr_authorization_diagnostic`. Il teste séparément l’utilisateur authentifié, la visibilité du dépôt, la liste des PR et une PR facultative. Il classe les erreurs GitHub sans exposer le credential.
+
+Décision de périmètre : l’outil diagnostique uniquement le credential GitHub monté dans le runtime MCP. Il ne prétend pas lire ni réparer le token interne du connecteur GitHub natif de ChatGPT. Une réussite MCP combinée à un `FORBIDDEN` du connecteur ChatGPT doit être traitée comme un problème externe de réautorisation ou de sélection de dépôts.
+
+Sécurité : requêtes `GET` uniquement ; aucun token, en-tête `Authorization`, secret ou corps brut non borné ; recommandations limitées au principe du moindre privilège.
+
+Interdictions : aucun changement de paramètres GitHub automatique, aucun élargissement de permissions automatique, aucun merge, aucun déploiement et aucun redémarrage de production.
