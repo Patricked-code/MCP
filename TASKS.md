@@ -79,3 +79,15 @@ Mise à jour : 2026-07-09T20:08:09Z
   - Fichiers canoniques : `SUIVI.md`, `TASKS.md`, `CHANGELOG.md`, `DECISIONS_LOG.md`, `PRODUCTION_STATE.json`.
   - `MCP_MASTER_REFERENCE.md` a été retiré pour éviter une source concurrente.
 - TASK-20260711-004 — TERMINEE : préparer une PR draft vers `main`, sans merge, sans rebase PR #10, sans fermeture #2/#3.
+
+## Tâche active — PR 2
+
+Branche : `mcp/strict-read-write-separation-20260805`
+
+Critères :
+
+- tests réussis ;
+- aucun alias magique ;
+- aucun outil write en mode read-only ;
+- aucune perte d’outil ;
+- aucun déploiement.

@@ -109,3 +109,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Ajout de tests de syntaxe et de garde-fous ; aucune commande destructive ou réécriture d'historique autorisée.
 - Build et redémarrage volontairement séparés de la synchronisation Git.
 - Aucun déploiement serveur exécuté dans cette branche.
+
+## 2026-08-05 — Séparation stricte des capacités MCP
+
+- Ajout d’une politique centrale de classification des outils.
+- Séparation des outils AMF read/write.
+- Ajout d’outils publics AMF explicitement typés.
+- Ajout d’outils BRVMDATA preflight/push explicitement séparés.
+- Suppression des alias magiques de `curl_domain`.
+- Ajout des tests de catalogue et de non-exposition des mutations.

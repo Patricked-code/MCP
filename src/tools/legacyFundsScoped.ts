@@ -105,8 +105,8 @@ export function registerLegacyFundsScopedTools(server: McpServer): void {
     contains: z.string().min(2).max(80).regex(/^[A-Za-z0-9_.:/\[\] ()-]+$/).optional()
   };
 
-  server.tool('legacy_funds_frontend_status_s2', 'Contrôle le frontend Funds sur S2 et ses URL publiques.', {}, async () => { enabled(); return run(status('front'), 'legacy_funds_frontend_status_s2'); });
-  server.tool('legacy_funds_api_status_s2', 'Contrôle l API Funds sur S2 et ses URL publiques.', {}, async () => { enabled(); return run(status('api'), 'legacy_funds_api_status_s2'); });
+  server.tool('legacy_funds_frontend_status_s2', 'Contrôle le frontend Funds sur S2 et ses URL publiques.', {}, async () => { return run(status('front'), 'legacy_funds_frontend_status_s2'); });
+  server.tool('legacy_funds_api_status_s2', 'Contrôle l API Funds sur S2 et ses URL publiques.', {}, async () => { return run(status('api'), 'legacy_funds_api_status_s2'); });
 
   server.tool('legacy_funds_frontend_build_s2', 'Teste et compile le frontend Funds sur S2.', mut, async ({ allow_write, install_dependencies }) => {
     enabled(); assertWriteFlag(allow_write, 'legacy_funds_frontend_build_s2');
@@ -127,9 +127,9 @@ export function registerLegacyFundsScopedTools(server: McpServer): void {
   });
 
   server.tool('logs_legacy_funds_frontend_s2', 'Lit les logs Plesk Passenger du frontend Funds avec masquage des secrets.', logArgs, async ({ lines, contains }) => {
-    enabled(); return run(logs('front', lines, contains), 'logs_legacy_funds_frontend_s2');
+    return run(logs('front', lines, contains), 'logs_legacy_funds_frontend_s2');
   });
   server.tool('logs_legacy_funds_api_s2', 'Lit les logs Plesk Passenger de l API Funds avec masquage des secrets.', logArgs, async ({ lines, contains }) => {
-    enabled(); return run(logs('api', lines, contains), 'logs_legacy_funds_api_s2');
+    return run(logs('api', lines, contains), 'logs_legacy_funds_api_s2');
   });
 }

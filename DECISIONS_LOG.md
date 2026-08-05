@@ -66,3 +66,13 @@ Contexte : après fusion de la PR #11, le MCP déployé ne disposait d'aucun out
 Décision : ajouter `mcp_sync_from_github_s1` comme opération séparée exigeant `allow_write=true`. L'outil vérifie la branche `main`, le remote `Patricked-code/MCP`, un état totalement propre et l'ascendance avant tout fast-forward. Les hooks Git sont désactivés pendant la synchronisation.
 
 Interdictions : aucun reset, clean, checkout, switch, rebase, stash, push, build ou redémarrage dans l'outil de synchronisation. Les étapes de validation et de déploiement restent indépendantes.
+
+## 2026-08-05 — Classification centrale des outils
+
+Décision : l’exposition d’un outil dépend désormais d’un catalogue explicite et disjoint.
+
+- lecture : toujours disponible ;
+- écriture : uniquement si `ENABLE_WRITE_TOOLS=true` ;
+- aucun nom ne peut appartenir aux deux catalogues ;
+- tout outil de module mixte doit être classifié ;
+- les alias cachés sont interdits.

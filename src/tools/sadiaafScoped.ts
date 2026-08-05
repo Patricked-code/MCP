@@ -228,9 +228,6 @@ export function registerSadiaafScopedTools(
     'Retourne les deux projets SADIAAF autorisés sur S1 et leurs chemins, sans secret.',
     {},
     async () => {
-      assertScopedWriteToolsEnabled(
-        env.ENABLE_WRITE_TOOLS
-      );
 
       return asText(
         JSON.stringify(

@@ -66,3 +66,14 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+## PR 2 — Séparation lecture / écriture
+
+- [x] Remettre `curl_domain` en HTTPS uniquement.
+- [x] Remplacer les alias AMF.
+- [x] Remplacer les alias BRVMDATA.
+- [x] Séparer les catalogues read/write.
+- [x] Ajouter les tests de classification.
+- [ ] Revue humaine.
+- [ ] Fusion après validation.
+- [ ] PR 3 Registry V2.

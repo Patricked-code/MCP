@@ -185,3 +185,13 @@ Point de reprise public-safe : audit Phase 1 validé par l'opérateur, puis ouve
 Exception à tracer : le commit `f92f621` contient aussi l'ajout `src/tools/durableAccounts.ts` et `MCP_DURABLE_ACCOUNT_MANAGEMENT.md`. Il semble être arrivé sur `main` sans PR visible dans l'audit courant. Cette exception ne doit pas être répétée : les prochains changements doivent passer par branche `mcp/*`, PR draft, CI et revue humaine.
 
 Action locale Phase 2 : durcir la détection read-only pour ne plus confondre `.mcp` ou `MCP` avec la commande shell `cp`, ajouter une CI minimale, et mettre à jour uniquement l'état documentaire public-safe. Aucune action production, aucun restart, aucun déploiement, aucune suppression, aucun merge de PR #10.
+
+## 2026-08-05 — PR 2 séparation lecture / écriture
+
+- Branche candidate : `mcp/strict-read-write-separation-20260805`.
+- Base : branche forensique `7c8d9f7`.
+- `curl_domain` redevient strictement HTTPS.
+- Les alias AMF et BRVMDATA sont remplacés par des outils explicites.
+- Les outils read-only sont indépendants de `ENABLE_WRITE_TOOLS`.
+- Les mutations restent filtrées par un catalogue distinct.
+- Aucun déploiement ni redémarrage.

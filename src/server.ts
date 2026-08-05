@@ -9,6 +9,10 @@ import { registerOauthRoutes } from './oauth.js';
 import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
+import {
+  filterToolRegistrations,
+  WRITE_SCOPED_TOOL_NAMES
+} from './tools/registrationPolicy.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
 
@@ -209,7 +213,12 @@ export function buildMcpServer(): McpServer {
 
   registerReadOnlyTools(server);
   if (env.ENABLE_WRITE_TOOLS) {
-    registerScopedWriteTools(server);
+    registerScopedWriteTools(
+      filterToolRegistrations(
+        server,
+        WRITE_SCOPED_TOOL_NAMES
+      )
+    );
   }
 
   return server;

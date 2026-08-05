@@ -4,6 +4,10 @@ import { env } from '../config/env.js';
 import { runGuardedCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
 import { registerMcpSelfWriteTools } from './selfManagement.js';
+import { registerBrvmdataAmfTools } from './brvmdataAmf.js';
+import { registerNigeriaScopedTools } from './nigeriaScoped.js';
+import { registerLegacyFundsScopedTools } from './legacyFundsScoped.js';
+import { registerSadiaafTools } from './sadiaafDeploy.js';
 import { registerLegacyVhostsScopedTools } from './legacyVhostsScoped.js';
 import { registerAmfRegistryTools } from './amfRegistry.js';
 import { registerSadiaafScopedTools } from './sadiaafScoped.js';
@@ -288,7 +292,6 @@ fi`;
 
 export function registerScopedWriteTools(server: McpServer): void {
   server.tool('get_write_tools_context', 'Liste les projets et opérations d’écriture contrôlées disponibles. Aucun secret n’est exposé.', {}, async () => {
-    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     return asText(JSON.stringify({
       mode: 'scoped-write-tools',
       free_shell: false,
@@ -302,7 +305,6 @@ export function registerScopedWriteTools(server: McpServer): void {
   server.tool('run_sql_readonly_s2', 'Exécute une requête SQL SELECT uniquement sur la base OPCVM S2.', {
     query: z.string().min(8).max(20_000)
   }, async ({ query }) => {
-    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     assertSelectOnlyQuery(query);
     const command = `set -euo pipefail
 mysql -N -B ${shellQuote(env.OPCVM_DB_NAME)} -e ${shellQuote(query.trim())}`;
@@ -317,7 +319,6 @@ mysql -N -B ${shellQuote(env.OPCVM_DB_NAME)} -e ${shellQuote(query.trim())}`;
   server.tool('brvm_run_sql_readonly_s2', 'Exécute une requête SQL SELECT uniquement sur la base PostgreSQL BRVM (conteneur brvm_db) sur S2.', {
     query: z.string().min(8).max(20_000)
   }, async ({ query }) => {
-    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     assertSelectOnlyQuery(query);
     const command = `set -euo pipefail
 DOCKER_API_VERSION=1.44 docker ps --format '{{.Names}}' | grep -qx brvm_db
@@ -331,7 +332,6 @@ printf '%s' ${shellQuote(query.trim())} | DOCKER_API_VERSION=1.44 docker exec -i
     lines: z.number().int().min(20).max(500).default(150),
     contains: z.string().min(2).max(60).regex(/^[A-Za-z0-9_.:\/\[\] -]+$/, 'Filtre limité aux caractères alphanumériques simples').optional()
   }, async ({ lines, contains }) => {
-    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     // Accolades indispensables : sans elles, `|| true` capture le pipe suivant et le
     // masquage des secrets ne s'applique plus quand le filtre trouve des lignes.
     const filter = contains ? ` | { grep -i -F -- ${shellQuote(contains)} || true; }` : '';
@@ -374,7 +374,6 @@ node ${shellQuote(script)} ${quotedArgs}`;
   server.tool('git_status_project_s2', 'Affiche l’état Git d’un projet autorisé sur S2.', {
     project: ProjectKeySchema
   }, async ({ project }) => {
-    assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     return runS2(buildGitStatusCommand(project), `git_status_project_s2:${project}`, 30_000);
   });
 
@@ -397,8 +396,12 @@ node ${shellQuote(script)} ${quotedArgs}`;
     return runS2(buildDeployCommand('brvmchainsolution'), 'deploy_brvm_s2', 900_000);
   });
 
+  registerSadiaafTools(server);
+  registerLegacyFundsScopedTools(server);
+  registerNigeriaScopedTools(server);
   registerSadiaafScopedTools(server);
   registerLegacyVhostsScopedTools(server);
   registerAmfRegistryTools(server);
+  registerBrvmdataAmfTools(server);
   registerMcpSelfWriteTools(server);
 }

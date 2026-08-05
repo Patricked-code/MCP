@@ -185,7 +185,6 @@ export function registerLegacyVhostsScopedTools(
     'Liste les applications historiques autorisées sur S1, avec leurs chemins exacts.',
     {},
     async () => {
-      assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
 
       return asText(JSON.stringify({
         server: 's1',
