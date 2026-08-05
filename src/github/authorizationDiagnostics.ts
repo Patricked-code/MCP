@@ -7,6 +7,7 @@ const DEFAULT_API_BASE = 'https://api.github.com';
 export type GithubAuthorizationFailureKind =
   | 'none'
   | 'token_missing'
+  | 'api_base_not_allowed'
   | 'authentication_failed'
   | 'token_expired_or_revoked'
   | 'rate_limited'
@@ -60,7 +61,6 @@ type GithubRequestResult = {
 };
 
 const tokenFilePath = () => env.GITHUB_TOKEN_FILE || DEFAULT_TOKEN_FILE;
-const apiBase = () => (env.GITHUB_API_BASE || DEFAULT_API_BASE).replace(/\/$/, '');
 
 function splitHeader(value: string | null): string[] {
   if (!value) return [];
@@ -77,6 +77,34 @@ function normalizeRepo(value: string): string {
   const repo = value.trim();
   if (!/^[A-Za-z0-9_.-]{1,120}$/.test(repo)) throw new Error('Nom de dépôt GitHub invalide.');
   return repo;
+}
+
+export function resolveGithubApiBase(
+  configuredBase = env.GITHUB_API_BASE || DEFAULT_API_BASE,
+  allowedHostsValue = env.GITHUB_API_ALLOWED_HOSTS
+): string {
+  const parsed = new URL(configuredBase);
+  const allowedHosts = new Set(
+    allowedHostsValue
+      .split(',')
+      .map((host) => host.trim().toLowerCase())
+      .filter(Boolean)
+  );
+
+  if (parsed.protocol !== 'https:') {
+    throw new Error('GitHub API base doit utiliser HTTPS.');
+  }
+  if (parsed.username || parsed.password) {
+    throw new Error('GitHub API base ne doit contenir aucun identifiant.');
+  }
+  if (parsed.search || parsed.hash) {
+    throw new Error('GitHub API base ne doit contenir ni query string ni fragment.');
+  }
+  if (!allowedHosts.has(parsed.hostname.toLowerCase())) {
+    throw new Error('Hôte GitHub API non autorisé.');
+  }
+
+  return parsed.toString().replace(/\/$/, '');
 }
 
 async function readToken(): Promise<string | null> {
@@ -100,35 +128,49 @@ function extractLogin(json: unknown): string | null {
   return typeof login === 'string' ? login : null;
 }
 
-async function githubRequest(token: string, endpoint: string): Promise<GithubRequestResult> {
-  const response = await fetch(`${apiBase()}${endpoint}`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'wealthtech-mcp-github-auth-diagnostic'
-    }
-  });
+async function githubRequest(
+  token: string,
+  apiBase: string,
+  endpoint: string
+): Promise<GithubRequestResult> {
+  if (!endpoint.startsWith('/')) throw new Error('Endpoint GitHub invalide.');
 
-  const text = await response.text();
-  let json: unknown = null;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), env.GITHUB_REQUEST_TIMEOUT_MS);
+
   try {
-    json = text ? JSON.parse(text) : null;
-  } catch {
-    json = null;
-  }
+    const response = await fetch(`${apiBase}${endpoint}`, {
+      method: 'GET',
+      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'User-Agent': 'wealthtech-mcp-github-auth-diagnostic'
+      }
+    });
 
-  return {
-    ok: response.ok,
-    status: response.status,
-    message: extractMessage(json),
-    json,
-    acceptedPermissions: splitHeader(response.headers.get('x-accepted-github-permissions')),
-    oauthScopes: splitHeader(response.headers.get('x-oauth-scopes')),
-    requestId: response.headers.get('x-github-request-id'),
-    tokenExpiresAt: response.headers.get('github-authentication-token-expiration')
-  };
+    const text = await response.text();
+    let json: unknown = null;
+    try {
+      json = text ? JSON.parse(text) : null;
+    } catch {
+      json = null;
+    }
+
+    return {
+      ok: response.ok,
+      status: response.status,
+      message: extractMessage(json),
+      json,
+      acceptedPermissions: splitHeader(response.headers.get('x-accepted-github-permissions')),
+      oauthScopes: splitHeader(response.headers.get('x-oauth-scopes')),
+      requestId: response.headers.get('x-github-request-id'),
+      tokenExpiresAt: response.headers.get('github-authentication-token-expiration')
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 export function classifyGithubAuthorizationFailure(
@@ -161,7 +203,7 @@ export function classifyGithubAuthorizationFailure(
   }
   if (status === 404) {
     if (probeName === 'repository') return 'repository_not_visible_or_not_selected';
-    if (probeName === 'pull_request' || probeName === 'pull_request_list') return 'pull_request_permission_missing';
+    if (probeName === 'pull_request_list') return 'pull_request_permission_missing';
     return 'not_found';
   }
   return 'unexpected_response';
@@ -195,6 +237,8 @@ export function buildGithubAuthorizationRemediations(
   switch (failure) {
     case 'token_missing':
       return ['Connecter un credential GitHub au MCP sans le commiter dans Git.', 'Vérifier que le fichier secret GitHub est monté en lecture seule dans le conteneur.'];
+    case 'api_base_not_allowed':
+      return ['Configurer une API GitHub HTTPS dont le hostname figure explicitement dans GITHUB_API_ALLOWED_HOSTS.', 'Ne jamais autoriser un hôte arbitraire à recevoir le credential GitHub.'];
     case 'authentication_failed':
     case 'token_expired_or_revoked':
       return ['Renouveler ou réautoriser le credential GitHub utilisé par le MCP.', 'Ne jamais copier le token dans un issue, une PR, un log ou un fichier versionné.'];
@@ -213,13 +257,39 @@ export function buildGithubAuthorizationRemediations(
     case 'forbidden':
       return ['Vérifier la sélection du dépôt, les permissions GitHub App, le SSO et les restrictions de l’organisation.', 'Réautoriser la connexion uniquement après avoir identifié la permission manquante.'];
     case 'network_error':
-      return ['Vérifier la résolution DNS et la connectivité HTTPS vers api.github.com depuis le runtime MCP.', 'Relancer le diagnostic sans modifier Git ni la production.'];
+      return ['Vérifier la résolution DNS, la connectivité HTTPS et le timeout vers l’API GitHub depuis le runtime MCP.', 'Relancer le diagnostic sans modifier Git ni la production.'];
     case 'not_found':
     case 'unexpected_response':
       return ['Vérifier le propriétaire, le nom du dépôt et le numéro de PR.', 'Conserver le statut HTTP et le X-GitHub-Request-Id pour l’analyse.'];
     case 'none':
       return ['Aucune correction d’autorisation GitHub n’est requise pour les lectures testées.'];
   }
+}
+
+function diagnosticFailure(
+  failure: GithubAuthorizationFailureKind,
+  owner: string,
+  repo: string,
+  pullRequestNumber: number | null,
+  tokenFile: string,
+  login: string | null,
+  probes: GithubAuthorizationProbe[],
+  warning: string
+): GithubPrAuthorizationDiagnostic {
+  return {
+    ok: false,
+    readOnly: true,
+    diagnosticScope: 'mcp_server_github_credential',
+    owner,
+    repo,
+    pullRequestNumber,
+    login,
+    tokenFile,
+    probes,
+    primaryFailure: failure,
+    remediations: buildGithubAuthorizationRemediations(failure, owner, repo),
+    warnings: [warning]
+  };
 }
 
 export async function diagnoseGithubPrAuthorization(options: {
@@ -235,65 +305,72 @@ export async function diagnoseGithubPrAuthorization(options: {
   }
 
   const tokenFile = tokenFilePath();
-  const token = await readToken();
-  if (!token) {
-    return {
-      ok: false,
-      readOnly: true,
-      diagnosticScope: 'mcp_server_github_credential',
+  let apiBase: string;
+  try {
+    apiBase = resolveGithubApiBase();
+  } catch {
+    return diagnosticFailure(
+      'api_base_not_allowed',
       owner,
       repo,
       pullRequestNumber,
-      login: null,
       tokenFile,
-      probes: [],
-      primaryFailure: 'token_missing',
-      remediations: buildGithubAuthorizationRemediations('token_missing', owner, repo),
-      warnings: ['Ce diagnostic teste le credential GitHub du serveur MCP, pas la session interne du connecteur GitHub de ChatGPT.']
-    };
+      null,
+      [],
+      'La configuration de l’API GitHub est refusée avant toute lecture du credential.'
+    );
+  }
+
+  const token = await readToken();
+  if (!token) {
+    return diagnosticFailure(
+      'token_missing',
+      owner,
+      repo,
+      pullRequestNumber,
+      tokenFile,
+      null,
+      [],
+      'Ce diagnostic teste le credential GitHub du serveur MCP, pas la session interne du connecteur GitHub de ChatGPT.'
+    );
   }
 
   const probes: GithubAuthorizationProbe[] = [];
   let login: string | null = null;
 
   try {
-    const userResult = await githubRequest(token, '/user');
+    const userResult = await githubRequest(token, apiBase, '/user');
     login = userResult.ok ? extractLogin(userResult.json) : null;
     probes.push(toProbe('authenticated_user', '/user', userResult));
 
     if (userResult.ok) {
       const repoEndpoint = `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`;
-      const repoResult = await githubRequest(token, repoEndpoint);
+      const repoResult = await githubRequest(token, apiBase, repoEndpoint);
       probes.push(toProbe('repository', repoEndpoint, repoResult));
 
       if (repoResult.ok) {
         const pullListEndpoint = `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls?state=all&per_page=1`;
-        const pullListResult = await githubRequest(token, pullListEndpoint);
+        const pullListResult = await githubRequest(token, apiBase, pullListEndpoint);
         probes.push(toProbe('pull_request_list', pullListEndpoint, pullListResult));
 
-        if (pullRequestNumber !== null) {
+        if (pullListResult.ok && pullRequestNumber !== null) {
           const pullEndpoint = `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls/${pullRequestNumber}`;
-          const pullResult = await githubRequest(token, pullEndpoint);
+          const pullResult = await githubRequest(token, apiBase, pullEndpoint);
           probes.push(toProbe('pull_request', pullEndpoint, pullResult));
         }
       }
     }
   } catch {
-    const failure: GithubAuthorizationFailureKind = 'network_error';
-    return {
-      ok: false,
-      readOnly: true,
-      diagnosticScope: 'mcp_server_github_credential',
+    return diagnosticFailure(
+      'network_error',
       owner,
       repo,
       pullRequestNumber,
-      login,
       tokenFile,
+      login,
       probes,
-      primaryFailure: failure,
-      remediations: buildGithubAuthorizationRemediations(failure, owner, repo),
-      warnings: ['Une erreur réseau a interrompu le diagnostic. Aucun secret ni corps de réponse brut n’est retourné.']
-    };
+      'Une erreur réseau ou un timeout a interrompu le diagnostic. Aucun objet d’erreur, secret ou header de requête n’est retourné.'
+    );
   }
 
   const failedProbe = probes.find((probe) => !probe.ok);
