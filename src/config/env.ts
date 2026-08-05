@@ -33,6 +33,8 @@ const EnvSchema = z.object({
   GITHUB_ORG: z.string().default(''),
   GITHUB_TOKEN_FILE: z.string().default(''),
   GITHUB_API_BASE: z.string().url().default('https://api.github.com'),
+  GITHUB_API_ALLOWED_HOSTS: z.string().default('api.github.com'),
+  GITHUB_REQUEST_TIMEOUT_MS: z.coerce.number().int().min(100).max(120_000).default(15_000),
   MCP_GITHUB_BOOTSTRAPPED: EnvBooleanSchema.default(false)
 });
 
