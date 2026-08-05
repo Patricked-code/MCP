@@ -1,7 +1,7 @@
 # Sélection des modules récupérés du runtime S1
 
-Date : 2026-08-05  
-Source forensique : PR #19, `mcp/recover-runtime-drift-20260805@7c8d9f782ae3195197345257f38fbc400504a848`  
+Date : 2026-08-05
+Source forensique : PR #19, `mcp/recover-runtime-drift-20260805@7c8d9f782ae3195197345257f38fbc400504a848`
 Statut : décision de réintégration, aucun déploiement
 
 ## 1. Principe
