@@ -102,6 +102,53 @@ Garde-fous :
 
 Cet outil fournit une preuve de provenance. Il n’autorise ni build, ni restart, ni déploiement, ni alignement GitHub → S1.
 
+## `mcp_prepare_recovery_candidate_s1`
+
+Objectif : préparer hors du dépôt actif un snapshot forensique local et un clone candidat indépendant au SHA exact du `main` GitHub distant.
+
+Arguments obligatoires :
+
+- `expected_main_sha` : SHA Git complet de 40 caractères ;
+- `allow_write=true` : validation explicite de l’opérateur.
+
+Préconditions :
+
+- `ENABLE_WRITE_TOOLS=true` ;
+- dépôt actif sous `/opt/apps/wealthtech-mcp-ssh-bridge` ;
+- remote actif limité à `Patricked-code/MCP` ;
+- SHA demandé identique à `refs/heads/main` lu directement sur le remote canonique ;
+- répertoire de récupération fixe, non symbolique et extérieur au dépôt actif.
+
+Snapshot créé sous `/opt/apps/wealthtech-mcp-recovery/snapshots/<run_id>` :
+
+- branche, HEAD et statut Git ;
+- bundle Git de tous les refs ;
+- patch binaire du working tree hors chemins sensibles/générés ;
+- archive des fichiers non suivis autorisés ;
+- nombre de fichiers non suivis exclus, sans publier leur contenu ;
+- attestation bornée du conteneur et de l’image Docker ;
+- manifeste `SHA256SUMS` et hash du manifeste.
+
+Candidat créé sous `/opt/apps/wealthtech-mcp-recovery/candidates/<run_id>` :
+
+- dépôt Git indépendant ;
+- remote HTTPS canonique ;
+- fetch de `main` avec hooks désactivés ;
+- checkout détaché uniquement dans le candidat ;
+- vérification stricte du SHA, du remote et d’un état propre.
+
+Exclusions des fichiers non suivis : `.env`, secrets, clés, dumps, bases locales, logs, `node_modules`, `dist`, `build`, `coverage` et sauvegardes MCP.
+
+Interdictions :
+
+- aucun checkout, reset, clean, stash, rebase ou pull dans le dépôt actif ;
+- aucun build, `npm ci`, restart ou démarrage de conteneur ;
+- aucun changement du runtime actif, du registre ou du remote ;
+- aucune suppression, purge ou quarantaine ;
+- aucune conclusion de validation ou de déployabilité.
+
+La sortie porte explicitement `production_modified=false` et `candidate_validated=false`. La validation du candidat est une phase séparée.
+
 ## `mcp_sync_from_github_s1`
 
 Objectif : synchroniser `/opt/apps/wealthtech-mcp-ssh-bridge` avec `Patricked-code/MCP:main` sans écraser ni réécrire l'historique.
