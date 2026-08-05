@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+echo "git=$(git --version)"
+echo "lfs=$(command -v git-lfs >/dev/null 2>&1 && git lfs version || echo absent)"
+echo "ssh_remote:"
+GIT_SSH_COMMAND='ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15' git ls-remote git@github.com:chainsolutions-wealthtech/BRVMDATA.git HEAD refs/heads/main refs/heads/master 2>&1 || true
+echo "https_remote:"
+git ls-remote https://github.com/chainsolutions-wealthtech/BRVMDATA.git HEAD refs/heads/main refs/heads/master 2>&1 || true
+echo "files:"
+for f in /tmp/AMF_UMOA_Registre_Dynamique_Natif.zip /tmp/AMF_UMOA_REGISTRE_DYNAMIQUE_NATIF.sqlite.gz /tmp/amf_registry_native/AMF_UMOA_REGISTRE_DYNAMIQUE_NATIF.sqlite /tmp/AMF_UMOA_REGISTRE_DYNAMIQUE_NATIF_BASE_ET_CSV.zip; do
+  if [ -f "$f" ]; then stat -c '%s %n' "$f"; fi
+done
