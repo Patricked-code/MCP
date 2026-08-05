@@ -28,18 +28,13 @@ Chaque changement visible doit indiquer date, fichier, raison, impact, tests et 
 - Aucun secret critique ajouté.
 - Aucune suppression destructive effectuée.
 
-
 ---
 
 ## Règle permanente — double présence, non-régression et amélioration continue
 
 GitHub est la source versionnée.
-
 Le serveur MCP est la source exécutée.
-
 Les deux doivent toujours être vérifiés ensemble avant et après toute intervention.
-
-Aucune IA ne doit supposer que GitHub et le serveur sont synchronisés sans vérification.
 
 Toute intervention humaine, IA ou automatisée doit respecter :
 
@@ -130,3 +125,18 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Tests `tests/githubAuthorization.test.ts` intégrés à `test:readonly-safety`.
 - Runbook ajouté sous `docs/runbooks/GITHUB_PR_AUTHORIZATION_DIAGNOSTIC.md`.
 - Aucun changement de production, aucun déploiement et aucun redémarrage S1.
+
+## 2026-08-05 — Fondations GitHub MCP terminées
+
+- PR #18 fusionnée : documentation canonique et reprise non destructive.
+- PR #25 fusionnée : diagnostic GitHub PR strictement read-only.
+- PR #26 fusionnée : catalogues READ et WRITE disjoints et testés.
+- PR #27 fusionnée : GitRegistry v2 dual et dry-run uniquement.
+- `main` atteint `618f4020ac69801dd53f624e5cd188fc6d76cc24`.
+- Ruleset `protect-main` actif ; issue #24 clôturée.
+- Anciennes PR #21, #22 et #23 fermées sans fusion après reconstruction.
+- CI des PR #25, #26 et #27 entièrement réussie.
+- État final consigné dans `docs/audits/2026-08-05/MCP_FOUNDATIONS_FINAL_STATE.md`.
+- `PRODUCTION_STATE.json`, `TASKS.md` et `TODO.md` actualisés.
+- Aucun changement S1/S2, aucun build ou restart de production, aucun déploiement et aucune migration du registre actif.
+- Prochaine action unique : attestation S1 read-only après reconnexion du connecteur `wealthtech_ssh_bridge`.
