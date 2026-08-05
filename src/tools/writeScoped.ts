@@ -4,6 +4,7 @@ import { env } from '../config/env.js';
 import { runGuardedCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
 import { registerMcpSelfWriteTools } from './selfManagement.js';
+import { registerRecoveryCandidateWriteTools } from './recoveryCandidate.js';
 import {
   assertScopedWriteToolsEnabled,
   assertSelectOnlyQuery,
@@ -292,4 +293,5 @@ node ${shellQuote(script)} ${quotedArgs}`;
   });
 
   registerMcpSelfWriteTools(server);
+  registerRecoveryCandidateWriteTools(server);
 }
