@@ -109,3 +109,15 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Ajout de tests de syntaxe et de garde-fous ; aucune commande destructive ou réécriture d'historique autorisée.
 - Build et redémarrage volontairement séparés de la synchronisation Git.
 - Aucun déploiement serveur exécuté dans cette branche.
+
+## 2026-08-05 -- Diagnostic d’autorisation GitHub PR
+
+- Branche : `mcp/github-pr-auth-diagnostics-20260805`, créée depuis `main@097dac93715c0af83fcfad82cd598bacec956125`.
+- Ajout du module `src/github/authorizationDiagnostics.ts`.
+- Ajout de l’outil read-only `github_pr_authorization_diagnostic`.
+- Probes séparées : utilisateur authentifié, dépôt, liste des PR et PR ciblée.
+- Classification des erreurs `401`, `403`, `404`, SSO, rate limit, dépôt non sélectionné et permission `Pull requests: Read` absente.
+- Ajout des tests `tests/githubAuthorization.test.ts` à la suite `test:readonly-safety`.
+- Ajout du runbook `docs/runbooks/GITHUB_PR_AUTHORIZATION_DIAGNOSTIC.md`.
+- Aucun token, secret ou en-tête `Authorization` retourné.
+- Aucun changement de production, aucun redémarrage, aucun déploiement, aucun merge automatique.
