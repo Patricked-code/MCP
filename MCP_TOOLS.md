@@ -13,6 +13,37 @@ Catalogue des outils MCP disponibles.
 ## Règle
 Chaque outil doit documenter arguments, résultat, droits requis, risques et interdictions.
 
+## `github_pr_authorization_diagnostic`
+
+Objectif : tester en lecture seule l’authentification GitHub du serveur MCP, la visibilité d’un dépôt, la liste des pull requests et, facultativement, une pull request précise.
+
+Arguments :
+
+- `owner` : propriétaire GitHub ;
+- `repo` : nom du dépôt ;
+- `pullRequestNumber` : numéro de PR facultatif.
+
+Résultat :
+
+- probes HTTP séparées pour l’utilisateur authentifié, le dépôt, la liste des PR et la PR ciblée ;
+- classification publique des erreurs `401`, `403` et `404` ;
+- permissions GitHub acceptées lorsque l’en-tête correspondant est fourni ;
+- `X-GitHub-Request-Id` pour la traçabilité ;
+- recommandations limitées au dépôt ciblé.
+
+Garde-fous :
+
+- requêtes GitHub `GET` uniquement ;
+- API HTTPS et hostname explicitement autorisé ;
+- timeout réseau borné ;
+- aucun token ou en-tête `Authorization` retourné ;
+- aucun corps brut non borné ;
+- aucune écriture GitHub, Git ou serveur ;
+- aucune conclusion sur l’état d’une PR lorsque l’autorisation échoue ;
+- le diagnostic concerne le credential du serveur MCP, pas le token interne du connecteur GitHub natif de ChatGPT.
+
+Runbook : `docs/runbooks/GITHUB_PR_AUTHORIZATION_DIAGNOSTIC.md`.
+
 ## `mcp_sync_from_github_s1`
 
 Objectif : synchroniser `/opt/apps/wealthtech-mcp-ssh-bridge` avec `Patricked-code/MCP:main` sans écraser ni réécrire l'historique.
@@ -61,4 +92,4 @@ Règles permanentes :
 - DirtyCount à zéro avant pull, merge, deploy, migration ou nettoyage ;
 - non-régression obligatoire.
 
-Mise à jour : 2026-07-09T20:08:09Z
+Mise à jour : 2026-08-05
