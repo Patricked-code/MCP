@@ -67,15 +67,31 @@ Règles permanentes :
 
 Mise à jour : 2026-07-09T20:08:09Z
 
-## Alignement MCP — 2026-08-05
+## Alignement MCP — état au 2026-08-05
 
-- [x] Snapshot forensique.
-- [x] Baseline testée.
+- [x] Snapshot forensique créé et conservé dans la PR #19 `DO NOT MERGE`.
+- [x] Baseline `097dac9` testée.
 - [x] Runtime récupéré dans GitHub.
 - [x] Bundle Git vérifié.
-- [ ] PR 1 documentation fusionnée.
-- [ ] PR 2 séparation lecture / écriture.
-- [ ] Main GitHub alignée.
-- [ ] Image reconstruite depuis le commit fusionné.
-- [ ] Dossier Git S1 remis dans un état propre.
-- [ ] PRODUCTION_STATE final attesté.
+- [x] Documentation canonique fusionnée par la PR #18.
+- [x] Diagnostic GitHub read-only fusionné par la PR #25.
+- [x] Séparation lecture / écriture fusionnée par la PR #26.
+- [x] Fondation GitRegistry v2 dry-run fusionnée par la PR #27.
+- [x] `main` protégé avec PR et CI obligatoires.
+- [x] Issue de protection #24 clôturée.
+- [ ] Reconnecter `wealthtech_ssh_bridge`.
+- [ ] Attester en lecture seule Git S1, Docker, outils et endpoints.
+- [ ] Produire un verdict Go / Go avec corrections / No-Go.
+- [ ] Préparer une copie propre isolée avant tout build.
+- [ ] Aligner S1 uniquement après verdict Go et procédure de rollback.
+- [ ] Reconstruire l’image depuis un commit fusionné et attesté.
+- [ ] Vérifier GitHub = S1 HEAD = image Docker.
+- [ ] Migrer le registre actif vers v2 dans une PR et une opération séparées.
+
+## Interdictions tant que S1 n’est pas attesté
+
+- aucun pull, reset, clean ou checkout dans le working tree actif ;
+- aucun build ni restart depuis le dossier sale ;
+- aucun remplacement du registre actif ;
+- aucun changement de remote ;
+- aucun déploiement, nettoyage ou suppression.

@@ -95,3 +95,24 @@ Périmètre : l’outil diagnostique uniquement le credential GitHub monté dans
 Sécurité : requêtes `GET` uniquement ; API HTTPS et hostname autorisé ; timeout borné ; aucun token, en-tête `Authorization`, secret ou objet d’erreur réseau retourné.
 
 Interdictions : aucun changement automatique de permissions GitHub, aucun élargissement de rôle, aucun déploiement et aucun redémarrage de production.
+
+## 2026-08-05 — Clôture des fondations GitHub
+
+Contexte : la documentation, le diagnostic GitHub, la séparation READ/WRITE et GitRegistry v2 avaient été préparés dans des PR basées sur plusieurs états successifs de `main`.
+
+Décision : reconstruire chaque fondation depuis le `main` protégé, fermer les anciennes PR sans fusion, exiger une nouvelle CI puis fusionner avec un SHA attendu.
+
+Résultat :
+
+- PR #18 fusionnée : documentation canonique ;
+- PR #25 fusionnée : diagnostic GitHub read-only ;
+- PR #26 fusionnée : séparation READ/WRITE ;
+- PR #27 fusionnée : GitRegistry v2 dry-run ;
+- `main` protégé et positionné sur `618f4020ac69801dd53f624e5cd188fc6d76cc24` ;
+- issue #24 clôturée comme terminée.
+
+Décision de frontière : les fondations GitHub sont terminées, mais cela ne vaut ni alignement S1, ni déploiement, ni migration du registre actif.
+
+Prochaine action unique : reconnecter `wealthtech_ssh_bridge` et effectuer une attestation strictement read-only de Git S1, Docker, outils et endpoints.
+
+Interdictions jusqu’au verdict : aucun pull, reset, clean, checkout, build ou restart dans le working tree actif ; aucun remplacement du registre ; aucun changement de remote ; aucun déploiement, nettoyage ou suppression.

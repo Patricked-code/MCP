@@ -28,7 +28,7 @@
     "/.well-known/oauth-authorization-server": "200 OK",
     "/mcp_without_token": "401 Unauthorized"
   },
-  "githubCommitFull": "38c999087b0e93adc2beeba04733af182c92be9c",
+  "githubCommitFull": "618f4020ac69801dd53f624e5cd188fc6d76cc24",
   "serverGitState": {
     "branch": "main",
     "serverCommitPrefix": "f92f621",
@@ -37,11 +37,14 @@
     "originMainCommitPrefix": "f92f621",
     "trackedWorkingTreeClean": true,
     "ignoredFilesAudited": false,
-    "verifiedAt": "2026-07-12"
+    "verifiedAt": "2026-07-12",
+    "currentStateSupersededByForensicAudit": true,
+    "currentAlignmentAttested": false
   },
   "runtimeState": {
     "containerRuntimeObserved": true,
-    "containerImageCommitVerified": false
+    "containerImageCommitVerified": false,
+    "rebuiltFromCurrentGithubMain": false
   },
   "securityState": {
     "secretScannerStatus": "blocked_before_pr11_correction_due_to_cp_false_positive"
@@ -51,14 +54,16 @@
     "pr11Merged": true,
     "pr11MergeCommit": "38c999087b0e93adc2beeba04733af182c92be9c",
     "pr11Deployed": false,
-    "mcpSyncToolDeployed": false
+    "mcpSyncToolDeployed": false,
+    "foundationsDeployed": false
   },
   "onboardingEngineState": "documented_and_configured_but_not_implemented_in_main",
   "alignmentRecovery": {
     "recordedAt": "2026-08-05T04:06:10.567244+00:00",
-    "status": "forensic_branch_published_alignment_pending",
+    "status": "github_foundations_merged_s1_alignment_pending",
     "repository": "Patricked-code/MCP",
     "baselineMainCommit": "097dac93715c0af83fcfad82cd598bacec956125",
+    "currentGithubMainCommit": "618f4020ac69801dd53f624e5cd188fc6d76cc24",
     "recoveryBranch": "mcp/recover-runtime-drift-20260805",
     "recoveryCommit": "7c8d9f782ae3195197345257f38fbc400504a848",
     "runtimeBuildParityVerified": true,
@@ -69,6 +74,20 @@
     "githubMainAligned": false,
     "serverWorkingTreeClean": false,
     "runtimeRebuiltFromMergedCommit": false,
-    "nextStep": "strict_read_write_separation"
+    "nextStep": "reconnect_wealthtech_ssh_bridge_and_run_read_only_attestation"
+  },
+  "githubFoundationState": {
+    "recordedAt": "2026-08-05T08:28:13Z",
+    "mainCommit": "618f4020ac69801dd53f624e5cd188fc6d76cc24",
+    "mainProtected": true,
+    "requiredStatusCheck": "validate",
+    "mergedPullRequests": [18, 25, 26, 27],
+    "githubAuthorizationDiagnosticMerged": true,
+    "readWriteFoundationMerged": true,
+    "gitRegistryV2DryRunMerged": true,
+    "registryActiveFileModified": false,
+    "s1Aligned": false,
+    "runtimeRebuilt": false,
+    "productionModified": false
   }
 }
