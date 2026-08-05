@@ -6,77 +6,98 @@ Dépôt actif : `Patricked-code/MCP`
 Branche officielle : `main`
 Chemin serveur déclaré : `/opt/apps/wealthtech-mcp-ssh-bridge`
 
-## État GitHub attesté
+## État GitHub de référence avant la présente PR
 
 ```text
-main : 618f4020ac69801dd53f624e5cd188fc6d76cc24
+main : 5c349ef7d20eba128a09bac3d4fcae779a48b3f7
 protection main : active
 contrôle obligatoire : validate
 ```
 
-Fondations fusionnées :
+Fondations et correctifs fusionnés :
 
 - PR #18 — documentation canonique et reprise forensique ;
 - PR #25 — diagnostic GitHub PR strictement read-only ;
 - PR #26 — séparation des catalogues READ et WRITE ;
-- PR #27 — fondation GitRegistry v2 duale et dry-run.
-
-Anciennes PR #21, #22 et #23 : fermées sans fusion après reconstruction depuis un `main` à jour.
+- PR #27 — fondation GitRegistry v2 duale et dry-run ;
+- PR #30 — redaction P1 des identifiants et query strings OAuth dans les logs ;
+- PR #31 — attestation read-only bornée du conteneur et de l’image Docker.
 
 PR #19 : snapshot forensique conservé avec statut `DO NOT MERGE`.
 
-Issue #24 : protection de `main` terminée et clôturée.
+## Attestation S1 terminée
 
-## Capacités intégrées dans GitHub
+L’issue #29 est clôturée avec un verdict **NO-GO pour alignement direct**.
 
-### Diagnostic GitHub read-only
+Écarts attestés :
 
-Outil : `github_pr_authorization_diagnostic`.
+- branche S1 différente de `main` ;
+- HEAD S1 ancien ;
+- working tree suivi et non suivi sale ;
+- runtime actif divergent du dépôt canonique ;
+- provenance d’image initialement incomplète ;
+- aucune autorisation de pull, build, restart ou nettoyage direct.
 
-Il classe les erreurs d’authentification et d’autorisation sans exposer le credential et sans modifier GitHub.
+L’ancienne issue #17 ciblant `097dac9` est fermée comme supersédée.
 
-### Séparation READ / WRITE
+## Phase active
 
-Les catalogues scoped READ et WRITE sont disjoints et testés. Les mutations restent derrière `ENABLE_WRITE_TOOLS` et ne sont pas déclarées prêtes pour un déploiement automatique.
+Issue P0 : #32 — préparation d’un candidat isolé depuis le `main` protégé.
 
-### GitRegistry v2
+Branche de travail :
 
-Outil : `github_registry_v2_dry_run`.
+```text
+mcp/recovery-candidate-preparation-20260805
+```
 
-La conversion v1 vers v2 est validée en mémoire uniquement. Aucun registre actif, remote, mapping ou chemin serveur n’est modifié.
+Outil préparé :
+
+```text
+mcp_prepare_recovery_candidate_s1
+```
+
+Il doit uniquement :
+
+1. vérifier le SHA exact du `main` distant ;
+2. créer un snapshot forensique hors dépôt actif ;
+3. conserver bundle, patch, archive autorisée, attestation Docker et manifeste SHA-256 ;
+4. créer un clone candidat indépendant au SHA demandé ;
+5. retourner `production_modified=false` et `candidate_validated=false`.
 
 ## État S1 et production
 
 ```text
-S1 aligné avec main@618f4020 : non attesté
-working tree S1 propre       : non
-image reconstruite           : non
-registre actif migré         : non
-production modifiée          : non
+S1 aligné avec main             : non
+working tree S1 propre          : non
+snapshot phase A exécuté        : non
+clone candidat créé sur S1      : non
+candidat validé                 : non
+runtime candidat démarré        : non
+production modifiée             : non
+registre actif migré            : non
 ```
 
-Le connecteur `wealthtech_ssh_bridge` n’était pas disponible pendant la clôture des fondations. Aucun nouveau verdict serveur n’est produit.
+Le connecteur `wealthtech_ssh_bridge` n’est pas exposé dans la conversation courante. Le code de préparation est donc versionné et testé côté GitHub uniquement ; aucune action serveur n’est prétendue exécutée.
 
-## Prochaine tâche unique
+## Étape suivante après fusion de la phase A
 
-`TASK-20260805-006` — reconnecter `wealthtech_ssh_bridge` et effectuer uniquement une attestation read-only :
+Reconnecter le connecteur serveur, exécuter d’abord les contrôles read-only, puis invoquer la préparation avec :
 
-1. ping du bridge ;
-2. état Git complet S1 ;
-3. branche, HEAD, remote et `origin/main` ;
-4. image Docker active et digest ;
-5. catalogue réel des outils ;
-6. health checks local et public ;
-7. comparaison GitHub / S1 / runtime ;
-8. verdict Go, Go avec corrections ou No-Go.
+```text
+expected_main_sha=<SHA complet du main alors courant>
+allow_write=true
+```
 
-## Interdictions jusqu’au verdict
+La sortie devra être publiée sous forme public-safe dans l’issue #32 avant la phase B de validation du candidat.
+
+## Interdictions permanentes jusqu’au verdict du candidat
 
 - aucun pull, reset, clean, checkout, switch, rebase ou stash dans le working tree actif ;
 - aucun build ou restart depuis le dossier actif sale ;
 - aucun remplacement du registre ;
 - aucun changement de remote ;
-- aucun déploiement, migration, quarantaine, purge ou suppression.
+- aucun déploiement, migration, quarantaine, purge ou suppression ;
+- aucune confusion entre candidat préparé, candidat validé et candidat déployable.
 
 ## Sources associées
 
@@ -85,5 +106,5 @@ Le connecteur `wealthtech_ssh_bridge` n’était pas disponible pendant la clôt
 - `TODO.md` ;
 - `DECISIONS_LOG.md` ;
 - `CHANGELOG.md` ;
-- `docs/audits/2026-08-05/MCP_FOUNDATIONS_FINAL_STATE.md` ;
+- `docs/audits/2026-08-05/MCP_RECOVERY_CANDIDATE_PREPARATION.md` ;
 - `docs/history/SUIVI_PRE_FOUNDATIONS_20260805.md` pour l’historique antérieur.
