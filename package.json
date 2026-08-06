@@ -16,7 +16,7 @@
     "test:readonly-safety": "tsx --test tests/readOnlySafety.test.ts tests/mcpGitSync.test.ts tests/githubAuthorization.test.ts tests/toolClassification.test.ts tests/gitRegistryV2.test.ts tests/oauthLogRedaction.test.ts tests/runtimeAttestation.test.ts"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "latest",
+    "@modelcontextprotocol/sdk": "1.30.0",
     "dotenv": "latest",
     "express": "latest",
     "pino": "latest",
@@ -33,5 +33,11 @@
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "overrides": {
+    "fast-uri": "3.1.5",
+    "ip-address": "10.3.1",
+    "hono": "4.12.34",
+    "@hono/node-server": "2.0.5"
   }
 }
