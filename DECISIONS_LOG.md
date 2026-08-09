@@ -138,3 +138,30 @@ Ordre de rotation : installer et tester la nouvelle identité en parallèle,
 fusionner/déployer le correctif, basculer le remote, vérifier, puis seulement
 révoquer l'ancienne identité. Aucune clé privée ou donnée sensible n'entre dans
 Git.
+
+## 2026-08-09 — MCP Live State Engine V1 natif et read-only-first
+
+Contexte : l'état opérationnel du MCP est aujourd'hui réparti entre GitHub, le checkout S1, Docker et plusieurs documents. Les documents peuvent devenir périmés après une fusion ou un déploiement, et un nouvel agent doit reconstruire manuellement la situation avant de savoir quoi faire.
+
+Décision : intégrer le Live State Engine directement dans le processus Node/TypeScript `wealthtech_ssh_bridge`, sans second MCP ni microservice. La V1 observe les sources, les compare, persiste un snapshot commun et l'expose aux clients MCP.
+
+Architecture décidée :
+
+- stockage runtime : `/app/data/mcp-live-state.json` ;
+- écriture atomique et permissions `0600` ;
+- GitHub `main` lu dynamiquement, aucun SHA de production codé en dur ;
+- S1 observé uniquement par commandes Git read-only compatibles avec `assertReadOnlyCommand` ;
+- runtime observé via l'attestation Docker bornée existante ;
+- documentation réduite à des signaux déterministes de tâche/SHA ;
+- réconciliation initiale au démarrage puis au plus toutes les 60 secondes ;
+- `stateVersion` évoluant uniquement lors d'un changement sémantique ;
+- une source indisponible ou périmée dégrade explicitement le verdict ;
+- `FULLY_ALIGNED` est interdit sans preuve que GitHub, S1 et la révision runtime sont actuels et égaux ;
+- le build Docker reçoit le HEAD S1 dans `org.opencontainers.image.revision` afin de rendre l'attestation runtime vérifiable ;
+- outils read-only exposés : `mcp_get_live_state` et `mcp_reconcile_live_state`.
+
+Limites V1 : pas de PostgreSQL, Redis, GitHub App/webhook, locks de tâches, heartbeats, write gates ou concurrence optimiste généralisée. Ces mécanismes appartiennent à V1.5/V2 après validation du moteur d'observation.
+
+Décision de non-duplication : réutiliser le volume `/app/data`, l'SSH read-only, l'attestation Docker et le chemin d'enregistrement MCP existants. Ne pas créer de système systemd parallèle de mémoire vive.
+
+Limitation d'intégration connue : l'injection directe du résumé Live State dans `get_project_context` reste différée car le wrapper de mutation GitHub a bloqué la réécriture de `src/tools/readOnly.ts`, fichier contenant de nombreuses commandes shell historiques. Le moteur et les deux outils Live State sont néanmoins enregistrés dans le chemin read-only existant ; aucun contournement opaque de ce garde-fou n'est autorisé.

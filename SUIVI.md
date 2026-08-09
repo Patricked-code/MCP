@@ -10,93 +10,102 @@ Branche officielle : `main`
 
 Chemin serveur : `/opt/apps/wealthtech-mcp-ssh-bridge`
 
-## État réel attesté avant le changement
+## État GitHub vérifié dans la session courante
 
 ```text
-GitHub main : 4228119a9950828d372d1fbacbd9a613a7efa2d6
+GitHub main : d3bcac0cf17608963317a18aa2916a5997916394
+PR #37      : MERGED
+PR ouvertes : 0 avant ouverture de la PR Live State
+```
+
+La PR #37 `security: enforce read-only S1 GitHub identity` est fusionnée. Les anciens documents indiquant encore `4228119…` comme état courant étaient donc périmés.
+
+## État S1 / runtime
+
+Le connecteur `wealthtech_ssh_bridge` n’est pas invocable dans la session d’implémentation courante. Aucun nouvel état S1 ou Docker n’est donc présenté comme actuel.
+
+Dernière observation live connue avant ce chantier, à revalider avant tout déploiement :
+
+```text
 S1 branche  : main
-S1 HEAD     : 4228119a9950828d372d1fbacbd9a613a7efa2d6
+S1 HEAD     : d3bcac0cf17608963317a18aa2916a5997916394
 S1 statut   : propre, diff vide
-Conteneur   : wealthtech_mcp_ssh_bridge, healthy
-Ping MCP    : wealthtech_ssh_bridge_ok
+Fetch       : git@github.com-mcp-patricked-ro:Patricked-code/MCP.git
+Push        : disabled://mcp-s1-read-only
+Runtime SHA : non attesté
 ```
 
-La baseline GitHub et le checkout S1 sont alignés. Le tag annoté
-`mcp-baseline-2026-08-09-4228119` n'a pas été trouvé lors du dernier contrôle et
-reste à créer/protéger par une action d'administration GitHub séparée.
+Cette dernière observation ne vaut pas préflight actuel. Tant qu’une nouvelle lecture S1 n’est pas possible, l’état de déploiement doit rester `DEPLOYMENT_PENDING` ou `RUNTIME_UNVERIFIED` selon l’étape.
 
-## Risque de sécurité actif
+## Tâche active
 
-Le remote S1 utilise encore :
+`TASK-20260809-002 — MCP Live State Engine V1`
 
-```text
-git@github.com-mcp-patricked-rw:Patricked-code/MCP.git
-```
+Branche : `mcp/live-state-v1-20260809`
 
-pour `fetch` et `push`. Le suffixe `rw` ne prouve pas à lui seul les droits
-effectifs, mais la configuration ne garantit ni une identité GitHub read-only ni
-la neutralisation locale du push.
+Base exacte de création : `d3bcac0cf17608963317a18aa2916a5997916394`.
 
-## Changement en cours
+Objectif : intégrer au MCP existant une mémoire opérationnelle read-only-first qui observe GitHub `main`, S1, Docker et la documentation, compare ces sources, persiste un état atomique et l’expose à tous les clients MCP.
 
-Tâche : `TASK-20260809-001`
+## Implémentation préparée sur la branche
 
-Branche : `mcp/s1-readonly-deploy-identity-20260809`
+La V1 comprend :
 
-Objectif : réserver à S1 une identité GitHub de déploiement limitée à la lecture.
+- modèle d’état et réconciliation déterministe ;
+- `stateVersion` sémantique ;
+- fraîcheur `CURRENT/STALE` avec limite de 60 secondes ;
+- stockage atomique `/app/data/mcp-live-state.json` en `0600` ;
+- collecteur GitHub dynamique sur `main` sans SHA codé en dur ;
+- collecteur Git S1 strictement read-only ;
+- réutilisation de l’attestation Docker bornée ;
+- signaux documentaires ciblés ;
+- provenance OCI `org.opencontainers.image.revision` alimentée par le HEAD S1 au build ;
+- moteur non chevauchant avec réconciliation initiale puis intervalle 60 s ;
+- dégradation explicite si une source échoue ;
+- outils MCP `mcp_get_live_state` et `mcp_reconcile_live_state` enregistrés dans le chemin read-only ;
+- tests TDD de réconciliation, store, collecteurs, provenance, moteur et outils.
 
-Le changement versionné :
+## Validation obtenue avant documentation finale
 
-- refuse l'ancien alias `github.com-mcp-patricked-rw` dans
-  `mcp_sync_from_github_s1` ;
-- autorise uniquement `github.com-mcp-patricked-ro` pour le fetch de
-  `Patricked-code/MCP` ;
-- exige une URL de push neutralisée égale à
-  `disabled://mcp-s1-read-only` ;
-- ajoute un test comportemental couvrant l'identité historique, un push actif et
-  la configuration cible ;
-- documente la rotation sans secret et avec rollback.
+Sur le dernier head fonctionnel vérifié avant cette mise à jour documentaire :
 
-## État de production pendant la PR
+- typecheck : PASS ;
+- build : PASS ;
+- docs check : PASS ;
+- scan secrets : PASS ;
+- suite read-only incluant Live State : PASS ;
+- `git diff --check` : PASS.
 
-La production n'est pas modifiée par la préparation de cette branche. Jusqu'à la
-rotation effective, S1 demeure sur `main@4228119…` avec l'ancien remote.
+Chaque bloc fonctionnel a été introduit par un cycle RED/GREEN vérifié avec GitHub Actions.
 
-## Prochaines actions, dans cet ordre
+## Limitation V1 connue
 
-1. terminer les tests, le typecheck, le build, le contrôle documentaire et le
-   scan de secrets ;
-2. ouvrir une Pull Request draft et obtenir la CI/revue ;
-3. créer sur S1 une nouvelle paire de clés dédiée, sans exposer la clé privée ;
-4. enregistrer uniquement la clé publique comme deploy key GitHub avec écriture
-   désactivée ;
-5. tester la lecture de `main` avec l'alias `github.com-mcp-patricked-ro` ;
-6. après fusion du correctif, synchroniser le commit fusionné par l'ancien outil
-   encore actif ;
-7. basculer le fetch vers l'alias `-ro` et le push vers la sentinelle désactivée ;
-8. attester que le fetch réussit et que deux chemins de push sont refusés : la
-   sentinelle locale et la deploy key GitHub read-only ;
-9. inventorier les usages de l'ancienne identité, puis révoquer son accès à ce
-   dépôt et la retirer de S1 ;
-10. reconstruire/redémarrer le runtime au SHA fusionné et attester
-    GitHub = S1 = image/runtime.
+La modification directe de `src/tools/readOnly.ts` visant à injecter le résumé Live State dans l’outil historique `get_project_context` a été bloquée par le filtre de sécurité du wrapper de mutation GitHub, qui classe le contenu shell historique du fichier comme indéterminé. Aucune tentative de contournement opaque n’a été effectuée.
 
-Runbook : `docs/runbooks/S1_GITHUB_READ_ONLY_DEPLOY_IDENTITY.md`.
+Les deux outils Live State sont néanmoins enregistrés dans le catalogue read-only via le chemin GitHub Authorization déjà appelé par `registerReadOnlyTools`. Le résumé compact est implémenté dans `src/tools/liveState.ts` et pourra être injecté dans `get_project_context` lors d’une modification autorisée de ce fichier, sans changement d’architecture.
+
+## Prochaine action autorisée
+
+1. finaliser la documentation de gouvernance de la branche ;
+2. auditer le diff complet contre `main` ;
+3. ouvrir une PR Draft unique ;
+4. obtenir une CI de PR verte et traiter toute revue ;
+5. fusionner uniquement avec le head attendu ;
+6. dès que S1 est de nouveau invocable, refaire le préflight live puis utiliser `mcp_sync_from_github_s1` ;
+7. vérifier GitHub main = S1 HEAD et working tree propre ;
+8. build/déploiement Docker gouverné avec provenance du SHA ;
+9. vérifier health et les deux outils Live State ;
+10. attester GitHub = S1 = runtime avant `FULLY_ALIGNED`.
 
 ## Interdictions
 
-- aucun secret, clé privée ou contenu de `.ssh` dans Git ;
-- aucun changement direct de code dans le checkout de production ;
 - aucun push direct sur `main` ;
-- aucune révocation de l'ancienne identité avant preuve de lecture avec la
-  nouvelle ;
-- aucune supposition fondée uniquement sur le nom `-ro` ou `-rw` ;
-- aucun déploiement avant fusion, CI réussie et SHA attendu.
+- aucune écriture directe du code sur S1 ;
+- aucun `reset --hard`, clean ou force pour aligner S1 ;
+- aucun secret ou clé privée dans Git ;
+- aucun `FULLY_ALIGNED` sans preuve runtime ;
+- aucun PostgreSQL, Redis, nouveau service, lock ou write gate dans cette V1.
 
 ## Rollback
 
-Tant que l'ancienne identité n'est pas révoquée, le rollback consiste à restaurer
-temporairement l'ancien remote uniquement si le fetch read-only échoue, sans
-modifier le code ou l'historique. Après validation complète, l'ancien accès doit
-être révoqué ; un rollback ultérieur exige alors une nouvelle identité read-only,
-pas la réactivation permanente d'un credential d'écriture.
+La V1 est additive et read-only sur les sources observées. Le rollback applicatif consiste à revenir au précédent commit/image MCP connu bon via la procédure gouvernée habituelle, sans réécriture de l’historique. Le fichier `/app/data/mcp-live-state.json` peut rester inutilisé après rollback ; aucun secret n’y est nécessaire.

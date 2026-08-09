@@ -156,3 +156,18 @@ Mise à jour : 2026-07-09T20:08:09Z
   `.mcp`.
 - Production non modifiée dans ce commit ; la rotation S1 reste une opération
   post-fusion contrôlée.
+
+## 2026-08-09 — MCP Live State Engine V1 — branche de livraison
+
+- Ajout d'un modèle d'état partagé GitHub/S1/runtime/documentation avec verdict déterministe, contradictions, prochaine action, fraîcheur et `stateVersion` sémantique.
+- Ajout du store atomique `/app/data/mcp-live-state.json` en permissions `0600`.
+- Ajout de collecteurs GitHub dynamique, Git S1 read-only, Docker borné et signaux documentaires ciblés.
+- Ajout d'une réconciliation initiale puis toutes les 60 secondes avec protection contre les exécutions concurrentes et dégradation explicite en cas d'échec.
+- Ajout des outils MCP read-only `mcp_get_live_state` et `mcp_reconcile_live_state`.
+- Ajout de la provenance OCI : le build Docker reçoit le HEAD S1 et le publie dans `org.opencontainers.image.revision`.
+- Réutilisation du déployeur MCP existant ; aucune seconde voie de déploiement n'est créée.
+- TDD vérifié par cycles RED/GREEN GitHub Actions pour réconciliation, stockage, collecteurs, provenance, moteur et outils.
+- Dernière validation fonctionnelle avant consolidation documentaire : typecheck, build, docs check, scan secrets, suite read-only et `git diff --check` tous réussis.
+- Limitation connue : injection directe du résumé dans `get_project_context` différée parce que la mutation de `src/tools/readOnly.ts` a été bloquée par le filtre de sécurité du wrapper ; les deux outils Live State sont néanmoins enregistrés dans le chemin read-only global.
+- Aucun déploiement S1/Docker n'est déclaré à ce stade : le connecteur S1 doit être réinvocable et le préflight doit être refait après merge.
+- Rollback : précédent commit/image MCP connu bon, sans réécriture d'historique ; le state file runtime peut rester inutilisé.

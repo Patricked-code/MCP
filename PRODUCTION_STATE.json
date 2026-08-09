@@ -6,8 +6,12 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "lastValidatedAt": "2026-08-09T09:15:01Z",
+  "githubObservedAt": null,
+  "githubObservationBasis": "current_session_connector_read_without_separate_exact_observation_timestamp",
+  "serverStateFreshness": "requires_revalidation",
+  "runtimeStateFreshness": "requires_revalidation",
   "lastKnownGoodCommits": [
+    "d3bcac0cf17608963317a18aa2916a5997916394 security: enforce read-only S1 GitHub identity (#37)",
     "4228119a9950828d372d1fbacbd9a613a7efa2d6 fix(security): update Hono node server override",
     "f92f621 fix(oauth): accept Claude and ChatGPT MCP resource aliases",
     "4ae1124 docs: add MCP anti-dispersion manual and function cartography",
@@ -29,29 +33,36 @@
     "/.well-known/oauth-authorization-server": "200 OK",
     "/mcp_without_token": "401 Unauthorized"
   },
-  "githubCommitFull": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
+  "githubCommitFull": "d3bcac0cf17608963317a18aa2916a5997916394",
+  "githubState": {
+    "currentMainVerified": true,
+    "currentMainCommit": "d3bcac0cf17608963317a18aa2916a5997916394",
+    "pullRequest37Merged": true,
+    "liveStateV1Branch": "mcp/live-state-v1-20260809",
+    "liveStateV1DeploymentStatus": "not_merged_not_deployed"
+  },
   "serverGitState": {
     "branch": "main",
-    "serverCommitPrefix": "4228119",
-    "serverCommitFull": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
-    "serverCommitFullVerifiedDirectly": true,
-    "originMainCommitPrefix": "4228119",
-    "trackedWorkingTreeClean": true,
-    "ignoredFilesAudited": false,
-    "verifiedAt": "2026-08-09T09:15:01Z",
-    "currentStateSupersededByForensicAudit": false,
-    "currentAlignmentAttested": true
+    "lastDirectlyVerifiedCommitFull": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
+    "lastDirectlyVerifiedAt": "2026-08-09T09:15:01Z",
+    "lastKnownPostRotationCommitFull": "d3bcac0cf17608963317a18aa2916a5997916394",
+    "lastKnownWorkingTreeClean": true,
+    "currentDirectVerificationAvailable": false,
+    "currentAlignmentAttested": false,
+    "requiredNextCheck": "revalidate_branch_head_status_diff_fetch_push_before_any_sync_or_deploy"
   },
   "runtimeState": {
-    "containerRuntimeObserved": true,
-    "containerHealthy": true,
-    "observedAt": "2026-08-09T09:15:01Z",
+    "containerRuntimeObservedHistorically": true,
+    "lastDirectlyObservedHealthy": true,
+    "lastDirectlyObservedAt": "2026-08-09T09:15:01Z",
     "containerImageCommitVerified": false,
-    "rebuiltFromCurrentGithubMain": false
+    "rebuiltFromCurrentGithubMain": false,
+    "currentRuntimeRevision": null,
+    "status": "RUNTIME_UNVERIFIED"
   },
   "securityState": {
-    "secretScannerStatus": "pending_branch_validation",
-    "s1GithubDeploymentIdentity": "transition_pending"
+    "secretScannerStatus": "live_state_branch_ci_passed_before_final_review_fixes",
+    "s1GithubDeploymentIdentity": "last_known_read_only_requires_revalidation"
   },
   "deploymentState": {
     "pr10Deployed": false,
@@ -60,40 +71,45 @@
     "pr11Deployed": false,
     "mcpSyncToolDeployed": true,
     "foundationsDeployed": true,
-    "readonlyIdentityChangeDeployed": false
+    "readonlyIdentityChangeMerged": true,
+    "readonlyIdentityChangeMergeCommit": "d3bcac0cf17608963317a18aa2916a5997916394",
+    "readonlyIdentityLastKnownOnS1": true,
+    "readonlyIdentityCurrentAttestation": "requires_revalidation",
+    "liveStateV1": "review_fixes_pending_final_ci_not_merged_not_deployed"
   },
   "onboardingEngineState": "documented_and_configured_but_not_implemented_in_main",
   "alignmentRecovery": {
     "recordedAt": "2026-08-05T04:06:10.567244+00:00",
-    "status": "github_main_and_s1_checkout_aligned_runtime_revision_unverified",
+    "status": "github_main_current_s1_and_runtime_require_revalidation",
     "repository": "Patricked-code/MCP",
     "baselineMainCommit": "097dac93715c0af83fcfad82cd598bacec956125",
-    "currentGithubMainCommit": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
+    "currentGithubMainCommit": "d3bcac0cf17608963317a18aa2916a5997916394",
     "recoveryBranch": "mcp/recover-runtime-drift-20260805",
     "recoveryCommit": "7c8d9f782ae3195197345257f38fbc400504a848",
-    "runtimeBuildParityVerified": true,
-    "runtimeBuildDiffLines": 0,
+    "runtimeBuildParityVerifiedHistorically": true,
+    "runtimeBuildDiffLinesHistorically": 0,
     "bundleSha256": "8a27a5814fb5fe688b42344cab770a1aee2ad059dc076b691df1e7900c43c4bd",
-    "activeDockerImageId": "sha256:b82969cbd5b840738b411ec99956075dcb40516501d8048883f95b529d2c03d0",
+    "historicalDockerImageId": "sha256:b82969cbd5b840738b411ec99956075dcb40516501d8048883f95b529d2c03d0",
     "productionModifiedDuringRecovery": false,
-    "githubMainAligned": true,
-    "serverWorkingTreeClean": true,
-    "runtimeRebuiltFromMergedCommit": false,
-    "nextStep": "rotate_s1_github_deployment_identity_to_read_only"
+    "githubMainAlignedToS1Current": false,
+    "serverWorkingTreeCurrentCleanAttested": false,
+    "runtimeRebuiltFromCurrentMergedCommit": false,
+    "nextStep": "merge_live_state_v1_then_revalidate_s1_before_governed_sync_and_runtime_rebuild"
   },
   "githubFoundationState": {
-    "recordedAt": "2026-08-05T08:28:13Z",
-    "mainCommit": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
+    "recordedAt": "2026-08-09T13:01:53Z",
+    "mainCommit": "d3bcac0cf17608963317a18aa2916a5997916394",
     "mainProtected": true,
     "requiredStatusCheck": "validate",
-    "mergedPullRequests": [18, 25, 26, 27],
+    "mergedPullRequests": [18, 25, 26, 27, 37],
     "githubAuthorizationDiagnosticMerged": true,
     "readWriteFoundationMerged": true,
     "gitRegistryV2DryRunMerged": true,
+    "readonlyS1IdentityChangeMerged": true,
     "registryActiveFileModified": false,
-    "s1Aligned": true,
+    "s1CurrentAlignmentRequiresRevalidation": true,
     "runtimeRebuilt": false,
-    "productionModified": false
+    "productionModifiedByLiveStateV1": false
   },
   "baselineProtection": {
     "baselineCommit": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
@@ -102,13 +118,29 @@
     "verifiedAt": "2026-08-09T09:15:01Z"
   },
   "s1GitIdentityState": {
-    "status": "rotation_pending",
-    "currentFetchRemote": "git@github.com-mcp-patricked-rw:Patricked-code/MCP.git",
-    "currentPushRemote": "git@github.com-mcp-patricked-rw:Patricked-code/MCP.git",
-    "currentEffectiveWritePermission": "UNVERIFIED",
-    "targetFetchRemote": "git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",
-    "targetPushRemote": "disabled://mcp-s1-read-only",
-    "targetGithubPermission": "contents_read_only",
-    "rotationTask": "TASK-20260809-001"
+    "status": "last_known_read_only_requires_revalidation",
+    "lastKnownFetchRemote": "git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",
+    "lastKnownPushRemote": "disabled://mcp-s1-read-only",
+    "currentEffectiveWritePermission": "UNVERIFIED_IN_CURRENT_SESSION",
+    "requiredFetchRemote": "git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",
+    "requiredPushRemote": "disabled://mcp-s1-read-only",
+    "requiredGithubPermission": "contents_read_only",
+    "rotationTask": "TASK-20260809-001",
+    "nextVerification": "fetch_main_success_and_push_refusal_revalidation"
+  },
+  "liveStateV1": {
+    "task": "TASK-20260809-002",
+    "branch": "mcp/live-state-v1-20260809",
+    "baseCommit": "d3bcac0cf17608963317a18aa2916a5997916394",
+    "storage": "/app/data/mcp-live-state.json",
+    "maxAgeSeconds": 60,
+    "tools": [
+      "mcp_get_live_state",
+      "mcp_reconcile_live_state"
+    ],
+    "branchValidation": "pending_final_ci_after_review_fixes",
+    "merged": false,
+    "deployed": false,
+    "runtimeAttested": false
   }
 }
