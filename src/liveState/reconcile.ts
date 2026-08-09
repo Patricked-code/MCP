@@ -19,6 +19,10 @@ function semanticValue(state: LiveStateSnapshot): string {
   });
 }
 
+function runtimeHealthReady(health: string | null): boolean {
+  return health === 'healthy' || health === 'none';
+}
+
 function buildAlignment(input: LiveStateObservations): {
   alignment: LiveStateAlignment;
   contradictions: string[];
@@ -45,6 +49,9 @@ function buildAlignment(input: LiveStateObservations): {
   if (githubVsS1 === 'DRIFTED') contradictions.push('GITHUB_S1_DRIFT');
   if (runtime === 'DRIFTED') contradictions.push('RUNTIME_DRIFT');
   if (runtime === 'RUNTIME_UNVERIFIED') contradictions.push('RUNTIME_REVISION_UNVERIFIED');
+  if (input.runtime.containerStatus === 'running' && !runtimeHealthReady(input.runtime.health)) {
+    contradictions.push('RUNTIME_HEALTH_NOT_READY');
+  }
 
   let global: LiveStateAlignment['global'];
   let nextAction: string | null;
@@ -69,6 +76,9 @@ function buildAlignment(input: LiveStateObservations): {
     nextAction = runtime === 'RUNTIME_UNVERIFIED'
       ? 'attest_runtime_revision'
       : 'refresh_unverified_git_alignment';
+  } else if (!runtimeHealthReady(input.runtime.health)) {
+    global = 'PARTIALLY_ALIGNED';
+    nextAction = 'wait_for_runtime_health';
   } else {
     global = 'FULLY_ALIGNED';
     nextAction = null;
