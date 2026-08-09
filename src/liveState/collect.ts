@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises';
 
-import { env } from '../config/env.js';
 import { runReadOnlyCommand } from '../ssh/client.js';
 import { buildMcpRuntimeImageAttestationCommand } from '../tools/runtimeAttestation.js';
 import type {
@@ -125,7 +124,7 @@ export function parseDocumentationObservation(
 }
 
 async function readGithubToken(): Promise<string | null> {
-  const file = env.GITHUB_TOKEN_FILE || TOKEN_FILE;
+  const file = process.env.GITHUB_TOKEN_FILE || TOKEN_FILE;
   try {
     return (await readFile(file, 'utf8')).trim() || null;
   } catch {
@@ -135,7 +134,7 @@ async function readGithubToken(): Promise<string | null> {
 
 export async function collectGithubObservation(): Promise<GithubLiveObservation> {
   const token = await readGithubToken();
-  const base = (env.GITHUB_API_BASE || 'https://api.github.com').replace(/\/$/, '');
+  const base = (process.env.GITHUB_API_BASE || 'https://api.github.com').replace(/\/$/, '');
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
@@ -153,12 +152,12 @@ export async function collectGithubObservation(): Promise<GithubLiveObservation>
     return head
       ? { status: 'CURRENT', branch: BRANCH, head }
       : { status: 'UNAVAILABLE', branch: BRANCH, head: null, error: 'github_sha_missing' };
-  } catch (error) {
+  } catch {
     return {
       status: 'UNAVAILABLE',
       branch: BRANCH,
       head: null,
-      error: error instanceof Error ? error.message : 'github_unavailable'
+      error: 'github_unavailable'
     };
   }
 }
@@ -174,11 +173,11 @@ export async function collectS1Observation(): Promise<S1LiveObservation> {
       };
     }
     return parseS1Observation(result.stdout);
-  } catch (error) {
+  } catch {
     return {
       status: 'UNAVAILABLE', path: MCP_ROOT, branch: null, head: null, originMain: null,
       workingTreeClean: null, diffEmpty: null, fetchRemote: null, pushRemote: null,
-      error: error instanceof Error ? error.message : 's1_unavailable'
+      error: 's1_unavailable'
     };
   }
 }
@@ -193,11 +192,11 @@ export async function collectRuntimeObservation(): Promise<RuntimeLiveObservatio
       };
     }
     return parseRuntimeObservation(result.stdout);
-  } catch (error) {
+  } catch {
     return {
       status: 'UNAVAILABLE', container: MCP_CONTAINER, containerStatus: null,
       health: null, imageId: null, revision: null,
-      error: error instanceof Error ? error.message : 'runtime_unavailable'
+      error: 'runtime_unavailable'
     };
   }
 }
@@ -215,11 +214,11 @@ export async function collectDocumentationObservation(
       };
     }
     return parseDocumentationObservation(result.stdout, observedGithubSha, observedS1Sha);
-  } catch (error) {
+  } catch {
     return {
       status: 'UNAVAILABLE', activeTask: null, declaredGithubSha: null,
       declaredS1Sha: null, drift: false,
-      error: error instanceof Error ? error.message : 'documentation_unavailable'
+      error: 'documentation_unavailable'
     };
   }
 }
