@@ -21,17 +21,6 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Prepare server deploy candidate
-        run: node scripts/generate-server-deploy-candidate.mjs
-
-      - name: Upload server deploy candidate
-        uses: actions/upload-artifact@v4
-        with:
-          name: mcp-server-deploy-candidate
-          path: /tmp/mcp-server-candidate/server.ts
-          if-no-files-found: error
-          retention-days: 1
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
