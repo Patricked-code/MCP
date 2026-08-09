@@ -101,11 +101,14 @@ function parseJwt(token: string): {
     throw oidcError('oidc_token_invalid');
   }
 
-  const header = decodeJsonSegment<GithubOidcHeader>(parts[0], 'oidc_header_invalid');
-  const claims = decodeJsonSegment<GithubOidcClaims>(parts[1], 'oidc_claims_invalid');
+  const headerSegment = parts[0]!;
+  const claimsSegment = parts[1]!;
+  const signatureSegment = parts[2]!;
+  const header = decodeJsonSegment<GithubOidcHeader>(headerSegment, 'oidc_header_invalid');
+  const claims = decodeJsonSegment<GithubOidcClaims>(claimsSegment, 'oidc_claims_invalid');
   let signature: Buffer;
   try {
-    signature = Buffer.from(parts[2], 'base64url');
+    signature = Buffer.from(signatureSegment, 'base64url');
   } catch {
     throw oidcError('oidc_signature_invalid');
   }
@@ -114,7 +117,7 @@ function parseJwt(token: string): {
   return {
     header,
     claims,
-    signingInput: `${parts[0]}.${parts[1]}`,
+    signingInput: `${headerSegment}.${claimsSegment}`,
     signature
   };
 }
@@ -170,7 +173,7 @@ async function fetchGithubJwks(): Promise<GithubJwks> {
 function selectVerificationKey(jwks: GithubJwks, kid: string): GithubJwk {
   const matches = jwks.keys.filter((key) => key?.kid === kid);
   if (matches.length !== 1) throw oidcError('oidc_kid_unknown');
-  const key = matches[0];
+  const key = matches[0]!;
   if (key.kty !== 'RSA') throw oidcError('oidc_key_invalid');
   if (key.alg !== undefined && key.alg !== 'RS256') throw oidcError('oidc_key_invalid');
   if (key.use !== undefined && key.use !== 'sig') throw oidcError('oidc_key_invalid');
