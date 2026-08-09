@@ -92,5 +92,26 @@ export function validateCanonicalStates(documents) {
   return { ok: conflicts.length === 0, conflicts };
 }
 
+export function validateRequiredCanonicalStates(requiredPaths, documents) {
+  const byPath = new Map(documents.map((document) => [document.path, document]));
+  const missing = requiredPaths.filter((path) => !byPath.has(path)).sort();
+  const withoutState = requiredPaths
+    .filter((path) => byPath.has(path) && !byPath.get(path)?.state)
+    .sort();
+  const presentWithState = requiredPaths
+    .filter((path) => byPath.get(path)?.state)
+    .map((path) => byPath.get(path));
+  const semantic = presentWithState.length > 0
+    ? validateCanonicalStates(presentWithState)
+    : { ok: false, conflicts: [] };
+
+  return {
+    ok: missing.length === 0 && withoutState.length === 0 && semantic.ok,
+    missing,
+    withoutState,
+    conflicts: semantic.conflicts
+  };
+}
+
 export const canonicalStateKeys = Object.freeze([...CANONICAL_KEYS]);
 export const canonicalRootDocuments = Object.freeze([...CANONICAL_ROOT_DOCUMENTS]);
