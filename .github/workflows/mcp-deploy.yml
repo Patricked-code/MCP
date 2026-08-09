@@ -65,7 +65,7 @@ jobs:
           }
 
           validate_status() {
-            GITHUB_SHA="$GITHUB_SHA" JOB_ID="$JOB_ID" node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw,'utf8') > 16384) process.exit(1); let body; try { body=JSON.parse(raw); } catch { process.exit(1); } const sha=process.env.GITHUB_SHA; const job=process.env.JOB_ID; if (!body || body.jobId !== job || body.requestedSha !== sha) process.exit(1); if (body.status === 'succeeded') { if (body.phase !== 'attested' || body.runtimeRevision !== sha || body.rollbackStatus !== 'not_needed' || body.healthOk !== true || body.oauthOk !== true || body.mcpAuthOk !== true) process.exit(1); process.stdout.write('succeeded'); return; } if (body.status === 'failed') { process.stdout.write('failed'); return; } if (body.status === 'queued' || body.status === 'running') { process.stdout.write(body.status); return; } process.exit(1);"
+            GITHUB_SHA="$GITHUB_SHA" JOB_ID="$JOB_ID" node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw,'utf8') > 16384) process.exit(1); let body; try { body=JSON.parse(raw); } catch { process.exit(1); } const sha=process.env.GITHUB_SHA; const job=process.env.JOB_ID; if (!body || body.jobId !== job || body.requestedSha !== sha) process.exit(1); if (body.status === 'succeeded') { if (body.phase !== 'attested' || body.runtimeRevision !== sha || body.rollbackStatus !== 'not_needed' || body.healthOk !== true || body.oauthOk !== true || body.mcpAuthOk !== true) process.exit(1); process.stdout.write('succeeded'); } else if (body.status === 'failed') { process.stdout.write('failed'); } else if (body.status === 'queued' || body.status === 'running') { process.stdout.write(body.status); } else { process.exit(1); }"
           }
 
           OIDC_TOKEN="$(get_oidc)"
@@ -108,7 +108,7 @@ jobs:
                 sleep 10
                 ;;
               *)
-                process.exit(1)
+                exit 1
                 ;;
             esac
           done
