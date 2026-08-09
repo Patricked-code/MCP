@@ -11,6 +11,9 @@ import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
+import { createGithubDeployRouter } from './deploy/routes.js';
+import { verifyGithubOidcToken } from './deploy/githubOidc.js';
+import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
 
 const WEB_SESSION_COOKIE = 'mcp_web_session';
 const WEB_SESSION_MAX_AGE_SECONDS = Math.max(1, Number.parseInt(process.env.MCP_SESSION_TTL_HOURS || '8', 10)) * 60 * 60;
@@ -217,6 +220,16 @@ export function buildMcpServer(): McpServer {
 
 export async function startHttpServer(): Promise<void> {
   const app = express();
+  app.use(createGithubDeployRouter({
+    verifyOidc: verifyGithubOidcToken,
+    writeEnabled: () => env.ENABLE_WRITE_TOOLS,
+    runWrite: async (command) => runGuardedCommand('s1', command, {
+      intent: 'github_oidc_s1_deploy_start',
+      timeoutMs: 15_000,
+      maxOutputBytes: 8_192
+    }),
+    runRead: async (command) => runReadOnlyCommand('s1', command, 15_000, 8_192)
+  }));
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: false, limit: '64kb' }));
 
