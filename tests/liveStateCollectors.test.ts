@@ -8,7 +8,8 @@ import {
   parseDocumentationObservation,
   parseKeyValueOutput,
   parseRuntimeObservation,
-  parseS1Observation
+  parseS1Observation,
+  resolveLiveStateGithubApiBase
 } from '../src/liveState/collect.js';
 import { assertReadOnlyCommand } from '../src/ssh/safety.js';
 import { buildMcpRestartCommand } from '../src/tools/mcpRuntimeDeploy.js';
@@ -107,6 +108,29 @@ test('un SHA documentaire différent est signalé comme drift', () => {
 
 test('parseKeyValueOutput ignore les lignes sans clé bornée', () => {
   assert.deepEqual(parseKeyValueOutput('a=1\ntexte libre\nb=2=3\n'), { a: '1', b: '2=3' });
+});
+
+test('GitHub API base exige HTTPS et une allowlist explicite', () => {
+  assert.equal(
+    resolveLiveStateGithubApiBase('https://api.github.com', 'api.github.com'),
+    'https://api.github.com'
+  );
+  assert.throws(
+    () => resolveLiveStateGithubApiBase('http://api.github.com', 'api.github.com'),
+    /HTTPS/
+  );
+  assert.throws(
+    () => resolveLiveStateGithubApiBase('https://evil.example', 'api.github.com'),
+    /non autorisé/
+  );
+  assert.throws(
+    () => resolveLiveStateGithubApiBase('https://user:pass@api.github.com', 'api.github.com'),
+    /identifiant/
+  );
+  assert.throws(
+    () => resolveLiveStateGithubApiBase('https://api.github.com?x=1', 'api.github.com'),
+    /query string/
+  );
 });
 
 test('le déploiement Docker transmet le HEAD S1 comme révision OCI', async () => {
