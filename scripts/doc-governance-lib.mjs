@@ -27,6 +27,8 @@ export function classifyMarkdownPath(path) {
   if (path.startsWith('docs/superpowers/plans/')) return 'engineering-plan';
   if (path.startsWith('docs/superpowers/specs/')) return 'engineering-spec';
   if (path.startsWith('Migration/')) return 'migration-history';
+  if (path.startsWith('memory/')) return 'memory';
+  if (path.startsWith('wealthtech_project_memory/')) return 'runtime-mirror-tracked';
   if (path.startsWith('docs/')) return 'documentation';
   if (!path.includes('/')) return 'root-documentation';
   return null;
