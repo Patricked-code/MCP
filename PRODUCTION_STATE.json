@@ -6,7 +6,8 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "githubObservedAt": "2026-08-09T13:01:53Z",
+  "githubObservedAt": null,
+  "githubObservationBasis": "current_session_connector_read_without_separate_exact_observation_timestamp",
   "serverStateFreshness": "requires_revalidation",
   "runtimeStateFreshness": "requires_revalidation",
   "lastKnownGoodCommits": [
@@ -60,7 +61,7 @@
     "status": "RUNTIME_UNVERIFIED"
   },
   "securityState": {
-    "secretScannerStatus": "live_state_branch_ci_passed",
+    "secretScannerStatus": "live_state_branch_ci_passed_before_final_review_fixes",
     "s1GithubDeploymentIdentity": "last_known_read_only_requires_revalidation"
   },
   "deploymentState": {
@@ -74,7 +75,7 @@
     "readonlyIdentityChangeMergeCommit": "d3bcac0cf17608963317a18aa2916a5997916394",
     "readonlyIdentityLastKnownOnS1": true,
     "readonlyIdentityCurrentAttestation": "requires_revalidation",
-    "liveStateV1": "branch_validated_not_merged_not_deployed"
+    "liveStateV1": "review_fixes_pending_final_ci_not_merged_not_deployed"
   },
   "onboardingEngineState": "documented_and_configured_but_not_implemented_in_main",
   "alignmentRecovery": {
@@ -137,7 +138,7 @@
       "mcp_get_live_state",
       "mcp_reconcile_live_state"
     ],
-    "branchValidation": "passed",
+    "branchValidation": "pending_final_ci_after_review_fixes",
     "merged": false,
     "deployed": false,
     "runtimeAttested": false
