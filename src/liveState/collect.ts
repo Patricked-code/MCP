@@ -13,6 +13,9 @@ const BRANCH = 'main';
 const MCP_ROOT = '/opt/apps/wealthtech-mcp-ssh-bridge';
 const MCP_CONTAINER = 'wealthtech_mcp_ssh_bridge';
 const TOKEN_FILE = '/app/secrets/github_token';
+const DEFAULT_GITHUB_API_BASE = 'https://api.github.com';
+const DEFAULT_GITHUB_ALLOWED_HOSTS = 'api.github.com';
+const DEFAULT_GITHUB_TIMEOUT_MS = 15_000;
 const SHA_PATTERN = /^[0-9a-f]{40}$/i;
 
 function shellQuote(value: string): string {
@@ -39,6 +42,42 @@ function booleanValue(value: string | undefined): boolean | null {
 
 function shaOrNull(value: string | undefined): string | null {
   return value && SHA_PATTERN.test(value) ? value.toLowerCase() : null;
+}
+
+export function resolveLiveStateGithubApiBase(
+  configuredBase: string,
+  allowedHostsValue: string
+): string {
+  const parsed = new URL(configuredBase);
+  const allowedHosts = new Set(
+    allowedHostsValue
+      .split(',')
+      .map((host) => host.trim().toLowerCase())
+      .filter(Boolean)
+  );
+
+  if (parsed.protocol !== 'https:') {
+    throw new Error('GitHub API base doit utiliser HTTPS.');
+  }
+  if (parsed.username || parsed.password) {
+    throw new Error('GitHub API base ne doit contenir aucun identifiant.');
+  }
+  if (parsed.search || parsed.hash) {
+    throw new Error('GitHub API base ne doit contenir ni query string ni fragment.');
+  }
+  if (!allowedHosts.has(parsed.hostname.toLowerCase())) {
+    throw new Error('Hôte GitHub API non autorisé.');
+  }
+
+  return parsed.toString().replace(/\/$/, '');
+}
+
+function githubRequestTimeoutMs(): number {
+  const parsed = Number.parseInt(process.env.GITHUB_REQUEST_TIMEOUT_MS || '', 10);
+  if (!Number.isFinite(parsed) || parsed < 1_000 || parsed > 30_000) {
+    return DEFAULT_GITHUB_TIMEOUT_MS;
+  }
+  return parsed;
 }
 
 export function buildS1LiveStateCommand(): string {
@@ -131,8 +170,17 @@ async function readGithubToken(): Promise<string | null> {
 }
 
 export async function collectGithubObservation(): Promise<GithubLiveObservation> {
+  let base: string;
+  try {
+    base = resolveLiveStateGithubApiBase(
+      process.env.GITHUB_API_BASE || DEFAULT_GITHUB_API_BASE,
+      process.env.GITHUB_API_ALLOWED_HOSTS || DEFAULT_GITHUB_ALLOWED_HOSTS
+    );
+  } catch {
+    return { status: 'UNAVAILABLE', branch: BRANCH, head: null, error: 'github_api_base_not_allowed' };
+  }
+
   const token = await readGithubToken();
-  const base = (process.env.GITHUB_API_BASE || 'https://api.github.com').replace(/\/$/, '');
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
@@ -140,8 +188,15 @@ export async function collectGithubObservation(): Promise<GithubLiveObservation>
   };
   if (token) headers.Authorization = `Bearer ${token}`;
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), githubRequestTimeoutMs());
+
   try {
-    const response = await fetch(`${base}/repos/${REPOSITORY}/commits/${encodeURIComponent(BRANCH)}`, { headers });
+    const response = await fetch(`${base}/repos/${REPOSITORY}/commits/${encodeURIComponent(BRANCH)}`, {
+      method: 'GET',
+      signal: controller.signal,
+      headers
+    });
     if (!response.ok) {
       return { status: 'UNAVAILABLE', branch: BRANCH, head: null, error: `github_http_${response.status}` };
     }
@@ -152,6 +207,8 @@ export async function collectGithubObservation(): Promise<GithubLiveObservation>
       : { status: 'UNAVAILABLE', branch: BRANCH, head: null, error: 'github_sha_missing' };
   } catch {
     return { status: 'UNAVAILABLE', branch: BRANCH, head: null, error: 'github_unavailable' };
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
