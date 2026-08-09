@@ -52,6 +52,16 @@ test('GitHub, S1 et runtime égaux produisent FULLY_ALIGNED', () => {
   assert.equal(state.stateVersion, 1);
 });
 
+test('un runtime running mais health starting ne peut pas être FULLY_ALIGNED', () => {
+  const input = observations();
+  input.runtime.health = 'starting';
+  const state = reconcileLiveState(input, null, NOW);
+  assert.equal(state.alignment.githubVsS1, 'ALIGNED');
+  assert.equal(state.alignment.runtime, 'ALIGNED');
+  assert.equal(state.alignment.global, 'PARTIALLY_ALIGNED');
+  assert.equal(state.nextAction, 'wait_for_runtime_health');
+});
+
 test('un nouveau main GitHub non présent sur S1 produit DEPLOYMENT_PENDING', () => {
   const input = observations();
   input.github.head = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
