@@ -39,6 +39,9 @@ jobs:
       - name: Docs check
         run: npm run docs:check
 
+      - name: Governance tests
+        run: npm run test:governance
+
       - name: Secret scan
         run: npm run lint:secrets --if-present
 
