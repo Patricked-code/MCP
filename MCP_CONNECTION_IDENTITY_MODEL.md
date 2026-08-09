@@ -57,3 +57,22 @@ Point de reprise :
 - relier agent IA à permissions ;
 - ajouter une matrice d’approbation ;
 - produire un audit log structuré exploitable.
+
+## Identité de déploiement GitHub S1
+
+Identité cible : `S1_MCP_GITHUB_DEPLOY_READ_ONLY`.
+
+```text
+Type             : GitHub deploy key SSH
+Dépôt            : Patricked-code/MCP uniquement
+Usage            : fetch de refs/heads/main
+Contents read    : oui
+Contents write   : non
+Push             : interdit côté GitHub et neutralisé côté Git
+Alias SSH        : github.com-mcp-patricked-ro
+Push URL locale  : disabled://mcp-s1-read-only
+Secret           : clé privée locale S1, jamais lisible par le MCP ni versionnée
+```
+
+Le fingerprint public, la date de création, la date de rotation et l'identifiant
+GitHub de la deploy key doivent être consignés sans inclure la clé privée.

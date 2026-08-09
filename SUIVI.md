@@ -1,89 +1,102 @@
 # SUIVI.md — Point de reprise courant
 
-Date : 2026-08-05
+Date : 2026-08-09
+
 Projet : WealthTech MCP SSH Bridge
+
 Dépôt actif : `Patricked-code/MCP`
+
 Branche officielle : `main`
-Chemin serveur déclaré : `/opt/apps/wealthtech-mcp-ssh-bridge`
 
-## État GitHub attesté
+Chemin serveur : `/opt/apps/wealthtech-mcp-ssh-bridge`
 
-```text
-main : 618f4020ac69801dd53f624e5cd188fc6d76cc24
-protection main : active
-contrôle obligatoire : validate
-```
-
-Fondations fusionnées :
-
-- PR #18 — documentation canonique et reprise forensique ;
-- PR #25 — diagnostic GitHub PR strictement read-only ;
-- PR #26 — séparation des catalogues READ et WRITE ;
-- PR #27 — fondation GitRegistry v2 duale et dry-run.
-
-Anciennes PR #21, #22 et #23 : fermées sans fusion après reconstruction depuis un `main` à jour.
-
-PR #19 : snapshot forensique conservé avec statut `DO NOT MERGE`.
-
-Issue #24 : protection de `main` terminée et clôturée.
-
-## Capacités intégrées dans GitHub
-
-### Diagnostic GitHub read-only
-
-Outil : `github_pr_authorization_diagnostic`.
-
-Il classe les erreurs d’authentification et d’autorisation sans exposer le credential et sans modifier GitHub.
-
-### Séparation READ / WRITE
-
-Les catalogues scoped READ et WRITE sont disjoints et testés. Les mutations restent derrière `ENABLE_WRITE_TOOLS` et ne sont pas déclarées prêtes pour un déploiement automatique.
-
-### GitRegistry v2
-
-Outil : `github_registry_v2_dry_run`.
-
-La conversion v1 vers v2 est validée en mémoire uniquement. Aucun registre actif, remote, mapping ou chemin serveur n’est modifié.
-
-## État S1 et production
+## État réel attesté avant le changement
 
 ```text
-S1 aligné avec main@618f4020 : non attesté
-working tree S1 propre       : non
-image reconstruite           : non
-registre actif migré         : non
-production modifiée          : non
+GitHub main : 4228119a9950828d372d1fbacbd9a613a7efa2d6
+S1 branche  : main
+S1 HEAD     : 4228119a9950828d372d1fbacbd9a613a7efa2d6
+S1 statut   : propre, diff vide
+Conteneur   : wealthtech_mcp_ssh_bridge, healthy
+Ping MCP    : wealthtech_ssh_bridge_ok
 ```
 
-Le connecteur `wealthtech_ssh_bridge` n’était pas disponible pendant la clôture des fondations. Aucun nouveau verdict serveur n’est produit.
+La baseline GitHub et le checkout S1 sont alignés. Le tag annoté
+`mcp-baseline-2026-08-09-4228119` n'a pas été trouvé lors du dernier contrôle et
+reste à créer/protéger par une action d'administration GitHub séparée.
 
-## Prochaine tâche unique
+## Risque de sécurité actif
 
-`TASK-20260805-006` — reconnecter `wealthtech_ssh_bridge` et effectuer uniquement une attestation read-only :
+Le remote S1 utilise encore :
 
-1. ping du bridge ;
-2. état Git complet S1 ;
-3. branche, HEAD, remote et `origin/main` ;
-4. image Docker active et digest ;
-5. catalogue réel des outils ;
-6. health checks local et public ;
-7. comparaison GitHub / S1 / runtime ;
-8. verdict Go, Go avec corrections ou No-Go.
+```text
+git@github.com-mcp-patricked-rw:Patricked-code/MCP.git
+```
 
-## Interdictions jusqu’au verdict
+pour `fetch` et `push`. Le suffixe `rw` ne prouve pas à lui seul les droits
+effectifs, mais la configuration ne garantit ni une identité GitHub read-only ni
+la neutralisation locale du push.
 
-- aucun pull, reset, clean, checkout, switch, rebase ou stash dans le working tree actif ;
-- aucun build ou restart depuis le dossier actif sale ;
-- aucun remplacement du registre ;
-- aucun changement de remote ;
-- aucun déploiement, migration, quarantaine, purge ou suppression.
+## Changement en cours
 
-## Sources associées
+Tâche : `TASK-20260809-001`
 
-- `PRODUCTION_STATE.json` ;
-- `TASKS.md` ;
-- `TODO.md` ;
-- `DECISIONS_LOG.md` ;
-- `CHANGELOG.md` ;
-- `docs/audits/2026-08-05/MCP_FOUNDATIONS_FINAL_STATE.md` ;
-- `docs/history/SUIVI_PRE_FOUNDATIONS_20260805.md` pour l’historique antérieur.
+Branche : `mcp/s1-readonly-deploy-identity-20260809`
+
+Objectif : réserver à S1 une identité GitHub de déploiement limitée à la lecture.
+
+Le changement versionné :
+
+- refuse l'ancien alias `github.com-mcp-patricked-rw` dans
+  `mcp_sync_from_github_s1` ;
+- autorise uniquement `github.com-mcp-patricked-ro` pour le fetch de
+  `Patricked-code/MCP` ;
+- exige une URL de push neutralisée égale à
+  `disabled://mcp-s1-read-only` ;
+- ajoute un test comportemental couvrant l'identité historique, un push actif et
+  la configuration cible ;
+- documente la rotation sans secret et avec rollback.
+
+## État de production pendant la PR
+
+La production n'est pas modifiée par la préparation de cette branche. Jusqu'à la
+rotation effective, S1 demeure sur `main@4228119…` avec l'ancien remote.
+
+## Prochaines actions, dans cet ordre
+
+1. terminer les tests, le typecheck, le build, le contrôle documentaire et le
+   scan de secrets ;
+2. ouvrir une Pull Request draft et obtenir la CI/revue ;
+3. créer sur S1 une nouvelle paire de clés dédiée, sans exposer la clé privée ;
+4. enregistrer uniquement la clé publique comme deploy key GitHub avec écriture
+   désactivée ;
+5. tester la lecture de `main` avec l'alias `github.com-mcp-patricked-ro` ;
+6. après fusion du correctif, synchroniser le commit fusionné par l'ancien outil
+   encore actif ;
+7. basculer le fetch vers l'alias `-ro` et le push vers la sentinelle désactivée ;
+8. attester que le fetch réussit et que deux chemins de push sont refusés : la
+   sentinelle locale et la deploy key GitHub read-only ;
+9. inventorier les usages de l'ancienne identité, puis révoquer son accès à ce
+   dépôt et la retirer de S1 ;
+10. reconstruire/redémarrer le runtime au SHA fusionné et attester
+    GitHub = S1 = image/runtime.
+
+Runbook : `docs/runbooks/S1_GITHUB_READ_ONLY_DEPLOY_IDENTITY.md`.
+
+## Interdictions
+
+- aucun secret, clé privée ou contenu de `.ssh` dans Git ;
+- aucun changement direct de code dans le checkout de production ;
+- aucun push direct sur `main` ;
+- aucune révocation de l'ancienne identité avant preuve de lecture avec la
+  nouvelle ;
+- aucune supposition fondée uniquement sur le nom `-ro` ou `-rw` ;
+- aucun déploiement avant fusion, CI réussie et SHA attendu.
+
+## Rollback
+
+Tant que l'ancienne identité n'est pas révoquée, le rollback consiste à restaurer
+temporairement l'ancien remote uniquement si le fetch read-only échoue, sans
+modifier le code ou l'historique. Après validation complète, l'ancien accès doit
+être révoqué ; un rollback ultérieur exige alors une nouvelle identité read-only,
+pas la réactivation permanente d'un credential d'écriture.

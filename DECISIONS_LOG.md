@@ -116,3 +116,25 @@ Décision de frontière : les fondations GitHub sont terminées, mais cela ne va
 Prochaine action unique : reconnecter `wealthtech_ssh_bridge` et effectuer une attestation strictement read-only de Git S1, Docker, outils et endpoints.
 
 Interdictions jusqu’au verdict : aucun pull, reset, clean, checkout, build ou restart dans le working tree actif ; aucun remplacement du registre ; aucun changement de remote ; aucun déploiement, nettoyage ou suppression.
+
+## 2026-08-09 — Identité GitHub de déploiement S1 strictement read-only
+
+Contexte : le checkout MCP actif sur S1 est aligné avec `main@4228119…`, mais son
+remote `origin` utilise l'alias `github.com-mcp-patricked-rw` pour le fetch et le
+push. Le code de `mcp_sync_from_github_s1` accepte également cet alias.
+
+Décision : S1 doit utiliser une deploy key dédiée à `Patricked-code/MCP`, créée
+avec l'écriture GitHub désactivée. Le fetch doit passer exclusivement par l'alias
+`github.com-mcp-patricked-ro`. La configuration Git doit en outre déclarer
+`disabled://mcp-s1-read-only` comme push URL afin qu'un push accidentel échoue
+avant même toute connexion réseau.
+
+Preuves exigées : lecture de `refs/heads/main` réussie avec la nouvelle identité,
+SHA attendu retrouvé, push normal neutralisé localement, push direct `--dry-run`
+refusé par GitHub avec la deploy key read-only, working tree propre et runtime
+attesté après déploiement.
+
+Ordre de rotation : installer et tester la nouvelle identité en parallèle,
+fusionner/déployer le correctif, basculer le remote, vérifier, puis seulement
+révoquer l'ancienne identité. Aucune clé privée ou donnée sensible n'entre dans
+Git.

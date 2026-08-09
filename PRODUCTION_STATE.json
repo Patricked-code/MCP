@@ -6,8 +6,9 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "lastValidatedAt": "2026-07-13T02:01:50Z",
+  "lastValidatedAt": "2026-08-09T09:15:01Z",
   "lastKnownGoodCommits": [
+    "4228119a9950828d372d1fbacbd9a613a7efa2d6 fix(security): update Hono node server override",
     "f92f621 fix(oauth): accept Claude and ChatGPT MCP resource aliases",
     "4ae1124 docs: add MCP anti-dispersion manual and function cartography",
     "4619588 docs: record final MCP production validation",
@@ -28,42 +29,46 @@
     "/.well-known/oauth-authorization-server": "200 OK",
     "/mcp_without_token": "401 Unauthorized"
   },
-  "githubCommitFull": "618f4020ac69801dd53f624e5cd188fc6d76cc24",
+  "githubCommitFull": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
   "serverGitState": {
     "branch": "main",
-    "serverCommitPrefix": "f92f621",
-    "serverCommitFull": null,
-    "serverCommitFullVerifiedDirectly": false,
-    "originMainCommitPrefix": "f92f621",
+    "serverCommitPrefix": "4228119",
+    "serverCommitFull": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
+    "serverCommitFullVerifiedDirectly": true,
+    "originMainCommitPrefix": "4228119",
     "trackedWorkingTreeClean": true,
     "ignoredFilesAudited": false,
-    "verifiedAt": "2026-07-12",
-    "currentStateSupersededByForensicAudit": true,
-    "currentAlignmentAttested": false
+    "verifiedAt": "2026-08-09T09:15:01Z",
+    "currentStateSupersededByForensicAudit": false,
+    "currentAlignmentAttested": true
   },
   "runtimeState": {
     "containerRuntimeObserved": true,
+    "containerHealthy": true,
+    "observedAt": "2026-08-09T09:15:01Z",
     "containerImageCommitVerified": false,
     "rebuiltFromCurrentGithubMain": false
   },
   "securityState": {
-    "secretScannerStatus": "blocked_before_pr11_correction_due_to_cp_false_positive"
+    "secretScannerStatus": "pending_branch_validation",
+    "s1GithubDeploymentIdentity": "transition_pending"
   },
   "deploymentState": {
     "pr10Deployed": false,
     "pr11Merged": true,
     "pr11MergeCommit": "38c999087b0e93adc2beeba04733af182c92be9c",
     "pr11Deployed": false,
-    "mcpSyncToolDeployed": false,
-    "foundationsDeployed": false
+    "mcpSyncToolDeployed": true,
+    "foundationsDeployed": true,
+    "readonlyIdentityChangeDeployed": false
   },
   "onboardingEngineState": "documented_and_configured_but_not_implemented_in_main",
   "alignmentRecovery": {
     "recordedAt": "2026-08-05T04:06:10.567244+00:00",
-    "status": "github_foundations_merged_s1_alignment_pending",
+    "status": "github_main_and_s1_checkout_aligned_runtime_revision_unverified",
     "repository": "Patricked-code/MCP",
     "baselineMainCommit": "097dac93715c0af83fcfad82cd598bacec956125",
-    "currentGithubMainCommit": "618f4020ac69801dd53f624e5cd188fc6d76cc24",
+    "currentGithubMainCommit": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
     "recoveryBranch": "mcp/recover-runtime-drift-20260805",
     "recoveryCommit": "7c8d9f782ae3195197345257f38fbc400504a848",
     "runtimeBuildParityVerified": true,
@@ -71,14 +76,14 @@
     "bundleSha256": "8a27a5814fb5fe688b42344cab770a1aee2ad059dc076b691df1e7900c43c4bd",
     "activeDockerImageId": "sha256:b82969cbd5b840738b411ec99956075dcb40516501d8048883f95b529d2c03d0",
     "productionModifiedDuringRecovery": false,
-    "githubMainAligned": false,
-    "serverWorkingTreeClean": false,
+    "githubMainAligned": true,
+    "serverWorkingTreeClean": true,
     "runtimeRebuiltFromMergedCommit": false,
-    "nextStep": "reconnect_wealthtech_ssh_bridge_and_run_read_only_attestation"
+    "nextStep": "rotate_s1_github_deployment_identity_to_read_only"
   },
   "githubFoundationState": {
     "recordedAt": "2026-08-05T08:28:13Z",
-    "mainCommit": "618f4020ac69801dd53f624e5cd188fc6d76cc24",
+    "mainCommit": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
     "mainProtected": true,
     "requiredStatusCheck": "validate",
     "mergedPullRequests": [18, 25, 26, 27],
@@ -86,8 +91,24 @@
     "readWriteFoundationMerged": true,
     "gitRegistryV2DryRunMerged": true,
     "registryActiveFileModified": false,
-    "s1Aligned": false,
+    "s1Aligned": true,
     "runtimeRebuilt": false,
     "productionModified": false
+  },
+  "baselineProtection": {
+    "baselineCommit": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
+    "annotatedTag": "mcp-baseline-2026-08-09-4228119",
+    "tagObserved": false,
+    "verifiedAt": "2026-08-09T09:15:01Z"
+  },
+  "s1GitIdentityState": {
+    "status": "rotation_pending",
+    "currentFetchRemote": "git@github.com-mcp-patricked-rw:Patricked-code/MCP.git",
+    "currentPushRemote": "git@github.com-mcp-patricked-rw:Patricked-code/MCP.git",
+    "currentEffectiveWritePermission": "UNVERIFIED",
+    "targetFetchRemote": "git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",
+    "targetPushRemote": "disabled://mcp-s1-read-only",
+    "targetGithubPermission": "contents_read_only",
+    "rotationTask": "TASK-20260809-001"
   }
 }
