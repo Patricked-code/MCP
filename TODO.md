@@ -4,16 +4,15 @@
 Liste large des idees, anomalies, points a verifier et besoins non encore ordonnes.
 
 ## A traiter
-- Verifier tous les fichiers Markdown racine attendus.
-- Consolider les doublons utiles entre docs/, memory/ et la racine.
-- Verifier la coherence des fichiers .mcp.
+- Vérifier tous les fichiers Markdown racine attendus.
+- Consolider les doublons utiles entre `docs/`, `memory/` et la racine.
+- Vérifier la cohérence des fichiers `.mcp`.
 - Ajouter les fichiers enfants par projet.
-- Creer un rapport d'audit documentaire.
-- Ne pas toucher aux secrets ni au code applicatif pendant cette passe.
+- Créer un rapport d'audit documentaire.
+- Ne pas toucher aux secrets ni au code applicatif pendant une passe documentaire pure.
 
 ## Passage vers TASKS.md
 Lorsqu'un point devient executable, il doit etre transforme en entree dans TASKS.md.
-
 
 ---
 
@@ -65,13 +64,13 @@ Règles permanentes :
 - DirtyCount à zéro avant pull, merge, deploy, migration ou nettoyage ;
 - non-régression obligatoire.
 
-Mise à jour : 2026-07-09T20:08:09Z
+Mise à jour : 2026-08-09
 
-## Alignement MCP — état au 2026-08-05
+## Alignement MCP — état au 2026-08-09
 
 - [x] Snapshot forensique créé et conservé dans la PR #19 `DO NOT MERGE`.
 - [x] Baseline `097dac9` testée.
-- [x] Runtime récupéré dans GitHub.
+- [x] Runtime historique récupéré dans GitHub.
 - [x] Bundle Git vérifié.
 - [x] Documentation canonique fusionnée par la PR #18.
 - [x] Diagnostic GitHub read-only fusionné par la PR #25.
@@ -79,21 +78,32 @@ Mise à jour : 2026-07-09T20:08:09Z
 - [x] Fondation GitRegistry v2 dry-run fusionnée par la PR #27.
 - [x] `main` protégé avec PR et CI obligatoires.
 - [x] Issue de protection #24 clôturée.
-- [x] Reconnecter `wealthtech_ssh_bridge`.
-- [x] Attester en lecture seule la branche, le HEAD, le remote, la propreté Git S1 et la santé du conteneur.
-- [x] Confirmer l'alignement du checkout GitHub `main` ↔ S1 sur `4228119…`.
-- [ ] Remplacer l'identité GitHub S1 par une deploy key read-only et neutraliser le push.
-- [ ] Attester le SHA de l'image/runtime après le prochain déploiement.
-- [ ] Préparer une copie propre isolée avant tout build.
-- [ ] Aligner S1 uniquement après verdict Go et procédure de rollback.
-- [ ] Reconstruire l’image depuis un commit fusionné et attesté.
-- [ ] Vérifier GitHub = S1 HEAD = image Docker.
+- [x] PR #37 fusionnée dans `main@d3bcac0cf17608963317a18aa2916a5997916394` pour imposer l'identité S1 read-only dans le synchroniseur.
+- [x] Dernière observation S1 connue : fetch `github.com-mcp-patricked-ro`, push `disabled://mcp-s1-read-only`, checkout sur `d3bcac0…`. Cette preuve doit être rafraîchie avant le prochain déploiement.
+- [x] Implémenter sur branche la V1 du Live State : modèle, store atomique, collecteurs, réconciliation 60 s, outils MCP et provenance OCI.
+- [ ] Ouvrir/valider/fusionner la PR Live State V1.
+- [ ] Reconnecter/invoquer S1 pour le préflight post-merge actuel.
+- [ ] Synchroniser S1 par `mcp_sync_from_github_s1` seulement après CI/merge et working tree propre.
+- [ ] Reconstruire l’image depuis le merge SHA avec `org.opencontainers.image.revision`.
+- [ ] Attester le SHA de l'image/runtime après ce déploiement.
+- [ ] Vérifier GitHub `main` = S1 HEAD = image/runtime.
+- [ ] Vérifier en production `mcp_get_live_state` et `mcp_reconcile_live_state`.
+- [ ] Intégrer le résumé Live State directement dans `get_project_context` quand la modification de `src/tools/readOnly.ts` peut être effectuée via un chemin de mutation autorisé.
 - [ ] Migrer le registre actif vers v2 dans une PR et une opération séparées.
 
-## Interdictions tant que S1 n’est pas attesté
+## Évolutions Live State V1.5/V2 — séparées
 
-- aucun pull, reset, clean ou checkout dans le working tree actif ;
-- aucun build ni restart depuis le dossier sale ;
+- [ ] Sessions gouvernées et identifiant de session agent.
+- [ ] Heartbeats et locks de tâches.
+- [ ] `expectedStateVersion` / concurrence optimiste.
+- [ ] Write gates fail-closed devant les mutations.
+- [ ] Webhooks/Checks GitHub et éventuel required check Live State.
+- [ ] Évaluer PostgreSQL uniquement si plusieurs instances MCP doivent écrire simultanément ; ne pas l'ajouter par défaut.
+
+## Interdictions tant que S1 n’est pas réattesté
+
+- aucun reset/clean/force pour aligner le working tree actif ;
+- aucun build ni restart si le working tree est sale ou le SHA inattendu ;
 - aucun remplacement du registre actif ;
-- aucun changement de remote ;
-- aucun déploiement, nettoyage ou suppression.
+- aucune modification arbitraire de remote ;
+- aucun déploiement, nettoyage ou suppression hors procédure gouvernée.
