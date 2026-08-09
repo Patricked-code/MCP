@@ -110,10 +110,8 @@ export function parseS1Observation(output: string): S1LiveObservation {
 export function parseRuntimeObservation(output: string): RuntimeLiveObservation {
   const values = parseKeyValueOutput(output);
   const containerName = (values.container_name || MCP_CONTAINER).replace(/^\//, '');
-  const revision = shaOrNull(
-    values['container_label.org.opencontainers.image.revision'] ||
-    values['image_label.org.opencontainers.image.revision']
-  );
+  const revision = shaOrNull(values['container_label.org.opencontainers.image.revision'])
+    ?? shaOrNull(values['image_label.org.opencontainers.image.revision']);
 
   return {
     status: 'CURRENT',
@@ -196,6 +194,7 @@ export async function collectGithubObservation(): Promise<GithubLiveObservation>
   try {
     const response = await fetch(`${base}/repos/${REPOSITORY}/commits/${encodeURIComponent(BRANCH)}`, {
       method: 'GET',
+      redirect: 'error',
       signal: controller.signal,
       headers
     });
