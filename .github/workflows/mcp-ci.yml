@@ -21,17 +21,6 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Prepare canonical document candidates
-        run: node scripts/generate-canonical-docs-candidate.mjs
-
-      - name: Upload canonical document candidates
-        uses: actions/upload-artifact@v4
-        with:
-          name: mcp-canonical-docs
-          path: /tmp/mcp-canonical-docs
-          if-no-files-found: error
-          retention-days: 1
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -52,18 +41,6 @@ jobs:
 
       - name: Governance tests
         run: npm run test:governance
-
-      - name: Markdown baseline candidate
-        shell: bash
-        run: node scripts/generate-doc-governance-baseline.mjs > /tmp/mcp-markdown-baseline.json
-
-      - name: Upload Markdown baseline candidate
-        uses: actions/upload-artifact@v4
-        with:
-          name: mcp-markdown-baseline
-          path: /tmp/mcp-markdown-baseline.json
-          if-no-files-found: error
-          retention-days: 1
 
       - name: Secret scan
         run: npm run lint:secrets --if-present
