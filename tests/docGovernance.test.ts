@@ -5,7 +5,8 @@ import {
   classifyMarkdownPath,
   compareMarkdownInventory,
   extractCanonicalState,
-  validateCanonicalStates
+  validateCanonicalStates,
+  validateRequiredCanonicalStates
 } from '../scripts/doc-governance-lib.mjs';
 
 const canonical = {
@@ -74,4 +75,43 @@ test('une contradiction sémantique est refusée et attribuée au document fauti
   assert.deepEqual(result.conflicts, [
     { path: 'TASKS.md', key: 'branch', expected: 'main', actual: 'legacy' }
   ]);
+});
+
+test('les autorités sémantiques manquantes ou sans canonical-state sont refusées', () => {
+  const required = [
+    'SUIVI.md',
+    'TASKS.md',
+    'TODO.md',
+    'DEPLOYMENT_PRODUCTION.md',
+    'MCP_ANTI_DISPERSION_GOVERNANCE.md'
+  ];
+  const result = validateRequiredCanonicalStates(required, [
+    { path: 'SUIVI.md', state: canonical },
+    { path: 'TASKS.md', state: canonical },
+    { path: 'TODO.md', state: null },
+    { path: 'DEPLOYMENT_PRODUCTION.md', state: canonical }
+  ]);
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.missing, ['MCP_ANTI_DISPERSION_GOVERNANCE.md']);
+  assert.deepEqual(result.withoutState, ['TODO.md']);
+});
+
+test('les cinq autorités présentes et cohérentes sont valides', () => {
+  const required = [
+    'SUIVI.md',
+    'TASKS.md',
+    'TODO.md',
+    'DEPLOYMENT_PRODUCTION.md',
+    'MCP_ANTI_DISPERSION_GOVERNANCE.md'
+  ];
+  const result = validateRequiredCanonicalStates(
+    required,
+    required.map((path) => ({ path, state: canonical }))
+  );
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.missing, []);
+  assert.deepEqual(result.withoutState, []);
+  assert.deepEqual(result.conflicts, []);
 });
