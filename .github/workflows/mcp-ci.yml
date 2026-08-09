@@ -21,6 +21,17 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Prepare autodeploy governance candidates
+        run: node scripts/generate-autodeploy-governance-candidates.mjs
+
+      - name: Upload autodeploy governance candidates
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-autodeploy-governance
+          path: /tmp/mcp-autodeploy-governance
+          if-no-files-found: error
+          retention-days: 1
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
