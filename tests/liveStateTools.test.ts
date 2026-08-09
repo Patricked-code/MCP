@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { registerLiveStateReadOnlyTools } from '../src/tools/liveState.js';
+import { getLiveStateSummary, registerLiveStateReadOnlyTools } from '../src/tools/liveState.js';
 import type { LiveStateSnapshot } from '../src/liveState/types.js';
 
 const SHA = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
@@ -81,11 +81,22 @@ test('les handlers retournent un état JSON sans forcer de mutation', async () =
   assert.match(reconcileResult?.content?.[0]?.text || '', /"FULLY_ALIGNED"/);
 });
 
-test('le registre global read-only référence Live State et le contexte projet', async () => {
-  const source = await readFile('src/tools/readOnly.ts', 'utf8');
+test('le résumé expose uniquement le contexte opérationnel compact', () => {
+  assert.deepEqual(getLiveStateSummary(snapshot()), {
+    available: true,
+    stateVersion: 7,
+    freshness: 'CURRENT',
+    ageSeconds: 3,
+    globalAlignment: 'FULLY_ALIGNED',
+    activeTask: 'TASK-20260809-002',
+    nextAction: null
+  });
+});
+
+test('le chemin read-only global enregistre Live State sans catalogue WRITE', async () => {
+  const source = await readFile('src/tools/githubAuthorization.ts', 'utf8');
   assert.match(source, /registerLiveStateReadOnlyTools/);
-  assert.match(source, /getLiveStateSummary/);
-  assert.match(source, /liveState/);
+  assert.doesNotMatch(source, /registerLiveStateWrite|mcp_live_state_write/);
 });
 
 test('le point de démarrage initialise le moteur Live State une seule fois', async () => {
