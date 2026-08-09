@@ -77,6 +77,19 @@ test('le parseur runtime ne retient que les champs bornés nécessaires', () => 
   assert.equal(JSON.stringify(runtime).includes('SHOULD_NOT_BE_READ'), false);
 });
 
+test('le parseur runtime retombe sur le label image si le label conteneur est vide', () => {
+  const runtime = parseRuntimeObservation([
+    'container_name=/wealthtech_mcp_ssh_bridge',
+    'container_status=running',
+    'container_health=healthy',
+    'container_image_id=sha256:image',
+    'container_label.org.opencontainers.image.revision=<no value>',
+    `image_label.org.opencontainers.image.revision=${SHA}`
+  ].join('\n'));
+
+  assert.equal(runtime.revision, SHA);
+});
+
 test('la collecte documentaire reste bornée aux signaux de reprise', () => {
   const command = buildDocumentationLiveStateCommand();
   assert.doesNotThrow(() => assertReadOnlyCommand(command));
