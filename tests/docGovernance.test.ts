@@ -24,6 +24,8 @@ test('chaque chemin Markdown reçoit une catégorie gouvernée déterministe', (
   assert.equal(classifyMarkdownPath('docs/superpowers/plans/plan.md'), 'engineering-plan');
   assert.equal(classifyMarkdownPath('docs/SECURITY.md'), 'documentation');
   assert.equal(classifyMarkdownPath('Migration/archive/note.md'), 'migration-history');
+  assert.equal(classifyMarkdownPath('memory/README.md'), 'memory');
+  assert.equal(classifyMarkdownPath('wealthtech_project_memory/memory/README.md'), 'runtime-mirror-tracked');
   assert.equal(classifyMarkdownPath('vendor/unknown.md'), null);
 });
 
