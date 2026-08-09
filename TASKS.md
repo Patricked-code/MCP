@@ -12,8 +12,9 @@ Plan operationnel executable du MCP.
 - TASK-20260805-004 — TERMINÉE : fondation GitRegistry v2 dry-run fusionnée par la PR #27.
 - TASK-20260805-005 — TERMINÉE : ruleset `protect-main` actif et issue #24 clôturée.
 - TASK-20260805-006 — TERMINÉE : connecteur `wealthtech_ssh_bridge` reconnecté ; branche, HEAD, remote, propreté et santé du conteneur attestés.
-- TASK-20260805-007 — EN ATTENTE DU VERDICT : préparer l’alignement GitHub ↔ S1 ↔ Docker dans une copie propre isolée, avec rollback.
-- TASK-20260809-001 — EN COURS : remplacer l'identité GitHub S1 par une deploy key read-only, neutraliser le push et attester le refus d'écriture.
+- TASK-20260805-007 — PARTIELLEMENT ABSORBÉE : l’alignement checkout GitHub ↔ S1 a été observé ultérieurement ; l’attestation runtime finale reste à produire après le prochain déploiement gouverné.
+- TASK-20260809-001 — GITHUB TERMINÉ / ATTESTATION RUNTIME RESTANTE : la PR #37 est fusionnée dans `main@d3bcac0cf17608963317a18aa2916a5997916394`. La dernière observation S1 connue montrait le fetch `-ro`, le push neutralisé et le checkout aligné, mais le connecteur S1 n’est pas invocable dans la session courante et le runtime au SHA reste à réattester.
+- TASK-20260809-002 — EN COURS : implémenter le MCP Live State Engine V1 natif, read-only-first, avec état persistant, réconciliation ≤ 60 s, provenance runtime, outils MCP et déploiement gouverné.
 
 ## Taches futures separees
 - TASK-FUTURE-NODE — PLANIFIEE, NON EXECUTEE : préparer la migration du runtime Node dans une PR dédiée.
@@ -24,39 +25,51 @@ Plan operationnel executable du MCP.
 
 ## Tâche active unique
 
-### TASK-20260809-001 — Identité GitHub S1 read-only
+### TASK-20260809-002 — MCP Live State Engine V1
+
+Objectif : fournir à tous les clients du MCP une vue opérationnelle partagée et fraîche de `Patricked-code/MCP`, de S1, du runtime Docker et de la documentation canonique, sans mutation des sources observées.
 
 Préconditions :
 
-- `main`, S1 et `origin/main` alignés sur `4228119…` avant travaux ;
-- checkout S1 propre ;
-- nouvelle branche créée depuis ce SHA ;
-- aucune clé privée exposée ou versionnée.
+- base GitHub vérifiée sur `main@d3bcac0cf17608963317a18aa2916a5997916394` avant création de branche ;
+- branche dédiée `mcp/live-state-v1-20260809` ;
+- aucune modification directe du checkout de production S1 ;
+- aucun secret nouveau dans Git ;
+- réutilisation du MCP Node/TypeScript, du volume `/app/data`, de l’SSH read-only et de l’attestation runtime existants.
 
-Fichiers concernés :
+Fichiers principaux concernés :
 
-- `src/tools/mcpGitSync.ts` ;
-- `tests/mcpGitSync.test.ts` ;
-- documents et politiques de gouvernance associés.
+- `src/liveState/*` ;
+- `src/tools/liveState.ts` ;
+- `src/tools/mcpRuntimeDeploy.ts` ;
+- intégration read-only et démarrage MCP ;
+- `Dockerfile` et `docker-compose.yml` pour la provenance OCI ;
+- tests Live State et documents de gouvernance.
 
-Risques : coupure du fetch si l'alias SSH ou la deploy key sont incorrects ; voie
-d'écriture persistante si l'ancien credential n'est pas révoqué ; faux sentiment
-de sécurité si seul le nom de l'alias est changé.
+Risques : faux `FULLY_ALIGNED` si une source est indisponible ; fuite de données si une inspection runtime devient non bornée ; timer concurrent ; état JSON corrompu ; provenance Docker absente ; dérive documentaire ; régression des catalogues read/write.
 
-Tests attendus : test ciblé RED/GREEN, suite read-only complète, typecheck, build,
-scan de secrets, contrôle documentaire, CI GitHub, `git fetch` réussi avec la
-nouvelle identité et deux preuves de push refusé.
+Garde-fous :
 
-Résultat attendu : S1 peut récupérer uniquement `Patricked-code/MCP:main`, ne peut
-pas pousser vers GitHub, et le runtime au SHA fusionné reste sain.
+- collecteurs read-only uniquement ;
+- runtime inspecté avec l’allowlist existante ;
+- écriture atomique de `/app/data/mcp-live-state.json` en `0600` ;
+- `FULLY_ALIGNED` interdit sans GitHub = S1 = runtime attesté ;
+- une source indisponible produit `DEGRADED` ;
+- aucune nouvelle infrastructure PostgreSQL/Redis/service en V1 ;
+- aucun push direct sur `main`.
 
-## Actions interdites pendant TASK-20260809-001
+Tests attendus : cycles TDD RED/GREEN pour réconciliation, store, collecteurs et moteur ; suite `test:readonly-safety`, typecheck, build, scan secrets, docs check, `git diff --check`, CI de PR et audit de diff complet.
+
+Résultat attendu : après merge et déploiement, `mcp_get_live_state` et `mcp_reconcile_live_state` exposent un état commun actualisé au plus toutes les 60 secondes, avec `stateVersion`, fraîcheur, alignements, contradictions et prochaine action. Le déploiement final reste interdit tant que S1 ne peut pas être revalidé en lecture live.
+
+## Actions interdites pendant TASK-20260809-002
 
 - push direct sur `main` ;
-- écriture directe de code dans le checkout actif S1 ;
-- stockage de clé privée dans Git ou dans un rapport ;
-- révocation de l'ancienne identité avant validation de la nouvelle ;
-- fusion ou déploiement sans CI, revue et SHA attendu.
+- écriture directe du code sur S1 ;
+- reset/clean/force pour aligner S1 ;
+- déclaration `FULLY_ALIGNED` sans attestation runtime ;
+- nouvelle base, Redis, microservice ou GitHub App en V1 ;
+- exposition de token, clé privée, `.env`, mounts secrets ou Docker inspect non borné.
 
 ## Regle
 Une tache executable doit indiquer objectif, fichiers concernes, risques, preconditions, tests et resultat attendu.
@@ -111,4 +124,4 @@ Règles permanentes :
 - DirtyCount à zéro avant pull, merge, deploy, migration ou nettoyage ;
 - non-régression obligatoire.
 
-Mise à jour : 2026-08-05
+Mise à jour : 2026-08-09
