@@ -10,12 +10,14 @@ import {
   parseRuntimeObservation,
   parseS1Observation
 } from '../src/liveState/collect.js';
+import { assertReadOnlyCommand } from '../src/ssh/safety.js';
 import { buildMcpRestartCommand } from '../src/tools/mcpRuntimeDeploy.js';
 
 const SHA = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
 test('la commande S1 Live State ne contient que des lectures Git bornées', () => {
   const command = buildS1LiveStateCommand();
+  assert.doesNotThrow(() => assertReadOnlyCommand(command));
   assert.match(command, /git branch --show-current/);
   assert.match(command, /git rev-parse HEAD/);
   assert.match(command, /git rev-parse origin\/main/);
@@ -76,6 +78,7 @@ test('le parseur runtime ne retient que les champs bornés nécessaires', () => 
 
 test('la collecte documentaire reste bornée aux signaux de reprise', () => {
   const command = buildDocumentationLiveStateCommand();
+  assert.doesNotThrow(() => assertReadOnlyCommand(command));
   assert.match(command, /TASKS\.md/);
   assert.match(command, /PRODUCTION_STATE\.json/);
   assert.match(command, /SUIVI\.md/);
