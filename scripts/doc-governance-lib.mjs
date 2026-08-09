@@ -52,6 +52,29 @@ export function compareMarkdownInventory(expectedPaths, actualPaths) {
   };
 }
 
+export function validateMarkdownBaseline(expectedEntries, actualPaths) {
+  const entries = Array.isArray(expectedEntries) ? expectedEntries : [];
+  const expectedPaths = entries
+    .map((entry) => entry?.path)
+    .filter((path) => typeof path === 'string');
+  const inventory = compareMarkdownInventory(expectedPaths, actualPaths);
+  const categoryDrift = entries
+    .filter((entry) => entry && typeof entry.path === 'string')
+    .map((entry) => ({
+      path: entry.path,
+      expected: entry.category ?? null,
+      actual: classifyMarkdownPath(entry.path)
+    }))
+    .filter((entry) => entry.expected !== entry.actual)
+    .sort((a, b) => a.path.localeCompare(b.path));
+
+  return {
+    ...inventory,
+    categoryDrift,
+    ok: inventory.ok && categoryDrift.length === 0
+  };
+}
+
 export function extractCanonicalState(markdown) {
   if (typeof markdown !== 'string') return null;
   const match = markdown.match(/```canonical-state\s*\n([\s\S]*?)\n```/);
