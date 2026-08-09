@@ -83,12 +83,14 @@ test('la collecte documentaire reste bornée aux signaux de reprise', () => {
   assert.match(command, /TASKS\.md/);
   assert.match(command, /PRODUCTION_STATE\.json/);
   assert.match(command, /SUIVI\.md/);
+  assert.match(command, /documentation_requires_revalidation/);
   assert.doesNotMatch(command, /cat .*\.env|keys\/|secrets\//);
 
   const observation = parseDocumentationObservation([
     'active_task=TASK-20260809-001 — EN COURS',
     `declared_github_sha=${SHA}`,
-    `declared_s1_sha=${SHA}`
+    `declared_s1_sha=${SHA}`,
+    'documentation_requires_revalidation=false'
   ].join('\n'), SHA, SHA);
 
   assert.equal(observation.status, 'CURRENT');
@@ -96,13 +98,26 @@ test('la collecte documentaire reste bornée aux signaux de reprise', () => {
   assert.equal(observation.drift, false);
 });
 
-test('un SHA documentaire différent est signalé comme drift', () => {
+test('un SHA documentaire historique différent ne crée pas une boucle de drift', () => {
   const observation = parseDocumentationObservation([
     'active_task=TASK-20260809-001 — EN COURS',
     'declared_github_sha=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
-    'declared_s1_sha=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+    'declared_s1_sha=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+    'documentation_requires_revalidation=false'
   ].join('\n'), SHA, SHA);
 
+  assert.equal(observation.drift, false);
+});
+
+test('le signal structuré requires_revalidation produit DOCUMENTATION_DRIFT', () => {
+  const observation = parseDocumentationObservation([
+    'active_task=TASK-20260809-002 — EN COURS',
+    `declared_github_sha=${SHA}`,
+    `declared_s1_sha=${SHA}`,
+    'documentation_requires_revalidation=true'
+  ].join('\n'), SHA, SHA);
+
+  assert.equal(observation.activeTask, 'TASK-20260809-002');
   assert.equal(observation.drift, true);
 });
 
