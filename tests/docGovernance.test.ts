@@ -6,7 +6,8 @@ import {
   compareMarkdownInventory,
   extractCanonicalState,
   validateCanonicalStates,
-  validateRequiredCanonicalStates
+  validateRequiredCanonicalStates,
+  validateMarkdownBaseline
 } from '../scripts/doc-governance-lib.mjs';
 
 const canonical = {
@@ -48,6 +49,21 @@ test('un inventaire identique et entièrement classifié est valide', () => {
   assert.deepEqual(result.missing, []);
   assert.deepEqual(result.added, []);
   assert.deepEqual(result.unclassified, []);
+});
+
+test('la baseline refuse une catégorie différente de la classification déterministe', () => {
+  const result = validateMarkdownBaseline(
+    [
+      { path: 'SUIVI.md', category: 'root-documentation' },
+      { path: 'docs/SECURITY.md', category: 'documentation' }
+    ],
+    ['SUIVI.md', 'docs/SECURITY.md']
+  );
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.categoryDrift, [
+    { path: 'SUIVI.md', expected: 'root-documentation', actual: 'canonical' }
+  ]);
 });
 
 test('canonical-state extrait un objet JSON borné', () => {
