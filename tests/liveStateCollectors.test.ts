@@ -10,7 +10,7 @@ import {
   parseRuntimeObservation,
   parseS1Observation
 } from '../src/liveState/collect.js';
-import { buildMcpRestartCommand } from '../src/tools/selfManagement.js';
+import { buildMcpRestartCommand } from '../src/tools/mcpRuntimeDeploy.js';
 
 const SHA = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
