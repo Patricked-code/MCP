@@ -1,4 +1,7 @@
 FROM node:20-alpine
+ARG GIT_REVISION=unknown
+LABEL org.opencontainers.image.source="https://github.com/Patricked-code/MCP"
+LABEL org.opencontainers.image.revision="${GIT_REVISION}"
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
