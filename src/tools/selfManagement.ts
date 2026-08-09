@@ -4,6 +4,7 @@ import { env } from '../config/env.js';
 import { runReadOnlyCommand, runGuardedCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
 import { buildMcpGitSyncCommand } from './mcpGitSync.js';
+import { buildMcpRestartCommand } from './mcpRuntimeDeploy.js';
 import { assertScopedWriteToolsEnabled, assertWriteFlag } from '../ssh/writeSafety.js';
 
 const MCP_PROJECT_KEY = 'mcp_bridge';
@@ -250,11 +251,6 @@ docker run --rm -v "$PWD:/work" -w /work node:20-alpine sh -lc 'npm install --pa
   }, async ({ allow_write }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     assertWriteFlag(allow_write, 'restart_mcp_bridge_s1');
-    return runS1Write(`set -euo pipefail
-cd ${shellQuote(MCP_ROOT)}
-docker compose up -d --build
-sleep 5
-docker ps --filter name=${MCP_CONTAINER} --format "table {{.Names}}\\t{{.Status}}\\t{{.Ports}}"
-curl -s http://127.0.0.1:8787/health || true`, 'restart_mcp_bridge_s1', 240_000);
+    return runS1Write(buildMcpRestartCommand(), 'restart_mcp_bridge_s1', 240_000);
   });
 }
