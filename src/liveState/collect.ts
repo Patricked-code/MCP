@@ -1,7 +1,5 @@
 import { readFile } from 'node:fs/promises';
 
-import { runReadOnlyCommand } from '../ssh/client.js';
-import { buildMcpRuntimeImageAttestationCommand } from '../tools/runtimeAttestation.js';
 import type {
   DocumentationLiveObservation,
   GithubLiveObservation,
@@ -153,18 +151,18 @@ export async function collectGithubObservation(): Promise<GithubLiveObservation>
       ? { status: 'CURRENT', branch: BRANCH, head }
       : { status: 'UNAVAILABLE', branch: BRANCH, head: null, error: 'github_sha_missing' };
   } catch {
-    return {
-      status: 'UNAVAILABLE',
-      branch: BRANCH,
-      head: null,
-      error: 'github_unavailable'
-    };
+    return { status: 'UNAVAILABLE', branch: BRANCH, head: null, error: 'github_unavailable' };
   }
+}
+
+async function runS1ReadOnly(command: string) {
+  const { runReadOnlyCommand } = await import('../ssh/client.js');
+  return runReadOnlyCommand('s1', command);
 }
 
 export async function collectS1Observation(): Promise<S1LiveObservation> {
   try {
-    const result = await runReadOnlyCommand('s1', buildS1LiveStateCommand());
+    const result = await runS1ReadOnly(buildS1LiveStateCommand());
     if (result.code !== 0) {
       return {
         status: 'UNAVAILABLE', path: MCP_ROOT, branch: null, head: null, originMain: null,
@@ -184,7 +182,8 @@ export async function collectS1Observation(): Promise<S1LiveObservation> {
 
 export async function collectRuntimeObservation(): Promise<RuntimeLiveObservation> {
   try {
-    const result = await runReadOnlyCommand('s1', buildMcpRuntimeImageAttestationCommand());
+    const { buildMcpRuntimeImageAttestationCommand } = await import('../tools/runtimeAttestation.js');
+    const result = await runS1ReadOnly(buildMcpRuntimeImageAttestationCommand());
     if (result.code !== 0) {
       return {
         status: 'UNAVAILABLE', container: MCP_CONTAINER, containerStatus: null,
@@ -206,7 +205,7 @@ export async function collectDocumentationObservation(
   observedS1Sha: string | null
 ): Promise<DocumentationLiveObservation> {
   try {
-    const result = await runReadOnlyCommand('s1', buildDocumentationLiveStateCommand());
+    const result = await runS1ReadOnly(buildDocumentationLiveStateCommand());
     if (result.code !== 0) {
       return {
         status: 'UNAVAILABLE', activeTask: null, declaredGithubSha: null,
@@ -217,8 +216,7 @@ export async function collectDocumentationObservation(
   } catch {
     return {
       status: 'UNAVAILABLE', activeTask: null, declaredGithubSha: null,
-      declaredS1Sha: null, drift: false,
-      error: 'documentation_unavailable'
+      declaredS1Sha: null, drift: false, error: 'documentation_unavailable'
     };
   }
 }
