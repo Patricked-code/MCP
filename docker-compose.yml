@@ -1,6 +1,9 @@
 services:
   wealthtech-mcp-ssh-bridge:
-    build: .
+    build:
+      context: .
+      args:
+        GIT_REVISION: ${MCP_GIT_REVISION:-unknown}
     container_name: wealthtech_mcp_ssh_bridge
     restart: unless-stopped
     env_file:
