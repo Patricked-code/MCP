@@ -76,8 +76,8 @@ CONTAINER=${shellQuote(MCP_CONTAINER)}
 SERVICE=${shellQuote(MCP_SERVICE)}
 JOB_ID=${shellQuote(jobId)}
 REQUESTED_SHA=${shellQuote(sha)}
-JOB_DIR="$DEPLOY_ROOT/jobs/$JOB_ID"
-STATUS_FILE="$JOB_DIR/status.env"
+JOB_DIR=${shellQuote(`${DEPLOY_JOBS_ROOT}/${jobId}`)}
+STATUS_FILE="$JOB_DIR/status.state"
 ATTESTATION_FILE="$JOB_DIR/attestation.json"
 CANDIDATE_REF="wealthtech-mcp-ssh-bridge:deploy-$REQUESTED_SHA"
 ROLLBACK_REF="wealthtech-mcp-ssh-bridge:rollback-$JOB_ID"
@@ -96,7 +96,7 @@ chmod 700 "$DEPLOY_ROOT" "$JOB_DIR"
 write_status() {
   local status="$1"
   local phase="$2"
-  local tmp="$JOB_DIR/status.env.tmp"
+  local tmp="$JOB_DIR/status.state.tmp"
   printf 'job_id=%s\\nrequested_sha=%s\\nstatus=%s\\nphase=%s\\nruntime_revision=%s\\nrollback_status=%s\\nhealth_ok=%s\\noauth_ok=%s\\nmcp_auth_ok=%s\\n' \\
     "$JOB_ID" "$REQUESTED_SHA" "$status" "$phase" "$RUNTIME_REVISION" "$ROLLBACK_STATUS" "$HEALTH_OK" "$OAUTH_OK" "$MCP_AUTH_OK" > "$tmp"
   chmod 600 "$tmp"
@@ -239,17 +239,19 @@ export function buildS1DeployLaunchCommand(runIdInput: string, shaInput: string)
   const jobId = buildS1DeployJobId(runId, sha);
   const workerScript = buildS1DeployWorkerScript(jobId, sha);
   const workerBase64 = Buffer.from(workerScript, 'utf8').toString('base64');
+  const jobDir = `${DEPLOY_JOBS_ROOT}/${jobId}`;
 
   return `set -euo pipefail
 DEPLOY_ROOT=${shellQuote(DEPLOY_ROOT)}
+JOBS_ROOT=${shellQuote(DEPLOY_JOBS_ROOT)}
 JOB_ID=${shellQuote(jobId)}
-JOB_DIR="$DEPLOY_ROOT/jobs/$JOB_ID"
+JOB_DIR=${shellQuote(jobDir)}
 mkdir -p "$JOB_DIR"
-chmod 700 "$DEPLOY_ROOT" "$DEPLOY_ROOT/jobs" "$JOB_DIR"
+chmod 700 "$DEPLOY_ROOT" "$JOBS_ROOT" "$JOB_DIR"
 printf '%s' ${shellQuote(workerBase64)} | base64 -d > "$JOB_DIR/worker.sh"
 chmod 700 "$JOB_DIR/worker.sh"
-printf 'job_id=%s\\nrequested_sha=%s\\nstatus=queued\\nphase=queued\\n' "$JOB_ID" ${shellQuote(sha)} > "$JOB_DIR/status.env"
-chmod 600 "$JOB_DIR/status.env"
+printf 'job_id=%s\\nrequested_sha=%s\\nstatus=queued\\nphase=queued\\n' "$JOB_ID" ${shellQuote(sha)} > "$JOB_DIR/status.state"
+chmod 600 "$JOB_DIR/status.state"
 nohup /bin/bash "$JOB_DIR/worker.sh" >/dev/null 2>&1 </dev/null &
 printf 'job_id=%s\\nrequested_sha=%s\\nstatus=queued\\n' "$JOB_ID" ${shellQuote(sha)}`;
 }
@@ -257,7 +259,7 @@ printf 'job_id=%s\\nrequested_sha=%s\\nstatus=queued\\n' "$JOB_ID" ${shellQuote(
 export function buildS1DeployStatusCommand(jobIdInput: string, shaInput: string): string {
   const sha = normalizeSha(shaInput);
   const jobId = normalizeJobId(jobIdInput, sha);
-  const statusFile = `${DEPLOY_JOBS_ROOT}/${jobId}/status.env`;
+  const statusFile = `${DEPLOY_JOBS_ROOT}/${jobId}/status.state`;
   return `set -euo pipefail
 test -f ${shellQuote(statusFile)}
 sed -n '1,20p' ${shellQuote(statusFile)}`;
