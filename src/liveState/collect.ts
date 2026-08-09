@@ -134,22 +134,24 @@ DECLARED_GITHUB_SHA="$(grep -Eo '[0-9a-f]{40}' SUIVI.md 2>/dev/null | head -1 ||
 if [ -z "$DECLARED_GITHUB_SHA" ]; then DECLARED_GITHUB_SHA="$(grep -E '"githubCommitFull"' PRODUCTION_STATE.json 2>/dev/null | grep -Eo '[0-9a-f]{40}' | head -1 || true)"; fi
 printf 'declared_github_sha=%s\\n' "$DECLARED_GITHUB_SHA"
 DECLARED_S1_SHA="$(grep -E 'S1 HEAD|serverCommitFull' SUIVI.md PRODUCTION_STATE.json 2>/dev/null | grep -Eo '[0-9a-f]{40}' | head -1 || true)"
-printf 'declared_s1_sha=%s\\n' "$DECLARED_S1_SHA"`;
+printf 'declared_s1_sha=%s\\n' "$DECLARED_S1_SHA"
+if grep -q '"serverStateFreshness": "requires_revalidation"' PRODUCTION_STATE.json 2>/dev/null || grep -q '"runtimeStateFreshness": "requires_revalidation"' PRODUCTION_STATE.json 2>/dev/null; then
+  printf 'documentation_requires_revalidation=true\\n'
+else
+  printf 'documentation_requires_revalidation=false\\n'
+fi`;
 }
 
 export function parseDocumentationObservation(
   output: string,
-  observedGithubSha: string | null,
-  observedS1Sha: string | null
+  _observedGithubSha: string | null,
+  _observedS1Sha: string | null
 ): DocumentationLiveObservation {
   const values = parseKeyValueOutput(output);
   const declaredGithubSha = shaOrNull(values.declared_github_sha);
   const declaredS1Sha = shaOrNull(values.declared_s1_sha);
   const activeMatch = values.active_task?.match(/TASK-[0-9]{8}-[0-9]+/);
-  const drift = Boolean(
-    (declaredGithubSha && observedGithubSha && declaredGithubSha !== observedGithubSha) ||
-    (declaredS1Sha && observedS1Sha && declaredS1Sha !== observedS1Sha)
-  );
+  const drift = values.documentation_requires_revalidation === 'true';
 
   return {
     status: 'CURRENT',
