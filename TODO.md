@@ -79,9 +79,11 @@ Mise à jour : 2026-07-09T20:08:09Z
 - [x] Fondation GitRegistry v2 dry-run fusionnée par la PR #27.
 - [x] `main` protégé avec PR et CI obligatoires.
 - [x] Issue de protection #24 clôturée.
-- [ ] Reconnecter `wealthtech_ssh_bridge`.
-- [ ] Attester en lecture seule Git S1, Docker, outils et endpoints.
-- [ ] Produire un verdict Go / Go avec corrections / No-Go.
+- [x] Reconnecter `wealthtech_ssh_bridge`.
+- [x] Attester en lecture seule la branche, le HEAD, le remote, la propreté Git S1 et la santé du conteneur.
+- [x] Confirmer l'alignement du checkout GitHub `main` ↔ S1 sur `4228119…`.
+- [ ] Remplacer l'identité GitHub S1 par une deploy key read-only et neutraliser le push.
+- [ ] Attester le SHA de l'image/runtime après le prochain déploiement.
 - [ ] Préparer une copie propre isolée avant tout build.
 - [ ] Aligner S1 uniquement après verdict Go et procédure de rollback.
 - [ ] Reconstruire l’image depuis un commit fusionné et attesté.

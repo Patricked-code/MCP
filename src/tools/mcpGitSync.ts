@@ -18,7 +18,7 @@ fi
 
 REMOTE_URL="$(git remote get-url origin)"
 case "$REMOTE_URL" in
-  'https://github.com/${MCP_GITHUB_REPOSITORY}.git'|'git@github.com:${MCP_GITHUB_REPOSITORY}.git'|'git@github.com-mcp-patricked-rw:${MCP_GITHUB_REPOSITORY}.git')
+  'git@github.com-mcp-patricked-ro:${MCP_GITHUB_REPOSITORY}.git')
     ;;
   *)
     echo "Synchronisation MCP refusée: remote origin inattendu."
@@ -26,10 +26,16 @@ case "$REMOTE_URL" in
     ;;
 esac
 
+PUSH_URL="$(git remote get-url --push origin)"
+if [ "$PUSH_URL" != 'disabled://mcp-s1-read-only' ]; then
+  echo "Synchronisation MCP refusée: push origin non neutralisé."
+  exit 33
+fi
+
 if [ -n "$(git status --porcelain --untracked-files=all)" ]; then
   echo "Synchronisation MCP refusée: le dépôt contient des modifications ou fichiers non suivis."
   git status -sb
-  exit 33
+  exit 34
 fi
 
 LOCAL_BEFORE="$(git rev-parse HEAD)"
@@ -42,19 +48,19 @@ elif git merge-base --is-ancestor "$LOCAL_BEFORE" "$REMOTE_MAIN"; then
   git -c core.hooksPath=/dev/null merge --ff-only "$REMOTE_MAIN"
 else
   echo "Synchronisation MCP refusée: divergence ou historique local non fast-forward."
-  exit 34
+  exit 35
 fi
 
 LOCAL_AFTER="$(git rev-parse HEAD)"
 if [ "$LOCAL_AFTER" != "$REMOTE_MAIN" ]; then
   echo "Synchronisation MCP échouée: le commit local final ne correspond pas à origin/main."
-  exit 35
+  exit 36
 fi
 
 if [ -n "$(git status --porcelain --untracked-files=all)" ]; then
   echo "Synchronisation MCP échouée: le dépôt n'est plus propre après fast-forward."
   git status -sb
-  exit 36
+  exit 37
 fi
 
 printf 'Synchronisation MCP GitHub vers S1 validée.\n'

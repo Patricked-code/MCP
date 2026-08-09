@@ -4,7 +4,14 @@
     "directMainPush": false,
     "branchRequired": true,
     "pullRequestRequired": true,
-    "secretReadingForbidden": true
+    "secretReadingForbidden": true,
+    "s1GithubPush": false
+  },
+  "s1GithubDeployment": {
+    "repository": "Patricked-code/MCP",
+    "fetchRemote": "git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",
+    "pushRemote": "disabled://mcp-s1-read-only",
+    "requiredGithubPermission": "contents_read_only"
   },
   "allowedBranchPrefixes": [
     "chatgpt/",

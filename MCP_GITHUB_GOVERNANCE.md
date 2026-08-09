@@ -14,6 +14,19 @@ Gouvernance GitHub via MCP.
 ## À vérifier
 Protection de branche, PR ouvertes, droits GitHub, remotes, statut sync serveur/GitHub.
 
+## Identité GitHub du déploiement S1
+
+- S1 utilise une deploy key dédiée au seul dépôt `Patricked-code/MCP`.
+- L'option GitHub « Allow write access » doit rester désactivée.
+- Le remote de fetch attendu est
+  `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`.
+- Le remote de push attendu est la sentinelle locale
+  `disabled://mcp-s1-read-only`.
+- Un nom d'alias ne vaut jamais preuve de permissions : la rotation doit attester
+  un fetch réussi et un push direct `--dry-run` refusé par GitHub.
+- L'ancienne identité `github.com-mcp-patricked-rw` doit être révoquée après
+  inventaire de ses usages et validation de la nouvelle identité.
+
 ---
 
 <!-- MCP-GOVERNANCE-MANUAL-REFERENCE -->

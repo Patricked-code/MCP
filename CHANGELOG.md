@@ -140,3 +140,19 @@ Mise à jour : 2026-07-09T20:08:09Z
 - `PRODUCTION_STATE.json`, `TASKS.md` et `TODO.md` actualisés.
 - Aucun changement S1/S2, aucun build ou restart de production, aucun déploiement et aucune migration du registre actif.
 - Prochaine action unique : attestation S1 read-only après reconnexion du connecteur `wealthtech_ssh_bridge`.
+
+## 2026-08-09 — Durcissement de l'identité GitHub de déploiement S1
+
+- Remplacement dans `mcp_sync_from_github_s1` de l'alias autorisé
+  `github.com-mcp-patricked-rw` par `github.com-mcp-patricked-ro`.
+- Refus de toute synchronisation si `remote.origin.pushurl` n'est pas exactement
+  `disabled://mcp-s1-read-only`.
+- Ajout d'un test comportemental exécutant le préflight Git dans des dépôts
+  temporaires : ancien alias refusé, push actif refusé, configuration read-only
+  acceptée jusqu'au fetch.
+- Ajout d'une procédure de rotation et de rollback sans secret dans
+  `docs/runbooks/S1_GITHUB_READ_ONLY_DEPLOY_IDENTITY.md`.
+- Mise à jour de `SUIVI.md`, `TASKS.md`, `DECISIONS_LOG.md` et des politiques
+  `.mcp`.
+- Production non modifiée dans ce commit ; la rotation S1 reste une opération
+  post-fusion contrôlée.

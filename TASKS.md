@@ -11,8 +11,9 @@ Plan operationnel executable du MCP.
 - TASK-20260805-003 — TERMINÉE : séparation stricte des catalogues READ et WRITE fusionnée par la PR #26.
 - TASK-20260805-004 — TERMINÉE : fondation GitRegistry v2 dry-run fusionnée par la PR #27.
 - TASK-20260805-005 — TERMINÉE : ruleset `protect-main` actif et issue #24 clôturée.
-- TASK-20260805-006 — BLOQUÉE PAR CONNECTEUR : reconnecter `wealthtech_ssh_bridge` et effectuer l’attestation S1 strictement read-only.
+- TASK-20260805-006 — TERMINÉE : connecteur `wealthtech_ssh_bridge` reconnecté ; branche, HEAD, remote, propreté et santé du conteneur attestés.
 - TASK-20260805-007 — EN ATTENTE DU VERDICT : préparer l’alignement GitHub ↔ S1 ↔ Docker dans une copie propre isolée, avec rollback.
+- TASK-20260809-001 — EN COURS : remplacer l'identité GitHub S1 par une deploy key read-only, neutraliser le push et attester le refus d'écriture.
 
 ## Taches futures separees
 - TASK-FUTURE-NODE — PLANIFIEE, NON EXECUTEE : préparer la migration du runtime Node dans une PR dédiée.
@@ -23,30 +24,39 @@ Plan operationnel executable du MCP.
 
 ## Tâche active unique
 
-### TASK-20260805-006 — Attestation S1 read-only
+### TASK-20260809-001 — Identité GitHub S1 read-only
 
-Précondition : connecteur `wealthtech_ssh_bridge` réellement invocable.
+Préconditions :
 
-Contrôles obligatoires :
+- `main`, S1 et `origin/main` alignés sur `4228119…` avant travaux ;
+- checkout S1 propre ;
+- nouvelle branche créée depuis ce SHA ;
+- aucune clé privée exposée ou versionnée.
 
-1. ping MCP ;
-2. `git status` complet avec fichiers non suivis ;
-3. branche, HEAD, remote et `origin/main` ;
-4. image Docker active, ID, digest, date et labels ;
-5. catalogue des outils réellement exposés ;
-6. health checks local et public ;
-7. comparaison avec `main@618f4020ac69801dd53f624e5cd188fc6d76cc24` ;
-8. rapport Go, Go avec corrections ou No-Go.
+Fichiers concernés :
 
-Résultat attendu : preuve suffisante pour décider d’une procédure d’alignement séparée. Cette tâche n’autorise aucun changement serveur.
+- `src/tools/mcpGitSync.ts` ;
+- `tests/mcpGitSync.test.ts` ;
+- documents et politiques de gouvernance associés.
 
-## Actions interdites avant clôture de TASK-20260805-006
+Risques : coupure du fetch si l'alias SSH ou la deploy key sont incorrects ; voie
+d'écriture persistante si l'ancien credential n'est pas révoqué ; faux sentiment
+de sécurité si seul le nom de l'alias est changé.
 
-- pull, reset, clean, checkout, switch, rebase ou stash dans le working tree actif ;
-- build ou restart depuis le dossier actif sale ;
-- remplacement du registre ;
-- modification de remote ;
-- déploiement, migration, quarantaine, purge ou suppression.
+Tests attendus : test ciblé RED/GREEN, suite read-only complète, typecheck, build,
+scan de secrets, contrôle documentaire, CI GitHub, `git fetch` réussi avec la
+nouvelle identité et deux preuves de push refusé.
+
+Résultat attendu : S1 peut récupérer uniquement `Patricked-code/MCP:main`, ne peut
+pas pousser vers GitHub, et le runtime au SHA fusionné reste sain.
+
+## Actions interdites pendant TASK-20260809-001
+
+- push direct sur `main` ;
+- écriture directe de code dans le checkout actif S1 ;
+- stockage de clé privée dans Git ou dans un rapport ;
+- révocation de l'ancienne identité avant validation de la nouvelle ;
+- fusion ou déploiement sans CI, revue et SHA attendu.
 
 ## Regle
 Une tache executable doit indiquer objectif, fichiers concernes, risques, preconditions, tests et resultat attendu.
