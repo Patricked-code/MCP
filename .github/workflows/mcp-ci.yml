@@ -21,6 +21,17 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Prepare canonical document candidates
+        run: node scripts/generate-canonical-docs-candidate.mjs
+
+      - name: Upload canonical document candidates
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-canonical-docs
+          path: /tmp/mcp-canonical-docs
+          if-no-files-found: error
+          retention-days: 1
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
