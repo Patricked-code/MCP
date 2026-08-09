@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved in conversation on 2026-08-09 before implementation. This document materializes the approved design; it does not introduce a second architecture.
+Approved in conversation on 2026-08-09 before implementation, then refined by TDD and PR review. This document materializes the approved design; it does not introduce a second architecture.
 
 ## Goal
 
@@ -67,6 +67,15 @@ Collect at minimum:
 - branch `main`;
 - current remote `main` SHA.
 
+Network requirements:
+
+- HTTPS only;
+- hostname must belong to the configured allowlist;
+- no credentials, query string, or fragment in the configured API base;
+- timeout bounded;
+- redirects refused for the authenticated Live State request;
+- token contents are never returned or logged.
+
 The collector must fail closed: when GitHub cannot be observed, mark that source unavailable/stale rather than preserving an old value as if current.
 
 ## S1 collector
@@ -83,7 +92,7 @@ Collect at minimum:
 - fetch remote;
 - push remote.
 
-No pull, reset, clean, checkout, rebase, stash, build, restart, or write is allowed in the collector.
+No pull, reset, clean, checkout, rebase, stash, build, restart, or write is allowed in the collector. Generated commands must remain compatible with the existing `assertReadOnlyCommand` safety policy.
 
 ## Runtime collector
 
@@ -97,13 +106,21 @@ Collect at minimum:
 - image ID;
 - OCI revision when explicitly available through the safe allowlist.
 
-If the runtime revision cannot be proven, report `UNVERIFIED`. Never infer it from the S1 checkout.
+The parser first accepts a valid SHA from the container revision label and otherwise falls back to the image revision label. Placeholder values such as `<no value>` are never accepted as provenance.
+
+If the runtime revision cannot be proven, report `RUNTIME_UNVERIFIED`. Never infer it from the S1 checkout.
+
+A runtime can only participate in `FULLY_ALIGNED` when its container is `running` and its health state is ready (`healthy` or `none` when no Docker healthcheck exists). `starting` remains `PARTIALLY_ALIGNED`; `unhealthy` degrades the state.
 
 ## Documentation collector
 
 Read only the minimum canonical operational documents needed to identify declared state, especially `SUIVI.md`, `TASKS.md`, `TODO.md`, `DECISIONS_LOG.md`, and `PRODUCTION_STATE.json` when present.
 
-V1 should use deterministic, conservative signals rather than an unrestricted natural-language parser. A disagreement between documented SHA/task status and verified live state becomes `DOCUMENTATION_DRIFT` or `RECONCILIATION_REQUIRED`.
+V1 uses deterministic, conservative signals rather than an unrestricted natural-language parser.
+
+Important anti-recursion rule: SHA values embedded in versioned Markdown/JSON are informative historical/checkpoint data. They MUST NOT be compared directly to the current `main` SHA to decide documentation drift, because merging the documentation itself changes `main` and would create a permanent self-referential drift loop.
+
+`DOCUMENTATION_DRIFT` in V1 is therefore driven by an explicit structured re-attestation signal in canonical production state, such as `serverStateFreshness` or `runtimeStateFreshness` equal to `requires_revalidation`. A later governed closure checkpoint may clear that signal after the corresponding S1/runtime evidence exists.
 
 ## Reconciliation
 
@@ -131,7 +148,8 @@ Core rules:
 - dirty S1 checkout => `RECONCILIATION_REQUIRED`;
 - unavailable mandatory source => `DEGRADED`;
 - stale state older than 60 seconds => `STALE`;
-- declared documentation conflicting with verified state => `DOCUMENTATION_DRIFT`.
+- explicit canonical re-attestation signal => `DOCUMENTATION_DRIFT` / `RECONCILIATION_REQUIRED`;
+- runtime `starting` => `PARTIALLY_ALIGNED` until health becomes ready.
 
 ## Refresh lifecycle
 
@@ -159,14 +177,9 @@ Both tools must be registered through the existing read-only registration path a
 
 ## Project context integration
 
-Extend `get_project_context` without removing existing fields. Add a compact Live State summary or pointer containing at least:
+Preferred target: extend `get_project_context` without removing existing fields and add a compact Live State summary or pointer containing availability, state version, freshness, global alignment, active task and next action.
 
-- availability;
-- state version;
-- freshness;
-- global alignment;
-- active task signal if available;
-- next action.
+Current V1 delivery limitation: the GitHub mutation wrapper refused replacement of `src/tools/readOnly.ts` because that historical file contains many shell-command strings. The implementation therefore registers both Live State tools through an already-called read-only registration module and keeps the compact summary helper ready for a later authorized refactor. No opaque bypass is allowed.
 
 ## HTTP surface
 
@@ -180,15 +193,19 @@ Tests must cover at least:
 2. GitHub != S1 => deployment pending/drift;
 3. runtime revision absent => runtime unverified;
 4. runtime revision differs => runtime deployment pending;
-5. documentation mismatch => documentation drift;
-6. unavailable source => degraded, never fully aligned;
-7. stale state calculation;
-8. state version changes only for meaningful state changes;
-9. atomic state persistence and JSON validity;
-10. the two MCP tools are registered as read-only;
-11. collector failure does not crash reconciliation;
-12. no secret-bearing Docker surfaces are added;
-13. existing safety/typecheck/build/docs/secrets tests continue to pass.
+5. explicit documentation revalidation signal => documentation drift;
+6. historical documentation SHA mismatch alone does not cause self-referential drift;
+7. unavailable source => degraded, never fully aligned;
+8. stale state calculation;
+9. state version changes only for meaningful state changes;
+10. atomic state persistence and JSON validity;
+11. the two MCP tools are registered as read-only;
+12. collector failure does not crash reconciliation;
+13. no secret-bearing Docker surfaces are added;
+14. GitHub API destination is allowlisted and HTTPS-only;
+15. runtime image-label provenance fallback works;
+16. runtime health `starting` cannot produce `FULLY_ALIGNED`;
+17. existing safety/typecheck/build/docs/secrets tests continue to pass.
 
 ## Deployment flow
 
@@ -197,6 +214,8 @@ After CI and review:
 `GitHub branch -> PR -> merge main -> mcp_sync_from_github_s1 -> verify GitHub main = S1 HEAD -> typecheck/build -> docker compose up -d --build -> health -> runtime attestation -> Live State verification`.
 
 S1 synchronization must use the existing governed fast-forward-only tool. No direct source edit on S1 and no S1 push to GitHub.
+
+A versioned closure checkpoint may require a final documentation-only PR followed by its normal governed deployment if strict `GitHub = S1 = runtime` equality is required after clearing the structured re-attestation marker. This is intentional and avoids falsely treating stale documentation as live truth.
 
 ## V1 exclusions
 
@@ -215,7 +234,7 @@ These belong to V1.5/V2 after the read-only state engine proves reliable.
 
 ## Failure semantics
 
-The engine must prefer explicit uncertainty over false certainty. `FULLY_ALIGNED` is only legal when all required comparable states are current and GitHub, S1, and runtime revision are proven equal and there is no blocking documentation/working-tree drift.
+The engine must prefer explicit uncertainty over false certainty. `FULLY_ALIGNED` is only legal when all required comparable states are current, GitHub/S1/runtime revision are proven equal, runtime health is ready, and there is no blocking documentation/working-tree drift.
 
 ## Rollback
 
