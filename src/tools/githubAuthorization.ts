@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { buildGithubPrAuthorizationSummary } from '../github/authorizationDiagnostics.js';
 import { asText } from './format.js';
+import { registerLiveStateReadOnlyTools } from './liveState.js';
 
 const OwnerSchema = z.string().min(1).max(120).regex(/^[A-Za-z0-9_.-]+$/);
 const RepoSchema = z.string().min(1).max(120).regex(/^[A-Za-z0-9_.-]+$/);
@@ -21,4 +22,6 @@ export function registerGithubAuthorizationReadOnlyTools(server: McpServer): voi
       pullRequestNumber: pullRequestNumber ?? null
     }))
   );
+
+  registerLiveStateReadOnlyTools(server);
 }
