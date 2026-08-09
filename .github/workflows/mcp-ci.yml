@@ -44,11 +44,15 @@ jobs:
 
       - name: Markdown baseline candidate
         shell: bash
-        run: |
-          node scripts/generate-doc-governance-baseline.mjs > /tmp/mcp-markdown-baseline.json
-          printf 'MCP_MARKDOWN_BASELINE_B64='
-          base64 -w0 /tmp/mcp-markdown-baseline.json
-          printf '\n'
+        run: node scripts/generate-doc-governance-baseline.mjs > /tmp/mcp-markdown-baseline.json
+
+      - name: Upload Markdown baseline candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-markdown-baseline
+          path: /tmp/mcp-markdown-baseline.json
+          if-no-files-found: error
+          retention-days: 1
 
       - name: Secret scan
         run: npm run lint:secrets --if-present
