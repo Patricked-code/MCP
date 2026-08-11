@@ -98,9 +98,28 @@ async function runCommand(serverId: ServerId, command: string, options: GuardedC
   });
 }
 
-export async function runReadOnlyCommand(serverId: ServerId, command: string): Promise<CommandResult> {
+function boundedReadTimeout(value: number): number {
+  if (!Number.isFinite(value)) return 30_000;
+  return Math.min(120_000, Math.max(1_000, Math.trunc(value)));
+}
+
+function boundedReadOutput(value: number): number {
+  if (!Number.isFinite(value)) return 200_000;
+  return Math.min(200_000, Math.max(1_024, Math.trunc(value)));
+}
+
+export async function runReadOnlyCommand(
+  serverId: ServerId,
+  command: string,
+  timeoutMs = 30_000,
+  maxOutputBytes = 200_000
+): Promise<CommandResult> {
   assertReadOnlyCommand(command);
-  return runCommand(serverId, command, { intent: 'read_only', timeoutMs: 30_000, maxOutputBytes: 200_000 });
+  return runCommand(serverId, command, {
+    intent: 'read_only',
+    timeoutMs: boundedReadTimeout(timeoutMs),
+    maxOutputBytes: boundedReadOutput(maxOutputBytes)
+  });
 }
 
 export async function runGuardedCommand(serverId: ServerId, command: string, options: GuardedCommandOptions = {}): Promise<CommandResult> {

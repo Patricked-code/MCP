@@ -1,5 +1,6 @@
 services:
   wealthtech-mcp-ssh-bridge:
+    image: ${MCP_IMAGE_REF:-wealthtech-mcp-ssh-bridge:local}
     build:
       context: .
       args:

@@ -1,0 +1,117 @@
+name: MCP Governed Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout governed policy
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve deployment gate
+        id: gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            enabled=true
+          else
+            enabled="$(node -e "const p=require('./.mcp/autodeploy-policy.json'); if (p.schemaVersion !== 1 || typeof p.pushEnabled !== 'boolean') process.exit(2); process.stdout.write(p.pushEnabled ? 'true' : 'false');")"
+          fi
+          printf 'enabled=%s\n' "$enabled" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy exact main SHA through MCP
+        if: steps.gate.outputs.enabled == 'true'
+        shell: bash
+        env:
+          MCP_BASE_URL: https://mcp.wealthtechinnovations.com
+          MCP_OIDC_AUDIENCE: https://mcp.wealthtechinnovations.com/deploy/github/s1
+        run: |
+          set -euo pipefail
+
+          get_oidc() {
+            if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] || [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
+              printf '%s\n' 'GitHub OIDC request context unavailable.' >&2
+              return 1
+            fi
+
+            local separator='?'
+            case "$ACTIONS_ID_TOKEN_REQUEST_URL" in
+              *\?*) separator='&' ;;
+            esac
+
+            local response
+            response="$(curl --fail --silent --show-error --max-time 10 \
+              --header "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+              "${ACTIONS_ID_TOKEN_REQUEST_URL}${separator}audience=https%3A%2F%2Fmcp.wealthtechinnovations.com%2Fdeploy%2Fgithub%2Fs1")"
+
+            printf '%s' "$response" | node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw,'utf8') > 32768) process.exit(1); let body; try { body=JSON.parse(raw); } catch { process.exit(1); } if (!body || typeof body.value !== 'string' || body.value.length < 32 || body.value.length > 16384) process.exit(1); process.stdout.write(body.value);"
+          }
+
+          validate_start() {
+            GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw,'utf8') > 16384) process.exit(1); let body; try { body=JSON.parse(raw); } catch { process.exit(1); } const sha=process.env.GITHUB_SHA; const expected='mcp-s1-'+process.env.GITHUB_RUN_ID+'-'+sha.slice(0, 12); if (!body || body.jobId !== expected || body.requestedSha !== sha || body.status !== 'queued') process.exit(1); process.stdout.write(body.jobId);"
+          }
+
+          validate_status() {
+            GITHUB_SHA="$GITHUB_SHA" JOB_ID="$JOB_ID" node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw,'utf8') > 16384) process.exit(1); let body; try { body=JSON.parse(raw); } catch { process.exit(1); } const sha=process.env.GITHUB_SHA; const job=process.env.JOB_ID; if (!body || body.jobId !== job || body.requestedSha !== sha) process.exit(1); if (body.status === 'succeeded') { if (body.phase !== 'attested' || body.runtimeRevision !== sha || body.rollbackStatus !== 'not_needed' || body.healthOk !== true || body.oauthOk !== true || body.mcpAuthOk !== true) process.exit(1); process.stdout.write('succeeded'); } else if (body.status === 'failed') { process.stdout.write('failed'); } else if (body.status === 'queued' || body.status === 'running') { process.stdout.write(body.status); } else { process.exit(1); }"
+          }
+
+          OIDC_TOKEN="$(get_oidc)"
+          printf '::add-mask::%s\n' "$OIDC_TOKEN"
+          START_RESPONSE="$(curl --fail --silent --show-error --max-time 10 \
+            --request POST \
+            --header "Authorization: Bearer ${OIDC_TOKEN}" \
+            --header 'Content-Type: application/json' \
+            --data "{\"sha\":\"${GITHUB_SHA}\"}" \
+            "${MCP_BASE_URL}/deploy/github/s1/start")"
+          JOB_ID="$(printf '%s' "$START_RESPONSE" | validate_start)"
+          printf 'Deployment job accepted: %s for %s\n' "$JOB_ID" "$GITHUB_SHA"
+          unset OIDC_TOKEN START_RESPONSE
+
+          for attempt in $(seq 1 60); do
+            OIDC_TOKEN="$(get_oidc)"
+            printf '::add-mask::%s\n' "$OIDC_TOKEN"
+            STATUS_RESPONSE=''
+            if ! STATUS_RESPONSE="$(curl --fail --silent --show-error --max-time 10 \
+              --header "Authorization: Bearer ${OIDC_TOKEN}" \
+              "${MCP_BASE_URL}/deploy/github/s1/status/${JOB_ID}?sha=${GITHUB_SHA}")"; then
+              unset OIDC_TOKEN STATUS_RESPONSE
+              sleep 10
+              continue
+            fi
+            unset OIDC_TOKEN
+
+            STATE="$(printf '%s' "$STATUS_RESPONSE" | validate_status)"
+            unset STATUS_RESPONSE
+            case "$STATE" in
+              succeeded)
+                printf 'Deployment attested for exact SHA %s.\n' "$GITHUB_SHA"
+                exit 0
+                ;;
+              failed)
+                printf 'Governed deployment failed for %s.\n' "$GITHUB_SHA" >&2
+                exit 1
+                ;;
+              queued|running)
+                sleep 10
+                ;;
+              *)
+                exit 1
+                ;;
+            esac
+          done
+
+          printf 'Deployment status polling timed out for %s.\n' "$GITHUB_SHA" >&2
+          exit 1

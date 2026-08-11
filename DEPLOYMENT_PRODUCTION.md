@@ -1,5 +1,19 @@
 # DEPLOYMENT_PRODUCTION.md
 
+## État canonique structurel
+
+```canonical-state
+{
+  "repository": "Patricked-code/MCP",
+  "branch": "main",
+  "s1Root": "/opt/apps/wealthtech-mcp-ssh-bridge",
+  "fetchRemote": "git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",
+  "pushRemote": "disabled://mcp-s1-read-only",
+  "container": "wealthtech_mcp_ssh_bridge"
+}
+```
+
+
 ## Rôle
 Procédure de production MCP.
 
