@@ -171,3 +171,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Limitation connue : injection directe du résumé dans `get_project_context` différée parce que la mutation de `src/tools/readOnly.ts` a été bloquée par le filtre de sécurité du wrapper ; les deux outils Live State sont néanmoins enregistrés dans le chemin read-only global.
 - Aucun déploiement S1/Docker n'est déclaré à ce stade : le connecteur S1 doit être réinvocable et le préflight doit être refait après merge.
 - Rollback : précédent commit/image MCP connu bon, sans réécriture d'historique ; le state file runtime peut rester inutilisé.
+
+## 2026-08-12 — Reprise post-fusion et cohérence de l'état de production
+
+- PR #39 confirmée fusionnée au commit `989dcefd90b8820f27af70f2ce18dc4a7685f6e1`.
+- CI post-fusion `MCP CI #295` réussie ; workflow de déploiement push correctement gated avec étape réelle `skipped` sous `pushEnabled=false`.
+- Préflight S1 strictement read-only : `main@d3bcac0…`, arbre propre, diff vide, fetch read-only, push désactivé, conteneur healthy.
+- Écart confirmé : GitHub contient les PR #38/#39, S1 reste au commit de la PR #37 ; révision OCI non attestée.
+- Blocage confirmé : `mcp_sync_from_github_s1` existe dans le code S1 mais n'est pas callable depuis le catalogue ChatGPT courant.
+- Ajout d'une validation sémantique de `PRODUCTION_STATE.json` à `docs:check`, avec tests RED/GREEN sur les contradictions GitHub/S1/runtime et les snapshots antérieurs à la PR #39.
+- Aucun sync, build, restart, patch S1, `workflow_dispatch` ou activation automatique exécuté.

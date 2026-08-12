@@ -165,3 +165,11 @@ Limites V1 : pas de PostgreSQL, Redis, GitHub App/webhook, locks de tâches, hea
 Décision de non-duplication : réutiliser le volume `/app/data`, l'SSH read-only, l'attestation Docker et le chemin d'enregistrement MCP existants. Ne pas créer de système systemd parallèle de mémoire vive.
 
 Limitation d'intégration connue : l'injection directe du résumé Live State dans `get_project_context` reste différée car le wrapper de mutation GitHub a bloqué la réécriture de `src/tools/readOnly.ts`, fichier contenant de nombreuses commandes shell historiques. Le moteur et les deux outils Live State sont néanmoins enregistrés dans le chemin read-only existant ; aucun contournement opaque de ce garde-fou n'est autorisé.
+
+## 2026-08-12 — Blocage de bootstrap par catalogue et validation de l'état machine
+
+Contexte : la PR #39 est fusionnée et ses workflows post-fusion sont réussis, mais S1 reste au commit `d3bcac0…`. L'outil `mcp_sync_from_github_s1` est présent dans `src/tools/selfManagement.ts` et dans la politique de registration S1, tandis que le catalogue ChatGPT courant ne le publie pas.
+
+Décision : ne pas contourner cette rupture par `patch_mcp_code_file_s1`, shell libre, modification directe S1 ou détournement d'un hook de build. Le bootstrap reste bloqué jusqu'à exposition réelle de l'outil gouverné. Après rafraîchissement du catalogue, reprendre au préflight complet avant toute mutation.
+
+Décision complémentaire : `docs:check` valide désormais la cohérence de `PRODUCTION_STATE.json` avec l'état canonique et refuse notamment un jalon PR #39 absent, un catalogue non qualifié, un alignement attesté malgré des SHA GitHub/S1 différents ou un runtime `FULLY_ALIGNED` sans révision OCI égale.

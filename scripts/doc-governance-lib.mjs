@@ -136,5 +136,148 @@ export function validateRequiredCanonicalStates(requiredPaths, documents) {
   };
 }
 
+export function validateProductionState(state, canonicalState) {
+  const issues = [];
+  const structuralMappings = [
+    ['repository', 'repository'],
+    ['serverPath', 's1Root'],
+    ['branch', 'branch'],
+    ['container', 'container']
+  ];
+
+  for (const [stateKey, canonicalKey] of structuralMappings) {
+    const expected = canonicalState?.[canonicalKey] ?? null;
+    const actual = state?.[stateKey] ?? null;
+    if (actual !== expected) {
+      issues.push({
+        path: stateKey,
+        expected,
+        actual,
+        reason: 'canonical_structure_mismatch'
+      });
+    }
+  }
+
+  const githubSha = state?.githubState?.currentMainCommit ?? state?.githubCommitFull ?? null;
+  const mergeSha = state?.githubState?.governedAutodeployV1MergeCommit ?? null;
+  const s1Sha = state?.serverGitState?.lastDirectlyVerifiedCommitFull ?? null;
+  const runtimeSha = state?.runtimeState?.currentRuntimeRevision ?? null;
+  const autodeployStates = new Set([
+    'merged_not_deployed',
+    'bootstrap_succeeded_manual_validation_pending',
+    'manual_validation_succeeded',
+    'automatic_enabled_attestation_pending',
+    'fully_attested'
+  ]);
+  const bootstrapStates = new Set([
+    'blocked_connector_catalog',
+    'pending_sync',
+    'bootstrapped_manual_validation_pending',
+    'manual_validation_succeeded',
+    'automatic_enabled_attestation_pending',
+    'fully_attested'
+  ]);
+
+  if (state?.githubState?.pullRequest39Merged !== true) {
+    issues.push({
+      path: 'githubState.pullRequest39Merged',
+      expected: true,
+      actual: state?.githubState?.pullRequest39Merged ?? null,
+      reason: 'governed_autodeploy_merge_unrecorded'
+    });
+  }
+
+  if (typeof mergeSha !== 'string' || !/^[a-f0-9]{40}$/.test(mergeSha)) {
+    issues.push({
+      path: 'githubState.governedAutodeployV1MergeCommit',
+      expected: '40_char_lowercase_sha',
+      actual: mergeSha,
+      reason: 'merged_pr_without_merge_sha'
+    });
+  }
+
+  if (typeof state?.serverGitState?.connectorSyncToolCallable !== 'boolean') {
+    issues.push({
+      path: 'serverGitState.connectorSyncToolCallable',
+      expected: 'boolean',
+      actual: state?.serverGitState?.connectorSyncToolCallable ?? null,
+      reason: 'connector_catalog_state_missing'
+    });
+  }
+
+  if (!autodeployStates.has(state?.deploymentState?.governedAutodeployV1)) {
+    issues.push({
+      path: 'deploymentState.governedAutodeployV1',
+      expected: 'governed_autodeploy_state',
+      actual: state?.deploymentState?.governedAutodeployV1 ?? null,
+      reason: 'governed_autodeploy_state_missing'
+    });
+  }
+
+  if (!bootstrapStates.has(state?.deploymentState?.bootstrapStatus)) {
+    issues.push({
+      path: 'deploymentState.bootstrapStatus',
+      expected: 'governed_bootstrap_state',
+      actual: state?.deploymentState?.bootstrapStatus ?? null,
+      reason: 'governed_bootstrap_state_missing'
+    });
+  }
+
+  if (state?.githubState?.pullRequest39Merged === true) {
+    if (String(state?.deploymentState?.governedAutodeployV1 ?? '').includes('not_merged')) {
+      issues.push({
+        path: 'deploymentState.governedAutodeployV1',
+        expected: 'merged_state',
+        actual: state.deploymentState.governedAutodeployV1,
+        reason: 'merged_pr_marked_not_merged'
+      });
+    }
+  }
+
+  if (
+    state?.serverGitState?.connectorSyncToolCallable === false
+    && state?.deploymentState?.bootstrapStatus !== 'blocked_connector_catalog'
+  ) {
+    issues.push({
+      path: 'deploymentState.bootstrapStatus',
+      expected: 'blocked_connector_catalog',
+      actual: state?.deploymentState?.bootstrapStatus ?? null,
+      reason: 'sync_tool_not_callable'
+    });
+  }
+
+  if (
+    typeof githubSha === 'string'
+    && typeof s1Sha === 'string'
+    && githubSha !== s1Sha
+    && state?.serverGitState?.currentAlignmentAttested === true
+  ) {
+    issues.push({
+      path: 'serverGitState.currentAlignmentAttested',
+      expected: false,
+      actual: true,
+      reason: 'github_s1_sha_mismatch'
+    });
+  }
+
+  if (
+    state?.runtimeState?.status === 'FULLY_ALIGNED'
+    && (
+      typeof runtimeSha !== 'string'
+      || runtimeSha !== githubSha
+      || runtimeSha !== s1Sha
+    )
+  ) {
+    issues.push({
+      path: 'runtimeState.status',
+      expected: 'not_fully_aligned',
+      actual: state.runtimeState.status,
+      reason: 'runtime_revision_not_attested'
+    });
+  }
+
+  return { ok: issues.length === 0, issues };
+}
+
 export const canonicalStateKeys = Object.freeze([...CANONICAL_KEYS]);
 export const canonicalRootDocuments = Object.freeze([...CANONICAL_ROOT_DOCUMENTS]);
