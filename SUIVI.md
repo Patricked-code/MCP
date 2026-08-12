@@ -21,8 +21,9 @@ Date : 2026-08-12
 - branche canonique : `main` ;
 - PR #38 Live State V1 fusionnée au commit `cd80665837c1bbf692728d9fbb2c614bb1cb7734` ;
 - PR #39 Governed Autodeploy V1 fusionnée au commit `989dcefd90b8820f27af70f2ce18dc4a7685f6e1` ;
-- `main` vérifié le 2026-08-12 : identique à `989dcefd90b8820f27af70f2ce18dc4a7685f6e1`, aucun commit plus récent ;
-- branche de reprise documentaire : `mcp/autodeploy-bootstrap-attestation-20260811` ;
+- PR #40 de qualification du blocage S1 fusionnée au commit `f87bf471d2d62b9586113cd6a91fb411f03cba41` ;
+- `main` vérifié le 2026-08-12 : identique à `f87bf471d2d62b9586113cd6a91fb411f03cba41` avant la correction du redémarrage ;
+- branche de correction : `mcp/fix-restart-force-recreate-20260812` ;
 - aucune écriture directe sur `main` ;
 - aucune preuve S1/runtime courante n'est inventée lorsque le connecteur privé n'est pas invocable.
 
@@ -54,13 +55,16 @@ Objectif : terminer la chaîne gouvernée GitHub → S1 → Docker avec inventai
 - Docker : `wealthtech_mcp_ssh_bridge` actif et healthy ; révision OCI courante non attestée ;
 - `mcp_sync_from_github_s1` est présent et enregistré dans le code S1, mais absent du catalogue callable de la session ;
 - les routes `/deploy/github/s1/*` de la PR #39 ne sont pas présentes dans le checkout S1 `d3bcac0…` ;
-- aucune synchronisation, aucun build et aucun redémarrage n'ont été exécutés pendant ce préflight ;
+- typecheck et build S1 exécutés le 2026-08-12 : succès, 0 vulnérabilité npm signalée ;
+- le premier appel `restart_mcp_bridge_s1` n'a pas recréé le conteneur car Compose a réutilisé l'image et l'uptime est resté à trois jours ;
+- un bootstrap contrôlé et réversible a forcé une reconstruction réelle, puis restauré le `Dockerfile` original ; le conteneur est reparti à zéro et reste healthy, tandis que Git S1 est revenu propre avec diff vide ;
+- le catalogue de la conversation courante est resté mis en cache après ce redémarrage réel ; `mcp_sync_from_github_s1` n'est donc toujours pas callable dans cette session ;
 - GitHub et S1 ne sont pas alignés ; aucun déploiement automatique n'est déclaré comme réalisé ;
 - `FULLY_ALIGNED` reste interdit sans preuve live.
 
 ## Prochaine action unique
 
-Rafraîchir ou reconnecter le catalogue du connecteur `wealthtech_ssh_bridge` jusqu'à ce que `mcp_sync_from_github_s1` soit réellement callable. Ensuite seulement : répéter le préflight, synchroniser en fast-forward vers le SHA `main` exact, typecheck/build/rebuild-restart, attester health/OAuth/OCI, lancer `workflow_dispatch`, puis activer `pushEnabled=true` par une PR séparée après preuve réussie.
+Fusionner après CI la correction qui impose `--force-recreate` et rend l'échec de `/health` bloquant, puis rafraîchir ou reconnecter le catalogue du connecteur `wealthtech_ssh_bridge` jusqu'à ce que `mcp_sync_from_github_s1` soit réellement callable. Ensuite seulement : répéter le préflight, synchroniser en fast-forward vers le SHA `main` exact, typecheck/build/rebuild-restart, attester health/OAuth/OCI, lancer `workflow_dispatch`, puis activer `pushEnabled=true` par une PR séparée après preuve réussie.
 
 ## Critère de clôture
 

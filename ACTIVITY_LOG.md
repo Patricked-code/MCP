@@ -54,3 +54,14 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Catalogue : `mcp_sync_from_github_s1` présent dans le code S1 mais absent des outils callables ChatGPT.
 - Action : aucune mutation S1 ; ajout local par TDD du contrôle sémantique de `PRODUCTION_STATE.json` et mise à jour du point de reprise.
 - Prochaine action : publier la correction documentaire, rafraîchir le catalogue, répéter le préflight, puis seulement exécuter le bootstrap gouverné.
+
+## 2026-08-12T15:35:31Z — TASK-20260809-003 — Recréation réelle du runtime et correction du faux redémarrage
+
+- GitHub : `main@f87bf471d2d62b9586113cd6a91fb411f03cba41` vérifié avant la correction.
+- S1 avant action : `main@d3bcac0…`, branche et remotes conformes, arbre propre, diff vide, conteneur healthy depuis trois jours.
+- Validation : `mcp_typecheck_s1` et `mcp_build_s1` réussis avec Node 20 ; npm a signalé 0 vulnérabilité.
+- Observation : `restart_mcp_bridge_s1` a reconstruit l'image mais n'a pas recréé le conteneur ; uptime inchangé à trois jours.
+- Bootstrap réversible : ajout temporaire d'un label Docker public-safe par l'outil borné, reconstruction effective, puis restauration exacte du `Dockerfile`. Après action : conteneur redémarré et healthy, Git S1 propre, diff vide.
+- Catalogue : la session ChatGPT conserve encore son ancien catalogue ; `mcp_sync_from_github_s1` reste non callable dans cette session malgré sa présence dans le code S1.
+- Correction TDD : test RED reproduisant l'absence de `--force-recreate`, puis commande corrigée et santé fail-closed ; validation complète 118/118 et contrôles CI locaux réussis.
+- Aucune synchronisation Git, aucun push S1, aucun secret, aucune suppression et aucune activation de `pushEnabled`.
