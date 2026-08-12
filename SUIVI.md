@@ -13,14 +13,16 @@
 }
 ```
 
-Date : 2026-08-09
+Date : 2026-08-12
 
 ## Source de vérité GitHub
 
 - dépôt actif : `Patricked-code/MCP` ;
 - branche canonique : `main` ;
-- base du chantier : `main@cd80665837c1bbf692728d9fbb2c614bb1cb7734`, merge de la PR #38 Live State V1 ;
-- branche de travail : `mcp/governed-autodeploy-v1-20260809` ;
+- PR #38 Live State V1 fusionnée au commit `cd80665837c1bbf692728d9fbb2c614bb1cb7734` ;
+- PR #39 Governed Autodeploy V1 fusionnée au commit `989dcefd90b8820f27af70f2ce18dc4a7685f6e1` ;
+- `main` vérifié le 2026-08-12 : identique à `989dcefd90b8820f27af70f2ce18dc4a7685f6e1`, aucun commit plus récent ;
+- branche de reprise documentaire : `mcp/autodeploy-bootstrap-attestation-20260811` ;
 - aucune écriture directe sur `main` ;
 - aucune preuve S1/runtime courante n'est inventée lorsque le connecteur privé n'est pas invocable.
 
@@ -30,36 +32,35 @@ Date : 2026-08-09
 
 Objectif : terminer la chaîne gouvernée GitHub → S1 → Docker avec inventaire documentaire exact, cohérence sémantique CI, authentification GitHub OIDC, déploiement exact-SHA, rollback runtime et attestation.
 
-## État vérifié sur la branche
+## État vérifié GitHub et local
 
 - inventaire Git Markdown : **189 chemins exacts**, classifiés et verrouillés dans `docs/governance/markdown-inventory.json` ;
 - audit historique S1 conservé : 209 Markdown observés à cette date = 183 Git à l'époque + 26 runtime-only ; cette valeur historique n'est pas utilisée comme constante du Git courant ;
-- `docs:check` contrôle inventaire exact + cinq autorités `canonical-state` ;
+- `docs:check` contrôle inventaire exact, cinq autorités `canonical-state` et cohérence interne de `PRODUCTION_STATE.json` ;
 - GitHub OIDC : politique fixe dépôt/IDs/ref/workflow/événement/SHA, RS256/JWKS GitHub, bornes fail-closed ;
 - orchestrateur S1 : `flock`, remotes read-only, fetch exact, fast-forward only, image candidate, health/OAuth/MCP, attestation et rollback runtime ;
 - routes HTTP : OIDC-only, séparées des sessions web et du bearer MCP ordinaire ;
 - workflow `.github/workflows/mcp-deploy.yml` : permissions `contents: read` + `id-token: write`, exact `GITHUB_SHA`, tokens OIDC frais et polling borné ;
 - politique bootstrap : `.mcp/autodeploy-policy.json` avec `pushEnabled=false` tant que le premier bootstrap S1 n'est pas attesté ;
-- CI complète de branche validée jusqu'au workflow, y compris contrôle de syntaxe shell `bash -n`.
+- CI post-fusion `MCP CI #295`, run `31480688497` : succès complet ;
+- workflow post-fusion `MCP Governed Deploy #1`, run `31480688510` : succès du gate et étape de déploiement `skipped`, conformément à `pushEnabled=false` ;
+- worktree de reprise propre, sans commit local devant ou derrière le `main` observé avant la présente correction documentaire.
 
 ## État S1 / Docker
 
-- état courant S1 : **requires_revalidation** ;
-- état courant Docker : **requires_revalidation** ;
-- le connecteur privé S1 n'est pas invocable dans cette session ;
-- aucun déploiement automatique n'est donc déclaré comme réalisé ;
+- préflight read-only du 2026-08-12 : S1 sur `main@d3bcac0…`, working tree propre et diff vide ;
+- remote fetch : `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git` ;
+- remote push : `disabled://mcp-s1-read-only` ;
+- Docker : `wealthtech_mcp_ssh_bridge` actif et healthy ; révision OCI courante non attestée ;
+- `mcp_sync_from_github_s1` est présent et enregistré dans le code S1, mais absent du catalogue callable de la session ;
+- les routes `/deploy/github/s1/*` de la PR #39 ne sont pas présentes dans le checkout S1 `d3bcac0…` ;
+- aucune synchronisation, aucun build et aucun redémarrage n'ont été exécutés pendant ce préflight ;
+- GitHub et S1 ne sont pas alignés ; aucun déploiement automatique n'est déclaré comme réalisé ;
 - `FULLY_ALIGNED` reste interdit sans preuve live.
 
 ## Prochaine action unique
 
-1. auditer le diff complet et les garde-fous ;
-2. ouvrir une PR Draft unique vers `main` ;
-3. exiger CI verte sur le head exact et absence de revue bloquante ;
-4. fusionner uniquement le head vérifié ;
-5. vérifier CI post-merge et constater que le workflow push est gated/skipped tant que `pushEnabled=false` ;
-6. lorsque S1 redevient invocable : préflight live, sync fast-forward gouvernée, build/restart bootstrap de l'endpoint OIDC, health/OAuth/OCI ;
-7. lancer `workflow_dispatch` sur le SHA exact et obtenir une attestation réussie ;
-8. seulement après cette preuve, passer `pushEnabled=true` par PR et valider un merge inoffensif déclenchant automatiquement GitHub → S1 → Docker.
+Rafraîchir ou reconnecter le catalogue du connecteur `wealthtech_ssh_bridge` jusqu'à ce que `mcp_sync_from_github_s1` soit réellement callable. Ensuite seulement : répéter le préflight, synchroniser en fast-forward vers le SHA `main` exact, typecheck/build/rebuild-restart, attester health/OAuth/OCI, lancer `workflow_dispatch`, puis activer `pushEnabled=true` par une PR séparée après preuve réussie.
 
 ## Critère de clôture
 

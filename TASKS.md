@@ -23,6 +23,7 @@ Plan opérationnel exécutable du MCP. L'historique détaillé est conservé dan
 - PR #36 : correction finale `@hono/node-server` — fusionnée.
 - PR #37 : identité GitHub S1 read-only imposée — fusionnée.
 - PR #38 : MCP Live State Engine V1 — fusionnée dans `main@cd80665837c1bbf692728d9fbb2c614bb1cb7734`.
+- PR #39 : MCP Governed Autodeploy V1 — fusionnée dans `main@989dcefd90b8820f27af70f2ce18dc4a7685f6e1` ; CI post-fusion réussie et déploiement push correctement bloqué par `pushEnabled=false`.
 - `TASK-20260809-002` : partie GitHub Live State terminée ; déploiement/runtime restent à réattester sur S1.
 
 ## Tâche active unique
@@ -46,15 +47,17 @@ Objectif : rendre le processus GitHub → S1 → Docker automatique, reproductib
 - [x] workflow GitHub Actions exact-SHA à permissions minimales ;
 - [x] politique bootstrap versionnée `pushEnabled=false` ;
 - [x] contrôle `bash -n` du shell réel du workflow ;
+- [x] validation sémantique de `PRODUCTION_STATE.json` intégrée à `docs:check` ;
 - [x] suites typecheck/build/docs/gouvernance/secrets/safety/diff-check vertes sur les blocs implémentés.
 
 ### Reste à exécuter
 
-- [ ] audit final du diff branche → `main` ;
-- [ ] PR Draft unique, CI de PR verte, revue et fusion sur head exact ;
-- [ ] CI post-merge ;
-- [ ] constater le workflow push gated/skipped avec `pushEnabled=false` ;
-- [ ] réattester S1 : branche, HEAD, status, diff, fetch remote, push remote, Docker ;
+- [x] audit final du diff branche → `main` ;
+- [x] PR Draft unique, CI de PR verte, revue et fusion sur head exact ;
+- [x] CI post-merge ;
+- [x] constater le workflow push gated/skipped avec `pushEnabled=false` ;
+- [x] réattester S1 : branche, HEAD, status, diff, fetch remote, push remote, Docker ;
+- [ ] rafraîchir l'exposition du connecteur jusqu'à rendre `mcp_sync_from_github_s1` callable ;
 - [ ] bootstrap unique via les outils MCP gouvernés existants : sync fast-forward, typecheck/build, rebuild/restart ;
 - [ ] attester health/OAuth/OCI ;
 - [ ] lancer `workflow_dispatch` sur le SHA exact et obtenir `succeeded/attested` ;

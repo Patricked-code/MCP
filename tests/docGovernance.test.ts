@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
+import * as docGovernance from '../scripts/doc-governance-lib.mjs';
 import {
   classifyMarkdownPath,
   compareMarkdownInventory,
@@ -130,4 +131,106 @@ test('les cinq autorités présentes et cohérentes sont valides', () => {
   assert.deepEqual(result.missing, []);
   assert.deepEqual(result.withoutState, []);
   assert.deepEqual(result.conflicts, []);
+});
+
+test('PRODUCTION_STATE refuse un alignement attesté quand GitHub et S1 divergent', () => {
+  assert.equal(typeof docGovernance.validateProductionState, 'function');
+
+  const state = {
+    project: 'wealthtech-mcp-ssh-bridge',
+    repository: canonical.repository,
+    serverPath: canonical.s1Root,
+    branch: canonical.branch,
+    container: canonical.container,
+    githubObservedAt: '2026-08-12T10:24:44Z',
+    githubCommitFull: '989dcefd90b8820f27af70f2ce18dc4a7685f6e1',
+    serverStateFreshness: 'current_read_only_preflight',
+    runtimeStateFreshness: 'current_health_revision_unverified',
+    githubState: {
+      currentMainCommit: '989dcefd90b8820f27af70f2ce18dc4a7685f6e1',
+      pullRequest39Merged: true,
+      governedAutodeployV1MergeCommit: '989dcefd90b8820f27af70f2ce18dc4a7685f6e1'
+    },
+    serverGitState: {
+      lastDirectlyVerifiedCommitFull: 'd3bcac0cf17608963317a18aa2916a5997916394',
+      currentAlignmentAttested: true,
+      connectorSyncToolCallable: false
+    },
+    runtimeState: {
+      currentRuntimeRevision: null,
+      status: 'FULLY_ALIGNED'
+    },
+    deploymentState: {
+      governedAutodeployV1: 'merged_not_deployed',
+      bootstrapStatus: 'blocked_connector_catalog'
+    }
+  };
+
+  const result = docGovernance.validateProductionState(state, canonical);
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.issues, [
+    {
+      path: 'serverGitState.currentAlignmentAttested',
+      expected: false,
+      actual: true,
+      reason: 'github_s1_sha_mismatch'
+    },
+    {
+      path: 'runtimeState.status',
+      expected: 'not_fully_aligned',
+      actual: 'FULLY_ALIGNED',
+      reason: 'runtime_revision_not_attested'
+    }
+  ]);
+});
+
+test('PRODUCTION_STATE refuse un snapshot antérieur au jalon autodeploy fusionné', () => {
+  const state = {
+    project: 'wealthtech-mcp-ssh-bridge',
+    repository: canonical.repository,
+    serverPath: canonical.s1Root,
+    branch: canonical.branch,
+    container: canonical.container,
+    githubState: {},
+    serverGitState: {},
+    runtimeState: { status: 'RUNTIME_UNVERIFIED' },
+    deploymentState: {}
+  };
+
+  const result = docGovernance.validateProductionState(state, canonical);
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.issues, [
+    {
+      path: 'githubState.pullRequest39Merged',
+      expected: true,
+      actual: null,
+      reason: 'governed_autodeploy_merge_unrecorded'
+    },
+    {
+      path: 'githubState.governedAutodeployV1MergeCommit',
+      expected: '40_char_lowercase_sha',
+      actual: null,
+      reason: 'merged_pr_without_merge_sha'
+    },
+    {
+      path: 'serverGitState.connectorSyncToolCallable',
+      expected: 'boolean',
+      actual: null,
+      reason: 'connector_catalog_state_missing'
+    },
+    {
+      path: 'deploymentState.governedAutodeployV1',
+      expected: 'governed_autodeploy_state',
+      actual: null,
+      reason: 'governed_autodeploy_state_missing'
+    },
+    {
+      path: 'deploymentState.bootstrapStatus',
+      expected: 'governed_bootstrap_state',
+      actual: null,
+      reason: 'governed_bootstrap_state_missing'
+    }
+  ]);
 });

@@ -44,3 +44,13 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - `TASK-20260809-002` reste EN COURS jusqu'à PR/merge puis déploiement/attestation.
 - Limitation documentée : injection directe du résumé dans `get_project_context` différée car la mutation de `src/tools/readOnly.ts` a été bloquée par le filtre de sécurité du wrapper ; aucun contournement opaque n'a été utilisé.
 - Prochaine action : audit complet du diff, CI finale, PR Draft, revue, merge conditionnel, puis S1 uniquement après préflight live.
+
+## 2026-08-12T10:24:44Z — TASK-20260809-003 — Reprise, préflight et blocage du bootstrap
+
+- GitHub : `main@989dcefd90b8820f27af70f2ce18dc4a7685f6e1`, PR #39 fusionnée ; `MCP CI #295` réussie.
+- Gate : run `31480688510` réussi, étape `Deploy exact main SHA through MCP` marquée `skipped` sous `pushEnabled=false`.
+- S1 : `main@d3bcac0…`, arbre propre, diff vide, fetch read-only et push `disabled://mcp-s1-read-only`.
+- Docker : `wealthtech_mcp_ssh_bridge` actif et healthy ; révision OCI NON VÉRIFIÉE.
+- Catalogue : `mcp_sync_from_github_s1` présent dans le code S1 mais absent des outils callables ChatGPT.
+- Action : aucune mutation S1 ; ajout local par TDD du contrôle sémantique de `PRODUCTION_STATE.json` et mise à jour du point de reprise.
+- Prochaine action : publier la correction documentaire, rafraîchir le catalogue, répéter le préflight, puis seulement exécuter le bootstrap gouverné.

@@ -28,10 +28,12 @@ Liste des travaux restant réellement à accomplir. Les éléments devenus exéc
 - [x] Implémenter le workflow GitHub Actions exact-SHA avec permissions minimales.
 - [x] Ajouter une politique bootstrap versionnée `pushEnabled=false`.
 - [x] Tester la syntaxe du shell réel du workflow avec `bash -n`.
-- [ ] Auditer le diff complet pour secrets, shell non borné, Git destructif, duplication de voie de déploiement et assertions runtime inventées.
-- [ ] Ouvrir la PR Draft unique, obtenir CI/revue verte et fusionner le head exact.
-- [ ] Vérifier la CI `main` post-merge et le comportement gated du workflow.
-- [ ] Réattester S1 en lecture live dès que le connecteur privé est invocable.
+- [x] Auditer le diff complet pour secrets, shell non borné, Git destructif, duplication de voie de déploiement et assertions runtime inventées.
+- [x] Ouvrir la PR Draft unique, obtenir CI/revue verte et fusionner le head exact.
+- [x] Vérifier la CI `main` post-merge et le comportement gated du workflow.
+- [x] Réattester S1 en lecture live dès que le connecteur privé est invocable.
+- [x] Étendre `docs:check` à la cohérence de `PRODUCTION_STATE.json`.
+- [ ] Rafraîchir/reconnecter le catalogue ChatGPT afin d'exposer `mcp_sync_from_github_s1`, déjà présent dans le code S1.
 - [ ] Effectuer le bootstrap unique : sync fast-forward, typecheck/build, rebuild/restart MCP.
 - [ ] Vérifier health, OAuth, contrôle d'accès MCP et révision OCI.
 - [ ] Exécuter `workflow_dispatch` sur le SHA exact et récupérer l'attestation finale.

@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import {
   extractCanonicalState,
   validateMarkdownBaseline,
+  validateProductionState,
   validateRequiredCanonicalStates
 } from './doc-governance-lib.mjs';
 
@@ -85,6 +86,24 @@ if (!semantic.ok) {
   fail('canonical_state_drift', semantic);
 }
 
+let productionState = null;
+try {
+  productionState = JSON.parse(await readFile('PRODUCTION_STATE.json', 'utf8'));
+} catch (error) {
+  fail('production_state_unreadable', {
+    file: 'PRODUCTION_STATE.json',
+    error: error instanceof Error ? error.message : 'unknown'
+  });
+}
+
+const canonicalReference = canonicalDocuments.find((document) => document.path === 'SUIVI.md')?.state ?? null;
+if (productionState && canonicalReference) {
+  const productionSemantic = validateProductionState(productionState, canonicalReference);
+  if (!productionSemantic.ok) {
+    fail('production_state_drift', productionSemantic);
+  }
+}
+
 if (!process.exitCode) {
-  console.log(`Documentation gouvernée: ${baseline.trackedCount} Markdown suivis, inventaire exact et état canonique cohérents.`);
+  console.log(`Documentation gouvernée: ${baseline.trackedCount} Markdown suivis, inventaire exact, état canonique et production cohérents.`);
 }
