@@ -164,7 +164,8 @@ test('GitHub API base exige HTTPS et une allowlist explicite', () => {
 test('le déploiement Docker transmet le HEAD S1 comme révision OCI', async () => {
   const command = buildMcpRestartCommand();
   assert.match(command, /MCP_GIT_REVISION="\$\(git rev-parse HEAD\)"/);
-  assert.match(command, /docker compose up -d --build/);
+  assert.match(command, /docker compose up -d --build --force-recreate/);
+  assert.doesNotMatch(command, /\/health \|\| true/);
 
   const dockerfile = await readFile('Dockerfile', 'utf8');
   const compose = await readFile('docker-compose.yml', 'utf8');

@@ -10,8 +10,8 @@ export function buildMcpRestartCommand(): string {
 cd ${shellQuote(MCP_ROOT)}
 MCP_GIT_REVISION="$(git rev-parse HEAD)"
 export MCP_GIT_REVISION
-docker compose up -d --build
+docker compose up -d --build --force-recreate
 sleep 5
 docker ps --filter name=${MCP_CONTAINER} --format "table {{.Names}}\\t{{.Status}}\\t{{.Ports}}"
-curl -s http://127.0.0.1:8787/health || true`;
+curl --fail --silent --show-error --max-time 15 http://127.0.0.1:8787/health`;
 }

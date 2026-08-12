@@ -173,3 +173,11 @@ Contexte : la PR #39 est fusionnée et ses workflows post-fusion sont réussis, 
 Décision : ne pas contourner cette rupture par `patch_mcp_code_file_s1`, shell libre, modification directe S1 ou détournement d'un hook de build. Le bootstrap reste bloqué jusqu'à exposition réelle de l'outil gouverné. Après rafraîchissement du catalogue, reprendre au préflight complet avant toute mutation.
 
 Décision complémentaire : `docs:check` valide désormais la cohérence de `PRODUCTION_STATE.json` avec l'état canonique et refuse notamment un jalon PR #39 absent, un catalogue non qualifié, un alignement attesté malgré des SHA GitHub/S1 différents ou un runtime `FULLY_ALIGNED` sans révision OCI égale.
+
+## 2026-08-12 — Le redémarrage gouverné doit recréer le conteneur et échouer si la santé échoue
+
+Contexte : sur S1 propre, typecheck et build réussis, `restart_mcp_bridge_s1` a terminé avec un code 0 mais l'uptime Docker est resté à trois jours. `docker compose up -d --build` avait réutilisé l'image et conservé le conteneur. La commande masquait également un échec de santé avec `curl ... || true`.
+
+Décision : le générateur de redémarrage ajoute `--force-recreate` et le contrôle `/health` devient fail-closed avec timeout. Un redémarrage ne peut plus être attesté sur le seul succès de construction ou sur un conteneur préexistant.
+
+Limite : cette correction ne vaut ni exposition du catalogue ChatGPT, ni synchronisation GitHub → S1. Le garde `pushEnabled=false` reste fermé jusqu'au bootstrap exact-SHA et aux attestations complètes.

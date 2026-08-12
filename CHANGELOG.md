@@ -3,6 +3,14 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
+## 2026-08-12 — Redémarrage MCP réellement recréé et santé fail-closed
+
+- `buildMcpRestartCommand()` impose désormais `docker compose up -d --build --force-recreate` afin qu'un bootstrap ne soit plus déclaré redémarré lorsque Compose conserve le conteneur existant.
+- Le contrôle local `/health` devient bloquant avec timeout ; l'ancien `|| true` qui masquait un runtime indisponible est supprimé.
+- Test de non-régression ajouté au contrat de déploiement runtime.
+- Preuves locales : test RED observé sur l'ancienne commande, puis 118/118 tests, typecheck, build, `docs:check`, scan de secrets et `git diff --check` réussis.
+- Rollback : rétablir la commande précédente dans `src/tools/mcpRuntimeDeploy.ts` et son test associé ; aucun schéma, secret, remote ou volume n'est modifié.
+
 ## 2026-07-09 - Bootstrap documentaire MCP
 - Creation progressive des fichiers Markdown racine manquants.
 - Conservation des fichiers deja presents sans ecrasement.
