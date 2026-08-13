@@ -145,11 +145,15 @@ test('heartbeat renouvelle les locks et la libération est idempotente', async (
       expectedLockRevision: renewed?.lockRevision ?? -1
     }, { transportSessionId: 'transport-A', identity: IDENTITY });
     assert.equal(released.status, 'RELEASED');
+    const lockStoreAfterRelease = await readFile(f.lockFile);
+    const sessionStoreAfterRelease = await readFile(f.sessionFile);
     assert.deepEqual(await f.locks.releaseLock({
       governedSessionId: opened.session.governedSessionId,
       lockId: lock.lockId,
       expectedLockRevision: lock.lockRevision
     }, { transportSessionId: 'transport-A', identity: IDENTITY }), released);
+    assert.deepEqual(await readFile(f.lockFile), lockStoreAfterRelease);
+    assert.deepEqual(await readFile(f.sessionFile), sessionStoreAfterRelease);
   } finally {
     await rm(f.directory, { recursive: true, force: true });
   }

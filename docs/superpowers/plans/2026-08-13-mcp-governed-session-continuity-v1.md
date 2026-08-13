@@ -725,17 +725,17 @@ Normalisation :
 
 TTL default 300 secondes, max 1800 secondes. Un lock actif concurrent sur le même scope retourne LOCK_CONFLICT et l’identifiant public du propriétaire, sans transfert.
 
-- [ ] **Step 1: RED acquisition, conflit et non-écriture sur conflit.**
-- [ ] **Step 2: RED renouvellement heartbeat, expiration et libération idempotente.**
-- [ ] **Step 3: RED redémarrage simulé : un lock expiré relu du store reste expiré.**
-- [ ] **Step 4: Exécuter RED.**
+- [x] **Step 1: RED acquisition, conflit et non-écriture sur conflit.**
+- [x] **Step 2: RED renouvellement heartbeat, expiration et libération idempotente.**
+- [x] **Step 3: RED redémarrage simulé : un lock expiré relu du store reste expiré.**
+- [x] **Step 4: Exécuter RED.**
 
 ~~~~bash
 node --import tsx --test tests/governedLocks.test.ts
 ~~~~
 
-- [ ] **Step 5: Implémenter et GREEN.**
-- [ ] **Step 6: Commits.**
+- [x] **Step 5: Implémenter et GREEN.**
+- [x] **Step 6: Commits.**
 
 - RED: test(locks): define governed lock semantics
 - GREEN: feat(locks): add bounded session locks

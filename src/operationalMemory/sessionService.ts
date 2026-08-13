@@ -89,6 +89,10 @@ type GovernedSessionServiceOptions = {
   resumeGraceSeconds: number;
   now?: () => Date;
   getLiveState?: () => Promise<{ stateVersion: number }>;
+  renewLocksForHeartbeat?: (
+    governedSessionId: string,
+    at: Date
+  ) => Promise<unknown>;
 };
 
 function publicSession(session: GovernedSessionRecord): GovernedSessionPublicRecord {
@@ -286,15 +290,18 @@ export function createGovernedSessionService(
     },
 
     async heartbeat(input, request) {
-      return mutateSession(input, request, (session, at) => ({
+      const heartbeatAt = now();
+      const updated = await mutateSession(input, request, (session) => ({
         ...session,
         status: 'ACTIVE',
-        lastHeartbeatAt: at.toISOString(),
+        lastHeartbeatAt: heartbeatAt.toISOString(),
         currentTransport: session.currentTransport
-          ? { ...session.currentTransport, lastSeenAt: at.toISOString() }
+          ? { ...session.currentTransport, lastSeenAt: heartbeatAt.toISOString() }
           : null,
         sessionRevision: session.sessionRevision + 1
       }));
+      await options.renewLocksForHeartbeat?.(input.governedSessionId, heartbeatAt);
+      return updated;
     },
 
     async acknowledgeContext(input, request) {

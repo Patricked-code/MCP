@@ -2,6 +2,7 @@ type TimerHandle = { unref?: () => void };
 
 type MaintenanceOptions<Timer extends TimerHandle> = {
   expireSessions: () => Promise<number>;
+  expireLocks?: () => Promise<number>;
   intervalMs?: number;
   setInterval?: (callback: () => void, intervalMs: number) => Timer;
   clearInterval?: (timer: Timer) => void;
@@ -22,7 +23,10 @@ export function startOperationalMemoryMaintenance<Timer extends TimerHandle = No
     globalThis.clearInterval(timer as unknown as NodeJS.Timeout);
   });
   const timer = setTimer(() => {
-    void options.expireSessions().catch((error) => options.onError?.(error));
+    void Promise.all([
+      options.expireSessions(),
+      options.expireLocks?.() ?? Promise.resolve(0)
+    ]).catch((error) => options.onError?.(error));
   }, options.intervalMs ?? 60_000);
   timer.unref?.();
   let stopped = false;
