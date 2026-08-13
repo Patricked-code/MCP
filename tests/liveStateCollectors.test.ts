@@ -161,6 +161,19 @@ test('GitHub API base exige HTTPS et une allowlist explicite', () => {
   );
 });
 
+test('le redémarrage MCP attend la santé par polling borné et échoue fermé', () => {
+  const command = buildMcpRestartCommand();
+
+  assert.match(command, /attempt=0/);
+  assert.match(command, /while \[ "\$attempt" -lt [0-9]+ \]/);
+  assert.match(command, /curl[^\n]*--max-time [0-9]+[^\n]*127\.0\.0\.1:8787\/health/);
+  assert.match(command, /attempt=\$\(\(attempt \+ 1\)\)/);
+  assert.match(command, /sleep [0-9]+/);
+  assert.match(command, /return 1/);
+  assert.doesNotMatch(command, /\nsleep 5\n/);
+  assert.doesNotMatch(command, /\/health \|\| true/);
+});
+
 test('le déploiement Docker transmet le HEAD S1 comme révision OCI', async () => {
   const command = buildMcpRestartCommand();
   assert.match(command, /MCP_GIT_REVISION="\$\(git rev-parse HEAD\)"/);
