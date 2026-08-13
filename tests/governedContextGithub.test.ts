@@ -50,8 +50,24 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
       ]
     });
     if (url.includes('/pulls/44/reviews?')) return json([
-      { state: 'APPROVED' },
-      { state: 'CHANGES_REQUESTED' }
+      {
+        id: 10,
+        state: 'CHANGES_REQUESTED',
+        submitted_at: '2026-08-13T07:00:00Z',
+        user: { id: 101, login: 'reviewer-one' }
+      },
+      {
+        id: 11,
+        state: 'APPROVED',
+        submitted_at: '2026-08-13T07:30:00Z',
+        user: { id: 101, login: 'reviewer-one' }
+      },
+      {
+        id: 12,
+        state: 'CHANGES_REQUESTED',
+        submitted_at: '2026-08-13T07:45:00Z',
+        user: { id: 202, login: 'reviewer-two' }
+      }
     ]);
     if (url.endsWith('/graphql')) return json({
       data: {
