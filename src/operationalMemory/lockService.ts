@@ -41,6 +41,7 @@ export type GovernedLockService = {
     now: Date
   ): Promise<GovernedLockRecord[]>;
   expireLocks(now?: Date): Promise<number>;
+  reconcileSessionLockIds(): Promise<number>;
   listActiveLocks(): Promise<GovernedLockRecord[]>;
 };
 
@@ -309,6 +310,46 @@ export function createGovernedLockService(
         await audit.record({ type: 'lock.expired', lock });
       }
       return expired.length;
+    },
+
+    async reconcileSessionLockIds() {
+      const at = currentTime().getTime();
+      const locks = (await options.store.read()).locks.filter((lock) => (
+        lock.status === 'ACTIVE' && Date.parse(lock.expiresAt) > at
+      ));
+      const desiredBySession = new Map<string, string[]>();
+      for (const lock of locks) {
+        const desired = desiredBySession.get(lock.governedSessionId) ?? [];
+        desired.push(lock.lockId);
+        desiredBySession.set(lock.governedSessionId, desired);
+      }
+      const before = await options.sessionStore.read();
+      const needsRepair = before.sessions.some((session) => {
+        const desired = desiredBySession.get(session.governedSessionId) ?? [];
+        return session.lockIds.length !== desired.length
+          || session.lockIds.some((lockId, index) => lockId !== desired[index]);
+      });
+      if (!needsRepair) return 0;
+
+      let repaired = 0;
+      await options.sessionStore.update((document) => {
+        const sessions = document.sessions.map((session) => {
+          const desired = desiredBySession.get(session.governedSessionId) ?? [];
+          const aligned = session.lockIds.length === desired.length
+            && session.lockIds.every((lockId, index) => lockId === desired[index]);
+          if (aligned) return session;
+          repaired += 1;
+          return {
+            ...session,
+            lockIds: [...desired],
+            sessionRevision: session.sessionRevision + 1
+          };
+        });
+        return repaired === 0
+          ? document
+          : { ...document, storeRevision: document.storeRevision + 1, sessions };
+      });
+      return repaired;
     },
 
     async listActiveLocks() {

@@ -8,6 +8,7 @@ export type OperationalMemoryMaintenanceCycle = {
 type MaintenanceOptions<Timer extends TimerHandle> = {
   expireSessions: () => Promise<number>;
   expireLocks?: () => Promise<number>;
+  reconcileSessionLockIds?: () => Promise<number>;
   intervalMs?: number;
   setInterval?: (callback: () => void, intervalMs: number) => Timer;
   clearInterval?: (timer: Timer) => void;
@@ -34,6 +35,7 @@ export function startOperationalMemoryMaintenance<Timer extends TimerHandle = No
         options.expireSessions(),
         options.expireLocks?.() ?? Promise.resolve(0)
       ]);
+      await options.reconcileSessionLockIds?.();
       await options.onCycle?.({ expiredSessionCount, expiredLockCount });
     })().catch((error) => options.onError?.(error));
   }, options.intervalMs ?? 60_000);

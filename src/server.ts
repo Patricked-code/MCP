@@ -228,6 +228,7 @@ function startGovernedOperationalMemoryMaintenance(): void {
   startOperationalMemoryMaintenance({
     expireSessions: () => operational.sessions.expireIdleSessions(),
     expireLocks: () => operational.locks.expireLocks(),
+    reconcileSessionLockIds: () => operational.locks.reconcileSessionLockIds(),
     intervalMs: 60_000,
     async onCycle(summary) {
       if (summary.expiredSessionCount === 0 && summary.expiredLockCount === 0) return;
