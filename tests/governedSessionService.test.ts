@@ -608,3 +608,29 @@ test('expiration idle et maintenance utilisent un timer unique unref', async () 
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('le compteur dashboard reflète seulement les sessions opérationnelles actives', async () => {
+  const { directory, service } = await fixture();
+  try {
+    const first = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-A-raw',
+      identity: OAUTH_IDENTITY
+    });
+    await service.openSession({ ...OPEN_INPUT, taskScope: 'TASK-20260813-005' }, {
+      transportSessionId: 'transport-B-raw',
+      identity: OAUTH_IDENTITY
+    });
+    assert.equal(await service.countActiveSessions(), 2);
+
+    await service.closeSession({
+      governedSessionId: first.session.governedSessionId,
+      expectedSessionRevision: first.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-A-raw',
+      identity: OAUTH_IDENTITY
+    });
+    assert.equal(await service.countActiveSessions(), 1);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});

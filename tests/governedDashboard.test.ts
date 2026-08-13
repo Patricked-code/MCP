@@ -141,6 +141,14 @@ test('le dashboard rend la vue opérationnelle bornée demandée', () => {
   assert.match(html, /review pending/);
 });
 
+test('le dashboard affiche le compteur global injecté même sans session web liée', () => {
+  const context = governedContext();
+  context.session = null;
+  const html = renderGovernedContextDashboardSection(context, 3);
+
+  assert.match(html, /Sessions actives compatibles[^0-9]*3/);
+});
+
 test('le dashboard échappe toutes les chaînes et ignore les secrets hors contrat', () => {
   const context = governedContext();
   context.session = {
@@ -216,6 +224,43 @@ test('la maintenance utilise un timer unique unref et journalise seulement des c
   assert.equal(sessionExpirations, 1);
   assert.equal(lockExpirations, 1);
   assert.equal(lockIdReconciliations, 1);
+  maintenance.stop();
+});
+
+test('la maintenance ignore un tick concurrent puis reprend au tick suivant', async () => {
+  let callback: (() => void) | undefined;
+  let cycles = 0;
+  let expirationCalls = 0;
+  let releaseFirst!: () => void;
+  const firstHeld = new Promise<void>((resolve) => { releaseFirst = resolve; });
+  let resolveFirstCycle!: () => void;
+  const firstCycle = new Promise<void>((resolve) => { resolveFirstCycle = resolve; });
+  const maintenance = startOperationalMemoryMaintenance({
+    expireSessions: async () => {
+      expirationCalls += 1;
+      if (expirationCalls === 1) await firstHeld;
+      return 0;
+    },
+    setInterval: (scheduledCallback) => {
+      callback = scheduledCallback;
+      return { unref() {} };
+    },
+    clearInterval: () => undefined,
+    onCycle: () => {
+      cycles += 1;
+      if (cycles === 1) resolveFirstCycle();
+    }
+  });
+
+  callback?.();
+  callback?.();
+  await new Promise<void>((resolve) => setImmediate(resolve));
+  assert.equal(expirationCalls, 1);
+  releaseFirst();
+  await firstCycle;
+  callback?.();
+  await new Promise<void>((resolve) => setImmediate(resolve));
+  assert.equal(expirationCalls, 2);
   maintenance.stop();
 });
 
