@@ -9,6 +9,21 @@ import { registerOauthRoutes } from './oauth.js';
 import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
+import { governedContextInstructions } from './tools/governedContext.js';
+import { getGovernedContextToolDependencies } from './tools/governedContext.js';
+import { getGovernedSessionToolDependencies } from './tools/governedSessions.js';
+import {
+  loadGovernedDashboardContext,
+  renderGovernedContextDashboardDisabledSection,
+  renderGovernedContextDashboardSection
+} from './governedContext/dashboard.js';
+import {
+  decorateScopedWriteServer,
+  getDefaultScopedWriteGateDependencies
+} from './governance/scopedWriteGate.js';
+import { operationalMemoryConfig } from './operationalMemory/config.js';
+import { getDefaultOperationalEventJournal } from './operationalMemory/eventJournal.js';
+import { startOperationalMemoryMaintenance } from './operationalMemory/maintenance.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
 import { createGithubDeployRouter } from './deploy/routes.js';
@@ -154,8 +169,27 @@ function nav(): string {
 }
 
 async function renderDashboardPage(): Promise<string> {
-  const status = await getGithubConnectionStatus();
-  const registry = await readGitRegistry();
+  const [status, registry, governedContext, activeSessionCount] = await Promise.all([
+    getGithubConnectionStatus(),
+    readGitRegistry(),
+    loadGovernedDashboardContext(operationalMemoryConfig.enabled, () => (
+      getGovernedContextToolDependencies().context.getCurrent({
+        governedSessionId: null,
+        workBranch: null,
+        request: {
+          transportSessionId: 'web-dashboard',
+          identity: {
+            principalId: null,
+            clientId: 'wealthtech-dashboard',
+            assurance: 'declared_only'
+          }
+        }
+      })
+    )),
+    loadGovernedDashboardContext(operationalMemoryConfig.enabled, () => (
+      getGovernedSessionToolDependencies().sessions.countActiveSessions()
+    ))
+  ]);
   const connected = status.connected ? 'connecté' : 'non connecté';
 
   return `<!doctype html>
@@ -186,8 +220,40 @@ async function renderDashboardPage(): Promise<string> {
   <p>Mappings repo ↔ serveur : <strong>${registry.repoMappings.length}</strong></p>
   <p>Dernière mise à jour : <strong>${escapeHtml(registry.updatedAt)}</strong></p>
   <p><a href="/git/status">Voir JSON</a></p>
+
+  ${governedContext
+    ? renderGovernedContextDashboardSection(governedContext, activeSessionCount ?? 0)
+    : renderGovernedContextDashboardDisabledSection()}
 </body>
 </html>`;
+}
+
+function startGovernedOperationalMemoryMaintenance(): void {
+  if (!operationalMemoryConfig.enabled) return;
+  const operational = getGovernedSessionToolDependencies();
+  const journal = getDefaultOperationalEventJournal({
+    filePath: operationalMemoryConfig.eventJournalPath,
+    maxBytes: operationalMemoryConfig.eventMaxBytes,
+    archives: operationalMemoryConfig.eventArchives
+  });
+  startOperationalMemoryMaintenance({
+    expireSessions: () => operational.sessions.expireIdleSessions(),
+    expireLocks: () => operational.locks.expireLocks(),
+    reconcileSessionLockIds: () => operational.locks.reconcileSessionLockIds(),
+    intervalMs: 60_000,
+    async onCycle(summary) {
+      if (summary.expiredSessionCount === 0 && summary.expiredLockCount === 0) return;
+      await journal.append({
+        type: 'maintenance.completed',
+        governedSessionId: null,
+        metadata: summary
+      });
+    },
+    onError() {
+      logger.warn({ reasonCode: 'operational_maintenance_failed' },
+        'Maintenance de la mémoire opérationnelle impossible');
+    }
+  });
 }
 
 function addGithubNav(html: string): string {
@@ -208,17 +274,23 @@ export function buildMcpServer(): McpServer {
   const server = new McpServer({
     name: 'wealthtech_ssh_bridge',
     version: '0.1.0'
+  }, {
+    instructions: governedContextInstructions(operationalMemoryConfig.enabled)
   });
 
   registerReadOnlyTools(server);
   if (env.ENABLE_WRITE_TOOLS) {
-    registerScopedWriteTools(server);
+    registerScopedWriteTools(decorateScopedWriteServer(
+      server,
+      getDefaultScopedWriteGateDependencies()
+    ));
   }
 
   return server;
 }
 
 export async function startHttpServer(): Promise<void> {
+  startGovernedOperationalMemoryMaintenance();
   const app = express();
   app.use(createGithubDeployRouter({
     verifyOidc: verifyGithubOidcToken,
@@ -418,6 +490,9 @@ export async function startHttpServer(): Promise<void> {
         transport.onclose = () => {
           if (transport.sessionId) {
             delete transports[transport.sessionId];
+            if (operationalMemoryConfig.enabled) {
+              getGovernedSessionToolDependencies().sessions.unbindTransport(transport.sessionId);
+            }
           }
         };
 

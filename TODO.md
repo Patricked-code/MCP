@@ -28,13 +28,28 @@ Travaux restant réellement à accomplir.
 - [x] Garantir la parité exacte des candidats documentaires CI avec les sources.
 - [x] Activer `pushEnabled=true` via la PR #42.
 - [x] Attester le premier déploiement automatique par push.
-- [ ] Créer puis fusionner la seconde PR documentaire utile.
-- [ ] Attester le second déploiement automatique canonique.
-- [ ] Émettre le verdict final des six objectifs.
-- [ ] Réactiver les deux automatisations métier seulement après clôture intégrale.
-- [ ] Désactiver la surveillance bootstrap seulement après le rapport final et les réactivations attestées.
+- [x] Créer puis fusionner la seconde PR documentaire utile (#43).
+- [x] Attester le second déploiement automatique canonique au SHA `eb61b97e…`.
+- [x] Clore `TASK-20260809-003` sur les preuves exact-SHA observées.
+
+## Governed Session Continuity / Operational Memory V1
+
+- [x] Verrouiller la baseline et approuver la spécification.
+- [x] Versionner le plan TDD détaillé avant tout code fonctionnel.
+- [x] Reproduire en RED le faux alignement du SHA documentaire ancien.
+- [x] Livrer le GREEN minimal sans changer les autres contrats Live State.
+- [x] Implémenter les governed sessions durables distinctes de `MCP-Session-Id`.
+- [x] Ajouter mémoire bornée, checkpoints, locks et contexte gouverné.
+- [x] Observer les outils WRITE en `shadow` sans jamais les bloquer en V1.
+- [x] Exécuter la régression complète avant la draft PR.
+- [x] Créer la draft PR unique #44 et traiter la première revue par TDD additif.
+- [x] Traiter par TDD les quatre findings de la seconde revue et les deux cas différentiels supplémentaires.
+- [x] Obtenir la confirmation différentielle sans finding critique/important.
+- [x] Obtenir la CI verte `31681641604` du head consolidé `4eee32b…`.
+- [ ] Recevoir l’autorisation humaine, passer la PR ready et fusionner uniquement la tête reverrouillée avec sa CI verte.
+- [ ] Après autorisation de merge, observer l’Autodeploy V1 existant et attester le runtime sans écriture directe S1.
 
 ## Maintenance séparée
 
 - Migrer les actions GitHub encore exécutées sous compatibilité Node 24 dans une PR dédiée.
-- Activer l’authentification à deux facteurs du compte avant le 18 août 2026.
+- La 2FA GitHub est explicitement exclue par décision humaine ; aucune activation ni action associée ne doit être menée dans ce chantier.

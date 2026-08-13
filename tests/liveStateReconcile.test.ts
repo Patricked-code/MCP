@@ -101,6 +101,8 @@ test('un désaccord documentaire produit DOCUMENTATION_DRIFT', () => {
   const state = reconcileLiveState(input, null, NOW);
   assert.equal(state.alignment.documentation, 'DOCUMENTATION_DRIFT');
   assert.equal(state.alignment.global, 'RECONCILIATION_REQUIRED');
+  assert.ok(state.contradictions.includes('DOCUMENTATION_DRIFT'));
+  assert.equal(state.nextAction, 'reconcile_canonical_documentation');
 });
 
 test('une source obligatoire indisponible dégrade le verdict', () => {

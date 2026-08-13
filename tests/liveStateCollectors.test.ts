@@ -111,15 +111,16 @@ test('la collecte documentaire reste bornée aux signaux de reprise', () => {
   assert.equal(observation.drift, false);
 });
 
-test('un SHA documentaire historique différent ne crée pas une boucle de drift', () => {
+test('un SHA GitHub documentaire explicite ancien force le drift', () => {
   const observation = parseDocumentationObservation([
-    'active_task=TASK-20260809-001 — EN COURS',
+    'active_task=TASK-20260813-004 — EN COURS',
     'declared_github_sha=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
-    'declared_s1_sha=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+    `declared_s1_sha=${SHA}`,
     'documentation_requires_revalidation=false'
   ].join('\n'), SHA, SHA);
 
-  assert.equal(observation.drift, false);
+  assert.equal(observation.declaredGithubSha, 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
+  assert.equal(observation.drift, true);
 });
 
 test('le signal structuré requires_revalidation produit DOCUMENTATION_DRIFT', () => {

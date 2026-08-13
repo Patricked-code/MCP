@@ -142,14 +142,26 @@ fi`;
 
 export function parseDocumentationObservation(
   output: string,
-  _observedGithubSha: string | null,
-  _observedS1Sha: string | null
+  observedGithubSha: string | null,
+  observedS1Sha: string | null
 ): DocumentationLiveObservation {
   const values = parseKeyValueOutput(output);
   const declaredGithubSha = shaOrNull(values.declared_github_sha);
   const declaredS1Sha = shaOrNull(values.declared_s1_sha);
   const activeMatch = values.active_task?.match(/TASK-[0-9]{8}-[0-9]+/);
-  const drift = values.documentation_requires_revalidation === 'true';
+  const explicitGithubMismatch = Boolean(
+    declaredGithubSha
+    && observedGithubSha
+    && declaredGithubSha !== observedGithubSha
+  );
+  const explicitS1Mismatch = Boolean(
+    declaredS1Sha
+    && observedS1Sha
+    && declaredS1Sha !== observedS1Sha
+  );
+  const drift = values.documentation_requires_revalidation === 'true'
+    || explicitGithubMismatch
+    || explicitS1Mismatch;
 
   return {
     status: 'CURRENT',

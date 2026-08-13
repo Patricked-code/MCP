@@ -199,3 +199,45 @@ Contexte : la PR #42 a activé `pushEnabled=true` et a fusionné le SHA `9be5095
 Décision : accepter ce run comme première preuve réelle du chemin automatique et résoudre le P2 de la PR #41, la correction étant fusionnée, testée et déployée.
 
 Décision complémentaire : conserver le chantier ouvert jusqu’à la fusion d’une seconde PR documentaire utile et à l’attestation indépendante du second push automatique. Aucun succès final ni changement d’automatisation n’est déclaré avant cette seconde preuve.
+
+## 2026-08-13 — Seconde preuve automatique acceptée et passage au plan Governed Session V1
+
+Contexte : la PR #43 a fusionné le SHA `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2`. Son push a produit la CI `31659053828` et le déploiement `31659053836`, job `94319801309`, tous réussis. La lecture fraîche du bridge confirme GitHub/S1/origin/OCI/runtime égaux, S1 propre et read-only, Docker running/healthy.
+
+Décision : clôturer `TASK-20260809-003` sur ces deux preuves automatiques exact-SHA et verrouiller `eb61b97e…` comme baseline immuable de `TASK-20260813-004`.
+
+Décision complémentaire : corriger en premier, par TDD additif, le détecteur documentaire qui autorise encore un SHA déclaré ancien avec `documentation=ALIGNED`. L'extension Governed Session conserve tous les contrats existants, sépare `governedSessionId` de `MCP-Session-Id` et démarre le nouveau WRITE gate en `shadow` non bloquant. Toute nécessité de remplacer une mécanique validée impose STOP. Aucune action 2FA n'est autorisée dans ce chantier.
+
+## 2026-08-13 — Governed Session Continuity V1 prête pour review sans nouvelle autorité
+
+Contexte : les cycles RED/GREEN de la branche unique sont terminés au head fonctionnel `38e3ced7ff61119b1e8fd8d0228bf032972ecca9`. La CI `31675193991` et la régression locale fraîche sont vertes ; `main` reste sur la baseline `eb61b97e…`.
+
+Décision : conserver Live State V1 comme source opérationnelle existante et lui composer, sans le remplacer, la session durable, les locks, le contexte GitHub borné et la vue dashboard. Le transport MCP reste une liaison éphémère ; seul `governedSessionId` est l'identité de continuité.
+
+Décision complémentaire : partager un journal opérationnel unique dans le processus, démarrer une seule maintenance à intervalle 60 secondes et limiter ses événements aux compteurs d'expiration. Le dashboard utilise `getCurrent` cache/store-only et ne force aucune collecte GitHub/SSH.
+
+Limites : le WRITE gate demeure `shadow` non bloquant ; aucune mutation existante n’est retirée ou durcie en V1. Aucun merge, déploiement ou état runtime de cette branche n’est déclaré avant preuve exacte ; aucune action 2FA n’est permise.
+
+## 2026-08-13 — Résolution additive de la première revue de la PR #44
+
+Contexte : la première revue a identifié des liaisons transport survivant à une reprise, un shadow qui attendait l’observation, un journal insuffisamment câblé, une fenêtre de divergence entre les deux stores, une lecture erronée des résumés de rulesets, un feature-off incohérent et deux défauts mineurs de dashboard/maintenance.
+
+Décision : corriger chaque point par test RED puis GREEN sur la branche unique. Le transport précédent est révoqué, le shadow devient best-effort hors chemin critique, l’audit reçoit uniquement des objets de domaine typés/sanitizés, et le collecteur GitHub charge le détail d’un seul ruleset actif.
+
+Décision de compatibilité : ne pas fusionner les stores sessions et locks, car cela remplacerait une mécanique approuvée. Le store de locks reste l’autorité des locks actifs ; `session.lockIds` demeure une projection dénormalisée réparée par la maintenance existante après toute panne partielle.
+
+Limites : la PR reste draft jusqu’à CI et seconde revue du head exact. `main`, S1/runtime, Autodeploy V1, GitHub OIDC, `ENABLE_WRITE_TOOLS`, `allow_write` et l’exclusion 2FA restent inchangés.
+
+## 2026-08-13 — Résolution additive de la seconde revue de la PR #44
+
+Contexte : la seconde revue a confirmé une compensation mémoire incorrecte lors d’une reprise sur le même transport, une agrégation historique des reviews GitHub, une course de preuve lors d’un unbind et un libellé dashboard ambigu. La confirmation différentielle a ajouté deux cas : `COMMENTED` effaçait le verdict décisif antérieur et la redaction par motifs laissait des PAT/URI/JWT/PEM dans des champs libres.
+
+Décision : différer le rebinding jusqu’au succès durable, agréger uniquement le dernier verdict décisif par reviewer avec `DISMISSED` explicite, conserver un instantané éphémère sanitizé de chaque binding retiré et nommer le compteur global. Les champs libres du journal deviennent systématiquement `[REDACTED]`; les autres valeurs conservent une défense PAT/JWT/PEM/Bearer/URI.
+
+Décision de compatibilité : conserver toutes les APIs/outils existants, la table de bindings dans le même service et le journal unique déjà validé. Aucun store, service, gate ou collecteur parallèle n’est introduit.
+
+Limites : la PR reste draft jusqu’à confirmation différentielle et CI du head exact. Aucun merge, Autodeploy, S1/runtime ou 2FA n’est exécuté ; `ENABLE_WRITE_TOOLS`, `allow_write`, Live State V1 et OIDC restent invariants.
+
+Confirmation : l’ultime revue différentielle ne relève aucun finding critique ou important et juge le range fonctionnel `fd0b1d8…de8a6df` mergeable. Cela ne vaut pas autorisation de fusion ; la CI du head documentaire exact reste exigée.
+
+Preuve de clôture de review : le head consolidé `4eee32b…` a passé la régression locale `187/187` et la CI exacte `31681641604`. La PR #44 reste volontairement draft. La prochaine mutation autorisée est uniquement son passage ready/merge après GO humain, reverrouillage du SHA et CI verte de la tête proposée.

@@ -15,16 +15,16 @@
 
 Date : 2026-08-13
 
-## État frais après le premier push automatique
+## État frais après la seconde preuve automatique
 
-- GitHub `main` : `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7` (merge de la PR #42).
+- GitHub `main` : `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2` (merge de la PR #43).
 - S1 `HEAD` et `origin/main` : même SHA ; branche `main`, arbre propre, diff vide.
 - Remote fetch : `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`.
 - Remote push : `disabled://mcp-s1-read-only`.
 - Docker : `wealthtech_mcp_ssh_bridge` `running` et `healthy`.
-- OCI/runtime : `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7`.
-- Image : `sha256:1a3cc55d8ae7579e5e7c328e4ef925dee44d149b84ba7e6a09722711404bbb49`.
-- Live State généré à `2026-08-13T01:42:36.744Z` : `CURRENT`, `FULLY_ALIGNED`, contradictions vides, `nextAction=null`.
+- OCI/runtime : `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2`.
+- Image : `sha256:65465451fb4c3459b20aa9d96af9a81a39f95a68b5577973a74c61bdac0487cb`.
+- Live State observé à `2026-08-13T05:19:31.979Z` : `CURRENT`, `stateVersion=9`. Son ancien détecteur retourne encore à tort `documentation=ALIGNED` avec le SHA documentaire `9be5095…`; ce faux alignement est la reproduction RED du correctif en cours et n'est pas accepté comme preuve documentaire.
 
 ## Preuves de déploiement
 
@@ -34,12 +34,14 @@ Date : 2026-08-13
 - Premier push automatique : CI `31658327373` réussie ; deploy `31658327435`, job `94317597740` réussi.
 - Étape `Deploy exact main SHA through MCP` : exécutée et réussie.
 - Job MCP : `mcp-s1-31658327435-9be5095cbf72` ; SHA exact `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7` attesté ; health/OAuth/MCP vrais ; rollback `not_needed`.
+- Seconde preuve canonique : PR #43 fusionnée au SHA `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2` ; CI push `31659053828` réussie ; deploy push `31659053836`, job `94319801309`, réussi avec l'étape `Deploy exact main SHA through MCP` exécutée.
+- Attestation fraîche : GitHub, S1, `origin/main`, OCI et runtime égaux à `eb61b97e…`; S1 propre/read-only, conteneur running/healthy. L'identifiant interne du job MCP de cette seconde preuve n'est pas inventé lorsqu'il n'est pas exposé par la preuve consultée.
 
 ## Inventaire Markdown
 
-- Git courant : 189 Markdown, 189 chemins classifiés individuellement.
+- Branche de travail courante : 191 Markdown, 191 chemins classifiés individuellement.
 - Miroir runtime fraîchement observé : 33 Markdown, dont 7 suivis par Git et 26 runtime-only.
-- Surface courante observée : `189 + 26 = 215`.
+- Surface de production attestée au baseline : `189 + 26 = 215`; les deux nouveaux Markdown de spec/plan restent sur la branche et ne sont pas déclarés déployés.
 - Photographie historique : `183 + 26 = 209`.
 - Croissance Git historique : `183 → 189` (+6) ; aucun ensemble exact de six chemins n’est affirmé sans snapshot différentiel historique.
 
@@ -49,10 +51,30 @@ Date : 2026-08-13
 - Polling readiness : 20 tentatives maximales, requête bornée à 5 secondes, pause de 2 secondes, échec fermé.
 - TDD : RED `31657464793`, GREEN `31657546033`.
 
+## État de branche et revue de la draft PR #44
+
+- Branche unique : `mcp/session-continuity-v1-20260813`, commits petits et réversibles depuis la baseline immuable.
+- Draft PR unique : #44 vers `main`, créée sur la base exacte `eb61b97e…`; elle reste en brouillon et non fusionnée.
+- Head consolidé vérifié : `4eee32b8314ec5c287b6dd8308ceb02c50759884`; ultime confirmation sans finding critique/important, régression locale `187/187` et CI exacte `31681641604` réussie.
+- Correctif documentaire : un SHA déclaré ancien produit désormais `DOCUMENTATION_DRIFT`, sans changement des autres contrats Live State V1.
+- Operational Memory V1 : stores atomiques bornés, journal JSONL sanitizé réellement câblé, `governedSessionId` durable, reprise prouvée, transport remplacé/délié, checkpoints, heartbeats et locks gouvernés.
+- Surface MCP additive : onze outils de session, resource/instructions de contexte, deux outils de contexte et dashboard authentifié ; aucune architecture parallèle.
+- WRITE gate : `shadow` non bloquant même si l’évaluateur ou le journal ne répond jamais ; `ENABLE_WRITE_TOOLS`, `allow_write`, résultats, erreurs, arité et schémas historiques conservés.
+- Maintenance : un timer `60 s` avec `unref`, cycles single-flight, expiration/réparation sessions-locks et journalisation de compteurs uniquement ; aucune collecte GitHub/SSH ni écriture Live State périodique.
+- GitHub : la liste de rulesets sélectionne un seul actif puis charge son détail, avec sept appels maximum, timeout/cache/single-flight inchangés.
+- Reprises et audit : un échec durable sur le transport déjà lié conserve le binding légitime ; un `transport_closed` journalise l’instantané effectivement retiré même si une reprise s’entrelace.
+- Reviews : seul le dernier verdict décisif `APPROVED`/`CHANGES_REQUESTED` de chaque reviewer est compté ; `COMMENTED` ne l’efface pas et `DISMISSED` le lève explicitement.
+- Journal : `taskScope`, `agentIdentity`, `resultCode` de checkpoint et `scope` sont opaques ; les autres valeurs couvrent aussi PAT, JWT, PEM, Bearer, affectations sensibles et userinfo URI avant append.
+- Feature-off : aucune instruction ou ressource promise, aucun store chargé, projection dashboard explicitement désactivée.
+- Dashboard : le compteur réellement global est explicitement nommé « sessions actives globales ».
+- Régression fraîche : suite intégrale `187/187`, zéro fail/cancelled/skipped/todo ; typecheck, build, docs check, scan secrets et diff check réussis.
+- Invariants : `origin/main` reste `eb61b97e…`; Autodeploy V1, GitHub OIDC, `src/deploy` et `.mcp/autodeploy-policy.json` inchangés ; aucun fichier supprimé ; aucune écriture S1/runtime ; aucune 2FA.
+- Merge, autodeploy de cette branche et attestation post-merge : NON OBSERVÉS et non déclarés.
+
 ## Tâche active
 
-`TASK-20260809-003 — MCP Governed Autodeploy V1 — EN COURS`
+`TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — EN COURS`
 
 ## Prochaine action unique
 
-Soumettre cette consolidation documentaire par une PR draft gouvernée, attendre sa CI verte, la passer en ready puis fusionner uniquement son head exact. Sa fusion doit déclencher le second déploiement automatique canonique ; réattester ensuite GitHub, S1, OCI, runtime et Live State avant le verdict final.
+Maintenir la PR #44 en draft et demander l’autorisation humaine de la passer ready/merge exact-head. Au moment de l’autorisation, reverrouiller le head et exiger sa CI verte avant fusion.

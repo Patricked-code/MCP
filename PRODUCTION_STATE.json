@@ -6,11 +6,11 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "githubObservedAt": "2026-08-13T01:42:36.744Z",
+  "githubObservedAt": "2026-08-13T05:19:31.979Z",
   "githubObservationBasis": "github_connector_push_runs_jobs_steps_logs_plus_wealthtech_bridge_read_only_attestation",
-  "serverStateFreshness": "current_post_first_automatic_push_attestation",
-  "runtimeStateFreshness": "current_exact_sha_post_first_automatic_push",
-  "githubCommitFull": "9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7",
+  "serverStateFreshness": "current_post_second_automatic_push_attestation",
+  "runtimeStateFreshness": "current_exact_sha_post_second_automatic_push",
+  "githubCommitFull": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
   "requiredRules": [
     "GitHub est la source versionnée.",
     "Le serveur MCP est la source exécutée.",
@@ -28,7 +28,7 @@
   },
   "githubState": {
     "currentMainVerified": true,
-    "currentMainCommit": "9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7",
+    "currentMainCommit": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
     "pullRequest37Merged": true,
     "pullRequest38Merged": true,
     "pullRequest39Merged": true,
@@ -48,6 +48,7 @@
     "activationBranch": "mcp/finalize-governed-autodeploy-20260813",
     "activationState": "merged_first_automatic_deployment_attested",
     "pullRequest42Merged": true,
+    "pullRequest43Merged": true,
     "activationMergeCommit": "9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7",
     "activationFinalCiRunId": 31658220076,
     "firstAutomaticCiRunId": 31658327373,
@@ -56,14 +57,23 @@
     "firstAutomaticDeployJobId": 94317597740,
     "firstAutomaticDeployConclusion": "success",
     "firstAutomaticDeployStep": "Deploy exact main SHA through MCP",
-    "firstAutomaticDeployStepConclusion": "success"
+    "firstAutomaticDeployStepConclusion": "success",
+    "canonicalFollowUpPullRequest": 43,
+    "canonicalFollowUpMergeCommit": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
+    "canonicalFollowUpCiRunId": 31659053828,
+    "canonicalFollowUpCiConclusion": "success",
+    "canonicalFollowUpDeployRunId": 31659053836,
+    "canonicalFollowUpDeployJobId": 94319801309,
+    "canonicalFollowUpDeployConclusion": "success",
+    "canonicalFollowUpDeployStep": "Deploy exact main SHA through MCP",
+    "canonicalFollowUpDeployStepConclusion": "success"
   },
   "serverGitState": {
     "branch": "main",
-    "lastDirectlyVerifiedCommitAbbrev": "9be5095",
-    "lastDirectlyVerifiedCommitFull": "9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7",
-    "originMain": "9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7",
-    "lastDirectlyVerifiedAt": "2026-08-13T01:42:36.744Z",
+    "lastDirectlyVerifiedCommitAbbrev": "eb61b97",
+    "lastDirectlyVerifiedCommitFull": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
+    "originMain": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
+    "lastDirectlyVerifiedAt": "2026-08-13T05:19:31.979Z",
     "lastKnownWorkingTreeClean": true,
     "diffEmpty": true,
     "currentAlignmentAttested": true,
@@ -76,20 +86,20 @@
   "runtimeState": {
     "containerStatus": "running",
     "health": "healthy",
-    "containerId": "9277284ba18b390a10fdb17541d5d411218944f6f40b85325b6b82e27b620c8a",
-    "imageId": "sha256:1a3cc55d8ae7579e5e7c328e4ef925dee44d149b84ba7e6a09722711404bbb49",
-    "currentRuntimeRevision": "9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7",
+    "containerId": "d195899369bd6d4745465b525c37be5dbedec7fd66c53020b44d46c0e5aa2ddd",
+    "imageId": "sha256:65465451fb4c3459b20aa9d96af9a81a39f95a68b5577973a74c61bdac0487cb",
+    "currentRuntimeRevision": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
     "status": "FULLY_ALIGNED",
-    "containerCreatedAt": "2026-08-13T01:38:35.136979086Z",
-    "containerStartedAt": "2026-08-13T01:38:35.58348534Z",
+    "containerCreatedAt": "2026-08-13T01:52:29.765477997Z",
+    "containerStartedAt": "2026-08-13T01:52:30.260306828Z",
     "healthOk": true,
     "oauthOk": true,
     "mcpAuthOk": true,
     "rollbackStatus": "not_needed"
   },
   "liveState": {
-    "stateVersion": 7,
-    "generatedAt": "2026-08-13T01:42:36.744Z",
+    "stateVersion": 9,
+    "generatedAt": "2026-08-13T05:19:31.979Z",
     "freshness": "CURRENT",
     "githubVsS1": "ALIGNED",
     "runtime": "ALIGNED",
@@ -99,19 +109,19 @@
     "nextAction": null
   },
   "markdownInventory": {
-    "trackedGitMarkdown": 189,
-    "trackedPathsIndividuallyClassified": 189,
+    "trackedGitMarkdown": 191,
+    "trackedPathsIndividuallyClassified": 191,
     "runtimeMirrorObservedMarkdown": 33,
     "runtimeMirrorTrackedOverlap": 7,
     "runtimeOnlyMarkdown": 26,
-    "currentObservedSurface": 215,
-    "currentObservationBasis": "wealthtech_ssh_bridge_list_mcp_code_files_s1_read_only",
+    "currentObservedSurface": 217,
+    "currentObservationBasis": "branch_git_inventory_plus_last_verified_runtime_only_markdown_count",
     "historicalSnapshot": {
       "total": 209,
       "trackedGitMarkdownAtThatTime": 183,
       "runtimeOnlyMarkdown": 26
     },
-    "trackedGrowthSinceHistoricalSnapshot": 6,
+    "trackedGrowthSinceHistoricalSnapshot": 8,
     "exactHistoricalSixPathsAvailable": false
   },
   "deploymentState": {
@@ -125,11 +135,15 @@
     "activationAuthorized": true,
     "automaticPushEnabled": true,
     "automaticDeploymentAttested": true,
-    "canonicalFollowUpDeploymentAttested": false,
-    "pendingProof": "merge_governed_documentary_follow_up_then_attest_second_automatic_push",
+    "canonicalFollowUpDeploymentAttested": true,
+    "pendingProof": null,
     "firstAutomaticDeploymentSha": "9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7",
     "firstAutomaticDeploymentRunId": 31658327435,
-    "firstAutomaticDeploymentJob": "mcp-s1-31658327435-9be5095cbf72"
+    "firstAutomaticDeploymentJob": "mcp-s1-31658327435-9be5095cbf72",
+    "canonicalFollowUpDeploymentSha": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
+    "canonicalFollowUpDeploymentRunId": 31659053836,
+    "canonicalFollowUpDeploymentGithubJobId": 94319801309,
+    "canonicalFollowUpDeploymentMcpJob": null
   },
   "governedAutodeployV1": {
     "task": "TASK-20260809-003",
@@ -143,9 +157,11 @@
     "manualWorkflowDispatchSha": "8fb075dd55a3b94ed620527f11b2a77f88627188",
     "automaticDeploymentEnabledByCandidatePolicy": true,
     "automaticDeploymentAttested": true,
-    "canonicalSecondMergeAttested": false,
+    "canonicalSecondMergeAttested": true,
     "firstAutomaticDeploymentSha": "9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7",
-    "firstAutomaticDeploymentRunId": 31658327435
+    "firstAutomaticDeploymentRunId": 31658327435,
+    "canonicalSecondMergeSha": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
+    "canonicalSecondDeploymentRunId": 31659053836
   },
   "reviewState": {
     "pr41P2Thread": "PRRT_kwDOTJ-y6M6YoQ5j",
@@ -161,6 +177,6 @@
   "maintenanceWarnings": {
     "githubActionsNode20ForcedToNode24": true,
     "migrationTrackedSeparately": true,
-    "accountTwoFactorDeadline": "2026-08-18"
+    "accountTwoFactorAction": "excluded_by_human_decision"
   }
 }

@@ -101,3 +101,52 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Live State `2026-08-13T01:42:36.744Z` : CURRENT, FULLY_ALIGNED, contradictions vides, `nextAction=null`.
 - Thread P2 PR #41 répondu puis résolu après fusion et attestation.
 - Prochaine action : seconde PR documentaire gouvernée, puis second déploiement automatique canonique.
+
+## 2026-08-13T05:19:31.979Z — TASK-20260813-004 — GO, plan TDD et défaut documentaire reproduit
+
+- GO humain : spécification Governed Session Continuity / Operational Memory V1 approuvée le 2026-08-13.
+- Branche unique : `mcp/session-continuity-v1-20260813` ; plan versionné au head corrigé `7e45ba2f3dd0df9500bc693f3190be4e6ed44933`, CI `31669569897` réussie.
+- Baseline immuable : GitHub/S1/origin/OCI/runtime `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2` ; S1 propre/read-only ; runtime running/healthy.
+- RED documentaire : commit `eedc0f88cb396f4149921e28731f4c1d48147339`, CI `31669784015` en échec attendu uniquement à l'étape read-only safety ; localement un seul test échoue avec `false !== true`.
+- Défaut runtime reproduit : Live State `stateVersion=9` déclare encore le SHA documentaire `9be5095…` et retourne `documentation=ALIGNED` malgré GitHub `eb61b97…`.
+- Aucun changement de `main`, aucune écriture S1, aucune modification runtime, Autodeploy/OIDC ou 2FA.
+
+## 2026-08-13T06:50:43Z — TASK-20260813-004 — Cycles TDD terminés et candidate prête pour draft PR
+
+- Branche : `mcp/session-continuity-v1-20260813`, 27 commits réversibles depuis `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2`.
+- Head fonctionnel : `38e3ced7ff61119b1e8fd8d0228bf032972ecca9` ; GitHub Actions `31675193991` terminé `success`.
+- Livraison de branche : correctif SHA documentaire, mémoire atomique, journal sanitizé, governed sessions durables, reprise, lifecycle/checkpoints, locks, identité OAuth sanitizée, outils MCP, contexte composé, resource/instructions, WRITE gate shadow, maintenance et dashboard.
+- Installation fraîche : `npm --cache=/tmp/mcp-task13-npm-cache ci`, 143 packages, code 0. Le premier essai sans cache explicite a échoué localement avant les tests sur l'accès interdit à `/root/.npm`; aucune source n'a été modifiée par cet incident.
+- Régression fraîche : `12/12` gouvernance et `161/161` read-only, zéro fail/cancelled/skipped/todo ; typecheck, build, docs check, secret scan et diff check réussis.
+- Invariants : `origin/main=eb61b97e…`; 18/18 fichiers de test historiques conservés, 30 au total ; aucun fichier supprimé ; Autodeploy/OIDC/deploy inchangés ; `ENABLE_WRITE_TOOLS` et `allow_write` conservés ; aucun transport brut persisté.
+- S1/runtime : aucune écriture ni modification. Merge, Autodeploy et attestation de cette branche : NON OBSERVÉS.
+- Prochaine action : commit de consolidation, CI du head exact, puis unique draft PR et review.
+
+## 2026-08-13T09:38:26Z — TASK-20260813-004 — Première revue corrigée, seconde revue requise
+
+- Draft PR #44 créée vers `main` à base exacte `eb61b97e…`; CI initiales push `31675502633` et PR `31675612349` réussies.
+- Première revue indépendante : verdict initial `non mergeable`, avec deux findings critiques, quatre importants et deux mineurs.
+- Corrections TDD sur la branche unique : révocation/déliaison transport, shadow non bloquant en cas d’observateur suspendu, audit machine câblé, réparation `session.lockIds`, détail ruleset actif, feature-off inerte, compteur dashboard global et maintenance single-flight.
+- Proposition de document unique pour sessions+locks non retenue car incompatible avec la conception approuvée ; alternative additive appliquée en conservant le store de locks comme autorité et `session.lockIds` comme projection réparée.
+- Régression fraîche au head fonctionnel `6365e13…` : gouvernance `12/12`, read-only `172/172`, zéro fail/cancelled/skipped/todo ; typecheck, build, docs, secrets, diff et invariants réussis.
+- `origin/main` reste `eb61b97e…`; Autodeploy/OIDC/deploy inchangés ; aucune écriture S1/runtime et aucune 2FA.
+- Prochaine action : consolidation documentaire, CI du head exact et seconde revue indépendante avant toute autorisation ready/merge.
+
+## 2026-08-13T10:18:00Z — TASK-20260813-004 — Revue différentielle corrigée, confirmation exacte requise
+
+- Seconde revue du head `90e9ec6…` : aucun finding critique, deux importants et deux mineurs.
+- Cycles RED/GREEN publiés sur la branche unique : compensation sûre de reprise, dernier verdict décisif par reviewer, instantané d’unbind et libellé dashboard global.
+- La confirmation différentielle a ajouté deux RED : `COMMENTED` ne doit effacer aucun verdict ; les champs libres du journal doivent rester opaques face aux PAT/JWT/PEM/URI.
+- Head fonctionnel : `de8a6dfcfa56a30b6096fdb4a538c3a33a259d24` ; suite intégrale précédente `187/187`, puis tests ciblés/typecheck/secrets verts sur les deux dernières corrections.
+- `origin/main=eb61b97e…`; aucun diff Autodeploy/OIDC/deploy, aucune écriture S1/runtime et aucune 2FA.
+- Ultime confirmation différentielle : zéro finding critique/important ; range `fd0b1d8…de8a6df` déclaré mergeable.
+- Prochaine action : commit documentaire, régression et CI exactes, avec maintien de la PR #44 en draft avant autorisation humaine ready/merge.
+
+## 2026-08-13T10:22:00Z — TASK-20260813-004 — Revue et CI du head consolidé terminées
+
+- Head consolidé : `4eee32b8314ec5c287b6dd8308ceb02c50759884` ; branche propre et synchronisée.
+- Régression locale exacte : `187/187`, zéro fail/cancelled/skipped/todo ; typecheck, build, docs `191`, secrets et diff réussis.
+- GitHub Actions : run `31681641604`, `MCP CI #425`, conclusion `success` sur ce SHA exact.
+- PR #44 : ouverte, mergeable techniquement, toujours draft, base `eb61b97e…`, aucun thread/review GitHub.
+- Invariants : `main` inchangé, diff Autodeploy/OIDC/deploy nul, aucun fichier supprimé, aucune écriture S1/runtime et aucune 2FA.
+- Prochaine action : autorisation humaine ready/merge, puis reverrouillage exact-head et CI avant toute fusion.

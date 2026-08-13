@@ -32,6 +32,14 @@ function captureTools(register: (server: McpServer) => void): Set<string> {
       assert.equal(names.has(name), false, `Outil enregistré deux fois : ${name}`);
       names.add(name);
       return undefined;
+    },
+    registerTool(name: string) {
+      assert.equal(names.has(name), false, `Outil enregistré deux fois : ${name}`);
+      names.add(name);
+      return undefined;
+    },
+    registerResource() {
+      return undefined;
     }
   } as unknown as McpServer;
 

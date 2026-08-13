@@ -208,3 +208,46 @@ Mise à jour : 2026-07-09T20:08:09Z
 - S1 est resté sur `main`, propre, avec fetch read-only et push désactivé ; OCI/runtime sont alignés sur le merge.
 - Le thread P2 de la PR #41 a été résolu après présence de la correction sur `main` et preuve du déploiement.
 - Preuve restante avant clôture : fusion et attestation automatique de la seconde PR documentaire gouvernée.
+
+## 2026-08-13 — Seconde preuve Autodeploy attestée et correctif documentaire TDD
+
+- PR #43 fusionnée au SHA `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2` ; CI push `31659053828` et deploy push `31659053836` réussis, job `94319801309`.
+- Attestation fraîche : GitHub, S1, `origin/main`, OCI et runtime alignés ; S1 propre avec push désactivé ; conteneur running/healthy.
+- Nouveau test de non-régression : un SHA GitHub documentaire explicite ancien doit produire `DOCUMENTATION_DRIFT` même si `documentation_requires_revalidation=false`.
+- GREEN minimal : `parseDocumentationObservation` compare les SHA déclarés aux SHA observés sans modifier types, enums, `stateVersion`, outils, fallback ou store Live State.
+- Fixture littéral des 92 noms/descriptions/schémas d'outils historiques pour interdire renommage, suppression ou changement incompatible.
+- Production non modifiée par ce commit de branche ; rollback fonctionnel limité au changement local de comparaison SHA.
+
+## 2026-08-13 — MCP Governed Session Continuity / Operational Memory V1 — candidate de review
+
+- Ajout de `governedSessionId` durable, distinct du `MCP-Session-Id` éphémère, avec reprise par principal OAuth stable ou secret de reprise haché.
+- Ajout de stores JSON atomiques stricts, permissions `0700/0600`, révisions optimistes, corruption fail-closed et journal JSONL rotatif à allowlist.
+- Ajout des heartbeats, acquittements `stateVersion`, checkpoints, pause/close, expiration et locks gouvernés bornés.
+- Ajout de onze outils MCP de session et de deux outils de contexte, plus instructions d'initialisation et resource `mcp://wealthtech/governed-context/current`.
+- Ajout d'un collecteur GitHub borné cache/single-flight et d'une composition déterministe Live State/session/locks/PR/checks/reviews.
+- Ajout d'un WRITE gate strictement `shadow` qui préserve le handler, le résultat ou l'erreur historique et ne modifie ni `ENABLE_WRITE_TOOLS` ni `allow_write`.
+- Ajout d'une maintenance 60 secondes sans collecte GitHub/SSH/Live State et d'une section dashboard authentifiée, échappée et cache/store-only.
+- Régression fraîche : 12 tests de gouvernance et 161 tests read-only réussis ; typecheck, build, docs, secrets et invariants réussis ; CI `31675193991` verte sur `38e3ced7…`.
+- Aucun merge, déploiement S1, changement runtime, Autodeploy/OIDC ou 2FA n'est inclus ou déclaré.
+
+## 2026-08-13 — Corrections TDD de la première revue de la PR #44
+
+- Reprise de session : l’ancien transport partagé est révoqué après reprise réussie et le transport courant est délié à sa fermeture, sans fermer la governed session.
+- WRITE gate : l’évaluation et la journalisation shadow sont détachées du chemin critique ; un observateur bloqué ne retarde plus le résultat ou l’erreur historique.
+- Audit : sessions, transports, contexte, checkpoints, locks et réconciliation émettent désormais les événements machine allowlistés prévus.
+- Cohérence locks : `session.lockIds` est réparé depuis le store de locks existant après une panne inter-fichiers, sans fusion de stores ni nouvelle autorité.
+- GitHub : le détail du seul ruleset actif sélectionné est chargé avec un plafond de sept appels, conformément à l’API REST officielle.
+- Feature-off, dashboard et maintenance : aucun store chargé lorsque désactivé, compteur global réel et cycles périodiques single-flight.
+- Régression post-review : gouvernance `12/12`, read-only `172/172`, typecheck, build, docs, secret scan et invariants réussis sur le head fonctionnel `6365e13…`.
+- PR #44 reste draft ; aucun merge, autodeploy, changement S1/runtime ou 2FA n’est déclaré.
+
+## 2026-08-13 — Corrections TDD de la seconde revue de la PR #44
+
+- La reprise sur le transport déjà lié ne modifie plus la table de bindings avant la réussite du store ; une panne d’écriture conserve store et autorisation antérieurs.
+- Les revues GitHub conservent le dernier verdict décisif par reviewer ; `COMMENTED` est non décisif et `DISMISSED` lève explicitement le verdict antérieur.
+- La fermeture d’un transport journalise un instantané immuable du binding retiré, sans course avec une reprise ultérieure.
+- Le dashboard nomme explicitement son compteur global ; les champs libres du journal sont opaques et les autres valeurs couvrent aussi PAT/JWT/PEM/URI.
+- Régression intégrale précédente : `187/187`; tests ciblés, typecheck et secrets verts au head fonctionnel `de8a6df…` avant consolidation documentaire.
+- Ultime confirmation différentielle : aucun finding critique ou important, range fonctionnel déclaré mergeable.
+- Head consolidé `4eee32b…` : régression locale `187/187` et CI exacte `31681641604` réussies ; PR #44 maintenue draft dans l’attente d’une autorisation humaine.
+- PR #44 reste draft ; `main`, S1/runtime, Autodeploy V1, OIDC, `ENABLE_WRITE_TOOLS`, `allow_write` et l’exclusion 2FA restent inchangés.
