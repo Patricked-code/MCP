@@ -21,7 +21,7 @@ const IDENTITY = {
   assurance: 'oauth_subject' as const
 };
 
-async function fixture() {
+async function fixture(audit?: { record(input: { type: string }): Promise<void> }) {
   const directory = await mkdtemp(join(tmpdir(), 'mcp-governed-locks-'));
   const sessionFile = join(directory, 'sessions.json');
   const lockFile = join(directory, 'locks.json');
@@ -54,7 +54,8 @@ async function fixture() {
     bindings,
     defaultTtlSeconds: 300,
     maxTtlSeconds: 1_800,
-    now: () => currentTime
+    now: () => currentTime,
+    audit
   });
   renewLocks = locks.renewLocksForHeartbeat;
 
@@ -209,6 +210,70 @@ test('les scopes ambigus et TTL hors bornes sont refusés', async () => {
       }, { transportSessionId: 'transport-A', identity: IDENTITY }),
       /LOCK_SCOPE_INVALID|LOCK_TTL_INVALID/);
     }
+  } finally {
+    await rm(f.directory, { recursive: true, force: true });
+  }
+});
+
+test('le cycle des locks émet acquis, conflit, renouvelé, libéré et expiré', async () => {
+  const eventTypes: string[] = [];
+  const f = await fixture({
+    async record(input) { eventTypes.push(input.type); }
+  });
+  try {
+    const first = await f.open('TASK-20260813-004', 'transport-A');
+    const acquired = await f.locks.acquireLock({
+      governedSessionId: first.session.governedSessionId,
+      expectedSessionRevision: first.session.sessionRevision,
+      scope: { type: 'task', key: 'TASK-20260813-004' },
+      reason: 'audit lifecycle'
+    }, { transportSessionId: 'transport-A', identity: IDENTITY });
+    const second = await f.open('TASK-20260813-005', 'transport-B');
+    await assert.rejects(f.locks.acquireLock({
+      governedSessionId: second.session.governedSessionId,
+      expectedSessionRevision: second.session.sessionRevision,
+      scope: { type: 'task', key: 'TASK-20260813-004' },
+      reason: 'audit conflict'
+    }, { transportSessionId: 'transport-B', identity: IDENTITY }), /LOCK_CONFLICT/);
+
+    const firstAfterAcquire = await f.sessions.getVisibleSession(
+      first.session.governedSessionId,
+      { transportSessionId: 'transport-A', identity: IDENTITY }
+    );
+    f.setNow('2026-08-13T08:01:00.000Z');
+    await f.sessions.heartbeat({
+      governedSessionId: first.session.governedSessionId,
+      expectedSessionRevision: firstAfterAcquire?.sessionRevision ?? -1
+    }, { transportSessionId: 'transport-A', identity: IDENTITY });
+    const renewed = (await f.locks.listActiveLocks())[0]!;
+    await f.locks.releaseLock({
+      governedSessionId: first.session.governedSessionId,
+      lockId: acquired.lockId,
+      expectedLockRevision: renewed.lockRevision
+    }, { transportSessionId: 'transport-A', identity: IDENTITY });
+
+    const firstAfterRelease = await f.sessions.getVisibleSession(
+      first.session.governedSessionId,
+      { transportSessionId: 'transport-A', identity: IDENTITY }
+    );
+    await f.locks.acquireLock({
+      governedSessionId: first.session.governedSessionId,
+      expectedSessionRevision: firstAfterRelease?.sessionRevision ?? -1,
+      scope: { type: 'resource', key: 'src/operationalMemory/lockService.ts' },
+      ttlSeconds: 30,
+      reason: 'audit expiration'
+    }, { transportSessionId: 'transport-A', identity: IDENTITY });
+    f.setNow('2026-08-13T08:01:31.000Z');
+    await f.locks.expireLocks();
+
+    assert.deepEqual(eventTypes, [
+      'lock.acquired',
+      'lock.conflicted',
+      'lock.renewed',
+      'lock.released',
+      'lock.acquired',
+      'lock.expired'
+    ]);
   } finally {
     await rm(f.directory, { recursive: true, force: true });
   }
