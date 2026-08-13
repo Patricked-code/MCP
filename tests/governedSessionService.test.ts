@@ -121,6 +121,57 @@ test('resume sur un nouveau transport conserve governedSessionId et incrémente 
   }
 });
 
+test('un échec de persistance pendant resume sur le transport courant conserve le binding légitime', async () => {
+  const { directory, file, store, bindings, service } = await fixture();
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-A-raw',
+      identity: SHARED_IDENTITY
+    });
+    const before = await readFile(file);
+    const failingService = createGovernedSessionService({
+      store: {
+        read: () => store.read(),
+        async update(mutator) {
+          await mutator(await store.read());
+          throw new Error('INJECTED_ATOMIC_WRITE_FAILURE');
+        }
+      },
+      bindings,
+      idleTtlSeconds: 86_400,
+      resumeGraceSeconds: 604_800,
+      now: () => new Date('2026-08-13T07:01:00.000Z')
+    });
+
+    await assert.rejects(failingService.resumeSession({
+      governedSessionId: opened.session.governedSessionId,
+      resumeSecret: opened.resumeSecret,
+      repository: 'Patricked-code/MCP',
+      taskScope: OPEN_INPUT.taskScope,
+      expectedSessionRevision: opened.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-A-raw',
+      identity: SHARED_IDENTITY
+    }), /INJECTED_ATOMIC_WRITE_FAILURE/);
+
+    assert.equal(
+      bindings.lookup('transport-A-raw'),
+      opened.session.governedSessionId
+    );
+    assert.deepEqual(await readFile(file), before);
+    const heartbeat = await service.heartbeat({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-A-raw',
+      identity: SHARED_IDENTITY
+    });
+    assert.equal(heartbeat.sessionRevision, opened.session.sessionRevision + 1);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test('la fermeture du transport courant supprime sa liaison sans fermer la governed session', async () => {
   const { directory, bindings, service } = await fixture();
   try {
