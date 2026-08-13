@@ -909,11 +909,11 @@ GitHub collector :
 - jamais de token dans error;
 - échec partiel = DEGRADED, jamais throw depuis le composer.
 
-- [ ] **Step 1: RED GitHub avec fetch injecté.**
+- [x] **Step 1: RED GitHub avec fetch injecté.**
 
 Couvrir PR active, checks, reviews, thread count, ruleset, cache et timeout. Un body malformé retourne DEGRADED avec champs null/bornés.
 
-- [ ] **Step 2: RED composer.**
+- [x] **Step 2: RED composer.**
 
 Avec Live State et GitHub fixtures littéraux, vérifier les priorités de nextAction :
 1. blocker Live State;
@@ -923,17 +923,17 @@ Avec Live State et GitHub fixtures littéraux, vérifier les priorités de nextA
 5. checkpoint nextAction;
 6. null.
 
-- [ ] **Step 3: Exécuter RED.**
+- [x] **Step 3: Exécuter RED.**
 
 ~~~~bash
 node --import tsx --test tests/governedContextGithub.test.ts tests/governedContextService.test.ts
 ~~~~
 
-- [ ] **Step 4: Implémenter puis GREEN.**
+- [x] **Step 4: Implémenter puis GREEN.**
 
 Le composer lit les stores et caches; il n’écrit rien et ne force ni SSH ni GitHub sauf dans reconcileExplicit().
 
-- [ ] **Step 5: Commits.**
+- [x] **Step 5: Commits.**
 
 - RED: test(governed-context): define composed operational view
 - GREEN: feat(governed-context): compose bounded live context

@@ -95,9 +95,11 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
     collector.collect(BRANCH)
   ]);
   const cached = await collector.collect(BRANCH);
+  const cacheOnly = await collector.getCurrent(BRANCH);
 
   assert.deepEqual(joined, first);
   assert.deepEqual(cached, first);
+  assert.deepEqual(cacheOnly, first);
   assert.equal(calls.length, 6);
   assert.equal(calls.every((call) => call.authorization === 'Bearer sensitive-token-never-returned'), true);
   assert.equal(calls.filter((call) => call.method === 'POST').length, 1);
@@ -141,6 +143,29 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
   assert.match(calls.find((call) => call.url.includes('/check-runs?'))?.url ?? '', /per_page=100/);
   assert.match(calls.find((call) => call.url.includes('/reviews?'))?.url ?? '', /per_page=100/);
   assert.match(calls.find((call) => call.url.includes('/rulesets?'))?.url ?? '', /per_page=20/);
+
+  const [forced, forcedJoined] = await Promise.all([
+    collector.reconcileExplicit(BRANCH),
+    collector.reconcileExplicit(BRANCH)
+  ]);
+  assert.deepEqual(forcedJoined, forced);
+  assert.equal(calls.length, 12);
+});
+
+test('getCurrent sur cache miss ne déclenche aucun accès GitHub', async () => {
+  let calls = 0;
+  const collector = createGithubOperationalContextCollector({
+    fetchImpl: async () => { calls += 1; return json({}); },
+    readToken: async () => 'must-not-be-read-for-cache-only',
+    apiBase: 'https://api.github.test',
+    allowedHosts: 'api.github.test',
+    now: () => new Date('2026-08-13T08:00:00.000Z')
+  });
+
+  const result = await collector.getCurrent('mcp/another-branch');
+  assert.equal(calls, 0);
+  assert.equal(result.status, 'UNAVAILABLE');
+  assert.equal(result.error, 'github_cache_miss');
 });
 
 test('un body malformé dégrade la vue avec champs bornés sans propager de secret', async () => {

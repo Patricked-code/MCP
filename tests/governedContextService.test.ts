@@ -137,6 +137,7 @@ async function context(overrides: {
 } = {}) {
   let liveReconciles = 0;
   let githubReconciles = 0;
+  let githubCollections = 0;
   const liveState = overrides.liveState === undefined ? LIVE_STATE : overrides.liveState;
   const session = overrides.session === undefined ? SESSION : overrides.session;
   const github = overrides.github ?? GITHUB;
@@ -146,7 +147,8 @@ async function context(overrides: {
       reconcileNow: async () => { liveReconciles += 1; return liveState; }
     },
     github: {
-      collect: async () => github,
+      getCurrent: async () => github,
+      collect: async () => { githubCollections += 1; return github; },
       reconcileExplicit: async () => { githubReconciles += 1; return github; }
     },
     sessions: {
@@ -169,7 +171,7 @@ async function context(overrides: {
     result,
     service,
     input,
-    counts: () => ({ liveReconciles, githubReconciles })
+    counts: () => ({ liveReconciles, githubReconciles, githubCollections })
   };
 }
 
@@ -200,7 +202,11 @@ test('priorise Live State, acquittement, conflit, CI/review, checkpoint puis nul
 
 test('getCurrent reste cache/store-only et reconcileExplicit force seulement les sources prévues', async () => {
   const fixture = await context();
-  assert.deepEqual(fixture.counts(), { liveReconciles: 0, githubReconciles: 0 });
+  assert.deepEqual(fixture.counts(), {
+    liveReconciles: 0,
+    githubReconciles: 0,
+    githubCollections: 0
+  });
   assert.equal(fixture.result.schemaVersion, 1);
   assert.equal(fixture.result.gate.mode, 'shadow');
   assert.equal(fixture.result.gate.existingWriteToolsEnabled, true);
@@ -209,7 +215,11 @@ test('getCurrent reste cache/store-only et reconcileExplicit force seulement les
 
   const refreshed = await fixture.service.reconcileExplicit(fixture.input);
   assert.equal(refreshed.repository, 'Patricked-code/MCP');
-  assert.deepEqual(fixture.counts(), { liveReconciles: 1, githubReconciles: 1 });
+  assert.deepEqual(fixture.counts(), {
+    liveReconciles: 1,
+    githubReconciles: 1,
+    githubCollections: 0
+  });
 });
 
 test('une session absente et des lecteurs dégradés produisent une vue, jamais un throw', async () => {
@@ -219,4 +229,32 @@ test('une session absente et des lecteurs dégradés produisent une vue, jamais 
   assert.equal(fixture.result.nextAction, 'mcp_open_governed_session');
   assert.equal(fixture.result.proof.identityAssurance, null);
   assert.equal(fixture.result.proof.limitations.includes('live_state_unavailable'), true);
+});
+
+test('des dépendances qui lèvent synchroniquement sont converties en vue dégradée', async () => {
+  const throwing = () => { throw new Error('sensitive dependency failure'); };
+  const service = createGovernedOperationalContextService({
+    liveState: {
+      getCurrent: throwing,
+      reconcileNow: throwing
+    },
+    github: {
+      getCurrent: throwing,
+      reconcileExplicit: throwing
+    },
+    sessions: { getVisibleSession: throwing },
+    locks: { listActiveLocks: throwing },
+    gateMode: 'shadow',
+    existingWriteToolsEnabled: false,
+    now: () => new Date(NOW)
+  } as never);
+
+  const result = await service.getCurrent({
+    governedSessionId: SESSION_ID,
+    workBranch: 'mcp/session-continuity-v1-20260813',
+    request: REQUEST
+  });
+  assert.equal(result.freshness, 'DEGRADED');
+  assert.equal(result.github.error, 'github_context_unavailable');
+  assert.equal(JSON.stringify(result).includes('sensitive dependency failure'), false);
 });
