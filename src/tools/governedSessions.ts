@@ -86,7 +86,8 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
     sessionStore,
     bindings,
     defaultTtlSeconds: operationalMemoryConfig.lockDefaultTtlSeconds,
-    maxTtlSeconds: operationalMemoryConfig.lockMaxTtlSeconds
+    maxTtlSeconds: operationalMemoryConfig.lockMaxTtlSeconds,
+    audit
   });
   sharedDependencies = { sessions, locks, audit };
   return sharedDependencies;

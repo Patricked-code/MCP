@@ -1,6 +1,10 @@
 import { randomUUID } from 'node:crypto';
 
 import type { AtomicJsonStore } from './atomicStore.js';
+import {
+  NOOP_OPERATIONAL_AUDIT,
+  type OperationalAudit
+} from './operationalAudit.js';
 import type { SessionRequest } from './sessionService.js';
 import type { TransportBindings } from './transportBindings.js';
 import type {
@@ -47,6 +51,7 @@ type GovernedLockServiceOptions = {
   defaultTtlSeconds: number;
   maxTtlSeconds: number;
   now?: () => Date;
+  audit?: OperationalAudit;
 };
 
 function fail(code: string): never {
@@ -89,6 +94,7 @@ export function createGovernedLockService(
   options: GovernedLockServiceOptions
 ): GovernedLockService {
   const currentTime = options.now ?? (() => new Date());
+  const audit = options.audit ?? NOOP_OPERATIONAL_AUDIT;
 
   async function requireSession(
     governedSessionId: string,
@@ -148,20 +154,36 @@ export function createGovernedLockService(
         lockRevision: 1
       };
 
-      await options.store.update((document) => {
-        const conflict = document.locks.find((candidate) => (
-          candidate.scope === scope
-          && candidate.status === 'ACTIVE'
-          && Date.parse(candidate.expiresAt) > at.getTime()
-          && candidate.governedSessionId !== input.governedSessionId
-        ));
-        if (conflict) fail(`LOCK_CONFLICT:${conflict.governedSessionId}`);
-        return {
-          ...document,
-          storeRevision: document.storeRevision + 1,
-          locks: [...document.locks, lock]
-        };
-      });
+      let conflictingLockId: string | null = null;
+      try {
+        await options.store.update((document) => {
+          const conflict = document.locks.find((candidate) => (
+            candidate.scope === scope
+            && candidate.status === 'ACTIVE'
+            && Date.parse(candidate.expiresAt) > at.getTime()
+            && candidate.governedSessionId !== input.governedSessionId
+          ));
+          if (conflict) {
+            conflictingLockId = conflict.lockId;
+            fail(`LOCK_CONFLICT:${conflict.governedSessionId}`);
+          }
+          return {
+            ...document,
+            storeRevision: document.storeRevision + 1,
+            locks: [...document.locks, lock]
+          };
+        });
+      } catch (error) {
+        if (conflictingLockId) {
+          await audit.record({
+            type: 'lock.conflicted',
+            governedSessionId: input.governedSessionId,
+            scope,
+            conflictingLockId
+          });
+        }
+        throw error;
+      }
 
       try {
         await options.sessionStore.update((document) => {
@@ -185,6 +207,7 @@ export function createGovernedLockService(
         await compensateLock(lock.lockId);
         throw error;
       }
+      await audit.record({ type: 'lock.acquired', lock });
       return lock;
     },
 
@@ -222,6 +245,7 @@ export function createGovernedLockService(
             }
           : session)
       }));
+      await audit.record({ type: 'lock.released', lock: released });
       return released;
     },
 
@@ -250,22 +274,26 @@ export function createGovernedLockService(
         if (renewed.length === 0) return document;
         return { ...document, storeRevision: document.storeRevision + 1, locks };
       });
+      for (const lock of renewed) {
+        await audit.record({ type: 'lock.renewed', lock });
+      }
       return renewed;
     },
 
     async expireLocks(at = currentTime()) {
-      const expiredIds: string[] = [];
+      const expired: GovernedLockRecord[] = [];
       await options.store.update((document) => {
         const locks = document.locks.map((lock) => {
           if (lock.status !== 'ACTIVE' || Date.parse(lock.expiresAt) > at.getTime()) return lock;
-          expiredIds.push(lock.lockId);
-          return { ...lock, status: 'EXPIRED' as const, lockRevision: lock.lockRevision + 1 };
+          const next = { ...lock, status: 'EXPIRED' as const, lockRevision: lock.lockRevision + 1 };
+          expired.push(next);
+          return next;
         });
-        if (expiredIds.length === 0) return document;
+        if (expired.length === 0) return document;
         return { ...document, storeRevision: document.storeRevision + 1, locks };
       });
-      if (expiredIds.length > 0) {
-        const expiredSet = new Set(expiredIds);
+      if (expired.length > 0) {
+        const expiredSet = new Set(expired.map((lock) => lock.lockId));
         await options.sessionStore.update((document) => ({
           ...document,
           storeRevision: document.storeRevision + 1,
@@ -277,7 +305,10 @@ export function createGovernedLockService(
           })
         }));
       }
-      return expiredIds.length;
+      for (const lock of expired) {
+        await audit.record({ type: 'lock.expired', lock });
+      }
+      return expired.length;
     },
 
     async listActiveLocks() {
