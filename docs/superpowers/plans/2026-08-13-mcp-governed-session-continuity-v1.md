@@ -482,21 +482,21 @@ export type OperationalEventJournal = {
 
 Le module n’accepte pas un Record arbitraire depuis les handlers. Une fonction metadataForEvent(type, typedInput) construit une allowlist par type. Les clés token, authorization, prompt, arguments, output, content, mcpSessionId et transportSessionId sont refusées par test.
 
-- [ ] **Step 1: Écrire RED pour append, séquence, parallélisme, permissions, sanitization et rotation.**
+- [x] **Step 1: Écrire RED pour append, séquence, parallélisme, permissions, sanitization et rotation.**
 
 Avec maxBytes=512 et archives=2, écrire assez d’événements pour produire .1 et .2, vérifier absence de .3 et JSON valide ligne par ligne.
 
-- [ ] **Step 2: Exécuter RED.**
+- [x] **Step 2: Exécuter RED.**
 
 ~~~~bash
 node --import tsx --test tests/operationalEventJournal.test.ts
 ~~~~
 
-- [ ] **Step 3: Implémenter append sérialisé et rotation 10 MiB/5 archives par défaut.**
+- [x] **Step 3: Implémenter append sérialisé et rotation 10 MiB/5 archives par défaut.**
 
 La rotation renomme du plus ancien au plus récent, ne suit aucun symlink, et maintient le fichier actif en 0600.
 
-- [ ] **Step 4: Vérifier GREEN et le secret scan.**
+- [x] **Step 4: Vérifier GREEN et le secret scan.**
 
 ~~~~bash
 node --import tsx --test tests/operationalEventJournal.test.ts
@@ -504,7 +504,7 @@ npm run lint:secrets
 git diff --check
 ~~~~
 
-- [ ] **Step 5: Commits.**
+- [x] **Step 5: Commits.**
 
 - RED: test(operational-memory): define event journal contract
 - GREEN: feat(operational-memory): add sanitized event journal
