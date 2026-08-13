@@ -31,6 +31,7 @@ async function fixture(options: {
   now?: () => Date;
   stateVersion?: () => number;
   idleTtlSeconds?: number;
+  audit?: { record(input: { type: string }): Promise<void> };
 } = {}) {
   const directory = await mkdtemp(join(tmpdir(), 'mcp-governed-session-'));
   const file = join(directory, 'sessions.json');
@@ -46,7 +47,8 @@ async function fixture(options: {
     idleTtlSeconds: options.idleTtlSeconds ?? 86_400,
     resumeGraceSeconds: 604_800,
     now: options.now ?? (() => new Date('2026-08-13T07:00:00.000Z')),
-    getLiveState: async () => ({ stateVersion: options.stateVersion?.() ?? 9 })
+    getLiveState: async () => ({ stateVersion: options.stateVersion?.() ?? 9 }),
+    audit: options.audit
   });
   return { directory, file, store, bindings, service };
 }
@@ -155,6 +157,94 @@ test('la fermeture du transport courant supprime sa liaison sans fermer la gover
       transportSessionId: 'transport-B-raw',
       identity: SHARED_IDENTITY
     })).governedSessionId, opened.session.governedSessionId);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('le cycle session/transport/contexte/checkpoint émet les événements machine minimaux', async () => {
+  const eventTypes: string[] = [];
+  const { directory, service } = await fixture({
+    audit: {
+      async record(input) { eventTypes.push(input.type); }
+    }
+  });
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-A-raw',
+      identity: SHARED_IDENTITY
+    });
+    const resumed = await service.resumeSession({
+      governedSessionId: opened.session.governedSessionId,
+      resumeSecret: opened.resumeSecret,
+      repository: 'Patricked-code/MCP',
+      taskScope: OPEN_INPUT.taskScope,
+      expectedSessionRevision: opened.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-B-raw',
+      identity: SHARED_IDENTITY
+    });
+    const heartbeat = await service.heartbeat({
+      governedSessionId: resumed.governedSessionId,
+      expectedSessionRevision: resumed.sessionRevision
+    }, {
+      transportSessionId: 'transport-B-raw',
+      identity: SHARED_IDENTITY
+    });
+    const acknowledged = await service.acknowledgeContext({
+      governedSessionId: heartbeat.governedSessionId,
+      expectedSessionRevision: heartbeat.sessionRevision,
+      expectedStateVersion: 9
+    }, {
+      transportSessionId: 'transport-B-raw',
+      identity: SHARED_IDENTITY
+    });
+    await service.createCheckpoint({
+      governedSessionId: acknowledged.governedSessionId,
+      expectedSessionRevision: acknowledged.sessionRevision,
+      expectedStateVersion: 9,
+      completedAction: 'audit session lifecycle',
+      resultCode: 'PASS',
+      pullRequestNumber: null,
+      observedHeadSha: null,
+      blockers: [],
+      nextAction: null
+    }, {
+      transportSessionId: 'transport-B-raw',
+      identity: SHARED_IDENTITY
+    });
+    const current = await service.getVisibleSession(opened.session.governedSessionId, {
+      transportSessionId: 'transport-B-raw',
+      identity: SHARED_IDENTITY
+    });
+    const paused = await service.pauseSession({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: current?.sessionRevision ?? -1
+    }, {
+      transportSessionId: 'transport-B-raw',
+      identity: SHARED_IDENTITY
+    });
+    await service.closeSession({
+      governedSessionId: paused.governedSessionId,
+      expectedSessionRevision: paused.sessionRevision
+    }, {
+      transportSessionId: 'transport-B-raw',
+      identity: SHARED_IDENTITY
+    });
+
+    assert.deepEqual(eventTypes, [
+      'session.opened',
+      'transport.bound',
+      'transport.unbound',
+      'session.resumed',
+      'transport.bound',
+      'session.heartbeat',
+      'context.acknowledged',
+      'checkpoint.created',
+      'session.paused',
+      'session.closed',
+      'transport.unbound'
+    ]);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
