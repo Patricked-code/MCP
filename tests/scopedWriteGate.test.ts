@@ -95,6 +95,19 @@ function dependencies(options: {
   };
 }
 
+async function settleBeforeShadowDeadline<T>(promise: Promise<T>) {
+  const timedOut = Symbol('shadow observation blocked historical handler');
+  return Promise.race([
+    promise.then(
+      (value) => ({ status: 'fulfilled' as const, value }),
+      (error) => ({ status: 'rejected' as const, error })
+    ),
+    new Promise<typeof timedOut>((resolve) => {
+      setTimeout(() => resolve(timedOut), 100);
+    })
+  ]);
+}
+
 test('succès: schéma/annotations/arité et référence résultat restent exacts, handler appelé une fois', async () => {
   const fake = fakeServer();
   const deps = dependencies();
@@ -182,6 +195,46 @@ test('une erreur evaluator/journal reste sans effet sur le résultat historique'
     assert.equal(calls, 1);
     assert.equal(deps.counts().reconciles, 1);
   }
+});
+
+test('un evaluator shadow qui ne répond jamais ne retarde ni le résultat ni reconcile', async () => {
+  const fake = fakeServer();
+  const never = new Promise<never>(() => undefined);
+  const deps = dependencies({ evaluate: () => never });
+  const decorated = decorateScopedWriteServer(fake.server, deps.value);
+  const historicalResult = { status: 'historical-success' };
+  (decorated as any).tool('never_resolving_evaluator', {}, async () => historicalResult);
+
+  const settled = await settleBeforeShadowDeadline(
+    fake.registrations[0]!.callback({}, EXTRA)
+  );
+
+  assert.notEqual(typeof settled, 'symbol');
+  if (typeof settled === 'symbol') return;
+  assert.equal(settled.status, 'fulfilled');
+  if (settled.status === 'fulfilled') assert.equal(settled.value, historicalResult);
+  assert.deepEqual(deps.counts(), { evaluates: 1, reconciles: 1 });
+});
+
+test('un journal shadow qui ne répond jamais ne retarde pas la même erreur historique', async () => {
+  const fake = fakeServer();
+  const never = new Promise<never>(() => undefined);
+  const deps = dependencies({ record: () => never });
+  const decorated = decorateScopedWriteServer(fake.server, deps.value);
+  const historicalError = new Error('same historical error');
+  (decorated as any).tool('never_resolving_journal', {}, async () => {
+    throw historicalError;
+  });
+
+  const settled = await settleBeforeShadowDeadline(
+    fake.registrations[0]!.callback({}, EXTRA)
+  );
+
+  assert.notEqual(typeof settled, 'symbol');
+  if (typeof settled === 'symbol') return;
+  assert.equal(settled.status, 'rejected');
+  if (settled.status === 'rejected') assert.equal(settled.error, historicalError);
+  assert.deepEqual(deps.counts(), { evaluates: 1, reconciles: 0 });
 });
 
 test('off reste silencieux; tous les verdicts shadow restent non bloquants', async () => {
