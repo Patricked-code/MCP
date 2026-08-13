@@ -134,6 +134,7 @@ async function context(overrides: {
   session?: GovernedSessionPublicRecord | null;
   locks?: GovernedLockRecord[];
   github?: typeof GITHUB;
+  audit?: { record(input: { type: string }): Promise<void> };
 } = {}) {
   let liveReconciles = 0;
   let githubReconciles = 0;
@@ -159,7 +160,8 @@ async function context(overrides: {
     },
     gateMode: 'shadow',
     existingWriteToolsEnabled: true,
-    now: () => new Date(NOW)
+    now: () => new Date(NOW),
+    audit: overrides.audit
   });
   const input = {
     governedSessionId: session?.governedSessionId ?? null,
@@ -220,6 +222,24 @@ test('getCurrent reste cache/store-only et reconcileExplicit force seulement les
     githubReconciles: 1,
     githubCollections: 0
   });
+});
+
+test('lecture et réconciliation explicite émettent les événements machine dans l’ordre', async () => {
+  const eventTypes: string[] = [];
+  const fixture = await context({
+    audit: {
+      async record(input) { eventTypes.push(input.type); }
+    }
+  });
+
+  await fixture.service.reconcileExplicit(fixture.input);
+
+  assert.deepEqual(eventTypes, [
+    'context.read',
+    'reconcile.requested',
+    'context.read',
+    'reconcile.completed'
+  ]);
 });
 
 test('une session absente et des lecteurs dégradés produisent une vue, jamais un throw', async () => {
