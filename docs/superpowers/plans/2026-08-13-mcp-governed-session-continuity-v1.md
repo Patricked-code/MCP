@@ -1052,38 +1052,38 @@ Règles d’implémentation V1 :
 - Après succès uniquement, requestReconcile déclenche liveStateEngine.reconcileNow en fire-and-forget; le single-flight existant absorbe la concurrence.
 - createGithubDeployRouter reçoit exactement les dépendances actuelles et n’est jamais enveloppé.
 
-- [ ] **Step 1: RED délégation exacte.**
+- [x] **Step 1: RED délégation exacte.**
 
 Tester success, Error, AbortError et erreur du journal. Compteur original toujours égal à 1; résultat/erreur identique.
 
-- [ ] **Step 2: RED off/shadow.**
+- [x] **Step 2: RED off/shadow.**
 
 off n’écrit aucun événement; shadow journalise une décision. session absente, stateVersion périmé et conflit de lock restent non bloquants.
 
-- [ ] **Step 3: RED contrats historiques.**
+- [x] **Step 3: RED contrats historiques.**
 
 registerScopedWriteTools sur le serveur décoré doit encore correspondre au fixture historique exact.
 
-- [ ] **Step 4: Exécuter RED.**
+- [x] **Step 4: Exécuter RED.**
 
 ~~~~bash
 node --import tsx --test tests/scopedWriteGate.test.ts tests/toolContractRegression.test.ts tests/toolClassification.test.ts
 ~~~~
 
-- [ ] **Step 5: Implémenter et GREEN.**
-- [ ] **Step 6: Rejouer toutes les régressions OIDC/deploy inchangées.**
+- [x] **Step 5: Implémenter et GREEN.**
+- [x] **Step 6: Rejouer toutes les régressions OIDC/deploy inchangées.**
 
 ~~~~bash
 node --import tsx --test tests/githubOidc.test.ts tests/s1Deploy.test.ts tests/deployRoutes.test.ts tests/serverDeployRegistration.test.ts tests/deployWorkflow.test.ts tests/deployWorkflowShell.test.ts
 ~~~~
 
-- [ ] **Step 7: Vérifier qu’aucun fichier OIDC/deploy n’a changé depuis la baseline.**
+- [x] **Step 7: Vérifier qu’aucun fichier OIDC/deploy n’a changé depuis la baseline.**
 
 ~~~~bash
 git diff --exit-code eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2 -- .github/workflows/mcp-deploy.yml src/deploy
 ~~~~
 
-- [ ] **Step 8: Commits.**
+- [x] **Step 8: Commits.**
 
 - RED: test(write-gate): define non-blocking shadow behavior
 - GREEN: feat(write-gate): observe scoped writes in shadow

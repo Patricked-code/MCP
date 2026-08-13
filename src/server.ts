@@ -10,6 +10,10 @@ import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
 import { GOVERNED_CONTEXT_INSTRUCTIONS } from './tools/governedContext.js';
+import {
+  decorateScopedWriteServer,
+  getDefaultScopedWriteGateDependencies
+} from './governance/scopedWriteGate.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
 import { createGithubDeployRouter } from './deploy/routes.js';
@@ -215,7 +219,10 @@ export function buildMcpServer(): McpServer {
 
   registerReadOnlyTools(server);
   if (env.ENABLE_WRITE_TOOLS) {
-    registerScopedWriteTools(server);
+    registerScopedWriteTools(decorateScopedWriteServer(
+      server,
+      getDefaultScopedWriteGateDependencies()
+    ));
   }
 
   return server;
