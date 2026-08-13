@@ -430,8 +430,8 @@ git diff --check
 
 - [ ] **Step 5: Commit RED puis GREEN séparément.**
 
-RED: test(operational-memory): define atomic store contract  
-GREEN: feat(operational-memory): add versioned atomic stores
+- RED: test(operational-memory): define atomic store contract
+- GREEN: feat(operational-memory): add versioned atomic stores
 
 ### Task 4: Ajouter le journal machine append-only, sanitizé et borné
 
@@ -506,8 +506,8 @@ git diff --check
 
 - [ ] **Step 5: Commits.**
 
-RED: test(operational-memory): define event journal contract  
-GREEN: feat(operational-memory): add sanitized event journal
+- RED: test(operational-memory): define event journal contract
+- GREEN: feat(operational-memory): add sanitized event journal
 
 ### Task 5: Séparer transport et identité durable, puis implémenter ouverture/reprise
 
@@ -611,8 +611,8 @@ Les tests doivent échouer si le code :
 
 - [ ] **Step 7: Commits.**
 
-RED: test(session): define durable resume policy  
-GREEN: feat(session): add governed session continuity
+- RED: test(session): define durable resume policy
+- GREEN: feat(session): add governed session continuity
 
 ### Task 6: Heartbeat, acquittement, checkpoints, pause/close et maintenance
 
@@ -678,8 +678,8 @@ node --import tsx --test tests/governedSessionService.test.ts
 - [ ] **Step 5: Implémenter minimalement et vérifier GREEN.**
 - [ ] **Step 6: Commits.**
 
-RED: test(session): define lifecycle and checkpoint contracts  
-GREEN: feat(session): add lifecycle and checkpoints
+- RED: test(session): define lifecycle and checkpoint contracts
+- GREEN: feat(session): add lifecycle and checkpoints
 
 ### Task 7: Locks temporaires avec conflit explicite et renouvellement par heartbeat
 
@@ -737,8 +737,8 @@ node --import tsx --test tests/governedLocks.test.ts
 - [ ] **Step 5: Implémenter et GREEN.**
 - [ ] **Step 6: Commits.**
 
-RED: test(locks): define governed lock semantics  
-GREEN: feat(locks): add bounded session locks
+- RED: test(locks): define governed lock semantics
+- GREEN: feat(locks): add bounded session locks
 
 ### Task 8: Propager une identité MCP sanitizée et exposer les outils de session
 
@@ -815,8 +815,8 @@ node --import tsx --test tests/mcpAuthContext.test.ts tests/governedSessionTools
 
 - [ ] **Step 6: Commits.**
 
-RED: test(mcp-session): define authenticated lifecycle tools  
-GREEN: feat(mcp-session): expose governed lifecycle tools
+- RED: test(mcp-session): define authenticated lifecycle tools
+- GREEN: feat(mcp-session): expose governed lifecycle tools
 
 ### Task 9: Collecter GitHub de manière bornée et composer le Governed Operational Context
 
@@ -935,8 +935,8 @@ Le composer lit les stores et caches; il n’écrit rien et ne force ni SSH ni G
 
 - [ ] **Step 5: Commits.**
 
-RED: test(governed-context): define composed operational view  
-GREEN: feat(governed-context): compose bounded live context
+- RED: test(governed-context): define composed operational view
+- GREEN: feat(governed-context): compose bounded live context
 
 ### Task 10: Exposer instructions, ressource et outils MCP de contexte
 
@@ -998,8 +998,8 @@ node --import tsx --test tests/governedContextTools.test.ts tests/liveStateTools
 
 - [ ] **Step 6: Commits.**
 
-RED: test(governed-context): define MCP context surfaces  
-GREEN: feat(governed-context): expose resource and read tools
+- RED: test(governed-context): define MCP context surfaces
+- GREEN: feat(governed-context): expose resource and read tools
 
 ### Task 11: Ajouter le WRITE gate shadow sans modifier les handlers existants
 
@@ -1085,8 +1085,8 @@ git diff --exit-code eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2 -- .github/workflo
 
 - [ ] **Step 8: Commits.**
 
-RED: test(write-gate): define non-blocking shadow behavior  
-GREEN: feat(write-gate): observe scoped writes in shadow
+- RED: test(write-gate): define non-blocking shadow behavior
+- GREEN: feat(write-gate): observe scoped writes in shadow
 
 ### Task 12: Ajouter maintenance événementielle et dashboard sans nouvelle autorité
 
@@ -1136,8 +1136,8 @@ node --import tsx --test tests/governedDashboard.test.ts tests/governedSessionSe
 - [ ] **Step 4: Implémenter puis GREEN.**
 - [ ] **Step 5: Commits.**
 
-RED: test(governed-dashboard): define additive operational view  
-GREEN: feat(governed-dashboard): expose bounded live context
+- RED: test(governed-dashboard): define additive operational view
+- GREEN: feat(governed-dashboard): expose bounded live context
 
 ### Task 13: Régression complète, documentation de livraison et draft PR
 
@@ -1337,4 +1337,3 @@ Rapport STOP obligatoire :
 ## Règle d’exécution
 
 Exécuter inline dans cette session avec superpowers:executing-plans et superpowers:test-driven-development. Ne déléguer à aucun sous-agent dans ce chantier. Après chaque GREEN poussé, attendre la CI du head avant de passer au cycle suivant; si la CI échoue pour une cause autre que le RED attendu, appliquer systematic-debugging et ne pas empiler de correction.
-
