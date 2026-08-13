@@ -134,6 +134,35 @@ test('les clés sensibles ou hors allowlist sont refusées avant écriture', asy
   }
 });
 
+test('les valeurs autorisées masquent les credentials déclarés avant persistance', async () => {
+  const { directory, file } = await temporaryJournalPath();
+  const journal = createOperationalEventJournal({
+    filePath: file,
+    maxBytes: 65_536,
+    archives: 2
+  });
+
+  try {
+    const event = await journal.append({
+      type: 'session.opened',
+      governedSessionId: SESSION_ID,
+      metadata: {
+        repository: 'Patricked-code/MCP',
+        taskScope: 'Bearer raw-credential-value',
+        agentIdentity: 'token=another-raw-credential',
+        status: 'OPEN'
+      }
+    });
+    const raw = await readFile(file, 'utf8');
+
+    assert.equal(raw.includes('raw-credential-value'), false);
+    assert.equal(raw.includes('another-raw-credential'), false);
+    assert.equal(JSON.stringify(event.metadata).includes('[REDACTED]'), true);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test('la rotation conserve deux archives maximum et chaque ligne reste JSON valide', async () => {
   const { directory, file } = await temporaryJournalPath();
   const journal = createOperationalEventJournal({
