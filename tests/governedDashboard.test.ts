@@ -230,5 +230,6 @@ test('le serveur démarre une seule maintenance et le dashboard reste cache/stor
   assert.equal((serverSource.match(/startOperationalMemoryMaintenance\(\{/g) ?? []).length, 1);
   assert.match(serverSource, /context\.getCurrent\(\{/);
   assert.doesNotMatch(serverSource, /context\.reconcileExplicit\(/);
+  assert.match(serverSource, /transport\.onclose[\s\S]*sessions\.unbindTransport\(transport\.sessionId\)/);
   assert.doesNotMatch(maintenanceSource, /liveState|github|ssh/i);
 });

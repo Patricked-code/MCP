@@ -101,11 +101,60 @@ test('resume sur un nouveau transport conserve governedSessionId et incrémente 
 
     assert.equal(resumed.governedSessionId, opened.session.governedSessionId);
     assert.equal(resumed.sessionRevision, opened.session.sessionRevision + 1);
+    assert.equal(bindings.lookup('transport-A-raw'), null);
     assert.equal(bindings.lookup('transport-B-raw'), opened.session.governedSessionId);
     assert.notEqual(
       resumed.currentTransport?.fingerprint,
       opened.session.currentTransport?.fingerprint
     );
+    await assert.rejects(service.heartbeat({
+      governedSessionId: resumed.governedSessionId,
+      expectedSessionRevision: resumed.sessionRevision
+    }, {
+      transportSessionId: 'transport-A-raw',
+      identity: SHARED_IDENTITY
+    }), /SESSION_NOT_BOUND/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('la fermeture du transport courant supprime sa liaison sans fermer la governed session', async () => {
+  const { directory, bindings, service } = await fixture();
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-A-raw',
+      identity: SHARED_IDENTITY
+    });
+
+    assert.equal(
+      service.unbindTransport('transport-A-raw'),
+      opened.session.governedSessionId
+    );
+    assert.equal(bindings.lookup('transport-A-raw'), null);
+    await assert.rejects(service.heartbeat({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-A-raw',
+      identity: SHARED_IDENTITY
+    }), /SESSION_NOT_BOUND/);
+
+    const persisted = await service.getVisibleSession(opened.session.governedSessionId, {
+      transportSessionId: 'transport-A-raw',
+      identity: SHARED_IDENTITY
+    });
+    assert.equal(persisted, null);
+    assert.equal((await service.resumeSession({
+      governedSessionId: opened.session.governedSessionId,
+      resumeSecret: opened.resumeSecret,
+      repository: 'Patricked-code/MCP',
+      taskScope: OPEN_INPUT.taskScope,
+      expectedSessionRevision: opened.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-B-raw',
+      identity: SHARED_IDENTITY
+    })).governedSessionId, opened.session.governedSessionId);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
