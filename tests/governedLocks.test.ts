@@ -278,3 +278,51 @@ test('le cycle des locks émet acquis, conflit, renouvelé, libéré et expiré'
     await rm(f.directory, { recursive: true, force: true });
   }
 });
+
+test('la réconciliation répare un lockId de session après panne inter-fichiers', async () => {
+  const f = await fixture();
+  try {
+    const opened = await f.open('TASK-20260813-004', 'transport-A');
+    const acquired = await f.locks.acquireLock({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      scope: { type: 'repository', key: 'Patricked-code/MCP' },
+      reason: 'failure injection'
+    }, { transportSessionId: 'transport-A', identity: IDENTITY });
+
+    let failNextUpdate = true;
+    const failingSessionStore: typeof f.sessionStore = {
+      read: () => f.sessionStore.read(),
+      update(mutator) {
+        if (failNextUpdate) {
+          failNextUpdate = false;
+          return Promise.reject(new Error('INJECTED_SESSION_WRITE_FAILURE'));
+        }
+        return f.sessionStore.update(mutator);
+      }
+    };
+    const recoveringLocks = createGovernedLockService({
+      store: f.lockStore,
+      sessionStore: failingSessionStore,
+      bindings: f.bindings,
+      defaultTtlSeconds: 300,
+      maxTtlSeconds: 1_800,
+      now: () => new Date('2026-08-13T08:00:00.000Z')
+    });
+
+    await assert.rejects(recoveringLocks.releaseLock({
+      governedSessionId: opened.session.governedSessionId,
+      lockId: acquired.lockId,
+      expectedLockRevision: acquired.lockRevision
+    }, { transportSessionId: 'transport-A', identity: IDENTITY }),
+    /INJECTED_SESSION_WRITE_FAILURE/);
+    assert.equal((await f.lockStore.read()).locks[0]?.status, 'RELEASED');
+    assert.deepEqual((await f.sessionStore.read()).sessions[0]?.lockIds, [acquired.lockId]);
+
+    assert.equal(await recoveringLocks.reconcileSessionLockIds(), 1);
+    assert.deepEqual((await f.sessionStore.read()).sessions[0]?.lockIds, []);
+    assert.deepEqual(await recoveringLocks.listActiveLocks(), []);
+  } finally {
+    await rm(f.directory, { recursive: true, force: true });
+  }
+});

@@ -167,6 +167,7 @@ test('la maintenance utilise un timer unique unref et journalise seulement des c
   let unrefCalled = 0;
   let sessionExpirations = 0;
   let lockExpirations = 0;
+  let lockIdReconciliations = 0;
   let resolveCycle!: () => void;
   const cycleRecorded = new Promise<void>((resolve) => { resolveCycle = resolve; });
   const timer = { unref: () => { unrefCalled += 1; } };
@@ -174,6 +175,7 @@ test('la maintenance utilise un timer unique unref et journalise seulement des c
   const maintenance = startOperationalMemoryMaintenance({
     expireSessions: async () => { sessionExpirations += 1; return 2; },
     expireLocks: async () => { lockExpirations += 1; return 1; },
+    reconcileSessionLockIds: async () => { lockIdReconciliations += 1; return 0; },
     intervalMs: 60_000,
     setInterval: (scheduledCallback, intervalMs) => {
       scheduled += 1;
@@ -194,6 +196,7 @@ test('la maintenance utilise un timer unique unref et journalise seulement des c
   await cycleRecorded;
   assert.equal(sessionExpirations, 1);
   assert.equal(lockExpirations, 1);
+  assert.equal(lockIdReconciliations, 1);
   maintenance.stop();
 });
 
