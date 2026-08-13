@@ -578,29 +578,29 @@ Politique de reprise :
 7. sinon : SESSION_RESUME_PROOF_REQUIRED;
 8. un credential partagé ou agentIdentity seul ne suffit jamais.
 
-- [ ] **Step 1: Écrire RED pour governedSessionId stable et secret non persisté.**
+- [x] **Step 1: Écrire RED pour governedSessionId stable et secret non persisté.**
 
 Ouvrir avec transport-A, lire le JSON et vérifier governedSessionId présent, resumeSecret absent, transport-A absent et fingerprint présent.
 
-- [ ] **Step 2: Écrire RED pour reprise sur transport-B.**
+- [x] **Step 2: Écrire RED pour reprise sur transport-B.**
 
 Reprendre avec secret valide et même scope; vérifier même governedSessionId, nouveau fingerprint, revision +1 et lookup(transport-B) égal à la session.
 
-- [ ] **Step 3: Écrire RED pour les refus.**
+- [x] **Step 3: Écrire RED pour les refus.**
 
 Secret faux, scope différent, session fermée, revision périmée, credential partagé seul et collision ambiguë doivent échouer sans modifier les octets du store.
 
-- [ ] **Step 4: Exécuter RED.**
+- [x] **Step 4: Exécuter RED.**
 
 ~~~~bash
 node --import tsx --test tests/governedSessionService.test.ts
 ~~~~
 
-- [ ] **Step 5: Implémenter le minimum puis GREEN.**
+- [x] **Step 5: Implémenter le minimum puis GREEN.**
 
 Toutes les mutations de session passent par atomicStore.update et comparent la revision avant copie immutable. La vue publique est construite par une fonction unique qui omet resumeSecretHash.
 
-- [ ] **Step 6: Vérifier mutation mentale.**
+- [x] **Step 6: Vérifier mutation mentale.**
 
 Les tests doivent échouer si le code :
 - utilise transportSessionId comme governedSessionId;
@@ -609,7 +609,7 @@ Les tests doivent échouer si le code :
 - accepte un credential partagé sans secret;
 - crée un nouvel UUID pendant resume.
 
-- [ ] **Step 7: Commits.**
+- [x] **Step 7: Commits.**
 
 - RED: test(session): define durable resume policy
 - GREEN: feat(session): add governed session continuity

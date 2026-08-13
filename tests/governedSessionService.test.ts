@@ -226,3 +226,39 @@ test('session fermée et collision de transport sont refusées sans écriture am
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('une session expirée au-delà de la grace period ne peut pas être reprise', async () => {
+  const { directory, file, store, service } = await fixture();
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-A-raw',
+      identity: SHARED_IDENTITY
+    });
+    await store.update((document) => ({
+      ...document,
+      storeRevision: document.storeRevision + 1,
+      sessions: document.sessions.map((session) => session.governedSessionId === opened.session.governedSessionId
+        ? {
+            ...session,
+            status: 'EXPIRED' as const,
+            expiredAt: '2026-07-01T07:00:00.000Z'
+          }
+        : session)
+    }));
+
+    const before = await readFile(file);
+    await assert.rejects(service.resumeSession({
+      governedSessionId: opened.session.governedSessionId,
+      resumeSecret: opened.resumeSecret,
+      repository: 'Patricked-code/MCP',
+      taskScope: OPEN_INPUT.taskScope,
+      expectedSessionRevision: opened.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-B-raw',
+      identity: SHARED_IDENTITY
+    }), /SESSION_EXPIRED/);
+    assert.deepEqual(await readFile(file), before);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
