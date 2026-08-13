@@ -175,7 +175,8 @@ GithubOperationalContext['reviews'], 'approvals' | 'changesRequested'
     index: number;
   }>();
   reviews.forEach((review, index) => {
-    if (review?.state === 'DISMISSED') return;
+    const state = review?.state;
+    if (!['APPROVED', 'CHANGES_REQUESTED', 'DISMISSED'].includes(String(state))) return;
     const user = object(review?.user);
     const userId = user?.id;
     const login = string(user?.login, 100)?.toLowerCase();
@@ -196,7 +197,7 @@ GithubOperationalContext['reviews'], 'approvals' | 'changesRequested'
       || (submittedAtMs === current.submittedAt && index > current.index)
     ) {
       latestByReviewer.set(reviewerKey, {
-        state: review?.state,
+        state,
         submittedAt: submittedAtMs,
         index
       });
