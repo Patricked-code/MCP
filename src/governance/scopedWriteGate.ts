@@ -117,12 +117,12 @@ function wrapCallback(
     try {
       result = await Reflect.apply(callback, thisArg, args);
     } catch (error) {
-      await observe(args, error instanceof Error && error.name === 'AbortError'
+      void observe(args, error instanceof Error && error.name === 'AbortError'
         ? 'cancelled'
         : 'failed');
       throw error;
     }
-    await observe(args, 'succeeded');
+    void observe(args, 'succeeded');
     try {
       dependencies.requestReconcile();
     } catch {
