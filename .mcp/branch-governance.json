@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-13T01:17:25.976Z",
+  "updatedAt": "2026-08-13T01:42:36.744Z",
   "main": {
     "role": "stable_reference_production_after_validation",
     "directPushAllowed": false
@@ -22,5 +22,7 @@
   "doubleUpdateRule": "every_structural_change_must_be_reflected_in_github_and_server_memory",
   "currentBranchForThisWork": null,
   "branchSelection": "dynamic_per_governed_task_and_pull_request",
-  "activeGovernedPullRequest": 42
+  "activeGovernedPullRequest": null,
+  "lastCompletedGovernedPullRequest": 42,
+  "nextGovernedBranch": "mcp/record-first-automatic-deploy-20260813"
 }

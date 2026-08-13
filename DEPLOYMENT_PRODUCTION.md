@@ -34,7 +34,9 @@ Procédure de production MCP gouvernée et exact-SHA.
 
 ## État d’activation
 
-Le bootstrap manuel a été attesté par le run `31655087215` au SHA `8fb075dd55a3b94ed620527f11b2a77f88627188`. La PR #42 peut donc activer `pushEnabled=true`. Cette activation n’est pas une preuve anticipée du chemin automatique : la fusion doit encore produire un run `push` non skipped et une attestation exacte, puis une seconde fusion ultérieure doit fournir la preuve canonique reproductible.
+Le bootstrap manuel est attesté par le run `31655087215` au SHA `8fb075dd55a3b94ed620527f11b2a77f88627188`. La PR #42 a fusionné `pushEnabled=true` au SHA `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7`. Le push de cette fusion a exécuté le run de déploiement `31658327435`, job `94317597740`, avec l’étape exacte non skipped et réussie ; le job MCP `mcp-s1-31658327435-9be5095cbf72` a attesté ce même SHA avec health/OAuth/MCP vrais et rollback `not_needed`.
+
+Cette première preuve valide l’activation. La clôture canonique exige encore une seconde fusion documentaire utile suivie d’un nouveau run automatique exact-SHA et d’une attestation indépendante.
 
 ## Redémarrage générique
 
