@@ -396,11 +396,11 @@ export function createAtomicJsonStore<T>(options: {
 }): AtomicJsonStore<T>;
 ~~~~
 
-- [ ] **Step 1: Écrire RED pour absence, écriture, remplacement, 0600, sérialisation et corruption.**
+- [x] **Step 1: Écrire RED pour absence, écriture, remplacement, 0600, sérialisation et corruption.**
 
 Le test de corruption écrit un JSON invalide, appelle read, attend OPERATIONAL_STORE_CORRUPTED et vérifie octet pour octet que le fichier corrompu n’a pas été remplacé.
 
-- [ ] **Step 2: Exécuter RED.**
+- [x] **Step 2: Exécuter RED.**
 
 ~~~~bash
 node --import tsx --test tests/operationalMemoryStore.test.ts
@@ -408,7 +408,7 @@ node --import tsx --test tests/operationalMemoryStore.test.ts
 
 Expected: module not found.
 
-- [ ] **Step 3: Implémenter strictement le store minimal.**
+- [x] **Step 3: Implémenter strictement le store minimal.**
 
 - mkdir parent avec mode 0700;
 - readFile puis schema.safeParse;
@@ -420,7 +420,7 @@ Expected: module not found.
 - en erreur avant rename, supprimer uniquement le temporaire exact;
 - ne jamais réécrire un fichier corrompu.
 
-- [ ] **Step 4: Vérifier GREEN puis typecheck.**
+- [x] **Step 4: Vérifier GREEN puis typecheck.**
 
 ~~~~bash
 node --import tsx --test tests/operationalMemoryStore.test.ts
@@ -428,7 +428,7 @@ npm run typecheck
 git diff --check
 ~~~~
 
-- [ ] **Step 5: Commit RED puis GREEN séparément.**
+- [x] **Step 5: Commit RED puis GREEN séparément.**
 
 - RED: test(operational-memory): define atomic store contract
 - GREEN: feat(operational-memory): add versioned atomic stores
