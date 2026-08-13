@@ -56,7 +56,7 @@ export function renderGovernedContextDashboardSection(
   <p>Alignement global : <strong>${display(liveState?.alignment.global)}</strong></p>
   <p>Task : <strong>${display(task)}</strong></p>
   <p>Next action : <strong>${display(context.nextAction)}</strong></p>
-  <p>Sessions actives compatibles : <strong>${activeSessionCount}</strong></p>
+  <p>Sessions actives globales : <strong>${activeSessionCount}</strong></p>
   <p>WRITE gate : <strong>${display(context.gate.mode)}</strong> — décision ${display(context.gate.decision)}</p>
 
   <h3>Locks actifs (${context.activeLocks.length})</h3>
