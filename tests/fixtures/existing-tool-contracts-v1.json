@@ -1,0 +1,1844 @@
+{
+  "amf_registry_native_chunk": {
+    "description": "Retourne un fragment base64 de l’archive native AMF-UMOA afin de la transférer sans accès shell libre.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "length": {
+          "default": 150000,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 180000
+        }
+      },
+      "required": [
+        "offset",
+        "length"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "amf_registry_native_export": {
+    "description": "Extrait intégralement le registre dynamique public AMF-UMOA accueil/intervenant depuis ses API natives, crée SQLite/CSV/JSON et archive les documents liés.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "amf_registry_native_info": {
+    "description": "Retourne les métadonnées et contrôles de la dernière extraction native AMF-UMOA.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "amf_registry_publish_download": {
+    "description": "Publie une copie gzip du référentiel natif AMF-UMOA dans un répertoire web dédié et vérifie son URL HTTPS.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "brvm_container_logs_s2": {
+    "description": "Affiche les dernières lignes de logs Docker du conteneur brvm_app sur S2 (secrets masqués).",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "lines": {
+          "default": 150,
+          "type": "integer",
+          "minimum": 20,
+          "maximum": 500
+        },
+        "contains": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 60,
+          "pattern": "^[A-Za-z0-9_.:\\/\\[\\] -]+$"
+        }
+      },
+      "required": [
+        "lines"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "brvm_run_sql_readonly_s2": {
+    "description": "Exécute une requête SQL SELECT uniquement sur la base PostgreSQL BRVM (conteneur brvm_db) sur S2.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 20000
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "check_disk_s1": {
+    "description": "Affiche df -h sur S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "check_disk_s2": {
+    "description": "Affiche df -h sur S2.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "curl_domain": {
+    "description": "Exécute un curl -I HTTPS sur un domaine fourni depuis S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 255,
+          "pattern": "^[a-zA-Z0-9.-]+$"
+        }
+      },
+      "required": [
+        "domain"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "deploy_brvm_s2": {
+    "description": "Déploie automatiquement BRVMCHAINSOLUTION sur S2 avec logs, stash, rebase et recette BRVM.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "deploy_project_s2": {
+    "description": "Déploie automatiquement un projet autorisé sur S2 avec logs, stash, rebase et recette projet.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "api_opcv",
+            "front_end_opcvm",
+            "legacy_funds_frontend",
+            "legacy_funds_api",
+            "brvmchainsolution"
+          ]
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "deploy_sadiaaf_s1": {
+    "description": "Sauvegarde les deux anciennes applications SadiaAF puis déploie le pipeline AfricaFunds sur S1 avec API, dashboard, PostgreSQL, cron et rollback.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "docker_status_s1": {
+    "description": "Liste les conteneurs Docker actifs sur S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "docker_status_s2": {
+    "description": "Liste les conteneurs Docker actifs sur S2.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "exec_repo_script_s2": {
+    "description": "Exécute uniquement un script autorisé du dépôt API OPCVM ou BRVM sur S2. Le paramètre project force le dépôt cible.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "script": {
+          "type": "string",
+          "pattern": "^scripts\\/[A-Za-z0-9_./-]+\\.(js|ts)$"
+        },
+        "args": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "project": {
+          "type": "string",
+          "enum": [
+            "api_opcv",
+            "front_end_opcvm",
+            "legacy_funds_frontend",
+            "legacy_funds_api",
+            "brvmchainsolution"
+          ]
+        }
+      },
+      "required": [
+        "script",
+        "args"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "get_project_context": {
+    "description": "Retourne le contexte projet, les serveurs et les domaines protégés.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "get_write_tools_context": {
+    "description": "Liste les projets et opérations d’écriture contrôlées disponibles. Aucun secret n’est exposé.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "git_pull_project_s2": {
+    "description": "Met à jour automatiquement un projet autorisé sur S2 avec stash, pull --rebase et restauration du stash.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "api_opcv",
+            "front_end_opcvm",
+            "legacy_funds_frontend",
+            "legacy_funds_api",
+            "brvmchainsolution"
+          ]
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "git_status_project_s2": {
+    "description": "Affiche l’état Git d’un projet autorisé sur S2.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "api_opcv",
+            "front_end_opcvm",
+            "legacy_funds_frontend",
+            "legacy_funds_api",
+            "brvmchainsolution"
+          ]
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "github_account_inventory": {
+    "description": "Liste les dépôts GitHub visibles pour le compte authentifié par le token MCP, sans écrire, sans cloner et sans supprimer.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "includeArchived": {
+          "default": true,
+          "type": "boolean"
+        },
+        "includeForks": {
+          "default": true,
+          "type": "boolean"
+        },
+        "maxPages": {
+          "default": 20,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "includeArchived",
+        "includeForks",
+        "maxPages"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "github_durable_accounts_inventory": {
+    "description": "Inventorie les dépôts visibles par les comptes GitHub durablement configurés, sans écrire, sans cloner et sans supprimer.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "maxReposPerAccount": {
+          "default": 30,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "maxReposPerAccount"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "github_durable_accounts_status": {
+    "description": "Vérifie durablement tous les comptes GitHub déclarés dans le registre MCP, sans afficher les secrets et sans écrire.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "github_org_inventory": {
+    "description": "Liste les dépôts GitHub visibles pour l’organisation configurée ou fournie, sans écrire, sans cloner et sans supprimer.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "includeArchived": {
+          "default": true,
+          "type": "boolean"
+        },
+        "includeForks": {
+          "default": true,
+          "type": "boolean"
+        },
+        "maxPages": {
+          "default": 20,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "includeArchived",
+        "includeForks",
+        "maxPages"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "github_pr_authorization_diagnostic": {
+    "description": "Teste en lecture seule l’authentification GitHub, la visibilité du dépôt et la lecture des pull requests avec le credential du serveur MCP. Aucun token n’est affiché.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "repo": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "pullRequestNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "owner",
+        "repo"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "github_registry_v2_dry_run": {
+    "description": "Valide le registre Git actuel et prépare en mémoire un candidat GitRegistry v2. Aucun fichier n’est écrit.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "include_candidate": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "include_candidate"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "inspect_sadiaaf_s1": {
+    "description": "Inspecte en lecture seule les deux domaines SadiaAF, le stack Docker et les sauvegardes sur S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "legacy_funds_api_status_s2": {
+    "description": "Contrôle l API Funds sur S2 et ses URL publiques.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "legacy_funds_api_test_s2": {
+    "description": "Teste et compile l API Funds sur S2.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        },
+        "install_dependencies": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_write",
+        "install_dependencies"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_funds_frontend_build_s2": {
+    "description": "Teste et compile le frontend Funds sur S2.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        },
+        "install_dependencies": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_write",
+        "install_dependencies"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_funds_frontend_status_s2": {
+    "description": "Contrôle le frontend Funds sur S2 et ses URL publiques.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhost_commit_push_s1": {
+    "description": "Committe les modifications sûres et peut pousser une branche de travail autorisée.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend",
+            "liquidity_main",
+            "liquidity_v1",
+            "liquidity_test",
+            "liquidity_dapps",
+            "liquidity_api_v3"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 180,
+          "pattern": "^[A-Za-z0-9À-ÿ _.,:;()[\\]#/+\\-]+$"
+        },
+        "push": {
+          "default": false,
+          "type": "boolean"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "message",
+        "push",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhost_delete_path_s1": {
+    "description": "Supprime définitivement un fichier ou répertoire relatif autorisé dans une application historique S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend",
+            "liquidity_main",
+            "liquidity_v1",
+            "liquidity_test",
+            "liquidity_dapps",
+            "liquidity_api_v3"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "pattern": "^[A-Za-z0-9_./@+\\-]+$"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "path",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhost_deploy_s1": {
+    "description": "Compile puis redémarre une application historique via Passenger.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend",
+            "liquidity_main",
+            "liquidity_v1",
+            "liquidity_test",
+            "liquidity_dapps",
+            "liquidity_api_v3"
+          ]
+        },
+        "install_dependencies": {
+          "default": false,
+          "type": "boolean"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "install_dependencies",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhost_git_init_s1": {
+    "description": "Initialise un nouveau dépôt Git dans une racine historique vide ou reconstruite.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend",
+            "liquidity_main",
+            "liquidity_v1",
+            "liquidity_test",
+            "liquidity_dapps",
+            "liquidity_api_v3"
+          ]
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 120,
+          "pattern": "^(mcp|claude|codex|feature|fix)\\/[A-Za-z0-9._-]+$"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "branch",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhost_git_status_s1": {
+    "description": "Affiche l’état Git d’une application historique S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend",
+            "liquidity_main",
+            "liquidity_v1",
+            "liquidity_test",
+            "liquidity_dapps",
+            "liquidity_api_v3"
+          ]
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhost_inventory_s1": {
+    "description": "Inventorie un répertoire historique autorisé sur S1, sans lire les secrets.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend",
+            "liquidity_main",
+            "liquidity_v1",
+            "liquidity_test",
+            "liquidity_dapps",
+            "liquidity_api_v3"
+          ]
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhost_purge_s1": {
+    "description": "Supprime définitivement tout le contenu d’une racine historique, après double validation.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend",
+            "liquidity_main",
+            "liquidity_v1",
+            "liquidity_test",
+            "liquidity_dapps",
+            "liquidity_api_v3"
+          ]
+        },
+        "confirm_domain": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 255
+        },
+        "confirm_phrase": {
+          "type": "string",
+          "const": "DELETE PERMANENTLY"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "confirm_domain",
+        "confirm_phrase",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhost_quality_s1": {
+    "description": "Installe les dépendances, exécute lint, typecheck, tests et build.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend",
+            "liquidity_main",
+            "liquidity_v1",
+            "liquidity_test",
+            "liquidity_dapps",
+            "liquidity_api_v3"
+          ]
+        },
+        "install_dependencies": {
+          "default": true,
+          "type": "boolean"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "install_dependencies",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhost_read_file_s1": {
+    "description": "Lit un fichier texte autorisé dans une application historique S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend",
+            "liquidity_main",
+            "liquidity_v1",
+            "liquidity_test",
+            "liquidity_dapps",
+            "liquidity_api_v3"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "pattern": "^[A-Za-z0-9_./@+\\-]+$"
+        }
+      },
+      "required": [
+        "project",
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhost_search_s1": {
+    "description": "Recherche un terme dans le code autorisé d’une application historique S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend",
+            "liquidity_main",
+            "liquidity_v1",
+            "liquidity_test",
+            "liquidity_dapps",
+            "liquidity_api_v3"
+          ]
+        },
+        "query": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120,
+          "pattern": "^[A-Za-z0-9À-ÿ_ .:/@+\\-]+$"
+        }
+      },
+      "required": [
+        "project",
+        "query"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhost_write_file_s1": {
+    "description": "Crée ou remplace un fichier autorisé dans une application historique S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend",
+            "liquidity_main",
+            "liquidity_v1",
+            "liquidity_test",
+            "liquidity_dapps",
+            "liquidity_api_v3"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "pattern": "^[A-Za-z0-9_./@+\\-]+$"
+        },
+        "content_base64": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000000,
+          "pattern": "^[A-Za-z0-9+/=\\\\r\\\\n]+$"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "path",
+        "content_base64",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "legacy_vhosts_context_s1": {
+    "description": "Liste les applications historiques autorisées sur S1, avec leurs chemins exacts.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "list_backups_s1": {
+    "description": "Liste les sauvegardes potentielles sur S1 sans suppression.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "list_backups_s2": {
+    "description": "Liste les sauvegardes potentielles sur S2 sans suppression.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "list_domains_s1": {
+    "description": "Inventaire read-only des domaines Plesk/vhosts S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "list_domains_s2": {
+    "description": "Inventaire read-only des domaines Plesk/vhosts S2.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "list_large_files_s1": {
+    "description": "Liste les fichiers volumineux sur S1 sans suppression.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "list_large_files_s2": {
+    "description": "Liste les fichiers volumineux sur S2 sans suppression.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "list_mcp_code_files_s1": {
+    "description": "Liste les fichiers utiles du code MCP sur S1, hors secrets et node_modules.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "logs_legacy_funds_api_s2": {
+    "description": "Lit les logs Plesk Passenger de l API Funds avec masquage des secrets.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "lines": {
+          "default": 150,
+          "type": "integer",
+          "minimum": 20,
+          "maximum": 500
+        },
+        "contains": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9_.:/\\[\\] ()-]+$"
+        }
+      },
+      "required": [
+        "lines"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "logs_legacy_funds_frontend_s2": {
+    "description": "Lit les logs Plesk Passenger du frontend Funds avec masquage des secrets.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "lines": {
+          "default": 150,
+          "type": "integer",
+          "minimum": 20,
+          "maximum": 500
+        },
+        "contains": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9_.:/\\[\\] ()-]+$"
+        }
+      },
+      "required": [
+        "lines"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "mcp_bridge": {
+    "description": "Retourne la fiche du projet MCP auto-gérable.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "mcp_build_s1": {
+    "description": "Build le MCP sur S1 via Node 20 Docker.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "mcp_container_logs_s1": {
+    "description": "Affiche les dernières lignes de logs Docker du conteneur MCP sur S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "lines": {
+          "default": 120,
+          "type": "integer",
+          "minimum": 20,
+          "maximum": 300
+        }
+      },
+      "required": [
+        "lines"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "mcp_get_live_state": {
+    "description": "Retourne le dernier état opérationnel partagé GitHub/S1/runtime/documentation avec fraîcheur, alignement et prochaine action. Lecture uniquement.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "mcp_git_diff_s1": {
+    "description": "Affiche le diff Git du dépôt MCP sur S1, sans secrets.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "mcp_git_status_s1": {
+    "description": "Affiche l’état Git du dépôt MCP sur S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "mcp_reconcile_live_state": {
+    "description": "Force une nouvelle observation read-only GitHub/S1/runtime/documentation, persiste l’état normalisé et retourne le résultat.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "mcp_runtime_image_attestation_s1": {
+    "description": "Retourne une attestation bornée du conteneur et de son image Docker active sur S1, sans environnement, mounts, commandes, réseaux ni labels arbitraires.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "mcp_sync_from_github_s1": {
+    "description": "Synchronise le dépôt MCP S1 avec origin/main par fast-forward uniquement.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "mcp_typecheck_s1": {
+    "description": "Lance le typecheck TypeScript du MCP sur S1 via Node 20 Docker.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "nigeria_bootstrap_s2": {
+    "description": "Clone Patricked-code/Nigeria sur S2 et prépare une branche contrôlée.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "branch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^(main|master|feature\\/[A-Za-z0-9._-]+|claude\\/[A-Za-z0-9._-]+)$"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "branch",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "nigeria_commit_push_s2": {
+    "description": "Teste, commit et push la branche Nigeria.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "branch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^(main|master|feature\\/[A-Za-z0-9._-]+|claude\\/[A-Za-z0-9._-]+)$"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 180
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "branch",
+        "message",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "nigeria_deploy_s2": {
+    "description": "Déploie le projet Nigeria via Docker Compose après contrôles.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "branch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^(main|master|feature\\/[A-Za-z0-9._-]+|claude\\/[A-Za-z0-9._-]+)$"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "branch",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "nigeria_patch_file_s2": {
+    "description": "Ecrit un fichier texte autorisé du projet Nigeria.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "content_base64": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 900000,
+          "pattern": "^[A-Za-z0-9+/=\\r\\n]+$"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "content_base64",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "nigeria_project_status_s2": {
+    "description": "Etat read-only du projet Nigeria sur S2.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "patch_mcp_code_file_s1": {
+    "description": "Écrit ou remplace un fichier texte autorisé du dépôt MCP sur S1 via contenu base64. Ne lit ni n’écrit les secrets.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 260
+        },
+        "content_base64": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 700000,
+          "pattern": "^[A-Za-z0-9+/=\\\\r\\\\n]+$"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "content_base64",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "ping": {
+    "description": "Vérifie que le MCP WealthTech SSH Bridge répond.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "pm2_status_s1": {
+    "description": "Affiche pm2 list sur S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "pm2_status_s2": {
+    "description": "Affiche pm2 list sur S2.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "read_mcp_code_file_s1": {
+    "description": "Lit un fichier texte autorisé du code MCP sur S1, avec masquage de secrets.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 260
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "restart_legacy_funds_api_s2": {
+    "description": "Relance l API Funds via Passenger.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "restart_legacy_funds_frontend_s2": {
+    "description": "Relance le frontend Funds via Passenger.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "restart_mcp_bridge_s1": {
+    "description": "Redémarre le conteneur MCP sur S1 après validation.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "rollback_sadiaaf_s1": {
+    "description": "Restaure une sauvegarde SadiaAF créée par le déploiement contrôlé.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "backup_dir": {
+          "type": "string",
+          "pattern": "^\\/var\\/backups\\/sadiaaf\\/\\d{8}_\\d{6}$"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "backup_dir",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "run_sql_readonly_s2": {
+    "description": "Exécute une requête SQL SELECT uniquement sur la base OPCVM S2.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 20000
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_commit_push_s1": {
+    "description": "Crée un commit contrôlé sur une branche non protégée et peut le pousser vers origin.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 160,
+          "pattern": "^[A-Za-z0-9À-ÿ _.,:;()\\[\\]#/+\\-]+$"
+        },
+        "push": {
+          "default": false,
+          "type": "boolean"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "message",
+        "push",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_deploy_s1": {
+    "description": "Build puis redémarre l’application SADIAAF via Passenger, avec contrôle HTTPS.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        },
+        "install_dependencies": {
+          "default": false,
+          "type": "boolean"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "install_dependencies",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_git_diff_s1": {
+    "description": "Affiche le diff Git sûr d’un projet SADIAAF sur S1, sans secrets.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_git_status_s1": {
+    "description": "Affiche l’état Git, la branche, le dernier commit et les remotes d’un projet SADIAAF sur S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_list_files_s1": {
+    "description": "Liste les fichiers utiles d’un projet SADIAAF sur S1, hors secrets, dépendances et artefacts.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_patch_file_s1": {
+    "description": "Écrit ou remplace un fichier texte autorisé d’un projet SADIAAF sur S1. Une sauvegarde horodatée est créée hors du vhost.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 260,
+          "pattern": "^[A-Za-z0-9_./@+\\-]+$"
+        },
+        "content_base64": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1500000,
+          "pattern": "^[A-Za-z0-9+/=\\\\r\\\\n]+$"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "path",
+        "content_base64",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_prepare_branch_s1": {
+    "description": "Crée ou sélectionne une branche de travail contrôlée pour un projet SADIAAF sur S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 100,
+          "pattern": "^(mcp|claude|codex|feature|fix)\\/[A-Za-z0-9._-]+$"
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "branch",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_projects_context_s1": {
+    "description": "Retourne les deux projets SADIAAF autorisés sur S1 et leurs chemins, sans secret.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_quality_s1": {
+    "description": "Installe les dépendances et/ou exécute lint, typecheck, tests et build pour un projet SADIAAF sur S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        },
+        "mode": {
+          "default": "all",
+          "type": "string",
+          "enum": [
+            "install",
+            "lint",
+            "typecheck",
+            "test",
+            "build",
+            "all"
+          ]
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "mode",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_quarantine_contents_s1": {
+    "description": "Vide réversiblement le contenu applicatif d’un projet SADIAAF en le déplaçant vers une quarantaine horodatée hors du vhost.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        },
+        "confirm_domain": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 255
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "confirm_domain",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_read_file_s1": {
+    "description": "Lit un fichier texte autorisé d’un projet SADIAAF sur S1 avec masquage des secrets.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 260,
+          "pattern": "^[A-Za-z0-9_./@+\\-]+$"
+        }
+      },
+      "required": [
+        "project",
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_restore_quarantine_s1": {
+    "description": "Restaure une quarantaine SADIAAF horodatée dans un répertoire applicatif actuellement vide.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        },
+        "snapshot": {
+          "type": "string",
+          "pattern": "^\\d{8}_\\d{6}$"
+        },
+        "confirm_domain": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 255
+        },
+        "allow_write": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "project",
+        "snapshot",
+        "confirm_domain",
+        "allow_write"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_search_code_s1": {
+    "description": "Recherche un terme dans le code d’un projet SADIAAF sur S1, hors secrets et dépendances.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "project": {
+          "type": "string",
+          "enum": [
+            "sadiaaf_api",
+            "sadiaaf_frontend"
+          ]
+        },
+        "query": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9_ .:/@+\\-]+$"
+        }
+      },
+      "required": [
+        "project",
+        "query"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "sadiaaf_status_s1": {
+    "description": "Vérifie les domaines, les conteneurs, l’état de déploiement et les sauvegardes SadiaAF sur S1.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "scan_mcp_secrets_s1": {
+    "description": "Scanne le dépôt MCP pour détecter des secrets potentiels, sans afficher les valeurs.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    }
+  },
+  "search_mcp_code_s1": {
+    "description": "Recherche un terme dans le code MCP sur S1, hors secrets et node_modules.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9_.:/ -]+$"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
