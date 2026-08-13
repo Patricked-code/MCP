@@ -6,6 +6,7 @@ import test from 'node:test';
 
 import { createAtomicJsonStore } from '../src/operationalMemory/atomicStore.js';
 import { startOperationalMemoryMaintenance } from '../src/operationalMemory/maintenance.js';
+import type { OperationalAuditInput } from '../src/operationalMemory/operationalAudit.js';
 import {
   createGovernedSessionService,
   type RequestIdentity
@@ -209,6 +210,79 @@ test('la fermeture du transport courant supprime sa liaison sans fermer la gover
       identity: SHARED_IDENTITY
     })).governedSessionId, opened.session.governedSessionId);
   } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('audit transport_closed conserve le fingerprint retiré si une reprise précède la lecture durable', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-governed-session-unbind-audit-'));
+  const baseStore = createAtomicJsonStore({
+    filePath: join(directory, 'sessions.json'),
+    schema: SessionStoreDocumentSchema,
+    empty: createEmptySessionStoreDocument
+  });
+  let holdNextRead = false;
+  let releaseRead = () => {};
+  const readReleased = new Promise<void>((resolve) => { releaseRead = resolve; });
+  const store = {
+    async read() {
+      if (holdNextRead) {
+        holdNextRead = false;
+        await readReleased;
+      }
+      return baseStore.read();
+    },
+    update: baseStore.update
+  };
+  const bindings = createTransportBindings();
+  const audits: OperationalAuditInput[] = [];
+  let resolveClosedAudit = () => {};
+  const closedAudit = new Promise<void>((resolve) => { resolveClosedAudit = resolve; });
+  const service = createGovernedSessionService({
+    store,
+    bindings,
+    idleTtlSeconds: 86_400,
+    resumeGraceSeconds: 604_800,
+    now: () => new Date('2026-08-13T07:00:00.000Z'),
+    audit: {
+      async record(input) {
+        audits.push(input);
+        if (input.type === 'transport.unbound' && input.reasonCode === 'transport_closed') {
+          resolveClosedAudit();
+        }
+      }
+    }
+  });
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-A-raw',
+      identity: SHARED_IDENTITY
+    });
+    holdNextRead = true;
+    service.unbindTransport('transport-A-raw');
+    const resumed = await service.resumeSession({
+      governedSessionId: opened.session.governedSessionId,
+      resumeSecret: opened.resumeSecret,
+      repository: 'Patricked-code/MCP',
+      taskScope: OPEN_INPUT.taskScope,
+      expectedSessionRevision: opened.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-B-raw',
+      identity: SHARED_IDENTITY
+    });
+    releaseRead();
+    await closedAudit;
+
+    const event = audits.find((input) => (
+      input.type === 'transport.unbound' && input.reasonCode === 'transport_closed'
+    ));
+    assert.equal(event?.type, 'transport.unbound');
+    if (event?.type !== 'transport.unbound') assert.fail('transport_closed audit missing');
+    assert.equal(event.fingerprint, opened.session.currentTransport?.fingerprint);
+    assert.notEqual(event.fingerprint, resumed.currentTransport?.fingerprint);
+    assert.equal(event.sessionRevision, opened.session.sessionRevision);
+  } finally {
+    releaseRead();
     await rm(directory, { recursive: true, force: true });
   }
 });
