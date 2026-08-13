@@ -90,6 +90,18 @@ const ALLOWED_METADATA_KEYS: Record<OperationalEventType, ReadonlySet<string>> =
   'blocker.detected': new Set(['blockerCode', 'scope', 'stateVersion', 'sessionRevision'])
 };
 
+const OPAQUE_METADATA_KEYS: Partial<Record<OperationalEventType, ReadonlySet<string>>> = {
+  'session.opened': new Set(['taskScope', 'agentIdentity']),
+  'session.resumed': new Set(['taskScope']),
+  'checkpoint.created': new Set(['resultCode']),
+  'lock.acquired': new Set(['scope']),
+  'lock.renewed': new Set(['scope']),
+  'lock.conflicted': new Set(['scope']),
+  'lock.released': new Set(['scope']),
+  'lock.expired': new Set(['scope']),
+  'blocker.detected': new Set(['scope'])
+};
+
 function validateMetadata(type: OperationalEventType, metadata: OperationalEventMetadata): void {
   const entries = Object.entries(metadata);
   if (entries.length > 16) {
@@ -115,21 +127,33 @@ function validateMetadata(type: OperationalEventType, metadata: OperationalEvent
 
 function redactSensitiveValue(value: string): string {
   return value
+    .replace(
+      /-----BEGIN [^-\r\n]*PRIVATE KEY-----[\s\S]*?(?:-----END [^-\r\n]*PRIVATE KEY-----|$)/gi,
+      '[REDACTED]'
+    )
+    .replace(/\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b/g, '[REDACTED]')
+    .replace(/\beyJ[A-Za-z0-9_-]{5,}\.[A-Za-z0-9_-]{5,}\.[A-Za-z0-9_-]{5,}\b/g, '[REDACTED]')
     .replace(/\bBearer\s+[A-Za-z0-9._~+/=-]+/gi, 'Bearer [REDACTED]')
     .replace(
       /\b(authorization|auth|token|secret|password|private[_-]?key|api[_-]?key|access[_-]?token|refresh[_-]?token)\b\s*[:=]\s*(?:"[^"]*"|'[^']*'|[^\s,;]+)/gi,
       '$1=[REDACTED]'
     )
     .replace(
-      /\b((?:mongodb|mysql|postgres|postgresql):\/\/)[^@\s/]+(?::[^@\s]*)?@/gi,
+      /\b([a-z][a-z0-9+.-]*:\/\/)[^@\s/]+(?::[^@\s]*)?@/gi,
       '$1[REDACTED]@'
     );
 }
 
-function sanitizedMetadata(metadata: OperationalEventMetadata): OperationalEventMetadata {
+function sanitizedMetadata(
+  type: OperationalEventType,
+  metadata: OperationalEventMetadata
+): OperationalEventMetadata {
+  const opaqueKeys = OPAQUE_METADATA_KEYS[type] ?? new Set<string>();
   return Object.fromEntries(Object.entries(metadata).map(([key, value]) => [
     key,
-    typeof value === 'string' ? redactSensitiveValue(value) : value
+    typeof value === 'string'
+      ? opaqueKeys.has(key) ? '[REDACTED]' : redactSensitiveValue(value)
+      : value
   ]));
 }
 
@@ -190,7 +214,7 @@ export function createOperationalEventJournal(
 
   async function appendOne(input: OperationalEventInput): Promise<OperationalEvent> {
     validateMetadata(input.type, input.metadata);
-    const metadata = sanitizedMetadata(input.metadata);
+    const metadata = sanitizedMetadata(input.type, input.metadata);
     validateMetadata(input.type, metadata);
     await mkdir(dirname(options.filePath), { recursive: true, mode: 0o700 });
     await chmod(dirname(options.filePath), 0o700);
