@@ -10,6 +10,7 @@ export type TransportBindings = {
   ): SanitizedTransportMetadata;
   lookup(transportSessionId: string | undefined): string | null;
   unbind(transportSessionId: string): string | null;
+  unbindGovernedSession(governedSessionId: string): number;
 };
 
 function fingerprintTransport(transportSessionId: string): string {
@@ -41,6 +42,16 @@ export function createTransportBindings(): TransportBindings {
       const governedSessionId = bindings.get(transportSessionId) ?? null;
       bindings.delete(transportSessionId);
       return governedSessionId;
+    },
+    unbindGovernedSession(governedSessionId) {
+      let removed = 0;
+      for (const [transportSessionId, boundGovernedSessionId] of bindings) {
+        if (boundGovernedSessionId === governedSessionId) {
+          bindings.delete(transportSessionId);
+          removed += 1;
+        }
+      }
+      return removed;
     }
   };
 }

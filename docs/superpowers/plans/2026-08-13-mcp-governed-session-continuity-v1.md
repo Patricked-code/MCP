@@ -666,17 +666,17 @@ Règles :
 - idle TTL marque EXPIRED; grace dépassé rend la reprise impossible.
 - maintenance toutes les 60 secondes, unref, single timer.
 
-- [ ] **Step 1: RED pour revision et stateVersion indépendants.**
-- [ ] **Step 2: RED pour checkpoint sanitizé et borné.**
-- [ ] **Step 3: RED pour heartbeat, pause, close, expiration et timer unref.**
-- [ ] **Step 4: Exécuter RED.**
+- [x] **Step 1: RED pour revision et stateVersion indépendants.**
+- [x] **Step 2: RED pour checkpoint sanitizé et borné.**
+- [x] **Step 3: RED pour heartbeat, pause, close, expiration et timer unref.**
+- [x] **Step 4: Exécuter RED.**
 
 ~~~~bash
 node --import tsx --test tests/governedSessionService.test.ts
 ~~~~
 
-- [ ] **Step 5: Implémenter minimalement et vérifier GREEN.**
-- [ ] **Step 6: Commits.**
+- [x] **Step 5: Implémenter minimalement et vérifier GREEN.**
+- [x] **Step 6: Commits.**
 
 - RED: test(session): define lifecycle and checkpoint contracts
 - GREEN: feat(session): add lifecycle and checkpoints

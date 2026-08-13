@@ -4,6 +4,7 @@ import type { AtomicJsonStore } from './atomicStore.js';
 import { createResumeSecret, hashResumeSecret, verifyResumeSecret } from './resumeProof.js';
 import type { TransportBindings } from './transportBindings.js';
 import type {
+  GovernedCheckpoint,
   GovernedSessionPublicRecord,
   GovernedSessionRecord,
   IdentityAssurance,
@@ -49,7 +50,36 @@ export type GovernedSessionService = {
     input: ResumeSessionInput,
     request: SessionRequest
   ): Promise<GovernedSessionPublicRecord>;
+  heartbeat(input: SessionRevisionInput, request: SessionRequest): Promise<GovernedSessionPublicRecord>;
+  acknowledgeContext(
+    input: SessionRevisionInput & { expectedStateVersion: number },
+    request: SessionRequest
+  ): Promise<GovernedSessionPublicRecord>;
+  createCheckpoint(input: CreateCheckpointInput, request: SessionRequest): Promise<GovernedCheckpoint>;
+  pauseSession(input: SessionRevisionInput, request: SessionRequest): Promise<GovernedSessionPublicRecord>;
+  closeSession(input: SessionRevisionInput, request: SessionRequest): Promise<GovernedSessionPublicRecord>;
+  listVisibleSessions(request: SessionRequest): Promise<GovernedSessionPublicRecord[]>;
+  getVisibleSession(
+    governedSessionId: string,
+    request: SessionRequest
+  ): Promise<GovernedSessionPublicRecord | null>;
+  expireIdleSessions(): Promise<number>;
   lookupGovernedSessionId(transportSessionId: string | undefined): string | null;
+};
+
+export type SessionRevisionInput = {
+  governedSessionId: string;
+  expectedSessionRevision: number;
+};
+
+export type CreateCheckpointInput = SessionRevisionInput & {
+  expectedStateVersion: number;
+  completedAction: string;
+  resultCode: string;
+  pullRequestNumber: number | null;
+  observedHeadSha: string | null;
+  blockers: string[];
+  nextAction: string | null;
 };
 
 type GovernedSessionServiceOptions = {
@@ -58,6 +88,7 @@ type GovernedSessionServiceOptions = {
   idleTtlSeconds: number;
   resumeGraceSeconds: number;
   now?: () => Date;
+  getLiveState?: () => Promise<{ stateVersion: number }>;
 };
 
 function publicSession(session: GovernedSessionRecord): GovernedSessionPublicRecord {
@@ -73,6 +104,7 @@ export function createGovernedSessionService(
   options: GovernedSessionServiceOptions
 ): GovernedSessionService {
   const now = options.now ?? (() => new Date());
+  const getLiveState = options.getLiveState ?? (async () => ({ stateVersion: 0 }));
 
   function assertTransportAvailable(
     transportSessionId: string,
@@ -80,6 +112,51 @@ export function createGovernedSessionService(
   ): void {
     const current = options.bindings.lookup(transportSessionId);
     if (current && current !== governedSessionId) fail('TRANSPORT_BINDING_CONFLICT');
+  }
+
+  function canAccess(session: GovernedSessionRecord, request: SessionRequest): boolean {
+    return options.bindings.lookup(request.transportSessionId) === session.governedSessionId
+      || (
+        request.identity.assurance === 'oauth_subject'
+        && request.identity.principalId !== null
+        && request.identity.principalId === session.ownerPrincipalId
+      );
+  }
+
+  function assertMutable(
+    session: GovernedSessionRecord,
+    input: SessionRevisionInput,
+    request: SessionRequest
+  ): void {
+    if (!canAccess(session, request)) fail('SESSION_NOT_BOUND');
+    if (session.status === 'CLOSED') fail('SESSION_CLOSED');
+    if (session.status === 'EXPIRED') fail('SESSION_EXPIRED');
+    if (session.sessionRevision !== input.expectedSessionRevision) {
+      fail('SESSION_REVISION_MISMATCH');
+    }
+  }
+
+  async function mutateSession(
+    input: SessionRevisionInput,
+    request: SessionRequest,
+    mutator: (session: GovernedSessionRecord, at: Date) => GovernedSessionRecord
+  ): Promise<GovernedSessionPublicRecord> {
+    let changed: GovernedSessionRecord | null = null;
+    const at = now();
+    await options.store.update((document) => {
+      const index = document.sessions.findIndex(
+        (session) => session.governedSessionId === input.governedSessionId
+      );
+      const current = index >= 0 ? document.sessions[index] : undefined;
+      if (!current) fail('SESSION_NOT_FOUND');
+      assertMutable(current, input, request);
+      changed = mutator(current, at);
+      const sessions = [...document.sessions];
+      sessions[index] = changed;
+      return { ...document, storeRevision: document.storeRevision + 1, sessions };
+    });
+    if (!changed) fail('SESSION_UPDATE_FAILED');
+    return publicSession(changed);
   }
 
   return {
@@ -185,6 +262,8 @@ export function createGovernedSessionService(
           resumedAt: resumedAt.toISOString(),
           lastHeartbeatAt: resumedAt.toISOString(),
           currentTransport,
+          pausedAt: null,
+          expiredAt: null,
           identityAssurance: oauthOwnerMatches ? 'oauth_subject' : 'resume_secret',
           sessionRevision: current.sessionRevision + 1
         };
@@ -204,6 +283,134 @@ export function createGovernedSessionService(
 
       if (!resumed) fail('SESSION_RESUME_FAILED');
       return publicSession(resumed);
+    },
+
+    async heartbeat(input, request) {
+      return mutateSession(input, request, (session, at) => ({
+        ...session,
+        status: 'ACTIVE',
+        lastHeartbeatAt: at.toISOString(),
+        currentTransport: session.currentTransport
+          ? { ...session.currentTransport, lastSeenAt: at.toISOString() }
+          : null,
+        sessionRevision: session.sessionRevision + 1
+      }));
+    },
+
+    async acknowledgeContext(input, request) {
+      const liveState = await getLiveState();
+      if (liveState.stateVersion !== input.expectedStateVersion) {
+        fail('LIVE_STATE_VERSION_MISMATCH');
+      }
+      return mutateSession(input, request, (session) => ({
+        ...session,
+        lastAcknowledgedStateVersion: input.expectedStateVersion,
+        sessionRevision: session.sessionRevision + 1
+      }));
+    },
+
+    async createCheckpoint(input, request) {
+      const liveState = await getLiveState();
+      if (liveState.stateVersion !== input.expectedStateVersion) {
+        fail('LIVE_STATE_VERSION_MISMATCH');
+      }
+      let checkpoint: GovernedCheckpoint | null = null;
+      await mutateSession(input, request, (session, at) => {
+        if (session.lastAcknowledgedStateVersion !== input.expectedStateVersion) {
+          fail('CONTEXT_NOT_ACKNOWLEDGED');
+        }
+        checkpoint = {
+          checkpointId: randomUUID(),
+          governedSessionId: session.governedSessionId,
+          createdAt: at.toISOString(),
+          taskScope: session.taskScope,
+          workBranch: session.workBranch,
+          pullRequestNumber: input.pullRequestNumber,
+          observedHeadSha: input.observedHeadSha,
+          acknowledgedStateVersion: input.expectedStateVersion,
+          completedAction: input.completedAction,
+          resultCode: input.resultCode,
+          blockers: [...input.blockers],
+          nextAction: input.nextAction,
+          eventIds: [],
+          sessionRevision: session.sessionRevision + 1
+        };
+        return {
+          ...session,
+          lastCheckpoint: checkpoint,
+          blockers: [...input.blockers],
+          nextAction: input.nextAction,
+          sessionRevision: session.sessionRevision + 1
+        };
+      });
+      if (!checkpoint) fail('CHECKPOINT_CREATE_FAILED');
+      return checkpoint;
+    },
+
+    async pauseSession(input, request) {
+      return mutateSession(input, request, (session, at) => ({
+        ...session,
+        status: 'PAUSED',
+        pausedAt: at.toISOString(),
+        sessionRevision: session.sessionRevision + 1
+      }));
+    },
+
+    async closeSession(input, request) {
+      const existing = (await options.store.read()).sessions.find(
+        (session) => session.governedSessionId === input.governedSessionId
+      );
+      if (!existing) fail('SESSION_NOT_FOUND');
+      if (!canAccess(existing, request)) fail('SESSION_NOT_BOUND');
+      if (existing.status === 'CLOSED') return publicSession(existing);
+      const closed = await mutateSession(input, request, (session, at) => ({
+        ...session,
+        status: 'CLOSED',
+        closedAt: at.toISOString(),
+        currentTransport: null,
+        sessionRevision: session.sessionRevision + 1
+      }));
+      options.bindings.unbindGovernedSession(input.governedSessionId);
+      return closed;
+    },
+
+    async listVisibleSessions(request) {
+      const document = await options.store.read();
+      return document.sessions.filter((session) => canAccess(session, request)).map(publicSession);
+    },
+
+    async getVisibleSession(governedSessionId, request) {
+      const session = (await options.store.read()).sessions.find(
+        (candidate) => candidate.governedSessionId === governedSessionId
+      );
+      return session && canAccess(session, request) ? publicSession(session) : null;
+    },
+
+    async expireIdleSessions() {
+      const at = now();
+      const expiredIds: string[] = [];
+      await options.store.update((document) => {
+        const sessions = document.sessions.map((session) => {
+          if (
+            !['OPEN', 'ACTIVE', 'PAUSED'].includes(session.status)
+            || at.getTime() - Date.parse(session.lastHeartbeatAt) <= options.idleTtlSeconds * 1_000
+          ) return session;
+          expiredIds.push(session.governedSessionId);
+          return {
+            ...session,
+            status: 'EXPIRED' as const,
+            expiredAt: at.toISOString(),
+            currentTransport: null,
+            sessionRevision: session.sessionRevision + 1
+          };
+        });
+        if (expiredIds.length === 0) return document;
+        return { ...document, storeRevision: document.storeRevision + 1, sessions };
+      });
+      for (const governedSessionId of expiredIds) {
+        options.bindings.unbindGovernedSession(governedSessionId);
+      }
+      return expiredIds.length;
     },
 
     lookupGovernedSessionId(transportSessionId) {
