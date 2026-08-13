@@ -130,7 +130,7 @@ test('le dashboard rend la vue opérationnelle bornée demandée', () => {
   assert.match(html, /FULLY_ALIGNED/);
   assert.match(html, /TASK-20260813-012/);
   assert.match(html, /prepare-review/);
-  assert.match(html, /Sessions actives compatibles[^0-9]*1/);
+  assert.match(html, /Sessions actives globales[^0-9]*1/);
   assert.match(html, /task:TASK-20260813-012/);
   assert.match(html, /2026-08-13T08:05:00.000Z/);
   assert.match(html, /PR #44/);
@@ -146,7 +146,8 @@ test('le dashboard affiche le compteur global injecté même sans session web li
   context.session = null;
   const html = renderGovernedContextDashboardSection(context, 3);
 
-  assert.match(html, /Sessions actives compatibles[^0-9]*3/);
+  assert.match(html, /Sessions actives globales[^0-9]*3/);
+  assert.doesNotMatch(html, /Sessions actives compatibles/);
 });
 
 test('le dashboard échappe toutes les chaînes et ignore les secrets hors contrat', () => {
