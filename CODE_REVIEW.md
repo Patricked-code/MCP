@@ -41,4 +41,5 @@ Toute intervention humaine, IA ou automatisée doit respecter :
 - Correction : jusqu’à 20 tentatives, requête bornée à 5 secondes, pause de 2 secondes, échec final non masqué.
 - Test : RED `31657464793`, GREEN `31657546033`.
 - Dette documentaire associée : le générateur d’artefact codait sept anciens snapshots ; il copie désormais les sources actives et la parité est testée.
-- Risque restant : aucun merge avant CI finale et head exact ; aucune clôture du thread avant présence de la correction sur `main`.
+- Résolution : correction fusionnée sur `main` par la PR #42 au SHA `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7` ; CI finale `31658220076` verte ; premier déploiement automatique `31658327435` attesté ; thread répondu et résolu.
+- Risque restant : la preuve canonique ultérieure dépend encore d’une seconde fusion documentaire utile et de son déploiement exact-SHA.

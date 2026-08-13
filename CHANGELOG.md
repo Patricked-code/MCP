@@ -198,3 +198,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Correction P2 : polling readiness borné pour `restart_mcp_bridge_s1`, avec RED `31657464793` et GREEN `31657546033`.
 - Artefact CI : suppression des sept candidats historiques codés en dur ; parité exacte source/artefact testée, RED `31657669105`, GREEN `31657781749`.
 - PR #42 prépare `pushEnabled=true` ; la preuve automatique par push reste en attente de fusion et d’attestation.
+
+## 2026-08-13 — Premier déploiement automatique exact-SHA attesté
+
+- PR #42 fusionnée à tête verrouillée au commit `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7` après CI finale `31658220076` entièrement verte.
+- Le push sur `main` a déclenché la CI `31658327373` et le déploiement gouverné `31658327435`, tous deux réussis.
+- Job GitHub `94317597740` : étapes `Resolve deployment gate` et `Deploy exact main SHA through MCP` exécutées et réussies.
+- Job MCP `mcp-s1-31658327435-9be5095cbf72` : SHA exact attesté, health/OAuth/MCP vrais, rollback `not_needed`.
+- S1 est resté sur `main`, propre, avec fetch read-only et push désactivé ; OCI/runtime sont alignés sur le merge.
+- Le thread P2 de la PR #41 a été résolu après présence de la correction sur `main` et preuve du déploiement.
+- Preuve restante avant clôture : fusion et attestation automatique de la seconde PR documentaire gouvernée.

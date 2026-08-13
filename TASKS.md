@@ -19,14 +19,15 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ## Jalons terminés
 
-- PR #34 à #41 fusionnées selon leur gouvernance.
+- PR #34 à #42 fusionnées selon la gouvernance.
 - Live State V1 déployé et attesté.
-- Governed Autodeploy V1 bootstrappé sur S1.
-- Workflow manuel exact-SHA `31655087215` réussi au SHA `8fb075dd55a3b94ed620527f11b2a77f88627188`.
+- Bootstrap manuel exact-SHA réussi : run `31655087215`.
+- Politique `pushEnabled=true` fusionnée avec la PR #42.
+- Premier déploiement automatique exact-SHA réussi : run `31658327435`, job MCP `mcp-s1-31658327435-9be5095cbf72`, SHA `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7`.
 - GitHub, S1, `origin/main`, OCI et runtime alignés ; health/OAuth/MCP validés ; rollback non nécessaire.
-- Inventaire courant réattesté : 189 Git + 26 runtime-only = 215 ; historique 209 conservé séparément.
-- P2 de readiness polling reproduit par test RED puis corrigé avec CI GREEN.
-- Artefact CI des sept documents actifs rendu strictement identique aux sources suivies.
+- Inventaire courant : 189 Git + 26 runtime-only = 215 ; historique 209 conservé séparément.
+- P2 readiness polling corrigé en TDD et thread PR #41 résolu.
+- Artefact CI des sept documents actifs strictement identique aux sources suivies.
 
 ## Tâche active unique
 
@@ -37,11 +38,9 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] attestation post-workflow fraîche et alignée ;
 - [x] correction P2 avec polling borné fail-closed ;
 - [x] consolidation documentaire post-bootstrap ;
-- [x] autorisation conditionnelle de `pushEnabled=true` dans la PR #42 ;
-- [ ] CI finale verte sur le head documentaire exact ;
-- [ ] PR #42 ready puis fusion locked-head ;
-- [ ] premier déploiement automatique déclenché par le push de fusion, non skipped et attesté ;
-- [ ] seconde PR utile enregistrant la première preuve ;
+- [x] activation `pushEnabled=true` fusionnée ;
+- [x] premier déploiement automatique par push non skipped et attesté ;
+- [ ] seconde PR documentaire utile enregistrant cette première preuve ;
 - [ ] seconde fusion automatique canonique et attestation finale ;
 - [ ] verdict final des six objectifs et gestion conditionnelle des automatisations.
 

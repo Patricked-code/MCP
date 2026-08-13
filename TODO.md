@@ -24,11 +24,10 @@ Travaux restant réellement à accomplir.
 - [x] Conserver séparément l’historique `209 = 183 + 26` et la surface courante `215 = 189 + 26`.
 - [x] Terminer le bootstrap S1 et le workflow manuel exact-SHA.
 - [x] Vérifier health, OAuth, MCP 401, OCI, Live State et rollback.
-- [x] Corriger le polling P2 avec TDD.
-- [x] Éliminer les candidats documentaires CI codés en dur et garantir la parité avec les sources.
-- [x] Préparer l’activation `pushEnabled=true` dans la PR #42.
-- [ ] Fusionner la PR #42 sur head exact après CI/revue vertes.
-- [ ] Attester le premier déploiement automatique par push.
+- [x] Corriger le polling P2 avec TDD puis résoudre le thread après fusion.
+- [x] Garantir la parité exacte des candidats documentaires CI avec les sources.
+- [x] Activer `pushEnabled=true` via la PR #42.
+- [x] Attester le premier déploiement automatique par push.
 - [ ] Créer puis fusionner la seconde PR documentaire utile.
 - [ ] Attester le second déploiement automatique canonique.
 - [ ] Émettre le verdict final des six objectifs.

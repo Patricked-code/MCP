@@ -88,3 +88,16 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Artefact documentaire : test RED `263fdcc72c6ac2932eca9a416089c75410617765`, run `31657669105` en échec attendu ; générateur corrigé, run `31657781749` réussi après correction du diff-check.
 - Politique : activation `pushEnabled=true` candidate ; aucune preuve de push automatique n’est encore déclarée.
 - Aucune écriture directe sur S1, aucun push S1, aucun secret et aucune suppression.
+
+## 2026-08-13T01:38:43.9747634Z — TASK-20260809-003 — Premier déploiement automatique par push attesté
+
+- PR #42 fusionnée à tête verrouillée au SHA `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7`.
+- CI push : run `31658327373`, job `94317597260`, tous les contrôles critiques réussis.
+- Déploiement push : run `31658327435`, job `94317597740`, conclusion `success`.
+- Étape `Resolve deployment gate` : exécutée et réussie.
+- Étape `Deploy exact main SHA through MCP` : exécutée et réussie.
+- Job MCP : `mcp-s1-31658327435-9be5095cbf72` ; message final d’attestation du SHA exact.
+- État post-déploiement : GitHub/S1/origin/OCI/runtime égaux ; S1 propre ; runtime running/healthy ; image `sha256:1a3cc55d8ae7579e5e7c328e4ef925dee44d149b84ba7e6a09722711404bbb49`.
+- Live State `2026-08-13T01:42:36.744Z` : CURRENT, FULLY_ALIGNED, contradictions vides, `nextAction=null`.
+- Thread P2 PR #41 répondu puis résolu après fusion et attestation.
+- Prochaine action : seconde PR documentaire gouvernée, puis second déploiement automatique canonique.

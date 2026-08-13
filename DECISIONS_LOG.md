@@ -191,3 +191,11 @@ Décision : la PR #42 est autorisée à passer `.mcp/autodeploy-policy.json` à 
 Décision complémentaire : le thread P2 de la PR #41 est traité par un polling borné fail-closed, vérifié RED/GREEN. L’artefact CI doit être une copie exacte des sept documents actifs, jamais une régénération de snapshots historiques.
 
 Preuve restante : le push de fusion de la PR #42 puis une seconde fusion utile doivent chacun produire un job non skipped, exact-SHA et attesté avant la clôture complète.
+
+## 2026-08-13 — Première preuve automatique acceptée, seconde preuve canonique requise
+
+Contexte : la PR #42 a activé `pushEnabled=true` et a fusionné le SHA `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7` après CI verte. Le push a produit la CI `31658327373` et le déploiement `31658327435`; l’étape exact-SHA a réussi et S1/OCI/runtime ont convergé vers ce SHA.
+
+Décision : accepter ce run comme première preuve réelle du chemin automatique et résoudre le P2 de la PR #41, la correction étant fusionnée, testée et déployée.
+
+Décision complémentaire : conserver le chantier ouvert jusqu’à la fusion d’une seconde PR documentaire utile et à l’attestation indépendante du second push automatique. Aucun succès final ni changement d’automatisation n’est déclaré avant cette seconde preuve.
