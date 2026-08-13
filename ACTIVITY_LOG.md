@@ -131,3 +131,13 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Régression fraîche au head fonctionnel `6365e13…` : gouvernance `12/12`, read-only `172/172`, zéro fail/cancelled/skipped/todo ; typecheck, build, docs, secrets, diff et invariants réussis.
 - `origin/main` reste `eb61b97e…`; Autodeploy/OIDC/deploy inchangés ; aucune écriture S1/runtime et aucune 2FA.
 - Prochaine action : consolidation documentaire, CI du head exact et seconde revue indépendante avant toute autorisation ready/merge.
+
+## 2026-08-13T10:18:00Z — TASK-20260813-004 — Revue différentielle corrigée, confirmation exacte requise
+
+- Seconde revue du head `90e9ec6…` : aucun finding critique, deux importants et deux mineurs.
+- Cycles RED/GREEN publiés sur la branche unique : compensation sûre de reprise, dernier verdict décisif par reviewer, instantané d’unbind et libellé dashboard global.
+- La confirmation différentielle a ajouté deux RED : `COMMENTED` ne doit effacer aucun verdict ; les champs libres du journal doivent rester opaques face aux PAT/JWT/PEM/URI.
+- Head fonctionnel : `de8a6dfcfa56a30b6096fdb4a538c3a33a259d24` ; suite intégrale précédente `187/187`, puis tests ciblés/typecheck/secrets verts sur les deux dernières corrections.
+- `origin/main=eb61b97e…`; aucun diff Autodeploy/OIDC/deploy, aucune écriture S1/runtime et aucune 2FA.
+- Ultime confirmation différentielle : zéro finding critique/important ; range `fd0b1d8…de8a6df` déclaré mergeable.
+- Prochaine action : commit documentaire, régression et CI exactes, avec maintien de la PR #44 en draft avant autorisation humaine ready/merge.

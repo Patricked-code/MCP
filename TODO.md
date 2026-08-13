@@ -43,7 +43,9 @@ Travaux restant réellement à accomplir.
 - [x] Observer les outils WRITE en `shadow` sans jamais les bloquer en V1.
 - [x] Exécuter la régression complète avant la draft PR.
 - [x] Créer la draft PR unique #44 et traiter la première revue par TDD additif.
-- [ ] Obtenir la CI verte et la seconde revue indépendante du head exact, puis autoriser ready/merge.
+- [x] Traiter par TDD les quatre findings de la seconde revue et les deux cas différentiels supplémentaires.
+- [x] Obtenir la confirmation différentielle sans finding critique/important.
+- [ ] Obtenir la CI verte du head exact, puis autoriser ready/merge.
 - [ ] Après autorisation de merge, observer l’Autodeploy V1 existant et attester le runtime sans écriture directe S1.
 
 ## Maintenance séparée

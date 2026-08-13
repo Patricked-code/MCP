@@ -240,3 +240,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Feature-off, dashboard et maintenance : aucun store chargé lorsque désactivé, compteur global réel et cycles périodiques single-flight.
 - Régression post-review : gouvernance `12/12`, read-only `172/172`, typecheck, build, docs, secret scan et invariants réussis sur le head fonctionnel `6365e13…`.
 - PR #44 reste draft ; aucun merge, autodeploy, changement S1/runtime ou 2FA n’est déclaré.
+
+## 2026-08-13 — Corrections TDD de la seconde revue de la PR #44
+
+- La reprise sur le transport déjà lié ne modifie plus la table de bindings avant la réussite du store ; une panne d’écriture conserve store et autorisation antérieurs.
+- Les revues GitHub conservent le dernier verdict décisif par reviewer ; `COMMENTED` est non décisif et `DISMISSED` lève explicitement le verdict antérieur.
+- La fermeture d’un transport journalise un instantané immuable du binding retiré, sans course avec une reprise ultérieure.
+- Le dashboard nomme explicitement son compteur global ; les champs libres du journal sont opaques et les autres valeurs couvrent aussi PAT/JWT/PEM/URI.
+- Régression intégrale précédente : `187/187`; tests ciblés, typecheck et secrets verts au head fonctionnel `de8a6df…` avant consolidation documentaire.
+- Ultime confirmation différentielle : aucun finding critique ou important, range fonctionnel déclaré mergeable.
+- PR #44 reste draft ; `main`, S1/runtime, Autodeploy V1, OIDC, `ENABLE_WRITE_TOOLS`, `allow_write` et l’exclusion 2FA restent inchangés.

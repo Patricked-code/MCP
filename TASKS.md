@@ -45,6 +45,10 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] régression fraîche complète sur le head fonctionnel `38e3ced7…` et CI `31675193991` verte ;
 - [x] draft PR unique #44 créée et première revue indépendante traitée par cycles RED/GREEN ;
 - [x] régression locale post-review : gouvernance `12/12`, read-only `172/172`, typecheck/build/docs/secrets/invariants verts ;
+- [x] seconde revue du head `90e9ec6…` traitée : deux findings importants et deux mineurs corrigés en TDD ;
+- [x] deux findings différentiels supplémentaires traités : commentaires GitHub non décisifs et champs libres du journal opaques ;
+- [x] ultime confirmation différentielle : zéro finding critique/important, range fonctionnel déclaré mergeable ;
+- [x] régression intégrale locale du head fonctionnel précédent : `187/187`; tests ciblés, typecheck et secrets verts sur `de8a6df…` ;
 - [ ] CI et seconde revue du head documentaire exact, puis autorisation ready/merge ;
 - [ ] merge autorisé exact-head puis Autodeploy V1 existant et attestation post-merge.
 

@@ -53,17 +53,21 @@ Date : 2026-08-13
 
 ## État de branche et revue de la draft PR #44
 
-- Branche unique : `mcp/session-continuity-v1-20260813`, 46 commits petits et réversibles depuis la baseline immuable avant le commit documentaire final.
+- Branche unique : `mcp/session-continuity-v1-20260813`, 61 commits petits et réversibles depuis la baseline immuable avant le présent commit documentaire.
 - Draft PR unique : #44 vers `main`, créée sur la base exacte `eb61b97e…`; elle reste en brouillon et non fusionnée.
-- Head fonctionnel après corrections de revue : `6365e13c12c9d84f99717256ce92e915579c8b47`; commit documentaire exact-head et seconde revue encore requis.
+- Head fonctionnel après les corrections différentielles : `de8a6dfcfa56a30b6096fdb4a538c3a33a259d24`; ultime confirmation sans finding critique/important, commit documentaire et CI exact-head encore requis.
 - Correctif documentaire : un SHA déclaré ancien produit désormais `DOCUMENTATION_DRIFT`, sans changement des autres contrats Live State V1.
 - Operational Memory V1 : stores atomiques bornés, journal JSONL sanitizé réellement câblé, `governedSessionId` durable, reprise prouvée, transport remplacé/délié, checkpoints, heartbeats et locks gouvernés.
 - Surface MCP additive : onze outils de session, resource/instructions de contexte, deux outils de contexte et dashboard authentifié ; aucune architecture parallèle.
 - WRITE gate : `shadow` non bloquant même si l’évaluateur ou le journal ne répond jamais ; `ENABLE_WRITE_TOOLS`, `allow_write`, résultats, erreurs, arité et schémas historiques conservés.
 - Maintenance : un timer `60 s` avec `unref`, cycles single-flight, expiration/réparation sessions-locks et journalisation de compteurs uniquement ; aucune collecte GitHub/SSH ni écriture Live State périodique.
 - GitHub : la liste de rulesets sélectionne un seul actif puis charge son détail, avec sept appels maximum, timeout/cache/single-flight inchangés.
+- Reprises et audit : un échec durable sur le transport déjà lié conserve le binding légitime ; un `transport_closed` journalise l’instantané effectivement retiré même si une reprise s’entrelace.
+- Reviews : seul le dernier verdict décisif `APPROVED`/`CHANGES_REQUESTED` de chaque reviewer est compté ; `COMMENTED` ne l’efface pas et `DISMISSED` le lève explicitement.
+- Journal : `taskScope`, `agentIdentity`, `resultCode` de checkpoint et `scope` sont opaques ; les autres valeurs couvrent aussi PAT, JWT, PEM, Bearer, affectations sensibles et userinfo URI avant append.
 - Feature-off : aucune instruction ou ressource promise, aucun store chargé, projection dashboard explicitement désactivée.
-- Régression fraîche : gouvernance `12/12`, suite read-only `172/172`, zéro fail/cancelled/skipped/todo ; typecheck, build, docs check, scan secrets et diff check réussis.
+- Dashboard : le compteur réellement global est explicitement nommé « sessions actives globales ».
+- Régression fraîche : suite intégrale `187/187`, zéro fail/cancelled/skipped/todo ; typecheck, build, docs check, scan secrets et diff check réussis.
 - Invariants : `origin/main` reste `eb61b97e…`; Autodeploy V1, GitHub OIDC, `src/deploy` et `.mcp/autodeploy-policy.json` inchangés ; aucun fichier supprimé ; aucune écriture S1/runtime ; aucune 2FA.
 - Merge, autodeploy de cette branche et attestation post-merge : NON OBSERVÉS et non déclarés.
 
@@ -73,4 +77,4 @@ Date : 2026-08-13
 
 ## Prochaine action unique
 
-Versionner ce bilan, obtenir la CI verte du head exact et une seconde revue indépendante sans finding actionnable, puis seulement demander l’autorisation de passer la PR #44 ready/merge exact-head.
+Versionner ce bilan, obtenir la CI verte du head exact, puis seulement demander l’autorisation de passer la PR #44 ready/merge exact-head.

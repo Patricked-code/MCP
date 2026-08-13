@@ -227,3 +227,15 @@ Décision : corriger chaque point par test RED puis GREEN sur la branche unique.
 Décision de compatibilité : ne pas fusionner les stores sessions et locks, car cela remplacerait une mécanique approuvée. Le store de locks reste l’autorité des locks actifs ; `session.lockIds` demeure une projection dénormalisée réparée par la maintenance existante après toute panne partielle.
 
 Limites : la PR reste draft jusqu’à CI et seconde revue du head exact. `main`, S1/runtime, Autodeploy V1, GitHub OIDC, `ENABLE_WRITE_TOOLS`, `allow_write` et l’exclusion 2FA restent inchangés.
+
+## 2026-08-13 — Résolution additive de la seconde revue de la PR #44
+
+Contexte : la seconde revue a confirmé une compensation mémoire incorrecte lors d’une reprise sur le même transport, une agrégation historique des reviews GitHub, une course de preuve lors d’un unbind et un libellé dashboard ambigu. La confirmation différentielle a ajouté deux cas : `COMMENTED` effaçait le verdict décisif antérieur et la redaction par motifs laissait des PAT/URI/JWT/PEM dans des champs libres.
+
+Décision : différer le rebinding jusqu’au succès durable, agréger uniquement le dernier verdict décisif par reviewer avec `DISMISSED` explicite, conserver un instantané éphémère sanitizé de chaque binding retiré et nommer le compteur global. Les champs libres du journal deviennent systématiquement `[REDACTED]`; les autres valeurs conservent une défense PAT/JWT/PEM/Bearer/URI.
+
+Décision de compatibilité : conserver toutes les APIs/outils existants, la table de bindings dans le même service et le journal unique déjà validé. Aucun store, service, gate ou collecteur parallèle n’est introduit.
+
+Limites : la PR reste draft jusqu’à confirmation différentielle et CI du head exact. Aucun merge, Autodeploy, S1/runtime ou 2FA n’est exécuté ; `ENABLE_WRITE_TOOLS`, `allow_write`, Live State V1 et OIDC restent invariants.
+
+Confirmation : l’ultime revue différentielle ne relève aucun finding critique ou important et juge le range fonctionnel `fd0b1d8…de8a6df` mergeable. Cela ne vaut pas autorisation de fusion ; la CI du head documentaire exact reste exigée.
