@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import test from 'node:test';
 
 import { createAtomicJsonStore } from '../src/operationalMemory/atomicStore.js';
+import { startOperationalMemoryMaintenance } from '../src/operationalMemory/maintenance.js';
 import {
   createGovernedSessionService,
   type RequestIdentity
@@ -26,7 +27,11 @@ const SHARED_IDENTITY: RequestIdentity = {
   assurance: 'shared_credential'
 };
 
-async function fixture() {
+async function fixture(options: {
+  now?: () => Date;
+  stateVersion?: () => number;
+  idleTtlSeconds?: number;
+} = {}) {
   const directory = await mkdtemp(join(tmpdir(), 'mcp-governed-session-'));
   const file = join(directory, 'sessions.json');
   const store = createAtomicJsonStore({
@@ -38,9 +43,10 @@ async function fixture() {
   const service = createGovernedSessionService({
     store,
     bindings,
-    idleTtlSeconds: 86_400,
+    idleTtlSeconds: options.idleTtlSeconds ?? 86_400,
     resumeGraceSeconds: 604_800,
-    now: () => new Date('2026-08-13T07:00:00.000Z')
+    now: options.now ?? (() => new Date('2026-08-13T07:00:00.000Z')),
+    getLiveState: async () => ({ stateVersion: options.stateVersion?.() ?? 9 })
   });
   return { directory, file, store, bindings, service };
 }
@@ -258,6 +264,207 @@ test('une session expirée au-delà de la grace period ne peut pas être reprise
       identity: SHARED_IDENTITY
     }), /SESSION_EXPIRED/);
     assert.deepEqual(await readFile(file), before);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('heartbeat et acquittement gardent sessionRevision et stateVersion distincts', async () => {
+  let currentStateVersion = 9;
+  const { directory, file, service } = await fixture({
+    stateVersion: () => currentStateVersion
+  });
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-A-raw',
+      identity: OAUTH_IDENTITY
+    });
+    const heartbeat = await service.heartbeat({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-A-raw',
+      identity: OAUTH_IDENTITY
+    });
+    assert.equal(heartbeat.sessionRevision, opened.session.sessionRevision + 1);
+    assert.equal(heartbeat.lastAcknowledgedStateVersion, null);
+
+    const before = await readFile(file);
+    await assert.rejects(service.acknowledgeContext({
+      governedSessionId: heartbeat.governedSessionId,
+      expectedSessionRevision: heartbeat.sessionRevision,
+      expectedStateVersion: 8
+    }, {
+      transportSessionId: 'transport-A-raw',
+      identity: OAUTH_IDENTITY
+    }), /LIVE_STATE_VERSION_MISMATCH/);
+    assert.deepEqual(await readFile(file), before);
+
+    const acknowledged = await service.acknowledgeContext({
+      governedSessionId: heartbeat.governedSessionId,
+      expectedSessionRevision: heartbeat.sessionRevision,
+      expectedStateVersion: currentStateVersion
+    }, {
+      transportSessionId: 'transport-A-raw',
+      identity: OAUTH_IDENTITY
+    });
+    assert.equal(acknowledged.lastAcknowledgedStateVersion, 9);
+    assert.equal(acknowledged.sessionRevision, heartbeat.sessionRevision + 1);
+
+    currentStateVersion = 10;
+    await assert.rejects(service.createCheckpoint({
+      governedSessionId: acknowledged.governedSessionId,
+      expectedSessionRevision: acknowledged.sessionRevision,
+      expectedStateVersion: 9,
+      completedAction: 'Task 6 RED',
+      resultCode: 'PASS',
+      pullRequestNumber: null,
+      observedHeadSha: null,
+      blockers: [],
+      nextAction: null
+    }, {
+      transportSessionId: 'transport-A-raw',
+      identity: OAUTH_IDENTITY
+    }), /LIVE_STATE_VERSION_MISMATCH/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('checkpoint exige un contexte acquitté et reste borné/sanitizé', async () => {
+  const { directory, service } = await fixture();
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-A-raw',
+      identity: OAUTH_IDENTITY
+    });
+    const request = {
+      transportSessionId: 'transport-A-raw',
+      identity: OAUTH_IDENTITY
+    };
+    await assert.rejects(service.createCheckpoint({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      expectedStateVersion: 9,
+      completedAction: 'Task 6 RED',
+      resultCode: 'PASS',
+      pullRequestNumber: null,
+      observedHeadSha: null,
+      blockers: [],
+      nextAction: 'continue'
+    }, request), /CONTEXT_NOT_ACKNOWLEDGED/);
+
+    const acknowledged = await service.acknowledgeContext({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      expectedStateVersion: 9
+    }, request);
+    const checkpoint = await service.createCheckpoint({
+      governedSessionId: acknowledged.governedSessionId,
+      expectedSessionRevision: acknowledged.sessionRevision,
+      expectedStateVersion: 9,
+      completedAction: 'Task 6 RED',
+      resultCode: 'PASS',
+      pullRequestNumber: 44,
+      observedHeadSha: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      blockers: ['none'],
+      nextAction: 'Task 6 GREEN'
+    }, request);
+
+    assert.equal(checkpoint.governedSessionId, acknowledged.governedSessionId);
+    assert.equal(checkpoint.acknowledgedStateVersion, 9);
+    assert.equal(checkpoint.taskScope, OPEN_INPUT.taskScope);
+    assert.equal(JSON.stringify(checkpoint).includes('resumeSecret'), false);
+    assert.equal((await service.getVisibleSession(checkpoint.governedSessionId, request))
+      ?.lastCheckpoint?.checkpointId, checkpoint.checkpointId);
+
+    const current = await service.getVisibleSession(checkpoint.governedSessionId, request);
+    await assert.rejects(service.createCheckpoint({
+      governedSessionId: checkpoint.governedSessionId,
+      expectedSessionRevision: current?.sessionRevision ?? -1,
+      expectedStateVersion: 9,
+      completedAction: 'x'.repeat(241),
+      resultCode: 'PASS',
+      pullRequestNumber: null,
+      observedHeadSha: null,
+      blockers: [],
+      nextAction: null
+    }, request), /OPERATIONAL_STORE_INVALID_UPDATE/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('pause et close sont gouvernés, close est idempotent et bloque heartbeat', async () => {
+  const { directory, service } = await fixture();
+  try {
+    const request = { transportSessionId: 'transport-A-raw', identity: OAUTH_IDENTITY };
+    const opened = await service.openSession(OPEN_INPUT, request);
+    const paused = await service.pauseSession({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision
+    }, request);
+    assert.equal(paused.status, 'PAUSED');
+
+    const closed = await service.closeSession({
+      governedSessionId: paused.governedSessionId,
+      expectedSessionRevision: paused.sessionRevision
+    }, request);
+    assert.equal(closed.status, 'CLOSED');
+    assert.deepEqual(await service.closeSession({
+      governedSessionId: closed.governedSessionId,
+      expectedSessionRevision: paused.sessionRevision
+    }, request), closed);
+    await assert.rejects(service.heartbeat({
+      governedSessionId: closed.governedSessionId,
+      expectedSessionRevision: closed.sessionRevision
+    }, request), /SESSION_CLOSED/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('expiration idle et maintenance utilisent un timer unique unref', async () => {
+  let currentTime = new Date('2026-08-13T07:00:00.000Z');
+  const { directory, service } = await fixture({
+    now: () => currentTime,
+    idleTtlSeconds: 300
+  });
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-A-raw',
+      identity: OAUTH_IDENTITY
+    });
+    currentTime = new Date('2026-08-13T07:06:00.000Z');
+    assert.equal(await service.expireIdleSessions(), 1);
+    assert.equal((await service.getVisibleSession(opened.session.governedSessionId, {
+      transportSessionId: 'transport-A-raw',
+      identity: OAUTH_IDENTITY
+    }))?.status, 'EXPIRED');
+
+    let scheduled = 0;
+    let unrefCalled = 0;
+    let cleared = 0;
+    const timer = { unref: () => { unrefCalled += 1; } };
+    const maintenance = startOperationalMemoryMaintenance({
+      expireSessions: () => service.expireIdleSessions(),
+      intervalMs: 60_000,
+      setInterval: (callback, intervalMs) => {
+        scheduled += 1;
+        assert.equal(typeof callback, 'function');
+        assert.equal(intervalMs, 60_000);
+        return timer;
+      },
+      clearInterval: (value) => {
+        assert.equal(value, timer);
+        cleared += 1;
+      }
+    });
+    assert.equal(scheduled, 1);
+    assert.equal(unrefCalled, 1);
+    maintenance.stop();
+    maintenance.stop();
+    assert.equal(cleared, 1);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
