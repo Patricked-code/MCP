@@ -51,16 +51,19 @@ Date : 2026-08-13
 - Polling readiness : 20 tentatives maximales, requête bornée à 5 secondes, pause de 2 secondes, échec fermé.
 - TDD : RED `31657464793`, GREEN `31657546033`.
 
-## État de branche avant draft PR
+## État de branche et revue de la draft PR #44
 
-- Branche unique : `mcp/session-continuity-v1-20260813`, 27 commits petits et réversibles depuis la baseline immuable.
-- Head fonctionnel vérifié : `38e3ced7ff61119b1e8fd8d0228bf032972ecca9` ; CI GitHub `31675193991` réussie.
+- Branche unique : `mcp/session-continuity-v1-20260813`, 46 commits petits et réversibles depuis la baseline immuable avant le commit documentaire final.
+- Draft PR unique : #44 vers `main`, créée sur la base exacte `eb61b97e…`; elle reste en brouillon et non fusionnée.
+- Head fonctionnel après corrections de revue : `6365e13c12c9d84f99717256ce92e915579c8b47`; commit documentaire exact-head et seconde revue encore requis.
 - Correctif documentaire : un SHA déclaré ancien produit désormais `DOCUMENTATION_DRIFT`, sans changement des autres contrats Live State V1.
-- Operational Memory V1 : stores atomiques bornés, journal JSONL sanitizé, `governedSessionId` durable, reprise prouvée, checkpoints, heartbeats et locks gouvernés.
+- Operational Memory V1 : stores atomiques bornés, journal JSONL sanitizé réellement câblé, `governedSessionId` durable, reprise prouvée, transport remplacé/délié, checkpoints, heartbeats et locks gouvernés.
 - Surface MCP additive : onze outils de session, resource/instructions de contexte, deux outils de contexte et dashboard authentifié ; aucune architecture parallèle.
-- WRITE gate : `shadow` non bloquant uniquement ; `ENABLE_WRITE_TOOLS`, `allow_write`, résultats, erreurs, arité et schémas historiques conservés.
-- Maintenance : un timer `60 s` avec `unref`, expiration sessions/locks et journalisation de compteurs uniquement ; aucune collecte GitHub/SSH ni écriture Live State périodique.
-- Régression fraîche après `npm ci` : gouvernance `12/12`, suite read-only `161/161`, zéro fail/cancelled/skipped/todo ; typecheck, build, docs check, scan secrets et diff check réussis.
+- WRITE gate : `shadow` non bloquant même si l’évaluateur ou le journal ne répond jamais ; `ENABLE_WRITE_TOOLS`, `allow_write`, résultats, erreurs, arité et schémas historiques conservés.
+- Maintenance : un timer `60 s` avec `unref`, cycles single-flight, expiration/réparation sessions-locks et journalisation de compteurs uniquement ; aucune collecte GitHub/SSH ni écriture Live State périodique.
+- GitHub : la liste de rulesets sélectionne un seul actif puis charge son détail, avec sept appels maximum, timeout/cache/single-flight inchangés.
+- Feature-off : aucune instruction ou ressource promise, aucun store chargé, projection dashboard explicitement désactivée.
+- Régression fraîche : gouvernance `12/12`, suite read-only `172/172`, zéro fail/cancelled/skipped/todo ; typecheck, build, docs check, scan secrets et diff check réussis.
 - Invariants : `origin/main` reste `eb61b97e…`; Autodeploy V1, GitHub OIDC, `src/deploy` et `.mcp/autodeploy-policy.json` inchangés ; aucun fichier supprimé ; aucune écriture S1/runtime ; aucune 2FA.
 - Merge, autodeploy de cette branche et attestation post-merge : NON OBSERVÉS et non déclarés.
 
@@ -70,4 +73,4 @@ Date : 2026-08-13
 
 ## Prochaine action unique
 
-Créer une unique draft PR de `mcp/session-continuity-v1-20260813` vers `main` après CI verte du commit de consolidation, puis effectuer la review complète sans fusion prématurée.
+Versionner ce bilan, obtenir la CI verte du head exact et une seconde revue indépendante sans finding actionnable, puis seulement demander l’autorisation de passer la PR #44 ready/merge exact-head.

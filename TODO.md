@@ -42,7 +42,8 @@ Travaux restant réellement à accomplir.
 - [x] Ajouter mémoire bornée, checkpoints, locks et contexte gouverné.
 - [x] Observer les outils WRITE en `shadow` sans jamais les bloquer en V1.
 - [x] Exécuter la régression complète avant la draft PR.
-- [ ] Créer la draft PR unique, traiter la review et verrouiller son head exact.
+- [x] Créer la draft PR unique #44 et traiter la première revue par TDD additif.
+- [ ] Obtenir la CI verte et la seconde revue indépendante du head exact, puis autoriser ready/merge.
 - [ ] Après autorisation de merge, observer l’Autodeploy V1 existant et attester le runtime sans écriture directe S1.
 
 ## Maintenance séparée

@@ -1207,9 +1207,11 @@ git add package.json SUIVI.md TASKS.md TODO.md DECISIONS_LOG.md CHANGELOG.md ACT
 git commit -m "docs: prepare governed session continuity review"
 ~~~~
 
-- [ ] **Step 6: Pousser, attendre CI verte et auto-relire le diff complet.**
+- [x] **Step 6: Pousser, attendre CI verte et auto-relire le diff complet.**
 
 Créer ensuite une seule draft PR de mcp/session-continuity-v1-20260813 vers main. Ne pas la passer ready dans la même action.
+
+Réalisé : draft PR #44 créée vers `main`, base exacte `eb61b97e…`; CI push `31675502633` et CI PR `31675612349` réussies sur le head initial de review `923b126…`.
 
 - [ ] **Step 7: Review.**
 
@@ -1219,6 +1221,8 @@ Créer ensuite une seule draft PR de mcp/session-continuity-v1-20260813 vers mai
 - résoudre un thread seulement lorsque la correction est sur le head;
 - relancer la régression complète;
 - verrouiller l’exact head SHA.
+
+Première revue indépendante : verdict initial `non mergeable`. Les deux findings critiques, quatre importants et deux mineurs ont été traités par cycles RED/GREEN additifs sur la même branche : remplacement/déliaison du transport, shadow réellement non bloquant, audit machine des cycles de vie, réparation inter-stores sans fusion des stores, détail ruleset GitHub borné, feature-off inerte, compteur global et maintenance single-flight. La Step 7 reste ouverte jusqu’à la seconde revue du head consolidé et à sa CI exacte.
 
 - [ ] **Step 8: Ready et merge exact-head uniquement après autorisation et preuves.**
 

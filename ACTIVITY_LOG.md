@@ -121,3 +121,13 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Invariants : `origin/main=eb61b97e…`; 18/18 fichiers de test historiques conservés, 30 au total ; aucun fichier supprimé ; Autodeploy/OIDC/deploy inchangés ; `ENABLE_WRITE_TOOLS` et `allow_write` conservés ; aucun transport brut persisté.
 - S1/runtime : aucune écriture ni modification. Merge, Autodeploy et attestation de cette branche : NON OBSERVÉS.
 - Prochaine action : commit de consolidation, CI du head exact, puis unique draft PR et review.
+
+## 2026-08-13T09:38:26Z — TASK-20260813-004 — Première revue corrigée, seconde revue requise
+
+- Draft PR #44 créée vers `main` à base exacte `eb61b97e…`; CI initiales push `31675502633` et PR `31675612349` réussies.
+- Première revue indépendante : verdict initial `non mergeable`, avec deux findings critiques, quatre importants et deux mineurs.
+- Corrections TDD sur la branche unique : révocation/déliaison transport, shadow non bloquant en cas d’observateur suspendu, audit machine câblé, réparation `session.lockIds`, détail ruleset actif, feature-off inerte, compteur dashboard global et maintenance single-flight.
+- Proposition de document unique pour sessions+locks non retenue car incompatible avec la conception approuvée ; alternative additive appliquée en conservant le store de locks comme autorité et `session.lockIds` comme projection réparée.
+- Régression fraîche au head fonctionnel `6365e13…` : gouvernance `12/12`, read-only `172/172`, zéro fail/cancelled/skipped/todo ; typecheck, build, docs, secrets, diff et invariants réussis.
+- `origin/main` reste `eb61b97e…`; Autodeploy/OIDC/deploy inchangés ; aucune écriture S1/runtime et aucune 2FA.
+- Prochaine action : consolidation documentaire, CI du head exact et seconde revue indépendante avant toute autorisation ready/merge.

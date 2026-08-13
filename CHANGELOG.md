@@ -229,3 +229,14 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Ajout d'une maintenance 60 secondes sans collecte GitHub/SSH/Live State et d'une section dashboard authentifiée, échappée et cache/store-only.
 - Régression fraîche : 12 tests de gouvernance et 161 tests read-only réussis ; typecheck, build, docs, secrets et invariants réussis ; CI `31675193991` verte sur `38e3ced7…`.
 - Aucun merge, déploiement S1, changement runtime, Autodeploy/OIDC ou 2FA n'est inclus ou déclaré.
+
+## 2026-08-13 — Corrections TDD de la première revue de la PR #44
+
+- Reprise de session : l’ancien transport partagé est révoqué après reprise réussie et le transport courant est délié à sa fermeture, sans fermer la governed session.
+- WRITE gate : l’évaluation et la journalisation shadow sont détachées du chemin critique ; un observateur bloqué ne retarde plus le résultat ou l’erreur historique.
+- Audit : sessions, transports, contexte, checkpoints, locks et réconciliation émettent désormais les événements machine allowlistés prévus.
+- Cohérence locks : `session.lockIds` est réparé depuis le store de locks existant après une panne inter-fichiers, sans fusion de stores ni nouvelle autorité.
+- GitHub : le détail du seul ruleset actif sélectionné est chargé avec un plafond de sept appels, conformément à l’API REST officielle.
+- Feature-off, dashboard et maintenance : aucun store chargé lorsque désactivé, compteur global réel et cycles périodiques single-flight.
+- Régression post-review : gouvernance `12/12`, read-only `172/172`, typecheck, build, docs, secret scan et invariants réussis sur le head fonctionnel `6365e13…`.
+- PR #44 reste draft ; aucun merge, autodeploy, changement S1/runtime ou 2FA n’est déclaré.

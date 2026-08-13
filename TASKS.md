@@ -43,7 +43,9 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] cycles TDD Operational Memory / governed sessions / locks / contexte ;
 - [x] WRITE gate `shadow` non bloquant, sans changement des handlers historiques ;
 - [x] régression fraîche complète sur le head fonctionnel `38e3ced7…` et CI `31675193991` verte ;
-- [ ] draft PR unique, review complète et CI du head exact ;
+- [x] draft PR unique #44 créée et première revue indépendante traitée par cycles RED/GREEN ;
+- [x] régression locale post-review : gouvernance `12/12`, read-only `172/172`, typecheck/build/docs/secrets/invariants verts ;
+- [ ] CI et seconde revue du head documentaire exact, puis autorisation ready/merge ;
 - [ ] merge autorisé exact-head puis Autodeploy V1 existant et attestation post-merge.
 
 ## Interdictions

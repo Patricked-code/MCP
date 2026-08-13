@@ -216,4 +216,14 @@ Décision : conserver Live State V1 comme source opérationnelle existante et lu
 
 Décision complémentaire : partager un journal opérationnel unique dans le processus, démarrer une seule maintenance à intervalle 60 secondes et limiter ses événements aux compteurs d'expiration. Le dashboard utilise `getCurrent` cache/store-only et ne force aucune collecte GitHub/SSH.
 
-Limites : le WRITE gate demeure `shadow` non bloquant ; aucune mutation existante n'est retirée ou durcie en V1. Aucun merge, déploiement ou état runtime de cette branche n'est déclaré avant preuve exacte ; aucune action 2FA n'est permise.
+Limites : le WRITE gate demeure `shadow` non bloquant ; aucune mutation existante n’est retirée ou durcie en V1. Aucun merge, déploiement ou état runtime de cette branche n’est déclaré avant preuve exacte ; aucune action 2FA n’est permise.
+
+## 2026-08-13 — Résolution additive de la première revue de la PR #44
+
+Contexte : la première revue a identifié des liaisons transport survivant à une reprise, un shadow qui attendait l’observation, un journal insuffisamment câblé, une fenêtre de divergence entre les deux stores, une lecture erronée des résumés de rulesets, un feature-off incohérent et deux défauts mineurs de dashboard/maintenance.
+
+Décision : corriger chaque point par test RED puis GREEN sur la branche unique. Le transport précédent est révoqué, le shadow devient best-effort hors chemin critique, l’audit reçoit uniquement des objets de domaine typés/sanitizés, et le collecteur GitHub charge le détail d’un seul ruleset actif.
+
+Décision de compatibilité : ne pas fusionner les stores sessions et locks, car cela remplacerait une mécanique approuvée. Le store de locks reste l’autorité des locks actifs ; `session.lockIds` demeure une projection dénormalisée réparée par la maintenance existante après toute panne partielle.
+
+Limites : la PR reste draft jusqu’à CI et seconde revue du head exact. `main`, S1/runtime, Autodeploy V1, GitHub OIDC, `ENABLE_WRITE_TOOLS`, `allow_write` et l’exclusion 2FA restent inchangés.
