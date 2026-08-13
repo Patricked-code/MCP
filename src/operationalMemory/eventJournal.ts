@@ -113,6 +113,26 @@ function validateMetadata(type: OperationalEventType, metadata: OperationalEvent
   }
 }
 
+function redactSensitiveValue(value: string): string {
+  return value
+    .replace(/\bBearer\s+[A-Za-z0-9._~+/=-]+/gi, 'Bearer [REDACTED]')
+    .replace(
+      /\b(authorization|auth|token|secret|password|private[_-]?key|api[_-]?key|access[_-]?token|refresh[_-]?token)\b\s*[:=]\s*(?:"[^"]*"|'[^']*'|[^\s,;]+)/gi,
+      '$1=[REDACTED]'
+    )
+    .replace(
+      /\b((?:mongodb|mysql|postgres|postgresql):\/\/)[^@\s/]+(?::[^@\s]*)?@/gi,
+      '$1[REDACTED]@'
+    );
+}
+
+function sanitizedMetadata(metadata: OperationalEventMetadata): OperationalEventMetadata {
+  return Object.fromEntries(Object.entries(metadata).map(([key, value]) => [
+    key,
+    typeof value === 'string' ? redactSensitiveValue(value) : value
+  ]));
+}
+
 function isMissing(error: unknown): boolean {
   return error instanceof Error
     && 'code' in error
@@ -170,6 +190,8 @@ export function createOperationalEventJournal(
 
   async function appendOne(input: OperationalEventInput): Promise<OperationalEvent> {
     validateMetadata(input.type, input.metadata);
+    const metadata = sanitizedMetadata(input.metadata);
+    validateMetadata(input.type, metadata);
     await mkdir(dirname(options.filePath), { recursive: true, mode: 0o700 });
     await chmod(dirname(options.filePath), 0o700);
     await assertNotSymlink(options.filePath);
@@ -181,7 +203,7 @@ export function createOperationalEventJournal(
       occurredAt: now().toISOString(),
       type: input.type,
       governedSessionId: input.governedSessionId,
-      metadata: { ...input.metadata }
+      metadata
     };
     const line = `${JSON.stringify(event)}\n`;
     await rotateIfNeeded(Buffer.byteLength(line));
