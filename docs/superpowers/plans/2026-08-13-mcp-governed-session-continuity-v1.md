@@ -975,28 +975,28 @@ Outils read-only :
 - mcp_reconcile_governed_context : appelle liveStateEngine.reconcileNow et force le refresh GitHub, puis compose.
 - annotations readOnlyHint=true, destructiveHint=false.
 
-- [ ] **Step 1: RED enregistrement réel.**
+- [x] **Step 1: RED enregistrement réel.**
 
 Fake McpServer capture registerResource/registerTool. Vérifier URI, metadata, annotations et résultats JSON. Le test ne greppe pas le source.
 
-- [ ] **Step 2: RED client sans resources.**
+- [x] **Step 2: RED client sans resources.**
 
 Appeler mcp_get_governed_context directement et obtenir la même projection essentielle que la ressource. Cela prouve que la garantie ne dépend pas du support resource du client.
 
-- [ ] **Step 3: Exécuter RED.**
+- [x] **Step 3: Exécuter RED.**
 
 ~~~~bash
 node --import tsx --test tests/governedContextTools.test.ts
 ~~~~
 
-- [ ] **Step 4: Implémenter et GREEN.**
-- [ ] **Step 5: Rejouer Live State/tool contracts.**
+- [x] **Step 4: Implémenter et GREEN.**
+- [x] **Step 5: Rejouer Live State/tool contracts.**
 
 ~~~~bash
 node --import tsx --test tests/governedContextTools.test.ts tests/liveStateTools.test.ts tests/toolClassification.test.ts tests/toolContractRegression.test.ts
 ~~~~
 
-- [ ] **Step 6: Commits.**
+- [x] **Step 6: Commits.**
 
 - RED: test(governed-context): define MCP context surfaces
 - GREEN: feat(governed-context): expose resource and read tools

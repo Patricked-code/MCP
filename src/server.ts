@@ -9,6 +9,7 @@ import { registerOauthRoutes } from './oauth.js';
 import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
+import { GOVERNED_CONTEXT_INSTRUCTIONS } from './tools/governedContext.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
 import { createGithubDeployRouter } from './deploy/routes.js';
@@ -208,6 +209,8 @@ export function buildMcpServer(): McpServer {
   const server = new McpServer({
     name: 'wealthtech_ssh_bridge',
     version: '0.1.0'
+  }, {
+    instructions: GOVERNED_CONTEXT_INSTRUCTIONS
   });
 
   registerReadOnlyTools(server);

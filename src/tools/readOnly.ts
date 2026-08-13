@@ -14,6 +14,7 @@ import { registerGitRegistryV2ReadOnlyTools } from './githubRegistryV2.js';
 import { registerScopedReadOnlyTools } from './writeScoped.js';
 import { registerRuntimeAttestationReadOnlyTools } from './runtimeAttestation.js';
 import { registerGovernedSessionTools } from './governedSessions.js';
+import { registerGovernedContextTools } from './governedContext.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -55,6 +56,7 @@ export function registerReadOnlyTools(server: McpServer): void {
   registerGitRegistryV2ReadOnlyTools(server);
   registerRuntimeAttestationReadOnlyTools(server);
   registerGovernedSessionTools(server);
+  registerGovernedContextTools(server);
   registerMcpSelfReadOnlyTools(server);
   registerSadiaafTools(server);
   registerLegacyFundsScopedTools(server);

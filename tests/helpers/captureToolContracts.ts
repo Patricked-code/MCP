@@ -20,12 +20,21 @@ export function captureToolContracts(
   register: ToolRegistration
 ): Record<string, CapturedToolContract> {
   const contracts: Record<string, CapturedToolContract> = {};
+  function capture(
+    name: string,
+    description: string | null,
+    rawShape: z.ZodRawShape
+  ) {
+    if (contracts[name]) {
+      throw new Error(`Outil enregistré deux fois pendant la capture : ${name}`);
+    }
+    contracts[name] = {
+      description,
+      inputSchema: z.toJSONSchema(z.object(rawShape)) as Record<string, unknown>
+    };
+  }
   const fakeServer = {
     tool(name: string, ...rawArguments: unknown[]) {
-      if (contracts[name]) {
-        throw new Error(`Outil enregistré deux fois pendant la capture : ${name}`);
-      }
-
       const args = [...rawArguments];
       const description = typeof args[0] === 'string'
         ? String(args.shift())
@@ -33,11 +42,18 @@ export function captureToolContracts(
 
       args.pop();
       const rawShape = args.find(isRawShape) ?? {};
-      contracts[name] = {
-        description,
-        inputSchema: z.toJSONSchema(z.object(rawShape)) as Record<string, unknown>
-      };
-
+      capture(name, description, rawShape);
+      return undefined;
+    },
+    registerTool(name: string, config: Record<string, unknown>) {
+      capture(
+        name,
+        typeof config.description === 'string' ? config.description : null,
+        isRawShape(config.inputSchema) ? config.inputSchema : {}
+      );
+      return undefined;
+    },
+    registerResource() {
       return undefined;
     }
   } as unknown as McpServer;

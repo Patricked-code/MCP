@@ -28,7 +28,7 @@ export type GovernedSessionToolDependencies = {
   locks: GovernedLockService;
 };
 
-type ToolExtra = {
+export type GovernedSessionToolExtra = {
   sessionId?: string;
   authInfo?: AuthInfo;
 };
@@ -41,7 +41,7 @@ const NullableNextActionSchema = z.string().trim().min(1).max(500).nullable().de
 
 let sharedDependencies: GovernedSessionToolDependencies | null = null;
 
-function getSharedDependencies(): GovernedSessionToolDependencies {
+export function getGovernedSessionToolDependencies(): GovernedSessionToolDependencies {
   if (sharedDependencies) return sharedDependencies;
 
   const bindings = createTransportBindings();
@@ -107,7 +107,7 @@ function requestIdentity(authInfo: AuthInfo | undefined): RequestIdentity {
   fail('AUTH_IDENTITY_REQUIRED');
 }
 
-function sessionRequest(extra: ToolExtra): SessionRequest {
+export function sessionRequestFromToolExtra(extra: GovernedSessionToolExtra): SessionRequest {
   if (!extra.sessionId) fail('TRANSPORT_SESSION_REQUIRED');
   return {
     transportSessionId: extra.sessionId,
@@ -154,7 +154,7 @@ async function handled(work: () => Promise<unknown>) {
 
 export function registerGovernedSessionTools(
   server: McpServer,
-  dependencies: GovernedSessionToolDependencies = getSharedDependencies()
+  dependencies: GovernedSessionToolDependencies = getGovernedSessionToolDependencies()
 ): void {
   if (!operationalMemoryConfig.enabled) return;
 
@@ -171,7 +171,7 @@ export function registerGovernedSessionTools(
     },
     async (input, extra) => handled(() => dependencies.sessions.openSession(
       input,
-      sessionRequest(extra)
+      sessionRequestFromToolExtra(extra)
     ))
   );
 
@@ -187,7 +187,7 @@ export function registerGovernedSessionTools(
     },
     async (input, extra) => handled(() => dependencies.sessions.resumeSession(
       input,
-      sessionRequest(extra)
+      sessionRequestFromToolExtra(extra)
     ))
   );
 
@@ -200,7 +200,7 @@ export function registerGovernedSessionTools(
     },
     async (input, extra) => handled(() => dependencies.sessions.heartbeat(
       input,
-      sessionRequest(extra)
+      sessionRequestFromToolExtra(extra)
     ))
   );
 
@@ -214,7 +214,7 @@ export function registerGovernedSessionTools(
     },
     async (input, extra) => handled(() => dependencies.sessions.acknowledgeContext(
       input,
-      sessionRequest(extra)
+      sessionRequestFromToolExtra(extra)
     ))
   );
 
@@ -234,7 +234,7 @@ export function registerGovernedSessionTools(
     },
     async (input, extra) => handled(() => dependencies.sessions.createCheckpoint(
       input,
-      sessionRequest(extra)
+      sessionRequestFromToolExtra(extra)
     ))
   );
 
@@ -246,7 +246,10 @@ export function registerGovernedSessionTools(
     server.tool(name, description, {
       governedSessionId: GovernedSessionIdSchema,
       expectedSessionRevision: ExpectedSessionRevisionSchema
-    }, async (input, extra) => handled(() => operation(input, sessionRequest(extra))));
+    }, async (input, extra) => handled(() => operation(
+      input,
+      sessionRequestFromToolExtra(extra)
+    )));
   };
 
   registerRevisionTool(
@@ -265,7 +268,7 @@ export function registerGovernedSessionTools(
     'Liste uniquement les governed sessions visibles par l’identité courante.',
     {},
     async (_input, extra) => handled(() => dependencies.sessions.listVisibleSessions(
-      sessionRequest(extra)
+      sessionRequestFromToolExtra(extra)
     ))
   );
 
@@ -275,7 +278,7 @@ export function registerGovernedSessionTools(
     { governedSessionId: GovernedSessionIdSchema },
     async (input, extra) => handled(() => dependencies.sessions.getVisibleSession(
       input.governedSessionId,
-      sessionRequest(extra)
+      sessionRequestFromToolExtra(extra)
     ))
   );
 
@@ -304,7 +307,7 @@ export function registerGovernedSessionTools(
     },
     async (input, extra) => handled(() => dependencies.locks.acquireLock(
       input,
-      sessionRequest(extra)
+      sessionRequestFromToolExtra(extra)
     ))
   );
 
@@ -318,7 +321,7 @@ export function registerGovernedSessionTools(
     },
     async (input, extra) => handled(() => dependencies.locks.releaseLock(
       input,
-      sessionRequest(extra)
+      sessionRequestFromToolExtra(extra)
     ))
   );
 }
