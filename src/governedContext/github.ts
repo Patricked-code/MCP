@@ -187,23 +187,43 @@ function parseUnresolvedThreads(value: unknown): number | null {
   return nodes.filter((thread) => thread?.isResolved === false).length;
 }
 
-function parseRuleset(value: unknown): GithubOperationalContext['ruleset'] | null {
+type RulesetSummary = {
+  id: number;
+  name: string | null;
+  enforcement: string | null;
+};
+
+function parseRulesetSummaries(value: unknown): RulesetSummary[] | null {
   if (!Array.isArray(value)) return null;
   const values = value.slice(0, 20).map(object).filter(Boolean);
   if (values.length !== Math.min(value.length, 20)) return null;
-  const ruleset = values.find((candidate) => candidate?.enforcement === 'active') ?? values[0];
-  if (!ruleset) {
+  const summaries = values.map((candidate) => {
+    const id = candidate?.id;
+    if (
+      typeof id !== 'number'
+      || !Number.isInteger(id)
+      || id < 1
+      || id > Number.MAX_SAFE_INTEGER
+    ) return null;
     return {
-      name: null,
-      enforcement: null,
-      requiresPullRequest: false,
-      requiredStatusChecks: [],
-      requiresConversationResolution: false
+      id,
+      name: string(candidate?.name, 120),
+      enforcement: string(candidate?.enforcement, 40)
     };
-  }
-  const rules = Array.isArray(ruleset.rules)
-    ? ruleset.rules.slice(0, 100).map(object).filter(Boolean)
+  });
+  return summaries.every((summary) => summary !== null)
+    ? summaries as RulesetSummary[]
     : null;
+}
+
+function parseRulesetDetail(
+  value: unknown,
+  summary: RulesetSummary
+): GithubOperationalContext['ruleset'] | null {
+  const ruleset = object(value);
+  if (!ruleset || !Array.isArray(ruleset.rules)) return null;
+  const rules = ruleset.rules.slice(0, 100).map(object).filter(Boolean);
+  if (rules.length !== Math.min(ruleset.rules.length, 100)) return null;
   const statusRule = rules?.find((rule) => rule?.type === 'required_status_checks');
   const parameters = object(statusRule?.parameters);
   const rawChecks = Array.isArray(parameters?.required_status_checks)
@@ -213,13 +233,13 @@ function parseRuleset(value: unknown): GithubOperationalContext['ruleset'] | nul
     .map((entry) => string(object(entry)?.context, 100))
     .filter((entry): entry is string => entry !== null);
   return {
-    name: string(ruleset.name, 120),
-    enforcement: string(ruleset.enforcement, 40),
-    requiresPullRequest: rules ? rules.some((rule) => rule?.type === 'pull_request') : null,
+    name: string(ruleset.name, 120) ?? summary.name,
+    enforcement: string(ruleset.enforcement, 40) ?? summary.enforcement,
+    requiresPullRequest: rules.some((rule) => rule?.type === 'pull_request'),
     requiredStatusChecks,
-    requiresConversationResolution: rules
-      ? rules.some((rule) => rule?.type === 'required_conversation_resolution')
-      : null
+    requiresConversationResolution: rules.some(
+      (rule) => rule?.type === 'required_conversation_resolution'
+    )
   };
 }
 
@@ -377,6 +397,47 @@ export function createGithubOperationalContextCollector(
         return emptyContext(observedAt, normalizedBranch, 'UNAVAILABLE', 'github_timeout');
       }
 
+      let ruleset: GithubOperationalContext['ruleset'] | null = null;
+      if (!rulesResult.ok) {
+        errors.push(rulesResult.error ?? 'github_rulesets_unavailable');
+      } else {
+        const summaries = parseRulesetSummaries(rulesResult.json);
+        if (!summaries) {
+          errors.push('github_rulesets_malformed');
+        } else if (summaries.length === 0) {
+          ruleset = {
+            name: null,
+            enforcement: null,
+            requiresPullRequest: false,
+            requiredStatusChecks: [],
+            requiresConversationResolution: false
+          };
+        } else {
+          const selected = summaries.find((candidate) => candidate.enforcement === 'active')
+            ?? summaries[0]!;
+          const detailResult = await request(
+            `/repos/${REPOSITORY}/rulesets/${selected.id}`,
+            'ruleset_detail'
+          );
+          if (detailResult.ok) {
+            ruleset = parseRulesetDetail(detailResult.json, selected);
+          }
+          if (!ruleset) {
+            errors.push(detailResult.error ?? 'github_ruleset_detail_malformed');
+            ruleset = {
+              name: selected.name,
+              enforcement: selected.enforcement,
+              requiresPullRequest: null,
+              requiredStatusChecks: [],
+              requiresConversationResolution: null
+            };
+          }
+        }
+      }
+      if (controller.signal.aborted) {
+        return emptyContext(observedAt, normalizedBranch, 'UNAVAILABLE', 'github_timeout');
+      }
+
       let checks: GithubOperationalContext['checks'] = {
         status: 'unavailable', conclusion: null, total: 0, failed: 0
       };
@@ -397,8 +458,6 @@ export function createGithubOperationalContextCollector(
         else errors.push(threadsResult.error ?? 'github_threads_malformed');
       }
 
-      const ruleset = rulesResult.ok ? parseRuleset(rulesResult.json) : null;
-      if (!ruleset) errors.push(rulesResult.error ?? 'github_rulesets_malformed');
       const error = errorSummary(errors);
       return {
         status: error ? 'DEGRADED' : 'CURRENT',

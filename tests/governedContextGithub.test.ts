@@ -110,7 +110,7 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
   assert.deepEqual(joined, first);
   assert.deepEqual(cached, first);
   assert.deepEqual(cacheOnly, first);
-  assert.equal(calls.length, 6);
+  assert.equal(calls.length, 7);
   assert.equal(calls.every((call) => call.authorization === 'Bearer sensitive-token-never-returned'), true);
   assert.equal(calls.filter((call) => call.method === 'POST').length, 1);
   assert.deepEqual(first, {
