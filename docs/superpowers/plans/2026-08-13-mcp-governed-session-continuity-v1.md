@@ -1213,7 +1213,7 @@ Créer ensuite une seule draft PR de mcp/session-continuity-v1-20260813 vers mai
 
 Réalisé : draft PR #44 créée vers `main`, base exacte `eb61b97e…`; CI push `31675502633` et CI PR `31675612349` réussies sur le head initial de review `923b126…`.
 
-- [ ] **Step 7: Review.**
+- [x] **Step 7: Review.**
 
 - lire tous les threads;
 - traiter uniquement les findings actionnables;
@@ -1224,7 +1224,7 @@ Réalisé : draft PR #44 créée vers `main`, base exacte `eb61b97e…`; CI push
 
 Première revue indépendante : verdict initial `non mergeable`. Les deux findings critiques, quatre importants et deux mineurs ont été traités par cycles RED/GREEN additifs sur la même branche : remplacement/déliaison du transport, shadow réellement non bloquant, audit machine des cycles de vie, réparation inter-stores sans fusion des stores, détail ruleset GitHub borné, feature-off inerte, compteur global et maintenance single-flight.
 
-Seconde revue indépendante du head `90e9ec6…` : aucun finding critique, deux findings importants et deux mineurs. Une confirmation différentielle a ensuite relevé deux cas importants supplémentaires : un commentaire effaçait un verdict décisif et la redaction par motifs laissait des formats de credentials. Les corrections TDD additives sont présentes au head fonctionnel `de8a6dfcfa56a30b6096fdb4a538c3a33a259d24` : reprise sans compensation mémoire destructive, dernier verdict décisif GitHub par reviewer avec `DISMISSED` explicite, instantané immuable du binding retiré, libellé du compteur global et champs libres du journal rendus opaques avec défense PAT/JWT/PEM/URI. L’ultime confirmation différentielle ne relève aucun finding critique ou important et juge ce range mergeable. Régression intégrale locale précédente : `187/187`; les tests ciblés supplémentaires, typecheck et secrets sont verts. La Step 7 reste ouverte jusqu’à la régression intégrale fraîche et la CI du head documentaire exact.
+Seconde revue indépendante du head `90e9ec6…` : aucun finding critique, deux findings importants et deux mineurs. Une confirmation différentielle a ensuite relevé deux cas importants supplémentaires : un commentaire effaçait un verdict décisif et la redaction par motifs laissait des formats de credentials. Les corrections TDD additives sont présentes au head fonctionnel `de8a6dfcfa56a30b6096fdb4a538c3a33a259d24` : reprise sans compensation mémoire destructive, dernier verdict décisif GitHub par reviewer avec `DISMISSED` explicite, instantané immuable du binding retiré, libellé du compteur global et champs libres du journal rendus opaques avec défense PAT/JWT/PEM/URI. L’ultime confirmation différentielle ne relève aucun finding critique ou important et juge ce range mergeable. Sur le head consolidé `4eee32b8314ec5c287b6dd8308ceb02c50759884`, la régression intégrale locale est `187/187` et la CI exacte `31681641604` est réussie. Step 7 terminée ; Step 8 reste soumise à l’autorisation humaine et à la CI exacte du head finalement proposé.
 
 - [ ] **Step 8: Ready et merge exact-head uniquement après autorisation et preuves.**
 

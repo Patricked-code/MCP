@@ -53,9 +53,9 @@ Date : 2026-08-13
 
 ## État de branche et revue de la draft PR #44
 
-- Branche unique : `mcp/session-continuity-v1-20260813`, 61 commits petits et réversibles depuis la baseline immuable avant le présent commit documentaire.
+- Branche unique : `mcp/session-continuity-v1-20260813`, commits petits et réversibles depuis la baseline immuable.
 - Draft PR unique : #44 vers `main`, créée sur la base exacte `eb61b97e…`; elle reste en brouillon et non fusionnée.
-- Head fonctionnel après les corrections différentielles : `de8a6dfcfa56a30b6096fdb4a538c3a33a259d24`; ultime confirmation sans finding critique/important, commit documentaire et CI exact-head encore requis.
+- Head consolidé vérifié : `4eee32b8314ec5c287b6dd8308ceb02c50759884`; ultime confirmation sans finding critique/important, régression locale `187/187` et CI exacte `31681641604` réussie.
 - Correctif documentaire : un SHA déclaré ancien produit désormais `DOCUMENTATION_DRIFT`, sans changement des autres contrats Live State V1.
 - Operational Memory V1 : stores atomiques bornés, journal JSONL sanitizé réellement câblé, `governedSessionId` durable, reprise prouvée, transport remplacé/délié, checkpoints, heartbeats et locks gouvernés.
 - Surface MCP additive : onze outils de session, resource/instructions de contexte, deux outils de contexte et dashboard authentifié ; aucune architecture parallèle.
@@ -77,4 +77,4 @@ Date : 2026-08-13
 
 ## Prochaine action unique
 
-Versionner ce bilan, obtenir la CI verte du head exact, puis seulement demander l’autorisation de passer la PR #44 ready/merge exact-head.
+Maintenir la PR #44 en draft et demander l’autorisation humaine de la passer ready/merge exact-head. Au moment de l’autorisation, reverrouiller le head et exiger sa CI verte avant fusion.

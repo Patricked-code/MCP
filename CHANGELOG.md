@@ -249,4 +249,5 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Le dashboard nomme explicitement son compteur global ; les champs libres du journal sont opaques et les autres valeurs couvrent aussi PAT/JWT/PEM/URI.
 - Régression intégrale précédente : `187/187`; tests ciblés, typecheck et secrets verts au head fonctionnel `de8a6df…` avant consolidation documentaire.
 - Ultime confirmation différentielle : aucun finding critique ou important, range fonctionnel déclaré mergeable.
+- Head consolidé `4eee32b…` : régression locale `187/187` et CI exacte `31681641604` réussies ; PR #44 maintenue draft dans l’attente d’une autorisation humaine.
 - PR #44 reste draft ; `main`, S1/runtime, Autodeploy V1, OIDC, `ENABLE_WRITE_TOOLS`, `allow_write` et l’exclusion 2FA restent inchangés.

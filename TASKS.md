@@ -49,7 +49,8 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] deux findings différentiels supplémentaires traités : commentaires GitHub non décisifs et champs libres du journal opaques ;
 - [x] ultime confirmation différentielle : zéro finding critique/important, range fonctionnel déclaré mergeable ;
 - [x] régression intégrale locale du head fonctionnel précédent : `187/187`; tests ciblés, typecheck et secrets verts sur `de8a6df…` ;
-- [ ] CI et seconde revue du head documentaire exact, puis autorisation ready/merge ;
+- [x] head consolidé `4eee32b…` : régression `187/187`, CI exacte `31681641604` verte, revue sans finding critique/important ;
+- [ ] autorisation humaine ready/merge, reverrouillage exact-head puis CI verte avant fusion ;
 - [ ] merge autorisé exact-head puis Autodeploy V1 existant et attestation post-merge.
 
 ## Interdictions

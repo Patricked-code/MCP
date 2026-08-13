@@ -45,7 +45,8 @@ Travaux restant réellement à accomplir.
 - [x] Créer la draft PR unique #44 et traiter la première revue par TDD additif.
 - [x] Traiter par TDD les quatre findings de la seconde revue et les deux cas différentiels supplémentaires.
 - [x] Obtenir la confirmation différentielle sans finding critique/important.
-- [ ] Obtenir la CI verte du head exact, puis autoriser ready/merge.
+- [x] Obtenir la CI verte `31681641604` du head consolidé `4eee32b…`.
+- [ ] Recevoir l’autorisation humaine, passer la PR ready et fusionner uniquement la tête reverrouillée avec sa CI verte.
 - [ ] Après autorisation de merge, observer l’Autodeploy V1 existant et attester le runtime sans écriture directe S1.
 
 ## Maintenance séparée
