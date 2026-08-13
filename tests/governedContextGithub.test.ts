@@ -63,10 +63,28 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
         user: { id: 101, login: 'reviewer-one' }
       },
       {
+        id: 13,
+        state: 'COMMENTED',
+        submitted_at: '2026-08-13T07:40:00Z',
+        user: { id: 101, login: 'reviewer-one' }
+      },
+      {
         id: 12,
         state: 'CHANGES_REQUESTED',
         submitted_at: '2026-08-13T07:45:00Z',
         user: { id: 202, login: 'reviewer-two' }
+      },
+      {
+        id: 14,
+        state: 'COMMENTED',
+        submitted_at: '2026-08-13T07:50:00Z',
+        user: { id: 202, login: 'reviewer-two' }
+      },
+      {
+        id: 15,
+        state: 'DISMISSED',
+        submitted_at: '2026-08-13T07:55:00Z',
+        user: { id: 303, login: 'reviewer-three' }
       }
     ]);
     if (url.endsWith('/graphql')) return json({
