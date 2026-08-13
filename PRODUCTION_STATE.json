@@ -115,8 +115,8 @@
     "exactHistoricalSixPathsAvailable": false
   },
   "deploymentState": {
-    "governedAutodeployV1": "automatic_enabled_first_push_attested",
-    "bootstrapStatus": "automatic_enabled_first_push_attested",
+    "governedAutodeployV1": "fully_attested",
+    "bootstrapStatus": "fully_attested",
     "bootstrapCompleted": true,
     "manualWorkflowDispatchCompleted": true,
     "manualWorkflowDispatchSha": "8fb075dd55a3b94ed620527f11b2a77f88627188",
