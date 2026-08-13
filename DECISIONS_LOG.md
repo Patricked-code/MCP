@@ -181,3 +181,14 @@ Contexte : sur S1 propre, typecheck et build réussis, `restart_mcp_bridge_s1` a
 Décision : le générateur de redémarrage ajoute `--force-recreate` et le contrôle `/health` devient fail-closed avec timeout. Un redémarrage ne peut plus être attesté sur le seul succès de construction ou sur un conteneur préexistant.
 
 Limite : cette correction ne vaut ni exposition du catalogue ChatGPT, ni synchronisation GitHub → S1. Le garde `pushEnabled=false` reste fermé jusqu'au bootstrap exact-SHA et aux attestations complètes.
+
+## 2026-08-13 — Activation automatique autorisée après preuve manuelle, preuve push encore requise
+
+Contexte : le run manuel `31655087215` a exécuté l’étape de déploiement exact-SHA et attesté `8fb075dd55a3b94ed620527f11b2a77f88627188`. La passe post-workflow a confirmé l’égalité GitHub/S1/origin/OCI/runtime, la propreté S1, la santé, OAuth, MCP, Live State sans contradiction et rollback non nécessaire.
+
+Décision : la PR #42 est autorisée à passer `.mcp/autodeploy-policy.json` à `pushEnabled=true`. Cette décision signifie bootstrap terminé, garde-fous validés et activation autorisée ; elle ne signifie pas qu’un futur déclenchement automatique est déjà prouvé.
+
+Décision complémentaire : le thread P2 de la PR #41 est traité par un polling borné fail-closed, vérifié RED/GREEN. L’artefact CI doit être une copie exacte des sept documents actifs, jamais une régénération de snapshots historiques.
+
+Preuve restante : le push de fusion de la PR #42 puis une seconde fusion utile doivent chacun produire un job non skipped, exact-SHA et attesté avant la clôture complète.
+

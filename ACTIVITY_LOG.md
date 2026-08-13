@@ -65,3 +65,27 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Catalogue : la session ChatGPT conserve encore son ancien catalogue ; `mcp_sync_from_github_s1` reste non callable dans cette session malgré sa présence dans le code S1.
 - Correction TDD : test RED reproduisant l'absence de `--force-recreate`, puis commande corrigée et santé fail-closed ; validation complète 118/118 et contrôles CI locaux réussis.
 - Aucune synchronisation Git, aucun push S1, aucun secret, aucune suppression et aucune activation de `pushEnabled`.
+
+## 2026-08-13T00:38:34.1662564Z — TASK-20260809-003 — Workflow manuel exact-SHA attesté
+
+- Run GitHub : `31655087215`, job `94307689798`.
+- Job MCP : `mcp-s1-31655087215-8fb075dd55a3`.
+- SHA demandé et attesté : `8fb075dd55a3b94ed620527f11b2a77f88627188`.
+- Contrat final : `succeeded/attested`, health/OAuth/MCP vrais, rollback `not_needed`.
+
+## 2026-08-13T01:17:25.976Z — TASK-20260809-003 — Attestation post-workflow et inventaire courant
+
+- GitHub main, S1 HEAD, origin/main, OCI et runtime égaux au SHA manuel.
+- S1 : `main`, propre, diff vide, fetch read-only, push désactivé.
+- Docker : running/healthy ; image `sha256:6f05aeffc4d5b57bc179f50c33e555dd39545fc828c636ef93f3abfdafb5dd50`.
+- Live State : CURRENT, FULLY_ALIGNED, contradictions vides, prochaine action nulle.
+- Markdown : 189 Git ; 33 miroir runtime dont 7 suivis et 26 runtime-only ; surface courante 215 ; historique 209 conservé séparément.
+
+## 2026-08-13 — TASK-20260809-003 — PR #42, corrections TDD et activation candidate
+
+- Branche : `mcp/finalize-governed-autodeploy-20260813`, base `main@8fb075dd55a3b94ed620527f11b2a77f88627188`.
+- P2 polling : commit RED `979f22a5044d0d93adbd90cf555656dfd57cf5b1`, run `31657464793` en échec attendu ; correction `8827966e60178f65e9daccef8bc0d9150dff82c0`, run `31657546033` réussi.
+- Artefact documentaire : test RED `263fdcc72c6ac2932eca9a416089c75410617765`, run `31657669105` en échec attendu ; générateur corrigé, run `31657781749` réussi après correction du diff-check.
+- Politique : activation `pushEnabled=true` candidate ; aucune preuve de push automatique n’est encore déclarée.
+- Aucune écriture directe sur S1, aucun push S1, aucun secret et aucune suppression.
+

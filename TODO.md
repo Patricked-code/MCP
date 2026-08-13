@@ -14,36 +14,28 @@
 ```
 
 ## Rôle
-Liste des travaux restant réellement à accomplir. Les éléments devenus exécutables sont reflétés dans `TASKS.md`.
+
+Travaux restant réellement à accomplir.
 
 ## Governed Autodeploy V1
 
-- [x] Verrouiller l'inventaire Markdown Git exact et la cohérence canonique CI.
-- [x] Distinguer l'ancien constat S1 `209 = 183 Git + 26 runtime-only` de la baseline Git actuelle de 189 chemins.
-- [x] Implémenter la vérification GitHub OIDC fail-closed.
-- [x] Implémenter l'orchestrateur S1 exact-SHA et rollback runtime.
-- [x] Rendre l'image Compose explicitement sélectionnable pour candidate/rollback.
-- [x] Implémenter les routes HTTP OIDC-only.
-- [x] Câbler ces routes avant les surfaces web/MCP historiques.
-- [x] Implémenter le workflow GitHub Actions exact-SHA avec permissions minimales.
-- [x] Ajouter une politique bootstrap versionnée `pushEnabled=false`.
-- [x] Tester la syntaxe du shell réel du workflow avec `bash -n`.
-- [x] Auditer le diff complet pour secrets, shell non borné, Git destructif, duplication de voie de déploiement et assertions runtime inventées.
-- [x] Ouvrir la PR Draft unique, obtenir CI/revue verte et fusionner le head exact.
-- [x] Vérifier la CI `main` post-merge et le comportement gated du workflow.
-- [x] Réattester S1 en lecture live dès que le connecteur privé est invocable.
-- [x] Étendre `docs:check` à la cohérence de `PRODUCTION_STATE.json`.
-- [ ] Rafraîchir/reconnecter le catalogue ChatGPT afin d'exposer `mcp_sync_from_github_s1`, déjà présent dans le code S1.
-- [ ] Effectuer le bootstrap unique : sync fast-forward, typecheck/build, rebuild/restart MCP.
-- [ ] Vérifier health, OAuth, contrôle d'accès MCP et révision OCI.
-- [ ] Exécuter `workflow_dispatch` sur le SHA exact et récupérer l'attestation finale.
-- [ ] Activer `pushEnabled=true` uniquement par PR après preuve du bootstrap.
-- [ ] Valider un déploiement automatique réel sur un merge de suivi sans risque.
-- [ ] Clôturer seulement après `GitHub main = S1 HEAD = Docker OCI revision = attestation`.
+- [x] Classifier les 189 Markdown Git et contrôler leur cohérence par CI.
+- [x] Réattester 33 Markdown du miroir runtime : 7 suivis, 26 runtime-only.
+- [x] Conserver séparément l’historique `209 = 183 + 26` et la surface courante `215 = 189 + 26`.
+- [x] Terminer le bootstrap S1 et le workflow manuel exact-SHA.
+- [x] Vérifier health, OAuth, MCP 401, OCI, Live State et rollback.
+- [x] Corriger le polling P2 avec TDD.
+- [x] Éliminer les candidats documentaires CI codés en dur et garantir la parité avec les sources.
+- [x] Préparer l’activation `pushEnabled=true` dans la PR #42.
+- [ ] Fusionner la PR #42 sur head exact après CI/revue vertes.
+- [ ] Attester le premier déploiement automatique par push.
+- [ ] Créer puis fusionner la seconde PR documentaire utile.
+- [ ] Attester le second déploiement automatique canonique.
+- [ ] Émettre le verdict final des six objectifs.
+- [ ] Réactiver les deux automatisations métier seulement après clôture intégrale.
+- [ ] Désactiver la surveillance bootstrap seulement après le rapport final et les réactivations attestées.
 
-## Travaux futurs séparés
+## Maintenance séparée
 
-- migration GitRegistry v2 active avec backup/rollback/audit ;
-- cockpit GitRegistry read-only puis CRUD gouverné ;
-- éventuels write-gates/locks distribués V1.5/V2 si plusieurs instances MCP deviennent concurrentes ;
-- migration/modernisation Node et GitHub Actions dans des PR dédiées, jamais mélangées au bootstrap autodeploy.
+- Migrer les actions GitHub encore exécutées sous compatibilité Node 24 dans une PR dédiée.
+- Activer l’authentification à deux facteurs du compte avant le 18 août 2026.

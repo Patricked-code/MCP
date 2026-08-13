@@ -13,39 +13,33 @@
 }
 ```
 
-
 ## Rôle
-Procédure de production MCP.
 
-## Règles
-- Ne jamais déployer sans lecture de SUIVI.md.
-- Ne jamais redémarrer sans connaître l’impact.
-- Ne jamais exposer de secrets.
-- Vérifier build, typecheck, logs et rollback.
-- Documenter toute action dans CHANGELOG.md.
+Procédure de production MCP gouvernée et exact-SHA.
 
-## À vérifier
-Commande build, commande restart, conteneur, ports, domaine, reverse proxy, logs et smoke tests.
+## Chaîne autorisée
 
+`push main → GitHub Actions → OIDC éphémère → MCP gouverné → fetch read-only S1 → fast-forward exact-SHA → build candidat → Docker → health/OAuth/MCP → attestation`.
 
----
+## Invariants
 
-## Règle permanente — double présence, non-régression et amélioration continue
+- CI verte sur le head exact avant fusion.
+- GitHub Actions : `contents: read`, `id-token: write`, aucun secret SSH longue durée.
+- S1 : branche `main`, arbre propre, fetch read-only, push désactivé.
+- `FETCH_HEAD` doit être le SHA demandé et le mouvement doit être fast-forward.
+- Image candidate étiquetée `org.opencontainers.image.revision=<SHA>`.
+- Health 200, deux métadonnées OAuth 200 et `/mcp` sans jeton 401.
+- Succès uniquement si l’attestation retourne le SHA exact et `rollbackStatus=not_needed`.
+- En cas d’échec runtime réel, restauration de l’image précédente selon le runbook ; aucune réécriture Git.
 
-GitHub est la source versionnée.
+## État d’activation
 
-Le serveur MCP est la source exécutée.
+Le bootstrap manuel a été attesté par le run `31655087215` au SHA `8fb075dd55a3b94ed620527f11b2a77f88627188`. La PR #42 peut donc activer `pushEnabled=true`. Cette activation n’est pas une preuve anticipée du chemin automatique : la fusion doit encore produire un run `push` non skipped et une attestation exacte, puis une seconde fusion ultérieure doit fournir la preuve canonique reproductible.
 
-Les deux doivent toujours être vérifiés ensemble avant et après toute intervention.
+## Redémarrage générique
 
-Aucune IA ne doit supposer que GitHub et le serveur sont synchronisés sans vérification.
+`restart_mcp_bridge_s1` recrée le conteneur et sonde `/health` par polling borné. Une readiness tardive n’est plus confondue avec un échec immédiat ; l’épuisement des essais reste bloquant.
 
-Toute intervention humaine, IA ou automatisée doit respecter :
+## Contrôles après chaque déploiement
 
-- non-régression obligatoire ;
-- amélioration continue obligatoire ;
-- aucune suppression destructive sans sauvegarde, justification et validation ;
-- aucun secret dans GitHub ;
-- vérification GitHub + serveur avant modification ;
-- documentation dans `SUIVI.md` après modification ;
-- vérification service, logs et endpoints après déploiement.
+Réattester GitHub main, S1 HEAD, S1 origin/main, propreté, remotes, Docker, image ID, OCI revision, runtime revision, Live State, health/OAuth/MCP et rollback.
