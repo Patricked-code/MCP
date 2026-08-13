@@ -19,6 +19,20 @@ function activeCompatibleSessionCount(context: GovernedOperationalContext): numb
     : 0;
 }
 
+export async function loadGovernedDashboardContext<T>(
+  enabled: boolean,
+  load: () => Promise<T>
+): Promise<T | null> {
+  return enabled ? load() : null;
+}
+
+export function renderGovernedContextDashboardDisabledSection(): string {
+  return `<section aria-labelledby="governed-context-heading">
+  <h2 id="governed-context-heading">MCP Governed Session Continuity</h2>
+  <p>Mémoire opérationnelle gouvernée : <strong>désactivée</strong></p>
+</section>`;
+}
+
 export function renderGovernedContextDashboardSection(
   context: GovernedOperationalContext
 ): string {

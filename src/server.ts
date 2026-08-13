@@ -9,10 +9,14 @@ import { registerOauthRoutes } from './oauth.js';
 import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
-import { GOVERNED_CONTEXT_INSTRUCTIONS } from './tools/governedContext.js';
+import { governedContextInstructions } from './tools/governedContext.js';
 import { getGovernedContextToolDependencies } from './tools/governedContext.js';
 import { getGovernedSessionToolDependencies } from './tools/governedSessions.js';
-import { renderGovernedContextDashboardSection } from './governedContext/dashboard.js';
+import {
+  loadGovernedDashboardContext,
+  renderGovernedContextDashboardDisabledSection,
+  renderGovernedContextDashboardSection
+} from './governedContext/dashboard.js';
 import {
   decorateScopedWriteServer,
   getDefaultScopedWriteGateDependencies
@@ -168,18 +172,20 @@ async function renderDashboardPage(): Promise<string> {
   const [status, registry, governedContext] = await Promise.all([
     getGithubConnectionStatus(),
     readGitRegistry(),
-    getGovernedContextToolDependencies().context.getCurrent({
-      governedSessionId: null,
-      workBranch: null,
-      request: {
-        transportSessionId: 'web-dashboard',
-        identity: {
-          principalId: null,
-          clientId: 'wealthtech-dashboard',
-          assurance: 'declared_only'
+    loadGovernedDashboardContext(operationalMemoryConfig.enabled, () => (
+      getGovernedContextToolDependencies().context.getCurrent({
+        governedSessionId: null,
+        workBranch: null,
+        request: {
+          transportSessionId: 'web-dashboard',
+          identity: {
+            principalId: null,
+            clientId: 'wealthtech-dashboard',
+            assurance: 'declared_only'
+          }
         }
-      }
-    })
+      })
+    ))
   ]);
   const connected = status.connected ? 'connecté' : 'non connecté';
 
@@ -212,7 +218,9 @@ async function renderDashboardPage(): Promise<string> {
   <p>Dernière mise à jour : <strong>${escapeHtml(registry.updatedAt)}</strong></p>
   <p><a href="/git/status">Voir JSON</a></p>
 
-  ${renderGovernedContextDashboardSection(governedContext)}
+  ${governedContext
+    ? renderGovernedContextDashboardSection(governedContext)
+    : renderGovernedContextDashboardDisabledSection()}
 </body>
 </html>`;
 }
@@ -264,7 +272,7 @@ export function buildMcpServer(): McpServer {
     name: 'wealthtech_ssh_bridge',
     version: '0.1.0'
   }, {
-    instructions: GOVERNED_CONTEXT_INSTRUCTIONS
+    instructions: governedContextInstructions(operationalMemoryConfig.enabled)
   });
 
   registerReadOnlyTools(server);

@@ -168,9 +168,10 @@ async function handled(work: () => Promise<unknown>) {
 
 export function registerGovernedSessionTools(
   server: McpServer,
-  dependencies: GovernedSessionToolDependencies = getGovernedSessionToolDependencies()
+  dependencies?: GovernedSessionToolDependencies
 ): void {
   if (!operationalMemoryConfig.enabled) return;
+  const activeDependencies = dependencies ?? getGovernedSessionToolDependencies();
 
   server.tool(
     'mcp_open_governed_session',
@@ -183,7 +184,7 @@ export function registerGovernedSessionTools(
       blockers: BlockersSchema,
       nextAction: NullableNextActionSchema
     },
-    async (input, extra) => handled(() => dependencies.sessions.openSession(
+    async (input, extra) => handled(() => activeDependencies.sessions.openSession(
       input,
       sessionRequestFromToolExtra(extra)
     ))
@@ -199,7 +200,7 @@ export function registerGovernedSessionTools(
       taskScope: z.string().trim().min(1).max(200),
       expectedSessionRevision: ExpectedSessionRevisionSchema
     },
-    async (input, extra) => handled(() => dependencies.sessions.resumeSession(
+    async (input, extra) => handled(() => activeDependencies.sessions.resumeSession(
       input,
       sessionRequestFromToolExtra(extra)
     ))
@@ -212,7 +213,7 @@ export function registerGovernedSessionTools(
       governedSessionId: GovernedSessionIdSchema,
       expectedSessionRevision: ExpectedSessionRevisionSchema
     },
-    async (input, extra) => handled(() => dependencies.sessions.heartbeat(
+    async (input, extra) => handled(() => activeDependencies.sessions.heartbeat(
       input,
       sessionRequestFromToolExtra(extra)
     ))
@@ -226,7 +227,7 @@ export function registerGovernedSessionTools(
       expectedSessionRevision: ExpectedSessionRevisionSchema,
       expectedStateVersion: z.number().int().nonnegative()
     },
-    async (input, extra) => handled(() => dependencies.sessions.acknowledgeContext(
+    async (input, extra) => handled(() => activeDependencies.sessions.acknowledgeContext(
       input,
       sessionRequestFromToolExtra(extra)
     ))
@@ -246,7 +247,7 @@ export function registerGovernedSessionTools(
       blockers: BlockersSchema,
       nextAction: NullableNextActionSchema
     },
-    async (input, extra) => handled(() => dependencies.sessions.createCheckpoint(
+    async (input, extra) => handled(() => activeDependencies.sessions.createCheckpoint(
       input,
       sessionRequestFromToolExtra(extra)
     ))
@@ -269,19 +270,19 @@ export function registerGovernedSessionTools(
   registerRevisionTool(
     'mcp_pause_governed_session',
     'Met une governed session en pause sans supprimer sa mémoire.',
-    dependencies.sessions.pauseSession
+    activeDependencies.sessions.pauseSession
   );
   registerRevisionTool(
     'mcp_close_governed_session',
     'Ferme idempotemment une governed session.',
-    dependencies.sessions.closeSession
+    activeDependencies.sessions.closeSession
   );
 
   server.tool(
     'mcp_list_governed_sessions',
     'Liste uniquement les governed sessions visibles par l’identité courante.',
     {},
-    async (_input, extra) => handled(() => dependencies.sessions.listVisibleSessions(
+    async (_input, extra) => handled(() => activeDependencies.sessions.listVisibleSessions(
       sessionRequestFromToolExtra(extra)
     ))
   );
@@ -290,7 +291,7 @@ export function registerGovernedSessionTools(
     'mcp_get_governed_session',
     'Retourne une governed session visible sans secret ni identifiant de transport brut.',
     { governedSessionId: GovernedSessionIdSchema },
-    async (input, extra) => handled(() => dependencies.sessions.getVisibleSession(
+    async (input, extra) => handled(() => activeDependencies.sessions.getVisibleSession(
       input.governedSessionId,
       sessionRequestFromToolExtra(extra)
     ))
@@ -319,7 +320,7 @@ export function registerGovernedSessionTools(
       ttlSeconds: z.number().int().min(30).max(1_800).optional(),
       reason: z.string().trim().min(1).max(240)
     },
-    async (input, extra) => handled(() => dependencies.locks.acquireLock(
+    async (input, extra) => handled(() => activeDependencies.locks.acquireLock(
       input,
       sessionRequestFromToolExtra(extra)
     ))
@@ -333,7 +334,7 @@ export function registerGovernedSessionTools(
       lockId: z.string().uuid(),
       expectedLockRevision: z.number().int().nonnegative()
     },
-    async (input, extra) => handled(() => dependencies.locks.releaseLock(
+    async (input, extra) => handled(() => activeDependencies.locks.releaseLock(
       input,
       sessionRequestFromToolExtra(extra)
     ))

@@ -25,6 +25,10 @@ export const GOVERNED_CONTEXT_INSTRUCTIONS = [
   'Le WRITE gate V1 est shadow et ne remplace ni ENABLE_WRITE_TOOLS ni allow_write.'
 ].join('\n');
 
+export function governedContextInstructions(enabled: boolean): string | undefined {
+  return enabled ? GOVERNED_CONTEXT_INSTRUCTIONS : undefined;
+}
+
 type GovernedContextToolDependencies = {
   context: GovernedOperationalContextService;
   sessions: Pick<GovernedSessionService, 'lookupGovernedSessionId'>;
@@ -89,9 +93,10 @@ async function handleTool(work: () => Promise<unknown>) {
 
 export function registerGovernedContextTools(
   server: McpServer,
-  dependencies: GovernedContextToolDependencies = getGovernedContextToolDependencies()
+  dependencies?: GovernedContextToolDependencies
 ): void {
   if (!operationalMemoryConfig.enabled) return;
+  const activeDependencies = dependencies ?? getGovernedContextToolDependencies();
 
   server.registerResource(
     'wealthtech-governed-context-current',
@@ -104,7 +109,9 @@ export function registerGovernedContextTools(
     },
     async (_uri, extra) => {
       try {
-        const value = await dependencies.context.getCurrent(contextInput(extra, dependencies.sessions));
+        const value = await activeDependencies.context.getCurrent(
+          contextInput(extra, activeDependencies.sessions)
+        );
         return {
           contents: [{
             uri: GOVERNED_CONTEXT_RESOURCE_URI,
@@ -136,8 +143,8 @@ export function registerGovernedContextTools(
       inputSchema: {},
       annotations
     },
-    async (_input, extra) => handleTool(() => dependencies.context.getCurrent(
-      contextInput(extra, dependencies.sessions)
+    async (_input, extra) => handleTool(() => activeDependencies.context.getCurrent(
+      contextInput(extra, activeDependencies.sessions)
     ))
   );
   server.registerTool(
@@ -148,8 +155,8 @@ export function registerGovernedContextTools(
       inputSchema: {},
       annotations
     },
-    async (_input, extra) => handleTool(() => dependencies.context.reconcileExplicit(
-      contextInput(extra, dependencies.sessions)
+    async (_input, extra) => handleTool(() => activeDependencies.context.reconcileExplicit(
+      contextInput(extra, activeDependencies.sessions)
     ))
   );
 }
