@@ -43,7 +43,8 @@ export function getGovernedContextToolDependencies(): GovernedContextToolDepende
       sessions: operational.sessions,
       locks: operational.locks,
       gateMode: operationalMemoryConfig.writeGateMode,
-      existingWriteToolsEnabled: env.ENABLE_WRITE_TOOLS
+      existingWriteToolsEnabled: env.ENABLE_WRITE_TOOLS,
+      audit: operational.audit
     }),
     sessions: operational.sessions
   };

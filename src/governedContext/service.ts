@@ -1,6 +1,10 @@
 import type { LiveStateEngine } from '../liveState/engine.js';
 import type { LiveStateSnapshot } from '../liveState/types.js';
 import type { GovernedLockService } from '../operationalMemory/lockService.js';
+import {
+  NOOP_OPERATIONAL_AUDIT,
+  type OperationalAudit
+} from '../operationalMemory/operationalAudit.js';
 import type {
   GovernedSessionService,
   SessionRequest
@@ -32,6 +36,7 @@ type ContextServiceOptions = {
   gateMode: 'off' | 'shadow';
   existingWriteToolsEnabled: boolean;
   now?: () => Date;
+  audit?: OperationalAudit;
 };
 
 export type GovernedOperationalContextService = {
@@ -89,6 +94,7 @@ export function createGovernedOperationalContextService(
   options: ContextServiceOptions
 ): GovernedOperationalContextService {
   const now = options.now ?? (() => new Date());
+  const audit = options.audit ?? NOOP_OPERATIONAL_AUDIT;
 
   async function safeRead<T>(work: () => T | Promise<T>, fallback: T): Promise<T> {
     try {
@@ -104,6 +110,13 @@ export function createGovernedOperationalContextService(
   ): Promise<GovernedOperationalContext> {
     const generatedAt = now().toISOString();
     const limitations: string[] = [];
+    if (explicit) {
+      await audit.record({
+        type: 'reconcile.requested',
+        governedSessionId: input.governedSessionId,
+        stateVersion: null
+      });
+    }
     const liveState = await safeRead(
       () => explicit
         ? options.liveState.reconcileNow()
@@ -169,7 +182,7 @@ export function createGovernedOperationalContextService(
     );
     if (!runtimeRealtimeAvailable) limitations.push('runtime_realtime_unavailable');
 
-    return {
+    const context: GovernedOperationalContext = {
       schemaVersion: 1,
       generatedAt,
       freshness,
@@ -193,6 +206,16 @@ export function createGovernedOperationalContextService(
         limitations: [...new Set(limitations)].slice(0, 20)
       }
     };
+    await audit.record({ type: 'context.read', context });
+    if (explicit) {
+      await audit.record({
+        type: 'reconcile.completed',
+        governedSessionId: input.governedSessionId,
+        context,
+        previousStateVersion: null
+      });
+    }
+    return context;
   }
 
   return {
