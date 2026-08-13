@@ -169,9 +169,45 @@ GithubOperationalContext['reviews'], 'approvals' | 'changesRequested'
   if (!Array.isArray(value)) return null;
   const reviews = value.slice(0, 100).map(object).filter(Boolean);
   if (reviews.length !== Math.min(value.length, 100)) return null;
+  const latestByReviewer = new Map<string, {
+    state: unknown;
+    submittedAt: number;
+    index: number;
+  }>();
+  reviews.forEach((review, index) => {
+    if (review?.state === 'DISMISSED') return;
+    const user = object(review?.user);
+    const userId = user?.id;
+    const login = string(user?.login, 100)?.toLowerCase();
+    const reviewId = review?.id;
+    const reviewerKey = typeof userId === 'number' && Number.isSafeInteger(userId) && userId > 0
+      ? `id:${userId}`
+      : login
+        ? `login:${login}`
+        : typeof reviewId === 'number' && Number.isSafeInteger(reviewId) && reviewId > 0
+          ? `review:${reviewId}`
+          : `bounded-index:${index}`;
+    const submittedAt = timestamp(review?.submitted_at);
+    const submittedAtMs = submittedAt ? Date.parse(submittedAt) : Number.NEGATIVE_INFINITY;
+    const current = latestByReviewer.get(reviewerKey);
+    if (
+      !current
+      || submittedAtMs > current.submittedAt
+      || (submittedAtMs === current.submittedAt && index > current.index)
+    ) {
+      latestByReviewer.set(reviewerKey, {
+        state: review?.state,
+        submittedAt: submittedAtMs,
+        index
+      });
+    }
+  });
+  const currentReviews = [...latestByReviewer.values()];
   return {
-    approvals: reviews.filter((review) => review?.state === 'APPROVED').length,
-    changesRequested: reviews.filter((review) => review?.state === 'CHANGES_REQUESTED').length
+    approvals: currentReviews.filter((review) => review.state === 'APPROVED').length,
+    changesRequested: currentReviews.filter(
+      (review) => review.state === 'CHANGES_REQUESTED'
+    ).length
   };
 }
 
