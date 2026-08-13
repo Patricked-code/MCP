@@ -20,6 +20,7 @@ export type OperationalEventType =
   | 'lock.conflicted'
   | 'lock.released'
   | 'lock.expired'
+  | 'maintenance.completed'
   | 'scoped_write.shadow'
   | 'reconcile.requested'
   | 'reconcile.completed'
@@ -47,7 +48,7 @@ export type OperationalEventJournal = {
   append(input: OperationalEventInput): Promise<OperationalEvent>;
 };
 
-type OperationalEventJournalOptions = {
+export type OperationalEventJournalOptions = {
   filePath: string;
   maxBytes: number;
   archives: number;
@@ -82,6 +83,7 @@ const ALLOWED_METADATA_KEYS: Record<OperationalEventType, ReadonlySet<string>> =
   'lock.conflicted': new Set(['scope', 'conflictingLockId', 'reasonCode']),
   'lock.released': new Set(['lockId', 'scope', 'lockRevision']),
   'lock.expired': new Set(['lockId', 'scope', 'lockRevision']),
+  'maintenance.completed': new Set(['expiredSessionCount', 'expiredLockCount']),
   'scoped_write.shadow': new Set(['toolName', 'decision', 'stateVersion', 'sessionRevision', 'lockConflict']),
   'reconcile.requested': new Set(['reasonCode', 'stateVersion']),
   'reconcile.completed': new Set(['resultCode', 'previousStateVersion', 'stateVersion', 'globalAlignment']),
@@ -207,4 +209,13 @@ export function createOperationalEventJournal(
       return operation;
     }
   };
+}
+
+let defaultJournal: OperationalEventJournal | null = null;
+
+export function getDefaultOperationalEventJournal(
+  options: OperationalEventJournalOptions
+): OperationalEventJournal {
+  defaultJournal ??= createOperationalEventJournal(options);
+  return defaultJournal;
 }

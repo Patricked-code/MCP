@@ -12,6 +12,8 @@ import { startOperationalMemoryMaintenance } from '../src/operationalMemory/main
 const NOW = '2026-08-13T08:00:00.000Z';
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
 const LOCK_ID = '22222222-2222-4222-8222-222222222222';
+const SERVER_FILE = new URL('../src/server.ts', import.meta.url);
+const MAINTENANCE_FILE = new URL('../src/operationalMemory/maintenance.ts', import.meta.url);
 
 function governedContext(): GovernedOperationalContext {
   return {
@@ -140,6 +142,7 @@ test('le dashboard échappe toutes les chaînes et ignore les secrets hors contr
     taskScope: '<script>alert("task")</script>',
     nextAction: '<img src=x onerror=alert(1)>'
   };
+  context.nextAction = '<img src=x onerror=alert(1)>';
   context.blockers = ['<script>alert("blocker")</script>'];
   const hostile = Object.assign(context, {
     resumeSecretHash: 'resume-secret-hash-raw',
@@ -215,4 +218,17 @@ test('le journal de maintenance refuse toute métadonnée brute hors compteurs',
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
+});
+
+test('le serveur démarre une seule maintenance et le dashboard reste cache/store-only', async () => {
+  const [serverSource, maintenanceSource] = await Promise.all([
+    readFile(SERVER_FILE, 'utf8'),
+    readFile(MAINTENANCE_FILE, 'utf8')
+  ]);
+
+  assert.equal((serverSource.match(/startGovernedOperationalMemoryMaintenance\(\);/g) ?? []).length, 1);
+  assert.equal((serverSource.match(/startOperationalMemoryMaintenance\(\{/g) ?? []).length, 1);
+  assert.match(serverSource, /context\.getCurrent\(\{/);
+  assert.doesNotMatch(serverSource, /context\.reconcileExplicit\(/);
+  assert.doesNotMatch(maintenanceSource, /liveState|github|ssh/i);
 });

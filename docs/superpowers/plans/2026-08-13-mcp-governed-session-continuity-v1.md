@@ -1125,16 +1125,16 @@ Maintenance :
 - aucune collecte GitHub/SSH à chaque heartbeat;
 - aucun changement de Live State stateVersion à cause d’une session ou d’un lock.
 
-- [ ] **Step 1: RED rendu et sanitization.**
-- [ ] **Step 2: RED maintenance single timer/unref et absence de Live State write.**
-- [ ] **Step 3: Exécuter RED.**
+- [x] **Step 1: RED rendu et sanitization.**
+- [x] **Step 2: RED maintenance single timer/unref et absence de Live State write.**
+- [x] **Step 3: Exécuter RED.**
 
 ~~~~bash
 node --import tsx --test tests/governedDashboard.test.ts tests/governedSessionService.test.ts tests/governedLocks.test.ts
 ~~~~
 
-- [ ] **Step 4: Implémenter puis GREEN.**
-- [ ] **Step 5: Commits.**
+- [x] **Step 4: Implémenter puis GREEN.**
+- [x] **Step 5: Commits.**
 
 - RED: test(governed-dashboard): define additive operational view
 - GREEN: feat(governed-dashboard): expose bounded live context

@@ -1,11 +1,17 @@
 type TimerHandle = { unref?: () => void };
 
+export type OperationalMemoryMaintenanceCycle = {
+  expiredSessionCount: number;
+  expiredLockCount: number;
+};
+
 type MaintenanceOptions<Timer extends TimerHandle> = {
   expireSessions: () => Promise<number>;
   expireLocks?: () => Promise<number>;
   intervalMs?: number;
   setInterval?: (callback: () => void, intervalMs: number) => Timer;
   clearInterval?: (timer: Timer) => void;
+  onCycle?: (summary: OperationalMemoryMaintenanceCycle) => void | Promise<void>;
   onError?: (error: unknown) => void;
 };
 
@@ -23,10 +29,13 @@ export function startOperationalMemoryMaintenance<Timer extends TimerHandle = No
     globalThis.clearInterval(timer as unknown as NodeJS.Timeout);
   });
   const timer = setTimer(() => {
-    void Promise.all([
-      options.expireSessions(),
-      options.expireLocks?.() ?? Promise.resolve(0)
-    ]).catch((error) => options.onError?.(error));
+    void (async () => {
+      const [expiredSessionCount, expiredLockCount] = await Promise.all([
+        options.expireSessions(),
+        options.expireLocks?.() ?? Promise.resolve(0)
+      ]);
+      await options.onCycle?.({ expiredSessionCount, expiredLockCount });
+    })().catch((error) => options.onError?.(error));
   }, options.intervalMs ?? 60_000);
   timer.unref?.();
   let stopped = false;

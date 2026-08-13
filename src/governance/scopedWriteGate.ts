@@ -5,7 +5,7 @@ import type { ServerNotification, ServerRequest } from '@modelcontextprotocol/sd
 import { logger } from '../logger.js';
 import { liveStateEngine } from '../liveState/engine.js';
 import { operationalMemoryConfig } from '../operationalMemory/config.js';
-import { createOperationalEventJournal } from '../operationalMemory/eventJournal.js';
+import { getDefaultOperationalEventJournal } from '../operationalMemory/eventJournal.js';
 import {
   getGovernedContextToolDependencies
 } from '../tools/governedContext.js';
@@ -189,7 +189,7 @@ export function getDefaultScopedWriteGateDependencies(): ScopedWriteGateDependen
     return defaultDependencies;
   }
   const contextDependencies = getGovernedContextToolDependencies();
-  const journal = createOperationalEventJournal({
+  const journal = getDefaultOperationalEventJournal({
     filePath: operationalMemoryConfig.eventJournalPath,
     maxBytes: operationalMemoryConfig.eventMaxBytes,
     archives: operationalMemoryConfig.eventArchives
