@@ -4,7 +4,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 
-import { renderGovernedContextDashboardSection } from '../src/governedContext/dashboard.js';
+import {
+  loadGovernedDashboardContext,
+  renderGovernedContextDashboardDisabledSection,
+  renderGovernedContextDashboardSection
+} from '../src/governedContext/dashboard.js';
 import type { GovernedOperationalContext } from '../src/governedContext/types.js';
 import { createOperationalEventJournal } from '../src/operationalMemory/eventJournal.js';
 import { startOperationalMemoryMaintenance } from '../src/operationalMemory/maintenance.js';
@@ -14,6 +18,8 @@ const SESSION_ID = '11111111-1111-4111-8111-111111111111';
 const LOCK_ID = '22222222-2222-4222-8222-222222222222';
 const SERVER_FILE = new URL('../src/server.ts', import.meta.url);
 const MAINTENANCE_FILE = new URL('../src/operationalMemory/maintenance.ts', import.meta.url);
+const SESSION_TOOLS_FILE = new URL('../src/tools/governedSessions.ts', import.meta.url);
+const CONTEXT_TOOLS_FILE = new URL('../src/tools/governedContext.ts', import.meta.url);
 
 function governedContext(): GovernedOperationalContext {
   return {
@@ -161,6 +167,19 @@ test('le dashboard échappe toutes les chaînes et ignore les secrets hors contr
   assert.equal(html.includes('transport-raw-secret'), false);
 });
 
+test('le mode disabled ne charge aucun store et affiche une projection explicite', async () => {
+  let loads = 0;
+  const context = await loadGovernedDashboardContext(false, async () => {
+    loads += 1;
+    throw new Error('disabled mode must not load governed dependencies');
+  });
+
+  assert.equal(context, null);
+  assert.equal(loads, 0);
+  assert.match(renderGovernedContextDashboardDisabledSection(), /désactivée/i);
+  assert.doesNotMatch(renderGovernedContextDashboardDisabledSection(), /governed-context\/current/);
+});
+
 test('la maintenance utilise un timer unique unref et journalise seulement des compteurs', async () => {
   let callback: (() => void) | undefined;
   let scheduled = 0;
@@ -224,9 +243,11 @@ test('le journal de maintenance refuse toute métadonnée brute hors compteurs',
 });
 
 test('le serveur démarre une seule maintenance et le dashboard reste cache/store-only', async () => {
-  const [serverSource, maintenanceSource] = await Promise.all([
+  const [serverSource, maintenanceSource, sessionToolsSource, contextToolsSource] = await Promise.all([
     readFile(SERVER_FILE, 'utf8'),
-    readFile(MAINTENANCE_FILE, 'utf8')
+    readFile(MAINTENANCE_FILE, 'utf8'),
+    readFile(SESSION_TOOLS_FILE, 'utf8'),
+    readFile(CONTEXT_TOOLS_FILE, 'utf8')
   ]);
 
   assert.equal((serverSource.match(/startGovernedOperationalMemoryMaintenance\(\);/g) ?? []).length, 1);
@@ -235,4 +256,6 @@ test('le serveur démarre une seule maintenance et le dashboard reste cache/stor
   assert.doesNotMatch(serverSource, /context\.reconcileExplicit\(/);
   assert.match(serverSource, /transport\.onclose[\s\S]*sessions\.unbindTransport\(transport\.sessionId\)/);
   assert.doesNotMatch(maintenanceSource, /liveState|github|ssh/i);
+  assert.doesNotMatch(sessionToolsSource, /dependencies:\s*GovernedSessionToolDependencies\s*=\s*getGovernedSessionToolDependencies/);
+  assert.doesNotMatch(contextToolsSource, /dependencies:\s*GovernedContextToolDependencies\s*=\s*getGovernedContextToolDependencies/);
 });

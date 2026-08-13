@@ -12,6 +12,7 @@ process.env.MCP_GOVERNED_SESSIONS_ENABLED ??= 'true';
 const {
   GOVERNED_CONTEXT_INSTRUCTIONS,
   GOVERNED_CONTEXT_RESOURCE_URI,
+  governedContextInstructions,
   registerGovernedContextTools
 } = await import('../src/tools/governedContext.js');
 const { buildMcpServer } = await import('../src/server.js');
@@ -180,4 +181,6 @@ test('buildMcpServer publie les instructions gouvernées dans l’initialisation
     'Acquitter le stateVersion courant avant checkpoint.',
     'Le WRITE gate V1 est shadow et ne remplace ni ENABLE_WRITE_TOOLS ni allow_write.'
   ].join('\n'));
+  assert.equal(governedContextInstructions(false), undefined);
+  assert.equal(governedContextInstructions(true), GOVERNED_CONTEXT_INSTRUCTIONS);
 });
