@@ -10,8 +10,19 @@ export function buildMcpRestartCommand(): string {
 cd ${shellQuote(MCP_ROOT)}
 MCP_GIT_REVISION="$(git rev-parse HEAD)"
 export MCP_GIT_REVISION
+wait_for_health() {
+  local attempt=0
+  while [ "$attempt" -lt 20 ]; do
+    if curl --fail --silent --show-error --max-time 5 http://127.0.0.1:8787/health; then
+      return 0
+    fi
+    attempt=$((attempt + 1))
+    if [ "$attempt" -lt 20 ]; then sleep 2; fi
+  done
+  return 1
+}
+
 docker compose up -d --build --force-recreate
-sleep 5
 docker ps --filter name=${MCP_CONTAINER} --format "table {{.Names}}\\t{{.Status}}\\t{{.Ports}}"
-curl --fail --silent --show-error --max-time 15 http://127.0.0.1:8787/health`;
+wait_for_health`;
 }

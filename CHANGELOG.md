@@ -189,3 +189,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Blocage confirmé : `mcp_sync_from_github_s1` existe dans le code S1 mais n'est pas callable depuis le catalogue ChatGPT courant.
 - Ajout d'une validation sémantique de `PRODUCTION_STATE.json` à `docs:check`, avec tests RED/GREEN sur les contradictions GitHub/S1/runtime et les snapshots antérieurs à la PR #39.
 - Aucun sync, build, restart, patch S1, `workflow_dispatch` ou activation automatique exécuté.
+
+## 2026-08-13 — Bootstrap manuel attesté et activation gouvernée préparée
+
+- Workflow manuel `31655087215` réussi au SHA exact `8fb075dd55a3b94ed620527f11b2a77f88627188`.
+- GitHub, S1, `origin/main`, OCI et runtime réattestés égaux ; Docker healthy ; health/OAuth/MCP validés ; rollback `not_needed`.
+- Surface Markdown courante : 189 Git + 26 runtime-only = 215 ; photographie historique 209 conservée séparément.
+- Correction P2 : polling readiness borné pour `restart_mcp_bridge_s1`, avec RED `31657464793` et GREEN `31657546033`.
+- Artefact CI : suppression des sept candidats historiques codés en dur ; parité exacte source/artefact testée, RED `31657669105`, GREEN `31657781749`.
+- PR #42 prépare `pushEnabled=true` ; la preuve automatique par push reste en attente de fusion et d’attestation.

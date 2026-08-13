@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-09T20:08:09Z",
+  "updatedAt": "2026-08-13T01:17:25.976Z",
   "main": {
     "role": "stable_reference_production_after_validation",
     "directPushAllowed": false
@@ -20,5 +20,7 @@
   "serverMustReturnToMainAfterPushingUnmergedBranch": true,
   "dirtyCountRule": "if_dirty_count_gt_zero_no_pull_no_merge_no_reset_no_deploy_no_cleanup",
   "doubleUpdateRule": "every_structural_change_must_be_reflected_in_github_and_server_memory",
-  "currentBranchForThisWork": "mcp/governance-anti-dispersion-manual"
+  "currentBranchForThisWork": null,
+  "branchSelection": "dynamic_per_governed_task_and_pull_request",
+  "activeGovernedPullRequest": 42
 }
