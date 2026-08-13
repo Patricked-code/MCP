@@ -10,12 +10,23 @@ export type TransportBindings = {
   bind(
     transportSessionId: string,
     governedSessionId: string,
-    now: Date
+    now: Date,
+    sessionRevision: number
   ): SanitizedTransportMetadata;
   lookup(transportSessionId: string | undefined): string | null;
+  updateGovernedSessionRevision(governedSessionId: string, sessionRevision: number): void;
+  unbindSnapshot(transportSessionId: string): UnboundTransportBinding | null;
   unbind(transportSessionId: string): string | null;
   unbindGovernedSession(governedSessionId: string): number;
 };
+
+export type UnboundTransportBinding = {
+  governedSessionId: string;
+  fingerprint: string;
+  sessionRevision: number;
+};
+
+type TransportBinding = UnboundTransportBinding;
 
 function fingerprintTransport(transportSessionId: string): string {
   return createHash('sha256')
@@ -25,7 +36,7 @@ function fingerprintTransport(transportSessionId: string): string {
 }
 
 export function createTransportBindings(): TransportBindings {
-  const bindings = new Map<string, string>();
+  const bindings = new Map<string, TransportBinding>();
 
   function metadata(
     transportSessionId: string,
@@ -40,25 +51,42 @@ export function createTransportBindings(): TransportBindings {
     };
   }
 
+  function unbindSnapshot(transportSessionId: string): UnboundTransportBinding | null {
+    const binding = bindings.get(transportSessionId) ?? null;
+    bindings.delete(transportSessionId);
+    return binding ? { ...binding } : null;
+  }
+
   return {
     metadata,
-    bind(transportSessionId, governedSessionId, now) {
-      bindings.set(transportSessionId, governedSessionId);
-      return metadata(transportSessionId, now);
+    bind(transportSessionId, governedSessionId, now, sessionRevision) {
+      const sanitized = metadata(transportSessionId, now);
+      bindings.set(transportSessionId, {
+        governedSessionId,
+        fingerprint: sanitized.fingerprint,
+        sessionRevision
+      });
+      return sanitized;
     },
     lookup(transportSessionId) {
       if (!transportSessionId) return null;
-      return bindings.get(transportSessionId) ?? null;
+      return bindings.get(transportSessionId)?.governedSessionId ?? null;
     },
+    updateGovernedSessionRevision(governedSessionId, sessionRevision) {
+      for (const binding of bindings.values()) {
+        if (binding.governedSessionId === governedSessionId) {
+          binding.sessionRevision = sessionRevision;
+        }
+      }
+    },
+    unbindSnapshot,
     unbind(transportSessionId) {
-      const governedSessionId = bindings.get(transportSessionId) ?? null;
-      bindings.delete(transportSessionId);
-      return governedSessionId;
+      return unbindSnapshot(transportSessionId)?.governedSessionId ?? null;
     },
     unbindGovernedSession(governedSessionId) {
       let removed = 0;
-      for (const [transportSessionId, boundGovernedSessionId] of bindings) {
-        if (boundGovernedSessionId === governedSessionId) {
+      for (const [transportSessionId, binding] of bindings) {
+        if (binding.governedSessionId === governedSessionId) {
           bindings.delete(transportSessionId);
           removed += 1;
         }

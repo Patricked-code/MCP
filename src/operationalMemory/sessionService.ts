@@ -167,8 +167,13 @@ export function createGovernedSessionService(
       sessions[index] = changed;
       return { ...document, storeRevision: document.storeRevision + 1, sessions };
     });
-    if (!changed) fail('SESSION_UPDATE_FAILED');
-    return publicSession(changed);
+    const persisted = changed as GovernedSessionRecord | null;
+    if (!persisted) fail('SESSION_UPDATE_FAILED');
+    options.bindings.updateGovernedSessionRevision(
+      input.governedSessionId,
+      persisted.sessionRevision
+    );
+    return publicSession(persisted);
   }
 
   return {
@@ -181,7 +186,8 @@ export function createGovernedSessionService(
       const currentTransport = options.bindings.bind(
         request.transportSessionId,
         governedSessionId,
-        openedAt
+        openedAt,
+        1
       );
       const assurance: IdentityAssurance = request.identity.assurance;
       const record: GovernedSessionRecord = {
@@ -294,13 +300,14 @@ export function createGovernedSessionService(
       });
 
       if (!resumed) fail('SESSION_RESUME_FAILED');
+      const visible = publicSession(resumed);
       options.bindings.unbindGovernedSession(input.governedSessionId);
       options.bindings.bind(
         request.transportSessionId,
         input.governedSessionId,
-        resumedAt
+        resumedAt,
+        visible.sessionRevision
       );
-      const visible = publicSession(resumed);
       if (previousTransportFingerprint) {
         await audit.record({
           type: 'transport.unbound',
@@ -499,23 +506,17 @@ export function createGovernedSessionService(
     },
 
     unbindTransport(transportSessionId) {
-      const governedSessionId = options.bindings.unbind(transportSessionId);
-      if (governedSessionId) {
-        void options.store.read().then((document) => {
-          const session = document.sessions.find(
-            (candidate) => candidate.governedSessionId === governedSessionId
-          );
-          if (!session?.currentTransport) return;
-          return audit.record({
-            type: 'transport.unbound',
-            governedSessionId,
-            fingerprint: session.currentTransport.fingerprint,
-            sessionRevision: session.sessionRevision,
-            reasonCode: 'transport_closed'
-          });
-        }).catch(() => undefined);
+      const binding = options.bindings.unbindSnapshot(transportSessionId);
+      if (binding) {
+        void audit.record({
+          type: 'transport.unbound',
+          governedSessionId: binding.governedSessionId,
+          fingerprint: binding.fingerprint,
+          sessionRevision: binding.sessionRevision,
+          reasonCode: 'transport_closed'
+        });
       }
-      return governedSessionId;
+      return binding?.governedSessionId ?? null;
     }
   };
 }
