@@ -13,6 +13,7 @@ import { registerNigeriaScopedTools } from './nigeriaScoped.js';
 import { registerGitRegistryV2ReadOnlyTools } from './githubRegistryV2.js';
 import { registerScopedReadOnlyTools } from './writeScoped.js';
 import { registerRuntimeAttestationReadOnlyTools } from './runtimeAttestation.js';
+import { registerGovernedSessionTools } from './governedSessions.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -53,6 +54,7 @@ export function registerReadOnlyTools(server: McpServer): void {
   registerDurableAccountReadOnlyTools(server);
   registerGitRegistryV2ReadOnlyTools(server);
   registerRuntimeAttestationReadOnlyTools(server);
+  registerGovernedSessionTools(server);
   registerMcpSelfReadOnlyTools(server);
   registerSadiaafTools(server);
   registerLegacyFundsScopedTools(server);

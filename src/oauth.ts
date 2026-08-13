@@ -41,6 +41,13 @@ type OAuthTokenPayload = {
   jti: string;
 };
 
+export type VerifiedOauthIdentity = {
+  subject: string;
+  clientId: string;
+  scopes: string[];
+  expiresAt: number;
+};
+
 type RegisterOAuthRoutesOptions = {
   isAuthenticated: (req: Request) => boolean;
 };
@@ -258,25 +265,41 @@ function parseAccessToken(token: string): OAuthTokenPayload | null {
   }
 }
 
-export function verifyOauthAccessToken(token: string, requiredScope = 'mcp:read'): boolean {
+export function inspectOauthAccessToken(
+  token: string,
+  requiredScope?: string
+): VerifiedOauthIdentity | null {
   const payload = parseAccessToken(token);
   const issuer = oauthIssuer();
   const nowSeconds = Math.floor(Date.now() / 1000);
 
   if (!payload) {
-    return false;
+    return null;
   }
 
   if (payload.iss !== issuer || payload.aud !== issuer || normalizeResourceAlias(payload.resource) !== issuer) {
-    return false;
+    return null;
   }
 
   if (payload.exp <= nowSeconds || payload.iat > nowSeconds + 60) {
-    return false;
+    return null;
   }
 
-  const scopes = new Set(payload.scope.split(/\s+/).filter(Boolean));
-  return scopes.has(requiredScope);
+  const scopes = [...new Set(payload.scope.split(/\s+/).filter(Boolean))];
+  if (requiredScope !== undefined && !scopes.includes(requiredScope)) {
+    return null;
+  }
+
+  return {
+    subject: payload.sub,
+    clientId: payload.client_id,
+    scopes,
+    expiresAt: payload.exp
+  };
+}
+
+export function verifyOauthAccessToken(token: string, requiredScope = 'mcp:read'): boolean {
+  return inspectOauthAccessToken(token, requiredScope) !== null;
 }
 
 function sendOAuthError(res: Response, status: number, error: string, description: string): void {

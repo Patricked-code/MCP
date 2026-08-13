@@ -792,28 +792,28 @@ Outils additifs :
 
 Les mutations portent uniquement sur /app/data et restent disponibles indépendamment de ENABLE_WRITE_TOOLS. Les réponses utilisent content JSON et isError=true avec un code borné pour les erreurs nouvelles.
 
-- [ ] **Step 1: RED auth.**
+- [x] **Step 1: RED auth.**
 
 Tester token partagé et OAuth valides/invalide; les décisions 200/401 existantes sont inchangées. Vérifier que la vue identité ne contient jamais le token.
 
-- [ ] **Step 2: RED outils.**
+- [x] **Step 2: RED outils.**
 
 Fake McpServer capture les handlers et extra.sessionId. Vérifier ouverture, resume, heartbeat, erreur structurée de revision et absence de MCP-Session-Id dans la réponse.
 
-- [ ] **Step 3: Exécuter RED.**
+- [x] **Step 3: Exécuter RED.**
 
 ~~~~bash
 node --import tsx --test tests/mcpAuthContext.test.ts tests/governedSessionTools.test.ts
 ~~~~
 
-- [ ] **Step 4: Implémenter sans toucher aux schémas historiques.**
-- [ ] **Step 5: Rejouer auth/OAuth et tool contracts.**
+- [x] **Step 4: Implémenter sans toucher aux schémas historiques.**
+- [x] **Step 5: Rejouer auth/OAuth et tool contracts.**
 
 ~~~~bash
 node --import tsx --test tests/mcpAuthContext.test.ts tests/governedSessionTools.test.ts tests/oauthLogRedaction.test.ts tests/toolClassification.test.ts tests/toolContractRegression.test.ts
 ~~~~
 
-- [ ] **Step 6: Commits.**
+- [x] **Step 6: Commits.**
 
 - RED: test(mcp-session): define authenticated lifecycle tools
 - GREEN: feat(mcp-session): expose governed lifecycle tools

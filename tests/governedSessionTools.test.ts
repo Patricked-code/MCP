@@ -4,7 +4,14 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 import type { GovernedLockService } from '../src/operationalMemory/lockService.js';
 import type { GovernedSessionService } from '../src/operationalMemory/sessionService.js';
-import { registerGovernedSessionTools } from '../src/tools/governedSessions.js';
+
+process.env.MCP_AUTH_TOKEN ??= 'mcp-unit-test-value-20260805-abcdef';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
+
+const { registerGovernedSessionTools } = await import('../src/tools/governedSessions.js');
 
 type Handler = (input: any, extra: any) => Promise<any>;
 
