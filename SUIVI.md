@@ -51,10 +51,23 @@ Date : 2026-08-13
 - Polling readiness : 20 tentatives maximales, requête bornée à 5 secondes, pause de 2 secondes, échec fermé.
 - TDD : RED `31657464793`, GREEN `31657546033`.
 
+## État de branche avant draft PR
+
+- Branche unique : `mcp/session-continuity-v1-20260813`, 27 commits petits et réversibles depuis la baseline immuable.
+- Head fonctionnel vérifié : `38e3ced7ff61119b1e8fd8d0228bf032972ecca9` ; CI GitHub `31675193991` réussie.
+- Correctif documentaire : un SHA déclaré ancien produit désormais `DOCUMENTATION_DRIFT`, sans changement des autres contrats Live State V1.
+- Operational Memory V1 : stores atomiques bornés, journal JSONL sanitizé, `governedSessionId` durable, reprise prouvée, checkpoints, heartbeats et locks gouvernés.
+- Surface MCP additive : onze outils de session, resource/instructions de contexte, deux outils de contexte et dashboard authentifié ; aucune architecture parallèle.
+- WRITE gate : `shadow` non bloquant uniquement ; `ENABLE_WRITE_TOOLS`, `allow_write`, résultats, erreurs, arité et schémas historiques conservés.
+- Maintenance : un timer `60 s` avec `unref`, expiration sessions/locks et journalisation de compteurs uniquement ; aucune collecte GitHub/SSH ni écriture Live State périodique.
+- Régression fraîche après `npm ci` : gouvernance `12/12`, suite read-only `161/161`, zéro fail/cancelled/skipped/todo ; typecheck, build, docs check, scan secrets et diff check réussis.
+- Invariants : `origin/main` reste `eb61b97e…`; Autodeploy V1, GitHub OIDC, `src/deploy` et `.mcp/autodeploy-policy.json` inchangés ; aucun fichier supprimé ; aucune écriture S1/runtime ; aucune 2FA.
+- Merge, autodeploy de cette branche et attestation post-merge : NON OBSERVÉS et non déclarés.
+
 ## Tâche active
 
 `TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — EN COURS`
 
 ## Prochaine action unique
 
-Exécuter le plan TDD versionné sur `mcp/session-continuity-v1-20260813` par commits RED/GREEN réversibles. Ne créer la draft PR qu'après régression complète ; ne modifier ni `main`, ni S1/runtime, ni Autodeploy V1/OIDC pendant l'implémentation de branche.
+Créer une unique draft PR de `mcp/session-continuity-v1-20260813` vers `main` après CI verte du commit de consolidation, puis effectuer la review complète sans fusion prématurée.

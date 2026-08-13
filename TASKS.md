@@ -40,9 +40,11 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] plan TDD détaillé versionné et CI verte (`31669569897`) ;
 - [x] RED du SHA documentaire ancien observé localement et en CI (`31669784015`) ;
 - [x] GREEN minimal du détecteur documentaire et régression Live State ;
-- [ ] cycles TDD Operational Memory / governed sessions / locks / contexte ;
-- [ ] WRITE gate `shadow` non bloquant, sans changement des handlers historiques ;
-- [ ] régression complète puis draft PR, review et CI exact-head.
+- [x] cycles TDD Operational Memory / governed sessions / locks / contexte ;
+- [x] WRITE gate `shadow` non bloquant, sans changement des handlers historiques ;
+- [x] régression fraîche complète sur le head fonctionnel `38e3ced7…` et CI `31675193991` verte ;
+- [ ] draft PR unique, review complète et CI du head exact ;
+- [ ] merge autorisé exact-head puis Autodeploy V1 existant et attestation post-merge.
 
 ## Interdictions
 

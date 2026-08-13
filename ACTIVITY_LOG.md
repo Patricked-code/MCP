@@ -110,3 +110,14 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - RED documentaire : commit `eedc0f88cb396f4149921e28731f4c1d48147339`, CI `31669784015` en échec attendu uniquement à l'étape read-only safety ; localement un seul test échoue avec `false !== true`.
 - Défaut runtime reproduit : Live State `stateVersion=9` déclare encore le SHA documentaire `9be5095…` et retourne `documentation=ALIGNED` malgré GitHub `eb61b97…`.
 - Aucun changement de `main`, aucune écriture S1, aucune modification runtime, Autodeploy/OIDC ou 2FA.
+
+## 2026-08-13T06:50:43Z — TASK-20260813-004 — Cycles TDD terminés et candidate prête pour draft PR
+
+- Branche : `mcp/session-continuity-v1-20260813`, 27 commits réversibles depuis `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2`.
+- Head fonctionnel : `38e3ced7ff61119b1e8fd8d0228bf032972ecca9` ; GitHub Actions `31675193991` terminé `success`.
+- Livraison de branche : correctif SHA documentaire, mémoire atomique, journal sanitizé, governed sessions durables, reprise, lifecycle/checkpoints, locks, identité OAuth sanitizée, outils MCP, contexte composé, resource/instructions, WRITE gate shadow, maintenance et dashboard.
+- Installation fraîche : `npm --cache=/tmp/mcp-task13-npm-cache ci`, 143 packages, code 0. Le premier essai sans cache explicite a échoué localement avant les tests sur l'accès interdit à `/root/.npm`; aucune source n'a été modifiée par cet incident.
+- Régression fraîche : `12/12` gouvernance et `161/161` read-only, zéro fail/cancelled/skipped/todo ; typecheck, build, docs check, secret scan et diff check réussis.
+- Invariants : `origin/main=eb61b97e…`; 18/18 fichiers de test historiques conservés, 30 au total ; aucun fichier supprimé ; Autodeploy/OIDC/deploy inchangés ; `ENABLE_WRITE_TOOLS` et `allow_write` conservés ; aucun transport brut persisté.
+- S1/runtime : aucune écriture ni modification. Merge, Autodeploy et attestation de cette branche : NON OBSERVÉS.
+- Prochaine action : commit de consolidation, CI du head exact, puis unique draft PR et review.

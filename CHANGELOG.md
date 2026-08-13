@@ -217,3 +217,15 @@ Mise à jour : 2026-07-09T20:08:09Z
 - GREEN minimal : `parseDocumentationObservation` compare les SHA déclarés aux SHA observés sans modifier types, enums, `stateVersion`, outils, fallback ou store Live State.
 - Fixture littéral des 92 noms/descriptions/schémas d'outils historiques pour interdire renommage, suppression ou changement incompatible.
 - Production non modifiée par ce commit de branche ; rollback fonctionnel limité au changement local de comparaison SHA.
+
+## 2026-08-13 — MCP Governed Session Continuity / Operational Memory V1 — candidate de review
+
+- Ajout de `governedSessionId` durable, distinct du `MCP-Session-Id` éphémère, avec reprise par principal OAuth stable ou secret de reprise haché.
+- Ajout de stores JSON atomiques stricts, permissions `0700/0600`, révisions optimistes, corruption fail-closed et journal JSONL rotatif à allowlist.
+- Ajout des heartbeats, acquittements `stateVersion`, checkpoints, pause/close, expiration et locks gouvernés bornés.
+- Ajout de onze outils MCP de session et de deux outils de contexte, plus instructions d'initialisation et resource `mcp://wealthtech/governed-context/current`.
+- Ajout d'un collecteur GitHub borné cache/single-flight et d'une composition déterministe Live State/session/locks/PR/checks/reviews.
+- Ajout d'un WRITE gate strictement `shadow` qui préserve le handler, le résultat ou l'erreur historique et ne modifie ni `ENABLE_WRITE_TOOLS` ni `allow_write`.
+- Ajout d'une maintenance 60 secondes sans collecte GitHub/SSH/Live State et d'une section dashboard authentifiée, échappée et cache/store-only.
+- Régression fraîche : 12 tests de gouvernance et 161 tests read-only réussis ; typecheck, build, docs, secrets et invariants réussis ; CI `31675193991` verte sur `38e3ced7…`.
+- Aucun merge, déploiement S1, changement runtime, Autodeploy/OIDC ou 2FA n'est inclus ou déclaré.

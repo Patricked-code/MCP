@@ -38,10 +38,12 @@ Travaux restant réellement à accomplir.
 - [x] Versionner le plan TDD détaillé avant tout code fonctionnel.
 - [x] Reproduire en RED le faux alignement du SHA documentaire ancien.
 - [x] Livrer le GREEN minimal sans changer les autres contrats Live State.
-- [ ] Implémenter les governed sessions durables distinctes de `MCP-Session-Id`.
-- [ ] Ajouter mémoire bornée, checkpoints, locks et contexte gouverné.
-- [ ] Observer les outils WRITE en `shadow` sans jamais les bloquer en V1.
-- [ ] Exécuter la régression complète avant la draft PR.
+- [x] Implémenter les governed sessions durables distinctes de `MCP-Session-Id`.
+- [x] Ajouter mémoire bornée, checkpoints, locks et contexte gouverné.
+- [x] Observer les outils WRITE en `shadow` sans jamais les bloquer en V1.
+- [x] Exécuter la régression complète avant la draft PR.
+- [ ] Créer la draft PR unique, traiter la review et verrouiller son head exact.
+- [ ] Après autorisation de merge, observer l’Autodeploy V1 existant et attester le runtime sans écriture directe S1.
 
 ## Maintenance séparée
 

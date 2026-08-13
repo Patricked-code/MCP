@@ -1154,11 +1154,11 @@ node --import tsx --test tests/governedDashboard.test.ts tests/governedSessionSe
 **Interfaces:**
 - Aucun nouveau comportement; phase de preuve et consolidation.
 
-- [ ] **Step 1: Vérifier le script de test.**
+- [x] **Step 1: Vérifier le script de test.**
 
 test:readonly-safety doit inclure tous les tests nouveaux sans retirer un test historique. Le workflow .github/workflows/mcp-ci.yml reste inchangé.
 
-- [ ] **Step 2: Lancer la régression locale fraîche.**
+- [x] **Step 2: Lancer la régression locale fraîche.**
 
 ~~~~bash
 npm ci
@@ -1173,7 +1173,7 @@ git diff --check
 
 Expected: zéro fail/cancelled/todo/skipped; build et typecheck exit 0.
 
-- [ ] **Step 3: Vérifier les invariants par diff.**
+- [x] **Step 3: Vérifier les invariants par diff.**
 
 - main n’a pas bougé pendant la branche;
 - aucun fichier src/deploy ou mcp-deploy.yml modifié;
@@ -1196,11 +1196,11 @@ rg -n "MCP-Session-Id|mcp-session-id|transportSessionId" src/operationalMemory
 
 La dernière commande peut trouver transportSessionId uniquement dans transportBindings et paramètres éphémères; aucun serializer/type persistant ne doit le contenir.
 
-- [ ] **Step 4: Mettre à jour les documents avec le head de branche et les preuves réelles.**
+- [x] **Step 4: Mettre à jour les documents avec le head de branche et les preuves réelles.**
 
 Ne pas déclarer merge, autodeploy ou attestation avant leur observation. TASK-20260813-004 reste EN COURS avec prochaine action draft PR/review/CI.
 
-- [ ] **Step 5: Commit de consolidation.**
+- [x] **Step 5: Commit de consolidation.**
 
 ~~~~bash
 git add package.json SUIVI.md TASKS.md TODO.md DECISIONS_LOG.md CHANGELOG.md ACTIVITY_LOG.md docs/governance/markdown-inventory.json

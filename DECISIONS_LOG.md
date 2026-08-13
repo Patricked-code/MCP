@@ -207,3 +207,13 @@ Contexte : la PR #43 a fusionné le SHA `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab
 Décision : clôturer `TASK-20260809-003` sur ces deux preuves automatiques exact-SHA et verrouiller `eb61b97e…` comme baseline immuable de `TASK-20260813-004`.
 
 Décision complémentaire : corriger en premier, par TDD additif, le détecteur documentaire qui autorise encore un SHA déclaré ancien avec `documentation=ALIGNED`. L'extension Governed Session conserve tous les contrats existants, sépare `governedSessionId` de `MCP-Session-Id` et démarre le nouveau WRITE gate en `shadow` non bloquant. Toute nécessité de remplacer une mécanique validée impose STOP. Aucune action 2FA n'est autorisée dans ce chantier.
+
+## 2026-08-13 — Governed Session Continuity V1 prête pour review sans nouvelle autorité
+
+Contexte : les cycles RED/GREEN de la branche unique sont terminés au head fonctionnel `38e3ced7ff61119b1e8fd8d0228bf032972ecca9`. La CI `31675193991` et la régression locale fraîche sont vertes ; `main` reste sur la baseline `eb61b97e…`.
+
+Décision : conserver Live State V1 comme source opérationnelle existante et lui composer, sans le remplacer, la session durable, les locks, le contexte GitHub borné et la vue dashboard. Le transport MCP reste une liaison éphémère ; seul `governedSessionId` est l'identité de continuité.
+
+Décision complémentaire : partager un journal opérationnel unique dans le processus, démarrer une seule maintenance à intervalle 60 secondes et limiter ses événements aux compteurs d'expiration. Le dashboard utilise `getCurrent` cache/store-only et ne force aucune collecte GitHub/SSH.
+
+Limites : le WRITE gate demeure `shadow` non bloquant ; aucune mutation existante n'est retirée ou durcie en V1. Aucun merge, déploiement ou état runtime de cette branche n'est déclaré avant preuve exacte ; aucune action 2FA n'est permise.
