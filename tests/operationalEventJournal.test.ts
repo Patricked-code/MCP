@@ -143,21 +143,49 @@ test('les valeurs autorisées masquent les credentials déclarés avant persista
   });
 
   try {
-    const event = await journal.append({
+    const githubPat = ['ghp', 'A'.repeat(36)].join('_');
+    const jwt = ['eyJhbGciOiJIUzI1NiJ9', 'c2Vuc2l0aXZlLXBheWxvYWQ', 'c2lnbmF0dXJl'].join('.');
+    const uriWithUserInfo = 'https://operator:raw-uri-password@example.test/path';
+    const privateKeyMarker = '-----BEGIN PRIVATE KEY----- raw-key-material -----END PRIVATE KEY-----';
+    const opened = await journal.append({
       type: 'session.opened',
       governedSessionId: SESSION_ID,
       metadata: {
         repository: 'Patricked-code/MCP',
-        taskScope: 'Bearer raw-credential-value',
-        agentIdentity: 'token=another-raw-credential',
+        taskScope: githubPat,
+        agentIdentity: uriWithUserInfo,
         status: 'OPEN'
+      }
+    });
+    const checkpoint = await journal.append({
+      type: 'checkpoint.created',
+      governedSessionId: SESSION_ID,
+      metadata: {
+        checkpointId: '22222222-2222-4222-8222-222222222222',
+        resultCode: jwt,
+        sessionRevision: 2,
+        eventCount: 0
+      }
+    });
+    const lock = await journal.append({
+      type: 'lock.acquired',
+      governedSessionId: SESSION_ID,
+      metadata: {
+        lockId: '33333333-3333-4333-8333-333333333333',
+        scope: privateKeyMarker,
+        expiresAt: '2026-08-13T06:05:00.000Z',
+        lockRevision: 1
       }
     });
     const raw = await readFile(file, 'utf8');
 
-    assert.equal(raw.includes('raw-credential-value'), false);
-    assert.equal(raw.includes('another-raw-credential'), false);
-    assert.equal(JSON.stringify(event.metadata).includes('[REDACTED]'), true);
+    for (const credential of [githubPat, jwt, uriWithUserInfo, privateKeyMarker]) {
+      assert.equal(raw.includes(credential), false);
+    }
+    assert.equal(opened.metadata.taskScope, '[REDACTED]');
+    assert.equal(opened.metadata.agentIdentity, '[REDACTED]');
+    assert.equal(checkpoint.metadata.resultCode, '[REDACTED]');
+    assert.equal(lock.metadata.scope, '[REDACTED]');
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
