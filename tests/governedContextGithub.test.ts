@@ -65,6 +65,16 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
       }
     });
     if (url.includes('/rulesets?')) return json([{
+      id: 42,
+      name: 'main-protection',
+      enforcement: 'active'
+    }, {
+      id: 43,
+      name: 'evaluate-only',
+      enforcement: 'evaluate'
+    }]);
+    if (url.endsWith('/rulesets/42')) return json({
+      id: 42,
       name: 'main-protection',
       enforcement: 'active',
       rules: [
@@ -77,7 +87,7 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
         },
         { type: 'required_conversation_resolution' }
       ]
-    }]);
+    });
     return json({ message: 'unexpected endpoint' }, 500);
   };
   const collector = createGithubOperationalContextCollector({
@@ -143,13 +153,15 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
   assert.match(calls.find((call) => call.url.includes('/check-runs?'))?.url ?? '', /per_page=100/);
   assert.match(calls.find((call) => call.url.includes('/reviews?'))?.url ?? '', /per_page=100/);
   assert.match(calls.find((call) => call.url.includes('/rulesets?'))?.url ?? '', /per_page=20/);
+  assert.equal(calls.filter((call) => /\/rulesets\/[0-9]+$/.test(call.url)).length, 1);
+  assert.equal(calls.some((call) => call.url.endsWith('/rulesets/43')), false);
 
   const [forced, forcedJoined] = await Promise.all([
     collector.reconcileExplicit(BRANCH),
     collector.reconcileExplicit(BRANCH)
   ]);
   assert.deepEqual(forcedJoined, forced);
-  assert.equal(calls.length, 12);
+  assert.equal(calls.length, 14);
 });
 
 test('getCurrent sur cache miss ne déclenche aucun accès GitHub', async () => {
