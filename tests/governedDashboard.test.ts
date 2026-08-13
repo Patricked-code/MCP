@@ -258,6 +258,7 @@ test('la maintenance ignore un tick concurrent puis reprend au tick suivant', as
   assert.equal(expirationCalls, 1);
   releaseFirst();
   await firstCycle;
+  await new Promise<void>((resolve) => setImmediate(resolve));
   callback?.();
   await new Promise<void>((resolve) => setImmediate(resolve));
   assert.equal(expirationCalls, 2);

@@ -169,7 +169,7 @@ function nav(): string {
 }
 
 async function renderDashboardPage(): Promise<string> {
-  const [status, registry, governedContext] = await Promise.all([
+  const [status, registry, governedContext, activeSessionCount] = await Promise.all([
     getGithubConnectionStatus(),
     readGitRegistry(),
     loadGovernedDashboardContext(operationalMemoryConfig.enabled, () => (
@@ -185,6 +185,9 @@ async function renderDashboardPage(): Promise<string> {
           }
         }
       })
+    )),
+    loadGovernedDashboardContext(operationalMemoryConfig.enabled, () => (
+      getGovernedSessionToolDependencies().sessions.countActiveSessions()
     ))
   ]);
   const connected = status.connected ? 'connecté' : 'non connecté';
@@ -219,7 +222,7 @@ async function renderDashboardPage(): Promise<string> {
   <p><a href="/git/status">Voir JSON</a></p>
 
   ${governedContext
-    ? renderGovernedContextDashboardSection(governedContext)
+    ? renderGovernedContextDashboardSection(governedContext, activeSessionCount ?? 0)
     : renderGovernedContextDashboardDisabledSection()}
 </body>
 </html>`;

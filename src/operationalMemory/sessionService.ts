@@ -67,6 +67,7 @@ export type GovernedSessionService = {
     governedSessionId: string,
     request: SessionRequest
   ): Promise<GovernedSessionPublicRecord | null>;
+  countActiveSessions(): Promise<number>;
   expireIdleSessions(): Promise<number>;
   lookupGovernedSessionId(transportSessionId: string | undefined): string | null;
   unbindTransport(transportSessionId: string): string | null;
@@ -445,6 +446,12 @@ export function createGovernedSessionService(
         (candidate) => candidate.governedSessionId === governedSessionId
       );
       return session && canAccess(session, request) ? publicSession(session) : null;
+    },
+
+    async countActiveSessions() {
+      return (await options.store.read()).sessions.filter((session) => (
+        ['OPEN', 'ACTIVE', 'PAUSED'].includes(session.status)
+      )).length;
     },
 
     async expireIdleSessions() {

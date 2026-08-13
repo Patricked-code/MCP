@@ -29,7 +29,10 @@ export function startOperationalMemoryMaintenance<Timer extends TimerHandle = No
   const clearTimer = options.clearInterval ?? ((timer) => {
     globalThis.clearInterval(timer as unknown as NodeJS.Timeout);
   });
+  let cycleRunning = false;
   const timer = setTimer(() => {
+    if (cycleRunning) return;
+    cycleRunning = true;
     void (async () => {
       const [expiredSessionCount, expiredLockCount] = await Promise.all([
         options.expireSessions(),
@@ -37,7 +40,9 @@ export function startOperationalMemoryMaintenance<Timer extends TimerHandle = No
       ]);
       await options.reconcileSessionLockIds?.();
       await options.onCycle?.({ expiredSessionCount, expiredLockCount });
-    })().catch((error) => options.onError?.(error));
+    })().catch((error) => options.onError?.(error)).finally(() => {
+      cycleRunning = false;
+    });
   }, options.intervalMs ?? 60_000);
   timer.unref?.();
   let stopped = false;

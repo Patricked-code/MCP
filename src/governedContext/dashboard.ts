@@ -13,12 +13,6 @@ function display(value: unknown, fallback = 'non disponible'): string {
   return escapeHtml(value ?? fallback);
 }
 
-function activeCompatibleSessionCount(context: GovernedOperationalContext): number {
-  return context.session && ['OPEN', 'ACTIVE', 'PAUSED'].includes(context.session.status)
-    ? 1
-    : 0;
-}
-
 export async function loadGovernedDashboardContext<T>(
   enabled: boolean,
   load: () => Promise<T>
@@ -34,7 +28,10 @@ export function renderGovernedContextDashboardDisabledSection(): string {
 }
 
 export function renderGovernedContextDashboardSection(
-  context: GovernedOperationalContext
+  context: GovernedOperationalContext,
+  activeSessionCount = context.session && ['OPEN', 'ACTIVE', 'PAUSED'].includes(context.session.status)
+    ? 1
+    : 0
 ): string {
   const liveState = context.liveState;
   const task = context.session?.taskScope
@@ -59,7 +56,7 @@ export function renderGovernedContextDashboardSection(
   <p>Alignement global : <strong>${display(liveState?.alignment.global)}</strong></p>
   <p>Task : <strong>${display(task)}</strong></p>
   <p>Next action : <strong>${display(context.nextAction)}</strong></p>
-  <p>Sessions actives compatibles : <strong>${activeCompatibleSessionCount(context)}</strong></p>
+  <p>Sessions actives compatibles : <strong>${activeSessionCount}</strong></p>
   <p>WRITE gate : <strong>${display(context.gate.mode)}</strong> — décision ${display(context.gate.decision)}</p>
 
   <h3>Locks actifs (${context.activeLocks.length})</h3>
