@@ -6,6 +6,11 @@ import { liveStateEngine } from '../liveState/engine.js';
 import { createAtomicJsonStore } from '../operationalMemory/atomicStore.js';
 import { operationalMemoryConfig } from '../operationalMemory/config.js';
 import {
+  createOperationalAudit,
+  type OperationalAudit
+} from '../operationalMemory/operationalAudit.js';
+import { getDefaultOperationalEventJournal } from '../operationalMemory/eventJournal.js';
+import {
   createGovernedLockService,
   type GovernedLockService
 } from '../operationalMemory/lockService.js';
@@ -26,6 +31,7 @@ import {
 export type GovernedSessionToolDependencies = {
   sessions: GovernedSessionService;
   locks: GovernedLockService;
+  audit?: OperationalAudit;
 };
 
 export type GovernedSessionToolExtra = {
@@ -45,6 +51,12 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
   if (sharedDependencies) return sharedDependencies;
 
   const bindings = createTransportBindings();
+  const journal = getDefaultOperationalEventJournal({
+    filePath: operationalMemoryConfig.eventJournalPath,
+    maxBytes: operationalMemoryConfig.eventMaxBytes,
+    archives: operationalMemoryConfig.eventArchives
+  });
+  const audit = createOperationalAudit(journal);
   const sessionStore = createAtomicJsonStore({
     filePath: operationalMemoryConfig.sessionStorePath,
     schema: SessionStoreDocumentSchema,
@@ -64,6 +76,7 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
     getLiveState: async () => ({
       stateVersion: (await liveStateEngine.getCurrent())?.stateVersion ?? 0
     }),
+    audit,
     renewLocksForHeartbeat: (governedSessionId, at) => (
       locks.renewLocksForHeartbeat(governedSessionId, at)
     )
@@ -75,7 +88,7 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
     defaultTtlSeconds: operationalMemoryConfig.lockDefaultTtlSeconds,
     maxTtlSeconds: operationalMemoryConfig.lockMaxTtlSeconds
   });
-  sharedDependencies = { sessions, locks };
+  sharedDependencies = { sessions, locks, audit };
   return sharedDependencies;
 }
 

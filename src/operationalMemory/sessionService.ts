@@ -1,6 +1,10 @@
 import { randomUUID } from 'node:crypto';
 
 import type { AtomicJsonStore } from './atomicStore.js';
+import {
+  NOOP_OPERATIONAL_AUDIT,
+  type OperationalAudit
+} from './operationalAudit.js';
 import { createResumeSecret, hashResumeSecret, verifyResumeSecret } from './resumeProof.js';
 import type { TransportBindings } from './transportBindings.js';
 import type {
@@ -94,6 +98,7 @@ type GovernedSessionServiceOptions = {
     governedSessionId: string,
     at: Date
   ) => Promise<unknown>;
+  audit?: OperationalAudit;
 };
 
 function publicSession(session: GovernedSessionRecord): GovernedSessionPublicRecord {
@@ -110,6 +115,7 @@ export function createGovernedSessionService(
 ): GovernedSessionService {
   const now = options.now ?? (() => new Date());
   const getLiveState = options.getLiveState ?? (async () => ({ stateVersion: 0 }));
+  const audit = options.audit ?? NOOP_OPERATIONAL_AUDIT;
 
   function assertTransportAvailable(
     transportSessionId: string,
@@ -214,6 +220,12 @@ export function createGovernedSessionService(
         options.bindings.unbind(request.transportSessionId);
         throw error;
       }
+      await audit.record({ type: 'session.opened', session: publicSession(record) });
+      await audit.record({
+        type: 'transport.bound',
+        session: publicSession(record),
+        bindingResult: 'opened'
+      });
       return { session: publicSession(record), resumeSecret };
     },
 
@@ -222,6 +234,7 @@ export function createGovernedSessionService(
       const resumedAt = now();
       let resumed: GovernedSessionRecord | null = null;
       let boundDuringOperation = false;
+      let previousTransportFingerprint: string | null = null;
 
       await options.store.update(async (document) => {
         const index = document.sessions.findIndex(
@@ -230,6 +243,7 @@ export function createGovernedSessionService(
         if (index < 0) fail('SESSION_NOT_FOUND');
         const current = document.sessions[index];
         if (!current) fail('SESSION_NOT_FOUND');
+        previousTransportFingerprint = current.currentTransport?.fingerprint ?? null;
         if (current.status === 'CLOSED') fail('SESSION_CLOSED');
         if (current.status === 'EXPIRED') {
           const expiredAt = current.expiredAt ? Date.parse(current.expiredAt) : Number.NaN;
@@ -293,7 +307,19 @@ export function createGovernedSessionService(
         input.governedSessionId,
         resumedAt
       );
-      return publicSession(resumed);
+      const visible = publicSession(resumed);
+      if (previousTransportFingerprint) {
+        await audit.record({
+          type: 'transport.unbound',
+          governedSessionId: visible.governedSessionId,
+          fingerprint: previousTransportFingerprint,
+          sessionRevision: visible.sessionRevision,
+          reasonCode: 'transport_replaced'
+        });
+      }
+      await audit.record({ type: 'session.resumed', session: visible });
+      await audit.record({ type: 'transport.bound', session: visible, bindingResult: 'resumed' });
+      return visible;
     },
 
     async heartbeat(input, request) {
@@ -308,6 +334,7 @@ export function createGovernedSessionService(
         sessionRevision: session.sessionRevision + 1
       }));
       await options.renewLocksForHeartbeat?.(input.governedSessionId, heartbeatAt);
+      await audit.record({ type: 'session.heartbeat', session: updated });
       return updated;
     },
 
@@ -316,11 +343,17 @@ export function createGovernedSessionService(
       if (liveState.stateVersion !== input.expectedStateVersion) {
         fail('LIVE_STATE_VERSION_MISMATCH');
       }
-      return mutateSession(input, request, (session) => ({
+      const acknowledged = await mutateSession(input, request, (session) => ({
         ...session,
         lastAcknowledgedStateVersion: input.expectedStateVersion,
         sessionRevision: session.sessionRevision + 1
       }));
+      await audit.record({
+        type: 'context.acknowledged',
+        session: acknowledged,
+        stateVersion: input.expectedStateVersion
+      });
+      return acknowledged;
     },
 
     async createCheckpoint(input, request) {
@@ -358,16 +391,19 @@ export function createGovernedSessionService(
         };
       });
       if (!checkpoint) fail('CHECKPOINT_CREATE_FAILED');
+      await audit.record({ type: 'checkpoint.created', checkpoint });
       return checkpoint;
     },
 
     async pauseSession(input, request) {
-      return mutateSession(input, request, (session, at) => ({
+      const paused = await mutateSession(input, request, (session, at) => ({
         ...session,
         status: 'PAUSED',
         pausedAt: at.toISOString(),
         sessionRevision: session.sessionRevision + 1
       }));
+      await audit.record({ type: 'session.paused', session: paused, reasonCode: 'paused_by_owner' });
+      return paused;
     },
 
     async closeSession(input, request) {
@@ -377,6 +413,7 @@ export function createGovernedSessionService(
       if (!existing) fail('SESSION_NOT_FOUND');
       if (!canAccess(existing, request)) fail('SESSION_NOT_BOUND');
       if (existing.status === 'CLOSED') return publicSession(existing);
+      const previousTransportFingerprint = existing.currentTransport?.fingerprint ?? null;
       const closed = await mutateSession(input, request, (session, at) => ({
         ...session,
         status: 'CLOSED',
@@ -385,6 +422,16 @@ export function createGovernedSessionService(
         sessionRevision: session.sessionRevision + 1
       }));
       options.bindings.unbindGovernedSession(input.governedSessionId);
+      await audit.record({ type: 'session.closed', session: closed, reasonCode: 'closed_by_owner' });
+      if (previousTransportFingerprint) {
+        await audit.record({
+          type: 'transport.unbound',
+          governedSessionId: closed.governedSessionId,
+          fingerprint: previousTransportFingerprint,
+          sessionRevision: closed.sessionRevision,
+          reasonCode: 'session_closed'
+        });
+      }
       return closed;
     },
 
@@ -402,29 +449,50 @@ export function createGovernedSessionService(
 
     async expireIdleSessions() {
       const at = now();
-      const expiredIds: string[] = [];
+      const expired: Array<{
+        session: GovernedSessionPublicRecord;
+        previousTransportFingerprint: string | null;
+      }> = [];
       await options.store.update((document) => {
         const sessions = document.sessions.map((session) => {
           if (
             !['OPEN', 'ACTIVE', 'PAUSED'].includes(session.status)
             || at.getTime() - Date.parse(session.lastHeartbeatAt) <= options.idleTtlSeconds * 1_000
           ) return session;
-          expiredIds.push(session.governedSessionId);
-          return {
+          const next = {
             ...session,
             status: 'EXPIRED' as const,
             expiredAt: at.toISOString(),
             currentTransport: null,
             sessionRevision: session.sessionRevision + 1
           };
+          expired.push({
+            session: publicSession(next),
+            previousTransportFingerprint: session.currentTransport?.fingerprint ?? null
+          });
+          return next;
         });
-        if (expiredIds.length === 0) return document;
+        if (expired.length === 0) return document;
         return { ...document, storeRevision: document.storeRevision + 1, sessions };
       });
-      for (const governedSessionId of expiredIds) {
-        options.bindings.unbindGovernedSession(governedSessionId);
+      for (const entry of expired) {
+        options.bindings.unbindGovernedSession(entry.session.governedSessionId);
+        await audit.record({
+          type: 'session.expired',
+          session: entry.session,
+          reasonCode: 'idle_ttl'
+        });
+        if (entry.previousTransportFingerprint) {
+          await audit.record({
+            type: 'transport.unbound',
+            governedSessionId: entry.session.governedSessionId,
+            fingerprint: entry.previousTransportFingerprint,
+            sessionRevision: entry.session.sessionRevision,
+            reasonCode: 'session_expired'
+          });
+        }
       }
-      return expiredIds.length;
+      return expired.length;
     },
 
     lookupGovernedSessionId(transportSessionId) {
@@ -432,7 +500,23 @@ export function createGovernedSessionService(
     },
 
     unbindTransport(transportSessionId) {
-      return options.bindings.unbind(transportSessionId);
+      const governedSessionId = options.bindings.unbind(transportSessionId);
+      if (governedSessionId) {
+        void options.store.read().then((document) => {
+          const session = document.sessions.find(
+            (candidate) => candidate.governedSessionId === governedSessionId
+          );
+          if (!session?.currentTransport) return;
+          return audit.record({
+            type: 'transport.unbound',
+            governedSessionId,
+            fingerprint: session.currentTransport.fingerprint,
+            sessionRevision: session.sessionRevision,
+            reasonCode: 'transport_closed'
+          });
+        }).catch(() => undefined);
+      }
+      return governedSessionId;
     }
   };
 }
