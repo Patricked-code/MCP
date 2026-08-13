@@ -256,4 +256,3 @@ test('l’artefact de gouvernance reproduit exactement les documents actifs suiv
     assert.equal(candidate, source.endsWith('\n') ? source : `${source}\n`, path);
   }
 });
-
