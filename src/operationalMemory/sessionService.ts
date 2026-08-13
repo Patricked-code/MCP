@@ -234,7 +234,6 @@ export function createGovernedSessionService(
       assertTransportAvailable(request.transportSessionId, input.governedSessionId);
       const resumedAt = now();
       let resumed: GovernedSessionRecord | null = null;
-      let boundDuringOperation = false;
       let previousTransportFingerprint: string | null = null;
 
       await options.store.update(async (document) => {
@@ -270,12 +269,10 @@ export function createGovernedSessionService(
           fail('SESSION_RESUME_PROOF_REQUIRED');
         }
 
-        const currentTransport = options.bindings.bind(
+        const currentTransport = options.bindings.metadata(
           request.transportSessionId,
-          current.governedSessionId,
           resumedAt
         );
-        boundDuringOperation = true;
         resumed = {
           ...current,
           status: 'ACTIVE',
@@ -294,11 +291,6 @@ export function createGovernedSessionService(
           storeRevision: document.storeRevision + 1,
           sessions
         };
-      }).catch((error) => {
-        if (boundDuringOperation) {
-          options.bindings.unbind(request.transportSessionId);
-        }
-        throw error;
       });
 
       if (!resumed) fail('SESSION_RESUME_FAILED');

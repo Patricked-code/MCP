@@ -3,6 +3,10 @@ import { createHash } from 'node:crypto';
 import type { SanitizedTransportMetadata } from './types.js';
 
 export type TransportBindings = {
+  metadata(
+    transportSessionId: string,
+    now: Date
+  ): SanitizedTransportMetadata;
   bind(
     transportSessionId: string,
     governedSessionId: string,
@@ -23,16 +27,24 @@ function fingerprintTransport(transportSessionId: string): string {
 export function createTransportBindings(): TransportBindings {
   const bindings = new Map<string, string>();
 
+  function metadata(
+    transportSessionId: string,
+    now: Date
+  ): SanitizedTransportMetadata {
+    if (!transportSessionId) throw new Error('TRANSPORT_SESSION_ID_REQUIRED');
+    const at = now.toISOString();
+    return {
+      fingerprint: fingerprintTransport(transportSessionId),
+      boundAt: at,
+      lastSeenAt: at
+    };
+  }
+
   return {
+    metadata,
     bind(transportSessionId, governedSessionId, now) {
-      if (!transportSessionId) throw new Error('TRANSPORT_SESSION_ID_REQUIRED');
       bindings.set(transportSessionId, governedSessionId);
-      const at = now.toISOString();
-      return {
-        fingerprint: fingerprintTransport(transportSessionId),
-        boundAt: at,
-        lastSeenAt: at
-      };
+      return metadata(transportSessionId, now);
     },
     lookup(transportSessionId) {
       if (!transportSessionId) return null;
