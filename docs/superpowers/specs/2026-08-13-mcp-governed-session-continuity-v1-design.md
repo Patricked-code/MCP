@@ -4,7 +4,7 @@
 - Dépôt : `Patricked-code/MCP`
 - Branche de travail unique : `mcp/session-continuity-v1-20260813`
 - Baseline GitHub/S1/runtime verrouillée : `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2`
-- Statut : architecture approuvée ; spécification soumise à revue avant plan d’implémentation
+- Statut : architecture et spécification approuvées par GO humain explicite le 2026-08-13 ; plan d’implémentation TDD autorisé, aucun code fonctionnel encore engagé
 - Mode de livraison : additif, backward-compatible, sans architecture parallèle
 - Hors périmètre explicite : activation ou modification de la 2FA GitHub
 
