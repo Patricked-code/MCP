@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 import * as docGovernance from '../scripts/doc-governance-lib.mjs';
@@ -234,3 +236,24 @@ test('PRODUCTION_STATE refuse un snapshot antérieur au jalon autodeploy fusionn
     }
   ]);
 });
+
+test('l’artefact de gouvernance reproduit exactement les documents actifs suivis', async () => {
+  execFileSync(process.execPath, ['scripts/generate-autodeploy-governance-candidates.mjs'], {
+    encoding: 'utf8'
+  });
+
+  for (const path of [
+    'ACTIVITY_LOG.md',
+    'CHANGELOG.md',
+    'DECISIONS_LOG.md',
+    'PRODUCTION_STATE.json',
+    'SUIVI.md',
+    'TASKS.md',
+    'TODO.md'
+  ]) {
+    const source = await readFile(path, 'utf8');
+    const candidate = await readFile(`/tmp/mcp-autodeploy-governance/${path}`, 'utf8');
+    assert.equal(candidate, source.endsWith('\n') ? source : `${source}\n`, path);
+  }
+});
+
