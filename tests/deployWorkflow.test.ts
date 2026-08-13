@@ -13,8 +13,8 @@ async function policy(): Promise<{ schemaVersion?: unknown; pushEnabled?: unknow
   return JSON.parse(await readFile(POLICY, 'utf8')) as { schemaVersion?: unknown; pushEnabled?: unknown };
 }
 
-test('la politique bootstrap est versionnée et désactive le push automatique initial', async () => {
-  assert.deepEqual(await policy(), { schemaVersion: 1, pushEnabled: false });
+test('la politique post-bootstrap est versionnée et active le push gouverné', async () => {
+  assert.deepEqual(await policy(), { schemaVersion: 1, pushEnabled: true });
 });
 
 test('le workflow possède uniquement les permissions minimales OIDC + lecture', async () => {
