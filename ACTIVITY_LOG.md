@@ -88,4 +88,3 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Artefact documentaire : test RED `263fdcc72c6ac2932eca9a416089c75410617765`, run `31657669105` en échec attendu ; générateur corrigé, run `31657781749` réussi après correction du diff-check.
 - Politique : activation `pushEnabled=true` candidate ; aucune preuve de push automatique n’est encore déclarée.
 - Aucune écriture directe sur S1, aucun push S1, aucun secret et aucune suppression.
-

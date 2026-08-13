@@ -198,4 +198,3 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Correction P2 : polling readiness borné pour `restart_mcp_bridge_s1`, avec RED `31657464793` et GREEN `31657546033`.
 - Artefact CI : suppression des sept candidats historiques codés en dur ; parité exacte source/artefact testée, RED `31657669105`, GREEN `31657781749`.
 - PR #42 prépare `pushEnabled=true` ; la preuve automatique par push reste en attente de fusion et d’attestation.
-

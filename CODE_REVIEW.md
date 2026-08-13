@@ -42,4 +42,3 @@ Toute intervention humaine, IA ou automatisée doit respecter :
 - Test : RED `31657464793`, GREEN `31657546033`.
 - Dette documentaire associée : le générateur d’artefact codait sept anciens snapshots ; il copie désormais les sources actives et la parité est testée.
 - Risque restant : aucun merge avant CI finale et head exact ; aucune clôture du thread avant présence de la correction sur `main`.
-
