@@ -115,7 +115,7 @@
 - Le fixture contient uniquement la surface existant à e80e420859653224dd4c03964cd87e2ae4ffb618.
 - Ne produit aucun code runtime.
 
-- [ ] **Step 1: Capturer la baseline des outils existants avant toute extension.**
+- [x] **Step 1: Capturer la baseline des outils existants avant toute extension.**
 
 Le helper enveloppe chaque raw Zod shape dans z.object(shape), appelle z.toJSONSchema et conserve description + inputSchema. Les overloads sans schema produisent un objet JSON Schema vide. Les fonctions handler ne sont jamais invoquées pendant la capture.
 
@@ -132,7 +132,7 @@ export function captureToolContracts(
 
 Le test appelle séparément registerReadOnlyTools et registerScopedWriteTools, fusionne les résultats et vérifie chaque contrat littéral du fixture. Les futurs outils sont permis, mais chaque nom historique doit rester présent et strictement égal.
 
-- [ ] **Step 2: Vérifier que le test de caractérisation est GREEN sur la baseline.**
+- [x] **Step 2: Vérifier que le test de caractérisation est GREEN sur la baseline.**
 
 Run:
 
@@ -142,7 +142,7 @@ node --import tsx --test tests/toolContractRegression.test.ts
 
 Expected: PASS; le nombre capturé correspond exactement au fixture généré sur e80e420.
 
-- [ ] **Step 3: Remplacer le test qui autorise à tort le SHA historique par le test RED demandé.**
+- [x] **Step 3: Remplacer le test qui autorise à tort le SHA historique par le test RED demandé.**
 
 ~~~~typescript
 test('un SHA GitHub documentaire explicite ancien force le drift', () => {
@@ -163,7 +163,7 @@ test('un SHA GitHub documentaire explicite ancien force le drift', () => {
 
 Ajouter dans liveStateReconcile.test.ts un test où documentation.drift=true et declaredGithubSha diffère du head GitHub; attendre DOCUMENTATION_DRIFT, RECONCILIATION_REQUIRED, contradiction DOCUMENTATION_DRIFT et nextAction reconcile_canonical_documentation.
 
-- [ ] **Step 4: Exécuter RED et vérifier la cause exacte.**
+- [x] **Step 4: Exécuter RED et vérifier la cause exacte.**
 
 Run:
 
@@ -173,7 +173,7 @@ node --import tsx --test tests/liveStateCollectors.test.ts tests/liveStateReconc
 
 Expected: un seul échec nouveau, actual false, expected true, dans le test du SHA documentaire ancien. Les tests de réconciliation existants restent verts.
 
-- [ ] **Step 5: Commit RED.**
+- [x] **Step 5: Commit RED.**
 
 ~~~~bash
 git add tests/helpers/captureToolContracts.ts tests/fixtures/existing-tool-contracts-v1.json tests/toolContractRegression.test.ts tests/liveStateCollectors.test.ts tests/liveStateReconcile.test.ts package.json
@@ -198,7 +198,7 @@ Pousser le commit via le connecteur GitHub et conserver le run CI rouge comme pr
 - parseDocumentationObservation(output, observedGithubSha, observedS1Sha) conserve exactement son type de retour.
 - Aucun champ LiveStateSnapshot, nom d’alignement, stateVersion ou outil ne change.
 
-- [ ] **Step 1: Implémenter le calcul minimal du drift.**
+- [x] **Step 1: Implémenter le calcul minimal du drift.**
 
 ~~~~typescript
 const explicitGithubMismatch = Boolean(
@@ -218,7 +218,7 @@ const drift = values.documentation_requires_revalidation === 'true'
 
 Renommer les paramètres _observedGithubSha et _observedS1Sha sans changer la signature. Ne considérer ni null ni chaîne invalide comme égalité implicite.
 
-- [ ] **Step 2: Vérifier GREEN ciblé.**
+- [x] **Step 2: Vérifier GREEN ciblé.**
 
 ~~~~bash
 node --import tsx --test tests/liveStateCollectors.test.ts tests/liveStateReconcile.test.ts
@@ -226,7 +226,7 @@ node --import tsx --test tests/liveStateCollectors.test.ts tests/liveStateReconc
 
 Expected: tous les tests ciblés passent; la valeur publique non alignée reste DOCUMENTATION_DRIFT.
 
-- [ ] **Step 3: Rejouer tous les tests Live State.**
+- [x] **Step 3: Rejouer tous les tests Live State.**
 
 ~~~~bash
 node --import tsx --test tests/liveStateCollectors.test.ts tests/liveStateReconcile.test.ts tests/liveStateStore.test.ts tests/liveStateEngine.test.ts tests/liveStateTools.test.ts
@@ -234,7 +234,7 @@ node --import tsx --test tests/liveStateCollectors.test.ts tests/liveStateReconc
 
 Expected: PASS, zéro changement de stateVersion lorsque seules les dates changent.
 
-- [ ] **Step 4: Réconcilier les documents avec les preuves effectivement observées au 2026-08-13.**
+- [x] **Step 4: Réconcilier les documents avec les preuves effectivement observées au 2026-08-13.**
 
 Écrire les faits suivants, sans déclarer le head futur de la branche comme état de production :
 
@@ -250,11 +250,11 @@ Expected: PASS, zéro changement de stateVersion lorsque seules les dates change
 
 PRODUCTION_STATE.json doit être actualisé uniquement avec les identifiants de runs déjà vérifiés dans la preuve de PR #43; si un identifiant exact n’est pas disponible dans les documents ou GitHub, conserver un champ null/absent plutôt que l’inventer.
 
-- [ ] **Step 5: Ajouter l’événement ACTIVITY_LOG en fin de fichier.**
+- [x] **Step 5: Ajouter l’événement ACTIVITY_LOG en fin de fichier.**
 
 L’entrée indique le GO humain, la branche, le head du plan, la baseline runtime, le défaut documentaire reproduit et l’absence de mutation S1/runtime.
 
-- [ ] **Step 6: Vérifier la gouvernance documentaire.**
+- [x] **Step 6: Vérifier la gouvernance documentaire.**
 
 ~~~~bash
 npm run docs:check
@@ -262,7 +262,7 @@ node --import tsx --test tests/docGovernance.test.ts
 git diff --check
 ~~~~
 
-- [ ] **Step 7: Commit GREEN.**
+- [x] **Step 7: Commit GREEN.**
 
 ~~~~bash
 git add src/liveState/collect.ts tests/liveStateCollectors.test.ts tests/liveStateReconcile.test.ts SUIVI.md TASKS.md TODO.md DECISIONS_LOG.md CHANGELOG.md PRODUCTION_STATE.json ACTIVITY_LOG.md

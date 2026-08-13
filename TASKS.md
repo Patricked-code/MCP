@@ -19,7 +19,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ## Jalons terminés
 
-- PR #34 à #42 fusionnées selon la gouvernance.
+- PR #34 à #43 fusionnées selon la gouvernance.
 - Live State V1 déployé et attesté.
 - Bootstrap manuel exact-SHA réussi : run `31655087215`.
 - Politique `pushEnabled=true` fusionnée avec la PR #42.
@@ -28,21 +28,21 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - Inventaire courant : 189 Git + 26 runtime-only = 215 ; historique 209 conservé séparément.
 - P2 readiness polling corrigé en TDD et thread PR #41 résolu.
 - Artefact CI des sept documents actifs strictement identique aux sources suivies.
+- Seconde preuve automatique canonique réussie : PR #43 fusionnée à `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2`, CI `31659053828`, deploy `31659053836`, job `94319801309`.
+- `TASK-20260809-003` terminée : les deux preuves automatiques exact-SHA sont attestées.
 
 ## Tâche active unique
 
-### TASK-20260809-003 — MCP Governed Autodeploy V1 — EN COURS
+### TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — EN COURS
 
-- [x] bootstrap S1 exact-SHA ;
-- [x] workflow manuel `workflow_dispatch` réussi ;
-- [x] attestation post-workflow fraîche et alignée ;
-- [x] correction P2 avec polling borné fail-closed ;
-- [x] consolidation documentaire post-bootstrap ;
-- [x] activation `pushEnabled=true` fusionnée ;
-- [x] premier déploiement automatique par push non skipped et attesté ;
-- [ ] seconde PR documentaire utile enregistrant cette première preuve ;
-- [ ] seconde fusion automatique canonique et attestation finale ;
-- [ ] verdict final des six objectifs et gestion conditionnelle des automatisations.
+- [x] baseline `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2` verrouillée et attestée ;
+- [x] spécification approuvée par GO humain le 2026-08-13 ;
+- [x] plan TDD détaillé versionné et CI verte (`31669569897`) ;
+- [x] RED du SHA documentaire ancien observé localement et en CI (`31669784015`) ;
+- [x] GREEN minimal du détecteur documentaire et régression Live State ;
+- [ ] cycles TDD Operational Memory / governed sessions / locks / contexte ;
+- [ ] WRITE gate `shadow` non bloquant, sans changement des handlers historiques ;
+- [ ] régression complète puis draft PR, review et CI exact-head.
 
 ## Interdictions
 
@@ -51,3 +51,4 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - aucun patch direct du code versionné sur S1 ;
 - aucun reset/clean/rebase/force pour aligner la production ;
 - aucune déclaration d’automatisation complète avant les deux preuves par push.
+- aucune activation ni opération GitHub 2FA dans ce chantier.

@@ -101,3 +101,12 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Live State `2026-08-13T01:42:36.744Z` : CURRENT, FULLY_ALIGNED, contradictions vides, `nextAction=null`.
 - Thread P2 PR #41 répondu puis résolu après fusion et attestation.
 - Prochaine action : seconde PR documentaire gouvernée, puis second déploiement automatique canonique.
+
+## 2026-08-13T05:19:31.979Z — TASK-20260813-004 — GO, plan TDD et défaut documentaire reproduit
+
+- GO humain : spécification Governed Session Continuity / Operational Memory V1 approuvée le 2026-08-13.
+- Branche unique : `mcp/session-continuity-v1-20260813` ; plan versionné au head corrigé `7e45ba2f3dd0df9500bc693f3190be4e6ed44933`, CI `31669569897` réussie.
+- Baseline immuable : GitHub/S1/origin/OCI/runtime `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2` ; S1 propre/read-only ; runtime running/healthy.
+- RED documentaire : commit `eedc0f88cb396f4149921e28731f4c1d48147339`, CI `31669784015` en échec attendu uniquement à l'étape read-only safety ; localement un seul test échoue avec `false !== true`.
+- Défaut runtime reproduit : Live State `stateVersion=9` déclare encore le SHA documentaire `9be5095…` et retourne `documentation=ALIGNED` malgré GitHub `eb61b97…`.
+- Aucun changement de `main`, aucune écriture S1, aucune modification runtime, Autodeploy/OIDC ou 2FA.

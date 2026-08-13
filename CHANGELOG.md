@@ -208,3 +208,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - S1 est resté sur `main`, propre, avec fetch read-only et push désactivé ; OCI/runtime sont alignés sur le merge.
 - Le thread P2 de la PR #41 a été résolu après présence de la correction sur `main` et preuve du déploiement.
 - Preuve restante avant clôture : fusion et attestation automatique de la seconde PR documentaire gouvernée.
+
+## 2026-08-13 — Seconde preuve Autodeploy attestée et correctif documentaire TDD
+
+- PR #43 fusionnée au SHA `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2` ; CI push `31659053828` et deploy push `31659053836` réussis, job `94319801309`.
+- Attestation fraîche : GitHub, S1, `origin/main`, OCI et runtime alignés ; S1 propre avec push désactivé ; conteneur running/healthy.
+- Nouveau test de non-régression : un SHA GitHub documentaire explicite ancien doit produire `DOCUMENTATION_DRIFT` même si `documentation_requires_revalidation=false`.
+- GREEN minimal : `parseDocumentationObservation` compare les SHA déclarés aux SHA observés sans modifier types, enums, `stateVersion`, outils, fallback ou store Live State.
+- Fixture littéral des 92 noms/descriptions/schémas d'outils historiques pour interdire renommage, suppression ou changement incompatible.
+- Production non modifiée par ce commit de branche ; rollback fonctionnel limité au changement local de comparaison SHA.

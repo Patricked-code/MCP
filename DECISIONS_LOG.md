@@ -199,3 +199,11 @@ Contexte : la PR #42 a activé `pushEnabled=true` et a fusionné le SHA `9be5095
 Décision : accepter ce run comme première preuve réelle du chemin automatique et résoudre le P2 de la PR #41, la correction étant fusionnée, testée et déployée.
 
 Décision complémentaire : conserver le chantier ouvert jusqu’à la fusion d’une seconde PR documentaire utile et à l’attestation indépendante du second push automatique. Aucun succès final ni changement d’automatisation n’est déclaré avant cette seconde preuve.
+
+## 2026-08-13 — Seconde preuve automatique acceptée et passage au plan Governed Session V1
+
+Contexte : la PR #43 a fusionné le SHA `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2`. Son push a produit la CI `31659053828` et le déploiement `31659053836`, job `94319801309`, tous réussis. La lecture fraîche du bridge confirme GitHub/S1/origin/OCI/runtime égaux, S1 propre et read-only, Docker running/healthy.
+
+Décision : clôturer `TASK-20260809-003` sur ces deux preuves automatiques exact-SHA et verrouiller `eb61b97e…` comme baseline immuable de `TASK-20260813-004`.
+
+Décision complémentaire : corriger en premier, par TDD additif, le détecteur documentaire qui autorise encore un SHA déclaré ancien avec `documentation=ALIGNED`. L'extension Governed Session conserve tous les contrats existants, sépare `governedSessionId` de `MCP-Session-Id` et démarre le nouveau WRITE gate en `shadow` non bloquant. Toute nécessité de remplacer une mécanique validée impose STOP. Aucune action 2FA n'est autorisée dans ce chantier.
