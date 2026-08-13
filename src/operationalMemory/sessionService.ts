@@ -65,6 +65,7 @@ export type GovernedSessionService = {
   ): Promise<GovernedSessionPublicRecord | null>;
   expireIdleSessions(): Promise<number>;
   lookupGovernedSessionId(transportSessionId: string | undefined): string | null;
+  unbindTransport(transportSessionId: string): string | null;
 };
 
 export type SessionRevisionInput = {
@@ -286,6 +287,12 @@ export function createGovernedSessionService(
       });
 
       if (!resumed) fail('SESSION_RESUME_FAILED');
+      options.bindings.unbindGovernedSession(input.governedSessionId);
+      options.bindings.bind(
+        request.transportSessionId,
+        input.governedSessionId,
+        resumedAt
+      );
       return publicSession(resumed);
     },
 
@@ -422,6 +429,10 @@ export function createGovernedSessionService(
 
     lookupGovernedSessionId(transportSessionId) {
       return options.bindings.lookup(transportSessionId);
+    },
+
+    unbindTransport(transportSessionId) {
+      return options.bindings.unbind(transportSessionId);
     }
   };
 }

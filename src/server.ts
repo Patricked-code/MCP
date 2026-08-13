@@ -478,6 +478,9 @@ export async function startHttpServer(): Promise<void> {
         transport.onclose = () => {
           if (transport.sessionId) {
             delete transports[transport.sessionId];
+            if (operationalMemoryConfig.enabled) {
+              getGovernedSessionToolDependencies().sessions.unbindTransport(transport.sessionId);
+            }
           }
         };
 
