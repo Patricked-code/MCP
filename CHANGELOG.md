@@ -251,3 +251,15 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Ultime confirmation différentielle : aucun finding critique ou important, range fonctionnel déclaré mergeable.
 - Head consolidé `4eee32b…` : régression locale `187/187` et CI exacte `31681641604` réussies ; PR #44 maintenue draft dans l’attente d’une autorisation humaine.
 - PR #44 reste draft ; `main`, S1/runtime, Autodeploy V1, OIDC, `ENABLE_WRITE_TOOLS`, `allow_write` et l’exclusion 2FA restent inchangés.
+
+## 2026-08-15 — Durcissement post-PR #44
+
+- Ajout d'une rétention déterministe des sessions terminales réconciliées avant la borne de 1 000 et d'un échec explicite lorsque la capacité n'est pas supprimable.
+- Ajout d'une rétention déterministe des locks inactifs avant la borne de 2 000, sans suppression de lock actif ni masquage de conflit.
+- Ajout de la libération des locks actifs avant la fermeture de leur session ; la projection `session.lockIds` est vidée à la fermeture et reste réparable après panne partielle.
+- Les sessions terminales portant encore des `lockIds` sont conservées jusqu'à réconciliation.
+- Le détecteur documentaire accepte un SHA déclaré ancêtre uniquement lorsque `git diff --name-only` prouve un descendant strictement documentaire ; un changement de code reste en `DOCUMENTATION_DRIFT`.
+- TDD : RED `592b8506…` / GREEN `12e52030…`, puis RED `7308d19…` / GREEN `101d4c481caa42568f9c50302ddd891935e86917`.
+- CI finale fonctionnelle : `31907348932` et `31907350301`, `12/12 + 184/184` tests, typecheck/build/docs/secrets/diff verts.
+- Aucun changement d'Autodeploy, OIDC, outils historiques, `ENABLE_WRITE_TOOLS`, `allow_write`, WRITE gate `shadow` ou 2FA.
+

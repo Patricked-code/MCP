@@ -150,3 +150,17 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - PR #44 : ouverte, mergeable techniquement, toujours draft, base `eb61b97e…`, aucun thread/review GitHub.
 - Invariants : `main` inchangé, diff Autodeploy/OIDC/deploy nul, aucun fichier supprimé, aucune écriture S1/runtime et aucune 2FA.
 - Prochaine action : autorisation humaine ready/merge, puis reverrouillage exact-head et CI avant toute fusion.
+
+## 2026-08-15T20:43:00Z — TASK-20260813-004 — Durcissement post-merge PR #44
+
+- Baseline production reverrouillée : GitHub/S1/OCI/runtime `3838c3918c3411a3317c6ea81047e77a7b627673`, S1 propre, Docker healthy.
+- Governed session `049db54e-9d97-44c2-ade7-7d310f364b1c` ouverte et lock dépôt acquis avant mutation.
+- Draft PR #45 créée sur `mcp/harden-operational-memory-retention-20260815`.
+- RED `592b8506…` : CI `31906835517`, six échecs attendus sur rétention, capacité, close et panne partielle.
+- GREEN `12e52030…` : CI push `31906965949` et PR `31906967911` réussies.
+- Revue interne : ajout d'une protection des sessions terminales encore liées à des locks et constat de l'impossibilité d'un SHA documentaire auto-référent.
+- Second RED `7308d19…` : CI `31907149328`, trois échecs attendus.
+- Correctif Live State initial `15244ff…` rejeté au typecheck ; cause racine identifiée comme expansion spéciale `$'` de `String.replace`, fichier reconstruit depuis le parent sain.
+- GREEN final `101d4c481caa42568f9c50302ddd891935e86917` : CI push `31907348932` et PR `31907350301` réussies ; gouvernance `12/12`, read-only `184/184`.
+- PR #45 toujours draft ; aucun merge, déploiement S1/runtime ou résolution de thread n'est encore déclaré.
+

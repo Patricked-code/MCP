@@ -241,3 +241,16 @@ Limites : la PR reste draft jusqu’à confirmation différentielle et CI du hea
 Confirmation : l’ultime revue différentielle ne relève aucun finding critique ou important et juge le range fonctionnel `fd0b1d8…de8a6df` mergeable. Cela ne vaut pas autorisation de fusion ; la CI du head documentaire exact reste exigée.
 
 Preuve de clôture de review : le head consolidé `4eee32b…` a passé la régression locale `187/187` et la CI exacte `31681641604`. La PR #44 reste volontairement draft. La prochaine mutation autorisée est uniquement son passage ready/merge après GO humain, reverrouillage du SHA et CI verte de la tête proposée.
+
+## 2026-08-15 — Rétention bornée et clôture documentaire post-merge
+
+Contexte : trois findings publiés après la fusion de la PR #44 rendent à terme l'ouverture de sessions et l'acquisition de locks indisponibles, et la fermeture d'une session peut conserver un lock actif jusqu'à son TTL.
+
+Décision : conserver toutes les sessions actives, toutes les sessions terminales portant encore des `lockIds` et tous les locks actifs. À la borne, retirer uniquement les plus anciens enregistrements terminaux/inactifs selon un ordre horodatage puis identifiant. Si le nombre d'entrées supprimables est insuffisant, échouer explicitement avec `SESSION_STORE_CAPACITY_EXCEEDED` ou `LOCK_STORE_CAPACITY_EXCEEDED`.
+
+Décision de cycle de vie : libérer durablement les locks dans leur store avant de fermer la session, puis vider `session.lockIds` dans l'écriture atomique de fermeture. Si la seconde étape échoue, aucun lock actif ne subsiste et la réconciliation existante répare la projection ; les stores restent séparés.
+
+Décision documentaire : l'égalité stricte entre le SHA déclaré dans un fichier et le SHA du commit contenant ce même fichier est auto-référente et inexécutable. Un SHA déclaré différent n'est accepté que s'il est un ancêtre Git et si tous les chemins descendants appartiennent à l'allowlist documentaire. Toute modification de code, tout SHA inconnu et tout signal `requires_revalidation` restent en drift.
+
+Limites : cette décision n'élargit aucune autorité, ne modifie aucun outil historique, ne remplace aucun store et ne touche ni Autodeploy/OIDC, ni `ENABLE_WRITE_TOOLS`, `allow_write`, le gate `shadow` ou la 2FA.
+
