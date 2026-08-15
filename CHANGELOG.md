@@ -262,3 +262,14 @@ Mise à jour : 2026-07-09T20:08:09Z
 - TDD : RED `592b8506…` / GREEN `12e52030…`, puis RED `7308d19…` / GREEN `101d4c481caa42568f9c50302ddd891935e86917`.
 - CI finale fonctionnelle : `31907348932` et `31907350301`, `12/12 + 184/184` tests, typecheck/build/docs/secrets/diff verts.
 - Aucun changement d'Autodeploy, OIDC, outils historiques, `ENABLE_WRITE_TOOLS`, `allow_write`, WRITE gate `shadow` ou 2FA.
+
+## 2026-08-15 — Operational Memory hardening déployé
+
+- PR #45 fusionnée au SHA `bac8779320c8b9529d2a5215dbb1b1f31f828987` après TDD RED/GREEN et double CI exacte.
+- Stores sessions et locks désormais bornés par rétention déterministe des seuls enregistrements supprimables, avec erreurs de capacité explicites.
+- `closeSession` libère les locks avant fermeture et conserve la réparation inter-stores après panne partielle.
+- Le contrôle documentaire accepte un ancêtre uniquement pour un descendant strictement documentaire ; les changements runtime restent en drift.
+- CI main `31907827255`, Autodeploy `31907827212` et job `95068288136` réussis.
+- S1, OCI/runtime et Docker réattestés ; trois threads tardifs PR #44 résolus.
+- Documentation canonique réconciliée ; `TASK-20260813-004` terminée.
+- Aucun élargissement d'autorité ni changement d'Autodeploy, OIDC, outils historiques, WRITE gate, 2FA ou écriture directe S1.

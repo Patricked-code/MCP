@@ -15,49 +15,42 @@
 
 Date : 2026-08-15
 
-## Production attestée après la PR #44
+## État fonctionnel attesté
 
-- GitHub `main`, S1 `HEAD`, S1 `origin/main` et révision OCI/runtime : `3838c3918c3411a3317c6ea81047e77a7b627673`.
-- PR #44 fusionnée le 2026-08-13 ; CI push `31684159546` et Autodeploy `31684159586` réussis.
-- Job de déploiement `94396216832` : étape `Deploy exact main SHA through MCP` exécutée et réussie.
+- Référence GitHub déclarée : `bac8779320c8b9529d2a5215dbb1b1f31f828987`, merge squash de la PR #45.
+- GitHub `main`, dépôt S1, OCI et runtime ont été réattestés ensemble sur cette référence avant la présente réconciliation documentaire.
+- CI `main` `31907827255` réussie.
+- Autodeploy exact-SHA `31907827212`, job `95068288136` : étape `Deploy exact main SHA through MCP` exécutée et réussie.
 - S1 : branche `main`, arbre propre, diff vide, fetch read-only et push `disabled://mcp-s1-read-only`.
-- Docker : conteneur `wealthtech_mcp_ssh_bridge` running/healthy ; image `sha256:644fbbc9c7c5a856cb33390ee6a11277047e074189d7b9f793ecbf06064c1581`.
-- Live State frais observé le 2026-08-15 : `stateVersion=14`, GitHub/S1/runtime alignés, mais documentation encore en `DOCUMENTATION_DRIFT` avant la passe finale post-hardening.
+- Docker : conteneur `wealthtech_mcp_ssh_bridge` running/healthy ; image `sha256:5a64f24f937718c392ccd2d8ac6387d5ceb1bc0535d2dcc6f3efbb7f7c8e4fc8`.
+- La présente PR est strictement documentaire. Après sa fusion, Live State accepte la référence ancêtre ci-dessus uniquement parce que Git prouve que tous les chemins descendants sont documentaires.
 
-## Findings tardifs de la PR #44
+## Correctifs Operational Memory déployés
 
-Trois threads publiés après la fusion restaient ouverts :
+- Sessions : rétention déterministe des plus anciennes sessions terminales réconciliées ; sessions actives et sessions terminales portant encore des `lockIds` conservées.
+- Locks : rétention déterministe des plus anciens locks inactifs ; locks actifs et priorité des conflits conservés.
+- Capacité : erreurs explicites `SESSION_STORE_CAPACITY_EXCEEDED` et `LOCK_STORE_CAPACITY_EXCEEDED` lorsque rien ne peut être supprimé.
+- Fermeture : libération durable des locks avant la transition de session, projection `lockIds` vidée et réconciliation conservée après panne partielle.
+- Documentation : tout descendant contenant du code, tout SHA inconnu ou tout signal `requires_revalidation` reste en drift.
 
-- P1 : saturation du store sessions à 1 000 enregistrements historiques ;
-- P1 : saturation du store locks à 2 000 enregistrements historiques ;
-- P2 : locks actifs non libérés lors de la fermeture de leur session.
+## Preuves de non-régression
 
-Aucun incident immédiat n'était présent lors de l'attestation : aucune session active et aucun lock actif.
+- RED initial `592b8506c14455e07852091282b918aa2b468730`, run `31906835517` : six échecs attendus.
+- GREEN initial `12e52030b5a6ddb4f1120057086b0e5643c6579b`.
+- RED de revue `7308d19c2153604dbe231236c6fbcaf46609a21d` : trois échecs attendus.
+- GREEN fonctionnel `101d4c481caa42568f9c50302ddd891935e86917`.
+- Head final PR #45 `e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d` : CI push `31907681047` et PR `31907683383` réussies.
+- Suites finales : gouvernance `12/12`, read-only `184/184`, typecheck, build, docs, scan secrets et whitespace diff verts.
+- Aucun changement d'Autodeploy V1, GitHub OIDC, outils historiques, `ENABLE_WRITE_TOOLS`, `allow_write`, WRITE gate `shadow` ou exclusion 2FA.
 
-## Draft PR #45 — durcissement Operational Memory
+## Revue et clôture
 
-- Branche gouvernée unique : `mcp/harden-operational-memory-retention-20260815`.
-- Draft PR : #45, base exacte `3838c3918c3411a3317c6ea81047e77a7b627673`.
-- Head fonctionnel avant consolidation documentaire : `101d4c481caa42568f9c50302ddd891935e86917`.
-- RED initial : `592b8506c14455e07852091282b918aa2b468730`, CI `31906835517`, six échecs attendus et discriminants.
-- GREEN initial : `12e52030b5a6ddb4f1120057086b0e5643c6579b`, CI push/PR réussies.
-- Revue interne RED : `7308d19c2153604dbe231236c6fbcaf46609a21d`, trois échecs attendus pour session terminale encore réconciliable et réconciliation documentaire post-merge.
-- GREEN final : `101d4c481caa42568f9c50302ddd891935e86917`, CI push `31907348932` et PR `31907350301` réussies.
-- Régression exacte : gouvernance `12/12`, read-only `184/184`, zéro fail ; typecheck, build, docs, secrets et `git diff --check` réussis.
-- Sessions : conservation de toutes les sessions actives et de toute session terminale portant encore des `lockIds`; purge déterministe des plus anciennes sessions terminales réconciliées ; échec explicite si aucune entrée n'est supprimable.
-- Locks : conservation de tous les locks actifs ; purge déterministe des plus anciens locks inactifs ; conflit toujours prioritaire ; échec explicite si la capacité est réellement active.
-- Close : libération durable des locks avant transition de session, projection `lockIds` vidée dans l'écriture de fermeture et réconciliation conservée après panne partielle.
-- Live State documentaire : un SHA déclaré différent reste en drift, sauf si ce SHA est prouvé ancêtre et que le diff descendant est strictement limité aux fichiers documentaires allowlistés.
-- Aucun thread/review GitHub n'est présent sur la PR #45 au moment de cette consolidation.
+Les trois threads tardifs de la PR #44 (`PRRT_kwDOTJ-y6M6Y3wvB`, `PRRT_kwDOTJ-y6M6Y3wvI`, `PRRT_kwDOTJ-y6M6Y3wvR`) sont résolus avec références à la PR #45 fusionnée et déployée.
 
-## Invariants préservés
+## Tâche
 
-Autodeploy V1, GitHub OIDC, les outils historiques, `ENABLE_WRITE_TOOLS`, `allow_write`, le WRITE gate `shadow`, les deux stores existants et l'exclusion 2FA restent inchangés. Aucun patch, build, restart ou déploiement direct n'a été exécuté sur S1.
+`TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — TERMINÉE`
 
-## Tâche active
+## Prochaine action
 
-`TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — EN COURS`
-
-## Prochaine action unique
-
-Valider la CI du head documentaire exact de la PR #45, reverrouiller la base et le head, passer la PR ready puis fusionner uniquement cette tête verte. Laisser Autodeploy V1 déployer, réattester GitHub/S1/OCI/runtime, résoudre les trois threads de la PR #44, puis effectuer une PR strictement documentaire finale déclarant le merge SHA de la PR #45.
+Aucune action fonctionnelle ou documentaire restante dans ce périmètre. La maintenance Node 24 demeure une tâche séparée ; la 2FA GitHub reste explicitement exclue.

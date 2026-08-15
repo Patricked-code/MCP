@@ -6,11 +6,11 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "githubObservedAt": "2026-08-15T20:22:22.389Z",
-  "githubObservationBasis": "github_connector_pr44_runs_jobs_plus_wealthtech_bridge_current_attestation",
-  "serverStateFreshness": "current_post_pr44_attestation",
-  "runtimeStateFreshness": "current_exact_sha_post_pr44",
-  "githubCommitFull": "3838c3918c3411a3317c6ea81047e77a7b627673",
+  "githubObservedAt": "2026-08-15T20:52:47.873Z",
+  "githubObservationBasis": "github_connector_pr45_exact_head_main_ci_deploy_jobs_plus_wealthtech_bridge_post_deploy_attestation",
+  "serverStateFreshness": "current_post_pr45_attestation",
+  "runtimeStateFreshness": "current_exact_sha_post_pr45",
+  "githubCommitFull": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
   "requiredRules": [
     "GitHub est la source versionnée.",
     "Le serveur MCP est la source exécutée.",
@@ -28,7 +28,7 @@
   },
   "githubState": {
     "currentMainVerified": true,
-    "currentMainCommit": "3838c3918c3411a3317c6ea81047e77a7b627673",
+    "currentMainCommit": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
     "pullRequest37Merged": true,
     "pullRequest38Merged": true,
     "pullRequest39Merged": true,
@@ -75,15 +75,27 @@
     "governedSessionContinuityDeployJobId": 94396216832,
     "operationalMemoryHardeningPullRequest": 45,
     "operationalMemoryHardeningBranch": "mcp/harden-operational-memory-retention-20260815",
-    "operationalMemoryHardeningCandidateHead": "101d4c481caa42568f9c50302ddd891935e86917",
-    "operationalMemoryHardeningState": "draft_ci_green_pre_documentation_consolidation"
+    "operationalMemoryHardeningCandidateHead": "e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d",
+    "operationalMemoryHardeningState": "merged_deployed_attested",
+    "pullRequest45Merged": true,
+    "operationalMemoryHardeningMergeCommit": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
+    "operationalMemoryHardeningPreMergePushRunId": 31907681047,
+    "operationalMemoryHardeningPreMergePullRequestRunId": 31907683383,
+    "operationalMemoryHardeningMainCiRunId": 31907827255,
+    "operationalMemoryHardeningDeployRunId": 31907827212,
+    "operationalMemoryHardeningDeployJobId": 95068288136,
+    "operationalMemoryHardeningDeployStep": "Deploy exact main SHA through MCP",
+    "operationalMemoryHardeningDeployStepConclusion": "success",
+    "canonicalDocumentationPullRequest": 46,
+    "canonicalDocumentationBaseCommit": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
+    "canonicalDocumentationState": "docs_only_reconciliation"
   },
   "serverGitState": {
     "branch": "main",
-    "lastDirectlyVerifiedCommitAbbrev": "3838c39",
-    "lastDirectlyVerifiedCommitFull": "3838c3918c3411a3317c6ea81047e77a7b627673",
-    "originMain": "3838c3918c3411a3317c6ea81047e77a7b627673",
-    "lastDirectlyVerifiedAt": "2026-08-15T20:22:22.389Z",
+    "lastDirectlyVerifiedCommitAbbrev": "bac8779",
+    "lastDirectlyVerifiedCommitFull": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
+    "originMain": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
+    "lastDirectlyVerifiedAt": "2026-08-15T20:52:47.873Z",
     "lastKnownWorkingTreeClean": true,
     "diffEmpty": true,
     "currentAlignmentAttested": true,
@@ -96,29 +108,28 @@
   "runtimeState": {
     "containerStatus": "running",
     "health": "healthy",
-    "containerId": "499e4fe98f364d3131af587c6265b0ad9f48fb75284268672b07238a1015b4ab",
-    "imageId": "sha256:644fbbc9c7c5a856cb33390ee6a11277047e074189d7b9f793ecbf06064c1581",
-    "currentRuntimeRevision": "3838c3918c3411a3317c6ea81047e77a7b627673",
+    "containerId": "37f1548bf13a23b9f2f4f67084ae318a8ea51121ad7d23d8bf7720a019b0430f",
+    "imageId": "sha256:5a64f24f937718c392ccd2d8ac6387d5ceb1bc0535d2dcc6f3efbb7f7c8e4fc8",
+    "currentRuntimeRevision": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
     "status": "FULLY_ALIGNED",
-    "containerCreatedAt": "2026-08-13T08:54:54.525478725Z",
-    "containerStartedAt": "2026-08-13T08:54:55.046696334Z",
+    "containerCreatedAt": "2026-08-15T20:51:54.996256913Z",
+    "containerStartedAt": "2026-08-15T20:51:55.491955488Z",
     "healthOk": true,
     "oauthOk": true,
     "mcpAuthOk": true,
     "rollbackStatus": "not_needed"
   },
   "liveState": {
-    "stateVersion": 14,
-    "generatedAt": "2026-08-15T20:22:22.389Z",
+    "stateVersion": 16,
+    "generatedAt": "2026-08-15T20:52:47.873Z",
     "freshness": "CURRENT",
     "githubVsS1": "ALIGNED",
     "runtime": "ALIGNED",
-    "documentation": "DOCUMENTATION_DRIFT",
-    "global": "RECONCILIATION_REQUIRED",
-    "contradictions": [
-      "DOCUMENTATION_DRIFT"
-    ],
-    "nextAction": "merge_pr45_then_reconcile_canonical_documentation"
+    "documentation": "ALIGNED_BY_DOCS_ONLY_DESCENDANT_POLICY",
+    "global": "FULLY_ALIGNED",
+    "contradictions": [],
+    "nextAction": null,
+    "declaredFunctionalBaseline": "bac8779320c8b9529d2a5215dbb1b1f31f828987"
   },
   "markdownInventory": {
     "trackedGitMarkdown": 191,
@@ -155,7 +166,11 @@
     "canonicalFollowUpDeploymentSha": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
     "canonicalFollowUpDeploymentRunId": 31659053836,
     "canonicalFollowUpDeploymentGithubJobId": 94319801309,
-    "canonicalFollowUpDeploymentMcpJob": null
+    "canonicalFollowUpDeploymentMcpJob": null,
+    "operationalMemoryHardeningDeploymentAttested": true,
+    "operationalMemoryHardeningDeploymentSha": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
+    "operationalMemoryHardeningDeploymentRunId": 31907827212,
+    "operationalMemoryHardeningDeploymentGithubJobId": 95068288136
   },
   "governedAutodeployV1": {
     "task": "TASK-20260809-003",
@@ -189,20 +204,23 @@
       {
         "id": "PRRT_kwDOTJ-y6M6Y3wvB",
         "severity": "P1",
-        "status": "open",
-        "correctionPullRequest": 45
+        "status": "resolved_after_pr45_merged_deployed_attested",
+        "correctionPullRequest": 45,
+        "correctionMergeCommit": "bac8779320c8b9529d2a5215dbb1b1f31f828987"
       },
       {
         "id": "PRRT_kwDOTJ-y6M6Y3wvI",
         "severity": "P1",
-        "status": "open",
-        "correctionPullRequest": 45
+        "status": "resolved_after_pr45_merged_deployed_attested",
+        "correctionPullRequest": 45,
+        "correctionMergeCommit": "bac8779320c8b9529d2a5215dbb1b1f31f828987"
       },
       {
         "id": "PRRT_kwDOTJ-y6M6Y3wvR",
         "severity": "P2",
-        "status": "open",
-        "correctionPullRequest": 45
+        "status": "resolved_after_pr45_merged_deployed_attested",
+        "correctionPullRequest": 45,
+        "correctionMergeCommit": "bac8779320c8b9529d2a5215dbb1b1f31f828987"
       }
     ]
   },
@@ -215,7 +233,7 @@
     "pullRequest": 45,
     "branch": "mcp/harden-operational-memory-retention-20260815",
     "baseSha": "3838c3918c3411a3317c6ea81047e77a7b627673",
-    "candidateHead": "101d4c481caa42568f9c50302ddd891935e86917",
+    "candidateHead": "e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d",
     "redCommit": "592b8506c14455e07852091282b918aa2b468730",
     "redRunId": 31906835517,
     "firstGreenCommit": "12e52030b5a6ddb4f1120057086b0e5643c6579b",
@@ -225,6 +243,22 @@
     "finalPullRequestRunId": 31907350301,
     "governanceTests": "12/12",
     "readOnlySafetyTests": "184/184",
-    "state": "draft_ci_green_pre_documentation_consolidation"
+    "state": "merged_deployed_attested_documentation_reconciled",
+    "finalDocumentationHead": "e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d",
+    "finalHeadPushRunId": 31907681047,
+    "finalHeadPullRequestRunId": 31907683383,
+    "mergeCommit": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
+    "mainCiRunId": 31907827255,
+    "deployRunId": 31907827212,
+    "deployJobId": 95068288136,
+    "deployAttested": true,
+    "pr44LateThreadsResolved": true,
+    "canonicalDocumentationPullRequest": 46
+  },
+  "taskState": {
+    "task": "TASK-20260813-004",
+    "status": "COMPLETED",
+    "completedAt": "2026-08-15",
+    "completionBasis": "PR45 merged, exact-SHA CI and Autodeploy attested, late PR44 threads resolved, canonical docs-only reconciliation"
   }
 }
