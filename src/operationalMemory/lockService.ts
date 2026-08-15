@@ -7,11 +7,12 @@ import {
 } from './operationalAudit.js';
 import type { SessionRequest } from './sessionService.js';
 import type { TransportBindings } from './transportBindings.js';
-import type {
-  GovernedLockRecord,
-  GovernedSessionRecord,
-  LockStoreDocument,
-  SessionStoreDocument
+import {
+  MAX_GOVERNED_LOCK_RECORDS,
+  type GovernedLockRecord,
+  type GovernedSessionRecord,
+  type LockStoreDocument,
+  type SessionStoreDocument
 } from './types.js';
 
 export type LockScopeInput =
@@ -36,6 +37,7 @@ export type ReleaseLockInput = {
 export type GovernedLockService = {
   acquireLock(input: AcquireLockInput, request: SessionRequest): Promise<GovernedLockRecord>;
   releaseLock(input: ReleaseLockInput, request: SessionRequest): Promise<GovernedLockRecord>;
+  releaseLocksForSession(governedSessionId: string): Promise<GovernedLockRecord[]>;
   renewLocksForHeartbeat(
     governedSessionId: string,
     now: Date
@@ -76,6 +78,26 @@ function normalizeScope(scope: LockScopeInput): string {
     || !/^[A-Za-z0-9./:_-]+$/.test(scope.key)
   ) fail('LOCK_SCOPE_INVALID');
   return `resource:${scope.key}`;
+}
+
+function lockInactiveTime(lock: GovernedLockRecord): number {
+  return Date.parse(lock.renewedAt || lock.acquiredAt);
+}
+
+function retainLocksForAppend(locks: GovernedLockRecord[]): GovernedLockRecord[] {
+  const requiredSlots = locks.length + 1 - MAX_GOVERNED_LOCK_RECORDS;
+  if (requiredSlots <= 0) return locks;
+
+  const removable = locks.filter((lock) => lock.status !== 'ACTIVE').sort((left, right) => (
+    lockInactiveTime(left) - lockInactiveTime(right)
+    || left.lockId.localeCompare(right.lockId)
+  ));
+  if (removable.length < requiredSlots) fail('LOCK_STORE_CAPACITY_EXCEEDED');
+
+  const removedIds = new Set(
+    removable.slice(0, requiredSlots).map((lock) => lock.lockId)
+  );
+  return locks.filter((lock) => !removedIds.has(lock.lockId));
 }
 
 function canAccess(
@@ -171,7 +193,7 @@ export function createGovernedLockService(
           return {
             ...document,
             storeRevision: document.storeRevision + 1,
-            locks: [...document.locks, lock]
+            locks: [...retainLocksForAppend(document.locks), lock]
           };
         });
       } catch (error) {
@@ -247,6 +269,31 @@ export function createGovernedLockService(
           : session)
       }));
       await audit.record({ type: 'lock.released', lock: released });
+      return released;
+    },
+
+    async releaseLocksForSession(governedSessionId) {
+      const released: GovernedLockRecord[] = [];
+      await options.store.update((document) => {
+        const locks = document.locks.map((lock) => {
+          if (
+            lock.governedSessionId !== governedSessionId
+            || lock.status !== 'ACTIVE'
+          ) return lock;
+          const next = {
+            ...lock,
+            status: 'RELEASED' as const,
+            lockRevision: lock.lockRevision + 1
+          };
+          released.push(next);
+          return next;
+        });
+        if (released.length === 0) return document;
+        return { ...document, storeRevision: document.storeRevision + 1, locks };
+      });
+      for (const lock of released) {
+        await audit.record({ type: 'lock.released', lock });
+      }
       return released;
     },
 

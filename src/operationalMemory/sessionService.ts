@@ -7,12 +7,13 @@ import {
 } from './operationalAudit.js';
 import { createResumeSecret, hashResumeSecret, verifyResumeSecret } from './resumeProof.js';
 import type { TransportBindings } from './transportBindings.js';
-import type {
-  GovernedCheckpoint,
-  GovernedSessionPublicRecord,
-  GovernedSessionRecord,
-  IdentityAssurance,
-  SessionStoreDocument
+import {
+  MAX_GOVERNED_SESSION_RECORDS,
+  type GovernedCheckpoint,
+  type GovernedSessionPublicRecord,
+  type GovernedSessionRecord,
+  type IdentityAssurance,
+  type SessionStoreDocument
 } from './types.js';
 
 export type RequestIdentity = {
@@ -99,6 +100,7 @@ type GovernedSessionServiceOptions = {
     governedSessionId: string,
     at: Date
   ) => Promise<unknown>;
+  releaseLocksForSession?: (governedSessionId: string) => Promise<unknown>;
   audit?: OperationalAudit;
 };
 
@@ -109,6 +111,31 @@ function publicSession(session: GovernedSessionRecord): GovernedSessionPublicRec
 
 function fail(code: string): never {
   throw new Error(code);
+}
+
+function sessionTerminalTime(session: GovernedSessionRecord): number {
+  const terminalAt = session.status === 'CLOSED' ? session.closedAt : session.expiredAt;
+  return Date.parse(terminalAt ?? session.createdAt);
+}
+
+function retainSessionsForAppend(
+  sessions: GovernedSessionRecord[]
+): GovernedSessionRecord[] {
+  const requiredSlots = sessions.length + 1 - MAX_GOVERNED_SESSION_RECORDS;
+  if (requiredSlots <= 0) return sessions;
+
+  const removable = sessions.filter((session) => (
+    session.status === 'CLOSED' || session.status === 'EXPIRED'
+  )).sort((left, right) => (
+    sessionTerminalTime(left) - sessionTerminalTime(right)
+    || left.governedSessionId.localeCompare(right.governedSessionId)
+  ));
+  if (removable.length < requiredSlots) fail('SESSION_STORE_CAPACITY_EXCEEDED');
+
+  const removedIds = new Set(
+    removable.slice(0, requiredSlots).map((session) => session.governedSessionId)
+  );
+  return sessions.filter((session) => !removedIds.has(session.governedSessionId));
 }
 
 export function createGovernedSessionService(
@@ -221,7 +248,7 @@ export function createGovernedSessionService(
         await options.store.update((document) => ({
           ...document,
           storeRevision: document.storeRevision + 1,
-          sessions: [...document.sessions, record]
+          sessions: [...retainSessionsForAppend(document.sessions), record]
         }));
       } catch (error) {
         options.bindings.unbind(request.transportSessionId);
@@ -413,12 +440,15 @@ export function createGovernedSessionService(
       if (!existing) fail('SESSION_NOT_FOUND');
       if (!canAccess(existing, request)) fail('SESSION_NOT_BOUND');
       if (existing.status === 'CLOSED') return publicSession(existing);
+      assertMutable(existing, input, request);
+      await options.releaseLocksForSession?.(input.governedSessionId);
       const previousTransportFingerprint = existing.currentTransport?.fingerprint ?? null;
       const closed = await mutateSession(input, request, (session, at) => ({
         ...session,
         status: 'CLOSED',
         closedAt: at.toISOString(),
         currentTransport: null,
+        lockIds: [],
         sessionRevision: session.sessionRevision + 1
       }));
       options.bindings.unbindGovernedSession(input.governedSessionId);

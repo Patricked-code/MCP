@@ -79,6 +79,9 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
     audit,
     renewLocksForHeartbeat: (governedSessionId, at) => (
       locks.renewLocksForHeartbeat(governedSessionId, at)
+    ),
+    releaseLocksForSession: (governedSessionId) => (
+      locks.releaseLocksForSession(governedSessionId)
     )
   });
   locks = createGovernedLockService({
