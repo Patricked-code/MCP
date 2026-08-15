@@ -133,6 +133,18 @@ if [ -z "$DECLARED_GITHUB_SHA" ]; then DECLARED_GITHUB_SHA="$(grep -E '"githubCo
 printf 'declared_github_sha=%s\\n' "$DECLARED_GITHUB_SHA"
 DECLARED_S1_SHA="$(grep -E 'S1 HEAD|serverCommitFull' SUIVI.md PRODUCTION_STATE.json 2>/dev/null | grep -Eo '[0-9a-f]{40}' | head -1 || true)"
 printf 'declared_s1_sha=%s\\n' "$DECLARED_S1_SHA"
+DOCUMENTATION_DESCENDANT_SCOPE='unknown'
+if [ -n "$DECLARED_GITHUB_SHA" ] && [ "$DECLARED_GITHUB_SHA" = "$(git rev-parse HEAD)" ]; then
+  DOCUMENTATION_DESCENDANT_SCOPE='exact'
+elif [ -n "$DECLARED_GITHUB_SHA" ] && git merge-base --is-ancestor "$DECLARED_GITHUB_SHA" HEAD 2>/dev/null; then
+  NON_DOCUMENTATION_PATH="$(git diff --name-only "$DECLARED_GITHUB_SHA" HEAD | grep -Ev '.*\\.md$|^PRODUCTION_STATE\\.json$|^docs/governance/markdown-inventory\\.json$' | head -1 || true)"
+  if [ -z "$NON_DOCUMENTATION_PATH" ]; then
+    DOCUMENTATION_DESCENDANT_SCOPE='docs_only'
+  else
+    DOCUMENTATION_DESCENDANT_SCOPE='contains_runtime_changes'
+  fi
+fi
+printf 'documentation_descendant_scope=%s\\n' "$DOCUMENTATION_DESCENDANT_SCOPE"
 if grep -q '"serverStateFreshness": "requires_revalidation"' PRODUCTION_STATE.json 2>/dev/null || grep -q '"runtimeStateFreshness": "requires_revalidation"' PRODUCTION_STATE.json 2>/dev/null; then
   printf 'documentation_requires_revalidation=true\\n'
 else
@@ -153,6 +165,7 @@ export function parseDocumentationObservation(
     declaredGithubSha
     && observedGithubSha
     && declaredGithubSha !== observedGithubSha
+    && values.documentation_descendant_scope !== 'docs_only'
   );
   const explicitS1Mismatch = Boolean(
     declaredS1Sha

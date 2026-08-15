@@ -77,10 +77,12 @@ export const GovernedSessionRecordSchema = z.object({
 export type GovernedSessionRecord = z.infer<typeof GovernedSessionRecordSchema>;
 export type GovernedSessionPublicRecord = Omit<GovernedSessionRecord, 'resumeSecretHash'>;
 
+export const MAX_GOVERNED_SESSION_RECORDS = 1_000;
+
 export const SessionStoreDocumentSchema = z.object({
   schemaVersion: z.literal(1),
   storeRevision: z.number().int().nonnegative(),
-  sessions: z.array(GovernedSessionRecordSchema).max(1_000)
+  sessions: z.array(GovernedSessionRecordSchema).max(MAX_GOVERNED_SESSION_RECORDS)
 }).strict();
 export type SessionStoreDocument = z.infer<typeof SessionStoreDocumentSchema>;
 
@@ -101,10 +103,12 @@ export const GovernedLockRecordSchema = z.object({
 }).strict();
 export type GovernedLockRecord = z.infer<typeof GovernedLockRecordSchema>;
 
+export const MAX_GOVERNED_LOCK_RECORDS = 2_000;
+
 export const LockStoreDocumentSchema = z.object({
   schemaVersion: z.literal(1),
   storeRevision: z.number().int().nonnegative(),
-  locks: z.array(GovernedLockRecordSchema).max(2_000)
+  locks: z.array(GovernedLockRecordSchema).max(MAX_GOVERNED_LOCK_RECORDS)
 }).strict();
 export type LockStoreDocument = z.infer<typeof LockStoreDocumentSchema>;
 

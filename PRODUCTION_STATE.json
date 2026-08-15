@@ -6,11 +6,11 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "githubObservedAt": "2026-08-13T05:19:31.979Z",
-  "githubObservationBasis": "github_connector_push_runs_jobs_steps_logs_plus_wealthtech_bridge_read_only_attestation",
-  "serverStateFreshness": "current_post_second_automatic_push_attestation",
-  "runtimeStateFreshness": "current_exact_sha_post_second_automatic_push",
-  "githubCommitFull": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
+  "githubObservedAt": "2026-08-15T20:22:22.389Z",
+  "githubObservationBasis": "github_connector_pr44_runs_jobs_plus_wealthtech_bridge_current_attestation",
+  "serverStateFreshness": "current_post_pr44_attestation",
+  "runtimeStateFreshness": "current_exact_sha_post_pr44",
+  "githubCommitFull": "3838c3918c3411a3317c6ea81047e77a7b627673",
   "requiredRules": [
     "GitHub est la source versionnée.",
     "Le serveur MCP est la source exécutée.",
@@ -28,7 +28,7 @@
   },
   "githubState": {
     "currentMainVerified": true,
-    "currentMainCommit": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
+    "currentMainCommit": "3838c3918c3411a3317c6ea81047e77a7b627673",
     "pullRequest37Merged": true,
     "pullRequest38Merged": true,
     "pullRequest39Merged": true,
@@ -66,14 +66,24 @@
     "canonicalFollowUpDeployJobId": 94319801309,
     "canonicalFollowUpDeployConclusion": "success",
     "canonicalFollowUpDeployStep": "Deploy exact main SHA through MCP",
-    "canonicalFollowUpDeployStepConclusion": "success"
+    "canonicalFollowUpDeployStepConclusion": "success",
+    "pullRequest44Merged": true,
+    "governedSessionContinuityHead": "bba56ac802ac952bf8a6211dc982a6eced732f44",
+    "governedSessionContinuityMergeCommit": "3838c3918c3411a3317c6ea81047e77a7b627673",
+    "governedSessionContinuityCiRunId": 31684159546,
+    "governedSessionContinuityDeployRunId": 31684159586,
+    "governedSessionContinuityDeployJobId": 94396216832,
+    "operationalMemoryHardeningPullRequest": 45,
+    "operationalMemoryHardeningBranch": "mcp/harden-operational-memory-retention-20260815",
+    "operationalMemoryHardeningCandidateHead": "101d4c481caa42568f9c50302ddd891935e86917",
+    "operationalMemoryHardeningState": "draft_ci_green_pre_documentation_consolidation"
   },
   "serverGitState": {
     "branch": "main",
-    "lastDirectlyVerifiedCommitAbbrev": "eb61b97",
-    "lastDirectlyVerifiedCommitFull": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
-    "originMain": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
-    "lastDirectlyVerifiedAt": "2026-08-13T05:19:31.979Z",
+    "lastDirectlyVerifiedCommitAbbrev": "3838c39",
+    "lastDirectlyVerifiedCommitFull": "3838c3918c3411a3317c6ea81047e77a7b627673",
+    "originMain": "3838c3918c3411a3317c6ea81047e77a7b627673",
+    "lastDirectlyVerifiedAt": "2026-08-15T20:22:22.389Z",
     "lastKnownWorkingTreeClean": true,
     "diffEmpty": true,
     "currentAlignmentAttested": true,
@@ -86,27 +96,29 @@
   "runtimeState": {
     "containerStatus": "running",
     "health": "healthy",
-    "containerId": "d195899369bd6d4745465b525c37be5dbedec7fd66c53020b44d46c0e5aa2ddd",
-    "imageId": "sha256:65465451fb4c3459b20aa9d96af9a81a39f95a68b5577973a74c61bdac0487cb",
-    "currentRuntimeRevision": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
+    "containerId": "499e4fe98f364d3131af587c6265b0ad9f48fb75284268672b07238a1015b4ab",
+    "imageId": "sha256:644fbbc9c7c5a856cb33390ee6a11277047e074189d7b9f793ecbf06064c1581",
+    "currentRuntimeRevision": "3838c3918c3411a3317c6ea81047e77a7b627673",
     "status": "FULLY_ALIGNED",
-    "containerCreatedAt": "2026-08-13T01:52:29.765477997Z",
-    "containerStartedAt": "2026-08-13T01:52:30.260306828Z",
+    "containerCreatedAt": "2026-08-13T08:54:54.525478725Z",
+    "containerStartedAt": "2026-08-13T08:54:55.046696334Z",
     "healthOk": true,
     "oauthOk": true,
     "mcpAuthOk": true,
     "rollbackStatus": "not_needed"
   },
   "liveState": {
-    "stateVersion": 9,
-    "generatedAt": "2026-08-13T05:19:31.979Z",
+    "stateVersion": 14,
+    "generatedAt": "2026-08-15T20:22:22.389Z",
     "freshness": "CURRENT",
     "githubVsS1": "ALIGNED",
     "runtime": "ALIGNED",
-    "documentation": "ALIGNED",
-    "global": "FULLY_ALIGNED",
-    "contradictions": [],
-    "nextAction": null
+    "documentation": "DOCUMENTATION_DRIFT",
+    "global": "RECONCILIATION_REQUIRED",
+    "contradictions": [
+      "DOCUMENTATION_DRIFT"
+    ],
+    "nextAction": "merge_pr45_then_reconcile_canonical_documentation"
   },
   "markdownInventory": {
     "trackedGitMarkdown": 191,
@@ -172,11 +184,47 @@
     "artifactParityRedRunId": 31657669105,
     "artifactParityGreenRunId": 31657781749,
     "correctionMergeCommit": "9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7",
-    "correctionFinalCiRunId": 31658220076
+    "correctionFinalCiRunId": 31658220076,
+    "pr44LateThreads": [
+      {
+        "id": "PRRT_kwDOTJ-y6M6Y3wvB",
+        "severity": "P1",
+        "status": "open",
+        "correctionPullRequest": 45
+      },
+      {
+        "id": "PRRT_kwDOTJ-y6M6Y3wvI",
+        "severity": "P1",
+        "status": "open",
+        "correctionPullRequest": 45
+      },
+      {
+        "id": "PRRT_kwDOTJ-y6M6Y3wvR",
+        "severity": "P2",
+        "status": "open",
+        "correctionPullRequest": 45
+      }
+    ]
   },
   "maintenanceWarnings": {
     "githubActionsNode20ForcedToNode24": true,
     "migrationTrackedSeparately": true,
     "accountTwoFactorAction": "excluded_by_human_decision"
+  },
+  "operationalMemoryHardening": {
+    "pullRequest": 45,
+    "branch": "mcp/harden-operational-memory-retention-20260815",
+    "baseSha": "3838c3918c3411a3317c6ea81047e77a7b627673",
+    "candidateHead": "101d4c481caa42568f9c50302ddd891935e86917",
+    "redCommit": "592b8506c14455e07852091282b918aa2b468730",
+    "redRunId": 31906835517,
+    "firstGreenCommit": "12e52030b5a6ddb4f1120057086b0e5643c6579b",
+    "reviewRedCommit": "7308d19c2153604dbe231236c6fbcaf46609a21d",
+    "finalGreenCommit": "101d4c481caa42568f9c50302ddd891935e86917",
+    "finalPushRunId": 31907348932,
+    "finalPullRequestRunId": 31907350301,
+    "governanceTests": "12/12",
+    "readOnlySafetyTests": "184/184",
+    "state": "draft_ci_green_pre_documentation_consolidation"
   }
 }

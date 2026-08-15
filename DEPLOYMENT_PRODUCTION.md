@@ -45,3 +45,9 @@ Cette première preuve valide l’activation. La clôture canonique exige encore
 ## Contrôles après chaque déploiement
 
 Réattester GitHub main, S1 HEAD, S1 origin/main, propreté, remotes, Docker, image ID, OCI revision, runtime revision, Live State, health/OAuth/MCP et rollback.
+
+## Attestation PR #44 et séquence de durcissement
+
+La PR #44 a fusionné `3838c3918c3411a3317c6ea81047e77a7b627673`. La CI push `31684159546` et le déploiement `31684159586` ont réussi ; le job `94396216832` a exécuté l'étape exact-SHA. L'attestation du 2026-08-15 confirme S1 propre, Docker running/healthy et OCI/runtime sur ce même SHA.
+
+La draft PR #45 ne doit être déployée qu'après CI du head documentaire exact et fusion verrouillée. La fusion doit déclencher l'Autodeploy existant ; aucune synchronisation, construction ou relance directe sur S1 n'est autorisée. Une PR strictement documentaire post-déploiement déclarera ensuite le merge SHA de la PR #45 et sera acceptée par Live State seulement si son diff descendant reste intégralement documentaire.

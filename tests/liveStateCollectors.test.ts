@@ -97,6 +97,9 @@ test('la collecte documentaire reste bornée aux signaux de reprise', () => {
   assert.match(command, /PRODUCTION_STATE\.json/);
   assert.match(command, /SUIVI\.md/);
   assert.match(command, /documentation_requires_revalidation/);
+  assert.match(command, /git merge-base --is-ancestor/);
+  assert.match(command, /git diff --name-only/);
+  assert.match(command, /documentation_descendant_scope/);
   assert.doesNotMatch(command, /cat .*\.env|keys\/|secrets\//);
 
   const observation = parseDocumentationObservation([
@@ -187,4 +190,31 @@ test('le déploiement Docker transmet le HEAD S1 comme révision OCI', async () 
   assert.match(dockerfile, /org\.opencontainers\.image\.revision="\$\{GIT_REVISION\}"/);
   assert.match(dockerfile, /org\.opencontainers\.image\.source="https:\/\/github\.com\/Patricked-code\/MCP"/);
   assert.match(compose, /GIT_REVISION: \$\{MCP_GIT_REVISION:-unknown\}/);
+});
+
+
+test('un SHA declare ancetre est accepte uniquement si le diff descendant est strictement documentaire', () => {
+  const declared = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+  const observation = parseDocumentationObservation([
+    'active_task=TASK-20260813-004 — EN COURS',
+    `declared_github_sha=${declared}`,
+    `declared_s1_sha=${SHA}`,
+    'documentation_descendant_scope=docs_only',
+    'documentation_requires_revalidation=false'
+  ].join('\n'), SHA, SHA);
+
+  assert.equal(observation.declaredGithubSha, declared);
+  assert.equal(observation.drift, false);
+});
+
+test('un SHA declare ancetre reste en drift si le diff descendant contient du code', () => {
+  const observation = parseDocumentationObservation([
+    'active_task=TASK-20260813-004 — EN COURS',
+    'declared_github_sha=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+    `declared_s1_sha=${SHA}`,
+    'documentation_descendant_scope=contains_runtime_changes',
+    'documentation_requires_revalidation=false'
+  ].join('\n'), SHA, SHA);
+
+  assert.equal(observation.drift, true);
 });

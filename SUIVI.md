@@ -13,63 +13,46 @@
 }
 ```
 
-Date : 2026-08-13
+Date : 2026-08-15
 
-## État frais après la seconde preuve automatique
+## Production attestée après la PR #44
 
-- GitHub `main` : `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2` (merge de la PR #43).
-- S1 `HEAD` et `origin/main` : même SHA ; branche `main`, arbre propre, diff vide.
-- Remote fetch : `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`.
-- Remote push : `disabled://mcp-s1-read-only`.
-- Docker : `wealthtech_mcp_ssh_bridge` `running` et `healthy`.
-- OCI/runtime : `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2`.
-- Image : `sha256:65465451fb4c3459b20aa9d96af9a81a39f95a68b5577973a74c61bdac0487cb`.
-- Live State observé à `2026-08-13T05:19:31.979Z` : `CURRENT`, `stateVersion=9`. Son ancien détecteur retourne encore à tort `documentation=ALIGNED` avec le SHA documentaire `9be5095…`; ce faux alignement est la reproduction RED du correctif en cours et n'est pas accepté comme preuve documentaire.
+- GitHub `main`, S1 `HEAD`, S1 `origin/main` et révision OCI/runtime : `3838c3918c3411a3317c6ea81047e77a7b627673`.
+- PR #44 fusionnée le 2026-08-13 ; CI push `31684159546` et Autodeploy `31684159586` réussis.
+- Job de déploiement `94396216832` : étape `Deploy exact main SHA through MCP` exécutée et réussie.
+- S1 : branche `main`, arbre propre, diff vide, fetch read-only et push `disabled://mcp-s1-read-only`.
+- Docker : conteneur `wealthtech_mcp_ssh_bridge` running/healthy ; image `sha256:644fbbc9c7c5a856cb33390ee6a11277047e074189d7b9f793ecbf06064c1581`.
+- Live State frais observé le 2026-08-15 : `stateVersion=14`, GitHub/S1/runtime alignés, mais documentation encore en `DOCUMENTATION_DRIFT` avant la passe finale post-hardening.
 
-## Preuves de déploiement
+## Findings tardifs de la PR #44
 
-- Bootstrap manuel : run `31655087215`, job GitHub `94307689798`, job MCP `mcp-s1-31655087215-8fb075dd55a3`, SHA `8fb075dd55a3b94ed620527f11b2a77f88627188`.
-- CI finale PR #42 : run `31658220076`, tous les contrôles critiques réussis.
-- Fusion locked-head PR #42 : `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7`.
-- Premier push automatique : CI `31658327373` réussie ; deploy `31658327435`, job `94317597740` réussi.
-- Étape `Deploy exact main SHA through MCP` : exécutée et réussie.
-- Job MCP : `mcp-s1-31658327435-9be5095cbf72` ; SHA exact `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7` attesté ; health/OAuth/MCP vrais ; rollback `not_needed`.
-- Seconde preuve canonique : PR #43 fusionnée au SHA `eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2` ; CI push `31659053828` réussie ; deploy push `31659053836`, job `94319801309`, réussi avec l'étape `Deploy exact main SHA through MCP` exécutée.
-- Attestation fraîche : GitHub, S1, `origin/main`, OCI et runtime égaux à `eb61b97e…`; S1 propre/read-only, conteneur running/healthy. L'identifiant interne du job MCP de cette seconde preuve n'est pas inventé lorsqu'il n'est pas exposé par la preuve consultée.
+Trois threads publiés après la fusion restaient ouverts :
 
-## Inventaire Markdown
+- P1 : saturation du store sessions à 1 000 enregistrements historiques ;
+- P1 : saturation du store locks à 2 000 enregistrements historiques ;
+- P2 : locks actifs non libérés lors de la fermeture de leur session.
 
-- Branche de travail courante : 191 Markdown, 191 chemins classifiés individuellement.
-- Miroir runtime fraîchement observé : 33 Markdown, dont 7 suivis par Git et 26 runtime-only.
-- Surface de production attestée au baseline : `189 + 26 = 215`; les deux nouveaux Markdown de spec/plan restent sur la branche et ne sont pas déclarés déployés.
-- Photographie historique : `183 + 26 = 209`.
-- Croissance Git historique : `183 → 189` (+6) ; aucun ensemble exact de six chemins n’est affirmé sans snapshot différentiel historique.
+Aucun incident immédiat n'était présent lors de l'attestation : aucune session active et aucun lock actif.
 
-## Revue P2
+## Draft PR #45 — durcissement Operational Memory
 
-- Thread PR #41 `PRRT_kwDOTJ-y6M6YoQ5j` résolu après correction fusionnée sur `main`.
-- Polling readiness : 20 tentatives maximales, requête bornée à 5 secondes, pause de 2 secondes, échec fermé.
-- TDD : RED `31657464793`, GREEN `31657546033`.
+- Branche gouvernée unique : `mcp/harden-operational-memory-retention-20260815`.
+- Draft PR : #45, base exacte `3838c3918c3411a3317c6ea81047e77a7b627673`.
+- Head fonctionnel avant consolidation documentaire : `101d4c481caa42568f9c50302ddd891935e86917`.
+- RED initial : `592b8506c14455e07852091282b918aa2b468730`, CI `31906835517`, six échecs attendus et discriminants.
+- GREEN initial : `12e52030b5a6ddb4f1120057086b0e5643c6579b`, CI push/PR réussies.
+- Revue interne RED : `7308d19c2153604dbe231236c6fbcaf46609a21d`, trois échecs attendus pour session terminale encore réconciliable et réconciliation documentaire post-merge.
+- GREEN final : `101d4c481caa42568f9c50302ddd891935e86917`, CI push `31907348932` et PR `31907350301` réussies.
+- Régression exacte : gouvernance `12/12`, read-only `184/184`, zéro fail ; typecheck, build, docs, secrets et `git diff --check` réussis.
+- Sessions : conservation de toutes les sessions actives et de toute session terminale portant encore des `lockIds`; purge déterministe des plus anciennes sessions terminales réconciliées ; échec explicite si aucune entrée n'est supprimable.
+- Locks : conservation de tous les locks actifs ; purge déterministe des plus anciens locks inactifs ; conflit toujours prioritaire ; échec explicite si la capacité est réellement active.
+- Close : libération durable des locks avant transition de session, projection `lockIds` vidée dans l'écriture de fermeture et réconciliation conservée après panne partielle.
+- Live State documentaire : un SHA déclaré différent reste en drift, sauf si ce SHA est prouvé ancêtre et que le diff descendant est strictement limité aux fichiers documentaires allowlistés.
+- Aucun thread/review GitHub n'est présent sur la PR #45 au moment de cette consolidation.
 
-## État de branche et revue de la draft PR #44
+## Invariants préservés
 
-- Branche unique : `mcp/session-continuity-v1-20260813`, commits petits et réversibles depuis la baseline immuable.
-- Draft PR unique : #44 vers `main`, créée sur la base exacte `eb61b97e…`; elle reste en brouillon et non fusionnée.
-- Head consolidé vérifié : `4eee32b8314ec5c287b6dd8308ceb02c50759884`; ultime confirmation sans finding critique/important, régression locale `187/187` et CI exacte `31681641604` réussie.
-- Correctif documentaire : un SHA déclaré ancien produit désormais `DOCUMENTATION_DRIFT`, sans changement des autres contrats Live State V1.
-- Operational Memory V1 : stores atomiques bornés, journal JSONL sanitizé réellement câblé, `governedSessionId` durable, reprise prouvée, transport remplacé/délié, checkpoints, heartbeats et locks gouvernés.
-- Surface MCP additive : onze outils de session, resource/instructions de contexte, deux outils de contexte et dashboard authentifié ; aucune architecture parallèle.
-- WRITE gate : `shadow` non bloquant même si l’évaluateur ou le journal ne répond jamais ; `ENABLE_WRITE_TOOLS`, `allow_write`, résultats, erreurs, arité et schémas historiques conservés.
-- Maintenance : un timer `60 s` avec `unref`, cycles single-flight, expiration/réparation sessions-locks et journalisation de compteurs uniquement ; aucune collecte GitHub/SSH ni écriture Live State périodique.
-- GitHub : la liste de rulesets sélectionne un seul actif puis charge son détail, avec sept appels maximum, timeout/cache/single-flight inchangés.
-- Reprises et audit : un échec durable sur le transport déjà lié conserve le binding légitime ; un `transport_closed` journalise l’instantané effectivement retiré même si une reprise s’entrelace.
-- Reviews : seul le dernier verdict décisif `APPROVED`/`CHANGES_REQUESTED` de chaque reviewer est compté ; `COMMENTED` ne l’efface pas et `DISMISSED` le lève explicitement.
-- Journal : `taskScope`, `agentIdentity`, `resultCode` de checkpoint et `scope` sont opaques ; les autres valeurs couvrent aussi PAT, JWT, PEM, Bearer, affectations sensibles et userinfo URI avant append.
-- Feature-off : aucune instruction ou ressource promise, aucun store chargé, projection dashboard explicitement désactivée.
-- Dashboard : le compteur réellement global est explicitement nommé « sessions actives globales ».
-- Régression fraîche : suite intégrale `187/187`, zéro fail/cancelled/skipped/todo ; typecheck, build, docs check, scan secrets et diff check réussis.
-- Invariants : `origin/main` reste `eb61b97e…`; Autodeploy V1, GitHub OIDC, `src/deploy` et `.mcp/autodeploy-policy.json` inchangés ; aucun fichier supprimé ; aucune écriture S1/runtime ; aucune 2FA.
-- Merge, autodeploy de cette branche et attestation post-merge : NON OBSERVÉS et non déclarés.
+Autodeploy V1, GitHub OIDC, les outils historiques, `ENABLE_WRITE_TOOLS`, `allow_write`, le WRITE gate `shadow`, les deux stores existants et l'exclusion 2FA restent inchangés. Aucun patch, build, restart ou déploiement direct n'a été exécuté sur S1.
 
 ## Tâche active
 
@@ -77,4 +60,4 @@ Date : 2026-08-13
 
 ## Prochaine action unique
 
-Maintenir la PR #44 en draft et demander l’autorisation humaine de la passer ready/merge exact-head. Au moment de l’autorisation, reverrouiller le head et exiger sa CI verte avant fusion.
+Valider la CI du head documentaire exact de la PR #45, reverrouiller la base et le head, passer la PR ready puis fusionner uniquement cette tête verte. Laisser Autodeploy V1 déployer, réattester GitHub/S1/OCI/runtime, résoudre les trois threads de la PR #44, puis effectuer une PR strictement documentaire finale déclarant le merge SHA de la PR #45.

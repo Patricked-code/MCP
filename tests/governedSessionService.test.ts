@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { randomUUID } from 'node:crypto';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -755,6 +756,146 @@ test('le compteur dashboard reflète seulement les sessions opérationnelles act
       identity: OAUTH_IDENTITY
     });
     assert.equal(await service.countActiveSessions(), 1);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+
+test('open conserve les sessions actives et purge deterministiquement la plus ancienne session terminale au plafond', async () => {
+  const { directory, store, service } = await fixture();
+  try {
+    const existing = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-retention-existing',
+      identity: OAUTH_IDENTITY
+    });
+    const template = (await store.read()).sessions[0]!;
+    const terminalSessions = Array.from({ length: 999 }, (_, index) => {
+      const terminalAt = new Date(Date.UTC(2026, 0, 1, 0, 0, index)).toISOString();
+      return {
+        ...template,
+        governedSessionId: randomUUID(),
+        status: 'CLOSED' as const,
+        createdAt: terminalAt,
+        lastHeartbeatAt: terminalAt,
+        closedAt: terminalAt,
+        currentTransport: null,
+        sessionRevision: 2
+      };
+    });
+    const oldestTerminalId = terminalSessions[0]!.governedSessionId;
+    await store.update(() => ({
+      schemaVersion: 1,
+      storeRevision: 1,
+      sessions: [template, ...terminalSessions]
+    }));
+
+    const opened = await service.openSession(
+      { ...OPEN_INPUT, taskScope: 'TASK-20260813-005' },
+      {
+        transportSessionId: 'transport-retention-new',
+        identity: OAUTH_IDENTITY
+      }
+    );
+    const persisted = await store.read();
+
+    assert.equal(persisted.sessions.length, 1_000);
+    assert.equal(
+      persisted.sessions.some((session) => (
+        session.governedSessionId === existing.session.governedSessionId
+      )),
+      true
+    );
+    assert.equal(
+      persisted.sessions.some((session) => (
+        session.governedSessionId === opened.session.governedSessionId
+      )),
+      true
+    );
+    assert.equal(
+      persisted.sessions.some((session) => session.governedSessionId === oldestTerminalId),
+      false
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('open echoue explicitement sans perdre le binding si le plafond ne contient aucune session terminale', async () => {
+  const { directory, store, bindings, service } = await fixture();
+  try {
+    await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-capacity-seed',
+      identity: OAUTH_IDENTITY
+    });
+    const template = (await store.read()).sessions[0]!;
+    await store.update(() => ({
+      schemaVersion: 1,
+      storeRevision: 1,
+      sessions: Array.from({ length: 1_000 }, () => ({
+        ...template,
+        governedSessionId: randomUUID(),
+        currentTransport: null
+      }))
+    }));
+
+    await assert.rejects(service.openSession(
+      { ...OPEN_INPUT, taskScope: 'TASK-20260813-006' },
+      {
+        transportSessionId: 'transport-capacity-rejected',
+        identity: OAUTH_IDENTITY
+      }
+    ), /SESSION_STORE_CAPACITY_EXCEEDED/);
+    assert.equal(bindings.lookup('transport-capacity-rejected'), null);
+    assert.equal((await store.read()).sessions.length, 1_000);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+
+test('open ne purge pas une session terminale portant encore une projection de lock a reconcilier', async () => {
+  const { directory, store, service } = await fixture();
+  try {
+    await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-locked-terminal-seed',
+      identity: OAUTH_IDENTITY
+    });
+    const template = (await store.read()).sessions[0]!;
+    const lockedTerminalId = randomUUID();
+    const lockedTerminal = {
+      ...template,
+      governedSessionId: lockedTerminalId,
+      status: 'CLOSED' as const,
+      closedAt: '2026-01-01T00:00:00.000Z',
+      currentTransport: null,
+      lockIds: [randomUUID()],
+      sessionRevision: 2
+    };
+    const activeSessions = Array.from({ length: 999 }, () => ({
+      ...template,
+      governedSessionId: randomUUID(),
+      currentTransport: null
+    }));
+    await store.update(() => ({
+      schemaVersion: 1,
+      storeRevision: 1,
+      sessions: [lockedTerminal, ...activeSessions]
+    }));
+
+    await assert.rejects(service.openSession(
+      { ...OPEN_INPUT, taskScope: 'TASK-20260813-007' },
+      {
+        transportSessionId: 'transport-locked-terminal-rejected',
+        identity: OAUTH_IDENTITY
+      }
+    ), /SESSION_STORE_CAPACITY_EXCEEDED/);
+    assert.equal(
+      (await store.read()).sessions.some((session) => (
+        session.governedSessionId === lockedTerminalId
+      )),
+      true
+    );
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
