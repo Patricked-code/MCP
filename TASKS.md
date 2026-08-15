@@ -27,20 +27,22 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - Les trois findings tardifs P1/P1/P2 de la PR #44 sont corrigés, testés et résolus.
 - La présente réconciliation canonique est strictement documentaire et ne change aucun invariant d'autorité.
 
-## Tâche clôturée
+## Tâche active unique
 
-### TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — TERMINÉE
+### TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — CORRECTION TARDIVE EN COURS
 
-- [x] conception, TDD, PR #44, fusion et Autodeploy exact-SHA ;
-- [x] détection et reproduction des trois findings tardifs ;
-- [x] rétention bornée sessions/locks avec échecs explicites ;
-- [x] libération des locks à la fermeture et réparation après panne partielle ;
-- [x] garde documentaire descendant strictement docs-only ;
-- [x] CI exacte `12/12 + 184/184` et contrôles de build/gouvernance ;
-- [x] PR #45 fusionnée et déployée au SHA exact ;
-- [x] S1, OCI, runtime et Docker réattestés ;
-- [x] trois threads PR #44 résolus ;
-- [x] documentation canonique réconciliée.
+- [x] portée initiale, PR #44/#45, Autodeploy et première réconciliation canonique ;
+- [x] qualification des trois threads tardifs PR #45 ;
+- [x] RED `e18f553d7f8423f301fd3f226a14fe835dac8a74` : 3 échecs ciblés sur 187 tests ;
+- [x] GREEN `fc27e7e342b2ebfdbde4adc830b151a4018f2b4e` : `12/12 + 188/188`, double CI verte ;
+- [x] préservation de la grâce de reprise des sessions expirées ;
+- [x] rétention des locks actifs au TTL écoulé avec audit et nettoyage de projection ;
+- [x] exception S1 docs-only limitée à la même référence GitHub déclarée ;
+- [x] journaux canoniques mis à jour avant déploiement ;
+- [ ] valider la CI et la revue du head canonique consolidé ;
+- [ ] fusionner PR #47 avec garde exact-head et attester l'Autodeploy ;
+- [ ] résoudre les trois threads tardifs PR #45 après déploiement attesté ;
+- [ ] publier la réconciliation documentaire finale et refermer la tâche.
 
 ## Interdictions préservées
 

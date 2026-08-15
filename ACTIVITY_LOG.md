@@ -173,3 +173,11 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Les threads PR #44 `PRRT_kwDOTJ-y6M6Y3wvB`, `PRRT_kwDOTJ-y6M6Y3wvI` et `PRRT_kwDOTJ-y6M6Y3wvR` ont reçu les preuves de correction puis ont été résolus.
 - La session gouvernée fonctionnelle a été checkpointée, son lock libéré et la session fermée sans lock résiduel.
 - La présente PR strictement documentaire réconcilie les huit sources canoniques et clôt `TASK-20260813-004`.
+
+## 2026-08-15T21:21:00Z — TASK-20260813-004 — Réouverture contrôlée après revue PR #47
+
+- La revue asynchrone du head `fc27e7e342b2ebfdbde4adc830b151a4018f2b4e` a exigé la mise à jour préalable de `SUIVI.md`, `CHANGELOG.md` et `DECISIONS_LOG.md`.
+- Le commit `1d4c392eb19b22848047b70ef78b299162ed14d5` a ajouté ces preuves ; CI push `31908986986` et PR `31908988519` réussies.
+- La seconde revue a identifié l'écart entre `SUIVI.md` réouvert et `TASKS.md` encore terminé.
+- Le présent commit synchronise `TASKS.md`, `TODO.md`, `PRODUCTION_STATE.json` et ce journal.
+- PR #47 reste non fusionnée et non déployée ; les trois threads PR #45 restent ouverts jusqu'à une attestation post-déploiement.
