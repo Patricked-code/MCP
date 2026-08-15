@@ -125,7 +125,8 @@ function retainSessionsForAppend(
   if (requiredSlots <= 0) return sessions;
 
   const removable = sessions.filter((session) => (
-    session.status === 'CLOSED' || session.status === 'EXPIRED'
+    (session.status === 'CLOSED' || session.status === 'EXPIRED')
+    && session.lockIds.length === 0
   )).sort((left, right) => (
     sessionTerminalTime(left) - sessionTerminalTime(right)
     || left.governedSessionId.localeCompare(right.governedSessionId)
