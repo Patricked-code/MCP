@@ -232,3 +232,15 @@ test('un descendant docs-only couvre aussi le SHA S1 declare ancetre', () => {
   assert.equal(observation.declaredS1Sha, declared);
   assert.equal(observation.drift, false);
 });
+
+test('un descendant docs-only ne masque pas une declaration S1 differente de la reference GitHub', () => {
+  const observation = parseDocumentationObservation([
+    'active_task=',
+    'declared_github_sha=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+    'declared_s1_sha=cccccccccccccccccccccccccccccccccccccccc',
+    'documentation_descendant_scope=docs_only',
+    'documentation_requires_revalidation=false'
+  ].join('\n'), SHA, SHA);
+
+  assert.equal(observation.drift, true);
+});

@@ -171,6 +171,10 @@ export function parseDocumentationObservation(
     declaredS1Sha
     && observedS1Sha
     && declaredS1Sha !== observedS1Sha
+    && !(
+      values.documentation_descendant_scope === 'docs_only'
+      && declaredS1Sha === declaredGithubSha
+    )
   );
   const drift = values.documentation_requires_revalidation === 'true'
     || explicitGithubMismatch
