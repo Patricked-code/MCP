@@ -218,3 +218,17 @@ test('un SHA declare ancetre reste en drift si le diff descendant contient du co
 
   assert.equal(observation.drift, true);
 });
+
+test('un descendant docs-only couvre aussi le SHA S1 declare ancetre', () => {
+  const declared = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+  const observation = parseDocumentationObservation([
+    'active_task=',
+    `declared_github_sha=${declared}`,
+    `declared_s1_sha=${declared}`,
+    'documentation_descendant_scope=docs_only',
+    'documentation_requires_revalidation=false'
+  ].join('\n'), SHA, SHA);
+
+  assert.equal(observation.declaredS1Sha, declared);
+  assert.equal(observation.drift, false);
+});

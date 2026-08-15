@@ -900,3 +900,63 @@ test('open ne purge pas une session terminale portant encore une projection de l
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('open preserve une session expiree encore reprenable et purge une session definitivement terminale', async () => {
+  const { directory, store, service } = await fixture();
+  try {
+    await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-resume-grace-seed',
+      identity: OAUTH_IDENTITY
+    });
+    const template = (await store.read()).sessions[0]!;
+    const resumableExpiredId = randomUUID();
+    const closedId = randomUUID();
+    const resumableExpired = {
+      ...template,
+      governedSessionId: resumableExpiredId,
+      status: 'EXPIRED' as const,
+      expiredAt: '2026-08-13T06:50:00.000Z',
+      currentTransport: null,
+      sessionRevision: 2
+    };
+    const closed = {
+      ...template,
+      governedSessionId: closedId,
+      status: 'CLOSED' as const,
+      closedAt: '2026-08-13T06:55:00.000Z',
+      currentTransport: null,
+      sessionRevision: 2
+    };
+    const activeSessions = Array.from({ length: 998 }, () => ({
+      ...template,
+      governedSessionId: randomUUID(),
+      currentTransport: null
+    }));
+    await store.update(() => ({
+      schemaVersion: 1,
+      storeRevision: 1,
+      sessions: [resumableExpired, closed, ...activeSessions]
+    }));
+
+    await service.openSession(
+      { ...OPEN_INPUT, taskScope: 'TASK-20260813-008' },
+      {
+        transportSessionId: 'transport-resume-grace-new',
+        identity: OAUTH_IDENTITY
+      }
+    );
+    const persisted = await store.read();
+
+    assert.equal(persisted.sessions.length, 1_000);
+    assert.equal(
+      persisted.sessions.some((session) => session.governedSessionId === resumableExpiredId),
+      true
+    );
+    assert.equal(
+      persisted.sessions.some((session) => session.governedSessionId === closedId),
+      false
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});

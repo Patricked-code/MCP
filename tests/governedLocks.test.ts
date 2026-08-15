@@ -528,3 +528,48 @@ test('close reste fail-closed si les locks sont liberes mais que la transition d
     await rm(f.directory, { recursive: true, force: true });
   }
 });
+
+test('acquire traite un lock ACTIVE au TTL ecoule comme supprimable au plafond', async () => {
+  const f = await fixture();
+  try {
+    const opened = await f.open('TASK-20260813-004', 'transport-elapsed-capacity');
+    const elapsedLockId = randomUUID();
+    const acquiredAt = '2026-08-13T07:00:00.000Z';
+    const unexpired = Array.from({ length: 1_999 }, (_, index) => ({
+      schemaVersion: 1 as const,
+      lockId: randomUUID(),
+      scope: `resource:active-unexpired/${index}`,
+      governedSessionId: opened.session.governedSessionId,
+      acquiredAt,
+      expiresAt: '2026-08-13T08:30:00.000Z',
+      renewedAt: acquiredAt,
+      reason: 'unexpired active capacity',
+      status: 'ACTIVE' as const,
+      lockRevision: 1
+    }));
+    await f.lockStore.update(() => ({
+      schemaVersion: 1,
+      storeRevision: 1,
+      locks: [{
+        ...unexpired[0]!,
+        lockId: elapsedLockId,
+        scope: 'resource:elapsed-active',
+        expiresAt: '2026-08-13T07:59:59.000Z'
+      }, ...unexpired]
+    }));
+
+    const acquired = await f.locks.acquireLock({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      scope: { type: 'repository', key: 'Patricked-code/MCP' },
+      reason: 'elapsed capacity replacement'
+    }, { transportSessionId: 'transport-elapsed-capacity', identity: IDENTITY });
+    const persisted = await f.lockStore.read();
+
+    assert.equal(persisted.locks.length, 2_000);
+    assert.equal(persisted.locks.some((lock) => lock.lockId === elapsedLockId), false);
+    assert.equal(persisted.locks.some((lock) => lock.lockId === acquired.lockId), true);
+  } finally {
+    await rm(f.directory, { recursive: true, force: true });
+  }
+});
