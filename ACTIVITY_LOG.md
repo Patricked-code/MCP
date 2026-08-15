@@ -163,4 +163,3 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Correctif Live State initial `15244ff…` rejeté au typecheck ; cause racine identifiée comme expansion spéciale `$'` de `String.replace`, fichier reconstruit depuis le parent sain.
 - GREEN final `101d4c481caa42568f9c50302ddd891935e86917` : CI push `31907348932` et PR `31907350301` réussies ; gouvernance `12/12`, read-only `184/184`.
 - PR #45 toujours draft ; aucun merge, déploiement S1/runtime ou résolution de thread n'est encore déclaré.
-

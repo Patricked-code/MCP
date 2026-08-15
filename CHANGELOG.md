@@ -262,4 +262,3 @@ Mise à jour : 2026-07-09T20:08:09Z
 - TDD : RED `592b8506…` / GREEN `12e52030…`, puis RED `7308d19…` / GREEN `101d4c481caa42568f9c50302ddd891935e86917`.
 - CI finale fonctionnelle : `31907348932` et `31907350301`, `12/12 + 184/184` tests, typecheck/build/docs/secrets/diff verts.
 - Aucun changement d'Autodeploy, OIDC, outils historiques, `ENABLE_WRITE_TOOLS`, `allow_write`, WRITE gate `shadow` ou 2FA.
-
