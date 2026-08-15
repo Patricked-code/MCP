@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { randomUUID } from 'node:crypto';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -38,16 +39,24 @@ async function fixture(audit?: { record(input: { type: string }): Promise<void> 
   const bindings = createTransportBindings();
   let currentTime = new Date('2026-08-13T08:00:00.000Z');
   let renewLocks: ((governedSessionId: string, at: Date) => Promise<unknown>) | null = null;
-  const sessions = createGovernedSessionService({
+  let releaseLocksForSession = (_governedSessionId: string): Promise<unknown> => (
+    Promise.resolve([])
+  );
+  const sessionOptions = {
     store: sessionStore,
     bindings,
     idleTtlSeconds: 86_400,
     resumeGraceSeconds: 604_800,
     now: () => currentTime,
     getLiveState: async () => ({ stateVersion: 9 }),
-    renewLocksForHeartbeat: (governedSessionId, at) => renewLocks?.(governedSessionId, at)
-      ?? Promise.resolve([])
-  });
+    renewLocksForHeartbeat: (governedSessionId: string, at: Date) => (
+      renewLocks?.(governedSessionId, at) ?? Promise.resolve([])
+    ),
+    releaseLocksForSession: (governedSessionId: string) => (
+      releaseLocksForSession(governedSessionId)
+    )
+  };
+  const sessions = createGovernedSessionService(sessionOptions);
   const locks = createGovernedLockService({
     store: lockStore,
     sessionStore,
@@ -58,6 +67,11 @@ async function fixture(audit?: { record(input: { type: string }): Promise<void> 
     audit
   });
   renewLocks = locks.renewLocksForHeartbeat;
+  releaseLocksForSession = (governedSessionId) => (
+    (locks as typeof locks & {
+      releaseLocksForSession(id: string): Promise<unknown>;
+    }).releaseLocksForSession(governedSessionId)
+  );
 
   async function open(taskScope: string, transportSessionId: string) {
     return sessions.openSession({
@@ -322,6 +336,194 @@ test('la réconciliation répare un lockId de session après panne inter-fichier
     assert.equal(await recoveringLocks.reconcileSessionLockIds(), 1);
     assert.deepEqual((await f.sessionStore.read()).sessions[0]?.lockIds, []);
     assert.deepEqual(await recoveringLocks.listActiveLocks(), []);
+  } finally {
+    await rm(f.directory, { recursive: true, force: true });
+  }
+});
+
+
+test('acquire conserve les locks actifs et purge deterministiquement le plus ancien lock inactif au plafond', async () => {
+  const f = await fixture();
+  try {
+    const opened = await f.open('TASK-20260813-004', 'transport-retention');
+    const inactiveLocks = Array.from({ length: 2_000 }, (_, index) => {
+      const acquiredAt = new Date(Date.UTC(2026, 0, 1, 0, 0, index)).toISOString();
+      return {
+        schemaVersion: 1 as const,
+        lockId: randomUUID(),
+        scope: `resource:history/${index}`,
+        governedSessionId: opened.session.governedSessionId,
+        acquiredAt,
+        expiresAt: acquiredAt,
+        renewedAt: acquiredAt,
+        reason: 'historical terminal lock',
+        status: 'RELEASED' as const,
+        lockRevision: 2
+      };
+    });
+    const oldestInactiveId = inactiveLocks[0]!.lockId;
+    await f.lockStore.update(() => ({
+      schemaVersion: 1,
+      storeRevision: 1,
+      locks: inactiveLocks
+    }));
+
+    const acquired = await f.locks.acquireLock({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      scope: { type: 'repository', key: 'Patricked-code/MCP' },
+      reason: 'retention boundary'
+    }, { transportSessionId: 'transport-retention', identity: IDENTITY });
+    const persisted = await f.lockStore.read();
+
+    assert.equal(persisted.locks.length, 2_000);
+    assert.equal(
+      persisted.locks.some((lock) => lock.lockId === acquired.lockId && lock.status === 'ACTIVE'),
+      true
+    );
+    assert.equal(persisted.locks.some((lock) => lock.lockId === oldestInactiveId), false);
+  } finally {
+    await rm(f.directory, { recursive: true, force: true });
+  }
+});
+
+test('acquire echoue explicitement lorsque le plafond est entierement occupe par des locks actifs', async () => {
+  const f = await fixture();
+  try {
+    const opened = await f.open('TASK-20260813-004', 'transport-capacity');
+    const acquiredAt = '2026-08-13T08:00:00.000Z';
+    await f.lockStore.update(() => ({
+      schemaVersion: 1,
+      storeRevision: 1,
+      locks: Array.from({ length: 2_000 }, (_, index) => ({
+        schemaVersion: 1 as const,
+        lockId: randomUUID(),
+        scope: `resource:active/${index}`,
+        governedSessionId: opened.session.governedSessionId,
+        acquiredAt,
+        expiresAt: '2026-08-13T08:30:00.000Z',
+        renewedAt: acquiredAt,
+        reason: 'active capacity',
+        status: 'ACTIVE' as const,
+        lockRevision: 1
+      }))
+    }));
+
+    await assert.rejects(f.locks.acquireLock({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      scope: { type: 'repository', key: 'Patricked-code/MCP' },
+      reason: 'capacity rejected'
+    }, { transportSessionId: 'transport-capacity', identity: IDENTITY }),
+    /LOCK_STORE_CAPACITY_EXCEEDED/);
+    assert.equal((await f.lockStore.read()).locks.length, 2_000);
+  } finally {
+    await rm(f.directory, { recursive: true, force: true });
+  }
+});
+
+test('close libere les locks actifs, vide la projection et rend le scope immediatement disponible', async () => {
+  const f = await fixture();
+  try {
+    const first = await f.open('TASK-20260813-004', 'transport-close-A');
+    const acquired = await f.locks.acquireLock({
+      governedSessionId: first.session.governedSessionId,
+      expectedSessionRevision: first.session.sessionRevision,
+      scope: { type: 'repository', key: 'Patricked-code/MCP' },
+      reason: 'close lifecycle'
+    }, { transportSessionId: 'transport-close-A', identity: IDENTITY });
+    const afterAcquire = await f.sessions.getVisibleSession(
+      first.session.governedSessionId,
+      { transportSessionId: 'transport-close-A', identity: IDENTITY }
+    );
+
+    const closed = await f.sessions.closeSession({
+      governedSessionId: first.session.governedSessionId,
+      expectedSessionRevision: afterAcquire?.sessionRevision ?? -1
+    }, { transportSessionId: 'transport-close-A', identity: IDENTITY });
+
+    assert.equal(closed.status, 'CLOSED');
+    assert.deepEqual(closed.lockIds, []);
+    assert.deepEqual(await f.locks.listActiveLocks(), []);
+    assert.equal(
+      (await f.lockStore.read()).locks.find((lock) => lock.lockId === acquired.lockId)?.status,
+      'RELEASED'
+    );
+
+    const second = await f.open('TASK-20260813-005', 'transport-close-B');
+    const reacquired = await f.locks.acquireLock({
+      governedSessionId: second.session.governedSessionId,
+      expectedSessionRevision: second.session.sessionRevision,
+      scope: { type: 'repository', key: 'Patricked-code/MCP' },
+      reason: 'scope available after close'
+    }, { transportSessionId: 'transport-close-B', identity: IDENTITY });
+    assert.equal(reacquired.status, 'ACTIVE');
+  } finally {
+    await rm(f.directory, { recursive: true, force: true });
+  }
+});
+
+test('close reste fail-closed si les locks sont liberes mais que la transition de session echoue', async () => {
+  const f = await fixture();
+  try {
+    const opened = await f.open('TASK-20260813-004', 'transport-close-failure');
+    const acquired = await f.locks.acquireLock({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      scope: { type: 'repository', key: 'Patricked-code/MCP' },
+      reason: 'partial failure'
+    }, { transportSessionId: 'transport-close-failure', identity: IDENTITY });
+    const afterAcquire = await f.sessions.getVisibleSession(
+      opened.session.governedSessionId,
+      { transportSessionId: 'transport-close-failure', identity: IDENTITY }
+    );
+    const closingOptions = {
+      store: f.sessionStore,
+      bindings: f.bindings,
+      idleTtlSeconds: 86_400,
+      resumeGraceSeconds: 604_800,
+      now: () => new Date('2026-08-13T08:01:00.000Z'),
+      async releaseLocksForSession(governedSessionId: string) {
+        await f.lockStore.update((document) => ({
+          ...document,
+          storeRevision: document.storeRevision + 1,
+          locks: document.locks.map((lock) => (
+            lock.governedSessionId === governedSessionId && lock.status === 'ACTIVE'
+              ? { ...lock, status: 'RELEASED' as const, lockRevision: lock.lockRevision + 1 }
+              : lock
+          ))
+        }));
+        throw new Error('INJECTED_POST_LOCK_RELEASE_FAILURE');
+      }
+    };
+    const closingService = createGovernedSessionService(closingOptions);
+
+    await assert.rejects(closingService.closeSession({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: afterAcquire?.sessionRevision ?? -1
+    }, { transportSessionId: 'transport-close-failure', identity: IDENTITY }),
+    /INJECTED_POST_LOCK_RELEASE_FAILURE/);
+
+    assert.equal(
+      (await f.sessionStore.read()).sessions[0]?.status,
+      'OPEN'
+    );
+    assert.equal(
+      (await f.lockStore.read()).locks.find((lock) => lock.lockId === acquired.lockId)?.status,
+      'RELEASED'
+    );
+    assert.deepEqual((await f.sessionStore.read()).sessions[0]?.lockIds, [acquired.lockId]);
+    assert.equal(await f.locks.reconcileSessionLockIds(), 1);
+    const reconciled = await f.sessions.getVisibleSession(
+      opened.session.governedSessionId,
+      { transportSessionId: 'transport-close-failure', identity: IDENTITY }
+    );
+    const closed = await f.sessions.closeSession({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: reconciled?.sessionRevision ?? -1
+    }, { transportSessionId: 'transport-close-failure', identity: IDENTITY });
+    assert.equal(closed.status, 'CLOSED');
+    assert.deepEqual(closed.lockIds, []);
   } finally {
     await rm(f.directory, { recursive: true, force: true });
   }
