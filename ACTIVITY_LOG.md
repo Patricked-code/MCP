@@ -163,3 +163,13 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Correctif Live State initial `15244ff…` rejeté au typecheck ; cause racine identifiée comme expansion spéciale `$'` de `String.replace`, fichier reconstruit depuis le parent sain.
 - GREEN final `101d4c481caa42568f9c50302ddd891935e86917` : CI push `31907348932` et PR `31907350301` réussies ; gouvernance `12/12`, read-only `184/184`.
 - PR #45 toujours draft ; aucun merge, déploiement S1/runtime ou résolution de thread n'est encore déclaré.
+
+## 2026-08-15T20:54:00Z — TASK-20260813-004 — Fusion, déploiement et clôture
+
+- PR #45 reverrouillée sur `e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d` après CI push `31907681047` et PR `31907683383` réussies.
+- Fusion squash `bac8779320c8b9529d2a5215dbb1b1f31f828987` avec garde `expected_head_sha`.
+- CI main `31907827255` et Autodeploy `31907827212` réussis ; job `95068288136`, étape exact-SHA exécutée.
+- Attestation indépendante : GitHub, dépôt S1, OCI et runtime alignés ; S1 propre/read-only ; Docker running/healthy ; image `sha256:5a64f24f937718c392ccd2d8ac6387d5ceb1bc0535d2dcc6f3efbb7f7c8e4fc8`.
+- Les threads PR #44 `PRRT_kwDOTJ-y6M6Y3wvB`, `PRRT_kwDOTJ-y6M6Y3wvI` et `PRRT_kwDOTJ-y6M6Y3wvR` ont reçu les preuves de correction puis ont été résolus.
+- La session gouvernée fonctionnelle a été checkpointée, son lock libéré et la session fermée sans lock résiduel.
+- La présente PR strictement documentaire réconcilie les huit sources canoniques et clôt `TASK-20260813-004`.

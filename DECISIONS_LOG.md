@@ -253,3 +253,13 @@ Décision de cycle de vie : libérer durablement les locks dans leur store avant
 Décision documentaire : l'égalité stricte entre le SHA déclaré dans un fichier et le SHA du commit contenant ce même fichier est auto-référente et inexécutable. Un SHA déclaré différent n'est accepté que s'il est un ancêtre Git et si tous les chemins descendants appartiennent à l'allowlist documentaire. Toute modification de code, tout SHA inconnu et tout signal `requires_revalidation` restent en drift.
 
 Limites : cette décision n'élargit aucune autorité, ne modifie aucun outil historique, ne remplace aucun store et ne touche ni Autodeploy/OIDC, ni `ENABLE_WRITE_TOOLS`, `allow_write`, le gate `shadow` ou la 2FA.
+
+## 2026-08-15 — Clôture de TASK-20260813-004
+
+Décision : accepter la correction Operational Memory uniquement après double CI du head exact, fusion gardée par `expected_head_sha`, Autodeploy exact-SHA et attestation indépendante GitHub/S1/OCI/runtime.
+
+Décision : résoudre les findings tardifs de la PR #44 seulement après déploiement attesté du merge `bac8779320c8b9529d2a5215dbb1b1f31f828987`. Les trois threads P1/P1/P2 ont suivi cette séquence.
+
+Décision : la clôture canonique est portée par une PR séparée ne modifiant que huit documents. Elle déclare le merge fonctionnel comme ancêtre ; Live State n'accepte le descendant que si Git prouve une portée strictement documentaire. Cette exception ne couvre jamais un changement de code, un SHA inconnu ou un état nécessitant revalidation.
+
+Résultat : `TASK-20260813-004` est terminée, sans modification d'Autodeploy/OIDC, des outils historiques, de `ENABLE_WRITE_TOOLS`, `allow_write`, du gate `shadow` ou de la 2FA.

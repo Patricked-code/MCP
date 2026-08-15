@@ -19,31 +19,30 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ## Jalons terminés
 
-- PR #34 à #44 fusionnées selon la gouvernance.
-- Live State V1, Autodeploy V1 et Governed Session Continuity V1 déployés.
+- PR #34 à #45 fusionnées selon la gouvernance.
+- Live State V1, Autodeploy V1 et Governed Session Continuity / Operational Memory V1 déployés.
 - PR #44 : merge `3838c3918c3411a3317c6ea81047e77a7b627673`, CI `31684159546`, deploy `31684159586`, job `94396216832`.
-- GitHub, S1, `origin/main`, OCI et runtime alignés sur `3838c3918c3411a3317c6ea81047e77a7b627673`; S1 propre et runtime healthy.
-- Les trois findings tardifs de la PR #44 sont reproduits et corrigés sur la draft PR #45.
-- Le head fonctionnel `101d4c481caa42568f9c50302ddd891935e86917` a passé `12/12 + 184/184` tests, typecheck, build, docs, secrets et diff.
+- PR #45 : head verrouillé `e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d`, merge `bac8779320c8b9529d2a5215dbb1b1f31f828987`, CI `31907827255`, deploy `31907827212`, job `95068288136`.
+- S1 propre/read-only, Docker running/healthy et OCI/runtime réattestés sur le merge de la PR #45.
+- Les trois findings tardifs P1/P1/P2 de la PR #44 sont corrigés, testés et résolus.
+- La présente réconciliation canonique est strictement documentaire et ne change aucun invariant d'autorité.
 
-## Tâche active unique
+## Tâche clôturée
 
-### TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — EN COURS
+### TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — TERMINÉE
 
-- [x] conception, TDD initial, PR #44, fusion et Autodeploy exact-SHA ;
-- [x] détection des trois findings tardifs P1/P1/P2 ;
-- [x] governed session et lock dépôt ouverts pour la correction ;
-- [x] RED `592b8506…` puis GREEN `12e52030…` ;
-- [x] revue interne RED `7308d19…` puis GREEN final `101d4c481caa42568f9c50302ddd891935e86917` ;
-- [x] conservation des sessions terminales non encore réconciliées ;
-- [x] règle docs-only descendante sans affaiblir le drift des changements de code ;
-- [x] CI push `31907348932` et PR `31907350301` vertes ;
-- [ ] consolidation documentaire finale de la PR #45, CI et reverrouillage exact-head ;
-- [ ] ready/merge PR #45, Autodeploy et attestation post-merge ;
-- [ ] résolution des trois threads PR #44 ;
-- [ ] PR documentaire finale, Live State `FULLY_ALIGNED` et clôture.
+- [x] conception, TDD, PR #44, fusion et Autodeploy exact-SHA ;
+- [x] détection et reproduction des trois findings tardifs ;
+- [x] rétention bornée sessions/locks avec échecs explicites ;
+- [x] libération des locks à la fermeture et réparation après panne partielle ;
+- [x] garde documentaire descendant strictement docs-only ;
+- [x] CI exacte `12/12 + 184/184` et contrôles de build/gouvernance ;
+- [x] PR #45 fusionnée et déployée au SHA exact ;
+- [x] S1, OCI, runtime et Docker réattestés ;
+- [x] trois threads PR #44 résolus ;
+- [x] documentation canonique réconciliée.
 
-## Interdictions
+## Interdictions préservées
 
 - aucun push direct sur `main` ;
 - aucune écriture ou branche GitHub depuis S1 ;
