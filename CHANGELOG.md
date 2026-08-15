@@ -273,3 +273,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - S1, OCI/runtime et Docker réattestés ; trois threads tardifs PR #44 résolus.
 - Documentation canonique réconciliée ; `TASK-20260813-004` terminée.
 - Aucun élargissement d'autorité ni changement d'Autodeploy, OIDC, outils historiques, WRITE gate, 2FA ou écriture directe S1.
+
+## Non publié — correction tardive PR #47
+
+- Préservation des sessions expirées encore reprenables pendant `resumeGraceSeconds`.
+- Rétention des locks actifs au TTL écoulé lorsque le store atteint sa capacité, avec événement d'expiration et nettoyage de la projection de session.
+- Exception docs-only S1 limitée à la même référence déclarée que GitHub ; des déclarations divergentes restent bloquantes.
+- TDD RED `e18f553d7f8423f301fd3f226a14fe835dac8a74` : 3 échecs ciblés sur 187 tests.
+- GREEN `fc27e7e342b2ebfdbde4adc830b151a4018f2b4e` : CI `31908660001` et `31908662058`, `12/12 + 188/188`, zéro échec.
+- État : PR #47 en validation, non fusionnée et non déployée à cette étape.

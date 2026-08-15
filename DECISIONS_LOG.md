@@ -263,3 +263,13 @@ Décision : résoudre les findings tardifs de la PR #44 seulement après déploi
 Décision : la clôture canonique est portée par une PR séparée ne modifiant que huit documents. Elle déclare le merge fonctionnel comme ancêtre ; Live State n'accepte le descendant que si Git prouve une portée strictement documentaire. Cette exception ne couvre jamais un changement de code, un SHA inconnu ou un état nécessitant revalidation.
 
 Résultat : `TASK-20260813-004` est terminée, sans modification d'Autodeploy/OIDC, des outils historiques, de `ENABLE_WRITE_TOOLS`, `allow_write`, du gate `shadow` ou de la 2FA.
+
+## 2026-08-15 — Gate de revue tardive PR #47
+
+Décision : une session `EXPIRED` n'est définitivement supprimable que lorsque la condition de refus de `resumeSession` est vraie, soit un dépassement strict de `resumeGraceSeconds` ou un horodatage inexploitable.
+
+Décision : à capacité, un lock `ACTIVE` dont `expiresAt` est écoulé est logiquement inactif. Sa suppression en rétention produit une preuve `lock.expired` et retire sa projection de session dans la mise à jour inter-store ; la réconciliation existante reste le filet après panne partielle.
+
+Décision : la dérogation docs-only au mismatch S1 exige que le SHA S1 déclaré soit identique au SHA GitHub déclaré ancêtre. Cette contrainte évite de masquer deux déclarations canoniques divergentes.
+
+Gate : aucune fusion de la PR #47 avant mise à jour des journaux canoniques, CI exacte du nouveau head, revue sans thread non résolu, Autodeploy post-merge et réconciliation documentaire finale.

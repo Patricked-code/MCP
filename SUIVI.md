@@ -47,10 +47,22 @@ Date : 2026-08-15
 
 Les trois threads tardifs de la PR #44 (`PRRT_kwDOTJ-y6M6Y3wvB`, `PRRT_kwDOTJ-y6M6Y3wvI`, `PRRT_kwDOTJ-y6M6Y3wvR`) sont résolus avec références à la PR #45 fusionnée et déployée.
 
+## Correction tardive PR #47 — en validation
+
+La revue asynchrone de la PR #45 a identifié trois cas limites supplémentaires :
+
+- une session `EXPIRED` reste conservée tant que la même grâce que `resumeSession` autorise encore sa reprise ;
+- un lock `ACTIVE` au TTL écoulé devient supprimable à capacité, avec journalisation d'expiration et nettoyage de projection réconciliable ;
+- l'exception docs-only couvre le SHA S1 déclaré seulement s'il correspond à la même référence ancêtre GitHub ; toute divergence reste en drift.
+
+TDD : RED `e18f553d7f8423f301fd3f226a14fe835dac8a74`, exactement 3 échecs sur 187 tests ; GREEN `fc27e7e342b2ebfdbde4adc830b151a4018f2b4e`, CI push `31908660001` et PR `31908662058`, gouvernance `12/12` et read-only `188/188`.
+
+La PR #47 n'est pas encore fusionnée ni déployée. Le runtime attesté reste celui déclaré dans la section d'état fonctionnel.
+
 ## Tâche
 
-`TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — TERMINÉE`
+`TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — CORRECTION TARDIVE EN COURS`
 
 ## Prochaine action
 
-Aucune action fonctionnelle ou documentaire restante dans ce périmètre. La maintenance Node 24 demeure une tâche séparée ; la 2FA GitHub reste explicitement exclue.
+Valider la CI et la revue du head documentaire consolidé de la PR #47, reverrouiller puis fusionner exact-head. Attester l'Autodeploy, résoudre les trois threads PR #45 et publier une dernière réconciliation strictement documentaire.
