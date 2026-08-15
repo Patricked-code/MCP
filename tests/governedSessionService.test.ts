@@ -852,3 +852,51 @@ test('open echoue explicitement sans perdre le binding si le plafond ne contient
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+
+test('open ne purge pas une session terminale portant encore une projection de lock a reconcilier', async () => {
+  const { directory, store, service } = await fixture();
+  try {
+    await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-locked-terminal-seed',
+      identity: OAUTH_IDENTITY
+    });
+    const template = (await store.read()).sessions[0]!;
+    const lockedTerminalId = randomUUID();
+    const lockedTerminal = {
+      ...template,
+      governedSessionId: lockedTerminalId,
+      status: 'CLOSED' as const,
+      closedAt: '2026-01-01T00:00:00.000Z',
+      currentTransport: null,
+      lockIds: [randomUUID()],
+      sessionRevision: 2
+    };
+    const activeSessions = Array.from({ length: 999 }, () => ({
+      ...template,
+      governedSessionId: randomUUID(),
+      currentTransport: null
+    }));
+    await store.update(() => ({
+      schemaVersion: 1,
+      storeRevision: 1,
+      sessions: [lockedTerminal, ...activeSessions]
+    }));
+
+    await assert.rejects(service.openSession(
+      { ...OPEN_INPUT, taskScope: 'TASK-20260813-007' },
+      {
+        transportSessionId: 'transport-locked-terminal-rejected',
+        identity: OAUTH_IDENTITY
+      }
+    ), /SESSION_STORE_CAPACITY_EXCEEDED/);
+    assert.equal(
+      (await store.read()).sessions.some((session) => (
+        session.governedSessionId === lockedTerminalId
+      )),
+      true
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
