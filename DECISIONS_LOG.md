@@ -273,3 +273,13 @@ Décision : à capacité, un lock `ACTIVE` dont `expiresAt` est écoulé est log
 Décision : la dérogation docs-only au mismatch S1 exige que le SHA S1 déclaré soit identique au SHA GitHub déclaré ancêtre. Cette contrainte évite de masquer deux déclarations canoniques divergentes.
 
 Gate : aucune fusion de la PR #47 avant mise à jour des journaux canoniques, CI exacte du nouveau head, revue sans thread non résolu, Autodeploy post-merge et réconciliation documentaire finale.
+
+## 2026-08-22 — Clôture de la correction tardive Operational Memory
+
+Décision : une session `EXPIRED` reste conservée exactement pendant la fenêtre où `resumeSession` autorise encore sa reprise ; sa suppression n'est permise qu'après dépassement strict de la grâce ou horodatage inexploitable.
+
+Décision : un lock `ACTIVE` dont le TTL est écoulé est logiquement inactif à capacité. Sa rétention produit `lock.expired`, nettoie les projections de session et conserve la réconciliation comme filet après panne partielle.
+
+Décision : la dérogation descendant docs-only couvre le mismatch S1 uniquement si le SHA S1 déclaré est égal au SHA GitHub déclaré ancêtre. Toute divergence, tout code descendant ou `requires_revalidation` reste bloquant.
+
+Gate satisfait : PR #47 fusionnée au SHA `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`, CI/Autodeploy exact-SHA réussis, S1/runtime réattestés, trois threads PR #45 résolus. La PR #48 est limitée aux huit documents canoniques et clôt `TASK-20260813-004` sans élargissement d'autorité.

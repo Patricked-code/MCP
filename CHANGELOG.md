@@ -282,3 +282,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - TDD RED `e18f553d7f8423f301fd3f226a14fe835dac8a74` : 3 échecs ciblés sur 187 tests.
 - GREEN `fc27e7e342b2ebfdbde4adc830b151a4018f2b4e` : CI `31908660001` et `31908662058`, `12/12 + 188/188`, zéro échec.
 - État : PR #47 en validation, non fusionnée et non déployée à cette étape.
+
+## 2026-08-22 — Correction tardive PR #47 déployée et clôture canonique
+
+- Préserve les sessions `EXPIRED` encore reprenables pendant `resumeGraceSeconds`.
+- Rend supprimables à capacité les locks `ACTIVE` au TTL écoulé, avec événement `lock.expired` et nettoyage des projections de session.
+- Étend l'exception descendant docs-only au S1 déclaré seulement lorsque sa référence est identique à l'ancêtre GitHub déclaré.
+- TDD PR #47 : RED `e18f553d7f8423f301fd3f226a14fe835dac8a74` (3/187 échecs ciblés), GREEN final `8dddc5656aa959f4c392d0f1816b5ee0e25709a0` (`12/12 + 188/188`, zéro échec).
+- Merge `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`, CI main `32535404248`, Autodeploy `32535404345`, job `96935241275`, S1/runtime exact-SHA healthy.
+- Trois threads PR #45 résolus ; PR #48 strictement documentaire pour la réconciliation finale.

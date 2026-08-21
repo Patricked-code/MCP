@@ -6,11 +6,11 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "githubObservedAt": "2026-08-15T20:52:47.873Z",
-  "githubObservationBasis": "github_connector_pr45_exact_head_main_ci_deploy_jobs_plus_wealthtech_bridge_post_deploy_attestation",
-  "serverStateFreshness": "current_post_pr45_attestation",
-  "runtimeStateFreshness": "current_exact_sha_post_pr45",
-  "githubCommitFull": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
+  "githubObservedAt": "2026-08-21T23:03:43.792Z",
+  "githubObservationBasis": "github_connector_pr47_exact_head_main_ci_deploy_jobs_plus_wealthtech_bridge_post_deploy_attestation",
+  "serverStateFreshness": "current_post_pr47_attestation",
+  "runtimeStateFreshness": "current_exact_sha_post_pr47",
+  "githubCommitFull": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
   "requiredRules": [
     "GitHub est la source versionnée.",
     "Le serveur MCP est la source exécutée.",
@@ -28,7 +28,7 @@
   },
   "githubState": {
     "currentMainVerified": true,
-    "currentMainCommit": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
+    "currentMainCommit": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
     "pullRequest37Merged": true,
     "pullRequest38Merged": true,
     "pullRequest39Merged": true,
@@ -88,14 +88,30 @@
     "operationalMemoryHardeningDeployStepConclusion": "success",
     "canonicalDocumentationPullRequest": 46,
     "canonicalDocumentationBaseCommit": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
-    "canonicalDocumentationState": "docs_only_reconciliation"
+    "canonicalDocumentationState": "docs_only_reconciliation",
+    "lateReviewCorrectionPullRequest": 47,
+    "lateReviewCorrectionBranch": "mcp/fix-late-retention-review-20260815",
+    "lateReviewCorrectionCandidateHead": "8dddc5656aa959f4c392d0f1816b5ee0e25709a0",
+    "lateReviewCorrectionState": "merged_deployed_attested_threads_resolved",
+    "pullRequest47Merged": true,
+    "lateReviewCorrectionMergeCommit": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
+    "lateReviewCorrectionPreMergePushRunId": 31909255189,
+    "lateReviewCorrectionPreMergePullRequestRunId": 31909257693,
+    "lateReviewCorrectionMainCiRunId": 32535404248,
+    "lateReviewCorrectionDeployRunId": 32535404345,
+    "lateReviewCorrectionDeployJobId": 96935241275,
+    "lateReviewCorrectionDeployStep": "Deploy exact main SHA through MCP",
+    "lateReviewCorrectionDeployStepConclusion": "success",
+    "finalCanonicalDocumentationPullRequest": 48,
+    "finalCanonicalDocumentationBaseCommit": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
+    "finalCanonicalDocumentationState": "docs_only_reconciliation"
   },
   "serverGitState": {
     "branch": "main",
-    "lastDirectlyVerifiedCommitAbbrev": "bac8779",
-    "lastDirectlyVerifiedCommitFull": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
-    "originMain": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
-    "lastDirectlyVerifiedAt": "2026-08-15T20:52:47.873Z",
+    "lastDirectlyVerifiedCommitAbbrev": "3fb5a1b",
+    "lastDirectlyVerifiedCommitFull": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
+    "originMain": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
+    "lastDirectlyVerifiedAt": "2026-08-21T23:03:43.792Z",
     "lastKnownWorkingTreeClean": true,
     "diffEmpty": true,
     "currentAlignmentAttested": true,
@@ -108,28 +124,30 @@
   "runtimeState": {
     "containerStatus": "running",
     "health": "healthy",
-    "containerId": "37f1548bf13a23b9f2f4f67084ae318a8ea51121ad7d23d8bf7720a019b0430f",
-    "imageId": "sha256:5a64f24f937718c392ccd2d8ac6387d5ceb1bc0535d2dcc6f3efbb7f7c8e4fc8",
-    "currentRuntimeRevision": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
+    "containerId": "155ec9648e9ae05aff8d48adf2b86184013fe9f5cb96133dc1d18845f8b32073",
+    "imageId": "sha256:18c66b149e5e044880c3c786ca71ab1a27b4084f3e66cbb23be4fba27440ee75",
+    "currentRuntimeRevision": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
     "status": "FULLY_ALIGNED",
-    "containerCreatedAt": "2026-08-15T20:51:54.996256913Z",
-    "containerStartedAt": "2026-08-15T20:51:55.491955488Z",
+    "containerCreatedAt": "2026-08-21T23:03:10.674412613Z",
+    "containerStartedAt": "2026-08-21T23:03:11.429412373Z",
     "healthOk": true,
     "oauthOk": true,
     "mcpAuthOk": true,
     "rollbackStatus": "not_needed"
   },
   "liveState": {
-    "stateVersion": 16,
-    "generatedAt": "2026-08-15T20:52:47.873Z",
+    "stateVersion": 29,
+    "generatedAt": "2026-08-21T23:03:43.792Z",
     "freshness": "CURRENT",
+    "observationBasis": "functional_attestation_plus_final_docs_only_descendant_policy",
     "githubVsS1": "ALIGNED",
     "runtime": "ALIGNED",
     "documentation": "ALIGNED_BY_DOCS_ONLY_DESCENDANT_POLICY",
     "global": "FULLY_ALIGNED",
     "contradictions": [],
     "nextAction": null,
-    "declaredFunctionalBaseline": "bac8779320c8b9529d2a5215dbb1b1f31f828987"
+    "declaredFunctionalBaseline": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
+    "declaredS1Baseline": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc"
   },
   "markdownInventory": {
     "trackedGitMarkdown": 191,
@@ -170,7 +188,12 @@
     "operationalMemoryHardeningDeploymentAttested": true,
     "operationalMemoryHardeningDeploymentSha": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
     "operationalMemoryHardeningDeploymentRunId": 31907827212,
-    "operationalMemoryHardeningDeploymentGithubJobId": 95068288136
+    "operationalMemoryHardeningDeploymentGithubJobId": 95068288136,
+    "lateReviewCorrectionDeploymentAttested": true,
+    "lateReviewCorrectionDeploymentSha": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
+    "lateReviewCorrectionMainCiRunId": 32535404248,
+    "lateReviewCorrectionDeploymentRunId": 32535404345,
+    "lateReviewCorrectionDeploymentGithubJobId": 96935241275
   },
   "governedAutodeployV1": {
     "task": "TASK-20260809-003",
@@ -222,6 +245,29 @@
         "correctionPullRequest": 45,
         "correctionMergeCommit": "bac8779320c8b9529d2a5215dbb1b1f31f828987"
       }
+    ],
+    "pr45LateThreads": [
+      {
+        "id": "PRRT_kwDOTJ-y6M6ZiwC5",
+        "severity": "P1",
+        "status": "resolved_after_pr47_merged_deployed_attested",
+        "correctionPullRequest": 47,
+        "correctionMergeCommit": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc"
+      },
+      {
+        "id": "PRRT_kwDOTJ-y6M6ZiwC6",
+        "severity": "P1",
+        "status": "resolved_after_pr47_merged_deployed_attested",
+        "correctionPullRequest": 47,
+        "correctionMergeCommit": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc"
+      },
+      {
+        "id": "PRRT_kwDOTJ-y6M6ZiwC7",
+        "severity": "P2",
+        "status": "resolved_after_pr47_merged_deployed_attested",
+        "correctionPullRequest": 47,
+        "correctionMergeCommit": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc"
+      }
     ]
   },
   "maintenanceWarnings": {
@@ -257,11 +303,11 @@
   },
   "taskState": {
     "task": "TASK-20260813-004",
-    "status": "LATE_CORRECTION_IN_PROGRESS",
-    "completedAt": "2026-08-15",
-    "completionBasis": null,
+    "status": "COMPLETED",
+    "completedAt": "2026-08-22",
+    "completionBasis": "PR47 merged, exact-SHA CI and Autodeploy attested, late PR45 threads resolved, final canonical docs-only reconciliation",
     "reopenedAt": "2026-08-15",
-    "nextAction": "validate_merge_deploy_pr47_then_final_docs_reconciliation"
+    "nextAction": null
   },
   "lateReviewCorrection": {
     "pullRequest": 47,
@@ -283,6 +329,20 @@
       "retain_elapsed_active_locks_at_capacity",
       "waive_matching_s1_docs_only_ancestor"
     ],
-    "state": "review_in_progress_not_merged_not_deployed"
-  }
+    "state": "merged_deployed_attested_threads_resolved_final_documentation",
+    "finalHead": "8dddc5656aa959f4c392d0f1816b5ee0e25709a0",
+    "finalHeadPushRunId": 31909255189,
+    "finalHeadPullRequestRunId": 31909257693,
+    "mergeCommit": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
+    "mainCiRunId": 32535404248,
+    "deployRunId": 32535404345,
+    "deployJobId": 96935241275,
+    "deployStep": "Deploy exact main SHA through MCP",
+    "deployStepConclusion": "success",
+    "imageId": "sha256:18c66b149e5e044880c3c786ca71ab1a27b4084f3e66cbb23be4fba27440ee75",
+    "deployAttested": true,
+    "pr45LateThreadsResolved": true,
+    "finalCanonicalDocumentationPullRequest": 48
+  },
+  "serverCommitFull": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc"
 }

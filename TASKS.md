@@ -19,30 +19,27 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ## Jalons terminés
 
-- PR #34 à #45 fusionnées selon la gouvernance.
-- Live State V1, Autodeploy V1 et Governed Session Continuity / Operational Memory V1 déployés.
+- PR #34 à #47 fusionnées selon la gouvernance ; la présente PR #48 est la réconciliation strictement documentaire finale.
 - PR #44 : merge `3838c3918c3411a3317c6ea81047e77a7b627673`, CI `31684159546`, deploy `31684159586`, job `94396216832`.
-- PR #45 : head verrouillé `e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d`, merge `bac8779320c8b9529d2a5215dbb1b1f31f828987`, CI `31907827255`, deploy `31907827212`, job `95068288136`.
-- S1 propre/read-only, Docker running/healthy et OCI/runtime réattestés sur le merge de la PR #45.
-- Les trois findings tardifs P1/P1/P2 de la PR #44 sont corrigés, testés et résolus.
-- La présente réconciliation canonique est strictement documentaire et ne change aucun invariant d'autorité.
+- PR #45 : merge `bac8779320c8b9529d2a5215dbb1b1f31f828987`, CI `31907827255`, deploy `31907827212`, job `95068288136`.
+- PR #47 : head `8dddc5656aa959f4c392d0f1816b5ee0e25709a0`, merge `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`, CI main `32535404248`, deploy `32535404345`, job `96935241275`.
+- S1 propre/read-only, Docker running/healthy et OCI/runtime réattestés sur le merge de la PR #47.
+- Les trois findings tardifs PR #45 sont corrigés, testés, déployés et leurs fils sont résolus.
 
-## Tâche active unique
+## Tâche clôturée
 
-### TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — CORRECTION TARDIVE EN COURS
+### TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — TERMINÉE
 
 - [x] portée initiale, PR #44/#45, Autodeploy et première réconciliation canonique ;
-- [x] qualification des trois threads tardifs PR #45 ;
-- [x] RED `e18f553d7f8423f301fd3f226a14fe835dac8a74` : 3 échecs ciblés sur 187 tests ;
-- [x] GREEN `fc27e7e342b2ebfdbde4adc830b151a4018f2b4e` : `12/12 + 188/188`, double CI verte ;
+- [x] qualification et reproduction RED des trois findings tardifs PR #45 ;
+- [x] GREEN PR #47 `12/12 + 188/188` et double CI exacte ;
 - [x] préservation de la grâce de reprise des sessions expirées ;
 - [x] rétention des locks actifs au TTL écoulé avec audit et nettoyage de projection ;
 - [x] exception S1 docs-only limitée à la même référence GitHub déclarée ;
-- [x] journaux canoniques mis à jour avant déploiement ;
-- [ ] valider la CI et la revue du head canonique consolidé ;
-- [ ] fusionner PR #47 avec garde exact-head et attester l'Autodeploy ;
-- [ ] résoudre les trois threads tardifs PR #45 après déploiement attesté ;
-- [ ] publier la réconciliation documentaire finale et refermer la tâche.
+- [x] journaux canoniques synchronisés avant déploiement ;
+- [x] PR #47 fusionnée avec garde exact-head et Autodeploy exact-SHA attesté ;
+- [x] trois threads tardifs PR #45 résolus après déploiement attesté ;
+- [x] réconciliation documentaire finale publiée par la présente PR #48.
 
 ## Interdictions préservées
 
