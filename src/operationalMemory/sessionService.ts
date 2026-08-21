@@ -119,15 +119,24 @@ function sessionTerminalTime(session: GovernedSessionRecord): number {
 }
 
 function retainSessionsForAppend(
-  sessions: GovernedSessionRecord[]
+  sessions: GovernedSessionRecord[],
+  at: Date,
+  resumeGraceSeconds: number
 ): GovernedSessionRecord[] {
   const requiredSlots = sessions.length + 1 - MAX_GOVERNED_SESSION_RECORDS;
   if (requiredSlots <= 0) return sessions;
 
-  const removable = sessions.filter((session) => (
-    (session.status === 'CLOSED' || session.status === 'EXPIRED')
-    && session.lockIds.length === 0
-  )).sort((left, right) => (
+  const removable = sessions.filter((session) => {
+    const expiredAt = session.expiredAt ? Date.parse(session.expiredAt) : Number.NaN;
+    const permanentlyExpired = session.status === 'EXPIRED' && (
+      !Number.isFinite(expiredAt)
+      || at.getTime() - expiredAt > resumeGraceSeconds * 1_000
+    );
+    return (
+      (session.status === 'CLOSED' || permanentlyExpired)
+      && session.lockIds.length === 0
+    );
+  }).sort((left, right) => (
     sessionTerminalTime(left) - sessionTerminalTime(right)
     || left.governedSessionId.localeCompare(right.governedSessionId)
   ));
@@ -249,7 +258,14 @@ export function createGovernedSessionService(
         await options.store.update((document) => ({
           ...document,
           storeRevision: document.storeRevision + 1,
-          sessions: [...retainSessionsForAppend(document.sessions), record]
+          sessions: [
+            ...retainSessionsForAppend(
+              document.sessions,
+              openedAt,
+              options.resumeGraceSeconds
+            ),
+            record
+          ]
         }));
       } catch (error) {
         options.bindings.unbind(request.transportSessionId);

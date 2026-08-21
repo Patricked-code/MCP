@@ -84,20 +84,34 @@ function lockInactiveTime(lock: GovernedLockRecord): number {
   return Date.parse(lock.renewedAt || lock.acquiredAt);
 }
 
-function retainLocksForAppend(locks: GovernedLockRecord[]): GovernedLockRecord[] {
+function retainLocksForAppend(
+  locks: GovernedLockRecord[],
+  at: Date
+): { locks: GovernedLockRecord[]; expiredDuringRetention: GovernedLockRecord[] } {
   const requiredSlots = locks.length + 1 - MAX_GOVERNED_LOCK_RECORDS;
-  if (requiredSlots <= 0) return locks;
+  if (requiredSlots <= 0) return { locks, expiredDuringRetention: [] };
 
-  const removable = locks.filter((lock) => lock.status !== 'ACTIVE').sort((left, right) => (
-    lockInactiveTime(left) - lockInactiveTime(right)
+  const removable = locks.filter((lock) => (
+    lock.status !== 'ACTIVE' || Date.parse(lock.expiresAt) <= at.getTime()
+  )).sort((left, right) => (
+    (left.status === 'ACTIVE' ? Date.parse(left.expiresAt) : lockInactiveTime(left))
+    - (right.status === 'ACTIVE' ? Date.parse(right.expiresAt) : lockInactiveTime(right))
     || left.lockId.localeCompare(right.lockId)
   ));
   if (removable.length < requiredSlots) fail('LOCK_STORE_CAPACITY_EXCEEDED');
 
-  const removedIds = new Set(
-    removable.slice(0, requiredSlots).map((lock) => lock.lockId)
-  );
-  return locks.filter((lock) => !removedIds.has(lock.lockId));
+  const removed = removable.slice(0, requiredSlots);
+  const removedIds = new Set(removed.map((candidate) => candidate.lockId));
+  return {
+    locks: locks.filter((candidate) => !removedIds.has(candidate.lockId)),
+    expiredDuringRetention: removed
+      .filter((candidate) => candidate.status === 'ACTIVE')
+      .map((candidate) => ({
+        ...candidate,
+        status: 'EXPIRED' as const,
+        lockRevision: candidate.lockRevision + 1
+      }))
+  };
 }
 
 function canAccess(
@@ -178,6 +192,7 @@ export function createGovernedLockService(
       };
 
       let conflictingLockId: string | null = null;
+      let expiredDuringRetention: GovernedLockRecord[] = [];
       try {
         await options.store.update((document) => {
           const conflict = document.locks.find((candidate) => (
@@ -190,10 +205,12 @@ export function createGovernedLockService(
             conflictingLockId = conflict.lockId;
             fail(`LOCK_CONFLICT:${conflict.governedSessionId}`);
           }
+          const retained = retainLocksForAppend(document.locks, at);
+          expiredDuringRetention = retained.expiredDuringRetention;
           return {
             ...document,
             storeRevision: document.storeRevision + 1,
-            locks: [...retainLocksForAppend(document.locks), lock]
+            locks: [...retained.locks, lock]
           };
         });
       } catch (error) {
@@ -218,17 +235,36 @@ export function createGovernedLockService(
           if (session.sessionRevision !== input.expectedSessionRevision) {
             fail('SESSION_REVISION_MISMATCH');
           }
-          const sessions = [...document.sessions];
-          sessions[index] = {
-            ...session,
-            lockIds: [...new Set([...session.lockIds, lock.lockId])],
-            sessionRevision: session.sessionRevision + 1
-          };
+          const expiredIds = new Set(
+            expiredDuringRetention.map((expired) => expired.lockId)
+          );
+          const sessions = document.sessions.map((candidate, candidateIndex) => {
+            const retainedLockIds = candidate.lockIds.filter(
+              (lockId) => !expiredIds.has(lockId)
+            );
+            if (candidateIndex === index) {
+              return {
+                ...candidate,
+                lockIds: [...new Set([...retainedLockIds, lock.lockId])],
+                sessionRevision: candidate.sessionRevision + 1
+              };
+            }
+            return retainedLockIds.length === candidate.lockIds.length
+              ? candidate
+              : {
+                  ...candidate,
+                  lockIds: retainedLockIds,
+                  sessionRevision: candidate.sessionRevision + 1
+                };
+          });
           return { ...document, storeRevision: document.storeRevision + 1, sessions };
         });
       } catch (error) {
         await compensateLock(lock.lockId);
         throw error;
+      }
+      for (const expired of expiredDuringRetention) {
+        await audit.record({ type: 'lock.expired', lock: expired });
       }
       await audit.record({ type: 'lock.acquired', lock });
       return lock;

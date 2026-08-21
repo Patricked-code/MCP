@@ -36,8 +36,17 @@ Travaux restant réellement à accomplir.
 - [x] Valider le head exact de la PR #45 avec `12/12 + 184/184` tests et tous les contrôles CI.
 - [x] Fusionner exact-head et attester l'Autodeploy sans écriture directe S1.
 - [x] Résoudre les trois threads tardifs de la PR #44 avec les preuves de correction.
-- [x] Fusionner la réconciliation documentaire canonique.
-- [x] Clôturer `TASK-20260813-004`.
+- [x] Fusionner la première réconciliation documentaire canonique.
+
+## Correction tardive PR #47
+
+- [x] Reproduire les trois findings tardifs PR #45 en RED.
+- [x] Obtenir le GREEN `12/12 + 188/188` et la double CI exacte.
+- [x] Synchroniser les journaux et le registre d'exécution avant déploiement.
+- [ ] Valider le head consolidé par CI et revue sans thread ouvert.
+- [ ] Fusionner exact-head, attester l'Autodeploy et résoudre les threads PR #45.
+- [ ] Fusionner une dernière PR strictement documentaire.
+- [ ] Obtenir `FULLY_ALIGNED` puis clôturer `TASK-20260813-004`.
 
 ## Maintenance séparée
 

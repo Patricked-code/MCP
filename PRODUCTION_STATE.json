@@ -257,8 +257,32 @@
   },
   "taskState": {
     "task": "TASK-20260813-004",
-    "status": "COMPLETED",
+    "status": "LATE_CORRECTION_IN_PROGRESS",
     "completedAt": "2026-08-15",
-    "completionBasis": "PR45 merged, exact-SHA CI and Autodeploy attested, late PR44 threads resolved, canonical docs-only reconciliation"
+    "completionBasis": null,
+    "reopenedAt": "2026-08-15",
+    "nextAction": "validate_merge_deploy_pr47_then_final_docs_reconciliation"
+  },
+  "lateReviewCorrection": {
+    "pullRequest": 47,
+    "branch": "mcp/fix-late-retention-review-20260815",
+    "baseSha": "389b8d967f5107bc7bcba07d5d68ccf492810a8c",
+    "redCommit": "e18f553d7f8423f301fd3f226a14fe835dac8a74",
+    "redPushRunId": 31908513401,
+    "redPullRequestRunId": 31908522085,
+    "redExpectedFailures": "3/187",
+    "greenCommit": "fc27e7e342b2ebfdbde4adc830b151a4018f2b4e",
+    "greenPushRunId": 31908660001,
+    "greenPullRequestRunId": 31908662058,
+    "tests": "12/12 + 188/188",
+    "governanceLogCommit": "1d4c392eb19b22848047b70ef78b299162ed14d5",
+    "governanceLogPushRunId": 31908986986,
+    "governanceLogPullRequestRunId": 31908988519,
+    "reviewedFindings": [
+      "preserve_resumable_expired_sessions",
+      "retain_elapsed_active_locks_at_capacity",
+      "waive_matching_s1_docs_only_ancestor"
+    ],
+    "state": "review_in_progress_not_merged_not_deployed"
   }
 }
