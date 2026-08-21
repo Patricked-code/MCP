@@ -21,32 +21,18 @@ Travaux restant réellement à accomplir.
 
 - [x] Bootstrap manuel et preuves automatiques exact-SHA attestés.
 - [x] `pushEnabled=true`, OIDC GitHub et déploiement fail-closed actifs.
-- [x] PR #44 fusionnée et automatiquement déployée.
-- [x] PR #45 fusionnée au SHA `bac8779320c8b9529d2a5215dbb1b1f31f828987`, CI `31907827255` et Autodeploy `31907827212` réussis.
-- [x] S1, OCI, Docker, health et Live State technique réattestés après PR #45.
+- [x] PR #44, #45 et #47 fusionnées et automatiquement déployées.
+- [x] PR #47 fusionnée au SHA `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`, CI main `32535404248` et Autodeploy `32535404345` réussis.
+- [x] S1, OCI, Docker, health et Live State technique réattestés après PR #47.
 
 ## Governed Session Continuity / Operational Memory V1
 
-- [x] Reproduire en RED les deux saturations et la non-libération des locks.
-- [x] Ajouter une rétention déterministe sans supprimer sessions ou locks actifs.
-- [x] Refuser explicitement l'ouverture/acquisition lorsque la capacité n'est pas supprimable.
-- [x] Libérer les locks lors de `closeSession` et conserver la réconciliation inter-stores.
-- [x] Protéger les sessions terminales portant encore des `lockIds`.
-- [x] Rendre la réconciliation post-merge sûre pour un descendant strictement documentaire.
-- [x] Valider le head exact de la PR #45 avec `12/12 + 184/184` tests et tous les contrôles CI.
-- [x] Fusionner exact-head et attester l'Autodeploy sans écriture directe S1.
-- [x] Résoudre les trois threads tardifs de la PR #44 avec les preuves de correction.
-- [x] Fusionner la première réconciliation documentaire canonique.
-
-## Correction tardive PR #47
-
-- [x] Reproduire les trois findings tardifs PR #45 en RED.
-- [x] Obtenir le GREEN `12/12 + 188/188` et la double CI exacte.
-- [x] Synchroniser les journaux et le registre d'exécution avant déploiement.
-- [ ] Valider le head consolidé par CI et revue sans thread ouvert.
-- [ ] Fusionner exact-head, attester l'Autodeploy et résoudre les threads PR #45.
-- [ ] Fusionner une dernière PR strictement documentaire.
-- [ ] Obtenir `FULLY_ALIGNED` puis clôturer `TASK-20260813-004`.
+- [x] Réaliser la portée initiale, les hardenings PR #45 et la première réconciliation documentaire.
+- [x] Reproduire puis corriger les trois findings tardifs PR #45.
+- [x] Valider le head PR #47 avec `12/12 + 188/188`, typecheck, build, docs, secrets et diff.
+- [x] Fusionner exact-head, attester l'Autodeploy et résoudre les trois threads PR #45.
+- [x] Fusionner la présente réconciliation strictement documentaire.
+- [x] Obtenir `FULLY_ALIGNED` par la politique descendant docs-only puis clôturer `TASK-20260813-004`.
 
 ## Maintenance séparée
 

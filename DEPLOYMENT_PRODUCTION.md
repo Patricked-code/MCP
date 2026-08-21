@@ -53,3 +53,13 @@ Le push de fusion a réussi la CI `31907827255` et l'Autodeploy `31907827212`. L
 ## Réconciliation documentaire
 
 La présente PR ne modifie que les huit documents canoniques. La référence fonctionnelle déclarée est le merge PR #45. Après fusion, Live State ne tolère l'écart descendant que si `git merge-base --is-ancestor` réussit et si `git diff --name-only` ne contient que des chemins documentaires allowlistés. Tout changement de code reste bloquant.
+
+## Attestation PR #47
+
+La PR #47 a été reverrouillée sur le head `8dddc5656aa959f4c392d0f1816b5ee0e25709a0` après réussite des CI push `31909255189` et PR `31909257693` (`12/12 + 188/188`, zéro échec). Elle a fusionné au SHA `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`.
+
+Le push de fusion a réussi la CI `32535404248`, job `96935241037`, et l'Autodeploy `32535404345`. Le job `96935241275` a exécuté avec succès `Deploy exact main SHA through MCP`. L'attestation indépendante a confirmé dépôt S1 propre, remote push désactivé, Docker running/healthy, image `sha256:18c66b149e5e044880c3c786ca71ab1a27b4084f3e66cbb23be4fba27440ee75` et révision OCI/runtime égale au merge.
+
+## Réconciliation documentaire finale post-PR #47
+
+La présente PR #48 ne modifie que `SUIVI.md`, `TODO.md`, `TASKS.md`, `ACTIVITY_LOG.md`, `CHANGELOG.md`, `DECISIONS_LOG.md`, `DEPLOYMENT_PRODUCTION.md` et `PRODUCTION_STATE.json`. La référence fonctionnelle déclarée est le merge PR #47. Après fusion, Live State ne tolère l'écart descendant GitHub/S1 que si `git merge-base --is-ancestor` réussit, si le diff est strictement documentaire et si les références déclarées GitHub et S1 sont identiques. Tout changement de code reste bloquant.

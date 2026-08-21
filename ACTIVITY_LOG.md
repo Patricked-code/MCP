@@ -181,3 +181,12 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - La seconde revue a identifié l'écart entre `SUIVI.md` réouvert et `TASKS.md` encore terminé.
 - Le présent commit synchronise `TASKS.md`, `TODO.md`, `PRODUCTION_STATE.json` et ce journal.
 - PR #47 reste non fusionnée et non déployée ; les trois threads PR #45 restent ouverts jusqu'à une attestation post-déploiement.
+
+## 2026-08-21T23:04:38Z — TASK-20260813-004 — Correction tardive PR #47 déployée et revue clôturée
+
+- Le head exact `8dddc5656aa959f4c392d0f1816b5ee0e25709a0` a passé les CI push `31909255189` et PR `31909257693`, avec `12/12 + 188/188`, zéro échec et revue Codex sans problème majeur.
+- La PR #47 a été fusionnée au SHA `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`.
+- La CI main `32535404248` et l'Autodeploy `32535404345`, job `96935241275`, étape `Deploy exact main SHA through MCP`, ont réussi.
+- GitHub, S1 et le runtime ont été réattestés au SHA exact ; S1 est propre/read-only et Docker running/healthy sur l'image `sha256:18c66b149e5e044880c3c786ca71ab1a27b4084f3e66cbb23be4fba27440ee75`.
+- Les trois threads tardifs PR #45 `PRRT_kwDOTJ-y6M6ZiwC5`, `PRRT_kwDOTJ-y6M6ZiwC6` et `PRRT_kwDOTJ-y6M6ZiwC7` ont reçu les preuves puis ont été résolus.
+- La session fonctionnelle a été checkpointée et fermée sans lock ; la présente PR #48 ne modifie que les huit documents canoniques et clôt la tâche après fusion.
