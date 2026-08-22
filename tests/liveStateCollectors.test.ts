@@ -4,7 +4,9 @@ import test from 'node:test';
 
 import {
   buildDocumentationLiveStateCommand,
+  buildCurrentStateEvidenceCommand,
   buildS1LiveStateCommand,
+  parseCurrentStateEvidence,
   parseDocumentationObservation,
   parseKeyValueOutput,
   parseRuntimeObservation,
@@ -15,6 +17,38 @@ import { assertReadOnlyCommand } from '../src/ssh/safety.js';
 import { buildMcpRestartCommand } from '../src/tools/mcpRuntimeDeploy.js';
 
 const SHA = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
+test('la preuve current-state est exécutée en lecture seule et parsée de façon bornée', () => {
+  const command = buildCurrentStateEvidenceCommand();
+  assert.doesNotThrow(() => assertReadOnlyCommand(command));
+  assert.match(command, /node scripts\/current-state-evidence\.mjs/);
+  assert.doesNotMatch(command, />|tee|cp |mv |rm /);
+
+  const evidence = parseCurrentStateEvidence(JSON.stringify({
+    schemaVersion: 1,
+    repositoryHead: SHA,
+    architecture: { modules: [], routes: [], digest: 'a'.repeat(64) },
+    documentation: { files: ['README.md'], digest: 'b'.repeat(64) },
+    audits: [],
+    governance: {
+      files: [{ path: '.mcp/manifest.json', present: true, digest: 'c'.repeat(64) }],
+      digest: 'd'.repeat(64)
+    },
+    taskRegistry: {
+      path: '.mcp/task-registry.json', present: false, registryVersion: null, digest: null
+    },
+    testSuiteDigest: 'e'.repeat(64),
+    sourceDigest: 'f'.repeat(64),
+    contradictions: ['missing_governance_file:.mcp/task-registry.json']
+  }));
+
+  assert.equal(evidence.repositoryHead, SHA);
+  assert.equal(evidence.documentation.files.length, 1);
+  assert.deepEqual(evidence.contradictions, [
+    'missing_governance_file:.mcp/task-registry.json'
+  ]);
+  assert.throws(() => parseCurrentStateEvidence('{}'), /CURRENT_STATE_EVIDENCE_INVALID/);
+});
 
 test('la commande S1 Live State ne contient que des lectures Git bornées', () => {
   const command = buildS1LiveStateCommand();

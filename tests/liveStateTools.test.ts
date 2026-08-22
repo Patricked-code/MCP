@@ -34,6 +34,24 @@ function snapshot(): LiveStateSnapshot {
       status: 'CURRENT', activeTask: 'TASK-20260809-002', declaredGithubSha: SHA,
       declaredS1Sha: SHA, drift: false
     },
+    capabilities: {
+      status: 'CURRENT', catalogueDigest: 'a'.repeat(64), registeredToolCount: 92,
+      readOnlyToolCount: 80, writeToolCount: 12, resourceCount: 1,
+      tools: [], resources: [], contradictions: []
+    },
+    governance: {
+      status: 'CURRENT', repositoryHead: SHA, governanceDigest: 'b'.repeat(64),
+      files: [], taskRegistryVersion: null, contradictions: []
+    },
+    auditBaseline: {
+      status: 'CURRENT', repositoryHead: SHA, testSuiteDigest: 'c'.repeat(64),
+      sourceDigest: 'd'.repeat(64), contradictions: []
+    },
+    inventory: {
+      status: 'CURRENT', repositoryHead: SHA,
+      architecture: { modules: [], routes: [], digest: 'e'.repeat(64) },
+      documentation: { files: [], digest: 'f'.repeat(64) }, audits: [], contradictions: []
+    },
     alignment: {
       githubVsS1: 'ALIGNED', runtime: 'ALIGNED', documentation: 'ALIGNED', global: 'FULLY_ALIGNED'
     },
@@ -89,6 +107,24 @@ test('le résumé expose uniquement le contexte opérationnel compact', () => {
     ageSeconds: 3,
     globalAlignment: 'FULLY_ALIGNED',
     activeTask: 'TASK-20260809-002',
+    capabilities: {
+      status: 'CURRENT',
+      catalogueDigest: 'a'.repeat(64),
+      registeredToolCount: 92,
+      readOnlyToolCount: 80,
+      writeToolCount: 12,
+      resourceCount: 1
+    },
+    governance: {
+      status: 'CURRENT',
+      governanceDigest: 'b'.repeat(64),
+      taskRegistryVersion: null
+    },
+    auditBaseline: {
+      status: 'CURRENT',
+      testSuiteDigest: 'c'.repeat(64),
+      sourceDigest: 'd'.repeat(64)
+    },
     nextAction: null
   });
 });
