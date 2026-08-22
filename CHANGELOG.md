@@ -314,3 +314,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Régression précédente : `218/218`, typecheck, build, docs, cartographie et secrets verts ; une validation fraîche du head consolidé reste obligatoire avant publication.
 - Fusion non destructive du cycle TDD concurrent déjà publié sur la même branche : garanties SDK et métadonnées catalogue conservées, extensions `operational-write` intégrées, cartographie régénérée et validation combinée `220/220` verte.
 - Intégration du second lot concurrent Current-State/Live State : limites globales d'entrée/sortie, refus des chemins sensibles et symlinks, API de collecte déterministe et test CLI ajoutés à la carte relationnelle existante ; validation combinée `221/221` verte.
+
+## 2026-08-22 — Mandatory Agent Bootstrap V1 déployé
+
+- PR #49 fusionnée au SHA `c944fd9e7c05aad503f9e1d5d21e0ead25747886` depuis le head exact `1c9297d663624e5c348fba687051b649ca3e2a22` après CI `32565936838` réussie.
+- Validation consolidée : `222/222`, typecheck, build, gouvernance documentaire `196`, cartographie runtime, preuve current-state, secrets et diff verts.
+- Catalogue déployé : 111 outils, 2 resources, 66 lectures, 45 écritures ; 92 contrats historiques inchangés.
+- Live State `stateVersion=33` atteste GitHub/S1/runtime exact-SHA, S1 propre et Docker healthy sur l'image `sha256:f6e05d77ed04c342e663c04322029f5233009ee4d75b78a9ebeea12af8027de5`.
+- Receipt de bootstrap créé en production avec digests catalogue/gouvernance/task registry et limitations vides.
+- Aucun enforcement bloquant, changement OIDC/Autodeploy, secret, 2FA, `ENABLE_WRITE_TOOLS` ou `allow_write` n'a été introduit.

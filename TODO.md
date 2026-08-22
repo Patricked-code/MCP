@@ -45,6 +45,7 @@ Travaux restant réellement à accomplir.
 - [x] Inventaire architecture/documents/audits/politiques dérivé du SHA suivi.
 - [x] Live State enrichi, Bootstrap Receipt, Task Registry et Work Queue persistante.
 - [x] Governed Context, onboarding, dashboard, audit et verdicts `shadow` enrichis.
-- [ ] CI/revue du head exact de la Draft PR.
-- [ ] Merge, CI main, Autodeploy exact-SHA et attestation GitHub/S1/OCI/runtime.
-- [ ] Réconciliation canonique post-déploiement si le merge SHA ne peut pas être pré-déclaré.
+- [x] CI `32565936838` du head exact `1c9297d…`, passage Ready et absence de thread actionnable.
+- [x] Merge `c944fd9e…`, Autodeploy exact-SHA et attestation Live State `stateVersion=33` de GitHub/S1/OCI/runtime.
+- [x] Réconciliation canonique post-déploiement préparée dans une branche strictement documentaire.
+- [ ] Sur la prochaine connexion ayant rechargé les nouveaux outils, reprendre et clôturer la tâche runtime `TASK-20260822-001` déjà présente en `READY`, sans nouvelle tâche ni nouvelle branche.

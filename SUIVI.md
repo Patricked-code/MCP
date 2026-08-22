@@ -17,14 +17,13 @@ Date : 2026-08-22
 
 ## État fonctionnel attesté
 
-- Référence GitHub déclarée : `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`, merge squash de la PR #47.
-- S1 HEAD déclaré : `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`.
-- GitHub `main`, dépôt S1, OCI et runtime ont été réattestés ensemble sur cette référence avant la présente réconciliation documentaire.
-- CI `main` `32535404248`, job `96935241037` : réussie.
-- Autodeploy exact-SHA `32535404345`, job `96935241275` : étape `Deploy exact main SHA through MCP` exécutée et réussie.
+- Référence GitHub et S1 déclarée : `c944fd9e7c05aad503f9e1d5d21e0ead25747886`, merge squash exact-head de la PR #49.
+- Head candidat PR #49 : `1c9297d663624e5c348fba687051b649ca3e2a22` ; CI exacte `32565936838` réussie avant fusion.
+- Live State `stateVersion=33`, réconcilié le `2026-08-22T09:51:57.351Z`, atteste GitHub `main`, S1, `origin/main` et runtime égaux à `c944fd9e…`.
 - S1 : branche `main`, arbre propre, diff vide, fetch read-only et push `disabled://mcp-s1-read-only`.
-- Docker : conteneur `wealthtech_mcp_ssh_bridge` running/healthy ; image `sha256:18c66b149e5e044880c3c786ca71ab1a27b4084f3e66cbb23be4fba27440ee75`.
-- La présente PR #48 est strictement documentaire. Après sa fusion, Live State accepte la référence ancêtre ci-dessus pour GitHub et S1 uniquement parce que Git prouve que tous les chemins descendants sont documentaires et que les deux déclarations désignent le même ancêtre.
+- Docker : conteneur `wealthtech_mcp_ssh_bridge` running/healthy ; image `sha256:f6e05d77ed04c342e663c04322029f5233009ee4d75b78a9ebeea12af8027de5` ; révision OCI exacte `c944fd9e…`.
+- Le déploiement fonctionnel est attesté ; le seul drift observé est documentaire et `nextAction=reconcile_canonical_documentation`.
+- La présente branche est strictement documentaire. Après sa fusion, Live State peut accepter `c944fd9e…` comme ancêtre uniquement si tous les chemins descendants restent dans l'allowlist documentaire et si GitHub/S1 déclarent la même référence.
 
 ## Correctifs Operational Memory déployés
 
@@ -51,7 +50,7 @@ Date : 2026-08-22
 
 ## Tâche
 
-`TASK-20260822-001 — Mandatory Agent Bootstrap & Work Orchestration V1 — EN COURS`
+`TASK-20260822-001 — Mandatory Agent Bootstrap & Work Orchestration V1 — RÉCONCILIATION DOCUMENTAIRE FINALE`
 
 ## Candidate courante
 
@@ -60,9 +59,10 @@ Date : 2026-08-22
 - Cartographie dérivée : 111 outils, 2 resources, 64 modules TypeScript, 188 relations d'import, 23 routes, 196 Markdown et 18 audits.
 - Nouveaux contrats : inventaire current-state, receipt de bootstrap, Task Registry/queue et cinq outils de tâche ; les 92 contrats historiques restent inchangés.
 - Gate : nouveaux verdicts observés en `shadow`, sans enforcement bloquant ; `ENABLE_WRITE_TOOLS`, `allow_write`, OIDC, Autodeploy et exclusion 2FA restent inchangés.
-- Régression fraîche après intégration des deux lots TDD concurrents : installation de 143 packages, `221/221` tests, zéro échec/cancelled/skipped/todo ; typecheck, build, docs `196`, cartographie, secrets et diff réussis.
-- État de livraison : implémentation et validations ciblées terminées ; aucun merge, déploiement ou état runtime de cette branche n'est encore déclaré.
+- Régression fraîche finale : installation de 143 packages, `222/222` tests, zéro échec/cancelled/skipped/todo ; typecheck, build, docs `196`, cartographie, preuve current-state, secrets et diff réussis.
+- PR #49 : head exact `1c9297d…`, CI `32565936838` réussie, aucun thread de revue, fusion gardée par `expected_head_sha` au merge `c944fd9e…`.
+- État de livraison : code fusionné et Autodeploy exact-SHA attesté ; GitHub/S1/runtime sont alignés et healthy. La queue runtime conserve la tâche `READY` jusqu'à son claim/transition via un connecteur ayant rechargé les cinq nouveaux outils de tâche.
 
 ## Prochaine action
 
-Exécuter la validation fraîche finale du head consolidé, publier le head exact, créer la Draft PR, traiter CI/revue, puis fusionner et attester l'Autodeploy exact-SHA. La maintenance Node 24 demeure séparée ; la 2FA GitHub reste explicitement exclue.
+Fusionner la PR strictement documentaire, réattester Live State puis, depuis une connexion dont la surface MCP a été rafraîchie, réclamer `TASK-20260822-001` et appliquer ses transitions finales sans recréer de tâche. La maintenance Node 24 demeure séparée ; la 2FA GitHub reste explicitement exclue.

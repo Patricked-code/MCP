@@ -19,12 +19,13 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ## Jalons terminés
 
-- PR #34 à #47 fusionnées selon la gouvernance ; la présente PR #48 est la réconciliation strictement documentaire finale.
+- PR #34 à #49 fusionnées selon la gouvernance ; PR #49 porte Mandatory Agent Bootstrap V1 et la présente branche porte sa réconciliation strictement documentaire.
 - PR #44 : merge `3838c3918c3411a3317c6ea81047e77a7b627673`, CI `31684159546`, deploy `31684159586`, job `94396216832`.
 - PR #45 : merge `bac8779320c8b9529d2a5215dbb1b1f31f828987`, CI `31907827255`, deploy `31907827212`, job `95068288136`.
 - PR #47 : head `8dddc5656aa959f4c392d0f1816b5ee0e25709a0`, merge `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`, CI main `32535404248`, deploy `32535404345`, job `96935241275`.
 - S1 propre/read-only, Docker running/healthy et OCI/runtime réattestés sur le merge de la PR #47.
 - Les trois findings tardifs PR #45 sont corrigés, testés, déployés et leurs fils sont résolus.
+- PR #49 : head `1c9297d663624e5c348fba687051b649ca3e2a22`, CI `32565936838`, merge `c944fd9e7c05aad503f9e1d5d21e0ead25747886` ; GitHub/S1/OCI/runtime exact-SHA, S1 propre et Docker healthy.
 
 ## Tâche clôturée
 
@@ -43,7 +44,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ## Tâche courante
 
-### TASK-20260822-001 — Mandatory Agent Bootstrap & Work Orchestration V1 — EN COURS
+### TASK-20260822-001 — Mandatory Agent Bootstrap & Work Orchestration V1 — LIVRÉE, CLÔTURE RUNTIME À ACQUITTER
 
 - [x] dériver le catalogue complet depuis les registrations MCP et protéger sa fraîcheur en CI ;
 - [x] dériver du SHA suivi les modules, imports, routes, documents, audits et politiques sans écriture ;
@@ -53,8 +54,10 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] exposer l'inventaire courant et les outils de queue MCP ;
 - [x] enrichir Governed Context, le dashboard, l'onboarding réel, le journal et le gate `shadow` ;
 - [x] conserver les 92 contrats historiques et un diff nul sur OIDC/Autodeploy ;
-- [ ] publier le head consolidé, obtenir les CI exactes et la revue ;
-- [ ] fusionner, attendre l'Autodeploy exact-SHA, réattester et réconcilier les références canoniques.
+- [x] publier le head consolidé, obtenir la CI exacte et vérifier l'absence de thread actionnable ;
+- [x] fusionner avec garde exact-head, attendre l'Autodeploy exact-SHA et réattester GitHub/S1/OCI/runtime ;
+- [x] publier les références et preuves canoniques dans une branche strictement documentaire ;
+- [ ] après rafraîchissement de la surface du connecteur, réclamer la tâche runtime déjà en `READY`, parcourir les transitions autorisées jusqu'à `DONE`, checkpoint final, lock libéré et session fermée.
 
 ## Interdictions préservées
 
