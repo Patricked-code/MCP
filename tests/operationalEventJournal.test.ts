@@ -96,6 +96,38 @@ test('les appends parallèles restent complets et séquencés', async () => {
   }
 });
 
+test('bootstrap.acknowledged accepte uniquement la preuve bornée sans contexte brut', async () => {
+  const { directory, file } = await temporaryJournalPath();
+  const journal = createOperationalEventJournal({
+    filePath: file,
+    maxBytes: 65_536,
+    archives: 2
+  });
+  try {
+    const event = await journal.append({
+      type: 'bootstrap.acknowledged',
+      governedSessionId: SESSION_ID,
+      metadata: {
+        bootstrapReceiptId: '22222222-2222-4222-8222-222222222222',
+        stateVersion: 31,
+        catalogueDigest: 'a'.repeat(64),
+        governanceDigest: 'b'.repeat(64),
+        taskRegistryVersion: 1,
+        sessionRevision: 4
+      }
+    });
+    assert.equal(event.type, 'bootstrap.acknowledged');
+    await assert.rejects(journal.append({
+      type: 'bootstrap.acknowledged',
+      governedSessionId: SESSION_ID,
+      metadata: { prompt: 'must-never-persist' }
+    } as never), /OPERATIONAL_EVENT_METADATA_FORBIDDEN/);
+    assert.equal((await readFile(file, 'utf8')).includes('must-never-persist'), false);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test('les clés sensibles ou hors allowlist sont refusées avant écriture', async () => {
   const forbiddenKeys = [
     'token',

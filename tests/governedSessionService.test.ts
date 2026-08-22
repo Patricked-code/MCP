@@ -34,6 +34,7 @@ async function fixture(options: {
   stateVersion?: () => number;
   idleTtlSeconds?: number;
   audit?: { record(input: { type: string }): Promise<void> };
+  liveStateProof?: Record<string, unknown>;
 } = {}) {
   const directory = await mkdtemp(join(tmpdir(), 'mcp-governed-session-'));
   const file = join(directory, 'sessions.json');
@@ -49,7 +50,10 @@ async function fixture(options: {
     idleTtlSeconds: options.idleTtlSeconds ?? 86_400,
     resumeGraceSeconds: 604_800,
     now: options.now ?? (() => new Date('2026-08-13T07:00:00.000Z')),
-    getLiveState: async () => ({ stateVersion: options.stateVersion?.() ?? 9 }),
+    getLiveState: async () => ({
+      stateVersion: options.stateVersion?.() ?? 9,
+      ...options.liveStateProof
+    }),
     audit: options.audit
   });
   return { directory, file, store, bindings, service };
@@ -366,6 +370,7 @@ test('le cycle session/transport/contexte/checkpoint émet les événements mach
       'transport.bound',
       'session.heartbeat',
       'context.acknowledged',
+      'bootstrap.acknowledged',
       'checkpoint.created',
       'session.paused',
       'session.closed',
@@ -591,6 +596,51 @@ test('heartbeat et acquittement gardent sessionRevision et stateVersion distinct
       transportSessionId: 'transport-A-raw',
       identity: OAUTH_IDENTITY
     }), /LIVE_STATE_VERSION_MISMATCH/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('acquittement crée atomiquement un bootstrap receipt borné sans secret', async () => {
+  const { directory, file, service } = await fixture({
+    liveStateProof: {
+      githubHead: 'a'.repeat(40),
+      runtimeRevision: 'a'.repeat(40),
+      catalogueDigest: 'b'.repeat(64),
+      governanceDigest: 'c'.repeat(64),
+      taskRegistryVersion: 1,
+      limitations: ['inventory_projection_degraded']
+    }
+  });
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-bootstrap-raw',
+      identity: OAUTH_IDENTITY
+    });
+    assert.equal(opened.session.bootstrapReceipt, undefined);
+    const acknowledged = await service.acknowledgeContext({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      expectedStateVersion: 9
+    }, {
+      transportSessionId: 'transport-bootstrap-raw',
+      identity: OAUTH_IDENTITY
+    });
+    const receipt = acknowledged.bootstrapReceipt;
+    const raw = await readFile(file, 'utf8');
+
+    assert.match(receipt?.bootstrapReceiptId ?? '', /^[0-9a-f-]{36}$/);
+    assert.equal(receipt?.governedSessionId, opened.session.governedSessionId);
+    assert.equal(receipt?.stateVersion, 9);
+    assert.equal(receipt?.githubHead, 'a'.repeat(40));
+    assert.equal(receipt?.runtimeRevision, 'a'.repeat(40));
+    assert.equal(receipt?.catalogueDigest, 'b'.repeat(64));
+    assert.equal(receipt?.governanceDigest, 'c'.repeat(64));
+    assert.equal(receipt?.taskRegistryVersion, 1);
+    assert.deepEqual(receipt?.limitations, ['inventory_projection_degraded']);
+    assert.equal(raw.includes(opened.resumeSecret), false);
+    assert.equal(raw.includes('transport-bootstrap-raw'), false);
+    assert.equal(raw.includes('must-never-persist'), false);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
