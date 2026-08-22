@@ -13,6 +13,10 @@ function semanticValue(state: LiveStateSnapshot): string {
     s1: state.s1,
     runtime: state.runtime,
     documentation: state.documentation,
+    capabilities: state.capabilities,
+    governance: state.governance,
+    auditBaseline: state.auditBaseline,
+    inventory: state.inventory,
     alignment: state.alignment,
     contradictions: state.contradictions,
     nextAction: state.nextAction
@@ -52,6 +56,18 @@ function buildAlignment(input: LiveStateObservations): {
   if (input.runtime.containerStatus === 'running' && !runtimeHealthReady(input.runtime.health)) {
     contradictions.push('RUNTIME_HEALTH_NOT_READY');
   }
+  if (input.capabilities?.status === 'UNAVAILABLE') contradictions.push('CAPABILITIES_UNAVAILABLE');
+  if (input.governance?.status === 'UNAVAILABLE') contradictions.push('GOVERNANCE_EVIDENCE_UNAVAILABLE');
+  if (input.auditBaseline?.status === 'UNAVAILABLE') contradictions.push('AUDIT_BASELINE_UNAVAILABLE');
+  if (input.inventory?.status === 'UNAVAILABLE') contradictions.push('CURRENT_STATE_INVENTORY_UNAVAILABLE');
+  for (const contradiction of [
+    ...(input.capabilities?.contradictions ?? []),
+    ...(input.governance?.contradictions ?? []),
+    ...(input.auditBaseline?.contradictions ?? []),
+    ...(input.inventory?.contradictions ?? [])
+  ]) {
+    contradictions.push(`CURRENT_STATE:${contradiction}`);
+  }
 
   let global: LiveStateAlignment['global'];
   let nextAction: string | null;
@@ -86,7 +102,7 @@ function buildAlignment(input: LiveStateObservations): {
 
   return {
     alignment: { githubVsS1, runtime, documentation, global },
-    contradictions,
+    contradictions: [...new Set(contradictions)],
     nextAction
   };
 }

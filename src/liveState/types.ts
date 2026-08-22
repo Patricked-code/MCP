@@ -50,12 +50,89 @@ export type DocumentationLiveObservation = {
   error?: string | null;
 };
 
+export type CurrentStateArchitecture = {
+  modules: Array<{ path: string; imports: string[] }>;
+  routes: Array<{ file: string; method: string; path: string }>;
+  digest: string;
+};
+
+export type CurrentStateDocumentation = {
+  files: string[];
+  digest: string;
+};
+
+export type CurrentStateGovernanceFile = {
+  path: string;
+  present: boolean;
+  digest: string | null;
+};
+
+export type CurrentStateEvidence = {
+  schemaVersion: 1;
+  repositoryHead: string;
+  architecture: CurrentStateArchitecture;
+  documentation: CurrentStateDocumentation;
+  audits: string[];
+  governance: { files: CurrentStateGovernanceFile[]; digest: string };
+  taskRegistry: {
+    path: string;
+    present: boolean;
+    registryVersion: number | null;
+    digest: string | null;
+  };
+  testSuiteDigest: string;
+  sourceDigest: string;
+  contradictions: string[];
+};
+
+export type CapabilitiesLiveObservation = {
+  status: LiveStateSourceStatus;
+  catalogueDigest: string | null;
+  registeredToolCount: number;
+  readOnlyToolCount: number;
+  writeToolCount: number;
+  resourceCount: number;
+  tools: CurrentToolContract[];
+  resources: CurrentResourceContract[];
+  contradictions: string[];
+};
+
+export type GovernanceLiveObservation = {
+  status: LiveStateSourceStatus;
+  repositoryHead: string | null;
+  governanceDigest: string | null;
+  files: CurrentStateGovernanceFile[];
+  taskRegistryVersion: number | null;
+  contradictions: string[];
+};
+
+export type AuditBaselineLiveObservation = {
+  status: LiveStateSourceStatus;
+  repositoryHead: string | null;
+  testSuiteDigest: string | null;
+  sourceDigest: string | null;
+  contradictions: string[];
+};
+
+export type InventoryLiveObservation = {
+  status: LiveStateSourceStatus;
+  repositoryHead: string | null;
+  architecture: CurrentStateArchitecture | null;
+  documentation: CurrentStateDocumentation | null;
+  audits: string[];
+  contradictions: string[];
+};
+
 export type LiveStateObservations = {
   repository: string;
   github: GithubLiveObservation;
   s1: S1LiveObservation;
   runtime: RuntimeLiveObservation;
   documentation: DocumentationLiveObservation;
+  capabilities?: CapabilitiesLiveObservation;
+  governance?: GovernanceLiveObservation;
+  auditBaseline?: AuditBaselineLiveObservation;
+  inventory?: InventoryLiveObservation;
 };
 
 export type LiveStateAlignment = {
@@ -77,3 +154,7 @@ export type LiveStateSnapshot = LiveStateObservations & {
   contradictions: string[];
   nextAction: string | null;
 };
+import type {
+  CurrentResourceContract,
+  CurrentToolContract
+} from '../currentState/toolCatalog.js';

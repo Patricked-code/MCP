@@ -61,6 +61,23 @@ function unavailableObservations(): LiveStateObservations {
       declaredS1Sha: null,
       drift: false,
       error: 'live_state_collection_failed'
+    },
+    capabilities: {
+      status: 'UNAVAILABLE', catalogueDigest: null, registeredToolCount: 0,
+      readOnlyToolCount: 0, writeToolCount: 0, resourceCount: 0,
+      tools: [], resources: [], contradictions: ['live_state_collection_failed']
+    },
+    governance: {
+      status: 'UNAVAILABLE', repositoryHead: null, governanceDigest: null,
+      files: [], taskRegistryVersion: null, contradictions: ['live_state_collection_failed']
+    },
+    auditBaseline: {
+      status: 'UNAVAILABLE', repositoryHead: null, testSuiteDigest: null,
+      sourceDigest: null, contradictions: ['live_state_collection_failed']
+    },
+    inventory: {
+      status: 'UNAVAILABLE', repositoryHead: null, architecture: null,
+      documentation: null, audits: [], contradictions: ['live_state_collection_failed']
     }
   };
 }

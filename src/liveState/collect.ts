@@ -1,8 +1,16 @@
 import { readFile } from 'node:fs/promises';
+import { z } from 'zod';
+
+import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
 
 import type {
+  AuditBaselineLiveObservation,
+  CapabilitiesLiveObservation,
+  CurrentStateEvidence,
   DocumentationLiveObservation,
   GithubLiveObservation,
+  GovernanceLiveObservation,
+  InventoryLiveObservation,
   LiveStateObservations,
   RuntimeLiveObservation,
   S1LiveObservation
@@ -17,6 +25,48 @@ const DEFAULT_GITHUB_API_BASE = 'https://api.github.com';
 const DEFAULT_GITHUB_ALLOWED_HOSTS = 'api.github.com';
 const DEFAULT_GITHUB_TIMEOUT_MS = 15_000;
 const SHA_PATTERN = /^[0-9a-f]{40}$/i;
+const DIGEST_PATTERN = /^[0-9a-f]{64}$/i;
+const EvidencePathSchema = z.string().min(1).max(500);
+const EvidenceDigestSchema = z.string().regex(DIGEST_PATTERN);
+const EvidenceContradictionsSchema = z.array(z.string().min(1).max(240)).max(100);
+const CurrentStateEvidenceSchema = z.object({
+  schemaVersion: z.literal(1),
+  repositoryHead: z.string().regex(SHA_PATTERN),
+  architecture: z.object({
+    modules: z.array(z.object({
+      path: EvidencePathSchema,
+      imports: z.array(z.string().min(1).max(500)).max(200)
+    }).strict()).max(2_000),
+    routes: z.array(z.object({
+      file: EvidencePathSchema,
+      method: z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
+      path: z.string().min(1).max(500)
+    }).strict()).max(2_000),
+    digest: EvidenceDigestSchema
+  }).strict(),
+  documentation: z.object({
+    files: z.array(EvidencePathSchema).max(5_000),
+    digest: EvidenceDigestSchema
+  }).strict(),
+  audits: z.array(EvidencePathSchema).max(2_000),
+  governance: z.object({
+    files: z.array(z.object({
+      path: EvidencePathSchema,
+      present: z.boolean(),
+      digest: EvidenceDigestSchema.nullable()
+    }).strict()).max(100),
+    digest: EvidenceDigestSchema
+  }).strict(),
+  taskRegistry: z.object({
+    path: EvidencePathSchema,
+    present: z.boolean(),
+    registryVersion: z.number().int().nonnegative().nullable(),
+    digest: EvidenceDigestSchema.nullable()
+  }).strict(),
+  testSuiteDigest: EvidenceDigestSchema,
+  sourceDigest: EvidenceDigestSchema,
+  contradictions: EvidenceContradictionsSchema
+}).strict();
 
 function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'"'"'`)}'`;
@@ -90,6 +140,23 @@ if [ -z "$(git status --porcelain --untracked-files=all)" ]; then printf 'workin
 if git diff --quiet && git diff --cached --quiet; then printf 'diff_empty=true\\n'; else printf 'diff_empty=false\\n'; fi
 printf 'fetch_remote=%s\\n' "$(git remote get-url origin 2>/dev/null || true)"
 printf 'push_remote=%s\\n' "$(git remote get-url --push origin 2>/dev/null || true)"`;
+}
+
+export function buildCurrentStateEvidenceCommand(): string {
+  return `set -euo pipefail
+cd ${shellQuote(MCP_ROOT)}
+node scripts/current-state-evidence.mjs`;
+}
+
+export function parseCurrentStateEvidence(output: string): CurrentStateEvidence {
+  if (Buffer.byteLength(output) > 1_000_000) {
+    throw new Error('CURRENT_STATE_EVIDENCE_INVALID');
+  }
+  try {
+    return CurrentStateEvidenceSchema.parse(JSON.parse(output)) as CurrentStateEvidence;
+  } catch {
+    throw new Error('CURRENT_STATE_EVIDENCE_INVALID');
+  }
 }
 
 export function parseS1Observation(output: string): S1LiveObservation {
@@ -308,12 +375,96 @@ export async function collectDocumentationObservation(
   }
 }
 
+function capabilitiesObservation(): CapabilitiesLiveObservation {
+  const catalog = getCurrentToolCatalog();
+  const available = catalog.registeredToolCount > 0;
+  return {
+    status: available ? 'CURRENT' : 'UNAVAILABLE',
+    catalogueDigest: available ? catalog.catalogueDigest : null,
+    registeredToolCount: catalog.registeredToolCount,
+    readOnlyToolCount: catalog.readOnlyToolCount,
+    writeToolCount: catalog.writeToolCount,
+    resourceCount: catalog.resourceCount,
+    tools: catalog.tools,
+    resources: catalog.resources,
+    contradictions: available ? [] : ['current_tool_catalog_empty']
+  };
+}
+
+async function collectCurrentStateEvidence(): Promise<CurrentStateEvidence | null> {
+  try {
+    const result = await runS1ReadOnly(buildCurrentStateEvidenceCommand());
+    if (result.code !== 0) return null;
+    return parseCurrentStateEvidence(result.stdout);
+  } catch {
+    return null;
+  }
+}
+
+function evidenceObservations(evidence: CurrentStateEvidence | null): {
+  governance: GovernanceLiveObservation;
+  auditBaseline: AuditBaselineLiveObservation;
+  inventory: InventoryLiveObservation;
+} {
+  if (!evidence) {
+    const contradictions = ['current_state_evidence_unavailable'];
+    return {
+      governance: {
+        status: 'UNAVAILABLE', repositoryHead: null, governanceDigest: null,
+        files: [], taskRegistryVersion: null, contradictions
+      },
+      auditBaseline: {
+        status: 'UNAVAILABLE', repositoryHead: null, testSuiteDigest: null,
+        sourceDigest: null, contradictions
+      },
+      inventory: {
+        status: 'UNAVAILABLE', repositoryHead: null, architecture: null,
+        documentation: null, audits: [], contradictions
+      }
+    };
+  }
+  return {
+    governance: {
+      status: 'CURRENT',
+      repositoryHead: evidence.repositoryHead,
+      governanceDigest: evidence.governance.digest,
+      files: evidence.governance.files,
+      taskRegistryVersion: evidence.taskRegistry.registryVersion,
+      contradictions: evidence.contradictions
+    },
+    auditBaseline: {
+      status: 'CURRENT',
+      repositoryHead: evidence.repositoryHead,
+      testSuiteDigest: evidence.testSuiteDigest,
+      sourceDigest: evidence.sourceDigest,
+      contradictions: evidence.contradictions
+    },
+    inventory: {
+      status: 'CURRENT',
+      repositoryHead: evidence.repositoryHead,
+      architecture: evidence.architecture,
+      documentation: evidence.documentation,
+      audits: evidence.audits,
+      contradictions: evidence.contradictions
+    }
+  };
+}
+
 export async function collectLiveStateObservations(): Promise<LiveStateObservations> {
-  const [github, s1, runtime] = await Promise.all([
+  const [github, s1, runtime, evidence] = await Promise.all([
     collectGithubObservation(),
     collectS1Observation(),
-    collectRuntimeObservation()
+    collectRuntimeObservation(),
+    collectCurrentStateEvidence()
   ]);
   const documentation = await collectDocumentationObservation(github.head, s1.head);
-  return { repository: REPOSITORY, github, s1, runtime, documentation };
+  return {
+    repository: REPOSITORY,
+    github,
+    s1,
+    runtime,
+    documentation,
+    capabilities: capabilitiesObservation(),
+    ...evidenceObservations(evidence)
+  };
 }
