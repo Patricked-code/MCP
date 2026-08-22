@@ -297,3 +297,11 @@ Décision de compatibilité : le gate reste `shadow`. Les nouveaux verdicts obse
 Décision anti-staleness : `.mcp/branch-governance.json` ne porte plus aucun numéro de PR, branche de travail ou prochaine branche dynamique. GitHub, Operational Memory, Governed Task Queue et Live State restent les autorités ; le collecteur current-state signale toute réintroduction d'une valeur dynamique persistée.
 
 Décision de clôture : la tâche seed `TASK-20260822-001` reste `READY` jusqu'à la preuve CI du head exact, le merge, l'Autodeploy exact-SHA, l'attestation GitHub/S1/runtime et la réconciliation canonique. Le déploiement du code ne doit pas fabriquer rétrospectivement un état `DONE` non attesté.
+
+## 2026-08-22 — Clôture en deux preuves et reprise obligatoire de la queue runtime
+
+Décision : accepter la PR #49 uniquement après `222/222`, CI exacte `32565936838`, absence de thread actionnable et fusion gardée par `expected_head_sha`. Le merge fonctionnel retenu est `c944fd9e7c05aad503f9e1d5d21e0ead25747886`.
+
+Décision : considérer l'Autodeploy attesté uniquement après un nouveau Live State prouvant GitHub, S1, `origin/main` et runtime égaux, arbre S1 propre et conteneur healthy. Cette preuve est `stateVersion=33` ; la documentation est ensuite réconciliée dans une branche séparée strictement documentaire.
+
+Décision de queue : ne pas contourner la state machine et ne pas modifier directement le store. Le connecteur de cette conversation ayant figé son catalogue avant le déploiement, `TASK-20260822-001` reste volontairement `READY`. La prochaine connexion doit charger les nouveaux outils, reprendre cette tâche existante et appliquer les transitions gouvernées jusqu'à `DONE`, sans créer de doublon.

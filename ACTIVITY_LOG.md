@@ -217,3 +217,13 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Les protections supplémentaires de collecte sont conservées : maximum 5 000 fichiers, 1 Mo par fichier, 25 Mo lus, 1 Mo en sortie, chemins sensibles jamais lus et symlinks refusés.
 - La projection finale conserve en plus les imports résolus, les catégories documentaires, les audits et historiques séparés, les 10 politiques machine, la détection de métadonnées dynamiques statiques et la validité de baseline liée aux digests/runtime.
 - Validation fraîche : `221/221`, zéro échec/cancelled/skipped/todo ; typecheck, build, documentation `196`, cartographie, secrets et diff passent.
+
+## 2026-08-22T09:52:44Z — TASK-20260822-001 — PR #49 fusionnée, déployée et attestée
+
+- Intégration finale de la queue et du Bootstrap Receipt avec le travail concurrent publié, sans force-push ; ajout du contrôle owner-aware des locks externes.
+- RED ciblé : le scope verrouillé par une autre session était classé `NEW_TASK` ; GREEN : `CONFLICT`, tandis que le propriétaire du lock peut continuer.
+- Head exact `1c9297d663624e5c348fba687051b649ca3e2a22` : `222/222` tests, typecheck, build, docs `196`, cartographie, preuve current-state, secrets et diff verts ; CI GitHub `32565936838` réussie.
+- PR #49 passée Ready après CI et absence de thread actionnable, puis fusion squash avec `expected_head_sha` au SHA `c944fd9e7c05aad503f9e1d5d21e0ead25747886`.
+- Live State `stateVersion=33` : GitHub, S1, `origin/main` et runtime égaux au merge ; S1 propre/read-only ; Docker running/healthy ; image `sha256:f6e05d77ed04c342e663c04322029f5233009ee4d75b78a9ebeea12af8027de5`.
+- Bootstrap Receipt réel créé sans limitation après le déploiement ; checkpoint fonctionnel final enregistré et première session fermée sans lock résiduel.
+- Nouveau point de reprise : branche documentaire dédiée, session `2807acb8-84ec-4760-882e-5a5e43496fc3` et lock repository actifs. La tâche runtime seed demeure `READY` jusqu'au rechargement des cinq nouveaux outils par le connecteur courant.
