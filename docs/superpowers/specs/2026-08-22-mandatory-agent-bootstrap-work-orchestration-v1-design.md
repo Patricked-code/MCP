@@ -33,7 +33,7 @@ La livraison préserve :
 - Governed Sessions, checkpoints, locks, atomic store, journal et maintenance ;
 - GitHub OIDC, Autodeploy exact-SHA, fast-forward only, attestation OCI et rollback ;
 - `protect-main`, la Draft PR et la garde exact-head ;
-- les 92 contrats historiques et les 105 outils observés avant cette évolution ;
+- les 92 contrats historiques du runtime ; le nombre d’outils exposés par chaque connecteur client reste une observation de transport, jamais une constante métier ;
 - `ENABLE_WRITE_TOOLS`, `allow_write` et le WRITE gate `shadow` ;
 - les routes OAuth, MCP, health, dashboard et déploiement existantes ;
 - l’absence de secret, prompt complet, transport brut ou sortie brute dans les stores ;
@@ -54,7 +54,7 @@ Aucun second Live State, système de sessions, moteur de locks, journal, dashboa
 | Documents et audits | inventaire Markdown + Git | preuve documentaire dérivée |
 | Politiques `.mcp` | fichiers versionnés | digests, présence et contradictions |
 | Sessions et checkpoints | store existant | bootstrap receipt dans la session |
-| Tâches opérationnelles | Task Registry versionné + task store runtime | Work Queue |
+| Tâches opérationnelles | Task Registry versionné (seed) + task store Operational Memory (autorité runtime) | Work Queue |
 | Chronologie machine | journal JSONL existant | nouveaux événements allowlistés |
 | Vue agent | Governed Context | Current-State Inventory composé |
 
@@ -132,7 +132,7 @@ Ces sections participent à la valeur sémantique du Live State. Un digest ou un
 
 ### 7.1 Registre versionné
 
-`.mcp/task-registry.json` contient le backlog canonique initial, son `registryVersion` et un digest. Le fichier n’est pas le store runtime : il sert de seed versionné et de preuve documentaire.
+`.mcp/task-registry.json` contient le backlog initial versionné, son `registryVersion` et un digest. Le fichier n’est pas le store runtime et ne concurrence pas `TASKS.md` : il sert de seed machine, de migration explicite et de preuve documentaire. Après initialisation, le task store Operational Memory est l’autorité de l’état runtime ; `TASKS.md` demeure la vue canonique humaine mise à jour par le workflow gouverné.
 
 ### 7.2 Store runtime
 

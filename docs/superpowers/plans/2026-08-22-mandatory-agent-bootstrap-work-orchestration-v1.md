@@ -1,6 +1,6 @@
 # Mandatory Agent Bootstrap & Work Orchestration V1 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **Mode d’exécution retenu :** exécution séquentielle dans la workspace isolée existante avec `superpowers:executing-plans`, sans sous-agent. Chaque comportement de production suit un cycle `RED observé → GREEN minimal → régression voisine → commit`.
 
 **Goal:** Enrichir les moteurs MCP existants pour fournir à chaque connexion un inventaire courant, un receipt de bootstrap et une queue de travail gouvernée sans régression des contrats historiques.
 
@@ -20,6 +20,20 @@
 - Aucun prompt complet, token, credential, transport brut ou sortie brute persisté.
 - Aucun nouveau moteur parallèle à Live State, Governed Context ou Operational Memory.
 
+## Baseline fraîche observée avant mutation
+
+- Branche locale propre : `mcp/mandatory-agent-bootstrap-v1-20260822`.
+- Parent de la branche : `main@78dade5e103c2ac73727f44c571f99384d6b8798`.
+- Head documentaire initial : `b46b143` (`docs: specify mandatory agent bootstrap v1`).
+- Installation : `npm ci` réussie avec cache temporaire isolé.
+- Tests : `node --import tsx --test tests/*.test.ts` → `200/200`, zéro échec.
+- Typecheck : `tsc --noEmit -p tsconfig.json` → succès.
+- Build : `tsc -p tsconfig.json` → succès.
+- Documentation : 193 Markdown suivis, inventaire exact et état canonique cohérent.
+- Scan de secrets et `git diff --check` → succès.
+
+Le runner `tsx` CLI ouvre un socket IPC interdit dans la sandbox locale ; les preuves locales utilisent donc `node --import tsx --test`, équivalent sans IPC. La CI conserve les scripts `npm` canoniques.
+
 ---
 
 ### Task 1: Catalogue dérivé des registrations
@@ -34,8 +48,52 @@
 - Consumes: appels SDK `tool`, `registerTool`, `registerResource`.
 - Produces: `decorateRegistrationCatalogServer`, `getCurrentToolCatalog`, `resetToolCatalogForTests`.
 
-- [ ] **Step 1: Écrire le RED qui capture deux outils, une ressource, leurs schémas et leur classification sans changer les retours SDK.**
-- [ ] **Step 2: Exécuter `node --import tsx --test tests/currentToolCatalog.test.ts`; attendre `ERR_MODULE_NOT_FOUND`.**
+**Contrat exact V1:**
+
+```ts
+export type RegistrationSurface = 'read' | 'scoped-write';
+
+export type CurrentToolContract = {
+  name: string;
+  title: string | null;
+  description: string | null;
+  surface: RegistrationSurface;
+  annotations: {
+    readOnlyHint: boolean | null;
+    destructiveHint: boolean | null;
+  };
+  inputSchema: Record<string, unknown>;
+  contractDigest: string;
+};
+
+export type CurrentResourceContract = {
+  name: string;
+  uri: string;
+  title: string | null;
+  description: string | null;
+  mimeType: string | null;
+  audience: string[];
+  priority: number | null;
+  contractDigest: string;
+};
+
+export type CurrentToolCatalog = {
+  schemaVersion: 1;
+  catalogueVersion: 1;
+  catalogueDigest: string;
+  registeredToolCount: number;
+  readOnlyToolCount: number;
+  writeToolCount: number;
+  resourceCount: number;
+  tools: CurrentToolContract[];
+  resources: CurrentResourceContract[];
+};
+```
+
+Le digest est le SHA-256 hexadécimal d’un JSON canonique à clés triées. Les dates ne participent pas au catalogue sémantique. `z.toJSONSchema(z.object(rawShape))` convertit les schémas legacy ; `registerTool` utilise `config.inputSchema`. Le décorateur délègue d’abord au SDK puis enregistre la preuve uniquement si l’enregistrement a réussi. Un nom réenregistré avec le même contrat est idempotent ; un contrat différent lève `CURRENT_TOOL_CATALOG_CONFLICT:<name>`.
+
+- [ ] **Step 1: Écrire le RED qui capture `tool`, `registerTool` et `registerResource`, vérifie le tri/digest, la classification, l’idempotence, le conflit et l’identité du retour SDK.**
+- [ ] **Step 2: Exécuter `node --import tsx --test tests/currentToolCatalog.test.ts`; attendre un échec d’import de `src/currentState/toolCatalog.ts`.**
 - [ ] **Step 3: Implémenter le décorateur avec tri, JSON canonique, SHA-256, déduplication idempotente et conflit fail-closed.**
 - [ ] **Step 4: Câbler `registerReadOnlyTools` sur la surface `read` et `registerScopedWriteTools` sur `scoped-write`, le gate historique restant autour du second décorateur.**
 - [ ] **Step 5: Rejouer le test ciblé, `toolContractRegression` et `scopedWriteGate`; attendre zéro échec.**
