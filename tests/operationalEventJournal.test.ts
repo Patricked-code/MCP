@@ -96,6 +96,56 @@ test('les appends parallèles restent complets et séquencés', async () => {
   }
 });
 
+test('bootstrap.acknowledged accepte seulement les identifiants et digests bornés', async () => {
+  const { directory, file } = await temporaryJournalPath();
+  const journal = createOperationalEventJournal({ filePath: file, maxBytes: 65_536, archives: 2 });
+  try {
+    const event = await journal.append({
+      type: 'bootstrap.acknowledged',
+      governedSessionId: SESSION_ID,
+      metadata: {
+        bootstrapReceiptId: '22222222-2222-4222-8222-222222222222',
+        stateVersion: 9,
+        sessionRevision: 3,
+        catalogueDigest: 'a'.repeat(64),
+        governanceDigest: 'b'.repeat(64),
+        taskRegistryDigest: 'c'.repeat(64),
+        limitationCount: 1
+      }
+    });
+    assert.equal(event.type, 'bootstrap.acknowledged');
+    await assert.rejects(journal.append({
+      type: 'bootstrap.acknowledged', governedSessionId: SESSION_ID,
+      metadata: { prompt: 'forbidden' }
+    } as never), /OPERATIONAL_EVENT_METADATA_FORBIDDEN/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('les événements intention/tâche restent bornés et ne journalisent jamais le résumé', async () => {
+  const { directory, file } = await temporaryJournalPath();
+  const journal = createOperationalEventJournal({ filePath: file, maxBytes: 65_536, archives: 2 });
+  try {
+    await journal.append({
+      type: 'intent.reconciled', governedSessionId: SESSION_ID,
+      metadata: { taskId: 'TASK-20260822-001', classification: 'NEW_TASK', reasonCode: 'new_task_enqueued', storeRevision: 3 }
+    });
+    await journal.append({
+      type: 'task.transitioned', governedSessionId: SESSION_ID,
+      metadata: { taskId: 'TASK-20260822-001', previousStatus: 'CLAIMED', status: 'IN_PROGRESS', taskRevision: 3, storeRevision: 4 }
+    });
+    await assert.rejects(journal.append({
+      type: 'intent.reconciled', governedSessionId: SESSION_ID,
+      metadata: { summary: 'must not be persisted' }
+    } as never), /OPERATIONAL_EVENT_METADATA_FORBIDDEN/);
+    const raw = await readFile(file, 'utf8');
+    assert.equal(raw.includes('must not be persisted'), false);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test('les clés sensibles ou hors allowlist sont refusées avant écriture', async () => {
   const forbiddenKeys = [
     'token',

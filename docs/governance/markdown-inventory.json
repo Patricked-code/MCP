@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 191,
+  "trackedCount": 196,
   "categories": {
     "root-documentation": 50,
     "canonical": 7,
     "migration-history": 7,
-    "documentation": 52,
+    "documentation": 55,
     "history": 1,
-    "engineering-plan": 3,
-    "engineering-spec": 3,
+    "engineering-plan": 4,
+    "engineering-spec": 4,
     "memory": 61,
     "runtime-mirror-tracked": 7
   },
@@ -495,6 +495,10 @@
       "category": "engineering-plan"
     },
     {
+      "path": "docs/superpowers/plans/2026-08-22-mandatory-agent-bootstrap-work-orchestration-v1.md",
+      "category": "engineering-plan"
+    },
+    {
       "path": "docs/superpowers/specs/2026-08-09-governed-autodeploy-v1-design.md",
       "category": "engineering-spec"
     },
@@ -504,6 +508,10 @@
     },
     {
       "path": "docs/superpowers/specs/2026-08-13-mcp-governed-session-continuity-v1-design.md",
+      "category": "engineering-spec"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-08-22-mandatory-agent-bootstrap-work-orchestration-v1-design.md",
       "category": "engineering-spec"
     },
     {
@@ -749,6 +757,18 @@
     {
       "path": "memory/WEALTHTECH_PROJECT_MEMORY.md",
       "category": "memory"
+    },
+    {
+      "path": "tests/fixtures/current-state-evidence-repo/README.md",
+      "category": "documentation"
+    },
+    {
+      "path": "tests/fixtures/current-state-evidence-repo/docs/audits/baseline.md",
+      "category": "documentation"
+    },
+    {
+      "path": "tests/fixtures/current-state-evidence-repo/docs/history/change.md",
+      "category": "documentation"
     },
     {
       "path": "wealthtech_project_memory/memory/CONVERSATION_COMPILED_WEALTHTECH_EWARI_MCP.md",

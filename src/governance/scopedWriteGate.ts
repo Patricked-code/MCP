@@ -30,7 +30,14 @@ export type ShadowWriteDecision = {
     | 'context_unacknowledged'
     | 'state_version_stale'
     | 'lock_conflict'
+    | 'bootstrap_receipt_missing'
+    | 'bootstrap_receipt_stale'
+    | 'task_unclaimed'
+    | 'audit_baseline_invalid'
     | 'shadow_ready';
+  bootstrapReceiptStatus?: 'MISSING' | 'CURRENT' | 'STALE' | 'EXPIRED' | null;
+  currentTaskStatus?: string | null;
+  auditBaselineValid?: boolean | null;
 };
 
 export type ShadowWriteOutcome = 'succeeded' | 'failed' | 'cancelled';
@@ -58,6 +65,13 @@ export function deriveShadowWriteDecision(
   else if (input.acknowledgedStateVersion !== input.currentStateVersion) {
     verdict = 'state_version_stale';
   } else if (input.activeLockConflicts > 0) verdict = 'lock_conflict';
+  else if (input.bootstrapReceiptStatus !== undefined && input.bootstrapReceiptStatus !== 'CURRENT') {
+    verdict = input.bootstrapReceiptStatus === 'MISSING' || input.bootstrapReceiptStatus === null
+      ? 'bootstrap_receipt_missing'
+      : 'bootstrap_receipt_stale';
+  } else if (Object.prototype.hasOwnProperty.call(input, 'currentTaskStatus') && !input.currentTaskStatus) {
+    verdict = 'task_unclaimed';
+  } else if (input.auditBaselineValid === false) verdict = 'audit_baseline_invalid';
   else verdict = 'shadow_ready';
   const { currentFreshness: _currentFreshness, ...decision } = input;
   return { ...decision, verdict };
@@ -218,7 +232,10 @@ export function getDefaultScopedWriteGateDependencies(): ScopedWriteGateDependen
         currentStateVersion: context.liveState?.stateVersion ?? null,
         currentFreshness: context.liveState?.freshness ?? null,
         acknowledgedStateVersion: context.session?.lastAcknowledgedStateVersion ?? null,
-        activeLockConflicts
+        activeLockConflicts,
+        bootstrapReceiptStatus: context.bootstrap.status,
+        currentTaskStatus: context.currentTask?.status ?? null,
+        auditBaselineValid: context.currentState.auditBaselineValid
       });
     },
     async record(decision, outcome) {

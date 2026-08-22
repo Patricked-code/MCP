@@ -129,6 +129,26 @@ test('stateVersion augmente lorsqu’un état significatif change', () => {
   assert.equal(second.stateVersion, 2);
 });
 
+test('stateVersion suit les digests current-state mais ignore leurs dates', () => {
+  const initial = observations();
+  initial.capabilities = {
+    status: 'CURRENT', catalogueVersion: 1, catalogueDigest: 'a'.repeat(64),
+    registeredToolCount: 105, readOnlyToolCount: 80, writeToolCount: 25,
+    resourceCount: 2, tools: [], resources: [], generatedAt: NOW.toISOString(), contradictions: []
+  };
+  const first = reconcileLiveState(initial, null, NOW);
+
+  const timestampOnly = structuredClone(initial);
+  timestampOnly.capabilities!.generatedAt = '2026-08-09T12:00:30.000Z';
+  const second = reconcileLiveState(timestampOnly, first, new Date(timestampOnly.capabilities!.generatedAt));
+  assert.equal(second.stateVersion, 1);
+
+  const changed = structuredClone(timestampOnly);
+  changed.capabilities!.catalogueDigest = 'b'.repeat(64);
+  const third = reconcileLiveState(changed, second, new Date('2026-08-09T12:00:40.000Z'));
+  assert.equal(third.stateVersion, 2);
+});
+
 test('applyFreshness marque STALE après maxAgeSeconds', () => {
   const state = reconcileLiveState(observations(), null, NOW);
   const fresh = applyFreshness(state, new Date('2026-08-09T12:00:30.000Z'));

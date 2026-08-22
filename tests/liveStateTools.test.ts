@@ -34,6 +34,30 @@ function snapshot(): LiveStateSnapshot {
       status: 'CURRENT', activeTask: 'TASK-20260809-002', declaredGithubSha: SHA,
       declaredS1Sha: SHA, drift: false
     },
+    capabilities: {
+      status: 'CURRENT', catalogueVersion: 1, catalogueDigest: 'a'.repeat(64), registeredToolCount: 92,
+      readOnlyToolCount: 80, writeToolCount: 12, resourceCount: 1,
+      tools: [], resources: [], generatedAt: '2026-08-09T12:00:00.000Z', contradictions: []
+    },
+    governance: {
+      status: 'CURRENT', digest: 'b'.repeat(64), files: [], taskRegistry: null,
+      contradictions: []
+    },
+    auditBaseline: {
+      status: 'CURRENT', evidenceHead: SHA, runtimeRevision: SHA,
+      testSuiteDigest: 'c'.repeat(64), sourceDigest: 'd'.repeat(64),
+      catalogueDigest: 'a'.repeat(64), governanceDigest: 'b'.repeat(64),
+      valid: true, invalidReasons: []
+    },
+    inventory: {
+      status: 'CURRENT', evidenceHead: SHA, generatedAt: '2026-08-09T12:00:00.000Z',
+      sourceDigest: 'e'.repeat(64),
+      architecture: { modules: [], imports: [], routes: [], digest: 'f'.repeat(64) },
+      documentation: { markdown: [], categories: {}, digest: '1'.repeat(64) },
+      audits: [], history: [],
+      governance: { files: [], taskRegistry: null, digest: 'b'.repeat(64) },
+      testSuiteDigest: 'c'.repeat(64), contradictions: []
+    },
     alignment: {
       githubVsS1: 'ALIGNED', runtime: 'ALIGNED', documentation: 'ALIGNED', global: 'FULLY_ALIGNED'
     },
@@ -89,6 +113,11 @@ test('le résumé expose uniquement le contexte opérationnel compact', () => {
     ageSeconds: 3,
     globalAlignment: 'FULLY_ALIGNED',
     activeTask: 'TASK-20260809-002',
+    catalogueDigest: 'a'.repeat(64),
+    registeredToolCount: 92,
+    inventoryDigest: 'e'.repeat(64),
+    governanceDigest: 'b'.repeat(64),
+    auditBaselineValid: true,
     nextAction: null
   });
 });

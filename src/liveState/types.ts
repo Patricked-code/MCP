@@ -50,12 +50,81 @@ export type DocumentationLiveObservation = {
   error?: string | null;
 };
 
+export type CurrentStateCapabilityObservation = {
+  status: LiveStateSourceStatus;
+  catalogueVersion: 1;
+  catalogueDigest: string | null;
+  registeredToolCount: number;
+  readOnlyToolCount: number;
+  writeToolCount: number;
+  resourceCount: number;
+  tools: unknown[];
+  resources: unknown[];
+  generatedAt: string;
+  contradictions: string[];
+  error?: string | null;
+};
+
+export type CurrentStateEvidenceObservation = {
+  status: LiveStateSourceStatus;
+  evidenceHead: string | null;
+  generatedAt: string | null;
+  sourceDigest: string | null;
+  architecture: {
+    modules: string[];
+    imports: Array<{ from: string; to: string }>;
+    routes: Array<{ method: string; path: string; source: string }>;
+    digest: string | null;
+  };
+  documentation: {
+    markdown: string[];
+    categories: Record<string, number>;
+    digest: string | null;
+  };
+  audits: string[];
+  history: string[];
+  governance: {
+    files: Array<{ path: string; status: string; digest: string | null }>;
+    taskRegistry: { registryVersion: number | null; taskCount: number | null; digest: string } | null;
+    digest: string | null;
+  };
+  testSuiteDigest: string | null;
+  contradictions: Array<{ code: string; path?: string }>;
+  error?: string | null;
+};
+
+export type CurrentStateGovernanceObservation = {
+  status: LiveStateSourceStatus;
+  digest: string | null;
+  files: CurrentStateEvidenceObservation['governance']['files'];
+  taskRegistry: CurrentStateEvidenceObservation['governance']['taskRegistry'];
+  contradictions: string[];
+  error?: string | null;
+};
+
+export type CurrentStateAuditBaselineObservation = {
+  status: LiveStateSourceStatus;
+  evidenceHead: string | null;
+  runtimeRevision: string | null;
+  testSuiteDigest: string | null;
+  sourceDigest: string | null;
+  catalogueDigest: string | null;
+  governanceDigest: string | null;
+  valid: boolean;
+  invalidReasons: string[];
+  error?: string | null;
+};
+
 export type LiveStateObservations = {
   repository: string;
   github: GithubLiveObservation;
   s1: S1LiveObservation;
   runtime: RuntimeLiveObservation;
   documentation: DocumentationLiveObservation;
+  capabilities?: CurrentStateCapabilityObservation;
+  governance?: CurrentStateGovernanceObservation;
+  auditBaseline?: CurrentStateAuditBaselineObservation;
+  inventory?: CurrentStateEvidenceObservation;
 };
 
 export type LiveStateAlignment = {

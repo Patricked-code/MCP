@@ -94,6 +94,7 @@ function governedContext(): GovernedOperationalContext {
       closedAt: null,
       currentTransport: null,
       lastAcknowledgedStateVersion: 9,
+      bootstrapReceipt: null,
       sessionRevision: 3,
       lastCheckpoint: null,
       blockers: [],
@@ -101,6 +102,14 @@ function governedContext(): GovernedOperationalContext {
       lockIds: [LOCK_ID],
       resumePolicy: 'stable_principal_or_resume_secret'
     },
+    bootstrap: { required: true, status: 'CURRENT', receipt: null, limitations: [] },
+    currentState: {
+      catalogueDigest: 'b'.repeat(64), inventoryDigest: 'c'.repeat(64),
+      governanceDigest: 'd'.repeat(64), auditBaselineValid: true
+    },
+    workQueue: { storeRevision: 3, total: 2, byStatus: { DONE: 1, IN_PROGRESS: 1 } },
+    currentTask: null,
+    firstExecutableTask: null,
     activeLocks: [{
       schemaVersion: 1,
       lockId: LOCK_ID,
@@ -138,6 +147,9 @@ test('le dashboard rend la vue opérationnelle bornée demandée', () => {
   assert.match(html, /success/);
   assert.match(html, /Approbations[^0-9]*2/);
   assert.match(html, /shadow/);
+  assert.match(html, /Bootstrap[^<]*<[^>]+>CURRENT/);
+  assert.match(html, /Queue[^0-9]*2/);
+  assert.match(html, new RegExp('b{64}'));
   assert.match(html, /review pending/);
 });
 
@@ -159,6 +171,8 @@ test('le dashboard échappe toutes les chaînes et ignore les secrets hors contr
   };
   context.nextAction = '<img src=x onerror=alert(1)>';
   context.blockers = ['<script>alert("blocker")</script>'];
+  context.bootstrap.limitations = ['<svg onload=alert(2)>'];
+  context.workQueue.byStatus = { '<script>bad</script>': 2 };
   const hostile = Object.assign(context, {
     resumeSecretHash: 'resume-secret-hash-raw',
     authInfo: { token: 'Bearer raw-token' },
@@ -169,6 +183,7 @@ test('le dashboard échappe toutes les chaînes et ignore les secrets hors contr
 
   assert.equal(html.includes('<script>'), false);
   assert.equal(html.includes('<img'), false);
+  assert.equal(html.includes('<svg'), false);
   assert.match(html, /&lt;script&gt;alert\(&quot;task&quot;\)&lt;\/script&gt;/);
   assert.match(html, /&lt;img src=x onerror=alert\(1\)&gt;/);
   assert.equal(html.includes('resume-secret-hash-raw'), false);

@@ -1,68 +1,3548 @@
 {
-  "schemaVersion": 1,
-  "updatedAt": "2026-07-09T20:08:09Z",
-  "manualsToReadOnConnection": [
-    "SUIVI.md",
-    "NO_REGRESSION_POLICY.md",
-    "SOURCE_OF_TRUTH.md",
-    "MCP_ANTI_DISPERSION_GOVERNANCE.md",
-    "MCP_FUNCTIONS_AND_TOOLS_MANUAL.md",
-    "MCP_FUNCTIONAL_CARTOGRAPHY.md",
-    "MCP_CONNECTION_IDENTITY_MODEL.md",
-    "MCP_INTELLIGENT_USAGE_MODE.md",
-    "MCP_TOOLS.md",
-    "MCP_AGENT_RULES.md",
-    ".mcp/branch-governance.json",
-    ".mcp/function-cartography.json",
-    ".mcp/identity-policy.json",
-    ".mcp/permissions.json",
-    ".mcp/agents.json",
-    ".mcp/server-map.json"
+  "schemaVersion": 2,
+  "generatedFrom": "runtime-registration",
+  "catalogueVersion": 1,
+  "catalogueDigest": "dc776d433a5b2943d660582353ea8507537ee3da290e820e71269ad20b2388b2",
+  "registeredToolCount": 111,
+  "readOnlyToolCount": 66,
+  "writeToolCount": 45,
+  "resourceCount": 2,
+  "tools": [
+    {
+      "name": "amf_registry_native_chunk",
+      "title": null,
+      "description": "Retourne un fragment base64 de l’archive native AMF-UMOA afin de la transférer sans accès shell libre.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "length": {
+            "default": 150000,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 180000
+          }
+        },
+        "required": [
+          "offset",
+          "length"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "4759f15e1f4e856e48bdce5e555cda5495f3e34d55a46c723808ef5bd15b500b"
+    },
+    {
+      "name": "amf_registry_native_export",
+      "title": null,
+      "description": "Extrait intégralement le registre dynamique public AMF-UMOA accueil/intervenant depuis ses API natives, crée SQLite/CSV/JSON et archive les documents liés.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "9d4eb96ce8e1a52a41d4ef9523da49d820b229e3a12453f24807f415d48dc0ab"
+    },
+    {
+      "name": "amf_registry_native_info",
+      "title": null,
+      "description": "Retourne les métadonnées et contrôles de la dernière extraction native AMF-UMOA.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "2b15514da5ab86fa9700a7bf3db6b0d0e0fc24f70f868257c7c5f438f2a30b49"
+    },
+    {
+      "name": "amf_registry_publish_download",
+      "title": null,
+      "description": "Publie une copie gzip du référentiel natif AMF-UMOA dans un répertoire web dédié et vérifie son URL HTTPS.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "edbd7f5c8eea033b92ed06cc93d78866fb9ccaf2e8e56ad2ef1efef2e9d42711"
+    },
+    {
+      "name": "brvm_container_logs_s2",
+      "title": null,
+      "description": "Affiche les dernières lignes de logs Docker du conteneur brvm_app sur S2 (secrets masqués).",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "lines": {
+            "default": 150,
+            "type": "integer",
+            "minimum": 20,
+            "maximum": 500
+          },
+          "contains": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 60,
+            "pattern": "^[A-Za-z0-9_.:\\/\\[\\] -]+$"
+          }
+        },
+        "required": [
+          "lines"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a00959af13bfc57e24ce3fb3ac9e9ada1879626086753b15c1625928e414accf"
+    },
+    {
+      "name": "brvm_run_sql_readonly_s2",
+      "title": null,
+      "description": "Exécute une requête SQL SELECT uniquement sur la base PostgreSQL BRVM (conteneur brvm_db) sur S2.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 20000
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "f4ed020b0f7001b23cd7d294536d10dc1b7d58a7db1d048ad908ac60406b67f7"
+    },
+    {
+      "name": "check_disk_s1",
+      "title": null,
+      "description": "Affiche df -h sur S1.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "5ecf83b5861f743f436558c334a4c42f9291b7faa42a43c1ab1b30149a142a17"
+    },
+    {
+      "name": "check_disk_s2",
+      "title": null,
+      "description": "Affiche df -h sur S2.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "49517344893e35b46dad45d2e7d76747a29d20a279b25fb336efee5f39762abe"
+    },
+    {
+      "name": "curl_domain",
+      "title": null,
+      "description": "Exécute un curl -I HTTPS sur un domaine fourni depuis S1.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 255,
+            "pattern": "^[a-zA-Z0-9.-]+$"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a4ba7935cb3eec6a7ec2037ed1f4bd62353233ebd89810ea73793af4b70f471b"
+    },
+    {
+      "name": "deploy_brvm_s2",
+      "title": null,
+      "description": "Déploie automatiquement BRVMCHAINSOLUTION sur S2 avec logs, stash, rebase et recette BRVM.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "dda4328451dce572ac5fe3f321b189c71ed285955dd9a95d2406f4d19219794d"
+    },
+    {
+      "name": "deploy_project_s2",
+      "title": null,
+      "description": "Déploie automatiquement un projet autorisé sur S2 avec logs, stash, rebase et recette projet.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "api_opcv",
+              "front_end_opcvm",
+              "legacy_funds_frontend",
+              "legacy_funds_api",
+              "brvmchainsolution"
+            ]
+          }
+        },
+        "required": [
+          "project"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "490639b64460ac76bb3ff35154a2550a26cc84db5c8ec16989a94f44cc04ba6b"
+    },
+    {
+      "name": "deploy_sadiaaf_s1",
+      "title": null,
+      "description": "Sauvegarde les deux anciennes applications SadiaAF puis déploie le pipeline AfricaFunds sur S1 avec API, dashboard, PostgreSQL, cron et rollback.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "e9c67e7683ec387d054efc4fdf97ee16410b278002bc8dfd4a9de4b927e82856"
+    },
+    {
+      "name": "docker_status_s1",
+      "title": null,
+      "description": "Liste les conteneurs Docker actifs sur S1.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "e3a071988ebb22e0ac994b507274bf7367d2968a8e8726f56ae1374518eeb915"
+    },
+    {
+      "name": "docker_status_s2",
+      "title": null,
+      "description": "Liste les conteneurs Docker actifs sur S2.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "055ff2107c8ddc55d9d4e03a34f0f0aa623735349e59bd45ae2022d1a3eddc92"
+    },
+    {
+      "name": "exec_repo_script_s2",
+      "title": null,
+      "description": "Exécute uniquement un script autorisé du dépôt API OPCVM ou BRVM sur S2. Le paramètre project force le dépôt cible.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "script": {
+            "type": "string",
+            "pattern": "^scripts\\/[A-Za-z0-9_./-]+\\.(js|ts)$"
+          },
+          "args": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "project": {
+            "type": "string",
+            "enum": [
+              "api_opcv",
+              "front_end_opcvm",
+              "legacy_funds_frontend",
+              "legacy_funds_api",
+              "brvmchainsolution"
+            ]
+          }
+        },
+        "required": [
+          "script",
+          "args"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "72a404645caaa43542c5de649d00ea21f387794f46d028a06279e12a55463456"
+    },
+    {
+      "name": "get_project_context",
+      "title": null,
+      "description": "Retourne le contexte projet, les serveurs et les domaines protégés.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "7d5dfe7d5413664de77683dfea7cc457e9be957afc8ea0e9b965c2d33a2c0f80"
+    },
+    {
+      "name": "get_write_tools_context",
+      "title": null,
+      "description": "Liste les projets et opérations d’écriture contrôlées disponibles. Aucun secret n’est exposé.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "4e8d5f89b7a0768bf83a46f7e26e4b3729591f650ed318e9d1c4fd5abfcdf355"
+    },
+    {
+      "name": "git_pull_project_s2",
+      "title": null,
+      "description": "Met à jour automatiquement un projet autorisé sur S2 avec stash, pull --rebase et restauration du stash.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "api_opcv",
+              "front_end_opcvm",
+              "legacy_funds_frontend",
+              "legacy_funds_api",
+              "brvmchainsolution"
+            ]
+          }
+        },
+        "required": [
+          "project"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "9b66c3cd2835225aced191541302d555b3bcf93691eff5561a9898defe680102"
+    },
+    {
+      "name": "git_status_project_s2",
+      "title": null,
+      "description": "Affiche l’état Git d’un projet autorisé sur S2.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "api_opcv",
+              "front_end_opcvm",
+              "legacy_funds_frontend",
+              "legacy_funds_api",
+              "brvmchainsolution"
+            ]
+          }
+        },
+        "required": [
+          "project"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "f8f4639b9a7b002fdde481b9be13d8a359955d653ddd39290223689990dd5b0d"
+    },
+    {
+      "name": "github_account_inventory",
+      "title": null,
+      "description": "Liste les dépôts GitHub visibles pour le compte authentifié par le token MCP, sans écrire, sans cloner et sans supprimer.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "includeArchived": {
+            "default": true,
+            "type": "boolean"
+          },
+          "includeForks": {
+            "default": true,
+            "type": "boolean"
+          },
+          "maxPages": {
+            "default": 20,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "includeArchived",
+          "includeForks",
+          "maxPages"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "472170dd3a2088b679a37a1a17b377da673c49f45e8ebec43666622b3b9a8c51"
+    },
+    {
+      "name": "github_durable_accounts_inventory",
+      "title": null,
+      "description": "Inventorie les dépôts visibles par les comptes GitHub durablement configurés, sans écrire, sans cloner et sans supprimer.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "maxReposPerAccount": {
+            "default": 30,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "maxReposPerAccount"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "9731b4be79231898f089f454bbfb321cba83feebaa88671c84613d9d649d70d1"
+    },
+    {
+      "name": "github_durable_accounts_status",
+      "title": null,
+      "description": "Vérifie durablement tous les comptes GitHub déclarés dans le registre MCP, sans afficher les secrets et sans écrire.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "318ef624bb42b6a0e1a3dda9e65f4034ee8562ba071efa60d150cf884671d9c6"
+    },
+    {
+      "name": "github_org_inventory",
+      "title": null,
+      "description": "Liste les dépôts GitHub visibles pour l’organisation configurée ou fournie, sans écrire, sans cloner et sans supprimer.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "includeArchived": {
+            "default": true,
+            "type": "boolean"
+          },
+          "includeForks": {
+            "default": true,
+            "type": "boolean"
+          },
+          "maxPages": {
+            "default": 20,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "includeArchived",
+          "includeForks",
+          "maxPages"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "abe1a1641a631b428597968edc9af5f75dfaf731ea93703a1212343da38e04b7"
+    },
+    {
+      "name": "github_pr_authorization_diagnostic",
+      "title": null,
+      "description": "Teste en lecture seule l’authentification GitHub, la visibilité du dépôt et la lecture des pull requests avec le credential du serveur MCP. Aucun token n’est affiché.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "repo": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "pullRequestNumber": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "3468afd62e7acd4cdefff09fe6f2df2904d82baf87c05b82109a341bbb0eeb91"
+    },
+    {
+      "name": "github_registry_v2_dry_run",
+      "title": null,
+      "description": "Valide le registre Git actuel et prépare en mémoire un candidat GitRegistry v2. Aucun fichier n’est écrit.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "include_candidate": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "include_candidate"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "b2d16db1477861e712b3aa9386c4f1d6331f68592273c920fb37e2ba4ac67671"
+    },
+    {
+      "name": "inspect_sadiaaf_s1",
+      "title": null,
+      "description": "Inspecte en lecture seule les deux domaines SadiaAF, le stack Docker et les sauvegardes sur S1.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "a956a89c02d023bb5bb4599bb0713818cc4a87f08a71ab66f170f9b0e8b304d8"
+    },
+    {
+      "name": "legacy_funds_api_status_s2",
+      "title": null,
+      "description": "Contrôle l API Funds sur S2 et ses URL publiques.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "881c675de81713ca89b43be21b11c0e78b2f92185944af3e82a1c567e60f0080"
+    },
+    {
+      "name": "legacy_funds_api_test_s2",
+      "title": null,
+      "description": "Teste et compile l API Funds sur S2.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          },
+          "install_dependencies": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow_write",
+          "install_dependencies"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "268736224d9eac6fb2d079bc86eed3cb6dbb176e5a706c0a98d1088f4c27ee2e"
+    },
+    {
+      "name": "legacy_funds_frontend_build_s2",
+      "title": null,
+      "description": "Teste et compile le frontend Funds sur S2.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          },
+          "install_dependencies": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow_write",
+          "install_dependencies"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "d5af6bdf16d25aaf44adc2ce12a649cf56af74d827f3d9684782fa820f92e432"
+    },
+    {
+      "name": "legacy_funds_frontend_status_s2",
+      "title": null,
+      "description": "Contrôle le frontend Funds sur S2 et ses URL publiques.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "31639fbe89f1c2717bdb591556794a141d75c70b55beb9b4d9dea7cd71f65e03"
+    },
+    {
+      "name": "legacy_vhost_commit_push_s1",
+      "title": null,
+      "description": "Committe les modifications sûres et peut pousser une branche de travail autorisée.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend",
+              "liquidity_main",
+              "liquidity_v1",
+              "liquidity_test",
+              "liquidity_dapps",
+              "liquidity_api_v3"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 180,
+            "pattern": "^[A-Za-z0-9À-ÿ _.,:;()[\\]#/+\\-]+$"
+          },
+          "push": {
+            "default": false,
+            "type": "boolean"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "message",
+          "push",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "1aeaa2b63b172793d2a04ef2a444e4fe2cf1a12d78292493922ec8956f93fd2a"
+    },
+    {
+      "name": "legacy_vhost_delete_path_s1",
+      "title": null,
+      "description": "Supprime définitivement un fichier ou répertoire relatif autorisé dans une application historique S1.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend",
+              "liquidity_main",
+              "liquidity_v1",
+              "liquidity_test",
+              "liquidity_dapps",
+              "liquidity_api_v3"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300,
+            "pattern": "^[A-Za-z0-9_./@+\\-]+$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "path",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "f22a485fbd5f673e9a9030028e40dba9aff3c90380edeebad564001c902ad0f0"
+    },
+    {
+      "name": "legacy_vhost_deploy_s1",
+      "title": null,
+      "description": "Compile puis redémarre une application historique via Passenger.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend",
+              "liquidity_main",
+              "liquidity_v1",
+              "liquidity_test",
+              "liquidity_dapps",
+              "liquidity_api_v3"
+            ]
+          },
+          "install_dependencies": {
+            "default": false,
+            "type": "boolean"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "install_dependencies",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "5a93cabe39fca40a075c35afcda6b9b45e43849c0d0c58292451bf9cd2a96b94"
+    },
+    {
+      "name": "legacy_vhost_git_init_s1",
+      "title": null,
+      "description": "Initialise un nouveau dépôt Git dans une racine historique vide ou reconstruite.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend",
+              "liquidity_main",
+              "liquidity_v1",
+              "liquidity_test",
+              "liquidity_dapps",
+              "liquidity_api_v3"
+            ]
+          },
+          "branch": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 120,
+            "pattern": "^(mcp|claude|codex|feature|fix)\\/[A-Za-z0-9._-]+$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "0497bc2c0172f138d615bc7798846529554a2237eecc69a8d98a188c38042957"
+    },
+    {
+      "name": "legacy_vhost_git_status_s1",
+      "title": null,
+      "description": "Affiche l’état Git d’une application historique S1.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend",
+              "liquidity_main",
+              "liquidity_v1",
+              "liquidity_test",
+              "liquidity_dapps",
+              "liquidity_api_v3"
+            ]
+          }
+        },
+        "required": [
+          "project"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "57cde2372523cc1e0b5142a86c3bc9e6b20c505887bcc4b802e7c380559fee93"
+    },
+    {
+      "name": "legacy_vhost_inventory_s1",
+      "title": null,
+      "description": "Inventorie un répertoire historique autorisé sur S1, sans lire les secrets.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend",
+              "liquidity_main",
+              "liquidity_v1",
+              "liquidity_test",
+              "liquidity_dapps",
+              "liquidity_api_v3"
+            ]
+          }
+        },
+        "required": [
+          "project"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "6b049312c51a4e94f8ba23bdb08feb9d8fcbccc9ef97e16c69d7943496ee7de6"
+    },
+    {
+      "name": "legacy_vhost_purge_s1",
+      "title": null,
+      "description": "Supprime définitivement tout le contenu d’une racine historique, après double validation.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend",
+              "liquidity_main",
+              "liquidity_v1",
+              "liquidity_test",
+              "liquidity_dapps",
+              "liquidity_api_v3"
+            ]
+          },
+          "confirm_domain": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 255
+          },
+          "confirm_phrase": {
+            "type": "string",
+            "const": "DELETE PERMANENTLY"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "confirm_domain",
+          "confirm_phrase",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "baf1042ae25817c2494e596366fed63c16e31dafca999ff63a56bb11eb43d9a1"
+    },
+    {
+      "name": "legacy_vhost_quality_s1",
+      "title": null,
+      "description": "Installe les dépendances, exécute lint, typecheck, tests et build.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend",
+              "liquidity_main",
+              "liquidity_v1",
+              "liquidity_test",
+              "liquidity_dapps",
+              "liquidity_api_v3"
+            ]
+          },
+          "install_dependencies": {
+            "default": true,
+            "type": "boolean"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "install_dependencies",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "471b45090d5e62d70b18a5a532787724bab2e0d754c72de96e3a54318d040646"
+    },
+    {
+      "name": "legacy_vhost_read_file_s1",
+      "title": null,
+      "description": "Lit un fichier texte autorisé dans une application historique S1.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend",
+              "liquidity_main",
+              "liquidity_v1",
+              "liquidity_test",
+              "liquidity_dapps",
+              "liquidity_api_v3"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300,
+            "pattern": "^[A-Za-z0-9_./@+\\-]+$"
+          }
+        },
+        "required": [
+          "project",
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "c3c0d1289a5ca7298bf6d6a09d608acb4986302b95535f90bca17375b0ec3580"
+    },
+    {
+      "name": "legacy_vhost_search_s1",
+      "title": null,
+      "description": "Recherche un terme dans le code autorisé d’une application historique S1.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend",
+              "liquidity_main",
+              "liquidity_v1",
+              "liquidity_test",
+              "liquidity_dapps",
+              "liquidity_api_v3"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9À-ÿ_ .:/@+\\-]+$"
+          }
+        },
+        "required": [
+          "project",
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "5e976febcbe3e7fe1e30ef47f67546ffcbecbf61afe678b5eeb5111bc34c6c09"
+    },
+    {
+      "name": "legacy_vhost_write_file_s1",
+      "title": null,
+      "description": "Crée ou remplace un fichier autorisé dans une application historique S1.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend",
+              "liquidity_main",
+              "liquidity_v1",
+              "liquidity_test",
+              "liquidity_dapps",
+              "liquidity_api_v3"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300,
+            "pattern": "^[A-Za-z0-9_./@+\\-]+$"
+          },
+          "content_base64": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000000,
+            "pattern": "^[A-Za-z0-9+/=\\\\r\\\\n]+$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "path",
+          "content_base64",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "f4e1cb2bc1241bf5aa6aa86b02e2003a075597c1bf206e2801f8ff2ba1636020"
+    },
+    {
+      "name": "legacy_vhosts_context_s1",
+      "title": null,
+      "description": "Liste les applications historiques autorisées sur S1, avec leurs chemins exacts.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "bd63cb0a27dd34fd298ca09b6827e10c8d703edfa9ce2c75a23ba32f067b43d5"
+    },
+    {
+      "name": "list_backups_s1",
+      "title": null,
+      "description": "Liste les sauvegardes potentielles sur S1 sans suppression.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "d7b9bdab4696a8013e500f3bbfb09845fc07868a32e2e6d56a933ce1b8df6dc5"
+    },
+    {
+      "name": "list_backups_s2",
+      "title": null,
+      "description": "Liste les sauvegardes potentielles sur S2 sans suppression.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "a32eef6060c9b7ca864c87e39011a156761a653fc0ec7378af30ec58b78f8237"
+    },
+    {
+      "name": "list_domains_s1",
+      "title": null,
+      "description": "Inventaire read-only des domaines Plesk/vhosts S1.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "f05fb209f451777ee44ff71ecbc0f777e1c3508a213aa3cb649ee11d71163202"
+    },
+    {
+      "name": "list_domains_s2",
+      "title": null,
+      "description": "Inventaire read-only des domaines Plesk/vhosts S2.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "2767bdc7c9fd34cb78b0738fe872cb38d2c53ce2a2188d58edbd877b4931c499"
+    },
+    {
+      "name": "list_large_files_s1",
+      "title": null,
+      "description": "Liste les fichiers volumineux sur S1 sans suppression.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "b0ea3f170f980cc8a9790bee515a4110be1c33ed6db060b2f1f282c6df9f850c"
+    },
+    {
+      "name": "list_large_files_s2",
+      "title": null,
+      "description": "Liste les fichiers volumineux sur S2 sans suppression.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "7f2e43c789b05518f90e624559abca8930d965ffff74fcd5a8e19cbc06b0f301"
+    },
+    {
+      "name": "list_mcp_code_files_s1",
+      "title": null,
+      "description": "Liste les fichiers utiles du code MCP sur S1, hors secrets et node_modules.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "914d3d602ce1f148e9d79e533c2b1d52b7667ea2ffb1033739fbcbda75ce1322"
+    },
+    {
+      "name": "logs_legacy_funds_api_s2",
+      "title": null,
+      "description": "Lit les logs Plesk Passenger de l API Funds avec masquage des secrets.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "lines": {
+            "default": 150,
+            "type": "integer",
+            "minimum": 20,
+            "maximum": 500
+          },
+          "contains": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9_.:/\\[\\] ()-]+$"
+          }
+        },
+        "required": [
+          "lines"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "28a8e9f1947e268ac5dcc8dd069d309a0696720ae8e0aea6ed06f5129b0a514e"
+    },
+    {
+      "name": "logs_legacy_funds_frontend_s2",
+      "title": null,
+      "description": "Lit les logs Plesk Passenger du frontend Funds avec masquage des secrets.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "lines": {
+            "default": 150,
+            "type": "integer",
+            "minimum": 20,
+            "maximum": 500
+          },
+          "contains": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9_.:/\\[\\] ()-]+$"
+          }
+        },
+        "required": [
+          "lines"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "327fb9911f302f175785cf5babf9f1cf1c690baff1b2daf881b6699a225401e5"
+    },
+    {
+      "name": "mcp_acknowledge_governed_context",
+      "title": null,
+      "description": "Acquitte explicitement une version observée du contexte opérationnel.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expectedStateVersion": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision",
+          "expectedStateVersion"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "96e318f8ad42847b9dff14bc42abacc1a06c8c09c606ad9784102f42a1187aba"
+    },
+    {
+      "name": "mcp_acquire_governed_lock",
+      "title": null,
+      "description": "Acquiert un lock temporaire borné appartenant à la governed session.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "scope": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "repository"
+                  },
+                  "key": {
+                    "type": "string",
+                    "const": "Patricked-code/MCP"
+                  }
+                },
+                "required": [
+                  "type",
+                  "key"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "task"
+                  },
+                  "key": {
+                    "type": "string",
+                    "pattern": "^TASK-[0-9]{8}-[0-9]{3,}$"
+                  }
+                },
+                "required": [
+                  "type",
+                  "key"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "resource"
+                  },
+                  "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160,
+                    "pattern": "^[A-Za-z0-9./:_-]+$"
+                  }
+                },
+                "required": [
+                  "type",
+                  "key"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "ttlSeconds": {
+            "type": "integer",
+            "minimum": 30,
+            "maximum": 1800
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision",
+          "scope",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "18f922dd066050a145cef5bc8920f82717270e4d9a0a42fe8efca7b6642317c9"
+    },
+    {
+      "name": "mcp_bridge",
+      "title": null,
+      "description": "Retourne la fiche du projet MCP auto-gérable.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "732cf318f17288c2772b2aea87b5e519d6ca81d646233d5fc39d36431ff4ea78"
+    },
+    {
+      "name": "mcp_build_s1",
+      "title": null,
+      "description": "Build le MCP sur S1 via Node 20 Docker.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "2d443639439b36402499cc86adc0f871dcb9e19eebd698e578e0e83d77fd1655"
+    },
+    {
+      "name": "mcp_claim_next_governed_task",
+      "title": null,
+      "description": "Réclame atomiquement la première tâche exécutable selon priorité puis séquence.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expectedBootstrapReceiptId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedStateVersion": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expectedStoreRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision",
+          "expectedBootstrapReceiptId",
+          "expectedStateVersion",
+          "expectedStoreRevision"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "166f0ccaf426a1479648648903d71af8164080e6f06b31b1e6c2fd103cfb79ea"
+    },
+    {
+      "name": "mcp_close_governed_session",
+      "title": null,
+      "description": "Ferme idempotemment une governed session.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "725bfcb53dd3d6ca06e5fbbc7648642ce104027d906713dc1fa54be8f70b0e96"
+    },
+    {
+      "name": "mcp_container_logs_s1",
+      "title": null,
+      "description": "Affiche les dernières lignes de logs Docker du conteneur MCP sur S1.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "lines": {
+            "default": 120,
+            "type": "integer",
+            "minimum": 20,
+            "maximum": 300
+          }
+        },
+        "required": [
+          "lines"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "f768b8a2b3f03c4423139883b1367c55b9dc7d067ccc47a93e9bcc9b8ca7e24b"
+    },
+    {
+      "name": "mcp_create_governed_checkpoint",
+      "title": null,
+      "description": "Crée un checkpoint borné après acquittement du contexte opérationnel.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expectedStateVersion": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "completedAction": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          },
+          "resultCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[A-Z0-9_.:-]+$"
+          },
+          "pullRequestNumber": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 2147483647
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "observedHeadSha": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "blockers": {
+            "default": [],
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            }
+          },
+          "nextAction": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision",
+          "expectedStateVersion",
+          "completedAction",
+          "resultCode",
+          "pullRequestNumber",
+          "observedHeadSha",
+          "blockers",
+          "nextAction"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "2ca1f2adf4b1373cec2da0a78a816daab2f4de5484718dec1176c136c71eed18"
+    },
+    {
+      "name": "mcp_get_current_state_inventory",
+      "title": "Get Current-State Inventory",
+      "description": "Retourne la dernière cartographie dérivée, la baseline d’audit, les sessions et la file de travail.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "20a9861ac28faa311c2365fff7929ce220fafde8dad8d1ea24abedad912e9275"
+    },
+    {
+      "name": "mcp_get_governed_context",
+      "title": "Get Governed Operational Context",
+      "description": "Lit le contexte gouverné courant depuis les caches et stores sans forcer de réconciliation.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "01354d532be3d2e2b307b85e247c67c2111aa85b6115279549642d8b372c31f8"
+    },
+    {
+      "name": "mcp_get_governed_session",
+      "title": null,
+      "description": "Retourne une governed session visible sans secret ni identifiant de transport brut.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          }
+        },
+        "required": [
+          "governedSessionId"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "2d08c0003ad4f6cbc7afedf55b02eda03eee514533e66307f48db011f8bed8c6"
+    },
+    {
+      "name": "mcp_get_governed_task",
+      "title": null,
+      "description": "Retourne une tâche gouvernée visible par son Task ID.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "pattern": "^TASK-[0-9]{8}-[0-9]{3,}$"
+          }
+        },
+        "required": [
+          "taskId"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "39c256ff616bd493ac927ab9098429eec5a5a69e9e95a874c12fa1ff2027f9db"
+    },
+    {
+      "name": "mcp_get_live_state",
+      "title": null,
+      "description": "Retourne le dernier état opérationnel partagé GitHub/S1/runtime/documentation avec fraîcheur, alignement et prochaine action. Lecture uniquement.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "a6dd9a64fdeb27a57824961717d8267a09f34b1dba70d5170e13bc8665c36edc"
+    },
+    {
+      "name": "mcp_get_work_queue",
+      "title": null,
+      "description": "Retourne la file de travail gouvernée visible, ordonnée et révisionnée.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "ada5a660f8f44567cf553a2e0678f64874bbff0f1e2deaef933356f8c76eb70b"
+    },
+    {
+      "name": "mcp_git_diff_s1",
+      "title": null,
+      "description": "Affiche le diff Git du dépôt MCP sur S1, sans secrets.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "a9286aac60036af3a34225812cdb9df35c36d8d53a2b86e5bcb5001baddf0a28"
+    },
+    {
+      "name": "mcp_git_status_s1",
+      "title": null,
+      "description": "Affiche l’état Git du dépôt MCP sur S1.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "faadf96a88fa84b7afc09bda1893a7ac7bbfbb1e4f59f1a3e235f1ae3759f3d3"
+    },
+    {
+      "name": "mcp_governed_session_heartbeat",
+      "title": null,
+      "description": "Renouvelle la présence et les locks actifs d’une governed session.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "3986770a7c7916b552103a406af5db7b64459b08c30d6e92e90ccb1dc24d2ec6"
+    },
+    {
+      "name": "mcp_list_governed_sessions",
+      "title": null,
+      "description": "Liste uniquement les governed sessions visibles par l’identité courante.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "24e8acfcf06e5009cc3320a4ef5340839b8974d58f26afd5d809c356df025453"
+    },
+    {
+      "name": "mcp_open_governed_session",
+      "title": null,
+      "description": "Ouvre une governed session durable, distincte de la session de transport MCP.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "repository": {
+            "type": "string",
+            "const": "Patricked-code/MCP"
+          },
+          "taskScope": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "workBranch": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "agentIdentity": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "blockers": {
+            "default": [],
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            }
+          },
+          "nextAction": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "repository",
+          "taskScope",
+          "workBranch",
+          "agentIdentity",
+          "blockers",
+          "nextAction"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "7162ef851eb6e82d962f06a654c16b0f1257fe522b18ac0ef34366fda224d1f9"
+    },
+    {
+      "name": "mcp_pause_governed_session",
+      "title": null,
+      "description": "Met une governed session en pause sans supprimer sa mémoire.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "2d3b0589561e5e28c53ca4f55a67eb9cd4525c202e25ab21f9ef802785eb71fe"
+    },
+    {
+      "name": "mcp_reconcile_agent_intent",
+      "title": null,
+      "description": "Classe une projection bornée de la nouvelle instruction et ajoute uniquement une nouvelle tâche sûre.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expectedBootstrapReceiptId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedStateVersion": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "repository": {
+            "type": "string",
+            "const": "Patricked-code/MCP"
+          },
+          "taskId": {
+            "type": "string",
+            "pattern": "^TASK-[0-9]{8}-[0-9]{3,}$"
+          },
+          "intentKey": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 160,
+            "pattern": "^[a-z0-9][a-z0-9:._/-]+$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "priority": {
+            "default": 50,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "dependencies": {
+            "default": [],
+            "maxItems": 64,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^TASK-[0-9]{8}-[0-9]{3,}$"
+            }
+          },
+          "resourceScopes": {
+            "default": [],
+            "maxItems": 64,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 256
+            }
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision",
+          "expectedBootstrapReceiptId",
+          "expectedStateVersion",
+          "repository",
+          "intentKey",
+          "title",
+          "summary",
+          "priority",
+          "dependencies",
+          "resourceScopes"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "c03766ec1cfb8bc9a2a983a616b5528edb60146dbebac044cdb6335f152caed9"
+    },
+    {
+      "name": "mcp_reconcile_governed_context",
+      "title": "Reconcile Governed Operational Context",
+      "description": "Force une observation read-only Live State et GitHub, puis compose le contexte gouverné.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "b96722d8a2fa3f9e47ae09c4b71cbb9c282a5c402020322a34b6ef9fd1a108d5"
+    },
+    {
+      "name": "mcp_reconcile_live_state",
+      "title": null,
+      "description": "Force une nouvelle observation read-only GitHub/S1/runtime/documentation, persiste l’état normalisé et retourne le résultat.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "acf015ab4fcc62b805c078154b809f65a728328e1cd9bb38018350921ecc4b54"
+    },
+    {
+      "name": "mcp_release_governed_lock",
+      "title": null,
+      "description": "Libère idempotemment un lock appartenant à la governed session.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "lockId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedLockRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "lockId",
+          "expectedLockRevision"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "f2c133b3dbea44fb7c8e5d00a6e44ee8137f812caaaf5d1eef3bdc305317b944"
+    },
+    {
+      "name": "mcp_resume_governed_session",
+      "title": null,
+      "description": "Reprend une governed session légitime sur le transport MCP courant.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "resumeSecret": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 256
+          },
+          "repository": {
+            "type": "string",
+            "const": "Patricked-code/MCP"
+          },
+          "taskScope": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "repository",
+          "taskScope",
+          "expectedSessionRevision"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "6f2f10186e7887272232f88e2d110d3a10ecfc44ca7eb50b21e45bb78d41193b"
+    },
+    {
+      "name": "mcp_runtime_image_attestation_s1",
+      "title": null,
+      "description": "Retourne une attestation bornée du conteneur et de son image Docker active sur S1, sans environnement, mounts, commandes, réseaux ni labels arbitraires.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "6acc514dc0f567cb8accd1a8cef87539889e7f71bbde61db8b6e7b1e096116bb"
+    },
+    {
+      "name": "mcp_sync_from_github_s1",
+      "title": null,
+      "description": "Synchronise le dépôt MCP S1 avec origin/main par fast-forward uniquement.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "3cf3d2cd8a693fd457561ec8ee51aea64da358fa31dbca2fa6902c95a24d2c11"
+    },
+    {
+      "name": "mcp_transition_governed_task",
+      "title": null,
+      "description": "Applique une transition allowlistée avec révision optimiste et corrélations bornées.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expectedBootstrapReceiptId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedStateVersion": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "taskId": {
+            "type": "string",
+            "pattern": "^TASK-[0-9]{8}-[0-9]{3,}$"
+          },
+          "expectedTaskRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DISCOVERED",
+              "READY",
+              "CLAIMED",
+              "IN_PROGRESS",
+              "REVIEW",
+              "MERGE_READY",
+              "DEPLOYING",
+              "VERIFYING",
+              "DONE",
+              "BLOCKED",
+              "CONFLICT",
+              "CANCELLED",
+              "SUPERSEDED"
+            ]
+          },
+          "blockers": {
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            }
+          },
+          "nextAction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "workBranch": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pullRequestNumber": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "observedHeadSha": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "runtimeRevision": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision",
+          "expectedBootstrapReceiptId",
+          "expectedStateVersion",
+          "taskId",
+          "expectedTaskRevision",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "97a7d5bff92edb0e197dc1762877c14be729d454794cf38c11ce139f17ba6ba6"
+    },
+    {
+      "name": "mcp_typecheck_s1",
+      "title": null,
+      "description": "Lance le typecheck TypeScript du MCP sur S1 via Node 20 Docker.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "91c14b53d517c0e7461a010971758156f68b61a3df5bdbf3f7185aa1b0cd0ce6"
+    },
+    {
+      "name": "nigeria_bootstrap_s2",
+      "title": null,
+      "description": "Clone Patricked-code/Nigeria sur S2 et prépare une branche contrôlée.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^(main|master|feature\\/[A-Za-z0-9._-]+|claude\\/[A-Za-z0-9._-]+)$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "branch",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "0a487c9d8b8942a66b101f4c8e88f049b6ab9d10a5bb63705c247c960173f585"
+    },
+    {
+      "name": "nigeria_commit_push_s2",
+      "title": null,
+      "description": "Teste, commit et push la branche Nigeria.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^(main|master|feature\\/[A-Za-z0-9._-]+|claude\\/[A-Za-z0-9._-]+)$"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 180
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "branch",
+          "message",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "aae617d8b4c8ed642f7c4f1c17515191e79a3ccd49eb9764d6d9a5ddbf8d93b1"
+    },
+    {
+      "name": "nigeria_deploy_s2",
+      "title": null,
+      "description": "Déploie le projet Nigeria via Docker Compose après contrôles.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^(main|master|feature\\/[A-Za-z0-9._-]+|claude\\/[A-Za-z0-9._-]+)$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "branch",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "308b120bed9a036e013b1bc3e92cd097b8eb188b97f9708822d424b33d19e80a"
+    },
+    {
+      "name": "nigeria_patch_file_s2",
+      "title": null,
+      "description": "Ecrit un fichier texte autorisé du projet Nigeria.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "content_base64": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 900000,
+            "pattern": "^[A-Za-z0-9+/=\\r\\n]+$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "path",
+          "content_base64",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "1aacad20418c8fb4fd8446aa2ea2af077dbe3b2e0af7b5ecba6d01b6a0aa46f2"
+    },
+    {
+      "name": "nigeria_project_status_s2",
+      "title": null,
+      "description": "Etat read-only du projet Nigeria sur S2.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "fd8a2bcf05e78f9b7039c301f3ce02ab29a8da36bd4233615aa8d0664d4824c5"
+    },
+    {
+      "name": "patch_mcp_code_file_s1",
+      "title": null,
+      "description": "Écrit ou remplace un fichier texte autorisé du dépôt MCP sur S1 via contenu base64. Ne lit ni n’écrit les secrets.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 260
+          },
+          "content_base64": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 700000,
+            "pattern": "^[A-Za-z0-9+/=\\\\r\\\\n]+$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "path",
+          "content_base64",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "c8f06bcc47898fa800ff14202070681d04bf460ec9202d0ad0fb911feff6adfc"
+    },
+    {
+      "name": "ping",
+      "title": null,
+      "description": "Vérifie que le MCP WealthTech SSH Bridge répond.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "1896e5f6e4998a517bf8cebc31925d30e2d9adc373bc1f2190501be1c56f8dcc"
+    },
+    {
+      "name": "pm2_status_s1",
+      "title": null,
+      "description": "Affiche pm2 list sur S1.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "81ab1e5ff8adda0d5788ffcf3df34128ed42ade22a18bff31cb7ecff1fbd4b15"
+    },
+    {
+      "name": "pm2_status_s2",
+      "title": null,
+      "description": "Affiche pm2 list sur S2.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "85e5a23078a2843def0af3cf233660de8a203fe4ce63a6cc835b9cf0cb4557f0"
+    },
+    {
+      "name": "read_mcp_code_file_s1",
+      "title": null,
+      "description": "Lit un fichier texte autorisé du code MCP sur S1, avec masquage de secrets.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 260
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "7d847ef4ddd1087c09b9db7f24b9c7b0a5d769ea2a2ff1a18b51ef1f26c3f571"
+    },
+    {
+      "name": "restart_legacy_funds_api_s2",
+      "title": null,
+      "description": "Relance l API Funds via Passenger.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "7e7f5dab290d2ad962f04816133e1f2f3802eb2aabf003d7610960705571ae9f"
+    },
+    {
+      "name": "restart_legacy_funds_frontend_s2",
+      "title": null,
+      "description": "Relance le frontend Funds via Passenger.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "ac443c8e8f95a801712a49854c0c341fa04718b95116c18b8e04885dbe143c4f"
+    },
+    {
+      "name": "restart_mcp_bridge_s1",
+      "title": null,
+      "description": "Redémarre le conteneur MCP sur S1 après validation.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "09c62c423280cb7f09e6d4f21243cf9d6fc994149f6f82eb5c67314f17e8d623"
+    },
+    {
+      "name": "rollback_sadiaaf_s1",
+      "title": null,
+      "description": "Restaure une sauvegarde SadiaAF créée par le déploiement contrôlé.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "backup_dir": {
+            "type": "string",
+            "pattern": "^\\/var\\/backups\\/sadiaaf\\/\\d{8}_\\d{6}$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "backup_dir",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "b86853dd83289d2fabf5d605df6ee69feefdacfeb6eee6333ca26f9c4865bc9c"
+    },
+    {
+      "name": "run_sql_readonly_s2",
+      "title": null,
+      "description": "Exécute une requête SQL SELECT uniquement sur la base OPCVM S2.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 20000
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "2a7ef1f0744193cd0e1c0cde7eefaa24d97bcc462af0f37113f33f440dc06217"
+    },
+    {
+      "name": "sadiaaf_commit_push_s1",
+      "title": null,
+      "description": "Crée un commit contrôlé sur une branche non protégée et peut le pousser vers origin.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 160,
+            "pattern": "^[A-Za-z0-9À-ÿ _.,:;()\\[\\]#/+\\-]+$"
+          },
+          "push": {
+            "default": false,
+            "type": "boolean"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "message",
+          "push",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "5e6f2c9ac81f0e9565d2dd236da57add987e8db0e18fad962b506e37005de869"
+    },
+    {
+      "name": "sadiaaf_deploy_s1",
+      "title": null,
+      "description": "Build puis redémarre l’application SADIAAF via Passenger, avec contrôle HTTPS.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          },
+          "install_dependencies": {
+            "default": false,
+            "type": "boolean"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "install_dependencies",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "dc957ee7bc6cb23282721531dd7be750972715aba68087e83a6a2406e7d67868"
+    },
+    {
+      "name": "sadiaaf_git_diff_s1",
+      "title": null,
+      "description": "Affiche le diff Git sûr d’un projet SADIAAF sur S1, sans secrets.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          }
+        },
+        "required": [
+          "project"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "e10cf66dad8a9636e95a65a4e4c319b61b181c5df33733f22e2de58518553689"
+    },
+    {
+      "name": "sadiaaf_git_status_s1",
+      "title": null,
+      "description": "Affiche l’état Git, la branche, le dernier commit et les remotes d’un projet SADIAAF sur S1.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          }
+        },
+        "required": [
+          "project"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "ecef316aa71f6de39e1d16e3ffb1adcbb140453fd46cc8b1f4cbe894b21919ce"
+    },
+    {
+      "name": "sadiaaf_list_files_s1",
+      "title": null,
+      "description": "Liste les fichiers utiles d’un projet SADIAAF sur S1, hors secrets, dépendances et artefacts.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          }
+        },
+        "required": [
+          "project"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "f933c2736b1419df100b2dde1af93aa49cf85b34d25516d7ffb761deb39a9062"
+    },
+    {
+      "name": "sadiaaf_patch_file_s1",
+      "title": null,
+      "description": "Écrit ou remplace un fichier texte autorisé d’un projet SADIAAF sur S1. Une sauvegarde horodatée est créée hors du vhost.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 260,
+            "pattern": "^[A-Za-z0-9_./@+\\-]+$"
+          },
+          "content_base64": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1500000,
+            "pattern": "^[A-Za-z0-9+/=\\\\r\\\\n]+$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "path",
+          "content_base64",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "31b4a38b51af72fe4739aaa5cbf340e12f58b35a503c0ef1346cf319fa9f882e"
+    },
+    {
+      "name": "sadiaaf_prepare_branch_s1",
+      "title": null,
+      "description": "Crée ou sélectionne une branche de travail contrôlée pour un projet SADIAAF sur S1.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          },
+          "branch": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 100,
+            "pattern": "^(mcp|claude|codex|feature|fix)\\/[A-Za-z0-9._-]+$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "270328570f318e9d2a420068e4f1bba2df2d5265dc6d3906a93c7bfb17acab5a"
+    },
+    {
+      "name": "sadiaaf_projects_context_s1",
+      "title": null,
+      "description": "Retourne les deux projets SADIAAF autorisés sur S1 et leurs chemins, sans secret.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "c59f74959eb7618f34b716c7e0e77ee5aa905d2170a51d39ec174d4b52c136d1"
+    },
+    {
+      "name": "sadiaaf_quality_s1",
+      "title": null,
+      "description": "Installe les dépendances et/ou exécute lint, typecheck, tests et build pour un projet SADIAAF sur S1.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          },
+          "mode": {
+            "default": "all",
+            "type": "string",
+            "enum": [
+              "install",
+              "lint",
+              "typecheck",
+              "test",
+              "build",
+              "all"
+            ]
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "mode",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "25c65dbd9b9597a6d3be570c09211fd9792b52c366ed36d85d03c7e9eb3dbbbd"
+    },
+    {
+      "name": "sadiaaf_quarantine_contents_s1",
+      "title": null,
+      "description": "Vide réversiblement le contenu applicatif d’un projet SADIAAF en le déplaçant vers une quarantaine horodatée hors du vhost.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          },
+          "confirm_domain": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 255
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "confirm_domain",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "119054d3f7b30370a8d03d4f2224527efab12e1376b85120d291d571da9aa0a6"
+    },
+    {
+      "name": "sadiaaf_read_file_s1",
+      "title": null,
+      "description": "Lit un fichier texte autorisé d’un projet SADIAAF sur S1 avec masquage des secrets.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 260,
+            "pattern": "^[A-Za-z0-9_./@+\\-]+$"
+          }
+        },
+        "required": [
+          "project",
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "1159d2ba9665d8405fa6578ce4d7c4b7785a4fb371bf5b4a0af51ba602684024"
+    },
+    {
+      "name": "sadiaaf_restore_quarantine_s1",
+      "title": null,
+      "description": "Restaure une quarantaine SADIAAF horodatée dans un répertoire applicatif actuellement vide.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          },
+          "snapshot": {
+            "type": "string",
+            "pattern": "^\\d{8}_\\d{6}$"
+          },
+          "confirm_domain": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 255
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project",
+          "snapshot",
+          "confirm_domain",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "1d8275942b4fadd0b49065f960fcc5e23267d2c5028bf5169a30a394458e6714"
+    },
+    {
+      "name": "sadiaaf_search_code_s1",
+      "title": null,
+      "description": "Recherche un terme dans le code d’un projet SADIAAF sur S1, hors secrets et dépendances.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "enum": [
+              "sadiaaf_api",
+              "sadiaaf_frontend"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_ .:/@+\\-]+$"
+          }
+        },
+        "required": [
+          "project",
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "44dc9f781cec03b27dc6cbbb2a4a6ed655b1783b28366ed0f1615134756a4c7b"
+    },
+    {
+      "name": "sadiaaf_status_s1",
+      "title": null,
+      "description": "Vérifie les domaines, les conteneurs, l’état de déploiement et les sauvegardes SadiaAF sur S1.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "279af99e1da6bcce1d65991b7e3ad27d43587ea7e559c2d0682d92e55da90640"
+    },
+    {
+      "name": "scan_mcp_secrets_s1",
+      "title": null,
+      "description": "Scanne le dépôt MCP pour détecter des secrets potentiels, sans afficher les valeurs.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "2dcc53d28a51e82cff871c3c1daefdddf95ed1e58e0b7daeb5ae06deeeef8d13"
+    },
+    {
+      "name": "search_mcp_code_s1",
+      "title": null,
+      "description": "Recherche un terme dans le code MCP sur S1, hors secrets et node_modules.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9_.:/ -]+$"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "171fc0a4649c4808a912f2c1b5c84803ebfab4f9e14d73b061ae726a31d3e2ff"
+    }
   ],
-  "toolGroups": {
-    "readOnly": [
-      "ping",
-      "get_project_context",
-      "check_disk_s1",
-      "check_disk_s2",
-      "pm2_status_s1",
-      "pm2_status_s2",
-      "docker_status_s1",
-      "docker_status_s2",
-      "list_domains_s1",
-      "list_domains_s2",
-      "list_large_files_s1",
-      "list_large_files_s2",
-      "list_backups_s1",
-      "list_backups_s2",
-      "curl_domain"
-    ],
-    "mcpSelfReadOnly": [
-      "mcp_bridge",
-      "mcp_git_status_s1",
-      "mcp_git_diff_s1",
-      "list_mcp_code_files_s1",
-      "read_mcp_code_file_s1",
-      "search_mcp_code_s1",
-      "scan_mcp_secrets_s1",
-      "mcp_container_logs_s1"
-    ],
-    "mcpScopedWrite": [
-      "patch_mcp_code_file_s1",
-      "mcp_typecheck_s1",
-      "mcp_build_s1",
-      "restart_mcp_bridge_s1"
-    ],
-    "projectS2": [
-      "get_write_tools_context",
-      "git_status_project_s2",
-      "git_pull_project_s2",
-      "deploy_project_s2",
-      "deploy_brvm_s2",
-      "exec_repo_script_s2"
-    ],
-    "data": [
-      "run_sql_readonly_s2"
-    ]
-  }
+  "resources": [
+    {
+      "name": "wealthtech-current-state-inventory",
+      "uri": "mcp://wealthtech/current-state/inventory",
+      "title": "WealthTech Current-State Inventory",
+      "description": "Cartographie dérivée et bornée des capacités, architectures, audits, sessions et tâches courantes.",
+      "mimeType": "application/json",
+      "audience": [
+        "assistant"
+      ],
+      "priority": 1,
+      "surface": "read",
+      "contractDigest": "7f26f985a1c82201d802faccf924277b8864b78eb154471b0604b0c753eac8fe"
+    },
+    {
+      "name": "wealthtech-governed-context-current",
+      "uri": "mcp://wealthtech/governed-context/current",
+      "title": "WealthTech Governed Operational Context",
+      "description": "Contexte opérationnel gouverné courant, composé depuis Live State, GitHub et la session durable.",
+      "mimeType": "application/json",
+      "audience": [
+        "assistant"
+      ],
+      "priority": 1,
+      "surface": "read",
+      "contractDigest": "2bcc5db3c856b1a28a8de3d023c25bffda33889873cb25b2efd1ac16a04718b7"
+    }
+  ]
 }

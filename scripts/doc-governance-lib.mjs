@@ -29,6 +29,7 @@ export function classifyMarkdownPath(path) {
   if (path.startsWith('Migration/')) return 'migration-history';
   if (path.startsWith('memory/')) return 'memory';
   if (path.startsWith('wealthtech_project_memory/')) return 'runtime-mirror-tracked';
+  if (path.startsWith('tests/fixtures/current-state-evidence-repo/')) return 'documentation';
   if (path.startsWith('docs/')) return 'documentation';
   if (!path.includes('/')) return 'root-documentation';
   return null;

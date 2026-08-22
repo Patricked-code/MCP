@@ -263,6 +263,22 @@ test('off reste silencieux; tous les verdicts shadow restent non bloquants', asy
     {
       expected: 'lock_conflict',
       input: { governedSessionId: '11111111-1111-4111-8111-111111111111', currentStateVersion: 9, currentFreshness: 'CURRENT', acknowledgedStateVersion: 9, activeLockConflicts: 1 }
+    },
+    {
+      expected: 'bootstrap_receipt_missing',
+      input: { governedSessionId: '11111111-1111-4111-8111-111111111111', currentStateVersion: 9, currentFreshness: 'CURRENT', acknowledgedStateVersion: 9, activeLockConflicts: 0, bootstrapReceiptStatus: 'MISSING' }
+    },
+    {
+      expected: 'bootstrap_receipt_stale',
+      input: { governedSessionId: '11111111-1111-4111-8111-111111111111', currentStateVersion: 9, currentFreshness: 'CURRENT', acknowledgedStateVersion: 9, activeLockConflicts: 0, bootstrapReceiptStatus: 'STALE' }
+    },
+    {
+      expected: 'task_unclaimed',
+      input: { governedSessionId: '11111111-1111-4111-8111-111111111111', currentStateVersion: 9, currentFreshness: 'CURRENT', acknowledgedStateVersion: 9, activeLockConflicts: 0, bootstrapReceiptStatus: 'CURRENT', currentTaskStatus: null }
+    },
+    {
+      expected: 'audit_baseline_invalid',
+      input: { governedSessionId: '11111111-1111-4111-8111-111111111111', currentStateVersion: 9, currentFreshness: 'CURRENT', acknowledgedStateVersion: 9, activeLockConflicts: 0, bootstrapReceiptStatus: 'CURRENT', currentTaskStatus: 'IN_PROGRESS', auditBaselineValid: false }
     }
   ] as const;
   for (const entry of cases) {

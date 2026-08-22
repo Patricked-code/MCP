@@ -15,6 +15,7 @@ import { registerScopedReadOnlyTools } from './writeScoped.js';
 import { registerRuntimeAttestationReadOnlyTools } from './runtimeAttestation.js';
 import { registerGovernedSessionTools } from './governedSessions.js';
 import { registerGovernedContextTools } from './governedContext.js';
+import { registerCurrentStateTools } from './currentState.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -57,6 +58,7 @@ export function registerReadOnlyTools(server: McpServer): void {
   registerRuntimeAttestationReadOnlyTools(server);
   registerGovernedSessionTools(server);
   registerGovernedContextTools(server);
+  registerCurrentStateTools(server);
   registerMcpSelfReadOnlyTools(server);
   registerSadiaafTools(server);
   registerLegacyFundsScopedTools(server);

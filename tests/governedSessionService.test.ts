@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -34,6 +34,14 @@ async function fixture(options: {
   stateVersion?: () => number;
   idleTtlSeconds?: number;
   audit?: { record(input: { type: string }): Promise<void> };
+  liveState?: () => {
+    stateVersion: number;
+    github?: { head: string | null };
+    runtime?: { revision: string | null };
+    capabilities?: { catalogueDigest: string | null };
+    governance?: { digest: string | null; taskRegistry: { digest: string } | null };
+    inventory?: { contradictions: Array<{ code: string }> };
+  };
 } = {}) {
   const directory = await mkdtemp(join(tmpdir(), 'mcp-governed-session-'));
   const file = join(directory, 'sessions.json');
@@ -49,7 +57,7 @@ async function fixture(options: {
     idleTtlSeconds: options.idleTtlSeconds ?? 86_400,
     resumeGraceSeconds: 604_800,
     now: options.now ?? (() => new Date('2026-08-13T07:00:00.000Z')),
-    getLiveState: async () => ({ stateVersion: options.stateVersion?.() ?? 9 }),
+    getLiveState: async () => options.liveState?.() ?? ({ stateVersion: options.stateVersion?.() ?? 9 }),
     audit: options.audit
   });
   return { directory, file, store, bindings, service };
@@ -366,11 +374,59 @@ test('le cycle session/transport/contexte/checkpoint émet les événements mach
       'transport.bound',
       'session.heartbeat',
       'context.acknowledged',
+      'bootstrap.acknowledged',
       'checkpoint.created',
       'session.paused',
       'session.closed',
       'transport.unbound'
     ]);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('un store historique sans receipt reste lisible et acquittement crée une preuve sanitizée', async () => {
+  const sha = 'a'.repeat(40);
+  const digest = 'b'.repeat(64);
+  const { directory, file, service } = await fixture({
+    liveState: () => ({
+      stateVersion: 9,
+      github: { head: sha },
+      runtime: { revision: sha },
+      capabilities: { catalogueDigest: digest },
+      governance: { digest, taskRegistry: { digest } },
+      inventory: { contradictions: [{ code: 'LIMITED_GITHUB_CACHE' }] }
+    })
+  });
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-receipt-raw',
+      identity: OAUTH_IDENTITY
+    });
+    const historical = JSON.parse(await readFile(file, 'utf8'));
+    delete historical.sessions[0].bootstrapReceipt;
+    await writeFile(file, `${JSON.stringify(historical, null, 2)}\n`, { mode: 0o600 });
+
+    const visible = await service.getVisibleSession(opened.session.governedSessionId, {
+      transportSessionId: 'transport-receipt-raw', identity: OAUTH_IDENTITY
+    });
+    assert.equal(visible?.bootstrapReceipt, undefined);
+    const acknowledged = await service.acknowledgeContext({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      expectedStateVersion: 9
+    }, {
+      transportSessionId: 'transport-receipt-raw', identity: OAUTH_IDENTITY
+    });
+
+    assert.equal(acknowledged.bootstrapReceipt?.stateVersion, 9);
+    assert.equal(acknowledged.bootstrapReceipt?.githubHead, sha);
+    assert.equal(acknowledged.bootstrapReceipt?.catalogueDigest, digest);
+    assert.deepEqual(acknowledged.bootstrapReceipt?.limitations, ['LIMITED_GITHUB_CACHE']);
+    const raw = await readFile(file, 'utf8');
+    for (const forbidden of ['transport-receipt-raw', opened.resumeSecret, '"prompt"', '"token"']) {
+      assert.equal(raw.toLowerCase().includes(forbidden.toLowerCase()), false);
+    }
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

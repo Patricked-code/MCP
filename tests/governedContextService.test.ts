@@ -67,6 +67,24 @@ const SESSION: GovernedSessionPublicRecord = {
   closedAt: null,
   currentTransport: null,
   lastAcknowledgedStateVersion: 9,
+  bootstrapReceipt: {
+    schemaVersion: 1,
+    bootstrapReceiptId: '55555555-5555-4555-8555-555555555555',
+    governedSessionId: SESSION_ID,
+    agentIdentity: 'codex-work-mode',
+    repository: 'Patricked-code/MCP',
+    governedBranch: 'mcp/session-continuity-v1-20260813',
+    stateVersion: 9,
+    githubHead: 'a'.repeat(40),
+    runtimeRevision: 'a'.repeat(40),
+    catalogueDigest: 'b'.repeat(64),
+    governanceDigest: 'c'.repeat(64),
+    taskRegistryDigest: 'd'.repeat(64),
+    createdAt: NOW,
+    expiresAt: '2026-08-13T09:00:00.000Z',
+    status: 'ACKNOWLEDGED',
+    limitations: []
+  },
   sessionRevision: 3,
   lastCheckpoint: {
     checkpointId: '33333333-3333-4333-8333-333333333333',
@@ -135,6 +153,7 @@ async function context(overrides: {
   locks?: GovernedLockRecord[];
   github?: typeof GITHUB;
   audit?: { record(input: { type: string }): Promise<void> };
+  currentState?: Record<string, any> | null;
 } = {}) {
   let liveReconciles = 0;
   let githubReconciles = 0;
@@ -158,6 +177,17 @@ async function context(overrides: {
     locks: {
       listActiveLocks: async () => overrides.locks ?? []
     },
+    currentState: {
+      getInventory: async () => overrides.currentState === undefined ? {
+        source: { catalogueDigest: 'b'.repeat(64), inventoryDigest: 'e'.repeat(64) },
+        governance: { digest: 'c'.repeat(64) },
+        auditBaseline: { valid: true },
+        workQueue: { storeRevision: 2, tasks: [] },
+        currentTask: null,
+        firstExecutableTask: null,
+        contradictions: []
+      } : overrides.currentState
+    },
     gateMode: 'shadow',
     existingWriteToolsEnabled: true,
     now: () => new Date(NOW),
@@ -177,7 +207,7 @@ async function context(overrides: {
   };
 }
 
-test('priorise Live State, acquittement, conflit, CI/review, checkpoint puis null', async () => {
+test('priorise Live State, receipt, queue, conflit, CI/review, checkpoint puis null', async () => {
   assert.equal((await context({
     liveState: { ...LIVE_STATE, nextAction: 'mcp_reconcile_live_state' }
   })).result.nextAction, 'mcp_reconcile_live_state');
@@ -185,6 +215,14 @@ test('priorise Live State, acquittement, conflit, CI/review, checkpoint puis nul
   assert.equal((await context({
     session: { ...SESSION, lastAcknowledgedStateVersion: 8 }
   })).result.nextAction, 'mcp_acknowledge_governed_context');
+
+  assert.equal((await context({
+    currentState: {
+      source: {}, governance: null, auditBaseline: null,
+      workQueue: { storeRevision: 3, tasks: [] }, currentTask: null,
+      firstExecutableTask: { taskId: 'TASK-20260822-001' }, contradictions: []
+    }
+  })).result.nextAction, 'mcp_claim_next_governed_task');
 
   assert.equal((await context({ locks: [foreignLock()] })).result.nextAction,
     'wait_for_governed_lock');
@@ -214,6 +252,9 @@ test('getCurrent reste cache/store-only et reconcileExplicit force seulement les
   assert.equal(fixture.result.gate.existingWriteToolsEnabled, true);
   assert.equal(fixture.result.gate.decision, 'shadow_observed');
   assert.equal(fixture.result.proof.runtimeRealtimeAvailable, true);
+  assert.equal(fixture.result.bootstrap.status, 'CURRENT');
+  assert.equal(fixture.result.workQueue.storeRevision, 2);
+  assert.equal(fixture.result.currentState.catalogueDigest, 'b'.repeat(64));
 
   const refreshed = await fixture.service.reconcileExplicit(fixture.input);
   assert.equal(refreshed.repository, 'Patricked-code/MCP');

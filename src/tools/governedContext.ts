@@ -15,14 +15,19 @@ import {
   sessionRequestFromToolExtra,
   type GovernedSessionToolExtra
 } from './governedSessions.js';
+import { getCurrentStateService } from './currentState.js';
 
 export const GOVERNED_CONTEXT_RESOURCE_URI = 'mcp://wealthtech/governed-context/current';
 
 export const GOVERNED_CONTEXT_INSTRUCTIONS = [
-  'Avant une mutation gouvernée, lire mcp://wealthtech/governed-context/current.',
-  'Ouvrir ou reprendre une governed session; MCP-Session-Id reste un transport temporaire.',
-  'Acquitter le stateVersion courant avant checkpoint.',
-  'Le WRITE gate V1 est shadow et ne remplace ni ENABLE_WRITE_TOOLS ni allow_write.'
+  '1. Appeler ping puis mcp_reconcile_governed_context.',
+  '2. Lire mcp://wealthtech/current-state/inventory ou mcp_get_current_state_inventory.',
+  '3. Reprendre une governed session compatible ou en ouvrir une; MCP-Session-Id reste temporaire.',
+  '4. Acquitter le stateVersion courant afin de recevoir un Bootstrap Receipt.',
+  '5. Projeter la nouvelle instruction puis appeler mcp_reconcile_agent_intent.',
+  '6. Réclamer mcp_claim_next_governed_task: la première tâche exécutable précède les nouvelles.',
+  '7. Respecter locks, CI, reviews, exact-SHA deploy, checkpoint et clôture.',
+  '8. Le WRITE gate reste shadow et ne remplace ni ENABLE_WRITE_TOOLS ni allow_write.'
 ].join('\n');
 
 export function governedContextInstructions(enabled: boolean): string | undefined {
@@ -48,6 +53,7 @@ export function getGovernedContextToolDependencies(): GovernedContextToolDepende
       locks: operational.locks,
       gateMode: operationalMemoryConfig.writeGateMode,
       existingWriteToolsEnabled: env.ENABLE_WRITE_TOOLS,
+      currentState: getCurrentStateService(),
       audit: operational.audit
     }),
     sessions: operational.sessions

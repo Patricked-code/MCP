@@ -23,6 +23,11 @@ export function getLiveStateSummary(snapshot: LiveStateSnapshot | null): Record<
     ageSeconds: snapshot.ageSeconds,
     globalAlignment: snapshot.alignment.global,
     activeTask: snapshot.documentation.activeTask,
+    catalogueDigest: snapshot.capabilities?.catalogueDigest ?? null,
+    registeredToolCount: snapshot.capabilities?.registeredToolCount ?? null,
+    inventoryDigest: snapshot.inventory?.sourceDigest ?? null,
+    governanceDigest: snapshot.governance?.digest ?? null,
+    auditBaselineValid: snapshot.auditBaseline?.valid ?? null,
     nextAction: snapshot.nextAction
   };
 }

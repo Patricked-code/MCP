@@ -283,3 +283,17 @@ Décision : un lock `ACTIVE` dont le TTL est écoulé est logiquement inactif à
 Décision : la dérogation descendant docs-only couvre le mismatch S1 uniquement si le SHA S1 déclaré est égal au SHA GitHub déclaré ancêtre. Toute divergence, tout code descendant ou `requires_revalidation` reste bloquant.
 
 Gate satisfait : PR #47 fusionnée au SHA `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`, CI/Autodeploy exact-SHA réussis, S1/runtime réattestés, trois threads PR #45 résolus. La PR #48 est limitée aux huit documents canoniques et clôt `TASK-20260813-004` sans élargissement d'autorité.
+
+## 2026-08-22 — Bootstrap obligatoire et orchestration sans moteur parallèle
+
+Décision : compléter Live State, Governed Context et Operational Memory au lieu de créer une nouvelle autorité. Le catalogue provient des registrations réelles ; l'architecture, les routes, documents, audits et politiques proviennent du clone Git suivi au SHA observé.
+
+Décision de queue : une nouvelle instruction est projetée sous forme bornée, classifiée de manière déterministe puis ajoutée après le backlog existant. `claimNextTask` choisit la première tâche exécutable par priorité puis séquence ; dépendances, scopes, ownership et transitions restent fail-closed sous révisions optimistes.
+
+Décision de bootstrap : l'acquittement de Live State crée un receipt sanitizé lié à la session, au stateVersion et aux digests. Les surfaces MCP et le dashboard réutilisent cette même projection. Aucun prompt brut, token, transport ou secret de reprise n'est journalisé.
+
+Décision de compatibilité : le gate reste `shadow`. Les nouveaux verdicts observent receipt, tâche et baseline d'audit, mais le handler historique reste exécuté exactement une fois. L'enforcement bloquant exigera une décision et une PR distinctes.
+
+Décision anti-staleness : `.mcp/branch-governance.json` ne porte plus aucun numéro de PR, branche de travail ou prochaine branche dynamique. GitHub, Operational Memory, Governed Task Queue et Live State restent les autorités ; le collecteur current-state signale toute réintroduction d'une valeur dynamique persistée.
+
+Décision de clôture : la tâche seed `TASK-20260822-001` reste `READY` jusqu'à la preuve CI du head exact, le merge, l'Autodeploy exact-SHA, l'attestation GitHub/S1/runtime et la réconciliation canonique. Le déploiement du code ne doit pas fabriquer rétrospectivement un état `DONE` non attesté.

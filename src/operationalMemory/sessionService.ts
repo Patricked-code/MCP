@@ -9,6 +9,7 @@ import { createResumeSecret, hashResumeSecret, verifyResumeSecret } from './resu
 import type { TransportBindings } from './transportBindings.js';
 import {
   MAX_GOVERNED_SESSION_RECORDS,
+  type BootstrapReceipt,
   type GovernedCheckpoint,
   type GovernedSessionPublicRecord,
   type GovernedSessionRecord,
@@ -89,13 +90,22 @@ export type CreateCheckpointInput = SessionRevisionInput & {
   nextAction: string | null;
 };
 
+type SessionLiveStateProof = {
+  stateVersion: number;
+  github?: { head: string | null };
+  runtime?: { revision: string | null };
+  capabilities?: { catalogueDigest: string | null };
+  governance?: { digest: string | null; taskRegistry: { digest: string } | null };
+  inventory?: { contradictions: Array<{ code: string }> };
+};
+
 type GovernedSessionServiceOptions = {
   store: AtomicJsonStore<SessionStoreDocument>;
   bindings: TransportBindings;
   idleTtlSeconds: number;
   resumeGraceSeconds: number;
   now?: () => Date;
-  getLiveState?: () => Promise<{ stateVersion: number }>;
+  getLiveState?: () => Promise<SessionLiveStateProof>;
   renewLocksForHeartbeat?: (
     governedSessionId: string,
     at: Date
@@ -152,7 +162,8 @@ export function createGovernedSessionService(
   options: GovernedSessionServiceOptions
 ): GovernedSessionService {
   const now = options.now ?? (() => new Date());
-  const getLiveState = options.getLiveState ?? (async () => ({ stateVersion: 0 }));
+  const getLiveState: () => Promise<SessionLiveStateProof> = options.getLiveState
+    ?? (async () => ({ stateVersion: 0 }));
   const audit = options.audit ?? NOOP_OPERATIONAL_AUDIT;
 
   function assertTransportAvailable(
@@ -246,6 +257,7 @@ export function createGovernedSessionService(
         closedAt: null,
         currentTransport,
         lastAcknowledgedStateVersion: null,
+        bootstrapReceipt: null,
         sessionRevision: 1,
         lastCheckpoint: null,
         blockers: [...input.blockers],
@@ -387,15 +399,47 @@ export function createGovernedSessionService(
       if (liveState.stateVersion !== input.expectedStateVersion) {
         fail('LIVE_STATE_VERSION_MISMATCH');
       }
-      const acknowledged = await mutateSession(input, request, (session) => ({
-        ...session,
-        lastAcknowledgedStateVersion: input.expectedStateVersion,
-        sessionRevision: session.sessionRevision + 1
-      }));
+      let receipt: BootstrapReceipt | null = null;
+      const acknowledged = await mutateSession(input, request, (session, at) => {
+        receipt = {
+          schemaVersion: 1,
+          bootstrapReceiptId: randomUUID(),
+          governedSessionId: session.governedSessionId,
+          agentIdentity: session.agentIdentity,
+          repository: session.repository,
+          governedBranch: session.workBranch,
+          stateVersion: input.expectedStateVersion,
+          githubHead: liveState.github?.head ?? null,
+          runtimeRevision: liveState.runtime?.revision ?? null,
+          catalogueDigest: liveState.capabilities?.catalogueDigest ?? null,
+          governanceDigest: liveState.governance?.digest ?? null,
+          taskRegistryDigest: liveState.governance?.taskRegistry?.digest ?? null,
+          createdAt: at.toISOString(),
+          expiresAt: new Date(at.getTime() + options.idleTtlSeconds * 1_000).toISOString(),
+          status: 'ACKNOWLEDGED',
+          limitations: [...new Set((liveState.inventory?.contradictions ?? [])
+            .map((entry) => entry.code)
+            .filter((code) => /^[A-Z0-9_.:-]{2,80}$/.test(code)))]
+            .sort()
+            .slice(0, 20)
+        };
+        return {
+          ...session,
+          lastAcknowledgedStateVersion: input.expectedStateVersion,
+          bootstrapReceipt: receipt,
+          sessionRevision: session.sessionRevision + 1
+        };
+      });
       await audit.record({
         type: 'context.acknowledged',
         session: acknowledged,
         stateVersion: input.expectedStateVersion
+      });
+      if (!receipt) fail('BOOTSTRAP_RECEIPT_CREATE_FAILED');
+      await audit.record({
+        type: 'bootstrap.acknowledged',
+        session: acknowledged,
+        receipt
       });
       return acknowledged;
     },

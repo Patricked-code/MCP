@@ -13,6 +13,24 @@ function semanticValue(state: LiveStateSnapshot): string {
     s1: state.s1,
     runtime: state.runtime,
     documentation: state.documentation,
+    capabilities: state.capabilities ? {
+      status: state.capabilities.status,
+      catalogueDigest: state.capabilities.catalogueDigest,
+      contradictions: state.capabilities.contradictions
+    } : null,
+    governance: state.governance ? {
+      status: state.governance.status,
+      digest: state.governance.digest,
+      taskRegistry: state.governance.taskRegistry,
+      contradictions: state.governance.contradictions
+    } : null,
+    auditBaseline: state.auditBaseline ?? null,
+    inventory: state.inventory ? {
+      status: state.inventory.status,
+      evidenceHead: state.inventory.evidenceHead,
+      sourceDigest: state.inventory.sourceDigest,
+      contradictions: state.inventory.contradictions
+    } : null,
     alignment: state.alignment,
     contradictions: state.contradictions,
     nextAction: state.nextAction
@@ -29,7 +47,9 @@ function buildAlignment(input: LiveStateObservations): {
   nextAction: string | null;
 } {
   const contradictions: string[] = [];
-  const unavailable = [input.github.status, input.s1.status, input.runtime.status, input.documentation.status]
+  const optionalStatuses = [input.capabilities?.status, input.governance?.status, input.auditBaseline?.status, input.inventory?.status]
+    .filter((status): status is NonNullable<typeof status> => status !== undefined);
+  const unavailable = [input.github.status, input.s1.status, input.runtime.status, input.documentation.status, ...optionalStatuses]
     .some((status) => status === 'UNAVAILABLE' || status === 'STALE');
 
   const githubVsS1 = input.github.head && input.s1.head
@@ -51,6 +71,18 @@ function buildAlignment(input: LiveStateObservations): {
   if (runtime === 'RUNTIME_UNVERIFIED') contradictions.push('RUNTIME_REVISION_UNVERIFIED');
   if (input.runtime.containerStatus === 'running' && !runtimeHealthReady(input.runtime.health)) {
     contradictions.push('RUNTIME_HEALTH_NOT_READY');
+  }
+  if (input.capabilities?.status !== undefined && input.capabilities.status !== 'CURRENT') {
+    contradictions.push('CAPABILITIES_UNAVAILABLE');
+  }
+  if (input.inventory?.status !== undefined && input.inventory.status !== 'CURRENT') {
+    contradictions.push('CURRENT_STATE_INVENTORY_UNAVAILABLE');
+  }
+  if (input.governance?.status !== undefined && input.governance.status !== 'CURRENT') {
+    contradictions.push('GOVERNANCE_EVIDENCE_UNAVAILABLE');
+  }
+  if (input.auditBaseline && !input.auditBaseline.valid) {
+    contradictions.push(...input.auditBaseline.invalidReasons.map((reason) => `AUDIT_BASELINE_${reason}`));
   }
 
   let global: LiveStateAlignment['global'];
@@ -86,7 +118,7 @@ function buildAlignment(input: LiveStateObservations): {
 
   return {
     alignment: { githubVsS1, runtime, documentation, global },
-    contradictions,
+    contradictions: [...new Set(contradictions)],
     nextAction
   };
 }

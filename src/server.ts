@@ -29,6 +29,8 @@ import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from '
 import { createGithubDeployRouter } from './deploy/routes.js';
 import { verifyGithubOidcToken } from './deploy/githubOidc.js';
 import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
+import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js';
+import { registerGovernedTaskTools } from './tools/governedTasks.js';
 
 const WEB_SESSION_COOKIE = 'mcp_web_session';
 const WEB_SESSION_MAX_AGE_SECONDS = Math.max(1, Number.parseInt(process.env.MCP_SESSION_TTL_HOURS || '8', 10)) * 60 * 60;
@@ -278,10 +280,11 @@ export function buildMcpServer(): McpServer {
     instructions: governedContextInstructions(operationalMemoryConfig.enabled)
   });
 
-  registerReadOnlyTools(server);
+  registerReadOnlyTools(decorateRegistrationCatalogServer(server, 'read'));
+  registerGovernedTaskTools(decorateRegistrationCatalogServer(server, 'operational-write'));
   if (env.ENABLE_WRITE_TOOLS) {
     registerScopedWriteTools(decorateScopedWriteServer(
-      server,
+      decorateRegistrationCatalogServer(server, 'scoped-write'),
       getDefaultScopedWriteGateDependencies()
     ));
   }

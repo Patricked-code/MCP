@@ -73,9 +73,10 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
     bindings,
     idleTtlSeconds: operationalMemoryConfig.sessionIdleTtlSeconds,
     resumeGraceSeconds: operationalMemoryConfig.sessionResumeGraceSeconds,
-    getLiveState: async () => ({
-      stateVersion: (await liveStateEngine.getCurrent())?.stateVersion ?? 0
-    }),
+    getLiveState: async () => {
+      const state = await liveStateEngine.getCurrent();
+      return state ?? { stateVersion: 0 };
+    },
     audit,
     renewLocksForHeartbeat: (governedSessionId, at) => (
       locks.renewLocksForHeartbeat(governedSessionId, at)

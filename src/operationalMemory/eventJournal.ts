@@ -14,6 +14,13 @@ export type OperationalEventType =
   | 'transport.unbound'
   | 'context.read'
   | 'context.acknowledged'
+  | 'bootstrap.acknowledged'
+  | 'intent.reconciled'
+  | 'task.discovered'
+  | 'task.claimed'
+  | 'task.transitioned'
+  | 'task.blocked'
+  | 'task.completed'
   | 'checkpoint.created'
   | 'lock.acquired'
   | 'lock.renewed'
@@ -77,6 +84,16 @@ const ALLOWED_METADATA_KEYS: Record<OperationalEventType, ReadonlySet<string>> =
   'transport.unbound': new Set(['fingerprint', 'reasonCode', 'sessionRevision']),
   'context.read': new Set(['stateVersion', 'freshness', 'globalAlignment']),
   'context.acknowledged': new Set(['stateVersion', 'sessionRevision']),
+  'bootstrap.acknowledged': new Set([
+    'bootstrapReceiptId', 'stateVersion', 'sessionRevision', 'catalogueDigest',
+    'governanceDigest', 'taskRegistryDigest', 'limitationCount'
+  ]),
+  'intent.reconciled': new Set(['taskId', 'classification', 'reasonCode', 'storeRevision']),
+  'task.discovered': new Set(['taskId', 'status', 'taskRevision', 'storeRevision']),
+  'task.claimed': new Set(['taskId', 'status', 'taskRevision', 'storeRevision']),
+  'task.transitioned': new Set(['taskId', 'previousStatus', 'status', 'taskRevision', 'storeRevision']),
+  'task.blocked': new Set(['taskId', 'status', 'taskRevision', 'storeRevision', 'reasonCode']),
+  'task.completed': new Set(['taskId', 'status', 'taskRevision', 'storeRevision']),
   'checkpoint.created': new Set(['checkpointId', 'resultCode', 'sessionRevision', 'eventCount']),
   'lock.acquired': new Set(['lockId', 'scope', 'expiresAt', 'lockRevision']),
   'lock.renewed': new Set(['lockId', 'scope', 'expiresAt', 'lockRevision']),
