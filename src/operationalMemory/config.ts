@@ -3,6 +3,7 @@ import { env } from '../config/env.js';
 export const DEFAULT_GOVERNED_SESSION_STORE_PATH = '/app/data/mcp-governed-sessions.json';
 export const DEFAULT_GOVERNED_LOCK_STORE_PATH = '/app/data/mcp-governed-locks.json';
 export const DEFAULT_OPERATIONAL_EVENT_JOURNAL_PATH = '/app/data/mcp-operational-events.jsonl';
+export const DEFAULT_GOVERNED_TASK_STORE_PATH = '/app/data/mcp-governed-tasks.json';
 
 export const operationalMemoryConfig = Object.freeze({
   enabled: env.MCP_GOVERNED_SESSIONS_ENABLED,
@@ -15,6 +16,7 @@ export const operationalMemoryConfig = Object.freeze({
   eventArchives: env.MCP_OPERATIONAL_EVENT_ARCHIVES,
   sessionStorePath: DEFAULT_GOVERNED_SESSION_STORE_PATH,
   lockStorePath: DEFAULT_GOVERNED_LOCK_STORE_PATH,
+  taskStorePath: DEFAULT_GOVERNED_TASK_STORE_PATH,
   eventJournalPath: DEFAULT_OPERATIONAL_EVENT_JOURNAL_PATH
 });
 

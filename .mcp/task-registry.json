@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "registryVersion": 1,
+  "tasks": [
+    {
+      "taskId": "TASK-20260822-001",
+      "intentKey": "mandatory-agent-bootstrap-v1",
+      "title": "Mandatory Agent Bootstrap & Work Orchestration V1",
+      "summary": "Faire évoluer Live State, Governed Context et Operational Memory avec un bootstrap attesté et une file de travail gouvernée.",
+      "priority": 0,
+      "sequence": 1,
+      "status": "DISCOVERED",
+      "dependencies": [],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP"
+      ],
+      "nextAction": "reconcile_current_session_and_claim_task"
+    }
+  ]
+}
