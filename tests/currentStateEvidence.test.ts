@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
-import { mkdtemp, mkdir, readdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readdir, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
@@ -29,6 +29,8 @@ async function fixtureRepository(): Promise<string> {
   await write(root, 'docs/audits/proof.md', '# Audit\n');
   await write(root, '.mcp/manifest.json', '{"version":1}\n');
   await write(root, '.mcp/task-registry.json', '{"schemaVersion":1,"registryVersion":3,"tasks":[]}\n');
+  await write(root, 'secrets/key.txt', 'must-never-be-returned\n');
+  await symlink('../outside.ts', join(root, 'src/external.ts'));
   await execFileAsync('git', ['init', '-q'], { cwd: root });
   await execFileAsync('git', ['add', '.'], { cwd: root });
   await execFileAsync('git', [
@@ -72,7 +74,10 @@ test('dérive une preuve triée et déterministe depuis les seuls fichiers Git s
   assert.equal(first.governance.files.find(({ path }) => path === '.mcp/manifest.json')?.present, true);
   assert.equal(first.governance.files.find(({ path }) => path === '.mcp/onboarding.json')?.present, false);
   assert.equal(first.contradictions.includes('missing_governance_file:.mcp/onboarding.json'), true);
+  assert.equal(first.contradictions.includes('sensitive_tracked_path:secrets/key.txt'), true);
+  assert.equal(first.contradictions.includes('tracked_symlink_refused:src/external.ts'), true);
   assert.equal(JSON.stringify(first).includes('must-not-be-read'), false);
+  assert.equal(JSON.stringify(first).includes('must-never-be-returned'), false);
   assert.match(first.sourceDigest, /^[0-9a-f]{64}$/);
   assert.match(first.testSuiteDigest, /^[0-9a-f]{64}$/);
 });
