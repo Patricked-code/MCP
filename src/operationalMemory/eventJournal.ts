@@ -14,6 +14,7 @@ export type OperationalEventType =
   | 'transport.unbound'
   | 'context.read'
   | 'context.acknowledged'
+  | 'bootstrap.acknowledged'
   | 'checkpoint.created'
   | 'lock.acquired'
   | 'lock.renewed'
@@ -77,6 +78,10 @@ const ALLOWED_METADATA_KEYS: Record<OperationalEventType, ReadonlySet<string>> =
   'transport.unbound': new Set(['fingerprint', 'reasonCode', 'sessionRevision']),
   'context.read': new Set(['stateVersion', 'freshness', 'globalAlignment']),
   'context.acknowledged': new Set(['stateVersion', 'sessionRevision']),
+  'bootstrap.acknowledged': new Set([
+    'bootstrapReceiptId', 'stateVersion', 'catalogueDigest', 'governanceDigest',
+    'taskRegistryVersion', 'sessionRevision'
+  ]),
   'checkpoint.created': new Set(['checkpointId', 'resultCode', 'sessionRevision', 'eventCount']),
   'lock.acquired': new Set(['lockId', 'scope', 'expiresAt', 'lockRevision']),
   'lock.renewed': new Set(['lockId', 'scope', 'expiresAt', 'lockRevision']),

@@ -73,9 +73,22 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
     bindings,
     idleTtlSeconds: operationalMemoryConfig.sessionIdleTtlSeconds,
     resumeGraceSeconds: operationalMemoryConfig.sessionResumeGraceSeconds,
-    getLiveState: async () => ({
-      stateVersion: (await liveStateEngine.getCurrent())?.stateVersion ?? 0
-    }),
+    getLiveState: async () => {
+      const state = await liveStateEngine.getCurrent();
+      return {
+        stateVersion: state?.stateVersion ?? 0,
+        githubHead: state?.github.head ?? null,
+        runtimeRevision: state?.runtime.revision ?? null,
+        catalogueDigest: state?.capabilities?.catalogueDigest ?? null,
+        governanceDigest: state?.governance?.governanceDigest ?? null,
+        taskRegistryVersion: state?.governance?.taskRegistryVersion ?? null,
+        limitations: [
+          ...(state?.capabilities?.status !== 'CURRENT' ? ['capabilities_unavailable'] : []),
+          ...(state?.governance?.status !== 'CURRENT' ? ['governance_unavailable'] : []),
+          ...(state?.inventory?.status !== 'CURRENT' ? ['inventory_unavailable'] : [])
+        ]
+      };
+    },
     audit,
     renewLocksForHeartbeat: (governedSessionId, at) => (
       locks.renewLocksForHeartbeat(governedSessionId, at)

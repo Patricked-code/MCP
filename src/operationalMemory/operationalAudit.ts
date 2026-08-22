@@ -5,6 +5,7 @@ import type {
   OperationalEventType
 } from './eventJournal.js';
 import type {
+  BootstrapReceipt,
   GovernedCheckpoint,
   GovernedLockRecord,
   GovernedSessionPublicRecord
@@ -48,6 +49,11 @@ export type OperationalAuditInput =
       type: 'context.acknowledged';
       session: GovernedSessionPublicRecord;
       stateVersion: number;
+    }
+  | {
+      type: 'bootstrap.acknowledged';
+      session: GovernedSessionPublicRecord;
+      receipt: BootstrapReceipt;
     }
   | {
       type: 'checkpoint.created';
@@ -174,6 +180,18 @@ function metadataForAuditEvent(input: OperationalAuditInput): {
         governedSessionId: input.session.governedSessionId,
         metadata: {
           stateVersion: input.stateVersion,
+          sessionRevision: input.session.sessionRevision
+        }
+      };
+    case 'bootstrap.acknowledged':
+      return {
+        governedSessionId: input.session.governedSessionId,
+        metadata: {
+          bootstrapReceiptId: input.receipt.bootstrapReceiptId,
+          stateVersion: input.receipt.stateVersion,
+          catalogueDigest: input.receipt.catalogueDigest,
+          governanceDigest: input.receipt.governanceDigest,
+          taskRegistryVersion: input.receipt.taskRegistryVersion,
           sessionRevision: input.session.sessionRevision
         }
       };

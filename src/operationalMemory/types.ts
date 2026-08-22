@@ -48,6 +48,25 @@ export const GovernedCheckpointSchema = z.object({
 }).strict();
 export type GovernedCheckpoint = z.infer<typeof GovernedCheckpointSchema>;
 
+export const BootstrapReceiptSchema = z.object({
+  bootstrapReceiptId: GovernedIdSchema,
+  governedSessionId: GovernedIdSchema,
+  repository: z.literal('Patricked-code/MCP'),
+  agentIdentity: z.string().trim().min(1).max(200),
+  governedBranch: BranchSchema.nullable(),
+  stateVersion: z.number().int().nonnegative(),
+  githubHead: ShaSchema.nullable(),
+  runtimeRevision: ShaSchema.nullable(),
+  catalogueDigest: z.string().regex(/^[0-9a-f]{64}$/).nullable(),
+  governanceDigest: z.string().regex(/^[0-9a-f]{64}$/).nullable(),
+  taskRegistryVersion: z.number().int().nonnegative().nullable(),
+  createdAt: TimestampSchema,
+  expiresAt: TimestampSchema,
+  status: z.literal('ACKNOWLEDGED'),
+  limitations: z.array(z.string().trim().min(1).max(120)).max(20)
+}).strict();
+export type BootstrapReceipt = z.infer<typeof BootstrapReceiptSchema>;
+
 export const GovernedSessionRecordSchema = z.object({
   schemaVersion: z.literal(1),
   governedSessionId: GovernedIdSchema,
@@ -69,6 +88,7 @@ export const GovernedSessionRecordSchema = z.object({
   lastAcknowledgedStateVersion: z.number().int().nonnegative().nullable(),
   sessionRevision: z.number().int().nonnegative(),
   lastCheckpoint: GovernedCheckpointSchema.nullable(),
+  bootstrapReceipt: BootstrapReceiptSchema.optional(),
   blockers: z.array(BlockerSchema).max(20),
   nextAction: z.string().trim().min(1).max(500).nullable(),
   lockIds: z.array(GovernedIdSchema).max(64),

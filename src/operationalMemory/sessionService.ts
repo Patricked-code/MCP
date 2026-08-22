@@ -9,6 +9,7 @@ import { createResumeSecret, hashResumeSecret, verifyResumeSecret } from './resu
 import type { TransportBindings } from './transportBindings.js';
 import {
   MAX_GOVERNED_SESSION_RECORDS,
+  type BootstrapReceipt,
   type GovernedCheckpoint,
   type GovernedSessionPublicRecord,
   type GovernedSessionRecord,
@@ -95,7 +96,15 @@ type GovernedSessionServiceOptions = {
   idleTtlSeconds: number;
   resumeGraceSeconds: number;
   now?: () => Date;
-  getLiveState?: () => Promise<{ stateVersion: number }>;
+  getLiveState?: () => Promise<{
+    stateVersion: number;
+    githubHead?: string | null;
+    runtimeRevision?: string | null;
+    catalogueDigest?: string | null;
+    governanceDigest?: string | null;
+    taskRegistryVersion?: number | null;
+    limitations?: string[];
+  }>;
   renewLocksForHeartbeat?: (
     governedSessionId: string,
     at: Date
@@ -152,7 +161,8 @@ export function createGovernedSessionService(
   options: GovernedSessionServiceOptions
 ): GovernedSessionService {
   const now = options.now ?? (() => new Date());
-  const getLiveState = options.getLiveState ?? (async () => ({ stateVersion: 0 }));
+  const getLiveState: NonNullable<GovernedSessionServiceOptions['getLiveState']> =
+    options.getLiveState ?? (async () => ({ stateVersion: 0 }));
   const audit = options.audit ?? NOOP_OPERATIONAL_AUDIT;
 
   function assertTransportAvailable(
@@ -387,15 +397,52 @@ export function createGovernedSessionService(
       if (liveState.stateVersion !== input.expectedStateVersion) {
         fail('LIVE_STATE_VERSION_MISMATCH');
       }
-      const acknowledged = await mutateSession(input, request, (session) => ({
-        ...session,
-        lastAcknowledgedStateVersion: input.expectedStateVersion,
-        sessionRevision: session.sessionRevision + 1
-      }));
+      let receipt: BootstrapReceipt | null = null;
+      const acknowledged = await mutateSession(input, request, (session, at) => {
+        const limitations = [...new Set([
+          ...(liveState.limitations ?? []),
+          ...(!liveState.githubHead ? ['github_head_unavailable'] : []),
+          ...(!liveState.runtimeRevision ? ['runtime_revision_unavailable'] : []),
+          ...(!liveState.catalogueDigest ? ['catalogue_digest_unavailable'] : []),
+          ...(!liveState.governanceDigest ? ['governance_digest_unavailable'] : []),
+          ...(liveState.taskRegistryVersion === null || liveState.taskRegistryVersion === undefined
+            ? ['task_registry_version_unavailable']
+            : [])
+        ])].slice(0, 20);
+        receipt = {
+          bootstrapReceiptId: randomUUID(),
+          governedSessionId: session.governedSessionId,
+          repository: session.repository,
+          agentIdentity: session.agentIdentity,
+          governedBranch: session.workBranch,
+          stateVersion: input.expectedStateVersion,
+          githubHead: liveState.githubHead ?? null,
+          runtimeRevision: liveState.runtimeRevision ?? null,
+          catalogueDigest: liveState.catalogueDigest ?? null,
+          governanceDigest: liveState.governanceDigest ?? null,
+          taskRegistryVersion: liveState.taskRegistryVersion ?? null,
+          createdAt: at.toISOString(),
+          expiresAt: new Date(at.getTime() + 3_600_000).toISOString(),
+          status: 'ACKNOWLEDGED',
+          limitations
+        };
+        return {
+          ...session,
+          lastAcknowledgedStateVersion: input.expectedStateVersion,
+          bootstrapReceipt: receipt,
+          sessionRevision: session.sessionRevision + 1
+        };
+      });
       await audit.record({
         type: 'context.acknowledged',
         session: acknowledged,
         stateVersion: input.expectedStateVersion
+      });
+      if (!receipt) fail('BOOTSTRAP_RECEIPT_CREATE_FAILED');
+      await audit.record({
+        type: 'bootstrap.acknowledged',
+        session: acknowledged,
+        receipt
       });
       return acknowledged;
     },
