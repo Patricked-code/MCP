@@ -10,6 +10,14 @@ import {
   resetToolCatalogForTests
 } from '../src/currentState/toolCatalog.js';
 
+process.env.MCP_AUTH_TOKEN ??= 'mcp-unit-test-value-20260805-abcdef';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
+process.env.ENABLE_WRITE_TOOLS = 'true';
+process.env.MCP_GOVERNED_SESSIONS_ENABLED = 'true';
+
 function fakeServer() {
   const returns = {
     tool: { kind: 'legacy-tool-return' },
@@ -126,4 +134,20 @@ test('déduplique un contrat identique et refuse un contrat divergent', () => {
     /CURRENT_TOOL_CATALOG_CONFLICT:same_tool/
   );
   assert.equal(getCurrentToolCatalog().registeredToolCount, 1);
+});
+
+test('buildMcpServer classe les registrations réelles sans changer la surface historique', async () => {
+  const { buildMcpServer } = await import('../src/server.js');
+  resetToolCatalogForTests();
+
+  buildMcpServer();
+
+  const catalog = getCurrentToolCatalog();
+  assert.ok(catalog.registeredToolCount >= 92);
+  assert.ok(catalog.readOnlyToolCount > 0);
+  assert.ok(catalog.writeToolCount > 0);
+  assert.equal(
+    catalog.resources.some(({ uri }) => uri === 'mcp://wealthtech/governed-context/current'),
+    true
+  );
 });
