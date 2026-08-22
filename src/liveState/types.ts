@@ -50,77 +50,69 @@ export type DocumentationLiveObservation = {
   error?: string | null;
 };
 
-export type CurrentStateArchitecture = {
-  modules: Array<{ path: string; imports: string[] }>;
-  routes: Array<{ file: string; method: string; path: string }>;
-  digest: string;
-};
-
-export type CurrentStateDocumentation = {
-  files: string[];
-  digest: string;
-};
-
-export type CurrentStateGovernanceFile = {
-  path: string;
-  present: boolean;
-  digest: string | null;
-};
-
-export type CurrentStateEvidence = {
-  schemaVersion: 1;
-  repositoryHead: string;
-  architecture: CurrentStateArchitecture;
-  documentation: CurrentStateDocumentation;
-  audits: string[];
-  governance: { files: CurrentStateGovernanceFile[]; digest: string };
-  taskRegistry: {
-    path: string;
-    present: boolean;
-    registryVersion: number | null;
-    digest: string | null;
-  };
-  testSuiteDigest: string;
-  sourceDigest: string;
-  contradictions: string[];
-};
-
-export type CapabilitiesLiveObservation = {
+export type CurrentStateCapabilityObservation = {
   status: LiveStateSourceStatus;
+  catalogueVersion: 1;
   catalogueDigest: string | null;
   registeredToolCount: number;
   readOnlyToolCount: number;
   writeToolCount: number;
   resourceCount: number;
-  tools: CurrentToolContract[];
-  resources: CurrentResourceContract[];
+  tools: unknown[];
+  resources: unknown[];
+  generatedAt: string;
   contradictions: string[];
+  error?: string | null;
 };
 
-export type GovernanceLiveObservation = {
+export type CurrentStateEvidenceObservation = {
   status: LiveStateSourceStatus;
-  repositoryHead: string | null;
-  governanceDigest: string | null;
-  files: CurrentStateGovernanceFile[];
-  taskRegistryVersion: number | null;
-  contradictions: string[];
+  evidenceHead: string | null;
+  generatedAt: string | null;
+  sourceDigest: string | null;
+  architecture: {
+    modules: string[];
+    imports: Array<{ from: string; to: string }>;
+    routes: Array<{ method: string; path: string; source: string }>;
+    digest: string | null;
+  };
+  documentation: {
+    markdown: string[];
+    categories: Record<string, number>;
+    digest: string | null;
+  };
+  audits: string[];
+  history: string[];
+  governance: {
+    files: Array<{ path: string; status: string; digest: string | null }>;
+    taskRegistry: { registryVersion: number | null; taskCount: number | null; digest: string } | null;
+    digest: string | null;
+  };
+  testSuiteDigest: string | null;
+  contradictions: Array<{ code: string; path?: string }>;
+  error?: string | null;
 };
 
-export type AuditBaselineLiveObservation = {
+export type CurrentStateGovernanceObservation = {
   status: LiveStateSourceStatus;
-  repositoryHead: string | null;
+  digest: string | null;
+  files: CurrentStateEvidenceObservation['governance']['files'];
+  taskRegistry: CurrentStateEvidenceObservation['governance']['taskRegistry'];
+  contradictions: string[];
+  error?: string | null;
+};
+
+export type CurrentStateAuditBaselineObservation = {
+  status: LiveStateSourceStatus;
+  evidenceHead: string | null;
+  runtimeRevision: string | null;
   testSuiteDigest: string | null;
   sourceDigest: string | null;
-  contradictions: string[];
-};
-
-export type InventoryLiveObservation = {
-  status: LiveStateSourceStatus;
-  repositoryHead: string | null;
-  architecture: CurrentStateArchitecture | null;
-  documentation: CurrentStateDocumentation | null;
-  audits: string[];
-  contradictions: string[];
+  catalogueDigest: string | null;
+  governanceDigest: string | null;
+  valid: boolean;
+  invalidReasons: string[];
+  error?: string | null;
 };
 
 export type LiveStateObservations = {
@@ -129,10 +121,10 @@ export type LiveStateObservations = {
   s1: S1LiveObservation;
   runtime: RuntimeLiveObservation;
   documentation: DocumentationLiveObservation;
-  capabilities?: CapabilitiesLiveObservation;
-  governance?: GovernanceLiveObservation;
-  auditBaseline?: AuditBaselineLiveObservation;
-  inventory?: InventoryLiveObservation;
+  capabilities?: CurrentStateCapabilityObservation;
+  governance?: CurrentStateGovernanceObservation;
+  auditBaseline?: CurrentStateAuditBaselineObservation;
+  inventory?: CurrentStateEvidenceObservation;
 };
 
 export type LiveStateAlignment = {
@@ -154,7 +146,3 @@ export type LiveStateSnapshot = LiveStateObservations & {
   contradictions: string[];
   nextAction: string | null;
 };
-import type {
-  CurrentResourceContract,
-  CurrentToolContract
-} from '../currentState/toolCatalog.js';

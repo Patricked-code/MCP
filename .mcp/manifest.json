@@ -12,5 +12,12 @@
     "MCP_SERVER_MAPPING.md",
     "CODESPACES.md"
   ],
-  "onboardingEngine": true
+  "onboardingEngine": true,
+  "onboarding": {
+    "status": "operational",
+    "version": 1,
+    "resource": "mcp://wealthtech/current-state/inventory",
+    "taskRegistry": ".mcp/task-registry.json",
+    "enforcement": "shadow"
+  }
 }

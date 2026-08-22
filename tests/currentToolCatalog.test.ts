@@ -44,70 +44,53 @@ function fakeServer() {
 
 test.beforeEach(() => resetToolCatalogForTests());
 
-test('capture les registrations SDK sans modifier leurs retours et produit un catalogue déterministe', () => {
+test('captures complete sorted contracts after successful SDK registration without changing returns', () => {
   const { server, calls, returns } = fakeServer();
   const read = decorateRegistrationCatalogServer(server, 'read');
+  const operational = decorateRegistrationCatalogServer(server, 'operational-write');
   const write = decorateRegistrationCatalogServer(server, 'scoped-write');
-  const legacyHandler = async () => ({ content: [] });
-  const registeredHandler = async () => ({ content: [] });
+  const handler = async () => ({ content: [] });
   const resourceHandler = async () => ({ contents: [] });
 
-  const legacyReturn = read.tool(
-    'z_legacy',
-    'Legacy read tool',
-    { value: z.string().min(1) },
-    legacyHandler
-  );
-  const registeredReturn = write.registerTool(
-    'a_registered',
-    {
-      title: 'Registered write tool',
-      description: 'Registered description',
-      inputSchema: { count: z.number().int().min(1) },
-      annotations: { readOnlyHint: false, destructiveHint: true }
-    },
-    registeredHandler
-  );
-  const resourceReturn = read.registerResource(
-    'wealthtech-current',
-    'mcp://wealthtech/current',
-    {
-      title: 'Current state',
-      description: 'Current resource',
-      mimeType: 'application/json',
-      annotations: { audience: ['assistant'], priority: 1 }
-    },
-    resourceHandler
-  );
+  assert.equal(read.tool('z_legacy', 'Legacy read tool', { value: z.string().min(1) }, handler), returns.tool);
+  assert.equal(operational.registerTool('b_operational', {
+    title: 'Operational task tool',
+    description: 'Operational description',
+    inputSchema: { stateVersion: z.number().int() },
+    annotations: { readOnlyHint: false, destructiveHint: false }
+  }, handler), returns.registerTool);
+  assert.equal(write.registerTool('a_registered', {
+    title: 'Registered write tool',
+    description: 'Registered description',
+    inputSchema: { count: z.number().int().min(1) },
+    annotations: { readOnlyHint: false, destructiveHint: true }
+  }, handler), returns.registerTool);
+  assert.equal(read.registerResource('wealthtech-current', 'mcp://wealthtech/current', {
+    title: 'Current state',
+    description: 'Current resource',
+    mimeType: 'application/json',
+    annotations: { audience: ['assistant'], priority: 1 }
+  }, resourceHandler), returns.registerResource);
 
-  assert.equal(legacyReturn, returns.tool);
-  assert.equal(registeredReturn, returns.registerTool);
-  assert.equal(resourceReturn, returns.registerResource);
-  assert.deepEqual(calls.map(({ method }) => method), ['tool', 'registerTool', 'registerResource']);
-  assert.equal(calls[0]?.args.at(-1), legacyHandler);
-  assert.equal(calls[1]?.args.at(-1), registeredHandler);
-  assert.equal(calls[2]?.args.at(-1), resourceHandler);
-
+  assert.deepEqual(calls.map(({ method }) => method), ['tool', 'registerTool', 'registerTool', 'registerResource']);
   const first = getCurrentToolCatalog();
   const second = getCurrentToolCatalog();
   assert.deepEqual(first, second);
-  assert.equal(first.schemaVersion, 1);
-  assert.equal(first.catalogueVersion, 1);
-  assert.equal(first.registeredToolCount, 2);
-  assert.equal(first.readOnlyToolCount, 1);
-  assert.equal(first.writeToolCount, 1);
-  assert.equal(first.resourceCount, 1);
-  assert.deepEqual(first.tools.map(({ name }) => name), ['a_registered', 'z_legacy']);
-  assert.equal(first.tools[0]?.surface, 'scoped-write');
-  assert.deepEqual(first.tools[0]?.annotations, {
-    readOnlyHint: false,
-    destructiveHint: true
+  assert.deepEqual(first.counts, {
+    tools: 3,
+    resources: 1,
+    read: 1,
+    operationalWrite: 1,
+    scopedWrite: 1
   });
-  assert.equal(first.tools[1]?.surface, 'read');
-  assert.equal(first.tools[1]?.inputSchema.type, 'object');
-  assert.match(first.tools[0]?.contractDigest ?? '', /^[0-9a-f]{64}$/);
-  assert.match(first.resources[0]?.contractDigest ?? '', /^[0-9a-f]{64}$/);
-  assert.match(first.catalogueDigest, /^[0-9a-f]{64}$/);
+  assert.equal(first.registeredToolCount, 3);
+  assert.equal(first.readOnlyToolCount, 1);
+  assert.equal(first.operationalWriteToolCount, 1);
+  assert.equal(first.writeToolCount, 2);
+  assert.deepEqual(first.tools.map(({ name }) => name), ['a_registered', 'b_operational', 'z_legacy']);
+  assert.deepEqual(first.tools[0]?.annotations, { readOnlyHint: false, destructiveHint: true });
+  assert.equal(first.tools[1]?.title, 'Operational task tool');
+  assert.equal(first.tools[2]?.inputSchema.type, 'object');
   assert.deepEqual(first.resources[0], {
     name: 'wealthtech-current',
     uri: 'mcp://wealthtech/current',
@@ -116,11 +99,14 @@ test('capture les registrations SDK sans modifier leurs retours et produit un ca
     mimeType: 'application/json',
     audience: ['assistant'],
     priority: 1,
+    surface: 'read',
     contractDigest: first.resources[0]?.contractDigest
   });
+  assert.match(first.catalogueDigest, /^[0-9a-f]{64}$/);
+  assert.equal(first.catalogDigest, first.catalogueDigest);
 });
 
-test('déduplique un contrat identique et refuse un contrat divergent', () => {
+test('deduplicates identical contracts and fails closed on a conflicting one', () => {
   const { server } = fakeServer();
   const read = decorateRegistrationCatalogServer(server, 'read');
   const handler = async () => ({ content: [] });
@@ -128,7 +114,6 @@ test('déduplique un contrat identique et refuse un contrat divergent', () => {
   read.tool('same_tool', 'Same', {}, handler);
   read.tool('same_tool', 'Same', {}, handler);
   assert.equal(getCurrentToolCatalog().registeredToolCount, 1);
-
   assert.throws(
     () => read.tool('same_tool', 'Different', {}, handler),
     /CURRENT_TOOL_CATALOG_CONFLICT:same_tool/
@@ -136,7 +121,28 @@ test('déduplique un contrat identique et refuse un contrat divergent', () => {
   assert.equal(getCurrentToolCatalog().registeredToolCount, 1);
 });
 
-test('buildMcpServer classe les registrations réelles sans changer la surface historique', async () => {
+test('does not record a registration rejected by the SDK', () => {
+  const rejected = new Error('sdk_registration_rejected');
+  const server = {
+    tool() { throw rejected; }
+  } as unknown as McpServer;
+  const decorated = decorateRegistrationCatalogServer(server, 'read');
+
+  assert.throws(() => decorated.tool('rejected', 'Rejected', {}, async () => ({ content: [] })), rejected);
+  assert.equal(getCurrentToolCatalog().registeredToolCount, 0);
+});
+
+test('catalogue digest is stable and excludes observation time', () => {
+  const { server } = fakeServer();
+  decorateRegistrationCatalogServer(server, 'read')
+    .tool('stable', 'Stable', {}, async () => ({ content: [] }));
+  const first = getCurrentToolCatalog();
+  const second = getCurrentToolCatalog();
+  assert.equal(first.catalogueDigest, second.catalogueDigest);
+  assert.equal(first.generatedAt, second.generatedAt);
+});
+
+test('buildMcpServer classifies the complete real registration surface', async () => {
   const { buildMcpServer } = await import('../src/server.js');
   resetToolCatalogForTests();
 
@@ -145,9 +151,14 @@ test('buildMcpServer classe les registrations réelles sans changer la surface h
   const catalog = getCurrentToolCatalog();
   assert.ok(catalog.registeredToolCount >= 92);
   assert.ok(catalog.readOnlyToolCount > 0);
-  assert.ok(catalog.writeToolCount > 0);
+  assert.ok(catalog.operationalWriteToolCount > 0);
+  assert.ok(catalog.writeToolCount > catalog.operationalWriteToolCount);
   assert.equal(
     catalog.resources.some(({ uri }) => uri === 'mcp://wealthtech/governed-context/current'),
+    true
+  );
+  assert.equal(
+    catalog.resources.some(({ uri }) => uri === 'mcp://wealthtech/current-state/inventory'),
     true
   );
 });

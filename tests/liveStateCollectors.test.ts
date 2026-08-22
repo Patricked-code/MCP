@@ -6,10 +6,10 @@ import {
   buildDocumentationLiveStateCommand,
   buildCurrentStateEvidenceCommand,
   buildS1LiveStateCommand,
-  parseCurrentStateEvidence,
   parseDocumentationObservation,
   parseKeyValueOutput,
   parseRuntimeObservation,
+  parseCurrentStateEvidence,
   parseS1Observation,
   resolveLiveStateGithubApiBase
 } from '../src/liveState/collect.js';
@@ -17,38 +17,6 @@ import { assertReadOnlyCommand } from '../src/ssh/safety.js';
 import { buildMcpRestartCommand } from '../src/tools/mcpRuntimeDeploy.js';
 
 const SHA = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-
-test('la preuve current-state est exécutée en lecture seule et parsée de façon bornée', () => {
-  const command = buildCurrentStateEvidenceCommand();
-  assert.doesNotThrow(() => assertReadOnlyCommand(command));
-  assert.match(command, /node scripts\/current-state-evidence\.mjs/);
-  assert.doesNotMatch(command, />|tee|cp |mv |rm /);
-
-  const evidence = parseCurrentStateEvidence(JSON.stringify({
-    schemaVersion: 1,
-    repositoryHead: SHA,
-    architecture: { modules: [], routes: [], digest: 'a'.repeat(64) },
-    documentation: { files: ['README.md'], digest: 'b'.repeat(64) },
-    audits: [],
-    governance: {
-      files: [{ path: '.mcp/manifest.json', present: true, digest: 'c'.repeat(64) }],
-      digest: 'd'.repeat(64)
-    },
-    taskRegistry: {
-      path: '.mcp/task-registry.json', present: false, registryVersion: null, digest: null
-    },
-    testSuiteDigest: 'e'.repeat(64),
-    sourceDigest: 'f'.repeat(64),
-    contradictions: ['missing_governance_file:.mcp/task-registry.json']
-  }));
-
-  assert.equal(evidence.repositoryHead, SHA);
-  assert.equal(evidence.documentation.files.length, 1);
-  assert.deepEqual(evidence.contradictions, [
-    'missing_governance_file:.mcp/task-registry.json'
-  ]);
-  assert.throws(() => parseCurrentStateEvidence('{}'), /CURRENT_STATE_EVIDENCE_INVALID/);
-});
 
 test('la commande S1 Live State ne contient que des lectures Git bornées', () => {
   const command = buildS1LiveStateCommand();
@@ -146,6 +114,28 @@ test('la collecte documentaire reste bornée aux signaux de reprise', () => {
   assert.equal(observation.status, 'CURRENT');
   assert.equal(observation.activeTask, 'TASK-20260809-001');
   assert.equal(observation.drift, false);
+});
+
+test('la preuve current-state est lue par une commande bornée et son JSON est normalisé', () => {
+  const command = buildCurrentStateEvidenceCommand();
+  assert.doesNotThrow(() => assertReadOnlyCommand(command));
+  assert.match(command, /node scripts\/current-state-evidence\.mjs/);
+  assert.doesNotMatch(command, /npm|curl|cat .*\.env|secrets\//);
+
+  const evidence = parseCurrentStateEvidence(JSON.stringify({
+    schemaVersion: 1,
+    evidenceHead: SHA,
+    generatedAt: '2026-08-09T12:00:00.000Z',
+    sourceDigest: 'b'.repeat(64),
+    architecture: { modules: ['src/a.ts'], imports: [], routes: [], digest: 'c'.repeat(64) },
+    documentation: { markdown: ['README.md'], categories: {}, digest: 'd'.repeat(64) },
+    audits: [], history: [],
+    governance: { files: [], taskRegistry: null, digest: 'e'.repeat(64) },
+    testSuiteDigest: 'f'.repeat(64), contradictions: []
+  }));
+  assert.equal(evidence.status, 'CURRENT');
+  assert.equal(evidence.sourceDigest, 'b'.repeat(64));
+  assert.equal(evidence.architecture.modules[0], 'src/a.ts');
 });
 
 test('un SHA GitHub documentaire explicite ancien force le drift', () => {

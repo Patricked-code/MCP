@@ -75,19 +75,7 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
     resumeGraceSeconds: operationalMemoryConfig.sessionResumeGraceSeconds,
     getLiveState: async () => {
       const state = await liveStateEngine.getCurrent();
-      return {
-        stateVersion: state?.stateVersion ?? 0,
-        githubHead: state?.github.head ?? null,
-        runtimeRevision: state?.runtime.revision ?? null,
-        catalogueDigest: state?.capabilities?.catalogueDigest ?? null,
-        governanceDigest: state?.governance?.governanceDigest ?? null,
-        taskRegistryVersion: state?.governance?.taskRegistryVersion ?? null,
-        limitations: [
-          ...(state?.capabilities?.status !== 'CURRENT' ? ['capabilities_unavailable'] : []),
-          ...(state?.governance?.status !== 'CURRENT' ? ['governance_unavailable'] : []),
-          ...(state?.inventory?.status !== 'CURRENT' ? ['inventory_unavailable'] : [])
-        ]
-      };
+      return state ?? { stateVersion: 0 };
     },
     audit,
     renewLocksForHeartbeat: (governedSessionId, at) => (

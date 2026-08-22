@@ -30,6 +30,26 @@ export const SanitizedTransportMetadataSchema = z.object({
 }).strict();
 export type SanitizedTransportMetadata = z.infer<typeof SanitizedTransportMetadataSchema>;
 
+export const BootstrapReceiptSchema = z.object({
+  schemaVersion: z.literal(1),
+  bootstrapReceiptId: GovernedIdSchema,
+  governedSessionId: GovernedIdSchema,
+  agentIdentity: z.string().trim().min(1).max(200),
+  repository: z.literal('Patricked-code/MCP'),
+  governedBranch: BranchSchema.nullable(),
+  stateVersion: z.number().int().nonnegative(),
+  githubHead: ShaSchema.nullable(),
+  runtimeRevision: ShaSchema.nullable(),
+  catalogueDigest: z.string().regex(/^[0-9a-f]{64}$/).nullable(),
+  governanceDigest: z.string().regex(/^[0-9a-f]{64}$/).nullable(),
+  taskRegistryDigest: z.string().regex(/^[0-9a-f]{64}$/).nullable(),
+  createdAt: TimestampSchema,
+  expiresAt: TimestampSchema,
+  status: z.literal('ACKNOWLEDGED'),
+  limitations: z.array(z.string().regex(/^[A-Z0-9_.:-]{2,80}$/)).max(20)
+}).strict();
+export type BootstrapReceipt = z.infer<typeof BootstrapReceiptSchema>;
+
 export const GovernedCheckpointSchema = z.object({
   checkpointId: GovernedIdSchema,
   governedSessionId: GovernedIdSchema,
@@ -47,25 +67,6 @@ export const GovernedCheckpointSchema = z.object({
   sessionRevision: z.number().int().nonnegative()
 }).strict();
 export type GovernedCheckpoint = z.infer<typeof GovernedCheckpointSchema>;
-
-export const BootstrapReceiptSchema = z.object({
-  bootstrapReceiptId: GovernedIdSchema,
-  governedSessionId: GovernedIdSchema,
-  repository: z.literal('Patricked-code/MCP'),
-  agentIdentity: z.string().trim().min(1).max(200),
-  governedBranch: BranchSchema.nullable(),
-  stateVersion: z.number().int().nonnegative(),
-  githubHead: ShaSchema.nullable(),
-  runtimeRevision: ShaSchema.nullable(),
-  catalogueDigest: z.string().regex(/^[0-9a-f]{64}$/).nullable(),
-  governanceDigest: z.string().regex(/^[0-9a-f]{64}$/).nullable(),
-  taskRegistryVersion: z.number().int().nonnegative().nullable(),
-  createdAt: TimestampSchema,
-  expiresAt: TimestampSchema,
-  status: z.literal('ACKNOWLEDGED'),
-  limitations: z.array(z.string().trim().min(1).max(120)).max(20)
-}).strict();
-export type BootstrapReceipt = z.infer<typeof BootstrapReceiptSchema>;
 
 export const GovernedSessionRecordSchema = z.object({
   schemaVersion: z.literal(1),
@@ -86,9 +87,9 @@ export const GovernedSessionRecordSchema = z.object({
   closedAt: TimestampSchema.nullable(),
   currentTransport: SanitizedTransportMetadataSchema.nullable(),
   lastAcknowledgedStateVersion: z.number().int().nonnegative().nullable(),
+  bootstrapReceipt: BootstrapReceiptSchema.nullable().optional(),
   sessionRevision: z.number().int().nonnegative(),
   lastCheckpoint: GovernedCheckpointSchema.nullable(),
-  bootstrapReceipt: BootstrapReceiptSchema.optional(),
   blockers: z.array(BlockerSchema).max(20),
   nextAction: z.string().trim().min(1).max(500).nullable(),
   lockIds: z.array(GovernedIdSchema).max(64),
@@ -96,76 +97,6 @@ export const GovernedSessionRecordSchema = z.object({
 }).strict();
 export type GovernedSessionRecord = z.infer<typeof GovernedSessionRecordSchema>;
 export type GovernedSessionPublicRecord = Omit<GovernedSessionRecord, 'resumeSecretHash'>;
-
-export const GovernedTaskStatusSchema = z.enum([
-  'DISCOVERED',
-  'READY',
-  'CLAIMED',
-  'IN_PROGRESS',
-  'REVIEW',
-  'MERGE_READY',
-  'DEPLOYING',
-  'VERIFYING',
-  'DONE',
-  'BLOCKED',
-  'CONFLICT',
-  'CANCELLED',
-  'SUPERSEDED'
-]);
-export type GovernedTaskStatus = z.infer<typeof GovernedTaskStatusSchema>;
-
-const GovernedTaskIdSchema = z.string().regex(/^TASK-[0-9]{8}-[0-9]{3,}$/);
-const IntentKeySchema = z.string().trim().min(3).max(160).regex(/^[a-z0-9][a-z0-9._:-]*$/);
-const ResourceScopeSchema = z.string().trim().min(3).max(256).regex(/^[A-Za-z0-9./:_-]+$/);
-const TaskPrioritySchema = z.number().int().min(0).max(100);
-
-export const GovernedTaskSeedSchema = z.object({
-  taskId: GovernedTaskIdSchema,
-  intentKey: IntentKeySchema,
-  title: z.string().trim().min(1).max(160),
-  summary: z.string().trim().min(1).max(500),
-  priority: TaskPrioritySchema,
-  sequence: z.number().int().positive(),
-  status: GovernedTaskStatusSchema,
-  dependencies: z.array(GovernedTaskIdSchema).max(50),
-  resourceScopes: z.array(ResourceScopeSchema).max(100),
-  nextAction: z.string().trim().min(1).max(500).nullable()
-}).strict();
-export type GovernedTaskSeed = z.infer<typeof GovernedTaskSeedSchema>;
-
-export const GovernedTaskSeedDocumentSchema = z.object({
-  schemaVersion: z.literal(1),
-  registryVersion: z.number().int().positive(),
-  tasks: z.array(GovernedTaskSeedSchema).max(5_000)
-}).strict();
-export type GovernedTaskSeedDocument = z.infer<typeof GovernedTaskSeedDocumentSchema>;
-
-export const GovernedTaskRecordSchema = GovernedTaskSeedSchema.extend({
-  schemaVersion: z.literal(1),
-  governedSessionId: GovernedIdSchema.nullable(),
-  workBranch: BranchSchema.nullable(),
-  pullRequestNumber: z.number().int().positive().max(2_147_483_647).nullable(),
-  ciHeadSha: ShaSchema.nullable(),
-  mergeSha: ShaSchema.nullable(),
-  runtimeRevision: ShaSchema.nullable(),
-  blockers: z.array(BlockerSchema).max(20),
-  requestDigest: z.string().regex(/^[0-9a-f]{64}$/),
-  provenance: z.enum(['versioned_seed', 'runtime_intent']),
-  createdAt: TimestampSchema,
-  updatedAt: TimestampSchema,
-  taskRevision: z.number().int().nonnegative()
-}).strict();
-export type GovernedTaskRecord = z.infer<typeof GovernedTaskRecordSchema>;
-
-export const MAX_GOVERNED_TASK_RECORDS = 5_000;
-
-export const GovernedTaskStoreDocumentSchema = z.object({
-  schemaVersion: z.literal(1),
-  storeRevision: z.number().int().nonnegative(),
-  seededRegistryVersion: z.number().int().nonnegative(),
-  tasks: z.array(GovernedTaskRecordSchema).max(MAX_GOVERNED_TASK_RECORDS)
-}).strict();
-export type GovernedTaskStoreDocument = z.infer<typeof GovernedTaskStoreDocumentSchema>;
 
 export const MAX_GOVERNED_SESSION_RECORDS = 1_000;
 
@@ -210,6 +141,52 @@ export function createEmptyLockStoreDocument(): LockStoreDocument {
   return { schemaVersion: 1, storeRevision: 0, locks: [] };
 }
 
-export function createEmptyGovernedTaskStoreDocument(): GovernedTaskStoreDocument {
-  return { schemaVersion: 1, storeRevision: 0, seededRegistryVersion: 0, tasks: [] };
+export const GovernedTaskStatusSchema = z.enum([
+  'DISCOVERED', 'READY', 'CLAIMED', 'IN_PROGRESS', 'REVIEW', 'MERGE_READY',
+  'DEPLOYING', 'VERIFYING', 'DONE', 'BLOCKED', 'CONFLICT', 'CANCELLED', 'SUPERSEDED'
+]);
+export type GovernedTaskStatus = z.infer<typeof GovernedTaskStatusSchema>;
+
+export const GovernedTaskRecordSchema = z.object({
+  schemaVersion: z.literal(1),
+  taskId: z.string().regex(/^TASK-[0-9]{8}-[0-9]{3,}$/),
+  repository: z.literal('Patricked-code/MCP'),
+  intentKey: z.string().trim().min(3).max(160).regex(/^[a-z0-9][a-z0-9:._/-]+$/),
+  title: z.string().trim().min(1).max(160),
+  summary: z.string().trim().min(1).max(500),
+  priority: z.number().int().min(0).max(100),
+  sequence: z.number().int().nonnegative(),
+  status: GovernedTaskStatusSchema,
+  dependencies: z.array(z.string().regex(/^TASK-[0-9]{8}-[0-9]{3,}$/)).max(64),
+  resourceScopes: z.array(z.string().trim().min(3).max(256)).max(64),
+  ownerGovernedSessionId: GovernedIdSchema.nullable(),
+  workBranch: BranchSchema.nullable(),
+  pullRequestNumber: z.number().int().positive().max(2_147_483_647).nullable(),
+  observedHeadSha: ShaSchema.nullable(),
+  runtimeRevision: ShaSchema.nullable(),
+  blockers: z.array(BlockerSchema).max(20),
+  nextAction: z.string().trim().min(1).max(500).nullable(),
+  source: z.object({
+    kind: z.enum(['seed', 'agent']),
+    requestDigest: z.string().regex(/^[0-9a-f]{64}$/)
+  }).strict(),
+  createdAt: TimestampSchema,
+  updatedAt: TimestampSchema,
+  taskRevision: z.number().int().nonnegative()
+}).strict();
+export type GovernedTaskRecord = z.infer<typeof GovernedTaskRecordSchema>;
+
+export const MAX_GOVERNED_TASK_RECORDS = 5_000;
+
+export const TaskStoreDocumentSchema = z.object({
+  schemaVersion: z.literal(1),
+  storeRevision: z.number().int().nonnegative(),
+  seedRegistryVersion: z.number().int().nonnegative(),
+  nextSequence: z.number().int().nonnegative(),
+  tasks: z.array(GovernedTaskRecordSchema).max(MAX_GOVERNED_TASK_RECORDS)
+}).strict();
+export type TaskStoreDocument = z.infer<typeof TaskStoreDocumentSchema>;
+
+export function createEmptyTaskStoreDocument(): TaskStoreDocument {
+  return { schemaVersion: 1, storeRevision: 0, seedRegistryVersion: 0, nextSequence: 1, tasks: [] };
 }

@@ -38,3 +38,13 @@ Travaux restant réellement à accomplir.
 
 - [ ] Migrer dans une PR dédiée les actions GitHub encore exécutées sous compatibilité Node 24.
 - La 2FA GitHub reste explicitement exclue.
+
+## Mandatory Agent Bootstrap & Work Orchestration V1
+
+- [x] Catalogue et cartographie dérivés des registrations réelles.
+- [x] Inventaire architecture/documents/audits/politiques dérivé du SHA suivi.
+- [x] Live State enrichi, Bootstrap Receipt, Task Registry et Work Queue persistante.
+- [x] Governed Context, onboarding, dashboard, audit et verdicts `shadow` enrichis.
+- [ ] CI/revue du head exact de la Draft PR.
+- [ ] Merge, CI main, Autodeploy exact-SHA et attestation GitHub/S1/OCI/runtime.
+- [ ] Réconciliation canonique post-déploiement si le merge SHA ne peut pas être pré-déclaré.

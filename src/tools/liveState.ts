@@ -23,24 +23,11 @@ export function getLiveStateSummary(snapshot: LiveStateSnapshot | null): Record<
     ageSeconds: snapshot.ageSeconds,
     globalAlignment: snapshot.alignment.global,
     activeTask: snapshot.documentation.activeTask,
-    capabilities: {
-      status: snapshot.capabilities?.status ?? 'UNAVAILABLE',
-      catalogueDigest: snapshot.capabilities?.catalogueDigest ?? null,
-      registeredToolCount: snapshot.capabilities?.registeredToolCount ?? 0,
-      readOnlyToolCount: snapshot.capabilities?.readOnlyToolCount ?? 0,
-      writeToolCount: snapshot.capabilities?.writeToolCount ?? 0,
-      resourceCount: snapshot.capabilities?.resourceCount ?? 0
-    },
-    governance: {
-      status: snapshot.governance?.status ?? 'UNAVAILABLE',
-      governanceDigest: snapshot.governance?.governanceDigest ?? null,
-      taskRegistryVersion: snapshot.governance?.taskRegistryVersion ?? null
-    },
-    auditBaseline: {
-      status: snapshot.auditBaseline?.status ?? 'UNAVAILABLE',
-      testSuiteDigest: snapshot.auditBaseline?.testSuiteDigest ?? null,
-      sourceDigest: snapshot.auditBaseline?.sourceDigest ?? null
-    },
+    catalogueDigest: snapshot.capabilities?.catalogueDigest ?? null,
+    registeredToolCount: snapshot.capabilities?.registeredToolCount ?? null,
+    inventoryDigest: snapshot.inventory?.sourceDigest ?? null,
+    governanceDigest: snapshot.governance?.digest ?? null,
+    auditBaselineValid: snapshot.auditBaseline?.valid ?? null,
     nextAction: snapshot.nextAction
   };
 }

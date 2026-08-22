@@ -190,3 +190,30 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - GitHub, S1 et le runtime ont été réattestés au SHA exact ; S1 est propre/read-only et Docker running/healthy sur l'image `sha256:18c66b149e5e044880c3c786ca71ab1a27b4084f3e66cbb23be4fba27440ee75`.
 - Les trois threads tardifs PR #45 `PRRT_kwDOTJ-y6M6ZiwC5`, `PRRT_kwDOTJ-y6M6ZiwC6` et `PRRT_kwDOTJ-y6M6ZiwC7` ont reçu les preuves puis ont été résolus.
 - La session fonctionnelle a été checkpointée et fermée sans lock ; la présente PR #48 ne modifie que les huit documents canoniques et clôt la tâche après fusion.
+
+## 2026-08-22T11:05:00Z — TASK-20260822-001 — Candidate Mandatory Bootstrap consolidée
+
+- Nouveau `ping`, Live State `stateVersion=31`, Governed Context, sessions et tâches historiques vérifiés avant mutation ; GitHub/S1/runtime alignés sur `78dade5e103c2ac73727f44c571f99384d6b8798`.
+- Governed session `998292a6-b95f-4f3d-a4b0-b0f4738dea86`, branche `mcp/mandatory-agent-bootstrap-v1-20260822` et lock repository créés selon la gouvernance.
+- Neuf cycles TDD livrent catalogue dérivé, preuve current-state, Live State enrichi, queue atomique, receipt, surfaces MCP, Governed Context, audit/dashboard/onboarding et cartographie anti-staleness.
+- État dérivé du head : 111 outils, 2 resources, 64 modules, 188 imports, 23 routes, 196 Markdown, 18 audits, aucune contradiction de gouvernance.
+- Installation fraîche de 143 packages et régression complète `218/218`, zéro échec/cancelled/skipped/todo ; typecheck, build, documentation `196`, cartographie, secrets et diff passent.
+- OIDC/Autodeploy restent couverts par la régression et le diff est nul sur `src/deploy` et `.github/workflows`.
+- Aucun merge, déploiement S1/runtime, enforcement, changement 2FA ou secret n'est déclaré à ce jalon.
+- Dernière revue de complétude : suppression des métadonnées dynamiques périmées de la politique de branche, documentation de l'architecture actuelle et test RED/GREEN `STATIC_GOVERNANCE_DYNAMIC_VALUE`.
+- La tâche seed de livraison est corrigée de `DONE` prématuré vers `READY` ; elle ne sera clôturée qu'après attestation complète et réconciliation documentaire.
+
+## 2026-08-22T09:26:03Z — TASK-20260822-001 — Réconciliation du head GitHub concurrent
+
+- La branche GitHub avait avancé de trois commits depuis `b46b143…` avec un cycle RED/GREEN catalogue ; la tentative fast-forward divergente a été refusée et aucun force-push n'a été effectué.
+- Les garanties supplémentaires ont été fusionnées : délégation SDK avant capture, métadonnées titre/audience/priorité, test du serveur réel et contrat documentaire explicite.
+- Les extensions ultérieures sont préservées : surface `operational-write`, queue, Current-State Inventory, Live State et aliases de compatibilité du catalogue.
+- Cartographie régénérée : 111 outils, 2 resources, 66 read-only et 45 write ; digest catalogue `dc776d433a5b2943d660582353ea8507537ee3da290e820e71269ad20b2388b2`.
+- Validation fraîche du résultat fusionné : `220/220`, zéro échec/cancelled/skipped/todo ; typecheck, build, docs `196`, cartographie, scan minimal de secrets et diff réussis.
+
+## 2026-08-22T09:35:36Z — TASK-20260822-001 — Intégration Current-State/Live State concurrente
+
+- Quatre nouveaux commits distants RED/GREEN ont été intégrés sans force-push ni seconde branche.
+- Les protections supplémentaires de collecte sont conservées : maximum 5 000 fichiers, 1 Mo par fichier, 25 Mo lus, 1 Mo en sortie, chemins sensibles jamais lus et symlinks refusés.
+- La projection finale conserve en plus les imports résolus, les catégories documentaires, les audits et historiques séparés, les 10 politiques machine, la détection de métadonnées dynamiques statiques et la validité de baseline liée aux digests/runtime.
+- Validation fraîche : `221/221`, zéro échec/cancelled/skipped/todo ; typecheck, build, documentation `196`, cartographie, secrets et diff passent.

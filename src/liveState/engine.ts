@@ -2,6 +2,7 @@ import { collectLiveStateObservations } from './collect.js';
 import { applyFreshness, reconcileLiveState } from './reconcile.js';
 import { readLiveState, writeLiveState } from './store.js';
 import type { LiveStateObservations, LiveStateSnapshot } from './types.js';
+import { unavailableCurrentStateEvidence } from './collect.js';
 
 const REPOSITORY = 'Patricked-code/MCP';
 const MCP_ROOT = '/opt/apps/wealthtech-mcp-ssh-bridge';
@@ -25,6 +26,7 @@ export type LiveStateEngine = {
 };
 
 function unavailableObservations(): LiveStateObservations {
+  const inventory = unavailableCurrentStateEvidence('live_state_collection_failed');
   return {
     repository: REPOSITORY,
     github: {
@@ -63,22 +65,21 @@ function unavailableObservations(): LiveStateObservations {
       error: 'live_state_collection_failed'
     },
     capabilities: {
-      status: 'UNAVAILABLE', catalogueDigest: null, registeredToolCount: 0,
-      readOnlyToolCount: 0, writeToolCount: 0, resourceCount: 0,
-      tools: [], resources: [], contradictions: ['live_state_collection_failed']
+      status: 'UNAVAILABLE', catalogueVersion: 1, catalogueDigest: null,
+      registeredToolCount: 0, readOnlyToolCount: 0, writeToolCount: 0, resourceCount: 0,
+      tools: [], resources: [], generatedAt: new Date(0).toISOString(),
+      contradictions: ['RUNTIME_CATALOG_UNAVAILABLE'], error: 'live_state_collection_failed'
     },
     governance: {
-      status: 'UNAVAILABLE', repositoryHead: null, governanceDigest: null,
-      files: [], taskRegistryVersion: null, contradictions: ['live_state_collection_failed']
+      status: 'UNAVAILABLE', digest: null, files: [], taskRegistry: null,
+      contradictions: ['GOVERNANCE_EVIDENCE_UNAVAILABLE'], error: 'live_state_collection_failed'
     },
     auditBaseline: {
-      status: 'UNAVAILABLE', repositoryHead: null, testSuiteDigest: null,
-      sourceDigest: null, contradictions: ['live_state_collection_failed']
+      status: 'UNAVAILABLE', evidenceHead: null, runtimeRevision: null,
+      testSuiteDigest: null, sourceDigest: null, catalogueDigest: null, governanceDigest: null,
+      valid: false, invalidReasons: ['LIVE_STATE_COLLECTION_FAILED'], error: 'live_state_collection_failed'
     },
-    inventory: {
-      status: 'UNAVAILABLE', repositoryHead: null, architecture: null,
-      documentation: null, audits: [], contradictions: ['live_state_collection_failed']
-    }
+    inventory
   };
 }
 

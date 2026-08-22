@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 193,
+  "trackedCount": 196,
   "categories": {
     "root-documentation": 50,
     "canonical": 7,
     "migration-history": 7,
-    "documentation": 52,
+    "documentation": 55,
     "history": 1,
     "engineering-plan": 4,
     "engineering-spec": 4,
@@ -757,6 +757,18 @@
     {
       "path": "memory/WEALTHTECH_PROJECT_MEMORY.md",
       "category": "memory"
+    },
+    {
+      "path": "tests/fixtures/current-state-evidence-repo/README.md",
+      "category": "documentation"
+    },
+    {
+      "path": "tests/fixtures/current-state-evidence-repo/docs/audits/baseline.md",
+      "category": "documentation"
+    },
+    {
+      "path": "tests/fixtures/current-state-evidence-repo/docs/history/change.md",
+      "category": "documentation"
     },
     {
       "path": "wealthtech_project_memory/memory/CONVERSATION_COMPILED_WEALTHTECH_EWARI_MCP.md",

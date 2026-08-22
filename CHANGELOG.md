@@ -3,6 +3,17 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
+## 2026-08-22 — Mandatory Agent Bootstrap & Work Orchestration V1
+
+- Catalogue runtime dérivé des registrations MCP : 111 outils, 2 resources, contrats triés et digestés ; `.mcp/function-cartography.json` est généré et vérifié en CI.
+- Preuve current-state read-only dérivée du clone Git suivi : modules, imports, routes, Markdown, audits, historique, politiques, Task Registry et digests.
+- Live State reçoit des sections additives `capabilities`, `governance`, `auditBaseline` et `inventory` ; `stateVersion` ignore les dates seules et suit les digests.
+- Operational Memory reçoit une Task Registry versionnée, une queue atomique, l'ordre priorité/séquence, les dépendances, conflits, claims et transitions optimistes.
+- L'acquittement de contexte crée un Bootstrap Receipt sanitizé ; Governed Context compose receipt, current state, queue et prochaine tâche.
+- Six surfaces MCP additives exposent l'inventaire et la queue. Le dashboard, l'onboarding réel, le journal et le WRITE gate `shadow` sont enrichis.
+- Compatibilité : 92 contrats historiques inchangés ; aucune modification d'OIDC, Autodeploy, 2FA, `ENABLE_WRITE_TOOLS`, `allow_write` ou enforcement bloquant.
+- Rollback : revert des commits de la branche unique ; stores et champs nouveaux sont additifs et les sessions historiques sans receipt restent lisibles.
+
 ## 2026-08-12 — Redémarrage MCP réellement recréé et santé fail-closed
 
 - `buildMcpRestartCommand()` impose désormais `docker compose up -d --build --force-recreate` afin qu'un bootstrap ne soit plus déclaré redémarré lorsque Compose conserve le conteneur existant.
@@ -291,3 +302,15 @@ Mise à jour : 2026-07-09T20:08:09Z
 - TDD PR #47 : RED `e18f553d7f8423f301fd3f226a14fe835dac8a74` (3/187 échecs ciblés), GREEN final `8dddc5656aa959f4c392d0f1816b5ee0e25709a0` (`12/12 + 188/188`, zéro échec).
 - Merge `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`, CI main `32535404248`, Autodeploy `32535404345`, job `96935241275`, S1/runtime exact-SHA healthy.
 - Trois threads PR #45 résolus ; PR #48 strictement documentaire pour la réconciliation finale.
+
+## 2026-08-22 — Candidate Mandatory Agent Bootstrap & Work Orchestration V1
+
+- Dérivation automatique de la surface MCP, de l'architecture suivie, des routes, documents, audits et politiques au HEAD observé.
+- Ajout du Current-State Inventory, des Bootstrap Receipts et de la Governed Task Queue avec ordre priorité/FIFO, dépendances, conflits et révisions optimistes.
+- Composition dans Live State, Governed Context, dashboard, onboarding, journal et WRITE gate maintenu en `shadow`.
+- Réconciliation de `.mcp/branch-governance.json` : les branches, PR et prochaines tâches dynamiques proviennent désormais de leurs autorités runtime et ne peuvent plus être figées dans la politique statique.
+- Remplacement de la section incomplète d'`ARCHITECTURE.md` par la carte actuelle des autorités, composants, relations, stores, surfaces et chemin exact-SHA.
+- La task registry conserve la tâche de livraison en `READY` jusqu'à CI, merge, déploiement attesté et réconciliation documentaire ; aucune clôture anticipée n'est déclarée.
+- Régression précédente : `218/218`, typecheck, build, docs, cartographie et secrets verts ; une validation fraîche du head consolidé reste obligatoire avant publication.
+- Fusion non destructive du cycle TDD concurrent déjà publié sur la même branche : garanties SDK et métadonnées catalogue conservées, extensions `operational-write` intégrées, cartographie régénérée et validation combinée `220/220` verte.
+- Intégration du second lot concurrent Current-State/Live State : limites globales d'entrée/sortie, refus des chemins sensibles et symlinks, API de collecte déterministe et test CLI ajoutés à la carte relationnelle existante ; validation combinée `221/221` verte.

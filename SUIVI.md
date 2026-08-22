@@ -51,8 +51,18 @@ Date : 2026-08-22
 
 ## Tâche
 
-`TASK-20260813-004 — MCP Governed Session Continuity / Operational Memory V1 — TERMINÉE`
+`TASK-20260822-001 — Mandatory Agent Bootstrap & Work Orchestration V1 — EN COURS`
+
+## Candidate courante
+
+- Branche gouvernée : `mcp/mandatory-agent-bootstrap-v1-20260822`, base exacte `78dade5e103c2ac73727f44c571f99384d6b8798`.
+- Session gouvernée : `998292a6-b95f-4f3d-a4b0-b0f4738dea86` ; lock repository acquis avant mutation.
+- Cartographie dérivée : 111 outils, 2 resources, 64 modules TypeScript, 188 relations d'import, 23 routes, 196 Markdown et 18 audits.
+- Nouveaux contrats : inventaire current-state, receipt de bootstrap, Task Registry/queue et cinq outils de tâche ; les 92 contrats historiques restent inchangés.
+- Gate : nouveaux verdicts observés en `shadow`, sans enforcement bloquant ; `ENABLE_WRITE_TOOLS`, `allow_write`, OIDC, Autodeploy et exclusion 2FA restent inchangés.
+- Régression fraîche après intégration des deux lots TDD concurrents : installation de 143 packages, `221/221` tests, zéro échec/cancelled/skipped/todo ; typecheck, build, docs `196`, cartographie, secrets et diff réussis.
+- État de livraison : implémentation et validations ciblées terminées ; aucun merge, déploiement ou état runtime de cette branche n'est encore déclaré.
 
 ## Prochaine action
 
-Aucune action fonctionnelle ou documentaire restante dans ce périmètre après fusion de la présente PR. La maintenance Node 24 demeure une tâche séparée ; la 2FA GitHub reste explicitement exclue.
+Exécuter la validation fraîche finale du head consolidé, publier le head exact, créer la Draft PR, traiter CI/revue, puis fusionner et attester l'Autodeploy exact-SHA. La maintenance Node 24 demeure séparée ; la 2FA GitHub reste explicitement exclue.

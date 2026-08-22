@@ -8,7 +8,8 @@ import type {
   BootstrapReceipt,
   GovernedCheckpoint,
   GovernedLockRecord,
-  GovernedSessionPublicRecord
+  GovernedSessionPublicRecord,
+  GovernedTaskRecord
 } from './types.js';
 
 type SessionAuditType =
@@ -79,6 +80,28 @@ export type OperationalAuditInput =
       governedSessionId: string | null;
       context: GovernedOperationalContext;
       previousStateVersion: number | null;
+    }
+  | {
+      type: 'intent.reconciled';
+      governedSessionId: string;
+      taskId: string | null;
+      classification: 'CONTINUATION' | 'NEW_TASK' | 'DUPLICATE' | 'CONFLICT' | 'BLOCKED' | 'OUT_OF_SCOPE';
+      reasonCode: string;
+      storeRevision: number;
+    }
+  | {
+      type: 'task.discovered' | 'task.claimed' | 'task.blocked' | 'task.completed';
+      governedSessionId: string;
+      task: GovernedTaskRecord;
+      storeRevision: number;
+      reasonCode?: string;
+    }
+  | {
+      type: 'task.transitioned';
+      governedSessionId: string;
+      task: GovernedTaskRecord;
+      previousStatus: string;
+      storeRevision: number;
     };
 
 export type OperationalAudit = {
@@ -189,10 +212,11 @@ function metadataForAuditEvent(input: OperationalAuditInput): {
         metadata: {
           bootstrapReceiptId: input.receipt.bootstrapReceiptId,
           stateVersion: input.receipt.stateVersion,
+          sessionRevision: input.session.sessionRevision,
           catalogueDigest: input.receipt.catalogueDigest,
           governanceDigest: input.receipt.governanceDigest,
-          taskRegistryVersion: input.receipt.taskRegistryVersion,
-          sessionRevision: input.session.sessionRevision
+          taskRegistryDigest: input.receipt.taskRegistryDigest,
+          limitationCount: input.receipt.limitations.length
         }
       };
     case 'checkpoint.created':
@@ -246,6 +270,41 @@ function metadataForAuditEvent(input: OperationalAuditInput): {
           previousStateVersion: input.previousStateVersion,
           stateVersion: input.context.liveState?.stateVersion ?? null,
           globalAlignment: input.context.liveState?.alignment.global ?? null
+        }
+      };
+    case 'intent.reconciled':
+      return {
+        governedSessionId: input.governedSessionId,
+        metadata: {
+          taskId: input.taskId,
+          classification: input.classification,
+          reasonCode: auditText(input.reasonCode, 80),
+          storeRevision: input.storeRevision
+        }
+      };
+    case 'task.discovered':
+    case 'task.claimed':
+    case 'task.blocked':
+    case 'task.completed':
+      return {
+        governedSessionId: input.governedSessionId,
+        metadata: {
+          taskId: input.task.taskId,
+          status: input.task.status,
+          taskRevision: input.task.taskRevision,
+          storeRevision: input.storeRevision,
+          ...(input.type === 'task.blocked' ? { reasonCode: auditText(input.reasonCode ?? 'task_blocked', 80) } : {})
+        }
+      };
+    case 'task.transitioned':
+      return {
+        governedSessionId: input.governedSessionId,
+        metadata: {
+          taskId: input.task.taskId,
+          previousStatus: input.previousStatus,
+          status: input.task.status,
+          taskRevision: input.task.taskRevision,
+          storeRevision: input.storeRevision
         }
       };
   }

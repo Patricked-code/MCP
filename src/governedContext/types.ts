@@ -3,6 +3,8 @@ import type {
   GovernedCheckpoint,
   GovernedLockRecord,
   GovernedSessionPublicRecord,
+  GovernedTaskRecord,
+  BootstrapReceipt,
   IdentityAssurance
 } from '../operationalMemory/types.js';
 
@@ -54,6 +56,25 @@ export type GovernedOperationalContext = {
   liveState: LiveStateSnapshot | null;
   github: GithubOperationalContext;
   session: PublicGovernedSession | null;
+  bootstrap: {
+    required: true;
+    status: 'MISSING' | 'CURRENT' | 'STALE' | 'EXPIRED';
+    receipt: BootstrapReceipt | null;
+    limitations: string[];
+  };
+  currentState: {
+    catalogueDigest: string | null;
+    inventoryDigest: string | null;
+    governanceDigest: string | null;
+    auditBaselineValid: boolean | null;
+  };
+  workQueue: {
+    storeRevision: number | null;
+    total: number;
+    byStatus: Record<string, number>;
+  };
+  currentTask: GovernedTaskRecord | null;
+  firstExecutableTask: GovernedTaskRecord | null;
   activeLocks: PublicGovernedLock[];
   lastCheckpoint: GovernedCheckpoint | null;
   blockers: string[];

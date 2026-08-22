@@ -1,99 +1,89 @@
 import assert from 'node:assert/strict';
-import { execFile } from 'node:child_process';
-import { mkdtemp, mkdir, readdir, symlink, writeFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+import { cp, mkdir, mkdtemp, readdir, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { promisify } from 'node:util';
+import path from 'node:path';
 import test from 'node:test';
 
 import { collectCurrentStateEvidence } from '../scripts/current-state-evidence.mjs';
 
-const execFileAsync = promisify(execFile);
+const fixture = path.resolve('tests/fixtures/current-state-evidence-repo');
+const script = path.resolve('scripts/current-state-evidence.mjs');
 
-async function write(root: string, path: string, content: string): Promise<void> {
-  const fullPath = join(root, path);
-  await mkdir(join(fullPath, '..'), { recursive: true });
-  await writeFile(fullPath, content, 'utf8');
-}
-
-async function fixtureRepository(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'mcp-current-state-evidence-'));
-  await write(root, 'src/b.ts', 'export const b = 1;\n');
-  await write(root, 'src/a.ts', [
-    "import { b } from './b.js';",
-    "app.get('/health', (_req, res) => res.json({ b }));",
-    ''
-  ].join('\n'));
-  await write(root, 'tests/a.test.ts', "import '../src/a.js';\n");
-  await write(root, 'README.md', '# Fixture\n');
-  await write(root, 'docs/audits/proof.md', '# Audit\n');
-  await write(root, '.mcp/manifest.json', '{"version":1}\n');
-  await write(root, '.mcp/task-registry.json', '{"schemaVersion":1,"registryVersion":3,"tasks":[]}\n');
-  await write(root, 'secrets/key.txt', 'must-never-be-returned\n');
-  await symlink('../outside.ts', join(root, 'src/external.ts'));
-  await execFileAsync('git', ['init', '-q'], { cwd: root });
-  await execFileAsync('git', ['add', '.'], { cwd: root });
-  await execFileAsync('git', [
-    '-c', 'user.name=MCP Test',
-    '-c', 'user.email=mcp-test@example.invalid',
-    'commit', '-qm', 'fixture'
-  ], { cwd: root });
-  await write(root, 'untracked-secret.env', 'TOKEN=must-not-be-read\n');
+async function repositoryFixture(): Promise<string> {
+  const root = await mkdtemp(path.join(tmpdir(), 'mcp-evidence-'));
+  await cp(fixture, root, { recursive: true });
+  await mkdir(path.join(root, 'secrets'), { recursive: true });
+  await writeFile(path.join(root, 'secrets', 'key.txt'), 'must-never-be-returned\n');
+  const outside = path.join(tmpdir(), `outside-${path.basename(root)}.ts`);
+  await writeFile(outside, 'export const outside = true;\n');
+  await symlink(outside, path.join(root, 'src', 'external.ts'));
+  for (const args of [
+    ['init', '-b', 'main'],
+    ['config', 'user.email', 'fixture@example.test'],
+    ['config', 'user.name', 'Fixture'],
+    ['add', '.'],
+    ['commit', '-m', 'fixture']
+  ]) {
+    const result = spawnSync('git', args, { cwd: root, encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stderr);
+  }
+  await writeFile(path.join(root, 'src', 'untracked.ts'), 'export const secret = true;\n');
+  await writeFile(path.join(root, 'untracked-secret.env'), 'TOKEN=must-not-be-read\n');
   return root;
 }
 
-async function visiblePaths(root: string): Promise<string[]> {
-  return (await readdir(root)).sort();
-}
+test('derives deterministic bounded relationships from tracked non-sensitive files only', async () => {
+  const root = await repositoryFixture();
+  const before = (await readdir(root)).sort();
 
-test('dérive une preuve triée et déterministe depuis les seuls fichiers Git suivis sans écrire', async () => {
-  const root = await fixtureRepository();
-  const before = await visiblePaths(root);
-
-  const first = await collectCurrentStateEvidence({ repositoryRoot: root });
-  const second = await collectCurrentStateEvidence({ repositoryRoot: root });
+  const first = collectCurrentStateEvidence({ repositoryRoot: root });
+  const second = collectCurrentStateEvidence({ repositoryRoot: root });
 
   assert.deepEqual(first, second);
-  assert.deepEqual(await visiblePaths(root), before);
+  assert.deepEqual((await readdir(root)).sort(), before);
   assert.equal(first.schemaVersion, 1);
-  assert.match(first.repositoryHead, /^[0-9a-f]{40}$/);
-  assert.deepEqual(first.architecture.modules.map(({ path }) => path), [
-    'src/a.ts',
-    'src/b.ts'
+  assert.match(first.evidenceHead, /^[a-f0-9]{40}$/);
+  assert.match(first.generatedAt, /^\d{4}-\d{2}-\d{2}T/);
+  assert.deepEqual(first.architecture.modules, ['src/a.ts', 'src/b.ts', 'src/server.ts']);
+  assert.deepEqual(first.architecture.imports, [{ from: 'src/a.ts', to: 'src/b.ts' }]);
+  assert.deepEqual(first.architecture.routes, [{ method: 'GET', path: '/health', source: 'src/server.ts' }]);
+  assert.deepEqual(first.documentation.markdown, [
+    'README.md',
+    'docs/audits/baseline.md',
+    'docs/history/change.md'
   ]);
-  assert.deepEqual(first.architecture.modules[0]?.imports, ['./b.js']);
-  assert.deepEqual(first.architecture.routes, [{
-    file: 'src/a.ts',
-    method: 'GET',
-    path: '/health'
-  }]);
-  assert.deepEqual(first.documentation.files, ['README.md', 'docs/audits/proof.md']);
-  assert.deepEqual(first.audits, ['docs/audits/proof.md']);
-  assert.equal(first.taskRegistry.present, true);
-  assert.equal(first.taskRegistry.registryVersion, 3);
-  assert.equal(first.governance.files.find(({ path }) => path === '.mcp/manifest.json')?.present, true);
-  assert.equal(first.governance.files.find(({ path }) => path === '.mcp/onboarding.json')?.present, false);
-  assert.equal(first.contradictions.includes('missing_governance_file:.mcp/onboarding.json'), true);
-  assert.equal(first.contradictions.includes('sensitive_tracked_path:secrets/key.txt'), true);
-  assert.equal(first.contradictions.includes('tracked_symlink_refused:src/external.ts'), true);
-  assert.equal(JSON.stringify(first).includes('must-not-be-read'), false);
+  assert.deepEqual(first.audits, ['docs/audits/baseline.md']);
+  assert.deepEqual(first.history, ['docs/history/change.md']);
+  assert.equal(first.governance.files.find((file: any) => file.path === '.mcp/manifest.json')?.status, 'PRESENT');
+  assert.equal(first.contradictions.some((entry: any) => entry.code === 'REQUIRED_GOVERNANCE_FILE_MISSING'), true);
+  assert.equal(first.contradictions.some((entry: any) => entry.code === 'STATIC_GOVERNANCE_DYNAMIC_VALUE'), true);
+  assert.equal(first.contradictions.some((entry: any) => entry.code === 'SENSITIVE_TRACKED_PATH'), true);
+  assert.equal(first.contradictions.some((entry: any) => entry.code === 'TRACKED_SYMLINK_OUTSIDE_ROOT'), true);
   assert.equal(JSON.stringify(first).includes('must-never-be-returned'), false);
-  assert.match(first.sourceDigest, /^[0-9a-f]{64}$/);
-  assert.match(first.testSuiteDigest, /^[0-9a-f]{64}$/);
+  assert.equal(JSON.stringify(first).includes('must-not-be-read'), false);
+  assert.equal(first.architecture.modules.includes('src/untracked.ts'), false);
+  assert.match(first.governance.digest, /^[a-f0-9]{64}$/);
+  assert.match(first.documentation.digest, /^[a-f0-9]{64}$/);
+  assert.match(first.testSuiteDigest, /^[a-f0-9]{64}$/);
+  assert.match(first.sourceDigest, /^[a-f0-9]{64}$/);
+  assert.ok(Buffer.byteLength(JSON.stringify(first)) < 1_000_000);
 });
 
-test('le CLI retourne le même schéma JSON borné et ne crée aucun artefact', async () => {
-  const root = await fixtureRepository();
-  const before = await visiblePaths(root);
-  const { stdout, stderr } = await execFileAsync(
-    process.execPath,
-    ['scripts/current-state-evidence.mjs', '--root', root],
-    { cwd: process.cwd(), maxBuffer: 1_048_576 }
-  );
-  const parsed = JSON.parse(stdout);
+test('CLI exposes the same bounded schema without creating an artifact', async () => {
+  const root = await repositoryFixture();
+  const before = (await readdir(root)).sort();
+  const expected = collectCurrentStateEvidence({ repositoryRoot: root });
+  const result = spawnSync(process.execPath, [script, '--root', root], {
+    cwd: root,
+    encoding: 'utf8',
+    env: { PATH: process.env.PATH ?? '' },
+    maxBuffer: 1_048_576
+  });
 
-  assert.equal(stderr, '');
-  assert.equal(parsed.schemaVersion, 1);
-  assert.ok(stdout.length < 1_048_576);
-  assert.deepEqual(await visiblePaths(root), before);
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, '');
+  assert.deepEqual(JSON.parse(result.stdout), expected);
+  assert.ok(Buffer.byteLength(result.stdout) < 1_000_000);
+  assert.deepEqual((await readdir(root)).sort(), before);
 });

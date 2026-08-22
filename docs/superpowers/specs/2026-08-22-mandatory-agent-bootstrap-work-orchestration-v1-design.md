@@ -68,7 +68,7 @@ Pour chaque outil, la projection conserve :
 
 - nom ;
 - description ;
-- surface `read` ou `scoped-write` ;
+- surface `read`, `operational-write` ou `scoped-write` ;
 - annotations read-only/destructive ;
 - schéma JSON d’entrée canonique ;
 - digest du contrat.
@@ -81,6 +81,7 @@ Le catalogue expose :
 - `catalogueDigest` ;
 - `registeredToolCount` ;
 - `readOnlyToolCount` ;
+- `operationalWriteToolCount` ;
 - `writeToolCount` ;
 - `resourceCount` ;
 - la liste triée complète ;

@@ -344,5 +344,28 @@
     "pr45LateThreadsResolved": true,
     "finalCanonicalDocumentationPullRequest": 48
   },
+  "mandatoryAgentBootstrapV1": {
+    "task": "TASK-20260822-001",
+    "branch": "mcp/mandatory-agent-bootstrap-v1-20260822",
+    "baseSha": "78dade5e103c2ac73727f44c571f99384d6b8798",
+    "state": "candidate_validation_pending",
+    "runtimeToolCount": 111,
+    "runtimeResourceCount": 2,
+    "trackedMarkdown": 196,
+    "writeGateMode": "shadow",
+    "historicalToolContractsPreserved": 92,
+    "freshRegression": "221/221",
+    "freshInstallPackages": 143,
+    "typecheck": "success",
+    "build": "success",
+    "documentationCheck": "196/196",
+    "functionCartographyCheck": "success",
+    "secretScan": "success",
+    "deployAndWorkflowDiff": "none",
+    "mergeCommit": null,
+    "mainCiRunId": null,
+    "deployRunId": null,
+    "deployAttested": false
+  },
   "serverCommitFull": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc"
 }

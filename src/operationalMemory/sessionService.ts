@@ -90,21 +90,22 @@ export type CreateCheckpointInput = SessionRevisionInput & {
   nextAction: string | null;
 };
 
+type SessionLiveStateProof = {
+  stateVersion: number;
+  github?: { head: string | null };
+  runtime?: { revision: string | null };
+  capabilities?: { catalogueDigest: string | null };
+  governance?: { digest: string | null; taskRegistry: { digest: string } | null };
+  inventory?: { contradictions: Array<{ code: string }> };
+};
+
 type GovernedSessionServiceOptions = {
   store: AtomicJsonStore<SessionStoreDocument>;
   bindings: TransportBindings;
   idleTtlSeconds: number;
   resumeGraceSeconds: number;
   now?: () => Date;
-  getLiveState?: () => Promise<{
-    stateVersion: number;
-    githubHead?: string | null;
-    runtimeRevision?: string | null;
-    catalogueDigest?: string | null;
-    governanceDigest?: string | null;
-    taskRegistryVersion?: number | null;
-    limitations?: string[];
-  }>;
+  getLiveState?: () => Promise<SessionLiveStateProof>;
   renewLocksForHeartbeat?: (
     governedSessionId: string,
     at: Date
@@ -161,8 +162,8 @@ export function createGovernedSessionService(
   options: GovernedSessionServiceOptions
 ): GovernedSessionService {
   const now = options.now ?? (() => new Date());
-  const getLiveState: NonNullable<GovernedSessionServiceOptions['getLiveState']> =
-    options.getLiveState ?? (async () => ({ stateVersion: 0 }));
+  const getLiveState: () => Promise<SessionLiveStateProof> = options.getLiveState
+    ?? (async () => ({ stateVersion: 0 }));
   const audit = options.audit ?? NOOP_OPERATIONAL_AUDIT;
 
   function assertTransportAvailable(
@@ -256,6 +257,7 @@ export function createGovernedSessionService(
         closedAt: null,
         currentTransport,
         lastAcknowledgedStateVersion: null,
+        bootstrapReceipt: null,
         sessionRevision: 1,
         lastCheckpoint: null,
         blockers: [...input.blockers],
@@ -399,32 +401,27 @@ export function createGovernedSessionService(
       }
       let receipt: BootstrapReceipt | null = null;
       const acknowledged = await mutateSession(input, request, (session, at) => {
-        const limitations = [...new Set([
-          ...(liveState.limitations ?? []),
-          ...(!liveState.githubHead ? ['github_head_unavailable'] : []),
-          ...(!liveState.runtimeRevision ? ['runtime_revision_unavailable'] : []),
-          ...(!liveState.catalogueDigest ? ['catalogue_digest_unavailable'] : []),
-          ...(!liveState.governanceDigest ? ['governance_digest_unavailable'] : []),
-          ...(liveState.taskRegistryVersion === null || liveState.taskRegistryVersion === undefined
-            ? ['task_registry_version_unavailable']
-            : [])
-        ])].slice(0, 20);
         receipt = {
+          schemaVersion: 1,
           bootstrapReceiptId: randomUUID(),
           governedSessionId: session.governedSessionId,
-          repository: session.repository,
           agentIdentity: session.agentIdentity,
+          repository: session.repository,
           governedBranch: session.workBranch,
           stateVersion: input.expectedStateVersion,
-          githubHead: liveState.githubHead ?? null,
-          runtimeRevision: liveState.runtimeRevision ?? null,
-          catalogueDigest: liveState.catalogueDigest ?? null,
-          governanceDigest: liveState.governanceDigest ?? null,
-          taskRegistryVersion: liveState.taskRegistryVersion ?? null,
+          githubHead: liveState.github?.head ?? null,
+          runtimeRevision: liveState.runtime?.revision ?? null,
+          catalogueDigest: liveState.capabilities?.catalogueDigest ?? null,
+          governanceDigest: liveState.governance?.digest ?? null,
+          taskRegistryDigest: liveState.governance?.taskRegistry?.digest ?? null,
           createdAt: at.toISOString(),
-          expiresAt: new Date(at.getTime() + 3_600_000).toISOString(),
+          expiresAt: new Date(at.getTime() + options.idleTtlSeconds * 1_000).toISOString(),
           status: 'ACKNOWLEDGED',
-          limitations
+          limitations: [...new Set((liveState.inventory?.contradictions ?? [])
+            .map((entry) => entry.code)
+            .filter((code) => /^[A-Z0-9_.:-]{2,80}$/.test(code)))]
+            .sort()
+            .slice(0, 20)
         };
         return {
           ...session,

@@ -1,14 +1,27 @@
 {
   "schemaVersion": 1,
-  "status": "initialized",
-  "engine": "MCP Onboarding Engine",
-  "nextRoutes": [
-    "GET /git/onboarding",
-    "POST /git/onboarding/start",
-    "POST /git/onboarding/answer",
-    "GET /git/repos",
-    "GET /git/agents",
-    "GET /git/permissions",
-    "GET /git/audit"
-  ]
+  "status": "operational",
+  "engine": "Mandatory Agent Bootstrap & Work Orchestration V1",
+  "resource": "mcp://wealthtech/current-state/inventory",
+  "entrypoints": [
+    "ping",
+    "mcp_reconcile_governed_context",
+    "mcp_get_current_state_inventory",
+    "mcp_resume_governed_session",
+    "mcp_open_governed_session",
+    "mcp_acknowledge_governed_context",
+    "mcp_reconcile_agent_intent",
+    "mcp_claim_next_governed_task"
+  ],
+  "procedure": [
+    "refresh_live_state_and_governed_context",
+    "read_current_state_inventory",
+    "resume_or_open_governed_session",
+    "acknowledge_state_and_issue_bootstrap_receipt",
+    "reconcile_bounded_agent_intent",
+    "claim_first_executable_task",
+    "execute_with_locks_ci_reviews_exact_sha_and_checkpoint"
+  ],
+  "writeGateMode": "shadow",
+  "httpRoutesDeclared": []
 }

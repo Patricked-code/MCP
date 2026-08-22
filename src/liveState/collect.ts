@@ -1,20 +1,17 @@
 import { readFile } from 'node:fs/promises';
-import { z } from 'zod';
-
-import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
 
 import type {
-  AuditBaselineLiveObservation,
-  CapabilitiesLiveObservation,
-  CurrentStateEvidence,
   DocumentationLiveObservation,
+  CurrentStateAuditBaselineObservation,
+  CurrentStateCapabilityObservation,
+  CurrentStateEvidenceObservation,
+  CurrentStateGovernanceObservation,
   GithubLiveObservation,
-  GovernanceLiveObservation,
-  InventoryLiveObservation,
   LiveStateObservations,
   RuntimeLiveObservation,
   S1LiveObservation
 } from './types.js';
+import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
 
 const REPOSITORY = 'Patricked-code/MCP';
 const BRANCH = 'main';
@@ -26,47 +23,6 @@ const DEFAULT_GITHUB_ALLOWED_HOSTS = 'api.github.com';
 const DEFAULT_GITHUB_TIMEOUT_MS = 15_000;
 const SHA_PATTERN = /^[0-9a-f]{40}$/i;
 const DIGEST_PATTERN = /^[0-9a-f]{64}$/i;
-const EvidencePathSchema = z.string().min(1).max(500);
-const EvidenceDigestSchema = z.string().regex(DIGEST_PATTERN);
-const EvidenceContradictionsSchema = z.array(z.string().min(1).max(240)).max(100);
-const CurrentStateEvidenceSchema = z.object({
-  schemaVersion: z.literal(1),
-  repositoryHead: z.string().regex(SHA_PATTERN),
-  architecture: z.object({
-    modules: z.array(z.object({
-      path: EvidencePathSchema,
-      imports: z.array(z.string().min(1).max(500)).max(200)
-    }).strict()).max(2_000),
-    routes: z.array(z.object({
-      file: EvidencePathSchema,
-      method: z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
-      path: z.string().min(1).max(500)
-    }).strict()).max(2_000),
-    digest: EvidenceDigestSchema
-  }).strict(),
-  documentation: z.object({
-    files: z.array(EvidencePathSchema).max(5_000),
-    digest: EvidenceDigestSchema
-  }).strict(),
-  audits: z.array(EvidencePathSchema).max(2_000),
-  governance: z.object({
-    files: z.array(z.object({
-      path: EvidencePathSchema,
-      present: z.boolean(),
-      digest: EvidenceDigestSchema.nullable()
-    }).strict()).max(100),
-    digest: EvidenceDigestSchema
-  }).strict(),
-  taskRegistry: z.object({
-    path: EvidencePathSchema,
-    present: z.boolean(),
-    registryVersion: z.number().int().nonnegative().nullable(),
-    digest: EvidenceDigestSchema.nullable()
-  }).strict(),
-  testSuiteDigest: EvidenceDigestSchema,
-  sourceDigest: EvidenceDigestSchema,
-  contradictions: EvidenceContradictionsSchema
-}).strict();
 
 function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'"'"'`)}'`;
@@ -145,18 +101,7 @@ printf 'push_remote=%s\\n' "$(git remote get-url --push origin 2>/dev/null || tr
 export function buildCurrentStateEvidenceCommand(): string {
   return `set -euo pipefail
 cd ${shellQuote(MCP_ROOT)}
-node scripts/current-state-evidence.mjs`;
-}
-
-export function parseCurrentStateEvidence(output: string): CurrentStateEvidence {
-  if (Buffer.byteLength(output) > 1_000_000) {
-    throw new Error('CURRENT_STATE_EVIDENCE_INVALID');
-  }
-  try {
-    return CurrentStateEvidenceSchema.parse(JSON.parse(output)) as CurrentStateEvidence;
-  } catch {
-    throw new Error('CURRENT_STATE_EVIDENCE_INVALID');
-  }
+node scripts/current-state-evidence.mjs --root ${shellQuote(MCP_ROOT)}`;
 }
 
 export function parseS1Observation(output: string): S1LiveObservation {
@@ -217,6 +162,138 @@ if grep -q '"serverStateFreshness": "requires_revalidation"' PRODUCTION_STATE.js
 else
   printf 'documentation_requires_revalidation=false\\n'
 fi`;
+}
+
+function stringArray(value: unknown, max = 2_000): string[] {
+  return Array.isArray(value)
+    ? value.filter((entry): entry is string => typeof entry === 'string').slice(0, max)
+    : [];
+}
+
+function digestOrNull(value: unknown): string | null {
+  return typeof value === 'string' && DIGEST_PATTERN.test(value) ? value.toLowerCase() : null;
+}
+
+export function parseCurrentStateEvidence(output: string): CurrentStateEvidenceObservation {
+  if (Buffer.byteLength(output) > 1_000_000) throw new Error('current_state_evidence_too_large');
+  const parsed = JSON.parse(output) as Record<string, unknown>;
+  const architecture = parsed.architecture as Record<string, unknown> | undefined;
+  const documentation = parsed.documentation as Record<string, unknown> | undefined;
+  const governance = parsed.governance as Record<string, unknown> | undefined;
+  const sourceDigest = digestOrNull(parsed.sourceDigest);
+  const evidenceHead = typeof parsed.evidenceHead === 'string' && SHA_PATTERN.test(parsed.evidenceHead)
+    ? parsed.evidenceHead.toLowerCase()
+    : null;
+  if (parsed.schemaVersion !== 1 || !sourceDigest || !evidenceHead || !architecture || !documentation || !governance) {
+    throw new Error('current_state_evidence_invalid');
+  }
+  const imports = Array.isArray(architecture.imports)
+    ? architecture.imports.slice(0, 5_000).flatMap((entry) => {
+      if (!entry || typeof entry !== 'object') return [];
+      const item = entry as Record<string, unknown>;
+      return typeof item.from === 'string' && typeof item.to === 'string'
+        ? [{ from: item.from, to: item.to }]
+        : [];
+    })
+    : [];
+  const routes = Array.isArray(architecture.routes)
+    ? architecture.routes.slice(0, 2_000).flatMap((entry) => {
+      if (!entry || typeof entry !== 'object') return [];
+      const item = entry as Record<string, unknown>;
+      return typeof item.method === 'string' && typeof item.path === 'string' && typeof item.source === 'string'
+        ? [{ method: item.method, path: item.path, source: item.source }]
+        : [];
+    })
+    : [];
+  const categories = documentation.categories && typeof documentation.categories === 'object'
+    ? Object.fromEntries(Object.entries(documentation.categories as Record<string, unknown>)
+      .filter((entry): entry is [string, number] => Number.isInteger(entry[1]) && Number(entry[1]) >= 0))
+    : {};
+  const files = Array.isArray(governance.files)
+    ? governance.files.slice(0, 100).flatMap((entry) => {
+      if (!entry || typeof entry !== 'object') return [];
+      const item = entry as Record<string, unknown>;
+      return typeof item.path === 'string' && typeof item.status === 'string'
+        ? [{ path: item.path, status: item.status, digest: digestOrNull(item.digest) }]
+        : [];
+    })
+    : [];
+  const rawTaskRegistry = governance.taskRegistry && typeof governance.taskRegistry === 'object'
+    ? governance.taskRegistry as Record<string, unknown>
+    : null;
+  const taskRegistry = rawTaskRegistry && digestOrNull(rawTaskRegistry.digest)
+    ? {
+      registryVersion: Number.isInteger(rawTaskRegistry.registryVersion) ? Number(rawTaskRegistry.registryVersion) : null,
+      taskCount: Number.isInteger(rawTaskRegistry.taskCount) ? Number(rawTaskRegistry.taskCount) : null,
+      digest: digestOrNull(rawTaskRegistry.digest) as string
+    }
+    : null;
+  const contradictions = Array.isArray(parsed.contradictions)
+    ? parsed.contradictions.slice(0, 100).flatMap((entry) => {
+      if (!entry || typeof entry !== 'object') return [];
+      const item = entry as Record<string, unknown>;
+      return typeof item.code === 'string'
+        ? [{ code: item.code, ...(typeof item.path === 'string' ? { path: item.path } : {}) }]
+        : [];
+    })
+    : [];
+  return {
+    status: 'CURRENT',
+    evidenceHead,
+    generatedAt: typeof parsed.generatedAt === 'string' ? parsed.generatedAt : null,
+    sourceDigest,
+    architecture: {
+      modules: stringArray(architecture.modules, 5_000), imports, routes,
+      digest: digestOrNull(architecture.digest)
+    },
+    documentation: {
+      markdown: stringArray(documentation.markdown, 5_000), categories,
+      digest: digestOrNull(documentation.digest)
+    },
+    audits: stringArray(parsed.audits),
+    history: stringArray(parsed.history),
+    governance: { files, taskRegistry, digest: digestOrNull(governance.digest) },
+    testSuiteDigest: digestOrNull(parsed.testSuiteDigest),
+    contradictions
+  };
+}
+
+export function unavailableCurrentStateEvidence(error: string): CurrentStateEvidenceObservation {
+  return {
+    status: 'UNAVAILABLE', evidenceHead: null, generatedAt: null, sourceDigest: null,
+    architecture: { modules: [], imports: [], routes: [], digest: null },
+    documentation: { markdown: [], categories: {}, digest: null },
+    audits: [], history: [], governance: { files: [], taskRegistry: null, digest: null },
+    testSuiteDigest: null, contradictions: [], error
+  };
+}
+
+export function collectCapabilityObservation(): CurrentStateCapabilityObservation {
+  const catalog = getCurrentToolCatalog();
+  return {
+    status: catalog.counts.tools > 0 ? 'CURRENT' : 'UNAVAILABLE',
+    catalogueVersion: 1,
+    catalogueDigest: catalog.counts.tools > 0 ? catalog.catalogDigest : null,
+    registeredToolCount: catalog.counts.tools,
+    readOnlyToolCount: catalog.counts.read,
+    writeToolCount: catalog.writeToolCount,
+    resourceCount: catalog.counts.resources,
+    tools: catalog.tools,
+    resources: catalog.resources,
+    generatedAt: catalog.generatedAt,
+    contradictions: catalog.counts.tools > 0 ? [] : ['RUNTIME_CATALOG_EMPTY'],
+    ...(catalog.counts.tools > 0 ? {} : { error: 'runtime_catalog_empty' })
+  };
+}
+
+export async function collectCurrentStateEvidence(): Promise<CurrentStateEvidenceObservation> {
+  try {
+    const result = await runS1ReadOnly(buildCurrentStateEvidenceCommand());
+    if (result.code !== 0) return unavailableCurrentStateEvidence(`evidence_exit_${result.code}`);
+    return parseCurrentStateEvidence(result.stdout);
+  } catch {
+    return unavailableCurrentStateEvidence('current_state_evidence_unavailable');
+  }
 }
 
 export function parseDocumentationObservation(
@@ -375,96 +452,43 @@ export async function collectDocumentationObservation(
   }
 }
 
-function capabilitiesObservation(): CapabilitiesLiveObservation {
-  const catalog = getCurrentToolCatalog();
-  const available = catalog.registeredToolCount > 0;
-  return {
-    status: available ? 'CURRENT' : 'UNAVAILABLE',
-    catalogueDigest: available ? catalog.catalogueDigest : null,
-    registeredToolCount: catalog.registeredToolCount,
-    readOnlyToolCount: catalog.readOnlyToolCount,
-    writeToolCount: catalog.writeToolCount,
-    resourceCount: catalog.resourceCount,
-    tools: catalog.tools,
-    resources: catalog.resources,
-    contradictions: available ? [] : ['current_tool_catalog_empty']
-  };
-}
-
-async function collectCurrentStateEvidence(): Promise<CurrentStateEvidence | null> {
-  try {
-    const result = await runS1ReadOnly(buildCurrentStateEvidenceCommand());
-    if (result.code !== 0) return null;
-    return parseCurrentStateEvidence(result.stdout);
-  } catch {
-    return null;
-  }
-}
-
-function evidenceObservations(evidence: CurrentStateEvidence | null): {
-  governance: GovernanceLiveObservation;
-  auditBaseline: AuditBaselineLiveObservation;
-  inventory: InventoryLiveObservation;
-} {
-  if (!evidence) {
-    const contradictions = ['current_state_evidence_unavailable'];
-    return {
-      governance: {
-        status: 'UNAVAILABLE', repositoryHead: null, governanceDigest: null,
-        files: [], taskRegistryVersion: null, contradictions
-      },
-      auditBaseline: {
-        status: 'UNAVAILABLE', repositoryHead: null, testSuiteDigest: null,
-        sourceDigest: null, contradictions
-      },
-      inventory: {
-        status: 'UNAVAILABLE', repositoryHead: null, architecture: null,
-        documentation: null, audits: [], contradictions
-      }
-    };
-  }
-  return {
-    governance: {
-      status: 'CURRENT',
-      repositoryHead: evidence.repositoryHead,
-      governanceDigest: evidence.governance.digest,
-      files: evidence.governance.files,
-      taskRegistryVersion: evidence.taskRegistry.registryVersion,
-      contradictions: evidence.contradictions
-    },
-    auditBaseline: {
-      status: 'CURRENT',
-      repositoryHead: evidence.repositoryHead,
-      testSuiteDigest: evidence.testSuiteDigest,
-      sourceDigest: evidence.sourceDigest,
-      contradictions: evidence.contradictions
-    },
-    inventory: {
-      status: 'CURRENT',
-      repositoryHead: evidence.repositoryHead,
-      architecture: evidence.architecture,
-      documentation: evidence.documentation,
-      audits: evidence.audits,
-      contradictions: evidence.contradictions
-    }
-  };
-}
-
 export async function collectLiveStateObservations(): Promise<LiveStateObservations> {
-  const [github, s1, runtime, evidence] = await Promise.all([
+  const [github, s1, runtime, inventory] = await Promise.all([
     collectGithubObservation(),
     collectS1Observation(),
     collectRuntimeObservation(),
     collectCurrentStateEvidence()
   ]);
   const documentation = await collectDocumentationObservation(github.head, s1.head);
+  const capabilities = collectCapabilityObservation();
+  const inventoryContradictions = inventory.contradictions.map((entry) => entry.code);
+  const governance: CurrentStateGovernanceObservation = {
+    status: inventory.status,
+    digest: inventory.governance.digest,
+    files: inventory.governance.files,
+    taskRegistry: inventory.governance.taskRegistry,
+    contradictions: inventoryContradictions,
+    ...(inventory.error ? { error: inventory.error } : {})
+  };
+  const invalidReasons = [
+    ...(inventory.status === 'CURRENT' ? [] : ['INVENTORY_UNAVAILABLE']),
+    ...(inventory.evidenceHead && s1.head && inventory.evidenceHead !== s1.head ? ['EVIDENCE_HEAD_MISMATCH'] : []),
+    ...inventoryContradictions
+  ];
+  const auditBaseline: CurrentStateAuditBaselineObservation = {
+    status: inventory.status,
+    evidenceHead: inventory.evidenceHead,
+    runtimeRevision: runtime.revision,
+    testSuiteDigest: inventory.testSuiteDigest,
+    sourceDigest: inventory.sourceDigest,
+    catalogueDigest: capabilities.catalogueDigest,
+    governanceDigest: governance.digest,
+    valid: invalidReasons.length === 0,
+    invalidReasons,
+    ...(inventory.error ? { error: inventory.error } : {})
+  };
   return {
-    repository: REPOSITORY,
-    github,
-    s1,
-    runtime,
-    documentation,
-    capabilities: capabilitiesObservation(),
-    ...evidenceObservations(evidence)
+    repository: REPOSITORY, github, s1, runtime, documentation,
+    capabilities, governance, auditBaseline, inventory
   };
 }

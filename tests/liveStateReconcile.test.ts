@@ -129,27 +129,24 @@ test('stateVersion augmente lorsqu’un état significatif change', () => {
   assert.equal(second.stateVersion, 2);
 });
 
-test('stateVersion augmente quand un digest current-state change mais pas pour une projection identique', () => {
-  const firstInput = observations();
-  firstInput.capabilities = {
-    status: 'CURRENT',
-    catalogueDigest: 'a'.repeat(64),
-    registeredToolCount: 92,
-    readOnlyToolCount: 80,
-    writeToolCount: 12,
-    resourceCount: 1,
-    tools: [],
-    resources: [],
-    contradictions: []
+test('stateVersion suit les digests current-state mais ignore leurs dates', () => {
+  const initial = observations();
+  initial.capabilities = {
+    status: 'CURRENT', catalogueVersion: 1, catalogueDigest: 'a'.repeat(64),
+    registeredToolCount: 105, readOnlyToolCount: 80, writeToolCount: 25,
+    resourceCount: 2, tools: [], resources: [], generatedAt: NOW.toISOString(), contradictions: []
   };
-  const first = reconcileLiveState(firstInput, null, NOW);
-  const same = reconcileLiveState(firstInput, first, new Date('2026-08-09T12:00:10.000Z'));
-  const changedInput = structuredClone(firstInput);
-  changedInput.capabilities.catalogueDigest = 'b'.repeat(64);
-  const changed = reconcileLiveState(changedInput, same, new Date('2026-08-09T12:00:20.000Z'));
+  const first = reconcileLiveState(initial, null, NOW);
 
-  assert.equal(same.stateVersion, 1);
-  assert.equal(changed.stateVersion, 2);
+  const timestampOnly = structuredClone(initial);
+  timestampOnly.capabilities!.generatedAt = '2026-08-09T12:00:30.000Z';
+  const second = reconcileLiveState(timestampOnly, first, new Date(timestampOnly.capabilities!.generatedAt));
+  assert.equal(second.stateVersion, 1);
+
+  const changed = structuredClone(timestampOnly);
+  changed.capabilities!.catalogueDigest = 'b'.repeat(64);
+  const third = reconcileLiveState(changed, second, new Date('2026-08-09T12:00:40.000Z'));
+  assert.equal(third.stateVersion, 2);
 });
 
 test('applyFreshness marque STALE après maxAgeSeconds', () => {

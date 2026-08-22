@@ -1,16 +1,15 @@
+#!/usr/bin/env node
 import { createHash } from 'node:crypto';
-import { execFile } from 'node:child_process';
-import { lstat, readFile, realpath } from 'node:fs/promises';
-import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { lstatSync, readFileSync, realpathSync } from 'node:fs';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { promisify } from 'node:util';
 
-const execFileAsync = promisify(execFile);
 const MAX_TRACKED_FILES = 5_000;
-const MAX_FILE_BYTES = 2_000_000;
+const MAX_FILE_BYTES = 1_000_000;
 const MAX_TOTAL_BYTES = 25_000_000;
 const MAX_OUTPUT_BYTES = 1_000_000;
-const EXPECTED_GOVERNANCE_FILES = [
+const REQUIRED_GOVERNANCE_FILES = [
   '.mcp/agents.json',
   '.mcp/autodeploy-policy.json',
   '.mcp/branch-governance.json',
@@ -22,209 +21,248 @@ const EXPECTED_GOVERNANCE_FILES = [
   '.mcp/server-map.json',
   '.mcp/task-registry.json'
 ];
-const SENSITIVE_PATH = /(^|\/)(?:\.env(?:\.|$)|secrets?|credentials?)(?:\/|$)/i;
+const SENSITIVE_PATH = /(^|\/)(?:\.env(?:\.|$)|secrets?|credentials?)(?:\/|$)/iu;
 
-function canonicalize(value) {
-  if (Array.isArray(value)) return value.map(canonicalize);
+function canonical(value) {
+  if (Array.isArray(value)) return value.map(canonical);
   if (value && typeof value === 'object') {
-    return Object.fromEntries(
-      Object.entries(value)
-        .sort(([left], [right]) => left.localeCompare(right))
-        .map(([key, entry]) => [key, canonicalize(entry)])
-    );
+    return Object.fromEntries(Object.entries(value)
+      .filter(([, entry]) => entry !== undefined)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, entry]) => [key, canonical(entry)]));
   }
   return value;
 }
 
 function digest(value) {
-  return createHash('sha256')
-    .update(JSON.stringify(canonicalize(value)))
-    .digest('hex');
-}
-
-function normalizeRepositoryPath(path) {
-  return path.replaceAll('\\', '/').replace(/^\.\//, '');
+  return createHash('sha256').update(JSON.stringify(canonical(value))).digest('hex');
 }
 
 function isInside(root, candidate) {
-  const scope = relative(root, candidate);
-  return scope === '' || (!scope.startsWith(`..${sep}`) && scope !== '..' && !isAbsolute(scope));
+  const relative = path.relative(root, candidate);
+  return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
 }
 
-async function git(root, args) {
-  const { stdout } = await execFileAsync('git', ['-C', root, ...args], {
-    encoding: 'utf8',
-    maxBuffer: 2_000_000
-  });
-  return stdout.trim();
-}
-
-function parseImports(source) {
-  const imports = new Set();
-  const pattern = /(?:from\s*|import\s*\(|require\s*\()\s*['"](\.[^'"]+)['"]/g;
-  for (const match of source.matchAll(pattern)) {
-    if (match[1]) imports.add(match[1]);
-  }
-  return [...imports].sort();
-}
-
-function parseRoutes(path, source) {
-  const routes = [];
-  const pattern = /\b(?:app|router)\.(get|post|put|patch|delete)\(\s*['"]([^'"]+)['"]/gi;
-  for (const match of source.matchAll(pattern)) {
-    if (!match[1] || !match[2]) continue;
-    routes.push({ file: path, method: match[1].toUpperCase(), path: match[2] });
-  }
-  return routes;
-}
-
-async function readTrackedFiles(root, paths, contradictions) {
+export function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } = {}) {
+  const root = realpathSync(path.resolve(repositoryRoot));
+  const contradictions = [];
+  const contradictionKeys = new Set();
   const contents = new Map();
-  const sourceRecords = [];
   let totalBytes = 0;
 
-  for (const path of paths) {
-    if (SENSITIVE_PATH.test(path)) {
-      contradictions.push(`sensitive_tracked_path:${path}`);
-      sourceRecords.push({ path, redacted: true });
-      continue;
+  function contradiction(code, relativePath) {
+    const key = `${code}:${relativePath ?? ''}`;
+    if (contradictionKeys.has(key)) return;
+    contradictionKeys.add(key);
+    contradictions.push({ code, ...(relativePath ? { path: relativePath } : {}) });
+  }
+
+  function git(args) {
+    return execFileSync('git', ['-C', root, ...args], {
+      encoding: 'utf8',
+      maxBuffer: 8 * 1024 * 1024,
+      stdio: ['ignore', 'pipe', 'pipe']
+    }).trim();
+  }
+
+  const evidenceHead = git(['rev-parse', 'HEAD']);
+  if (!/^[0-9a-f]{40}$/u.test(evidenceHead)) throw new Error('CURRENT_STATE_EVIDENCE_HEAD_INVALID');
+  const generatedAt = git(['show', '-s', '--format=%cI', 'HEAD']);
+  const tracked = git(['ls-files', '-z']).split('\0').filter(Boolean).sort();
+  if (tracked.length > MAX_TRACKED_FILES) throw new Error('CURRENT_STATE_EVIDENCE_FILE_LIMIT');
+  const trackedSet = new Set(tracked);
+
+  for (const relativePath of tracked) {
+    if (SENSITIVE_PATH.test(relativePath)) contradiction('SENSITIVE_TRACKED_PATH', relativePath);
+  }
+
+  function safeTrackedFile(relativePath) {
+    if (!trackedSet.has(relativePath)) return null;
+    if (contents.has(relativePath)) return contents.get(relativePath);
+    if (SENSITIVE_PATH.test(relativePath)) return null;
+    const absolutePath = path.resolve(root, relativePath);
+    if (!isInside(root, absolutePath)) {
+      contradiction('TRACKED_PATH_ESCAPES_ROOT', relativePath);
+      return null;
     }
-    const candidate = resolve(root, path);
-    if (!isInside(root, candidate)) {
-      contradictions.push(`tracked_path_outside_repository:${path}`);
-      continue;
+    let stat;
+    try {
+      stat = lstatSync(absolutePath);
+    } catch {
+      contradiction('TRACKED_PATH_UNREADABLE', relativePath);
+      return null;
     }
-    const metadata = await lstat(candidate);
-    if (metadata.isSymbolicLink()) {
-      const target = await realpath(candidate).catch(() => null);
-      contradictions.push(target && !isInside(root, target)
-        ? `tracked_symlink_outside_repository:${path}`
-        : `tracked_symlink_refused:${path}`);
-      continue;
+    if (stat.isSymbolicLink()) {
+      let target = null;
+      try { target = realpathSync(absolutePath); } catch { /* refused below */ }
+      contradiction(target && !isInside(root, target)
+        ? 'TRACKED_SYMLINK_OUTSIDE_ROOT'
+        : 'TRACKED_SYMLINK_REFUSED', relativePath);
+      return null;
     }
-    if (!metadata.isFile()) continue;
-    if (metadata.size > MAX_FILE_BYTES) {
-      contradictions.push(`tracked_file_too_large:${path}`);
-      continue;
+    if (!stat.isFile()) {
+      contradiction('TRACKED_PATH_NOT_FILE', relativePath);
+      return null;
     }
-    totalBytes += metadata.size;
+    if (stat.size > MAX_FILE_BYTES) {
+      contradiction('TRACKED_FILE_TOO_LARGE', relativePath);
+      return null;
+    }
+    totalBytes += stat.size;
     if (totalBytes > MAX_TOTAL_BYTES) throw new Error('CURRENT_STATE_EVIDENCE_INPUT_TOO_LARGE');
-    const content = await readFile(candidate);
-    contents.set(path, content.toString('utf8'));
-    sourceRecords.push({
-      path,
-      sha256: createHash('sha256').update(content).digest('hex')
-    });
+    const content = readFileSync(absolutePath, 'utf8');
+    contents.set(relativePath, content);
+    return content;
   }
-  return { contents, sourceRecords };
-}
 
-function parseTaskRegistry(content, contradictions) {
-  if (content === undefined) {
-    return { path: '.mcp/task-registry.json', present: false, registryVersion: null, digest: null };
+  function resolveImport(from, request) {
+    const raw = path.posix.normalize(path.posix.join(path.posix.dirname(from), request));
+    const candidates = [
+      raw,
+      raw.replace(/\.js$/u, '.ts'),
+      raw.replace(/\.js$/u, '.tsx'),
+      `${raw}.ts`,
+      `${raw}.tsx`,
+      `${raw}/index.ts`,
+      `${raw}/index.tsx`
+    ];
+    return candidates.find((candidate) => trackedSet.has(candidate)) ?? null;
   }
-  try {
-    const parsed = JSON.parse(content);
-    const registryVersion = Number.isInteger(parsed?.registryVersion)
-      ? parsed.registryVersion
-      : null;
-    if (registryVersion === null) contradictions.push('task_registry_version_invalid');
-    return {
-      path: '.mcp/task-registry.json',
-      present: true,
-      registryVersion,
-      digest: digest(parsed)
-    };
-  } catch {
-    contradictions.push('task_registry_json_invalid');
-    return { path: '.mcp/task-registry.json', present: true, registryVersion: null, digest: null };
+
+  const modules = tracked
+    .filter((file) => /^src\/.*\.tsx?$/u.test(file))
+    .filter((file) => safeTrackedFile(file) !== null);
+  const imports = [];
+  const routes = [];
+  for (const module of modules) {
+    const content = safeTrackedFile(module);
+    if (content === null) continue;
+    const importPattern = /(?:import|export)\s+(?:[\s\S]*?\s+from\s+)?['"](\.[^'"]+)['"]/gu;
+    for (const match of content.matchAll(importPattern)) {
+      const target = resolveImport(module, match[1]);
+      if (target) imports.push({ from: module, to: target });
+    }
+    const routePattern = /\b(?:app|router)\.(get|post|put|patch|delete|options|head|use)\(\s*['"]([^'"]+)['"]/giu;
+    for (const match of content.matchAll(routePattern)) {
+      routes.push({ method: match[1].toUpperCase(), path: match[2], source: module });
+    }
   }
-}
+  imports.sort((left, right) => left.from.localeCompare(right.from) || left.to.localeCompare(right.to));
+  routes.sort((left, right) => left.path.localeCompare(right.path)
+    || left.method.localeCompare(right.method)
+    || left.source.localeCompare(right.source));
 
-export async function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } = {}) {
-  const root = await realpath(resolve(repositoryRoot));
-  const repositoryHead = await git(root, ['rev-parse', 'HEAD']);
-  if (!/^[0-9a-f]{40}$/.test(repositoryHead)) throw new Error('CURRENT_STATE_EVIDENCE_HEAD_INVALID');
-  const rawPaths = await git(root, ['ls-files', '-z']);
-  const paths = rawPaths
-    .split('\0')
-    .map(normalizeRepositoryPath)
-    .filter(Boolean)
-    .sort();
-  if (paths.length > MAX_TRACKED_FILES) throw new Error('CURRENT_STATE_EVIDENCE_FILE_LIMIT');
-
-  const contradictions = [];
-  const { contents, sourceRecords } = await readTrackedFiles(root, paths, contradictions);
-  const modules = paths
-    .filter((path) => /^src\/.*\.ts$/.test(path) && contents.has(path))
-    .map((path) => ({ path, imports: parseImports(contents.get(path)) }));
-  const routes = modules
-    .flatMap(({ path }) => parseRoutes(path, contents.get(path)))
-    .sort((left, right) => (
-      left.file.localeCompare(right.file)
-      || left.method.localeCompare(right.method)
-      || left.path.localeCompare(right.path)
-    ));
-  const architectureCore = { modules, routes };
-  const documentationFiles = paths.filter((path) => path.endsWith('.md'));
-  const audits = documentationFiles.filter((path) => (
-    path.startsWith('docs/audits/') || path.startsWith('docs/history/')
-  ));
-  const governanceFiles = EXPECTED_GOVERNANCE_FILES.map((path) => {
-    const content = contents.get(path);
-    if (content === undefined) contradictions.push(`missing_governance_file:${path}`);
-    return {
-      path,
-      present: content !== undefined,
-      digest: content === undefined ? null : digest(content)
-    };
-  });
-  const tests = paths.filter((path) => /^tests\/.*\.test\.ts$/.test(path));
-  const taskRegistry = parseTaskRegistry(contents.get('.mcp/task-registry.json'), contradictions);
-  const evidence = {
-    schemaVersion: 1,
-    repositoryHead,
-    architecture: {
-      ...architectureCore,
-      digest: digest(architectureCore)
-    },
-    documentation: {
-      files: documentationFiles,
-      digest: digest(documentationFiles.map((path) => ({ path, content: contents.get(path) ?? null })))
-    },
-    audits,
-    governance: {
-      files: governanceFiles,
-      digest: digest(governanceFiles)
-    },
-    taskRegistry,
-    testSuiteDigest: digest(tests.map((path) => ({ path, content: contents.get(path) ?? null }))),
-    sourceDigest: digest(sourceRecords),
-    contradictions: [...new Set(contradictions)].sort()
+  const markdown = tracked.filter((file) => file.toLowerCase().endsWith('.md'));
+  const audits = markdown.filter((file) => file.startsWith('docs/audits/'));
+  const history = markdown.filter((file) => file.startsWith('docs/history/'));
+  const documentation = {
+    markdown,
+    categories: {
+      root: markdown.filter((file) => !file.includes('/')).length,
+      audits: audits.length,
+      history: history.length,
+      governance: markdown.filter((file) => file.startsWith('docs/governance/')).length,
+      memory: markdown.filter((file) => file.startsWith('memory/') || file.startsWith('wealthtech_project_memory/')).length,
+      other: markdown.filter((file) => file.includes('/')
+        && !file.startsWith('docs/audits/')
+        && !file.startsWith('docs/history/')
+        && !file.startsWith('docs/governance/')
+        && !file.startsWith('memory/')
+        && !file.startsWith('wealthtech_project_memory/')).length
+    }
   };
+  documentation.digest = digest(markdown.map((file) => ({ path: file, content: safeTrackedFile(file) })));
+
+  const governanceFiles = REQUIRED_GOVERNANCE_FILES.map((file) => {
+    const content = safeTrackedFile(file);
+    if (content === null) {
+      contradiction('REQUIRED_GOVERNANCE_FILE_MISSING', file);
+      return { path: file, status: 'MISSING', digest: null };
+    }
+    return { path: file, status: 'PRESENT', digest: digest(content) };
+  });
+
+  let taskRegistry = null;
+  const taskRegistryContent = safeTrackedFile('.mcp/task-registry.json');
+  if (taskRegistryContent !== null) {
+    try {
+      const parsed = JSON.parse(taskRegistryContent);
+      taskRegistry = {
+        registryVersion: Number.isInteger(parsed.registryVersion) ? parsed.registryVersion : null,
+        taskCount: Array.isArray(parsed.tasks) ? parsed.tasks.length : null,
+        digest: digest(parsed)
+      };
+      if (taskRegistry.registryVersion === null || taskRegistry.taskCount === null) {
+        contradiction('TASK_REGISTRY_SCHEMA_INVALID', '.mcp/task-registry.json');
+      }
+    } catch {
+      contradiction('TASK_REGISTRY_INVALID_JSON', '.mcp/task-registry.json');
+    }
+  }
+
+  const branchGovernanceContent = safeTrackedFile('.mcp/branch-governance.json');
+  if (branchGovernanceContent !== null) {
+    try {
+      const parsed = JSON.parse(branchGovernanceContent);
+      for (const field of [
+        'currentBranchForThisWork',
+        'activeGovernedPullRequest',
+        'lastCompletedGovernedPullRequest',
+        'nextGovernedBranch'
+      ]) {
+        if (parsed[field] !== null && parsed[field] !== undefined) {
+          contradiction('STATIC_GOVERNANCE_DYNAMIC_VALUE', `.mcp/branch-governance.json#${field}`);
+        }
+      }
+    } catch {
+      contradiction('BRANCH_GOVERNANCE_INVALID_JSON', '.mcp/branch-governance.json');
+    }
+  }
+
+  const governance = { files: governanceFiles, taskRegistry };
+  governance.digest = digest(governance);
+  const architecture = { modules, imports, routes };
+  architecture.digest = digest(architecture);
+  const testFiles = tracked.filter((file) => /^tests\/.*\.(?:test|spec)\.tsx?$/u.test(file));
+  const testSuiteDigest = digest(testFiles.map((file) => ({
+    path: file,
+    digest: digest(safeTrackedFile(file) ?? '')
+  })));
+
+  const stableProof = {
+    schemaVersion: 1,
+    evidenceHead,
+    generatedAt,
+    architecture,
+    documentation,
+    audits,
+    history,
+    governance,
+    testSuiteDigest,
+    contradictions: contradictions.sort((left, right) => (
+      left.code.localeCompare(right.code) || (left.path ?? '').localeCompare(right.path ?? '')
+    ))
+  };
+  const evidence = { ...stableProof, sourceDigest: digest(stableProof) };
   if (Buffer.byteLength(JSON.stringify(evidence)) > MAX_OUTPUT_BYTES) {
     throw new Error('CURRENT_STATE_EVIDENCE_OUTPUT_TOO_LARGE');
   }
   return evidence;
 }
 
-function cliRoot(arguments_) {
-  const index = arguments_.indexOf('--root');
-  if (index === -1) return process.cwd();
-  const value = arguments_[index + 1];
-  if (!value || value.startsWith('--')) throw new Error('CURRENT_STATE_EVIDENCE_ROOT_REQUIRED');
-  return value;
+function argument(name, fallback) {
+  const index = process.argv.indexOf(name);
+  return index >= 0 && process.argv[index + 1] ? process.argv[index + 1] : fallback;
 }
 
-const isCli = process.argv[1]
-  && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-
+const isCli = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isCli) {
   try {
-    const evidence = await collectCurrentStateEvidence({ repositoryRoot: cliRoot(process.argv.slice(2)) });
-    process.stdout.write(`${JSON.stringify(evidence)}\n`);
+    process.stdout.write(`${JSON.stringify(collectCurrentStateEvidence({
+      repositoryRoot: argument('--root', process.cwd())
+    }))}\n`);
   } catch (error) {
-    const code = error instanceof Error && /^[A-Z0-9_]+$/.test(error.message)
+    const code = error instanceof Error && /^[A-Z0-9_]+$/u.test(error.message)
       ? error.message
       : 'CURRENT_STATE_EVIDENCE_FAILED';
     process.stderr.write(`${code}\n`);

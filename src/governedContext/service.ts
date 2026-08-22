@@ -15,6 +15,7 @@ import type {
   PublicGovernedLock,
   PublicGovernedSession
 } from './types.js';
+import type { CurrentStateInventory, CurrentStateService } from '../currentState/service.js';
 
 export type GovernedContextInput = {
   governedSessionId: string | null;
@@ -37,6 +38,7 @@ type ContextServiceOptions = {
   existingWriteToolsEnabled: boolean;
   now?: () => Date;
   audit?: OperationalAudit;
+  currentState?: Pick<CurrentStateService, 'getInventory'>;
 };
 
 export type GovernedOperationalContextService = {
@@ -67,15 +69,17 @@ function fallbackGithub(at: string, workBranch: string | null): GithubOperationa
 function nextAction(
   liveState: LiveStateSnapshot | null,
   session: PublicGovernedSession | null,
+  bootstrapStatus: GovernedOperationalContext['bootstrap']['status'],
+  currentTask: CurrentStateInventory['currentTask'],
+  firstExecutableTask: CurrentStateInventory['firstExecutableTask'],
   github: GithubOperationalContext,
   foreignLock: boolean
 ): string | null {
   if (liveState?.nextAction) return liveState.nextAction;
   if (!session) return 'mcp_open_governed_session';
-  if (
-    liveState
-    && session.lastAcknowledgedStateVersion !== liveState.stateVersion
-  ) return 'mcp_acknowledge_governed_context';
+  if (bootstrapStatus !== 'CURRENT') return 'mcp_acknowledge_governed_context';
+  if (currentTask) return currentTask.nextAction ?? 'mcp_transition_governed_task';
+  if (firstExecutableTask) return 'mcp_claim_next_governed_task';
   if (foreignLock) return 'wait_for_governed_lock';
   if (github.checks.failed > 0 || github.checks.conclusion === 'failure') {
     return 'resolve_github_checks';
@@ -138,6 +142,21 @@ export function createGovernedOperationalContextService(
     }
     if (!session) limitations.push('session_unbound');
 
+    const currentState = options.currentState
+      ? await safeRead(() => options.currentState!.getInventory(input.request), null)
+      : null;
+    if (options.currentState && !currentState) limitations.push('current_state_inventory_unavailable');
+
+    const receipt = session?.bootstrapReceipt ?? null;
+    let bootstrapStatus: GovernedOperationalContext['bootstrap']['status'] = 'MISSING';
+    if (receipt) {
+      if (Date.parse(receipt.expiresAt) <= now().getTime()) bootstrapStatus = 'EXPIRED';
+      else if (!liveState || receipt.stateVersion !== liveState.stateVersion
+        || session?.lastAcknowledgedStateVersion !== liveState.stateVersion) bootstrapStatus = 'STALE';
+      else bootstrapStatus = 'CURRENT';
+    }
+    if (bootstrapStatus !== 'CURRENT') limitations.push(`bootstrap_${bootstrapStatus.toLowerCase()}`);
+
     const rawLocks = await safeRead(
       () => options.locks.listActiveLocks(),
       null
@@ -191,10 +210,39 @@ export function createGovernedOperationalContextService(
       liveState,
       github,
       session,
+      bootstrap: {
+        required: true,
+        status: bootstrapStatus,
+        receipt,
+        limitations: receipt?.limitations ?? []
+      },
+      currentState: {
+        catalogueDigest: currentState?.source.catalogueDigest ?? liveState?.capabilities?.catalogueDigest ?? null,
+        inventoryDigest: currentState?.source.inventoryDigest ?? liveState?.inventory?.sourceDigest ?? null,
+        governanceDigest: currentState?.governance?.digest ?? liveState?.governance?.digest ?? null,
+        auditBaselineValid: currentState?.auditBaseline?.valid ?? liveState?.auditBaseline?.valid ?? null
+      },
+      workQueue: {
+        storeRevision: currentState?.workQueue.storeRevision ?? null,
+        total: currentState?.workQueue.tasks.length ?? 0,
+        byStatus: Object.fromEntries(Object.entries(
+          (currentState?.workQueue.tasks ?? []).reduce<Record<string, number>>((counts, task) => {
+            counts[task.status] = (counts[task.status] ?? 0) + 1;
+            return counts;
+          }, {})
+        ).sort(([left], [right]) => left.localeCompare(right)))
+      },
+      currentTask: currentState?.currentTask ?? null,
+      firstExecutableTask: currentState?.firstExecutableTask ?? null,
       activeLocks,
       lastCheckpoint: session?.lastCheckpoint ?? null,
       blockers,
-      nextAction: nextAction(liveState, session, github, foreignLock),
+      nextAction: nextAction(
+        liveState, session, bootstrapStatus,
+        currentState?.currentTask ?? null,
+        currentState?.firstExecutableTask ?? null,
+        github, foreignLock
+      ),
       gate: {
         mode: options.gateMode,
         existingWriteToolsEnabled: options.existingWriteToolsEnabled,

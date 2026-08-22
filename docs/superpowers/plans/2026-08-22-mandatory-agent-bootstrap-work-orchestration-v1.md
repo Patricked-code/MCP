@@ -51,7 +51,7 @@ Le runner `tsx` CLI ouvre un socket IPC interdit dans la sandbox locale ; les pr
 **Contrat exact V1:**
 
 ```ts
-export type RegistrationSurface = 'read' | 'scoped-write';
+export type RegistrationSurface = 'read' | 'operational-write' | 'scoped-write';
 
 export type CurrentToolContract = {
   name: string;
@@ -74,23 +74,34 @@ export type CurrentResourceContract = {
   mimeType: string | null;
   audience: string[];
   priority: number | null;
+  surface: RegistrationSurface;
   contractDigest: string;
 };
 
 export type CurrentToolCatalog = {
   schemaVersion: 1;
   catalogueVersion: 1;
+  generatedAt: string;
   catalogueDigest: string;
+  catalogDigest: string; // alias de compatibilité interne
   registeredToolCount: number;
   readOnlyToolCount: number;
+  operationalWriteToolCount: number;
   writeToolCount: number;
   resourceCount: number;
+  counts: {
+    tools: number;
+    resources: number;
+    read: number;
+    operationalWrite: number;
+    scopedWrite: number;
+  };
   tools: CurrentToolContract[];
   resources: CurrentResourceContract[];
 };
 ```
 
-Le digest est le SHA-256 hexadécimal d’un JSON canonique à clés triées. Les dates ne participent pas au catalogue sémantique. `z.toJSONSchema(z.object(rawShape))` convertit les schémas legacy ; `registerTool` utilise `config.inputSchema`. Le décorateur délègue d’abord au SDK puis enregistre la preuve uniquement si l’enregistrement a réussi. Un nom réenregistré avec le même contrat est idempotent ; un contrat différent lève `CURRENT_TOOL_CATALOG_CONFLICT:<name>`.
+Le digest est le SHA-256 hexadécimal d’un JSON canonique à clés triées. Les dates ne participent pas au catalogue sémantique. `z.toJSONSchema(z.object(rawShape))` convertit les schémas legacy ; `registerTool` utilise `config.inputSchema`. Le décorateur délègue d’abord au SDK puis enregistre la preuve uniquement si l’enregistrement a réussi. Un nom réenregistré avec le même contrat est idempotent ; un contrat différent lève `CURRENT_TOOL_CATALOG_CONFLICT:<name>`. `writeToolCount` agrège les surfaces `operational-write` et `scoped-write` tandis que `counts` les conserve séparément.
 
 - [ ] **Step 1: Écrire le RED qui capture `tool`, `registerTool` et `registerResource`, vérifie le tri/digest, la classification, l’idempotence, le conflit et l’identité du retour SDK.**
 - [ ] **Step 2: Exécuter `node --import tsx --test tests/currentToolCatalog.test.ts`; attendre un échec d’import de `src/currentState/toolCatalog.ts`.**

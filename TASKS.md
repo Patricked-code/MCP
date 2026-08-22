@@ -41,6 +41,21 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] trois threads tardifs PR #45 résolus après déploiement attesté ;
 - [x] réconciliation documentaire finale publiée par la présente PR #48.
 
+## Tâche courante
+
+### TASK-20260822-001 — Mandatory Agent Bootstrap & Work Orchestration V1 — EN COURS
+
+- [x] dériver le catalogue complet depuis les registrations MCP et protéger sa fraîcheur en CI ;
+- [x] dériver du SHA suivi les modules, imports, routes, documents, audits et politiques sans écriture ;
+- [x] enrichir Live State avec catalogue, gouvernance, baseline d'audit et inventaire ;
+- [x] ajouter Task Registry, queue persistante, ordre priorité/séquence, dépendances, conflits et révisions optimistes ;
+- [x] créer le Bootstrap Receipt sanitizé lors de l'acquittement ;
+- [x] exposer l'inventaire courant et les outils de queue MCP ;
+- [x] enrichir Governed Context, le dashboard, l'onboarding réel, le journal et le gate `shadow` ;
+- [x] conserver les 92 contrats historiques et un diff nul sur OIDC/Autodeploy ;
+- [ ] publier le head consolidé, obtenir les CI exactes et la revue ;
+- [ ] fusionner, attendre l'Autodeploy exact-SHA, réattester et réconcilier les références canoniques.
+
 ## Interdictions préservées
 
 - aucun push direct sur `main` ;

@@ -90,9 +90,9 @@ test('une exception globale de collecte produit et persiste DEGRADED au lieu de 
   assert.equal(snapshot.runtime.status, 'UNAVAILABLE');
   assert.equal(snapshot.documentation.status, 'UNAVAILABLE');
   assert.equal(snapshot.capabilities?.status, 'UNAVAILABLE');
+  assert.equal(snapshot.inventory?.status, 'UNAVAILABLE');
   assert.equal(snapshot.governance?.status, 'UNAVAILABLE');
   assert.equal(snapshot.auditBaseline?.status, 'UNAVAILABLE');
-  assert.equal(snapshot.inventory?.status, 'UNAVAILABLE');
   assert.equal(written.length, 1);
   assert.equal(JSON.stringify(snapshot).includes('unexpected collector failure'), false);
 });

@@ -1,20 +1,38 @@
 {
   "schemaVersion": 1,
-  "registryVersion": 1,
+  "registryVersion": 2,
+  "generatedAt": "2026-08-22T00:00:00.000Z",
+  "registryDigest": "42bc4a14fe2afb5edd33eafac299dfbd7f5c89e8d9c76f3c37061429ea1e292b",
   "tasks": [
     {
-      "taskId": "TASK-20260822-001",
-      "intentKey": "mandatory-agent-bootstrap-v1",
-      "title": "Mandatory Agent Bootstrap & Work Orchestration V1",
-      "summary": "Faire évoluer Live State, Governed Context et Operational Memory avec un bootstrap attesté et une file de travail gouvernée.",
-      "priority": 0,
+      "taskId": "TASK-20260813-004",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "operational-memory-hardening-final",
+      "title": "Operational Memory hardening and reconciliation",
+      "summary": "PR 44 through 48 delivered, reconciled and attested.",
+      "priority": 50,
       "sequence": 1,
-      "status": "DISCOVERED",
+      "status": "DONE",
       "dependencies": [],
-      "resourceScopes": [
-        "repository:Patricked-code/MCP"
-      ],
-      "nextAction": "reconcile_current_session_and_claim_task"
+      "resourceScopes": ["repository:Patricked-code/MCP"],
+      "blockers": [],
+      "nextAction": null,
+      "requestDigest": "6afddcbbf3aa489509914d5e1f2e2f488b48486207534b8f116e4f8986d11ab4"
+    },
+    {
+      "taskId": "TASK-20260822-001",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "mandatory-agent-bootstrap-work-orchestration-v1",
+      "title": "Mandatory Agent Bootstrap and Work Orchestration V1",
+      "summary": "Derive current state, issue bootstrap receipts and orchestrate governed work in FIFO order.",
+      "priority": 80,
+      "sequence": 2,
+      "status": "READY",
+      "dependencies": ["TASK-20260813-004"],
+      "resourceScopes": ["repository:Patricked-code/MCP"],
+      "blockers": [],
+      "nextAction": "Claim the task, validate the exact PR head, merge, attest exact-SHA deployment and reconcile canonical documentation.",
+      "requestDigest": "13ba5345de8b8e23c0b3f6a1fb00c779b4fb52f1667573417e623e3700c6852f"
     }
   ]
 }
