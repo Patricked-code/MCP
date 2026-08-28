@@ -54,6 +54,7 @@ Travaux restant réellement à accomplir.
 - [x] Corriger les findings de revue indépendante : propriétaire supprimé, TOCTOU session/tâche, replacement refs et pureté des lectures ; documenter l'audit best-effort.
 - [x] Valider localement `234/234`, typecheck, build, docs, cartographie, preuve current-state, secrets et diff.
 - [x] Publier la branche corrective et ouvrir la Draft PR #52.
-- [ ] Obtenir CI et revue vertes sur le head exact, résoudre les trois threads de la PR #49, puis fusionner avec garde exact-head.
-- [ ] Attester Autodeploy, GitHub/S1/OCI/runtime et Live State post-merge.
+- [x] Obtenir CI et revue vertes sur le head exact, résoudre les trois threads de la PR #49, puis fusionner avec garde exact-head.
+- [x] Attester Autodeploy, GitHub/S1/OCI/runtime et Live State post-merge au SHA `fff44ff2db386942730a67f3884980c7824cae7f`.
+- [ ] Fusionner et attester la présente réconciliation strictement documentaire.
 - [ ] Enregistrer le checkpoint final, libérer le lock et fermer la session sans lock résiduel.
