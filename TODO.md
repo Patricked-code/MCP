@@ -51,8 +51,9 @@ Travaux restant réellement à accomplir.
 - [x] Reprendre la tâche runtime `TASK-20260822-001` et la Governed Session corrective existantes, sans doublon de tâche ni seconde branche.
 - [x] Reproduire par TDD les trois findings tardifs de la PR #49, le défaut de gate des sessions terminales et l'erreur de classification des outils de lecture.
 - [x] Corriger la réattribution après session terminale, la projection `currentTask`, la preuve Git au HEAD et la séparation des surfaces read/write.
-- [x] Valider localement `12/12 + 216/216`, typecheck, build, docs, cartographie, preuve current-state, secrets et diff.
-- [ ] Publier la branche corrective et ouvrir une Draft PR.
+- [x] Corriger les findings de revue indépendante : propriétaire supprimé, TOCTOU session/tâche, replacement refs et pureté des lectures ; documenter l'audit best-effort.
+- [x] Valider localement `234/234`, typecheck, build, docs, cartographie, preuve current-state, secrets et diff.
+- [x] Publier la branche corrective et ouvrir la Draft PR #52.
 - [ ] Obtenir CI et revue vertes sur le head exact, résoudre les trois threads de la PR #49, puis fusionner avec garde exact-head.
 - [ ] Attester Autodeploy, GitHub/S1/OCI/runtime et Live State post-merge.
 - [ ] Enregistrer le checkpoint final, libérer le lock et fermer la session sans lock résiduel.

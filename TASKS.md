@@ -64,8 +64,13 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] dériver la preuve current-state des blobs du `evidenceHead`, sans attribuer les modifications locales au commit ;
 - [x] refuser les mutations de tâche depuis une session `CLOSED` ou `EXPIRED` ;
 - [x] classifier les deux lectures de queue comme `read` et conserver les trois mutations en `operational-write` ;
-- [x] valider localement `12/12 + 216/216`, typecheck, build, docs, cartographie, preuve current-state, secrets et diff ;
-- [ ] publier la branche, ouvrir une Draft PR et obtenir CI/revue sur le head exact ;
+- [x] récupérer aussi les tâches dont la session propriétaire a déjà été supprimée par rétention ;
+- [x] sérialiser rétention/reprise/fermeture/expiration et mutations de tâche avec un coordinateur mémoire partagé ;
+- [x] rendre les lectures de queue réellement sans écriture et initialiser le seed avant exposition du serveur ;
+- [x] neutraliser les replacement refs et lier l'horodatage au `evidenceHead` ;
+- [x] valider localement `234/234`, typecheck, build, docs, cartographie, preuve current-state, secrets et diff ;
+- [x] publier le head fonctionnel `0a672591…` et ouvrir la Draft PR #52 ;
+- [ ] obtenir CI/revue sur le head documentaire exact ;
 - [ ] résoudre les trois threads PR #49 après preuve de correction ;
 - [ ] fusionner avec garde exact-head, attester Autodeploy et réconcilier GitHub/S1/OCI/runtime ;
 - [ ] checkpoint final, lock libéré et session fermée sans lock résiduel.

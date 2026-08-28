@@ -35,17 +35,22 @@ Date : 2026-08-28
   - `PRRT_kwDOTJ-y6M6bYAMY` : preuve current-state lue depuis les blobs du `evidenceHead`, indépendamment du working tree.
 - Le gate de mutation des tâches refuse désormais les sessions `CLOSED` et `EXPIRED`.
 - Les deux outils de lecture de queue sont classés `read`; les trois mutations restent `operational-write`.
-- La maintenance réattribue de façon idempotente les tâches non terminales : fermeture immédiatement, expiration après la grâce de reprise seulement.
+- La maintenance réattribue de façon idempotente, au prochain cycle normalement inférieur à 60 secondes, les tâches non terminales dont la session est fermée, définitivement expirée ou déjà supprimée par rétention.
+- Un coordinateur mémoire partagé sérialise rétention, reprise, fermeture et expiration avec les trois mutations de tâche ; aucun store ou moteur supplémentaire n'est introduit.
+- Les outils de lecture de queue sont sans écriture ; le seed est initialisé avant l'exposition du serveur.
+- La preuve Git neutralise les replacement refs et lie contenu, horodatage et SHA au même `evidenceHead`.
 
 ## Preuves locales de la candidate
 
 - TDD RED : huit échecs ciblés sur les garanties manquantes.
-- GREEN ciblé élargi : `50/50`.
-- Régression complète : gouvernance `12/12`, autres suites `216/216`, total `228/228`.
+- GREEN ciblé élargi après revue : `51/51`.
+- Régression complète : total `234/234`, zéro échec/cancelled/skipped/todo.
 - Typecheck, build, documentation `196`, cartographie, preuve current-state, scan de secrets et contrôle du diff réussis avant consolidation documentaire.
 - Catalogue candidat : 111 outils, 2 resources, 68 lectures, 43 écritures ; digest `cfd5f18490f25ce79b4afbda36a9eda48453a7098237f73b39aa804a4cd43aad`.
-- Aucun commit, push, PR corrective, merge, déploiement ou changement runtime n'est encore déclaré à ce jalon.
+- Head fonctionnel post-review publié : `0a67259195ad90d4e2e945201133de1047b6c553`, arbre exact `96bc9076acdc67013c21846f5147b78bab8f90c3`.
+- Draft PR #52 ouverte ; son head documentaire final, sa nouvelle CI, sa revue finale, le merge et le déploiement restent à attester.
+- L'audit de tâche conserve le contrat existant best-effort : une panne du journal ne bloque pas la persistance et n'est pas rejouée comme événement synthétique.
 
 ## Prochaine action
 
-Valider le diff consolidé, committer et publier la branche gouvernée, ouvrir une Draft PR, exiger la CI et la revue du head exact, puis seulement fusionner et attester l'Autodeploy exact-SHA. Après attestation, checkpoint final, libération du lock et fermeture de la session. L'activation d'`enforce` reste hors périmètre et exige un GO distinct.
+Publier la réconciliation documentaire de la revue sur la Draft PR #52, exiger une nouvelle CI et une nouvelle revue du head exact, puis seulement passer Ready, fusionner et attester l'Autodeploy exact-SHA. Après attestation, checkpoint final, libération du lock et fermeture de la session. L'activation d'`enforce` reste hors périmètre et exige un GO distinct.

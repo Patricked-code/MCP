@@ -15,6 +15,16 @@ Historique factuel des changements du depot MCP.
 - Compatibilité : changement additif sans nouveau store ou moteur ; WRITE gate maintenu en `shadow`, OIDC/Autodeploy/2FA/`ENABLE_WRITE_TOOLS`/`allow_write` inchangés.
 - Rollback : revert du commit correctif unique ; aucun schéma historique n'est supprimé et les données de tâche existantes restent lisibles.
 
+## 2026-08-28 — Corrections de revue de la Draft PR #52
+
+- Les sessions encore actives ou expirées mais reprenables constituent désormais l'ensemble positif des propriétaires conservables ; une session terminale déjà supprimée rend donc sa tâche réclamable au prochain cycle.
+- Un coordinateur mémoire partagé sérialise rétention, reprise, fermeture, expiration et les trois mutations de tâche afin de fermer la course inter-stores sans fusionner les stores.
+- Le seed de tâche est initialisé avant l'exposition HTTP/MCP ; les outils `readOnlyHint` et le Current-State Inventory ne déclenchent plus d'écriture.
+- Toutes les commandes Git de preuve désactivent les replacement refs et l'horodatage est résolu depuis le SHA capturé dans `evidenceHead`.
+- L'audit de tâche reste best-effort conformément au contrat historique : la persistance métier n'échoue pas si le journal échoue, et aucun faux événement rétroactif n'est fabriqué.
+- Validation post-review : ciblée `51/51`, complète `234/234`, typecheck, build, cartographie et diff verts ; head fonctionnel GitHub `0a67259195ad90d4e2e945201133de1047b6c553`.
+- Rollback : revert du commit post-review ; le coordinateur est en mémoire, sans migration ni schéma persistant.
+
 ## 2026-08-22 — Mandatory Agent Bootstrap & Work Orchestration V1
 
 - Catalogue runtime dérivé des registrations MCP : 111 outils, 2 resources, contrats triés et digestés ; `.mcp/function-cartography.json` est généré et vérifié en CI.

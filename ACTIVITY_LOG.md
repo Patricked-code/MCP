@@ -238,3 +238,13 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - TDD RED : huit échecs ciblés. GREEN : `50/50` ciblés, `12/12 + 216/216` en régression complète, typecheck/build/docs/cartographie/current-state/secrets/diff verts.
 - Catalogue candidat : 111 outils, 2 resources, 68 lectures, 43 écritures, digest `cfd5f18490f25ce79b4afbda36a9eda48453a7098237f73b39aa804a4cd43aad`.
 - Aucun commit distant, PR corrective, merge, déploiement, écriture S1, enforcement ou changement 2FA n'est déclaré à ce jalon.
+
+## 2026-08-28T23:30:58Z — TASK-20260822-001 — Revue PR #52 corrigée par TDD
+
+- CI du head initial `e067af0aedc26ef7a351eea39d6ceb7740684734` : MCP CI #481, run `33211642146`, success.
+- Revue indépendante : zéro Critical, cinq Important ; la Draft PR est restée bloquée pendant la correction.
+- RED reproduits : replacement refs, écriture induite par les lectures, propriétaire de tâche déjà supprimé, course lifecycle/mutation et limites d'audit.
+- GREEN : owner absent réattribuable, coordinateur FIFO mémoire, seed avant exposition, lectures pures, preuve Git sans replacements et audit best-effort explicitement testé.
+- Head fonctionnel publié : `0a67259195ad90d4e2e945201133de1047b6c553`, arbre `96bc9076acdc67013c21846f5147b78bab8f90c3`.
+- Validation : ciblée `51/51`, complète `234/234`, zéro échec/cancelled/skipped/todo ; typecheck, build, cartographie et diff verts.
+- Aucune fusion, écriture S1, modification runtime, activation `enforce`, modification OIDC/Autodeploy ou 2FA.
