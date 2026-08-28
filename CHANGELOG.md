@@ -3,6 +3,18 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
+## 2026-08-28 — Candidate corrective Mandatory Agent Bootstrap V1
+
+- Réattribue de manière idempotente les tâches non terminales dont la session propriétaire est `CLOSED`, ou `EXPIRED` au-delà de `resumeGraceSeconds`, en conservant branche, PR et corrélations SHA/runtime.
+- Limite `currentTask` à la Governed Session liée au transport appelant, uniquement si la session est utilisable et la tâche non terminale.
+- Refuse les mutations de tâche depuis les sessions `CLOSED` ou `EXPIRED`.
+- Lit la preuve current-state depuis les blobs Git du `evidenceHead` ; un working tree sale ne peut plus être attribué au commit observé.
+- Classe `mcp_get_work_queue` et `mcp_get_governed_task` en `read`, tandis que claim et transitions restent `operational-write`.
+- Catalogue candidat : 111 outils, 2 resources, 68 lectures, 43 écritures, digest `cfd5f18490f25ce79b4afbda36a9eda48453a7098237f73b39aa804a4cd43aad`.
+- TDD : huit échecs RED ciblés, puis `50/50` ciblés et `228/228` en régression complète ; typecheck, build, docs, cartographie, preuve current-state, secrets et diff réussis.
+- Compatibilité : changement additif sans nouveau store ou moteur ; WRITE gate maintenu en `shadow`, OIDC/Autodeploy/2FA/`ENABLE_WRITE_TOOLS`/`allow_write` inchangés.
+- Rollback : revert du commit correctif unique ; aucun schéma historique n'est supprimé et les données de tâche existantes restent lisibles.
+
 ## 2026-08-22 — Mandatory Agent Bootstrap & Work Orchestration V1
 
 - Catalogue runtime dérivé des registrations MCP : 111 outils, 2 resources, contrats triés et digestés ; `.mcp/function-cartography.json` est généré et vérifié en CI.

@@ -227,3 +227,14 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Live State `stateVersion=33` : GitHub, S1, `origin/main` et runtime égaux au merge ; S1 propre/read-only ; Docker running/healthy ; image `sha256:f6e05d77ed04c342e663c04322029f5233009ee4d75b78a9ebeea12af8027de5`.
 - Bootstrap Receipt réel créé sans limitation après le déploiement ; checkpoint fonctionnel final enregistré et première session fermée sans lock résiduel.
 - Nouveau point de reprise : branche documentaire dédiée, session `2807acb8-84ec-4760-882e-5a5e43496fc3` et lock repository actifs. La tâche runtime seed demeure `READY` jusqu'au rechargement des cinq nouveaux outils par le connecteur courant.
+
+## 2026-08-28T21:03:20Z — TASK-20260822-001 — Correction TDD des findings tardifs PR #49
+
+- `wealthtech_ssh_bridge` vérifié callable, puis Live State `stateVersion=36` reconstruit : GitHub/S1/origin/runtime `4d17e972ea04624fc41f90fbb908dc0f70b34430`, S1 propre/read-only, Docker healthy.
+- Governed Session `913048d7-1128-4179-b0bb-3d961730c3f8` reprise, receipt renouvelé, lock repository `671d2c8c-abaf-455b-8e47-163cf79f2782` acquis et heartbeat enregistré.
+- Branche unique `mcp/fix-mandatory-bootstrap-review-20260822` conservée depuis le SHA exact de production ; aucun doublon de tâche ou de branche.
+- Trois threads PR #49 reproduits et corrigés : réattribution après session terminale, `currentTask` propre à la session appelante, preuve current-state issue des blobs du HEAD.
+- Deux écarts connexes corrigés : mutations interdites aux sessions terminales et lectures de queue reclassées `read`.
+- TDD RED : huit échecs ciblés. GREEN : `50/50` ciblés, `12/12 + 216/216` en régression complète, typecheck/build/docs/cartographie/current-state/secrets/diff verts.
+- Catalogue candidat : 111 outils, 2 resources, 68 lectures, 43 écritures, digest `cfd5f18490f25ce79b4afbda36a9eda48453a7098237f73b39aa804a4cd43aad`.
+- Aucun commit distant, PR corrective, merge, déploiement, écriture S1, enforcement ou changement 2FA n'est déclaré à ce jalon.

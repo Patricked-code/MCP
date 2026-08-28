@@ -30,7 +30,11 @@ import { createGithubDeployRouter } from './deploy/routes.js';
 import { verifyGithubOidcToken } from './deploy/githubOidc.js';
 import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
 import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js';
-import { registerGovernedTaskTools } from './tools/governedTasks.js';
+import {
+  getGovernedTaskToolDependencies,
+  registerGovernedTaskMutationTools,
+  registerGovernedTaskReadTools
+} from './tools/governedTasks.js';
 
 const WEB_SESSION_COOKIE = 'mcp_web_session';
 const WEB_SESSION_MAX_AGE_SECONDS = Math.max(1, Number.parseInt(process.env.MCP_SESSION_TTL_HOURS || '8', 10)) * 60 * 60;
@@ -233,6 +237,7 @@ async function renderDashboardPage(): Promise<string> {
 function startGovernedOperationalMemoryMaintenance(): void {
   if (!operationalMemoryConfig.enabled) return;
   const operational = getGovernedSessionToolDependencies();
+  const tasks = getGovernedTaskToolDependencies();
   const journal = getDefaultOperationalEventJournal({
     filePath: operationalMemoryConfig.eventJournalPath,
     maxBytes: operationalMemoryConfig.eventMaxBytes,
@@ -242,9 +247,14 @@ function startGovernedOperationalMemoryMaintenance(): void {
     expireSessions: () => operational.sessions.expireIdleSessions(),
     expireLocks: () => operational.locks.expireLocks(),
     reconcileSessionLockIds: () => operational.locks.reconcileSessionLockIds(),
+    requeueTerminalTasks: () => tasks.queue.requeueTerminalSessionTasks(),
     intervalMs: 60_000,
     async onCycle(summary) {
-      if (summary.expiredSessionCount === 0 && summary.expiredLockCount === 0) return;
+      if (
+        summary.expiredSessionCount === 0
+        && summary.expiredLockCount === 0
+        && summary.requeuedTaskCount === 0
+      ) return;
       await journal.append({
         type: 'maintenance.completed',
         governedSessionId: null,
@@ -281,7 +291,15 @@ export function buildMcpServer(): McpServer {
   });
 
   registerReadOnlyTools(decorateRegistrationCatalogServer(server, 'read'));
-  registerGovernedTaskTools(decorateRegistrationCatalogServer(server, 'operational-write'));
+  const taskDependencies = getGovernedTaskToolDependencies();
+  registerGovernedTaskReadTools(
+    decorateRegistrationCatalogServer(server, 'read'),
+    taskDependencies
+  );
+  registerGovernedTaskMutationTools(
+    decorateRegistrationCatalogServer(server, 'operational-write'),
+    taskDependencies
+  );
   if (env.ENABLE_WRITE_TOOLS) {
     registerScopedWriteTools(decorateScopedWriteServer(
       decorateRegistrationCatalogServer(server, 'scoped-write'),

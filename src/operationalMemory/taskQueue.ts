@@ -85,6 +85,7 @@ export type GovernedTaskQueue = {
   }>;
   claimNextTask(governedSessionId: string, expectedStoreRevision: number): Promise<GovernedTaskRecord | null>;
   transitionTask(input: TransitionTaskInput): Promise<GovernedTaskRecord>;
+  requeueTerminalSessionTasks(): Promise<number>;
   listVisibleTasks(): Promise<TaskStoreDocument>;
   getVisibleTask(taskId: string): Promise<GovernedTaskRecord | null>;
 };
@@ -137,7 +138,8 @@ export function createGovernedTaskQueue(
   store: AtomicJsonStore<TaskStoreDocument>,
   now = () => new Date(),
   audit: OperationalAudit = NOOP_OPERATIONAL_AUDIT,
-  listActiveLocks: () => Promise<ActiveLockProjection[]> = async () => []
+  listActiveLocks: () => Promise<ActiveLockProjection[]> = async () => [],
+  listTerminalSessionIds: () => Promise<string[]> = async () => []
 ): GovernedTaskQueue {
   async function safeAudit(input: Parameters<OperationalAudit['record']>[0]): Promise<void> {
     try { await audit.record(input); } catch { /* audit must not alter task persistence */ }
@@ -359,6 +361,56 @@ export function createGovernedTaskQueue(
         });
       }
       return finalTransition;
+    },
+
+    async requeueTerminalSessionTasks() {
+      const terminalSessionIds = new Set(await listTerminalSessionIds());
+      if (terminalSessionIds.size === 0) return 0;
+      const requeued: Array<{
+        task: GovernedTaskRecord;
+        previousStatus: GovernedTaskStatus;
+        governedSessionId: string;
+      }> = [];
+      let storeRevision = 0;
+      await store.update((document) => {
+        const timestamp = now().toISOString();
+        const tasks = document.tasks.map((task) => {
+          const governedSessionId = task.ownerGovernedSessionId;
+          if (
+            !governedSessionId
+            || TERMINAL.has(task.status)
+            || !terminalSessionIds.has(governedSessionId)
+          ) return task;
+          const next = GovernedTaskRecordSchema.parse({
+            ...task,
+            status: 'READY',
+            ownerGovernedSessionId: null,
+            blockers: [],
+            nextAction: 'claim_governed_task',
+            updatedAt: timestamp,
+            taskRevision: task.taskRevision + 1
+          });
+          requeued.push({
+            task: next,
+            previousStatus: task.status,
+            governedSessionId
+          });
+          return next;
+        });
+        if (requeued.length === 0) return document;
+        storeRevision = document.storeRevision + 1;
+        return { ...document, storeRevision, tasks };
+      });
+      for (const entry of requeued) {
+        await safeAudit({
+          type: 'task.transitioned',
+          governedSessionId: entry.governedSessionId,
+          task: entry.task,
+          previousStatus: entry.previousStatus,
+          storeRevision
+        });
+      }
+      return requeued.length;
     },
 
     listVisibleTasks() {

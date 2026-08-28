@@ -3,6 +3,20 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-08-28 — Cycle de vie de tâche, preuve Git et surface de queue
+
+Contexte : trois threads tardifs de la PR #49 montrent qu'une tâche pouvait rester détenue par une session définitivement terminale, que `currentTask` pouvait provenir d'une autre session ou être terminale, et que la preuve current-state associait le contenu du working tree au `evidenceHead`. La cartographie classait aussi les deux lectures de queue comme écritures et les mutations n'écartaient pas les sessions terminales.
+
+Décision de cycle de vie : la maintenance réattribue les tâches non terminales d'une session `CLOSED` immédiatement et d'une session `EXPIRED` seulement après le dépassement strict de `resumeGraceSeconds`. La transition conserve les corrélations branche/PR/SHA/runtime, incrémente les révisions et journalise `task.transitioned`. Elle est idempotente.
+
+Décision de contexte : `currentTask` est une projection de la seule Governed Session liée au transport appelant. Une session non `OPEN`, `ACTIVE` ou `PAUSED`, ou une tâche `DONE`, `CANCELLED` ou `SUPERSEDED`, ne produit aucun `currentTask`.
+
+Décision de preuve : les fichiers attribués au `evidenceHead` sont énumérés par `git ls-tree` et lus par `git cat-file`. Les plafonds, refus de symlink et limitations public-safe existants sont conservés ; les modifications locales ne changent plus la preuve du commit.
+
+Décision de surface : `mcp_get_work_queue` et `mcp_get_governed_task` sont enregistrés comme `read`; les trois mutations restent `operational-write`. Toute mutation exige en outre une session non terminale avec receipt valide.
+
+Gate : aucune fusion avant validation complète, Draft PR, CI et revue du head exact. Aucun `enforce`, changement OIDC/Autodeploy, écriture directe S1 ou modification 2FA n'est autorisé par cette décision.
+
 ## 2026-07-09 - Documentation racine et logique parent/enfant
 Contexte : le MCP doit etre repris par ChatGPT, Claude Code, Codex, le MCP et un humain sans perte de contexte.
 Decision : creer les fichiers Markdown racine manquants et utiliser docs/projects/<projet>/ pour la memoire enfant de chaque projet.

@@ -48,4 +48,11 @@ Travaux restant réellement à accomplir.
 - [x] CI `32565936838` du head exact `1c9297d…`, passage Ready et absence de thread actionnable.
 - [x] Merge `c944fd9e…`, Autodeploy exact-SHA et attestation Live State `stateVersion=33` de GitHub/S1/OCI/runtime.
 - [x] Réconciliation canonique post-déploiement préparée dans une branche strictement documentaire.
-- [ ] Sur la prochaine connexion ayant rechargé les nouveaux outils, reprendre et clôturer la tâche runtime `TASK-20260822-001` déjà présente en `READY`, sans nouvelle tâche ni nouvelle branche.
+- [x] Reprendre la tâche runtime `TASK-20260822-001` et la Governed Session corrective existantes, sans doublon de tâche ni seconde branche.
+- [x] Reproduire par TDD les trois findings tardifs de la PR #49, le défaut de gate des sessions terminales et l'erreur de classification des outils de lecture.
+- [x] Corriger la réattribution après session terminale, la projection `currentTask`, la preuve Git au HEAD et la séparation des surfaces read/write.
+- [x] Valider localement `12/12 + 216/216`, typecheck, build, docs, cartographie, preuve current-state, secrets et diff.
+- [ ] Publier la branche corrective et ouvrir une Draft PR.
+- [ ] Obtenir CI et revue vertes sur le head exact, résoudre les trois threads de la PR #49, puis fusionner avec garde exact-head.
+- [ ] Attester Autodeploy, GitHub/S1/OCI/runtime et Live State post-merge.
+- [ ] Enregistrer le checkpoint final, libérer le lock et fermer la session sans lock résiduel.

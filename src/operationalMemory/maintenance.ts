@@ -3,12 +3,14 @@ type TimerHandle = { unref?: () => void };
 export type OperationalMemoryMaintenanceCycle = {
   expiredSessionCount: number;
   expiredLockCount: number;
+  requeuedTaskCount: number;
 };
 
 type MaintenanceOptions<Timer extends TimerHandle> = {
   expireSessions: () => Promise<number>;
   expireLocks?: () => Promise<number>;
   reconcileSessionLockIds?: () => Promise<number>;
+  requeueTerminalTasks?: () => Promise<number>;
   intervalMs?: number;
   setInterval?: (callback: () => void, intervalMs: number) => Timer;
   clearInterval?: (timer: Timer) => void;
@@ -39,7 +41,8 @@ export function startOperationalMemoryMaintenance<Timer extends TimerHandle = No
         options.expireLocks?.() ?? Promise.resolve(0)
       ]);
       await options.reconcileSessionLockIds?.();
-      await options.onCycle?.({ expiredSessionCount, expiredLockCount });
+      const requeuedTaskCount = await (options.requeueTerminalTasks?.() ?? Promise.resolve(0));
+      await options.onCycle?.({ expiredSessionCount, expiredLockCount, requeuedTaskCount });
     })().catch((error) => options.onError?.(error)).finally(() => {
       cycleRunning = false;
     });

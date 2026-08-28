@@ -87,3 +87,16 @@ test('CLI exposes the same bounded schema without creating an artifact', async (
   assert.ok(Buffer.byteLength(result.stdout) < 1_000_000);
   assert.deepEqual((await readdir(root)).sort(), before);
 });
+
+test('evidence remains bound to HEAD when tracked working-tree content is modified', async () => {
+  const root = await repositoryFixture();
+  const committed = collectCurrentStateEvidence({ repositoryRoot: root });
+  await writeFile(
+    path.join(root, 'src', 'a.ts'),
+    "import './b.js';\nexport const dirty = true;\n"
+  );
+  await writeFile(path.join(root, 'README.md'), '# Dirty working tree\n');
+
+  const observed = collectCurrentStateEvidence({ repositoryRoot: root });
+  assert.deepEqual(observed, committed);
+});

@@ -100,7 +100,7 @@ const ALLOWED_METADATA_KEYS: Record<OperationalEventType, ReadonlySet<string>> =
   'lock.conflicted': new Set(['scope', 'conflictingLockId', 'reasonCode']),
   'lock.released': new Set(['lockId', 'scope', 'lockRevision']),
   'lock.expired': new Set(['lockId', 'scope', 'lockRevision']),
-  'maintenance.completed': new Set(['expiredSessionCount', 'expiredLockCount']),
+  'maintenance.completed': new Set(['expiredSessionCount', 'expiredLockCount', 'requeuedTaskCount']),
   'scoped_write.shadow': new Set(['toolName', 'decision', 'stateVersion', 'sessionRevision', 'lockConflict']),
   'reconcile.requested': new Set(['reasonCode', 'stateVersion']),
   'reconcile.completed': new Set(['resultCode', 'previousStateVersion', 'stateVersion', 'globalAlignment']),

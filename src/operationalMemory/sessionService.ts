@@ -70,6 +70,7 @@ export type GovernedSessionService = {
     request: SessionRequest
   ): Promise<GovernedSessionPublicRecord | null>;
   countActiveSessions(): Promise<number>;
+  listTerminalSessionIdsForTaskRequeue(): Promise<string[]>;
   expireIdleSessions(): Promise<number>;
   lookupGovernedSessionId(transportSessionId: string | undefined): string | null;
   unbindTransport(transportSessionId: string): string | null;
@@ -542,6 +543,20 @@ export function createGovernedSessionService(
       return (await options.store.read()).sessions.filter((session) => (
         ['OPEN', 'ACTIVE', 'PAUSED'].includes(session.status)
       )).length;
+    },
+
+    async listTerminalSessionIdsForTaskRequeue() {
+      const at = now().getTime();
+      return (await options.store.read()).sessions
+        .filter((session) => {
+          if (session.status === 'CLOSED') return true;
+          if (session.status !== 'EXPIRED') return false;
+          const expiredAt = session.expiredAt ? Date.parse(session.expiredAt) : Number.NaN;
+          return !Number.isFinite(expiredAt)
+            || at - expiredAt > options.resumeGraceSeconds * 1_000;
+        })
+        .map((session) => session.governedSessionId)
+        .sort();
     },
 
     async expireIdleSessions() {

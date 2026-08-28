@@ -37,7 +37,7 @@ export type CurrentStateInventory = {
 type CurrentStateServiceOptions = {
   liveState: Pick<LiveStateEngine, 'getCurrent'>;
   tasks: Pick<GovernedTaskQueue, 'listVisibleTasks'>;
-  sessions: Pick<GovernedSessionService, 'listVisibleSessions'>;
+  sessions: Pick<GovernedSessionService, 'listVisibleSessions' | 'lookupGovernedSessionId'>;
   ready?: () => Promise<unknown>;
   catalogue?: () => CurrentToolCatalog;
   now?: () => Date;
@@ -68,12 +68,21 @@ export function createCurrentStateService(options: CurrentStateServiceOptions): 
         options.sessions.listVisibleSessions(request)
       ]);
       const catalog = catalogue();
-      const activeSessionIds = new Set(sessions
-        .filter((session) => ['OPEN', 'ACTIVE', 'PAUSED'].includes(session.status))
-        .map((session) => session.governedSessionId));
-      const currentTask = workQueue.tasks
-        .filter((task) => task.ownerGovernedSessionId && activeSessionIds.has(task.ownerGovernedSessionId))
-        .sort((left, right) => left.sequence - right.sequence)[0] ?? null;
+      const requestedSessionId = options.sessions.lookupGovernedSessionId(
+        request.transportSessionId
+      );
+      const requestedSessionIsActive = requestedSessionId !== null && sessions.some((session) => (
+        session.governedSessionId === requestedSessionId
+        && ['OPEN', 'ACTIVE', 'PAUSED'].includes(session.status)
+      ));
+      const currentTask = requestedSessionIsActive
+        ? workQueue.tasks
+          .filter((task) => (
+            task.ownerGovernedSessionId === requestedSessionId
+            && !['DONE', 'CANCELLED', 'SUPERSEDED'].includes(task.status)
+          ))
+          .sort((left, right) => left.sequence - right.sequence)[0] ?? null
+        : null;
       const limitations = [
         ...(!liveState ? ['LIVE_STATE_UNAVAILABLE'] : []),
         ...(catalog.counts.tools === 0 ? ['RUNTIME_CATALOG_EMPTY'] : []),

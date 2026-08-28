@@ -33,6 +33,7 @@ async function fixture(options: {
   now?: () => Date;
   stateVersion?: () => number;
   idleTtlSeconds?: number;
+  resumeGraceSeconds?: number;
   audit?: { record(input: { type: string }): Promise<void> };
   liveState?: () => {
     stateVersion: number;
@@ -55,7 +56,7 @@ async function fixture(options: {
     store,
     bindings,
     idleTtlSeconds: options.idleTtlSeconds ?? 86_400,
-    resumeGraceSeconds: 604_800,
+    resumeGraceSeconds: options.resumeGraceSeconds ?? 604_800,
     now: options.now ?? (() => new Date('2026-08-13T07:00:00.000Z')),
     getLiveState: async () => options.liveState?.() ?? ({ stateVersion: options.stateVersion?.() ?? 9 }),
     audit: options.audit
@@ -786,6 +787,49 @@ test('expiration idle et maintenance utilisent un timer unique unref', async () 
     maintenance.stop();
     maintenance.stop();
     assert.equal(cleared, 1);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('task ownership becomes terminal on close or after expired resume grace', async () => {
+  let currentTime = new Date('2026-08-13T07:00:00.000Z');
+  const { directory, service } = await fixture({
+    now: () => currentTime,
+    idleTtlSeconds: 300,
+    resumeGraceSeconds: 600
+  });
+  try {
+    const expiredCandidate = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-expired-candidate',
+      identity: OAUTH_IDENTITY
+    });
+    const closedCandidate = await service.openSession({
+      ...OPEN_INPUT,
+      taskScope: 'TASK-20260813-005'
+    }, {
+      transportSessionId: 'transport-closed-candidate',
+      identity: OAUTH_IDENTITY
+    });
+    await service.closeSession({
+      governedSessionId: closedCandidate.session.governedSessionId,
+      expectedSessionRevision: closedCandidate.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-closed-candidate',
+      identity: OAUTH_IDENTITY
+    });
+
+    currentTime = new Date('2026-08-13T07:06:00.000Z');
+    assert.equal(await service.expireIdleSessions(), 1);
+    assert.deepEqual(await service.listTerminalSessionIdsForTaskRequeue(), [
+      closedCandidate.session.governedSessionId
+    ]);
+
+    currentTime = new Date('2026-08-13T07:17:00.001Z');
+    assert.deepEqual(await service.listTerminalSessionIdsForTaskRequeue(), [
+      closedCandidate.session.governedSessionId,
+      expiredCandidate.session.governedSessionId
+    ].sort());
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

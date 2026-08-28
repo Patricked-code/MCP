@@ -21,6 +21,19 @@ const EXTRA = {
   }
 };
 
+function visibleSession(status = 'ACTIVE') {
+  return {
+    governedSessionId: SESSION_ID,
+    sessionRevision: 3,
+    status,
+    bootstrapReceipt: {
+      bootstrapReceiptId: RECEIPT_ID,
+      stateVersion: 9,
+      expiresAt: '2099-01-01T00:00:00.000Z'
+    }
+  };
+}
+
 function capture(overrides: Record<string, unknown> = {}) {
   const handlers = new Map<string, (...args: any[]) => Promise<any>>();
   const server = {
@@ -29,15 +42,7 @@ function capture(overrides: Record<string, unknown> = {}) {
     }
   } as unknown as McpServer;
   let mutationCount = 0;
-  const session = {
-    governedSessionId: SESSION_ID,
-    sessionRevision: 3,
-    bootstrapReceipt: {
-      bootstrapReceiptId: RECEIPT_ID,
-      stateVersion: 9,
-      expiresAt: '2099-01-01T00:00:00.000Z'
-    }
-  };
+  const session = visibleSession();
   registerGovernedTaskTools(server, {
     ready: async () => undefined,
     queue: {
@@ -100,4 +105,22 @@ test('valid receipt allows deterministic intent reconciliation', async () => {
   assert.equal(result.isError, undefined);
   assert.match(result.content[0].text, /NEW_TASK/);
   assert.equal(mutationCount(), 1);
+});
+
+test('terminal sessions cannot mutate the governed task queue', async () => {
+  for (const status of ['CLOSED', 'EXPIRED']) {
+    const { handlers, mutationCount } = capture({
+      sessions: { async getVisibleSession() { return visibleSession(status); } }
+    });
+    const result = await handlers.get('mcp_claim_next_governed_task')?.({
+      governedSessionId: SESSION_ID,
+      expectedSessionRevision: 3,
+      expectedBootstrapReceiptId: RECEIPT_ID,
+      expectedStateVersion: 9,
+      expectedStoreRevision: 4
+    }, EXTRA);
+    assert.equal(result.isError, true);
+    assert.match(result.content[0].text, new RegExp(`SESSION_${status}`));
+    assert.equal(mutationCount(), 0);
+  }
 });
