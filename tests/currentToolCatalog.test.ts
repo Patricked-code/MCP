@@ -161,4 +161,10 @@ test('buildMcpServer classifies the complete real registration surface', async (
     catalog.resources.some(({ uri }) => uri === 'mcp://wealthtech/current-state/inventory'),
     true
   );
+  const surfaceByTool = new Map(catalog.tools.map((tool) => [tool.name, tool.surface]));
+  assert.equal(surfaceByTool.get('mcp_get_work_queue'), 'read');
+  assert.equal(surfaceByTool.get('mcp_get_governed_task'), 'read');
+  assert.equal(surfaceByTool.get('mcp_reconcile_agent_intent'), 'operational-write');
+  assert.equal(surfaceByTool.get('mcp_claim_next_governed_task'), 'operational-write');
+  assert.equal(surfaceByTool.get('mcp_transition_governed_task'), 'operational-write');
 });

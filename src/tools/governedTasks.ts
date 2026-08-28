@@ -18,6 +18,10 @@ import {
 } from '../operationalMemory/types.js';
 import type { GovernedSessionService } from '../operationalMemory/sessionService.js';
 import {
+  NOOP_TASK_LIFECYCLE_COORDINATOR,
+  type TaskLifecycleCoordinator
+} from '../operationalMemory/taskLifecycleCoordinator.js';
+import {
   getGovernedSessionToolDependencies,
   sessionRequestFromToolExtra,
   type GovernedSessionToolExtra
@@ -32,6 +36,7 @@ export type GovernedTaskToolDependencies = {
   queue: GovernedTaskQueue;
   sessions: Pick<GovernedSessionService, 'getVisibleSession'>;
   liveState: Pick<typeof liveStateEngine, 'getCurrent'>;
+  lifecycle: TaskLifecycleCoordinator;
   ready: () => Promise<unknown>;
   now?: () => Date;
 };
@@ -50,7 +55,8 @@ export function getGovernedTaskToolDependencies(): GovernedTaskToolDependencies 
     store,
     undefined,
     operational.audit,
-    () => operational.locks.listActiveLocks()
+    () => operational.locks.listActiveLocks(),
+    () => operational.sessions.listTaskOwnerSessionIdsToRetain()
   );
   let initialization: Promise<void> | null = null;
   const ready = () => {
@@ -63,6 +69,7 @@ export function getGovernedTaskToolDependencies(): GovernedTaskToolDependencies 
     queue,
     sessions: operational.sessions,
     liveState: liveStateEngine,
+    lifecycle: operational.taskLifecycle ?? NOOP_TASK_LIFECYCLE_COORDINATOR,
     ready
   };
   return sharedDependencies;
@@ -102,6 +109,8 @@ async function assertBootstrap(
   const request = sessionRequestFromToolExtra(extra);
   const session = await dependencies.sessions.getVisibleSession(input.governedSessionId, request);
   if (!session) throw new Error('SESSION_NOT_BOUND');
+  if (session.status === 'CLOSED') throw new Error('SESSION_CLOSED');
+  if (session.status === 'EXPIRED') throw new Error('SESSION_EXPIRED');
   if (session.sessionRevision !== input.expectedSessionRevision) throw new Error('SESSION_REVISION_MISMATCH');
   const receipt = session.bootstrapReceipt;
   if (!receipt) throw new Error('BOOTSTRAP_RECEIPT_REQUIRED');
@@ -122,24 +131,28 @@ const BootstrapInputShape = {
   expectedStateVersion: ExpectedRevisionSchema
 };
 
-export function registerGovernedTaskTools(
+function registerGovernedTaskReadToolsWithDependencies(
   server: McpServer,
-  dependencies?: GovernedTaskToolDependencies
+  active: GovernedTaskToolDependencies
 ): void {
-  if (!operationalMemoryConfig.enabled) return;
-  const active = dependencies ?? getGovernedTaskToolDependencies();
   const readAnnotations = { readOnlyHint: true, destructiveHint: false } as const;
-  const mutationAnnotations = { readOnlyHint: false, destructiveHint: false, idempotentHint: false } as const;
 
   server.registerTool('mcp_get_work_queue', {
     description: 'Retourne la file de travail gouvernée visible, ordonnée et révisionnée.',
     inputSchema: {}, annotations: readAnnotations
-  }, async () => handled(async () => { await active.ready(); return active.queue.listVisibleTasks(); }));
+  }, async () => handled(() => active.queue.listVisibleTasks()));
 
   server.registerTool('mcp_get_governed_task', {
     description: 'Retourne une tâche gouvernée visible par son Task ID.',
     inputSchema: { taskId: TaskIdSchema }, annotations: readAnnotations
-  }, async ({ taskId }) => handled(async () => { await active.ready(); return active.queue.getVisibleTask(taskId); }));
+  }, async ({ taskId }) => handled(() => active.queue.getVisibleTask(taskId)));
+}
+
+function registerGovernedTaskMutationToolsWithDependencies(
+  server: McpServer,
+  active: GovernedTaskToolDependencies
+): void {
+  const mutationAnnotations = { readOnlyHint: false, destructiveHint: false, idempotentHint: false } as const;
 
   server.registerTool('mcp_reconcile_agent_intent', {
     description: 'Classe une projection bornée de la nouvelle instruction et ajoute uniquement une nouvelle tâche sûre.',
@@ -155,20 +168,20 @@ export function registerGovernedTaskTools(
       resourceScopes: z.array(z.string().trim().min(3).max(256)).max(64).default([])
     },
     annotations: mutationAnnotations
-  }, async (input, extra) => handled(async () => {
-    await assertBootstrap(input, extra, active);
-    const { governedSessionId, expectedSessionRevision: _revision, expectedBootstrapReceiptId: _receipt, expectedStateVersion: _state, ...intent } = input;
-    return active.queue.reconcileIntent(intent, governedSessionId);
-  }));
+  }, async (input, extra) => handled(() => active.lifecycle.run(async () => {
+      await assertBootstrap(input, extra, active);
+      const { governedSessionId, expectedSessionRevision: _revision, expectedBootstrapReceiptId: _receipt, expectedStateVersion: _state, ...intent } = input;
+      return active.queue.reconcileIntent(intent, governedSessionId);
+    })));
 
   server.registerTool('mcp_claim_next_governed_task', {
     description: 'Réclame atomiquement la première tâche exécutable selon priorité puis séquence.',
     inputSchema: { ...BootstrapInputShape, expectedStoreRevision: ExpectedRevisionSchema },
     annotations: mutationAnnotations
-  }, async (input, extra) => handled(async () => {
-    await assertBootstrap(input, extra, active);
-    return active.queue.claimNextTask(input.governedSessionId, input.expectedStoreRevision);
-  }));
+  }, async (input, extra) => handled(() => active.lifecycle.run(async () => {
+      await assertBootstrap(input, extra, active);
+      return active.queue.claimNextTask(input.governedSessionId, input.expectedStoreRevision);
+    })));
 
   server.registerTool('mcp_transition_governed_task', {
     description: 'Applique une transition allowlistée avec révision optimiste et corrélations bornées.',
@@ -188,9 +201,41 @@ export function registerGovernedTaskTools(
       runtimeRevision: z.string().regex(/^[0-9a-f]{40}$/).nullable().optional()
     },
     annotations: mutationAnnotations
-  }, async (input, extra) => handled(async () => {
-    await assertBootstrap(input, extra, active);
-    const { expectedSessionRevision: _sessionRevision, expectedBootstrapReceiptId: _receipt, expectedStateVersion: _state, ...transition } = input;
-    return active.queue.transitionTask(transition);
-  }));
+  }, async (input, extra) => handled(() => active.lifecycle.run(async () => {
+      await assertBootstrap(input, extra, active);
+      const { expectedSessionRevision: _sessionRevision, expectedBootstrapReceiptId: _receipt, expectedStateVersion: _state, ...transition } = input;
+      return active.queue.transitionTask(transition);
+    })));
+}
+
+export function registerGovernedTaskReadTools(
+  server: McpServer,
+  dependencies?: GovernedTaskToolDependencies
+): void {
+  if (!operationalMemoryConfig.enabled) return;
+  registerGovernedTaskReadToolsWithDependencies(
+    server,
+    dependencies ?? getGovernedTaskToolDependencies()
+  );
+}
+
+export function registerGovernedTaskMutationTools(
+  server: McpServer,
+  dependencies?: GovernedTaskToolDependencies
+): void {
+  if (!operationalMemoryConfig.enabled) return;
+  registerGovernedTaskMutationToolsWithDependencies(
+    server,
+    dependencies ?? getGovernedTaskToolDependencies()
+  );
+}
+
+export function registerGovernedTaskTools(
+  server: McpServer,
+  dependencies?: GovernedTaskToolDependencies
+): void {
+  if (!operationalMemoryConfig.enabled) return;
+  const active = dependencies ?? getGovernedTaskToolDependencies();
+  registerGovernedTaskReadToolsWithDependencies(server, active);
+  registerGovernedTaskMutationToolsWithDependencies(server, active);
 }

@@ -3,6 +3,32 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-08-28 — Cycle de vie de tâche, preuve Git et surface de queue
+
+Contexte : trois threads tardifs de la PR #49 montrent qu'une tâche pouvait rester détenue par une session définitivement terminale, que `currentTask` pouvait provenir d'une autre session ou être terminale, et que la preuve current-state associait le contenu du working tree au `evidenceHead`. La cartographie classait aussi les deux lectures de queue comme écritures et les mutations n'écartaient pas les sessions terminales.
+
+Décision de cycle de vie : la maintenance réattribue les tâches non terminales d'une session `CLOSED` immédiatement et d'une session `EXPIRED` seulement après le dépassement strict de `resumeGraceSeconds`. La transition conserve les corrélations branche/PR/SHA/runtime, incrémente les révisions et journalise `task.transitioned`. Elle est idempotente.
+
+Décision de contexte : `currentTask` est une projection de la seule Governed Session liée au transport appelant. Une session non `OPEN`, `ACTIVE` ou `PAUSED`, ou une tâche `DONE`, `CANCELLED` ou `SUPERSEDED`, ne produit aucun `currentTask`.
+
+Décision de preuve : les fichiers attribués au `evidenceHead` sont énumérés par `git ls-tree` et lus par `git cat-file`. Les plafonds, refus de symlink et limitations public-safe existants sont conservés ; les modifications locales ne changent plus la preuve du commit.
+
+Décision de surface : `mcp_get_work_queue` et `mcp_get_governed_task` sont enregistrés comme `read`; les trois mutations restent `operational-write`. Toute mutation exige en outre une session non terminale avec receipt valide.
+
+Gate : aucune fusion avant validation complète, Draft PR, CI et revue du head exact. Aucun `enforce`, changement OIDC/Autodeploy, écriture directe S1 ou modification 2FA n'est autorisé par cette décision.
+
+## 2026-08-28 — Fermeture des gaps de revue PR #52
+
+Décision d'orphelin : la queue ne dépend plus de l'existence durable d'un enregistrement terminal. Elle conserve l'ownership uniquement pour les sessions actives ou expirées encore reprenables ; tout owner absent, fermé ou définitivement expiré est réattribué au prochain cycle de maintenance, normalement dans les 60 secondes. Les blockers de l'ancien owner sont effacés lors du retour `READY`, car ils ne sont pas distinguables de limitations propres à la session disparue ; les corrélations branche/PR/SHA/runtime restent conservées.
+
+Décision de concurrence : ajouter un coordinateur FIFO en mémoire, partagé par les services existants, autour de l'ouverture avec rétention, la reprise, la fermeture, l'expiration, la réattribution et les trois mutations de tâche. Ce verrou ferme le TOCTOU sans fusionner les stores ni créer une autorité persistante.
+
+Décision read-only : le seed est persisté avant que le serveur n'expose ses routes. Les deux outils de lecture de queue et le Current-State Inventory lisent ensuite seulement le store ; leur classification `read` correspond donc au comportement effectif.
+
+Décision de preuve : `GIT_NO_REPLACE_OBJECTS=1` s'applique à toutes les lectures Git et `generatedAt` est dérivé du SHA capturé, non d'une seconde résolution de `HEAD`.
+
+Décision d'audit : conserver le modèle best-effort déjà appliqué aux mutations de tâche. Une indisponibilité du journal ne bloque jamais la persistance et le retry idempotent ne fabrique pas un événement rétroactif. Un outbox transactionnel modifierait le schéma et l'autorité de persistance ; il reste hors périmètre tant qu'une exigence exactly-once distincte n'est pas approuvée.
+
 ## 2026-07-09 - Documentation racine et logique parent/enfant
 Contexte : le MCP doit etre repris par ChatGPT, Claude Code, Codex, le MCP et un humain sans perte de contexte.
 Decision : creer les fichiers Markdown racine manquants et utiliser docs/projects/<projet>/ pour la memoire enfant de chaque projet.

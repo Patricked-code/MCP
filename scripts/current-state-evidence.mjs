@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { lstatSync, readFileSync, realpathSync } from 'node:fs';
+import { realpathSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -45,6 +45,7 @@ function isInside(root, candidate) {
 
 export function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } = {}) {
   const root = realpathSync(path.resolve(repositoryRoot));
+  const gitEnvironment = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' };
   const contradictions = [];
   const contradictionKeys = new Set();
   const contents = new Map();
@@ -60,15 +61,43 @@ export function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } =
   function git(args) {
     return execFileSync('git', ['-C', root, ...args], {
       encoding: 'utf8',
+      env: gitEnvironment,
       maxBuffer: 8 * 1024 * 1024,
       stdio: ['ignore', 'pipe', 'pipe']
     }).trim();
   }
 
+  function gitRaw(args, maxBuffer = 8 * 1024 * 1024) {
+    return execFileSync('git', ['-C', root, ...args], {
+      encoding: 'utf8',
+      env: gitEnvironment,
+      maxBuffer,
+      stdio: ['ignore', 'pipe', 'pipe']
+    });
+  }
+
   const evidenceHead = git(['rev-parse', 'HEAD']);
   if (!/^[0-9a-f]{40}$/u.test(evidenceHead)) throw new Error('CURRENT_STATE_EVIDENCE_HEAD_INVALID');
-  const generatedAt = git(['show', '-s', '--format=%cI', 'HEAD']);
-  const tracked = git(['ls-files', '-z']).split('\0').filter(Boolean).sort();
+  const generatedAt = git(['show', '-s', '--format=%cI', evidenceHead]);
+  const treeEntries = new Map();
+  for (const rawEntry of gitRaw(['ls-tree', '-r', '-z', '--long', evidenceHead]).split('\0').filter(Boolean)) {
+    const separator = rawEntry.indexOf('\t');
+    if (separator < 0) throw new Error('CURRENT_STATE_EVIDENCE_TREE_INVALID');
+    const [mode, type, objectId, sizeValue] = rawEntry.slice(0, separator).trim().split(/\s+/u);
+    const relativePath = rawEntry.slice(separator + 1);
+    if (
+      !/^[0-9]{6}$/u.test(mode ?? '')
+      || !/^[0-9a-f]{40}$/u.test(objectId ?? '')
+      || !relativePath
+    ) throw new Error('CURRENT_STATE_EVIDENCE_TREE_INVALID');
+    treeEntries.set(relativePath, {
+      mode,
+      type,
+      objectId,
+      size: sizeValue === '-' ? null : Number(sizeValue)
+    });
+  }
+  const tracked = [...treeEntries.keys()].sort();
   if (tracked.length > MAX_TRACKED_FILES) throw new Error('CURRENT_STATE_EVIDENCE_FILE_LIMIT');
   const trackedSet = new Set(tracked);
 
@@ -85,32 +114,31 @@ export function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } =
       contradiction('TRACKED_PATH_ESCAPES_ROOT', relativePath);
       return null;
     }
-    let stat;
-    try {
-      stat = lstatSync(absolutePath);
-    } catch {
-      contradiction('TRACKED_PATH_UNREADABLE', relativePath);
-      return null;
-    }
-    if (stat.isSymbolicLink()) {
-      let target = null;
-      try { target = realpathSync(absolutePath); } catch { /* refused below */ }
-      contradiction(target && !isInside(root, target)
+    const entry = treeEntries.get(relativePath);
+    if (!entry) return null;
+    if (entry.mode === '120000') {
+      const target = gitRaw(['cat-file', 'blob', entry.objectId], MAX_FILE_BYTES);
+      const resolvedTarget = path.resolve(path.dirname(absolutePath), target);
+      contradiction(!isInside(root, resolvedTarget)
         ? 'TRACKED_SYMLINK_OUTSIDE_ROOT'
         : 'TRACKED_SYMLINK_REFUSED', relativePath);
       return null;
     }
-    if (!stat.isFile()) {
+    if (entry.type !== 'blob' || !['100644', '100755'].includes(entry.mode)) {
       contradiction('TRACKED_PATH_NOT_FILE', relativePath);
       return null;
     }
-    if (stat.size > MAX_FILE_BYTES) {
+    if (entry.size === null || !Number.isSafeInteger(entry.size)) {
+      contradiction('TRACKED_PATH_UNREADABLE', relativePath);
+      return null;
+    }
+    if (entry.size > MAX_FILE_BYTES) {
       contradiction('TRACKED_FILE_TOO_LARGE', relativePath);
       return null;
     }
-    totalBytes += stat.size;
+    totalBytes += entry.size;
     if (totalBytes > MAX_TOTAL_BYTES) throw new Error('CURRENT_STATE_EVIDENCE_INPUT_TOO_LARGE');
-    const content = readFileSync(absolutePath, 'utf8');
+    const content = gitRaw(['cat-file', 'blob', entry.objectId], MAX_FILE_BYTES + 1_024);
     contents.set(relativePath, content);
     return content;
   }

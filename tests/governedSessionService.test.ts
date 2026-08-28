@@ -33,6 +33,8 @@ async function fixture(options: {
   now?: () => Date;
   stateVersion?: () => number;
   idleTtlSeconds?: number;
+  resumeGraceSeconds?: number;
+  taskLifecycleCoordinator?: { run<T>(work: () => Promise<T>): Promise<T> };
   audit?: { record(input: { type: string }): Promise<void> };
   liveState?: () => {
     stateVersion: number;
@@ -55,7 +57,8 @@ async function fixture(options: {
     store,
     bindings,
     idleTtlSeconds: options.idleTtlSeconds ?? 86_400,
-    resumeGraceSeconds: 604_800,
+    resumeGraceSeconds: options.resumeGraceSeconds ?? 604_800,
+    taskLifecycleCoordinator: options.taskLifecycleCoordinator,
     now: options.now ?? (() => new Date('2026-08-13T07:00:00.000Z')),
     getLiveState: async () => options.liveState?.() ?? ({ stateVersion: options.stateVersion?.() ?? 9 }),
     audit: options.audit
@@ -786,6 +789,91 @@ test('expiration idle et maintenance utilisent un timer unique unref', async () 
     maintenance.stop();
     maintenance.stop();
     assert.equal(cleared, 1);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('task ownership becomes terminal on close or after expired resume grace', async () => {
+  let currentTime = new Date('2026-08-13T07:00:00.000Z');
+  const { directory, service } = await fixture({
+    now: () => currentTime,
+    idleTtlSeconds: 300,
+    resumeGraceSeconds: 600
+  });
+  try {
+    const expiredCandidate = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-expired-candidate',
+      identity: OAUTH_IDENTITY
+    });
+    const closedCandidate = await service.openSession({
+      ...OPEN_INPUT,
+      taskScope: 'TASK-20260813-005'
+    }, {
+      transportSessionId: 'transport-closed-candidate',
+      identity: OAUTH_IDENTITY
+    });
+    await service.closeSession({
+      governedSessionId: closedCandidate.session.governedSessionId,
+      expectedSessionRevision: closedCandidate.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-closed-candidate',
+      identity: OAUTH_IDENTITY
+    });
+
+    currentTime = new Date('2026-08-13T07:06:00.000Z');
+    assert.equal(await service.expireIdleSessions(), 1);
+    assert.deepEqual(await service.listTaskOwnerSessionIdsToRetain(), [
+      expiredCandidate.session.governedSessionId
+    ]);
+
+    currentTime = new Date('2026-08-13T07:17:00.001Z');
+    assert.deepEqual(await service.listTaskOwnerSessionIdsToRetain(), []);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('session retention, resume, close and expiry use the shared task lifecycle coordinator', async () => {
+  let lifecycleRuns = 0;
+  let tail = Promise.resolve();
+  const taskLifecycleCoordinator = {
+    run<T>(work: () => Promise<T>): Promise<T> {
+      lifecycleRuns += 1;
+      const operation = tail.then(work);
+      tail = operation.then(() => undefined, () => undefined);
+      return operation;
+    }
+  };
+  let currentTime = new Date('2026-08-13T07:00:00.000Z');
+  const { directory, service } = await fixture({
+    now: () => currentTime,
+    idleTtlSeconds: 300,
+    resumeGraceSeconds: 600,
+    taskLifecycleCoordinator
+  });
+  try {
+    const request = {
+      transportSessionId: 'transport-lifecycle',
+      identity: OAUTH_IDENTITY
+    };
+    const opened = await service.openSession(OPEN_INPUT, request);
+    assert.equal(lifecycleRuns, 1);
+    currentTime = new Date('2026-08-13T07:06:00.000Z');
+    await service.expireIdleSessions();
+    assert.equal(lifecycleRuns, 2);
+    const resumed = await service.resumeSession({
+      governedSessionId: opened.session.governedSessionId,
+      repository: 'Patricked-code/MCP',
+      taskScope: OPEN_INPUT.taskScope,
+      expectedSessionRevision: opened.session.sessionRevision + 1
+    }, request);
+    assert.equal(lifecycleRuns, 3);
+    await service.closeSession({
+      governedSessionId: resumed.governedSessionId,
+      expectedSessionRevision: resumed.sessionRevision
+    }, request);
+    assert.equal(lifecycleRuns, 4);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

@@ -44,7 +44,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ## Tâche courante
 
-### TASK-20260822-001 — Mandatory Agent Bootstrap & Work Orchestration V1 — LIVRÉE, CLÔTURE RUNTIME À ACQUITTER
+### TASK-20260822-001 — Mandatory Agent Bootstrap & Work Orchestration V1 — CORRECTION DE REVUE EN COURS
 
 - [x] dériver le catalogue complet depuis les registrations MCP et protéger sa fraîcheur en CI ;
 - [x] dériver du SHA suivi les modules, imports, routes, documents, audits et politiques sans écriture ;
@@ -57,7 +57,23 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] publier le head consolidé, obtenir la CI exacte et vérifier l'absence de thread actionnable ;
 - [x] fusionner avec garde exact-head, attendre l'Autodeploy exact-SHA et réattester GitHub/S1/OCI/runtime ;
 - [x] publier les références et preuves canoniques dans une branche strictement documentaire ;
-- [ ] après rafraîchissement de la surface du connecteur, réclamer la tâche runtime déjà en `READY`, parcourir les transitions autorisées jusqu'à `DONE`, checkpoint final, lock libéré et session fermée.
+- [x] reprendre la tâche runtime et la Governed Session correctives existantes sur l'unique branche `mcp/fix-mandatory-bootstrap-review-20260822` ;
+- [x] reproduire les trois findings tardifs PR #49 et les deux écarts de gate/catalogue ;
+- [x] réattribuer les tâches non terminales lorsque leur session propriétaire devient définitivement terminale ;
+- [x] limiter `currentTask` à la session appelante, aux statuts de session admissibles et aux tâches non terminales ;
+- [x] dériver la preuve current-state des blobs du `evidenceHead`, sans attribuer les modifications locales au commit ;
+- [x] refuser les mutations de tâche depuis une session `CLOSED` ou `EXPIRED` ;
+- [x] classifier les deux lectures de queue comme `read` et conserver les trois mutations en `operational-write` ;
+- [x] récupérer aussi les tâches dont la session propriétaire a déjà été supprimée par rétention ;
+- [x] sérialiser rétention/reprise/fermeture/expiration et mutations de tâche avec un coordinateur mémoire partagé ;
+- [x] rendre les lectures de queue réellement sans écriture et initialiser le seed avant exposition du serveur ;
+- [x] neutraliser les replacement refs et lier l'horodatage au `evidenceHead` ;
+- [x] valider localement `234/234`, typecheck, build, docs, cartographie, preuve current-state, secrets et diff ;
+- [x] publier le head fonctionnel `0a672591…` et ouvrir la Draft PR #52 ;
+- [ ] obtenir CI/revue sur le head documentaire exact ;
+- [ ] résoudre les trois threads PR #49 après preuve de correction ;
+- [ ] fusionner avec garde exact-head, attester Autodeploy et réconcilier GitHub/S1/OCI/runtime ;
+- [ ] checkpoint final, lock libéré et session fermée sans lock résiduel.
 
 ## Interdictions préservées
 

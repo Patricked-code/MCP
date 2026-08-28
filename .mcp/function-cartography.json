@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "dc776d433a5b2943d660582353ea8507537ee3da290e820e71269ad20b2388b2",
+  "catalogueDigest": "cfd5f18490f25ce79b4afbda36a9eda48453a7098237f73b39aa804a4cd43aad",
   "registeredToolCount": 111,
-  "readOnlyToolCount": 66,
-  "writeToolCount": 45,
+  "readOnlyToolCount": 68,
+  "writeToolCount": 43,
   "resourceCount": 2,
   "tools": [
     {
@@ -1908,7 +1908,7 @@
       "name": "mcp_get_governed_task",
       "title": null,
       "description": "Retourne une tâche gouvernée visible par son Task ID.",
-      "surface": "operational-write",
+      "surface": "read",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false
@@ -1927,7 +1927,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "39c256ff616bd493ac927ab9098429eec5a5a69e9e95a874c12fa1ff2027f9db"
+      "contractDigest": "d3c53df7e2b18cefbd69f4d8231a6b6909b5ba022467bb014c75436f9948a73e"
     },
     {
       "name": "mcp_get_live_state",
@@ -1950,7 +1950,7 @@
       "name": "mcp_get_work_queue",
       "title": null,
       "description": "Retourne la file de travail gouvernée visible, ordonnée et révisionnée.",
-      "surface": "operational-write",
+      "surface": "read",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false
@@ -1961,7 +1961,7 @@
         "properties": {},
         "additionalProperties": false
       },
-      "contractDigest": "ada5a660f8f44567cf553a2e0678f64874bbff0f1e2deaef933356f8c76eb70b"
+      "contractDigest": "3392d3fcc60e11286fe91446e6365b02d1a13ce717a2aebe3bdfd79a059d2193"
     },
     {
       "name": "mcp_git_diff_s1",

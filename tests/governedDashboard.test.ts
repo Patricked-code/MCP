@@ -211,6 +211,8 @@ test('la maintenance utilise un timer unique unref et journalise seulement des c
   let sessionExpirations = 0;
   let lockExpirations = 0;
   let lockIdReconciliations = 0;
+  let terminalTaskRequeues = 0;
+  let observedSummary: unknown;
   let resolveCycle!: () => void;
   const cycleRecorded = new Promise<void>((resolve) => { resolveCycle = resolve; });
   const timer = { unref: () => { unrefCalled += 1; } };
@@ -219,6 +221,7 @@ test('la maintenance utilise un timer unique unref et journalise seulement des c
     expireSessions: async () => { sessionExpirations += 1; return 2; },
     expireLocks: async () => { lockExpirations += 1; return 1; },
     reconcileSessionLockIds: async () => { lockIdReconciliations += 1; return 0; },
+    requeueTerminalTasks: async () => { terminalTaskRequeues += 1; return 3; },
     intervalMs: 60_000,
     setInterval: (scheduledCallback, intervalMs) => {
       scheduled += 1;
@@ -228,7 +231,7 @@ test('la maintenance utilise un timer unique unref et journalise seulement des c
     },
     clearInterval: () => undefined,
     onCycle: async (summary) => {
-      assert.deepEqual(summary, { expiredSessionCount: 2, expiredLockCount: 1 });
+      observedSummary = summary;
       resolveCycle();
     }
   });
@@ -237,9 +240,15 @@ test('la maintenance utilise un timer unique unref et journalise seulement des c
   assert.equal(unrefCalled, 1);
   callback?.();
   await cycleRecorded;
+  assert.deepEqual(observedSummary, {
+    expiredSessionCount: 2,
+    expiredLockCount: 1,
+    requeuedTaskCount: 3
+  });
   assert.equal(sessionExpirations, 1);
   assert.equal(lockExpirations, 1);
   assert.equal(lockIdReconciliations, 1);
+  assert.equal(terminalTaskRequeues, 1);
   maintenance.stop();
 });
 
@@ -289,7 +298,7 @@ test('le journal de maintenance refuse toute métadonnée brute hors compteurs',
     await journal.append({
       type: 'maintenance.completed',
       governedSessionId: null,
-      metadata: { expiredSessionCount: 2, expiredLockCount: 1 }
+      metadata: { expiredSessionCount: 2, expiredLockCount: 1, requeuedTaskCount: 3 }
     });
     await assert.rejects(journal.append({
       type: 'maintenance.completed',
@@ -298,6 +307,7 @@ test('le journal de maintenance refuse toute métadonnée brute hors compteurs',
     }), /OPERATIONAL_EVENT_METADATA_FORBIDDEN/);
     const raw = await readFile(filePath, 'utf8');
     assert.match(raw, /"expiredSessionCount":2/);
+    assert.match(raw, /"requeuedTaskCount":3/);
     assert.equal(raw.includes('transport-raw'), false);
   } finally {
     await rm(directory, { recursive: true, force: true });
@@ -313,6 +323,10 @@ test('le serveur démarre une seule maintenance et le dashboard reste cache/stor
   ]);
 
   assert.equal((serverSource.match(/startGovernedOperationalMemoryMaintenance\(\);/g) ?? []).length, 1);
+  assert.ok(
+    serverSource.indexOf('await getGovernedTaskToolDependencies().ready();')
+      < serverSource.indexOf('startGovernedOperationalMemoryMaintenance();')
+  );
   assert.equal((serverSource.match(/startOperationalMemoryMaintenance\(\{/g) ?? []).length, 1);
   assert.match(serverSource, /context\.getCurrent\(\{/);
   assert.doesNotMatch(serverSource, /context\.reconcileExplicit\(/);
