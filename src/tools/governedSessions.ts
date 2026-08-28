@@ -22,6 +22,10 @@ import {
 } from '../operationalMemory/sessionService.js';
 import { createTransportBindings } from '../operationalMemory/transportBindings.js';
 import {
+  createTaskLifecycleCoordinator,
+  type TaskLifecycleCoordinator
+} from '../operationalMemory/taskLifecycleCoordinator.js';
+import {
   LockStoreDocumentSchema,
   SessionStoreDocumentSchema,
   createEmptyLockStoreDocument,
@@ -32,6 +36,7 @@ export type GovernedSessionToolDependencies = {
   sessions: GovernedSessionService;
   locks: GovernedLockService;
   audit?: OperationalAudit;
+  taskLifecycle?: TaskLifecycleCoordinator;
 };
 
 export type GovernedSessionToolExtra = {
@@ -57,6 +62,7 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
     archives: operationalMemoryConfig.eventArchives
   });
   const audit = createOperationalAudit(journal);
+  const taskLifecycle = createTaskLifecycleCoordinator();
   const sessionStore = createAtomicJsonStore({
     filePath: operationalMemoryConfig.sessionStorePath,
     schema: SessionStoreDocumentSchema,
@@ -83,7 +89,8 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
     ),
     releaseLocksForSession: (governedSessionId) => (
       locks.releaseLocksForSession(governedSessionId)
-    )
+    ),
+    taskLifecycleCoordinator: taskLifecycle
   });
   locks = createGovernedLockService({
     store: lockStore,
@@ -93,7 +100,7 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
     maxTtlSeconds: operationalMemoryConfig.lockMaxTtlSeconds,
     audit
   });
-  sharedDependencies = { sessions, locks, audit };
+  sharedDependencies = { sessions, locks, audit, taskLifecycle };
   return sharedDependencies;
 }
 

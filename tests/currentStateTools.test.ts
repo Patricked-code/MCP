@@ -59,10 +59,14 @@ test('resource and read tool expose the exact same bounded projection', async ()
   assert.equal(JSON.stringify(toolResult).includes('transport-current-state'), false);
 });
 
-function currentStateService(tasks: Array<Record<string, unknown>>, requestedSessionId: string) {
+function currentStateService(
+  tasks: Array<Record<string, unknown>>,
+  requestedSessionId: string | null,
+  requestedSessionStatus = 'ACTIVE'
+) {
   const session = (governedSessionId: string) => ({
     governedSessionId,
-    status: 'ACTIVE'
+    status: governedSessionId === requestedSessionId ? requestedSessionStatus : 'ACTIVE'
   });
   return createCurrentStateService({
     liveState: { async getCurrent() { return null; } },
@@ -126,4 +130,27 @@ test('currentTask excludes a terminal task owned by the requesting session', asy
 
   const inventory = await service.getInventory(CURRENT_STATE_REQUEST);
   assert.equal(inventory.currentTask, null);
+});
+
+test('currentTask excludes every terminal task and unusable or unbound sessions', async () => {
+  const requestedSessionId = '22222222-2222-4222-8222-222222222222';
+  for (const status of ['DONE', 'CANCELLED', 'SUPERSEDED']) {
+    const service = currentStateService([{
+      taskId: 'TASK-20260822-002', sequence: 2, status,
+      ownerGovernedSessionId: requestedSessionId, dependencies: []
+    }], requestedSessionId);
+    assert.equal((await service.getInventory(CURRENT_STATE_REQUEST)).currentTask, null);
+  }
+  for (const sessionStatus of ['CLOSED', 'EXPIRED']) {
+    const service = currentStateService([{
+      taskId: 'TASK-20260822-002', sequence: 2, status: 'IN_PROGRESS',
+      ownerGovernedSessionId: requestedSessionId, dependencies: []
+    }], requestedSessionId, sessionStatus);
+    assert.equal((await service.getInventory(CURRENT_STATE_REQUEST)).currentTask, null);
+  }
+  const unbound = currentStateService([{
+    taskId: 'TASK-20260822-002', sequence: 2, status: 'IN_PROGRESS',
+    ownerGovernedSessionId: requestedSessionId, dependencies: []
+  }], null);
+  assert.equal((await unbound.getInventory(CURRENT_STATE_REQUEST)).currentTask, null);
 });

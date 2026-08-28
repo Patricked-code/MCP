@@ -45,6 +45,7 @@ function isInside(root, candidate) {
 
 export function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } = {}) {
   const root = realpathSync(path.resolve(repositoryRoot));
+  const gitEnvironment = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1' };
   const contradictions = [];
   const contradictionKeys = new Set();
   const contents = new Map();
@@ -60,6 +61,7 @@ export function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } =
   function git(args) {
     return execFileSync('git', ['-C', root, ...args], {
       encoding: 'utf8',
+      env: gitEnvironment,
       maxBuffer: 8 * 1024 * 1024,
       stdio: ['ignore', 'pipe', 'pipe']
     }).trim();
@@ -68,6 +70,7 @@ export function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } =
   function gitRaw(args, maxBuffer = 8 * 1024 * 1024) {
     return execFileSync('git', ['-C', root, ...args], {
       encoding: 'utf8',
+      env: gitEnvironment,
       maxBuffer,
       stdio: ['ignore', 'pipe', 'pipe']
     });
@@ -75,7 +78,7 @@ export function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } =
 
   const evidenceHead = git(['rev-parse', 'HEAD']);
   if (!/^[0-9a-f]{40}$/u.test(evidenceHead)) throw new Error('CURRENT_STATE_EVIDENCE_HEAD_INVALID');
-  const generatedAt = git(['show', '-s', '--format=%cI', 'HEAD']);
+  const generatedAt = git(['show', '-s', '--format=%cI', evidenceHead]);
   const treeEntries = new Map();
   for (const rawEntry of gitRaw(['ls-tree', '-r', '-z', '--long', evidenceHead]).split('\0').filter(Boolean)) {
     const separator = rawEntry.indexOf('\t');

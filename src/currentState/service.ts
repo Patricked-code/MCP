@@ -38,7 +38,6 @@ type CurrentStateServiceOptions = {
   liveState: Pick<LiveStateEngine, 'getCurrent'>;
   tasks: Pick<GovernedTaskQueue, 'listVisibleTasks'>;
   sessions: Pick<GovernedSessionService, 'listVisibleSessions' | 'lookupGovernedSessionId'>;
-  ready?: () => Promise<unknown>;
   catalogue?: () => CurrentToolCatalog;
   now?: () => Date;
 };
@@ -61,7 +60,6 @@ export function createCurrentStateService(options: CurrentStateServiceOptions): 
   const catalogue = options.catalogue ?? getCurrentToolCatalog;
   return {
     async getInventory(request) {
-      await options.ready?.();
       const [liveState, workQueue, sessions] = await Promise.all([
         options.liveState.getCurrent(),
         options.tasks.listVisibleTasks(),

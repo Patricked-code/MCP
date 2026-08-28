@@ -21,6 +21,17 @@ const EXTRA = {
   }
 };
 
+function serialLifecycle() {
+  let tail = Promise.resolve();
+  return {
+    run<T>(work: () => Promise<T>): Promise<T> {
+      const operation = tail.then(work);
+      tail = operation.then(() => undefined, () => undefined);
+      return operation;
+    }
+  };
+}
+
 function visibleSession(status = 'ACTIVE') {
   return {
     governedSessionId: SESSION_ID,
@@ -42,9 +53,11 @@ function capture(overrides: Record<string, unknown> = {}) {
     }
   } as unknown as McpServer;
   let mutationCount = 0;
+  let readyCount = 0;
   const session = visibleSession();
   registerGovernedTaskTools(server, {
-    ready: async () => undefined,
+    ready: async () => { readyCount += 1; },
+    lifecycle: serialLifecycle(),
     queue: {
       async listVisibleTasks() { return { storeRevision: 4, tasks: [] }; },
       async getVisibleTask() { return null; },
@@ -59,7 +72,7 @@ function capture(overrides: Record<string, unknown> = {}) {
     now: () => new Date('2026-08-22T10:00:00.000Z'),
     ...overrides
   } as never);
-  return { handlers, mutationCount: () => mutationCount };
+  return { handlers, mutationCount: () => mutationCount, readyCount: () => readyCount };
 }
 
 test('registers queue reads plus three operational mutations', () => {
@@ -71,6 +84,13 @@ test('registers queue reads plus three operational mutations', () => {
     'mcp_reconcile_agent_intent',
     'mcp_transition_governed_task'
   ]);
+});
+
+test('queue read tools never initialize or mutate the task store', async () => {
+  const { handlers, readyCount } = capture();
+  await handlers.get('mcp_get_work_queue')?.({}, EXTRA);
+  await handlers.get('mcp_get_governed_task')?.({ taskId: 'TASK-20260822-001' }, EXTRA);
+  assert.equal(readyCount(), 0);
 });
 
 test('mutation fails before store access when session receipt or revision is stale', async () => {
@@ -112,15 +132,68 @@ test('terminal sessions cannot mutate the governed task queue', async () => {
     const { handlers, mutationCount } = capture({
       sessions: { async getVisibleSession() { return visibleSession(status); } }
     });
-    const result = await handlers.get('mcp_claim_next_governed_task')?.({
+    const common = {
       governedSessionId: SESSION_ID,
       expectedSessionRevision: 3,
       expectedBootstrapReceiptId: RECEIPT_ID,
-      expectedStateVersion: 9,
-      expectedStoreRevision: 4
-    }, EXTRA);
-    assert.equal(result.isError, true);
-    assert.match(result.content[0].text, new RegExp(`SESSION_${status}`));
+      expectedStateVersion: 9
+    };
+    const attempts = [
+      ['mcp_reconcile_agent_intent', {
+        ...common, repository: 'Patricked-code/MCP', intentKey: 'terminal-intent',
+        title: 'Terminal intent', summary: 'Must not mutate.', priority: 50,
+        dependencies: [], resourceScopes: []
+      }],
+      ['mcp_claim_next_governed_task', { ...common, expectedStoreRevision: 4 }],
+      ['mcp_transition_governed_task', {
+        ...common, taskId: 'TASK-20260822-001', expectedTaskRevision: 1,
+        status: 'IN_PROGRESS'
+      }]
+    ] as const;
+    for (const [toolName, input] of attempts) {
+      const result = await handlers.get(toolName)?.(input, EXTRA);
+      assert.equal(result.isError, true);
+      assert.match(result.content[0].text, new RegExp(`SESSION_${status}`));
+    }
     assert.equal(mutationCount(), 0);
   }
+});
+
+test('task mutation holds the shared lifecycle coordinator through persistence', async () => {
+  const lifecycle = serialLifecycle();
+  let announceClaim!: () => void;
+  let releaseClaim!: () => void;
+  const claimStarted = new Promise<void>((resolve) => { announceClaim = resolve; });
+  const claimMayFinish = new Promise<void>((resolve) => { releaseClaim = resolve; });
+  const { handlers } = capture({
+    lifecycle,
+    queue: {
+      async claimNextTask() {
+        announceClaim();
+        await claimMayFinish;
+        return null;
+      }
+    }
+  });
+  const mutation = handlers.get('mcp_claim_next_governed_task')?.({
+    governedSessionId: SESSION_ID,
+    expectedSessionRevision: 3,
+    expectedBootstrapReceiptId: RECEIPT_ID,
+    expectedStateVersion: 9,
+    expectedStoreRevision: 4
+  }, EXTRA);
+  await claimStarted;
+
+  let lifecycleMutationRan = false;
+  const competingLifecycleMutation = lifecycle.run(async () => {
+    lifecycleMutationRan = true;
+  });
+  await Promise.resolve();
+  const ranBeforeTaskPersistenceCompleted = lifecycleMutationRan;
+
+  releaseClaim();
+  await mutation;
+  await competingLifecycleMutation;
+  assert.equal(ranBeforeTaskPersistenceCompleted, false);
+  assert.equal(lifecycleMutationRan, true);
 });

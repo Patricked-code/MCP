@@ -7,6 +7,7 @@ import {
 } from './operationalAudit.js';
 import { createResumeSecret, hashResumeSecret, verifyResumeSecret } from './resumeProof.js';
 import type { TransportBindings } from './transportBindings.js';
+import type { TaskLifecycleCoordinator } from './taskLifecycleCoordinator.js';
 import {
   MAX_GOVERNED_SESSION_RECORDS,
   type BootstrapReceipt,
@@ -70,7 +71,7 @@ export type GovernedSessionService = {
     request: SessionRequest
   ): Promise<GovernedSessionPublicRecord | null>;
   countActiveSessions(): Promise<number>;
-  listTerminalSessionIdsForTaskRequeue(): Promise<string[]>;
+  listTaskOwnerSessionIdsToRetain(): Promise<string[]>;
   expireIdleSessions(): Promise<number>;
   lookupGovernedSessionId(transportSessionId: string | undefined): string | null;
   unbindTransport(transportSessionId: string): string | null;
@@ -112,6 +113,7 @@ type GovernedSessionServiceOptions = {
     at: Date
   ) => Promise<unknown>;
   releaseLocksForSession?: (governedSessionId: string) => Promise<unknown>;
+  taskLifecycleCoordinator?: TaskLifecycleCoordinator;
   audit?: OperationalAudit;
 };
 
@@ -225,7 +227,7 @@ export function createGovernedSessionService(
     return publicSession(persisted);
   }
 
-  return {
+  const service: GovernedSessionService = {
     async openSession(input, request) {
       assertTransportAvailable(request.transportSessionId);
       const resumeSecret = createResumeSecret();
@@ -545,15 +547,15 @@ export function createGovernedSessionService(
       )).length;
     },
 
-    async listTerminalSessionIdsForTaskRequeue() {
+    async listTaskOwnerSessionIdsToRetain() {
       const at = now().getTime();
       return (await options.store.read()).sessions
         .filter((session) => {
-          if (session.status === 'CLOSED') return true;
+          if (['OPEN', 'ACTIVE', 'PAUSED'].includes(session.status)) return true;
           if (session.status !== 'EXPIRED') return false;
           const expiredAt = session.expiredAt ? Date.parse(session.expiredAt) : Number.NaN;
-          return !Number.isFinite(expiredAt)
-            || at - expiredAt > options.resumeGraceSeconds * 1_000;
+          return Number.isFinite(expiredAt)
+            && at - expiredAt <= options.resumeGraceSeconds * 1_000;
         })
         .map((session) => session.governedSessionId)
         .sort();
@@ -624,5 +626,14 @@ export function createGovernedSessionService(
       }
       return binding?.governedSessionId ?? null;
     }
+  };
+  const lifecycle = options.taskLifecycleCoordinator;
+  if (!lifecycle) return service;
+  return {
+    ...service,
+    openSession: (input, request) => lifecycle.run(() => service.openSession(input, request)),
+    resumeSession: (input, request) => lifecycle.run(() => service.resumeSession(input, request)),
+    closeSession: (input, request) => lifecycle.run(() => service.closeSession(input, request)),
+    expireIdleSessions: () => lifecycle.run(() => service.expireIdleSessions())
   };
 }

@@ -15,8 +15,7 @@ export function getCurrentStateService(): CurrentStateService {
   sharedService = createCurrentStateService({
     liveState: liveStateEngine,
     tasks: taskDependencies.queue,
-    sessions: getGovernedSessionToolDependencies().sessions,
-    ready: taskDependencies.ready
+    sessions: getGovernedSessionToolDependencies().sessions
   });
   return sharedService;
 }

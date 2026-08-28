@@ -139,7 +139,7 @@ export function createGovernedTaskQueue(
   now = () => new Date(),
   audit: OperationalAudit = NOOP_OPERATIONAL_AUDIT,
   listActiveLocks: () => Promise<ActiveLockProjection[]> = async () => [],
-  listTerminalSessionIds: () => Promise<string[]> = async () => []
+  listTaskOwnerSessionIdsToRetain: () => Promise<string[]> = async () => []
 ): GovernedTaskQueue {
   async function safeAudit(input: Parameters<OperationalAudit['record']>[0]): Promise<void> {
     try { await audit.record(input); } catch { /* audit must not alter task persistence */ }
@@ -364,8 +364,13 @@ export function createGovernedTaskQueue(
     },
 
     async requeueTerminalSessionTasks() {
-      const terminalSessionIds = new Set(await listTerminalSessionIds());
-      if (terminalSessionIds.size === 0) return 0;
+      const retainedOwnerSessionIds = new Set(await listTaskOwnerSessionIdsToRetain());
+      const before = await store.read();
+      if (!before.tasks.some((task) => (
+        task.ownerGovernedSessionId
+        && !TERMINAL.has(task.status)
+        && !retainedOwnerSessionIds.has(task.ownerGovernedSessionId)
+      ))) return 0;
       const requeued: Array<{
         task: GovernedTaskRecord;
         previousStatus: GovernedTaskStatus;
@@ -379,7 +384,7 @@ export function createGovernedTaskQueue(
           if (
             !governedSessionId
             || TERMINAL.has(task.status)
-            || !terminalSessionIds.has(governedSessionId)
+            || retainedOwnerSessionIds.has(governedSessionId)
           ) return task;
           const next = GovernedTaskRecordSchema.parse({
             ...task,

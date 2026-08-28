@@ -100,3 +100,31 @@ test('evidence remains bound to HEAD when tracked working-tree content is modifi
   const observed = collectCurrentStateEvidence({ repositoryRoot: root });
   assert.deepEqual(observed, committed);
 });
+
+test('evidence ignores replacement refs and keeps metadata bound to the reported SHA', async () => {
+  const root = await repositoryFixture();
+  const original = collectCurrentStateEvidence({ repositoryRoot: root });
+  await writeFile(path.join(root, 'README.md'), '# Replacement content\n');
+  for (const args of [
+    ['add', 'README.md'],
+    ['commit', '-m', 'replacement']
+  ]) {
+    const result = spawnSync('git', args, {
+      cwd: root,
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        GIT_AUTHOR_DATE: '2030-01-01T00:00:00Z',
+        GIT_COMMITTER_DATE: '2030-01-01T00:00:00Z'
+      }
+    });
+    assert.equal(result.status, 0, result.stderr);
+  }
+  const replacement = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim();
+  const checkout = spawnSync('git', ['checkout', '--detach', original.evidenceHead], { cwd: root, encoding: 'utf8' });
+  assert.equal(checkout.status, 0, checkout.stderr);
+  const replace = spawnSync('git', ['replace', original.evidenceHead, replacement], { cwd: root, encoding: 'utf8' });
+  assert.equal(replace.status, 0, replace.stderr);
+
+  assert.deepEqual(collectCurrentStateEvidence({ repositoryRoot: root }), original);
+});

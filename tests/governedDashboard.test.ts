@@ -323,6 +323,10 @@ test('le serveur démarre une seule maintenance et le dashboard reste cache/stor
   ]);
 
   assert.equal((serverSource.match(/startGovernedOperationalMemoryMaintenance\(\);/g) ?? []).length, 1);
+  assert.ok(
+    serverSource.indexOf('await getGovernedTaskToolDependencies().ready();')
+      < serverSource.indexOf('startGovernedOperationalMemoryMaintenance();')
+  );
   assert.equal((serverSource.match(/startOperationalMemoryMaintenance\(\{/g) ?? []).length, 1);
   assert.match(serverSource, /context\.getCurrent\(\{/);
   assert.doesNotMatch(serverSource, /context\.reconcileExplicit\(/);

@@ -247,7 +247,9 @@ function startGovernedOperationalMemoryMaintenance(): void {
     expireSessions: () => operational.sessions.expireIdleSessions(),
     expireLocks: () => operational.locks.expireLocks(),
     reconcileSessionLockIds: () => operational.locks.reconcileSessionLockIds(),
-    requeueTerminalTasks: () => tasks.queue.requeueTerminalSessionTasks(),
+    requeueTerminalTasks: () => tasks.lifecycle.run(
+      () => tasks.queue.requeueTerminalSessionTasks()
+    ),
     intervalMs: 60_000,
     async onCycle(summary) {
       if (
@@ -311,6 +313,9 @@ export function buildMcpServer(): McpServer {
 }
 
 export async function startHttpServer(): Promise<void> {
+  if (operationalMemoryConfig.enabled) {
+    await getGovernedTaskToolDependencies().ready();
+  }
   startGovernedOperationalMemoryMaintenance();
   const app = express();
   app.use(createGithubDeployRouter({

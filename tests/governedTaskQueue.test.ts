@@ -45,7 +45,8 @@ function seed(): TaskRegistrySeed {
 
 async function fixture(
   activeLocks: Array<{ scope: string; governedSessionId: string }> = [],
-  terminalSessionIds: string[] = []
+  retainedTaskOwnerSessionIds: string[] = [SESSION],
+  audit?: { record(input: { type: string }): Promise<void> }
 ) {
   const directory = await mkdtemp(path.join(tmpdir(), 'mcp-task-queue-'));
   const store = createAtomicJsonStore({
@@ -56,9 +57,9 @@ async function fixture(
   const queue = createGovernedTaskQueue(
     store,
     () => NOW,
-    undefined,
+    audit,
     async () => activeLocks,
-    async () => terminalSessionIds
+    async () => retainedTaskOwnerSessionIds
   );
   await queue.initializeSeed(seed());
   return { directory, store, queue };
@@ -170,8 +171,8 @@ test('stale revisions and illegal transitions do not mutate the store', async ()
   }
 });
 
-test('unfinished tasks are requeued when their owning session becomes terminal', async () => {
-  const { directory, queue } = await fixture([], [SESSION]);
+test('unfinished tasks are requeued when their owning session is terminal or already pruned', async () => {
+  const { directory, queue } = await fixture([], []);
   try {
     const state = await queue.listVisibleTasks();
     const claimed = await queue.claimNextTask(SESSION, state.storeRevision);
@@ -181,7 +182,11 @@ test('unfinished tasks are requeued when their owning session becomes terminal',
       expectedTaskRevision: claimed.taskRevision,
       governedSessionId: SESSION,
       status: 'IN_PROGRESS',
-      workBranch: 'mcp/fix-mandatory-bootstrap-review-20260822'
+      blockers: ['previous owner unavailable'],
+      workBranch: 'mcp/fix-mandatory-bootstrap-review-20260822',
+      pullRequestNumber: 52,
+      observedHeadSha: 'e067af0aedc26ef7a351eea39d6ceb7740684734',
+      runtimeRevision: '4d17e972ea04624fc41f90fbb908dc0f70b34430'
     });
 
     assert.equal(await queue.requeueTerminalSessionTasks(), 1);
@@ -190,8 +195,36 @@ test('unfinished tasks are requeued when their owning session becomes terminal',
     assert.equal(requeued?.ownerGovernedSessionId, null);
     assert.equal(requeued?.nextAction, 'claim_governed_task');
     assert.equal(requeued?.workBranch, 'mcp/fix-mandatory-bootstrap-review-20260822');
+    assert.equal(requeued?.pullRequestNumber, 52);
+    assert.equal(requeued?.observedHeadSha, 'e067af0aedc26ef7a351eea39d6ceb7740684734');
+    assert.equal(requeued?.runtimeRevision, '4d17e972ea04624fc41f90fbb908dc0f70b34430');
+    assert.deepEqual(requeued?.blockers, []);
     assert.equal(requeued?.taskRevision, inProgress.taskRevision + 1);
     assert.equal(await queue.requeueTerminalSessionTasks(), 0);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('requeue remains persisted and idempotent when best-effort audit fails', async () => {
+  let auditAttempts = 0;
+  const { directory, queue } = await fixture([], [], {
+    async record() {
+      auditAttempts += 1;
+      throw new Error('AUDIT_UNAVAILABLE');
+    }
+  });
+  try {
+    const state = await queue.listVisibleTasks();
+    const claimed = await queue.claimNextTask(SESSION, state.storeRevision);
+    assert.ok(claimed);
+    auditAttempts = 0;
+
+    assert.equal(await queue.requeueTerminalSessionTasks(), 1);
+    assert.equal((await queue.getVisibleTask(claimed.taskId))?.status, 'READY');
+    assert.equal(auditAttempts, 1);
+    assert.equal(await queue.requeueTerminalSessionTasks(), 0);
+    assert.equal(auditAttempts, 1);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
