@@ -73,10 +73,13 @@ Le chantier continue sur l'unique branche `mcp/unified-operational-work-state-20
 - [x] intégrer Observer Before Actor dans le chemin réel de Governed Context ;
 - [x] pour une session d'intake sans branche, observer la `workBranch` portée par la tâche courante avant le fallback d'entrée ;
 - [x] propager les `reasonCodes` GitHub observés vers `GovernanceDecision` afin qu'un check/review bloquant rende la mutation non sûre ;
-- [x] valider le head fonctionnel `34d51247c021524f4c3e03824c938529bc831743` par CI `33236805556` : typecheck, build, docs, gouvernance, secrets, read-only safety et diff verts ;
+- [x] distinguer explicitement cache miss, auth manquante/invalide, permission, not-found/invisible, timeout, stale, head mismatch, checks et reviews bloquantes ;
+- [x] observer le HEAD read-only de `workBranch` avant la création d'une PR lorsque la branche existe ;
+- [x] valider le head fonctionnel `c25ba8c775b5a2a81f84b424ffd01686e833ea0c` par CI #549 (`33238637948`) : typecheck, build, docs, gouvernance, secrets, `247/247` read-only safety et diff verts ;
 - [x] réconcilier les documents canoniques sur la branche candidate sans changer le mode `shadow` ni les autorités ;
+- [x] ouvrir la Draft PR #55 sur cette même branche, sans nouvelle branche concurrente ;
 - [ ] obtenir la CI du head documentaire exact et vérifier le diff final ;
-- [ ] ouvrir la Draft PR sur cette même branche, sans nouvelle branche concurrente ;
+- [ ] passer PR #55 Ready seulement après exact-head CI, reviews/threads et ruleset propres ;
 - [ ] obtenir revue et CI exact-head sans finding actionnable ;
 - [ ] fusionner seulement sous les gardes de `main`, puis attester l'Autodeploy exact-SHA ;
 - [ ] réattester runtime/Live State et réconcilier la documentation post-déploiement avant toute déclaration `DONE`.
