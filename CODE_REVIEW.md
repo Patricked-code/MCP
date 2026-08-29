@@ -11,6 +11,16 @@ Journal de revue technique et dette du MCP.
 ## À documenter
 Risques, dette, fichiers critiques, corrections faites, corrections restantes et tests.
 
+## 2026-08-28 — Verdict final et attestation PR #52
+
+- Revue indépendante du head final : zéro Critical, zéro Important, zéro Minor ; les cinq findings initiaux sont confirmés résolus.
+- Arbres local et GitHub identiques : `4655f4aaa8b79557bf1fbb23651faa7e72a7021d` ; head GitHub final `33a3e424a5fe271cf82c1ee6db8c94785289e3ca`.
+- Validation fraîche avant fusion : `234/234`, typecheck, build, docs `196`, cartographie, preuve current-state, secrets et diff réussis ; CI PR `33213114008` réussie.
+- Fusion protégée au SHA `fff44ff2db386942730a67f3884980c7824cae7f` ; CI main `33214825660` et deploy `33214825772` réussis.
+- Attestation post-déploiement : GitHub/S1/OCI/runtime exact-SHA, S1 propre/read-only, Docker healthy ; les trois threads PR #49 sont résolus.
+- Dette explicitement conservée : audit de tâche best-effort, sans outbox ni garantie exactly-once ; ce choix est hors du périmètre de la correction et couvert par les tests.
+- Aucun risque Critical/Important connu ne reste ouvert pour cette livraison `shadow`; l'enforcement demeure hors périmètre.
+
 ## 2026-08-28 — Findings tardifs PR #49
 
 - `PRRT_kwDOTJ-y6M6bYAMT` (P1) : une tâche non terminale restait détenue après fermeture ou expiration définitive de sa session. Correction : réattribution maintenance idempotente, avec grâce de reprise préservée et corrélations conservées.

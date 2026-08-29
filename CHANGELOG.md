@@ -3,6 +3,15 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
+## 2026-08-28 — Correction PR #52 fusionnée et déployée
+
+- PR #52 fusionnée par squash avec garde `expected_head_sha` au SHA `fff44ff2db386942730a67f3884980c7824cae7f` ; arbre exact `4655f4aaa8b79557bf1fbb23651faa7e72a7021d`.
+- CI PR #485 (`33213114008`), CI main #486 (`33214825660`) et Governed Deploy #14 (`33214825772`, job `98996005106`) réussis.
+- GitHub, S1, `origin/main`, image OCI et runtime attestés au SHA exact ; S1 propre/read-only, Docker running/healthy, image `sha256:c616dd31923a574ab276805a1f4cd1066399c5858d37f9acbce8ac7cb565d588`.
+- Live State `39` expose le catalogue corrigé 111 outils, 2 resources, 68 lectures et 43 écritures ; le seul écart restant avant cette candidate est la réconciliation documentaire.
+- Les trois threads tardifs PR #49 ont reçu les preuves de correction et sont résolus.
+- WRITE gate toujours `shadow`; aucun changement OIDC, Autodeploy, 2FA, `ENABLE_WRITE_TOOLS`, `allow_write` ou activation `enforce`.
+
 ## 2026-08-28 — Candidate corrective Mandatory Agent Bootstrap V1
 
 - Réattribue de manière idempotente les tâches non terminales dont la session propriétaire est `CLOSED`, ou `EXPIRED` au-delà de `resumeGraceSeconds`, en conservant branche, PR et corrélations SHA/runtime.

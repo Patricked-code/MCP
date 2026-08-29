@@ -3,6 +3,16 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-08-28 — Clôture fonctionnelle de la correction Mandatory Bootstrap
+
+Décision de livraison : accepter la PR #52 après validation `234/234`, CI exacte et revue indépendante sans Critical/Important/Minor, puis fusionner uniquement le head `33a3e424a5fe271cf82c1ee6db8c94785289e3ca` par `expected_head_sha`.
+
+Décision d'attestation : retenir `fff44ff2db386942730a67f3884980c7824cae7f` comme baseline fonctionnelle seulement après succès de la CI main, de l'Autodeploy et des preuves GitHub/S1/OCI/runtime. Le SHA déclaré reste la baseline fonctionnelle lorsqu'une PR descendante modifie uniquement Markdown, `PRODUCTION_STATE.json` et l'inventaire documentaire autorisé.
+
+Décision de revue : résoudre les trois threads PR #49 uniquement après publication des preuves de correction fusionnées et déployées. Les trois threads sont désormais résolus.
+
+Décision de périmètre : la réconciliation finale reste strictement documentaire sur la branche gouvernée existante. Le WRITE gate reste `shadow`; aucun `enforce`, changement OIDC/Autodeploy/2FA ou nouveau moteur persistant n'est autorisé.
+
 ## 2026-08-28 — Cycle de vie de tâche, preuve Git et surface de queue
 
 Contexte : trois threads tardifs de la PR #49 montrent qu'une tâche pouvait rester détenue par une session définitivement terminale, que `currentTask` pouvait provenir d'une autre session ou être terminale, et que la preuve current-state associait le contenu du working tree au `evidenceHead`. La cartographie classait aussi les deux lectures de queue comme écritures et les mutations n'écartaient pas les sessions terminales.
