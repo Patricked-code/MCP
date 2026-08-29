@@ -143,6 +143,7 @@ test('branchless intake session observes task branch and propagates operation ev
   assert.equal(context.governanceDecision?.owner, SESSION_ID);
   assert.deepEqual(context.governanceDecision?.dependencies, ['TASK-20260822-001']);
   assert.equal(context.governanceDecision?.runtimeState?.revision, SHA);
+  assert.equal(context.taskReality?.evidence.deploymentExactShaSuccess, false);
   assert.equal(context.governanceDecision?.reasonCodes.includes('OWNER_MISMATCH'), false);
   assert.equal(context.governanceDecision?.reasonCodes.includes('DEPENDENCY_INCOMPLETE'), false);
   assert.equal(context.governanceDecision?.reasonCodes.includes('RUNTIME_SHA_MISMATCH'), false);
