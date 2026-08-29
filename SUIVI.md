@@ -15,37 +15,37 @@
 
 Date : 2026-08-29
 
-## Baseline intégrée avant le chantier courant
+## Baseline fonctionnelle actuellement déployée
 
-- `main` est au SHA `a35280e172e40525689520e1443ccd59e850e91a`, merge de la PR #54 `docs(governance): reconcile PR 52 deployment state`.
-- La PR #54 est une réconciliation strictement documentaire de `TASK-20260822-001`; elle ne modifie ni code source, ni workflow, ni OIDC, ni Autodeploy, ni WRITE gate.
-- CI main `33222774901` et MCP Governed Deploy `33222774905` ont réussi sur ce SHA exact.
-- La fusion documentaire restant cochée comme non faite dans les anciens `TASKS.md`/`TODO.md` est donc désormais réconciliée comme terminée.
-- La preuve finale `checkpoint + libération du lock + fermeture de session sans lock résiduel` reste une preuve Operational Memory runtime : elle ne doit pas être inventée depuis GitHub.
+- GitHub `main` est au SHA `2c2dde2bffe62b2685bf2fad94530571762470c8`, merge de la PR #55 `feat(governance): unify operational work state`.
+- S1 HEAD et `origin/main` sont au SHA exact `2c2dde2bffe62b2685bf2fad94530571762470c8`; le working tree S1 est propre et le push remote reste `disabled://mcp-s1-read-only`.
+- L'image/runtime actif expose `org.opencontainers.image.revision=2c2dde2bffe62b2685bf2fad94530571762470c8`; le conteneur `wealthtech_mcp_ssh_bridge` est `running` et `healthy`.
+- CI main `33256566688` et MCP Governed Deploy `33256566695`, job `99111230626`, ont réussi sur ce SHA exact; l'étape `Deploy exact main SHA through MCP` est `success`.
+- Live State `stateVersion=51` atteste GitHub/S1/runtime alignés au SHA exact; la seule contradiction observée avant la présente réconciliation est `DOCUMENTATION_DRIFT` avec `nextAction=reconcile_canonical_documentation`.
+- Audit baseline et Current-State Inventory sont valides sur `2c2dde2bffe62b2685bf2fad94530571762470c8`; catalogue MCP inchangé à 111 outils, 68 lectures et 43 écritures, WRITE gate toujours `shadow`.
 
-## Chantier courant — Unified Operational Work State
+## TASK-20260829-001 — Unified Operational Work State
 
-- Branche gouvernée existante conservée : `mcp/unified-operational-work-state-20260829`; aucune nouvelle branche et aucun moteur parallèle n'ont été créés.
-- Draft PR existante : #55 `feat(governance): unify operational work state`; elle reste Draft tant que les gardes exact-head/review ne sont pas complètement satisfaites.
-- Baseline de branche : `main@a35280e172e40525689520e1443ccd59e850e91a`; la branche reste descendante directe de cette baseline.
-- Le chantier compose les autorités existantes dans une décision bornée : Live State, Current-State Inventory, Governed Task Queue, Governed Session, locks, contexte GitHub et catalogue MCP.
-- `src/governance/operationalDecision.ts` ajoute `CapabilityReality`, `TaskReality` et `GovernanceDecision` sans nouveau store persistant ni nouvelle source de vérité.
-- `src/governedContext/` est enrichi pour exposer la réalité GitHub, la réalité de tâche, la décision gouvernée et l'observabilité/dashboard bornée.
-- Observer Before Actor est intégré : une opération qui dépend de GitHub doit observer la branche de travail, le head exact, les checks/reviews/ruleset et leurs reason codes avant d'être considérée sûre.
-- Une session d'intake sans `workBranch` reprend désormais la branche de la tâche courante avant tout fallback explicite; la tâche reste l'autorité de continuité lorsque la session n'a pas encore lié la branche.
-- Les reason codes GitHub déjà observés sont propagés dans `GovernanceDecision`; un check requis en échec peut donc rendre `mayMutate=false` sans modifier le comportement historique du WRITE gate.
-- Le collecteur GitHub observe désormais aussi le HEAD read-only de `workBranch` lorsqu'aucune PR n'existe encore; l'Observer Before Actor ne dépend donc plus de l'existence préalable d'une PR pour connaître le head de travail.
-- Le WRITE gate reste `shadow`; `ENABLE_WRITE_TOOLS`, `allow_write`, OIDC, Autodeploy, 2FA et les 92 contrats historiques restent inchangés.
+- La tâche reste gouvernée par Operational Memory et la Governed Task Queue; ce document ne remplace pas leur statut, leur owner, leurs locks, checkpoints ou révisions.
+- Branche fonctionnelle utilisée et conservée dans l'historique : `mcp/unified-operational-work-state-20260829`.
+- PR fonctionnelle #55 fusionnée avec garde `expected_head_sha` au head exact `de0030b0df42a693d2e96c87f008c9ffd1c2ce04`.
+- CI PR exact-head #577, run `33256403390`, job `99110808499` : `success`; typecheck, build, docs check, governance tests, secret scan, read-only safety `250/250` et whitespace diff sont verts.
+- Quatre findings de review ont été corrigés additivement puis résolus avec preuve GREEN : SHA lu sur chaque `check_runs[]`, preuve de déploiement liée au `runtimeRevision` de la tâche, agrégation de tous les rulesets actifs applicables à `main`, et prise en compte du nombre d'approbations exigé.
+- Le ruleset réel `protect-main` reste l'autorité GitHub : PR requise, check `validate`, résolution des threads, `required_approving_review_count=0` à l'observation de clôture fonctionnelle.
+- Le merge #55 est `2c2dde2bffe62b2685bf2fad94530571762470c8`; l'Autodeploy exact-SHA est attesté par `33256566695` / `99111230626` et le runtime est aligné sur ce même SHA.
+- `CapabilityReality`, `TaskReality` et `GovernanceDecision` restent des projections des autorités existantes; aucun nouveau store, orchestrateur, chemin GitHub/S1 ou mécanisme d'enforcement n'a été créé.
+- `deploymentExactShaSuccess` exige désormais que le `runtimeRevision` enregistré par la tâche corresponde simultanément à GitHub main, S1 HEAD, S1 `origin/main` et au runtime healthy; un déploiement ultérieur sans rapport ne peut plus vérifier rétroactivement une tâche.
+- L'observation GitHub utilise les SHA des check-runs individuels et agrège tous les rulesets actifs applicables à `main`; les règles non applicables et les rulesets `evaluate` ne deviennent pas artificiellement bloquants.
+- Le WRITE gate reste `shadow`; OIDC, Governed Autodeploy, 2FA, `ENABLE_WRITE_TOOLS`, `allow_write`, secrets et règle d'absence de push direct sur `main` restent inchangés.
 
-## Validation fonctionnelle fraîche
+## Réconciliation documentaire post-déploiement
 
-- Head fonctionnel initial du lot Observer Before Actor : `34d51247c021524f4c3e03824c938529bc831743`, CI MCP `33236805556`, job `99059095387` : success.
-- Le dernier test RED de clôture a ensuite exigé l'observation du HEAD de `workBranch` avant toute PR; le RED exact a été attesté au head `25838a2d7265f907705f6febaf23e4878a554589` par CI #547 (`33237579706`), avec un seul échec ciblé sur `workBranchHead=null`.
-- GREEN minimal au head fonctionnel `c25ba8c775b5a2a81f84b424ffd01686e833ea0c` : lecture read-only de `/commits/<workBranch>` uniquement lorsqu'aucune PR n'existe, sans nouveau store ni nouvelle autorité.
-- CI MCP #549 (`33238637948`), job `99064005788` : success sur `c25ba8c775b5a2a81f84b424ffd01686e833ea0c`.
-- Étapes réussies : typecheck, build, docs check, governance tests, secret scan, read-only safety tests (`247/247`) et whitespace diff check.
-- Aucun merge, aucun déploiement de ce chantier, aucune écriture directe S1 et aucune activation `enforce` ne sont déclarés à ce stade.
+- La présente branche est une réconciliation docs-only descendante exacte de `main@2c2dde2bffe62b2685bf2fad94530571762470c8`.
+- Elle ne modifie ni source TypeScript, tests, workflow, OIDC, Autodeploy, politique `.mcp`, WRITE gate, secret, runtime ou fichier S1.
+- Elle met à jour la baseline canonique de `SUIVI.md`, `TASKS.md` et `TODO.md` à partir des preuves GitHub/S1/runtime réellement observées.
+- Après fusion de cette réconciliation, un nouveau Live State doit être collecté. `DOCUMENTATION_DRIFT` doit disparaître sans masquer un éventuel autre drift.
+- La clôture `DONE`, le checkpoint final, la libération du lock et la pause/fermeture de la Governed Session restent exclusivement des preuves Operational Memory postérieures à cette fusion; elles ne sont pas pré-déclarées ici.
 
 ## Prochaine action gouvernée
 
-Valider le head documentaire exact après cette réconciliation, conserver PR #55 sur la même branche, vérifier de nouveau CI exact-head, reviews, threads et ruleset, puis sortir du Draft uniquement si toutes les gardes sont propres. Fusionner ensuite avec garde `expected_head_sha`, laisser l'Autodeploy exact-SHA existant s'exécuter et réattester GitHub/main, S1, OCI/runtime, Live State, Current State et Task Reality avant toute déclaration `DONE`. Toute clôture de tâche/session/lock runtime doit provenir d'Operational Memory, pas d'une déduction GitHub. La migration des GitHub Actions Node et tout passage `shadow → enforce` restent des chantiers séparés.
+Valider le head exact de cette réconciliation docs-only, obtenir CI/review/ruleset propres, fusionner avec garde `expected_head_sha`, laisser le Governed Autodeploy existant maintenir GitHub/S1/runtime sur le nouveau commit documentaire, puis réconcilier Live State, Current State, Governed Context et Task Reality. Seulement si ces autorités attestent un état cohérent, faire évoluer `TASK-20260829-001` jusqu'à `DONE`, créer le checkpoint final, libérer le lock et préserver la Governed Session selon son cycle normal. La prochaine tâche du programme de connexion gouvernée ne doit être ajoutée qu'après cette clôture runtime.
