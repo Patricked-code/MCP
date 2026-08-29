@@ -47,13 +47,28 @@ export type GovernedOperationalContextService = {
 };
 
 function fallbackGithub(at: string, workBranch: string | null): GithubOperationalContext {
+  const unavailable = {
+    freshness: 'UNAVAILABLE' as const,
+    observedAt: at,
+    provenance: 'memory_cache' as const
+  };
   return {
     status: 'UNAVAILABLE',
     observedAt: at,
     mainHead: null,
     workBranch,
+    workBranchHead: null,
     pullRequest: null,
-    checks: { status: 'unavailable', conclusion: null, total: 0, failed: 0 },
+    checks: {
+      status: 'unavailable',
+      conclusion: null,
+      total: 0,
+      failed: 0,
+      headSha: null,
+      exactHead: null,
+      required: [],
+      requiredSatisfied: null
+    },
     reviews: { approvals: 0, changesRequested: 0, unresolvedThreads: null },
     ruleset: {
       name: null,
@@ -61,6 +76,20 @@ function fallbackGithub(at: string, workBranch: string | null): GithubOperationa
       requiresPullRequest: null,
       requiredStatusChecks: [],
       requiresConversationResolution: null
+    },
+    ownership: { pullRequestAuthor: null },
+    activity: { lastActivityAt: null },
+    cache: {
+      status: 'MISS',
+      observedAt: at,
+      provenance: 'memory_cache'
+    },
+    evidence: {
+      main: unavailable,
+      pullRequest: unavailable,
+      checks: unavailable,
+      reviews: unavailable,
+      ruleset: unavailable
     },
     error: 'github_context_unavailable'
   };
@@ -112,99 +141,57 @@ export function createGovernedOperationalContextService(
     input: GovernedContextInput,
     explicit: boolean
   ): Promise<GovernedOperationalContext> {
-    const generatedAt = now().toISOString();
-    const limitations: string[] = [];
-    if (explicit) {
-      await audit.record({
-        type: 'reconcile.requested',
-        governedSessionId: input.governedSessionId,
-        stateVersion: null
-      });
-    }
+    const at = now().toISOString();
     const liveState = await safeRead(
-      () => explicit
-        ? options.liveState.reconcileNow()
-        : options.liveState.getCurrent(),
+      () => explicit ? options.liveState.reconcileNow() : options.liveState.getCurrent(),
       null
     );
-    if (!liveState) limitations.push('live_state_unavailable');
-    else if (liveState.freshness === 'STALE') limitations.push('live_state_stale');
-
-    let session: PublicGovernedSession | null = null;
-    if (input.governedSessionId) {
-      session = await safeRead(
-        () => options.sessions.getVisibleSession(
-          input.governedSessionId!,
-          input.request
-        ),
-        null
-      );
-    }
-    if (!session) limitations.push('session_unbound');
-
-    const currentState = options.currentState
-      ? await safeRead(() => options.currentState!.getInventory(input.request), null)
+    const session = input.governedSessionId
+      ? await safeRead(
+          () => options.sessions.getVisibleSession(input.governedSessionId!, input.request),
+          null
+        )
       : null;
-    if (options.currentState && !currentState) limitations.push('current_state_inventory_unavailable');
-
-    const receipt = session?.bootstrapReceipt ?? null;
-    let bootstrapStatus: GovernedOperationalContext['bootstrap']['status'] = 'MISSING';
-    if (receipt) {
-      if (Date.parse(receipt.expiresAt) <= now().getTime()) bootstrapStatus = 'EXPIRED';
-      else if (!liveState || receipt.stateVersion !== liveState.stateVersion
-        || session?.lastAcknowledgedStateVersion !== liveState.stateVersion) bootstrapStatus = 'STALE';
-      else bootstrapStatus = 'CURRENT';
-    }
-    if (bootstrapStatus !== 'CURRENT') limitations.push(`bootstrap_${bootstrapStatus.toLowerCase()}`);
-
-    const rawLocks = await safeRead(
-      () => options.locks.listActiveLocks(),
-      null
-    );
-    if (!rawLocks) limitations.push('locks_unavailable');
-    const activeLocks: PublicGovernedLock[] = (rawLocks ?? []).slice(0, 100);
     const workBranch = session?.workBranch ?? input.workBranch;
     const github = await safeRead(
       () => explicit
         ? options.github.reconcileExplicit(workBranch)
         : options.github.getCurrent(workBranch),
-      fallbackGithub(generatedAt, workBranch)
+      fallbackGithub(at, workBranch)
     );
-    if (github.status !== 'CURRENT') {
-      limitations.push(github.error ?? 'github_context_degraded');
-    }
-
-    const foreignLock = activeLocks.some((lock) => (
-      lock.status === 'ACTIVE'
-      && lock.governedSessionId !== session?.governedSessionId
-    ));
-    const freshness: GovernedOperationalContext['freshness'] = (
-      !liveState || github.status !== 'CURRENT' || liveState.alignment.global === 'DEGRADED'
-    ) ? 'DEGRADED' : liveState.freshness === 'STALE' ? 'STALE' : 'CURRENT';
-    const decision: GovernedOperationalContext['gate']['decision'] = options.gateMode === 'off'
-      ? 'read_only'
-      : !session
-        ? 'session_unbound'
-        : liveState && session.lastAcknowledgedStateVersion !== liveState.stateVersion
-          ? 'context_unacknowledged'
-          : foreignLock
-            ? 'lock_conflict'
-            : 'shadow_observed';
-    const blockers = [...new Set([
+    const activeLocks = await safeRead(
+      () => options.locks.listActiveLocks('Patricked-code/MCP'),
+      [] as PublicGovernedLock[]
+    );
+    const currentState = options.currentState
+      ? await safeRead(() => options.currentState!.getInventory(), null)
+      : null;
+    const bootstrapStatus: GovernedOperationalContext['bootstrap']['status'] = !session?.bootstrapReceipt
+      ? 'MISSING'
+      : session.bootstrapReceipt.status !== 'ACKNOWLEDGED'
+        ? 'STALE'
+        : Date.parse(session.bootstrapReceipt.expiresAt) <= Date.parse(at)
+          ? 'EXPIRED'
+          : session.bootstrapReceipt.stateVersion === liveState?.stateVersion
+            ? 'CURRENT'
+            : 'STALE';
+    const currentTask = currentState?.currentTask ?? null;
+    const firstExecutableTask = currentState?.firstExecutableTask ?? null;
+    const foreignLock = activeLocks.some((lock) => lock.ownerGovernedSessionId !== session?.governedSessionId);
+    const blockers = [
       ...(liveState?.contradictions ?? []),
-      ...(session?.blockers ?? [])
-    ])].slice(0, 40);
-    const runtimeRealtimeAvailable = Boolean(
-      liveState?.runtime.status === 'CURRENT'
-      && liveState.runtime.containerStatus === 'running'
-      && liveState.runtime.health === 'healthy'
-    );
-    if (!runtimeRealtimeAvailable) limitations.push('runtime_realtime_unavailable');
-
+      ...(session?.blockers ?? []),
+      ...(github.error ? [github.error] : []),
+      ...(foreignLock ? ['governed_lock_conflict'] : [])
+    ];
     const context: GovernedOperationalContext = {
       schemaVersion: 1,
-      generatedAt,
-      freshness,
+      generatedAt: at,
+      freshness: !liveState || liveState.freshness.global !== 'CURRENT'
+        ? 'DEGRADED'
+        : github.status === 'UNAVAILABLE'
+          ? 'DEGRADED'
+          : 'CURRENT',
       repository: 'Patricked-code/MCP',
       governedBranch: 'main',
       liveState,
@@ -213,56 +200,68 @@ export function createGovernedOperationalContextService(
       bootstrap: {
         required: true,
         status: bootstrapStatus,
-        receipt,
-        limitations: receipt?.limitations ?? []
+        receipt: session?.bootstrapReceipt ?? null,
+        limitations: session?.bootstrapReceipt?.limitations ?? []
       },
       currentState: {
-        catalogueDigest: currentState?.source.catalogueDigest ?? liveState?.capabilities?.catalogueDigest ?? null,
-        inventoryDigest: currentState?.source.inventoryDigest ?? liveState?.inventory?.sourceDigest ?? null,
-        governanceDigest: currentState?.governance?.digest ?? liveState?.governance?.digest ?? null,
-        auditBaselineValid: currentState?.auditBaseline?.valid ?? liveState?.auditBaseline?.valid ?? null
+        catalogueDigest: currentState?.catalogue.catalogueDigest ?? null,
+        inventoryDigest: currentState?.inventoryDigest ?? null,
+        governanceDigest: liveState?.currentState?.governanceDigest ?? null,
+        auditBaselineValid: currentState?.auditBaseline.valid ?? null
       },
       workQueue: {
-        storeRevision: currentState?.workQueue.storeRevision ?? null,
-        total: currentState?.workQueue.tasks.length ?? 0,
-        byStatus: Object.fromEntries(Object.entries(
-          (currentState?.workQueue.tasks ?? []).reduce<Record<string, number>>((counts, task) => {
-            counts[task.status] = (counts[task.status] ?? 0) + 1;
-            return counts;
-          }, {})
-        ).sort(([left], [right]) => left.localeCompare(right)))
+        storeRevision: currentState?.taskRegistry.storeRevision ?? null,
+        total: currentState?.taskRegistry.total ?? 0,
+        byStatus: currentState?.taskRegistry.byStatus ?? {}
       },
-      currentTask: currentState?.currentTask ?? null,
-      firstExecutableTask: currentState?.firstExecutableTask ?? null,
+      currentTask,
+      firstExecutableTask,
       activeLocks,
       lastCheckpoint: session?.lastCheckpoint ?? null,
       blockers,
       nextAction: nextAction(
-        liveState, session, bootstrapStatus,
-        currentState?.currentTask ?? null,
-        currentState?.firstExecutableTask ?? null,
-        github, foreignLock
+        liveState,
+        session,
+        bootstrapStatus,
+        currentTask,
+        firstExecutableTask,
+        github,
+        foreignLock
       ),
       gate: {
         mode: options.gateMode,
         existingWriteToolsEnabled: options.existingWriteToolsEnabled,
-        decision
+        decision: options.gateMode === 'off'
+          ? 'read_only'
+          : !session
+            ? 'session_unbound'
+            : bootstrapStatus !== 'CURRENT'
+              ? 'context_unacknowledged'
+              : foreignLock
+                ? 'lock_conflict'
+                : 'shadow_observed'
       },
       proof: {
         identityAssurance: session?.identityAssurance ?? null,
-        runtimeRealtimeAvailable,
-        limitations: [...new Set(limitations)].slice(0, 20)
+        runtimeRealtimeAvailable: liveState?.sources.runtime.status === 'CURRENT',
+        limitations: [
+          ...(github.status === 'UNAVAILABLE' ? ['github_operational_context_unavailable'] : []),
+          ...(bootstrapStatus !== 'CURRENT' ? ['bootstrap_not_current'] : [])
+        ]
       }
     };
-    await audit.record({ type: 'context.read', context });
-    if (explicit) {
-      await audit.record({
-        type: 'reconcile.completed',
-        governedSessionId: input.governedSessionId,
-        context,
-        previousStateVersion: null
-      });
-    }
+    await audit.recordContextEvent(
+      explicit ? 'context.reconciled' : 'context.loaded',
+      {
+        governedSessionId: session?.governedSessionId ?? input.governedSessionId,
+        stateVersion: liveState?.stateVersion ?? null,
+        freshness: context.freshness,
+        githubStatus: github.status,
+        bootstrapStatus,
+        taskId: currentTask?.taskId ?? firstExecutableTask?.taskId ?? null,
+        blockerCount: blockers.length
+      }
+    ).catch(() => undefined);
     return context;
   }
 
