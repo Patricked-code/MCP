@@ -3,6 +3,17 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
+## 2026-08-29 — Candidate Unified Operational Work State
+
+- Ajout additif de `src/governance/operationalDecision.ts` pour dériver `CapabilityReality`, `TaskReality` et `GovernanceDecision` à partir des autorités existantes, sans nouveau store ni nouvelle source de vérité.
+- Enrichissement de Governed Context et du contexte GitHub avec branche/head de travail, PR, checks exact-head, reviews, threads, ruleset, ownership, activité, fraîcheur/cache, reality projections et décision opérationnelle bornée.
+- Ajout de l'observabilité correspondante dans le dashboard sans nouveau collecteur parallèle.
+- Observer Before Actor est intégré au chemin réel : une session sans `workBranch` utilise la branche portée par la tâche courante avant le fallback d'entrée, et les reason codes GitHub observés sont propagés à `GovernanceDecision` lorsque l'opération exige GitHub.
+- TDD de clôture : le test d'intégration a d'abord exposé la branche non propagée, puis le reason code GitHub manquant; les deux gaps ont été corrigés par deux changements minimaux dans `src/governedContext/service.ts`.
+- Validation fonctionnelle fraîche au head `34d51247c021524f4c3e03824c938529bc831743` : MCP CI `33236805556`, job `99059095387`, avec typecheck, build, docs, gouvernance, secrets, read-only safety et whitespace diff tous réussis.
+- Compatibilité : WRITE gate toujours `shadow`; aucun nouveau store, aucune migration, aucun changement OIDC/Autodeploy/2FA/`ENABLE_WRITE_TOOLS`/`allow_write`, aucun push direct `main` et aucun contrat historique supprimé ou renommé.
+- Rollback : revert des commits du chantier sur la branche gouvernée; les nouvelles projections sont additives et ne remplacent ni Live State, ni Operational Memory, ni Governed Task Queue, ni GitHub.
+
 ## 2026-08-28 — Correction PR #52 fusionnée et déployée
 
 - PR #52 fusionnée par squash avec garde `expected_head_sha` au SHA `fff44ff2db386942730a67f3884980c7824cae7f` ; arbre exact `4655f4aaa8b79557bf1fbb23651faa7e72a7021d`.

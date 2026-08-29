@@ -13,6 +13,53 @@ function display(value: unknown, fallback = 'non disponible'): string {
   return escapeHtml(value ?? fallback);
 }
 
+export type GovernedObservabilityProjection = {
+  capabilities: {
+    total: number;
+    callable: number;
+    notCallable: number;
+    unknown: number;
+    authorizationFalse: number;
+    authorizationUnknown: number;
+    safeNowFalse: number;
+  };
+  taskRealityDrift: string | null;
+  mayMutate: boolean | null;
+  githubReasonCodes: string[];
+  githubUncertainties: string[];
+  governanceReasonCodes: string[];
+  shadowMode: 'off' | 'shadow';
+  shadowDecision: GovernedOperationalContext['gate']['decision'];
+};
+
+function boundedUnique(values: string[], limit = 20): string[] {
+  return [...new Set(values)].slice(0, limit);
+}
+
+export function deriveGovernedObservability(
+  context: GovernedOperationalContext
+): GovernedObservabilityProjection {
+  const capabilities = (context.capabilityReality ?? []).slice(0, 500);
+  return {
+    capabilities: {
+      total: capabilities.length,
+      callable: capabilities.filter((entry) => entry.callability.status === 'CALLABLE').length,
+      notCallable: capabilities.filter((entry) => entry.callability.status === 'NOT_CALLABLE').length,
+      unknown: capabilities.filter((entry) => entry.callability.status === 'UNKNOWN').length,
+      authorizationFalse: capabilities.filter((entry) => entry.authorized.status === 'FALSE').length,
+      authorizationUnknown: capabilities.filter((entry) => entry.authorized.status === 'UNKNOWN').length,
+      safeNowFalse: capabilities.filter((entry) => entry.safeNow === false).length
+    },
+    taskRealityDrift: context.taskReality?.drift ?? null,
+    mayMutate: context.governanceDecision?.mayMutate ?? null,
+    githubReasonCodes: boundedUnique(context.github.reasonCodes ?? []),
+    githubUncertainties: boundedUnique(context.github.uncertainties ?? []),
+    governanceReasonCodes: boundedUnique(context.governanceDecision?.reasonCodes ?? []),
+    shadowMode: context.gate.mode,
+    shadowDecision: context.gate.decision
+  };
+}
+
 export async function loadGovernedDashboardContext<T>(
   enabled: boolean,
   load: () => Promise<T>
@@ -39,6 +86,7 @@ export function renderGovernedContextDashboardSection(
     ?? liveState?.documentation.activeTask
     ?? null;
   const pullRequest = context.github.pullRequest;
+  const observability = deriveGovernedObservability(context);
   const locks = context.activeLocks.length === 0
     ? '<li>Aucun lock actif.</li>'
     : context.activeLocks.slice(0, 100).map((lock) => (
@@ -54,6 +102,15 @@ export function renderGovernedContextDashboardSection(
   const bootstrapLimitations = context.bootstrap.limitations.length === 0
     ? '<li>Aucune limitation du receipt.</li>'
     : context.bootstrap.limitations.slice(0, 20).map((limitation) => `<li>${display(limitation)}</li>`).join('');
+  const githubReasons = observability.githubReasonCodes.length === 0
+    ? '<li>Aucun reasonCode GitHub.</li>'
+    : observability.githubReasonCodes.map((reason) => `<li>${display(reason)}</li>`).join('');
+  const githubUncertainties = observability.githubUncertainties.length === 0
+    ? '<li>Aucune incertitude GitHub.</li>'
+    : observability.githubUncertainties.map((reason) => `<li>${display(reason)}</li>`).join('');
+  const governanceReasons = observability.governanceReasonCodes.length === 0
+    ? '<li>Aucun reasonCode de gouvernance.</li>'
+    : observability.governanceReasonCodes.map((reason) => `<li>${display(reason)}</li>`).join('');
 
   return `<section aria-labelledby="governed-context-heading">
   <h2 id="governed-context-heading">MCP Governed Session Continuity</h2>
@@ -88,6 +145,19 @@ export function renderGovernedContextDashboardSection(
   <p>${pullRequest ? `PR #${pullRequest.number} — ${display(pullRequest.state)}${pullRequest.draft ? ' — draft' : ''}` : 'Aucune PR associée.'}</p>
   <p>Checks : <strong>${display(context.github.checks.status)}</strong> / ${display(context.github.checks.conclusion)} — ${context.github.checks.failed} échec(s) sur ${context.github.checks.total}</p>
   <p>Approbations : <strong>${context.github.reviews.approvals}</strong> — changements demandés ${context.github.reviews.changesRequested} — fils non résolus ${display(context.github.reviews.unresolvedThreads)}</p>
+
+  <h3>Capability Reality</h3>
+  <p>Total : <strong>${observability.capabilities.total}</strong> — CALLABLE <strong>${observability.capabilities.callable}</strong> — NOT_CALLABLE <strong>${observability.capabilities.notCallable}</strong> — UNKNOWN <strong>${observability.capabilities.unknown}</strong></p>
+  <p>Authorization FALSE : <strong>${observability.capabilities.authorizationFalse}</strong> — UNKNOWN : <strong>${observability.capabilities.authorizationUnknown}</strong> — safeNow=false : <strong>${observability.capabilities.safeNowFalse}</strong></p>
+  <p>Task Reality drift : <strong>${display(observability.taskRealityDrift)}</strong></p>
+  <p>mayMutate : <strong>${display(observability.mayMutate)}</strong></p>
+  <p>Shadow : <strong>${display(observability.shadowMode)}</strong> — ${display(observability.shadowDecision)}</p>
+  <h4>GitHub reasonCodes</h4>
+  <ul>${githubReasons}</ul>
+  <h4>GitHub uncertainties</h4>
+  <ul>${githubUncertainties}</ul>
+  <h4>Governance reasonCodes</h4>
+  <ul>${governanceReasons}</ul>
 
   <h3>Blockers</h3>
   <ul>${blockers}</ul>

@@ -1,5 +1,11 @@
 import type { LiveStateEngine } from '../liveState/engine.js';
 import type { LiveStateSnapshot } from '../liveState/types.js';
+import {
+  deriveCapabilityReality,
+  deriveGovernanceDecision,
+  deriveTaskReality,
+  projectRegisteredCapabilityRealities
+} from '../governance/operationalDecision.js';
 import type { GovernedLockService } from '../operationalMemory/lockService.js';
 import {
   NOOP_OPERATIONAL_AUDIT,
@@ -47,13 +53,28 @@ export type GovernedOperationalContextService = {
 };
 
 function fallbackGithub(at: string, workBranch: string | null): GithubOperationalContext {
+  const unavailable = {
+    freshness: 'UNAVAILABLE' as const,
+    observedAt: at,
+    provenance: 'memory_cache' as const
+  };
   return {
     status: 'UNAVAILABLE',
     observedAt: at,
     mainHead: null,
     workBranch,
+    workBranchHead: null,
     pullRequest: null,
-    checks: { status: 'unavailable', conclusion: null, total: 0, failed: 0 },
+    checks: {
+      status: 'unavailable',
+      conclusion: null,
+      total: 0,
+      failed: 0,
+      headSha: null,
+      exactHead: null,
+      required: [],
+      requiredSatisfied: null
+    },
     reviews: { approvals: 0, changesRequested: 0, unresolvedThreads: null },
     ruleset: {
       name: null,
@@ -62,6 +83,18 @@ function fallbackGithub(at: string, workBranch: string | null): GithubOperationa
       requiredStatusChecks: [],
       requiresConversationResolution: null
     },
+    ownership: { pullRequestAuthor: null },
+    activity: { lastActivityAt: null },
+    cache: { status: 'MISS', observedAt: at, provenance: 'memory_cache' },
+    evidence: {
+      main: unavailable,
+      pullRequest: unavailable,
+      checks: unavailable,
+      reviews: unavailable,
+      ruleset: unavailable
+    },
+    reasonCodes: ['GITHUB_WORK_STATE_UNAVAILABLE'],
+    uncertainties: [],
     error: 'github_context_unavailable'
   };
 }
@@ -92,6 +125,10 @@ function nextAction(
     return 'wait_for_github_checks';
   }
   return session.lastCheckpoint?.nextAction ?? null;
+}
+
+function operationNeedsGithubWorkState(operation: string): boolean {
+  return /(^github\.|merge|review|github_checks|pull_request|create_pr|create_branch)/i.test(operation);
 }
 
 export function createGovernedOperationalContextService(
@@ -163,7 +200,7 @@ export function createGovernedOperationalContextService(
     );
     if (!rawLocks) limitations.push('locks_unavailable');
     const activeLocks: PublicGovernedLock[] = (rawLocks ?? []).slice(0, 100);
-    const workBranch = session?.workBranch ?? input.workBranch;
+    const workBranch = session?.workBranch ?? currentState?.currentTask?.workBranch ?? input.workBranch;
     const github = await safeRead(
       () => explicit
         ? options.github.reconcileExplicit(workBranch)
@@ -201,6 +238,130 @@ export function createGovernedOperationalContextService(
     );
     if (!runtimeRealtimeAvailable) limitations.push('runtime_realtime_unavailable');
 
+    const currentTask = currentState?.currentTask ?? null;
+    const firstExecutableTask = currentState?.firstExecutableTask ?? null;
+    const taskStatuses = new Map(
+      (currentState?.workQueue.tasks ?? []).map((task) => [task.taskId, task.status])
+    );
+    const ownerMatches = currentTask
+      ? currentTask.ownerGovernedSessionId === session?.governedSessionId
+      : undefined;
+    const dependenciesSatisfied = currentTask
+      ? currentTask.dependencies.every((dependencyId) => taskStatuses.get(dependencyId) === 'DONE')
+      : undefined;
+    const auditBaselineValid = currentState?.auditBaseline?.valid
+      ?? liveState?.auditBaseline?.valid
+      ?? null;
+    const capabilityReality = projectRegisteredCapabilityRealities(
+      currentState?.catalogue?.tools ?? [],
+      generatedAt
+    );
+    const githubWorkStateAvailable = github.status === 'CURRENT';
+    const runtimeAligned = Boolean(
+      liveState
+      && liveState.alignment.githubVsS1 === 'ALIGNED'
+      && liveState.alignment.runtime === 'ALIGNED'
+    );
+    const documentationAligned = Boolean(
+      liveState
+      && liveState.alignment.documentation === 'ALIGNED'
+      && liveState.documentation.drift === false
+    );
+    const taskRuntimeRevision = currentTask?.runtimeRevision ?? null;
+    const deploymentExactShaSuccess = Boolean(
+      github.pullRequest?.merged === true
+      && taskRuntimeRevision
+      && liveState?.github.head === taskRuntimeRevision
+      && liveState.s1.head === taskRuntimeRevision
+      && liveState.s1.originMain === taskRuntimeRevision
+      && liveState.runtime.revision === taskRuntimeRevision
+      && liveState.runtime.health === 'healthy'
+    );
+    const taskReality = currentTask
+      ? deriveTaskReality({
+          declaredStatus: currentTask.status,
+          evidence: {
+            githubWorkStateAvailable,
+            pullRequestMerged: github.pullRequest?.merged === true,
+            ciExactHeadSuccess: Boolean(
+              github.checks.exactHead === true
+              && github.checks.requiredSatisfied === true
+              && github.checks.status === 'completed'
+              && github.checks.conclusion === 'success'
+            ),
+            deploymentExactShaSuccess,
+            runtimeAligned,
+            documentationAligned
+          },
+          observedAt: generatedAt
+        })
+      : null;
+    const computedNextAction = nextAction(
+      liveState, session, bootstrapStatus,
+      currentTask,
+      firstExecutableTask,
+      github, foreignLock
+    );
+    const operation = computedNextAction ?? 'observe_operational_context';
+    const selectedCapability = capabilityReality.find((entry) => entry.toolName === operation)
+      ?? deriveCapabilityReality({
+        toolName: operation,
+        registered: false,
+        governanceSafe: true,
+        observedAt: generatedAt,
+        provenance: ['governed_context_projection']
+      });
+    const governanceDecision = deriveGovernanceDecision({
+      operation,
+      capabilityReality: selectedCapability,
+      sessionPresent: Boolean(session),
+      bootstrapCurrent: bootstrapStatus === 'CURRENT',
+      lockConflicts: foreignLock ? 1 : 0,
+      githubWorkStateAvailable,
+      requiresGithubWorkState: operationNeedsGithubWorkState(operation),
+      githubReasonCodes: github.reasonCodes,
+      ownerMatches,
+      dependenciesSatisfied,
+      requiredEvidence: operationNeedsGithubWorkState(operation) ? ['github_work_state'] : [],
+      observedAt: generatedAt,
+      preconditions: {
+        sessionPresent: Boolean(session),
+        currentStateVersion: liveState?.stateVersion ?? null,
+        currentFreshness: liveState?.freshness ?? null,
+        acknowledgedStateVersion: session?.lastAcknowledgedStateVersion ?? null,
+        activeLockConflicts: foreignLock ? 1 : 0,
+        bootstrapReceiptStatus: bootstrapStatus,
+        ...(currentTask ? { currentTaskStatus: currentTask.status } : {}),
+        auditBaselineValid
+      },
+      task: currentTask ? { taskId: currentTask.taskId, status: currentTask.status } : null,
+      taskReality,
+      session: session
+        ? { governedSessionId: session.governedSessionId, status: session.status }
+        : null,
+      owner: currentTask?.ownerGovernedSessionId ?? null,
+      bootstrap: {
+        status: bootstrapStatus,
+        stateVersion: receipt?.stateVersion ?? null
+      },
+      dependencies: currentTask?.dependencies ?? [],
+      resourceScopes: currentTask?.resourceScopes ?? [],
+      githubWorkState: {
+        status: github.status,
+        error: github.error,
+        mainHead: github.mainHead,
+        workBranch: github.workBranch,
+        workBranchHead: github.workBranchHead
+      },
+      runtimeState: liveState
+        ? {
+            status: liveState.runtime.status,
+            revision: liveState.runtime.revision,
+            health: liveState.runtime.health
+          }
+        : null
+    });
+
     const context: GovernedOperationalContext = {
       schemaVersion: 1,
       generatedAt,
@@ -220,7 +381,7 @@ export function createGovernedOperationalContextService(
         catalogueDigest: currentState?.source.catalogueDigest ?? liveState?.capabilities?.catalogueDigest ?? null,
         inventoryDigest: currentState?.source.inventoryDigest ?? liveState?.inventory?.sourceDigest ?? null,
         governanceDigest: currentState?.governance?.digest ?? liveState?.governance?.digest ?? null,
-        auditBaselineValid: currentState?.auditBaseline?.valid ?? liveState?.auditBaseline?.valid ?? null
+        auditBaselineValid
       },
       workQueue: {
         storeRevision: currentState?.workQueue.storeRevision ?? null,
@@ -232,17 +393,15 @@ export function createGovernedOperationalContextService(
           }, {})
         ).sort(([left], [right]) => left.localeCompare(right)))
       },
-      currentTask: currentState?.currentTask ?? null,
-      firstExecutableTask: currentState?.firstExecutableTask ?? null,
+      currentTask,
+      firstExecutableTask,
+      capabilityReality,
+      taskReality,
+      governanceDecision,
       activeLocks,
       lastCheckpoint: session?.lastCheckpoint ?? null,
       blockers,
-      nextAction: nextAction(
-        liveState, session, bootstrapStatus,
-        currentState?.currentTask ?? null,
-        currentState?.firstExecutableTask ?? null,
-        github, foreignLock
-      ),
+      nextAction: computedNextAction,
       gate: {
         mode: options.gateMode,
         existingWriteToolsEnabled: options.existingWriteToolsEnabled,

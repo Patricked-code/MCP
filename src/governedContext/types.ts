@@ -1,5 +1,10 @@
 import type { LiveStateSnapshot } from '../liveState/types.js';
 import type {
+  CapabilityReality,
+  GovernanceDecision,
+  TaskReality
+} from '../governance/operationalDecision.js';
+import type {
   GovernedCheckpoint,
   GovernedLockRecord,
   GovernedSessionPublicRecord,
@@ -8,11 +13,38 @@ import type {
   IdentityAssurance
 } from '../operationalMemory/types.js';
 
+export type GithubEvidenceFreshness = 'CURRENT' | 'STALE' | 'UNAVAILABLE' | 'NOT_APPLICABLE';
+export type GithubEvidenceProvenance = 'github_api' | 'memory_cache';
+
+export type GithubReasonCode =
+  | 'GITHUB_CACHE_MISS'
+  | 'GITHUB_SURFACE_NOT_EXPOSED'
+  | 'GITHUB_AUTH_MISSING'
+  | 'GITHUB_AUTH_INVALID'
+  | 'GITHUB_PERMISSION_DENIED'
+  | 'GITHUB_NOT_FOUND_OR_INVISIBLE'
+  | 'GITHUB_TIMEOUT'
+  | 'GITHUB_STALE'
+  | 'GITHUB_HEAD_MISMATCH'
+  | 'GITHUB_REQUIRED_CHECKS_PENDING'
+  | 'GITHUB_REQUIRED_CHECKS_FAILED'
+  | 'GITHUB_REVIEW_BLOCKING'
+  | 'GITHUB_WORK_STATE_UNAVAILABLE';
+
+export type GithubOperationalUncertainty = 'GITHUB_VISIBILITY_UNCERTAIN';
+
+export type GithubEvidenceObservation = {
+  freshness: GithubEvidenceFreshness;
+  observedAt: string;
+  provenance: GithubEvidenceProvenance;
+};
+
 export type GithubOperationalContext = {
   status: 'CURRENT' | 'DEGRADED' | 'UNAVAILABLE';
   observedAt: string;
   mainHead: string | null;
   workBranch: string | null;
+  workBranchHead: string | null;
   pullRequest: {
     number: number;
     state: 'open' | 'closed';
@@ -21,6 +53,7 @@ export type GithubOperationalContext = {
     base: string;
     head: string;
     headSha: string;
+    author: string | null;
     updatedAt: string;
   } | null;
   checks: {
@@ -28,6 +61,14 @@ export type GithubOperationalContext = {
     conclusion: string | null;
     total: number;
     failed: number;
+    headSha: string | null;
+    exactHead: boolean | null;
+    required: Array<{
+      context: string;
+      status: string;
+      conclusion: string | null;
+    }>;
+    requiredSatisfied: boolean | null;
   };
   reviews: {
     approvals: number;
@@ -40,7 +81,28 @@ export type GithubOperationalContext = {
     requiresPullRequest: boolean | null;
     requiredStatusChecks: string[];
     requiresConversationResolution: boolean | null;
+    requiredApprovingReviewCount?: number | null;
   };
+  ownership: {
+    pullRequestAuthor: string | null;
+  };
+  activity: {
+    lastActivityAt: string | null;
+  };
+  cache: {
+    status: 'MISS' | 'HIT' | 'REFRESHED';
+    observedAt: string;
+    provenance: GithubEvidenceProvenance;
+  };
+  evidence: {
+    main: GithubEvidenceObservation;
+    pullRequest: GithubEvidenceObservation;
+    checks: GithubEvidenceObservation;
+    reviews: GithubEvidenceObservation;
+    ruleset: GithubEvidenceObservation;
+  };
+  reasonCodes: GithubReasonCode[];
+  uncertainties: GithubOperationalUncertainty[];
   error: string | null;
 };
 
@@ -75,6 +137,9 @@ export type GovernedOperationalContext = {
   };
   currentTask: GovernedTaskRecord | null;
   firstExecutableTask: GovernedTaskRecord | null;
+  capabilityReality: CapabilityReality[];
+  taskReality: TaskReality | null;
+  governanceDecision: GovernanceDecision | null;
   activeLocks: PublicGovernedLock[];
   lastCheckpoint: GovernedCheckpoint | null;
   blockers: string[];
