@@ -149,12 +149,11 @@ test('GitHub work state exposes exact-head, required checks, ownership, activity
       updated_at: '2026-08-29T02:00:00Z'
     }]);
     if (url.includes('/check-runs?')) return json({
-      head_sha: sha,
       total_count: 3,
       check_runs: [
-        { name: 'validate', status: 'completed', conclusion: 'success' },
-        { name: 'security', status: 'completed', conclusion: 'success' },
-        { name: 'optional', status: 'in_progress', conclusion: null }
+        { name: 'validate', head_sha: sha, status: 'completed', conclusion: 'success' },
+        { name: 'security', head_sha: sha, status: 'completed', conclusion: 'success' },
+        { name: 'optional', head_sha: sha, status: 'in_progress', conclusion: null }
       ]
     });
     if (url.includes('/reviews?')) return json([]);
