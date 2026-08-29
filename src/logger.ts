@@ -11,6 +11,10 @@ export const LOGGER_REDACT_PATHS = [
   '*.clientId',
   'client_id',
   '*.client_id',
+  'sessionId',
+  '*.sessionId',
+  'transportSessionId',
+  '*.transportSessionId',
   'req.query.client_id',
   'req.url',
   'req.originalUrl'
