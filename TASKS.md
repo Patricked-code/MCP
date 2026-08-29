@@ -19,13 +19,14 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ## Jalons terminés
 
-- PR #44, #45, #47, #49 et #52 fusionnées selon la gouvernance ; PR #50 fermée sans fusion comme doublon exact de la PR #49.
+- PR #44, #45, #47, #49, #52 et #55 fusionnées selon la gouvernance ; PR #50 fermée sans fusion comme doublon exact de la PR #49.
 - PR #44 : merge `3838c3918c3411a3317c6ea81047e77a7b627673`, CI `31684159546`, deploy `31684159586`, job `94396216832`.
 - PR #45 : merge `bac8779320c8b9529d2a5215dbb1b1f31f828987`, CI `31907827255`, deploy `31907827212`, job `95068288136`.
 - PR #47 : head `8dddc5656aa959f4c392d0f1816b5ee0e25709a0`, merge `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`, CI main `32535404248`, deploy `32535404345`, job `96935241275`.
 - PR #49 : head `1c9297d663624e5c348fba687051b649ca3e2a22`, CI `32565936838`, merge `c944fd9e7c05aad503f9e1d5d21e0ead25747886`; GitHub/S1/OCI/runtime exact-SHA attestés à cette étape.
 - PR #52 : head `33a3e424a5fe271cf82c1ee6db8c94785289e3ca`, CI PR `33213114008`, merge `fff44ff2db386942730a67f3884980c7824cae7f`, CI main `33214825660`, deploy `33214825772`, job `98996005106`.
 - PR #54 : réconciliation strictement documentaire post-PR #52, fusionnée au SHA `a35280e172e40525689520e1443ccd59e850e91a`; CI main `33222774901` et Governed Deploy `33222774905` réussis.
+- PR #55 : head `de0030b0df42a693d2e96c87f008c9ffd1c2ce04`, CI exact-head `33256403390` / job `99110808499`, merge `2c2dde2bffe62b2685bf2fad94530571762470c8`, CI main `33256566688`, Governed Deploy `33256566695` / job `99111230626`; GitHub, S1, origin/main et runtime attestés au même SHA.
 
 ## Tâche clôturée
 
@@ -61,7 +62,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ## Chantier courant — Unified Operational Work State
 
-Le chantier continue sur l'unique branche `mcp/unified-operational-work-state-20260829`, descendante de `main@a35280e172e40525689520e1443ccd59e850e91a`. L'identifiant et l'état runtime de la tâche restent à lire dans la Governed Task Queue; aucun identifiant dynamique n'est figé ici sur la seule base d'une fixture de test.
+La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. La présente branche `mcp/reconcile-unified-operational-work-state-20260829` est une réconciliation strictement documentaire descendante de `main@2c2dde2bffe62b2685bf2fad94530571762470c8`. Le statut final, le checkpoint, les locks et la session restent exclusivement sous l'autorité d'Operational Memory.
 
 - [x] composer une réalité opérationnelle à partir des autorités existantes sans second store ni seconde source de vérité ;
 - [x] ajouter `CapabilityReality` avec registration, callability, authorization, `safeNow`, reason codes et preuves requises ;
@@ -75,14 +76,15 @@ Le chantier continue sur l'unique branche `mcp/unified-operational-work-state-20
 - [x] propager les `reasonCodes` GitHub observés vers `GovernanceDecision` afin qu'un check/review bloquant rende la mutation non sûre ;
 - [x] distinguer explicitement cache miss, auth manquante/invalide, permission, not-found/invisible, timeout, stale, head mismatch, checks et reviews bloquantes ;
 - [x] observer le HEAD read-only de `workBranch` avant la création d'une PR lorsque la branche existe ;
-- [x] valider le head fonctionnel `c25ba8c775b5a2a81f84b424ffd01686e833ea0c` par CI #549 (`33238637948`) : typecheck, build, docs, gouvernance, secrets, `247/247` read-only safety et diff verts ;
-- [x] réconcilier les documents canoniques sur la branche candidate sans changer le mode `shadow` ni les autorités ;
-- [x] ouvrir la Draft PR #55 sur cette même branche, sans nouvelle branche concurrente ;
-- [ ] obtenir la CI du head documentaire exact et vérifier le diff final ;
-- [ ] passer PR #55 Ready seulement après exact-head CI, reviews/threads et ruleset propres ;
-- [ ] obtenir revue et CI exact-head sans finding actionnable ;
-- [ ] fusionner seulement sous les gardes de `main`, puis attester l'Autodeploy exact-SHA ;
-- [ ] réattester runtime/Live State et réconcilier la documentation post-déploiement avant toute déclaration `DONE`.
+- [x] corriger les quatre findings finaux : SHA de chaque check-run, preuve de déploiement liée au `runtimeRevision` de la tâche, agrégation des rulesets applicables et nombre d'approbations requis ;
+- [x] obtenir la CI exact-head de PR #55 : run `33256403390`, job `99110808499`, `250/250` tests, typecheck/build/docs/gouvernance/secrets/diff verts ;
+- [x] résoudre tous les threads actionnables et satisfaire le ruleset `protect-main` ;
+- [x] fusionner PR #55 avec garde `expected_head_sha` au merge `2c2dde2bffe62b2685bf2fad94530571762470c8` ;
+- [x] attester CI main `33256566688` et Governed Deploy `33256566695` / job `99111230626` sur ce SHA exact ;
+- [x] réattester GitHub main, S1 HEAD, S1 origin/main et runtime healthy au SHA `2c2dde2bffe62b2685bf2fad94530571762470c8` dans Live State `51` ;
+- [ ] fusionner la présente réconciliation docs-only après CI/review exact-head ;
+- [ ] réattester Live State / Current State / Governed Context / Task Reality après le merge documentaire ;
+- [ ] seulement ensuite faire évoluer la Task Queue jusqu'à `DONE`, créer le checkpoint final, libérer le lock et préserver/fermer la Governed Session selon son cycle normal.
 
 ## Maintenance séparée
 
