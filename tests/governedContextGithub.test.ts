@@ -39,14 +39,16 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
       merged_at: null,
       base: { ref: 'main' },
       head: { ref: BRANCH, sha: SHA },
+      user: { login: 'task-owner' },
       updated_at: '2026-08-13T08:00:00Z'
     }]);
     if (url.includes('/check-runs?')) return json({
+      head_sha: SHA,
       total_count: 3,
       check_runs: [
-        { status: 'completed', conclusion: 'success' },
-        { status: 'completed', conclusion: 'failure' },
-        { status: 'in_progress', conclusion: null }
+        { name: 'validate', status: 'completed', conclusion: 'success' },
+        { name: 'security', status: 'completed', conclusion: 'failure' },
+        { name: 'optional', status: 'in_progress', conclusion: null }
       ]
     });
     if (url.includes('/pulls/44/reviews?')) return json([
@@ -142,8 +144,11 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
   const cacheOnly = await collector.getCurrent(BRANCH);
 
   assert.deepEqual(joined, first);
-  assert.deepEqual(cached, first);
-  assert.deepEqual(cacheOnly, first);
+  assert.equal(first.cache.status, 'REFRESHED');
+  assert.equal(cached.cache.status, 'HIT');
+  assert.equal(cacheOnly.cache.status, 'HIT');
+  assert.equal(cached.workBranchHead, first.workBranchHead);
+  assert.equal(cacheOnly.pullRequest?.headSha, first.pullRequest?.headSha);
   assert.equal(calls.length, 7);
   assert.equal(calls.every((call) => call.authorization === 'Bearer sensitive-token-never-returned'), true);
   assert.equal(calls.filter((call) => call.method === 'POST').length, 1);
@@ -152,6 +157,7 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
     observedAt: '2026-08-13T08:00:00.000Z',
     mainHead: SHA,
     workBranch: BRANCH,
+    workBranchHead: SHA,
     pullRequest: {
       number: 44,
       state: 'open',
@@ -160,13 +166,21 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
       base: 'main',
       head: BRANCH,
       headSha: SHA,
+      author: 'task-owner',
       updatedAt: '2026-08-13T08:00:00.000Z'
     },
     checks: {
       status: 'in_progress',
       conclusion: 'failure',
       total: 3,
-      failed: 1
+      failed: 1,
+      headSha: SHA,
+      exactHead: true,
+      required: [
+        { context: 'validate', status: 'completed', conclusion: 'success' },
+        { context: 'security', status: 'completed', conclusion: 'failure' }
+      ],
+      requiredSatisfied: false
     },
     reviews: {
       approvals: 1,
@@ -179,6 +193,20 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
       requiresPullRequest: true,
       requiredStatusChecks: ['validate', 'security'],
       requiresConversationResolution: true
+    },
+    ownership: { pullRequestAuthor: 'task-owner' },
+    activity: { lastActivityAt: '2026-08-13T08:00:00.000Z' },
+    cache: {
+      status: 'REFRESHED',
+      observedAt: '2026-08-13T08:00:00.000Z',
+      provenance: 'github_api'
+    },
+    evidence: {
+      main: { freshness: 'CURRENT', observedAt: '2026-08-13T08:00:00.000Z', provenance: 'github_api' },
+      pullRequest: { freshness: 'CURRENT', observedAt: '2026-08-13T08:00:00.000Z', provenance: 'github_api' },
+      checks: { freshness: 'CURRENT', observedAt: '2026-08-13T08:00:00.000Z', provenance: 'github_api' },
+      reviews: { freshness: 'CURRENT', observedAt: '2026-08-13T08:00:00.000Z', provenance: 'github_api' },
+      ruleset: { freshness: 'CURRENT', observedAt: '2026-08-13T08:00:00.000Z', provenance: 'github_api' }
     },
     error: null
   });
@@ -195,6 +223,7 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
     collector.reconcileExplicit(BRANCH)
   ]);
   assert.deepEqual(forcedJoined, forced);
+  assert.equal(forced.cache.status, 'REFRESHED');
   assert.equal(calls.length, 14);
 });
 
@@ -212,6 +241,7 @@ test('getCurrent sur cache miss ne déclenche aucun accès GitHub', async () => 
   assert.equal(calls, 0);
   assert.equal(result.status, 'UNAVAILABLE');
   assert.equal(result.error, 'github_cache_miss');
+  assert.equal(result.cache.status, 'MISS');
 });
 
 test('un body malformé dégrade la vue avec champs bornés sans propager de secret', async () => {
