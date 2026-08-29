@@ -131,11 +131,10 @@ test('GitHub exact-head checks and review blockers are distinct reason codes', a
       updated_at: OBSERVED_AT
     }]);
     if (url.includes('/check-runs?')) return json({
-      head_sha: SHA,
       total_count: 2,
       check_runs: [
-        { name: 'validate', status: 'in_progress', conclusion: null },
-        { name: 'security', status: 'completed', conclusion: 'failure' }
+        { name: 'validate', head_sha: SHA, status: 'in_progress', conclusion: null },
+        { name: 'security', head_sha: SHA, status: 'completed', conclusion: 'failure' }
       ]
     });
     if (url.includes('/reviews?')) return json([{
