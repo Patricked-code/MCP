@@ -102,19 +102,13 @@ test('plusieurs governed sessions OAuth compatibles échouent fermé sans liaiso
     service.unbindTransport('transport-first-raw');
     service.unbindTransport('transport-second-raw');
 
-    const result = await (service as typeof service & {
-      autoResumeCompatibleSession(input: { repository: 'Patricked-code/MCP' }, request: {
-        transportSessionId: string;
-        identity: RequestIdentity;
-      }): Promise<
-        | { status: 'RESUMED'; session: typeof first.session }
-        | { status: 'NONE' }
-        | { status: 'AMBIGUOUS' }
-      >;
-    }).autoResumeCompatibleSession({ repository: 'Patricked-code/MCP' }, {
-      transportSessionId: 'transport-new-ambiguous-raw',
-      identity: OAUTH_IDENTITY
-    });
+    const result = await service.autoResumeCompatibleSession(
+      { repository: 'Patricked-code/MCP' },
+      {
+        transportSessionId: 'transport-new-ambiguous-raw',
+        identity: OAUTH_IDENTITY
+      }
+    );
 
     assert.equal(result.status, 'AMBIGUOUS');
     assert.equal(bindings.lookup('transport-new-ambiguous-raw'), null);
@@ -128,6 +122,53 @@ test('plusieurs governed sessions OAuth compatibles échouent fermé sans liaiso
     });
     assert.equal(firstAfter?.sessionRevision, first.session.sessionRevision);
     assert.equal(secondAfter?.sessionRevision, second.session.sessionRevision);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('un credential partagé ne reprend jamais automatiquement une governed session non liée', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-auto-bootstrap-shared-'));
+  try {
+    const store = createAtomicJsonStore({
+      filePath: join(directory, 'sessions.json'),
+      schema: SessionStoreDocumentSchema,
+      empty: createEmptySessionStoreDocument
+    });
+    const bindings = createTransportBindings();
+    const service = createGovernedSessionService({
+      store,
+      bindings,
+      idleTtlSeconds: 86_400,
+      resumeGraceSeconds: 604_800,
+      now: () => new Date('2026-08-29T14:00:00.000Z')
+    });
+    const sharedIdentity: RequestIdentity = {
+      principalId: 'shared:legacy',
+      clientId: 'wealthtech-shared-mcp',
+      assurance: 'shared_credential'
+    };
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-shared-existing-raw',
+      identity: sharedIdentity
+    });
+    service.unbindTransport('transport-shared-existing-raw');
+
+    const result = await service.autoResumeCompatibleSession(
+      { repository: 'Patricked-code/MCP' },
+      {
+        transportSessionId: 'transport-shared-new-raw',
+        identity: sharedIdentity
+      }
+    );
+
+    assert.equal(result.status, 'NONE');
+    assert.equal(bindings.lookup('transport-shared-new-raw'), null);
+    const after = await service.getVisibleSession(opened.session.governedSessionId, {
+      transportSessionId: 'transport-shared-new-raw',
+      identity: sharedIdentity
+    });
+    assert.equal(after, null);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
