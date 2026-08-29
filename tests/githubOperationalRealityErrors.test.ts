@@ -1,7 +1,15 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { createGithubOperationalContextCollector } from '../src/governedContext/github.js';
+process.env.MCP_AUTH_TOKEN ??= 'mcp-unit-test-value-20260805-abcdef';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
+
+const { createGithubOperationalContextCollector } = await import(
+  '../src/governedContext/github.js'
+);
 
 const OBSERVED_AT = '2026-08-29T03:10:00.000Z';
 const BRANCH = 'mcp/unified-operational-work-state-20260829';
