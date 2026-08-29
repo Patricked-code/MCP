@@ -13,6 +13,7 @@ const { createGovernedOperationalContextService } = await import(
 
 const NOW = '2026-08-29T03:30:00.000Z';
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
+const OTHER_SESSION_ID = '22222222-2222-4222-8222-222222222222';
 const BRANCH = 'mcp/unified-operational-work-state-20260829';
 const SHA = 'a'.repeat(40);
 
@@ -91,18 +92,23 @@ function githubContext(workBranch: string | null) {
   } as any;
 }
 
-test('branchless intake session observes task branch and propagates operation evidence into one decision', async () => {
-  let observedWorkBranch: string | null | undefined;
-  const currentTask = {
+function task(overrides: Record<string, unknown> = {}) {
+  return {
     taskId: 'TASK-20260829-001', intentKey: 'mandatory-agent-bootstrap:unified-operational-work-state',
     title: 'Unified Operational Work State', summary: 'test', repository: 'Patricked-code/MCP',
     priority: 90, sequence: 3, status: 'IN_PROGRESS',
     ownerGovernedSessionId: SESSION_ID, dependencies: ['TASK-20260822-001'],
     resourceScopes: ['repo:Patricked-code/MCP'], workBranch: BRANCH, pullRequestNumber: null,
     observedHeadSha: null, runtimeRevision: null, blockers: [], nextAction: 'github.merge',
-    createdAt: NOW, updatedAt: NOW, taskRevision: 4
-  };
-  const dependency = { ...currentTask, taskId: 'TASK-20260822-001', status: 'DONE', ownerGovernedSessionId: null };
+    createdAt: NOW, updatedAt: NOW, taskRevision: 4,
+    ...overrides
+  } as any;
+}
+
+test('branchless intake session observes task branch and propagates operation evidence into one decision', async () => {
+  let observedWorkBranch: string | null | undefined;
+  const currentTask = task();
+  const dependency = task({ taskId: 'TASK-20260822-001', status: 'DONE', ownerGovernedSessionId: null });
   const service = createGovernedOperationalContextService({
     liveState: {
       getCurrent: async () => liveState(),
@@ -144,9 +150,54 @@ test('branchless intake session observes task branch and propagates operation ev
   assert.deepEqual(context.governanceDecision?.dependencies, ['TASK-20260822-001']);
   assert.equal(context.governanceDecision?.runtimeState?.revision, SHA);
   assert.equal(context.taskReality?.evidence.deploymentExactShaSuccess, false);
-  assert.equal(context.governanceDecision?.reasonCodes.includes('OWNER_MISMATCH'), false);
-  assert.equal(context.governanceDecision?.reasonCodes.includes('DEPENDENCY_INCOMPLETE'), false);
+  assert.equal(context.governanceDecision?.reasonCodes.includes('WRONG_OWNER_OR_SESSION'), false);
+  assert.equal(context.governanceDecision?.reasonCodes.includes('DEPENDENCY_NOT_DONE'), false);
+  assert.equal(context.governanceDecision?.reasonCodes.includes('AUDIT_BASELINE_INVALID'), false);
   assert.equal(context.governanceDecision?.reasonCodes.includes('RUNTIME_SHA_MISMATCH'), false);
   assert.equal(context.governanceDecision?.reasonCodes.includes('GITHUB_REQUIRED_CHECKS_FAILED'), true);
+  assert.equal(context.governanceDecision?.mayMutate, false);
+});
+
+test('governed context fails closed on inconsistent owner dependency and audit evidence', async () => {
+  const currentTask = task({ ownerGovernedSessionId: OTHER_SESSION_ID });
+  const dependency = task({
+    taskId: 'TASK-20260822-001',
+    status: 'IN_PROGRESS',
+    ownerGovernedSessionId: OTHER_SESSION_ID
+  });
+  const service = createGovernedOperationalContextService({
+    liveState: {
+      getCurrent: async () => liveState(),
+      reconcileNow: async () => liveState()
+    },
+    github: {
+      getCurrent: async (workBranch) => githubContext(workBranch),
+      reconcileExplicit: async (workBranch) => githubContext(workBranch)
+    },
+    sessions: { getVisibleSession: async () => session() },
+    locks: { listActiveLocks: async () => [] },
+    currentState: {
+      getInventory: async () => ({
+        source: { catalogueDigest: 'b'.repeat(64), inventoryDigest: 'e'.repeat(64) },
+        governance: { digest: 'c'.repeat(64) }, auditBaseline: { valid: false },
+        workQueue: { storeRevision: 15, tasks: [dependency, currentTask] },
+        currentTask, firstExecutableTask: null, contradictions: [], catalogue: { tools: [] }
+      })
+    },
+    gateMode: 'shadow', existingWriteToolsEnabled: true, now: () => new Date(NOW)
+  } as any);
+
+  const context = await service.getCurrent({
+    governedSessionId: SESSION_ID,
+    workBranch: null,
+    request: {
+      transportSessionId: 'transport-A',
+      identity: { principalId: 'oauth:owner', clientId: 'client', assurance: 'oauth_subject' }
+    }
+  } as any);
+
+  assert.equal(context.governanceDecision?.reasonCodes.includes('WRONG_OWNER_OR_SESSION'), true);
+  assert.equal(context.governanceDecision?.reasonCodes.includes('DEPENDENCY_NOT_DONE'), true);
+  assert.equal(context.governanceDecision?.reasonCodes.includes('AUDIT_BASELINE_INVALID'), true);
   assert.equal(context.governanceDecision?.mayMutate, false);
 });
