@@ -8,11 +8,21 @@ import type {
   IdentityAssurance
 } from '../operationalMemory/types.js';
 
+export type GithubEvidenceFreshness = 'CURRENT' | 'UNAVAILABLE' | 'NOT_APPLICABLE';
+export type GithubEvidenceProvenance = 'github_api' | 'memory_cache';
+
+export type GithubEvidenceObservation = {
+  freshness: GithubEvidenceFreshness;
+  observedAt: string;
+  provenance: GithubEvidenceProvenance;
+};
+
 export type GithubOperationalContext = {
   status: 'CURRENT' | 'DEGRADED' | 'UNAVAILABLE';
   observedAt: string;
   mainHead: string | null;
   workBranch: string | null;
+  workBranchHead: string | null;
   pullRequest: {
     number: number;
     state: 'open' | 'closed';
@@ -21,6 +31,7 @@ export type GithubOperationalContext = {
     base: string;
     head: string;
     headSha: string;
+    author: string | null;
     updatedAt: string;
   } | null;
   checks: {
@@ -28,6 +39,14 @@ export type GithubOperationalContext = {
     conclusion: string | null;
     total: number;
     failed: number;
+    headSha: string | null;
+    exactHead: boolean | null;
+    required: Array<{
+      context: string;
+      status: string;
+      conclusion: string | null;
+    }>;
+    requiredSatisfied: boolean | null;
   };
   reviews: {
     approvals: number;
@@ -40,6 +59,24 @@ export type GithubOperationalContext = {
     requiresPullRequest: boolean | null;
     requiredStatusChecks: string[];
     requiresConversationResolution: boolean | null;
+  };
+  ownership: {
+    pullRequestAuthor: string | null;
+  };
+  activity: {
+    lastActivityAt: string | null;
+  };
+  cache: {
+    status: 'MISS' | 'HIT' | 'REFRESHED';
+    observedAt: string;
+    provenance: GithubEvidenceProvenance;
+  };
+  evidence: {
+    main: GithubEvidenceObservation;
+    pullRequest: GithubEvidenceObservation;
+    checks: GithubEvidenceObservation;
+    reviews: GithubEvidenceObservation;
+    ruleset: GithubEvidenceObservation;
   };
   error: string | null;
 };
