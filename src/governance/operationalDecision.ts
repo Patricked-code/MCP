@@ -29,6 +29,10 @@ export type CapabilityRealityInput = {
   provenance?: string[];
 };
 
+type RegisteredToolProjection = {
+  name: string;
+};
+
 function unique(values: string[]): string[] {
   return [...new Set(values)];
 }
@@ -75,6 +79,21 @@ export function deriveCapabilityReality(input: CapabilityRealityInput): Capabili
     observedAt: input.observedAt,
     provenance: unique(input.provenance ?? [])
   };
+}
+
+export function projectRegisteredCapabilityRealities(
+  tools: RegisteredToolProjection[],
+  observedAt: string
+): CapabilityReality[] {
+  return [...tools]
+    .sort((left, right) => left.name.localeCompare(right.name))
+    .map((tool) => deriveCapabilityReality({
+      toolName: tool.name,
+      registered: true,
+      governanceSafe: true,
+      observedAt,
+      provenance: ['runtime_catalogue']
+    }));
 }
 
 export type TaskObservedPhase =
@@ -189,8 +208,43 @@ export function deriveTaskReality(input: {
   };
 }
 
+export type GovernanceDecisionTask = {
+  taskId: string;
+  status: string;
+} | null;
+
+export type GovernanceDecisionSession = {
+  governedSessionId: string;
+  status: string;
+} | null;
+
 export type GovernanceDecision = {
   operation: string;
+  task: GovernanceDecisionTask;
+  taskReality: TaskReality | null;
+  session: GovernanceDecisionSession;
+  owner: string | null;
+  bootstrap: {
+    status: string;
+    stateVersion: number | null;
+  } | null;
+  dependencies: string[];
+  resourceScopes: string[];
+  locks: {
+    activeConflictCount: number;
+  };
+  githubWorkState: {
+    status: string;
+    error: string | null;
+    mainHead: string | null;
+    workBranch: string | null;
+    workBranchHead: string | null;
+  } | null;
+  runtimeState: {
+    status: string;
+    revision: string | null;
+    health: string | null;
+  } | null;
   capabilityReality: CapabilityReality;
   requiredEvidence: string[];
   blockers: string[];
@@ -210,6 +264,15 @@ export function deriveGovernanceDecision(input: {
   requiresGithubWorkState: boolean;
   requiredEvidence: string[];
   observedAt: string;
+  task?: GovernanceDecisionTask;
+  taskReality?: TaskReality | null;
+  session?: GovernanceDecisionSession;
+  owner?: string | null;
+  bootstrap?: GovernanceDecision['bootstrap'];
+  dependencies?: string[];
+  resourceScopes?: string[];
+  githubWorkState?: GovernanceDecision['githubWorkState'];
+  runtimeState?: GovernanceDecision['runtimeState'];
 }): GovernanceDecision {
   const reasons: string[] = [];
   if (!input.capabilityReality.safeNow) reasons.push(...input.capabilityReality.reasonCodes);
@@ -220,11 +283,21 @@ export function deriveGovernanceDecision(input: {
     reasons.push('GITHUB_WORK_STATE_UNAVAILABLE');
   }
   const reasonCodes = unique(reasons);
-  const blockers = reasonCodes.filter((reason) => reason !== 'CALLABILITY_UNATTESTED');
+  const blockers = [...reasonCodes];
   const mayMutate = reasonCodes.length === 0;
 
   return {
     operation: input.operation,
+    task: input.task ?? null,
+    taskReality: input.taskReality ?? null,
+    session: input.session ?? null,
+    owner: input.owner ?? null,
+    bootstrap: input.bootstrap ?? null,
+    dependencies: unique(input.dependencies ?? []),
+    resourceScopes: unique(input.resourceScopes ?? []),
+    locks: { activeConflictCount: input.lockConflicts },
+    githubWorkState: input.githubWorkState ?? null,
+    runtimeState: input.runtimeState ?? null,
     capabilityReality: input.capabilityReality,
     requiredEvidence: unique([
       ...input.requiredEvidence,
