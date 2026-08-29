@@ -256,7 +256,8 @@ export function createGovernedOperationalContextService(
       && liveState.documentation.drift === false
     );
     const deploymentExactShaSuccess = Boolean(
-      liveState?.github.head
+      github.pullRequest?.merged === true
+      && liveState?.github.head
       && runtimeAligned
       && liveState.s1.head === liveState.github.head
       && liveState.s1.originMain === liveState.github.head
