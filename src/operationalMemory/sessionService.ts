@@ -57,7 +57,8 @@ export type AutoResumeCompatibleSessionInput = {
 
 export type AutoResumeCompatibleSessionResult =
   | { status: 'RESUMED'; session: GovernedSessionPublicRecord }
-  | { status: 'NONE' };
+  | { status: 'NONE' }
+  | { status: 'AMBIGUOUS' };
 
 export type GovernedSessionService = {
   openSession(input: OpenSessionInput, request: SessionRequest): Promise<OpenSessionResult>;
@@ -410,7 +411,8 @@ export function createGovernedSessionService(
         return Number.isFinite(expiredAt)
           && at.getTime() - expiredAt <= options.resumeGraceSeconds * 1_000;
       });
-      if (candidates.length !== 1) return { status: 'NONE' };
+      if (candidates.length === 0) return { status: 'NONE' };
+      if (candidates.length > 1) return { status: 'AMBIGUOUS' };
 
       const candidate = candidates[0];
       if (!candidate) return { status: 'NONE' };
