@@ -81,6 +81,7 @@ export type GithubOperationalContext = {
     requiresPullRequest: boolean | null;
     requiredStatusChecks: string[];
     requiresConversationResolution: boolean | null;
+    requiredApprovingReviewCount?: number | null;
   };
   ownership: {
     pullRequestAuthor: string | null;
