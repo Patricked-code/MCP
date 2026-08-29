@@ -605,6 +605,20 @@ export function createGithubOperationalContextCollector(
         }
       }
 
+      let workBranchHead = pullRequest?.headSha ?? null;
+      if (normalizedBranch && !pullRequest) {
+        const branchResult = await request(
+          `/repos/${REPOSITORY}/commits/${encodeURIComponent(normalizedBranch)}`,
+          'work_branch'
+        );
+        if (!branchResult.ok) {
+          errors.push(branchResult.error ?? 'github_work_branch_unavailable');
+        } else {
+          workBranchHead = sha(object(branchResult.json)?.sha);
+          if (!workBranchHead) errors.push('github_work_branch_malformed');
+        }
+      }
+
       const rulesPromise = request(`/repos/${REPOSITORY}/rulesets?per_page=20`, 'rulesets');
       const checksPromise = pullRequest
         ? request(`/repos/${REPOSITORY}/commits/${pullRequest.headSha}/check-runs?per_page=100`, 'checks')
@@ -712,7 +726,7 @@ export function createGithubOperationalContextCollector(
         observedAt,
         mainHead,
         workBranch: normalizedBranch,
-        workBranchHead: pullRequest?.headSha ?? null,
+        workBranchHead,
         pullRequest,
         checks,
         reviews,
