@@ -158,7 +158,9 @@ export type TaskRealityDrift =
   | 'ALIGNED'
   | 'TASK_STATE_BEHIND_REALITY'
   | 'TASK_STATE_AHEAD_OF_REALITY'
-  | 'EVIDENCE_UNAVAILABLE';
+  | 'EVIDENCE_UNAVAILABLE'
+  | 'REALITY_INCOMPLETE'
+  | 'REALITY_CONTRADICTORY';
 
 export type TaskRealityEvidence = {
   githubWorkStateAvailable: boolean;
@@ -174,6 +176,7 @@ export type TaskReality = {
   observedPhase: TaskObservedPhase;
   drift: TaskRealityDrift;
   evidence: TaskRealityEvidence;
+  contradictions: string[];
   recommendedLifecyclePath: string[];
   observedAt: string;
 };
@@ -233,25 +236,36 @@ function observedTaskPhase(evidence: TaskRealityEvidence): TaskObservedPhase {
 export function deriveTaskReality(input: {
   declaredStatus: string;
   evidence: TaskRealityEvidence;
+  evidenceComplete?: boolean;
+  contradictions?: string[];
   observedAt: string;
 }): TaskReality {
   const observedPhase = observedTaskPhase(input.evidence);
   const declaredRank = DECLARED_RANK[input.declaredStatus] ?? -1;
   const observedRank = OBSERVED_RANK[observedPhase];
+  const contradictions = unique(input.contradictions ?? []);
   let drift: TaskRealityDrift;
-  if (!input.evidence.githubWorkStateAvailable) drift = 'EVIDENCE_UNAVAILABLE';
+  if (contradictions.length > 0) drift = 'REALITY_CONTRADICTORY';
+  else if (input.evidenceComplete === false) drift = 'REALITY_INCOMPLETE';
+  else if (!input.evidence.githubWorkStateAvailable) drift = 'EVIDENCE_UNAVAILABLE';
   else if (declaredRank < observedRank) drift = 'TASK_STATE_BEHIND_REALITY';
   else if (declaredRank > observedRank) drift = 'TASK_STATE_AHEAD_OF_REALITY';
   else drift = 'ALIGNED';
+
+  const lifecycleActionable = ![
+    'ALIGNED',
+    'EVIDENCE_UNAVAILABLE',
+    'REALITY_INCOMPLETE',
+    'REALITY_CONTRADICTORY'
+  ].includes(drift);
 
   return {
     declaredStatus: input.declaredStatus,
     observedPhase,
     drift,
     evidence: input.evidence,
-    recommendedLifecyclePath: drift === 'ALIGNED' || drift === 'EVIDENCE_UNAVAILABLE'
-      ? []
-      : [...LIFECYCLE_PATH],
+    contradictions,
+    recommendedLifecyclePath: lifecycleActionable ? [...LIFECYCLE_PATH] : [],
     observedAt: input.observedAt
   };
 }
@@ -310,6 +324,11 @@ export function deriveGovernanceDecision(input: {
   lockConflicts: number;
   githubWorkStateAvailable: boolean;
   requiresGithubWorkState: boolean;
+  githubReasonCodes?: string[];
+  ownerMatches?: boolean;
+  dependenciesSatisfied?: boolean;
+  runtimeAligned?: boolean;
+  requiresRuntimeAlignment?: boolean;
   requiredEvidence: string[];
   observedAt: string;
   preconditions?: GovernancePreconditionInput;
@@ -332,8 +351,14 @@ export function deriveGovernanceDecision(input: {
     if (!input.bootstrapCurrent) reasons.push('BOOTSTRAP_NOT_CURRENT');
     if (input.lockConflicts > 0) reasons.push('LOCK_CONFLICT');
   }
-  if (input.requiresGithubWorkState && !input.githubWorkStateAvailable) {
-    reasons.push('GITHUB_WORK_STATE_UNAVAILABLE');
+  if (input.ownerMatches === false) reasons.push('WRONG_OWNER_OR_SESSION');
+  if (input.dependenciesSatisfied === false) reasons.push('DEPENDENCY_NOT_DONE');
+  if (input.requiresGithubWorkState) {
+    if (!input.githubWorkStateAvailable) reasons.push('GITHUB_WORK_STATE_UNAVAILABLE');
+    reasons.push(...(input.githubReasonCodes ?? []));
+  }
+  if (input.requiresRuntimeAlignment && input.runtimeAligned === false) {
+    reasons.push('RUNTIME_SHA_MISMATCH');
   }
   const reasonCodes = unique(reasons);
   const blockers = [...reasonCodes];
