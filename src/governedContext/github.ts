@@ -2,7 +2,10 @@ import { readFile } from 'node:fs/promises';
 
 import { env } from '../config/env.js';
 import { resolveGithubApiBase } from '../github/authorizationDiagnostics.js';
-import type { GithubOperationalContext } from './types.js';
+import type {
+  GithubEvidenceFreshness,
+  GithubOperationalContext
+} from './types.js';
 
 const REPOSITORY = 'Patricked-code/MCP';
 const OWNER = 'Patricked-code';
@@ -39,19 +42,44 @@ type CacheEntry = {
   value: GithubOperationalContext;
 };
 
+type ParsedChecks = {
+  summary: GithubOperationalContext['checks'];
+  runs: Array<{ context: string; status: string; conclusion: string | null }>;
+};
+
+function evidence(
+  observedAt: string,
+  freshness: GithubEvidenceFreshness,
+  provenance: 'github_api' | 'memory_cache' = 'github_api'
+) {
+  return { freshness, observedAt, provenance } as const;
+}
+
 function emptyContext(
   observedAt: string,
   workBranch: string | null,
   status: GithubOperationalContext['status'],
-  error: string
+  error: string,
+  cacheStatus: GithubOperationalContext['cache']['status'] = 'REFRESHED',
+  cacheProvenance: GithubOperationalContext['cache']['provenance'] = 'github_api'
 ): GithubOperationalContext {
   return {
     status,
     observedAt,
     mainHead: null,
     workBranch,
+    workBranchHead: null,
     pullRequest: null,
-    checks: { status: 'unavailable', conclusion: null, total: 0, failed: 0 },
+    checks: {
+      status: 'unavailable',
+      conclusion: null,
+      total: 0,
+      failed: 0,
+      headSha: null,
+      exactHead: null,
+      required: [],
+      requiredSatisfied: null
+    },
     reviews: { approvals: 0, changesRequested: 0, unresolvedThreads: null },
     ruleset: {
       name: null,
@@ -60,7 +88,32 @@ function emptyContext(
       requiredStatusChecks: [],
       requiresConversationResolution: null
     },
+    ownership: { pullRequestAuthor: null },
+    activity: { lastActivityAt: null },
+    cache: { status: cacheStatus, observedAt, provenance: cacheProvenance },
+    evidence: {
+      main: evidence(observedAt, 'UNAVAILABLE', cacheProvenance),
+      pullRequest: evidence(observedAt, 'UNAVAILABLE', cacheProvenance),
+      checks: evidence(observedAt, 'UNAVAILABLE', cacheProvenance),
+      reviews: evidence(observedAt, 'UNAVAILABLE', cacheProvenance),
+      ruleset: evidence(observedAt, 'UNAVAILABLE', cacheProvenance)
+    },
     error
+  };
+}
+
+function withCache(
+  value: GithubOperationalContext,
+  status: 'HIT' | 'REFRESHED',
+  observedAt: string
+): GithubOperationalContext {
+  return {
+    ...value,
+    cache: {
+      status,
+      observedAt,
+      provenance: status === 'HIT' ? 'memory_cache' : 'github_api'
+    }
   };
 }
 
@@ -104,6 +157,7 @@ function parsePullRequest(value: unknown): GithubOperationalContext['pullRequest
   const pull = object(value);
   const base = object(pull?.base);
   const head = object(pull?.head);
+  const user = object(pull?.user);
   const number = pull?.number;
   const state = pull?.state;
   const baseRef = string(base?.ref);
@@ -129,14 +183,16 @@ function parsePullRequest(value: unknown): GithubOperationalContext['pullRequest
     base: baseRef,
     head: headRef,
     headSha,
+    author: string(user?.login, 100),
     updatedAt
   };
 }
 
-function parseChecks(value: unknown): GithubOperationalContext['checks'] | null {
+function parseChecks(value: unknown, expectedHeadSha: string): ParsedChecks | null {
   const root = object(value);
   if (!root || !Array.isArray(root.check_runs)) return null;
-  const runs = root.check_runs.slice(0, 100).map(object).filter(Boolean);
+  const rawRuns = root.check_runs.slice(0, 100);
+  const runs = rawRuns.map(object).filter(Boolean);
   if (runs.length !== Math.min(root.check_runs.length, 100)) return null;
   const totalCandidate = root.total_count;
   const total = typeof totalCandidate === 'number' && Number.isInteger(totalCandidate)
@@ -153,14 +209,48 @@ function parseChecks(value: unknown): GithubOperationalContext['checks'] | null 
     : statuses.includes('queued')
       ? 'queued'
       : 'completed';
+  const headSha = sha(root.head_sha);
+  const runSummaries = runs.flatMap((run) => {
+    const context = string(run?.name, 100);
+    const runStatus = string(run?.status, 40);
+    if (!context || !runStatus) return [];
+    return [{
+      context,
+      status: runStatus,
+      conclusion: string(run?.conclusion, 40)
+    }];
+  });
   return {
-    status,
-    conclusion: failed > 0
-      ? 'failure'
-      : status === 'completed' && total > 0 ? 'success' : null,
-    total,
-    failed
+    summary: {
+      status,
+      conclusion: failed > 0
+        ? 'failure'
+        : status === 'completed' && total > 0 ? 'success' : null,
+      total,
+      failed,
+      headSha,
+      exactHead: headSha ? headSha === expectedHeadSha : null,
+      required: [],
+      requiredSatisfied: null
+    },
+    runs: runSummaries
   };
+}
+
+function applyRequiredChecks(
+  checks: GithubOperationalContext['checks'],
+  runs: ParsedChecks['runs'],
+  requiredContexts: string[]
+): GithubOperationalContext['checks'] {
+  const required = requiredContexts.map((context) => {
+    const run = runs.find((candidate) => candidate.context === context);
+    return run ?? { context, status: 'missing', conclusion: null };
+  });
+  const requiredSatisfied = requiredContexts.length === 0
+    ? true
+    : required.every((item) => item.status === 'completed'
+      && ['success', 'neutral', 'skipped'].includes(item.conclusion ?? ''));
+  return { ...checks, required, requiredSatisfied };
 }
 
 function parseReviews(value: unknown): Pick<
@@ -196,11 +286,7 @@ GithubOperationalContext['reviews'], 'approvals' | 'changesRequested'
       || submittedAtMs > current.submittedAt
       || (submittedAtMs === current.submittedAt && index > current.index)
     ) {
-      latestByReviewer.set(reviewerKey, {
-        state,
-        submittedAt: submittedAtMs,
-        index
-      });
+      latestByReviewer.set(reviewerKey, { state, submittedAt: submittedAtMs, index });
     }
   });
   const currentReviews = [...latestByReviewer.values()];
@@ -389,6 +475,7 @@ export function createGithubOperationalContextCollector(
       else if (!mainHead) errors.push('github_main_malformed');
 
       let pullRequest: GithubOperationalContext['pullRequest'] = null;
+      let pullRequestFreshness: GithubEvidenceFreshness = normalizedBranch ? 'UNAVAILABLE' : 'NOT_APPLICABLE';
       if (normalizedBranch) {
         const params = new URLSearchParams({
           state: 'all',
@@ -399,11 +486,17 @@ export function createGithubOperationalContextCollector(
         const pullsResult = await request(`/repos/${REPOSITORY}/pulls?${params}`, 'pulls');
         if (!pullsResult.ok) errors.push(pullsResult.error ?? 'github_pulls_unavailable');
         else if (!Array.isArray(pullsResult.json)) errors.push('github_pulls_malformed');
-        else if (pullsResult.json.length > 0) {
-          pullRequest = pullsResult.json.slice(0, 10)
-            .map(parsePullRequest)
-            .find((candidate) => candidate?.head === normalizedBranch) ?? null;
-          if (!pullRequest) errors.push('github_pulls_malformed');
+        else {
+          pullRequestFreshness = 'CURRENT';
+          if (pullsResult.json.length > 0) {
+            pullRequest = pullsResult.json.slice(0, 10)
+              .map(parsePullRequest)
+              .find((candidate) => candidate?.head === normalizedBranch) ?? null;
+            if (!pullRequest) {
+              errors.push('github_pulls_malformed');
+              pullRequestFreshness = 'UNAVAILABLE';
+            }
+          }
         }
       }
 
@@ -435,6 +528,7 @@ export function createGithubOperationalContextCollector(
       }
 
       let ruleset: GithubOperationalContext['ruleset'] | null = null;
+      let rulesFreshness: GithubEvidenceFreshness = 'UNAVAILABLE';
       if (!rulesResult.ok) {
         errors.push(rulesResult.error ?? 'github_rulesets_unavailable');
       } else {
@@ -442,6 +536,7 @@ export function createGithubOperationalContextCollector(
         if (!summaries) {
           errors.push('github_rulesets_malformed');
         } else if (summaries.length === 0) {
+          rulesFreshness = 'CURRENT';
           ruleset = {
             name: null,
             enforcement: null,
@@ -468,6 +563,8 @@ export function createGithubOperationalContextCollector(
               requiredStatusChecks: [],
               requiresConversationResolution: null
             };
+          } else {
+            rulesFreshness = 'CURRENT';
           }
         }
       }
@@ -476,23 +573,42 @@ export function createGithubOperationalContextCollector(
       }
 
       let checks: GithubOperationalContext['checks'] = {
-        status: 'unavailable', conclusion: null, total: 0, failed: 0
+        status: 'unavailable',
+        conclusion: null,
+        total: 0,
+        failed: 0,
+        headSha: null,
+        exactHead: null,
+        required: [],
+        requiredSatisfied: null
       };
+      let checksFreshness: GithubEvidenceFreshness = pullRequest ? 'UNAVAILABLE' : 'NOT_APPLICABLE';
       let reviews: GithubOperationalContext['reviews'] = {
         approvals: 0, changesRequested: 0, unresolvedThreads: null
       };
+      let reviewsFreshness: GithubEvidenceFreshness = pullRequest ? 'UNAVAILABLE' : 'NOT_APPLICABLE';
       if (pullRequest) {
-        const parsedChecks = checksResult.ok ? parseChecks(checksResult.json) : null;
-        if (parsedChecks) checks = parsedChecks;
-        else errors.push(checksResult.error ?? 'github_checks_malformed');
+        const parsedChecks = checksResult.ok ? parseChecks(checksResult.json, pullRequest.headSha) : null;
+        if (parsedChecks) {
+          checks = applyRequiredChecks(
+            parsedChecks.summary,
+            parsedChecks.runs,
+            ruleset?.requiredStatusChecks ?? []
+          );
+          checksFreshness = 'CURRENT';
+        } else errors.push(checksResult.error ?? 'github_checks_malformed');
         const parsedReviews = reviewsResult.ok ? parseReviews(reviewsResult.json) : null;
         if (parsedReviews) reviews = { ...reviews, ...parsedReviews };
         else errors.push(reviewsResult.error ?? 'github_reviews_malformed');
         const unresolvedThreads = threadsResult.ok
           ? parseUnresolvedThreads(threadsResult.json)
           : null;
-        if (unresolvedThreads !== null) reviews.unresolvedThreads = unresolvedThreads;
-        else errors.push(threadsResult.error ?? 'github_threads_malformed');
+        if (parsedReviews && unresolvedThreads !== null) {
+          reviews.unresolvedThreads = unresolvedThreads;
+          reviewsFreshness = 'CURRENT';
+        } else if (unresolvedThreads === null) {
+          errors.push(threadsResult.error ?? 'github_threads_malformed');
+        }
       }
 
       const error = errorSummary(errors);
@@ -501,10 +617,21 @@ export function createGithubOperationalContextCollector(
         observedAt,
         mainHead,
         workBranch: normalizedBranch,
+        workBranchHead: pullRequest?.headSha ?? null,
         pullRequest,
         checks,
         reviews,
         ruleset: ruleset ?? emptyContext(observedAt, normalizedBranch, 'DEGRADED', 'x').ruleset,
+        ownership: { pullRequestAuthor: pullRequest?.author ?? null },
+        activity: { lastActivityAt: pullRequest?.updatedAt ?? null },
+        cache: { status: 'REFRESHED', observedAt, provenance: 'github_api' },
+        evidence: {
+          main: evidence(observedAt, mainHead ? 'CURRENT' : 'UNAVAILABLE'),
+          pullRequest: evidence(observedAt, pullRequestFreshness),
+          checks: evidence(observedAt, checksFreshness),
+          reviews: evidence(observedAt, reviewsFreshness),
+          ruleset: evidence(observedAt, rulesFreshness)
+        },
         error
       };
     } finally {
@@ -519,11 +646,14 @@ export function createGithubOperationalContextCollector(
     if (current) return current;
     if (!force) {
       const cached = cache.get(key);
-      if (cached && cached.expiresAt > at) return cached.value;
+      if (cached && cached.expiresAt > at) {
+        return withCache(cached.value, 'HIT', now().toISOString());
+      }
     }
     const work = collectWork(workBranch).then((value) => {
-      cache.set(key, { expiresAt: now().getTime() + cacheTtlMs, value });
-      return value;
+      const refreshed = withCache(value, 'REFRESHED', value.observedAt);
+      cache.set(key, { expiresAt: now().getTime() + cacheTtlMs, value: refreshed });
+      return refreshed;
     }).finally(() => {
       if (inFlight.get(key) === work) inFlight.delete(key);
     });
@@ -535,11 +665,13 @@ export function createGithubOperationalContextCollector(
     getCurrent: async (workBranch) => {
       const key = workBranch ?? '(none)';
       const cached = cache.get(key);
-      if (cached && cached.expiresAt > now().getTime()) return cached.value;
+      if (cached && cached.expiresAt > now().getTime()) {
+        return withCache(cached.value, 'HIT', now().toISOString());
+      }
       const normalizedBranch = normalizeBranch(workBranch);
       return workBranch !== null && !normalizedBranch
-        ? emptyContext(now().toISOString(), null, 'DEGRADED', 'github_work_branch_invalid')
-        : emptyContext(now().toISOString(), normalizedBranch, 'UNAVAILABLE', 'github_cache_miss');
+        ? emptyContext(now().toISOString(), null, 'DEGRADED', 'github_work_branch_invalid', 'MISS', 'memory_cache')
+        : emptyContext(now().toISOString(), normalizedBranch, 'UNAVAILABLE', 'github_cache_miss', 'MISS', 'memory_cache');
     },
     collect: (workBranch) => run(workBranch, false),
     reconcileExplicit: (workBranch) => run(workBranch, true)
