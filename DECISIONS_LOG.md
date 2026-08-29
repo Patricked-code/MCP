@@ -3,6 +3,22 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-08-29 — Unified Operational Work State sans autorité parallèle
+
+Contexte : Live State, Current-State Inventory, Operational Memory, Governed Task Queue et le collecteur GitHub savent déjà observer leurs domaines, mais aucune projection unique ne relie encore capability, tâche, session, owner, dépendances, locks, GitHub, runtime et opération proposée pour répondre de manière bornée à « que peut-on faire maintenant ? ».
+
+Décision d'architecture : ajouter `CapabilityReality`, `TaskReality` et `GovernanceDecision` comme projections dérivées dans le processus existant. Aucun store, service persistant ou moteur current-state concurrent n'est créé. GitHub reste autorité des PR/checks/reviews, Live State de l'alignement exact-SHA, Operational Memory des sessions/checkpoints/locks/receipts, Governed Task Queue des tâches et registrations MCP des capabilities.
+
+Décision Observer Before Actor : une opération dépendante de GitHub ne peut ignorer l'état GitHub déjà observé. La branche de travail est résolue par priorité `session.workBranch`, puis `currentTask.workBranch`, puis branche d'entrée explicite. Les reason codes GitHub sont propagés dans `GovernanceDecision` uniquement lorsque l'opération exige cette preuve; ils ne doivent pas bloquer une opération indépendante de GitHub.
+
+Décision de réalité de tâche : l'état déclaré ne remplace jamais la preuve observée. `TaskReality` signale les états en avance, en retard, incomplets ou contradictoires; `VERIFIED` exige les preuves de livraison nécessaires et ne doit pas être déduit d'un simple commit ou merge.
+
+Décision de compatibilité : le WRITE gate reste `shadow`. Les décisions nouvelles sont observables et testables mais ne remplacent pas les contrats WRITE historiques. Tout passage à `enforce` reste hors périmètre et exige un GO, une décision et une PR distincts. OIDC, Autodeploy, 2FA, `ENABLE_WRITE_TOOLS` et `allow_write` restent invariants.
+
+Preuve fonctionnelle : le head `34d51247c021524f4c3e03824c938529bc831743` a passé la CI `33236805556`, job `99059095387`, avec typecheck, build, docs, gouvernance, secrets, read-only safety et diff tous verts. Le test d'intégration Observer Before Actor a exposé successivement deux gaps réels — branche de tâche non propagée puis reason code GitHub non propagé — corrigés par deux changements minimaux sans refonte.
+
+Gate de livraison : documenter ce chantier sur la même branche, obtenir CI du head documentaire exact, ouvrir une Draft PR, exiger revue et checks exact-head, fusionner uniquement sous les protections de `main`, puis attester Autodeploy/runtime/Live State avant toute clôture. La migration Node GitHub Actions et l'enforcement restent des chantiers séparés.
+
 ## 2026-08-28 — Clôture fonctionnelle de la correction Mandatory Bootstrap
 
 Décision de livraison : accepter la PR #52 après validation `234/234`, CI exacte et revue indépendante sans Critical/Important/Minor, puis fusionner uniquement le head `33a3e424a5fe271cf82c1ee6db8c94785289e3ca` par `expected_head_sha`.

@@ -47,9 +47,13 @@ flowchart TD
     B --> G["Governed Context"]
     D --> G
     F --> G
-    G --> H["Bootstrap Receipt"]
+    J["GitHub work state"] --> G
+    G --> K["Operational Reality / Governance Decision"]
+    K --> H["Bootstrap Receipt / next safe action"]
     H --> I["Outils write gouvernés"]
 ```
+
+La couche `Operational Reality / Governance Decision` est une projection dérivée : elle n'est ni un store, ni une nouvelle autorité. Elle assemble les preuves déjà détenues par Live State, Current-State Inventory, Operational Memory, Governed Task Queue, GitHub et les registrations MCP.
 
 ### Live State
 
@@ -108,6 +112,24 @@ La queue ordonne les tâches par priorité puis FIFO, vérifie leurs dépendance
 
 Le receipt relie la session, l’identité agent/client, la version Live State, les SHA GitHub/runtime et les digests catalogue, gouvernance et task registry. Il ne contient ni prompt brut, ni jeton, ni secret de reprise.
 
+Pour l'observation GitHub d'un travail en cours, la branche est résolue dans cet ordre : branche déjà liée à la Governed Session, puis branche portée par la tâche courante, puis branche explicitement fournie à l'entrée. Une session d'intake sans branche ne perd donc pas la continuité de la tâche déjà gouvernée.
+
+### Unified Operational Work State
+
+`src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.
+
+`CapabilityReality` répond, pour une capability donnée, à quatre questions distinctes : outil enregistré, appelabilité attestée, autorisation attestée et préconditions de gouvernance satisfaites. `safeNow=true` exige les quatre preuves; une inconnue reste une inconnue et produit une preuve requise au lieu d'une autorisation implicite.
+
+`TaskReality` compare l'état déclaré de la tâche aux preuves observées. Les phases observées sont `UNKNOWN`, `DISCOVERED`, `IN_PROGRESS`, `REVIEW`, `MERGE_READY`, `DEPLOYING`, `VERIFYING` et `VERIFIED`. Les écarts sont explicités comme `ALIGNED`, état déclaré en retard ou en avance, preuve indisponible/incomplète ou réalité contradictoire. Une tâche n'est `VERIFIED` que lorsque les preuves nécessaires de PR/CI exact-head, déploiement exact-SHA, runtime et documentation sont réunies.
+
+`GovernanceDecision` compose l'opération proposée, la tâche, sa réalité, la session/owner, le bootstrap, les dépendances, scopes, locks, l'état GitHub, l'état runtime et la capability. Elle retourne les preuves requises, blockers, reason codes, `nextSafeAction` et `mayMutate`. Elle ne modifie aucun store et ne remplace aucune décision d'autorité source.
+
+### Observer Before Actor
+
+Avant qu'une opération dépendante d'une autorité soit considérée sûre, cette autorité doit avoir été observée avec une preuve suffisamment fraîche. Pour GitHub, la projection porte notamment la branche et le head de travail, PR, checks requis exact-head, reviews, threads, ruleset, ownership, activité, fraîcheur/cache et reason codes. Ces reason codes sont propagés à `GovernanceDecision` lorsqu'une opération exige GitHub; ils ne bloquent pas une opération qui ne dépend pas de GitHub.
+
+Cette règle reste aujourd'hui une couche d'observation et de décision compatible avec le mode `shadow`; elle ne constitue pas une activation implicite de l'enforcement.
+
 ### WRITE gate
 
 `src/governance/scopedWriteGate.ts` observe :
@@ -138,7 +160,7 @@ Le catalogue exact, y compris les outils feature-gated, est généré dans `.mcp
 
 ## Stores persistants
 
-Les stores runtime vivent sous `/app/data` dans le volume Docker : sessions, locks, journal et queue. Les écritures utilisent des validations strictes, des révisions optimistes et des remplacements atomiques. GitHub et les documents gouvernés conservent les sources versionnées ; les stores runtime ne les remplacent pas.
+Les stores runtime vivent sous `/app/data` dans le volume Docker : sessions, locks, journal et queue. Les écritures utilisent des validations strictes, des révisions optimistes et des remplacements atomiques. GitHub et les documents gouvernés conservent les sources versionnées ; les stores runtime ne les remplacent pas. Unified Operational Work State n'ajoute aucun store persistant.
 
 ## Livraison exacte-SHA
 
@@ -167,6 +189,8 @@ Build et restart restent séparés. Aucun push direct sur `main`, aucun build ma
 - 92 contrats historiques protégés contre suppression, renommage et dérive de schéma ;
 - ajout additif des nouvelles surfaces ;
 - TDD `RED → GREEN`, tests ciblés, régression complète, typecheck, build, gouvernance documentaire, scan de secrets et `git diff --check` ;
+- si une capacité équivalente existe, elle est étendue plutôt que dupliquée ;
+- si une autorité existe, elle est consultée plutôt que remplacée par une copie concurrente ;
 - suppression destructive, migration et enforcement bloquant uniquement après autorisation distincte.
 
 ## Règle de maintenance
