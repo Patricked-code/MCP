@@ -6,6 +6,7 @@ import { logger } from '../logger.js';
 import { liveStateEngine } from '../liveState/engine.js';
 import { operationalMemoryConfig } from '../operationalMemory/config.js';
 import { getDefaultOperationalEventJournal } from '../operationalMemory/eventJournal.js';
+import { deriveGovernancePreconditionReasons } from './operationalDecision.js';
 import {
   getGovernedContextToolDependencies
 } from '../tools/governedContext.js';
@@ -53,26 +54,42 @@ export type ShadowWriteDecisionInput = Omit<ShadowWriteDecision, 'verdict'> & {
   currentFreshness: 'CURRENT' | 'STALE' | null;
 };
 
+const PRECONDITION_TO_SHADOW_VERDICT = {
+  SESSION_UNBOUND: 'session_unbound',
+  CONTEXT_UNACKNOWLEDGED: 'context_unacknowledged',
+  STATE_VERSION_STALE: 'state_version_stale',
+  LOCK_CONFLICT: 'lock_conflict',
+  BOOTSTRAP_RECEIPT_MISSING: 'bootstrap_receipt_missing',
+  BOOTSTRAP_RECEIPT_STALE: 'bootstrap_receipt_stale',
+  TASK_UNCLAIMED: 'task_unclaimed',
+  AUDIT_BASELINE_INVALID: 'audit_baseline_invalid'
+} as const;
+
 export function deriveShadowWriteDecision(
   input: ShadowWriteDecisionInput
 ): ShadowWriteDecision {
   let verdict: ShadowWriteDecision['verdict'];
-  if (input.mode === 'off') verdict = 'off';
-  else if (!input.governedSessionId) verdict = 'session_unbound';
-  else if (input.currentStateVersion === null || input.currentFreshness !== 'CURRENT') {
-    verdict = 'state_version_stale';
-  } else if (input.acknowledgedStateVersion === null) verdict = 'context_unacknowledged';
-  else if (input.acknowledgedStateVersion !== input.currentStateVersion) {
-    verdict = 'state_version_stale';
-  } else if (input.activeLockConflicts > 0) verdict = 'lock_conflict';
-  else if (input.bootstrapReceiptStatus !== undefined && input.bootstrapReceiptStatus !== 'CURRENT') {
-    verdict = input.bootstrapReceiptStatus === 'MISSING' || input.bootstrapReceiptStatus === null
-      ? 'bootstrap_receipt_missing'
-      : 'bootstrap_receipt_stale';
-  } else if (Object.prototype.hasOwnProperty.call(input, 'currentTaskStatus') && !input.currentTaskStatus) {
-    verdict = 'task_unclaimed';
-  } else if (input.auditBaselineValid === false) verdict = 'audit_baseline_invalid';
-  else verdict = 'shadow_ready';
+  if (input.mode === 'off') {
+    verdict = 'off';
+  } else {
+    const optionalBootstrap = Object.prototype.hasOwnProperty.call(input, 'bootstrapReceiptStatus')
+      ? { bootstrapReceiptStatus: input.bootstrapReceiptStatus }
+      : {};
+    const optionalTask = Object.prototype.hasOwnProperty.call(input, 'currentTaskStatus')
+      ? { currentTaskStatus: input.currentTaskStatus }
+      : {};
+    const [reason] = deriveGovernancePreconditionReasons({
+      sessionPresent: Boolean(input.governedSessionId),
+      currentStateVersion: input.currentStateVersion,
+      currentFreshness: input.currentFreshness,
+      acknowledgedStateVersion: input.acknowledgedStateVersion,
+      activeLockConflicts: input.activeLockConflicts,
+      ...optionalBootstrap,
+      ...optionalTask,
+      auditBaselineValid: input.auditBaselineValid
+    });
+    verdict = reason ? PRECONDITION_TO_SHADOW_VERDICT[reason] : 'shadow_ready';
+  }
   const { currentFreshness: _currentFreshness, ...decision } = input;
   return { ...decision, verdict };
 }
