@@ -267,13 +267,14 @@ export function createGovernedOperationalContextService(
       && liveState.alignment.documentation === 'ALIGNED'
       && liveState.documentation.drift === false
     );
+    const taskRuntimeRevision = currentTask?.runtimeRevision ?? null;
     const deploymentExactShaSuccess = Boolean(
       github.pullRequest?.merged === true
-      && liveState?.github.head
-      && runtimeAligned
-      && liveState.s1.head === liveState.github.head
-      && liveState.s1.originMain === liveState.github.head
-      && liveState.runtime.revision === liveState.github.head
+      && taskRuntimeRevision
+      && liveState?.github.head === taskRuntimeRevision
+      && liveState.s1.head === taskRuntimeRevision
+      && liveState.s1.originMain === taskRuntimeRevision
+      && liveState.runtime.revision === taskRuntimeRevision
       && liveState.runtime.health === 'healthy'
     );
     const taskReality = currentTask
