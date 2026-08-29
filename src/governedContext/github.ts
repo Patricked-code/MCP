@@ -544,6 +544,18 @@ function parseRulesetDetail(
       .filter((entry): entry is string => entry !== null);
   }), 50);
   const pullRequestRules = rules.filter((rule) => rule?.type === 'pull_request');
+  const approvalCounts = pullRequestRules.flatMap((rule) => {
+    const candidate = object(rule?.parameters)?.required_approving_review_count;
+    return typeof candidate === 'number'
+      && Number.isInteger(candidate)
+      && candidate >= 0
+      && candidate <= 100
+      ? [candidate]
+      : [];
+  });
+  const requiredApprovingReviewCount = approvalCounts.length > 0
+    ? Math.max(...approvalCounts)
+    : null;
   const appliesToMain = rulesetAppliesToMain(value);
   if (appliesToMain === null) return null;
   return {
@@ -557,7 +569,8 @@ function parseRulesetDetail(
         (rule) => rule?.type === 'required_conversation_resolution'
       ) || pullRequestRules.some(
         (rule) => object(rule?.parameters)?.required_review_thread_resolution === true
-      )
+      ),
+      ...(requiredApprovingReviewCount !== null ? { requiredApprovingReviewCount } : {})
     }
   };
 }
@@ -579,6 +592,14 @@ function aggregateRulesets(
     applicable.flatMap((value) => value.ruleset.name ? [value.ruleset.name] : []),
     20
   );
+  const approvalCounts = applicable.flatMap((value) => (
+    typeof value.ruleset.requiredApprovingReviewCount === 'number'
+      ? [value.ruleset.requiredApprovingReviewCount]
+      : []
+  ));
+  const requiredApprovingReviewCount = approvalCounts.length > 0
+    ? Math.max(...approvalCounts)
+    : null;
   return {
     name: names.length > 0 ? names.join(',').slice(0, 120) : null,
     enforcement: 'active',
@@ -589,7 +610,8 @@ function aggregateRulesets(
     ),
     requiresConversationResolution: applicable.some(
       (value) => value.ruleset.requiresConversationResolution === true
-    )
+    ),
+    ...(requiredApprovingReviewCount !== null ? { requiredApprovingReviewCount } : {})
   };
 }
 
@@ -847,6 +869,12 @@ export function createGithubOperationalContextCollector(
 
       const error = errorSummary(errors);
       const reasoning = githubReasoning({ error, checks, reviews });
+      const approvalBlocked = reviewsFreshness === 'CURRENT'
+        && typeof ruleset?.requiredApprovingReviewCount === 'number'
+        && reviews.approvals < ruleset.requiredApprovingReviewCount;
+      const reasonCodes = approvalBlocked
+        ? boundedUnique([...reasoning.reasonCodes, 'GITHUB_REVIEW_BLOCKING'])
+        : reasoning.reasonCodes;
       return {
         status: error ? 'DEGRADED' : 'CURRENT',
         observedAt,
@@ -868,6 +896,7 @@ export function createGithubOperationalContextCollector(
           ruleset: evidence(observedAt, rulesFreshness)
         },
         ...reasoning,
+        reasonCodes,
         error
       };
     } finally {
