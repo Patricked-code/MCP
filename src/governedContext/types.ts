@@ -1,5 +1,10 @@
 import type { LiveStateSnapshot } from '../liveState/types.js';
 import type {
+  CapabilityReality,
+  GovernanceDecision,
+  TaskReality
+} from '../governance/operationalDecision.js';
+import type {
   GovernedCheckpoint,
   GovernedLockRecord,
   GovernedSessionPublicRecord,
@@ -112,6 +117,9 @@ export type GovernedOperationalContext = {
   };
   currentTask: GovernedTaskRecord | null;
   firstExecutableTask: GovernedTaskRecord | null;
+  capabilityReality: CapabilityReality[];
+  taskReality: TaskReality | null;
+  governanceDecision: GovernanceDecision | null;
   activeLocks: PublicGovernedLock[];
   lastCheckpoint: GovernedCheckpoint | null;
   blockers: string[];
