@@ -305,6 +305,7 @@ export function createGovernedOperationalContextService(
       lockConflicts: foreignLock ? 1 : 0,
       githubWorkStateAvailable,
       requiresGithubWorkState: operationNeedsGithubWorkState(operation),
+      githubReasonCodes: github.reasonCodes,
       requiredEvidence: operationNeedsGithubWorkState(operation) ? ['github_work_state'] : [],
       observedAt: generatedAt,
       task: currentTask ? { taskId: currentTask.taskId, status: currentTask.status } : null,
