@@ -200,7 +200,7 @@ export function createGovernedOperationalContextService(
     );
     if (!rawLocks) limitations.push('locks_unavailable');
     const activeLocks: PublicGovernedLock[] = (rawLocks ?? []).slice(0, 100);
-    const workBranch = session?.workBranch ?? input.workBranch;
+    const workBranch = session?.workBranch ?? currentState?.currentTask?.workBranch ?? input.workBranch;
     const github = await safeRead(
       () => explicit
         ? options.github.reconcileExplicit(workBranch)
