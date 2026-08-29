@@ -208,6 +208,8 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
       reviews: { freshness: 'CURRENT', observedAt: '2026-08-13T08:00:00.000Z', provenance: 'github_api' },
       ruleset: { freshness: 'CURRENT', observedAt: '2026-08-13T08:00:00.000Z', provenance: 'github_api' }
     },
+    reasonCodes: ['GITHUB_REQUIRED_CHECKS_FAILED', 'GITHUB_REVIEW_BLOCKING'],
+    uncertainties: [],
     error: null
   });
   assert.equal(JSON.stringify(first).includes('sensitive-token'), false);
@@ -242,6 +244,7 @@ test('getCurrent sur cache miss ne déclenche aucun accès GitHub', async () => 
   assert.equal(result.status, 'UNAVAILABLE');
   assert.equal(result.error, 'github_cache_miss');
   assert.equal(result.cache.status, 'MISS');
+  assert.deepEqual(result.reasonCodes, ['GITHUB_CACHE_MISS']);
 });
 
 test('un body malformé dégrade la vue avec champs bornés sans propager de secret', async () => {
@@ -280,5 +283,6 @@ test('le timeout global est borné et retourne UNAVAILABLE sans throw', async ()
   const result = await collector.collect(BRANCH);
   assert.equal(result.status, 'UNAVAILABLE');
   assert.equal(result.error, 'github_timeout');
+  assert.deepEqual(result.reasonCodes, ['GITHUB_TIMEOUT']);
   assert.equal(JSON.stringify(result).includes('timeout-sensitive-token'), false);
 });
