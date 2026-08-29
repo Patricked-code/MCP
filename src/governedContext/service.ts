@@ -240,6 +240,18 @@ export function createGovernedOperationalContextService(
 
     const currentTask = currentState?.currentTask ?? null;
     const firstExecutableTask = currentState?.firstExecutableTask ?? null;
+    const taskStatuses = new Map(
+      (currentState?.workQueue.tasks ?? []).map((task) => [task.taskId, task.status])
+    );
+    const ownerMatches = currentTask
+      ? currentTask.ownerGovernedSessionId === session?.governedSessionId
+      : undefined;
+    const dependenciesSatisfied = currentTask
+      ? currentTask.dependencies.every((dependencyId) => taskStatuses.get(dependencyId) === 'DONE')
+      : undefined;
+    const auditBaselineValid = currentState?.auditBaseline?.valid
+      ?? liveState?.auditBaseline?.valid
+      ?? null;
     const capabilityReality = projectRegisteredCapabilityRealities(
       currentState?.catalogue?.tools ?? [],
       generatedAt
@@ -307,8 +319,20 @@ export function createGovernedOperationalContextService(
       githubWorkStateAvailable,
       requiresGithubWorkState: operationNeedsGithubWorkState(operation),
       githubReasonCodes: github.reasonCodes,
+      ownerMatches,
+      dependenciesSatisfied,
       requiredEvidence: operationNeedsGithubWorkState(operation) ? ['github_work_state'] : [],
       observedAt: generatedAt,
+      preconditions: {
+        sessionPresent: Boolean(session),
+        currentStateVersion: liveState?.stateVersion ?? null,
+        currentFreshness: liveState?.freshness ?? null,
+        acknowledgedStateVersion: session?.lastAcknowledgedStateVersion ?? null,
+        activeLockConflicts: foreignLock ? 1 : 0,
+        bootstrapReceiptStatus: bootstrapStatus,
+        ...(currentTask ? { currentTaskStatus: currentTask.status } : {}),
+        auditBaselineValid
+      },
       task: currentTask ? { taskId: currentTask.taskId, status: currentTask.status } : null,
       taskReality,
       session: session
@@ -356,7 +380,7 @@ export function createGovernedOperationalContextService(
         catalogueDigest: currentState?.source.catalogueDigest ?? liveState?.capabilities?.catalogueDigest ?? null,
         inventoryDigest: currentState?.source.inventoryDigest ?? liveState?.inventory?.sourceDigest ?? null,
         governanceDigest: currentState?.governance?.digest ?? liveState?.governance?.digest ?? null,
-        auditBaselineValid: currentState?.auditBaseline?.valid ?? liveState?.auditBaseline?.valid ?? null
+        auditBaselineValid
       },
       workQueue: {
         storeRevision: currentState?.workQueue.storeRevision ?? null,
