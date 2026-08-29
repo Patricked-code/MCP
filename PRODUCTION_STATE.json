@@ -6,11 +6,11 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "githubObservedAt": "2026-08-22T09:51:57.351Z",
-  "githubObservationBasis": "github_connector_pr49_exact_head_ci_merge_plus_wealthtech_live_state_v33_post_autodeploy_attestation",
-  "serverStateFreshness": "current_post_pr49_attestation",
-  "runtimeStateFreshness": "current_exact_sha_post_pr49",
-  "githubCommitFull": "c944fd9e7c05aad503f9e1d5d21e0ead25747886",
+  "githubObservedAt": "2026-08-28T21:59:14.182Z",
+  "githubObservationBasis": "github_connector_pr52_exact_head_review_merge_main_ci_deploy_plus_wealthtech_live_state_v39_attestation",
+  "serverStateFreshness": "current_post_pr52_attestation",
+  "runtimeStateFreshness": "current_exact_sha_post_pr52",
+  "githubCommitFull": "fff44ff2db386942730a67f3884980c7824cae7f",
   "requiredRules": [
     "GitHub est la source versionnée.",
     "Le serveur MCP est la source exécutée.",
@@ -28,7 +28,7 @@
   },
   "githubState": {
     "currentMainVerified": true,
-    "currentMainCommit": "c944fd9e7c05aad503f9e1d5d21e0ead25747886",
+    "currentMainCommit": "fff44ff2db386942730a67f3884980c7824cae7f",
     "pullRequest37Merged": true,
     "pullRequest38Merged": true,
     "pullRequest39Merged": true,
@@ -109,14 +109,24 @@
     "mandatoryAgentBootstrapCandidateHead": "1c9297d663624e5c348fba687051b649ca3e2a22",
     "mandatoryAgentBootstrapHeadCiRunId": 32565936838,
     "mandatoryAgentBootstrapMergeCommit": "c944fd9e7c05aad503f9e1d5d21e0ead25747886",
-    "mandatoryAgentBootstrapState": "merged_deployed_attested_documentation_reconciliation"
+    "mandatoryAgentBootstrapState": "merged_deployed_attested_documentation_reconciliation",
+    "mandatoryBootstrapCorrectionPullRequest": 52,
+    "mandatoryBootstrapCorrectionBranch": "mcp/fix-mandatory-bootstrap-review-20260822",
+    "mandatoryBootstrapCorrectionCandidateHead": "33a3e424a5fe271cf82c1ee6db8c94785289e3ca",
+    "mandatoryBootstrapCorrectionTree": "4655f4aaa8b79557bf1fbb23651faa7e72a7021d",
+    "mandatoryBootstrapCorrectionHeadCiRunId": 33213114008,
+    "mandatoryBootstrapCorrectionMergeCommit": "fff44ff2db386942730a67f3884980c7824cae7f",
+    "mandatoryBootstrapCorrectionMainCiRunId": 33214825660,
+    "mandatoryBootstrapCorrectionDeployRunId": 33214825772,
+    "mandatoryBootstrapCorrectionDeployJobId": 98996005106,
+    "mandatoryBootstrapCorrectionState": "merged_deployed_attested_threads_resolved_documentation_reconciliation"
   },
   "serverGitState": {
     "branch": "main",
-    "lastDirectlyVerifiedCommitAbbrev": "c944fd9",
-    "lastDirectlyVerifiedCommitFull": "c944fd9e7c05aad503f9e1d5d21e0ead25747886",
-    "originMain": "c944fd9e7c05aad503f9e1d5d21e0ead25747886",
-    "lastDirectlyVerifiedAt": "2026-08-22T09:51:57.351Z",
+    "lastDirectlyVerifiedCommitAbbrev": "fff44ff",
+    "lastDirectlyVerifiedCommitFull": "fff44ff2db386942730a67f3884980c7824cae7f",
+    "originMain": "fff44ff2db386942730a67f3884980c7824cae7f",
+    "lastDirectlyVerifiedAt": "2026-08-28T21:59:14.182Z",
     "lastKnownWorkingTreeClean": true,
     "diffEmpty": true,
     "currentAlignmentAttested": true,
@@ -129,8 +139,8 @@
   "runtimeState": {
     "containerStatus": "running",
     "health": "healthy",
-    "imageId": "sha256:f6e05d77ed04c342e663c04322029f5233009ee4d75b78a9ebeea12af8027de5",
-    "currentRuntimeRevision": "c944fd9e7c05aad503f9e1d5d21e0ead25747886",
+    "imageId": "sha256:c616dd31923a574ab276805a1f4cd1066399c5858d37f9acbce8ac7cb565d588",
+    "currentRuntimeRevision": "fff44ff2db386942730a67f3884980c7824cae7f",
     "status": "FULLY_ALIGNED",
     "healthOk": true,
     "oauthOk": true,
@@ -138,18 +148,20 @@
     "rollbackStatus": "not_needed"
   },
   "liveState": {
-    "stateVersion": 33,
-    "generatedAt": "2026-08-22T09:51:57.351Z",
+    "stateVersion": 39,
+    "generatedAt": "2026-08-28T21:59:14.182Z",
     "freshness": "CURRENT",
-    "observationBasis": "functional_attestation_plus_final_docs_only_descendant_policy",
+    "observationBasis": "post_pr52_functional_attestation_before_final_docs_only_reconciliation",
     "githubVsS1": "ALIGNED",
     "runtime": "ALIGNED",
-    "documentation": "ALIGNED_BY_DOCS_ONLY_DESCENDANT_POLICY",
-    "global": "FULLY_ALIGNED",
-    "contradictions": [],
-    "nextAction": null,
-    "declaredFunctionalBaseline": "c944fd9e7c05aad503f9e1d5d21e0ead25747886",
-    "declaredS1Baseline": "c944fd9e7c05aad503f9e1d5d21e0ead25747886"
+    "documentation": "DOCUMENTATION_DRIFT",
+    "global": "RECONCILIATION_REQUIRED",
+    "contradictions": [
+      "DOCUMENTATION_DRIFT"
+    ],
+    "nextAction": "reconcile_canonical_documentation",
+    "declaredFunctionalBaseline": "fff44ff2db386942730a67f3884980c7824cae7f",
+    "declaredS1Baseline": "fff44ff2db386942730a67f3884980c7824cae7f"
   },
   "markdownInventory": {
     "trackedGitMarkdown": 196,
@@ -195,7 +207,12 @@
     "lateReviewCorrectionDeploymentSha": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
     "lateReviewCorrectionMainCiRunId": 32535404248,
     "lateReviewCorrectionDeploymentRunId": 32535404345,
-    "lateReviewCorrectionDeploymentGithubJobId": 96935241275
+    "lateReviewCorrectionDeploymentGithubJobId": 96935241275,
+    "mandatoryBootstrapCorrectionDeploymentAttested": true,
+    "mandatoryBootstrapCorrectionDeploymentSha": "fff44ff2db386942730a67f3884980c7824cae7f",
+    "mandatoryBootstrapCorrectionMainCiRunId": 33214825660,
+    "mandatoryBootstrapCorrectionDeploymentRunId": 33214825772,
+    "mandatoryBootstrapCorrectionDeploymentGithubJobId": 98996005106
   },
   "governedAutodeployV1": {
     "task": "TASK-20260809-003",
@@ -270,6 +287,29 @@
         "correctionPullRequest": 47,
         "correctionMergeCommit": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc"
       }
+    ],
+    "pr49LateThreads": [
+      {
+        "id": "PRRT_kwDOTJ-y6M6bYAMT",
+        "severity": "P1",
+        "status": "resolved_after_pr52_merged_deployed_attested",
+        "correctionPullRequest": 52,
+        "correctionMergeCommit": "fff44ff2db386942730a67f3884980c7824cae7f"
+      },
+      {
+        "id": "PRRT_kwDOTJ-y6M6bYAMV",
+        "severity": "P2",
+        "status": "resolved_after_pr52_merged_deployed_attested",
+        "correctionPullRequest": 52,
+        "correctionMergeCommit": "fff44ff2db386942730a67f3884980c7824cae7f"
+      },
+      {
+        "id": "PRRT_kwDOTJ-y6M6bYAMY",
+        "severity": "P2",
+        "status": "resolved_after_pr52_merged_deployed_attested",
+        "correctionPullRequest": 52,
+        "correctionMergeCommit": "fff44ff2db386942730a67f3884980c7824cae7f"
+      }
     ]
   },
   "maintenanceWarnings": {
@@ -304,12 +344,12 @@
     "canonicalDocumentationPullRequest": 46
   },
   "taskState": {
-    "task": "TASK-20260813-004",
-    "status": "COMPLETED",
-    "completedAt": "2026-08-22",
-    "completionBasis": "PR47 merged, exact-SHA CI and Autodeploy attested, late PR45 threads resolved, final canonical docs-only reconciliation",
-    "reopenedAt": "2026-08-15",
-    "nextAction": null
+    "task": "TASK-20260822-001",
+    "status": "DOCUMENTATION_RECONCILIATION",
+    "completedAt": null,
+    "completionBasis": "PR52 merged, exact-SHA CI and Autodeploy attested, late PR49 threads resolved; final docs-only reconciliation pending",
+    "reopenedAt": "2026-08-28",
+    "nextAction": "merge_and_attest_final_docs_only_reconciliation"
   },
   "lateReviewCorrection": {
     "pullRequest": 47,
@@ -350,7 +390,7 @@
     "task": "TASK-20260822-001",
     "branch": "mcp/mandatory-agent-bootstrap-v1-20260822",
     "baseSha": "78dade5e103c2ac73727f44c571f99384d6b8798",
-    "state": "merged_deployed_attested_documentation_reconciliation",
+    "state": "correction_merged_deployed_attested_threads_resolved_documentation_reconciliation",
     "runtimeToolCount": 111,
     "runtimeResourceCount": 2,
     "trackedMarkdown": 196,
@@ -361,9 +401,9 @@
     "headCiRunId": 32565936838,
     "headCiConclusion": "success",
     "mergeCommit": "c944fd9e7c05aad503f9e1d5d21e0ead25747886",
-    "liveStateVersion": 33,
-    "runtimeImageId": "sha256:f6e05d77ed04c342e663c04322029f5233009ee4d75b78a9ebeea12af8027de5",
-    "freshRegression": "222/222",
+    "liveStateVersion": 39,
+    "runtimeImageId": "sha256:c616dd31923a574ab276805a1f4cd1066399c5858d37f9acbce8ac7cb565d588",
+    "freshRegression": "234/234",
     "freshInstallPackages": 143,
     "typecheck": "success",
     "build": "success",
@@ -372,9 +412,18 @@
     "secretScan": "success",
     "deployAndWorkflowDiff": "none",
     "postMergeAlignment": "GITHUB_S1_RUNTIME_EXACT_SHA",
-    "mainCiRunId": null,
-    "deployRunId": null,
-    "deployAttested": true
+    "mainCiRunId": 33214825660,
+    "deployRunId": 33214825772,
+    "deployJobId": 98996005106,
+    "deployAttested": true,
+    "correctionBranch": "mcp/fix-mandatory-bootstrap-review-20260822",
+    "correctionPullRequest": 52,
+    "correctionCandidateHead": "33a3e424a5fe271cf82c1ee6db8c94785289e3ca",
+    "correctionTree": "4655f4aaa8b79557bf1fbb23651faa7e72a7021d",
+    "correctionHeadCiRunId": 33213114008,
+    "correctionMergeCommit": "fff44ff2db386942730a67f3884980c7824cae7f",
+    "correctionReview": "zero_critical_important_minor",
+    "pr49LateThreadsResolved": true
   },
-  "serverCommitFull": "c944fd9e7c05aad503f9e1d5d21e0ead25747886"
+  "serverCommitFull": "fff44ff2db386942730a67f3884980c7824cae7f"
 }

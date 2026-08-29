@@ -19,13 +19,15 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ## Jalons terminés
 
-- PR #34 à #49 fusionnées selon la gouvernance ; PR #49 porte Mandatory Agent Bootstrap V1 et la présente branche porte sa réconciliation strictement documentaire.
+- Jalons explicitement attestés ci-dessous : PR #44, #45, #47, #49 et #52 fusionnées selon la gouvernance ; PR #50 fermée sans fusion comme doublon exact de la PR #49 ; la présente candidate porte la réconciliation strictement documentaire post-PR #52.
 - PR #44 : merge `3838c3918c3411a3317c6ea81047e77a7b627673`, CI `31684159546`, deploy `31684159586`, job `94396216832`.
 - PR #45 : merge `bac8779320c8b9529d2a5215dbb1b1f31f828987`, CI `31907827255`, deploy `31907827212`, job `95068288136`.
 - PR #47 : head `8dddc5656aa959f4c392d0f1816b5ee0e25709a0`, merge `3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc`, CI main `32535404248`, deploy `32535404345`, job `96935241275`.
 - S1 propre/read-only, Docker running/healthy et OCI/runtime réattestés sur le merge de la PR #47.
 - Les trois findings tardifs PR #45 sont corrigés, testés, déployés et leurs fils sont résolus.
 - PR #49 : head `1c9297d663624e5c348fba687051b649ca3e2a22`, CI `32565936838`, merge `c944fd9e7c05aad503f9e1d5d21e0ead25747886` ; GitHub/S1/OCI/runtime exact-SHA, S1 propre et Docker healthy.
+- PR #52 : head `33a3e424a5fe271cf82c1ee6db8c94785289e3ca`, CI PR `33213114008`, merge `fff44ff2db386942730a67f3884980c7824cae7f`, CI main `33214825660`, deploy `33214825772`, job `98996005106` ; GitHub/S1/OCI/runtime exact-SHA, S1 propre et Docker healthy.
+- Les trois findings tardifs PR #49 sont corrigés, déployés et leurs threads sont résolus.
 
 ## Tâche clôturée
 
@@ -44,7 +46,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ## Tâche courante
 
-### TASK-20260822-001 — Mandatory Agent Bootstrap & Work Orchestration V1 — CORRECTION DE REVUE EN COURS
+### TASK-20260822-001 — Mandatory Agent Bootstrap & Work Orchestration V1 — RÉCONCILIATION DOCUMENTAIRE FINALE
 
 - [x] dériver le catalogue complet depuis les registrations MCP et protéger sa fraîcheur en CI ;
 - [x] dériver du SHA suivi les modules, imports, routes, documents, audits et politiques sans écriture ;
@@ -70,9 +72,10 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] neutraliser les replacement refs et lier l'horodatage au `evidenceHead` ;
 - [x] valider localement `234/234`, typecheck, build, docs, cartographie, preuve current-state, secrets et diff ;
 - [x] publier le head fonctionnel `0a672591…` et ouvrir la Draft PR #52 ;
-- [ ] obtenir CI/revue sur le head documentaire exact ;
-- [ ] résoudre les trois threads PR #49 après preuve de correction ;
-- [ ] fusionner avec garde exact-head, attester Autodeploy et réconcilier GitHub/S1/OCI/runtime ;
+- [x] obtenir CI/revue sur le head documentaire exact de la PR #52 ;
+- [x] résoudre les trois threads PR #49 après preuve de correction ;
+- [x] fusionner avec garde exact-head et attester Autodeploy, GitHub/S1/OCI/runtime au SHA `fff44ff2db386942730a67f3884980c7824cae7f` ;
+- [ ] fusionner et attester la présente réconciliation strictement documentaire ;
 - [ ] checkpoint final, lock libéré et session fermée sans lock résiduel.
 
 ## Interdictions préservées
