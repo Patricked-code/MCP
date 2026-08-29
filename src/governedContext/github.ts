@@ -16,6 +16,7 @@ const REPO = 'MCP';
 const TOKEN_FILE = '/app/secrets/github_token';
 const MAX_RESPONSE_BYTES = 1_000_000;
 const SHA_PATTERN = /^[0-9a-f]{40}$/i;
+const MAIN_REF = 'refs/heads/main';
 
 type GithubCollectorOptions = {
   fetchImpl?: typeof fetch;
@@ -314,7 +315,19 @@ function parseChecks(value: unknown, expectedHeadSha: string): ParsedChecks | nu
     : statuses.includes('queued')
       ? 'queued'
       : 'completed';
-  const headSha = sha(root.head_sha);
+  const runHeadShas = runs.map((run) => sha(run?.head_sha));
+  const allRunsHaveHeadSha = runs.length > 0 && runHeadShas.every((value) => value !== null);
+  const uniqueRunHeadShas = boundedUnique(
+    runHeadShas.filter((value): value is string => value !== null)
+  );
+  const headSha = allRunsHaveHeadSha && uniqueRunHeadShas.length === 1
+    ? uniqueRunHeadShas[0]!
+    : null;
+  const exactHead = runs.length === 0
+    ? null
+    : allRunsHaveHeadSha
+      ? uniqueRunHeadShas.length === 1 && headSha === expectedHeadSha
+      : null;
   const runSummaries = runs.flatMap((run) => {
     const context = string(run?.name, 100);
     const runStatus = string(run?.status, 40);
@@ -334,7 +347,7 @@ function parseChecks(value: unknown, expectedHeadSha: string): ParsedChecks | nu
       total,
       failed,
       headSha,
-      exactHead: headSha ? headSha === expectedHeadSha : null,
+      exactHead,
       required: [],
       requiredSatisfied: null
     },
@@ -421,6 +434,11 @@ type RulesetSummary = {
   enforcement: string | null;
 };
 
+type ParsedRuleset = {
+  ruleset: GithubOperationalContext['ruleset'];
+  appliesToMain: boolean;
+};
+
 function parseRulesetSummaries(value: unknown): RulesetSummary[] | null {
   if (!Array.isArray(value)) return null;
   const values = value.slice(0, 20).map(object).filter(Boolean);
@@ -444,29 +462,133 @@ function parseRulesetSummaries(value: unknown): RulesetSummary[] | null {
     : null;
 }
 
+function globToRegExp(pattern: string): RegExp | null {
+  if (pattern.length < 1 || pattern.length > 255) return null;
+  let source = '^';
+  for (let index = 0; index < pattern.length; index += 1) {
+    const current = pattern[index]!;
+    const next = pattern[index + 1];
+    if (current === '*' && next === '*') {
+      source += '.*';
+      index += 1;
+    } else if (current === '*') {
+      source += '[^/]*';
+    } else if (current === '?') {
+      source += '[^/]';
+    } else {
+      source += current.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+  }
+  source += '$';
+  try {
+    return new RegExp(source);
+  } catch {
+    return null;
+  }
+}
+
+function refPatternMatches(pattern: string, ref: string): boolean | null {
+  if (pattern === '~ALL') return true;
+  if (pattern === '~DEFAULT_BRANCH') return ref === MAIN_REF;
+  const regexp = globToRegExp(pattern);
+  return regexp ? regexp.test(ref) : null;
+}
+
+function parseRefPatterns(value: unknown): string[] | null {
+  if (!Array.isArray(value)) return null;
+  const patterns = value.slice(0, 50).map((entry) => string(entry, 255));
+  return patterns.every((entry) => entry !== null) ? patterns as string[] : null;
+}
+
+function rulesetAppliesToMain(value: unknown): boolean | null {
+  const ruleset = object(value);
+  if (!ruleset) return null;
+  const conditions = object(ruleset.conditions);
+  if (!conditions || !Object.prototype.hasOwnProperty.call(conditions, 'ref_name')) return true;
+  const refName = object(conditions.ref_name);
+  if (!refName) return null;
+  const includes = parseRefPatterns(refName.include);
+  const excludes = parseRefPatterns(refName.exclude);
+  if (!includes || !excludes) return null;
+  for (const pattern of excludes) {
+    const matches = refPatternMatches(pattern, MAIN_REF);
+    if (matches === null) return null;
+    if (matches) return false;
+  }
+  if (includes.length === 0) return true;
+  let matched = false;
+  for (const pattern of includes) {
+    const matches = refPatternMatches(pattern, MAIN_REF);
+    if (matches === null) return null;
+    if (matches) matched = true;
+  }
+  return matched;
+}
+
 function parseRulesetDetail(
   value: unknown,
   summary: RulesetSummary
-): GithubOperationalContext['ruleset'] | null {
+): ParsedRuleset | null {
   const ruleset = object(value);
   if (!ruleset || !Array.isArray(ruleset.rules)) return null;
   const rules = ruleset.rules.slice(0, 100).map(object).filter(Boolean);
   if (rules.length !== Math.min(ruleset.rules.length, 100)) return null;
-  const statusRule = rules?.find((rule) => rule?.type === 'required_status_checks');
-  const parameters = object(statusRule?.parameters);
-  const rawChecks = Array.isArray(parameters?.required_status_checks)
-    ? parameters.required_status_checks.slice(0, 50)
-    : [];
-  const requiredStatusChecks = rawChecks
-    .map((entry) => string(object(entry)?.context, 100))
-    .filter((entry): entry is string => entry !== null);
+  const requiredStatusChecks = boundedUnique(rules.flatMap((rule) => {
+    if (rule?.type !== 'required_status_checks') return [];
+    const parameters = object(rule.parameters);
+    const rawChecks = Array.isArray(parameters?.required_status_checks)
+      ? parameters.required_status_checks.slice(0, 50)
+      : [];
+    return rawChecks
+      .map((entry) => string(object(entry)?.context, 100))
+      .filter((entry): entry is string => entry !== null);
+  }), 50);
+  const pullRequestRules = rules.filter((rule) => rule?.type === 'pull_request');
+  const appliesToMain = rulesetAppliesToMain(value);
+  if (appliesToMain === null) return null;
   return {
-    name: string(ruleset.name, 120) ?? summary.name,
-    enforcement: string(ruleset.enforcement, 40) ?? summary.enforcement,
-    requiresPullRequest: rules.some((rule) => rule?.type === 'pull_request'),
-    requiredStatusChecks,
-    requiresConversationResolution: rules.some(
-      (rule) => rule?.type === 'required_conversation_resolution'
+    appliesToMain,
+    ruleset: {
+      name: string(ruleset.name, 120) ?? summary.name,
+      enforcement: string(ruleset.enforcement, 40) ?? summary.enforcement,
+      requiresPullRequest: pullRequestRules.length > 0,
+      requiredStatusChecks,
+      requiresConversationResolution: rules.some(
+        (rule) => rule?.type === 'required_conversation_resolution'
+      ) || pullRequestRules.some(
+        (rule) => object(rule?.parameters)?.required_review_thread_resolution === true
+      )
+    }
+  };
+}
+
+function aggregateRulesets(
+  values: ParsedRuleset[]
+): GithubOperationalContext['ruleset'] {
+  const applicable = values.filter((value) => value.appliesToMain);
+  if (applicable.length === 0) {
+    return {
+      name: null,
+      enforcement: 'active',
+      requiresPullRequest: false,
+      requiredStatusChecks: [],
+      requiresConversationResolution: false
+    };
+  }
+  const names = boundedUnique(
+    applicable.flatMap((value) => value.ruleset.name ? [value.ruleset.name] : []),
+    20
+  );
+  return {
+    name: names.length > 0 ? names.join(',').slice(0, 120) : null,
+    enforcement: 'active',
+    requiresPullRequest: applicable.some((value) => value.ruleset.requiresPullRequest === true),
+    requiredStatusChecks: boundedUnique(
+      applicable.flatMap((value) => value.ruleset.requiredStatusChecks),
+      50
+    ),
+    requiresConversationResolution: applicable.some(
+      (value) => value.ruleset.requiresConversationResolution === true
     )
   };
 }
@@ -654,36 +776,40 @@ export function createGithubOperationalContextCollector(
         const summaries = parseRulesetSummaries(rulesResult.json);
         if (!summaries) {
           errors.push('github_rulesets_malformed');
-        } else if (summaries.length === 0) {
-          rulesFreshness = 'CURRENT';
-          ruleset = {
-            name: null,
-            enforcement: null,
-            requiresPullRequest: false,
-            requiredStatusChecks: [],
-            requiresConversationResolution: false
-          };
         } else {
-          const selected = summaries.find((candidate) => candidate.enforcement === 'active')
-            ?? summaries[0]!;
-          const detailResult = await request(
-            `/repos/${REPOSITORY}/rulesets/${selected.id}`,
-            'ruleset_detail'
-          );
-          if (detailResult.ok) {
-            ruleset = parseRulesetDetail(detailResult.json, selected);
-          }
-          if (!ruleset) {
-            errors.push(detailResult.error ?? 'github_ruleset_detail_malformed');
+          const activeSummaries = summaries.filter((candidate) => candidate.enforcement === 'active');
+          if (activeSummaries.length === 0) {
+            rulesFreshness = 'CURRENT';
             ruleset = {
-              name: selected.name,
-              enforcement: selected.enforcement,
-              requiresPullRequest: null,
+              name: null,
+              enforcement: null,
+              requiresPullRequest: false,
               requiredStatusChecks: [],
-              requiresConversationResolution: null
+              requiresConversationResolution: false
             };
           } else {
-            rulesFreshness = 'CURRENT';
+            const detailResults = await Promise.all(activeSummaries.map(async (summary) => ({
+              summary,
+              result: await request(
+                `/repos/${REPOSITORY}/rulesets/${summary.id}`,
+                `ruleset_detail_${summary.id}`
+              )
+            })));
+            const parsedRulesets: ParsedRuleset[] = [];
+            let rulesetsComplete = true;
+            for (const { summary, result } of detailResults) {
+              const parsed = result.ok ? parseRulesetDetail(result.json, summary) : null;
+              if (!parsed) {
+                rulesetsComplete = false;
+                errors.push(result.error ?? `github_ruleset_detail_${summary.id}_malformed`);
+              } else {
+                parsedRulesets.push(parsed);
+              }
+            }
+            if (rulesetsComplete) {
+              ruleset = aggregateRulesets(parsedRulesets);
+              rulesFreshness = 'CURRENT';
+            }
           }
         }
       }
