@@ -96,6 +96,54 @@ export function projectRegisteredCapabilityRealities(
     }));
 }
 
+export type GovernancePreconditionInput = {
+  sessionPresent: boolean;
+  currentStateVersion: number | null;
+  currentFreshness: 'CURRENT' | 'STALE' | null;
+  acknowledgedStateVersion: number | null;
+  activeLockConflicts: number;
+  bootstrapReceiptStatus?: 'MISSING' | 'CURRENT' | 'STALE' | 'EXPIRED' | null;
+  currentTaskStatus?: string | null;
+  auditBaselineValid?: boolean | null;
+};
+
+export type GovernancePreconditionReason =
+  | 'SESSION_UNBOUND'
+  | 'STATE_VERSION_STALE'
+  | 'CONTEXT_UNACKNOWLEDGED'
+  | 'LOCK_CONFLICT'
+  | 'BOOTSTRAP_RECEIPT_MISSING'
+  | 'BOOTSTRAP_RECEIPT_STALE'
+  | 'TASK_UNCLAIMED'
+  | 'AUDIT_BASELINE_INVALID';
+
+export function deriveGovernancePreconditionReasons(
+  input: GovernancePreconditionInput
+): GovernancePreconditionReason[] {
+  if (!input.sessionPresent) return ['SESSION_UNBOUND'];
+  if (input.currentStateVersion === null || input.currentFreshness !== 'CURRENT') {
+    return ['STATE_VERSION_STALE'];
+  }
+  if (input.acknowledgedStateVersion === null) return ['CONTEXT_UNACKNOWLEDGED'];
+  if (input.acknowledgedStateVersion !== input.currentStateVersion) {
+    return ['STATE_VERSION_STALE'];
+  }
+  if (input.activeLockConflicts > 0) return ['LOCK_CONFLICT'];
+  if (
+    Object.prototype.hasOwnProperty.call(input, 'bootstrapReceiptStatus')
+    && input.bootstrapReceiptStatus !== 'CURRENT'
+  ) {
+    return input.bootstrapReceiptStatus === 'MISSING' || input.bootstrapReceiptStatus === null
+      ? ['BOOTSTRAP_RECEIPT_MISSING']
+      : ['BOOTSTRAP_RECEIPT_STALE'];
+  }
+  if (Object.prototype.hasOwnProperty.call(input, 'currentTaskStatus') && !input.currentTaskStatus) {
+    return ['TASK_UNCLAIMED'];
+  }
+  if (input.auditBaselineValid === false) return ['AUDIT_BASELINE_INVALID'];
+  return [];
+}
+
 export type TaskObservedPhase =
   | 'UNKNOWN'
   | 'DISCOVERED'
@@ -264,6 +312,7 @@ export function deriveGovernanceDecision(input: {
   requiresGithubWorkState: boolean;
   requiredEvidence: string[];
   observedAt: string;
+  preconditions?: GovernancePreconditionInput;
   task?: GovernanceDecisionTask;
   taskReality?: TaskReality | null;
   session?: GovernanceDecisionSession;
@@ -276,9 +325,13 @@ export function deriveGovernanceDecision(input: {
 }): GovernanceDecision {
   const reasons: string[] = [];
   if (!input.capabilityReality.safeNow) reasons.push(...input.capabilityReality.reasonCodes);
-  if (!input.sessionPresent) reasons.push('SESSION_UNBOUND');
-  if (!input.bootstrapCurrent) reasons.push('BOOTSTRAP_NOT_CURRENT');
-  if (input.lockConflicts > 0) reasons.push('LOCK_CONFLICT');
+  if (input.preconditions) {
+    reasons.push(...deriveGovernancePreconditionReasons(input.preconditions));
+  } else {
+    if (!input.sessionPresent) reasons.push('SESSION_UNBOUND');
+    if (!input.bootstrapCurrent) reasons.push('BOOTSTRAP_NOT_CURRENT');
+    if (input.lockConflicts > 0) reasons.push('LOCK_CONFLICT');
+  }
   if (input.requiresGithubWorkState && !input.githubWorkStateAvailable) {
     reasons.push('GITHUB_WORK_STATE_UNAVAILABLE');
   }
