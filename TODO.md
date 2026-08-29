@@ -21,7 +21,7 @@ Travaux restant réellement à accomplir. Les états dynamiques de tâche, sessi
 
 - [x] Bootstrap manuel et preuves automatiques exact-SHA attestés.
 - [x] `pushEnabled=true`, OIDC GitHub et déploiement fail-closed actifs.
-- [x] PR #44, #45 et #47 fusionnées et automatiquement déployées.
+- [x] PR #44, #45, #47 et #55 fusionnées et automatiquement déployées.
 - [x] S1, OCI, Docker, health et Live State technique réattestés sur les jalons clôturés.
 
 ## Governed Session Continuity / Operational Memory V1
@@ -44,7 +44,7 @@ Travaux restant réellement à accomplir. Les états dynamiques de tâche, sessi
 - [x] Réconciliation documentaire fusionnée par PR #54 au SHA `a35280e172e40525689520e1443ccd59e850e91a`; CI main `33222774901` et Governed Deploy `33222774905` réussis.
 - [ ] Lire Operational Memory pour attester le checkpoint final, la libération du lock et la fermeture de session sans lock résiduel; ne pas déduire cette preuve depuis GitHub.
 
-## Unified Operational Work State — chantier courant
+## Unified Operational Work State — clôture en cours
 
 - [x] Réutiliser Live State, Current-State Inventory, Operational Memory, Governed Task Queue, GitHub context et scoped WRITE gate; aucun nouveau store global.
 - [x] Ajouter `CapabilityReality`, `TaskReality` et `GovernanceDecision` comme projections dérivées et bornées.
@@ -57,16 +57,19 @@ Travaux restant réellement à accomplir. Les états dynamiques de tâche, sessi
 - [x] Distinguer cache miss, auth manquante/invalide, permission denied, not-found/invisible incertain, timeout, stale, head mismatch, checks pending/failed et review bloquante.
 - [x] Prouver qu'une indisponibilité GitHub ne bloque pas artificiellement une opération indépendante de GitHub.
 - [x] Observer le HEAD de `workBranch` avant PR lorsque la branche existe, par lecture GitHub bornée et read-only.
-- [x] Obtenir CI verte #549 (`33238637948`) sur le head fonctionnel `c25ba8c775b5a2a81f84b424ffd01686e833ea0c`, y compris typecheck, build, docs, gouvernance, secrets, `247/247` read-only safety et diff.
-- [x] Réconcilier `ARCHITECTURE.md`, `SUIVI.md`, `TASKS.md`, `TODO.md`, `CHANGELOG.md` et `DECISIONS_LOG.md` dans la même branche candidate.
-- [x] Ouvrir la Draft PR #55 depuis `mcp/unified-operational-work-state-20260829` vers `main`.
-- [ ] Obtenir une CI verte sur le head documentaire exact après la dernière réconciliation.
-- [ ] Vérifier PR #55 exact-head, reviews, threads et ruleset puis la passer Ready.
-- [ ] Corriger additivement tout finding éventuel sans élargir le scope.
-- [ ] Fusionner uniquement sous les gardes de `main`, puis attendre le Governed Autodeploy exact-SHA.
-- [ ] Réattester le SHA main/S1/OCI/runtime et un Live State frais avant de considérer la livraison technique vérifiée.
-- [ ] Réconcilier ensuite Current State, Governed Context et Task Reality, puis ne clôturer la tâche/session/locks que depuis leurs autorités runtime.
-- [ ] Produire les observations/métriques et le rapport `enforce-ready` sans activer `enforce`.
+- [x] Corriger les quatre findings de PR #55 sans élargir le scope : check-runs exact SHA, preuve deploy liée au SHA de tâche, agrégation des rulesets applicables, nombre minimal d'approbations.
+- [x] Obtenir CI MCP #577 verte sur le dernier head PR `de0030b0df42a693d2e96c87f008c9ffd1c2ce04` et résoudre les quatre threads.
+- [x] Fusionner PR #55 au merge `2c2dde2bffe62b2685bf2fad94530571762470c8` sous les gardes de `main`.
+- [x] Attester CI main `33256566688`, Governed Deploy `33256566695` / job `99111230626`, GitHub/S1/OCI/runtime et Docker healthy sur ce SHA fonctionnel exact.
+- [ ] Fusionner la réconciliation documentaire strictement docs-only depuis `mcp/reconcile-unified-work-state-20260829` après CI exact-head et vérification du diff.
+- [ ] Forcer un Live State frais et vérifier `GitHub↔S1=ALIGNED`, runtime `ALIGNED` et disparition de `DOCUMENTATION_DRIFT` selon la politique descendant docs-only.
+- [ ] Réconcilier Current State, Governed Context et Task Reality; faire passer `TASK-20260829-001` par `VERIFYING` puis `DONE` uniquement depuis Operational Memory.
+- [ ] Créer le checkpoint final, libérer le lock et conserver la preuve de clôture de la session depuis Operational Memory.
+- [ ] Après `DONE`, enregistrer seulement alors la prochaine tâche additive du programme : `Automatic Governed Connection Bootstrap & Conversation Session Binding`.
+
+## Programme suivant — ne pas exécuter avant clôture de la tâche courante
+
+Le programme futur reste additif et doit s'intégrer dans OAuth, Operational Memory, Governed Sessions, Transport Bindings, GitRegistry V2, Live/Current State, Governed Context et Task Queue existants. Ordre directeur : connexion → identification → conversation/session binding → GitHub/repository/project binding → serveur/domaine/runtime → Live State → gouvernance → Bootstrap Receipt → Work State → routage → permissions effectives → exécution → présence/trace. Aucun moteur parallèle.
 
 ## Maintenance séparée
 
