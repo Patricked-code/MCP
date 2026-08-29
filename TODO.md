@@ -54,14 +54,19 @@ Travaux restant réellement à accomplir. Les états dynamiques de tâche, sessi
 - [x] Intégrer Observer Before Actor au chemin réel et ajouter son test de régression complet.
 - [x] Corriger la reprise de `currentTask.workBranch` pour les sessions d'intake sans branche.
 - [x] Propager les reason codes GitHub vers `GovernanceDecision`.
-- [x] Obtenir CI verte `33236805556` sur le head fonctionnel `34d51247c021524f4c3e03824c938529bc831743`, y compris read-only safety et diff.
+- [x] Distinguer cache miss, auth manquante/invalide, permission denied, not-found/invisible incertain, timeout, stale, head mismatch, checks pending/failed et review bloquante.
+- [x] Prouver qu'une indisponibilité GitHub ne bloque pas artificiellement une opération indépendante de GitHub.
+- [x] Observer le HEAD de `workBranch` avant PR lorsque la branche existe, par lecture GitHub bornée et read-only.
+- [x] Obtenir CI verte #549 (`33238637948`) sur le head fonctionnel `c25ba8c775b5a2a81f84b424ffd01686e833ea0c`, y compris typecheck, build, docs, gouvernance, secrets, `247/247` read-only safety et diff.
 - [x] Réconcilier `ARCHITECTURE.md`, `SUIVI.md`, `TASKS.md`, `TODO.md`, `CHANGELOG.md` et `DECISIONS_LOG.md` dans la même branche candidate.
-- [ ] Obtenir une CI verte sur le head documentaire exact.
-- [ ] Ouvrir la Draft PR depuis `mcp/unified-operational-work-state-20260829` vers `main`.
-- [ ] Exiger revue, checks exact-head et absence de thread actionnable; corriger additivement tout finding.
+- [x] Ouvrir la Draft PR #55 depuis `mcp/unified-operational-work-state-20260829` vers `main`.
+- [ ] Obtenir une CI verte sur le head documentaire exact après la dernière réconciliation.
+- [ ] Vérifier PR #55 exact-head, reviews, threads et ruleset puis la passer Ready.
+- [ ] Corriger additivement tout finding éventuel sans élargir le scope.
 - [ ] Fusionner uniquement sous les gardes de `main`, puis attendre le Governed Autodeploy exact-SHA.
 - [ ] Réattester le SHA main/S1/OCI/runtime et un Live State frais avant de considérer la livraison technique vérifiée.
-- [ ] Réconcilier ensuite la documentation post-déploiement si nécessaire et ne clôturer la tâche/session/locks que depuis leurs autorités runtime.
+- [ ] Réconcilier ensuite Current State, Governed Context et Task Reality, puis ne clôturer la tâche/session/locks que depuis leurs autorités runtime.
+- [ ] Produire les observations/métriques et le rapport `enforce-ready` sans activer `enforce`.
 
 ## Maintenance séparée
 
