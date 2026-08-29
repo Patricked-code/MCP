@@ -43,12 +43,11 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
       updated_at: '2026-08-13T08:00:00Z'
     }]);
     if (url.includes('/check-runs?')) return json({
-      head_sha: SHA,
       total_count: 3,
       check_runs: [
-        { name: 'validate', status: 'completed', conclusion: 'success' },
-        { name: 'security', status: 'completed', conclusion: 'failure' },
-        { name: 'optional', status: 'in_progress', conclusion: null }
+        { name: 'validate', head_sha: SHA, status: 'completed', conclusion: 'success' },
+        { name: 'security', head_sha: SHA, status: 'completed', conclusion: 'failure' },
+        { name: 'optional', head_sha: SHA, status: 'in_progress', conclusion: null }
       ]
     });
     if (url.includes('/pulls/44/reviews?')) return json([
