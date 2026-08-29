@@ -93,6 +93,8 @@ function fallbackGithub(at: string, workBranch: string | null): GithubOperationa
       reviews: unavailable,
       ruleset: unavailable
     },
+    reasonCodes: ['GITHUB_WORK_STATE_UNAVAILABLE'],
+    uncertainties: [],
     error: 'github_context_unavailable'
   };
 }
