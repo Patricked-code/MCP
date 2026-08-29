@@ -4,7 +4,10 @@ import { env } from '../config/env.js';
 import { resolveGithubApiBase } from '../github/authorizationDiagnostics.js';
 import type {
   GithubEvidenceFreshness,
-  GithubOperationalContext
+  GithubEvidenceObservation,
+  GithubOperationalContext,
+  GithubOperationalUncertainty,
+  GithubReasonCode
 } from './types.js';
 
 const REPOSITORY = 'Patricked-code/MCP';
@@ -55,6 +58,81 @@ function evidence(
   return { freshness, observedAt, provenance } as const;
 }
 
+function boundedUnique<T extends string>(values: T[], limit = 20): T[] {
+  return [...new Set(values)].slice(0, limit);
+}
+
+function githubReasoning(input: {
+  error: string | null;
+  checks: GithubOperationalContext['checks'];
+  reviews: GithubOperationalContext['reviews'];
+}): {
+  reasonCodes: GithubReasonCode[];
+  uncertainties: GithubOperationalUncertainty[];
+} {
+  const reasonCodes: GithubReasonCode[] = [];
+  const uncertainties: GithubOperationalUncertainty[] = [];
+  const error = input.error ?? '';
+
+  if (error.includes('github_cache_miss')) reasonCodes.push('GITHUB_CACHE_MISS');
+  if (error.includes('github_surface_not_exposed')) reasonCodes.push('GITHUB_SURFACE_NOT_EXPOSED');
+  if (error.includes('github_token_missing')) reasonCodes.push('GITHUB_AUTH_MISSING');
+  if (error.includes('_http_401')) reasonCodes.push('GITHUB_AUTH_INVALID');
+  if (error.includes('_http_403')) reasonCodes.push('GITHUB_PERMISSION_DENIED');
+  if (error.includes('_http_404')) {
+    reasonCodes.push('GITHUB_NOT_FOUND_OR_INVISIBLE');
+    uncertainties.push('GITHUB_VISIBILITY_UNCERTAIN');
+  }
+  if (error.includes('github_timeout')) reasonCodes.push('GITHUB_TIMEOUT');
+  if (error.includes('github_stale')) reasonCodes.push('GITHUB_STALE');
+
+  if (input.checks.exactHead === false) {
+    reasonCodes.push('GITHUB_HEAD_MISMATCH');
+  }
+  const requiredPending = input.checks.required.some((item) => item.status !== 'completed');
+  if (requiredPending) {
+    reasonCodes.push('GITHUB_REQUIRED_CHECKS_PENDING');
+  }
+  const requiredFailed = input.checks.required.some((item) => (
+    item.status === 'completed'
+    && !['success', 'neutral', 'skipped'].includes(item.conclusion ?? '')
+  ));
+  if (requiredFailed) {
+    reasonCodes.push('GITHUB_REQUIRED_CHECKS_FAILED');
+  }
+  if (
+    input.reviews.changesRequested > 0
+    || (input.reviews.unresolvedThreads ?? 0) > 0
+  ) {
+    reasonCodes.push('GITHUB_REVIEW_BLOCKING');
+  }
+
+  if (error && reasonCodes.length === 0) {
+    reasonCodes.push('GITHUB_WORK_STATE_UNAVAILABLE');
+  }
+  return {
+    reasonCodes: boundedUnique(reasonCodes),
+    uncertainties: boundedUnique(uncertainties)
+  };
+}
+
+function emptyChecks(): GithubOperationalContext['checks'] {
+  return {
+    status: 'unavailable',
+    conclusion: null,
+    total: 0,
+    failed: 0,
+    headSha: null,
+    exactHead: null,
+    required: [],
+    requiredSatisfied: null
+  };
+}
+
+function emptyReviews(): GithubOperationalContext['reviews'] {
+  return { approvals: 0, changesRequested: 0, unresolvedThreads: null };
+}
+
 function emptyContext(
   observedAt: string,
   workBranch: string | null,
@@ -63,6 +141,9 @@ function emptyContext(
   cacheStatus: GithubOperationalContext['cache']['status'] = 'REFRESHED',
   cacheProvenance: GithubOperationalContext['cache']['provenance'] = 'github_api'
 ): GithubOperationalContext {
+  const checks = emptyChecks();
+  const reviews = emptyReviews();
+  const reasoning = githubReasoning({ error, checks, reviews });
   return {
     status,
     observedAt,
@@ -70,17 +151,8 @@ function emptyContext(
     workBranch,
     workBranchHead: null,
     pullRequest: null,
-    checks: {
-      status: 'unavailable',
-      conclusion: null,
-      total: 0,
-      failed: 0,
-      headSha: null,
-      exactHead: null,
-      required: [],
-      requiredSatisfied: null
-    },
-    reviews: { approvals: 0, changesRequested: 0, unresolvedThreads: null },
+    checks,
+    reviews,
     ruleset: {
       name: null,
       enforcement: null,
@@ -98,6 +170,7 @@ function emptyContext(
       reviews: evidence(observedAt, 'UNAVAILABLE', cacheProvenance),
       ruleset: evidence(observedAt, 'UNAVAILABLE', cacheProvenance)
     },
+    ...reasoning,
     error
   };
 }
@@ -114,6 +187,38 @@ function withCache(
       observedAt,
       provenance: status === 'HIT' ? 'memory_cache' : 'github_api'
     }
+  };
+}
+
+function staleEvidence(
+  value: GithubEvidenceObservation,
+  observedAt: string
+): GithubEvidenceObservation {
+  return {
+    freshness: value.freshness === 'CURRENT' ? 'STALE' : value.freshness,
+    observedAt,
+    provenance: 'memory_cache'
+  };
+}
+
+function withStaleCache(
+  value: GithubOperationalContext,
+  observedAt: string
+): GithubOperationalContext {
+  return {
+    ...value,
+    status: value.status === 'UNAVAILABLE' ? 'UNAVAILABLE' : 'DEGRADED',
+    observedAt,
+    cache: { status: 'HIT', observedAt, provenance: 'memory_cache' },
+    evidence: {
+      main: staleEvidence(value.evidence.main, observedAt),
+      pullRequest: staleEvidence(value.evidence.pullRequest, observedAt),
+      checks: staleEvidence(value.evidence.checks, observedAt),
+      reviews: staleEvidence(value.evidence.reviews, observedAt),
+      ruleset: staleEvidence(value.evidence.ruleset, observedAt)
+    },
+    reasonCodes: boundedUnique([...value.reasonCodes, 'GITHUB_STALE']),
+    uncertainties: [...value.uncertainties]
   };
 }
 
@@ -572,20 +677,9 @@ export function createGithubOperationalContextCollector(
         return emptyContext(observedAt, normalizedBranch, 'UNAVAILABLE', 'github_timeout');
       }
 
-      let checks: GithubOperationalContext['checks'] = {
-        status: 'unavailable',
-        conclusion: null,
-        total: 0,
-        failed: 0,
-        headSha: null,
-        exactHead: null,
-        required: [],
-        requiredSatisfied: null
-      };
+      let checks: GithubOperationalContext['checks'] = emptyChecks();
       let checksFreshness: GithubEvidenceFreshness = pullRequest ? 'UNAVAILABLE' : 'NOT_APPLICABLE';
-      let reviews: GithubOperationalContext['reviews'] = {
-        approvals: 0, changesRequested: 0, unresolvedThreads: null
-      };
+      let reviews: GithubOperationalContext['reviews'] = emptyReviews();
       let reviewsFreshness: GithubEvidenceFreshness = pullRequest ? 'UNAVAILABLE' : 'NOT_APPLICABLE';
       if (pullRequest) {
         const parsedChecks = checksResult.ok ? parseChecks(checksResult.json, pullRequest.headSha) : null;
@@ -612,6 +706,7 @@ export function createGithubOperationalContextCollector(
       }
 
       const error = errorSummary(errors);
+      const reasoning = githubReasoning({ error, checks, reviews });
       return {
         status: error ? 'DEGRADED' : 'CURRENT',
         observedAt,
@@ -632,6 +727,7 @@ export function createGithubOperationalContextCollector(
           reviews: evidence(observedAt, reviewsFreshness),
           ruleset: evidence(observedAt, rulesFreshness)
         },
+        ...reasoning,
         error
       };
     } finally {
@@ -665,13 +761,16 @@ export function createGithubOperationalContextCollector(
     getCurrent: async (workBranch) => {
       const key = workBranch ?? '(none)';
       const cached = cache.get(key);
-      if (cached && cached.expiresAt > now().getTime()) {
-        return withCache(cached.value, 'HIT', now().toISOString());
+      const observedAt = now().toISOString();
+      if (cached) {
+        return cached.expiresAt > now().getTime()
+          ? withCache(cached.value, 'HIT', observedAt)
+          : withStaleCache(cached.value, observedAt);
       }
       const normalizedBranch = normalizeBranch(workBranch);
       return workBranch !== null && !normalizedBranch
-        ? emptyContext(now().toISOString(), null, 'DEGRADED', 'github_work_branch_invalid', 'MISS', 'memory_cache')
-        : emptyContext(now().toISOString(), normalizedBranch, 'UNAVAILABLE', 'github_cache_miss', 'MISS', 'memory_cache');
+        ? emptyContext(observedAt, null, 'DEGRADED', 'github_work_branch_invalid', 'MISS', 'memory_cache')
+        : emptyContext(observedAt, normalizedBranch, 'UNAVAILABLE', 'github_cache_miss', 'MISS', 'memory_cache');
     },
     collect: (workBranch) => run(workBranch, false),
     reconcileExplicit: (workBranch) => run(workBranch, true)
