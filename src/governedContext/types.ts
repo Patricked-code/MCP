@@ -13,8 +13,25 @@ import type {
   IdentityAssurance
 } from '../operationalMemory/types.js';
 
-export type GithubEvidenceFreshness = 'CURRENT' | 'UNAVAILABLE' | 'NOT_APPLICABLE';
+export type GithubEvidenceFreshness = 'CURRENT' | 'STALE' | 'UNAVAILABLE' | 'NOT_APPLICABLE';
 export type GithubEvidenceProvenance = 'github_api' | 'memory_cache';
+
+export type GithubReasonCode =
+  | 'GITHUB_CACHE_MISS'
+  | 'GITHUB_SURFACE_NOT_EXPOSED'
+  | 'GITHUB_AUTH_MISSING'
+  | 'GITHUB_AUTH_INVALID'
+  | 'GITHUB_PERMISSION_DENIED'
+  | 'GITHUB_NOT_FOUND_OR_INVISIBLE'
+  | 'GITHUB_TIMEOUT'
+  | 'GITHUB_STALE'
+  | 'GITHUB_HEAD_MISMATCH'
+  | 'GITHUB_REQUIRED_CHECKS_PENDING'
+  | 'GITHUB_REQUIRED_CHECKS_FAILED'
+  | 'GITHUB_REVIEW_BLOCKING'
+  | 'GITHUB_WORK_STATE_UNAVAILABLE';
+
+export type GithubOperationalUncertainty = 'GITHUB_VISIBILITY_UNCERTAIN';
 
 export type GithubEvidenceObservation = {
   freshness: GithubEvidenceFreshness;
@@ -83,6 +100,8 @@ export type GithubOperationalContext = {
     reviews: GithubEvidenceObservation;
     ruleset: GithubEvidenceObservation;
   };
+  reasonCodes: GithubReasonCode[];
+  uncertainties: GithubOperationalUncertainty[];
   error: string | null;
 };
 
