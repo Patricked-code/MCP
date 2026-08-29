@@ -121,3 +121,118 @@ test('governance decision fails closed only when the operation requires unavaila
   assert.equal(independentDecision.mayMutate, true);
   assert.equal(independentDecision.reasonCodes.includes('GITHUB_WORK_STATE_UNAVAILABLE'), false);
 });
+
+test('GitHub work state exposes exact-head, required checks, ownership, activity, freshness and cache provenance', async () => {
+  process.env.MCP_AUTH_TOKEN ??= 'mcp-unit-test-value-20260805-abcdef';
+  process.env.S1_HOST ??= '127.0.0.1';
+  process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
+  process.env.S2_HOST ??= '127.0.0.1';
+  process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
+  const { createGithubOperationalContextCollector } = await import('../src/governedContext/github.js');
+  const sha = 'a'.repeat(40);
+  const branch = 'mcp/unified-operational-work-state-20260829';
+  const json = (value: unknown) => new Response(JSON.stringify(value), {
+    status: 200,
+    headers: { 'content-type': 'application/json' }
+  });
+  const fetchImpl: typeof fetch = async (input) => {
+    const url = String(input);
+    if (url.endsWith('/commits/main')) return json({ sha });
+    if (url.includes('/pulls?')) return json([{
+      number: 55,
+      state: 'open',
+      draft: true,
+      merged_at: null,
+      base: { ref: 'main' },
+      head: { ref: branch, sha },
+      user: { login: 'task-owner' },
+      updated_at: '2026-08-29T02:00:00Z'
+    }]);
+    if (url.includes('/check-runs?')) return json({
+      head_sha: sha,
+      total_count: 3,
+      check_runs: [
+        { name: 'validate', status: 'completed', conclusion: 'success' },
+        { name: 'security', status: 'completed', conclusion: 'success' },
+        { name: 'optional', status: 'in_progress', conclusion: null }
+      ]
+    });
+    if (url.includes('/reviews?')) return json([]);
+    if (url.endsWith('/graphql')) return json({
+      data: { repository: { pullRequest: { reviewThreads: { nodes: [] } } } }
+    });
+    if (url.includes('/rulesets?')) return json([{ id: 42, name: 'main-protection', enforcement: 'active' }]);
+    if (url.endsWith('/rulesets/42')) return json({
+      id: 42,
+      name: 'main-protection',
+      enforcement: 'active',
+      rules: [
+        { type: 'pull_request' },
+        {
+          type: 'required_status_checks',
+          parameters: { required_status_checks: [{ context: 'validate' }, { context: 'security' }] }
+        },
+        { type: 'required_conversation_resolution' }
+      ]
+    });
+    return new Response(JSON.stringify({ message: 'unexpected' }), { status: 500 });
+  };
+  const collector = createGithubOperationalContextCollector({
+    fetchImpl,
+    readToken: async () => 'bounded-test-token',
+    apiBase: 'https://api.github.test',
+    allowedHosts: 'api.github.test',
+    now: () => new Date(OBSERVED_AT),
+    cacheTtlMs: 15_000
+  });
+
+  const refreshed = await collector.collect(branch);
+  assert.equal(refreshed.workBranchHead, sha);
+  assert.deepEqual(refreshed.ownership, { pullRequestAuthor: 'task-owner' });
+  assert.deepEqual(refreshed.activity, { lastActivityAt: OBSERVED_AT });
+  assert.equal(refreshed.checks.headSha, sha);
+  assert.equal(refreshed.checks.exactHead, true);
+  assert.equal(refreshed.checks.requiredSatisfied, true);
+  assert.deepEqual(refreshed.checks.required, [
+    { context: 'validate', status: 'completed', conclusion: 'success' },
+    { context: 'security', status: 'completed', conclusion: 'success' }
+  ]);
+  assert.equal(refreshed.cache.status, 'REFRESHED');
+  assert.equal(refreshed.cache.provenance, 'github_api');
+  assert.equal(refreshed.evidence.main.freshness, 'CURRENT');
+  assert.equal(refreshed.evidence.checks.freshness, 'CURRENT');
+  assert.equal(refreshed.evidence.checks.provenance, 'github_api');
+
+  const cached = await collector.collect(branch);
+  assert.equal(cached.cache.status, 'HIT');
+  assert.equal(cached.cache.provenance, 'memory_cache');
+  assert.equal(cached.workBranchHead, sha);
+
+  const current = await collector.getCurrent(branch);
+  assert.equal(current.cache.status, 'HIT');
+
+  const forced = await collector.reconcileExplicit(branch);
+  assert.equal(forced.cache.status, 'REFRESHED');
+});
+
+test('GitHub cache miss remains explicit and bounded', async () => {
+  process.env.MCP_AUTH_TOKEN ??= 'mcp-unit-test-value-20260805-abcdef';
+  process.env.S1_HOST ??= '127.0.0.1';
+  process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
+  process.env.S2_HOST ??= '127.0.0.1';
+  process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
+  const { createGithubOperationalContextCollector } = await import('../src/governedContext/github.js');
+  const collector = createGithubOperationalContextCollector({
+    fetchImpl: async () => { throw new Error('must not fetch'); },
+    readToken: async () => 'must-not-be-read',
+    apiBase: 'https://api.github.test',
+    allowedHosts: 'api.github.test',
+    now: () => new Date(OBSERVED_AT)
+  });
+  const miss = await collector.getCurrent('mcp/uncached-work');
+  assert.equal(miss.status, 'UNAVAILABLE');
+  assert.equal(miss.error, 'github_cache_miss');
+  assert.equal(miss.cache.status, 'MISS');
+  assert.equal(miss.cache.provenance, 'memory_cache');
+  assert.equal(miss.evidence.pullRequest.freshness, 'UNAVAILABLE');
+});
