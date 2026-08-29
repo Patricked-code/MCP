@@ -39,7 +39,7 @@ function boundedUnique(values: string[], limit = 20): string[] {
 export function deriveGovernedObservability(
   context: GovernedOperationalContext
 ): GovernedObservabilityProjection {
-  const capabilities = context.capabilityReality.slice(0, 500);
+  const capabilities = (context.capabilityReality ?? []).slice(0, 500);
   return {
     capabilities: {
       total: capabilities.length,
@@ -52,8 +52,8 @@ export function deriveGovernedObservability(
     },
     taskRealityDrift: context.taskReality?.drift ?? null,
     mayMutate: context.governanceDecision?.mayMutate ?? null,
-    githubReasonCodes: boundedUnique(context.github.reasonCodes),
-    githubUncertainties: boundedUnique(context.github.uncertainties),
+    githubReasonCodes: boundedUnique(context.github.reasonCodes ?? []),
+    githubUncertainties: boundedUnique(context.github.uncertainties ?? []),
     governanceReasonCodes: boundedUnique(context.governanceDecision?.reasonCodes ?? []),
     shadowMode: context.gate.mode,
     shadowDecision: context.gate.decision
