@@ -36,6 +36,7 @@ export type ShadowWriteDecision = {
     | 'task_unclaimed'
     | 'audit_baseline_invalid'
     | 'shadow_ready';
+  wouldBlock: boolean;
   bootstrapReceiptStatus?: 'MISSING' | 'CURRENT' | 'STALE' | 'EXPIRED' | null;
   currentTaskStatus?: string | null;
   auditBaselineValid?: boolean | null;
@@ -50,7 +51,7 @@ export type ScopedWriteGateDependencies = {
   requestReconcile(): void;
 };
 
-export type ShadowWriteDecisionInput = Omit<ShadowWriteDecision, 'verdict'> & {
+export type ShadowWriteDecisionInput = Omit<ShadowWriteDecision, 'verdict' | 'wouldBlock'> & {
   currentFreshness: 'CURRENT' | 'STALE' | null;
 };
 
@@ -91,7 +92,11 @@ export function deriveShadowWriteDecision(
     verdict = reason ? PRECONDITION_TO_SHADOW_VERDICT[reason] : 'shadow_ready';
   }
   const { currentFreshness: _currentFreshness, ...decision } = input;
-  return { ...decision, verdict };
+  return {
+    ...decision,
+    verdict,
+    wouldBlock: input.mode === 'shadow' && verdict !== 'shadow_ready'
+  };
 }
 
 function callbackExtra(args: unknown[]): HandlerExtra {
