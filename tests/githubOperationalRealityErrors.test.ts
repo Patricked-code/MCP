@@ -14,6 +14,7 @@ const { createGithubOperationalContextCollector } = await import(
 const OBSERVED_AT = '2026-08-29T03:10:00.000Z';
 const BRANCH = 'mcp/unified-operational-work-state-20260829';
 const SHA = 'a'.repeat(40);
+const WORK_SHA = 'b'.repeat(40);
 
 function json(value: unknown, status = 200): Response {
   return new Response(JSON.stringify(value), { status, headers: { 'content-type': 'application/json' } });
@@ -73,6 +74,7 @@ test('expired cached evidence becomes STALE while a never-observed key remains C
     const url = String(input);
     if (url.endsWith('/commits/main')) return json({ sha: SHA });
     if (url.includes('/pulls?')) return json([]);
+    if (url.includes(`/commits/${encodeURIComponent(BRANCH)}`)) return json({ sha: WORK_SHA });
     if (url.includes('/rulesets?')) return json([]);
     return json({});
   };
@@ -86,6 +88,31 @@ test('expired cached evidence becomes STALE while a never-observed key remains C
   const miss = await subject.getCurrent('mcp/never-observed');
   assert.ok(miss.reasonCodes.includes('GITHUB_CACHE_MISS'));
   assert.equal(miss.cache.status, 'MISS');
+});
+
+test('GitHub observes work branch head before a pull request exists', async () => {
+  const calls: string[] = [];
+  const fetchImpl: typeof fetch = async (input) => {
+    const url = String(input);
+    calls.push(url);
+    if (url.endsWith('/commits/main')) return json({ sha: SHA });
+    if (url.includes('/pulls?')) return json([]);
+    if (url.includes(`/commits/${encodeURIComponent(BRANCH)}`)) return json({ sha: WORK_SHA });
+    if (url.includes('/rulesets?')) return json([]);
+    return json({ message: 'unexpected endpoint' }, 500);
+  };
+
+  const result = await collector({ fetchImpl }).reconcileExplicit(BRANCH);
+  assert.equal(result.status, 'CURRENT');
+  assert.equal(result.pullRequest, null);
+  assert.equal(result.workBranchHead, WORK_SHA);
+  assert.equal(result.evidence.pullRequest.freshness, 'CURRENT');
+  assert.equal(result.checks.status, 'unavailable');
+  assert.equal(result.evidence.checks.freshness, 'NOT_APPLICABLE');
+  assert.equal(
+    calls.some((url) => url.includes(`/commits/${encodeURIComponent(BRANCH)}`)),
+    true
+  );
 });
 
 test('GitHub exact-head checks and review blockers are distinct reason codes', async () => {
