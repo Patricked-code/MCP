@@ -27,6 +27,8 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - PR #52 : head `33a3e424a5fe271cf82c1ee6db8c94785289e3ca`, CI PR `33213114008`, merge `fff44ff2db386942730a67f3884980c7824cae7f`, CI main `33214825660`, deploy `33214825772`, job `98996005106`.
 - PR #54 : réconciliation strictement documentaire post-PR #52, fusionnée au SHA `a35280e172e40525689520e1443ccd59e850e91a`; CI main `33222774901` et Governed Deploy `33222774905` réussis.
 - PR #55 : head `de0030b0df42a693d2e96c87f008c9ffd1c2ce04`, CI exact-head `33256403390` / job `99110808499`, merge `2c2dde2bffe62b2685bf2fad94530571762470c8`, CI main `33256566688`, Governed Deploy `33256566695` / job `99111230626`; GitHub, S1, origin/main et runtime attestés au même SHA.
+- PR #60 : premier lot de connexion gouvernée fusionné et déployé au SHA `211a7de7940f115aa997f404927a8e0c9ace9055`.
+- PR #62 : head `2e8fa683296f4f1bf53b9875104598696ba9c6e2`, CI PR #645 / run `33442649238` / job `99654287301`, merge `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53`, CI main #646 et Governed Deploy #19; GitHub/S1/runtime attestés au même SHA et Docker healthy.
 
 ## Tâche clôturée
 
@@ -90,17 +92,18 @@ La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. 
 ## Chantier courant — TASK-20260829-002 Automatic Governed Connection Bootstrap
 
 - [x] auto-corréler l'identité OAuth authentifiée et le nouveau transport à l'unique Governed Session compatible ;
-- [x] conserver `NONE`, `AMBIGUOUS` fail-closed et le refus des credentials partagés ;
+- [x] conserver `NONE`, `AMBIGUOUS`, `IN_USE` fail-closed et le refus des credentials partagés ;
 - [x] redacter `sessionId` et `transportSessionId` dans Pino ;
 - [x] câbler `/mcp initialize` avec `req.auth`, `sessionRequestFromToolExtra()` et l'attente du bootstrap ;
 - [x] fusionner et déployer le premier lot par PR #60 au SHA `211a7de7940f115aa997f404927a8e0c9ace9055` ;
-- [x] reproduire le churn réel `sessionRevision=66 → 67 → 68` dû aux transports éphémères ;
-- [x] obtenir les RED exacts CI #626/#628 ;
+- [x] reproduire le churn réel `sessionRevision=66 → 67 → 68` et obtenir les RED CI #626/#628 ;
 - [x] corriger par `ATTACHED` sans mutation durable pour les sessions non terminales, tout en conservant `RESUMED` pour `EXPIRED` ;
-- [x] obtenir le GREEN exact-head `8a0e6fc0903bfdce04f2c476df50bee013fd1b9a`, CI #635, `257/257` ;
-- [ ] terminer review/threads/ruleset de PR #61 et fusionner sous garde exact-head ;
-- [ ] attester Governed Autodeploy, GitHub/S1/runtime exact-SHA et santé ;
-- [ ] publier la réconciliation docs-only descendante du merge fonctionnel ;
+- [x] ajouter la régression anti-vol de session : les bindings actifs existants restent intacts ;
+- [x] valider le head `2e8fa683296f4f1bf53b9875104598696ba9c6e2` par CI PR #645, `258/258` tests et tous les gates ;
+- [x] fusionner PR #62 sous garde exact-head au SHA `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53` ;
+- [x] attester CI main #646, Governed Deploy #19, GitHub/S1/runtime exact-SHA, S1 propre et Docker healthy ;
+- [x] vérifier en production trois lectures successives stables à `sessionRevision=68` ;
+- [ ] fusionner la présente réconciliation docs-only descendante du merge fonctionnel ;
 - [ ] obtenir `FULLY_ALIGNED`, passer la task à `DONE`, créer le checkpoint final et fermer la session sans lock résiduel.
 
 ## Maintenance séparée

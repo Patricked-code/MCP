@@ -20,35 +20,33 @@ Date : 2026-08-31
 
 ### Baseline fonctionnelle déployée et attestée
 
-- La PR #60 a fusionné le premier lot fonctionnel au SHA `211a7de7940f115aa997f404927a8e0c9ace9055`.
-- GitHub `main`, S1 HEAD, S1 `origin/main` et le runtime OCI sont alignés sur `211a7de7940f115aa997f404927a8e0c9ace9055`; le working tree S1 est propre, le push remote reste `disabled://mcp-s1-read-only` et le conteneur est `running/healthy`.
-- Live State `stateVersion=59` confirme l'alignement technique ; le drift restant est documentaire.
-- La PR #60 a ajouté l'auto-corrélation OAuth vers l'unique Governed Session compatible, le refus `AMBIGUOUS`, le refus des credentials partagés, la redaction des identifiants de transport et l'attente bornée du bootstrap avant les requêtes MCP suivantes.
-- Un finding P1 publié après le merge de la PR #60 demande la présente mise à jour de `SUIVI.md`, `CHANGELOG.md` et `DECISIONS_LOG.md`.
+- La PR #62 a fusionné la correction finale au SHA `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53`, depuis le head exact `2e8fa683296f4f1bf53b9875104598696ba9c6e2`.
+- GitHub `main`, S1 HEAD, S1 `origin/main` et la révision OCI du runtime sont alignés sur `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53`; le working tree S1 est propre, le push remote reste `disabled://mcp-s1-read-only` et le conteneur est `running/healthy`.
+- La CI PR #645 (run `33442649238`, job `99654287301`), la CI main #646 (run `33442929136`) et MCP Governed Deploy #19 (run `33442929180`) ont réussi.
+- Live State `stateVersion=63` confirme l'alignement technique exact-SHA. Le seul écart restant à cette observation est `DOCUMENTATION_DRIFT`, car la baseline documentaire déclarait encore `211a7de7940f115aa997f404927a8e0c9ace9055`.
+- La PR #60 reste le premier lot historique : auto-corrélation OAuth, `NONE`/`AMBIGUOUS` fail-closed, refus des credentials partagés, redaction du transport et attente du bootstrap serveur.
 
-### Régression découverte après déploiement
+### Régression découverte puis corrigée
 
-- La surface ChatGPT/Codex utilise des transports MCP éphémères successifs. Trois lectures réelles de la même Governed Session ont produit `sessionRevision=66 → 67 → 68`, avec trois `resumedAt` et fingerprints distincts.
-- Cause racine : `autoResumeCompatibleSession()` appelait `resumeSession()` pour toute session unique compatible, même déjà `OPEN`, `ACTIVE` ou `PAUSED`. Chaque initialisation remplaçait donc le binding durable et incrémentait la révision avant l'opération suivante.
-- Effet : le verrouillage optimiste devenait inexécutable depuis cette surface, car `expectedSessionRevision` était périmé avant d'atteindre le handler.
-
-### Correction gouvernée en cours — PR #61
-
-- Même task et même branche `mcp/automatic-governed-connection-bootstrap-20260829`; aucun nouveau store, moteur de session, chemin de déploiement ou patch S1.
-- RED `c1d8bd8112e3df6aa05afc1c42618bd716b78f21`, CI #626 : `actual RESUMED / expected ATTACHED`, exactement un échec sur 257.
-- RED serveur `c1ff0aa5f61d61b4d42316dbb672a59b9b223f06`, CI #628 : absence du reason code d'attachement éphémère confirmée.
-- GREEN `8a0e6fc0903bfdce04f2c476df50bee013fd1b9a`, CI #635 : typecheck, build, docs, gouvernance, secrets, whitespace et `257/257` tests réussis.
-- Nouveau contrat :
+- La surface ChatGPT/Codex utilise des transports MCP éphémères successifs. Avant correction, trois lectures réelles de la même Governed Session produisaient `sessionRevision=66 → 67 → 68`.
+- Cause racine : `autoResumeCompatibleSession()` appelait `resumeSession()` pour toute session unique compatible, même déjà `OPEN`, `ACTIVE` ou `PAUSED`. Chaque initialisation remplaçait donc le binding durable et périmait la révision optimiste.
+- Les RED `c1d8bd8112e3df6aa05afc1c42618bd716b78f21` / CI #626 et `c1ff0aa5f61d61b4d42316dbb672a59b9b223f06` / CI #628 ont reproduit exactement le défaut et l'absence du reason code serveur.
+- Le contrat final est :
   - session OAuth unique non terminale → `ATTACHED`, liaison de transport en mémoire, aucune écriture du store et aucune hausse de `sessionRevision` ;
-  - session OAuth unique `EXPIRED` encore reprenable → `RESUMED`, reprise durable et incrément de révision ;
+  - session OAuth unique `EXPIRED` encore reprenable → `RESUMED`, reprise durable ;
   - zéro candidat → `NONE` ;
   - plusieurs candidats → `AMBIGUOUS`, sans sélection arbitraire ;
   - credential partagé → aucune auto-reprise.
 - L'audit distingue `bindingResult=attached` de `resumed`; le serveur journalise `governed_session_auto_attached` sans identifiant de transport brut.
+- Après déploiement, trois lectures successives ont toutes retourné `sessionRevision=68`, le même `resumedAt` et le même fingerprint durable : le churn n'est plus reproduit.
 
-### Gate de clôture
+### Réconciliation documentaire et gate de clôture
 
-La PR #61 doit encore passer la review exact-head, tous les threads et le ruleset `protect-main`, puis être fusionnée sous garde du SHA exact. Governed Autodeploy doit ensuite aligner GitHub/S1/runtime sur le merge. Une PR docs-only descendante de ce merge déclarera alors ce SHA fonctionnel sans auto-référence. Seulement après `FULLY_ALIGNED`, Operational Memory pourra passer `TASK-20260829-002` à `DONE`, créer le checkpoint final, libérer le lock éventuel et fermer la Governed Session.
+- La présente branche `mcp/automatic-governed-connection-bootstrap-20260829` est fast-forwardée depuis `main@878a1646fc7e5928cdb7951a3d2ad1f0639a1d53` pour une réconciliation strictement Markdown.
+- Cette réconciliation ne modifie ni TypeScript, tests, workflow, OIDC, Autodeploy, politique `.mcp`, WRITE gate, secret, runtime ou fichier S1.
+- Après fusion sous garde exact-head, Governed Autodeploy doit maintenir GitHub/S1/runtime alignés sur le commit documentaire descendant.
+- Un Live State frais doit alors reconnaître `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53` comme baseline fonctionnelle déclarée et le descendant comme docs-only, sans `DOCUMENTATION_DRIFT`.
+- Seulement après `FULLY_ALIGNED`, Operational Memory pourra faire évoluer `TASK-20260829-002` de `MERGE_READY` à `DEPLOYING`, `VERIFYING`, puis `DONE`, créer le checkpoint final, libérer le lock éventuel et fermer la Governed Session.
 
 ---
 

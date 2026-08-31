@@ -3,6 +3,17 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
+## 2026-08-31 — Automatic Governed Connection Bootstrap stabilisé et déployé
+
+- PR #60 : premier lot de bootstrap automatique fusionné et déployé au SHA `211a7de7940f115aa997f404927a8e0c9ace9055`.
+- Une observation runtime a exposé un churn de révision sur transports MCP éphémères : `66 → 67 → 68`, rendant les écritures optimistes inexécutables.
+- TDD RED : CI #626 a obtenu `actual RESUMED / expected ATTACHED`; CI #628 a confirmé l'absence du reason code serveur.
+- GREEN final : les sessions `OPEN`/`ACTIVE`/`PAUSED` utilisent `ATTACHED` sans mutation durable; `EXPIRED` conserve `RESUMED`; `NONE`, `AMBIGUOUS`, `IN_USE` et le refus des credentials partagés restent fail-closed.
+- Le head exact `2e8fa683296f4f1bf53b9875104598696ba9c6e2` a passé la CI PR #645, run `33442649238`, job `99654287301`, avec `258/258` tests, typecheck, build, documentation, gouvernance, secrets et whitespace réussis.
+- PR #62 fusionnée sous garde du SHA exact au merge `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53`; CI main #646 et MCP Governed Deploy #19 ont réussi.
+- Live State `63` atteste GitHub/S1/runtime alignés sur `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53`, S1 propre/read-only et Docker healthy. Trois lectures production restent à `sessionRevision=68`.
+- La présente modification est la réconciliation docs-only descendante requise avant la clôture Operational Memory. Aucun code, workflow, secret, OIDC, Autodeploy, WRITE gate ou fichier S1 n'est modifié.
+
 ## 2026-08-29 — Candidate Unified Operational Work State
 
 - Ajout additif de `src/governance/operationalDecision.ts` pour dériver `CapabilityReality`, `TaskReality` et `GovernanceDecision` à partir des autorités existantes, sans nouveau store ni nouvelle source de vérité.

@@ -3,6 +3,18 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-08-31 — Attacher les transports actifs sans reprendre la session durable
+
+Contexte : un client peut ouvrir des transports MCP OAuth successifs pour un même principal. Appeler `resumeSession()` à chaque transport incrémente `sessionRevision`, remplace le binding durable et invalide toute opération optimiste observée juste avant.
+
+Décision : une session unique compatible en état `OPEN`, `ACTIVE` ou `PAUSED` produit `ATTACHED`. Le transport éphémère est ajouté aux `TransportBindings` existants sans écriture du session store, sans nouvelle autorité et sans incrément de `sessionRevision`. Seule une session `EXPIRED` encore reprenable produit `RESUMED` et une mutation durable.
+
+Sécurité : `NONE`, `AMBIGUOUS`, `IN_USE` et le refus des credentials partagés restent fail-closed. L'attachement ne supprime pas les bindings actifs existants. L'audit encode `bindingResult=attached` et les logs n'exposent aucun identifiant de transport brut.
+
+Preuve : RED CI #626/#628, GREEN exact-head `2e8fa683296f4f1bf53b9875104598696ba9c6e2` avec CI PR #645 et `258/258` tests. PR #62 fusionnée au SHA `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53`; CI main #646 et Governed Deploy #19 réussis. Live State `63`, S1 propre et l'image OCI active attestent ce même SHA; trois lectures production conservent `sessionRevision=68`.
+
+Clôture : une réconciliation strictement documentaire descendante de `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53` doit supprimer le drift documentaire. La tâche Operational Memory ne devient `DONE` qu'après CI/review/merge de cette réconciliation, nouvel autodeploy, Live State `FULLY_ALIGNED`, checkpoint final et fermeture de la Governed Session.
+
 ## 2026-08-29 — Unified Operational Work State sans autorité parallèle
 
 Contexte : Live State, Current-State Inventory, Operational Memory, Governed Task Queue et le collecteur GitHub savent déjà observer leurs domaines, mais aucune projection unique ne relie encore capability, tâche, session, owner, dépendances, locks, GitHub, runtime et opération proposée pour répondre de manière bornée à « que peut-on faire maintenant ? ».
