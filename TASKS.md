@@ -17,6 +17,8 @@
 
 Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIVITY_LOG.md`, `CHANGELOG.md`, `DECISIONS_LOG.md` et les PR GitHub. Les identifiants, propriétaires, branches et états runtime dynamiques restent dérivés de la Governed Task Queue et d'Operational Memory; ce fichier ne remplace pas ces autorités.
 
+`ROADMAP.md` décrit tous les chantiers/lots connus. `TODO.md` contient ce qui reste à accomplir. Ce fichier ne pré-crée pas toutes les tâches futures : une `TASK-...` n'est considérée officielle qu'après son enregistrement dans Operational Memory.
+
 ## Jalons terminés
 
 - PR #44, #45, #47, #49, #52 et #55 fusionnées selon la gouvernance ; PR #50 fermée sans fusion comme doublon exact de la PR #49.
@@ -29,6 +31,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - PR #55 : head `de0030b0df42a693d2e96c87f008c9ffd1c2ce04`, CI exact-head `33256403390` / job `99110808499`, merge `2c2dde2bffe62b2685bf2fad94530571762470c8`, CI main `33256566688`, Governed Deploy `33256566695` / job `99111230626`; GitHub, S1, origin/main et runtime attestés au même SHA.
 - PR #60 : premier lot de connexion gouvernée fusionné et déployé au SHA `211a7de7940f115aa997f404927a8e0c9ace9055`.
 - PR #62 : head `2e8fa683296f4f1bf53b9875104598696ba9c6e2`, CI PR #645 / run `33442649238` / job `99654287301`, merge `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53`, CI main #646 et Governed Deploy #19; GitHub/S1/runtime attestés au même SHA et Docker healthy.
+- PR #63 : réconciliation documentaire post-PR #62 fusionnée au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`; elle ne modifie que la documentation canonique et constitue le dernier jalon GitHub connu avant la présente stabilisation de roadmap.
 
 ## Tâche clôturée
 
@@ -45,7 +48,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] trois threads tardifs PR #45 résolus après déploiement attesté ;
 - [x] réconciliation documentaire finale publiée par PR #48.
 
-## Tâche précédente — clôture technique acquise, preuve runtime finale distincte
+## Tâche précédente — preuve runtime finale sous autorité Operational Memory
 
 ### TASK-20260822-001 — Mandatory Agent Bootstrap & Work Orchestration V1
 
@@ -60,11 +63,11 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] corriger les findings tardifs PR #49 et les écarts de gate/catalogue par PR #52 ;
 - [x] fusionner PR #52 et attester CI/Autodeploy/GitHub/S1/OCI/runtime au SHA fonctionnel `fff44ff2db386942730a67f3884980c7824cae7f` ;
 - [x] fusionner et attester la réconciliation documentaire via PR #54, merge `a35280e172e40525689520e1443ccd59e850e91a` ;
-- [ ] attester depuis Operational Memory le checkpoint final, la libération du lock et la fermeture de la session sans lock résiduel ; cette preuve ne doit pas être déduite de GitHub.
+- [ ] lorsqu'une preuve actuelle est requise, lire Operational Memory pour connaître le checkpoint final, les locks et le cycle de session ; ne pas déduire ces états dynamiques de ce fichier.
 
-## Chantier précédent — Unified Operational Work State
+## Chantier historique — Unified Operational Work State
 
-La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. La présente branche `mcp/reconcile-unified-operational-work-state-20260829` est une réconciliation strictement documentaire descendante de `main@2c2dde2bffe62b2685bf2fad94530571762470c8`. Le statut final, le checkpoint, les locks et la session restent exclusivement sous l'autorité d'Operational Memory.
+La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. Les statuts finaux de tâche, checkpoint, locks et session restent exclusivement sous l'autorité d'Operational Memory.
 
 - [x] composer une réalité opérationnelle à partir des autorités existantes sans second store ni seconde source de vérité ;
 - [x] ajouter `CapabilityReality` avec registration, callability, authorization, `safeNow`, reason codes et preuves requises ;
@@ -84,12 +87,9 @@ La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. 
 - [x] fusionner PR #55 avec garde `expected_head_sha` au merge `2c2dde2bffe62b2685bf2fad94530571762470c8` ;
 - [x] attester CI main `33256566688` et Governed Deploy `33256566695` / job `99111230626` sur ce SHA exact ;
 - [x] réattester GitHub main, S1 HEAD, S1 origin/main et runtime healthy au SHA `2c2dde2bffe62b2685bf2fad94530571762470c8` dans Live State `51` ;
-- [ ] fusionner la présente réconciliation docs-only après CI/review exact-head ;
-- [ ] réattester Live State / Current State / Governed Context / Task Reality après le merge documentaire ;
-- [ ] seulement ensuite faire évoluer la Task Queue jusqu'à `DONE`, créer le checkpoint final, libérer le lock et préserver/fermer la Governed Session selon son cycle normal.
+- [ ] si le statut runtime final de `TASK-20260829-001` doit être attesté de nouveau, le lire depuis Operational Memory/Task Reality plutôt que le réécrire ici.
 
-
-## Chantier courant — TASK-20260829-002 Automatic Governed Connection Bootstrap
+## Chantier livré côté GitHub — TASK-20260829-002 Automatic Governed Connection Bootstrap
 
 - [x] auto-corréler l'identité OAuth authentifiée et le nouveau transport à l'unique Governed Session compatible ;
 - [x] conserver `NONE`, `AMBIGUOUS`, `IN_USE` fail-closed et le refus des credentials partagés ;
@@ -101,10 +101,37 @@ La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. 
 - [x] ajouter la régression anti-vol de session : les bindings actifs existants restent intacts ;
 - [x] valider le head `2e8fa683296f4f1bf53b9875104598696ba9c6e2` par CI PR #645, `258/258` tests et tous les gates ;
 - [x] fusionner PR #62 sous garde exact-head au SHA `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53` ;
-- [x] attester CI main #646, Governed Deploy #19, GitHub/S1/runtime exact-SHA, S1 propre et Docker healthy ;
-- [x] vérifier en production trois lectures successives stables à `sessionRevision=68` ;
-- [ ] fusionner la présente réconciliation docs-only descendante du merge fonctionnel ;
-- [ ] obtenir `FULLY_ALIGNED`, passer la task à `DONE`, créer le checkpoint final et fermer la session sans lock résiduel.
+- [x] attester CI main #646, Governed Deploy #19, GitHub/S1/runtime exact-SHA, S1 propre et Docker healthy au jalon fonctionnel ;
+- [x] vérifier en production trois lectures successives stables à `sessionRevision=68` au jalon observé ;
+- [x] fusionner la réconciliation docs-only par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba` ;
+- [ ] ne maintenir ici aucun faux statut runtime : `DONE`, checkpoint, locks et cycle de session doivent être lus depuis Operational Memory lorsqu'une attestation actuelle est nécessaire.
+
+## Prochaine tâche candidate — non enregistrée
+
+### Project Context Resolution — Client/GitHub/Repository/Project Binding
+
+Statut documentaire : `PLANNED / NOT_REGISTERED`.
+
+Aucun `TASK-...` n'est attribué ici tant que la Governed Task Queue / Operational Memory ne l'a pas officiellement enregistré.
+
+Objectif borné : prolonger le bootstrap existant sans refaire la session automatique, afin de résoudre progressivement :
+
+```text
+principal OAuth
+→ Connection Context minimal
+→ GitHub identity
+→ repository
+→ GitRegistry V2 mapping
+→ project
+→ server/runtime/domain
+→ governance héritée
+```
+
+Autorités existantes à réutiliser : OAuth, Operational Memory, Governed Session, GitRegistry V2, `.mcp/server-map.json`, Live State, Governed Context, Bootstrap Receipt et permissions existantes.
+
+Interdictions : aucun nouveau Session Manager, aucun second GitRegistry, aucune seconde Task Queue, aucun choix arbitraire en cas d'ambiguïté, aucun secret dans Git, aucune création de ressource dans ce premier lot de résolution.
+
+Les sous-lots, dépendances et lots ultérieurs sont décrits dans `ROADMAP.md`. `TODO.md` porte uniquement le travail restant correspondant.
 
 ## Maintenance séparée
 
