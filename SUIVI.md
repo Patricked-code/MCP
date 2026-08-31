@@ -17,22 +17,33 @@ Date : 2026-09-01
 
 ## Stabilisation du pilotage documentaire
 
-### Baseline GitHub observée
+### Baseline historique de départ
 
-- GitHub `main` est au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`, merge de la PR #63 `docs(governance): reconcile governed bootstrap deployment`.
-- La PR #63 a déjà fusionné la réconciliation Markdown post-PR #62 ; les sections historiques datées ci-dessous qui parlent encore de cette fusion comme d'une étape future sont conservées comme checkpoints historiques et ne constituent plus la prochaine action GitHub.
-- Le présent chantier de stabilisation est strictement documentaire : il n'ajoute ni code TypeScript, ni workflow, ni secret, ni WRITE gate, ni nouveau store/runtime, ni chemin de déploiement.
+- La stabilisation du pilotage a été préparée depuis `main@a026616fbf2df47962243bfcff46ac734bed50ba`, merge de la PR #63.
+- La PR #64 `docs(governance): stabilize roadmap and governed program planning` a ensuite fusionné la nouvelle organisation documentaire sur `main`.
+- Le SHA GitHub courant ne doit pas être figé ici comme une valeur auto-référentielle : à chaque reprise, il doit être lu directement depuis GitHub/Live State. Cette règle évite qu'un commit documentaire rende immédiatement `SUIVI.md` obsolète.
 
 ### Nouvelle organisation de pilotage
 
-- `ROADMAP.md` porte désormais la vision complète des chantiers et lots connus, leurs dépendances, points d'intégration et règles anti-régression.
+- `ROADMAP.md` porte la vision complète des chantiers et lots connus, leurs dépendances, points d'intégration et règles anti-régression.
 - `TODO.md` porte uniquement le travail réellement restant dérivé de la roadmap.
 - `TASKS.md` porte les tâches historiques/actuelles et au plus la prochaine candidate ; aucun `TASK-...` futur n'est inventé avant son enregistrement officiel dans Operational Memory.
-- `SUIVI.md` reste le point de reprise du moment et ne remplace ni Live State, ni Operational Memory, ni Governed Task Queue, ni GitHub.
+- `SUIVI.md` reste le point de reprise humain/documentaire et ne remplace ni Live State, ni Operational Memory, ni Governed Task Queue, ni GitHub.
 
-### Autorités runtime préservées
+### Autorités dynamiques préservées
 
-Les statuts dynamiques `DONE`, checkpoints, locks, owners, sessions et queue ne sont pas déclarés depuis ce document. Lorsqu'une attestation actuelle est nécessaire, ils doivent être lus depuis Operational Memory / Governed Task Queue / Live State / Governed Context.
+Les valeurs suivantes ne sont pas maintenues comme vérités statiques dans ce document :
+
+- SHA GitHub courant ;
+- `DONE`/statut runtime des tasks ;
+- checkpoints ;
+- locks ;
+- owners ;
+- Governed Session active ;
+- état de la queue ;
+- alignement GitHub/S1/runtime.
+
+Lorsqu'une attestation actuelle est nécessaire, ces données doivent être lues depuis GitHub, Operational Memory, Governed Task Queue, Live State, Current State et Governed Context selon leur autorité respective.
 
 ### Programme suivant — orientation documentaire
 
@@ -51,9 +62,15 @@ principal OAuth
 
 Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) sont positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
 
-### Prochaine action de ce point de reprise
+### Règle de reprise
 
-Valider cette stabilisation documentaire par le workflow GitHub normal (diff borné, CI/review/ruleset), puis, après merge, reprendre toute décision de nouvelle tâche depuis les autorités runtime réelles. Ne jamais utiliser la roadmap comme autorité de statut et ne jamais contourner Operational Memory.
+À chaque nouvelle reprise :
+
+1. lire l'état GitHub `main` réel ;
+2. lire les autorités runtime nécessaires ;
+3. vérifier s'il existe déjà une tâche gouvernée active ou exécutable ;
+4. ne créer la prochaine tâche candidate que si la queue et les dépendances l'autorisent ;
+5. ne jamais utiliser `ROADMAP.md`, `TODO.md`, `TASKS.md` ou `SUIVI.md` comme substitut aux autorités dynamiques.
 
 ---
 
