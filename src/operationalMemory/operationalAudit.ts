@@ -22,7 +22,7 @@ type SessionAuditType =
 
 type SessionReasonCode = 'paused_by_owner' | 'idle_ttl' | 'closed_by_owner';
 type TransportReasonCode = 'transport_closed' | 'transport_replaced' | 'session_closed' | 'session_expired';
-type BindingResult = 'opened' | 'resumed';
+type BindingResult = 'opened' | 'attached' | 'resumed';
 
 export type OperationalAuditInput =
   | {
