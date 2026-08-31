@@ -357,3 +357,15 @@ Décision : accepter la PR #49 uniquement après `222/222`, CI exacte `325659368
 Décision : considérer l'Autodeploy attesté uniquement après un nouveau Live State prouvant GitHub, S1, `origin/main` et runtime égaux, arbre S1 propre et conteneur healthy. Cette preuve est `stateVersion=33` ; la documentation est ensuite réconciliée dans une branche séparée strictement documentaire.
 
 Décision de queue : ne pas contourner la state machine et ne pas modifier directement le store. Le connecteur de cette conversation ayant figé son catalogue avant le déploiement, `TASK-20260822-001` reste volontairement `READY`. La prochaine connexion doit charger les nouveaux outils, reprendre cette tâche existante et appliquer les transitions gouvernées jusqu'à `DONE`, sans créer de doublon.
+
+## 2026-08-31 — Attachement éphémère sans révision durable pour les transports OAuth successifs
+
+Contexte : après le déploiement de la PR #60 au SHA `211a7de7940f115aa997f404927a8e0c9ace9055`, trois appels réels depuis la surface ChatGPT/Codex ont repris la même Governed Session et produit les révisions `66 → 67 → 68`. Chaque appel initialise un nouveau transport MCP ; l'appel automatique systématique à `resumeSession()` invalidait donc l'optimistic locking avant l'opération métier suivante.
+
+Décision : pour l'unique session OAuth compatible dont le statut est `OPEN`, `ACTIVE` ou `PAUSED`, l'initialisation d'un nouveau transport crée uniquement un binding éphémère `ATTACHED` dans `TransportBindings`. Elle ne modifie ni le store de session, ni `resumedAt`, ni `lastHeartbeatAt`, ni `sessionRevision`. Les bindings antérieurs ne sont pas arbitrairement volés.
+
+Décision complémentaire : conserver `resumeSession()` et le statut `RESUMED` pour une session réellement `EXPIRED` encore dans sa fenêtre de grâce. Conserver `NONE` pour zéro candidat, `AMBIGUOUS` pour plusieurs candidats et le refus d'auto-reprise pour `shared_credential`.
+
+Preuve : RED exact `actual RESUMED / expected ATTACHED` dans CI #626, second RED serveur dans CI #628, puis GREEN `8a0e6fc0903bfdce04f2c476df50bee013fd1b9a` avec CI #635 entièrement réussie et `257/257` tests.
+
+Limites : aucun identifiant stable de conversation n'est fabriqué. Aucune nouvelle autorité, aucun nouveau store, aucun élargissement de droits, aucun changement du WRITE gate `shadow`, d'OIDC, d'Autodeploy, de 2FA ou du chemin GitHub→S1. Le merge, le déploiement exact-SHA, la réconciliation docs-only et la clôture Operational Memory restent à attester.
