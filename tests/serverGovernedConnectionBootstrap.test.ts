@@ -10,8 +10,8 @@ test('MCP initialize déclenche automatiquement la reprise gouvernée avec l ide
   assert.match(source, /sessionRequestFromToolExtra/);
   assert.match(source, /autoResumeCompatibleSession/);
   assert.match(source, /repository:\s*['"]Patricked-code\/MCP['"]/);
-  assert.match(source, /sessionId:\s*newSessionId/);
-  assert.match(source, /authInfo/);
+  assert.match(source, /autoResumeGovernedSessionForTransport\(newSessionId,\s*authInfo\)/);
+  assert.match(source, /sessionRequestFromToolExtra\(\{\s*sessionId:\s*transportSessionId,\s*authInfo\s*\}\)/s);
 });
 
 test('MCP initialize ne journalise plus explicitement l identifiant de transport brut', async () => {
