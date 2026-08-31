@@ -173,3 +173,90 @@ test('un credential partagé ne reprend jamais automatiquement une governed sess
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('des transports OAuth successifs s attachent sans invalider la révision optimiste', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-auto-bootstrap-transport-churn-'));
+  try {
+    const store = createAtomicJsonStore({
+      filePath: join(directory, 'sessions.json'),
+      schema: SessionStoreDocumentSchema,
+      empty: createEmptySessionStoreDocument
+    });
+    const bindings = createTransportBindings();
+    const service = createGovernedSessionService({
+      store,
+      bindings,
+      idleTtlSeconds: 86_400,
+      resumeGraceSeconds: 604_800,
+      now: () => new Date('2026-08-31T21:21:25.000Z'),
+      getLiveState: async () => ({ stateVersion: 59 })
+    });
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-churn-first-raw',
+      identity: OAUTH_IDENTITY
+    });
+    service.unbindTransport('transport-churn-first-raw');
+
+    const first = await service.autoResumeCompatibleSession(
+      { repository: 'Patricked-code/MCP' },
+      {
+        transportSessionId: 'transport-churn-second-raw',
+        identity: OAUTH_IDENTITY
+      }
+    );
+    const firstWithSession = first as {
+      status: string;
+      session?: { governedSessionId: string; sessionRevision: number };
+    };
+
+    assert.equal(firstWithSession.status, 'ATTACHED');
+    assert.equal(firstWithSession.session?.sessionRevision, opened.session.sessionRevision);
+    assert.equal(
+      bindings.lookup('transport-churn-second-raw'),
+      opened.session.governedSessionId
+    );
+
+    service.unbindTransport('transport-churn-second-raw');
+    const observedBeforeNextTransport = await service.getVisibleSession(
+      opened.session.governedSessionId,
+      {
+        transportSessionId: 'transport-churn-second-raw',
+        identity: OAUTH_IDENTITY
+      }
+    );
+    assert.equal(observedBeforeNextTransport?.sessionRevision, opened.session.sessionRevision);
+
+    const second = await service.autoResumeCompatibleSession(
+      { repository: 'Patricked-code/MCP' },
+      {
+        transportSessionId: 'transport-churn-third-raw',
+        identity: OAUTH_IDENTITY
+      }
+    );
+    const secondWithSession = second as {
+      status: string;
+      session?: { governedSessionId: string; sessionRevision: number };
+    };
+
+    assert.equal(secondWithSession.status, 'ATTACHED');
+    assert.equal(
+      secondWithSession.session?.sessionRevision,
+      observedBeforeNextTransport?.sessionRevision
+    );
+
+    const acknowledged = await service.acknowledgeContext({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: observedBeforeNextTransport?.sessionRevision ?? -1,
+      expectedStateVersion: 59
+    }, {
+      transportSessionId: 'transport-churn-third-raw',
+      identity: OAUTH_IDENTITY
+    });
+    assert.equal(
+      acknowledged.sessionRevision,
+      (observedBeforeNextTransport?.sessionRevision ?? 0) + 1
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
