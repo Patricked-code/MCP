@@ -51,12 +51,25 @@ export type ResumeSessionInput = {
   expectedSessionRevision: number;
 };
 
+export type AutoResumeCompatibleSessionInput = {
+  repository: 'Patricked-code/MCP';
+};
+
+export type AutoResumeCompatibleSessionResult =
+  | { status: 'RESUMED'; session: GovernedSessionPublicRecord }
+  | { status: 'NONE' }
+  | { status: 'AMBIGUOUS' };
+
 export type GovernedSessionService = {
   openSession(input: OpenSessionInput, request: SessionRequest): Promise<OpenSessionResult>;
   resumeSession(
     input: ResumeSessionInput,
     request: SessionRequest
   ): Promise<GovernedSessionPublicRecord>;
+  autoResumeCompatibleSession(
+    input: AutoResumeCompatibleSessionInput,
+    request: SessionRequest
+  ): Promise<AutoResumeCompatibleSessionResult>;
   heartbeat(input: SessionRevisionInput, request: SessionRequest): Promise<GovernedSessionPublicRecord>;
   acknowledgeContext(
     input: SessionRevisionInput & { expectedStateVersion: number },
@@ -381,6 +394,37 @@ export function createGovernedSessionService(
       return visible;
     },
 
+    async autoResumeCompatibleSession(input, request) {
+      if (
+        request.identity.assurance !== 'oauth_subject'
+        || request.identity.principalId === null
+      ) return { status: 'NONE' };
+
+      const at = now();
+      const document = await options.store.read();
+      const candidates = document.sessions.filter((session) => {
+        if (session.repository !== input.repository) return false;
+        if (session.ownerPrincipalId !== request.identity.principalId) return false;
+        if (session.status === 'CLOSED') return false;
+        if (session.status !== 'EXPIRED') return true;
+        const expiredAt = session.expiredAt ? Date.parse(session.expiredAt) : Number.NaN;
+        return Number.isFinite(expiredAt)
+          && at.getTime() - expiredAt <= options.resumeGraceSeconds * 1_000;
+      });
+      if (candidates.length === 0) return { status: 'NONE' };
+      if (candidates.length > 1) return { status: 'AMBIGUOUS' };
+
+      const candidate = candidates[0];
+      if (!candidate) return { status: 'NONE' };
+      const session = await service.resumeSession({
+        governedSessionId: candidate.governedSessionId,
+        repository: candidate.repository,
+        taskScope: candidate.taskScope,
+        expectedSessionRevision: candidate.sessionRevision
+      }, request);
+      return { status: 'RESUMED', session };
+    },
+
     async heartbeat(input, request) {
       const heartbeatAt = now();
       const updated = await mutateSession(input, request, (session) => ({
@@ -633,6 +677,9 @@ export function createGovernedSessionService(
     ...service,
     openSession: (input, request) => lifecycle.run(() => service.openSession(input, request)),
     resumeSession: (input, request) => lifecycle.run(() => service.resumeSession(input, request)),
+    autoResumeCompatibleSession: (input, request) => lifecycle.run(
+      () => service.autoResumeCompatibleSession(input, request)
+    ),
     closeSession: (input, request) => lifecycle.run(() => service.closeSession(input, request)),
     expireIdleSessions: () => lifecycle.run(() => service.expireIdleSessions())
   };
