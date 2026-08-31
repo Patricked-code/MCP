@@ -22,3 +22,12 @@ test('MCP initialize ne journalise plus explicitement l identifiant de transport
     /logger\.info\(\{\s*sessionId:\s*newSessionId\s*\},\s*['"]MCP session initialisée['"]\)/
   );
 });
+
+test('les requêtes suivantes attendent la tentative de binding gouverné du transport', async () => {
+  const source = await readFile(SERVER_FILE, 'utf8');
+
+  assert.match(source, /transportBootstraps/);
+  assert.match(source, /transportBootstraps\[newSessionId\]\s*=/);
+  assert.match(source, /await\s+transportBootstraps\[sessionId\]/);
+  assert.match(source, /delete\s+transportBootstraps\[transport\.sessionId\]/);
+});
