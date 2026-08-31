@@ -324,10 +324,18 @@ async function autoResumeGovernedSessionForTransport(
       sessionRequestFromToolExtra({ sessionId: transportSessionId, authInfo })
     );
 
+    if (result.status === 'ATTACHED') {
+      logger.info(
+        { governedSessionId: result.session.governedSessionId, reasonCode: 'governed_session_auto_attached' },
+        'Transport attaché automatiquement à la governed session active'
+      );
+      return;
+    }
+
     if (result.status === 'RESUMED') {
       logger.info(
         { governedSessionId: result.session.governedSessionId, reasonCode: 'governed_session_auto_resumed' },
-        'Governed session reprise automatiquement'
+        'Governed session expirée reprise automatiquement'
       );
       return;
     }
