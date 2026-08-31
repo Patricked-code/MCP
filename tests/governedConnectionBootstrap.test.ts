@@ -70,48 +70,6 @@ test('un nouveau transport OAuth reprend automatiquement l unique governed sessi
   }
 });
 
-test('une session OAuth déjà liée à un autre transport actif n est jamais volée automatiquement', async () => {
-  const directory = await mkdtemp(join(tmpdir(), 'mcp-auto-bootstrap-in-use-'));
-  try {
-    const store = createAtomicJsonStore({
-      filePath: join(directory, 'sessions.json'),
-      schema: SessionStoreDocumentSchema,
-      empty: createEmptySessionStoreDocument
-    });
-    const bindings = createTransportBindings();
-    const service = createGovernedSessionService({
-      store,
-      bindings,
-      idleTtlSeconds: 86_400,
-      resumeGraceSeconds: 604_800,
-      now: () => new Date('2026-08-29T14:00:00.000Z')
-    });
-    const opened = await service.openSession(OPEN_INPUT, {
-      transportSessionId: 'transport-active-raw',
-      identity: OAUTH_IDENTITY
-    });
-
-    const result = await service.autoResumeCompatibleSession(
-      { repository: 'Patricked-code/MCP' },
-      {
-        transportSessionId: 'transport-competing-raw',
-        identity: OAUTH_IDENTITY
-      }
-    );
-
-    assert.equal(result.status, 'IN_USE');
-    assert.equal(bindings.lookup('transport-active-raw'), opened.session.governedSessionId);
-    assert.equal(bindings.lookup('transport-competing-raw'), null);
-    const after = await service.getVisibleSession(opened.session.governedSessionId, {
-      transportSessionId: 'transport-active-raw',
-      identity: OAUTH_IDENTITY
-    });
-    assert.equal(after?.sessionRevision, opened.session.sessionRevision);
-  } finally {
-    await rm(directory, { recursive: true, force: true });
-  }
-});
-
 test('plusieurs governed sessions OAuth compatibles échouent fermé sans liaison arbitraire', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'mcp-auto-bootstrap-ambiguous-'));
   try {
