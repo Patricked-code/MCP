@@ -17,6 +17,12 @@
 
 Travaux restant réellement à accomplir. Les états dynamiques de tâche, session, branche et PR sont lus depuis leurs autorités runtime/GitHub et ne sont pas figés ici.
 
+## Règle de dérivation depuis la roadmap
+
+`ROADMAP.md` porte la vision complète des chantiers et lots connus. Ce fichier ne duplique pas toute la roadmap : il ne contient que les éléments qui restent réellement à accomplir ou à vérifier avant qu'un lot puisse être considéré exécutable.
+
+Une amélioration structurante est d'abord positionnée dans `ROADMAP.md`. Lorsqu'elle devient un travail réellement restant, elle est reflétée ici. Une `TASK-...` officielle n'est créée que lorsque la gouvernance et Operational Memory l'autorisent.
+
 ## Governed Autodeploy V1
 
 - [x] Bootstrap manuel et preuves automatiques exact-SHA attestés.
@@ -42,7 +48,7 @@ Travaux restant réellement à accomplir. Les états dynamiques de tâche, sessi
 - [x] Findings tardifs PR #49 et écarts de gate/catalogue corrigés par PR #52.
 - [x] PR #52 fusionnée, CI/Autodeploy exact-SHA et GitHub/S1/OCI/runtime attestés au SHA `fff44ff2db386942730a67f3884980c7824cae7f`.
 - [x] Réconciliation documentaire fusionnée par PR #54 au SHA `a35280e172e40525689520e1443ccd59e850e91a`; CI main `33222774901` et Governed Deploy `33222774905` réussis.
-- [ ] Lire Operational Memory pour attester le checkpoint final, la libération du lock et la fermeture de session sans lock résiduel; ne pas déduire cette preuve depuis GitHub.
+- [ ] Lire Operational Memory pour attester le checkpoint final, la libération du lock et la fermeture de session sans lock résiduel; ne pas déduire cette preuve depuis GitHub si elle n'a pas déjà été enregistrée par l'autorité runtime.
 
 ## Unified Operational Work State — historique
 
@@ -62,29 +68,78 @@ Travaux restant réellement à accomplir. Les états dynamiques de tâche, sessi
 - [x] Attester le merge fonctionnel `2c2dde2bffe62b2685bf2fad94530571762470c8`, CI main `33256566688` et Governed Deploy `33256566695` / job `99111230626`.
 - [x] Réattester GitHub main, S1 HEAD/origin-main et runtime healthy sur le même SHA dans Live State `51`.
 - [x] Démarrer la réconciliation documentaire post-déploiement sur `mcp/reconcile-unified-operational-work-state-20260829` sans code, workflow, policy ou changement de WRITE gate.
-- [ ] Ouvrir la PR docs-only, vérifier son diff, puis obtenir CI/review/ruleset exact-head propres.
-- [ ] Fusionner cette réconciliation documentaire sous garde exact-head et laisser l'Autodeploy existant maintenir l'alignement.
-- [ ] Réconcilier un Live State frais et vérifier la disparition de `DOCUMENTATION_DRIFT` sans masquer un autre drift.
-- [ ] Réconcilier Current State, Governed Context et Task Reality ; faire évoluer `TASK-20260829-001` jusqu'à `DONE` uniquement depuis Operational Memory.
-- [ ] Créer le checkpoint final, libérer le lock et préserver/fermer la Governed Session selon son cycle normal.
-- [ ] Ensuite seulement enregistrer la première tâche du programme suivant : `Automatic Governed Connection Bootstrap & Conversation Session Binding`.
+- [ ] Les états finaux de `TASK-20260829-001` (DONE/checkpoint/locks/session) restent à lire depuis Operational Memory lorsqu'une preuve actuelle est nécessaire ; ne pas les réinventer depuis ce Markdown.
 
-
-## Automatic Governed Connection Bootstrap — clôture en cours
+## Automatic Governed Connection Bootstrap — livraison GitHub acquise
 
 - [x] PR #60 fusionnée et déployée sur `211a7de7940f115aa997f404927a8e0c9ace9055`.
 - [x] Drift documentaire et finding tardif PR #60 identifiés.
 - [x] Churn de révision sur transports successifs reproduit en runtime et par RED CI #626/#628.
 - [x] GREEN `ATTACHED`/`RESUMED` finalisé au head `2e8fa683296f4f1bf53b9875104598696ba9c6e2`, CI PR #645, `258/258`.
 - [x] PR #62 fusionnée sous garde exact-head au SHA `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53`.
-- [x] CI main #646, Governed Deploy #19, GitHub/S1/runtime exact-SHA, dépôt S1 propre et Docker healthy attestés.
-- [x] Stabilité runtime confirmée : trois lectures successives restent à `sessionRevision=68`.
-- [ ] Fusionner cette réconciliation docs-only après CI/review/ruleset exact-head.
-- [ ] Vérifier la disparition de `DOCUMENTATION_DRIFT` et obtenir `FULLY_ALIGNED`.
-- [ ] Réacquitter le contexte, faire évoluer `TASK-20260829-002` jusqu'à `DONE`, créer le checkpoint final, libérer les locks et fermer la session.
+- [x] CI main #646, Governed Deploy #19, GitHub/S1/runtime exact-SHA, dépôt S1 propre et Docker healthy attestés au jalon fonctionnel.
+- [x] Stabilité runtime confirmée : trois lectures successives restent à `sessionRevision=68` au jalon observé.
+- [x] Réconciliation docs-only fusionnée par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`.
+- [ ] Lorsque nécessaire, lire Operational Memory/Live State pour confirmer l'état runtime courant de `TASK-20260829-002`, son checkpoint, ses locks et la session ; ces statuts dynamiques ne sont pas maintenus manuellement ici.
+
+## Programme suivant — lots planifiés, non enregistrés comme tâches runtime
+
+La séquence détaillée, les dépendances et les contrats d'intégration sont portés par `ROADMAP.md`. Les éléments ci-dessous représentent le travail restant connu, pas des `TASK-...` déjà créées.
+
+### Prochain socle — Client / Connection Context
+
+- [ ] rattacher durablement le principal OAuth et la Governed Session à un `ConnectionContext` minimal sans second moteur de session ;
+- [ ] classifier l'identité du client uniquement à partir de preuves réellement disponibles ;
+- [ ] ne jamais inventer de `conversation_id`, workspace ou project ref externe ;
+- [ ] conserver les secrets/codes/tokens hors des registres métier et de la journalisation.
+
+### GitHub Identity & Repository Resolution
+
+- [ ] résoudre les comptes GitHub autorisés liés au contexte courant ;
+- [ ] compléter le mapping GitHub user/account → rôle projet sans exposer le token ;
+- [ ] gérer `NONE` / `AMBIGUOUS` sans choix arbitraire ;
+- [ ] résoudre le repository explicitement fourni ou déjà gouverné ;
+- [ ] supprimer progressivement les dépendances hardcodées à `Patricked-code/MCP` uniquement quand un `repositoryId`/mapping validé est disponible et sans casser le cas historique.
+
+### Project Binding / GitRegistry V2
+
+- [ ] réutiliser GitRegistry V2 comme autorité de binding repo ↔ projet ↔ serveur ↔ domaine ;
+- [ ] vérifier `realPath`, remote et domaine pour les mappings qui en ont besoin ;
+- [ ] résoudre `repositoryId → mappingId → projectId` avec `RESOLVED` / `NONE` / `AMBIGUOUS` / `UNVERIFIED` ;
+- [ ] composer `.mcp/server-map.json`, GitRegistry et Live State pour résoudre S1/S2, path, runtime/container et domaine ;
+- [ ] ne pas créer de `repository-binding.yaml` éditable comme seconde source de vérité ; une éventuelle matérialisation future doit rester une projection dérivée.
+
+### Governance Inheritance & Effective Capabilities
+
+- [ ] hériter automatiquement de la gouvernance existante lorsqu'un mapping est connu ;
+- [ ] calculer les capacités effectives en composant OAuth, GitHub, projet, serveur, règles et WRITE gate ;
+- [ ] enrichir le Bootstrap Receipt existant avec les références de connexion/repository/project nécessaires sans secret.
+
+### Guided Context Completion
+
+- [ ] détecter uniquement les informations réellement manquantes ;
+- [ ] faire évoluer les surfaces frontend existantes en wizard de complétion plutôt que créer un frontend parallèle ;
+- [ ] exiger consentement explicite avant toute création ou écriture de ressource inconnue.
+
+### Lots ultérieurs déjà identifiés
+
+- [ ] Governed Provisioning contrôlé pour les ressources réellement absentes ;
+- [ ] Client Presence et distinction `lastClientObservedAt` / `lastSyntheticProbeAt` ;
+- [ ] Tool Surface Attestation serveur vs client observé ;
+- [ ] tracing end-to-end OAuth/MCP/tool/upstream dans l'Event Journal existant ;
+- [ ] monitoring synthétique et enrichissement du dashboard de connexion ;
+- [ ] certifications Claude et ChatGPT ;
+- [ ] hardening futur selon décisions séparées.
 
 ## Maintenance séparée
 
 - [ ] Migrer dans une PR dédiée les actions GitHub encore exécutées sous compatibilité Node 24.
-- [ ] Évaluer un éventuel passage `WRITE gate shadow → enforce` uniquement après GO distinct, décision architecturale, TDD, PR séparée et preuve de parité; ce n'est pas inclus dans le chantier courant.
+- [ ] Évaluer un éventuel passage `WRITE gate shadow → enforce` uniquement après GO distinct, décision architecturale, TDD, PR séparée et preuve de parité; ce n'est pas inclus dans le prochain chantier.
 - La 2FA GitHub reste explicitement exclue.
+
+## Règle permanente de synchronisation
+
+- nouvelle amélioration structurante → `ROADMAP.md` ;
+- travail réellement restant → `TODO.md` ;
+- tâche gouvernée réellement enregistrée → Operational Memory + `TASKS.md` ;
+- fin de tâche → autorités runtime/GitHub d'abord, puis réconciliation descendante `SUIVI.md` / `TASKS.md` / `TODO.md` / `ROADMAP.md`.
