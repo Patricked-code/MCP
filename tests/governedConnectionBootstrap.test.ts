@@ -30,7 +30,7 @@ const OPEN_INPUT = {
   nextAction: 'continue existing governed work'
 };
 
-test('un nouveau transport OAuth reprend automatiquement l unique governed session compatible', async () => {
+test('un nouveau transport OAuth attache automatiquement l unique governed session active compatible', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'mcp-auto-bootstrap-'));
   try {
     const store = createAtomicJsonStore({
@@ -60,16 +60,67 @@ test('un nouveau transport OAuth reprend automatiquement l unique governed sessi
       }
     );
 
-    assert.equal(result.status, 'RESUMED');
-    if (result.status !== 'RESUMED') assert.fail('expected RESUMED');
+    assert.equal(result.status, 'ATTACHED');
+    if (result.status !== 'ATTACHED') assert.fail('expected ATTACHED');
     assert.equal(result.session.governedSessionId, opened.session.governedSessionId);
+    assert.equal(result.session.sessionRevision, opened.session.sessionRevision);
     assert.equal(bindings.lookup('transport-new-raw'), opened.session.governedSessionId);
-    assert.notEqual(result.session.currentTransport?.fingerprint, opened.session.currentTransport?.fingerprint);
+    assert.equal(
+      result.session.currentTransport?.fingerprint,
+      opened.session.currentTransport?.fingerprint
+    );
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
 });
 
+
+test('une governed session OAuth expirée est réellement reprise et incrémente sa révision', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-auto-bootstrap-expired-'));
+  let currentTime = new Date('2026-08-29T14:00:00.000Z');
+  try {
+    const store = createAtomicJsonStore({
+      filePath: join(directory, 'sessions.json'),
+      schema: SessionStoreDocumentSchema,
+      empty: createEmptySessionStoreDocument
+    });
+    const bindings = createTransportBindings();
+    const service = createGovernedSessionService({
+      store,
+      bindings,
+      idleTtlSeconds: 1,
+      resumeGraceSeconds: 604_800,
+      now: () => currentTime
+    });
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-expired-existing-raw',
+      identity: OAUTH_IDENTITY
+    });
+    service.unbindTransport('transport-expired-existing-raw');
+    currentTime = new Date('2026-08-29T14:00:02.000Z');
+    assert.equal(await service.expireIdleSessions(), 1);
+
+    const result = await service.autoResumeCompatibleSession(
+      { repository: 'Patricked-code/MCP' },
+      {
+        transportSessionId: 'transport-expired-new-raw',
+        identity: OAUTH_IDENTITY
+      }
+    );
+
+    assert.equal(result.status, 'RESUMED');
+    if (result.status !== 'RESUMED') assert.fail('expected RESUMED');
+    assert.equal(result.session.governedSessionId, opened.session.governedSessionId);
+    assert.equal(result.session.status, 'ACTIVE');
+    assert.equal(result.session.sessionRevision, opened.session.sessionRevision + 2);
+    assert.equal(
+      bindings.lookup('transport-expired-new-raw'),
+      opened.session.governedSessionId
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
 test('plusieurs governed sessions OAuth compatibles échouent fermé sans liaison arbitraire', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'mcp-auto-bootstrap-ambiguous-'));
   try {
