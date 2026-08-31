@@ -63,7 +63,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] corriger les findings tardifs PR #49 et les écarts de gate/catalogue par PR #52 ;
 - [x] fusionner PR #52 et attester CI/Autodeploy/GitHub/S1/OCI/runtime au SHA fonctionnel `fff44ff2db386942730a67f3884980c7824cae7f` ;
 - [x] fusionner et attester la réconciliation documentaire via PR #54, merge `a35280e172e40525689520e1443ccd59e850e91a` ;
-- [ ] lorsqu'une preuve actuelle est requise, lire Operational Memory pour connaître le checkpoint final, les locks et le cycle de session ; ne pas déduire ces états dynamiques de ce fichier.
+- Note d'autorité runtime : checkpoint final, locks et cycle de session doivent être lus depuis Operational Memory lorsqu'une preuve actuelle est nécessaire ; ils ne sont pas maintenus comme état dynamique dans ce Markdown.
 
 ## Chantier historique — Unified Operational Work State
 
@@ -87,7 +87,7 @@ La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. 
 - [x] fusionner PR #55 avec garde `expected_head_sha` au merge `2c2dde2bffe62b2685bf2fad94530571762470c8` ;
 - [x] attester CI main `33256566688` et Governed Deploy `33256566695` / job `99111230626` sur ce SHA exact ;
 - [x] réattester GitHub main, S1 HEAD, S1 origin/main et runtime healthy au SHA `2c2dde2bffe62b2685bf2fad94530571762470c8` dans Live State `51` ;
-- [ ] si le statut runtime final de `TASK-20260829-001` doit être attesté de nouveau, le lire depuis Operational Memory/Task Reality plutôt que le réécrire ici.
+- Note d'autorité runtime : le statut final de `TASK-20260829-001`, son checkpoint, ses locks et sa session sont lus depuis Operational Memory/Task Reality ; ce fichier ne les transforme pas en tâches documentaires persistantes.
 
 ## Chantier livré côté GitHub — TASK-20260829-002 Automatic Governed Connection Bootstrap
 
@@ -104,7 +104,7 @@ La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. 
 - [x] attester CI main #646, Governed Deploy #19, GitHub/S1/runtime exact-SHA, S1 propre et Docker healthy au jalon fonctionnel ;
 - [x] vérifier en production trois lectures successives stables à `sessionRevision=68` au jalon observé ;
 - [x] fusionner la réconciliation docs-only par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba` ;
-- [ ] ne maintenir ici aucun faux statut runtime : `DONE`, checkpoint, locks et cycle de session doivent être lus depuis Operational Memory lorsqu'une attestation actuelle est nécessaire.
+- Note d'autorité runtime : `DONE`, checkpoint, locks et cycle de session doivent être lus depuis Operational Memory lorsqu'une attestation actuelle est nécessaire ; aucun faux statut runtime n'est maintenu ici.
 
 ## Prochaine tâche candidate — non enregistrée
 
