@@ -74,13 +74,14 @@ Travaux restant réellement à accomplir. Les états dynamiques de tâche, sessi
 
 - [x] PR #60 fusionnée et déployée sur `211a7de7940f115aa997f404927a8e0c9ace9055`.
 - [x] Drift documentaire et finding tardif PR #60 identifiés.
-- [x] Churn de révision sur transports successifs reproduit en runtime et par RED.
-- [x] GREEN `ATTACHED`/ `RESUMED` obtenu sur `8a0e6fc0903bfdce04f2c476df50bee013fd1b9a`, CI #635, `257/257`.
-- [ ] Finaliser la review exact-head de PR #61 et résoudre tout thread actionnable.
-- [ ] Fusionner avec garde SHA, puis attester Autodeploy exact-SHA.
-- [ ] Créer la réconciliation docs-only sur la même branche après le merge fonctionnel.
-- [ ] Vérifier la disparition de `DOCUMENTATION_DRIFT`.
-- [ ] Réacquitter le contexte, faire évoluer `TASK-20260829-002` jusqu'à `DONE`, checkpoint final, libération des locks et fermeture de session.
+- [x] Churn de révision sur transports successifs reproduit en runtime et par RED CI #626/#628.
+- [x] GREEN `ATTACHED`/`RESUMED` finalisé au head `2e8fa683296f4f1bf53b9875104598696ba9c6e2`, CI PR #645, `258/258`.
+- [x] PR #62 fusionnée sous garde exact-head au SHA `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53`.
+- [x] CI main #646, Governed Deploy #19, GitHub/S1/runtime exact-SHA, dépôt S1 propre et Docker healthy attestés.
+- [x] Stabilité runtime confirmée : trois lectures successives restent à `sessionRevision=68`.
+- [ ] Fusionner cette réconciliation docs-only après CI/review/ruleset exact-head.
+- [ ] Vérifier la disparition de `DOCUMENTATION_DRIFT` et obtenir `FULLY_ALIGNED`.
+- [ ] Réacquitter le contexte, faire évoluer `TASK-20260829-002` jusqu'à `DONE`, créer le checkpoint final, libérer les locks et fermer la session.
 
 ## Maintenance séparée
 
