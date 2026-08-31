@@ -365,3 +365,18 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Live State `stateVersion=33` atteste GitHub/S1/runtime exact-SHA, S1 propre et Docker healthy sur l'image `sha256:f6e05d77ed04c342e663c04322029f5233009ee4d75b78a9ebeea12af8027de5`.
 - Receipt de bootstrap créé en production avec digests catalogue/gouvernance/task registry et limitations vides.
 - Aucun enforcement bloquant, changement OIDC/Autodeploy, secret, 2FA, `ENABLE_WRITE_TOOLS` ou `allow_write` n'a été introduit.
+
+## Non publié — stabilisation du bootstrap OAuth après PR #60
+
+- PR #60 fusionnée et déployée au SHA `211a7de7940f115aa997f404927a8e0c9ace9055` avec auto-binding OAuth, ambiguïté fail-closed, credential partagé fail-closed, redaction transport et ordonnancement du bootstrap.
+- Observation runtime post-déploiement : des transports MCP successifs faisaient évoluer la même Governed Session de `sessionRevision=66` à `67`, puis `68`, rendant toute mutation optimiste immédiatement obsolète.
+- Cause racine : `resumeSession()` était appelé pour une session unique déjà non terminale à chaque initialisation de transport.
+- PR #61 sur la même branche et la même task :
+  - RED CI #626 : `RESUMED` au lieu de `ATTACHED`, un seul échec sur 257 ;
+  - RED serveur CI #628 : attachement éphémère non distingué ;
+  - GREEN `8a0e6fc0903bfdce04f2c476df50bee013fd1b9a`, CI #635 entièrement verte, `257/257`.
+- Les sessions `OPEN/ACTIVE/PAUSED` reçoivent désormais un binding éphémère `ATTACHED` sans mutation durable ni hausse de révision.
+- Les sessions `EXPIRED` conservent la vraie reprise `RESUMED` et son incrément durable.
+- Ajout des reason codes/audits bornés `governed_session_auto_attached` et `bindingResult=attached`.
+- Aucun changement de credential partagé, ambiguïté, OIDC, Governed Autodeploy, WRITE gate `shadow`, 2FA, secret ou écriture directe S1.
+- État : candidat non encore fusionné ni déployé ; review exact-head et réconciliation docs-only post-déploiement encore requises.

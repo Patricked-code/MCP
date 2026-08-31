@@ -56,6 +56,7 @@ export type AutoResumeCompatibleSessionInput = {
 };
 
 export type AutoResumeCompatibleSessionResult =
+  | { status: 'ATTACHED'; session: GovernedSessionPublicRecord }
   | { status: 'RESUMED'; session: GovernedSessionPublicRecord }
   | { status: 'NONE' }
   | { status: 'AMBIGUOUS' };
@@ -416,6 +417,24 @@ export function createGovernedSessionService(
 
       const candidate = candidates[0];
       if (!candidate) return { status: 'NONE' };
+
+      if (candidate.status !== 'EXPIRED') {
+        assertTransportAvailable(request.transportSessionId, candidate.governedSessionId);
+        const session = publicSession(candidate);
+        const currentTransport = options.bindings.bind(
+          request.transportSessionId,
+          candidate.governedSessionId,
+          at,
+          candidate.sessionRevision
+        );
+        await audit.record({
+          type: 'transport.bound',
+          session: { ...session, currentTransport },
+          bindingResult: 'attached'
+        });
+        return { status: 'ATTACHED', session };
+      }
+
       const session = await service.resumeSession({
         governedSessionId: candidate.governedSessionId,
         repository: candidate.repository,

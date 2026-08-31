@@ -60,7 +60,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - [x] fusionner et attester la réconciliation documentaire via PR #54, merge `a35280e172e40525689520e1443ccd59e850e91a` ;
 - [ ] attester depuis Operational Memory le checkpoint final, la libération du lock et la fermeture de la session sans lock résiduel ; cette preuve ne doit pas être déduite de GitHub.
 
-## Chantier courant — Unified Operational Work State
+## Chantier précédent — Unified Operational Work State
 
 La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. La présente branche `mcp/reconcile-unified-operational-work-state-20260829` est une réconciliation strictement documentaire descendante de `main@2c2dde2bffe62b2685bf2fad94530571762470c8`. Le statut final, le checkpoint, les locks et la session restent exclusivement sous l'autorité d'Operational Memory.
 
@@ -85,6 +85,23 @@ La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. 
 - [ ] fusionner la présente réconciliation docs-only après CI/review exact-head ;
 - [ ] réattester Live State / Current State / Governed Context / Task Reality après le merge documentaire ;
 - [ ] seulement ensuite faire évoluer la Task Queue jusqu'à `DONE`, créer le checkpoint final, libérer le lock et préserver/fermer la Governed Session selon son cycle normal.
+
+
+## Chantier courant — TASK-20260829-002 Automatic Governed Connection Bootstrap
+
+- [x] auto-corréler l'identité OAuth authentifiée et le nouveau transport à l'unique Governed Session compatible ;
+- [x] conserver `NONE`, `AMBIGUOUS` fail-closed et le refus des credentials partagés ;
+- [x] redacter `sessionId` et `transportSessionId` dans Pino ;
+- [x] câbler `/mcp initialize` avec `req.auth`, `sessionRequestFromToolExtra()` et l'attente du bootstrap ;
+- [x] fusionner et déployer le premier lot par PR #60 au SHA `211a7de7940f115aa997f404927a8e0c9ace9055` ;
+- [x] reproduire le churn réel `sessionRevision=66 → 67 → 68` dû aux transports éphémères ;
+- [x] obtenir les RED exacts CI #626/#628 ;
+- [x] corriger par `ATTACHED` sans mutation durable pour les sessions non terminales, tout en conservant `RESUMED` pour `EXPIRED` ;
+- [x] obtenir le GREEN exact-head `8a0e6fc0903bfdce04f2c476df50bee013fd1b9a`, CI #635, `257/257` ;
+- [ ] terminer review/threads/ruleset de PR #61 et fusionner sous garde exact-head ;
+- [ ] attester Governed Autodeploy, GitHub/S1/runtime exact-SHA et santé ;
+- [ ] publier la réconciliation docs-only descendante du merge fonctionnel ;
+- [ ] obtenir `FULLY_ALIGNED`, passer la task à `DONE`, créer le checkpoint final et fermer la session sans lock résiduel.
 
 ## Maintenance séparée
 

@@ -31,3 +31,10 @@ test('les requêtes suivantes attendent la tentative de binding gouverné du tra
   assert.match(source, /await\s+transportBootstraps\[sessionId\]/);
   assert.match(source, /delete\s+transportBootstraps\[transport\.sessionId\]/);
 });
+
+test('MCP initialize distingue une attache éphémère sans révision d une reprise durable', async () => {
+  const source = await readFile(SERVER_FILE, 'utf8');
+
+  assert.match(source, /result\.status\s*===\s*['"]ATTACHED['"]/);
+  assert.match(source, /governed_session_auto_attached/);
+});

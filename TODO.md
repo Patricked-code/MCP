@@ -44,7 +44,7 @@ Travaux restant réellement à accomplir. Les états dynamiques de tâche, sessi
 - [x] Réconciliation documentaire fusionnée par PR #54 au SHA `a35280e172e40525689520e1443ccd59e850e91a`; CI main `33222774901` et Governed Deploy `33222774905` réussis.
 - [ ] Lire Operational Memory pour attester le checkpoint final, la libération du lock et la fermeture de session sans lock résiduel; ne pas déduire cette preuve depuis GitHub.
 
-## Unified Operational Work State — clôture en cours
+## Unified Operational Work State — historique
 
 - [x] Réutiliser Live State, Current-State Inventory, Operational Memory, Governed Task Queue, GitHub context et scoped WRITE gate; aucun nouveau store global.
 - [x] Ajouter `CapabilityReality`, `TaskReality` et `GovernanceDecision` comme projections dérivées et bornées.
@@ -68,6 +68,19 @@ Travaux restant réellement à accomplir. Les états dynamiques de tâche, sessi
 - [ ] Réconcilier Current State, Governed Context et Task Reality ; faire évoluer `TASK-20260829-001` jusqu'à `DONE` uniquement depuis Operational Memory.
 - [ ] Créer le checkpoint final, libérer le lock et préserver/fermer la Governed Session selon son cycle normal.
 - [ ] Ensuite seulement enregistrer la première tâche du programme suivant : `Automatic Governed Connection Bootstrap & Conversation Session Binding`.
+
+
+## Automatic Governed Connection Bootstrap — clôture en cours
+
+- [x] PR #60 fusionnée et déployée sur `211a7de7940f115aa997f404927a8e0c9ace9055`.
+- [x] Drift documentaire et finding tardif PR #60 identifiés.
+- [x] Churn de révision sur transports successifs reproduit en runtime et par RED.
+- [x] GREEN `ATTACHED`/ `RESUMED` obtenu sur `8a0e6fc0903bfdce04f2c476df50bee013fd1b9a`, CI #635, `257/257`.
+- [ ] Finaliser la review exact-head de PR #61 et résoudre tout thread actionnable.
+- [ ] Fusionner avec garde SHA, puis attester Autodeploy exact-SHA.
+- [ ] Créer la réconciliation docs-only sur la même branche après le merge fonctionnel.
+- [ ] Vérifier la disparition de `DOCUMENTATION_DRIFT`.
+- [ ] Réacquitter le contexte, faire évoluer `TASK-20260829-002` jusqu'à `DONE`, checkpoint final, libération des locks et fermeture de session.
 
 ## Maintenance séparée
 
