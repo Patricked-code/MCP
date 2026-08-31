@@ -13,10 +13,53 @@
 }
 ```
 
+Date : 2026-09-01
+
+## Stabilisation du pilotage documentaire
+
+### Baseline GitHub observée
+
+- GitHub `main` est au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`, merge de la PR #63 `docs(governance): reconcile governed bootstrap deployment`.
+- La PR #63 a déjà fusionné la réconciliation Markdown post-PR #62 ; les sections historiques datées ci-dessous qui parlent encore de cette fusion comme d'une étape future sont conservées comme checkpoints historiques et ne constituent plus la prochaine action GitHub.
+- Le présent chantier de stabilisation est strictement documentaire : il n'ajoute ni code TypeScript, ni workflow, ni secret, ni WRITE gate, ni nouveau store/runtime, ni chemin de déploiement.
+
+### Nouvelle organisation de pilotage
+
+- `ROADMAP.md` porte désormais la vision complète des chantiers et lots connus, leurs dépendances, points d'intégration et règles anti-régression.
+- `TODO.md` porte uniquement le travail réellement restant dérivé de la roadmap.
+- `TASKS.md` porte les tâches historiques/actuelles et au plus la prochaine candidate ; aucun `TASK-...` futur n'est inventé avant son enregistrement officiel dans Operational Memory.
+- `SUIVI.md` reste le point de reprise du moment et ne remplace ni Live State, ni Operational Memory, ni Governed Task Queue, ni GitHub.
+
+### Autorités runtime préservées
+
+Les statuts dynamiques `DONE`, checkpoints, locks, owners, sessions et queue ne sont pas déclarés depuis ce document. Lorsqu'une attestation actuelle est nécessaire, ils doivent être lus depuis Operational Memory / Governed Task Queue / Live State / Governed Context.
+
+### Programme suivant — orientation documentaire
+
+La prochaine tâche candidate n'est pas pré-enregistrée ici. Son objectif borné est de prolonger le bootstrap de session déjà livré avec la résolution du contexte projet :
+
+```text
+principal OAuth
+→ Connection Context minimal
+→ GitHub identity
+→ repository
+→ GitRegistry V2 mapping
+→ project
+→ server/runtime/domain
+→ gouvernance héritée
+```
+
+Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) sont positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
+
+### Prochaine action de ce point de reprise
+
+Valider cette stabilisation documentaire par le workflow GitHub normal (diff borné, CI/review/ruleset), puis, après merge, reprendre toute décision de nouvelle tâche depuis les autorités runtime réelles. Ne jamais utiliser la roadmap comme autorité de statut et ne jamais contourner Operational Memory.
+
+---
+
+## Historique — TASK-20260829-002 — Automatic Governed Connection Bootstrap & Conversation Session Binding
 
 Date : 2026-08-31
-
-## TASK-20260829-002 — Automatic Governed Connection Bootstrap & Conversation Session Binding
 
 ### Baseline fonctionnelle déployée et attestée
 
@@ -40,13 +83,12 @@ Date : 2026-08-31
 - L'audit distingue `bindingResult=attached` de `resumed`; le serveur journalise `governed_session_auto_attached` sans identifiant de transport brut.
 - Après déploiement, trois lectures successives ont toutes retourné `sessionRevision=68`, le même `resumedAt` et le même fingerprint durable : le churn n'est plus reproduit.
 
-### Réconciliation documentaire et gate de clôture
+### Réconciliation documentaire et gate de clôture — checkpoint historique
 
-- La présente branche `mcp/automatic-governed-connection-bootstrap-20260829` est fast-forwardée depuis `main@878a1646fc7e5928cdb7951a3d2ad1f0639a1d53` pour une réconciliation strictement Markdown.
-- Cette réconciliation ne modifie ni TypeScript, tests, workflow, OIDC, Autodeploy, politique `.mcp`, WRITE gate, secret, runtime ou fichier S1.
-- Après fusion sous garde exact-head, Governed Autodeploy doit maintenir GitHub/S1/runtime alignés sur le commit documentaire descendant.
-- Un Live State frais doit alors reconnaître `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53` comme baseline fonctionnelle déclarée et le descendant comme docs-only, sans `DOCUMENTATION_DRIFT`.
-- Seulement après `FULLY_ALIGNED`, Operational Memory pourra faire évoluer `TASK-20260829-002` de `MERGE_READY` à `DEPLOYING`, `VERIFYING`, puis `DONE`, créer le checkpoint final, libérer le lock éventuel et fermer la Governed Session.
+- La branche `mcp/automatic-governed-connection-bootstrap-20260829` avait été fast-forwardée depuis `main@878a1646fc7e5928cdb7951a3d2ad1f0639a1d53` pour une réconciliation strictement Markdown.
+- Cette réconciliation ne modifiait ni TypeScript, tests, workflow, OIDC, Autodeploy, politique `.mcp`, WRITE gate, secret, runtime ou fichier S1.
+- Cette réconciliation a depuis été fusionnée par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`.
+- Les états runtime de clôture de `TASK-20260829-002` restent exclusivement des preuves Operational Memory et ne sont pas réinterprétés depuis ce checkpoint documentaire.
 
 ---
 
@@ -77,14 +119,8 @@ Date : 2026-08-29
 - L'observation GitHub utilise les SHA des check-runs individuels et agrège tous les rulesets actifs applicables à `main`; les règles non applicables et les rulesets `evaluate` ne deviennent pas artificiellement bloquants.
 - Le WRITE gate reste `shadow`; OIDC, Governed Autodeploy, 2FA, `ENABLE_WRITE_TOOLS`, `allow_write`, secrets et règle d'absence de push direct sur `main` restent inchangés.
 
-## Réconciliation documentaire post-déploiement
+## Réconciliation documentaire post-déploiement — checkpoint historique
 
-- La présente branche est une réconciliation docs-only descendante exacte de `main@2c2dde2bffe62b2685bf2fad94530571762470c8`.
-- Elle ne modifie ni source TypeScript, tests, workflow, OIDC, Autodeploy, politique `.mcp`, WRITE gate, secret, runtime ou fichier S1.
-- Elle met à jour la baseline canonique de `SUIVI.md`, `TASKS.md` et `TODO.md` à partir des preuves GitHub/S1/runtime réellement observées.
-- Après fusion de cette réconciliation, un nouveau Live State doit être collecté. `DOCUMENTATION_DRIFT` doit disparaître sans masquer un éventuel autre drift.
-- La clôture `DONE`, le checkpoint final, la libération du lock et la pause/fermeture de la Governed Session restent exclusivement des preuves Operational Memory postérieures à cette fusion; elles ne sont pas pré-déclarées ici.
-
-## Prochaine action gouvernée
-
-Valider le head exact de cette réconciliation docs-only, obtenir CI/review/ruleset propres, fusionner avec garde `expected_head_sha`, laisser le Governed Autodeploy existant maintenir GitHub/S1/runtime sur le nouveau commit documentaire, puis réconcilier Live State, Current State, Governed Context et Task Reality. Seulement si ces autorités attestent un état cohérent, faire évoluer `TASK-20260829-001` jusqu'à `DONE`, créer le checkpoint final, libérer le lock et préserver la Governed Session selon son cycle normal. La prochaine tâche du programme de connexion gouvernée ne doit être ajoutée qu'après cette clôture runtime.
+- Cette section décrit le checkpoint documentaire descendant de `main@2c2dde2bffe62b2685bf2fad94530571762470c8` au moment où il a été produit.
+- Elle ne modifiait ni source TypeScript, tests, workflow, OIDC, Autodeploy, politique `.mcp`, WRITE gate, secret, runtime ou fichier S1.
+- Les statuts `DONE`, checkpoint final, libération de lock et cycle de Governed Session restent exclusivement sous autorité Operational Memory et ne sont pas pré-déclarés ici.
