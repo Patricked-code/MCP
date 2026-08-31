@@ -48,7 +48,7 @@ Une amélioration structurante est d'abord positionnée dans `ROADMAP.md`. Lorsq
 - [x] Findings tardifs PR #49 et écarts de gate/catalogue corrigés par PR #52.
 - [x] PR #52 fusionnée, CI/Autodeploy exact-SHA et GitHub/S1/OCI/runtime attestés au SHA `fff44ff2db386942730a67f3884980c7824cae7f`.
 - [x] Réconciliation documentaire fusionnée par PR #54 au SHA `a35280e172e40525689520e1443ccd59e850e91a`; CI main `33222774901` et Governed Deploy `33222774905` réussis.
-- [ ] Lire Operational Memory pour attester le checkpoint final, la libération du lock et la fermeture de session sans lock résiduel; ne pas déduire cette preuve depuis GitHub si elle n'a pas déjà été enregistrée par l'autorité runtime.
+- Note d'autorité runtime : checkpoint final, locks et cycle de session ne sont pas maintenus comme TODO documentaire ; les lire depuis Operational Memory lorsqu'une preuve actuelle est nécessaire.
 
 ## Unified Operational Work State — historique
 
@@ -68,7 +68,7 @@ Une amélioration structurante est d'abord positionnée dans `ROADMAP.md`. Lorsq
 - [x] Attester le merge fonctionnel `2c2dde2bffe62b2685bf2fad94530571762470c8`, CI main `33256566688` et Governed Deploy `33256566695` / job `99111230626`.
 - [x] Réattester GitHub main, S1 HEAD/origin-main et runtime healthy sur le même SHA dans Live State `51`.
 - [x] Démarrer la réconciliation documentaire post-déploiement sur `mcp/reconcile-unified-operational-work-state-20260829` sans code, workflow, policy ou changement de WRITE gate.
-- [ ] Les états finaux de `TASK-20260829-001` (DONE/checkpoint/locks/session) restent à lire depuis Operational Memory lorsqu'une preuve actuelle est nécessaire ; ne pas les réinventer depuis ce Markdown.
+- Note d'autorité runtime : le statut final de `TASK-20260829-001`, son checkpoint, ses locks et sa session sont lus depuis Operational Memory/Task Reality ; ils ne constituent pas un TODO Markdown persistant.
 
 ## Automatic Governed Connection Bootstrap — livraison GitHub acquise
 
@@ -80,7 +80,7 @@ Une amélioration structurante est d'abord positionnée dans `ROADMAP.md`. Lorsq
 - [x] CI main #646, Governed Deploy #19, GitHub/S1/runtime exact-SHA, dépôt S1 propre et Docker healthy attestés au jalon fonctionnel.
 - [x] Stabilité runtime confirmée : trois lectures successives restent à `sessionRevision=68` au jalon observé.
 - [x] Réconciliation docs-only fusionnée par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`.
-- [ ] Lorsque nécessaire, lire Operational Memory/Live State pour confirmer l'état runtime courant de `TASK-20260829-002`, son checkpoint, ses locks et la session ; ces statuts dynamiques ne sont pas maintenus manuellement ici.
+- Note d'autorité runtime : l'état courant de `TASK-20260829-002`, son checkpoint, ses locks et la session sont lus depuis Operational Memory/Live State ; ils ne sont pas maintenus comme cases à cocher ici.
 
 ## Programme suivant — lots planifiés, non enregistrés comme tâches runtime
 
