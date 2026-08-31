@@ -75,6 +75,51 @@ test('un nouveau transport OAuth attache automatiquement l unique governed sessi
 });
 
 
+
+test('une session OAuth active attache un second transport sans voler le premier binding', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-auto-bootstrap-active-attach-'));
+  try {
+    const store = createAtomicJsonStore({
+      filePath: join(directory, 'sessions.json'),
+      schema: SessionStoreDocumentSchema,
+      empty: createEmptySessionStoreDocument
+    });
+    const bindings = createTransportBindings();
+    const service = createGovernedSessionService({
+      store,
+      bindings,
+      idleTtlSeconds: 86_400,
+      resumeGraceSeconds: 604_800,
+      now: () => new Date('2026-08-31T21:21:25.000Z')
+    });
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-active-first-raw',
+      identity: OAUTH_IDENTITY
+    });
+
+    const result = await service.autoResumeCompatibleSession(
+      { repository: 'Patricked-code/MCP' },
+      {
+        transportSessionId: 'transport-active-second-raw',
+        identity: OAUTH_IDENTITY
+      }
+    );
+
+    assert.equal(result.status, 'ATTACHED');
+    if (result.status !== 'ATTACHED') assert.fail('expected ATTACHED');
+    assert.equal(result.session.sessionRevision, opened.session.sessionRevision);
+    assert.equal(
+      bindings.lookup('transport-active-first-raw'),
+      opened.session.governedSessionId
+    );
+    assert.equal(
+      bindings.lookup('transport-active-second-raw'),
+      opened.session.governedSessionId
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
 test('une governed session OAuth expirée est réellement reprise et incrémente sa révision', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'mcp-auto-bootstrap-expired-'));
   let currentTime = new Date('2026-08-29T14:00:00.000Z');
@@ -255,13 +300,9 @@ test('des transports OAuth successifs s attachent sans invalider la révision op
         identity: OAUTH_IDENTITY
       }
     );
-    const firstWithSession = first as {
-      status: string;
-      session?: { governedSessionId: string; sessionRevision: number };
-    };
-
-    assert.equal(firstWithSession.status, 'ATTACHED');
-    assert.equal(firstWithSession.session?.sessionRevision, opened.session.sessionRevision);
+    assert.equal(first.status, 'ATTACHED');
+    if (first.status !== 'ATTACHED') assert.fail('expected ATTACHED');
+    assert.equal(first.session.sessionRevision, opened.session.sessionRevision);
     assert.equal(
       bindings.lookup('transport-churn-second-raw'),
       opened.session.governedSessionId
@@ -284,14 +325,10 @@ test('des transports OAuth successifs s attachent sans invalider la révision op
         identity: OAUTH_IDENTITY
       }
     );
-    const secondWithSession = second as {
-      status: string;
-      session?: { governedSessionId: string; sessionRevision: number };
-    };
-
-    assert.equal(secondWithSession.status, 'ATTACHED');
+    assert.equal(second.status, 'ATTACHED');
+    if (second.status !== 'ATTACHED') assert.fail('expected ATTACHED');
     assert.equal(
-      secondWithSession.session?.sessionRevision,
+      second.session.sessionRevision,
       observedBeforeNextTransport?.sessionRevision
     );
 
