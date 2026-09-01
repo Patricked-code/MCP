@@ -1,9 +1,9 @@
 # Governed Connection Context Minimal — Design
 
-Date : 2026-09-01  
-Task : `TASK-20260901-001`  
-Repository : `Patricked-code/MCP`  
-Baseline : `main@184107d5705248427d322922077d18f51e133c15`  
+Date : 2026-09-01
+Task : `TASK-20260901-001`
+Repository : `Patricked-code/MCP`
+Baseline : `main@184107d5705248427d322922077d18f51e133c15`
 Statut : design approuvé, implémentation non commencée
 
 ## 1. Objectif
