@@ -3,6 +3,18 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-01 — Connection Context dans la Governed Session existante
+
+Contexte : l'authentification fournit déjà un principal OAuth, un `clientId` et une assurance, mais ces preuves ne sont pas regroupées dans un contexte logique durable préparant la résolution GitHub/repository/projet.
+
+Décision : ajouter un `ConnectionContext` versionné, strict, sanitizé, optionnel et imbriqué dans `GovernedSessionRecord`. Le contexte est créé uniquement pour une identité `oauth_subject` prouvée; un credential partagé conserve `connectionContext=null`. Aucun nom ChatGPT/Claude/Codex ni identifiant de conversation externe n'est déduit sans preuve.
+
+Compatibilité : le champ optionnel maintient la lecture des sessions historiques. Le même `connectionContextId` est conservé pendant `ATTACHED` et `RESUMED`; aucune attache de transport ne doit incrémenter `sessionRevision`.
+
+Frontière : ce premier lot ne modifie ni GitRegistry V1/V2, ni Bootstrap Receipt, ni Governed Context Service, ni WRITE gate, ni serveur/runtime/domaine. Les résolutions GitHub et Project Binding restent des lots ultérieurs.
+
+Gate : tests RED avant code, suite complète, Draft PR, revue exact-head, GitHub → S1 uniquement et attestation Live State avant clôture.
+
 ## 2026-08-31 — Attacher les transports actifs sans reprendre la session durable
 
 Contexte : un client peut ouvrir des transports MCP OAuth successifs pour un même principal. Appeler `resumeSession()` à chaque transport incrémente `sessionRevision`, remplace le binding durable et invalide toute opération optimiste observée juste avant.
