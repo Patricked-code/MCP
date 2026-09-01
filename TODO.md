@@ -82,16 +82,26 @@ Une amélioration structurante est d'abord positionnée dans `ROADMAP.md`. Lorsq
 - [x] Réconciliation docs-only fusionnée par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`.
 - Note d'autorité runtime : l'état courant de `TASK-20260829-002`, son checkpoint, ses locks et la session sont lus depuis Operational Memory/Live State ; ils ne sont pas maintenus comme cases à cocher ici.
 
-## Programme suivant — lots planifiés, non enregistrés comme tâches runtime
+## Programme en cours — TASK-20260901-001
 
-La séquence détaillée, les dépendances et les contrats d'intégration sont portés par `ROADMAP.md`. Les éléments ci-dessous représentent le travail restant connu, pas des `TASK-...` déjà créées.
+La séquence détaillée, les dépendances et les contrats d'intégration sont portés par `ROADMAP.md`. `TASK-20260901-001` est officiellement enregistrée dans Operational Memory, mais son plan approuvé borne l'exécution à A2.1. B1 et les lots suivants restent des candidats non enregistrés tant qu'aucune décision gouvernée n'a réconcilié autrement cette portée.
 
-### Prochain socle — Client / Connection Context
+### A2.1 — Connection Context minimal — fonctionnellement déployé, clôture restante
 
-- [ ] rattacher durablement le principal OAuth et la Governed Session à un `ConnectionContext` minimal sans second moteur de session ;
-- [ ] classifier l'identité du client uniquement à partir de preuves réellement disponibles ;
-- [ ] ne jamais inventer de `conversation_id`, workspace ou project ref externe ;
-- [ ] conserver les secrets/codes/tokens hors des registres métier et de la journalisation.
+- [x] rattacher durablement le principal OAuth et la Governed Session à un `ConnectionContext` minimal sans second moteur de session ;
+- [x] conserver une classification initiale `UNRESOLVED` sans inventer l'identité du client ;
+- [x] ne jamais inventer de `conversation_id`, workspace ou project ref externe ;
+- [x] conserver secrets, codes, tokens, transports bruts et resume proofs hors du contexte et de la journalisation ;
+- [x] préserver les sessions historiques sans backfill et les credentials partagés avec `connectionContext: null` ;
+- [x] corriger TDD-first le risque de binding orphelin puis valider `272/272`, merge et déploiement exact-SHA ;
+- [ ] fusionner et attester la réconciliation documentaire, obtenir `FULLY_ALIGNED`, puis clôturer `TASK-20260901-001` selon le plan approuvé.
+
+### A2.2 — Verified Client Evidence — restant et conditionnel
+
+- [ ] classifier l'identité cliente uniquement lorsqu'une preuve vérifiable et bornée est réellement fournie ;
+- [ ] conserver `UNKNOWN` en l'absence de preuve et ne rien déduire du seul `clientId` opaque ;
+- [ ] persister une référence conversation/workspace uniquement si elle est fournie, autorisée et sanitizable ;
+- [ ] garder A2.2 non bloquant pour B1 lorsque le principal OAuth suffit à la résolution GitHub gouvernée.
 
 ### GitHub Identity & Repository Resolution
 

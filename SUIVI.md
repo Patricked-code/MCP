@@ -15,7 +15,20 @@
 
 Date : 2026-09-01
 
-## TASK-20260901-001 — Connection Context minimal implémenté sur la Draft PR #67
+## Point courant — A2.1 fusionné et déployé
+
+- Baseline fonctionnelle attestée : `024f6ad4c047614bdfaea0e317f371b789f60136`.
+- La Draft PR #67 a été fermée sans fusion uniquement après l'échec avant mutation de la transition Draft → Ready du connecteur; elle reste le carrier historique initial du même travail.
+- La PR #68 a repris la même branche gouvernée `mcp/project-context-resolution-20260901`, a corrigé TDD-first le finding P2 de binding de transport, puis a été fusionnée depuis le head exact `81832e1b702a8dfe10cda5634d6092fb3a177142`.
+- MCP CI PR #713 a réussi avec `272/272`; CI main #714/#715 et MCP Governed Deploy #24 ont réussi sur le merge exact.
+- GitHub `main`, S1 HEAD, S1 `origin/main` et le runtime healthy sont alignés sur `024f6ad4c047614bdfaea0e317f371b789f60136`; S1 reste propre et sans push.
+- Operational Memory porte officiellement `TASK-20260901-001` en `VERIFYING`. Le plan d'implémentation approuvé borne son exécution à A2.1 et exige sa clôture seulement après `FULLY_ALIGNED`; le résumé runtime plus large ne doit pas être utilisé pour absorber B1 à D3 sans réconciliation explicite de portée.
+- La présente réconciliation reste strictement documentaire. Elle ne change ni TypeScript, tests, OAuth, GitRegistry, Bootstrap Receipt, WRITE gate, workflow, S1 ou runtime.
+- Après attestation et clôture d'A2.1, B1 `GitHub Identity Resolution` doit devenir une nouvelle tâche gouvernée officiellement enregistrée, sauf décision préalable réconciliant explicitement la portée du plan et d'Operational Memory. A2.2 reste conditionné à une preuve cliente réelle et ne bloque pas B1.
+
+Les statuts dynamiques, propriétaires, locks, checkpoints et SHA courants doivent toujours être relus dans GitHub, Live State, Operational Memory et la Governed Task Queue. Ce checkpoint documente une baseline fonctionnelle immuable; il ne remplace pas ces autorités.
+
+## Historique pré-merge — TASK-20260901-001 — Connection Context minimal sur la Draft PR #67
 
 - Baseline GitHub `main` : `184107d5705248427d322922077d18f51e133c15`.
 - S1 HEAD et runtime observés avant le chantier : `184107d5705248427d322922077d18f51e133c15`.
@@ -28,9 +41,9 @@ Date : 2026-09-01
 - GREEN fonctionnel : `994b71de97beeb14b48cbd8ad501f9844b145764`; stabilité de continuité validée à `6088a707c8a2e580cc0467adbae06873c73f4265`; surfaces existantes validées à `2f9d752e5c2c9c4eff98138b67a3bd96b6561656`.
 - Invariants confirmés : aucun backfill implicite, aucun nouveau store/manager/outil, aucun changement OAuth, GitRegistry, Bootstrap Receipt, WRITE gate, workflow de déploiement, S1 ou runtime.
 - Roadmap réconciliée additivement : A2 est décomposé en A2.1 `Connection Context minimal` et A2.2 `Verified Client Evidence`; aucun statut `LIVRÉ` n'est anticipé avant merge, déploiement et attestation.
-- État courant : implémentation encore non fusionnée et non déployée; prochaine étape = CI exacte du head documentaire, revue indépendante, puis livraison gouvernée si toutes les preuves restent vertes.
+- État à ce checkpoint historique : l'implémentation n'était pas encore fusionnée; la livraison ultérieure est décrite dans le point courant placé en tête de ce document.
 
-## Checkpoint de réconciliation documentaire courant
+## Historique — checkpoint de réconciliation documentaire de TASK-20260831-001
 
 - GitHub `main` baseline de réconciliation : `3b33086caf8e043624a126521f0d2b4804be3e66`.
 - S1 HEAD et révision runtime observés avant cette correction documentaire : `3b33086caf8e043624a126521f0d2b4804be3e66`.
@@ -69,20 +82,20 @@ Lorsqu'une attestation actuelle est nécessaire, ces données doivent être lues
 
 ### Programme suivant — orientation documentaire
 
-La prochaine tâche candidate n'est pas pré-enregistrée ici. Son objectif borné est de prolonger le bootstrap de session déjà livré avec la résolution du contexte projet :
+Le programme global prolonge le bootstrap de session déjà livré avec la chaîne de résolution ci-dessous. La tâche gouvernée actuelle `TASK-20260901-001` couvre uniquement le premier maillon A2.1 `Connection Context minimal`; elle doit être clôturée avant toute exécution de B1.
 
 ```text
 principal OAuth
-→ Connection Context minimal
-→ GitHub identity
-→ repository
-→ GitRegistry V2 mapping
-→ project
-→ server/runtime/domain
-→ gouvernance héritée
+→ A2.1 Connection Context minimal [TASK-20260901-001]
+→ clôture et attestation A2.1
+→ B1 GitHub identity [future tâche distincte]
+→ B2 repository [future tâche distincte]
+→ C1/C2 GitRegistry V2 mapping / project [futures tâches distinctes]
+→ C3/C4/C5 server / runtime / domain [futures tâches distinctes]
+→ D1/D2/D3 gouvernance héritée [futures tâches distinctes]
 ```
 
-Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) sont positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
+B1 et tous les maillons suivants sont des candidats du programme, pas une extension implicite de `TASK-20260901-001`. Ils ne peuvent être enregistrés puis exécutés que séparément, selon les dépendances et les autorités runtime. Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) restent positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
 
 ### Règle de reprise
 

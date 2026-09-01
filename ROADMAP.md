@@ -133,7 +133,9 @@ Objectif global : construire la continuité de connexion par enrichissements bor
 
 Le statut dynamique des travaux, de la branche, de la PR et de la tâche reste lu dans Operational Memory, la Governed Task Queue et GitHub. Cette roadmap ne déclare jamais un lot `LIVRÉ` avant merge, déploiement exact-SHA et réconciliation complète.
 
-#### A2.1 — Connection Context minimal
+#### A2.1 — Connection Context minimal — EN ATTESTATION DE CLÔTURE
+
+Preuve fonctionnelle acquise : PR #68 fusionnée depuis le head exact `81832e1b702a8dfe10cda5634d6092fb3a177142` au merge `024f6ad4c047614bdfaea0e317f371b789f60136`; MCP CI PR #713 (`272/272`), CI main #714/#715, Governed Deploy #24 et alignement GitHub/S1/runtime healthy attestés. Le statut `LIVRÉ` reste bloqué jusqu'au merge et à l'attestation de la réconciliation documentaire, à Live State `FULLY_ALIGNED` et à la clôture de la tâche selon son plan approuvé.
 
 Objectif : rattacher durablement le principal OAuth assaini et la Governed Session à une identité logique de connexion stable.
 
@@ -427,7 +429,7 @@ Optionnel. Exige un GO distinct, décision architecturale, TDD, PR séparée et 
 ```text
 A1 Session Binding [livré]
   ↓
-A2.1 Connection Context minimal
+A2.1 Connection Context minimal [en attestation de clôture]
   ├──→ B1 GitHub Identity
   └──→ A2.2 Verified Client Evidence [si preuve disponible, non bloquant pour B1]
   ↓

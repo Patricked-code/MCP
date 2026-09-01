@@ -14,6 +14,15 @@ Historique factuel des changements du depot MCP.
 - Aucun changement d'authentification, serveur MCP, GitRegistry, Governed Context, Bootstrap Receipt, WRITE gate, Autodeploy, S1 ou runtime. Rollback : revert des commits du lot; les enregistrements historiques demeurent valides grâce au champ optionnel.
 - `ROADMAP.md` décompose désormais A2 en A2.1 (contexte minimal) et A2.2 (preuve cliente vérifiée), garde les statuts dynamiques dans leurs autorités et interdit de déclarer le lot livré avant l'attestation complète.
 
+### Livraison gouvernée du lot A2.1
+
+- La Draft PR #67 a été fermée sans fusion après l'échec avant mutation de sa transition Ready; la PR #68 a poursuivi la même tâche, branche et portée sans créer d'autorité parallèle.
+- La revue PR #68 a identifié un finding P2 : une validation de contexte pouvait échouer après `TransportBindings.bind`. Le RED `f3b4bacd1d8a6975d33c949372cda6f1d1d2d523` a reproduit le binding orphelin comme unique échec (`271/272`).
+- Le GREEN `81832e1b702a8dfe10cda5634d6092fb3a177142` construit et valide le contexte avant tout binding; MCP CI #713 passe `272/272` et la revue exact-head ne trouve plus de blocker.
+- PR #68 fusionnée au SHA `024f6ad4c047614bdfaea0e317f371b789f60136`; CI main #714/#715 et MCP Governed Deploy #24 réussis.
+- GitHub main, S1 HEAD, S1 origin/main et runtime healthy sont attestés au même SHA; aucun changement OAuth, GitRegistry, Bootstrap Receipt, WRITE gate ou chemin de déploiement.
+- `TASK-20260901-001` reste en attestation de clôture A2.1. Son plan approuvé exige `DONE` après `FULLY_ALIGNED` et interdit de poursuivre vers GitHub Identity/Repository Resolution dans la même exécution; B1 doit être enregistré comme tâche distincte sauf décision gouvernée explicite réconciliant la portée.
+
 ## 2026-08-31 — Automatic Governed Connection Bootstrap stabilisé et déployé
 
 - PR #60 : premier lot de bootstrap automatique fusionné et déployé au SHA `211a7de7940f115aa997f404927a8e0c9ace9055`.

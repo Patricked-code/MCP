@@ -31,7 +31,9 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - PR #55 : head `de0030b0df42a693d2e96c87f008c9ffd1c2ce04`, CI exact-head `33256403390` / job `99110808499`, merge `2c2dde2bffe62b2685bf2fad94530571762470c8`, CI main `33256566688`, Governed Deploy `33256566695` / job `99111230626`; GitHub, S1, origin/main et runtime attestés au même SHA.
 - PR #60 : premier lot de connexion gouvernée fusionné et déployé au SHA `211a7de7940f115aa997f404927a8e0c9ace9055`.
 - PR #62 : head `2e8fa683296f4f1bf53b9875104598696ba9c6e2`, CI PR #645 / run `33442649238` / job `99654287301`, merge `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53`, CI main #646 et Governed Deploy #19; GitHub/S1/runtime attestés au même SHA et Docker healthy.
-- PR #63 : réconciliation documentaire post-PR #62 fusionnée au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`; elle ne modifie que la documentation canonique et constitue le dernier jalon GitHub connu avant la présente stabilisation de roadmap.
+- PR #63 : réconciliation documentaire post-PR #62 fusionnée au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`.
+- PR #66 : réconciliation canonique post-roadmap fusionnée et déployée au SHA `184107d5705248427d322922077d18f51e133c15`; `TASK-20260831-001` est `DONE` dans Operational Memory.
+- PR #68 : lot A2.1 Connection Context minimal fusionné depuis `81832e1b702a8dfe10cda5634d6092fb3a177142` au merge `024f6ad4c047614bdfaea0e317f371b789f60136`; CI PR #713 (`272/272`), CI main #714/#715 et MCP Governed Deploy #24 réussis; GitHub/S1/runtime exact-SHA et healthy.
 
 ## Tâche clôturée
 
@@ -106,32 +108,46 @@ La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. 
 - [x] fusionner la réconciliation docs-only par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba` ;
 - Note d'autorité runtime : `DONE`, checkpoint, locks et cycle de session doivent être lus depuis Operational Memory lorsqu'une attestation actuelle est nécessaire ; aucun faux statut runtime n'est maintenu ici.
 
-## Prochaine tâche candidate — non enregistrée
+## Tâche gouvernée actuelle — lot A2.1
 
-### Project Context Resolution — Client/GitHub/Repository/Project Binding
+### TASK-20260901-001 — Connection Context minimal
 
-Statut documentaire : `PLANNED / NOT_REGISTERED`.
+Operational Memory porte actuellement un titre et un résumé plus larges, mais le plan d'implémentation approuvé `docs/superpowers/plans/2026-09-01-governed-connection-context-minimal.md` borne l'exécution de cette tâche à A2.1, impose l'arrêt si GitHub Identity ou Repository Resolution devient nécessaire et exige `DONE` seulement après merge, déploiement, `FULLY_ALIGNED` et absence de drift documentaire.
 
-Aucun `TASK-...` n'est attribué ici tant que la Governed Task Queue / Operational Memory ne l'a pas officiellement enregistré.
+Tant que cette contradiction de portée n'a pas reçu de décision gouvernée explicite, le contrat le plus étroit s'applique fail-closed : B1 à D3 ne sont pas absorbés dans `TASK-20260901-001`.
 
-Objectif borné : prolonger le bootstrap existant sans refaire la session automatique, afin de résoudre progressivement :
+Preuves fonctionnelles A2.1 acquises :
 
-```text
-principal OAuth
-→ Connection Context minimal
-→ GitHub identity
-→ repository
-→ GitRegistry V2 mapping
-→ project
-→ server/runtime/domain
-→ governance héritée
-```
+- [x] ajouter un `ConnectionContext` strict, versionné, optionnel et sanitizé dans le `GovernedSessionRecord` existant ;
+- [x] créer le contexte uniquement pour une identité `oauth_subject` et persister `null` pour un credential partagé ;
+- [x] préserver les sessions historiques sans backfill implicite ;
+- [x] préserver le même `connectionContextId` pendant attach, heartbeat, checkpoint, pause et resume ;
+- [x] corriger TDD-first le risque P2 de binding orphelin avant validation du contexte ;
+- [x] valider le head exact PR #68 par MCP CI #713, `272/272` ;
+- [x] fusionner sous garde exact-head et attester CI main, Governed Deploy, GitHub, S1 et runtime sur `024f6ad4c047614bdfaea0e317f371b789f60136`.
 
-Autorités existantes à réutiliser : OAuth, Operational Memory, Governed Session, GitRegistry V2, `.mcp/server-map.json`, Live State, Governed Context, Bootstrap Receipt et permissions existantes.
+Gates restant avant clôture de la tâche :
 
-Interdictions : aucun nouveau Session Manager, aucun second GitRegistry, aucune seconde Task Queue, aucun choix arbitraire en cas d'ambiguïté, aucun secret dans Git, aucune création de ressource dans ce premier lot de résolution.
+- [ ] fusionner la réconciliation documentaire exact-head après résolution de tous les findings ;
+- [ ] attester le déploiement gouverné du merge documentaire ;
+- [ ] obtenir Live State `FULLY_ALIGNED` sans `DOCUMENTATION_DRIFT` ;
+- [ ] transitionner `TASK-20260901-001` à `DONE`, checkpoint final, libération du lock et clôture de session selon le plan approuvé.
 
-Les sous-lots, dépendances et lots ultérieurs sont décrits dans `ROADMAP.md`. `TODO.md` porte uniquement le travail restant correspondant.
+## Prochaines tâches candidates — non enregistrées
+
+Après clôture d'A2.1, la gouvernance pourra enregistrer séparément, selon dépendances :
+
+1. B1 — GitHub Identity Resolution ;
+2. B2 — Repository Resolution ;
+3. C1/C2 — GitRegistry V2 et Project Binding ;
+4. C3/C4/C5 — Server, Runtime et Domain Resolution ;
+5. D1/D2/D3 — Governance Inheritance, Effective Capabilities et Bootstrap Receipt enrichment.
+
+A2.2 `Verified Client Evidence` reste conditionnel et ne peut inventer aucune identité ChatGPT/Claude, référence de conversation ou workspace. Son absence ne bloque pas B1 lorsque le principal OAuth constitue la preuve requise.
+
+Autorités à réutiliser : OAuth, RequestIdentity, Operational Memory, Governed Session, GitHub connection registry, GitRegistry V2, `.mcp/server-map.json`, Live State, Governed Context, Bootstrap Receipt et permissions existantes.
+
+Interdictions : aucun nouveau Session Manager, second GitRegistry, seconde Task Queue, store de contexte parallèle, choix arbitraire en cas d'ambiguïté, secret dans Git, ressource créée sans consentement ou écriture directe de code sur S1.
 
 ## Maintenance séparée
 
