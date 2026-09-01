@@ -22,9 +22,9 @@ Date : 2026-09-01
 - La PR #68 a repris la même branche gouvernée `mcp/project-context-resolution-20260901`, a corrigé TDD-first le finding P2 de binding de transport, puis a été fusionnée depuis le head exact `81832e1b702a8dfe10cda5634d6092fb3a177142`.
 - MCP CI PR #713 a réussi avec `272/272`; CI main #714/#715 et MCP Governed Deploy #24 ont réussi sur le merge exact.
 - GitHub `main`, S1 HEAD, S1 `origin/main` et le runtime healthy sont alignés sur `024f6ad4c047614bdfaea0e317f371b789f60136`; S1 reste propre et sans push.
-- Operational Memory porte officiellement `TASK-20260901-001`; le lot A2.1 est livré fonctionnellement, tandis que la tâche globale reste ouverte pour les lots GitHub Identity, Repository Resolution, Project Binding et gouvernance héritée.
+- Operational Memory porte officiellement `TASK-20260901-001` en `VERIFYING`. Le plan d'implémentation approuvé borne son exécution à A2.1 et exige sa clôture seulement après `FULLY_ALIGNED`; le résumé runtime plus large ne doit pas être utilisé pour absorber B1 à D3 sans réconciliation explicite de portée.
 - La présente réconciliation reste strictement documentaire. Elle ne change ni TypeScript, tests, OAuth, GitRegistry, Bootstrap Receipt, WRITE gate, workflow, S1 ou runtime.
-- La prochaine reprise fonctionnelle, après attestation de cette réconciliation, est B1 `GitHub Identity Resolution`; A2.2 `Verified Client Evidence` reste conditionné à une preuve cliente réelle et ne bloque pas B1.
+- Après attestation et clôture d'A2.1, B1 `GitHub Identity Resolution` doit devenir une nouvelle tâche gouvernée officiellement enregistrée, sauf décision préalable réconciliant explicitement la portée du plan et d'Operational Memory. A2.2 reste conditionné à une preuve cliente réelle et ne bloque pas B1.
 
 Les statuts dynamiques, propriétaires, locks, checkpoints et SHA courants doivent toujours être relus dans GitHub, Live State, Operational Memory et la Governed Task Queue. Ce checkpoint documente une baseline fonctionnelle immuable; il ne remplace pas ces autorités.
 
