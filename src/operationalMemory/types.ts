@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { ConnectionContextSchema } from './connectionContext.js';
+
 const TimestampSchema = z.string().datetime({ offset: true });
 const GovernedIdSchema = z.string().uuid();
 const ShaSchema = z.string().regex(/^[0-9a-f]{40}$/);
@@ -88,6 +90,7 @@ export const GovernedSessionRecordSchema = z.object({
   currentTransport: SanitizedTransportMetadataSchema.nullable(),
   lastAcknowledgedStateVersion: z.number().int().nonnegative().nullable(),
   bootstrapReceipt: BootstrapReceiptSchema.nullable().optional(),
+  connectionContext: ConnectionContextSchema.nullable().optional(),
   sessionRevision: z.number().int().nonnegative(),
   lastCheckpoint: GovernedCheckpointSchema.nullable(),
   blockers: z.array(BlockerSchema).max(20),
