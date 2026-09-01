@@ -15,6 +15,8 @@ Frontière : ce premier lot ne modifie ni GitRegistry V1/V2, ni Bootstrap Receip
 
 Gate : tests RED avant code, suite complète, Draft PR, revue exact-head, GitHub → S1 uniquement et attestation Live State avant clôture.
 
+Preuve d'exécution : le premier RED (`7335e3fdb0812402d4ed3cd570e9909beb74c475`) échoue uniquement sur le module absent; le second (`28b3bf45c903f43f56bd8b90921a34236f707f03`) échoue uniquement sur la persistance non encore implémentée. Les GREEN `994b71de97beeb14b48cbd8ad501f9844b145764`, `6088a707c8a2e580cc0467adbae06873c73f4265` et `2f9d752e5c2c9c4eff98138b67a3bd96b6561656` valident respectivement création, continuité historique et exposition via les surfaces existantes, avec CI complète réussie.
+
 ## 2026-08-31 — Attacher les transports actifs sans reprendre la session durable
 
 Contexte : un client peut ouvrir des transports MCP OAuth successifs pour un même principal. Appeler `resumeSession()` à chaque transport incrémente `sessionRevision`, remplace le binding durable et invalide toute opération optimiste observée juste avant.

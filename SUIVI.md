@@ -15,14 +15,19 @@
 
 Date : 2026-09-01
 
-## TASK-20260901-001 — Design du Connection Context minimal
+## TASK-20260901-001 — Connection Context minimal implémenté sur la Draft PR #67
 
 - Baseline GitHub `main` : `184107d5705248427d322922077d18f51e133c15`.
 - S1 HEAD et runtime observés avant le chantier : `184107d5705248427d322922077d18f51e133c15`.
-- Governed Session : `73044653-61b5-4030-912c-1b6e07f2dd41`; branche `mcp/project-context-resolution-20260901`.
-- Design approuvé : enrichir la Governed Session existante avec un `ConnectionContext` OAuth optionnel et sanitizé, sans nouveau store ni résolution GitHub/projet dans ce premier lot.
-- Spécification : `docs/superpowers/specs/2026-09-01-governed-connection-context-minimal-design.md`.
-- État de ce checkpoint documentaire : aucun code fonctionnel encore modifié; prochaine étape soumise à validation de la spécification puis plan TDD.
+- Governed Session : `73044653-61b5-4030-912c-1b6e07f2dd41`; branche `mcp/project-context-resolution-20260901`; Draft PR #67.
+- Spécification approuvée : `docs/superpowers/specs/2026-09-01-governed-connection-context-minimal-design.md`.
+- Plan TDD exécuté : `docs/superpowers/plans/2026-09-01-governed-connection-context-minimal.md`.
+- Intégration additive : `ConnectionContext` OAuth strict, versionné et sanitizé dans le même `GovernedSessionRecord`; credential partagé à `null`; champ optionnel pour les sessions historiques.
+- RED 1 : `7335e3fdb0812402d4ed3cd570e9909beb74c475`, échec unique `ERR_MODULE_NOT_FOUND` du contrat ajouté, avec 260 tests historiques réussis.
+- RED 2 : `28b3bf45c903f43f56bd8b90921a34236f707f03`, deux échecs ciblés car `openSession` ne persistait encore ni objet OAuth ni `null` partagé; le test de lecture historique réussissait déjà.
+- GREEN fonctionnel : `994b71de97beeb14b48cbd8ad501f9844b145764`; stabilité de continuité validée à `6088a707c8a2e580cc0467adbae06873c73f4265`; surfaces existantes validées à `2f9d752e5c2c9c4eff98138b67a3bd96b6561656`.
+- Invariants confirmés : aucun backfill implicite, aucun nouveau store/manager/outil, aucun changement OAuth, GitRegistry, Bootstrap Receipt, WRITE gate, workflow de déploiement, S1 ou runtime.
+- État courant : implémentation encore non fusionnée et non déployée; prochaine étape = CI exacte du head documentaire, revue indépendante, puis livraison gouvernée si toutes les preuves restent vertes.
 
 ## Checkpoint de réconciliation documentaire courant
 
