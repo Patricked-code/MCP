@@ -73,6 +73,14 @@ type ConnectionContext = {
 
 Aucun champ `externalConversationRef` n'est ajouté tant qu'aucun client ne fournit une telle preuve. L'absence de donnée est conservée comme absence, pas transformée en identifiant fictif.
 
+### Contraintes de validation exactes
+
+- `connectionContextId` et `governedSessionId` : UUID ;
+- `principalId` : chaîne trimée de 1 à 256 caractères commençant par `oauth:` ;
+- `observedClientId` : `null` ou chaîne trimée de 1 à 256 caractères ;
+- `createdAt` : date ISO-8601 avec offset ;
+- objet strict : toute propriété supplémentaire est refusée.
+
 ## 5. Compatibilité du schéma
 
 `GovernedSessionRecordSchema` reçoit :
@@ -175,7 +183,7 @@ Modification :
 - `src/operationalMemory/types.ts` ;
 - `src/operationalMemory/sessionService.ts` ;
 - `tests/governedConnectionBootstrap.test.ts` ;
-- éventuellement `tests/governedSessionService.test.ts` uniquement si une preuve de compatibilité ne peut pas être portée par le nouveau test ;
+- `tests/governedSessionService.test.ts` pour prouver explicitement la lecture des sessions historiques sans `connectionContext` ;
 - `SUIVI.md`, `CHANGELOG.md` et `DECISIONS_LOG.md` pour la traçabilité finale.
 
 Non modifiés dans ce lot :
