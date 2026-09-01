@@ -15,6 +15,13 @@
 
 Date : 2026-09-01
 
+## Checkpoint de réconciliation documentaire courant
+
+- GitHub `main` baseline de réconciliation : `3b33086caf8e043624a126521f0d2b4804be3e66`.
+- S1 HEAD et révision runtime observés avant cette correction documentaire : `3b33086caf8e043624a126521f0d2b4804be3e66`.
+- Cette valeur est la baseline immuable d'entrée de la réconciliation `docs_only`, pas une tentative de remplacer GitHub ou Live State comme autorité dynamique du SHA courant.
+- Périmètre : `TASK-20260831-001`, correction de `SUIVI.md` uniquement ; aucun code fonctionnel, workflow, secret, WRITE gate, store ou runtime n'est modifié.
+
 ## Stabilisation du pilotage documentaire
 
 ### Baseline historique de départ
