@@ -127,26 +127,68 @@ Réutilise :
 
 État fonctionnel connu : `ATTACHED` / `RESUMED` / `NONE` / `AMBIGUOUS`, refus des credentials partagés, redaction des identifiants de transport bruts et stabilité des révisions lors du transport churn.
 
-### A2 — Client Identity & Connection Context — PROCHAIN SOCLE
+### A2 — Client Identity & Connection Context — DÉCOMPOSÉ EN LOTS
 
-Objectif : créer une corrélation durable minimale pour une connexion sans inventer d'identifiant externe fourni par le client.
+Objectif global : construire la continuité de connexion par enrichissements bornés de la Governed Session existante, sans inventer d'identifiant externe fourni par le client et sans créer d'autorité parallèle.
+
+Le statut dynamique des travaux, de la branche, de la PR et de la tâche reste lu dans Operational Memory, la Governed Task Queue et GitHub. Cette roadmap ne déclare jamais un lot `LIVRÉ` avant merge, déploiement exact-SHA et réconciliation complète.
+
+#### A2.1 — Connection Context minimal
+
+Objectif : rattacher durablement le principal OAuth assaini et la Governed Session à une identité logique de connexion stable.
+
+Dépend de :
+- A1 — Automatic Governed Session Binding.
 
 Réutilise :
-- OAuth ;
+- `RequestIdentity` ;
 - Operational Memory ;
 - Governed Session ;
-- Event Journal.
+- Transport Bindings ;
+- surfaces de session existantes.
 
-Ajouts attendus :
-- identité de client vérifiable quand disponible ;
+Ajouts autorisés :
+- contrat `schemaVersion: 1` strict et sanitizé ;
 - `connectionContextId` durable ;
-- référence de conversation/workspace uniquement si réellement fournie ;
-- corrélation avec le principal authentifié et la Governed Session.
+- corrélation avec `governedSessionId`, repository, principal OAuth et `clientId` observé ;
+- classification initiale `UNRESOLVED` et provenance `oauth_auth_info` ;
+- champ optionnel et nullable pour préserver les enregistrements historiques.
+
+Résultats fail-closed :
+- identité `oauth_subject` valide → contexte minimal ;
+- credential partagé → `connectionContext: null` ;
+- session historique sans champ → lecture et continuité inchangées, sans backfill implicite ;
+- aucune preuve cliente supplémentaire → aucune classification ChatGPT, Claude ou autre inventée.
 
 Ne doit pas créer :
 - nouveau Session Manager ;
-- nouvelle mémoire globale ;
-- faux `conversation_id`.
+- nouveau store ou registre d'identité ;
+- nouvel outil ou endpoint `ConnectionContext` ;
+- faux `conversation_id` ;
+- persistance de token, secret, transport brut ou métadonnée arbitraire.
+
+Critère `DONE` :
+- contrats historiques et continuité validés ;
+- CI complète sur le head exact ;
+- revue indépendante ;
+- merge protégé et déploiement gouverné ;
+- GitHub, S1, runtime et documentation réconciliés `FULLY_ALIGNED`.
+
+#### A2.2 — Verified Client Evidence
+
+Objectif : enrichir le contexte minimal avec une identité ou référence cliente uniquement lorsqu'une preuve vérifiable est réellement fournie.
+
+Dépend de :
+- A2.1 livré et attesté ;
+- disponibilité d'une preuve cliente bornée.
+
+Ajouts attendus :
+- classification vérifiée ou `UNKNOWN` ;
+- référence conversation/workspace uniquement si fournie et autorisée ;
+- provenance et horodatage bornés ;
+- aucune déduction fondée sur le seul `clientId` opaque.
+
+A2.2 ne bloque pas B1 lorsque le principal OAuth suffit à la résolution GitHub gouvernée ; l'absence de preuve cliente reste explicite et fail-closed.
 
 ### A3 — OAuth Auth Attempt Correlation
 
@@ -385,9 +427,9 @@ Optionnel. Exige un GO distinct, décision architecturale, TDD, PR séparée et 
 ```text
 A1 Session Binding [livré]
   ↓
-A2 Client / Connection Context
-  ↓
-B1 GitHub Identity
+A2.1 Connection Context minimal
+  ├──→ B1 GitHub Identity
+  └──→ A2.2 Verified Client Evidence [si preuve disponible, non bloquant pour B1]
   ↓
 B2 Repository Resolution
   ↓

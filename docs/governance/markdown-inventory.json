@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 196,
+  "trackedCount": 198,
   "categories": {
     "root-documentation": 50,
     "canonical": 7,
     "migration-history": 7,
     "documentation": 55,
     "history": 1,
-    "engineering-plan": 4,
-    "engineering-spec": 4,
+    "engineering-plan": 5,
+    "engineering-spec": 5,
     "memory": 61,
     "runtime-mirror-tracked": 7
   },
@@ -499,6 +499,10 @@
       "category": "engineering-plan"
     },
     {
+      "path": "docs/superpowers/plans/2026-09-01-governed-connection-context-minimal.md",
+      "category": "engineering-plan"
+    },
+    {
       "path": "docs/superpowers/specs/2026-08-09-governed-autodeploy-v1-design.md",
       "category": "engineering-spec"
     },
@@ -512,6 +516,10 @@
     },
     {
       "path": "docs/superpowers/specs/2026-08-22-mandatory-agent-bootstrap-work-orchestration-v1-design.md",
+      "category": "engineering-spec"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-01-governed-connection-context-minimal-design.md",
       "category": "engineering-spec"
     },
     {

@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
 import type { AtomicJsonStore } from './atomicStore.js';
+import { createConnectionContext } from './connectionContext.js';
 import {
   NOOP_OPERATIONAL_AUDIT,
   type OperationalAudit
@@ -248,13 +249,19 @@ export function createGovernedSessionService(
       const resumeSecretHash = await hashResumeSecret(resumeSecret);
       const governedSessionId = randomUUID();
       const openedAt = now();
+      const assurance: IdentityAssurance = request.identity.assurance;
+      const connectionContext = createConnectionContext({
+        governedSessionId,
+        repository: input.repository,
+        requestIdentity: request.identity,
+        now: () => openedAt
+      });
       const currentTransport = options.bindings.bind(
         request.transportSessionId,
         governedSessionId,
         openedAt,
         1
       );
-      const assurance: IdentityAssurance = request.identity.assurance;
       const record: GovernedSessionRecord = {
         schemaVersion: 1,
         governedSessionId,
@@ -275,6 +282,7 @@ export function createGovernedSessionService(
         currentTransport,
         lastAcknowledgedStateVersion: null,
         bootstrapReceipt: null,
+        connectionContext,
         sessionRevision: 1,
         lastCheckpoint: null,
         blockers: [...input.blockers],

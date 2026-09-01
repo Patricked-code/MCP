@@ -1104,3 +1104,207 @@ test('open preserve une session expiree encore reprenable et purge une session d
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+
+test('open persists a sanitized connection context for an OAuth-subject session', async () => {
+  const { directory, service } = await fixture();
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-connection-context-oauth',
+      identity: OAUTH_IDENTITY
+    });
+
+    assert.equal(
+      opened.session.connectionContext?.governedSessionId,
+      opened.session.governedSessionId
+    );
+    assert.equal(opened.session.connectionContext?.repository, 'Patricked-code/MCP');
+    assert.equal(opened.session.connectionContext?.principalId, OAUTH_IDENTITY.principalId);
+    assert.equal(opened.session.connectionContext?.observedClientId, OAUTH_IDENTITY.clientId);
+    assert.equal(opened.session.connectionContext?.identityAssurance, 'oauth_subject');
+    assert.equal(opened.session.connectionContext?.clientClassification, 'UNRESOLVED');
+    assert.equal(opened.session.connectionContext?.evidenceSource, 'oauth_auth_info');
+    assert.equal(opened.session.connectionContext?.createdAt, '2026-08-13T07:00:00.000Z');
+    assert.match(opened.session.connectionContext?.connectionContextId ?? '', /^[0-9a-f-]{36}$/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('open explicitly persists null connection context for shared credentials', async () => {
+  const { directory, service } = await fixture();
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-connection-context-shared',
+      identity: SHARED_IDENTITY
+    });
+
+    assert.equal(opened.session.connectionContext, null);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('a historical session record without connectionContext remains readable', async () => {
+  const { directory, store, service } = await fixture();
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-connection-context-legacy',
+      identity: OAUTH_IDENTITY
+    });
+    await store.update((document) => ({
+      ...document,
+      storeRevision: document.storeRevision + 1,
+      sessions: document.sessions.map((session) => {
+        if (session.governedSessionId !== opened.session.governedSessionId) return session;
+        const { connectionContext: _connectionContext, ...legacySession } = session;
+        return legacySession;
+      })
+    }));
+
+    const visible = await service.getVisibleSession(opened.session.governedSessionId, {
+      transportSessionId: 'transport-connection-context-legacy',
+      identity: OAUTH_IDENTITY
+    });
+    assert.equal(visible?.connectionContext, undefined);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+
+test('connection context remains byte-stable across attach, heartbeat, checkpoint, pause and resume', async () => {
+  const { directory, service } = await fixture();
+  try {
+    const ownerRequest = {
+      transportSessionId: 'transport-context-stability-A',
+      identity: OAUTH_IDENTITY
+    };
+    const opened = await service.openSession(OPEN_INPUT, ownerRequest);
+    const originalContext = opened.session.connectionContext;
+    assert.notEqual(originalContext, null);
+    assert.notEqual(originalContext, undefined);
+
+    const attached = await service.autoResumeCompatibleSession({
+      repository: 'Patricked-code/MCP'
+    }, {
+      transportSessionId: 'transport-context-stability-B',
+      identity: OAUTH_IDENTITY
+    });
+    assert.equal(attached.status, 'ATTACHED');
+    if (attached.status !== 'ATTACHED') throw new Error('EXPECTED_ATTACHED');
+    assert.deepEqual(attached.session.connectionContext, originalContext);
+
+    const heartbeat = await service.heartbeat({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-context-stability-B',
+      identity: OAUTH_IDENTITY
+    });
+    assert.deepEqual(heartbeat.connectionContext, originalContext);
+
+    const acknowledged = await service.acknowledgeContext({
+      governedSessionId: heartbeat.governedSessionId,
+      expectedSessionRevision: heartbeat.sessionRevision,
+      expectedStateVersion: 9
+    }, {
+      transportSessionId: 'transport-context-stability-B',
+      identity: OAUTH_IDENTITY
+    });
+    assert.deepEqual(acknowledged.connectionContext, originalContext);
+
+    const checkpoint = await service.createCheckpoint({
+      governedSessionId: acknowledged.governedSessionId,
+      expectedSessionRevision: acknowledged.sessionRevision,
+      expectedStateVersion: 9,
+      completedAction: 'Connection Context stability verification',
+      resultCode: 'PASS',
+      pullRequestNumber: 67,
+      observedHeadSha: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      blockers: [],
+      nextAction: 'pause and resume'
+    }, {
+      transportSessionId: 'transport-context-stability-B',
+      identity: OAUTH_IDENTITY
+    });
+    const checkpointed = await service.getVisibleSession(
+      acknowledged.governedSessionId,
+      {
+        transportSessionId: 'transport-context-stability-B',
+        identity: OAUTH_IDENTITY
+      }
+    );
+    assert.equal(checkpoint.sessionRevision, checkpointed?.sessionRevision);
+    assert.deepEqual(checkpointed?.connectionContext, originalContext);
+
+    const paused = await service.pauseSession({
+      governedSessionId: checkpointed?.governedSessionId ?? '',
+      expectedSessionRevision: checkpointed?.sessionRevision ?? -1
+    }, {
+      transportSessionId: 'transport-context-stability-B',
+      identity: OAUTH_IDENTITY
+    });
+    assert.deepEqual(paused.connectionContext, originalContext);
+
+    const resumed = await service.resumeSession({
+      governedSessionId: paused.governedSessionId,
+      repository: 'Patricked-code/MCP',
+      taskScope: OPEN_INPUT.taskScope,
+      expectedSessionRevision: paused.sessionRevision
+    }, {
+      transportSessionId: 'transport-context-stability-C',
+      identity: OAUTH_IDENTITY
+    });
+    assert.deepEqual(resumed.connectionContext, originalContext);
+    assert.equal(
+      resumed.connectionContext?.connectionContextId,
+      originalContext?.connectionContextId
+    );
+    assert.equal(resumed.connectionContext?.createdAt, originalContext?.createdAt);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('legacy session continuity never performs a hidden connection context backfill', async () => {
+  const { directory, store, service } = await fixture();
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-context-legacy-A',
+      identity: OAUTH_IDENTITY
+    });
+    await store.update((document) => ({
+      ...document,
+      storeRevision: document.storeRevision + 1,
+      sessions: document.sessions.map((session) => {
+        if (session.governedSessionId !== opened.session.governedSessionId) return session;
+        const { connectionContext: _connectionContext, ...legacySession } = session;
+        return legacySession;
+      })
+    }));
+
+    const attached = await service.autoResumeCompatibleSession({
+      repository: 'Patricked-code/MCP'
+    }, {
+      transportSessionId: 'transport-context-legacy-B',
+      identity: OAUTH_IDENTITY
+    });
+    assert.equal(attached.status, 'ATTACHED');
+    if (attached.status !== 'ATTACHED') throw new Error('EXPECTED_ATTACHED');
+    assert.equal(attached.session.connectionContext, undefined);
+
+    const resumed = await service.resumeSession({
+      governedSessionId: opened.session.governedSessionId,
+      repository: 'Patricked-code/MCP',
+      taskScope: OPEN_INPUT.taskScope,
+      expectedSessionRevision: opened.session.sessionRevision
+    }, {
+      transportSessionId: 'transport-context-legacy-C',
+      identity: OAUTH_IDENTITY
+    });
+    assert.equal(resumed.connectionContext, undefined);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});

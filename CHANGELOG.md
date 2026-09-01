@@ -3,6 +3,17 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
+## 2026-09-01 — Governed Connection Context minimal
+
+- `TASK-20260901-001` part de `main@184107d5705248427d322922077d18f51e133c15` sur `mcp/project-context-resolution-20260901`, Draft PR #67.
+- Ajout d'un `ConnectionContext` strict, versionné, optionnel et sanitizé dans le `GovernedSessionRecord` existant; aucun store, manager, registry ou outil parallèle.
+- Les nouvelles sessions OAuth persistent un identifiant logique stable, le principal et le `clientId` déjà assainis; les credentials partagés persistent explicitement `null`; les sessions historiques sans champ restent lisibles et reprenables sans backfill.
+- RED `7335e3fdb0812402d4ed3cd570e9909beb74c475` : module absent, 260/261 tests réussis. RED `28b3bf45c903f43f56bd8b90921a34236f707f03` : deux assertions de persistance ciblées échouent tandis que la compatibilité historique passe.
+- GREEN `994b71de97beeb14b48cbd8ad501f9844b145764` : création OAuth/partagée validée. `6088a707c8a2e580cc0467adbae06873c73f4265` : stabilité attach/heartbeat/checkpoint/pause/resume et absence de migration implicite validées.
+- Head fonctionnel `2f9d752e5c2c9c4eff98138b67a3bd96b6561656` : les surfaces existantes open/get/list/resume exposent le même contexte assaini sans token, transport brut, resume secret ou hash; CI complète réussie.
+- Aucun changement d'authentification, serveur MCP, GitRegistry, Governed Context, Bootstrap Receipt, WRITE gate, Autodeploy, S1 ou runtime. Rollback : revert des commits du lot; les enregistrements historiques demeurent valides grâce au champ optionnel.
+- `ROADMAP.md` décompose désormais A2 en A2.1 (contexte minimal) et A2.2 (preuve cliente vérifiée), garde les statuts dynamiques dans leurs autorités et interdit de déclarer le lot livré avant l'attestation complète.
+
 ## 2026-08-31 — Automatic Governed Connection Bootstrap stabilisé et déployé
 
 - PR #60 : premier lot de bootstrap automatique fusionné et déployé au SHA `211a7de7940f115aa997f404927a8e0c9ace9055`.
