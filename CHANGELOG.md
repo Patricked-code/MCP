@@ -3,6 +3,13 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
+## 2026-09-01 — Design du Governed Connection Context minimal
+
+- `TASK-20260901-001` démarre depuis `main@184107d5705248427d322922077d18f51e133c15` sur `mcp/project-context-resolution-20260901`.
+- Ajout de la spécification approuvée du premier lot : contexte OAuth minimal imbriqué dans la Governed Session existante.
+- Compatibilité verrouillée : anciennes sessions lisibles, `ATTACHED` sans churn, `RESUMED` préservé, credential partagé fail-closed.
+- Aucun code, store, GitRegistry, Bootstrap Receipt, WRITE gate, workflow, S1 ou runtime modifié à ce checkpoint.
+
 ## 2026-08-31 — Automatic Governed Connection Bootstrap stabilisé et déployé
 
 - PR #60 : premier lot de bootstrap automatique fusionné et déployé au SHA `211a7de7940f115aa997f404927a8e0c9ace9055`.
