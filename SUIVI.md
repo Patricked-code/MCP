@@ -15,27 +15,28 @@
 
 Date : 2026-09-01
 
-## TASK-20260901-001 — Connection Context minimal implémenté sur la Draft PR #67
+## TASK-20260901-001 — premier lot Connection Context fusionné, déployé et attesté
 
-- Baseline GitHub `main` : `184107d5705248427d322922077d18f51e133c15`.
-- S1 HEAD et runtime observés avant le chantier : `184107d5705248427d322922077d18f51e133c15`.
-- Governed Session : `73044653-61b5-4030-912c-1b6e07f2dd41`; branche `mcp/project-context-resolution-20260901`; Draft PR #67.
-- Spécification approuvée : `docs/superpowers/specs/2026-09-01-governed-connection-context-minimal-design.md`.
-- Plan TDD exécuté : `docs/superpowers/plans/2026-09-01-governed-connection-context-minimal.md`.
-- Intégration additive : `ConnectionContext` OAuth strict, versionné et sanitizé dans le même `GovernedSessionRecord`; credential partagé à `null`; champ optionnel pour les sessions historiques.
-- RED 1 : `7335e3fdb0812402d4ed3cd570e9909beb74c475`, échec unique `ERR_MODULE_NOT_FOUND` du contrat ajouté, avec 260 tests historiques réussis.
-- RED 2 : `28b3bf45c903f43f56bd8b90921a34236f707f03`, deux échecs ciblés car `openSession` ne persistait encore ni objet OAuth ni `null` partagé; le test de lecture historique réussissait déjà.
-- GREEN fonctionnel : `994b71de97beeb14b48cbd8ad501f9844b145764`; stabilité de continuité validée à `6088a707c8a2e580cc0467adbae06873c73f4265`; surfaces existantes validées à `2f9d752e5c2c9c4eff98138b67a3bd96b6561656`.
-- Invariants confirmés : aucun backfill implicite, aucun nouveau store/manager/outil, aucun changement OAuth, GitRegistry, Bootstrap Receipt, WRITE gate, workflow de déploiement, S1 ou runtime.
-- Roadmap réconciliée additivement : A2 est décomposé en A2.1 `Connection Context minimal` et A2.2 `Verified Client Evidence`; aucun statut `LIVRÉ` n'est anticipé avant merge, déploiement et attestation.
-- État courant : implémentation encore non fusionnée et non déployée; prochaine étape = CI exacte du head documentaire, revue indépendante, puis livraison gouvernée si toutes les preuves restent vertes.
+- Baseline fonctionnelle GitHub `main` après merge de la PR #68 : `024f6ad4c047614bdfaea0e317f371b789f60136`.
+- S1 HEAD, `origin/main` et runtime observés après Governed Autodeploy : `024f6ad4c047614bdfaea0e317f371b789f60136` ; working tree propre, push remote `disabled://mcp-s1-read-only`, conteneur `running/healthy`.
+- Governed Session réutilisée : `73044653-61b5-4030-912c-1b6e07f2dd41` ; la tâche globale `TASK-20260901-001` reste l'autorité Operational Memory pour les lots suivants.
+- La Draft PR #67 a été fermée uniquement comme carrier après l'échec du passage Draft → Ready causé par le connecteur GraphQL `Repository.fullDatabaseId`; aucun code, branche logique, tâche ni autorité n'a été recréé.
+- La PR #68 a repris le même head, puis la revue indépendante a détecté un P2 réel : une validation `ConnectionContext` pouvait échouer après `TransportBindings.bind()` et laisser un binding de transport résiduel.
+- TDD du finding P2 : RED `f3b4bacd1d8a6975d33c949372cda6f1d1d2d523`, CI #711 avec `271/272` tests ; GREEN `81832e1b702a8dfe10cda5634d6092fb3a177142`, CI #713 avec `272/272`, en construisant/validant le `ConnectionContext` avant toute mutation de `TransportBindings`.
+- PR #68 fusionnée avec garde exact-head `81832e1b702a8dfe10cda5634d6092fb3a177142` ; merge `024f6ad4c047614bdfaea0e317f371b789f60136`.
+- CI main #714 réussie : typecheck, build, docs check, governance tests, secret scan, read-only safety et whitespace verts.
+- Governed Deploy #24 réussi et attesté sur le merge SHA exact ; l'image OCI active porte `org.opencontainers.image.revision=024f6ad4c047614bdfaea0e317f371b789f60136` et le runtime est `healthy`.
+- Intégration additive confirmée : `ConnectionContext` OAuth strict, versionné et sanitizé dans le même `GovernedSessionRecord`; credential partagé à `null`; champ optionnel pour les sessions historiques; aucun backfill implicite.
+- Aucun nouveau Session Manager, store, registre concurrent, outil/endpoint ConnectionContext, chemin de déploiement, changement OAuth, GitRegistry, Bootstrap Receipt, WRITE gate ou écriture S1 directe n'a été introduit.
+- Le premier lot A2.1 est techniquement livré et attesté ; `TASK-20260901-001` n'est pas terminée et doit poursuivre les lots GitHub Identity Resolution, Repository Resolution, GitRegistry V2 Project Binding, server/runtime/domain resolution, governance inheritance et enrichissement borné du Bootstrap Receipt.
 
-## Checkpoint de réconciliation documentaire courant
+## Réconciliation documentaire post-déploiement en cours
 
-- GitHub `main` baseline de réconciliation : `3b33086caf8e043624a126521f0d2b4804be3e66`.
-- S1 HEAD et révision runtime observés avant cette correction documentaire : `3b33086caf8e043624a126521f0d2b4804be3e66`.
-- Cette valeur est la baseline immuable d'entrée de la réconciliation `docs_only`, pas une tentative de remplacer GitHub ou Live State comme autorité dynamique du SHA courant.
-- Périmètre : `TASK-20260831-001`, correction de `SUIVI.md` uniquement ; aucun code fonctionnel, workflow, secret, WRITE gate, store ou runtime n'est modifié.
+- Baseline d'entrée GitHub/S1/runtime de cette réconciliation docs-only : `024f6ad4c047614bdfaea0e317f371b789f60136`.
+- Branche documentaire : `mcp/project-context-resolution-docs-20260901`.
+- Périmètre : documentation canonique uniquement ; aucun TypeScript, test, workflow, OIDC, Autodeploy, politique `.mcp`, secret, WRITE gate, store ou fichier S1 n'est modifié directement.
+- Le but est de faire descendre la preuve fonctionnelle déjà acquise vers `SUIVI.md`, `TASKS.md` et `TODO.md`, puis de laisser Live State et Operational Memory recalculer l'alignement et le statut dynamique après merge/déploiement.
+- Cette baseline est un checkpoint d'entrée de la réconciliation et ne remplace jamais GitHub/Live State comme autorité du SHA courant.
 
 ## Stabilisation du pilotage documentaire
 
