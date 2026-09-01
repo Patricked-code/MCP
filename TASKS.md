@@ -31,7 +31,8 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - PR #55 : head `de0030b0df42a693d2e96c87f008c9ffd1c2ce04`, CI exact-head `33256403390` / job `99110808499`, merge `2c2dde2bffe62b2685bf2fad94530571762470c8`, CI main `33256566688`, Governed Deploy `33256566695` / job `99111230626`; GitHub, S1, origin/main et runtime attestés au même SHA.
 - PR #60 : premier lot de connexion gouvernée fusionné et déployé au SHA `211a7de7940f115aa997f404927a8e0c9ace9055`.
 - PR #62 : head `2e8fa683296f4f1bf53b9875104598696ba9c6e2`, CI PR #645 / run `33442649238` / job `99654287301`, merge `878a1646fc7e5928cdb7951a3d2ad1f0639a1d53`, CI main #646 et Governed Deploy #19; GitHub/S1/runtime attestés au même SHA et Docker healthy.
-- PR #63 : réconciliation documentaire post-PR #62 fusionnée au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`; elle ne modifie que la documentation canonique et constitue le dernier jalon GitHub connu avant la présente stabilisation de roadmap.
+- PR #63 : réconciliation documentaire post-PR #62 fusionnée au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`; elle ne modifie que la documentation canonique.
+- PR #68 : premier lot `ConnectionContext` de `TASK-20260901-001`, head final `81832e1b702a8dfe10cda5634d6092fb3a177142`, merge `024f6ad4c047614bdfaea0e317f371b789f60136`, CI main #714 et Governed Deploy #24 réussis ; GitHub/S1/runtime exact-SHA et Docker healthy attestés.
 
 ## Tâche clôturée
 
@@ -106,13 +107,11 @@ La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. 
 - [x] fusionner la réconciliation docs-only par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba` ;
 - Note d'autorité runtime : `DONE`, checkpoint, locks et cycle de session doivent être lus depuis Operational Memory lorsqu'une attestation actuelle est nécessaire ; aucun faux statut runtime n'est maintenu ici.
 
-## Prochaine tâche candidate — non enregistrée
+## Tâche gouvernée active — TASK-20260901-001
 
 ### Project Context Resolution — Client/GitHub/Repository/Project Binding
 
-Statut documentaire : `PLANNED / NOT_REGISTERED`.
-
-Aucun `TASK-...` n'est attribué ici tant que la Governed Task Queue / Operational Memory ne l'a pas officiellement enregistré.
+Cette tâche est officiellement enregistrée dans Operational Memory. Son statut, son owner, ses révisions, blockers, branche et PR courants doivent toujours être lus depuis Governed Task Queue / Operational Memory ; le présent document n'en fabrique pas une copie dynamique.
 
 Objectif borné : prolonger le bootstrap existant sans refaire la session automatique, afin de résoudre progressivement :
 
@@ -127,9 +126,21 @@ principal OAuth
 → governance héritée
 ```
 
+Premier lot livré techniquement :
+
+- [x] `ConnectionContext` minimal strict/versionné/sanitizé ajouté dans le `GovernedSessionRecord` existant ;
+- [x] shared credential → `null`, historiques sans backfill, continuité attach/resume préservée ;
+- [x] finding P2 de fuite de binding reproduit RED puis corrigé GREEN avant merge ;
+- [x] PR #68 fusionnée sous garde exact-head, CI main #714 et Governed Deploy #24 réussis ;
+- [x] GitHub/S1/runtime réattestés sur `024f6ad4c047614bdfaea0e317f371b789f60136`, runtime healthy ;
+- [ ] achever la réconciliation documentaire descendante du premier lot et laisser les autorités runtime confirmer l'alignement global ;
+- [ ] poursuivre GitHub Identity Resolution puis Repository Resolution ;
+- [ ] réutiliser GitRegistry V2 pour le binding projet/serveur/runtime/domaine ;
+- [ ] hériter la gouvernance et enrichir le Bootstrap Receipt sans secret.
+
 Autorités existantes à réutiliser : OAuth, Operational Memory, Governed Session, GitRegistry V2, `.mcp/server-map.json`, Live State, Governed Context, Bootstrap Receipt et permissions existantes.
 
-Interdictions : aucun nouveau Session Manager, aucun second GitRegistry, aucune seconde Task Queue, aucun choix arbitraire en cas d'ambiguïté, aucun secret dans Git, aucune création de ressource dans ce premier lot de résolution.
+Interdictions : aucun nouveau Session Manager, aucun second GitRegistry, aucune seconde Task Queue, aucun choix arbitraire en cas d'ambiguïté, aucun secret dans Git, aucune création de ressource dans les lots de résolution sans autorisation explicite.
 
 Les sous-lots, dépendances et lots ultérieurs sont décrits dans `ROADMAP.md`. `TODO.md` porte uniquement le travail restant correspondant.
 
