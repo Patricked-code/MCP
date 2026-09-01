@@ -12,6 +12,7 @@ Historique factuel des changements du depot MCP.
 - GREEN `994b71de97beeb14b48cbd8ad501f9844b145764` : création OAuth/partagée validée. `6088a707c8a2e580cc0467adbae06873c73f4265` : stabilité attach/heartbeat/checkpoint/pause/resume et absence de migration implicite validées.
 - Head fonctionnel `2f9d752e5c2c9c4eff98138b67a3bd96b6561656` : les surfaces existantes open/get/list/resume exposent le même contexte assaini sans token, transport brut, resume secret ou hash; CI complète réussie.
 - Aucun changement d'authentification, serveur MCP, GitRegistry, Governed Context, Bootstrap Receipt, WRITE gate, Autodeploy, S1 ou runtime. Rollback : revert des commits du lot; les enregistrements historiques demeurent valides grâce au champ optionnel.
+- `ROADMAP.md` décompose désormais A2 en A2.1 (contexte minimal) et A2.2 (preuve cliente vérifiée), garde les statuts dynamiques dans leurs autorités et interdit de déclarer le lot livré avant l'attestation complète.
 
 ## 2026-08-31 — Automatic Governed Connection Bootstrap stabilisé et déployé
 

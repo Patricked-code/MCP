@@ -13,6 +13,8 @@ Compatibilité : le champ optionnel maintient la lecture des sessions historique
 
 Frontière : ce premier lot ne modifie ni GitRegistry V1/V2, ni Bootstrap Receipt, ni Governed Context Service, ni WRITE gate, ni serveur/runtime/domaine. Les résolutions GitHub et Project Binding restent des lots ultérieurs.
 
+Décision de pilotage : décomposer A2 dans `ROADMAP.md` en A2.1 `Connection Context minimal` et A2.2 `Verified Client Evidence`. A2.2 ne bloque pas B1 si le principal OAuth fournit déjà la preuve requise; aucun statut `LIVRÉ` n'est figé avant merge, déploiement exact-SHA et `FULLY_ALIGNED`.
+
 Gate : tests RED avant code, suite complète, Draft PR, revue exact-head, GitHub → S1 uniquement et attestation Live State avant clôture.
 
 Preuve d'exécution : le premier RED (`7335e3fdb0812402d4ed3cd570e9909beb74c475`) échoue uniquement sur le module absent; le second (`28b3bf45c903f43f56bd8b90921a34236f707f03`) échoue uniquement sur la persistance non encore implémentée. Les GREEN `994b71de97beeb14b48cbd8ad501f9844b145764`, `6088a707c8a2e580cc0467adbae06873c73f4265` et `2f9d752e5c2c9c4eff98138b67a3bd96b6561656` valident respectivement création, continuité historique et exposition via les surfaces existantes, avec CI complète réussie.

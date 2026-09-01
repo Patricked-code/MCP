@@ -27,6 +27,7 @@ Date : 2026-09-01
 - RED 2 : `28b3bf45c903f43f56bd8b90921a34236f707f03`, deux échecs ciblés car `openSession` ne persistait encore ni objet OAuth ni `null` partagé; le test de lecture historique réussissait déjà.
 - GREEN fonctionnel : `994b71de97beeb14b48cbd8ad501f9844b145764`; stabilité de continuité validée à `6088a707c8a2e580cc0467adbae06873c73f4265`; surfaces existantes validées à `2f9d752e5c2c9c4eff98138b67a3bd96b6561656`.
 - Invariants confirmés : aucun backfill implicite, aucun nouveau store/manager/outil, aucun changement OAuth, GitRegistry, Bootstrap Receipt, WRITE gate, workflow de déploiement, S1 ou runtime.
+- Roadmap réconciliée additivement : A2 est décomposé en A2.1 `Connection Context minimal` et A2.2 `Verified Client Evidence`; aucun statut `LIVRÉ` n'est anticipé avant merge, déploiement et attestation.
 - État courant : implémentation encore non fusionnée et non déployée; prochaine étape = CI exacte du head documentaire, revue indépendante, puis livraison gouvernée si toutes les preuves restent vertes.
 
 ## Checkpoint de réconciliation documentaire courant
