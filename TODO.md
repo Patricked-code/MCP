@@ -82,13 +82,13 @@ Une amélioration structurante est d'abord positionnée dans `ROADMAP.md`. Lorsq
 - [x] Réconciliation docs-only fusionnée par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`.
 - Note d'autorité runtime : l'état courant de `TASK-20260829-002`, son checkpoint, ses locks et la session sont lus depuis Operational Memory/Live State ; ils ne sont pas maintenus comme cases à cocher ici.
 
-## Programme suivant — lots planifiés, non enregistrés comme tâches runtime
+## Programme suivant — lots planifiés
 
-La séquence détaillée, les dépendances et les contrats d'intégration sont portés par `ROADMAP.md`. Les éléments ci-dessous représentent le travail restant connu, pas des `TASK-...` déjà créées.
+La séquence détaillée, les dépendances et les contrats d'intégration sont portés par `ROADMAP.md`. `TASK-20260901-001` est désormais enregistrée dans Operational Memory ; les cases ci-dessous décrivent le travail livré/restant sans remplacer son statut dynamique, son owner, ses locks, sa branche ou sa PR.
 
-### Prochain socle — Client / Connection Context
+### Client / Connection Context
 
-- [ ] rattacher durablement le principal OAuth et la Governed Session à un `ConnectionContext` minimal sans second moteur de session ;
+- [x] rattacher durablement le principal OAuth et la Governed Session à un `ConnectionContext` minimal sans second moteur de session ; livré par PR #68, merge fonctionnel `024f6ad4c047614bdfaea0e317f371b789f60136`, CI main #714 et Governed Deploy #24 exact-SHA attestés ;
 - [ ] classifier l'identité du client uniquement à partir de preuves réellement disponibles ;
 - [ ] ne jamais inventer de `conversation_id`, workspace ou project ref externe ;
 - [ ] conserver les secrets/codes/tokens hors des registres métier et de la journalisation.
