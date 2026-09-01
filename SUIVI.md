@@ -43,7 +43,7 @@ Les statuts dynamiques, propriétaires, locks, checkpoints et SHA courants doive
 - Roadmap réconciliée additivement : A2 est décomposé en A2.1 `Connection Context minimal` et A2.2 `Verified Client Evidence`; aucun statut `LIVRÉ` n'est anticipé avant merge, déploiement et attestation.
 - État à ce checkpoint historique : l'implémentation n'était pas encore fusionnée; la livraison ultérieure est décrite dans le point courant placé en tête de ce document.
 
-## Checkpoint de réconciliation documentaire courant
+## Historique — checkpoint de réconciliation documentaire de TASK-20260831-001
 
 - GitHub `main` baseline de réconciliation : `3b33086caf8e043624a126521f0d2b4804be3e66`.
 - S1 HEAD et révision runtime observés avant cette correction documentaire : `3b33086caf8e043624a126521f0d2b4804be3e66`.
