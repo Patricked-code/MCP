@@ -21,7 +21,7 @@ Preuve d'exécution : le premier RED (`7335e3fdb0812402d4ed3cd570e9909beb74c475`
 
 Décision de correction de revue : le finding P2 de binding orphelin est corrigé sans nouveau mécanisme de cleanup parallèle. Le contexte est construit et validé avant `TransportBindings.bind`; le test RED `f3b4bacd1d8a6975d33c949372cda6f1d1d2d523` puis le GREEN `81832e1b702a8dfe10cda5634d6092fb3a177142` prouvent l'ordre sûr des effets.
 
-Clôture A2.1 : la PR #68 est fusionnée et déployée au SHA `024f6ad4c047614bdfaea0e317f371b789f60136`, avec CI PR #713 (`272/272`), CI main #714/#715, Governed Deploy #24 et alignement GitHub/S1/runtime. Cette clôture ne clôt pas `TASK-20260901-001`; elle autorise le passage à B1 après réconciliation documentaire. A2.2 reste conditionné à une preuve cliente réelle et ne peut inventer aucune identité externe.
+Clôture A2.1 : la PR #68 est fusionnée et déployée au SHA `024f6ad4c047614bdfaea0e317f371b789f60136`, avec CI PR #713 (`272/272`), CI main #714/#715, Governed Deploy #24 et alignement GitHub/S1/runtime. `TASK-20260901-001` ne devient `DONE` qu'après réconciliation documentaire et `FULLY_ALIGNED`, conformément au plan approuvé. GitHub Identity/Repository Resolution constitue un stop condition de ce plan : B1 doit être enregistré séparément sauf décision gouvernée explicite réconciliant d'abord le résumé Operational Memory plus large. A2.2 reste conditionné à une preuve cliente réelle et ne peut inventer aucune identité externe.
 
 ## 2026-08-31 — Attacher les transports actifs sans reprendre la session durable
 
