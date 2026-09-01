@@ -15,6 +15,15 @@
 
 Date : 2026-09-01
 
+## TASK-20260901-001 — Design du Connection Context minimal
+
+- Baseline GitHub `main` : `184107d5705248427d322922077d18f51e133c15`.
+- S1 HEAD et runtime observés avant le chantier : `184107d5705248427d322922077d18f51e133c15`.
+- Governed Session : `73044653-61b5-4030-912c-1b6e07f2dd41`; branche `mcp/project-context-resolution-20260901`.
+- Design approuvé : enrichir la Governed Session existante avec un `ConnectionContext` OAuth optionnel et sanitizé, sans nouveau store ni résolution GitHub/projet dans ce premier lot.
+- Spécification : `docs/superpowers/specs/2026-09-01-governed-connection-context-minimal-design.md`.
+- État de ce checkpoint documentaire : aucun code fonctionnel encore modifié; prochaine étape soumise à validation de la spécification puis plan TDD.
+
 ## Checkpoint de réconciliation documentaire courant
 
 - GitHub `main` baseline de réconciliation : `3b33086caf8e043624a126521f0d2b4804be3e66`.
