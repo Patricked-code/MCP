@@ -82,20 +82,20 @@ Lorsqu'une attestation actuelle est nécessaire, ces données doivent être lues
 
 ### Programme suivant — orientation documentaire
 
-La tâche `TASK-20260901-001` est désormais officiellement enregistrée dans Operational Memory. Elle prolonge le bootstrap de session déjà livré avec la résolution du contexte projet :
+Le programme global prolonge le bootstrap de session déjà livré avec la chaîne de résolution ci-dessous. La tâche gouvernée actuelle `TASK-20260901-001` couvre uniquement le premier maillon A2.1 `Connection Context minimal`; elle doit être clôturée avant toute exécution de B1.
 
 ```text
 principal OAuth
-→ Connection Context minimal
-→ GitHub identity
-→ repository
-→ GitRegistry V2 mapping
-→ project
-→ server/runtime/domain
-→ gouvernance héritée
+→ A2.1 Connection Context minimal [TASK-20260901-001]
+→ clôture et attestation A2.1
+→ B1 GitHub identity [future tâche distincte]
+→ B2 repository [future tâche distincte]
+→ C1/C2 GitRegistry V2 mapping / project [futures tâches distinctes]
+→ C3/C4/C5 server / runtime / domain [futures tâches distinctes]
+→ D1/D2/D3 gouvernance héritée [futures tâches distinctes]
 ```
 
-Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) sont positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
+B1 et tous les maillons suivants sont des candidats du programme, pas une extension implicite de `TASK-20260901-001`. Ils ne peuvent être enregistrés puis exécutés que séparément, selon les dépendances et les autorités runtime. Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) restent positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
 
 ### Règle de reprise
 
