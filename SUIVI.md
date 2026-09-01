@@ -15,7 +15,7 @@
 
 Date : 2026-09-01
 
-## Point courant — A2.1 fusionné et déployé, réconciliation documentaire requise
+## Point courant — A2.1 fusionné et déployé
 
 - Baseline fonctionnelle attestée : `024f6ad4c047614bdfaea0e317f371b789f60136`.
 - La Draft PR #67 a été fermée sans fusion uniquement après l'échec avant mutation de la transition Draft → Ready du connecteur; elle reste le carrier historique initial du même travail.
@@ -24,7 +24,7 @@ Date : 2026-09-01
 - GitHub `main`, S1 HEAD, S1 `origin/main` et le runtime healthy sont alignés sur `024f6ad4c047614bdfaea0e317f371b789f60136`; S1 reste propre et sans push.
 - Operational Memory porte officiellement `TASK-20260901-001`; le lot A2.1 est livré fonctionnellement, tandis que la tâche globale reste ouverte pour les lots GitHub Identity, Repository Resolution, Project Binding et gouvernance héritée.
 - La présente réconciliation reste strictement documentaire. Elle ne change ni TypeScript, tests, OAuth, GitRegistry, Bootstrap Receipt, WRITE gate, workflow, S1 ou runtime.
-- Après merge et attestation de cette réconciliation, la prochaine reprise fonctionnelle est B1 `GitHub Identity Resolution`; A2.2 `Verified Client Evidence` reste conditionné à une preuve cliente réelle et ne bloque pas B1.
+- La prochaine reprise fonctionnelle, après attestation de cette réconciliation, est B1 `GitHub Identity Resolution`; A2.2 `Verified Client Evidence` reste conditionné à une preuve cliente réelle et ne bloque pas B1.
 
 Les statuts dynamiques, propriétaires, locks, checkpoints et SHA courants doivent toujours être relus dans GitHub, Live State, Operational Memory et la Governed Task Queue. Ce checkpoint documente une baseline fonctionnelle immuable; il ne remplace pas ces autorités.
 
