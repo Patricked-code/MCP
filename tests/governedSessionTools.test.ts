@@ -38,6 +38,18 @@ const PUBLIC_SESSION = {
     lastSeenAt: '2026-08-13T08:00:00.000Z'
   },
   lastAcknowledgedStateVersion: null,
+  connectionContext: {
+    schemaVersion: 1,
+    connectionContextId: '22222222-2222-4222-8222-222222222222',
+    governedSessionId: SESSION_ID,
+    repository: 'Patricked-code/MCP',
+    principalId: 'oauth:wealthtech-mcp-admin',
+    observedClientId: 'chatgpt-client',
+    identityAssurance: 'oauth_subject',
+    clientClassification: 'UNRESOLVED',
+    evidenceSource: 'oauth_auth_info',
+    createdAt: '2026-08-13T08:00:00.000Z'
+  },
   sessionRevision: 1,
   lastCheckpoint: null,
   blockers: [],
@@ -167,4 +179,56 @@ test('resume et heartbeat gardent governedSessionId; une révision invalide est 
     ok: false,
     error: { code: 'SESSION_REVISION_MISMATCH' }
   });
+});
+
+
+test('existing open, get, list and resume surfaces expose only the sanitized connection context', async () => {
+  const sessions = {
+    async openSession() {
+      return { session: PUBLIC_SESSION, resumeSecret: 'resume-secret-public-once' };
+    },
+    async getVisibleSession() {
+      return PUBLIC_SESSION;
+    },
+    async listVisibleSessions() {
+      return [PUBLIC_SESSION];
+    },
+    async resumeSession() {
+      return { ...PUBLIC_SESSION, status: 'ACTIVE', sessionRevision: 2 };
+    }
+  } as unknown as GovernedSessionService;
+  const handlers = capture({ sessions, locks: {} as GovernedLockService });
+
+  const opened = textJson(await handlers.get('mcp_open_governed_session')?.({
+    repository: 'Patricked-code/MCP',
+    taskScope: 'TASK-20260813-008',
+    workBranch: 'mcp/session-continuity-v1-20260813',
+    agentIdentity: 'codex-work-mode',
+    blockers: [],
+    nextAction: null
+  }, extra()));
+  const fetchedSession = textJson(await handlers.get('mcp_get_governed_session')?.({
+    governedSessionId: SESSION_ID
+  }, extra()));
+  const listed = textJson(await handlers.get('mcp_list_governed_sessions')?.({}, extra()));
+  const resumed = textJson(await handlers.get('mcp_resume_governed_session')?.({
+    governedSessionId: SESSION_ID,
+    repository: 'Patricked-code/MCP',
+    taskScope: 'TASK-20260813-008',
+    expectedSessionRevision: 1
+  }, extra('transport-raw-B')));
+
+  const expectedContext = PUBLIC_SESSION.connectionContext;
+  assert.deepEqual(opened.result.session.connectionContext, expectedContext);
+  assert.deepEqual(fetchedSession.result.connectionContext, expectedContext);
+  assert.deepEqual(listed.result[0].connectionContext, expectedContext);
+  assert.deepEqual(resumed.result.connectionContext, expectedContext);
+
+  for (const result of [opened, fetchedSession, listed, resumed]) {
+    const serialized = JSON.stringify(result);
+    assert.equal(serialized.includes('must-never-be-returned'), false);
+    assert.equal(serialized.includes('transport-raw-A'), false);
+    assert.equal(serialized.includes('transport-raw-B'), false);
+    assert.equal(serialized.includes('resumeSecretHash'), false);
+  }
 });
