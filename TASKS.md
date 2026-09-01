@@ -108,13 +108,15 @@ La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. 
 - [x] fusionner la réconciliation docs-only par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba` ;
 - Note d'autorité runtime : `DONE`, checkpoint, locks et cycle de session doivent être lus depuis Operational Memory lorsqu'une attestation actuelle est nécessaire ; aucun faux statut runtime n'est maintenu ici.
 
-## Tâche gouvernée actuelle
+## Tâche gouvernée actuelle — lot A2.1
 
-### TASK-20260901-001 — Project Context Resolution — Client/GitHub/Repository/Project Binding
+### TASK-20260901-001 — Connection Context minimal
 
-Cette tâche est officiellement enregistrée dans Operational Memory. Son statut, son owner, sa révision, ses locks, son checkpoint et ses corrélations SHA restent dynamiques et doivent être lus depuis Operational Memory et la Governed Task Queue.
+Operational Memory porte actuellement un titre et un résumé plus larges, mais le plan d'implémentation approuvé `docs/superpowers/plans/2026-09-01-governed-connection-context-minimal.md` borne l'exécution de cette tâche à A2.1, impose l'arrêt si GitHub Identity ou Repository Resolution devient nécessaire et exige `DONE` seulement après merge, déploiement, `FULLY_ALIGNED` et absence de drift documentaire.
 
-Lot A2.1 livré et attesté :
+Tant que cette contradiction de portée n'a pas reçu de décision gouvernée explicite, le contrat le plus étroit s'applique fail-closed : B1 à D3 ne sont pas absorbés dans `TASK-20260901-001`.
+
+Preuves fonctionnelles A2.1 acquises :
 
 - [x] ajouter un `ConnectionContext` strict, versionné, optionnel et sanitizé dans le `GovernedSessionRecord` existant ;
 - [x] créer le contexte uniquement pour une identité `oauth_subject` et persister `null` pour un credential partagé ;
@@ -124,7 +126,16 @@ Lot A2.1 livré et attesté :
 - [x] valider le head exact PR #68 par MCP CI #713, `272/272` ;
 - [x] fusionner sous garde exact-head et attester CI main, Governed Deploy, GitHub, S1 et runtime sur `024f6ad4c047614bdfaea0e317f371b789f60136`.
 
-Lots restant dans la même tâche, à exécuter séparément :
+Gates restant avant clôture de la tâche :
+
+- [ ] fusionner la réconciliation documentaire exact-head après résolution de tous les findings ;
+- [ ] attester le déploiement gouverné du merge documentaire ;
+- [ ] obtenir Live State `FULLY_ALIGNED` sans `DOCUMENTATION_DRIFT` ;
+- [ ] transitionner `TASK-20260901-001` à `DONE`, checkpoint final, libération du lock et clôture de session selon le plan approuvé.
+
+## Prochaines tâches candidates — non enregistrées
+
+Après clôture d'A2.1, la gouvernance pourra enregistrer séparément, selon dépendances :
 
 1. B1 — GitHub Identity Resolution ;
 2. B2 — Repository Resolution ;
@@ -132,7 +143,7 @@ Lots restant dans la même tâche, à exécuter séparément :
 4. C3/C4/C5 — Server, Runtime et Domain Resolution ;
 5. D1/D2/D3 — Governance Inheritance, Effective Capabilities et Bootstrap Receipt enrichment.
 
-A2.2 `Verified Client Evidence` reste un enrichissement conditionnel : aucune identité ChatGPT/Claude, référence de conversation ou workspace ne doit être inventée. Son absence ne bloque pas B1 lorsque le principal OAuth constitue la preuve requise.
+A2.2 `Verified Client Evidence` reste conditionnel et ne peut inventer aucune identité ChatGPT/Claude, référence de conversation ou workspace. Son absence ne bloque pas B1 lorsque le principal OAuth constitue la preuve requise.
 
 Autorités à réutiliser : OAuth, RequestIdentity, Operational Memory, Governed Session, GitHub connection registry, GitRegistry V2, `.mcp/server-map.json`, Live State, Governed Context, Bootstrap Receipt et permissions existantes.
 
