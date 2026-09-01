@@ -15,16 +15,15 @@
 
 Date : 2026-09-01
 
-## Point courant — A2.1 fusionné et déployé
+## Point courant — A2.1 livré et clôturé
 
-- Baseline fonctionnelle attestée : `024f6ad4c047614bdfaea0e317f371b789f60136`.
-- La Draft PR #67 a été fermée sans fusion uniquement après l'échec avant mutation de la transition Draft → Ready du connecteur; elle reste le carrier historique initial du même travail.
-- La PR #68 a repris la même branche gouvernée `mcp/project-context-resolution-20260901`, a corrigé TDD-first le finding P2 de binding de transport, puis a été fusionnée depuis le head exact `81832e1b702a8dfe10cda5634d6092fb3a177142`.
-- MCP CI PR #713 a réussi avec `272/272`; CI main #714/#715 et MCP Governed Deploy #24 ont réussi sur le merge exact.
-- GitHub `main`, S1 HEAD, S1 `origin/main` et le runtime healthy sont alignés sur `024f6ad4c047614bdfaea0e317f371b789f60136`; S1 reste propre et sans push.
-- Operational Memory porte officiellement `TASK-20260901-001` en `VERIFYING`. Le plan d'implémentation approuvé borne son exécution à A2.1 et exige sa clôture seulement après `FULLY_ALIGNED`; le résumé runtime plus large ne doit pas être utilisé pour absorber B1 à D3 sans réconciliation explicite de portée.
-- La présente réconciliation reste strictement documentaire. Elle ne change ni TypeScript, tests, OAuth, GitRegistry, Bootstrap Receipt, WRITE gate, workflow, S1 ou runtime.
-- Après attestation et clôture d'A2.1, B1 `GitHub Identity Resolution` doit devenir une nouvelle tâche gouvernée officiellement enregistrée, sauf décision préalable réconciliant explicitement la portée du plan et d'Operational Memory. A2.2 reste conditionné à une preuve cliente réelle et ne bloque pas B1.
+- Baseline fonctionnelle A2.1 : PR #68 fusionnée depuis `81832e1b702a8dfe10cda5634d6092fb3a177142` au merge `024f6ad4c047614bdfaea0e317f371b789f60136`; MCP CI PR #713 (`272/272`), CI main #714/#715 et Governed Deploy #24 réussis.
+- Clôture documentaire : PR #70 fusionnée depuis `59de3687bf1b2439a24f092257236fb3f559feee` au merge `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4`; MCP CI PR #745, CI main #746 et Governed Deploy #25 réussis.
+- Live State `83` a attesté GitHub `main`, S1 HEAD, S1 `origin/main`, image OCI, runtime healthy et documentation `FULLY_ALIGNED` sur `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4`; S1 est propre et son push reste désactivé.
+- Operational Memory a transitionné `TASK-20260901-001` à `DONE` en révision 10, enregistré le checkpoint final, libéré le lock puis fermé la session.
+- La queue observée après clôture avait six tâches toutes `DONE`, sans `currentTask` ni `firstExecutableTask`. A2.2 et B1+ restaient des candidats distincts non enregistrés.
+- `TASK-20260901-002 — Final A2.1 documentation reconciliation` porte uniquement la présente projection descendante dans six Markdown canoniques. Son statut courant, sa branche, sa PR, ses locks et sa session doivent être relus dans les autorités runtime/GitHub.
+- Aucun TypeScript, test, OAuth, GitRegistry, Bootstrap Receipt, WRITE gate, workflow, secret, S1 ou runtime n'est modifié par ce lot.
 
 Les statuts dynamiques, propriétaires, locks, checkpoints et SHA courants doivent toujours être relus dans GitHub, Live State, Operational Memory et la Governed Task Queue. Ce checkpoint documente une baseline fonctionnelle immuable; il ne remplace pas ces autorités.
 
@@ -82,12 +81,12 @@ Lorsqu'une attestation actuelle est nécessaire, ces données doivent être lues
 
 ### Programme suivant — orientation documentaire
 
-Le programme global prolonge le bootstrap de session déjà livré avec la chaîne de résolution ci-dessous. La tâche gouvernée actuelle `TASK-20260901-001` couvre uniquement le premier maillon A2.1 `Connection Context minimal`; elle doit être clôturée avant toute exécution de B1.
+Le programme global prolonge le bootstrap de session déjà livré avec la chaîne de résolution ci-dessous. `TASK-20260901-001` a couvert uniquement le premier maillon A2.1 `Connection Context minimal` et est maintenant clôturée; B1 peut uniquement être enregistré comme une future tâche distincte après son propre design et ses gates.
 
 ```text
 principal OAuth
-→ A2.1 Connection Context minimal [TASK-20260901-001]
-→ clôture et attestation A2.1
+→ A2.1 Connection Context minimal [livré par TASK-20260901-001]
+→ clôture et attestation A2.1 [acquises]
 → B1 GitHub identity [future tâche distincte]
 → B2 repository [future tâche distincte]
 → C1/C2 GitRegistry V2 mapping / project [futures tâches distinctes]

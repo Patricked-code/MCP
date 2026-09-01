@@ -34,6 +34,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 - PR #63 : réconciliation documentaire post-PR #62 fusionnée au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`.
 - PR #66 : réconciliation canonique post-roadmap fusionnée et déployée au SHA `184107d5705248427d322922077d18f51e133c15`; `TASK-20260831-001` est `DONE` dans Operational Memory.
 - PR #68 : lot A2.1 Connection Context minimal fusionné depuis `81832e1b702a8dfe10cda5634d6092fb3a177142` au merge `024f6ad4c047614bdfaea0e317f371b789f60136`; CI PR #713 (`272/272`), CI main #714/#715 et MCP Governed Deploy #24 réussis; GitHub/S1/runtime exact-SHA et healthy.
+- PR #70 : réconciliation A2.1 fusionnée depuis `59de3687bf1b2439a24f092257236fb3f559feee` au merge `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4`; CI PR #745, CI main #746, Governed Deploy #25 et Live State `83` `FULLY_ALIGNED`; `TASK-20260901-001` clôturée `DONE` en révision 10.
 
 ## Tâche clôturée
 
@@ -108,13 +109,11 @@ La livraison fonctionnelle de `TASK-20260829-001` est fusionnée et déployée. 
 - [x] fusionner la réconciliation docs-only par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba` ;
 - Note d'autorité runtime : `DONE`, checkpoint, locks et cycle de session doivent être lus depuis Operational Memory lorsqu'une attestation actuelle est nécessaire ; aucun faux statut runtime n'est maintenu ici.
 
-## Tâche gouvernée actuelle — lot A2.1
+## Tâche clôturée — lot A2.1
 
 ### TASK-20260901-001 — Connection Context minimal
 
-Operational Memory porte actuellement un titre et un résumé plus larges, mais le plan d'implémentation approuvé `docs/superpowers/plans/2026-09-01-governed-connection-context-minimal.md` borne l'exécution de cette tâche à A2.1, impose l'arrêt si GitHub Identity ou Repository Resolution devient nécessaire et exige `DONE` seulement après merge, déploiement, `FULLY_ALIGNED` et absence de drift documentaire.
-
-Tant que cette contradiction de portée n'a pas reçu de décision gouvernée explicite, le contrat le plus étroit s'applique fail-closed : B1 à D3 ne sont pas absorbés dans `TASK-20260901-001`.
+Le plan d'implémentation approuvé `docs/superpowers/plans/2026-09-01-governed-connection-context-minimal.md` a borné l'exécution de cette tâche à A2.1 et imposé l'arrêt avant GitHub Identity ou Repository Resolution. Operational Memory a appliqué ce contrat étroit fail-closed : `TASK-20260901-001` est `DONE` en révision 10 sur `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4`, avec B1 à D3 explicitement exclus de sa continuation.
 
 Preuves fonctionnelles A2.1 acquises :
 
@@ -126,12 +125,16 @@ Preuves fonctionnelles A2.1 acquises :
 - [x] valider le head exact PR #68 par MCP CI #713, `272/272` ;
 - [x] fusionner sous garde exact-head et attester CI main, Governed Deploy, GitHub, S1 et runtime sur `024f6ad4c047614bdfaea0e317f371b789f60136`.
 
-Gates restant avant clôture de la tâche :
+Preuves de clôture acquises :
 
-- [ ] fusionner la réconciliation documentaire exact-head après résolution de tous les findings ;
-- [ ] attester le déploiement gouverné du merge documentaire ;
-- [ ] obtenir Live State `FULLY_ALIGNED` sans `DOCUMENTATION_DRIFT` ;
-- [ ] transitionner `TASK-20260901-001` à `DONE`, checkpoint final, libération du lock et clôture de session selon le plan approuvé.
+- [x] fusionner la PR #70 depuis le head exact `59de3687bf1b2439a24f092257236fb3f559feee` après résolution des quatre findings ;
+- [x] réussir CI main #746 et Governed Deploy #25 sur le merge `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4` ;
+- [x] obtenir Live State `83` `FULLY_ALIGNED` sans contradiction, avec S1 propre et runtime healthy ;
+- [x] transitionner `TASK-20260901-001` à `DONE` révision 10, enregistrer le checkpoint final, libérer le lock et fermer la session selon le plan approuvé.
+
+## Réconciliation descendante enregistrée
+
+`TASK-20260901-002 — Final A2.1 documentation reconciliation` est la tâche documentaire bornée qui porte la présente mise à jour des six fichiers canoniques. Son état, sa branche, sa PR, ses locks et sa session restent sous l'autorité de la Governed Task Queue, d'Operational Memory et de GitHub; ce document n'anticipe pas son statut terminal.
 
 ## Prochaines tâches candidates — non enregistrées
 

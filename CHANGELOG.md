@@ -21,7 +21,9 @@ Historique factuel des changements du depot MCP.
 - Le GREEN `81832e1b702a8dfe10cda5634d6092fb3a177142` construit et valide le contexte avant tout binding; MCP CI #713 passe `272/272` et la revue exact-head ne trouve plus de blocker.
 - PR #68 fusionnée au SHA `024f6ad4c047614bdfaea0e317f371b789f60136`; CI main #714/#715 et MCP Governed Deploy #24 réussis.
 - GitHub main, S1 HEAD, S1 origin/main et runtime healthy sont attestés au même SHA; aucun changement OAuth, GitRegistry, Bootstrap Receipt, WRITE gate ou chemin de déploiement.
-- `TASK-20260901-001` reste en attestation de clôture A2.1. Son plan approuvé exige `DONE` après `FULLY_ALIGNED` et interdit de poursuivre vers GitHub Identity/Repository Resolution dans la même exécution; B1 doit être enregistré comme tâche distincte sauf décision gouvernée explicite réconciliant la portée.
+- La réconciliation documentaire PR #70 a été fusionnée depuis `59de3687bf1b2439a24f092257236fb3f559feee` au merge `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4`; CI PR #745, CI main #746 et Governed Deploy #25 ont réussi.
+- Live State `83` a attesté GitHub/S1/runtime/documentation `FULLY_ALIGNED`, S1 propre et le runtime healthy sur le merge exact. Operational Memory a ensuite clôturé `TASK-20260901-001` à `DONE` révision 10, checkpointé, libéré son lock et fermé sa session.
+- `TASK-20260901-002` porte uniquement la projection documentaire finale dans `ROADMAP.md`, `TODO.md`, `TASKS.md`, `SUIVI.md`, `CHANGELOG.md` et `DECISIONS_LOG.md`. B1 et les lots suivants restent non enregistrés; aucun code, workflow, policy, secret, WRITE gate, S1 ou runtime n'est modifié.
 
 ## 2026-08-31 — Automatic Governed Connection Bootstrap stabilisé et déployé
 
