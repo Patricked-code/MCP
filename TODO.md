@@ -82,11 +82,11 @@ Une amélioration structurante est d'abord positionnée dans `ROADMAP.md`. Lorsq
 - [x] Réconciliation docs-only fusionnée par PR #63 au SHA `a026616fbf2df47962243bfcff46ac734bed50ba`.
 - Note d'autorité runtime : l'état courant de `TASK-20260829-002`, son checkpoint, ses locks et la session sont lus depuis Operational Memory/Live State ; ils ne sont pas maintenus comme cases à cocher ici.
 
-## Programme en cours — TASK-20260901-001
+## A2.1 livré — TASK-20260901-001 clôturée
 
-La séquence détaillée, les dépendances et les contrats d'intégration sont portés par `ROADMAP.md`. `TASK-20260901-001` est officiellement enregistrée dans Operational Memory, mais son plan approuvé borne l'exécution à A2.1. B1 et les lots suivants restent des candidats non enregistrés tant qu'aucune décision gouvernée n'a réconcilié autrement cette portée.
+La séquence détaillée, les dépendances et les contrats d'intégration restent portés par `ROADMAP.md`. Operational Memory a clôturé `TASK-20260901-001` à `DONE` en révision 10 après la PR #70, la CI main #746, Governed Deploy #25 et Live State `83` `FULLY_ALIGNED`. B1 et les lots suivants restent des candidats non enregistrés; ils ne sont pas implicitement rattachés à la tâche clôturée.
 
-### A2.1 — Connection Context minimal — fonctionnellement déployé, clôture restante
+### A2.1 — Connection Context minimal — livré et attesté
 
 - [x] rattacher durablement le principal OAuth et la Governed Session à un `ConnectionContext` minimal sans second moteur de session ;
 - [x] conserver une classification initiale `UNRESOLVED` sans inventer l'identité du client ;
@@ -94,7 +94,8 @@ La séquence détaillée, les dépendances et les contrats d'intégration sont p
 - [x] conserver secrets, codes, tokens, transports bruts et resume proofs hors du contexte et de la journalisation ;
 - [x] préserver les sessions historiques sans backfill et les credentials partagés avec `connectionContext: null` ;
 - [x] corriger TDD-first le risque de binding orphelin puis valider `272/272`, merge et déploiement exact-SHA ;
-- [ ] fusionner et attester la réconciliation documentaire, obtenir `FULLY_ALIGNED`, puis clôturer `TASK-20260901-001` selon le plan approuvé.
+- [x] fusionner la réconciliation documentaire PR #70 au SHA `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4`, réussir CI main #746 et Governed Deploy #25, obtenir Live State `83` `FULLY_ALIGNED`, puis clôturer `TASK-20260901-001` à `DONE` selon le plan approuvé.
+- Note d'autorité : checkpoint, lock, session et état courant de la queue restent lus depuis Operational Memory; cette preuve historique ne crée aucune tâche B1.
 
 ### A2.2 — Verified Client Evidence — restant et conditionnel
 
