@@ -17,7 +17,7 @@ Date : 2026-09-01
 
 ## Point courant — A2.1 livré et clôturé
 
-- Clôture documentaire : PR #70 fusionnée depuis `59de3687bf1b2439a24f092257236fb3f559feee` au merge `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4`; MCP CI PR #745, CI main #746 et Governed Deploy #25 réussis.
+- Clôture documentaire : merge `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4` de la PR #70, fusionnée depuis le head exact `59de3687bf1b2439a24f092257236fb3f559feee`; MCP CI PR #745, CI main #746 et Governed Deploy #25 réussis.
 - Baseline fonctionnelle A2.1 : PR #68 fusionnée depuis `81832e1b702a8dfe10cda5634d6092fb3a177142` au merge `024f6ad4c047614bdfaea0e317f371b789f60136`; MCP CI PR #713 (`272/272`), CI main #714/#715 et Governed Deploy #24 réussis.
 - Live State `83` a attesté GitHub `main`, S1 HEAD, S1 `origin/main`, image OCI, runtime healthy et documentation `FULLY_ALIGNED` sur `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4`; S1 est propre et son push reste désactivé.
 - Operational Memory a transitionné `TASK-20260901-001` à `DONE` en révision 10, enregistré le checkpoint final, libéré le lock puis fermé la session.
