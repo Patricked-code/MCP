@@ -146,8 +146,9 @@ Repository is a contextual filter when already proven. It is not a universal B1 
 | src/governedContext/github.ts | GitHub work-state observation and existing bounded cache | integrate identity observation and reuse one cache; no second cache |
 | src/governedContext/service.ts | compose Governed Context | add derived GitHub Identity |
 | src/governedContext/types.ts | context contracts | add backward-compatible optional identity projection |
-| src/governedConnection/types.ts | ConnectionContext V1 | no schema change |
+| src/operationalMemory/connectionContext.ts and src/operationalMemory/types.ts | ConnectionContext V1 and historical session records | no schema change |
 | existing dashboard | display governed projections | optional additive display only; no new identity store |
+| Dockerfile | build the executable runtime image | copy the versioned identity policy into /app/.mcp beside the existing task registry |
 
 A new src/github/identityResolution.ts is permitted only as a stateless pure resolver. It performs no I/O, network access, secret access, persistence or caching.
 
@@ -247,6 +248,7 @@ NONE is not permission denial or approval. UNVERIFIED and AMBIGUOUS are fail-clo
 ## 11. Persistence and compatibility
 
 - Identity Policy V2 persists only the approved selection rule.
+- Dockerfile packages .mcp/identity-policy.json into the runtime image at /app/.mcp/identity-policy.json; no writable volume or parallel runtime registry is introduced.
 - Existing durable-account storage remains the connection authority.
 - Existing secret storage remains the credential authority.
 - Resolution output is derived at observation time and is not written into historical governed sessions.
@@ -339,6 +341,7 @@ The implementation lot must update:
 - MCP_PERMISSIONS_MODEL.md to state explicitly that B1 grants no permission;
 - MCP_FUNCTIONAL_CARTOGRAPHY.md and its governed JSON projection when required by the docs checker;
 - .mcp/identity-policy.json to additive V2;
+- Dockerfile so the governed policy used by the resolver is part of the same exact-SHA OCI artifact;
 - SUIVI.md, DECISIONS_LOG.md and CHANGELOG.md at governed lifecycle checkpoints;
 - ROADMAP.md, TODO.md and TASKS.md only according to their existing canonical roles.
 
