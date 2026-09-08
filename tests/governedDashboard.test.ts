@@ -74,6 +74,24 @@ function governedContext(): GovernedOperationalContext {
         name: 'main-protection', enforcement: 'active', requiresPullRequest: true,
         requiredStatusChecks: ['validate'], requiresConversationResolution: true
       },
+      identity: {
+        status: 'RESOLVED',
+        observedAt: NOW,
+        bindingId: 'oauth-wealthtech-mcp-admin__patricked-code__patricked-code-mcp',
+        oauthPrincipalId: 'oauth:wealthtech-mcp-admin',
+        repositoryContext: 'Patricked-code/MCP',
+        authenticatedPrincipal: {
+          provider: 'github', login: 'Patricked-code', accountType: 'user', githubUserId: 270385782
+        },
+        selectedAccountContext: {
+          owner: 'Patricked-code', type: 'user', source: 'durable_account'
+        },
+        accessibleAccountContexts: [],
+        freshness: 'CURRENT',
+        provenance: ['identity_policy', 'durable_accounts', 'github_api:get_user'],
+        reasonCodes: [],
+        policyDigest: 'e'.repeat(64)
+      },
       error: null
     },
     session: {
@@ -146,6 +164,10 @@ test('le dashboard rend la vue opérationnelle bornée demandée', () => {
   assert.match(html, /completed/);
   assert.match(html, /success/);
   assert.match(html, /Approbations[^0-9]*2/);
+  assert.match(html, /Identité GitHub/);
+  assert.match(html, /RESOLVED/);
+  assert.match(html, /Patricked-code/);
+  assert.match(html, /IDENTITY_ONLY|identité uniquement/i);
   assert.match(html, /shadow/);
   assert.match(html, /Bootstrap[^<]*<[^>]+>CURRENT/);
   assert.match(html, /Queue[^0-9]*2/);
@@ -173,6 +195,15 @@ test('le dashboard échappe toutes les chaînes et ignore les secrets hors contr
   context.blockers = ['<script>alert("blocker")</script>'];
   context.bootstrap.limitations = ['<svg onload=alert(2)>'];
   context.workQueue.byStatus = { '<script>bad</script>': 2 };
+  context.github.identity = {
+    ...context.github.identity!,
+    authenticatedPrincipal: {
+      provider: 'github', login: '<script>alert("github")</script>', accountType: 'user'
+    },
+    selectedAccountContext: {
+      owner: '<img src=x onerror=alert(3)>', type: 'user', source: 'durable_account'
+    }
+  };
   const hostile = Object.assign(context, {
     resumeSecretHash: 'resume-secret-hash-raw',
     authInfo: { token: 'Bearer raw-token' },
@@ -186,9 +217,13 @@ test('le dashboard échappe toutes les chaînes et ignore les secrets hors contr
   assert.equal(html.includes('<svg'), false);
   assert.match(html, /&lt;script&gt;alert\(&quot;task&quot;\)&lt;\/script&gt;/);
   assert.match(html, /&lt;img src=x onerror=alert\(1\)&gt;/);
+  assert.match(html, /&lt;script&gt;alert\(&quot;github&quot;\)&lt;\/script&gt;/);
+  assert.match(html, /&lt;img src=x onerror=alert\(3\)&gt;/);
   assert.equal(html.includes('resume-secret-hash-raw'), false);
   assert.equal(html.includes('Bearer raw-token'), false);
   assert.equal(html.includes('transport-raw-secret'), false);
+  assert.equal(html.includes('permissionsGranted'), false);
+  assert.equal(html.includes('mayWrite'), false);
 });
 
 test('le mode disabled ne charge aucun store et affiche une projection explicite', async () => {
