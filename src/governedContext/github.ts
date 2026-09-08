@@ -2,6 +2,16 @@ import { readFile } from 'node:fs/promises';
 
 import { env } from '../config/env.js';
 import { resolveGithubApiBase } from '../github/authorizationDiagnostics.js';
+import {
+  loadGithubIdentityPolicy,
+  type LoadedGithubIdentityPolicy
+} from '../github/identityPolicy.js';
+import {
+  resolveGithubIdentity,
+  type DurableGithubIdentityObservation,
+  type GithubIdentityResolution
+} from '../github/identityResolution.js';
+import { loadDurableGithubIdentityObservations } from '../tools/durableAccounts.js';
 import type {
   GithubEvidenceFreshness,
   GithubEvidenceObservation,
@@ -15,6 +25,7 @@ const OWNER = 'Patricked-code';
 const REPO = 'MCP';
 const TOKEN_FILE = '/app/secrets/github_token';
 const MAX_RESPONSE_BYTES = 1_000_000;
+const MAX_CACHE_ENTRIES = 100;
 const SHA_PATTERN = /^[0-9a-f]{40}$/i;
 const MAIN_REF = 'refs/heads/main';
 
@@ -26,12 +37,19 @@ type GithubCollectorOptions = {
   now?: () => Date;
   timeoutMs?: number;
   cacheTtlMs?: number;
+  loadIdentityPolicy?: () => Promise<LoadedGithubIdentityPolicy>;
+  observeIdentityConnections?: () => Promise<DurableGithubIdentityObservation[]>;
+};
+
+export type GithubIdentityScope = {
+  oauthPrincipalId: string | null;
+  repositoryContext: string | null;
 };
 
 export type GithubOperationalContextCollector = {
-  getCurrent(workBranch: string | null): Promise<GithubOperationalContext>;
-  collect(workBranch: string | null): Promise<GithubOperationalContext>;
-  reconcileExplicit(workBranch: string | null): Promise<GithubOperationalContext>;
+  getCurrent(workBranch: string | null, identityScope?: GithubIdentityScope): Promise<GithubOperationalContext>;
+  collect(workBranch: string | null, identityScope?: GithubIdentityScope): Promise<GithubOperationalContext>;
+  reconcileExplicit(workBranch: string | null, identityScope?: GithubIdentityScope): Promise<GithubOperationalContext>;
 };
 
 type RequestResult = {
@@ -43,6 +61,8 @@ type RequestResult = {
 
 type CacheEntry = {
   expiresAt: number;
+  storedAt: number;
+  scopeKey: string;
   value: GithubOperationalContext;
 };
 
@@ -183,11 +203,34 @@ function withCache(
 ): GithubOperationalContext {
   return {
     ...value,
+    ...(value.identity && status === 'HIT' ? {
+      identity: {
+        ...value.identity,
+        provenance: boundedUnique([...value.identity.provenance, 'memory_cache'])
+      }
+    } : {}),
     cache: {
       status,
       observedAt,
       provenance: status === 'HIT' ? 'memory_cache' : 'github_api'
     }
+  };
+}
+
+function staleIdentity(
+  value: GithubIdentityResolution,
+  observedAt: string
+): GithubIdentityResolution {
+  return {
+    ...value,
+    status: 'UNVERIFIED',
+    observedAt,
+    authenticatedPrincipal: null,
+    selectedAccountContext: null,
+    accessibleAccountContexts: [],
+    freshness: 'STALE',
+    provenance: boundedUnique([...value.provenance, 'memory_cache']),
+    reasonCodes: ['GITHUB_IDENTITY_EVIDENCE_STALE']
   };
 }
 
@@ -218,9 +261,52 @@ function withStaleCache(
       reviews: staleEvidence(value.evidence.reviews, observedAt),
       ruleset: staleEvidence(value.evidence.ruleset, observedAt)
     },
+    ...(value.identity ? { identity: staleIdentity(value.identity, observedAt) } : {}),
     reasonCodes: boundedUnique([...value.reasonCodes, 'GITHUB_STALE']),
     uncertainties: [...value.uncertainties]
   };
+}
+
+function identityCacheMiss(
+  scope: GithubIdentityScope,
+  observedAt: string
+): GithubIdentityResolution {
+  return {
+    status: 'UNVERIFIED',
+    observedAt,
+    bindingId: null,
+    oauthPrincipalId: scope.oauthPrincipalId,
+    repositoryContext: scope.repositoryContext,
+    authenticatedPrincipal: null,
+    selectedAccountContext: null,
+    accessibleAccountContexts: [],
+    freshness: 'UNKNOWN',
+    provenance: ['memory_cache'],
+    reasonCodes: ['GITHUB_IDENTITY_CACHE_MISS'],
+    policyDigest: null
+  };
+}
+
+function identityScopeKey(
+  workBranch: string | null,
+  scope?: GithubIdentityScope
+): string {
+  return JSON.stringify({
+    workBranch: workBranch ?? null,
+    oauthPrincipalId: scope?.oauthPrincipalId?.trim().toLowerCase() ?? null,
+    repositoryContext: scope?.repositoryContext?.trim().toLowerCase() ?? null
+  });
+}
+
+function completeCacheKey(
+  scopeKey: string,
+  identity?: GithubIdentityResolution
+): string {
+  return JSON.stringify({
+    scopeKey,
+    policyDigest: identity?.policyDigest ?? null,
+    bindingId: identity?.bindingId ?? null
+  });
 }
 
 function normalizeBranch(value: string | null): string | null {
@@ -639,6 +725,39 @@ export function createGithubOperationalContextCollector(
   const cache = new Map<string, CacheEntry>();
   const inFlight = new Map<string, Promise<GithubOperationalContext>>();
 
+  async function collectIdentity(
+    scope: GithubIdentityScope | undefined,
+    observedAt: string
+  ): Promise<GithubIdentityResolution | undefined> {
+    if (!scope) return undefined;
+    const loadPolicy = options.loadIdentityPolicy ?? loadGithubIdentityPolicy;
+    const observeConnections = options.observeIdentityConnections
+      ?? loadDurableGithubIdentityObservations;
+    let loaded: LoadedGithubIdentityPolicy;
+    let connections: DurableGithubIdentityObservation[];
+    try {
+      [loaded, connections] = await Promise.all([
+        loadPolicy(),
+        observeConnections()
+      ]);
+    } catch {
+      loaded = {
+        parse: { ok: false, reasonCode: 'GITHUB_IDENTITY_POLICY_INVALID' },
+        digest: null
+      };
+      connections = [];
+    }
+    return resolveGithubIdentity({
+      oauthPrincipalId: scope.oauthPrincipalId,
+      repositoryContext: scope.repositoryContext,
+      policy: loaded.parse.ok ? loaded.parse.policy : null,
+      policyDigest: loaded.digest,
+      policyValid: loaded.parse.ok,
+      connections: connections.slice(0, 100),
+      observedAt
+    });
+  }
+
   async function collectWork(workBranch: string | null): Promise<GithubOperationalContext> {
     const observedAt = now().toISOString();
     const normalizedBranch = normalizeBranch(workBranch);
@@ -904,32 +1023,65 @@ export function createGithubOperationalContextCollector(
     }
   }
 
-  async function run(workBranch: string | null, force: boolean): Promise<GithubOperationalContext> {
-    const key = workBranch ?? '(none)';
+  function newestCacheEntry(scopeKey: string): CacheEntry | null {
+    let newest: CacheEntry | null = null;
+    for (const entry of cache.values()) {
+      if (entry.scopeKey !== scopeKey) continue;
+      if (!newest || entry.storedAt >= newest.storedAt) newest = entry;
+    }
+    return newest;
+  }
+
+  async function run(
+    workBranch: string | null,
+    force: boolean,
+    identityScope?: GithubIdentityScope
+  ): Promise<GithubOperationalContext> {
+    const scopeKey = identityScopeKey(workBranch, identityScope);
     const at = now().getTime();
-    const current = inFlight.get(key);
+    const current = inFlight.get(scopeKey);
     if (current) return current;
     if (!force) {
-      const cached = cache.get(key);
+      const cached = newestCacheEntry(scopeKey);
       if (cached && cached.expiresAt > at) {
         return withCache(cached.value, 'HIT', now().toISOString());
       }
     }
-    const work = collectWork(workBranch).then((value) => {
-      const refreshed = withCache(value, 'REFRESHED', value.observedAt);
-      cache.set(key, { expiresAt: now().getTime() + cacheTtlMs, value: refreshed });
+    const observedAt = now().toISOString();
+    const work = Promise.all([
+      collectWork(workBranch),
+      collectIdentity(identityScope, observedAt)
+    ]).then(([value, identity]) => {
+      const withIdentity = identity ? { ...value, identity } : value;
+      const refreshed = withCache(withIdentity, 'REFRESHED', value.observedAt);
+      const storedAt = now().getTime();
+      for (const [key, entry] of cache.entries()) {
+        if (entry.scopeKey === scopeKey) cache.delete(key);
+      }
+      cache.set(completeCacheKey(scopeKey, identity), {
+        expiresAt: storedAt + cacheTtlMs,
+        storedAt,
+        scopeKey,
+        value: refreshed
+      });
+      if (cache.size > MAX_CACHE_ENTRIES) {
+        const oldest = [...cache.entries()].sort((left, right) => (
+          left[1].storedAt - right[1].storedAt
+        ))[0];
+        if (oldest) cache.delete(oldest[0]);
+      }
       return refreshed;
     }).finally(() => {
-      if (inFlight.get(key) === work) inFlight.delete(key);
+      if (inFlight.get(scopeKey) === work) inFlight.delete(scopeKey);
     });
-    inFlight.set(key, work);
+    inFlight.set(scopeKey, work);
     return work;
   }
 
   return {
-    getCurrent: async (workBranch) => {
-      const key = workBranch ?? '(none)';
-      const cached = cache.get(key);
+    getCurrent: async (workBranch, identityScope) => {
+      const scopeKey = identityScopeKey(workBranch, identityScope);
+      const cached = newestCacheEntry(scopeKey);
       const observedAt = now().toISOString();
       if (cached) {
         return cached.expiresAt > now().getTime()
@@ -937,11 +1089,14 @@ export function createGithubOperationalContextCollector(
           : withStaleCache(cached.value, observedAt);
       }
       const normalizedBranch = normalizeBranch(workBranch);
-      return workBranch !== null && !normalizedBranch
+      const empty = workBranch !== null && !normalizedBranch
         ? emptyContext(observedAt, null, 'DEGRADED', 'github_work_branch_invalid', 'MISS', 'memory_cache')
         : emptyContext(observedAt, normalizedBranch, 'UNAVAILABLE', 'github_cache_miss', 'MISS', 'memory_cache');
+      return identityScope
+        ? { ...empty, identity: identityCacheMiss(identityScope, observedAt) }
+        : empty;
     },
-    collect: (workBranch) => run(workBranch, false),
-    reconcileExplicit: (workBranch) => run(workBranch, true)
+    collect: (workBranch, identityScope) => run(workBranch, false, identityScope),
+    reconcileExplicit: (workBranch, identityScope) => run(workBranch, true, identityScope)
   };
 }

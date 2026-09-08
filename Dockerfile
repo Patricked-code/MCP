@@ -7,6 +7,7 @@ COPY package*.json ./
 RUN npm install
 COPY tsconfig.json ./
 COPY .mcp/task-registry.json ./.mcp/task-registry.json
+COPY .mcp/identity-policy.json ./.mcp/identity-policy.json
 COPY src ./src
 RUN npm run build
 ENV NODE_ENV=production

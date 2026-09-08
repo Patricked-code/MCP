@@ -86,6 +86,7 @@ export function renderGovernedContextDashboardSection(
     ?? liveState?.documentation.activeTask
     ?? null;
   const pullRequest = context.github.pullRequest;
+  const githubIdentity = context.github.identity;
   const observability = deriveGovernedObservability(context);
   const locks = context.activeLocks.length === 0
     ? '<li>Aucun lock actif.</li>'
@@ -108,6 +109,9 @@ export function renderGovernedContextDashboardSection(
   const githubUncertainties = observability.githubUncertainties.length === 0
     ? '<li>Aucune incertitude GitHub.</li>'
     : observability.githubUncertainties.map((reason) => `<li>${display(reason)}</li>`).join('');
+  const githubIdentityReasons = !githubIdentity || githubIdentity.reasonCodes.length === 0
+    ? '<li>Aucun reasonCode d’identité GitHub.</li>'
+    : githubIdentity.reasonCodes.slice(0, 20).map((reason) => `<li>${display(reason)}</li>`).join('');
   const governanceReasons = observability.governanceReasonCodes.length === 0
     ? '<li>Aucun reasonCode de gouvernance.</li>'
     : observability.governanceReasonCodes.map((reason) => `<li>${display(reason)}</li>`).join('');
@@ -145,6 +149,13 @@ export function renderGovernedContextDashboardSection(
   <p>${pullRequest ? `PR #${pullRequest.number} — ${display(pullRequest.state)}${pullRequest.draft ? ' — draft' : ''}` : 'Aucune PR associée.'}</p>
   <p>Checks : <strong>${display(context.github.checks.status)}</strong> / ${display(context.github.checks.conclusion)} — ${context.github.checks.failed} échec(s) sur ${context.github.checks.total}</p>
   <p>Approbations : <strong>${context.github.reviews.approvals}</strong> — changements demandés ${context.github.reviews.changesRequested} — fils non résolus ${display(context.github.reviews.unresolvedThreads)}</p>
+
+  <h4>Identité GitHub</h4>
+  <p>Statut : <strong>${display(githubIdentity?.status)}</strong> — fraîcheur ${display(githubIdentity?.freshness)}</p>
+  <p>Principal authentifié : <strong>${display(githubIdentity?.authenticatedPrincipal?.login)}</strong></p>
+  <p>Contexte de compte : <strong>${display(githubIdentity?.selectedAccountContext?.owner)}</strong> — dépôt ${display(githubIdentity?.repositoryContext)}</p>
+  <p>Effet : <strong>identité uniquement (IDENTITY_ONLY)</strong> — aucune permission implicite.</p>
+  <ul>${githubIdentityReasons}</ul>
 
   <h3>Capability Reality</h3>
   <p>Total : <strong>${observability.capabilities.total}</strong> — CALLABLE <strong>${observability.capabilities.callable}</strong> — NOT_CALLABLE <strong>${observability.capabilities.notCallable}</strong> — UNKNOWN <strong>${observability.capabilities.unknown}</strong></p>

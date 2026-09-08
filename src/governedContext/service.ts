@@ -21,6 +21,7 @@ import type {
   PublicGovernedLock,
   PublicGovernedSession
 } from './types.js';
+import type { GithubIdentityScope } from './github.js';
 import type { CurrentStateInventory, CurrentStateService } from '../currentState/service.js';
 
 export type GovernedContextInput = {
@@ -34,9 +35,9 @@ type ContextServiceOptions = {
     reconcileNow(): Promise<LiveStateSnapshot | null>;
   };
   github: {
-    getCurrent(workBranch: string | null): Promise<GithubOperationalContext>;
-    collect?(workBranch: string | null): Promise<GithubOperationalContext>;
-    reconcileExplicit(workBranch: string | null): Promise<GithubOperationalContext>;
+    getCurrent(workBranch: string | null, identityScope?: GithubIdentityScope): Promise<GithubOperationalContext>;
+    collect?(workBranch: string | null, identityScope?: GithubIdentityScope): Promise<GithubOperationalContext>;
+    reconcileExplicit(workBranch: string | null, identityScope?: GithubIdentityScope): Promise<GithubOperationalContext>;
   };
   sessions: Pick<GovernedSessionService, 'getVisibleSession'>;
   locks: Pick<GovernedLockService, 'listActiveLocks'>;
@@ -52,7 +53,11 @@ export type GovernedOperationalContextService = {
   reconcileExplicit(input: GovernedContextInput): Promise<GovernedOperationalContext>;
 };
 
-function fallbackGithub(at: string, workBranch: string | null): GithubOperationalContext {
+function fallbackGithub(
+  at: string,
+  workBranch: string | null,
+  identityScope: GithubIdentityScope
+): GithubOperationalContext {
   const unavailable = {
     freshness: 'UNAVAILABLE' as const,
     observedAt: at,
@@ -85,6 +90,20 @@ function fallbackGithub(at: string, workBranch: string | null): GithubOperationa
     },
     ownership: { pullRequestAuthor: null },
     activity: { lastActivityAt: null },
+    identity: {
+      status: 'UNVERIFIED',
+      observedAt: at,
+      bindingId: null,
+      oauthPrincipalId: identityScope.oauthPrincipalId,
+      repositoryContext: identityScope.repositoryContext,
+      authenticatedPrincipal: null,
+      selectedAccountContext: null,
+      accessibleAccountContexts: [],
+      freshness: 'UNKNOWN',
+      provenance: ['governed_context_fallback'],
+      reasonCodes: ['GITHUB_IDENTITY_API_UNAVAILABLE'],
+      policyDigest: null
+    },
     cache: { status: 'MISS', observedAt: at, provenance: 'memory_cache' },
     evidence: {
       main: unavailable,
@@ -96,6 +115,22 @@ function fallbackGithub(at: string, workBranch: string | null): GithubOperationa
     reasonCodes: ['GITHUB_WORK_STATE_UNAVAILABLE'],
     uncertainties: [],
     error: 'github_context_unavailable'
+  };
+}
+
+function githubIdentityScope(
+  session: PublicGovernedSession | null
+): GithubIdentityScope {
+  const context = session?.connectionContext;
+  const compatible = Boolean(
+    context
+    && context.identityAssurance === 'oauth_subject'
+    && context.evidenceSource === 'oauth_auth_info'
+    && context.principalId.startsWith('oauth:')
+  );
+  return {
+    oauthPrincipalId: compatible ? context!.principalId : null,
+    repositoryContext: compatible ? context!.repository : null
   };
 }
 
@@ -201,11 +236,12 @@ export function createGovernedOperationalContextService(
     if (!rawLocks) limitations.push('locks_unavailable');
     const activeLocks: PublicGovernedLock[] = (rawLocks ?? []).slice(0, 100);
     const workBranch = session?.workBranch ?? currentState?.currentTask?.workBranch ?? input.workBranch;
+    const identityScope = githubIdentityScope(session);
     const github = await safeRead(
       () => explicit
-        ? options.github.reconcileExplicit(workBranch)
-        : options.github.getCurrent(workBranch),
-      fallbackGithub(generatedAt, workBranch)
+        ? options.github.reconcileExplicit(workBranch, identityScope)
+        : options.github.getCurrent(workBranch, identityScope),
+      fallbackGithub(generatedAt, workBranch, identityScope)
     );
     if (github.status !== 'CURRENT') {
       limitations.push(github.error ?? 'github_context_degraded');

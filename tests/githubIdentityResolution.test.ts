@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 import { parseGithubIdentityPolicy, type GithubIdentityPolicyV1, type GithubIdentityPolicyV2 } from '../src/github/identityPolicy.js';
@@ -168,4 +169,32 @@ test('la projection ne contient ni permission ni secret', () => {
     'permissionsGranted', 'grants', 'mayWrite', 'mayMerge', 'mayDeploy',
     'oauthScopes', 'tokenFile', 'Authorization', 'sensitive-token'
   ]) assert.equal(raw.includes(forbidden), false, `forbidden identity output: ${forbidden}`);
+});
+
+test('les identifiants GitHub et le repository sont comparés sans dépendre de la casse', () => {
+  const result = resolveGithubIdentity(input({
+    repositoryContext: 'patricked-code/mcp',
+    connections: [connection({
+      owner: 'patricked-code',
+      principal: { ...connection().principal, login: 'patricked-CODE' }
+    })]
+  }));
+  assert.equal(result.status, 'RESOLVED');
+  assert.equal(result.authenticatedPrincipal?.login, 'patricked-CODE');
+});
+
+test('la policy réellement versionnée reste V1 complète, contextuelle et packagée', async () => {
+  const raw = await readFile(new URL('../.mcp/identity-policy.json', import.meta.url), 'utf8');
+  const parsed = parseGithubIdentityPolicy(JSON.parse(raw));
+  assert.equal(parsed.ok, true);
+  if (!parsed.ok || parsed.policy.schemaVersion !== 2) assert.fail('versioned V2 policy required');
+  assert.equal(parsed.policy.goal, V1.goal.replace(
+    'governed evidence',
+    'actor, tool, server, project, branch, objective, risk, backup, tests, result and point de reprise'
+  ));
+  assert.deepEqual(parsed.policy.s1GithubDeploymentIdentity, V1.s1GithubDeploymentIdentity);
+  assert.equal(parsed.policy.githubPrincipalBindings.length, 1);
+  assert.deepEqual(parsed.policy.githubPrincipalBindings[0], BINDING);
+  const dockerfile = await readFile(new URL('../Dockerfile', import.meta.url), 'utf8');
+  assert.match(dockerfile, /COPY \.mcp\/identity-policy\.json \.\/\.mcp\/identity-policy\.json/);
 });
