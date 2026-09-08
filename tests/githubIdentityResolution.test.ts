@@ -130,6 +130,16 @@ test('les connexions absentes ou dupliquées échouent fermé', () => {
   assert.deepEqual(duplicate.reasonCodes, ['GITHUB_IDENTITY_CONNECTION_AMBIGUOUS']);
 });
 
+test('un contexte de compte configuré mais non vérifié ne peut jamais être RESOLVED', () => {
+  const result = resolveGithubIdentity(input({
+    connections: [connection({ accountVerified: false })]
+  }));
+  assert.equal(result.status, 'UNVERIFIED');
+  assert.deepEqual(result.reasonCodes, ['GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED']);
+  assert.equal(result.authenticatedPrincipal, null);
+  assert.equal(result.selectedAccountContext, null);
+});
+
 test('principal, policy, preuve et fraîcheur insuffisants produisent UNVERIFIED', () => {
   assert.deepEqual(resolveGithubIdentity(input({ oauthPrincipalId: null })).reasonCodes,
     ['GITHUB_IDENTITY_OAUTH_PRINCIPAL_UNAVAILABLE']);
