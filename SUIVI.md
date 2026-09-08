@@ -22,10 +22,11 @@ Date : 2026-09-08
 - Décision utilisateur acquise : binding `oauth:wealthtech-mcp-admin` → utilisateur GitHub `Patricked-code` uniquement pour le contexte déjà prouvé `Patricked-code/MCP`, effet `IDENTITY_ONLY`, moindre privilège, non global/non exclusif/réversible et extensible multi-compte.
 - Design et plan : `docs/superpowers/specs/2026-09-07-b1-github-identity-resolution-design.md` et `docs/superpowers/plans/2026-09-07-b1-github-identity-resolution.md`.
 - TDD publié : RED pur `8c570f96a94a492846b5df618f6b7383ba36a510`, GREEN pur `bbec96d87c46b9bea398ef5594ba278bfd48142d`, RED intégration `476e0b26d1eeadac30afdee1ec73b5781516c320`, GREEN fonctionnel `7830fb5ad0fdc385332259439600df357ea8ed13`.
-- Validation locale après réconciliation documentaire : 37 tests ciblés et 304 tests complets réussis, typecheck/build/docs/current-state/secrets/diff verts. Le head documentaire exact, sa CI et sa revue restent à produire et observer.
+- Self-review : le RED exact `a9a0131ae3ce68f1b234448de242d314c8f202df` prouve qu'un compte configuré mais `accountVerified=false` pouvait encore être déclaré `RESOLVED`. La correction fail-closed retourne désormais `GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED` sans principal ni contexte sélectionné.
+- Validation locale après correction : 38 tests ciblés et 305 tests complets réussis, typecheck/build/docs/current-state/secrets/diff verts. Le head corrigé exact, sa CI et la résolution du thread restent à produire et observer.
 - Intégration : Identity Policy V2 additive, connexions/secret storage existants, preuve live `GET /user`, collecteur/cache Governed Context existants ; aucun `identity-registry.json`, registre, store, Session Manager, cache, observateur ou outil parallèle.
 - Frontières : utilisateur GitHub distinct des organisations accessibles ; OAuth principal, Human Identity, Agent Role et repository context distincts ; aucune permission ou Effective Capability B1 ; GitRegistry V2 inchangé ; WRITE gate `shadow` ; aucune écriture directe S1.
-- Prochaine action : achever la réconciliation canonique, régénérer les preuves, exécuter la validation complète fraîche, publier le head exact, puis seulement revue/merge/déploiement/attestation/`DONE`.
+- Prochaine action : publier le GREEN de revue, obtenir la CI exacte, résoudre le thread sur le commit correctif, puis seulement ready/revue/merge/déploiement/attestation/`DONE`.
 - B2 n'est pas enregistré : il reste la prochaine candidate séparée dans la chronologie B1 → B2 → C1/C2 → C3/C4/C5 → D1/D2/D3.
 
 Les statuts dynamiques, propriétaires, locks, checkpoints et SHA courants doivent toujours être relus dans GitHub, Live State, Operational Memory et la Governed Task Queue. Ce checkpoint documentaire ne remplace pas ces autorités.

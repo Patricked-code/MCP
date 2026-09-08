@@ -58,7 +58,7 @@ The local runtime may reject the tsx CLI IPC socket. In that environment, `node 
 - the approved binding resolves only for `oauth:wealthtech-mcp-admin` plus `Patricked-code/MCP`, one `Patricked-code` user connection and a fresh matching `/user` proof.
 - no binding produces `NONE`.
 - multiple applicable bindings and multiple matching connections produce `AMBIGUOUS`.
-- missing OAuth principal, required repository context, configured connection, authentication proof, current evidence, API availability or expected login produce `UNVERIFIED` with the specified reason code.
+- missing OAuth principal, required repository context, configured connection, verified account context, authentication proof, current evidence, API availability or expected login produce `UNVERIFIED` with the specified reason code.
 - an accessible organization remains separate from the authenticated user.
 - the returned object contains no permission or secret-shaped fields.
 - future bindings for another repository/account coexist without changing the current result.

@@ -32,7 +32,8 @@ L'autorité dynamique reste la Governed Task Queue/Operational Memory. Au checkp
 - [x] conserver Identity Policy V1 et l'étendre additivement en V2, sans backfill ;
 - [x] réutiliser les connexions durables, le secret storage, le même `GET /user` et le collecteur/cache Governed Context existants ;
 - [x] préserver `RESOLVED`/`NONE`/`AMBIGUOUS`/`UNVERIFIED`, les sessions historiques, les 111 outils/92 contrats historiques et le WRITE gate `shadow` ;
-- [x] obtenir après réconciliation documentaire 37 tests ciblés et 304 tests complets, plus typecheck/build/docs/current-state/secrets/diff verts ;
+- [x] publier le RED de self-review `a9a0131ae3ce68f1b234448de242d314c8f202df` pour un contexte `accountVerified=false`, puis corriger fail-closed avec `GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED` ;
+- [x] obtenir après correction de revue 38 tests ciblés et 305 tests complets, plus typecheck/build/docs/current-state/secrets/diff verts ;
 - [ ] publier la réconciliation documentaire et ses preuves dérivées ;
 - [ ] obtenir CI, revue et absence de thread bloquant sur le head exact ;
 - [ ] fusionner sous garde exact-head, déployer uniquement par GitHub → S1 et attester GitHub/S1/OCI/runtime ;

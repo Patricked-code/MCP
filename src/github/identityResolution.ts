@@ -7,6 +7,7 @@ export type GithubIdentityReasonCode =
   | 'GITHUB_IDENTITY_BINDING_AMBIGUOUS'
   | 'GITHUB_IDENTITY_CONNECTION_NOT_FOUND'
   | 'GITHUB_IDENTITY_CONNECTION_AMBIGUOUS'
+  | 'GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED'
   | 'GITHUB_IDENTITY_OAUTH_PRINCIPAL_UNAVAILABLE'
   | 'GITHUB_IDENTITY_CONTEXT_REQUIRED'
   | 'GITHUB_IDENTITY_AUTH_MISSING'
@@ -170,6 +171,15 @@ export function resolveGithubIdentity(
   }
   if (!same(principal.login, binding.expectedAuthenticatedLogin)) {
     return unresolved(input, 'UNVERIFIED', 'GITHUB_IDENTITY_PRINCIPAL_MISMATCH', binding.bindingId, principal.freshness);
+  }
+  if (!connection.accountVerified) {
+    return unresolved(
+      input,
+      'UNVERIFIED',
+      'GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED',
+      binding.bindingId,
+      principal.freshness
+    );
   }
   return {
     status: 'RESOLVED',

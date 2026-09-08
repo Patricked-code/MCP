@@ -177,9 +177,10 @@ The secret reference may be used by the existing connection layer, but neither i
 9. If more than one connection matches, return AMBIGUOUS.
 10. Require a fresh successful authenticated-principal observation for that connection.
 11. Compare GET /user login to expectedAuthenticatedLogin using GitHub login case-insensitive equality while preserving the observed spelling.
-12. A mismatch or unavailable/invalid/stale proof returns UNVERIFIED.
-13. A single fully proved match returns RESOLVED.
-14. Do not infer or emit permissions.
+12. Require the selected user or organization account context to be live-verified; a configured but unverified context cannot be selected.
+13. A mismatch or unavailable/invalid/stale proof returns UNVERIFIED.
+14. A single fully proved match returns RESOLVED.
+15. Do not infer or emit permissions.
 
 ## 9. Output contract
 
@@ -234,6 +235,7 @@ Stable reason codes:
 - GITHUB_IDENTITY_BINDING_AMBIGUOUS
 - GITHUB_IDENTITY_CONNECTION_NOT_FOUND
 - GITHUB_IDENTITY_CONNECTION_AMBIGUOUS
+- GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED
 - GITHUB_IDENTITY_OAUTH_PRINCIPAL_UNAVAILABLE
 - GITHUB_IDENTITY_CONTEXT_REQUIRED
 - GITHUB_IDENTITY_AUTH_MISSING

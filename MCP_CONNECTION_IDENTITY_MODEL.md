@@ -83,7 +83,9 @@ repository `Patricked-code/MCP`. Il n'est ni global, ni exclusif, ni irréversib
 un futur binding peut viser une autre connexion ou un autre repository sans
 modifier celui-ci. Zéro correspondance produit `NONE`, plusieurs correspondances
 produisent `AMBIGUOUS`, et une preuve absente, périmée ou contradictoire produit
-`UNVERIFIED`. Aucun de ces états n'accorde une permission.
+`UNVERIFIED`. Un contexte de compte configuré mais non vérifié produit également
+`UNVERIFIED` avec `GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED` et ne peut jamais
+devenir le `selectedAccountContext`. Aucun de ces états n'accorde une permission.
 
 `Human Identity`, `Agent Role`, résolution repository B2 et Effective Capabilities
 SLOT-11 restent hors de B1. GitRegistry V2 conserve exclusivement les mappings
