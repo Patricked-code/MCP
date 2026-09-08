@@ -3,6 +3,22 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-08 — Résolution GitHub contextuelle B1 sans autorité ni permission parallèle
+
+Contexte : A2.1 fournit déjà un `ConnectionContext` durable contenant le principal OAuth et, pour le cas historique courant, le repository `Patricked-code/MCP`. B1 doit résoudre l'identité GitHub sans supposer qu'un principal OAuth, un login GitHub, une organisation accessible, une Human Identity ou un Agent Role sont équivalents.
+
+Décision de binding : sélectionner la connexion utilisateur `Patricked-code` pour `oauth:wealthtech-mcp-admin` uniquement lorsque le contexte exact `Patricked-code/MCP` est déjà prouvé. L'effet est `IDENTITY_ONLY` : il n'accorde aucun scope, rôle, grant, droit d'écriture, de merge ou de déploiement. Ce binding n'est ni global, ni exclusif, ni irréversible et n'empêche aucun futur binding contextuel vers `chainsolutions-wealthtech` ou un autre compte/repository.
+
+Décision d'autorité : `.mcp/identity-policy.json` porte seulement la policy versionnée de sélection ; `data/github-accounts.json` et les mécanismes durable accounts existants portent les connexions configurées ; le secret storage existant porte le credential ; GitHub `GET /user` porte la preuve live ; Governed Context/Identity Block porte une projection dérivée. GitRegistry V2 conserve exclusivement l'autorité repo ↔ projet ↔ serveur ↔ domaine.
+
+Décision de compatibilité : Identity Policy V2 étend l'intégralité de V1 avec `githubPrincipalBindings`. Les champs V1 restent obligatoires, V1 et V2 restent lisibles, aucun backfill n'est exécuté et les sessions historiques sans identité GitHub restent valides. Le repository est un filtre B1 lorsqu'il est déjà prouvé, jamais une précondition universelle créant une circularité B1 ↔ B2.
+
+Décision d'intégration : enrichir `src/github/connection.ts`, `src/tools/durableAccounts.ts` et le collecteur/cache GitHub de Governed Context existants. Un même helper borné observe `GET /user` et les token files identiques sont dédupliqués uniquement pendant une collecte. Aucun second observateur/cache/store/registry/Session Manager ni nouvel outil MCP n'est créé.
+
+Décision fail-closed : B1 produit seulement `RESOLVED`, `NONE`, `AMBIGUOUS` ou `UNVERIFIED`, avec provenance, fraîcheur et reason codes. Un `GET /user` prouve le principal utilisateur ; une organisation accessible reste un contexte organisationnel distinct. Permissions et Effective Capabilities restent au SLOT-11 ; le WRITE gate demeure `shadow`.
+
+Gate de livraison : RED/GREEN publiés, documentation canonique, suite complète, CI/revue exact-head, merge protégé, déploiement GitHub → S1, attestation OCI/runtime et Live State `FULLY_ALIGNED` sont requis avant `DONE`. B2 reste un lot séparé et ne doit pas être précréé par B1.
+
 ## 2026-09-01 — Connection Context dans la Governed Session existante
 
 Contexte : l'authentification fournit déjà un principal OAuth, un `clientId` et une assurance, mais ces preuves ne sont pas regroupées dans un contexte logique durable préparant la résolution GitHub/repository/projet.

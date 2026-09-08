@@ -19,6 +19,27 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 `ROADMAP.md` décrit tous les chantiers/lots connus. `TODO.md` contient ce qui reste à accomplir. Ce fichier ne pré-crée pas toutes les tâches futures : une `TASK-...` n'est considérée officielle qu'après son enregistrement dans Operational Memory.
 
+## Tâche gouvernée courante — B1 GitHub Identity Resolution
+
+### TASK-20260907-001 — EN COURS
+
+L'autorité dynamique reste la Governed Task Queue/Operational Memory. Au checkpoint du 2026-09-08, la tâche est claimée par la Governed Session `72017a9c-f31c-4cde-acac-64d8e001f168`, exécutée sur `mcp/github-identity-resolution-20260907` et publiée dans la Draft PR #73. Son statut, ses révisions, locks et SHA exacts doivent être relus avant chaque mutation.
+
+- [x] approuver le design `docs/superpowers/specs/2026-09-07-b1-github-identity-resolution-design.md` et le binding contextuel `IDENTITY_ONLY` ;
+- [x] enregistrer, claim et locker B1 seulement après design approuvé et dépendances connues ;
+- [x] publier le RED pur `8c570f96a94a492846b5df618f6b7383ba36a510` puis le GREEN pur `bbec96d87c46b9bea398ef5594ba278bfd48142d` ;
+- [x] publier le RED d'intégration `476e0b26d1eeadac30afdee1ec73b5781516c320` puis le GREEN fonctionnel `7830fb5ad0fdc385332259439600df357ea8ed13` ;
+- [x] conserver Identity Policy V1 et l'étendre additivement en V2, sans backfill ;
+- [x] réutiliser les connexions durables, le secret storage, le même `GET /user` et le collecteur/cache Governed Context existants ;
+- [x] préserver `RESOLVED`/`NONE`/`AMBIGUOUS`/`UNVERIFIED`, les sessions historiques, les 111 outils/92 contrats historiques et le WRITE gate `shadow` ;
+- [x] obtenir après réconciliation documentaire 37 tests ciblés et 304 tests complets, plus typecheck/build/docs/current-state/secrets/diff verts ;
+- [ ] publier la réconciliation documentaire et ses preuves dérivées ;
+- [ ] obtenir CI, revue et absence de thread bloquant sur le head exact ;
+- [ ] fusionner sous garde exact-head, déployer uniquement par GitHub → S1 et attester GitHub/S1/OCI/runtime ;
+- [ ] obtenir Live State `FULLY_ALIGNED`, checkpoint final, `DONE`, libération des locks et clôture de session.
+
+Exclusions : aucune permission/Effective Capability, Human Identity, Agent Role, Repository Resolution B2, nouveau registre/store/cache/observateur/outil, écriture directe S1 ou activation du WRITE gate. B2 reste candidat séparé jusqu'à ce qu'il soit défini, gouverné et exécutable.
+
 ## Jalons terminés
 
 - PR #44, #45, #47, #49, #52 et #55 fusionnées selon la gouvernance ; PR #50 fermée sans fusion comme doublon exact de la PR #49.
@@ -136,15 +157,14 @@ Preuves de clôture acquises :
 
 `TASK-20260901-002 — Final A2.1 documentation reconciliation` est la tâche documentaire bornée qui porte la présente mise à jour des six fichiers canoniques. Son état, sa branche, sa PR, ses locks et sa session restent sous l'autorité de la Governed Task Queue, d'Operational Memory et de GitHub; ce document n'anticipe pas son statut terminal.
 
-## Prochaines tâches candidates — non enregistrées
+## Prochaines tâches candidates — non enregistrées après B1
 
-Après clôture d'A2.1, la gouvernance pourra enregistrer séparément, selon dépendances :
+Après clôture gouvernée de B1, la gouvernance pourra enregistrer séparément, selon dépendances :
 
-1. B1 — GitHub Identity Resolution ;
-2. B2 — Repository Resolution ;
-3. C1/C2 — GitRegistry V2 et Project Binding ;
-4. C3/C4/C5 — Server, Runtime et Domain Resolution ;
-5. D1/D2/D3 — Governance Inheritance, Effective Capabilities et Bootstrap Receipt enrichment.
+1. B2 — Repository Resolution ;
+2. C1/C2 — GitRegistry V2 et Project Binding ;
+3. C3/C4/C5 — Server, Runtime et Domain Resolution ;
+4. D1/D2/D3 — Governance Inheritance, Effective Capabilities et Bootstrap Receipt enrichment.
 
 A2.2 `Verified Client Evidence` reste conditionnel et ne peut inventer aucune identité ChatGPT/Claude, référence de conversation ou workspace. Son absence ne bloque pas B1 lorsque le principal OAuth constitue la preuve requise.
 

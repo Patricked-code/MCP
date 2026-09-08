@@ -5,6 +5,16 @@
 ## Cartographie fonctionnelle
 
 MCP WealthTech SSH Bridge
+- Identité GitHub gouvernée — SLOT-06
+  - principal OAuth : `ConnectionContext` existant
+  - binding contextuel : `.mcp/identity-policy.json`
+  - connexions : `data/github-accounts.json`
+  - credential : secret storage existant, jamais exposé
+  - preuve : GitHub `GET /user`
+  - projection : collecteur/cache `src/governedContext/github.ts` existant
+  - sorties : `RESOLVED` / `NONE` / `AMBIGUOUS` / `UNVERIFIED`
+  - exclusions : repository B2, Human Identity, Agent Role et permissions SLOT-11
+
 - Diagnostic lecture
   - ping
   - get_project_context
@@ -91,3 +101,7 @@ Ordre recommandé :
 13. .mcp/permissions.json
 14. .mcp/agents.json
 15. .mcp/server-map.json
+
+`.mcp/identity-registry.json` est interdit : il constituerait un registre parallèle.
+GitRegistry V2 reste l'autorité des mappings repository/projet/serveur/domaine et ne
+porte pas les bindings OAuth → connexion GitHub.

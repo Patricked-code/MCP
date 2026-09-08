@@ -33,6 +33,10 @@ Le système ne possède pas de seconde base current-state indépendante. Chaque 
 | Contrats historiques protégés | fixture de non-régression V1 |
 | Modules, imports, routes, documentation et audits | fichiers suivis par Git au HEAD lu |
 | Règles machine | fichiers suivis sous `.mcp/` |
+| Binding OAuth → connexion GitHub contextuelle | `.mcp/identity-policy.json` |
+| Connexions GitHub configurées | registre durable `data/github-accounts.json` |
+| Credentials GitHub | secret storage existant, hors Git et hors projections |
+| Principal GitHub authentifié | preuve live GitHub `GET /user` |
 | Historique humain | documents canoniques et journaux append-only |
 
 Les champs dynamiques de branche, PR ou prochain travail ne sont pas persistés dans `.mcp/branch-governance.json`. Ils sont lus depuis GitHub, Operational Memory et la queue.
@@ -48,6 +52,7 @@ flowchart TD
     D --> G
     F --> G
     J["GitHub work state"] --> G
+    L["Policy + durable accounts + GET /user"] --> G
     G --> K["Operational Reality / Governance Decision"]
     K --> H["Bootstrap Receipt / next safe action"]
     H --> I["Outils write gouvernés"]
@@ -113,6 +118,20 @@ La queue ordonne les tâches par priorité puis FIFO, vérifie leurs dépendance
 Le receipt relie la session, l’identité agent/client, la version Live State, les SHA GitHub/runtime et les digests catalogue, gouvernance et task registry. Il ne contient ni prompt brut, ni jeton, ni secret de reprise.
 
 Pour l'observation GitHub d'un travail en cours, la branche est résolue dans cet ordre : branche déjà liée à la Governed Session, puis branche portée par la tâche courante, puis branche explicitement fournie à l'entrée. Une session d'intake sans branche ne perd donc pas la continuité de la tâche déjà gouvernée.
+
+La résolution B1 enrichit ce même collecteur GitHub et son cache existant ; elle
+n'ajoute aucun observateur ni store. Le service transmet uniquement le principal
+OAuth et le repository issus du `ConnectionContext` durable visible. Pendant une
+réconciliation explicite, le collecteur compose la policy versionnée, les
+connexions durables existantes et la preuve live `GET /user`. `getCurrent` reste
+cache/store-only. Sa clé sépare branche, principal OAuth, repository, digest de
+policy et binding applicable ; une preuve expirée devient `UNVERIFIED/STALE`.
+
+La GitHub Identity résultante est une projection `RESOLVED`, `NONE`, `AMBIGUOUS`
+ou `UNVERIFIED`. Elle ne modifie ni la session historique, ni GitRegistry V2, ni
+le Bootstrap Receipt, ni les permissions. Le principal `GET /user` reste distinct
+des organisations accessibles. Les capacités effectives sont calculées seulement
+au SLOT-11 à partir de leurs autorités propres.
 
 ### Unified Operational Work State
 

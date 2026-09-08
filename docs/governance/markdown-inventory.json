@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 198,
+  "trackedCount": 200,
   "categories": {
     "root-documentation": 50,
     "canonical": 7,
     "migration-history": 7,
     "documentation": 55,
     "history": 1,
-    "engineering-plan": 5,
-    "engineering-spec": 5,
+    "engineering-plan": 6,
+    "engineering-spec": 6,
     "memory": 61,
     "runtime-mirror-tracked": 7
   },
@@ -503,6 +503,10 @@
       "category": "engineering-plan"
     },
     {
+      "path": "docs/superpowers/plans/2026-09-07-b1-github-identity-resolution.md",
+      "category": "engineering-plan"
+    },
+    {
       "path": "docs/superpowers/specs/2026-08-09-governed-autodeploy-v1-design.md",
       "category": "engineering-spec"
     },
@@ -520,6 +524,10 @@
     },
     {
       "path": "docs/superpowers/specs/2026-09-01-governed-connection-context-minimal-design.md",
+      "category": "engineering-spec"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-07-b1-github-identity-resolution-design.md",
       "category": "engineering-spec"
     },
     {

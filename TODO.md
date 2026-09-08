@@ -104,13 +104,30 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [ ] persister une référence conversation/workspace uniquement si elle est fournie, autorisée et sanitizable ;
 - [ ] garder A2.2 non bloquant pour B1 lorsque le principal OAuth suffit à la résolution GitHub gouvernée.
 
-### GitHub Identity & Repository Resolution
+### B1 — GitHub Identity Resolution — tâche gouvernée en cours
 
-- [ ] résoudre les comptes GitHub autorisés liés au contexte courant ;
-- [ ] compléter le mapping GitHub user/account → rôle projet sans exposer le token ;
-- [ ] gérer `NONE` / `AMBIGUOUS` sans choix arbitraire ;
+- [x] approuver le binding `oauth:wealthtech-mcp-admin` → `Patricked-code` uniquement pour `Patricked-code/MCP`, avec effet `IDENTITY_ONLY` ;
+- [x] préserver toute la sémantique Identity Policy V1 dans une V2 additive ;
+- [x] réutiliser les connexions durables, le secret storage, `GET /user` et le collecteur/cache Governed Context existants sans registre/observateur/cache parallèle ;
+- [x] distinguer principal GitHub authentifié et organisation accessible ;
+- [x] gérer `RESOLVED` / `NONE` / `AMBIGUOUS` / `UNVERIFIED` sans premier-match ;
+- [x] préserver les sessions/`ConnectionContext` historiques et exclure permissions, Human Identity, Agent Role et résolution repository ;
+- [x] obtenir les GREEN locaux ciblés et la régression historique complète ;
+- [ ] terminer la réconciliation documentaire et régénérer les preuves dérivées ;
+- [ ] obtenir la CI et la revue du HEAD exact de la PR #73, sans thread bloquant ;
+- [ ] fusionner sous garde exact-head, observer l'Autodeploy, attester GitHub/S1/OCI/runtime et Live State `FULLY_ALIGNED` ;
+- [ ] clôturer `TASK-20260907-001`, checkpoint, locks et session uniquement après ces preuves.
+
+### B2 — Repository Resolution — restant séparé
+
 - [ ] résoudre le repository explicitement fourni ou déjà gouverné ;
-- [ ] supprimer progressivement les dépendances hardcodées à `Patricked-code/MCP` uniquement quand un `repositoryId`/mapping validé est disponible et sans casser le cas historique.
+- [ ] gérer `NONE` / `AMBIGUOUS` / `UNVERIFIED` sans choix arbitraire ;
+- [ ] supprimer progressivement les dépendances hardcodées à `Patricked-code/MCP` uniquement quand un `repositoryId`/mapping validé est disponible et sans casser le cas historique ;
+- [ ] ne créer la Governed Task B2 que lorsqu'elle devient définie, gouvernée et exécutable après clôture B1.
+
+Le mapping GitHub user/account → rôle projet et les permissions ne font pas partie
+de B1. Ils restent positionnés dans les lots de gouvernance/Effective Capabilities
+appropriés, sans être pré-créés comme tasks.
 
 ### Project Binding / GitRegistry V2
 
