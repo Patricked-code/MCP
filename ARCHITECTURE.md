@@ -130,8 +130,11 @@ policy et binding applicable ; une preuve expirée devient `UNVERIFIED/STALE`.
 La GitHub Identity résultante est une projection `RESOLVED`, `NONE`, `AMBIGUOUS`
 ou `UNVERIFIED`. Elle ne modifie ni la session historique, ni GitRegistry V2, ni
 le Bootstrap Receipt, ni les permissions. Le principal `GET /user` reste distinct
-des organisations accessibles. Les capacités effectives sont calculées seulement
-au SLOT-11 à partir de leurs autorités propres.
+des organisations accessibles. Une organisation n'est vérifiée que par une
+appartenance authentifiée active et concordante ; son profil public ne suffit pas.
+Les contextes accessibles sont bornés au même credential par une corrélation
+éphémère non secrète, jamais persistée ni projetée. Les capacités effectives sont
+calculées seulement au SLOT-11 à partir de leurs autorités propres.
 
 ### Unified Operational Work State
 

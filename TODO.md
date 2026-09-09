@@ -110,6 +110,7 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [x] préserver toute la sémantique Identity Policy V1 dans une V2 additive ;
 - [x] réutiliser les connexions durables, le secret storage, `GET /user` et le collecteur/cache Governed Context existants sans registre/observateur/cache parallèle ;
 - [x] distinguer principal GitHub authentifié et organisation accessible ;
+- [x] exiger une appartenance authentifiée active pour une organisation et isoler les contextes accessibles par credential sans exposer sa corrélation ;
 - [x] gérer `RESOLVED` / `NONE` / `AMBIGUOUS` / `UNVERIFIED` sans premier-match ;
 - [x] préserver les sessions/`ConnectionContext` historiques et exclure permissions, Human Identity, Agent Role et résolution repository ;
 - [x] obtenir les GREEN locaux ciblés et la régression historique complète ;

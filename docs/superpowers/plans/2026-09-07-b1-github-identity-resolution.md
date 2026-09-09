@@ -123,6 +123,9 @@ Commit only tests and test-runner registration. Open a draft PR after task claim
 **RED tests:**
 
 - one shared `/user` observation yields a bounded authenticated principal and never returns the token;
+- a public organization profile never verifies an organization context; only an active owner-matching authenticated membership does;
+- same-credential observations share one ephemeral non-secret correlation while different credentials remain isolated;
+- the resolved projection includes only account contexts correlated to the selected credential and never exposes the correlation;
 - the durable account status path uses that shared observer and preserves its historical text contract;
 - explicit Governed Context reconciliation attaches the B1 identity result;
 - cache-only get never performs a GitHub request on a new key;
@@ -152,6 +155,8 @@ Commit only tests and test-runner registration. Open a draft PR after task claim
 - Deduplicate identical token-file observations only within one collection call; do not create a durable cache.
 - Continue to restrict token paths to `/app/secrets/*`.
 - Distinguish the authenticated user from an accessible organization context.
+- Verify an organization context through active `GET /user/memberships/orgs/{owner}` evidence; `GET /orgs/{owner}` alone is never sufficient.
+- Assign one ephemeral non-secret authentication-context identifier per token-file group during a collection, never persist or project it, and fail closed when correlation is unavailable.
 
 ### Task 2.3: Integrate B1 into the existing GitHub collector/cache
 
@@ -174,6 +179,7 @@ Commit only tests and test-runner registration. Open a draft PR after task claim
 - Preserve every existing GitHub work-state field and reason code.
 - Add identity to fallback and degraded contexts.
 - Compose identity without changing governance permission calculations.
+- Filter accessible account contexts to the authentication context of the selected durable connection.
 - Add a minimal escaped dashboard projection.
 
 ### Task 2.4: Package the versioned policy with the runtime

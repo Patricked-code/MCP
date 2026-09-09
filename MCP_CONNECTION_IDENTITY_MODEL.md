@@ -74,7 +74,7 @@ La résolution GitHub conserve cinq notions distinctes :
 | Connexion GitHub configurée | `data/github-accounts.json` et mécanismes durables existants | sélection d'une connexion existante |
 | Credential | secret storage `/app/secrets/*` | utilisé par la couche de connexion, jamais projeté |
 | Principal GitHub | réponse live `GET /user` | preuve de l'utilisateur authentifié |
-| Contexte organisationnel | compte organisation accessible observé séparément | contexte accessible, jamais login authentifié |
+| Contexte organisationnel | appartenance active du principal prouvée par `GET /user/memberships/orgs/{org}` | contexte credential-scoped, jamais login authentifié ; le profil public `/orgs/{org}` ne suffit pas |
 | GitHub Identity | `Governed Context` | projection dérivée, non persistante |
 
 Le binding actuellement approuvé relie `oauth:wealthtech-mcp-admin` au compte
@@ -86,6 +86,13 @@ produisent `AMBIGUOUS`, et une preuve absente, périmée ou contradictoire produ
 `UNVERIFIED`. Un contexte de compte configuré mais non vérifié produit également
 `UNVERIFIED` avec `GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED` et ne peut jamais
 devenir le `selectedAccountContext`. Aucun de ces états n'accorde une permission.
+
+Les observations provenant d'un même credential sont corrélées uniquement pendant
+la collecte par un identifiant opaque non secret, non persisté et non projeté.
+`accessibleAccountContexts` exclut toute observation provenant d'un autre
+credential. Une corrélation absente retourne `UNVERIFIED` avec
+`GITHUB_IDENTITY_AUTHENTICATION_CONTEXT_UNAVAILABLE`. Une preuve d'organisation
+inactive, discordante ou indisponible reste `GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED`.
 
 `Human Identity`, `Agent Role`, résolution repository B2 et Effective Capabilities
 SLOT-11 restent hors de B1. GitRegistry V2 conserve exclusivement les mappings

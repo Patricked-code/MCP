@@ -17,6 +17,8 @@ Décision d'intégration : enrichir `src/github/connection.ts`, `src/tools/durab
 
 Décision fail-closed : B1 produit seulement `RESOLVED`, `NONE`, `AMBIGUOUS` ou `UNVERIFIED`, avec provenance, fraîcheur et reason codes. Un `GET /user` prouve le principal utilisateur ; une organisation accessible reste un contexte organisationnel distinct. Permissions et Effective Capabilities restent au SLOT-11 ; le WRITE gate demeure `shadow`.
 
+Décision de correction de revue : un profil public `GET /orgs/{owner}` ne prouve jamais l'accès du principal. Une organisation B1 exige une appartenance active et concordante via `GET /user/memberships/orgs/{owner}`. Les observations d'un même credential reçoivent une corrélation opaque uniquement pendant la collecte ; la projection exclut les contextes d'un autre credential et n'expose ni ne persiste cette corrélation. Une preuve ou corrélation insuffisante reste `UNVERIFIED`, sans permission implicite.
+
 Gate de livraison : RED/GREEN publiés, documentation canonique, suite complète, CI/revue exact-head, merge protégé, déploiement GitHub → S1, attestation OCI/runtime et Live State `FULLY_ALIGNED` sont requis avant `DONE`. B2 reste un lot séparé et ne doit pas être précréé par B1.
 
 ## 2026-09-01 — Connection Context dans la Governed Session existante

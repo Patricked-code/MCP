@@ -34,6 +34,17 @@ function accountType(value: unknown): DurableGithubIdentityObservation['type'] {
   return 'organization_or_user';
 }
 
+function activeOrganizationMembership(value: unknown, owner: string): boolean {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const membership = value as {
+    state?: unknown;
+    organization?: { login?: unknown };
+  };
+  return membership.state === 'active'
+    && typeof membership.organization?.login === 'string'
+    && membership.organization.login.toLowerCase() === owner.toLowerCase();
+}
+
 async function readJson(): Promise<AccountsFile> {
   try {
     return JSON.parse(await readFile(ACCOUNTS_FILE, 'utf8')) as AccountsFile;
@@ -97,15 +108,25 @@ export async function collectDurableGithubIdentityObservations(
       return Boolean(principal.login && principal.login.toLowerCase() === owner.toLowerCase());
     }
     if (type === 'organization') {
-      return (await githubJsonRequest(token, `/orgs/${encodeURIComponent(owner)}`)).ok;
+      const membership = await githubJsonRequest(
+        token,
+        `/user/memberships/orgs/${encodeURIComponent(owner)}`
+      );
+      return membership.ok && activeOrganizationMembership(membership.json, owner);
     }
     if (principal.login?.toLowerCase() === owner.toLowerCase()) return true;
-    return (await githubJsonRequest(token, `/orgs/${encodeURIComponent(owner)}`)).ok;
+    const membership = await githubJsonRequest(
+      token,
+      `/user/memberships/orgs/${encodeURIComponent(owner)}`
+    );
+    return membership.ok && activeOrganizationMembership(membership.json, owner);
   });
   const byTokenFile = new Map<string, Promise<{
+    authenticationContextId: string;
     token: string | null;
     principal: GithubAuthenticatedPrincipalObservation;
   }>>();
+  let nextAuthenticationContext = 0;
 
   const observations = await Promise.all(accounts.slice(0, 100).map(async (account) => {
     const owner = clean(account.owner);
@@ -118,27 +139,41 @@ export async function collectDurableGithubIdentityObservations(
         owner,
         type,
         configuredStatus,
+        authenticationContextId: null,
         principal: unavailablePrincipal(observedAt),
         accountVerified: false
       };
     }
     let shared = byTokenFile.get(file);
     if (!shared) {
+      const authenticationContextId = `durable-authentication-context-${++nextAuthenticationContext}`;
       shared = tokenReader(file).then(async (token) => ({
+        authenticationContextId,
         token,
         principal: token
           ? await principalObserver(token)
           : unavailablePrincipal(observedAt)
-      })).catch(() => ({ token: null, principal: unavailablePrincipal(observedAt) }));
+      })).catch(() => ({
+        authenticationContextId,
+        token: null,
+        principal: unavailablePrincipal(observedAt)
+      }));
       byTokenFile.set(file, shared);
     }
-    const { token, principal } = await shared;
+    const { authenticationContextId, token, principal } = await shared;
     const accountVerified = Boolean(
       token
       && principal.status === 'VERIFIED'
       && await contextVerifier(token, owner, type, principal).catch(() => false)
     );
-    return { owner, type, configuredStatus, principal, accountVerified };
+    return {
+      owner,
+      type,
+      configuredStatus,
+      authenticationContextId,
+      principal,
+      accountVerified
+    };
   }));
   return observations;
 }

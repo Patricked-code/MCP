@@ -7,6 +7,7 @@ export type GithubIdentityReasonCode =
   | 'GITHUB_IDENTITY_BINDING_AMBIGUOUS'
   | 'GITHUB_IDENTITY_CONNECTION_NOT_FOUND'
   | 'GITHUB_IDENTITY_CONNECTION_AMBIGUOUS'
+  | 'GITHUB_IDENTITY_AUTHENTICATION_CONTEXT_UNAVAILABLE'
   | 'GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED'
   | 'GITHUB_IDENTITY_OAUTH_PRINCIPAL_UNAVAILABLE'
   | 'GITHUB_IDENTITY_CONTEXT_REQUIRED'
@@ -32,6 +33,7 @@ export type DurableGithubIdentityObservation = {
   owner: string;
   type: 'user' | 'organization' | 'organization_or_user';
   configuredStatus: string;
+  authenticationContextId: string | null;
   principal: GithubAuthenticatedPrincipalObservation;
   accountVerified: boolean;
 };
@@ -78,8 +80,13 @@ function same(left: string, right: string): boolean {
   return left.localeCompare(right, undefined, { sensitivity: 'accent' }) === 0;
 }
 
-function contexts(connections: DurableGithubIdentityObservation[]) {
+function contexts(
+  connections: DurableGithubIdentityObservation[],
+  authenticationContextId?: string | null
+) {
+  if (!authenticationContextId) return [];
   return connections
+    .filter((entry) => entry.authenticationContextId === authenticationContextId)
     .filter((entry): entry is DurableGithubIdentityObservation & { type: 'user' | 'organization' } => (
       entry.type === 'user' || entry.type === 'organization'
     ))
@@ -156,6 +163,14 @@ export function resolveGithubIdentity(
     return unresolved(input, 'AMBIGUOUS', 'GITHUB_IDENTITY_CONNECTION_AMBIGUOUS', binding.bindingId);
   }
   const connection = matches[0]!;
+  if (!connection.authenticationContextId) {
+    return unresolved(
+      input,
+      'UNVERIFIED',
+      'GITHUB_IDENTITY_AUTHENTICATION_CONTEXT_UNAVAILABLE',
+      binding.bindingId
+    );
+  }
   const principal = connection.principal;
   if (principal.freshness !== 'CURRENT') {
     return unresolved(input, 'UNVERIFIED', 'GITHUB_IDENTITY_EVIDENCE_STALE', binding.bindingId, principal.freshness);
@@ -198,7 +213,7 @@ export function resolveGithubIdentity(
       type: binding.connectionSelector.type,
       source: 'durable_account'
     },
-    accessibleAccountContexts: contexts(input.connections),
+    accessibleAccountContexts: contexts(input.connections, connection.authenticationContextId),
     freshness: 'CURRENT',
     provenance: ['identity_policy', 'durable_accounts', 'github_api:get_user'],
     reasonCodes: [],

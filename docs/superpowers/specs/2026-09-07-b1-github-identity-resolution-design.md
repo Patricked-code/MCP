@@ -63,7 +63,7 @@ B2 owns Repository Resolution. C1/C2 own GitRegistry V2 and project binding. C3/
 | configured GitHub connections | data/github-accounts.json and existing durable-account mechanisms | candidate connections |
 | GitHub credential | existing secret storage under /app/secrets | used only by existing observer, never returned |
 | authenticated GitHub user | live GitHub API GET /user | primary identity proof |
-| accessible organization context | live GitHub organization API | contextual account evidence, never the authenticated principal |
+| accessible organization context | live authenticated membership proof `GET /user/memberships/orgs/{org}` | credential-scoped contextual evidence, never the authenticated principal; a public organization profile is insufficient |
 | repository/project/server/runtime/domain mapping | GitRegistry / GitRegistry V2 | not mutated and not reused as OAuth binding authority |
 | composed GitHub Identity | Governed Context / Identity Block | derived projection only |
 | chronological evidence | existing Event Journal / governed observability | secret-free audit |
@@ -129,6 +129,7 @@ The resolver consumes only bounded, typed inputs:
 - optional proven repository context from ConnectionContext;
 - parsed Identity Policy V1 or V2;
 - configured durable GitHub connection descriptors without credentials;
+- an ephemeral non-secret authentication-context correlation shared only by descriptors backed by the same credential during one collection;
 - fresh or explicitly stale GitHub principal observations from the existing observation layer;
 - observation time and configured freshness threshold.
 
@@ -139,7 +140,7 @@ Repository is a contextual filter when already proven. It is not a universal B1 
 | Component | Existing responsibility | B1 change |
 |---|---|---|
 | src/github/connection.ts | token lookup/validation, GET /user, optional organization check | expose/reuse a shared secret-free authenticated-principal observation |
-| src/tools/durableAccounts.ts | iterate configured accounts and report status | call the shared principal observer instead of duplicating GET /user semantics |
+| src/tools/durableAccounts.ts | iterate configured accounts and report status | call the shared principal observer, require authenticated organization membership for B1, and correlate same-credential observations ephemerally without exposing the credential |
 | src/github/inventory.ts | repository inventory and legacy registry interactions | unchanged; not the B1 resolver |
 | src/github/authorizationDiagnostics.ts | repository and pull-request authorization diagnostics | unchanged; remains capability evidence outside B1 |
 | src/github/registry.ts and registryV2.ts | repository/project/server/runtime/domain mapping | unchanged as binding authorities |
@@ -160,6 +161,19 @@ GET /user proves the authenticated GitHub user principal. For the current creden
 
 An organization such as chainsolutions-wealthtech that is accessible with the same credential is an accessible organization/account context. It is not the authenticated login and must never replace authenticatedPrincipal.login.
 
+For an organization, a successful public `GET /orgs/{owner}` response proves only
+that the organization profile exists. B1 accepts organization context evidence
+only when `GET /user/memberships/orgs/{owner}` succeeds and returns an active,
+owner-matching membership for the authenticated credential. Missing API access,
+an inactive membership, a mismatched owner or an unavailable response keeps the
+context unverified; B1 does not request or infer an additional permission.
+
+Durable observations created from the same credential file receive one ephemeral,
+non-secret `authenticationContextId` for the duration of that collection. The
+identifier is never persisted or projected. `accessibleAccountContexts` is
+filtered to the selected connection's authentication context, so evidence obtained
+through another credential cannot be attributed to the resolved principal.
+
 The secret reference may be used by the existing connection layer, but neither its path nor its raw value belongs in the B1 output, logs, checkpoints, tests or Governed Context.
 
 ## 8. Resolution algorithm
@@ -175,12 +189,14 @@ The secret reference may be used by the existing connection layer, but neither i
 7. Match the single binding's connectionSelector against configured durable connections.
 8. If no connection matches, return UNVERIFIED.
 9. If more than one connection matches, return AMBIGUOUS.
-10. Require a fresh successful authenticated-principal observation for that connection.
-11. Compare GET /user login to expectedAuthenticatedLogin using GitHub login case-insensitive equality while preserving the observed spelling.
-12. Require the selected user or organization account context to be live-verified; a configured but unverified context cannot be selected.
-13. A mismatch or unavailable/invalid/stale proof returns UNVERIFIED.
-14. A single fully proved match returns RESOLVED.
-15. Do not infer or emit permissions.
+10. Require a non-secret authentication-context correlation for that connection; missing correlation returns UNVERIFIED.
+11. Require a fresh successful authenticated-principal observation for that connection.
+12. Compare GET /user login to expectedAuthenticatedLogin using GitHub login case-insensitive equality while preserving the observed spelling.
+13. Require the selected user or organization account context to be live-verified; organization verification requires active authenticated membership, not a public profile.
+14. Project accessible account contexts only from observations sharing the selected connection's authentication context.
+15. A mismatch or unavailable/invalid/stale proof returns UNVERIFIED.
+16. A single fully proved match returns RESOLVED.
+17. Do not infer or emit permissions.
 
 ## 9. Output contract
 
@@ -235,6 +251,7 @@ Stable reason codes:
 - GITHUB_IDENTITY_BINDING_AMBIGUOUS
 - GITHUB_IDENTITY_CONNECTION_NOT_FOUND
 - GITHUB_IDENTITY_CONNECTION_AMBIGUOUS
+- GITHUB_IDENTITY_AUTHENTICATION_CONTEXT_UNAVAILABLE
 - GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED
 - GITHUB_IDENTITY_OAUTH_PRINCIPAL_UNAVAILABLE
 - GITHUB_IDENTITY_CONTEXT_REQUIRED
@@ -253,6 +270,7 @@ NONE is not permission denial or approval. UNVERIFIED and AMBIGUOUS are fail-clo
 - Dockerfile packages .mcp/identity-policy.json into the runtime image at /app/.mcp/identity-policy.json; no writable volume or parallel runtime registry is introduced.
 - Existing durable-account storage remains the connection authority.
 - Existing secret storage remains the credential authority.
+- Authentication-context correlation is ephemeral, collection-local and non-secret; it is neither a registry key nor persisted output.
 - Resolution output is derived at observation time and is not written into historical governed sessions.
 - ConnectionContext remains schemaVersion 1 and byte-compatible.
 - Old sessions, receipts, checkpoints, task records and events remain readable.
@@ -302,6 +320,8 @@ Downstream:
 - no new GitHub permission is requested or granted;
 - no token is exposed, copied or persisted;
 - no organization is misrepresented as the authenticated user;
+- no public organization profile is treated as authenticated membership;
+- no account context observed through another credential is projected for the selected principal;
 - no repository-scoped binding becomes global;
 - ambiguity and missing proof fail closed;
 - invalid configuration never triggers heuristic fallback;
@@ -326,12 +346,15 @@ Strict RED-before-GREEN tests must cover:
 11. Missing/invalid credential proof, API unavailability and stale evidence return UNVERIFIED.
 12. Authenticated login mismatch returns UNVERIFIED.
 13. Authenticated user and accessible organization remain distinct.
-14. Output contains no permissions or secrets.
-15. Existing GitHub cache does not reuse observations across different principal/repository/binding keys.
-16. Existing durable account status and connection diagnostics retain their behavior through shared observation.
-17. ConnectionContext V1 and historical session/receipt/task fixtures remain unchanged and readable.
-18. Existing A1 identity outcomes, GitRegistry V2, WRITE gate, deployment and tool contracts do not regress.
-19. The historical 111-tool catalogue and its 92 protected tool contracts remain unchanged.
+14. A public organization profile or inactive/mismatched membership cannot verify an organization context.
+15. Accessible contexts are restricted to the selected credential correlation and that correlation is not projected.
+16. Missing credential correlation fails closed with `GITHUB_IDENTITY_AUTHENTICATION_CONTEXT_UNAVAILABLE`.
+17. Output contains no permissions or secrets.
+18. Existing GitHub cache does not reuse observations across different principal/repository/binding keys.
+19. Existing durable account status and connection diagnostics retain their behavior through shared observation.
+20. ConnectionContext V1 and historical session/receipt/task fixtures remain unchanged and readable.
+21. Existing A1 identity outcomes, GitRegistry V2, WRITE gate, deployment and tool contracts do not regress.
+22. The historical 111-tool catalogue and its 92 protected tool contracts remain unchanged.
 
 ## 16. Documentation reconciliation
 
@@ -377,6 +400,7 @@ B1 is DONE only when:
 - Identity Policy V2 is strictly additive and V1 remains readable;
 - all four statuses and reason codes behave deterministically;
 - GitHub user and accessible organization are distinct;
+- organization context requires active authenticated membership and cross-credential contexts are excluded;
 - no permission or secret is emitted or inferred;
 - no parallel registry, store, cache, observer or governance authority exists;
 - historical sessions and ConnectionContext remain compatible;
