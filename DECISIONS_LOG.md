@@ -21,6 +21,8 @@ Décision de correction de revue : un profil public `GET /orgs/{owner}` ne prouv
 
 Gate de livraison : RED/GREEN publiés, documentation canonique, suite complète, CI/revue exact-head, merge protégé, déploiement GitHub → S1, attestation OCI/runtime et Live State `FULLY_ALIGNED` sont requis avant `DONE`. B2 reste un lot séparé et ne doit pas être précréé par B1.
 
+Preuve fonctionnelle et décision de clôture : les corrections finales ont été publiées en RED `631b5070f201950d2cdcc73363df8004d4ab5fec` puis GREEN `9b1a572ab0362aeefa5e13f425225e1f510704b7`. MCP CI #777 et les trois threads résolus ont autorisé le merge protégé de la PR #73 au SHA `208b8744810a23e48a4282450786805e7ff18845`; MCP CI main #778 et Governed Deploy #27 ont réussi. Live State `96` atteste l'exact-SHA GitHub/S1/runtime healthy et la projection B1 `RESOLVED` sans permission. La tâche reste ouverte uniquement pour supprimer `DOCUMENTATION_DRIFT` par une PR strictement limitée aux six Markdown canoniques, puis obtenir `FULLY_ALIGNED`; aucune task B2 n'est créée pendant cette clôture.
+
 ## 2026-09-01 — Connection Context dans la Governed Session existante
 
 Contexte : l'authentification fournit déjà un principal OAuth, un `clientId` et une assurance, mais ces preuves ne sont pas regroupées dans un contexte logique durable préparant la résolution GitHub/repository/projet.

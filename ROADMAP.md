@@ -212,11 +212,15 @@ Ajouts attendus :
 
 Objectif : résoudre les comptes GitHub réellement autorisés pour le principal courant.
 
-État du lot au checkpoint du 2026-09-08 : design approuvé, Governed Task
-`TASK-20260907-001` enregistrée/claimée, implémentation additive en Draft PR #73.
-Cette indication documentaire ne remplace pas l'état dynamique de la queue, de la
-session, des locks, de GitHub ou du runtime. B1 ne sera déclaré livré qu'après merge,
-déploiement exact-SHA et Live State `FULLY_ALIGNED`.
+État du lot au checkpoint du 2026-09-09 : design approuvé, Governed Task
+`TASK-20260907-001` enregistrée/claimée, implémentation additive de la PR #73
+fusionnée au merge `208b8744810a23e48a4282450786805e7ff18845`. MCP CI main #778 et
+MCP Governed Deploy #27 ont réussi ; Live State `96` atteste GitHub/S1/runtime
+exact-SHA et healthy ainsi que l'identité B1 `RESOLVED`. Seul
+`DOCUMENTATION_DRIFT` reste à lever par la réconciliation des six projections
+canoniques. Cette indication ne remplace pas l'état dynamique de la queue, de la
+session, des locks, de GitHub ou du runtime ; B1 ne devient `DONE` qu'après le
+nouveau Live State `FULLY_ALIGNED`, le checkpoint et la clôture gouvernée.
 
 Réutilise :
 - GitHub connection registry existant ;

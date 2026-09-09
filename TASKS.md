@@ -23,7 +23,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ### TASK-20260907-001 — EN COURS
 
-L'autorité dynamique reste la Governed Task Queue/Operational Memory. Au checkpoint du 2026-09-08, la tâche est claimée par la Governed Session `72017a9c-f31c-4cde-acac-64d8e001f168`, exécutée sur `mcp/github-identity-resolution-20260907` et publiée dans la Draft PR #73. Son statut, ses révisions, locks et SHA exacts doivent être relus avant chaque mutation.
+L'autorité dynamique reste la Governed Task Queue/Operational Memory. Au checkpoint du 2026-09-09, la tâche est claimée par la Governed Session `72017a9c-f31c-4cde-acac-64d8e001f168`. Son lot fonctionnel PR #73 est fusionné et déployé ; la tâche reste `IN_PROGRESS` révision 12 uniquement pour la réconciliation documentaire sur `mcp/b1-final-documentation-20260909`. Son statut, ses révisions, locks et SHA exacts doivent être relus avant chaque mutation.
 
 - [x] approuver le design `docs/superpowers/specs/2026-09-07-b1-github-identity-resolution-design.md` et le binding contextuel `IDENTITY_ONLY` ;
 - [x] enregistrer, claim et locker B1 seulement après design approuvé et dépendances connues ;
@@ -36,10 +36,14 @@ L'autorité dynamique reste la Governed Task Queue/Operational Memory. Au checkp
 - [x] reproduire en RED les deux P2 pré-merge : profil public d'organisation insuffisant et agrégation de contextes provenant de credentials distincts ;
 - [x] corriger dans l'observateur existant par appartenance active authentifiée et corrélation éphémère non secrète, sans nouveau registre/cache ni permission ;
 - [x] obtenir après ces corrections 43 tests B1 ciblés et 310 tests complets, plus typecheck/build/docs/current-state/secrets/diff verts localement ;
-- [x] obtenir après correction de revue 38 tests ciblés et 305 tests complets, plus typecheck/build/docs/current-state/secrets/diff verts ;
-- [ ] publier la réconciliation documentaire et ses preuves dérivées ;
-- [ ] obtenir CI, revue et absence de thread bloquant sur le head exact ;
-- [ ] fusionner sous garde exact-head, déployer uniquement par GitHub → S1 et attester GitHub/S1/OCI/runtime ;
+- [x] publier RED `631b5070f201950d2cdcc73363df8004d4ab5fec` puis GREEN exact `9b1a572ab0362aeefa5e13f425225e1f510704b7` pour les deux P2 ;
+- [x] obtenir MCP CI #777 verte sur le GREEN exact et résoudre les trois threads de la PR #73 ;
+- [x] fusionner la PR #73 sous garde exact-head au merge `208b8744810a23e48a4282450786805e7ff18845` ;
+- [x] réussir MCP CI main #778 et MCP Governed Deploy #27, puis attester GitHub/S1/OCI/runtime exact-SHA et healthy dans Live State `96` ;
+- [x] observer en production B1 `RESOLVED`, principal GitHub `Patricked-code`, binding contextuel exact, freshness `CURRENT`, sans reason code ni permission dérivée ;
+- [ ] publier la réconciliation strictement documentaire des six projections canoniques depuis le merge fonctionnel ;
+- [ ] obtenir CI, revue et absence de thread bloquant sur le head exact documentaire ;
+- [ ] fusionner cette réconciliation sous garde exact-head et la déployer uniquement par GitHub → S1 ;
 - [ ] obtenir Live State `FULLY_ALIGNED`, checkpoint final, `DONE`, libération des locks et clôture de session.
 
 Exclusions : aucune permission/Effective Capability, Human Identity, Agent Role, Repository Resolution B2, nouveau registre/store/cache/observateur/outil, écriture directe S1 ou activation du WRITE gate. B2 reste candidat séparé jusqu'à ce qu'il soit défini, gouverné et exécutable.
