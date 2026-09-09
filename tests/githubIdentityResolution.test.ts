@@ -36,6 +36,7 @@ const V2: GithubIdentityPolicyV2 = { ...V1, schemaVersion: 2, githubPrincipalBin
 function connection(overrides: Record<string, unknown> = {}) {
   return {
     owner: 'Patricked-code', type: 'user' as const, configuredStatus: 'active',
+    authenticationContextId: 'authentication-context-primary',
     principal: {
       status: 'VERIFIED' as const, observedAt: NOW, freshness: 'CURRENT' as const,
       login: 'Patricked-code', githubUserId: 270385782, accountType: 'user' as const,
@@ -99,6 +100,38 @@ test('le contexte organisationnel accessible ne remplace jamais le principal GET
     { owner: 'chainsolutions-wealthtech', type: 'organization', verified: true },
     { owner: 'Patricked-code', type: 'user', verified: true }
   ]);
+});
+
+test('les contextes accessibles restent bornés au credential qui a prouvé le principal sélectionné', () => {
+  const result = resolveGithubIdentity(input({
+    connections: [
+      connection(),
+      connection({
+        owner: 'chainsolutions-wealthtech',
+        type: 'organization',
+        accountVerified: true,
+        authenticationContextId: 'authentication-context-other'
+      })
+    ]
+  }));
+
+  assert.equal(result.status, 'RESOLVED');
+  assert.deepEqual(result.accessibleAccountContexts, [
+    { owner: 'Patricked-code', type: 'user', verified: true }
+  ]);
+  assert.equal(JSON.stringify(result).includes('authentication-context'), false);
+});
+
+test('une connexion sans corrélation de credential ne peut jamais résoudre l identité', () => {
+  const result = resolveGithubIdentity(input({
+    connections: [connection({ authenticationContextId: null })]
+  }));
+
+  assert.equal(result.status, 'UNVERIFIED');
+  assert.deepEqual(result.reasonCodes, ['GITHUB_IDENTITY_AUTHENTICATION_CONTEXT_UNAVAILABLE']);
+  assert.equal(result.authenticatedPrincipal, null);
+  assert.equal(result.selectedAccountContext, null);
+  assert.deepEqual(result.accessibleAccountContexts, []);
 });
 
 test('un autre repository ou un contexte absent ne globalise jamais le binding', () => {

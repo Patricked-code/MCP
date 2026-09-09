@@ -113,6 +113,108 @@ test('les comptes durables réutilisent une seule observation /user par tokenFil
   assert.equal(serialized.includes('oauthScopes'), false);
 });
 
+test('un profil public d organisation ne prouve jamais l appartenance du principal authentifié', async () => {
+  const originalFetch = globalThis.fetch;
+  const endpoints: string[] = [];
+  globalThis.fetch = (async (input: string | URL | Request) => {
+    const endpoint = new URL(String(input)).pathname;
+    endpoints.push(endpoint);
+    if (endpoint === '/orgs/chainsolutions-wealthtech') {
+      return json({ login: 'chainsolutions-wealthtech', type: 'Organization' });
+    }
+    if (endpoint === '/user/memberships/orgs/chainsolutions-wealthtech') {
+      return json({
+        state: 'inactive',
+        organization: { login: 'chainsolutions-wealthtech', type: 'Organization' }
+      });
+    }
+    return json({ message: 'unexpected endpoint' }, 500);
+  }) as typeof fetch;
+
+  try {
+    const observations = await collectDurableGithubIdentityObservations([{
+      owner: 'chainsolutions-wealthtech', type: 'organization', status: 'active',
+      tokenFile: '/app/secrets/github_patricked'
+    }], {
+      readToken: async () => 'organization-membership-test-token',
+      observePrincipal: async () => ({
+        status: 'VERIFIED', observedAt: NOW, freshness: 'CURRENT',
+        login: 'Patricked-code', githubUserId: 270385782,
+        accountType: 'user', reasonCode: null
+      })
+    });
+
+    assert.equal(observations[0]?.accountVerified, false);
+    assert.deepEqual(endpoints, ['/user/memberships/orgs/chainsolutions-wealthtech']);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('une appartenance active et concordante vérifie le contexte organisationnel', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = (async (input: string | URL | Request) => {
+    const endpoint = new URL(String(input)).pathname;
+    return endpoint === '/user/memberships/orgs/chainsolutions-wealthtech'
+      ? json({
+          state: 'active',
+          organization: { login: 'chainsolutions-wealthtech', type: 'Organization' }
+        })
+      : json({ message: 'unexpected endpoint' }, 500);
+  }) as typeof fetch;
+
+  try {
+    const observations = await collectDurableGithubIdentityObservations([{
+      owner: 'chainsolutions-wealthtech', type: 'organization', status: 'active',
+      tokenFile: '/app/secrets/github_patricked'
+    }], {
+      readToken: async () => 'active-membership-test-token',
+      observePrincipal: async () => ({
+        status: 'VERIFIED', observedAt: NOW, freshness: 'CURRENT',
+        login: 'Patricked-code', githubUserId: 270385782,
+        accountType: 'user', reasonCode: null
+      })
+    });
+
+    assert.equal(observations[0]?.accountVerified, true);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('les observations corrèlent sans secret les comptes issus du même credential uniquement', async () => {
+  const observations = await collectDurableGithubIdentityObservations([
+    {
+      owner: 'Patricked-code', type: 'user', status: 'active',
+      tokenFile: '/app/secrets/github_primary'
+    },
+    {
+      owner: 'chainsolutions-wealthtech', type: 'organization', status: 'active',
+      tokenFile: '/app/secrets/github_primary'
+    },
+    {
+      owner: 'another-context', type: 'organization', status: 'active',
+      tokenFile: '/app/secrets/github_other'
+    }
+  ], {
+    readToken: async (path) => path.endsWith('github_primary') ? 'primary-token' : 'other-token',
+    observePrincipal: async () => ({
+      status: 'VERIFIED', observedAt: NOW, freshness: 'CURRENT',
+      login: 'Patricked-code', githubUserId: 270385782,
+      accountType: 'user', reasonCode: null
+    }),
+    verifyAccountContext: async () => true
+  });
+
+  assert.equal(typeof observations[0]?.authenticationContextId, 'string');
+  assert.equal(observations[0]?.authenticationContextId, observations[1]?.authenticationContextId);
+  assert.notEqual(observations[0]?.authenticationContextId, observations[2]?.authenticationContextId);
+  const serialized = JSON.stringify(observations);
+  for (const forbidden of ['github_primary', 'github_other', 'primary-token', 'other-token']) {
+    assert.equal(serialized.includes(forbidden), false);
+  }
+});
+
 test('un tokenFile hors du secret storage existant est refusé sans lecture', async () => {
   let tokenReads = 0;
   const observations = await collectDurableGithubIdentityObservations([{

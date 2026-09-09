@@ -325,6 +325,7 @@ function identityConnection(observedAt = '2026-09-07T21:00:00.000Z') {
     owner: 'Patricked-code',
     type: 'user' as const,
     configuredStatus: 'active',
+    authenticationContextId: 'authentication-context-primary',
     accountVerified: true,
     principal: {
       status: 'VERIFIED' as const,
