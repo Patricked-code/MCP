@@ -13,22 +13,23 @@
 }
 ```
 
-Date : 2026-09-08
+Date : 2026-09-09
 
-## Point courant — B1 GitHub Identity Resolution en livraison gouvernée
+## Point courant — B1 GitHub Identity Resolution en clôture documentaire gouvernée
 
-- Autorités observées : Governed Session `72017a9c-f31c-4cde-acac-64d8e001f168` active, `TASK-20260907-001` claimée/lockée, branche `mcp/github-identity-resolution-20260907`, Draft PR #73.
-- Baseline d'entrée attestée : GitHub `main`, S1 et runtime `aa57b07cd3ba514df7b1ceb8cc60ab1587e15620`, Live State `93` `FULLY_ALIGNED`. Cette baseline doit être revalidée depuis les autorités avant merge/déploiement.
+- Jalon fonctionnel attesté : GitHub `main`, S1 HEAD, S1 `origin/main` et runtime healthy sont alignés sur `208b8744810a23e48a4282450786805e7ff18845`; S1 est propre/read-only et l'image active est `sha256:4bdb9524dd1ace6d700c95b27dab1c12c19d55cbf6e95aa7e9d671fade437401`.
+- Autorités observées : Governed Session `72017a9c-f31c-4cde-acac-64d8e001f168` active ; `TASK-20260907-001` révision 12, claimée/lockée et `IN_PROGRESS` uniquement pour la réconciliation des six projections canoniques sur `mcp/b1-final-documentation-20260909`.
 - Décision utilisateur acquise : binding `oauth:wealthtech-mcp-admin` → utilisateur GitHub `Patricked-code` uniquement pour le contexte déjà prouvé `Patricked-code/MCP`, effet `IDENTITY_ONLY`, moindre privilège, non global/non exclusif/réversible et extensible multi-compte.
 - Design et plan : `docs/superpowers/specs/2026-09-07-b1-github-identity-resolution-design.md` et `docs/superpowers/plans/2026-09-07-b1-github-identity-resolution.md`.
 - TDD publié : RED pur `8c570f96a94a492846b5df618f6b7383ba36a510`, GREEN pur `bbec96d87c46b9bea398ef5594ba278bfd48142d`, RED intégration `476e0b26d1eeadac30afdee1ec73b5781516c320`, GREEN fonctionnel `7830fb5ad0fdc385332259439600df357ea8ed13`.
 - Self-review : le RED exact `a9a0131ae3ce68f1b234448de242d314c8f202df` prouve qu'un compte configuré mais `accountVerified=false` pouvait encore être déclaré `RESOLVED`. La correction fail-closed retourne désormais `GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED` sans principal ni contexte sélectionné.
 - Revue pré-merge : deux nouveaux P2 ont ramené la tâche gouvernée en `IN_PROGRESS`. Les RED ciblés prouvent qu'un profil public `/orgs/{owner}` ne suffit pas à établir une appartenance et qu'une projection ne doit jamais agréger les contextes d'un autre credential. La correction exige une appartenance active `/user/memberships/orgs/{owner}` et une corrélation opaque, éphémère, non persistée/non projetée, bornée au credential sélectionné.
-- Nouvelle validation locale : 43 tests B1 ciblés et 310 tests complets réussis ; typecheck, build, 200 Markdown gouvernés, cartographie, current-state sans contradiction, secrets et whitespace sont verts. Ces preuves restent locales jusqu'à publication du nouveau head et CI GitHub exacte.
-- Validation locale après correction : 38 tests ciblés et 305 tests complets réussis, typecheck/build/docs/current-state/secrets/diff verts. Le head corrigé exact, sa CI et la résolution du thread restent à produire et observer.
+- Preuves exact-head : RED `631b5070f201950d2cdcc73363df8004d4ab5fec`, GREEN `9b1a572ab0362aeefa5e13f425225e1f510704b7`, 43 tests B1 ciblés, 310 tests complets et MCP CI #777 verte ; les trois threads de la PR #73 sont résolus.
+- Livraison : PR #73 fusionnée sous garde du head exact `9b1a572ab0362aeefa5e13f425225e1f510704b7` au merge `208b8744810a23e48a4282450786805e7ff18845`; MCP CI main #778 et MCP Governed Deploy #27 réussis.
+- Preuve runtime Live State `96` : GitHub/S1/runtime exact-SHA et healthy ; B1 retourne `RESOLVED` pour le binding `oauth-wealthtech-mcp-admin__patricked-code__patricked-code-mcp`, principal GitHub authentifié `Patricked-code` (`githubUserId=270385782`, type `user`), contexte sélectionné `Patricked-code`, freshness `CURRENT`, aucun reason code et aucune permission dérivée.
 - Intégration : Identity Policy V2 additive, connexions/secret storage existants, preuve live `GET /user`, collecteur/cache Governed Context existants ; aucun `identity-registry.json`, registre, store, Session Manager, cache, observateur ou outil parallèle.
 - Frontières : utilisateur GitHub distinct des organisations accessibles ; OAuth principal, Human Identity, Agent Role et repository context distincts ; aucune permission ou Effective Capability B1 ; GitRegistry V2 inchangé ; WRITE gate `shadow` ; aucune écriture directe S1.
-- Prochaine action : publier les nouvelles preuves RED/GREEN de revue, obtenir la CI exacte, résoudre les deux threads sur le commit correctif, puis seulement `REVIEW`/`MERGE_READY`/merge/déploiement/attestation/`DONE`.
+- Écart restant : Live State `96` ne signale plus que `DOCUMENTATION_DRIFT`. Publier cette réconciliation strictement Markdown, obtenir sa CI/revue, la fusionner exact-head, laisser GitHub → S1 déployer, puis exiger `FULLY_ALIGNED` avant `DONE`, checkpoint, libération des locks et clôture de session.
 - B2 n'est pas enregistré : il reste la prochaine candidate séparée dans la chronologie B1 → B2 → C1/C2 → C3/C4/C5 → D1/D2/D3.
 
 Les statuts dynamiques, propriétaires, locks, checkpoints et SHA courants doivent toujours être relus dans GitHub, Live State, Operational Memory et la Governed Task Queue. Ce checkpoint documentaire ne remplace pas ces autorités.

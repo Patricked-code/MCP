@@ -113,10 +113,12 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [x] exiger une appartenance authentifiée active pour une organisation et isoler les contextes accessibles par credential sans exposer sa corrélation ;
 - [x] gérer `RESOLVED` / `NONE` / `AMBIGUOUS` / `UNVERIFIED` sans premier-match ;
 - [x] préserver les sessions/`ConnectionContext` historiques et exclure permissions, Human Identity, Agent Role et résolution repository ;
-- [x] obtenir les GREEN locaux ciblés et la régression historique complète ;
-- [ ] terminer la réconciliation documentaire et régénérer les preuves dérivées ;
-- [ ] obtenir la CI et la revue du HEAD exact de la PR #73, sans thread bloquant ;
-- [ ] fusionner sous garde exact-head, observer l'Autodeploy, attester GitHub/S1/OCI/runtime et Live State `FULLY_ALIGNED` ;
+- [x] obtenir 43 GREEN ciblés et 310 tests complets, puis MCP CI #777 verte sur le head exact `9b1a572ab0362aeefa5e13f425225e1f510704b7` ;
+- [x] résoudre les trois threads et fusionner la PR #73 sous garde exact-head au merge `208b8744810a23e48a4282450786805e7ff18845` ;
+- [x] réussir MCP CI main #778 et MCP Governed Deploy #27 ;
+- [x] attester dans Live State `96` GitHub/S1/OCI/runtime exact-SHA et healthy ainsi que B1 `RESOLVED` sans permission dérivée ;
+- [ ] publier, valider, revoir et fusionner la réconciliation strictement documentaire des six projections canoniques ;
+- [ ] observer son Autodeploy et obtenir Live State `FULLY_ALIGNED` sans `DOCUMENTATION_DRIFT` ;
 - [ ] clôturer `TASK-20260907-001`, checkpoint, locks et session uniquement après ces preuves.
 
 ### B2 — Repository Resolution — restant séparé
