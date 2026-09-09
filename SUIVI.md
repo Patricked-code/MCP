@@ -100,20 +100,20 @@ Lorsqu'une attestation actuelle est nécessaire, ces données doivent être lues
 
 ### Programme suivant — orientation documentaire
 
-Le programme global prolonge le bootstrap de session déjà livré avec la chaîne de résolution ci-dessous. `TASK-20260901-001` a couvert uniquement A2.1 et est clôturée ; après design approuvé, B1 a été enregistré séparément sous `TASK-20260907-001` et reste en cours tant que merge, déploiement et attestation ne sont pas acquis.
+Le programme global prolonge le bootstrap de session déjà livré avec la chaîne de résolution ci-dessous. `TASK-20260901-001` a couvert uniquement A2.1 et est clôturée ; après design approuvé, B1 a été enregistré séparément sous `TASK-20260907-001`. Son implémentation est fusionnée et déployée, et sa preuve runtime est acquise ; la tâche reste ouverte uniquement jusqu'à la réconciliation documentaire, au nouveau Live State `FULLY_ALIGNED` et à la clôture Operational Memory.
 
 ```text
 principal OAuth
 → A2.1 Connection Context minimal [livré par TASK-20260901-001]
 → clôture et attestation A2.1 [acquises]
-→ B1 GitHub identity [tâche distincte actuelle, non encore livrée]
+→ B1 GitHub identity [fonctionnellement livré, clôture documentaire en cours]
 → B2 repository [future tâche distincte]
 → C1/C2 GitRegistry V2 mapping / project [futures tâches distinctes]
 → C3/C4/C5 server / runtime / domain [futures tâches distinctes]
 → D1/D2/D3 gouvernance héritée [futures tâches distinctes]
 ```
 
-B1 n'est pas une extension implicite de `TASK-20260901-001` mais la tâche distincte actuelle. B2 et tous les maillons suivants restent des candidats du programme et ne peuvent être enregistrés qu'individuellement selon les dépendances et les autorités runtime. Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) restent positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
+B1 n'est pas une extension implicite de `TASK-20260901-001` mais la tâche distincte actuelle en clôture documentaire. Sa livraison fonctionnelle ne préjuge pas de son statut terminal, qui reste sous l'autorité d'Operational Memory jusqu'à `FULLY_ALIGNED`. B2 et tous les maillons suivants restent des candidats du programme et ne peuvent être enregistrés qu'individuellement selon les dépendances et les autorités runtime. Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) restent positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
 
 ### Règle de reprise
 
