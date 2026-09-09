@@ -212,17 +212,37 @@ Ajouts attendus :
 
 Objectif : résoudre les comptes GitHub réellement autorisés pour le principal courant.
 
+État du lot au checkpoint du 2026-09-08 : design approuvé, Governed Task
+`TASK-20260907-001` enregistrée/claimée, implémentation additive en Draft PR #73.
+Cette indication documentaire ne remplace pas l'état dynamique de la queue, de la
+session, des locks, de GitHub ou du runtime. B1 ne sera déclaré livré qu'après merge,
+déploiement exact-SHA et Live State `FULLY_ALIGNED`.
+
 Réutilise :
 - GitHub connection registry existant ;
 - stockage secret existant ;
 - `.mcp/identity-policy.json` ;
-- permissions observées.
+- `ConnectionContext` existant pour le principal OAuth et le repository déjà prouvé ;
+- preuve live GitHub `GET /user` ;
+- collecteur et cache GitHub de `Governed Context` existants.
 
 Comportement cible :
 - zéro compte compatible → `NONE` ;
 - un compte compatible → résolution automatique ;
 - plusieurs comptes compatibles → `AMBIGUOUS`, choix explicite ;
+- preuve absente, périmée, invalide ou contradictoire → `UNVERIFIED` ;
 - aucun token exposé dans les registres métier.
+
+Binding approuvé : `oauth:wealthtech-mcp-admin` → connexion utilisateur
+`Patricked-code`, uniquement dans le contexte `Patricked-code/MCP`, avec effet
+`IDENTITY_ONLY`. Le binding est contextuel, non global, non exclusif, réversible et
+extensible à de futurs comptes/repositories. Il ne crée aucune permission implicite.
+
+Autorités : `.mcp/identity-policy.json` porte la policy/binding ;
+`data/github-accounts.json` les connexions configurées ; le secret storage le
+credential ; GitHub API la preuve live ; Governed Context la projection dérivée.
+GitRegistry V2 n'est pas utilisé comme registre OAuth → GitHub. Le repository déjà
+prouvé sert de filtre sans rendre B1 universellement dépendant de B2.
 
 ### B2 — Repository Resolution
 

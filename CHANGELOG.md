@@ -3,6 +3,21 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
+## 2026-09-08 — Candidate B1 GitHub Identity Resolution
+
+- `TASK-20260907-001` exécute le design approuvé sur la branche gouvernée `mcp/github-identity-resolution-20260907`, Draft PR #73, depuis `main@aa57b07cd3ba514df7b1ceb8cc60ab1587e15620`.
+- `.mcp/identity-policy.json` passe en V2 strictement additive : `goal`, `currentSignals`, `limits`, `s1GithubDeploymentIdentity` et `requiredSuiviFields` restent obligatoires et inchangés sémantiquement ; seul `githubPrincipalBindings` est ajouté.
+- Le binding `oauth:wealthtech-mcp-admin` → utilisateur GitHub `Patricked-code` s'applique uniquement au contexte déjà prouvé `Patricked-code/MCP`, avec effet `IDENTITY_ONLY`. Il est non global, non exclusif, réversible et extensible à d'autres comptes ou repositories.
+- Le chemin durable existant est réutilisé : `data/github-accounts.json` sélectionne une connexion configurée, le secret storage fournit le credential sans l'exposer, le même observateur borné `GET /user` prouve le principal GitHub, puis le collecteur/cache GitHub existant compose la projection Governed Context.
+- Les résultats `RESOLVED`, `NONE`, `AMBIGUOUS` et `UNVERIFIED` sont fail-closed, avec provenance, fraîcheur et reason codes ; un utilisateur authentifié reste distinct des organisations accessibles.
+- Aucun `identity-registry.json`, nouveau registre, store, Session Manager, cache, observateur, outil MCP ou permission n'est créé. GitRegistry V2 reste réservé aux mappings repository/projet/serveur/domaine ; les Effective Capabilities restent au SLOT-11 et le WRITE gate reste `shadow`.
+- TDD publié : RED purs `8c570f96a94a492846b5df618f6b7383ba36a510`, GREEN purs `bbec96d87c46b9bea398ef5594ba278bfd48142d`, RED intégration `476e0b26d1eeadac30afdee1ec73b5781516c320`, GREEN intégration `7830fb5ad0fdc385332259439600df357ea8ed13`.
+- La self-review exact-head a détecté avant merge qu'un futur contexte de compte configuré mais non vérifié pouvait encore être sélectionné. Le RED de revue `a9a0131ae3ce68f1b234448de242d314c8f202df` reproduit cet écart ; la correction fail-closed exige désormais `accountVerified` et retourne `GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED` sinon.
+- Le contrôle pré-merge a ensuite bloqué la fusion sur deux findings P2 : un profil public d'organisation pouvait être confondu avec une appartenance authentifiée, et des contextes observés via un autre credential pouvaient être projetés. Les nouveaux RED ciblés reproduisent ces deux écarts. La correction réutilise le même observateur durable : appartenance active `GET /user/memberships/orgs/{owner}`, corrélation opaque limitée à une collecte et filtrage strict au credential sélectionné, sans nouveau store/cache/registre ni permission.
+- Validation locale de cette seconde correction : 43 tests B1 ciblés et 310 tests complets réussis, plus typecheck, build, documentation (200 Markdown), cartographie, preuve current-state sans contradiction, scan de secrets et `git diff --check` verts. Une nouvelle CI exact-head et la résolution des deux threads restent obligatoires avant tout retour à `MERGE_READY`.
+- Validation locale après correction de revue : 38 tests ciblés et 305 tests complets réussis, avec typecheck, build, docs, preuve current-state, scan de secrets et `git diff --check` verts. Le lot reste candidat jusqu'à la CI/revue du head exact corrigé, merge exact-head, déploiement et Live State `FULLY_ALIGNED`.
+- Rollback : avant merge, fermer/revert la PR ; après merge, revert gouverné exact via PR puis déploiement normal GitHub → S1. Aucun backfill ni migration destructive n'est requis.
+
 ## 2026-09-01 — Governed Connection Context minimal
 
 - `TASK-20260901-001` part de `main@184107d5705248427d322922077d18f51e133c15` sur `mcp/project-context-resolution-20260901`, Draft PR #67.

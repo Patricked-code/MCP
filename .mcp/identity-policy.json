@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "updatedAt": "2026-08-09T09:15:01Z",
   "goal": "link every MCP or Git intervention to actor, tool, server, project, branch, objective, risk, backup, tests, result and point de reprise",
   "currentSignals": [
@@ -39,5 +39,22 @@
     "tests",
     "result",
     "point_de_reprise"
+  ],
+  "githubPrincipalBindings": [
+    {
+      "bindingId": "oauth-wealthtech-mcp-admin__patricked-code__patricked-code-mcp",
+      "oauthPrincipalId": "oauth:wealthtech-mcp-admin",
+      "provider": "github",
+      "connectionSelector": {
+        "owner": "Patricked-code",
+        "type": "user"
+      },
+      "expectedAuthenticatedLogin": "Patricked-code",
+      "context": {
+        "repository": "Patricked-code/MCP"
+      },
+      "effect": "IDENTITY_ONLY",
+      "enabled": true
+    }
   ]
 }

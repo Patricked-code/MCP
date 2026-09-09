@@ -1,8 +1,14 @@
 import { mkdir, readFile, writeFile, chmod, stat } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { env } from '../config/env.js';
+import { resolveGithubApiBase } from './authorizationDiagnostics.js';
+import type {
+  GithubAuthenticatedPrincipalObservation,
+  GithubIdentityReasonCode
+} from './identityResolution.js';
 
 const DEFAULT_TOKEN_FILE = '/app/secrets/github_token';
+const MAX_RESPONSE_BYTES = 1_000_000;
 
 export type GitHubConnectionStatus = {
   configured: boolean;
@@ -23,11 +29,28 @@ export type GitHubConnectionStatus = {
   error: string | null;
 };
 
-type GitHubResponse = {
+export type GitHubJsonResponse = {
   ok: boolean;
-  status: number;
+  status: number | null;
   json: unknown;
-  text: string;
+  tokenExpiresAt: string | null;
+  oauthScopes: string[];
+};
+
+export type GitHubJsonRequestOptions = {
+  fetchImpl?: typeof fetch;
+  apiBase?: string;
+  allowedHosts?: string;
+  timeoutMs?: number;
+};
+
+export type GitHubPrincipalObservationOptions = GitHubJsonRequestOptions & {
+  now?: () => Date;
+};
+
+export type GitHubAuthenticatedPrincipalEvidence = {
+  principal: GithubAuthenticatedPrincipalObservation;
+  httpStatus: number | null;
   tokenExpiresAt: string | null;
   oauthScopes: string[];
 };
@@ -76,34 +99,77 @@ async function getTokenFileMode(): Promise<string | null> {
   }
 }
 
-async function githubRequest(token: string, endpoint: string): Promise<GitHubResponse> {
-  const base = githubApiBase().replace(/\/$/, '');
-  const url = endpoint.startsWith('http') ? endpoint : `${base}${endpoint}`;
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'wealthtech-mcp-guardian'
-    }
-  });
-
-  const text = await response.text();
-  let json: unknown = null;
+export async function githubJsonRequest(
+  token: string,
+  endpoint: string,
+  options: GitHubJsonRequestOptions = {}
+): Promise<GitHubJsonResponse> {
+  const fetchImpl = options.fetchImpl ?? fetch;
+  const timeoutMs = Math.max(1, Math.min(options.timeoutMs ?? env.GITHUB_REQUEST_TIMEOUT_MS, 15_000));
+  let base: string;
   try {
-    json = text ? JSON.parse(text) : null;
+    base = resolveGithubApiBase(
+      options.apiBase ?? githubApiBase(),
+      options.allowedHosts ?? env.GITHUB_API_ALLOWED_HOSTS
+    ).replace(/\/$/, '');
   } catch {
-    json = null;
+    return {
+      ok: false, status: null, json: null, tokenExpiresAt: null, oauthScopes: []
+    };
   }
-
-  return {
-    ok: response.ok,
-    status: response.status,
-    json,
-    text,
-    tokenExpiresAt: response.headers.get('github-authentication-token-expiration'),
-    oauthScopes: parseScopes(response.headers.get('x-oauth-scopes'))
-  };
+  if (!endpoint.startsWith('/') || endpoint.startsWith('//')) {
+    return {
+      ok: false, status: null, json: null, tokenExpiresAt: null, oauthScopes: []
+    };
+  }
+  const url = `${base}${endpoint}`;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetchImpl(url, {
+      redirect: 'error',
+      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'User-Agent': 'wealthtech-mcp-guardian'
+      }
+    });
+    const declaredLength = Number(response.headers.get('content-length') ?? '0');
+    if (declaredLength > MAX_RESPONSE_BYTES) {
+      return {
+        ok: false, status: response.status, json: null,
+        tokenExpiresAt: null, oauthScopes: []
+      };
+    }
+    const text = await response.text();
+    if (Buffer.byteLength(text, 'utf8') > MAX_RESPONSE_BYTES) {
+      return {
+        ok: false, status: response.status, json: null,
+        tokenExpiresAt: null, oauthScopes: []
+      };
+    }
+    let json: unknown = null;
+    try {
+      json = text ? JSON.parse(text) : null;
+    } catch {
+      json = null;
+    }
+    return {
+      ok: response.ok,
+      status: response.status,
+      json,
+      tokenExpiresAt: response.headers.get('github-authentication-token-expiration'),
+      oauthScopes: parseScopes(response.headers.get('x-oauth-scopes'))
+    };
+  } catch {
+    return {
+      ok: false, status: null, json: null, tokenExpiresAt: null, oauthScopes: []
+    };
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function getArrayLength(value: unknown): number | null {
@@ -118,10 +184,92 @@ function getLogin(value: unknown): string | null {
   return null;
 }
 
+function principalReason(status: number | null): GithubIdentityReasonCode {
+  if (status === 401) return 'GITHUB_IDENTITY_AUTH_INVALID';
+  return 'GITHUB_IDENTITY_API_UNAVAILABLE';
+}
+
+export async function observeGithubAuthenticatedPrincipalEvidence(
+  token: string | null,
+  options: GitHubPrincipalObservationOptions = {}
+): Promise<GitHubAuthenticatedPrincipalEvidence> {
+  const observedAt = (options.now ?? (() => new Date()))().toISOString();
+  if (!token) {
+    return {
+      principal: {
+        status: 'MISSING', observedAt, freshness: 'UNKNOWN', login: null,
+        accountType: null, reasonCode: 'GITHUB_IDENTITY_AUTH_MISSING'
+      },
+      httpStatus: null,
+      tokenExpiresAt: null,
+      oauthScopes: []
+    };
+  }
+  const response = await githubJsonRequest(token, '/user', options);
+  if (!response.ok) {
+    const reasonCode = principalReason(response.status);
+    return {
+      principal: {
+        status: reasonCode === 'GITHUB_IDENTITY_AUTH_INVALID' ? 'INVALID' : 'UNAVAILABLE',
+        observedAt,
+        freshness: 'UNKNOWN',
+        login: null,
+        accountType: null,
+        reasonCode
+      },
+      httpStatus: response.status,
+      tokenExpiresAt: response.tokenExpiresAt,
+      oauthScopes: response.oauthScopes
+    };
+  }
+  const root = response.json && typeof response.json === 'object' && !Array.isArray(response.json)
+    ? response.json as Record<string, unknown>
+    : null;
+  const login = getLogin(root);
+  const githubUserId = root?.id;
+  const accountType = typeof root?.type === 'string' && root.type.toLowerCase() === 'user'
+    ? 'user' as const
+    : null;
+  if (
+    !login
+    || login.length > 120
+    || !accountType
+    || typeof githubUserId !== 'number'
+    || !Number.isSafeInteger(githubUserId)
+    || githubUserId < 1
+  ) {
+    return {
+      principal: {
+        status: 'UNAVAILABLE', observedAt, freshness: 'UNKNOWN', login: null,
+        accountType: null, reasonCode: 'GITHUB_IDENTITY_API_UNAVAILABLE'
+      },
+      httpStatus: response.status,
+      tokenExpiresAt: response.tokenExpiresAt,
+      oauthScopes: response.oauthScopes
+    };
+  }
+  return {
+    principal: {
+      status: 'VERIFIED', observedAt, freshness: 'CURRENT', login,
+      githubUserId, accountType, reasonCode: null
+    },
+    httpStatus: response.status,
+    tokenExpiresAt: response.tokenExpiresAt,
+    oauthScopes: response.oauthScopes
+  };
+}
+
+export async function observeGithubAuthenticatedPrincipal(
+  token: string | null,
+  options: GitHubPrincipalObservationOptions = {}
+): Promise<GithubAuthenticatedPrincipalObservation> {
+  return (await observeGithubAuthenticatedPrincipalEvidence(token, options)).principal;
+}
+
 export async function validateGithubToken(token: string, org: string): Promise<GitHubConnectionStatus> {
   const tokenFile = tokenFilePath();
   const warnings: string[] = [];
-  const user = await githubRequest(token, '/user');
+  const user = await githubJsonRequest(token, '/user');
   const login = user.ok ? getLogin(user.json) : null;
   const scopes = user.oauthScopes;
 
@@ -132,12 +280,12 @@ export async function validateGithubToken(token: string, org: string): Promise<G
   if (!user.ok || !login) {
     error = `GitHub user check failed with HTTP ${user.status}`;
   } else if (org) {
-    const orgCheck = await githubRequest(token, `/orgs/${encodeURIComponent(org)}`);
+    const orgCheck = await githubJsonRequest(token, `/orgs/${encodeURIComponent(org)}`);
     orgAccessible = orgCheck.ok;
     if (!orgCheck.ok) {
       error = `GitHub org check failed for ${org} with HTTP ${orgCheck.status}`;
     } else {
-      const repos = await githubRequest(token, `/orgs/${encodeURIComponent(org)}/repos?per_page=100&type=all`);
+      const repos = await githubJsonRequest(token, `/orgs/${encodeURIComponent(org)}/repos?per_page=100&type=all`);
       if (repos.ok) {
         reposVisible = getArrayLength(repos.json);
       } else {

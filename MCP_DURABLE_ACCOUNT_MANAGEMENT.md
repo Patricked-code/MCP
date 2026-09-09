@@ -28,6 +28,8 @@ Le registre actuel `data/github-accounts.json` déclare :
 8. `deployEnabled=false` bloque tout déploiement.
 9. Un compte dont le token est absent, invalide ou expiré doit être marqué comme non connecté.
 10. Toute nouvelle connexion doit être additive.
+11. Une observation `GET /user` prouve un utilisateur GitHub authentifié ; elle ne transforme pas une organisation accessible en principal.
+12. Un binding B1 sélectionne contextuellement une connexion existante mais ne crée ni connexion, credential, permission ou rôle.
 
 ## Outils ajoutés
 
@@ -38,6 +40,19 @@ Vérifie tous les comptes déclarés, leurs fichiers secrets, leur validation Gi
 ### `github_durable_accounts_inventory`
 
 Inventorie les dépôts visibles par les comptes déclarés, sans écrire, sans cloner, sans supprimer.
+
+## Réutilisation par GitHub Identity B1
+
+La résolution B1 réutilise le même observateur borné `GET /user` que les outils
+durables. Les token files identiques sont dédupliqués pendant une collecte ; aucun
+cache durable supplémentaire n'est créé. La projection exportée contient seulement
+le compte configuré, la preuve de principal assainie, la fraîcheur et le statut du
+contexte de compte. Elle exclut le chemin du secret, le token, les scopes et toute
+capability.
+
+`data/github-accounts.json` reste l'autorité des connexions configurées.
+`.mcp/identity-policy.json` porte seulement la sélection/binding contextuel. Le
+secret storage reste l'autorité du credential et GitHub API celle de la preuve live.
 
 ## Limite volontaire
 

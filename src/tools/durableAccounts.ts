@@ -1,20 +1,49 @@
 import { readFile, stat } from 'node:fs/promises';
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import {
+  githubJsonRequest,
+  observeGithubAuthenticatedPrincipal,
+  observeGithubAuthenticatedPrincipalEvidence,
+  type GitHubAuthenticatedPrincipalEvidence
+} from '../github/connection.js';
+import type {
+  DurableGithubIdentityObservation,
+  GithubAuthenticatedPrincipalObservation
+} from '../github/identityResolution.js';
 import { asText } from './format.js';
 
 const ACCOUNTS_FILE = process.env.MCP_GITHUB_ACCOUNTS_FILE || '/app/data/github-accounts.json';
-const API_BASE = process.env.GITHUB_API_BASE || 'https://api.github.com';
 const SECRET_PREFIX = '/app/secrets/';
 
-type Account = { owner?: string; type?: string; role?: string; tokenFile?: string; status?: string };
-type AccountsFile = { defaultTargetOwner?: string; accounts?: Account[] };
+export type DurableGithubAccountConfig = {
+  owner?: string;
+  type?: string;
+  role?: string;
+  tokenFile?: string;
+  status?: string;
+};
+type AccountsFile = { defaultTargetOwner?: string; accounts?: DurableGithubAccountConfig[] };
 
 const clean = (v: unknown) => String(v ?? '').trim().replace(/^@/, '').replace(/[^A-Za-z0-9_.-]/g, '');
 const tokenPath = (v: unknown) => String(v ?? '').trim() || '/app/secrets/github_token';
 const allowedSecret = (p: string) => p.startsWith(SECRET_PREFIX) && !p.includes('..');
-const scopesOf = (v: string | null) => v ? v.split(',').map((s) => s.trim()).filter(Boolean) : [];
-const loginOf = (v: unknown) => v && typeof v === 'object' && typeof (v as { login?: unknown }).login === 'string' ? String((v as { login: string }).login) : null;
+
+function accountType(value: unknown): DurableGithubIdentityObservation['type'] {
+  if (value === 'user' || value === 'organization') return value;
+  return 'organization_or_user';
+}
+
+function activeOrganizationMembership(value: unknown, owner: string): boolean {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const membership = value as {
+    state?: unknown;
+    organization?: { login?: unknown };
+  };
+  return membership.state === 'active'
+    && typeof membership.organization?.login === 'string'
+    && membership.organization.login.toLowerCase() === owner.toLowerCase();
+}
 
 async function readJson(): Promise<AccountsFile> {
   try {
@@ -40,29 +69,131 @@ async function modeOf(path: string): Promise<string | null> {
   }
 }
 
-async function gh(token: string, endpoint: string) {
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE.replace(/\/$/, '')}${endpoint}`;
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'wealthtech-mcp-durable-accounts'
-    }
-  });
-  const text = await response.text();
-  let json: unknown = null;
-  try { json = text ? JSON.parse(text) : null; } catch { json = null; }
+function unavailablePrincipal(
+  observedAt: string
+): GithubAuthenticatedPrincipalObservation {
   return {
-    ok: response.ok,
-    status: response.status,
-    json,
-    scopes: scopesOf(response.headers.get('x-oauth-scopes')),
-    expires: response.headers.get('github-authentication-token-expiration')
+    status: 'UNAVAILABLE', observedAt, freshness: 'UNKNOWN', login: null,
+    accountType: null, reasonCode: 'GITHUB_IDENTITY_AUTH_MISSING'
   };
 }
 
-async function accountLines(account: Account, includeRepos: boolean, maxRepos: number): Promise<string[]> {
+export type DurableGithubIdentityObservationDependencies = {
+  readToken?: (path: string) => Promise<string | null>;
+  observePrincipal?: (token: string) => Promise<GithubAuthenticatedPrincipalObservation>;
+  verifyAccountContext?: (
+    token: string,
+    owner: string,
+    type: DurableGithubIdentityObservation['type'],
+    principal: GithubAuthenticatedPrincipalObservation
+  ) => Promise<boolean>;
+  now?: () => Date;
+};
+
+export async function collectDurableGithubIdentityObservations(
+  accounts: DurableGithubAccountConfig[],
+  dependencies: DurableGithubIdentityObservationDependencies = {}
+): Promise<DurableGithubIdentityObservation[]> {
+  const now = dependencies.now ?? (() => new Date());
+  const tokenReader = dependencies.readToken ?? readToken;
+  const principalObserver = dependencies.observePrincipal
+    ?? ((token: string) => observeGithubAuthenticatedPrincipal(token, { now }));
+  const contextVerifier = dependencies.verifyAccountContext ?? (async (
+    token,
+    owner,
+    type,
+    principal
+  ) => {
+    if (type === 'user') {
+      return Boolean(principal.login && principal.login.toLowerCase() === owner.toLowerCase());
+    }
+    if (type === 'organization') {
+      const membership = await githubJsonRequest(
+        token,
+        `/user/memberships/orgs/${encodeURIComponent(owner)}`
+      );
+      return membership.ok && activeOrganizationMembership(membership.json, owner);
+    }
+    if (principal.login?.toLowerCase() === owner.toLowerCase()) return true;
+    const membership = await githubJsonRequest(
+      token,
+      `/user/memberships/orgs/${encodeURIComponent(owner)}`
+    );
+    return membership.ok && activeOrganizationMembership(membership.json, owner);
+  });
+  const byTokenFile = new Map<string, Promise<{
+    authenticationContextId: string;
+    token: string | null;
+    principal: GithubAuthenticatedPrincipalObservation;
+  }>>();
+  let nextAuthenticationContext = 0;
+
+  const observations = await Promise.all(accounts.slice(0, 100).map(async (account) => {
+    const owner = clean(account.owner);
+    const type = accountType(account.type);
+    const configuredStatus = String(account.status ?? 'unknown').slice(0, 120);
+    const file = tokenPath(account.tokenFile);
+    const observedAt = now().toISOString();
+    if (!owner || !allowedSecret(file)) {
+      return {
+        owner,
+        type,
+        configuredStatus,
+        authenticationContextId: null,
+        principal: unavailablePrincipal(observedAt),
+        accountVerified: false
+      };
+    }
+    let shared = byTokenFile.get(file);
+    if (!shared) {
+      const authenticationContextId = `durable-authentication-context-${++nextAuthenticationContext}`;
+      shared = tokenReader(file).then(async (token) => ({
+        authenticationContextId,
+        token,
+        principal: token
+          ? await principalObserver(token)
+          : unavailablePrincipal(observedAt)
+      })).catch(() => ({
+        authenticationContextId,
+        token: null,
+        principal: unavailablePrincipal(observedAt)
+      }));
+      byTokenFile.set(file, shared);
+    }
+    const { authenticationContextId, token, principal } = await shared;
+    const accountVerified = Boolean(
+      token
+      && principal.status === 'VERIFIED'
+      && await contextVerifier(token, owner, type, principal).catch(() => false)
+    );
+    return {
+      owner,
+      type,
+      configuredStatus,
+      authenticationContextId,
+      principal,
+      accountVerified
+    };
+  }));
+  return observations;
+}
+
+export async function loadDurableGithubIdentityObservations(
+  dependencies: DurableGithubIdentityObservationDependencies = {}
+): Promise<DurableGithubIdentityObservation[]> {
+  const cfg = await readJson();
+  return collectDurableGithubIdentityObservations(
+    Array.isArray(cfg.accounts) ? cfg.accounts : [],
+    dependencies
+  );
+}
+
+async function accountLines(
+  account: DurableGithubAccountConfig,
+  includeRepos: boolean,
+  maxRepos: number,
+  principalEvidence: GitHubAuthenticatedPrincipalEvidence | null
+): Promise<string[]> {
   const owner = clean(account.owner);
   const type = String(account.type ?? 'unknown');
   const role = String(account.role ?? 'unknown');
@@ -90,18 +221,20 @@ async function accountLines(account: Account, includeRepos: boolean, maxRepos: n
     return lines;
   }
 
-  const user = await gh(token, '/user');
-  const login = user.ok ? loginOf(user.json) : null;
-  lines.push(`  githubUserCheck=${user.ok} | http=${user.status} | login=${login ?? 'n/a'} | tokenExpires=${user.expires ?? 'n/a'}`);
-  lines.push(`  scopes=${user.scopes.length ? user.scopes.join(',') : 'non_communique_ou_token_finement_limite'}`);
-  if (!user.ok || !login) {
+  const evidence = principalEvidence
+    ?? await observeGithubAuthenticatedPrincipalEvidence(token);
+  const principal = evidence.principal;
+  const login = principal.login;
+  lines.push(`  githubUserCheck=${principal.status === 'VERIFIED'} | http=${evidence.httpStatus ?? 'n/a'} | login=${login ?? 'n/a'} | tokenExpires=${evidence.tokenExpiresAt ?? 'n/a'}`);
+  lines.push(`  scopes=${evidence.oauthScopes.length ? evidence.oauthScopes.join(',') : 'non_communique_ou_token_finement_limite'}`);
+  if (principal.status !== 'VERIFIED' || !login) {
     lines.push('  connected=false');
     return lines;
   }
 
   const isOrg = type.toLowerCase().includes('org') || owner.toLowerCase() !== login.toLowerCase();
   if (isOrg) {
-    const org = await gh(token, `/orgs/${encodeURIComponent(owner)}`);
+    const org = await githubJsonRequest(token, `/orgs/${encodeURIComponent(owner)}`);
     lines.push(`  orgAccess=${org.ok} | orgHttp=${org.status}`);
     if (!org.ok) lines.push(`  warning=${owner} n'est pas confirmé accessible avec ce token`);
   } else {
@@ -112,7 +245,7 @@ async function accountLines(account: Account, includeRepos: boolean, maxRepos: n
     const endpoint = isOrg
       ? `/orgs/${encodeURIComponent(owner)}/repos?per_page=${Math.max(1, Math.min(maxRepos, 100))}&type=all&sort=updated`
       : `/user/repos?per_page=${Math.max(1, Math.min(maxRepos, 100))}&visibility=all&affiliation=owner,collaborator,organization_member&sort=updated`;
-    const repos = await gh(token, endpoint);
+    const repos = await githubJsonRequest(token, endpoint);
     const arr = Array.isArray(repos.json) ? repos.json : [];
     lines.push(`  reposHttp=${repos.status} | reposReturned=${arr.length}`);
     for (const item of arr.slice(0, maxRepos)) {
@@ -137,7 +270,23 @@ async function render(includeRepos: boolean, maxRepos: number): Promise<string> 
   lines.push(`accountsConfigured=${accounts.length}`);
   lines.push('security=aucun token affiché; chemins secrets limités à /app/secrets/*; lecture seule; aucun clone; aucune suppression; aucune écriture GitHub');
   lines.push('');
-  for (const account of accounts) lines.push(...await accountLines(account, includeRepos, maxRepos));
+  const principalByTokenFile = new Map<string, Promise<GitHubAuthenticatedPrincipalEvidence | null>>();
+  for (const account of accounts) {
+    const file = tokenPath(account.tokenFile);
+    let principal = principalByTokenFile.get(file);
+    if (!principal && allowedSecret(file)) {
+      principal = readToken(file).then((token) => (
+        token ? observeGithubAuthenticatedPrincipalEvidence(token) : null
+      )).catch(() => null);
+      principalByTokenFile.set(file, principal);
+    }
+    lines.push(...await accountLines(
+      account,
+      includeRepos,
+      maxRepos,
+      principal ? await principal : null
+    ));
+  }
   if (accounts.length === 0) lines.push('Aucun compte configuré.');
   return lines.join('\n');
 }

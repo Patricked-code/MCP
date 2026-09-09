@@ -13,19 +13,37 @@
 }
 ```
 
-Date : 2026-09-01
+Date : 2026-09-08
 
-## Point courant — A2.1 livré et clôturé
+## Point courant — B1 GitHub Identity Resolution en livraison gouvernée
+
+- Autorités observées : Governed Session `72017a9c-f31c-4cde-acac-64d8e001f168` active, `TASK-20260907-001` claimée/lockée, branche `mcp/github-identity-resolution-20260907`, Draft PR #73.
+- Baseline d'entrée attestée : GitHub `main`, S1 et runtime `aa57b07cd3ba514df7b1ceb8cc60ab1587e15620`, Live State `93` `FULLY_ALIGNED`. Cette baseline doit être revalidée depuis les autorités avant merge/déploiement.
+- Décision utilisateur acquise : binding `oauth:wealthtech-mcp-admin` → utilisateur GitHub `Patricked-code` uniquement pour le contexte déjà prouvé `Patricked-code/MCP`, effet `IDENTITY_ONLY`, moindre privilège, non global/non exclusif/réversible et extensible multi-compte.
+- Design et plan : `docs/superpowers/specs/2026-09-07-b1-github-identity-resolution-design.md` et `docs/superpowers/plans/2026-09-07-b1-github-identity-resolution.md`.
+- TDD publié : RED pur `8c570f96a94a492846b5df618f6b7383ba36a510`, GREEN pur `bbec96d87c46b9bea398ef5594ba278bfd48142d`, RED intégration `476e0b26d1eeadac30afdee1ec73b5781516c320`, GREEN fonctionnel `7830fb5ad0fdc385332259439600df357ea8ed13`.
+- Self-review : le RED exact `a9a0131ae3ce68f1b234448de242d314c8f202df` prouve qu'un compte configuré mais `accountVerified=false` pouvait encore être déclaré `RESOLVED`. La correction fail-closed retourne désormais `GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED` sans principal ni contexte sélectionné.
+- Revue pré-merge : deux nouveaux P2 ont ramené la tâche gouvernée en `IN_PROGRESS`. Les RED ciblés prouvent qu'un profil public `/orgs/{owner}` ne suffit pas à établir une appartenance et qu'une projection ne doit jamais agréger les contextes d'un autre credential. La correction exige une appartenance active `/user/memberships/orgs/{owner}` et une corrélation opaque, éphémère, non persistée/non projetée, bornée au credential sélectionné.
+- Nouvelle validation locale : 43 tests B1 ciblés et 310 tests complets réussis ; typecheck, build, 200 Markdown gouvernés, cartographie, current-state sans contradiction, secrets et whitespace sont verts. Ces preuves restent locales jusqu'à publication du nouveau head et CI GitHub exacte.
+- Validation locale après correction : 38 tests ciblés et 305 tests complets réussis, typecheck/build/docs/current-state/secrets/diff verts. Le head corrigé exact, sa CI et la résolution du thread restent à produire et observer.
+- Intégration : Identity Policy V2 additive, connexions/secret storage existants, preuve live `GET /user`, collecteur/cache Governed Context existants ; aucun `identity-registry.json`, registre, store, Session Manager, cache, observateur ou outil parallèle.
+- Frontières : utilisateur GitHub distinct des organisations accessibles ; OAuth principal, Human Identity, Agent Role et repository context distincts ; aucune permission ou Effective Capability B1 ; GitRegistry V2 inchangé ; WRITE gate `shadow` ; aucune écriture directe S1.
+- Prochaine action : publier les nouvelles preuves RED/GREEN de revue, obtenir la CI exacte, résoudre les deux threads sur le commit correctif, puis seulement `REVIEW`/`MERGE_READY`/merge/déploiement/attestation/`DONE`.
+- B2 n'est pas enregistré : il reste la prochaine candidate séparée dans la chronologie B1 → B2 → C1/C2 → C3/C4/C5 → D1/D2/D3.
+
+Les statuts dynamiques, propriétaires, locks, checkpoints et SHA courants doivent toujours être relus dans GitHub, Live State, Operational Memory et la Governed Task Queue. Ce checkpoint documentaire ne remplace pas ces autorités.
+
+## Baseline précédente — A2.1 livré et clôturé
 
 - Clôture documentaire : merge `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4` de la PR #70, fusionnée depuis le head exact `59de3687bf1b2439a24f092257236fb3f559feee`; MCP CI PR #745, CI main #746 et Governed Deploy #25 réussis.
 - Baseline fonctionnelle A2.1 : PR #68 fusionnée depuis `81832e1b702a8dfe10cda5634d6092fb3a177142` au merge `024f6ad4c047614bdfaea0e317f371b789f60136`; MCP CI PR #713 (`272/272`), CI main #714/#715 et Governed Deploy #24 réussis.
 - Live State `83` a attesté GitHub `main`, S1 HEAD, S1 `origin/main`, image OCI, runtime healthy et documentation `FULLY_ALIGNED` sur `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4`; S1 est propre et son push reste désactivé.
 - Operational Memory a transitionné `TASK-20260901-001` à `DONE` en révision 10, enregistré le checkpoint final, libéré le lock puis fermé la session.
-- La queue observée après clôture avait six tâches toutes `DONE`, sans `currentTask` ni `firstExecutableTask`. A2.2 et B1+ restaient des candidats distincts non enregistrés.
+- La queue observée à cette clôture avait six tâches toutes `DONE`, sans `currentTask` ni `firstExecutableTask`. A2.2 et B1+ étaient alors des candidats distincts non enregistrés.
 - `TASK-20260901-002 — Final A2.1 documentation reconciliation` porte uniquement la présente projection descendante dans six Markdown canoniques. Son statut courant, sa branche, sa PR, ses locks et sa session doivent être relus dans les autorités runtime/GitHub.
 - Aucun TypeScript, test, OAuth, GitRegistry, Bootstrap Receipt, WRITE gate, workflow, secret, S1 ou runtime n'est modifié par ce lot.
 
-Les statuts dynamiques, propriétaires, locks, checkpoints et SHA courants doivent toujours être relus dans GitHub, Live State, Operational Memory et la Governed Task Queue. Ce checkpoint documente une baseline fonctionnelle immuable; il ne remplace pas ces autorités.
+Ce checkpoint A2.1 documente une baseline fonctionnelle immuable; il ne remplace pas les autorités courantes B1.
 
 ## Historique pré-merge — TASK-20260901-001 — Connection Context minimal sur la Draft PR #67
 
@@ -81,20 +99,20 @@ Lorsqu'une attestation actuelle est nécessaire, ces données doivent être lues
 
 ### Programme suivant — orientation documentaire
 
-Le programme global prolonge le bootstrap de session déjà livré avec la chaîne de résolution ci-dessous. `TASK-20260901-001` a couvert uniquement le premier maillon A2.1 `Connection Context minimal` et est maintenant clôturée; B1 peut uniquement être enregistré comme une future tâche distincte après son propre design et ses gates.
+Le programme global prolonge le bootstrap de session déjà livré avec la chaîne de résolution ci-dessous. `TASK-20260901-001` a couvert uniquement A2.1 et est clôturée ; après design approuvé, B1 a été enregistré séparément sous `TASK-20260907-001` et reste en cours tant que merge, déploiement et attestation ne sont pas acquis.
 
 ```text
 principal OAuth
 → A2.1 Connection Context minimal [livré par TASK-20260901-001]
 → clôture et attestation A2.1 [acquises]
-→ B1 GitHub identity [future tâche distincte]
+→ B1 GitHub identity [tâche distincte actuelle, non encore livrée]
 → B2 repository [future tâche distincte]
 → C1/C2 GitRegistry V2 mapping / project [futures tâches distinctes]
 → C3/C4/C5 server / runtime / domain [futures tâches distinctes]
 → D1/D2/D3 gouvernance héritée [futures tâches distinctes]
 ```
 
-B1 et tous les maillons suivants sont des candidats du programme, pas une extension implicite de `TASK-20260901-001`. Ils ne peuvent être enregistrés puis exécutés que séparément, selon les dépendances et les autorités runtime. Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) restent positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
+B1 n'est pas une extension implicite de `TASK-20260901-001` mais la tâche distincte actuelle. B2 et tous les maillons suivants restent des candidats du programme et ne peuvent être enregistrés qu'individuellement selon les dépendances et les autorités runtime. Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) restent positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
 
 ### Règle de reprise
 

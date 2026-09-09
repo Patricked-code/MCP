@@ -66,6 +66,18 @@ const SESSION: GovernedSessionPublicRecord = {
   expiredAt: null,
   closedAt: null,
   currentTransport: null,
+  connectionContext: {
+    schemaVersion: 1,
+    connectionContextId: '66666666-6666-4666-8666-666666666666',
+    governedSessionId: SESSION_ID,
+    repository: 'Patricked-code/MCP',
+    principalId: 'oauth:wealthtech-mcp-admin',
+    observedClientId: 'chatgpt-client',
+    identityAssurance: 'oauth_subject',
+    clientClassification: 'UNRESOLVED',
+    evidenceSource: 'oauth_auth_info',
+    createdAt: NOW
+  },
   lastAcknowledgedStateVersion: 9,
   bootstrapReceipt: {
     schemaVersion: 1,
@@ -158,18 +170,63 @@ async function context(overrides: {
   let liveReconciles = 0;
   let githubReconciles = 0;
   let githubCollections = 0;
+  const githubIdentityScopes: unknown[] = [];
   const liveState = overrides.liveState === undefined ? LIVE_STATE : overrides.liveState;
   const session = overrides.session === undefined ? SESSION : overrides.session;
   const github = overrides.github ?? GITHUB;
+  const githubWithIdentity = (scope: unknown) => {
+    githubIdentityScopes.push(scope);
+    const value = scope as { oauthPrincipalId?: string | null; repositoryContext?: string | null } | undefined;
+    const resolved = value?.oauthPrincipalId === 'oauth:wealthtech-mcp-admin'
+      && value.repositoryContext === 'Patricked-code/MCP';
+    return {
+      ...github,
+      identity: resolved ? {
+        status: 'RESOLVED' as const,
+        observedAt: NOW,
+        bindingId: 'oauth-wealthtech-mcp-admin__patricked-code__patricked-code-mcp',
+        oauthPrincipalId: value.oauthPrincipalId!,
+        repositoryContext: value.repositoryContext!,
+        authenticatedPrincipal: {
+          provider: 'github' as const, login: 'Patricked-code', accountType: 'user' as const,
+          githubUserId: 270385782
+        },
+        selectedAccountContext: {
+          owner: 'Patricked-code', type: 'user' as const, source: 'durable_account' as const
+        },
+        accessibleAccountContexts: [],
+        freshness: 'CURRENT' as const,
+        provenance: ['identity_policy', 'durable_accounts', 'github_api:get_user'],
+        reasonCodes: [],
+        policyDigest: 'a'.repeat(64)
+      } : {
+        status: 'UNVERIFIED' as const,
+        observedAt: NOW,
+        bindingId: null,
+        oauthPrincipalId: value?.oauthPrincipalId ?? null,
+        repositoryContext: value?.repositoryContext ?? null,
+        authenticatedPrincipal: null,
+        selectedAccountContext: null,
+        accessibleAccountContexts: [],
+        freshness: 'UNKNOWN' as const,
+        provenance: ['identity_policy'],
+        reasonCodes: ['GITHUB_IDENTITY_OAUTH_PRINCIPAL_UNAVAILABLE' as const],
+        policyDigest: null
+      }
+    };
+  };
   const service = createGovernedOperationalContextService({
     liveState: {
       getCurrent: async () => liveState,
       reconcileNow: async () => { liveReconciles += 1; return liveState; }
     },
     github: {
-      getCurrent: async () => github,
-      collect: async () => { githubCollections += 1; return github; },
-      reconcileExplicit: async () => { githubReconciles += 1; return github; }
+      getCurrent: async (_branch, scope) => githubWithIdentity(scope),
+      collect: async (_branch, scope) => { githubCollections += 1; return githubWithIdentity(scope); },
+      reconcileExplicit: async (_branch, scope) => {
+        githubReconciles += 1;
+        return githubWithIdentity(scope);
+      }
     },
     sessions: {
       getVisibleSession: async () => session
@@ -203,7 +260,8 @@ async function context(overrides: {
     result,
     service,
     input,
-    counts: () => ({ liveReconciles, githubReconciles, githubCollections })
+    counts: () => ({ liveReconciles, githubReconciles, githubCollections }),
+    identityScopes: () => githubIdentityScopes
   };
 }
 
@@ -290,6 +348,28 @@ test('une session absente et des lecteurs dégradés produisent une vue, jamais 
   assert.equal(fixture.result.nextAction, 'mcp_open_governed_session');
   assert.equal(fixture.result.proof.identityAssurance, null);
   assert.equal(fixture.result.proof.limitations.includes('live_state_unavailable'), true);
+});
+
+test('B1 utilise seulement le ConnectionContext OAuth durable et échoue fermé sans lui', async () => {
+  const current = await context();
+  assert.deepEqual(current.identityScopes()[0], {
+    oauthPrincipalId: 'oauth:wealthtech-mcp-admin',
+    repositoryContext: 'Patricked-code/MCP'
+  });
+  assert.equal(current.result.github.identity?.status, 'RESOLVED');
+
+  const historical = await context({
+    session: { ...SESSION, connectionContext: undefined }
+  });
+  assert.deepEqual(historical.identityScopes()[0], {
+    oauthPrincipalId: null,
+    repositoryContext: null
+  });
+  assert.equal(historical.result.github.identity?.status, 'UNVERIFIED');
+  assert.deepEqual(historical.result.github.identity?.reasonCodes, [
+    'GITHUB_IDENTITY_OAUTH_PRINCIPAL_UNAVAILABLE'
+  ]);
+  assert.equal(historical.input.request.identity.principalId, 'oauth:wealthtech-mcp-admin');
 });
 
 test('des dépendances qui lèvent synchroniquement sont converties en vue dégradée', async () => {

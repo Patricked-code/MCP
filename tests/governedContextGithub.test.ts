@@ -285,3 +285,131 @@ test('le timeout global est borné et retourne UNAVAILABLE sans throw', async ()
   assert.deepEqual(result.reasonCodes, ['GITHUB_TIMEOUT']);
   assert.equal(JSON.stringify(result).includes('timeout-sensitive-token'), false);
 });
+
+const IDENTITY_POLICY = {
+  schemaVersion: 2 as const,
+  updatedAt: '2026-08-09T09:15:01Z',
+  goal: 'link every MCP or Git intervention to governed evidence',
+  currentSignals: ['mcp tool called'],
+  limits: ['human identity may require confirmation'],
+  s1GithubDeploymentIdentity: {
+    id: 'S1_MCP_GITHUB_DEPLOY_READ_ONLY',
+    type: 'github_deploy_key_ssh',
+    repository: 'Patricked-code/MCP',
+    fetchAlias: 'github.com-mcp-patricked-ro',
+    contentsRead: true,
+    contentsWrite: false,
+    pushUrl: 'disabled://mcp-s1-read-only',
+    privateKeyReadableByMcp: false
+  },
+  requiredSuiviFields: ['date'],
+  githubPrincipalBindings: [{
+    bindingId: 'oauth-wealthtech-mcp-admin__patricked-code__patricked-code-mcp',
+    oauthPrincipalId: 'oauth:wealthtech-mcp-admin',
+    provider: 'github' as const,
+    connectionSelector: { owner: 'Patricked-code', type: 'user' as const },
+    expectedAuthenticatedLogin: 'Patricked-code',
+    context: { repository: 'Patricked-code/MCP' },
+    effect: 'IDENTITY_ONLY' as const,
+    enabled: true
+  }]
+};
+
+const IDENTITY_SCOPE = {
+  oauthPrincipalId: 'oauth:wealthtech-mcp-admin',
+  repositoryContext: 'Patricked-code/MCP'
+};
+
+function identityConnection(observedAt = '2026-09-07T21:00:00.000Z') {
+  return {
+    owner: 'Patricked-code',
+    type: 'user' as const,
+    configuredStatus: 'active',
+    authenticationContextId: 'authentication-context-primary',
+    accountVerified: true,
+    principal: {
+      status: 'VERIFIED' as const,
+      observedAt,
+      freshness: 'CURRENT' as const,
+      login: 'Patricked-code',
+      githubUserId: 270385782,
+      accountType: 'user' as const,
+      reasonCode: null
+    }
+  };
+}
+
+test('la réconciliation explicite attache B1 et le cache reste isolé par tout le contexte', async () => {
+  let now = new Date('2026-09-07T21:00:00.000Z');
+  let policyDigest = 'a'.repeat(64);
+  let workCalls = 0;
+  let identityCalls = 0;
+  const collector = createGithubOperationalContextCollector({
+    fetchImpl: async (input) => {
+      workCalls += 1;
+      const url = String(input);
+      if (url.endsWith('/commits/main') || url.includes('/commits/mcp%2F')) return json({ sha: SHA });
+      if (url.includes('/pulls?')) return json([]);
+      if (url.includes('/rulesets?')) return json([]);
+      return json({ message: 'unexpected endpoint' }, 500);
+    },
+    readToken: async () => 'work-state-token',
+    apiBase: 'https://api.github.test',
+    allowedHosts: 'api.github.test',
+    now: () => now,
+    cacheTtlMs: 1_000,
+    loadIdentityPolicy: async () => ({
+      parse: { ok: true as const, policy: IDENTITY_POLICY },
+      digest: policyDigest
+    }),
+    observeIdentityConnections: async () => {
+      identityCalls += 1;
+      return [identityConnection(now.toISOString())];
+    }
+  });
+
+  const first = await collector.reconcileExplicit(BRANCH, IDENTITY_SCOPE);
+  assert.equal(first.identity?.status, 'RESOLVED');
+  assert.equal(first.identity?.authenticatedPrincipal?.login, 'Patricked-code');
+  assert.equal(first.identity?.selectedAccountContext?.owner, 'Patricked-code');
+  assert.equal(first.identity?.policyDigest, 'a'.repeat(64));
+  assert.equal(identityCalls, 1);
+
+  const cached = await collector.getCurrent(BRANCH, IDENTITY_SCOPE);
+  assert.equal(cached.cache.status, 'HIT');
+  assert.equal(cached.identity?.status, 'RESOLVED');
+  assert.equal(identityCalls, 1);
+  const callsAfterCacheHit = workCalls;
+
+  const otherPrincipal = await collector.getCurrent(BRANCH, {
+    ...IDENTITY_SCOPE,
+    oauthPrincipalId: 'oauth:another-principal'
+  });
+  const otherRepository = await collector.getCurrent(BRANCH, {
+    ...IDENTITY_SCOPE,
+    repositoryContext: 'Patricked-code/Other'
+  });
+  const otherBranch = await collector.getCurrent('mcp/another-branch', IDENTITY_SCOPE);
+  for (const result of [otherPrincipal, otherRepository, otherBranch]) {
+    assert.equal(result.cache.status, 'MISS');
+    assert.equal(result.identity?.status, 'UNVERIFIED');
+    assert.deepEqual(result.identity?.reasonCodes, ['GITHUB_IDENTITY_CACHE_MISS']);
+  }
+  assert.equal(workCalls, callsAfterCacheHit);
+  assert.equal(identityCalls, 1);
+
+  policyDigest = 'b'.repeat(64);
+  const refreshed = await collector.reconcileExplicit(BRANCH, IDENTITY_SCOPE);
+  assert.equal(refreshed.identity?.policyDigest, 'b'.repeat(64));
+  assert.equal(identityCalls, 2);
+  const newest = await collector.getCurrent(BRANCH, IDENTITY_SCOPE);
+  assert.equal(newest.identity?.policyDigest, 'b'.repeat(64));
+
+  now = new Date('2026-09-07T21:00:02.000Z');
+  const stale = await collector.getCurrent(BRANCH, IDENTITY_SCOPE);
+  assert.equal(stale.status, 'DEGRADED');
+  assert.equal(stale.identity?.status, 'UNVERIFIED');
+  assert.equal(stale.identity?.freshness, 'STALE');
+  assert.deepEqual(stale.identity?.reasonCodes, ['GITHUB_IDENTITY_EVIDENCE_STALE']);
+  assert.equal(stale.identity?.authenticatedPrincipal, null);
+});

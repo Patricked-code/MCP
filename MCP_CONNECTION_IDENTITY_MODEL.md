@@ -52,11 +52,51 @@ Point de reprise :
 
 ## À améliorer ensuite
 
-- créer .mcp/identity-registry.json ;
+- étendre additivement `.mcp/identity-policy.json` lorsque de nouveaux bindings contextuels sont approuvés ;
 - relier GitHub user à rôle projet ;
 - relier agent IA à permissions ;
 - ajouter une matrice d’approbation ;
 - produire un audit log structuré exploitable.
+
+L'ancienne instruction de créer `.mcp/identity-registry.json` est explicitement
+supersédée. Ce fichier ne doit pas être créé : il doublerait les autorités déjà
+présentes et confondrait politique de sélection, connexions configurées et preuve
+GitHub live.
+
+## Résolution GitHub B1 — SLOT-06
+
+La résolution GitHub conserve cinq notions distinctes :
+
+| Notion | Autorité | Effet |
+|---|---|---|
+| Principal OAuth | authentification vérifiée puis `ConnectionContext` | input de corrélation uniquement |
+| Binding contextuel | `.mcp/identity-policy.json` | règle versionnée `IDENTITY_ONLY` |
+| Connexion GitHub configurée | `data/github-accounts.json` et mécanismes durables existants | sélection d'une connexion existante |
+| Credential | secret storage `/app/secrets/*` | utilisé par la couche de connexion, jamais projeté |
+| Principal GitHub | réponse live `GET /user` | preuve de l'utilisateur authentifié |
+| Contexte organisationnel | appartenance active du principal prouvée par `GET /user/memberships/orgs/{org}` | contexte credential-scoped, jamais login authentifié ; le profil public `/orgs/{org}` ne suffit pas |
+| GitHub Identity | `Governed Context` | projection dérivée, non persistante |
+
+Le binding actuellement approuvé relie `oauth:wealthtech-mcp-admin` au compte
+utilisateur `Patricked-code` uniquement lorsque le `ConnectionContext` prouve le
+repository `Patricked-code/MCP`. Il n'est ni global, ni exclusif, ni irréversible ;
+un futur binding peut viser une autre connexion ou un autre repository sans
+modifier celui-ci. Zéro correspondance produit `NONE`, plusieurs correspondances
+produisent `AMBIGUOUS`, et une preuve absente, périmée ou contradictoire produit
+`UNVERIFIED`. Un contexte de compte configuré mais non vérifié produit également
+`UNVERIFIED` avec `GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED` et ne peut jamais
+devenir le `selectedAccountContext`. Aucun de ces états n'accorde une permission.
+
+Les observations provenant d'un même credential sont corrélées uniquement pendant
+la collecte par un identifiant opaque non secret, non persisté et non projeté.
+`accessibleAccountContexts` exclut toute observation provenant d'un autre
+credential. Une corrélation absente retourne `UNVERIFIED` avec
+`GITHUB_IDENTITY_AUTHENTICATION_CONTEXT_UNAVAILABLE`. Une preuve d'organisation
+inactive, discordante ou indisponible reste `GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNVERIFIED`.
+
+`Human Identity`, `Agent Role`, résolution repository B2 et Effective Capabilities
+SLOT-11 restent hors de B1. GitRegistry V2 conserve exclusivement les mappings
+repository ↔ projet ↔ serveur ↔ domaine.
 
 ## Identité de déploiement GitHub S1
 
