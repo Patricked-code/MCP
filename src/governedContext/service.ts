@@ -1,5 +1,7 @@
 import type { LiveStateEngine } from '../liveState/engine.js';
 import type { LiveStateSnapshot } from '../liveState/types.js';
+import type { GithubRepositoryRoutingService } from '../github/repositoryRouting.js';
+import type { GithubTechnicalAccess } from '../github/repositoryResolution.js';
 import {
   deriveCapabilityReality,
   deriveGovernanceDecision,
@@ -28,6 +30,8 @@ export type GovernedContextInput = {
   governedSessionId: string | null;
   workBranch: string | null;
   request: SessionRequest;
+  targetRepository?: string | null;
+  requiredGithubAccess?: GithubTechnicalAccess;
 };
 
 type ContextServiceOptions = {
@@ -39,6 +43,7 @@ type ContextServiceOptions = {
     collect?(workBranch: string | null, identityScope?: GithubIdentityScope): Promise<GithubOperationalContext>;
     reconcileExplicit(workBranch: string | null, identityScope?: GithubIdentityScope): Promise<GithubOperationalContext>;
   };
+  repositoryRouting?: GithubRepositoryRoutingService;
   sessions: Pick<GovernedSessionService, 'getVisibleSession'>;
   locks: Pick<GovernedLockService, 'listActiveLocks'>;
   gateMode: 'off' | 'shadow';
@@ -247,6 +252,20 @@ export function createGovernedOperationalContextService(
       limitations.push(github.error ?? 'github_context_degraded');
     }
 
+    const repositoryResolution = explicit && input.targetRepository && options.repositoryRouting
+      ? await safeRead(
+          () => options.repositoryRouting!.resolve({
+            oauthPrincipalId: identityScope.oauthPrincipalId,
+            targetRepository: input.targetRepository!,
+            requiredTechnicalAccess: input.requiredGithubAccess ?? 'read'
+          }),
+          null
+        )
+      : null;
+    if (explicit && input.targetRepository && options.repositoryRouting && !repositoryResolution) {
+      limitations.push('github_repository_resolution_unavailable');
+    }
+
     const foreignLock = activeLocks.some((lock) => (
       lock.status === 'ACTIVE'
       && lock.governedSessionId !== session?.governedSessionId
@@ -406,6 +425,7 @@ export function createGovernedOperationalContextService(
       governedBranch: 'main',
       liveState,
       github,
+      ...(repositoryResolution ? { repositoryResolution } : {}),
       session,
       bootstrap: {
         required: true,
