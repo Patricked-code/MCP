@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "b26dae1b36c889f0920b3a6843e5f6994cc5478e1bfd7fda7511fcb63dd98385",
+  "catalogueDigest": "cfd5f18490f25ce79b4afbda36a9eda48453a7098237f73b39aa804a4cd43aad",
   "registeredToolCount": 111,
   "readOnlyToolCount": 68,
   "writeToolCount": 43,
@@ -2257,7 +2257,7 @@
     {
       "name": "mcp_reconcile_governed_context",
       "title": "Reconcile Governed Operational Context",
-      "description": "Force une observation read-only Live State et GitHub, puis compose le contexte gouverné; un dépôt cible explicite peut aussi déclencher B2 Repository Resolution.",
+      "description": "Force une observation read-only Live State et GitHub, puis compose le contexte gouverné.",
       "surface": "read",
       "annotations": {
         "readOnlyHint": true,
@@ -2266,27 +2266,10 @@
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
-        "properties": {
-          "target_repository": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})\\/[A-Za-z0-9_.-]{1,100}$"
-          },
-          "required_github_access": {
-            "default": "read",
-            "type": "string",
-            "enum": [
-              "read",
-              "write",
-              "admin"
-            ]
-          }
-        },
-        "required": [
-          "required_github_access"
-        ],
+        "properties": {},
         "additionalProperties": false
       },
-      "contractDigest": "05d81d4b267e97a6e6c7c9514b6b6ebda6fc9060234f74a2caa08c5f8330a256"
+      "contractDigest": "b96722d8a2fa3f9e47ae09c4b71cbb9c282a5c402020322a34b6ef9fd1a108d5"
     },
     {
       "name": "mcp_reconcile_live_state",

@@ -1,8 +1,6 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { z } from 'zod';
 
 import { env } from '../config/env.js';
-import { createGithubRepositoryRoutingService } from '../github/repositoryRouting.js';
 import { createGithubOperationalContextCollector } from '../governedContext/github.js';
 import {
   createGovernedOperationalContextService,
@@ -51,7 +49,6 @@ export function getGovernedContextToolDependencies(): GovernedContextToolDepende
     context: createGovernedOperationalContextService({
       liveState: liveStateEngine,
       github,
-      repositoryRouting: createGithubRepositoryRoutingService(),
       sessions: operational.sessions,
       locks: operational.locks,
       gateMode: operationalMemoryConfig.writeGateMode,
@@ -66,18 +63,13 @@ export function getGovernedContextToolDependencies(): GovernedContextToolDepende
 
 function contextInput(
   extra: GovernedSessionToolExtra,
-  sessions: Pick<GovernedSessionService, 'lookupGovernedSessionId'>,
-  repositoryTarget?: Pick<GovernedContextInput, 'targetRepository' | 'requiredGithubAccess'>
+  sessions: Pick<GovernedSessionService, 'lookupGovernedSessionId'>
 ): GovernedContextInput {
   const request = sessionRequestFromToolExtra(extra);
   return {
     governedSessionId: sessions.lookupGovernedSessionId(extra.sessionId),
     workBranch: null,
-    request,
-    ...(repositoryTarget?.targetRepository ? {
-      targetRepository: repositoryTarget.targetRepository,
-      requiredGithubAccess: repositoryTarget.requiredGithubAccess ?? 'read'
-    } : {})
+    request
   };
 }
 
@@ -165,22 +157,12 @@ export function registerGovernedContextTools(
     'mcp_reconcile_governed_context',
     {
       title: 'Reconcile Governed Operational Context',
-      description: 'Force une observation read-only Live State et GitHub, puis compose le contexte gouverné; un dépôt cible explicite peut aussi déclencher B2 Repository Resolution.',
-      inputSchema: {
-        target_repository: z.string().trim().regex(
-          /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})\/[A-Za-z0-9_.-]{1,100}$/
-        ).optional(),
-        required_github_access: z.enum(['read', 'write', 'admin']).default('read')
-      },
+      description: 'Force une observation read-only Live State et GitHub, puis compose le contexte gouverné.',
+      inputSchema: {},
       annotations
     },
-    async ({ target_repository, required_github_access }, extra) => handleTool(() => (
-      activeDependencies.context.reconcileExplicit(
-        contextInput(extra, activeDependencies.sessions, {
-          targetRepository: target_repository ?? null,
-          requiredGithubAccess: required_github_access
-        })
-      )
+    async (_input, extra) => handleTool(() => activeDependencies.context.reconcileExplicit(
+      contextInput(extra, activeDependencies.sessions)
     ))
   );
 }

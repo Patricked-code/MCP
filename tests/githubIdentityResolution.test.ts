@@ -31,30 +31,6 @@ const BINDING = {
   effect: 'IDENTITY_ONLY' as const, enabled: true
 };
 
-const ROUTING_BINDINGS = [
-  {
-    routingBindingId: 'oauth-wealthtech-mcp-admin__route__patricked-code',
-    oauthPrincipalId: 'oauth:wealthtech-mcp-admin', provider: 'github' as const,
-    repositoryOwner: 'Patricked-code',
-    connectionSelector: { owner: 'Patricked-code', type: 'user' as const },
-    effect: 'ROUTING_ONLY' as const, enabled: true
-  },
-  {
-    routingBindingId: 'oauth-wealthtech-mcp-admin__route__chainsolutions-wealthtech',
-    oauthPrincipalId: 'oauth:wealthtech-mcp-admin', provider: 'github' as const,
-    repositoryOwner: 'chainsolutions-wealthtech',
-    connectionSelector: { owner: 'chainsolutions-wealthtech', type: 'organization' as const },
-    effect: 'ROUTING_ONLY' as const, enabled: true
-  },
-  {
-    routingBindingId: 'oauth-wealthtech-mcp-admin__route__wealthtechinnovations',
-    oauthPrincipalId: 'oauth:wealthtech-mcp-admin', provider: 'github' as const,
-    repositoryOwner: 'Wealthtechinnovations',
-    connectionSelector: { owner: 'Wealthtechinnovations', type: 'organization_or_user' as const },
-    effect: 'ROUTING_ONLY' as const, enabled: true
-  }
-];
-
 const V2: GithubIdentityPolicyV2 = { ...V1, schemaVersion: 2, githubPrincipalBindings: [BINDING] };
 
 function connection(overrides: Record<string, unknown> = {}) {
@@ -250,11 +226,11 @@ test('les identifiants GitHub et le repository sont comparés sans dépendre de 
   assert.equal(result.authenticatedPrincipal?.login, 'patricked-CODE');
 });
 
-test('la policy réellement versionnée est V3, conserve B1 et ajoute uniquement les trois routes B2 explicites', async () => {
+test('la policy réellement versionnée reste V1 complète, contextuelle et packagée', async () => {
   const raw = await readFile(new URL('../.mcp/identity-policy.json', import.meta.url), 'utf8');
   const parsed = parseGithubIdentityPolicy(JSON.parse(raw));
   assert.equal(parsed.ok, true);
-  if (!parsed.ok || parsed.policy.schemaVersion !== 3) assert.fail('versioned V3 policy required');
+  if (!parsed.ok || parsed.policy.schemaVersion !== 2) assert.fail('versioned V2 policy required');
   assert.equal(parsed.policy.goal, V1.goal.replace(
     'governed evidence',
     'actor, tool, server, project, branch, objective, risk, backup, tests, result and point de reprise'
@@ -262,8 +238,6 @@ test('la policy réellement versionnée est V3, conserve B1 et ajoute uniquement
   assert.deepEqual(parsed.policy.s1GithubDeploymentIdentity, V1.s1GithubDeploymentIdentity);
   assert.equal(parsed.policy.githubPrincipalBindings.length, 1);
   assert.deepEqual(parsed.policy.githubPrincipalBindings[0], BINDING);
-  assert.deepEqual(parsed.policy.githubRepositoryRoutingBindings, ROUTING_BINDINGS);
-  assert.equal(parsed.policy.githubRepositoryRoutingBindings.some((binding) => binding.repositoryOwner === '*'), false);
   const dockerfile = await readFile(new URL('../Dockerfile', import.meta.url), 'utf8');
   assert.match(dockerfile, /COPY \.mcp\/identity-policy\.json \.\/\.mcp\/identity-policy\.json/);
 });

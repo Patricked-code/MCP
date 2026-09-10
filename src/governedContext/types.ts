@@ -1,6 +1,5 @@
 import type { LiveStateSnapshot } from '../liveState/types.js';
 import type { GithubIdentityResolution } from '../github/identityResolution.js';
-import type { GithubRepositoryResolution } from '../github/repositoryResolution.js';
 import type {
   CapabilityReality,
   GovernanceDecision,
@@ -121,8 +120,6 @@ export type GovernedOperationalContext = {
   governedBranch: 'main';
   liveState: LiveStateSnapshot | null;
   github: GithubOperationalContext;
-  /** Explicit B2 projection only; absent from historical cache/store-only reads. */
-  repositoryResolution?: GithubRepositoryResolution;
   session: PublicGovernedSession | null;
   bootstrap: {
     required: true;

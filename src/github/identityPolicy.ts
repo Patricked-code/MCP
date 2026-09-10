@@ -55,32 +55,10 @@ export const GithubIdentityPolicyV2Schema = z.object({
   githubPrincipalBindings: z.array(GithubPrincipalBindingSchema).max(200)
 }).strict();
 
-export const GithubRepositoryRoutingBindingSchema = z.object({
-  routingBindingId: z.string().trim().min(3).max(200).regex(/^[A-Za-z0-9._-]+$/),
-  oauthPrincipalId: z.string().trim().min(7).max(256).startsWith('oauth:'),
-  provider: z.literal('github'),
-  repositoryOwner: GithubLoginSchema,
-  connectionSelector: z.object({
-    owner: GithubLoginSchema,
-    type: z.enum(['user', 'organization', 'organization_or_user'])
-  }).strict(),
-  effect: z.literal('ROUTING_ONLY'),
-  enabled: z.boolean()
-}).strict();
-
-export const GithubIdentityPolicyV3Schema = z.object({
-  schemaVersion: z.literal(3),
-  ...IdentityPolicyBaseShape,
-  githubPrincipalBindings: z.array(GithubPrincipalBindingSchema).max(200),
-  githubRepositoryRoutingBindings: z.array(GithubRepositoryRoutingBindingSchema).max(200)
-}).strict();
-
 export type GithubIdentityPolicyV1 = z.infer<typeof GithubIdentityPolicyV1Schema>;
 export type GithubIdentityPolicyV2 = z.infer<typeof GithubIdentityPolicyV2Schema>;
-export type GithubIdentityPolicyV3 = z.infer<typeof GithubIdentityPolicyV3Schema>;
-export type GithubIdentityPolicy = GithubIdentityPolicyV1 | GithubIdentityPolicyV2 | GithubIdentityPolicyV3;
+export type GithubIdentityPolicy = GithubIdentityPolicyV1 | GithubIdentityPolicyV2;
 export type GithubPrincipalBinding = z.infer<typeof GithubPrincipalBindingSchema>;
-export type GithubRepositoryRoutingBinding = z.infer<typeof GithubRepositoryRoutingBindingSchema>;
 
 export type GithubIdentityPolicyParseResult =
   | { ok: true; policy: GithubIdentityPolicy }
@@ -100,9 +78,7 @@ export function parseGithubIdentityPolicy(value: unknown): GithubIdentityPolicyP
     ? GithubIdentityPolicyV1Schema.safeParse(value)
     : version === 2
       ? GithubIdentityPolicyV2Schema.safeParse(value)
-      : version === 3
-        ? GithubIdentityPolicyV3Schema.safeParse(value)
-        : null;
+      : null;
   return parsed?.success
     ? { ok: true, policy: parsed.data }
     : { ok: false, reasonCode: 'GITHUB_IDENTITY_POLICY_INVALID' };

@@ -127,13 +127,13 @@ export function resolveGithubIdentity(
   if (!input.oauthPrincipalId) {
     return unresolved(input, 'UNVERIFIED', 'GITHUB_IDENTITY_OAUTH_PRINCIPAL_UNAVAILABLE');
   }
-  const bindings = input.policy.schemaVersion === 1
-    ? []
-    : input.policy.githubPrincipalBindings.filter((binding) => (
+  const bindings = input.policy.schemaVersion === 2
+    ? input.policy.githubPrincipalBindings.filter((binding) => (
         binding.enabled
         && binding.provider === 'github'
         && same(binding.oauthPrincipalId, input.oauthPrincipalId!)
-      ));
+      ))
+    : [];
   const contextRequired = bindings.some((binding) => (
     Boolean(binding.context?.repository) && !input.repositoryContext
   ));
