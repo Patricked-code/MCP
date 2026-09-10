@@ -47,6 +47,19 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Generate function cartography candidate
+        run: |
+          node --import tsx scripts/emit-function-cartography.ts > /tmp/function-cartography.json
+          node -e "const fs=require('fs'); const p='/tmp/function-cartography.json'; fs.writeFileSync(p, JSON.stringify(JSON.parse(fs.readFileSync(p,'utf8')), null, 2)+'\n')"
+
+      - name: Upload function cartography candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-function-cartography-candidate
+          path: /tmp/function-cartography.json
+          if-no-files-found: error
+          retention-days: 1
+
       - name: Docs check
         run: npm run docs:check
 
