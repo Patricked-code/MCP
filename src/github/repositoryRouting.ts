@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 
-import { githubJsonRequest, type GitHubJsonResponse } from './connection.js';
+import type { GitHubJsonResponse } from './connection.js';
 import { loadGithubIdentityPolicy, type LoadedGithubIdentityPolicy } from './identityPolicy.js';
 import {
   resolveGithubRepository,
@@ -9,10 +9,7 @@ import {
   type GithubTechnicalAccess
 } from './repositoryResolution.js';
 import { dryRunGitRegistryV2, type GitRegistryV2 } from './registryV2.js';
-import {
-  collectDurableGithubIdentityObservations,
-  type DurableGithubAccountConfig
-} from '../tools/durableAccounts.js';
+import type { DurableGithubAccountConfig } from '../tools/durableAccounts.js';
 import type { DurableGithubIdentityObservation } from './identityResolution.js';
 
 const DEFAULT_ACCOUNTS_FILE = '/app/data/github-accounts.json';
@@ -93,6 +90,20 @@ async function defaultLoadRegistry(): Promise<GitRegistryV2 | null> {
   } catch {
     return null;
   }
+}
+
+async function defaultGithubRequest(token: string, endpoint: string): Promise<GitHubJsonResponse> {
+  const { githubJsonRequest } = await import('./connection.js');
+  return githubJsonRequest(token, endpoint);
+}
+
+async function defaultCollectIdentityObservations(
+  accounts: DurableGithubAccountConfig[],
+  readToken: (path: string) => Promise<string | null>,
+  now: () => Date
+): Promise<DurableGithubIdentityObservation[]> {
+  const { collectDurableGithubIdentityObservations } = await import('../tools/durableAccounts.js');
+  return collectDurableGithubIdentityObservations(accounts, { readToken, now });
 }
 
 function targetOwner(repository: string | null): string | null {
@@ -195,15 +206,10 @@ export function createGithubRepositoryRoutingService(
   const loadPolicy = dependencies.loadPolicy ?? loadGithubIdentityPolicy;
   const loadAccounts = dependencies.loadAccounts ?? defaultLoadAccounts;
   const readToken = dependencies.readToken ?? defaultReadToken;
-  const githubRequest = dependencies.githubRequest ?? ((token: string, endpoint: string) => (
-    githubJsonRequest(token, endpoint)
-  ));
+  const githubRequest = dependencies.githubRequest ?? defaultGithubRequest;
   const loadRegistry = dependencies.loadRegistry ?? defaultLoadRegistry;
   const collectIdentityObservations = dependencies.collectIdentityObservations
-    ?? ((accounts: DurableGithubAccountConfig[]) => collectDurableGithubIdentityObservations(accounts, {
-      readToken,
-      now
-    }));
+    ?? ((accounts: DurableGithubAccountConfig[]) => defaultCollectIdentityObservations(accounts, readToken, now));
 
   return {
     async resolve(input) {
