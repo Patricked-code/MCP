@@ -235,7 +235,10 @@ export function resolveGithubRepository(
     });
   }
   if (observation.status !== 'VERIFIED' || !observation.repository) {
-    const reason = ({
+    const reason = observation.status === 'UNAVAILABLE'
+      && observation.reasonCode === 'GITHUB_REPOSITORY_AUTH_MISSING'
+      ? 'GITHUB_REPOSITORY_AUTH_MISSING'
+      : ({
       NOT_FOUND_OR_INVISIBLE: 'GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE',
       AUTH_INVALID: 'GITHUB_REPOSITORY_AUTH_INVALID',
       PERMISSION_DENIED: 'GITHUB_REPOSITORY_PERMISSION_DENIED',

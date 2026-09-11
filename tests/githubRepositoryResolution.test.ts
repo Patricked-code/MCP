@@ -297,6 +297,19 @@ test('le reason code d une preuve échouée est dérivé du statut et non accept
   assert.deepEqual(result.reasonCodes, ['GITHUB_REPOSITORY_AUTH_INVALID']);
 });
 
+test('UNAVAILABLE conserve la distinction bornée AUTH_MISSING', () => {
+  const result = resolveGithubRepository(input({
+    repositoryObservation: proof({
+      status: 'UNAVAILABLE',
+      repository: null,
+      reasonCode: 'GITHUB_REPOSITORY_AUTH_MISSING',
+      freshness: 'UNKNOWN'
+    })
+  }));
+  assert.equal(result.status, 'UNVERIFIED');
+  assert.deepEqual(result.reasonCodes, ['GITHUB_REPOSITORY_AUTH_MISSING']);
+});
+
 test('une preuve absente ou de fraîcheur inconnue reste UNVERIFIED', () => {
   assert.equal(resolveGithubRepository(input({ repositoryObservation: null })).status, 'UNVERIFIED');
   const stale = resolveGithubRepository(input({
