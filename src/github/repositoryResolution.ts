@@ -107,6 +107,7 @@ function parseRepository(value: string | null): Candidate | null {
   if (parts.length !== 2) return null;
   const [owner, name] = parts;
   if (!owner || !name || owner.length > 100 || name.length > 100) return null;
+  if (owner === '.' || owner === '..' || name === '.' || name === '..') return null;
   if (!/^[A-Za-z0-9_.-]+$/.test(owner) || !/^[A-Za-z0-9_.-]+$/.test(name)) return null;
   return { owner, name, fullName: `${owner}/${name}` };
 }

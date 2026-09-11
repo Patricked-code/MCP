@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 
 import { env } from '../config/env.js';
 import { resolveGithubApiBase } from '../github/authorizationDiagnostics.js';
@@ -255,12 +256,12 @@ function staleIdentity(
 
 function staleRepositoryResolution(
   value: GithubRepositoryResolution,
-  observedAt: string
+  _observedAt: string
 ): GithubRepositoryResolution {
   return {
     ...value,
     status: 'UNVERIFIED',
-    observedAt,
+    observedAt: value.observedAt,
     selectedRepository: null,
     freshness: 'STALE',
     provenance: boundedUnique([...value.provenance, 'memory_cache']),
@@ -349,10 +350,15 @@ function identityScopeKey(
   workBranch: string | null,
   scope?: GithubIdentityScope
 ): string {
+  const boundedIdentityKey = (value: string | null | undefined): string | null => (
+    value === null || value === undefined
+      ? null
+      : createHash('sha256').update(value.toLowerCase()).digest('hex')
+  );
   return JSON.stringify({
     workBranch: workBranch ?? null,
-    oauthPrincipalId: scope?.oauthPrincipalId?.trim().toLowerCase() ?? null,
-    repositoryContext: scope?.repositoryContext?.trim().toLowerCase() ?? null
+    oauthPrincipalId: boundedIdentityKey(scope?.oauthPrincipalId),
+    repositoryContext: boundedIdentityKey(scope?.repositoryContext)
   });
 }
 
@@ -1179,7 +1185,7 @@ export function createGithubOperationalContextCollector(
     const at = now().getTime();
     const current = inFlight.get(scopeKey);
     if (current) return current;
-    if (!force) {
+    if (!force && !identityScope) {
       const cached = newestCacheEntry(scopeKey);
       if (cached && cached.expiresAt > at) {
         return withCache(cached.value, 'HIT', now().toISOString());

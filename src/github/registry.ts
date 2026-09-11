@@ -1,10 +1,11 @@
-import { mkdir, readFile, writeFile, chmod } from 'node:fs/promises';
+import { mkdir, open, readFile, writeFile, chmod } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { createHash } from 'node:crypto';
 import type { GitHubConnectionStatus } from './connection.js';
 
 const FILE = '/app/data/mcp-git-registry.json';
 const DEFAULT_PROJECT_KEY = 'mcp_bridge';
+const MAX_REGISTRY_EVIDENCE_BYTES = 1_000_000;
 
 export type GitHubAccessMode = 'read' | 'write' | 'admin' | 'org_admin';
 export type GitHubAccountRegistryEntry = Record<string, unknown>;
@@ -58,9 +59,30 @@ export async function readGitRegistry(): Promise<GitRegistry> {
   try { return norm(JSON.parse(await readFile(rf(), 'utf8'))); } catch { return empty(); }
 }
 
+async function readBoundedGitRegistryEvidenceFile(path: string): Promise<string> {
+  const file = await open(path, 'r');
+  try {
+    const chunks: Buffer[] = [];
+    let offset = 0;
+    while (offset <= MAX_REGISTRY_EVIDENCE_BYTES) {
+      const length = Math.min(64 * 1024, MAX_REGISTRY_EVIDENCE_BYTES + 1 - offset);
+      if (length <= 0) break;
+      const buffer = Buffer.allocUnsafe(length);
+      const { bytesRead } = await file.read(buffer, 0, length, offset);
+      if (bytesRead === 0) break;
+      chunks.push(buffer.subarray(0, bytesRead));
+      offset += bytesRead;
+    }
+    if (offset > MAX_REGISTRY_EVIDENCE_BYTES) throw new Error('registry exceeds byte bound');
+    return Buffer.concat(chunks, offset).toString('utf8');
+  } finally {
+    await file.close();
+  }
+}
+
 export async function readGitRegistryEvidence(): Promise<GitRegistryEvidence> {
   try {
-    const raw = await readFile(rf(), 'utf8');
+    const raw = await readBoundedGitRegistryEvidenceFile(rf());
     const parsed = JSON.parse(raw) as unknown;
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('invalid registry');
     const candidate = parsed as { version?: unknown; repoMappings?: unknown };
