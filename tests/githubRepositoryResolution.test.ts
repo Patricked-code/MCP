@@ -248,7 +248,9 @@ const failedEvidence = [
 for (const [status, reason] of failedEvidence) {
   test(`la preuve ${status} devient UNVERIFIED`, () => {
     const result = resolveGithubRepository(input({
-      repositoryObservation: proof({ status, repository: null, reasonCode: reason })
+      repositoryObservation: proof({
+        status, repository: null, reasonCode: reason, freshness: 'UNKNOWN'
+      })
     }));
     assert.equal(result.status, 'UNVERIFIED');
     assert.deepEqual(result.reasonCodes, [reason]);

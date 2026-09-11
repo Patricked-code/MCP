@@ -413,3 +413,184 @@ test('la réconciliation explicite attache B1 et le cache reste isolé par tout 
   assert.deepEqual(stale.identity?.reasonCodes, ['GITHUB_IDENTITY_EVIDENCE_STALE']);
   assert.equal(stale.identity?.authenticatedPrincipal, null);
 });
+
+function repositoryApiProof(status: 'VERIFIED' | 'NOT_FOUND_OR_INVISIBLE' = 'VERIFIED') {
+  return status === 'VERIFIED'
+    ? {
+        status,
+        observedAt: '2026-09-07T21:00:00.000Z',
+        freshness: 'CURRENT' as const,
+        requestedFullName: 'Patricked-code/MCP',
+        repository: {
+          githubRepositoryId: 1285534440,
+          owner: 'Patricked-code',
+          ownerType: 'user' as const,
+          name: 'MCP',
+          fullName: 'Patricked-code/MCP',
+          defaultBranch: 'main',
+          visibility: 'public' as const,
+          archived: false,
+          fork: false
+        },
+        reasonCode: null
+      }
+    : {
+        status,
+        observedAt: '2026-09-07T21:00:00.000Z',
+        freshness: 'UNKNOWN' as const,
+        requestedFullName: 'Patricked-code/MCP',
+        repository: null,
+        reasonCode: 'GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE' as const
+      };
+}
+
+function b2Collector(options: {
+  repositoryStatus?: 'VERIFIED' | 'NOT_FOUND_OR_INVISIBLE';
+  repositoryContext?: string | null;
+  policyWithoutRepositoryContext?: boolean;
+  registry?: { available: boolean; schemaVersion: 1; mappings: Array<{ githubOwner: string; githubRepo: string }>; digest: string | null };
+  observedAuthenticationContexts?: string[];
+}) {
+  const policy = options.policyWithoutRepositoryContext
+    ? {
+        ...IDENTITY_POLICY,
+        githubPrincipalBindings: IDENTITY_POLICY.githubPrincipalBindings.map((binding) => ({
+          ...binding,
+          context: undefined
+        }))
+      }
+    : IDENTITY_POLICY;
+  return createGithubOperationalContextCollector({
+    fetchImpl: async (input) => {
+      const url = String(input);
+      if (url.endsWith('/commits/main')) return json({ sha: SHA });
+      if (url.includes('/rulesets?')) return json([]);
+      return json({ message: 'unexpected endpoint' }, 500);
+    },
+    readToken: async () => 'work-state-token',
+    apiBase: 'https://api.github.test',
+    allowedHosts: 'api.github.test',
+    now: () => new Date('2026-09-07T21:00:00.000Z'),
+    loadIdentityPolicy: async () => ({
+      parse: { ok: true as const, policy },
+      digest: 'policy-digest'
+    }),
+    collectObservationBatch: async () => ({
+      identityObservations: [identityConnection()],
+      observeRepository: async (authenticationContextId, repository) => {
+        options.observedAuthenticationContexts?.push(authenticationContextId);
+        assert.deepEqual(repository, { owner: 'Patricked-code', name: 'MCP' });
+        return repositoryApiProof(options.repositoryStatus);
+      }
+    }),
+    readRepositoryRegistry: async () => options.registry ?? ({
+      available: true, schemaVersion: 1 as const, mappings: [], digest: 'registry-digest'
+    })
+  });
+}
+
+test('SLOT-07 résout le ConnectionContext exact avec le même contexte authentifié B1', async () => {
+  const observedAuthenticationContexts: string[] = [];
+  const collector = b2Collector({
+    repositoryContext: 'Patricked-code/MCP',
+    observedAuthenticationContexts,
+    registry: { available: false, schemaVersion: 1, mappings: [], digest: null }
+  });
+  const result = await collector.reconcileExplicit(null, IDENTITY_SCOPE);
+  assert.equal(result.repositoryResolution?.status, 'RESOLVED');
+  assert.equal(result.repositoryResolution?.selectionSource, 'connection_context');
+  assert.equal(result.repositoryResolution?.selectedRepository?.repositoryId, 'github:Patricked-code/MCP');
+  assert.deepEqual(observedAuthenticationContexts, ['authentication-context-primary']);
+  const serialized = JSON.stringify(result.repositoryResolution);
+  for (const forbidden of ['permissions', 'grants', 'mayWrite', 'mayDeploy']) {
+    assert.equal(serialized.includes(forbidden), false);
+  }
+});
+
+test('SLOT-07 utilise uniquement un candidat explicite GitRegistry V1 quand le contexte exact manque', async () => {
+  const observedAuthenticationContexts: string[] = [];
+  const collector = b2Collector({
+    repositoryContext: null,
+    policyWithoutRepositoryContext: true,
+    observedAuthenticationContexts,
+    registry: {
+      available: true,
+      schemaVersion: 1,
+      mappings: [{ githubOwner: 'Patricked-code', githubRepo: 'MCP' }],
+      digest: 'registry-digest'
+    }
+  });
+  const result = await collector.reconcileExplicit(null, {
+    ...IDENTITY_SCOPE, repositoryContext: null
+  });
+  assert.equal(result.repositoryResolution?.status, 'RESOLVED');
+  assert.equal(result.repositoryResolution?.selectionSource, 'git_registry');
+  assert.deepEqual(observedAuthenticationContexts, ['authentication-context-primary']);
+});
+
+test('SLOT-07 conserve 404 comme UNVERIFIED avec visibilité incertaine', async () => {
+  const collector = b2Collector({ repositoryStatus: 'NOT_FOUND_OR_INVISIBLE' });
+  const result = await collector.reconcileExplicit(null, IDENTITY_SCOPE);
+  assert.equal(result.repositoryResolution?.status, 'UNVERIFIED');
+  assert.deepEqual(result.repositoryResolution?.reasonCodes, [
+    'GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE'
+  ]);
+  assert.deepEqual(result.repositoryResolution?.uncertainties, [
+    'GITHUB_REPOSITORY_VISIBILITY_UNCERTAIN'
+  ]);
+});
+
+test('SLOT-07 rend NONE uniquement pour un registre V1 disponible sans candidat', async () => {
+  const collector = b2Collector({
+    repositoryContext: null,
+    policyWithoutRepositoryContext: true,
+    registry: { available: true, schemaVersion: 1, mappings: [], digest: 'registry-digest' }
+  });
+  const result = await collector.reconcileExplicit(null, {
+    ...IDENTITY_SCOPE, repositoryContext: null
+  });
+  assert.equal(result.repositoryResolution?.status, 'NONE');
+  assert.deepEqual(result.repositoryResolution?.reasonCodes, [
+    'GITHUB_REPOSITORY_CANDIDATE_NOT_FOUND'
+  ]);
+});
+
+test('le cache B2 manque fermé et retire la preuve sélectionnée lorsqu elle devient stale', async () => {
+  let now = new Date('2026-09-07T21:00:00.000Z');
+  const collector = createGithubOperationalContextCollector({
+    fetchImpl: async (input) => {
+      const url = String(input);
+      if (url.endsWith('/commits/main')) return json({ sha: SHA });
+      if (url.includes('/rulesets?')) return json([]);
+      return json({ message: 'unexpected endpoint' }, 500);
+    },
+    readToken: async () => 'work-state-token',
+    apiBase: 'https://api.github.test',
+    allowedHosts: 'api.github.test',
+    now: () => now,
+    cacheTtlMs: 1_000,
+    loadIdentityPolicy: async () => ({
+      parse: { ok: true as const, policy: IDENTITY_POLICY }, digest: 'policy-digest'
+    }),
+    collectObservationBatch: async () => ({
+      identityObservations: [identityConnection(now.toISOString())],
+      observeRepository: async () => repositoryApiProof()
+    }),
+    readRepositoryRegistry: async () => ({
+      available: true, schemaVersion: 1, mappings: [], digest: 'registry-digest'
+    })
+  });
+  const miss = await collector.getCurrent(null, IDENTITY_SCOPE);
+  assert.equal(miss.repositoryResolution?.status, 'UNVERIFIED');
+  assert.deepEqual(miss.repositoryResolution?.reasonCodes, ['GITHUB_REPOSITORY_CACHE_MISS']);
+  const fresh = await collector.reconcileExplicit(null, IDENTITY_SCOPE);
+  assert.equal(fresh.repositoryResolution?.status, 'RESOLVED');
+  now = new Date('2026-09-07T21:00:02.000Z');
+  const stale = await collector.getCurrent(null, IDENTITY_SCOPE);
+  assert.equal(stale.repositoryResolution?.status, 'UNVERIFIED');
+  assert.equal(stale.repositoryResolution?.freshness, 'STALE');
+  assert.equal(stale.repositoryResolution?.selectedRepository, null);
+  assert.deepEqual(stale.repositoryResolution?.reasonCodes, [
+    'GITHUB_REPOSITORY_EVIDENCE_STALE'
+  ]);
+});

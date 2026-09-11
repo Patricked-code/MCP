@@ -231,12 +231,6 @@ export function resolveGithubRepository(
       source, candidates, candidateCount: candidates.length || 1
     });
   }
-  if (observation.freshness !== 'CURRENT') {
-    return unresolved(input, 'UNVERIFIED', 'GITHUB_REPOSITORY_EVIDENCE_STALE', {
-      source, candidates, candidateCount: candidates.length || 1,
-      freshness: observation.freshness === 'UNKNOWN' ? 'UNKNOWN' : 'STALE'
-    });
-  }
   if (observation.status !== 'VERIFIED' || !observation.repository) {
     const reason = observation.reasonCode ?? ({
       NOT_FOUND_OR_INVISIBLE: 'GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE',
@@ -253,6 +247,12 @@ export function resolveGithubRepository(
       uncertainty: observation.status === 'NOT_FOUND_OR_INVISIBLE'
         ? 'GITHUB_REPOSITORY_VISIBILITY_UNCERTAIN'
         : undefined
+    });
+  }
+  if (observation.freshness !== 'CURRENT') {
+    return unresolved(input, 'UNVERIFIED', 'GITHUB_REPOSITORY_EVIDENCE_STALE', {
+      source, candidates, candidateCount: candidates.length || 1,
+      freshness: 'UNKNOWN'
     });
   }
   const repository = observation.repository;

@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile, chmod } from 'node:fs/promises';
 import { dirname } from 'node:path';
+import { createHash } from 'node:crypto';
 import type { GitHubConnectionStatus } from './connection.js';
 
 const FILE = '/app/data/mcp-git-registry.json';
@@ -12,6 +13,12 @@ export type RegistryAuditEvent = Record<string, unknown>;
 export type AutoGitServerResolutionInput = { projectKey?: string | null; githubOwner?: string | null; githubRepo?: string | null; };
 export type AutoGitServerContext = Record<string, unknown> & { resolved: boolean };
 export type GitRegistry = { version: 1; updatedAt: string; accounts: GitHubAccountRegistryEntry[]; repoMappings: RepoMappingEntry[]; auditEvents: RegistryAuditEvent[]; activeContext?: AutoGitServerContext; };
+export type GitRegistryEvidence = {
+  available: boolean;
+  schemaVersion: 1;
+  mappings: Array<{ githubOwner: string; githubRepo: string }>;
+  digest: string | null;
+};
 
 const now = () => new Date().toISOString();
 const eid = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -49,6 +56,37 @@ function norm(v: unknown): GitRegistry {
 
 export async function readGitRegistry(): Promise<GitRegistry> {
   try { return norm(JSON.parse(await readFile(rf(), 'utf8'))); } catch { return empty(); }
+}
+
+export async function readGitRegistryEvidence(): Promise<GitRegistryEvidence> {
+  try {
+    const raw = await readFile(rf(), 'utf8');
+    const parsed = JSON.parse(raw) as unknown;
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('invalid registry');
+    const candidate = parsed as { version?: unknown; repoMappings?: unknown };
+    if (candidate.version !== 1 || !Array.isArray(candidate.repoMappings)) throw new Error('invalid registry');
+    const mappings = candidate.repoMappings.slice(0, 1000).map((mapping) => {
+      if (!mapping || typeof mapping !== 'object' || Array.isArray(mapping)) return null;
+      const value = mapping as { githubOwner?: unknown; githubRepo?: unknown };
+      return typeof value.githubOwner === 'string'
+        && value.githubOwner.length > 0
+        && value.githubOwner.length <= 100
+        && typeof value.githubRepo === 'string'
+        && value.githubRepo.length > 0
+        && value.githubRepo.length <= 100
+        ? { githubOwner: value.githubOwner, githubRepo: value.githubRepo }
+        : null;
+    });
+    if (mappings.some((mapping) => mapping === null)) throw new Error('invalid registry');
+    return {
+      available: true,
+      schemaVersion: 1,
+      mappings: mappings as Array<{ githubOwner: string; githubRepo: string }>,
+      digest: createHash('sha256').update(raw).digest('hex')
+    };
+  } catch {
+    return { available: false, schemaVersion: 1, mappings: [], digest: null };
+  }
 }
 
 export async function writeGitRegistry(registry: GitRegistry): Promise<void> {

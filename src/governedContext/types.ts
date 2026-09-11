@@ -1,5 +1,6 @@
 import type { LiveStateSnapshot } from '../liveState/types.js';
 import type { GithubIdentityResolution } from '../github/identityResolution.js';
+import type { GithubRepositoryResolution } from '../github/repositoryResolution.js';
 import type {
   CapabilityReality,
   GovernanceDecision,
@@ -92,6 +93,8 @@ export type GithubOperationalContext = {
   };
   /** Always projected by the governed service; optional only for historical in-process consumers. */
   identity?: GithubIdentityResolution;
+  /** Always projected with an identity scope after B2; optional for historical consumers. */
+  repositoryResolution?: GithubRepositoryResolution;
   cache: {
     status: 'MISS' | 'HIT' | 'REFRESHED';
     observedAt: string;

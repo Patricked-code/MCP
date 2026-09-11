@@ -11,7 +11,18 @@ import {
   type DurableGithubIdentityObservation,
   type GithubIdentityResolution
 } from '../github/identityResolution.js';
-import { loadDurableGithubIdentityObservations } from '../tools/durableAccounts.js';
+import {
+  resolveGithubRepository,
+  type GithubRepositoryResolution
+} from '../github/repositoryResolution.js';
+import {
+  readGitRegistryEvidence,
+  type GitRegistryEvidence
+} from '../github/registry.js';
+import {
+  loadDurableGithubObservationBatch,
+  type DurableGithubObservationBatch
+} from '../tools/durableAccounts.js';
 import type {
   GithubEvidenceFreshness,
   GithubEvidenceObservation,
@@ -39,6 +50,8 @@ type GithubCollectorOptions = {
   cacheTtlMs?: number;
   loadIdentityPolicy?: () => Promise<LoadedGithubIdentityPolicy>;
   observeIdentityConnections?: () => Promise<DurableGithubIdentityObservation[]>;
+  collectObservationBatch?: () => Promise<DurableGithubObservationBatch>;
+  readRepositoryRegistry?: () => Promise<GitRegistryEvidence>;
 };
 
 export type GithubIdentityScope = {
@@ -209,6 +222,12 @@ function withCache(
         provenance: boundedUnique([...value.identity.provenance, 'memory_cache'])
       }
     } : {}),
+    ...(value.repositoryResolution && status === 'HIT' ? {
+      repositoryResolution: {
+        ...value.repositoryResolution,
+        provenance: boundedUnique([...value.repositoryResolution.provenance, 'memory_cache'])
+      }
+    } : {}),
     cache: {
       status,
       observedAt,
@@ -231,6 +250,21 @@ function staleIdentity(
     freshness: 'STALE',
     provenance: boundedUnique([...value.provenance, 'memory_cache']),
     reasonCodes: ['GITHUB_IDENTITY_EVIDENCE_STALE']
+  };
+}
+
+function staleRepositoryResolution(
+  value: GithubRepositoryResolution,
+  observedAt: string
+): GithubRepositoryResolution {
+  return {
+    ...value,
+    status: 'UNVERIFIED',
+    observedAt,
+    selectedRepository: null,
+    freshness: 'STALE',
+    provenance: boundedUnique([...value.provenance, 'memory_cache']),
+    reasonCodes: ['GITHUB_REPOSITORY_EVIDENCE_STALE']
   };
 }
 
@@ -262,6 +296,9 @@ function withStaleCache(
       ruleset: staleEvidence(value.evidence.ruleset, observedAt)
     },
     ...(value.identity ? { identity: staleIdentity(value.identity, observedAt) } : {}),
+    ...(value.repositoryResolution
+      ? { repositoryResolution: staleRepositoryResolution(value.repositoryResolution, observedAt) }
+      : {}),
     reasonCodes: boundedUnique([...value.reasonCodes, 'GITHUB_STALE']),
     uncertainties: [...value.uncertainties]
   };
@@ -287,6 +324,27 @@ function identityCacheMiss(
   };
 }
 
+function repositoryCacheMiss(
+  scope: GithubIdentityScope,
+  observedAt: string
+): GithubRepositoryResolution {
+  return {
+    status: 'UNVERIFIED',
+    observedAt,
+    requestedRepositoryContext: scope.repositoryContext,
+    selectionSource: null,
+    selectedAccountContext: null,
+    selectedRepository: null,
+    candidates: [],
+    candidateCount: 0,
+    freshness: 'UNKNOWN',
+    provenance: ['memory_cache'],
+    reasonCodes: ['GITHUB_REPOSITORY_CACHE_MISS'],
+    uncertainties: [],
+    registryDigest: null
+  };
+}
+
 function identityScopeKey(
   workBranch: string | null,
   scope?: GithubIdentityScope
@@ -300,12 +358,20 @@ function identityScopeKey(
 
 function completeCacheKey(
   scopeKey: string,
-  identity?: GithubIdentityResolution
+  identity?: GithubIdentityResolution,
+  repositoryResolution?: GithubRepositoryResolution
 ): string {
   return JSON.stringify({
     scopeKey,
     policyDigest: identity?.policyDigest ?? null,
-    bindingId: identity?.bindingId ?? null
+    bindingId: identity?.bindingId ?? null,
+    selectedAccountOwner: identity?.selectedAccountContext?.owner.toLowerCase() ?? null,
+    selectedAccountType: identity?.selectedAccountContext?.type ?? null,
+    registryDigest: repositoryResolution?.registryDigest ?? null,
+    repositoryId: repositoryResolution?.selectedRepository?.repositoryId.toLowerCase()
+      ?? repositoryResolution?.candidates[0]?.repositoryId.toLowerCase()
+      ?? null,
+    repositorySource: repositoryResolution?.selectionSource ?? null
   });
 }
 
@@ -725,29 +791,59 @@ export function createGithubOperationalContextCollector(
   const cache = new Map<string, CacheEntry>();
   const inFlight = new Map<string, Promise<GithubOperationalContext>>();
 
-  async function collectIdentity(
+  async function collectIdentityAndRepository(
     scope: GithubIdentityScope | undefined,
     observedAt: string
-  ): Promise<GithubIdentityResolution | undefined> {
+  ): Promise<{
+    identity: GithubIdentityResolution;
+    repositoryResolution: GithubRepositoryResolution;
+  } | undefined> {
     if (!scope) return undefined;
     const loadPolicy = options.loadIdentityPolicy ?? loadGithubIdentityPolicy;
-    const observeConnections = options.observeIdentityConnections
-      ?? loadDurableGithubIdentityObservations;
     let loaded: LoadedGithubIdentityPolicy;
-    let connections: DurableGithubIdentityObservation[];
-    try {
-      [loaded, connections] = await Promise.all([
-        loadPolicy(),
-        observeConnections()
-      ]);
-    } catch {
-      loaded = {
-        parse: { ok: false, reasonCode: 'GITHUB_IDENTITY_POLICY_INVALID' },
-        digest: null
-      };
-      connections = [];
+    try { loaded = await loadPolicy(); } catch {
+      loaded = { parse: { ok: false, reasonCode: 'GITHUB_IDENTITY_POLICY_INVALID' }, digest: null };
     }
-    return resolveGithubIdentity({
+    let batch: DurableGithubObservationBatch;
+    try {
+      if (options.collectObservationBatch) {
+        batch = await options.collectObservationBatch();
+      } else if (options.observeIdentityConnections) {
+        batch = {
+          identityObservations: await options.observeIdentityConnections(),
+          observeRepository: async (_authenticationContextId, repository) => ({
+            status: 'UNAVAILABLE',
+            observedAt,
+            freshness: 'UNKNOWN',
+            requestedFullName: `${repository.owner}/${repository.name}`,
+            repository: null,
+            reasonCode: 'GITHUB_REPOSITORY_API_UNAVAILABLE'
+          })
+        };
+      } else {
+        batch = await loadDurableGithubObservationBatch();
+      }
+    } catch {
+      batch = {
+        identityObservations: [],
+        observeRepository: async (_authenticationContextId, repository) => ({
+          status: 'UNAVAILABLE',
+          observedAt,
+          freshness: 'UNKNOWN',
+          requestedFullName: `${repository.owner}/${repository.name}`,
+          repository: null,
+          reasonCode: 'GITHUB_REPOSITORY_API_UNAVAILABLE'
+        })
+      };
+    }
+    let registry: GitRegistryEvidence;
+    try {
+      registry = await (options.readRepositoryRegistry ?? readGitRegistryEvidence)();
+    } catch {
+      registry = { available: false, schemaVersion: 1, mappings: [], digest: null };
+    }
+    const connections = batch.identityObservations.slice(0, 100);
+    const identity = resolveGithubIdentity({
       oauthPrincipalId: scope.oauthPrincipalId,
       repositoryContext: scope.repositoryContext,
       policy: loaded.parse.ok ? loaded.parse.policy : null,
@@ -756,6 +852,48 @@ export function createGithubOperationalContextCollector(
       connections: connections.slice(0, 100),
       observedAt
     });
+    const selected = identity.selectedAccountContext;
+    const authenticationContextId = selected
+      ? connections.find((connection) => (
+          connection.owner.toLowerCase() === selected.owner.toLowerCase()
+          && connection.type === selected.type
+          && connection.accountVerified
+          && Boolean(connection.authenticationContextId)
+        ))?.authenticationContextId ?? null
+      : null;
+    const resolutionInput = {
+      identity,
+      identityAuthenticationContextId: authenticationContextId,
+      requestedRepositoryContext: scope.repositoryContext,
+      registry,
+      repositoryObservation: null,
+      observedAt
+    };
+    const preflight = resolveGithubRepository(resolutionInput);
+    let candidate: { owner: string; name: string } | null = null;
+    if (
+      preflight.selectionSource === 'connection_context'
+      && scope.repositoryContext
+      && preflight.reasonCodes.includes('GITHUB_REPOSITORY_API_UNAVAILABLE')
+    ) {
+      const [owner, name] = scope.repositoryContext.split('/');
+      candidate = owner && name ? { owner, name } : null;
+    } else if (
+      preflight.selectionSource === 'git_registry'
+      && preflight.candidateCount === 1
+      && preflight.candidates.length === 1
+      && preflight.reasonCodes.includes('GITHUB_REPOSITORY_API_UNAVAILABLE')
+    ) {
+      const [owner, name] = preflight.candidates[0]!.fullName.split('/');
+      candidate = owner && name ? { owner, name } : null;
+    }
+    const repositoryObservation = candidate && authenticationContextId
+      ? await batch.observeRepository(authenticationContextId, candidate).catch(() => null)
+      : null;
+    const repositoryResolution = repositoryObservation
+      ? resolveGithubRepository({ ...resolutionInput, repositoryObservation })
+      : preflight;
+    return { identity, repositoryResolution };
   }
 
   async function collectWork(workBranch: string | null): Promise<GithubOperationalContext> {
@@ -1050,15 +1188,19 @@ export function createGithubOperationalContextCollector(
     const observedAt = now().toISOString();
     const work = Promise.all([
       collectWork(workBranch),
-      collectIdentity(identityScope, observedAt)
-    ]).then(([value, identity]) => {
-      const withIdentity = identity ? { ...value, identity } : value;
+      collectIdentityAndRepository(identityScope, observedAt)
+    ]).then(([value, identityAndRepository]) => {
+      const identity = identityAndRepository?.identity;
+      const repositoryResolution = identityAndRepository?.repositoryResolution;
+      const withIdentity = identityAndRepository
+        ? { ...value, identity, repositoryResolution }
+        : value;
       const refreshed = withCache(withIdentity, 'REFRESHED', value.observedAt);
       const storedAt = now().getTime();
       for (const [key, entry] of cache.entries()) {
         if (entry.scopeKey === scopeKey) cache.delete(key);
       }
-      cache.set(completeCacheKey(scopeKey, identity), {
+      cache.set(completeCacheKey(scopeKey, identity, repositoryResolution), {
         expiresAt: storedAt + cacheTtlMs,
         storedAt,
         scopeKey,
@@ -1093,7 +1235,11 @@ export function createGithubOperationalContextCollector(
         ? emptyContext(observedAt, null, 'DEGRADED', 'github_work_branch_invalid', 'MISS', 'memory_cache')
         : emptyContext(observedAt, normalizedBranch, 'UNAVAILABLE', 'github_cache_miss', 'MISS', 'memory_cache');
       return identityScope
-        ? { ...empty, identity: identityCacheMiss(identityScope, observedAt) }
+        ? {
+            ...empty,
+            identity: identityCacheMiss(identityScope, observedAt),
+            repositoryResolution: repositoryCacheMiss(identityScope, observedAt)
+          }
         : empty;
     },
     collect: (workBranch, identityScope) => run(workBranch, false, identityScope),
