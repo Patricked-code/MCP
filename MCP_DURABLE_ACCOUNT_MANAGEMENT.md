@@ -54,6 +54,19 @@ capability.
 `.mcp/identity-policy.json` porte seulement la sélection/binding contextuel. Le
 secret storage reste l'autorité du credential et GitHub API celle de la preuve live.
 
+## Réutilisation par Repository Resolution B2
+
+B2 étend ce même module par un batch de collecte interne. Le batch expose les
+observations B1 existantes et une fonction éphémère `observeRepository` qui
+accepte uniquement un `authenticationContextId` créé pendant cette collecte. Un
+identifiant inconnu est refusé sans bascule vers un autre credential.
+
+L'appel exact `GET /repos/{owner}/{repo}` est réduit à l'identifiant numérique,
+owner/type, nom canonique, branche par défaut éventuelle, visibilité éventuelle,
+état archived/fork et fraîcheur. Token, tokenFile, scopes, `permissions`, URLs,
+réponse brute et corps d'erreur ne quittent jamais l'observateur. Les wrappers B1
+historiques restent inchangés et aucun deuxième observateur ou cache n'est créé.
+
 ## Limite volontaire
 
 Le MCP ne peut pas se connecter durablement à tous les comptes “par magie”. Il ne peut gérer durablement que les comptes déclarés et autorisés par des secrets valides. Cette limite protège les comptes, les dépôts et les serveurs WealthTech.

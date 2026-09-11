@@ -3,9 +3,23 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
-## 2026-09-09 — B1 GitHub Identity Resolution livré fonctionnellement, clôture documentaire en cours
+## 2026-09-11 — B2 Repository Resolution en cours de validation
 
-- `TASK-20260907-001` a exécuté le design approuvé sur `mcp/github-identity-resolution-20260907`, PR #73, depuis `main@aa57b07cd3ba514df7b1ceb8cc60ab1587e15620` ; il reste gouverné jusqu'à la réconciliation documentaire finale.
+- `TASK-20260909-001` implémente le design SLOT-07 approuvé au checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c` depuis `main@efb09ce7eeba85122b01c7fa48d99e967b7cdb7c`.
+- Le resolver pur privilégie `ConnectionContext.repository`, utilise seulement owner/repo de GitRegistry V1 en fallback et produit `RESOLVED/NONE/AMBIGUOUS/UNVERIFIED` avec provenance, fraîcheur, reason codes et candidats bornés.
+- `src/tools/durableAccounts.ts` expose un batch éphémère réutilisant exactement le credential B1 ; `/repos/{owner}/{repo}` est assaini et ne projette ni token, chemin, scopes, permissions ou erreur brute.
+- Le collecteur/cache/service/dashboard Governed Context existant reçoit une projection optionnelle backward-compatible ; cache miss et stale restent fail-closed.
+- Un registre V1 absent, corrompu ou structurellement invalide est `UNAVAILABLE`, jamais transformé en faux `NONE`; le lecteur historique reste inchangé.
+- La revue TDD a corrigé la priorité des statuts : un 404 est `UNVERIFIED` avec visibilité incertaine, jamais `NONE`.
+- La self-review TDD refuse aussi les registres de plus de 1 000 mappings au lieu de créer une fausse résolution par troncature, exige la cohérence `user/organization` avec B1 et dérive les reason codes du statut observé.
+- Aucun nouvel outil, registre, store, cache, observateur, Session Manager, permission, Policy V3, activation GitRegistry V2 ou écriture S1 n'est introduit. Le WRITE gate reste `shadow`.
+- La branche concurrente incompatible a été neutralisée par un descendant non destructif `3bad842b1bfe8bdcd7289201f6a696fb84168e34`; aucun force-push ni effacement d'historique.
+- Validation locale acquise : 351/351 tests, typecheck, build, secrets, 202 Markdown gouvernés, cartographie et Current-State Evidence sans contradiction. La commande enveloppe `tsx --test` reste interdite par l'IPC de cette sandbox (`EPERM`) ; les mêmes tests sont inclus dans la suite complète exécutée avec `node --import tsx --test`.
+- Livraison encore requise : revue indépendante, PR/CI exact-head, merge, GitHub → S1, attestation OCI/runtime/Live State et clôture gouvernée.
+
+## 2026-09-09 — B1 GitHub Identity Resolution livré et clôturé
+
+- `TASK-20260907-001` a exécuté le design approuvé sur `mcp/github-identity-resolution-20260907`, PR #73, depuis `main@aa57b07cd3ba514df7b1ceb8cc60ab1587e15620`, puis a été clôturé séparément après sa réconciliation documentaire PR #74.
 - `.mcp/identity-policy.json` passe en V2 strictement additive : `goal`, `currentSignals`, `limits`, `s1GithubDeploymentIdentity` et `requiredSuiviFields` restent obligatoires et inchangés sémantiquement ; seul `githubPrincipalBindings` est ajouté.
 - Le binding `oauth:wealthtech-mcp-admin` → utilisateur GitHub `Patricked-code` s'applique uniquement au contexte déjà prouvé `Patricked-code/MCP`, avec effet `IDENTITY_ONLY`. Il est non global, non exclusif, réversible et extensible à d'autres comptes ou repositories.
 - Le chemin durable existant est réutilisé : `data/github-accounts.json` sélectionne une connexion configurée, le secret storage fournit le credential sans l'exposer, le même observateur borné `GET /user` prouve le principal GitHub, puis le collecteur/cache GitHub existant compose la projection Governed Context.
@@ -18,7 +32,7 @@ Historique factuel des changements du depot MCP.
 - PR #73 fusionnée sous garde du head exact `9b1a572ab0362aeefa5e13f425225e1f510704b7` au merge `208b8744810a23e48a4282450786805e7ff18845`; MCP CI main #778 et MCP Governed Deploy #27 ont réussi.
 - Live State `96` atteste GitHub main, S1 HEAD/origin-main et runtime healthy sur `208b8744810a23e48a4282450786805e7ff18845`, S1 propre/read-only et image OCI `sha256:4bdb9524dd1ace6d700c95b27dab1c12c19d55cbf6e95aa7e9d671fade437401`.
 - La projection runtime résout le binding `oauth-wealthtech-mcp-admin__patricked-code__patricked-code-mcp` en `RESOLVED` : principal GitHub authentifié `Patricked-code` (`githubUserId=270385782`, type `user`), contexte sélectionné `Patricked-code`, freshness `CURRENT`, aucun reason code et aucune permission dérivée. `chainsolutions-wealthtech` reste un contexte organisationnel accessible distinct, vérifié via le même credential.
-- La seule contradiction Live State restante est `DOCUMENTATION_DRIFT`. La branche `mcp/b1-final-documentation-20260909` réconcilie uniquement `ROADMAP.md`, `TODO.md`, `TASKS.md`, `SUIVI.md`, `CHANGELOG.md` et `DECISIONS_LOG.md`; B1 ne passe pas `DONE` avant CI/revue/merge exact-head, Autodeploy, `FULLY_ALIGNED`, checkpoint et clôture.
+- La contradiction documentaire résiduelle a été levée par la PR #74 ; `observedHeadSha` et `runtimeRevision` ont été attestés à `efb09ce7eeba85122b01c7fa48d99e967b7cdb7c`, puis `TASK-20260907-001` a été transitionné à `DONE` révision 19 avant l'enregistrement de B2.
 - Rollback : avant merge, fermer/revert la PR ; après merge, revert gouverné exact via PR puis déploiement normal GitHub → S1. Aucun backfill ni migration destructive n'est requis.
 
 ## 2026-09-01 — Governed Connection Context minimal

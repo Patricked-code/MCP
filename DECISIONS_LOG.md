@@ -3,6 +3,37 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-11 — Repository Resolution B2 fail-closed dans les autorités existantes
+
+Décision : SLOT-07 résout une identité de repository, pas une permission ni un
+mapping aval. Le repository exact du `ConnectionContext` est prioritaire quand il
+est déjà prouvé. En son absence, seuls `githubOwner/githubRepo` des mappings
+GitRegistry V1 servent de candidats ; `activeContext`, fallback `mcp_bridge`,
+`allowedAccess` et `deployEnabled` sont exclus.
+
+Preuve : `RESOLVED` exige B1 `RESOLVED/CURRENT`, son même contexte
+d'authentification éphémère et un `GET /repos/{owner}/{repo}` frais et concordant.
+Zéro candidat dans un registre disponible donne `NONE`, plusieurs donnent
+`AMBIGUOUS`, toute preuve insuffisante donne `UNVERIFIED`. Un 404 signifie
+not-found-ou-invisible, porte une incertitude de visibilité et ne devient jamais
+`NONE`.
+
+Autorités : l'observateur durable existant est refactoré en batch éphémère ; le
+credential n'est ni persisté ni projeté. GitRegistry V1 reçoit seulement une vue
+d'évidence read-only qui distingue absence/corruption de zéro mapping, sans
+modifier le lecteur historique. Governed Context et son cache existant portent la
+projection. GitRegistry V2 demeure dry-run jusqu'à C1.
+
+Compatibilité et sécurité : le champ B2 est optionnel pour les consommateurs
+historiques ; B1, ConnectionContext V1, Identity Policy V2, sessions, tasks,
+receipts, locks et outils restent lisibles. GitHub `permissions`, scopes, erreurs
+brutes et données de projet/serveur/runtime/domaine sont rejetés. SLOT-11 reste
+l'unique lieu des Effective Capabilities et le WRITE gate reste `shadow`.
+
+Conflit de branche : le lot concurrent mélangeant Policy V3, permissions et
+observateur parallèle a été annulé par commit descendant sans réécriture
+d'historique. L'implémentation approuvée repart de l'arbre exact de la baseline.
+
 ## 2026-09-08 — Résolution GitHub contextuelle B1 sans autorité ni permission parallèle
 
 Contexte : A2.1 fournit déjà un `ConnectionContext` durable contenant le principal OAuth et, pour le cas historique courant, le repository `Patricked-code/MCP`. B1 doit résoudre l'identité GitHub sans supposer qu'un principal OAuth, un login GitHub, une organisation accessible, une Human Identity ou un Agent Role sont équivalents.
@@ -21,7 +52,7 @@ Décision de correction de revue : un profil public `GET /orgs/{owner}` ne prouv
 
 Gate de livraison : RED/GREEN publiés, documentation canonique, suite complète, CI/revue exact-head, merge protégé, déploiement GitHub → S1, attestation OCI/runtime et Live State `FULLY_ALIGNED` sont requis avant `DONE`. B2 reste un lot séparé et ne doit pas être précréé par B1.
 
-Preuve fonctionnelle et décision de clôture : les corrections finales ont été publiées en RED `631b5070f201950d2cdcc73363df8004d4ab5fec` puis GREEN `9b1a572ab0362aeefa5e13f425225e1f510704b7`. MCP CI #777 et les trois threads résolus ont autorisé le merge protégé de la PR #73 au SHA `208b8744810a23e48a4282450786805e7ff18845`; MCP CI main #778 et Governed Deploy #27 ont réussi. Live State `96` atteste l'exact-SHA GitHub/S1/runtime healthy et la projection B1 `RESOLVED` sans permission. La tâche reste ouverte uniquement pour supprimer `DOCUMENTATION_DRIFT` par une PR strictement limitée aux six Markdown canoniques, puis obtenir `FULLY_ALIGNED`; aucune task B2 n'est créée pendant cette clôture.
+Preuve fonctionnelle et décision de clôture : les corrections finales ont été publiées en RED `631b5070f201950d2cdcc73363df8004d4ab5fec` puis GREEN `9b1a572ab0362aeefa5e13f425225e1f510704b7`. MCP CI #777 et les trois threads résolus ont autorisé le merge protégé de la PR #73 au SHA `208b8744810a23e48a4282450786805e7ff18845`; MCP CI main #778 et Governed Deploy #27 ont réussi. Live State `96` a attesté l'exact-SHA GitHub/S1/runtime healthy et la projection B1 `RESOLVED` sans permission. La tâche est restée ouverte uniquement pendant la suppression de `DOCUMENTATION_DRIFT` ; la PR #74 a ensuite été fusionnée/déployée à `efb09ce7eeba85122b01c7fa48d99e967b7cdb7c` et `TASK-20260907-001` a été clôturée `DONE` révision 19 avant la création séparée de B2.
 
 ## 2026-09-01 — Connection Context dans la Governed Session existante
 

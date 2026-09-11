@@ -212,15 +212,13 @@ Ajouts attendus :
 
 Objectif : résoudre les comptes GitHub réellement autorisés pour le principal courant.
 
-État du lot au checkpoint du 2026-09-09 : design approuvé, Governed Task
-`TASK-20260907-001` enregistrée/claimée, implémentation additive de la PR #73
+État acquis : le design approuvé a été implémenté additivement par la PR #73,
 fusionnée au merge `208b8744810a23e48a4282450786805e7ff18845`. MCP CI main #778 et
-MCP Governed Deploy #27 ont réussi ; Live State `96` atteste GitHub/S1/runtime
-exact-SHA et healthy ainsi que l'identité B1 `RESOLVED`. Seul
-`DOCUMENTATION_DRIFT` reste à lever par la réconciliation des six projections
-canoniques. Cette indication ne remplace pas l'état dynamique de la queue, de la
-session, des locks, de GitHub ou du runtime ; B1 ne devient `DONE` qu'après le
-nouveau Live State `FULLY_ALIGNED`, le checkpoint et la clôture gouvernée.
+MCP Governed Deploy #27 ont réussi ; Live State `96` a attesté GitHub/S1/runtime
+exact-SHA et healthy ainsi que l'identité B1 `RESOLVED`. La réconciliation
+documentaire PR #74 a ensuite porté `main`, S1 et runtime à
+`efb09ce7eeba85122b01c7fa48d99e967b7cdb7c`, puis Operational Memory a clôturé
+`TASK-20260907-001` à `DONE` révision 19 avant l'enregistrement séparé de B2.
 
 Réutilise :
 - GitHub connection registry existant ;
@@ -250,18 +248,30 @@ prouvé sert de filtre sans rendre B1 universellement dépendant de B2.
 
 ### B2 — Repository Resolution
 
-Objectif : résoudre le repository explicitement fourni ou déjà relié au contexte courant.
+Objectif : résoudre l'identité du repository explicitement fourni ou déjà relié
+au contexte courant, sans résoudre encore son projet/serveur/runtime/domaine.
+
+État gouverné au checkpoint du 2026-09-11 : design approuvé au checkpoint
+`0c6299c9-9f62-477f-907b-f97eb2ffbe4c`, Governed Task
+`TASK-20260909-001` `IN_PROGRESS`, branche
+`mcp/b2-repository-resolution-20260909`. La branche distante a été restaurée
+additivement à la baseline approuvée après détection d'un lot concurrent mélangeant
+SLOT-07, permissions et Policy V3 ; aucune réécriture d'historique n'a été faite.
 
 Réutilise :
-- GitRegistry ;
-- inventaire GitHub existant ;
-- Governed Session / Connection Context.
+- B1 et son contexte d'authentification éphémère ;
+- `ConnectionContext.repository` comme candidat exact quand il est déjà prouvé ;
+- `repoMappings` GitRegistry V1 comme fallback owner/repo borné uniquement ;
+- l'observateur durable et le cache Governed Context existants ;
+- GitHub `GET /repos/{owner}/{repo}` comme preuve live.
 
 Comportement cible :
-- mapping existant → réutilisation automatique ;
-- plusieurs repositories possibles → `AMBIGUOUS` ;
-- aucun repository → `NONE` ;
-- aucune sélection arbitraire du « dernier repo global ».
+- candidat unique + B1 current + preuve live concordante → `RESOLVED` ;
+- plusieurs repositories possibles → `AMBIGUOUS`, sans premier-match ;
+- aucun candidat dans un registre disponible → `NONE` ;
+- preuve insuffisante, registre indisponible ou 404/invisibilité → `UNVERIFIED` ;
+- aucune sélection arbitraire du « dernier repo global » ;
+- aucune permission implicite et aucune activation GitRegistry V2 avant C1.
 
 ### B3 — Multi-repository Governed Context
 

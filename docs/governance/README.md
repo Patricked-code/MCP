@@ -8,11 +8,12 @@ Ce répertoire contrôle déterministement les Markdown de `Patricked-code/MCP` 
 
 La passe read-only post-workflow a observé :
 
-- 200 Markdown suivis par Git et classifiés individuellement dans `markdown-inventory.json` ;
+- 202 Markdown suivis par Git et classifiés individuellement dans `markdown-inventory.json` ;
 - 33 Markdown sous `wealthtech_project_memory/memory/` sur S1 ;
 - 7 de ces 33 également suivis par Git ;
 - 26 Markdown runtime-only ;
-- surface courante observée : `196 + 26 = 222`.
+- surface Git gouvernée actuelle : 202 Markdown ; la composante runtime-only doit
+  être réobservée avant tout nouveau total combiné.
 
 ## Historique 209
 
@@ -24,7 +25,7 @@ Chaque Markdown suivi appartient à exactement une catégorie déterministe : `c
 
 ## Baseline et CI
 
-`markdown-inventory.json` contient les 200 chemins et catégories exacts. La CI échoue sur ajout, disparition, catégorie divergente, document non classifié ou contradiction `canonical-state`.
+`markdown-inventory.json` contient les 202 chemins et catégories exacts. La CI échoue sur ajout, disparition, catégorie divergente, document non classifié ou contradiction `canonical-state`.
 
 L’artefact `mcp-autodeploy-governance` copie désormais exactement les sept documents actifs suivis ; il ne génère plus d’anciens candidats codés en dur.
 

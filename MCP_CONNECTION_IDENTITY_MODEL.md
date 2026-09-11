@@ -98,6 +98,32 @@ inactive, discordante ou indisponible reste `GITHUB_IDENTITY_ACCOUNT_CONTEXT_UNV
 SLOT-11 restent hors de B1. GitRegistry V2 conserve exclusivement les mappings
 repository ↔ projet ↔ serveur ↔ domaine.
 
+## Résolution repository B2 — SLOT-07
+
+B2 consomme la projection B1 sans fusionner les identités. Le principal OAuth,
+le principal GitHub authentifié, le contexte de compte sélectionné, la Human
+Identity, l'Agent Role et le repository demeurent six notions séparées.
+
+Pour le contexte historique actuel, `ConnectionContext.repository =
+Patricked-code/MCP` fournit le candidat exact sans exiger qu'un mapping projet
+existe déjà. Dans le cas général où ce contexte n'est pas disponible, B2 peut
+utiliser uniquement les couples `githubOwner/githubRepo` explicites de
+GitRegistry V1, filtrés par le compte B1, dédupliqués, triés et bornés. Cette voie
+évite toute circularité B1 ↔ B2 ; elle n'utilise jamais `activeContext` ni le
+fallback `mcp_bridge`.
+
+`RESOLVED` exige B1 `RESOLVED/CURRENT`, une corrélation au même credential et une
+preuve live fraîche `GET /repos/{owner}/{repo}` concordante. Zéro candidat dans
+un registre disponible produit `NONE`; plusieurs candidats produisent
+`AMBIGUOUS`; registre absent/corrompu, preuve manquante/périmée/contradictoire,
+401, 403, 404 ou réponse malformée produisent `UNVERIFIED`. Un 404 porte aussi
+`GITHUB_REPOSITORY_VISIBILITY_UNCERTAIN` et ne signifie jamais `NONE`.
+
+La projection est non persistante et ne contient aucune permission. GitRegistry
+V1 reste l'autorité des mappings existants, GitRegistry V2 reste dry-run jusqu'au
+lot C1, et `.mcp/identity-policy.json` reste exclusivement l'autorité B1 de
+sélection/binding. Aucun `.mcp/identity-registry.json` n'est créé.
+
 ## Identité de déploiement GitHub S1
 
 Identité cible : `S1_MCP_GITHUB_DEPLOY_READ_ONLY`.

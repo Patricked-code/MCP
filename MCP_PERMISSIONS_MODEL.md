@@ -25,3 +25,10 @@ continuer à composer séparément les politiques de gouvernance, le WRITE gate,
 tâche, le receipt, les locks et les preuves d'autorisation nécessaires. Le WRITE
 gate reste `shadow` ; B1 ne change ni `ENABLE_WRITE_TOOLS`, ni `allow_write`, ni les
 contrats historiques.
+
+B2 / SLOT-07 résout de la même manière uniquement l'identité du repository. Les
+champs techniques `permissions` éventuellement retournés par GitHub, ainsi que
+`allowedAccess` et `deployEnabled` de GitRegistry, sont délibérément exclus de ses
+inputs publics et de sa projection. Un repository `RESOLVED` ne signifie ni
+lecture, ni écriture, ni merge, ni déploiement autorisé. Cette décision demeure
+exclusivement au SLOT-11.

@@ -15,6 +15,17 @@ MCP WealthTech SSH Bridge
   - sorties : `RESOLVED` / `NONE` / `AMBIGUOUS` / `UNVERIFIED`
   - exclusions : repository B2, Human Identity, Agent Role et permissions SLOT-11
 
+- Identité du repository GitHub — SLOT-07
+  - prérequis : B1 `RESOLVED/CURRENT` et corrélation credential-scoped
+  - candidat prioritaire : repository exact du `ConnectionContext`
+  - fallback : `repoMappings` GitRegistry V1, champs owner/repo uniquement
+  - preuve : GitHub `GET /repos/{owner}/{repo}` via le contexte authentifié B1
+  - résolution pure : `src/github/repositoryResolution.ts`
+  - observation partagée : `src/tools/durableAccounts.ts`
+  - projection/cache : collecteur GitHub Governed Context existant
+  - sorties : `RESOLVED` / `NONE` / `AMBIGUOUS` / `UNVERIFIED`
+  - exclusions : permissions SLOT-11, projet/serveur/runtime/domaine, activation V2
+
 - Diagnostic lecture
   - ping
   - get_project_context
