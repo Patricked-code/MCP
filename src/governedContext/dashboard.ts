@@ -87,6 +87,7 @@ export function renderGovernedContextDashboardSection(
     ?? null;
   const pullRequest = context.github.pullRequest;
   const githubIdentity = context.github.identity;
+  const githubRepository = context.github.repositoryResolution;
   const observability = deriveGovernedObservability(context);
   const locks = context.activeLocks.length === 0
     ? '<li>Aucun lock actif.</li>'
@@ -112,6 +113,9 @@ export function renderGovernedContextDashboardSection(
   const githubIdentityReasons = !githubIdentity || githubIdentity.reasonCodes.length === 0
     ? '<li>Aucun reasonCode d’identité GitHub.</li>'
     : githubIdentity.reasonCodes.slice(0, 20).map((reason) => `<li>${display(reason)}</li>`).join('');
+  const githubRepositoryReasons = !githubRepository || githubRepository.reasonCodes.length === 0
+    ? '<li>Aucun reasonCode de dépôt GitHub.</li>'
+    : githubRepository.reasonCodes.slice(0, 20).map((reason) => `<li>${display(reason)}</li>`).join('');
   const governanceReasons = observability.governanceReasonCodes.length === 0
     ? '<li>Aucun reasonCode de gouvernance.</li>'
     : observability.governanceReasonCodes.map((reason) => `<li>${display(reason)}</li>`).join('');
@@ -156,6 +160,14 @@ export function renderGovernedContextDashboardSection(
   <p>Contexte de compte : <strong>${display(githubIdentity?.selectedAccountContext?.owner)}</strong> — dépôt ${display(githubIdentity?.repositoryContext)}</p>
   <p>Effet : <strong>identité uniquement (IDENTITY_ONLY)</strong> — aucune permission implicite.</p>
   <ul>${githubIdentityReasons}</ul>
+
+  <h4>Dépôt GitHub — SLOT-07</h4>
+  <p>Statut : <strong>${display(githubRepository?.status)}</strong> — fraîcheur ${display(githubRepository?.freshness)}</p>
+  <p>Source : <strong>${display(githubRepository?.selectionSource)}</strong></p>
+  <p>Repository ID : <code>${display(githubRepository?.selectedRepository?.repositoryId)}</code></p>
+  <p>Nom canonique : <strong>${display(githubRepository?.selectedRepository?.fullName)}</strong></p>
+  <p>Effet : <strong>preuve d’identité du dépôt uniquement</strong> — aucune permission implicite.</p>
+  <ul>${githubRepositoryReasons}</ul>
 
   <h3>Capability Reality</h3>
   <p>Total : <strong>${observability.capabilities.total}</strong> — CALLABLE <strong>${observability.capabilities.callable}</strong> — NOT_CALLABLE <strong>${observability.capabilities.notCallable}</strong> — UNKNOWN <strong>${observability.capabilities.unknown}</strong></p>

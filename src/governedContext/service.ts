@@ -104,6 +104,21 @@ function fallbackGithub(
       reasonCodes: ['GITHUB_IDENTITY_API_UNAVAILABLE'],
       policyDigest: null
     },
+    repositoryResolution: {
+      status: 'UNVERIFIED',
+      observedAt: at,
+      requestedRepositoryContext: identityScope.repositoryContext,
+      selectionSource: null,
+      selectedAccountContext: null,
+      selectedRepository: null,
+      candidates: [],
+      candidateCount: 0,
+      freshness: 'UNKNOWN',
+      provenance: ['governed_context_fallback'],
+      reasonCodes: ['GITHUB_REPOSITORY_API_UNAVAILABLE'],
+      uncertainties: [],
+      registryDigest: null
+    },
     cache: { status: 'MISS', observedAt: at, provenance: 'memory_cache' },
     evidence: {
       main: unavailable,

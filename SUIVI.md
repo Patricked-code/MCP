@@ -13,12 +13,30 @@
 }
 ```
 
-Date : 2026-09-09
+Date : 2026-09-11
 
-## Point courant — B1 GitHub Identity Resolution en clôture documentaire gouvernée
+## Point courant — B2 Repository Resolution en implémentation gouvernée
+
+- GitHub `main` observé : `efb09ce7eeba85122b01c7fa48d99e967b7cdb7c` ; branche B2 distante restaurée par descendant non destructif `3bad842b1bfe8bdcd7289201f6a696fb84168e34`, dont l'arbre est exactement la baseline.
+- Governed Session : `98e9aee8-20c0-404f-807f-6630ffbb1a1c`, reprise active ; tâche `TASK-20260909-001` `IN_PROGRESS`, branche `mcp/b2-repository-resolution-20260909`.
+- Design approuvé : checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c`, spec/plan sous `docs/superpowers/`.
+- Conflit réconcilié : le lot distant concurrent mélangeait Policy V3, permissions/access levels, routage global et observateur credential parallèle. Il a été annulé sans force-push ; son historique demeure auditable mais son arbre n'est pas livré.
+- Implémentation additive locale : resolver pur `src/github/repositoryResolution.ts`, vue d'évidence dans GitRegistry V1 existant, batch éphémère dans `src/tools/durableAccounts.ts`, projection dans le collecteur/cache/service/dashboard existant.
+- Preuves acquises : baseline 310/310 ; suite complète locale 357/357 ; typecheck, build, secrets, documentation gouvernée (202 Markdown), cartographie et Current-State Evidence verts, sans contradiction.
+- Correctifs de self-review : les statuts HTTP explicites sont évalués avant la fraîcheur afin qu'un 404 reste `UNVERIFIED/GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE` avec visibilité incertaine ; un registre de plus de 1 000 mappings est refusé plutôt que tronqué ; le type de propriétaire doit correspondre au contexte B1 ; les reason codes échoués sont dérivés du statut observé tout en conservant l'absence de credential comme `AUTH_MISSING`.
+- Autorités préservées : contexte exact A2.1, identité B1, connexions et secret storage existants, GitHub API live, GitRegistry V1 fallback read-only, Governed Context projection ; GitRegistry V2 reste dry-run jusqu'à C1.
+- Frontières : aucune permission/capability, aucun projet/serveur/runtime/domaine, aucune nouvelle authority/registry/store/cache/session/observer/tool, aucun changement WRITE gate ou workflow de déploiement, aucune écriture directe S1.
+- Revue indépendante : le premier passage a refusé la livraison sans finding critique, puis six assertions RED ciblées ont reproduit les écarts de cache, validation et bornage (`38/44` au commit `e81e3cd`). Le GREEN `ffc4c96` les corrige ; le second passage conclut `READY`, sans finding Critical/Important/Minor, avec 76/76 tests B1/B2/cache ciblés.
+- Prochaine action : publier l'historique RED/GREEN exact sur la branche distante restaurée, ouvrir la Draft PR, obtenir CI/revue exact-head, merger, laisser l'Autodeploy gouverné agir, exiger Live State `FULLY_ALIGNED`, puis `DONE` et réconciliation de queue.
+
+Les valeurs dynamiques restent à relire dans GitHub, Operational Memory et Live
+State avant chaque mutation. B3/C1 et les lots aval restent cartographiés mais ne
+sont pas précréés dans la Task Queue.
+
+## Baseline précédente — B1 GitHub Identity Resolution
 
 - Jalon fonctionnel attesté : GitHub `main`, S1 HEAD, S1 `origin/main` et runtime healthy sont alignés sur `208b8744810a23e48a4282450786805e7ff18845`; S1 est propre/read-only et l'image active est `sha256:4bdb9524dd1ace6d700c95b27dab1c12c19d55cbf6e95aa7e9d671fade437401`.
-- Autorités observées : Governed Session `72017a9c-f31c-4cde-acac-64d8e001f168` active ; `TASK-20260907-001` révision 12, claimée/lockée et `IN_PROGRESS` uniquement pour la réconciliation des six projections canoniques sur `mcp/b1-final-documentation-20260909`.
+- État terminal acquis : `TASK-20260907-001` est `DONE` révision 19 ; la PR documentaire #74 porte `observedHeadSha` et `runtimeRevision` `efb09ce7eeba85122b01c7fa48d99e967b7cdb7c`. La session, les locks et le checkpoint terminal restent sous Operational Memory.
 - Décision utilisateur acquise : binding `oauth:wealthtech-mcp-admin` → utilisateur GitHub `Patricked-code` uniquement pour le contexte déjà prouvé `Patricked-code/MCP`, effet `IDENTITY_ONLY`, moindre privilège, non global/non exclusif/réversible et extensible multi-compte.
 - Design et plan : `docs/superpowers/specs/2026-09-07-b1-github-identity-resolution-design.md` et `docs/superpowers/plans/2026-09-07-b1-github-identity-resolution.md`.
 - TDD publié : RED pur `8c570f96a94a492846b5df618f6b7383ba36a510`, GREEN pur `bbec96d87c46b9bea398ef5594ba278bfd48142d`, RED intégration `476e0b26d1eeadac30afdee1ec73b5781516c320`, GREEN fonctionnel `7830fb5ad0fdc385332259439600df357ea8ed13`.
@@ -29,8 +47,8 @@ Date : 2026-09-09
 - Preuve runtime Live State `96` : GitHub/S1/runtime exact-SHA et healthy ; B1 retourne `RESOLVED` pour le binding `oauth-wealthtech-mcp-admin__patricked-code__patricked-code-mcp`, principal GitHub authentifié `Patricked-code` (`githubUserId=270385782`, type `user`), contexte sélectionné `Patricked-code`, freshness `CURRENT`, aucun reason code et aucune permission dérivée.
 - Intégration : Identity Policy V2 additive, connexions/secret storage existants, preuve live `GET /user`, collecteur/cache Governed Context existants ; aucun `identity-registry.json`, registre, store, Session Manager, cache, observateur ou outil parallèle.
 - Frontières : utilisateur GitHub distinct des organisations accessibles ; OAuth principal, Human Identity, Agent Role et repository context distincts ; aucune permission ou Effective Capability B1 ; GitRegistry V2 inchangé ; WRITE gate `shadow` ; aucune écriture directe S1.
-- Écart restant : Live State `96` ne signale plus que `DOCUMENTATION_DRIFT`. Publier cette réconciliation strictement Markdown, obtenir sa CI/revue, la fusionner exact-head, laisser GitHub → S1 déployer, puis exiger `FULLY_ALIGNED` avant `DONE`, checkpoint, libération des locks et clôture de session.
-- B2 n'est pas enregistré : il reste la prochaine candidate séparée dans la chronologie B1 → B2 → C1/C2 → C3/C4/C5 → D1/D2/D3.
+- Clôture acquise : la réconciliation strictement Markdown a été fusionnée par PR #74, déployée selon GitHub → S1 et B1 a été transitionné à `DONE` avant B2.
+- B2 a ensuite été approuvé et enregistré séparément sous `TASK-20260909-001`; C1+ restent seulement cartographiés.
 
 Les statuts dynamiques, propriétaires, locks, checkpoints et SHA courants doivent toujours être relus dans GitHub, Live State, Operational Memory et la Governed Task Queue. Ce checkpoint documentaire ne remplace pas ces autorités.
 
@@ -100,20 +118,20 @@ Lorsqu'une attestation actuelle est nécessaire, ces données doivent être lues
 
 ### Programme suivant — orientation documentaire
 
-Le programme global prolonge le bootstrap de session déjà livré avec la chaîne de résolution ci-dessous. `TASK-20260901-001` a couvert uniquement A2.1 et est clôturée ; après design approuvé, B1 a été enregistré séparément sous `TASK-20260907-001`. Son implémentation est fusionnée et déployée, et sa preuve runtime est acquise ; la tâche reste ouverte uniquement jusqu'à la réconciliation documentaire, au nouveau Live State `FULLY_ALIGNED` et à la clôture Operational Memory.
+Le programme global prolonge le bootstrap de session déjà livré avec la chaîne de résolution ci-dessous. `TASK-20260901-001` a couvert uniquement A2.1 et est clôturée ; B1 a ensuite été enregistré séparément sous `TASK-20260907-001`, livré puis clôturé `DONE` révision 19. B2 est la tâche gouvernée courante distincte.
 
 ```text
 principal OAuth
 → A2.1 Connection Context minimal [livré par TASK-20260901-001]
 → clôture et attestation A2.1 [acquises]
-→ B1 GitHub identity [fonctionnellement livré, clôture documentaire en cours]
-→ B2 repository [future tâche distincte]
+→ B1 GitHub identity [livré et clôturé]
+→ B2 repository [TASK-20260909-001 en cours]
 → C1/C2 GitRegistry V2 mapping / project [futures tâches distinctes]
 → C3/C4/C5 server / runtime / domain [futures tâches distinctes]
 → D1/D2/D3 gouvernance héritée [futures tâches distinctes]
 ```
 
-B1 n'est pas une extension implicite de `TASK-20260901-001` mais la tâche distincte actuelle en clôture documentaire. Sa livraison fonctionnelle ne préjuge pas de son statut terminal, qui reste sous l'autorité d'Operational Memory jusqu'à `FULLY_ALIGNED`. B2 et tous les maillons suivants restent des candidats du programme et ne peuvent être enregistrés qu'individuellement selon les dépendances et les autorités runtime. Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) restent positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
+B1 n'est pas une extension implicite de `TASK-20260901-001` : il a été livré et clôturé sous sa tâche distincte. B2 a ensuite été enregistré individuellement après approbation de son design ; C1+ restent des candidats du programme soumis à leurs dépendances et autorités runtime. Les lots ultérieurs (guided intake, provisioning, présence client, tool-surface attestation, tracing, monitoring, dashboard, certifications Claude/ChatGPT et hardening séparé) restent positionnés dans `ROADMAP.md` sans être pré-créés dans la Task Queue.
 
 ### Règle de reprise
 

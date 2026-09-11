@@ -5,12 +5,17 @@ import {
   githubJsonRequest,
   observeGithubAuthenticatedPrincipal,
   observeGithubAuthenticatedPrincipalEvidence,
-  type GitHubAuthenticatedPrincipalEvidence
+  type GitHubAuthenticatedPrincipalEvidence,
+  type GitHubJsonResponse
 } from '../github/connection.js';
 import type {
   DurableGithubIdentityObservation,
   GithubAuthenticatedPrincipalObservation
 } from '../github/identityResolution.js';
+import type {
+  DurableGithubRepositoryObservation,
+  GithubRepositoryReasonCode
+} from '../github/repositoryResolution.js';
 import { asText } from './format.js';
 
 const ACCOUNTS_FILE = process.env.MCP_GITHUB_ACCOUNTS_FILE || '/app/data/github-accounts.json';
@@ -87,13 +92,127 @@ export type DurableGithubIdentityObservationDependencies = {
     type: DurableGithubIdentityObservation['type'],
     principal: GithubAuthenticatedPrincipalObservation
   ) => Promise<boolean>;
+  requestJson?: (token: string, endpoint: string) => Promise<GitHubJsonResponse>;
   now?: () => Date;
 };
 
-export async function collectDurableGithubIdentityObservations(
+export type DurableGithubObservationBatch = {
+  identityObservations: DurableGithubIdentityObservation[];
+  observeRepository(
+    authenticationContextId: string,
+    repository: { owner: string; name: string }
+  ): Promise<DurableGithubRepositoryObservation>;
+};
+
+function repositoryFailure(
+  observedAt: string,
+  requestedFullName: string,
+  status: DurableGithubRepositoryObservation['status'],
+  reasonCode: GithubRepositoryReasonCode
+): DurableGithubRepositoryObservation {
+  return {
+    status,
+    observedAt,
+    freshness: 'UNKNOWN',
+    requestedFullName,
+    repository: null,
+    reasonCode
+  };
+}
+
+function boundedString(value: unknown, max = 255): string | null {
+  return typeof value === 'string' && value.length > 0 && value.length <= max
+    ? value
+    : null;
+}
+
+function parseRepositoryObservation(
+  response: GitHubJsonResponse,
+  observedAt: string,
+  requestedFullName: string
+): DurableGithubRepositoryObservation {
+  if (!response.ok) {
+    if (response.status === 401) {
+      return repositoryFailure(observedAt, requestedFullName, 'AUTH_INVALID', 'GITHUB_REPOSITORY_AUTH_INVALID');
+    }
+    if (response.status === 403) {
+      return repositoryFailure(observedAt, requestedFullName, 'PERMISSION_DENIED', 'GITHUB_REPOSITORY_PERMISSION_DENIED');
+    }
+    if (response.status === 404) {
+      return repositoryFailure(
+        observedAt,
+        requestedFullName,
+        'NOT_FOUND_OR_INVISIBLE',
+        'GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE'
+      );
+    }
+    return repositoryFailure(observedAt, requestedFullName, 'UNAVAILABLE', 'GITHUB_REPOSITORY_API_UNAVAILABLE');
+  }
+  const root = response.json && typeof response.json === 'object' && !Array.isArray(response.json)
+    ? response.json as Record<string, unknown>
+    : null;
+  const ownerRoot = root?.owner && typeof root.owner === 'object' && !Array.isArray(root.owner)
+    ? root.owner as Record<string, unknown>
+    : null;
+  const githubRepositoryId = root?.id;
+  const owner = boundedString(ownerRoot?.login, 100);
+  const name = boundedString(root?.name, 100);
+  const fullName = boundedString(root?.full_name, 202);
+  const ownerType = ownerRoot?.type === 'User'
+    ? 'user' as const
+    : ownerRoot?.type === 'Organization'
+      ? 'organization' as const
+      : null;
+  const defaultBranch = root?.default_branch === null || root?.default_branch === undefined
+    ? null
+    : boundedString(root.default_branch, 255);
+  const visibility = root?.visibility === 'public'
+    || root?.visibility === 'private'
+    || root?.visibility === 'internal'
+    ? root.visibility
+    : root?.visibility === null || root?.visibility === undefined
+      ? null
+      : undefined;
+  if (
+    typeof githubRepositoryId !== 'number'
+    || !Number.isSafeInteger(githubRepositoryId)
+    || githubRepositoryId < 1
+    || !owner
+    || !name
+    || !fullName
+    || !ownerType
+    || fullName.toLowerCase() !== `${owner}/${name}`.toLowerCase()
+    || (root?.default_branch !== null && root?.default_branch !== undefined && !defaultBranch)
+    || visibility === undefined
+    || typeof root?.archived !== 'boolean'
+    || typeof root?.fork !== 'boolean'
+  ) {
+    return repositoryFailure(observedAt, requestedFullName, 'MALFORMED', 'GITHUB_REPOSITORY_RESPONSE_INVALID');
+  }
+  return {
+    status: 'VERIFIED',
+    observedAt,
+    freshness: 'CURRENT',
+    requestedFullName,
+    repository: {
+      githubRepositoryId,
+      owner,
+      ownerType,
+      name,
+      fullName,
+      defaultBranch,
+      visibility,
+      archived: root.archived,
+      fork: root.fork
+    },
+    reasonCode: null
+  };
+}
+
+export async function collectDurableGithubObservationBatch(
   accounts: DurableGithubAccountConfig[],
   dependencies: DurableGithubIdentityObservationDependencies = {}
-): Promise<DurableGithubIdentityObservation[]> {
+): Promise<DurableGithubObservationBatch> {
   const now = dependencies.now ?? (() => new Date());
   const tokenReader = dependencies.readToken ?? readToken;
   const principalObserver = dependencies.observePrincipal
@@ -175,7 +294,57 @@ export async function collectDurableGithubIdentityObservations(
       accountVerified
     };
   }));
-  return observations;
+  const tokenByAuthenticationContext = new Map<string, string>();
+  for (const shared of byTokenFile.values()) {
+    const { authenticationContextId, token } = await shared;
+    if (token) tokenByAuthenticationContext.set(authenticationContextId, token);
+  }
+  const requestJson = dependencies.requestJson
+    ?? ((token: string, endpoint: string) => githubJsonRequest(token, endpoint));
+  return {
+    identityObservations: observations,
+    observeRepository: async (authenticationContextId, repository) => {
+      const observedAt = now().toISOString();
+      const owner = clean(repository.owner);
+      const name = clean(repository.name);
+      const requestedFullName = owner && name ? `${owner}/${name}` : 'invalid/invalid';
+      const token = tokenByAuthenticationContext.get(authenticationContextId);
+      if (!token) {
+        return repositoryFailure(
+          observedAt,
+          requestedFullName,
+          'UNAVAILABLE',
+          'GITHUB_REPOSITORY_AUTH_MISSING'
+        );
+      }
+      if (!owner || !name || owner !== repository.owner || name !== repository.name) {
+        return repositoryFailure(
+          observedAt,
+          requestedFullName,
+          'MALFORMED',
+          'GITHUB_REPOSITORY_RESPONSE_INVALID'
+        );
+      }
+      const response = await requestJson(
+        token,
+        `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(name)}`
+      ).catch((): GitHubJsonResponse => ({
+        ok: false,
+        status: null,
+        json: null,
+        tokenExpiresAt: null,
+        oauthScopes: []
+      }));
+      return parseRepositoryObservation(response, observedAt, requestedFullName);
+    }
+  };
+}
+
+export async function collectDurableGithubIdentityObservations(
+  accounts: DurableGithubAccountConfig[],
+  dependencies: DurableGithubIdentityObservationDependencies = {}
+): Promise<DurableGithubIdentityObservation[]> {
+  return (await collectDurableGithubObservationBatch(accounts, dependencies)).identityObservations;
 }
 
 export async function loadDurableGithubIdentityObservations(
@@ -183,6 +352,16 @@ export async function loadDurableGithubIdentityObservations(
 ): Promise<DurableGithubIdentityObservation[]> {
   const cfg = await readJson();
   return collectDurableGithubIdentityObservations(
+    Array.isArray(cfg.accounts) ? cfg.accounts : [],
+    dependencies
+  );
+}
+
+export async function loadDurableGithubObservationBatch(
+  dependencies: DurableGithubIdentityObservationDependencies = {}
+): Promise<DurableGithubObservationBatch> {
+  const cfg = await readJson();
+  return collectDurableGithubObservationBatch(
     Array.isArray(cfg.accounts) ? cfg.accounts : [],
     dependencies
   );

@@ -136,6 +136,32 @@ Les contextes accessibles sont bornés au même credential par une corrélation
 éphémère non secrète, jamais persistée ni projetée. Les capacités effectives sont
 calculées seulement au SLOT-11 à partir de leurs autorités propres.
 
+La résolution B2 prolonge le même collecteur au SLOT-07. Elle privilégie le
+repository exact du `ConnectionContext` lorsqu'il est déjà prouvé ; sinon elle
+lit uniquement `githubOwner`/`githubRepo` dans les `repoMappings` GitRegistry V1
+comme candidats bornés. Elle n'appelle jamais le fallback historique
+`mcp_bridge`, n'active pas GitRegistry V2 et ne résout encore ni projet, serveur,
+runtime ou domaine. Un seul candidat déterministe est observé par
+`GET /repos/{owner}/{repo}` avec l'exact `authenticationContextId` sélectionné
+par B1.
+
+Le batch d'observation reste éphémère dans `src/tools/durableAccounts.ts` : il
+réutilise la collecte B1, déduplique les token files et ne conserve le credential
+que dans une closure locale. `GithubOperationalContext.repositoryResolution` est
+une projection additive et optionnelle pour les consommateurs historiques. Le
+cache GitHub existant reste l'unique cache ; une entrée expirée supprime le dépôt
+sélectionné et devient `UNVERIFIED/STALE`. Les réponses GitHub sont réduites à
+l'identité canonique du repository ; permissions, scopes et erreurs brutes sont
+écartés avant projection.
+
+Une collecte portant une identité B1/B2 réobserve les autorités live au lieu de
+servir une preuve potentiellement révoquée depuis le cache ; `getCurrent()` reste
+strictement cache-only pour ses consommateurs historiques. Les clés de
+single-flight hachent les valeurs exactes du principal et du repository sans les
+normaliser avant validation, afin qu'un contexte invalide ne puisse pas partager
+la collecte d'un contexte valide. La vue d'évidence GitRegistry V1 borne enfin la
+lecture à 1 MiB et 1 000 mappings avant toute résolution.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.

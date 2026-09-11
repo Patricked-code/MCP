@@ -84,7 +84,7 @@ Une amélioration structurante est d'abord positionnée dans `ROADMAP.md`. Lorsq
 
 ## A2.1 livré — TASK-20260901-001 clôturée
 
-La séquence détaillée, les dépendances et les contrats d'intégration restent portés par `ROADMAP.md`. Operational Memory a clôturé `TASK-20260901-001` à `DONE` en révision 10 après la PR #70, la CI main #746, Governed Deploy #25 et Live State `83` `FULLY_ALIGNED`. B1 et les lots suivants restent des candidats non enregistrés; ils ne sont pas implicitement rattachés à la tâche clôturée.
+La séquence détaillée, les dépendances et les contrats d'intégration restent portés par `ROADMAP.md`. Operational Memory a clôturé `TASK-20260901-001` à `DONE` en révision 10 après la PR #70, la CI main #746, Governed Deploy #25 et Live State `83` `FULLY_ALIGNED`. À cette clôture A2.1, B1 et les lots suivants étaient encore des candidats distincts non enregistrés ; B1 a depuis été clôturé séparément et B2 enregistré sous sa propre tâche.
 
 ### A2.1 — Connection Context minimal — livré et attesté
 
@@ -104,7 +104,7 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [ ] persister une référence conversation/workspace uniquement si elle est fournie, autorisée et sanitizable ;
 - [ ] garder A2.2 non bloquant pour B1 lorsque le principal OAuth suffit à la résolution GitHub gouvernée.
 
-### B1 — GitHub Identity Resolution — tâche gouvernée en cours
+### B1 — GitHub Identity Resolution — livré et clôturé avant B2
 
 - [x] approuver le binding `oauth:wealthtech-mcp-admin` → `Patricked-code` uniquement pour `Patricked-code/MCP`, avec effet `IDENTITY_ONLY` ;
 - [x] préserver toute la sémantique Identity Policy V1 dans une V2 additive ;
@@ -117,16 +117,24 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [x] résoudre les trois threads et fusionner la PR #73 sous garde exact-head au merge `208b8744810a23e48a4282450786805e7ff18845` ;
 - [x] réussir MCP CI main #778 et MCP Governed Deploy #27 ;
 - [x] attester dans Live State `96` GitHub/S1/OCI/runtime exact-SHA et healthy ainsi que B1 `RESOLVED` sans permission dérivée ;
-- [ ] publier, valider, revoir et fusionner la réconciliation strictement documentaire des six projections canoniques ;
-- [ ] observer son Autodeploy et obtenir Live State `FULLY_ALIGNED` sans `DOCUMENTATION_DRIFT` ;
-- [ ] clôturer `TASK-20260907-001`, checkpoint, locks et session uniquement après ces preuves.
+- [x] publier, valider, revoir et fusionner la réconciliation documentaire finale par PR #74 ;
+- [x] observer son Autodeploy et obtenir Live State `FULLY_ALIGNED` sans `DOCUMENTATION_DRIFT` ;
+- [x] clôturer `TASK-20260907-001` avant l'enregistrement séparé de B2.
 
-### B2 — Repository Resolution — restant séparé
+### B2 — Repository Resolution — tâche gouvernée en cours
 
-- [ ] résoudre le repository explicitement fourni ou déjà gouverné ;
-- [ ] gérer `NONE` / `AMBIGUOUS` / `UNVERIFIED` sans choix arbitraire ;
-- [ ] supprimer progressivement les dépendances hardcodées à `Patricked-code/MCP` uniquement quand un `repositoryId`/mapping validé est disponible et sans casser le cas historique ;
-- [ ] ne créer la Governed Task B2 que lorsqu'elle devient définie, gouvernée et exécutable après clôture B1.
+- [x] approuver le design B2 au checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c` ;
+- [x] enregistrer/claim B2 séparément sous `TASK-20260909-001` après clôture B1 ;
+- [x] restaurer additivement la branche après détection du lot concurrent incompatible, sans force-push ;
+- [x] implémenter le resolver pur fail-closed et la vue d'évidence GitRegistry V1 ;
+- [x] étendre l'observateur durable existant avec le batch credential-scoped ;
+- [x] projeter B2 dans le collecteur/cache/service/dashboard Governed Context existant ;
+- [x] gérer `RESOLVED` / `NONE` / `AMBIGUOUS` / `UNVERIFIED`, dont 404 jamais `NONE` ;
+- [x] préserver les contrats historiques et exclure toute permission, V2 active ou mapping aval ;
+- [x] terminer documentation, suite complète, sécurité, cartographie et revue indépendante ;
+- [ ] publier la branche exacte, ouvrir/revoir la PR et obtenir CI exact-head sans thread ;
+- [ ] merger exact-head, laisser GitHub → S1 déployer, obtenir `FULLY_ALIGNED`, puis clôturer task/session/locks ;
+- [ ] conserver B3/C1+ dans la roadmap sans les précréer dans la queue.
 
 Le mapping GitHub user/account → rôle projet et les permissions ne font pas partie
 de B1. Ils restent positionnés dans les lots de gouvernance/Effective Capabilities

@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 200,
+  "trackedCount": 202,
   "categories": {
     "root-documentation": 50,
     "canonical": 7,
     "migration-history": 7,
     "documentation": 55,
     "history": 1,
-    "engineering-plan": 6,
-    "engineering-spec": 6,
+    "engineering-plan": 7,
+    "engineering-spec": 7,
     "memory": 61,
     "runtime-mirror-tracked": 7
   },
@@ -507,6 +507,10 @@
       "category": "engineering-plan"
     },
     {
+      "path": "docs/superpowers/plans/2026-09-09-b2-repository-resolution.md",
+      "category": "engineering-plan"
+    },
+    {
       "path": "docs/superpowers/specs/2026-08-09-governed-autodeploy-v1-design.md",
       "category": "engineering-spec"
     },
@@ -528,6 +532,10 @@
     },
     {
       "path": "docs/superpowers/specs/2026-09-07-b1-github-identity-resolution-design.md",
+      "category": "engineering-spec"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-09-b2-repository-resolution-design.md",
       "category": "engineering-spec"
     },
     {
