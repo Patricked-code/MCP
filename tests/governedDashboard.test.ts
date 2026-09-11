@@ -92,6 +92,32 @@ function governedContext(): GovernedOperationalContext {
         reasonCodes: [],
         policyDigest: 'e'.repeat(64)
       },
+      repositoryResolution: {
+        status: 'RESOLVED',
+        observedAt: NOW,
+        requestedRepositoryContext: 'Patricked-code/MCP',
+        selectionSource: 'connection_context',
+        selectedAccountContext: { owner: 'Patricked-code', type: 'user' },
+        selectedRepository: {
+          repositoryId: 'github:Patricked-code/MCP',
+          githubRepositoryId: 1285534440,
+          owner: 'Patricked-code',
+          ownerType: 'user',
+          name: 'MCP',
+          fullName: 'Patricked-code/MCP',
+          defaultBranch: 'main',
+          visibility: 'public',
+          archived: false,
+          fork: false
+        },
+        candidates: [],
+        candidateCount: 1,
+        freshness: 'CURRENT',
+        provenance: ['github_identity', 'connection_context', 'github_api:get_repository'],
+        reasonCodes: [],
+        uncertainties: [],
+        registryDigest: 'f'.repeat(64)
+      },
       error: null
     },
     session: {
@@ -168,6 +194,11 @@ test('le dashboard rend la vue opérationnelle bornée demandée', () => {
   assert.match(html, /RESOLVED/);
   assert.match(html, /Patricked-code/);
   assert.match(html, /IDENTITY_ONLY|identité uniquement/i);
+  assert.match(html, /Dépôt GitHub/);
+  assert.match(html, /SLOT-07/);
+  assert.match(html, /github:Patricked-code\/MCP/);
+  assert.match(html, /connection_context/);
+  assert.match(html, /preuve d’identité du dépôt uniquement/i);
   assert.match(html, /shadow/);
   assert.match(html, /Bootstrap[^<]*<[^>]+>CURRENT/);
   assert.match(html, /Queue[^0-9]*2/);
@@ -204,6 +235,15 @@ test('le dashboard échappe toutes les chaînes et ignore les secrets hors contr
       owner: '<img src=x onerror=alert(3)>', type: 'user', source: 'durable_account'
     }
   };
+  context.github.repositoryResolution = {
+    ...context.github.repositoryResolution!,
+    selectedRepository: {
+      ...context.github.repositoryResolution!.selectedRepository!,
+      repositoryId: 'github:<script>alert("repository")</script>',
+      fullName: '<img src=x onerror=alert(4)>'
+    },
+    reasonCodes: ['GITHUB_REPOSITORY_RESPONSE_INVALID']
+  };
   const hostile = Object.assign(context, {
     resumeSecretHash: 'resume-secret-hash-raw',
     authInfo: { token: 'Bearer raw-token' },
@@ -219,6 +259,8 @@ test('le dashboard échappe toutes les chaînes et ignore les secrets hors contr
   assert.match(html, /&lt;img src=x onerror=alert\(1\)&gt;/);
   assert.match(html, /&lt;script&gt;alert\(&quot;github&quot;\)&lt;\/script&gt;/);
   assert.match(html, /&lt;img src=x onerror=alert\(3\)&gt;/);
+  assert.match(html, /github:&lt;script&gt;alert\(&quot;repository&quot;\)&lt;\/script&gt;/);
+  assert.match(html, /&lt;img src=x onerror=alert\(4\)&gt;/);
   assert.equal(html.includes('resume-secret-hash-raw'), false);
   assert.equal(html.includes('Bearer raw-token'), false);
   assert.equal(html.includes('transport-raw-secret'), false);

@@ -397,5 +397,10 @@ test('des dépendances qui lèvent synchroniquement sont converties en vue dégr
   });
   assert.equal(result.freshness, 'DEGRADED');
   assert.equal(result.github.error, 'github_context_unavailable');
+  assert.equal(result.github.repositoryResolution?.status, 'UNVERIFIED');
+  assert.equal(result.github.repositoryResolution?.freshness, 'UNKNOWN');
+  assert.deepEqual(result.github.repositoryResolution?.reasonCodes, [
+    'GITHUB_REPOSITORY_API_UNAVAILABLE'
+  ]);
   assert.equal(JSON.stringify(result).includes('sensitive dependency failure'), false);
 });
