@@ -154,6 +154,14 @@ sélectionné et devient `UNVERIFIED/STALE`. Les réponses GitHub sont réduites
 l'identité canonique du repository ; permissions, scopes et erreurs brutes sont
 écartés avant projection.
 
+Une collecte portant une identité B1/B2 réobserve les autorités live au lieu de
+servir une preuve potentiellement révoquée depuis le cache ; `getCurrent()` reste
+strictement cache-only pour ses consommateurs historiques. Les clés de
+single-flight hachent les valeurs exactes du principal et du repository sans les
+normaliser avant validation, afin qu'un contexte invalide ne puisse pas partager
+la collecte d'un contexte valide. La vue d'évidence GitRegistry V1 borne enfin la
+lecture à 1 MiB et 1 000 mappings avant toute résolution.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.

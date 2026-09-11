@@ -131,7 +131,7 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [x] projeter B2 dans le collecteur/cache/service/dashboard Governed Context existant ;
 - [x] gérer `RESOLVED` / `NONE` / `AMBIGUOUS` / `UNVERIFIED`, dont 404 jamais `NONE` ;
 - [x] préserver les contrats historiques et exclure toute permission, V2 active ou mapping aval ;
-- [ ] terminer documentation, suite complète, sécurité, cartographie et revue indépendante ;
+- [x] terminer documentation, suite complète, sécurité, cartographie et revue indépendante ;
 - [ ] publier la branche exacte, ouvrir/revoir la PR et obtenir CI exact-head sans thread ;
 - [ ] merger exact-head, laisser GitHub → S1 déployer, obtenir `FULLY_ALIGNED`, puis clôturer task/session/locks ;
 - [ ] conserver B3/C1+ dans la roadmap sans les précréer dans la queue.

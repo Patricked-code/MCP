@@ -22,11 +22,12 @@ Date : 2026-09-11
 - Design approuvé : checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c`, spec/plan sous `docs/superpowers/`.
 - Conflit réconcilié : le lot distant concurrent mélangeait Policy V3, permissions/access levels, routage global et observateur credential parallèle. Il a été annulé sans force-push ; son historique demeure auditable mais son arbre n'est pas livré.
 - Implémentation additive locale : resolver pur `src/github/repositoryResolution.ts`, vue d'évidence dans GitRegistry V1 existant, batch éphémère dans `src/tools/durableAccounts.ts`, projection dans le collecteur/cache/service/dashboard existant.
-- Preuves acquises : baseline 310/310 ; suite complète locale 352/352 ; typecheck, build, secrets, documentation gouvernée (202 Markdown), cartographie et Current-State Evidence verts, sans contradiction.
+- Preuves acquises : baseline 310/310 ; suite complète locale 357/357 ; typecheck, build, secrets, documentation gouvernée (202 Markdown), cartographie et Current-State Evidence verts, sans contradiction.
 - Correctifs de self-review : les statuts HTTP explicites sont évalués avant la fraîcheur afin qu'un 404 reste `UNVERIFIED/GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE` avec visibilité incertaine ; un registre de plus de 1 000 mappings est refusé plutôt que tronqué ; le type de propriétaire doit correspondre au contexte B1 ; les reason codes échoués sont dérivés du statut observé tout en conservant l'absence de credential comme `AUTH_MISSING`.
 - Autorités préservées : contexte exact A2.1, identité B1, connexions et secret storage existants, GitHub API live, GitRegistry V1 fallback read-only, Governed Context projection ; GitRegistry V2 reste dry-run jusqu'à C1.
 - Frontières : aucune permission/capability, aucun projet/serveur/runtime/domaine, aucune nouvelle authority/registry/store/cache/session/observer/tool, aucun changement WRITE gate ou workflow de déploiement, aucune écriture directe S1.
-- Prochaine action : finir docs/cartographie et suite complète, revue indépendante, publication exact-head, PR/CI/revue/merge, Autodeploy, Live State `FULLY_ALIGNED`, puis `DONE` et réconciliation de queue.
+- Revue indépendante : le premier passage a refusé la livraison sans finding critique, puis six assertions RED ciblées ont reproduit les écarts de cache, validation et bornage (`38/44` au commit `e81e3cd`). Le GREEN `ffc4c96` les corrige ; le second passage conclut `READY`, sans finding Critical/Important/Minor, avec 76/76 tests B1/B2/cache ciblés.
+- Prochaine action : publier l'historique RED/GREEN exact sur la branche distante restaurée, ouvrir la Draft PR, obtenir CI/revue exact-head, merger, laisser l'Autodeploy gouverné agir, exiger Live State `FULLY_ALIGNED`, puis `DONE` et réconciliation de queue.
 
 Les valeurs dynamiques restent à relire dans GitHub, Operational Memory et Live
 State avant chaque mutation. B3/C1 et les lots aval restent cartographiés mais ne

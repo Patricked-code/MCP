@@ -34,6 +34,13 @@ Conflit de branche : le lot concurrent mélangeant Policy V3, permissions et
 observateur parallèle a été annulé par commit descendant sans réécriture
 d'historique. L'implémentation approuvée repart de l'arbre exact de la baseline.
 
+Décision de revue : le premier passage indépendant a maintenu le gate fermé sans
+finding critique et a exigé six preuves supplémentaires. Le RED `e81e3cd`
+reproduit les écarts (`38/44`) ; le GREEN `ffc4c96` isole les single-flights par
+inputs exacts, réobserve les autorités pour une collecte identity-scoped, borne le
+registre avant parsing, conserve l'horodatage stale et refuse `.`/`..`. Le second
+passage conclut `READY` sans finding restant et 76/76 tests ciblés.
+
 ## 2026-09-08 — Résolution GitHub contextuelle B1 sans autorité ni permission parallèle
 
 Contexte : A2.1 fournit déjà un `ConnectionContext` durable contenant le principal OAuth et, pour le cas historique courant, le repository `Patricked-code/MCP`. B1 doit résoudre l'identité GitHub sans supposer qu'un principal OAuth, un login GitHub, une organisation accessible, une Human Identity ou un Agent Role sont équivalents.

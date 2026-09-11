@@ -403,6 +403,36 @@
 
 ---
 
+## Pre-PR Execution Evidence — 2026-09-11
+
+Tasks 1 through 8 have been executed under `TASK-20260909-001`; Task 9 remains
+open. The evidence below records actual commands and outcomes rather than
+retroactively marking unobserved steps complete.
+
+- Baseline before B2: 310/310 full historical tests passed.
+- Pure resolver RED: `tests/githubRepositoryResolution.test.ts` failed because
+  the repository-resolution module did not exist; the focused GREEN then passed.
+- Durable observation RED: the observation-batch API was absent; after the
+  shared-observer refactor, the B1/B2 observation suites passed.
+- Collector integration RED: 9/10 passed and the 404 case failed because stale
+  handling masked the explicit not-found status; the corrected priority passed.
+- Self-review RED: 4/28 assertions failed for registry bounds, owner-type
+  consistency and reason-code derivation; the corresponding GREEN passed 28/28.
+- Missing-auth RED: 24/25 passed before the bounded `AUTH_MISSING` correction;
+  the focused GREEN passed 50/50.
+- First independent review: no Critical finding, but delivery was not ready.
+  Commit `e81e3cd` added six failing assertions (`38/44`) for oversized registry
+  input, `.`/`..`, stale `observedAt`, authority refresh and invalid-context
+  cache/single-flight isolation.
+- Review GREEN: commit `ffc4c96` passed the same 44/44 assertions plus typecheck.
+- Second independent review: `READY`, no Critical/Important/Minor finding; the
+  B1/B2/cache-focused verification passed 76/76.
+- Final local gate before publication: 357/357 full tests, typecheck, build,
+  `lint:secrets`, `docs:check`, cartography and Current-State Evidence passed.
+  `npm run test:readonly-safety` could not start the `tsx` CLI because this
+  sandbox forbids its IPC socket (`EPERM`); every listed test was run successfully
+  inside the 357-test `node --import tsx --test tests/*.test.ts` suite.
+
 ## Task 9: PR, Review, Exact-Head Merge and Runtime Attestation
 
 **Files:** governed metadata and PR evidence

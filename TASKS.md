@@ -36,7 +36,7 @@ relus avant toute mutation.
 - [x] prouver les quatre états, exact context, fallback V1 et 404 fail-closed ;
 - [x] préserver B1, Identity Policy V2, ConnectionContext V1 et lecture GitRegistry historique ;
 - [x] exclure permissions, projet/serveur/runtime/domaine, V2 active et nouvel outil/registre/cache ;
-- [ ] terminer les preuves complètes, documentation et revue ;
+- [x] terminer les preuves complètes, documentation et revue indépendante sans finding restant ;
 - [ ] ouvrir la PR, obtenir CI/revue exact-head, fusionner et déployer par GitHub → S1 ;
 - [ ] exiger Live State `FULLY_ALIGNED` avant `DONE`, checkpoint et libération des locks.
 

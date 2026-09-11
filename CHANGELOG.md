@@ -14,8 +14,10 @@ Historique factuel des changements du depot MCP.
 - La self-review TDD refuse aussi les registres de plus de 1 000 mappings au lieu de créer une fausse résolution par troncature, exige la cohérence `user/organization` avec B1 et dérive les reason codes du statut observé, avec une exception bornée pour distinguer `AUTH_MISSING` d'une indisponibilité API.
 - Aucun nouvel outil, registre, store, cache, observateur, Session Manager, permission, Policy V3, activation GitRegistry V2 ou écriture S1 n'est introduit. Le WRITE gate reste `shadow`.
 - La branche concurrente incompatible a été neutralisée par un descendant non destructif `3bad842b1bfe8bdcd7289201f6a696fb84168e34`; aucun force-push ni effacement d'historique.
-- Validation locale acquise : 352/352 tests, typecheck, build, secrets, 202 Markdown gouvernés, cartographie et Current-State Evidence sans contradiction. La commande enveloppe `tsx --test` reste interdite par l'IPC de cette sandbox (`EPERM`) ; les mêmes tests sont inclus dans la suite complète exécutée avec `node --import tsx --test`.
-- Livraison encore requise : revue indépendante, PR/CI exact-head, merge, GitHub → S1, attestation OCI/runtime/Live State et clôture gouvernée.
+- La première revue indépendante n'a trouvé aucun défaut critique mais a bloqué la livraison sur le cache identity-scoped, les collisions d'inputs invalides, le bornage avant parsing, la conservation de `observedAt` stale et les segments `.`/`..`. Le commit RED `e81e3cd` échoue sur six assertions ciblées (`38/44`) ; le GREEN `ffc4c96` les rend toutes passantes.
+- Le second passage indépendant conclut `READY`, sans finding Critical/Important/Minor, avec 76/76 tests ciblés B1/B2/cache. La collecte identité-scopée réobserve désormais les autorités tandis que `getCurrent()` et le cache non scopé conservent leurs contrats historiques.
+- Validation locale acquise : 357/357 tests, typecheck, build, secrets, 202 Markdown gouvernés, cartographie et Current-State Evidence sans contradiction. La commande enveloppe `tsx --test` reste interdite par l'IPC de cette sandbox (`EPERM` sur le socket CLI) ; les mêmes tests sont inclus dans la suite complète exécutée avec `node --import tsx --test`.
+- Livraison encore requise : PR/CI exact-head, merge, GitHub → S1, attestation OCI/runtime/Live State et clôture gouvernée.
 
 ## 2026-09-09 — B1 GitHub Identity Resolution livré et clôturé
 
