@@ -585,6 +585,7 @@ test('le cache B2 manque fermé et retire la preuve sélectionnée lorsqu elle d
   assert.deepEqual(miss.repositoryResolution?.reasonCodes, ['GITHUB_REPOSITORY_CACHE_MISS']);
   const fresh = await collector.reconcileExplicit(null, IDENTITY_SCOPE);
   assert.equal(fresh.repositoryResolution?.status, 'RESOLVED');
+  const repositoryObservedAt = fresh.repositoryResolution?.observedAt;
   now = new Date('2026-09-07T21:00:02.000Z');
   const stale = await collector.getCurrent(null, IDENTITY_SCOPE);
   assert.equal(stale.repositoryResolution?.status, 'UNVERIFIED');
@@ -593,4 +594,88 @@ test('le cache B2 manque fermé et retire la preuve sélectionnée lorsqu elle d
   assert.deepEqual(stale.repositoryResolution?.reasonCodes, [
     'GITHUB_REPOSITORY_EVIDENCE_STALE'
   ]);
+  assert.equal(stale.repositoryResolution?.observedAt, repositoryObservedAt);
+});
+
+test('collect avec identité réobserve les autorités au lieu de réutiliser leur ancien cache', async () => {
+  let policyDigest = 'a'.repeat(64);
+  let repositoryName = 'MCP';
+  let identityCalls = 0;
+  let registryCalls = 0;
+  const policy = {
+    ...IDENTITY_POLICY,
+    githubPrincipalBindings: IDENTITY_POLICY.githubPrincipalBindings.map((binding) => ({
+      ...binding,
+      context: undefined
+    }))
+  };
+  const collector = createGithubOperationalContextCollector({
+    fetchImpl: async (input) => {
+      const url = String(input);
+      if (url.endsWith('/commits/main')) return json({ sha: SHA });
+      if (url.includes('/rulesets?')) return json([]);
+      return json({ message: 'unexpected endpoint' }, 500);
+    },
+    readToken: async () => 'work-state-token',
+    apiBase: 'https://api.github.test',
+    allowedHosts: 'api.github.test',
+    now: () => new Date('2026-09-07T21:00:00.000Z'),
+    cacheTtlMs: 15_000,
+    loadIdentityPolicy: async () => ({
+      parse: { ok: true as const, policy }, digest: policyDigest
+    }),
+    collectObservationBatch: async () => {
+      identityCalls += 1;
+      return {
+        identityObservations: [identityConnection()],
+        observeRepository: async (_authenticationContextId, repository) => ({
+          ...repositoryApiProof(),
+          requestedFullName: `${repository.owner}/${repository.name}`,
+          repository: {
+            ...repositoryApiProof().repository!,
+            name: repository.name,
+            fullName: `${repository.owner}/${repository.name}`
+          }
+        })
+      };
+    },
+    readRepositoryRegistry: async () => {
+      registryCalls += 1;
+      return {
+        available: true,
+        schemaVersion: 1 as const,
+        mappings: [{ githubOwner: 'Patricked-code', githubRepo: repositoryName }],
+        digest: `${repositoryName}-digest`
+      };
+    }
+  });
+  const scope = { ...IDENTITY_SCOPE, repositoryContext: null };
+  const first = await collector.collect(null, scope);
+  assert.equal(first.repositoryResolution?.selectedRepository?.fullName, 'Patricked-code/MCP');
+  policyDigest = 'b'.repeat(64);
+  repositoryName = 'Other';
+  const refreshed = await collector.collect(null, scope);
+  assert.equal(refreshed.cache.status, 'REFRESHED');
+  assert.equal(refreshed.identity?.policyDigest, 'b'.repeat(64));
+  assert.equal(refreshed.repositoryResolution?.selectedRepository?.fullName, 'Patricked-code/Other');
+  assert.equal(identityCalls, 2);
+  assert.equal(registryCalls, 2);
+});
+
+test('un contexte repository invalide ne partage ni cache ni single-flight avec le contexte valide', async () => {
+  const collector = b2Collector({});
+  const invalidScope = {
+    ...IDENTITY_SCOPE,
+    repositoryContext: ' Patricked-code/MCP '
+  };
+  const [valid, invalid] = await Promise.all([
+    collector.collect(null, IDENTITY_SCOPE),
+    collector.collect(null, invalidScope)
+  ]);
+  assert.equal(valid.repositoryResolution?.status, 'RESOLVED');
+  assert.equal(invalid.repositoryResolution?.status, 'UNVERIFIED');
+  assert.equal(invalid.repositoryResolution?.selectedRepository, null);
+  const cacheOnly = await collector.getCurrent(null, invalidScope);
+  assert.equal(cacheOnly.repositoryResolution?.status, 'UNVERIFIED');
+  assert.equal(cacheOnly.repositoryResolution?.selectedRepository, null);
 });

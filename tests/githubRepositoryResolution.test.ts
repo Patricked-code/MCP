@@ -161,6 +161,17 @@ test('rejette un contexte exact invalide sans tenter le registre', () => {
   assert.deepEqual(result.reasonCodes, ['GITHUB_REPOSITORY_CONTEXT_INVALID']);
 });
 
+for (const repositoryContext of ['Patricked-code/.', 'Patricked-code/..']) {
+  test(`rejette le segment repository réservé ${repositoryContext}`, () => {
+    const result = resolveGithubRepository(input({
+      requestedRepositoryContext: repositoryContext,
+      repositoryObservation: null
+    }));
+    assert.equal(result.status, 'UNVERIFIED');
+    assert.deepEqual(result.reasonCodes, ['GITHUB_REPOSITORY_CONTEXT_INVALID']);
+  });
+}
+
 test('retourne NONE quand aucun contexte exact ni candidat V1 compatible existe', () => {
   const result = resolveGithubRepository(input({
     requestedRepositoryContext: null,
