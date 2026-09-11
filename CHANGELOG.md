@@ -11,10 +11,10 @@ Historique factuel des changements du depot MCP.
 - Le collecteur/cache/service/dashboard Governed Context existant reçoit une projection optionnelle backward-compatible ; cache miss et stale restent fail-closed.
 - Un registre V1 absent, corrompu ou structurellement invalide est `UNAVAILABLE`, jamais transformé en faux `NONE`; le lecteur historique reste inchangé.
 - La revue TDD a corrigé la priorité des statuts : un 404 est `UNVERIFIED` avec visibilité incertaine, jamais `NONE`.
-- La self-review TDD refuse aussi les registres de plus de 1 000 mappings au lieu de créer une fausse résolution par troncature, exige la cohérence `user/organization` avec B1 et dérive les reason codes du statut observé.
+- La self-review TDD refuse aussi les registres de plus de 1 000 mappings au lieu de créer une fausse résolution par troncature, exige la cohérence `user/organization` avec B1 et dérive les reason codes du statut observé, avec une exception bornée pour distinguer `AUTH_MISSING` d'une indisponibilité API.
 - Aucun nouvel outil, registre, store, cache, observateur, Session Manager, permission, Policy V3, activation GitRegistry V2 ou écriture S1 n'est introduit. Le WRITE gate reste `shadow`.
 - La branche concurrente incompatible a été neutralisée par un descendant non destructif `3bad842b1bfe8bdcd7289201f6a696fb84168e34`; aucun force-push ni effacement d'historique.
-- Validation locale acquise : 351/351 tests, typecheck, build, secrets, 202 Markdown gouvernés, cartographie et Current-State Evidence sans contradiction. La commande enveloppe `tsx --test` reste interdite par l'IPC de cette sandbox (`EPERM`) ; les mêmes tests sont inclus dans la suite complète exécutée avec `node --import tsx --test`.
+- Validation locale acquise : 352/352 tests, typecheck, build, secrets, 202 Markdown gouvernés, cartographie et Current-State Evidence sans contradiction. La commande enveloppe `tsx --test` reste interdite par l'IPC de cette sandbox (`EPERM`) ; les mêmes tests sont inclus dans la suite complète exécutée avec `node --import tsx --test`.
 - Livraison encore requise : revue indépendante, PR/CI exact-head, merge, GitHub → S1, attestation OCI/runtime/Live State et clôture gouvernée.
 
 ## 2026-09-09 — B1 GitHub Identity Resolution livré et clôturé
