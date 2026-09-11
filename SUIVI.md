@@ -18,7 +18,7 @@ Date : 2026-09-11
 ## Point courant — B2 Repository Resolution livré fonctionnellement, réconciliation documentaire en cours
 
 - GitHub `main`, S1 HEAD, S1 `origin/main` et runtime healthy sont observés au SHA exact `f2c90902a627ee9209d805403e584f3123a0453a` ; S1 est propre/read-only et l'image active est `sha256:f4873739812999349d57f4dd02337cf2e873c81e9bfd938e53a86bedebb9334a`.
-- Governed Session : `98e9aee8-20c0-404f-807f-6630ffbb1a1c`, active ; tâche `TASK-20260909-001` `VERIFYING` révision 7. Le blocker unique de Live State `163` est `DOCUMENTATION_DRIFT`, porté par les déclarations pré-merge encore présentes dans les projections canoniques.
+- Governed Session : `98e9aee8-20c0-404f-807f-6630ffbb1a1c`, active ; après l'attestation technique en `VERIFYING` révision 7, la tâche `TASK-20260909-001` est revenue explicitement à `IN_PROGRESS` révision 8 pour sa réconciliation documentaire. Le blocker unique de Live State `163` est `DOCUMENTATION_DRIFT`, porté par les déclarations pré-merge encore présentes dans les projections canoniques.
 - Livraison fonctionnelle : PR #75 fusionnée sous garde du head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au merge `f2c90902a627ee9209d805403e584f3123a0453a`; MCP CI main #811 et MCP Governed Deploy #29 ont réussi sur ce SHA exact.
 - Réconciliation finale strictement documentaire préparée sur `mcp/b2-final-documentation-20260911`; elle ne modifie aucun TypeScript, test, workflow, secret, WRITE gate, registre, store, S1 ou runtime.
 - Design approuvé : checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c`, spec/plan sous `docs/superpowers/`.

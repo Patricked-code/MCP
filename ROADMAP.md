@@ -253,7 +253,9 @@ au contexte courant, sans résoudre encore son projet/serveur/runtime/domaine.
 
 État gouverné au checkpoint du 2026-09-11 : design approuvé au checkpoint
 `0c6299c9-9f62-477f-907b-f97eb2ffbe4c`, Governed Task
-`TASK-20260909-001` `VERIFYING` révision 7. La PR #75 a été fusionnée depuis le
+`TASK-20260909-001`, passée à `VERIFYING` révision 7 après l'attestation technique
+puis revenue à `IN_PROGRESS` révision 8 pour la réconciliation documentaire. La
+PR #75 a été fusionnée depuis le
 head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au merge
 `f2c90902a627ee9209d805403e584f3123a0453a`; CI main #811 et Governed Deploy
 #29 ont réussi. Live State `163` atteste l'alignement GitHub/S1/origin-main/runtime

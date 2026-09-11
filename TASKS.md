@@ -23,8 +23,10 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 ### TASK-20260909-001 — EN COURS
 
-L'autorité dynamique reste la Governed Task Queue/Operational Memory. La tâche B2
-est `VERIFYING` révision 7 après livraison fonctionnelle par PR #75, dépend de B1
+L'autorité dynamique reste la Governed Task Queue/Operational Memory. Après son
+attestation technique en `VERIFYING` révision 7, la tâche B2 est revenue
+explicitement à `IN_PROGRESS` révision 8 pour la réconciliation documentaire
+post-PR #75 ; elle dépend de B1
 terminé et réutilise la Governed Session
 `98e9aee8-20c0-404f-807f-6630ffbb1a1c`. Le design approuvé est le checkpoint
 `0c6299c9-9f62-477f-907b-f97eb2ffbe4c` ; statut, revisions et locks doivent être

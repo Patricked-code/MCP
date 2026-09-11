@@ -19,7 +19,7 @@ Historique factuel des changements du depot MCP.
 - Validation locale acquise : 357/357 tests, typecheck, build, secrets, 202 Markdown gouvernés, cartographie et Current-State Evidence sans contradiction. La commande enveloppe `tsx --test` reste interdite par l'IPC de cette sandbox (`EPERM` sur le socket CLI) ; les mêmes tests sont inclus dans la suite complète exécutée avec `node --import tsx --test`.
 - La PR #75 a été fusionnée sous garde du head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au merge `f2c90902a627ee9209d805403e584f3123a0453a`. MCP CI main #811 et MCP Governed Deploy #29 ont réussi sur ce SHA.
 - Live State `163` atteste GitHub main, S1 HEAD/origin-main et runtime healthy au SHA exact `f2c90902a627ee9209d805403e584f3123a0453a`, S1 propre/read-only et l'image OCI `sha256:f4873739812999349d57f4dd02337cf2e873c81e9bfd938e53a86bedebb9334a`.
-- La tâche est passée à `VERIFYING` révision 7. Le seul blocker restant est la réconciliation descendante strictement documentaire ; aucune clôture `DONE` n'est anticipée avant son CI/merge/déploiement et Live State `FULLY_ALIGNED`.
+- La tâche est passée à `VERIFYING` révision 7 après l'attestation technique, puis est revenue explicitement à `IN_PROGRESS` révision 8 pour la réconciliation descendante strictement documentaire. Aucune clôture `DONE` n'est anticipée avant son CI/merge/déploiement et Live State `FULLY_ALIGNED`.
 
 ## 2026-09-09 — B1 GitHub Identity Resolution livré et clôturé
 
