@@ -13,6 +13,9 @@ const { observeGithubAuthenticatedPrincipal } = await import(
 const { collectDurableGithubIdentityObservations } = await import(
   '../src/tools/durableAccounts.js'
 );
+const { collectDurableGithubObservationBatch } = await import(
+  '../src/tools/durableAccounts.js'
+);
 
 const NOW = '2026-09-07T21:00:00.000Z';
 
@@ -229,4 +232,157 @@ test('un tokenFile hors du secret storage existant est refusé sans lecture', as
   assert.equal(observations[0]?.principal.status, 'UNAVAILABLE');
   assert.equal(observations[0]?.principal.reasonCode, 'GITHUB_IDENTITY_AUTH_MISSING');
   assert.equal(observations[0]?.accountVerified, false);
+});
+
+test('un batch durable réutilise le credential B1 exact pour observer un seul dépôt', async () => {
+  const requests: Array<{ token: string; endpoint: string }> = [];
+  const batch = await collectDurableGithubObservationBatch([
+    {
+      owner: 'Patricked-code', type: 'user', status: 'active',
+      tokenFile: '/app/secrets/github_primary'
+    },
+    {
+      owner: 'chainsolutions-wealthtech', type: 'organization', status: 'active',
+      tokenFile: '/app/secrets/github_primary'
+    }
+  ], {
+    readToken: async () => 'primary-sensitive-token',
+    observePrincipal: async () => ({
+      status: 'VERIFIED', observedAt: NOW, freshness: 'CURRENT',
+      login: 'Patricked-code', githubUserId: 270385782,
+      accountType: 'user', reasonCode: null
+    }),
+    verifyAccountContext: async () => true,
+    requestJson: async (token, endpoint) => {
+      requests.push({ token, endpoint });
+      return {
+        ok: true,
+        status: 200,
+        json: {
+          id: 1285534440,
+          name: 'MCP',
+          full_name: 'Patricked-code/MCP',
+          owner: { login: 'Patricked-code', type: 'User' },
+          default_branch: 'main',
+          visibility: 'public',
+          archived: false,
+          fork: false,
+          permissions: { admin: true, push: true },
+          sensitive: 'must-not-project'
+        },
+        tokenExpiresAt: 'must-not-project',
+        oauthScopes: ['repo']
+      };
+    },
+    now: () => new Date(NOW)
+  });
+
+  assert.equal(batch.identityObservations.length, 2);
+  const authenticationContextId = batch.identityObservations[0]?.authenticationContextId;
+  assert.equal(typeof authenticationContextId, 'string');
+  const result = await batch.observeRepository(authenticationContextId!, {
+    owner: 'Patricked-code', name: 'MCP'
+  });
+  assert.deepEqual(requests, [{
+    token: 'primary-sensitive-token', endpoint: '/repos/Patricked-code/MCP'
+  }]);
+  assert.equal(result.status, 'VERIFIED');
+  assert.equal(result.repository?.fullName, 'Patricked-code/MCP');
+  const serialized = JSON.stringify(result);
+  for (const forbidden of [
+    'primary-sensitive-token', 'github_primary', 'permissions', 'admin',
+    'oauthScopes', 'tokenExpiresAt', 'must-not-project'
+  ]) assert.equal(serialized.includes(forbidden), false);
+});
+
+test('un contexte authentifié inconnu est refusé sans fallback credential', async () => {
+  let requests = 0;
+  const batch = await collectDurableGithubObservationBatch([{
+    owner: 'Patricked-code', type: 'user', status: 'active',
+    tokenFile: '/app/secrets/github_primary'
+  }], {
+    readToken: async () => 'primary-sensitive-token',
+    observePrincipal: async () => ({
+      status: 'VERIFIED', observedAt: NOW, freshness: 'CURRENT',
+      login: 'Patricked-code', githubUserId: 270385782,
+      accountType: 'user', reasonCode: null
+    }),
+    verifyAccountContext: async () => true,
+    requestJson: async () => {
+      requests += 1;
+      throw new Error('must not request');
+    },
+    now: () => new Date(NOW)
+  });
+  const result = await batch.observeRepository('unknown-auth-context', {
+    owner: 'Patricked-code', name: 'MCP'
+  });
+  assert.equal(requests, 0);
+  assert.equal(result.status, 'UNAVAILABLE');
+  assert.equal(result.reasonCode, 'GITHUB_REPOSITORY_AUTH_MISSING');
+});
+
+for (const [httpStatus, status, reasonCode] of [
+  [401, 'AUTH_INVALID', 'GITHUB_REPOSITORY_AUTH_INVALID'],
+  [403, 'PERMISSION_DENIED', 'GITHUB_REPOSITORY_PERMISSION_DENIED'],
+  [404, 'NOT_FOUND_OR_INVISIBLE', 'GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE'],
+  [500, 'UNAVAILABLE', 'GITHUB_REPOSITORY_API_UNAVAILABLE'],
+  [null, 'UNAVAILABLE', 'GITHUB_REPOSITORY_API_UNAVAILABLE']
+] as const) {
+  test(`le batch assainit une observation repository HTTP ${httpStatus}`, async () => {
+    const batch = await collectDurableGithubObservationBatch([{
+      owner: 'Patricked-code', type: 'user', status: 'active',
+      tokenFile: '/app/secrets/github_primary'
+    }], {
+      readToken: async () => 'sensitive-token',
+      observePrincipal: async () => ({
+        status: 'VERIFIED', observedAt: NOW, freshness: 'CURRENT',
+        login: 'Patricked-code', githubUserId: 270385782,
+        accountType: 'user', reasonCode: null
+      }),
+      verifyAccountContext: async () => true,
+      requestJson: async () => ({
+        ok: false, status: httpStatus, json: { message: 'sensitive-token raw error' },
+        tokenExpiresAt: null, oauthScopes: []
+      }),
+      now: () => new Date(NOW)
+    });
+    const result = await batch.observeRepository(
+      batch.identityObservations[0]!.authenticationContextId!,
+      { owner: 'Patricked-code', name: 'MCP' }
+    );
+    assert.equal(result.status, status);
+    assert.equal(result.reasonCode, reasonCode);
+    assert.equal(result.repository, null);
+    assert.equal(JSON.stringify(result).includes('sensitive-token'), false);
+  });
+}
+
+test('une réponse repository 200 malformée est rejetée sans données brutes', async () => {
+  const batch = await collectDurableGithubObservationBatch([{
+    owner: 'Patricked-code', type: 'user', status: 'active',
+    tokenFile: '/app/secrets/github_primary'
+  }], {
+    readToken: async () => 'sensitive-token',
+    observePrincipal: async () => ({
+      status: 'VERIFIED', observedAt: NOW, freshness: 'CURRENT',
+      login: 'Patricked-code', githubUserId: 270385782,
+      accountType: 'user', reasonCode: null
+    }),
+    verifyAccountContext: async () => true,
+    requestJson: async () => ({
+      ok: true, status: 200, json: {
+        id: -1, full_name: 'Patricked-code/MCP', raw: 'sensitive-token'
+      }, tokenExpiresAt: null, oauthScopes: []
+    }),
+    now: () => new Date(NOW)
+  });
+  const result = await batch.observeRepository(
+    batch.identityObservations[0]!.authenticationContextId!,
+    { owner: 'Patricked-code', name: 'MCP' }
+  );
+  assert.equal(result.status, 'MALFORMED');
+  assert.equal(result.reasonCode, 'GITHUB_REPOSITORY_RESPONSE_INVALID');
+  assert.equal(result.repository, null);
+  assert.equal(JSON.stringify(result).includes('sensitive-token'), false);
 });
