@@ -42,6 +42,7 @@ relus avant toute mutation.
 - [x] publier la PR #75 au head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b`, obtenir les CI PR exact-head, la revue indépendante sans finding et zéro thread bloquant ;
 - [x] fusionner sous garde exact-head au merge `f2c90902a627ee9209d805403e584f3123a0453a`, réussir MCP CI main #811 et Governed Deploy #29 ;
 - [x] attester GitHub/S1/origin-main/runtime exact-SHA, S1 propre/read-only et runtime healthy dans Live State `163` ;
+- [x] observer en production B2 `RESOLVED/CURRENT` pour `github:Patricked-code/MCP` / GitHub ID `1285534440`, sans reason code, incertitude ni permission dérivée ;
 - [ ] fusionner/déployer la réconciliation strictement documentaire, puis exiger Live State `FULLY_ALIGNED` avant checkpoint, `DONE` et libération des locks.
 
 ## Tâche précédente — B1 GitHub Identity Resolution

@@ -45,10 +45,13 @@ Décision de livraison : la PR #75 est fusionnée sous garde du head exact
 `dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au merge
 `f2c90902a627ee9209d805403e584f3123a0453a`. MCP CI main #811 et Governed Deploy
 #29 sont réussis ; Live State `163` atteste GitHub/S1/origin-main/runtime exact-SHA,
-S1 propre/read-only et runtime healthy. La tâche reste `VERIFYING` tant que la
-réconciliation documentaire descendante n'a pas elle-même passé PR, CI, merge,
-déploiement et Live State `FULLY_ALIGNED`. Cette réconciliation n'élargit aucune
-autorité et ne contient aucun changement runtime.
+S1 propre/read-only et runtime healthy. Governed Context observe B2
+`RESOLVED/CURRENT` pour `github:Patricked-code/MCP`, GitHub repository ID
+`1285534440`, sans reason code, incertitude ni permission dérivée. Après son passage
+technique à `VERIFYING` révision 7, la tâche revient explicitement à `IN_PROGRESS`
+révision 8 tant que la réconciliation documentaire descendante n'a pas elle-même
+passé PR, CI, merge, déploiement et Live State `FULLY_ALIGNED`. Cette
+réconciliation n'élargit aucune autorité et ne contient aucun changement runtime.
 
 ## 2026-09-08 — Résolution GitHub contextuelle B1 sans autorité ni permission parallèle
 
