@@ -3,7 +3,7 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
-## 2026-09-11 — B2 Repository Resolution en cours de validation
+## 2026-09-11 — B2 Repository Resolution livré fonctionnellement
 
 - `TASK-20260909-001` implémente le design SLOT-07 approuvé au checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c` depuis `main@efb09ce7eeba85122b01c7fa48d99e967b7cdb7c`.
 - Le resolver pur privilégie `ConnectionContext.repository`, utilise seulement owner/repo de GitRegistry V1 en fallback et produit `RESOLVED/NONE/AMBIGUOUS/UNVERIFIED` avec provenance, fraîcheur, reason codes et candidats bornés.
@@ -17,7 +17,9 @@ Historique factuel des changements du depot MCP.
 - La première revue indépendante n'a trouvé aucun défaut critique mais a bloqué la livraison sur le cache identity-scoped, les collisions d'inputs invalides, le bornage avant parsing, la conservation de `observedAt` stale et les segments `.`/`..`. Le commit RED `e81e3cd` échoue sur six assertions ciblées (`38/44`) ; le GREEN `ffc4c96` les rend toutes passantes.
 - Le second passage indépendant conclut `READY`, sans finding Critical/Important/Minor, avec 76/76 tests ciblés B1/B2/cache. La collecte identité-scopée réobserve désormais les autorités tandis que `getCurrent()` et le cache non scopé conservent leurs contrats historiques.
 - Validation locale acquise : 357/357 tests, typecheck, build, secrets, 202 Markdown gouvernés, cartographie et Current-State Evidence sans contradiction. La commande enveloppe `tsx --test` reste interdite par l'IPC de cette sandbox (`EPERM` sur le socket CLI) ; les mêmes tests sont inclus dans la suite complète exécutée avec `node --import tsx --test`.
-- Livraison encore requise : PR/CI exact-head, merge, GitHub → S1, attestation OCI/runtime/Live State et clôture gouvernée.
+- La PR #75 a été fusionnée sous garde du head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au merge `f2c90902a627ee9209d805403e584f3123a0453a`. MCP CI main #811 et MCP Governed Deploy #29 ont réussi sur ce SHA.
+- Live State `163` atteste GitHub main, S1 HEAD/origin-main et runtime healthy au SHA exact `f2c90902a627ee9209d805403e584f3123a0453a`, S1 propre/read-only et l'image OCI `sha256:f4873739812999349d57f4dd02337cf2e873c81e9bfd938e53a86bedebb9334a`.
+- La tâche est passée à `VERIFYING` révision 7. Le seul blocker restant est la réconciliation descendante strictement documentaire ; aucune clôture `DONE` n'est anticipée avant son CI/merge/déploiement et Live State `FULLY_ALIGNED`.
 
 ## 2026-09-09 — B1 GitHub Identity Resolution livré et clôturé
 

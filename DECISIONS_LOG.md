@@ -41,6 +41,15 @@ inputs exacts, réobserve les autorités pour une collecte identity-scoped, born
 registre avant parsing, conserve l'horodatage stale et refuse `.`/`..`. Le second
 passage conclut `READY` sans finding restant et 76/76 tests ciblés.
 
+Décision de livraison : la PR #75 est fusionnée sous garde du head exact
+`dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au merge
+`f2c90902a627ee9209d805403e584f3123a0453a`. MCP CI main #811 et Governed Deploy
+#29 sont réussis ; Live State `163` atteste GitHub/S1/origin-main/runtime exact-SHA,
+S1 propre/read-only et runtime healthy. La tâche reste `VERIFYING` tant que la
+réconciliation documentaire descendante n'a pas elle-même passé PR, CI, merge,
+déploiement et Live State `FULLY_ALIGNED`. Cette réconciliation n'élargit aucune
+autorité et ne contient aucun changement runtime.
+
 ## 2026-09-08 — Résolution GitHub contextuelle B1 sans autorité ni permission parallèle
 
 Contexte : A2.1 fournit déjà un `ConnectionContext` durable contenant le principal OAuth et, pour le cas historique courant, le repository `Patricked-code/MCP`. B1 doit résoudre l'identité GitHub sans supposer qu'un principal OAuth, un login GitHub, une organisation accessible, une Human Identity ou un Agent Role sont équivalents.

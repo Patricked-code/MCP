@@ -121,7 +121,7 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [x] observer son Autodeploy et obtenir Live State `FULLY_ALIGNED` sans `DOCUMENTATION_DRIFT` ;
 - [x] clôturer `TASK-20260907-001` avant l'enregistrement séparé de B2.
 
-### B2 — Repository Resolution — tâche gouvernée en cours
+### B2 — Repository Resolution — livraison fonctionnelle acquise, clôture documentaire en cours
 
 - [x] approuver le design B2 au checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c` ;
 - [x] enregistrer/claim B2 séparément sous `TASK-20260909-001` après clôture B1 ;
@@ -132,8 +132,10 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [x] gérer `RESOLVED` / `NONE` / `AMBIGUOUS` / `UNVERIFIED`, dont 404 jamais `NONE` ;
 - [x] préserver les contrats historiques et exclure toute permission, V2 active ou mapping aval ;
 - [x] terminer documentation, suite complète, sécurité, cartographie et revue indépendante ;
-- [ ] publier la branche exacte, ouvrir/revoir la PR et obtenir CI exact-head sans thread ;
-- [ ] merger exact-head, laisser GitHub → S1 déployer, obtenir `FULLY_ALIGNED`, puis clôturer task/session/locks ;
+- [x] publier la branche exacte, ouvrir/revoir la PR #75 et obtenir CI exact-head sans thread ;
+- [x] merger le head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au SHA `f2c90902a627ee9209d805403e584f3123a0453a`, réussir CI main #811 et Governed Deploy #29 ;
+- [x] attester GitHub/S1/origin-main/runtime alignés, S1 propre/read-only et runtime healthy dans Live State `163` ;
+- [ ] publier/fusionner/déployer la réconciliation documentaire descendante, obtenir `FULLY_ALIGNED`, puis clôturer task/locks selon l'état gouverné réel ;
 - [ ] conserver B3/C1+ dans la roadmap sans les précréer dans la queue.
 
 Le mapping GitHub user/account → rôle projet et les permissions ne font pas partie
