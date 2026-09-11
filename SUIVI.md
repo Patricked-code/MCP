@@ -15,10 +15,13 @@
 
 Date : 2026-09-11
 
-## Point courant — B2 Repository Resolution en implémentation gouvernée
+## Point courant — B2 Repository Resolution livré fonctionnellement, réconciliation documentaire en cours
 
-- GitHub `main` observé : `efb09ce7eeba85122b01c7fa48d99e967b7cdb7c` ; branche B2 distante restaurée par descendant non destructif `3bad842b1bfe8bdcd7289201f6a696fb84168e34`, dont l'arbre est exactement la baseline.
-- Governed Session : `98e9aee8-20c0-404f-807f-6630ffbb1a1c`, reprise active ; tâche `TASK-20260909-001` `IN_PROGRESS`, branche `mcp/b2-repository-resolution-20260909`.
+- GitHub `main`, S1 HEAD, S1 `origin/main` et runtime healthy sont observés au SHA exact `f2c90902a627ee9209d805403e584f3123a0453a` ; S1 est propre/read-only et l'image active est `sha256:f4873739812999349d57f4dd02337cf2e873c81e9bfd938e53a86bedebb9334a`.
+- Governed Session : `98e9aee8-20c0-404f-807f-6630ffbb1a1c`, active ; après l'attestation technique en `VERIFYING` révision 7, la tâche `TASK-20260909-001` est revenue explicitement à `IN_PROGRESS` révision 8 pour sa réconciliation documentaire. Le blocker unique de Live State `163` est `DOCUMENTATION_DRIFT`, porté par les déclarations pré-merge encore présentes dans les projections canoniques.
+- Livraison fonctionnelle : PR #75 fusionnée sous garde du head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au merge `f2c90902a627ee9209d805403e584f3123a0453a`; MCP CI main #811 et MCP Governed Deploy #29 ont réussi sur ce SHA exact.
+- Preuve B2 en production : la réconciliation Governed Context du 2026-09-11T23:50:41Z retourne `RESOLVED/CURRENT` depuis `ConnectionContext` pour `github:Patricked-code/MCP`, GitHub repository ID `1285534440`, sans reason code, incertitude ni permission dérivée ; B1 reste `RESOLVED/CURRENT` sur le même contexte d'authentification.
+- Réconciliation finale strictement documentaire préparée sur `mcp/b2-final-documentation-20260911`; elle ne modifie aucun TypeScript, test, workflow, secret, WRITE gate, registre, store, S1 ou runtime.
 - Design approuvé : checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c`, spec/plan sous `docs/superpowers/`.
 - Conflit réconcilié : le lot distant concurrent mélangeait Policy V3, permissions/access levels, routage global et observateur credential parallèle. Il a été annulé sans force-push ; son historique demeure auditable mais son arbre n'est pas livré.
 - Implémentation additive locale : resolver pur `src/github/repositoryResolution.ts`, vue d'évidence dans GitRegistry V1 existant, batch éphémère dans `src/tools/durableAccounts.ts`, projection dans le collecteur/cache/service/dashboard existant.
@@ -27,7 +30,7 @@ Date : 2026-09-11
 - Autorités préservées : contexte exact A2.1, identité B1, connexions et secret storage existants, GitHub API live, GitRegistry V1 fallback read-only, Governed Context projection ; GitRegistry V2 reste dry-run jusqu'à C1.
 - Frontières : aucune permission/capability, aucun projet/serveur/runtime/domaine, aucune nouvelle authority/registry/store/cache/session/observer/tool, aucun changement WRITE gate ou workflow de déploiement, aucune écriture directe S1.
 - Revue indépendante : le premier passage a refusé la livraison sans finding critique, puis six assertions RED ciblées ont reproduit les écarts de cache, validation et bornage (`38/44` au commit `e81e3cd`). Le GREEN `ffc4c96` les corrige ; le second passage conclut `READY`, sans finding Critical/Important/Minor, avec 76/76 tests B1/B2/cache ciblés.
-- Prochaine action : publier l'historique RED/GREEN exact sur la branche distante restaurée, ouvrir la Draft PR, obtenir CI/revue exact-head, merger, laisser l'Autodeploy gouverné agir, exiger Live State `FULLY_ALIGNED`, puis `DONE` et réconciliation de queue.
+- Prochaine action : publier et revoir la réconciliation documentaire exact-head, la fusionner par le chemin protégé GitHub → S1, exiger Live State `FULLY_ALIGNED`, puis seulement checkpoint, `DONE`, libération des locks et réconciliation de queue.
 
 Les valeurs dynamiques restent à relire dans GitHub, Operational Memory et Live
 State avant chaque mutation. B3/C1 et les lots aval restent cartographiés mais ne
