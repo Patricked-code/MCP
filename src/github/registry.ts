@@ -65,6 +65,7 @@ export async function readGitRegistryEvidence(): Promise<GitRegistryEvidence> {
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('invalid registry');
     const candidate = parsed as { version?: unknown; repoMappings?: unknown };
     if (candidate.version !== 1 || !Array.isArray(candidate.repoMappings)) throw new Error('invalid registry');
+    if (candidate.repoMappings.length > 1000) throw new Error('registry exceeds evidence bound');
     const mappings = candidate.repoMappings.slice(0, 1000).map((mapping) => {
       if (!mapping || typeof mapping !== 'object' || Array.isArray(mapping)) return null;
       const value = mapping as { githubOwner?: unknown; githubRepo?: unknown };

@@ -87,3 +87,25 @@ test('un registre structurellement invalide ne devient jamais un faux NONE', asy
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('un registre dépassant la borne est indisponible plutôt que tronqué', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-b2-registry-'));
+  const file = join(directory, 'registry.json');
+  const previous = process.env.MCP_GIT_REGISTRY_FILE;
+  process.env.MCP_GIT_REGISTRY_FILE = file;
+  try {
+    await writeFile(file, JSON.stringify({
+      version: 1,
+      repoMappings: Array.from({ length: 1001 }, (_, index) => ({
+        githubOwner: 'Patricked-code', githubRepo: `Repo-${index}`
+      }))
+    }), 'utf8');
+    assert.deepEqual(await readGitRegistryEvidence(), {
+      available: false, schemaVersion: 1, mappings: [], digest: null
+    });
+  } finally {
+    if (previous === undefined) delete process.env.MCP_GIT_REGISTRY_FILE;
+    else process.env.MCP_GIT_REGISTRY_FILE = previous;
+    await rm(directory, { recursive: true, force: true });
+  }
+});

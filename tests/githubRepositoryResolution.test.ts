@@ -180,6 +180,20 @@ test('un registre indisponible ne signifie jamais aucun dépôt', () => {
   assert.deepEqual(result.reasonCodes, ['GITHUB_REPOSITORY_REGISTRY_UNAVAILABLE']);
 });
 
+test('un registre au-delà de la borne ne peut pas produire une fausse résolution unique', () => {
+  const mappings = Array.from({ length: 1001 }, (_, index) => ({
+    githubOwner: 'Patricked-code',
+    githubRepo: index === 1000 ? 'Other' : 'MCP'
+  }));
+  const result = resolveGithubRepository(input({
+    requestedRepositoryContext: null,
+    registry: { available: true, schemaVersion: 1, mappings, digest: 'registry-digest' },
+    repositoryObservation: null
+  }));
+  assert.equal(result.status, 'UNVERIFIED');
+  assert.deepEqual(result.reasonCodes, ['GITHUB_REPOSITORY_REGISTRY_UNAVAILABLE']);
+});
+
 test('déduplique et trie les mappings V1, puis résout un candidat unique', () => {
   const result = resolveGithubRepository(input({
     requestedRepositoryContext: null,
@@ -237,6 +251,16 @@ test('une preuve canonique discordante est invalide', () => {
   assert.deepEqual(result.reasonCodes, ['GITHUB_REPOSITORY_RESPONSE_INVALID']);
 });
 
+test('un type de propriétaire live discordant avec le contexte B1 est invalide', () => {
+  const result = resolveGithubRepository(input({
+    repositoryObservation: proof({
+      repository: { ...proof().repository!, ownerType: 'organization' }
+    })
+  }));
+  assert.equal(result.status, 'UNVERIFIED');
+  assert.deepEqual(result.reasonCodes, ['GITHUB_REPOSITORY_RESPONSE_INVALID']);
+});
+
 const failedEvidence = [
   ['NOT_FOUND_OR_INVISIBLE', 'GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE'],
   ['AUTH_INVALID', 'GITHUB_REPOSITORY_AUTH_INVALID'],
@@ -259,6 +283,19 @@ for (const [status, reason] of failedEvidence) {
     }
   });
 }
+
+test('le reason code d une preuve échouée est dérivé du statut et non accepté aveuglément', () => {
+  const result = resolveGithubRepository(input({
+    repositoryObservation: proof({
+      status: 'AUTH_INVALID',
+      repository: null,
+      reasonCode: 'GITHUB_REPOSITORY_PERMISSION_DENIED',
+      freshness: 'UNKNOWN'
+    })
+  }));
+  assert.equal(result.status, 'UNVERIFIED');
+  assert.deepEqual(result.reasonCodes, ['GITHUB_REPOSITORY_AUTH_INVALID']);
+});
 
 test('une preuve absente ou de fraîcheur inconnue reste UNVERIFIED', () => {
   assert.equal(resolveGithubRepository(input({ repositoryObservation: null })).status, 'UNVERIFIED');

@@ -204,6 +204,9 @@ export function resolveGithubRepository(
     if (!input.registry.available) {
       return unresolved(input, 'UNVERIFIED', 'GITHUB_REPOSITORY_REGISTRY_UNAVAILABLE');
     }
+    if (input.registry.mappings.length > 1000) {
+      return unresolved(input, 'UNVERIFIED', 'GITHUB_REPOSITORY_REGISTRY_UNAVAILABLE');
+    }
     candidates = registryCandidates(input);
     if (candidates.length === 0) {
       return unresolved(input, 'NONE', 'GITHUB_REPOSITORY_CANDIDATE_NOT_FOUND', {
@@ -232,7 +235,7 @@ export function resolveGithubRepository(
     });
   }
   if (observation.status !== 'VERIFIED' || !observation.repository) {
-    const reason = observation.reasonCode ?? ({
+    const reason = ({
       NOT_FOUND_OR_INVISIBLE: 'GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE',
       AUTH_INVALID: 'GITHUB_REPOSITORY_AUTH_INVALID',
       PERMISSION_DENIED: 'GITHUB_REPOSITORY_PERMISSION_DENIED',
@@ -260,6 +263,7 @@ export function resolveGithubRepository(
     !same(observation.requestedFullName, candidate.fullName)
     || !same(repository.fullName, candidate.fullName)
     || !same(repository.fullName, `${repository.owner}/${repository.name}`)
+    || repository.ownerType !== input.identity.selectedAccountContext?.type
   ) {
     return unresolved(input, 'UNVERIFIED', 'GITHUB_REPOSITORY_RESPONSE_INVALID', {
       source, candidates, candidateCount: candidates.length || 1
