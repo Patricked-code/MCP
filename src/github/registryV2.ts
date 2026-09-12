@@ -22,6 +22,9 @@ const LegacyMappingSchema = z.object({
   githubOwner: z.string().min(1),
   githubRepo: z.string().min(1),
   projectKey: z.string().min(1),
+  projectId: z.string().min(1).max(200).optional(),
+  projectUid: z.string().min(1).max(200).optional(),
+  componentRole: z.string().min(1).max(100).optional(),
   serverId: z.string().min(1),
   serverPath: z.string().min(1),
   officialBranch: z.string().min(1),
@@ -30,6 +33,40 @@ const LegacyMappingSchema = z.object({
   createdAt: IsoDateSchema.optional(),
   updatedAt: IsoDateSchema.optional()
 }).passthrough();
+
+const RegistryProjectComponentSchema = z.object({
+  repositoryId: z.string().min(1).max(300),
+  mappingId: z.string().min(1).max(200),
+  role: z.string().min(1).max(100)
+});
+
+const HistoricalVhostSchema = z.object({
+  historicalVhostId: z.string().min(1).max(200),
+  classification: z.literal('HISTORICAL_VHOST'),
+  serverId: z.string().min(1).max(100),
+  serverPath: z.string().min(1).max(1000),
+  domain: z.string().min(1).max(253),
+  repositoryId: z.null(),
+  current: z.literal(false),
+  deploymentSource: z.literal(false)
+});
+
+export const RegistryProjectSchema = z.object({
+  projectId: z.string().min(1).max(200),
+  projectUid: z.string().min(1).max(200),
+  name: z.string().min(1).max(200),
+  kind: z.string().min(1).max(100),
+  productionServerId: z.string().min(1).max(100),
+  canonicalBranch: z.string().min(1).max(255),
+  repositoryComponents: z.array(RegistryProjectComponentSchema).min(1).max(20),
+  globalCheckpointRepositoryId: z.string().min(1).max(300),
+  centralGovernanceRepositoryId: z.string().min(1).max(300),
+  stateModel: z.string().min(1).max(100),
+  stateFields: z.array(z.string().min(1).max(100)).min(1).max(30),
+  publicDomain: z.string().min(1).max(253).nullable(),
+  publicApi: z.string().url().max(1000).nullable(),
+  historicalVhosts: z.array(HistoricalVhostSchema).max(50)
+});
 
 const LegacyAuditEventSchema = z.object({
   id: z.string().min(1),
@@ -45,7 +82,8 @@ export const GitRegistryV1Schema = z.object({
   updatedAt: IsoDateSchema,
   accounts: z.array(LegacyAccountSchema),
   repoMappings: z.array(LegacyMappingSchema),
-  auditEvents: z.array(LegacyAuditEventSchema)
+  auditEvents: z.array(LegacyAuditEventSchema),
+  projects: z.array(RegistryProjectSchema).max(200).optional()
 }).passthrough();
 
 export const RegistryCapabilitiesSchema = z.object({
@@ -99,6 +137,8 @@ const RegistryRepositorySchema = z.object({
 const RegistryMappingSchema = z.object({
   mappingId: z.string().min(1),
   projectId: z.string().min(1),
+  projectUid: z.string().min(1).max(200).optional(),
+  componentRole: z.string().min(1).max(100).optional(),
   repositoryId: z.string().min(1),
   sourceRepositoryId: z.string().nullable(),
   targetRepositoryId: z.string().nullable(),
@@ -186,6 +226,7 @@ export const GitRegistryV2Schema = z.object({
   connections: z.array(RegistryConnectionSchema),
   repositories: z.array(RegistryRepositorySchema),
   mappings: z.array(RegistryMappingSchema),
+  projects: z.array(RegistryProjectSchema).max(200).optional(),
   migrations: z.array(RegistryMigrationSchema),
   auditEvents: z.array(RegistryAuditEventV2Schema),
   activeContext: z.null()
@@ -193,6 +234,7 @@ export const GitRegistryV2Schema = z.object({
 
 export type GitRegistryV1 = z.infer<typeof GitRegistryV1Schema>;
 export type GitRegistryV2 = z.infer<typeof GitRegistryV2Schema>;
+export type RegistryProject = z.infer<typeof RegistryProjectSchema>;
 export type RegistryCapabilities = z.infer<typeof RegistryCapabilitiesSchema>;
 
 export type GitRegistryV2DryRunReport = {
@@ -207,6 +249,7 @@ export type GitRegistryV2DryRunReport = {
     mappings: number;
     migrations: number;
     auditEvents: number;
+    projects?: number;
   };
   warnings: string[];
 };
@@ -271,6 +314,44 @@ export function validateGitRegistryV2(input: unknown): GitRegistryV2 {
   assertUniqueIds(registry.mappings.map((entry) => entry.mappingId), 'mappings');
   assertUniqueIds(registry.migrations.map((entry) => entry.migrationId), 'migrations');
   assertUniqueIds(registry.auditEvents.map((entry) => entry.eventId), 'auditEvents');
+  if (registry.projects) {
+    assertUniqueIds(registry.projects.map((entry) => entry.projectId), 'projects.projectId');
+    assertUniqueIds(registry.projects.map((entry) => entry.projectUid), 'projects.projectUid');
+
+    const repositoryIds = new Set(registry.repositories.map((entry) => entry.repositoryId));
+    const mappings = new Map(registry.mappings.map((entry) => [entry.mappingId, entry]));
+    for (const project of registry.projects) {
+      assertUniqueIds(project.repositoryComponents.map((entry) => entry.repositoryId), `${project.projectId}.repositoryComponents.repositoryId`);
+      assertUniqueIds(project.repositoryComponents.map((entry) => entry.mappingId), `${project.projectId}.repositoryComponents.mappingId`);
+      assertUniqueIds(project.repositoryComponents.map((entry) => entry.role), `${project.projectId}.repositoryComponents.role`);
+      assertUniqueIds(project.stateFields, `${project.projectId}.stateFields`);
+      assertUniqueIds(project.historicalVhosts.map((entry) => entry.historicalVhostId), `${project.projectId}.historicalVhosts`);
+
+      for (const repositoryIdValue of [project.globalCheckpointRepositoryId, project.centralGovernanceRepositoryId]) {
+        if (!repositoryIds.has(repositoryIdValue)) {
+          throw new Error(`Référence repository absente pour ${project.projectId}: ${repositoryIdValue}`);
+        }
+      }
+      for (const component of project.repositoryComponents) {
+        if (!repositoryIds.has(component.repositoryId)) {
+          throw new Error(`Référence repository de composant absente pour ${project.projectId}: ${component.repositoryId}`);
+        }
+        const mapping = mappings.get(component.mappingId);
+        if (!mapping) {
+          throw new Error(`Référence mapping absente pour ${project.projectId}: ${component.mappingId}`);
+        }
+        if (mapping.repositoryId !== component.repositoryId || mapping.projectId !== project.projectId) {
+          throw new Error(`Référence mapping incohérente pour ${project.projectId}: ${component.mappingId}`);
+        }
+        if (mapping.projectUid !== undefined && mapping.projectUid !== project.projectUid) {
+          throw new Error(`Référence projectUid incohérente pour ${project.projectId}: ${component.mappingId}`);
+        }
+        if (mapping.componentRole !== undefined && mapping.componentRole !== component.role) {
+          throw new Error(`Référence componentRole incohérente pour ${project.projectId}: ${component.mappingId}`);
+        }
+      }
+    }
+  }
   assertNoCredentialMaterial(registry);
   return registry;
 }
@@ -308,7 +389,9 @@ function genericMapping(mapping: z.infer<typeof LegacyMappingSchema>): z.infer<t
   const repoId = repositoryId(mapping.githubOwner, mapping.githubRepo);
   return {
     mappingId: mapping.id,
-    projectId: mapping.projectKey,
+    projectId: mapping.projectId ?? mapping.projectKey,
+    ...(mapping.projectUid ? { projectUid: mapping.projectUid } : {}),
+    ...(mapping.componentRole ? { componentRole: mapping.componentRole } : {}),
     repositoryId: repoId,
     sourceRepositoryId: null,
     targetRepositoryId: null,
@@ -483,6 +566,7 @@ function buildV2FromV1(legacy: GitRegistryV1): GitRegistryV2 {
     connections,
     repositories,
     mappings,
+    ...(legacy.projects ? { projects: legacy.projects } : {}),
     migrations,
     auditEvents,
     activeContext: null
@@ -529,7 +613,8 @@ export function dryRunGitRegistryV2(input: unknown): {
         repositories: candidate.repositories.length,
         mappings: candidate.mappings.length,
         migrations: candidate.migrations.length,
-        auditEvents: candidate.auditEvents.length
+        auditEvents: candidate.auditEvents.length,
+        ...(candidate.projects ? { projects: candidate.projects.length } : {})
       },
       warnings
     }
