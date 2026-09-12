@@ -10,10 +10,11 @@ const MAX_REGISTRY_EVIDENCE_BYTES = 1_000_000;
 export type GitHubAccessMode = 'read' | 'write' | 'admin' | 'org_admin';
 export type GitHubAccountRegistryEntry = Record<string, unknown>;
 export type RepoMappingEntry = Record<string, unknown> & { githubOwner: string; githubRepo: string; projectKey: string; serverId: string; serverPath: string; officialBranch: string; allowedAccess: GitHubAccessMode; deployEnabled: boolean; };
+export type ProjectRegistryEntry = Record<string, unknown> & { projectId: string; projectUid: string };
 export type RegistryAuditEvent = Record<string, unknown>;
 export type AutoGitServerResolutionInput = { projectKey?: string | null; githubOwner?: string | null; githubRepo?: string | null; };
 export type AutoGitServerContext = Record<string, unknown> & { resolved: boolean };
-export type GitRegistry = { version: 1; updatedAt: string; accounts: GitHubAccountRegistryEntry[]; repoMappings: RepoMappingEntry[]; auditEvents: RegistryAuditEvent[]; activeContext?: AutoGitServerContext; };
+export type GitRegistry = { version: 1; updatedAt: string; accounts: GitHubAccountRegistryEntry[]; repoMappings: RepoMappingEntry[]; auditEvents: RegistryAuditEvent[]; projects?: ProjectRegistryEntry[]; activeContext?: AutoGitServerContext; };
 export type GitRegistryEvidence = {
   available: boolean;
   schemaVersion: 1;
@@ -52,7 +53,17 @@ function empty(): GitRegistry { return attach({ version: 1, updatedAt: now(), ac
 function norm(v: unknown): GitRegistry {
   if (!v || typeof v !== 'object') return empty();
   const c = v as Partial<GitRegistry>;
-  return attach({ version: 1, updatedAt: typeof c.updatedAt === 'string' ? c.updatedAt : now(), accounts: Array.isArray(c.accounts) ? c.accounts : [], repoMappings: Array.isArray(c.repoMappings) ? c.repoMappings : [], auditEvents: Array.isArray(c.auditEvents) ? c.auditEvents : [] });
+  const projects = Array.isArray(c.projects) && c.projects.length <= 200
+    ? c.projects
+    : undefined;
+  return attach({
+    version: 1,
+    updatedAt: typeof c.updatedAt === 'string' ? c.updatedAt : now(),
+    accounts: Array.isArray(c.accounts) ? c.accounts : [],
+    repoMappings: Array.isArray(c.repoMappings) ? c.repoMappings : [],
+    auditEvents: Array.isArray(c.auditEvents) ? c.auditEvents : [],
+    ...(projects ? { projects } : {})
+  });
 }
 
 export async function readGitRegistry(): Promise<GitRegistry> {
@@ -115,7 +126,15 @@ export async function readGitRegistryEvidence(): Promise<GitRegistryEvidence> {
 export async function writeGitRegistry(registry: GitRegistry): Promise<void> {
   const file = rf();
   await mkdir(dirname(file), { recursive: true, mode: 0o700 });
-  await writeFile(file, `${JSON.stringify({ version: 1, updatedAt: now(), accounts: registry.accounts, repoMappings: registry.repoMappings, auditEvents: registry.auditEvents.slice(-500) }, null, 2)}\n`, { encoding: 'utf8', mode: 0o600 });
+  const persisted = {
+    version: 1 as const,
+    updatedAt: now(),
+    accounts: registry.accounts,
+    repoMappings: registry.repoMappings,
+    auditEvents: registry.auditEvents.slice(-500),
+    ...(Array.isArray(registry.projects) ? { projects: registry.projects } : {})
+  };
+  await writeFile(file, `${JSON.stringify(persisted, null, 2)}\n`, { encoding: 'utf8', mode: 0o600 });
   await chmod(file, 0o600);
 }
 
