@@ -3,6 +3,18 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
+## 2026-09-12 — AfricaFunds Phase 1 compatibility foundation
+
+- `TASK-20260910-001` exécute le design en deux phases approuvé au checkpoint `6ad95c77-fb4b-4abd-bf3f-3a1db74eb142`, sans recréer la tâche après B2.
+- La Phase 1 étend l'unique GitRegistry actif avec un champ racine `projects` optionnel et des corrélations mapping optionnelles; l'absence historique reste absente à la lecture/écriture/migration.
+- Le candidat GitRegistry V2 dry-run accepte les projets sans être activé et valide identifiants uniques, références repository/mapping et invariants `HISTORICAL_VHOST` non Git/inactif/non déployable.
+- RED ciblé : 1 test historique vert et 5 échecs attendus avant code. GREEN : 6/6 ciblés, 363/363 complets, typecheck, build, 204 Markdown gouvernés, cartographie, secrets et diff-check verts.
+- PR #78 fusionnée sous garde du head exact `f7800966119601e336c480da6f2f98eafe6e6e70` au merge `b747dfc7f67786a40c19c285dbcdb3a07b78d5c0`; MCP CI #824 `validate` a réussi sur le head exact.
+- Live State `175` atteste GitHub/S1/origin-main/runtime exact-SHA, S1 propre/read-only et runtime healthy sur le merge; le blocker restant est uniquement `DOCUMENTATION_DRIFT`.
+- Aucun projet AfricaFunds actif n'est encore ajouté, V2 reste dry-run, aucun outil/registre/store/cache/observateur/permission/WRITE gate n'est créé ou élargi et aucun dépôt/checkout/vhost S2 n'est muté.
+- Le transport GitHub Actions → SSH → S1 reste un lot séparé et ne fait pas partie de `TASK-20260910-001`.
+- Cette modification est la réconciliation strictement Markdown nécessaire avant le gate `FULLY_ALIGNED` et le démarrage de la Phase 2.
+
 ## 2026-09-11 — B2 Repository Resolution livré fonctionnellement
 
 - `TASK-20260909-001` implémente le design SLOT-07 approuvé au checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c` depuis `main@efb09ce7eeba85122b01c7fa48d99e967b7cdb7c`.

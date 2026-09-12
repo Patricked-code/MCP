@@ -251,17 +251,15 @@ prouvé sert de filtre sans rendre B1 universellement dépendant de B2.
 Objectif : résoudre l'identité du repository explicitement fourni ou déjà relié
 au contexte courant, sans résoudre encore son projet/serveur/runtime/domaine.
 
-État gouverné au checkpoint du 2026-09-11 : design approuvé au checkpoint
+État livré : design approuvé au checkpoint
 `0c6299c9-9f62-477f-907b-f97eb2ffbe4c`, Governed Task
-`TASK-20260909-001`, passée à `VERIFYING` révision 7 après l'attestation technique
-puis revenue à `IN_PROGRESS` révision 8 pour la réconciliation documentaire. La
-PR #75 a été fusionnée depuis le
+`TASK-20260909-001` clôturée `DONE` révision 18. La PR #75 a été fusionnée depuis le
 head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au merge
 `f2c90902a627ee9209d805403e584f3123a0453a`; CI main #811 et Governed Deploy
-#29 ont réussi. Live State `163` atteste l'alignement GitHub/S1/origin-main/runtime
-et le runtime healthy ; seule la réconciliation documentaire descendante reste
-requise avant `DONE`. La restauration antérieure de branche est restée additive,
-sans réécriture d'historique.
+#29 ont réussi. Les réconciliations #76/#77 ont ensuite porté GitHub/S1/runtime au
+SHA `fa563c6e21d6fa07bf5b33a58626ceae1cdedc13` `FULLY_ALIGNED` et fermé la
+session avant la reprise distincte d'AfricaFunds. La restauration antérieure de
+branche est restée additive, sans réécriture d'historique.
 
 Réutilise :
 - B1 et son contexte d'authentification éphémère ;
@@ -285,6 +283,25 @@ Objectif : généraliser progressivement les contrats historiquement bornés à 
 ---
 
 ## CHANTIER C — Project Binding / Server / Runtime / Domain
+
+### C0 — AfricaFunds project-aware compatibility and mapping
+
+Lot gouverné courant `TASK-20260910-001`, design approuvé au checkpoint
+`6ad95c77-fb4b-4abd-bf3f-3a1db74eb142`. Il prépare puis renseigne l'autorité
+GitRegistry existante en deux livraisons séparées :
+
+1. compatibilité structurelle V1/V2 optionnelle, sans donnée AfricaFunds active ;
+2. après déploiement exact-SHA et `FULLY_ALIGNED`, un projet logique
+   `CS-AFRICAFUNDS-001` / `chainsolutions.africafunds`, deux composants repository
+   read-only/no-deploy et deux vhosts historiques explicitement non Git.
+
+Phase 1 est fusionnée par PR #78 au merge
+`b747dfc7f67786a40c19c285dbcdb3a07b78d5c0` et attestée techniquement dans Live
+State `175`; sa réconciliation documentaire reste le gate immédiat avant Phase 2.
+
+Ce lot n'active pas GitRegistry V2, ne résout pas encore universellement C2, ne
+change aucune permission/Effective Capability, ne synchronise aucun checkout S2
+et n'intègre pas le transport séparé GitHub Actions → SSH → S1.
 
 ### C1 — GitRegistry V2 verification & activation path
 

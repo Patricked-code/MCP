@@ -13,28 +13,26 @@
 }
 ```
 
-Date : 2026-09-11
+Date : 2026-09-12
 
-## Point courant — B2 Repository Resolution livré fonctionnellement, réconciliation documentaire en cours
+## Point courant — AfricaFunds Phase 1 déployée, réconciliation documentaire en cours
 
-- GitHub `main`, S1 HEAD, S1 `origin/main` et runtime healthy sont observés au SHA exact `f2c90902a627ee9209d805403e584f3123a0453a` ; S1 est propre/read-only et l'image active est `sha256:f4873739812999349d57f4dd02337cf2e873c81e9bfd938e53a86bedebb9334a`.
-- Governed Session : `98e9aee8-20c0-404f-807f-6630ffbb1a1c`, active ; après l'attestation technique en `VERIFYING` révision 7, la tâche `TASK-20260909-001` est revenue explicitement à `IN_PROGRESS` révision 8 pour sa réconciliation documentaire. Le blocker unique de Live State `163` est `DOCUMENTATION_DRIFT`, porté par les déclarations pré-merge encore présentes dans les projections canoniques.
-- Livraison fonctionnelle : PR #75 fusionnée sous garde du head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au merge `f2c90902a627ee9209d805403e584f3123a0453a`; MCP CI main #811 et MCP Governed Deploy #29 ont réussi sur ce SHA exact.
-- Preuve B2 en production : la réconciliation Governed Context du 2026-09-11T23:50:41Z retourne `RESOLVED/CURRENT` depuis `ConnectionContext` pour `github:Patricked-code/MCP`, GitHub repository ID `1285534440`, sans reason code, incertitude ni permission dérivée ; B1 reste `RESOLVED/CURRENT` sur le même contexte d'authentification.
-- Réconciliation finale strictement documentaire préparée sur `mcp/b2-final-documentation-20260911`; elle ne modifie aucun TypeScript, test, workflow, secret, WRITE gate, registre, store, S1 ou runtime.
-- Design approuvé : checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c`, spec/plan sous `docs/superpowers/`.
-- Conflit réconcilié : le lot distant concurrent mélangeait Policy V3, permissions/access levels, routage global et observateur credential parallèle. Il a été annulé sans force-push ; son historique demeure auditable mais son arbre n'est pas livré.
-- Implémentation additive locale : resolver pur `src/github/repositoryResolution.ts`, vue d'évidence dans GitRegistry V1 existant, batch éphémère dans `src/tools/durableAccounts.ts`, projection dans le collecteur/cache/service/dashboard existant.
-- Preuves acquises : baseline 310/310 ; suite complète locale 357/357 ; typecheck, build, secrets, documentation gouvernée (202 Markdown), cartographie et Current-State Evidence verts, sans contradiction.
-- Correctifs de self-review : les statuts HTTP explicites sont évalués avant la fraîcheur afin qu'un 404 reste `UNVERIFIED/GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE` avec visibilité incertaine ; un registre de plus de 1 000 mappings est refusé plutôt que tronqué ; le type de propriétaire doit correspondre au contexte B1 ; les reason codes échoués sont dérivés du statut observé tout en conservant l'absence de credential comme `AUTH_MISSING`.
-- Autorités préservées : contexte exact A2.1, identité B1, connexions et secret storage existants, GitHub API live, GitRegistry V1 fallback read-only, Governed Context projection ; GitRegistry V2 reste dry-run jusqu'à C1.
-- Frontières : aucune permission/capability, aucun projet/serveur/runtime/domaine, aucune nouvelle authority/registry/store/cache/session/observer/tool, aucun changement WRITE gate ou workflow de déploiement, aucune écriture directe S1.
-- Revue indépendante : le premier passage a refusé la livraison sans finding critique, puis six assertions RED ciblées ont reproduit les écarts de cache, validation et bornage (`38/44` au commit `e81e3cd`). Le GREEN `ffc4c96` les corrige ; le second passage conclut `READY`, sans finding Critical/Important/Minor, avec 76/76 tests B1/B2/cache ciblés.
-- Prochaine action : publier et revoir la réconciliation documentaire exact-head, la fusionner par le chemin protégé GitHub → S1, exiger Live State `FULLY_ALIGNED`, puis seulement checkpoint, `DONE`, libération des locks et réconciliation de queue.
+- GitHub `main`, S1 HEAD, S1 `origin/main` et runtime healthy sont observés au SHA exact `b747dfc7f67786a40c19c285dbcdb3a07b78d5c0`; S1 est propre/read-only et le runtime porte l'image `sha256:2fbcc62113380ce9384bb282f5fdd45d31b878bf961606ff3213b39a319a7429`.
+- Tâche gouvernée courante : `TASK-20260910-001`, statut `DEPLOYING`, révision 11 au checkpoint `be2c734f-88d6-4ad6-808c-fa84b2db9ca6`; Governed Session `39ff2377-f4c2-4ca2-99ee-beff54a2f2d4`. Ces valeurs dynamiques doivent être relues avant mutation.
+- Design utilisateur approuvé : checkpoint `6ad95c77-fb4b-4abd-bf3f-3a1db74eb142`. L'exécution reste strictement en deux phases : fondation de compatibilité, attestation complète, puis seulement mapping AfricaFunds.
+- Phase 1 TDD : le RED ciblé obtenait 1 test historique vert et 5 échecs attendus parce que `projects` était éliminé/non validé. Le GREEN conserve l'absence historique, préserve les projets/corrélations optionnels et valide identifiants, références et vhosts historiques fail-closed.
+- Livraison Phase 1 : PR #78 fusionnée sous garde du head exact `f7800966119601e336c480da6f2f98eafe6e6e70` au merge `b747dfc7f67786a40c19c285dbcdb3a07b78d5c0`; MCP CI #824, job `validate`, a réussi sur le head exact.
+- Preuves : 363/363 tests complets, typecheck, build, secrets, 204 Markdown gouvernés, cartographie et diff-check verts. Live State `175` atteste GitHub/S1/origin-main/runtime exact-SHA, S1 propre/read-only et runtime healthy; le seul blocker est `DOCUMENTATION_DRIFT`.
+- Autorité : l'unique GitRegistry V1 reste la persistance active; GitRegistry V2 reste un candidat dry-run. Aucun registre, store, cache, observateur, outil ou moteur parallèle n'est ajouté.
+- Frontières : aucune donnée AfricaFunds active n'est encore écrite, aucune permission/capability n'est déduite, aucun WRITE gate n'est changé, aucun checkout/repository/vhost S2 n'est muté et le transport séparé GitHub Actions → SSH → S1 n'entre pas dans cette tâche.
+- Réconciliation documentaire : branche `mcp/africafunds-phase1-documentation-20260912`, strictement limitée aux six projections canoniques.
+- Prochaine action : publier/revoir/fusionner/déployer cette réconciliation exact-head, exiger `FULLY_ALIGNED`, checkpoint Phase 1, puis seulement rebaseliner et commencer les RED de Phase 2.
 
-Les valeurs dynamiques restent à relire dans GitHub, Operational Memory et Live
-State avant chaque mutation. B3/C1 et les lots aval restent cartographiés mais ne
-sont pas précréés dans la Task Queue.
+## Baseline précédente — B2 Repository Resolution livré et clôturé
+
+- `TASK-20260909-001` est `DONE` révision 18. Sa PR fonctionnelle #75 a été fusionnée au SHA `f2c90902a627ee9209d805403e584f3123a0453a`; B2 y est attesté `RESOLVED/CURRENT` pour `github:Patricked-code/MCP` sans permission dérivée.
+- Les PR documentaires #76 puis #77 ont réconcilié et finalisé la fermeture de session; `main`, S1 et runtime ont été attestés `FULLY_ALIGNED` sur `fa563c6e21d6fa07bf5b33a58626ceae1cdedc13` avant la reprise distincte d'AfricaFunds.
+- Le design B2 reste le checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c`; GitRegistry V2 est resté dry-run et aucun mapping aval ni permission n'a été absorbé par SLOT-07.
 
 ## Baseline précédente — B1 GitHub Identity Resolution
 

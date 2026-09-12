@@ -19,31 +19,45 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 `ROADMAP.md` décrit tous les chantiers/lots connus. `TODO.md` contient ce qui reste à accomplir. Ce fichier ne pré-crée pas toutes les tâches futures : une `TASK-...` n'est considérée officielle qu'après son enregistrement dans Operational Memory.
 
-## Tâche gouvernée courante — B2 Repository Resolution
+## Tâche gouvernée courante — AfricaFunds project-aware S2 mapping
 
-### TASK-20260909-001 — EN COURS
+### TASK-20260910-001 — EN COURS
 
-L'autorité dynamique reste la Governed Task Queue/Operational Memory. Après son
-attestation technique en `VERIFYING` révision 7, la tâche B2 est revenue
-explicitement à `IN_PROGRESS` révision 8 pour la réconciliation documentaire
-post-PR #75 ; elle dépend de B1
-terminé et réutilise la Governed Session
-`98e9aee8-20c0-404f-807f-6630ffbb1a1c`. Le design approuvé est le checkpoint
-`0c6299c9-9f62-477f-907b-f97eb2ffbe4c` ; statut, revisions et locks doivent être
-relus avant toute mutation.
+L'autorité dynamique reste la Governed Task Queue/Operational Memory. Au checkpoint
+`be2c734f-88d6-4ad6-808c-fa84b2db9ca6`, la tâche est `DEPLOYING` révision 11 dans
+la Governed Session `39ff2377-f4c2-4ca2-99ee-beff54a2f2d4`. Le design approuvé
+est le checkpoint `6ad95c77-fb4b-4abd-bf3f-3a1db74eb142`; statut, révisions,
+receipt et locks doivent être relus avant toute mutation.
 
-- [x] préserver la baseline `main@efb09ce7eeba85122b01c7fa48d99e967b7cdb7c` ;
-- [x] annuler par descendant non destructif le lot concurrent incompatible ;
-- [x] versionner design/plan, resolver pur, observation partagée et projection Governed Context ;
-- [x] prouver les quatre états, exact context, fallback V1 et 404 fail-closed ;
-- [x] préserver B1, Identity Policy V2, ConnectionContext V1 et lecture GitRegistry historique ;
-- [x] exclure permissions, projet/serveur/runtime/domaine, V2 active et nouvel outil/registre/cache ;
-- [x] terminer les preuves complètes, documentation et revue indépendante sans finding restant ;
-- [x] publier la PR #75 au head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b`, obtenir les CI PR exact-head, la revue indépendante sans finding et zéro thread bloquant ;
-- [x] fusionner sous garde exact-head au merge `f2c90902a627ee9209d805403e584f3123a0453a`, réussir MCP CI main #811 et Governed Deploy #29 ;
-- [x] attester GitHub/S1/origin-main/runtime exact-SHA, S1 propre/read-only et runtime healthy dans Live State `163` ;
-- [x] observer en production B2 `RESOLVED/CURRENT` pour `github:Patricked-code/MCP` / GitHub ID `1285534440`, sans reason code, incertitude ni permission dérivée ;
-- [ ] fusionner/déployer la réconciliation strictement documentaire, puis exiger Live State `FULLY_ALIGNED` avant checkpoint, `DONE` et libération des locks.
+- [x] reprendre la tâche existante sans la recréer et acquitter Live State `171` ;
+- [x] acquérir puis renouveler les locks task/repository minimaux ;
+- [x] créer la branche Phase 1 depuis `main@fa563c6e21d6fa07bf5b33a58626ceae1cdedc13` ;
+- [x] versionner le design approuvé et le plan TDD en deux phases ;
+- [x] prouver en RED que l'ancien reader/writer/migrateur éliminait encore `projects` ;
+- [x] implémenter additivement la compatibilité V1/V2 optionnelle sans donnée AfricaFunds active ;
+- [x] conserver V2 dry-run, outils historiques, permissions, WRITE gate et autorités existantes ;
+- [x] obtenir 363/363 tests, typecheck, build, docs, secrets, cartographie et diff-check verts ;
+- [x] publier/revoir la PR #78, obtenir MCP CI #824 `validate` verte sans thread bloquant ;
+- [x] fusionner sous garde du head exact `f7800966119601e336c480da6f2f98eafe6e6e70` au merge `b747dfc7f67786a40c19c285dbcdb3a07b78d5c0` ;
+- [x] attester GitHub/S1/origin-main/runtime exact-SHA, S1 propre/read-only et runtime healthy dans Live State `175` ;
+- [ ] fusionner/déployer la réconciliation Phase 1 strictement documentaire et exiger `FULLY_ALIGNED` ;
+- [ ] après ce gate seulement, rebaseliner puis écrire les RED Phase 2 du mapping AfricaFunds approuvé ;
+- [ ] livrer/attester Phase 2 avant checkpoint final, `DONE`, libération des locks et clôture de session.
+
+Exclusions courantes : aucune synchronisation des checkouts S2, aucun accès aux
+untracked API, aucune mutation des dépôts AfricaFunds, aucun vhost historique
+transformé en dépôt Git, aucune permission implicite et aucun mélange avec le
+transport séparé GitHub Actions → SSH → S1.
+
+## Tâche précédente — B2 Repository Resolution
+
+### TASK-20260909-001 — TERMINÉE AVANT AFRICAFUNDS
+
+Operational Memory atteste B2 `DONE` révision 18. La PR #75 a livré SLOT-07 au
+merge `f2c90902a627ee9209d805403e584f3123a0453a`; les PR #76/#77 ont réconcilié
+la documentation et la fermeture de session jusqu'au SHA `fa563c6e21d6fa07bf5b33a58626ceae1cdedc13`
+`FULLY_ALIGNED`. AfricaFunds a ensuite été reprise sous sa tâche déjà existante,
+sans absorber ni rouvrir B2.
 
 ## Tâche précédente — B1 GitHub Identity Resolution
 
