@@ -121,7 +121,7 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [x] observer son Autodeploy et obtenir Live State `FULLY_ALIGNED` sans `DOCUMENTATION_DRIFT` ;
 - [x] clôturer `TASK-20260907-001` avant l'enregistrement séparé de B2.
 
-### B2 — Repository Resolution — livraison fonctionnelle acquise, clôture documentaire en cours
+### B2 — Repository Resolution — livré et clôturé
 
 - [x] approuver le design B2 au checkpoint `0c6299c9-9f62-477f-907b-f97eb2ffbe4c` ;
 - [x] enregistrer/claim B2 séparément sous `TASK-20260909-001` après clôture B1 ;
@@ -135,12 +135,28 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [x] publier la branche exacte, ouvrir/revoir la PR #75 et obtenir CI exact-head sans thread ;
 - [x] merger le head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au SHA `f2c90902a627ee9209d805403e584f3123a0453a`, réussir CI main #811 et Governed Deploy #29 ;
 - [x] attester GitHub/S1/origin-main/runtime alignés, S1 propre/read-only et runtime healthy dans Live State `163` ;
-- [ ] publier/fusionner/déployer la réconciliation documentaire descendante, obtenir `FULLY_ALIGNED`, puis clôturer la task et ses locks, fermer explicitement la Governed Session B2 et réconcilier la Work Queue afin de réinscrire `TASK-20260910-001` en `READY` sans owner avant sa reprise dans une session appropriée ;
-- [ ] conserver B3/C1+ dans la roadmap sans les précréer dans la queue.
+- [x] publier/fusionner/déployer les réconciliations documentaires #76/#77, obtenir `FULLY_ALIGNED`, clôturer B2 `DONE` révision 18, fermer sa session et réconcilier la Work Queue ;
+- [x] conserver B3/C1+ dans la roadmap sans les précréer dans la queue.
 
 Le mapping GitHub user/account → rôle projet et les permissions ne font pas partie
 de B1. Ils restent positionnés dans les lots de gouvernance/Effective Capabilities
 appropriés, sans être pré-créés comme tasks.
+
+### AfricaFunds project-aware S2 mapping — tâche courante en deux phases
+
+- [x] approuver le design au checkpoint `6ad95c77-fb4b-4abd-bf3f-3a1db74eb142` ;
+- [x] reprendre `TASK-20260910-001` après B2 sans nouvelle tâche ;
+- [x] livrer par TDD la compatibilité structurelle optionnelle V1/V2 sans donnée AfricaFunds active ;
+- [x] fusionner la PR Phase 1 #78 au merge `b747dfc7f67786a40c19c285dbcdb3a07b78d5c0` et attester le runtime exact-SHA healthy ;
+- [ ] fusionner/déployer la réconciliation documentaire Phase 1 et obtenir `FULLY_ALIGNED` ;
+- [ ] seulement ensuite, rebaseliner les observations GitHub/S2 et écrire les RED Phase 2 ;
+- [ ] ajouter dans l'unique GitRegistry le projet `CS-AFRICAFUNDS-001` / `chainsolutions.africafunds`, ses deux composants read-only/no-deploy et ses deux vhosts `HISTORICAL_VHOST` non Git ;
+- [ ] valider, revoir, fusionner, déployer et attester Phase 2 exact-SHA ;
+- [ ] checkpoint final, `DONE`, release locks, fermeture de session et réconciliation Work Queue.
+
+Interdictions : ne synchroniser aucun checkout S2, ne toucher à aucun untracked
+API, ne modifier aucun dépôt AfricaFunds, ne déduire aucune permission et ne pas
+mélanger le futur transport GitHub Actions → SSH → S1 avec cette tâche.
 
 ### Project Binding / GitRegistry V2
 

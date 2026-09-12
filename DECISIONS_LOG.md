@@ -3,6 +3,38 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-12 — AfricaFunds en deux phases dans l'unique GitRegistry
+
+Décision : représenter AfricaFunds comme un projet logique multi-repository dans
+l'autorité GitRegistry existante, jamais dans un nouveau Project Registry. La
+première livraison ajoute uniquement une compatibilité structurelle optionnelle
+aux lecteurs/writers V1 et au candidat V2 dry-run. La donnée AfricaFunds n'entre
+qu'après merge, déploiement exact-SHA et attestation `FULLY_ALIGNED` de cette
+fondation.
+
+Compatibilité : un registre historique sans `projects` ne gagne pas ce champ par
+normalisation ou migration. Les nouveaux projets et corrélations sont optionnels,
+bornés et validés. Les composants doivent référencer des repositories/mappings
+existants; un `HISTORICAL_VHOST` conserve `repositoryId=null`, `current=false` et
+`deploymentSource=false`.
+
+Autorités : GitRegistry V1 reste la persistance active; GitRegistry V2 reste
+dry-run. GitHub, S2, server-map et Live State fournissent les preuves observées;
+les permissions restent au SLOT-11. Aucun store, cache, observateur, outil,
+Session Manager ou chemin de déploiement parallèle n'est créé.
+
+Séquençage : la PR #78 est fusionnée sous garde du head exact
+`f7800966119601e336c480da6f2f98eafe6e6e70` au merge
+`b747dfc7f67786a40c19c285dbcdb3a07b78d5c0`. MCP CI #824 et Live State `175`
+attestent les tests et l'alignement technique exact-SHA; la Phase 2 reste interdite
+tant que la présente réconciliation documentaire n'a pas produit
+`FULLY_ALIGNED`.
+
+Exclusions : ne pas synchroniser les checkouts S2 en retard, toucher les untracked
+API, modifier les dépôts AfricaFunds, transformer les vhosts historiques en Git,
+déduire une permission ou mélanger le futur transport GitHub Actions → SSH → S1
+avec `TASK-20260910-001`.
+
 ## 2026-09-11 — Repository Resolution B2 fail-closed dans les autorités existantes
 
 Décision : SLOT-07 résout une identité de repository, pas une permission ni un
