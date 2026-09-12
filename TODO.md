@@ -135,7 +135,7 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [x] publier la branche exacte, ouvrir/revoir la PR #75 et obtenir CI exact-head sans thread ;
 - [x] merger le head exact `dd2a9a7894f928aa5dac886c79dc269ea3838a7b` au SHA `f2c90902a627ee9209d805403e584f3123a0453a`, réussir CI main #811 et Governed Deploy #29 ;
 - [x] attester GitHub/S1/origin-main/runtime alignés, S1 propre/read-only et runtime healthy dans Live State `163` ;
-- [ ] publier/fusionner/déployer la réconciliation documentaire descendante, obtenir `FULLY_ALIGNED`, puis clôturer task/locks selon l'état gouverné réel ;
+- [ ] publier/fusionner/déployer la réconciliation documentaire descendante, obtenir `FULLY_ALIGNED`, puis clôturer la task et ses locks, fermer explicitement la Governed Session B2 et réconcilier la Work Queue afin de réinscrire `TASK-20260910-001` en `READY` sans owner avant sa reprise dans une session appropriée ;
 - [ ] conserver B3/C1+ dans la roadmap sans les précréer dans la queue.
 
 Le mapping GitHub user/account → rôle projet et les permissions ne font pas partie
