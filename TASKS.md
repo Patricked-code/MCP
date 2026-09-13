@@ -235,3 +235,11 @@ Interdictions : aucun nouveau Session Manager, second GitRegistry, seconde Task 
 - aucun reset, clean, rebase ou force pour aligner la production ;
 - aucune modification de la 2FA ;
 - aucun nouveau store d'état global concurrent de Live State, Operational Memory, Governed Task Queue ou GitHub.
+
+
+## TASK-20260910-001 — AfricaFunds Phase 2
+
+- Statut runtime : `IN_PROGRESS` (Operational Memory reste autorité).
+- RED : `5cedc7ac4b32d71ead8c8574c001669f3ff86f4e`, CI #831 en échec attendu.
+- GREEN exact : `5b296e48b7140e0205a4921a8f9d3e8a35700477`, CI #833 verte.
+- Reste : Draft PR, revue, fusion, déploiement exact-SHA, Live State `FULLY_ALIGNED`, checkpoint terminal et clôture gouvernée.
