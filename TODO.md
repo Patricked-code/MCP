@@ -195,4 +195,3 @@ PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a
 - travail réellement restant → `TODO.md` ;
 - tâche gouvernée réellement enregistrée → Operational Memory + `TASKS.md` ;
 - fin de tâche → autorités runtime/GitHub d'abord, puis réconciliation descendante `SUIVI.md` / `TASKS.md` / `TODO.md` / `ROADMAP.md`.
-
