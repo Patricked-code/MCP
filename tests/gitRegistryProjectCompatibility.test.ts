@@ -9,6 +9,7 @@ const {
   writeGitRegistry
 } = await import('../src/github/registry.js');
 const {
+  canonicalRegistryHash,
   dryRunGitRegistryV2,
   migrateGitRegistryToV2,
   validateGitRegistryV2
@@ -155,4 +156,106 @@ test('le validateur V2 garde les vhosts historiques non Git et inactifs', () => 
   invalid.projects[0].historicalVhosts[0].current = true;
 
   assert.throws(() => validateGitRegistryV2(invalid));
+});
+
+
+test('le registre actif contient le mapping AfricaFunds approuvé et reste idempotent en dry-run', async () => {
+  const registryPath = new URL('../data/mcp-git-registry.json', import.meta.url);
+  const registry = JSON.parse(await readFile(registryPath, 'utf8')) as any;
+  const africaFunds = registry.projects?.find(
+    (entry: any) => entry.projectUid === 'CS-AFRICAFUNDS-001'
+  );
+
+  assert.ok(africaFunds);
+  assert.equal(africaFunds.projectId, 'chainsolutions.africafunds');
+  assert.equal(africaFunds.kind, 'MULTI_REPOSITORY_APPLICATION');
+  assert.equal(africaFunds.productionServerId, 'S2');
+  assert.equal(africaFunds.canonicalBranch, 'claude/code-review-improvements-ikvuj');
+  assert.equal(africaFunds.stateModel, 'FUND_STATE');
+  assert.deepEqual(africaFunds.stateFields, [
+    'API_SHA',
+    'FRONTEND_SHA',
+    'SUIVI_CHECKPOINT',
+    'PRODUCTION_ATTESTATION'
+  ]);
+  assert.equal(africaFunds.globalCheckpointRepositoryId, 'github:Wealthtechinnovations/front_end_opcvm');
+  assert.equal(africaFunds.centralGovernanceRepositoryId, 'github:Wealthtechinnovations/front_end_opcvm');
+
+  assert.deepEqual(africaFunds.repositoryComponents, [
+    {
+      repositoryId: 'github:Wealthtechinnovations/api_opcv',
+      mappingId: 'github:Wealthtechinnovations/api_opcv:s2:africafunds_api',
+      role: 'API'
+    },
+    {
+      repositoryId: 'github:Wealthtechinnovations/front_end_opcvm',
+      mappingId: 'github:Wealthtechinnovations/front_end_opcvm:s2:africafunds_frontend',
+      role: 'FRONTEND'
+    }
+  ]);
+
+  const mappings = registry.repoMappings.filter(
+    (entry: any) => entry.projectUid === 'CS-AFRICAFUNDS-001'
+  );
+  assert.equal(mappings.length, 2);
+  for (const mapping of mappings) {
+    assert.equal(mapping.projectId, 'chainsolutions.africafunds');
+    assert.equal(mapping.projectKey, 'chainsolutions.africafunds');
+    assert.equal(mapping.serverId, 'S2');
+    assert.equal(mapping.allowedAccess, 'read');
+    assert.equal(mapping.deployEnabled, false);
+  }
+  assert.deepEqual(mappings.map((entry: any) => entry.componentRole).sort(), ['API', 'FRONTEND']);
+  assert.deepEqual(mappings.map((entry: any) => entry.serverPath).sort(), [
+    '/var/www/vhosts/chainsolutions.fr/africafunds.chainsolutions.fr/api',
+    '/var/www/vhosts/chainsolutions.fr/africafunds.chainsolutions.fr/frontend'
+  ]);
+
+  assert.deepEqual(africaFunds.historicalVhosts, [
+    {
+      historicalVhostId: 's2-api-funds-chainsolutions-fr',
+      classification: 'HISTORICAL_VHOST',
+      serverId: 'S2',
+      serverPath: '/var/www/vhosts/chainsolutions.fr/api.funds.chainsolutions.fr',
+      domain: 'api.funds.chainsolutions.fr',
+      repositoryId: null,
+      current: false,
+      deploymentSource: false
+    },
+    {
+      historicalVhostId: 's2-funds-chainsolutions-fr',
+      classification: 'HISTORICAL_VHOST',
+      serverId: 'S2',
+      serverPath: '/var/www/vhosts/chainsolutions.fr/Funds.chainsolutions.fr',
+      domain: 'funds.chainsolutions.fr',
+      repositoryId: null,
+      current: false,
+      deploymentSource: false
+    }
+  ]);
+
+  const first = dryRunGitRegistryV2(registry);
+  const second = dryRunGitRegistryV2(first.candidate);
+  assert.equal(first.report.counts.projects, 1);
+  assert.equal(second.report.alreadyV2, true);
+  assert.equal(canonicalRegistryHash(second.candidate), canonicalRegistryHash(first.candidate));
+
+  const sensitiveCapabilities = [
+    'writeFiles',
+    'createBranch',
+    'commit',
+    'pushBranch',
+    'build',
+    'deploy',
+    'rollback',
+    'quarantine',
+    'purge'
+  ] as const;
+  for (const mapping of first.candidate.mappings.filter(
+    (entry) => entry.projectUid === 'CS-AFRICAFUNDS-001'
+  )) {
+    for (const capability of sensitiveCapabilities) {
+      assert.equal(mapping.capabilities[capability], false);
+    }
+  }
 });
