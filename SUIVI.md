@@ -237,3 +237,16 @@ Date : 2026-08-29
 - Correction de non-régression des compteurs du test V2 au head `5b296e48b7140e0205a4921a8f9d3e8a35700477`; CI #833 complète verte.
 - Aucune permission, capability WRITE, activation V2, mutation AfricaFunds/S2, synchronisation de checkout ou nouveau chemin de déploiement.
 - Prochaine action : Draft PR Phase 2, revue exacte, CI, fusion gardée, Autodeploy MCP, attestation Live State, puis réconciliation documentaire terminale.
+
+
+## 2026-09-13 — C1 GitRegistry V2 verification gates — candidat non publié
+
+- Autorité runtime : `TASK-20260913-002` reste `IN_PROGRESS`; Operational Memory et la Governed Task Queue restent seules autorités de statut.
+- Branche gouvernée : `mcp/c1-gitregistry-v2-verification-20260913`.
+- Design fail-closed approuvé au checkpoint `ce434de7-f21c-4ed4-a963-a49a70c275f8`.
+- TDD RED : `af4ee0f7`, MCP CI #854 ; exactement deux nouveaux tests C1 échouent parce que le verdict d'activation n'existe pas encore, tandis que les 320 tests historiques passent.
+- TDD GREEN : `db703454`, MCP CI #855 entièrement verte, incluant typecheck, build, docs, gouvernance, secret scan, read-only safety et whitespace.
+- `assessGitRegistryV2ActivationReadiness()` est une dérivation pure et non mutante : chaque mapping reste `BLOCKED` tant que statut, realPath, remote, domaine requis, credential, migration, health checks ou rollback ne sont pas suffisamment prouvés.
+- Aucun mapping réel n'est activé, aucune capability WRITE n'est ajoutée, aucun remote n'est modifié, aucune migration n'est exécutée et aucun code versionné n'est écrit directement sur S1.
+- Les gates techniques encore ouverts sont : credential Wealthtechinnovations non vérifié, preuves path/remote/domain incomplètes et migration MCP encore pending.
+- Prochaine action : revue/PR exacte de ce socle de vérification, puis collecte séparée des preuves ; une activation V2 restera interdite tant que les gates ne sont pas satisfaits.

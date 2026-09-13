@@ -525,3 +525,14 @@ Limites : aucun identifiant stable de conversation n'est fabriqué. Aucune nouve
 Décision : représenter AfricaFunds par un projet logique unique dans le GitRegistry existant, avec deux composants Git indépendants. Le frontend porte la référence de checkpoint global et de gouvernance centrale observée; les SHA API et frontend restent deux preuves séparées.
 
 Décision de sécurité : les mappings restent `read`, `deployEnabled=false` et toutes les capabilities sensibles V2 restent fausses. Les vhosts historiques restent non Git, non courants et non sources de déploiement. Aucun écart S2 n'est corrigé dans cette tâche.
+
+
+## 2026-09-13 — C1 GitRegistry V2 : activation uniquement après preuves explicites
+
+Décision : l'activation V2 doit être précédée d'un verdict pur et fail-closed dérivé du registre existant. Un mapping ne peut être considéré `READY` que si son statut est validé/actif et si les preuves applicables de realPath, remote, domaine, credential, migration, health checks et rollback sont satisfaites.
+
+Décision de non-régression : ce verdict n'écrit rien. Il ne modifie ni mapping, migration, credential, remote, branche, permission ou capability. GitRegistry V1 reste l'autorité active tant qu'une activation V2 distincte n'a pas été explicitement approuvée et attestée.
+
+Décision migration : tout mapping portant une migration autre que `migration_completed` reste `BLOCKED`; `migration_pending` n'autorise aucune mutation automatique du repository/remote actif.
+
+Preuve TDD : RED #854 sur `af4ee0f7`, puis GREEN #855 sur `db703454`. Le présent lot prépare le gate de vérification ; il ne constitue pas une activation V2.
