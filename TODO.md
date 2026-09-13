@@ -195,3 +195,15 @@ PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a
 - travail réellement restant → `TODO.md` ;
 - tâche gouvernée réellement enregistrée → Operational Memory + `TASKS.md` ;
 - fin de tâche → autorités runtime/GitHub d'abord, puis réconciliation descendante `SUIVI.md` / `TASKS.md` / `TODO.md` / `ROADMAP.md`.
+
+
+### C1 — GitRegistry V2 verification — travail gouverné en cours
+
+- [x] introduire un verdict d'activation pur, déterministe et non mutant ;
+- [x] bloquer fail-closed les mappings non validés ou dont path/remote/domain/credential/migration/health/rollback sont insuffisamment prouvés ;
+- [x] démontrer RED #854 puis GREEN #855 sans activer le registre V2 ni changer de permission ;
+- [ ] faire revoir et fusionner ce socle de vérification via PR gouvernée exact-head ;
+- [ ] prouver les credentials durables applicables, notamment Wealthtechinnovations ;
+- [ ] vérifier les realpaths, remotes et domaines requis sans déduire une preuve absente ;
+- [ ] traiter la migration MCP séparément ; `migration_pending` interdit toute mutation automatique du remote actif ;
+- [ ] seulement après toutes les preuves et gates, concevoir la transition explicite d'un mapping `validated → active` ; aucune activation n'est incluse dans le présent lot.

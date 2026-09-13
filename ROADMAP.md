@@ -551,3 +551,12 @@ Règle : les Markdown décrivent et projettent la réalité ; ils ne remplacent 
 ## Position 2026-09-13 — SLOT-08 AfricaFunds
 
 Phase 1 et Phase 2 sont fusionnées et déployées; PR #80 et Deploy #34 constituent la preuve fonctionnelle Phase 2. La réconciliation terminale précède l'attestation FULLY_ALIGNED et la clôture runtime. Cela n'active ni C1/GitRegistry V2, ni C2, ni SLOT-11. Ensuite seule la première tâche réellement exécutable de la queue peut être reprise; les candidats documentés ne sont pas des Task IDs.
+
+
+## Position 2026-09-13 — C1 GitRegistry V2 verification actif
+
+C1 est désormais une tâche runtime réelle : `TASK-20260913-002`. Le premier incrément implémente uniquement un verdict fail-closed, pur et non mutant sur le candidat GitRegistry V2 existant. RED #854 puis GREEN #855 prouvent que le socle distingue `READY` de `BLOCKED` sans activer de mapping ni accorder de capacité.
+
+Les critères de blocage couvrent au minimum : statut non validé, realPath non vérifié, remote non vérifié, domaine requis non vérifié, credential repository non vérifié, migration encore pending, health checks absents et rollback requis non prouvé.
+
+Ce jalon ne réalise pas l'activation V2. Le chemin reste : vérification des preuves → mapping `validated` → revue/approbation → activation explicite. GitRegistry V1, les remotes actuels, GitHub→S1, le WRITE gate et les permissions restent inchangés.

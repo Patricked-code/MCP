@@ -254,6 +254,22 @@ export type GitRegistryV2DryRunReport = {
   warnings: string[];
 };
 
+export type GitRegistryV2ActivationReasonCode =
+  | 'MAPPING_STATUS_NOT_VALIDATED'
+  | 'MAPPING_PATH_UNVERIFIED'
+  | 'MAPPING_REMOTE_UNVERIFIED'
+  | 'MAPPING_DOMAIN_UNVERIFIED'
+  | 'REPOSITORY_CREDENTIAL_UNVERIFIED'
+  | 'MIGRATION_PENDING'
+  | 'HEALTH_CHECKS_UNVERIFIED'
+  | 'ROLLBACK_UNVERIFIED';
+
+export type GitRegistryV2ActivationReadiness = {
+  mappingId: string;
+  status: 'READY' | 'BLOCKED';
+  reasonCodes: GitRegistryV2ActivationReasonCode[];
+};
+
 const repositoryId = (owner: string, repo: string) => `github:${owner}/${repo}`;
 
 function defaultCapabilities(): RegistryCapabilities {
@@ -354,6 +370,69 @@ export function validateGitRegistryV2(input: unknown): GitRegistryV2 {
   }
   assertNoCredentialMaterial(registry);
   return registry;
+}
+
+export function assessGitRegistryV2ActivationReadiness(
+  input: unknown
+): GitRegistryV2ActivationReadiness[] {
+  const registry = validateGitRegistryV2(input);
+  const repositories = new Map(
+    registry.repositories.map((repository) => [repository.repositoryId, repository])
+  );
+  const migrationsByMapping = new Map<string, typeof registry.migrations>();
+  for (const migration of registry.migrations) {
+    const entries = migrationsByMapping.get(migration.mappingId) ?? [];
+    entries.push(migration);
+    migrationsByMapping.set(migration.mappingId, entries);
+  }
+
+  return registry.mappings.map((mapping) => {
+    const reasonCodes: GitRegistryV2ActivationReasonCode[] = [];
+
+    if (mapping.status !== 'validated' && mapping.status !== 'active') {
+      reasonCodes.push('MAPPING_STATUS_NOT_VALIDATED');
+    }
+    if (!mapping.realPath || !mapping.realPathVerified) {
+      reasonCodes.push('MAPPING_PATH_UNVERIFIED');
+    }
+    if (!mapping.remoteVerified) {
+      reasonCodes.push('MAPPING_REMOTE_UNVERIFIED');
+    }
+    if (mapping.domain !== null && !mapping.domainVerified) {
+      reasonCodes.push('MAPPING_DOMAIN_UNVERIFIED');
+    }
+
+    const repository = repositories.get(mapping.repositoryId);
+    const connection = repository
+      ? registry.connections.find(
+          (entry) => entry.accountLogin.toLowerCase() === repository.owner.toLowerCase()
+        )
+      : undefined;
+    if (
+      !connection ||
+      connection.configuredStatus !== 'validated' ||
+      connection.credentialRef === null
+    ) {
+      reasonCodes.push('REPOSITORY_CREDENTIAL_UNVERIFIED');
+    }
+
+    const migrations = migrationsByMapping.get(mapping.mappingId) ?? [];
+    if (migrations.some((migration) => migration.status !== 'migration_completed')) {
+      reasonCodes.push('MIGRATION_PENDING');
+    }
+    if (mapping.healthChecks.length === 0) {
+      reasonCodes.push('HEALTH_CHECKS_UNVERIFIED');
+    }
+    if (mapping.backupRequired && mapping.rollbackMethod === null) {
+      reasonCodes.push('ROLLBACK_UNVERIFIED');
+    }
+
+    return {
+      mappingId: mapping.mappingId,
+      status: reasonCodes.length === 0 ? 'READY' as const : 'BLOCKED' as const,
+      reasonCodes
+    };
+  });
 }
 
 function accountType(value: string | undefined): 'organization' | 'user' | 'unknown' {

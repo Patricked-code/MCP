@@ -232,3 +232,17 @@ Interdictions : aucun nouveau Session Manager, second GitRegistry, seconde Task 
 - RED : `5cedc7ac4b32d71ead8c8574c001669f3ff86f4e`, CI #831 en échec attendu.
 - GREEN exact : `5b296e48b7140e0205a4921a8f9d3e8a35700477`, CI #833 verte.
 - Reste : Draft PR, revue, fusion, déploiement exact-SHA, Live State `FULLY_ALIGNED`, checkpoint terminal et clôture gouvernée.
+
+
+## Tâche gouvernée en cours — TASK-20260913-002 — C1 GitRegistry V2 verification
+
+- [x] approuver le design C1 fail-closed sans activation implicite ;
+- [x] réutiliser l'unique GitRegistry V2 candidat et son dry-run read-only ;
+- [x] produire le RED `af4ee0f7` / MCP CI #854 avec deux échecs C1 ciblés et 320 tests historiques verts ;
+- [x] produire le GREEN `db703454` / MCP CI #855 avec verdict pur `READY|BLOCKED` et reason codes bornés ;
+- [x] préserver toutes les capabilities sensibles à `false`, GitRegistry V1 comme autorité active et la migration MCP en `migration_pending` ;
+- [ ] ouvrir la Draft PR C1 sur le head exact après réconciliation documentaire de branche ;
+- [ ] obtenir CI/revue exact-head et traiter tout finding par RED→GREEN sans élargir le scope ;
+- [ ] fusionner/déployer uniquement le socle de vérification, puis réconcilier Live State ;
+- [ ] vérifier séparément credential, realPath, remote et domaine avant toute activation de mapping ;
+- [ ] ne modifier le remote/mapping actif MCP qu'au travers d'une migration gouvernée explicitement prête, jamais par inférence.
