@@ -200,3 +200,10 @@ mélanger le futur transport GitHub Actions → SSH → S1 avec cette tâche.
 - travail réellement restant → `TODO.md` ;
 - tâche gouvernée réellement enregistrée → Operational Memory + `TASKS.md` ;
 - fin de tâche → autorités runtime/GitHub d'abord, puis réconciliation descendante `SUIVI.md` / `TASKS.md` / `TODO.md` / `ROADMAP.md`.
+
+
+## AfricaFunds Phase 2 — restant après GREEN
+
+- [x] Re-observer GitHub et S2 sans mutation.
+- [x] Produire le RED exact puis le GREEN complet.
+- [x] Ajouter le projet, les deux...
