@@ -462,3 +462,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Ajout des reason codes/audits bornés `governed_session_auto_attached` et `bindingResult=attached`.
 - Aucun changement de credential partagé, ambiguïté, OIDC, Governed Autodeploy, WRITE gate `shadow`, 2FA, secret ou écriture directe S1.
 - État : candidat non encore fusionné ni déployé ; review exact-head et réconciliation docs-only post-déploiement encore requises.
+
+
+## 2026-09-13 — AfricaFunds Phase 2 project mapping
+
+- Ajout additif dans l'unique GitRegistry V1 de deux mappings AfricaFunds vers les checkouts S2 existants, tous deux en lecture seule et déploiement désactivé.
+- Ajout du projet logique `CS-AFRICAFUNDS-001` / `chainsolutions.africafunds`, composé des repositories API et frontend.
+- Le modèle `FUND_STATE` conserve séparément `API_SHA`, `FRONTEND_SHA`, `SUIVI_CHECKPOINT` et `PRODUCTION_ATTESTATION`.
+- Les deux anciens vhosts sont classés `HISTORICAL_VHOST`, sans repository, non courants et non sources de déploiement.
+- TDD : RED exact `5cedc7ac4b32d71ead8c8574c001669f3ff86f4e`/CI #831; GREEN exact `5b296e48b7140e0205a4921a8f9d3e8a35700477`/CI #833.
+- Aucune activation V2, permission, capability WRITE, mutation S2 ou synchronisation AfricaFunds.

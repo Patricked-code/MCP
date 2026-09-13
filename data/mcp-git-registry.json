@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-08T20:10:00.000Z",
+  "updatedAt": "2026-09-13T09:06:00.000Z",
   "accounts": [
     {
       "id": "chainsolutions-wealthtech:chainsolutions-wealthtech",
@@ -109,6 +109,38 @@
       "deployEnabled": false,
       "createdAt": "2026-07-08T04:55:00.000Z",
       "updatedAt": "2026-07-08T20:10:00.000Z"
+    },
+    {
+      "id": "github:Wealthtechinnovations/api_opcv:s2:africafunds_api",
+      "githubOwner": "Wealthtechinnovations",
+      "githubRepo": "api_opcv",
+      "projectKey": "chainsolutions.africafunds",
+      "projectId": "chainsolutions.africafunds",
+      "projectUid": "CS-AFRICAFUNDS-001",
+      "componentRole": "API",
+      "serverId": "S2",
+      "serverPath": "/var/www/vhosts/chainsolutions.fr/africafunds.chainsolutions.fr/api",
+      "officialBranch": "claude/code-review-improvements-ikvuj",
+      "allowedAccess": "read",
+      "deployEnabled": false,
+      "createdAt": "2026-09-13T09:06:00.000Z",
+      "updatedAt": "2026-09-13T09:06:00.000Z"
+    },
+    {
+      "id": "github:Wealthtechinnovations/front_end_opcvm:s2:africafunds_frontend",
+      "githubOwner": "Wealthtechinnovations",
+      "githubRepo": "front_end_opcvm",
+      "projectKey": "chainsolutions.africafunds",
+      "projectId": "chainsolutions.africafunds",
+      "projectUid": "CS-AFRICAFUNDS-001",
+      "componentRole": "FRONTEND",
+      "serverId": "S2",
+      "serverPath": "/var/www/vhosts/chainsolutions.fr/africafunds.chainsolutions.fr/frontend",
+      "officialBranch": "claude/code-review-improvements-ikvuj",
+      "allowedAccess": "read",
+      "deployEnabled": false,
+      "createdAt": "2026-09-13T09:06:00.000Z",
+      "updatedAt": "2026-09-13T09:06:00.000Z"
     }
   ],
   "auditEvents": [
@@ -135,6 +167,76 @@
         "writeToolVerifiedByPatch": true,
         "liveGitHubTokenValidation": "pending_dashboard_or_github_route"
       }
+    },
+    {
+      "id": "20260913-090600-africafunds-project-mapped",
+      "at": "2026-09-13T09:06:00.000Z",
+      "type": "github.registry.project_mapped",
+      "actor": "chatgpt-codex",
+      "message": "AfricaFunds recorded as one multi-repository project with two read-only, deploy-disabled S2 mappings and two non-Git historical vhosts.",
+      "metadata": {
+        "projectUid": "CS-AFRICAFUNDS-001",
+        "projectId": "chainsolutions.africafunds",
+        "componentCount": 2,
+        "historicalVhostCount": 2,
+        "destructiveActions": false,
+        "s2Mutation": false
+      }
+    }
+  ],
+  "projects": [
+    {
+      "projectId": "chainsolutions.africafunds",
+      "projectUid": "CS-AFRICAFUNDS-001",
+      "name": "AfricaFunds",
+      "kind": "MULTI_REPOSITORY_APPLICATION",
+      "productionServerId": "S2",
+      "canonicalBranch": "claude/code-review-improvements-ikvuj",
+      "repositoryComponents": [
+        {
+          "repositoryId": "github:Wealthtechinnovations/api_opcv",
+          "mappingId": "github:Wealthtechinnovations/api_opcv:s2:africafunds_api",
+          "role": "API"
+        },
+        {
+          "repositoryId": "github:Wealthtechinnovations/front_end_opcvm",
+          "mappingId": "github:Wealthtechinnovations/front_end_opcvm:s2:africafunds_frontend",
+          "role": "FRONTEND"
+        }
+      ],
+      "globalCheckpointRepositoryId": "github:Wealthtechinnovations/front_end_opcvm",
+      "centralGovernanceRepositoryId": "github:Wealthtechinnovations/front_end_opcvm",
+      "stateModel": "FUND_STATE",
+      "stateFields": [
+        "API_SHA",
+        "FRONTEND_SHA",
+        "SUIVI_CHECKPOINT",
+        "PRODUCTION_ATTESTATION"
+      ],
+      "publicDomain": "africafunds.chainsolutions.fr",
+      "publicApi": "https://africafunds.chainsolutions.fr/api",
+      "historicalVhosts": [
+        {
+          "historicalVhostId": "s2-api-funds-chainsolutions-fr",
+          "classification": "HISTORICAL_VHOST",
+          "serverId": "S2",
+          "serverPath": "/var/www/vhosts/chainsolutions.fr/api.funds.chainsolutions.fr",
+          "domain": "api.funds.chainsolutions.fr",
+          "repositoryId": null,
+          "current": false,
+          "deploymentSource": false
+        },
+        {
+          "historicalVhostId": "s2-funds-chainsolutions-fr",
+          "classification": "HISTORICAL_VHOST",
+          "serverId": "S2",
+          "serverPath": "/var/www/vhosts/chainsolutions.fr/Funds.chainsolutions.fr",
+          "domain": "funds.chainsolutions.fr",
+          "repositoryId": null,
+          "current": false,
+          "deploymentSource": false
+        }
+      ]
     }
   ]
 }

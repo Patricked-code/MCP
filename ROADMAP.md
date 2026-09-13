@@ -543,3 +543,8 @@ travail terminé
 ```
 
 Règle : les Markdown décrivent et projettent la réalité ; ils ne remplacent jamais les autorités runtime.
+
+
+## Position 2026-09-13 — SLOT-08 AfricaFunds
+
+La fondation de compatibilité Phase 1 est déployée et attestée. La Phase 2 a atteint GREEN sur la branche gouvernée : un projet logique, deux composants Git read-only/non déployables, quatre champs d'état indépendants et deux vhosts historiques non Git. Les gates restantes sont la Draft PR, la revue exacte, la fusion, l'Autodeploy MCP et l'attestation Live State terminale. Cela ne vaut ni activation générale de C2/GitRegistry V2 ni attribution de capabilities SLOT-11.

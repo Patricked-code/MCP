@@ -213,3 +213,14 @@ Date : 2026-08-29
 - Cette section décrit le checkpoint documentaire descendant de `main@2c2dde2bffe62b2685bf2fad94530571762470c8` au moment où il a été produit.
 - Elle ne modifiait ni source TypeScript, tests, workflow, OIDC, Autodeploy, politique `.mcp`, WRITE gate, secret, runtime ou fichier S1.
 - Les statuts `DONE`, checkpoint final, libération de lock et cycle de Governed Session restent exclusivement sous autorité Operational Memory et ne sont pas pré-déclarés ici.
+
+
+## 2026-09-13 — AfricaFunds Phase 2 fonctionnelle prête pour PR
+
+- Autorités rebaselinées sur MCP main/S1/runtime `740e62a248a804ed73babedc7b3869b3a28ef612`; branche Phase 2 existante `mcp/africafunds-registry-phase2-20260912`.
+- Observations sans mutation : API GitHub `ff133efaa36d7bc36cabd6061e1b3d235f16b968`, S2 `79b40d13e` avec fichiers non suivis conservés; frontend GitHub `55191a74c8d581adb383123ce1d9f5bea98dc267`, S2 `cac9f1d` propre.
+- RED exact `5cedc7ac4b32d71ead8c8574c001669f3ff86f4e`, CI #831 échouée uniquement dans la suite read-only sur l'absence attendue du mapping.
+- GREEN : deux mappings V1 corrélés, `allowedAccess=read`, `deployEnabled=false`; projet unique `CS-AFRICAFUNDS-001` / `chainsolutions.africafunds`; état `FUND_STATE` à quatre champs indépendants; deux vhosts historiques non Git/inactifs/non déployables.
+- Correction de non-régression des compteurs du test V2 au head `5b296e48b7140e0205a4921a8f9d3e8a35700477`; CI #833 complète verte.
+- Aucune permission, capability WRITE, activation V2, mutation AfricaFunds/S2, synchronisation de checkout ou nouveau chemin de déploiement.
+- Prochaine action : Draft PR Phase 2, revue exacte, CI, fusion gardée, Autodeploy MCP, attestation Live State, puis réconciliation documentaire terminale.
