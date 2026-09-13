@@ -487,10 +487,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Aucune activation V2, permission, capability WRITE, mutation S2 ou synchronisation AfricaFunds.
 
 
-## Non publié — 2026-09-13 — C1 GitRegistry V2 activation readiness
+## 2026-09-13 — C1 GitRegistry V2 activation readiness
 
 - Ajout d'un verdict pur `assessGitRegistryV2ActivationReadiness()` qui retourne `READY` ou `BLOCKED` par mapping avec des reason codes bornés.
 - Fail-closed sur statut, realPath, remote, domaine requis, credential repository, migration, health checks et rollback.
 - TDD : RED `af4ee0f7` / CI #854 avec deux échecs ciblés ; GREEN `db703454` / CI #855 entièrement verte.
 - Le verdict ne mute ni registre, mapping, migration, credential, remote ni capability.
 - Aucune activation GitRegistry V2, aucune permission WRITE, aucune migration MCP et aucune écriture directe de code versionné sur S1.
+- Livraison : PR #83 fusionnée depuis `424508e244763fa00705b207daf834e7e2bdd1f0` au merge `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`; CI PR #857, CI main #858 et Governed Deploy #37 réussis.
+- Live State 217 atteste l'alignement technique exact-SHA et signale uniquement la projection documentaire à réconcilier avant la suite gouvernée.

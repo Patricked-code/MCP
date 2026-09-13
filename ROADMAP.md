@@ -553,10 +553,10 @@ Règle : les Markdown décrivent et projettent la réalité ; ils ne remplacent 
 Phase 1 et Phase 2 sont fusionnées et déployées; PR #80 et Deploy #34 constituent la preuve fonctionnelle Phase 2. La réconciliation terminale précède l'attestation FULLY_ALIGNED et la clôture runtime. Cela n'active ni C1/GitRegistry V2, ni C2, ni SLOT-11. Ensuite seule la première tâche réellement exécutable de la queue peut être reprise; les candidats documentés ne sont pas des Task IDs.
 
 
-## Position 2026-09-13 — C1 GitRegistry V2 verification actif
+## Position 2026-09-13 — C1 GitRegistry V2 verification gate livré
 
-C1 est désormais une tâche runtime réelle : `TASK-20260913-002`. Le premier incrément implémente uniquement un verdict fail-closed, pur et non mutant sur le candidat GitRegistry V2 existant. RED #854 puis GREEN #855 prouvent que le socle distingue `READY` de `BLOCKED` sans activer de mapping ni accorder de capacité.
+C1 est une tâche runtime réelle : `TASK-20260913-002`. Le premier incrément de vérification a été fusionné par PR #83 au merge `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`, validé par CI PR #857, CI main #858 et Governed Deploy #37. Live State 217 confirme l'alignement technique exact-SHA et demande uniquement la réconciliation documentaire descendante.
 
-Les critères de blocage couvrent au minimum : statut non validé, realPath non vérifié, remote non vérifié, domaine requis non vérifié, credential repository non vérifié, migration encore pending, health checks absents et rollback requis non prouvé.
+Le socle déployé implémente un verdict pur, déterministe et non mutant `READY|BLOCKED`. Les critères fail-closed couvrent au minimum : statut non validé, realPath non vérifié, remote non vérifié, domaine requis non vérifié, credential repository non vérifié, migration encore pending, health checks absents et rollback requis non prouvé.
 
-Ce jalon ne réalise pas l'activation V2. Le chemin reste : vérification des preuves → mapping `validated` → revue/approbation → activation explicite. GitRegistry V1, les remotes actuels, GitHub→S1, le WRITE gate et les permissions restent inchangés.
+Ce jalon ne réalise pas l'activation V2. Le chemin reste : preuves réelles → mapping `validated` → revue/approbation → activation explicite. GitRegistry V1, les remotes actuels, GitHub→S1, le WRITE gate et les permissions restent inchangés. Les trois gates techniques encore ouverts sont le credential Wealthtechinnovations, les preuves path/remote/domain et la migration MCP pending.

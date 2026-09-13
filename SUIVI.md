@@ -15,7 +15,19 @@
 
 Date : 2026-09-13
 
-## Point courant — AfricaFunds Phase 2 déployée, réconciliation terminale
+## Point courant — C1 GitRegistry V2 verification gate déployé
+
+- GitHub main, S1 HEAD, S1 origin/main et runtime OCI sont observés au SHA exact `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`; S1 est sur `main`, propre/read-only, fetch `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`, push `disabled://mcp-s1-read-only`, runtime running/healthy.
+- PR #83 `feat(registry): add fail-closed C1 activation readiness` a été fusionnée depuis le head exact `424508e244763fa00705b207daf834e7e2bdd1f0` au merge `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`.
+- Preuves : RED `af4ee0f7` / CI #854, GREEN `db703454` / CI #855, head documentaire `424508e2` / CI #856, CI PR #857, CI main #858 et Governed Deploy #37 (run `34779240457`) réussis.
+- Deploy #37 a attesté l'exact-SHA `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e` avec runtimeRevision identique, rollback non requis, health/OAuth/MCP auth sains.
+- `assessGitRegistryV2ActivationReadiness()` est déployé comme verdict pur et fail-closed `READY|BLOCKED`; il ne mute ni registre, mapping, migration, credential, remote ni capability.
+- Live State `217` confirme l'alignement technique GitHub/S1/runtime mais retourne encore `RECONCILIATION_REQUIRED` avec l'unique contradiction `DOCUMENTATION_DRIFT`, car la baseline documentaire déclarait encore le merge fonctionnel AfricaFunds.
+- La présente réconciliation descendante remplace uniquement cette projection canonique par le merge fonctionnel C1 attesté. Aucun code fonctionnel, registre, workflow, permission ou remote n'est modifié.
+- `TASK-20260913-002` reste sous Operational Memory en phase de vérification; son statut, sa révision, ses locks et sa session doivent être relus dans les autorités runtime, jamais déduits de ce Markdown.
+- Les gates d'activation V2 restent ouverts : credential Wealthtechinnovations non vérifié, preuves path/remote/domain incomplètes et migration MCP encore `migration_pending`. Aucune activation V2 n'est autorisée par cette livraison.
+
+## Historique — AfricaFunds Phase 2 déployée, réconciliation terminale
 
 - GitHub main, S1 HEAD, S1 origin/main et runtime OCI ont été attestés au SHA exact `1eac93f631fcf7843d7e768bba7a4125ed00bdbb` dans Live State `204`; S1 propre/read-only, push désactivé, runtime running/healthy.
 - PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a` au merge `1eac93f631fcf7843d7e768bba7a4125ed00bdbb`; CI PR #841, CI main #842 et Governed Deploy #34 (run `34750625897`) réussis.
