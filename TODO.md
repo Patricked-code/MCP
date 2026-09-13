@@ -202,8 +202,9 @@ PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a
 - [x] introduire un verdict d'activation pur, déterministe et non mutant ;
 - [x] bloquer fail-closed les mappings non validés ou dont path/remote/domain/credential/migration/health/rollback sont insuffisamment prouvés ;
 - [x] démontrer RED #854 puis GREEN #855 sans activer le registre V2 ni changer de permission ;
-- [ ] faire revoir et fusionner ce socle de vérification via PR gouvernée exact-head ;
+- [x] faire revoir et fusionner ce socle via PR #83, CI exact-head #857, CI main #858 et Governed Deploy #37 ;
+- [ ] réconcilier la projection documentaire post-déploiement et exiger le Live State frais ;
 - [ ] prouver les credentials durables applicables, notamment Wealthtechinnovations ;
 - [ ] vérifier les realpaths, remotes et domaines requis sans déduire une preuve absente ;
 - [ ] traiter la migration MCP séparément ; `migration_pending` interdit toute mutation automatique du remote actif ;
-- [ ] seulement après toutes les preuves et gates, concevoir la transition explicite d'un mapping `validated → active` ; aucune activation n'est incluse dans le présent lot.
+- [ ] seulement après toutes les preuves et gates, concevoir/exécuter la transition explicite d'un mapping `validated → active` ; aucune activation n'est incluse dans le présent jalon.

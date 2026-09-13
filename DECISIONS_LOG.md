@@ -536,3 +536,7 @@ Décision de non-régression : ce verdict n'écrit rien. Il ne modifie ni mappin
 Décision migration : tout mapping portant une migration autre que `migration_completed` reste `BLOCKED`; `migration_pending` n'autorise aucune mutation automatique du repository/remote actif.
 
 Preuve TDD : RED #854 sur `af4ee0f7`, puis GREEN #855 sur `db703454`. Le présent lot prépare le gate de vérification ; il ne constitue pas une activation V2.
+
+Décision de livraison : le socle fail-closed est fusionné par PR #83 au merge `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`, avec CI PR #857, CI main #858 et Governed Deploy #37 réussis. Live State 217 atteste GitHub/S1/runtime exact-SHA mais exige une réconciliation documentaire descendante avant de considérer la projection canonique alignée.
+
+Décision de frontière : cette livraison n'autorise toujours aucune activation V2. Credential Wealthtechinnovations, preuves path/remote/domain et migration MCP restent des gates distincts ; aucun d'eux ne peut être déduit du simple déploiement du verdict de readiness.

@@ -234,15 +234,18 @@ Interdictions : aucun nouveau Session Manager, second GitRegistry, seconde Task 
 - Reste : Draft PR, revue, fusion, déploiement exact-SHA, Live State `FULLY_ALIGNED`, checkpoint terminal et clôture gouvernée.
 
 
-## Tâche gouvernée en cours — TASK-20260913-002 — C1 GitRegistry V2 verification
+## Tâche gouvernée actuelle — TASK-20260913-002 — C1 GitRegistry V2 verification
 
 - [x] approuver le design C1 fail-closed sans activation implicite ;
 - [x] réutiliser l'unique GitRegistry V2 candidat et son dry-run read-only ;
-- [x] produire le RED `af4ee0f7` / MCP CI #854 avec deux échecs C1 ciblés et 320 tests historiques verts ;
+- [x] produire le RED `af4ee0f7` / MCP CI #854 avec deux échecs C1 ciblés et les tests historiques verts ;
 - [x] produire le GREEN `db703454` / MCP CI #855 avec verdict pur `READY|BLOCKED` et reason codes bornés ;
-- [x] préserver toutes les capabilities sensibles à `false`, GitRegistry V1 comme autorité active et la migration MCP en `migration_pending` ;
-- [ ] ouvrir la Draft PR C1 sur le head exact après réconciliation documentaire de branche ;
-- [ ] obtenir CI/revue exact-head et traiter tout finding par RED→GREEN sans élargir le scope ;
-- [ ] fusionner/déployer uniquement le socle de vérification, puis réconcilier Live State ;
+- [x] publier/revoir la PR #83 sur le head exact `424508e244763fa00705b207daf834e7e2bdd1f0`, CI PR #857 verte, zéro thread requis ;
+- [x] fusionner #83 sous garde exact-head au merge `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`, réussir CI main #858 et Governed Deploy #37 ;
+- [x] attester GitHub/S1/origin-main/runtime exact-SHA, S1 propre/read-only et runtime healthy dans Live State 217 ;
+- [ ] réconcilier le `DOCUMENTATION_DRIFT` post-déploiement et obtenir un nouveau Live State sans contradiction documentaire ;
 - [ ] vérifier séparément credential, realPath, remote et domaine avant toute activation de mapping ;
-- [ ] ne modifier le remote/mapping actif MCP qu'au travers d'une migration gouvernée explicitement prête, jamais par inférence.
+- [ ] traiter la migration MCP séparément ; `migration_pending` interdit toute mutation automatique du remote actif ;
+- [ ] ne passer aucun mapping `validated → active` avant preuves complètes, revue et autorisation explicite.
+
+Autorité : Operational Memory garde le statut/revision/locks/session courants. Le socle de vérification est livré ; GitRegistry V2 n'est pas activé.
