@@ -142,21 +142,16 @@ Le mapping GitHub user/account → rôle projet et les permissions ne font pas p
 de B1. Ils restent positionnés dans les lots de gouvernance/Effective Capabilities
 appropriés, sans être pré-créés comme tasks.
 
-### AfricaFunds project-aware S2 mapping — tâche courante en deux phases
+### AfricaFunds — livraison fonctionnelle acquise
 
-- [x] approuver le design au checkpoint `6ad95c77-fb4b-4abd-bf3f-3a1db74eb142` ;
-- [x] reprendre `TASK-20260910-001` après B2 sans nouvelle tâche ;
-- [x] livrer par TDD la compatibilité structurelle optionnelle V1/V2 sans donnée AfricaFunds active ;
-- [x] fusionner la PR Phase 1 #78 au merge `b747dfc7f67786a40c19c285dbcdb3a07b78d5c0` et attester le runtime exact-SHA healthy ;
-- [ ] fusionner/déployer la réconciliation documentaire Phase 1 et obtenir `FULLY_ALIGNED` ;
-- [ ] seulement ensuite, rebaseliner les observations GitHub/S2 et écrire les RED Phase 2 ;
-- [ ] ajouter dans l'unique GitRegistry le projet `CS-AFRICAFUNDS-001` / `chainsolutions.africafunds`, ses deux composants read-only/no-deploy et ses deux vhosts `HISTORICAL_VHOST` non Git ;
-- [ ] valider, revoir, fusionner, déployer et attester Phase 2 exact-SHA ;
-- [ ] checkpoint final, `DONE`, release locks, fermeture de session et réconciliation Work Queue.
+PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a` au merge `1eac93f631fcf7843d7e768bba7a4125ed00bdbb`; CI PR #841, CI main #842 et Governed Deploy #34 (run `34750625897`) réussis.
 
-Interdictions : ne synchroniser aucun checkout S2, ne toucher à aucun untracked
-API, ne modifier aucun dépôt AfricaFunds, ne déduire aucune permission et ne pas
-mélanger le futur transport GitHub Actions → SSH → S1 avec cette tâche.
+- [x] Phase 1 et réconciliation #79 attestées avant Phase 2 ;
+- [x] observations S2 sans mutation, RED/GREEN et mapping approuvé ;
+- [x] CI/revue/merge exact-head Phase 2 et Governed Deploy #34 ;
+- [x] GitHub/S1/origin-main/runtime exact-SHA, S1 propre/read-only et runtime healthy ;
+- La présente réconciliation documentaire lève la projection devenue stale. Sa validation et son déploiement restent requis pour l'attestation FULLY_ALIGNED.
+- Note d'autorité : DONE, checkpoint final, locks et fermeture de session se vérifient dans Operational Memory; ils ne deviennent pas des TODO Markdown persistants.
 
 ### Project Binding / GitRegistry V2
 
@@ -200,15 +195,3 @@ mélanger le futur transport GitHub Actions → SSH → S1 avec cette tâche.
 - travail réellement restant → `TODO.md` ;
 - tâche gouvernée réellement enregistrée → Operational Memory + `TASKS.md` ;
 - fin de tâche → autorités runtime/GitHub d'abord, puis réconciliation descendante `SUIVI.md` / `TASKS.md` / `TODO.md` / `ROADMAP.md`.
-
-
-## AfricaFunds Phase 2 — restant après GREEN
-
-- [x] Re-observer GitHub et S2 sans mutation.
-- [x] Produire le RED exact puis le GREEN complet.
-- [x] Ajouter le projet logique et les deux mappings read-only/non déployables.
-- [x] Conserver quatre champs d'état indépendants et deux vhosts historiques non Git.
-- [ ] Ouvrir la Draft PR Phase 2 et obtenir la CI exacte.
-- [ ] Traiter toute revue par RED/GREEN sans élargir le périmètre.
-- [ ] Fusionner sous garde du head exact et attendre l'Autodeploy gouverné.
-- [ ] Exiger Live State FULLY_ALIGNED, réconcilier les six projections puis clôturer tâche/session/locks.
