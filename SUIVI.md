@@ -13,9 +13,22 @@
 }
 ```
 
-Date : 2026-09-12
+Date : 2026-09-13
 
-## Point courant — AfricaFunds Phase 1 déployée, réconciliation documentaire en cours
+## Point courant — AfricaFunds Phase 2 déployée, réconciliation terminale
+
+- PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a` au merge `1eac93f631fcf7843d7e768bba7a4125ed00bdbb`; CI PR #841, CI main #842 et Governed Deploy #34 (run `34750625897`) réussis.
+- GitHub main, S1 HEAD, S1 origin/main et runtime OCI ont été attestés au SHA exact `1eac93f631fcf7843d7e768bba7a4125ed00bdbb` dans Live State `204`; S1 propre/read-only, push désactivé, runtime running/healthy.
+- Image attestée : `sha256:f736b0573615fc12a73318093ff9049e15fbe164ad3b9f1004b33b684b89b998`.
+- Checkpoint post-déploiement : `bbd274c2-d5e5-4bb6-83ec-8006616f08cb`. Seule contradiction : `DOCUMENTATION_DRIFT`; cette réconciliation descendante vise à la lever par le flux GitHub normal.
+- Registre actif : projet `CS-AFRICAFUNDS-001`, deux composants S2 read-only/non déployables, quatre champs FUND_STATE indépendants, deux vhosts historiques non Git. Dry-run runtime : 1 projet, 5 repositories, 4 mappings, `written=false`; V2 reste non activé.
+- #840 avait zéro job; #841 a fourni la preuve CI du head exact fusionné. Aucun RED/GREEN fonctionnel n'a été rejoué sans finding.
+- Branche documentaire : `mcp/africafunds-terminal-documentation-20260913`, issue du merge attesté; seuls les six Markdown canoniques sont réconciliés.
+- Le statut terminal, le checkpoint final, les locks et la fermeture de session restent exclusivement sous Operational Memory; les relire après le déploiement documentaire. Aucun DONE n'est anticipé par cette projection.
+- Reprise : PR documentaire, CI exact-head, revue, fusion gardée, Governed Deploy et Live State `FULLY_ALIGNED`; ensuite clôture tâche/session/locks et relecture de la queue.
+- Aucun code fonctionnel, workflow, permission ou checkout S2 modifié. Le transport SSH direct indépendant du MCP reste distinct.
+
+## Historique — AfricaFunds Phase 1 déployée, réconciliation documentaire en cours
 
 - GitHub `main`, S1 HEAD, S1 `origin/main` et runtime healthy sont observés au SHA exact `b747dfc7f67786a40c19c285dbcdb3a07b78d5c0`; S1 est propre/read-only et le runtime porte l'image `sha256:2fbcc62113380ce9384bb282f5fdd45d31b878bf961606ff3213b39a319a7429`.
 - Tâche gouvernée courante : `TASK-20260910-001`, statut `DEPLOYING`, révision 11 au checkpoint `be2c734f-88d6-4ad6-808c-fa84b2db9ca6`; Governed Session `39ff2377-f4c2-4ca2-99ee-beff54a2f2d4`. Ces valeurs dynamiques doivent être relues avant mutation.
@@ -215,7 +228,7 @@ Date : 2026-08-29
 - Les statuts `DONE`, checkpoint final, libération de lock et cycle de Governed Session restent exclusivement sous autorité Operational Memory et ne sont pas pré-déclarés ici.
 
 
-## 2026-09-13 — AfricaFunds Phase 2 fonctionnelle prête pour PR
+## Historique pré-PR #80 — AfricaFunds Phase 2 fonctionnelle prête pour PR
 
 - Autorités rebaselinées sur MCP main/S1/runtime `740e62a248a804ed73babedc7b3869b3a28ef612`; branche Phase 2 existante `mcp/africafunds-registry-phase2-20260912`.
 - Observations sans mutation : API GitHub `ff133efaa36d7bc36cabd6061e1b3d235f16b968`, S2 `79b40d13e` avec fichiers non suivis conservés; frontend GitHub `55191a74c8d581adb383123ce1d9f5bea98dc267`, S2 `cac9f1d` propre.

@@ -3,6 +3,19 @@
 ## Role
 Historique factuel des changements du depot MCP.
 
+
+## 2026-09-13 — AfricaFunds Phase 2 livrée, réconciliation terminale
+
+PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a` au merge `1eac93f631fcf7843d7e768bba7a4125ed00bdbb`; CI PR #841, CI main #842 et Governed Deploy #34 (run `34750625897`) réussis.
+
+Live State `204` : GitHub/S1/origin-main/runtime exact-SHA, S1 propre/read-only et runtime healthy. Le seul DOCUMENTATION_DRIFT exige cette réconciliation descendante des six Markdown via une PR documentaire distincte.
+
+Le dry-run du registre exécuté confirme 1 projet, 5 repositories, 4 mappings, capacités sensibles désactivées et aucune écriture. Aucun code fonctionnel, workflow, secret, permission ou checkout S2 modifié.
+
+#840 à zéro job n'est pas une régression démontrée; #841 est la preuve du head fusionné. Le statut terminal, le checkpoint final, les locks et la fermeture de session restent exclusivement sous Operational Memory; les relire après le déploiement documentaire. Aucun DONE n'est anticipé par cette projection.
+
+Le transport SSH direct indépendant du MCP reste un sujet séparé. La queue runtime doit être relue après clôture; aucune tâche ou permission n'est inférée de la roadmap.
+
 ## 2026-09-12 — AfricaFunds Phase 1 compatibility foundation
 
 - `TASK-20260910-001` exécute le design en deux phases approuvé au checkpoint `6ad95c77-fb4b-4abd-bf3f-3a1db74eb142`, sans recréer la tâche après B2.

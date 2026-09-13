@@ -297,7 +297,10 @@ GitRegistry existante en deux livraisons séparées :
 
 Phase 1 est fusionnée par PR #78 au merge
 `b747dfc7f67786a40c19c285dbcdb3a07b78d5c0` et attestée techniquement dans Live
-State `175`; sa réconciliation documentaire reste le gate immédiat avant Phase 2.
+State `175`; la réconciliation #79 a permis la baseline `740e62a248a804ed73babedc7b3869b3a28ef612` avant Phase 2.
+
+PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a` au merge `1eac93f631fcf7843d7e768bba7a4125ed00bdbb`; CI PR #841, CI main #842 et Governed Deploy #34 (run `34750625897`) réussis.
+Live State `204` atteste l'alignement technique et le runtime healthy. La réconciliation terminale lève le seul DOCUMENTATION_DRIFT; la clôture reste attestée par Operational Memory.
 
 Ce lot n'active pas GitRegistry V2, ne résout pas encore universellement C2, ne
 change aucune permission/Effective Capability, ne synchronise aucun checkout S2
@@ -547,4 +550,4 @@ Règle : les Markdown décrivent et projettent la réalité ; ils ne remplacent 
 
 ## Position 2026-09-13 — SLOT-08 AfricaFunds
 
-La fondation de compatibilité Phase 1 est déployée et attestée. La Phase 2 a atteint GREEN sur la branche gouvernée : un projet logique, deux composants Git read-only/non déployables, quatre champs d'état indépendants et deux vhosts historiques non Git. Les gates restantes sont la Draft PR, la revue exacte, la fusion, l'Autodeploy MCP et l'attestation Live State terminale. Cela ne vaut ni activation générale de C2/GitRegistry V2 ni attribution de capabilities SLOT-11.
+Phase 1 et Phase 2 sont fusionnées et déployées; PR #80 et Deploy #34 constituent la preuve fonctionnelle Phase 2. La réconciliation terminale précède l'attestation FULLY_ALIGNED et la clôture runtime. Cela n'active ni C1/GitRegistry V2, ni C2, ni SLOT-11. Ensuite seule la première tâche réellement exécutable de la queue peut être reprise; les candidats documentés ne sont pas des Task IDs.

@@ -19,35 +19,24 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 `ROADMAP.md` décrit tous les chantiers/lots connus. `TODO.md` contient ce qui reste à accomplir. Ce fichier ne pré-crée pas toutes les tâches futures : une `TASK-...` n'est considérée officielle qu'après son enregistrement dans Operational Memory.
 
-## Tâche gouvernée courante — AfricaFunds project-aware S2 mapping
+## Tâche gouvernée — AfricaFunds project-aware S2 mapping
 
-### TASK-20260910-001 — EN COURS
+### TASK-20260910-001 — livraison fonctionnelle attestée
 
-L'autorité dynamique reste la Governed Task Queue/Operational Memory. Au checkpoint
-`be2c734f-88d6-4ad6-808c-fa84b2db9ca6`, la tâche est `DEPLOYING` révision 11 dans
-la Governed Session `39ff2377-f4c2-4ca2-99ee-beff54a2f2d4`. Le design approuvé
-est le checkpoint `6ad95c77-fb4b-4abd-bf3f-3a1db74eb142`; statut, révisions,
-receipt et locks doivent être relus avant toute mutation.
+PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a` au merge `1eac93f631fcf7843d7e768bba7a4125ed00bdbb`; CI PR #841, CI main #842 et Governed Deploy #34 (run `34750625897`) réussis.
 
-- [x] reprendre la tâche existante sans la recréer et acquitter Live State `171` ;
-- [x] acquérir puis renouveler les locks task/repository minimaux ;
-- [x] créer la branche Phase 1 depuis `main@fa563c6e21d6fa07bf5b33a58626ceae1cdedc13` ;
-- [x] versionner le design approuvé et le plan TDD en deux phases ;
-- [x] prouver en RED que l'ancien reader/writer/migrateur éliminait encore `projects` ;
-- [x] implémenter additivement la compatibilité V1/V2 optionnelle sans donnée AfricaFunds active ;
-- [x] conserver V2 dry-run, outils historiques, permissions, WRITE gate et autorités existantes ;
-- [x] obtenir 363/363 tests, typecheck, build, docs, secrets, cartographie et diff-check verts ;
-- [x] publier/revoir la PR #78, obtenir MCP CI #824 `validate` verte sans thread bloquant ;
-- [x] fusionner sous garde du head exact `f7800966119601e336c480da6f2f98eafe6e6e70` au merge `b747dfc7f67786a40c19c285dbcdb3a07b78d5c0` ;
-- [x] attester GitHub/S1/origin-main/runtime exact-SHA, S1 propre/read-only et runtime healthy dans Live State `175` ;
-- [ ] fusionner/déployer la réconciliation Phase 1 strictement documentaire et exiger `FULLY_ALIGNED` ;
-- [ ] après ce gate seulement, rebaseliner puis écrire les RED Phase 2 du mapping AfricaFunds approuvé ;
-- [ ] livrer/attester Phase 2 avant checkpoint final, `DONE`, libération des locks et clôture de session.
+- [x] livrer Phase 1 et réconciliation #79, attestées sur `740e62a248a804ed73babedc7b3869b3a28ef612` avant Phase 2 ;
+- [x] produire les RED/GREEN Phase 2 et conserver les contrats historiques ;
+- [x] livrer le projet logique, les deux composants read-only/no-deploy et les deux vhosts historiques non Git dans le registre existant ;
+- [x] obtenir CI exacte #841, auto-revue du diff et absence de thread, vérifier protect-main ;
+- [x] fusionner #80 sous garde expected_head_sha puis attester Deploy #34, SHA exact, S1 propre/read-only et runtime healthy ;
+- [x] enregistrer le checkpoint technique `bbd274c2-d5e5-4bb6-83ec-8006616f08cb` sur Live State `204` ;
+- La réconciliation des six projections passe par `mcp/africafunds-terminal-documentation-20260913` et ses propres gates PR/CI/revue/merge/deploy.
+- Le statut terminal, le checkpoint final, les locks et la fermeture de session restent exclusivement sous Operational Memory; les relire après le déploiement documentaire. Aucun DONE n'est anticipé par cette projection.
 
-Exclusions courantes : aucune synchronisation des checkouts S2, aucun accès aux
-untracked API, aucune mutation des dépôts AfricaFunds, aucun vhost historique
-transformé en dépôt Git, aucune permission implicite et aucun mélange avec le
-transport séparé GitHub Actions → SSH → S1.
+Condition de clôture : Live State terminal FULLY_ALIGNED, preuve exacte de déploiement, puis DONE, checkpoint, release locks, fermeture de session et réconciliation de la queue.
+
+Frontières : aucune mutation AfricaFunds/S2, activation V2, permission implicite ni transport SSH direct dans cette tâche.
 
 ## Tâche précédente — B2 Repository Resolution
 
@@ -237,7 +226,7 @@ Interdictions : aucun nouveau Session Manager, second GitRegistry, seconde Task 
 - aucun nouveau store d'état global concurrent de Live State, Operational Memory, Governed Task Queue ou GitHub.
 
 
-## TASK-20260910-001 — AfricaFunds Phase 2
+## Historique avant PR #80 — AfricaFunds Phase 2
 
 - Statut runtime : `IN_PROGRESS` (Operational Memory reste autorité).
 - RED : `5cedc7ac4b32d71ead8c8574c001669f3ff86f4e`, CI #831 en échec attendu.
