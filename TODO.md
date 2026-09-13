@@ -206,4 +206,9 @@ mélanger le futur transport GitHub Actions → SSH → S1 avec cette tâche.
 
 - [x] Re-observer GitHub et S2 sans mutation.
 - [x] Produire le RED exact puis le GREEN complet.
-- [x] Ajouter le projet, les deux...
+- [x] Ajouter le projet logique et les deux mappings read-only/non déployables.
+- [x] Conserver quatre champs d'état indépendants et deux vhosts historiques non Git.
+- [ ] Ouvrir la Draft PR Phase 2 et obtenir la CI exacte.
+- [ ] Traiter toute revue par RED/GREEN sans élargir le périmètre.
+- [ ] Fusionner sous garde du head exact et attendre l'Autodeploy gouverné.
+- [ ] Exiger Live State FULLY_ALIGNED, réconcilier les six projections puis clôturer tâche/session/locks.
