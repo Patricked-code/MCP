@@ -505,3 +505,10 @@ Décision complémentaire : conserver `resumeSession()` et le statut `RESUMED` p
 Preuve : RED exact `actual RESUMED / expected ATTACHED` dans CI #626, second RED serveur dans CI #628, puis GREEN `8a0e6fc0903bfdce04f2c476df50bee013fd1b9a` avec CI #635 entièrement réussie et `257/257` tests.
 
 Limites : aucun identifiant stable de conversation n'est fabriqué. Aucune nouvelle autorité, aucun nouveau store, aucun élargissement de droits, aucun changement du WRITE gate `shadow`, d'OIDC, d'Autodeploy, de 2FA ou du chemin GitHub→S1. Le merge, le déploiement exact-SHA, la réconciliation docs-only et la clôture Operational Memory restent à attester.
+
+
+## 2026-09-13 — Décision Phase 2 AfricaFunds
+
+Décision : représenter AfricaFunds par un projet logique unique dans le GitRegistry existant, avec deux composants Git indépendants. Le frontend porte la référence de checkpoint global et de gouvernance centrale observée; les SHA API et frontend restent deux preuves séparées.
+
+Décision de sécurité : les mappings restent `read`, `deployEnabled=false` et toutes les capabilities sensibles V2 restent fausses. Les vhosts historiques restent non Git, non courants et non sources de déploiement. Aucun écart S2 n'est corrigé dans cette tâche.
