@@ -17,8 +17,8 @@ Date : 2026-09-13
 
 ## Point courant — AfricaFunds Phase 2 déployée, réconciliation terminale
 
-- PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a` au merge `1eac93f631fcf7843d7e768bba7a4125ed00bdbb`; CI PR #841, CI main #842 et Governed Deploy #34 (run `34750625897`) réussis.
 - GitHub main, S1 HEAD, S1 origin/main et runtime OCI ont été attestés au SHA exact `1eac93f631fcf7843d7e768bba7a4125ed00bdbb` dans Live State `204`; S1 propre/read-only, push désactivé, runtime running/healthy.
+- PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a` au merge `1eac93f631fcf7843d7e768bba7a4125ed00bdbb`; CI PR #841, CI main #842 et Governed Deploy #34 (run `34750625897`) réussis.
 - Image attestée : `sha256:f736b0573615fc12a73318093ff9049e15fbe164ad3b9f1004b33b684b89b998`.
 - Checkpoint post-déploiement : `bbd274c2-d5e5-4bb6-83ec-8006616f08cb`. Seule contradiction : `DOCUMENTATION_DRIFT`; cette réconciliation descendante vise à la lever par le flux GitHub normal.
 - Registre actif : projet `CS-AFRICAFUNDS-001`, deux composants S2 read-only/non déployables, quatre champs FUND_STATE indépendants, deux vhosts historiques non Git. Dry-run runtime : 1 projet, 5 repositories, 4 mappings, `written=false`; V2 reste non activé.
