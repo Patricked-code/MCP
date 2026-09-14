@@ -215,6 +215,9 @@ case "$FRONT_CODE" in 2*|3*) ;; *) echo 'ERREUR health frontend'; exit 31 ;; esa
 case "$AUTH_CODE" in 2*|3*) ;; *) echo 'ERREUR health auth'; exit 32 ;; esac
 case "$LOGIN_CODE" in 200|401) ;; *) echo 'ERREUR health api/login'; exit 33 ;; esac
 
+rm -f tmp/restart.txt
+rmdir tmp 2>/dev/null || true
+
 echo 'Déploiement Stablecoin terminé.'
 git status -sb`;
   }
