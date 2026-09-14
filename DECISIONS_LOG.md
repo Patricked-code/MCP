@@ -540,3 +540,34 @@ Preuve TDD : RED #854 sur `af4ee0f7`, puis GREEN #855 sur `db703454`. Le présen
 Décision de livraison : le socle fail-closed est fusionné par PR #83 au merge `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`, avec CI PR #857, CI main #858 et Governed Deploy #37 réussis. Live State 217 atteste GitHub/S1/runtime exact-SHA mais exige une réconciliation documentaire descendante avant de considérer la projection canonique alignée.
 
 Décision de frontière : cette livraison n'autorise toujours aucune activation V2. Credential Wealthtechinnovations, preuves path/remote/domain et migration MCP restent des gates distincts ; aucun d'eux ne peut être déduit du simple déploiement du verdict de readiness.
+
+## 2026-09-14 — Transport GitHub Actions → SSH direct uniquement comme extension gouvernée
+
+Contexte : le Governed Deploy actuel est attesté via GitHub Actions → OIDC → MCP
+→ SSH → S1. L'objectif produit est de permettre à une conversation utilisant
+GitHub comme surface de déclencher et observer des opérations serveur même lorsque
+le bridge MCP n'est pas disponible, sans introduire un shell libre ni une seconde
+gouvernance.
+
+Décision d'architecture : inscrire un candidat `Governed GitHub Actions → SSH
+Transport V1` qui ajoute seulement un transport. GitHub, Operational Memory,
+Governed Task Queue, Governed Session, GitRegistry, Live State,
+GovernanceDecision/Effective Capabilities et les règles de non-régression
+restent les autorités existantes. Le transport direct ne peut ni remplacer ni
+court-circuiter ces autorités.
+
+Décision de sécurité : les credentials SSH doivent rester hors Git dans des
+GitHub Environments/Actions Secrets protégés, séparés par cible. Aucun arbitrary
+shell, secret dump, push serveur → GitHub, édition directe du code versionné,
+reset/clean libre ou changement de remote libre n'est autorisé.
+
+Décision de compatibilité : le workflow historique `mcp-deploy.yml` et son test
+qui refusent `secrets.*`, `ssh`, `scp`, `id_rsa` et les private keys restent
+inchangés. Un futur transport direct doit disposer de son propre Integration
+Slot/workflow ou d'une abstraction explicitement approuvée, avec preuve de
+parité avant toute activation.
+
+Gate : cette décision documente un candidat de roadmap uniquement. Elle ne crée
+aucun `TASK-...`, ne modifie ni C1, ni GitRegistry, ni credential, ni remote, ni
+workflow, ni permission, ni runtime. L'enregistrement exécutable reste réservé à
+Operational Memory et à la Governed Task Queue.
