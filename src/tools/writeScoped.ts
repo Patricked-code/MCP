@@ -106,7 +106,7 @@ async function runS2(command: string, intent: string, timeoutMs = 30_000) {
   return asText(commandResultToText(result));
 }
 
-function buildGitStatusCommand(project: ProjectKey): string {
+export function buildGitStatusCommand(project: ProjectKey): string {
   const config = projectFor(project);
   return `set -euo pipefail
 cd ${shellQuote(config.path)}
