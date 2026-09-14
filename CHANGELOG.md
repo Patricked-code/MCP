@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+
+## 2026-09-15 — Stablecoin S2 governed SSH candidate
+
+- Branche candidate `mcp/stablecoin-s2-governed-ssh-20260915` basée sur `main@555a51d0648ef796eba4868282942055a2f67a65`.
+- Réutilisation de la couche SSH2 existante du MCP vers S2 ; aucun nouveau bridge, secret ou transport OAuth/Actions n'est ajouté.
+- Ajout de `stablecoin_frontend` aux outils projet existants avec recette Git spécifique : remote `github`, branche `main`, checkout Plesk documenté, working tree propre et fast-forward strict.
+- Déploiement borné à la recette Stablecoin documentée : build Next.js sous `NODE_OPTIONS=--openssl-legacy-provider`, restart Passenger par `tmp/restart.txt`, health checks frontend/auth/API login.
+- Mapping V1 candidat `CS-STABLECOIN-001` / `chainsolutions.stablecoin` vers S2 ; backend API conservé comme runtime à découvrir, sans inventer de repository.
+- Tests ciblés et contrats historiques mis à jour ; aucune mutation S2 n'est exécutée par cette branche.
+- Fusion/déploiement interdits avant enregistrement/claim d'une tâche Operational Memory dédiée, relecture des locks/session/checkpoint, CI exact-head et revue.
+
+
 ## Role
 Historique factuel des changements du depot MCP.
 
