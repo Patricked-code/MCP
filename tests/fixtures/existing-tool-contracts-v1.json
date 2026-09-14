@@ -157,7 +157,7 @@
     }
   },
   "deploy_project_s2": {
-    "description": "Déploie automatiquement un projet autorisé sur S2 avec logs, stash, rebase et recette projet.",
+    "description": "Déploie un projet autorisé sur S2 selon sa recette gouvernée et ses garde-fous projet.",
     "inputSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
@@ -169,7 +169,8 @@
             "front_end_opcvm",
             "legacy_funds_frontend",
             "legacy_funds_api",
-            "brvmchainsolution"
+            "brvmchainsolution",
+            "stablecoin_frontend"
           ]
         }
       },
@@ -268,7 +269,7 @@
     }
   },
   "git_pull_project_s2": {
-    "description": "Met à jour automatiquement un projet autorisé sur S2 avec stash, pull --rebase et restauration du stash.",
+    "description": "Met à jour un projet autorisé sur S2 selon sa stratégie Git gouvernée (Stablecoin utilise remote github + fast-forward strict).",
     "inputSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
@@ -280,7 +281,8 @@
             "front_end_opcvm",
             "legacy_funds_frontend",
             "legacy_funds_api",
-            "brvmchainsolution"
+            "brvmchainsolution",
+            "stablecoin_frontend"
           ]
         }
       },
@@ -303,7 +305,8 @@
             "front_end_opcvm",
             "legacy_funds_frontend",
             "legacy_funds_api",
-            "brvmchainsolution"
+            "brvmchainsolution",
+            "stablecoin_frontend"
           ]
         }
       },

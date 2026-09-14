@@ -234,9 +234,38 @@ test('le registre actif contient le mapping AfricaFunds approuvé et reste idemp
     }
   ]);
 
+  const stablecoin = registry.projects?.find(
+    (entry: any) => entry.projectUid === 'CS-STABLECOIN-001'
+  );
+  assert.ok(stablecoin);
+  assert.equal(stablecoin.projectId, 'chainsolutions.stablecoin');
+  assert.equal(stablecoin.productionServerId, 'S2');
+  assert.equal(stablecoin.canonicalBranch, 'main');
+  assert.equal(stablecoin.publicDomain, 'stablecoin.chainsolutions.fr');
+  assert.equal(stablecoin.publicApi, 'https://api.stablecoin.chainsolutions.fr');
+  assert.deepEqual(stablecoin.repositoryComponents, [
+    {
+      repositoryId: 'github:Patricked-code/Stablecoin',
+      mappingId: 'github:Patricked-code/Stablecoin:s2:stablecoin_frontend',
+      role: 'FRONTEND'
+    }
+  ]);
+
+  const stablecoinMapping = registry.repoMappings.find(
+    (entry: any) => entry.projectUid === 'CS-STABLECOIN-001'
+  );
+  assert.ok(stablecoinMapping);
+  assert.equal(stablecoinMapping.githubOwner, 'Patricked-code');
+  assert.equal(stablecoinMapping.githubRepo, 'Stablecoin');
+  assert.equal(stablecoinMapping.serverId, 'S2');
+  assert.equal(stablecoinMapping.serverPath, '/var/www/vhosts/chainsolutions.fr/stablecoin.chainsolutions.fr/stablecoin');
+  assert.equal(stablecoinMapping.officialBranch, 'main');
+  assert.equal(stablecoinMapping.allowedAccess, 'write');
+  assert.equal(stablecoinMapping.deployEnabled, true);
+
   const first = dryRunGitRegistryV2(registry);
   const second = dryRunGitRegistryV2(first.candidate);
-  assert.equal(first.report.counts.projects, 1);
+  assert.equal(first.report.counts.projects, 2);
   assert.equal(second.report.alreadyV2, true);
   assert.equal(canonicalRegistryHash(second.candidate), canonicalRegistryHash(first.candidate));
 

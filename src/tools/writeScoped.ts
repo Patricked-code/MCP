@@ -18,9 +18,19 @@ const ProjectKeySchema = z.enum([
   'front_end_opcvm',
   'legacy_funds_frontend',
   'legacy_funds_api',
-  'brvmchainsolution'
+  'brvmchainsolution',
+  'stablecoin_frontend'
 ]);
 type ProjectKey = z.infer<typeof ProjectKeySchema>;
+
+const ScriptProjectKeySchema = z.enum([
+  'api_opcv',
+  'front_end_opcvm',
+  'legacy_funds_frontend',
+  'legacy_funds_api',
+  'brvmchainsolution'
+]);
+type ScriptProjectKey = z.infer<typeof ScriptProjectKeySchema>;
 
 const AllowedScriptSchema = z.string()
   .regex(/^scripts\/[A-Za-z0-9_./-]+\.(js|ts)$/, 'Script autorisé uniquement sous scripts/ avec extension .js ou .ts')
@@ -53,10 +63,15 @@ const projects: Record<ProjectKey, { label: string; path: string; note: string }
     label: 'BRVM Chain Solution',
     path: '/opt/apps/brvmchain/BRVMCHAINSOLUTION',
     note: 'Projet BRVM autorisé pour statut Git, pull contrôlé et déploiement Docker Compose contrôlé.'
+  },
+  stablecoin_frontend: {
+    label: 'Stablecoin / E-WARI frontend',
+    path: '/var/www/vhosts/chainsolutions.fr/stablecoin.chainsolutions.fr/stablecoin',
+    note: 'Frontend Stablecoin Plesk/Passenger : remote github + branche main, synchronisation fast-forward stricte et build/restart contrôlés.'
   }
 };
 
-function inferScriptProject(script: AllowedScript): ProjectKey {
+function inferScriptProject(script: AllowedScript): ScriptProjectKey {
   if (
     script.includes('repair-ost') ||
     script.includes('align-dividend-years') ||
@@ -91,7 +106,7 @@ async function runS2(command: string, intent: string, timeoutMs = 30_000) {
   return asText(commandResultToText(result));
 }
 
-function buildGitStatusCommand(project: ProjectKey): string {
+export function buildGitStatusCommand(project: ProjectKey): string {
   const config = projectFor(project);
   return `set -euo pipefail
 cd ${shellQuote(config.path)}
@@ -109,8 +124,84 @@ echo 'Remote:'
 git remote -v`;
 }
 
-function buildGitPullCommand(project: ProjectKey): string {
+function buildStablecoinGitPullCommand(project: ProjectKey): string {
   const config = projectFor(project);
+  return [
+    'set -euo pipefail',
+    `cd ${shellQuote(config.path)}`,
+    `printf 'Projet: ${config.label}\\nChemin: ${config.path}\\n\\n'`,
+    'test -d .git',
+    '',
+    'CURRENT_BRANCH="$(git branch --show-current)"',
+    'echo "Branche courante: $CURRENT_BRANCH"',
+    'test "$CURRENT_BRANCH" = "main" || { echo "ERREUR: Stablecoin doit rester sur main."; exit 21; }',
+    '',
+    'DIRTY="$(git status --porcelain=v1 --untracked-files=all | grep -v \'^?? tmp/restart.txt$\' || true)"',
+    'test -z "$DIRTY" || { echo "ERREUR: working tree Stablecoin non propre."; printf \'%s\\n\' "$DIRTY"; exit 22; }',
+    '',
+    'REMOTE_URL="$(git remote get-url github 2>/dev/null || true)"',
+    'case "$REMOTE_URL" in',
+    '  https://github.com/Patricked-code/Stablecoin.git|git@github.com:Patricked-code/Stablecoin.git) ;;',
+    '  *) echo "ERREUR: remote github absent ou inattendu."; exit 23 ;;',
+    'esac',
+    '',
+    'echo "Remote github vérifié."',
+    'printf \'HEAD avant: \'',
+    'git rev-parse HEAD',
+    'REMOTE_SHA="$(git ls-remote github refs/heads/main | awk \'{print $1}\' | head -1)"',
+    'test -n "$REMOTE_SHA" || { echo "ERREUR: SHA distant main introuvable."; exit 24; }',
+    'echo "GitHub main observé: $REMOTE_SHA"',
+    '',
+    'git fetch github main',
+    'FETCHED_SHA="$(git rev-parse github/main)"',
+    'test "$FETCHED_SHA" = "$REMOTE_SHA" || { echo "ERREUR: incohérence entre ls-remote et github/main après fetch."; exit 25; }',
+    '',
+    'LOCAL_SHA="$(git rev-parse HEAD)"',
+    'if [ "$LOCAL_SHA" = "$REMOTE_SHA" ]; then',
+    '  echo "Stablecoin déjà synchronisé."',
+    'else',
+    '  git merge-base --is-ancestor "$LOCAL_SHA" "$REMOTE_SHA" || { echo "ERREUR: serveur ahead/divergé; fast-forward refusé."; exit 26; }',
+    '  git merge --ff-only "$REMOTE_SHA"',
+    'fi',
+    '',
+    'test "$(git rev-parse HEAD)" = "$REMOTE_SHA"',
+    'echo "HEAD après synchronisation: $(git rev-parse HEAD)"',
+    'git status -sb'
+  ].join('\\n');
+}
+
+function buildStablecoinDeployCommand(project: ProjectKey): string {
+  const common = buildStablecoinGitPullCommand(project);
+  return [
+    common,
+    '',
+    "echo 'Déploiement Stablecoin / E-WARI contrôlé'",
+    'test -f package.json',
+    'NODE_OPTIONS=--openssl-legacy-provider npm run build',
+    '',
+    'mkdir -p tmp',
+    'touch tmp/restart.txt',
+    '',
+    "echo 'Restart Passenger demandé via tmp/restart.txt'",
+    'FRONT_CODE="$(curl -sS -o /dev/null -w \'%{http_code}\' --max-time 20 https://stablecoin.chainsolutions.fr/ || true)"',
+    'AUTH_CODE="$(curl -sS -o /dev/null -w \'%{http_code}\' --max-time 20 https://stablecoin.chainsolutions.fr/auth/authentication/ || true)"',
+    'LOGIN_CODE="$(curl -sS -o /dev/null -w \'%{http_code}\' --max-time 20 https://stablecoin.chainsolutions.fr/api/login/ || true)"',
+    'echo "HTTP frontend=$FRONT_CODE auth=$AUTH_CODE api_login=$LOGIN_CODE"',
+    'case "$FRONT_CODE" in 2*|3*) ;; *) echo "ERREUR health frontend"; exit 31 ;; esac',
+    'case "$AUTH_CODE" in 2*|3*) ;; *) echo "ERREUR health auth"; exit 32 ;; esac',
+    'case "$LOGIN_CODE" in 200|401) ;; *) echo "ERREUR health api/login"; exit 33 ;; esac',
+    '',
+    'rm -f tmp/restart.txt',
+    'rmdir tmp 2>/dev/null || true',
+    '',
+    "echo 'Déploiement Stablecoin terminé.'",
+    'git status -sb'
+  ].join('\\n');
+}
+
+export function buildGitPullCommand(project: ProjectKey): string {
+  const config = projectFor(project);
+  if (project === 'stablecoin_frontend') return buildStablecoinGitPullCommand(project);
   return `set -euo pipefail
 cd ${shellQuote(config.path)}
 mkdir -p .mcp_logs
@@ -170,8 +261,9 @@ echo "État Git final:"
 git status -sb`;
 }
 
-function buildDeployCommand(project: ProjectKey): string {
+export function buildDeployCommand(project: ProjectKey): string {
   const config = projectFor(project);
+  if (project === 'stablecoin_frontend') return buildStablecoinDeployCommand(project);
   const common = buildGitPullCommand(project);
 
   if (project === 'brvmchainsolution') {
@@ -375,7 +467,7 @@ DOCKER_API_VERSION=1.44 docker logs --tail ${lines} brvm_app 2>&1${filter} | sed
   server.tool('exec_repo_script_s2', 'Exécute uniquement un script autorisé du dépôt API OPCVM ou BRVM sur S2. Le paramètre project force le dépôt cible.', {
     script: AllowedScriptSchema,
     args: z.array(z.string()).default([]),
-    project: ProjectKeySchema.optional()
+    project: ScriptProjectKeySchema.optional()
   }, async ({ script, args, project }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     assertSafeScriptArgs(args);
@@ -399,14 +491,14 @@ node ${shellQuote(script)} ${quotedArgs}`;
     return runS2(command, `exec_repo_script_s2:${script}`, 900_000);
   });
 
-  server.tool('git_pull_project_s2', 'Met à jour automatiquement un projet autorisé sur S2 avec stash, pull --rebase et restauration du stash.', {
+  server.tool('git_pull_project_s2', 'Met à jour un projet autorisé sur S2 selon sa stratégie Git gouvernée (Stablecoin utilise remote github + fast-forward strict).', {
     project: ProjectKeySchema
   }, async ({ project }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     return runS2(buildGitPullCommand(project), `git_pull_project_s2:${project}`, 300_000);
   });
 
-  server.tool('deploy_project_s2', 'Déploie automatiquement un projet autorisé sur S2 avec logs, stash, rebase et recette projet.', {
+  server.tool('deploy_project_s2', 'Déploie un projet autorisé sur S2 selon sa recette gouvernée et ses garde-fous projet.', {
     project: ProjectKeySchema
   }, async ({ project }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
