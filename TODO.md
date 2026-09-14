@@ -183,6 +183,25 @@ PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a
 - [ ] certifications Claude et ChatGPT ;
 - [ ] hardening futur selon décisions séparées.
 
+
+### Stablecoin S2 — intégration SSH gouvernée candidate
+
+Ce lot reste **candidat** tant qu'Operational Memory / Governed Task Queue n'a pas enregistré et claimé une tâche dédiée. Il ne modifie pas le runtime S2 depuis cette branche.
+
+- [x] réutiliser la couche SSH2 S1/S2 existante du MCP, sans nouveau bridge ni transport parallèle ;
+- [x] ajouter `stablecoin_frontend` aux projets bornés des outils `git_status_project_s2`, `git_pull_project_s2` et `deploy_project_s2` ;
+- [x] borner le checkout à `/var/www/vhosts/chainsolutions.fr/stablecoin.chainsolutions.fr/stablecoin`, branche `main`, remote `github` et dépôt `Patricked-code/Stablecoin` ;
+- [x] imposer working tree propre, observation `ls-remote`, fetch `github main`, comparaison de SHA et merge `--ff-only` ; aucun stash/rebase/reset ;
+- [x] utiliser la recette Plesk/Passenger documentée : build avec `NODE_OPTIONS=--openssl-legacy-provider`, `tmp/restart.txt`, puis health checks HTTP ;
+- [x] ajouter le mapping `CS-STABLECOIN-001` au GitRegistry V1 et conserver le backend en `LIVE_DISCOVERY_REQUIRED` ;
+- [x] ajouter des tests ciblés et mettre à jour les contrats historiques ;
+- [ ] obtenir CI exacte du head candidat ;
+- [ ] enregistrer/claim une tâche gouvernée dédiée et relire session/locks/checkpoint avant toute fusion ;
+- [ ] faire reviewer la PR exacte, fusionner uniquement après gates runtime, puis Governed Deploy du MCP ;
+- [ ] après déploiement MCP, observer Stablecoin S2 en lecture seule avant le premier `git_pull_project_s2` ou `deploy_project_s2` ;
+- [ ] enregistrer l'attestation frontend/backend et le résultat de production après la première mise à jour gouvernée.
+
+
 ## Maintenance séparée
 
 - [ ] Migrer dans une PR dédiée les actions GitHub encore exécutées sous compatibilité Node 24.
