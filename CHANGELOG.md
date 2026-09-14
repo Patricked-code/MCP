@@ -496,3 +496,11 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Aucune activation GitRegistry V2, aucune permission WRITE, aucune migration MCP et aucune écriture directe de code versionné sur S1.
 - Livraison : PR #83 fusionnée depuis `424508e244763fa00705b207daf834e7e2bdd1f0` au merge `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`; CI PR #857, CI main #858 et Governed Deploy #37 réussis.
 - Live State 217 atteste l'alignement technique exact-SHA et signale uniquement la projection documentaire à réconcilier avant la suite gouvernée.
+
+## 2026-09-14 — Planification du transport Actions → SSH direct
+
+- Ajout d'un candidat de roadmap `Governed GitHub Actions → SSH Transport V1`.
+- Le candidat est strictement additif : le chemin actuel GitHub Actions → OIDC → MCP → SSH reste inchangé.
+- La future implémentation devra conserver les mêmes invariants exact-SHA, GitHub read-only côté serveur, push désactivé, health/OAuth/MCP auth, OCI, rollback, audit et fail-closed.
+- Aucun workflow, secret, credential, remote, mapping, permission, runtime ou code applicatif n'est modifié par cette planification.
+- Aucun `TASK-...` n'est créé dans les Markdown ; Operational Memory/Work Queue restent seules autorités pour l'enregistrement exécutable.

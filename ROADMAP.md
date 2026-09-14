@@ -365,6 +365,46 @@ Une capacité technique ne devient jamais une autorisation si la gouvernance l'i
 
 Objectif : enrichir le Bootstrap Receipt existant avec les références client/connexion/repository/project/mapping nécessaires, sans secrets et sans créer de second receipt.
 
+### D4 — Governed GitHub Actions → SSH Transport V1 — candidat structurant
+
+Objectif : ajouter un second transport serveur gouverné permettant à GitHub Actions
+d'atteindre directement un serveur résolu via un GitHub Environment protégé et
+des secrets Actions, sans remplacer ni contourner le chemin existant
+GitHub Actions → OIDC → MCP → SSH.
+
+Principes non négociables :
+- le transport n'est jamais une autorité : GitHub, Operational Memory, Governed Task Queue, Governed Session, GitRegistry, Live State et GovernanceDecision conservent leurs rôles actuels ;
+- aucun shell arbitraire n'est exposé ; seules des actions bornées, typées, auditables et fail-closed peuvent être invoquées ;
+- aucune écriture directe du code versionné sur S1/S2, aucun push serveur → GitHub, aucun changement libre de remote et aucun secret dans Git ;
+- les identités SSH S1/S2 restent séparées des credentials GitHub et des credentials durables MCP ;
+- les secrets SSH résident uniquement dans des GitHub Environments/Actions Secrets protégés et ne sont jamais journalisés ;
+- le chemin existant OIDC → MCP → SSH reste inchangé tant que la parité n'est pas prouvée.
+
+Le candidat doit réutiliser le même contrat de déploiement/attestation :
+requested SHA exact, checkout propre, fetch GitHub read-only, push désactivé,
+fast-forward only, validations, Docker, health, OAuth, refus MCP non authentifié,
+révision OCI, rollback, audit, timeouts et fail-closed.
+
+Avant toute sélection automatique du transport direct, une preuve de parité doit
+comparer explicitement :
+- `Actions → OIDC → MCP → SSH` ;
+- `Actions → Environment/Secrets → SSH`.
+
+Tant que cette parité n'est pas attestée, le nouveau transport ne devient ni
+primaire ni fallback automatique.
+
+Dépendances à vérifier avant enregistrement runtime :
+- C2/C3/C4 pour la résolution repository → projet → serveur → runtime lorsque la cible n'est pas déjà bornée ;
+- D1/D2 pour l'héritage de gouvernance et les Effective Capabilities ;
+- C1 reste l'autorité de readiness GitRegistry et n'est ni contourné ni absorbé.
+
+Une V1 strictement MCP/S1 peut être étudiée séparément si le design démontre
+qu'elle est bornée par les autorités déjà connues et qu'elle ne nécessite aucune
+activation GitRegistry V2 implicite.
+
+Ce lot est un candidat de roadmap. Il ne constitue pas une `TASK-...` officielle
+tant qu'Operational Memory et la Governed Task Queue ne l'ont pas enregistré.
+
 ---
 
 ## CHANTIER E — Guided Context Completion

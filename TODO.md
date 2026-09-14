@@ -167,6 +167,16 @@ PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a
 - [ ] calculer les capacités effectives en composant OAuth, GitHub, projet, serveur, règles et WRITE gate ;
 - [ ] enrichir le Bootstrap Receipt existant avec les références de connexion/repository/project nécessaires sans secret.
 
+### Governed GitHub Actions → SSH Transport V1 — candidat structurant
+
+- [ ] produire le design read-only du transport direct sans modifier le Governed Deploy existant ;
+- [ ] prouver les dépendances exactes avec C1/C2/C3/C4/D1/D2 et conserver `UNVERIFIED/BLOCKED` lorsqu'une preuve manque ;
+- [ ] définir des GitHub Environments protégés distincts par serveur et des références de secrets sans valeur en Git ;
+- [ ] définir un catalogue fermé d'actions serveur ; aucun arbitrary shell n'est autorisé ;
+- [ ] partager les invariants exact-SHA, fetch read-only, push disabled, fast-forward only, health/OAuth/MCP auth, OCI, rollback, audit et fail-closed avec le chemin existant ;
+- [ ] ajouter une preuve de parité `Actions→OIDC→MCP→SSH` vs `Actions→Environment/Secrets→SSH` avant toute sélection automatique du nouveau transport ;
+- [ ] conserver le transport MCP actuel intact jusqu'à certification et attestation complètes ;
+- [ ] ne créer une `TASK-...` que lorsque Operational Memory/Work Queue autorisent réellement l'enregistrement et l'exécution du lot.
 ### Guided Context Completion
 
 - [ ] détecter uniquement les informations réellement manquantes ;
