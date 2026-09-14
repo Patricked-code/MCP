@@ -22,11 +22,11 @@ test('le dry-run convertit le registre v1 réel sans écrire ni activer de mutat
   assert.equal(report.alreadyV2, false);
   assert.deepEqual(report.counts, {
     connections: 3,
-    repositories: 5,
-    mappings: 4,
+    repositories: 6,
+    mappings: 5,
     migrations: 1,
-    auditEvents: 3,
-    projects: 1
+    auditEvents: 4,
+    projects: 2
   });
 
   const mcp = candidate.mappings.find((mapping) => mapping.mappingId === 'mcp-s1-production');
