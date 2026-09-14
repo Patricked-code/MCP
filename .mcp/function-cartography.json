@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "cfd5f18490f25ce79b4afbda36a9eda48453a7098237f73b39aa804a4cd43aad",
+  "catalogueDigest": "17e220649f57f70b5396a8483a408f70b12435455a2dac12fb6cb076969f61a7",
   "registeredToolCount": 111,
   "readOnlyToolCount": 68,
   "writeToolCount": 43,
@@ -248,7 +248,7 @@
     {
       "name": "deploy_project_s2",
       "title": null,
-      "description": "Déploie automatiquement un projet autorisé sur S2 avec logs, stash, rebase et recette projet.",
+      "description": "Déploie un projet autorisé sur S2 selon sa recette gouvernée et ses garde-fous projet.",
       "surface": "scoped-write",
       "annotations": {
         "readOnlyHint": null,
@@ -265,7 +265,8 @@
               "front_end_opcvm",
               "legacy_funds_frontend",
               "legacy_funds_api",
-              "brvmchainsolution"
+              "brvmchainsolution",
+              "stablecoin_frontend"
             ]
           }
         },
@@ -274,7 +275,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "490639b64460ac76bb3ff35154a2550a26cc84db5c8ec16989a94f44cc04ba6b"
+      "contractDigest": "bdfe5e0b233675fd4c895d8245f7313908bd1ad5604bb71c57157ebbdf69d6ad"
     },
     {
       "name": "deploy_sadiaaf_s1",
@@ -415,7 +416,7 @@
     {
       "name": "git_pull_project_s2",
       "title": null,
-      "description": "Met à jour automatiquement un projet autorisé sur S2 avec stash, pull --rebase et restauration du stash.",
+      "description": "Met à jour un projet autorisé sur S2 selon sa stratégie Git gouvernée (Stablecoin utilise remote github + fast-forward strict).",
       "surface": "scoped-write",
       "annotations": {
         "readOnlyHint": null,
@@ -432,7 +433,8 @@
               "front_end_opcvm",
               "legacy_funds_frontend",
               "legacy_funds_api",
-              "brvmchainsolution"
+              "brvmchainsolution",
+              "stablecoin_frontend"
             ]
           }
         },
@@ -441,7 +443,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "9b66c3cd2835225aced191541302d555b3bcf93691eff5561a9898defe680102"
+      "contractDigest": "95909f1e9110d3fd6142d75f429eb68b796d4d1953a88408c6fab26461d05f91"
     },
     {
       "name": "git_status_project_s2",
@@ -463,7 +465,8 @@
               "front_end_opcvm",
               "legacy_funds_frontend",
               "legacy_funds_api",
-              "brvmchainsolution"
+              "brvmchainsolution",
+              "stablecoin_frontend"
             ]
           }
         },
@@ -472,7 +475,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "f8f4639b9a7b002fdde481b9be13d8a359955d653ddd39290223689990dd5b0d"
+      "contractDigest": "186bf89bb76d5f86ffa5c0c2acbd2c43d6600793deb231fa60303863a78715d0"
     },
     {
       "name": "github_account_inventory",
