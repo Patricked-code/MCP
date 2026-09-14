@@ -108,7 +108,6 @@ async function runS2(command: string, intent: string, timeoutMs = 30_000) {
 
 function buildGitStatusCommand(project: ProjectKey): string {
   const config = projectFor(project);
-  if (project === 'stablecoin_frontend') return buildStablecoinGitPullCommand(project);
   return `set -euo pipefail
 cd ${shellQuote(config.path)}
 printf 'Projet: ${config.label}\nChemin: ${config.path}\n\n'
@@ -202,6 +201,7 @@ function buildStablecoinDeployCommand(project: ProjectKey): string {
 
 export function buildGitPullCommand(project: ProjectKey): string {
   const config = projectFor(project);
+  if (project === 'stablecoin_frontend') return buildStablecoinGitPullCommand(project);
   return `set -euo pipefail
 cd ${shellQuote(config.path)}
 mkdir -p .mcp_logs
