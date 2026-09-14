@@ -23,6 +23,15 @@ const ProjectKeySchema = z.enum([
 ]);
 type ProjectKey = z.infer<typeof ProjectKeySchema>;
 
+const ScriptProjectKeySchema = z.enum([
+  'api_opcv',
+  'front_end_opcvm',
+  'legacy_funds_frontend',
+  'legacy_funds_api',
+  'brvmchainsolution'
+]);
+type ScriptProjectKey = z.infer<typeof ScriptProjectKeySchema>;
+
 const AllowedScriptSchema = z.string()
   .regex(/^scripts\/[A-Za-z0-9_./-]+\.(js|ts)$/, 'Script autorisé uniquement sous scripts/ avec extension .js ou .ts')
   .refine((value) => !value.includes('..') && !value.startsWith('/'), 'Script path interdit hors dépôt');
@@ -62,7 +71,7 @@ const projects: Record<ProjectKey, { label: string; path: string; note: string }
   }
 };
 
-function inferScriptProject(script: AllowedScript): ProjectKey {
+function inferScriptProject(script: AllowedScript): ScriptProjectKey {
   if (
     script.includes('repair-ost') ||
     script.includes('align-dividend-years') ||
@@ -458,7 +467,7 @@ DOCKER_API_VERSION=1.44 docker logs --tail ${lines} brvm_app 2>&1${filter} | sed
   server.tool('exec_repo_script_s2', 'Exécute uniquement un script autorisé du dépôt API OPCVM ou BRVM sur S2. Le paramètre project force le dépôt cible.', {
     script: AllowedScriptSchema,
     args: z.array(z.string()).default([]),
-    project: ProjectKeySchema.optional()
+    project: ScriptProjectKeySchema.optional()
   }, async ({ script, args, project }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     assertSafeScriptArgs(args);
