@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-process.env.MCP_AUTH_TOKEN ??= 'stablecoin-test-token';
+process.env.MCP_AUTH_TOKEN ??= 'stablecoin-test-token-0123456789abcdef';
 process.env.S1_HOST ??= '127.0.0.1';
 process.env.S1_KEY_PATH ??= '/tmp/stablecoin-test-s1-key';
 process.env.S2_HOST ??= '127.0.0.1';
