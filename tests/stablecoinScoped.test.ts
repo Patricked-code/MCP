@@ -9,8 +9,23 @@ process.env.S2_KEY_PATH ??= '/tmp/stablecoin-test-s2-key';
 
 const {
   buildDeployCommand,
-  buildGitPullCommand
+  buildGitPullCommand,
+  buildGitStatusCommand
 } = await import('../src/tools/writeScoped.js');
+
+test('Stablecoin S2 status remains strictly read-only', () => {
+  const command = buildGitStatusCommand('stablecoin_frontend');
+
+  assert.match(command, /git status -sb/);
+  assert.match(command, /git branch --show-current/);
+  assert.match(command, /git remote -v/);
+
+  assert.doesNotMatch(command, /git fetch/);
+  assert.doesNotMatch(command, /git merge/);
+  assert.doesNotMatch(command, /git pull/);
+  assert.doesNotMatch(command, /git stash/);
+  assert.doesNotMatch(command, /touch tmp\/restart\.txt/);
+});
 
 test('Stablecoin S2 sync is fail-closed and fast-forward only', () => {
   const command = buildGitPullCommand('stablecoin_frontend');
