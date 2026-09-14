@@ -1,10 +1,16 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {
+process.env.MCP_AUTH_TOKEN ??= 'stablecoin-test-token';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/stablecoin-test-s1-key';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S2_KEY_PATH ??= '/tmp/stablecoin-test-s2-key';
+
+const {
   buildDeployCommand,
   buildGitPullCommand
-} from '../src/tools/writeScoped.js';
+} = await import('../src/tools/writeScoped.js');
 
 test('Stablecoin S2 sync is fail-closed and fast-forward only', () => {
   const command = buildGitPullCommand('stablecoin_frontend');
