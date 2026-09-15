@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## 2026-09-15 — C2 Repository → Project Resolution en Draft PR
+
+- Ajout additif du resolver C2 `repositoryId → mappingId → projectId` dans le chemin Governed Context existant, avec statuts bornés `RESOLVED/NONE/AMBIGUOUS/UNVERIFIED`.
+- Réutilisation de l'unique GitRegistry via une projection d'évidence V2 dry-run bornée ; aucune activation V2, aucun second registre/store/cache et aucune permission nouvelle.
+- Séparation explicite entre identité de mapping et `activationReadiness` C1 : un mapping peut être structurellement `RESOLVED` tout en restant opérationnellement `BLOCKED`.
+- Compatibilité historique `Patricked-code/MCP` préservée lorsque le mapping porte `projectId=mcp_bridge` sans fiche projet dédiée ; les métadonnées absentes restent nulles et une référence présente mais incohérente reste fail-closed.
+- TDD : RED `f71704db` / CI #933, GREEN `45adc859` / CI #935, RED compatibilité `6fc9c74b` / CI #937, GREEN `d71ba167` / CI #939.
+- PR #92 reste Draft/non fusionnée à ce checkpoint ; aucun déploiement ni statut terminal n'est déclaré ici.
+
+
 ## Role
 Historique factuel des changements du depot MCP.
 

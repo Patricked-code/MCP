@@ -557,3 +557,16 @@ Décision de projection de preuve : `deploymentExactShaSuccess` exige que la tâ
 Décision de livraison : PR #87 fusionnée depuis le head exact revu `289b3b71c8352738395bf290bc1ae10dc405ee15` au merge `dc4698de66b7becfc924ea4fabe8037e089d3336` sous l'autorisation humaine distincte et bornée `G3_EXACT_HEAD_MERGE_AUTHORIZATION_V2`. Aucune autorisation antérieure liée à `ae7bec13` n'a été considérée comme valable pour ce head.
 
 Décision de frontière : cette livraison n'autorise aucune activation GitRegistry V2, aucun transport SSH, aucune délégation d'exécution externe, aucune permission supplémentaire et aucun secret. Le statut terminal de `TASK-20260914-002` reste exclusivement sous Operational Memory.
+
+## 2026-09-15 — C2 résout l'identité projet sans activer le mapping
+
+Décision : C2 résout uniquement la chaîne d'identité `repositoryId → mappingId → projectId`. Les résultats restent bornés `RESOLVED`, `NONE`, `AMBIGUOUS` ou `UNVERIFIED`. C2 compose B2 avec le candidat GitRegistry V2 dérivé de l'unique registre existant ; il ne crée aucune autorité parallèle et n'active pas GitRegistry V2.
+
+Décision de frontière C1/C2 : `activationReadiness` est une preuve opérationnelle distincte de l'identité du binding. Un mapping structurellement cohérent peut donc être C2 `RESOLVED` tout en restant C1 `BLOCKED`; les reason codes de readiness restent projetés séparément et ne deviennent ni permission, ni capability, ni autorisation de déploiement.
+
+Décision de compatibilité : le `projectId` validé du mapping est suffisant pour C2 même lorsqu'aucune fiche `projects[]` enrichie n'existe encore, notamment pour le cas historique `Patricked-code/MCP → mcp_bridge`. Si une fiche projet existe, ses références repository/mapping/role doivent rester cohérentes ; toute contradiction est `UNVERIFIED`.
+
+Décision de sécurité : la projection C2 exclut permissions, grants, credentials, chemins serveur et capacités de déploiement. Le cache Governed Context existant propage cache-miss/staleness fail-closed ; aucune donnée secrète ou transport brut n'est introduit.
+
+Preuve TDD : RED initial `f71704dbfd2ad3fe2ba7c8545fa157435e97de7e` / CI #933 ; GREEN `45adc85925bf819b8c71df4621315e95bc3154ca` / CI #935 ; RED historique MCP `6fc9c74b3a405a69f23e13d80c4557fa1d5b4538` / CI #937 ; GREEN `d71ba1671adcadf94f263f00ec6eef02d915663f` / CI #939.
+
