@@ -70,6 +70,58 @@ export const GovernedCheckpointSchema = z.object({
 }).strict();
 export type GovernedCheckpoint = z.infer<typeof GovernedCheckpointSchema>;
 
+export const ClientToolSurfaceCapabilitySchema = z.object({
+  name: z.string().trim().min(1).max(160).regex(/^[A-Za-z0-9][A-Za-z0-9._:/-]*$/),
+  callability: z.enum(['CALLABLE', 'NOT_CALLABLE', 'UNKNOWN']),
+  source: z.literal('CLIENT_ATTESTATION'),
+  provider: z.string().trim().min(1).max(80).regex(/^[a-z0-9][a-z0-9._-]*$/),
+  repositoryScope: z.literal('Patricked-code/MCP')
+}).strict();
+export type ClientToolSurfaceCapability = z.infer<typeof ClientToolSurfaceCapabilitySchema>;
+
+const MAX_CLIENT_TOOL_SURFACE_ATTESTATION_VALIDITY_MS = 5 * 60 * 1_000;
+
+const ClientToolSurfaceProvenanceSchema = z.string()
+  .trim()
+  .min(1)
+  .max(80)
+  .regex(/^[a-z0-9][a-z0-9._:-]*$/);
+
+export const ClientToolSurfaceAttestationSchema = z.object({
+  schemaVersion: z.literal(1),
+  attestationId: GovernedIdSchema,
+  governedSessionId: GovernedIdSchema,
+  connectionContextId: GovernedIdSchema.nullable(),
+  surface: z.string().trim().min(1).max(80).regex(/^[a-z0-9][a-z0-9._:-]*$/),
+  observedAt: TimestampSchema,
+  expiresAt: TimestampSchema,
+  capabilities: z.array(ClientToolSurfaceCapabilitySchema).min(1).max(256),
+  provenance: z.array(ClientToolSurfaceProvenanceSchema)
+    .max(20)
+    .refine((entries) => new Set(entries).size === entries.length, 'provenance entries must be unique')
+}).strict().superRefine((attestation, context) => {
+  const observedAtMs = Date.parse(attestation.observedAt);
+  const expiresAtMs = Date.parse(attestation.expiresAt);
+
+  if (expiresAtMs <= observedAtMs) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['expiresAt'],
+      message: 'expiresAt must be strictly after observedAt'
+    });
+    return;
+  }
+
+  if (expiresAtMs - observedAtMs > MAX_CLIENT_TOOL_SURFACE_ATTESTATION_VALIDITY_MS) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['expiresAt'],
+      message: 'attestation validity must not exceed the maximum bounded lifetime'
+    });
+  }
+});
+export type ClientToolSurfaceAttestation = z.infer<typeof ClientToolSurfaceAttestationSchema>;
+
 export const GovernedSessionRecordSchema = z.object({
   schemaVersion: z.literal(1),
   governedSessionId: GovernedIdSchema,
@@ -91,13 +143,38 @@ export const GovernedSessionRecordSchema = z.object({
   lastAcknowledgedStateVersion: z.number().int().nonnegative().nullable(),
   bootstrapReceipt: BootstrapReceiptSchema.nullable().optional(),
   connectionContext: ConnectionContextSchema.nullable().optional(),
+  clientToolSurfaceAttestation: ClientToolSurfaceAttestationSchema.nullable().optional(),
   sessionRevision: z.number().int().nonnegative(),
   lastCheckpoint: GovernedCheckpointSchema.nullable(),
   blockers: z.array(BlockerSchema).max(20),
   nextAction: z.string().trim().min(1).max(500).nullable(),
   lockIds: z.array(GovernedIdSchema).max(64),
   resumePolicy: z.literal('stable_principal_or_resume_secret')
-}).strict();
+}).strict().superRefine((record, context) => {
+  const attestation = record.clientToolSurfaceAttestation;
+  if (!attestation) return;
+
+  if (attestation.governedSessionId !== record.governedSessionId) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['clientToolSurfaceAttestation', 'governedSessionId'],
+      message: 'attestation governedSessionId must match the containing governed session'
+    });
+  }
+
+  const parentConnectionContextId = record.connectionContext?.connectionContextId ?? null;
+  if (
+    parentConnectionContextId !== null
+    && attestation.connectionContextId !== null
+    && attestation.connectionContextId !== parentConnectionContextId
+  ) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['clientToolSurfaceAttestation', 'connectionContextId'],
+      message: 'attestation connectionContextId must match the containing connection context'
+    });
+  }
+});
 export type GovernedSessionRecord = z.infer<typeof GovernedSessionRecordSchema>;
 export type GovernedSessionPublicRecord = Omit<GovernedSessionRecord, 'resumeSecretHash'>;
 
