@@ -1,0 +1,1559 @@
+{
+  "schemaVersion": 1,
+  "program": "GIT_GITHUB_CONTROL_PLANE",
+  "objective": "Couverture Git et GitHub gouvernée, typée, sans shell libre ni API brute.",
+  "generatedAt": "2026-09-15",
+  "invariants": [
+    "read_only_first",
+    "no_raw_git_shell",
+    "no_raw_github_api",
+    "no_force_push",
+    "no_reset_hard",
+    "exact_head_for_mutations",
+    "task_session_lock_receipt_live_state_before_sensitive_write",
+    "secrets_write_only_never_read_value"
+  ],
+  "existingLegacySurfaces": [
+    "git_status_project_s2",
+    "git_pull_project_s2",
+    "mcp_git_status_s1",
+    "mcp_git_diff_s1",
+    "mcp_sync_from_github_s1",
+    "github_account_inventory",
+    "github_org_inventory",
+    "github_durable_accounts_inventory",
+    "github_pr_authorization_diagnostic"
+  ],
+  "capabilities": [
+    {
+      "id": "GIT-STATUS-001",
+      "toolName": "git_status_project",
+      "platform": "git",
+      "family": "status",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-STATUS-002",
+      "toolName": "git_diff_project",
+      "platform": "git",
+      "family": "status",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-STATUS-003",
+      "toolName": "git_diff_stat_project",
+      "platform": "git",
+      "family": "status",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-HISTORY-001",
+      "toolName": "git_log_project",
+      "platform": "git",
+      "family": "history",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-HISTORY-002",
+      "toolName": "git_show_project",
+      "platform": "git",
+      "family": "history",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-HISTORY-003",
+      "toolName": "git_rev_parse_project",
+      "platform": "git",
+      "family": "history",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-HISTORY-004",
+      "toolName": "git_merge_base_project",
+      "platform": "git",
+      "family": "history",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-BRANCH-001",
+      "toolName": "git_branch_list_project",
+      "platform": "git",
+      "family": "branch",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-TAG-001",
+      "toolName": "git_tag_list_project",
+      "platform": "git",
+      "family": "tag",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-REMOTE-001",
+      "toolName": "git_remote_list_project",
+      "platform": "git",
+      "family": "remote",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-REMOTE-002",
+      "toolName": "git_remote_show_project",
+      "platform": "git",
+      "family": "remote",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-TREE-001",
+      "toolName": "git_ls_files_project",
+      "platform": "git",
+      "family": "tree",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-TREE-002",
+      "toolName": "git_ls_tree_project",
+      "platform": "git",
+      "family": "tree",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-TREE-003",
+      "toolName": "git_cat_file_project",
+      "platform": "git",
+      "family": "tree",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-HISTORY-005",
+      "toolName": "git_blame_project",
+      "platform": "git",
+      "family": "history",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-SEARCH-001",
+      "toolName": "git_grep_project",
+      "platform": "git",
+      "family": "search",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-MAINTENANCE-001",
+      "toolName": "git_fsck_project",
+      "platform": "git",
+      "family": "maintenance",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-WORKTREE-001",
+      "toolName": "git_worktree_list_project",
+      "platform": "git",
+      "family": "worktree",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-SUBMODULE-001",
+      "toolName": "git_submodule_status_project",
+      "platform": "git",
+      "family": "submodule",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-STASH-001",
+      "toolName": "git_stash_list_project",
+      "platform": "git",
+      "family": "stash",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-SYNC-001",
+      "toolName": "git_compare_local_remote",
+      "platform": "git",
+      "family": "sync",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-SYNC-002",
+      "toolName": "git_ahead_behind_project",
+      "platform": "git",
+      "family": "sync",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-GUARD-001",
+      "toolName": "git_verify_clean_project",
+      "platform": "git",
+      "family": "guard",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-GUARD-002",
+      "toolName": "git_verify_branch_project",
+      "platform": "git",
+      "family": "guard",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-GUARD-003",
+      "toolName": "git_verify_exact_head_project",
+      "platform": "git",
+      "family": "guard",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-SYNC-003",
+      "toolName": "git_fetch_project",
+      "platform": "git",
+      "family": "sync",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-SYNC-004",
+      "toolName": "git_fetch_branch_project",
+      "platform": "git",
+      "family": "sync",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-SYNC-005",
+      "toolName": "git_fetch_tags_project",
+      "platform": "git",
+      "family": "sync",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-SYNC-006",
+      "toolName": "git_fast_forward_project",
+      "platform": "git",
+      "family": "sync",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-SYNC-007",
+      "toolName": "git_pull_ff_only_project",
+      "platform": "git",
+      "family": "sync",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-BRANCH-002",
+      "toolName": "git_create_branch_project",
+      "platform": "git",
+      "family": "branch",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-BRANCH-003",
+      "toolName": "git_switch_branch_project",
+      "platform": "git",
+      "family": "branch",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-BRANCH-004",
+      "toolName": "git_delete_branch_project",
+      "platform": "git",
+      "family": "branch",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-BRANCH-005",
+      "toolName": "git_rename_branch_project",
+      "platform": "git",
+      "family": "branch",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-COMMIT-001",
+      "toolName": "git_stage_files_project",
+      "platform": "git",
+      "family": "commit",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-COMMIT-002",
+      "toolName": "git_unstage_files_project",
+      "platform": "git",
+      "family": "commit",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-COMMIT-003",
+      "toolName": "git_commit_project",
+      "platform": "git",
+      "family": "commit",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-COMMIT-004",
+      "toolName": "git_amend_commit_project",
+      "platform": "git",
+      "family": "commit",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-INTEGRATION-001",
+      "toolName": "git_merge_project",
+      "platform": "git",
+      "family": "integration",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-INTEGRATION-002",
+      "toolName": "git_merge_no_ff_project",
+      "platform": "git",
+      "family": "integration",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-INTEGRATION-003",
+      "toolName": "git_rebase_project",
+      "platform": "git",
+      "family": "integration",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-INTEGRATION-004",
+      "toolName": "git_rebase_continue_project",
+      "platform": "git",
+      "family": "integration",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-INTEGRATION-005",
+      "toolName": "git_rebase_abort_project",
+      "platform": "git",
+      "family": "integration",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-INTEGRATION-006",
+      "toolName": "git_cherry_pick_project",
+      "platform": "git",
+      "family": "integration",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-INTEGRATION-007",
+      "toolName": "git_cherry_pick_continue_project",
+      "platform": "git",
+      "family": "integration",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-INTEGRATION-008",
+      "toolName": "git_cherry_pick_abort_project",
+      "platform": "git",
+      "family": "integration",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-RECOVERY-001",
+      "toolName": "git_revert_project",
+      "platform": "git",
+      "family": "recovery",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-STASH-002",
+      "toolName": "git_stash_push_project",
+      "platform": "git",
+      "family": "stash",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-STASH-003",
+      "toolName": "git_stash_show_project",
+      "platform": "git",
+      "family": "stash",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-STASH-004",
+      "toolName": "git_stash_apply_project",
+      "platform": "git",
+      "family": "stash",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-STASH-005",
+      "toolName": "git_stash_pop_project",
+      "platform": "git",
+      "family": "stash",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-STASH-006",
+      "toolName": "git_stash_drop_project",
+      "platform": "git",
+      "family": "stash",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-TAG-002",
+      "toolName": "git_create_tag_project",
+      "platform": "git",
+      "family": "tag",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-TAG-003",
+      "toolName": "git_create_annotated_tag_project",
+      "platform": "git",
+      "family": "tag",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-TAG-004",
+      "toolName": "git_delete_tag_project",
+      "platform": "git",
+      "family": "tag",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-TAG-005",
+      "toolName": "git_verify_tag_project",
+      "platform": "git",
+      "family": "tag",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-REMOTE-003",
+      "toolName": "git_add_remote_project",
+      "platform": "git",
+      "family": "remote",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-REMOTE-004",
+      "toolName": "git_update_remote_project",
+      "platform": "git",
+      "family": "remote",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-REMOTE-005",
+      "toolName": "git_remove_remote_project",
+      "platform": "git",
+      "family": "remote",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-REMOTE-006",
+      "toolName": "git_set_fetch_url_project",
+      "platform": "git",
+      "family": "remote",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-REMOTE-007",
+      "toolName": "git_set_push_url_project",
+      "platform": "git",
+      "family": "remote",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-REMOTE-008",
+      "toolName": "git_verify_remote_project",
+      "platform": "git",
+      "family": "remote",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-WORKTREE-002",
+      "toolName": "git_worktree_add_project",
+      "platform": "git",
+      "family": "worktree",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-WORKTREE-003",
+      "toolName": "git_worktree_remove_project",
+      "platform": "git",
+      "family": "worktree",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-WORKTREE-004",
+      "toolName": "git_worktree_prune_project",
+      "platform": "git",
+      "family": "worktree",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-SUBMODULE-002",
+      "toolName": "git_submodule_init_project",
+      "platform": "git",
+      "family": "submodule",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-SUBMODULE-003",
+      "toolName": "git_submodule_update_project",
+      "platform": "git",
+      "family": "submodule",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-SUBMODULE-004",
+      "toolName": "git_submodule_sync_project",
+      "platform": "git",
+      "family": "submodule",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-BISECT-001",
+      "toolName": "git_bisect_start_project",
+      "platform": "git",
+      "family": "bisect",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-BISECT-002",
+      "toolName": "git_bisect_good_project",
+      "platform": "git",
+      "family": "bisect",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-BISECT-003",
+      "toolName": "git_bisect_bad_project",
+      "platform": "git",
+      "family": "bisect",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-BISECT-004",
+      "toolName": "git_bisect_reset_project",
+      "platform": "git",
+      "family": "bisect",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-RECOVERY-002",
+      "toolName": "git_restore_file_project",
+      "platform": "git",
+      "family": "recovery",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-RECOVERY-003",
+      "toolName": "git_restore_staged_project",
+      "platform": "git",
+      "family": "recovery",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-MAINTENANCE-002",
+      "toolName": "git_gc_project",
+      "platform": "git",
+      "family": "maintenance",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GIT-MAINTENANCE-003",
+      "toolName": "git_prune_dry_run_project",
+      "platform": "git",
+      "family": "maintenance",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-MAINTENANCE-004",
+      "toolName": "git_count_objects_project",
+      "platform": "git",
+      "family": "maintenance",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GIT-FORBID-RAW-SHELL",
+      "toolName": null,
+      "platform": "git",
+      "family": "forbidden",
+      "effect": "forbidden",
+      "implementationStatus": "forbidden",
+      "risk": "critical"
+    },
+    {
+      "id": "GIT-FORBID-FORCE-PUSH",
+      "toolName": null,
+      "platform": "git",
+      "family": "forbidden",
+      "effect": "forbidden",
+      "implementationStatus": "forbidden",
+      "risk": "critical"
+    },
+    {
+      "id": "GIT-FORBID-RESET-HARD",
+      "toolName": null,
+      "platform": "git",
+      "family": "forbidden",
+      "effect": "forbidden",
+      "implementationStatus": "forbidden",
+      "risk": "critical"
+    },
+    {
+      "id": "GIT-FORBID-CLEAN-FDX",
+      "toolName": null,
+      "platform": "git",
+      "family": "forbidden",
+      "effect": "forbidden",
+      "implementationStatus": "forbidden",
+      "risk": "critical"
+    },
+    {
+      "id": "GIT-FORBID-REFLOG-EXPIRE",
+      "toolName": null,
+      "platform": "git",
+      "family": "forbidden",
+      "effect": "forbidden",
+      "implementationStatus": "forbidden",
+      "risk": "critical"
+    },
+    {
+      "id": "GITHUB-REPOSITORY-001",
+      "toolName": "github_get_repository_state",
+      "platform": "github",
+      "family": "repository",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-REPOSITORY-002",
+      "toolName": "github_create_repository",
+      "platform": "github",
+      "family": "repository",
+      "effect": "admin",
+      "implementationStatus": "candidate",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-REPOSITORY-003",
+      "toolName": "github_configure_repository",
+      "platform": "github",
+      "family": "repository",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-REPOSITORY-004",
+      "toolName": "github_archive_repository",
+      "platform": "github",
+      "family": "repository",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-REPOSITORY-005",
+      "toolName": "github_set_default_branch",
+      "platform": "github",
+      "family": "repository",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-REPOSITORY-006",
+      "toolName": "github_get_repository_permissions",
+      "platform": "github",
+      "family": "repository",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-REPOSITORY-007",
+      "toolName": "github_get_collaborators",
+      "platform": "github",
+      "family": "repository",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-REPOSITORY-008",
+      "toolName": "github_get_teams",
+      "platform": "github",
+      "family": "repository",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-BRANCH-001",
+      "toolName": "github_get_branch_state",
+      "platform": "github",
+      "family": "branch",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-BRANCH-002",
+      "toolName": "github_create_branch",
+      "platform": "github",
+      "family": "branch",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-BRANCH-003",
+      "toolName": "github_delete_branch",
+      "platform": "github",
+      "family": "branch",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-BRANCH-004",
+      "toolName": "github_compare_refs",
+      "platform": "github",
+      "family": "branch",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-BRANCH-005",
+      "toolName": "github_get_branch_protection",
+      "platform": "github",
+      "family": "branch",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-COMMIT-001",
+      "toolName": "github_get_commit_state",
+      "platform": "github",
+      "family": "commit",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-COMMIT-002",
+      "toolName": "github_get_commits",
+      "platform": "github",
+      "family": "commit",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-COMMIT-003",
+      "toolName": "github_get_commit_diff",
+      "platform": "github",
+      "family": "commit",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-COMMIT-004",
+      "toolName": "github_create_commit",
+      "platform": "github",
+      "family": "commit",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-FILE-001",
+      "toolName": "github_create_or_update_file",
+      "platform": "github",
+      "family": "file",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-FILE-002",
+      "toolName": "github_delete_file",
+      "platform": "github",
+      "family": "file",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-TREE-001",
+      "toolName": "github_get_tree",
+      "platform": "github",
+      "family": "tree",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-PULL-REQUEST-001",
+      "toolName": "github_create_pull_request",
+      "platform": "github",
+      "family": "pull_request",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-PULL-REQUEST-002",
+      "toolName": "github_get_pull_request_state",
+      "platform": "github",
+      "family": "pull_request",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-PULL-REQUEST-003",
+      "toolName": "github_update_pull_request",
+      "platform": "github",
+      "family": "pull_request",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-PULL-REQUEST-004",
+      "toolName": "github_mark_pr_ready",
+      "platform": "github",
+      "family": "pull_request",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-PULL-REQUEST-005",
+      "toolName": "github_request_review",
+      "platform": "github",
+      "family": "pull_request",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-PULL-REQUEST-006",
+      "toolName": "github_get_pull_request_reviews",
+      "platform": "github",
+      "family": "pull_request",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-PULL-REQUEST-007",
+      "toolName": "github_get_review_threads",
+      "platform": "github",
+      "family": "pull_request",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-PULL-REQUEST-008",
+      "toolName": "github_reply_review_thread",
+      "platform": "github",
+      "family": "pull_request",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-PULL-REQUEST-009",
+      "toolName": "github_resolve_review_thread",
+      "platform": "github",
+      "family": "pull_request",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-PULL-REQUEST-010",
+      "toolName": "github_get_mergeability",
+      "platform": "github",
+      "family": "pull_request",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-PULL-REQUEST-011",
+      "toolName": "github_merge_pull_request",
+      "platform": "github",
+      "family": "pull_request",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-ACTIONS-001",
+      "toolName": "github_get_commit_checks",
+      "platform": "github",
+      "family": "actions",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-ACTIONS-002",
+      "toolName": "github_get_required_checks",
+      "platform": "github",
+      "family": "actions",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-ACTIONS-003",
+      "toolName": "github_get_workflow_runs",
+      "platform": "github",
+      "family": "actions",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-ACTIONS-004",
+      "toolName": "github_get_workflow_jobs",
+      "platform": "github",
+      "family": "actions",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-ACTIONS-005",
+      "toolName": "github_get_workflow_logs",
+      "platform": "github",
+      "family": "actions",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-ACTIONS-006",
+      "toolName": "github_rerun_workflow",
+      "platform": "github",
+      "family": "actions",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-ACTIONS-007",
+      "toolName": "github_cancel_workflow",
+      "platform": "github",
+      "family": "actions",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-ACTIONS-008",
+      "toolName": "github_dispatch_workflow",
+      "platform": "github",
+      "family": "actions",
+      "effect": "production_effect",
+      "implementationStatus": "planned",
+      "risk": "critical"
+    },
+    {
+      "id": "GITHUB-RULESET-001",
+      "toolName": "github_get_rulesets",
+      "platform": "github",
+      "family": "ruleset",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-RULESET-002",
+      "toolName": "github_create_ruleset",
+      "platform": "github",
+      "family": "ruleset",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-RULESET-003",
+      "toolName": "github_update_ruleset",
+      "platform": "github",
+      "family": "ruleset",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-RULESET-004",
+      "toolName": "github_delete_ruleset",
+      "platform": "github",
+      "family": "ruleset",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-RULESET-005",
+      "toolName": "github_get_branch_rules",
+      "platform": "github",
+      "family": "ruleset",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-WEBHOOK-001",
+      "toolName": "github_get_webhooks",
+      "platform": "github",
+      "family": "webhook",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-WEBHOOK-002",
+      "toolName": "github_create_webhook",
+      "platform": "github",
+      "family": "webhook",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-WEBHOOK-003",
+      "toolName": "github_update_webhook",
+      "platform": "github",
+      "family": "webhook",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-WEBHOOK-004",
+      "toolName": "github_ping_webhook",
+      "platform": "github",
+      "family": "webhook",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-WEBHOOK-005",
+      "toolName": "github_delete_webhook",
+      "platform": "github",
+      "family": "webhook",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-ENVIRONMENT-001",
+      "toolName": "github_get_environments",
+      "platform": "github",
+      "family": "environment",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-ENVIRONMENT-002",
+      "toolName": "github_create_environment",
+      "platform": "github",
+      "family": "environment",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-ENVIRONMENT-003",
+      "toolName": "github_update_environment",
+      "platform": "github",
+      "family": "environment",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-ENVIRONMENT-004",
+      "toolName": "github_get_environment_protection",
+      "platform": "github",
+      "family": "environment",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-VARIABLE-001",
+      "toolName": "github_get_variable_names",
+      "platform": "github",
+      "family": "variable",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-VARIABLE-002",
+      "toolName": "github_set_variable",
+      "platform": "github",
+      "family": "variable",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-VARIABLE-003",
+      "toolName": "github_delete_variable",
+      "platform": "github",
+      "family": "variable",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-SECRET-001",
+      "toolName": "github_get_secret_names",
+      "platform": "github",
+      "family": "secret",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-SECRET-002",
+      "toolName": "github_set_secret",
+      "platform": "github",
+      "family": "secret",
+      "effect": "security_sensitive",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-RELEASE-001",
+      "toolName": "github_create_tag",
+      "platform": "github",
+      "family": "release",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-RELEASE-002",
+      "toolName": "github_create_release",
+      "platform": "github",
+      "family": "release",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-RELEASE-003",
+      "toolName": "github_update_release",
+      "platform": "github",
+      "family": "release",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-RELEASE-004",
+      "toolName": "github_get_releases",
+      "platform": "github",
+      "family": "release",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-RELEASE-005",
+      "toolName": "github_get_release_assets",
+      "platform": "github",
+      "family": "release",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-DEPLOYMENT-001",
+      "toolName": "github_create_deployment",
+      "platform": "github",
+      "family": "deployment",
+      "effect": "production_effect",
+      "implementationStatus": "planned",
+      "risk": "critical"
+    },
+    {
+      "id": "GITHUB-DEPLOYMENT-002",
+      "toolName": "github_get_deployments",
+      "platform": "github",
+      "family": "deployment",
+      "effect": "read",
+      "implementationStatus": "candidate",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-DEPLOYMENT-003",
+      "toolName": "github_create_deployment_status",
+      "platform": "github",
+      "family": "deployment",
+      "effect": "production_effect",
+      "implementationStatus": "planned",
+      "risk": "critical"
+    },
+    {
+      "id": "GITHUB-DEPLOYMENT-004",
+      "toolName": "github_get_deployment_status",
+      "platform": "github",
+      "family": "deployment",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-ISSUE-001",
+      "toolName": "github_create_issue",
+      "platform": "github",
+      "family": "issue",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-ISSUE-002",
+      "toolName": "github_update_issue",
+      "platform": "github",
+      "family": "issue",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-ISSUE-003",
+      "toolName": "github_add_label",
+      "platform": "github",
+      "family": "issue",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-ISSUE-004",
+      "toolName": "github_assign_issue",
+      "platform": "github",
+      "family": "issue",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-PROJECT-001",
+      "toolName": "github_create_project",
+      "platform": "github",
+      "family": "project",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-PROJECT-002",
+      "toolName": "github_get_project",
+      "platform": "github",
+      "family": "project",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-PROJECT-003",
+      "toolName": "github_add_project_item",
+      "platform": "github",
+      "family": "project",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-PROJECT-004",
+      "toolName": "github_update_project_item",
+      "platform": "github",
+      "family": "project",
+      "effect": "write",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-ORGANIZATION-001",
+      "toolName": "github_get_organization",
+      "platform": "github",
+      "family": "organization",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-ORGANIZATION-002",
+      "toolName": "github_get_org_repositories",
+      "platform": "github",
+      "family": "organization",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-ORGANIZATION-003",
+      "toolName": "github_get_org_membership",
+      "platform": "github",
+      "family": "organization",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-ORGANIZATION-004",
+      "toolName": "github_get_org_rulesets",
+      "platform": "github",
+      "family": "organization",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-ORGANIZATION-005",
+      "toolName": "github_create_org_ruleset",
+      "platform": "github",
+      "family": "organization",
+      "effect": "admin",
+      "implementationStatus": "planned",
+      "risk": "high"
+    },
+    {
+      "id": "GITHUB-AUDIT-001",
+      "toolName": "github_get_audit_events",
+      "platform": "github",
+      "family": "audit",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-AUDIT-002",
+      "toolName": "github_repository_security_state",
+      "platform": "github",
+      "family": "audit",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-AUDIT-003",
+      "toolName": "github_repository_governance_state",
+      "platform": "github",
+      "family": "audit",
+      "effect": "read",
+      "implementationStatus": "planned",
+      "risk": "low"
+    },
+    {
+      "id": "GITHUB-FORBID-RAW-API",
+      "toolName": null,
+      "platform": "github",
+      "family": "forbidden",
+      "effect": "forbidden",
+      "implementationStatus": "forbidden",
+      "risk": "critical"
+    },
+    {
+      "id": "GITHUB-FORBID-DELETE-REPOSITORY",
+      "toolName": null,
+      "platform": "github",
+      "family": "forbidden",
+      "effect": "forbidden",
+      "implementationStatus": "forbidden",
+      "risk": "critical"
+    },
+    {
+      "id": "GITHUB-FORBID-MAKE-PUBLIC",
+      "toolName": null,
+      "platform": "github",
+      "family": "forbidden",
+      "effect": "forbidden",
+      "implementationStatus": "forbidden",
+      "risk": "critical"
+    },
+    {
+      "id": "GITHUB-FORBID-DELETE-ORG",
+      "toolName": null,
+      "platform": "github",
+      "family": "forbidden",
+      "effect": "forbidden",
+      "implementationStatus": "forbidden",
+      "risk": "critical"
+    },
+    {
+      "id": "GITHUB-FORBID-READ-SECRET-VALUE",
+      "toolName": null,
+      "platform": "github",
+      "family": "forbidden",
+      "effect": "forbidden",
+      "implementationStatus": "forbidden",
+      "risk": "critical"
+    }
+  ]
+}
