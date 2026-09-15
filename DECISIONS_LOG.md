@@ -569,4 +569,3 @@ Décision de compatibilité : le `projectId` validé du mapping est suffisant po
 Décision de sécurité : la projection C2 exclut permissions, grants, credentials, chemins serveur et capacités de déploiement. Le cache Governed Context existant propage cache-miss/staleness fail-closed ; aucune donnée secrète ou transport brut n'est introduit.
 
 Preuve TDD : RED initial `f71704dbfd2ad3fe2ba7c8545fa157435e97de7e` / CI #933 ; GREEN `45adc85925bf819b8c71df4621315e95bc3154ca` / CI #935 ; RED historique MCP `6fc9c74b3a405a69f23e13d80c4557fa1d5b4538` / CI #937 ; GREEN `d71ba1671adcadf94f263f00ec6eef02d915663f` / CI #939.
-
