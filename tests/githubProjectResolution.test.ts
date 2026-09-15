@@ -147,14 +147,64 @@ test('C2 reste UNVERIFIED si B2 n est pas une preuve RESOLVED CURRENT', () => {
   assert.deepEqual(result.reasonCodes, ['GITHUB_PROJECT_REPOSITORY_UNVERIFIED']);
 });
 
-test('C2 reste UNVERIFIED si le mapping ne peut pas être relié à un projet V2 cohérent', () => {
+test('C2 reste UNVERIFIED si une fiche projet présente contredit le mapping', () => {
+  const inconsistent = (registry() as any).projects[0];
   const result = resolveGithubProject({
     repository: repository() as any,
-    registry: registry({ projects: [] }) as any,
+    registry: registry({
+      projects: [{
+        ...inconsistent,
+        repositoryComponents: []
+      }]
+    }) as any,
     observedAt
   });
   assert.equal(result.status, 'UNVERIFIED');
   assert.deepEqual(result.reasonCodes, ['GITHUB_PROJECT_REFERENCE_UNVERIFIED']);
+});
+
+test('C2 préserve le cas historique MCP en résolvant projectId depuis le mapping même sans fiche projects', () => {
+  const result = resolveGithubProject({
+    repository: repository({
+      requestedRepositoryContext: 'Patricked-code/MCP',
+      selectedAccountContext: { owner: 'Patricked-code', type: 'user' },
+      selectedRepository: {
+        repositoryId: 'github:Patricked-code/MCP',
+        githubRepositoryId: 1285534440,
+        owner: 'Patricked-code',
+        ownerType: 'user',
+        name: 'MCP',
+        fullName: 'Patricked-code/MCP',
+        defaultBranch: 'main',
+        visibility: 'public',
+        archived: false,
+        fork: false
+      }
+    }) as any,
+    registry: registry({
+      mappings: [{
+        mappingId: 'mcp-s1-production',
+        repositoryId: 'github:Patricked-code/MCP',
+        projectId: 'mcp_bridge',
+        projectUid: null,
+        componentRole: null
+      }],
+      projects: [],
+      activationReadiness: [{
+        mappingId: 'mcp-s1-production',
+        status: 'BLOCKED',
+        reasonCodes: ['MAPPING_PATH_UNVERIFIED']
+      }]
+    }) as any,
+    observedAt
+  });
+  assert.equal(result.status, 'RESOLVED');
+  assert.equal(result.selectedMapping?.mappingId, 'mcp-s1-production');
+  assert.equal(result.selectedProject?.projectId, 'mcp_bridge');
+  assert.equal(result.selectedProject?.projectUid, null);
+  assert.equal(result.selectedProject?.name, null);
+  assert.equal(result.selectedProject?.kind, null);
+  assert.equal(result.selectedMapping?.activationReadiness, 'BLOCKED');
 });
 
 test('C2 ne projette aucune permission, credential ou capacité de déploiement', () => {
