@@ -850,7 +850,7 @@
       "platform": "github",
       "family": "branch",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -859,7 +859,7 @@
       "platform": "github",
       "family": "branch",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -895,7 +895,7 @@
       "platform": "github",
       "family": "commit",
       "effect": "read",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "low"
     },
     {
@@ -904,7 +904,7 @@
       "platform": "github",
       "family": "commit",
       "effect": "read",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "low"
     },
     {
@@ -913,7 +913,7 @@
       "platform": "github",
       "family": "commit",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -922,7 +922,7 @@
       "platform": "github",
       "family": "file",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -931,7 +931,7 @@
       "platform": "github",
       "family": "file",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -940,7 +940,7 @@
       "platform": "github",
       "family": "tree",
       "effect": "read",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "low"
     },
     {
@@ -949,7 +949,7 @@
       "platform": "github",
       "family": "pull_request",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -967,7 +967,7 @@
       "platform": "github",
       "family": "pull_request",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -976,7 +976,7 @@
       "platform": "github",
       "family": "pull_request",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -985,7 +985,7 @@
       "platform": "github",
       "family": "pull_request",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -1003,7 +1003,7 @@
       "platform": "github",
       "family": "pull_request",
       "effect": "read",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "low"
     },
     {
@@ -1012,7 +1012,7 @@
       "platform": "github",
       "family": "pull_request",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -1021,7 +1021,7 @@
       "platform": "github",
       "family": "pull_request",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -1030,7 +1030,7 @@
       "platform": "github",
       "family": "pull_request",
       "effect": "read",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "low"
     },
     {
@@ -1039,7 +1039,7 @@
       "platform": "github",
       "family": "pull_request",
       "effect": "write",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "high"
     },
     {
@@ -1057,7 +1057,7 @@
       "platform": "github",
       "family": "actions",
       "effect": "read",
-      "implementationStatus": "planned",
+      "implementationStatus": "candidate",
       "risk": "low"
     },
     {
