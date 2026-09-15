@@ -35,9 +35,9 @@ export type GithubProjectResolution = {
   } | null;
   selectedProject: {
     projectId: string;
-    projectUid: string;
-    name: string;
-    kind: string;
+    projectUid: string | null;
+    name: string | null;
+    kind: string | null;
   } | null;
   candidates: Array<{
     mappingId: string;
@@ -137,26 +137,28 @@ export function resolveGithubProject(
 
   const mapping = matches[0]!.mapping;
   const projects = input.registry.projects.filter((project) => project.projectId === mapping.projectId);
-  if (projects.length !== 1) {
+  if (projects.length > 1) {
     return unresolved(input, 'UNVERIFIED', 'GITHUB_PROJECT_REFERENCE_UNVERIFIED', {
       repositoryId,
       candidates: [matches[0]!.candidate]
     });
   }
-  const project = projects[0]!;
-  const component = project.repositoryComponents.find((entry) => (
-    same(entry.repositoryId, repositoryId)
-    && entry.mappingId === mapping.mappingId
-  ));
-  if (
-    !component
-    || (mapping.projectUid !== null && mapping.projectUid !== project.projectUid)
-    || (mapping.componentRole !== null && mapping.componentRole !== component.role)
-  ) {
-    return unresolved(input, 'UNVERIFIED', 'GITHUB_PROJECT_REFERENCE_UNVERIFIED', {
-      repositoryId,
-      candidates: [matches[0]!.candidate]
-    });
+  const project = projects[0] ?? null;
+  if (project) {
+    const component = project.repositoryComponents.find((entry) => (
+      same(entry.repositoryId, repositoryId)
+      && entry.mappingId === mapping.mappingId
+    ));
+    if (
+      !component
+      || (mapping.projectUid !== null && mapping.projectUid !== project.projectUid)
+      || (mapping.componentRole !== null && mapping.componentRole !== component.role)
+    ) {
+      return unresolved(input, 'UNVERIFIED', 'GITHUB_PROJECT_REFERENCE_UNVERIFIED', {
+        repositoryId,
+        candidates: [matches[0]!.candidate]
+      });
+    }
   }
 
   const readiness = input.registry.activationReadiness.find(
@@ -176,12 +178,19 @@ export function resolveGithubProject(
       activationReadiness: readiness?.status ?? 'UNKNOWN',
       activationReasonCodes: readiness?.reasonCodes ?? []
     },
-    selectedProject: {
-      projectId: project.projectId,
-      projectUid: project.projectUid,
-      name: project.name,
-      kind: project.kind
-    },
+    selectedProject: project
+      ? {
+          projectId: project.projectId,
+          projectUid: project.projectUid,
+          name: project.name,
+          kind: project.kind
+        }
+      : {
+          projectId: mapping.projectId,
+          projectUid: mapping.projectUid,
+          name: null,
+          kind: null
+        },
     candidates: [{ mappingId: mapping.mappingId, projectId: mapping.projectId }],
     candidateCount: 1,
     freshness: 'CURRENT',
