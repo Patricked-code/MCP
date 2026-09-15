@@ -262,10 +262,10 @@ Autorité : Operational Memory garde le statut/revision/locks/session courants. 
 - [x] revalider les préconditions et enregistrer `df002af4-7427-4518-9b66-e55417576cfa` (`G3_MERGE_READY_PRECONDITIONS_REVALIDATED`) ;
 - [x] fusionner #87 sous garde `expected_head_sha` au merge `dc4698de66b7becfc924ea4fabe8037e089d3336` sous `G3_EXACT_HEAD_MERGE_AUTHORIZATION_V2`, puis attester Governed Deploy #39 et MCP CI #920 ;
 - [x] enregistrer le checkpoint post-merge `759d2395-f2fc-4d2a-b2bf-6c6ba440908e` (`G3_MERGED_EXACT_HEAD`) sur Live State `228` ;
-- [ ] projeter la preuve de déploiement exact-SHA déjà acquise en enregistrant le `runtimeRevision` attesté sur la tâche, afin que `deploymentExactShaSuccess` devienne vrai sans redéploiement ;
+- [x] projeter la preuve de déploiement exact-SHA déjà acquise en enregistrant le `runtimeRevision` attesté `dc4698de66b7becfc924ea4fabe8037e089d3336` sur la tâche, sans redéploiement; `deploymentExactShaSuccess` et `runtimeAligned` valent désormais `true` ;
 - [ ] réconcilier le `DOCUMENTATION_DRIFT` post-déploiement par la présente projection canonique et obtenir un Live State sans contradiction documentaire ;
-- [ ] transitionner `MERGE_READY → VERIFYING → DONE` uniquement si les preuves live le permettent, puis checkpoint terminal, release locks, fermeture de session et réconciliation de la queue.
+- [ ] transitionner `DEPLOYING → VERIFYING → DONE` uniquement si les preuves live le permettent, puis checkpoint terminal, release locks, fermeture de session et réconciliation de la queue.
 
-Autorité : Operational Memory garde le statut, la révision, les locks et la session courants. Statut observé au moment de cette écriture : `MERGE_READY`, révision 9, Governed Session `c4f08e5c-aeba-4297-b711-5e6808227225`. Aucun DONE n'est anticipé par ce fichier.
+Autorité : Operational Memory garde le statut, la révision, les locks et la session courants. Statut observé au moment de cette écriture : `DEPLOYING`, révision 10, Governed Session `c4f08e5c-aeba-4297-b711-5e6808227225`. Aucun DONE n'est anticipé par ce fichier.
 
 Frontières : aucune activation GitRegistry V2, aucun transport SSH, aucune délégation d'exécution externe, aucune permission supplémentaire, aucun secret et aucun déploiement manuel dans cette tâche. Le Git/GitHub Control Plane parallèle reste hors scope et ne précède pas C2 sans dépendance live prouvée.
