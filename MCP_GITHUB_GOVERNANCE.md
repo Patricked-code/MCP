@@ -14,6 +14,15 @@ Gouvernance GitHub via MCP.
 ## À vérifier
 Protection de branche, PR ouvertes, droits GitHub, remotes, statut sync serveur/GitHub.
 
+## Création gouvernée de repositories d'organisation
+
+- La capacité `github_create_repository` réutilise exclusivement la connexion GitHub serveur existante ; aucun second MCP, registre d'identité ou credential en Git n'est créé.
+- V1 est bornée à `GITHUB_ORG`, aux repositories privés et vides (`auto_init=false`). Il n'existe pas de surface GitHub API brute.
+- Avant mutation, l'outil exige `ENABLE_WRITE_TOOLS=true` et un verdict gouverné `shadow_ready` ; une session, Task, Live State, bootstrap receipt ou lock non prêt bloque l'appel.
+- Un dépôt privé déjà existant est traité idempotemment comme `ALREADY_EXISTS`; un dépôt public homonyme est refusé.
+- Les réponses sont assainies et ne projettent jamais token, clé privée, scopes bruts ou payload GitHub complet.
+- La disponibilité technique du credential ne vaut jamais autorisation de créer un repository. Merge, déploiement et invocation runtime restent soumis aux autorités opérationnelles courantes.
+
 ## Identité GitHub du déploiement S1
 
 - S1 utilise une deploy key dédiée au seul dépôt `Patricked-code/MCP`.

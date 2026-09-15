@@ -18,6 +18,7 @@ export const WRITE_SCOPED_TOOL_NAMES = new Set<string>([
   'deploy_project_s2',
   'exec_repo_script_s2',
   'git_pull_project_s2',
+  'github_create_repository',
   'legacy_vhost_commit_push_s1',
   'legacy_vhost_delete_path_s1',
   'legacy_vhost_deploy_s1',

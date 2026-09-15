@@ -342,6 +342,36 @@
       "additionalProperties": false
     }
   },
+  "github_create_repository": {
+    "description": "Crée de façon gouvernée un dépôt GitHub privé et vide dans l’organisation GitHub configurée du MCP. Refuse toute autre organisation, tout dépôt public et toute mutation si la session, la Task, le Live State, le receipt ou les locks ne sont pas prêts.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "organization": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 350
+        }
+      },
+      "required": [
+        "organization",
+        "name"
+      ],
+      "additionalProperties": false
+    }
+  },
   "github_durable_accounts_inventory": {
     "description": "Inventorie les dépôts visibles par les comptes GitHub durablement configurés, sans écrire, sans cloner et sans supprimer.",
     "inputSchema": {

@@ -79,6 +79,8 @@ mcp_build_s1 : lance le build MCP via Docker Node 20 avec allow_write.
 
 restart_mcp_bridge_s1 : redémarre le conteneur MCP après validation.
 
+github_create_repository : crée uniquement un dépôt GitHub privé et vide dans l’organisation configurée du MCP. L’outil est scoped-write, n’accepte aucune autre organisation, est idempotent si le dépôt privé existe déjà et exige un verdict gouverné `shadow_ready` avant toute mutation. Il ne crée ni GitHub App, ni webhook, ni ruleset, ni secret et ne transforme jamais une permission technique en autorisation de gouvernance.
+
 ## Outils projet S2
 
 get_write_tools_context : liste les projets et opérations d’écriture contrôlées.
