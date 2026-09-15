@@ -15,6 +15,17 @@
 
 Date : 2026-09-15
 
+## Candidat empilé — Git/GitHub Control Plane Foundation (NON LIVRÉ)
+
+- Demande utilisateur : intégrer la surface Git et GitHub utile de bout en bout dans le MCP existant, avec gouvernance et sans shell/API brute.
+- Branche : `mcp/git-github-control-plane-foundation-20260915`, empilée depuis le head GREEN de la branche #88 `d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993`.
+- Manifeste : 170 capacités classifiées ; statuts `existing|candidate|planned|forbidden` et effets `read|write|admin|security_sensitive|production_effect|forbidden`.
+- Première vague candidate : 12 outils READ GitHub ; cartographie candidate = 124 outils (80 READ, 44 WRITE) et 2 resources, digest `9372de56c4b806df00bf6d84b362ee8577820e6f91457b529143f9d576ba557a`.
+- RED `5449bbe4e730ddff55f3131c30c7b04f7e794b19` / CI #908 ; GREEN exact `0571b175df91069c76e989328d6fc47f27178f3a` / CI #914 SUCCESS.
+- CI #914 atteste typecheck, build, 205 Markdown gouvernés, cartographie, governance tests, secret scan, read-only safety tests et whitespace diff tous verts.
+- Cette fondation ne mute aucun repository cible et ne rend aucune capacité WRITE supplémentaire disponible en runtime tant que les PR empilées ne sont pas mergées/déployées selon les autorités dynamiques.
+- Prochaine étape programme : Draft PR empilée sur #88 puis lot GitHub lifecycle (branches/commits/files/PR/reviews/checks), sans merge automatique.
+
 ## Candidat en cours — GitHub repository creation gouverné (NON LIVRÉ)
 
 - Demande utilisateur : rendre le MCP existant capable de créer lui-même un repository d'organisation, notamment le futur Shadow BRVM, sans créer un second MCP.
