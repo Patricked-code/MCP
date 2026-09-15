@@ -2,6 +2,11 @@ import { mkdir, open, readFile, writeFile, chmod } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { createHash } from 'node:crypto';
 import type { GitHubConnectionStatus } from './connection.js';
+import {
+  assessGitRegistryV2ActivationReadiness,
+  dryRunGitRegistryV2,
+  type GitRegistryV2ActivationReasonCode
+} from './registryV2.js';
 
 const FILE = '/app/data/mcp-git-registry.json';
 const DEFAULT_PROJECT_KEY = 'mcp_bridge';
@@ -20,6 +25,36 @@ export type GitRegistryEvidence = {
   schemaVersion: 1;
   mappings: Array<{ githubOwner: string; githubRepo: string }>;
   digest: string | null;
+};
+
+export type GitRegistryProjectEvidence = {
+  available: boolean;
+  sourceSchemaVersion: 1 | 2 | null;
+  digest: string | null;
+  candidateDigest: string | null;
+  mappings: Array<{
+    mappingId: string;
+    repositoryId: string;
+    projectId: string;
+    projectUid: string | null;
+    componentRole: string | null;
+  }>;
+  projects: Array<{
+    projectId: string;
+    projectUid: string;
+    name: string;
+    kind: string;
+    repositoryComponents: Array<{
+      repositoryId: string;
+      mappingId: string;
+      role: string;
+    }>;
+  }>;
+  activationReadiness: Array<{
+    mappingId: string;
+    status: 'READY' | 'BLOCKED';
+    reasonCodes: GitRegistryV2ActivationReasonCode[];
+  }>;
 };
 
 const now = () => new Date().toISOString();
@@ -120,6 +155,53 @@ export async function readGitRegistryEvidence(): Promise<GitRegistryEvidence> {
     };
   } catch {
     return { available: false, schemaVersion: 1, mappings: [], digest: null };
+  }
+}
+
+export async function readGitRegistryProjectEvidence(): Promise<GitRegistryProjectEvidence> {
+  try {
+    const raw = await readBoundedGitRegistryEvidenceFile(rf());
+    const parsed = JSON.parse(raw) as unknown;
+    const { candidate, report } = dryRunGitRegistryV2(parsed);
+    if (candidate.mappings.length > 1000) throw new Error('registry exceeds project evidence bound');
+    const projects = candidate.projects ?? [];
+    if (projects.length > 200) throw new Error('registry exceeds project evidence bound');
+    const activationReadiness = assessGitRegistryV2ActivationReadiness(candidate);
+    return {
+      available: true,
+      sourceSchemaVersion: report.sourceSchemaVersion,
+      digest: createHash('sha256').update(raw).digest('hex'),
+      candidateDigest: report.candidateHash,
+      mappings: candidate.mappings.slice(0, 1000).map((mapping) => ({
+        mappingId: mapping.mappingId,
+        repositoryId: mapping.repositoryId,
+        projectId: mapping.projectId,
+        projectUid: mapping.projectUid ?? null,
+        componentRole: mapping.componentRole ?? null
+      })),
+      projects: projects.slice(0, 200).map((project) => ({
+        projectId: project.projectId,
+        projectUid: project.projectUid,
+        name: project.name,
+        kind: project.kind,
+        repositoryComponents: project.repositoryComponents.slice(0, 20).map((component) => ({
+          repositoryId: component.repositoryId,
+          mappingId: component.mappingId,
+          role: component.role
+        }))
+      })),
+      activationReadiness
+    };
+  } catch {
+    return {
+      available: false,
+      sourceSchemaVersion: null,
+      digest: null,
+      candidateDigest: null,
+      mappings: [],
+      projects: [],
+      activationReadiness: []
+    };
   }
 }
 

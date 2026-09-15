@@ -196,13 +196,30 @@ Preuves de clôture acquises :
 
 `TASK-20260901-002 — Final A2.1 documentation reconciliation` est la tâche documentaire bornée qui porte la présente mise à jour des six fichiers canoniques. Son état, sa branche, sa PR, ses locks et sa session restent sous l'autorité de la Governed Task Queue, d'Operational Memory et de GitHub; ce document n'anticipe pas son statut terminal.
 
-## Prochaines tâches candidates — non enregistrées après B2
+## Tâche gouvernée courante — TASK-20260915-001 — C2 Repository → Project Resolution
 
-Après clôture gouvernée de B2, la gouvernance pourra enregistrer séparément, selon dépendances :
+- [x] enregistrer et claim la Task C2 existante sous Governed Session ;
+- [x] utiliser un lock minimal `resource:project-binding:repository-project-resolution` ;
+- [x] créer une unique branche gouvernée depuis le SHA exact de `main` ;
+- [x] produire le RED initial `f71704db` et observer CI #933 en échec uniquement sur le module C2 absent ;
+- [x] produire le GREEN `45adc859` et obtenir CI #935 entièrement verte ;
+- [x] ajouter la régression historique MCP `6fc9c74b` et observer CI #937 en échec ciblé ;
+- [x] corriger additivement au GREEN `d71ba167` et obtenir CI #939 entièrement verte ;
+- [x] préserver `RESOLVED/NONE/AMBIGUOUS/UNVERIFIED`, fail-closed, sans permission ni activation V2 implicite ;
+- [ ] terminer la revue exacte de PR #92 et satisfaire les protections GitHub ;
+- [ ] fusionner uniquement le head exact accepté ;
+- [ ] laisser l'Autodeploy gouverné attester le merge exact-SHA ;
+- [ ] réconcilier Live State et la documentation descendante ;
+- [ ] transitionner C2 jusqu'à `DONE`, checkpoint, release lock et fermeture de session uniquement sur preuves runtime.
 
-1. C1/C2 — GitRegistry V2 et Project Binding ;
-2. C3/C4/C5 — Server, Runtime et Domain Resolution ;
-3. D1/D2/D3 — Governance Inheritance, Effective Capabilities et Bootstrap Receipt enrichment.
+Autorité : le statut courant reste Operational Memory ; cette liste ne pré-déclare ni merge, ni déploiement, ni état terminal.
+
+## Prochaines tâches candidates — après C2
+
+Après clôture gouvernée de C2, la gouvernance pourra enregistrer séparément, selon dépendances :
+
+1. C3/C4/C5 — Server, Runtime et Domain Resolution ;
+2. D1/D2/D3 — Governance Inheritance, Effective Capabilities et Bootstrap Receipt enrichment.
 
 A2.2 `Verified Client Evidence` reste conditionnel et ne peut inventer aucune identité ChatGPT/Claude, référence de conversation ou workspace. Son absence ne bloque pas B1 lorsque le principal OAuth constitue la preuve requise.
 
