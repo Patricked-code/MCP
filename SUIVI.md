@@ -13,11 +13,24 @@
 }
 ```
 
-Date : 2026-09-13
+Date : 2026-09-15
 
-## Point courant — C1 GitRegistry V2 verification gate déployé
+## Point courant — G3 Client Tool Surface Attestation V1 fusionnée et déployée
 
-- GitHub main, S1 HEAD, S1 origin/main et runtime OCI sont observés au SHA exact `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`; S1 est sur `main`, propre/read-only, fetch `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`, push `disabled://mcp-s1-read-only`, runtime running/healthy.
+- GitHub main, S1 HEAD, S1 origin/main et runtime OCI sont observés au SHA exact `dc4698de66b7becfc924ea4fabe8037e089d3336`; S1 est sur `main`, propre/read-only, fetch `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`, push `disabled://mcp-s1-read-only`, runtime running/healthy.
+- PR #87 a été fusionnée depuis le head exact revu `289b3b71c8352738395bf290bc1ae10dc405ee15` au merge `dc4698de66b7becfc924ea4fabe8037e089d3336`, sous l'autorisation humaine distincte et bornée `G3_EXACT_HEAD_MERGE_AUTHORIZATION_V2`. Le merge commit a pour parents `555a51d0` et `289b3b71`.
+- Séquence TDD conservée dans `main` par merge commit : RED `f87baa4e`, GREEN `ae7bec13`, RED P2 `b2955874`, GREEN P2 `289b3b71`. Aucun squash ni rebase n'a été appliqué.
+- Preuves exact-head : `validate` SUCCESS sur `289b3b71` (runs `34918037851` et `34918042001`), MCP CI #920 SUCCESS sur le merge; 13/13 tests G3, 4/4 régressions P2, 335/335 read-only safety, 12/12 governance, 0 échec, 0 skip, typecheck, build, docs/cartographie, secret scan et whitespace verts.
+- Les deux findings P2 sont corrigés dans `src/operationalMemory/types.ts` : une attestation est rejetée fail-closed si son `governedSessionId` diffère de la session parente ou si, quand le contrat parent porte un `connectionContext`, son `connectionContextId` diffère; l'intervalle de validité exige `expiresAt > observedAt` et une durée maximale de cinq minutes. `schemaVersion` reste `1`, l'attestation reste optionnelle, les records historiques restent valides et `CLIENT_ATTESTATION` reste une provenance de callability qui n'implique ni `AUTHORIZED` ni `safeNow`.
+- Governed Deploy #39 (run `34919927303`) a attesté l'exact-SHA `dc4698de66b7becfc924ea4fabe8037e089d3336` avec runtimeRevision identique, rollback non requis, health/OAuth/MCP auth sains. `pushEnabled: true` dans `.mcp/autodeploy-policy.json` est intentionnel : un merge autorisé déclenche l'autodeploy gouverné comme conséquence connue, jamais comme déploiement manuel.
+- Checkpoints enregistrés sur Live State `228` avec Bootstrap Receipt `9a20b8cb-6191-49ad-935d-e5bc81a81bdf` : `d959f2c8-2e54-49d0-95c7-539b71216b0f` (`G3_REVIEW_PASS_PR_READY`), `df002af4-7427-4518-9b66-e55417576cfa` (`G3_MERGE_READY_PRECONDITIONS_REVALIDATED`) et `759d2395-f2fc-4d2a-b2bf-6c6ba440908e` (`G3_MERGED_EXACT_HEAD`).
+- `TASK-20260914-002` reste sous Operational Memory au statut observé `MERGE_READY`, révision 9, Governed Session `c4f08e5c-aeba-4297-b711-5e6808227225`; statut, révision, locks et session doivent être relus dans les autorités runtime, jamais déduits de ce Markdown. Aucun DONE n'est anticipé par cette projection.
+- Gap résiduel non documentaire : `deploymentExactShaSuccess` reste `false` parce que le champ `runtimeRevision` de la tâche est encore `null`. La projection exige que la tâche enregistre elle-même son `runtimeRevision`, de sorte qu'un déploiement ultérieur sans rapport ne puisse pas vérifier rétroactivement une tâche; aucun redéploiement n'est donc requis ni autorisé pour lever ce gap.
+- La présente réconciliation descendante remplace uniquement la projection canonique C1 par le merge fonctionnel G3 attesté. Aucun code fonctionnel, registre, workflow, permission, secret ni remote n'est modifié.
+
+## Historique — C1 GitRegistry V2 verification gate déployé
+
+- GitHub main, S1 HEAD, S1 origin/main et runtime OCI ont été observés au SHA exact `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`; S1 est sur `main`, propre/read-only, fetch `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`, push `disabled://mcp-s1-read-only`, runtime running/healthy.
 - PR #83 `feat(registry): add fail-closed C1 activation readiness` a été fusionnée depuis le head exact `424508e244763fa00705b207daf834e7e2bdd1f0` au merge `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`.
 - Preuves : RED `af4ee0f7` / CI #854, GREEN `db703454` / CI #855, head documentaire `424508e2` / CI #856, CI PR #857, CI main #858 et Governed Deploy #37 (run `34779240457`) réussis.
 - Deploy #37 a attesté l'exact-SHA `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e` avec runtimeRevision identique, rollback non requis, health/OAuth/MCP auth sains.

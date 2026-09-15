@@ -234,7 +234,7 @@ Interdictions : aucun nouveau Session Manager, second GitRegistry, seconde Task 
 - Reste : Draft PR, revue, fusion, déploiement exact-SHA, Live State `FULLY_ALIGNED`, checkpoint terminal et clôture gouvernée.
 
 
-## Tâche gouvernée actuelle — TASK-20260913-002 — C1 GitRegistry V2 verification
+## Tâche précédente — TASK-20260913-002 — C1 GitRegistry V2 verification
 
 - [x] approuver le design C1 fail-closed sans activation implicite ;
 - [x] réutiliser l'unique GitRegistry V2 candidat et son dry-run read-only ;
@@ -249,3 +249,23 @@ Interdictions : aucun nouveau Session Manager, second GitRegistry, seconde Task 
 - [ ] ne passer aucun mapping `validated → active` avant preuves complètes, revue et autorisation explicite.
 
 Autorité : Operational Memory garde le statut/revision/locks/session courants. Le socle de vérification est livré ; GitRegistry V2 n'est pas activé.
+
+
+## Tâche gouvernée actuelle — TASK-20260914-002 — G3 Client Tool Surface Attestation V1
+
+- [x] attester la surface d'outils client via le modèle `CapabilityReality` existant et la provenance `CLIENT_ATTESTATION`, sans store, registre, cache, queue ni service parallèle ;
+- [x] produire le RED `f87baa4e` puis le GREEN `ae7bec13` du slot d'attestation borné ;
+- [x] produire le RED P2 `b2955874` test-only, démontrer le TRUE RED, puis le GREEN P2 `289b3b71` limité à `src/operationalMemory/types.ts` ;
+- [x] corriger P2 #1 : binding fail-closed de l'attestation à sa session gouvernée et à son `connectionContextId` parent quand ce binding existe ;
+- [x] corriger P2 #2 : `expiresAt > observedAt` et durée maximale de cinq minutes, sans nouvelle autorité de temps ;
+- [x] obtenir `validate` SUCCESS sur le head exact `289b3b71c8352738395bf290bc1ae10dc405ee15`, résoudre les deux threads P2 et enregistrer le checkpoint `d959f2c8-2e54-49d0-95c7-539b71216b0f` (`G3_REVIEW_PASS_PR_READY`) ;
+- [x] revalider les préconditions et enregistrer `df002af4-7427-4518-9b66-e55417576cfa` (`G3_MERGE_READY_PRECONDITIONS_REVALIDATED`) ;
+- [x] fusionner #87 sous garde `expected_head_sha` au merge `dc4698de66b7becfc924ea4fabe8037e089d3336` sous `G3_EXACT_HEAD_MERGE_AUTHORIZATION_V2`, puis attester Governed Deploy #39 et MCP CI #920 ;
+- [x] enregistrer le checkpoint post-merge `759d2395-f2fc-4d2a-b2bf-6c6ba440908e` (`G3_MERGED_EXACT_HEAD`) sur Live State `228` ;
+- [ ] projeter la preuve de déploiement exact-SHA déjà acquise en enregistrant le `runtimeRevision` attesté sur la tâche, afin que `deploymentExactShaSuccess` devienne vrai sans redéploiement ;
+- [ ] réconcilier le `DOCUMENTATION_DRIFT` post-déploiement par la présente projection canonique et obtenir un Live State sans contradiction documentaire ;
+- [ ] transitionner `MERGE_READY → VERIFYING → DONE` uniquement si les preuves live le permettent, puis checkpoint terminal, release locks, fermeture de session et réconciliation de la queue.
+
+Autorité : Operational Memory garde le statut, la révision, les locks et la session courants. Statut observé au moment de cette écriture : `MERGE_READY`, révision 9, Governed Session `c4f08e5c-aeba-4297-b711-5e6808227225`. Aucun DONE n'est anticipé par ce fichier.
+
+Frontières : aucune activation GitRegistry V2, aucun transport SSH, aucune délégation d'exécution externe, aucune permission supplémentaire, aucun secret et aucun déploiement manuel dans cette tâche. Le Git/GitHub Control Plane parallèle reste hors scope et ne précède pas C2 sans dépendance live prouvée.
