@@ -4,6 +4,16 @@
 Historique factuel des changements du depot MCP.
 
 
+## 2026-09-15 — Fondation Git/GitHub Control Plane candidate
+
+- Programme complet matérialisé dans `.mcp/git-github-capabilities.json` avec 170 capacités classifiées Git/GitHub, leurs effets et leur statut d'implémentation ; les portes dérobées restent explicitement `forbidden`.
+- Première vague fonctionnelle : 12 outils GitHub READ bornés pour repository, branche, commit, comparaison, PR/reviews, checks, workflows, rulesets, webhooks, releases et deployments.
+- Toutes les lectures bornent l'organisation à `GITHUB_ORG`, assainissent les réponses et n'exposent ni token, scopes bruts, permissions brutes, payload webhook secret ou patch GitHub complet.
+- Plan d'intégration versionné dans `docs/superpowers/plans/2026-09-15-git-github-control-plane-completion.md`; le manifeste de capacités ne remplace jamais la Governed Task Queue.
+- TDD fondation : RED `5449bbe4e730ddff55f3131c30c7b04f7e794b19` / CI #908 en échec attendu ; GREEN final `0571b175df91069c76e989328d6fc47f27178f3a` / CI #914 SUCCESS.
+- Cartographie runtime candidate : 124 outils, dont 80 READ et 44 WRITE, 2 resources ; digest `9372de56c4b806df00bf6d84b362ee8577820e6f91457b529143f9d576ba557a`.
+- Aucun merge, déploiement, mutation S1/S2/BRVM ou création de repository Shadow n'est impliqué par cette fondation.
+
 ## 2026-09-15 — Candidat GitHub repository creation gouverné
 
 - Ajout de la capacité bornée `github_create_repository` dans le MCP existant, sans nouveau MCP et sans surface GitHub API brute.

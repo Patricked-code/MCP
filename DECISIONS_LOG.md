@@ -4,6 +4,16 @@
 Journal des decisions structurantes du MCP.
 
 
+## 2026-09-15 — Git/GitHub Control Plane complet par capacités typées
+
+Décision : viser une couverture fonctionnelle complète de Git et GitHub dans le MCP existant, mais jamais sous forme de shell Git libre ou de proxy GitHub API générique. Les capacités sont inventoriées et classifiées dans `.mcp/git-github-capabilities.json`, puis implémentées par lots reviewables.
+
+Les opérations `git push --force`, `git reset --hard`, `git clean -fdx`, reflog destructif, GitHub raw API, suppression de repository, publication arbitraire et lecture de valeurs de secrets restent explicitement hors surface. Une opération exceptionnelle future devra recevoir son propre contrat et sa propre autorisation humaine bornée.
+
+Les capacités READ peuvent être exposées globalement quand elles sont assainies et bornées au contexte autorisé. Les capacités WRITE/ADMIN/SECURITY/PRODUCTION_EFFECT doivent traverser les gates dynamiques applicables ; le manifeste n'accorde aucun droit et n'est pas une Task Queue.
+
+La première fondation réutilise la connexion GitHub déjà introduite par le candidat #88 et ajoute uniquement 12 observations READ. Le programme est empilé afin que #88 reste reviewable séparément et puisse être validé avant les mutations GitHub supplémentaires.
+
 ## 2026-09-15 — Administration GitHub bornée dans le MCP existant
 
 Décision : étendre la connexion GitHub déjà présente dans `Patricked-code/MCP` plutôt que créer un second MCP ou une API GitHub générique. La première capacité est volontairement minimale : `github_create_repository` peut uniquement créer un repository privé et vide dans l'organisation exacte `GITHUB_ORG`.

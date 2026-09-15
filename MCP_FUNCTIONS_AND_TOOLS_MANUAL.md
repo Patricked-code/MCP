@@ -35,6 +35,26 @@ Les écritures sont limitées à des outils scoped-write et exigent une validati
 - outils write-scoped ;
 - outils SQL SELECT uniquement.
 
+## Git/GitHub Control Plane
+
+La couverture cible Git/GitHub est inventoriée dans `.mcp/git-github-capabilities.json`. Le manifeste classe les capacités et leurs risques mais ne crée aucune autorisation.
+
+Première vague candidate READ :
+- `github_get_repository_state`
+- `github_get_branch_state`
+- `github_get_commit_state`
+- `github_compare_refs`
+- `github_get_pull_request_state`
+- `github_get_pull_request_reviews`
+- `github_get_commit_checks`
+- `github_get_workflow_runs`
+- `github_get_rulesets`
+- `github_get_webhooks`
+- `github_get_releases`
+- `github_get_deployments`
+
+Toutes ces projections sont assainies et bornées à l'organisation configurée. Les capacités WRITE/ADMIN prévues restent non livrées tant que leur lot dédié n'a pas passé TDD, revue, merge et déploiement gouvernés.
+
 ## Outils read-only
 
 ping : vérifie que le MCP répond.
