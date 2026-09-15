@@ -35,19 +35,12 @@ try {
 if (current !== candidate) {
   const actual = current ? JSON.parse(current) : {};
   const expected = JSON.parse(candidate);
-  const actualTools = new Map((actual.tools ?? []).map((tool) => [tool.name, tool]));
-  const expectedTools = new Map((expected.tools ?? []).map((tool) => [tool.name, tool]));
-  const mismatchedTools = [...expectedTools.keys()]
-    .filter((name) => JSON.stringify(actualTools.get(name)) !== JSON.stringify(expectedTools.get(name)))
-    .slice(0, 20)
-    .map((name) => ({ name, actual: actualTools.get(name) ?? null, expected: expectedTools.get(name) ?? null }));
   process.stderr.write(JSON.stringify({
     error: 'FUNCTION_CARTOGRAPHY_STALE',
     actualToolCount: actual.registeredToolCount ?? null,
     expectedToolCount: expected.registeredToolCount,
     actualDigest: actual.catalogueDigest ?? null,
-    expectedDigest: expected.catalogueDigest,
-    mismatchedTools
+    expectedDigest: expected.catalogueDigest
   }));
   process.stderr.write('\n');
   process.exit(1);

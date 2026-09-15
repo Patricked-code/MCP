@@ -825,7 +825,8 @@
           },
           "pullRequestNumber": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 1,
+            "maximum": 9007199254740991
           }
         },
         "required": [
@@ -835,7 +836,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "9fc48ff8384cdcb876ee825e7669410b89cc7f52150785349114a647602719aa"
+      "contractDigest": "ee33d6da8c198c00e9a2dffa954153082508feb4ce90e6ca71ad498cb78668ee"
     },
     {
       "name": "github_get_pull_request_state",
@@ -864,7 +865,8 @@
           },
           "pullRequestNumber": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 1,
+            "maximum": 9007199254740991
           }
         },
         "required": [
@@ -874,7 +876,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "aca9f893ec51ea30dc0761c0ef16e0a284a5569a15ee65c9a50ddfdbb34283bf"
+      "contractDigest": "7f6ec30bac4b7b554b2ce0bdae6834bcf75bf3dd93d16cad027c795441d76ace"
     },
     {
       "name": "github_get_releases",
