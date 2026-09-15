@@ -42,7 +42,7 @@ export type GitHubJsonRequestOptions = {
   apiBase?: string;
   allowedHosts?: string;
   timeoutMs?: number;
-  method?: 'GET' | 'POST';
+  method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
   jsonBody?: unknown;
 };
 
@@ -128,7 +128,7 @@ export async function githubJsonRequest(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const method = options.method ?? 'GET';
-  const hasJsonBody = method === 'POST' && options.jsonBody !== undefined;
+  const hasJsonBody = method !== 'GET' && options.jsonBody !== undefined;
   const headers: Record<string, string> = {
     Authorization: `Bearer ${token}`,
     Accept: 'application/vnd.github+json',

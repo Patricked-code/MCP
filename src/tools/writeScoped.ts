@@ -8,6 +8,7 @@ import { registerLegacyVhostsScopedTools } from './legacyVhostsScoped.js';
 import { registerAmfRegistryTools } from './amfRegistry.js';
 import { registerSadiaafScopedTools } from './sadiaafScoped.js';
 import { registerGithubAdminTools } from './githubAdmin.js';
+import { registerGithubLifecycleWriteTools } from './githubLifecycle.js';
 import {
   assertScopedWriteToolsEnabled,
   assertSelectOnlyQuery,
@@ -420,6 +421,7 @@ node ${shellQuote(script)} ${quotedArgs}`;
   });
 
   registerGithubAdminTools(server);
+  registerGithubLifecycleWriteTools(server);
   registerSadiaafScopedTools(server);
   registerLegacyVhostsScopedTools(server);
   registerAmfRegistryTools(server);

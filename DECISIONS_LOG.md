@@ -4,6 +4,16 @@
 Journal des decisions structurantes du MCP.
 
 
+## 2026-09-15 — Lifecycle GitHub exact-head et fail-closed
+
+Décision : les mutations GitHub de branche, commit, fichier, pull request, review et merge sont exposées comme capacités séparées, jamais comme API GitHub brute. Chaque WRITE exige le hard gate `shadow_ready` en plus de l'activation globale des outils d'écriture.
+
+Les créations de commits utilisent l'API Git Data de manière transactionnelle logique : lecture du head exact, lecture du tree parent, blobs bornés, tree, commit parent exact, puis PATCH de la ref avec `force:false`. Une dérive du head bloque avant mutation de ref.
+
+La fusion d'une PR exige le head SHA attendu, une PR non Draft/non déjà fusionnée, une mergeability non fausse et aucun check-run en attente/échec observé. Les règles/reviews supplémentaires restent des preuves de gouvernance à composer par les autorités runtime ; cette primitive ne transforme pas un simple credential GitHub en autorisation.
+
+Les review threads utilisent des requêtes GraphQL hardcodées et assainies. Aucun endpoint GraphQL arbitraire n'est exposé.
+
 ## 2026-09-15 — Git/GitHub Control Plane complet par capacités typées
 
 Décision : viser une couverture fonctionnelle complète de Git et GitHub dans le MCP existant, mais jamais sous forme de shell Git libre ou de proxy GitHub API générique. Les capacités sont inventoriées et classifiées dans `.mcp/git-github-capabilities.json`, puis implémentées par lots reviewables.

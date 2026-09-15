@@ -4,6 +4,17 @@
 Historique factuel des changements du depot MCP.
 
 
+## 2026-09-15 — GitHub lifecycle gouverné candidate
+
+- Ajout de 18 capacités GitHub lifecycle : 6 READ et 12 scoped-write, empilées sur la fondation du Control Plane.
+- READ : commits, diff résumé sans patch, tree sans blobs, review threads, mergeability et required checks/rules.
+- WRITE : création/suppression de branche, commit multi-fichiers, create/update/delete file par commit, création/mise à jour PR, ready-for-review, demande de reviewers, réponse/résolution de thread et merge.
+- Toutes les mutations exigent `ENABLE_WRITE_TOOLS=true` et `shadow_ready`. Les branches/commits/merge sont liés à des SHA exacts ; les refs sont avancées avec `force:false`.
+- Le merge refuse head stale, Draft, PR déjà mergée, mergeability fausse ou check-runs non verts avant tout PUT de fusion.
+- RED `5136feadbd1e7b48216e5de8d93593423a4d9678` / CI #918 ; GREEN final `64d48f3e9fd3d852297d1f213c625eb7494d8425` / CI #922 SUCCESS.
+- Cartographie candidate : 142 outils (86 READ, 56 WRITE), 2 resources, digest `c3568d8a8854168c3fa1cd139c711512542832330153f382a8b061745b7a0128`.
+- Aucun merge, déploiement, mutation de repository cible, BRVM, S1/S2 ou DB production n'a lieu dans ce lot.
+
 ## 2026-09-15 — Fondation Git/GitHub Control Plane candidate
 
 - Programme complet matérialisé dans `.mcp/git-github-capabilities.json` avec 170 capacités classifiées Git/GitHub, leurs effets et leur statut d'implémentation ; les portes dérobées restent explicitement `forbidden`.
