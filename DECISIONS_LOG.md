@@ -569,3 +569,11 @@ Décision de compatibilité : le `projectId` validé du mapping est suffisant po
 Décision de sécurité : la projection C2 exclut permissions, grants, credentials, chemins serveur et capacités de déploiement. Le cache Governed Context existant propage cache-miss/staleness fail-closed ; aucune donnée secrète ou transport brut n'est introduit.
 
 Preuve TDD : RED initial `f71704dbfd2ad3fe2ba7c8545fa157435e97de7e` / CI #933 ; GREEN `45adc85925bf819b8c71df4621315e95bc3154ca` / CI #935 ; RED historique MCP `6fc9c74b3a405a69f23e13d80c4557fa1d5b4538` / CI #937 ; GREEN `d71ba1671adcadf94f263f00ec6eef02d915663f` / CI #939.
+
+## 2026-09-15 — Livraison fonctionnelle C2 et réconciliation descendante
+
+Décision de livraison : PR #92 est fusionnée sous garde du head exact `8b71f14f9a4884d57699e093853f4ccfb84080ef` au merge `46d576e53820eba0360647b6fd96d41dd4a2bbc6`. MCP CI main #944 et Governed Deploy #41 réussissent sur ce même SHA ; GitHub main, S1 HEAD/origin-main et runtime healthy sont observés alignés.
+
+Décision de preuve : la Task enregistre `runtimeRevision=46d576e53820eba0360647b6fd96d41dd4a2bbc6` sans redéploiement manuel. La seule contradiction résiduelle est documentaire ; elle se corrige par une branche/PR docs-only descendante, puis nouvelle observation Live State avant toute transition `VERIFYING` ou `DONE`.
+
+Décision de frontière : la livraison C2 n'active pas GitRegistry V2, n'élargit aucune permission, n'autorise aucun déploiement de projet et ne modifie pas le WRITE gate `shadow`. C3 reste un lot distinct après clôture gouvernée de C2.

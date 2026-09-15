@@ -1,14 +1,13 @@
 # CHANGELOG.md
 
-## 2026-09-15 — C2 Repository → Project Resolution en Draft PR
+## 2026-09-15 — C2 Repository → Project Resolution fusionnée et déployée
 
-- Ajout additif du resolver C2 `repositoryId → mappingId → projectId` dans le chemin Governed Context existant, avec statuts bornés `RESOLVED/NONE/AMBIGUOUS/UNVERIFIED`.
-- Réutilisation de l'unique GitRegistry via une projection d'évidence V2 dry-run bornée ; aucune activation V2, aucun second registre/store/cache et aucune permission nouvelle.
-- Séparation explicite entre identité de mapping et `activationReadiness` C1 : un mapping peut être structurellement `RESOLVED` tout en restant opérationnellement `BLOCKED`.
-- Compatibilité historique `Patricked-code/MCP` préservée lorsque le mapping porte `projectId=mcp_bridge` sans fiche projet dédiée ; les métadonnées absentes restent nulles et une référence présente mais incohérente reste fail-closed.
-- TDD : RED `f71704db` / CI #933, GREEN `45adc859` / CI #935, RED compatibilité `6fc9c74b` / CI #937, GREEN `d71ba167` / CI #939.
-- PR #92 reste Draft/non fusionnée à ce checkpoint ; aucun déploiement ni statut terminal n'est déclaré ici.
-
+- Ajout additif du resolver C2 `repositoryId → mappingId → projectId` dans le Governed Context existant, avec `RESOLVED/NONE/AMBIGUOUS/UNVERIFIED`.
+- Réutilisation de B2 et de l'unique GitRegistry via le candidat V2 dry-run ; aucune activation V2, aucun second registre/store/cache et aucune permission nouvelle.
+- Compatibilité historique `Patricked-code/MCP → mcp_bridge` préservée lorsque le mapping porte le `projectId` sans fiche projet dédiée ; toute référence présente mais contradictoire reste fail-closed.
+- TDD : RED `f71704db` / CI #933, GREEN `45adc859` / CI #935, RED MCP `6fc9c74b` / CI #937, GREEN `d71ba167` / CI #939, head final `8b71f14f` / CI #943.
+- PR #92 fusionnée au merge `46d576e53820eba0360647b6fd96d41dd4a2bbc6`; MCP CI main #944 et Governed Deploy #41 réussis ; GitHub/S1/origin-main/runtime sont alignés sur ce SHA, runtime healthy.
+- `TASK-20260915-001` est observée `DEPLOYING` révision 10 avec le même `runtimeRevision`; la réconciliation docs-only reste nécessaire avant `VERIFYING/DONE`.
 
 ## Role
 Historique factuel des changements du depot MCP.
