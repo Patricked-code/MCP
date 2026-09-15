@@ -79,6 +79,8 @@ export const ClientToolSurfaceCapabilitySchema = z.object({
 }).strict();
 export type ClientToolSurfaceCapability = z.infer<typeof ClientToolSurfaceCapabilitySchema>;
 
+const MAX_CLIENT_TOOL_SURFACE_ATTESTATION_VALIDITY_MS = 5 * 60 * 1_000;
+
 const ClientToolSurfaceProvenanceSchema = z.string()
   .trim()
   .min(1)
@@ -97,7 +99,27 @@ export const ClientToolSurfaceAttestationSchema = z.object({
   provenance: z.array(ClientToolSurfaceProvenanceSchema)
     .max(20)
     .refine((entries) => new Set(entries).size === entries.length, 'provenance entries must be unique')
-}).strict();
+}).strict().superRefine((attestation, context) => {
+  const observedAtMs = Date.parse(attestation.observedAt);
+  const expiresAtMs = Date.parse(attestation.expiresAt);
+
+  if (expiresAtMs <= observedAtMs) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['expiresAt'],
+      message: 'expiresAt must be strictly after observedAt'
+    });
+    return;
+  }
+
+  if (expiresAtMs - observedAtMs > MAX_CLIENT_TOOL_SURFACE_ATTESTATION_VALIDITY_MS) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['expiresAt'],
+      message: 'attestation validity must not exceed the maximum bounded lifetime'
+    });
+  }
+});
 export type ClientToolSurfaceAttestation = z.infer<typeof ClientToolSurfaceAttestationSchema>;
 
 export const GovernedSessionRecordSchema = z.object({
@@ -128,7 +150,31 @@ export const GovernedSessionRecordSchema = z.object({
   nextAction: z.string().trim().min(1).max(500).nullable(),
   lockIds: z.array(GovernedIdSchema).max(64),
   resumePolicy: z.literal('stable_principal_or_resume_secret')
-}).strict();
+}).strict().superRefine((record, context) => {
+  const attestation = record.clientToolSurfaceAttestation;
+  if (!attestation) return;
+
+  if (attestation.governedSessionId !== record.governedSessionId) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['clientToolSurfaceAttestation', 'governedSessionId'],
+      message: 'attestation governedSessionId must match the containing governed session'
+    });
+  }
+
+  const parentConnectionContextId = record.connectionContext?.connectionContextId ?? null;
+  if (
+    parentConnectionContextId !== null
+    && attestation.connectionContextId !== null
+    && attestation.connectionContextId !== parentConnectionContextId
+  ) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['clientToolSurfaceAttestation', 'connectionContextId'],
+      message: 'attestation connectionContextId must match the containing connection context'
+    });
+  }
+});
 export type GovernedSessionRecord = z.infer<typeof GovernedSessionRecordSchema>;
 export type GovernedSessionPublicRecord = Omit<GovernedSessionRecord, 'resumeSecretHash'>;
 
