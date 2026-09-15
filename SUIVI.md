@@ -13,9 +13,21 @@
 }
 ```
 
-Date : 2026-09-13
+Date : 2026-09-15
 
-## Point courant — C1 GitRegistry V2 verification gate déployé
+## Candidat en cours — GitHub repository creation gouverné (NON LIVRÉ)
+
+- Demande utilisateur : rendre le MCP existant capable de créer lui-même un repository d'organisation, notamment le futur Shadow BRVM, sans créer un second MCP.
+- Branche isolée : `mcp/github-admin-repository-create-20260915`, issue de `main@555a51d0648ef796eba4868282942055a2f67a65`. Elle est distincte de la PR #87 et ne reprend aucun scope G3.
+- RED `8e9ef1d975642904490f2972b4cb45d95e6a729a` : CI #900 échoue uniquement sur le nouveau contrat absent (`ERR_MODULE_NOT_FOUND`), tandis que 322 tests historiques passent.
+- GREEN fonctionnel `cf9b937294da067a7a192198b8d8d8b1e0a438dd` : typecheck et build réussissent ; le seul arrêt CI avant réconciliation est la cartographie runtime attendue à 112 outils au lieu de 111.
+- Architecture : réutilisation de `src/github/connection.ts` et du secret storage existant ; aucun GitHub raw API tool, nouveau registre, store, MCP, token commité ou identité parallèle.
+- Contrat V1 : organisation exactement `GITHUB_ORG`, repository privé et vide, GET d'idempotence avant POST, refus d'un homonyme public, course 422 réconciliée par GET, sortie strictement assainie.
+- Gouvernance : scoped-write + `ENABLE_WRITE_TOOLS` + hard gate `shadow_ready` avant mutation. Une permission GitHub ne vaut pas autorisation. Aucun identifiant `TASK-*` n'est inventé ici : Task/Session/locks/receipt restent exclusivement sous Operational Memory et devront être réobservés avant merge, déploiement ou invocation runtime.
+- Frontières : `Brvmchainsolutionstest` n'est pas encore créé ; BRVM Truth, S1, S2 et les bases de production ne sont pas modifiés par ce candidat.
+- Prochaine étape : obtenir CI complète verte sur le head documentaire/cartographie, ouvrir une Draft PR, revue exact-head, puis attendre une Task gouvernée dédiée avant tout merge/déploiement.
+
+## Baseline documentaire — C1 GitRegistry V2 verification gate déployé
 
 - GitHub main, S1 HEAD, S1 origin/main et runtime OCI sont observés au SHA exact `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`; S1 est sur `main`, propre/read-only, fetch `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`, push `disabled://mcp-s1-read-only`, runtime running/healthy.
 - PR #83 `feat(registry): add fail-closed C1 activation readiness` a été fusionnée depuis le head exact `424508e244763fa00705b207daf834e7e2bdd1f0` au merge `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`.

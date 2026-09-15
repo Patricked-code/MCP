@@ -4,6 +4,15 @@
 Historique factuel des changements du depot MCP.
 
 
+## 2026-09-15 — Candidat GitHub repository creation gouverné
+
+- Ajout de la capacité bornée `github_create_repository` dans le MCP existant, sans nouveau MCP et sans surface GitHub API brute.
+- Le service utilise la connexion GitHub serveur existante, borne l'organisation à `GITHUB_ORG`, crée uniquement du privé/vide, traite l'existant de manière idempotente et refuse un homonyme public.
+- `githubJsonRequest` accepte désormais GET/POST JSON de façon bornée tout en conservant HTTPS, allowlist d'hôtes, timeout, redirect=error et limite de réponse.
+- L'outil exige `ENABLE_WRITE_TOOLS=true` et un verdict gouverné `shadow_ready` avant la mutation ; un blocker de session/Task/Live State/receipt/lock devient bloquant pour cette capacité.
+- TDD : RED `8e9ef1d975642904490f2972b4cb45d95e6a729a` avec 322 tests historiques verts et l'échec attendu `ERR_MODULE_NOT_FOUND`; GREEN code `cf9b937294da067a7a192198b8d8d8b1e0a438dd` typecheck/build verts, cartographie passée de 111 à 112 outils avant la présente réconciliation.
+- Aucun repository Shadow n'est créé par ce changement, aucun secret n'est ajouté et aucune mutation n'est faite sur BRVM, S1 ou S2. Merge/déploiement/invocation runtime restent séparément gouvernés.
+
 ## 2026-09-13 — AfricaFunds Phase 2 livrée, réconciliation terminale
 
 PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a` au merge `1eac93f631fcf7843d7e768bba7a4125ed00bdbb`; CI PR #841, CI main #842 et Governed Deploy #34 (run `34750625897`) réussis.

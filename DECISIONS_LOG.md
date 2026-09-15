@@ -4,6 +4,16 @@
 Journal des decisions structurantes du MCP.
 
 
+## 2026-09-15 — Administration GitHub bornée dans le MCP existant
+
+Décision : étendre la connexion GitHub déjà présente dans `Patricked-code/MCP` plutôt que créer un second MCP ou une API GitHub générique. La première capacité est volontairement minimale : `github_create_repository` peut uniquement créer un repository privé et vide dans l'organisation exacte `GITHUB_ORG`.
+
+Sécurité : la mutation est scoped-write, derrière `ENABLE_WRITE_TOOLS`, et ajoute un hard gate local qui exige le verdict `shadow_ready` avant l'appel GitHub. Ce verrou est plus strict que l'observation historique du WRITE gate général en mode shadow. Une permission GitHub ou un credential techniquement capable ne devient jamais une autorisation de gouvernance.
+
+Non-régression : l'appel commence par une lecture idempotente, refuse un dépôt public homonyme, réconcilie une course GitHub 422 par relecture, assainit les réponses et n'expose aucun secret. Aucun endpoint GitHub arbitraire, webhook, ruleset, Project ou gestion de GitHub App n'est introduit dans ce lot.
+
+Frontière : cette décision fournit une capacité au MCP seulement. Elle ne crée pas encore `chainsolutions-wealthtech/Brvmchainsolutionstest`, ne modifie pas BRVM Truth, S2 ou la base de production et ne vaut ni merge ni déploiement. L'identifiant de Task officielle reste sous Operational Memory et ne doit pas être inventé dans la documentation.
+
 ## 2026-09-13 — AfricaFunds Phase 2 livrée, réconciliation terminale
 
 PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a` au merge `1eac93f631fcf7843d7e768bba7a4125ed00bdbb`; CI PR #841, CI main #842 et Governed Deploy #34 (run `34750625897`) réussis.
