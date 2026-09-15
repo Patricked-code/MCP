@@ -70,6 +70,36 @@ export const GovernedCheckpointSchema = z.object({
 }).strict();
 export type GovernedCheckpoint = z.infer<typeof GovernedCheckpointSchema>;
 
+export const ClientToolSurfaceCapabilitySchema = z.object({
+  name: z.string().trim().min(1).max(160).regex(/^[A-Za-z0-9][A-Za-z0-9._:/-]*$/),
+  callability: z.enum(['CALLABLE', 'NOT_CALLABLE', 'UNKNOWN']),
+  source: z.literal('CLIENT_ATTESTATION'),
+  provider: z.string().trim().min(1).max(80).regex(/^[a-z0-9][a-z0-9._-]*$/),
+  repositoryScope: z.literal('Patricked-code/MCP')
+}).strict();
+export type ClientToolSurfaceCapability = z.infer<typeof ClientToolSurfaceCapabilitySchema>;
+
+const ClientToolSurfaceProvenanceSchema = z.string()
+  .trim()
+  .min(1)
+  .max(80)
+  .regex(/^[a-z0-9][a-z0-9._:-]*$/);
+
+export const ClientToolSurfaceAttestationSchema = z.object({
+  schemaVersion: z.literal(1),
+  attestationId: GovernedIdSchema,
+  governedSessionId: GovernedIdSchema,
+  connectionContextId: GovernedIdSchema.nullable(),
+  surface: z.string().trim().min(1).max(80).regex(/^[a-z0-9][a-z0-9._:-]*$/),
+  observedAt: TimestampSchema,
+  expiresAt: TimestampSchema,
+  capabilities: z.array(ClientToolSurfaceCapabilitySchema).min(1).max(256),
+  provenance: z.array(ClientToolSurfaceProvenanceSchema)
+    .max(20)
+    .refine((entries) => new Set(entries).size === entries.length, 'provenance entries must be unique')
+}).strict();
+export type ClientToolSurfaceAttestation = z.infer<typeof ClientToolSurfaceAttestationSchema>;
+
 export const GovernedSessionRecordSchema = z.object({
   schemaVersion: z.literal(1),
   governedSessionId: GovernedIdSchema,
@@ -91,6 +121,7 @@ export const GovernedSessionRecordSchema = z.object({
   lastAcknowledgedStateVersion: z.number().int().nonnegative().nullable(),
   bootstrapReceipt: BootstrapReceiptSchema.nullable().optional(),
   connectionContext: ConnectionContextSchema.nullable().optional(),
+  clientToolSurfaceAttestation: ClientToolSurfaceAttestationSchema.nullable().optional(),
   sessionRevision: z.number().int().nonnegative(),
   lastCheckpoint: GovernedCheckpointSchema.nullable(),
   blockers: z.array(BlockerSchema).max(20),
