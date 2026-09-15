@@ -15,6 +15,16 @@
 
 Date : 2026-09-15
 
+## Candidat empilé — GitHub Lifecycle Control (NON LIVRÉ)
+
+- Branche `mcp/github-lifecycle-control-20260915`, empilée depuis `mcp/git-github-control-plane-foundation-20260915@5bc82c175311a76c2b70ec1b55ecc659ac692549`.
+- RED `5136feadbd1e7b48216e5de8d93593423a4d9678` / CI #918 : nouveau module lifecycle absent, échec attendu.
+- GREEN exact `64d48f3e9fd3d852297d1f213c625eb7494d8425` / CI #922 SUCCESS : typecheck, build, docs/cartographie, gouvernance, secret scan, read-only safety et whitespace tous verts.
+- Surface candidate : +6 READ et +12 WRITE ; total cartographié 142 outils = 86 READ + 56 WRITE, 2 resources, digest `c3568d8a8854168c3fa1cd139c711512542832330153f382a8b061745b7a0128`.
+- Garde-fous : organisation bornée, refs/paths validés, SHA exacts, `force:false`, hard gate `shadow_ready`, GraphQL hardcodé uniquement, réponses assainies.
+- Aucun merge/déploiement/invocation runtime n'est autorisé par ce Markdown. Task/Session/locks/receipt restent sous Operational Memory.
+- Prochaine étape programme : Draft PR empilée, puis lot GitHub Administration (settings/rulesets/webhooks/environments/variables/secrets).
+
 ## Candidat empilé — Git/GitHub Control Plane Foundation (NON LIVRÉ)
 
 - Demande utilisateur : intégrer la surface Git et GitHub utile de bout en bout dans le MCP existant, avec gouvernance et sans shell/API brute.

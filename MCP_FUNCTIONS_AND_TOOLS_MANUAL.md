@@ -55,6 +55,12 @@ Première vague candidate READ :
 
 Toutes ces projections sont assainies et bornées à l'organisation configurée. Les capacités WRITE/ADMIN prévues restent non livrées tant que leur lot dédié n'a pas passé TDD, revue, merge et déploiement gouvernés.
 
+### Lifecycle GitHub candidat
+
+La vague lifecycle ajoute les lectures `github_get_commits`, `github_get_commit_diff`, `github_get_tree`, `github_get_review_threads`, `github_get_mergeability` et `github_get_required_checks`.
+
+Les mutations candidates sont `github_create_branch`, `github_delete_branch`, `github_create_commit`, `github_create_or_update_file`, `github_delete_file`, `github_create_pull_request`, `github_update_pull_request`, `github_mark_pr_ready`, `github_request_review`, `github_reply_review_thread`, `github_resolve_review_thread` et `github_merge_pull_request`. Elles restent indisponibles en runtime tant que leur chaîne gouvernée de merge/déploiement n'est pas terminée.
+
 ## Outils read-only
 
 ping : vérifie que le MCP répond.
