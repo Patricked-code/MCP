@@ -9,6 +9,7 @@ import { GovernedSessionRecordSchema } from '../src/operationalMemory/types.js';
 
 const NOW = '2026-09-15T00:00:00.000Z';
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
+const CONNECTION_CONTEXT_ID = '33333333-3333-4333-8333-333333333333';
 
 function historicalSession() {
   return {
@@ -72,6 +73,68 @@ test('G3 RED: governed session accepts a bounded current client tool surface att
     true,
     'missing G3 integration slot: GovernedSession rejects clientToolSurfaceAttestation'
   );
+});
+
+test('G3 P2: rejects an attestation bound to a different governed session', () => {
+  const parsed = GovernedSessionRecordSchema.safeParse({
+    ...historicalSession(),
+    clientToolSurfaceAttestation: {
+      ...safeAttestation(),
+      governedSessionId: '44444444-4444-4444-8444-444444444444'
+    }
+  });
+
+  assert.equal(parsed.success, false);
+});
+
+test('G3 P2: rejects an attestation bound to a different connection context', () => {
+  const parsed = GovernedSessionRecordSchema.safeParse({
+    ...historicalSession(),
+    connectionContext: {
+      schemaVersion: 1,
+      connectionContextId: CONNECTION_CONTEXT_ID,
+      governedSessionId: SESSION_ID,
+      repository: 'Patricked-code/MCP',
+      principalId: 'oauth:wealthtech-mcp-admin',
+      observedClientId: null,
+      identityAssurance: 'oauth_subject',
+      clientClassification: 'UNRESOLVED',
+      evidenceSource: 'oauth_auth_info',
+      createdAt: NOW
+    },
+    clientToolSurfaceAttestation: {
+      ...safeAttestation(),
+      connectionContextId: '55555555-5555-4555-8555-555555555555'
+    }
+  });
+
+  assert.equal(parsed.success, false);
+});
+
+test('G3 P2: rejects non-positive attestation validity intervals', () => {
+  for (const expiresAt of [NOW, '2026-09-14T23:59:59.999Z']) {
+    const parsed = GovernedSessionRecordSchema.safeParse({
+      ...historicalSession(),
+      clientToolSurfaceAttestation: {
+        ...safeAttestation(),
+        expiresAt
+      }
+    });
+
+    assert.equal(parsed.success, false, `expected ${expiresAt} to be rejected`);
+  }
+});
+
+test('G3 P2: rejects attestation validity beyond the canonical five-minute bound', () => {
+  const parsed = GovernedSessionRecordSchema.safeParse({
+    ...historicalSession(),
+    clientToolSurfaceAttestation: {
+      ...safeAttestation(),
+      expiresAt: '2026-09-15T00:05:00.001Z'
+    }
+  });
+
+  assert.equal(parsed.success, false);
 });
 
 test('G3 contract: absence of client attestation remains UNKNOWN and fail-closed', () => {
