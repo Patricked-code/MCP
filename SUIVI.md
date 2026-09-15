@@ -15,7 +15,19 @@
 
 Date : 2026-09-15
 
-## Point courant — G3 Client Tool Surface Attestation V1 fusionnée et déployée
+## Point courant — C2 Repository → Project Resolution fusionnée et déployée
+
+- GitHub main, S1 HEAD, S1 origin/main et runtime OCI sont observés au SHA exact `46d576e53820eba0360647b6fd96d41dd4a2bbc6`; S1 est sur `main`, propre/read-only, fetch `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`, push `disabled://mcp-s1-read-only`, runtime running/healthy.
+- PR #92 a été fusionnée depuis le head exact `8b71f14f9a4884d57699e093853f4ccfb84080ef` au merge `46d576e53820eba0360647b6fd96d41dd4a2bbc6`; le merge commit conserve comme parents `a533eeca5ca9e37fcad51ded161a2f1c8736c7fd` et `8b71f14f9a4884d57699e093853f4ccfb84080ef`.
+- TDD conservé dans l'historique : RED initial `f71704db` / CI #933, GREEN `45adc859` / CI #935, RED compatibilité MCP `6fc9c74b` / CI #937, GREEN `d71ba167` / CI #939, puis head documentaire/whitespace final `8b71f14f` / CI #943.
+- MCP CI main #944 et Governed Deploy #41 (run `34925946935`) sont `SUCCESS` sur le merge exact `46d576e53820eba0360647b6fd96d41dd4a2bbc6`. Le déploiement est la conséquence gouvernée du merge via `pushEnabled: true`; aucun deploy, sync ou restart manuel n'a été exécuté.
+- C2 résout `repositoryId → mappingId → projectId` avec `RESOLVED | NONE | AMBIGUOUS | UNVERIFIED`, en réutilisant B2 et l'unique GitRegistry existant. Le candidat GitRegistry V2 reste dry-run et aucune activation V2, permission, credential, serverPath ou capability de déploiement n'est ajoutée.
+- La compatibilité historique `Patricked-code/MCP → mcp_bridge` est conservée même sans fiche `projects[]` dédiée : le `projectId` porté par le mapping suffit à C2 ; une fiche projet présente mais incohérente reste fail-closed `UNVERIFIED`.
+- `activationReadiness` C1 reste séparée de l'identité C2 : un mapping peut être C2 `RESOLVED` tout en restant opérationnellement `BLOCKED`, avec ses reason codes visibles et sans autorisation implicite.
+- Operational Memory observe `TASK-20260915-001` en `DEPLOYING` révision 10, `runtimeRevision=46d576e53820eba0360647b6fd96d41dd4a2bbc6`, GitHub/S1/runtime alignés et healthy. Le seul blocker restant avant cette réconciliation descendante est `DOCUMENTATION_DRIFT`.
+- La présente branche `mcp/c2-terminal-documentation-20260915` est strictement documentaire. Elle ne pré-déclare ni `VERIFYING`, ni `DONE`, ni fermeture de session : ces états restent exclusivement sous Operational Memory après merge, autodeploy et nouvelle observation Live State.
+
+## Historique — G3 Client Tool Surface Attestation V1 fusionnée et déployée
 
 - GitHub main, S1 HEAD, S1 origin/main et runtime OCI sont observés au SHA exact `dc4698de66b7becfc924ea4fabe8037e089d3336`; S1 est sur `main`, propre/read-only, fetch `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`, push `disabled://mcp-s1-read-only`, runtime running/healthy.
 - PR #87 a été fusionnée depuis le head exact revu `289b3b71c8352738395bf290bc1ae10dc405ee15` au merge `dc4698de66b7becfc924ea4fabe8037e089d3336`, sous l'autorisation humaine distincte et bornée `G3_EXACT_HEAD_MERGE_AUTHORIZATION_V2`. Le merge commit a pour parents `555a51d0` et `289b3b71`.
@@ -29,17 +41,6 @@ Date : 2026-09-15
 - Contradiction restante observée avant la présente réconciliation : `DOCUMENTATION_DRIFT` uniquement.
 - La présente réconciliation descendante remplace uniquement la projection canonique C1 par le merge fonctionnel G3 attesté. Aucun code fonctionnel, registre, workflow, permission, secret ni remote n'est modifié.
 
-## Chantier courant — C2 Repository → Project Resolution en Draft PR
-
-- Autorité runtime : `TASK-20260915-001` est `IN_PROGRESS` sous Operational Memory ; son statut, sa révision, son owner, ses locks et sa session doivent être relus depuis les autorités dynamiques.
-- Baseline GitHub observée au démarrage C2 : `main@a533eeca5ca9e37fcad51ded161a2f1c8736c7fd`. Branche gouvernée : `mcp/c2-repository-project-resolution-20260915`. Draft PR : #92.
-- Contrat C2 canonique : résoudre `repositoryId → mappingId → projectId` avec résultats bornés `RESOLVED | NONE | AMBIGUOUS | UNVERIFIED`, en composant B2 et l'unique GitRegistry existant ; aucun registre, store, cache ou moteur parallèle n'est créé.
-- TDD publié : RED initial `f71704dbfd2ad3fe2ba7c8545fa157435e97de7e` / CI #933, échec unique attendu `ERR_MODULE_NOT_FOUND` ; GREEN `45adc85925bf819b8c71df4621315e95bc3154ca` / CI #935 entièrement verte.
-- Régression de compatibilité historique MCP : RED `6fc9c74b3a405a69f23e13d80c4557fa1d5b4538` / CI #937, échec unique `actual=UNVERIFIED / expected=RESOLVED` lorsque le mapping porte `projectId=mcp_bridge` sans fiche `projects[]`; GREEN `d71ba1671adcadf94f263f00ec6eef02d915663f` / CI #939 entièrement verte.
-- Le resolver distingue identité de binding et activation opérationnelle : un mapping structurellement résolu peut rester `activationReadiness=BLOCKED` sans rendre C2 globalement `UNVERIFIED`; les reason codes C1 restent visibles séparément.
-- Le cas historique `Patricked-code/MCP` reste compatible : le `projectId` porté par le mapping V2 candidat suffit à C2, tandis que les métadonnées de projet absentes restent `null`. Une fiche projet présente mais incohérente reste fail-closed `UNVERIFIED`.
-- La projection C2 exclut permissions, grants, credentials, serverPath et capacités de déploiement. GitRegistry V2 reste un candidat dry-run ; aucune activation V2, permission WRITE, migration, mutation serveur ou écriture directe S1 n'est autorisée par ce lot.
-- État de livraison à ce checkpoint documentaire : PR #92 toujours non fusionnée. Aucun merge, autodeploy, runtimeRevision, VERIFYING ou DONE n'est anticipé par cette documentation.
 
 ## Historique — C1 GitRegistry V2 verification gate déployé
 

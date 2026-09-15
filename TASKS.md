@@ -199,20 +199,23 @@ Preuves de clôture acquises :
 ## Tâche gouvernée courante — TASK-20260915-001 — C2 Repository → Project Resolution
 
 - [x] enregistrer et claim la Task C2 existante sous Governed Session ;
-- [x] utiliser un lock minimal `resource:project-binding:repository-project-resolution` ;
-- [x] créer une unique branche gouvernée depuis le SHA exact de `main` ;
-- [x] produire le RED initial `f71704db` et observer CI #933 en échec uniquement sur le module C2 absent ;
-- [x] produire le GREEN `45adc859` et obtenir CI #935 entièrement verte ;
-- [x] ajouter la régression historique MCP `6fc9c74b` et observer CI #937 en échec ciblé ;
-- [x] corriger additivement au GREEN `d71ba167` et obtenir CI #939 entièrement verte ;
-- [x] préserver `RESOLVED/NONE/AMBIGUOUS/UNVERIFIED`, fail-closed, sans permission ni activation V2 implicite ;
-- [ ] terminer la revue exacte de PR #92 et satisfaire les protections GitHub ;
-- [ ] fusionner uniquement le head exact accepté ;
-- [ ] laisser l'Autodeploy gouverné attester le merge exact-SHA ;
-- [ ] réconcilier Live State et la documentation descendante ;
-- [ ] transitionner C2 jusqu'à `DONE`, checkpoint, release lock et fermeture de session uniquement sur preuves runtime.
+- [x] utiliser le lock minimal `resource:project-binding:repository-project-resolution` ;
+- [x] créer une unique branche fonctionnelle gouvernée depuis le SHA exact de `main` ;
+- [x] produire le RED initial `f71704db` / CI #933 puis le GREEN `45adc859` / CI #935 ;
+- [x] produire le RED historique MCP `6fc9c74b` / CI #937 puis le GREEN `d71ba167` / CI #939 ;
+- [x] obtenir le head final `8b71f14f9a4884d57699e093853f4ccfb84080ef` avec CI #943 entièrement verte ;
+- [x] vérifier protect-main, zéro thread bloquant et zéro approbation obligatoire ;
+- [x] fusionner PR #92 sous garde exact-head au merge `46d576e53820eba0360647b6fd96d41dd4a2bbc6` ;
+- [x] attester MCP CI main #944 et Governed Deploy #41 sur `46d576e53820eba0360647b6fd96d41dd4a2bbc6` ;
+- [x] observer GitHub/S1/origin-main/runtime exact-SHA, S1 propre/read-only et runtime healthy ;
+- [x] enregistrer `runtimeRevision=46d576e53820eba0360647b6fd96d41dd4a2bbc6` sur la Task sans redéploiement manuel ;
+- [x] ouvrir la réconciliation docs-only `mcp/c2-terminal-documentation-20260915` depuis le merge attesté ;
+- [ ] obtenir CI/revue/merge/autodeploy de la réconciliation documentaire ;
+- [ ] obtenir Live State sans `DOCUMENTATION_DRIFT` ;
+- [ ] transitionner C2 vers `VERIFYING` puis `DONE` uniquement sur preuves ;
+- [ ] checkpoint terminal, release lock, fermeture de session et réconciliation de la queue.
 
-Autorité : le statut courant reste Operational Memory ; cette liste ne pré-déclare ni merge, ni déploiement, ni état terminal.
+Autorité : Operational Memory observe actuellement C2 en `DEPLOYING` révision 10. Ce fichier ne pré-déclare aucun état terminal.
 
 ## Prochaines tâches candidates — après C2
 
