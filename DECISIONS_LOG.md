@@ -540,3 +540,20 @@ Preuve TDD : RED #854 sur `af4ee0f7`, puis GREEN #855 sur `db703454`. Le présen
 Décision de livraison : le socle fail-closed est fusionné par PR #83 au merge `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`, avec CI PR #857, CI main #858 et Governed Deploy #37 réussis. Live State 217 atteste GitHub/S1/runtime exact-SHA mais exige une réconciliation documentaire descendante avant de considérer la projection canonique alignée.
 
 Décision de frontière : cette livraison n'autorise toujours aucune activation V2. Credential Wealthtechinnovations, preuves path/remote/domain et migration MCP restent des gates distincts ; aucun d'eux ne peut être déduit du simple déploiement du verdict de readiness.
+
+
+## 2026-09-15 — G3 attestation liée à sa session et bornée dans le temps
+
+Décision de correction P2 : une attestation de surface d'outils client n'a de sens que rattachée à la session gouvernée qui la contient. Le `GovernedSessionRecord` valide donc de façon croisée et fail-closed que `clientToolSurfaceAttestation.governedSessionId` égale le `governedSessionId` parent, et que le `connectionContextId` non nul de l'attestation égale celui du `connectionContext` parent lorsque ce binding existe dans le contrat applicable. Une attestation appartenant à une autre session ou à un autre contexte n'est jamais acceptée comme preuve de la session contenante.
+
+Décision de borne temporelle : `expiresAt` doit être strictement postérieur à `observedAt`, et la durée d'attestation ne peut pas dépasser cinq minutes. La borne canonique de cinq minutes est dérivée du fixture G3 `safeAttestation` déjà accepté par le contrat existant, et non d'une nouvelle constante arbitraire. La validation réutilise les timestamps déjà validés par la frontière existante; aucune nouvelle autorité de temps n'est introduite.
+
+Décision de non-régression : `schemaVersion` reste `1`, l'attestation reste optionnelle et nullable, les records historiques sans attestation restent valides, les objets restent stricts, le repository scoping et les bornes existantes sont préservés, absence et staleness projettent toujours `UNKNOWN`, et `CLIENT_ATTESTATION` reste une provenance de callability qui n'implique ni `AUTHORIZED` ni `safeNow`.
+
+Décision d'autodeploy : `pushEnabled: true` dans `.mcp/autodeploy-policy.json` est intentionnel et n'est pas désactivé. Un merge explicitement autorisé sur `main` déclenche l'autodeploy gouverné, l'attestation exact-SHA puis la réconciliation; cette conséquence automatique est une conséquence gouvernée connue du merge et non un déploiement manuel supplémentaire. L'interdiction porte sur le déploiement manuel, l'appel direct sync/restart/deploy hors gate et tout contournement de la gouvernance.
+
+Décision de projection de preuve : `deploymentExactShaSuccess` exige que la tâche enregistre elle-même son `runtimeRevision`. Le gap résiduel constaté après le merge G3 est donc une projection de preuve manquante, pas un état runtime manquant; il se lève par l'enregistrement du `runtimeRevision` attesté sur la tâche, jamais par un nouveau déploiement ni par une seconde autorité d'attestation.
+
+Décision de livraison : PR #87 fusionnée depuis le head exact revu `289b3b71c8352738395bf290bc1ae10dc405ee15` au merge `dc4698de66b7becfc924ea4fabe8037e089d3336` sous l'autorisation humaine distincte et bornée `G3_EXACT_HEAD_MERGE_AUTHORIZATION_V2`. Aucune autorisation antérieure liée à `ae7bec13` n'a été considérée comme valable pour ce head.
+
+Décision de frontière : cette livraison n'autorise aucune activation GitRegistry V2, aucun transport SSH, aucune délégation d'exécution externe, aucune permission supplémentaire et aucun secret. Le statut terminal de `TASK-20260914-002` reste exclusivement sous Operational Memory.

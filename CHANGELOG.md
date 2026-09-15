@@ -496,3 +496,16 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Aucune activation GitRegistry V2, aucune permission WRITE, aucune migration MCP et aucune écriture directe de code versionné sur S1.
 - Livraison : PR #83 fusionnée depuis `424508e244763fa00705b207daf834e7e2bdd1f0` au merge `1a3af33054dc4b5429b0e36de4ee25efc3a9f88e`; CI PR #857, CI main #858 et Governed Deploy #37 réussis.
 - Live State 217 atteste l'alignement technique exact-SHA et signale uniquement la projection documentaire à réconcilier avant la suite gouvernée.
+
+
+## 2026-09-15 — G3 Client Tool Surface Attestation V1 livrée et déployée
+
+- `TASK-20260914-002` livre l'attestation bornée de la surface d'outils client dans le modèle `CapabilityReality` existant, avec provenance `CLIENT_ATTESTATION`; aucun store, registre, cache, queue, autorité de persistance ou service parallèle n'est ajouté.
+- Séquence TDD conservée dans `main` : RED `f87baa4e`, GREEN `ae7bec13`, RED P2 `b2955874`, GREEN P2 `289b3b71`. Le merge commit conserve les quatre commits, sans squash ni rebase.
+- Correction P2 #1 : `GovernedSessionRecordSchema` rejette fail-closed une attestation dont le `governedSessionId` diffère de la session parente, et dont le `connectionContextId` non nul diffère du `connectionContextId` du `connectionContext` parent quand ce binding existe.
+- Correction P2 #2 : `ClientToolSurfaceAttestationSchema` exige `expiresAt > observedAt` et une durée maximale de cinq minutes, en réutilisant les timestamps déjà validés par la frontière existante; aucune nouvelle autorité de temps n'est créée.
+- Non-régression : `schemaVersion` reste `1`, `clientToolSurfaceAttestation` reste optionnel, les records historiques sans attestation restent valides, les objets restent stricts, absence/staleness restent `UNKNOWN` et `CLIENT_ATTESTATION` n'implique ni `AUTHORIZED` ni `safeNow`.
+- Preuves : `validate` SUCCESS sur le head exact `289b3b71c8352738395bf290bc1ae10dc405ee15` (runs `34918037851`, `34918042001`), MCP CI #920 SUCCESS sur le merge; 13/13 tests G3, 4/4 régressions P2, 335/335 read-only safety, 12/12 governance, 0 échec, 0 skip.
+- Livraison : PR #87 fusionnée depuis `289b3b71c8352738395bf290bc1ae10dc405ee15` au merge `dc4698de66b7becfc924ea4fabe8037e089d3336` sous l'autorisation humaine distincte `G3_EXACT_HEAD_MERGE_AUTHORIZATION_V2`; Governed Deploy #39 (run `34919927303`) a attesté l'exact-SHA avec runtimeRevision identique, rollback non requis et health/OAuth/MCP auth sains.
+- Live State atteste GitHub/S1/origin-main/runtime au SHA exact du merge, S1 propre/read-only et runtime healthy. La preuve exact-SHA est projetée sur la tâche (`runtimeRevision` = `dc4698de66b7becfc924ea4fabe8037e089d3336`, `deploymentExactShaSuccess` = `true`, `runtimeAligned` = `true`) sans redéploiement; la tâche est observée `DEPLOYING` révision 10 et la seule contradiction restante avant la présente réconciliation est `DOCUMENTATION_DRIFT`.
+- Aucun DONE n'est anticipé : le statut terminal, le checkpoint terminal, les locks et la fermeture de session restent exclusivement sous Operational Memory.
