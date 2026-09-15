@@ -7,6 +7,7 @@ import { registerMcpSelfWriteTools } from './selfManagement.js';
 import { registerLegacyVhostsScopedTools } from './legacyVhostsScoped.js';
 import { registerAmfRegistryTools } from './amfRegistry.js';
 import { registerSadiaafScopedTools } from './sadiaafScoped.js';
+import { registerGithubAdminTools } from './githubAdmin.js';
 import {
   assertScopedWriteToolsEnabled,
   assertSelectOnlyQuery,
@@ -418,6 +419,7 @@ node ${shellQuote(script)} ${quotedArgs}`;
     return runS2(buildDeployCommand('brvmchainsolution'), 'deploy_brvm_s2', 900_000);
   });
 
+  registerGithubAdminTools(server);
   registerSadiaafScopedTools(server);
   registerLegacyVhostsScopedTools(server);
   registerAmfRegistryTools(server);
