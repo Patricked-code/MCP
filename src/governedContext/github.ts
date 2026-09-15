@@ -17,8 +17,14 @@ import {
   type GithubRepositoryResolution
 } from '../github/repositoryResolution.js';
 import {
+  resolveGithubProject,
+  type GithubProjectResolution
+} from '../github/projectResolution.js';
+import {
   readGitRegistryEvidence,
-  type GitRegistryEvidence
+  readGitRegistryProjectEvidence,
+  type GitRegistryEvidence,
+  type GitRegistryProjectEvidence
 } from '../github/registry.js';
 import {
   loadDurableGithubObservationBatch,
@@ -53,6 +59,7 @@ type GithubCollectorOptions = {
   observeIdentityConnections?: () => Promise<DurableGithubIdentityObservation[]>;
   collectObservationBatch?: () => Promise<DurableGithubObservationBatch>;
   readRepositoryRegistry?: () => Promise<GitRegistryEvidence>;
+  readProjectRegistry?: () => Promise<GitRegistryProjectEvidence>;
 };
 
 export type GithubIdentityScope = {
@@ -229,6 +236,12 @@ function withCache(
         provenance: boundedUnique([...value.repositoryResolution.provenance, 'memory_cache'])
       }
     } : {}),
+    ...(value.projectResolution && status === 'HIT' ? {
+      projectResolution: {
+        ...value.projectResolution,
+        provenance: boundedUnique([...value.projectResolution.provenance, 'memory_cache'])
+      }
+    } : {}),
     cache: {
       status,
       observedAt,
@@ -269,6 +282,20 @@ function staleRepositoryResolution(
   };
 }
 
+function staleProjectResolution(
+  value: GithubProjectResolution
+): GithubProjectResolution {
+  return {
+    ...value,
+    status: 'UNVERIFIED',
+    selectedMapping: null,
+    selectedProject: null,
+    freshness: 'STALE',
+    provenance: boundedUnique([...value.provenance, 'memory_cache']),
+    reasonCodes: ['GITHUB_PROJECT_EVIDENCE_STALE']
+  };
+}
+
 function staleEvidence(
   value: GithubEvidenceObservation,
   observedAt: string
@@ -299,6 +326,9 @@ function withStaleCache(
     ...(value.identity ? { identity: staleIdentity(value.identity, observedAt) } : {}),
     ...(value.repositoryResolution
       ? { repositoryResolution: staleRepositoryResolution(value.repositoryResolution, observedAt) }
+      : {}),
+    ...(value.projectResolution
+      ? { projectResolution: staleProjectResolution(value.projectResolution) }
       : {}),
     reasonCodes: boundedUnique([...value.reasonCodes, 'GITHUB_STALE']),
     uncertainties: [...value.uncertainties]
@@ -346,6 +376,25 @@ function repositoryCacheMiss(
   };
 }
 
+function projectCacheMiss(
+  observedAt: string
+): GithubProjectResolution {
+  return {
+    status: 'UNVERIFIED',
+    observedAt,
+    repositoryId: null,
+    selectedMapping: null,
+    selectedProject: null,
+    candidates: [],
+    candidateCount: 0,
+    freshness: 'UNKNOWN',
+    provenance: ['memory_cache'],
+    reasonCodes: ['GITHUB_PROJECT_CACHE_MISS'],
+    registryDigest: null,
+    candidateDigest: null
+  };
+}
+
 function identityScopeKey(
   workBranch: string | null,
   scope?: GithubIdentityScope
@@ -365,7 +414,8 @@ function identityScopeKey(
 function completeCacheKey(
   scopeKey: string,
   identity?: GithubIdentityResolution,
-  repositoryResolution?: GithubRepositoryResolution
+  repositoryResolution?: GithubRepositoryResolution,
+  projectResolution?: GithubProjectResolution
 ): string {
   return JSON.stringify({
     scopeKey,
@@ -377,7 +427,9 @@ function completeCacheKey(
     repositoryId: repositoryResolution?.selectedRepository?.repositoryId.toLowerCase()
       ?? repositoryResolution?.candidates[0]?.repositoryId.toLowerCase()
       ?? null,
-    repositorySource: repositoryResolution?.selectionSource ?? null
+    repositorySource: repositoryResolution?.selectionSource ?? null,
+    projectRegistryDigest: projectResolution?.candidateDigest ?? null,
+    projectId: projectResolution?.selectedProject?.projectId ?? null
   });
 }
 
@@ -803,6 +855,7 @@ export function createGithubOperationalContextCollector(
   ): Promise<{
     identity: GithubIdentityResolution;
     repositoryResolution: GithubRepositoryResolution;
+    projectResolution: GithubProjectResolution;
   } | undefined> {
     if (!scope) return undefined;
     const loadPolicy = options.loadIdentityPolicy ?? loadGithubIdentityPolicy;
@@ -899,7 +952,26 @@ export function createGithubOperationalContextCollector(
     const repositoryResolution = repositoryObservation
       ? resolveGithubRepository({ ...resolutionInput, repositoryObservation })
       : preflight;
-    return { identity, repositoryResolution };
+    let projectRegistry: GitRegistryProjectEvidence;
+    try {
+      projectRegistry = await (options.readProjectRegistry ?? readGitRegistryProjectEvidence)();
+    } catch {
+      projectRegistry = {
+        available: false,
+        sourceSchemaVersion: null,
+        digest: null,
+        candidateDigest: null,
+        mappings: [],
+        projects: [],
+        activationReadiness: []
+      };
+    }
+    const projectResolution = resolveGithubProject({
+      repository: repositoryResolution,
+      registry: projectRegistry,
+      observedAt
+    });
+    return { identity, repositoryResolution, projectResolution };
   }
 
   async function collectWork(workBranch: string | null): Promise<GithubOperationalContext> {
@@ -1198,15 +1270,16 @@ export function createGithubOperationalContextCollector(
     ]).then(([value, identityAndRepository]) => {
       const identity = identityAndRepository?.identity;
       const repositoryResolution = identityAndRepository?.repositoryResolution;
+      const projectResolution = identityAndRepository?.projectResolution;
       const withIdentity = identityAndRepository
-        ? { ...value, identity, repositoryResolution }
+        ? { ...value, identity, repositoryResolution, projectResolution }
         : value;
       const refreshed = withCache(withIdentity, 'REFRESHED', value.observedAt);
       const storedAt = now().getTime();
       for (const [key, entry] of cache.entries()) {
         if (entry.scopeKey === scopeKey) cache.delete(key);
       }
-      cache.set(completeCacheKey(scopeKey, identity, repositoryResolution), {
+      cache.set(completeCacheKey(scopeKey, identity, repositoryResolution, projectResolution), {
         expiresAt: storedAt + cacheTtlMs,
         storedAt,
         scopeKey,
@@ -1244,7 +1317,8 @@ export function createGithubOperationalContextCollector(
         ? {
             ...empty,
             identity: identityCacheMiss(identityScope, observedAt),
-            repositoryResolution: repositoryCacheMiss(identityScope, observedAt)
+            repositoryResolution: repositoryCacheMiss(identityScope, observedAt),
+            projectResolution: projectCacheMiss(observedAt)
           }
         : empty;
     },
