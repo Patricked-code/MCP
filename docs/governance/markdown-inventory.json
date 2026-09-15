@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 204,
+  "trackedCount": 205,
   "categories": {
     "root-documentation": 50,
     "canonical": 7,
@@ -9,7 +9,7 @@
     "documentation": 55,
     "history": 1,
     "engineering-plan": 8,
-    "engineering-spec": 8,
+    "engineering-spec": 9,
     "memory": 61,
     "runtime-mirror-tracked": 7
   },
@@ -544,6 +544,10 @@
     },
     {
       "path": "docs/superpowers/specs/2026-09-12-africafunds-project-aware-s2-mapping-design.md",
+      "category": "engineering-spec"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-15-governed-workflow-contract-v1-design.md",
       "category": "engineering-spec"
     },
     {
