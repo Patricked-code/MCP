@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 205,
+  "trackedCount": 208,
   "categories": {
     "root-documentation": 50,
     "canonical": 7,
     "migration-history": 7,
-    "documentation": 55,
+    "documentation": 58,
     "history": 1,
     "engineering-plan": 8,
     "engineering-spec": 9,
@@ -448,6 +448,18 @@
     },
     {
       "path": "docs/governance/README.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/BACKLOG.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/README.md",
       "category": "documentation"
     },
     {

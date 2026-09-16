@@ -4,6 +4,18 @@
 Journal des decisions structurantes du MCP.
 
 
+## 2026-09-16 — Le dossier GWC devient la source versionnée, la promotion des tâches reste humaine
+
+Décision : l'architecture GWC et le backlog qui en découle vivent désormais dans le dépôt, sous `docs/gwc/` pour la lecture humaine et sous `.mcp/gwc-*.json` pour la lecture machine, plutôt que dans des documents externes. Motif : tout agent doit pouvoir lire le même état sans dépendre d'un canal hors dépôt, et les révisions doivent être traçables par Git.
+
+Décision : le backlog est déposé dans un fichier de préparation `.mcp/gwc-task-seed.json` distinct de `.mcp/task-registry.json`. Motif : `initializeSeed()` charge le registre au démarrage ; y écrire directement rendrait exécutables des tâches issues d'une architecture non ratifiée. La promotion est une étape humaine explicite, documentée dans `docs/gwc/BACKLOG.md`.
+
+Décision : les révisions du dossier sont additives. Une révision amende et signale, elle ne réécrit pas. Motif : non-régression documentaire et lisibilité de l'historique d'analyse.
+
+Décision maintenue : aucune implémentation GWC ne commence avant ratification humaine de l'architecture (`TASK-20260916-001`). Les identifiants `GW-01` à `GW-73` restent un espace de noms stable et ne sont ni renumérotés, ni supprimés, ni fusionnés.
+
+Point ouvert soumis à ratification : la table des familles `A=GW-01`, `B=GW-02..09`, `C=GW-10..12`, `D=GW-13..20`, `E=GW-21..33`, `F=GW-34..45`, `G=GW-46..57`, `H=GW-58..72`, `I=GW-73` est une dérivation convergente de deux analyses indépendantes, pas un texte du design. Elle doit être ratifiée avant d'être figée dans `ids.ts`.
+
 ## 2026-09-13 — AfricaFunds Phase 2 livrée, réconciliation terminale
 
 PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a` au merge `1eac93f631fcf7843d7e768bba7a4125ed00bdbb`; CI PR #841, CI main #842 et Governed Deploy #34 (run `34750625897`) réussis.

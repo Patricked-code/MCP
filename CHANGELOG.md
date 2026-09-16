@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## 2026-09-16 — Dossier permanent GWC versionné (documentation et données, sans implémentation)
+
+- Ajout de `docs/gwc/` : `README.md` (protocole agent et procédure d'amendement), `ARCHITECTURE_73_CONTRACTS.md` (architecture R2 complète, 73 fiches, AF-01 à AF-30) et `BACKLOG.md` (projection lisible du backlog).
+- Ajout de `.mcp/gwc-contracts.json` : les 73 contrats en lecture machine, avec maturité, stratégie d'intégration, nature d'action, autorité principale, slot d'intégration, lot et tâche d'implémentation associée.
+- Ajout de `.mcp/gwc-task-seed.json` : 18 tâches candidates au format `TaskRegistrySeed`, en préparation. Ce fichier n'est chargé par aucun code ; seul `.mcp/task-registry.json` est lu par `initializeSeed()`.
+- Ajout de `scripts/gwc-verify.mjs` et du script npm `gwc:verify` : vérification déterministe des deux artefacts, avec la même sérialisation canonique que `src/operationalMemory/taskQueue.ts`.
+- `docs/governance/markdown-inventory.json` : 205 → 208 Markdown suivis, catégorie `documentation` 55 → 58.
+- Aucun comportement runtime modifié, aucun outil MCP ajouté, aucune tâche créée dans la Governed Task Queue, aucun lock, aucun déploiement.
+
 ## 2026-09-15 — C2 Repository → Project Resolution fusionnée et déployée
 
 - Ajout additif du resolver C2 `repositoryId → mappingId → projectId` dans le Governed Context existant, avec `RESOLVED/NONE/AMBIGUOUS/UNVERIFIED`.

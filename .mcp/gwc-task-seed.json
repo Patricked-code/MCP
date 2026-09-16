@@ -1,0 +1,371 @@
+{
+  "schemaVersion": 1,
+  "registryVersion": 1,
+  "generatedAt": "2026-09-16T00:00:00.000Z",
+  "registryDigest": "10c4ab1ed6c1b59a11746b2f59da7e760f4119982ecd66c0e3b1bac83caa2cb1",
+  "tasks": [
+    {
+      "taskId": "TASK-20260916-001",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:ratify-architecture-r2",
+      "title": "Ratification humaine de l’architecture GWC R2",
+      "summary": "Ratifier la table des familles, le graphe d’exécution corrigé et les findings AF-01 à AF-30 consignés dans docs/gwc/. Aucune implémentation GWC ne commence avant cette ratification.",
+      "priority": 95,
+      "sequence": 1,
+      "status": "READY",
+      "dependencies": [],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "docs/gwc"
+      ],
+      "blockers": [],
+      "nextAction": "Lire docs/gwc/README.md puis ARCHITECTURE_73_CONTRACTS.md. Ratifier ou amender la table des familles et le graphe corrigé, puis consigner la décision dans DECISIONS_LOG.md et passer cette tâche à DONE.",
+      "requestDigest": "799c1d79b2440291b340130d9e4680556436f7d5f610d4fadc9dd12644e5a1b3"
+    },
+    {
+      "taskId": "TASK-20260916-002",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:af19-deploy-requires-ci-of-deployed-sha",
+      "title": "AF-19 — lier le déploiement à la CI du SHA déployé",
+      "summary": "Le SHA de squash déployé n’est pas le SHA validé par le check requis, et mcp-deploy.yml part en parallèle de mcp-ci.yml sur push:main. Conditionner le déploiement à la conclusion des checks du SHA effectivement déployé.",
+      "priority": 92,
+      "sequence": 2,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-001"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        ".github/workflows"
+      ],
+      "blockers": [],
+      "nextAction": "RED : test prouvant qu’un déploiement peut partir sans preuve CI du SHA déployé. GREEN : workflow_run sur MCP CI ou garde explicite sur le head déployé. Vérifier qu’aucun déploiement ne démarre avant conclusion des checks du même SHA.",
+      "requestDigest": "9e8f239a83e0131cf5e0855e966cc67e5d947d32282e9b44c32f64877fce6f37"
+    },
+    {
+      "taskId": "TASK-20260916-003",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:af22-review-evidence-sha-bound",
+      "title": "AF-22 et AF-30 — preuve de revue liée au head exact",
+      "summary": "parseReviews ignore review.commit_id : une approbation sur un ancien SHA compte pour le head courant. parseUnresolvedThreads a le même angle mort. La famille F ne peut pas consommer ces preuves en l’état.",
+      "priority": 90,
+      "sequence": 3,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-001"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/governedContext/github.ts"
+      ],
+      "blockers": [],
+      "nextAction": "RED : test avec une approbation portant un commit_id antérieur au head. GREEN : ne compter une approbation que si review.commit_id égale le head exact observé ; exposer la distinction dans GithubOperationalContext.",
+      "requestDigest": "c820b6746d4d195307579831b9e9d10c3b36843169320ecdfcf50b7f0e39aebc"
+    },
+    {
+      "taskId": "TASK-20260916-004",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:disposition-open-pr-stack",
+      "title": "Disposition gouvernée des PR ouvertes #85 #86 #88 #89 #90",
+      "summary": "Les cinq PR ouvertes partent d’un main ancien. #88 → #89 → #90 portent le GitHub Control Plane dont les contrats GW-23 à GW-45 dépendent. Statuer avant d’écrire GWC-0 pour ne pas créer un second client GitHub.",
+      "priority": 85,
+      "sequence": 4,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-001"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "pull-requests"
+      ],
+      "blockers": [],
+      "nextAction": "Auditer #88 contre le main exact, puis réconcilier #89 et #90 dans cet ordre. Décider merge, rebase, close ou supersede pour #85 et #86. Consigner chaque décision dans DECISIONS_LOG.md.",
+      "requestDigest": "f695391680b61749fc33b1218224d6628769b1ad994c350e84795cc129e229f8"
+    },
+    {
+      "taskId": "TASK-20260916-005",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot0-contract-substrate",
+      "title": "LOT 0 — substrat contractuel GWC, sans comportement métier",
+      "summary": "Créer src/governedWorkflow/ avec ids.ts, types.ts, invariants.ts, graph.ts et attestation.ts. Aucun store, aucune autorité, aucun changement de comportement runtime.",
+      "priority": 80,
+      "sequence": 5,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-004"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/governedWorkflow"
+      ],
+      "blockers": [],
+      "nextAction": "RED puis GREEN sur tests/governedWorkflowContract.test.ts : 73 IDs uniques, 9 familles, 12 invariants, graphe sans contrainte to>from, transition GW-17→GW-12 acceptée, attestationId présent, projection persistable sans payload métier.",
+      "requestDigest": "a22d715e998c348a6d73a7a47a774e526fc9ce0a5eeb125c6b6efe8186b878f5"
+    },
+    {
+      "taskId": "TASK-20260916-006",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot1-gw01-intent-capture",
+      "title": "LOT 1 — GW-01 Intent Capture pur",
+      "summary": "Premier comportement GWC réel : capture déterministe de l’intention, sans I/O, sans mutation, sans création de tâche, sans inférence de permission. rawIntent n’est jamais persisté.",
+      "priority": 78,
+      "sequence": 6,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-005"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/governedWorkflow/intentCapture.ts"
+      ],
+      "blockers": [],
+      "nextAction": "N’extraire un hint que sur référence explicite et non ambiguë (repository, TASK-…, PR, SHA 40 hex, serveur) ; sinon UNKNOWN. L’attestation persistable ne contient que digests, références bornées et reasonCodes.",
+      "requestDigest": "40ace348b463601f1c38158480404c41c1b995f061b445b96eba36773bc1ccdf"
+    },
+    {
+      "taskId": "TASK-20260916-007",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot2-wrap-existing-authorities",
+      "title": "LOT 2 — wrappers des autorités déjà implémentées",
+      "summary": "Poser les IDs GW-02 à GW-06 et GW-13 à GW-20 autour de Session, Task Queue, Locks, Live State, Capability Reality et Governance Decision, sans réécrire leur comportement.",
+      "priority": 75,
+      "sequence": 7,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-006"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/governedWorkflow/wrappers"
+      ],
+      "blockers": [],
+      "nextAction": "Respecter le graphe R2.1 : GW-13 puis GW-14 lookup read-only, GW-16, GW-17, GW-12, puis GW-15 si aucune tâche. Les trois mutations de Task Queue n’étant derrière aucun gate, chaque wrapper porte ses propres préconditions.",
+      "requestDigest": "744d95d027ead397c606905206bd1a72af3807bb601ea82b6a0bda747c6580a5"
+    },
+    {
+      "taskId": "TASK-20260916-008",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot3-b3a-repository-identity",
+      "title": "LOT 3 — B3-A identité de dépôt et de cible",
+      "summary": "Introduire un RepositoryId partagé et généraliser additivement ConnectionContext, GovernedSession, BootstrapReceipt, GovernedTask et ClientToolSurfaceCapability. Aucune migration destructive, aucun backfill.",
+      "priority": 72,
+      "sequence": 8,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-007"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/operationalMemory"
+      ],
+      "blockers": [],
+      "nextAction": "Les données historiques portant le littéral Patricked-code/MCP restent lisibles. Un mismatch entre repository résolu et repository de session donne CONFLICT, jamais une réaffectation silencieuse.",
+      "requestDigest": "2bda5b117c2d244b58f05c5ee0a1cc56d2f14d21d742da7b298384ccd0b04b33"
+    },
+    {
+      "taskId": "TASK-20260916-009",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot4-c3-server-resolution",
+      "title": "LOT 4 — C3 résolution de serveur, par généralisation",
+      "summary": "Construire resolveServer() au-dessus de GitRegistry, .mcp/server-map.json et Live State. Nouveau resolver ne signifie pas nouvelle autorité : aucune donnée n’est recopiée hors du registre.",
+      "priority": 70,
+      "sequence": 9,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-008"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/governedWorkflow/resolvers"
+      ],
+      "blockers": [],
+      "nextAction": "Exiger la convergence mapping.serverId = project.productionServerId = identité connue du server-map. Toute divergence donne CONFLICT ou UNVERIFIED, jamais un premier résultat arbitraire.",
+      "requestDigest": "492545f6633a5d12b669a4c8303b9672ea1bb06c8cf969ee3ac939aaaf4fdeac"
+    },
+    {
+      "taskId": "TASK-20260916-010",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot5-c5-domain-resolution",
+      "title": "LOT 5 — C5 résolution de domaine, par généralisation",
+      "summary": "Construire resolveDomain() sur mapping.domain, mapping.domainVerified, project.publicDomain et historicalVhosts. Aucun Domain Registry supplémentaire.",
+      "priority": 68,
+      "sequence": 10,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-008"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/governedWorkflow/resolvers"
+      ],
+      "blockers": [],
+      "nextAction": "GW-09 définit un contrat de convergence entre domaine déclaré, domaine du mapping et évidence observée, et non une priorité arbitraire entre sources.",
+      "requestDigest": "6bc2bfad76ab099b13f8f67547a42e5ca0e44a32bfc22255fe4ea60f85a9a471"
+    },
+    {
+      "taskId": "TASK-20260916-011",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot6-c4-runtime-evidence",
+      "title": "LOT 6 — C4 contrat d’évidence runtime",
+      "summary": "GitRegistry V2 n’a aucun modèle universel de runtime. Définir un contrat d’évidence séparé exploitant les primitives read-only existantes, sans deviner le runtime depuis le nom du projet.",
+      "priority": 66,
+      "sequence": 11,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-009",
+        "TASK-20260916-010"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/governedWorkflow/resolvers"
+      ],
+      "blockers": [],
+      "nextAction": "Type de runtime, identité de conteneur ou de service et relation au reverse proxy doivent être prouvés par observation. Aucune inférence à partir du nom de projet n’est acceptable.",
+      "requestDigest": "2f935b9cf0b1061676e521fd1f30ab5c5753ee5e4d1db49115322bd81a416710"
+    },
+    {
+      "taskId": "TASK-20260916-012",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot7-d1-d2-d3",
+      "title": "LOT 7 — D1 héritage, D2 capacités effectives, D3 receipt enrichi",
+      "summary": "Projeter l’héritage de gouvernance par digest et provenance, intersecter les capacités en fail-closed, et étendre le BootstrapReceipt existant pour le rendre project-aware.",
+      "priority": 64,
+      "sequence": 12,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-011"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/governedContext",
+        "src/governance"
+      ],
+      "blockers": [],
+      "nextAction": "ClientToolSurfaceAttestation n’a aucun producteur aujourd’hui : le défaut reste CALLABILITY UNKNOWN, AUTHORIZED UNKNOWN, safeNow false. Un outil enregistré n’est jamais une autorisation.",
+      "requestDigest": "03c600fa5306f4b80835538b251f9036c33ce7955b25c350bff98810f29dfde0"
+    },
+    {
+      "taskId": "TASK-20260916-013",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot8-b3b-multi-target-live-state",
+      "title": "LOT 8 — B3-B Live State et contexte réellement multi-cibles",
+      "summary": "Conserver une autorité Live State unique avec des projections par cible à stateVersion indépendants, pour qu’un changement sur un projet ne périme pas le receipt d’un autre.",
+      "priority": 62,
+      "sequence": 13,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-012"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/liveState",
+        "src/governedContext"
+      ],
+      "blockers": [],
+      "nextAction": "Ne jamais remplacer la cible par le dernier projet demandé : deux agents sur deux projets se voleraient mutuellement le Live State. Aucun second moteur concurrent.",
+      "requestDigest": "b873aafa1d7f2cfc3663cc0df4facbdb180267d22722351d490ff5a7e1d94e16"
+    },
+    {
+      "taskId": "TASK-20260916-014",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot9-gw21-gw45-github-wrappers",
+      "title": "LOT 9 — GW-21 à GW-45 sur le Control Plane réconcilié",
+      "summary": "Envelopper la surface GitHub issue de la pile réconciliée pour les contrats de développement, de revue et de merge. Ne pas réimplémenter branche, commit, PR, reviews ni merge.",
+      "priority": 60,
+      "sequence": 14,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-013"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/governedWorkflow/github"
+      ],
+      "blockers": [],
+      "nextAction": "Toute attestation de revue est liée au head exact et tout merge passe par expected_head_sha. GITHUB_ORG global doit devenir un contexte GitHub résolu et autorisé, jamais une permission globale.",
+      "requestDigest": "a9366827dfca656a2eca73cf2a06034b11c6bd23c4e6d8202dfc4dbb4bc03919"
+    },
+    {
+      "taskId": "TASK-20260916-015",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot10-gw46-gw67-deployment",
+      "title": "LOT 10 — GW-46 à GW-67 déploiement et observation",
+      "summary": "Abstraire ResolvedDeploymentTarget puis adaptateurs par projet. Le pipeline MCP historique devient le premier adaptateur compatible, il n’est pas remplacé.",
+      "priority": 58,
+      "sequence": 15,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-014"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/deploy",
+        "src/governedWorkflow/deploy"
+      ],
+      "blockers": [],
+      "nextAction": "Un fait runtime ne se déduit jamais de GitHub seul. L’attestation exact-SHA et la vérification du runtime restent des observations indépendantes.",
+      "requestDigest": "fb715af79500c8ee4ca6180d80e497a53e9f0ef16c3635e4362ddff2715e7c51"
+    },
+    {
+      "taskId": "TASK-20260916-016",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot11-gw68-terminal-verification",
+      "title": "LOT 11 — GW-68 vérification terminale, gate dur",
+      "summary": "Composer la preuve terminale : merge exact head, CI main verte, déploiement exact-SHA, runtime sain et à la bonne révision, documentation alignée, Live State frais, receipt courant, aucune contradiction.",
+      "priority": 56,
+      "sequence": 16,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-015"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/governedWorkflow/terminal"
+      ],
+      "blockers": [],
+      "nextAction": "VERIFIED seulement si tout converge. Ne pas réécrire la Task Queue : GW-68 produit une attestation que GW-69 exigera.",
+      "requestDigest": "1a18ffcdfb6e7a70063915d5a2de7159f50a5630b2f517fb3b316b0572ca1d62"
+    },
+    {
+      "taskId": "TASK-20260916-017",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot12-gw69-gw72-closure",
+      "title": "LOT 12 — GW-69 à GW-72 DONE, checkpoint, locks, clôture",
+      "summary": "Le wrapper GW-69 refuse la transition VERIFYING vers DONE si l’attestation GW-68 est absente, périmée, ou porte une autre tâche, session, dépôt ou révision runtime.",
+      "priority": 54,
+      "sequence": 17,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-016"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "src/governedWorkflow/terminal",
+        "src/operationalMemory"
+      ],
+      "blockers": [],
+      "nextAction": "Supprime le faux DONE structurellement possible aujourd’hui. GW-72 orchestre fermeture de session et réconciliation de la file sans fusionner leurs stores.",
+      "requestDigest": "9284896dea8ed8b914084b2eda7c93788503972f0b788870dfb3e048e387b1b4"
+    },
+    {
+      "taskId": "TASK-20260916-018",
+      "repository": "Patricked-code/MCP",
+      "intentKey": "gwc:lot13-gw73-universal-acceptance",
+      "title": "LOT 13 — GW-73 acceptance universelle sur cible non-MCP",
+      "summary": "Prouver que le même chemin traite un dépôt et un projet non-MCP de bout en bout sans rencontrer Patricked-code/MCP, wealthtech_mcp_ssh_bridge, /opt/apps/wealthtech-mcp-ssh-bridge ni mcp.wealthtechinnovations.com dans le moteur générique.",
+      "priority": 52,
+      "sequence": 18,
+      "status": "READY",
+      "dependencies": [
+        "TASK-20260916-017"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP",
+        "tests/governedWorkflowUniversalAcceptance.test.ts"
+      ],
+      "blockers": [],
+      "nextAction": "Stablecoin ne sert que de fixture de scénario. Aucune condition de code du type if project === Stablecoin n’est acceptable dans le moteur GWC.",
+      "requestDigest": "23786c95833d5de57133d7a6311e8eefa48b0d0890514428e0d7369671c95bfa"
+    }
+  ]
+}

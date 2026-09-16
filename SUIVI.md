@@ -289,3 +289,14 @@ Date : 2026-08-29
 - Aucun mapping réel n'est activé, aucune capability WRITE n'est ajoutée, aucun remote n'est modifié, aucune migration n'est exécutée et aucun code versionné n'est écrit directement sur S1.
 - Les gates techniques encore ouverts sont : credential Wealthtechinnovations non vérifié, preuves path/remote/domain incomplètes et migration MCP encore pending.
 - Prochaine action : revue/PR exacte de ce socle de vérification, puis collecte séparée des preuves ; une activation V2 restera interdite tant que les gates ne sont pas satisfaits.
+
+## 2026-09-16 — Dossier permanent GWC versionné, préparation de la file gouvernée
+
+- Source de vérité de l'observation : GitHub live. `REF = main`, `OBSERVED_SHA = d1f303955c4d368950da2307dda41d826fc85d0a`. Clone local utilisé comme cache de lecture uniquement, SHA identique et worktree propre au moment de l'écriture.
+- Ajout de `docs/gwc/` (3 Markdown), `.mcp/gwc-contracts.json` (73 contrats), `.mcp/gwc-task-seed.json` (18 tâches candidates) et `scripts/gwc-verify.mjs`.
+- `node scripts/gwc-verify.mjs` recalcule les empreintes avec la sérialisation canonique du runtime et échoue sur divergence. Câbler ce contrôle dans la CI fait partie du LOT 0, après ratification.
+- Le backlog est en préparation et n'est chargé par aucun code. La promotion vers `.mcp/task-registry.json` est une étape humaine explicite.
+- Findings de sécurité consignés et non corrigés : AF-19 (le SHA de squash déployé n'est pas le SHA validé par le check requis, et le déploiement se termine avant la fin de la CI du SHA déployé — 21 s sur `d1f3039`, 16 s sur `39662171`) et AF-22 / AF-30 (`parseReviews` ignore `review.commit_id`).
+- Non vérifié ici : le contenu exact du ruleset `protect-main`. Aucun outil ruleset dans la surface utilisée. À VÉRIFIER.
+- Aucun comportement runtime modifié, aucune tâche créée, aucun lock pris, aucun déploiement déclenché.
+- Prochaine action : ratification humaine de l'architecture, puis AF-19, puis AF-22, puis disposition de la pile de PR ouvertes.
