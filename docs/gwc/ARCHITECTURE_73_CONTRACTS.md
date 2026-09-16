@@ -55,11 +55,13 @@ règle `to > from` ne doit exister, et `scripts/gwc-verify.mjs` échoue si elle 
 
 ---
 
-Date: 2026-09-17  
-Repository de référence: `Patricked-code/MCP`  
-GitHub live baseline: `d1f303955c4d368950da2307dda41d826fc85d0a`  
-Local clone utilisé: **NO**  
-Écriture repo pendant cette matérialisation: **NO**
+Provenance de la baseline canonique :
+
+- Date : 2026-09-17
+- Repository de référence : `Patricked-code/MCP`
+- GitHub live baseline : `d1f303955c4d368950da2307dda41d826fc85d0a`
+- Clone local utilisé : **NO**
+- Écriture repo pendant cette matérialisation : **NO**
 
 ## Statut
 
