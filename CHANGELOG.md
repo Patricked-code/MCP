@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## 2026-09-16 — Réconciliation R3 du dossier GWC : corps canonique et blueprints
+
+- `docs/gwc/ARCHITECTURE_73_CONTRACTS.md` devient le **corps canonique** : les 73 Contract Design Sheets au modèle A→BA, baseline `GWC_73_CONTRACT_DESIGN_SHEETS_CANONICAL_R1`. Il ne contient plus aucune affirmation historique.
+- Ajout de `docs/gwc/REVISION_HISTORY.md` (R1 → R2 → R3), `docs/gwc/DEPRECATED_CLAIMS.md` (DC-01 à DC-11) et `docs/gwc/archive/ARCHITECTURE_R2_NON_CANONICAL.md` (archive R2 avec bannière non canonique).
+- Statut d'architecture : `AWAITING_HUMAN_RATIFICATION` → `READY_FOR_GOVERNED_IMPLEMENTATION`.
+- Suppression de `.mcp/gwc-task-seed.json` et de `docs/gwc/BACKLOG.md`, remplacés par `.mcp/gwc-blueprints.json` et `docs/gwc/BLUEPRINTS.md` : 18 blueprints `GWC-0`…`GWC-17`. `TASK BLUEPRINT ≠ GovernedTaskRecord`.
+- Suppression de la Task de ratification humaine `TASK-20260916-001` ; aucun human gate générique n'est créé.
+- `.mcp/gwc-contracts.json` devient une projection compacte et déterministe de la baseline canonique : `stepId`, `canonicalName`, `contractVersion`, `family`, `profiles`, `executionSemantics`, `integrationClassification`, `canonicalSheetRef`, `blueprintRef`, findings et références de graphe.
+- Ajout de `.mcp/gwc-workflow-graph.json` : 80 arêtes, dont 4 à rebours et 7 sauts déclarés. Aucune règle `to > from`.
+- Portées de ressource passées au domaine de collision minimal ; aucune portée globale `repository:Patricked-code/MCP`.
+- `scripts/gwc-verify.mjs` étendu : contrats, graphe, blueprints, réciprocité des références, propriété architecturale des findings, absence de promotion en Task Queue.
+- `docs/governance/markdown-inventory.json` : 208 → 211 Markdown suivis.
+- Aucune Task runtime créée, aucune promotion en Task Queue, aucun déploiement, aucune implémentation GWC runtime démarrée.
+
 ## 2026-09-16 — Dossier permanent GWC versionné (documentation et données, sans implémentation)
 
 - Ajout de `docs/gwc/` : `README.md` (protocole agent et procédure d'amendement), `ARCHITECTURE_73_CONTRACTS.md` (architecture R2 complète, 73 fiches, AF-01 à AF-30) et `BACKLOG.md` (projection lisible du backlog).

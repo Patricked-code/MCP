@@ -2,59 +2,141 @@
 
 ## Objet
 
-Ce répertoire est la source versionnée unique de l'architecture des 73 contrats GWC et du backlog qui en découle. Il est conçu pour être lu par un humain **et** par n'importe quel agent, et pour être complété au fil des révisions sans perdre l'historique.
+Ce répertoire est la source versionnée unique de l'architecture des 73 contrats GWC et des
+blueprints d'implémentation qui en découlent. Il est conçu pour être lu par un humain **et**
+par n'importe quel agent, et pour être complété au fil des révisions sans perdre l'historique
+ni exposer une conclusion périmée comme si elle était courante.
 
-L'autorité de départ reste `docs/superpowers/specs/2026-09-15-governed-workflow-contract-v1-design.md`. Ce dossier ne la remplace pas : il la prolonge par une architecture confrontée au code réel.
+L'autorité de départ reste `docs/superpowers/specs/2026-09-15-governed-workflow-contract-v1-design.md`.
+Ce dossier ne la remplace pas : il la prolonge par une conception canonique confrontée à l'état
+GitHub live.
 
 ## État
 
 | Champ | Valeur |
 | --- | --- |
-| Révision courante | `R2` |
-| Statut | `AWAITING_HUMAN_RATIFICATION` |
-| Dépôt | `Patricked-code/MCP` |
-| SHA observé pour R2 | `d1f303955c4d368950da2307dda41d826fc85d0a` |
-| Implémentation autorisée | **non** — aucune tâche GWC ne doit être exécutée avant ratification |
+| Révision courante | `R3` |
+| Baseline canonique | `GWC_73_CONTRACT_DESIGN_SHEETS_CANONICAL_R1` |
+| Statut d'architecture | `READY_FOR_GOVERNED_IMPLEMENTATION` |
+| `SOURCE` | `GITHUB_LIVE` |
+| `REPOSITORY` | `Patricked-code/MCP` |
+| `REF` / `OBSERVED_SHA` | `main` / `d1f303955c4d368950da2307dda41d826fc85d0a` |
+| `OBSERVED_AT` | `2026-09-16T23:23:04Z` |
+| Implémentation runtime démarrée | `NO` |
+| Tâches runtime créées | `0` |
+| Blueprints promus en Task Queue | `NO` |
 
 ## Contenu
 
 | Fichier | Rôle | Lecteur |
 | --- | --- | --- |
-| `docs/gwc/README.md` | porte d'entrée, protocole d'amendement | humain et agent |
-| `docs/gwc/ARCHITECTURE_73_CONTRACTS.md` | architecture complète, 73 fiches, findings AF-01 à AF-30 | humain |
-| `docs/gwc/BACKLOG.md` | backlog lisible et procédure de promotion | humain |
-| `.mcp/gwc-contracts.json` | les 73 contrats en lecture machine | agent |
-| `.mcp/gwc-task-seed.json` | backlog candidat au format `TaskRegistrySeed` | agent |
-| `scripts/gwc-verify.mjs` | vérificateur déterministe des deux artefacts | CI, humain, agent |
+| `docs/gwc/README.md` | porte d'entrée, protocole agent, procédure d'amendement | humain et agent |
+| `docs/gwc/ARCHITECTURE_73_CONTRACTS.md` | **corps canonique** — 73 Contract Design Sheets A→BA | humain |
+| `docs/gwc/BLUEPRINTS.md` | 18 blueprints d'implémentation `GWC-0`…`GWC-17` | humain |
+| `docs/gwc/REVISION_HISTORY.md` | historique R1 → R2 → R3 | humain |
+| `docs/gwc/DEPRECATED_CLAIMS.md` | affirmations explicitement remplacées | humain et agent |
+| `docs/gwc/archive/ARCHITECTURE_R2_NON_CANONICAL.md` | archive non canonique de R2 | traçabilité |
+| `.mcp/gwc-contracts.json` | projection machine des 73 contrats | agent |
+| `.mcp/gwc-workflow-graph.json` | graphe d'exécution canonique | agent |
+| `.mcp/gwc-blueprints.json` | registre machine des 18 blueprints | agent |
+| `scripts/gwc-verify.mjs` | vérificateur déterministe | humain et agent |
+
+## Frontière d'autorité — à ne pas confondre
+
+La **Governed Task Queue** existe et fournit `initializeSeed`, `firstExecutable`, le claim, le
+cycle de vie des Tasks, les priorités, les dépendances, l'ownership et les conflits de
+ressources.
+
+Elle **n'est pas** le **GWC Workflow Execution Engine**. Celui-ci reste à construire comme une
+couche d'orchestration distincte qui *compose* les autorités existantes : `ContractRegistry`,
+`WorkflowGraph`, `ExecutionFrame`, `EvidenceBroker`, `ContractEvaluator`,
+`GovernanceGateComposer`, `EffectPlan`, `ActionDispatcher`, `PostconditionVerifier`,
+`GraphRouter`, `ResumeResolver`, `WAIT_EXTERNAL`, replay et recovery, protection
+anti-non-progression, continuation autonome.
+
+Le moteur ne possède aucune autorité métier nouvelle : pas de seconde Task Queue, pas de second
+Live State, pas de seconde Operational Memory, pas de magasin durable d'état de workflow en V1.
+Blueprint porteur : `GWC-2`.
+
+## Blueprint ≠ Task
+
+`TASK BLUEPRINT ≠ GovernedTaskRecord`.
+
+```text
+architecture → blueprints → réconciliation avec la Task Queue live
+             → classification NEW_TASK uniquement → Task runtime
+```
+
+Un futur materializer peut produire **0, 1 ou plusieurs** Governed Tasks depuis un même
+blueprint selon la réalité live. Ne jamais supposer `1 blueprint = 1 Task`. Les blueprints ne
+sont chargés par aucun code : seul `.mcp/task-registry.json` est lu par `initializeSeed()`.
 
 ## Protocole obligatoire pour tout agent
 
-1. **Lire avant d'agir.** `CLAUDE.md`, `SUIVI.md`, puis ce `README.md`, puis `.mcp/gwc-contracts.json` pour l'état d'un contrat précis.
-2. **Ne jamais déduire l'état courant d'un checkout local.** GitHub live est la source de vérité. Observer `main` et son SHA exact, les branches, les PR ouvertes avec leurs base et head SHA, les checks, les workflow runs et les rulesets avant toute conclusion. Étiqueter chaque affirmation dépendante de l'état : `GITHUB_LIVE` ou `LOCAL_CLONE`.
-3. **Ne jamais transformer une hypothèse en certitude.** Une donnée non reproduite s'écrit `À VÉRIFIER`.
-4. **Ne jamais renuméroter, supprimer ou fusionner un identifiant `GW-xx`.** Les 73 identifiants sont un espace de noms stable, pas une séquence d'exécution.
-5. **Ne jamais créer une seconde autorité.** Pas de second Live State, de seconde Task Queue, de second moteur de session, de second gestionnaire de locks, de second GitRegistry, de second moteur de déploiement, de seconde base d'attestations.
-6. **Ne jamais exécuter une tâche du seed avant ratification** et avant sa promotion dans `.mcp/task-registry.json`.
-7. **Après toute modification de ce dossier**, exécuter `node scripts/gwc-verify.mjs` et documenter dans `SUIVI.md`, `CHANGELOG.md` et `DECISIONS_LOG.md`.
+1. **Lire avant d'agir.** `CLAUDE.md`, `SUIVI.md`, puis ce `README.md`, puis
+   `.mcp/gwc-contracts.json` pour l'état d'un contrat précis.
+2. **GitHub live est la source de vérité.** L'ordre de travail est :
+   `GitHub live → observer le ref → obtenir le SHA exact → lire le fichier sur CE ref → observer branches, PR, commits, checks, workflows, rulesets → analyser → conclure`.
+   Jamais `clone → lecture → supposition que GitHub est identique`. Un clone local ne sert que
+   de cache de lecture, après preuve d'égalité des SHA, et n'est jamais une source de
+   certification.
+3. **Étiqueter chaque affirmation dépendante de l'état** : `GITHUB_LIVE` ou `LOCAL_CLONE`, avec
+   `REPOSITORY`, `REF`, `SHA`, `OBSERVED_AT`. En cas de divergence, GitHub live prévaut et le
+   drift est signalé, jamais masqué.
+4. **Ne jamais transformer une hypothèse en certitude.** Une donnée live inaccessible n'est
+   jamais compensée par le clone : elle s'écrit `À VÉRIFIER`.
+5. **Ne jamais renuméroter, supprimer ou fusionner un identifiant `GW-xx`.** Les 73
+   identifiants sont un espace de noms stable, jamais une séquence d'exécution. Le graphe
+   canonique comporte des arêtes à rebours et des sauts déclarés ; aucune règle `to > from`
+   ne doit exister.
+6. **Ne jamais créer une seconde autorité.** Pas de second Live State, de seconde Task Queue,
+   de second moteur de session, de second gestionnaire de locks, de second GitRegistry, de
+   second GitHub Control Plane, de second moteur de déploiement, de magasin durable d'état de
+   workflow.
+7. **Ne jamais promouvoir un blueprint en Task** sans réconciliation avec la Task Queue live et
+   classification `NEW_TASK`.
+8. **Ne jamais créer de human gate générique.** La conception conceptuelle est validée. Les
+   seules interruptions légitimes viennent d'autorités réelles : permission réellement requise,
+   capacité absente, ambiguïté, conflit, évidence périmée, lock, politique explicite.
+9. **Vérifier un fragment avant de le croire.** Si un extrait provient de
+   `docs/gwc/archive/` ou correspond à une entrée de `DEPRECATED_CLAIMS.md`, il est historique.
+10. **Après toute modification de ce dossier**, exécuter `node scripts/gwc-verify.mjs` et
+    documenter dans `SUIVI.md`, `CHANGELOG.md` et `DECISIONS_LOG.md`.
 
 ## Comment amender
 
-Les révisions sont additives. Une révision ne réécrit pas la précédente, elle l'amende et le signale.
+Le corps canonique ne contient que l'architecture retenue courante. Les révisions ne
+s'empilent pas dedans.
 
-1. Créer une branche de travail dédiée ; jamais de push direct sur `main`.
-2. Ajouter une section `R<n>` à la fin de `ARCHITECTURE_73_CONTRACTS.md`, avec son en-tête d'observation, ses corrections et son journal d'amendements.
-3. Poser un marqueur court à l'endroit du texte amendé plutôt que de le réécrire, afin que la lecture historique reste possible.
-4. Répercuter les changements structurants dans `.mcp/gwc-contracts.json` (champs `maturity`, `integrationStrategy`, `r2Note` et suivants) et, si la séquence change, dans `.mcp/gwc-task-seed.json`.
-5. Recalculer les empreintes : `node scripts/gwc-verify.mjs --write`, puis vérifier : `node scripts/gwc-verify.mjs`.
-6. Mettre à jour `docs/governance/markdown-inventory.json` si un Markdown est ajouté ou retiré.
-7. Ouvrir une pull request draft.
+1. Travailler sur une branche dédiée ; jamais de push direct sur `main`.
+2. Modifier `ARCHITECTURE_73_CONTRACTS.md` pour qu'il reflète **uniquement** l'état retenu.
+3. Déplacer toute affirmation remplacée vers `DEPRECATED_CLAIMS.md`, avec son remplacement.
+4. Consigner la révision dans `REVISION_HISTORY.md`.
+5. Archiver un corps entièrement remplacé sous `docs/gwc/archive/`, avec sa bannière non
+   canonique.
+6. Répercuter dans `.mcp/gwc-contracts.json`, `.mcp/gwc-workflow-graph.json` et
+   `.mcp/gwc-blueprints.json`.
+7. Recalculer les empreintes : `node scripts/gwc-verify.mjs --write`, puis vérifier :
+   `node scripts/gwc-verify.mjs`.
+8. Mettre à jour `docs/governance/markdown-inventory.json` si un Markdown est ajouté ou retiré.
+9. Ouvrir ou mettre à jour une pull request draft.
 
 ## Empreintes et intégrité
 
-`.mcp/gwc-contracts.json` et `.mcp/gwc-task-seed.json` portent un `registryDigest`, et chaque tâche du seed porte un `requestDigest`. Les deux reposent sur la même sérialisation canonique que `src/operationalMemory/taskQueue.ts`, afin qu'une empreinte calculée hors runtime soit identique à celle calculée par le runtime.
+Les trois artefacts `.mcp/gwc-*.json` portent un `registryDigest` calculé avec la même
+sérialisation canonique que `src/operationalMemory/taskQueue.ts`, afin qu'une empreinte
+calculée hors runtime soit identique à celle calculée par le runtime.
 
-`scripts/gwc-verify.mjs` recalcule ces empreintes et échoue si un artefact a été édité sans les régénérer. Câbler ce script dans la CI fait partie du LOT 0, après ratification.
+`scripts/gwc-verify.mjs` contrôle : 73 identifiants exacts et uniques, familles valides,
+versions de contrat, références canoniques et de blueprint réciproques, empreintes, arêtes du
+graphe pointant toutes sur des contrats existants, absence de règle `to > from`, présence d'au
+moins une arête à rebours, 18 blueprints `GWC-0`…`GWC-17` sans duplication ni dépendance
+inconnue, couverture de chaque contrat par exactement un blueprint, propriété architecturale
+des findings, absence de portée globale non justifiée, et absence de toute promotion de
+blueprint dans `.mcp/task-registry.json`.
 
 ## Frontière assumée
 
-Ce dossier est de la documentation et de la donnée. Il ne modifie aucun comportement runtime, n'ajoute aucun outil MCP, ne crée aucune tâche dans la Governed Task Queue, ne prend aucun lock et ne déclenche aucun déploiement. `.mcp/gwc-task-seed.json` est un fichier de préparation : il n'est chargé par aucun code. Seul `.mcp/task-registry.json` est lu au démarrage par `initializeSeed()`.
+Ce dossier est de la documentation et de la donnée. Il ne modifie aucun comportement runtime,
+n'ajoute aucun outil MCP, ne crée aucune tâche dans la Governed Task Queue, ne prend aucun lock
+et ne déclenche aucun déploiement.

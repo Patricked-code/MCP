@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 208,
+  "trackedCount": 211,
   "categories": {
-    "root-documentation": 50,
     "canonical": 7,
-    "migration-history": 7,
-    "documentation": 58,
-    "history": 1,
+    "documentation": 61,
     "engineering-plan": 8,
     "engineering-spec": 9,
+    "history": 1,
     "memory": 61,
+    "migration-history": 7,
+    "root-documentation": 50,
     "runtime-mirror-tracked": 7
   },
   "entries": [
@@ -455,11 +455,23 @@
       "category": "documentation"
     },
     {
-      "path": "docs/gwc/BACKLOG.md",
+      "path": "docs/gwc/BLUEPRINTS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/DEPRECATED_CLAIMS.md",
       "category": "documentation"
     },
     {
       "path": "docs/gwc/README.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/REVISION_HISTORY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/archive/ARCHITECTURE_R2_NON_CANONICAL.md",
       "category": "documentation"
     },
     {

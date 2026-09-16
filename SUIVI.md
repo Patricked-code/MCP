@@ -300,3 +300,16 @@ Date : 2026-08-29
 - Non vérifié ici : le contenu exact du ruleset `protect-main`. Aucun outil ruleset dans la surface utilisée. À VÉRIFIER.
 - Aucun comportement runtime modifié, aucune tâche créée, aucun lock pris, aucun déploiement déclenché.
 - Prochaine action : ratification humaine de l'architecture, puis AF-19, puis AF-22, puis disposition de la pile de PR ouvertes.
+
+## 2026-09-16 — R3 : réconciliation du dossier GWC sur la PR #95 existante
+
+- `SOURCE = GITHUB_LIVE` · `REPOSITORY = Patricked-code/MCP` · `REF = main` · `OBSERVED_SHA = d1f303955c4d368950da2307dda41d826fc85d0a` · `OBSERVED_AT = 2026-09-16T23:23:04Z`.
+- PR #95 réobservée live avant travail : ouverte, draft, `mergeable_state = clean`, head `36fe3b11be7a74d8190d0954a4dcae0052b5b5ba`, base `main@d1f3039`. Aucune nouvelle branche, aucune nouvelle PR.
+- Clone local utilisé uniquement comme tampon d'écriture, après preuve `LOCAL_HEAD == origin/claude/ecstatic-edison-v1dyt1 == 36fe3b11` et worktree propre. `LOCAL_CLONE_USED_FOR_CANONICAL_REVALIDATION = NO` : les fichiers du dépôt analysés ont été lus depuis GitHub live au SHA exact.
+- Corps canonique remplacé par les 73 Contract Design Sheets A→BA ; R2 archivée sous `docs/gwc/archive/` avec bannière non canonique ; affirmations remplacées consignées dans `DEPRECATED_CLAIMS.md`.
+- Statut d'architecture : `READY_FOR_GOVERNED_IMPLEMENTATION`. Aucune Task de ratification humaine.
+- 18 blueprints `GWC-0`…`GWC-17` en registre machine, jamais promus en Task Queue.
+- Findings conservés : `AF-19` propriétaire `GWC-15`, `AF-22` et `AF-30` propriétaire `GWC-14`. Priorité d'implémentation : AF-19, puis AF-22/AF-30, puis réconciliation #88/#89/#90 (`GWC-12`), puis `GWC-0`.
+- Non vérifié ici : contenu exact du ruleset `protect-main`. Aucun outil ruleset dans la surface utilisée. À VÉRIFIER.
+- PR #95 reste ouverte, draft et non fusionnée : AF-19 est une faiblesse vivante de l'autodeploy `main`, et un merge déclencherait le déploiement automatique existant.
+- Aucune implémentation GWC runtime démarrée, aucune Task créée, aucun lock, aucun déploiement.

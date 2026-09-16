@@ -4,6 +4,24 @@
 Journal des decisions structurantes du MCP.
 
 
+## 2026-09-16 — R3 : corps canonique, blueprints et frontière Task Queue / Execution Engine
+
+Décision : le corps canonique de l'architecture ne contient que l'architecture retenue courante. Motif : un agent qui récupère un fragment du document ne doit jamais lire une conclusion invalidée et la croire actuelle. Les affirmations remplacées vivent dans `docs/gwc/DEPRECATED_CLAIMS.md`, l'histoire dans `docs/gwc/REVISION_HISTORY.md`, et un corps entièrement remplacé sous `docs/gwc/archive/` avec bannière non canonique.
+
+Correction : la Governed Task Queue n'est pas le GWC Workflow Execution Engine. Elle fournit `initializeSeed`, `firstExecutable`, le claim, le cycle de vie, les priorités, les dépendances, l'ownership et les conflits de ressources. Le moteur reste une couche d'orchestration distincte qui compose les autorités existantes et n'acquiert aucune autorité métier nouvelle. Blueprint porteur `GWC-2`.
+
+Décision : `TASK BLUEPRINT ≠ GovernedTaskRecord`. Le chemin est architecture → blueprints → réconciliation avec la Task Queue live → classification `NEW_TASK` uniquement → Task runtime. Un blueprint peut produire 0, 1 ou N Governed Tasks. `.mcp/gwc-task-seed.json` est supprimé au profit de `.mcp/gwc-blueprints.json`, jamais chargé par `initializeSeed()`.
+
+Décision : aucun human gate générique. La validation conceptuelle était une étape de programme, pas une Task runtime. La Task de ratification `TASK-20260916-001` est supprimée. Les seules interruptions futures viennent d'autorités réelles : permission requise, capacité absente, ambiguïté, conflit, évidence périmée, lock, politique explicite.
+
+Décision : portées de ressource au domaine de collision minimal. Sérialiser tout le programme derrière `repository:Patricked-code/MCP` n'est pas de l'anti-dispersion mais une perte de parallélisme. Deux travaux indépendants doivent progresser si dépendances satisfaites et portées et locks disjoints.
+
+Décision : propriété architecturale des findings figée — `AF-19` à `GWC-15`, `AF-22` et `AF-30` à `GWC-14`, réconciliation de la pile de PR à `GWC-12`, multi-repository `TargetScope` à `GWC-10`. Leur priorité d'implémentation est volontairement plus précoce que la position de leur propriétaire dans le graphe ; cela ne crée pas d'architecture parallèle.
+
+Décision : le modèle est réellement multi-repository. Un projet peut porter 0, 1 ou N repositories et runtimes, plusieurs endpoints et plusieurs SHAs indépendants. Réduire cela à un `PROJECT_SHA` unique est interdit. Session, Task et Receipt évoluent de façon additive et rétrocompatible.
+
+Reconnaissance : les conclusions de R1 et R2 ont été produites avec `LOCAL_CLONE_USED = yes` et ne suffisent pas à une certification. Elles sont conservées, revalidées depuis `GITHUB_LIVE` ou explicitement marquées `À VÉRIFIER`. Une donnée live inaccessible n'est jamais compensée par le clone.
+
 ## 2026-09-16 — Le dossier GWC devient la source versionnée, la promotion des tâches reste humaine
 
 Décision : l'architecture GWC et le backlog qui en découle vivent désormais dans le dépôt, sous `docs/gwc/` pour la lecture humaine et sous `.mcp/gwc-*.json` pour la lecture machine, plutôt que dans des documents externes. Motif : tout agent doit pouvoir lire le même état sans dépendre d'un canal hors dépôt, et les révisions doivent être traçables par Git.

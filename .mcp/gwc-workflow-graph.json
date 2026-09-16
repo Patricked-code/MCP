@@ -1,0 +1,419 @@
+{
+  "schemaVersion": 1,
+  "revision": "R3",
+  "canonicalBaseline": "GWC_73_CONTRACT_DESIGN_SHEETS_CANONICAL_R1",
+  "entry": "GW-01",
+  "terminal": "GW-73",
+  "rules": {
+    "numericOrderEnforced": false,
+    "note": "Les identifiants sont un espace de noms stable. Aucune règle to > from. Les arêtes BACKWARD et SKIP sont des routes canoniques déclarées, pas des retries implicites."
+  },
+  "edgeKinds": [
+    "FORWARD",
+    "BACKWARD",
+    "SKIP"
+  ],
+  "registryDigest": "d08f0c74b8c0b1c873cd039bbc01005c0a741b60d2e7b556dfcc381c454963e5",
+  "edges": [
+    {
+      "from": "GW-01",
+      "to": "GW-02",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-02",
+      "to": "GW-03",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-02",
+      "to": "GW-16",
+      "kind": "SKIP"
+    },
+    {
+      "from": "GW-03",
+      "to": "GW-04",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-04",
+      "to": "GW-05",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-05",
+      "to": "GW-06",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-06",
+      "to": "GW-07",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-07",
+      "to": "GW-08",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-08",
+      "to": "GW-09",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-09",
+      "to": "GW-10",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-10",
+      "to": "GW-11",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-11",
+      "to": "GW-12",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-12",
+      "to": "GW-17",
+      "kind": "SKIP"
+    },
+    {
+      "from": "GW-13",
+      "to": "GW-12",
+      "kind": "BACKWARD"
+    },
+    {
+      "from": "GW-13",
+      "to": "GW-17",
+      "kind": "SKIP"
+    },
+    {
+      "from": "GW-14",
+      "to": "GW-15",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-15",
+      "to": "GW-16",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-16",
+      "to": "GW-03",
+      "kind": "BACKWARD"
+    },
+    {
+      "from": "GW-16",
+      "to": "GW-17",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-17",
+      "to": "GW-18",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-18",
+      "to": "GW-19",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-19",
+      "to": "GW-20",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-20",
+      "to": "GW-21",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-21",
+      "to": "GW-22",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-22",
+      "to": "GW-23",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-23",
+      "to": "GW-24",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-24",
+      "to": "GW-25",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-25",
+      "to": "GW-26",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-26",
+      "to": "GW-27",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-27",
+      "to": "GW-28",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-28",
+      "to": "GW-29",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-29",
+      "to": "GW-30",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-29",
+      "to": "GW-32",
+      "kind": "SKIP"
+    },
+    {
+      "from": "GW-30",
+      "to": "GW-31",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-31",
+      "to": "GW-32",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-32",
+      "to": "GW-33",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-33",
+      "to": "GW-34",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-34",
+      "to": "GW-35",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-35",
+      "to": "GW-36",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-36",
+      "to": "GW-37",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-37",
+      "to": "GW-30",
+      "kind": "BACKWARD"
+    },
+    {
+      "from": "GW-37",
+      "to": "GW-38",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-38",
+      "to": "GW-39",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-39",
+      "to": "GW-40",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-40",
+      "to": "GW-41",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-41",
+      "to": "GW-42",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-42",
+      "to": "GW-43",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-43",
+      "to": "GW-44",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-44",
+      "to": "GW-45",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-45",
+      "to": "GW-46",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-47",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-52",
+      "kind": "SKIP"
+    },
+    {
+      "from": "GW-47",
+      "to": "GW-48",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-48",
+      "to": "GW-49",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-49",
+      "to": "GW-50",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-50",
+      "to": "GW-51",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-51",
+      "to": "GW-52",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-52",
+      "to": "GW-53",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-53",
+      "to": "GW-54",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-54",
+      "to": "GW-55",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-54",
+      "to": "GW-56",
+      "kind": "SKIP"
+    },
+    {
+      "from": "GW-55",
+      "to": "GW-56",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-56",
+      "to": "GW-57",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-57",
+      "to": "GW-58",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-58",
+      "to": "GW-59",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-58",
+      "to": "GW-66",
+      "kind": "SKIP"
+    },
+    {
+      "from": "GW-59",
+      "to": "GW-60",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-60",
+      "to": "GW-61",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-61",
+      "to": "GW-62",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-62",
+      "to": "GW-63",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-63",
+      "to": "GW-64",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-64",
+      "to": "GW-65",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-65",
+      "to": "GW-66",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-65",
+      "to": "GW-56",
+      "kind": "BACKWARD"
+    },
+    {
+      "from": "GW-66",
+      "to": "GW-67",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-67",
+      "to": "GW-68",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-68",
+      "to": "GW-69",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-69",
+      "to": "GW-70",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-70",
+      "to": "GW-71",
+      "kind": "FORWARD"
+    },
+    {
+      "from": "GW-71",
+      "to": "GW-72",
+      "kind": "FORWARD"
+    }
+  ]
+}

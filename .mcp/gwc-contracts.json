@@ -1,1281 +1,2526 @@
 {
   "schemaVersion": 1,
-  "revision": "R2",
-  "generatedAt": "2026-09-16T00:00:00.000Z",
+  "revision": "R3",
+  "canonicalBaseline": "GWC_73_CONTRACT_DESIGN_SHEETS_CANONICAL_R1",
+  "generatedAt": "2026-09-16T23:23:04Z",
   "repository": "Patricked-code/MCP",
   "observedSha": "d1f303955c4d368950da2307dda41d826fc85d0a",
-  "source": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md",
-  "status": "AWAITING_HUMAN_RATIFICATION",
+  "source": "GITHUB_LIVE",
+  "architectureStatus": "READY_FOR_GOVERNED_IMPLEMENTATION",
+  "canonicalDetail": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md",
+  "note": "Projection machine déterministe de la baseline canonique. Aucune autorité métier.",
   "families": {
     "A": "Intake",
-    "B": "Identité et résolution de cible",
-    "C": "Gouvernance et composition de capacités",
-    "D": "Orchestration du travail",
-    "E": "Développement",
-    "F": "Revue et merge",
-    "G": "Déploiement",
-    "H": "Vérification et clôture",
-    "I": "Acceptance universelle"
+    "B": "Identity and Target Resolution",
+    "C": "Governance and Capability Composition",
+    "D": "Work Orchestration",
+    "E": "Development",
+    "F": "Review and Merge",
+    "G": "Deployment",
+    "H": "Verification and Closure",
+    "I": "Universal Acceptance"
   },
-  "legend": {
-    "maturity": {
-      "AI": "ALREADY_IMPLEMENTED",
-      "INW": "IMPLEMENTED_NOT_WRAPPED",
-      "P": "PARTIAL",
-      "MH": "MCP_HARDCODED",
-      "DNI": "DESIGNED_NOT_IMPLEMENTED",
-      "DB": "DEPENDENCY_BLOCKED"
-    },
-    "actionKind": {
-      "R": "READ",
-      "D": "DERIVE",
-      "Rec": "RECORD",
-      "M": "MUTATE via autorité existante",
-      "M*": "mutation accomplie hors MCP, GWC atteste"
-    }
-  },
-  "registryDigest": "6d089c565699306e69b856781aef5374ec62d68e4059426c1e966885082fc2eb",
+  "registryDigest": "d4783b9724a96eff51ee0147bc1e6ca18fd42475ad8f986dd7d3a8062c08e04d",
   "contracts": [
     {
       "stepId": "GW-01",
-      "name": "INTENT_CAPTURE",
+      "canonicalName": "INTENT_CAPTURE",
       "family": "A",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "D",
-      "primaryAuthority": "requête entrante",
-      "input": "rawIntent, source, receivedAt",
-      "output": "IntentContext",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-A amont",
-      "lot": "LOT-1",
-      "implementedByTaskId": "TASK-20260916-006",
-      "r2Note": null
+      "familyName": "Intake",
+      "contractVersion": 1,
+      "profiles": [
+        "PURE_TRANSFORM"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "NEW",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "IntentContext",
+      "replayModel": "PURE",
+      "currentMapping": "No runtime IntentCapture contract on main; design exists.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-01--intent_capture",
+      "blueprintRef": "GWC-1",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [],
+        "successors": [
+          "GW-02"
+        ],
+        "entry": true,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-02",
-      "name": "CONNECTION_BOOTSTRAP",
+      "canonicalName": "CONNECTION_BOOTSTRAP",
       "family": "B",
-      "maturity": "AI",
-      "integrationStrategy": "WRAP",
-      "actionKind": "M",
-      "primaryAuthority": "TransportBindings + GovernedSession",
-      "input": "transportSessionId, authInfo",
-      "output": "ATTACHED/RESUMED/NONE/AMBIGUOUS",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-B",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": null
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "BOOTSTRAP_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ConnectionBootstrapResult",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/server.ts bootstrap/auto-resume transport path.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-02--connection_bootstrap",
+      "blueprintRef": "GWC-4",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-01"
+        ],
+        "successors": [
+          "GW-03",
+          "GW-16"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-03",
-      "name": "CONNECTION_CONTEXT",
+      "canonicalName": "CONNECTION_CONTEXT",
       "family": "B",
-      "maturity": "MH",
-      "integrationStrategy": "WRAP+GEN",
-      "actionKind": "R/D",
-      "primaryAuthority": "ConnectionContext (OAuth)",
-      "input": "RequestIdentity",
-      "output": "ConnectionContext",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-B",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": null
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "CONTEXT_PROJECTION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY / COMPOSED",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD bounded projection if existing authority owns it"
+      ],
+      "canonicalOutput": "ConnectionContext",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/operationalMemory/connectionContext.ts + session records.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-03--connection_context",
+      "blueprintRef": "GWC-4",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-02",
+          "GW-16"
+        ],
+        "successors": [
+          "GW-04"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-04",
-      "name": "GITHUB_IDENTITY_RESOLUTION",
+      "canonicalName": "GITHUB_IDENTITY_RESOLUTION",
       "family": "B",
-      "maturity": "AI",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R/D",
-      "primaryAuthority": "identity-policy.json + GitHub GET /user",
-      "input": "oauthPrincipalId, repositoryContext, policy",
-      "output": "GithubIdentityResolution",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": null
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "GithubIdentityResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/github/identityResolution.ts.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-04--github_identity_resolution",
+      "blueprintRef": "GWC-3",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-03"
+        ],
+        "successors": [
+          "GW-05"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-05",
-      "name": "REPOSITORY_RESOLUTION",
+      "canonicalName": "REPOSITORY_RESOLUTION",
       "family": "B",
-      "maturity": "AI",
-      "integrationStrategy": "WRAP+GEN",
-      "actionKind": "R/D",
-      "primaryAuthority": "GitHub GET /repos + GitRegistry V1",
-      "input": "identité + registry + observation live",
-      "output": "GithubRepositoryResolution",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-3",
-      "implementedByTaskId": "TASK-20260916-008",
-      "r2Note": null
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RepositoryResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/github/repositoryResolution.ts.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-05--repository_resolution",
+      "blueprintRef": "GWC-3",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-04"
+        ],
+        "successors": [
+          "GW-06"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-06",
-      "name": "PROJECT_RESOLUTION",
+      "canonicalName": "PROJECT_RESOLUTION",
       "family": "B",
-      "maturity": "AI",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R/D",
-      "primaryAuthority": "GitRegistry V2 candidat",
-      "input": "repositoryId + V2 candidat",
-      "output": "GithubProjectResolution",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": null
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ProjectResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/github/projectResolution.ts + registry evidence.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-06--project_resolution",
+      "blueprintRef": "GWC-3",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-05"
+        ],
+        "successors": [
+          "GW-07"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-07",
-      "name": "SERVER_RESOLUTION",
+      "canonicalName": "SERVER_RESOLUTION",
       "family": "B",
-      "maturity": "P",
-      "integrationStrategy": "GENERALIZE",
-      "actionKind": "R/D",
-      "primaryAuthority": "server-map.json + V2 mapping + Live State",
-      "input": "projet + mapping + server-map",
-      "output": "ServerResolution (futur)",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-4",
-      "implementedByTaskId": "TASK-20260916-009",
-      "r2Note": "Reclassé en R2 : la donnée existe (resolveMcpGitServerContextFromRegistry, registry.ts:69 ; serverPath/realPathVerified). Généraliser, ne pas créer d'autorité."
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "GENERALIZE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ServerResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GitRegistry serverId/serverPath/realPath data; no universal resolver.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-07--server_resolution",
+      "blueprintRef": "GWC-6",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-06"
+        ],
+        "successors": [
+          "GW-08"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-08",
-      "name": "RUNTIME_RESOLUTION",
+      "canonicalName": "RUNTIME_RESOLUTION",
       "family": "B",
-      "maturity": "P",
-      "integrationStrategy": "GENERALIZE+NEW",
-      "actionKind": "R/D",
-      "primaryAuthority": "runtime Docker S1",
-      "input": "serveur + observation Docker",
-      "output": "RuntimeResolution (futur)",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-A/E",
-      "lot": "LOT-6",
-      "implementedByTaskId": "TASK-20260916-011",
-      "r2Note": "Reclassé en R2 : généraliser l'observation runtime existante, et n'ajouter un contrat d'évidence runtime que là où registryV2 n'a aucun modèle (Docker/Compose/PM2/Passenger/systemd/port/health)."
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "GENERALIZE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RuntimeResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Live State/runtime attestation/deploy code; no universal RuntimeBinding.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-08--runtime_resolution",
+      "blueprintRef": "GWC-7",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-07"
+        ],
+        "successors": [
+          "GW-09"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-09",
-      "name": "DOMAIN_RESOLUTION",
+      "canonicalName": "DOMAIN_RESOLUTION",
       "family": "B",
-      "maturity": "P",
-      "integrationStrategy": "GENERALIZE",
-      "actionKind": "R/D",
-      "primaryAuthority": "V2 publicDomain + vhosts",
-      "input": "projet + serveur + V2 domaine",
-      "output": "DomainResolution (futur)",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-5",
-      "implementedByTaskId": "TASK-20260916-010",
-      "r2Note": "Reclassé en R2 : domain/domainVerified/publicDomain/historicalVhosts existent déjà dans registryV2."
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "GENERALIZE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DomainResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GitRegistry project/publicDomain/domain/historicalVhosts.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-09--domain_resolution",
+      "blueprintRef": "GWC-8",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-08"
+        ],
+        "successors": [
+          "GW-10"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-10",
-      "name": "GOVERNANCE_INHERITANCE",
+      "canonicalName": "GOVERNANCE_INHERITANCE",
       "family": "C",
-      "maturity": "P",
-      "integrationStrategy": "EXTEND",
-      "actionKind": "D",
-      "primaryAuthority": ".mcp/*.json + GitHub rulesets",
-      "input": "repo/projet/serveur résolus",
-      "output": "InheritedGovernance (futur)",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-7",
-      "implementedByTaskId": "TASK-20260916-012",
-      "r2Note": null
+      "familyName": "Governance and Capability Composition",
+      "contractVersion": 1,
+      "profiles": [
+        "DERIVER"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "PARTIAL/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "GovernanceContext",
+      "replayModel": "READ_ONLY",
+      "currentMapping": ".mcp policies + governance evidence; no universal inheritance engine.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-10--governance_inheritance",
+      "blueprintRef": "GWC-9",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-09"
+        ],
+        "successors": [
+          "GW-11"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-11",
-      "name": "EFFECTIVE_CAPABILITIES",
+      "canonicalName": "EFFECTIVE_CAPABILITIES",
       "family": "C",
-      "maturity": "P",
-      "integrationStrategy": "GENERALIZE",
-      "actionKind": "D",
-      "primaryAuthority": "CapabilityReality + GovernanceDecision",
-      "input": "gouvernance + capability + gate",
-      "output": "EffectiveCapabilities (futur)",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-D/F/H",
-      "lot": "LOT-7",
-      "implementedByTaskId": "TASK-20260916-012",
-      "r2Note": null
+      "familyName": "Governance and Capability Composition",
+      "contractVersion": 1,
+      "profiles": [
+        "DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "EffectiveCapabilitySet",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/governance/operationalDecision.ts CapabilityReality/GovernanceDecision.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-11--effective_capabilities",
+      "blueprintRef": "GWC-9",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-10"
+        ],
+        "successors": [
+          "GW-12"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-12",
-      "name": "BOOTSTRAP_RECEIPT",
+      "canonicalName": "BOOTSTRAP_RECEIPT",
       "family": "C",
-      "maturity": "INW",
-      "integrationStrategy": "EXTEND",
-      "actionKind": "M",
-      "primaryAuthority": "GovernedSession (acknowledgeContext)",
-      "input": "expectedStateVersion + session",
-      "output": "BootstrapReceipt",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-7",
-      "implementedByTaskId": "TASK-20260916-012",
-      "r2Note": "Reclassé en R2 : D3 = PARTIAL/EXTEND. Étendre le BootstrapReceipt existant, jamais en créer un second. Exécution après GW-16 puis GW-17."
+      "familyName": "Governance and Capability Composition",
+      "contractVersion": 1,
+      "profiles": [
+        "PROJECTION"
+      ],
+      "executionSemantics": "COMPOSED_SUBCONTRACT",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD bounded projection if existing authority owns it"
+      ],
+      "canonicalOutput": "BootstrapReceiptProposal",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "BootstrapReceipt schema/sessionService.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-12--bootstrap_receipt",
+      "blueprintRef": "GWC-4",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-11",
+          "GW-13"
+        ],
+        "successors": [
+          "GW-17"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-13",
-      "name": "LIVE_STATE_RECONCILIATION",
+      "canonicalName": "LIVE_STATE_RECONCILIATION",
       "family": "D",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "R/D",
-      "primaryAuthority": "Live State engine",
-      "input": "observations 4 sources",
-      "output": "LiveStateSnapshot",
-      "lock": "—",
-      "taskInteraction": "aucune",
-      "integrationSlot": "SLOT-E",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": null
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "RECONCILER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "LiveStateSnapshot",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/liveState/*.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-13--live_state_reconciliation",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "derived",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-11"
+        ],
+        "successors": [
+          "GW-12",
+          "GW-17"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-14",
-      "name": "EXISTING_TASK_LOOKUP",
+      "canonicalName": "EXISTING_TASK_LOOKUP",
       "family": "D",
-      "maturity": "AI",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R/D",
-      "primaryAuthority": "Governed Task Queue",
-      "input": "intentKey / taskId",
-      "output": "classification + firstExecutableTask",
-      "lock": "lit locks",
-      "taskInteraction": "lookup",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": "Précisé en R2 : GW-14 est un lookup read-only (mcp_get_work_queue / mcp_get_governed_task). reconcileIntent() n'est pas un lookup et exige le receipt."
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "OBSERVER"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ExistingTaskLookup",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Task Queue read surfaces/current state.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-14--existing_task_lookup",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-13"
+        ],
+        "successors": [
+          "GW-15"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-15",
-      "name": "TASK_CREATION_IF_REQUIRED",
+      "canonicalName": "TASK_CREATION_IF_REQUIRED",
       "family": "D",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Task Queue",
-      "input": "ReconcileIntentInput",
-      "output": "GovernedTaskRecord READY",
-      "lock": "conflit vérifié",
-      "taskInteraction": "create",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": "Précisé en R2 : exige session + receipt frais (assertBootstrap avant reconcileIntent, governedTasks.ts:172-174)."
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "EVALUATE_THEN_MUTATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "IntentReconciliation",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "taskQueue.reconcileIntent().",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-15--task_creation_if_required",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-14"
+        ],
+        "successors": [
+          "GW-16"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-16",
-      "name": "GOVERNED_SESSION_OPEN_OR_RESUME",
+      "canonicalName": "GOVERNED_SESSION_OPEN_OR_RESUME",
       "family": "D",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Session",
-      "input": "repository + taskScope",
-      "output": "GovernedSessionPublicRecord",
-      "lock": "—",
-      "taskInteraction": "owner",
-      "integrationSlot": "SLOT-B/C",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": null
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "GovernedSession",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "sessionService open/resume/auto-resume.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-16--governed_session_open_or_resume",
+      "blueprintRef": "GWC-4",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-02"
+        ],
+        "successors": [
+          "GW-03",
+          "GW-17"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-17",
-      "name": "CONTEXT_ACKNOWLEDGEMENT",
+      "canonicalName": "CONTEXT_ACKNOWLEDGEMENT",
       "family": "D",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Session + Live State",
-      "input": "expectedStateVersion",
-      "output": "session + receipt",
-      "lock": "—",
-      "taskInteraction": "prérequis",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": null
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "AcknowledgedContext",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "sessionService acknowledgeContext().",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-17--context_acknowledgement",
+      "blueprintRef": "GWC-4",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-16"
+        ],
+        "successors": [
+          "GW-18"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-18",
-      "name": "TASK_CLAIM",
+      "canonicalName": "TASK_CLAIM",
       "family": "D",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Task Queue",
-      "input": "expectedStoreRevision",
-      "output": "task CLAIMED",
-      "lock": "scope + lock externe",
-      "taskInteraction": "claim",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": null
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "ClaimedTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "taskQueue.claimNextTask().",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-18--task_claim",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-17"
+        ],
+        "successors": [
+          "GW-19"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-19",
-      "name": "MINIMAL_LOCK_ACQUISITION",
+      "canonicalName": "MINIMAL_LOCK_ACQUISITION",
       "family": "D",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Lock Service",
-      "input": "scope, ttlSeconds, reason",
-      "output": "GovernedLockRecord ACTIVE",
-      "lock": "acquiert",
-      "taskInteraction": "protège",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": null
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "LOCKING"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "AcquiredLockSet",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT",
+      "currentMapping": "lockService.ts.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-19--minimal_lock_acquisition",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-18"
+        ],
+        "successors": [
+          "GW-20"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-20",
-      "name": "TASK_IN_PROGRESS",
+      "canonicalName": "TASK_IN_PROGRESS",
       "family": "D",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Task Queue",
-      "input": "task + revision",
-      "output": "task IN_PROGRESS",
-      "lock": "détient",
-      "taskInteraction": "transition",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-2",
-      "implementedByTaskId": "TASK-20260916-007",
-      "r2Note": null
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "InProgressTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "taskQueue.transitionTask().",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-20--task_in_progress",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-19"
+        ],
+        "successors": [
+          "GW-21"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-21",
-      "name": "AUTHORITY_DOCUMENT_READ",
+      "canonicalName": "AUTHORITY_DOCUMENT_READ",
       "family": "E",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R/D",
-      "primaryAuthority": "Current State evidence",
-      "input": "inventaire markdown/gouvernance",
-      "output": "AuthorityReadAttestation",
-      "lock": "détient",
-      "taskInteraction": "contexte",
-      "integrationSlot": "SLOT-J",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "AuthorityDocumentSet",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "CLAUDE.md/.mcp/docs/current state; procedural today.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-21--authority_document_read",
+      "blueprintRef": "GWC-11",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-20"
+        ],
+        "successors": [
+          "GW-22"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-22",
-      "name": "INTEGRATION_SLOT_RESOLUTION",
+      "canonicalName": "INTEGRATION_SLOT_RESOLUTION",
       "family": "E",
-      "maturity": "P",
-      "integrationStrategy": "EXTEND",
-      "actionKind": "D",
-      "primaryAuthority": "function-cartography.json + architecture",
-      "input": "cartographie + modules/routes",
-      "output": "IntegrationSlot",
-      "lock": "détient",
-      "taskInteraction": "contexte",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "DERIVER"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "IntegrationSlot",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Current State architecture/modules/imports/routes; no formal slot resolver.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-22--integration_slot_resolution",
+      "blueprintRef": "GWC-11",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-21"
+        ],
+        "successors": [
+          "GW-23"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-23",
-      "name": "EXACT_GITHUB_BASELINE",
+      "canonicalName": "EXACT_GITHUB_BASELINE",
       "family": "E",
-      "maturity": "AI",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R",
-      "primaryAuthority": "GitHub main head",
-      "input": "GitHub main",
-      "output": "exactBaselineSha",
-      "lock": "détient",
-      "taskInteraction": "observedHeadSha",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "GithubBaseline",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GovernedContext GitHub/Live State observations.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-23--exact_github_baseline",
+      "blueprintRef": "GWC-11",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-22"
+        ],
+        "successors": [
+          "GW-24"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-24",
-      "name": "GOVERNED_BRANCH_CREATION",
+      "canonicalName": "GOVERNED_BRANCH_CREATION",
       "family": "E",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "M*",
-      "primaryAuthority": "GitHub + branch-governance.json",
-      "input": "baseline + branch-governance",
-      "output": "branchRef observé",
-      "lock": "détient",
-      "taskInteraction": "workBranch",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "BranchMutationResult",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate PR #90 github_create_branch.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-24--governed_branch_creation",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-23"
+        ],
+        "successors": [
+          "GW-25"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-25",
-      "name": "TDD_RED_AUTHORING",
+      "canonicalName": "TDD_RED_AUTHORING",
       "family": "E",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "M*",
-      "primaryAuthority": "agent (déclaré)",
-      "input": "slot + tests",
-      "output": "commit RED déclaré",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "agent",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "DEV_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL/CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "RedCandidate",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Existing tests/TDD process; candidate #90 mutation surfaces.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-25--tdd_red_authoring",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-24"
+        ],
+        "successors": [
+          "GW-26"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-26",
-      "name": "TDD_RED_OBSERVATION",
+      "canonicalName": "TDD_RED_OBSERVATION",
       "family": "E",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R",
-      "primaryAuthority": "GitHub check-runs (head exact)",
-      "input": "commit RED + CI",
-      "output": "redObserved",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "TEST_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RedProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "CI/check observation; missing targeted RED proof model.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-26--tdd_red_observation",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-25"
+        ],
+        "successors": [
+          "GW-27"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-27",
-      "name": "TDD_GREEN_MINIMAL_IMPLEMENTATION",
+      "canonicalName": "TDD_GREEN_MINIMAL_IMPLEMENTATION",
       "family": "E",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "M*",
-      "primaryAuthority": "agent (déclaré)",
-      "input": "RED observé",
-      "output": "commit GREEN déclaré",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "agent",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "DEV_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL/CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "GreenCandidate",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 commit/file mutation surfaces.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-27--tdd_green_minimal_implementation",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-26"
+        ],
+        "successors": [
+          "GW-28"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-28",
-      "name": "GREEN_CI",
+      "canonicalName": "GREEN_CI",
       "family": "E",
-      "maturity": "AI",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R",
-      "primaryAuthority": "GitHub check-runs + rulesets",
-      "input": "head exact + rulesets",
-      "output": "ciExactHeadSuccess",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "CI_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "GreenCiProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "mcp-ci.yml + GitHub checks evidence.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-28--green_ci",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-27"
+        ],
+        "successors": [
+          "GW-29"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-29",
-      "name": "SELF_REVIEW",
+      "canonicalName": "SELF_REVIEW",
       "family": "E",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "D",
-      "primaryAuthority": "agent + diff GitHub",
-      "input": "diff exact",
-      "output": "findings[]",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "agent",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "REVIEW_DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ReviewFindingSet",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Existing review practice/diff evidence; no formal contract.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-29--self_review",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-28"
+        ],
+        "successors": [
+          "GW-30",
+          "GW-32"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-30",
-      "name": "REGRESSION_RED_IF_FINDING",
+      "canonicalName": "REGRESSION_RED_IF_FINDING",
       "family": "E",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "M*",
-      "primaryAuthority": "agent + CI",
-      "input": "finding",
-      "output": "commit RED régression",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "agent",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "TEST_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "RegressionRedProof",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Tests exist; no formal regression-red contract.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-30--regression_red_if_finding",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-29"
+        ],
+        "successors": [
+          "GW-31"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-31",
-      "name": "REGRESSION_GREEN",
+      "canonicalName": "REGRESSION_GREEN",
       "family": "E",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "M*",
-      "primaryAuthority": "agent + CI",
-      "input": "RED régression",
-      "output": "commit GREEN",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "agent",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "DEV_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "RegressionGreenCandidate",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Tests/code mutation process; no formal contract.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-31--regression_green",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-30"
+        ],
+        "successors": [
+          "GW-32"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-32",
-      "name": "FULL_REGRESSION",
+      "canonicalName": "FULL_REGRESSION",
       "family": "E",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R",
-      "primaryAuthority": "CI job validate",
-      "input": "suite complète CI",
-      "output": "fullRegressionGreen",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "CI_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "FullRegressionProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "package scripts + mcp-ci.yml.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-32--full_regression",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-31"
+        ],
+        "successors": [
+          "GW-33"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-33",
-      "name": "NON_TERMINAL_DOCUMENTATION",
+      "canonicalName": "NON_TERMINAL_DOCUMENTATION",
       "family": "E",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "M*",
-      "primaryAuthority": "doc governance scripts",
-      "input": "docs non terminales",
-      "output": "commits doc",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-J",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "DOC_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DocumentationCandidate",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Documentation governance/process.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-33--non_terminal_documentation",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-32"
+        ],
+        "successors": [
+          "GW-34"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-34",
-      "name": "DRAFT_PR",
+      "canonicalName": "DRAFT_PR",
       "family": "F",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "M*",
-      "primaryAuthority": "GitHub PR (agent)",
-      "input": "branche + base main",
-      "output": "PR draft observée",
-      "lock": "détient",
-      "taskInteraction": "pullRequestNumber",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DraftPullRequest",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate PR #90 github_create_pull_request.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-34--draft_pr",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-33"
+        ],
+        "successors": [
+          "GW-35"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-35",
-      "name": "EXACT_DIFF_REVIEW",
+      "canonicalName": "EXACT_DIFF_REVIEW",
       "family": "F",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R",
-      "primaryAuthority": "GitHub reviews + threads",
-      "input": "diff exact du head",
-      "output": "revue exacte",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": "AF-22/AF-30 : parseReviews ignore review.commit_id ; la preuve de revue doit devenir SHA-bound avant usage."
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ExactDiffEvidence",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GovernedContext + #89/#90 bounded compare/diff surfaces.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-35--exact_diff_review",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-22",
+        "AF-30"
+      ],
+      "graph": {
+        "predecessors": [
+          "GW-34"
+        ],
+        "successors": [
+          "GW-36"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-36",
-      "name": "RULESET_VERIFICATION",
+      "canonicalName": "RULESET_VERIFICATION",
       "family": "F",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "R/D",
-      "primaryAuthority": "GitHub rulesets",
-      "input": "rulesets actifs main",
-      "output": "contraintes agrégées",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_DECISION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RulesetEvidence",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GitHub ruleset/protection evidence.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-36--ruleset_verification",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-35"
+        ],
+        "successors": [
+          "GW-37"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-37",
-      "name": "REVIEW_FINDINGS_RESOLUTION",
+      "canonicalName": "REVIEW_FINDINGS_RESOLUTION",
       "family": "F",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "M*",
-      "primaryAuthority": "GitHub threads",
-      "input": "threads non résolus",
-      "output": "threads = 0",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "REVIEW_MUTATION"
+      ],
+      "executionSemantics": "EVALUATE_THEN_MUTATE",
+      "integrationClassification": "PARTIAL/CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "FindingsResolution",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 thread reply/resolve + review loop.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-37--review_findings_resolution",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-36"
+        ],
+        "successors": [
+          "GW-30",
+          "GW-38"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-38",
-      "name": "PR_READY",
+      "canonicalName": "PR_READY",
       "family": "F",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "M*",
-      "primaryAuthority": "GitHub PR draft flag",
-      "input": "draft=false",
-      "output": "PR ready",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "ReadyPullRequest",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 github_mark_pr_ready.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-38--pr_ready",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-22",
+        "AF-30"
+      ],
+      "graph": {
+        "predecessors": [
+          "GW-37"
+        ],
+        "successors": [
+          "GW-39"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-39",
-      "name": "TASK_REVIEW",
+      "canonicalName": "TASK_REVIEW",
       "family": "F",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Task Queue",
-      "input": "task + revision",
-      "output": "task REVIEW",
-      "lock": "détient",
-      "taskInteraction": "transition",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "ReviewTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Task Queue REVIEW transition.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-39--task_review",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-38"
+        ],
+        "successors": [
+          "GW-40"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-40",
-      "name": "REVIEW_CHECKPOINT",
+      "canonicalName": "REVIEW_CHECKPOINT",
       "family": "F",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Session",
-      "input": "contexte acquitté",
-      "output": "GovernedCheckpoint",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "ReviewCheckpoint",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Governed Session checkpoint.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-40--review_checkpoint",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-39"
+        ],
+        "successors": [
+          "GW-41"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-41",
-      "name": "PREMERGE_REVALIDATION",
+      "canonicalName": "PREMERGE_REVALIDATION",
       "family": "F",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R/D",
-      "primaryAuthority": "Governed Context",
-      "input": "contexte recomposé",
-      "output": "préconditions revalidées",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "CROSS_EVIDENCE_DECISION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "PremergeProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GovernedContext + #89 review commitId + #90 review-thread/mergeability surfaces.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-41--premerge_revalidation",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-22",
+        "AF-30"
+      ],
+      "graph": {
+        "predecessors": [
+          "GW-40"
+        ],
+        "successors": [
+          "GW-42"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-42",
-      "name": "TASK_MERGE_READY",
+      "canonicalName": "TASK_MERGE_READY",
       "family": "F",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Task Queue",
-      "input": "task + revision",
-      "output": "task MERGE_READY",
-      "lock": "détient",
-      "taskInteraction": "transition",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "MergeReadyTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Task Queue MERGE_READY transition.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-42--task_merge_ready",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-41"
+        ],
+        "successors": [
+          "GW-43"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-43",
-      "name": "EXACT_HEAD_MERGE",
+      "canonicalName": "EXACT_HEAD_MERGE",
       "family": "F",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "M*",
-      "primaryAuthority": "GitHub merge (expected_head_sha)",
-      "input": "expected_head_sha",
-      "output": "mergeSha",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "agent + SLOT-A",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "MergeEffectResult",
+      "replayModel": "NON_REPLAYABLE; RECOVERABLE_BY_OBSERVATION",
+      "currentMapping": "Candidate #90 github_merge_pull_request exact-head.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-43--exact_head_merge",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-22",
+        "AF-30"
+      ],
+      "graph": {
+        "predecessors": [
+          "GW-42"
+        ],
+        "successors": [
+          "GW-44"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-44",
-      "name": "MAIN_MERGE_COMMIT_OBSERVATION",
-      "family": "F",
-      "maturity": "AI",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R",
-      "primaryAuthority": "GitHub main head + Live State",
-      "input": "GitHub main",
-      "output": "mergeSha confirmé",
-      "lock": "détient",
-      "taskInteraction": "observedHeadSha",
-      "integrationSlot": "SLOT-A/E",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": null
+      "canonicalName": "MAIN_MERGE_COMMIT_OBSERVATION",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "MergeCommitObservation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GitHub main/PR merge observation.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-44--main_merge_commit_observation",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-43"
+        ],
+        "successors": [
+          "GW-45"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-45",
-      "name": "MAIN_CI",
-      "family": "F",
-      "maturity": "P",
-      "integrationStrategy": "EXTEND",
-      "actionKind": "R",
-      "primaryAuthority": "GitHub check-runs sur main — non collecté (AF-19)",
-      "input": "check-runs sur main",
-      "output": "mainCiGreen",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "absent (AF-19)",
-      "lot": "LOT-9",
-      "implementedByTaskId": "TASK-20260916-014",
-      "r2Note": "AF-19 : aucune source de données aujourd’hui ; les check-runs ne sont collectés que pour pullRequest.headSha (github.ts:1103)."
+      "canonicalName": "MAIN_CI",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "CI_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "MainCiProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "mcp-ci.yml + checks/workflow-runs evidence.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-45--main_ci",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-19"
+      ],
+      "graph": {
+        "predecessors": [
+          "GW-44"
+        ],
+        "successors": [
+          "GW-46"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-46",
-      "name": "GOVERNED_AUTODEPLOY_OBSERVATION",
+      "canonicalName": "GOVERNED_AUTODEPLOY_OBSERVATION",
       "family": "G",
-      "maturity": "P",
-      "integrationStrategy": "EXTEND",
-      "actionKind": "R",
-      "primaryAuthority": "mcp-deploy.yml + job S1",
-      "input": "run mcp-deploy.yml",
-      "output": "statut de job",
-      "lock": "flock S1",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-G",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "DEPLOY_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DeploymentJobObservation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "mcp-deploy.yml + deploy job/status.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-46--governed_autodeploy_observation",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-19"
+      ],
+      "graph": {
+        "predecessors": [
+          "GW-45"
+        ],
+        "successors": [
+          "GW-47",
+          "GW-52"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-47",
-      "name": "GITHUB_TO_S1_SYNC_ATTESTATION",
+      "canonicalName": "GITHUB_TO_S1_SYNC_ATTESTATION",
       "family": "G",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "R/D",
-      "primaryAuthority": "Live State s1.head / originMain",
-      "input": "Live State S1",
-      "output": "githubVsS1 = ALIGNED",
-      "lock": "flock",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-E",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "DEPLOY_ATTESTATION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "SyncAttestation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/deploy/s1Deploy.ts exact SHA/FF sync.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-47--github_to_s1_sync_attestation",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-46"
+        ],
+        "successors": [
+          "GW-48"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-48",
-      "name": "DEPLOY_TYPECHECK_BUILD",
+      "canonicalName": "DEPLOY_TYPECHECK_BUILD",
       "family": "G",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R",
-      "primaryAuthority": "CI validate + worker build",
-      "input": "worker build",
-      "output": "build OK",
-      "lock": "flock",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-G",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "DEPLOY_CI_ATTESTATION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "BuildAttestation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "CI typecheck/build + deploy docker build.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-48--deploy_typecheck_build",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-47"
+        ],
+        "successors": [
+          "GW-49"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-49",
-      "name": "RUNTIME_REBUILD_OR_RESTART_ATTESTATION",
+      "canonicalName": "RUNTIME_REBUILD_OR_RESTART_ATTESTATION",
       "family": "G",
-      "maturity": "AI",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R",
-      "primaryAuthority": "S1 deploy worker phases",
-      "input": "worker start",
-      "output": "conteneur recréé",
-      "lock": "flock",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-G",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "RUNTIME_ATTESTATION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RuntimeStartAttestation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "s1Deploy runtime start/rollback.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-49--runtime_rebuild_or_restart_attestation",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-48"
+        ],
+        "successors": [
+          "GW-50"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-50",
-      "name": "HEALTH_CHECK",
+      "canonicalName": "HEALTH_CHECK",
       "family": "G",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "R",
-      "primaryAuthority": "/health, oauth, /mcp 401",
-      "input": "endpoints locaux",
-      "output": "health/oauth/mcpAuth OK",
-      "lock": "flock",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-G",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "RUNTIME_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "HealthProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "s1Deploy health/OAuth/MCP auth checks.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-50--health_check",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-49"
+        ],
+        "successors": [
+          "GW-51"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-51",
-      "name": "RUNTIME_IMAGE_ATTESTATION",
+      "canonicalName": "RUNTIME_IMAGE_ATTESTATION",
       "family": "G",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "R",
-      "primaryAuthority": "labels Docker S1",
-      "input": "labels Docker",
-      "output": "runtimeRevision",
-      "lock": "—",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-E",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "RUNTIME_ATTESTATION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RuntimeImageProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/tools/runtimeAttestation.ts.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-51--runtime_image_attestation",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-50"
+        ],
+        "successors": [
+          "GW-52"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-52",
-      "name": "EXACT_SHA_DEPLOYMENT_PROOF",
+      "canonicalName": "EXACT_SHA_DEPLOYMENT_PROOF",
       "family": "G",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "D",
-      "primaryAuthority": "deploymentExactShaSuccess",
-      "input": "5 SHA + health",
-      "output": "deploymentExactShaSuccess",
-      "lock": "—",
-      "taskInteraction": "runtimeRevision",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "CROSS_AUTHORITY_DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "REUSE/GENERALIZE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ExactDeploymentProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Deploy attestation + Live State cross-authority equality.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-52--exact_sha_deployment_proof",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-47",
+          "GW-51"
+        ],
+        "successors": [
+          "GW-53"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-53",
-      "name": "LIVE_STATE_UPDATE",
+      "canonicalName": "LIVE_STATE_UPDATE",
       "family": "G",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Live State engine",
-      "input": "observations",
-      "output": "stateVersion n+1",
-      "lock": "—",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-E",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "RECONCILER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ReconciledLiveState",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Live State reconcileNow/stateVersion.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-53--live_state_update",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-52"
+        ],
+        "successors": [
+          "GW-54"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-54",
-      "name": "STALE_RECEIPT_DETECTION",
+      "canonicalName": "STALE_RECEIPT_DETECTION",
       "family": "G",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "D",
-      "primaryAuthority": "bootstrap status derivation",
-      "input": "receipt + stateVersion",
-      "output": "MISSING/CURRENT/STALE/EXPIRED",
-      "lock": "—",
-      "taskInteraction": "bloque",
-      "integrationSlot": "SLOT-A/C",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ReceiptFreshness",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "BootstrapReceipt vs Live State version checks.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-54--stale_receipt_detection",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-53"
+        ],
+        "successors": [
+          "GW-55",
+          "GW-56"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-55",
-      "name": "RECEIPT_REFRESH",
+      "canonicalName": "RECEIPT_REFRESH",
       "family": "G",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Session",
-      "input": "expectedStateVersion",
-      "output": "receipt renouvelé",
-      "lock": "—",
-      "taskInteraction": "débloque",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "RefreshedReceipt",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "acknowledgeContext receipt refresh.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-55--receipt_refresh",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-54"
+        ],
+        "successors": [
+          "GW-56"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-56",
-      "name": "TASK_RUNTIME_REVISION_BINDING",
+      "canonicalName": "TASK_RUNTIME_REVISION_BINDING",
       "family": "G",
-      "maturity": "AI",
-      "integrationStrategy": "DERIVE",
-      "actionKind": "D",
-      "primaryAuthority": "Governed Task Queue",
-      "input": "runtimeRevision attesté",
-      "output": "task.runtimeRevision",
-      "lock": "détient",
-      "taskInteraction": "transition",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": "Reclassé en R2 : aucune auto-transition dans ALLOWED_TRANSITIONS, donc aucun patch d'évidence seule. GW-56 dérive un RuntimeRevisionBindingCandidate, GW-57 le persiste dans l'unique mutation MERGE_READY→DEPLOYING."
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "DERIVER_BINDING"
+      ],
+      "executionSemantics": "COMPOSED_SUBCONTRACT",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD bounded projection if existing authority owns it"
+      ],
+      "canonicalOutput": "RuntimeBindingProposal",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Task runtimeRevision field/transition; binding proof not formalized.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-56--task_runtime_revision_binding",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-08"
+      ],
+      "graph": {
+        "predecessors": [
+          "GW-55"
+        ],
+        "successors": [
+          "GW-57"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-57",
-      "name": "TASK_DEPLOYING",
+      "canonicalName": "TASK_DEPLOYING",
       "family": "G",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Task Queue",
-      "input": "task + revision",
-      "output": "task DEPLOYING",
-      "lock": "détient",
-      "taskInteraction": "transition",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DeployingTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Task Queue DEPLOYING transition.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-57--task_deploying",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-56"
+        ],
+        "successors": [
+          "GW-58"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-58",
-      "name": "DOCUMENTATION_DRIFT_DECISION",
+      "canonicalName": "DOCUMENTATION_DRIFT_DECISION",
       "family": "H",
-      "maturity": "P",
-      "integrationStrategy": "EXTEND",
-      "actionKind": "D",
-      "primaryAuthority": "Live State documentation.drift",
-      "input": "documentation.drift",
-      "output": "décision drift",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-E/J",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DocumentationDriftDecision",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Live State documentation drift.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-58--documentation_drift_decision",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-57"
+        ],
+        "successors": [
+          "GW-59",
+          "GW-66"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-59",
-      "name": "DOCUMENTATION_BRANCH_IF_REQUIRED",
+      "canonicalName": "DOCUMENTATION_BRANCH_IF_REQUIRED",
       "family": "H",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "M*",
-      "primaryAuthority": "GitHub (agent)",
-      "input": "drift=true",
-      "output": "branche doc",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "agent",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DocsBranch",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 branch creation reused for docs.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-59--documentation_branch_if_required",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-58"
+        ],
+        "successors": [
+          "GW-60"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-60",
-      "name": "DOCUMENTATION_RECONCILIATION",
+      "canonicalName": "DOCUMENTATION_RECONCILIATION",
       "family": "H",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "M*",
-      "primaryAuthority": "agent + doc governance",
-      "input": "drift + autorités",
-      "output": "commits doc",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-J",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "DOC_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL/CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DocsCandidate",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Docs governance + candidate GitHub commit surfaces.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-60--documentation_reconciliation",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-59"
+        ],
+        "successors": [
+          "GW-61"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-61",
-      "name": "DOCUMENTATION_PR",
+      "canonicalName": "DOCUMENTATION_PR",
       "family": "H",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "M*",
-      "primaryAuthority": "GitHub PR (agent)",
-      "input": "branche doc",
-      "output": "PR doc",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "agent",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DocsPullRequest",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 PR creation.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-61--documentation_pr",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-60"
+        ],
+        "successors": [
+          "GW-62"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-62",
-      "name": "DOCUMENTATION_CI_REVIEW",
+      "canonicalName": "DOCUMENTATION_CI_REVIEW",
       "family": "H",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R",
-      "primaryAuthority": "CI + reviews",
-      "input": "PR doc",
-      "output": "CI + revue verte",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "CI_REVIEW"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DocsReviewProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "CI/review evidence reused with documentation profile.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-62--documentation_ci_review",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-61"
+        ],
+        "successors": [
+          "GW-63"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-63",
-      "name": "DOCUMENTATION_EXACT_HEAD_MERGE",
+      "canonicalName": "DOCUMENTATION_EXACT_HEAD_MERGE",
       "family": "H",
-      "maturity": "DNI",
-      "integrationStrategy": "NEW",
-      "actionKind": "M*",
-      "primaryAuthority": "GitHub merge (agent)",
-      "input": "head exact doc",
-      "output": "mergeSha doc",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "agent",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DocsMergeResult",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 exact-head merge.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-63--documentation_exact_head_merge",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-62"
+        ],
+        "successors": [
+          "GW-64"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-64",
-      "name": "DOCUMENTATION_AUTODEPLOY",
+      "canonicalName": "DOCUMENTATION_AUTODEPLOY",
       "family": "H",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "R",
-      "primaryAuthority": "pipeline autodeploy",
-      "input": "mergeSha doc",
-      "output": "deploy attesté",
-      "lock": "flock",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-G",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "DEPLOY_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DocsDeployObservation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Existing deploy workflow on main push.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-64--documentation_autodeploy",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-63"
+        ],
+        "successors": [
+          "GW-65"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-65",
-      "name": "DOCUMENTATION_LIVE_STATE",
+      "canonicalName": "DOCUMENTATION_LIVE_STATE",
       "family": "H",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "R/D",
-      "primaryAuthority": "Live State",
-      "input": "Live State",
-      "output": "drift = false",
-      "lock": "—",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-E",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "RECONCILER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DocsAlignedLiveState",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Live State docs alignment.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-65--documentation_live_state",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-64"
+        ],
+        "successors": [
+          "GW-66",
+          "GW-56"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-66",
-      "name": "TERMINAL_RECEIPT_REFRESH",
+      "canonicalName": "TERMINAL_RECEIPT_REFRESH",
       "family": "H",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Session",
-      "input": "expectedStateVersion final",
-      "output": "receipt frais",
-      "lock": "—",
-      "taskInteraction": "débloque",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "TerminalReceipt",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Receipt freshness/acknowledge reuse.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-66--terminal_receipt_refresh",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-65"
+        ],
+        "successors": [
+          "GW-67"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-67",
-      "name": "TASK_VERIFYING",
+      "canonicalName": "TASK_VERIFYING",
       "family": "H",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Task Queue",
-      "input": "task + revision",
-      "output": "task VERIFYING",
-      "lock": "détient",
-      "taskInteraction": "transition",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-10",
-      "implementedByTaskId": "TASK-20260916-015",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "VerifyingTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Task Queue VERIFYING transition.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-67--task_verifying",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-66"
+        ],
+        "successors": [
+          "GW-68"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-68",
-      "name": "TERMINAL_VERIFICATION",
+      "canonicalName": "TERMINAL_VERIFICATION",
       "family": "H",
-      "maturity": "P",
-      "integrationStrategy": "WRAP",
-      "actionKind": "D",
-      "primaryAuthority": "TaskReality observedPhase=VERIFIED",
-      "input": "TaskReality",
-      "output": "observedPhase = VERIFIED",
-      "lock": "détient",
-      "taskInteraction": "preuve",
-      "integrationSlot": "SLOT-A",
-      "lot": "LOT-11",
-      "implementedByTaskId": "TASK-20260916-016",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "TERMINAL_DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "TerminalVerification",
+      "replayModel": "READ_ONLY / recalculable",
+      "currentMapping": "TaskReality/Live State/GovernanceDecision pieces; no unique hard terminal gate.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-68--terminal_verification",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-07"
+      ],
+      "graph": {
+        "predecessors": [
+          "GW-67"
+        ],
+        "successors": [
+          "GW-69"
+        ],
+        "entry": false,
+        "terminal": true
+      }
     },
     {
       "stepId": "GW-69",
-      "name": "TASK_DONE",
+      "canonicalName": "TASK_DONE",
       "family": "H",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Task Queue",
-      "input": "task + revision",
-      "output": "task DONE",
-      "lock": "détient",
-      "taskInteraction": "transition",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-12",
-      "implementedByTaskId": "TASK-20260916-017",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL/REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DoneTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT",
+      "currentMapping": "Task Queue VERIFYING→DONE exists but needs hard terminal proof requirement.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-69--task_done",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-07"
+      ],
+      "graph": {
+        "predecessors": [
+          "GW-68"
+        ],
+        "successors": [
+          "GW-70"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-70",
-      "name": "TERMINAL_CHECKPOINT",
+      "canonicalName": "TERMINAL_CHECKPOINT",
       "family": "H",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Session",
-      "input": "contexte acquitté",
-      "output": "checkpoint terminal",
-      "lock": "détient",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-12",
-      "implementedByTaskId": "TASK-20260916-017",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "TerminalCheckpoint",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Governed Session checkpoint.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-70--terminal_checkpoint",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-69"
+        ],
+        "successors": [
+          "GW-71"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-71",
-      "name": "LOCK_RELEASE",
+      "canonicalName": "LOCK_RELEASE",
       "family": "H",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Lock Service",
-      "input": "lockId + revision",
-      "output": "lock RELEASED",
-      "lock": "libère",
-      "taskInteraction": "—",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-12",
-      "implementedByTaskId": "TASK-20260916-017",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "LOCK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "LockReleaseProof",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Lock Service release + closeSession cleanup fallback.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-71--lock_release",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-70"
+        ],
+        "successors": [
+          "GW-72"
+        ],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-72",
-      "name": "SESSION_CLOSE_AND_QUEUE_RECONCILE",
+      "canonicalName": "SESSION_CLOSE_AND_QUEUE_RECONCILE",
       "family": "H",
-      "maturity": "AI",
-      "integrationStrategy": "REUSE",
-      "actionKind": "M",
-      "primaryAuthority": "Governed Session + Task Queue",
-      "input": "session + revision",
-      "output": "session CLOSED + requeue",
-      "lock": "libère tout",
-      "taskInteraction": "requeue",
-      "integrationSlot": "SLOT-C",
-      "lot": "LOT-12",
-      "implementedByTaskId": "TASK-20260916-017",
-      "r2Note": null
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_TASK_ORCHESTRATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL/REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "ClosureAndNextWork",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Session close + queue/requeue/firstExecutable primitives.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-72--session_close_and_queue_reconcile",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [
+          "GW-71"
+        ],
+        "successors": [],
+        "entry": false,
+        "terminal": false
+      }
     },
     {
       "stepId": "GW-73",
-      "name": "UNIVERSAL_ACCEPTANCE",
+      "canonicalName": "UNIVERSAL_ACCEPTANCE",
       "family": "I",
-      "maturity": "DB",
-      "integrationStrategy": "NEW",
-      "actionKind": "D",
-      "primaryAuthority": "orchestration GW-01 … GW-72",
-      "input": "scénarios E2E",
-      "output": "rapport d'acceptance",
-      "lock": "selon scénario",
-      "taskInteraction": "selon scénario",
-      "integrationSlot": "SLOT-A … J",
-      "lot": "LOT-13",
-      "implementedByTaskId": "TASK-20260916-018",
-      "r2Note": null
+      "familyName": "Universal Acceptance",
+      "contractVersion": 1,
+      "profiles": [
+        "ACCEPTANCE"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "NEW",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "UniversalAcceptanceReport",
+      "replayModel": "READ_ONLY acceptance suite except isolated governed fixture mutations.",
+      "currentMapping": "No complete engine; acceptance is new.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-73--universal_acceptance",
+      "blueprintRef": "GWC-17",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "graph": {
+        "predecessors": [],
+        "successors": [],
+        "entry": false,
+        "terminal": true
+      }
     }
   ]
 }
