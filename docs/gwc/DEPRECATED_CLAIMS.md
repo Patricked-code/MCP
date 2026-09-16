@@ -72,9 +72,9 @@ moment de la matérialisation. L'équation « 1 blueprint = 1 Task » est fausse
 | Remplacé par | le routage canonique `GW-13 → GW-12` et `GW-12 → GW-17` |
 
 L'intuition de R2 était correcte sur le fond — les identifiants ne sont pas une séquence — mais
-l'arête exacte ne l'était pas. Le graphe canonique déclare les arêtes à rebours
-`GW-13 → GW-12`, `GW-16 → GW-03`, `GW-37 → GW-30`, `GW-65 → GW-56` et les sauts `GW-29 → GW-32`,
-`GW-58 → GW-66`. La règle générale demeure : **aucune contrainte `to > from`**.
+l'arête exacte ne l'était pas. Le graphe canonique déclare 5 arêtes à rebours — `GW-13 → GW-12`,
+`GW-16 → GW-03`, `GW-37 → GW-30`, `GW-37 → GW-31`, `GW-65 → GW-56` — et 16 sauts. La règle
+générale demeure : **aucune contrainte `to > from`**.
 
 ## DC-06 — Portée `repository:Patricked-code/MCP` sur toutes les tâches
 
@@ -143,3 +143,57 @@ diffère de celui du frontend AfricaFunds. Réduire cela à un `PROJECT_SHA` uni
 | Remplacé par | le câblage CI reste à décider ; `GWC-0` porte le substrat contractuel, pas la politique CI |
 
 Le script reste exécutable manuellement (`npm run gwc:verify`) et par tout agent.
+
+## DC-12 — Graphe matérialisé depuis les seuls `successors`
+
+| | |
+| --- | --- |
+| Affirmé en | R3, première matérialisation de `.mcp/gwc-workflow-graph.json` |
+| Statut | **DÉFECTUEUX** |
+| Remplacé par | union exacte des deux sens de routage déclarés par les fiches |
+
+Le générateur ne dérivait les arêtes que du champ `successors` de chaque fiche. Six arêtes ne
+sont déclarées que du côté `predecessors` — `GW-11 → GW-13`, `GW-13 → GW-14` et
+`GW-47`…`GW-50 → GW-52` — et leur omission rendait `GW-13`, `GW-14` et `GW-15` inatteignables
+depuis `GW-01` : 69 contrats sur 73 seulement. Les notations de plage `GW-aa..GW-bb` et les
+raccourcis `GW-aa/bb` n'étaient pas non plus développés, d'où la divergence observée autour de
+`GW-30`, `GW-32` et `GW-52`.
+
+Défaut relevé par un audit GitHub live indépendant au head `29c46f3c`, reproduit puis corrigé.
+`scripts/gwc-verify.mjs` contrôle désormais l'atteignabilité réelle : retirer la seule arête
+`GW-11 → GW-13` fait échouer le vérificateur.
+
+## DC-13 — `terminal = GW-73`
+
+| | |
+| --- | --- |
+| Affirmé en | R3, première matérialisation du graphe |
+| Statut | **REMPLACÉ** |
+| Remplacé par | `runtimeTerminal = GW-72` et `outOfRuntimeGraph = ["GW-73"]` |
+
+`GW-73 UNIVERSAL_ACCEPTANCE` était déclaré terminal alors qu'aucun chemin canonique n'y menait.
+C'est sa sémantique réelle qui l'interdit : sa fiche déclare pour prédécesseur « global
+implemented system » et pour successeur « TERMINAL acceptance report ». Il évalue le système
+implémenté dans son ensemble et n'est pas une étape terminale de chaque Task runtime. Il est
+donc explicitement hors graphe runtime, avec motif et ancres, plutôt que terminal inaccessible.
+
+Le terminal du graphe runtime est `GW-72`, dont le successeur déclaré est « next queued task
+resume cycle or idle ».
+
+## DC-14 — `graph.predecessors` / `graph.successors` dans le registre
+
+| | |
+| --- | --- |
+| Affirmé en | R3, première matérialisation de `.mcp/gwc-contracts.json` |
+| Statut | **SUPPRIMÉ** |
+| Remplacé par | `graphProjection.incoming` / `graphProjection.outgoing` et `canonicalRouting` |
+
+Ces champs génériques étaient dérivés du seul texte de fiche et contredisaient le graphe
+canonique sur `GW-13`, `GW-14`, `GW-16`, `GW-17`, `GW-30`, `GW-32`, `GW-52`, `GW-56` et
+`GW-66`. Une seule sémantique est désormais retenue :
+
+- `graphProjection` est une **projection exacte** de `.mcp/gwc-workflow-graph.json`, vérifiée
+  arête par arête ;
+- `canonicalRouting.predecessorText` et `successorText` conservent le texte libre de la
+  section C des fiches, explicitement étiqueté comme prose de traçabilité et jamais comme
+  source de graphe.

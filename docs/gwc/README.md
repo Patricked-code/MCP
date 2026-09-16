@@ -127,13 +127,27 @@ Les trois artefacts `.mcp/gwc-*.json` portent un `registryDigest` calculé avec 
 sérialisation canonique que `src/operationalMemory/taskQueue.ts`, afin qu'une empreinte
 calculée hors runtime soit identique à celle calculée par le runtime.
 
-`scripts/gwc-verify.mjs` contrôle : 73 identifiants exacts et uniques, familles valides,
-versions de contrat, références canoniques et de blueprint réciproques, empreintes, arêtes du
-graphe pointant toutes sur des contrats existants, absence de règle `to > from`, présence d'au
-moins une arête à rebours, 18 blueprints `GWC-0`…`GWC-17` sans duplication ni dépendance
-inconnue, couverture de chaque contrat par exactement un blueprint, propriété architecturale
-des findings, absence de portée globale non justifiée, et absence de toute promotion de
-blueprint dans `.mcp/task-registry.json`.
+`scripts/gwc-verify.mjs` contrôle :
+
+- **Contrats** — 73 identifiants exacts et uniques, familles valides, versions, sémantiques
+  d'exécution connues, références canoniques et de blueprint réciproques, empreintes.
+- **Graphe** — toutes les arêtes pointent sur des contrats existants, pas de doublon, pas de
+  boucle sur soi non déclarée, `declaredBy` présent sur chaque arête, aucune règle `to > from`
+  et au moins une arête à rebours pour le prouver.
+- **Atteignabilité** — tout contrat du graphe runtime est atteignable depuis `entry`, aucun
+  contrat runtime hors entrée n'est sans arête entrante, aucun contrat runtime non terminal
+  n'est sans arête sortante, et le terminal déclaré est bien le seul sans successeur.
+- **Hors graphe runtime** — tout contrat exclu l'est explicitement dans `outOfRuntimeGraph`,
+  avec motif et ancres, et aucune arête ne le touche.
+- **Projection** — `graphProjection.incoming` et `graphProjection.outgoing` de chaque contrat
+  sont exactement les arêtes du WorkflowGraph ; l'ancien champ ambigu `graph` est refusé.
+- **Blueprints** — 18 identifiants `GWC-0`…`GWC-17` sans duplication ni dépendance inconnue,
+  chaque contrat couvert par exactement un blueprint, propriété architecturale des findings,
+  aucune portée globale sans `globalScopeJustification`.
+- **Non-promotion** — aucun blueprint présent dans `.mcp/task-registry.json`.
+
+Ce contrôle est exécuté par la CI au head exact, via l'étape `GWC dossier check` du job
+`validate` de `.github/workflows/mcp-ci.yml`.
 
 ## Frontière assumée
 

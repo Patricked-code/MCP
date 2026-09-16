@@ -2,418 +2,828 @@
   "schemaVersion": 1,
   "revision": "R3",
   "canonicalBaseline": "GWC_73_CONTRACT_DESIGN_SHEETS_CANONICAL_R1",
+  "semantics": "Union exacte des routages déclarés par les fiches canoniques, dans les deux sens : le champ successors de chaque fiche et le champ predecessors de chaque fiche produisent tous deux des arêtes. declaredBy indique de quel côté chaque arête provient.",
   "entry": "GW-01",
-  "terminal": "GW-73",
+  "runtimeTerminal": "GW-72",
+  "outOfRuntimeGraph": [
+    {
+      "stepId": "GW-73",
+      "reason": "Universal Acceptance évalue le système implémenté dans son ensemble. Ce n'est pas une étape terminale de chaque Task runtime : sa fiche canonique déclare le prédécesseur « global implemented system » et le successeur « TERMINAL acceptance report », deux ancres hors graphe.",
+      "predecessorAnchor": "IMPLEMENTED_SYSTEM",
+      "successorAnchor": "ACCEPTANCE_REPORT"
+    }
+  ],
   "rules": {
     "numericOrderEnforced": false,
-    "note": "Les identifiants sont un espace de noms stable. Aucune règle to > from. Les arêtes BACKWARD et SKIP sont des routes canoniques déclarées, pas des retries implicites."
+    "note": "Les identifiants sont un espace de noms stable. Aucune règle to > from. Les arêtes BACKWARD et SKIP sont des routes canoniques déclarées, pas des retries implicites.",
+    "rangeNotationExpanded": true,
+    "rangeNotationNote": "Les notations GW-aa..GW-bb et GW-aa/bb des fiches sont développées en arêtes individuelles."
   },
   "edgeKinds": [
     "FORWARD",
     "BACKWARD",
     "SKIP"
   ],
-  "registryDigest": "d08f0c74b8c0b1c873cd039bbc01005c0a741b60d2e7b556dfcc381c454963e5",
+  "registryDigest": "2c43a40ceca626d88daf9fec39e3829663ae1bfc5739ed78833a89fdc88c22d9",
   "edges": [
     {
       "from": "GW-01",
       "to": "GW-02",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-02",
       "to": "GW-03",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-02",
       "to": "GW-16",
-      "kind": "SKIP"
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-03",
       "to": "GW-04",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-04",
       "to": "GW-05",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-05",
       "to": "GW-06",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-06",
       "to": "GW-07",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-07",
       "to": "GW-08",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-08",
       "to": "GW-09",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-09",
       "to": "GW-10",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-10",
       "to": "GW-11",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-11",
       "to": "GW-12",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-11",
+      "to": "GW-13",
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor"
+      ]
     },
     {
       "from": "GW-12",
       "to": "GW-17",
-      "kind": "SKIP"
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ]
     },
     {
       "from": "GW-13",
       "to": "GW-12",
-      "kind": "BACKWARD"
+      "kind": "BACKWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-13",
+      "to": "GW-14",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor"
+      ]
     },
     {
       "from": "GW-13",
       "to": "GW-17",
-      "kind": "SKIP"
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ]
     },
     {
       "from": "GW-14",
       "to": "GW-15",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-15",
       "to": "GW-16",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "successor"
+      ]
     },
     {
       "from": "GW-16",
       "to": "GW-03",
-      "kind": "BACKWARD"
+      "kind": "BACKWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-16",
       "to": "GW-17",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-17",
       "to": "GW-18",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-18",
       "to": "GW-19",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-19",
       "to": "GW-20",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-20",
       "to": "GW-21",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-21",
       "to": "GW-22",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-22",
       "to": "GW-23",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-23",
       "to": "GW-24",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-24",
       "to": "GW-25",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-25",
       "to": "GW-26",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-26",
       "to": "GW-27",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-27",
       "to": "GW-28",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-28",
       "to": "GW-29",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-29",
       "to": "GW-30",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-29",
       "to": "GW-32",
-      "kind": "SKIP"
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ]
     },
     {
       "from": "GW-30",
       "to": "GW-31",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-31",
       "to": "GW-32",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-32",
       "to": "GW-33",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-33",
       "to": "GW-34",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-34",
       "to": "GW-35",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-35",
       "to": "GW-36",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-36",
       "to": "GW-37",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-37",
       "to": "GW-30",
-      "kind": "BACKWARD"
+      "kind": "BACKWARD",
+      "declaredBy": [
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-37",
+      "to": "GW-31",
+      "kind": "BACKWARD",
+      "declaredBy": [
+        "successor"
+      ]
     },
     {
       "from": "GW-37",
       "to": "GW-38",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-38",
       "to": "GW-39",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-39",
       "to": "GW-40",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-40",
       "to": "GW-41",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-41",
       "to": "GW-42",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-42",
       "to": "GW-43",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-43",
       "to": "GW-44",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-44",
       "to": "GW-45",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-45",
       "to": "GW-46",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-46",
       "to": "GW-47",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-48",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-49",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-50",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-51",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ]
     },
     {
       "from": "GW-46",
       "to": "GW-52",
-      "kind": "SKIP"
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ]
     },
     {
       "from": "GW-47",
       "to": "GW-48",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-47",
+      "to": "GW-52",
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor"
+      ]
     },
     {
       "from": "GW-48",
       "to": "GW-49",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-48",
+      "to": "GW-52",
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor"
+      ]
     },
     {
       "from": "GW-49",
       "to": "GW-50",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-49",
+      "to": "GW-52",
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor"
+      ]
     },
     {
       "from": "GW-50",
       "to": "GW-51",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-50",
+      "to": "GW-52",
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor"
+      ]
     },
     {
       "from": "GW-51",
       "to": "GW-52",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-52",
       "to": "GW-53",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-53",
       "to": "GW-54",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-54",
       "to": "GW-55",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-54",
       "to": "GW-56",
-      "kind": "SKIP"
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ]
     },
     {
       "from": "GW-55",
       "to": "GW-56",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-56",
       "to": "GW-57",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-57",
       "to": "GW-58",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-58",
       "to": "GW-59",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-58",
       "to": "GW-66",
-      "kind": "SKIP"
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ]
     },
     {
       "from": "GW-59",
       "to": "GW-60",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-60",
       "to": "GW-61",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-61",
       "to": "GW-62",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-62",
       "to": "GW-63",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-63",
       "to": "GW-64",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-64",
       "to": "GW-65",
-      "kind": "FORWARD"
-    },
-    {
-      "from": "GW-65",
-      "to": "GW-66",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-65",
       "to": "GW-56",
-      "kind": "BACKWARD"
+      "kind": "BACKWARD",
+      "declaredBy": [
+        "successor"
+      ]
+    },
+    {
+      "from": "GW-65",
+      "to": "GW-66",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-66",
       "to": "GW-67",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-67",
       "to": "GW-68",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-68",
       "to": "GW-69",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-69",
       "to": "GW-70",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-70",
       "to": "GW-71",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     },
     {
       "from": "GW-71",
       "to": "GW-72",
-      "kind": "FORWARD"
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ]
     }
   ]
 }

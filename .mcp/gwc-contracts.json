@@ -20,7 +20,7 @@
     "H": "Verification and Closure",
     "I": "Universal Acceptance"
   },
-  "registryDigest": "d4783b9724a96eff51ee0147bc1e6ca18fd42475ad8f986dd7d3a8062c08e04d",
+  "registryDigest": "934752a8e8d114b48aeb90b9b96ed456563f49244f19bd86fb0608afa28a6b1a",
   "contracts": [
     {
       "stepId": "GW-01",
@@ -44,13 +44,21 @@
       "blueprintRef": "GWC-1",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [],
-        "successors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [],
+        "outgoing": [
           "GW-02"
         ],
         "entry": true,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "ENTRY",
+        "successorText": "GW-02"
       }
     },
     {
@@ -75,16 +83,24 @@
       "blueprintRef": "GWC-4",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-01"
         ],
-        "successors": [
+        "outgoing": [
           "GW-03",
           "GW-16"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-01",
+        "successorText": "GW-03 or GW-16 depending existing session binding"
       }
     },
     {
@@ -110,16 +126,24 @@
       "blueprintRef": "GWC-4",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-02",
           "GW-16"
         ],
-        "successors": [
+        "outgoing": [
           "GW-04"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-02 / GW-16",
+        "successorText": "GW-04"
       }
     },
     {
@@ -144,15 +168,23 @@
       "blueprintRef": "GWC-3",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-03"
         ],
-        "successors": [
+        "outgoing": [
           "GW-05"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-03",
+        "successorText": "GW-05"
       }
     },
     {
@@ -177,15 +209,23 @@
       "blueprintRef": "GWC-3",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-04"
         ],
-        "successors": [
+        "outgoing": [
           "GW-06"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-04",
+        "successorText": "GW-06; reobserve/reconcile on ambiguity"
       }
     },
     {
@@ -210,15 +250,23 @@
       "blueprintRef": "GWC-3",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-05"
         ],
-        "successors": [
+        "outgoing": [
           "GW-07"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-05 / projectHint path",
+        "successorText": "GW-07"
       }
     },
     {
@@ -243,15 +291,23 @@
       "blueprintRef": "GWC-6",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-06"
         ],
-        "successors": [
+        "outgoing": [
           "GW-08"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-06",
+        "successorText": "GW-08"
       }
     },
     {
@@ -276,15 +332,23 @@
       "blueprintRef": "GWC-7",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-07"
         ],
-        "successors": [
+        "outgoing": [
           "GW-09"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-07",
+        "successorText": "GW-09"
       }
     },
     {
@@ -309,15 +373,23 @@
       "blueprintRef": "GWC-8",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-08"
         ],
-        "successors": [
+        "outgoing": [
           "GW-10"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-08",
+        "successorText": "GW-10"
       }
     },
     {
@@ -342,15 +414,23 @@
       "blueprintRef": "GWC-9",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-09"
         ],
-        "successors": [
+        "outgoing": [
           "GW-11"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-09",
+        "successorText": "GW-11"
       }
     },
     {
@@ -375,15 +455,24 @@
       "blueprintRef": "GWC-9",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-10"
         ],
-        "successors": [
-          "GW-12"
+        "outgoing": [
+          "GW-12",
+          "GW-13"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-10",
+        "successorText": "GW-12"
       }
     },
     {
@@ -409,16 +498,24 @@
       "blueprintRef": "GWC-4",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-11",
           "GW-13"
         ],
-        "successors": [
+        "outgoing": [
           "GW-17"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-11/GW-13",
+        "successorText": "GW-17 as composed persistence"
       }
     },
     {
@@ -443,16 +540,25 @@
       "blueprintRef": "GWC-5",
       "blueprintRefSource": "derived",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-11"
         ],
-        "successors": [
+        "outgoing": [
           "GW-12",
+          "GW-14",
           "GW-17"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-11",
+        "successorText": "GW-12/GW-17"
       }
     },
     {
@@ -477,15 +583,23 @@
       "blueprintRef": "GWC-5",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-13"
         ],
-        "successors": [
+        "outgoing": [
           "GW-15"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-13",
+        "successorText": "GW-15"
       }
     },
     {
@@ -512,15 +626,23 @@
       "blueprintRef": "GWC-5",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-14"
         ],
-        "successors": [
+        "outgoing": [
           "GW-16"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-14",
+        "successorText": "GW-16"
       }
     },
     {
@@ -547,16 +669,25 @@
       "blueprintRef": "GWC-4",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
-          "GW-02"
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-02",
+          "GW-15"
         ],
-        "successors": [
+        "outgoing": [
           "GW-03",
           "GW-17"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-02 if no compatible session",
+        "successorText": "GW-03/GW-17"
       }
     },
     {
@@ -583,15 +714,25 @@
       "blueprintRef": "GWC-4",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-12",
+          "GW-13",
           "GW-16"
         ],
-        "successors": [
+        "outgoing": [
           "GW-18"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-16",
+        "successorText": "GW-18"
       }
     },
     {
@@ -618,15 +759,23 @@
       "blueprintRef": "GWC-5",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-17"
         ],
-        "successors": [
+        "outgoing": [
           "GW-19"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-17",
+        "successorText": "GW-19"
       }
     },
     {
@@ -653,15 +802,23 @@
       "blueprintRef": "GWC-5",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-18"
         ],
-        "successors": [
+        "outgoing": [
           "GW-20"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-18",
+        "successorText": "GW-20"
       }
     },
     {
@@ -688,15 +845,23 @@
       "blueprintRef": "GWC-5",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-19"
         ],
-        "successors": [
+        "outgoing": [
           "GW-21"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-19",
+        "successorText": "GW-21"
       }
     },
     {
@@ -721,15 +886,23 @@
       "blueprintRef": "GWC-11",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-20"
         ],
-        "successors": [
+        "outgoing": [
           "GW-22"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-20",
+        "successorText": "GW-22"
       }
     },
     {
@@ -754,15 +927,23 @@
       "blueprintRef": "GWC-11",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-21"
         ],
-        "successors": [
+        "outgoing": [
           "GW-23"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-21",
+        "successorText": "GW-23"
       }
     },
     {
@@ -787,15 +968,23 @@
       "blueprintRef": "GWC-11",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-22"
         ],
-        "successors": [
+        "outgoing": [
           "GW-24"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-22",
+        "successorText": "GW-24"
       }
     },
     {
@@ -822,15 +1011,23 @@
       "blueprintRef": "GWC-13",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-23"
         ],
-        "successors": [
+        "outgoing": [
           "GW-25"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-23",
+        "successorText": "GW-25"
       }
     },
     {
@@ -857,15 +1054,23 @@
       "blueprintRef": "GWC-13",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-24"
         ],
-        "successors": [
+        "outgoing": [
           "GW-26"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-24",
+        "successorText": "GW-26"
       }
     },
     {
@@ -890,15 +1095,23 @@
       "blueprintRef": "GWC-13",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-25"
         ],
-        "successors": [
+        "outgoing": [
           "GW-27"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-25",
+        "successorText": "GW-27"
       }
     },
     {
@@ -925,15 +1138,23 @@
       "blueprintRef": "GWC-13",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-26"
         ],
-        "successors": [
+        "outgoing": [
           "GW-28"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-26",
+        "successorText": "GW-28"
       }
     },
     {
@@ -958,15 +1179,23 @@
       "blueprintRef": "GWC-13",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-27"
         ],
-        "successors": [
+        "outgoing": [
           "GW-29"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-27",
+        "successorText": "GW-29"
       }
     },
     {
@@ -991,16 +1220,24 @@
       "blueprintRef": "GWC-13",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-28"
         ],
-        "successors": [
+        "outgoing": [
           "GW-30",
           "GW-32"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-28",
+        "successorText": "GW-30 if finding; else GW-32"
       }
     },
     {
@@ -1027,15 +1264,24 @@
       "blueprintRef": "GWC-13",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
-          "GW-29"
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-29",
+          "GW-37"
         ],
-        "successors": [
+        "outgoing": [
           "GW-31"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-29",
+        "successorText": "GW-31"
       }
     },
     {
@@ -1062,15 +1308,24 @@
       "blueprintRef": "GWC-13",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
-          "GW-30"
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-30",
+          "GW-37"
         ],
-        "successors": [
+        "outgoing": [
           "GW-32"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-30",
+        "successorText": "GW-32 then re-review path"
       }
     },
     {
@@ -1095,15 +1350,24 @@
       "blueprintRef": "GWC-13",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-29",
           "GW-31"
         ],
-        "successors": [
+        "outgoing": [
           "GW-33"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-31",
+        "successorText": "GW-33"
       }
     },
     {
@@ -1130,15 +1394,23 @@
       "blueprintRef": "GWC-13",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-32"
         ],
-        "successors": [
+        "outgoing": [
           "GW-34"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-32",
+        "successorText": "GW-34"
       }
     },
     {
@@ -1165,15 +1437,23 @@
       "blueprintRef": "GWC-14",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-33"
         ],
-        "successors": [
+        "outgoing": [
           "GW-35"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-33",
+        "successorText": "GW-35"
       }
     },
     {
@@ -1201,15 +1481,23 @@
         "AF-22",
         "AF-30"
       ],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-34"
         ],
-        "successors": [
+        "outgoing": [
           "GW-36"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-34",
+        "successorText": "GW-36"
       }
     },
     {
@@ -1234,15 +1522,23 @@
       "blueprintRef": "GWC-14",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-35"
         ],
-        "successors": [
+        "outgoing": [
           "GW-37"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-35",
+        "successorText": "GW-37"
       }
     },
     {
@@ -1269,16 +1565,25 @@
       "blueprintRef": "GWC-14",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-36"
         ],
-        "successors": [
+        "outgoing": [
           "GW-30",
+          "GW-31",
           "GW-38"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-36",
+        "successorText": "GW-30/31 for code finding or GW-38"
       }
     },
     {
@@ -1308,15 +1613,23 @@
         "AF-22",
         "AF-30"
       ],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-37"
         ],
-        "successors": [
+        "outgoing": [
           "GW-39"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-37",
+        "successorText": "GW-39"
       }
     },
     {
@@ -1343,15 +1656,23 @@
       "blueprintRef": "GWC-14",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-38"
         ],
-        "successors": [
+        "outgoing": [
           "GW-40"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-38",
+        "successorText": "GW-40"
       }
     },
     {
@@ -1378,15 +1699,23 @@
       "blueprintRef": "GWC-14",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-39"
         ],
-        "successors": [
+        "outgoing": [
           "GW-41"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-39",
+        "successorText": "GW-41"
       }
     },
     {
@@ -1414,15 +1743,23 @@
         "AF-22",
         "AF-30"
       ],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-40"
         ],
-        "successors": [
+        "outgoing": [
           "GW-42"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-40",
+        "successorText": "GW-42"
       }
     },
     {
@@ -1449,15 +1786,23 @@
       "blueprintRef": "GWC-14",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-41"
         ],
-        "successors": [
+        "outgoing": [
           "GW-43"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-41",
+        "successorText": "GW-43"
       }
     },
     {
@@ -1487,15 +1832,23 @@
         "AF-22",
         "AF-30"
       ],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-42"
         ],
-        "successors": [
+        "outgoing": [
           "GW-44"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-42",
+        "successorText": "GW-44"
       }
     },
     {
@@ -1520,15 +1873,23 @@
       "blueprintRef": "GWC-15",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-43"
         ],
-        "successors": [
+        "outgoing": [
           "GW-45"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-43",
+        "successorText": "GW-45"
       }
     },
     {
@@ -1555,15 +1916,23 @@
       "findings": [
         "AF-19"
       ],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-44"
         ],
-        "successors": [
+        "outgoing": [
           "GW-46"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-44",
+        "successorText": "GW-46 or WAIT_EXTERNAL"
       }
     },
     {
@@ -1590,16 +1959,28 @@
       "findings": [
         "AF-19"
       ],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-45"
         ],
-        "successors": [
+        "outgoing": [
           "GW-47",
+          "GW-48",
+          "GW-49",
+          "GW-50",
+          "GW-51",
           "GW-52"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-45",
+        "successorText": "GW-47..GW-52 observe same deployment job"
       }
     },
     {
@@ -1624,15 +2005,24 @@
       "blueprintRef": "GWC-15",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-46"
         ],
-        "successors": [
-          "GW-48"
+        "outgoing": [
+          "GW-48",
+          "GW-52"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-46",
+        "successorText": "GW-48"
       }
     },
     {
@@ -1657,15 +2047,25 @@
       "blueprintRef": "GWC-15",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-46",
           "GW-47"
         ],
-        "successors": [
-          "GW-49"
+        "outgoing": [
+          "GW-49",
+          "GW-52"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-47",
+        "successorText": "GW-49"
       }
     },
     {
@@ -1690,15 +2090,25 @@
       "blueprintRef": "GWC-15",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-46",
           "GW-48"
         ],
-        "successors": [
-          "GW-50"
+        "outgoing": [
+          "GW-50",
+          "GW-52"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-48",
+        "successorText": "GW-50"
       }
     },
     {
@@ -1723,15 +2133,25 @@
       "blueprintRef": "GWC-15",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-46",
           "GW-49"
         ],
-        "successors": [
-          "GW-51"
+        "outgoing": [
+          "GW-51",
+          "GW-52"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-49",
+        "successorText": "GW-51"
       }
     },
     {
@@ -1756,15 +2176,24 @@
       "blueprintRef": "GWC-15",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-46",
           "GW-50"
         ],
-        "successors": [
+        "outgoing": [
           "GW-52"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-50",
+        "successorText": "GW-52"
       }
     },
     {
@@ -1789,16 +2218,28 @@
       "blueprintRef": "GWC-15",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-46",
           "GW-47",
+          "GW-48",
+          "GW-49",
+          "GW-50",
           "GW-51"
         ],
-        "successors": [
+        "outgoing": [
           "GW-53"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-47..GW-51",
+        "successorText": "GW-53"
       }
     },
     {
@@ -1823,15 +2264,23 @@
       "blueprintRef": "GWC-15",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-52"
         ],
-        "successors": [
+        "outgoing": [
           "GW-54"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-52",
+        "successorText": "GW-54"
       }
     },
     {
@@ -1856,16 +2305,24 @@
       "blueprintRef": "GWC-15",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-53"
         ],
-        "successors": [
+        "outgoing": [
           "GW-55",
           "GW-56"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-53",
+        "successorText": "GW-55 if stale else GW-56"
       }
     },
     {
@@ -1892,15 +2349,23 @@
       "blueprintRef": "GWC-15",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-54"
         ],
-        "successors": [
+        "outgoing": [
           "GW-56"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-54",
+        "successorText": "GW-56"
       }
     },
     {
@@ -1928,15 +2393,25 @@
       "findings": [
         "AF-08"
       ],
-      "graph": {
-        "predecessors": [
-          "GW-55"
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-54",
+          "GW-55",
+          "GW-65"
         ],
-        "successors": [
+        "outgoing": [
           "GW-57"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-55",
+        "successorText": "GW-57"
       }
     },
     {
@@ -1963,15 +2438,23 @@
       "blueprintRef": "GWC-15",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-56"
         ],
-        "successors": [
+        "outgoing": [
           "GW-58"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-56",
+        "successorText": "GW-58"
       }
     },
     {
@@ -1996,16 +2479,24 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-57"
         ],
-        "successors": [
+        "outgoing": [
           "GW-59",
           "GW-66"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-57",
+        "successorText": "GW-59 if drift else GW-66"
       }
     },
     {
@@ -2032,15 +2523,23 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-58"
         ],
-        "successors": [
+        "outgoing": [
           "GW-60"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-58",
+        "successorText": "GW-60"
       }
     },
     {
@@ -2067,15 +2566,23 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-59"
         ],
-        "successors": [
+        "outgoing": [
           "GW-61"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-59",
+        "successorText": "GW-61"
       }
     },
     {
@@ -2102,15 +2609,23 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-60"
         ],
-        "successors": [
+        "outgoing": [
           "GW-62"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-60",
+        "successorText": "GW-62"
       }
     },
     {
@@ -2135,15 +2650,23 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-61"
         ],
-        "successors": [
+        "outgoing": [
           "GW-63"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-61",
+        "successorText": "GW-63"
       }
     },
     {
@@ -2170,15 +2693,23 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-62"
         ],
-        "successors": [
+        "outgoing": [
           "GW-64"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-62",
+        "successorText": "GW-64"
       }
     },
     {
@@ -2203,15 +2734,23 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-63"
         ],
-        "successors": [
+        "outgoing": [
           "GW-65"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-63",
+        "successorText": "GW-65"
       }
     },
     {
@@ -2236,16 +2775,24 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-64"
         ],
-        "successors": [
-          "GW-66",
-          "GW-56"
+        "outgoing": [
+          "GW-56",
+          "GW-66"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-64",
+        "successorText": "GW-66 then final GW-56 binding"
       }
     },
     {
@@ -2272,15 +2819,24 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-58",
           "GW-65"
         ],
-        "successors": [
+        "outgoing": [
           "GW-67"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-65",
+        "successorText": "GW-67"
       }
     },
     {
@@ -2307,15 +2863,23 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-66"
         ],
-        "successors": [
+        "outgoing": [
           "GW-68"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-66",
+        "successorText": "GW-68"
       }
     },
     {
@@ -2342,15 +2906,23 @@
       "findings": [
         "AF-07"
       ],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-67"
         ],
-        "successors": [
+        "outgoing": [
           "GW-69"
         ],
         "entry": false,
-        "terminal": true
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-67",
+        "successorText": "GW-69 only if TERMINAL_VERIFIED"
       }
     },
     {
@@ -2379,15 +2951,23 @@
       "findings": [
         "AF-07"
       ],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-68"
         ],
-        "successors": [
+        "outgoing": [
           "GW-70"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-68",
+        "successorText": "GW-70"
       }
     },
     {
@@ -2414,15 +2994,23 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-69"
         ],
-        "successors": [
+        "outgoing": [
           "GW-71"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-69",
+        "successorText": "GW-71"
       }
     },
     {
@@ -2449,15 +3037,23 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-70"
         ],
-        "successors": [
+        "outgoing": [
           "GW-72"
         ],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-70",
+        "successorText": "GW-72"
       }
     },
     {
@@ -2484,13 +3080,21 @@
       "blueprintRef": "GWC-16",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
           "GW-71"
         ],
-        "successors": [],
+        "outgoing": [],
         "entry": false,
-        "terminal": false
+        "runtimeTerminal": true
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-71",
+        "successorText": "next queued task resume cycle or idle"
       }
     },
     {
@@ -2515,12 +3119,21 @@
       "blueprintRef": "GWC-17",
       "blueprintRefSource": "explicit",
       "findings": [],
-      "graph": {
-        "predecessors": [],
-        "successors": [],
+      "runtimeGraphMember": false,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [],
+        "outgoing": [],
         "entry": false,
-        "terminal": true
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "global implemented system",
+        "successorText": "TERMINAL acceptance report"
       }
     }
-  ]
+  ],
+  "graphProjectionNote": "Le graphe canonique est .mcp/gwc-workflow-graph.json. Les champs graphProjection.incoming et graphProjection.outgoing en sont une projection exacte et sont vérifiés comme tels. Les anciens champs graph.predecessors et graph.successors, dérivés du seul texte de fiche, sont supprimés."
 }

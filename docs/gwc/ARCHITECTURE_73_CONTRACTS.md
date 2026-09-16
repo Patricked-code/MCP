@@ -49,9 +49,28 @@ Live State, pas de seconde Operational Memory, pas de magasin durable d'état de
 ## Note sur la numérotation
 
 `GW-01`…`GW-73` sont un **espace de noms stable**, jamais une séquence d'exécution. Le graphe
-canonique comporte des arêtes à rebours déclarées (`GW-13 → GW-12`, `GW-16 → GW-03`,
-`GW-37 → GW-30`, `GW-65 → GW-56`) et des sauts (`GW-29 → GW-32`, `GW-58 → GW-66`). Aucune
-règle `to > from` ne doit exister, et `scripts/gwc-verify.mjs` échoue si elle apparaît.
+canonique comporte 5 arêtes à rebours déclarées (`GW-13 → GW-12`, `GW-16 → GW-03`,
+`GW-37 → GW-30`, `GW-37 → GW-31`, `GW-65 → GW-56`) et 16 sauts. Aucune règle `to > from` ne
+doit exister, et `scripts/gwc-verify.mjs` échoue si elle apparaît.
+
+Le graphe machine `.mcp/gwc-workflow-graph.json` est l'**union exacte des deux sens de routage
+déclarés par les fiches** : le champ `successors` d'une fiche et le champ `predecessors` d'une
+autre produisent tous deux des arêtes. Six arêtes ne sont déclarées que du côté prédécesseur —
+`GW-11 → GW-13`, `GW-13 → GW-14` et `GW-47…GW-50 → GW-52` — et les omettre rendait
+`GW-13`, `GW-14` et `GW-15` inatteignables. Les notations de plage `GW-aa..GW-bb` et les
+raccourcis `GW-aa/bb` des fiches sont développés en arêtes individuelles.
+
+## Terminal et hors graphe runtime
+
+Le graphe runtime porte 72 contrats, tous atteignables depuis `GW-01`. Son terminal est
+**`GW-72`**, dont la fiche déclare pour successeur « next queued task resume cycle or idle » :
+une reprise ou un repos, pas une étape.
+
+**`GW-73 UNIVERSAL_ACCEPTANCE` est hors du graphe runtime nominal**, explicitement. Sa fiche
+déclare pour prédécesseur « global implemented system » et pour successeur « TERMINAL
+acceptance report » : ce contrat évalue le système implémenté dans son ensemble, il n'est pas
+une étape terminale de chaque Task runtime. Il est déclaré dans `outOfRuntimeGraph` avec son
+motif et ses ancres, et le vérificateur refuse de le traiter comme terminal atteignable.
 
 ---
 

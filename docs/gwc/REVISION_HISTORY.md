@@ -69,6 +69,22 @@ Ce qui ne change pas :
 - `#95` reste ouverte, draft et non fusionnée ;
 - les identifiants `GW-01`…`GW-73` sont inchangés, ni renumérotés, ni supprimés, ni fusionnés.
 
+## R3 — correction du graphe après audit live indépendant
+
+Un audit GitHub live indépendant de la PR `#95` au head `29c46f3c827426b00c1c8901625090414b3e492a`
+a confirmé l'essentiel de la réconciliation et relevé un défaut réel dans la matérialisation du
+WorkflowGraph. Le défaut a été reproduit puis corrigé sur la même branche et la même PR.
+
+| Finding | Correction |
+| --- | --- |
+| 69 contrats sur 73 atteignables ; `GW-13`, `GW-14`, `GW-15`, `GW-73` inatteignables | graphe reconstruit en union exacte des deux sens de routage, notations de plage développées — 72 contrats runtime, tous atteignables |
+| `GW-72` sans successeur alors que `terminal = GW-73` | `runtimeTerminal = GW-72` et `GW-73` explicitement dans `outOfRuntimeGraph` avec motif et ancres |
+| `graph.predecessors` / `successors` du registre contredisant le graphe | champs supprimés au profit de `graphProjection`, projection exacte vérifiée, et de `canonicalRouting`, prose tracée |
+| `gwc-verify` passait malgré le défaut | atteignabilité, orphelins, culs-de-sac, terminal, exactitude de projection et statut hors runtime désormais contrôlés |
+| `gwc:verify` absent de la CI | étape `GWC dossier check` ajoutée au job `validate` |
+
+Voir `DEPRECATED_CLAIMS.md` DC-12, DC-13 et DC-14.
+
 ## Propriété architecturale des findings
 
 | Finding | Propriétaire architectural | Priorité d'implémentation |

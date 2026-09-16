@@ -112,14 +112,40 @@ export function verifyGraph(document, contracts) {
 
   check(errors, document?.schemaVersion === 1, 'graph.schemaVersion doit valoir 1');
   check(errors, document?.entry === 'GW-01', 'graph.entry doit être GW-01');
-  check(errors, document?.terminal === 'GW-73', 'graph.terminal doit être GW-73');
+  check(errors, STEP_ID.test(String(document?.runtimeTerminal)),
+    `graph.runtimeTerminal invalide : ${document?.runtimeTerminal}`);
+  check(errors, document?.terminal === undefined,
+    'graph.terminal est ambigu : utiliser runtimeTerminal et outOfRuntimeGraph');
+  check(errors, Array.isArray(document?.outOfRuntimeGraph),
+    'graph.outOfRuntimeGraph doit être un tableau, même vide');
   check(errors, Array.isArray(document?.edges), 'graph.edges doit être un tableau');
-  if (!Array.isArray(document?.edges)) return errors;
+  if (!Array.isArray(document?.edges) || !Array.isArray(document?.outOfRuntimeGraph)) return errors;
 
   // Les identifiants sont un espace de noms, pas une séquence : toute règle
   // imposant to > from est interdite, et le graphe doit le prouver.
   check(errors, document?.rules?.numericOrderEnforced === false,
     'graph.rules.numericOrderEnforced doit valoir false : aucune règle to > from');
+
+  // Tout contrat exclu du graphe runtime doit l'être explicitement et motivé.
+  const outOfRuntime = new Set();
+  for (const entry of document.outOfRuntimeGraph) {
+    check(errors, known.has(entry?.stepId),
+      `outOfRuntimeGraph référence un contrat inconnu : ${entry?.stepId}`);
+    check(errors, typeof entry?.reason === 'string' && entry.reason.length > 20,
+      `${entry?.stepId} : exclusion du graphe runtime sans motif explicite`);
+    check(errors, typeof entry?.predecessorAnchor === 'string' && entry.predecessorAnchor.length > 0,
+      `${entry?.stepId} : predecessorAnchor hors graphe manquant`);
+    check(errors, typeof entry?.successorAnchor === 'string' && entry.successorAnchor.length > 0,
+      `${entry?.stepId} : successorAnchor hors graphe manquant`);
+    outOfRuntime.add(entry?.stepId);
+  }
+  check(errors, !outOfRuntime.has(document.entry), 'graph.entry ne peut pas être hors graphe runtime');
+  check(errors, !outOfRuntime.has(document.runtimeTerminal),
+    'graph.runtimeTerminal ne peut pas être hors graphe runtime');
+
+  const outgoing = new Map();
+  const incoming = new Map();
+  for (const step of known) { outgoing.set(step, []); incoming.set(step, []); }
 
   const seen = new Set();
   let backward = 0;
@@ -131,21 +157,55 @@ export function verifyGraph(document, contracts) {
     check(errors, known.has(edge?.to), `arête vers un contrat inconnu : ${edge?.to}`);
     check(errors, EDGE_KINDS.includes(edge?.kind), `${key} : kind inconnu ${edge?.kind}`);
     check(errors, edge?.from !== edge?.to, `${key} : boucle sur soi non déclarée`);
+    check(errors, !outOfRuntime.has(edge?.from) && !outOfRuntime.has(edge?.to),
+      `${key} : arête vers ou depuis un contrat déclaré hors graphe runtime`);
+    check(errors, Array.isArray(edge?.declaredBy) && edge.declaredBy.length > 0,
+      `${key} : declaredBy manquant, impossible de tracer l’origine de l’arête`);
     if (edge?.kind === 'BACKWARD') backward += 1;
+    outgoing.get(edge?.from)?.push(edge?.to);
+    incoming.get(edge?.to)?.push(edge?.from);
   }
 
   check(errors, backward > 0,
     'le graphe doit contenir au moins une arête BACKWARD, preuve que l’ordre numérique n’est pas imposé');
 
-  // Une arête arbitraire à rebours doit être acceptable par le validateur.
+  // Une arête arbitraire à rebours doit rester acceptable par le validateur.
   const probe = validateEdgeShape({ from: 'GW-17', to: 'GW-12', kind: 'BACKWARD' }, known);
   check(errors, probe.length === 0,
     `une arête à rebours telle que GW-17 → GW-12 doit rester autorisable (${probe.join(', ')})`);
 
-  check(errors, document.edges.some((edge) => edge.from === document.entry),
+  const runtimeSteps = [...known].filter((step) => !outOfRuntime.has(step));
+
+  // Atteignabilité réelle depuis l'entrée : c'est le contrôle qui manquait.
+  const reached = new Set([document.entry]);
+  const queue = [document.entry];
+  while (queue.length > 0) {
+    const current = queue.shift();
+    for (const next of outgoing.get(current) ?? []) {
+      if (!reached.has(next)) { reached.add(next); queue.push(next); }
+    }
+  }
+  const unreachable = runtimeSteps.filter((step) => !reached.has(step)).sort();
+  check(errors, unreachable.length === 0,
+    `contrats runtime inatteignables depuis ${document.entry} : ${unreachable.join(', ')}`);
+
+  // Aucun orphelin : tout contrat runtime hors entrée a au moins une arête entrante.
+  const orphans = runtimeSteps
+    .filter((step) => step !== document.entry && (incoming.get(step) ?? []).length === 0).sort();
+  check(errors, orphans.length === 0,
+    `contrats runtime sans arête entrante : ${orphans.join(', ')}`);
+
+  // Tout contrat runtime non terminal a au moins une arête sortante.
+  const deadEnds = runtimeSteps
+    .filter((step) => step !== document.runtimeTerminal && (outgoing.get(step) ?? []).length === 0).sort();
+  check(errors, deadEnds.length === 0,
+    `contrats runtime non terminaux sans arête sortante : ${deadEnds.join(', ')}`);
+
+  // Le terminal déclaré est le seul sans successeur.
+  check(errors, (outgoing.get(document.runtimeTerminal) ?? []).length === 0,
+    `${document.runtimeTerminal} est déclaré terminal mais porte des successeurs`);
+  check(errors, (outgoing.get(document.entry) ?? []).length > 0,
     'aucune arête ne part du point d’entrée');
-  check(errors, !document.edges.some((edge) => edge.from === document.terminal),
-    'le contrat terminal ne doit avoir aucun successeur');
 
   const expected = registryDigest(document);
   check(errors, document.registryDigest === expected,
@@ -244,6 +304,54 @@ export function verifyBlueprints(document, contracts, taskRegistry) {
   return errors;
 }
 
+export function verifyGraphProjection(contracts, graph) {
+  const errors = [];
+  const outOfRuntime = new Set((graph?.outOfRuntimeGraph ?? []).map((entry) => entry.stepId));
+  const outgoing = new Map();
+  const incoming = new Map();
+  for (const contract of contracts?.contracts ?? []) {
+    outgoing.set(contract.stepId, []);
+    incoming.set(contract.stepId, []);
+  }
+  for (const edge of graph?.edges ?? []) {
+    outgoing.get(edge.from)?.push(edge.to);
+    incoming.get(edge.to)?.push(edge.from);
+  }
+
+  const same = (left, right) => left.length === right.length
+    && [...left].sort().every((value, index) => value === [...right].sort()[index]);
+
+  for (const contract of contracts?.contracts ?? []) {
+    const id = contract.stepId;
+    check(errors, contract?.graph === undefined,
+      `${id} : le champ graph ambigu doit être remplacé par graphProjection`);
+    check(errors, typeof contract?.runtimeGraphMember === 'boolean',
+      `${id} : runtimeGraphMember manquant`);
+    check(errors, contract?.runtimeGraphMember === !outOfRuntime.has(id),
+      `${id} : runtimeGraphMember contredit outOfRuntimeGraph`);
+
+    const projection = contract?.graphProjection;
+    check(errors, Boolean(projection), `${id} : graphProjection manquante`);
+    if (!projection) continue;
+    check(errors, projection.source === '.mcp/gwc-workflow-graph.json' && projection.exact === true,
+      `${id} : graphProjection doit se déclarer projection exacte du WorkflowGraph`);
+    check(errors, same(projection.incoming ?? [], incoming.get(id) ?? []),
+      `${id} : graphProjection.incoming diverge du WorkflowGraph (${(incoming.get(id) ?? []).join(', ') || 'aucune'})`);
+    check(errors, same(projection.outgoing ?? [], outgoing.get(id) ?? []),
+      `${id} : graphProjection.outgoing diverge du WorkflowGraph (${(outgoing.get(id) ?? []).join(', ') || 'aucune'})`);
+    check(errors, projection.entry === (id === graph?.entry),
+      `${id} : graphProjection.entry incohérent`);
+    check(errors, projection.runtimeTerminal === (id === graph?.runtimeTerminal),
+      `${id} : graphProjection.runtimeTerminal incohérent`);
+
+    // Le texte canonique reste de la prose tracée, jamais une source de graphe.
+    check(errors, typeof contract?.canonicalRouting?.note === 'string',
+      `${id} : canonicalRouting.note manquante, la sémantique du texte de fiche doit être explicite`);
+  }
+
+  return errors;
+}
+
 export function verifyCrossReferences(contracts, blueprints) {
   const errors = [];
   const byBlueprint = new Map((blueprints?.blueprints ?? [])
@@ -298,6 +406,7 @@ async function main() {
   const errors = [
     ...verifyContracts(contracts),
     ...verifyGraph(graph, contracts),
+    ...verifyGraphProjection(contracts, graph),
     ...verifyBlueprints(blueprints, contracts, taskRegistry),
     ...verifyCrossReferences(contracts, blueprints)
   ];
@@ -309,8 +418,12 @@ async function main() {
     return;
   }
 
+  const runtimeCount = contracts.contracts.filter((contract) => contract.runtimeGraphMember).length;
   console.log([
     `Vérification GWC réussie : ${contracts.contracts.length} contrats`,
+    `${runtimeCount} dans le graphe runtime, tous atteignables depuis ${graph.entry}`,
+    `terminal ${graph.runtimeTerminal}`,
+    `${graph.outOfRuntimeGraph.length} hors graphe runtime (${graph.outOfRuntimeGraph.map((entry) => entry.stepId).join(', ') || 'aucun'})`,
     `${graph.edges.length} arêtes (${graph.edges.filter((edge) => edge.kind === 'BACKWARD').length} à rebours)`,
     `${blueprints.blueprints.length} blueprints`,
     `${blueprints.runtimeTasksCreated} tâche runtime`
