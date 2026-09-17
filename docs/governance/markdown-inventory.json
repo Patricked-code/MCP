@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 211,
+  "trackedCount": 214,
   "categories": {
     "canonical": 7,
-    "documentation": 61,
+    "documentation": 64,
     "engineering-plan": 8,
     "engineering-spec": 9,
     "history": 1,
@@ -472,6 +472,18 @@
     },
     {
       "path": "docs/gwc/archive/ARCHITECTURE_R2_NON_CANONICAL.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/canonical-memory/pr95-ded/sources/ded-checkpoint.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/canonical-memory/pr95-ded/sources/historical-baseline.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/canonical-memory/pr95-ded/sources/mission-directive.md",
       "category": "documentation"
     },
     {
