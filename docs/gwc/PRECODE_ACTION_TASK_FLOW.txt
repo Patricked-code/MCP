@@ -1,0 +1,741 @@
+GWC PRE-CODE ACTION TASK FLOW — CANONICAL EXECUTION COMPANION
+Revision: R3-PRECODE-ACTION-FLOW
+Repository: Patricked-code/MCP
+Target work branch: claude/ecstatic-edison-v1dyt1
+Parent architecture plan: docs/gwc/PRECODE_EXECUTION_PLAN.txt
+
+PURPOSE
+Turn the approved canonical GWC execution plan into an explicit chronological queue of architecture/pre-code work items that an agent can execute, evidence, checkpoint and close before any GWC runtime implementation begins.
+
+AUTHORITY BOUNDARY
+- This file is an execution companion to PRECODE_EXECUTION_PLAN.txt.
+- It is NOT Operational Memory.
+- It is NOT the Governed Task Queue.
+- Its GWC-PRE-* identifiers are architecture work-item identifiers, never TASK-* identifiers.
+- It creates no GovernedTaskRecord, claim, lock, branch, permission, deployment or runtime mutation.
+- Live authorities must be re-observed before any state-dependent claim.
+- Existing completed evidence may satisfy a work item only after it is revalidated against the current exact branch head and the owning authority.
+- A blueprint may later reconcile to 0, 1 or N runtime Governed Tasks. Only NEW_TASK after live Task Queue reconciliation may create one.
+
+ABSOLUTE RULE
+NO GWC RUNTIME CODE MAY START UNTIL EVERY PRE-CODE GATE BELOW IS PASS_WITH_EVIDENCE.
+A documentation claim of COMPLETE is not sufficient by itself. Completion requires evidence references that can be re-read from the current branch/live authority.
+
+STATUS VOCABULARY
+PENDING            = not evaluated on the current exact branch head.
+IN_PROGRESS        = actively being verified/completed.
+PASS_WITH_EVIDENCE = completion proven by current evidence references.
+BLOCKED            = cannot proceed because a declared dependency/gate is not satisfied.
+CONFLICT           = authorities disagree; reconcile before proceeding.
+STALE               = evidence expired or no longer bound to current head/state.
+N/A                 = explicitly inapplicable with a documented reason.
+
+GLOBAL EXECUTION LOOP
+For every GWC-PRE-* work item:
+1. OBSERVE current authorities.
+2. RECONCILE with current branch/main/PR/task/session/locks/live state as applicable.
+3. READ the existing artifact/code/test before changing anything.
+4. EXECUTE only the bounded pre-code action.
+5. VERIFY the exact completion condition.
+6. RECORD evidence refs (file/ref/SHA/test output/reason code).
+7. UPDATE checkpoint/projection only after verification.
+8. MOVE to the next dependency-satisfied work item.
+If a conflict appears: STOP that path, mark CONFLICT, reconcile, and continue only independent disjoint work.
+
+===============================================================================
+PHASE 0 — CURRENT-AUTHORITY RECONSTRUCTION
+===============================================================================
+
+GWC-PRE-000 — Observe current authorities
+Actions:
+- Read GitHub main SHA, PR #95 base/head, branch ref, checks, reviews, threads, rulesets.
+- Read Operational Memory, Governed Task Queue, Governed Sessions, locks, Bootstrap Receipt, Live State, Current/Governed Context when available.
+- Read canonical-memory/current.json and verify its selected bundle.
+- Record UNKNOWN rather than substituting historical evidence for unavailable live evidence.
+Completion:
+CURRENT_AUTHORITIES_OBSERVED
+
+GWC-PRE-001 — Establish exact GWC baseline
+Actions:
+- Compare main, PR #95 base/head, PRECODE_EXECUTION_PLAN, gwc-contracts, workflow graph, blueprints, evolution design, precode gate and current canonical-memory pointer.
+- Record drift/contradiction/stale evidence explicitly.
+Completion:
+GWC_EXACT_BASELINE_ESTABLISHED
+
+===============================================================================
+PHASE A1 — EXISTING SYSTEM INVENTORY
+===============================================================================
+
+GWC-PRE-A1-01 — Inventory implementation components
+Inventory services, modules, types, schemas, stores, registries, caches, resolvers, observers, workers, MCP tools/resources, scripts and workflows.
+For each: responsibility, exports, imports, consumers, state owned, side effects, tests.
+
+GWC-PRE-A1-02 — Inventory governance authorities
+Inventory Operational Memory, Task Queue, Governed Sessions, Lock Service, Live State, Current State, Governed Context, Bootstrap Receipt, GitRegistry/V2 candidate, GitHub, runtime/S1, Event Journal, Capability Reality, Task Reality, Identity Policy and Connection Context.
+For each: owns/does-not-own, writers, readers, persistence, schemaVersion, freshness, failure mode.
+
+GWC-PRE-A1-03 — Inventory data contracts and persistence
+Inventory records, schemas, JSON artifacts, task/session/receipt/checkpoint/mapping/attestation structures.
+For each: owner, producer, consumer, persistence, ephemeral/durable, version, compatibility.
+
+GWC-PRE-A1-04 — Inventory operational call graph
+Map client -> auth -> MCP -> identity/context -> governance -> task -> lock -> tool -> upstream -> result -> audit/checkpoint.
+
+GWC-PRE-A1-05 — Inventory development/delivery pipeline
+Map intent -> branch -> RED -> GREEN -> CI -> review -> merge -> main CI -> governed deploy -> runtime -> Live State -> DONE.
+
+GWC-PRE-A1-06 — Inventory tests and control coverage
+Inventory every test file, package script, CI job, required check, review gate, merge guard, deploy trigger, runtime health check, docs check and secret scan.
+Explicitly confirm or refute AF-19, AF-31 and AF-32 from current exact evidence.
+
+GWC-PRE-A1-07 — Inventory authority documentation
+Classify authority docs, projection docs, canonical docs, historical docs and stale/contradictory docs.
+
+A1 EXIT GATE
+Required:
+- code inventory complete
+- authority inventory complete
+- data inventory complete
+- operational/development pipeline inventory complete
+- test/CI/review/deploy inventory complete
+- documentation inventory complete
+Output:
+EXISTING_SYSTEM_INVENTORY_COMPLETE
+
+===============================================================================
+PHASE A2 — EXISTING -> 73 CONTRACT MAPPING
+===============================================================================
+
+For EACH GW-01..GW-73 execute the same bounded mapping task:
+A. Restate canonical purpose/output.
+B. Locate existing type/function/service/authority/test/pipeline stage.
+C. Classify overlap: EXACT_EXISTING / PARTIAL_EXISTING / SPECIALIZED_EXISTING / MULTIPLE_COMPONENTS / NONE.
+D. Choose exactly one integration path: REUSE / WRAP / GENERALIZE / EXTEND / NEW.
+E. Justify every choice other than REUSE.
+F. NEW is valid only if no existing owner/component can be generalized and no parallel authority is created.
+G. Record predecessors/successors, authority owner, blueprint owner, findings and open decisions.
+H. Prove exactly one canonical blueprint owner and no orphan/duplicate ownership.
+
+CONTRACT MAPPING WORK ITEMS
+GWC-PRE-A2-GW-01 — map GW-01 to current implementation and record evidence.
+GWC-PRE-A2-GW-02 — map GW-02 to current implementation and record evidence.
+GWC-PRE-A2-GW-03 — map GW-03 to current implementation and record evidence.
+GWC-PRE-A2-GW-04 — map GW-04 to current implementation and record evidence.
+GWC-PRE-A2-GW-05 — map GW-05 to current implementation and record evidence.
+GWC-PRE-A2-GW-06 — map GW-06 to current implementation and record evidence.
+GWC-PRE-A2-GW-07 — map GW-07 to current implementation and record evidence.
+GWC-PRE-A2-GW-08 — map GW-08 to current implementation and record evidence.
+GWC-PRE-A2-GW-09 — map GW-09 to current implementation and record evidence.
+GWC-PRE-A2-GW-10 — map GW-10 to current implementation and record evidence.
+GWC-PRE-A2-GW-11 — map GW-11 to current implementation and record evidence.
+GWC-PRE-A2-GW-12 — map GW-12 to current implementation and record evidence.
+GWC-PRE-A2-GW-13 — map GW-13 to current implementation and record evidence.
+GWC-PRE-A2-GW-14 — map GW-14 to current implementation and record evidence.
+GWC-PRE-A2-GW-15 — map GW-15 to current implementation and record evidence.
+GWC-PRE-A2-GW-16 — map GW-16 to current implementation and record evidence.
+GWC-PRE-A2-GW-17 — map GW-17 to current implementation and record evidence.
+GWC-PRE-A2-GW-18 — map GW-18 to current implementation and record evidence.
+GWC-PRE-A2-GW-19 — map GW-19 to current implementation and record evidence.
+GWC-PRE-A2-GW-20 — map GW-20 to current implementation and record evidence.
+GWC-PRE-A2-GW-21 — map GW-21 to current implementation and record evidence.
+GWC-PRE-A2-GW-22 — map GW-22 to current implementation and record evidence.
+GWC-PRE-A2-GW-23 — map GW-23 to current implementation and record evidence.
+GWC-PRE-A2-GW-24 — map GW-24 to current implementation and record evidence.
+GWC-PRE-A2-GW-25 — map GW-25 to current implementation and record evidence.
+GWC-PRE-A2-GW-26 — map GW-26 to current implementation and record evidence.
+GWC-PRE-A2-GW-27 — map GW-27 to current implementation and record evidence.
+GWC-PRE-A2-GW-28 — map GW-28 to current implementation and record evidence.
+GWC-PRE-A2-GW-29 — map GW-29 to current implementation and record evidence.
+GWC-PRE-A2-GW-30 — map GW-30 to current implementation and record evidence.
+GWC-PRE-A2-GW-31 — map GW-31 to current implementation and record evidence.
+GWC-PRE-A2-GW-32 — map GW-32 to current implementation and record evidence.
+GWC-PRE-A2-GW-33 — map GW-33 to current implementation and record evidence.
+GWC-PRE-A2-GW-34 — map GW-34 to current implementation and record evidence.
+GWC-PRE-A2-GW-35 — map GW-35 to current implementation and record evidence.
+GWC-PRE-A2-GW-36 — map GW-36 to current implementation and record evidence.
+GWC-PRE-A2-GW-37 — map GW-37 to current implementation and record evidence.
+GWC-PRE-A2-GW-38 — map GW-38 to current implementation and record evidence.
+GWC-PRE-A2-GW-39 — map GW-39 to current implementation and record evidence.
+GWC-PRE-A2-GW-40 — map GW-40 to current implementation and record evidence.
+GWC-PRE-A2-GW-41 — map GW-41 to current implementation and record evidence.
+GWC-PRE-A2-GW-42 — map GW-42 to current implementation and record evidence.
+GWC-PRE-A2-GW-43 — map GW-43 to current implementation and record evidence.
+GWC-PRE-A2-GW-44 — map GW-44 to current implementation and record evidence.
+GWC-PRE-A2-GW-45 — map GW-45 to current implementation and record evidence.
+GWC-PRE-A2-GW-46 — map GW-46 to current implementation and record evidence.
+GWC-PRE-A2-GW-47 — map GW-47 to current implementation and record evidence.
+GWC-PRE-A2-GW-48 — map GW-48 to current implementation and record evidence.
+GWC-PRE-A2-GW-49 — map GW-49 to current implementation and record evidence.
+GWC-PRE-A2-GW-50 — map GW-50 to current implementation and record evidence.
+GWC-PRE-A2-GW-51 — map GW-51 to current implementation and record evidence.
+GWC-PRE-A2-GW-52 — map GW-52 to current implementation and record evidence.
+GWC-PRE-A2-GW-53 — map GW-53 to current implementation and record evidence.
+GWC-PRE-A2-GW-54 — map GW-54 to current implementation and record evidence.
+GWC-PRE-A2-GW-55 — map GW-55 to current implementation and record evidence.
+GWC-PRE-A2-GW-56 — map GW-56 to current implementation and record evidence.
+GWC-PRE-A2-GW-57 — map GW-57 to current implementation and record evidence.
+GWC-PRE-A2-GW-58 — map GW-58 to current implementation and record evidence.
+GWC-PRE-A2-GW-59 — map GW-59 to current implementation and record evidence.
+GWC-PRE-A2-GW-60 — map GW-60 to current implementation and record evidence.
+GWC-PRE-A2-GW-61 — map GW-61 to current implementation and record evidence.
+GWC-PRE-A2-GW-62 — map GW-62 to current implementation and record evidence.
+GWC-PRE-A2-GW-63 — map GW-63 to current implementation and record evidence.
+GWC-PRE-A2-GW-64 — map GW-64 to current implementation and record evidence.
+GWC-PRE-A2-GW-65 — map GW-65 to current implementation and record evidence.
+GWC-PRE-A2-GW-66 — map GW-66 to current implementation and record evidence.
+GWC-PRE-A2-GW-67 — map GW-67 to current implementation and record evidence.
+GWC-PRE-A2-GW-68 — map GW-68 to current implementation and record evidence.
+GWC-PRE-A2-GW-69 — map GW-69 to current implementation and record evidence.
+GWC-PRE-A2-GW-70 — map GW-70 to current implementation and record evidence.
+GWC-PRE-A2-GW-71 — map GW-71 to current implementation and record evidence.
+GWC-PRE-A2-GW-72 — map GW-72 to current implementation and record evidence.
+GWC-PRE-A2-GW-73 — map GW-73 to current implementation and record evidence.
+
+A2 EXIT GATE
+Required:
+- 73/73 mapped
+- 0 orphan contracts
+- 0 duplicate blueprint ownership
+- 0 unexplained NEW classifications
+Output:
+73_CONTRACTS_EXISTING_MAPPING_COMPLETE
+
+===============================================================================
+PHASE A3 — 73 CONTRACT DESIGN SHEETS
+===============================================================================
+
+For EACH GW-01..GW-73 execute the following contract-closure checklist:
+1. PURPOSE
+2. RESPONSIBILITY
+3. NON-RESPONSIBILITY
+4. INPUT schema + provenance
+5. OUTPUT schema + bounded result
+6. AUTHORITIES
+7. PRECONDITIONS
+8. POSTCONDITIONS
+9. INVARIANTS
+10. ALLOWED ACTIONS
+11. FORBIDDEN ACTIONS
+12. EVIDENCE
+13. FRESHNESS / TTL / reobserve rule
+14. REASON CODES
+15. FAIL-CLOSED STATES
+16. ATTESTATION
+17. LOCK / collision domain
+18. REPLAY class
+19. IDEMPOTENCY
+20. CONCURRENCY
+21. TRANSITIONS
+22. SKIP condition
+23. REOBSERVE condition
+24. RECONCILE condition
+25. SECURITY
+26. ACCEPTANCE CRITERIA
+
+Per-contract closure assertions:
+- no implicit authority
+- no implicit transition
+- no permission inferred from identity/callability
+- no stale evidence mutation
+- no hidden mutation
+- no secret projection
+- no unresolved decision capable of changing the contract semantics
+
+CONTRACT DESIGN CLOSURE WORK ITEMS
+GWC-PRE-A3-GW-01 — verify/complete all 26 design blocks for GW-01; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-02 — verify/complete all 26 design blocks for GW-02; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-03 — verify/complete all 26 design blocks for GW-03; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-04 — verify/complete all 26 design blocks for GW-04; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-05 — verify/complete all 26 design blocks for GW-05; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-06 — verify/complete all 26 design blocks for GW-06; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-07 — verify/complete all 26 design blocks for GW-07; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-08 — verify/complete all 26 design blocks for GW-08; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-09 — verify/complete all 26 design blocks for GW-09; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-10 — verify/complete all 26 design blocks for GW-10; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-11 — verify/complete all 26 design blocks for GW-11; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-12 — verify/complete all 26 design blocks for GW-12; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-13 — verify/complete all 26 design blocks for GW-13; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-14 — verify/complete all 26 design blocks for GW-14; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-15 — verify/complete all 26 design blocks for GW-15; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-16 — verify/complete all 26 design blocks for GW-16; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-17 — verify/complete all 26 design blocks for GW-17; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-18 — verify/complete all 26 design blocks for GW-18; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-19 — verify/complete all 26 design blocks for GW-19; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-20 — verify/complete all 26 design blocks for GW-20; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-21 — verify/complete all 26 design blocks for GW-21; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-22 — verify/complete all 26 design blocks for GW-22; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-23 — verify/complete all 26 design blocks for GW-23; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-24 — verify/complete all 26 design blocks for GW-24; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-25 — verify/complete all 26 design blocks for GW-25; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-26 — verify/complete all 26 design blocks for GW-26; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-27 — verify/complete all 26 design blocks for GW-27; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-28 — verify/complete all 26 design blocks for GW-28; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-29 — verify/complete all 26 design blocks for GW-29; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-30 — verify/complete all 26 design blocks for GW-30; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-31 — verify/complete all 26 design blocks for GW-31; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-32 — verify/complete all 26 design blocks for GW-32; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-33 — verify/complete all 26 design blocks for GW-33; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-34 — verify/complete all 26 design blocks for GW-34; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-35 — verify/complete all 26 design blocks for GW-35; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-36 — verify/complete all 26 design blocks for GW-36; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-37 — verify/complete all 26 design blocks for GW-37; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-38 — verify/complete all 26 design blocks for GW-38; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-39 — verify/complete all 26 design blocks for GW-39; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-40 — verify/complete all 26 design blocks for GW-40; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-41 — verify/complete all 26 design blocks for GW-41; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-42 — verify/complete all 26 design blocks for GW-42; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-43 — verify/complete all 26 design blocks for GW-43; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-44 — verify/complete all 26 design blocks for GW-44; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-45 — verify/complete all 26 design blocks for GW-45; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-46 — verify/complete all 26 design blocks for GW-46; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-47 — verify/complete all 26 design blocks for GW-47; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-48 — verify/complete all 26 design blocks for GW-48; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-49 — verify/complete all 26 design blocks for GW-49; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-50 — verify/complete all 26 design blocks for GW-50; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-51 — verify/complete all 26 design blocks for GW-51; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-52 — verify/complete all 26 design blocks for GW-52; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-53 — verify/complete all 26 design blocks for GW-53; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-54 — verify/complete all 26 design blocks for GW-54; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-55 — verify/complete all 26 design blocks for GW-55; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-56 — verify/complete all 26 design blocks for GW-56; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-57 — verify/complete all 26 design blocks for GW-57; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-58 — verify/complete all 26 design blocks for GW-58; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-59 — verify/complete all 26 design blocks for GW-59; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-60 — verify/complete all 26 design blocks for GW-60; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-61 — verify/complete all 26 design blocks for GW-61; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-62 — verify/complete all 26 design blocks for GW-62; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-63 — verify/complete all 26 design blocks for GW-63; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-64 — verify/complete all 26 design blocks for GW-64; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-65 — verify/complete all 26 design blocks for GW-65; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-66 — verify/complete all 26 design blocks for GW-66; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-67 — verify/complete all 26 design blocks for GW-67; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-68 — verify/complete all 26 design blocks for GW-68; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-69 — verify/complete all 26 design blocks for GW-69; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-70 — verify/complete all 26 design blocks for GW-70; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-71 — verify/complete all 26 design blocks for GW-71; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-72 — verify/complete all 26 design blocks for GW-72; attach evidence; mark COMPLETE only after all assertions pass.
+GWC-PRE-A3-GW-73 — verify/complete all 26 design blocks for GW-73; attach evidence; mark COMPLETE only after all assertions pass.
+
+A3 EXIT GATE
+Required:
+73 / 73 CONTRACT DESIGNS = COMPLETE_WITH_EVIDENCE
+Output:
+73_CONTRACT_DESIGNS_COMPLETE
+
+===============================================================================
+PHASE A4 — 18 DETAILED EVOLUTION DESIGNS
+===============================================================================
+
+For EACH GWC-0..GWC-17 verify/complete:
+CURRENT IMPLEMENTATION
+CURRENT AUTHORITIES
+CURRENT FILES
+CURRENT TYPES
+CURRENT CALL GRAPH
+CURRENT TESTS
+CURRENT HARD-CODES
+GAP
+REUSE / WRAP / GENERALIZE / EXTEND / NEW
+INTEGRATION SLOT
+EXPECTED TYPES
+EXPECTED FUNCTIONS
+EXPECTED FILES
+EXPECTED TESTS
+DATA MODEL
+PERSISTENCE
+SECURITY
+CONCURRENCY
+REPLAY
+RECOVERY
+BACKWARD COMPATIBILITY
+MULTI-REPOSITORY
+RED
+GREEN
+REGRESSION
+DEFINITION OF DONE
+
+Open decisions that can change implementation semantics must be closed before the affected blueprint can pass.
+New primitives must have an explicit justification and must not duplicate an existing authority.
+
+BLUEPRINT DESIGN CLOSURE WORK ITEMS
+GWC-PRE-A4-GWC-0 — verify/complete Detailed Evolution Design for GWC-0; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-1 — verify/complete Detailed Evolution Design for GWC-1; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-2 — verify/complete Detailed Evolution Design for GWC-2; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-3 — verify/complete Detailed Evolution Design for GWC-3; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-4 — verify/complete Detailed Evolution Design for GWC-4; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-5 — verify/complete Detailed Evolution Design for GWC-5; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-6 — verify/complete Detailed Evolution Design for GWC-6; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-7 — verify/complete Detailed Evolution Design for GWC-7; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-8 — verify/complete Detailed Evolution Design for GWC-8; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-9 — verify/complete Detailed Evolution Design for GWC-9; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-10 — verify/complete Detailed Evolution Design for GWC-10; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-11 — verify/complete Detailed Evolution Design for GWC-11; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-12 — verify/complete Detailed Evolution Design for GWC-12; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-13 — verify/complete Detailed Evolution Design for GWC-13; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-14 — verify/complete Detailed Evolution Design for GWC-14; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-15 — verify/complete Detailed Evolution Design for GWC-15; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-16 — verify/complete Detailed Evolution Design for GWC-16; close blocking decisions; bind findings and evidence.
+GWC-PRE-A4-GWC-17 — verify/complete Detailed Evolution Design for GWC-17; close blocking decisions; bind findings and evidence.
+
+A4 EXIT GATE
+Required:
+18 / 18 DETAILED EVOLUTION DESIGNS = COMPLETE_WITH_EVIDENCE
+Output:
+18_DETAILED_EVOLUTION_DESIGNS_COMPLETE
+
+===============================================================================
+PHASE A5 — WORKFLOW GRAPH
+===============================================================================
+
+GWC-PRE-A5-01 — Rebuild complete transition registry
+For every edge record source, target, type, trigger/precondition and declaredBy.
+Allowed edge classes:
+FORWARD / BACKWARD / SKIP / REOBSERVE / RECONCILE / BLOCK / CONFLICT / WAIT_EXTERNAL.
+
+GWC-PRE-A5-02 — Verify reachability and terminals
+Require GW-01 runtime entry; every runtime contract reachable; GW-72 runtime terminal; GW-73 Universal Acceptance outside normal runtime where declared.
+
+GWC-PRE-A5-03 — Verify graph safety
+Require 0 implicit transitions, 0 orphan runtime nodes, 0 undeclared skip/backward edges, 0 unbounded cycles/retry loops.
+
+A5 EXIT:
+WORKFLOW_GRAPH_VERIFIED
+
+===============================================================================
+PHASE A6 — AUTHORITY + DATA CONTRACTS
+===============================================================================
+
+GWC-PRE-A6-01 — Verify Authority Registry
+For each authority: scope, owns, does-not-own, writers, readers, persistence, freshness, version.
+
+GWC-PRE-A6-02 — Verify Data Contract Registry
+For each canonical data object: owner, producer, consumers, schemaVersion, persistence, freshness, compatibility.
+
+GWC-PRE-A6-03 — Prove authority uniqueness
+Require no second Live State, Operational Memory, Task Queue, Session engine, Lock engine, GitRegistry, Bootstrap Receipt, audit journal or deployment authority.
+
+A6 EXIT:
+AUTHORITY_AND_DATA_MODEL_VERIFIED
+
+===============================================================================
+PHASE A7 — EVIDENCE + ATTESTATION
+===============================================================================
+
+GWC-PRE-A7-01 — Verify EvidenceRef model
+Require authority/type/reference/observedAt/freshness/digest/binding.
+
+GWC-PRE-A7-02 — Verify StepAttestation model
+Require stepId, input/output digests, status, authorities/evidence, reason codes, freshness, session/task/repository/project bindings as applicable.
+
+GWC-PRE-A7-03 — Prove freshness/binding safety
+Wrong session/task/repository/project -> reject.
+Stale evidence -> cannot authorize mutation.
+Head moved -> reobserve.
+Runtime SHA drift -> reconcile/conflict.
+
+A7 EXIT:
+EVIDENCE_ATTESTATION_MODEL_VERIFIED
+
+===============================================================================
+PHASE A8 — CONCURRENCY / LOCKS / REPLAY
+===============================================================================
+
+GWC-PRE-A8-01 — Verify minimal collision domains
+Repository, project, task, resource, branch and deployment target where applicable.
+
+GWC-PRE-A8-02 — Verify Lock protocol
+Single lock, atomic multi-lock, deterministic ordering, TTL, renewal, ownership, release, expired-lock behavior, deadlock avoidance.
+
+GWC-PRE-A8-03 — Verify replay classes
+PURE / READ_ONLY / IDEMPOTENT_MUTATION / NON_REPLAYABLE_MUTATION.
+
+GWC-PRE-A8-04 — Verify recovery anchors and TOCTOU
+Define RecoveryAnchor, resume point, duplicate invocation handling and mandatory reobserve before state-sensitive mutation.
+
+A8 EXIT:
+CONCURRENCY_REPLAY_MODEL_VERIFIED
+
+===============================================================================
+PHASE A9 — FAILURE / RECOVERY / SECURITY
+===============================================================================
+
+GWC-PRE-A9-01 — Verify fail-closed matrix
+UNKNOWN / NONE / AMBIGUOUS / UNVERIFIED / BLOCKED / CONFLICT / STALE / OUT_OF_SCOPE / REJECTED.
+
+GWC-PRE-A9-02 — Verify recovery routing
+For every failure: retry/reobserve/reconcile/human-decision/terminal path must be explicit.
+
+GWC-PRE-A9-03 — Execute security architecture audit
+Check secret leakage, privilege escalation, authority confusion, cross-session/project/repository confusion, stale evidence, duplicate mutation, false DONE, exact-head bypass, lock bypass, Task Queue bypass.
+
+A9 EXIT:
+FAILURE_RECOVERY_SECURITY_VERIFIED
+
+===============================================================================
+PHASE A10 — BACKWARD COMPATIBILITY / UNIVERSALIZATION
+===============================================================================
+
+GWC-PRE-A10-01 — Inventory historical hardcodes
+Patricked-code/MCP, mcp_bridge, fixed branch/server/domain/runtime, single-repo/project assumptions, special-case paths.
+
+GWC-PRE-A10-02 — Map each hardcode to an owner/contract/generalization rule
+Record CURRENT HARDCODE / OWNER / TARGET CONTRACT / GENERALIZATION / COMPATIBILITY RULE / TEST REQUIRED.
+
+GWC-PRE-A10-03 — Prove historical compatibility
+Historical valid records/paths remain readable/behaviorally compatible while generic paths are supported.
+
+A10 EXIT:
+BACKWARD_COMPATIBILITY_VERIFIED
+
+===============================================================================
+PHASE A11 — GW-73 UNIVERSAL ACCEPTANCE DESIGN
+===============================================================================
+
+GWC-PRE-A11-01 — Complete GW-73 scenario matrix
+Minimum scenarios:
+happy path; repository unknown; project ambiguous; server missing; runtime stale; domain mismatch; governance missing; capability denied; duplicate task; lock conflict; CI failure; head moved; review finding; deploy failure; runtime SHA mismatch; documentation drift; receipt stale; reconnect; concurrent agents.
+
+For every scenario record INPUT / EXPECTED PATH / EXPECTED FAILURE OR RECOVERY / EXPECTED TERMINAL STATUS / EXPECTED EVIDENCE.
+
+GWC-PRE-A11-02 — Prove non-hardcoded acceptance
+No Stablecoin-only, Patricked-code/MCP-only, AfricaFunds-only, fixed server/domain/branch assumptions in the acceptance harness.
+
+A11 EXIT:
+GW73_ACCEPTANCE_DESIGN_COMPLETE
+
+===============================================================================
+PHASE A12 — IMPLEMENTATION SEQUENCE
+===============================================================================
+
+GWC-PRE-A12-01 — Freeze blueprint dependency DAG
+Record dependsOn, blocks, optional dependencies, resource scopes, parallel-safe conditions.
+
+GWC-PRE-A12-02 — Freeze nominal order
+GWC-0 -> GWC-1 -> GWC-2 -> GWC-3
+Then dependency-safe branches GWC-4/GWC-5/GWC-6->GWC-7/GWC-8
+Then convergence -> GWC-9 -> GWC-10 -> GWC-11 -> GWC-12 -> GWC-13 -> GWC-14 -> GWC-15 -> GWC-16 -> GWC-17.
+Parallelism only if dependencies satisfied AND scopes disjoint AND locks compatible AND no authority collision.
+
+A12 EXIT:
+IMPLEMENTATION_SEQUENCE_FROZEN
+
+===============================================================================
+PHASE A13 — GLOBAL CROSS-AUDIT
+===============================================================================
+
+GWC-PRE-A13-01 — Interface audit
+Verify every contract input/output and inter-contract dependency.
+
+GWC-PRE-A13-02 — Authority audit
+Verify no contract/blueprint appropriates authority owned elsewhere.
+
+GWC-PRE-A13-03 — Mutation/concurrency audit
+Find hidden writes, unlocked writes, duplicate mutations, unsafe replay and TOCTOU gaps.
+
+GWC-PRE-A13-04 — Graph/universality audit
+Require:
+73/73 contract designs
+18/18 evolution designs
+13/13 transverse registries
+4/4 global audits
+0 orphan contract
+0 duplicate ownership
+0 parallel authority
+0 illegal transition
+0 hidden mutation
+0 unresolved dependency cycle
+0 permission inferred from callability
+0 UNKNOWN -> PERMITTED
+0 stale-evidence mutation
+0 false-DONE path
+
+GWC-PRE-A13-05 — Findings disposition audit
+Every remaining finding must have findingId, owner, severity, blueprint and resolutionPath. Blocking findings must block their affected implementation path.
+
+A13 EXIT:
+GWC_ARCHITECTURE_CROSS_AUDIT_PASS
+
+===============================================================================
+PHASE A14 — FINAL CANONICALIZATION
+===============================================================================
+
+GWC-PRE-A14-01 — Align canonical artifacts
+docs/gwc/*
+.mcp/gwc-contracts.json
+.mcp/gwc-workflow-graph.json
+.mcp/gwc-blueprints.json
+.mcp/gwc-evolution-design.json
+.mcp/gwc-precode-gate.json
+this action-flow projection
+canonical-memory/current.json
+
+GWC-PRE-A14-02 — Align governance documentation
+SUIVI.md / DECISIONS_LOG.md / CHANGELOG.md / documentation governance as applicable.
+
+GWC-PRE-A14-03 — Prove no artificial runtime task materialization
+TASKS.md and Governed Task Queue must not be populated merely because blueprints exist.
+
+GWC-PRE-A14-04 — Run deterministic checks
+npm run gwc:verify
+npm run typecheck
+npm run build
+npm run docs:check
+npm run test:governance
+npm run test:readonly-safety
+npm run lint:secrets
+git diff --check against exact base
+
+A14 EXIT:
+GWC_ARCHITECTURE_CANONICAL
+
+===============================================================================
+ABSOLUTE PRE-CODE GATE
+===============================================================================
+
+GWC-PRE-GATE-01 — Architecture gate
+PASS only if:
+14/14 architecture phases PASS_WITH_EVIDENCE
+73/73 Contract Designs COMPLETE_WITH_EVIDENCE
+18/18 Evolution Designs COMPLETE_WITH_EVIDENCE
+13/13 transverse registries VERIFIED
+4/4 global audits PASS
+Workflow Graph VERIFIED
+Canonical Memory CURRENT
+SUIVI / DECISIONS aligned
+architecture cross-audit PASS
+
+If any condition fails:
+GWC_RUNTIME_IMPLEMENTATION = BLOCKED
+Return to the failing architecture work item.
+
+If all pass:
+GWC_ARCHITECTURE_GATE = PASS
+Proceed only to Phase B live task reconciliation.
+
+===============================================================================
+PHASE B — LIVE TASK RECONCILIATION
+===============================================================================
+
+GWC-PRE-B-01 — Reobserve live Task Queue/session/locks/branches/PRs.
+GWC-PRE-B-02 — Reconcile each executable blueprint intent via the existing reconciliation authority.
+Allowed classification:
+CONTINUATION / DUPLICATE / CONFLICT / BLOCKED / NEW_TASK.
+
+Rules:
+CONTINUATION -> resume existing work.
+DUPLICATE -> create nothing.
+CONFLICT -> reconcile before execution.
+BLOCKED -> satisfy blocker/dependency.
+NEW_TASK -> and only NEW_TASK -> may create a GovernedTaskRecord.
+
+Never assume 1 blueprint = 1 task. A blueprint may produce 0/1/N tasks from live reality.
+
+===============================================================================
+PHASE C — SAFETY PREREQUISITES
+===============================================================================
+
+GWC-PRE-C1 — AF-19 exact deployed-SHA CI evidence
+Prove deployed SHA equals the SHA whose required CI succeeded, without weakening existing OIDC/exact-SHA invariants.
+
+GWC-PRE-C2 — AF-22 / AF-30 exact-head review evidence
+Bind review/threads/ruleset evidence to the current exact PR head; any head move invalidates stale review proof.
+
+GWC-PRE-C3 — #88/#89/#90 PR-stack reconciliation
+For each capability: still needed? already implemented? duplicate? stale? GWC-compatible? correct owner/blueprint?
+Disposition must be KEEP / REWORK / SPLIT / SUPERSEDE / CLOSE / DEFER.
+No blind stale-stack merge.
+
+===============================================================================
+PHASE D — GOVERNED IMPLEMENTATION CYCLE
+===============================================================================
+
+Every runtime Governed Task materialized after Phase B must execute:
+OBSERVE
+-> RECONCILE
+-> CLAIM
+-> MINIMAL LOCK
+-> EXACT BASELINE
+-> RED
+-> PROVE RED
+-> MINIMAL GREEN
+-> TARGETED TESTS
+-> HISTORICAL REGRESSION
+-> TYPECHECK
+-> BUILD
+-> DOC CHECK
+-> SECURITY/SECRET CHECK
+-> SELF REVIEW
+-> DOCUMENT
+-> DRAFT PR
+-> EXACT-HEAD CI
+-> EXACT-HEAD REVIEW
+-> RESOLVE THREADS
+-> MERGE_READY
+-> EXACT-HEAD MERGE
+-> CI MAIN
+-> GOVERNED AUTODEPLOY
+-> EXACT-SHA ATTESTATION
+-> LIVE STATE
+-> VERIFYING
+-> TERMINAL VERIFICATION
+-> DONE
+-> CHECKPOINT
+-> LOCK RELEASE
+-> SESSION CLOSE
+-> RECONCILE QUEUE
+-> NEXT EXECUTABLE WORK
+
+===============================================================================
+PHASE E — BLUEPRINT MATERIALIZATION ORDER
+===============================================================================
+
+Nominal dependency order:
+GWC-0
+-> GWC-1
+-> GWC-2
+-> GWC-3
+-> dependency-safe set {GWC-4, GWC-5, GWC-6 -> GWC-7, GWC-8}
+-> GWC-9
+-> GWC-10
+-> GWC-11
+-> GWC-12
+-> GWC-13
+-> GWC-14
+-> GWC-15
+-> GWC-16
+-> GWC-17
+
+At every boundary:
+REOBSERVE AUTHORITIES
+RECONCILE TASK QUEUE
+REVALIDATE DEPENDENCIES
+REVALIDATE LOCK COLLISIONS
+
+===============================================================================
+PHASE F — UNIVERSAL ACCEPTANCE
+===============================================================================
+
+GWC-PRE-F-01 — Select non-hardcoded acceptance context.
+GWC-PRE-F-02 — Execute happy path:
+Intent -> Identity -> Repository -> Project -> Server -> Runtime -> Domain -> Governance -> Capability -> Task -> Session -> Locks -> Development -> CI -> Review -> Merge -> Deploy -> Verify -> DONE.
+GWC-PRE-F-03 — Execute negative paths:
+unknown / ambiguous / stale / conflict / duplicate / denied / CI failure / head drift / review rejection / deploy failure / runtime drift / docs drift / stale receipt / reconnect / concurrent agents.
+Every negative scenario must fail closed or follow an explicit recovery edge.
+GWC-PRE-F-04 — Cross-context universality audit.
+No Patricked-code/MCP, Stablecoin, AfricaFunds, fixed server, fixed branch or fixed domain hard dependency.
+GWC-PRE-F-05 — Final verdict only after exact evidence:
+UNIVERSAL_GOVERNED_WORKFLOW_ACCEPTED
+
+===============================================================================
+NEXT ACTION RULE
+===============================================================================
+
+On opening this file, the agent MUST:
+1. Reobserve current authorities.
+2. Resolve the current exact branch head.
+3. Start at the first work item that is not PASS_WITH_EVIDENCE on that head.
+4. Reuse existing evidence only after confirming it is still bound/current.
+5. Complete/checkpoint work items in dependency order.
+6. Never start GWC runtime implementation while GWC-PRE-GATE-01 is not PASS_WITH_EVIDENCE.
+7. Never manufacture TASK-* entries from this file.
+8. Continue autonomously through non-blocked pre-code items; stop only for a real governed blocker that cannot be resolved from existing authorities.

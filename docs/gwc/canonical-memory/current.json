@@ -2,6 +2,14 @@
   "currentBundle": "pr95-precode-architecture-complete",
   "currentBundleId": "bnd_mcp-pr95-precode-architecture-complete-20260917",
   "currentBundlePath": "docs/gwc/canonical-memory/pr95-precode-architecture-complete",
+  "preCodeActionFlow": {
+    "document": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+    "machineProjection": ".mcp/gwc-precode-action-flow.json",
+    "relation": "execution_companion_of_PRECODE_EXECUTION_PLAN",
+    "runtimeAuthority": false,
+    "taskQueueAuthority": false,
+    "requiredBeforeRuntimeCode": true
+  },
   "localCloneUsedForThisMemoryMission": false,
   "previousBundles": [
     {
@@ -17,6 +25,8 @@
   ],
   "readProtocol": [
     "Read docs/gwc/README.md first.",
+    "Read docs/gwc/PRECODE_ACTION_TASK_FLOW.txt before any GWC runtime implementation.",
+    "Read .mcp/gwc-precode-action-flow.json as a non-authoritative machine projection of that action flow.",
     "Resolve this pointer to the current bundle.",
     "Verify the selected bundle with Canonical Memory Verifier before projecting claims.",
     "Historical authority never satisfies live approval.",
@@ -25,5 +35,5 @@
   "repository": "Patricked-code/MCP",
   "schemaVersion": 1,
   "scope": "GWC",
-  "updatedFromGitHubObservationAt": "2026-09-17T07:18:35+02:00"
+  "updatedFromGitHubObservationAt": "2026-09-17T07:40:00+02:00"
 }

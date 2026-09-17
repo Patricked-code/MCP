@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 1,
+  "revision": "R3-PRECODE-ACTION-FLOW",
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+  "parentPlan": "docs/gwc/PRECODE_EXECUTION_PLAN.txt",
+  "projectionOnly": true,
+  "runtimeAuthority": false,
+  "governedTaskQueueAuthority": false,
+  "runtimeTasksCreated": 0,
+  "actionFlowDigestSha256": "6a8319ba00c2117fae9f0859ac5d0a14a0f6973d7495004df5e77ce115d3f268",
+  "absoluteRule": "NO_GWC_RUNTIME_CODE_BEFORE_GWC_PRE_GATE_01_PASS_WITH_EVIDENCE",
+  "statusVocabulary": [
+    "PENDING",
+    "IN_PROGRESS",
+    "PASS_WITH_EVIDENCE",
+    "BLOCKED",
+    "CONFLICT",
+    "STALE",
+    "N/A"
+  ],
+  "phases": [
+    {
+      "id": "P0",
+      "name": "Current Authority Reconstruction",
+      "dependsOn": [],
+      "exit": "GWC_EXACT_BASELINE_ESTABLISHED"
+    },
+    {
+      "id": "A1",
+      "name": "Existing System Inventory",
+      "dependsOn": [
+        "P0"
+      ],
+      "exit": "EXISTING_SYSTEM_INVENTORY_COMPLETE"
+    },
+    {
+      "id": "A2",
+      "name": "Existing to 73 Contract Mapping",
+      "dependsOn": [
+        "A1"
+      ],
+      "workItems": 73,
+      "exit": "73_CONTRACTS_EXISTING_MAPPING_COMPLETE"
+    },
+    {
+      "id": "A3",
+      "name": "73 Contract Design Sheets",
+      "dependsOn": [
+        "A2"
+      ],
+      "workItems": 73,
+      "exit": "73_CONTRACT_DESIGNS_COMPLETE"
+    },
+    {
+      "id": "A4",
+      "name": "18 Detailed Evolution Designs",
+      "dependsOn": [
+        "A3"
+      ],
+      "workItems": 18,
+      "exit": "18_DETAILED_EVOLUTION_DESIGNS_COMPLETE"
+    },
+    {
+      "id": "A5",
+      "name": "Workflow Graph",
+      "dependsOn": [
+        "A4"
+      ],
+      "exit": "WORKFLOW_GRAPH_VERIFIED"
+    },
+    {
+      "id": "A6",
+      "name": "Authority and Data Contracts",
+      "dependsOn": [
+        "A5"
+      ],
+      "exit": "AUTHORITY_AND_DATA_MODEL_VERIFIED"
+    },
+    {
+      "id": "A7",
+      "name": "Evidence and Attestation",
+      "dependsOn": [
+        "A6"
+      ],
+      "exit": "EVIDENCE_ATTESTATION_MODEL_VERIFIED"
+    },
+    {
+      "id": "A8",
+      "name": "Concurrency Locks Replay",
+      "dependsOn": [
+        "A7"
+      ],
+      "exit": "CONCURRENCY_REPLAY_MODEL_VERIFIED"
+    },
+    {
+      "id": "A9",
+      "name": "Failure Recovery Security",
+      "dependsOn": [
+        "A8"
+      ],
+      "exit": "FAILURE_RECOVERY_SECURITY_VERIFIED"
+    },
+    {
+      "id": "A10",
+      "name": "Backward Compatibility",
+      "dependsOn": [
+        "A9"
+      ],
+      "exit": "BACKWARD_COMPATIBILITY_VERIFIED"
+    },
+    {
+      "id": "A11",
+      "name": "Universal Acceptance Design",
+      "dependsOn": [
+        "A10"
+      ],
+      "exit": "GW73_ACCEPTANCE_DESIGN_COMPLETE"
+    },
+    {
+      "id": "A12",
+      "name": "Implementation Sequence",
+      "dependsOn": [
+        "A11"
+      ],
+      "exit": "IMPLEMENTATION_SEQUENCE_FROZEN"
+    },
+    {
+      "id": "A13",
+      "name": "Global Cross Audit",
+      "dependsOn": [
+        "A12"
+      ],
+      "exit": "GWC_ARCHITECTURE_CROSS_AUDIT_PASS"
+    },
+    {
+      "id": "A14",
+      "name": "Final Canonicalization",
+      "dependsOn": [
+        "A13"
+      ],
+      "exit": "GWC_ARCHITECTURE_CANONICAL"
+    },
+    {
+      "id": "PRECODE_GATE",
+      "name": "Absolute Pre-code Gate",
+      "dependsOn": [
+        "A14"
+      ],
+      "exit": "GWC_ARCHITECTURE_GATE_PASS"
+    },
+    {
+      "id": "B",
+      "name": "Live Task Reconciliation",
+      "dependsOn": [
+        "PRECODE_GATE"
+      ],
+      "allowedOutcomes": [
+        "CONTINUATION",
+        "DUPLICATE",
+        "CONFLICT",
+        "BLOCKED",
+        "NEW_TASK"
+      ]
+    },
+    {
+      "id": "C",
+      "name": "Safety Prerequisites",
+      "dependsOn": [
+        "B"
+      ],
+      "items": [
+        "AF-19",
+        "AF-22/AF-30",
+        "PR-STACK"
+      ]
+    },
+    {
+      "id": "D",
+      "name": "Governed Implementation Cycle",
+      "dependsOn": [
+        "C"
+      ]
+    },
+    {
+      "id": "E",
+      "name": "Blueprint Materialization Order",
+      "dependsOn": [
+        "D"
+      ]
+    },
+    {
+      "id": "F",
+      "name": "Universal Acceptance",
+      "dependsOn": [
+        "E"
+      ],
+      "exit": "UNIVERSAL_GOVERNED_WORKFLOW_ACCEPTED"
+    }
+  ],
+  "contractMappingWorkItems": [
+    "GWC-PRE-A2-GW-01",
+    "GWC-PRE-A2-GW-02",
+    "GWC-PRE-A2-GW-03",
+    "GWC-PRE-A2-GW-04",
+    "GWC-PRE-A2-GW-05",
+    "GWC-PRE-A2-GW-06",
+    "GWC-PRE-A2-GW-07",
+    "GWC-PRE-A2-GW-08",
+    "GWC-PRE-A2-GW-09",
+    "GWC-PRE-A2-GW-10",
+    "GWC-PRE-A2-GW-11",
+    "GWC-PRE-A2-GW-12",
+    "GWC-PRE-A2-GW-13",
+    "GWC-PRE-A2-GW-14",
+    "GWC-PRE-A2-GW-15",
+    "GWC-PRE-A2-GW-16",
+    "GWC-PRE-A2-GW-17",
+    "GWC-PRE-A2-GW-18",
+    "GWC-PRE-A2-GW-19",
+    "GWC-PRE-A2-GW-20",
+    "GWC-PRE-A2-GW-21",
+    "GWC-PRE-A2-GW-22",
+    "GWC-PRE-A2-GW-23",
+    "GWC-PRE-A2-GW-24",
+    "GWC-PRE-A2-GW-25",
+    "GWC-PRE-A2-GW-26",
+    "GWC-PRE-A2-GW-27",
+    "GWC-PRE-A2-GW-28",
+    "GWC-PRE-A2-GW-29",
+    "GWC-PRE-A2-GW-30",
+    "GWC-PRE-A2-GW-31",
+    "GWC-PRE-A2-GW-32",
+    "GWC-PRE-A2-GW-33",
+    "GWC-PRE-A2-GW-34",
+    "GWC-PRE-A2-GW-35",
+    "GWC-PRE-A2-GW-36",
+    "GWC-PRE-A2-GW-37",
+    "GWC-PRE-A2-GW-38",
+    "GWC-PRE-A2-GW-39",
+    "GWC-PRE-A2-GW-40",
+    "GWC-PRE-A2-GW-41",
+    "GWC-PRE-A2-GW-42",
+    "GWC-PRE-A2-GW-43",
+    "GWC-PRE-A2-GW-44",
+    "GWC-PRE-A2-GW-45",
+    "GWC-PRE-A2-GW-46",
+    "GWC-PRE-A2-GW-47",
+    "GWC-PRE-A2-GW-48",
+    "GWC-PRE-A2-GW-49",
+    "GWC-PRE-A2-GW-50",
+    "GWC-PRE-A2-GW-51",
+    "GWC-PRE-A2-GW-52",
+    "GWC-PRE-A2-GW-53",
+    "GWC-PRE-A2-GW-54",
+    "GWC-PRE-A2-GW-55",
+    "GWC-PRE-A2-GW-56",
+    "GWC-PRE-A2-GW-57",
+    "GWC-PRE-A2-GW-58",
+    "GWC-PRE-A2-GW-59",
+    "GWC-PRE-A2-GW-60",
+    "GWC-PRE-A2-GW-61",
+    "GWC-PRE-A2-GW-62",
+    "GWC-PRE-A2-GW-63",
+    "GWC-PRE-A2-GW-64",
+    "GWC-PRE-A2-GW-65",
+    "GWC-PRE-A2-GW-66",
+    "GWC-PRE-A2-GW-67",
+    "GWC-PRE-A2-GW-68",
+    "GWC-PRE-A2-GW-69",
+    "GWC-PRE-A2-GW-70",
+    "GWC-PRE-A2-GW-71",
+    "GWC-PRE-A2-GW-72",
+    "GWC-PRE-A2-GW-73"
+  ],
+  "contractDesignWorkItems": [
+    "GWC-PRE-A3-GW-01",
+    "GWC-PRE-A3-GW-02",
+    "GWC-PRE-A3-GW-03",
+    "GWC-PRE-A3-GW-04",
+    "GWC-PRE-A3-GW-05",
+    "GWC-PRE-A3-GW-06",
+    "GWC-PRE-A3-GW-07",
+    "GWC-PRE-A3-GW-08",
+    "GWC-PRE-A3-GW-09",
+    "GWC-PRE-A3-GW-10",
+    "GWC-PRE-A3-GW-11",
+    "GWC-PRE-A3-GW-12",
+    "GWC-PRE-A3-GW-13",
+    "GWC-PRE-A3-GW-14",
+    "GWC-PRE-A3-GW-15",
+    "GWC-PRE-A3-GW-16",
+    "GWC-PRE-A3-GW-17",
+    "GWC-PRE-A3-GW-18",
+    "GWC-PRE-A3-GW-19",
+    "GWC-PRE-A3-GW-20",
+    "GWC-PRE-A3-GW-21",
+    "GWC-PRE-A3-GW-22",
+    "GWC-PRE-A3-GW-23",
+    "GWC-PRE-A3-GW-24",
+    "GWC-PRE-A3-GW-25",
+    "GWC-PRE-A3-GW-26",
+    "GWC-PRE-A3-GW-27",
+    "GWC-PRE-A3-GW-28",
+    "GWC-PRE-A3-GW-29",
+    "GWC-PRE-A3-GW-30",
+    "GWC-PRE-A3-GW-31",
+    "GWC-PRE-A3-GW-32",
+    "GWC-PRE-A3-GW-33",
+    "GWC-PRE-A3-GW-34",
+    "GWC-PRE-A3-GW-35",
+    "GWC-PRE-A3-GW-36",
+    "GWC-PRE-A3-GW-37",
+    "GWC-PRE-A3-GW-38",
+    "GWC-PRE-A3-GW-39",
+    "GWC-PRE-A3-GW-40",
+    "GWC-PRE-A3-GW-41",
+    "GWC-PRE-A3-GW-42",
+    "GWC-PRE-A3-GW-43",
+    "GWC-PRE-A3-GW-44",
+    "GWC-PRE-A3-GW-45",
+    "GWC-PRE-A3-GW-46",
+    "GWC-PRE-A3-GW-47",
+    "GWC-PRE-A3-GW-48",
+    "GWC-PRE-A3-GW-49",
+    "GWC-PRE-A3-GW-50",
+    "GWC-PRE-A3-GW-51",
+    "GWC-PRE-A3-GW-52",
+    "GWC-PRE-A3-GW-53",
+    "GWC-PRE-A3-GW-54",
+    "GWC-PRE-A3-GW-55",
+    "GWC-PRE-A3-GW-56",
+    "GWC-PRE-A3-GW-57",
+    "GWC-PRE-A3-GW-58",
+    "GWC-PRE-A3-GW-59",
+    "GWC-PRE-A3-GW-60",
+    "GWC-PRE-A3-GW-61",
+    "GWC-PRE-A3-GW-62",
+    "GWC-PRE-A3-GW-63",
+    "GWC-PRE-A3-GW-64",
+    "GWC-PRE-A3-GW-65",
+    "GWC-PRE-A3-GW-66",
+    "GWC-PRE-A3-GW-67",
+    "GWC-PRE-A3-GW-68",
+    "GWC-PRE-A3-GW-69",
+    "GWC-PRE-A3-GW-70",
+    "GWC-PRE-A3-GW-71",
+    "GWC-PRE-A3-GW-72",
+    "GWC-PRE-A3-GW-73"
+  ],
+  "blueprintDesignWorkItems": [
+    "GWC-PRE-A4-GWC-0",
+    "GWC-PRE-A4-GWC-1",
+    "GWC-PRE-A4-GWC-2",
+    "GWC-PRE-A4-GWC-3",
+    "GWC-PRE-A4-GWC-4",
+    "GWC-PRE-A4-GWC-5",
+    "GWC-PRE-A4-GWC-6",
+    "GWC-PRE-A4-GWC-7",
+    "GWC-PRE-A4-GWC-8",
+    "GWC-PRE-A4-GWC-9",
+    "GWC-PRE-A4-GWC-10",
+    "GWC-PRE-A4-GWC-11",
+    "GWC-PRE-A4-GWC-12",
+    "GWC-PRE-A4-GWC-13",
+    "GWC-PRE-A4-GWC-14",
+    "GWC-PRE-A4-GWC-15",
+    "GWC-PRE-A4-GWC-16",
+    "GWC-PRE-A4-GWC-17"
+  ],
+  "blueprintNominalOrder": [
+    "GWC-0",
+    "GWC-1",
+    "GWC-2",
+    "GWC-3",
+    [
+      "GWC-4",
+      "GWC-5",
+      [
+        "GWC-6",
+        "GWC-7"
+      ],
+      "GWC-8"
+    ],
+    "GWC-9",
+    "GWC-10",
+    "GWC-11",
+    "GWC-12",
+    "GWC-13",
+    "GWC-14",
+    "GWC-15",
+    "GWC-16",
+    "GWC-17"
+  ],
+  "runtimeTaskRule": "BLUEPRINT_NE_TASK; only NEW_TASK after live reconciliation may create GovernedTaskRecord",
+  "safetyPrerequisites": [
+    "AF-19",
+    "AF-22/AF-30",
+    "PR-STACK"
+  ],
+  "nextActionRule": "Observe current authorities, resolve exact head, start at first work item not PASS_WITH_EVIDENCE, never infer runtime/task completion from this projection."
+}
