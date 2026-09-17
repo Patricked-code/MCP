@@ -1,0 +1,24 @@
+{
+  "currentBundle": "pr95-task-reconciliation-ready",
+  "currentBundleId": "bnd_mcp-pr95-task-reconciliation-ready-20260917",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-task-reconciliation-ready",
+  "localCloneUsedForThisMemoryMission": false,
+  "previousBundles": [
+    {
+      "name": "pr95-ded",
+      "path": "docs/gwc/canonical-memory/pr95-ded",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    }
+  ],
+  "readProtocol": [
+    "Read docs/gwc/README.md first.",
+    "Resolve this pointer to the current bundle.",
+    "Verify the selected bundle with Canonical Memory Verifier before projecting claims.",
+    "Historical authority never satisfies live approval.",
+    "Re-observe GitHub live and every applicable runtime authority before mutation."
+  ],
+  "repository": "Patricked-code/MCP",
+  "schemaVersion": 1,
+  "scope": "GWC",
+  "updatedFromGitHubObservationAt": "2026-09-17T06:34:09+02:00"
+}
