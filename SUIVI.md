@@ -313,3 +313,18 @@ Date : 2026-08-29
 - Non vérifié ici : contenu exact du ruleset `protect-main`. Aucun outil ruleset dans la surface utilisée. À VÉRIFIER.
 - PR #95 reste ouverte, draft et non fusionnée : AF-19 est une faiblesse vivante de l'autodeploy `main`, et un merge déclencherait le déploiement automatique existant.
 - Aucune implémentation GWC runtime démarrée, aucune Task créée, aucun lock, aucun déploiement.
+
+## 2026-09-17 — Conception d'évolution détaillée GWC-0..GWC-17 sur la PR #95 existante
+
+- `SOURCE = GITHUB_LIVE` · `REPOSITORY = Patricked-code/MCP` · `REF = main` · `OBSERVED_SHA = d1f303955c4d368950da2307dda41d826fc85d0a` · `OBSERVED_AT = 2026-09-17T03:47Z`.
+- PR #95 réobservée live avant écriture : ouverte, draft, non fusionnée, head `715393a549e9fae09021b073a50d243007a09346`, base `main@d1f3039`. Aucune nouvelle branche, aucune nouvelle PR.
+- Clone local synchronisé sur le head live avant écriture, `DirtyCount = 0` après synchronisation. Le clone n'a servi que de tampon d'écriture.
+- **CI rouge traitée en premier.** Le job `validate` échouait à l'étape `docs:check` avec `markdown_inventory_drift` puis `markdown_count_drift` (declared 211, actual 214) : trois sources du bundle `docs/gwc/canonical-memory/pr95-ded/` avaient été ajoutées sans réalignement de l'inventaire. Corrigé avec `scripts/generate-doc-governance-baseline.mjs`, diff réduit aux 3 entrées manquantes et aux deux compteurs.
+- 18 fiches de conception détaillée écrites, `GWC-0` à `GWC-17`, chacune couvrant l'existant sur trois plans, l'écart exact, la classification d'intégration, la décision `REUSE → WRAP → GENERALIZE → EXTEND → NEW`, les impacts, le plan TDD et la clôture.
+- 13 registres transverses, matrice centrale des 73 contrats générée depuis `.mcp/gwc-contracts.json`, et 4 audits globaux.
+- Trois findings découverts et enregistrés : `AF-31` deux fichiers de tests exécutés dans aucune étape CI ; `AF-32` trois outils `operational-write` ne traversant aucune porte d'écriture ; `AF-33` deux affectations de findings du registre machine sans définition versionnée cohérente.
+- `OD-07` réduit sur preuve : l'option `workflow_run` pour `AF-19` est éliminée parce que la politique OIDC gelée n'autorise que `push` et `workflow_dispatch` et exige `tokenSha === requestedSha`. Trois options compatibles restent ouvertes.
+- `.mcp/gwc-evolution-design.json` ajouté ; `scripts/gwc-verify.mjs` étendu par `verifyEvolutionDesign()`, prouvé mordant sur 13 défauts distincts injectés un par un.
+- Verdict : `DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION`, avec trois réserves énoncées — sept contrats dépendent de capacités non fusionnées, les définitions `AF-01` à `AF-27` ne sont versionnées que dans l'archive non canonique, et la Governed Task Queue runtime n'est pas observable depuis cette mission.
+- Non vérifié ici : contenu exact du ruleset `protect-main`, et état de la Governed Task Queue runtime. À VÉRIFIER.
+- Aucune implémentation runtime, aucune Task créée ou claimée, aucun lock, aucun merge, aucun déploiement, aucune mutation serveur, aucun secret. PR #95 reste ouverte, draft et non fusionnée.

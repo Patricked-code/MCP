@@ -4,6 +4,24 @@
 Journal des decisions structurantes du MCP.
 
 
+## 2026-09-17 — Conception d'évolution détaillée : décisions de conception
+
+Décision : la conception d'évolution détaillée vit dans `docs/gwc/BLUEPRINTS.md`, aux côtés des blueprints qu'elle détaille, et non dans un document séparé. Motif : une seconde surface de conception aurait créé exactement la dispersion que `MCP_ANTI_DISPERSION_GOVERNANCE.md` interdit, et aurait forcé un agent à décider lequel des deux documents fait foi.
+
+Décision : `AF-19` ne sera pas corrigé par un déclencheur `workflow_run`. Motif prouvé : `GITHUB_OIDC_POLICY` est gelée avec `allowedEvents = ['push', 'workflow_dispatch']`, et `validateClaims()` exige `tokenSha === requestedSha`. Un run déclenché par `workflow_run` échouerait deux fois — `oidc_event_not_allowed` puis `oidc_sha_mismatch` — et l'adopter exigerait d'élargir les événements admis et de relâcher la liaison au SHA, c'est-à-dire de démonter la protection même que `AF-19` vise à renforcer. Cette option avait été recommandée dans une analyse antérieure sur un argument de simplicité apparente ; la lecture intégrale de `src/deploy/githubOidc.ts` l'invalide.
+
+Décision : `OD-07` reste ouverte avec trois options compatibles — étape `gate` existante, point d'admission serveur, dépendance de job — dont aucune ne modifie la politique OIDC. Motif : le choix engage les permissions du workflow de déploiement et les responsabilités de l'autorité de déploiement ; il relève d'une décision gouvernée, pas d'une déduction de conception.
+
+Décision : `AF-22` et `AF-30` se corrigent en recopiant une forme qui existe déjà. `GithubOperationalContext.checks` porte `headSha` et `exactHead` ; `reviews`, déclaré dix lignes plus bas dans le même type, n'en porte aucun. La correction est donc une réutilisation de motif existant, pas une conception nouvelle.
+
+Décision : l'acquisition atomique multi-verrous est placée **dans** `lockService.ts`, jamais à côté. Motif : c'est la seule nouveauté réelle de concurrence du programme, et l'implémenter ailleurs créerait un second système de verrouillage.
+
+Décision : aucune définition de finding n'est inventée pour réconcilier un écart. Les affectations `AF-07` et `AF-08` du registre machine ne correspondent pas aux seules définitions versionnées, qui vivent dans l'archive non canonique. L'écart est enregistré sous `AF-33` et rattaché à `GWC-0` plutôt que résolu par hypothèse.
+
+Décision : la propagation multi-repository est strictement additive et optionnelle. Une session, une tâche, un verrou ou un reçu écrit avant cette évolution doit rester valide, lisible et reprenable sans étape de migration. Un enregistrement sans `TargetScope` signifie la cible unique actuelle, jamais « tous les composants ».
+
+Décision : le verdict est `DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION`, assorti de trois réserves énoncées explicitement. Motif : la couche de conception est complète et vérifiable par machine, et ce qui reste ouvert relève de décisions et de dispositions rattachées à un propriétaire, non de preuves manquantes. Les réserves sont écrites dans le verdict lui-même pour qu'il ne soit pas lu comme « tout est tranché ».
+
 ## 2026-09-16 — R3 : corps canonique, blueprints et frontière Task Queue / Execution Engine
 
 Décision : le corps canonique de l'architecture ne contient que l'architecture retenue courante. Motif : un agent qui récupère un fragment du document ne doit jamais lire une conclusion invalidée et la croire actuelle. Les affirmations remplacées vivent dans `docs/gwc/DEPRECATED_CLAIMS.md`, l'histoire dans `docs/gwc/REVISION_HISTORY.md`, et un corps entièrement remplacé sous `docs/gwc/archive/` avec bannière non canonique.

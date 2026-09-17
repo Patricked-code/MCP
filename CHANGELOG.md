@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## 2026-09-17 — Conception d'évolution détaillée GWC-0..GWC-17 et correction de la CI
+
+- Correctif CI : le job `validate` échouait à `docs:check` (`markdown_inventory_drift`, `markdown_count_drift`, declared 211 / actual 214). `docs/governance/markdown-inventory.json` réaligné sur les 3 sources de `docs/gwc/canonical-memory/pr95-ded/`, régénéré avec `scripts/generate-doc-governance-baseline.mjs` : 211 → 214 Markdown suivis, `categories.documentation` 61 → 64.
+- `docs/gwc/BLUEPRINTS.md` : ajout des 18 fiches de conception détaillée `GWC-0`…`GWC-17`, de 13 registres transverses, de la matrice centrale des 73 contrats, du traitement des 12 décisions ouvertes, du registre des 33 findings, des 4 audits globaux et du verdict terminal.
+- Ajout de `.mcp/gwc-evolution-design.json` : projection machine de la conception, 18 fiches, 73 contrats rattachés, 33 findings, 12 décisions ouvertes, `runtimeTasksCreated: 0`, `promotedToTaskQueue: false`.
+- `scripts/gwc-verify.mjs` : ajout de `verifyEvolutionDesign()` — 18 fiches sans doublon ni manquant, couverture et réciprocité des contrats, classifications bornées, aucun `NEW` sans primitive justifiée, aucune primitive déclarée par deux blueprints, findings rattachés et réciproques, `AF-19`/`AF-22`/`AF-30` chez leur propriétaire, `OD-01` à `OD-12` présentes, 13 registres et 4 audits déclarés, verdict borné.
+- Findings ajoutés : `AF-31` (deux fichiers de tests exécutés dans aucune étape CI), `AF-32` (trois outils `operational-write` hors porte d'écriture), `AF-33` (affectations de findings sans définition versionnée cohérente).
+- `docs/gwc/REVISION_HISTORY.md` : révision `R3-DED`. `docs/gwc/README.md` : contenu, état et contrôles du vérificateur mis à jour.
+- Aucun comportement runtime modifié, aucun outil MCP ajouté, aucune Task créée, aucun lock, aucun merge, aucun déploiement.
+
 ## 2026-09-16 — Réconciliation R3 du dossier GWC : corps canonique et blueprints
 
 - `docs/gwc/ARCHITECTURE_73_CONTRACTS.md` devient le **corps canonique** : les 73 Contract Design Sheets au modèle A→BA, baseline `GWC_73_CONTRACT_DESIGN_SHEETS_CANONICAL_R1`. Il ne contient plus aucune affirmation historique.

@@ -25,6 +25,8 @@ GitHub live.
 | Implémentation runtime démarrée | `NO` |
 | Tâches runtime créées | `0` |
 | Blueprints promus en Task Queue | `NO` |
+| Conception d'évolution détaillée | `GWC-0`…`GWC-17`, 18 sur 18 |
+| Verdict de conception | `DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION` |
 
 ## Contenu
 
@@ -39,6 +41,8 @@ GitHub live.
 | `.mcp/gwc-contracts.json` | projection machine des 73 contrats | agent |
 | `.mcp/gwc-workflow-graph.json` | graphe d'exécution canonique | agent |
 | `.mcp/gwc-blueprints.json` | registre machine des 18 blueprints | agent |
+| `.mcp/gwc-evolution-design.json` | projection machine de la conception d'évolution détaillée | agent |
+| `docs/gwc/canonical-memory/pr95-ded/` | sources et bundle de mémoire de la mission de conception | traçabilité |
 | `scripts/gwc-verify.mjs` | vérificateur déterministe | humain et agent |
 
 ## Frontière d'autorité — à ne pas confondre
@@ -145,6 +149,14 @@ calculée hors runtime soit identique à celle calculée par le runtime.
   chaque contrat couvert par exactement un blueprint, propriété architecturale des findings,
   aucune portée globale sans `globalScopeJustification`.
 - **Non-promotion** — aucun blueprint présent dans `.mcp/task-registry.json`.
+- **Conception d'évolution détaillée** — 18 fiches, une par blueprint, sans doublon ni manquant ;
+  chaque contrat porté par exactement une fiche et réciproque avec `contractRefs` ; aucune
+  classification d'intégration inconnue ; aucun `NEW` sans primitive déclarée et justifiée ;
+  aucune primitive nouvelle déclarée par deux blueprints ; les 33 findings rattachés à un
+  propriétaire connu et réciproque ; `AF-19`, `AF-22` et `AF-30` chez leur propriétaire attendu ;
+  `OD-01` à `OD-12` toutes présentes avec propriétaire et état connus ; 13 registres transverses
+  et 4 audits globaux déclarés ; verdict de conception dans l'ensemble autorisé ; aucune promotion
+  et aucune tâche runtime.
 
 Ce contrôle est exécuté par la CI au head exact, via l'étape `GWC dossier check` du job
 `validate` de `.github/workflows/mcp-ci.yml`.

@@ -21,6 +21,7 @@ const ROOT = process.cwd();
 const CONTRACTS_PATH = path.join(ROOT, '.mcp', 'gwc-contracts.json');
 const GRAPH_PATH = path.join(ROOT, '.mcp', 'gwc-workflow-graph.json');
 const BLUEPRINTS_PATH = path.join(ROOT, '.mcp', 'gwc-blueprints.json');
+const EVOLUTION_DESIGN_PATH = path.join(ROOT, '.mcp', 'gwc-evolution-design.json');
 const TASK_REGISTRY_PATH = path.join(ROOT, '.mcp', 'task-registry.json');
 
 const STEP_ID = /^GW-(0[1-9]|[1-6][0-9]|7[0-3])$/;
@@ -29,6 +30,28 @@ const DIGEST = /^[0-9a-f]{64}$/;
 const FAMILIES = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
 const EDGE_KINDS = ['FORWARD', 'BACKWARD', 'SKIP'];
 const ARCHITECTURE_STATUSES = ['CONCEPTUALLY_APPROVED', 'READY_FOR_GOVERNED_IMPLEMENTATION'];
+const FINDING_ID = /^AF-(0[1-9]|[1-2][0-9]|3[0-3])$/;
+const DESIGN_VERDICTS = [
+  'DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION',
+  'DETAILED_EVOLUTION_DESIGN_PARTIALLY_READY'
+];
+const DESIGN_STATUSES = [
+  'DETAILED_DESIGN_COMPLETE',
+  'DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS'
+];
+const DESIGN_CLASSIFICATIONS = [
+  'REUSE',
+  'REUSE/WRAP',
+  'REUSE/EXTEND',
+  'REUSE/GENERALIZE',
+  'GENERALIZE',
+  'GENERALIZE/EXTEND',
+  'DISPOSITION',
+  'NEW_ORCHESTRATION_ONLY',
+  'NEW'
+];
+const DEFINITION_SOURCES = ['CURRENT_MAIN_EVIDENCE', 'ARCHIVE_R2_NON_CANONICAL'];
+const DECISION_STATES = ['OPEN', 'NARROWED', 'OPEN_NARROWED', 'RESOLVED'];
 const EXECUTION_SEMANTICS = [
   'EVALUATE_ONLY', 'EVALUATE_ONLY / COMPOSED', 'OBSERVE_AND_EVALUATE',
   'EVALUATE_THEN_MUTATE', 'MUTATE_THEN_VERIFY', 'COMPOSED_SUBCONTRACT'
@@ -377,6 +400,139 @@ export function verifyCrossReferences(contracts, blueprints) {
   return errors;
 }
 
+export function verifyEvolutionDesign(design, contracts, blueprints) {
+  const errors = [];
+  check(errors, design?.schemaVersion === 1, 'evolution-design.schemaVersion doit valoir 1');
+  check(errors, design?.promotedToTaskQueue === false,
+    'evolution-design.promotedToTaskQueue doit valoir false : aucune promotion automatique');
+  check(errors, design?.runtimeTasksCreated === 0,
+    'evolution-design.runtimeTasksCreated doit valoir 0');
+  check(errors, DESIGN_VERDICTS.includes(design?.verdict),
+    `evolution-design.verdict invalide : ${design?.verdict}`);
+  check(errors, Array.isArray(design?.entries), 'evolution-design.entries doit être un tableau');
+  if (!Array.isArray(design?.entries)) return errors;
+
+  // Dix-huit fiches, une par blueprint, sans doublon ni manquant.
+  check(errors, design.entries.length === 18,
+    `18 fiches de conception attendues, ${design.entries.length} trouvées`);
+  const seen = new Set();
+  for (const entry of design.entries) {
+    const id = entry?.blueprintId;
+    check(errors, BLUEPRINT_ID.test(String(id)), `fiche : blueprintId invalide ${id}`);
+    check(errors, !seen.has(id), `fiche : blueprintId dupliqué ${id}`);
+    seen.add(id);
+    check(errors, DESIGN_STATUSES.includes(entry?.status),
+      `${id} : statut de conception inconnu ${entry?.status}`);
+    check(errors, DESIGN_CLASSIFICATIONS.includes(entry?.integrationClassification),
+      `${id} : classification d'intégration inconnue ${entry?.integrationClassification}`);
+    check(errors, typeof entry?.designSection === 'string' && entry.designSection.length > 0,
+      `${id} : designSection manquante`);
+
+    // Aucun NEW inexpliqué : toute primitive nouvelle porte sa justification.
+    const declaresNew = String(entry?.integrationClassification ?? '').includes('NEW');
+    const primitives = Array.isArray(entry?.newPrimitives) ? entry.newPrimitives : [];
+    check(errors, Array.isArray(entry?.newPrimitives), `${id} : newPrimitives doit être un tableau`);
+    check(errors, !declaresNew || primitives.length > 0,
+      `${id} : classification NEW sans primitive nouvelle déclarée`);
+    for (const primitive of primitives) {
+      check(errors, typeof primitive?.name === 'string' && primitive.name.length > 0,
+        `${id} : primitive nouvelle sans nom`);
+      check(errors, typeof primitive?.justification === 'string' && primitive.justification.length > 0,
+        `${id} : primitive nouvelle ${primitive?.name} sans justification`);
+    }
+  }
+  for (let index = 0; index <= 17; index += 1) {
+    check(errors, seen.has(`GWC-${index}`), `fiche de conception manquante : GWC-${index}`);
+  }
+
+  // Aucune autorité dupliquée : deux blueprints ne déclarent pas la même primitive.
+  const primitiveOwner = new Map();
+  for (const entry of design.entries) {
+    for (const primitive of entry?.newPrimitives ?? []) {
+      const name = primitive?.name;
+      check(errors, !primitiveOwner.has(name),
+        `primitive nouvelle dupliquée : ${name} déclarée par ${primitiveOwner.get(name)} et ${entry.blueprintId}`);
+      primitiveOwner.set(name, entry.blueprintId);
+    }
+  }
+
+  // Couverture des contrats : chaque GW est porté par exactement une fiche.
+  const known = new Set((contracts?.contracts ?? []).map((contract) => contract.stepId));
+  const covered = new Map();
+  for (const entry of design.entries) {
+    for (const ref of entry?.contractsCovered ?? []) {
+      check(errors, known.has(ref), `${entry.blueprintId} : contrat inconnu ${ref}`);
+      check(errors, !covered.has(ref),
+        `${ref} porté par deux fiches : ${covered.get(ref)} et ${entry.blueprintId}`);
+      covered.set(ref, entry.blueprintId);
+    }
+  }
+  for (const id of known) {
+    check(errors, covered.has(id), `contrat sans fiche de conception : ${id}`);
+  }
+
+  // Réciprocité avec le registre des blueprints.
+  const byBlueprint = new Map((blueprints?.blueprints ?? [])
+    .map((blueprint) => [blueprint.blueprintId, blueprint]));
+  for (const entry of design.entries) {
+    const blueprint = byBlueprint.get(entry.blueprintId);
+    check(errors, Boolean(blueprint),
+      `${entry.blueprintId} : absent du registre des blueprints`);
+    if (!blueprint) continue;
+    const expected = [...(blueprint.contractRefs ?? [])].sort();
+    const actual = [...(entry.contractsCovered ?? [])].sort();
+    check(errors, expected.length === actual.length && expected.every((v, i) => v === actual[i]),
+      `${entry.blueprintId} : contractsCovered diverge de contractRefs du registre`);
+  }
+
+  // Tout finding a un propriétaire connu, et ce propriétaire le déclare.
+  check(errors, Array.isArray(design?.findings), 'evolution-design.findings doit être un tableau');
+  const ownedByEntry = new Map();
+  for (const entry of design.entries) {
+    for (const finding of entry?.findingsOwned ?? []) ownedByEntry.set(finding, entry.blueprintId);
+  }
+  for (const record of design?.findings ?? []) {
+    check(errors, FINDING_ID.test(String(record?.finding)),
+      `finding invalide : ${record?.finding}`);
+    check(errors, seen.has(record?.owner),
+      `${record?.finding} : propriétaire inconnu ${record?.owner}`);
+    check(errors, DEFINITION_SOURCES.includes(record?.definitionSource),
+      `${record?.finding} : definitionSource inconnue ${record?.definitionSource}`);
+    check(errors, ownedByEntry.get(record?.finding) === record?.owner,
+      `${record?.finding} : propriété non réciproque avec ${record?.owner}`);
+  }
+
+  // Les findings de sûreté gardent leur propriétaire, comme dans le registre blueprints.
+  const findingOwner = (finding) => (design?.findings ?? [])
+    .find((record) => record.finding === finding)?.owner ?? null;
+  check(errors, findingOwner('AF-19') === 'GWC-15', 'AF-19 doit être porté par GWC-15');
+  check(errors, findingOwner('AF-22') === 'GWC-14', 'AF-22 doit être porté par GWC-14');
+  check(errors, findingOwner('AF-30') === 'GWC-14', 'AF-30 doit être porté par GWC-14');
+
+  // OD-01 à OD-12 toutes présentes, chacune avec un propriétaire et un état connus.
+  check(errors, Array.isArray(design?.openDecisions),
+    'evolution-design.openDecisions doit être un tableau');
+  const decisions = new Set((design?.openDecisions ?? []).map((decision) => decision?.id));
+  for (let index = 1; index <= 12; index += 1) {
+    const id = `OD-${String(index).padStart(2, '0')}`;
+    check(errors, decisions.has(id), `décision ouverte manquante : ${id}`);
+  }
+  for (const decision of design?.openDecisions ?? []) {
+    check(errors, DECISION_STATES.includes(decision?.state),
+      `${decision?.id} : état inconnu ${decision?.state}`);
+    check(errors, seen.has(decision?.owner),
+      `${decision?.id} : propriétaire inconnu ${decision?.owner}`);
+  }
+
+  // Les treize registres transverses et les quatre audits globaux sont déclarés.
+  check(errors, (design?.transverseRegistries ?? []).length === 13,
+    `13 registres transverses attendus, ${(design?.transverseRegistries ?? []).length} déclarés`);
+  check(errors, (design?.globalAudits ?? []).length === 4,
+    `4 audits globaux attendus, ${(design?.globalAudits ?? []).length} déclarés`);
+
+  return errors;
+}
+
 async function readJson(file, fallback = null) {
   try {
     return JSON.parse(await readFile(file, 'utf8'));
@@ -391,6 +547,7 @@ async function main() {
   const contracts = await readJson(CONTRACTS_PATH);
   const graph = await readJson(GRAPH_PATH);
   const blueprints = await readJson(BLUEPRINTS_PATH);
+  const design = await readJson(EVOLUTION_DESIGN_PATH);
   const taskRegistry = await readJson(TASK_REGISTRY_PATH, { tasks: [] });
 
   if (write) {
@@ -408,7 +565,8 @@ async function main() {
     ...verifyGraph(graph, contracts),
     ...verifyGraphProjection(contracts, graph),
     ...verifyBlueprints(blueprints, contracts, taskRegistry),
-    ...verifyCrossReferences(contracts, blueprints)
+    ...verifyCrossReferences(contracts, blueprints),
+    ...verifyEvolutionDesign(design, contracts, blueprints)
   ];
 
   if (errors.length > 0) {
@@ -426,6 +584,10 @@ async function main() {
     `${graph.outOfRuntimeGraph.length} hors graphe runtime (${graph.outOfRuntimeGraph.map((entry) => entry.stepId).join(', ') || 'aucun'})`,
     `${graph.edges.length} arêtes (${graph.edges.filter((edge) => edge.kind === 'BACKWARD').length} à rebours)`,
     `${blueprints.blueprints.length} blueprints`,
+    `${design.entries.length} fiches de conception détaillée`,
+    `${design.findings.length} findings tous rattachés`,
+    `${design.openDecisions.length} décisions ouvertes`,
+    `verdict ${design.verdict}`,
     `${blueprints.runtimeTasksCreated} tâche runtime`
   ].join(', ') + '.');
 }

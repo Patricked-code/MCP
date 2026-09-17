@@ -97,3 +97,41 @@ Voir `DEPRECATED_CLAIMS.md` DC-12, DC-13 et DC-14.
 La priorité d'implémentation est volontairement plus précoce que la position du blueprint
 propriétaire dans le graphe. Cela ne crée pas d'architecture parallèle : la propriété
 architecturale reste inchangée.
+
+## R3-DED — conception d'évolution détaillée
+
+Extension de `R3` sur la même branche et la même PR. Le corps canonique des 73 contrats n'est pas
+touché : cette révision ajoute la couche de conception d'évolution, qui décrit **comment** chaque
+blueprint s'intègre au système existant, sans rien implémenter.
+
+| Livrable | Contenu |
+| --- | --- |
+| Fiches de conception détaillée | 18, une par blueprint, dans `docs/gwc/BLUEPRINTS.md` |
+| Registres transverses | `R1` autorité · `R2` contrats de données · `R3` codes de raison · `R4` preuves · `R5` attestations · `R6` mutations · `R7` verrous · `R8` rejeu et reprise · `R9` sécurité · `R10` transitions et graphe · `R11` réutilisation de primitives · `R12` généralisation · `R13` migration |
+| Matrice centrale | 73 contrats, projection exacte de `.mcp/gwc-contracts.json` |
+| Audits globaux | `A1` interface · `A2` autorité · `A3` mutation et concurrence · `A4` graphe et universalité |
+| Projection machine | `.mcp/gwc-evolution-design.json` |
+| Vérificateur | `verifyEvolutionDesign()` ajouté à `scripts/gwc-verify.mjs` |
+
+### Findings découverts par cette révision
+
+| Finding | Défaut | Propriétaire |
+| --- | --- | --- |
+| `AF-31` | deux fichiers de tests référencés par aucun script `package.json`, donc exécutés dans aucune étape CI | `GWC-13` |
+| `AF-32` | trois outils enregistrés sur la surface `operational-write` ne traversent aucune porte d'écriture, pas même en mode shadow | `GWC-9` |
+| `AF-33` | deux affectations de findings du registre machine ne se résolvent pas vers une définition versionnée cohérente | `GWC-0` |
+
+### Correction d'une préférence antérieure
+
+L'analyse `AF19_LIVE_RESUME` recommandait le déclencheur `workflow_run` pour lier le déploiement à
+la CI du même SHA. La lecture intégrale de `src/deploy/githubOidc.ts` invalide cette préférence :
+`allowedEvents` ne contient que `push` et `workflow_dispatch`, et la revendication `sha` du jeton
+d'un run déclenché par `workflow_run` ne serait pas le SHA déployé. L'option est éliminée sur
+preuve, et trois options compatibles avec la politique OIDC restent ouvertes sous `OD-07`.
+
+### Verdict
+
+`DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION`, avec trois réserves explicitement
+énoncées : sept contrats dépendent de capacités non fusionnées, les définitions `AF-01` à `AF-27` ne
+sont versionnées que dans l'archive non canonique, et l'état de la Governed Task Queue runtime n'est
+pas observable depuis cette mission.
