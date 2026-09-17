@@ -20,7 +20,6 @@ Règles transversales :
 - documenter toute action importante dans SUIVI.md, CHANGELOG.md et DECISIONS_LOG.md ;
 - conserver la logique parent/enfant : racine MCP globale, puis docs/projects/<projet>/ pour chaque projet intégré.
 
-
 ## 3. Fonctionnement attendu
 
 Ce fichier doit être utilisé comme une pièce de mémoire opérationnelle. Il doit informer, contraindre, guider et tracer. Il ne doit pas être vide et ne doit pas servir de simple placeholder.
@@ -134,22 +133,29 @@ L’agent ne s’arrête que pour un blocker gouverné réel non résoluble depu
 
 Une fin de sous-tâche, un test vert, un commit ou un changement de phase ne sont pas des raisons d’attendre une nouvelle instruction utilisateur lorsque la prochaine action est déductible.
 
-### 9.6 Coordination multi-agent sur une branche GWC partagée
+### 9.6 Coordination multi-agent — programme GWC/PRECODE PR #95 uniquement
 
-Lorsque plusieurs agents (par exemple Claude et ChatGPT) interviennent sur la même branche, ils doivent appliquer `docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md`.
+Pour le programme d’évolution GWC/PRECODE porté par la PR #95 et la branche en ligne `claude/ecstatic-edison-v1dyt1`, appliquer obligatoirement `docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md`.
 
 Règles minimales obligatoires :
 
-- Claude est le writer PRECODE principal par défaut ; ChatGPT est reviewer/verifier indépendant par défaut ;
-- un second agent ne devient writer que sur un scope borné, dependency-satisfied et réellement disjoint ;
-- un seul writer par collision domain mutable ;
-- relecture du head exact immédiatement avant chaque écriture ;
-- si `HEAD_MOVED`, aucune écriture préparée sur l’ancien head n’est publiée avant réobservation et réconciliation ;
+- Claude, ChatGPT et les autres agents autorisés sont des exécutants pairs pour ce programme ; aucun agent n’est propriétaire permanent du chantier ;
+- l’ownership est temporaire, borné au `workItemId` / collision domain / session active ;
+- ChatGPT peut écrire lorsqu’un élément PRECODE attendu est absent, incomplet, stale ou à corriger, si le scope est libre et dependency-satisfied ; Claude peut faire exactement de même ;
+- tout agent qui revient après le travail d’un autre doit lire et comprendre les sessions, commits, diffs, preuves, findings, checkpoints et handoffs intervenus avant toute nouvelle écriture ;
+- chaque session est identifiée par un `GWC-PRE-SESSION-*` durable et, si disponible, son `providerSessionRef` ;
+- chaque action s’inscrit dans la hiérarchie `PROGRAM → PHASE → WORK ITEM → SESSION → ACTION → EVIDENCE → HANDOFF` ;
+- un seul writer par collision domain mutable ; plusieurs reviewers/readers sont permis ;
+- le head exact de la branche GitHub en ligne doit être relu immédiatement avant toute écriture ;
+- si `HEAD_MOVED`, arrêter l’écriture, lire le travail intervenu, le comprendre, réconcilier puis seulement reprendre ;
 - aucun force-push, reset ou écrasement de travail concurrent ;
-- tout scope mutable doit laisser une trace durable avec agent, work item, paths, starting head et NEXT_ACTION ;
-- les PRECODE scope claims ne sont jamais des `TASK-*`, Governed Tasks ou runtime locks ;
-- les fichiers canoniques partagés sont séquentiels par défaut ; le parallélisme n’est permis que pour des scopes/paths/autorités sans collision démontrée.
+- chaque session laisse `SESSION_START`, checkpoints significatifs, `SESSION_HANDOFF` si transfert et `SESSION_END` quand elle se termine normalement ;
+- tout checkpoint/handoff porte les preuves, head exact, statut, findings, dépendances et `NEXT_ACTION` ;
+- les PRECODE scope/session traces ne sont jamais des `TASK-*`, Governed Tasks, runtime locks ou nouvelles autorités ;
+- toutes les écritures durables de ce programme ciblent la branche GitHub en ligne `claude/ecstatic-edison-v1dyt1` ; aucune branche de développement parallèle n’est créée ; un workspace local éventuel est seulement une surface d’exécution éphémère synchronisée sur le head en ligne et ne constitue jamais une autorité ;
+- le runtime reste gelé jusqu’à `GWC-PRE-GATE-01 = PASS_WITH_EVIDENCE`.
 
+Dans ce périmètre précis, toute ancienne règle attribuant Claude comme writer principal permanent ou ChatGPT comme reviewer-only est remplacée par l’ownership temporaire par scope/session décrit ci-dessus.
 
 ---
 
@@ -201,4 +207,4 @@ Règles permanentes :
 - DirtyCount à zéro avant pull, merge, deploy, migration ou nettoyage ;
 - non-régression obligatoire.
 
-Mise à jour : 2026-09-17T08:30:00+02:00
+Mise à jour : 2026-09-17T08:40:00+02:00
