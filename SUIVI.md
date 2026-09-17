@@ -328,3 +328,20 @@ Date : 2026-08-29
 - Verdict : `DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION`, avec trois réserves énoncées — sept contrats dépendent de capacités non fusionnées, les définitions `AF-01` à `AF-27` ne sont versionnées que dans l'archive non canonique, et la Governed Task Queue runtime n'est pas observable depuis cette mission.
 - Non vérifié ici : contenu exact du ruleset `protect-main`, et état de la Governed Task Queue runtime. À VÉRIFIER.
 - Aucune implémentation runtime, aucune Task créée ou claimée, aucun lock, aucun merge, aucun déploiement, aucune mutation serveur, aucun secret. PR #95 reste ouverte, draft et non fusionnée.
+
+## 2026-09-17 — Exécution du flux pré-code GWC : P0 → A14, gate BLOQUÉ
+
+- `SOURCE = GITHUB_LIVE` · `REPOSITORY = Patricked-code/MCP` · `REF = main` · `MAIN_SHA = d1f303955c4d368950da2307dda41d826fc85d0a` · `PR95_HEAD = 58d71959488a012564f5fc6bf53fc64a038cadd9` · `OBSERVED_AT = 2026-09-17T13:23:01Z`.
+- Session d'architecture `GWC-PRE-SESSION-20260917-CLAUDE-58d71959`, agent Claude. Head relu avant écriture, pas de `HEAD_MOVED`, `DirtyCount = 0`.
+- **`GWC-PRE-000`** — autorités observées. GitHub : PR #95 `OPEN/DRAFT/NOT_MERGED`, `mergeable_state = clean`, MCP CI run 1000 `SUCCESS` sur le head exact, 0 review, 0 thread. **Rulesets `UNKNOWN`** : aucun outil ruleset dans la surface GitHub disponible. **Autorités runtime `UNKNOWN`** : Operational Memory, Governed Task Queue, Governed Sessions, Lock Service, Bootstrap Receipt, Live State, Capability Reality et Task Reality ne sont pas atteignables depuis cette session — le serveur MCP WealthTech n'est pas dans la surface d'outils. Aucune substitution par de la mémoire historique.
+- **Écart de procédure relevé** : le « Canonical Memory Verifier » prescrit par `CLAUDE.md §8` et par `current.json` n'existe pas dans le dépôt. La vérification équivalente a été exécutée à la main : bundle `pr95-precode-architecture-complete`, 3/3 sources conformes en `sha256` et en taille, 13 claims tous `approval_eligible = false`.
+- **`GWC-PRE-001`** — baseline établie. Digest `PRECODE_ACTION_TASK_FLOW.txt` == projection == gate. Une seule dérive, attendue et auto-déclarée : `observedHeadBeforeMemoryProjection = 73359454` contre head courant `58d71959`.
+- **Phases `PASS_WITH_EVIDENCE` (10/14)** : `A1` inventaire, `A2` 73/73 mappings, `A3` 73/73 fiches canoniques (ancres résolues), `A4` 18/18 fiches DED, `A6` autorités et contrats de données, `A9` fail-closed et sécurité, `A10` compatibilité ascendante, `A12` séquence gelée, `A13` audit croisé, plus `P0`.
+- **Phases bloquées (4)** : `A5` — 0/91 arêtes portent `trigger`/`precondition` alors que `A5-01` l'exige ; `A7` — aucun modèle `EvidenceRef` ni `StepAttestation` typé ; `A8` — classes de rejeu `PURE`/`READ_ONLY`/`IDEMPOTENT_MUTATION`/`NON_REPLAYABLE_MUTATION` non nommées et `RecoveryAnchor` non défini ; `A11` — 15/19 scénarios nommés couverts, manquent `governance missing`, `duplicate task`, `deploy failure`, `concurrent agents`. `A14` dépend des quatre.
+- **`AF-19`, `AF-31` et `AF-32` confirmés** sur preuve exacte du head courant, pas réaffirmés depuis la mémoire.
+- **`AF-34` ouvert** : `.mcp/gwc-precode-gate.json` déclare `architecturePhases.satisfied = 14`, la vérification en donne 10. `scripts/gwc-precode-verify.mjs` passe malgré tout, parce qu'il contrôle les compteurs déclarés du gate et les tailles des registres, jamais les conditions de sortie des phases. Propriétaire `GWC-0`.
+- **Verdict du gate** : `GWC_ARCHITECTURE_GATE_BLOCKED` · `GWC_RUNTIME_IMPLEMENTATION = BLOCKED`. Aucun code runtime GWC ne peut démarrer.
+- Statut par phase consigné dans `.mcp/gwc-precode-status.json`, projection non autoritative : ni Operational Memory, ni Governed Task Queue, ni lock runtime.
+- Non vérifié ici : contenu exact du ruleset `protect-main`, et état de la Governed Task Queue runtime. À VÉRIFIER.
+- Aucune Task créée ou claimée, aucun lock, aucun merge, aucun déploiement, aucune mutation serveur, aucun code runtime, aucun secret.
+- `NEXT_ACTION` : lever les blocages `A5-01`, `A7-01`, `A7-02`, `A8-03`, `A8-04` et `A11-01` par conception, puis réévaluer `A14` et le gate.

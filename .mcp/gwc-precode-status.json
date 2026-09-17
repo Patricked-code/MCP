@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "revision": "R3-PRECODE-STATUS",
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "note": "Projection de statut d'exécution du flux pré-code. Non autoritative. Ce n'est ni Operational Memory, ni la Governed Task Queue, ni un lock runtime. Les identifiants GWC-PRE-* sont des work items d'architecture, jamais des TASK-*.",
+  "projectionOnly": true,
+  "runtimeAuthority": false,
+  "governedTaskQueueAuthority": false,
+  "runtimeTasksCreated": 0,
+  "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+  "sessionId": "GWC-PRE-SESSION-20260917-CLAUDE-58d71959",
+  "agent": "Claude",
+  "observedHeadSha": "58d71959488a012564f5fc6bf53fc64a038cadd9",
+  "baseMainSha": "d1f303955c4d368950da2307dda41d826fc85d0a",
+  "observedAt": "2026-09-17T13:23:01Z",
+  "phases": [
+    {
+      "id": "P0",
+      "exit": "GWC_EXACT_BASELINE_ESTABLISHED",
+      "status": "PASS_WITH_EVIDENCE",
+      "evidence": [
+        "GWC-PRE-000: main=d1f30395, PR #95 head=58d71959, OPEN/DRAFT/NOT_MERGED, mergeable_state=clean, MCP CI run 1000 SUCCESS sur ce head exact, 0 review, 0 review thread",
+        "GWC-PRE-000: rulesets NON OBSERVABLES — aucun outil ruleset dans la surface GitHub disponible; enregistre UNKNOWN, non substitue",
+        "GWC-PRE-000: autorites runtime (Operational Memory, Governed Task Queue, Governed Sessions, Lock Service, Bootstrap Receipt, Live State, Capability Reality, Task Reality) NON ATTEIGNABLES depuis cette session — le serveur MCP WealthTech n'est pas dans la surface d'outils; enregistre UNKNOWN, non substitue",
+        "GWC-PRE-000: bundle canonique pr95-precode-architecture-complete verifie — 3/3 sources sha256 et tailles conformes, 13 claims tous approval_eligible=false",
+        "GWC-PRE-001: digest PRECODE_ACTION_TASK_FLOW.txt == projection == gate (PASS)",
+        "GWC-PRE-001: 73 contrats, 91 aretes, entry GW-01, runtimeTerminal GW-72, GW-73 hors runtime, 18 blueprints, 18 fiches DED, 33 findings, 12 decisions ouvertes"
+      ],
+      "drift": [
+        "bundle.sources/github-live.json observedHeadBeforeMemoryProjection=73359454 vs head courant 58d71959 — derive attendue et auto-declaree par le bundle, non contradictoire"
+      ]
+    },
+    {
+      "id": "A1",
+      "exit": "EXISTING_SYSTEM_INVENTORY_COMPLETE",
+      "status": "PASS_WITH_EVIDENCE",
+      "evidence": [
+        "A1-01: 71 modules TypeScript sous src/, 10 domaines (config, currentState, deploy, github, governance, governedContext, liveState, operationalMemory, ssh, tools)",
+        "A1-02..A1-05: registres R1 autorite, R2 contrats de donnees, R6 mutations, R10 graphe dans docs/gwc/BLUEPRINTS.md",
+        "A1-06: AF-19 CONFIRME — .github/workflows/mcp-deploy.yml ne contient aucune reference a la CI, aux checks ni a une dependance de job; l'etape gate decide depuis GITHUB_EVENT_NAME et pushEnabled seulement",
+        "A1-06: AF-31 CONFIRME — 57 fichiers tests/*.test.ts, 55 references par un script package.json, 2 non references (githubRegistryEvidence, githubRepositoryResolution)",
+        "A1-06: AF-32 CONFIRME — cartographie 111 outils = 68 read + 40 scoped-write + 3 operational-write; seuls les 40 traversent decorateScopedWriteServer",
+        "A1-07: R11 reutilisation, R12 generalisation, R13 migration dans docs/gwc/BLUEPRINTS.md; docs:check 215 Markdown inventaire exact"
+      ]
+    },
+    { "id": "A2", "exit": "73_CONTRACTS_EXISTING_MAPPING_COMPLETE", "status": "PASS_WITH_EVIDENCE",
+      "evidence": ["73/73 contrats portent currentMapping non vide, integrationClassification et un work item GWC-PRE-A2-GW-xx dans le flux"] },
+    { "id": "A3", "exit": "73_CONTRACT_DESIGNS_COMPLETE", "status": "PASS_WITH_EVIDENCE",
+      "evidence": ["73/73 canonicalSheetRef resolus en ancres reelles de docs/gwc/ARCHITECTURE_73_CONTRACTS.md (algorithme d'ancre GitHub), et 73/73 work items GWC-PRE-A3-GW-xx presents"] },
+    { "id": "A4", "exit": "18_DETAILED_EVOLUTION_DESIGNS_COMPLETE", "status": "PASS_WITH_EVIDENCE",
+      "evidence": ["18/18 sections '### GWC-n — ... — Detailed Evolution Design' presentes dans BLUEPRINTS.md, 18/18 entrees dans .mcp/gwc-evolution-design.json, 18/18 work items GWC-PRE-A4-GWC-n"] },
+    {
+      "id": "A5", "exit": "WORKFLOW_GRAPH_VERIFIED", "status": "BLOCKED",
+      "evidence": [
+        "A5-02 PASS: GW-01 entree, 72/72 contrats runtime atteignables, GW-72 terminal, GW-73 hors graphe runtime declare",
+        "A5-03 partiel: 0 orphelin, 0 cul-de-sac verifies par gwc-verify; 5 aretes BACKWARD (GW-13->GW-12, GW-16->GW-03, GW-37->GW-30, GW-37->GW-31, GW-65->GW-56)"
+      ],
+      "blockers": [
+        "A5-01 ECHEC: les aretes ne portent que from/to/kind/declaredBy. 0/91 portent trigger ou precondition, alors que A5-01 les exige explicitement."
+      ]
+    },
+    { "id": "A6", "exit": "AUTHORITY_AND_DATA_MODEL_VERIFIED", "status": "PASS_WITH_EVIDENCE",
+      "evidence": ["A6-01 registre R1 (17 autorites, owner/owns/consommateurs)", "A6-02 registre R2 (15 contrats de donnees, etat/proprietaire/regle de compatibilite)", "A6-03 audit global A2 — aucune seconde autorite creee, un contournement prefixistant recense (AF-32)"] },
+    {
+      "id": "A7", "exit": "EVIDENCE_ATTESTATION_MODEL_VERIFIED", "status": "BLOCKED",
+      "evidence": ["A7-03 partiel: les regles de fraicheur/liaison existent en prose (R4 preuves, R8 rejeu, AF-19/AF-22/AF-30)"],
+      "blockers": [
+        "A7-01 ECHEC: aucun modele EvidenceRef type (authority/type/reference/observedAt/freshness/digest/binding) n'existe dans le dossier",
+        "A7-02 ECHEC: aucun modele StepAttestation type (stepId, digests d'entree/sortie, statut, autorites, reason codes, fraicheur, liaisons session/task/repository/project) n'existe; AF-29 documente deja l'incompletude de l'attestation de deploiement"
+      ]
+    },
+    {
+      "id": "A8", "exit": "CONCURRENCY_REPLAY_MODEL_VERIFIED", "status": "BLOCKED",
+      "evidence": ["A8-01 PASS: domaines de collision minimaux, registre R7", "A8-02 partiel: protocole de lock existant (TTL, renouvellement, ownership, liberation, expiration) documente; acquisition atomique multi-locks reste OD-05 OUVERTE"],
+      "blockers": [
+        "A8-03 ECHEC: les quatre classes de rejeu PURE / READ_ONLY / IDEMPOTENT_MUTATION / NON_REPLAYABLE_MUTATION ne sont nommees nulle part dans le dossier",
+        "A8-04 ECHEC: RecoveryAnchor n'est cite que comme type futur explicitement inexistant; aucun modele defini, aucun point de reprise ni traitement d'invocation dupliquee specifie"
+      ]
+    },
+    { "id": "A9", "exit": "FAILURE_RECOVERY_SECURITY_VERIFIED", "status": "PASS_WITH_EVIDENCE",
+      "evidence": ["A9-01: les 9 statuts fail-closed (UNKNOWN, NONE, AMBIGUOUS, UNVERIFIED, BLOCKED, CONFLICT, STALE, OUT_OF_SCOPE, REJECTED) sont tous presents dans le corpus", "A9-02: chaque fiche DED porte une rubrique FAILURE/RECOVERY", "A9-03: registre R9 securite + audit global A3 mutation/concurrence"] },
+    { "id": "A10", "exit": "BACKWARD_COMPATIBILITY_VERIFIED", "status": "PASS_WITH_EVIDENCE",
+      "evidence": ["A10-01/02: registre R12 generalisation — 10 litteraux mono-cible avec emplacement, cible d'elargissement et validite de la valeur courante", "A10-03: registre R13 migration — regle additive optionnelle, aucun enregistrement historique reecrit"] },
+    {
+      "id": "A11", "exit": "GW73_ACCEPTANCE_DESIGN_COMPLETE", "status": "BLOCKED",
+      "evidence": ["21 scenarios E2E-01..E2E-21 declares dans PRECODE_EXECUTION_PLAN.txt", "A11-02 PASS: fiche DED GWC-17 exige l'absence de branchement specifique MCP/Stablecoin/AfricaFunds et une assertion anti-hardcode"],
+      "blockers": [
+        "A11-01 ECHEC: 15/19 scenarios nommes par le flux sont couverts. Manquants: governance missing, duplicate task, deploy failure, concurrent agents."
+      ]
+    },
+    { "id": "A12", "exit": "IMPLEMENTATION_SEQUENCE_FROZEN", "status": "PASS_WITH_EVIDENCE",
+      "evidence": ["A12-01: DAG de dependances et portees de ressource dans .mcp/gwc-blueprints.json, verifie sans dependance inconnue ni circularite directe", "A12-02: ordre nominal GWC-0 -> GWC-1 -> GWC-2 -> GWC-3 -> {GWC-4..GWC-8} -> GWC-9 -> ... -> GWC-17 dans blueprintNominalOrder"] },
+    { "id": "A13", "exit": "GWC_ARCHITECTURE_CROSS_AUDIT_PASS", "status": "PASS_WITH_EVIDENCE",
+      "evidence": ["4 audits globaux A1 interface, A2 autorite, A3 mutation/concurrence, A4 graphe/universalite dans docs/gwc/BLUEPRINTS.md, chacun enoncant ce qui a ete cherche et trouve"] },
+    { "id": "A14", "exit": "GWC_ARCHITECTURE_CANONICAL", "status": "BLOCKED",
+      "blockers": ["Depend de A5, A7, A8 et A11 qui ne sont pas PASS_WITH_EVIDENCE sur le head exact courant"] },
+    {
+      "id": "PRECODE_GATE", "exit": "GWC_ARCHITECTURE_GATE_PASS", "status": "BLOCKED",
+      "blockers": [
+        "14/14 phases PASS_WITH_EVIDENCE : NON — 10/14 seulement (A5, A7, A8, A11 bloquees, A14 dependante)",
+        "73/73 Contract Designs : OUI",
+        "18/18 Evolution Designs : OUI",
+        "13/13 registres transverses : OUI",
+        "4/4 audits globaux : OUI",
+        "Workflow Graph VERIFIED : NON (A5-01)",
+        "Canonical Memory CURRENT : OUI (bundle verifie)",
+        "SUIVI / DECISIONS alignes : OUI"
+      ],
+      "consequence": "GWC_RUNTIME_IMPLEMENTATION = BLOCKED. Aucun code runtime GWC ne peut demarrer."
+    }
+  ],
+  "gateVerdict": "GWC_ARCHITECTURE_GATE_BLOCKED",
+  "phasesPassWithEvidence": 10,
+  "phasesRequired": 14,
+  "findingsRaised": ["AF-34"]
+}

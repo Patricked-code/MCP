@@ -21,7 +21,8 @@
         "AF-20",
         "AF-21",
         "AF-28",
-        "AF-33"
+        "AF-33",
+        "AF-34"
       ],
       "openDecisions": [
         "OD-09"
@@ -645,6 +646,12 @@
     },
     {
       "finding": "AF-33",
+      "owner": "GWC-0",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": false
+    },
+    {
+      "finding": "AF-34",
       "owner": "GWC-0",
       "definitionSource": "CURRENT_MAIN_EVIDENCE",
       "corrected": false
