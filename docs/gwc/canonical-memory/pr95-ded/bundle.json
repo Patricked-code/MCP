@@ -1,0 +1,63 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-ded-20260917",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_github_live",
+      "path": "sources/github-live.json",
+      "media_type": "application/json",
+      "bytes": 769,
+      "sha256": "418c9133b02acb48e7a8587202459cb6c6f373a415559dd6f31d2b2c1f4faeb2"
+    },
+    {
+      "source_id": "src_ded_checkpoint",
+      "path": "sources/ded-checkpoint.md",
+      "media_type": "text/markdown",
+      "bytes": 1075,
+      "sha256": "cd02a60e2b69b7313e6f3a505d5952ed83ea78042de210801d8b24beb3374c4c"
+    },
+    {
+      "source_id": "src_mission_directive",
+      "path": "sources/mission-directive.md",
+      "media_type": "text/markdown",
+      "bytes": 1158,
+      "sha256": "589822af4e6b7fc6776f72dc74110cfa26d70a13f3187d7e9eb9c144f4ef3b6b"
+    },
+    {
+      "source_id": "src_historical_baseline",
+      "path": "sources/historical-baseline.md",
+      "media_type": "text/markdown",
+      "bytes": 390,
+      "sha256": "c467e1331c93553f874d3b00b018c46ef47a1a7554511fc8ba081af17cd4551b"
+    }
+  ],
+  "claims": [
+    {"claim_id":"clm_repo_main_sha_current","key":"repo.main_sha","claim_type":"fact","value":"d1f303955c4d368950da2307dda41d826fc85d0a","source_refs":["src_github_live"],"approval_eligible":false},
+    {"claim_id":"clm_pr95_head_baseline","key":"pr95.head_sha","claim_type":"fact","value":"7505a3c3c627909be336f1387eacfd23409c0e3b","source_refs":["src_historical_baseline"],"approval_eligible":false},
+    {"claim_id":"clm_pr95_head_current","key":"pr95.head_sha","claim_type":"fact","value":"75bc728813e1c19f6e17cb953067ddcd196496f4","source_refs":["src_github_live"],"approval_eligible":false},
+    {"claim_id":"clm_pr95_state","key":"pr95.state","claim_type":"fact","value":"OPEN_DRAFT_NOT_MERGED","source_refs":["src_github_live"],"approval_eligible":false},
+    {"claim_id":"clm_pr95_branch","key":"pr95.branch","claim_type":"fact","value":"claude/ecstatic-edison-v1dyt1","source_refs":["src_github_live"],"approval_eligible":false},
+    {"claim_id":"clm_pr95_validate","key":"pr95.validate_check","claim_type":"fact","value":"SUCCESS@75bc728813e1c19f6e17cb953067ddcd196496f4","source_refs":["src_github_live"],"approval_eligible":false},
+    {"claim_id":"clm_phase_current","key":"mission.phase","claim_type":"historical_authority","value":"DETAILED_EVOLUTION_DESIGN_GWC-0_THROUGH_GWC-17","source_refs":["src_mission_directive"],"approval_eligible":false},
+    {"claim_id":"clm_ded_completed","key":"ded.completed_blueprints","claim_type":"fact","value":"GWC-0,GWC-1,GWC-2,GWC-3","source_refs":["src_ded_checkpoint"],"approval_eligible":false},
+    {"claim_id":"clm_ded_in_progress","key":"ded.in_progress_blueprint","claim_type":"fact","value":"GWC-4","source_refs":["src_ded_checkpoint"],"approval_eligible":false},
+    {"claim_id":"clm_ded_not_started","key":"ded.not_started_blueprints","claim_type":"fact","value":"GWC-5..GWC-17","source_refs":["src_ded_checkpoint"],"approval_eligible":false},
+    {"claim_id":"clm_ded_open_decisions","key":"ded.open_decisions","claim_type":"fact","value":"OD-01..OD-12","source_refs":["src_ded_checkpoint"],"approval_eligible":false},
+    {"claim_id":"clm_ded_findings","key":"ded.open_findings","claim_type":"fact","value":"AF-01..AF-30; AF-19 owner=GWC-15; AF-22/AF-30 owner=GWC-14","source_refs":["src_ded_checkpoint"],"approval_eligible":false},
+    {"claim_id":"clm_ded_matrix","key":"ded.contract_matrix_status","claim_type":"fact","value":"NOT_STARTED","source_refs":["src_ded_checkpoint"],"approval_eligible":false},
+    {"claim_id":"clm_ded_audits","key":"ded.global_audits_status","claim_type":"fact","value":"NOT_STARTED","source_refs":["src_ded_checkpoint"],"approval_eligible":false},
+    {"claim_id":"clm_runtime_impl","key":"runtime.gwc_implementation","claim_type":"fact","value":"NOT_STARTED","source_refs":["src_ded_checkpoint","src_mission_directive"],"approval_eligible":false},
+    {"claim_id":"clm_runtime_tasks","key":"runtime.gwc_tasks_created","claim_type":"fact","value":"0","source_refs":["src_ded_checkpoint"],"approval_eligible":false},
+    {"claim_id":"clm_task_seed","key":"runtime.task_seed_promoted","claim_type":"fact","value":"NO","source_refs":["src_ded_checkpoint"],"approval_eligible":false},
+    {"claim_id":"clm_decision_order","key":"design.decision_order","claim_type":"historical_authority","value":"REUSE>WRAP>GENERALIZE>EXTEND>NEW","source_refs":["src_mission_directive"],"approval_eligible":false},
+    {"claim_id":"clm_task_materialization","key":"task.materialization_rule","claim_type":"historical_authority","value":"REQUIRES_LIVE_TASK_QUEUE_RECONCILIATION_BEFORE_NEW_TASK","source_refs":["src_mission_directive"],"approval_eligible":false},
+    {"claim_id":"clm_next_action_old","key":"workflow.next_legitimate_action","claim_type":"historical_authority","value":"AF-19_RED","source_refs":["src_historical_baseline"],"approval_eligible":false},
+    {"claim_id":"clm_next_action_current","key":"workflow.next_legitimate_action","claim_type":"historical_authority","value":"COMPLETE_DETAILED_EVOLUTION_DESIGN_GWC-0_THROUGH_GWC-17","source_refs":["src_mission_directive","src_ded_checkpoint"],"approval_eligible":false}
+  ],
+  "supersessions": [
+    {"edge_id":"sup_pr95_head_live","superseded_claim_id":"clm_pr95_head_baseline","superseding_claim_id":"clm_pr95_head_current","reason":"A later GitHub live observation supersedes the entry baseline SHA."},
+    {"edge_id":"sup_next_action_addendum","superseded_claim_id":"clm_next_action_old","superseding_claim_id":"clm_next_action_current","reason":"Normative addendum 0 BIS / 0 TER suspends AF-19 RED during Detailed Evolution Design."}
+  ]
+}
