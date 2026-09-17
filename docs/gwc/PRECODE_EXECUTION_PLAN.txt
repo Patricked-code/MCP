@@ -158,7 +158,7 @@ GW-72 SESSION_CLOSE_AND_QUEUE_RECONCILE | authority Session + Task Queue | MUTAT
 GW-73 UNIVERSAL_ACCEPTANCE | authority tests-only acceptance harness/fixtures | READ/DERIVE/REPORT | run full contract/graph architecture against non-MCP/multi-repo fixtures and negative paths; no real server/task/deploy mutation and no target hardcode.
 
 ============================================================
-21 E2E SCENARIOS
+22 E2E SCENARIOS
 ============================================================
 E2E-01 New governed change happy path — all authorities resolve, NEW_TASK valid, TDD/review/merge/deploy/docs terminal evidence succeeds -> GW-72 closes session/queue; GW-73 remains separate acceptance.
 E2E-02 Continuation — equivalent compatible active work exists -> GW-14 resolves continuation, GW-15 creates no duplicate, resume existing task/session.
@@ -181,6 +181,7 @@ E2E-18 Documentation drift — functional runtime correct but docs stale -> GW-5
 E2E-19 Receipt stale — stateVersion/runtime changed after issue -> GW-54 detects, GW-55 refreshes before dependent mutation.
 E2E-20 Conversation/transport interruption — reconnect -> resolve current Session/Task/checkpoint/receipt from authorities; never replay last chat mutation.
 E2E-21 Multi-repository universal acceptance — independent component SHAs/non-MCP target fixture -> pass only if target resolves/generalizes without MCP/Stablecoin hardcode.
+E2E-22 Review finding raised — GW-35/GW-37 surface a blocking finding on the exact head -> PR cannot reach GW-38 PR_READY until every finding is resolved or explicitly dispositioned with evidence; resolution on a superseded head is invalid and returns to GW-41 revalidation.
 
 ============================================================
 PRE-CODE GATE

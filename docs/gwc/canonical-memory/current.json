@@ -1,17 +1,23 @@
 {
-  "currentBundle": "pr95-precode-architecture-complete",
-  "currentBundleId": "bnd_mcp-pr95-precode-architecture-complete-20260917",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-precode-architecture-complete",
+  "currentBundle": "pr95-precode-gate",
+  "currentBundleId": "bnd_mcp-pr95-precode-gate-20260917",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-precode-gate",
   "preCodeActionFlow": {
     "document": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "machineProjection": ".mcp/gwc-precode-action-flow.json",
     "relation": "execution_companion_of_PRECODE_EXECUTION_PLAN",
     "runtimeAuthority": false,
     "taskQueueAuthority": false,
-    "requiredBeforeRuntimeCode": true
+    "requiredBeforeRuntimeCode": true,
+    "statusProjection": ".mcp/gwc-precode-status.json"
   },
   "localCloneUsedForThisMemoryMission": false,
   "previousBundles": [
+    {
+      "name": "pr95-precode-architecture-complete",
+      "path": "docs/gwc/canonical-memory/pr95-precode-architecture-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
     {
       "name": "pr95-task-reconciliation-ready",
       "path": "docs/gwc/canonical-memory/pr95-task-reconciliation-ready",
@@ -35,5 +41,5 @@
   "repository": "Patricked-code/MCP",
   "schemaVersion": 1,
   "scope": "GWC",
-  "updatedFromGitHubObservationAt": "2026-09-17T07:40:00+02:00"
+  "updatedFromGitHubObservationAt": "2026-09-17T13:23:01Z"
 }

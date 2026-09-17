@@ -2255,6 +2255,97 @@ add a literal repository, server, domain or container identifier to a governed p
 Single most important rule of the programme: a stored session, task, lock or receipt written before
 this evolution must remain valid, readable and resumable with no migration step.
 
+## Detailed Evolution Design — modèles de preuve, d'attestation et de reprise
+
+Ces quatre modèles sont exigés par les phases `A7` et `A8` du flux pré-code. Ils manquaient au
+dossier : la conception les nommait sans les spécifier. Ils sont typés ici, au niveau conception,
+sans aucune implémentation runtime.
+
+### M1 — `EvidenceRef` (exigé par `A7-01`)
+
+Une preuve n'est utilisable que si l'on sait **qui** l'a produite, **quand**, et **à quoi** elle est liée.
+
+| Champ | Type | Règle |
+| --- | --- | --- |
+| `authority` | identifiant d'autorité de `R1` | obligatoire ; jamais un document, jamais un agent |
+| `kind` | `OBSERVATION` · `DERIVATION` · `ATTESTATION` · `DECLARATION` | `DECLARATION` ne peut jamais satisfaire seule une précondition de mutation |
+| `reference` | référence relisible — SHA, run id, chemin + ancre, id d'enregistrement | doit être re-lisible depuis l'autorité citée, pas depuis une copie |
+| `observedAt` | horodatage UTC | obligatoire |
+| `freshness` | `CURRENT` · `STALE` · `EXPIRED` · `UNKNOWN` | `UNKNOWN` se comporte comme `STALE` |
+| `digest` | sha256 du contenu observé, ou `null` | `null` uniquement si l'autorité n'expose aucun contenu digestible |
+| `binding` | `{ repository?, project?, component?, branch?, headSha?, sessionId?, taskId? }` | toute liaison connue doit être portée ; une liaison absente ne vaut pas liaison satisfaite |
+
+Invariants. Une `EvidenceRef` sans `authority` ou sans `observedAt` est invalide. Une preuve `STALE`,
+`EXPIRED` ou `UNKNOWN` ne peut autoriser aucune mutation. Une preuve dont le `binding.headSha` diffère
+du head courant est `STALE` par construction — c'est la forme générale d'`AF-19`, d'`AF-22` et
+d'`AF-30`.
+
+### M2 — `StepAttestation` (exigé par `A7-02`)
+
+Ce qu'un pas de workflow laisse derrière lui. Complète `AF-29`, qui constatait l'incomplétude de
+l'attestation de déploiement existante.
+
+| Champ | Type | Règle |
+| --- | --- | --- |
+| `attestationId` | identifiant unique | obligatoire — son absence est précisément `AF-29` |
+| `stepId` | `GW-01`…`GW-73` | doit exister au registre des contrats |
+| `contractVersion` · `graphVersion` | entiers | l'attestation est liée à la version de conception qui l'a produite |
+| `inputDigest` · `outputDigest` | sha256 ou `null` | `null` admis pour un pas sans entrée ou sans sortie digestible |
+| `status` | `PASS` · `FAIL` · `BLOCKED` · `CONFLICT` · `SKIPPED` · `WAIT_EXTERNAL` | énumération fermée |
+| `authorities` | `EvidenceRef[]` | au moins une pour tout pas non `PURE` |
+| `reasonCodes` | codes bornés de `R3` | jamais de texte libre |
+| `freshness` | reprise de la preuve la moins fraîche citée | une attestation n'est jamais plus fraîche que sa preuve la plus périmée |
+| `binding` | identique à `EvidenceRef.binding` | une attestation portant une liaison autre que celle du pas est rejetée |
+| `endedAt` | horodatage UTC | obligatoire |
+
+Invariants. Une attestation n'est pas une autorisation : elle enregistre ce qui a été prouvé, jamais
+ce qui est permis. Une attestation historique n'est jamais réinterprétée sous une version de contrat
+plus récente. `SKIPPED` exige un motif de saut déclaré au graphe (`M5`).
+
+### M3 — classes de rejeu (exigé par `A8-03`)
+
+Tout contrat porte exactement une classe.
+
+| Classe | Définition | Règle de rejeu |
+| --- | --- | --- |
+| `PURE` | transformation déterministe, aucune lecture d'autorité | rejouable sans condition |
+| `READ_ONLY` | observe une autorité, ne mute rien | rejouable, mais la fraîcheur doit être ré-établie |
+| `IDEMPOTENT_MUTATION` | mute, et un second passage sur le même état converge vers le même résultat | rejouable seulement après réobservation de la postcondition |
+| `NON_REPLAYABLE_MUTATION` | mute de façon non convergente — merge, déploiement, création de Task, acquisition de lock | **jamais rejouée** ; une reprise passe obligatoirement par `M4` |
+
+Invariant. Aucune mutation n'est rejouée sur la seule foi du journal d'événements. Le déploiement
+exact-SHA et le merge exact-head sont `NON_REPLAYABLE_MUTATION` par construction.
+
+### M4 — `RecoveryAnchor` (exigé par `A8-04`)
+
+Le point depuis lequel une reprise est légitime après interruption.
+
+| Champ | Type | Règle |
+| --- | --- | --- |
+| `anchorId` | identifiant unique | obligatoire |
+| `stepId` | dernier pas dont la postcondition a été **observée**, pas seulement tentée | jamais le pas en cours |
+| `observedPostcondition` | `EvidenceRef` | obligatoire — une ancre sans preuve de postcondition est invalide |
+| `binding` | identique à `M1` | une ancre ne traverse ni session, ni tâche, ni cible |
+| `replayClassOfNextStep` | valeur de `M3` | détermine si la reprise peut ré-exécuter ou doit réobserver |
+| `duplicateInvocationRule` | `REOBSERVE_THEN_DECIDE` | une invocation dupliquée n'est jamais présumée sans effet |
+
+Invariants. Reprendre consiste à réobserver depuis l'ancre, jamais à rejouer depuis un journal. Une
+ancre dont le `binding.headSha` ne correspond plus impose `STOP → REOBSERVE → RECONCILE`. Devant une
+invocation potentiellement dupliquée d'une `NON_REPLAYABLE_MUTATION`, la seule issue admise est de
+réobserver l'autorité pour savoir si la mutation a eu lieu — jamais de la retenter.
+
+### M5 — précondition d'arête (exigé par `A5-01`)
+
+Chaque arête du graphe porte une précondition typée, projetée dans `.mcp/gwc-workflow-graph.json`.
+
+| Champ | Type | Règle |
+| --- | --- | --- |
+| `trigger` | `POSTCONDITION_PASS` · `POSTCONDITION_FAIL` · `SKIP_CONDITION` · `REOBSERVE_REQUIRED` | énumération fermée |
+| `precondition` | expression lisible portant sur le statut du pas source | obligatoire, jamais vide |
+
+Invariant. Aucune transition implicite : une arête sans `trigger` ni `precondition` est refusée par
+`scripts/gwc-verify.mjs`.
+
 ---
 
 ## Detailed Evolution Design — matrice centrale des 73 contrats
@@ -2435,7 +2526,15 @@ l'exécution du flux pré-code. Aucun n'existait dans un document antérieur.
 
 `AF-34` est la démonstration que la règle absolue du flux tient : « une affirmation documentaire
 `COMPLETE` ne suffit pas par elle-même ». Le gate se déclarait complet ; la vérification contre le head
-exact le réfute. Tant que `AF-34` n'est pas résolu, `GWC_RUNTIME_IMPLEMENTATION = BLOCKED`.
+exact l'a réfuté.
+
+**`AF-34` est corrigé**, sur ses deux faces. L'instance : les six conditions de sortie manquantes
+(`A5-01`, `A7-01`, `A7-02`, `A8-03`, `A8-04`, `A11-01`) ont été comblées par conception, et les 14
+phases sont désormais `PASS_WITH_EVIDENCE` avec références de preuve relisibles. La cause : le
+vérificateur pre-code ne contrôlait que les compteurs déclarés du gate ; il recoupe maintenant ces
+compteurs contre `.mcp/gwc-precode-status.json`, refuse un `PASS_WITH_EVIDENCE` sans preuve, refuse un
+verdict de gate qui contredit le décompte des phases, et exige le head exact observé. Un gate ne peut
+donc plus se déclarer complet sans l'être.
 
 ### Findings hérités de l'archive R2
 
@@ -2479,7 +2578,7 @@ deux directions de routage, 91 arêtes, 72 contrats runtime tous atteignables de
 | dont définition restée `ARCHIVE_R2_NON_CANONICAL` | 26 |
 | Découverts par la conception d'évolution | 3 — `AF-31`, `AF-32`, `AF-33` |
 | Découverts par l'exécution du flux pré-code | 1 — `AF-34` |
-| Corrigés à ce jour | 1 — `AF-28` |
+| Corrigés à ce jour | 2 — `AF-28` (graphe), `AF-34` (gate déclaratif) |
 | Sans propriétaire architectural | 0 |
 
 Chaque finding a un blueprint propriétaire. Aucun n'est orphelin.

@@ -39,8 +39,8 @@
     "satisfied": 4
   },
   "e2eScenarios": {
-    "required": 21,
-    "satisfied": 21
+    "required": 22,
+    "satisfied": 22
   },
   "runtimeImplementation": "NOT_STARTED",
   "taskQueueMaterialization": "NOT_STARTED_REQUIRES_LIVE_RECONCILIATION",

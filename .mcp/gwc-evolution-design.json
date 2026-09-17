@@ -654,7 +654,7 @@
       "finding": "AF-34",
       "owner": "GWC-0",
       "definitionSource": "CURRENT_MAIN_EVIDENCE",
-      "corrected": false
+      "corrected": true
     }
   ],
   "openDecisions": [

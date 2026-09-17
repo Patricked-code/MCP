@@ -11,6 +11,7 @@ const PLAN = path.join(ROOT, 'docs', 'gwc', 'PRECODE_EXECUTION_PLAN.txt');
 const ACTION_FLOW = path.join(ROOT, 'docs', 'gwc', 'PRECODE_ACTION_TASK_FLOW.txt');
 const ACTION_FLOW_PROJECTION = path.join(ROOT, '.mcp', 'gwc-precode-action-flow.json');
 const GATE = path.join(ROOT, '.mcp', 'gwc-precode-gate.json');
+const STATUS = path.join(ROOT, '.mcp', 'gwc-precode-status.json');
 const CONTRACTS = path.join(ROOT, '.mcp', 'gwc-contracts.json');
 const BLUEPRINTS = path.join(ROOT, '.mcp', 'gwc-blueprints.json');
 const DESIGN = path.join(ROOT, '.mcp', 'gwc-evolution-design.json');
@@ -27,11 +28,12 @@ async function json(file) {
   return JSON.parse(await readFile(file, 'utf8'));
 }
 
-const [plan, actionFlow, actionProjection, gate, contracts, blueprints, design] = await Promise.all([
+const [plan, actionFlow, actionProjection, gate, status, contracts, blueprints, design] = await Promise.all([
   readFile(PLAN, 'utf8'),
   readFile(ACTION_FLOW, 'utf8'),
   json(ACTION_FLOW_PROJECTION),
   json(GATE),
+  json(STATUS),
   json(CONTRACTS),
   json(BLUEPRINTS),
   json(DESIGN)
@@ -52,7 +54,7 @@ fail(errors, gate.blueprintMaterializationRule.includes('ONLY_NEW_TASK'),
 for (const [field, required] of [
   ['architecturePhases', 14], ['contractDesignSheets', 73], ['contractExecutionProcedures', 73],
   ['evolutionDesigns', 18], ['blueprintExecutionProcedures', 18], ['transverseRegistries', 13],
-  ['globalAudits', 4], ['e2eScenarios', 21]
+  ['globalAudits', 4], ['e2eScenarios', 22]
 ]) {
   fail(errors, gate?.[field]?.required === required, `${field}.required doit valoir ${required}`);
   fail(errors, gate?.[field]?.satisfied === required, `${field}.satisfied doit valoir ${required}`);
@@ -73,7 +75,7 @@ fail(errors, (design.globalAudits ?? []).length === 4,
 fail(errors, plan.includes('14 ARCHITECTURE PHASES — CLOSURE MATRIX'), 'section 14 phases absente');
 fail(errors, plan.includes('18 BLUEPRINT EXECUTION PROCEDURES'), 'section 18 blueprints absente');
 fail(errors, plan.includes('73 CONTRACT EXECUTION PROCEDURES'), 'section 73 contrats absente');
-fail(errors, plan.includes('21 E2E SCENARIOS'), 'section E2E absente');
+fail(errors, plan.includes('22 E2E SCENARIOS'), 'section E2E absente');
 fail(errors, plan.includes('PRE-CODE GATE'), 'section PRE-CODE GATE absente');
 
 for (let i = 1; i <= 14; i += 1) {
@@ -91,7 +93,7 @@ for (let i = 0; i <= 17; i += 1) {
   fail(errors, line.test(plan), `procédure blueprint manquante : GWC-${i}`);
 }
 
-for (let i = 1; i <= 21; i += 1) {
+for (let i = 1; i <= 22; i += 1) {
   const line = new RegExp(`^E2E-${String(i).padStart(2, '0')} `, 'm');
   fail(errors, line.test(plan), `scénario E2E manquant : E2E-${String(i).padStart(2, '0')}`);
 }
@@ -187,10 +189,46 @@ fail(errors, actionFlow.includes('Never assume 1 blueprint = 1 task'),
 fail(errors, actionFlow.includes('NO GWC RUNTIME CODE MAY START'),
   'le gate absolu avant code runtime manque dans le flux d actions');
 
+// AF-34 : le gate se declarait complet sans que ses conditions de sortie soient
+// verifiees. La declaration est desormais recoupee contre la projection de statut,
+// qui porte une preuve par phase.
+const ARCHITECTURE_PHASES = ['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14'];
+fail(errors, status?.schemaVersion === 1, 'precode-status.schemaVersion doit valoir 1');
+fail(errors, status?.projectionOnly === true && status?.runtimeAuthority === false,
+  'precode-status doit rester une projection non autoritative');
+fail(errors, status?.governedTaskQueueAuthority === false,
+  'precode-status ne doit jamais devenir la Governed Task Queue');
+fail(errors, status?.runtimeTasksCreated === 0, 'precode-status ne doit creer aucune Task runtime');
+fail(errors, /^[0-9a-f]{40}$/.test(String(status?.observedHeadSha)),
+  'precode-status doit porter le head exact observe');
+
+const byPhase = new Map((status?.phases ?? []).map((phase) => [phase.id, phase]));
+let satisfied = 0;
+for (const id of ARCHITECTURE_PHASES) {
+  const phase = byPhase.get(id);
+  fail(errors, Boolean(phase), `phase d architecture absente de la projection de statut : ${id}`);
+  if (!phase) continue;
+  if (phase.status === 'PASS_WITH_EVIDENCE') {
+    satisfied += 1;
+    fail(errors, Array.isArray(phase.evidence) && phase.evidence.length > 0,
+      `${id} : PASS_WITH_EVIDENCE sans reference de preuve relisible`);
+  }
+}
+fail(errors, gate?.architecturePhases?.satisfied === satisfied,
+  `gate.architecturePhases.satisfied=${gate?.architecturePhases?.satisfied} contredit la projection de statut (${satisfied} phases PASS_WITH_EVIDENCE)`);
+
+const gateEntry = byPhase.get('PRECODE_GATE');
+fail(errors, Boolean(gateEntry), 'la projection de statut doit porter une entree PRECODE_GATE');
+if (gateEntry) {
+  const gatePass = gateEntry.status === 'PASS_WITH_EVIDENCE';
+  fail(errors, gatePass === (satisfied === ARCHITECTURE_PHASES.length),
+    'le verdict PRECODE_GATE contredit le nombre de phases PASS_WITH_EVIDENCE');
+}
+
 if (errors.length > 0) {
   console.error('GWC PRE-CODE VERIFY: FAIL');
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
 
-console.log('GWC PRE-CODE VERIFY: PASS | phases=14 | contractDesigns=73 | contractProcedures=73 | actionMappings=73 | actionContractClosures=73 | actionBlueprintClosures=18 | evolutionDesigns=18 | blueprintProcedures=18 | registries=13 | audits=4 | e2e=21 | runtime=NOT_STARTED');
+console.log('GWC PRE-CODE VERIFY: PASS | phases=14 | contractDesigns=73 | contractProcedures=73 | actionMappings=73 | actionContractClosures=73 | actionBlueprintClosures=18 | evolutionDesigns=18 | blueprintProcedures=18 | registries=13 | audits=4 | e2e=22 | runtime=NOT_STARTED');

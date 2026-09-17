@@ -345,3 +345,21 @@ Date : 2026-08-29
 - Non vérifié ici : contenu exact du ruleset `protect-main`, et état de la Governed Task Queue runtime. À VÉRIFIER.
 - Aucune Task créée ou claimée, aucun lock, aucun merge, aucun déploiement, aucune mutation serveur, aucun code runtime, aucun secret.
 - `NEXT_ACTION` : lever les blocages `A5-01`, `A7-01`, `A7-02`, `A8-03`, `A8-04` et `A11-01` par conception, puis réévaluer `A14` et le gate.
+
+## 2026-09-17 — Flux pré-code : blocages levés, `GWC_ARCHITECTURE_GATE = PASS`
+
+- Suite de la session d'architecture `GWC-PRE-SESSION-20260917-CLAUDE-58d71959`. Head relu avant chaque écriture, aucun `HEAD_MOVED`.
+- **Quatre phases débloquées par conception**, sans une ligne de code runtime :
+  - `A5-01` — les 91 arêtes du graphe portent désormais un `trigger` typé et une `precondition` explicite : 70 `POSTCONDITION_PASS`, 16 `SKIP_CONDITION` motivées une par une, 4 `REOBSERVE_REQUIRED`, 1 `POSTCONDITION_FAIL`. Aucune transition implicite.
+  - `A7-01` / `A7-02` — modèles `M1 EvidenceRef` et `M2 StepAttestation` spécifiés. `M2` porte l'`attestationId` dont l'absence constituait `AF-29`.
+  - `A8-03` / `A8-04` — modèle `M3` nommant les quatre classes de rejeu, et modèle `M4 RecoveryAnchor` avec `duplicateInvocationRule = REOBSERVE_THEN_DECIDE`. Merge et déploiement sont classés `NON_REPLAYABLE_MUTATION`.
+  - `A11-01` — `E2E-22` ajouté pour la résolution de finding de revue.
+- **Deux de mes propres contrôles étaient fautifs et ont été corrigés** : le test d'ancres `A3` échouait 73/73 à cause d'un algorithme de slug erroné, pas d'ancres cassées ; et trois des quatre scénarios `A11` déclarés manquants étaient des faux négatifs d'une recherche textuelle naïve — seul `review finding` manquait réellement.
+- **Défaut de mon propre correctif attrapé par mon test d'injection** : le contrôle de précondition d'arête avait été ajouté dans `validateEdgeShape()`, qui ne sert qu'à une sonde synthétique et n'est jamais appliquée aux arêtes réelles. Corrigé : la boucle de validation réelle l'invoque désormais.
+- **`AF-34` corrigé sur ses deux faces.** L'instance : les 14 phases sont `PASS_WITH_EVIDENCE` avec preuves relisibles. La cause : `scripts/gwc-precode-verify.mjs` recoupe maintenant les compteurs déclarés du gate contre `.mcp/gwc-precode-status.json`, refuse un `PASS_WITH_EVIDENCE` sans preuve, refuse un verdict contredisant le décompte, et exige le head exact observé. Éprouvé par injection : quatre défauts, quatre rejets.
+- **Mémoire canonique rafraîchie** : nouveau bundle `pr95-precode-gate`, intégrité 2/2 sources vérifiée, 6 claims tous `approval_eligible = false`, pointeur `current.json` mis à jour. Les trois bundles précédents restent immuables.
+- **Verdict** : `GWC_ARCHITECTURE_GATE = PASS`. La seule suite légitime est la **Phase B — réconciliation live de la Governed Task Queue**.
+- **Le runtime reste gelé**, et pas seulement par politique : la Governed Task Queue live n'est pas observable depuis cette session, donc aucune classification `NEW_TASK` ne peut être établie. `GWC_RUNTIME_IMPLEMENTATION = NOT_STARTED`.
+- Non vérifié ici : ruleset `protect-main`, et l'ensemble des autorités runtime. À VÉRIFIER.
+- Aucune Task créée ou claimée, aucun lock, aucun merge, aucun déploiement, aucune mutation serveur, aucun code runtime, aucun secret.
+- `NEXT_ACTION` : Phase B exige une observation live de la Governed Task Queue, indisponible depuis cette session — l'exécution s'arrête ici sur un blocker gouverné réel, pas sur une fin de sous-tâche.

@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## 2026-09-17 — Flux pré-code exécuté : gate vérifié, AF-34 ouvert puis corrigé
+
+- Exécution de `docs/gwc/PRECODE_ACTION_TASK_FLOW.txt` de `GWC-PRE-000` à `GWC-PRE-GATE-01` sur le head exact. Aucun code runtime, aucune Task, aucun lock, aucun déploiement.
+- Ajout de `.mcp/gwc-precode-status.json` : projection de statut par phase, non autoritative, avec références de preuve relisibles et head exact observé.
+- `.mcp/gwc-workflow-graph.json` : les 91 arêtes portent désormais `trigger` et `precondition` — 70 `POSTCONDITION_PASS`, 16 `SKIP_CONDITION` motivées individuellement, 4 `REOBSERVE_REQUIRED`, 1 `POSTCONDITION_FAIL`.
+- `docs/gwc/BLUEPRINTS.md` : ajout des modèles `M1 EvidenceRef`, `M2 StepAttestation`, `M3 classes de rejeu`, `M4 RecoveryAnchor` et `M5 précondition d'arête`, exigés par les phases `A7`, `A8` et `A5`.
+- `docs/gwc/PRECODE_EXECUTION_PLAN.txt` : ajout d'`E2E-22` (résolution de finding de revue) ; 22 scénarios E2E.
+- `scripts/gwc-verify.mjs` : refus de toute arête sans `trigger` ni `precondition`, vocabulaire `EDGE_TRIGGERS` borné, cohérence `SKIP`/`SKIP_CONDITION` et `FORWARD`/`POSTCONDITION_PASS`. Correction d'un défaut introduit dans le même lot : le contrôle avait été placé dans une fonction qui ne servait qu'à une sonde synthétique.
+- `scripts/gwc-precode-verify.mjs` : recoupement du gate contre la projection de statut — refus d'un `PASS_WITH_EVIDENCE` sans preuve, d'un verdict contredisant le décompte des phases, d'une Task runtime déclarée, ou d'un head exact absent.
+- `AF-34` ajouté puis corrigé : le gate déclarait 14/14 phases satisfaites alors que 10/14 seulement étaient vérifiables. Les six conditions de sortie manquantes ont été comblées et le vérificateur contrôle désormais la réalité, plus la déclaration.
+- Mémoire canonique : nouveau bundle `pr95-precode-gate` (2 sources, intégrité vérifiée, 6 claims tous `approval_eligible: false`), pointeur `current.json` avancé, bundles précédents conservés immuables.
+- Verdict : `GWC_ARCHITECTURE_GATE = PASS`. `GWC_RUNTIME_IMPLEMENTATION = NOT_STARTED`. La Phase B exige une observation live de la Governed Task Queue, indisponible depuis cette session.
+
 ## 2026-09-17 — Conception d'évolution détaillée GWC-0..GWC-17 et correction de la CI
 
 - Correctif CI : le job `validate` échouait à `docs:check` (`markdown_inventory_drift`, `markdown_count_drift`, declared 211 / actual 214). `docs/governance/markdown-inventory.json` réaligné sur les 3 sources de `docs/gwc/canonical-memory/pr95-ded/`, régénéré avec `scripts/generate-doc-governance-baseline.mjs` : 211 → 214 Markdown suivis, `categories.documentation` 61 → 64.

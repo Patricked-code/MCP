@@ -4,6 +4,20 @@
 Journal des decisions structurantes du MCP.
 
 
+## 2026-09-17 — Flux pré-code : décisions de conception
+
+Décision : les modèles `M1` à `M5` — `EvidenceRef`, `StepAttestation`, classes de rejeu, `RecoveryAnchor`, précondition d'arête — sont spécifiés au niveau conception, dans `docs/gwc/BLUEPRINTS.md`, sans aucune implémentation runtime. Motif : les phases `A7` et `A8` du flux pré-code les exigeaient, et le dossier les nommait sans les définir. Un modèle nommé mais non spécifié ne satisfait aucune condition de sortie.
+
+Décision : toute arête du graphe porte un `trigger` typé et une `precondition` explicite. Motif : `A5-01` interdit les transitions implicites. Les 16 arêtes `SKIP` reçoivent chacune une condition propre, dérivée du contrat source, plutôt qu'une formule générique — une condition de saut générique n'est pas une condition.
+
+Décision : `merge` et `déploiement` sont classés `NON_REPLAYABLE_MUTATION`. Motif : ces mutations ne convergent pas sur un second passage. Devant une invocation potentiellement dupliquée, la seule issue admise est de réobserver l'autorité pour savoir si la mutation a eu lieu — jamais de la retenter.
+
+Décision : un verdict de gate doit être recoupé contre une preuve par phase. Motif : `AF-34` a montré qu'un gate peut se déclarer complet sans l'être, et qu'un vérificateur contrôlant les compteurs déclarés valide la déclaration, pas la réalité. `scripts/gwc-precode-verify.mjs` recoupe désormais le gate contre `.mcp/gwc-precode-status.json` et refuse un `PASS_WITH_EVIDENCE` dépourvu de référence de preuve relisible.
+
+Décision : la mémoire canonique avance par nouveau bundle et déplacement du pointeur, jamais par mutation d'un bundle existant. Motif : règle déjà posée par `CLAUDE.md §8` ; elle est appliquée ici pour la première fois — `pr95-precode-gate` succède à `pr95-precode-architecture-complete`, qui reste immuable.
+
+Décision : l'exécution s'arrête à l'entrée de la Phase B. Motif : la réconciliation de la Governed Task Queue exige une autorité runtime qui n'est pas atteignable depuis cette session. C'est un blocker gouverné réel au sens de `CLAUDE.md §9.5`, pas une fin de sous-tâche — et seule une classification `NEW_TASK` issue de cette réconciliation pourrait matérialiser une tâche runtime.
+
 ## 2026-09-17 — Conception d'évolution détaillée : décisions de conception
 
 Décision : la conception d'évolution détaillée vit dans `docs/gwc/BLUEPRINTS.md`, aux côtés des blueprints qu'elle détaille, et non dans un document séparé. Motif : une seconde surface de conception aurait créé exactement la dispersion que `MCP_ANTI_DISPERSION_GOVERNANCE.md` interdit, et aurait forcé un agent à décider lequel des deux documents fait foi.

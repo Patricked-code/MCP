@@ -29,6 +29,7 @@ const BLUEPRINT_ID = /^GWC-(0|[1-9]|1[0-7])$/;
 const DIGEST = /^[0-9a-f]{64}$/;
 const FAMILIES = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
 const EDGE_KINDS = ['FORWARD', 'BACKWARD', 'SKIP'];
+const EDGE_TRIGGERS = ['POSTCONDITION_PASS', 'POSTCONDITION_FAIL', 'SKIP_CONDITION', 'REOBSERVE_REQUIRED'];
 const ARCHITECTURE_STATUSES = ['CONCEPTUALLY_APPROVED', 'READY_FOR_GOVERNED_IMPLEMENTATION'];
 const FINDING_ID = /^AF-(0[1-9]|[1-2][0-9]|3[0-9])$/;
 const DESIGN_VERDICTS = [
@@ -184,6 +185,12 @@ export function verifyGraph(document, contracts) {
       `${key} : arête vers ou depuis un contrat déclaré hors graphe runtime`);
     check(errors, Array.isArray(edge?.declaredBy) && edge.declaredBy.length > 0,
       `${key} : declaredBy manquant, impossible de tracer l’origine de l’arête`);
+
+    // Aucune transition implicite : toute arête déclare son déclencheur et sa précondition.
+    for (const message of validateEdgeShape(edge ?? {}, known)) {
+      if (!errors.includes(message)) errors.push(message);
+    }
+
     if (edge?.kind === 'BACKWARD') backward += 1;
     outgoing.get(edge?.from)?.push(edge?.to);
     incoming.get(edge?.to)?.push(edge?.from);
@@ -193,7 +200,13 @@ export function verifyGraph(document, contracts) {
     'le graphe doit contenir au moins une arête BACKWARD, preuve que l’ordre numérique n’est pas imposé');
 
   // Une arête arbitraire à rebours doit rester acceptable par le validateur.
-  const probe = validateEdgeShape({ from: 'GW-17', to: 'GW-12', kind: 'BACKWARD' }, known);
+  const probe = validateEdgeShape({
+    from: 'GW-17',
+    to: 'GW-12',
+    kind: 'BACKWARD',
+    trigger: 'REOBSERVE_REQUIRED',
+    precondition: 'sonde de validation : une arête à rebours motivée reste autorisable.'
+  }, known);
   check(errors, probe.length === 0,
     `une arête à rebours telle que GW-17 → GW-12 doit rester autorisable (${probe.join(', ')})`);
 
@@ -242,6 +255,17 @@ function validateEdgeShape(edge, known) {
   check(errors, known.has(edge.from), `arête depuis un contrat inconnu : ${edge.from}`);
   check(errors, known.has(edge.to), `arête vers un contrat inconnu : ${edge.to}`);
   check(errors, EDGE_KINDS.includes(edge.kind), `kind inconnu : ${edge.kind}`);
+
+  // Aucune transition implicite : toute arête déclare son déclencheur et sa précondition.
+  check(errors, EDGE_TRIGGERS.includes(edge.trigger),
+    `${edge.from} -> ${edge.to} : trigger inconnu ou absent (${edge.trigger})`);
+  check(errors, typeof edge.precondition === 'string' && edge.precondition.trim().length > 0,
+    `${edge.from} -> ${edge.to} : precondition manquante`);
+  check(errors, edge.kind !== 'SKIP' || edge.trigger === 'SKIP_CONDITION',
+    `${edge.from} -> ${edge.to} : une arête SKIP doit déclarer SKIP_CONDITION`);
+  check(errors, edge.kind !== 'FORWARD' || edge.trigger === 'POSTCONDITION_PASS',
+    `${edge.from} -> ${edge.to} : une arête FORWARD doit déclarer POSTCONDITION_PASS`);
+
   return errors;
 }
 

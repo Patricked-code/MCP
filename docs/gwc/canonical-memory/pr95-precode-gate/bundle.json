@@ -1,0 +1,92 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-precode-gate-20260917",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_github_live",
+      "path": "sources/github-live.json",
+      "media_type": "application/json",
+      "bytes": 607,
+      "sha256": "4310e60a7c01f74d48a85e97c329cbfb0e9477c0eecf33fecfbc6e5c76afa5b7"
+    },
+    {
+      "source_id": "src_precode_phase_closure",
+      "path": "sources/precode-phase-closure.json",
+      "media_type": "application/json",
+      "bytes": 1043,
+      "sha256": "32dbbd1dc121c20356bf7cf22022afbe19ff154bd82a33399b4d0ececd620667"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_precode_phases",
+      "key": "precode.architecture_phases",
+      "claim_type": "fact",
+      "value": "A1..A14 PASS_WITH_EVIDENCE sur le head exact, verifiees et non declarees",
+      "source_refs": [
+        "src_precode_phase_closure"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_precode_closures",
+      "key": "precode.closed_blockers",
+      "claim_type": "fact",
+      "value": "A5-01, A7-01, A7-02, A8-03, A8-04 et A11-01 fermes par conception; aucun code runtime",
+      "source_refs": [
+        "src_precode_phase_closure"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_af34",
+      "key": "finding.af34",
+      "claim_type": "fact",
+      "value": "AF-34 ouvert puis reduit: le gate declarait 14/14 alors que 10/14 etaient verifiables; le verificateur ne controlait que les compteurs declares",
+      "source_refs": [
+        "src_precode_phase_closure"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_runtime_frozen",
+      "key": "runtime.gwc_implementation",
+      "claim_type": "fact",
+      "value": "NOT_STARTED",
+      "source_refs": [
+        "src_precode_phase_closure"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_taskqueue",
+      "key": "runtime.task_materialization",
+      "claim_type": "fact",
+      "value": "NOT_STARTED_REQUIRES_LIVE_RECONCILIATION",
+      "source_refs": [
+        "src_precode_phase_closure"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_authorities_unknown",
+      "key": "runtime.authorities_observation",
+      "claim_type": "fact",
+      "value": "Operational Memory, Task Queue, Sessions, Locks, Receipt, Live State et rulesets non atteignables depuis cette session: UNKNOWN, jamais substitue",
+      "source_refs": [
+        "src_github_live"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": [
+    {
+      "edge_id": "sup_precode_phases",
+      "superseded_claim_id": "clm_phase_closure",
+      "superseding_claim_id": "clm_precode_phases",
+      "reason": "La cloture 14/14 etait declarative; elle est desormais verifiee condition de sortie par condition de sortie contre le head exact."
+    }
+  ]
+}
