@@ -55,6 +55,7 @@ GitHub live.
 | `.mcp/gwc-precode-status.json` | **état d'exécution par phase, preuves, Phase B et blocker courant** | agent |
 | `docs/gwc/canonical-memory/pr95-ded/` | sources et bundle de mémoire de la mission de conception | traçabilité |
 | `docs/gwc/canonical-memory/pr95-precode-gate/` | sources et bundle de mémoire de la clôture pré-code | traçabilité |
+| `docs/gwc/canonical-memory/pr95-phase-b-live-reconciliation/` | **bundle courant** — réconciliation live et blocker `AF-35` | humain et agent |
 | `scripts/gwc-verify.mjs` | vérificateur déterministe | humain et agent |
 | `scripts/gwc-precode-verify.mjs` | vérificateur du flux pré-code et du gate | humain et agent |
 

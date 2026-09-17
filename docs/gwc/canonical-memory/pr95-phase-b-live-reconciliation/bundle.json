@@ -1,0 +1,128 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-phase-b-live-reconciliation-20260917",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_github_live",
+      "path": "sources/github-live.json",
+      "media_type": "application/json",
+      "bytes": 519,
+      "sha256": "f3f57a8b2629691f4e0f811a847ad08af0cfc565a358dbf575463cd5d040231e"
+    },
+    {
+      "source_id": "src_live_authorities",
+      "path": "sources/live-authorities.json",
+      "media_type": "application/json",
+      "bytes": 2305,
+      "sha256": "c60dd34fab19660d810821b7fd65f8ee502f3d72944bb751a1c8bce48a1b80ec"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_live_authorities_observed",
+      "key": "runtime.authorities_observation",
+      "claim_type": "fact",
+      "value": "Task Queue storeRevision 188, Live State stateVersion 246 FULLY_ALIGNED, 25 sessions gouvernees, aucun lock detenu: autorites runtime reellement observees aupres de leurs proprietaires, non substituees",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_no_gwc_task",
+      "key": "taskqueue.gwc_tasks",
+      "claim_type": "fact",
+      "value": "0 des 18 blueprints a un GovernedTaskRecord dans la file live; ni CONTINUATION ni DUPLICATE ne s appliquent",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_task_conflict",
+      "key": "taskqueue.task_20260915_001",
+      "claim_type": "fact",
+      "value": "CONFLICT: la file declare DEPLOYING avec blocker DOCUMENTATION_DRIFT a 46d576e5, Live State 246 declare documentation ALIGNED et 0 contradiction a d1f30395 plus recent; enregistre sous AF-35, proprietaire GWC-5",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_blueprints_blocked",
+      "key": "runtime.task_materialization",
+      "claim_type": "fact",
+      "value": "BLOCKED_BY_PRIOR_NON_TERMINAL_TASK: GWC-0 a GWC-17 classes BLOCKED, pas NEW_TASK, car la premiere tache executable precede les nouvelles",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_conflict_not_ours",
+      "key": "taskqueue.conflict_ownership",
+      "claim_type": "fact",
+      "value": "TASK-20260915-001 appartient a la session ACTIVE 499b2ea3 d un autre agent; toute transition exigerait son governedSessionId et son expectedSessionRevision. Sa peremption manifeste ne transfere pas sa propriete.",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_runtime_frozen",
+      "key": "runtime.gwc_implementation",
+      "claim_type": "fact",
+      "value": "NOT_STARTED",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_no_mutation",
+      "key": "runtime.mutations_performed",
+      "claim_type": "fact",
+      "value": "RUNTIME_TASKS_CREATED=0, sessions ouvertes=0, Bootstrap Receipts demandes=0, claims=0, locks=0, transitions=0: l observation seule a produit la classification",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_next_action",
+      "key": "program.next_action",
+      "claim_type": "fact",
+      "value": "Resoudre le CONFLICT sur TASK-20260915-001, par cloture de l agent proprietaire ou par decision humaine explicite d expiration ou de supersession, avant toute materialisation GWC",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_github_head",
+      "key": "github.pr95_head",
+      "claim_type": "fact",
+      "value": "PR 95 OPEN DRAFT NOT_MERGED au head exact a6454628830d2cfa4465eb98c8aafe0843959aad, MCP CI run 1003 SUCCESS sur ce meme head",
+      "source_refs": [
+        "src_github_live"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": [
+    {
+      "edge_id": "sup_authorities_observation",
+      "superseded_claim_id": "clm_authorities_unknown",
+      "superseding_claim_id": "clm_live_authorities_observed",
+      "reason": "Les autorites runtime etaient UNKNOWN faute d atteignabilite du MCP WealthTech. Elles sont desormais reellement observees; l UNKNOWN n a jamais ete substitue entre-temps."
+    },
+    {
+      "edge_id": "sup_task_materialization",
+      "superseded_claim_id": "clm_taskqueue",
+      "superseding_claim_id": "clm_blueprints_blocked",
+      "reason": "NOT_STARTED_REQUIRES_LIVE_RECONCILIATION decrivait une reconciliation non faite. La reconciliation a eu lieu et son resultat est BLOCKED, sur une cause nommee et une tache identifiee."
+    }
+  ]
+}
