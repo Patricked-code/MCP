@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 214,
+  "trackedCount": 215,
   "categories": {
     "canonical": 7,
-    "documentation": 64,
+    "documentation": 65,
     "engineering-plan": 8,
     "engineering-spec": 9,
     "history": 1,
@@ -460,6 +460,10 @@
     },
     {
       "path": "docs/gwc/DEPRECATED_CLAIMS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md",
       "category": "documentation"
     },
     {
