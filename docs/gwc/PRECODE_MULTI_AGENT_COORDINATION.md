@@ -1,50 +1,154 @@
 # GWC PRE-CODE — MULTI-AGENT COORDINATION POLICY
 
-Revision: `R3-PRECODE-MULTI-AGENT-1`
+Revision: `R3-PRECODE-MULTI-AGENT-2`
 Repository: `Patricked-code/MCP`
-Target work branch: `claude/ecstatic-edison-v1dyt1`
+Target online work branch: `claude/ecstatic-edison-v1dyt1`
+Scope: **uniquement le programme d’évolution GWC / PRECODE porté par la PR #95**.
 
-## 1. Purpose
+## 1. Purpose and boundary
 
-Allow Claude, ChatGPT and other authorized agents to work on the same GWC pre-code branch without overwriting one another, duplicating work, creating a second Task Queue, or treating stale evidence as current.
+Allow Claude, ChatGPT and other authorized agents to work on the same GWC pre-code program without overwriting one another, duplicating work, losing provenance, creating a second Task Queue, or treating stale evidence as current.
 
-This policy coordinates branch-local PRECODE work only. It is **not** Operational Memory, **not** the Governed Task Queue, **not** a runtime lock service, **not** Live State, and **not** a new source of truth for runtime governance.
+This policy coordinates **only** the branch-local PRECODE evolution program. It is **not** Operational Memory, **not** the Governed Task Queue, **not** a runtime lock service, **not** Live State, **not** a new Session Manager and **not** a new runtime source of truth.
 
-## 2. Default roles
+The durable versioned work surface for this program is the GitHub online branch:
 
-- `Claude` = primary PRECODE executor/writer by default.
-- `ChatGPT` = independent observer/verifier/reviewer by default.
-- Any secondary agent may become a writer only for an explicitly bounded, dependency-satisfied and disjoint scope.
-- Multiple agents may read and review the same scope concurrently.
+`claude/ecstatic-edison-v1dyt1`
+
+No alternate persistent branch may be created for this program. A local workspace may be used only as an ephemeral execution surface after synchronizing the exact online head; it is never authoritative, never a second work stream, and no unpushed local state may be treated as a checkpoint or source of truth.
+
+## 2. Agents are peers; ownership belongs to the current bounded scope
+
+Claude and ChatGPT are equivalent authorized PRECODE executors for this evolution program.
+
+There is no permanent agent-level ownership of the program.
+
+- Claude may observe, verify, review or write.
+- ChatGPT may observe, verify, review or write.
+- Any authorized agent may become writer when the required PRECODE implementation/artifact is absent, incomplete, stale or needs correction, provided the bounded scope is dependency-satisfied and currently unowned.
+- Multiple agents may read/review the same scope concurrently.
 - Only one agent may mutate a given collision domain at a time.
+- Agent identity never grants permission by itself; every write still obeys repository/governance permissions and PRECODE gates.
 
-The default role separation may be changed by an explicit user instruction or by a durable checkpoint that assigns a disjoint scope, but it must never be inferred from mere tool availability.
+If Claude returns after ChatGPT has written, or ChatGPT returns after Claude has written, the returning agent MUST first reconstruct and understand the intervening session chain, commits, evidence and checkpoints before doing any new work.
 
-## 3. Mandatory pre-write observation
+No agent may assume that work it did not personally perform is invalid or must be replayed.
 
-Before **every** write-capable action, the agent must re-observe at minimum:
+## 3. Canonical hierarchy of work
 
-- PR `#95` state, base SHA, head branch and exact head SHA;
-- the latest durable GWC checkpoint / canonical-memory pointer;
-- latest PR comments/checkpoints relevant to work ownership;
-- the target work item and its dependencies;
-- the exact files/authorities it intends to mutate.
-
-If the observed head differs from the head on which the planned edit was prepared, the edit is stale and MUST NOT be written until it is reconciled.
-
-## 4. Scope claim — durable trace, not a runtime Task
-
-Before taking a mutable PRECODE scope, the writer must leave a durable trace using existing GitHub/checkpoint surfaces. The trace must contain:
+Every action in this program must be located in this hierarchy:
 
 ```text
+PROGRAM
+  GWC-R3-PRECODE-EVOLUTION
+    ↓
+PHASE
+  P0 / A1 / A2 / A3 / ... / A14 / PRECODE_GATE
+    ↓
+WORK ITEM
+  GWC-PRE-...
+    ↓
+SESSION
+  one identified Claude / ChatGPT / other authorized agent session
+    ↓
+ACTION
+  OBSERVE / RECONCILE / READ / WRITE / VERIFY / REVIEW / CHECKPOINT
+    ↓
+EVIDENCE
+  exact SHA / file / authority / test / CI / review / finding / decision
+    ↓
+HANDOFF
+  current status + NEXT_ACTION + next eligible owner/scope
+```
+
+A session never replaces the work item. A work item never becomes a runtime `TASK-*` merely because an agent is executing it. The hierarchy exists only to make the PRECODE evolution program traceable and resumable.
+
+## 4. Every agent session MUST be identified and traceable
+
+Every participating session must have a durable session identifier before its first mutable PRECODE action.
+
+Recommended identifier form:
+
+`GWC-PRE-SESSION-<UTC_TIMESTAMP>-<AGENT>-<SHORT_START_HEAD>`
+
+Examples:
+
+- `GWC-PRE-SESSION-20260917T063500Z-CLAUDE-85a7bb38`
+- `GWC-PRE-SESSION-20260917T071200Z-CHATGPT-1234abcd`
+
+If the provider exposes its own stable session/run URL or ID, record it as `providerSessionRef` in addition to the canonical PRECODE session id. It does not replace the canonical id.
+
+At session start, record durably using existing GitHub/checkpoint surfaces:
+
+```text
+SESSION_START
+program = GWC-R3-PRECODE-EVOLUTION
+sessionId = GWC-PRE-SESSION-...
+agent = Claude | ChatGPT | ...
+providerSessionRef = <if available>
+role = writer | reviewer | observer
+branch = claude/ecstatic-edison-v1dyt1
+startingHeadSha = <exact online SHA>
+pr = #95
+phase = <P0/A1/...>
+workItemId = <exact GWC-PRE-* or bounded range>
+collisionDomain = <scope>
+pathsToMutate = [...]
+dependenciesObserved = [...]
+expectedOutput = ...
+startedAt = ...
+```
+
+This trace may be a PR checkpoint/comment, an existing canonical-memory phase bundle, SUIVI entry and/or commit metadata as appropriate. Do **not** create a second session registry or session manager.
+
+## 5. Mandatory pre-write online observation
+
+Before **every** write-capable action, the agent must re-observe the GitHub online branch and at minimum:
+
+- PR `#95` state, base SHA, exact head branch and exact head SHA;
+- latest commits since the session started;
+- latest durable GWC checkpoint / canonical-memory pointer;
+- latest PR comments/checkpoints relevant to work ownership;
+- current session/work-item ownership traces;
+- target work item and dependencies;
+- exact files/authorities it intends to mutate.
+
+The online branch head is the coordination clock.
+
+If the observed head differs from the head on which the planned edit was prepared, the edit is stale and MUST NOT be written until the intervening work has been read and reconciled.
+
+## 6. Writer selection when work/code is missing
+
+When a required PRECODE artifact, design, verifier, documentation element or bounded code-support element does not yet exist, the active authorized agent may implement it on the online branch if all conditions below are true:
+
+1. the work belongs to this GWC/PRECODE evolution program;
+2. its dependency gate is satisfied;
+3. it is allowed by the current PRECODE boundary;
+4. no other active session currently owns the same mutable collision domain;
+5. exact online head has been observed;
+6. existing authorities/components have been inspected first (`REUSE → WRAP → GENERALIZE → EXTEND → NEW`);
+7. the intended scope is recorded in the session trace;
+8. no runtime GWC implementation is started before `GWC-PRE-GATE-01 = PASS_WITH_EVIDENCE`.
+
+Therefore ChatGPT is explicitly allowed to write missing PRECODE work, and Claude is explicitly allowed to return later and continue from that work. The same rule applies in reverse.
+
+## 7. Scope claim — durable coordination trace, not a runtime Task
+
+Before taking a mutable PRECODE scope, the writer must leave a durable trace using existing GitHub/checkpoint surfaces. It must contain at minimum:
+
+```text
+sessionId
 agent
-role = writer | reviewer
+role = writer
+program
+phase
 workItemId / bounded workItem range
 collisionDomain
 pathsToMutate
 startingHeadSha
 observedPrHeadSha
 expectedOutput
+dependencies
 startedAt
 ```
 
@@ -54,11 +158,11 @@ A PRECODE scope claim:
 - does **not** create a GovernedTaskRecord;
 - does **not** acquire a runtime lock;
 - does **not** authorize runtime code;
-- only prevents overlapping branch-local PRECODE edits between cooperating agents.
+- only prevents overlapping branch-local PRECODE edits between cooperating sessions.
 
-Use existing PR/checkpoint/canonical-memory/SUIVI surfaces for the trace. Do not create a second task registry, work queue, journal, session manager or lock service for this purpose.
+Use existing PR/checkpoint/canonical-memory/SUIVI surfaces. Do not create a second task registry, work queue, journal, session manager or lock service.
 
-## 5. Collision domains and single-writer rule
+## 8. Collision domains and single-writer rule
 
 The following shared canonical files are single-writer collision domains while an edit is in progress:
 
@@ -66,6 +170,7 @@ The following shared canonical files are single-writer collision domains while a
 - `docs/gwc/BLUEPRINTS.md`
 - `docs/gwc/PRECODE_EXECUTION_PLAN.txt`
 - `docs/gwc/PRECODE_ACTION_TASK_FLOW.txt`
+- `docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md`
 - `docs/gwc/canonical-memory/current.json`
 - `.mcp/gwc-contracts.json`
 - `.mcp/gwc-workflow-graph.json`
@@ -78,43 +183,48 @@ The following shared canonical files are single-writer collision domains while a
 - `CHANGELOG.md`
 - `DECISIONS_LOG.md`
 
-Two agents may work in parallel only when all of the following are true:
+Two sessions may work in parallel only when all of the following are true:
 
 1. dependency order permits both work items;
 2. target paths/collision domains do not overlap;
-3. neither task consumes an uncommitted output of the other;
+3. neither consumes an uncommitted output of the other;
 4. authority ownership does not conflict;
 5. no live/runtime lock or governance rule forbids the work;
-6. both started from an exact observed head;
-7. each agent will re-observe the head immediately before publishing its commit.
+6. both started from an exact observed online head;
+7. each re-observes the online head immediately before publishing its commit.
 
 If any condition is false or unknown, work is sequential.
 
-## 6. Head-moved rule
+## 9. Head-moved rule and mandatory takeover reconciliation
 
-If another agent advances the branch while an edit is being prepared:
+If another session advances the branch while work is being prepared:
 
 ```text
 HEAD_MOVED
 → STOP WRITE
-→ REOBSERVE
-→ READ the intervening commit(s)
-→ RECONCILE scope and evidence
+→ REOBSERVE ONLINE BRANCH
+→ IDENTIFY INTERVENING SESSION/COMMIT
+→ READ every intervening relevant diff/checkpoint
+→ UNDERSTAND what changed and why
+→ RECONCILE scope, evidence and NEXT_ACTION
 → preserve valid concurrent work
 → recompute the edit on the new exact head
 → VERIFY
 → only then write
 ```
 
+A returning agent must not merely pull/rebase mechanically. It must understand the semantic effect of the intervening work on its phase, work item, evidence, findings, decisions, collision domain and next action.
+
 Forbidden responses to a moved head:
 
 - force push;
 - reset to the previous head;
-- overwrite the other agent's files from a stale snapshot;
+- overwrite another session's files from a stale snapshot;
 - replay an already valid work item without reconciliation;
-- mark stale evidence `PASS_WITH_EVIDENCE`.
+- mark stale evidence `PASS_WITH_EVIDENCE`;
+- continue from a remembered conversation state without reading durable traces.
 
-## 7. Reviewer mode
+## 10. Reviewer / verifier mode
 
 A reviewer/observer may work concurrently with a writer when it performs no mutation in the writer's collision domain.
 
@@ -123,69 +233,167 @@ Reviewer responsibilities:
 - independently verify evidence;
 - detect stale assumptions, authority drift and hidden regressions;
 - confirm or refute `PASS_WITH_EVIDENCE`;
-- report findings with exact head/provenance;
+- report findings with exact head/provenance and reviewer session id;
 - never silently convert a review finding into a conflicting edit.
 
 When a reviewer identifies a required change in a currently owned collision domain, it records the finding and the current writer integrates it, unless ownership is explicitly transferred after a checkpoint.
 
-## 8. Secondary-writer mode
+## 11. Session checkpoints: every meaningful step must leave evidence
 
-ChatGPT or another agent may become writer for a disjoint PRECODE lot only after:
+Each writer/reviewer session must checkpoint at meaningful boundaries, at minimum:
 
-1. re-observing the exact current head;
-2. checking current claims/checkpoints;
-3. selecting a dependency-satisfied scope with no overlapping collision domain;
-4. leaving the durable scope claim;
-5. performing only that bounded work;
-6. publishing evidence/checkpoint on completion.
+- after establishing/revalidating the baseline;
+- after each significant work item or bounded group;
+- before changing phase;
+- before yielding ownership;
+- before context exhaustion or voluntary stop;
+- after detecting a conflict/blocker;
+- after recovering from `HEAD_MOVED`;
+- at session end.
 
-The agent must not opportunistically expand its scope because adjacent work appears convenient.
-
-## 9. Completion and handoff
-
-Every writer completion must record at least:
+Checkpoint format:
 
 ```text
+SESSION_CHECKPOINT
+program
+sessionId
 agent
-workItemId
+providerSessionRef
+branch
 startingHeadSha
-completedHeadSha
+observedHeadSha
+phase
+workItemId / range
 status
+actionsCompleted
+filesRead
 filesChanged
+authoritiesObserved
 evidenceRefs
 checksRun
-findings
+findingsOpened
+findingsResolved
+decisionsApplied
+invariantsVerified
+blockers
 openDependencies
+collisionDomainOwnership = HELD | RELEASED
 NEXT_ACTION
-completedAt
+checkpointAt
 ```
 
-`PASS_WITH_EVIDENCE` is valid only when the evidence can be re-read and is bound to the completed exact head or to an explicitly fresh live authority.
+A `PASS_WITH_EVIDENCE` claim without re-readable evidence references is invalid.
 
-After completion, the agent releases branch-local ownership of that collision domain by recording the checkpoint/handoff. It must then either continue to the next eligible work item or leave an exact `NEXT_ACTION` if a real blocker stops the path.
+## 12. Session handoff and ordered continuation
 
-## 10. Canonical operating model
+Before a session yields work to another agent, it must leave a handoff that makes the next step deterministic:
 
 ```text
-ONE BRANCH
-ONE CURRENT HEAD
+SESSION_HANDOFF
+fromSessionId
+fromAgent
+completedHeadSha
+lastCompletedWorkItem
+currentPhase
+releasedCollisionDomains
+openFindings
+openDependencies
+evidenceStillFreshUntil / reobserveRule
+NEXT_ACTION
+nextEligibleWorkItem
+handoffAt
+```
+
+The receiving session MUST:
+
+1. identify itself;
+2. read the handoff;
+3. reobserve the exact online head;
+4. read all commits since the handoff head if any;
+5. validate the evidence/freshness needed for `NEXT_ACTION`;
+6. continue from the hierarchy, not from conversational memory.
+
+This is how Claude must understand ChatGPT's previous work, and how ChatGPT must understand Claude's previous work.
+
+## 13. Session end
+
+Every session that performed or reviewed meaningful PRECODE work must close durably:
+
+```text
+SESSION_END
+sessionId
+agent
+finalObservedHeadSha
+completedWorkItems
+verifiedWorkItems
+remainingOwnedScope = NONE | <explicit>
+releasedCollisionDomains
+finalStatus
+NEXT_ACTION
+endedAt
+```
+
+A provider session disappearing without `SESSION_END` does not automatically free an ambiguous mutable scope. A new session must reobserve the branch, inspect the last durable checkpoint and determine whether ownership is stale before taking over.
+
+## 14. Evidence chain and provenance
+
+Every material claim should be traceable through the chain:
+
+```text
+SESSION
+→ WORK ITEM
+→ ACTION
+→ COMMIT / FILE / AUTHORITY OBSERVATION
+→ TEST / CI / REVIEW / FINDING
+→ CHECKPOINT
+→ STATUS
+→ NEXT_ACTION
+```
+
+For every mutation, preserve at least:
+
+- authoring session id;
+- agent name;
+- exact parent/start head;
+- resulting commit/head;
+- work-item id;
+- evidence/check references;
+- why the change was necessary;
+- which previous evidence it supersedes, if any.
+
+Provider-specific session URLs may be added to commit bodies (for example `Claude-Session:`) but are supporting provenance, not the sole durable trace.
+
+## 15. Canonical operating model
+
+```text
+ONE ONLINE BRANCH
+ONE CURRENT ONLINE HEAD
 ONE CANONICAL GWC ARCHITECTURE
 ONE CURRENT CONTINUITY POINTER
-N AGENTS MAY OBSERVE/REVIEW
+ONE ORDERED WORK HIERARCHY
+N IDENTIFIED AGENT SESSIONS
+N CONCURRENT READERS/REVIEWERS
 BUT
 ONE WRITER PER MUTABLE COLLISION DOMAIN
 ```
 
-Default GWC PRECODE collaboration model:
+Writer ownership is **scope-based and temporary**, never permanently assigned to Claude or ChatGPT.
 
-```text
-CLAUDE  = primary executor / writer
-CHATGPT = independent verifier / reviewer
+## 16. Online-branch-only rule
 
-ChatGPT writer mode = allowed only for explicitly disjoint claimed scope
-```
+For this evolution program:
 
-## 11. Runtime boundary remains frozen
+- all durable writes target `claude/ecstatic-edison-v1dyt1` online;
+- no new parallel development branch is created;
+- no persistent work is kept only locally;
+- every session starts by observing the online head;
+- every commit is based on the latest reconciled online head;
+- every session handoff names the exact resulting online head;
+- GitHub PR #95 remains the common collaboration/history surface until the governed transition says otherwise.
+
+Local execution/checkouts are implementation details only. They never become an independent authority or independent branch of work.
+
+## 17. Runtime boundary remains frozen
 
 This coordination policy does not change the PRECODE gate:
 
@@ -193,3 +401,13 @@ This coordination policy does not change the PRECODE gate:
 - no artificial `TASK-*` creation from PRECODE work items;
 - no runtime claim/lock/deploy/server mutation from this policy;
 - Phase B live Task Queue reconciliation remains the only bridge to real Governed Tasks.
+
+## 18. Conflict resolution precedence for this program
+
+Within the specific PR #95 PRECODE evolution program, this revision supersedes any older statement that permanently assigns Claude as primary writer or ChatGPT as reviewer-only.
+
+The controlling rule is now:
+
+`ANY AUTHORIZED AGENT MAY WRITE AN ELIGIBLE UNOWNED BOUNDED PRECODE SCOPE; EVERY SESSION IS IDENTIFIED; EVERY HANDOFF IS TRACEABLE; EVERY WRITE IS RECONCILED AGAINST THE LATEST ONLINE HEAD.`
+
+All broader MCP governance, non-regression, authority, security and runtime rules remain unchanged.
