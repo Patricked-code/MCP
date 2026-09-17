@@ -134,7 +134,8 @@
         "AF-17",
         "AF-18",
         "AF-24",
-        "AF-27"
+        "AF-27",
+        "AF-35"
       ],
       "openDecisions": [
         "OD-05",
@@ -655,6 +656,12 @@
       "owner": "GWC-0",
       "definitionSource": "CURRENT_MAIN_EVIDENCE",
       "corrected": true
+    },
+    {
+      "finding": "AF-35",
+      "owner": "GWC-5",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": false
     }
   ],
   "openDecisions": [

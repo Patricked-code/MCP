@@ -363,3 +363,17 @@ Date : 2026-08-29
 - Non vérifié ici : ruleset `protect-main`, et l'ensemble des autorités runtime. À VÉRIFIER.
 - Aucune Task créée ou claimée, aucun lock, aucun merge, aucun déploiement, aucune mutation serveur, aucun code runtime, aucun secret.
 - `NEXT_ACTION` : Phase B exige une observation live de la Governed Task Queue, indisponible depuis cette session — l'exécution s'arrête ici sur un blocker gouverné réel, pas sur une fin de sous-tâche.
+
+## 2026-09-17 — Phase B : réconciliation live de la Governed Task Queue — `BLOCKED`
+
+- Le MCP WealthTech est devenu atteignable. `ping = wealthtech_ssh_bridge_ok`. Les autorités runtime, jusque-là `UNKNOWN`, ont été réellement observées.
+- **Autorités observées** — Task Queue `storeRevision 188`, 15 tâches (11 `DONE`, 3 `SUPERSEDED`, 1 `DEPLOYING`), `nextSequence 16` · Live State `stateVersion 246`, `freshness CURRENT`, `global FULLY_ALIGNED`, `documentation ALIGNED`, 0 contradiction, GitHub = S1 = runtime = `d1f30395` · 25 sessions gouvernées (1 `ACTIVE`, 1 `EXPIRED`, 23 `CLOSED`) · **aucun lock détenu par aucune session**.
+- **`GWC-PRE-B-01` réobservation : faite.**
+- **`GWC-PRE-B-02` classification :**
+  - **Aucune tâche GWC n'existe dans la file live.** 0 des 18 blueprints n'a de `GovernedTaskRecord`. Ni `CONTINUATION` ni `DUPLICATE` ne s'appliquent.
+  - **`TASK-20260915-001` → `CONFLICT`.** La file la déclare `DEPLOYING` avec blocker `DOCUMENTATION_DRIFT` à `46d576e5`. Live State `stateVersion 246` déclare `documentation: ALIGNED`, `global: FULLY_ALIGNED` et 0 contradiction à `d1f30395`, plus récent. Les deux autorités se contredisent.
+  - **`GWC-0` à `GWC-17` → `BLOCKED`.** Le protocole MCP impose que la première tâche exécutable précède les nouvelles. Enregistrer un `NEW_TASK` GWC avant résolution de `TASK-20260915-001` reviendrait à doubler la file.
+- **`AF-35` ouvert** — contradiction Task Queue contre Live State. Propriétaire `GWC-5`. La session propriétaire `499b2ea3` appartient à l'agent *ChatGPT GPT-5.6 Sol*, a acquitté `stateVersion 233` contre 246 en live, et n'a pas battu depuis le 2026-09-16T22:52Z : son Bootstrap Receipt est périmé. Son propre `nextAction` est obsolète — il demande de fusionner PR #92 au head `8b71f14f`, alors que PR #92 est fusionnée et que `main` a avancé.
+- **Pourquoi je n'ai pas résolu le `CONFLICT`** : `TASK-20260915-001` est possédée par une session `ACTIVE` qui n'est pas la mienne. Toute transition exigerait son `governedSessionId` et son `expectedSessionRevision`. Agir à sa place violerait la règle « un seul writer par domaine de collision » et l'interdiction d'écraser un travail concurrent. Deux voies seulement : l'agent propriétaire clôture, ou une décision humaine fait expirer ou superséder la tâche.
+- **`RUNTIME_TASKS_CREATED = 0`.** Aucune session ouverte, aucun Bootstrap Receipt demandé, aucun claim, aucun lock, aucune transition. L'observation seule a suffi à produire la classification.
+- `NEXT_ACTION` : résoudre le `CONFLICT` sur `TASK-20260915-001` avant toute matérialisation GWC.

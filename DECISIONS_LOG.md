@@ -639,3 +639,21 @@ Décision de livraison : PR #92 est fusionnée sous garde du head exact `8b71f14
 Décision de preuve : la Task enregistre `runtimeRevision=46d576e53820eba0360647b6fd96d41dd4a2bbc6` sans redéploiement manuel. La seule contradiction résiduelle est documentaire ; elle se corrige par une branche/PR docs-only descendante, puis nouvelle observation Live State avant toute transition `VERIFYING` ou `DONE`.
 
 Décision de frontière : la livraison C2 n'active pas GitRegistry V2, n'élargit aucune permission, n'autorise aucun déploiement de projet et ne modifie pas le WRITE gate `shadow`. C3 reste un lot distinct après clôture gouvernée de C2.
+
+## 2026-09-17 — Le gate pré-code se vérifie contre le head exact, jamais contre sa propre déclaration
+
+Décision : un compteur déclaré dans `.mcp/gwc-precode-gate.json` n'est pas une preuve. `AF-34` a montré qu'un gate pouvait déclarer `architecturePhases.satisfied = 14` alors que la vérification du head exact `58d71959` en donnait 10. La correction porte sur les deux faces : l'instance est comblée par conception, et le vérificateur recoupe désormais les compteurs du gate contre les preuves par phase de `.mcp/gwc-precode-status.json`. Un `PASS_WITH_EVIDENCE` sans référence de preuve relisible est refusé, et un verdict de gate qui contredit le décompte des phases est refusé.
+
+Décision de portée : cette correction ne crée aucune autorité nouvelle. Elle durcit un vérificateur déterministe déjà exécuté par la CI au head exact. Elle n'ajoute aucun outil MCP, ne crée aucune Task, ne prend aucun lock et ne déclenche aucun déploiement.
+
+## 2026-09-17 — La réconciliation live classe sans créer, et ne résout pas le conflit d'un autre agent
+
+Décision de classification : la réconciliation Phase B repose exclusivement sur l'observation des autorités live propriétaires — Governed Task Queue, Live State, sessions gouvernées, locks — et jamais sur `.mcp/task-registry.json`, sur un document Markdown ni sur une mémoire canonique. L'absence d'un blueprint dans un registre versionné ne vaut pas `NEW_TASK`.
+
+Décision : aucune tâche GWC n'existe dans la file live, donc ni `CONTINUATION` ni `DUPLICATE` ne s'appliquent aux 18 blueprints. La seule tâche non terminale, `TASK-20260915-001`, est classée `CONFLICT` : la Task Queue la déclare `DEPLOYING` avec blocker `DOCUMENTATION_DRIFT` observé à `46d576e5`, tandis que Live State `stateVersion 246` déclare `documentation: ALIGNED`, `global: FULLY_ALIGNED` et 0 contradiction à `d1f30395`, plus récent. Ce blocker est donc probablement périmé plutôt que réel, mais l'écart se constate et s'enregistre — il ne se tranche pas par hypothèse. Il est enregistré sous `AF-35`, propriétaire `GWC-5`.
+
+Décision de blocage : `GWC-0` à `GWC-17` sont classés `BLOCKED`, pas `NEW_TASK`. Le protocole MCP impose que la première tâche exécutable précède les nouvelles ; enregistrer dix-huit tâches GWC devant une tâche non terminale reviendrait à doubler la file et à contourner l'ordonnancement gouverné.
+
+Décision de non-intervention : le `CONFLICT` n'est pas résolu par cette session. `TASK-20260915-001` est possédée par la session `ACTIVE` `499b2ea3` d'un autre agent. Toute transition exigerait son `governedSessionId` et son `expectedSessionRevision` ; agir à sa place violerait la règle d'un seul writer par domaine de collision et l'interdiction d'écraser un travail concurrent. Le fait que cette session soit manifestement périmée — Bootstrap Receipt acquitté à `stateVersion 233` contre 246 en live, aucun heartbeat depuis le 2026-09-16T22:52Z, `nextAction` demandant la fusion d'une PR déjà fusionnée — ne transfère pas sa propriété. Deux voies légitimes seulement : l'agent propriétaire clôture sa tâche et sa session, ou une décision humaine explicite fait expirer ou superséder la tâche.
+
+Décision de frontière : l'observation seule a suffi à produire la classification. Aucune session n'a été ouverte, aucun Bootstrap Receipt demandé, aucun claim effectué, aucun lock pris, aucune transition tentée. `RUNTIME_TASKS_CREATED = 0` et le runtime GWC reste gelé jusqu'à résolution du `CONFLICT`.

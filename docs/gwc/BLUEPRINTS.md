@@ -373,8 +373,8 @@ DETAILED_EVOLUTION_PROGRESS
 - completed_blueprints: GWC-0 through GWC-17 (18 of 18)
 - in_progress_blueprint: none
 - not_started_blueprints: none
-- completed_findings: AF-28 only (graph incoherence, corrected in R3)
-- open_findings: AF-01..AF-33; AF-19 owned by GWC-15; AF-22/AF-30 owned by GWC-14; AF-29 by GWC-15; AF-31 by GWC-13; AF-32 by GWC-9; AF-33 by GWC-0
+- completed_findings: AF-28 (graph incoherence, corrected in R3) and AF-34 (declarative pre-code gate, corrected on both faces)
+- open_findings: AF-01..AF-33 and AF-35; AF-19 owned by GWC-15; AF-22/AF-30 owned by GWC-14; AF-29 by GWC-15; AF-31 by GWC-13; AF-32 by GWC-9; AF-33 by GWC-0; AF-35 by GWC-5 (AF-34 corrected, see below)
 - resolved_open_decisions: none — seven narrowed by evidence (OD-01, OD-02, OD-04, OD-06, OD-07, OD-10), five fully open
 - remaining_open_decisions: OD-01..OD-12, all owned, none blocking task reconciliation
 - candidate_prs_inspected: #85, #86, #88, #89, #90 observed GITHUB_LIVE at 2026-09-17T03:47Z; dispositions recorded in GWC-12; none merged
@@ -2520,9 +2520,10 @@ depuis des preuves `CURRENT_MAIN` indépendantes de l'archive.
 | `AF-32` | trois mutations gouvernées ne traversent aucune porte d'écriture | la cartographie enregistre 111 outils en 68 `read`, 40 `scoped-write` et 3 `operational-write` ; seuls les 40 passent par `decorateScopedWriteServer` | `GWC-9` | 2 |
 | `AF-33` | un identifiant de finding du registre machine ne se résout pas vers une définition versionnée cohérente | `AF-07` rattaché à `GW-68`/`GW-69` et `AF-08` à `GW-56`, alors que les seules définitions versionnées décrivent d'autres contrats | `GWC-0` | 3 |
 | `AF-34` | le gate pre-code déclare 14/14 phases d'architecture satisfaites, alors que quatre conditions de sortie ne sont pas vérifiables sur le head exact | `.mcp/gwc-precode-gate.json` porte `architecturePhases.satisfied = 14` ; la vérification du head `58d71959` donne 10/14 — `A5-01` 0/91 arêtes portant trigger/precondition, `A7-01`/`A7-02` aucun modèle `EvidenceRef` ni `StepAttestation` typé, `A8-03`/`A8-04` classes de rejeu et `RecoveryAnchor` non définies, `A11-01` 15/19 scénarios nommés couverts | `GWC-0` | 1 — bloque le gate |
+| `AF-35` | la Governed Task Queue et Live State se contredisent sur l'état de `TASK-20260915-001` | la file déclare `DEPLOYING` avec blocker `DOCUMENTATION_DRIFT` à `46d576e5` ; Live State `stateVersion 246` déclare `documentation: ALIGNED`, `global: FULLY_ALIGNED` et 0 contradiction à `d1f30395`, plus récent. La session propriétaire `499b2ea3` a acquitté `stateVersion 233` et n'a pas battu depuis le 2026-09-16T22:52Z | `GWC-5` | 1 — bloque la matérialisation |
 
-`AF-31`, `AF-32` et `AF-33` sont découverts par la conception d'évolution ; `AF-34` est découvert par
-l'exécution du flux pré-code. Aucun n'existait dans un document antérieur.
+`AF-31`, `AF-32` et `AF-33` sont découverts par la conception d'évolution ; `AF-34` et `AF-35` sont
+découverts par l'exécution du flux pré-code. Aucun n'existait dans un document antérieur.
 
 `AF-34` est la démonstration que la règle absolue du flux tient : « une affirmation documentaire
 `COMPLETE` ne suffit pas par elle-même ». Le gate se déclarait complet ; la vérification contre le head
@@ -2572,12 +2573,12 @@ deux directions de routage, 91 arêtes, 72 contrats runtime tous atteignables de
 
 | Mesure | Valeur |
 | --- | --- |
-| Findings enregistrés | 34 — `AF-01` à `AF-34` |
+| Findings enregistrés | 35 — `AF-01` à `AF-35` |
 | Série héritée `AF-01` à `AF-30` | 30 |
 | dont définition rétablie sur preuve `CURRENT_MAIN` ici | 4 — `AF-19`, `AF-22`, `AF-29`, `AF-30` |
 | dont définition restée `ARCHIVE_R2_NON_CANONICAL` | 26 |
 | Découverts par la conception d'évolution | 3 — `AF-31`, `AF-32`, `AF-33` |
-| Découverts par l'exécution du flux pré-code | 1 — `AF-34` |
+| Découverts par l'exécution du flux pré-code | 2 — `AF-34` (gate déclaratif), `AF-35` (Task Queue contre Live State) |
 | Corrigés à ce jour | 2 — `AF-28` (graphe), `AF-34` (gate déclaratif) |
 | Sans propriétaire architectural | 0 |
 

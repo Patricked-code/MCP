@@ -183,6 +183,66 @@
   "phasesPassWithEvidence": 14,
   "phasesRequired": 14,
   "findingsRaised": [
-    "AF-34"
-  ]
+    "AF-34",
+    "AF-35"
+  ],
+  "phaseB": {
+    "id": "B",
+    "name": "Live Task Reconciliation",
+    "status": "BLOCKED",
+    "observedAt": "2026-09-17T13:55:00Z",
+    "observedVia": "wealthtech_ssh_bridge",
+    "authorityObservationNote": "Ces autorites runtime sont observees via le MCP WealthTech, jamais via GitHub ni via le clone local. Le observedAt racine reste celui de l observation du head 58d71959 pour les phases d architecture et n est pas reutilise ici.",
+    "observedAuthorities": {
+      "taskQueue": {
+        "storeRevision": 188,
+        "nextSequence": 16,
+        "tasks": 15,
+        "byStatus": {
+          "DONE": 11,
+          "SUPERSEDED": 3,
+          "DEPLOYING": 1
+        }
+      },
+      "liveState": {
+        "stateVersion": 246,
+        "freshness": "CURRENT",
+        "global": "FULLY_ALIGNED",
+        "documentation": "ALIGNED",
+        "contradictions": 0,
+        "githubHead": "d1f303955c4d368950da2307dda41d826fc85d0a",
+        "s1Head": "d1f303955c4d368950da2307dda41d826fc85d0a",
+        "runtimeRevision": "d1f303955c4d368950da2307dda41d826fc85d0a"
+      },
+      "sessions": {
+        "total": 25,
+        "ACTIVE": 1,
+        "EXPIRED": 1,
+        "CLOSED": 23
+      },
+      "locks": {
+        "heldByAnySession": 0
+      }
+    },
+    "findings": [
+      "Aucune tache GWC n existe dans la file live: 0 des 18 blueprints n a de GovernedTaskRecord. Ni CONTINUATION ni DUPLICATE ne s appliquent.",
+      "La seule tache non terminale est TASK-20260915-001 (C2), statut DEPLOYING, blocker DOCUMENTATION_DRIFT, proprietaire session 499b2ea3.",
+      "CONFLICT d autorites: la Task Queue declare DOCUMENTATION_DRIFT bloquant a 46d576e5, tandis que Live State stateVersion 246 declare documentation ALIGNED, global FULLY_ALIGNED et 0 contradiction a d1f30395, plus recent.",
+      "La session proprietaire 499b2ea3 appartient a l agent ChatGPT GPT-5.6 Sol, dernier heartbeat 2026-09-16T22:52:19Z, lastAcknowledgedStateVersion 233 contre 246 en live: son Bootstrap Receipt est perime.",
+      "Le nextAction de cette session est lui-meme obsolete: il demande de merger PR #92 au head exact 8b71f14f, alors que PR #92 est fusionnee et que main a avance jusqu a d1f30395.",
+      "Aucun lock n est detenu par aucune session."
+    ],
+    "classification": {
+      "TASK-20260915-001": "CONFLICT",
+      "GWC-0..GWC-17": "BLOCKED"
+    },
+    "rule": "Le protocole MCP impose que la premiere tache executable precede les nouvelles. Enregistrer un NEW_TASK GWC avant resolution de TASK-20260915-001 reviendrait a doubler la file.",
+    "runtimeTasksCreated": 0,
+    "blockers": [
+      "CONFLICT non resolvable par cette session: TASK-20260915-001 est possedee par la session ACTIVE 499b2ea3 d un autre agent. Toute transition exigerait son governedSessionId et son expectedSessionRevision; agir a sa place violerait la regle un seul writer par domaine de collision et l interdiction d ecraser un travail concurrent.",
+      "Resolution possible par deux voies seulement: l agent proprietaire cloture sa tache et sa session, ou une decision humaine explicite fait expirer ou superseder TASK-20260915-001."
+    ],
+    "nextAction": "Resoudre le CONFLICT sur TASK-20260915-001 avant toute materialisation GWC. Aucune tache creee."
+  },
+  "phaseBVerdict": "LIVE_TASK_RECONCILIATION_BLOCKED_BY_PRIOR_NON_TERMINAL_TASK"
 }

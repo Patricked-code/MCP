@@ -27,6 +27,11 @@ GitHub live.
 | Blueprints promus en Task Queue | `NO` |
 | Conception d'évolution détaillée | `GWC-0`…`GWC-17`, 18 sur 18 |
 | Verdict de conception | `DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION` |
+| Flux pré-code | `GWC-PRE-000` → `GWC-PRE-GATE-01` exécuté ; 14 phases `A1`…`A14` `PASS_WITH_EVIDENCE` |
+| Verdict de gate | `GWC_ARCHITECTURE_GATE_PASS` |
+| Réconciliation live Phase B | `BLOCKED` — `LIVE_TASK_RECONCILIATION_BLOCKED_BY_PRIOR_NON_TERMINAL_TASK` |
+| Blocker courant | `CONFLICT` sur `TASK-20260915-001`, enregistré sous `AF-35` |
+| Findings enregistrés | 35 — `AF-01`…`AF-35`, dont `AF-28` et `AF-34` corrigés |
 
 ## Contenu
 
@@ -42,8 +47,16 @@ GitHub live.
 | `.mcp/gwc-workflow-graph.json` | graphe d'exécution canonique | agent |
 | `.mcp/gwc-blueprints.json` | registre machine des 18 blueprints | agent |
 | `.mcp/gwc-evolution-design.json` | projection machine de la conception d'évolution détaillée | agent |
+| `docs/gwc/PRECODE_ACTION_TASK_FLOW.txt` | flux pré-code `GWC-PRE-000` → `GWC-PRE-GATE-01` | humain et agent |
+| `docs/gwc/PRECODE_EXECUTION_PLAN.txt` | plan d'exécution et 22 scénarios `E2E` | humain et agent |
+| `docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md` | règles d'ownership temporaire par scope/session | humain et agent |
+| `.mcp/gwc-precode-action-flow.json` | projection machine du flux pré-code | agent |
+| `.mcp/gwc-precode-gate.json` | compteurs déclarés du gate, recoupés contre les preuves | agent |
+| `.mcp/gwc-precode-status.json` | **état d'exécution par phase, preuves, Phase B et blocker courant** | agent |
 | `docs/gwc/canonical-memory/pr95-ded/` | sources et bundle de mémoire de la mission de conception | traçabilité |
+| `docs/gwc/canonical-memory/pr95-precode-gate/` | sources et bundle de mémoire de la clôture pré-code | traçabilité |
 | `scripts/gwc-verify.mjs` | vérificateur déterministe | humain et agent |
+| `scripts/gwc-precode-verify.mjs` | vérificateur du flux pré-code et du gate | humain et agent |
 
 ## Frontière d'autorité — à ne pas confondre
 
@@ -74,6 +87,26 @@ architecture → blueprints → réconciliation avec la Task Queue live
 Un futur materializer peut produire **0, 1 ou plusieurs** Governed Tasks depuis un même
 blueprint selon la réalité live. Ne jamais supposer `1 blueprint = 1 Task`. Les blueprints ne
 sont chargés par aucun code : seul `.mcp/task-registry.json` est lu par `initializeSeed()`.
+
+### Où en est la réconciliation live
+
+La réconciliation Phase B **a été exécutée** contre les autorités runtime réelles, le
+2026-09-17, dès que le MCP WealthTech est devenu atteignable. Son résultat est enregistré dans
+`.mcp/gwc-precode-status.json`, bloc `phaseB` :
+
+- **aucune tâche GWC n'existe dans la file live** — 0 des 18 blueprints a un `GovernedTaskRecord`,
+  donc ni `CONTINUATION` ni `DUPLICATE` ne s'appliquent ;
+- **`TASK-20260915-001` est classée `CONFLICT`** — la Task Queue la déclare `DEPLOYING` avec
+  blocker `DOCUMENTATION_DRIFT`, Live State la contredit à un SHA plus récent. Enregistré
+  sous `AF-35` ;
+- **`GWC-0` à `GWC-17` sont classés `BLOCKED`**, pas `NEW_TASK` — la première tâche exécutable
+  précède les nouvelles ;
+- **`RUNTIME_TASKS_CREATED = 0`.**
+
+Un agent qui reprend ne doit donc **pas** relancer la classification comme si elle n'avait pas
+eu lieu, ni la considérer comme acquise sans réobservation : il réobserve les autorités live,
+compare au bloc `phaseB`, et ne poursuit la matérialisation qu'une fois le `CONFLICT` résolu par
+l'agent propriétaire ou par une décision humaine explicite.
 
 ## Protocole obligatoire pour tout agent
 
