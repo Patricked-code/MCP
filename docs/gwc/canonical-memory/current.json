@@ -1,9 +1,14 @@
 {
-  "currentBundle": "pr95-task-reconciliation-ready",
-  "currentBundleId": "bnd_mcp-pr95-task-reconciliation-ready-20260917",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-task-reconciliation-ready",
+  "currentBundle": "pr95-precode-architecture-complete",
+  "currentBundleId": "bnd_mcp-pr95-precode-architecture-complete-20260917",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-precode-architecture-complete",
   "localCloneUsedForThisMemoryMission": false,
   "previousBundles": [
+    {
+      "name": "pr95-task-reconciliation-ready",
+      "path": "docs/gwc/canonical-memory/pr95-task-reconciliation-ready",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
     {
       "name": "pr95-ded",
       "path": "docs/gwc/canonical-memory/pr95-ded",
@@ -20,5 +25,5 @@
   "repository": "Patricked-code/MCP",
   "schemaVersion": 1,
   "scope": "GWC",
-  "updatedFromGitHubObservationAt": "2026-09-17T06:34:09+02:00"
+  "updatedFromGitHubObservationAt": "2026-09-17T07:18:35+02:00"
 }
