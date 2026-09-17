@@ -59,8 +59,9 @@ Pour toute intervention liée à GWC, au Universal Resolver, aux 73 contrats, au
 2. lire `docs/gwc/canonical-memory/current.json` pour résoudre le bundle de continuité courant ;
 3. vérifier le bundle sélectionné avec un Canonical Memory Verifier compatible avant d’en projeter les claims ;
 4. lire `docs/gwc/PRECODE_ACTION_TASK_FLOW.txt` et sa projection `.mcp/gwc-precode-action-flow.json` avant toute implémentation runtime GWC ;
-5. lire ensuite les projections `.mcp/gwc-contracts.json`, `.mcp/gwc-workflow-graph.json`, `.mcp/gwc-blueprints.json` et `.mcp/gwc-evolution-design.json` selon le besoin ;
-6. réobserver les autorités live applicables avant toute mutation.
+5. lire `docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md` avant toute écriture sur une branche GWC partagée par plusieurs agents ;
+6. lire ensuite les projections `.mcp/gwc-contracts.json`, `.mcp/gwc-workflow-graph.json`, `.mcp/gwc-blueprints.json` et `.mcp/gwc-evolution-design.json` selon le besoin ;
+7. réobserver les autorités live applicables avant toute mutation.
 
 La mémoire canonique GWC fournit de la **continuité et de la provenance**, jamais une approbation live. Un claim `historical_authority` ne remplace ni GitHub live, ni la Governed Task Queue, ni la Governed Session, ni le Bootstrap Receipt, ni les locks, ni Live State, ni le runtime. Un ancien bundle reste immuable ; une phase plus récente est portée par un nouveau bundle et le pointeur `current.json`.
 
@@ -133,6 +134,22 @@ L’agent ne s’arrête que pour un blocker gouverné réel non résoluble depu
 
 Une fin de sous-tâche, un test vert, un commit ou un changement de phase ne sont pas des raisons d’attendre une nouvelle instruction utilisateur lorsque la prochaine action est déductible.
 
+### 9.6 Coordination multi-agent sur une branche GWC partagée
+
+Lorsque plusieurs agents (par exemple Claude et ChatGPT) interviennent sur la même branche, ils doivent appliquer `docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md`.
+
+Règles minimales obligatoires :
+
+- Claude est le writer PRECODE principal par défaut ; ChatGPT est reviewer/verifier indépendant par défaut ;
+- un second agent ne devient writer que sur un scope borné, dependency-satisfied et réellement disjoint ;
+- un seul writer par collision domain mutable ;
+- relecture du head exact immédiatement avant chaque écriture ;
+- si `HEAD_MOVED`, aucune écriture préparée sur l’ancien head n’est publiée avant réobservation et réconciliation ;
+- aucun force-push, reset ou écrasement de travail concurrent ;
+- tout scope mutable doit laisser une trace durable avec agent, work item, paths, starting head et NEXT_ACTION ;
+- les PRECODE scope claims ne sont jamais des `TASK-*`, Governed Tasks ou runtime locks ;
+- les fichiers canoniques partagés sont séquentiels par défaut ; le parallélisme n’est permis que pour des scopes/paths/autorités sans collision démontrée.
+
 
 ---
 
@@ -184,4 +201,4 @@ Règles permanentes :
 - DirtyCount à zéro avant pull, merge, deploy, migration ou nettoyage ;
 - non-régression obligatoire.
 
-Mise à jour : 2026-09-17T08:00:00+02:00
+Mise à jour : 2026-09-17T08:30:00+02:00
