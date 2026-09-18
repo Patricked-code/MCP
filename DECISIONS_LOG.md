@@ -3,6 +3,17 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-19 — PRECODE GitHub-first, sans dépendance MCP runtime
+
+Décision : pendant la construction candidate sur `claude/ecstatic-edison-v1dyt1`, l'agent arrive directement par GitHub et reconstruit son contexte depuis le HEAD et les artefacts versionnés de branche. Le MCP runtime n'est ni un prérequis de connexion, ni une autorité de session, tâche ou lock pour le PRECODE.
+
+Identité : la `candidateSessionId` est une identité branch-local dérivée pour la coordination. Elle ne doit jamais être présentée comme un véritable ID ChatGPT/Claude. Les références provider ne sont stockées que si le client les expose réellement ; sinon elles restent `null/UNAVAILABLE`.
+
+Orientation : si le message permet de déduire information/continuation/both, l'agent route sans question redondante. Si l'intention est indéterminable, il demande les trois choix canoniques avant tout claim.
+
+Évolution sans régression : les anciens enregistrements de candidate session restent lisibles ; les nouveaux champs sont additifs et peuvent être enrichis au prochain resume.
+
+
 ## 2026-09-19 — Continuité PRECODE multi-agent et informations de conversation
 
 Décision : toute IA autorisée qui reprend `claude/ecstatic-edison-v1dyt1` doit reconstituer le contexte depuis les autorités de branche, analyser les nouvelles informations de sa conversation, les réconcilier avec la mémoire canonique/backlog, puis reprendre son claim ou recevoir le prochain work item dependency-safe/collision-safe.
