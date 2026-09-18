@@ -6,7 +6,7 @@
   "actionFlow": {
     "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "projection": ".mcp/gwc-precode-action-flow.json",
-    "digestSha256": "d72e775c719bc9f8445aaec5b78f0f01f02d7cd8f758347f4e9e00ba455477a6",
+    "digestSha256": "e545252b4b998b0fb73bf5771e40d2d86e3a39fa32a0768c75db529371f8b812",
     "role": "candidate_build_execution_companion_not_runtime_authority",
     "mustBeRevalidatedBeforeCandidateCode": true
   },
@@ -92,6 +92,45 @@
       "red": "CI #1061 @ a992bc0adf8e841ee38463bce75667650c13689d",
       "compatibility": "CI #1062 @ 44e19282564578a748ae3563c726741816d304ea",
       "green": "CI #1063 @ 2264b3da4dc672ae1e271519957203c62b7ae03d"
+    }
+  },
+  "intakeContinuityCoherence": {
+    "status": "PASS_WITH_EVIDENCE",
+    "noParallelAuthority": true,
+    "implementation": "src/governedContext/candidateContinuity.ts",
+    "latestIntakeSequence": 2,
+    "reconciledThroughSequence": 0,
+    "pendingIntakes": [
+      "NEW_INFORMATION_INTAKE-001",
+      "NEW_INFORMATION_INTAKE-002"
+    ],
+    "initialCanonicalRevision": 1,
+    "initialBacklogRevision": 0,
+    "verdicts": [
+      "ACCEPT",
+      "ACCEPT_WITH_ADAPTATION",
+      "COMPLEMENT",
+      "DUPLICATE",
+      "DEFER",
+      "HOLD_FOR_REVIEW",
+      "OUT_OF_SCOPE",
+      "REJECT"
+    ],
+    "sequenceGap": "FAIL_CLOSED",
+    "contradictions": "HOLD_FOR_REVIEW",
+    "parallelAuthority": "REJECT",
+    "evidenceRequiredUnverified": "DEFER",
+    "localImpact": "ONLY_AFFECTED_WORK_REQUIRES_RECONCILIATION",
+    "guards": [
+      "HEAD_SHA",
+      "CANONICAL_REVISION",
+      "BACKLOG_REVISION"
+    ],
+    "runtimeMcpRequired": false,
+    "runtimeMutationAllowed": false,
+    "evidence": {
+      "red": "CI #1080 @ c63beb0ac413824a72647a661640ed599cc867a0",
+      "green": "CI #1081 @ f288d3e93eae772dd4e51654a1e4512a822b3dd6"
     }
   }
 }
