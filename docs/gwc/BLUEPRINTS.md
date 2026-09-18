@@ -374,7 +374,7 @@ DETAILED_EVOLUTION_PROGRESS
 - in_progress_blueprint: none
 - not_started_blueprints: none
 - completed_findings: AF-28 (graph incoherence, corrected in R3) and AF-34 (declarative pre-code gate, corrected on both faces)
-- open_findings: AF-01..AF-33 and AF-35; AF-19 owned by GWC-15; AF-22/AF-30 owned by GWC-14; AF-29 by GWC-15; AF-31 by GWC-13; AF-32 by GWC-9; AF-33 by GWC-0; AF-35 by GWC-5 (AF-34 corrected, see below)
+- open_findings: AF-01..AF-33; AF-19 owned by GWC-15; AF-22/AF-30 owned by GWC-14; AF-29 by GWC-15; AF-31 by GWC-13; AF-32 by GWC-9; AF-33 by GWC-0 (AF-34 corrected and AF-35 resolved at source, see below)
 - resolved_open_decisions: none — seven narrowed by evidence (OD-01, OD-02, OD-04, OD-06, OD-07, OD-10), five fully open
 - remaining_open_decisions: OD-01..OD-12, all owned, none blocking task reconciliation
 - candidate_prs_inspected: #85, #86, #88, #89, #90 observed GITHUB_LIVE at 2026-09-17T03:47Z; dispositions recorded in GWC-12; none merged
@@ -2520,7 +2520,7 @@ depuis des preuves `CURRENT_MAIN` indépendantes de l'archive.
 | `AF-32` | trois mutations gouvernées ne traversent aucune porte d'écriture | la cartographie enregistre 111 outils en 68 `read`, 40 `scoped-write` et 3 `operational-write` ; seuls les 40 passent par `decorateScopedWriteServer` | `GWC-9` | 2 |
 | `AF-33` | un identifiant de finding du registre machine ne se résout pas vers une définition versionnée cohérente | `AF-07` rattaché à `GW-68`/`GW-69` et `AF-08` à `GW-56`, alors que les seules définitions versionnées décrivent d'autres contrats | `GWC-0` | 3 |
 | `AF-34` | le gate pre-code déclare 14/14 phases d'architecture satisfaites, alors que quatre conditions de sortie ne sont pas vérifiables sur le head exact | `.mcp/gwc-precode-gate.json` porte `architecturePhases.satisfied = 14` ; la vérification du head `58d71959` donne 10/14 — `A5-01` 0/91 arêtes portant trigger/precondition, `A7-01`/`A7-02` aucun modèle `EvidenceRef` ni `StepAttestation` typé, `A8-03`/`A8-04` classes de rejeu et `RecoveryAnchor` non définies, `A11-01` 15/19 scénarios nommés couverts | `GWC-0` | 1 — bloque le gate |
-| `AF-35` | la Governed Task Queue et Live State se contredisent sur l'état de `TASK-20260915-001` | la file déclare `DEPLOYING` avec blocker `DOCUMENTATION_DRIFT` à `46d576e5` ; Live State `stateVersion 246` déclare `documentation: ALIGNED`, `global: FULLY_ALIGNED` et 0 contradiction à `d1f30395`, plus récent. La session propriétaire `499b2ea3` a acquitté `stateVersion 233` et n'a pas battu depuis le 2026-09-16T22:52Z | `GWC-5` | 1 — bloque la matérialisation |
+| `AF-35` | la Governed Task Queue et Live State se contredisent sur l'état de `TASK-20260915-001` | la file déclarait `DEPLOYING` avec blocker `DOCUMENTATION_DRIFT` à `46d576e5` ; Live State `stateVersion 246` déclarait `documentation: ALIGNED`, `global: FULLY_ALIGNED` et 0 contradiction à `d1f30395`, plus récent. **Résolu à la source le 2026-09-17T20:27Z** : l'agent propriétaire a acquitté `stateVersion 246`, porté la tâche à `DONE` avec blockers vides (`taskRevision 12`) puis fermé sa session `499b2ea3`. Les deux autorités concordent, réobservé le 2026-09-18T17:08Z | `GWC-5` | **résolu** |
 
 `AF-31`, `AF-32` et `AF-33` sont découverts par la conception d'évolution ; `AF-34` et `AF-35` sont
 découverts par l'exécution du flux pré-code. Aucun n'existait dans un document antérieur.
@@ -2580,6 +2580,7 @@ deux directions de routage, 91 arêtes, 72 contrats runtime tous atteignables de
 | Découverts par la conception d'évolution | 3 — `AF-31`, `AF-32`, `AF-33` |
 | Découverts par l'exécution du flux pré-code | 2 — `AF-34` (gate déclaratif), `AF-35` (Task Queue contre Live State) |
 | Corrigés à ce jour | 2 — `AF-28` (graphe), `AF-34` (gate déclaratif) |
+| Résolus à la source par un autre agent | 1 — `AF-35`, par clôture de `TASK-20260915-001` et de la session `499b2ea3` |
 | Sans propriétaire architectural | 0 |
 
 Chaque finding a un blueprint propriétaire. Aucun n'est orphelin.
@@ -2832,6 +2833,20 @@ runtime, et n'a jamais été traitée comme telle.
 > fiches gardent leur `REQUIRES LIVE TASK QUEUE RECONCILIATION`, non plus faute d'observation mais
 > parce que la première tâche exécutable précède les nouvelles. Voir le bloc `phaseB` de
 > `.mcp/gwc-precode-status.json`.
+>
+> **Blocage levé le 2026-09-18, réobservé à 17:08Z.** L'agent propriétaire a pris la voie (a) :
+> `TASK-20260915-001` est `DONE`, blockers vides, `taskRevision 12`, et la session `499b2ea3` est
+> `CLOSED` après acquittement du `stateVersion 246`. La file porte `storeRevision 190`, 15 tâches,
+> **12 `DONE` + 3 `SUPERSEDED`, aucune non terminale**, et **zéro session `ACTIVE`**. `AF-35` est
+> résolu à la source : les deux autorités concordent. La classification devient
+> **`GWC-0` à `GWC-17` → `NEW_TASK`**, seule classification autorisant la création d'un
+> `GovernedTaskRecord`.
+>
+> `NEW_TASK` rend la matérialisation **admissible, pas automatique**. Créer une Governed Task exige
+> une governed session et un Bootstrap Receipt — hors du périmètre de cette session — et
+> `TASK BLUEPRINT ≠ GovernedTaskRecord` interdit de créer les dix-huit en bloc. L'ordre prescrit
+> reste celui de la Phase E, et la contrainte C3 tient : `GWC-9` précède tout `SPLIT` portant du
+> `WRITE`. `RUNTIME_TASKS_CREATED` reste **0**.
 
 ### Frontières respectées
 

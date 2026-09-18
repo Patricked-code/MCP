@@ -189,7 +189,7 @@
   "phaseB": {
     "id": "B",
     "name": "Live Task Reconciliation",
-    "status": "BLOCKED",
+    "status": "PASS_WITH_EVIDENCE",
     "observedAt": "2026-09-17T13:55:00Z",
     "observedVia": "wealthtech_ssh_bridge",
     "authorityObservationNote": "Ces autorites runtime sont observees via le MCP WealthTech, jamais via GitHub ni via le clone local. Le observedAt racine reste celui de l observation du head 58d71959 pour les phases d architecture et n est pas reutilise ici.",
@@ -233,8 +233,8 @@
       "Aucun lock n est detenu par aucune session."
     ],
     "classification": {
-      "TASK-20260915-001": "CONFLICT",
-      "GWC-0..GWC-17": "BLOCKED"
+      "TASK-20260915-001": "RESOLVED",
+      "GWC-0..GWC-17": "NEW_TASK_ELIGIBLE"
     },
     "rule": "Le protocole MCP impose que la premiere tache executable precede les nouvelles. Enregistrer un NEW_TASK GWC avant resolution de TASK-20260915-001 reviendrait a doubler la file.",
     "runtimeTasksCreated": 0,
@@ -242,9 +242,84 @@
       "CONFLICT non resolvable par cette session: TASK-20260915-001 est possedee par la session ACTIVE 499b2ea3 d un autre agent. Toute transition exigerait son governedSessionId et son expectedSessionRevision; agir a sa place violerait la regle un seul writer par domaine de collision et l interdiction d ecraser un travail concurrent.",
       "Resolution possible par deux voies seulement: l agent proprietaire cloture sa tache et sa session, ou une decision humaine explicite fait expirer ou superseder TASK-20260915-001."
     ],
-    "nextAction": "Resoudre le CONFLICT sur TASK-20260915-001 avant toute materialisation GWC. Aucune tache creee."
+    "nextAction": "Materialisation GWC admissible. Premiere action executable: creer la Governed Task de GWC-0 via les primitives gouvernees existantes, apres decision humaine explicite. Ne jamais creer les 18 en bloc.",
+    "reobservations": [
+      {
+        "observedAt": "2026-09-18T17:08:00Z",
+        "observedVia": "wealthtech_ssh_bridge",
+        "trigger": "Bridge OAuth reautorise; reobservation exigee avant de rejouer une classification datee.",
+        "taskQueue": {
+          "storeRevision": 190,
+          "nextSequence": 16,
+          "tasks": 15,
+          "byStatus": {
+            "DONE": 12,
+            "SUPERSEDED": 3
+          },
+          "nonTerminalTasks": 0
+        },
+        "liveState": {
+          "stateVersion": 246,
+          "freshness": "CURRENT",
+          "global": "FULLY_ALIGNED",
+          "documentation": "ALIGNED",
+          "documentationDrift": false,
+          "contradictions": 0,
+          "activeTask": null,
+          "githubHead": "d1f303955c4d368950da2307dda41d826fc85d0a",
+          "s1Head": "d1f303955c4d368950da2307dda41d826fc85d0a",
+          "runtimeRevision": "d1f303955c4d368950da2307dda41d826fc85d0a",
+          "runtimeHealth": "healthy"
+        },
+        "sessions": {
+          "total": 25,
+          "ACTIVE": 0,
+          "EXPIRED": 1,
+          "CLOSED": 24
+        },
+        "locks": {
+          "note": "Aucune session ACTIVE n existe, donc aucune session ne detient de lock. Aucun outil de listage de locks en lecture seule n a ete utilise: enonce derive de l absence de session ACTIVE, pas d une enumeration directe."
+        },
+        "conflictResolution": {
+          "taskId": "TASK-20260915-001",
+          "previousStatus": "DEPLOYING",
+          "currentStatus": "DONE",
+          "previousBlockers": [
+            "DOCUMENTATION_DRIFT"
+          ],
+          "currentBlockers": [],
+          "taskRevision": 12,
+          "updatedAt": "2026-09-17T20:27:08.533Z",
+          "observedHeadSha": "d1f303955c4d368950da2307dda41d826fc85d0a",
+          "runtimeRevision": "d1f303955c4d368950da2307dda41d826fc85d0a",
+          "owningSession": "499b2ea3-754e-412d-970c-71530015e18a",
+          "owningSessionStatus": "CLOSED",
+          "owningSessionClosedAt": "2026-09-17T20:27:22.935Z",
+          "owningSessionLastAcknowledgedStateVersion": 246,
+          "owningSessionRevision": 13,
+          "resolutionPath": "VOIE_A_AGENT_PROPRIETAIRE",
+          "note": "L agent proprietaire a acquitte le stateVersion 246, porte sa tache a DONE avec blockers vides, puis ferme sa session. Aucune action de cette session n a ete necessaire ni exercee.",
+          "ownerNextAction": "C2 terminal conditions verified on current aligned main/runtime. Close the governed session, reconcile the live queue, then resume GWC Phase B classification without creating tasks except via NEW_TASK."
+        }
+      }
+    ],
+    "classificationRationale": [
+      "Aucune tache GWC n existe dans la file live: ni CONTINUATION ni DUPLICATE ne s appliquent.",
+      "Le CONFLICT sur TASK-20260915-001 est resolu a la source: la file ne declare plus DOCUMENTATION_DRIFT et Live State ne porte aucune contradiction.",
+      "Le motif BLOCKED est leve: aucune tache non terminale ne precede desormais les nouvelles (12 DONE, 3 SUPERSEDED, 0 non terminale).",
+      "Il reste donc NEW_TASK, seule classification autorisant la creation d un GovernedTaskRecord."
+    ],
+    "materializationGate": {
+      "admissible": true,
+      "executed": false,
+      "runtimeTasksCreated": 0,
+      "reason": "NEW_TASK rend la materialisation admissible, pas automatique. Creer une Governed Task exige une governed session et un Bootstrap Receipt, hors du perimetre autorise pour cette session. Une decision humaine explicite est requise.",
+      "architecturalRule": "TASK BLUEPRINT != GovernedTaskRecord: un blueprint peut produire 0, 1 ou N taches. Aucune creation en bloc des 18.",
+      "prescribedOrder": "Phase E: GWC-0 -> GWC-1 -> GWC-2 -> GWC-3 -> {GWC-4, GWC-5, GWC-6 -> GWC-7, GWC-8} -> GWC-9 -> GWC-10 -> GWC-11 ...",
+      "orderingConstraintFromC3": "GWC-9 precede l atterrissage de tout SPLIT portant du WRITE (AF-32)."
+    }
   },
-  "phaseBVerdict": "LIVE_TASK_RECONCILIATION_BLOCKED_BY_PRIOR_NON_TERMINAL_TASK",
+  "phaseBVerdict": "LIVE_TASK_RECONCILIATION_COMPLETE_NEW_TASK_ADMISSIBLE_NOT_MATERIALIZED",
   "phaseC": {
     "id": "C",
     "name": "Safety Prerequisites",
@@ -477,5 +552,14 @@
       "prsMutated": 0
     }
   },
-  "phaseCVerdict": "CANDIDATE_STACK_RECONCILED_DISPOSITIONS_RECORDED_NO_MERGE"
+  "phaseCVerdict": "CANDIDATE_STACK_RECONCILED_DISPOSITIONS_RECORDED_NO_MERGE",
+  "findingsResolved": [
+    {
+      "finding": "AF-35",
+      "owner": "GWC-5",
+      "resolvedAt": "2026-09-18T17:08:00Z",
+      "resolution": "Contradiction resolue a la source par l agent proprietaire: TASK-20260915-001 est DONE, blockers vides, session fermee apres acquittement du stateVersion 246. La file et Live State concordent.",
+      "resolvedBy": "OWNING_AGENT_NOT_THIS_SESSION"
+    }
+  ]
 }

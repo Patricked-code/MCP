@@ -1,0 +1,124 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-phase-b-resolved-20260918",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_github_live",
+      "path": "sources/github-live.json",
+      "media_type": "application/json",
+      "bytes": 494,
+      "sha256": "1c0147f35579b563bcc4fd2b443bb79bafff3310ea883e2c73bffd8a63affbe8"
+    },
+    {
+      "source_id": "src_live_authorities",
+      "path": "sources/live-authorities.json",
+      "media_type": "application/json",
+      "bytes": 2216,
+      "sha256": "677c6cb2c41be44406dd81ea85d5a39c20a7afa1d957b9d64dccf0f11d615e1e"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_conflict_resolved",
+      "key": "taskqueue.task_20260915_001",
+      "claim_type": "fact",
+      "value": "RESOLVED: TASK-20260915-001 est DONE, blockers vides, taskRevision 12; session proprietaire 499b2ea3 CLOSED apres acquittement du stateVersion 246. Resolu par l agent proprietaire, pas par la session Claude.",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_no_non_terminal_task",
+      "key": "taskqueue.non_terminal_tasks",
+      "claim_type": "fact",
+      "value": "0 sur 15 taches: 12 DONE, 3 SUPERSEDED, storeRevision 190. Aucune session ACTIVE sur 25.",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_blueprints_new_task",
+      "key": "runtime.task_materialization",
+      "claim_type": "fact",
+      "value": "NEW_TASK: GWC-0 a GWC-17 sont eligibles a la creation d un GovernedTaskRecord. Le motif BLOCKED est leve, aucune tache GWC n existe, donc ni CONTINUATION ni DUPLICATE.",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_not_materialized",
+      "key": "runtime.materialization_executed",
+      "claim_type": "fact",
+      "value": "NON EXECUTEE: RUNTIME_TASKS_CREATED=0. NEW_TASK rend la materialisation admissible, pas automatique. Elle exige une governed session, un Bootstrap Receipt et une decision humaine explicite.",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_materialization_granularity",
+      "key": "runtime.materialization_granularity",
+      "claim_type": "fact",
+      "value": "TASK BLUEPRINT != GovernedTaskRecord: jamais les 18 en bloc. Ordre prescrit Phase E a partir de GWC-0; GWC-9 precede tout SPLIT portant du WRITE tant qu AF-32 est ouvert.",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_af35_resolved",
+      "key": "finding.af35",
+      "claim_type": "fact",
+      "value": "AF-35 resolu a la source: la Governed Task Queue et Live State concordent desormais. Le blocker DOCUMENTATION_DRIFT etait perime plutot que reel, comme le SESSION_HANDOFF l avait pose sans le trancher.",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_runtime_frozen",
+      "key": "runtime.gwc_implementation",
+      "claim_type": "fact",
+      "value": "NOT_STARTED",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_next_action",
+      "key": "program.next_action",
+      "claim_type": "fact",
+      "value": "Creer la Governed Task de GWC-0 via les primitives gouvernees existantes, apres decision humaine explicite. Une seule tache, jamais les 18.",
+      "source_refs": [
+        "src_live_authorities"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": [
+    {
+      "edge_id": "sup_task_conflict",
+      "superseded_claim_id": "clm_task_conflict",
+      "superseding_claim_id": "clm_conflict_resolved",
+      "reason": "Le CONFLICT etait reel au 2026-09-17T13:55Z. L agent proprietaire l a resolu a la source le 2026-09-17T20:27Z. La reobservation du 2026-09-18T17:08Z le constate; l ancienne observation reste vraie a sa date et n est pas reecrite."
+    },
+    {
+      "edge_id": "sup_blueprints_blocked",
+      "superseded_claim_id": "clm_blueprints_blocked",
+      "superseding_claim_id": "clm_blueprints_new_task",
+      "reason": "BLOCKED reposait sur l existence d une tache non terminale precedant les nouvelles. Cette tache est terminale; le motif tombe et la classification devient NEW_TASK."
+    },
+    {
+      "edge_id": "sup_conflict_ownership",
+      "superseded_claim_id": "clm_conflict_not_ours",
+      "superseding_claim_id": "clm_conflict_resolved",
+      "reason": "La question de propriete est close: la session proprietaire a agi elle-meme puis s est fermee. Aucune action n a jamais ete exercee a sa place."
+    }
+  ]
+}

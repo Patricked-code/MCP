@@ -587,3 +587,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Contrainte d'ordonnancement enregistrée : `GWC-9` précède l'atterrissage de tout `SPLIT` portant du `WRITE`, parce que `AF-32` reste ouvert et que `#90` ajoute douze outils `WRITE`.
 - `GWC-PRE-C1` (`AF-19`) et `GWC-PRE-C2` (`AF-22`/`AF-30`) restent `PENDING` et sont déclarés tels : hors du périmètre autorisé pour cette session.
 - Portée : documentation et données. `PRS_MUTATED = 0`, `RUNTIME_TASKS_CREATED = 0`, aucun merge, aucun déploiement, aucun code runtime, aucun secret.
+
+
+## 2026-09-18 — Phase B réobservée : `CONFLICT` levé, classification `NEW_TASK`
+
+- Réobservation en lecture seule des autorités runtime après réautorisation du bridge WealthTech, le 2026-09-18T17:08Z.
+- `TASK-20260915-001` observée **`DONE`** avec blockers vides (`taskRevision 12`) ; session propriétaire `499b2ea3` **`CLOSED`** après acquittement du `stateVersion 246`. Le `CONFLICT` enregistré sous `AF-35` est **résolu à la source par l'agent propriétaire**, sans aucune action de cette session.
+- Task Queue `storeRevision 190` : 15 tâches, 12 `DONE`, 3 `SUPERSEDED`, **aucune non terminale**. 25 sessions, **aucune `ACTIVE`**. Live State `stateVersion 246` `FULLY_ALIGNED`, 0 contradiction.
+- Classification mise à jour : `TASK-20260915-001` → `RESOLVED` ; `GWC-0` à `GWC-17` → **`NEW_TASK`**, seule classification autorisant la création d'un `GovernedTaskRecord`.
+- `AF-35` passe de « ouvert, bloque la matérialisation » à « résolu ». Les compteurs de findings et le verdict terminal sont mis à jour en conséquence.
+- Portée : documentation et données. `RUNTIME_TASKS_CREATED = 0`, aucune session ouverte, aucun Bootstrap Receipt demandé, aucun claim, aucun lock, aucune transition, aucun merge, aucun déploiement, aucun secret. La matérialisation est admissible mais non exécutée : elle exige une governed session et une décision humaine explicite.

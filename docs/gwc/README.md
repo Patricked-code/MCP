@@ -29,9 +29,12 @@ GitHub live.
 | Verdict de conception | `DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION` |
 | Flux pré-code | `GWC-PRE-000` → `GWC-PRE-GATE-01` exécuté ; 14 phases `A1`…`A14` `PASS_WITH_EVIDENCE` |
 | Verdict de gate | `GWC_ARCHITECTURE_GATE_PASS` |
-| Réconciliation live Phase B | `BLOCKED` — `LIVE_TASK_RECONCILIATION_BLOCKED_BY_PRIOR_NON_TERMINAL_TASK` |
-| Blocker courant | `CONFLICT` sur `TASK-20260915-001`, enregistré sous `AF-35` |
-| Findings enregistrés | 35 — `AF-01`…`AF-35`, dont `AF-28` et `AF-34` corrigés |
+| Réconciliation live Phase B | `PASS_WITH_EVIDENCE` — `LIVE_TASK_RECONCILIATION_COMPLETE_NEW_TASK_ADMISSIBLE_NOT_MATERIALIZED` |
+| Blocker courant | **aucun** — `AF-35` résolu à la source le 2026-09-17T20:27Z, réobservé le 2026-09-18T17:08Z |
+| Classification des 18 blueprints | `NEW_TASK` — matérialisation **admissible**, non exécutée |
+| Tâches runtime créées | `0` — créer une Governed Task exige une governed session et une décision humaine |
+| Réconciliation de la pile candidate | `GWC-PRE-C3` exécutée, 8 capacités disposées |
+| Findings enregistrés | 35 — `AF-01`…`AF-35` ; `AF-28` et `AF-34` corrigés, `AF-35` résolu à la source |
 
 ## Contenu
 
@@ -91,23 +94,30 @@ sont chargés par aucun code : seul `.mcp/task-registry.json` est lu par `initia
 
 ### Où en est la réconciliation live
 
-La réconciliation Phase B **a été exécutée** contre les autorités runtime réelles, le
-2026-09-17, dès que le MCP WealthTech est devenu atteignable. Son résultat est enregistré dans
-`.mcp/gwc-precode-status.json`, bloc `phaseB` :
+La réconciliation Phase B **a été exécutée** contre les autorités runtime réelles, puis
+**réobservée le 2026-09-18 à 17:08Z**. Son résultat est enregistré dans
+`.mcp/gwc-precode-status.json`, bloc `phaseB`, avec l'historique complet des réobservations.
+
+État courant, observé :
 
 - **aucune tâche GWC n'existe dans la file live** — 0 des 18 blueprints a un `GovernedTaskRecord`,
   donc ni `CONTINUATION` ni `DUPLICATE` ne s'appliquent ;
-- **`TASK-20260915-001` est classée `CONFLICT`** — la Task Queue la déclare `DEPLOYING` avec
-  blocker `DOCUMENTATION_DRIFT`, Live State la contredit à un SHA plus récent. Enregistré
-  sous `AF-35` ;
-- **`GWC-0` à `GWC-17` sont classés `BLOCKED`**, pas `NEW_TASK` — la première tâche exécutable
-  précède les nouvelles ;
-- **`RUNTIME_TASKS_CREATED = 0`.**
+- **le `CONFLICT` sur `TASK-20260915-001` est résolu à la source.** L'agent propriétaire a acquitté
+  le `stateVersion 246`, porté sa tâche à `DONE` avec blockers vides, puis fermé sa session
+  `499b2ea3`. `AF-35` est résolu ;
+- **aucune tâche non terminale** — file `storeRevision 190`, 15 tâches, 12 `DONE` + 3 `SUPERSEDED` —
+  et **zéro session `ACTIVE`**. Le motif `BLOCKED` est donc levé ;
+- **`GWC-0` à `GWC-17` sont classés `NEW_TASK`** — seule classification autorisant la création d'un
+  `GovernedTaskRecord` ;
+- **`RUNTIME_TASKS_CREATED = 0`.** `NEW_TASK` rend la matérialisation *admissible*, pas
+  *automatique*.
 
 Un agent qui reprend ne doit donc **pas** relancer la classification comme si elle n'avait pas
-eu lieu, ni la considérer comme acquise sans réobservation : il réobserve les autorités live,
-compare au bloc `phaseB`, et ne poursuit la matérialisation qu'une fois le `CONFLICT` résolu par
-l'agent propriétaire ou par une décision humaine explicite.
+eu lieu, ni la considérer comme acquise sans réobservation : il réobserve les autorités live et
+compare au bloc `phaseB`. S'il matérialise, il le fait **une tâche à la fois**, dans l'ordre de la
+Phase E en commençant par `GWC-0`, jamais les dix-huit en bloc — `TASK BLUEPRINT ≠
+GovernedTaskRecord` — et en respectant la contrainte `C3` : `GWC-9` précède tout `SPLIT` portant du
+`WRITE`.
 
 ## Protocole obligatoire pour tout agent
 

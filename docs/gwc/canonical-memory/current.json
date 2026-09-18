@@ -1,7 +1,7 @@
 {
-  "currentBundle": "pr95-phase-b-live-reconciliation",
-  "currentBundleId": "bnd_mcp-pr95-phase-b-live-reconciliation-20260917",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-phase-b-live-reconciliation",
+  "currentBundle": "pr95-phase-b-resolved",
+  "currentBundleId": "bnd_mcp-pr95-phase-b-resolved-20260918",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-phase-b-resolved",
   "preCodeActionFlow": {
     "document": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "machineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -14,12 +14,13 @@
   "currentPhase": {
     "id": "B",
     "name": "Live Task Reconciliation",
-    "status": "BLOCKED",
-    "verdict": "LIVE_TASK_RECONCILIATION_BLOCKED_BY_PRIOR_NON_TERMINAL_TASK",
-    "blocker": "CONFLICT sur TASK-20260915-001, possedee par la session ACTIVE 499b2ea3 d un autre agent",
-    "finding": "AF-35",
+    "status": "PASS_WITH_EVIDENCE",
+    "verdict": "LIVE_TASK_RECONCILIATION_COMPLETE_NEW_TASK_ADMISSIBLE_NOT_MATERIALIZED",
+    "blocker": null,
+    "finding": "AF-35 resolu a la source par l agent proprietaire",
+    "classification": "GWC-0..GWC-17 = NEW_TASK",
     "runtimeTasksCreated": 0,
-    "nextAction": "Resoudre le CONFLICT sur TASK-20260915-001, par cloture de l agent proprietaire ou par decision humaine explicite d expiration ou de supersession, avant toute materialisation GWC."
+    "nextAction": "Creer la Governed Task de GWC-0 via les primitives gouvernees existantes, apres decision humaine explicite. Jamais les 18 en bloc; ordre Phase E; GWC-9 precede tout SPLIT portant du WRITE."
   },
   "localCloneUsedForThisMemoryMission": false,
   "previousBundles": [
@@ -42,6 +43,11 @@
       "name": "pr95-precode-gate",
       "path": "docs/gwc/canonical-memory/pr95-precode-gate",
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-phase-b-live-reconciliation",
+      "path": "docs/gwc/canonical-memory/pr95-phase-b-live-reconciliation",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     }
   ],
   "readProtocol": [
@@ -50,13 +56,16 @@
     "Read .mcp/gwc-precode-action-flow.json as a non-authoritative machine projection of that action flow.",
     "Resolve this pointer to the current bundle.",
     "Verify the selected bundle with Canonical Memory Verifier before projecting claims.",
-    "Read the phaseB block of .mcp/gwc-precode-status.json for the live reconciliation result and its blocker.",
+    "Read the phaseB block of .mcp/gwc-precode-status.json, including its reobservations array, for the live reconciliation history.",
+    "Read the phaseC block for the candidate-stack dispositions and the GWC-9-before-WRITE ordering constraint.",
     "Historical authority never satisfies live approval.",
     "Re-observe GitHub live and every applicable runtime authority before mutation.",
-    "The Phase B classification is a dated observation, not a standing fact: re-observe the Governed Task Queue, Live State, sessions and locks before acting on it."
+    "The Phase B classification is a dated observation, not a standing fact: re-observe the Governed Task Queue, Live State, sessions and locks before acting on it.",
+    "NEW_TASK makes materialization admissible, not automatic: creating a GovernedTaskRecord requires a governed session, a Bootstrap Receipt and an explicit human decision.",
+    "Never materialize the 18 blueprints in bulk: TASK BLUEPRINT != GovernedTaskRecord."
   ],
   "repository": "Patricked-code/MCP",
   "schemaVersion": 1,
   "scope": "GWC",
-  "updatedFromGitHubObservationAt": "2026-09-17T14:06:00Z"
+  "updatedFromGitHubObservationAt": "2026-09-18T17:09:26Z"
 }
