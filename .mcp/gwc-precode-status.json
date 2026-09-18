@@ -331,7 +331,7 @@
   "updatedForEvidencePolicyHead": "e6575971311d63cdc284d9e5333c9d8355c307e9",
   "historicalLiveTaskReconciliation": {
     "id": "HISTORICAL-LIVE-B",
-    "name": "Live Task Reconciliation",
+    "name": "Historical Live Task Reconciliation",
     "status": "PASS_WITH_EVIDENCE",
     "observedAt": "2026-09-17T13:55:00Z",
     "observedVia": "wealthtech_ssh_bridge",
@@ -461,7 +461,7 @@
       "prescribedOrder": "Phase E: GWC-0 -> GWC-1 -> GWC-2 -> GWC-3 -> {GWC-4, GWC-5, GWC-6 -> GWC-7, GWC-8} -> GWC-9 -> GWC-10 -> GWC-11 ...",
       "orderingConstraintFromC3": "GWC-9 precede l atterrissage de tout SPLIT portant du WRITE (AF-32)."
     },
-    "executionRole": "PROVENANCE_ONLY",
+    "executionRole": "PROVENANCE_ONLY_NOT_CURRENT_PHASE",
     "currentExecutionAuthority": false,
     "noteForPrecodeFinalization": "Preserved for provenance only. It does not make Phase B current or authorize task materialization while PRECODE finalization is active."
   },
