@@ -3,8 +3,11 @@ import test from 'node:test';
 
 import {
   CandidateConversationIntakeSchema,
+  bootstrapCandidateConnection,
   dispatchCandidateWork,
   reconcileConversationIntake,
+  resolveCandidateSession,
+  routeCandidateConnectionIntent,
   type CandidateCanonicalEntry,
   type CandidateWorkClaim,
   type CandidateWorkItem
@@ -200,4 +203,149 @@ test('conversation intake schema refuses raw transcript persistence', () => {
   });
 
   assert.equal(parsed.success, false);
+});
+
+
+test('GitHub-first candidate bootstrap resumes a branch-local session from an observed provider conversation reference without MCP runtime', () => {
+  const existingSessions = [{
+    candidateSessionId: 'candidate-session-existing',
+    agentIdentity: 'chatgpt',
+    provider: 'chatgpt' as const,
+    providerConversationRef: 'chatgpt-conversation-123',
+    providerConversationRefProvenance: 'PROVIDED_BY_CLIENT' as const,
+    githubActor: 'Patricked-code',
+    githubConnectionRef: null,
+    repository: 'Patricked-code/MCP' as const,
+    branch: 'claude/ecstatic-edison-v1dyt1' as const,
+    startingHeadSha: 'a'.repeat(40),
+    lastObservedHeadSha: 'b'.repeat(40),
+    createdAt: '2026-09-19T00:00:00+02:00',
+    lastSeenAt: '2026-09-19T00:10:00+02:00',
+    status: 'ACTIVE' as const
+  }];
+
+  const result = resolveCandidateSession({
+    repository: 'Patricked-code/MCP',
+    branch: 'claude/ecstatic-edison-v1dyt1',
+    observedHeadSha: 'c'.repeat(40),
+    agentIdentity: 'chatgpt',
+    provider: 'chatgpt',
+    providerConversationRef: 'chatgpt-conversation-123',
+    providerConversationRefProvenance: 'PROVIDED_BY_CLIENT',
+    githubActor: 'Patricked-code',
+    githubConnectionRef: null,
+    connectionInstanceRef: 'connection-local-1',
+    observedAt: '2026-09-19T00:30:00+02:00'
+  }, existingSessions);
+
+  assert.equal(result.status, 'RESUME');
+  assert.equal(result.session.candidateSessionId, 'candidate-session-existing');
+  assert.equal(result.session.lastObservedHeadSha, 'c'.repeat(40));
+  assert.equal(result.runtimeMcpRequired, false);
+});
+
+test('GitHub-first candidate bootstrap never invents a provider conversation id when the client did not expose one', () => {
+  const result = resolveCandidateSession({
+    repository: 'Patricked-code/MCP',
+    branch: 'claude/ecstatic-edison-v1dyt1',
+    observedHeadSha: 'd'.repeat(40),
+    agentIdentity: 'claude',
+    provider: 'claude',
+    providerConversationRef: null,
+    providerConversationRefProvenance: 'UNAVAILABLE',
+    githubActor: 'Patricked-code',
+    githubConnectionRef: 'github-agent-connection-77',
+    connectionInstanceRef: 'connection-local-77',
+    observedAt: '2026-09-19T00:31:00+02:00'
+  }, []);
+
+  assert.equal(result.status, 'CREATE');
+  assert.equal(result.session.providerConversationRef, null);
+  assert.equal(result.session.providerConversationRefProvenance, 'UNAVAILABLE');
+  assert.match(result.session.candidateSessionId, /^candidate-/);
+  assert.equal(result.runtimeMcpRequired, false);
+});
+
+test('candidate intent router automatically selects information, continuation or both and asks only when ambiguous', () => {
+  assert.equal(routeCandidateConnectionIntent({
+    declaredMode: null,
+    hasMaterialNewInformation: true,
+    requestsContinuation: false
+  }).mode, 'NEW_INFORMATION_INTAKE');
+
+  assert.equal(routeCandidateConnectionIntent({
+    declaredMode: null,
+    hasMaterialNewInformation: false,
+    requestsContinuation: true
+  }).mode, 'CONTINUE_PRECODE_WORK');
+
+  assert.equal(routeCandidateConnectionIntent({
+    declaredMode: null,
+    hasMaterialNewInformation: true,
+    requestsContinuation: true
+  }).mode, 'NEW_INFORMATION_THEN_CONTINUE_PRECODE');
+
+  const ambiguous = routeCandidateConnectionIntent({
+    declaredMode: null,
+    hasMaterialNewInformation: false,
+    requestsContinuation: false
+  });
+  assert.equal(ambiguous.mode, 'ASK_USER');
+  assert.deepEqual(ambiguous.choices, [
+    'NEW_INFORMATION_INTAKE',
+    'CONTINUE_PRECODE_WORK',
+    'NEW_INFORMATION_THEN_CONTINUE_PRECODE'
+  ]);
+});
+
+test('explicit PRECODE mode is authoritative and does not require a redundant question', () => {
+  const routed = routeCandidateConnectionIntent({
+    declaredMode: 'CONTINUE_PRECODE_WORK',
+    hasMaterialNewInformation: false,
+    requestsContinuation: false
+  });
+
+  assert.equal(routed.mode, 'CONTINUE_PRECODE_WORK');
+  assert.equal(routed.askUser, false);
+});
+
+test('GitHub-first bootstrap composes session resolution, intent routing and work dispatch without runtime authorities', () => {
+  const result = bootstrapCandidateConnection({
+    connection: {
+      repository: 'Patricked-code/MCP',
+      branch: 'claude/ecstatic-edison-v1dyt1',
+      observedHeadSha: 'e'.repeat(40),
+      agentIdentity: 'chatgpt',
+      provider: 'chatgpt',
+      providerConversationRef: null,
+      providerConversationRefProvenance: 'UNAVAILABLE',
+      githubActor: 'Patricked-code',
+      githubConnectionRef: 'github-connection-88',
+      connectionInstanceRef: 'connection-local-88',
+      observedAt: '2026-09-19T00:32:00+02:00'
+    },
+    intent: {
+      declaredMode: 'CONTINUE_PRECODE_WORK',
+      hasMaterialNewInformation: false,
+      requestsContinuation: true
+    },
+    sessions: [],
+    workItems: [{
+      workItemId: 'GWC-PRE-B-01',
+      intentKeys: ['candidate-backlog'],
+      title: 'Build candidate backlog',
+      status: 'READY',
+      priority: 100,
+      sequence: 1,
+      dependencies: [],
+      collisionDomains: ['docs:gwc']
+    }],
+    activeClaims: []
+  });
+
+  assert.equal(result.runtimeMcpRequired, false);
+  assert.equal(result.intent.mode, 'CONTINUE_PRECODE_WORK');
+  assert.equal(result.dispatch?.status, 'ASSIGN');
+  assert.equal(result.dispatch?.workItem?.workItemId, 'GWC-PRE-B-01');
+  assert.equal(result.requiresUserChoice, false);
 });
