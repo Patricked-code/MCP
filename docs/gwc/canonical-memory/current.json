@@ -16,7 +16,12 @@
     "name": "Safety Prerequisites",
     "status": "IN_PROGRESS",
     "verdict": "PHASE_B_COMPLETE_PHASE_C_IN_PROGRESS",
-    "blocker": null,
+    "blocker": {
+      "reasonCode": "CURRENT_CLIENT_GOVERNED_TASK_CLAIM_BLOCKED",
+      "ownerAuthority": "current client / MCP mutation guard",
+      "evidence": "TASK-20260918-001 remains READY owner=null blockers=[]; current client claim and session-close mutation calls are rejected by the security guard.",
+      "resolution": "An authorized agent surface must reobserve live authorities and claim TASK-20260918-001; once claimed, this client-specific blocker is stale and must be cleared."
+    },
     "completedItems": [
       "GWC-PRE-C3"
     ],
@@ -27,7 +32,7 @@
     "supportGovernedTask": "TASK-20260918-001",
     "supportTaskPurpose": "Harden canonical autonomous continuation before resuming Phase C.",
     "gwcRuntimeTasksCreated": 0,
-    "nextAction": "Reobserve TASK-20260918-001 and PR #95 exact head. If the support task is non-terminal, finish its verifier/canonical-memory hardening through DONE. If it is terminal, immediately resume Phase C at the first dependency-satisfied item among GWC-PRE-C1 and GWC-PRE-C2. Do not request redundant user approval; stop only on a genuine non-deducible governed blocker."
+    "nextAction": "Reobserve TASK-20260918-001. If it is still READY/unowned, an authorized agent surface claims it and completes the continuation hardening. If another session already owns it, read that session/checkpoint and continue without duplicate work. After DONE, resume Phase C automatically."
   },
   "localCloneUsedForThisMemoryMission": false,
   "previousBundles": [
@@ -73,7 +78,7 @@
   "repository": "Patricked-code/MCP",
   "schemaVersion": 1,
   "scope": "GWC",
-  "updatedFromGitHubObservationAt": "2026-09-18T17:36:00Z",
+  "updatedFromGitHubObservationAt": "2026-09-18T17:48:00Z",
   "continuationPolicy": {
     "mode": "AUTO_CONTINUE_UNTIL_REAL_BLOCKER_OR_UNIVERSAL_ACCEPTANCE",
     "invariant": "DERIVABLE_NEXT_ACTION_MUST_AUTO_CONTINUE",
