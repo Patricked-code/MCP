@@ -3,7 +3,7 @@ Revision: R3-PRECODE
 Repository: Patricked-code/MCP
 
 PURPOSE
-Describe the complete governed process before any GWC runtime implementation. This file is architecture only. It creates no Governed Task, acquires no lock, mutates no S1/runtime, changes no WRITE gate and deploys nothing.
+Describe the complete pre-integration construction process for the evolved MCP candidate on branch claude/ecstatic-edison-v1dyt1. The architecture phase comes first; once its gate passes, branch-local candidate code, wrappers, extensions, generalizations, tests, migrations and compatibility work are allowed and expected. This document never authorizes integration into main, mutation of S1/production, runtime Task Queue materialization, live locks or deployment.
 
 GLOBAL CONTRACT PROCEDURE
 Every GW contract is executed conceptually through the same nine stages:
@@ -31,7 +31,7 @@ CALLABLE != AUTHORIZED != SAFE_NOW.
 UNKNOWN never permits mutation.
 GitHub fact != runtime fact.
 Blueprint != GovernedTaskRecord.
-Only NEW_TASK after live Task Queue reconciliation may create a runtime Task.
+Branch-local candidate work items are not runtime Tasks. Only the later real-integration phase may use the live Governed Task Queue, and then only according to the current runtime governance observed at that time.
 Observe before act.
 Exact head before merge.
 Exact SHA before runtime truth.
@@ -59,7 +59,7 @@ PHASE 14 — Documentation finale / canonicalisation — COMPLETE_ON_PR95_BRANCH
 ============================================================
 18 BLUEPRINT EXECUTION PROCEDURES
 ============================================================
-Common blueprint construction procedure: REOBSERVE dependencies/authorities -> reconcile live Governed Task Queue (only NEW_TASK creates work; 0/1/N Tasks possible) -> claim task -> minimal collision-domain locks -> authority documents/integration slot/exact baseline -> intended RED -> minimal existing-first GREEN (REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW) -> targeted and full regression -> Draft PR/exact-head review/CI/rulesets -> exact-head merge only when authorized -> observe main CI/governed autodeploy -> exact-SHA runtime/Live State/docs verification -> VERIFYING/DONE only with terminal proof -> checkpoint -> release locks -> close session/queue reconcile.
+Common blueprint candidate-build procedure on claude/ecstatic-edison-v1dyt1: REOBSERVE exact online branch head and current architectural baseline -> identify bounded branch-local work item and collision domain -> inspect existing implementation first -> intended RED -> minimal existing-first GREEN (REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW) -> targeted tests -> historical regression -> typecheck/build/docs/security checks -> self-review -> record evidence/checkpoint -> continue to next dependency-safe candidate work item. No live Governed Task, runtime lock, main merge, S1 mutation or deployment is used for this candidate-build cycle.
 
 GWC-0 Contract substrate | deps none | infrastructure-only | registry GW-01..GW-73, shared contract/evidence types, graph validation and invariants; zero runtime behavior change.
 GWC-1 Intent Capture | deps GWC-0 | GW-01 | pure deterministic intent capture; property/fail-closed tests; no external side effect.
@@ -184,7 +184,7 @@ E2E-21 Multi-repository universal acceptance — independent component SHAs/non-
 E2E-22 Review finding raised — GW-35/GW-37 surface a blocking finding on the exact head -> PR cannot reach GW-38 PR_READY until every finding is resolved or explicitly dispositioned with evidence; resolution on a superseded head is invalid and returns to GW-41 revalidation.
 
 ============================================================
-PRE-CODE GATE
+ARCHITECTURE GATE
 ============================================================
 14/14 architecture phases described and evidenced.
 73/73 Contract Design Sheets present.
@@ -193,11 +193,102 @@ PRE-CODE GATE
 18/18 blueprint execution procedures present in this file.
 13/13 transverse registries present.
 4/4 global audits present.
-21 E2E scenarios present.
-Runtime GWC implementation: NOT_STARTED.
-Task Queue materialization: NOT_STARTED; live reconciliation required; only NEW_TASK creates runtime work.
-PR #95 -> main canonicalization: PENDING governed review/merge.
-Safety prerequisites before dependent runtime mutation: AF-19; AF-22/AF-30; PR-STACK.
+22 E2E scenarios present.
+
+ARCHITECTURE GATE SEMANTICS
+GWC_ARCHITECTURE_GATE_PASS unlocks construction of the evolved candidate ON claude/ecstatic-edison-v1dyt1.
+It does NOT authorize integration into main, S1, production runtime, live Task Queue, runtime locks or deployment.
+
+============================================================
+CANDIDATE BUILD PHASES
+============================================================
+
+B — CANDIDATE TASK SYNTHESIS
+Derive the complete branch-local implementation backlog from the 18 blueprints, 73 contracts, findings, decisions and compatibility requirements.
+Every candidate work item must bind: blueprint/contract refs, existing integration slot, files/types/functions, dependencies, collision domain, RED, GREEN, regression, compatibility, evidence and definition of done.
+These work items are PRECODE/candidate work items, never GovernedTaskRecord entries.
+
+C — CANDIDATE SAFETY / FOUNDATION COMPLETION
+Implement on the Claude branch the prerequisite corrections and enabling capabilities required by the evolved candidate (including AF-19, AF-22/AF-30 and dispositioned PR-stack capabilities where still applicable), without activating them in main/S1/production.
+All changes remain additive/backward-compatible and must preserve existing behavior by default.
+
+D — BRANCH-LOCAL CANDIDATE IMPLEMENTATION CYCLE
+For every candidate work item:
+OBSERVE exact branch head
+-> inspect existing implementation
+-> bounded scope claim/checkpoint
+-> exact baseline
+-> RED
+-> prove RED
+-> minimal GREEN
+-> targeted tests
+-> historical regression
+-> typecheck
+-> build
+-> docs check
+-> governance/security/secret checks
+-> self review
+-> evidence
+-> checkpoint
+-> next dependency-safe work item.
+
+Forbidden in D: runtime Task creation, runtime lock acquisition, main merge, S1 mutation, production deployment, live activation.
+
+E — BLUEPRINT CANDIDATE BUILD ORDER
+Build the evolved candidate in dependency order:
+GWC-0
+-> GWC-1
+-> GWC-2
+-> GWC-3
+-> dependency-safe set {GWC-4, GWC-5, GWC-6 -> GWC-7, GWC-8}
+-> GWC-9
+-> GWC-10
+-> GWC-11
+-> GWC-12
+-> GWC-13
+-> GWC-14
+-> GWC-15
+-> GWC-16
+-> GWC-17.
+
+F — CANDIDATE UNIVERSAL ACCEPTANCE
+Run the complete candidate against non-hardcoded fixtures/test contexts and all negative paths.
+Require:
+- existing historical behaviors still pass;
+- new behaviors pass;
+- no duplicate authority;
+- no hidden mutation path;
+- no target-specific hardcode;
+- candidate code compiles/builds/tests as one coherent evolved MCP version;
+- integration instructions and rollback/reconciliation rules are complete.
+
+============================================================
+FINAL CANDIDATE GATE
+============================================================
+PASS only if the architecture package AND the evolved candidate implementation are complete with evidence.
+
+Required verdict:
+FINAL_PRECODE_VERSION_ACCEPTED
+EVOLVED_CANDIDATE_READY_FOR_INTEGRATION
+
+At this gate the branch must already contain the evolved version: existing MCP skeleton + additive/backward-compatible code + tests + migrations/compatibility + workflows + documentation + complete task/evidence history.
+
+============================================================
+REAL INTEGRATION — OUTSIDE CURRENT CANDIDATE BUILD
+============================================================
+Only after FINAL_PRECODE_VERSION_ACCEPTED:
+
+1. Reobserve current main and current real server/runtime evidence.
+2. Reconcile any drift since the candidate baseline.
+3. Revalidate integration slots and compatibility assumptions.
+4. Use the then-current governed integration mechanism required by the project.
+5. Integrate the already-built candidate; do not redesign it unless live drift forces a bounded adjustment.
+6. Run exact-head review/CI.
+7. Merge/integrate under current governance.
+8. Run main CI, governed deployment, exact-SHA attestation and Live State/runtime verification.
+9. Close only with terminal evidence.
 
 FINAL RULE
-Do not begin GWC runtime implementation because this document exists. First: make the architecture canonical in main through governed review/merge when safe; reobserve the live Governed Task Queue and relevant runtime authorities; resolve owner-bound open decisions/safety prerequisites for the affected blueprint; materialize only legitimate NEW_TASK work. Then and only then execute governed TDD implementation.
+The Claude branch is the construction surface for the complete evolved candidate, not documentation-only and not a parallel production system.
+Candidate implementation on claude/ecstatic-edison-v1dyt1 is ALLOWED AND EXPECTED after GWC_ARCHITECTURE_GATE_PASS.
+Activation/integration into main, S1 and production remains FORBIDDEN until FINAL_PRECODE_VERSION_ACCEPTED.
