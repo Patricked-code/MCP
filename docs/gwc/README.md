@@ -15,25 +15,25 @@ GitHub live.
 
 | Champ | Valeur |
 | --- | --- |
-| Révision courante | `R3` |
+| Révision courante | `R4-CANDIDATE` |
 | Baseline canonique | `GWC_73_CONTRACT_DESIGN_SHEETS_CANONICAL_R1` |
-| Statut d'architecture | `PRECODE_FINALIZATION_IN_PROGRESS` — intégration réelle volontairement gelée |
+| Statut d'architecture | `GWC_ARCHITECTURE_GATE_PASS` — construction de la candidate évoluée autorisée sur la branche Claude |
 | `SOURCE` | `GITHUB_LIVE` |
 | `REPOSITORY` | `Patricked-code/MCP` |
 | `REF` / `OBSERVED_SHA` | `main` / `d1f303955c4d368950da2307dda41d826fc85d0a` |
 | `OBSERVED_AT` | `2026-09-16T23:23:04Z` |
-| Implémentation runtime démarrée | `NO` |
+| Implémentation candidate sur `claude/ecstatic-edison-v1dyt1` | `READY_TO_START` — code/tests/workflows autorisés et attendus |
 | Tâches runtime créées | `0` |
 | Blueprints promus en Task Queue | `NO` |
 | Conception d'évolution détaillée | `GWC-0`…`GWC-17`, 18 sur 18 |
-| Verdict de conception | `DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION` |
+| Verdict de conception | `ARCHITECTURE_COMPLETE_CANDIDATE_BUILD_UNLOCKED` |
 | Flux pré-code | `GWC-PRE-000` → `GWC-PRE-GATE-01` exécuté ; 14 phases `A1`…`A14` `PASS_WITH_EVIDENCE` |
 | Verdict de gate | `GWC_ARCHITECTURE_GATE_PASS` |
 | Réconciliation live Phase B | observation historique conservée pour provenance ; **pas la phase d'exécution courante** |
 | Blocker courant | **aucun** — `AF-35` résolu à la source le 2026-09-17T20:27Z, réobservé le 2026-09-18T17:08Z |
-| Classification des 18 blueprints | historique de réconciliation ; **aucune matérialisation autorisée pendant la finalisation PRECODE** |
-| Tâches runtime créées | `0` — la finalisation PRECODE interdit toute matérialisation runtime |
-| Travail courant | `T195 / A14` — alignement mémoire / SUIVI / décisions et canonicalisation finale PRECODE |
+| 18 blueprints | à construire progressivement dans la candidate de branche ; **pas** à matérialiser en Governed Tasks runtime |
+| Tâches runtime créées | `0` — non nécessaires pour construire la candidate de branche |
+| Travail courant | `GWC-PRE-B-01` — synthèse du backlog complet de construction candidate |
 | Findings enregistrés | 36 — `AF-01`…`AF-36` ; `AF-28`, `AF-34` et `AF-36` corrigés, `AF-35` résolu à la source |
 
 ## Contenu
@@ -59,37 +59,61 @@ GitHub live.
 | `docs/gwc/canonical-memory/pr95-ded/` | sources et bundle de mémoire de la mission de conception | traçabilité |
 | `docs/gwc/canonical-memory/pr95-precode-gate/` | sources et bundle de mémoire de la clôture pré-code | traçabilité |
 | `docs/gwc/canonical-memory/pr95-phase-b-live-reconciliation/` | bundle de la réconciliation live et du blocker `AF-35` — immuable, supersédé | traçabilité |
-| `docs/gwc/canonical-memory/pr95-phase-b-resolved/` | **bundle courant** — `AF-35` résolu, classification réobservée | humain et agent |
+| `docs/gwc/canonical-memory/pr95-phase-b-resolved/` | checkpoint historique de réconciliation live — provenance uniquement | traçabilité |
 | `docs/gwc/canonical-memory/current.json` | pointeur de continuité — **vérifié** par `verifyCanonicalMemory()` depuis `AF-36` | humain et agent |
 | `scripts/gwc-verify.mjs` | vérificateur déterministe | humain et agent |
 | `scripts/gwc-precode-verify.mjs` | vérificateur du flux pré-code et du gate | humain et agent |
 
-## Frontière actuelle — FINAL PRECODE uniquement
+## Frontière actuelle — construction de la candidate évoluée
 
-La PR #95 et la branche `claude/ecstatic-edison-v1dyt1` restent volontairement dans une phase **PRECODE-only**.
+La PR #95 et la branche `claude/ecstatic-edison-v1dyt1` sont la **surface de construction de la future version évoluée complète du MCP**.
 
-Le catalogue directeur conserve les **205 tâches macro `T00→T204`** et leur ordre complet, mais le mode d'exécution courant distingue strictement :
+Le mot PRECODE signifie ici **pré-intégration**, pas « documentation seulement ».
 
-- `T00→T195` : construction, revalidation et canonicalisation de la version PRECODE ;
-- `T196→T204` et Phases `B→F` : plan futur d'intégration, conservé et documenté mais **non exécutable contre le projet réel pendant cette phase**.
+La séquence courante est :
 
-Le travail courant est `T195 / A14` parce que la mémoire canonique et les projections de reprise doivent être réalignées sur cette frontière avant de déclarer la version finale.
+```text
+architecture exhaustive de l'existant
+→ A1..A14
+→ GWC_ARCHITECTURE_GATE_PASS
+→ B backlog candidate
+→ C safety/foundations candidate
+→ D/E construction code GWC-0..GWC-17
+→ F acceptance candidate
+→ FINAL_PRECODE_VERSION_ACCEPTED
+→ seulement ensuite intégration réelle
+```
 
-La sortie de cette phase est :
+Après le gate d'architecture, sont **autorisés et attendus sur la branche Claude** :
 
-`FINAL_PRECODE_VERSION_ACCEPTED`
+- code `src/**` ;
+- tests/fixtures ;
+- wrappers, extensions, généralisations et nouvelles primitives justifiées ;
+- types/interfaces/schémas backward-compatible ;
+- migrations additives/lecteurs de compatibilité ;
+- workflows/configuration en version candidate ;
+- corrections de findings et prérequis de sûreté ;
+- implémentation progressive GWC-0..GWC-17 ;
+- documentation, vérificateurs, CI et preuves.
 
-Avant cette sortie :
+La règle existing-first reste absolue :
 
-- pas de Governed Task GWC matérialisée ;
-- pas de claim/lock runtime ;
-- pas de code runtime GWC ;
-- pas de mutation de `main` ;
-- pas d'écriture S1 ;
-- pas de déploiement ;
-- pas d'utilisation de la Task Queue runtime comme moteur de suivi des work items PRECODE.
+`REUSE → WRAP → GENERALIZE → EXTEND → NEW`.
 
-La Governed Task Queue, Live State et les autres autorités runtime peuvent être **observés en lecture seule** lorsqu'un work item PRECODE exige de confronter une hypothèse à l'existant. Cette observation ne change jamais le périmètre courant.
+Ce qui reste gelé jusqu'à `FINAL_PRECODE_VERSION_ACCEPTED` :
+
+- création de Governed Tasks runtime pour piloter la candidate ;
+- runtime claims/locks ;
+- intégration/merge dans `main` ;
+- écriture directe S1 ;
+- déploiement ou restart production ;
+- activation live de la candidate.
+
+La candidate doit donc finir comme :
+
+`MCP existant conservé + évolutions additives/backward-compatible + tests + workflows + migrations/compatibilité + documentation + backlog/preuves complets`.
+
+À la fin, la phase d'intégration ne doit plus être une phase de développement : elle réobserve le projet réel, réconcilie le drift éventuel et intègre la candidate déjà construite.
 
 ## Sources de preuve PRECODE — sans dépendance OAuth/bridge
 
@@ -134,19 +158,17 @@ Blueprint porteur : `GWC-2`.
 `TASK BLUEPRINT ≠ GovernedTaskRecord`.
 
 ```text
-architecture → blueprints → réconciliation avec la Task Queue live
-             → classification NEW_TASK uniquement → Task runtime
+architecture → blueprints → branch-local candidate work
+             → GWC-0..GWC-17 built on claude/ecstatic-edison-v1dyt1
+             → FINAL_PRECODE_VERSION_ACCEPTED
+             → later real integration under then-current governance
 ```
 
-Un futur materializer peut produire **0, 1 ou plusieurs** Governed Tasks depuis un même
-blueprint selon la réalité live. Ne jamais supposer `1 blueprint = 1 Task`. Les blueprints ne
-sont chargés par aucun code : seul `.mcp/task-registry.json` est lu par `initializeSeed()`.
+Un blueprint peut produire un ou plusieurs **work items candidate** sur la branche sans créer de GovernedTaskRecord. La Task Queue runtime n'est pas le moteur de construction de la candidate. Lors de l'intégration réelle ultérieure, la gouvernance live décidera si des Governed Tasks sont nécessaires et à quelle granularité.
 
-### Où en est la réconciliation live
+### Observation live historique — provenance uniquement
 
-La réconciliation Phase B **a été exécutée** contre les autorités runtime réelles, puis
-**réobservée le 2026-09-18 à 17:08Z**. Son résultat est enregistré dans
-`.mcp/gwc-precode-status.json`, bloc `phaseB`, avec l'historique complet des réobservations.
+Une ancienne réconciliation live a été exécutée et réobservée. Elle est conservée comme **preuve historique de l'existant**, pas comme phase d'exécution courante. Son contenu est désormais projeté sous les blocs historiques de `.mcp/gwc-precode-status.json`.
 
 État courant, observé :
 
@@ -162,12 +184,7 @@ La réconciliation Phase B **a été exécutée** contre les autorités runtime 
 - **`RUNTIME_TASKS_CREATED = 0`.** `NEW_TASK` rend la matérialisation *admissible*, pas
   *automatique*.
 
-Un agent qui reprend ne doit donc **pas** relancer la classification comme si elle n'avait pas
-eu lieu, ni la considérer comme acquise sans réobservation : il réobserve les autorités live et
-compare au bloc `phaseB`. S'il matérialise, il le fait **une tâche à la fois**, dans l'ordre de la
-Phase E en commençant par `GWC-0`, jamais les dix-huit en bloc — `TASK BLUEPRINT ≠
-GovernedTaskRecord` — et en respectant la contrainte `C3` : `GWC-9` précède tout `SPLIT` portant du
-`WRITE`.
+Un agent qui reprend la **construction candidate** ne relance pas cette ancienne classification et ne matérialise aucune Task runtime. Il lit cet historique seulement pour comprendre l'existant, puis reprend le premier work item candidate incomplet depuis la mémoire canonique. La réobservation live de Task Queue/sessions/locks redevient pertinente seulement lors de l'intégration réelle postérieure au gate final.
 
 ## Protocole obligatoire pour tout agent
 
@@ -191,8 +208,7 @@ GovernedTaskRecord` — et en respectant la contrainte `C3` : `GWC-9` précède 
    de second moteur de session, de second gestionnaire de locks, de second GitRegistry, de
    second GitHub Control Plane, de second moteur de déploiement, de magasin durable d'état de
    workflow.
-7. **Ne jamais promouvoir un blueprint en Task** sans réconciliation avec la Task Queue live et
-   classification `NEW_TASK`.
+7. **Pendant le candidate build**, transformer les blueprints en work items de branche, jamais en Governed Tasks runtime. La Task Queue live ne redevient pertinente qu'après `FINAL_PRECODE_VERSION_ACCEPTED`, pendant l'intégration réelle.
 8. **Ne jamais créer de human gate générique.** La conception conceptuelle est validée. Les
    seules interruptions légitimes viennent d'autorités réelles : permission réellement requise,
    capacité absente, ambiguïté, conflit, évidence périmée, lock, politique explicite.
@@ -257,6 +273,4 @@ Ce contrôle est exécuté par la CI au head exact, via l'étape `GWC dossier ch
 
 ## Frontière assumée
 
-Ce dossier est de la documentation et de la donnée. Il ne modifie aucun comportement runtime,
-n'ajoute aucun outil MCP, ne crée aucune tâche dans la Governed Task Queue, ne prend aucun lock
-et ne déclenche aucun déploiement.
+Le dossier `docs/gwc/` reste documentation/donnée et ne constitue pas une autorité runtime. En revanche, **la même branche Claude est autorisée à porter le code candidate réel** dans `src/**`, `tests/**`, workflows, scripts et configurations compatibles après le gate d'architecture. Cette construction ne crée aucune Task runtime, ne prend aucun lock runtime et ne déclenche aucun déploiement tant que `FINAL_PRECODE_VERSION_ACCEPTED` n'est pas atteint.
