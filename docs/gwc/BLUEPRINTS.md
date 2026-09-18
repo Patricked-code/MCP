@@ -2670,6 +2670,111 @@ laquelle le verdict final n'est pas inconditionnel.
 
 ---
 
+## Phase C3 — réconciliation de la pile `#85` / `#86` / `#88` / `#89` / `#90`
+
+Exécution de `GWC-PRE-C3` du flux pré-code : *« For each capability: still needed? already
+implemented? duplicate? stale? GWC-compatible? correct owner/blueprint? Disposition must be
+KEEP / REWORK / SPLIT / SUPERSEDE / CLOSE / DEFER. No blind stale-stack merge. »*
+
+`GWC-12` énonçait les options stratégiques de la pile et les laissait à une décision gouvernée.
+C3 pose une question différente et plus fine : **capacité par capacité**, laquelle est encore
+nécessaire, et à qui. La disposition stratégique reste gouvernée ; l'analyse ci-dessous la rend
+informée plutôt qu'arbitraire.
+
+### Observation
+
+```
+SOURCE      = GITHUB_LIVE
+REPOSITORY  = Patricked-code/MCP
+OBSERVED_AT = 2026-09-18T05:45Z
+MAIN_SHA    = d1f303955c4d368950da2307dda41d826fc85d0a
+```
+
+Les cinq candidates sont **inchangées** depuis les 2026-09-14/15 : mêmes heads exacts qu'à
+l'observation du 2026-09-17T03:47Z enregistrée par `GWC-12`. Aucune n'a été rebasée, reprise ou
+fermée entre-temps. Les conclusions de `GWC-12` sur leur fraîcheur restent donc courantes, et non
+simplement héritées.
+
+### Ce que `main` porte réellement aujourd'hui
+
+`main@d1f30395` enregistre **111 outils**, dont **6** préfixés `github_` :
+`github_account_inventory`, `github_durable_accounts_inventory`, `github_durable_accounts_status`,
+`github_org_inventory`, `github_pr_authorization_diagnostic`, `github_registry_v2_dry_run`.
+
+Tous relèvent de l'inventaire ou du diagnostic. **Aucune capacité de contrôle GitHub — branche,
+commit, fichier, pull request, review, merge — n'existe sur `main`.** La réponse à « already
+implemented? » est donc *non* pour l'intégralité des capacités candidates, sans exception.
+
+### Le fait décisif : la dépendance bloquante se réduit à quatre outils
+
+Sur les 73 contrats, **7 sont classés `CANDIDATE`** — la capacité n'existe que dans la pile — et
+**4 sont `PARTIAL/CANDIDATE`** — `main` en porte une partie.
+
+| Contrat bloqué | Blueprint | Capacité requise | PR |
+| --- | --- | --- | --- |
+| `GW-24` `GOVERNED_BRANCH_CREATION` | `GWC-13` | `github_create_branch` | `#90` |
+| `GW-34` `DRAFT_PR` | `GWC-14` | `github_create_pull_request` | `#90` |
+| `GW-38` `PR_READY` | `GWC-14` | `github_mark_pr_ready` | `#90` |
+| `GW-43` `EXACT_HEAD_MERGE` | `GWC-14` | `github_merge_pull_request` | `#90` |
+| `GW-59` `DOCUMENTATION_BRANCH_IF_REQUIRED` | `GWC-16` | `github_create_branch` (réemploi) | `#90` |
+| `GW-61` `DOCUMENTATION_PR` | `GWC-16` | `github_create_pull_request` (réemploi) | `#90` |
+| `GW-63` `DOCUMENTATION_EXACT_HEAD_MERGE` | `GWC-16` | `github_merge_pull_request` (réemploi) | `#90` |
+
+Les sept contrats bloqués se ramènent à **quatre outils distincts**, tous dans `#90` :
+`github_create_branch`, `github_create_pull_request`, `github_mark_pr_ready`,
+`github_merge_pull_request`.
+
+C'est la mesure qui manquait. La pile pèse plus de 5 500 lignes ajoutées sur trois PR empilées ;
+ce qui bloque réellement l'architecture GWC en représente une fraction. Et `#88`, **racine** de la
+pile et seule des trois à être en conflit direct avec `main`, n'est requise par **aucun** des 73
+contrats : la staleness de toute la pile est enracinée dans une PR dont GWC n'a pas besoin.
+
+### Disposition par capacité
+
+| # | Capacité | Encore nécessaire ? | Sur `main` ? | Doublon ? | Stale ? | GWC-compatible ? | Propriétaire | Disposition |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `C-88.1` | `github_create_repository` — création d'un dépôt d'organisation, privé, vide | **non** — aucun des 73 contrats ne crée de dépôt | non | non | oui, `dirty` contre `main` | oui — bornée, `ENABLE_WRITE_TOOLS` + gate `shadow_ready` | aucun blueprint ; `GWC-12` porte la disposition | `DEFER` |
+| `C-89.1` | manifeste `.mcp/git-github-capabilities.json`, 170 capacités + parser fail-closed | comme **entrée de conception** oui ; comme runtime, non | non | **oui, partiellement** — recouvre la cartographie de fonctions, qui est déjà l'autorité de la surface enregistrée | oui | à condition de ne jamais devenir une seconde autorité | entrée de conception pour `GWC-0` et `GWC-9` | `SUPERSEDE` |
+| `C-89.2` | 12 outils READ bornés — dont `rulesets`, `PR reviews`, `commit checks`, `compare refs` | **oui, partiellement** — `rulesets` comble une lacune d'observabilité réelle ; `reviews`/`checks` alimentent `GW-35` et `GW-41` | non | non — complémentaires des outils d'inventaire de `main` | oui | oui — READ seul, fail-closed | `GWC-11`, `GWC-12` | `SPLIT` |
+| `C-90.1` | `github_create_branch`, `github_create_pull_request`, `github_mark_pr_ready`, `github_merge_pull_request` | **oui — seul blocage réel des 7 contrats `CANDIDATE`** | non | non | oui, transitivement via `#89` → `#88` | oui — le garde de merge (head stale, draft, déjà mergé, non mergeable, checks non verts) est exactement la postcondition de `GW-43` | `GWC-13`, `GWC-14`, `GWC-16` | `SPLIT` — priorité haute |
+| `C-90.2` | `github_get_review_threads`, `github_reply_review_thread`, `github_resolve_review_thread`, `github_create_commit`, `github_create_or_update_file` | **oui** — `GW-37` pour les threads, `GW-25`/`GW-27` pour la mutation de fichiers | non | non | oui | oui | `GWC-13`, `GWC-14` | `SPLIT` |
+| `C-90.3` | `github_delete_branch`, `github_delete_file`, `github_request_review`, `github_update_pull_request`, `github_get_tree`, `github_get_commits`, `github_get_commit_diff`, `github_get_mergeability`, `github_get_required_checks` | **non cité** par un contrat à ce jour ; `mergeability`/`required_checks` redeviendront utiles à `GW-41` | non | non | oui | oui | `GWC-14` | `DEFER` |
+| `C-85.1` | plan `Governed Actions → SSH Transport V1`, documentation seule | non — aucun contrat n'en dépend | sans objet | non | oui, `dirty` | sans objet — aucun code | hors périmètre GWC | `DEFER` |
+| `C-86.1` | projet S2 `stablecoin_frontend` borné, sync et deploy gouvernés | non comme prérequis ; **oui comme preuve** — un second projet et un runtime Passenger servent `GWC-7` et `GWC-17` | non | non | oui, `dirty` | oui | preuve pour `GWC-7`, `GWC-17` | `DEFER` |
+
+Aucune capacité ne reçoit `KEEP` : toutes sont stale contre `main` courant, donc aucune n'est
+fusionnable en l'état. Aucune ne reçoit `CLOSE` : la fermeture d'une PR d'autrui n'est pas une
+disposition que cette session peut exécuter, et la preuve TDD enregistrée dans chacune garde de la
+valeur.
+
+**Complétude de la partition, vérifiée.** Une table de disposition qui oublie une capacité ne vaut
+rien. `#90` déclare 18 outils — 6 `READ`, 12 `WRITE`. Les groupes `C-90.1`, `C-90.2` et `C-90.3` en
+comptent 4, 5 et 9, soit 18. Aucun doublon, aucun manquant, aucun outil étranger à la PR. La
+répartition `WRITE` est exactement 4 + 4 + 4 = 12. La partition est donc **exacte et exhaustive**,
+et non un échantillon commode.
+
+### Contrainte d'ordonnancement dérivée, non négociable
+
+`AF-32` établit que **trois** mutations gouvernées de `main` ne traversent aujourd'hui aucune porte
+d'écriture. `#90` ajoute **douze** outils `WRITE`. Faire atterrir une surface d'écriture candidate
+avant que `GWC-9` n'ait refermé `AF-32` élargirait un trou existant d'un facteur quatre, au lieu de
+le combler.
+
+Donc : **`GWC-9` précède l'atterrissage de tout `SPLIT` portant du `WRITE`.** Le `SPLIT` `C-89.2`,
+qui est READ seul, n'est pas soumis à cette contrainte. Ce n'est pas une préférence de séquencement,
+c'est une conséquence directe d'un finding enregistré.
+
+### Ce que C3 établit, et ce qu'il ne tranche pas
+
+Établi sur preuve : aucune capacité candidate n'existe sur `main` ; la dépendance bloquante se
+réduit à quatre outils de `#90` ; `#88` n'est requise par aucun contrat alors qu'elle enracine la
+staleness de la pile ; le manifeste de `#89` recouperait la cartographie et ne doit pas devenir une
+seconde autorité ; `GWC-9` doit précéder toute surface `WRITE`.
+
+Non tranché, et délibérément : **exécuter** un `SPLIT` est une matérialisation de tâche, donc
+soumis à la Phase B, qui est `BLOCKED`. C3 produit une disposition, pas un merge. Aucune PR n'est
+fusionnée, rebasée, fermée ni modifiée par cette analyse.
+
 ## Detailed Evolution Design — verdict terminal
 
 ```
@@ -2685,8 +2790,9 @@ VERDICT = DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION
 | Registres transverses | 13 sur 13, `R1` à `R13` |
 | Matrice centrale des contrats | générée depuis `.mcp/gwc-contracts.json` |
 | Audits globaux | 4 sur 4, `A1` à `A4` |
-| Findings | 33 enregistrés, 33 rattachés, 0 orphelin |
+| Findings | 35 enregistrés, 35 rattachés, 0 orphelin |
 | Décisions ouvertes | 12 enregistrées, 12 rattachées, 7 réduites par les preuves |
+| Réconciliation de la pile candidate | `GWC-PRE-C3` exécutée, 8 capacités disposées |
 | Projection machine | `.mcp/gwc-evolution-design.json` |
 | Vérificateur | étendu, et prouvé mordant sur 13 défauts distincts |
 
@@ -2700,6 +2806,14 @@ pile `#88` → `#89` → `#90`, observée stale contre `main` et dont `#88` est 
 bloque pas la réconciliation : `GWC-12` est précisément le blueprint chargé de trancher la
 disposition, et il est réconciliable tel quel.
 
+> **Réserve réduite le 2026-09-18 par `GWC-PRE-C3`.** La réconciliation capacité par capacité
+> établit que ces sept contrats ne dépendent que de **quatre outils** de `#90` —
+> `github_create_branch`, `github_create_pull_request`, `github_mark_pr_ready`,
+> `github_merge_pull_request` — et que `#88`, racine de la staleness de la pile, n'est requise par
+> aucun des 73 contrats. Les huit capacités portent désormais une disposition bornée. Voir
+> *Phase C3 — réconciliation de la pile*. La réserve subsiste — rien n'est fusionné — mais elle
+> n'est plus indéterminée.
+
 **Les définitions d'`AF-01` à `AF-27` ne sont versionnées que dans une archive non canonique.** La
 conséquence exacte — deux affectations du registre machine ne se résolvent pas vers une définition
 cohérente — est enregistrée sous `AF-33` et rattachée à `GWC-0`. Aucune définition n'a été inventée
@@ -2710,6 +2824,14 @@ raison pour laquelle les dix-huit fiches portent toutes
 `FUTURE TASK MATERIALIZATION GUIDANCE = REQUIRES LIVE TASK QUEUE RECONCILIATION` et aucune
 `NEW_TASK`. L'absence d'une entrée dans `.mcp/task-registry.json` n'est pas une preuve sur la file
 runtime, et n'a jamais été traitée comme telle.
+
+> **Réserve levée le 2026-09-17 par la Phase B.** Le MCP WealthTech est devenu atteignable et les
+> autorités runtime ont été réellement observées — Task Queue `storeRevision 188`, Live State
+> `stateVersion 246`, 25 sessions, aucun lock détenu. La réconciliation a eu lieu ; son résultat est
+> `BLOCKED` sur un `CONFLICT` nommé, `TASK-20260915-001`, enregistré sous `AF-35`. Les dix-huit
+> fiches gardent leur `REQUIRES LIVE TASK QUEUE RECONCILIATION`, non plus faute d'observation mais
+> parce que la première tâche exécutable précède les nouvelles. Voir le bloc `phaseB` de
+> `.mcp/gwc-precode-status.json`.
 
 ### Frontières respectées
 

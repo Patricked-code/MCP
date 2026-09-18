@@ -244,5 +244,238 @@
     ],
     "nextAction": "Resoudre le CONFLICT sur TASK-20260915-001 avant toute materialisation GWC. Aucune tache creee."
   },
-  "phaseBVerdict": "LIVE_TASK_RECONCILIATION_BLOCKED_BY_PRIOR_NON_TERMINAL_TASK"
+  "phaseBVerdict": "LIVE_TASK_RECONCILIATION_BLOCKED_BY_PRIOR_NON_TERMINAL_TASK",
+  "phaseC": {
+    "id": "C",
+    "name": "Safety Prerequisites",
+    "items": {
+      "GWC-PRE-C1": {
+        "status": "PENDING",
+        "finding": "AF-19",
+        "owner": "GWC-15",
+        "note": "Non execute: touche au chemin de deploiement et sort du perimetre autorise pour cette session."
+      },
+      "GWC-PRE-C2": {
+        "status": "PENDING",
+        "findings": [
+          "AF-22",
+          "AF-30"
+        ],
+        "owner": "GWC-14",
+        "note": "Non execute: modifie le gating de revue et sort du perimetre autorise pour cette session."
+      },
+      "GWC-PRE-C3": {
+        "status": "PASS_WITH_EVIDENCE",
+        "owner": "GWC-12"
+      }
+    },
+    "c3": {
+      "observedAt": "2026-09-18T05:45:00Z",
+      "source": "GITHUB_LIVE",
+      "mainSha": "d1f303955c4d368950da2307dda41d826fc85d0a",
+      "candidatePrs": [
+        {
+          "pr": 85,
+          "head": "490d58597e4df0b133effd1825ababaa92f6463a",
+          "base": "main@555a51d0",
+          "state": "open",
+          "draft": true,
+          "merged": false,
+          "unchangedSince": "2026-09-14T20:41:49Z"
+        },
+        {
+          "pr": 86,
+          "head": "5f54b78c87ae3a5e8a402ac80af42355a7f4ec08",
+          "base": "main@555a51d0",
+          "state": "open",
+          "draft": true,
+          "merged": false,
+          "unchangedSince": "2026-09-14T23:17:34Z"
+        },
+        {
+          "pr": 88,
+          "head": "d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993",
+          "base": "main@555a51d0",
+          "state": "open",
+          "draft": true,
+          "merged": false,
+          "mergeableState": "dirty",
+          "unchangedSince": "2026-09-15T01:41:35Z"
+        },
+        {
+          "pr": 89,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "base": "pr88@d5eb87c4",
+          "state": "open",
+          "draft": true,
+          "merged": false,
+          "mergeableState": "clean_relative_to_parent_only",
+          "unchangedSince": "2026-09-15T02:01:25Z"
+        },
+        {
+          "pr": 90,
+          "head": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+          "base": "pr89@5bc82c17",
+          "state": "open",
+          "draft": true,
+          "merged": false,
+          "mergeableState": "clean_relative_to_parent_only",
+          "unchangedSince": "2026-09-15T02:11:52Z"
+        }
+      ],
+      "mainGithubToolSurface": {
+        "totalTools": 111,
+        "githubPrefixed": 6,
+        "names": [
+          "github_account_inventory",
+          "github_durable_accounts_inventory",
+          "github_durable_accounts_status",
+          "github_org_inventory",
+          "github_pr_authorization_diagnostic",
+          "github_registry_v2_dry_run"
+        ],
+        "controlPlaneCapabilitiesPresent": 0,
+        "conclusion": "Aucune capacite candidate n existe sur main: already_implemented = false pour toutes."
+      },
+      "blockingDependency": {
+        "candidateContracts": 7,
+        "partialCandidateContracts": 4,
+        "contracts": [
+          "GW-24",
+          "GW-34",
+          "GW-38",
+          "GW-43",
+          "GW-59",
+          "GW-61",
+          "GW-63"
+        ],
+        "reducesToTools": [
+          "github_create_branch",
+          "github_create_pull_request",
+          "github_mark_pr_ready",
+          "github_merge_pull_request"
+        ],
+        "allInPr": 90,
+        "note": "Les 7 contrats bloques se ramenent a 4 outils distincts. PR 88, racine de la staleness de la pile, n est requise par aucun des 73 contrats."
+      },
+      "dispositions": [
+        {
+          "id": "C-88.1",
+          "pr": 88,
+          "capability": "github_create_repository",
+          "stillNeeded": false,
+          "alreadyOnMain": false,
+          "duplicate": false,
+          "stale": true,
+          "gwcCompatible": true,
+          "owner": "GWC-12",
+          "disposition": "DEFER"
+        },
+        {
+          "id": "C-89.1",
+          "pr": 89,
+          "capability": "manifeste 170 capacites + parser fail-closed",
+          "stillNeeded": "design_input_only",
+          "alreadyOnMain": false,
+          "duplicate": "partiel_avec_function_cartography",
+          "stale": true,
+          "gwcCompatible": "si jamais seconde autorite",
+          "owner": "GWC-0/GWC-9",
+          "disposition": "SUPERSEDE"
+        },
+        {
+          "id": "C-89.2",
+          "pr": 89,
+          "capability": "12 outils READ bornes dont rulesets, PR reviews, commit checks, compare refs",
+          "stillNeeded": "partiel",
+          "alreadyOnMain": false,
+          "duplicate": false,
+          "stale": true,
+          "gwcCompatible": true,
+          "owner": "GWC-11/GWC-12",
+          "disposition": "SPLIT"
+        },
+        {
+          "id": "C-90.1",
+          "pr": 90,
+          "capability": "create_branch, create_pull_request, mark_pr_ready, merge_pull_request",
+          "stillNeeded": true,
+          "alreadyOnMain": false,
+          "duplicate": false,
+          "stale": true,
+          "gwcCompatible": true,
+          "owner": "GWC-13/GWC-14/GWC-16",
+          "disposition": "SPLIT",
+          "priority": "HIGH"
+        },
+        {
+          "id": "C-90.2",
+          "pr": 90,
+          "capability": "review threads read/reply/resolve, create_commit, create_or_update_file",
+          "stillNeeded": true,
+          "alreadyOnMain": false,
+          "duplicate": false,
+          "stale": true,
+          "gwcCompatible": true,
+          "owner": "GWC-13/GWC-14",
+          "disposition": "SPLIT"
+        },
+        {
+          "id": "C-90.3",
+          "pr": 90,
+          "capability": "delete_branch, delete_file, request_review, update_pull_request, get_tree, get_commits, get_commit_diff, get_mergeability, get_required_checks",
+          "stillNeeded": false,
+          "alreadyOnMain": false,
+          "duplicate": false,
+          "stale": true,
+          "gwcCompatible": true,
+          "owner": "GWC-14",
+          "disposition": "DEFER"
+        },
+        {
+          "id": "C-85.1",
+          "pr": 85,
+          "capability": "plan Governed Actions vers SSH Transport V1, documentation seule",
+          "stillNeeded": false,
+          "alreadyOnMain": "n/a",
+          "duplicate": false,
+          "stale": true,
+          "gwcCompatible": "n/a",
+          "owner": "hors perimetre GWC",
+          "disposition": "DEFER"
+        },
+        {
+          "id": "C-86.1",
+          "pr": 86,
+          "capability": "projet S2 stablecoin_frontend borne",
+          "stillNeeded": "preuve_universalite",
+          "alreadyOnMain": false,
+          "duplicate": false,
+          "stale": true,
+          "gwcCompatible": true,
+          "owner": "preuve GWC-7/GWC-17",
+          "disposition": "DEFER"
+        }
+      ],
+      "dispositionCounts": {
+        "KEEP": 0,
+        "REWORK": 0,
+        "SPLIT": 3,
+        "SUPERSEDE": 1,
+        "CLOSE": 0,
+        "DEFER": 4
+      },
+      "orderingConstraint": {
+        "rule": "GWC-9 precede l atterrissage de tout SPLIT portant du WRITE.",
+        "basis": "AF-32: trois mutations gouvernees de main ne traversent aucune porte d ecriture; PR 90 ajoute douze outils WRITE.",
+        "exempt": [
+          "C-89.2"
+        ],
+        "exemptReason": "READ seul."
+      },
+      "notExecuted": "Executer un SPLIT est une materialisation de tache, donc soumis a la Phase B qui est BLOCKED. Aucune PR fusionnee, rebasee, fermee ni modifiee.",
+      "prsMutated": 0
+    }
+  },
+  "phaseCVerdict": "CANDIDATE_STACK_RECONCILED_DISPOSITIONS_RECORDED_NO_MERGE"
 }

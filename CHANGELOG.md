@@ -576,3 +576,14 @@ Mise à jour : 2026-07-09T20:08:09Z
 - `AF-35` ouvert — la Task Queue déclare `DOCUMENTATION_DRIFT` bloquant à `46d576e5` alors que Live State `246` déclare `documentation: ALIGNED` et 0 contradiction à `d1f30395`, plus récent. Propriétaire `GWC-5`. Non corrigé : la tâche appartient à la session `ACTIVE` d'un autre agent.
 - **`RUNTIME_TASKS_CREATED = 0`.** Aucune session ouverte, aucun Bootstrap Receipt demandé, aucun claim, aucun lock, aucune transition, aucun merge, aucun déploiement, aucune mutation serveur, aucun code runtime, aucun secret.
 - Portée : documentation et données uniquement. Le runtime GWC reste gelé.
+
+
+## 2026-09-18 — Réconciliation de la pile candidate (`GWC-PRE-C3`)
+
+- Exécution de `GWC-PRE-C3` du flux pré-code : disposition bornée, capacité par capacité, des cinq pull requests candidates `#85`, `#86`, `#88`, `#89` et `#90`.
+- Observation live : les cinq candidates sont inchangées depuis les 2026-09-14/15. `main@d1f30395` enregistre 111 outils dont 6 `github_*`, tous d'inventaire ou de diagnostic — aucune capacité de contrôle GitHub n'existe sur `main`.
+- Les 7 contrats classés `CANDIDATE` se réduisent à 4 outils de `#90` : `github_create_branch`, `github_create_pull_request`, `github_mark_pr_ready`, `github_merge_pull_request`. `#88`, racine de la staleness de la pile, n'est requise par aucun des 73 contrats.
+- 8 capacités disposées — 3 `SPLIT`, 1 `SUPERSEDE`, 4 `DEFER` ; aucun `KEEP`, aucun `CLOSE`. Partition des 18 outils de `#90` vérifiée exacte et exhaustive.
+- Contrainte d'ordonnancement enregistrée : `GWC-9` précède l'atterrissage de tout `SPLIT` portant du `WRITE`, parce que `AF-32` reste ouvert et que `#90` ajoute douze outils `WRITE`.
+- `GWC-PRE-C1` (`AF-19`) et `GWC-PRE-C2` (`AF-22`/`AF-30`) restent `PENDING` et sont déclarés tels : hors du périmètre autorisé pour cette session.
+- Portée : documentation et données. `PRS_MUTATED = 0`, `RUNTIME_TASKS_CREATED = 0`, aucun merge, aucun déploiement, aucun code runtime, aucun secret.

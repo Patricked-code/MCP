@@ -378,3 +378,16 @@ Date : 2026-08-29
 - **`RUNTIME_TASKS_CREATED = 0`.** Aucune session ouverte, aucun Bootstrap Receipt demandé, aucun claim, aucun lock, aucune transition. L'observation seule a suffi à produire la classification.
 - `NEXT_ACTION` : résoudre le `CONFLICT` sur `TASK-20260915-001` avant toute matérialisation GWC.
 - **Checkpoint durable** — bundle canonique `pr95-phase-b-live-reconciliation` créé (2 sources, intégrité sha256/taille vérifiée, 9 claims tous `approval_eligible: false`, 2 supersessions motivées). Le pointeur `docs/gwc/canonical-memory/current.json` est avancé et porte désormais `currentPhase` avec le blocker et le `NEXT_ACTION`. Les quatre bundles précédents restent immuables, conformément à `CLAUDE.md` §8. `clm_authorities_unknown` et `clm_taskqueue` sont explicitement supersédés : l'`UNKNOWN` n'a jamais été substitué entre-temps, il a été levé par observation réelle.
+
+## 2026-09-18 — Phase C3 : réconciliation de la pile candidate — `PASS_WITH_EVIDENCE`
+
+- Exécution de `GWC-PRE-C3`. `C1` (`AF-19`) et `C2` (`AF-22`/`AF-30`) **non exécutés** : ils touchent au chemin de déploiement et au gating de revue, hors du périmètre autorisé pour cette session. Enregistrés `PENDING`, pas passés sous silence.
+- **Réobservation live** — les cinq candidates `#85`, `#86`, `#88`, `#89`, `#90` sont inchangées depuis les 2026-09-14/15, mêmes heads exacts qu'au 2026-09-17T03:47Z. Aucune rebase, reprise ni fermeture entre-temps.
+- **`main` ne porte aucune capacité de contrôle GitHub.** Ses 111 outils comptent 6 `github_*`, tous d'inventaire ou de diagnostic. « Already implemented ? » = **non** pour l'intégralité des capacités candidates.
+- **Fait décisif** : les **7 contrats `CANDIDATE`** (`GW-24`, `GW-34`, `GW-38`, `GW-43`, `GW-59`, `GW-61`, `GW-63`) ne dépendent que de **4 outils** de `#90` — `github_create_branch`, `github_create_pull_request`, `github_mark_pr_ready`, `github_merge_pull_request`. La pile pèse plus de 5 500 lignes ; ce qui bloque réellement GWC en est une fraction. Et `#88`, **racine** de la staleness, n'est requise par **aucun** des 73 contrats.
+- **8 capacités disposées** : 3 `SPLIT`, 1 `SUPERSEDE`, 4 `DEFER`. Aucun `KEEP` — toutes sont stale. Aucun `CLOSE` — fermer la PR d'autrui n'est pas une disposition que cette session exécute.
+- **Partition vérifiée exacte** : les 18 outils de `#90` sont répartis 4 + 5 + 9, sans doublon, sans manquant, sans outil étranger ; `WRITE` 4 + 4 + 4 = 12.
+- **Contrainte d'ordonnancement dérivée** : `GWC-9` précède l'atterrissage de tout `SPLIT` portant du `WRITE`. `AF-32` établit que 3 mutations de `main` ne traversent aucune porte d'écriture ; `#90` en ajoute 12. Faire atterrir du `WRITE` avant `GWC-9` élargirait le trou d'un facteur quatre. `C-89.2`, `READ` seul, en est exempt.
+- **Deux réserves du verdict mises à jour** — celle des sept contrats est **réduite** (disposition bornée désormais établie) ; celle de la Task Queue non observable est **levée** par la Phase B du 2026-09-17.
+- **`PRS_MUTATED = 0`.** Aucune PR fusionnée, rebasée, fermée ni modifiée. Exécuter un `SPLIT` est une matérialisation de tâche, donc soumise à la Phase B, qui reste `BLOCKED`.
+- `NEXT_ACTION` inchangé : résoudre le `CONFLICT` sur `TASK-20260915-001`.
