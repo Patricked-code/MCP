@@ -607,5 +607,35 @@
     "nextAction": "Reconcile the canonical memory, README, SUIVI, CHANGELOG and DECISIONS against the complete PRECODE catalog and exact online head; then run deterministic verification and exact-head CI. Do not start Phase B/C/D/E/F runtime integration."
   },
   "updatedForPrecodeBoundaryAt": "2026-09-18T18:04:00Z",
-  "updatedForPrecodeBoundaryHead": "111babba7a942d33a6d5381c2e371edb73cf3ff1"
+  "updatedForPrecodeBoundaryHead": "111babba7a942d33a6d5381c2e371edb73cf3ff1",
+  "precodeEvidenceAcquisition": {
+    "bridgeOAuthRequired": false,
+    "serverBridgeRequired": false,
+    "preferredSources": [
+      "VERSIONED_AUDITS",
+      "CANONICAL_MEMORY_SNAPSHOTS",
+      "GITHUB_LIVE",
+      "GITHUB_ACTIONS_ARTIFACTS"
+    ],
+    "knownAuditRoots": [
+      "docs/audits/",
+      "docs/history/",
+      "docs/gwc/canonical-memory/"
+    ],
+    "liveServerFallback": {
+      "mode": "READONLY_EVIDENCE_MIRROR",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "transport": "GitHub Actions artifact",
+      "authentication": "dedicated least-privilege server read-only identity / forced-command; never MCP OAuth",
+      "mutationsForbidden": true,
+      "runtimeSessionForbidden": true,
+      "taskClaimForbidden": true,
+      "lockForbidden": true,
+      "secretsForbidden": true,
+      "staleOrUnavailableResult": "UNKNOWN"
+    },
+    "rule": "PRECODE progress must not depend on OAuth/bridge availability. Runtime/server evidence is consumed as versioned or GitHub-published read-only evidence with explicit freshness."
+  },
+  "updatedForEvidencePolicyAt": "2026-09-18T18:15:00Z",
+  "updatedForEvidencePolicyHead": "e6575971311d63cdc284d9e5333c9d8355c307e9"
 }
