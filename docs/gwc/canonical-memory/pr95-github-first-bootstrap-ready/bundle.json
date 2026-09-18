@@ -1,0 +1,88 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-github-first-bootstrap-ready-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_github_first_bootstrap",
+      "path": "sources/github-first-bootstrap.json",
+      "media_type": "application/json",
+      "bytes": 2712,
+      "sha256": "dbea051a503cdd330a4f66cf53f528aab0f34c036cb49a3c3a30a1af8a142c5d"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_github_first",
+      "key": "candidate.connection_transport",
+      "claim_type": "fact",
+      "value": "PRECODE connection on claude/ecstatic-edison-v1dyt1 is direct GitHub/versioned-branch coordination and does not require the live MCP runtime.",
+      "source_refs": [
+        "src_github_first_bootstrap"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_candidate_session",
+      "key": "candidate.session_identity",
+      "claim_type": "fact",
+      "value": "candidateSessionId is a branch-local coordination identifier resolved/created from observed identifiers; it is not a provider conversation ID.",
+      "source_refs": [
+        "src_github_first_bootstrap"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_unknown_identity",
+      "key": "candidate.identity_unknown_rule",
+      "claim_type": "fact",
+      "value": "Provider conversation IDs that are not exposed remain null/UNAVAILABLE and are never invented.",
+      "source_refs": [
+        "src_github_first_bootstrap"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intent_routing",
+      "key": "candidate.connection_intent_routing",
+      "claim_type": "fact",
+      "value": "Explicit/deducible intent routes to information, continuation or both; ambiguous bare connection asks the canonical three-choice question before work claim.",
+      "source_refs": [
+        "src_github_first_bootstrap"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_compatibility",
+      "key": "candidate.session_backward_compatibility",
+      "claim_type": "fact",
+      "value": "Legacy candidate sessions without connectionInstanceRef remain readable and are enriched on resume.",
+      "source_refs": [
+        "src_github_first_bootstrap"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_bootstrap_tdd",
+      "key": "candidate.github_first_bootstrap_tdd",
+      "claim_type": "fact",
+      "value": "RED CI #1061, compatibility correction CI #1062, GREEN CI #1063 SUCCESS.",
+      "source_refs": [
+        "src_github_first_bootstrap"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_next_work",
+      "key": "candidate.next_work_item",
+      "claim_type": "fact",
+      "value": "GWC-PRE-B-01 remains the next program work item.",
+      "source_refs": [
+        "src_github_first_bootstrap"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
