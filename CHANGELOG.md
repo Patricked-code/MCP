@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## 2026-09-18 — PRECODE indépendant du bridge OAuth
+
+- Ajout d'une hiérarchie de preuves PRECODE : audits versionnés → GitHub live/artefacts → miroir serveur read-only futur.
+- OAuth MCP / `wealthtech_ssh_bridge` n'est plus une dépendance de progression PRECODE.
+- Le miroir serveur proposé est GitHub-side, read-only, least-privilege, redacted et sans surface de mutation.
+- Les preuves historiques conservent date/SHA/fraîcheur ; absence de preuve fraîche = `UNKNOWN` / `STALE`.
+- Aucun workflow serveur, credential, runtime ou déploiement n'a été activé : conception PRECODE uniquement.
+
+
+
 ## 2026-09-18 — Rétablissement de la frontière PRECODE
 
 - Recentrage de la PR #95 sur la finalisation de la version PRECODE, sans intégration runtime.
