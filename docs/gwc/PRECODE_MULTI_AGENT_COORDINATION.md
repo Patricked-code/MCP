@@ -458,6 +458,37 @@ The deterministic selection contract is implemented by `dispatchCandidateWork()`
 
 This is a **PRECODE branch coordination projection**, not a second Operational Memory, Task Queue, Governed Session or runtime lock service. No `TASK-*` is created and no live authority is mutated.
 
+### 17.1A GitHub-first candidate session bootstrap
+
+PRECODE connection is **directly through GitHub and the versioned Claude branch**. It MUST NOT depend on the live MCP runtime.
+
+On every new or returning agent connection:
+
+1. observe `Patricked-code/MCP@claude/ecstatic-edison-v1dyt1` and exact online HEAD;
+2. read `CLAUDE.md`, canonical memory, current bundle, PRECODE status, checkpoint/handoff and active claims;
+3. collect only identifiers actually exposed by the client/GitHub:
+   - provider (`chatgpt|claude|other`);
+   - agent identity;
+   - provider conversation reference only if the client really exposes it;
+   - GitHub actor/connection reference only if observable;
+   - a branch-local connection instance reference;
+4. resolve an existing branch-local candidate session using, in order, provider conversation ref, GitHub connection ref, then connection instance ref;
+5. otherwise create a deterministic branch-local `candidateSessionId`;
+6. never present a derived `candidateSessionId` as a real ChatGPT/Claude conversation ID;
+7. if a provider conversation ID is unavailable, persist `providerConversationRef=null` with provenance `UNAVAILABLE`;
+8. detect the PRECODE mode from explicit user wording or the agent's bounded semantic projection;
+9. route to:
+   - `NEW_INFORMATION_INTAKE`;
+   - `CONTINUE_PRECODE_WORK`;
+   - `NEW_INFORMATION_THEN_CONTINUE_PRECODE`;
+10. if none is deducible, return `ASK_USER` and ask only the canonical three-choice question before any work claim;
+11. continuation modes then enter the existing branch-local dispatcher;
+12. reobserve HEAD immediately before persisting a candidate session/claim; on `HEAD_MOVED`, reconcile and redispatch.
+
+Compatibility rule: older candidate-session traces that lack `connectionInstanceRef` remain valid/readable and are enriched when resumed.
+
+TDD evidence: RED CI #1061 at `a992bc0adf8e841ee38463bce75667650c13689d`; compatibility finding/correction CI #1062 at `44e19282564578a748ae3563c726741816d304ea`; GREEN CI #1063 at `2264b3da4dc672ae1e271519957203c62b7ae03d`.
+
 ### 17.2 New conversation information intake
 
 A connected AI MUST treat new user/conversation information as potential program input, not as disposable chat context.
