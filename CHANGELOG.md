@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## 2026-09-19 — GitHub-first PRECODE bootstrap
+
+- Extension additive de `candidateContinuity.ts` avec `resolveCandidateSession()`, `routeCandidateConnectionIntent()` et `bootstrapCandidateConnection()`.
+- Connexion PRECODE directe GitHub ; `runtimeMcpRequired=false`.
+- Identifiants provider/GitHub conservés uniquement s'ils sont réellement observés ; IDs conversation absents restent `null/UNAVAILABLE`.
+- Routage automatique information/continuation/both ; `ASK_USER` uniquement si ambigu.
+- Compatibilité ascendante des anciennes candidate sessions sans `connectionInstanceRef`.
+- TDD : RED CI #1061, correction de compatibilité CI #1062, GREEN CI #1063.
+- Aucun changement live `main`/S1/prod/runtime.
+
+
 ## 2026-09-19 — Candidate multi-agent continuity and conversation reconciliation
 
 - Ajout additif de `src/governedContext/candidateContinuity.ts`.
