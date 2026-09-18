@@ -65,6 +65,19 @@ GitHub live.
 | `scripts/gwc-verify.mjs` | vérificateur déterministe | humain et agent |
 | `scripts/gwc-precode-verify.mjs` | vérificateur du flux pré-code et du gate | humain et agent |
 
+## Continuité automatique multi-agent et intake conversation
+
+La branche candidate dispose désormais d'une fondation testée dans `src/governedContext/candidateContinuity.ts` :
+
+- `dispatchCandidateWork()` reprend le claim candidat actif de la même session ou sélectionne le prochain work item READY compatible avec dépendances/collision domains ;
+- la persistance du claim reste branch-local dans `.mcp/gwc-precode-status.json > candidateCoordination.activeClaims` et exige une relecture du HEAD exact ;
+- `reconcileConversationIntake()` reçoit l'analyse structurée d'une conversation et classe les informations en `DUPLICATE / COMPLEMENT / DECISION / FINDING / TASK / CONTRADICTION / MEMORY` ;
+- le transcript brut n'est pas persisté par ce mécanisme ;
+- les enrichissements non conflictuels peuvent mettre à jour mémoire/backlog ; les contradictions sont retenues pour review ;
+- aucune de ces capacités n'utilise la Task Queue runtime ni n'autorise main/S1/prod.
+
+Preuves : RED CI #1046 ; GREEN CI #1048 SUCCESS.
+
 ## Frontière actuelle — construction de la candidate évoluée
 
 La PR #95 et la branche `claude/ecstatic-edison-v1dyt1` sont la **surface de construction de la future version évoluée complète du MCP**.
