@@ -1,4 +1,18 @@
-# SUIVI.md — Point de reprise courant
+# SUIVI.md
+
+## 2026-09-19 — Continuité automatique multi-agent + intake conversation PRECODE
+
+- Branche : `claude/ecstatic-edison-v1dyt1`; aucune mutation `main`/S1/prod.
+- Intégration existing-first dans `Governed Context` : `src/governedContext/candidateContinuity.ts`; aucune seconde Operational Memory, Task Queue, session ou lock authority.
+- `dispatchCandidateWork()` : reprise du claim actif de la même candidate session, sinon sélection du prochain work item READY dont les dépendances sont DONE et les collision domains libres ; ordre priorité décroissante puis séquence croissante ; ambiguïté fail-closed.
+- Claims PRECODE : projection branch-local `.mcp/gwc-precode-status.json > candidateCoordination.activeClaims`; relecture obligatoire du HEAD avant claim, `HEAD_MOVED` => redispatch.
+- `reconcileConversationIntake()` : la nouvelle conversation est comprise par l'agent puis projetée en insights bornés ; classification `DUPLICATE / COMPLEMENT / DECISION / FINDING / TASK / CONTRADICTION / MEMORY`.
+- Aucun transcript brut persisté par ce mécanisme. Les contradictions/supersessions restent en `HOLD_FOR_REVIEW`.
+- Une information non conflictuelle peut enrichir la mémoire canonique, une décision, un finding, un work item existant ou proposer un nouveau work item candidate.
+- TDD : RED CI #1046 au head `9f6e14df2939e5e4b062e2861dfd5af507d6b157`; GREEN CI #1048 SUCCESS au head `138d392942591f8ba0270757bc5df859fdd4b7cb`.
+- Bundle canonique courant : `docs/gwc/canonical-memory/pr95-candidate-continuity-ready`.
+- NEXT_ACTION : `GWC-PRE-B-01` reste READY ; dériver le backlog candidate complet en utilisant désormais ce protocole de continuité/intake.
+ — Point de reprise courant
 
 ## GWC PR #95 — candidate évoluée complète sur branche Claude
 
