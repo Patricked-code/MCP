@@ -517,6 +517,58 @@ Security and non-regression rules:
 
 TDD evidence for both foundations: RED CI #1046 at `9f6e14df2939e5e4b062e2861dfd5af507d6b157`; GREEN CI #1048 at `138d392942591f8ba0270757bc5df859fdd4b7cb`.
 
+### 17.3 Incremental intake continuity and coherence before work
+
+New information is never adopted merely because it is new. The branch MUST maintain one incremental continuity projection over the existing canonical-memory/status/work surfaces.
+
+The continuity model is:
+
+`INTAKE → STRUCTURE → COHERENCE GATE → RECONCILE → IMPACT → CANONICAL/BACKLOG REVISION → RECEIPT → AFFECTED WORK → DISPATCH`.
+
+Rules:
+
+1. Every new information event receives a monotone `NEW_INFORMATION_INTAKE-NNN` sequence and bounded provenance/digest. Raw transcript persistence remains forbidden.
+2. The cursor tracks `latestIntakeSequence`, `reconciledThroughSequence`, `canonicalRevision`, `backlogRevision`, `pendingIntakeIds` and `lastReconciliationDigest`.
+3. Only a contiguous delta beginning at `reconciledThroughSequence + 1` may be reconciled. Missing sequence => `BLOCKED_GAP`.
+4. Each structured intake passes the coherence gate before it can affect canonical memory or candidate work:
+   - understanding;
+   - relevance;
+   - evidence/provenance;
+   - GWC objective alignment;
+   - relation to existing capability;
+   - architecture fit;
+   - authority fit;
+   - non-regression;
+   - impact;
+   - existing-first path.
+5. Integration verdicts are bounded to `ACCEPT / ACCEPT_WITH_ADAPTATION / COMPLEMENT / DUPLICATE / DEFER / HOLD_FOR_REVIEW / OUT_OF_SCOPE / REJECT`.
+6. `NEW != GOOD != RELEVANT != COMPATIBLE != READY_TO_APPLY`.
+7. A parallel authority proposal is rejected; contradiction/supersession or a breaking change is held for review; evidence-required/unverified factual input is deferred.
+8. Accepted intake impact MUST search existing work first: enrich/reconcile an existing compatible work item before proposing a new one.
+9. Every reconciled batch produces a digest-bound `IntakeReconciliationReceipt` with sequences, intake ids, canonical/backlog revisions before/after and exact effects.
+10. Canonical/backlog revisions advance only when accepted effects change those projections. Duplicate/reject/defer/hold/out-of-scope may be attested without falsely advancing revisions.
+11. Before candidate mutation, validate both Git state and knowledge state:
+    - expected HEAD vs current HEAD;
+    - expected canonical revision vs current;
+    - expected backlog revision vs current.
+12. `HEAD_MOVED` keeps precedence and requires the existing full head reconciliation protocol.
+13. Knowledge-only drift is scoped. An intake affecting another work item does not globally stop independent work: `LOCAL_BLOCKER != GLOBAL_STOP`.
+14. If the delta does not affect the current work item, the agent may refresh/logically rebase its knowledge revision and continue.
+15. If the delta affects the current work item, status is `RECONCILE_REQUIRED` before further write.
+16. Agents execute only from reconciled state, not directly from raw/new intake evidence.
+17. `INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK`.
+
+Current bootstrap state after introducing this rule:
+- `latestIntakeSequence = 2`;
+- `reconciledThroughSequence = 0`;
+- pending = `NEW_INFORMATION_INTAKE-001`, `NEW_INFORMATION_INTAKE-002`;
+- both bundles remain immutable evidence and previously declared `canonicalAdoptionPerformed=false`;
+- they must pass this coherence/reconciliation layer before B-01 consumes their accepted effects.
+
+Implementation: `registerCandidateIntake()`, `evaluateCandidateIntakeGate()`, `reconcileCandidateIntakeBatch()`, `assessCandidateKnowledgeFreshness()` in `src/governedContext/candidateContinuity.ts`.
+
+TDD evidence: RED CI #1080 at `c63beb0ac413824a72647a661640ed599cc867a0`; GREEN CI #1081 at `f288d3e93eae772dd4e51654a1e4512a822b3dd6`.
+
 ## 18. Conflict resolution precedence for this program
 
 Within the specific PR #95 PRECODE evolution program, this revision supersedes any older statement that permanently assigns Claude as primary writer or ChatGPT as reviewer-only.
