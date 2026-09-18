@@ -3,6 +3,17 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-18 — PR #95 reste PRECODE-only jusqu'à FINAL_PRECODE_VERSION_ACCEPTED
+
+Décision : la branche `claude/ecstatic-edison-v1dyt1` sert d'abord à produire la version finale PRECODE complète. Le passage de `GWC_ARCHITECTURE_GATE_PASS` ne déclenche pas automatiquement l'intégration dans le MCP réel.
+
+Le catalogue complet `T00→T204` reste visible et ordonné dans les artefacts PRECODE, mais l'exécution actuelle est limitée à la construction/revalidation/canonicalisation PRECODE `T00→T195`. Les tâches `T196→T204` et les Phases B→F décrivent l'intégration future ; elles ne doivent pas être matérialisées ou exécutées contre le runtime pendant cette phase.
+
+La mémoire canonique doit permettre à tout agent de retrouver : état du programme, preuves, work item courant, session/handoff et `NEXT_ACTION`, sans utiliser une seconde Task Queue ni transformer les `GWC-PRE-*` en `TASK-*`.
+
+Sortie obligatoire avant toute phase d'intégration réelle : `FINAL_PRECODE_VERSION_ACCEPTED`.
+
+
 
 ## 2026-09-17 — Flux pré-code : décisions de conception
 
