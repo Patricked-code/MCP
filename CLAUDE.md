@@ -57,7 +57,7 @@ Pour toute intervention liée à GWC, au Universal Resolver, aux 73 contrats, au
 1. lire `docs/gwc/README.md` ;
 2. lire `docs/gwc/canonical-memory/current.json` pour résoudre le bundle de continuité courant ;
 3. vérifier le bundle sélectionné avec un Canonical Memory Verifier compatible avant d’en projeter les claims ;
-4. lire `docs/gwc/PRECODE_ACTION_TASK_FLOW.txt` et sa projection `.mcp/gwc-precode-action-flow.json` avant toute implémentation runtime GWC ;
+4. lire `docs/gwc/PRECODE_EXECUTION_PLAN.txt`, `docs/gwc/PRECODE_ACTION_TASK_FLOW.txt` et sa projection `.mcp/gwc-precode-action-flow.json` avant toute construction candidate GWC ;
 5. lire `docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md` avant toute écriture sur une branche GWC partagée par plusieurs agents ;
 6. lire ensuite les projections `.mcp/gwc-contracts.json`, `.mcp/gwc-workflow-graph.json`, `.mcp/gwc-blueprints.json` et `.mcp/gwc-evolution-design.json` selon le besoin ;
 7. réobserver les autorités live applicables avant toute mutation.
@@ -122,14 +122,14 @@ Ne jamais créer un store, journal, Task Queue ou mémoire parallèle uniquement
 2. résoudre `docs/gwc/canonical-memory/current.json` ;
 3. lire le checkpoint courant et `SUIVI.md` ;
 4. réobserver GitHub et les autorités live applicables ;
-5. vérifier que les SHA, PR, locks, session, Task Queue et Live State nécessaires sont toujours cohérents ;
+5. vérifier le SHA/PR/head GitHub exact et les preuves nécessaires au work item ; Task Queue, runtime locks, Governed Session et Live State ne sont requis que lorsqu'une preuve historique/live spécifique est réellement nécessaire, jamais comme moteur du candidate build ;
 6. reprendre directement depuis `NEXT_ACTION` si la preuve reste courante ;
 7. sinon marquer la preuve `STALE`/`CONFLICT` et réconcilier avant de poursuivre ;
 8. ne jamais rejouer une étape déjà `PASS_WITH_EVIDENCE` encore valide.
 
 ### 9.4.1 PRECODE — preuves sans OAuth/bridge
 
-Pendant `PRECODE_FINALIZATION_ONLY`, l'OAuth du serveur MCP et `wealthtech_ssh_bridge` ne sont pas des dépendances requises pour progresser.
+Pendant `PREINTEGRATION_EVOLVED_CANDIDATE_BUILD`, l'OAuth du serveur MCP et `wealthtech_ssh_bridge` ne sont pas des dépendances requises pour progresser.
 
 Ordre de preuve :
 
@@ -167,13 +167,25 @@ Règles minimales obligatoires :
 - tout checkpoint/handoff porte les preuves, head exact, statut, findings, dépendances et `NEXT_ACTION` ;
 - les PRECODE scope/session traces ne sont jamais des `TASK-*`, Governed Tasks, runtime locks ou nouvelles autorités ;
 - toutes les écritures durables de ce programme ciblent la branche GitHub en ligne `claude/ecstatic-edison-v1dyt1` ; aucune branche de développement parallèle n’est créée ; un workspace local éventuel est seulement une surface d’exécution éphémère synchronisée sur le head en ligne et ne constitue jamais une autorité ;
-- le runtime reste gelé pendant toute la phase de finalisation PRECODE sur cette branche, même si `GWC-PRE-GATE-01 = PASS_WITH_EVIDENCE` ;
-- le passage du PRECODE vers l'intégration réelle exige une clôture explicite `FINAL_PRECODE_VERSION_ACCEPTED` puis un nouveau cycle gouverné séparé ;
-- pendant la finalisation PRECODE, les phases B/C/D/E/F et T196→T204 peuvent être décrites, auditées et ordonnées comme plan futur, mais ne doivent pas être matérialisées en Governed Tasks ni exécutées contre le runtime réel.
+- `GWC-PRE-GATE-01 = PASS_WITH_EVIDENCE` autorise et déclenche la **construction candidate sur la branche Claude** : code `src/**`, tests, workflows, scripts, types, migrations additives, wrappers, extensions et généralisations sont permis et attendus ;
+- les phases B/C/D/E/F sont les phases actives de construction candidate : backlog complet → safety/foundations → implémentation branch-local GWC-0..17 → acceptance candidate ;
+- les work items PRECODE/candidate ne deviennent jamais automatiquement des `TASK-*`, Governed Tasks ou runtime locks ;
+- `main`, S1, production, déploiement et activation live restent gelés jusqu'à `FINAL_PRECODE_VERSION_ACCEPTED` ;
+- après `FINAL_PRECODE_VERSION_ACCEPTED`, un cycle d'intégration séparé réobserve l'état réel, réconcilie le drift puis intègre la candidate déjà construite selon la gouvernance alors courante.
 
 Dans ce périmètre précis, toute ancienne règle attribuant Claude comme writer principal permanent ou ChatGPT comme reviewer-only est remplacée par l’ownership temporaire par scope/session décrit ci-dessus.
 
 ---
+
+### 9.7 Distinction candidate vs projet réel
+
+Pour PR #95, `claude/ecstatic-edison-v1dyt1` est une **branche candidate complète**, pas une branche de documentation uniquement.
+
+Après le gate d'architecture, l'agent doit progressivement y construire la version évoluée à partir du squelette existant, en préservant l'existant et en appliquant `REUSE → WRAP → GENERALIZE → EXTEND → NEW`.
+
+Cette autorisation porte sur le contenu de la branche candidate. Elle ne constitue jamais une autorisation de merge `main`, écriture S1, déploiement, restart, runtime Task, runtime lock ou activation live.
+
+La condition terminale du candidate build est `FINAL_PRECODE_VERSION_ACCEPTED` / `EVOLVED_CANDIDATE_READY_FOR_INTEGRATION`.
 
 ## Règle permanente — double présence, non-régression et amélioration continue
 
@@ -182,6 +194,8 @@ GitHub est la source versionnée.
 Le serveur MCP est la source exécutée.
 
 Les deux doivent toujours être vérifiés ensemble avant et après toute intervention.
+
+Exception bornée PR #95 : pendant le **candidate build branch-only**, aucune connexion serveur live n'est requise pour chaque modification. Utiliser d'abord les audits/versioned evidence/GitHub ; le serveur réel est réobservé au moment de l'intégration ou lorsqu'une preuve live précise est indispensable.
 
 Aucune IA ne doit supposer que GitHub et le serveur sont synchronisés sans vérification.
 
