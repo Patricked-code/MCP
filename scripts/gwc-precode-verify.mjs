@@ -86,7 +86,9 @@ fail(errors, plan.includes('14 ARCHITECTURE PHASES — CLOSURE MATRIX'), 'sectio
 fail(errors, plan.includes('18 BLUEPRINT EXECUTION PROCEDURES'), 'section 18 blueprints absente');
 fail(errors, plan.includes('73 CONTRACT EXECUTION PROCEDURES'), 'section 73 contrats absente');
 fail(errors, plan.includes('22 E2E SCENARIOS'), 'section E2E absente');
-fail(errors, plan.includes('PRE-CODE GATE'), 'section PRE-CODE GATE absente');
+fail(errors, plan.includes('ARCHITECTURE GATE'), 'section ARCHITECTURE GATE absente');
+fail(errors, plan.includes('FINAL CANDIDATE GATE'), 'section FINAL CANDIDATE GATE absente');
+fail(errors, plan.includes('FINAL_PRECODE_VERSION_ACCEPTED'), 'verdict final candidate absent du plan');
 
 for (let i = 1; i <= 14; i += 1) {
   const id = `PHASE ${String(i).padStart(2, '0')} —`;
@@ -110,7 +112,7 @@ for (let i = 1; i <= 22; i += 1) {
 
 for (const invariant of [
   'INTENT != AUTHORIZATION', 'CALLABLE != AUTHORIZED != SAFE_NOW', 'UNKNOWN never permits mutation',
-  'Blueprint != GovernedTaskRecord', 'Only NEW_TASK after live Task Queue reconciliation may create a runtime Task',
+  'Blueprint != GovernedTaskRecord', 'Branch-local candidate work items are not runtime Tasks.',
   'Exact head before merge', 'Exact SHA before runtime truth', 'No false DONE'
 ]) {
   fail(errors, plan.includes(invariant), `invariant pre-code absent : ${invariant}`);
