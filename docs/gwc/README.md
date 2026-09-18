@@ -57,9 +57,10 @@ GitHub live.
 | `.mcp/gwc-precode-gate.json` | compteurs déclarés du gate, recoupés contre les preuves | agent |
 | `.mcp/gwc-precode-status.json` | **état d'exécution par phase, preuves, Phase B et blocker courant** | agent |
 | `docs/gwc/canonical-memory/pr95-ded/` | sources et bundle de mémoire de la mission de conception | traçabilité |
-| `docs/gwc/canonical-memory/pr95-precode-gate/` | sources et bundle de mémoire de la clôture pré-code | traçabilité |
+| `docs/gwc/canonical-memory/pr95-precode-gate/` | checkpoint historique du gate d'architecture | traçabilité |
 | `docs/gwc/canonical-memory/pr95-phase-b-live-reconciliation/` | bundle de la réconciliation live et du blocker `AF-35` — immuable, supersédé | traçabilité |
 | `docs/gwc/canonical-memory/pr95-phase-b-resolved/` | checkpoint historique de réconciliation live — provenance uniquement | traçabilité |
+| `docs/gwc/canonical-memory/pr95-candidate-build-ready/` | **bundle courant** — candidate évoluée autorisée sur branche, intégration live gelée | humain et agent |
 | `docs/gwc/canonical-memory/current.json` | pointeur de continuité — **vérifié** par `verifyCanonicalMemory()` depuis `AF-36` | humain et agent |
 | `scripts/gwc-verify.mjs` | vérificateur déterministe | humain et agent |
 | `scripts/gwc-precode-verify.mjs` | vérificateur du flux pré-code et du gate | humain et agent |
