@@ -1,5 +1,20 @@
 # SUIVI.md
 
+## 2026-09-19 — Intake Continuity / Coherence Gate / Knowledge Revisions
+
+- Extension additive de `candidateContinuity.ts` ; aucune nouvelle Task Queue, Memory DB, session manager ou autorité.
+- `registerCandidateIntake()` : séquence monotone et intake borné sans transcript brut.
+- `evaluateCandidateIntakeGate()` : compréhension, pertinence, evidence, objectif, relation existante, architecture, autorités, non-régression, impact et existing-first.
+- Verdicts : `ACCEPT / ACCEPT_WITH_ADAPTATION / COMPLEMENT / DUPLICATE / DEFER / HOLD_FOR_REVIEW / OUT_OF_SCOPE / REJECT`.
+- `reconcileCandidateIntakeBatch()` : uniquement delta contigu, fail-closed sur gap, receipt digesté, revisions canonical/backlog avancées uniquement si effet accepté.
+- `assessCandidateKnowledgeFreshness()` : garde `HEAD_SHA + canonicalRevision + backlogRevision`; `HEAD_MOVED` prioritaire ; drift connaissance localisé.
+- Règle : `LOCAL_BLOCKER != GLOBAL_STOP`.
+- Règle : `INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK`.
+- Les intakes déjà enregistrés #001/#002 restent immuables et pending sous le nouveau gate : `latest=2`, `reconciledThrough=0`, `canonicalRevision=1`, `backlogRevision=0`.
+- TDD : RED CI #1080 au head `c63beb0ac413824a72647a661640ed599cc867a0`; GREEN CI #1081 au head `f288d3e93eae772dd4e51654a1e4512a822b3dd6`.
+- Prochaine action programme : réconcilier #001/#002 par le gate avant de consommer leurs effets dans `GWC-PRE-B-01`.
+
+
 ## 2026-09-19 — Bootstrap PRECODE GitHub-first
 
 - Correction de frontière : pour `claude/ecstatic-edison-v1dyt1`, la connexion candidate se fait par GitHub/branche versionnée, pas par le MCP runtime.
