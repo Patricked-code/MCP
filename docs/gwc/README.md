@@ -67,6 +67,21 @@ GitHub live.
 
 ## Continuité automatique multi-agent et intake conversation
 
+## Continuité incrémentale des intakes et Coherence Gate
+
+La fondation de conversation intake est désormais prolongée par un modèle incrémental générique : chaque `NEW_INFORMATION_INTAKE-NNN` est enregistré avec séquence/provenance/digest, évalué par un gate de cohérence avant toute adoption, puis réconcilié par delta contigu.
+
+Le cursor PRECODE projette `latestIntakeSequence`, `reconciledThroughSequence`, `canonicalRevision`, `backlogRevision`, `pendingIntakeIds` et `lastReconciliationDigest`. Ce cursor est un index de continuité, pas une nouvelle queue ou mémoire autoritative.
+
+Le Coherence Gate vérifie compréhension, pertinence, preuve, objectif GWC, relation à l'existant, fit architecture/autorités, non-régression, impact et chemin `REUSE → WRAP → GENERALIZE → EXTEND → NEW`. Verdicts bornés : `ACCEPT / ACCEPT_WITH_ADAPTATION / COMPLEMENT / DUPLICATE / DEFER / HOLD_FOR_REVIEW / OUT_OF_SCOPE / REJECT`.
+
+Chaque lot réconcilié émet un receipt digesté et les agents valident `HEAD_SHA + canonicalRevision + backlogRevision` avant écriture. Un changement de connaissance ne bloque que les scopes affectés.
+
+État initial réel : intakes #001/#002 enregistrés mais non adoptés (`canonicalAdoptionPerformed=false`), donc cursor `latest=2`, `reconciledThrough=0`, pending #001/#002.
+
+Preuves : RED CI #1080, GREEN CI #1081.
+
+
 ## Bootstrap PRECODE GitHub-first
 
 L'entrée PRECODE de `claude/ecstatic-edison-v1dyt1` est désormais explicitement GitHub-first. Un agent se connecte au repository/branche, observe le HEAD exact, lit la mémoire canonique/status/checkpoint/handoff, puis résout ou crée une `candidateSessionId` branch-local sans ouvrir de Governed Session runtime.
