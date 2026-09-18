@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "observedHeadBeforeBundle": "bbfc9cb1d1cc4e372bf1471edf7880ca54c5d50c",
+  "observedAt": "2026-09-18T18:42:00Z",
+  "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
+  "semanticDefinition": "PRECODE means pre-integration evolved candidate construction, not documentation-only.",
+  "candidateBuild": {
+    "codeAllowed": true,
+    "codeExpected": true,
+    "scope": [
+      "src/**",
+      "tests/**",
+      ".github/workflows/**",
+      "scripts/**",
+      ".mcp/**",
+      "docs/**",
+      "additive/backward-compatible configuration and migrations"
+    ],
+    "existingFirst": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
+    "phases": "B -> C -> D/E -> F",
+    "currentWorkItem": "GWC-PRE-B-01",
+    "blueprintBuildItems": "GWC-PRE-E-GWC-0..GWC-PRE-E-GWC-17"
+  },
+  "liveBoundary": {
+    "runtimeTasks": false,
+    "runtimeClaims": false,
+    "runtimeLocks": false,
+    "mainIntegration": false,
+    "s1Mutation": false,
+    "productionDeploy": false,
+    "until": "FINAL_PRECODE_VERSION_ACCEPTED"
+  },
+  "finalExits": [
+    "FINAL_PRECODE_VERSION_ACCEPTED",
+    "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION"
+  ],
+  "evidenceRefs": [
+    "docs/gwc/PRECODE_EXECUTION_PLAN.txt",
+    "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+    ".mcp/gwc-precode-action-flow.json",
+    ".mcp/gwc-precode-gate.json",
+    ".mcp/gwc-precode-status.json",
+    "docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md",
+    "docs/gwc/README.md",
+    "CLAUDE.md"
+  ]
+}
