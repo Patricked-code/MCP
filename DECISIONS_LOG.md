@@ -3,6 +3,17 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-18 — PRECODE ne dépend pas de l'OAuth/bridge MCP
+
+Décision : la finalisation PRECODE doit pouvoir fonctionner avec GitHub et les preuves versionnées sans ouvrir de session OAuth contre le serveur MCP.
+
+Ordre de preuve : (1) audits/historiques/canonical-memory déjà versionnés, (2) GitHub live et artefacts CI, (3) uniquement si nécessaire, futur export serveur read-only indépendant du MCP/OAuth et publié comme artefact GitHub.
+
+Le futur exporteur doit respecter le moindre privilège : identité read-only dédiée ou forced-command, commandes allowlistées, redaction, digest, TTL/fraîcheur, aucun secret et aucune capacité de mutation/restart/deploy/claim/lock.
+
+Une preuve historique ne prouve pas automatiquement l'état live ; si aucune preuve fraîche n'est disponible, l'état est `UNKNOWN` ou `STALE`. Cette absence ne doit pas pousser un agent PRECODE à ouvrir une Governed Session runtime.
+
+
 ## 2026-09-18 — PR #95 reste PRECODE-only jusqu'à FINAL_PRECODE_VERSION_ACCEPTED
 
 Décision : la branche `claude/ecstatic-edison-v1dyt1` sert d'abord à produire la version finale PRECODE complète. Le passage de `GWC_ARCHITECTURE_GATE_PASS` ne déclenche pas automatiquement l'intégration dans le MCP réel.
