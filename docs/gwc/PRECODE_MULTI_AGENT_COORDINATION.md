@@ -439,6 +439,53 @@ The candidate-build sequence after architecture is:
 
 Only after that exit may a separate governed integration cycle reobserve current main/server state, reconcile drift and integrate the already-built candidate into the existing MCP.
 
+### 17.1 Automatic candidate connection and work dispatch
+
+Every authorized AI that connects to `claude/ecstatic-edison-v1dyt1` MUST execute this branch-local bootstrap before candidate work:
+
+1. reobserve the exact online branch HEAD;
+2. read `CLAUDE.md`, canonical memory, current bundle, `.mcp/gwc-precode-status.json`, latest checkpoint/handoff and action flow;
+3. inspect `candidateCoordination.activeClaims`;
+4. if the same candidate session already owns one ACTIVE claim, resume that work item first;
+5. otherwise select the next READY work item whose dependencies are DONE and whose collision domains are not occupied by another ACTIVE candidate claim;
+6. reobserve HEAD immediately before claiming;
+7. persist the bounded claim in `candidateCoordination.activeClaims` on the shared branch;
+8. if HEAD moved, do not write the stale claim: apply HEAD_MOVED → REOBSERVE → RECONCILE → REDISPATCH;
+9. execute RED → GREEN → regression → evidence;
+10. checkpoint/handoff, update canonical memory/NEXT_ACTION and release or transfer the branch-local claim.
+
+The deterministic selection contract is implemented by `dispatchCandidateWork()` in `src/governedContext/candidateContinuity.ts`.
+
+This is a **PRECODE branch coordination projection**, not a second Operational Memory, Task Queue, Governed Session or runtime lock service. No `TASK-*` is created and no live authority is mutated.
+
+### 17.2 New conversation information intake
+
+A connected AI MUST treat new user/conversation information as potential program input, not as disposable chat context.
+
+The AI performs semantic understanding and emits bounded structured insights only. The candidate contract then reconciles each insight against canonical memory and candidate work using `reconcileConversationIntake()`.
+
+Allowed dispositions:
+
+- `DUPLICATE` — already represented; do not duplicate;
+- `COMPLEMENT` — enrich the existing canonical fact/requirement and, when actionable, the matching candidate work item;
+- `DECISION` — record a new decision with provenance;
+- `FINDING` — record a new gap/risk/anomaly and attach or propose work when actionable;
+- `TASK` — enrich a matching work item or propose a new candidate work item;
+- `MEMORY` — add/enrich bounded canonical memory;
+- `CONTRADICTION` — fail closed to `HOLD_FOR_REVIEW`; never silently overwrite an active canonical rule.
+
+Security and non-regression rules:
+
+- raw conversation transcripts are not persisted by this contract;
+- only bounded summaries, digests and evidence references may enter branch memory;
+- information must be reconciled before it changes memory or backlog;
+- no conversation input may directly mutate `main`, S1, production, runtime Task Queue, runtime sessions or locks;
+- a new task signal must first be checked for duplicate/continuation/conflict and bound to the existing architecture with `REUSE → WRAP → GENERALIZE → EXTEND → NEW`;
+- canonical memory and candidate backlog must be updated together when an accepted insight materially changes the program;
+- every resulting change must leave evidence and a new `NEXT_ACTION` when appropriate.
+
+TDD evidence for both foundations: RED CI #1046 at `9f6e14df2939e5e4b062e2861dfd5af507d6b157`; GREEN CI #1048 at `138d392942591f8ba0270757bc5df859fdd4b7cb`.
+
 ## 18. Conflict resolution precedence for this program
 
 Within the specific PR #95 PRECODE evolution program, this revision supersedes any older statement that permanently assigns Claude as primary writer or ChatGPT as reviewer-only.
