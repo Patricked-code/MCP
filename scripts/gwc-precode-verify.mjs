@@ -207,12 +207,13 @@ for (let i = 0; i <= 17; i += 1) {
     `projection evolution design absente : GWC-${i}`);
 }
 
-fail(errors, actionFlow.includes('Only NEW_TASK') || actionFlow.includes('only NEW_TASK'),
-  'le flux d actions doit conserver la règle NEW_TASK');
-fail(errors, actionFlow.includes('Never assume 1 blueprint = 1 task'),
-  'le flux d actions doit conserver Blueprint != Task');
-fail(errors, actionFlow.includes('NO GWC RUNTIME CODE MAY START'),
-  'le gate absolu avant code runtime manque dans le flux d actions');
+fail(errors, actionFlow.includes('Never manufacture runtime TASK-* entries from branch-local candidate work items.'),
+  'le flux d actions doit conserver candidate work != runtime Task');
+fail(errors, actionFlow.includes('CANDIDATE_IMPLEMENTATION_ON_CLAUDE_BRANCH = ALLOWED_AND_EXPECTED'),
+  'le gate d architecture doit autoriser le code candidate sur la branche Claude');
+fail(errors, actionFlow.includes('LIVE_PROJECT_INTEGRATION = FORBIDDEN')
+  && actionFlow.includes('Never mutate main/S1/production or activate the candidate before FINAL_PRECODE_VERSION_ACCEPTED.'),
+  'la frontière candidate vs intégration live manque dans le flux d actions');
 
 // AF-34 : le gate se declarait complet sans que ses conditions de sortie soient
 // verifiees. La declaration est desormais recoupee contre la projection de statut,
