@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "R3-PRECODE-ACTION-FLOW",
+  "revision": "R4-CANDIDATE-ACTION-FLOW",
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
@@ -9,8 +9,8 @@
   "runtimeAuthority": false,
   "governedTaskQueueAuthority": false,
   "runtimeTasksCreated": 0,
-  "actionFlowDigestSha256": "6a8319ba00c2117fae9f0859ac5d0a14a0f6973d7495004df5e77ce115d3f268",
-  "absoluteRule": "NO_GWC_RUNTIME_CODE_BEFORE_GWC_PRE_GATE_01_PASS_WITH_EVIDENCE",
+  "actionFlowDigestSha256": "958598e8e2e8154d891ff54c9e6a7c3baab31bc4b12bc635b87c5a34a3bb4282",
+  "absoluteRule": "ARCHITECTURE_GATE_BEFORE_CANDIDATE_CODE; FINAL_PRECODE_VERSION_ACCEPTED_BEFORE_LIVE_INTEGRATION",
   "statusVocabulary": [
     "PENDING",
     "IN_PROGRESS",
@@ -152,21 +152,15 @@
     },
     {
       "id": "B",
-      "name": "Live Task Reconciliation",
+      "name": "Complete Candidate Task Synthesis",
       "dependsOn": [
         "PRECODE_GATE"
       ],
-      "allowedOutcomes": [
-        "CONTINUATION",
-        "DUPLICATE",
-        "CONFLICT",
-        "BLOCKED",
-        "NEW_TASK"
-      ]
+      "exit": "CANDIDATE_BACKLOG_COMPLETE"
     },
     {
       "id": "C",
-      "name": "Safety Prerequisites",
+      "name": "Candidate Safety and Foundation Completion",
       "dependsOn": [
         "B"
       ],
@@ -174,29 +168,33 @@
         "AF-19",
         "AF-22/AF-30",
         "PR-STACK"
-      ]
+      ],
+      "exit": "CANDIDATE_SAFETY_FOUNDATIONS_COMPLETE"
     },
     {
       "id": "D",
-      "name": "Governed Implementation Cycle",
+      "name": "Branch-local Candidate Implementation Cycle",
       "dependsOn": [
         "C"
-      ]
+      ],
+      "exit": "CANDIDATE_IMPLEMENTATION_CYCLE_VERIFIED"
     },
     {
       "id": "E",
-      "name": "Blueprint Materialization Order",
+      "name": "Blueprint Candidate Build Order",
       "dependsOn": [
         "D"
-      ]
+      ],
+      "workItems": 18,
+      "exit": "18_BLUEPRINT_CANDIDATE_IMPLEMENTATIONS_COMPLETE"
     },
     {
       "id": "F",
-      "name": "Universal Acceptance",
+      "name": "Candidate Universal Acceptance",
       "dependsOn": [
         "E"
       ],
-      "exit": "UNIVERSAL_GOVERNED_WORKFLOW_ACCEPTED"
+      "exit": "FINAL_PRECODE_VERSION_ACCEPTED"
     }
   ],
   "contractMappingWorkItems": [
@@ -393,11 +391,55 @@
     "GWC-16",
     "GWC-17"
   ],
-  "runtimeTaskRule": "BLUEPRINT_NE_TASK; only NEW_TASK after live reconciliation may create GovernedTaskRecord",
+  "runtimeTaskRule": "BRANCH_CANDIDATE_WORK_NE_GOVERNED_TASK; live Governed Tasks are considered only during post-candidate real integration under then-current governance",
   "safetyPrerequisites": [
     "AF-19",
     "AF-22/AF-30",
     "PR-STACK"
   ],
-  "nextActionRule": "Observe current authorities, resolve exact head, start at first work item not PASS_WITH_EVIDENCE, never infer runtime/task completion from this projection."
+  "nextActionRule": "Resolve exact Claude-branch head; if architecture gate is PASS and final candidate gate is not PASS, execute first incomplete branch-local candidate work item B->C->D/E->F. Never use runtime Task Queue or mutate main/S1/prod during candidate build.",
+  "candidateImplementation": {
+    "branch": "claude/ecstatic-edison-v1dyt1",
+    "allowedAfter": "GWC_ARCHITECTURE_GATE_PASS",
+    "codeAllowed": true,
+    "codeExpected": true,
+    "runtimeTaskQueueUsed": false,
+    "liveLocksUsed": false,
+    "mainMutationAllowed": false,
+    "s1MutationAllowed": false,
+    "productionDeploymentAllowed": false,
+    "finalExit": "FINAL_PRECODE_VERSION_ACCEPTED"
+  },
+  "candidateBlueprintWorkItems": [
+    "GWC-PRE-E-GWC-0",
+    "GWC-PRE-E-GWC-1",
+    "GWC-PRE-E-GWC-2",
+    "GWC-PRE-E-GWC-3",
+    "GWC-PRE-E-GWC-4",
+    "GWC-PRE-E-GWC-5",
+    "GWC-PRE-E-GWC-6",
+    "GWC-PRE-E-GWC-7",
+    "GWC-PRE-E-GWC-8",
+    "GWC-PRE-E-GWC-9",
+    "GWC-PRE-E-GWC-10",
+    "GWC-PRE-E-GWC-11",
+    "GWC-PRE-E-GWC-12",
+    "GWC-PRE-E-GWC-13",
+    "GWC-PRE-E-GWC-14",
+    "GWC-PRE-E-GWC-15",
+    "GWC-PRE-E-GWC-16",
+    "GWC-PRE-E-GWC-17"
+  ],
+  "integrationAfterFinalCandidate": {
+    "prerequisite": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "steps": [
+      "REOBSERVE_REAL_MAIN_AND_SERVER",
+      "RECONCILE_DRIFT",
+      "REVALIDATE_INTEGRATION_SLOTS",
+      "GOVERNED_INTEGRATION",
+      "EXACT_HEAD_CI_REVIEW_MERGE",
+      "MAIN_CI_GOVERNED_DEPLOY",
+      "EXACT_SHA_LIVE_VERIFICATION"
+    ]
+  }
 }
