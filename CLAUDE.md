@@ -127,6 +127,20 @@ Ne jamais créer un store, journal, Task Queue ou mémoire parallèle uniquement
 7. sinon marquer la preuve `STALE`/`CONFLICT` et réconcilier avant de poursuivre ;
 8. ne jamais rejouer une étape déjà `PASS_WITH_EVIDENCE` encore valide.
 
+### 9.4.1 PRECODE — preuves sans OAuth/bridge
+
+Pendant `PRECODE_FINALIZATION_ONLY`, l'OAuth du serveur MCP et `wealthtech_ssh_bridge` ne sont pas des dépendances requises pour progresser.
+
+Ordre de preuve :
+
+1. audits et historiques versionnés (`docs/audits/**`, `docs/history/**`, canonical-memory) ;
+2. GitHub live et artefacts CI exact-head ;
+3. futur miroir serveur read-only publié dans GitHub, indépendant du MCP/OAuth, uniquement si une preuve fraîche strictement nécessaire manque.
+
+Le miroir serveur read-only doit utiliser une identité à moindre privilège/forced-command, uniquement des commandes d'audit allowlistées et redacted, produire un artefact avec `observedAt`, digests et fraîcheur, et ne jamais disposer d'une surface de mutation, restart, deploy, Task claim ou lock.
+
+Si la preuve nécessaire n'existe pas ou est périmée : `UNKNOWN` / `STALE`. Ne jamais ouvrir une Governed Session runtime simplement pour débloquer un work item PRECODE.
+
 ### 9.5 Arrêts autorisés
 
 L’agent ne s’arrête que pour un blocker gouverné réel non résoluble depuis les autorités disponibles : permission réellement manquante, ambiguïté non déductible, lock incompatible, conflit d’autorités, dépendance indisponible, secret requis absent, risque destructif/irréversible, gate de sécurité bloquant ou décision humaine explicitement requise par la gouvernance.
