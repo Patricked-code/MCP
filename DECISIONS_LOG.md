@@ -3,6 +3,17 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-18 — PRECODE = candidate évoluée complète avant intégration réelle
+
+Décision : `claude/ecstatic-edison-v1dyt1` n'est pas une branche de documentation seulement. Après `GWC_ARCHITECTURE_GATE_PASS`, elle devient la surface de construction de la future version évoluée complète du MCP à partir du squelette réel existant.
+
+Le candidate build doit produire progressivement le code, tests, workflows, types, compatibilité/migrations additives, wrappers, généralisations, extensions et primitives nouvelles justifiées des 18 blueprints, selon `REUSE → WRAP → GENERALIZE → EXTEND → NEW`.
+
+Les work items candidate restent des `GWC-PRE-*` coordonnés par GitHub/canonical-memory/checkpoints. Ils ne sont pas des GovernedTaskRecords et ne nécessitent ni runtime Task Queue, ni runtime locks, ni OAuth bridge.
+
+Frontière : `main`, S1, production, déploiement et activation live sont interdits jusqu'à `FINAL_PRECODE_VERSION_ACCEPTED`. Après ce gate, l'intégration réelle réobserve l'état courant du projet, réconcilie le drift éventuel et intègre la candidate déjà construite, sans redévelopper l'architecture.
+
+
 ## 2026-09-18 — PRECODE ne dépend pas de l'OAuth/bridge MCP
 
 Décision : la finalisation PRECODE doit pouvoir fonctionner avec GitHub et les preuves versionnées sans ouvrir de session OAuth contre le serveur MCP.
