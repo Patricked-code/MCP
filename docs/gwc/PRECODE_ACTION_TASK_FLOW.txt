@@ -680,6 +680,26 @@ Implementation evidence:
 - RED CI #1046 / GREEN CI #1048
 Status: PASS_WITH_EVIDENCE
 
+GWC-PRE-B-FND-03 — GitHub-first PRECODE connection bootstrap
+Integration slot: existing candidate continuity / canonical-memory/status surfaces on the Claude branch. No MCP runtime dependency.
+Behavior:
+- entry is direct GitHub observation of Patricked-code/MCP@claude/ecstatic-edison-v1dyt1;
+- read exact HEAD, CLAUDE.md, canonical memory, status, checkpoint/handoff and branch-local claims;
+- resolve or create a branch-local candidateSessionId from identifiers actually exposed by the client/GitHub;
+- provider conversation ID is preserved only when explicitly exposed; otherwise it remains null/UNAVAILABLE and is never invented;
+- route intent automatically to NEW_INFORMATION_INTAKE / CONTINUE_PRECODE_WORK / NEW_INFORMATION_THEN_CONTINUE_PRECODE when deducible;
+- if intent is not deducible, ASK_USER with the three canonical choices before claiming work;
+- continuation modes feed the existing dependency-safe/collision-safe dispatcher;
+- legacy candidate sessions remain readable even without the new connectionInstanceRef and are enriched on resume;
+- no OAuth MCP, Governed Session runtime, Task Queue runtime, runtime lock, S1 or production dependency.
+Implementation evidence:
+- src/governedContext/candidateContinuity.ts
+- tests/candidateContinuity.test.ts
+- RED CI #1061 @ a992bc0adf8e841ee38463bce75667650c13689d
+- compatibility finding/correction CI #1062 @ 44e19282564578a748ae3563c726741816d304ea
+- GREEN CI #1063 @ 2264b3da4dc672ae1e271519957203c62b7ae03d
+Status: PASS_WITH_EVIDENCE
+
 B EXIT:
 CANDIDATE_BACKLOG_COMPLETE
 
