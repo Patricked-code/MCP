@@ -227,6 +227,45 @@ Compatibilité : les anciennes candidate sessions dépourvues de `connectionInst
 
 Cette capacité ne crée aucune seconde Task Queue, aucune seconde Operational Memory, aucune Governed Session runtime et aucun runtime lock. Elle ne donne aucune autorisation de merge `main`, écriture S1, déploiement ou activation live avant `FINAL_PRECODE_VERSION_ACCEPTED`.
 
+### 9.9 Continuité incrémentale des nouvelles informations et Coherence Gate
+
+Sur `claude/ecstatic-edison-v1dyt1`, une nouvelle information n'est jamais une nouvelle règle par défaut.
+
+Avant toute adoption dans la mémoire canonique ou le backlog candidate, appliquer obligatoirement :
+
+`NEW_INFORMATION_INTAKE → STRUCTURATION → QUALITY/EVIDENCE → OBJECTIVE ALIGNMENT → EXISTING SEARCH → ARCHITECTURE FIT → AUTHORITY FIT → NON-REGRESSION → IMPACT → INTEGRATION VERDICT → RECONCILIATION RECEIPT`.
+
+Règles obligatoires :
+
+- numéroter les intakes de manière monotone `NEW_INFORMATION_INTAKE-NNN` ;
+- conserver seulement la provenance/digest/insights bornés, jamais le transcript brut par ce mécanisme ;
+- maintenir le cursor `latestIntakeSequence / reconciledThroughSequence / canonicalRevision / backlogRevision / pendingIntakeIds / lastReconciliationDigest` dans les projections PRECODE existantes ;
+- ne réconcilier qu'un delta contigu ; un trou de séquence échoue fermé ;
+- utiliser uniquement les verdicts `ACCEPT / ACCEPT_WITH_ADAPTATION / COMPLEMENT / DUPLICATE / DEFER / HOLD_FOR_REVIEW / OUT_OF_SCOPE / REJECT` ;
+- `PARALLEL_AUTHORITY => REJECT` ;
+- contradiction/supersession/breaking change => `HOLD_FOR_REVIEW`, jamais écrasement silencieux ;
+- information factuelle exigeant une preuve et restant `UNVERIFIED` => `DEFER` ;
+- rechercher d'abord un work item existant compatible et l'enrichir/réconcilier avant de proposer un nouveau work item ;
+- chaque lot réconcilié doit produire un receipt digesté avec séquences, intakes, revisions avant/après et effets ;
+- canonicalRevision/backlogRevision ne changent que si des effets acceptés modifient réellement leurs projections ;
+- avant toute écriture candidate, valider `HEAD_SHA + canonicalRevision + backlogRevision` ;
+- `HEAD_MOVED` garde la priorité et impose la réconciliation Git complète ;
+- un drift de connaissance ne bloque que les work items affectés : `LOCAL_BLOCKER != GLOBAL_STOP` ;
+- un agent dont le scope n'est pas touché peut rafraîchir sa révision logique et continuer ;
+- un work item touché passe `RECONCILE_REQUIRED` avant nouvelle écriture ;
+- les agents travaillent depuis l'état réconcilié, jamais directement depuis un intake brut ;
+- préserver la séparation `INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK`.
+
+État initial de ce mécanisme : `latestIntakeSequence=2`, `reconciledThroughSequence=0`, `canonicalRevision=1`, `backlogRevision=0`, pending `#001/#002`. Ces deux bundles existaient déjà avec `canonicalAdoptionPerformed=false` et restent donc à évaluer/reconcilier sous ce gate avant consommation par `GWC-PRE-B-01`.
+
+Implémentation candidate :
+- `registerCandidateIntake()`
+- `evaluateCandidateIntakeGate()`
+- `reconcileCandidateIntakeBatch()`
+- `assessCandidateKnowledgeFreshness()`
+
+Preuves : RED CI #1080 `c63beb0...`, GREEN CI #1081 `f288d3e...`.
+
 ## Règle permanente — double présence, non-régression et amélioration continue
 
 GitHub est la source versionnée.
