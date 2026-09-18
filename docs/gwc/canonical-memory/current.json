@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-new-information-intake-002",
-  "currentBundleId": "bnd_mcp-pr95-new-information-intake-002-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-new-information-intake-002",
+  "currentBundle": "pr95-intake-continuity-coherence-ready",
+  "currentBundleId": "bnd_mcp-pr95-intake-continuity-coherence-ready-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-intake-continuity-coherence-ready",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -41,7 +41,7 @@
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "blocker": null,
-    "nextAction": "Execute GWC-PRE-B-01 through the direct-GitHub PRECODE bootstrap: observe exact branch HEAD, resolve/create branch-local candidate session from observed IDs only, route intent or ask the canonical three-choice question if ambiguous, reconcile new information, then derive the complete candidate backlog."
+    "nextAction": "Reconcile pending NEW_INFORMATION_INTAKE-001 and -002 through the coherence gate as one contiguous delta, emit a reconciliation receipt, advance canonical/backlog revisions only for accepted effects, then execute GWC-PRE-B-01 from the reconciled state."
   },
   "precodeContinuationPolicy": {
     "hierarchy": "PROGRAM -> ARCHITECTURE_PHASE_OR_CANDIDATE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
@@ -68,7 +68,15 @@
     "githubFirstBootstrap": true,
     "runtimeMcpRequiredForPrecode": false,
     "candidateSessionBranchLocal": true,
-    "unknownProviderConversationIdRule": "NULL_UNAVAILABLE_NEVER_INVENT"
+    "unknownProviderConversationIdRule": "NULL_UNAVAILABLE_NEVER_INVENT",
+    "intakeContinuityRequired": true,
+    "coherenceGateRequired": true,
+    "agentWorksFromReconciledState": true,
+    "knowledgeGuards": [
+      "HEAD_SHA",
+      "CANONICAL_REVISION",
+      "BACKLOG_REVISION"
+    ]
   },
   "historicalRuntimeObservations": {
     "role": "PROVENANCE_ONLY_NOT_CURRENT_EXECUTION",
@@ -101,9 +109,22 @@
     "Resolve/create branch-local candidateSessionId only from identifiers actually observed; a derived candidateSessionId is never a real provider conversation ID.",
     "If provider conversation ID is unavailable, preserve null/UNAVAILABLE rather than inventing one.",
     "Route connection intent to NEW_INFORMATION_INTAKE / CONTINUE_PRECODE_WORK / NEW_INFORMATION_THEN_CONTINUE_PRECODE; ask the canonical three-choice question only when intent is not deducible.",
-    "Legacy candidate sessions without connectionInstanceRef remain readable and are enriched on resume."
+    "Legacy candidate sessions without connectionInstanceRef remain readable and are enriched on resume.",
+    "Read intakeContinuity cursor before consuming any NEW_INFORMATION_INTAKE evidence.",
+    "A new intake is not canonical by default: evaluate coherence/integration before memory or backlog effects.",
+    "Only contiguous intake deltas advance reconciledThroughSequence; sequence gaps fail closed.",
+    "Emit a digest-bound reconciliation receipt and update canonical/backlog revisions only for accepted effects.",
+    "Before candidate writes validate HEAD_SHA + canonicalRevision + backlogRevision.",
+    "Knowledge drift blocks only affected work items; unrelated scopes may refresh/logically rebase and continue.",
+    "Agents work from reconciled state, never directly from raw/new intake evidence.",
+    "Preserve INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK."
   ],
   "previousBundles": [
+    {
+      "name": "pr95-new-information-intake-002",
+      "path": "docs/gwc/canonical-memory/pr95-new-information-intake-002",
+      "status": "IMMUTABLE_HISTORICAL_NEW_INFORMATION_INTAKE_002"
+    },
     {
       "name": "pr95-new-information-intake-001",
       "path": "docs/gwc/canonical-memory/pr95-new-information-intake-001",
@@ -156,8 +177,8 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "a15406fe126732e25292e06f462caffcc40f50f6",
-  "correctionReason": "Canonical memory advanced with NEW_INFORMATION_INTAKE #2: reconcile intake #1 against existing coherent matrices, add only missing GWC Root/Macro Contract/Master Crosswalk bindings, and feed B-01/B-02/B-03 without creating a parallel matrix.",
+  "observedHeadBeforePointerUpdate": "3d57a0c4919dcbb33efd2e0e24d76da3d32ff7d1",
+  "correctionReason": "Canonical memory advanced to the incremental intake continuity/coherence checkpoint. Existing intake #001/#002 remain pending, not automatically adopted; next step is gated reconciliation before B-01.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
@@ -348,5 +369,74 @@
     ],
     "nextCandidateProgramWorkItem": "GWC-PRE-B-01",
     "status": "INTEGRATION_INSTRUCTION_RECORDED"
+  },
+  "intakeContinuity": {
+    "latestIntakeSequence": 2,
+    "reconciledThroughSequence": 0,
+    "canonicalRevision": 1,
+    "backlogRevision": 0,
+    "lastReconciliationDigest": null,
+    "pendingIntakeIds": [
+      "NEW_INFORMATION_INTAKE-001",
+      "NEW_INFORMATION_INTAKE-002"
+    ],
+    "sourceBundles": [
+      "docs/gwc/canonical-memory/pr95-new-information-intake-001",
+      "docs/gwc/canonical-memory/pr95-new-information-intake-002"
+    ],
+    "projectionOnly": true,
+    "authority": false,
+    "rule": "Only contiguous deltas reconcile. Existing intake bundles remain immutable evidence. This cursor is not a second queue or memory authority."
+  },
+  "intakeCoherenceGate": {
+    "implementation": "src/governedContext/candidateContinuity.ts#evaluateCandidateIntakeGate",
+    "verdicts": [
+      "ACCEPT",
+      "ACCEPT_WITH_ADAPTATION",
+      "COMPLEMENT",
+      "DUPLICATE",
+      "DEFER",
+      "HOLD_FOR_REVIEW",
+      "OUT_OF_SCOPE",
+      "REJECT"
+    ],
+    "dimensions": [
+      "understanding",
+      "relevance",
+      "evidence",
+      "objectiveAlignment",
+      "relationToExisting",
+      "architecturalFit",
+      "authorityFit",
+      "nonRegression",
+      "impact",
+      "existingFirstPath"
+    ],
+    "rules": {
+      "newNotAutomaticallyGood": true,
+      "parallelAuthority": "REJECT",
+      "contradictionSupersessionBreaking": "HOLD_FOR_REVIEW",
+      "evidenceRequiredUnverified": "DEFER",
+      "existingWorkBeforeNewWork": true
+    }
+  },
+  "intakeReconciliation": {
+    "implementation": "src/governedContext/candidateContinuity.ts#reconcileCandidateIntakeBatch",
+    "contiguousOnly": true,
+    "gapResult": "BLOCKED_GAP",
+    "receiptRequired": true,
+    "revisionsAdvanceOnlyOnAcceptedEffects": true
+  },
+  "knowledgeFreshness": {
+    "implementation": "src/governedContext/candidateContinuity.ts#assessCandidateKnowledgeFreshness",
+    "guards": [
+      "HEAD_SHA",
+      "CANONICAL_REVISION",
+      "BACKLOG_REVISION"
+    ],
+    "headMovedPrecedence": true,
+    "localBlockerNotGlobalStop": true,
+    "unrelatedDrift": "LOGICAL_REBASE_ALLOWED_AFTER_REFRESH",
+    "affectedDrift": "RECONCILE_REQUIRED"
   }
 }
