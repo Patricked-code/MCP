@@ -341,3 +341,300 @@ export function reconcileConversationIntake(
     )).length
   };
 }
+
+
+const GitShaSchema = z.string().regex(/^[0-9a-f]{40}$/);
+const CandidateProviderSchema = z.enum(['chatgpt', 'claude', 'other']);
+const ProviderConversationRefProvenanceSchema = z.enum(['PROVIDED_BY_CLIENT', 'UNAVAILABLE']);
+const CandidatePrecodeModeSchema = z.enum([
+  'NEW_INFORMATION_INTAKE',
+  'CONTINUE_PRECODE_WORK',
+  'NEW_INFORMATION_THEN_CONTINUE_PRECODE'
+]);
+
+export const CandidateConnectionObservationSchema = z.object({
+  repository: z.literal('Patricked-code/MCP'),
+  branch: z.literal('claude/ecstatic-edison-v1dyt1'),
+  observedHeadSha: GitShaSchema,
+  agentIdentity: BoundedId,
+  provider: CandidateProviderSchema,
+  providerConversationRef: BoundedId.nullable(),
+  providerConversationRefProvenance: ProviderConversationRefProvenanceSchema,
+  githubActor: BoundedId.nullable(),
+  githubConnectionRef: BoundedId.nullable(),
+  connectionInstanceRef: BoundedId,
+  observedAt: z.string().datetime({ offset: true })
+}).strict().superRefine((value, ctx) => {
+  if (
+    value.providerConversationRefProvenance === 'PROVIDED_BY_CLIENT'
+    && value.providerConversationRef === null
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['providerConversationRef'],
+      message: 'PROVIDER_CONVERSATION_REF_REQUIRED_WHEN_PROVIDED_BY_CLIENT'
+    });
+  }
+  if (
+    value.providerConversationRefProvenance === 'UNAVAILABLE'
+    && value.providerConversationRef !== null
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['providerConversationRef'],
+      message: 'PROVIDER_CONVERSATION_REF_MUST_BE_NULL_WHEN_UNAVAILABLE'
+    });
+  }
+});
+export type CandidateConnectionObservation = z.infer<typeof CandidateConnectionObservationSchema>;
+
+export const CandidateSessionSchema = z.object({
+  candidateSessionId: BoundedId,
+  agentIdentity: BoundedId,
+  provider: CandidateProviderSchema,
+  providerConversationRef: BoundedId.nullable(),
+  providerConversationRefProvenance: ProviderConversationRefProvenanceSchema,
+  githubActor: BoundedId.nullable(),
+  githubConnectionRef: BoundedId.nullable(),
+  connectionInstanceRef: BoundedId,
+  repository: z.literal('Patricked-code/MCP'),
+  branch: z.literal('claude/ecstatic-edison-v1dyt1'),
+  startingHeadSha: GitShaSchema,
+  lastObservedHeadSha: GitShaSchema,
+  createdAt: z.string().datetime({ offset: true }),
+  lastSeenAt: z.string().datetime({ offset: true }),
+  status: z.enum(['ACTIVE', 'CLOSED'])
+}).strict();
+export type CandidateSession = z.infer<typeof CandidateSessionSchema>;
+
+export type CandidateSessionResolution = {
+  status: 'RESUME' | 'CREATE';
+  session: CandidateSession;
+  matchedBy: 'provider_conversation_ref' | 'github_connection_ref' | 'connection_instance_ref' | 'new_session';
+  runtimeMcpRequired: false;
+};
+
+function candidateSessionIdFor(connection: CandidateConnectionObservation): string {
+  const strongestRef = connection.providerConversationRef
+    ? `provider:${connection.provider}:${connection.providerConversationRef}`
+    : connection.githubConnectionRef
+      ? `github:${connection.githubConnectionRef}`
+      : `connection:${connection.connectionInstanceRef}`;
+  const digest = createHash('sha256').update(JSON.stringify({
+    repository: connection.repository,
+    branch: connection.branch,
+    agentIdentity: connection.agentIdentity,
+    strongestRef
+  })).digest('hex');
+  return `candidate-${digest.slice(0, 24)}`;
+}
+
+function sessionMatch(
+  connection: CandidateConnectionObservation,
+  sessions: CandidateSession[]
+): { session: CandidateSession; matchedBy: CandidateSessionResolution['matchedBy'] } | null {
+  const eligible = sessions.filter((session) => (
+    session.status === 'ACTIVE'
+    && session.repository === connection.repository
+    && session.branch === connection.branch
+    && session.agentIdentity === connection.agentIdentity
+    && session.provider === connection.provider
+  ));
+
+  if (connection.providerConversationRef) {
+    const match = eligible.find((session) => (
+      session.providerConversationRef === connection.providerConversationRef
+      && session.providerConversationRefProvenance === 'PROVIDED_BY_CLIENT'
+    ));
+    if (match) return { session: match, matchedBy: 'provider_conversation_ref' };
+  }
+
+  if (connection.githubConnectionRef) {
+    const match = eligible.find((session) => (
+      session.githubConnectionRef === connection.githubConnectionRef
+    ));
+    if (match) return { session: match, matchedBy: 'github_connection_ref' };
+  }
+
+  const connectionMatch = eligible.find((session) => (
+    session.connectionInstanceRef === connection.connectionInstanceRef
+  ));
+  return connectionMatch
+    ? { session: connectionMatch, matchedBy: 'connection_instance_ref' }
+    : null;
+}
+
+export function resolveCandidateSession(
+  rawConnection: CandidateConnectionObservation,
+  rawSessions: CandidateSession[]
+): CandidateSessionResolution {
+  const connection = CandidateConnectionObservationSchema.parse(rawConnection);
+  const sessions = z.array(CandidateSessionSchema).max(10_000).parse(rawSessions);
+  const matched = sessionMatch(connection, sessions);
+
+  if (matched) {
+    return {
+      status: 'RESUME',
+      matchedBy: matched.matchedBy,
+      runtimeMcpRequired: false,
+      session: CandidateSessionSchema.parse({
+        ...matched.session,
+        githubActor: connection.githubActor ?? matched.session.githubActor,
+        githubConnectionRef: connection.githubConnectionRef ?? matched.session.githubConnectionRef,
+        lastObservedHeadSha: connection.observedHeadSha,
+        lastSeenAt: connection.observedAt
+      })
+    };
+  }
+
+  return {
+    status: 'CREATE',
+    matchedBy: 'new_session',
+    runtimeMcpRequired: false,
+    session: CandidateSessionSchema.parse({
+      candidateSessionId: candidateSessionIdFor(connection),
+      agentIdentity: connection.agentIdentity,
+      provider: connection.provider,
+      providerConversationRef: connection.providerConversationRef,
+      providerConversationRefProvenance: connection.providerConversationRefProvenance,
+      githubActor: connection.githubActor,
+      githubConnectionRef: connection.githubConnectionRef,
+      connectionInstanceRef: connection.connectionInstanceRef,
+      repository: connection.repository,
+      branch: connection.branch,
+      startingHeadSha: connection.observedHeadSha,
+      lastObservedHeadSha: connection.observedHeadSha,
+      createdAt: connection.observedAt,
+      lastSeenAt: connection.observedAt,
+      status: 'ACTIVE'
+    })
+  };
+}
+
+export const CandidateConnectionIntentSchema = z.object({
+  declaredMode: CandidatePrecodeModeSchema.nullable(),
+  hasMaterialNewInformation: z.boolean(),
+  requestsContinuation: z.boolean()
+}).strict();
+export type CandidateConnectionIntent = z.infer<typeof CandidateConnectionIntentSchema>;
+
+export type CandidateConnectionIntentRoute = {
+  mode:
+    | 'NEW_INFORMATION_INTAKE'
+    | 'CONTINUE_PRECODE_WORK'
+    | 'NEW_INFORMATION_THEN_CONTINUE_PRECODE'
+    | 'ASK_USER';
+  askUser: boolean;
+  choices: Array<z.infer<typeof CandidatePrecodeModeSchema>>;
+  question: string | null;
+  reasonCode:
+    | 'explicit_precode_mode'
+    | 'material_information_detected'
+    | 'continuation_requested'
+    | 'information_and_continuation_detected'
+    | 'ambiguous_connection_intent';
+};
+
+const PRECODE_MODE_CHOICES: Array<z.infer<typeof CandidatePrecodeModeSchema>> = [
+  'NEW_INFORMATION_INTAKE',
+  'CONTINUE_PRECODE_WORK',
+  'NEW_INFORMATION_THEN_CONTINUE_PRECODE'
+];
+
+export function routeCandidateConnectionIntent(
+  rawIntent: CandidateConnectionIntent
+): CandidateConnectionIntentRoute {
+  const intent = CandidateConnectionIntentSchema.parse(rawIntent);
+
+  if (intent.declaredMode) {
+    return {
+      mode: intent.declaredMode,
+      askUser: false,
+      choices: [],
+      question: null,
+      reasonCode: 'explicit_precode_mode'
+    };
+  }
+
+  if (intent.hasMaterialNewInformation && intent.requestsContinuation) {
+    return {
+      mode: 'NEW_INFORMATION_THEN_CONTINUE_PRECODE',
+      askUser: false,
+      choices: [],
+      question: null,
+      reasonCode: 'information_and_continuation_detected'
+    };
+  }
+
+  if (intent.hasMaterialNewInformation) {
+    return {
+      mode: 'NEW_INFORMATION_INTAKE',
+      askUser: false,
+      choices: [],
+      question: null,
+      reasonCode: 'material_information_detected'
+    };
+  }
+
+  if (intent.requestsContinuation) {
+    return {
+      mode: 'CONTINUE_PRECODE_WORK',
+      askUser: false,
+      choices: [],
+      question: null,
+      reasonCode: 'continuation_requested'
+    };
+  }
+
+  return {
+    mode: 'ASK_USER',
+    askUser: true,
+    choices: [...PRECODE_MODE_CHOICES],
+    question: 'Que viens-tu faire sur cette branche : apporter de nouvelles informations, poursuivre le travail PRECODE, ou apporter des informations puis poursuivre automatiquement ?',
+    reasonCode: 'ambiguous_connection_intent'
+  };
+}
+
+export const CandidateBootstrapInputSchema = z.object({
+  connection: CandidateConnectionObservationSchema,
+  intent: CandidateConnectionIntentSchema,
+  sessions: z.array(CandidateSessionSchema).max(10_000),
+  workItems: z.array(CandidateWorkItemSchema).max(5_000),
+  activeClaims: z.array(CandidateWorkClaimSchema).max(5_000)
+}).strict();
+export type CandidateBootstrapInput = z.infer<typeof CandidateBootstrapInputSchema>;
+
+export type CandidateBootstrapResult = {
+  runtimeMcpRequired: false;
+  sessionResolution: CandidateSessionResolution;
+  intent: CandidateConnectionIntentRoute;
+  dispatch: CandidateDispatchResult | null;
+  requiresUserChoice: boolean;
+};
+
+export function bootstrapCandidateConnection(
+  rawInput: CandidateBootstrapInput
+): CandidateBootstrapResult {
+  const input = CandidateBootstrapInputSchema.parse(rawInput);
+  const sessionResolution = resolveCandidateSession(input.connection, input.sessions);
+  const intent = routeCandidateConnectionIntent(input.intent);
+  const shouldDispatch = (
+    intent.mode === 'CONTINUE_PRECODE_WORK'
+    || intent.mode === 'NEW_INFORMATION_THEN_CONTINUE_PRECODE'
+  );
+
+  return {
+    runtimeMcpRequired: false,
+    sessionResolution,
+    intent,
+    dispatch: shouldDispatch
+      ? dispatchCandidateWork({
+          candidateSessionId: sessionResolution.session.candidateSessionId,
+          agentIdentity: sessionResolution.session.agentIdentity,
+          workItems: input.workItems,
+          activeClaims: input.activeClaims
+        })
+      : null,
+    requiresUserChoice: intent.mode === 'ASK_USER'
+  };
+}
