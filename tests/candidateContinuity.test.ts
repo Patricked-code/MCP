@@ -23,7 +23,7 @@ const workItems: CandidateWorkItem[] = [
   },
   {
     workItemId: 'GWC-PRE-B-02',
-    intentKeys: ['candidate-bindings'],
+    intentKeys: ['candidate-bindings', 'candidate.dispatch'],
     title: 'Bind candidate work',
     status: 'READY',
     priority: 90,
