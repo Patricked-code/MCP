@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## 2026-09-18 — PRECODE devient construction de candidate évoluée
+
+- Correction sémantique majeure : PRECODE signifie désormais pré-intégration de la version évoluée complète, et non « architecture/doc uniquement ».
+- Le gate d'architecture autorise le code candidate sur `claude/ecstatic-edison-v1dyt1`.
+- Phases B→F redéfinies : backlog candidate, safety/foundations, cycle d'implémentation branch-local, construction GWC-0..17, acceptance candidate.
+- Ajout de 18 work items candidate `GWC-PRE-E-GWC-0..17`.
+- Gate machine R4 distingue candidate code autorisé de l'intégration live interdite.
+- Vérificateur PRECODE durci pour contrôler cette frontière.
+- Nouveau bundle canonique `pr95-candidate-build-ready`.
+- Aucune Governed Task runtime créée ; aucun main/S1/prod/deploy touché.
+
+
+
 ## 2026-09-18 — PRECODE indépendant du bridge OAuth
 
 - Ajout d'une hiérarchie de preuves PRECODE : audits versionnés → GitHub live/artefacts → miroir serveur read-only futur.
