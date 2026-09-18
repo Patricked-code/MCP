@@ -317,7 +317,10 @@
       "architecturalRule": "TASK BLUEPRINT != GovernedTaskRecord: un blueprint peut produire 0, 1 ou N taches. Aucune creation en bloc des 18.",
       "prescribedOrder": "Phase E: GWC-0 -> GWC-1 -> GWC-2 -> GWC-3 -> {GWC-4, GWC-5, GWC-6 -> GWC-7, GWC-8} -> GWC-9 -> GWC-10 -> GWC-11 ...",
       "orderingConstraintFromC3": "GWC-9 precede l atterrissage de tout SPLIT portant du WRITE (AF-32)."
-    }
+    },
+    "executionRole": "HISTORICAL_POST_GATE_OBSERVATION_ONLY",
+    "currentExecutionAuthority": false,
+    "noteForPrecodeFinalization": "Preserved for provenance only. It does not make Phase B current or authorize task materialization while PRECODE finalization is active."
   },
   "phaseBVerdict": "LIVE_TASK_RECONCILIATION_COMPLETE_NEW_TASK_ADMISSIBLE_NOT_MATERIALIZED",
   "phaseC": {
@@ -550,7 +553,10 @@
       },
       "notExecuted": "Executer un SPLIT est une materialisation de tache, donc soumis a la Phase B qui est BLOCKED. Aucune PR fusionnee, rebasee, fermee ni modifiee.",
       "prsMutated": 0
-    }
+    },
+    "executionRole": "FUTURE_INTEGRATION_PLAN_ONLY",
+    "currentExecutionAuthority": false,
+    "noteForPrecodeFinalization": "C safety prerequisites remain designed future integration work. They are not current PRECODE execution and must not mutate runtime/main/S1."
   },
   "phaseCVerdict": "CANDIDATE_STACK_RECONCILED_DISPOSITIONS_RECORDED_NO_MERGE",
   "findingsResolved": [
@@ -561,5 +567,45 @@
       "resolution": "Contradiction resolue a la source par l agent proprietaire: TASK-20260915-001 est DONE, blockers vides, session fermee apres acquittement du stateVersion 246. La file et Live State concordent.",
       "resolvedBy": "OWNING_AGENT_NOT_THIS_SESSION"
     }
-  ]
+  ],
+  "currentExecution": {
+    "mode": "PRECODE_FINALIZATION_ONLY",
+    "branch": "claude/ecstatic-edison-v1dyt1",
+    "runtimeIntegrationAllowed": false,
+    "mainMutationAllowed": false,
+    "s1MutationAllowed": false,
+    "governedTaskMaterializationAllowed": false,
+    "currentPhase": "A14",
+    "currentMacroTask": "T195",
+    "currentWork": "ALIGN_MEMORY_SUIVI_DECISIONS_AND_FINAL_PRECODE_CANONICALIZATION",
+    "status": "IN_PROGRESS",
+    "exit": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "nextAction": "Reconcile the canonical memory, README, SUIVI, CHANGELOG and DECISIONS against the complete PRECODE catalog and exact online head; then run deterministic verification and exact-head CI. Do not start Phase B/C/D/E/F runtime integration."
+  },
+  "programCatalog": {
+    "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+    "machineProjection": ".mcp/gwc-precode-action-flow.json",
+    "macroTaskRange": "T00-T204",
+    "macroTaskCount": 205,
+    "minimumElementaryActionsFullProgram": 2791,
+    "precodeArchitectureRange": "T00-T195",
+    "minimumElementaryActionsPrecodeArchitecture": 2782,
+    "futureIntegrationPlanRange": "T196-T204",
+    "futureIntegrationTaskCount": 9,
+    "rule": "All 205 macro tasks remain catalogued. During PRECODE finalization only T00-T195/A1-A14/PRECODE_GATE may be executed as branch-local PRECODE work; T196-T204 and Phases B-F remain future integration definitions until FINAL_PRECODE_VERSION_ACCEPTED."
+  },
+  "precodeFinalization": {
+    "status": "IN_PROGRESS",
+    "lastValidatedArchitectureGate": "GWC_ARCHITECTURE_GATE_PASS",
+    "currentMacroTask": "T195",
+    "currentPhase": "A14",
+    "workItemKind": "PRECODE_CANONICALIZATION",
+    "firstIncompleteOrReopenedWorkItem": "T195",
+    "reason": "Canonical memory had drifted into runtime/Task Queue execution semantics; it is being restored to the PRECODE-only program boundary.",
+    "completedArchitecturePhases": "A1-A14 PASS_WITH_EVIDENCE",
+    "runtimeBoundary": "FROZEN",
+    "nextAction": "Reconcile the canonical memory, README, SUIVI, CHANGELOG and DECISIONS against the complete PRECODE catalog and exact online head; then run deterministic verification and exact-head CI. Do not start Phase B/C/D/E/F runtime integration."
+  },
+  "updatedForPrecodeBoundaryAt": "2026-09-18T18:04:00Z",
+  "updatedForPrecodeBoundaryHead": "111babba7a942d33a6d5381c2e371edb73cf3ff1"
 }
