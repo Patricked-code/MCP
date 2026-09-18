@@ -681,3 +681,11 @@ Mise à jour : 2026-07-09T20:08:09Z
 - La différence **72 étapes runtime / 73 Contract Design Sheets** est explicitement réconciliée sans modifier le registre : 72 membres runtime restent compatibles avec `GW-73` hors graphe runtime.
 - Aucun blueprint, contrat, source runtime, Task Queue, lock, session runtime, main, S1 ou déploiement n'est modifié.
 - `GWC-PRE-B-01` reste `READY`; aucun travail candidate n'est dispatché par cet intake.
+
+## 2026-09-19 — NEW_INFORMATION_INTAKE #2 : instruction de consolidation GWC
+
+- Enregistre la consigne de réconcilier #1 contre les matrices existantes au lieu de créer une matrice parallèle.
+- La structure actuelle vérifiée reste cohérente : 73 contrats uniques / 72 runtime / GW-73 hors runtime / 91 arêtes / 18 blueprints / 18 evolution designs.
+- La nouvelle couche GWC Root + 8 Macro Contracts doit être une projection additive avec `macroContractRef`, sans remplacer les familles A..I ni les autorités existantes.
+- Le Master Construction Crosswalk est défini comme consolidation des bindings existants et alimentation de `GWC-PRE-B-01/B-02/B-03`.
+- Aucun contrat, blueprint, graphe, Task Queue, lock, session runtime, main, S1 ou déploiement n'est modifié par cet intake.

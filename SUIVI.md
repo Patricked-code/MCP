@@ -497,3 +497,14 @@ Date : 2026-08-29
 - Aucun `candidateSessionId` n'est inventé : aucun provider conversation ID ni connectionInstanceRef client n'a été exposé par la surface courante. Aucun claim candidate n'est requis pour cet intake information-only.
 - `GWC-PRE-B-01` reste `READY` ; `candidateWorkDispatched = false` ; `RUNTIME_TASKS_CREATED = 0`.
 - `NEXT_ACTION` programme inchangée : lors d'une future continuation, utiliser `NEW_INFORMATION_INTAKE-001` comme entrée bornée de réconciliation pour le backlog candidate, puis reprendre le premier work item dependency-safe/collision-safe.
+
+## 2026-09-19 — NEW_INFORMATION_INTAKE #2 : réconciliation de #1 contre les matrices GWC existantes
+
+- Head observé avant écriture : `a15406fe126732e25292e06f462caffcc40f50f6`.
+- Vérification lecture seule préalable : 73 contrats uniques, 72 membres runtime, `GW-73` hors runtime, 91 arêtes sans référence inconnue, 18 blueprints, 18 Detailed Evolution Designs, 0 contrat sans blueprint et 0 mismatch reverse blueprint↔contrat.
+- Consigne utilisateur : **ne pas recréer une matrice générique**. Confronter `NEW_INFORMATION_INTAKE #1` aux matrices/registries/design sheets déjà présents et ne produire que les colonnes/bindings manquants.
+- Couche manquante à traiter additivement : `GWC ROOT` + `MC-A..MC-H` + `macroContractRef` + Master Construction Crosswalk consolidé. Les familles canoniques `A..I`, les 73 IDs `GW-01..GW-73`, les 18 blueprints et le graphe existant restent inchangés tant qu'une réconciliation ultérieure ne prouve pas un besoin borné.
+- Le Master Crosswalk doit consolider, sans nouvelle autorité, les bindings déjà dispersés : Step/GW, famille, macro, blueprint, graphe, classification, integration slot, fichiers/types/fonctions/tests existants, autorités, I/O, préconditions/invariants, actions, dépendances, RED/GREEN/régression, evidence/attestation, findings/décisions, collision domains, DoD, build order et runtime order.
+- Ordre prévu : `GWC-PRE-B-01` synthétise le backlog complet à partir de #1/#2 + 18 blueprints + 73 contrats + findings + decisions + code existant ; `B-02` lie précisément les work items aux integration slots/dépendances/tests/preuves ; `B-03` audite trous, doublons, orphelins, conflits d'ownership et bindings manquants.
+- Règle existing-first maintenue : `REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW`.
+- Cet intake n'exécute pas B-01 : `candidateWorkDispatched=false`, `RUNTIME_TASKS_CREATED=0`.
