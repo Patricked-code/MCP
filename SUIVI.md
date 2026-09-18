@@ -1,5 +1,17 @@
 # SUIVI.md — Point de reprise courant
 
+## Point courant — GWC PR #95 : finalisation PRECODE stricte
+
+- Branche unique : `claude/ecstatic-edison-v1dyt1`; aucune écriture `main`, S1 ou runtime dans cette phase.
+- Programme canonique : `T00→T204` (205 tâches macro) décrit intégralement ; `T00→T195` constitue la construction/canonicalisation PRECODE courante, `T196→T204` reste un plan futur d'intégration.
+- A1→A14 : `PASS_WITH_EVIDENCE`; architecture gate : `GWC_ARCHITECTURE_GATE_PASS`.
+- Travail courant rouvert : `T195 / A14` — aligner mémoire canonique, SUIVI et décisions après dérive prématurée vers des sémantiques Task Queue/runtime.
+- Mémoire courante : `docs/gwc/canonical-memory/current.json` recentrée sur `pr95-precode-gate`.
+- Gouvernance multi-agent : `PROGRAM → PRECODE_PHASE → WORK_ITEM → SESSION → ACTION → EVIDENCE → CHECKPOINT → HANDOFF → NEXT_ACTION`; un seul writer par collision domain, head online relu avant chaque écriture.
+- Interdictions actuelles : aucune Governed Task GWC, aucun runtime lock, aucun code runtime GWC, aucune mutation main/S1, aucun deploy.
+- Sortie de cette phase : `FINAL_PRECODE_VERSION_ACCEPTED`.
+- NEXT_ACTION : vérifier l'alignement complet des artefacts PRECODE sur le head exact, exécuter les vérificateurs/CI, puis seulement déclarer la version PRECODE finale acceptée.
+
 ## État canonique structurel
 
 ```canonical-state
