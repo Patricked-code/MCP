@@ -119,7 +119,7 @@ If the observed head differs from the head on which the planned edit was prepare
 
 ## 6. Writer selection when work/code is missing
 
-When a required PRECODE artifact, design, verifier, documentation element or bounded code-support element does not yet exist, the active authorized agent may implement it on the online branch if all conditions below are true:
+When a required PRECODE/candidate artifact, design, verifier, documentation element, test, workflow or evolved code implementation does not yet exist, the active authorized agent may implement it on the online branch if all conditions below are true:
 
 1. the work belongs to this GWC/PRECODE evolution program;
 2. its dependency gate is satisfied;
@@ -128,7 +128,7 @@ When a required PRECODE artifact, design, verifier, documentation element or bou
 5. exact online head has been observed;
 6. existing authorities/components have been inspected first (`REUSE → WRAP → GENERALIZE → EXTEND → NEW`);
 7. the intended scope is recorded in the session trace;
-8. no runtime GWC implementation is started before `GWC-PRE-GATE-01 = PASS_WITH_EVIDENCE`.
+8. candidate GWC code starts only after `GWC-PRE-GATE-01 = PASS_WITH_EVIDENCE`; after that gate, branch-local candidate implementation is allowed and expected, while live integration remains forbidden until `FINAL_PRECODE_VERSION_ACCEPTED`.
 
 Therefore ChatGPT is explicitly allowed to write missing PRECODE work, and Claude is explicitly allowed to return later and continue from that work. The same rule applies in reverse.
 
@@ -157,7 +157,7 @@ A PRECODE scope claim:
 - does **not** create a `TASK-*`;
 - does **not** create a GovernedTaskRecord;
 - does **not** acquire a runtime lock;
-- does **not** authorize runtime code;
+- does **not** authorize live integration into main/S1/production; branch-local candidate code is authorized separately by the architecture gate;
 - only prevents overlapping branch-local PRECODE edits between cooperating sessions.
 
 Use existing PR/checkpoint/canonical-memory/SUIVI surfaces. Do not create a second task registry, work queue, journal, session manager or lock service.
@@ -393,28 +393,51 @@ For this evolution program:
 
 Local execution/checkouts are implementation details only. They never become an independent authority or independent branch of work.
 
-## 17. PRECODE-only boundary remains frozen
+## 17. Candidate-build boundary: code on Claude branch, live integration frozen
 
-This coordination policy governs the **final PRECODE construction only** on `claude/ecstatic-edison-v1dyt1`.
+This coordination policy governs the **pre-integration evolved candidate build** on `claude/ecstatic-edison-v1dyt1`.
 
-Even though `GWC-PRE-GATE-01 = PASS_WITH_EVIDENCE`, that gate proves the architecture package reached its architectural threshold; it does **not** authorize this branch to begin real integration.
+The architecture gate and the final candidate gate have different meanings:
 
-Until `FINAL_PRECODE_VERSION_ACCEPTED` is durably recorded:
+- `GWC_ARCHITECTURE_GATE_PASS` unlocks candidate implementation **on the Claude branch**.
+- `FINAL_PRECODE_VERSION_ACCEPTED` unlocks the later real-project integration phase.
 
-- no GWC runtime implementation;
-- no real `TASK-*` materialization from blueprints or PRECODE work items;
-- no runtime claim, runtime lock, deploy or server mutation;
-- no main merge used as a shortcut to start implementation;
-- no direct S1 write;
-- no execution of Phase B/C/D/E/F against production/runtime authorities except read-only observation explicitly required to validate PRECODE assumptions;
-- T196→T204 and Phases B→F remain **future integration plan definitions**, not current executable runtime work;
-- the active hierarchy remains `PROGRAM → PRECODE PHASE → GWC-PRE WORK ITEM → SESSION → ACTION → EVIDENCE → CHECKPOINT → HANDOFF → NEXT_ACTION`.
+Between those gates, agents are expected to progressively build the evolved MCP candidate using the real existing skeleton and existing-first integration:
 
-The PRECODE finalization exit is:
+`REUSE → WRAP → GENERALIZE → EXTEND → NEW`.
 
-`FINAL_PRECODE_VERSION_ACCEPTED`
+Allowed and expected on `claude/ecstatic-edison-v1dyt1` after the architecture gate:
 
-Only after that exit may a separate governed integration cycle reobserve the then-current real project and progressively integrate the design into the existing MCP without regression.
+- modify/add `src/**` code required by the candidate;
+- add/modify tests and fixtures;
+- add backward-compatible types/interfaces/schemas;
+- add wrappers, generalizations, extensions and justified new primitives;
+- prepare additive migrations/compatibility readers;
+- evolve workflows/configuration in candidate form;
+- close findings and safety prerequisites in candidate code;
+- build GWC-0..GWC-17 progressively in dependency order;
+- run RED/GREEN/regression/typecheck/build/docs/security checks;
+- maintain complete task/evidence/checkpoint/handoff history.
+
+Still forbidden until `FINAL_PRECODE_VERSION_ACCEPTED`:
+
+- real `TASK-*` / GovernedTaskRecord materialization for candidate build;
+- runtime claim or runtime lock acquisition;
+- merge/integration into `main`;
+- direct S1 mutation;
+- production deployment or restart;
+- activation of the candidate in the live MCP;
+- treating this branch as a second production authority.
+
+The active hierarchy is:
+
+`PROGRAM → ARCHITECTURE/CANDIDATE PHASE → GWC-PRE WORK ITEM → SESSION → ACTION → EVIDENCE → CHECKPOINT → HANDOFF → NEXT_ACTION`.
+
+The candidate-build sequence after architecture is:
+
+`B candidate backlog → C safety/foundations → D/E implementation GWC-0..17 → F candidate acceptance → FINAL_PRECODE_VERSION_ACCEPTED`.
+
+Only after that exit may a separate governed integration cycle reobserve current main/server state, reconcile drift and integrate the already-built candidate into the existing MCP.
 
 ## 18. Conflict resolution precedence for this program
 
