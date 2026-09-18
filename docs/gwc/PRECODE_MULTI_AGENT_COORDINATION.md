@@ -393,14 +393,28 @@ For this evolution program:
 
 Local execution/checkouts are implementation details only. They never become an independent authority or independent branch of work.
 
-## 17. Runtime boundary remains frozen
+## 17. PRECODE-only boundary remains frozen
 
-This coordination policy does not change the PRECODE gate:
+This coordination policy governs the **final PRECODE construction only** on `claude/ecstatic-edison-v1dyt1`.
 
-- no GWC runtime implementation before `GWC-PRE-GATE-01 = PASS_WITH_EVIDENCE`;
-- no artificial `TASK-*` creation from PRECODE work items;
-- no runtime claim/lock/deploy/server mutation from this policy;
-- Phase B live Task Queue reconciliation remains the only bridge to real Governed Tasks.
+Even though `GWC-PRE-GATE-01 = PASS_WITH_EVIDENCE`, that gate proves the architecture package reached its architectural threshold; it does **not** authorize this branch to begin real integration.
+
+Until `FINAL_PRECODE_VERSION_ACCEPTED` is durably recorded:
+
+- no GWC runtime implementation;
+- no real `TASK-*` materialization from blueprints or PRECODE work items;
+- no runtime claim, runtime lock, deploy or server mutation;
+- no main merge used as a shortcut to start implementation;
+- no direct S1 write;
+- no execution of Phase B/C/D/E/F against production/runtime authorities except read-only observation explicitly required to validate PRECODE assumptions;
+- T196→T204 and Phases B→F remain **future integration plan definitions**, not current executable runtime work;
+- the active hierarchy remains `PROGRAM → PRECODE PHASE → GWC-PRE WORK ITEM → SESSION → ACTION → EVIDENCE → CHECKPOINT → HANDOFF → NEXT_ACTION`.
+
+The PRECODE finalization exit is:
+
+`FINAL_PRECODE_VERSION_ACCEPTED`
+
+Only after that exit may a separate governed integration cycle reobserve the then-current real project and progressively integrate the design into the existing MCP without regression.
 
 ## 18. Conflict resolution precedence for this program
 
