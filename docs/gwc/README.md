@@ -91,6 +91,27 @@ Avant cette sortie :
 
 La Governed Task Queue, Live State et les autres autorités runtime peuvent être **observés en lecture seule** lorsqu'un work item PRECODE exige de confronter une hypothèse à l'existant. Cette observation ne change jamais le périmètre courant.
 
+## Sources de preuve PRECODE — sans dépendance OAuth/bridge
+
+Le travail PRECODE ne doit pas dépendre d'une connexion OAuth au serveur MCP ni de `wealthtech_ssh_bridge`.
+
+Ordre obligatoire des sources de preuve :
+
+1. **Preuves versionnées existantes** — `docs/audits/**`, `docs/history/**`, bundles `docs/gwc/canonical-memory/**`. Elles servent à prouver l'architecture, l'historique, les états déjà attestés et les inventaires. Leur date/SHA/fraîcheur doivent rester explicites.
+2. **GitHub live** — branche, commit, PR, checks, workflows et artefacts GitHub. C'est la source courante pour le dépôt et pour tout snapshot serveur déjà publié par CI.
+3. **Miroir serveur read-only** — mécanisme futur, uniquement si une preuve serveur fraîche manque. Il doit être indépendant du MCP/OAuth : identité serveur dédiée en lecture seule ou forced-command, commandes d'audit allowlistées, sortie JSON redacted + digest, publication comme artefact GitHub. Aucune mutation, aucun commit serveur, aucun restart, aucun deploy, aucune Governed Session, aucun claim, aucun lock.
+
+Exemples de preuves déjà disponibles :
+
+- `docs/audits/2026-08-05/MCP_RUNTIME_IMAGE_ATTESTATION_READONLY.md`
+- `docs/audits/2026-08-05/MCP_RUNTIME_RECOVERY_ATTESTATION.md`
+- `docs/audits/2026-08-05/MCP_RUNTIME_TOOL_CATALOG_20260805.md`
+- `docs/audits/2026-08-05/MCP_FOUNDATIONS_FINAL_STATE.md`
+- `docs/audits/2026-08-05/MCP_PRE29_RECOVERY_AUDIT.md`
+- `docs/gwc/canonical-memory/pr95-phase-b-resolved/sources/live-authorities.json`
+
+Une preuve historique ne devient jamais automatiquement une preuve live. Si aucune preuve fraîche n'est disponible pour une question PRECODE réellement dépendante du runtime, la réponse est `UNKNOWN` / `STALE`, jamais une ouverture de session runtime par défaut.
+
 ## Frontière d'autorité — à ne pas confondre
 
 La **Governed Task Queue** existe et fournit `initializeSeed`, `firstExecutable`, le claim, le
