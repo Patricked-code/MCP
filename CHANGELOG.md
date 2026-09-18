@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## 2026-09-19 — Candidate multi-agent continuity and conversation reconciliation
+
+- Ajout additif de `src/governedContext/candidateContinuity.ts`.
+- Ajout du dispatch PRECODE multi-agent sans Task Queue runtime : reprise du claim courant, dépendances, priorité/séquence et collision domains.
+- Ajout d'un intake borné de nouvelles informations de conversation avec réconciliation mémoire/backlog.
+- Refus de persister le transcript brut ; contradictions fail-closed vers review.
+- Ajout de `tests/candidateContinuity.test.ts` à `test:readonly-safety`.
+- TDD : RED #1046, GREEN #1048.
+- Nouveau bundle canonique `pr95-candidate-continuity-ready`.
+- Aucun merge main, aucune mutation S1/prod, aucun runtime Task/lock, aucun déploiement.
+
+
 ## 2026-09-18 — PRECODE devient construction de candidate évoluée
 
 - Correction sémantique majeure : PRECODE signifie désormais pré-intégration de la version évoluée complète, et non « architecture/doc uniquement ».
