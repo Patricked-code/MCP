@@ -673,3 +673,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Mes blocs `phaseB` et `phaseC` sont conservés et annotés par le pair (`executionRole`, `currentExecutionAuthority: false`) plutôt que supprimés : la provenance est préservée, le périmètre courant clarifié.
 - Correction de deux lignes périmées du README, laissées par moi lors du push `AF-36` : le compteur de findings indiquait 35 alors que le registre machine en porte 36, et la ligne « bundle courant » désignait un bundle supersédé. `current.json` est ajouté au tableau de contenu, puisqu'il est désormais vérifié par `verifyCanonicalMemory()`.
 - Portée : documentation. Aucun code runtime, `RUNTIME_TASKS_CREATED = 0`, aucun merge vers `main`, aucun déploiement.
+
+## 2026-09-19 — NEW_INFORMATION_INTAKE #1 enregistré dans la mémoire canonique GWC
+
+- Ajout d'un bundle canonique `pr95-new-information-intake-001` contenant uniquement des insights structurés issus de la conversation ; aucun transcript brut.
+- L'intake propose le modèle `GWC ROOT → 8 Macro Contracts → Step Contracts → deterministic functions` et un template commun de conception par étape.
+- La différence **72 étapes runtime / 73 Contract Design Sheets** est explicitement réconciliée sans modifier le registre : 72 membres runtime restent compatibles avec `GW-73` hors graphe runtime.
+- Aucun blueprint, contrat, source runtime, Task Queue, lock, session runtime, main, S1 ou déploiement n'est modifié.
+- `GWC-PRE-B-01` reste `READY`; aucun travail candidate n'est dispatché par cet intake.
+

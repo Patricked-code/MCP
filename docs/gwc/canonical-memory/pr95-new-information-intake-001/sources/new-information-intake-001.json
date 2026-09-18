@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "intakeId": "NEW_INFORMATION_INTAKE-001",
+  "intakeNumber": 1,
+  "mode": "NEW_INFORMATION_INTAKE",
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "observedHeadSha": "32133ec56ece4d4530ddfa270eb2b668845148f2",
+  "source": {
+    "sourceType": "chatgpt",
+    "sourceId": "NEW_INFORMATION_INTAKE-001",
+    "providerConversationRef": null,
+    "providerConversationRefProvenance": "UNAVAILABLE",
+    "rawTranscriptPersisted": false
+  },
+  "userDirective": {
+    "purpose": "Provide bounded new information to the candidate branch so the branch can assess relevance before adoption.",
+    "continuationRequested": false,
+    "automaticCandidateWorkDispatch": false,
+    "adoptionRule": "INFORMATION_ONLY_BRANCH_MUST_RECONCILE_BEFORE_CANONICAL_ADOPTION"
+  },
+  "insights": [
+    {
+      "key": "gwc.root-contract-model",
+      "kind": "DECISION",
+      "summary": "Conceptualize one GWC root contract orchestrating macro contracts, step contracts and deterministic functions.",
+      "disposition": "COMPLEMENT",
+      "relevance": "Adds an orchestration layer above the existing contract/blueprint material; does not itself replace an existing authority."
+    },
+    {
+      "key": "gwc.macro-contracts-eight",
+      "kind": "DECISION",
+      "summary": "Proposed macro decomposition: MC-A Context & Resolution steps 01-12; MC-B Work Orchestration 13-19; MC-C Governed Development 20-31; MC-D Review & Integration 32-42; MC-E Deployment & Runtime 43-53; MC-F Documentation Reconciliation 54-61; MC-G Verification & Closure 62-70; MC-H Program Continuity 71-72.",
+      "disposition": "COMPLEMENT",
+      "relevance": "Must be mapped against the existing 18 blueprints, not treated as their automatic replacement."
+    },
+    {
+      "key": "gwc.runtime-step-count-72",
+      "kind": "FACT",
+      "summary": "The conversation-level chronological workflow is expressed as 72 runtime steps.",
+      "disposition": "COMPLEMENT",
+      "relevance": "Branch already has 73 Contract Design Sheets with 72 runtime-graph members and GW-73 outside the runtime graph. Preserve all 73 sheets; interpret the 72 count as runtime chronology only unless later reconciliation proves otherwise."
+    },
+    {
+      "key": "gwc.nesting-model",
+      "kind": "DECISION",
+      "summary": "Target nesting model: GWC root -> Macro Contract -> Step Contract -> deterministic function.",
+      "disposition": "COMPLEMENT",
+      "relevance": "Candidate architectural organization proposal; existing-first mapping required."
+    },
+    {
+      "key": "gwc.step-contract-common-template",
+      "kind": "REQUIREMENT",
+      "summary": "Every chronological step should be specified with the same structure: purpose/boundary; required inputs/authorities/dependencies; chronology; conditions/invariants/fail-closed; matrix; conceptualization; smart-contract model; deterministic function; states/reason codes; attestation; non-regression; tests; integration slot; transition to next step.",
+      "disposition": "COMPLEMENT",
+      "relevance": "Candidate backlog/design enrichment for later step-by-step construction; no step is implemented or renumbered by this intake."
+    },
+    {
+      "key": "gwc.shared-governance-artifacts",
+      "kind": "REQUIREMENT",
+      "summary": "The root design should expose one transition graph, one global invariant set, one contract registry, one evidence model and one attestation chain.",
+      "disposition": "COMPLEMENT",
+      "relevance": "Several elements already exist on the branch; reconciliation should REUSE/WRAP/GENERALIZE rather than duplicate them."
+    },
+    {
+      "key": "gwc.authority-reuse",
+      "kind": "CONSTRAINT",
+      "summary": "The GWC must reuse GitHub, Operational Memory, Governed Task Queue, Live State, GitRegistry and runtime authorities and must not create a parallel governance authority.",
+      "disposition": "DUPLICATE",
+      "relevance": "Already consistent with the branch's existing authority-boundary rules."
+    },
+    {
+      "key": "gwc.step01-methodology",
+      "kind": "MEMORY",
+      "summary": "Step 01 has already been explored using the recurring method: what is required; chronology and conditions; matrix; conceptualization; deterministic-function/smart-contract behavior. The same analysis structure is intended for each chronological step.",
+      "disposition": "COMPLEMENT",
+      "relevance": "Methodological input only; detailed Step 01 content is not persisted as raw transcript."
+    }
+  ],
+  "reconciliation": {
+    "overallStatus": "BOUNDED_INTAKE_RECORDED",
+    "canonicalAdoptionPerformed": false,
+    "contradictionsAutoApplied": false,
+    "currentCanonicalContractSheetsChanged": false,
+    "currentBlueprintsChanged": false,
+    "runtimeTasksCreated": 0,
+    "candidateClaimsCreated": 0,
+    "candidateWorkDispatched": false,
+    "candidateSession": {
+      "status": "NOT_PERSISTED",
+      "reasonCode": "NO_OBSERVED_CONNECTION_INSTANCE_REF",
+      "note": "No provider conversation ID or client connection instance reference was exposed by the current tool surface; none was invented. Intake-only reconciliation does not require a work claim."
+    },
+    "nextCandidateProgramWorkItem": "GWC-PRE-B-01",
+    "nextCandidateProgramWorkItemStatus": "READY",
+    "note": "NEW_INFORMATION_INTAKE-001 is available as structured evidence for GWC-PRE-B-01 or later relevant design work when continuation is requested."
+  }
+}

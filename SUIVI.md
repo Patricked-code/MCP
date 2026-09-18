@@ -484,3 +484,17 @@ Date : 2026-08-29
 - Le pair a **conservé** mes blocs `phaseB` et `phaseC` en les annotant (`executionRole`, `currentExecutionAuthority: false`, `noteForPrecodeFinalization`) plutôt qu'en les supprimant. Provenance préservée, périmètre courant clarifié. Bonne pratique, adoptée telle quelle.
 - **Deux lignes périmées du README, et elles sont de moi** : en poussant `AF-36` j'avais mis à jour `BLUEPRINTS.md` et `.mcp/gwc-evolution-design.json` mais laissé le README à « 35 findings — `AF-01`…`AF-35` », en contradiction avec le registre machine qui en porte 36. Et la ligne « bundle courant » désignait encore `pr95-phase-b-live-reconciliation` alors que le pointeur vise `pr95-phase-b-resolved`. Le pair avait simplement préservé mes lignes ; il ne les a pas introduites. Corrigées, avec ajout de `current.json` au tableau de contenu puisqu'il est désormais vérifié.
 - État : head `6418833` mergé, `gwc:verify` 36 findings tous rattachés, pré-code `PASS`, `RUNTIME_TASKS_CREATED = 0`.
+
+## 2026-09-19 — NEW_INFORMATION_INTAKE #1 : architecture GWC racine / macro-contrats / modèle commun des étapes
+
+- Connexion GitHub-first sur `claude/ecstatic-edison-v1dyt1` et réobservation du head exact `32133ec56ece4d4530ddfa270eb2b668845148f2`.
+- Mode déduit explicitement : `NEW_INFORMATION_INTAKE`. L'utilisateur apporte de l'information à analyser ; il n'a pas demandé la continuation automatique du candidate build dans ce message.
+- Intake borné enregistré sous `docs/gwc/canonical-memory/pr95-new-information-intake-001/sources/new-information-intake-001.json` ; aucun transcript brut n'est persisté.
+- Information principale : proposition d'un `GWC ROOT` orchestrant **8 macro-contrats** puis les Step Contracts et leurs fonctions déterministes ; proposition d'un template commun de spécification pour chaque étape.
+- Réconciliation importante : le langage conversationnel parle de **72 étapes chronologiques runtime** ; la branche conserve **73 Contract Design Sheets**, dont **72 membres du runtime graph** et `GW-73` hors graphe runtime. Aucun contrat n'est renuméroté, supprimé ou fusionné par cet intake.
+- Les 8 macro-contrats sont enregistrés comme couche conceptuelle à mapper contre les **18 blueprints existants**, pas comme remplacement automatique.
+- Les invariants déjà présents — réutilisation des autorités existantes, pas d'autorité parallèle, transition graph, evidence/attestation — sont préservés et doivent être réutilisés avant toute extension.
+- Aucun `candidateSessionId` n'est inventé : aucun provider conversation ID ni connectionInstanceRef client n'a été exposé par la surface courante. Aucun claim candidate n'est requis pour cet intake information-only.
+- `GWC-PRE-B-01` reste `READY` ; `candidateWorkDispatched = false` ; `RUNTIME_TASKS_CREATED = 0`.
+- `NEXT_ACTION` programme inchangée : lors d'une future continuation, utiliser `NEW_INFORMATION_INTAKE-001` comme entrée bornée de réconciliation pour le backlog candidate, puis reprendre le premier work item dependency-safe/collision-safe.
+
