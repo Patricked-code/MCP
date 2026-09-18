@@ -6,7 +6,7 @@
   "actionFlow": {
     "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "projection": ".mcp/gwc-precode-action-flow.json",
-    "digestSha256": "958598e8e2e8154d891ff54c9e6a7c3baab31bc4b12bc635b87c5a34a3bb4282",
+    "digestSha256": "4443e05bb5ddcd42a0d9c32d4e38a80fad7306c16c36460cbb860dc511394727",
     "role": "candidate_build_execution_companion_not_runtime_authority",
     "mustBeRevalidatedBeforeCandidateCode": true
   },
@@ -60,5 +60,22 @@
     "requiredVerdict": "FINAL_PRECODE_VERSION_ACCEPTED",
     "integrationReadyVerdict": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
     "currentStatus": "PENDING_CANDIDATE_BUILD"
+  },
+  "candidateContinuity": {
+    "status": "IMPLEMENTED_BRANCH_LOCAL_NOT_LIVE_ACTIVATED",
+    "foundations": [
+      "GWC-PRE-B-FND-01",
+      "GWC-PRE-B-FND-02"
+    ],
+    "multiAgentDispatch": true,
+    "conversationIntakeReconciliation": true,
+    "rawTranscriptPersistence": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "liveActivation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
+    "evidence": {
+      "red": "CI #1046 @ 9f6e14df2939e5e4b062e2861dfd5af507d6b157",
+      "green": "CI #1048 @ 138d392942591f8ba0270757bc5df859fdd4b7cb"
+    }
   }
 }
