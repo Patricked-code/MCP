@@ -396,7 +396,7 @@ export const CandidateSessionSchema = z.object({
   providerConversationRefProvenance: ProviderConversationRefProvenanceSchema,
   githubActor: BoundedId.nullable(),
   githubConnectionRef: BoundedId.nullable(),
-  connectionInstanceRef: BoundedId,
+  connectionInstanceRef: BoundedId.optional(),
   repository: z.literal('Patricked-code/MCP'),
   branch: z.literal('claude/ecstatic-edison-v1dyt1'),
   startingHeadSha: GitShaSchema,
@@ -457,7 +457,8 @@ function sessionMatch(
   }
 
   const connectionMatch = eligible.find((session) => (
-    session.connectionInstanceRef === connection.connectionInstanceRef
+    session.connectionInstanceRef !== undefined
+    && session.connectionInstanceRef === connection.connectionInstanceRef
   ));
   return connectionMatch
     ? { session: connectionMatch, matchedBy: 'connection_instance_ref' }
@@ -481,6 +482,7 @@ export function resolveCandidateSession(
         ...matched.session,
         githubActor: connection.githubActor ?? matched.session.githubActor,
         githubConnectionRef: connection.githubConnectionRef ?? matched.session.githubConnectionRef,
+        connectionInstanceRef: matched.session.connectionInstanceRef ?? connection.connectionInstanceRef,
         lastObservedHeadSha: connection.observedHeadSha,
         lastSeenAt: connection.observedAt
       })
