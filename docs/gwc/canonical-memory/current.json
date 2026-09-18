@@ -3,40 +3,48 @@
   "scope": "GWC",
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
-  "mode": "PRECODE_FINALIZATION_ONLY",
+  "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
   "currentBundle": "pr95-precode-gate",
   "currentBundleId": "bnd_mcp-pr95-precode-gate-20260917",
   "currentBundlePath": "docs/gwc/canonical-memory/pr95-precode-gate",
   "programCatalog": {
-    "humanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
-    "machineProjection": ".mcp/gwc-precode-action-flow.json",
+    "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+    "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
     "statusProjection": ".mcp/gwc-precode-status.json",
-    "macroTaskRange": "T00-T204",
-    "macroTaskCount": 205,
-    "minimumElementaryActionsFullProgram": 2791,
-    "precodeArchitectureRange": "T00-T195",
-    "minimumElementaryActionsPrecodeArchitecture": 2782,
-    "futureIntegrationPlanRange": "T196-T204",
-    "futureIntegrationTaskCount": 9,
-    "rule": "All 205 macro tasks stay visible in canonical memory. During the current PRECODE-only phase, only branch-local architecture/design/canonicalization work is executable. T196-T204 and Phases B-F are future integration definitions, not current runtime work."
+    "architectureSequence": "P0 -> A1..A14 -> ARCHITECTURE_GATE",
+    "candidateSequence": "B -> C -> D/E -> F",
+    "candidateBlueprintWorkItems": "GWC-PRE-E-GWC-0..GWC-PRE-E-GWC-17",
+    "finalCandidateExit": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "integrationReadyExit": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
+    "legacyMacroDecomposition": {
+      "range": "T00-T204",
+      "count": 205,
+      "minimumElementaryActions": 2791,
+      "status": "HISTORICAL_DECOMPOSITION_PRESERVED_FOR_TRACEABILITY",
+      "note": "The old T196-T204 live-integration interpretation is superseded for current execution by the branch-local candidate B-F flow. Real integration occurs only after the final candidate gate."
+    },
+    "rule": "The Claude branch is the construction surface for the complete evolved MCP candidate: existing skeleton plus additive/backward-compatible code, tests, migrations/compatibility, workflows, documentation, task history and evidence. It is not documentation-only and not a parallel production authority."
   },
   "currentPrecodeState": {
-    "phase": "A14",
-    "macroTask": "T195",
-    "work": "ALIGN_MEMORY_SUIVI_DECISIONS_AND_FINAL_PRECODE_CANONICALIZATION",
-    "status": "IN_PROGRESS",
+    "phase": "B",
+    "workItem": "GWC-PRE-B-01",
+    "work": "DERIVE_COMPLETE_BRANCH_LOCAL_CANDIDATE_BACKLOG_FROM_18_BLUEPRINTS_73_CONTRACTS_FINDINGS_AND_EXISTING_CODE",
+    "status": "READY",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
-    "runtimeIntegration": "FORBIDDEN_IN_CURRENT_PHASE",
-    "governedTaskMaterialization": "FORBIDDEN_IN_CURRENT_PHASE",
-    "mainMutation": "FORBIDDEN_IN_CURRENT_PHASE",
-    "s1Mutation": "FORBIDDEN_IN_CURRENT_PHASE",
-    "deployment": "FORBIDDEN_IN_CURRENT_PHASE",
+    "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
+    "candidateCodeMayModifySrcTestsWorkflowsDocs": true,
+    "existingFirstRule": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
+    "runtimeGovernedTaskMaterialization": "NOT_USED_FOR_CANDIDATE_BUILD",
+    "runtimeLockAcquisition": "NOT_USED_FOR_CANDIDATE_BUILD",
+    "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
+    "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
+    "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "blocker": null,
-    "nextAction": "Reobserve the exact online branch head; verify that canonical memory, PRECODE status, coordination policy, README, SUIVI, CHANGELOG and DECISIONS all project the same PRECODE-only boundary; run deterministic GWC/PRECODE verification and exact-head CI. If all pass, record FINAL_PRECODE_VERSION_ACCEPTED. Do not start real integration."
+    "nextAction": "Execute GWC-PRE-B-01 on the exact online Claude-branch head: synthesize the complete candidate implementation backlog from the 18 Detailed Evolution Designs, 73 contracts, findings, open decisions and current existing code. Then bind every item to its integration slot, RED/GREEN/regression/backward-compatibility/evidence/DoD and continue through B->C->D/E->F."
   },
   "precodeContinuationPolicy": {
-    "hierarchy": "PROGRAM -> PRECODE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
+    "hierarchy": "PROGRAM -> ARCHITECTURE_PHASE_OR_CANDIDATE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
     "autonomousContinuation": true,
     "nextActionRequired": true,
     "singleWriterPerCollisionDomain": true,
@@ -45,12 +53,15 @@
     "runtimeTaskQueueUsedForPrecode": false,
     "runtimeLocksUsedForPrecode": false,
     "stopOnlyFor": [
-      "NON_DEDUCIBLE_PRECODE_BLOCKER",
+      "NON_DEDUCIBLE_CANDIDATE_BLOCKER",
       "HEAD_CONFLICT_REQUIRING_RECONCILIATION",
-      "MISSING_REQUIRED_PERMISSION_FOR_BRANCH_PRECODE_WRITE",
+      "MISSING_REQUIRED_PERMISSION_FOR_CLAUDE_BRANCH_WRITE",
       "SECURITY_OR_IRREVERSIBLE_DECISION_REQUIRED",
       "FINAL_PRECODE_VERSION_ACCEPTED"
-    ]
+    ],
+    "candidateCodeImplementationAllowed": true,
+    "candidateCodeImplementationExpected": true,
+    "liveIntegrationAllowedBeforeFinalCandidate": false
   },
   "historicalRuntimeObservations": {
     "role": "PROVENANCE_ONLY_NOT_CURRENT_EXECUTION",
@@ -58,22 +69,23 @@
       "pr95-phase-b-live-reconciliation",
       "pr95-phase-b-resolved"
     ],
-    "rule": "Runtime/Task Queue observations remain immutable evidence about the existing system. They never convert PRECODE work items into Governed Tasks and never make Phase B/C/D/E/F current while PRECODE_FINALIZATION_ONLY is active."
+    "rule": "Runtime/Task Queue observations remain immutable evidence about the existing system. They may inform candidate design/implementation but never become the branch-local execution engine. Real Task Queue/session/lock/main/S1/deploy activity belongs only to the later integration phase after FINAL_PRECODE_VERSION_ACCEPTED."
   },
   "readProtocol": [
     "Read CLAUDE.md sections 8-9.",
     "Read docs/gwc/README.md.",
     "Read this current.json and resolve currentBundlePath.",
-    "Read docs/gwc/PRECODE_ACTION_TASK_FLOW.txt and .mcp/gwc-precode-action-flow.json for the complete T00-T204 catalog.",
-    "Read .mcp/gwc-precode-status.json for phase/work-item evidence.",
+    "Read docs/gwc/PRECODE_EXECUTION_PLAN.txt, PRECODE_ACTION_TASK_FLOW.txt and .mcp/gwc-precode-action-flow.json.",
+    "Read .mcp/gwc-precode-status.json for architecture evidence, historical observations and current candidate work.",
     "Read docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md before any shared-branch write.",
-    "Before seeking any runtime connection, inspect versioned audit evidence under docs/audits/**, docs/history/** and canonical-memory sources.",
-    "For PRECODE, MCP OAuth/bridge is NOT_REQUIRED. Prefer versioned audits, GitHub live evidence and GitHub-published read-only server evidence artifacts.",
-    "If fresh server evidence is strictly required and no read-only evidence mirror exists yet, record UNKNOWN/STALE; do not open a runtime Governed Session merely to continue PRECODE.",
-    "Reobserve the exact online GitHub head immediately before every write.",
-    "Resume from currentPrecodeState.nextAction and the first PRECODE work item that is incomplete, stale or reopened.",
-    "Do not materialize Governed Tasks, claim runtime locks, mutate main/S1 or deploy during PRECODE_FINALIZATION_ONLY.",
-    "Historical runtime observations are evidence only; do not treat them as the current execution phase."
+    "Reobserve the exact online Claude-branch head immediately before every write.",
+    "Inspect the existing implementation before candidate code; apply REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW.",
+    "Candidate code on claude/ecstatic-edison-v1dyt1 is allowed and expected after GWC_ARCHITECTURE_GATE_PASS.",
+    "Candidate work items are not GovernedTaskRecords and do not use runtime Task Queue/locks/sessions.",
+    "Before seeking runtime connectivity, inspect versioned audits, canonical-memory evidence, GitHub live and GitHub-published read-only artifacts.",
+    "MCP OAuth/bridge is NOT_REQUIRED for candidate build; stale/unavailable live proof becomes UNKNOWN/STALE unless a read-only evidence mirror provides it.",
+    "Do not integrate/activate the candidate in main/S1/production before FINAL_PRECODE_VERSION_ACCEPTED.",
+    "Resume from currentPrecodeState.nextAction and continue automatically through B->C->D/E->F until the final candidate gate or a true non-deducible blocker."
   ],
   "previousBundles": [
     {
@@ -102,9 +114,9 @@
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-18T18:12:00Z",
-  "observedHeadBeforePointerUpdate": "d69a65155994ae6692af53e8d05afd43fab407f1",
-  "correctionReason": "Restore the canonical memory to the PRECODE program boundary. Earlier edits incorrectly promoted runtime Task Queue/claim semantics into the current PRECODE continuation state.",
+  "updatedFromGitHubObservationAt": "2026-09-18T18:35:00Z",
+  "observedHeadBeforePointerUpdate": "6b62d28fcbc5382569300585cf2a4a2a0dec2f57",
+  "correctionReason": "Canonical interpretation corrected: PRECODE means pre-integration evolved candidate construction, not documentation-only. The Claude branch must progressively contain the complete evolved MCP code and tests while live integration remains frozen.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
