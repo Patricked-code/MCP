@@ -3,6 +3,19 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-19 — Les nouvelles informations passent un gate avant adoption
+
+Décision : un `NEW_INFORMATION_INTAKE` est une entrée de connaissance, jamais une règle canonique ou une tâche par défaut.
+
+Le système conserve un cursor incrémental dans les projections PRECODE existantes, sans créer d'autorité parallèle. Chaque intake est évalué selon compréhension, pertinence, preuve, objectif GWC, relation à l'existant, architecture, autorités, non-régression, impact et existing-first.
+
+Une proposition de nouvelle autorité parallèle est `REJECT`. Une contradiction/supersession/breaking change est `HOLD_FOR_REVIEW`. Une preuve factuelle requise mais non vérifiée est `DEFER`. Les effets acceptés enrichissent d'abord un work item compatible existant avant toute proposition de nouveau travail.
+
+Les agents travaillent depuis l'état réconcilié et un receipt, jamais directement depuis les intakes bruts. La fraîcheur du travail est gouvernée par `HEAD_SHA + canonicalRevision + backlogRevision`; un drift de connaissance ne bloque que les scopes affectés.
+
+Les intakes #001/#002, déjà versionnés avec `canonicalAdoptionPerformed=false`, restent pending et doivent passer ce gate avant leur consommation par B-01.
+
+
 ## 2026-09-19 — PRECODE GitHub-first, sans dépendance MCP runtime
 
 Décision : pendant la construction candidate sur `claude/ecstatic-edison-v1dyt1`, l'agent arrive directement par GitHub et reconstruit son contexte depuis le HEAD et les artefacts versionnés de branche. Le MCP runtime n'est ni un prérequis de connexion, ni une autorité de session, tâche ou lock pour le PRECODE.
