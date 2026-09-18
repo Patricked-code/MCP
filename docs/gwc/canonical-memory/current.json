@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-candidate-build-ready",
-  "currentBundleId": "bnd_mcp-pr95-candidate-build-ready-20260918",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-candidate-build-ready",
+  "currentBundle": "pr95-candidate-continuity-ready",
+  "currentBundleId": "bnd_mcp-pr95-candidate-continuity-ready-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-candidate-continuity-ready",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -41,7 +41,7 @@
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "blocker": null,
-    "nextAction": "Execute GWC-PRE-B-01 on the exact online Claude-branch head: synthesize the complete candidate implementation backlog from the 18 Detailed Evolution Designs, 73 contracts, findings, open decisions and current existing code. Then bind every item to its integration slot, RED/GREEN/regression/backward-compatibility/evidence/DoD and continue through B->C->D/E->F."
+    "nextAction": "Execute GWC-PRE-B-01 using automatic candidate continuity: reobserve exact head; analyze and reconcile any new conversation information; resume/claim dependency-safe collision-safe branch work; derive the complete candidate backlog; checkpoint and update canonical memory."
   },
   "precodeContinuationPolicy": {
     "hierarchy": "PROGRAM -> ARCHITECTURE_PHASE_OR_CANDIDATE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
@@ -61,7 +61,10 @@
     ],
     "candidateCodeImplementationAllowed": true,
     "candidateCodeImplementationExpected": true,
-    "liveIntegrationAllowedBeforeFinalCandidate": false
+    "liveIntegrationAllowedBeforeFinalCandidate": false,
+    "conversationInformationMustBeReconciled": true,
+    "autoCandidateDispatch": true,
+    "rawConversationPersistence": false
   },
   "historicalRuntimeObservations": {
     "role": "PROVENANCE_ONLY_NOT_CURRENT_EXECUTION",
@@ -85,9 +88,18 @@
     "Before seeking runtime connectivity, inspect versioned audits, canonical-memory evidence, GitHub live and GitHub-published read-only artifacts.",
     "MCP OAuth/bridge is NOT_REQUIRED for candidate build; stale/unavailable live proof becomes UNKNOWN/STALE unless a read-only evidence mirror provides it.",
     "Do not integrate/activate the candidate in main/S1/production before FINAL_PRECODE_VERSION_ACCEPTED.",
-    "Resume from currentPrecodeState.nextAction and continue automatically through B->C->D/E->F until the final candidate gate or a true non-deducible blocker."
+    "Resume from currentPrecodeState.nextAction and continue automatically through B->C->D/E->F until the final candidate gate or a true non-deducible blocker.",
+    "When a new conversation brings material information, semantically analyze it and project bounded insights before candidate work selection.",
+    "Reconcile insights as DUPLICATE/COMPLEMENT/DECISION/FINDING/TASK/CONTRADICTION/MEMORY; accepted non-conflicting changes update canonical memory/backlog, contradictions HOLD_FOR_REVIEW.",
+    "For multi-agent continuation, resume the same ACTIVE branch-local claim first; otherwise select the next READY dependency-safe and collision-safe work item.",
+    "Persist branch-local claims only after exact-head reobservation; HEAD_MOVED requires redispatch."
   ],
   "previousBundles": [
+    {
+      "name": "pr95-candidate-build-ready",
+      "path": "docs/gwc/canonical-memory/pr95-candidate-build-ready",
+      "status": "IMMUTABLE_HISTORICAL_CANDIDATE_BUILD_BASELINE"
+    },
     {
       "name": "pr95-precode-gate",
       "path": "docs/gwc/canonical-memory/pr95-precode-gate",
@@ -119,9 +131,9 @@
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-18T18:44:00Z",
-  "observedHeadBeforePointerUpdate": "1a3f040ee84e0ecdc7b33f13d78d78a5c8057d4a",
-  "correctionReason": "Canonical memory now points to the immutable candidate-build-ready bundle: architecture complete, branch-local evolved candidate code allowed/expected, live integration frozen until final candidate acceptance.",
+  "updatedFromGitHubObservationAt": "2026-09-19",
+  "observedHeadBeforePointerUpdate": "7495cea097627c0865c5b9ab99379cef620a0bea",
+  "correctionReason": "Canonical memory advanced to the candidate-continuity checkpoint: automatic multi-agent branch dispatch plus bounded conversation-information reconciliation are implemented and tested, while live integration remains frozen.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
@@ -208,5 +220,53 @@
       "docs/audits/2026-08-05/MCP_PRE29_RECOVERY_AUDIT.md",
       "docs/gwc/canonical-memory/pr95-phase-b-resolved/sources/live-authorities.json"
     ]
+  },
+  "candidateContinuity": {
+    "status": "IMPLEMENTED_BRANCH_LOCAL_NOT_LIVE_ACTIVATED",
+    "integrationSlot": "EXISTING_GOVERNED_CONTEXT_PLUS_PRECODE_PROJECTIONS",
+    "implementation": "src/governedContext/candidateContinuity.ts",
+    "tests": "tests/candidateContinuity.test.ts",
+    "multiAgentDispatch": {
+      "resumeExistingClaimFirst": true,
+      "dependencySafeOnly": true,
+      "collisionSafeOnly": true,
+      "claimProjection": ".mcp/gwc-precode-status.json#candidateCoordination.activeClaims",
+      "claimCommitRule": "Reobserve exact branch head immediately before persisting a claim; if HEAD_MOVED, abort stale write and redispatch."
+    },
+    "conversationInformation": {
+      "semanticUnderstandingOwner": "CONNECTED_AI_AGENT",
+      "rawTranscriptPersistence": false,
+      "deterministicReconciliation": "reconcileConversationIntake",
+      "dispositions": [
+        "DUPLICATE",
+        "COMPLEMENT",
+        "DECISION",
+        "FINDING",
+        "TASK",
+        "CONTRADICTION",
+        "MEMORY"
+      ],
+      "contradictionPolicy": "HOLD_FOR_REVIEW",
+      "acceptedEffects": [
+        "CANONICAL_MEMORY_ENRICHMENT",
+        "DECISION",
+        "FINDING",
+        "EXISTING_WORK_ITEM_ENRICHMENT",
+        "CANDIDATE_WORK_ITEM_PROPOSAL"
+      ]
+    },
+    "authorityBoundary": {
+      "secondOperationalMemory": false,
+      "secondTaskQueue": false,
+      "secondSessionManager": false,
+      "secondLockService": false,
+      "runtimeTaskQueueUsed": false,
+      "runtimeLocksUsed": false,
+      "liveActivationAllowed": false
+    },
+    "evidence": {
+      "red": "MCP CI #1046 @ 9f6e14df2939e5e4b062e2861dfd5af507d6b157",
+      "green": "MCP CI #1048 SUCCESS @ 138d392942591f8ba0270757bc5df859fdd4b7cb"
+    }
   }
 }
