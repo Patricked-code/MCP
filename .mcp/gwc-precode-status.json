@@ -279,7 +279,7 @@
     "status": "READY",
     "exit": "FINAL_PRECODE_VERSION_ACCEPTED",
     "integrationReadyExit": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
-    "nextAction": "Derive the complete branch-local candidate backlog from the 18 blueprints, 73 contracts, findings, open decisions and current existing code; bind every work item to exact integration slot, files/types/functions, dependencies, RED/GREEN/regression, backward compatibility, evidence and definition of done."
+    "nextAction": "Execute GWC-PRE-B-01 using the new candidate continuity protocol: reobserve exact branch head, reconcile any new conversation insights, then derive the complete branch-local candidate backlog and bind future work for safe multi-agent dispatch."
   },
   "programCatalog": {
     "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
@@ -705,14 +705,173 @@
   "candidateProgram": {
     "status": "READY_TO_START",
     "architectureComplete": true,
-    "candidateImplementationStarted": false,
+    "candidateImplementationStarted": true,
     "completedArchitecturePhases": "A1-A14 PASS_WITH_EVIDENCE",
     "firstCandidateWorkItem": "GWC-PRE-B-01",
     "blueprintBuildCount": 18,
     "finalCandidateVerdict": "PENDING",
-    "liveIntegrationBoundary": "FROZEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED"
+    "liveIntegrationBoundary": "FROZEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
+    "implementedFoundations": [
+      "GWC-PRE-B-FND-01",
+      "GWC-PRE-B-FND-02"
+    ]
   },
   "finalCandidateVerdict": "PENDING",
   "updatedForCandidateInterpretationAt": "2026-09-18T18:37:00Z",
-  "updatedForCandidateInterpretationHead": "bd09af56ff4029f5509a58e1177ed75768bba5e7"
+  "updatedForCandidateInterpretationHead": "bd09af56ff4029f5509a58e1177ed75768bba5e7",
+  "candidateCoordination": {
+    "role": "BRANCH_LOCAL_COORDINATION_PROJECTION_NOT_RUNTIME_AUTHORITY",
+    "authorityBoundary": "Git history + canonical memory/checkpoints are the durable branch evidence; this projection never becomes Operational Memory or the runtime Governed Task Queue.",
+    "workItems": [
+      {
+        "workItemId": "GWC-PRE-B-FND-01",
+        "intentKeys": [
+          "candidate.auto-continuity",
+          "candidate.dispatch"
+        ],
+        "status": "DONE",
+        "priority": 110,
+        "sequence": 0,
+        "dependencies": [],
+        "collisionDomains": [
+          "src:governed-context",
+          "tests:candidate-continuity"
+        ],
+        "evidence": [
+          "RED CI #1046 @ 9f6e14df2939e5e4b062e2861dfd5af507d6b157",
+          "GREEN CI #1048 @ 138d392942591f8ba0270757bc5df859fdd4b7cb"
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-B-FND-02",
+        "intentKeys": [
+          "candidate.conversation-intake",
+          "candidate.ingestion-gap"
+        ],
+        "status": "DONE",
+        "priority": 109,
+        "sequence": 0,
+        "dependencies": [],
+        "collisionDomains": [
+          "src:governed-context",
+          "tests:candidate-continuity"
+        ],
+        "evidence": [
+          "RED CI #1046",
+          "GREEN CI #1048"
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-B-01",
+        "intentKeys": [
+          "candidate-backlog"
+        ],
+        "status": "READY",
+        "priority": 100,
+        "sequence": 1,
+        "dependencies": [],
+        "collisionDomains": [
+          "docs:gwc",
+          ".mcp:gwc-precode"
+        ],
+        "evidence": []
+      },
+      {
+        "workItemId": "GWC-PRE-B-02",
+        "intentKeys": [
+          "candidate-bindings",
+          "candidate.dispatch"
+        ],
+        "status": "PENDING",
+        "priority": 90,
+        "sequence": 2,
+        "dependencies": [
+          "GWC-PRE-B-01"
+        ],
+        "collisionDomains": [
+          "docs:gwc",
+          ".mcp:gwc-precode"
+        ],
+        "evidence": []
+      },
+      {
+        "workItemId": "GWC-PRE-B-03",
+        "intentKeys": [
+          "candidate-audit"
+        ],
+        "status": "PENDING",
+        "priority": 80,
+        "sequence": 3,
+        "dependencies": [
+          "GWC-PRE-B-02"
+        ],
+        "collisionDomains": [
+          "docs:gwc",
+          ".mcp:gwc-precode"
+        ],
+        "evidence": []
+      }
+    ],
+    "activeClaims": [],
+    "dispatchPolicy": {
+      "resumeSameCandidateSessionFirst": true,
+      "dependencySafeOnly": true,
+      "collisionDomainSafeOnly": true,
+      "ordering": "priority_desc_then_sequence_asc_then_workItemId",
+      "multipleActiveClaimsForSameSession": "FAIL_CLOSED",
+      "runtimeTaskQueueUsed": false,
+      "runtimeLocksUsed": false
+    },
+    "connectionProtocol": [
+      "REOBSERVE_EXACT_CLAUDE_BRANCH_HEAD",
+      "READ_CANONICAL_MEMORY_CURRENT_BUNDLE_AND_CHECKPOINT",
+      "ANALYZE_NEW_CONVERSATION_INFORMATION_IF_PRESENT",
+      "PROJECT_ONLY_BOUNDED_STRUCTURED_INSIGHTS",
+      "RECONCILE_WITH_CANONICAL_MEMORY_AND_CANDIDATE_WORK",
+      "HOLD_CONTRADICTIONS_OR_SUPERSESSIONS_FOR_REVIEW",
+      "RESUME_ACTIVE_BRANCH_LOCAL_CLAIM_IF_PRESENT",
+      "ELSE_SELECT_NEXT_DEPENDENCY_AND_COLLISION_SAFE_WORK_ITEM",
+      "EXECUTE_RED_GREEN_REGRESSION",
+      "CHECKPOINT_HANDOFF_UPDATE_MEMORY_AND_NEXT_ACTION"
+    ]
+  },
+  "conversationIntake": {
+    "role": "BOUNDED_SEMANTIC_RECONCILIATION_INPUT_TO_EXISTING_AUTHORITIES",
+    "implementation": "src/governedContext/candidateContinuity.ts",
+    "semanticUnderstandingOwner": "CONNECTED_AI_AGENT",
+    "deterministicReconciliationOwner": "candidateContinuity.reconcileConversationIntake",
+    "rawTranscriptPersistence": false,
+    "acceptedDispositions": [
+      "DUPLICATE",
+      "COMPLEMENT",
+      "DECISION",
+      "FINDING",
+      "TASK",
+      "CONTRADICTION",
+      "MEMORY"
+    ],
+    "nonConflictingActions": [
+      "ADD_CANONICAL_MEMORY",
+      "ENRICH_CANONICAL_MEMORY",
+      "ADD_DECISION",
+      "ADD_FINDING",
+      "RECORD_TASK_SIGNAL",
+      "ENRICH_EXISTING_WORK_ITEM",
+      "PROPOSE_CANDIDATE_WORK_ITEM"
+    ],
+    "contradictionAction": "HOLD_FOR_REVIEW",
+    "runtimeMutationAllowed": false,
+    "evidence": {
+      "red": {
+        "run": 1046,
+        "head": "9f6e14df2939e5e4b062e2861dfd5af507d6b157"
+      },
+      "green": {
+        "run": 1048,
+        "head": "138d392942591f8ba0270757bc5df859fdd4b7cb"
+      }
+    }
+  },
+  "updatedForCandidateContinuityAt": "2026-09-19T00:35:00+02:00",
+  "updatedForCandidateContinuityHead": "814d344710db4531d3b6cc868c587224f9ad2dea"
 }
