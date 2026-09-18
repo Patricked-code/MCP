@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "revision": "R3-PRECODE-STATUS",
+  "revision": "R4-CANDIDATE-STATUS",
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
-  "note": "Projection de statut d'exécution du flux pré-code. Non autoritative. Ce n'est ni Operational Memory, ni la Governed Task Queue, ni un lock runtime. Les identifiants GWC-PRE-* sont des work items d'architecture, jamais des TASK-*.",
+  "note": "Projection non autoritative du programme GWC pre-integration. L architecture A1-A14 est close; la branche claude/ecstatic-edison-v1dyt1 sert maintenant a construire la version evoluee complete (code/tests/workflows/docs inclus). Les GWC-PRE-* restent des work items de branche, jamais des TASK-* runtime.",
   "projectionOnly": true,
   "runtimeAuthority": false,
   "governedTaskQueueAuthority": false,
@@ -177,6 +177,62 @@
         "Canonical Memory CURRENT: bundle pr95-precode-gate verifie",
         "SUIVI / DECISIONS alignes"
       ]
+    },
+    {
+      "id": "B",
+      "name": "Complete Candidate Task Synthesis",
+      "status": "READY",
+      "exit": "CANDIDATE_BACKLOG_COMPLETE",
+      "currentWorkItem": "GWC-PRE-B-01",
+      "evidence": []
+    },
+    {
+      "id": "C",
+      "name": "Candidate Safety and Foundation Completion",
+      "status": "PENDING",
+      "exit": "CANDIDATE_SAFETY_FOUNDATIONS_COMPLETE",
+      "evidence": []
+    },
+    {
+      "id": "D",
+      "name": "Branch-local Candidate Implementation Cycle",
+      "status": "PENDING",
+      "exit": "CANDIDATE_IMPLEMENTATION_CYCLE_VERIFIED",
+      "evidence": []
+    },
+    {
+      "id": "E",
+      "name": "Blueprint Candidate Build Order",
+      "status": "PENDING",
+      "exit": "18_BLUEPRINT_CANDIDATE_IMPLEMENTATIONS_COMPLETE",
+      "candidateBlueprintWorkItems": [
+        "GWC-PRE-E-GWC-0",
+        "GWC-PRE-E-GWC-1",
+        "GWC-PRE-E-GWC-2",
+        "GWC-PRE-E-GWC-3",
+        "GWC-PRE-E-GWC-4",
+        "GWC-PRE-E-GWC-5",
+        "GWC-PRE-E-GWC-6",
+        "GWC-PRE-E-GWC-7",
+        "GWC-PRE-E-GWC-8",
+        "GWC-PRE-E-GWC-9",
+        "GWC-PRE-E-GWC-10",
+        "GWC-PRE-E-GWC-11",
+        "GWC-PRE-E-GWC-12",
+        "GWC-PRE-E-GWC-13",
+        "GWC-PRE-E-GWC-14",
+        "GWC-PRE-E-GWC-15",
+        "GWC-PRE-E-GWC-16",
+        "GWC-PRE-E-GWC-17"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "F",
+      "name": "Candidate Universal Acceptance",
+      "status": "PENDING",
+      "exit": "FINAL_PRECODE_VERSION_ACCEPTED",
+      "evidence": []
     }
   ],
   "gateVerdict": "GWC_ARCHITECTURE_GATE_PASS",
@@ -186,8 +242,95 @@
     "AF-34",
     "AF-35"
   ],
-  "phaseB": {
-    "id": "B",
+  "findingsResolved": [
+    {
+      "finding": "AF-35",
+      "owner": "GWC-5",
+      "resolvedAt": "2026-09-18T17:08:00Z",
+      "resolution": "Contradiction resolue a la source par l agent proprietaire: TASK-20260915-001 est DONE, blockers vides, session fermee apres acquittement du stateVersion 246. La file et Live State concordent.",
+      "resolvedBy": "OWNING_AGENT_NOT_THIS_SESSION"
+    }
+  ],
+  "currentExecution": {
+    "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
+    "branch": "claude/ecstatic-edison-v1dyt1",
+    "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
+    "candidateCodeImplementationAllowed": true,
+    "candidateCodeImplementationExpected": true,
+    "candidateMayModify": [
+      "src/**",
+      "tests/**",
+      ".github/workflows/**",
+      ".mcp/**",
+      "docs/**",
+      "scripts/**",
+      "configuration/migrations only when additive/backward-compatible"
+    ],
+    "existingFirstRule": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "runtimeGovernedSessionRequired": false,
+    "mainMutationAllowed": false,
+    "s1MutationAllowed": false,
+    "productionDeploymentAllowed": false,
+    "currentPhase": "B",
+    "currentWorkItem": "GWC-PRE-B-01",
+    "currentWork": "DERIVE_COMPLETE_CANDIDATE_BACKLOG",
+    "status": "READY",
+    "exit": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "integrationReadyExit": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
+    "nextAction": "Derive the complete branch-local candidate backlog from the 18 blueprints, 73 contracts, findings, open decisions and current existing code; bind every work item to exact integration slot, files/types/functions, dependencies, RED/GREEN/regression, backward compatibility, evidence and definition of done."
+  },
+  "programCatalog": {
+    "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+    "machineProjection": ".mcp/gwc-precode-action-flow.json",
+    "architecture": "P0 -> A1..A14 -> ARCHITECTURE_GATE",
+    "candidateBuild": "B -> C -> D/E -> F",
+    "candidateBlueprintWorkItems": "GWC-PRE-E-GWC-0..GWC-PRE-E-GWC-17",
+    "finalCandidateGate": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "integrationReadyVerdict": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
+    "legacyMacroDecomposition": {
+      "range": "T00-T204",
+      "count": 205,
+      "minimumElementaryActions": 2791,
+      "status": "HISTORICAL_TRACEABILITY"
+    },
+    "rule": "The candidate build executes on the Claude branch and includes code. Real project integration is a separate post-candidate phase."
+  },
+  "updatedForPrecodeBoundaryAt": "2026-09-18T18:04:00Z",
+  "updatedForPrecodeBoundaryHead": "111babba7a942d33a6d5381c2e371edb73cf3ff1",
+  "precodeEvidenceAcquisition": {
+    "bridgeOAuthRequired": false,
+    "serverBridgeRequired": false,
+    "preferredSources": [
+      "VERSIONED_AUDITS",
+      "CANONICAL_MEMORY_SNAPSHOTS",
+      "GITHUB_LIVE",
+      "GITHUB_ACTIONS_ARTIFACTS"
+    ],
+    "knownAuditRoots": [
+      "docs/audits/",
+      "docs/history/",
+      "docs/gwc/canonical-memory/"
+    ],
+    "liveServerFallback": {
+      "mode": "READONLY_EVIDENCE_MIRROR",
+      "status": "DESIGNED_NOT_IMPLEMENTED",
+      "transport": "GitHub Actions artifact",
+      "authentication": "dedicated least-privilege server read-only identity / forced-command; never MCP OAuth",
+      "mutationsForbidden": true,
+      "runtimeSessionForbidden": true,
+      "taskClaimForbidden": true,
+      "lockForbidden": true,
+      "secretsForbidden": true,
+      "staleOrUnavailableResult": "UNKNOWN"
+    },
+    "rule": "PRECODE progress must not depend on OAuth/bridge availability. Runtime/server evidence is consumed as versioned or GitHub-published read-only evidence with explicit freshness."
+  },
+  "updatedForEvidencePolicyAt": "2026-09-18T18:15:00Z",
+  "updatedForEvidencePolicyHead": "e6575971311d63cdc284d9e5333c9d8355c307e9",
+  "historicalLiveTaskReconciliation": {
+    "id": "HISTORICAL-LIVE-B",
     "name": "Live Task Reconciliation",
     "status": "PASS_WITH_EVIDENCE",
     "observedAt": "2026-09-17T13:55:00Z",
@@ -318,13 +461,13 @@
       "prescribedOrder": "Phase E: GWC-0 -> GWC-1 -> GWC-2 -> GWC-3 -> {GWC-4, GWC-5, GWC-6 -> GWC-7, GWC-8} -> GWC-9 -> GWC-10 -> GWC-11 ...",
       "orderingConstraintFromC3": "GWC-9 precede l atterrissage de tout SPLIT portant du WRITE (AF-32)."
     },
-    "executionRole": "HISTORICAL_POST_GATE_OBSERVATION_ONLY",
+    "executionRole": "PROVENANCE_ONLY",
     "currentExecutionAuthority": false,
     "noteForPrecodeFinalization": "Preserved for provenance only. It does not make Phase B current or authorize task materialization while PRECODE finalization is active."
   },
-  "phaseBVerdict": "LIVE_TASK_RECONCILIATION_COMPLETE_NEW_TASK_ADMISSIBLE_NOT_MATERIALIZED",
-  "phaseC": {
-    "id": "C",
+  "historicalLiveTaskReconciliationVerdict": "LIVE_TASK_RECONCILIATION_COMPLETE_NEW_TASK_ADMISSIBLE_NOT_MATERIALIZED",
+  "historicalLiveSafetyObservation": {
+    "id": "HISTORICAL-LIVE-C",
     "name": "Safety Prerequisites",
     "items": {
       "GWC-PRE-C1": {
@@ -554,88 +697,22 @@
       "notExecuted": "Executer un SPLIT est une materialisation de tache, donc soumis a la Phase B qui est BLOCKED. Aucune PR fusionnee, rebasee, fermee ni modifiee.",
       "prsMutated": 0
     },
-    "executionRole": "FUTURE_INTEGRATION_PLAN_ONLY",
+    "executionRole": "PROVENANCE_ONLY",
     "currentExecutionAuthority": false,
     "noteForPrecodeFinalization": "C safety prerequisites remain designed future integration work. They are not current PRECODE execution and must not mutate runtime/main/S1."
   },
-  "phaseCVerdict": "CANDIDATE_STACK_RECONCILED_DISPOSITIONS_RECORDED_NO_MERGE",
-  "findingsResolved": [
-    {
-      "finding": "AF-35",
-      "owner": "GWC-5",
-      "resolvedAt": "2026-09-18T17:08:00Z",
-      "resolution": "Contradiction resolue a la source par l agent proprietaire: TASK-20260915-001 est DONE, blockers vides, session fermee apres acquittement du stateVersion 246. La file et Live State concordent.",
-      "resolvedBy": "OWNING_AGENT_NOT_THIS_SESSION"
-    }
-  ],
-  "currentExecution": {
-    "mode": "PRECODE_FINALIZATION_ONLY",
-    "branch": "claude/ecstatic-edison-v1dyt1",
-    "runtimeIntegrationAllowed": false,
-    "mainMutationAllowed": false,
-    "s1MutationAllowed": false,
-    "governedTaskMaterializationAllowed": false,
-    "currentPhase": "A14",
-    "currentMacroTask": "T195",
-    "currentWork": "ALIGN_MEMORY_SUIVI_DECISIONS_AND_FINAL_PRECODE_CANONICALIZATION",
-    "status": "IN_PROGRESS",
-    "exit": "FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Reconcile the canonical memory, README, SUIVI, CHANGELOG and DECISIONS against the complete PRECODE catalog and exact online head; then run deterministic verification and exact-head CI. Do not start Phase B/C/D/E/F runtime integration."
-  },
-  "programCatalog": {
-    "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
-    "machineProjection": ".mcp/gwc-precode-action-flow.json",
-    "macroTaskRange": "T00-T204",
-    "macroTaskCount": 205,
-    "minimumElementaryActionsFullProgram": 2791,
-    "precodeArchitectureRange": "T00-T195",
-    "minimumElementaryActionsPrecodeArchitecture": 2782,
-    "futureIntegrationPlanRange": "T196-T204",
-    "futureIntegrationTaskCount": 9,
-    "rule": "All 205 macro tasks remain catalogued. During PRECODE finalization only T00-T195/A1-A14/PRECODE_GATE may be executed as branch-local PRECODE work; T196-T204 and Phases B-F remain future integration definitions until FINAL_PRECODE_VERSION_ACCEPTED."
-  },
-  "precodeFinalization": {
-    "status": "IN_PROGRESS",
-    "lastValidatedArchitectureGate": "GWC_ARCHITECTURE_GATE_PASS",
-    "currentMacroTask": "T195",
-    "currentPhase": "A14",
-    "workItemKind": "PRECODE_CANONICALIZATION",
-    "firstIncompleteOrReopenedWorkItem": "T195",
-    "reason": "Canonical memory had drifted into runtime/Task Queue execution semantics; it is being restored to the PRECODE-only program boundary.",
+  "historicalLiveSafetyObservationVerdict": "CANDIDATE_STACK_RECONCILED_DISPOSITIONS_RECORDED_NO_MERGE",
+  "candidateProgram": {
+    "status": "READY_TO_START",
+    "architectureComplete": true,
+    "candidateImplementationStarted": false,
     "completedArchitecturePhases": "A1-A14 PASS_WITH_EVIDENCE",
-    "runtimeBoundary": "FROZEN",
-    "nextAction": "Reconcile the canonical memory, README, SUIVI, CHANGELOG and DECISIONS against the complete PRECODE catalog and exact online head; then run deterministic verification and exact-head CI. Do not start Phase B/C/D/E/F runtime integration."
+    "firstCandidateWorkItem": "GWC-PRE-B-01",
+    "blueprintBuildCount": 18,
+    "finalCandidateVerdict": "PENDING",
+    "liveIntegrationBoundary": "FROZEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED"
   },
-  "updatedForPrecodeBoundaryAt": "2026-09-18T18:04:00Z",
-  "updatedForPrecodeBoundaryHead": "111babba7a942d33a6d5381c2e371edb73cf3ff1",
-  "precodeEvidenceAcquisition": {
-    "bridgeOAuthRequired": false,
-    "serverBridgeRequired": false,
-    "preferredSources": [
-      "VERSIONED_AUDITS",
-      "CANONICAL_MEMORY_SNAPSHOTS",
-      "GITHUB_LIVE",
-      "GITHUB_ACTIONS_ARTIFACTS"
-    ],
-    "knownAuditRoots": [
-      "docs/audits/",
-      "docs/history/",
-      "docs/gwc/canonical-memory/"
-    ],
-    "liveServerFallback": {
-      "mode": "READONLY_EVIDENCE_MIRROR",
-      "status": "DESIGNED_NOT_IMPLEMENTED",
-      "transport": "GitHub Actions artifact",
-      "authentication": "dedicated least-privilege server read-only identity / forced-command; never MCP OAuth",
-      "mutationsForbidden": true,
-      "runtimeSessionForbidden": true,
-      "taskClaimForbidden": true,
-      "lockForbidden": true,
-      "secretsForbidden": true,
-      "staleOrUnavailableResult": "UNKNOWN"
-    },
-    "rule": "PRECODE progress must not depend on OAuth/bridge availability. Runtime/server evidence is consumed as versioned or GitHub-published read-only evidence with explicit freshness."
-  },
-  "updatedForEvidencePolicyAt": "2026-09-18T18:15:00Z",
-  "updatedForEvidencePolicyHead": "e6575971311d63cdc284d9e5333c9d8355c307e9"
+  "finalCandidateVerdict": "PENDING",
+  "updatedForCandidateInterpretationAt": "2026-09-18T18:37:00Z",
+  "updatedForCandidateInterpretationHead": "bd09af56ff4029f5509a58e1177ed75768bba5e7"
 }
