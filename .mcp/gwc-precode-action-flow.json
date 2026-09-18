@@ -9,7 +9,7 @@
   "runtimeAuthority": false,
   "governedTaskQueueAuthority": false,
   "runtimeTasksCreated": 0,
-  "actionFlowDigestSha256": "4443e05bb5ddcd42a0d9c32d4e38a80fad7306c16c36460cbb860dc511394727",
+  "actionFlowDigestSha256": "d72e775c719bc9f8445aaec5b78f0f01f02d7cd8f758347f4e9e00ba455477a6",
   "absoluteRule": "ARCHITECTURE_GATE_BEFORE_CANDIDATE_CODE; FINAL_PRECODE_VERSION_ACCEPTED_BEFORE_LIVE_INTEGRATION",
   "statusVocabulary": [
     "PENDING",
@@ -470,18 +470,47 @@
         "run": 1048,
         "head": "138d392942591f8ba0270757bc5df859fdd4b7cb"
       }
+    },
+    {
+      "id": "GWC-PRE-B-FND-03",
+      "name": "GitHub-first PRECODE connection bootstrap",
+      "status": "PASS_WITH_EVIDENCE",
+      "integrationSlot": "Existing candidate continuity + canonical-memory/status surfaces",
+      "transportModel": "DIRECT_GITHUB_PRECODE",
+      "runtimeMcpRequired": false,
+      "identityRule": "Observe only IDs actually exposed; unavailable provider conversation IDs remain null/UNAVAILABLE",
+      "intentRouting": [
+        "NEW_INFORMATION_INTAKE",
+        "CONTINUE_PRECODE_WORK",
+        "NEW_INFORMATION_THEN_CONTINUE_PRECODE",
+        "ASK_USER"
+      ],
+      "red": {
+        "run": 1061,
+        "head": "a992bc0adf8e841ee38463bce75667650c13689d"
+      },
+      "compatibility": {
+        "run": 1062,
+        "head": "44e19282564578a748ae3563c726741816d304ea"
+      },
+      "green": {
+        "run": 1063,
+        "head": "2264b3da4dc672ae1e271519957203c62b7ae03d"
+      }
     }
   ],
   "candidateConnectionProtocol": [
+    "CONNECT_DIRECTLY_TO_GITHUB_BRANCH",
+    "NO_MCP_RUNTIME_DEPENDENCY",
     "REOBSERVE_EXACT_CLAUDE_BRANCH_HEAD",
-    "READ_CANONICAL_MEMORY_AND_CURRENT_CHECKPOINT",
-    "PROJECT_NEW_CONVERSATION_INFORMATION_TO_BOUNDED_INSIGHTS",
-    "RECONCILE_INSIGHTS_WITH_CANONICAL_MEMORY_AND_CANDIDATE_WORK",
-    "HOLD_CONTRADICTIONS_FOR_REVIEW",
-    "CONTINUE_EXISTING_CANDIDATE_CLAIM_IF_PRESENT",
-    "ELSE_ASSIGN_NEXT_DEPENDENCY_AND_COLLISION_SAFE_WORK_ITEM",
-    "EXECUTE_WITH_RED_GREEN_REGRESSION",
-    "CHECKPOINT_AND_UPDATE_CANONICAL_MEMORY_NEXT_ACTION"
+    "READ_CANONICAL_MEMORY_STATUS_CHECKPOINT_HANDOFF",
+    "OBSERVE_AVAILABLE_CONNECTION_IDENTIFIERS_ONLY",
+    "RESOLVE_OR_CREATE_BRANCH_LOCAL_CANDIDATE_SESSION",
+    "DETECT_OR_REQUEST_PRECODE_MODE",
+    "RECONCILE_NEW_INFORMATION_WHEN_PRESENT",
+    "RESUME_OR_DISPATCH_BRANCH_LOCAL_WORK",
+    "HEAD_MOVED_RECONCILE_AND_REDISPATCH",
+    "RED_GREEN_REGRESSION_EVIDENCE_CHECKPOINT"
   ],
   "conversationIntakeRule": "AI performs semantic understanding; only bounded structured insights/digests/evidence refs are reconciled. Raw transcript is not persisted by the candidate continuity contract."
 }
