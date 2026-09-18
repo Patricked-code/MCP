@@ -6,7 +6,7 @@
   "actionFlow": {
     "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "projection": ".mcp/gwc-precode-action-flow.json",
-    "digestSha256": "4443e05bb5ddcd42a0d9c32d4e38a80fad7306c16c36460cbb860dc511394727",
+    "digestSha256": "d72e775c719bc9f8445aaec5b78f0f01f02d7cd8f758347f4e9e00ba455477a6",
     "role": "candidate_build_execution_companion_not_runtime_authority",
     "mustBeRevalidatedBeforeCandidateCode": true
   },
@@ -76,6 +76,22 @@
     "evidence": {
       "red": "CI #1046 @ 9f6e14df2939e5e4b062e2861dfd5af507d6b157",
       "green": "CI #1048 @ 138d392942591f8ba0270757bc5df859fdd4b7cb"
+    }
+  },
+  "githubFirstCandidateBootstrap": {
+    "status": "PASS_WITH_EVIDENCE",
+    "transportModel": "DIRECT_GITHUB_PRECODE",
+    "runtimeMcpRequired": false,
+    "runtimeGovernedSessionRequired": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "identityRule": "Only observed IDs are retained; unavailable provider conversation IDs remain null/UNAVAILABLE and are never synthesized as provider IDs.",
+    "ambiguousIntent": "ASK_USER_WITH_THREE_CANONICAL_CHOICES",
+    "legacyCompatibility": "Candidate sessions lacking connectionInstanceRef remain readable and are enriched on resume.",
+    "evidence": {
+      "red": "CI #1061 @ a992bc0adf8e841ee38463bce75667650c13689d",
+      "compatibility": "CI #1062 @ 44e19282564578a748ae3563c726741816d304ea",
+      "green": "CI #1063 @ 2264b3da4dc672ae1e271519957203c62b7ae03d"
     }
   }
 }
