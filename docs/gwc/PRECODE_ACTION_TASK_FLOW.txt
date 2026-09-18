@@ -1,11 +1,11 @@
 GWC PRE-CODE ACTION TASK FLOW — CANONICAL EXECUTION COMPANION
-Revision: R3-PRECODE-ACTION-FLOW
+Revision: R4-CANDIDATE-ACTION-FLOW
 Repository: Patricked-code/MCP
 Target work branch: claude/ecstatic-edison-v1dyt1
 Parent architecture plan: docs/gwc/PRECODE_EXECUTION_PLAN.txt
 
 PURPOSE
-Turn the approved canonical GWC execution plan into an explicit chronological queue of architecture/pre-code work items that an agent can execute, evidence, checkpoint and close before any GWC runtime implementation begins.
+Turn the approved canonical GWC plan into an explicit chronological queue of architecture and branch-local candidate work items that any authorized agent can resume, execute, evidence, checkpoint and hand off before live integration begins.
 
 AUTHORITY BOUNDARY
 - This file is an execution companion to PRECODE_EXECUTION_PLAN.txt.
@@ -15,10 +15,10 @@ AUTHORITY BOUNDARY
 - It creates no GovernedTaskRecord, claim, lock, branch, permission, deployment or runtime mutation.
 - Live authorities must be re-observed before any state-dependent claim.
 - Existing completed evidence may satisfy a work item only after it is revalidated against the current exact branch head and the owning authority.
-- A blueprint may later reconcile to 0, 1 or N runtime Governed Tasks. Only NEW_TASK after live Task Queue reconciliation may create one.
+- Candidate work items never become runtime Governed Tasks automatically. Runtime Task reconciliation, if still required, occurs only in the later real-integration cycle after FINAL_PRECODE_VERSION_ACCEPTED.
 
 ABSOLUTE RULE
-NO GWC RUNTIME CODE MAY START UNTIL EVERY PRE-CODE GATE BELOW IS PASS_WITH_EVIDENCE.
+NO CANDIDATE CODE MAY START BEFORE GWC_ARCHITECTURE_GATE_PASS; AFTER THAT GATE, BRANCH-LOCAL CANDIDATE CODE IS ALLOWED AND EXPECTED. NO LIVE INTEGRATION MAY START BEFORE FINAL_PRECODE_VERSION_ACCEPTED.
 A documentation claim of COMPLETE is not sufficient by itself. Completion requires evidence references that can be re-read from the current branch/live authority.
 
 STATUS VOCABULARY
@@ -647,7 +647,38 @@ Require:
 0 code delta without owner
 0 duplicate authority
 0 runtime Task creation
-0 dependency on conversational memory
+0 dependency on unstructured conversational memory
+
+GWC-PRE-B-FND-01 — Multi-agent candidate continuity foundation
+Integration slot: existing Governed Context / candidate PRECODE coordination, never a second Task Queue.
+Behavior:
+- on connection/reprise, reobserve the exact Claude-branch head and canonical memory;
+- resume the same agent/session work item first when an ACTIVE branch-local claim exists;
+- otherwise choose the highest-priority/lowest-sequence READY work item whose dependencies are DONE and whose collision domains are not occupied by another active candidate claim;
+- ambiguous multiple active claims for one candidate session fail closed;
+- no runtime GovernedTaskRecord, runtime claim or runtime lock is created.
+Implementation evidence:
+- src/governedContext/candidateContinuity.ts
+- tests/candidateContinuity.test.ts
+- RED CI #1046 at 9f6e14df2939e5e4b062e2861dfd5af507d6b157
+- GREEN CI #1048 at 138d392942591f8ba0270757bc5df859fdd4b7cb
+Status: PASS_WITH_EVIDENCE
+
+GWC-PRE-B-FND-02 — Conversation information intake and reconciliation foundation
+Integration slot: existing Governed Context + canonical-memory/candidate-backlog projections; no parallel memory authority.
+Behavior:
+- the connected AI understands the new conversation and projects only bounded structured insights;
+- raw transcripts are not persisted by this contract;
+- deterministic reconciliation classifies DUPLICATE / COMPLEMENT / DECISION / FINDING / TASK / CONTRADICTION / MEMORY;
+- complementary/actionable information may enrich canonical memory or an existing candidate work item;
+- genuinely new actionable information may propose a new candidate work item;
+- contradictions/supersessions against active canonical information fail closed to HOLD_FOR_REVIEW;
+- no main/S1/prod/runtime mutation follows from conversation intake.
+Implementation evidence:
+- src/governedContext/candidateContinuity.ts
+- tests/candidateContinuity.test.ts
+- RED CI #1046 / GREEN CI #1048
+Status: PASS_WITH_EVIDENCE
 
 B EXIT:
 CANDIDATE_BACKLOG_COMPLETE
