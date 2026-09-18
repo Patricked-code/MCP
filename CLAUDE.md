@@ -153,7 +153,9 @@ Règles minimales obligatoires :
 - tout checkpoint/handoff porte les preuves, head exact, statut, findings, dépendances et `NEXT_ACTION` ;
 - les PRECODE scope/session traces ne sont jamais des `TASK-*`, Governed Tasks, runtime locks ou nouvelles autorités ;
 - toutes les écritures durables de ce programme ciblent la branche GitHub en ligne `claude/ecstatic-edison-v1dyt1` ; aucune branche de développement parallèle n’est créée ; un workspace local éventuel est seulement une surface d’exécution éphémère synchronisée sur le head en ligne et ne constitue jamais une autorité ;
-- le runtime reste gelé jusqu’à `GWC-PRE-GATE-01 = PASS_WITH_EVIDENCE`.
+- le runtime reste gelé pendant toute la phase de finalisation PRECODE sur cette branche, même si `GWC-PRE-GATE-01 = PASS_WITH_EVIDENCE` ;
+- le passage du PRECODE vers l'intégration réelle exige une clôture explicite `FINAL_PRECODE_VERSION_ACCEPTED` puis un nouveau cycle gouverné séparé ;
+- pendant la finalisation PRECODE, les phases B/C/D/E/F et T196→T204 peuvent être décrites, auditées et ordonnées comme plan futur, mais ne doivent pas être matérialisées en Governed Tasks ni exécutées contre le runtime réel.
 
 Dans ce périmètre précis, toute ancienne règle attribuant Claude comme writer principal permanent ou ChatGPT comme reviewer-only est remplacée par l’ownership temporaire par scope/session décrit ci-dessus.
 
