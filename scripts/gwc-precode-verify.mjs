@@ -41,15 +41,25 @@ const [plan, actionFlow, actionProjection, gate, status, contracts, blueprints, 
 
 const errors = [];
 fail(errors, gate.schemaVersion === 1, 'precode gate schemaVersion doit valoir 1');
-fail(errors, gate.revision === 'R3-PRECODE', 'precode gate revision doit valoir R3-PRECODE');
+fail(errors, gate.revision === 'R4-CANDIDATE', 'precode gate revision doit valoir R4-CANDIDATE');
 fail(errors, gate.source === 'docs/gwc/PRECODE_EXECUTION_PLAN.txt', 'source du precode gate inattendue');
-fail(errors, gate.runtimeImplementation === 'NOT_STARTED', 'runtimeImplementation doit rester NOT_STARTED');
-fail(errors, gate.taskQueueMaterialization === 'NOT_STARTED_REQUIRES_LIVE_RECONCILIATION',
-  'Task Queue : la réconciliation live doit rester obligatoire');
-fail(errors, gate.mainCanonicalization === 'PENDING_PR95_GOVERNED_MERGE',
-  'la canonicalisation main ne doit pas être pré-déclarée');
-fail(errors, gate.blueprintMaterializationRule.includes('ONLY_NEW_TASK'),
-  'la règle Blueprint != Task / NEW_TASK manque');
+fail(errors, gate.candidateImplementation === 'AUTHORIZED_AFTER_ARCHITECTURE_GATE',
+  'candidateImplementation doit être autorisée après le gate d architecture');
+fail(errors, ['NOT_STARTED', 'IN_PROGRESS', 'PASS_WITH_EVIDENCE'].includes(gate.candidateImplementationStatus),
+  'candidateImplementationStatus invalide');
+fail(errors, gate.liveRuntimeIntegration === 'FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED',
+  'l intégration runtime live doit rester interdite avant le gate final candidate');
+fail(errors, gate.taskQueueMaterialization === 'NOT_USED_FOR_CANDIDATE_BUILD',
+  'la Task Queue runtime ne doit pas piloter le candidate build');
+fail(errors, gate.mainIntegration === 'FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED',
+  'l intégration main doit rester interdite avant le gate final candidate');
+fail(errors, gate.s1ProductionMutation === 'FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED',
+  'S1/production doivent rester interdits avant le gate final candidate');
+fail(errors, gate.blueprintMaterializationRule.includes('BLUEPRINT_TO_BRANCH_CANDIDATE_WORK_ALLOWED')
+  && gate.blueprintMaterializationRule.includes('BLUEPRINT_NE_GOVERNED_TASK'),
+  'la distinction blueprint -> candidate work != GovernedTask manque');
+fail(errors, gate?.finalCandidateGate?.requiredVerdict === 'FINAL_PRECODE_VERSION_ACCEPTED',
+  'le verdict final candidate attendu manque');
 
 for (const [field, required] of [
   ['architecturePhases', 14], ['contractDesignSheets', 73], ['contractExecutionProcedures', 73],
@@ -115,11 +125,11 @@ fail(errors, gate?.actionFlow?.source === 'docs/gwc/PRECODE_ACTION_TASK_FLOW.txt
   'source du flux d actions pre-code absente du gate');
 fail(errors, gate?.actionFlow?.projection === '.mcp/gwc-precode-action-flow.json',
   'projection du flux d actions pre-code absente du gate');
-fail(errors, gate?.actionFlow?.mustBeRevalidatedBeforeRuntimeCode === true,
-  'le flux d actions doit être revalidé avant code runtime');
+fail(errors, gate?.actionFlow?.mustBeRevalidatedBeforeCandidateCode === true,
+  'le flux d actions doit être revalidé avant code candidate');
 
 fail(errors, actionProjection.schemaVersion === 1, 'action-flow schemaVersion doit valoir 1');
-fail(errors, actionProjection.revision === 'R3-PRECODE-ACTION-FLOW',
+fail(errors, actionProjection.revision === 'R4-CANDIDATE-ACTION-FLOW',
   'revision action-flow inattendue');
 fail(errors, actionProjection.projectionOnly === true && actionProjection.runtimeAuthority === false,
   'action-flow doit rester une projection non autoritative');
@@ -127,8 +137,19 @@ fail(errors, actionProjection.governedTaskQueueAuthority === false,
   'action-flow ne doit jamais devenir la Governed Task Queue');
 fail(errors, actionProjection.runtimeTasksCreated === 0,
   'action-flow ne doit créer aucune Task runtime');
-fail(errors, actionProjection.absoluteRule === 'NO_GWC_RUNTIME_CODE_BEFORE_GWC_PRE_GATE_01_PASS_WITH_EVIDENCE',
-  'règle absolue du flux d actions absente');
+fail(errors, actionProjection.absoluteRule === 'ARCHITECTURE_GATE_BEFORE_CANDIDATE_CODE; FINAL_PRECODE_VERSION_ACCEPTED_BEFORE_LIVE_INTEGRATION',
+  'règle absolue architecture/candidate/live integration absente');
+fail(errors, actionProjection?.candidateImplementation?.codeAllowed === true
+  && actionProjection?.candidateImplementation?.codeExpected === true,
+  'le code candidate doit être explicitement autorisé et attendu sur la branche Claude');
+fail(errors, actionProjection?.candidateImplementation?.runtimeTaskQueueUsed === false
+  && actionProjection?.candidateImplementation?.mainMutationAllowed === false
+  && actionProjection?.candidateImplementation?.s1MutationAllowed === false
+  && actionProjection?.candidateImplementation?.productionDeploymentAllowed === false,
+  'la frontière candidate vs live intégration est incohérente');
+fail(errors, Array.isArray(actionProjection.candidateBlueprintWorkItems)
+  && actionProjection.candidateBlueprintWorkItems.length === 18,
+  '18 work items candidate blueprint attendus');
 
 const actionDigest = createHash('sha256').update(actionFlow).digest('hex');
 fail(errors, actionProjection.actionFlowDigestSha256 === actionDigest,
@@ -153,12 +174,14 @@ for (const marker of [
   'GWC_ARCHITECTURE_CROSS_AUDIT_PASS',
   'GWC_ARCHITECTURE_CANONICAL',
   'GWC-PRE-GATE-01 — Architecture gate',
-  'PHASE B — LIVE TASK RECONCILIATION',
-  'PHASE C — SAFETY PREREQUISITES',
-  'PHASE D — GOVERNED IMPLEMENTATION CYCLE',
-  'PHASE E — BLUEPRINT MATERIALIZATION ORDER',
-  'PHASE F — UNIVERSAL ACCEPTANCE',
-  'UNIVERSAL_GOVERNED_WORKFLOW_ACCEPTED'
+  'PHASE B — COMPLETE CANDIDATE TASK SYNTHESIS',
+  'PHASE C — CANDIDATE SAFETY / FOUNDATION COMPLETION',
+  'PHASE D — BRANCH-LOCAL CANDIDATE IMPLEMENTATION CYCLE',
+  'PHASE E — BLUEPRINT CANDIDATE BUILD ORDER',
+  'PHASE F — CANDIDATE UNIVERSAL ACCEPTANCE',
+  'FINAL_PRECODE_VERSION_ACCEPTED',
+  'EVOLVED_CANDIDATE_READY_FOR_INTEGRATION',
+  'REAL PROJECT INTEGRATION — AFTER FINAL CANDIDATE GATE ONLY'
 ]) {
   fail(errors, actionFlow.includes(marker), `marqueur action-flow absent : ${marker}`);
 }
@@ -231,4 +254,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log('GWC PRE-CODE VERIFY: PASS | phases=14 | contractDesigns=73 | contractProcedures=73 | actionMappings=73 | actionContractClosures=73 | actionBlueprintClosures=18 | evolutionDesigns=18 | blueprintProcedures=18 | registries=13 | audits=4 | e2e=22 | runtime=NOT_STARTED');
+console.log('GWC PRE-CODE VERIFY: PASS | architecturePhases=14 | contractDesigns=73 | contractProcedures=73 | actionMappings=73 | actionContractClosures=73 | actionBlueprintClosures=18 | candidateBlueprintWorkItems=18 | evolutionDesigns=18 | blueprintProcedures=18 | registries=13 | audits=4 | e2e=22 | candidateCode=AUTHORIZED | liveIntegration=FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED');
