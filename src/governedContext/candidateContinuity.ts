@@ -640,3 +640,506 @@ export function bootstrapCandidateConnection(
     requiresUserChoice: intent.mode === 'ASK_USER'
   };
 }
+
+
+const Sha256HexSchema = z.string().regex(/^[0-9a-f]{64}$/);
+const CandidateIntakeSequenceSchema = z.number().int().positive();
+
+export const CandidateIntakeContinuityCursorSchema = z.object({
+  latestIntakeSequence: z.number().int().nonnegative(),
+  reconciledThroughSequence: z.number().int().nonnegative(),
+  canonicalRevision: z.number().int().nonnegative(),
+  backlogRevision: z.number().int().nonnegative(),
+  lastReconciliationDigest: Sha256HexSchema.nullable(),
+  pendingIntakeIds: z.array(BoundedId).max(10_000)
+}).strict().superRefine((value, ctx) => {
+  if (value.reconciledThroughSequence > value.latestIntakeSequence) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['reconciledThroughSequence'],
+      message: 'RECONCILED_SEQUENCE_CANNOT_EXCEED_LATEST_SEQUENCE'
+    });
+  }
+});
+export type CandidateIntakeContinuityCursor = z.infer<typeof CandidateIntakeContinuityCursorSchema>;
+
+export const CandidateIntakeLifecycleStateSchema = z.enum([
+  'RECEIVED',
+  'STRUCTURED',
+  'EVALUATED',
+  'RECONCILED',
+  'BOUND',
+  'APPLIED',
+  'ATTESTED',
+  'HOLD_FOR_REVIEW',
+  'ARCHIVED_NO_EFFECT',
+  'REJECTED'
+]);
+export type CandidateIntakeLifecycleState = z.infer<typeof CandidateIntakeLifecycleStateSchema>;
+
+export const CandidateRegisteredIntakeSchema = z.object({
+  intakeId: BoundedId,
+  sequence: CandidateIntakeSequenceSchema,
+  status: z.literal('RECEIVED'),
+  sourceType: z.enum(['chatgpt', 'claude', 'other']),
+  sourceId: BoundedId,
+  sourceDigest: Sha256HexSchema,
+  observedAt: z.string().datetime({ offset: true })
+}).strict();
+export type CandidateRegisteredIntake = z.infer<typeof CandidateRegisteredIntakeSchema>;
+
+export const CandidateIntakeRegistrationInputSchema = z.object({
+  cursor: CandidateIntakeContinuityCursorSchema,
+  sourceType: z.enum(['chatgpt', 'claude', 'other']),
+  sourceId: BoundedId,
+  sourceDigest: Sha256HexSchema,
+  observedAt: z.string().datetime({ offset: true })
+}).strict();
+export type CandidateIntakeRegistrationInput = z.infer<typeof CandidateIntakeRegistrationInputSchema>;
+
+function intakeIdForSequence(sequence: number): string {
+  return `NEW_INFORMATION_INTAKE-${String(sequence).padStart(3, '0')}`;
+}
+
+export function registerCandidateIntake(rawInput: CandidateIntakeRegistrationInput): {
+  intake: CandidateRegisteredIntake;
+  cursor: CandidateIntakeContinuityCursor;
+} {
+  const input = CandidateIntakeRegistrationInputSchema.parse(rawInput);
+  const sequence = input.cursor.latestIntakeSequence + 1;
+  const intakeId = intakeIdForSequence(sequence);
+  const intake = CandidateRegisteredIntakeSchema.parse({
+    intakeId,
+    sequence,
+    status: 'RECEIVED',
+    sourceType: input.sourceType,
+    sourceId: input.sourceId,
+    sourceDigest: input.sourceDigest,
+    observedAt: input.observedAt
+  });
+
+  return {
+    intake,
+    cursor: CandidateIntakeContinuityCursorSchema.parse({
+      ...input.cursor,
+      latestIntakeSequence: sequence,
+      pendingIntakeIds: unique([...input.cursor.pendingIntakeIds, intakeId])
+    })
+  };
+}
+
+const CandidateIntakeRelevanceSchema = z.enum(['RELEVANT', 'PARTIAL', 'OUT_OF_SCOPE']);
+const CandidateIntakeEvidenceSchema = z.enum(['VERIFIED', 'PLAUSIBLE', 'UNVERIFIED']);
+const CandidateIntakeObjectiveAlignmentSchema = z.enum(['ALIGNED', 'PARTIAL', 'MISALIGNED']);
+const CandidateIntakeRelationSchema = z.enum([
+  'DUPLICATE',
+  'COMPLEMENT',
+  'EXTENSION',
+  'CONTRADICTION',
+  'SUPERSESSION',
+  'NEW'
+]);
+const CandidateIntakeArchitecturalFitSchema = z.enum(['FITS', 'FITS_WITH_ADAPTATION', 'CONFLICTS']);
+const CandidateIntakeAuthorityFitSchema = z.enum([
+  'PRESERVES_EXISTING_AUTHORITIES',
+  'REQUIRES_RECONCILIATION',
+  'CREATES_PARALLEL_AUTHORITY'
+]);
+const CandidateIntakeNonRegressionSchema = z.enum(['SAFE', 'REQUIRES_COMPATIBILITY_WORK', 'BREAKING']);
+const CandidateIntakeImpactSchema = z.enum(['NONE', 'LOCAL', 'MULTI_CONTRACT', 'PROGRAM_WIDE']);
+const CandidateExistingFirstPathSchema = z.enum([
+  'REUSE',
+  'WRAP',
+  'GENERALIZE',
+  'EXTEND',
+  'NEW',
+  'NONE'
+]);
+
+export const CandidateIntakeGateFactsSchema = z.object({
+  understood: z.boolean(),
+  relevance: CandidateIntakeRelevanceSchema,
+  evidence: CandidateIntakeEvidenceSchema,
+  evidenceRequired: z.boolean(),
+  objectiveAlignment: CandidateIntakeObjectiveAlignmentSchema,
+  relationToExisting: CandidateIntakeRelationSchema,
+  architecturalFit: CandidateIntakeArchitecturalFitSchema,
+  authorityFit: CandidateIntakeAuthorityFitSchema,
+  nonRegression: CandidateIntakeNonRegressionSchema,
+  impact: CandidateIntakeImpactSchema,
+  existingFirstPath: CandidateExistingFirstPathSchema
+}).strict();
+export type CandidateIntakeGateFacts = z.infer<typeof CandidateIntakeGateFactsSchema>;
+
+export const CandidateIntakeGateInputSchema = CandidateIntakeGateFactsSchema.extend({
+  intakeId: BoundedId,
+  sequence: CandidateIntakeSequenceSchema,
+  affectedScopes: z.array(BoundedId).max(200),
+  affectedContracts: z.array(BoundedId).max(200),
+  affectedBlueprints: z.array(BoundedId).max(200),
+  affectedWorkItems: z.array(BoundedId).max(500),
+  affectedAuthorities: z.array(BoundedId).max(200)
+}).strict();
+export type CandidateIntakeGateInput = z.infer<typeof CandidateIntakeGateInputSchema>;
+
+export type CandidateIntakeIntegrationVerdict =
+  | 'ACCEPT'
+  | 'ACCEPT_WITH_ADAPTATION'
+  | 'COMPLEMENT'
+  | 'DUPLICATE'
+  | 'DEFER'
+  | 'HOLD_FOR_REVIEW'
+  | 'OUT_OF_SCOPE'
+  | 'REJECT';
+
+export type CandidateIntakeGateResult = CandidateIntakeGateInput & {
+  verdict: CandidateIntakeIntegrationVerdict;
+  shouldIntegrate: boolean;
+  reasonCodes: string[];
+};
+
+export function evaluateCandidateIntakeGate(rawInput: CandidateIntakeGateInput): CandidateIntakeGateResult {
+  const input = CandidateIntakeGateInputSchema.parse(rawInput);
+  const result = (
+    verdict: CandidateIntakeIntegrationVerdict,
+    shouldIntegrate: boolean,
+    reasonCodes: string[]
+  ): CandidateIntakeGateResult => ({
+    ...input,
+    verdict,
+    shouldIntegrate,
+    reasonCodes
+  });
+
+  if (!input.understood) {
+    return result('HOLD_FOR_REVIEW', false, ['INTAKE_NOT_UNDERSTOOD']);
+  }
+
+  if (input.relevance === 'OUT_OF_SCOPE' || input.objectiveAlignment === 'MISALIGNED') {
+    return result('OUT_OF_SCOPE', false, [
+      input.relevance === 'OUT_OF_SCOPE' ? 'PROGRAM_OUT_OF_SCOPE' : 'OBJECTIVE_MISALIGNED'
+    ]);
+  }
+
+  if (input.relationToExisting === 'DUPLICATE') {
+    return result('DUPLICATE', false, ['EQUIVALENT_CAPABILITY_ALREADY_EXISTS']);
+  }
+
+  if (input.authorityFit === 'CREATES_PARALLEL_AUTHORITY') {
+    return result('REJECT', false, ['PARALLEL_AUTHORITY']);
+  }
+
+  if (input.evidenceRequired && input.evidence === 'UNVERIFIED') {
+    return result('DEFER', false, ['EVIDENCE_REQUIRED_UNVERIFIED']);
+  }
+
+  if (
+    input.relationToExisting === 'CONTRADICTION'
+    || input.relationToExisting === 'SUPERSESSION'
+  ) {
+    return result('HOLD_FOR_REVIEW', false, ['CANONICAL_CONFLICT_REQUIRES_RECONCILIATION']);
+  }
+
+  if (input.architecturalFit === 'CONFLICTS') {
+    return result('HOLD_FOR_REVIEW', false, ['ARCHITECTURAL_CONFLICT']);
+  }
+
+  if (input.nonRegression === 'BREAKING') {
+    return result('HOLD_FOR_REVIEW', false, ['BREAKING_CHANGE_REQUIRES_REVIEW']);
+  }
+
+  const adaptationRequired = (
+    input.relevance === 'PARTIAL'
+    || input.objectiveAlignment === 'PARTIAL'
+    || input.architecturalFit === 'FITS_WITH_ADAPTATION'
+    || input.authorityFit === 'REQUIRES_RECONCILIATION'
+    || input.nonRegression === 'REQUIRES_COMPATIBILITY_WORK'
+  );
+
+  if (adaptationRequired) {
+    return result('ACCEPT_WITH_ADAPTATION', true, ['EXISTING_FIRST_ADAPTATION_REQUIRED']);
+  }
+
+  if (input.relationToExisting === 'COMPLEMENT') {
+    return result('COMPLEMENT', true, ['COMPLEMENTS_EXISTING_CANONICAL_STATE']);
+  }
+
+  return result('ACCEPT', true, ['COHERENCE_GATE_PASS']);
+}
+
+const CandidateCanonicalEffectSchema = z.enum(['NONE', 'ADD', 'ENRICH']);
+const CandidateBacklogEffectSchema = z.enum([
+  'NONE',
+  'ENRICH_EXISTING_WORK',
+  'PROPOSE_NEW_WORK',
+  'MARK_RECONCILE_REQUIRED'
+]);
+
+export const CandidateStructuredIntakeSchema = z.object({
+  intakeId: BoundedId,
+  sequence: CandidateIntakeSequenceSchema,
+  gate: CandidateIntakeGateFactsSchema,
+  affectedScopes: z.array(BoundedId).max(200),
+  affectedContracts: z.array(BoundedId).max(200),
+  affectedBlueprints: z.array(BoundedId).max(200),
+  affectedWorkItems: z.array(BoundedId).max(500),
+  affectedAuthorities: z.array(BoundedId).max(200),
+  canonicalEffect: CandidateCanonicalEffectSchema,
+  backlogEffect: CandidateBacklogEffectSchema
+}).strict();
+export type CandidateStructuredIntake = z.infer<typeof CandidateStructuredIntakeSchema>;
+
+export const CandidateIntakeBatchInputSchema = z.object({
+  cursor: CandidateIntakeContinuityCursorSchema,
+  intakes: z.array(CandidateStructuredIntakeSchema).max(1_000)
+}).strict();
+export type CandidateIntakeBatchInput = z.infer<typeof CandidateIntakeBatchInputSchema>;
+
+export type CandidateIntakeReconciliationReceipt = {
+  fromSequence: number;
+  throughSequence: number;
+  intakeIds: string[];
+  previousCanonicalRevision: number;
+  resultingCanonicalRevision: number;
+  previousBacklogRevision: number;
+  resultingBacklogRevision: number;
+  effects: {
+    duplicates: string[];
+    complements: string[];
+    accepted: string[];
+    acceptedWithAdaptation: string[];
+    deferred: string[];
+    heldForReview: string[];
+    outOfScope: string[];
+    rejected: string[];
+    tasksCreated: string[];
+    tasksEnriched: string[];
+    tasksReconcileRequired: string[];
+  };
+  digest: string;
+};
+
+export type CandidateIntakeBatchResult = {
+  status: 'RECONCILED' | 'BLOCKED_GAP' | 'NOOP';
+  expectedNextSequence: number;
+  cursor: CandidateIntakeContinuityCursor;
+  receipt: CandidateIntakeReconciliationReceipt | null;
+  evaluations: CandidateIntakeGateResult[];
+};
+
+function receiptDigest(receipt: Omit<CandidateIntakeReconciliationReceipt, 'digest'>): string {
+  return createHash('sha256').update(JSON.stringify(receipt)).digest('hex');
+}
+
+export function reconcileCandidateIntakeBatch(rawInput: CandidateIntakeBatchInput): CandidateIntakeBatchResult {
+  const input = CandidateIntakeBatchInputSchema.parse(rawInput);
+  const expectedNextSequence = input.cursor.reconciledThroughSequence + 1;
+  if (input.intakes.length === 0) {
+    return {
+      status: 'NOOP',
+      expectedNextSequence,
+      cursor: input.cursor,
+      receipt: null,
+      evaluations: []
+    };
+  }
+
+  const intakes = [...input.intakes].sort((left, right) => (
+    left.sequence - right.sequence || left.intakeId.localeCompare(right.intakeId)
+  ));
+
+  if (intakes[0]!.sequence !== expectedNextSequence) {
+    return {
+      status: 'BLOCKED_GAP',
+      expectedNextSequence,
+      cursor: input.cursor,
+      receipt: null,
+      evaluations: []
+    };
+  }
+
+  for (let index = 1; index < intakes.length; index += 1) {
+    if (intakes[index]!.sequence !== intakes[index - 1]!.sequence + 1) {
+      return {
+        status: 'BLOCKED_GAP',
+        expectedNextSequence,
+        cursor: input.cursor,
+        receipt: null,
+        evaluations: []
+      };
+    }
+  }
+
+  const evaluations = intakes.map((intake) => evaluateCandidateIntakeGate({
+    intakeId: intake.intakeId,
+    sequence: intake.sequence,
+    ...intake.gate,
+    affectedScopes: intake.affectedScopes,
+    affectedContracts: intake.affectedContracts,
+    affectedBlueprints: intake.affectedBlueprints,
+    affectedWorkItems: intake.affectedWorkItems,
+    affectedAuthorities: intake.affectedAuthorities
+  }));
+
+  const integrated = intakes.filter((intake, index) => evaluations[index]!.shouldIntegrate);
+  const canonicalChanged = integrated.some((intake) => intake.canonicalEffect !== 'NONE');
+  const backlogChanged = integrated.some((intake) => intake.backlogEffect !== 'NONE');
+  const evaluationById = new Map(evaluations.map((evaluation) => [evaluation.intakeId, evaluation]));
+
+  const effects = {
+    duplicates: evaluations.filter((e) => e.verdict === 'DUPLICATE').map((e) => e.intakeId),
+    complements: evaluations.filter((e) => e.verdict === 'COMPLEMENT').map((e) => e.intakeId),
+    accepted: evaluations.filter((e) => e.verdict === 'ACCEPT').map((e) => e.intakeId),
+    acceptedWithAdaptation: evaluations.filter((e) => e.verdict === 'ACCEPT_WITH_ADAPTATION').map((e) => e.intakeId),
+    deferred: evaluations.filter((e) => e.verdict === 'DEFER').map((e) => e.intakeId),
+    heldForReview: evaluations.filter((e) => e.verdict === 'HOLD_FOR_REVIEW').map((e) => e.intakeId),
+    outOfScope: evaluations.filter((e) => e.verdict === 'OUT_OF_SCOPE').map((e) => e.intakeId),
+    rejected: evaluations.filter((e) => e.verdict === 'REJECT').map((e) => e.intakeId),
+    tasksCreated: integrated
+      .filter((i) => i.backlogEffect === 'PROPOSE_NEW_WORK')
+      .map((i) => i.intakeId),
+    tasksEnriched: integrated
+      .filter((i) => i.backlogEffect === 'ENRICH_EXISTING_WORK')
+      .map((i) => i.intakeId),
+    tasksReconcileRequired: integrated
+      .filter((i) => i.backlogEffect === 'MARK_RECONCILE_REQUIRED')
+      .map((i) => i.intakeId)
+  };
+
+  // Keep an explicit read of the map in the deterministic projection so a later
+  // extension can bind per-intake effects without changing receipt semantics.
+  for (const intake of intakes) {
+    if (!evaluationById.has(intake.intakeId)) {
+      throw new Error('INTAKE_EVALUATION_MISSING');
+    }
+  }
+
+  const receiptWithoutDigest: Omit<CandidateIntakeReconciliationReceipt, 'digest'> = {
+    fromSequence: intakes[0]!.sequence,
+    throughSequence: intakes[intakes.length - 1]!.sequence,
+    intakeIds: intakes.map((intake) => intake.intakeId),
+    previousCanonicalRevision: input.cursor.canonicalRevision,
+    resultingCanonicalRevision: input.cursor.canonicalRevision + (canonicalChanged ? 1 : 0),
+    previousBacklogRevision: input.cursor.backlogRevision,
+    resultingBacklogRevision: input.cursor.backlogRevision + (backlogChanged ? 1 : 0),
+    effects
+  };
+  const digest = receiptDigest(receiptWithoutDigest);
+  const receipt: CandidateIntakeReconciliationReceipt = {
+    ...receiptWithoutDigest,
+    digest
+  };
+  const reconciledIds = new Set(receipt.intakeIds);
+
+  const cursor = CandidateIntakeContinuityCursorSchema.parse({
+    latestIntakeSequence: Math.max(
+      input.cursor.latestIntakeSequence,
+      receipt.throughSequence
+    ),
+    reconciledThroughSequence: receipt.throughSequence,
+    canonicalRevision: receipt.resultingCanonicalRevision,
+    backlogRevision: receipt.resultingBacklogRevision,
+    lastReconciliationDigest: digest,
+    pendingIntakeIds: input.cursor.pendingIntakeIds.filter((id) => !reconciledIds.has(id))
+  });
+
+  return {
+    status: 'RECONCILED',
+    expectedNextSequence: cursor.reconciledThroughSequence + 1,
+    cursor,
+    receipt,
+    evaluations
+  };
+}
+
+export const CandidateKnowledgeImpactSchema = z.object({
+  intakeId: BoundedId,
+  sequence: CandidateIntakeSequenceSchema,
+  affectedWorkItems: z.array(BoundedId).max(500),
+  affectedBlueprints: z.array(BoundedId).max(200),
+  affectedContracts: z.array(BoundedId).max(200),
+  globalImpact: z.boolean().optional()
+}).strict();
+export type CandidateKnowledgeImpact = z.infer<typeof CandidateKnowledgeImpactSchema>;
+
+export const CandidateKnowledgeFreshnessInputSchema = z.object({
+  expectedHeadSha: GitShaSchema,
+  currentHeadSha: GitShaSchema,
+  expectedCanonicalRevision: z.number().int().nonnegative(),
+  currentCanonicalRevision: z.number().int().nonnegative(),
+  expectedBacklogRevision: z.number().int().nonnegative(),
+  currentBacklogRevision: z.number().int().nonnegative(),
+  workItemId: BoundedId,
+  changedIntakes: z.array(CandidateKnowledgeImpactSchema).max(1_000)
+}).strict();
+export type CandidateKnowledgeFreshnessInput = z.infer<typeof CandidateKnowledgeFreshnessInputSchema>;
+
+export type CandidateKnowledgeFreshnessResult = {
+  status:
+    | 'CURRENT'
+    | 'HEAD_MOVED'
+    | 'KNOWLEDGE_STALE_NO_LOCAL_IMPACT'
+    | 'RECONCILE_REQUIRED';
+  mayContinueAfterLogicalRebase: boolean;
+  relevantIntakeIds: string[];
+  headCurrent: boolean;
+  canonicalRevisionCurrent: boolean;
+  backlogRevisionCurrent: boolean;
+};
+
+export function assessCandidateKnowledgeFreshness(
+  rawInput: CandidateKnowledgeFreshnessInput
+): CandidateKnowledgeFreshnessResult {
+  const input = CandidateKnowledgeFreshnessInputSchema.parse(rawInput);
+  const headCurrent = input.expectedHeadSha === input.currentHeadSha;
+  const canonicalRevisionCurrent = input.expectedCanonicalRevision === input.currentCanonicalRevision;
+  const backlogRevisionCurrent = input.expectedBacklogRevision === input.currentBacklogRevision;
+
+  if (!headCurrent) {
+    return {
+      status: 'HEAD_MOVED',
+      mayContinueAfterLogicalRebase: false,
+      relevantIntakeIds: [],
+      headCurrent,
+      canonicalRevisionCurrent,
+      backlogRevisionCurrent
+    };
+  }
+
+  if (canonicalRevisionCurrent && backlogRevisionCurrent) {
+    return {
+      status: 'CURRENT',
+      mayContinueAfterLogicalRebase: true,
+      relevantIntakeIds: [],
+      headCurrent,
+      canonicalRevisionCurrent,
+      backlogRevisionCurrent
+    };
+  }
+
+  const relevant = input.changedIntakes.filter((impact) => (
+    impact.globalImpact === true
+    || impact.affectedWorkItems.includes(input.workItemId)
+  ));
+  const relevantIntakeIds = relevant.map((impact) => impact.intakeId);
+
+  if (relevantIntakeIds.length > 0) {
+    return {
+      status: 'RECONCILE_REQUIRED',
+      mayContinueAfterLogicalRebase: false,
+      relevantIntakeIds,
+      headCurrent,
+      canonicalRevisionCurrent,
+      backlogRevisionCurrent
+    };
+  }
+
+  return {
+    status: 'KNOWLEDGE_STALE_NO_LOCAL_IMPACT',
+    mayContinueAfterLogicalRebase: true,
+    relevantIntakeIds: [],
+    headCurrent,
+    canonicalRevisionCurrent,
+    backlogRevisionCurrent
+  };
+}
