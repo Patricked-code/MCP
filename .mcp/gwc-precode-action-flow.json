@@ -9,7 +9,7 @@
   "runtimeAuthority": false,
   "governedTaskQueueAuthority": false,
   "runtimeTasksCreated": 0,
-  "actionFlowDigestSha256": "958598e8e2e8154d891ff54c9e6a7c3baab31bc4b12bc635b87c5a34a3bb4282",
+  "actionFlowDigestSha256": "4443e05bb5ddcd42a0d9c32d4e38a80fad7306c16c36460cbb860dc511394727",
   "absoluteRule": "ARCHITECTURE_GATE_BEFORE_CANDIDATE_CODE; FINAL_PRECODE_VERSION_ACCEPTED_BEFORE_LIVE_INTEGRATION",
   "statusVocabulary": [
     "PENDING",
@@ -441,5 +441,47 @@
       "MAIN_CI_GOVERNED_DEPLOY",
       "EXACT_SHA_LIVE_VERIFICATION"
     ]
-  }
+  },
+  "phaseBFoundations": [
+    {
+      "id": "GWC-PRE-B-FND-01",
+      "name": "Multi-agent candidate continuity",
+      "status": "PASS_WITH_EVIDENCE",
+      "integrationSlot": "Governed Context / candidate PRECODE coordination",
+      "red": {
+        "run": 1046,
+        "head": "9f6e14df2939e5e4b062e2861dfd5af507d6b157"
+      },
+      "green": {
+        "run": 1048,
+        "head": "138d392942591f8ba0270757bc5df859fdd4b7cb"
+      }
+    },
+    {
+      "id": "GWC-PRE-B-FND-02",
+      "name": "Conversation information intake and reconciliation",
+      "status": "PASS_WITH_EVIDENCE",
+      "integrationSlot": "Governed Context + canonical-memory/candidate-backlog projections",
+      "red": {
+        "run": 1046,
+        "head": "9f6e14df2939e5e4b062e2861dfd5af507d6b157"
+      },
+      "green": {
+        "run": 1048,
+        "head": "138d392942591f8ba0270757bc5df859fdd4b7cb"
+      }
+    }
+  ],
+  "candidateConnectionProtocol": [
+    "REOBSERVE_EXACT_CLAUDE_BRANCH_HEAD",
+    "READ_CANONICAL_MEMORY_AND_CURRENT_CHECKPOINT",
+    "PROJECT_NEW_CONVERSATION_INFORMATION_TO_BOUNDED_INSIGHTS",
+    "RECONCILE_INSIGHTS_WITH_CANONICAL_MEMORY_AND_CANDIDATE_WORK",
+    "HOLD_CONTRADICTIONS_FOR_REVIEW",
+    "CONTINUE_EXISTING_CANDIDATE_CLAIM_IF_PRESENT",
+    "ELSE_ASSIGN_NEXT_DEPENDENCY_AND_COLLISION_SAFE_WORK_ITEM",
+    "EXECUTE_WITH_RED_GREEN_REGRESSION",
+    "CHECKPOINT_AND_UPDATE_CANONICAL_MEMORY_NEXT_ACTION"
+  ],
+  "conversationIntakeRule": "AI performs semantic understanding; only bounded structured insights/digests/evidence refs are reconciled. Raw transcript is not persisted by the candidate continuity contract."
 }
