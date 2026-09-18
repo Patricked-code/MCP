@@ -700,6 +700,34 @@ Implementation evidence:
 - GREEN CI #1063 @ 2264b3da4dc672ae1e271519957203c62b7ae03d
 Status: PASS_WITH_EVIDENCE
 
+GWC-PRE-B-FND-04 — Incremental intake continuity, coherence gate and knowledge-revision guard
+Integration slot: existing candidateContinuity.ts + canonical-memory/current.json + gwc-precode-status + candidate work/checkpoints. No new queue, memory authority or task registry.
+Behavior:
+- every NEW_INFORMATION_INTAKE receives a monotone sequence and bounded provenance/digest; raw transcript remains outside this contract;
+- the continuity cursor tracks latestIntakeSequence, reconciledThroughSequence, canonicalRevision, backlogRevision, pendingIntakeIds and lastReconciliationDigest;
+- only contiguous pending deltas may advance reconciledThroughSequence; a gap fails closed;
+- every structured intake passes Quality / Objective / Existing / Architecture / Authority / Non-Regression / Impact checks before integration;
+- deterministic integration verdicts: ACCEPT / ACCEPT_WITH_ADAPTATION / COMPLEMENT / DUPLICATE / DEFER / HOLD_FOR_REVIEW / OUT_OF_SCOPE / REJECT;
+- PARALLEL_AUTHORITY => REJECT; contradiction/supersession or breaking architecture => HOLD_FOR_REVIEW; evidence-required UNVERIFIED => DEFER;
+- accepted effects first reconcile against existing work; enrich compatible work before proposing new work;
+- each reconciled batch emits a digest-bound IntakeReconciliationReceipt with revision before/after and effects;
+- canonicalRevision/backlogRevision advance only if accepted effects actually change the corresponding projection;
+- knowledge freshness guard checks HEAD_SHA + canonicalRevision + backlogRevision before candidate writes;
+- HEAD_MOVED keeps precedence; knowledge-only drift blocks only affected work items (LOCAL_BLOCKER != GLOBAL_STOP);
+- unrelated work may logically rebase its knowledge revision and continue after reobservation;
+- INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK.
+Current real intake bootstrap:
+- latestIntakeSequence = 2;
+- reconciledThroughSequence = 0;
+- pending = NEW_INFORMATION_INTAKE-001, NEW_INFORMATION_INTAKE-002;
+- both existing intake bundles remain immutable and retain canonicalAdoptionPerformed=false until passed through this gate.
+Implementation evidence:
+- src/governedContext/candidateContinuity.ts
+- tests/candidateContinuity.test.ts
+- RED CI #1080 @ c63beb0ac413824a72647a661640ed599cc867a0
+- GREEN CI #1081 @ f288d3e93eae772dd4e51654a1e4512a822b3dd6
+Status: PASS_WITH_EVIDENCE
+
 B EXIT:
 CANDIDATE_BACKLOG_COMPLETE
 
