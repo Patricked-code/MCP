@@ -17,7 +17,7 @@ GitHub live.
 | --- | --- |
 | Révision courante | `R3` |
 | Baseline canonique | `GWC_73_CONTRACT_DESIGN_SHEETS_CANONICAL_R1` |
-| Statut d'architecture | `READY_FOR_GOVERNED_IMPLEMENTATION` |
+| Statut d'architecture | `PRECODE_FINALIZATION_IN_PROGRESS` — intégration réelle volontairement gelée |
 | `SOURCE` | `GITHUB_LIVE` |
 | `REPOSITORY` | `Patricked-code/MCP` |
 | `REF` / `OBSERVED_SHA` | `main` / `d1f303955c4d368950da2307dda41d826fc85d0a` |
@@ -29,11 +29,11 @@ GitHub live.
 | Verdict de conception | `DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION` |
 | Flux pré-code | `GWC-PRE-000` → `GWC-PRE-GATE-01` exécuté ; 14 phases `A1`…`A14` `PASS_WITH_EVIDENCE` |
 | Verdict de gate | `GWC_ARCHITECTURE_GATE_PASS` |
-| Réconciliation live Phase B | `PASS_WITH_EVIDENCE` — `LIVE_TASK_RECONCILIATION_COMPLETE_NEW_TASK_ADMISSIBLE_NOT_MATERIALIZED` |
+| Réconciliation live Phase B | observation historique conservée pour provenance ; **pas la phase d'exécution courante** |
 | Blocker courant | **aucun** — `AF-35` résolu à la source le 2026-09-17T20:27Z, réobservé le 2026-09-18T17:08Z |
-| Classification des 18 blueprints | `NEW_TASK` — matérialisation **admissible**, non exécutée |
-| Tâches runtime créées | `0` — créer une Governed Task exige une governed session et une décision humaine |
-| Réconciliation de la pile candidate | `GWC-PRE-C3` exécutée, 8 capacités disposées |
+| Classification des 18 blueprints | historique de réconciliation ; **aucune matérialisation autorisée pendant la finalisation PRECODE** |
+| Tâches runtime créées | `0` — la finalisation PRECODE interdit toute matérialisation runtime |
+| Travail courant | `T195 / A14` — alignement mémoire / SUIVI / décisions et canonicalisation finale PRECODE |
 | Findings enregistrés | 35 — `AF-01`…`AF-35` ; `AF-28` et `AF-34` corrigés, `AF-35` résolu à la source |
 
 ## Contenu
@@ -61,6 +61,33 @@ GitHub live.
 | `docs/gwc/canonical-memory/pr95-phase-b-live-reconciliation/` | **bundle courant** — réconciliation live et blocker `AF-35` | humain et agent |
 | `scripts/gwc-verify.mjs` | vérificateur déterministe | humain et agent |
 | `scripts/gwc-precode-verify.mjs` | vérificateur du flux pré-code et du gate | humain et agent |
+
+## Frontière actuelle — FINAL PRECODE uniquement
+
+La PR #95 et la branche `claude/ecstatic-edison-v1dyt1` restent volontairement dans une phase **PRECODE-only**.
+
+Le catalogue directeur conserve les **205 tâches macro `T00→T204`** et leur ordre complet, mais le mode d'exécution courant distingue strictement :
+
+- `T00→T195` : construction, revalidation et canonicalisation de la version PRECODE ;
+- `T196→T204` et Phases `B→F` : plan futur d'intégration, conservé et documenté mais **non exécutable contre le projet réel pendant cette phase**.
+
+Le travail courant est `T195 / A14` parce que la mémoire canonique et les projections de reprise doivent être réalignées sur cette frontière avant de déclarer la version finale.
+
+La sortie de cette phase est :
+
+`FINAL_PRECODE_VERSION_ACCEPTED`
+
+Avant cette sortie :
+
+- pas de Governed Task GWC matérialisée ;
+- pas de claim/lock runtime ;
+- pas de code runtime GWC ;
+- pas de mutation de `main` ;
+- pas d'écriture S1 ;
+- pas de déploiement ;
+- pas d'utilisation de la Task Queue runtime comme moteur de suivi des work items PRECODE.
+
+La Governed Task Queue, Live State et les autres autorités runtime peuvent être **observés en lecture seule** lorsqu'un work item PRECODE exige de confronter une hypothèse à l'existant. Cette observation ne change jamais le périmètre courant.
 
 ## Frontière d'autorité — à ne pas confondre
 
