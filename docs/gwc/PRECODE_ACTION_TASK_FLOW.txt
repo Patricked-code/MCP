@@ -589,7 +589,7 @@ A14 EXIT:
 GWC_ARCHITECTURE_CANONICAL
 
 ===============================================================================
-ABSOLUTE PRE-CODE GATE
+ARCHITECTURE GATE — UNLOCKS CANDIDATE BUILD, NOT LIVE INTEGRATION
 ===============================================================================
 
 GWC-PRE-GATE-01 — Architecture gate
@@ -605,88 +605,108 @@ SUIVI / DECISIONS aligned
 architecture cross-audit PASS
 
 If any condition fails:
-GWC_RUNTIME_IMPLEMENTATION = BLOCKED
+CANDIDATE_IMPLEMENTATION = BLOCKED
 Return to the failing architecture work item.
 
 If all pass:
 GWC_ARCHITECTURE_GATE = PASS
-Proceed only to Phase B live task reconciliation.
+CANDIDATE_IMPLEMENTATION_ON_CLAUDE_BRANCH = ALLOWED_AND_EXPECTED
+LIVE_PROJECT_INTEGRATION = FORBIDDEN
+Proceed to Phase B candidate task synthesis.
 
 ===============================================================================
-PHASE B — LIVE TASK RECONCILIATION
+PHASE B — COMPLETE CANDIDATE TASK SYNTHESIS
 ===============================================================================
 
-GWC-PRE-B-01 — Reobserve live Task Queue/session/locks/branches/PRs.
-GWC-PRE-B-02 — Reconcile each executable blueprint intent via the existing reconciliation authority.
-Allowed classification:
-CONTINUATION / DUPLICATE / CONFLICT / BLOCKED / NEW_TASK.
+GWC-PRE-B-01 — Derive branch-local candidate backlog
+From 18 blueprints, 73 contracts, findings, open decisions and current existing implementation, derive every implementation delta still required on claude/ecstatic-edison-v1dyt1.
 
-Rules:
-CONTINUATION -> resume existing work.
-DUPLICATE -> create nothing.
-CONFLICT -> reconcile before execution.
-BLOCKED -> satisfy blocker/dependency.
-NEW_TASK -> and only NEW_TASK -> may create a GovernedTaskRecord.
+GWC-PRE-B-02 — Bind each candidate work item
+Every item must carry:
+blueprintRef
+contractRefs
+existingIntegrationSlot
+existingFiles/types/functions
+expectedFiles/types/functions
+REUSE/WRAP/GENERALIZE/EXTEND/NEW decision
+dependencies
+collisionDomain
+RED
+GREEN
+regression
+backwardCompatibility
+migration/compatibility needs
+security
+evidence
+definitionOfDone
 
-Never assume 1 blueprint = 1 task. A blueprint may produce 0/1/N tasks from live reality.
+GWC-PRE-B-03 — Prove candidate backlog completeness
+Require:
+0 blueprint without implementation work or explicit NO_CODE_REQUIRED justification
+0 finding without disposition
+0 code delta without owner
+0 duplicate authority
+0 runtime Task creation
+0 dependency on conversational memory
+
+B EXIT:
+CANDIDATE_BACKLOG_COMPLETE
 
 ===============================================================================
-PHASE C — SAFETY PREREQUISITES
+PHASE C — CANDIDATE SAFETY / FOUNDATION COMPLETION
 ===============================================================================
 
-GWC-PRE-C1 — AF-19 exact deployed-SHA CI evidence
-Prove deployed SHA equals the SHA whose required CI succeeded, without weakening existing OIDC/exact-SHA invariants.
+GWC-PRE-C1 — AF-19 candidate correction
+Implement the exact deployed-SHA/CI safety design on the Claude branch without deploying or activating it.
 
-GWC-PRE-C2 — AF-22 / AF-30 exact-head review evidence
-Bind review/threads/ruleset evidence to the current exact PR head; any head move invalidates stale review proof.
+GWC-PRE-C2 — AF-22 / AF-30 candidate correction
+Implement exact-head review evidence binding and stale-head invalidation on the Claude branch without changing live governance.
 
-GWC-PRE-C3 — #88/#89/#90 PR-stack reconciliation
-For each capability: still needed? already implemented? duplicate? stale? GWC-compatible? correct owner/blueprint?
-Disposition must be KEEP / REWORK / SPLIT / SUPERSEDE / CLOSE / DEFER.
-No blind stale-stack merge.
+GWC-PRE-C3 — Candidate capability reconciliation
+Re-derive only the still-needed capabilities from stale PR stack #88/#89/#90 against current branch/main baseline. Implement/rework/split the required capabilities directly into the evolved candidate; do not merge stale PRs blindly.
+
+C EXIT:
+CANDIDATE_SAFETY_FOUNDATIONS_COMPLETE
 
 ===============================================================================
-PHASE D — GOVERNED IMPLEMENTATION CYCLE
+PHASE D — BRANCH-LOCAL CANDIDATE IMPLEMENTATION CYCLE
 ===============================================================================
 
-Every runtime Governed Task materialized after Phase B must execute:
-OBSERVE
--> RECONCILE
--> CLAIM
--> MINIMAL LOCK
--> EXACT BASELINE
+For every branch-local candidate work item execute:
+REOBSERVE exact online branch head
+-> READ latest canonical memory/checkpoint
+-> inspect current existing implementation first
+-> confirm dependency/collision domain
+-> exact candidate baseline
 -> RED
 -> PROVE RED
--> MINIMAL GREEN
+-> minimal GREEN
 -> TARGETED TESTS
 -> HISTORICAL REGRESSION
 -> TYPECHECK
 -> BUILD
 -> DOC CHECK
--> SECURITY/SECRET CHECK
+-> GOVERNANCE/SECURITY/SECRET CHECK
 -> SELF REVIEW
--> DOCUMENT
--> DRAFT PR
--> EXACT-HEAD CI
--> EXACT-HEAD REVIEW
--> RESOLVE THREADS
--> MERGE_READY
--> EXACT-HEAD MERGE
--> CI MAIN
--> GOVERNED AUTODEPLOY
--> EXACT-SHA ATTESTATION
--> LIVE STATE
--> VERIFYING
--> TERMINAL VERIFICATION
--> DONE
+-> RECORD EVIDENCE
 -> CHECKPOINT
--> LOCK RELEASE
--> SESSION CLOSE
--> RECONCILE QUEUE
--> NEXT EXECUTABLE WORK
+-> NEXT ELIGIBLE CANDIDATE WORK
+
+Forbidden during D:
+NO runtime GovernedTaskRecord
+NO runtime claim
+NO runtime lock
+NO main merge
+NO S1 write
+NO production deploy
+NO live activation
+NO parallel replacement authority
+
+D EXIT:
+CANDIDATE_IMPLEMENTATION_CYCLE_VERIFIED
 
 ===============================================================================
-PHASE E — BLUEPRINT MATERIALIZATION ORDER
+PHASE E — BLUEPRINT CANDIDATE BUILD ORDER
 ===============================================================================
 
 Nominal dependency order:
@@ -705,37 +725,91 @@ GWC-0
 -> GWC-16
 -> GWC-17
 
+BLUEPRINT CANDIDATE BUILD WORK ITEMS
+GWC-PRE-E-GWC-0 — implement and verify the complete branch-local evolved candidate delta for GWC-0; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-1 — implement and verify the complete branch-local evolved candidate delta for GWC-1; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-2 — implement and verify the complete branch-local evolved candidate delta for GWC-2; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-3 — implement and verify the complete branch-local evolved candidate delta for GWC-3; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-4 — implement and verify the complete branch-local evolved candidate delta for GWC-4; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-5 — implement and verify the complete branch-local evolved candidate delta for GWC-5; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-6 — implement and verify the complete branch-local evolved candidate delta for GWC-6; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-7 — implement and verify the complete branch-local evolved candidate delta for GWC-7; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-8 — implement and verify the complete branch-local evolved candidate delta for GWC-8; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-9 — implement and verify the complete branch-local evolved candidate delta for GWC-9; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-10 — implement and verify the complete branch-local evolved candidate delta for GWC-10; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-11 — implement and verify the complete branch-local evolved candidate delta for GWC-11; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-12 — implement and verify the complete branch-local evolved candidate delta for GWC-12; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-13 — implement and verify the complete branch-local evolved candidate delta for GWC-13; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-14 — implement and verify the complete branch-local evolved candidate delta for GWC-14; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-15 — implement and verify the complete branch-local evolved candidate delta for GWC-15; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-16 — implement and verify the complete branch-local evolved candidate delta for GWC-16; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+GWC-PRE-E-GWC-17 — implement and verify the complete branch-local evolved candidate delta for GWC-17; preserve existing behavior; satisfy RED/GREEN/regression/evidence/DoD; no main/S1/prod activation.
+
 At every boundary:
-REOBSERVE AUTHORITIES
-RECONCILE TASK QUEUE
+REOBSERVE ONLINE CLAUDE BRANCH
 REVALIDATE DEPENDENCIES
-REVALIDATE LOCK COLLISIONS
+REVALIDATE COLLISION DOMAINS
+PRESERVE EXISTING TESTS/BEHAVIOR
+CHECKPOINT EVIDENCE
+CONTINUE
+
+E EXIT:
+18_BLUEPRINT_CANDIDATE_IMPLEMENTATIONS_COMPLETE
 
 ===============================================================================
-PHASE F — UNIVERSAL ACCEPTANCE
+PHASE F — CANDIDATE UNIVERSAL ACCEPTANCE
 ===============================================================================
 
-GWC-PRE-F-01 — Select non-hardcoded acceptance context.
-GWC-PRE-F-02 — Execute happy path:
+GWC-PRE-F-01 — Select non-hardcoded candidate acceptance contexts/fixtures.
+
+GWC-PRE-F-02 — Execute full candidate happy path in test/shadow/isolated mode:
 Intent -> Identity -> Repository -> Project -> Server -> Runtime -> Domain -> Governance -> Capability -> Task -> Session -> Locks -> Development -> CI -> Review -> Merge -> Deploy -> Verify -> DONE.
+These are simulated/tested contract behaviors where live mutation would otherwise occur; production activation is forbidden.
+
 GWC-PRE-F-03 — Execute negative paths:
 unknown / ambiguous / stale / conflict / duplicate / denied / CI failure / head drift / review rejection / deploy failure / runtime drift / docs drift / stale receipt / reconnect / concurrent agents.
 Every negative scenario must fail closed or follow an explicit recovery edge.
+
 GWC-PRE-F-04 — Cross-context universality audit.
 No Patricked-code/MCP, Stablecoin, AfricaFunds, fixed server, fixed branch or fixed domain hard dependency.
-GWC-PRE-F-05 — Final verdict only after exact evidence:
-UNIVERSAL_GOVERNED_WORKFLOW_ACCEPTED
+
+GWC-PRE-F-05 — Full candidate non-regression suite.
+Require existing historical behavior + new evolved behavior + compatibility/migration tests + typecheck/build/docs/security.
+
+GWC-PRE-F-06 — Integration package audit.
+Require exact integration instructions, expected main delta, drift-reconciliation rules, rollback strategy, required live attestations and post-integration verification.
+
+F EXIT:
+FINAL_PRECODE_VERSION_ACCEPTED
+EVOLVED_CANDIDATE_READY_FOR_INTEGRATION
+
+===============================================================================
+REAL PROJECT INTEGRATION — AFTER FINAL CANDIDATE GATE ONLY
+===============================================================================
+
+This section is future integration procedure, not current branch-local candidate work.
+
+INTEGRATE-01 — Reobserve current main and current server/runtime evidence.
+INTEGRATE-02 — Reconcile drift between candidate baseline and then-current real project.
+INTEGRATE-03 — Revalidate additive/backward-compatible integration slots.
+INTEGRATE-04 — Apply the already-built candidate using the then-current governed integration mechanism.
+INTEGRATE-05 — Exact-head CI/review/merge.
+INTEGRATE-06 — Main CI / governed deploy / exact-SHA attestation / Live State verification.
+INTEGRATE-07 — Terminal evidence and closure.
+
+Do not redesign the candidate during integration unless bounded live drift proves an adjustment is required.
 
 ===============================================================================
 NEXT ACTION RULE
 ===============================================================================
 
 On opening this file, the agent MUST:
-1. Reobserve current authorities.
-2. Resolve the current exact branch head.
-3. Start at the first work item that is not PASS_WITH_EVIDENCE on that head.
-4. Reuse existing evidence only after confirming it is still bound/current.
-5. Complete/checkpoint work items in dependency order.
-6. Never start GWC runtime implementation while GWC-PRE-GATE-01 is not PASS_WITH_EVIDENCE.
-7. Never manufacture TASK-* entries from this file.
-8. Continue autonomously through non-blocked pre-code items; stop only for a real governed blocker that cannot be resolved from existing authorities.
+1. Reobserve the current exact online head of claude/ecstatic-edison-v1dyt1.
+2. Read canonical memory, status, latest checkpoint/handoff and applicable existing architecture.
+3. If architecture gate is not PASS, resume first failing architecture work item.
+4. If architecture gate is PASS and final candidate gate is not PASS, resume the first incomplete candidate work item B->C->D/E->F.
+5. Reuse existing evidence only after confirming its binding/freshness.
+6. Candidate implementation on the Claude branch is allowed and expected.
+7. Never manufacture runtime TASK-* entries from branch-local candidate work items.
+8. Never mutate main/S1/production or activate the candidate before FINAL_PRECODE_VERSION_ACCEPTED.
+9. Continue autonomously through non-blocked candidate work; stop only for a real non-deducible blocker.
