@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## 2026-09-19 — Incremental intake continuity and coherence
+
+- Ajout additif de séquençage monotone des `NEW_INFORMATION_INTAKE-NNN`.
+- Ajout du `CandidateIntakeContinuityCursor` et des revisions canonical/backlog.
+- Ajout du Coherence Gate déterministe et de ses verdicts bornés.
+- Ajout de la réconciliation par batch contigu avec `IntakeReconciliationReceipt` digesté.
+- Ajout d'un knowledge freshness guard local : HEAD + canonical revision + backlog revision.
+- Préservation des deux intakes historiques #001/#002 sans adoption automatique ni réécriture.
+- TDD : RED CI #1080, GREEN CI #1081.
+- Aucun runtime MCP, Task Queue runtime, lock, main, S1 ou prod modifié.
+
+
 ## 2026-09-19 — GitHub-first PRECODE bootstrap
 
 - Extension additive de `candidateContinuity.ts` avec `resolveCandidateSession()`, `routeCandidateConnectionIntent()` et `bootstrapCandidateConnection()`.
