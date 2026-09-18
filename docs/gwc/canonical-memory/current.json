@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-candidate-continuity-ready",
-  "currentBundleId": "bnd_mcp-pr95-candidate-continuity-ready-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-candidate-continuity-ready",
+  "currentBundle": "pr95-github-first-bootstrap-ready",
+  "currentBundleId": "bnd_mcp-pr95-github-first-bootstrap-ready-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-github-first-bootstrap-ready",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -41,7 +41,7 @@
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "blocker": null,
-    "nextAction": "Execute GWC-PRE-B-01 using automatic candidate continuity: reobserve exact head; analyze and reconcile any new conversation information; resume/claim dependency-safe collision-safe branch work; derive the complete candidate backlog; checkpoint and update canonical memory."
+    "nextAction": "Execute GWC-PRE-B-01 through the direct-GitHub PRECODE bootstrap: observe exact branch HEAD, resolve/create branch-local candidate session from observed IDs only, route intent or ask the canonical three-choice question if ambiguous, reconcile new information, then derive the complete candidate backlog."
   },
   "precodeContinuationPolicy": {
     "hierarchy": "PROGRAM -> ARCHITECTURE_PHASE_OR_CANDIDATE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
@@ -64,7 +64,11 @@
     "liveIntegrationAllowedBeforeFinalCandidate": false,
     "conversationInformationMustBeReconciled": true,
     "autoCandidateDispatch": true,
-    "rawConversationPersistence": false
+    "rawConversationPersistence": false,
+    "githubFirstBootstrap": true,
+    "runtimeMcpRequiredForPrecode": false,
+    "candidateSessionBranchLocal": true,
+    "unknownProviderConversationIdRule": "NULL_UNAVAILABLE_NEVER_INVENT"
   },
   "historicalRuntimeObservations": {
     "role": "PROVENANCE_ONLY_NOT_CURRENT_EXECUTION",
@@ -92,9 +96,19 @@
     "When a new conversation brings material information, semantically analyze it and project bounded insights before candidate work selection.",
     "Reconcile insights as DUPLICATE/COMPLEMENT/DECISION/FINDING/TASK/CONTRADICTION/MEMORY; accepted non-conflicting changes update canonical memory/backlog, contradictions HOLD_FOR_REVIEW.",
     "For multi-agent continuation, resume the same ACTIVE branch-local claim first; otherwise select the next READY dependency-safe and collision-safe work item.",
-    "Persist branch-local claims only after exact-head reobservation; HEAD_MOVED requires redispatch."
+    "Persist branch-local claims only after exact-head reobservation; HEAD_MOVED requires redispatch.",
+    "PRECODE connection is direct GitHub/versioned-branch coordination; do not open or require MCP runtime sessions for candidate work.",
+    "Resolve/create branch-local candidateSessionId only from identifiers actually observed; a derived candidateSessionId is never a real provider conversation ID.",
+    "If provider conversation ID is unavailable, preserve null/UNAVAILABLE rather than inventing one.",
+    "Route connection intent to NEW_INFORMATION_INTAKE / CONTINUE_PRECODE_WORK / NEW_INFORMATION_THEN_CONTINUE_PRECODE; ask the canonical three-choice question only when intent is not deducible.",
+    "Legacy candidate sessions without connectionInstanceRef remain readable and are enriched on resume."
   ],
   "previousBundles": [
+    {
+      "name": "pr95-candidate-continuity-ready",
+      "path": "docs/gwc/canonical-memory/pr95-candidate-continuity-ready",
+      "status": "IMMUTABLE_HISTORICAL_CANDIDATE_CONTINUITY_BASELINE"
+    },
     {
       "name": "pr95-candidate-build-ready",
       "path": "docs/gwc/canonical-memory/pr95-candidate-build-ready",
@@ -132,8 +146,8 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "7495cea097627c0865c5b9ab99379cef620a0bea",
-  "correctionReason": "Canonical memory advanced to the candidate-continuity checkpoint: automatic multi-agent branch dispatch plus bounded conversation-information reconciliation are implemented and tested, while live integration remains frozen.",
+  "observedHeadBeforePointerUpdate": "8d7161018ee5280059bd85ebd143adcef619f032",
+  "correctionReason": "Canonical memory advanced to the GitHub-first PRECODE bootstrap checkpoint: candidate sessions and intent routing are branch-local/versioned, no MCP runtime dependency, unknown provider conversation IDs remain unknown.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
@@ -267,6 +281,43 @@
     "evidence": {
       "red": "MCP CI #1046 @ 9f6e14df2939e5e4b062e2861dfd5af507d6b157",
       "green": "MCP CI #1048 SUCCESS @ 138d392942591f8ba0270757bc5df859fdd4b7cb"
+    }
+  },
+  "githubFirstBootstrap": {
+    "status": "PASS_WITH_EVIDENCE",
+    "transportModel": "DIRECT_GITHUB_PRECODE",
+    "runtimeMcpRequired": false,
+    "runtimeGovernedSessionRequired": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "implementation": "src/governedContext/candidateContinuity.ts#bootstrapCandidateConnection",
+    "candidateSession": {
+      "authority": "BRANCH_LOCAL_VERSIONED_PROJECTION",
+      "resolver": "resolveCandidateSession",
+      "matchOrder": [
+        "providerConversationRef",
+        "githubConnectionRef",
+        "connectionInstanceRef",
+        "createNewCandidateSession"
+      ],
+      "providerConversationIdRule": "OBSERVE_IF_EXPOSED_ELSE_NULL_UNAVAILABLE_NEVER_INVENT",
+      "backwardCompatibility": "Legacy candidate sessions without connectionInstanceRef remain readable and are enriched on resume."
+    },
+    "intentRouting": {
+      "router": "routeCandidateConnectionIntent",
+      "modes": [
+        "NEW_INFORMATION_INTAKE",
+        "CONTINUE_PRECODE_WORK",
+        "NEW_INFORMATION_THEN_CONTINUE_PRECODE",
+        "ASK_USER"
+      ],
+      "askOnlyWhenAmbiguous": true,
+      "canonicalQuestion": "Que viens-tu faire sur cette branche : apporter de nouvelles informations, poursuivre le travail PRECODE, ou apporter des informations puis poursuivre automatiquement ?"
+    },
+    "evidence": {
+      "red": "CI #1061 @ a992bc0adf8e841ee38463bce75667650c13689d",
+      "compatibility": "CI #1062 @ 44e19282564578a748ae3563c726741816d304ea",
+      "green": "CI #1063 SUCCESS @ 2264b3da4dc672ae1e271519957203c62b7ae03d"
     }
   }
 }
