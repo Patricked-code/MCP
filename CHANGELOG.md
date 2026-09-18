@@ -681,4 +681,3 @@ Mise à jour : 2026-07-09T20:08:09Z
 - La différence **72 étapes runtime / 73 Contract Design Sheets** est explicitement réconciliée sans modifier le registre : 72 membres runtime restent compatibles avec `GW-73` hors graphe runtime.
 - Aucun blueprint, contrat, source runtime, Task Queue, lock, session runtime, main, S1 ou déploiement n'est modifié.
 - `GWC-PRE-B-01` reste `READY`; aucun travail candidate n'est dispatché par cet intake.
-

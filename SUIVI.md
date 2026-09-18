@@ -497,4 +497,3 @@ Date : 2026-08-29
 - Aucun `candidateSessionId` n'est inventé : aucun provider conversation ID ni connectionInstanceRef client n'a été exposé par la surface courante. Aucun claim candidate n'est requis pour cet intake information-only.
 - `GWC-PRE-B-01` reste `READY` ; `candidateWorkDispatched = false` ; `RUNTIME_TASKS_CREATED = 0`.
 - `NEXT_ACTION` programme inchangée : lors d'une future continuation, utiliser `NEW_INFORMATION_INTAKE-001` comme entrée bornée de réconciliation pour le backlog candidate, puis reprendre le premier work item dependency-safe/collision-safe.
-
