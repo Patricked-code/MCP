@@ -603,6 +603,16 @@ async function verifyCanonicalMemory() {
       `mémoire canonique : claim "${claim.claim_id}" doit rester approval_eligible=false — la mémoire historique n'approuve jamais`);
   }
 
+  // Le bundle courant ne peut pas être simultanément déclaré supersédé : un agent
+  // qui reprend lirait un checkpoint à la fois actif et périmé. Lacune du premier
+  // contrôle AF-36, comblée après l'avoir observée en conditions réelles.
+  const previousNames = (pointer.previousBundles ?? []).map((entry) => entry.name);
+  const previousPaths = (pointer.previousBundles ?? []).map((entry) => entry.path);
+  check(errors, !previousNames.includes(pointer.currentBundle),
+    `mémoire canonique : le bundle courant "${pointer.currentBundle}" est aussi listé dans previousBundles — il ne peut pas être à la fois courant et supersédé`);
+  check(errors, !previousPaths.includes(currentPath),
+    `mémoire canonique : le chemin courant "${currentPath}" est aussi listé dans previousBundles`);
+
   // Chaque bundle listé comme précédent doit exister : l'historique est immuable,
   // pas seulement déclaré.
   for (const previous of pointer.previousBundles ?? []) {

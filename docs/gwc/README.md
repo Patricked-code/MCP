@@ -34,7 +34,7 @@ GitHub live.
 | Classification des 18 blueprints | historique de réconciliation ; **aucune matérialisation autorisée pendant la finalisation PRECODE** |
 | Tâches runtime créées | `0` — la finalisation PRECODE interdit toute matérialisation runtime |
 | Travail courant | `T195 / A14` — alignement mémoire / SUIVI / décisions et canonicalisation finale PRECODE |
-| Findings enregistrés | 35 — `AF-01`…`AF-35` ; `AF-28` et `AF-34` corrigés, `AF-35` résolu à la source |
+| Findings enregistrés | 36 — `AF-01`…`AF-36` ; `AF-28`, `AF-34` et `AF-36` corrigés, `AF-35` résolu à la source |
 
 ## Contenu
 
@@ -58,7 +58,9 @@ GitHub live.
 | `.mcp/gwc-precode-status.json` | **état d'exécution par phase, preuves, Phase B et blocker courant** | agent |
 | `docs/gwc/canonical-memory/pr95-ded/` | sources et bundle de mémoire de la mission de conception | traçabilité |
 | `docs/gwc/canonical-memory/pr95-precode-gate/` | sources et bundle de mémoire de la clôture pré-code | traçabilité |
-| `docs/gwc/canonical-memory/pr95-phase-b-live-reconciliation/` | **bundle courant** — réconciliation live et blocker `AF-35` | humain et agent |
+| `docs/gwc/canonical-memory/pr95-phase-b-live-reconciliation/` | bundle de la réconciliation live et du blocker `AF-35` — immuable, supersédé | traçabilité |
+| `docs/gwc/canonical-memory/pr95-phase-b-resolved/` | **bundle courant** — `AF-35` résolu, classification réobservée | humain et agent |
+| `docs/gwc/canonical-memory/current.json` | pointeur de continuité — **vérifié** par `verifyCanonicalMemory()` depuis `AF-36` | humain et agent |
 | `scripts/gwc-verify.mjs` | vérificateur déterministe | humain et agent |
 | `scripts/gwc-precode-verify.mjs` | vérificateur du flux pré-code et du gate | humain et agent |
 

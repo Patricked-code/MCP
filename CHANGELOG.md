@@ -607,3 +607,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Cause corrigée : `verifyCanonicalMemory()` ajouté à `scripts/gwc-verify.mjs`. Il contrôle la résolution du pointeur, la correspondance du `bundle_id`, l'intégrité `sha256` et la taille de chaque source, `approval_eligible=false` sur chaque claim, et l'existence de chaque bundle précédent déclaré. Éprouvé par 5 défauts injectés, 5 rejets.
 - Les blocs `currentPhase` et `continuationPolicy` du commit pair sont **conservés intacts** : cette session ne les arbitre pas et ne s'en autorise pas.
 - Portée : documentation, données et vérificateur. Aucun code runtime, `RUNTIME_TASKS_CREATED = 0`, aucun merge, aucun déploiement, aucun secret.
+
+
+## 2026-09-18 — Frontière restreinte à `PRECODE-only` par le pair, README réaligné
+
+- Réconciliation des commits pairs `68cd082` → `6418833`, qui restreignent la frontière du programme : le runtime reste gelé pendant toute la finalisation PRECODE, même avec le gate d'architecture `PASS`. Sortie requise : `FINAL_PRECODE_VERSION_ACCEPTED`.
+- Les phases B→F et `T196→T204` sont reclassées en plan d'intégration futur, non exécutable contre le projet réel. Les autorités runtime restent observables en lecture seule.
+- Mes blocs `phaseB` et `phaseC` sont conservés et annotés par le pair (`executionRole`, `currentExecutionAuthority: false`) plutôt que supprimés : la provenance est préservée, le périmètre courant clarifié.
+- Correction de deux lignes périmées du README, laissées par moi lors du push `AF-36` : le compteur de findings indiquait 35 alors que le registre machine en porte 36, et la ligne « bundle courant » désignait un bundle supersédé. `current.json` est ajouté au tableau de contenu, puisqu'il est désormais vérifié par `verifyCanonicalMemory()`.
+- Portée : documentation. Aucun code runtime, `RUNTIME_TASKS_CREATED = 0`, aucun merge vers `main`, aucun déploiement.
