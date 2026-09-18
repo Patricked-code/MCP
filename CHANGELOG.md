@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## 2026-09-18 — Rétablissement de la frontière PRECODE
+
+- Recentrage de la PR #95 sur la finalisation de la version PRECODE, sans intégration runtime.
+- `CLAUDE.md` et la coordination multi-agent précisent désormais que le passage du gate d'architecture n'autorise pas l'intégration réelle.
+- `.mcp/gwc-precode-status.json` distingue le catalogue complet `T00→T204` de la plage PRECODE courante `T00→T195`; `T196→T204` reste un plan futur.
+- `docs/gwc/canonical-memory/current.json` repointe sur le bundle PRECODE `pr95-precode-gate` et remet `T195/A14` comme travail courant.
+- Les observations Phase B/C antérieures sont conservées pour provenance mais ne sont plus la phase d'exécution courante.
+- Aucun changement `main`, S1, runtime, Governed Task, lock ou déploiement.
+
+
+
 ## 2026-09-17 — Flux pré-code exécuté : gate vérifié, AF-34 ouvert puis corrigé
 
 - Exécution de `docs/gwc/PRECODE_ACTION_TASK_FLOW.txt` de `GWC-PRE-000` à `GWC-PRE-GATE-01` sur le head exact. Aucun code runtime, aucune Task, aucun lock, aucun déploiement.
