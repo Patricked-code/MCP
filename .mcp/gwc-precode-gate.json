@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "revision": "R3-PRECODE",
+  "revision": "R4-CANDIDATE",
   "repository": "Patricked-code/MCP",
   "source": "docs/gwc/PRECODE_EXECUTION_PLAN.txt",
   "actionFlow": {
     "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "projection": ".mcp/gwc-precode-action-flow.json",
-    "digestSha256": "6a8319ba00c2117fae9f0859ac5d0a14a0f6973d7495004df5e77ce115d3f268",
-    "role": "execution_companion_not_runtime_authority",
-    "mustBeRevalidatedBeforeRuntimeCode": true
+    "digestSha256": "958598e8e2e8154d891ff54c9e6a7c3baab31bc4b12bc635b87c5a34a3bb4282",
+    "role": "candidate_build_execution_companion_not_runtime_authority",
+    "mustBeRevalidatedBeforeCandidateCode": true
   },
   "architecturePhases": {
     "required": 14,
@@ -42,14 +42,23 @@
     "required": 22,
     "satisfied": 22
   },
-  "runtimeImplementation": "NOT_STARTED",
-  "taskQueueMaterialization": "NOT_STARTED_REQUIRES_LIVE_RECONCILIATION",
+  "taskQueueMaterialization": "NOT_USED_FOR_CANDIDATE_BUILD",
   "mainCanonicalization": "PENDING_PR95_GOVERNED_MERGE",
-  "blueprintMaterializationRule": "BLUEPRINT_NE_GOVERNED_TASK_ONLY_NEW_TASK_AFTER_LIVE_RECONCILIATION_MAY_CREATE_RUNTIME_TASK",
+  "blueprintMaterializationRule": "BLUEPRINT_TO_BRANCH_CANDIDATE_WORK_ALLOWED; BLUEPRINT_NE_GOVERNED_TASK; RUNTIME_TASKS_ONLY_DURING_LATER_REAL_INTEGRATION_IF_REQUIRED_BY_THEN_CURRENT_GOVERNANCE",
   "safetyPrerequisites": [
     "AF-19",
     "AF-22/AF-30",
     "PR-STACK"
   ],
-  "status": "PRECODE_ARCHITECTURE_COMPLETE_ON_PR95_BRANCH_PENDING_MAIN_AND_LIVE_RECONCILIATION"
+  "status": "ARCHITECTURE_COMPLETE_CANDIDATE_BUILD_UNLOCKED_ON_PR95_BRANCH",
+  "candidateImplementation": "AUTHORIZED_AFTER_ARCHITECTURE_GATE",
+  "candidateImplementationStatus": "NOT_STARTED",
+  "liveRuntimeIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
+  "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
+  "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
+  "finalCandidateGate": {
+    "requiredVerdict": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "integrationReadyVerdict": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
+    "currentStatus": "PENDING_CANDIDATE_BUILD"
+  }
 }
