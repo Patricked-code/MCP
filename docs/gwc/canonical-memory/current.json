@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-precode-gate",
-  "currentBundleId": "bnd_mcp-pr95-precode-gate-20260917",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-precode-gate",
+  "currentBundle": "pr95-candidate-build-ready",
+  "currentBundleId": "bnd_mcp-pr95-candidate-build-ready-20260918",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-candidate-build-ready",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -89,6 +89,11 @@
   ],
   "previousBundles": [
     {
+      "name": "pr95-precode-gate",
+      "path": "docs/gwc/canonical-memory/pr95-precode-gate",
+      "status": "IMMUTABLE_HISTORICAL_ARCHITECTURE_GATE_CHECKPOINT"
+    },
+    {
       "name": "pr95-phase-b-resolved",
       "path": "docs/gwc/canonical-memory/pr95-phase-b-resolved",
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_NOT_CURRENT_PRECODE_EXECUTION"
@@ -114,9 +119,9 @@
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-18T18:35:00Z",
-  "observedHeadBeforePointerUpdate": "6b62d28fcbc5382569300585cf2a4a2a0dec2f57",
-  "correctionReason": "Canonical interpretation corrected: PRECODE means pre-integration evolved candidate construction, not documentation-only. The Claude branch must progressively contain the complete evolved MCP code and tests while live integration remains frozen.",
+  "updatedFromGitHubObservationAt": "2026-09-18T18:44:00Z",
+  "observedHeadBeforePointerUpdate": "1a3f040ee84e0ecdc7b33f13d78d78a5c8057d4a",
+  "correctionReason": "Canonical memory now points to the immutable candidate-build-ready bundle: architecture complete, branch-local evolved candidate code allowed/expected, live integration frozen until final candidate acceptance.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
