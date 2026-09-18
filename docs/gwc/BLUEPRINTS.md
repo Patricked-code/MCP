@@ -2520,6 +2520,7 @@ depuis des preuves `CURRENT_MAIN` indépendantes de l'archive.
 | `AF-32` | trois mutations gouvernées ne traversent aucune porte d'écriture | la cartographie enregistre 111 outils en 68 `read`, 40 `scoped-write` et 3 `operational-write` ; seuls les 40 passent par `decorateScopedWriteServer` | `GWC-9` | 2 |
 | `AF-33` | un identifiant de finding du registre machine ne se résout pas vers une définition versionnée cohérente | `AF-07` rattaché à `GW-68`/`GW-69` et `AF-08` à `GW-56`, alors que les seules définitions versionnées décrivent d'autres contrats | `GWC-0` | 3 |
 | `AF-34` | le gate pre-code déclare 14/14 phases d'architecture satisfaites, alors que quatre conditions de sortie ne sont pas vérifiables sur le head exact | `.mcp/gwc-precode-gate.json` porte `architecturePhases.satisfied = 14` ; la vérification du head `58d71959` donne 10/14 — `A5-01` 0/91 arêtes portant trigger/precondition, `A7-01`/`A7-02` aucun modèle `EvidenceRef` ni `StepAttestation` typé, `A8-03`/`A8-04` classes de rejeu et `RecoveryAnchor` non définies, `A11-01` 15/19 scénarios nommés couverts | `GWC-0` | 1 — bloque le gate |
+| `AF-36` | le pointeur de mémoire canonique n'est validé par aucun contrôle, et une CI verte a couvert une mémoire irrésoluble | le commit `e22214d` a avancé `currentBundlePath` vers `pr95-autocontinuation-hardening`, absent de l'arbre : un agent suivant le protocole documenté résolvait un checkpoint introuvable. `docs:check` et `gwc:verify` passaient tous deux. **Corrigé sur ses deux faces** — l'instance par le commit pair `3f635e9`, qui a repointé vers le bundle réellement présent (la même réparation avait été dérivée indépendamment ici ; celle du pair a atterri en premier) ; la cause par `verifyCanonicalMemory()` ajouté ici : résolution du pointeur, correspondance du `bundle_id`, intégrité `sha256`/taille des sources, `approval_eligible=false`, existence de chaque bundle précédent. Éprouvé par 5 défauts injectés, 5 rejets | `GWC-0` | **corrigé** |
 | `AF-35` | la Governed Task Queue et Live State se contredisent sur l'état de `TASK-20260915-001` | la file déclarait `DEPLOYING` avec blocker `DOCUMENTATION_DRIFT` à `46d576e5` ; Live State `stateVersion 246` déclarait `documentation: ALIGNED`, `global: FULLY_ALIGNED` et 0 contradiction à `d1f30395`, plus récent. **Résolu à la source le 2026-09-17T20:27Z** : l'agent propriétaire a acquitté `stateVersion 246`, porté la tâche à `DONE` avec blockers vides (`taskRevision 12`) puis fermé sa session `499b2ea3`. Les deux autorités concordent, réobservé le 2026-09-18T17:08Z | `GWC-5` | **résolu** |
 
 `AF-31`, `AF-32` et `AF-33` sont découverts par la conception d'évolution ; `AF-34` et `AF-35` sont
@@ -2573,13 +2574,13 @@ deux directions de routage, 91 arêtes, 72 contrats runtime tous atteignables de
 
 | Mesure | Valeur |
 | --- | --- |
-| Findings enregistrés | 35 — `AF-01` à `AF-35` |
+| Findings enregistrés | 36 — `AF-01` à `AF-36` |
 | Série héritée `AF-01` à `AF-30` | 30 |
 | dont définition rétablie sur preuve `CURRENT_MAIN` ici | 4 — `AF-19`, `AF-22`, `AF-29`, `AF-30` |
 | dont définition restée `ARCHIVE_R2_NON_CANONICAL` | 26 |
 | Découverts par la conception d'évolution | 3 — `AF-31`, `AF-32`, `AF-33` |
-| Découverts par l'exécution du flux pré-code | 2 — `AF-34` (gate déclaratif), `AF-35` (Task Queue contre Live State) |
-| Corrigés à ce jour | 2 — `AF-28` (graphe), `AF-34` (gate déclaratif) |
+| Découverts par l'exécution du flux pré-code | 3 — `AF-34` (gate déclaratif), `AF-35` (Task Queue contre Live State), `AF-36` (pointeur de mémoire canonique non validé) |
+| Corrigés à ce jour | 3 — `AF-28` (graphe), `AF-34` (gate déclaratif), `AF-36` (pointeur canonique) |
 | Résolus à la source par un autre agent | 1 — `AF-35`, par clôture de `TASK-20260915-001` et de la session `499b2ea3` |
 | Sans propriétaire architectural | 0 |
 

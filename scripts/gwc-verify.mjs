@@ -23,6 +23,8 @@ const GRAPH_PATH = path.join(ROOT, '.mcp', 'gwc-workflow-graph.json');
 const BLUEPRINTS_PATH = path.join(ROOT, '.mcp', 'gwc-blueprints.json');
 const EVOLUTION_DESIGN_PATH = path.join(ROOT, '.mcp', 'gwc-evolution-design.json');
 const TASK_REGISTRY_PATH = path.join(ROOT, '.mcp', 'task-registry.json');
+const CANONICAL_MEMORY_DIR = path.join(ROOT, 'docs', 'gwc', 'canonical-memory');
+const CANONICAL_POINTER_PATH = path.join(CANONICAL_MEMORY_DIR, 'current.json');
 
 const STEP_ID = /^GW-(0[1-9]|[1-6][0-9]|7[0-3])$/;
 const BLUEPRINT_ID = /^GWC-(0|[1-9]|1[0-7])$/;
@@ -557,6 +559,62 @@ export function verifyEvolutionDesign(design, contracts, blueprints) {
   return errors;
 }
 
+// La mémoire canonique n'a de valeur de continuité que si son pointeur se
+// résout réellement. Un pointeur pendant laisse un agent qui reprend sans
+// checkpoint, ce que CLAUDE.md §9 vise précisément à empêcher — et il passait
+// jusqu'ici une CI verte, faute de contrôle. Enregistré sous AF-36.
+async function verifyCanonicalMemory() {
+  const errors = [];
+  const pointer = await readJson(CANONICAL_POINTER_PATH, false);
+
+  if (pointer === false) {
+    check(errors, false, `mémoire canonique : ${path.relative(ROOT, CANONICAL_POINTER_PATH)} absent`);
+    return errors;
+  }
+
+  const currentPath = pointer.currentBundlePath;
+  check(errors, typeof currentPath === 'string' && currentPath.length > 0,
+    'mémoire canonique : currentBundlePath manquant');
+  if (typeof currentPath !== 'string' || currentPath.length === 0) return errors;
+
+  const bundlePath = path.join(ROOT, currentPath, 'bundle.json');
+  const bundle = await readJson(bundlePath, false);
+  check(errors, bundle !== false,
+    `mémoire canonique : currentBundlePath "${currentPath}" ne se résout pas — bundle.json introuvable`);
+  if (bundle === false) return errors;
+
+  check(errors, bundle.bundle_id === pointer.currentBundleId,
+    `mémoire canonique : currentBundleId "${pointer.currentBundleId}" ne correspond pas au bundle résolu "${bundle.bundle_id}"`);
+
+  for (const source of bundle.sources ?? []) {
+    const sourcePath = path.join(ROOT, currentPath, source.path);
+    const raw = await readFile(sourcePath).catch(() => null);
+    check(errors, raw !== null,
+      `mémoire canonique : source "${source.path}" du bundle courant introuvable`);
+    if (raw === null) continue;
+    check(errors, raw.length === source.bytes,
+      `mémoire canonique : source "${source.path}" fait ${raw.length} octets, ${source.bytes} déclarés`);
+    check(errors, createHash('sha256').update(raw).digest('hex') === source.sha256,
+      `mémoire canonique : source "${source.path}" a une empreinte sha256 divergente`);
+  }
+
+  for (const claim of bundle.claims ?? []) {
+    check(errors, claim.approval_eligible === false,
+      `mémoire canonique : claim "${claim.claim_id}" doit rester approval_eligible=false — la mémoire historique n'approuve jamais`);
+  }
+
+  // Chaque bundle listé comme précédent doit exister : l'historique est immuable,
+  // pas seulement déclaré.
+  for (const previous of pointer.previousBundles ?? []) {
+    const previousBundle = path.join(ROOT, previous.path, 'bundle.json');
+    const exists = await readFile(previousBundle).then(() => true).catch(() => false);
+    check(errors, exists,
+      `mémoire canonique : bundle précédent "${previous.name}" déclaré mais introuvable à "${previous.path}"`);
+  }
+
+  return errors;
+}
+
 async function readJson(file, fallback = null) {
   try {
     return JSON.parse(await readFile(file, 'utf8'));
@@ -590,7 +648,8 @@ async function main() {
     ...verifyGraphProjection(contracts, graph),
     ...verifyBlueprints(blueprints, contracts, taskRegistry),
     ...verifyCrossReferences(contracts, blueprints),
-    ...verifyEvolutionDesign(design, contracts, blueprints)
+    ...verifyEvolutionDesign(design, contracts, blueprints),
+    ...(await verifyCanonicalMemory())
   ];
 
   if (errors.length > 0) {

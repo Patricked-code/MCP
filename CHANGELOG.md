@@ -597,3 +597,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Classification mise à jour : `TASK-20260915-001` → `RESOLVED` ; `GWC-0` à `GWC-17` → **`NEW_TASK`**, seule classification autorisant la création d'un `GovernedTaskRecord`.
 - `AF-35` passe de « ouvert, bloque la matérialisation » à « résolu ». Les compteurs de findings et le verdict terminal sont mis à jour en conséquence.
 - Portée : documentation et données. `RUNTIME_TASKS_CREATED = 0`, aucune session ouverte, aucun Bootstrap Receipt demandé, aucun claim, aucun lock, aucune transition, aucun merge, aucun déploiement, aucun secret. La matérialisation est admissible mais non exécutée : elle exige une governed session et une décision humaine explicite.
+
+
+## 2026-09-18 — `AF-36` : le pointeur de mémoire canonique est désormais vérifié
+
+- Réconciliation du commit pair `e22214d` sur la branche partagée, après `HEAD_MOVED`. Merge, aucune réécriture d'historique.
+- **`AF-36` ouvert et corrigé** : `currentBundlePath` désignait un bundle absent de l'arbre, laissant la mémoire canonique irrésoluble — et la CI restait verte, aucun contrôle ne validant ce pointeur.
+- Instance corrigée par le commit pair `3f635e9`, qui repointe vers le bundle le plus récent réellement présent. La même réparation avait été dérivée indépendamment ici ; celle du pair a atterri en premier et a été adoptée telle quelle. Son commit documente également la cause de l'orphelinat : la surface d'écriture GitHub autorisait la mise à jour de fichiers existants mais bloquait la création de nouveaux chemins de mémoire canonique.
+- Cause corrigée : `verifyCanonicalMemory()` ajouté à `scripts/gwc-verify.mjs`. Il contrôle la résolution du pointeur, la correspondance du `bundle_id`, l'intégrité `sha256` et la taille de chaque source, `approval_eligible=false` sur chaque claim, et l'existence de chaque bundle précédent déclaré. Éprouvé par 5 défauts injectés, 5 rejets.
+- Les blocs `currentPhase` et `continuationPolicy` du commit pair sont **conservés intacts** : cette session ne les arbitre pas et ne s'en autorise pas.
+- Portée : documentation, données et vérificateur. Aucun code runtime, `RUNTIME_TASKS_CREATED = 0`, aucun merge, aucun déploiement, aucun secret.

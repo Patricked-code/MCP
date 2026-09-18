@@ -22,7 +22,8 @@
         "AF-21",
         "AF-28",
         "AF-33",
-        "AF-34"
+        "AF-34",
+        "AF-36"
       ],
       "openDecisions": [
         "OD-09"
@@ -662,6 +663,12 @@
       "owner": "GWC-5",
       "definitionSource": "CURRENT_MAIN_EVIDENCE",
       "corrected": false
+    },
+    {
+      "finding": "AF-36",
+      "owner": "GWC-0",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": true
     }
   ],
   "openDecisions": [

@@ -98,5 +98,14 @@
     "governedTask": "TASK-20260918-001",
     "status": "IN_PROGRESS",
     "mustBeCanonicalizedIntoNewImmutableBundleWhenFileCreationIsAvailable": true
+  },
+  "pointerIntegrityCheck": {
+    "finding": "AF-36",
+    "observedAt": "2026-09-18T17:50:00Z",
+    "problem": "Entre e22214d et 3f635e9, currentBundlePath a designe un bundle absent de l arbre. La memoire canonique etait irresoluble et la CI est restee verte: aucun controle ne validait ce pointeur.",
+    "instanceFixedBy": "Le commit pair 3f635e9 a repointe vers pr95-phase-b-resolved. La meme reparation avait ete derivee independamment par Claude; celle du pair a atterri en premier.",
+    "rootCauseFix": "verifyCanonicalMemory() dans scripts/gwc-verify.mjs: resolution du pointeur, correspondance du bundle_id, integrite sha256 et taille de chaque source, approval_eligible=false sur chaque claim, existence de chaque bundle precedent declare.",
+    "provenControl": "5 defauts injectes, 5 rejets.",
+    "consequence": "Un pointeur pendant fait desormais echouer gwc:verify, donc la CI, au lieu de passer inapercu."
   }
 }
