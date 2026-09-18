@@ -67,6 +67,23 @@ GitHub live.
 
 ## Continuité automatique multi-agent et intake conversation
 
+## Bootstrap PRECODE GitHub-first
+
+L'entrée PRECODE de `claude/ecstatic-edison-v1dyt1` est désormais explicitement GitHub-first. Un agent se connecte au repository/branche, observe le HEAD exact, lit la mémoire canonique/status/checkpoint/handoff, puis résout ou crée une `candidateSessionId` branch-local sans ouvrir de Governed Session runtime.
+
+`bootstrapCandidateConnection()` compose :
+- identité candidate bornée à partir des IDs réellement observés ;
+- `providerConversationRef=null/UNAVAILABLE` lorsqu'aucun véritable ID ChatGPT/Claude n'est fourni ;
+- routage `NEW_INFORMATION_INTAKE / CONTINUE_PRECODE_WORK / NEW_INFORMATION_THEN_CONTINUE_PRECODE` ;
+- `ASK_USER` uniquement lorsque l'intention n'est pas déductible ;
+- dispatch candidate existant pour les modes de continuation.
+
+Compatibilité : les anciennes sessions candidate sans `connectionInstanceRef` restent valides et sont enrichies au prochain resume.
+
+Preuves : RED CI #1061 ; compatibilité CI #1062 ; GREEN CI #1063. Aucun MCP runtime, Task Queue runtime, lock runtime, S1 ou prod requis.
+
+
+
 La branche candidate dispose désormais d'une fondation testée dans `src/governedContext/candidateContinuity.ts` :
 
 - `dispatchCandidateWork()` reprend le claim candidat actif de la même session ou sélectionne le prochain work item READY compatible avec dépendances/collision domains ;
