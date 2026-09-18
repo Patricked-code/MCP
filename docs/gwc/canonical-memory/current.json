@@ -1,41 +1,83 @@
 {
-  "currentBundle": "pr95-phase-b-resolved",
-  "currentBundleId": "bnd_mcp-pr95-phase-b-resolved-20260918",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-phase-b-resolved",
-  "preCodeActionFlow": {
-    "document": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+  "schemaVersion": 1,
+  "scope": "GWC",
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "mode": "PRECODE_FINALIZATION_ONLY",
+  "currentBundle": "pr95-precode-gate",
+  "currentBundleId": "bnd_mcp-pr95-precode-gate-20260917",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-precode-gate",
+  "programCatalog": {
+    "humanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "machineProjection": ".mcp/gwc-precode-action-flow.json",
-    "relation": "execution_companion_of_PRECODE_EXECUTION_PLAN",
-    "runtimeAuthority": false,
-    "taskQueueAuthority": false,
-    "requiredBeforeRuntimeCode": true,
-    "statusProjection": ".mcp/gwc-precode-status.json"
+    "statusProjection": ".mcp/gwc-precode-status.json",
+    "macroTaskRange": "T00-T204",
+    "macroTaskCount": 205,
+    "minimumElementaryActionsFullProgram": 2791,
+    "precodeArchitectureRange": "T00-T195",
+    "minimumElementaryActionsPrecodeArchitecture": 2782,
+    "futureIntegrationPlanRange": "T196-T204",
+    "futureIntegrationTaskCount": 9,
+    "rule": "All 205 macro tasks stay visible in canonical memory. During the current PRECODE-only phase, only branch-local architecture/design/canonicalization work is executable. T196-T204 and Phases B-F are future integration definitions, not current runtime work."
   },
-  "currentPhase": {
-    "id": "C",
-    "name": "Safety Prerequisites",
+  "currentPrecodeState": {
+    "phase": "A14",
+    "macroTask": "T195",
+    "work": "ALIGN_MEMORY_SUIVI_DECISIONS_AND_FINAL_PRECODE_CANONICALIZATION",
     "status": "IN_PROGRESS",
-    "verdict": "PHASE_B_COMPLETE_PHASE_C_IN_PROGRESS",
-    "blocker": {
-      "reasonCode": "CURRENT_CLIENT_GOVERNED_TASK_CLAIM_BLOCKED",
-      "ownerAuthority": "current client / MCP mutation guard",
-      "evidence": "TASK-20260918-001 remains READY owner=null blockers=[]; current client claim and session-close mutation calls are rejected by the security guard.",
-      "resolution": "An authorized agent surface must reobserve live authorities and claim TASK-20260918-001; once claimed, this client-specific blocker is stale and must be cleared."
-    },
-    "completedItems": [
-      "GWC-PRE-C3"
-    ],
-    "pendingItems": [
-      "GWC-PRE-C1",
-      "GWC-PRE-C2"
-    ],
-    "supportGovernedTask": "TASK-20260918-001",
-    "supportTaskPurpose": "Harden canonical autonomous continuation before resuming Phase C.",
-    "gwcRuntimeTasksCreated": 0,
-    "nextAction": "Reobserve TASK-20260918-001. If it is still READY/unowned, an authorized agent surface claims it and completes the continuation hardening. If another session already owns it, read that session/checkpoint and continue without duplicate work. After DONE, resume Phase C automatically."
+    "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
+    "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
+    "runtimeIntegration": "FORBIDDEN_IN_CURRENT_PHASE",
+    "governedTaskMaterialization": "FORBIDDEN_IN_CURRENT_PHASE",
+    "mainMutation": "FORBIDDEN_IN_CURRENT_PHASE",
+    "s1Mutation": "FORBIDDEN_IN_CURRENT_PHASE",
+    "deployment": "FORBIDDEN_IN_CURRENT_PHASE",
+    "blocker": null,
+    "nextAction": "Reobserve the exact online branch head; verify that canonical memory, PRECODE status, coordination policy, README, SUIVI, CHANGELOG and DECISIONS all project the same PRECODE-only boundary; run deterministic GWC/PRECODE verification and exact-head CI. If all pass, record FINAL_PRECODE_VERSION_ACCEPTED. Do not start real integration."
   },
-  "localCloneUsedForThisMemoryMission": false,
+  "precodeContinuationPolicy": {
+    "hierarchy": "PROGRAM -> PRECODE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
+    "autonomousContinuation": true,
+    "nextActionRequired": true,
+    "singleWriterPerCollisionDomain": true,
+    "onlineBranchOnly": true,
+    "branch": "claude/ecstatic-edison-v1dyt1",
+    "runtimeTaskQueueUsedForPrecode": false,
+    "runtimeLocksUsedForPrecode": false,
+    "stopOnlyFor": [
+      "NON_DEDUCIBLE_PRECODE_BLOCKER",
+      "HEAD_CONFLICT_REQUIRING_RECONCILIATION",
+      "MISSING_REQUIRED_PERMISSION_FOR_BRANCH_PRECODE_WRITE",
+      "SECURITY_OR_IRREVERSIBLE_DECISION_REQUIRED",
+      "FINAL_PRECODE_VERSION_ACCEPTED"
+    ]
+  },
+  "historicalRuntimeObservations": {
+    "role": "PROVENANCE_ONLY_NOT_CURRENT_EXECUTION",
+    "bundles": [
+      "pr95-phase-b-live-reconciliation",
+      "pr95-phase-b-resolved"
+    ],
+    "rule": "Runtime/Task Queue observations remain immutable evidence about the existing system. They never convert PRECODE work items into Governed Tasks and never make Phase B/C/D/E/F current while PRECODE_FINALIZATION_ONLY is active."
+  },
+  "readProtocol": [
+    "Read CLAUDE.md sections 8-9.",
+    "Read docs/gwc/README.md.",
+    "Read this current.json and resolve currentBundlePath.",
+    "Read docs/gwc/PRECODE_ACTION_TASK_FLOW.txt and .mcp/gwc-precode-action-flow.json for the complete T00-T204 catalog.",
+    "Read .mcp/gwc-precode-status.json for phase/work-item evidence.",
+    "Read docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md before any shared-branch write.",
+    "Reobserve the exact online GitHub head immediately before every write.",
+    "Resume from currentPrecodeState.nextAction and the first PRECODE work item that is incomplete, stale or reopened.",
+    "Do not materialize Governed Tasks, claim runtime locks, mutate main/S1 or deploy during PRECODE_FINALIZATION_ONLY.",
+    "Historical runtime observations are evidence only; do not treat them as the current execution phase."
+  ],
   "previousBundles": [
+    {
+      "name": "pr95-phase-b-resolved",
+      "path": "docs/gwc/canonical-memory/pr95-phase-b-resolved",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_NOT_CURRENT_PRECODE_EXECUTION"
+    },
     {
       "name": "pr95-precode-architecture-complete",
       "path": "docs/gwc/canonical-memory/pr95-precode-architecture-complete",
@@ -62,49 +104,10 @@
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     }
   ],
-  "readProtocol": [
-    "Read docs/gwc/README.md first.",
-    "Read CLAUDE.md section 9 and docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md before any GWC mutation.",
-    "Read docs/gwc/PRECODE_ACTION_TASK_FLOW.txt and .mcp/gwc-precode-action-flow.json.",
-    "Resolve this pointer to the current bundle and verify the selected bundle before projecting claims.",
-    "Read .mcp/gwc-precode-status.json for A1-A14, Phase B history and current Phase C state.",
-    "Historical authority never satisfies live approval.",
-    "Re-observe GitHub, Governed Task Queue, sessions, locks and Live State before state-dependent mutation.",
-    "If the program is non-terminal and no genuine blocker exists, NEXT_ACTION is mandatory and must be executed automatically.",
-    "NEW_TASK is not a generic human gate inside the already-approved GWC program; materialize only the single first necessary executable task through existing governed primitives.",
-    "Never materialize the 18 blueprints in bulk: TASK BLUEPRINT != GovernedTaskRecord.",
-    "Stop only on a genuine non-deducible governed blocker or UNIVERSAL_GOVERNED_WORKFLOW_ACCEPTED."
-  ],
-  "repository": "Patricked-code/MCP",
-  "schemaVersion": 1,
-  "scope": "GWC",
-  "updatedFromGitHubObservationAt": "2026-09-18T17:48:00Z",
-  "continuationPolicy": {
-    "mode": "AUTO_CONTINUE_UNTIL_REAL_BLOCKER_OR_UNIVERSAL_ACCEPTANCE",
-    "invariant": "DERIVABLE_NEXT_ACTION_MUST_AUTO_CONTINUE",
-    "nextActionRequiredWhenProgramNonTerminal": true,
-    "redundantHumanApprovalForbidden": true,
-    "newTaskIsHumanGateByDefault": false,
-    "bulkBlueprintTaskCreationForbidden": true,
-    "reobserveAfterEveryTerminalTask": true,
-    "stopOnlyForReasonCodes": [
-      "PERMISSION_OR_CREDENTIAL_REQUIRED",
-      "NON_DEDUCIBLE_AMBIGUITY",
-      "OWNERSHIP_OR_LOCK_CONFLICT",
-      "SECURITY_POLICY_DECISION_REQUIRED",
-      "DESTRUCTIVE_OR_IRREVERSIBLE_DECISION_REQUIRED",
-      "AUTHORITY_CONTRADICTION_UNRESOLVED",
-      "UNIVERSAL_GOVERNED_WORKFLOW_ACCEPTED"
-    ]
-  },
-  "continuationOverlay": {
-    "kind": "CURRENT_POINTER_OVERLAY",
-    "reason": "GitHub write surface permits updates to existing files but currently blocks creation of new canonical-memory paths; keep the immutable Phase-B bundle as the last complete bundle while current.json carries the newer governed continuation pointer.",
-    "governedTask": "TASK-20260918-001",
-    "status": "IN_PROGRESS",
-    "mustBeCanonicalizedIntoNewImmutableBundleWhenFileCreationIsAvailable": true
-  },
-  "pointerIntegrityCheck": {
+  "updatedFromGitHubObservationAt": "2026-09-18T18:04:00Z",
+  "observedHeadBeforePointerUpdate": "6418833ec774c18c5810caf099880875bb2df5c9",
+  "correctionReason": "Restore the canonical memory to the PRECODE program boundary. Earlier edits incorrectly promoted runtime Task Queue/claim semantics into the current PRECODE continuation state.",
+  "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
     "problem": "Entre e22214d et 3f635e9, currentBundlePath a designe un bundle absent de l arbre. La memoire canonique etait irresoluble et la CI est restee verte: aucun controle ne validait ce pointeur.",
