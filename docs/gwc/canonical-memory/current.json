@@ -1,7 +1,7 @@
 {
-  "currentBundle": "pr95-autocontinuation-hardening",
-  "currentBundleId": "bnd_mcp-pr95-autocontinuation-hardening-20260918",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-autocontinuation-hardening",
+  "currentBundle": "pr95-phase-b-resolved",
+  "currentBundleId": "bnd_mcp-pr95-phase-b-resolved-20260918",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-phase-b-resolved",
   "preCodeActionFlow": {
     "document": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "machineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -31,11 +31,6 @@
   },
   "localCloneUsedForThisMemoryMission": false,
   "previousBundles": [
-    {
-      "name": "pr95-phase-b-resolved",
-      "path": "docs/gwc/canonical-memory/pr95-phase-b-resolved",
-      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
-    },
     {
       "name": "pr95-precode-architecture-complete",
       "path": "docs/gwc/canonical-memory/pr95-precode-architecture-complete",
@@ -96,5 +91,12 @@
       "AUTHORITY_CONTRADICTION_UNRESOLVED",
       "UNIVERSAL_GOVERNED_WORKFLOW_ACCEPTED"
     ]
+  },
+  "continuationOverlay": {
+    "kind": "CURRENT_POINTER_OVERLAY",
+    "reason": "GitHub write surface permits updates to existing files but currently blocks creation of new canonical-memory paths; keep the immutable Phase-B bundle as the last complete bundle while current.json carries the newer governed continuation pointer.",
+    "governedTask": "TASK-20260918-001",
+    "status": "IN_PROGRESS",
+    "mustBeCanonicalizedIntoNewImmutableBundleWhenFileCreationIsAvailable": true
   }
 }
