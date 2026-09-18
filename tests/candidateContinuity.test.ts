@@ -3,9 +3,13 @@ import test from 'node:test';
 
 import {
   CandidateConversationIntakeSchema,
+  assessCandidateKnowledgeFreshness,
   bootstrapCandidateConnection,
   dispatchCandidateWork,
+  evaluateCandidateIntakeGate,
+  reconcileCandidateIntakeBatch,
   reconcileConversationIntake,
+  registerCandidateIntake,
   resolveCandidateSession,
   routeCandidateConnectionIntent,
   type CandidateCanonicalEntry,
@@ -348,4 +352,336 @@ test('GitHub-first bootstrap composes session resolution, intent routing and wor
   assert.equal(result.dispatch?.status, 'ASSIGN');
   assert.equal(result.dispatch?.workItem?.workItemId, 'GWC-PRE-B-01');
   assert.equal(result.requiresUserChoice, false);
+});
+
+
+test('intake registration is monotone and does not persist raw conversation content', () => {
+  const result = registerCandidateIntake({
+    cursor: {
+      latestIntakeSequence: 2,
+      reconciledThroughSequence: 0,
+      canonicalRevision: 55,
+      backlogRevision: 17,
+      lastReconciliationDigest: null,
+      pendingIntakeIds: [
+        'NEW_INFORMATION_INTAKE-001',
+        'NEW_INFORMATION_INTAKE-002'
+      ]
+    },
+    sourceType: 'chatgpt',
+    sourceId: 'conversation-current',
+    sourceDigest: 'a'.repeat(64),
+    observedAt: '2026-09-19T01:45:00+02:00'
+  });
+
+  assert.equal(result.intake.intakeId, 'NEW_INFORMATION_INTAKE-003');
+  assert.equal(result.intake.sequence, 3);
+  assert.equal(result.intake.status, 'RECEIVED');
+  assert.equal(result.cursor.latestIntakeSequence, 3);
+  assert.deepEqual(result.cursor.pendingIntakeIds, [
+    'NEW_INFORMATION_INTAKE-001',
+    'NEW_INFORMATION_INTAKE-002',
+    'NEW_INFORMATION_INTAKE-003'
+  ]);
+  assert.equal('rawTranscript' in result.intake, false);
+});
+
+test('coherence gate rejects a parallel authority even when the idea is technically possible', () => {
+  const evaluated = evaluateCandidateIntakeGate({
+    intakeId: 'NEW_INFORMATION_INTAKE-003',
+    sequence: 3,
+    understood: true,
+    relevance: 'RELEVANT',
+    evidence: 'VERIFIED',
+    evidenceRequired: false,
+    objectiveAlignment: 'ALIGNED',
+    relationToExisting: 'NEW',
+    architecturalFit: 'CONFLICTS',
+    authorityFit: 'CREATES_PARALLEL_AUTHORITY',
+    nonRegression: 'BREAKING',
+    impact: 'PROGRAM_WIDE',
+    existingFirstPath: 'NEW',
+    affectedScopes: ['candidate-work'],
+    affectedContracts: [],
+    affectedBlueprints: [],
+    affectedWorkItems: [],
+    affectedAuthorities: ['Governed Task Queue']
+  });
+
+  assert.equal(evaluated.verdict, 'REJECT');
+  assert.equal(evaluated.shouldIntegrate, false);
+  assert.ok(evaluated.reasonCodes.includes('PARALLEL_AUTHORITY'));
+});
+
+test('coherence gate accepts an additive existing-first evolution with adaptation', () => {
+  const evaluated = evaluateCandidateIntakeGate({
+    intakeId: 'NEW_INFORMATION_INTAKE-004',
+    sequence: 4,
+    understood: true,
+    relevance: 'RELEVANT',
+    evidence: 'PLAUSIBLE',
+    evidenceRequired: false,
+    objectiveAlignment: 'ALIGNED',
+    relationToExisting: 'COMPLEMENT',
+    architecturalFit: 'FITS_WITH_ADAPTATION',
+    authorityFit: 'PRESERVES_EXISTING_AUTHORITIES',
+    nonRegression: 'REQUIRES_COMPATIBILITY_WORK',
+    impact: 'MULTI_CONTRACT',
+    existingFirstPath: 'EXTEND',
+    affectedScopes: ['candidate-continuity'],
+    affectedContracts: ['GW-35', 'GW-36'],
+    affectedBlueprints: ['GWC-14'],
+    affectedWorkItems: ['GWC-PRE-E-GWC-14'],
+    affectedAuthorities: []
+  });
+
+  assert.equal(evaluated.verdict, 'ACCEPT_WITH_ADAPTATION');
+  assert.equal(evaluated.shouldIntegrate, true);
+  assert.ok(evaluated.reasonCodes.includes('EXISTING_FIRST_ADAPTATION_REQUIRED'));
+});
+
+test('coherence gate defers an evidence-required unverified factual intake', () => {
+  const evaluated = evaluateCandidateIntakeGate({
+    intakeId: 'NEW_INFORMATION_INTAKE-005',
+    sequence: 5,
+    understood: true,
+    relevance: 'RELEVANT',
+    evidence: 'UNVERIFIED',
+    evidenceRequired: true,
+    objectiveAlignment: 'ALIGNED',
+    relationToExisting: 'NEW',
+    architecturalFit: 'FITS',
+    authorityFit: 'PRESERVES_EXISTING_AUTHORITIES',
+    nonRegression: 'SAFE',
+    impact: 'LOCAL',
+    existingFirstPath: 'EXTEND',
+    affectedScopes: ['candidate-continuity'],
+    affectedContracts: [],
+    affectedBlueprints: [],
+    affectedWorkItems: [],
+    affectedAuthorities: []
+  });
+
+  assert.equal(evaluated.verdict, 'DEFER');
+  assert.equal(evaluated.shouldIntegrate, false);
+  assert.ok(evaluated.reasonCodes.includes('EVIDENCE_REQUIRED_UNVERIFIED'));
+});
+
+test('coherence gate keeps duplicates out of canonical and backlog revisions', () => {
+  const evaluated = evaluateCandidateIntakeGate({
+    intakeId: 'NEW_INFORMATION_INTAKE-006',
+    sequence: 6,
+    understood: true,
+    relevance: 'RELEVANT',
+    evidence: 'VERIFIED',
+    evidenceRequired: false,
+    objectiveAlignment: 'ALIGNED',
+    relationToExisting: 'DUPLICATE',
+    architecturalFit: 'FITS',
+    authorityFit: 'PRESERVES_EXISTING_AUTHORITIES',
+    nonRegression: 'SAFE',
+    impact: 'NONE',
+    existingFirstPath: 'REUSE',
+    affectedScopes: [],
+    affectedContracts: [],
+    affectedBlueprints: [],
+    affectedWorkItems: [],
+    affectedAuthorities: []
+  });
+
+  assert.equal(evaluated.verdict, 'DUPLICATE');
+  assert.equal(evaluated.shouldIntegrate, false);
+});
+
+test('intake batch reconciliation advances only a contiguous delta and produces an auditable receipt', () => {
+  const result = reconcileCandidateIntakeBatch({
+    cursor: {
+      latestIntakeSequence: 2,
+      reconciledThroughSequence: 0,
+      canonicalRevision: 55,
+      backlogRevision: 17,
+      lastReconciliationDigest: null,
+      pendingIntakeIds: [
+        'NEW_INFORMATION_INTAKE-001',
+        'NEW_INFORMATION_INTAKE-002'
+      ]
+    },
+    intakes: [
+      {
+        intakeId: 'NEW_INFORMATION_INTAKE-001',
+        sequence: 1,
+        gate: {
+          understood: true,
+          relevance: 'RELEVANT',
+          evidence: 'PLAUSIBLE',
+          evidenceRequired: false,
+          objectiveAlignment: 'ALIGNED',
+          relationToExisting: 'COMPLEMENT',
+          architecturalFit: 'FITS_WITH_ADAPTATION',
+          authorityFit: 'PRESERVES_EXISTING_AUTHORITIES',
+          nonRegression: 'REQUIRES_COMPATIBILITY_WORK',
+          impact: 'MULTI_CONTRACT',
+          existingFirstPath: 'EXTEND'
+        },
+        affectedScopes: ['gwc-architecture'],
+        affectedContracts: ['GW-01', 'GW-02'],
+        affectedBlueprints: ['GWC-0'],
+        affectedWorkItems: ['GWC-PRE-B-01'],
+        affectedAuthorities: [],
+        canonicalEffect: 'ENRICH',
+        backlogEffect: 'ENRICH_EXISTING_WORK'
+      },
+      {
+        intakeId: 'NEW_INFORMATION_INTAKE-002',
+        sequence: 2,
+        gate: {
+          understood: true,
+          relevance: 'RELEVANT',
+          evidence: 'VERIFIED',
+          evidenceRequired: false,
+          objectiveAlignment: 'ALIGNED',
+          relationToExisting: 'COMPLEMENT',
+          architecturalFit: 'FITS_WITH_ADAPTATION',
+          authorityFit: 'PRESERVES_EXISTING_AUTHORITIES',
+          nonRegression: 'SAFE',
+          impact: 'MULTI_CONTRACT',
+          existingFirstPath: 'GENERALIZE'
+        },
+        affectedScopes: ['candidate-backlog'],
+        affectedContracts: [],
+        affectedBlueprints: ['GWC-0', 'GWC-14'],
+        affectedWorkItems: ['GWC-PRE-B-01', 'GWC-PRE-B-02', 'GWC-PRE-B-03'],
+        affectedAuthorities: [],
+        canonicalEffect: 'ENRICH',
+        backlogEffect: 'ENRICH_EXISTING_WORK'
+      }
+    ]
+  });
+
+  assert.equal(result.status, 'RECONCILED');
+  assert.equal(result.cursor.reconciledThroughSequence, 2);
+  assert.equal(result.cursor.canonicalRevision, 56);
+  assert.equal(result.cursor.backlogRevision, 18);
+  assert.deepEqual(result.cursor.pendingIntakeIds, []);
+  assert.equal(result.receipt.fromSequence, 1);
+  assert.equal(result.receipt.throughSequence, 2);
+  assert.deepEqual(result.receipt.intakeIds, [
+    'NEW_INFORMATION_INTAKE-001',
+    'NEW_INFORMATION_INTAKE-002'
+  ]);
+  assert.equal(result.receipt.previousCanonicalRevision, 55);
+  assert.equal(result.receipt.resultingCanonicalRevision, 56);
+  assert.equal(result.receipt.previousBacklogRevision, 17);
+  assert.equal(result.receipt.resultingBacklogRevision, 18);
+  assert.match(result.receipt.digest, /^[0-9a-f]{64}$/);
+});
+
+test('intake reconciliation fails closed on a sequence gap', () => {
+  const result = reconcileCandidateIntakeBatch({
+    cursor: {
+      latestIntakeSequence: 3,
+      reconciledThroughSequence: 0,
+      canonicalRevision: 55,
+      backlogRevision: 17,
+      lastReconciliationDigest: null,
+      pendingIntakeIds: [
+        'NEW_INFORMATION_INTAKE-001',
+        'NEW_INFORMATION_INTAKE-002',
+        'NEW_INFORMATION_INTAKE-003'
+      ]
+    },
+    intakes: [
+      {
+        intakeId: 'NEW_INFORMATION_INTAKE-002',
+        sequence: 2,
+        gate: {
+          understood: true,
+          relevance: 'RELEVANT',
+          evidence: 'VERIFIED',
+          evidenceRequired: false,
+          objectiveAlignment: 'ALIGNED',
+          relationToExisting: 'NEW',
+          architecturalFit: 'FITS',
+          authorityFit: 'PRESERVES_EXISTING_AUTHORITIES',
+          nonRegression: 'SAFE',
+          impact: 'LOCAL',
+          existingFirstPath: 'EXTEND'
+        },
+        affectedScopes: [],
+        affectedContracts: [],
+        affectedBlueprints: [],
+        affectedWorkItems: [],
+        affectedAuthorities: [],
+        canonicalEffect: 'ADD',
+        backlogEffect: 'NONE'
+      }
+    ]
+  });
+
+  assert.equal(result.status, 'BLOCKED_GAP');
+  assert.equal(result.expectedNextSequence, 1);
+  assert.equal(result.cursor.reconciledThroughSequence, 0);
+  assert.equal(result.receipt, null);
+});
+
+test('knowledge freshness is local: unrelated intake delta does not globally block independent work', () => {
+  const result = assessCandidateKnowledgeFreshness({
+    expectedHeadSha: 'f'.repeat(40),
+    currentHeadSha: 'f'.repeat(40),
+    expectedCanonicalRevision: 55,
+    currentCanonicalRevision: 56,
+    expectedBacklogRevision: 17,
+    currentBacklogRevision: 18,
+    workItemId: 'GWC-PRE-E-GWC-7',
+    changedIntakes: [{
+      intakeId: 'NEW_INFORMATION_INTAKE-010',
+      sequence: 10,
+      affectedWorkItems: ['GWC-PRE-E-GWC-14'],
+      affectedBlueprints: ['GWC-14'],
+      affectedContracts: ['GW-35']
+    }]
+  });
+
+  assert.equal(result.status, 'KNOWLEDGE_STALE_NO_LOCAL_IMPACT');
+  assert.equal(result.mayContinueAfterLogicalRebase, true);
+  assert.deepEqual(result.relevantIntakeIds, []);
+});
+
+test('knowledge freshness requires reconciliation when the delta affects the claimed work item', () => {
+  const result = assessCandidateKnowledgeFreshness({
+    expectedHeadSha: 'f'.repeat(40),
+    currentHeadSha: 'f'.repeat(40),
+    expectedCanonicalRevision: 55,
+    currentCanonicalRevision: 56,
+    expectedBacklogRevision: 17,
+    currentBacklogRevision: 18,
+    workItemId: 'GWC-PRE-E-GWC-14',
+    changedIntakes: [{
+      intakeId: 'NEW_INFORMATION_INTAKE-010',
+      sequence: 10,
+      affectedWorkItems: ['GWC-PRE-E-GWC-14'],
+      affectedBlueprints: ['GWC-14'],
+      affectedContracts: ['GW-35']
+    }]
+  });
+
+  assert.equal(result.status, 'RECONCILE_REQUIRED');
+  assert.equal(result.mayContinueAfterLogicalRebase, false);
+  assert.deepEqual(result.relevantIntakeIds, ['NEW_INFORMATION_INTAKE-010']);
+});
+
+test('HEAD_MOVED remains higher priority than knowledge-revision reconciliation', () => {
+  const result = assessCandidateKnowledgeFreshness({
+    expectedHeadSha: '1'.repeat(40),
+    currentHeadSha: '2'.repeat(40),
+    expectedCanonicalRevision: 55,
+    currentCanonicalRevision: 56,
+    expectedBacklogRevision: 17,
+    currentBacklogRevision: 18,
+    workItemId: 'GWC-PRE-E-GWC-14',
+    changedIntakes: []
+  });
+
+  assert.equal(result.status, 'HEAD_MOVED');
+  assert.equal(result.mayContinueAfterLogicalRebase, false);
 });
