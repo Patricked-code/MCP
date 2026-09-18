@@ -1,5 +1,14 @@
 # SUIVI.md — Point de reprise courant
 
+## PRECODE — preuves serveur sans OAuth/bridge
+
+- Le PRECODE ne dépend pas de l'OAuth du serveur MCP ni de `wealthtech_ssh_bridge`.
+- Sources prioritaires : audits versionnés `docs/audits/**` / `docs/history/**` / canonical-memory, puis GitHub live et artefacts CI exact-head.
+- Les audits déjà disponibles incluent notamment attestations runtime read-only, recovery, catalogue runtime, état des foundations et snapshots `live-authorities.json`.
+- Si une preuve serveur réellement fraîche manque, le design retenu est un **read-only evidence mirror** indépendant du MCP/OAuth : identité serveur dédiée/forced-command, commandes allowlistées, sortie JSON redacted + digest, publication GitHub Actions artifact.
+- Ce miroir est **DESIGNED_NOT_IMPLEMENTED** pendant PRECODE. Il ne doit disposer d'aucune mutation, restart, deploy, Governed Session, task claim ou lock.
+- Si la preuve n'existe pas ou est stale : `UNKNOWN` / `STALE`, jamais ouverture d'une session runtime par défaut.
+
 ## Point courant — GWC PR #95 : finalisation PRECODE stricte
 
 - Branche unique : `claude/ecstatic-edison-v1dyt1`; aucune écriture `main`, S1 ou runtime dans cette phase.
