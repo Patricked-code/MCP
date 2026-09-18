@@ -187,6 +187,29 @@ Cette autorisation porte sur le contenu de la branche candidate. Elle ne constit
 
 La condition terminale du candidate build est `FINAL_PRECODE_VERSION_ACCEPTED` / `EVOLVED_CANDIDATE_READY_FOR_INTEGRATION`.
 
+### 9.8 Bootstrap automatique PRECODE multi-agent et informations de conversation
+
+Sur `claude/ecstatic-edison-v1dyt1`, toute nouvelle IA autorisée (Claude, ChatGPT ou autre agent compatible) doit, dès sa connexion/reprise :
+
+1. reobserver le HEAD exact ;
+2. lire la mémoire canonique, le bundle courant, le status PRECODE et le dernier checkpoint/handoff ;
+3. analyser les nouvelles informations présentes dans la conversation courante ;
+4. ne projeter que des insights bornés et structurés — jamais persister le transcript brut par ce mécanisme ;
+5. réconcilier ces insights avec la mémoire canonique et les work items candidate ;
+6. classer chaque insight en `DUPLICATE / COMPLEMENT / DECISION / FINDING / TASK / CONTRADICTION / MEMORY` ;
+7. appliquer les enrichissements non conflictuels à la mémoire/backlog avec provenance ;
+8. mettre toute contradiction/supersession en `HOLD_FOR_REVIEW` au lieu d'écraser silencieusement une règle active ;
+9. reprendre son claim candidate actif s'il existe, sinon sélectionner le prochain work item READY dont les dépendances sont DONE et dont les collision domains sont libres ;
+10. reobserver le HEAD avant d'enregistrer le claim ; si le HEAD a bougé, recalculer l'attribution ;
+11. exécuter RED → GREEN → régression → preuves → checkpoint/handoff ;
+12. mettre à jour la mémoire canonique et `NEXT_ACTION` après tout changement significatif.
+
+Implémentation candidate : `src/governedContext/candidateContinuity.ts`.
+Projection branch-local : `.mcp/gwc-precode-status.json > candidateCoordination`.
+Tests : `tests/candidateContinuity.test.ts`.
+
+Cette capacité ne crée aucune seconde Task Queue, aucune seconde Operational Memory et aucun runtime lock. Elle ne donne aucune autorisation de merge `main`, écriture S1, déploiement ou activation live avant `FINAL_PRECODE_VERSION_ACCEPTED`.
+
 ## Règle permanente — double présence, non-régression et amélioration continue
 
 GitHub est la source versionnée.
