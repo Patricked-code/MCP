@@ -1,5 +1,20 @@
 # SUIVI.md — Point de reprise courant
 
+## GWC PR #95 — candidate évoluée complète sur branche Claude
+
+- Interprétation canonique corrigée : PRECODE = **pré-intégration de la candidate évoluée**, pas documentation seulement.
+- Branche de construction unique : `claude/ecstatic-edison-v1dyt1`.
+- Architecture exhaustive A1→A14 : `PASS_WITH_EVIDENCE`; gate : `GWC_ARCHITECTURE_GATE_PASS`.
+- Après ce gate, le code candidate est autorisé et attendu sur la branche : `src/**`, tests, workflows, scripts, types, wrappers, généralisations, extensions, migrations additives et corrections de findings.
+- Séquence candidate active : `B backlog complet → C safety/foundations → D/E implémentation GWC-0..17 → F acceptance candidate`.
+- Premier work item courant : `GWC-PRE-B-01`.
+- Gouvernance candidate : work items PRECODE, sessions/checkpoints/handoffs GitHub ; **aucune** Governed Task runtime, aucun runtime lock/claim.
+- `main`, S1, production et déploiement restent gelés jusqu'à `FINAL_PRECODE_VERSION_ACCEPTED`.
+- Bundle canonique courant : `docs/gwc/canonical-memory/pr95-candidate-build-ready`.
+- Sorties finales : `FINAL_PRECODE_VERSION_ACCEPTED` puis `EVOLVED_CANDIDATE_READY_FOR_INTEGRATION`.
+- Après seulement : réobservation du projet réel, réconciliation du drift, puis intégration de la candidate déjà construite.
+- NEXT_ACTION : exécuter `GWC-PRE-B-01` et synthétiser le backlog complet d'implémentation candidate depuis les 18 blueprints, 73 contrats, findings, décisions et code existant.
+
 ## PRECODE — preuves serveur sans OAuth/bridge
 
 - Le PRECODE ne dépend pas de l'OAuth du serveur MCP ni de `wealthtech_ssh_bridge`.
