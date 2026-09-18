@@ -279,7 +279,7 @@
     "status": "READY",
     "exit": "FINAL_PRECODE_VERSION_ACCEPTED",
     "integrationReadyExit": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
-    "nextAction": "Execute GWC-PRE-B-01 through the GitHub-first PRECODE bootstrap: connect directly to the Claude branch, resolve/create branch-local candidate session from observed identifiers only, route intent (information/continue/both or ask if ambiguous), reconcile new information, then derive the complete candidate backlog."
+    "nextAction": "Before GWC-PRE-B-01, reconcile pending NEW_INFORMATION_INTAKE-001..002 through the additive Intake Coherence Gate, emit a reconciliation receipt, update canonical/backlog revisions only for accepted effects, then derive the complete candidate backlog from the resulting reconciled state."
   },
   "programCatalog": {
     "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
@@ -714,7 +714,8 @@
     "implementedFoundations": [
       "GWC-PRE-B-FND-01",
       "GWC-PRE-B-FND-02",
-      "GWC-PRE-B-FND-03"
+      "GWC-PRE-B-FND-03",
+      "GWC-PRE-B-FND-04"
     ]
   },
   "finalCandidateVerdict": "PENDING",
@@ -789,6 +790,31 @@
         ]
       },
       {
+        "workItemId": "GWC-PRE-B-FND-04",
+        "intentKeys": [
+          "candidate.intake-continuity",
+          "candidate.coherence-gate",
+          "candidate.knowledge-revision"
+        ],
+        "status": "DONE",
+        "priority": 107,
+        "sequence": 0,
+        "dependencies": [
+          "GWC-PRE-B-FND-02",
+          "GWC-PRE-B-FND-03"
+        ],
+        "collisionDomains": [
+          "src:governed-context",
+          "tests:candidate-continuity",
+          "docs:gwc",
+          ".mcp:gwc-precode"
+        ],
+        "evidence": [
+          "RED CI #1080 @ c63beb0ac413824a72647a661640ed599cc867a0",
+          "GREEN CI #1081 @ f288d3e93eae772dd4e51654a1e4512a822b3dd6"
+        ]
+      },
+      {
         "workItemId": "GWC-PRE-B-01",
         "intentKeys": [
           "candidate-backlog"
@@ -852,20 +878,23 @@
     "connectionProtocol": [
       "CONNECT_DIRECTLY_TO_GITHUB_BRANCH_NO_MCP_RUNTIME_REQUIRED",
       "REOBSERVE_EXACT_CLAUDE_BRANCH_HEAD",
-      "READ_CLAUDE_CANONICAL_MEMORY_CURRENT_BUNDLE_STATUS_CHECKPOINT_HANDOFF",
+      "READ_CANONICAL_MEMORY_CURRENT_BUNDLE_STATUS_CHECKPOINT_HANDOFF",
+      "READ_INTAKE_CONTINUITY_CURSOR_AND_PENDING_DELTA",
       "OBSERVE_ONLY_IDENTIFIERS_ACTUALLY_EXPOSED_BY_CLIENT_OR_GITHUB",
       "RESOLVE_OR_CREATE_BRANCH_LOCAL_CANDIDATE_SESSION",
-      "NEVER_INVENT_PROVIDER_CONVERSATION_ID_WHEN_UNAVAILABLE",
       "DETECT_DECLARED_OR_SEMANTIC_PRECODE_MODE",
       "IF_AMBIGUOUS_ASK_USER_NEW_INFORMATION_OR_CONTINUE_OR_BOTH",
-      "ANALYZE_NEW_CONVERSATION_INFORMATION_IF_PRESENT",
-      "PROJECT_ONLY_BOUNDED_STRUCTURED_INSIGHTS",
-      "RECONCILE_WITH_CANONICAL_MEMORY_AND_CANDIDATE_WORK",
+      "IF_NEW_INFORMATION_REGISTER_MONOTONE_INTAKE_WITHOUT_RAW_TRANSCRIPT",
+      "STRUCTURE_AND_EVALUATE_THROUGH_COHERENCE_GATE",
+      "RECONCILE_ONLY_CONTIGUOUS_PENDING_DELTA",
+      "EMIT_RECONCILIATION_RECEIPT_AND_ADVANCE_REVISIONS_ONLY_ON_ACCEPTED_EFFECTS",
+      "CALCULATE_AFFECTED_SCOPES_CONTRACTS_BLUEPRINTS_WORK_ITEMS_AUTHORITIES",
       "HOLD_CONTRADICTIONS_OR_SUPERSESSIONS_FOR_REVIEW",
       "RESUME_ACTIVE_BRANCH_LOCAL_CLAIM_IF_PRESENT",
       "ELSE_SELECT_NEXT_DEPENDENCY_AND_COLLISION_SAFE_WORK_ITEM",
-      "REOBSERVE_HEAD_BEFORE_PERSISTING_SESSION_OR_CLAIM",
+      "BEFORE_WRITE_VALIDATE_HEAD_CANONICAL_REVISION_BACKLOG_REVISION",
       "HEAD_MOVED_RECONCILE_AND_REDISPATCH",
+      "KNOWLEDGE_STALE_ONLY_BLOCK_AFFECTED_WORK",
       "EXECUTE_RED_GREEN_REGRESSION",
       "CHECKPOINT_HANDOFF_UPDATE_MEMORY_AND_NEXT_ACTION"
     ],
@@ -965,5 +994,105 @@
     }
   },
   "updatedForGithubFirstBootstrapAt": "2026-09-19",
-  "updatedForGithubFirstBootstrapHead": "2264b3da4dc672ae1e271519957203c62b7ae03d"
+  "updatedForGithubFirstBootstrapHead": "2264b3da4dc672ae1e271519957203c62b7ae03d",
+  "intakeContinuity": {
+    "role": "BRANCH_LOCAL_CONTINUITY_INDEX_NOT_AUTHORITY",
+    "implementation": "src/governedContext/candidateContinuity.ts",
+    "latestIntakeSequence": 2,
+    "reconciledThroughSequence": 0,
+    "canonicalRevision": 1,
+    "backlogRevision": 0,
+    "lastReconciliationDigest": null,
+    "pendingIntakeIds": [
+      "NEW_INFORMATION_INTAKE-001",
+      "NEW_INFORMATION_INTAKE-002"
+    ],
+    "sourceBundles": [
+      "docs/gwc/canonical-memory/pr95-new-information-intake-001",
+      "docs/gwc/canonical-memory/pr95-new-information-intake-002"
+    ],
+    "rule": "The cursor indexes immutable intake evidence and reconciliation progress. It is not a second queue, memory store or task registry.",
+    "sequencePolicy": "NEW_INFORMATION_INTAKE-N is monotone; only contiguous deltas advance reconciledThroughSequence.",
+    "revisionPolicy": "Canonical/backlog revisions advance only when a reconciled batch produces accepted effects.",
+    "pendingRule": "Intake #001 and #002 were previously recorded with canonicalAdoptionPerformed=false; under the new gate they remain pending until explicitly evaluated/reconciled."
+  },
+  "intakeCoherenceGate": {
+    "status": "PASS_WITH_EVIDENCE",
+    "implementation": "src/governedContext/candidateContinuity.ts#evaluateCandidateIntakeGate",
+    "dimensions": [
+      "understanding",
+      "relevance",
+      "evidence",
+      "objectiveAlignment",
+      "relationToExisting",
+      "architecturalFit",
+      "authorityFit",
+      "nonRegression",
+      "impact",
+      "existingFirstPath"
+    ],
+    "verdicts": [
+      "ACCEPT",
+      "ACCEPT_WITH_ADAPTATION",
+      "COMPLEMENT",
+      "DUPLICATE",
+      "DEFER",
+      "HOLD_FOR_REVIEW",
+      "OUT_OF_SCOPE",
+      "REJECT"
+    ],
+    "integrationRule": "NEW != GOOD != RELEVANT != COMPATIBLE != READY_TO_APPLY",
+    "parallelAuthorityRule": "REJECT",
+    "contradictionRule": "HOLD_FOR_REVIEW",
+    "unverifiedEvidenceRequiredRule": "DEFER",
+    "existingFirstRule": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
+    "evidence": {
+      "red": {
+        "run": 1080,
+        "head": "c63beb0ac413824a72647a661640ed599cc867a0"
+      },
+      "green": {
+        "run": 1081,
+        "head": "f288d3e93eae772dd4e51654a1e4512a822b3dd6"
+      }
+    }
+  },
+  "intakeReconciliation": {
+    "batchFunction": "reconcileCandidateIntakeBatch",
+    "receiptRequired": true,
+    "receiptFields": [
+      "fromSequence",
+      "throughSequence",
+      "intakeIds",
+      "previousCanonicalRevision",
+      "resultingCanonicalRevision",
+      "previousBacklogRevision",
+      "resultingBacklogRevision",
+      "effects",
+      "digest"
+    ],
+    "gapPolicy": "FAIL_CLOSED_BLOCKED_GAP",
+    "canonicalRevisionIncrement": "AT_MOST_ONCE_PER_RECONCILIATION_BATCH_IF_ACCEPTED_CANONICAL_EFFECT_EXISTS",
+    "backlogRevisionIncrement": "AT_MOST_ONCE_PER_RECONCILIATION_BATCH_IF_ACCEPTED_BACKLOG_EFFECT_EXISTS"
+  },
+  "knowledgeFreshnessGuard": {
+    "function": "assessCandidateKnowledgeFreshness",
+    "guards": [
+      "HEAD_SHA",
+      "CANONICAL_REVISION",
+      "BACKLOG_REVISION"
+    ],
+    "precedence": "HEAD_MOVED_FIRST",
+    "localImpactRule": "LOCAL_BLOCKER_NE_GLOBAL_STOP",
+    "statuses": [
+      "CURRENT",
+      "HEAD_MOVED",
+      "KNOWLEDGE_STALE_NO_LOCAL_IMPACT",
+      "RECONCILE_REQUIRED"
+    ],
+    "noLocalImpact": "LOGICAL_REBASE_ALLOWED_AFTER_REFRESH",
+    "affectedWork": "RECONCILE_REQUIRED"
+  },
+  "updatedForIntakeContinuityAt": "2026-09-19",
+  "updatedForIntakeContinuityHead": "f288d3e93eae772dd4e51654a1e4512a822b3dd6"
 }
