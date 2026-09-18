@@ -94,11 +94,6 @@
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     },
     {
-      "name": "pr95-precode-gate",
-      "path": "docs/gwc/canonical-memory/pr95-precode-gate",
-      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
-    },
-    {
       "name": "pr95-phase-b-live-reconciliation",
       "path": "docs/gwc/canonical-memory/pr95-phase-b-live-reconciliation",
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
@@ -115,5 +110,14 @@
     "rootCauseFix": "verifyCanonicalMemory() dans scripts/gwc-verify.mjs: resolution du pointeur, correspondance du bundle_id, integrite sha256 et taille de chaque source, approval_eligible=false sur chaque claim, existence de chaque bundle precedent declare.",
     "provenControl": "5 defauts injectes, 5 rejets.",
     "consequence": "Un pointeur pendant fait desormais echouer gwc:verify, donc la CI, au lieu de passer inapercu."
+  },
+  "pointerCoherenceRepair": {
+    "finding": "AF-36",
+    "scope": "EXTENSION_DU_CONTROLE_INITIAL",
+    "observedAt": "2026-09-18T18:20:00Z",
+    "problem": "Le bundle courant pr95-precode-gate etait simultanement liste dans previousBundles comme supersede. Un agent qui reprend lisait un checkpoint a la fois actif et perime.",
+    "gapInMyOwnCheck": "Le premier controle AF-36 verifiait que chaque bundle precedent existe, mais pas que le bundle courant est absent de cette liste. La lacune est de moi et n a ete vue qu en confrontant le controle a une sortie pair reelle.",
+    "rootCauseFix": "verifyCanonicalMemory() rejette desormais un bundle courant egalement liste comme precedent, par nom et par chemin.",
+    "instanceFix": "Entree dupliquee retiree de previousBundles. Aucun autre bloc du pair modifie."
   }
 }
