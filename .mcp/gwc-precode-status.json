@@ -279,7 +279,7 @@
     "status": "READY",
     "exit": "FINAL_PRECODE_VERSION_ACCEPTED",
     "integrationReadyExit": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
-    "nextAction": "Execute GWC-PRE-B-01 using the new candidate continuity protocol: reobserve exact branch head, reconcile any new conversation insights, then derive the complete branch-local candidate backlog and bind future work for safe multi-agent dispatch."
+    "nextAction": "Execute GWC-PRE-B-01 through the GitHub-first PRECODE bootstrap: connect directly to the Claude branch, resolve/create branch-local candidate session from observed identifiers only, route intent (information/continue/both or ask if ambiguous), reconcile new information, then derive the complete candidate backlog."
   },
   "programCatalog": {
     "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
@@ -713,7 +713,8 @@
     "liveIntegrationBoundary": "FROZEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "implementedFoundations": [
       "GWC-PRE-B-FND-01",
-      "GWC-PRE-B-FND-02"
+      "GWC-PRE-B-FND-02",
+      "GWC-PRE-B-FND-03"
     ]
   },
   "finalCandidateVerdict": "PENDING",
@@ -759,6 +760,32 @@
         "evidence": [
           "RED CI #1046",
           "GREEN CI #1048"
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-B-FND-03",
+        "intentKeys": [
+          "candidate.github-first-bootstrap",
+          "candidate.session-identity",
+          "candidate.intent-routing"
+        ],
+        "status": "DONE",
+        "priority": 108,
+        "sequence": 0,
+        "dependencies": [
+          "GWC-PRE-B-FND-01",
+          "GWC-PRE-B-FND-02"
+        ],
+        "collisionDomains": [
+          "src:governed-context",
+          "tests:candidate-continuity",
+          "docs:gwc",
+          ".mcp:gwc-precode"
+        ],
+        "evidence": [
+          "RED CI #1061 @ a992bc0adf8e841ee38463bce75667650c13689d",
+          "Compatibility correction CI #1062 @ 44e19282564578a748ae3563c726741816d304ea",
+          "GREEN CI #1063 @ 2264b3da4dc672ae1e271519957203c62b7ae03d"
         ]
       },
       {
@@ -823,17 +850,26 @@
       "runtimeLocksUsed": false
     },
     "connectionProtocol": [
+      "CONNECT_DIRECTLY_TO_GITHUB_BRANCH_NO_MCP_RUNTIME_REQUIRED",
       "REOBSERVE_EXACT_CLAUDE_BRANCH_HEAD",
-      "READ_CANONICAL_MEMORY_CURRENT_BUNDLE_AND_CHECKPOINT",
+      "READ_CLAUDE_CANONICAL_MEMORY_CURRENT_BUNDLE_STATUS_CHECKPOINT_HANDOFF",
+      "OBSERVE_ONLY_IDENTIFIERS_ACTUALLY_EXPOSED_BY_CLIENT_OR_GITHUB",
+      "RESOLVE_OR_CREATE_BRANCH_LOCAL_CANDIDATE_SESSION",
+      "NEVER_INVENT_PROVIDER_CONVERSATION_ID_WHEN_UNAVAILABLE",
+      "DETECT_DECLARED_OR_SEMANTIC_PRECODE_MODE",
+      "IF_AMBIGUOUS_ASK_USER_NEW_INFORMATION_OR_CONTINUE_OR_BOTH",
       "ANALYZE_NEW_CONVERSATION_INFORMATION_IF_PRESENT",
       "PROJECT_ONLY_BOUNDED_STRUCTURED_INSIGHTS",
       "RECONCILE_WITH_CANONICAL_MEMORY_AND_CANDIDATE_WORK",
       "HOLD_CONTRADICTIONS_OR_SUPERSESSIONS_FOR_REVIEW",
       "RESUME_ACTIVE_BRANCH_LOCAL_CLAIM_IF_PRESENT",
       "ELSE_SELECT_NEXT_DEPENDENCY_AND_COLLISION_SAFE_WORK_ITEM",
+      "REOBSERVE_HEAD_BEFORE_PERSISTING_SESSION_OR_CLAIM",
+      "HEAD_MOVED_RECONCILE_AND_REDISPATCH",
       "EXECUTE_RED_GREEN_REGRESSION",
       "CHECKPOINT_HANDOFF_UPDATE_MEMORY_AND_NEXT_ACTION"
-    ]
+    ],
+    "candidateSessions": []
   },
   "conversationIntake": {
     "role": "BOUNDED_SEMANTIC_RECONCILIATION_INPUT_TO_EXISTING_AUTHORITIES",
@@ -873,5 +909,61 @@
     }
   },
   "updatedForCandidateContinuityAt": "2026-09-19T00:35:00+02:00",
-  "updatedForCandidateContinuityHead": "814d344710db4531d3b6cc868c587224f9ad2dea"
+  "updatedForCandidateContinuityHead": "814d344710db4531d3b6cc868c587224f9ad2dea",
+  "githubFirstCandidateBootstrap": {
+    "status": "PASS_WITH_EVIDENCE",
+    "implementation": "src/governedContext/candidateContinuity.ts",
+    "entrypoint": "bootstrapCandidateConnection",
+    "repository": "Patricked-code/MCP",
+    "branch": "claude/ecstatic-edison-v1dyt1",
+    "transportModel": "DIRECT_GITHUB_PRECODE",
+    "runtimeMcpRequired": false,
+    "runtimeGovernedSessionRequired": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "candidateSessionAuthority": "BRANCH_LOCAL_VERSIONED_PROJECTION",
+    "identityPolicy": {
+      "providerConversationRef": "OBSERVE_IF_EXPOSED_ELSE_NULL",
+      "providerConversationRefProvenance": [
+        "PROVIDED_BY_CLIENT",
+        "UNAVAILABLE"
+      ],
+      "githubActor": "OBSERVE_IF_AVAILABLE_ELSE_NULL",
+      "githubConnectionRef": "OBSERVE_IF_AVAILABLE_ELSE_NULL",
+      "candidateSessionId": "DERIVED_BRANCH_LOCAL_IDENTIFIER_NOT_PROVIDER_ID",
+      "unknownRule": "UNKNOWN_STAYS_UNKNOWN_NEVER_INVENTED"
+    },
+    "sessionResolutionOrder": [
+      "providerConversationRef",
+      "githubConnectionRef",
+      "connectionInstanceRef",
+      "createNewCandidateSession"
+    ],
+    "intentModes": [
+      "NEW_INFORMATION_INTAKE",
+      "CONTINUE_PRECODE_WORK",
+      "NEW_INFORMATION_THEN_CONTINUE_PRECODE",
+      "ASK_USER"
+    ],
+    "ambiguousQuestion": "Que viens-tu faire sur cette branche : apporter de nouvelles informations, poursuivre le travail PRECODE, ou apporter des informations puis poursuivre automatiquement ?",
+    "askOnlyWhenIntentNotDeductible": true,
+    "backwardCompatibility": "Legacy candidate session records without connectionInstanceRef remain readable and are enriched on next resume.",
+    "evidence": {
+      "red": {
+        "run": 1061,
+        "head": "a992bc0adf8e841ee38463bce75667650c13689d"
+      },
+      "intermediate": {
+        "run": 1062,
+        "head": "44e19282564578a748ae3563c726741816d304ea",
+        "finding": "legacy session compatibility"
+      },
+      "green": {
+        "run": 1063,
+        "head": "2264b3da4dc672ae1e271519957203c62b7ae03d"
+      }
+    }
+  },
+  "updatedForGithubFirstBootstrapAt": "2026-09-19",
+  "updatedForGithubFirstBootstrapHead": "2264b3da4dc672ae1e271519957203c62b7ae03d"
 }
