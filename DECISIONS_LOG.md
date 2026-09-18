@@ -3,6 +3,21 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-19 — Continuité PRECODE multi-agent et informations de conversation
+
+Décision : toute IA autorisée qui reprend `claude/ecstatic-edison-v1dyt1` doit reconstituer le contexte depuis les autorités de branche, analyser les nouvelles informations de sa conversation, les réconcilier avec la mémoire canonique/backlog, puis reprendre son claim ou recevoir le prochain work item dependency-safe/collision-safe.
+
+Architecture : la capacité étend `Governed Context` et les projections PRECODE existantes. Elle ne crée aucune seconde Operational Memory, Task Queue, Governed Session, Lock Service ou mémoire canonique.
+
+Sémantique : l'IA connectée reste responsable de comprendre le langage naturel. Le code n'essaie pas de persister/comprendre un transcript arbitraire ; il reçoit une projection bornée et effectue une réconciliation déterministe.
+
+Mémoire/tâches : `DUPLICATE` ne duplique rien ; `COMPLEMENT` enrichit ; `DECISION` et `FINDING` sont tracés ; `TASK` enrichit/propose le work candidate ; `CONTRADICTION` et supersession d'une règle active sont `HOLD_FOR_REVIEW`.
+
+Concurrence : un claim n'est durable qu'après relecture du HEAD exact et commit de la projection branch-local. Tout `HEAD_MOVED` invalide le choix non persisté et impose redispatch.
+
+Frontière : aucun effet live avant `FINAL_PRECODE_VERSION_ACCEPTED`.
+
+
 ## 2026-09-18 — PRECODE = candidate évoluée complète avant intégration réelle
 
 Décision : `claude/ecstatic-edison-v1dyt1` n'est pas une branche de documentation seulement. Après `GWC_ARCHITECTURE_GATE_PASS`, elle devient la surface de construction de la future version évoluée complète du MCP à partir du squelette réel existant.
