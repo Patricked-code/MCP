@@ -67,6 +67,9 @@
     "Read docs/gwc/PRECODE_ACTION_TASK_FLOW.txt and .mcp/gwc-precode-action-flow.json for the complete T00-T204 catalog.",
     "Read .mcp/gwc-precode-status.json for phase/work-item evidence.",
     "Read docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md before any shared-branch write.",
+    "Before seeking any runtime connection, inspect versioned audit evidence under docs/audits/**, docs/history/** and canonical-memory sources.",
+    "For PRECODE, MCP OAuth/bridge is NOT_REQUIRED. Prefer versioned audits, GitHub live evidence and GitHub-published read-only server evidence artifacts.",
+    "If fresh server evidence is strictly required and no read-only evidence mirror exists yet, record UNKNOWN/STALE; do not open a runtime Governed Session merely to continue PRECODE.",
     "Reobserve the exact online GitHub head immediately before every write.",
     "Resume from currentPrecodeState.nextAction and the first PRECODE work item that is incomplete, stale or reopened.",
     "Do not materialize Governed Tasks, claim runtime locks, mutate main/S1 or deploy during PRECODE_FINALIZATION_ONLY.",
@@ -99,8 +102,8 @@
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-18T18:04:00Z",
-  "observedHeadBeforePointerUpdate": "6418833ec774c18c5810caf099880875bb2df5c9",
+  "updatedFromGitHubObservationAt": "2026-09-18T18:12:00Z",
+  "observedHeadBeforePointerUpdate": "d69a65155994ae6692af53e8d05afd43fab407f1",
   "correctionReason": "Restore the canonical memory to the PRECODE program boundary. Earlier edits incorrectly promoted runtime Task Queue/claim semantics into the current PRECODE continuation state.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
@@ -119,5 +122,74 @@
     "gapInMyOwnCheck": "Le premier controle AF-36 verifiait que chaque bundle precedent existe, mais pas que le bundle courant est absent de cette liste. La lacune est de moi et n a ete vue qu en confrontant le controle a une sortie pair reelle.",
     "rootCauseFix": "verifyCanonicalMemory() rejette desormais un bundle courant egalement liste comme precedent, par nom et par chemin.",
     "instanceFix": "Entree dupliquee retiree de previousBundles. Aucun autre bloc du pair modifie."
+  },
+  "precodeEvidencePolicy": {
+    "mode": "GITHUB_AND_VERSIONED_EVIDENCE_FIRST",
+    "bridgeOAuthRequired": false,
+    "runtimeMutationAllowed": false,
+    "sourcePriority": [
+      {
+        "rank": 1,
+        "source": "VERSIONED_AUDIT_EVIDENCE",
+        "locations": [
+          "docs/audits/**",
+          "docs/history/**",
+          "docs/gwc/canonical-memory/**"
+        ],
+        "use": "architecture, historical runtime facts, previously attested server/runtime state, prior inventories and recovery evidence",
+        "freshnessRule": "Always preserve observedAt/source SHA. Historical evidence may prove existence/history but never silently becomes current live truth."
+      },
+      {
+        "rank": 2,
+        "source": "GITHUB_LIVE_EVIDENCE",
+        "locations": [
+          "GitHub branch/commit/PR/checks/workflows/artifacts"
+        ],
+        "use": "current repository, exact-head, CI, review and any server evidence already published as GitHub artifact",
+        "freshnessRule": "Exact ref/SHA/run required."
+      },
+      {
+        "rank": 3,
+        "source": "SERVER_READONLY_EVIDENCE_MIRROR",
+        "status": "PRECODE_DESIGN_ONLY_NOT_IMPLEMENTED",
+        "transport": "GitHub-triggered read-only collection independent of MCP OAuth/bridge",
+        "intendedMechanism": "A dedicated least-privilege read-only server identity or forced-command collector executes only allowlisted audit commands/scripts and uploads a redacted JSON evidence artifact to GitHub Actions. It must not commit, deploy, restart, claim tasks, acquire locks or mutate S1.",
+        "intendedFields": [
+          "schemaVersion",
+          "collectorVersion",
+          "observedAt",
+          "serverId",
+          "repoHead",
+          "originMain",
+          "dirtyCount",
+          "runtimeRevision",
+          "containerState",
+          "containerHealth",
+          "runtimeImageRevision",
+          "httpHealth",
+          "auditRefs",
+          "sha256"
+        ],
+        "freshnessRule": "TTL per field; stale/absent => UNKNOWN, never inferred.",
+        "security": [
+          "dedicated read-only credential",
+          "allowlisted commands only",
+          "no shell write surface",
+          "no secret values",
+          "redaction mandatory",
+          "artifact digest",
+          "no MCP OAuth token"
+        ]
+      }
+    ],
+    "runtimeAuthorityRule": "PRECODE must not require live Task Queue/Governed Session/Lock state for normal progress. If a specific architectural question cannot be answered from versioned audits or a read-only mirror, record UNKNOWN rather than opening a runtime execution session.",
+    "knownReusableEvidence": [
+      "docs/audits/2026-08-05/MCP_RUNTIME_IMAGE_ATTESTATION_READONLY.md",
+      "docs/audits/2026-08-05/MCP_RUNTIME_RECOVERY_ATTESTATION.md",
+      "docs/audits/2026-08-05/MCP_RUNTIME_TOOL_CATALOG_20260805.md",
+      "docs/audits/2026-08-05/MCP_FOUNDATIONS_FINAL_STATE.md",
+      "docs/audits/2026-08-05/MCP_PRE29_RECOVERY_AUDIT.md",
+      "docs/gwc/canonical-memory/pr95-phase-b-resolved/sources/live-authorities.json"
+    ]
   }
 }
