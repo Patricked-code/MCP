@@ -1,5 +1,19 @@
 # SUIVI.md
 
+## 2026-09-19 — Bootstrap PRECODE GitHub-first
+
+- Correction de frontière : pour `claude/ecstatic-edison-v1dyt1`, la connexion candidate se fait par GitHub/branche versionnée, pas par le MCP runtime.
+- Nouvelle entrée `bootstrapCandidateConnection()` dans `src/governedContext/candidateContinuity.ts`.
+- Résolution/création de `candidateSessionId` branch-local à partir d'identifiants réellement observés ; aucun vrai ID ChatGPT/Claude n'est inventé.
+- Ordre de rapprochement : provider conversation ref → GitHub connection ref → connection instance ref → nouvelle session candidate.
+- Routage automatique des intentions : `NEW_INFORMATION_INTAKE`, `CONTINUE_PRECODE_WORK`, `NEW_INFORMATION_THEN_CONTINUE_PRECODE`; question à 3 choix seulement si ambigu.
+- Les modes de continuation réutilisent le dispatcher dependency-safe/collision-safe existant.
+- Non-régression : anciennes sessions sans `connectionInstanceRef` toujours lisibles, enrichies au prochain resume.
+- TDD : RED #1061 `a992bc0...`; correction compatibilité #1062 `44e1928...`; GREEN #1063 `2264b3d...`.
+- Aucun runtime MCP/Governed Session/Task Queue/lock/S1/prod activé.
+- `GWC-PRE-B-01` reste le prochain work item programme.
+
+
 ## 2026-09-19 — Continuité automatique multi-agent + intake conversation PRECODE
 
 - Branche : `claude/ecstatic-edison-v1dyt1`; aucune mutation `main`/S1/prod.
