@@ -1666,7 +1666,7 @@
           "acceptance-context-selection"
         ],
         "title": "Phase F-01 — Non-hardcoded acceptance contexts",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 52,
         "sequence": 25,
         "dependencies": [
@@ -1678,7 +1678,11 @@
         "evidence": [
           "Phase F authority: select non-hardcoded candidate acceptance contexts/fixtures.",
           "Dependency GWC-PRE-E-GWC-17 DONE after exact-head checkpoint CI #1466 SUCCESS; release commit CI #1467 SUCCESS @ 3cf949b32f2589b666d0c03120442368c3276f52.",
-          "Existing-first rule: reuse the GWC-17 acceptance harness/fixtures and only add coverage if an explicit Phase F criterion is not already evidenced."
+          "Existing-first rule: reuse the GWC-17 acceptance harness/fixtures and only add coverage if an explicit Phase F criterion is not already evidenced.",
+          "Selected contexts are existing-first and already present in tests/governedWorkflowUniversalAcceptance: historical MCP legacy single repository, real Stablecoin/S2/Passenger, synthetic two-component target, partial component isolation, generic recovery/Intake-003.",
+          "Target-specific literals remain fixture data only; governed workflow source is separately scanned by the anti-hardcode acceptance scenario and negative control.",
+          "Stablecoin fixture provenance binds PR #86 exact head 5f54b78c87ae3a5e8a402ac80af42355a7f4ec08; unresolved backend remains LIVE_DISCOVERY_REQUIRED rather than invented.",
+          "Phase F materialization CI #1468 SUCCESS @ eb806615aa36bfba680b66142092df3067653e8b; 598/598 tests PASS, 0 skipped, discoveredTests=76, runnerTests=75, dedicatedTests=1."
         ]
       },
       {
@@ -1688,7 +1692,7 @@
           "full-happy-path"
         ],
         "title": "Phase F-02 — Full candidate happy path",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 51,
         "sequence": 26,
         "dependencies": [
@@ -1698,7 +1702,10 @@
           "path:tests/governedWorkflowUniversalAcceptance"
         ],
         "evidence": [
-          "Phase F authority requires one coherent test/shadow/isolated path: Intent -> Identity -> Repository -> Project -> Server -> Runtime -> Domain -> Governance -> Capability -> Task -> Session -> Locks -> Development -> CI -> Review -> Merge -> Deploy -> Verify -> DONE."
+          "Phase F authority requires one coherent test/shadow/isolated path: Intent -> Identity -> Repository -> Project -> Server -> Runtime -> Domain -> Governance -> Capability -> Task -> Session -> Locks -> Development -> CI -> Review -> Merge -> Deploy -> Verify -> DONE.",
+          "Dependency F-01 satisfied by existing non-hardcoded contexts and CI #1468 SUCCESS.",
+          "F-02 must prove one coherent candidate path across the full ordered Phase F chain, not merely independent unit/scenario fragments.",
+          "All otherwise-live mutations must remain simulated/test/shadow/isolated; no main/S1/production activation."
         ]
       },
       {
@@ -2118,6 +2125,15 @@
         "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
         "agentIdentity": "ChatGPT-GPT-5.6-Sol",
         "workItemId": "GWC-PRE-F-01",
+        "collisionDomains": [
+          "path:tests/governedWorkflowUniversalAcceptance"
+        ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-F-02",
         "collisionDomains": [
           "path:tests/governedWorkflowUniversalAcceptance"
         ],
@@ -6405,10 +6421,10 @@
   },
   "currentPrecodeState": {
     "phase": "F",
-    "workItem": "GWC-PRE-F-01",
-    "work": "SELECT_NON_HARDCODED_ACCEPTANCE_CONTEXTS",
+    "workItem": "GWC-PRE-F-02",
+    "work": "FULL_CANDIDATE_HAPPY_PATH",
     "status": "IN_PROGRESS",
-    "nextAction": "Audit existing GWC-17 acceptance fixtures against Phase F-01. Reuse only contexts whose target data is explicit and whose generic governed behavior does not branch on target literals; add no new fixture unless a required acceptance dimension is missing.",
+    "nextAction": "Audit whether any existing test already proves the complete ordered candidate happy path. If not, add a tests-only end-to-end acceptance composition that reuses existing governed primitives and one shared task/session/head/runtime binding from Intent through DONE, with all mutation steps represented as EffectPlans/observations only.",
     "blocker": null
   },
   "phaseF": {
@@ -6437,8 +6453,79 @@
       }
     },
     "f01": {
+      "workItemId": "GWC-PRE-F-01",
+      "status": "PASS_WITH_EVIDENCE",
+      "selectedContexts": [
+        {
+          "id": "mcp-historical-single-repository",
+          "kind": "HISTORICAL_COMPATIBILITY",
+          "target": "Patricked-code/MCP",
+          "genericRuntimeBranching": false
+        },
+        {
+          "id": "stablecoin-real-candidate",
+          "kind": "REAL_SECOND_PROJECT",
+          "projectUid": "CS-STABLECOIN-001",
+          "server": "S2",
+          "runtimeKind": "PASSENGER",
+          "backendState": "LIVE_DISCOVERY_REQUIRED"
+        },
+        {
+          "id": "synthetic-multi-component",
+          "kind": "GENERIC_MULTI_REPOSITORY",
+          "components": 2,
+          "projectSha": false,
+          "independentComponentShas": true
+        },
+        {
+          "id": "partial-component-isolation",
+          "kind": "PARTIAL_DISCOVERY",
+          "unverifiedComponentLocal": true
+        },
+        {
+          "id": "candidate-recovery-intake003",
+          "kind": "GENERIC_RECOVERY",
+          "targetSpecificAuthority": false
+        }
+      ],
+      "antiHardcodeBoundary": "TARGET_VALUES_ALLOWED_IN_FIXTURES__FORBIDDEN_AS_GOVERNED_WORKFLOW_BRANCHING",
+      "validation": {
+        "ciRunNumber": 1468,
+        "ciRunId": 35467454560,
+        "head": "eb806615aa36bfba680b66142092df3067653e8b",
+        "result": "SUCCESS",
+        "tests": 598,
+        "passed": 598,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "f02": {
+      "workItemId": "GWC-PRE-F-02",
       "status": "IN_PROGRESS",
-      "workItemId": "GWC-PRE-F-01"
+      "requiredOrderedPath": [
+        "Intent",
+        "Identity",
+        "Repository",
+        "Project",
+        "Server",
+        "Runtime",
+        "Domain",
+        "Governance",
+        "Capability",
+        "Task",
+        "Session",
+        "Locks",
+        "Development",
+        "CI",
+        "Review",
+        "Merge",
+        "Deploy",
+        "Verify",
+        "DONE"
+      ],
+      "executionMode": "TEST_SHADOW_ISOLATED_ONLY",
+      "liveMutationAllowed": false
     }
   }
 }
