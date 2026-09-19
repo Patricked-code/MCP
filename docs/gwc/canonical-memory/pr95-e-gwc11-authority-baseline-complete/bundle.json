@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc11-authority-baseline-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc11_authority_baseline",
+      "path": "sources/gwc11-authority-baseline.json",
+      "media_type": "application/json",
+      "bytes": 4197,
+      "sha256": "2dacb7e9fc2fe2dd80280e5730e80463803c1ce35c8d801c63e7eddc43d5c627"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc11_pass",
+      "key": "candidate.phase_e.gwc_11",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-11 is PASS_WITH_EVIDENCE. RED CI #1343/#1344 proved the missing project-scoped declaration and authority module. First GREEN #1345 succeeded. Self-review #1346 found two real freshness fail-open paths. Final CI #1348 succeeded after both were closed.",
+      "source_refs": [
+        "src_gwc11_authority_baseline"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc11_authorities",
+      "key": "candidate.gwc11.authority_boundary",
+      "claim_type": "fact",
+      "value": "GW-21 reuses documentation governance/cartography digests, GW-22 derives only from existing Current State inventories, and GW-23 reuses current GitHub observation. No second inventory, cartography, GitHub observer or persistence layer exists.",
+      "source_refs": [
+        "src_gwc11_authority_baseline"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc11_freshness",
+      "key": "candidate.gwc11.freshness",
+      "claim_type": "fact",
+      "value": "Stale or unavailable authority evidence fails closed. GW-22 never resolves an owner from stale inventory. GW-23 rejects pre-step replay, stale/unavailable required sub-evidence and exact-head contradictions.",
+      "source_refs": [
+        "src_gwc11_authority_baseline"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc11_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Keep the GWC-11 branch-local claim ACTIVE until this checkpoint passes exact-head CI. After SUCCESS, release GWC-11 and dispatch GWC-PRE-E-GWC-12 without replaying GWC-11.",
+      "source_refs": [
+        "src_gwc11_authority_baseline"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
