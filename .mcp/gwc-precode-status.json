@@ -1648,7 +1648,8 @@
           "NEW_INFORMATION_INTAKE-003 requirements are acceptance obligations: liveness, supervisor decision, runner acknowledgement, intake dedupe, restart-storm protection, claim safety, stale-envelope cancellation and secret non-persistence.",
           "No blocking open decision remains for GWC-17.",
           "PROVEN RED CI #1451 FAILURE @ 0b55d140a6b32be82d81192d2df12c3cabd8a893: 597 tests, 589 historical PASS, exactly 8 GW-73 failures, all ERR_MODULE_NOT_FOUND for tests/governedWorkflowUniversalAcceptance/harness.js; 0 skipped; static/build/docs/governance/GWC/secret checks green.",
-          "FIRST GREEN CI #1454 SUCCESS @ cf9f62f4b36ccf8eac6f477becb7c45505053174: 597/597 tests pass, 0 skipped; discoveredTests=76, runnerTests=75, dedicatedTests=1; harness remains tests-only and no src/ runtime file changed."
+          "FIRST GREEN CI #1454 SUCCESS @ cf9f62f4b36ccf8eac6f477becb7c45505053174: 597/597 tests pass, 0 skipped; discoveredTests=76, runnerTests=75, dedicatedTests=1; harness remains tests-only and no src/ runtime file changed.",
+          "SELF-REVIEW RED CI #1456 FAILURE @ da1ea9fb30d056bf21761dcfe3fa818de9c2c70e: 598 tests, 595 pass, exactly 3 intended failures proving missing canonical-substrate binding, missing anti-hardcode negative-control API, and missing failed-contract attribution; all historical/non-target tests remain green."
         ]
       }
     ],
@@ -6082,13 +6083,25 @@
         "dedicatedTests": 1
       },
       "selfReview": {
-        "status": "IN_PROGRESS",
+        "status": "RED_PROVEN",
         "findings": [
           "Negative-control proof is still required to show the anti-hardcode detector itself fails on a deliberately reintroduced target literal.",
           "Forced acceptance failure should name the contracts exercised by the failed scenario, not only return FAILED.",
           "Recovery acceptance should bind GW-68 through the canonical Contract Registry substrate rather than a test stub."
         ],
-        "nextAction": "Add bounded self-review RED assertions for anti-hardcode negative control, failed-contract attribution and canonical substrate binding; then harden tests-only harness."
+        "nextAction": "Harden tests/governedWorkflowUniversalAcceptance/harness.ts only: use canonical Contract Registry substrate for GW-68, expose reusable target-hardcode detection with negative control, and attribute failed scenarios to contracts exercised.",
+        "ciRunNumber": 1456,
+        "ciRunId": 35446166718,
+        "head": "da1ea9fb30d056bf21761dcfe3fa818de9c2c70e",
+        "result": "FAIL_EXPECTED",
+        "tests": 598,
+        "passed": 595,
+        "failed": 3,
+        "failedAssertions": [
+          "TERMINAL_CANONICAL_CONTRACT_REGISTRY_BINDING",
+          "ANTI_HARDCODE_NEGATIVE_CONTROL",
+          "FAILED_CONTRACT_ATTRIBUTION"
+        ]
       }
     }
   },
