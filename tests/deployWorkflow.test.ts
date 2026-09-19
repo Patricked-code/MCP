@@ -20,7 +20,7 @@ test('la politique post-bootstrap est versionnée et active le push gouverné', 
 test('le workflow possède uniquement les permissions minimales OIDC + lecture', async () => {
   const source = await workflowSource();
 
-  assert.match(source, /permissions:\s*\n\s+contents:\s*read\s*\n\s+id-token:\s*write/);
+  assert.match(source, /permissions:\s*\n\s+contents:\s*read\s*\n\s+actions:\s*read\s*\n\s+id-token:\s*write/);
   assert.doesNotMatch(source, /contents:\s*write|packages:\s*write|actions:\s*write|pull-requests:\s*write|issues:\s*write/);
   assert.match(source, /actions\/checkout@v4/);
   assert.match(source, /persist-credentials:\s*false/);
