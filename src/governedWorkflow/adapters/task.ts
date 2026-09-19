@@ -121,6 +121,12 @@ function taskEvidence(task: GovernedTaskRecord): EvidenceRef {
 }
 
 function lockEvidence(lock: GovernedLockRecord): EvidenceRef {
+  const repository = lock.scope.startsWith('repository:')
+    ? lock.scope.slice('repository:'.length)
+    : null;
+  const taskId = lock.scope.startsWith('task:')
+    ? lock.scope.slice('task:'.length)
+    : null;
   return {
     authority: 'Governed Lock Service',
     kind: 'OBSERVATION',
@@ -129,6 +135,8 @@ function lockEvidence(lock: GovernedLockRecord): EvidenceRef {
     freshness: lock.status === 'ACTIVE' ? 'CURRENT' : 'EXPIRED',
     digest: digest(lock),
     binding: {
+      ...(repository ? { repository } : {}),
+      ...(taskId ? { taskId } : {}),
       sessionId: lock.governedSessionId
     }
   };
