@@ -85,7 +85,7 @@ test('GWC-12 RED: materializes only C-90.1/C-90.2 selected surface', async () =>
   }
 });
 
-test('GWC-12 transport allows only required POST/PUT mutation methods and sends JSON body', async () => {
+test('GWC-12 transport carries required POST/PATCH/PUT mutation methods with JSON body', async () => {
   const { githubJsonRequest } = await import('../src/github/connection.js');
   const calls: Array<{ method: string | undefined; body: string | null }> = [];
   const response = await (githubJsonRequest as any)(
@@ -114,6 +114,33 @@ test('GWC-12 transport allows only required POST/PUT mutation methods and sends 
   assert.deepEqual(calls, [{
     method: 'PUT',
     body: JSON.stringify({ sha: 'a'.repeat(40), merge_method: 'squash' })
+  }]);
+
+  calls.length = 0;
+  await (githubJsonRequest as any)(
+    'sensitive-token',
+    '/repos/chainsolutions-wealthtech/Repo/git/refs/heads/mcp%2Fwork',
+    {
+      method: 'PATCH',
+      jsonBody: { sha: 'c'.repeat(40), force: false },
+      fetchImpl: async (_input: unknown, init: RequestInit) => {
+        calls.push({
+          method: init.method,
+          body: typeof init.body === 'string' ? init.body : null
+        });
+        return new Response(JSON.stringify({ ref: 'refs/heads/mcp/work' }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' }
+        });
+      },
+      apiBase: 'https://api.github.test',
+      allowedHosts: 'api.github.test',
+      timeoutMs: 1_000
+    }
+  );
+  assert.deepEqual(calls, [{
+    method: 'PATCH',
+    body: JSON.stringify({ sha: 'c'.repeat(40), force: false })
   }]);
 });
 
