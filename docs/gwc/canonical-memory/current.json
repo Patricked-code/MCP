@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-intake-003-reconciled",
-  "currentBundleId": "bnd_mcp-pr95-intake-003-reconciled-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-intake-003-reconciled",
+  "currentBundle": "pr95-e-gwc5-task-lock-orchestration-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc5-task-lock-orchestration-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc5-task-lock-orchestration-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -27,9 +27,9 @@
   },
   "currentPrecodeState": {
     "phase": "E",
-    "workItem": "GWC-PRE-E-GWC-5",
-    "work": "GWC_5_TASK_LOCK_ORCHESTRATION_WRAPPERS",
-    "status": "IN_PROGRESS",
+    "workItem": "GWC-PRE-E-GWC-4",
+    "work": "GWC_4_INTAKE_003_RECOVERY_RECONCILIATION",
+    "status": "READY",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Resume the existing ACTIVE GWC-PRE-E-GWC-5 claim first after reobserving this HEAD move; intake #003 has no local implementation impact on GWC-5. On GWC-5 release, dispatch selects requeued GWC-PRE-E-GWC-4 (higher priority) for bounded RED->GREEN additive recovery reconciliation, preserving prior GWC-4 PASS/CI #1205; GWC-17 later proves universal recovery acceptance.",
+    "nextAction": "Validate this GWC-5 completion checkpoint by CI. If no concurrent claim takes GWC-PRE-E-GWC-4, claim the existing requeued GWC-4 item and implement only the additive NEW_INFORMATION_INTAKE-003 recovery delta: intake discovery/deduplication through the existing intake path, bounded liveness telemetry, supervisor reobservation before resume, execution-runner adapter that never invents provider session identity, and acknowledgement-before-RESUMED behavior. Preserve the historical GWC-4 PASS and CI #1205; do not replay or replace existing session/receipt authority.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -120,6 +120,11 @@
     "Preserve INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK."
   ],
   "previousBundles": [
+    {
+      "name": "pr95-intake-003-reconciled",
+      "path": "docs/gwc/canonical-memory/pr95-intake-003-reconciled",
+      "status": "IMMUTABLE_HISTORICAL_INTAKE_003_RECONCILED_CHECKPOINT"
+    },
     {
       "name": "pr95-new-information-intake-003",
       "path": "docs/gwc/canonical-memory/pr95-new-information-intake-003",
@@ -237,8 +242,8 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "be28817e0319b48647f299ed2aa3cf0774a49884",
-  "correctionReason": "GWC-PRE-E-GWC-4 completed with RED CI #1199 and final GREEN CI #1205 after self-review corrected M1 evidence digests/bindings. Persisted session/receipt/context schemas and lifecycle authority remain unchanged.",
+  "observedHeadBeforePointerUpdate": "b7a2c0e8b98a1807fa2853cd8fe7e1ad4d2d2e29",
+  "correctionReason": "GWC-PRE-E-GWC-5 completed with final GREEN CI #1220 after self-review corrections for same-session unsettled locks and M1 lock evidence bindings. Intake #003 requires the existing GWC-4 work item to resume for an additive recovery delta before later work.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
@@ -578,6 +583,7 @@
     "GWC-1": "PASS_WITH_EVIDENCE",
     "GWC-2": "PASS_WITH_EVIDENCE",
     "GWC-3": "PASS_WITH_EVIDENCE",
-    "GWC-4": "PASS_WITH_EVIDENCE"
+    "GWC-4": "PASS_BASELINE_REQUEUED_FOR_INTAKE_003_DELTA",
+    "GWC-5": "PASS_WITH_EVIDENCE"
   }
 }
