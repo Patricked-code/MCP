@@ -999,7 +999,7 @@
           "GWC-1"
         ],
         "title": "GWC-1 — GW-01 Intent Capture",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 69,
         "sequence": 8,
         "dependencies": [
@@ -1013,7 +1013,12 @@
           "Dependency GWC-PRE-E-GWC-0 completed with GREEN CI #1163.",
           "Claimed by candidate-7afc131430c64c6fe34bcfea @ 3a82afc220492e392ba6b6e4b7ab15906c1b11d2",
           "OD-01 resolved existing-first: rawIntent max 16,384 UTF-8 bytes; oversize rejects instead of truncating, preserving faithful capture.",
-          "OD-02 resolved existing-first: closed source enum chatgpt|claude|other, reusing candidate conversation/source vocabulary already present on branch."
+          "OD-02 resolved existing-first: closed source enum chatgpt|claude|other, reusing candidate conversation/source vocabulary already present on branch.",
+          "RED CI #1170 FAILURE @ 8ac712fc878be6357448b4b3438ce15122583010: intentCapture module absent.",
+          "OD-01 resolved: rawIntent max 16,384 UTF-8 bytes; overflow rejects without truncation.",
+          "OD-02 resolved: source enum chatgpt|claude|other, reusing existing branch vocabulary.",
+          "GREEN CI #1171 SUCCESS @ 2571c51f689abbcf87bc792c715ddae8fcde56cb.",
+          "Intent Capture remains pure and does not classify Task intent or infer authorization."
         ]
       },
       {
@@ -1023,7 +1028,7 @@
           "GWC-2"
         ],
         "title": "GWC-2 — Execution Engine Skeleton",
-        "status": "PENDING",
+        "status": "READY",
         "priority": 68,
         "sequence": 9,
         "dependencies": [
@@ -1034,7 +1039,8 @@
           "path:src/governedWorkflow/engine"
         ],
         "evidence": [
-          "Derived from GWC-CAND-02 exact-bound candidate backlog."
+          "Derived from GWC-CAND-02 exact-bound candidate backlog.",
+          "Dependencies GWC-PRE-E-GWC-0 and GWC-PRE-E-GWC-1 completed with GREEN CI #1163/#1171."
         ]
       },
       {
@@ -1445,7 +1451,7 @@
         "collisionDomains": [
           "path:src/governedWorkflow/intentCapture"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -1493,9 +1499,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "3a82afc220492e392ba6b6e4b7ab15906c1b11d2",
+        "lastObservedHeadSha": "d33c6a55ef6f70706e98a6e46f763f618fd4314e",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T02:19:00Z",
+        "lastSeenAt": "2026-09-19T02:24:00Z",
         "status": "ACTIVE"
       }
     ]
@@ -4386,6 +4392,41 @@
         "package.json"
       ],
       "authorityBoundary": "PURE_IMMUTABLE_ORCHESTRATION_SUBSTRATE_NO_PERSISTENCE"
+    },
+    "gwc1": {
+      "workItemId": "GWC-PRE-E-GWC-1",
+      "blueprint": "GWC-1",
+      "status": "PASS_WITH_EVIDENCE",
+      "decisions": {
+        "od01": {
+          "rawIntentMaxBytes": 16384,
+          "measurement": "UTF-8_BYTES",
+          "overflow": "REJECT_NO_TRUNCATION"
+        },
+        "od02": {
+          "sourceEnum": [
+            "chatgpt",
+            "claude",
+            "other"
+          ]
+        }
+      },
+      "red": {
+        "ciRunNumber": 1170,
+        "head": "8ac712fc878be6357448b4b3438ce15122583010",
+        "result": "FAIL_EXPECTED"
+      },
+      "green": {
+        "ciRunNumber": 1171,
+        "head": "2571c51f689abbcf87bc792c715ddae8fcde56cb",
+        "result": "SUCCESS"
+      },
+      "implementation": [
+        "src/governedWorkflow/intentCapture.ts",
+        "tests/governedWorkflowIntentCapture.test.ts",
+        "package.json"
+      ],
+      "authorityBoundary": "PURE_CAPTURE_NO_TASK_CLASSIFICATION_NO_AUTHORIZATION_INFERENCE"
     }
   }
 }
