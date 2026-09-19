@@ -1323,7 +1323,7 @@
           "GWC-10"
         ],
         "title": "GWC-10 — B3 Multi-repository TargetScope",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 60,
         "sequence": 17,
         "dependencies": [
@@ -1360,7 +1360,9 @@
           "Self-review CI #1329 found one real defect only: TargetScope equality depended on component ordering; disjoint tasks, disjoint component locks, multi-component receipt and Live State timestamp stability were GREEN.",
           "FINAL GREEN CI #1330 SUCCESS @ 67197cd12e13f450734b403c4b85e26dc9760c60 after canonicalizing TargetScope equality.",
           "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete created; source SHA-256 5461517162540bdcffc070759da63edea4aa35f2b1e24e932d488c5ae9795ebe.",
-          "GWC-10 claim retained ACTIVE until exact-head checkpoint CI succeeds."
+          "GWC-10 claim retained ACTIVE until exact-head checkpoint CI succeeds.",
+          "Checkpoint MCP CI #1337 SUCCESS @ 50e05fbc398dad84612a8fff2e11e82084c2239b validated the GWC-10 canonical bundle, current pointer, coordination projection and project documentation before claim release.",
+          "GWC-10 claim released only after exact-head checkpoint SUCCESS."
         ]
       },
       {
@@ -1370,7 +1372,7 @@
           "GWC-11"
         ],
         "title": "GWC-11 — Authority docs / Integration slot / baseline",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 59,
         "sequence": 18,
         "dependencies": [
@@ -1381,7 +1383,9 @@
           "path:src/governedWorkflow/authority"
         ],
         "evidence": [
-          "Derived from GWC-CAND-11 exact-bound candidate backlog."
+          "Derived from GWC-CAND-11 exact-bound candidate backlog.",
+          "Dependencies GWC-PRE-E-GWC-2 and GWC-PRE-E-GWC-10 satisfied at dispatch; GWC-10 closes in this same exact-head transition after checkpoint CI #1337 SUCCESS.",
+          "Initial collision domain is exactly path:src/governedWorkflow/authority; any test/docs expansion requires exact-head claim update before mutation."
         ]
       },
       {
@@ -1737,6 +1741,15 @@
           "path:tests/governedWorkflowSessionIntegration.test.ts",
           "path:tests/governedWorkflowTaskLockIntegration.test.ts"
         ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-11",
+        "collisionDomains": [
+          "path:src/governedWorkflow/authority"
+        ],
         "status": "ACTIVE"
       }
     ],
@@ -1836,9 +1849,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "783fbbf1e9bef2dcfc23a70fc64d5345162fd087",
+        "lastObservedHeadSha": "50e05fbc398dad84612a8fff2e11e82084c2239b",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T08:02:00Z",
+        "lastSeenAt": "2026-09-19T08:08:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5221,7 +5234,7 @@
     "gwc10": {
       "workItemId": "GWC-PRE-E-GWC-10",
       "blueprint": "GWC-10",
-      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
+      "status": "PASS_WITH_EVIDENCE",
       "dependencies": [
         "GWC-PRE-E-GWC-3",
         "GWC-PRE-E-GWC-4",
@@ -5265,9 +5278,22 @@
       "projectSha": "FORBIDDEN",
       "checkpoint": {
         "bundle": "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete",
-        "validation": "PENDING_EXACT_HEAD_CI",
-        "claimRelease": "RETAINED_PENDING_CHECKPOINT_CI"
+        "validation": "SUCCESS",
+        "ciRunNumber": 1337,
+        "head": "50e05fbc398dad84612a8fff2e11e82084c2239b",
+        "claimRelease": "RELEASED_AFTER_CHECKPOINT_CI_SUCCESS"
       }
+    },
+    "gwc11": {
+      "workItemId": "GWC-PRE-E-GWC-11",
+      "blueprint": "GWC-11",
+      "status": "IN_PROGRESS",
+      "dependencies": [
+        "GWC-PRE-E-GWC-2",
+        "GWC-PRE-E-GWC-10"
+      ],
+      "scope": "AUTHORITY_DOCS_INTEGRATION_SLOT_BASELINE",
+      "authorityBoundary": "READ_DERIVE_ONLY__FORMALIZE_EXISTING_AUTHORITIES__NO_SECOND_OWNER"
     }
   },
   "intake003RecoveryEvolution": {
