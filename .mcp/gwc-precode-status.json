@@ -1491,7 +1491,9 @@
           "Structural AF-31 fix selected from Detailed Evolution Design: declare project-scoped validation profile in package.json and replace literal test enumeration with discovery; no second CI/profile authority.",
           "Expected-failure signature will carry only bounded sanitized step/reason/test signals; no raw CI logs or arbitrary failure output become contract state.",
           "AF-15 preserved as EVIDENCE = AGENT_DECLARED + CI_OBSERVED for cognitive development steps; AF-16 preserved as explicit SKIPPABLE_IF findings.length===0 for GW-30/GW-31 path.",
-          "Claim expanded before RED to tests/governedWorkflowDevelopment.test.ts, package.json and scripts/run-validation-tests.mjs."
+          "Claim expanded before RED to tests/governedWorkflowDevelopment.test.ts, package.json and scripts/run-validation-tests.mjs.",
+          "PROVEN RED CI #1378 FAILURE @ a01b09d741bfde064e455a61379f52846456fc04: exactly 10 intended GWC-13 failures; one proves literal test enumeration/profile absence, nine prove src/governedWorkflow/development absent. Typecheck/build/docs/governance/GWC/secrets all GREEN.",
+          "RED #1378 contains no unrelated historical failure; safe to proceed to minimal GREEN."
         ]
       },
       {
@@ -1949,9 +1951,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "1da66db4d682dac27f8cf58d2855edacfa068678",
+        "lastObservedHeadSha": "a01b09d741bfde064e455a61379f52846456fc04",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T09:14:00Z",
+        "lastSeenAt": "2026-09-19T09:22:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5531,6 +5533,14 @@
         ],
         "profileStrategy": "PACKAGE_DECLARATION_PLUS_DISCOVERY",
         "workflowChangeRequired": false
+      },
+      "red": {
+        "ciRunNumber": 1378,
+        "ciRunId": 35434381586,
+        "head": "a01b09d741bfde064e455a61379f52846456fc04",
+        "result": "FAIL_EXPECTED",
+        "failures": 10,
+        "signature": "PROFILE_DISCOVERY_ABSENT_PLUS_DEVELOPMENT_MODULE_ABSENT"
       }
     }
   },
