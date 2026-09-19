@@ -1616,7 +1616,8 @@
           "PROVEN RED CI #1433 FAILURE @ c504f22277fa3b5b8dd5fa8ae9a8f79f86f1e906: exactly 15 intended GW-58..GW-72 failures, all ERR_MODULE_NOT_FOUND for src/governedWorkflow/terminal/index.js; 573 historical tests pass, 0 skipped; typecheck/build/docs/governance/GWC/secret checks green.",
           "FIRST GREEN CI #1435 SUCCESS @ 476f676817500f7c7d520933d32cd9022e03c3fb: 588/588 tests pass, 0 skipped; discoveredTests=75, runnerTests=74, dedicatedTests=1; all validation steps green.",
           "SELF-REVIEW RED CI #1437 FAILURE @ f8ab3ce16132a74248516d805b5cadd233d08af0: 589 tests, 582 pass, exactly 7 intended failures on GW-59/60/61/63/68/69; proves GitHub EffectPlans were not yet exact-tool-schema compatible and GW-68 lacked the canonical final task/receipt/CI/deploy/review/lock evidence matrix.",
-          "FINAL GREEN CI #1440 SUCCESS @ b8a86c48eb24902f998d4533e6bbeac5144102c6: 589/589 tests pass, 0 skipped; discoveredTests=75, runnerTests=74, dedicatedTests=1; exact GitHub EffectPlan schemas and full GW-68 terminal evidence matrix verified."
+          "FINAL GREEN CI #1440 SUCCESS @ b8a86c48eb24902f998d4533e6bbeac5144102c6: 589/589 tests pass, 0 skipped; discoveredTests=75, runnerTests=74, dedicatedTests=1; exact GitHub EffectPlan schemas and full GW-68 terminal evidence matrix verified.",
+          "Canonical GWC-16 checkpoint staged at docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete; source=6015 bytes sha256 c1d6be7cbbbf3a9110114154787a01f0fe11281d579fea9b58fdacb686ac7be5. Claim retained pending exact-head checkpoint CI."
         ]
       },
       {
@@ -5890,7 +5891,7 @@
     "gwc16": {
       "workItemId": "GWC-PRE-E-GWC-16",
       "blueprint": "GWC-16",
-      "status": "PASS_WITH_EVIDENCE_DOCUMENTATION_PENDING",
+      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
       "dependency": "GWC-PRE-E-GWC-15",
       "dependencyEvidence": {
         "ciRunNumber": 1429,
@@ -5989,6 +5990,17 @@
         "discoveredTests": 75,
         "runnerTests": 74,
         "dedicatedTests": 1
+      },
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete",
+        "bundleId": "bnd_mcp-pr95-e-gwc16-documentation-closure-complete-20260919",
+        "source": {
+          "path": "docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete/sources/gwc16-documentation-closure-evidence.json",
+          "bytes": 6015,
+          "sha256": "c1d6be7cbbbf3a9110114154787a01f0fe11281d579fea9b58fdacb686ac7be5"
+        },
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "RETAINED_UNTIL_CHECKPOINT_CI_SUCCESS"
       }
     }
   },
@@ -6102,8 +6114,8 @@
     "phase": "E",
     "workItem": "GWC-PRE-E-GWC-16",
     "work": "GWC_16_DOCUMENTATION_AND_CLOSURE",
-    "status": "PASS_WITH_EVIDENCE_DOCUMENTATION_PENDING",
-    "nextAction": "Record GWC-16 final evidence in governed project documentation, create the canonical GWC-16 checkpoint bundle, validate it on the exact online branch head, then release the claim only after checkpoint CI succeeds.",
+    "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+    "nextAction": "Validate the staged GWC-16 canonical checkpoint on the exact online branch head. Keep the GWC-16 claim ACTIVE until MCP CI succeeds; then release it and dispatch GWC-PRE-E-GWC-17 without replaying GWC-16.",
     "blocker": null
   }
 }
