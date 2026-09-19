@@ -270,6 +270,35 @@ test('GW-42 plans MERGE_READY only from a READY PremergeProof at the same head',
   assert.equal(result.status, 'READY');
   assert.equal(result.effectPlan?.toolName, 'mcp_transition_governed_task');
   assert.equal(result.effectPlan?.payload.status, 'MERGE_READY');
+
+  const proofForOtherTask = {
+    ...proof,
+    payload: {
+      ...proof.payload,
+      taskId: 'TASK-20260919-901',
+      governedSessionId: SESSION_ID,
+      bootstrapReceiptId: RECEIPT_ID
+    }
+  } as typeof proof & {
+    payload: typeof proof.payload & {
+      taskId: string;
+      governedSessionId: string;
+      bootstrapReceiptId: string;
+    };
+  };
+  const wrongTask = planGw42TaskMergeReady({
+    taskId: 'TASK-20260919-900',
+    expectedTaskRevision: 8,
+    governedSessionId: SESSION_ID,
+    expectedSessionRevision: 5,
+    expectedBootstrapReceiptId: RECEIPT_ID,
+    expectedStateVersion: 13,
+    expectedHeadSha: HEAD,
+    premergeProof: proofForOtherTask
+  }, contracts);
+  assert.equal(wrongTask.status, 'BLOCKED');
+  assert.deepEqual(wrongTask.reasonCodes, ['PREMERGE_PROOF_TASK_MISMATCH']);
+  assert.equal(wrongTask.effectPlan, null);
 });
 
 test('GW-43 exact-head merge is non-replayable and refuses a proof from another head', async () => {
