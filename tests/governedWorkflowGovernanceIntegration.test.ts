@@ -8,6 +8,8 @@ import {
 } from '../src/governance/operationalDecision.js';
 import { createGovernedContractSubstrate } from '../src/governedWorkflow/contractSubstrate.js';
 
+process.env.MCP_GOVERNED_SESSIONS_ENABLED ??= 'true';
+
 const NOW = '2026-09-19T07:15:00Z';
 const TOOL = 'mcp_transition_governed_task';
 
@@ -228,4 +230,120 @@ test('GWC-9 is deterministic for the same target and authority snapshot', async 
   const first = composeGovernanceInheritance(value);
   const second = composeGovernanceInheritance(value);
   assert.deepEqual(second, first);
+});
+
+
+test('GWC-9 AF-32 shadow observation is non-blocking for governed task mutations', async () => {
+  const { decorateScopedWriteServer } = await import('../src/governance/scopedWriteGate.js');
+  const { registerGovernedTaskMutationTools } = await import('../src/tools/governedTasks.js');
+
+  const handlers = new Map<string, (...args: any[]) => Promise<any>>();
+  const fakeServer = {
+    registerTool(name: string, _config: unknown, handler: (...args: any[]) => Promise<any>) {
+      handlers.set(name, handler);
+      return { registered: name };
+    }
+  } as any;
+
+  const shadowDecisions: Array<{ decision: any; outcome: string }> = [];
+  let reconciles = 0;
+  const decorated = decorateScopedWriteServer(fakeServer, {
+    mode: 'shadow',
+    async evaluate() {
+      return {
+        mode: 'shadow',
+        toolName: 'ignored',
+        governedSessionId: '11111111-1111-4111-8111-111111111111',
+        currentStateVersion: 9,
+        acknowledgedStateVersion: 9,
+        activeLockConflicts: 1,
+        verdict: 'lock_conflict',
+        wouldBlock: true
+      };
+    },
+    async record(decision, outcome) {
+      shadowDecisions.push({ decision, outcome });
+    },
+    requestReconcile() {
+      reconciles += 1;
+    }
+  });
+
+  let claims = 0;
+  registerGovernedTaskMutationTools(decorated, {
+    ready: async () => undefined,
+    lifecycle: {
+      async run<T>(work: () => Promise<T>): Promise<T> {
+        return work();
+      }
+    },
+    queue: {
+      async reconcileIntent() {
+        return { classification: 'NEW_TASK' };
+      },
+      async claimNextTask() {
+        claims += 1;
+        return { taskId: 'TASK-TEST-001' };
+      },
+      async transitionTask() {
+        return {};
+      }
+    },
+    sessions: {
+      async getVisibleSession() {
+        return {
+          governedSessionId: '11111111-1111-4111-8111-111111111111',
+          sessionRevision: 3,
+          status: 'ACTIVE',
+          bootstrapReceipt: {
+            bootstrapReceiptId: '22222222-2222-4222-8222-222222222222',
+            stateVersion: 9,
+            expiresAt: '2099-01-01T00:00:00.000Z'
+          }
+        };
+      }
+    },
+    liveState: {
+      async getCurrent() {
+        return { stateVersion: 9 };
+      }
+    },
+    now: () => new Date('2026-09-19T07:15:00.000Z')
+  } as any);
+
+  assert.deepEqual([...handlers.keys()].sort(), [
+    'mcp_claim_next_governed_task',
+    'mcp_reconcile_agent_intent',
+    'mcp_transition_governed_task'
+  ]);
+
+  const extra = {
+    sessionId: 'transport-gwc9-shadow',
+    authInfo: {
+      clientId: 'test-client',
+      extra: {
+        governedPrincipalId: 'oauth:test',
+        identityAssurance: 'oauth_subject'
+      }
+    }
+  };
+  const result = await handlers.get('mcp_claim_next_governed_task')?.({
+    governedSessionId: '11111111-1111-4111-8111-111111111111',
+    expectedSessionRevision: 3,
+    expectedBootstrapReceiptId: '22222222-2222-4222-8222-222222222222',
+    expectedStateVersion: 9,
+    expectedStoreRevision: 4
+  }, extra);
+
+  await new Promise((resolve) => setTimeout(resolve, 0));
+
+  assert.equal(claims, 1);
+  assert.equal(result?.isError, undefined);
+  assert.match(result?.content?.[0]?.text ?? '', /TASK-TEST-001/);
+  assert.equal(shadowDecisions.length, 1);
+  assert.equal(shadowDecisions[0]?.decision.toolName, 'mcp_claim_next_governed_task');
+  assert.equal(shadowDecisions[0]?.decision.verdict, 'lock_conflict');
+  assert.equal(shadowDecisions[0]?.decision.wouldBlock, true);
+  assert.equal(shadowDecisions[0]?.outcome, 'succeeded');
+  assert.equal(reconciles, 1);
 });
