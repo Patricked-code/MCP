@@ -627,7 +627,9 @@ export function registerGithubLifecycleWriteTools(
         dependencies,
         `${repoEndpoint(org, repository)}/commits/${expected}/check-runs?per_page=100`
       ));
-      const notGreen = array(checksRaw?.check_runs).filter((entry) => {
+      const checks = array(checksRaw?.check_runs);
+      if (checks.length === 0) throw new Error('GITHUB_PR_CHECKS_UNAVAILABLE');
+      const notGreen = checks.filter((entry) => {
         const check = object(entry);
         return (
           string(check?.status) !== 'completed'
