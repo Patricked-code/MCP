@@ -1600,14 +1600,16 @@
         ],
         "collisionDomains": [
           "path:src/governedWorkflow/terminal",
-          "path:docs"
+          "path:docs",
+          "path:tests/governedWorkflowTerminal.test.ts"
         ],
         "evidence": [
           "Derived from GWC-CAND-16 exact-bound candidate backlog.",
           "Dependency GWC-PRE-E-GWC-15 satisfied by exact-head checkpoint CI #1429 SUCCESS @ bc2dbefba26dba1a5f6b480325ee8a1201ad1c03.",
           "GWC-16 covers GW-58..GW-72. Existing-first design requires reuse of documentation governance, Bootstrap Receipt freshness, Live State, Task Queue VERIFYING/DONE transitions, session checkpoint/close, lock release and queue reconciliation.",
           "AF-07 is the hard closure invariant: DONE must be refused unless terminal reality is re-observed and verified. No second closure authority or persistence layer is allowed.",
-          "No blocking open decision remains. Documentation recursion terminates when drift is zero; docs-only deployment may become the final runtime SHA."
+          "No blocking open decision remains. Documentation recursion terminates when drift is zero; docs-only deployment may become the final runtime SHA.",
+          "Claim expanded before RED to path:tests/governedWorkflowTerminal.test.ts; package validation discovery auto-runs *.test.ts, so no package.json mutation is required."
         ]
       },
       {
@@ -1936,7 +1938,8 @@
         "workItemId": "GWC-PRE-E-GWC-16",
         "collisionDomains": [
           "path:src/governedWorkflow/terminal",
-          "path:docs"
+          "path:docs",
+          "path:tests/governedWorkflowTerminal.test.ts"
         ],
         "status": "ACTIVE"
       }
@@ -5897,7 +5900,12 @@
       "closureOrder": "VERIFY__CHECKPOINT__RELEASE_LOCKS__CLOSE_SESSION__RECONCILE_QUEUE",
       "hardDoneGate": "NO_DONE_WITHOUT_VERIFIED_REALITY",
       "documentationRecursion": "TERMINATE_WHEN_DRIFT_ZERO",
-      "candidateMutationBoundary": "BRANCH_ONLY__NO_MAIN_S1_PRODUCTION_RUNTIME_MUTATION"
+      "candidateMutationBoundary": "BRANCH_ONLY__NO_MAIN_S1_PRODUCTION_RUNTIME_MUTATION",
+      "claimExpansion": {
+        "addedCollisionDomain": "path:tests/governedWorkflowTerminal.test.ts",
+        "reason": "BOUND_RED_TEST_SURFACE",
+        "packageJsonChangeRequired": false
+      }
     }
   },
   "intake003RecoveryEvolution": {
