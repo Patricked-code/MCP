@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-e-gwc16-documentation-closure-complete",
-  "currentBundleId": "bnd_mcp-pr95-e-gwc16-documentation-closure-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete",
+  "currentBundle": "pr95-e-gwc17-universal-acceptance-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc17-universal-acceptance-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc17-universal-acceptance-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -29,7 +29,7 @@
     "phase": "E",
     "workItem": "GWC-PRE-E-GWC-17",
     "work": "GWC_17_UNIVERSAL_ACCEPTANCE",
-    "status": "IN_PROGRESS",
+    "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Audit the implemented candidate against GW-73 and NEW_INFORMATION_INTAKE-003, then add a tests-only universal acceptance harness proving MCP, generic multi-repository, recovery/liveness, anti-hardcode and no-runtime-authority invariants.",
+    "nextAction": "Validate the staged GWC-17 checkpoint on the exact online branch head. Keep the GWC-17 claim ACTIVE until MCP CI succeeds; then release it and resolve Phase F / final candidate gates from the versioned PRECODE authorities.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -304,11 +304,16 @@
       "name": "pr95-e-gwc15-deployment-evidence-complete",
       "path": "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete",
       "status": "IMMUTABLE_HISTORICAL_GWC15_DEPLOYMENT_EVIDENCE_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-e-gwc16-documentation-closure-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC16_DOCUMENTATION_CLOSURE_COMPLETE_CHECKPOINT"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-19T13:23:27Z",
-  "observedHeadBeforePointerUpdate": "b710029edebcae8c67ee9f1470f90ee72ca55ab4",
-  "correctionReason": "GWC-16 checkpoint CI #1448 succeeded on exact head a137d575; GWC-16 claim was released and GWC-17 Universal Acceptance was dispatched. Current bundle remains the immutable GWC-16 checkpoint until GWC-17 creates its own validated acceptance checkpoint.",
+  "updatedFromGitHubObservationAt": "2026-09-19T13:43:25Z",
+  "observedHeadBeforePointerUpdate": "f311bc1323de6f94a7e2319cc28ba2e7c3c66e17",
+  "correctionReason": "GWC-17 reached final GREEN in MCP CI #1458 with 598/598 tests and zero skipped scenarios; root documentation is reconciled and the final Phase E universal-acceptance checkpoint is staged. Its branch-local claim remains ACTIVE until the checkpoint exact-head CI succeeds.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
