@@ -1647,7 +1647,8 @@
           "Integration classification NEW is limited to an acceptance harness + fixtures. Runtime code, authorities, workflow state and production behavior must not be added for this work item.",
           "NEW_INFORMATION_INTAKE-003 requirements are acceptance obligations: liveness, supervisor decision, runner acknowledgement, intake dedupe, restart-storm protection, claim safety, stale-envelope cancellation and secret non-persistence.",
           "No blocking open decision remains for GWC-17.",
-          "PROVEN RED CI #1451 FAILURE @ 0b55d140a6b32be82d81192d2df12c3cabd8a893: 597 tests, 589 historical PASS, exactly 8 GW-73 failures, all ERR_MODULE_NOT_FOUND for tests/governedWorkflowUniversalAcceptance/harness.js; 0 skipped; static/build/docs/governance/GWC/secret checks green."
+          "PROVEN RED CI #1451 FAILURE @ 0b55d140a6b32be82d81192d2df12c3cabd8a893: 597 tests, 589 historical PASS, exactly 8 GW-73 failures, all ERR_MODULE_NOT_FOUND for tests/governedWorkflowUniversalAcceptance/harness.js; 0 skipped; static/build/docs/governance/GWC/secret checks green.",
+          "FIRST GREEN CI #1454 SUCCESS @ cf9f62f4b36ccf8eac6f477becb7c45505053174: 597/597 tests pass, 0 skipped; discoveredTests=76, runnerTests=75, dedicatedTests=1; harness remains tests-only and no src/ runtime file changed."
         ]
       }
     ],
@@ -6066,6 +6067,28 @@
         "failed": 8,
         "skipped": 0,
         "signature": "GW73_ACCEPTANCE_HARNESS_ABSENT"
+      },
+      "firstFullGreen": {
+        "ciRunNumber": 1454,
+        "ciRunId": 35446041076,
+        "head": "cf9f62f4b36ccf8eac6f477becb7c45505053174",
+        "result": "SUCCESS",
+        "tests": 597,
+        "passed": 597,
+        "failed": 0,
+        "skipped": 0,
+        "discoveredTests": 76,
+        "runnerTests": 75,
+        "dedicatedTests": 1
+      },
+      "selfReview": {
+        "status": "IN_PROGRESS",
+        "findings": [
+          "Negative-control proof is still required to show the anti-hardcode detector itself fails on a deliberately reintroduced target literal.",
+          "Forced acceptance failure should name the contracts exercised by the failed scenario, not only return FAILED.",
+          "Recovery acceptance should bind GW-68 through the canonical Contract Registry substrate rather than a test stub."
+        ],
+        "nextAction": "Add bounded self-review RED assertions for anti-hardcode negative control, failed-contract attribution and canonical substrate binding; then harden tests-only harness."
       }
     }
   },
