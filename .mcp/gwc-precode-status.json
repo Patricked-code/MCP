@@ -1393,7 +1393,14 @@
           "GWC-11 dispatch transition MCP CI #1339 SUCCESS @ c578623540788787da39e7d5f9afb36b8ac10365.",
           "Existing-first audit confirms documentation inventory/canonical-state/cartography and GitHub exact-head observations already exist; only the integration-slot resolver is genuinely new.",
           "GW-21/22/23 canonical sheets require read/derive-only bounded outputs AuthorityDocumentSet, IntegrationSlot and GithubBaseline; no new persistence or capability authority.",
-          "Collision domain expanded before mutation to scripts/doc-governance-lib.mjs, tests/docGovernance.test.ts, tests/governedWorkflowAuthority.test.ts and package.json."
+          "Collision domain expanded before mutation to scripts/doc-governance-lib.mjs, tests/docGovernance.test.ts, tests/governedWorkflowAuthority.test.ts and package.json.",
+          "PROVEN RED CI #1343 FAILURE @ faded07fa88873093afe1ea6bca0ab2607a964ef: project-scoped documentation governance declaration absent.",
+          "SECOND RED CI #1344 FAILURE @ 34fb4cf3959a3d7f101a984b4fd9e6476ead242f: Governance tests GREEN; exactly 7 GW-21/22/23 tests failed because authority module was absent.",
+          "FIRST GREEN CI #1345 SUCCESS @ 0cdc2e01436351f41b144a7a45f5b7b15590ae9d.",
+          "Self-review CI #1346 found exactly two freshness fail-open defects: stale GW-22 inventory and stale GW-23 exact-head sub-evidence.",
+          "FINAL GREEN CI #1348 SUCCESS @ 2a82e278319dd750db2a6d870fc029fe296a66a6 after closing both freshness defects.",
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc11-authority-baseline-complete created; source SHA-256 2dacb7e9fc2fe2dd80280e5730e80463803c1ce35c8d801c63e7eddc43d5c627.",
+          "GWC-11 claim retained ACTIVE until exact-head checkpoint CI succeeds."
         ]
       },
       {
@@ -1861,9 +1868,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "c578623540788787da39e7d5f9afb36b8ac10365",
+        "lastObservedHeadSha": "ded7df7aee7de92806cc5b02b0b6f6521d037db8",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T08:12:00Z",
+        "lastSeenAt": "2026-09-19T08:35:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5299,7 +5306,7 @@
     "gwc11": {
       "workItemId": "GWC-PRE-E-GWC-11",
       "blueprint": "GWC-11",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
       "dependencies": [
         "GWC-PRE-E-GWC-2",
         "GWC-PRE-E-GWC-10"
@@ -5312,6 +5319,40 @@
         "githubBaseline": "REUSE_CURRENT_GITHUB_OBSERVATION_WITH_STEP_FRESHNESS_BINDING",
         "persistence": "NONE",
         "mutation": "NONE"
+      },
+      "red": {
+        "documentation": {
+          "ciRunNumber": 1343,
+          "head": "faded07fa88873093afe1ea6bca0ab2607a964ef",
+          "result": "FAILURE_EXPECTED"
+        },
+        "authority": {
+          "ciRunNumber": 1344,
+          "head": "34fb4cf3959a3d7f101a984b4fd9e6476ead242f",
+          "result": "FAILURE_EXPECTED_7_MODULE_ABSENT_TESTS"
+        }
+      },
+      "green": {
+        "first": {
+          "ciRunNumber": 1345,
+          "head": "0cdc2e01436351f41b144a7a45f5b7b15590ae9d",
+          "result": "SUCCESS"
+        },
+        "selfReview": {
+          "ciRunNumber": 1346,
+          "head": "ac9aad1f3e73fb60e8a102ff46d86fecb29a09d4",
+          "result": "FAILURE_TWO_REAL_FRESHNESS_FINDINGS"
+        },
+        "final": {
+          "ciRunNumber": 1348,
+          "head": "2a82e278319dd750db2a6d870fc029fe296a66a6",
+          "result": "SUCCESS"
+        }
+      },
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc11-authority-baseline-complete",
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "RETAINED_PENDING_CHECKPOINT_CI"
       }
     }
   },
