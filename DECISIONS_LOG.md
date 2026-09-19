@@ -859,3 +859,17 @@ Décision GW-23 : la baseline GitHub d'une étape doit être observée après le
 Décision d'autorité : aucun second inventaire documentaire, aucune seconde cartographie, aucun second observateur GitHub, aucun store GWC et aucune permission ne sont créés. Les trois contrats sont exclusivement READ/DERIVE, avec `authorizationInferred=false` et `mutationPerformed=false`.
 
 Preuve finale de code : MCP CI #1348 SUCCESS sur `2a82e278319dd750db2a6d870fc029fe296a66a6`. Bundle : `docs/gwc/canonical-memory/pr95-e-gwc11-authority-baseline-complete`, source SHA-256 `2dacb7e9fc2fe2dd80280e5730e80463803c1ce35c8d801c63e7eddc43d5c627`. Le claim GWC-11 reste retenu jusqu'au SUCCESS du checkpoint exact-head.
+
+## 2026-09-19 — GWC-16 : terminal verification, documentation recursion et clôture
+
+Décision AF-07 : `DONE` n'est jamais dérivé de la seule progression du workflow. Le gate GW-68 exige une preuve terminale fail-closed où Task VERIFYING, owner de session, Bootstrap Receipt et stateVersion, CI, déploiement, review, locks, Live State et état documentaire convergent vers le même SHA/runtime final. Une preuve issue d'une autre session, d'un autre head, d'un autre run CI/deploy ou un lock étranger contradictoire interdit la terminalité.
+
+Décision d'autorité : GWC-16 ne crée ni deuxième store de clôture ni nouvel executor. Les mutations restent la responsabilité des autorités existantes : outils GitHub gouvernés pour branch/commit/PR/merge, Governed Task Queue pour VERIFYING/DONE, Governed Session pour receipt/checkpoint/close, Lock Service pour release et Live State pour la réalité observée. Le module terminal ne produit que des résultats bornés et des EffectPlans ; `authorizationInferred=false` et `mutationPerformed=false`.
+
+Décision documentation : lorsque GW-58 constate zéro drift, le sous-flux documentaire est sauté vers GW-66. Lorsqu'une réconciliation documentaire est nécessaire, le merge/autodeploy documentaire peut produire le **nouveau SHA runtime final** ; GW-65 doit alors revalider Live State sur ce SHA avant receipt refresh et vérification terminale. La récursion se termine uniquement quand le drift documentaire est nul.
+
+Décision compatibilité outils : un EffectPlan doit être exécutable par l'outil existant qu'il référence, sans schéma inventé. GW-60 réutilise donc `github_create_commit` pour une mutation multi-fichiers atomique ; GW-59/61/63 utilisent les payloads exacts de `github_create_branch`, `github_create_pull_request`, `github_merge_pull_request`. GW-69 conserve le digest de la preuve terminale dans son résultat/recovery anchor, mais n'injecte aucun champ non supporté dans `mcp_transition_governed_task`.
+
+Décision clôture : ordre canonique après vérification terminale réussie : Task DONE → terminal checkpoint → libération des locks → fermeture de session → réconciliation de la Task Queue. La libération des locks reste indépendante du succès fonctionnel de la Task dès qu'un checkpoint terminal existe ; un échec ne doit pas laisser de lock orphelin.
+
+Preuves : RED #1433, GREEN initial #1435, self-review RED #1437, correction de fixture #1439, GREEN final MCP CI #1440 SUCCESS sur `b8a86c48eb24902f998d4533e6bbeac5144102c6` avec 589/589 tests. Aucun main/S1/production/deploy/runtime mutation n'a été effectué.
