@@ -78,6 +78,7 @@ test('GW-73 RED: recovery acceptance covers liveness, supervisor, runner ack, de
   assert.equal(scenario.evidence.intakeDuplicateCount, 2);
   assert.equal(scenario.evidence.restartPlanDeterministic, true);
   assert.equal(scenario.evidence.staleEnvelopeAccepted, false);
+  assert.equal(scenario.evidence.terminalContractRegistryBound, true);
   assert.equal(scenario.evidence.rawTranscriptPersisted, false);
   assert.equal(scenario.evidence.secretPersisted, false);
   assert.deepEqual(scenario.evidence.crashWindows, [
@@ -97,6 +98,17 @@ test('GW-73 RED: governed workflow source contains no target-specific repository
   assert.equal(scenario.evidence.scannedFileCount >= 10, true);
 });
 
+test('GWC-17 self-review RED: anti-hardcode detector rejects a deliberately reintroduced target literal', async () => {
+  const { detectTargetHardcodesInSource } = await harness();
+  const violations = detectTargetHardcodesInSource(
+    "const target = 'Patricked-code/MCP'; const server = 's2';"
+  );
+  assert.deepEqual(
+    violations.map((entry: any) => entry.literal).sort(),
+    ["'s2'", 'Patricked-code/MCP'].sort()
+  );
+});
+
 test('GW-73 RED: acceptance is test-only, fail-closed and never imported by runtime source', async () => {
   const {
     runUniversalAcceptance,
@@ -111,6 +123,9 @@ test('GW-73 RED: acceptance is test-only, fail-closed and never imported by runt
     forceScenarioFailure: 'stablecoin-real-candidate'
   });
   assert.equal(failed.status, 'FAILED');
-  assert.equal(failed.scenarios.find((entry: any) => entry.scenarioId === 'stablecoin-real-candidate')?.status, 'FAIL');
+  const failedScenario = failed.scenarios.find((entry: any) => entry.scenarioId === 'stablecoin-real-candidate');
+  assert.equal(failedScenario?.status, 'FAIL');
+  assert.equal(failedScenario?.reasonCode, 'FORCED_ACCEPTANCE_FAILURE');
+  assert.ok(failed.failedContracts.includes('GW-08'));
   assert.equal(failed.scenarios.some((scenario: any) => scenario.status === 'SKIPPED'), false);
 });
