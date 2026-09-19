@@ -8,6 +8,7 @@ import type {
 
 const ShaSchema = z.string().regex(/^[0-9a-f]{40}$/);
 const DigestSchema = z.string().regex(/^[0-9a-f]{64}$/);
+const Base64Schema = z.string().min(1).max(4_000_000).regex(/^[A-Za-z0-9+/]+={0,2}$/);
 const TimestampSchema = z.string().datetime({ offset: true });
 const RepositorySchema = z.string().trim().min(3).max(300)
   .regex(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/);
@@ -41,6 +42,7 @@ export type TerminalEffectPlan = Readonly<{
   effectId: string;
   toolName:
     | 'github_create_branch'
+    | 'github_create_commit'
     | 'github_create_or_update_file'
     | 'github_create_pull_request'
     | 'github_merge_pull_request'
@@ -90,6 +92,44 @@ const LiveStateSchema = z.object({
   observedAt: TimestampSchema
 }).strict();
 
+const TerminalEvidenceMatrixSchema = z.object({
+  task: z.object({
+    taskId: TaskIdSchema,
+    taskRevision: RevisionSchema,
+    status: z.string().trim().min(1).max(40),
+    ownerGovernedSessionId: UuidSchema,
+    observedHeadSha: ShaSchema,
+    runtimeRevision: ShaSchema
+  }).strict(),
+  receipt: z.object({
+    bootstrapReceiptId: UuidSchema,
+    stateVersion: RevisionSchema,
+    runtimeRevision: ShaSchema
+  }).strict(),
+  ci: z.object({
+    runId: z.number().int().positive(),
+    headSha: ShaSchema,
+    conclusion: z.string().trim().min(1).max(80)
+  }).strict(),
+  deployment: z.object({
+    jobId: z.string().trim().min(1).max(160),
+    ciRunId: z.number().int().positive(),
+    headSha: ShaSchema,
+    runtimeRevision: ShaSchema,
+    result: z.string().trim().min(1).max(80)
+  }).strict(),
+  review: z.object({
+    pullRequestNumber: PullRequestSchema,
+    headSha: ShaSchema,
+    approved: z.boolean(),
+    unresolvedThreads: z.number().int().nonnegative().max(100_000)
+  }).strict(),
+  locks: z.object({
+    ownActiveLockCount: z.number().int().nonnegative().max(64),
+    foreignConflictingLockCount: z.number().int().nonnegative().max(64)
+  }).strict()
+}).strict();
+
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
   if (value && typeof value === 'object') {
@@ -104,6 +144,15 @@ function canonical(value: unknown): string {
 
 function digest(value: unknown): string {
   return createHash('sha256').update(canonical(value)).digest('hex');
+}
+
+function repositoryParts(repositoryFullName: string): Readonly<{
+  organization: string;
+  repository: string;
+}> {
+  const [organization, repository, ...rest] = RepositorySchema.parse(repositoryFullName).split('/');
+  if (!organization || !repository || rest.length > 0) throw new Error('REPOSITORY_TARGET_INVALID');
+  return Object.freeze({ organization, repository });
 }
 
 function contract(
@@ -249,6 +298,7 @@ export function planGw59DocumentationBranch(
       payload: Object.freeze({ ...payloadBase, nextStepId: 'GW-66' as const })
     });
   }
+  const target = repositoryParts(input.repository);
   return result({
     stepId: 'GW-59', substrate, status: 'READY',
     payload: Object.freeze({ ...payloadBase, nextStepId: 'GW-60' as const }),
@@ -257,8 +307,9 @@ export function planGw59DocumentationBranch(
       toolName: 'github_create_branch',
       expectedHeadSha: input.baseSha,
       payload: {
-        repository: input.repository,
-        branchName: input.branchName,
+        organization: target.organization,
+        repository: target.repository,
+        branch: input.branchName,
         baseSha: input.baseSha
       },
       postconditions: [
@@ -275,7 +326,12 @@ export function planGw60DocumentationReconciliation(
     repository: string;
     branchName: string;
     baseSha: string;
-    changes: readonly Readonly<{ path: string; contentDigest: string }>[];
+    message: string;
+    changes: readonly Readonly<{
+      path: string;
+      contentBase64: string;
+      contentDigest: string;
+    }>[];
   }>,
   substrate: GovernedContractSubstrate
 ) {
@@ -283,37 +339,59 @@ export function planGw60DocumentationReconciliation(
     repository: RepositorySchema,
     branchName: BranchSchema,
     baseSha: ShaSchema,
+    message: z.string().trim().min(1).max(500),
     changes: z.array(z.object({
       path: z.string().trim().min(1).max(500),
+      contentBase64: Base64Schema,
       contentDigest: DigestSchema
-    }).strict()).min(1).max(200)
+    }).strict()).min(1).max(100)
   }).strict().parse(rawInput);
-  const changes = Object.freeze(input.changes.map((entry) => Object.freeze({ ...entry })));
+  const target = repositoryParts(input.repository);
+  const digestMismatch = input.changes.find((entry) => (
+    createHash('sha256')
+      .update(Buffer.from(entry.contentBase64, 'base64'))
+      .digest('hex') !== entry.contentDigest
+  ));
+  const projectedChanges = Object.freeze(input.changes.map((entry) => Object.freeze({
+    path: entry.path,
+    contentDigest: entry.contentDigest
+  })));
+  const payloadBase = {
+    repository: input.repository,
+    branchName: input.branchName,
+    baseSha: input.baseSha,
+    changeCount: projectedChanges.length,
+    changes: projectedChanges,
+    nextStepId: null as 'GW-61' | null
+  };
+  if (digestMismatch) {
+    return result({
+      stepId: 'GW-60', substrate, status: 'BLOCKED',
+      reasonCodes: ['DOC_CONTENT_DIGEST_MISMATCH'],
+      payload: Object.freeze(payloadBase)
+    });
+  }
   return result({
     stepId: 'GW-60', substrate, status: 'READY',
-    payload: Object.freeze({
-      repository: input.repository,
-      branchName: input.branchName,
-      baseSha: input.baseSha,
-      changeCount: changes.length,
-      changes,
-      nextStepId: 'GW-61' as const
-    }),
+    payload: Object.freeze({ ...payloadBase, nextStepId: 'GW-61' as const }),
     effectPlan: effectPlan({
       stepId: 'GW-60',
-      toolName: 'github_create_or_update_file',
+      toolName: 'github_create_commit',
       expectedHeadSha: input.baseSha,
       payload: {
-        repository: input.repository,
-        branchName: input.branchName,
-        baseSha: input.baseSha,
-        changes
+        organization: target.organization,
+        repository: target.repository,
+        branch: input.branchName,
+        expectedHeadSha: input.baseSha,
+        message: input.message,
+        files: input.changes.map(({ path, contentBase64 }) => ({ path, contentBase64 }))
       },
       postconditions: [
-        'documentation changes are written only on the documentation branch',
+        'documentation changes are committed atomically on the documentation branch',
+        'commit starts from the exact observed branch head',
         'documentation governance remains the drift authority'
       ],
-      recoveryAnchor: 'docs-reconcile:' + input.repository + ':' + input.branchName + ':' + digest(changes)
+      recoveryAnchor: 'docs-reconcile:' + input.repository + ':' + input.branchName + ':' + digest(projectedChanges)
     })
   });
 }
@@ -335,6 +413,7 @@ export function planGw61DocumentationPr(
     headSha: ShaSchema,
     title: z.string().trim().min(1).max(240)
   }).strict().parse(rawInput);
+  const target = repositoryParts(input.repository);
   return result({
     stepId: 'GW-61', substrate, status: 'READY',
     payload: Object.freeze({
@@ -348,11 +427,14 @@ export function planGw61DocumentationPr(
       toolName: 'github_create_pull_request',
       expectedHeadSha: input.headSha,
       payload: {
-        repository: input.repository,
+        organization: target.organization,
+        repository: target.repository,
+        title: input.title,
         head: input.branchName,
-        base: input.baseBranch,
+        targetBase: input.baseBranch,
         expectedHeadSha: input.headSha,
-        title: input.title
+        body: '',
+        draft: true
       },
       postconditions: [
         'documentation pull request targets the intended base branch',
@@ -428,6 +510,7 @@ export function planGw63DocumentationExactHeadMerge(
     repository: string;
     pullRequestNumber: number;
     expectedHeadSha: string;
+    mergeMethod: 'merge' | 'squash' | 'rebase';
     reviewProof: Readonly<{
       status: 'SUCCESS' | 'BLOCKED' | 'CONFLICT' | 'UNVERIFIED';
       headSha: string;
@@ -440,6 +523,7 @@ export function planGw63DocumentationExactHeadMerge(
     repository: RepositorySchema,
     pullRequestNumber: PullRequestSchema,
     expectedHeadSha: ShaSchema,
+    mergeMethod: z.enum(['merge', 'squash', 'rebase']),
     reviewProof: z.object({
       status: z.enum(['SUCCESS', 'BLOCKED', 'CONFLICT', 'UNVERIFIED']),
       headSha: ShaSchema,
@@ -462,6 +546,7 @@ export function planGw63DocumentationExactHeadMerge(
       payload: Object.freeze(payloadBase)
     });
   }
+  const target = repositoryParts(input.repository);
   return result({
     stepId: 'GW-63', substrate, status: 'READY',
     payload: Object.freeze({ ...payloadBase, nextStepId: 'GW-64' as const }),
@@ -471,9 +556,11 @@ export function planGw63DocumentationExactHeadMerge(
       expectedHeadSha: input.expectedHeadSha,
       replayClass: 'NON_REPLAYABLE_RECOVER_BY_OBSERVATION',
       payload: {
-        repository: input.repository,
+        organization: target.organization,
+        repository: target.repository,
         pullRequestNumber: input.pullRequestNumber,
-        expectedHeadSha: input.expectedHeadSha
+        expectedHeadSha: input.expectedHeadSha,
+        mergeMethod: input.mergeMethod
       },
       postconditions: [
         'merge occurs only for the reviewed exact documentation head',
@@ -739,6 +826,7 @@ export function evaluateGw68TerminalVerification(
     expectedRuntimeRevision: string;
     liveState: z.input<typeof LiveStateSchema>;
     documentation: z.input<typeof DocumentationStateSchema>;
+    terminalEvidence: z.input<typeof TerminalEvidenceMatrixSchema>;
   }>,
   substrate: GovernedContractSubstrate
 ) {
@@ -751,8 +839,21 @@ export function evaluateGw68TerminalVerification(
     expectedHeadSha: ShaSchema,
     expectedRuntimeRevision: ShaSchema,
     liveState: LiveStateSchema,
-    documentation: DocumentationStateSchema
+    documentation: DocumentationStateSchema,
+    terminalEvidence: TerminalEvidenceMatrixSchema
   }).strict().parse(rawInput);
+  const evidence = input.terminalEvidence;
+  const evidenceDigest = digest({
+    taskId: input.taskId,
+    governedSessionId: input.governedSessionId,
+    bootstrapReceiptId: input.bootstrapReceiptId,
+    receiptStateVersion: input.receiptStateVersion,
+    expectedHeadSha: input.expectedHeadSha,
+    expectedRuntimeRevision: input.expectedRuntimeRevision,
+    liveState: input.liveState,
+    documentation: input.documentation,
+    terminalEvidence: evidence
+  });
   const proofBase = {
     terminalVerified: false,
     taskId: input.taskId,
@@ -761,16 +862,7 @@ export function evaluateGw68TerminalVerification(
     stateVersion: input.liveState.stateVersion,
     headSha: input.expectedHeadSha,
     runtimeRevision: input.expectedRuntimeRevision,
-    evidenceDigest: digest({
-      taskId: input.taskId,
-      governedSessionId: input.governedSessionId,
-      bootstrapReceiptId: input.bootstrapReceiptId,
-      receiptStateVersion: input.receiptStateVersion,
-      expectedHeadSha: input.expectedHeadSha,
-      expectedRuntimeRevision: input.expectedRuntimeRevision,
-      liveState: input.liveState,
-      documentation: input.documentation
-    }),
+    evidenceDigest,
     nextStepId: null as 'GW-69' | null
   };
   if (input.taskStatus !== 'VERIFYING') {
@@ -787,6 +879,68 @@ export function evaluateGw68TerminalVerification(
     return result({
       stepId: 'GW-68', substrate, status: 'STALE',
       reasonCodes: ['TERMINAL_LIVE_STATE_STALE'],
+      payload: Object.freeze(proofBase)
+    });
+  }
+  if (
+    evidence.task.taskId !== input.taskId
+    || evidence.task.status !== 'VERIFYING'
+    || evidence.task.ownerGovernedSessionId !== input.governedSessionId
+    || evidence.task.observedHeadSha !== input.expectedHeadSha
+    || evidence.task.runtimeRevision !== input.expectedRuntimeRevision
+  ) {
+    return result({
+      stepId: 'GW-68', substrate, status: 'BLOCKED',
+      reasonCodes: ['TERMINAL_TASK_BINDING_MISMATCH'],
+      payload: Object.freeze(proofBase)
+    });
+  }
+  if (
+    evidence.receipt.bootstrapReceiptId !== input.bootstrapReceiptId
+    || evidence.receipt.stateVersion !== input.receiptStateVersion
+    || evidence.receipt.stateVersion !== input.liveState.stateVersion
+    || evidence.receipt.runtimeRevision !== input.expectedRuntimeRevision
+  ) {
+    return result({
+      stepId: 'GW-68', substrate, status: 'BLOCKED',
+      reasonCodes: ['TERMINAL_RECEIPT_BINDING_MISMATCH'],
+      payload: Object.freeze(proofBase)
+    });
+  }
+  if (evidence.locks.foreignConflictingLockCount > 0) {
+    return result({
+      stepId: 'GW-68', substrate, status: 'BLOCKED',
+      reasonCodes: ['TERMINAL_FOREIGN_LOCK_CONFLICT'],
+      payload: Object.freeze(proofBase)
+    });
+  }
+  if (
+    evidence.ci.headSha !== input.expectedHeadSha
+    || evidence.deployment.headSha !== input.expectedHeadSha
+    || evidence.deployment.runtimeRevision !== input.expectedRuntimeRevision
+    || evidence.review.headSha !== input.expectedHeadSha
+  ) {
+    return result({
+      stepId: 'GW-68', substrate, status: 'BLOCKED',
+      reasonCodes: ['TERMINAL_EVIDENCE_HEAD_MISMATCH'],
+      payload: Object.freeze(proofBase)
+    });
+  }
+  if (
+    evidence.ci.conclusion !== 'success'
+    || evidence.deployment.result !== 'succeeded'
+    || evidence.deployment.ciRunId !== evidence.ci.runId
+  ) {
+    return result({
+      stepId: 'GW-68', substrate, status: 'BLOCKED',
+      reasonCodes: ['TERMINAL_CI_DEPLOYMENT_EVIDENCE_UNVERIFIED'],
+      payload: Object.freeze(proofBase)
+    });
+  }
+  if (!evidence.review.approved || evidence.review.unresolvedThreads > 0) {
+    return result({
+      stepId: 'GW-68', substrate, status: 'BLOCKED',
+      reasonCodes: ['TERMINAL_REVIEW_EVIDENCE_UNVERIFIED'],
       payload: Object.freeze(proofBase)
     });
   }
@@ -839,6 +993,7 @@ export function planGw69TaskDone(
       stateVersion: number;
       headSha: string;
       runtimeRevision: string;
+      evidenceDigest: string;
     }>;
   }>,
   substrate: GovernedContractSubstrate
@@ -859,12 +1014,14 @@ export function planGw69TaskDone(
       bootstrapReceiptId: UuidSchema,
       stateVersion: RevisionSchema,
       headSha: ShaSchema,
-      runtimeRevision: ShaSchema
+      runtimeRevision: ShaSchema,
+      evidenceDigest: DigestSchema
     }).strict()
   }).strict().parse(rawInput);
   const verification = input.terminalVerification;
   const payloadBase = {
     taskId: input.taskId,
+    terminalEvidenceDigest: verification.evidenceDigest,
     targetStatus: 'DONE' as const,
     nextStepId: null as 'GW-70' | null
   };
@@ -901,14 +1058,14 @@ export function planGw69TaskDone(
         expectedTaskRevision: input.expectedTaskRevision,
         status: 'DONE',
         observedHeadSha: input.expectedHeadSha,
-        runtimeRevision: input.expectedHeadSha,
-        terminalVerificationRequired: true
+        runtimeRevision: input.expectedHeadSha
       },
       postconditions: [
         'task reaches DONE only after terminal verification succeeds',
-        'DONE remains bound to the exact task, session, receipt, state and runtime SHA'
+        'DONE remains bound to the exact task, session, receipt, state and runtime SHA',
+        'terminal verification evidence digest remains attached to the GW-69 planner result'
       ],
-      recoveryAnchor: 'governed-task:' + input.taskId + ':done:' + input.expectedTaskRevision + ':' + input.expectedHeadSha
+      recoveryAnchor: 'governed-task:' + input.taskId + ':done:' + input.expectedTaskRevision + ':' + input.expectedHeadSha + ':' + verification.evidenceDigest
     })
   });
 }
