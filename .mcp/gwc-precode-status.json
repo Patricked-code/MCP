@@ -1338,13 +1338,19 @@
         "collisionDomains": [
           "path:src/operationalMemory",
           "path:src/governedContext",
-          "path:src/liveState"
+          "path:src/liveState",
+          "path:tests/governedWorkflowTargetScope.test.ts",
+          "path:package.json"
         ],
         "evidence": [
           "Derived from GWC-CAND-10 exact-bound candidate backlog.",
           "All declared dependencies GWC-PRE-E-GWC-3 through GWC-PRE-E-GWC-9 are DONE/PASS_WITH_EVIDENCE at dispatch, with GWC-9 closed in this same exact-head transition after CI #1309 SUCCESS.",
           "Dispatched after GWC-9 checkpoint CI #1309 SUCCESS.",
-          "Initial collision domains remain exactly path:src/operationalMemory, path:src/governedContext and path:src/liveState; scope expansion requires exact-head claim update before mutation."
+          "Initial collision domains remain exactly path:src/operationalMemory, path:src/governedContext and path:src/liveState; scope expansion requires exact-head claim update before mutation.",
+          "Exact-head GWC-10 baseline confirms operational records and current Live State are single-target while GitRegistry project/component authority is already multi-repository.",
+          "OD-10 resolved by canonical compatibility rule: TargetScope is additive optional; absence keeps exact historical single-repository meaning and is never interpreted as all components.",
+          "OD-11 resolved existing-first: a Task owns exactly the component subset named by its optional TargetScope while ownerGovernedSessionId remains the task owner; disjoint component scopes stay independently claimable/lockable.",
+          "GWC-10 RED scope expanded only to tests/governedWorkflowTargetScope.test.ts and package.json before test mutation."
         ]
       },
       {
@@ -1715,7 +1721,9 @@
         "collisionDomains": [
           "path:src/operationalMemory",
           "path:src/governedContext",
-          "path:src/liveState"
+          "path:src/liveState",
+          "path:tests/governedWorkflowTargetScope.test.ts",
+          "path:package.json"
         ],
         "status": "ACTIVE"
       }
@@ -5212,7 +5220,12 @@
         "GWC-PRE-E-GWC-9"
       ],
       "scope": "B3_MULTI_REPOSITORY_TARGET_SCOPE",
-      "authorityBoundary": "ADDITIVE_TARGET_CONTEXT__HISTORICAL_SINGLE_REPO_RECORDS_REMAIN_READABLE__NO_PARALLEL_STATE_STORE"
+      "authorityBoundary": "ADDITIVE_TARGET_CONTEXT__HISTORICAL_SINGLE_REPO_RECORDS_REMAIN_READABLE__NO_PARALLEL_STATE_STORE",
+      "decisions": {
+        "od10": "ADDITIVE_OPTIONAL_TARGET_SCOPE__ABSENT_MEANS_HISTORICAL_SINGLE_REPOSITORY_ONLY__NO_BACKFILL",
+        "od11": "TASK_OWNS_EXACT_TARGET_SCOPE_COMPONENT_SUBSET__EXISTING_SESSION_OWNER_PRESERVED__DISJOINT_COMPONENTS_INDEPENDENT",
+        "projectSha": "FORBIDDEN"
+      }
     }
   },
   "intake003RecoveryEvolution": {
