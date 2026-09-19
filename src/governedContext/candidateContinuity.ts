@@ -1248,7 +1248,7 @@ export const CandidateHeartbeatSchema = z.object({
   schemaVersion: z.literal(1),
   candidateSessionId: CandidateHeartbeatSessionIdSchema,
   agentIdentity: BoundedId,
-  workItemId: BoundedId,
+  workItemId: BoundedId.nullable(),
   heartbeatSequence: z.number().int().min(1).max(Number.MAX_SAFE_INTEGER),
   emittedAt: z.string().datetime({ offset: true }),
   observedHeadSha: GitShaSchema,
@@ -1358,9 +1358,11 @@ export const CandidateHeartbeatBindingInputSchema = z.object({
 export type CandidateHeartbeatBindingInput = z.infer<typeof CandidateHeartbeatBindingInputSchema>;
 
 export type CandidateHeartbeatBindingResult = Readonly<{
-  status: 'BOUND' | 'INVALID';
+  status: 'BOUND' | 'BOUND_SESSION_ONLY' | 'INVALID';
   reasonCode:
     | 'HEARTBEAT_BOUND'
+    | 'HEARTBEAT_SESSION_BOUND_NO_CLAIM'
+    | 'HEARTBEAT_SESSION_INACTIVE'
     | 'HEARTBEAT_SESSION_MISMATCH'
     | 'HEARTBEAT_AGENT_MISMATCH'
     | 'HEARTBEAT_CLAIM_MISMATCH'
@@ -1385,20 +1387,14 @@ export function validateCandidateHeartbeatBinding(
   const session = input.candidateSession;
   const claim = input.activeClaim;
 
+  if (session.status !== 'ACTIVE') {
+    return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_SESSION_INACTIVE' as const });
+  }
   if (heartbeat.candidateSessionId !== session.candidateSessionId) {
     return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_SESSION_MISMATCH' as const });
   }
   if (heartbeat.agentIdentity !== session.agentIdentity) {
     return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_AGENT_MISMATCH' as const });
-  }
-  if (
-    !claim
-    || claim.status !== 'ACTIVE'
-    || claim.candidateSessionId !== heartbeat.candidateSessionId
-    || claim.agentIdentity !== heartbeat.agentIdentity
-    || claim.workItemId !== heartbeat.workItemId
-  ) {
-    return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_CLAIM_MISMATCH' as const });
   }
   if (heartbeat.observedHeadSha !== input.currentHeadSha) {
     return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_HEAD_MISMATCH' as const });
@@ -1413,6 +1409,27 @@ export function validateCandidateHeartbeatBinding(
     if (Date.parse(heartbeat.emittedAt) <= Date.parse(input.previousHeartbeat.emittedAt)) {
       return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_TIME_NOT_MONOTONE' as const });
     }
+  }
+
+  if (heartbeat.workItemId === null) {
+    if (claim !== null && claim.status === 'ACTIVE') {
+      return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_CLAIM_MISMATCH' as const });
+    }
+    return Object.freeze({
+      ...base,
+      status: 'BOUND_SESSION_ONLY' as const,
+      reasonCode: 'HEARTBEAT_SESSION_BOUND_NO_CLAIM' as const
+    });
+  }
+
+  if (
+    !claim
+    || claim.status !== 'ACTIVE'
+    || claim.candidateSessionId !== heartbeat.candidateSessionId
+    || claim.agentIdentity !== heartbeat.agentIdentity
+    || claim.workItemId !== heartbeat.workItemId
+  ) {
+    return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_CLAIM_MISMATCH' as const });
   }
 
   return Object.freeze({ ...base, status: 'BOUND' as const, reasonCode: 'HEARTBEAT_BOUND' as const });
