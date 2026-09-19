@@ -4,8 +4,10 @@ import test from 'node:test';
 
 const { createGovernedContractSubstrate } =
   await import('../src/governedWorkflow/contractSubstrate.js');
-const { createShadowExecutionEngine } =
-  await import('../src/governedWorkflow/executionEngine.js');
+const {
+  createShadowExecutionEngine,
+  parseRecoveryAnchor
+} = await import('../src/governedWorkflow/executionEngine.js');
 
 async function substrate() {
   const [contractsText, graphText] = await Promise.all([
@@ -47,11 +49,45 @@ test('GWC-2 builds an ephemeral frame and routes one pure PASS contract without 
   assert.equal(result.frame.stepId, 'GW-01');
   assert.equal(result.frame.contractVersion, 1);
   assert.equal(result.frame.effectPlan, null);
-  assert.equal(result.frame.recoveryAnchor.stepId, 'GW-01');
-  assert.equal(result.frame.recoveryAnchor.evidenceDigest, EVIDENCE_DIGEST);
+  assert.equal(result.frame.recoveryAnchor, null);
   assert.match(result.frame.frameDigest, /^[0-9a-f]{64}$/);
   assert.equal(Object.isFrozen(result.frame), true);
   assert.equal(Object.isFrozen(result), true);
+});
+
+
+test('GWC-2 never fabricates an M4 RecoveryAnchor and rejects an anchor on the current step', () => {
+  const binding = Object.freeze({ repository: 'example/project', branch: 'work' });
+  const raw = {
+    anchorId: 'anchor-gw01',
+    stepId: 'GW-01',
+    observedPostcondition: {
+      authority: 'GitHub',
+      kind: 'OBSERVATION',
+      reference: 'commit:abc',
+      observedAt: OBSERVED_AT,
+      freshness: 'CURRENT',
+      digest: EVIDENCE_DIGEST,
+      binding
+    },
+    binding,
+    replayClassOfNextStep: 'READ_ONLY',
+    duplicateInvocationRule: 'REOBSERVE_THEN_DECIDE'
+  };
+
+  assert.throws(
+    () => parseRecoveryAnchor(raw, 'GW-01'),
+    /RECOVERY_ANCHOR_CURRENT_STEP_FORBIDDEN/
+  );
+
+  const parsed = parseRecoveryAnchor({ ...raw, stepId: 'GW-01' }, 'GW-02');
+  assert.equal(parsed.stepId, 'GW-01');
+  assert.equal(parsed.duplicateInvocationRule, 'REOBSERVE_THEN_DECIDE');
+  assert.equal(parsed.observedPostcondition.authority, 'GitHub');
+  assert.deepEqual(parsed.binding, binding);
+  assert.equal(Object.isFrozen(parsed), true);
+  assert.equal(Object.isFrozen(parsed.observedPostcondition), true);
+  assert.equal(Object.isFrozen(parsed.binding), true);
 });
 
 test('GWC-2 waits externally on stale or unavailable evidence and never guesses success', async () => {
