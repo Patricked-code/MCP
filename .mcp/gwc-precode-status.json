@@ -1260,7 +1260,10 @@
         ],
         "evidence": [
           "Derived from GWC-CAND-08 exact-bound candidate backlog.",
-          "Dependency-safe dispatch after GWC-7 checkpoint CI #1275 SUCCESS; claimed by candidate-52e3b52226bf3462e7b112de."
+          "Dependency-safe dispatch after GWC-7 checkpoint CI #1275 SUCCESS; claimed by candidate-52e3b52226bf3462e7b112de.",
+          "Previous GWC-8 candidate candidate-52e3b52226bf3462e7b112de became STALE by minute-liveness (>120s) at unchanged dispatch head 4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa; no newer GWC-8 implementation or test existed.",
+          "Explicit human recovery authorization recorded in PR #95 comment 5740053066; old claim RELEASED and old candidate session CLOSED without inferring STALE=DEAD.",
+          "Replacement candidate candidate-gwc8-recovery-4d887146-20260919 claimed only path:src/governedWorkflow/resolvers/domain after exact-head reconciliation; no other work-item ownership transferred."
         ]
       },
       {
@@ -1649,6 +1652,15 @@
         "collisionDomains": [
           "path:src/governedWorkflow/resolvers/domain"
         ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-8",
+        "collisionDomains": [
+          "path:src/governedWorkflow/resolvers/domain"
+        ],
         "status": "ACTIVE"
       }
     ],
@@ -1731,23 +1743,41 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2855d0e0a4033feb3670b3d3c71315b2ac83c7e6",
-        "lastObservedHeadSha": "2855d0e0a4033feb3670b3d3c71315b2ac83c7e6",
+        "lastObservedHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
         "createdAt": "2026-09-19T06:27:47Z",
-        "lastSeenAt": "2026-09-19T06:27:47Z",
+        "lastSeenAt": "2026-09-19T06:40:21Z",
+        "status": "CLOSED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "provider": "chatgpt",
+        "providerConversationRef": null,
+        "providerConversationRefProvenance": "UNAVAILABLE",
+        "githubActor": "Wealthtechinnovations",
+        "githubConnectionRef": null,
+        "connectionInstanceRef": "precode-chatgpt-gwc8-recovery-20260919-4d887146",
+        "repository": "Patricked-code/MCP",
+        "branch": "claude/ecstatic-edison-v1dyt1",
+        "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
+        "lastObservedHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
+        "createdAt": "2026-09-19T06:48:00Z",
+        "lastSeenAt": "2026-09-19T06:48:00Z",
         "status": "ACTIVE"
       }
     ],
     "lastLivenessReconciliation": {
-      "observedAt": "2026-09-19T05:44:26Z",
-      "observedHeadSha": "4f88e8453523bd62f04989bc7d76b1aa3ad3cf65",
-      "intake004CandidateSessionId": "candidate-minute-liveness-20260919T042806Z",
-      "intake004Liveness": "STALE",
-      "intake004ClaimAfter": "RELEASED",
-      "gwc6CandidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
-      "gwc6Liveness": "UNKNOWN_MISSING_HEARTBEAT",
-      "gwc6ClaimAfter": "ACTIVE",
-      "humanAuthorizationCommentId": 5739730790,
-      "ownershipTransferred": false
+      "observedAt": "2026-09-19T06:48:00Z",
+      "observedHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
+      "previousCandidateSessionId": "candidate-52e3b52226bf3462e7b112de",
+      "previousLiveness": "STALE",
+      "previousClaimAfter": "RELEASED",
+      "replacementCandidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+      "replacementClaimAfter": "ACTIVE",
+      "workItemId": "GWC-PRE-E-GWC-8",
+      "humanAuthorizationCommentId": 5740053066,
+      "ownershipTransferred": true,
+      "transferReason": "EXPLICIT_HUMAN_AUTHORIZATION_AFTER_STALE_EXACT_HEAD_RECONCILIATION"
     }
   },
   "conversationIntake": {
@@ -4993,7 +5023,7 @@
     "gwc8": {
       "workItemId": "GWC-PRE-E-GWC-8",
       "blueprint": "GWC-8",
-      "status": "IN_PROGRESS",
+      "status": "IN_PROGRESS_RECOVERY_VALIDATION",
       "dependencies": [
         "GWC-PRE-E-GWC-3",
         "GWC-PRE-E-GWC-6"
@@ -5008,7 +5038,17 @@
           "result": "SUCCESS"
         }
       },
-      "authorityBoundary": "TO_RESOLVE_EXISTING_FIRST__DOMAIN_NONE_REMAINS_VALID"
+      "authorityBoundary": "TO_RESOLVE_EXISTING_FIRST__DOMAIN_NONE_REMAINS_VALID",
+      "recovery": {
+        "previousCandidateSessionId": "candidate-52e3b52226bf3462e7b112de",
+        "previousHeartbeatSequence": 13,
+        "previousHeartbeatAt": "2026-09-19T06:40:21Z",
+        "previousLiveness": "STALE",
+        "humanAuthorizationCommentId": 5740053066,
+        "replacementCandidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "transferHead": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
+        "validation": "PENDING_EXACT_HEAD_CI"
+      }
     }
   },
   "intake003RecoveryEvolution": {
