@@ -77,6 +77,10 @@ export type GithubOperationalContext = {
     approvals: number;
     changesRequested: number;
     unresolvedThreads: number | null;
+    /** Commit shared by the effective review evidence when GitHub exposes one exact binding. */
+    headSha?: string | null;
+    /** True only when the effective review evidence is bound to the current pull-request head. */
+    exactHead?: boolean | null;
   };
   ruleset: {
     name: string | null;
