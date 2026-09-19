@@ -1087,7 +1087,7 @@
           "GWC-4"
         ],
         "title": "GWC-4 — Connection/Session/Receipt integration",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 66,
         "sequence": 11,
         "dependencies": [
@@ -1104,7 +1104,12 @@
           "Claimed by candidate-7afc131430c64c6fe34bcfea @ 24f6be291ed950fb19bb2a1fd1a53d6120cd9d2f",
           "Existing session lifecycle, resume proof, transport bindings, optimistic revision control and BootstrapReceipt remain sole authorities.",
           "GWC-4 will not widen persisted Session/Receipt/ConnectionContext schemas; current persisted repository value remains Patricked-code/MCP until GWC-10.",
-          "Type generalization is limited to non-persisted projection/auto-resume seams so GWC-10 is not blocked."
+          "Type generalization is limited to non-persisted projection/auto-resume seams so GWC-10 is not blocked.",
+          "RED CI #1199 FAILURE @ 4c5cde427049dd4c499cce2728a2d4442c6fc7df: GWC-4 adapter absent.",
+          "First GREEN CI #1203 SUCCESS @ d1695768006093ff8d13a6b30a293cab354a0f97.",
+          "Self-review found M1 EvidenceRef digest/binding drift; regression RED CI #1204 FAILURE @ 49533320c646cb1ddabc192e77f3185a6e061709.",
+          "FINAL GREEN CI #1205 SUCCESS @ 3ad4bcc57e45679352472c383f30a4f0703f5db2.",
+          "Persisted Session/Receipt/ConnectionContext schemas and Session Service lifecycle methods remain unchanged."
         ]
       },
       {
@@ -1114,7 +1119,7 @@
           "GWC-5"
         ],
         "title": "GWC-5 — Task/Lock orchestration wrappers",
-        "status": "PENDING",
+        "status": "READY",
         "priority": 65,
         "sequence": 12,
         "dependencies": [
@@ -1127,7 +1132,8 @@
           "path:src/operationalMemory/lockService.ts"
         ],
         "evidence": [
-          "Derived from GWC-CAND-05 exact-bound candidate backlog."
+          "Derived from GWC-CAND-05 exact-bound candidate backlog.",
+          "Dependencies GWC-PRE-E-GWC-2 and GWC-PRE-E-GWC-4 completed; GWC-4 final GREEN CI #1205."
         ]
       },
       {
@@ -1502,7 +1508,7 @@
           "path:src/governedWorkflow/adapters/session",
           "path:src/operationalMemory/sessionService.ts"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -1550,9 +1556,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "24f6be291ed950fb19bb2a1fd1a53d6120cd9d2f",
+        "lastObservedHeadSha": "1c79cb863f8f5b048be5241040cf859b7d307c3c",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T02:58:00Z",
+        "lastSeenAt": "2026-09-19T03:08:00Z",
         "status": "ACTIVE"
       }
     ]
@@ -4530,6 +4536,42 @@
         "package.json"
       ],
       "authorityBoundary": "PARITY_WRAPPERS_ONLY_EXISTING_B1_B2_C2_AUTHORITIES_UNCHANGED"
+    },
+    "gwc4": {
+      "workItemId": "GWC-PRE-E-GWC-4",
+      "blueprint": "GWC-4",
+      "status": "PASS_WITH_EVIDENCE",
+      "red": {
+        "ciRunNumber": 1199,
+        "head": "4c5cde427049dd4c499cce2728a2d4442c6fc7df",
+        "result": "FAIL_EXPECTED"
+      },
+      "firstGreen": {
+        "ciRunNumber": 1203,
+        "head": "d1695768006093ff8d13a6b30a293cab354a0f97",
+        "result": "SUCCESS_REVIEW_REQUIRED"
+      },
+      "selfReview": {
+        "finding": "M1_EVIDENCE_DIGEST_AND_BINDING_DRIFT",
+        "regressionRed": {
+          "ciRunNumber": 1204,
+          "head": "49533320c646cb1ddabc192e77f3185a6e061709"
+        },
+        "result": "CORRECTED_BEFORE_CHECKPOINT"
+      },
+      "finalGreen": {
+        "ciRunNumber": 1205,
+        "head": "3ad4bcc57e45679352472c383f30a4f0703f5db2",
+        "result": "SUCCESS"
+      },
+      "implementation": [
+        "src/operationalMemory/sessionService.ts",
+        "src/governedContext/types.ts",
+        "src/governedWorkflow/adapters/session.ts",
+        "tests/governedWorkflowSessionIntegration.test.ts",
+        "package.json"
+      ],
+      "authorityBoundary": "PURE_SESSION_OBSERVATION_WRAPPERS_NO_PERSISTED_SCHEMA_OR_LIFECYCLE_CHANGE"
     }
   }
 }
