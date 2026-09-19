@@ -464,4 +464,3 @@ test('GWC-6 server resolution is deterministic and server paths never become ide
   assert.equal(first.selectedServer?.serverId, 's2');
   assert.equal(first.selectedServer?.bindings.length, 2);
 });
-
