@@ -73,12 +73,11 @@ function attestation(overrides: Record<string, unknown> = {}) {
     healthOk: true,
     oauthOk: true,
     mcpAuthOk: true,
-    ci: {
-      runId: 1500,
-      workflow: 'MCP CI',
-      event: 'push',
-      headSha: HEAD,
-      conclusion: 'success'
+    admission: {
+      kind: 'push_ci_gate',
+      ciRunId: 1500,
+      ciHeadSha: HEAD,
+      ciConclusion: 'success'
     },
     endedAt: NOW,
     ...overrides
@@ -458,12 +457,11 @@ test('GWC-15 self-review: GW-52 binds attested CI run to the exact GW-45 MainCiP
   const contracts = await substrate();
 
   const wrongCiAttestation = attestation({
-    ci: {
-      runId: 1501,
-      workflow: 'MCP CI',
-      event: 'push',
-      headSha: HEAD,
-      conclusion: 'success'
+    admission: {
+      kind: 'push_ci_gate',
+      ciRunId: 1501,
+      ciHeadSha: HEAD,
+      ciConclusion: 'success'
     }
   });
 
