@@ -58,7 +58,7 @@ const RegistryMappingDomainSchema = z.object({
   mappingId: BoundedId,
   repositoryId: BoundedId,
   projectId: BoundedId,
-  componentRole: z.string().trim().min(1).max(100).nullable(),
+  componentRole: z.string().trim().min(1).max(100).optional().nullable(),
   serverId: BoundedId,
   domain: BoundedDomain.nullable(),
   domainVerified: z.boolean()
@@ -178,7 +178,7 @@ function sameId(left: string, right: string): boolean {
   return left.trim().toLowerCase() === right.trim().toLowerCase();
 }
 
-function roleFromComponentRole(value: string | null): DomainRole {
+function roleFromComponentRole(value: string | null | undefined): DomainRole {
   const normalized = value?.trim().toUpperCase();
   if (normalized === 'API') return 'API';
   if (normalized === 'FRONTEND') return 'FRONTEND';
