@@ -1028,7 +1028,7 @@
           "GWC-2"
         ],
         "title": "GWC-2 — Execution Engine Skeleton",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 68,
         "sequence": 9,
         "dependencies": [
@@ -1043,7 +1043,12 @@
           "Dependencies GWC-PRE-E-GWC-0 and GWC-PRE-E-GWC-1 completed with GREEN CI #1163/#1171.",
           "Claimed by candidate-7afc131430c64c6fe34bcfea @ be53e4815bbb1166e666d6821048892b1ca2d620",
           "GWC-2 boundary revalidated: orchestration-only, ephemeral ExecutionFrame, no durable cursor/store, Event Journal audit-only, TaskLifecycleCoordinator not promoted to engine.",
-          "First GREEN will keep dispatcher disabled/shadow and exercise one pure contract route only."
+          "First GREEN will keep dispatcher disabled/shadow and exercise one pure contract route only.",
+          "RED CI #1178 FAILURE @ 781267106f652e5fb13bfd02715d750b6d2e15b4: execution engine module absent.",
+          "First GREEN CI #1180 SUCCESS @ 254871e84e5ab34288e6e5df158ef1b137581ca9.",
+          "Self-review rejected initial RecoveryAnchor shape as non-conformant to canonical M4; correction applied before checkpoint.",
+          "FINAL GREEN CI #1182 SUCCESS @ 43ac4c7504e8c4980ea3be3b22d7d13e0303bd03.",
+          "Engine remains ephemeral/shadow-only; dispatcher disabled; no durable workflow cursor/store."
         ]
       },
       {
@@ -1053,7 +1058,7 @@
           "GWC-3"
         ],
         "title": "GWC-3 — Wrap existing B1/B2/C2",
-        "status": "PENDING",
+        "status": "READY",
         "priority": 67,
         "sequence": 10,
         "dependencies": [
@@ -1063,7 +1068,8 @@
           "path:src/governedWorkflow/resolvers/identity"
         ],
         "evidence": [
-          "Derived from GWC-CAND-03 exact-bound candidate backlog."
+          "Derived from GWC-CAND-03 exact-bound candidate backlog.",
+          "Dependency GWC-PRE-E-GWC-2 completed with final GREEN CI #1182."
         ]
       },
       {
@@ -1463,7 +1469,7 @@
         "collisionDomains": [
           "path:src/governedWorkflow/engine"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -1511,9 +1517,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "be53e4815bbb1166e666d6821048892b1ca2d620",
+        "lastObservedHeadSha": "7011c3b685299ad562a0bceeb0c64ad169a4ffd3",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T02:29:00Z",
+        "lastSeenAt": "2026-09-19T02:37:00Z",
         "status": "ACTIVE"
       }
     ]
@@ -4439,6 +4445,37 @@
         "package.json"
       ],
       "authorityBoundary": "PURE_CAPTURE_NO_TASK_CLASSIFICATION_NO_AUTHORIZATION_INFERENCE"
+    },
+    "gwc2": {
+      "workItemId": "GWC-PRE-E-GWC-2",
+      "blueprint": "GWC-2",
+      "status": "PASS_WITH_EVIDENCE",
+      "red": {
+        "ciRunNumber": 1178,
+        "head": "781267106f652e5fb13bfd02715d750b6d2e15b4",
+        "result": "FAIL_EXPECTED"
+      },
+      "firstGreen": {
+        "ciRunNumber": 1180,
+        "head": "254871e84e5ab34288e6e5df158ef1b137581ca9",
+        "result": "SUCCESS_REVIEW_REQUIRED"
+      },
+      "selfReview": {
+        "finding": "RECOVERY_ANCHOR_M4_NON_CONFORMANCE",
+        "result": "CORRECTED_BEFORE_CHECKPOINT"
+      },
+      "finalGreen": {
+        "ciRunNumber": 1182,
+        "head": "43ac4c7504e8c4980ea3be3b22d7d13e0303bd03",
+        "result": "SUCCESS"
+      },
+      "implementation": [
+        "src/governedWorkflow/contractSubstrate.ts",
+        "src/governedWorkflow/executionEngine.ts",
+        "tests/governedWorkflowExecutionEngine.test.ts",
+        "package.json"
+      ],
+      "authorityBoundary": "EPHEMERAL_SHADOW_ORCHESTRATION_NO_DISPATCH_NO_DURABLE_CURSOR"
     }
   }
 }
