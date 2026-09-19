@@ -5,6 +5,7 @@ import test from 'node:test';
 import { resolveGithubIdentity } from '../src/github/identityResolution.js';
 import { resolveGithubRepository } from '../src/github/repositoryResolution.js';
 import { resolveGithubProject } from '../src/github/projectResolution.js';
+import { createGovernedContractSubstrate } from '../src/governedWorkflow/contractSubstrate.js';
 
 const NOW = '2026-09-19T02:46:00Z';
 const POLICY_DIGEST = 'a'.repeat(64);
@@ -131,6 +132,22 @@ function projectInput(repository = resolveGithubRepository(repositoryInput())) {
   } as any;
 }
 
+async function substrate() {
+  const [contractsText, graphText] = await Promise.all([
+    readFile('.mcp/gwc-contracts.json', 'utf8'),
+    readFile('.mcp/gwc-workflow-graph.json', 'utf8')
+  ]);
+  const contracts = JSON.parse(contractsText);
+  const graph = JSON.parse(graphText);
+  return createGovernedContractSubstrate({
+    contractsProjection: contracts,
+    graphProjection: graph,
+    expectedSchemaVersion: 1,
+    expectedContractRegistryDigest: contracts.registryDigest,
+    expectedGraphRegistryDigest: graph.registryDigest
+  });
+}
+
 async function adapters() {
   return import('../src/governedWorkflow/resolvers/githubResolvers.js');
 }
@@ -144,7 +161,7 @@ test('GW-04 wrapper is exact-parity with resolveGithubIdentity and never infers 
   const input = identityInput();
   const direct = resolveGithubIdentity(input);
   const { resolveGw04GithubIdentity } = await adapters();
-  const wrapped = resolveGw04GithubIdentity(input);
+  const wrapped = resolveGw04GithubIdentity(input, await substrate());
 
   assert.deepEqual(wrapped.payload, direct);
   assert.deepEqual(wrapped.contract, { stepId: 'GW-04', contractVersion: 1 });
@@ -159,7 +176,7 @@ test('GW-05 wrapper is exact-parity with resolveGithubRepository including fail-
   const input = repositoryInput();
   const direct = resolveGithubRepository(input);
   const { resolveGw05Repository } = await adapters();
-  const wrapped = resolveGw05Repository(input);
+  const wrapped = resolveGw05Repository(input, await substrate());
   assert.deepEqual(wrapped.payload, direct);
   assert.deepEqual(wrapped.contract, { stepId: 'GW-05', contractVersion: 1 });
   assert.equal(wrapped.freshness, direct.freshness);
@@ -170,7 +187,7 @@ test('GW-05 wrapper is exact-parity with resolveGithubRepository including fail-
     freshness: 'STALE'
   } as any);
   const staleDirect = resolveGithubRepository(staleInput);
-  const staleWrapped = resolveGw05Repository(staleInput);
+  const staleWrapped = resolveGw05Repository(staleInput, await substrate());
   assert.deepEqual(staleWrapped.payload, staleDirect);
   assert.equal(staleWrapped.status, 'UNVERIFIED');
   assert.notEqual(staleWrapped.freshness, 'CURRENT');
@@ -180,7 +197,7 @@ test('GW-06 wrapper preserves project identity, component role and activation-re
   const input = projectInput();
   const direct = resolveGithubProject(input);
   const { resolveGw06Project } = await adapters();
-  const wrapped = resolveGw06Project(input);
+  const wrapped = resolveGw06Project(input, await substrate());
 
   assert.deepEqual(wrapped.payload, direct);
   assert.deepEqual(wrapped.contract, { stepId: 'GW-06', contractVersion: 1 });
@@ -193,10 +210,11 @@ test('GW-06 wrapper preserves project identity, component role and activation-re
 
 test('GWC-3 adapters add only orchestration metadata and no MCP-specific target or permission surface', async () => {
   const { resolveGw04GithubIdentity, resolveGw05Repository, resolveGw06Project } = await adapters();
+  const contracts = await substrate();
   const values = [
-    resolveGw04GithubIdentity(identityInput()),
-    resolveGw05Repository(repositoryInput()),
-    resolveGw06Project(projectInput())
+    resolveGw04GithubIdentity(identityInput(), contracts),
+    resolveGw05Repository(repositoryInput(), contracts),
+    resolveGw06Project(projectInput(), contracts)
   ];
   for (const value of values) {
     const ownKeys = Object.keys(value).sort();
