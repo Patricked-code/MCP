@@ -32,6 +32,7 @@ import {
   validationProfileDigest
 } from '../../src/governedWorkflow/development/index.js';
 import {
+  evaluateGw54ReceiptFreshness,
   observeGw44MainMergeCommit,
   observeGw45MainCi,
   observeGw46GovernedAutodeploy
@@ -52,10 +53,13 @@ import { resolveRuntime } from '../../src/governedWorkflow/resolvers/runtime.js'
 import { resolveServer } from '../../src/governedWorkflow/resolvers/server.js';
 import {
   composeGw41PremergeProof,
+  observeGw35ExactDiffReview,
   planGw34DraftPr,
+  planGw38PrReady,
   planGw43ExactHeadMerge
 } from '../../src/governedWorkflow/review/index.js';
 import {
+  evaluateGw58DocumentationDrift,
   evaluateGw68TerminalVerification,
   planGw69TaskDone
 } from '../../src/governedWorkflow/terminal/index.js';
@@ -1527,6 +1531,529 @@ export async function runFullCandidateHappyPath() {
     mutationPerformed: false as const,
     liveMutationDispatched: false as const,
     effectPlansOnly
+  });
+}
+
+export async function runFullCandidateNegativeMatrix() {
+  const substrate = await canonicalContractSubstrate();
+  const HEAD = '8'.repeat(40);
+  const OTHER_HEAD = '9'.repeat(40);
+  const SESSION_ID = '11111111-1111-4111-8111-111111111111';
+  const RECEIPT_ID = '22222222-2222-4222-8222-222222222222';
+  const requiredClasses = Object.freeze([
+    'UNKNOWN',
+    'AMBIGUOUS',
+    'STALE',
+    'CONFLICT',
+    'DUPLICATE',
+    'DENIED',
+    'CI_FAILURE',
+    'HEAD_DRIFT',
+    'REVIEW_REJECTION',
+    'DEPLOY_FAILURE',
+    'RUNTIME_DRIFT',
+    'DOCS_DRIFT',
+    'STALE_RECEIPT',
+    'RECONNECT',
+    'CONCURRENT_AGENTS'
+  ] as const);
+  type CaseStatus = 'FAIL_CLOSED' | 'RECOVERY_EDGE';
+  const cases: Array<Readonly<{
+    negativeClass: typeof requiredClasses[number];
+    status: CaseStatus;
+    safe: boolean;
+    evidence: Readonly<Record<string, unknown>>;
+  }>> = [];
+  const push = (
+    negativeClass: typeof requiredClasses[number],
+    status: CaseStatus,
+    safe: boolean,
+    evidence: Record<string, unknown>
+  ) => cases.push(Object.freeze({
+    negativeClass,
+    status,
+    safe,
+    evidence: Object.freeze(evidence)
+  }));
+
+  const baseProject: any = {
+    status: 'RESOLVED',
+    observedAt: NOW,
+    repositoryId: 'github:ExampleOrg/api',
+    selectedMapping: {
+      mappingId: 'example-api',
+      repositoryId: 'github:ExampleOrg/api',
+      projectId: 'example.platform',
+      projectUid: 'EXAMPLE-001',
+      componentRole: 'API'
+    },
+    selectedProject: {
+      projectId: 'example.platform',
+      projectUid: 'EXAMPLE-001',
+      name: 'Example Platform',
+      kind: 'MULTI_REPOSITORY_APPLICATION'
+    },
+    candidates: [{ mappingId: 'example-api', projectId: 'example.platform' }],
+    candidateCount: 1,
+    freshness: 'CURRENT',
+    provenance: ['phase-f-negative'],
+    reasonCodes: [],
+    registryDigest: 'b'.repeat(64),
+    candidateDigest: 'c'.repeat(64)
+  };
+  const baseServer: any = {
+    status: 'RESOLVED',
+    observedAt: NOW,
+    projectId: 'example.platform',
+    selectedServer: { serverId: 's2', rawServerIds: ['s2'], environment: 'production', bindings: [] },
+    candidates: [],
+    candidateCount: 1,
+    freshness: 'CURRENT',
+    provenance: ['phase-f-negative'],
+    reasonCodes: [],
+    registryDigest: 'b'.repeat(64),
+    candidateDigest: 'c'.repeat(64),
+    projectMappingId: 'example-api',
+    canonicalServerIds: ['s1', 's2'],
+    authorizationInferred: false,
+    mutationPerformed: false,
+    sshMutationPerformed: false
+  };
+  const domainRegistry = {
+    available: true,
+    freshness: 'CURRENT' as const,
+    digest: 'b'.repeat(64),
+    candidateDigest: 'c'.repeat(64),
+    projects: [{
+      projectId: 'example.platform',
+      publicDomain: 'api.example.com',
+      publicApi: 'https://api.example.com/v1',
+      historicalVhosts: []
+    }],
+    mappings: [{
+      mappingId: 'example-api',
+      repositoryId: 'github:ExampleOrg/api',
+      projectId: 'example.platform',
+      componentRole: 'API',
+      serverId: 's2',
+      domain: 'api.example.com',
+      domainVerified: true
+    }]
+  };
+
+  const unknown = resolveDomain({
+    project: baseProject,
+    server: baseServer,
+    registry: domainRegistry,
+    observation: {
+      available: false,
+      freshness: 'UNKNOWN',
+      observedAt: NOW,
+      serverId: 's2',
+      domains: []
+    },
+    observedAt: NOW
+  } as any);
+  push('UNKNOWN', 'FAIL_CLOSED',
+    unknown.status === 'UNVERIFIED' && unknown.mutationPerformed === false,
+    { status: unknown.status, reasonCodes: unknown.reasonCodes });
+
+  const ambiguous = resolveServer({
+    project: baseProject,
+    registry: {
+      available: true,
+      freshness: 'CURRENT',
+      digest: 'b'.repeat(64),
+      candidateDigest: 'c'.repeat(64),
+      mappings: [
+        {
+          mappingId: 'example-api',
+          repositoryId: 'github:ExampleOrg/api',
+          projectId: 'example.platform',
+          projectUid: 'EXAMPLE-001',
+          componentRole: 'API',
+          serverId: 's1',
+          serverPath: '/srv/example/api-s1',
+          realPath: null,
+          realPathVerified: false,
+          environment: 'production'
+        },
+        {
+          mappingId: 'example-api',
+          repositoryId: 'github:ExampleOrg/api',
+          projectId: 'example.platform',
+          projectUid: 'EXAMPLE-001',
+          componentRole: 'API',
+          serverId: 's2',
+          serverPath: '/srv/example/api-s2',
+          realPath: null,
+          realPathVerified: false,
+          environment: 'production'
+        }
+      ]
+    },
+    canonicalServerIds: ['s1', 's2'],
+    serverHint: null,
+    observedAt: NOW
+  } as any);
+  push('AMBIGUOUS', 'FAIL_CLOSED',
+    ambiguous.status === 'AMBIGUOUS' && ambiguous.mutationPerformed === false,
+    { status: ambiguous.status, reasonCodes: ambiguous.reasonCodes });
+
+  const stale = resolveDomain({
+    project: baseProject,
+    server: baseServer,
+    registry: domainRegistry,
+    observation: {
+      available: true,
+      freshness: 'STALE',
+      observedAt: NOW,
+      serverId: 's2',
+      domains: [{ domain: 'api.example.com', verified: true, evidenceRef: 'phase-f:stale-domain' }]
+    },
+    observedAt: NOW
+  } as any);
+  push('STALE', 'FAIL_CLOSED',
+    stale.status === 'UNVERIFIED' && stale.freshness === 'STALE',
+    { status: stale.status, freshness: stale.freshness, reasonCodes: stale.reasonCodes });
+
+  const conflict = observeGw44MainMergeCommit({
+    repository: 'ExampleOrg/api',
+    expectedMergeSha: HEAD,
+    mainHeadSha: OTHER_HEAD,
+    observedAt: NOW
+  }, substrate);
+  push('CONFLICT', 'FAIL_CLOSED',
+    conflict.status === 'CONFLICT' && conflict.mutationPerformed === false,
+    { status: conflict.status, reasonCodes: conflict.reasonCodes });
+
+  const duplicate = discoverCandidateIntakeSources({
+    registeredIntakes: [{
+      intakeId: 'NEGATIVE-INTAKE-001',
+      sequence: 1,
+      status: 'RECEIVED',
+      sourceType: 'chatgpt',
+      sourceId: 'source-one',
+      sourceDigest: 'a'.repeat(64),
+      observedAt: NOW
+    }],
+    discoveredSources: [{
+      sourceType: 'chatgpt',
+      sourceId: 'source-one',
+      sourceDigest: 'a'.repeat(64),
+      observedAt: NOW
+    }]
+  });
+  push('DUPLICATE', 'FAIL_CLOSED',
+    duplicate.unseen.length === 0
+      && duplicate.duplicateSourceIds.length === 1
+      && duplicate.executesInstructions === false,
+    { duplicateSourceIds: duplicate.duplicateSourceIds, executesInstructions: duplicate.executesInstructions });
+
+  const deniedCapability = deriveCapabilityReality({
+    toolName: 'mcp_transition_governed_task',
+    registered: true,
+    callability: { status: 'CALLABLE', source: 'SERVER' },
+    authorized: { status: 'TRUE' },
+    governanceSafe: true,
+    observedAt: NOW,
+    provenance: ['phase-f-negative']
+  });
+  const deniedDecision = deriveGovernanceDecision({
+    operation: 'mcp_transition_governed_task',
+    capabilityReality: deniedCapability,
+    sessionPresent: true,
+    bootstrapCurrent: true,
+    lockConflicts: 0,
+    githubWorkStateAvailable: true,
+    requiresGithubWorkState: false,
+    ownerMatches: false,
+    dependenciesSatisfied: true,
+    runtimeAligned: true,
+    requiresRuntimeAlignment: false,
+    requiredEvidence: [],
+    observedAt: NOW
+  } as any);
+  const denied = composeGovernanceInheritance({
+    target: { targetId: 'EXAMPLE-001', repositoryId: 'ExampleOrg/api', componentId: 'example-api' },
+    capabilityReality: deniedCapability,
+    governanceDecision: deniedDecision,
+    observedAt: NOW
+  } as any);
+  push('DENIED', 'FAIL_CLOSED',
+    denied.status === 'BLOCKED' && denied.mayExecute === false && denied.mutationPerformed === false,
+    { status: denied.status, reasonCodes: denied.reasonCodes });
+
+  const ciFailure = observeGw45MainCi({
+    expectedHeadSha: HEAD,
+    ci: {
+      runId: 1501,
+      workflow: 'MCP CI',
+      event: 'push',
+      headSha: HEAD,
+      status: 'completed',
+      conclusion: 'failure',
+      observedAt: NOW
+    }
+  }, substrate);
+  push('CI_FAILURE', 'FAIL_CLOSED',
+    ciFailure.status === 'BLOCKED' && ciFailure.mutationPerformed === false,
+    { status: ciFailure.status, reasonCodes: ciFailure.reasonCodes });
+
+  const headDrift = observeGw35ExactDiffReview({
+    expectedHeadSha: HEAD,
+    evidence: {
+      observedAt: NOW,
+      headSha: OTHER_HEAD,
+      baseSha: '1'.repeat(40),
+      changedFiles: ['src/example.ts'],
+      additions: 1,
+      deletions: 0,
+      truncated: false
+    }
+  }, substrate);
+  push('HEAD_DRIFT', 'FAIL_CLOSED',
+    headDrift.status === 'CONFLICT' && headDrift.mutationPerformed === false,
+    { status: headDrift.status, reasonCodes: headDrift.reasonCodes });
+
+  const reviewRejected = planGw38PrReady({
+    repository: 'ExampleOrg/api',
+    pullRequestNumber: 196,
+    expectedHeadSha: HEAD,
+    review: {
+      headSha: HEAD,
+      exactHead: true,
+      blockingFindings: 1,
+      unresolvedRequiredThreads: 0
+    }
+  }, substrate);
+  push('REVIEW_REJECTION', 'FAIL_CLOSED',
+    reviewRejected.status === 'BLOCKED'
+      && reviewRejected.effectPlan === null
+      && reviewRejected.mutationPerformed === false,
+    { status: reviewRejected.status, reasonCodes: reviewRejected.reasonCodes });
+
+  const successfulMainCi = observeGw45MainCi({
+    expectedHeadSha: HEAD,
+    ci: {
+      runId: 1502,
+      workflow: 'MCP CI',
+      event: 'push',
+      headSha: HEAD,
+      status: 'completed',
+      conclusion: 'success',
+      observedAt: NOW
+    }
+  }, substrate);
+  const deployFailure = observeGw46GovernedAutodeploy({
+    expectedHeadSha: HEAD,
+    ciProof: successfulMainCi,
+    deploy: {
+      runId: 2502,
+      jobId: 'candidate-deploy-2502-bbbbbbbbbbbb',
+      workflow: 'MCP Governed Deploy',
+      event: 'push',
+      headSha: HEAD,
+      status: 'completed',
+      conclusion: 'failure',
+      observedAt: NOW
+    }
+  }, substrate);
+  push('DEPLOY_FAILURE', 'FAIL_CLOSED',
+    deployFailure.status === 'BLOCKED' && deployFailure.mutationPerformed === false,
+    { status: deployFailure.status, reasonCodes: deployFailure.reasonCodes });
+
+  const runtimeDrift = evaluateGw68TerminalVerification({
+    taskId: 'TASK-20260919-903',
+    taskStatus: 'VERIFYING',
+    governedSessionId: SESSION_ID,
+    bootstrapReceiptId: RECEIPT_ID,
+    receiptStateVersion: 500,
+    expectedHeadSha: HEAD,
+    expectedRuntimeRevision: HEAD,
+    liveState: {
+      stateVersion: 500,
+      freshness: 'CURRENT',
+      ageSeconds: 5,
+      maxAgeSeconds: 60,
+      githubHead: HEAD,
+      s1Head: HEAD,
+      runtimeRevision: OTHER_HEAD,
+      globalAlignment: 'DRIFT',
+      documentationStatus: 'ALIGNED',
+      documentationDrift: false,
+      contradictions: ['RUNTIME_REVISION_MISMATCH'],
+      observedAt: NOW
+    },
+    documentation: {
+      status: 'ALIGNED',
+      drift: false,
+      observedAt: NOW,
+      trackedHeadSha: HEAD
+    },
+    terminalEvidence: {
+      task: {
+        taskId: 'TASK-20260919-903',
+        taskRevision: 31,
+        status: 'VERIFYING',
+        ownerGovernedSessionId: SESSION_ID,
+        observedHeadSha: HEAD,
+        runtimeRevision: HEAD
+      },
+      receipt: { bootstrapReceiptId: RECEIPT_ID, stateVersion: 500, runtimeRevision: HEAD },
+      ci: { runId: 1502, headSha: HEAD, conclusion: 'success' },
+      deployment: {
+        jobId: 'candidate-deploy-2502-bbbbbbbbbbbb',
+        ciRunId: 1502,
+        headSha: HEAD,
+        runtimeRevision: HEAD,
+        result: 'succeeded'
+      },
+      review: { pullRequestNumber: 196, headSha: HEAD, approved: true, unresolvedThreads: 0 },
+      locks: { ownActiveLockCount: 1, foreignConflictingLockCount: 0 }
+    }
+  } as any, substrate);
+  push('RUNTIME_DRIFT', 'FAIL_CLOSED',
+    runtimeDrift.status === 'BLOCKED' && runtimeDrift.mutationPerformed === false,
+    { status: runtimeDrift.status, reasonCodes: runtimeDrift.reasonCodes });
+
+  const docsDrift = evaluateGw58DocumentationDrift({
+    expectedHeadSha: HEAD,
+    documentation: {
+      status: 'DRIFT',
+      drift: true,
+      observedAt: NOW,
+      trackedHeadSha: HEAD
+    }
+  }, substrate);
+  push('DOCS_DRIFT', 'RECOVERY_EDGE',
+    docsDrift.status === 'SUCCESS'
+      && docsDrift.payload.documentationRequired === true
+      && docsDrift.payload.nextStepId === 'GW-59'
+      && docsDrift.mutationPerformed === false,
+    { status: docsDrift.status, nextStepId: docsDrift.payload.nextStepId });
+
+  const staleReceipt = evaluateGw54ReceiptFreshness({
+    receipt: {
+      bootstrapReceiptId: RECEIPT_ID,
+      stateVersion: 499,
+      runtimeRevision: HEAD
+    },
+    liveState: {
+      stateVersion: 500,
+      generatedAt: NOW,
+      lastReconciledAt: NOW,
+      maxAgeSeconds: 60,
+      freshness: 'CURRENT',
+      ageSeconds: 5,
+      githubHead: HEAD,
+      s1Head: HEAD,
+      runtimeRevision: HEAD,
+      globalAlignment: 'FULLY_ALIGNED',
+      contradictions: []
+    }
+  }, substrate);
+  push('STALE_RECEIPT', 'RECOVERY_EDGE',
+    staleReceipt.status === 'STALE'
+      && staleReceipt.payload.nextStepId === 'GW-55'
+      && staleReceipt.mutationPerformed === false,
+    { status: staleReceipt.status, nextStepId: staleReceipt.payload.nextStepId });
+
+  const reconnectSession: any = {
+    schemaVersion: 1,
+    governedSessionId: SESSION_ID,
+    repository: 'ExampleOrg/api',
+    taskScope: 'TASK-20260919-904',
+    workBranch: 'phase-f/reconnect',
+    agentIdentity: 'acceptance-agent',
+    ownerPrincipalId: 'oauth:example-user',
+    identityAssurance: 'oauth_subject',
+    status: 'ACTIVE',
+    createdAt: NOW,
+    resumedAt: NOW,
+    lastHeartbeatAt: NOW,
+    pausedAt: null,
+    expiredAt: null,
+    closedAt: null,
+    currentTransport: null,
+    lastAcknowledgedStateVersion: 500,
+    bootstrapReceipt: {
+      schemaVersion: 1,
+      bootstrapReceiptId: RECEIPT_ID,
+      governedSessionId: SESSION_ID,
+      agentIdentity: 'acceptance-agent',
+      repository: 'ExampleOrg/api',
+      governedBranch: 'phase-f/reconnect',
+      stateVersion: 500,
+      githubHead: HEAD,
+      runtimeRevision: HEAD,
+      catalogueDigest: 'b'.repeat(64),
+      governanceDigest: 'c'.repeat(64),
+      taskRegistryDigest: 'd'.repeat(64),
+      createdAt: NOW,
+      expiresAt: '2026-09-19T23:30:00.000Z',
+      status: 'ACKNOWLEDGED',
+      limitations: []
+    },
+    connectionContext: null,
+    sessionRevision: 8,
+    lastCheckpoint: null,
+    blockers: [],
+    nextAction: 'reobserve',
+    lockIds: [],
+    resumePolicy: 'stable_principal_or_resume_secret'
+  };
+  const reconnect = wrapGw16SessionOpenOrResume({
+    status: 'RESUMED',
+    session: reconnectSession
+  } as any, substrate);
+  push('RECONNECT', 'RECOVERY_EDGE',
+    reconnect.status === 'RESUMED'
+      && reconnect.mutationPerformed === false
+      && JSON.stringify(reconnect).includes('resumeSecret') === false,
+    { status: reconnect.status, authority: 'EXISTING_GOVERNED_SESSION' });
+
+  const concurrent = dispatchCandidateWork({
+    candidateSessionId: 'candidate-b',
+    agentIdentity: 'agent-b',
+    workItems: [{
+      workItemId: 'GWC-PRE-F-NEGATIVE-01',
+      intentKeys: ['negative'],
+      title: 'Negative collision fixture',
+      status: 'READY',
+      priority: 1,
+      sequence: 1,
+      dependencies: [],
+      collisionDomains: ['path:shared']
+    }],
+    activeClaims: [{
+      candidateSessionId: 'candidate-a',
+      agentIdentity: 'agent-a',
+      workItemId: 'GWC-PRE-F-FOREIGN-01',
+      collisionDomains: ['path:shared'],
+      status: 'ACTIVE'
+    }]
+  });
+  push('CONCURRENT_AGENTS', 'FAIL_CLOSED',
+    concurrent.status === 'WAIT'
+      && concurrent.reasonCode === 'candidate_collision_domains_busy'
+      && concurrent.workItem === null,
+    { status: concurrent.status, reasonCode: concurrent.reasonCode });
+
+  const uniqueClasses = new Set(cases.map((entry) => entry.negativeClass));
+  const status = (
+    cases.length === requiredClasses.length
+    && uniqueClasses.size === requiredClasses.length
+    && requiredClasses.every((negativeClass) => uniqueClasses.has(negativeClass))
+    && cases.every((entry) => entry.safe)
+  ) ? 'PASS' as const : 'FAIL' as const;
+
+  return Object.freeze({
+    status,
+    requiredClasses,
+    cases: Object.freeze(cases),
+    mutationPerformed: false as const,
+    liveMutationDispatched: false as const
   });
 }
 
