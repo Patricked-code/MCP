@@ -351,6 +351,16 @@ test('GW-30 reuses expected-failure qualification and skips explicitly when no f
   }, canonical);
   assert.equal(proven.status, 'SUCCESS');
   assert.equal(proven.payload.nextStepId, 'GW-31');
+
+  const staleReview = observeGw30RegressionRed({
+    selfReview: withFinding,
+    expectedHeadSha: NEXT_HEAD,
+    profile,
+    expectedFailure: expectedFailure(),
+    ci: await ciObservation({ headSha: NEXT_HEAD })
+  }, canonical);
+  assert.equal(staleReview.status, 'BLOCKED');
+  assert.deepEqual(staleReview.reasonCodes, ['SELF_REVIEW_HEAD_MISMATCH']);
 });
 
 test('GW-31 plans regression green only after a proven regression RED', async () => {
