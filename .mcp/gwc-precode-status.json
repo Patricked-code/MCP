@@ -860,7 +860,7 @@
         "intentKeys": [
           "candidate-audit"
         ],
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 80,
         "sequence": 3,
         "dependencies": [
@@ -870,7 +870,9 @@
           "docs:gwc",
           ".mcp:gwc-precode"
         ],
-        "evidence": []
+        "evidence": [
+          "Dispatched to candidate-7afc131430c64c6fe34bcfea @ f098b4fe087e5dfbf223e23e9ef4eb293854bfa9"
+        ]
       }
     ],
     "activeClaims": [
@@ -893,6 +895,16 @@
           ".mcp:gwc-precode"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-B-03",
+        "collisionDomains": [
+          "docs:gwc",
+          ".mcp:gwc-precode"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -940,7 +952,7 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "39fdfe454510d38fea9abfb857d473f6037cda60",
+        "lastObservedHeadSha": "f098b4fe087e5dfbf223e23e9ef4eb293854bfa9",
         "createdAt": "2026-09-19T00:11:00Z",
         "lastSeenAt": "2026-09-19T00:11:00Z",
         "status": "ACTIVE"
