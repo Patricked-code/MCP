@@ -654,3 +654,20 @@ Date : 2026-08-29
 - GREEN final : MCP CI #1440 SUCCESS sur `b8a86c48eb24902f998d4533e6bbeac5144102c6` — 589/589 PASS, 0 skipped, discoveredTests=75, runnerTests=74, dedicatedTests=1 ; typecheck/build/docs/governance/GWC/secrets/read-only/whitespace verts.
 - Frontière : aucun merge main, aucune mutation S1/production, aucun déploiement, aucune Task/lock/session runtime exécutée par le PRECODE ; `src/governedWorkflow/terminal/index.ts` reste une couche pure d'évaluation/EffectPlan et ne crée aucune seconde autorité.
 - NEXT_ACTION : matérialiser le checkpoint canonique GWC-16, valider sa CI sur le HEAD exact, puis seulement libérer le claim et dispatcher `GWC-PRE-E-GWC-17`.
+
+## 2026-09-19 — GWC-17 Universal Acceptance — GREEN final, checkpoint en préparation
+
+- Work item : `GWC-PRE-E-GWC-17`; contrat `GW-73 UNIVERSAL_ACCEPTANCE`, explicitement hors du graphe runtime nominal. Le claim PRECODE reste ACTIVE jusqu'au SUCCESS du checkpoint exact-head.
+- Périmètre volontairement **tests-only** : `tests/governedWorkflowUniversalAcceptance/`; aucun fichier `src/` n'a été modifié par GWC-17 et le harnais n'est importé par aucun code runtime.
+- RED initial : MCP CI #1451 sur `0b55d140a6b32be82d81192d2df12c3cabd8a893` — 597 tests, 589 historiques PASS, exactement 8 échecs attendus par absence du harnais.
+- Premier GREEN : MCP CI #1454 sur `cf9f62f4b36ccf8eac6f477becb7c45505053174` — 597/597 PASS.
+- Self-review RED : MCP CI #1456 sur `da1ea9fb30d056bf21761dcfe3fa818de9c2c70e` — 598 tests, 595 PASS, exactement 3 échecs attendus : binding du gate GW-68 au Contract Registry canonique, contrôle négatif du détecteur anti-hardcode et attribution des contrats défaillants.
+- GREEN final : MCP CI #1458 SUCCESS sur `9b32bba86e830845ea63d90f37bf304d800b8f12` — 598/598 PASS, 0 skipped, discoveredTests=76, runnerTests=75, dedicatedTests=1.
+- Scénario MCP historique : l'absence de TargetScope conserve strictement `LEGACY_SINGLE_REPOSITORY / Patricked-code/MCP`; aucun branchement MCP spécifique n'existe dans les chemins gouvernés.
+- Scénario réel Stablecoin : fixture sourcée depuis PR #86, projet `CS-STABLECOIN-001`, frontend `Patricked-code/Stablecoin`, S2, runtime PASSENGER, domaine/public API déclarés, backend conservé `LIVE_DISCOVERY_REQUIRED` sans repository inventé.
+- Scénario multi-composants synthétique : SHAs GitHub/runtime indépendants, aucun `PROJECT_SHA`, locks composants distincts et isolation locale d'un composant UNVERIFIED.
+- Recovery Intake #003 : stale/missing heartbeat ne transfère ni ownership ni autorisation ; existing claim repris en CONTINUE ; plan runner déterministe, acknowledgement obligatoire, stale envelope refusée, intake dédupliqué, recovery anchor `REOBSERVE_THEN_DECIDE`, déploiement sans attestation bloqué par GW-68, aucun transcript brut/secret persisté.
+- Anti-hardcode : scan des chemins gouvernés sans littéraux cible MCP/Stablecoin/Chainsolutions/S1/S2 et contrôle négatif injectant volontairement des littéraux interdits pour prouver que le détecteur échoue bien.
+- Fail-closed : un scénario forcé en échec rend le rapport GW-73 `FAILED` et expose l'ensemble exact des `failedContracts`; aucun scénario n'est silencieusement SKIPPED.
+- Frontière : aucune mutation main/S1/production, aucun déploiement, aucune Task/Session/Lock runtime et aucune nouvelle autorité.
+- NEXT_ACTION : matérialiser le checkpoint canonique GWC-17, valider sa CI exact-head, libérer GWC-17 seulement après SUCCESS puis lire les autorités Phase F / final candidate gate avant toute intégration.
