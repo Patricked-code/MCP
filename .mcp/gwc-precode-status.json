@@ -1340,7 +1340,9 @@
           "path:src/governedContext",
           "path:src/liveState",
           "path:tests/governedWorkflowTargetScope.test.ts",
-          "path:package.json"
+          "path:package.json",
+          "path:tests/governedWorkflowSessionIntegration.test.ts",
+          "path:tests/governedWorkflowTaskLockIntegration.test.ts"
         ],
         "evidence": [
           "Derived from GWC-CAND-10 exact-bound candidate backlog.",
@@ -1350,7 +1352,9 @@
           "Exact-head GWC-10 baseline confirms operational records and current Live State are single-target while GitRegistry project/component authority is already multi-repository.",
           "OD-10 resolved by canonical compatibility rule: TargetScope is additive optional; absence keeps exact historical single-repository meaning and is never interpreted as all components.",
           "OD-11 resolved existing-first: a Task owns exactly the component subset named by its optional TargetScope while ownerGovernedSessionId remains the task owner; disjoint component scopes stay independently claimable/lockable.",
-          "GWC-10 RED scope expanded only to tests/governedWorkflowTargetScope.test.ts and package.json before test mutation."
+          "GWC-10 RED scope expanded only to tests/governedWorkflowTargetScope.test.ts and package.json before test mutation.",
+          "First GWC-10 runtime GREEN attempt reached read-only regression with all 10 new GWC-10 tests GREEN; only three pre-GWC10 guard tests failed because their names/assertions explicitly freeze behavior 'until/before GWC-10'.",
+          "Historical guard reconciliation scope expanded to governedWorkflowSessionIntegration.test.ts and governedWorkflowTaskLockIntegration.test.ts before editing; tests will be converted to prove additive GWC-10 activation plus legacy compatibility rather than deleted."
         ]
       },
       {
@@ -1723,7 +1727,9 @@
           "path:src/governedContext",
           "path:src/liveState",
           "path:tests/governedWorkflowTargetScope.test.ts",
-          "path:package.json"
+          "path:package.json",
+          "path:tests/governedWorkflowSessionIntegration.test.ts",
+          "path:tests/governedWorkflowTaskLockIntegration.test.ts"
         ],
         "status": "ACTIVE"
       }
