@@ -1058,7 +1058,7 @@
           "GWC-3"
         ],
         "title": "GWC-3 — Wrap existing B1/B2/C2",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 67,
         "sequence": 10,
         "dependencies": [
@@ -1072,7 +1072,12 @@
           "Dependency GWC-PRE-E-GWC-2 completed with final GREEN CI #1182.",
           "Claimed by candidate-7afc131430c64c6fe34bcfea @ 1b6a5da0673464b87ff10a541332d685ae490c98",
           "Existing-first boundary: resolveGithubIdentity, resolveGithubRepository and resolveGithubProject remain the only resolver algorithms/authorities; GWC-3 may wrap but not alter them.",
-          "CI gap confirmed from package.json: tests/githubRepositoryResolution.test.ts exists but is not in test:readonly-safety."
+          "CI gap confirmed from package.json: tests/githubRepositoryResolution.test.ts exists but is not in test:readonly-safety.",
+          "RED CI #1189 FAILURE @ 07317fd40d2c039e4c680d58339d5baf9b181e60: missing GWC wrappers plus missing githubRepositoryResolution CI coverage.",
+          "GREEN CI #1192 SUCCESS @ f482b67ebaf9c3bb4bbf613da2084d97cdedeefa.",
+          "GW-04/GW-05/GW-06 are parity wrappers only; resolver and registry authorities remain unchanged.",
+          "tests/githubRepositoryResolution.test.ts is now executed by test:readonly-safety.",
+          "Self-review PASS: no authorization, deploy, credential, MCP-specific target or PROJECT_SHA flattening semantics added."
         ]
       },
       {
@@ -1082,7 +1087,7 @@
           "GWC-4"
         ],
         "title": "GWC-4 — Connection/Session/Receipt integration",
-        "status": "PENDING",
+        "status": "READY",
         "priority": 66,
         "sequence": 11,
         "dependencies": [
@@ -1094,7 +1099,8 @@
           "path:src/operationalMemory/sessionService.ts"
         ],
         "evidence": [
-          "Derived from GWC-CAND-04 exact-bound candidate backlog."
+          "Derived from GWC-CAND-04 exact-bound candidate backlog.",
+          "Dependency GWC-PRE-E-GWC-3 completed with GREEN CI #1192."
         ]
       },
       {
@@ -1127,7 +1133,7 @@
           "GWC-6"
         ],
         "title": "GWC-6 — Server Resolver C3",
-        "status": "PENDING",
+        "status": "READY",
         "priority": 64,
         "sequence": 13,
         "dependencies": [
@@ -1137,7 +1143,8 @@
           "path:src/governedWorkflow/resolvers/server"
         ],
         "evidence": [
-          "Derived from GWC-CAND-06 exact-bound candidate backlog."
+          "Derived from GWC-CAND-06 exact-bound candidate backlog.",
+          "Dependency GWC-PRE-E-GWC-3 completed with GREEN CI #1192."
         ]
       },
       {
@@ -1481,7 +1488,7 @@
         "collisionDomains": [
           "path:src/governedWorkflow/resolvers/identity"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -1529,9 +1536,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "1b6a5da0673464b87ff10a541332d685ae490c98",
+        "lastObservedHeadSha": "6c1a95a1cc2a8f1771d22a8923b0ea617509a0a2",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T02:45:00Z",
+        "lastSeenAt": "2026-09-19T02:51:00Z",
         "status": "ACTIVE"
       }
     ]
@@ -4488,6 +4495,27 @@
         "package.json"
       ],
       "authorityBoundary": "EPHEMERAL_SHADOW_ORCHESTRATION_NO_DISPATCH_NO_DURABLE_CURSOR"
+    },
+    "gwc3": {
+      "workItemId": "GWC-PRE-E-GWC-3",
+      "blueprint": "GWC-3",
+      "status": "PASS_WITH_EVIDENCE",
+      "red": {
+        "ciRunNumber": 1189,
+        "head": "07317fd40d2c039e4c680d58339d5baf9b181e60",
+        "result": "FAIL_EXPECTED"
+      },
+      "green": {
+        "ciRunNumber": 1192,
+        "head": "f482b67ebaf9c3bb4bbf613da2084d97cdedeefa",
+        "result": "SUCCESS"
+      },
+      "implementation": [
+        "src/governedWorkflow/resolvers/githubResolvers.ts",
+        "tests/governedWorkflowGithubResolverAdapters.test.ts",
+        "package.json"
+      ],
+      "authorityBoundary": "PARITY_WRAPPERS_ONLY_EXISTING_B1_B2_C2_AUTHORITIES_UNCHANGED"
     }
   }
 }
