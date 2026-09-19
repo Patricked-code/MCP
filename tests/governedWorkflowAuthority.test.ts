@@ -239,3 +239,53 @@ test('GWC-11 GW-23 rejects exact-head contradictions rather than choosing a SHA'
   assert.equal(result.baseline, null);
   assert.deepEqual(result.reasonCodes, ['GITHUB_BASELINE_HEAD_MISMATCH']);
 });
+
+
+test('GWC-11 self-review: GW-22 rejects stale inventory instead of resolving an owner', async () => {
+  const { resolveGw22IntegrationSlot } = await import('../src/governedWorkflow/authority/index.js');
+  const result = resolveGw22IntegrationSlot({
+    repository: 'Patricked-code/MCP',
+    observedAt: '2026-09-19T08:15:00.000Z',
+    inventoryStatus: 'STALE',
+    inventoryDigest: '4'.repeat(64),
+    proposal: { kind: 'MODULE', key: 'src/operationalMemory/taskQueue.ts' },
+    inventory: {
+      modules: ['src/operationalMemory/taskQueue.ts'],
+      markdown: ['SUIVI.md'],
+      tools: []
+    }
+  } as any, await substrate());
+
+  assert.equal(result.status, 'STALE');
+  assert.equal(result.slot, null);
+  assert.deepEqual(result.reasonCodes, ['INTEGRATION_SLOT_INVENTORY_STALE']);
+  assert.equal(result.freshness, 'STALE');
+});
+
+test('GWC-11 self-review: GW-23 rejects stale exact-head sub-evidence', async () => {
+  const { observeGw23ExactGithubBaseline } = await import('../src/governedWorkflow/authority/index.js');
+  const base = currentGithub();
+  const github = currentGithub({
+    evidence: {
+      ...base.evidence,
+      pullRequest: {
+        ...base.evidence.pullRequest,
+        freshness: 'STALE'
+      },
+      checks: {
+        ...base.evidence.checks,
+        freshness: 'STALE'
+      }
+    }
+  });
+  const result = observeGw23ExactGithubBaseline({
+    repository: 'Patricked-code/MCP',
+    workBranch: 'claude/example',
+    stepStartedAt: '2026-09-19T08:14:59.000Z',
+    github
+  }, await substrate());
+
+  assert.equal(result.status, 'STALE');
+  assert.equal(result.baseline, null);
+  assert.deepEqual(result.reasonCodes, ['GITHUB_BASELINE_EVIDENCE_STALE']);
+});
