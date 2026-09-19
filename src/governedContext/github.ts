@@ -128,7 +128,7 @@ function githubReasoning(input: {
   if (error.includes('github_timeout')) reasonCodes.push('GITHUB_TIMEOUT');
   if (error.includes('github_stale')) reasonCodes.push('GITHUB_STALE');
 
-  if (input.checks.exactHead === false) {
+  if (input.checks.exactHead === false || input.reviews.exactHead === false) {
     reasonCodes.push('GITHUB_HEAD_MISMATCH');
   }
   const requiredPending = input.checks.required.some((item) => item.status !== 'completed');
@@ -172,7 +172,13 @@ function emptyChecks(): GithubOperationalContext['checks'] {
 }
 
 function emptyReviews(): GithubOperationalContext['reviews'] {
-  return { approvals: 0, changesRequested: 0, unresolvedThreads: null };
+  return {
+    approvals: 0,
+    changesRequested: 0,
+    unresolvedThreads: null,
+    headSha: null,
+    exactHead: null
+  };
 }
 
 function emptyContext(
@@ -581,14 +587,19 @@ function applyRequiredChecks(
   return { ...checks, required, requiredSatisfied };
 }
 
-function parseReviews(value: unknown): Pick<
-GithubOperationalContext['reviews'], 'approvals' | 'changesRequested'
+function parseReviews(
+  value: unknown,
+  expectedHeadSha: string
+): Pick<
+GithubOperationalContext['reviews'],
+'approvals' | 'changesRequested' | 'headSha' | 'exactHead'
 > | null {
   if (!Array.isArray(value)) return null;
   const reviews = value.slice(0, 100).map(object).filter(Boolean);
   if (reviews.length !== Math.min(value.length, 100)) return null;
   const latestByReviewer = new Map<string, {
     state: unknown;
+    commitSha: string | null;
     submittedAt: number;
     index: number;
   }>();
@@ -614,18 +625,38 @@ GithubOperationalContext['reviews'], 'approvals' | 'changesRequested'
       || submittedAtMs > current.submittedAt
       || (submittedAtMs === current.submittedAt && index > current.index)
     ) {
-      latestByReviewer.set(reviewerKey, { state, submittedAt: submittedAtMs, index });
+      latestByReviewer.set(reviewerKey, {
+        state,
+        commitSha: sha(review?.commit_id),
+        submittedAt: submittedAtMs,
+        index
+      });
     }
   });
   const currentReviews = [...latestByReviewer.values()];
+  const reviewHeadShas = currentReviews.map((review) => review.commitSha);
+  const allReviewsHaveHeadSha = currentReviews.length > 0
+    && reviewHeadShas.every((value) => value !== null);
+  const uniqueReviewHeadShas = boundedUnique(
+    reviewHeadShas.filter((value): value is string => value !== null)
+  );
+  const headSha = allReviewsHaveHeadSha && uniqueReviewHeadShas.length === 1
+    ? uniqueReviewHeadShas[0]!
+    : null;
+  const exactHead = currentReviews.length === 0
+    ? null
+    : allReviewsHaveHeadSha
+      ? uniqueReviewHeadShas.length === 1 && headSha === expectedHeadSha
+      : null;
   return {
     approvals: currentReviews.filter((review) => review.state === 'APPROVED').length,
     changesRequested: currentReviews.filter(
       (review) => review.state === 'CHANGES_REQUESTED'
-    ).length
+    ).length,
+    headSha,
+    exactHead
   };
 }
-
 function parseUnresolvedThreads(value: unknown): number | null {
   const root = object(value);
   const data = object(root?.data);
@@ -1188,7 +1219,9 @@ export function createGithubOperationalContextCollector(
           );
           checksFreshness = 'CURRENT';
         } else errors.push(checksResult.error ?? 'github_checks_malformed');
-        const parsedReviews = reviewsResult.ok ? parseReviews(reviewsResult.json) : null;
+        const parsedReviews = reviewsResult.ok
+          ? parseReviews(reviewsResult.json, pullRequest.headSha)
+          : null;
         if (parsedReviews) reviews = { ...reviews, ...parsedReviews };
         else errors.push(reviewsResult.error ?? 'github_reviews_malformed');
         const unresolvedThreads = threadsResult.ok

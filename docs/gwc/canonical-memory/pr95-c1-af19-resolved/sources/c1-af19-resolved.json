@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "event": "GWC_PRE_C1_AF19_RESOLUTION",
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "observedHeadBeforeCheckpoint": "074f2bd21eef6e23811512453d34670bfecc7485",
+  "workItem": "GWC-PRE-C1",
+  "finding": "AF-19",
+  "decision": "OD-07",
+  "resolution": {
+    "classification": "EXISTING_FIRST_AUTONOMOUS_RESOLUTION",
+    "selectedPlacement": "B_EXISTING_WORKFLOW_GATE",
+    "rationale": [
+      "The existing deployment gate is the documented Integration Slot.",
+      "workflow_run remains rejected because it would weaken or break the exact-SHA OIDC boundary.",
+      "Option B is additive, minimal, OIDC-compatible, and satisfies REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW.",
+      "Server-side admission and CI-job restructuring are not required to close AF-19 in the candidate and would expand authority/responsibility beyond the minimal fix."
+    ],
+    "preserved": [
+      "GITHUB_OIDC_POLICY allowedEvents unchanged",
+      "tokenSha === requestedSha unchanged",
+      "workflow_dispatch historical bypass behavior unchanged",
+      "Deploy exact main SHA through MCP step name unchanged",
+      "no new deployment authority created"
+    ]
+  },
+  "tdd": {
+    "red": {
+      "commit": "757ee2a525741eef5cbb36796fc69c62c85a47b2",
+      "ciRun": 1110,
+      "conclusion": "failure",
+      "failedStep": "Read-only safety tests",
+      "precedingChecks": "typecheck/build/docs/governance/GWC/secret-scan all success"
+    },
+    "green": {
+      "workflowCommit": "a92f8d4dfe2cbf7eeab3603a06e26009cda0243e",
+      "finalHead": "074f2bd21eef6e23811512453d34670bfecc7485",
+      "ciRun": 1112,
+      "conclusion": "success",
+      "checks": "typecheck/build/docs/governance/GWC/secret-scan/read-only-safety/whitespace all success"
+    }
+  },
+  "changedFiles": [
+    ".github/workflows/mcp-deploy.yml",
+    "tests/deployWorkflow.test.ts"
+  ],
+  "safety": {
+    "mainTouched": false,
+    "s1Touched": false,
+    "productionTouched": false,
+    "deploymentTriggered": false,
+    "runtimeTaskCreated": false,
+    "runtimeLockAcquired": false,
+    "runtimeGovernedSessionOpened": false
+  },
+  "nextWorkItem": "GWC-PRE-C2"
+}

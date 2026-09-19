@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-5",
+  "blueprint": "GWC-5",
+  "status": "PASS_WITH_EVIDENCE",
+  "session": {
+    "sessionId": "GWC-PRE-SESSION-20260919T001100Z-CHATGPT-2fb4b678",
+    "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol"
+  },
+  "red": {
+    "head": "021718f054946bf95f3be04e6f21523a0e7f4404",
+    "ciRunId": 35417680673,
+    "ciRunNumber": 1212,
+    "conclusion": "failure",
+    "evidence": [
+      "Existing sequential acquireLock can leave the first scope active when the second scope conflicts.",
+      "acquireLocksAtomically, normalizeLockScope export and GWC-5 task/lock adapter were absent."
+    ]
+  },
+  "firstGreen": {
+    "head": "98b65523e1a92137704457d0a2176c17c1e8c454",
+    "ciRunId": 35418328871,
+    "ciRunNumber": 1216,
+    "conclusion": "success",
+    "disposition": "TECHNICALLY_GREEN_SELF_REVIEW_REQUIRED"
+  },
+  "selfReview": [
+    {
+      "finding": "SAME_SESSION_UNSETTLED_LOCK_REUSE_RACE",
+      "regressionRed": {
+        "head": "da3f5de46355ec2b46a57b7e1d1c381db3c24d1e",
+        "ciRunId": 35418395656,
+        "ciRunNumber": 1217,
+        "conclusion": "failure"
+      },
+      "correction": "Atomic acquisition now reuses a same-session active lock only when that lockId is already projected in the required session record; otherwise it fails closed with LOCK_SESSION_PROJECTION_UNSETTLED.",
+      "green": {
+        "head": "c44eb22203101de2eef9e4579cdffae4db9be635",
+        "ciRunId": 35418454630,
+        "ciRunNumber": 1218,
+        "conclusion": "success"
+      }
+    },
+    {
+      "finding": "M1_LOCK_EVIDENCE_BINDING_INCOMPLETE",
+      "regressionRed": {
+        "head": "e7368083f00df4a9e52505f0fdaba60806726be1",
+        "ciRunId": 35418576803,
+        "ciRunNumber": 1219,
+        "conclusion": "failure"
+      },
+      "correction": "Governed Lock EvidenceRef now projects repository and task bindings already encoded by repository:/task: lock scopes, while retaining session binding and digest.",
+      "finalGreen": {
+        "head": "6ba1b80b7ee1117d254bf930e5d452c3a0c14644",
+        "ciRunId": 35418656954,
+        "ciRunNumber": 1220,
+        "conclusion": "success"
+      }
+    }
+  ],
+  "od05Resolution": {
+    "status": "RESOLVED_FOR_GWC_5_CURRENT_SINGLE_PROCESS_AUTHORITY",
+    "policy": [
+      "bounded input: 1..64 requested scopes",
+      "normalize with existing Lock Service scope rules",
+      "deduplicate and lexicographically sort normalized scopes before mutation",
+      "check every conflicting active scope before any grant is committed",
+      "commit all new lock records in one existing lock-store atomic update",
+      "commit session projection in one existing session-store atomic update and increment owner session revision at most once for the set",
+      "compensate every newly-created lock to RELEASED if session projection fails",
+      "reuse already-owned active locks only when their ids are already projected into the current expected session revision",
+      "repository type is future-target-compatible but runtime normalization remains fail-closed on Patricked-code/MCP until GWC-10"
+    ],
+    "distributedConcurrency": "NOT_RESOLVED_BY_GWC_5__OD_08_REMAINS_OPEN"
+  },
+  "implementation": {
+    "files": [
+      "src/operationalMemory/lockService.ts",
+      "src/governedWorkflow/adapters/task.ts",
+      "tests/governedWorkflowTaskLockIntegration.test.ts",
+      "package.json"
+    ],
+    "behavior": [
+      "GW-13/GW-14/GW-15/GW-18/GW-19/GW-20 wrappers observe existing Live State, Task Queue and Lock Service outputs without transitioning tasks or granting authorization.",
+      "planMinimalLockSet is pure, bounded, deterministic and delegates scope validation to the existing Lock Service normalizer.",
+      "acquireLocksAtomically is additive inside the existing Governed Lock Service; single-scope acquireLock remains unchanged.",
+      "all-or-nothing active grant is enforced for multi-scope acquisition under the existing atomic store model.",
+      "competing reversed lock plans cannot split ownership or deadlock within the current process/store authority.",
+      "cross-store session projection failure compensates the entire newly-created lock set.",
+      "same-session unsettled lock projections fail closed and require reconciliation.",
+      "Task Queue source blob and ALLOWED_TRANSITIONS are byte-identical to the GWC-5 start baseline.",
+      "reconcileIntent OUT_OF_SCOPE is preserved verbatim by wrappers.",
+      "M1 digests and known repository/task/session bindings are preserved in GWC-5 EvidenceRef projections."
+    ],
+    "authorityBoundary": "Governed Task Queue remains sole task identity/classification/lifecycle authority; Governed Lock Service remains sole lock grant/TTL/release authority; Live State remains observed-reality authority; no second queue, lock system or durable GWC workflow cursor was created."
+  },
+  "boundaries": {
+    "runtimeTasksCreated": 0,
+    "runtimeLocksUsed": false,
+    "runtimeMcpRequired": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deployment": false,
+    "taskQueueLifecycleChanged": false,
+    "taskRecordSchemaChanged": false,
+    "lockRecordSchemaChanged": false,
+    "secondQueueCreated": false,
+    "secondLockSystemCreated": false,
+    "authorizationInferred": false,
+    "distributedConcurrencyClaimed": false
+  },
+  "concurrentIntake003": {
+    "observedHeadMove": "021718f054946bf95f3be04e6f21523a0e7f4404 -> a0759b6ced1b719c4b3edb3be83f22d3bd0448cb",
+    "disposition": "LOCAL_KNOWLEDGE_DRIFT_NO_GWC5_IMPLEMENTATION_COLLISION",
+    "ruleApplied": "Resume existing GWC-5 ACTIVE claim; on release dispatch requeued GWC-4 before later work."
+  },
+  "nextAction": "Release GWC-PRE-E-GWC-5 claim and dispatch the requeued GWC-PRE-E-GWC-4 intake-003 recovery delta, preserving GWC-4 prior PASS and CI #1205 as historical baseline."
+}

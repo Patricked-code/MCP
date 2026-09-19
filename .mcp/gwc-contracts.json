@@ -1,0 +1,3139 @@
+{
+  "schemaVersion": 1,
+  "revision": "R3",
+  "canonicalBaseline": "GWC_73_CONTRACT_DESIGN_SHEETS_CANONICAL_R1",
+  "generatedAt": "2026-09-16T23:23:04Z",
+  "repository": "Patricked-code/MCP",
+  "observedSha": "d1f303955c4d368950da2307dda41d826fc85d0a",
+  "source": "GITHUB_LIVE",
+  "architectureStatus": "READY_FOR_GOVERNED_IMPLEMENTATION",
+  "canonicalDetail": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md",
+  "note": "Projection machine déterministe de la baseline canonique. Aucune autorité métier.",
+  "families": {
+    "A": "Intake",
+    "B": "Identity and Target Resolution",
+    "C": "Governance and Capability Composition",
+    "D": "Work Orchestration",
+    "E": "Development",
+    "F": "Review and Merge",
+    "G": "Deployment",
+    "H": "Verification and Closure",
+    "I": "Universal Acceptance"
+  },
+  "registryDigest": "934752a8e8d114b48aeb90b9b96ed456563f49244f19bd86fb0608afa28a6b1a",
+  "contracts": [
+    {
+      "stepId": "GW-01",
+      "canonicalName": "INTENT_CAPTURE",
+      "family": "A",
+      "familyName": "Intake",
+      "contractVersion": 1,
+      "profiles": [
+        "PURE_TRANSFORM"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "NEW",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "IntentContext",
+      "replayModel": "PURE",
+      "currentMapping": "No runtime IntentCapture contract on main; design exists.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-01--intent_capture",
+      "blueprintRef": "GWC-1",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [],
+        "outgoing": [
+          "GW-02"
+        ],
+        "entry": true,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "ENTRY",
+        "successorText": "GW-02"
+      }
+    },
+    {
+      "stepId": "GW-02",
+      "canonicalName": "CONNECTION_BOOTSTRAP",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "BOOTSTRAP_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ConnectionBootstrapResult",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/server.ts bootstrap/auto-resume transport path.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-02--connection_bootstrap",
+      "blueprintRef": "GWC-4",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-01"
+        ],
+        "outgoing": [
+          "GW-03",
+          "GW-16"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-01",
+        "successorText": "GW-03 or GW-16 depending existing session binding"
+      }
+    },
+    {
+      "stepId": "GW-03",
+      "canonicalName": "CONNECTION_CONTEXT",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "CONTEXT_PROJECTION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY / COMPOSED",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD bounded projection if existing authority owns it"
+      ],
+      "canonicalOutput": "ConnectionContext",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/operationalMemory/connectionContext.ts + session records.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-03--connection_context",
+      "blueprintRef": "GWC-4",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-02",
+          "GW-16"
+        ],
+        "outgoing": [
+          "GW-04"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-02 / GW-16",
+        "successorText": "GW-04"
+      }
+    },
+    {
+      "stepId": "GW-04",
+      "canonicalName": "GITHUB_IDENTITY_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "GithubIdentityResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/github/identityResolution.ts.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-04--github_identity_resolution",
+      "blueprintRef": "GWC-3",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-03"
+        ],
+        "outgoing": [
+          "GW-05"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-03",
+        "successorText": "GW-05"
+      }
+    },
+    {
+      "stepId": "GW-05",
+      "canonicalName": "REPOSITORY_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RepositoryResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/github/repositoryResolution.ts.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-05--repository_resolution",
+      "blueprintRef": "GWC-3",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-04"
+        ],
+        "outgoing": [
+          "GW-06"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-04",
+        "successorText": "GW-06; reobserve/reconcile on ambiguity"
+      }
+    },
+    {
+      "stepId": "GW-06",
+      "canonicalName": "PROJECT_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ProjectResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/github/projectResolution.ts + registry evidence.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-06--project_resolution",
+      "blueprintRef": "GWC-3",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-05"
+        ],
+        "outgoing": [
+          "GW-07"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-05 / projectHint path",
+        "successorText": "GW-07"
+      }
+    },
+    {
+      "stepId": "GW-07",
+      "canonicalName": "SERVER_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "GENERALIZE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ServerResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GitRegistry serverId/serverPath/realPath data; no universal resolver.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-07--server_resolution",
+      "blueprintRef": "GWC-6",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-06"
+        ],
+        "outgoing": [
+          "GW-08"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-06",
+        "successorText": "GW-08"
+      }
+    },
+    {
+      "stepId": "GW-08",
+      "canonicalName": "RUNTIME_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "GENERALIZE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RuntimeResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Live State/runtime attestation/deploy code; no universal RuntimeBinding.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-08--runtime_resolution",
+      "blueprintRef": "GWC-7",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-07"
+        ],
+        "outgoing": [
+          "GW-09"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-07",
+        "successorText": "GW-09"
+      }
+    },
+    {
+      "stepId": "GW-09",
+      "canonicalName": "DOMAIN_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "contractVersion": 1,
+      "profiles": [
+        "RESOLVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "GENERALIZE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DomainResolution",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GitRegistry project/publicDomain/domain/historicalVhosts.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-09--domain_resolution",
+      "blueprintRef": "GWC-8",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-08"
+        ],
+        "outgoing": [
+          "GW-10"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-08",
+        "successorText": "GW-10"
+      }
+    },
+    {
+      "stepId": "GW-10",
+      "canonicalName": "GOVERNANCE_INHERITANCE",
+      "family": "C",
+      "familyName": "Governance and Capability Composition",
+      "contractVersion": 1,
+      "profiles": [
+        "DERIVER"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "PARTIAL/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "GovernanceContext",
+      "replayModel": "READ_ONLY",
+      "currentMapping": ".mcp policies + governance evidence; no universal inheritance engine.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-10--governance_inheritance",
+      "blueprintRef": "GWC-9",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-09"
+        ],
+        "outgoing": [
+          "GW-11"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-09",
+        "successorText": "GW-11"
+      }
+    },
+    {
+      "stepId": "GW-11",
+      "canonicalName": "EFFECTIVE_CAPABILITIES",
+      "family": "C",
+      "familyName": "Governance and Capability Composition",
+      "contractVersion": 1,
+      "profiles": [
+        "DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "EffectiveCapabilitySet",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/governance/operationalDecision.ts CapabilityReality/GovernanceDecision.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-11--effective_capabilities",
+      "blueprintRef": "GWC-9",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-10"
+        ],
+        "outgoing": [
+          "GW-12",
+          "GW-13"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-10",
+        "successorText": "GW-12"
+      }
+    },
+    {
+      "stepId": "GW-12",
+      "canonicalName": "BOOTSTRAP_RECEIPT",
+      "family": "C",
+      "familyName": "Governance and Capability Composition",
+      "contractVersion": 1,
+      "profiles": [
+        "PROJECTION"
+      ],
+      "executionSemantics": "COMPOSED_SUBCONTRACT",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD bounded projection if existing authority owns it"
+      ],
+      "canonicalOutput": "BootstrapReceiptProposal",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "BootstrapReceipt schema/sessionService.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-12--bootstrap_receipt",
+      "blueprintRef": "GWC-4",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-11",
+          "GW-13"
+        ],
+        "outgoing": [
+          "GW-17"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-11/GW-13",
+        "successorText": "GW-17 as composed persistence"
+      }
+    },
+    {
+      "stepId": "GW-13",
+      "canonicalName": "LIVE_STATE_RECONCILIATION",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "RECONCILER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "LiveStateSnapshot",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/liveState/*.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-13--live_state_reconciliation",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "derived",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-11"
+        ],
+        "outgoing": [
+          "GW-12",
+          "GW-14",
+          "GW-17"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-11",
+        "successorText": "GW-12/GW-17"
+      }
+    },
+    {
+      "stepId": "GW-14",
+      "canonicalName": "EXISTING_TASK_LOOKUP",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "OBSERVER"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ExistingTaskLookup",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Task Queue read surfaces/current state.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-14--existing_task_lookup",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-13"
+        ],
+        "outgoing": [
+          "GW-15"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-13",
+        "successorText": "GW-15"
+      }
+    },
+    {
+      "stepId": "GW-15",
+      "canonicalName": "TASK_CREATION_IF_REQUIRED",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "EVALUATE_THEN_MUTATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "IntentReconciliation",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "taskQueue.reconcileIntent().",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-15--task_creation_if_required",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-14"
+        ],
+        "outgoing": [
+          "GW-16"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-14",
+        "successorText": "GW-16"
+      }
+    },
+    {
+      "stepId": "GW-16",
+      "canonicalName": "GOVERNED_SESSION_OPEN_OR_RESUME",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "GovernedSession",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "sessionService open/resume/auto-resume.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-16--governed_session_open_or_resume",
+      "blueprintRef": "GWC-4",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-02",
+          "GW-15"
+        ],
+        "outgoing": [
+          "GW-03",
+          "GW-17"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-02 if no compatible session",
+        "successorText": "GW-03/GW-17"
+      }
+    },
+    {
+      "stepId": "GW-17",
+      "canonicalName": "CONTEXT_ACKNOWLEDGEMENT",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "AcknowledgedContext",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "sessionService acknowledgeContext().",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-17--context_acknowledgement",
+      "blueprintRef": "GWC-4",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-12",
+          "GW-13",
+          "GW-16"
+        ],
+        "outgoing": [
+          "GW-18"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-16",
+        "successorText": "GW-18"
+      }
+    },
+    {
+      "stepId": "GW-18",
+      "canonicalName": "TASK_CLAIM",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "ClaimedTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "taskQueue.claimNextTask().",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-18--task_claim",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-17"
+        ],
+        "outgoing": [
+          "GW-19"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-17",
+        "successorText": "GW-19"
+      }
+    },
+    {
+      "stepId": "GW-19",
+      "canonicalName": "MINIMAL_LOCK_ACQUISITION",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "LOCKING"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "AcquiredLockSet",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT",
+      "currentMapping": "lockService.ts.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-19--minimal_lock_acquisition",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-18"
+        ],
+        "outgoing": [
+          "GW-20"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-18",
+        "successorText": "GW-20"
+      }
+    },
+    {
+      "stepId": "GW-20",
+      "canonicalName": "TASK_IN_PROGRESS",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "InProgressTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "taskQueue.transitionTask().",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-20--task_in_progress",
+      "blueprintRef": "GWC-5",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-19"
+        ],
+        "outgoing": [
+          "GW-21"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-19",
+        "successorText": "GW-21"
+      }
+    },
+    {
+      "stepId": "GW-21",
+      "canonicalName": "AUTHORITY_DOCUMENT_READ",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "AuthorityDocumentSet",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "CLAUDE.md/.mcp/docs/current state; procedural today.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-21--authority_document_read",
+      "blueprintRef": "GWC-11",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-20"
+        ],
+        "outgoing": [
+          "GW-22"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-20",
+        "successorText": "GW-22"
+      }
+    },
+    {
+      "stepId": "GW-22",
+      "canonicalName": "INTEGRATION_SLOT_RESOLUTION",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "DERIVER"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "IntegrationSlot",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Current State architecture/modules/imports/routes; no formal slot resolver.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-22--integration_slot_resolution",
+      "blueprintRef": "GWC-11",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-21"
+        ],
+        "outgoing": [
+          "GW-23"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-21",
+        "successorText": "GW-23"
+      }
+    },
+    {
+      "stepId": "GW-23",
+      "canonicalName": "EXACT_GITHUB_BASELINE",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "GithubBaseline",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GovernedContext GitHub/Live State observations.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-23--exact_github_baseline",
+      "blueprintRef": "GWC-11",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-22"
+        ],
+        "outgoing": [
+          "GW-24"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-22",
+        "successorText": "GW-24"
+      }
+    },
+    {
+      "stepId": "GW-24",
+      "canonicalName": "GOVERNED_BRANCH_CREATION",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "BranchMutationResult",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate PR #90 github_create_branch.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-24--governed_branch_creation",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-23"
+        ],
+        "outgoing": [
+          "GW-25"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-23",
+        "successorText": "GW-25"
+      }
+    },
+    {
+      "stepId": "GW-25",
+      "canonicalName": "TDD_RED_AUTHORING",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "DEV_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL/CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "RedCandidate",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Existing tests/TDD process; candidate #90 mutation surfaces.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-25--tdd_red_authoring",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-24"
+        ],
+        "outgoing": [
+          "GW-26"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-24",
+        "successorText": "GW-26"
+      }
+    },
+    {
+      "stepId": "GW-26",
+      "canonicalName": "TDD_RED_OBSERVATION",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "TEST_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RedProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "CI/check observation; missing targeted RED proof model.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-26--tdd_red_observation",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-25"
+        ],
+        "outgoing": [
+          "GW-27"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-25",
+        "successorText": "GW-27"
+      }
+    },
+    {
+      "stepId": "GW-27",
+      "canonicalName": "TDD_GREEN_MINIMAL_IMPLEMENTATION",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "DEV_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL/CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "GreenCandidate",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 commit/file mutation surfaces.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-27--tdd_green_minimal_implementation",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-26"
+        ],
+        "outgoing": [
+          "GW-28"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-26",
+        "successorText": "GW-28"
+      }
+    },
+    {
+      "stepId": "GW-28",
+      "canonicalName": "GREEN_CI",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "CI_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "GreenCiProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "mcp-ci.yml + GitHub checks evidence.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-28--green_ci",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-27"
+        ],
+        "outgoing": [
+          "GW-29"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-27",
+        "successorText": "GW-29"
+      }
+    },
+    {
+      "stepId": "GW-29",
+      "canonicalName": "SELF_REVIEW",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "REVIEW_DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ReviewFindingSet",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Existing review practice/diff evidence; no formal contract.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-29--self_review",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-28"
+        ],
+        "outgoing": [
+          "GW-30",
+          "GW-32"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-28",
+        "successorText": "GW-30 if finding; else GW-32"
+      }
+    },
+    {
+      "stepId": "GW-30",
+      "canonicalName": "REGRESSION_RED_IF_FINDING",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "TEST_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "RegressionRedProof",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Tests exist; no formal regression-red contract.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-30--regression_red_if_finding",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-29",
+          "GW-37"
+        ],
+        "outgoing": [
+          "GW-31"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-29",
+        "successorText": "GW-31"
+      }
+    },
+    {
+      "stepId": "GW-31",
+      "canonicalName": "REGRESSION_GREEN",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "DEV_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "RegressionGreenCandidate",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Tests/code mutation process; no formal contract.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-31--regression_green",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-30",
+          "GW-37"
+        ],
+        "outgoing": [
+          "GW-32"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-30",
+        "successorText": "GW-32 then re-review path"
+      }
+    },
+    {
+      "stepId": "GW-32",
+      "canonicalName": "FULL_REGRESSION",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "CI_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "FullRegressionProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "package scripts + mcp-ci.yml.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-32--full_regression",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-29",
+          "GW-31"
+        ],
+        "outgoing": [
+          "GW-33"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-31",
+        "successorText": "GW-33"
+      }
+    },
+    {
+      "stepId": "GW-33",
+      "canonicalName": "NON_TERMINAL_DOCUMENTATION",
+      "family": "E",
+      "familyName": "Development",
+      "contractVersion": 1,
+      "profiles": [
+        "DOC_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DocumentationCandidate",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Documentation governance/process.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-33--non_terminal_documentation",
+      "blueprintRef": "GWC-13",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-32"
+        ],
+        "outgoing": [
+          "GW-34"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-32",
+        "successorText": "GW-34"
+      }
+    },
+    {
+      "stepId": "GW-34",
+      "canonicalName": "DRAFT_PR",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DraftPullRequest",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate PR #90 github_create_pull_request.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-34--draft_pr",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-33"
+        ],
+        "outgoing": [
+          "GW-35"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-33",
+        "successorText": "GW-35"
+      }
+    },
+    {
+      "stepId": "GW-35",
+      "canonicalName": "EXACT_DIFF_REVIEW",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ExactDiffEvidence",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GovernedContext + #89/#90 bounded compare/diff surfaces.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-35--exact_diff_review",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-22",
+        "AF-30"
+      ],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-34"
+        ],
+        "outgoing": [
+          "GW-36"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-34",
+        "successorText": "GW-36"
+      }
+    },
+    {
+      "stepId": "GW-36",
+      "canonicalName": "RULESET_VERIFICATION",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_DECISION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RulesetEvidence",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GitHub ruleset/protection evidence.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-36--ruleset_verification",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-35"
+        ],
+        "outgoing": [
+          "GW-37"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-35",
+        "successorText": "GW-37"
+      }
+    },
+    {
+      "stepId": "GW-37",
+      "canonicalName": "REVIEW_FINDINGS_RESOLUTION",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "REVIEW_MUTATION"
+      ],
+      "executionSemantics": "EVALUATE_THEN_MUTATE",
+      "integrationClassification": "PARTIAL/CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "FindingsResolution",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 thread reply/resolve + review loop.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-37--review_findings_resolution",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-36"
+        ],
+        "outgoing": [
+          "GW-30",
+          "GW-31",
+          "GW-38"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-36",
+        "successorText": "GW-30/31 for code finding or GW-38"
+      }
+    },
+    {
+      "stepId": "GW-38",
+      "canonicalName": "PR_READY",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "ReadyPullRequest",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 github_mark_pr_ready.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-38--pr_ready",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-22",
+        "AF-30"
+      ],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-37"
+        ],
+        "outgoing": [
+          "GW-39"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-37",
+        "successorText": "GW-39"
+      }
+    },
+    {
+      "stepId": "GW-39",
+      "canonicalName": "TASK_REVIEW",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "ReviewTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Task Queue REVIEW transition.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-39--task_review",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-38"
+        ],
+        "outgoing": [
+          "GW-40"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-38",
+        "successorText": "GW-40"
+      }
+    },
+    {
+      "stepId": "GW-40",
+      "canonicalName": "REVIEW_CHECKPOINT",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "ReviewCheckpoint",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Governed Session checkpoint.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-40--review_checkpoint",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-39"
+        ],
+        "outgoing": [
+          "GW-41"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-39",
+        "successorText": "GW-41"
+      }
+    },
+    {
+      "stepId": "GW-41",
+      "canonicalName": "PREMERGE_REVALIDATION",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "CROSS_EVIDENCE_DECISION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "PremergeProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GovernedContext + #89 review commitId + #90 review-thread/mergeability surfaces.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-41--premerge_revalidation",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-22",
+        "AF-30"
+      ],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-40"
+        ],
+        "outgoing": [
+          "GW-42"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-40",
+        "successorText": "GW-42"
+      }
+    },
+    {
+      "stepId": "GW-42",
+      "canonicalName": "TASK_MERGE_READY",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "MergeReadyTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Task Queue MERGE_READY transition.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-42--task_merge_ready",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-41"
+        ],
+        "outgoing": [
+          "GW-43"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-41",
+        "successorText": "GW-43"
+      }
+    },
+    {
+      "stepId": "GW-43",
+      "canonicalName": "EXACT_HEAD_MERGE",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "MergeEffectResult",
+      "replayModel": "NON_REPLAYABLE; RECOVERABLE_BY_OBSERVATION",
+      "currentMapping": "Candidate #90 github_merge_pull_request exact-head.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-43--exact_head_merge",
+      "blueprintRef": "GWC-14",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-22",
+        "AF-30"
+      ],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-42"
+        ],
+        "outgoing": [
+          "GW-44"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-42",
+        "successorText": "GW-44"
+      }
+    },
+    {
+      "stepId": "GW-44",
+      "canonicalName": "MAIN_MERGE_COMMIT_OBSERVATION",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "MergeCommitObservation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "GitHub main/PR merge observation.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-44--main_merge_commit_observation",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-43"
+        ],
+        "outgoing": [
+          "GW-45"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-43",
+        "successorText": "GW-45"
+      }
+    },
+    {
+      "stepId": "GW-45",
+      "canonicalName": "MAIN_CI",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "CI_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "MainCiProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "mcp-ci.yml + checks/workflow-runs evidence.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-45--main_ci",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-19"
+      ],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-44"
+        ],
+        "outgoing": [
+          "GW-46"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-44",
+        "successorText": "GW-46 or WAIT_EXTERNAL"
+      }
+    },
+    {
+      "stepId": "GW-46",
+      "canonicalName": "GOVERNED_AUTODEPLOY_OBSERVATION",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "DEPLOY_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DeploymentJobObservation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "mcp-deploy.yml + deploy job/status.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-46--governed_autodeploy_observation",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-19"
+      ],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-45"
+        ],
+        "outgoing": [
+          "GW-47",
+          "GW-48",
+          "GW-49",
+          "GW-50",
+          "GW-51",
+          "GW-52"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-45",
+        "successorText": "GW-47..GW-52 observe same deployment job"
+      }
+    },
+    {
+      "stepId": "GW-47",
+      "canonicalName": "GITHUB_TO_S1_SYNC_ATTESTATION",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "DEPLOY_ATTESTATION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "SyncAttestation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/deploy/s1Deploy.ts exact SHA/FF sync.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-47--github_to_s1_sync_attestation",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-46"
+        ],
+        "outgoing": [
+          "GW-48",
+          "GW-52"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-46",
+        "successorText": "GW-48"
+      }
+    },
+    {
+      "stepId": "GW-48",
+      "canonicalName": "DEPLOY_TYPECHECK_BUILD",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "DEPLOY_CI_ATTESTATION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "BuildAttestation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "CI typecheck/build + deploy docker build.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-48--deploy_typecheck_build",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-46",
+          "GW-47"
+        ],
+        "outgoing": [
+          "GW-49",
+          "GW-52"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-47",
+        "successorText": "GW-49"
+      }
+    },
+    {
+      "stepId": "GW-49",
+      "canonicalName": "RUNTIME_REBUILD_OR_RESTART_ATTESTATION",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "RUNTIME_ATTESTATION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RuntimeStartAttestation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "s1Deploy runtime start/rollback.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-49--runtime_rebuild_or_restart_attestation",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-46",
+          "GW-48"
+        ],
+        "outgoing": [
+          "GW-50",
+          "GW-52"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-48",
+        "successorText": "GW-50"
+      }
+    },
+    {
+      "stepId": "GW-50",
+      "canonicalName": "HEALTH_CHECK",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "RUNTIME_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "HealthProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "s1Deploy health/OAuth/MCP auth checks.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-50--health_check",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-46",
+          "GW-49"
+        ],
+        "outgoing": [
+          "GW-51",
+          "GW-52"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-49",
+        "successorText": "GW-51"
+      }
+    },
+    {
+      "stepId": "GW-51",
+      "canonicalName": "RUNTIME_IMAGE_ATTESTATION",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "RUNTIME_ATTESTATION"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "RuntimeImageProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "src/tools/runtimeAttestation.ts.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-51--runtime_image_attestation",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-46",
+          "GW-50"
+        ],
+        "outgoing": [
+          "GW-52"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-50",
+        "successorText": "GW-52"
+      }
+    },
+    {
+      "stepId": "GW-52",
+      "canonicalName": "EXACT_SHA_DEPLOYMENT_PROOF",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "CROSS_AUTHORITY_DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "REUSE/GENERALIZE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ExactDeploymentProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Deploy attestation + Live State cross-authority equality.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-52--exact_sha_deployment_proof",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-46",
+          "GW-47",
+          "GW-48",
+          "GW-49",
+          "GW-50",
+          "GW-51"
+        ],
+        "outgoing": [
+          "GW-53"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-47..GW-51",
+        "successorText": "GW-53"
+      }
+    },
+    {
+      "stepId": "GW-53",
+      "canonicalName": "LIVE_STATE_UPDATE",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "RECONCILER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ReconciledLiveState",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Live State reconcileNow/stateVersion.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-53--live_state_update",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-52"
+        ],
+        "outgoing": [
+          "GW-54"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-52",
+        "successorText": "GW-54"
+      }
+    },
+    {
+      "stepId": "GW-54",
+      "canonicalName": "STALE_RECEIPT_DETECTION",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "ReceiptFreshness",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "BootstrapReceipt vs Live State version checks.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-54--stale_receipt_detection",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-53"
+        ],
+        "outgoing": [
+          "GW-55",
+          "GW-56"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-53",
+        "successorText": "GW-55 if stale else GW-56"
+      }
+    },
+    {
+      "stepId": "GW-55",
+      "canonicalName": "RECEIPT_REFRESH",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "RefreshedReceipt",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "acknowledgeContext receipt refresh.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-55--receipt_refresh",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-54"
+        ],
+        "outgoing": [
+          "GW-56"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-54",
+        "successorText": "GW-56"
+      }
+    },
+    {
+      "stepId": "GW-56",
+      "canonicalName": "TASK_RUNTIME_REVISION_BINDING",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "DERIVER_BINDING"
+      ],
+      "executionSemantics": "COMPOSED_SUBCONTRACT",
+      "integrationClassification": "PARTIAL",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD bounded projection if existing authority owns it"
+      ],
+      "canonicalOutput": "RuntimeBindingProposal",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Task runtimeRevision field/transition; binding proof not formalized.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-56--task_runtime_revision_binding",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-08"
+      ],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-54",
+          "GW-55",
+          "GW-65"
+        ],
+        "outgoing": [
+          "GW-57"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-55",
+        "successorText": "GW-57"
+      }
+    },
+    {
+      "stepId": "GW-57",
+      "canonicalName": "TASK_DEPLOYING",
+      "family": "G",
+      "familyName": "Deployment",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DeployingTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Task Queue DEPLOYING transition.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-57--task_deploying",
+      "blueprintRef": "GWC-15",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-56"
+        ],
+        "outgoing": [
+          "GW-58"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-56",
+        "successorText": "GW-58"
+      }
+    },
+    {
+      "stepId": "GW-58",
+      "canonicalName": "DOCUMENTATION_DRIFT_DECISION",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DocumentationDriftDecision",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Live State documentation drift.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-58--documentation_drift_decision",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-57"
+        ],
+        "outgoing": [
+          "GW-59",
+          "GW-66"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-57",
+        "successorText": "GW-59 if drift else GW-66"
+      }
+    },
+    {
+      "stepId": "GW-59",
+      "canonicalName": "DOCUMENTATION_BRANCH_IF_REQUIRED",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DocsBranch",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 branch creation reused for docs.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-59--documentation_branch_if_required",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-58"
+        ],
+        "outgoing": [
+          "GW-60"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-58",
+        "successorText": "GW-60"
+      }
+    },
+    {
+      "stepId": "GW-60",
+      "canonicalName": "DOCUMENTATION_RECONCILIATION",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "DOC_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL/CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DocsCandidate",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Docs governance + candidate GitHub commit surfaces.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-60--documentation_reconciliation",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-59"
+        ],
+        "outgoing": [
+          "GW-61"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-59",
+        "successorText": "GW-61"
+      }
+    },
+    {
+      "stepId": "GW-61",
+      "canonicalName": "DOCUMENTATION_PR",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DocsPullRequest",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 PR creation.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-61--documentation_pr",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-60"
+        ],
+        "outgoing": [
+          "GW-62"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-60",
+        "successorText": "GW-62"
+      }
+    },
+    {
+      "stepId": "GW-62",
+      "canonicalName": "DOCUMENTATION_CI_REVIEW",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "CI_REVIEW"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DocsReviewProof",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "CI/review evidence reused with documentation profile.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-62--documentation_ci_review",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-61"
+        ],
+        "outgoing": [
+          "GW-63"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-61",
+        "successorText": "GW-63"
+      }
+    },
+    {
+      "stepId": "GW-63",
+      "canonicalName": "DOCUMENTATION_EXACT_HEAD_MERGE",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "GIT_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "CANDIDATE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DocsMergeResult",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Candidate #90 exact-head merge.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-63--documentation_exact_head_merge",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-62"
+        ],
+        "outgoing": [
+          "GW-64"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-62",
+        "successorText": "GW-64"
+      }
+    },
+    {
+      "stepId": "GW-64",
+      "canonicalName": "DOCUMENTATION_AUTODEPLOY",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "DEPLOY_OBSERVER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DocsDeployObservation",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Existing deploy workflow on main push.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-64--documentation_autodeploy",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-63"
+        ],
+        "outgoing": [
+          "GW-65"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-63",
+        "successorText": "GW-65"
+      }
+    },
+    {
+      "stepId": "GW-65",
+      "canonicalName": "DOCUMENTATION_LIVE_STATE",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "RECONCILER"
+      ],
+      "executionSemantics": "OBSERVE_AND_EVALUATE",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "DocsAlignedLiveState",
+      "replayModel": "READ_ONLY",
+      "currentMapping": "Live State docs alignment.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-65--documentation_live_state",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-64"
+        ],
+        "outgoing": [
+          "GW-56",
+          "GW-66"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-64",
+        "successorText": "GW-66 then final GW-56 binding"
+      }
+    },
+    {
+      "stepId": "GW-66",
+      "canonicalName": "TERMINAL_RECEIPT_REFRESH",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "TerminalReceipt",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Receipt freshness/acknowledge reuse.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-66--terminal_receipt_refresh",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-58",
+          "GW-65"
+        ],
+        "outgoing": [
+          "GW-67"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-65",
+        "successorText": "GW-67"
+      }
+    },
+    {
+      "stepId": "GW-67",
+      "canonicalName": "TASK_VERIFYING",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "VerifyingTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Task Queue VERIFYING transition.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-67--task_verifying",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-66"
+        ],
+        "outgoing": [
+          "GW-68"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-66",
+        "successorText": "GW-68"
+      }
+    },
+    {
+      "stepId": "GW-68",
+      "canonicalName": "TERMINAL_VERIFICATION",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "TERMINAL_DECISION"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "PARTIAL/EXTEND",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "TerminalVerification",
+      "replayModel": "READ_ONLY / recalculable",
+      "currentMapping": "TaskReality/Live State/GovernanceDecision pieces; no unique hard terminal gate.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-68--terminal_verification",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-07"
+      ],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-67"
+        ],
+        "outgoing": [
+          "GW-69"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-67",
+        "successorText": "GW-69 only if TERMINAL_VERIFIED"
+      }
+    },
+    {
+      "stepId": "GW-69",
+      "canonicalName": "TASK_DONE",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "TASK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL/REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "DoneTask",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT",
+      "currentMapping": "Task Queue VERIFYING→DONE exists but needs hard terminal proof requirement.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-69--task_done",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [
+        "AF-07"
+      ],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-68"
+        ],
+        "outgoing": [
+          "GW-70"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-68",
+        "successorText": "GW-70"
+      }
+    },
+    {
+      "stepId": "GW-70",
+      "canonicalName": "TERMINAL_CHECKPOINT",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "TerminalCheckpoint",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Governed Session checkpoint.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-70--terminal_checkpoint",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-69"
+        ],
+        "outgoing": [
+          "GW-71"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-69",
+        "successorText": "GW-71"
+      }
+    },
+    {
+      "stepId": "GW-71",
+      "canonicalName": "LOCK_RELEASE",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "LOCK_MUTATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "LockReleaseProof",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Lock Service release + closeSession cleanup fallback.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-71--lock_release",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-70"
+        ],
+        "outgoing": [
+          "GW-72"
+        ],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-70",
+        "successorText": "GW-72"
+      }
+    },
+    {
+      "stepId": "GW-72",
+      "canonicalName": "SESSION_CLOSE_AND_QUEUE_RECONCILE",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "contractVersion": 1,
+      "profiles": [
+        "SESSION_TASK_ORCHESTRATION"
+      ],
+      "executionSemantics": "MUTATE_THEN_VERIFY",
+      "integrationClassification": "PARTIAL/REUSE",
+      "actionKinds": [
+        "READ",
+        "DERIVE",
+        "RECORD",
+        "MUTATE"
+      ],
+      "canonicalOutput": "ClosureAndNextWork",
+      "replayModel": "CONDITIONALLY_IDEMPOTENT unless explicitly NON_REPLAYABLE",
+      "currentMapping": "Session close + queue/requeue/firstExecutable primitives.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-72--session_close_and_queue_reconcile",
+      "blueprintRef": "GWC-16",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": true,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [
+          "GW-71"
+        ],
+        "outgoing": [],
+        "entry": false,
+        "runtimeTerminal": true
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "GW-71",
+        "successorText": "next queued task resume cycle or idle"
+      }
+    },
+    {
+      "stepId": "GW-73",
+      "canonicalName": "UNIVERSAL_ACCEPTANCE",
+      "family": "I",
+      "familyName": "Universal Acceptance",
+      "contractVersion": 1,
+      "profiles": [
+        "ACCEPTANCE"
+      ],
+      "executionSemantics": "EVALUATE_ONLY",
+      "integrationClassification": "NEW",
+      "actionKinds": [
+        "READ",
+        "DERIVE"
+      ],
+      "canonicalOutput": "UniversalAcceptanceReport",
+      "replayModel": "READ_ONLY acceptance suite except isolated governed fixture mutations.",
+      "currentMapping": "No complete engine; acceptance is new.",
+      "canonicalSheetRef": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md#gw-73--universal_acceptance",
+      "blueprintRef": "GWC-17",
+      "blueprintRefSource": "explicit",
+      "findings": [],
+      "runtimeGraphMember": false,
+      "graphProjection": {
+        "source": ".mcp/gwc-workflow-graph.json",
+        "exact": true,
+        "incoming": [],
+        "outgoing": [],
+        "entry": false,
+        "runtimeTerminal": false
+      },
+      "canonicalRouting": {
+        "note": "Texte libre de la section C de la fiche canonique, conservé pour traçabilité. Ce n’est pas le graphe.",
+        "predecessorText": "global implemented system",
+        "successorText": "TERMINAL acceptance report"
+      }
+    }
+  ],
+  "graphProjectionNote": "Le graphe canonique est .mcp/gwc-workflow-graph.json. Les champs graphProjection.incoming et graphProjection.outgoing en sont une projection exacte et sont vérifiés comme tels. Les anciens champs graph.predecessors et graph.successors, dérivés du seul texte de fiche, sont supprimés."
+}

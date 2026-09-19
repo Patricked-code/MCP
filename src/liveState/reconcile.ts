@@ -9,6 +9,16 @@ const MAX_AGE_SECONDS = 60 as const;
 function semanticValue(state: LiveStateSnapshot): string {
   return JSON.stringify({
     repository: state.repository,
+    targetContext: state.targetContext ? {
+      schemaVersion: state.targetContext.schemaVersion,
+      status: state.targetContext.status,
+      targetId: state.targetContext.targetId,
+      projectId: state.targetContext.projectId,
+      projectUid: state.targetContext.projectUid,
+      globalCheckpointRepositoryId: state.targetContext.globalCheckpointRepositoryId,
+      centralGovernanceRepositoryId: state.targetContext.centralGovernanceRepositoryId,
+      components: state.targetContext.components
+    } : null,
     github: state.github,
     s1: state.s1,
     runtime: state.runtime,

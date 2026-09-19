@@ -6,7 +6,8 @@ import {
   buildS1DeployJobId,
   buildS1DeployLaunchCommand,
   buildS1DeployStatusCommand,
-  parseS1DeployStatus
+  parseS1DeployStatus,
+  type S1DeployAdmissionEvidence
 } from './s1Deploy.js';
 
 const SHA_PATTERN = /^[0-9a-f]{40}$/;
@@ -38,13 +39,64 @@ function requestedSha(value: unknown): string | null {
   return SHA_PATTERN.test(normalized) ? normalized : null;
 }
 
-function exactStartBody(value: unknown): { sha: string } | null {
+function exactStartBody(value: unknown): {
+  sha: string;
+  admission: S1DeployAdmissionEvidence | null;
+} | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const record = value as Record<string, unknown>;
-  const keys = Object.keys(record);
-  if (keys.length !== 1 || keys[0] !== 'sha') return null;
+  const keys = Object.keys(record).sort();
+  if (
+    !(keys.length === 1 && keys[0] === 'sha')
+    && !(keys.length === 2 && keys[0] === 'admission' && keys[1] === 'sha')
+  ) return null;
   const sha = requestedSha(record.sha);
-  return sha ? { sha } : null;
+  if (!sha) return null;
+  if (record.admission === undefined) return { sha, admission: null };
+  if (!record.admission || typeof record.admission !== 'object' || Array.isArray(record.admission)) {
+    return null;
+  }
+  const admission = record.admission as Record<string, unknown>;
+  const admissionKeys = Object.keys(admission).sort();
+  if (admission.kind === 'workflow_dispatch_manual') {
+    if (admissionKeys.length !== 1 || admissionKeys[0] !== 'kind') return null;
+    return { sha, admission: { kind: 'workflow_dispatch_manual' } };
+  }
+  if (admission.kind !== 'push_ci_gate') return null;
+  if (
+    admissionKeys.join(',') !== 'ciConclusion,ciHeadSha,ciRunId,kind'
+    || !Number.isSafeInteger(admission.ciRunId)
+    || (admission.ciRunId as number) <= 0
+    || admission.ciHeadSha !== sha
+    || admission.ciConclusion !== 'success'
+  ) return null;
+  return {
+    sha,
+    admission: {
+      kind: 'push_ci_gate',
+      ciRunId: admission.ciRunId as number,
+      ciHeadSha: sha,
+      ciConclusion: 'success'
+    }
+  };
+}
+
+function resolveAdmission(
+  body: { sha: string; admission: S1DeployAdmissionEvidence | null },
+  claims: GithubOidcClaims
+): S1DeployAdmissionEvidence | null {
+  if (claims.event_name === 'workflow_dispatch') {
+    if (body.admission === null || body.admission.kind === 'workflow_dispatch_manual') {
+      return { kind: 'workflow_dispatch_manual' };
+    }
+    return null;
+  }
+  if (claims.event_name === 'push') {
+    if (body.admission?.kind !== 'push_ci_gate') return null;
+    if (body.admission.ciHeadSha !== body.sha || body.admission.ciConclusion !== 'success') return null;
+    return body.admission;
+  }
+  return null;
 }
 
 async function authenticate(
@@ -87,11 +139,14 @@ export function createGithubDeployRouter(dependencies: GithubDeployRouteDependen
       return jsonError(response, 403, 'github_oidc_invalid');
     }
 
+    const admission = resolveAdmission(body, claims);
+    if (!admission) return jsonError(response, 400, 'deploy_admission_evidence_invalid');
+
     let jobId: string;
     let command: string;
     try {
       jobId = buildS1DeployJobId(claims.run_id, body.sha);
-      command = buildS1DeployLaunchCommand(claims.run_id, body.sha);
+      command = buildS1DeployLaunchCommand(claims.run_id, body.sha, admission);
     } catch {
       return jsonError(response, 403, 'github_oidc_invalid');
     }

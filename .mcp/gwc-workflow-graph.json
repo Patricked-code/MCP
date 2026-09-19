@@ -1,0 +1,1011 @@
+{
+  "schemaVersion": 1,
+  "revision": "R3",
+  "canonicalBaseline": "GWC_73_CONTRACT_DESIGN_SHEETS_CANONICAL_R1",
+  "semantics": "Union exacte des routages déclarés par les fiches canoniques, dans les deux sens : le champ successors de chaque fiche et le champ predecessors de chaque fiche produisent tous deux des arêtes. declaredBy indique de quel côté chaque arête provient.",
+  "entry": "GW-01",
+  "runtimeTerminal": "GW-72",
+  "outOfRuntimeGraph": [
+    {
+      "stepId": "GW-73",
+      "reason": "Universal Acceptance évalue le système implémenté dans son ensemble. Ce n'est pas une étape terminale de chaque Task runtime : sa fiche canonique déclare le prédécesseur « global implemented system » et le successeur « TERMINAL acceptance report », deux ancres hors graphe.",
+      "predecessorAnchor": "IMPLEMENTED_SYSTEM",
+      "successorAnchor": "ACCEPTANCE_REPORT"
+    }
+  ],
+  "rules": {
+    "numericOrderEnforced": false,
+    "note": "Les identifiants sont un espace de noms stable. Aucune règle to > from. Les arêtes BACKWARD et SKIP sont des routes canoniques déclarées, pas des retries implicites.",
+    "rangeNotationExpanded": true,
+    "rangeNotationNote": "Les notations GW-aa..GW-bb et GW-aa/bb des fiches sont développées en arêtes individuelles."
+  },
+  "edgeKinds": [
+    "FORWARD",
+    "BACKWARD",
+    "SKIP"
+  ],
+  "registryDigest": "fdf82f094f948b9e1c32e531aae3bb35cf419ed0e0d7a90e4a2310b01d748581",
+  "edges": [
+    {
+      "from": "GW-01",
+      "to": "GW-02",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-01 (INTENT_CAPTURE) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-02",
+      "to": "GW-03",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-02 (CONNECTION_BOOTSTRAP) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-02",
+      "to": "GW-16",
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "La session gouvernée compatible est déjà résolue par le bootstrap : les résolutions B et C ne conditionnent pas ce chemin."
+    },
+    {
+      "from": "GW-03",
+      "to": "GW-04",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-03 (CONNECTION_CONTEXT) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-04",
+      "to": "GW-05",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-04 (GITHUB_IDENTITY_RESOLUTION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-05",
+      "to": "GW-06",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-05 (REPOSITORY_RESOLUTION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-06",
+      "to": "GW-07",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-06 (PROJECT_RESOLUTION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-07",
+      "to": "GW-08",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-07 (SERVER_RESOLUTION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-08",
+      "to": "GW-09",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-08 (RUNTIME_RESOLUTION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-09",
+      "to": "GW-10",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-09 (DOMAIN_RESOLUTION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-10",
+      "to": "GW-11",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-10 (GOVERNANCE_INHERITANCE) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-11",
+      "to": "GW-12",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-11 (EFFECTIVE_CAPABILITIES) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-11",
+      "to": "GW-13",
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "Les capacités effectives sont résolues et le receipt est CURRENT : GW-12 n apporte aucune preuve nouvelle."
+    },
+    {
+      "from": "GW-12",
+      "to": "GW-17",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "Le receipt est CURRENT et aucune réconciliation d état vivant n est requise pour cette intention."
+    },
+    {
+      "from": "GW-13",
+      "to": "GW-12",
+      "kind": "BACKWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "REOBSERVE_REQUIRED",
+      "precondition": "GW-13 observe un Bootstrap Receipt périmé ou une divergence d état : retour à GW-12 pour rafraîchir le receipt avant toute suite."
+    },
+    {
+      "from": "GW-13",
+      "to": "GW-14",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-13 (LIVE_STATE_RECONCILIATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-13",
+      "to": "GW-17",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "L état vivant est réconcilié et aucune recherche ni création de tâche n est requise à ce point."
+    },
+    {
+      "from": "GW-14",
+      "to": "GW-15",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-14 (EXISTING_TASK_LOOKUP) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-15",
+      "to": "GW-16",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-15 (TASK_CREATION_IF_REQUIRED) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-16",
+      "to": "GW-03",
+      "kind": "BACKWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "REOBSERVE_REQUIRED",
+      "precondition": "GW-16 constate que le ConnectionContext lié à la session a changé ou n est plus valide : retour à GW-03 avant ouverture ou reprise."
+    },
+    {
+      "from": "GW-16",
+      "to": "GW-17",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-16 (GOVERNED_SESSION_OPEN_OR_RESUME) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-17",
+      "to": "GW-18",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-17 (CONTEXT_ACKNOWLEDGEMENT) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-18",
+      "to": "GW-19",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-18 (TASK_CLAIM) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-19",
+      "to": "GW-20",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-19 (MINIMAL_LOCK_ACQUISITION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-20",
+      "to": "GW-21",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-20 (TASK_IN_PROGRESS) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-21",
+      "to": "GW-22",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-21 (AUTHORITY_DOCUMENT_READ) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-22",
+      "to": "GW-23",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-22 (INTEGRATION_SLOT_RESOLUTION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-23",
+      "to": "GW-24",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-23 (EXACT_GITHUB_BASELINE) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-24",
+      "to": "GW-25",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-24 (GOVERNED_BRANCH_CREATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-25",
+      "to": "GW-26",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-25 (TDD_RED_AUTHORING) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-26",
+      "to": "GW-27",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-26 (TDD_RED_OBSERVATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-27",
+      "to": "GW-28",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-27 (TDD_GREEN_MINIMAL_IMPLEMENTATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-28",
+      "to": "GW-29",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-28 (GREEN_CI) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-29",
+      "to": "GW-30",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-29 (SELF_REVIEW) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-29",
+      "to": "GW-32",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "L auto-revue ne retient aucun finding : la paire de régression GW-30 / GW-31 est sans objet."
+    },
+    {
+      "from": "GW-30",
+      "to": "GW-31",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-30 (REGRESSION_RED_IF_FINDING) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-31",
+      "to": "GW-32",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-31 (REGRESSION_GREEN) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-32",
+      "to": "GW-33",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-32 (FULL_REGRESSION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-33",
+      "to": "GW-34",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-33 (NON_TERMINAL_DOCUMENTATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-34",
+      "to": "GW-35",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-34 (DRAFT_PR) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-35",
+      "to": "GW-36",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-35 (EXACT_DIFF_REVIEW) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-36",
+      "to": "GW-37",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-36 (RULESET_VERIFICATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-37",
+      "to": "GW-30",
+      "kind": "BACKWARD",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_FAIL",
+      "precondition": "GW-37 retient au moins un finding de revue bloquant : un RED de régression doit être produit par GW-30 avant toute suite."
+    },
+    {
+      "from": "GW-37",
+      "to": "GW-31",
+      "kind": "BACKWARD",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-37 résout un finding déjà couvert par un RED existant : la boucle repasse directement par le GREEN de régression GW-31."
+    },
+    {
+      "from": "GW-37",
+      "to": "GW-38",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-37 (REVIEW_FINDINGS_RESOLUTION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-38",
+      "to": "GW-39",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-38 (PR_READY) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-39",
+      "to": "GW-40",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-39 (TASK_REVIEW) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-40",
+      "to": "GW-41",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-40 (REVIEW_CHECKPOINT) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-41",
+      "to": "GW-42",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-41 (PREMERGE_REVALIDATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-42",
+      "to": "GW-43",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-42 (TASK_MERGE_READY) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-43",
+      "to": "GW-44",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-43 (EXACT_HEAD_MERGE) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-44",
+      "to": "GW-45",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-44 (MAIN_MERGE_COMMIT_OBSERVATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-45",
+      "to": "GW-46",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-45 (MAIN_CI) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-47",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-46 (GOVERNED_AUTODEPLOY_OBSERVATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-48",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "L observation de l autodeploy montre que la synchronisation est déjà attestée : reprise directe au typecheck/build."
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-49",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "L observation de l autodeploy montre que typecheck et build sont déjà attestés pour ce SHA exact."
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-50",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "L observation de l autodeploy montre que le rebuild ou redémarrage est déjà attesté pour ce SHA exact."
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-51",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "L observation de l autodeploy montre que les contrôles de santé sont déjà attestés pour ce SHA exact."
+    },
+    {
+      "from": "GW-46",
+      "to": "GW-52",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "L observation de l autodeploy fournit déjà toutes les preuves intermédiaires : passage direct à la preuve de déploiement exact-SHA."
+    },
+    {
+      "from": "GW-47",
+      "to": "GW-48",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-47 (GITHUB_TO_S1_SYNC_ATTESTATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-47",
+      "to": "GW-52",
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "Le RuntimeBinding résolu ne comporte ni étape de build, ni redémarrage, ni endpoint de santé applicable."
+    },
+    {
+      "from": "GW-48",
+      "to": "GW-49",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-48 (DEPLOY_TYPECHECK_BUILD) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-48",
+      "to": "GW-52",
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "Le RuntimeBinding résolu ne comporte ni redémarrage ni endpoint de santé applicable."
+    },
+    {
+      "from": "GW-49",
+      "to": "GW-50",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-49 (RUNTIME_REBUILD_OR_RESTART_ATTESTATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-49",
+      "to": "GW-52",
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "Le RuntimeBinding résolu ne comporte aucun endpoint de santé applicable."
+    },
+    {
+      "from": "GW-50",
+      "to": "GW-51",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-50 (HEALTH_CHECK) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-50",
+      "to": "GW-52",
+      "kind": "SKIP",
+      "declaredBy": [
+        "predecessor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "Aucune attestation d image runtime n est applicable au RuntimeBinding résolu."
+    },
+    {
+      "from": "GW-51",
+      "to": "GW-52",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-51 (RUNTIME_IMAGE_ATTESTATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-52",
+      "to": "GW-53",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-52 (EXACT_SHA_DEPLOYMENT_PROOF) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-53",
+      "to": "GW-54",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-53 (LIVE_STATE_UPDATE) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-54",
+      "to": "GW-55",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-54 (STALE_RECEIPT_DETECTION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-54",
+      "to": "GW-56",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "Le receipt n est pas périmé : le rafraîchissement GW-55 est sans objet."
+    },
+    {
+      "from": "GW-55",
+      "to": "GW-56",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-55 (RECEIPT_REFRESH) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-56",
+      "to": "GW-57",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-56 (TASK_RUNTIME_REVISION_BINDING) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-57",
+      "to": "GW-58",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-57 (TASK_DEPLOYING) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-58",
+      "to": "GW-59",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-58 (DOCUMENTATION_DRIFT_DECISION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-58",
+      "to": "GW-66",
+      "kind": "SKIP",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "SKIP_CONDITION",
+      "precondition": "Aucune dérive documentaire n est constatée : la branche documentaire GW-59 à GW-65 est sans objet."
+    },
+    {
+      "from": "GW-59",
+      "to": "GW-60",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-59 (DOCUMENTATION_BRANCH_IF_REQUIRED) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-60",
+      "to": "GW-61",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-60 (DOCUMENTATION_RECONCILIATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-61",
+      "to": "GW-62",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-61 (DOCUMENTATION_PR) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-62",
+      "to": "GW-63",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-62 (DOCUMENTATION_CI_REVIEW) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-63",
+      "to": "GW-64",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-63 (DOCUMENTATION_EXACT_HEAD_MERGE) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-64",
+      "to": "GW-65",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-64 (DOCUMENTATION_AUTODEPLOY) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-65",
+      "to": "GW-56",
+      "kind": "BACKWARD",
+      "declaredBy": [
+        "successor"
+      ],
+      "trigger": "REOBSERVE_REQUIRED",
+      "precondition": "GW-65 observe une révision runtime différente de celle liée à la tâche : la liaison GW-56 doit être refaite avant clôture."
+    },
+    {
+      "from": "GW-65",
+      "to": "GW-66",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-65 (DOCUMENTATION_LIVE_STATE) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-66",
+      "to": "GW-67",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-66 (TERMINAL_RECEIPT_REFRESH) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-67",
+      "to": "GW-68",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-67 (TASK_VERIFYING) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-68",
+      "to": "GW-69",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-68 (TERMINAL_VERIFICATION) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-69",
+      "to": "GW-70",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-69 (TASK_DONE) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-70",
+      "to": "GW-71",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-70 (TERMINAL_CHECKPOINT) a une postcondition observée PASS."
+    },
+    {
+      "from": "GW-71",
+      "to": "GW-72",
+      "kind": "FORWARD",
+      "declaredBy": [
+        "predecessor",
+        "successor"
+      ],
+      "trigger": "POSTCONDITION_PASS",
+      "precondition": "GW-71 (LOCK_RELEASE) a une postcondition observée PASS."
+    }
+  ]
+}

@@ -1,0 +1,736 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-17T04:05:02.723Z",
+  "source": "GITHUB_LIVE",
+  "repository": "Patricked-code/MCP",
+  "baselineMain": "d1f303955c4d368950da2307dda41d826fc85d0a",
+  "designDocument": "docs/gwc/BLUEPRINTS.md",
+  "note": "Projection machine de la conception d evolution detaillee. Aucune autorite metier. Aucune Task runtime.",
+  "runtimeTasksCreated": 0,
+  "promotedToTaskQueue": false,
+  "verdict": "DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION",
+  "entries": [
+    {
+      "blueprintId": "GWC-0",
+      "title": "Contract substrate",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "NEW_ORCHESTRATION_ONLY",
+      "contractsCovered": [],
+      "findingsOwned": [
+        "AF-12",
+        "AF-20",
+        "AF-21",
+        "AF-28",
+        "AF-33",
+        "AF-34",
+        "AF-36"
+      ],
+      "openDecisions": [
+        "OD-09"
+      ],
+      "newPrimitives": [
+        {
+          "name": "GovernedStepId + ContractRegistry + evaluator",
+          "justification": "aucun composant runtime ne porte l orchestration de contrats"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-0"
+    },
+    {
+      "blueprintId": "GWC-1",
+      "title": "GW-01 Intent Capture",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "NEW",
+      "contractsCovered": [
+        "GW-01"
+      ],
+      "findingsOwned": [],
+      "openDecisions": [
+        "OD-01",
+        "OD-02"
+      ],
+      "newPrimitives": [
+        {
+          "name": "IntentContext parser",
+          "justification": "aucun composant ne normalise une intention avant classification"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-1"
+    },
+    {
+      "blueprintId": "GWC-2",
+      "title": "Execution Engine Skeleton",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "NEW_ORCHESTRATION_ONLY",
+      "contractsCovered": [],
+      "findingsOwned": [],
+      "openDecisions": [
+        "OD-08"
+      ],
+      "newPrimitives": [
+        {
+          "name": "ExecutionFrame + GraphRouter + ResumeResolver",
+          "justification": "aucun composant n orchestre une suite de contrats ; frame ephemere, aucun store durable"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-2"
+    },
+    {
+      "blueprintId": "GWC-3",
+      "title": "Wrap existing B1/B2/C2",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "REUSE/WRAP",
+      "contractsCovered": [
+        "GW-04",
+        "GW-05",
+        "GW-06"
+      ],
+      "findingsOwned": [
+        "AF-14"
+      ],
+      "openDecisions": [
+        "OD-10",
+        "OD-11"
+      ],
+      "newPrimitives": [],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-3"
+    },
+    {
+      "blueprintId": "GWC-4",
+      "title": "Connection/Session/Receipt integration",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "REUSE/GENERALIZE",
+      "contractsCovered": [
+        "GW-02",
+        "GW-03",
+        "GW-12",
+        "GW-16",
+        "GW-17"
+      ],
+      "findingsOwned": [
+        "AF-11"
+      ],
+      "openDecisions": [
+        "OD-08",
+        "OD-10"
+      ],
+      "newPrimitives": [],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-4"
+    },
+    {
+      "blueprintId": "GWC-5",
+      "title": "Task/Lock orchestration wrappers",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "REUSE/EXTEND",
+      "contractsCovered": [
+        "GW-13",
+        "GW-14",
+        "GW-15",
+        "GW-18",
+        "GW-19",
+        "GW-20"
+      ],
+      "findingsOwned": [
+        "AF-08",
+        "AF-17",
+        "AF-18",
+        "AF-24",
+        "AF-27",
+        "AF-35"
+      ],
+      "openDecisions": [
+        "OD-05",
+        "OD-08",
+        "OD-11"
+      ],
+      "newPrimitives": [
+        {
+          "name": "lock-set planner",
+          "justification": "aucun composant ne calcule l ensemble minimal de verrous ; acquisition atomique placee dans lockService.ts"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-5"
+    },
+    {
+      "blueprintId": "GWC-6",
+      "title": "Server Resolver C3",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "GENERALIZE/EXTEND",
+      "contractsCovered": [
+        "GW-07"
+      ],
+      "findingsOwned": [],
+      "openDecisions": [
+        "OD-03"
+      ],
+      "newPrimitives": [],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-6"
+    },
+    {
+      "blueprintId": "GWC-7",
+      "title": "Runtime Resolver C4",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "GENERALIZE/EXTEND",
+      "contractsCovered": [
+        "GW-08"
+      ],
+      "findingsOwned": [],
+      "openDecisions": [
+        "OD-04"
+      ],
+      "newPrimitives": [
+        {
+          "name": "RuntimeBinding",
+          "justification": "aucun composant ne type un runtime ; evidence uniquement, jamais executeur"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-7"
+    },
+    {
+      "blueprintId": "GWC-8",
+      "title": "Domain Resolver C5",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "GENERALIZE/EXTEND",
+      "contractsCovered": [
+        "GW-09"
+      ],
+      "findingsOwned": [],
+      "openDecisions": [],
+      "newPrimitives": [],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-8"
+    },
+    {
+      "blueprintId": "GWC-9",
+      "title": "Governance inheritance and effective capabilities",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "REUSE/EXTEND",
+      "contractsCovered": [
+        "GW-10",
+        "GW-11"
+      ],
+      "findingsOwned": [
+        "AF-10",
+        "AF-32"
+      ],
+      "openDecisions": [],
+      "newPrimitives": [],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-9"
+    },
+    {
+      "blueprintId": "GWC-10",
+      "title": "B3 Multi-repository TargetScope",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "GENERALIZE",
+      "contractsCovered": [],
+      "findingsOwned": [
+        "AF-01",
+        "AF-02",
+        "AF-03",
+        "AF-04",
+        "AF-05"
+      ],
+      "openDecisions": [
+        "OD-10",
+        "OD-11"
+      ],
+      "newPrimitives": [
+        {
+          "name": "TargetContext + TargetScope",
+          "justification": "aucun composant ne porte une cible multi-composants au niveau operationnel ; additif et optionnel"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-10"
+    },
+    {
+      "blueprintId": "GWC-11",
+      "title": "Authority docs / Integration slot / baseline",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "REUSE/EXTEND",
+      "contractsCovered": [
+        "GW-21",
+        "GW-22",
+        "GW-23"
+      ],
+      "findingsOwned": [],
+      "openDecisions": [],
+      "newPrimitives": [
+        {
+          "name": "integration-slot resolver",
+          "justification": "rend la regle REUSE-avant-NEW verifiable par machine"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-11"
+    },
+    {
+      "blueprintId": "GWC-12",
+      "title": "GitHub Control Plane reconciliation",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "DISPOSITION",
+      "contractsCovered": [],
+      "findingsOwned": [],
+      "openDecisions": [],
+      "newPrimitives": [],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-12"
+    },
+    {
+      "blueprintId": "GWC-13",
+      "title": "Development workflow contracts",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "REUSE/EXTEND",
+      "contractsCovered": [
+        "GW-24",
+        "GW-25",
+        "GW-26",
+        "GW-27",
+        "GW-28",
+        "GW-29",
+        "GW-30",
+        "GW-31",
+        "GW-32",
+        "GW-33"
+      ],
+      "findingsOwned": [
+        "AF-15",
+        "AF-16",
+        "AF-31"
+      ],
+      "openDecisions": [],
+      "newPrimitives": [
+        {
+          "name": "expected-failure signature + validation profile",
+          "justification": "aucun composant ne type un profil de validation ni ne qualifie un RED"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-13"
+    },
+    {
+      "blueprintId": "GWC-14",
+      "title": "Review / merge contracts",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "REUSE/EXTEND",
+      "contractsCovered": [
+        "GW-34",
+        "GW-35",
+        "GW-36",
+        "GW-37",
+        "GW-38",
+        "GW-39",
+        "GW-40",
+        "GW-41",
+        "GW-42",
+        "GW-43"
+      ],
+      "findingsOwned": [
+        "AF-22",
+        "AF-25",
+        "AF-30"
+      ],
+      "openDecisions": [
+        "OD-06"
+      ],
+      "newPrimitives": [
+        {
+          "name": "PremergeProof",
+          "justification": "compose des preuves existantes a un head unique, sans re-observer"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-14"
+    },
+    {
+      "blueprintId": "GWC-15",
+      "title": "Deployment / exact-SHA evidence",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "REUSE/EXTEND",
+      "contractsCovered": [
+        "GW-44",
+        "GW-45",
+        "GW-46",
+        "GW-47",
+        "GW-48",
+        "GW-49",
+        "GW-50",
+        "GW-51",
+        "GW-52",
+        "GW-53",
+        "GW-54",
+        "GW-55",
+        "GW-56",
+        "GW-57"
+      ],
+      "findingsOwned": [
+        "AF-06",
+        "AF-19",
+        "AF-26",
+        "AF-29"
+      ],
+      "openDecisions": [
+        "OD-07",
+        "OD-12"
+      ],
+      "newPrimitives": [
+        {
+          "name": "CI evidence + admission predicate",
+          "justification": "aucun composant ne conditionne l admission d un deploiement a la CI du meme SHA"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-15"
+    },
+    {
+      "blueprintId": "GWC-16",
+      "title": "Documentation and closure",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "REUSE/EXTEND",
+      "contractsCovered": [
+        "GW-58",
+        "GW-59",
+        "GW-60",
+        "GW-61",
+        "GW-62",
+        "GW-63",
+        "GW-64",
+        "GW-65",
+        "GW-66",
+        "GW-67",
+        "GW-68",
+        "GW-69",
+        "GW-70",
+        "GW-71",
+        "GW-72"
+      ],
+      "findingsOwned": [
+        "AF-07",
+        "AF-09",
+        "AF-23"
+      ],
+      "openDecisions": [],
+      "newPrimitives": [
+        {
+          "name": "terminal verification predicate",
+          "justification": "aucun composant ne conditionne DONE a une reobservation de la realite"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-16"
+    },
+    {
+      "blueprintId": "GWC-17",
+      "title": "Universal Acceptance",
+      "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+      "integrationClassification": "NEW",
+      "contractsCovered": [
+        "GW-73"
+      ],
+      "findingsOwned": [
+        "AF-13"
+      ],
+      "openDecisions": [],
+      "newPrimitives": [
+        {
+          "name": "acceptance harness + fixtures",
+          "justification": "un harnais d acceptance n a par definition aucun proprietaire existant ; tests uniquement, non importable par le runtime"
+        }
+      ],
+      "designSection": "docs/gwc/BLUEPRINTS.md#gwc-17"
+    }
+  ],
+  "transverseRegistries": [
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6",
+    "R7",
+    "R8",
+    "R9",
+    "R10",
+    "R11",
+    "R12",
+    "R13"
+  ],
+  "globalAudits": [
+    "A1",
+    "A2",
+    "A3",
+    "A4"
+  ],
+  "findings": [
+    {
+      "finding": "AF-01",
+      "owner": "GWC-10",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-02",
+      "owner": "GWC-10",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-03",
+      "owner": "GWC-10",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-04",
+      "owner": "GWC-10",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-05",
+      "owner": "GWC-10",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-06",
+      "owner": "GWC-15",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-07",
+      "owner": "GWC-16",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-08",
+      "owner": "GWC-5",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-09",
+      "owner": "GWC-16",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-10",
+      "owner": "GWC-9",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-11",
+      "owner": "GWC-4",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-12",
+      "owner": "GWC-0",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-13",
+      "owner": "GWC-17",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-14",
+      "owner": "GWC-3",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-15",
+      "owner": "GWC-13",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-16",
+      "owner": "GWC-13",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-17",
+      "owner": "GWC-5",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-18",
+      "owner": "GWC-5",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-19",
+      "owner": "GWC-15",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": false
+    },
+    {
+      "finding": "AF-20",
+      "owner": "GWC-0",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-21",
+      "owner": "GWC-0",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-22",
+      "owner": "GWC-14",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": false
+    },
+    {
+      "finding": "AF-23",
+      "owner": "GWC-16",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-24",
+      "owner": "GWC-5",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-25",
+      "owner": "GWC-14",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-26",
+      "owner": "GWC-15",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-27",
+      "owner": "GWC-5",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": false
+    },
+    {
+      "finding": "AF-28",
+      "owner": "GWC-0",
+      "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+      "corrected": true
+    },
+    {
+      "finding": "AF-29",
+      "owner": "GWC-15",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": false
+    },
+    {
+      "finding": "AF-30",
+      "owner": "GWC-14",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": false
+    },
+    {
+      "finding": "AF-31",
+      "owner": "GWC-13",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": false
+    },
+    {
+      "finding": "AF-32",
+      "owner": "GWC-9",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": false
+    },
+    {
+      "finding": "AF-33",
+      "owner": "GWC-0",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": false
+    },
+    {
+      "finding": "AF-34",
+      "owner": "GWC-0",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": true
+    },
+    {
+      "finding": "AF-35",
+      "owner": "GWC-5",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": false
+    },
+    {
+      "finding": "AF-36",
+      "owner": "GWC-0",
+      "definitionSource": "CURRENT_MAIN_EVIDENCE",
+      "corrected": true
+    }
+  ],
+  "openDecisions": [
+    {
+      "id": "OD-01",
+      "owner": "GWC-1",
+      "state": "NARROWED"
+    },
+    {
+      "id": "OD-02",
+      "owner": "GWC-1",
+      "state": "NARROWED"
+    },
+    {
+      "id": "OD-03",
+      "owner": "GWC-6",
+      "state": "OPEN"
+    },
+    {
+      "id": "OD-04",
+      "owner": "GWC-7",
+      "state": "NARROWED"
+    },
+    {
+      "id": "OD-05",
+      "owner": "GWC-5",
+      "state": "OPEN"
+    },
+    {
+      "id": "OD-06",
+      "owner": "GWC-14",
+      "state": "NARROWED"
+    },
+    {
+      "id": "OD-07",
+      "owner": "GWC-15",
+      "state": "OPEN_NARROWED"
+    },
+    {
+      "id": "OD-08",
+      "owner": "GWC-4",
+      "state": "OPEN"
+    },
+    {
+      "id": "OD-09",
+      "owner": "GWC-0",
+      "state": "OPEN"
+    },
+    {
+      "id": "OD-10",
+      "owner": "GWC-10",
+      "state": "NARROWED"
+    },
+    {
+      "id": "OD-11",
+      "owner": "GWC-10",
+      "state": "OPEN"
+    },
+    {
+      "id": "OD-12",
+      "owner": "GWC-15",
+      "state": "OPEN"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc16-documentation-closure-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc16_documentation_closure_evidence",
+      "path": "sources/gwc16-documentation-closure-evidence.json",
+      "media_type": "application/json",
+      "bytes": 6015,
+      "sha256": "c1d6be7cbbbf3a9110114154787a01f0fe11281d579fea9b58fdacb686ac7be5"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc16_pass",
+      "key": "candidate.phase_e.gwc_16",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-16 reached final GREEN after RED CI #1433, first GREEN #1435, self-review RED #1437, fixture-only correction #1439 and final MCP CI #1440 SUCCESS with 589/589 tests. The claim remains ACTIVE until this checkpoint passes exact-head CI.",
+      "source_refs": [
+        "src_gwc16_documentation_closure_evidence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc16_terminal_gate",
+      "key": "candidate.gwc16.terminal_verification",
+      "claim_type": "fact",
+      "value": "GW-68 is the NO_FALSE_DONE gate. It requires one coherent final evidence matrix binding Task VERIFYING, owner session, Bootstrap Receipt/stateVersion, CI, deployment, review, locks, Live State, documentation, head SHA and runtime revision. Foreign conflicting locks or cross-session/cross-head/cross-run evidence block terminal verification.",
+      "source_refs": [
+        "src_gwc16_documentation_closure_evidence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc16_existing_authorities",
+      "key": "candidate.gwc16.existing_authorities",
+      "claim_type": "fact",
+      "value": "GWC-16 reuses the existing GitHub lifecycle, Live State, Governed Task Queue, Governed Session, Bootstrap Receipt, Lock Service and queue reconciliation authorities. GitHub EffectPlans match existing tool schemas exactly; GW-60 reuses github_create_commit for bounded multi-file reconciliation. No second closure/task/session/lock/documentation authority is introduced.",
+      "source_refs": [
+        "src_gwc16_documentation_closure_evidence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc16_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Keep the GWC-16 branch-local claim ACTIVE until this checkpoint passes exact-head CI. After SUCCESS, release GWC-16 and dispatch GWC-PRE-E-GWC-17 without replaying GWC-16.",
+      "source_refs": [
+        "src_gwc16_documentation_closure_evidence"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

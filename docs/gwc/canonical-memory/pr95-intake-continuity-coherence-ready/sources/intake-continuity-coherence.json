@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "observedHeadBeforeBundle": "6c16312197e4f3de81c2236b4895ff0d2000b393",
+  "purpose": "Canonical checkpoint for incremental NEW_INFORMATION_INTAKE continuity, coherence/integration gating, reconciliation receipts and scoped knowledge freshness.",
+  "authorityBoundary": {
+    "newQueue": false,
+    "newMemoryAuthority": false,
+    "newTaskRegistry": false,
+    "newSessionManager": false,
+    "runtimeMcpRequired": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false
+  },
+  "integrationSlot": {
+    "code": "src/governedContext/candidateContinuity.ts",
+    "projections": [
+      "docs/gwc/canonical-memory/current.json",
+      ".mcp/gwc-precode-status.json",
+      ".mcp/gwc-precode-action-flow.json",
+      ".mcp/gwc-precode-gate.json"
+    ],
+    "workSurfaces": [
+      "candidate work items",
+      "checkpoints",
+      "handoffs"
+    ]
+  },
+  "continuityCursor": {
+    "latestIntakeSequence": 2,
+    "reconciledThroughSequence": 0,
+    "canonicalRevision": 1,
+    "backlogRevision": 0,
+    "pendingIntakeIds": [
+      "NEW_INFORMATION_INTAKE-001",
+      "NEW_INFORMATION_INTAKE-002"
+    ],
+    "lastReconciliationDigest": null,
+    "rule": "Projection/index only. Intake bundles are immutable evidence; no raw transcript; no independent queue."
+  },
+  "existingIntakes": {
+    "NEW_INFORMATION_INTAKE-001": {
+      "bundle": "docs/gwc/canonical-memory/pr95-new-information-intake-001",
+      "canonicalAdoptionPerformed": false
+    },
+    "NEW_INFORMATION_INTAKE-002": {
+      "bundle": "docs/gwc/canonical-memory/pr95-new-information-intake-002",
+      "canonicalAdoptionPerformed": false
+    },
+    "consequence": "Both remain pending under the new coherence gate before accepted effects can influence GWC-PRE-B-01."
+  },
+  "functions": {
+    "register": "registerCandidateIntake",
+    "gate": "evaluateCandidateIntakeGate",
+    "reconcile": "reconcileCandidateIntakeBatch",
+    "freshness": "assessCandidateKnowledgeFreshness"
+  },
+  "coherenceGate": {
+    "dimensions": [
+      "understood",
+      "relevance",
+      "evidence",
+      "evidenceRequired",
+      "objectiveAlignment",
+      "relationToExisting",
+      "architecturalFit",
+      "authorityFit",
+      "nonRegression",
+      "impact",
+      "existingFirstPath"
+    ],
+    "verdicts": [
+      "ACCEPT",
+      "ACCEPT_WITH_ADAPTATION",
+      "COMPLEMENT",
+      "DUPLICATE",
+      "DEFER",
+      "HOLD_FOR_REVIEW",
+      "OUT_OF_SCOPE",
+      "REJECT"
+    ],
+    "rules": {
+      "parallelAuthority": "REJECT",
+      "contradictionOrSupersession": "HOLD_FOR_REVIEW",
+      "breakingChange": "HOLD_FOR_REVIEW",
+      "evidenceRequiredUnverified": "DEFER",
+      "adaptation": "ACCEPT_WITH_ADAPTATION",
+      "duplicate": "NO_CANONICAL_OR_BACKLOG_CHANGE"
+    }
+  },
+  "reconciliation": {
+    "contiguousOnly": true,
+    "gap": "BLOCKED_GAP",
+    "receiptRequired": true,
+    "canonicalRevision": "increment at most once per batch if accepted canonical effect exists",
+    "backlogRevision": "increment at most once per batch if accepted backlog effect exists",
+    "existingWorkFirst": true
+  },
+  "freshness": {
+    "guards": [
+      "HEAD_SHA",
+      "CANONICAL_REVISION",
+      "BACKLOG_REVISION"
+    ],
+    "precedence": "HEAD_MOVED first",
+    "localRule": "LOCAL_BLOCKER != GLOBAL_STOP",
+    "unrelatedKnowledgeDrift": "logical refresh/rebase then continue",
+    "affectedKnowledgeDrift": "RECONCILE_REQUIRED"
+  },
+  "separation": "INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK",
+  "tdd": {
+    "red": {
+      "run": 1080,
+      "head": "c63beb0ac413824a72647a661640ed599cc867a0"
+    },
+    "green": {
+      "run": 1081,
+      "head": "f288d3e93eae772dd4e51654a1e4512a822b3dd6",
+      "conclusion": "SUCCESS"
+    }
+  },
+  "nextProgramWork": "Reconcile intake #001/#002 through the new gate and receipt before GWC-PRE-B-01 consumes accepted effects."
+}

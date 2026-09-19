@@ -1,0 +1,294 @@
+GWC PRE-CODE EXECUTION PLAN — PR #95
+Revision: R3-PRECODE
+Repository: Patricked-code/MCP
+
+PURPOSE
+Describe the complete pre-integration construction process for the evolved MCP candidate on branch claude/ecstatic-edison-v1dyt1. The architecture phase comes first; once its gate passes, branch-local candidate code, wrappers, extensions, generalizations, tests, migrations and compatibility work are allowed and expected. This document never authorizes integration into main, mutation of S1/production, runtime Task Queue materialization, live locks or deployment.
+
+GLOBAL CONTRACT PROCEDURE
+Every GW contract is executed conceptually through the same nine stages:
+1. ENTER — load only the bounded input selected by the canonical workflow graph.
+2. OBSERVE — observe the owning authority before deriving or acting.
+3. VALIDATE — validate schema, identity/binding, freshness, contradictions and preconditions; UNKNOWN remains UNKNOWN.
+4. DERIVE — derive only facts owned by this contract; never infer facts owned by another authority.
+5. AUTHORIZE_IF_MUTATING — require callable && authorized && safeNow && preconditionsSatisfied, plus current task/session/receipt/locks where applicable.
+6. ACT_OR_RECORD — execute only action kinds explicitly allowed by the contract.
+7. VERIFY — re-observe postconditions from owning authorities; invocation success is never proof.
+8. ATTEST — record only bounded evidence refs/reason codes/freshness; never secrets/raw credentials/arbitrary prompt bodies.
+9. ROUTE — route only through .mcp/gwc-workflow-graph.json; numeric GW order is never authority.
+
+FAIL-CLOSED ROUTING
+STALE -> reobserve owning authority and invalidate dependent evidence.
+CONFLICT -> reconcile current Task Queue/session/lock/GitHub state; never force.
+AMBIGUOUS -> block until the owning resolver disambiguates; no heuristic candidate choice.
+UNVERIFIED -> no mutation; obtain authoritative evidence or remain blocked.
+BLOCKED -> preserve reason and continue only independent work whose dependencies/scopes allow it.
+REJECTED -> terminate this route with explicit reason; never downgrade to warning.
+
+GLOBAL INVARIANTS
+INTENT != AUTHORIZATION.
+CALLABLE != AUTHORIZED != SAFE_NOW.
+UNKNOWN never permits mutation.
+GitHub fact != runtime fact.
+Blueprint != GovernedTaskRecord.
+Branch-local candidate work items are not runtime Tasks. Only the later real-integration phase may use the live Governed Task Queue, and then only according to the current runtime governance observed at that time.
+Observe before act.
+Exact head before merge.
+Exact SHA before runtime truth.
+No false DONE.
+No parallel Live State, Task Queue, Session, Lock, GitRegistry, Operational Memory, GitHub control plane or deployment authority.
+
+============================================================
+14 ARCHITECTURE PHASES — CLOSURE MATRIX
+============================================================
+PHASE 01 — Inventaire read-only de l’existant — COMPLETE. Existing services/types/tools/stores/workflows/tests/authorities are inventoried in the 73 sheets and 18 evolution designs. Future mutation must still reobserve live authority.
+PHASE 02 — Cartographie existant -> 73 contrats — COMPLETE. 73/73 contracts are mapped exactly once; existing-first classifications are recorded. AF-33 remains an explicit historical-definition mismatch, not an invented correction.
+PHASE 03 — Architecture fonctionnelle de chaque contrat — COMPLETE. 73 canonical Contract Design Sheets exist.
+PHASE 04 — Architecture technique de chaque contrat — COMPLETE. 18 Detailed Evolution Designs cover integration slots, types, files, tests, gaps and compatibility for 73/73 contracts; open decisions remain explicit and owned.
+PHASE 05 — Transition graph + state interactions — COMPLETE. Runtime graph has GW-01 entry, GW-72 terminal, GW-73 outside normal runtime acceptance, and explicit forward/backward/skip edges verified by gwc:verify.
+PHASE 06 — Data contracts + authority matrix — COMPLETE. Transverse data/authority registries exist and retain existing authority owners.
+PHASE 07 — Attestation + evidence model — COMPLETE. Evidence/freshness/binding and attestation registries exist; implementation gaps such as AF-19/AF-29 are recorded rather than hidden.
+PHASE 08 — Concurrency + locks + replay — COMPLETE. Minimal collision domain, existing Lock Service, atomic multi-lock design, idempotency/replay/reobserve/recovery semantics are specified.
+PHASE 09 — Failure/recovery/security — COMPLETE. Fail-closed statuses, recovery rules, security registry and negative scenarios are specified; UNKNOWN never becomes permission.
+PHASE 10 — Backward compatibility / multi-repo — COMPLETE. Generalization remains additive; historical single-repo Session/Task/Receipt records remain readable; no forced migration.
+PHASE 11 — Universal acceptance architecture — COMPLETE. GW-73 is a tests-only acceptance harness design with non-MCP target fixtures and negative paths; no Stablecoin/MCP hardcode.
+PHASE 12 — Implementation sequence — COMPLETE. GWC-0..GWC-17 dependencies/scopes/owned contracts and safety prerequisites are defined. Blueprint != Task.
+PHASE 13 — Relecture transversale — COMPLETE_WITH_RECORDED_FINDINGS. Four global audits, deterministic GWC verifier, findings ownership and this pre-code coverage gate cover the architecture. Findings/open decisions remain owner-bound prerequisites for affected implementation.
+PHASE 14 — Documentation finale / canonicalisation — COMPLETE_ON_PR95_BRANCH_PENDING_MAIN. Versioned architecture and canonical-memory candidate live on PR #95; they are not main authority until governed review/merge.
+
+============================================================
+18 BLUEPRINT EXECUTION PROCEDURES
+============================================================
+Common blueprint candidate-build procedure on claude/ecstatic-edison-v1dyt1: REOBSERVE exact online branch head and current architectural baseline -> identify bounded branch-local work item and collision domain -> inspect existing implementation first -> intended RED -> minimal existing-first GREEN (REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW) -> targeted tests -> historical regression -> typecheck/build/docs/security checks -> self-review -> record evidence/checkpoint -> continue to next dependency-safe candidate work item. No live Governed Task, runtime lock, main merge, S1 mutation or deployment is used for this candidate-build cycle.
+
+GWC-0 Contract substrate | deps none | infrastructure-only | registry GW-01..GW-73, shared contract/evidence types, graph validation and invariants; zero runtime behavior change.
+GWC-1 Intent Capture | deps GWC-0 | GW-01 | pure deterministic intent capture; property/fail-closed tests; no external side effect.
+GWC-2 Execution Engine Skeleton | deps GWC-0,GWC-1 | infrastructure-only | shadow orchestration frame/registry/router/evidence broker/resume/no-progress; no authority takeover.
+GWC-3 Wrap B1/B2/C2 | deps GWC-2 | GW-04,05,06 | adapters around existing identity/repository/project resolvers; no semantic rewrite.
+GWC-4 Connection/Session/Receipt integration | deps GWC-2,GWC-3 | GW-02,03,12,16,17 | preserve existing bootstrap, auto-resume, ConnectionContext and Bootstrap Receipt authority.
+GWC-5 Task/Lock orchestration wrappers | deps GWC-2,GWC-4 | GW-13,14,15,18,19,20 | Task Queue remains task authority; Lock Service remains lock authority; atomic multi-lock, if needed, belongs inside existing lock service.
+GWC-6 Server Resolver C3 | deps GWC-3 | GW-07 | resolve server identity/binding from registry/evidence; no SSH mutation by resolution.
+GWC-7 Runtime Resolver C4 | deps GWC-6 | GW-08 | optional typed RuntimeBinding evidence; no runtime executor/restart authority.
+GWC-8 Domain Resolver C5 | deps GWC-3,GWC-6 | GW-09 | resolve endpoint/domain roles and preserve NONE vs UNVERIFIED.
+GWC-9 Governance/capabilities | deps GWC-3,GWC-4,GWC-5 | GW-10,11 | compose existing governance, Capability Reality and write-gate evidence; UNKNOWN blocks; gate mode not implicitly changed.
+GWC-10 Multi-repository TargetScope | deps GWC-3..GWC-9 as declared | infrastructure-only | additive optional TargetScope across Session/Task/Receipt/Live State; independent component SHAs; historical records remain valid.
+GWC-11 Authority docs / Integration slot / baseline | deps GWC-2,GWC-10 | GW-21,22,23 | formalize authority-document evidence, existing owner/integration slot and exact GitHub baseline.
+GWC-12 GitHub Control Plane reconciliation | deps GWC-11 | infrastructure-only | reconcile PR/control-plane stack with current main before dependent work; no blind stale-PR merge.
+GWC-13 Development workflow | deps GWC-11,GWC-12 | GW-24..33 | branch/TDD/CI/self-review/regression/non-terminal docs with exact-SHA evidence.
+GWC-14 Review / merge | deps GWC-12,GWC-13 | GW-34..43 | bind reviews/threads/rulesets to exact head, build premerge proof, exact-head merge; owns AF-22/AF-30.
+GWC-15 Deployment / exact-SHA | deps GWC-14 | GW-44..57 | main CI, autodeploy observation, S1/runtime/OCI exact-SHA evidence; close AF-19 without weakening OIDC.
+GWC-16 Documentation and closure | deps GWC-15 | GW-58..72 | docs drift reconciliation, terminal receipt, VERIFYING/DONE, checkpoint, lock release, session close; no false DONE.
+GWC-17 Universal Acceptance | deps GWC-10,GWC-16 | GW-73 | tests-only whole-chain acceptance against non-MCP fixtures/targets and negative scenarios.
+
+============================================================
+73 CONTRACT EXECUTION PROCEDURES
+============================================================
+GW-01 INTENT_CAPTURE | authority incoming request/source metadata | READ/DERIVE | capture bounded IntentContext; retain objective/hints/constraints/uncertainties/contradictions; no task/lock/branch/permission mutation; verify faithful capture; route via graph.
+GW-02 CONNECTION_BOOTSTRAP | authority existing auth/bootstrap | existing-path effect only | bootstrap through existing connection/auth path; no parallel bootstrap authority; verify authenticated/bounded result.
+GW-03 CONNECTION_CONTEXT | authority ConnectionContext/Operational Memory | DERIVE/RECORD | bind/derive existing connection context and session relation; preserve historical semantics; verify context binding.
+GW-04 GITHUB_IDENTITY_RESOLUTION | authority GitHub identity resolver | READ/DERIVE | resolve authenticated GitHub identity; no permission inference; NONE/AMBIGUOUS/UNVERIFIED fail closed.
+GW-05 REPOSITORY_RESOLUTION | authority B2 repository resolver/GitHub evidence | READ/DERIVE | resolve repository identity; do not infer project/server/capability; stale evidence reobserves.
+GW-06 PROJECT_RESOLUTION | authority C2/GitRegistry project binding | READ/DERIVE | resolve repositoryId->mappingId->projectId; do not activate mapping or infer deployment permission.
+GW-07 SERVER_RESOLUTION | authority GitRegistry server binding + observed server evidence | READ/DERIVE | resolve server identity/canonical binding; resolution itself never executes SSH mutation.
+GW-08 RUNTIME_RESOLUTION | authority server/runtime observation + optional registry descriptor | READ/DERIVE | produce typed RuntimeBinding evidence; unobserved runtime=UNVERIFIED, not NO_RUNTIME; never restart/rebuild.
+GW-09 DOMAIN_RESOLUTION | authority registry domain declarations + observed endpoint evidence | READ/DERIVE | resolve current domains/endpoints/roles; NONE can be valid; mismatch/unobserved stays fail closed; never mutate vhost.
+GW-10 GOVERNANCE_INHERITANCE | authority project/repository governance declarations | READ/DERIVE | compose inherited governance from existing declarations/documents; create no second policy store.
+GW-11 EFFECTIVE_CAPABILITIES | authority Capability Reality + Governance Decision | READ/DERIVE | compose callability/authorization/safeNow/preconditions; UNKNOWN never becomes allowed; client tool visibility never grants permission.
+GW-12 BOOTSTRAP_RECEIPT | authority existing Bootstrap Receipt service | RECORD through existing authority | issue/refresh bounded receipt with current stateVersion/digests; no second receipt store.
+GW-13 LIVE_STATE_RECONCILIATION | authority Live State | READ/DERIVE | reconcile GitHub/S1/runtime/docs observed facts; no task transition implied by reconciliation.
+GW-14 EXISTING_TASK_LOOKUP | authority Governed Task Queue | READ/DERIVE | lookup compatible/equivalent active work; preserve CONTINUATION/DUPLICATE/CONFLICT/BLOCKED semantics.
+GW-15 TASK_CREATION_IF_REQUIRED | authority Governed Task Queue | MUTATE | create a Task only after intent reconciliation returns NEW_TASK; dependency-not-DONE may yield BLOCKED+task:null; no speculative duplicate.
+GW-16 GOVERNED_SESSION_OPEN_OR_RESUME | authority Governed Session service | MUTATE/RECORD | open or resume exactly one compatible governed session through existing service; no parallel session engine.
+GW-17 CONTEXT_ACKNOWLEDGEMENT | authority Session + Bootstrap Receipt | MUTATE/RECORD | acknowledge current governed context/stateVersion and bind receipt/session; stale receipt cannot authorize later mutation.
+GW-18 TASK_CLAIM | authority Task Queue | MUTATE | claim selected task with optimistic task revision/ownership checks; conflict reobserves/reconciles.
+GW-19 MINIMAL_LOCK_ACQUISITION | authority Lock Service | MUTATE | acquire only minimal collision-domain locks atomically; partial acquisition releases acquired locks; deterministic ordering prevents deadlock.
+GW-20 TASK_IN_PROGRESS | authority Task Queue | MUTATE | CLAIMED->IN_PROGRESS only with current ownership/dependencies/locks/receipt; verify new task revision.
+GW-21 AUTHORITY_DOCUMENT_READ | authority versioned authority docs/document governance | READ/DERIVE | read applicable authority docs and bounded digests; docs never become runtime truth or capability.
+GW-22 INTEGRATION_SLOT_RESOLUTION | authority existing code owners/contracts/architecture | READ/DERIVE | locate existing owner/integration slot; enforce REUSE->WRAP->GENERALIZE->EXTEND->NEW; no parallel authority.
+GW-23 EXACT_GITHUB_BASELINE | authority GitHub | READ/DERIVE | pin exact repository/base SHA/ref; stale branch/diff assumptions invalidated.
+GW-24 GOVERNED_BRANCH_CREATION | authority GitHub branch state | MUTATE | create/reuse governed work branch from exact baseline; never direct-main versioned write.
+GW-25 TDD_RED_AUTHORING | authority governed branch/test specification | MUTATE | author smallest RED proving intended missing behavior; no broad implementation.
+GW-26 TDD_RED_OBSERVATION | authority test execution evidence | READ/DERIVE | run/observe RED and prove intended failure signature; unrelated failure routes back to authoring.
+GW-27 TDD_GREEN_MINIMAL_IMPLEMENTATION | authority governed branch/diff | MUTATE | smallest GREEN existing-first change; no gratuitous refactor/new authority.
+GW-28 GREEN_CI | authority exact-head GitHub Actions | READ/DERIVE | require GREEN CI on exact implementation SHA; never transfer green across head change.
+GW-29 SELF_REVIEW | authority exact diff | READ/DERIVE | inspect scope, authority ownership, secrets, regressions and hidden mutations before PR progression.
+GW-30 REGRESSION_RED_IF_FINDING | authority regression finding evidence | conditional MUTATE | when finding needs behavioral proof, add minimal failing regression; otherwise take declared skip path.
+GW-31 REGRESSION_GREEN | authority governed branch | MUTATE | minimal corrective change for regression finding; prove targeted green.
+GW-32 FULL_REGRESSION | authority full validation profile/CI | READ/DERIVE | run full applicable regression/typecheck/build/docs/security/cartography; retain exact-SHA evidence.
+GW-33 NON_TERMINAL_DOCUMENTATION | authority documentation governance | MUTATE docs only | update pre-merge docs/projections without claiming runtime/DONE/session-close facts.
+GW-34 DRAFT_PR | authority GitHub PR | MUTATE | open/reuse Draft PR from governed branch to authorized base; preserve bounded scope.
+GW-35 EXACT_DIFF_REVIEW | authority GitHub exact diff | READ/DERIVE | review exact PR diff and bind evidence to current head; head change invalidates review evidence.
+GW-36 RULESET_VERIFICATION | authority GitHub ruleset/branch protection | READ/DERIVE | observe required checks/protection/rules for exact target; unavailable evidence=UNVERIFIED, not assumed.
+GW-37 REVIEW_FINDINGS_RESOLUTION | authority review findings + branch | MUTATE | resolve findings with bounded changes/comments; re-run affected checks; no scope drift.
+GW-38 PR_READY | authority PR readiness evidence | MUTATE PR state | mark Ready only with current exact-head review preconditions satisfied.
+GW-39 TASK_REVIEW | authority Task Queue | MUTATE | transition task to REVIEW using current revision after PR readiness evidence.
+GW-40 REVIEW_CHECKPOINT | authority Governed Session checkpoint service | RECORD | checkpoint exact task/head/review evidence; duplicate-safe by session/revision semantics.
+GW-41 PREMERGE_REVALIDATION | authority exact-head checks/reviews/threads/rulesets | READ/DERIVE | reobserve everything immediately before merge; stale head/approval/thread/ruleset blocks.
+GW-42 TASK_MERGE_READY | authority Task Queue | MUTATE | REVIEW->MERGE_READY only with current premerge proof and revision.
+GW-43 EXACT_HEAD_MERGE | authority GitHub merge | MUTATE NON-REPLAYABLE | merge only exact revalidated/authorized head; changed head refuses; observe resulting merge commit.
+GW-44 MAIN_MERGE_COMMIT_OBSERVATION | authority GitHub main | READ/DERIVE | observe merge SHA/parents on main; downstream evidence binds to this SHA.
+GW-45 MAIN_CI | authority GitHub Actions | READ/DERIVE | wait/observe CI for exact merge SHA; failed/unverified CI blocks deployment admission.
+GW-46 GOVERNED_AUTODEPLOY_OBSERVATION | authority existing deploy workflow | READ/DERIVE | observe automatic governed deploy consequence; never replace with manual sync/restart.
+GW-47 GITHUB_TO_S1_SYNC_ATTESTATION | authority deployment sync attestation | READ/RECORD | attest exact-SHA GitHub->S1 sync from existing deployment evidence.
+GW-48 DEPLOY_TYPECHECK_BUILD | authority deployment build/typecheck evidence | READ/RECORD | attest deploy-time typecheck/build for exact SHA; no independent build authority.
+GW-49 RUNTIME_REBUILD_OR_RESTART_ATTESTATION | authority S1/runtime deploy attestation | READ/RECORD | attest rebuild/restart result for exact SHA; GWC does not manually restart.
+GW-50 HEALTH_CHECK | authority runtime health/OAuth/MCP auth evidence | READ/RECORD | attest required health checks for deployed revision; unknown check blocks exact deployment proof.
+GW-51 RUNTIME_IMAGE_ATTESTATION | authority runtime OCI/image evidence | READ/RECORD | bind image/OCI identity to runtime revision; S1-specific legacy mechanisms are generalized, not duplicated.
+GW-52 EXACT_SHA_DEPLOYMENT_PROOF | authority exact-SHA deployment attestation | READ/DERIVE/RECORD | prove requested SHA = S1 HEAD = runtime revision = applicable image/OCI revision and bind authorizing CI evidence.
+GW-53 LIVE_STATE_UPDATE | authority Live State | MUTATE existing state projection | reconcile/update Live State from observed authorities only; no GitHub-only runtime inference.
+GW-54 STALE_RECEIPT_DETECTION | authority Receipt + current Live State | READ/DERIVE | detect receipt staleness against new stateVersion/revisions; stale means no dependent mutation.
+GW-55 RECEIPT_REFRESH | authority Bootstrap Receipt | MUTATE/RECORD | refresh through existing receipt authority when stale; never synthesize a receipt.
+GW-56 TASK_RUNTIME_REVISION_BINDING | authority Task Queue task record | MUTATE | bind task's own runtimeRevision/exact-SHA proof so unrelated later deploy cannot retroactively verify task.
+GW-57 TASK_DEPLOYING | authority Task Queue | MUTATE | transition task to DEPLOYING only with current exact deployment evidence/runtime binding.
+GW-58 DOCUMENTATION_DRIFT_DECISION | authority Live State + doc governance | READ/DERIVE | determine terminal documentation drift; result controls skip vs docs reconciliation branch.
+GW-59 DOCUMENTATION_BRANCH_IF_REQUIRED | authority GitHub branch state | conditional MUTATE | if drift, create/reuse docs-only branch from attested baseline; if no drift, take graph skip.
+GW-60 DOCUMENTATION_RECONCILIATION | authority canonical docs + observed authorities | MUTATE docs only | reconcile docs downward from facts; never invent runtime/session/task status.
+GW-61 DOCUMENTATION_PR | authority GitHub PR | MUTATE | open/reuse docs-only PR with bounded scope.
+GW-62 DOCUMENTATION_CI_REVIEW | authority exact-head CI/review | READ/RECORD | require exact-head docs CI/review evidence.
+GW-63 DOCUMENTATION_EXACT_HEAD_MERGE | authority GitHub merge | MUTATE NON-REPLAYABLE | merge only exact reviewed docs head; changed head returns to revalidation.
+GW-64 DOCUMENTATION_AUTODEPLOY | authority existing autodeploy | READ/RECORD | observe automatic docs merge deployment consequence; no manual deployment.
+GW-65 DOCUMENTATION_LIVE_STATE | authority Live State | READ/DERIVE/RECORD | reconcile final Live State after docs deploy; require applicable convergence.
+GW-66 TERMINAL_RECEIPT_REFRESH | authority Bootstrap Receipt | MUTATE/RECORD | refresh terminal receipt against final stateVersion before verification transitions.
+GW-67 TASK_VERIFYING | authority Task Queue | MUTATE | transition task to VERIFYING with current terminal receipt/evidence.
+GW-68 TERMINAL_VERIFICATION | authority Live State + GitHub + runtime + Task/Session | READ/DERIVE/RECORD | verify all terminal postconditions across specialized authorities; no single-source shortcut.
+GW-69 TASK_DONE | authority Task Queue | MUTATE | VERIFYING->DONE only when GW-68 proves every required postcondition; no false DONE.
+GW-70 TERMINAL_CHECKPOINT | authority Session checkpoint service | RECORD | checkpoint exact terminal head/runtime/task/evidence.
+GW-71 LOCK_RELEASE | authority Lock Service | MUTATE | release only locks owned by closing session/task; reobserve ownership; do not delete another session's lock.
+GW-72 SESSION_CLOSE_AND_QUEUE_RECONCILE | authority Session + Task Queue | MUTATE | close session and reconcile queue/next dependency; never fabricate next Task.
+GW-73 UNIVERSAL_ACCEPTANCE | authority tests-only acceptance harness/fixtures | READ/DERIVE/REPORT | run full contract/graph architecture against non-MCP/multi-repo fixtures and negative paths; no real server/task/deploy mutation and no target hardcode.
+
+============================================================
+22 E2E SCENARIOS
+============================================================
+E2E-01 New governed change happy path — all authorities resolve, NEW_TASK valid, TDD/review/merge/deploy/docs terminal evidence succeeds -> GW-72 closes session/queue; GW-73 remains separate acceptance.
+E2E-02 Continuation — equivalent compatible active work exists -> GW-14 resolves continuation, GW-15 creates no duplicate, resume existing task/session.
+E2E-03 Duplicate request — duplicate/equivalent intent -> no new Task; existing reference/controlled no-op.
+E2E-04 Two agents same resource — second agent meets ownership/lock conflict -> CONFLICT/BLOCKED; disjoint work may continue.
+E2E-05 Repository unknown — GW-05 NONE/UNVERIFIED -> fail closed; no project/task/branch mutation.
+E2E-06 Project ambiguous — GW-06 multiple/inconsistent mappings -> AMBIGUOUS; no server/capability inference.
+E2E-07 Server missing — GW-07 lacks authoritative binding/evidence -> NONE/UNVERIFIED; no SSH mutation.
+E2E-08 Runtime stale/unobservable — GW-08 observation unavailable -> UNVERIFIED, never NO_RUNTIME.
+E2E-09 Domain mismatch — GW-09 declaration/observation conflict -> UNVERIFIED/CONFLICT; dependent health/deploy path blocked.
+E2E-10 Capability denied/unknown — GW-10/11 -> mayExecute=false despite callable tool.
+E2E-11 Task dependency blocked — unmet dependency -> BLOCKED; where reconciliation rules require, task:null; no speculative task.
+E2E-12 Invalid RED — failure is unrelated to intended behavior -> GW-26 routes back; GREEN forbidden.
+E2E-13 Exact-head CI fails — GW-28/32 evidence red -> PR cannot become merge-ready from stale green evidence.
+E2E-14 Review belongs to old head — head changed after approval/thread/ruleset observation -> GW-41 reobserve; old evidence invalid.
+E2E-15 Head moved before merge — current head != premerge-authorized head -> GW-43 refuses and returns to revalidation.
+E2E-16 Main CI/deployment admission fails — merge exists but exact merge-SHA CI failed/unverified -> no deployment mutation; WAIT_EXTERNAL/BLOCKED.
+E2E-17 Runtime SHA mismatch — requested/S1/runtime/OCI differ -> GW-52 fails; no task runtime binding/DONE.
+E2E-18 Documentation drift — functional runtime correct but docs stale -> GW-58..65 docs-only governed reconciliation and new Live State.
+E2E-19 Receipt stale — stateVersion/runtime changed after issue -> GW-54 detects, GW-55 refreshes before dependent mutation.
+E2E-20 Conversation/transport interruption — reconnect -> resolve current Session/Task/checkpoint/receipt from authorities; never replay last chat mutation.
+E2E-21 Multi-repository universal acceptance — independent component SHAs/non-MCP target fixture -> pass only if target resolves/generalizes without MCP/Stablecoin hardcode.
+E2E-22 Review finding raised — GW-35/GW-37 surface a blocking finding on the exact head -> PR cannot reach GW-38 PR_READY until every finding is resolved or explicitly dispositioned with evidence; resolution on a superseded head is invalid and returns to GW-41 revalidation.
+
+============================================================
+ARCHITECTURE GATE
+============================================================
+14/14 architecture phases described and evidenced.
+73/73 Contract Design Sheets present.
+73/73 explicit contract execution procedures present in this file.
+18/18 Detailed Evolution Designs present.
+18/18 blueprint execution procedures present in this file.
+13/13 transverse registries present.
+4/4 global audits present.
+22 E2E scenarios present.
+
+ARCHITECTURE GATE SEMANTICS
+GWC_ARCHITECTURE_GATE_PASS unlocks construction of the evolved candidate ON claude/ecstatic-edison-v1dyt1.
+It does NOT authorize integration into main, S1, production runtime, live Task Queue, runtime locks or deployment.
+
+============================================================
+CANDIDATE BUILD PHASES
+============================================================
+
+B — CANDIDATE TASK SYNTHESIS
+Derive the complete branch-local implementation backlog from the 18 blueprints, 73 contracts, findings, decisions and compatibility requirements.
+Every candidate work item must bind: blueprint/contract refs, existing integration slot, files/types/functions, dependencies, collision domain, RED, GREEN, regression, compatibility, evidence and definition of done.
+These work items are PRECODE/candidate work items, never GovernedTaskRecord entries.
+
+C — CANDIDATE SAFETY / FOUNDATION COMPLETION
+Implement on the Claude branch the prerequisite corrections and enabling capabilities required by the evolved candidate (including AF-19, AF-22/AF-30 and dispositioned PR-stack capabilities where still applicable), without activating them in main/S1/production.
+All changes remain additive/backward-compatible and must preserve existing behavior by default.
+
+D — BRANCH-LOCAL CANDIDATE IMPLEMENTATION CYCLE
+For every candidate work item:
+OBSERVE exact branch head
+-> inspect existing implementation
+-> bounded scope claim/checkpoint
+-> exact baseline
+-> RED
+-> prove RED
+-> minimal GREEN
+-> targeted tests
+-> historical regression
+-> typecheck
+-> build
+-> docs check
+-> governance/security/secret checks
+-> self review
+-> evidence
+-> checkpoint
+-> next dependency-safe work item.
+
+Forbidden in D: runtime Task creation, runtime lock acquisition, main merge, S1 mutation, production deployment, live activation.
+
+E — BLUEPRINT CANDIDATE BUILD ORDER
+Build the evolved candidate in dependency order:
+GWC-0
+-> GWC-1
+-> GWC-2
+-> GWC-3
+-> dependency-safe set {GWC-4, GWC-5, GWC-6 -> GWC-7, GWC-8}
+-> GWC-9
+-> GWC-10
+-> GWC-11
+-> GWC-12
+-> GWC-13
+-> GWC-14
+-> GWC-15
+-> GWC-16
+-> GWC-17.
+
+F — CANDIDATE UNIVERSAL ACCEPTANCE
+Run the complete candidate against non-hardcoded fixtures/test contexts and all negative paths.
+Require:
+- existing historical behaviors still pass;
+- new behaviors pass;
+- no duplicate authority;
+- no hidden mutation path;
+- no target-specific hardcode;
+- candidate code compiles/builds/tests as one coherent evolved MCP version;
+- integration instructions and rollback/reconciliation rules are complete.
+
+============================================================
+FINAL CANDIDATE GATE
+============================================================
+PASS only if the architecture package AND the evolved candidate implementation are complete with evidence.
+
+Required verdict:
+FINAL_PRECODE_VERSION_ACCEPTED
+EVOLVED_CANDIDATE_READY_FOR_INTEGRATION
+
+At this gate the branch must already contain the evolved version: existing MCP skeleton + additive/backward-compatible code + tests + migrations/compatibility + workflows + documentation + complete task/evidence history.
+
+============================================================
+REAL INTEGRATION — OUTSIDE CURRENT CANDIDATE BUILD
+============================================================
+Only after FINAL_PRECODE_VERSION_ACCEPTED:
+
+1. Reobserve current main and current real server/runtime evidence.
+2. Reconcile any drift since the candidate baseline.
+3. Revalidate integration slots and compatibility assumptions.
+4. Use the then-current governed integration mechanism required by the project.
+5. Integrate the already-built candidate; do not redesign it unless live drift forces a bounded adjustment.
+6. Run exact-head review/CI.
+7. Merge/integrate under current governance.
+8. Run main CI, governed deployment, exact-SHA attestation and Live State/runtime verification.
+9. Close only with terminal evidence.
+
+FINAL RULE
+The Claude branch is the construction surface for the complete evolved candidate, not documentation-only and not a parallel production system.
+Candidate implementation on claude/ecstatic-edison-v1dyt1 is ALLOWED AND EXPECTED after GWC_ARCHITECTURE_GATE_PASS.
+Activation/integration into main, S1 and production remains FORBIDDEN until FINAL_PRECODE_VERSION_ACCEPTED.

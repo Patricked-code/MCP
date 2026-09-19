@@ -42,6 +42,8 @@ export type GitHubJsonRequestOptions = {
   apiBase?: string;
   allowedHosts?: string;
   timeoutMs?: number;
+  method?: 'GET' | 'POST' | 'PATCH' | 'PUT';
+  jsonBody?: unknown;
 };
 
 export type GitHubPrincipalObservationOptions = GitHubJsonRequestOptions & {
@@ -125,16 +127,22 @@ export async function githubJsonRequest(
   const url = `${base}${endpoint}`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const method = options.method ?? 'GET';
+  const hasJsonBody = method !== 'GET' && options.jsonBody !== undefined;
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'User-Agent': 'wealthtech-mcp-guardian'
+  };
+  if (hasJsonBody) headers['Content-Type'] = 'application/json';
   try {
     const response = await fetchImpl(url, {
+      method,
       redirect: 'error',
       signal: controller.signal,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'User-Agent': 'wealthtech-mcp-guardian'
-      }
+      headers,
+      ...(hasJsonBody ? { body: JSON.stringify(options.jsonBody) } : {})
     });
     const declaredLength = Number(response.headers.get('content-length') ?? '0');
     if (declaredLength > MAX_RESPONSE_BYTES) {
@@ -170,6 +178,24 @@ export async function githubJsonRequest(
   } finally {
     clearTimeout(timer);
   }
+}
+
+
+export async function githubJsonRequestWithServerCredential(
+  endpoint: string,
+  options: GitHubJsonRequestOptions = {}
+): Promise<GitHubJsonResponse> {
+  const token = await readToken();
+  if (!token) {
+    return {
+      ok: false,
+      status: null,
+      json: null,
+      tokenExpiresAt: null,
+      oauthScopes: []
+    };
+  }
+  return githubJsonRequest(token, endpoint, options);
 }
 
 function getArrayLength(value: unknown): number | null {

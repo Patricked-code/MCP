@@ -26,6 +26,18 @@ Mode opératoire de Codex dans le dépôt MCP.
 ## Point d’attention actuel
 Deux fichiers applicatifs existaient déjà comme modifiés avant cette passe documentaire : data/mcp-git-registry.json et src/github/registry.ts. Ne pas les mélanger à un commit documentaire sans revue dédiée.
 
+## GWC — architecture et mémoire canonique de continuité
+
+Pour toute intervention liée à GWC, au Universal Resolver, aux 73 contrats, aux blueprints GWC ou à leur future matérialisation en Governed Tasks :
+
+1. lire `docs/gwc/README.md` ;
+2. lire `docs/gwc/canonical-memory/current.json` pour résoudre le bundle de continuité courant ;
+3. vérifier le bundle sélectionné avec un Canonical Memory Verifier compatible avant d’en projeter les claims ;
+4. lire ensuite les projections `.mcp/gwc-contracts.json`, `.mcp/gwc-workflow-graph.json`, `.mcp/gwc-blueprints.json` et `.mcp/gwc-evolution-design.json` selon le besoin ;
+5. réobserver les autorités live applicables avant toute mutation.
+
+La mémoire canonique GWC fournit de la **continuité et de la provenance**, jamais une approbation live. Un claim `historical_authority` ne remplace ni GitHub live, ni la Governed Task Queue, ni la Governed Session, ni le Bootstrap Receipt, ni les locks, ni Live State, ni le runtime. Un ancien bundle reste immuable ; une phase plus récente est portée par un nouveau bundle et le pointeur `current.json`.
+
 
 ---
 

@@ -299,7 +299,10 @@ export function buildMcpServer(): McpServer {
     taskDependencies
   );
   registerGovernedTaskMutationTools(
-    decorateRegistrationCatalogServer(server, 'operational-write'),
+    decorateScopedWriteServer(
+      decorateRegistrationCatalogServer(server, 'operational-write'),
+      getDefaultScopedWriteGateDependencies()
+    ),
     taskDependencies
   );
   if (env.ENABLE_WRITE_TOOLS) {

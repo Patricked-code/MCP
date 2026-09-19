@@ -10,6 +10,12 @@ import { createResumeSecret, hashResumeSecret, verifyResumeSecret } from './resu
 import type { TransportBindings } from './transportBindings.js';
 import type { TaskLifecycleCoordinator } from './taskLifecycleCoordinator.js';
 import {
+  projectTargetContext,
+  targetScopeEquals,
+  type TargetContext,
+  type TargetScope
+} from './targetScope.js';
+import {
   MAX_GOVERNED_SESSION_RECORDS,
   type BootstrapReceipt,
   type GovernedCheckpoint,
@@ -31,7 +37,8 @@ export type SessionRequest = {
 };
 
 export type OpenSessionInput = {
-  repository: 'Patricked-code/MCP';
+  repository: GovernedRepositoryTarget;
+  targetScope?: TargetScope;
   taskScope: string;
   workBranch: string | null;
   agentIdentity: string;
@@ -47,13 +54,17 @@ export type OpenSessionResult = {
 export type ResumeSessionInput = {
   governedSessionId: string;
   resumeSecret?: string;
-  repository: 'Patricked-code/MCP';
+  repository: GovernedRepositoryTarget;
+  targetScope?: TargetScope;
   taskScope: string;
   expectedSessionRevision: number;
 };
 
+export type GovernedRepositoryTarget = string;
+
 export type AutoResumeCompatibleSessionInput = {
-  repository: 'Patricked-code/MCP';
+  repository: GovernedRepositoryTarget;
+  targetScope?: TargetScope;
 };
 
 export type AutoResumeCompatibleSessionResult =
@@ -109,6 +120,7 @@ export type CreateCheckpointInput = SessionRevisionInput & {
 
 type SessionLiveStateProof = {
   stateVersion: number;
+  targetContext?: TargetContext;
   github?: { head: string | null };
   runtime?: { revision: string | null };
   capabilities?: { catalogueDigest: string | null };
@@ -266,6 +278,7 @@ export function createGovernedSessionService(
         schemaVersion: 1,
         governedSessionId,
         repository: input.repository,
+        ...(input.targetScope ? { targetScope: input.targetScope } : {}),
         taskScope: input.taskScope,
         workBranch: input.workBranch,
         agentIdentity: input.agentIdentity,
@@ -339,7 +352,11 @@ export function createGovernedSessionService(
             || resumedAt.getTime() - expiredAt > options.resumeGraceSeconds * 1_000
           ) fail('SESSION_EXPIRED');
         }
-        if (current.repository !== input.repository || current.taskScope !== input.taskScope) {
+        if (
+          current.repository !== input.repository
+          || current.taskScope !== input.taskScope
+          || !targetScopeEquals(current.targetScope, input.targetScope)
+        ) {
           fail('SESSION_SCOPE_MISMATCH');
         }
         if (current.sessionRevision !== input.expectedSessionRevision) {
@@ -413,6 +430,7 @@ export function createGovernedSessionService(
       const document = await options.store.read();
       const candidates = document.sessions.filter((session) => {
         if (session.repository !== input.repository) return false;
+        if (!targetScopeEquals(session.targetScope, input.targetScope)) return false;
         if (session.ownerPrincipalId !== request.identity.principalId) return false;
         if (session.status === 'CLOSED') return false;
         if (session.status !== 'EXPIRED') return true;
@@ -446,6 +464,7 @@ export function createGovernedSessionService(
       const session = await service.resumeSession({
         governedSessionId: candidate.governedSessionId,
         repository: candidate.repository,
+        ...(candidate.targetScope ? { targetScope: candidate.targetScope } : {}),
         taskScope: candidate.taskScope,
         expectedSessionRevision: candidate.sessionRevision
       }, request);
@@ -475,6 +494,14 @@ export function createGovernedSessionService(
       }
       let receipt: BootstrapReceipt | null = null;
       const acknowledged = await mutateSession(input, request, (session, at) => {
+        let scopedTargetContext: TargetContext | undefined;
+        if (session.targetScope) {
+          if (!liveState.targetContext) fail('TARGET_CONTEXT_UNAVAILABLE');
+          scopedTargetContext = projectTargetContext(liveState.targetContext, session.targetScope);
+        }
+        const targetLimitations = scopedTargetContext
+          ? scopedTargetContext.components.flatMap((component) => component.reasonCodes)
+          : [];
         receipt = {
           schemaVersion: 1,
           bootstrapReceiptId: randomUUID(),
@@ -482,18 +509,21 @@ export function createGovernedSessionService(
           agentIdentity: session.agentIdentity,
           repository: session.repository,
           governedBranch: session.workBranch,
+          ...(session.targetScope ? { targetScope: session.targetScope } : {}),
+          ...(scopedTargetContext ? { targetContext: scopedTargetContext } : {}),
           stateVersion: input.expectedStateVersion,
-          githubHead: liveState.github?.head ?? null,
-          runtimeRevision: liveState.runtime?.revision ?? null,
+          githubHead: session.targetScope ? null : liveState.github?.head ?? null,
+          runtimeRevision: session.targetScope ? null : liveState.runtime?.revision ?? null,
           catalogueDigest: liveState.capabilities?.catalogueDigest ?? null,
           governanceDigest: liveState.governance?.digest ?? null,
           taskRegistryDigest: liveState.governance?.taskRegistry?.digest ?? null,
           createdAt: at.toISOString(),
           expiresAt: new Date(at.getTime() + options.idleTtlSeconds * 1_000).toISOString(),
           status: 'ACKNOWLEDGED',
-          limitations: [...new Set((liveState.inventory?.contradictions ?? [])
-            .map((entry) => entry.code)
-            .filter((code) => /^[A-Z0-9_.:-]{2,80}$/.test(code)))]
+          limitations: [...new Set([
+            ...(liveState.inventory?.contradictions ?? []).map((entry) => entry.code),
+            ...targetLimitations
+          ].filter((code) => /^[A-Z0-9_.:-]{2,80}$/.test(code)))]
             .sort()
             .slice(0, 20)
         };

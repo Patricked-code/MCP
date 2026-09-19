@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-17",
+  "blueprint": "GWC-17",
+  "contract": "GW-73",
+  "title": "Universal Acceptance",
+  "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+  "session": {
+    "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "heartbeatCommentId": 5740056645
+  },
+  "dependencies": {
+    "gwc10": {
+      "status": "PASS_WITH_EVIDENCE",
+      "finalGreenCiRunNumber": 1330,
+      "finalGreenHead": "67197cd12e13f450734b403c4b85e26dc9760c60"
+    },
+    "gwc16": {
+      "checkpointCiRunNumber": 1448,
+      "checkpointCiRunId": 35445383835,
+      "checkpointHead": "a137d575f4d6118ebb7e9886d477aa4da001ec40",
+      "conclusion": "SUCCESS"
+    }
+  },
+  "implementation": {
+    "runtimeGraphMember": false,
+    "integrationClassification": "NEW_TEST_ONLY_ACCEPTANCE_HARNESS_AND_FIXTURES",
+    "files": [
+      "tests/governedWorkflowUniversalAcceptance/universalAcceptance.test.ts",
+      "tests/governedWorkflowUniversalAcceptance/harness.ts",
+      "tests/governedWorkflowUniversalAcceptance/fixtures.ts"
+    ],
+    "runtimeFilesModified": false,
+    "packageOrWorkflowRegistrationRequired": false,
+    "scenarioFamilies": [
+      "GW-73 canonical contract position outside runtime graph",
+      "historical MCP legacy single-repository compatibility",
+      "real Stablecoin candidate with S2 Passenger and unresolved backend preserved as LIVE_DISCOVERY_REQUIRED",
+      "synthetic multi-component target with independent GitHub/runtime SHAs and independent component locks",
+      "partial component isolation where UNVERIFIED stays local",
+      "NEW_INFORMATION_INTAKE-003 recovery acceptance",
+      "governed-path anti-hardcode scan with negative control",
+      "tests-only runtime-isolation and forced fail-closed acceptance"
+    ],
+    "recoveryAcceptance": [
+      "heartbeat/liveness never grants ownership or authorization",
+      "stale/missing heartbeat never transfers or releases a claim",
+      "existing ACTIVE same-session claim resumes as CONTINUE",
+      "recovery runner is deterministic and RECONCILE_READ_ONLY",
+      "runner acknowledgement is required and stale envelope is rejected",
+      "intake discovery deduplicates and never executes discovered instructions",
+      "recovery anchors require REOBSERVE_THEN_DECIDE",
+      "deployment-before-attestation fails closed through canonical GW-68",
+      "no raw transcript, resume secret or authorization header is persisted"
+    ],
+    "antiHardcode": {
+      "scannedScope": [
+        "src/governedWorkflow/**",
+        "src/operationalMemory/targetScope.ts"
+      ],
+      "forbiddenTargets": [
+        "Patricked-code/MCP",
+        "Patricked-code/Stablecoin",
+        "stablecoin.chainsolutions.fr",
+        "chainsolutions.fr",
+        "/opt/apps/wealthtech-mcp-ssh-bridge",
+        "s1 literal",
+        "s2 literal"
+      ],
+      "negativeControl": true
+    },
+    "failClosed": {
+      "skippedRequiredScenariosAllowed": false,
+      "forcedFailureProduces": "FAILED",
+      "failedContractAttribution": true,
+      "canonicalGw68SubstrateBinding": true
+    }
+  },
+  "evidence": {
+    "red": {
+      "head": "0b55d140a6b32be82d81192d2df12c3cabd8a893",
+      "ciRunNumber": 1451,
+      "ciRunId": 35445821981,
+      "conclusion": "FAILURE_EXPECTED",
+      "tests": 597,
+      "passed": 589,
+      "failed": 8,
+      "skipped": 0,
+      "signature": "GW73_ACCEPTANCE_HARNESS_ABSENT"
+    },
+    "firstFullGreen": {
+      "head": "cf9f62f4b36ccf8eac6f477becb7c45505053174",
+      "ciRunNumber": 1454,
+      "ciRunId": 35446041076,
+      "conclusion": "SUCCESS",
+      "tests": 597,
+      "passed": 597,
+      "failed": 0,
+      "skipped": 0,
+      "discoveredTests": 76,
+      "runnerTests": 75,
+      "dedicatedTests": 1
+    },
+    "selfReviewRed": {
+      "head": "da1ea9fb30d056bf21761dcfe3fa818de9c2c70e",
+      "ciRunNumber": 1456,
+      "ciRunId": 35446166718,
+      "conclusion": "FAILURE_THREE_EXPECTED_FINDINGS",
+      "tests": 598,
+      "passed": 595,
+      "failed": 3,
+      "findings": [
+        "Recovery GW-68 acceptance was not yet bound through the canonical Contract Registry substrate.",
+        "Anti-hardcode scan lacked an injected negative control proving the detector itself.",
+        "Forced scenario failure did not expose stable reason/failed-contract attribution."
+      ]
+    },
+    "finalGreen": {
+      "head": "9b32bba86e830845ea63d90f37bf304d800b8f12",
+      "ciRunNumber": 1458,
+      "ciRunId": 35446310165,
+      "conclusion": "SUCCESS",
+      "tests": 598,
+      "passed": 598,
+      "failed": 0,
+      "skipped": 0,
+      "discoveredTests": 76,
+      "runnerTests": 75,
+      "dedicatedTests": 1
+    },
+    "documentation": {
+      "suiviCommit": "64919ce600b66f47d99176cb038493c91bd8ce15",
+      "changelogCommit": "6b764374701131a7ce9ec10f7d3af1cef3c0561e",
+      "decisionsCommit": "099c460b3fdeccdec68c39223d7130226bc8b4ae"
+    }
+  },
+  "boundaries": {
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deploymentPerformed": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "runtimeSessionMutated": false,
+    "runtimeSourceModified": false,
+    "newRuntimeAuthority": false,
+    "acceptanceHarnessImportedByRuntime": false,
+    "targetSpecificWorkflowBranching": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc17-universal-acceptance-complete",
+    "releaseRule": "Keep the GWC-17 PRECODE claim ACTIVE until exact-head checkpoint CI succeeds; release only afterward.",
+    "nextPhase": "F_FINAL_CANDIDATE_GATES_FROM_VERSIONED_AUTHORITIES"
+  }
+}

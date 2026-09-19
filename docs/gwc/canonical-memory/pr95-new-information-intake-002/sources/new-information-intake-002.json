@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "intakeId": "NEW_INFORMATION_INTAKE-002",
+  "intakeNumber": 2,
+  "mode": "NEW_INFORMATION_INTAKE",
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "observedHeadSha": "a15406fe126732e25292e06f462caffcc40f50f6",
+  "dependsOn": [
+    "NEW_INFORMATION_INTAKE-001"
+  ],
+  "source": {
+    "sourceType": "chatgpt",
+    "sourceId": "NEW_INFORMATION_INTAKE-002",
+    "providerConversationRef": null,
+    "providerConversationRefProvenance": "UNAVAILABLE",
+    "rawTranscriptPersisted": false
+  },
+  "userDirective": {
+    "purpose": "Tell canonical memory how to integrate NEW_INFORMATION_INTAKE #1 against the already-existing GWC matrices without creating a parallel matrix.",
+    "continuationRequested": false,
+    "automaticCandidateWorkDispatch": false,
+    "adoptionRule": "RECONCILE_EXISTING_FIRST_BEFORE_ANY_NEW_MATRIX_OR_BINDING"
+  },
+  "verifiedContext": {
+    "contractRegistry": {
+      "path": ".mcp/gwc-contracts.json",
+      "contracts": 73,
+      "uniqueIds": 73,
+      "runtimeGraphMembers": 72,
+      "outOfRuntime": [
+        "GW-73"
+      ]
+    },
+    "workflowGraph": {
+      "path": ".mcp/gwc-workflow-graph.json",
+      "entry": "GW-01",
+      "runtimeTerminal": "GW-72",
+      "edges": 91,
+      "unknownReferences": 0
+    },
+    "blueprints": {
+      "path": ".mcp/gwc-blueprints.json",
+      "count": 18
+    },
+    "evolutionDesigns": {
+      "path": ".mcp/gwc-evolution-design.json",
+      "count": 18
+    },
+    "centralMatrix": {
+      "path": "docs/gwc/BLUEPRINTS.md",
+      "coverage": "73/73 contracts have exactly one owning blueprint"
+    },
+    "designSheets": {
+      "path": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md",
+      "coverage": "73 A-to-BA Contract Design Sheets"
+    },
+    "structuralConsistency": {
+      "duplicateContractIds": 0,
+      "contractsWithoutBlueprint": 0,
+      "blueprintReverseMismatches": 0,
+      "runtimeContractsMissingFromGraph": 0,
+      "outOfRuntimeContractPresentInRuntimeEdges": 0
+    }
+  },
+  "integrationInstruction": {
+    "primaryRule": "Do not create a second generic contract matrix. Reuse the existing registries, matrices, workflow graph, blueprints, evolution designs and design sheets.",
+    "action": "Confront NEW_INFORMATION_INTAKE #1 with the existing matrices and produce only missing columns/bindings/projections.",
+    "requiredMissingLayer": [
+      "GWC_ROOT orchestration layer",
+      "Macro Contract layer MC-A..MC-H as an additive orchestration projection",
+      "macroContractRef binding for each runtime GW contract",
+      "Master Construction Crosswalk consolidating already-existing distributed bindings"
+    ],
+    "preserveExisting": [
+      "canonical families A..I",
+      "73 stable GW IDs",
+      "72 runtime graph members",
+      "GW-73 outside normal runtime graph",
+      "18 existing blueprints",
+      "existing authority ownership",
+      "existing graph, findings, decisions, evidence, attestation, replay and recovery semantics"
+    ],
+    "forbiddenInterpretations": [
+      "Do not replace canonical families A..I with MC-A..MC-H.",
+      "Do not renumber, delete, merge or recreate GW-01..GW-73.",
+      "Do not duplicate Contract Registry, Workflow Graph, Task Queue, Live State, Operational Memory, Session, Lock, GitRegistry or deployment authority.",
+      "Do not treat NEW_INFORMATION_INTAKE #1 as automatically adopted architecture without reconciliation."
+    ],
+    "desiredCrosswalkColumns": [
+      "stepId",
+      "canonicalName",
+      "canonicalFamily",
+      "macroContractRef",
+      "blueprintRef",
+      "runtimeGraphMember",
+      "predecessors",
+      "successors",
+      "integrationClassification",
+      "existingIntegrationSlot",
+      "existingFiles",
+      "existingTypes",
+      "existingFunctions",
+      "existingTests",
+      "authorities",
+      "inputContract",
+      "outputContract",
+      "preconditions",
+      "invariants",
+      "allowedActions",
+      "forbiddenActions",
+      "dependencies",
+      "redTest",
+      "greenTarget",
+      "regression",
+      "evidenceRequirements",
+      "attestation",
+      "findings",
+      "openDecisions",
+      "collisionDomains",
+      "definitionOfDone",
+      "buildOrder",
+      "runtimeOrder"
+    ],
+    "executionBinding": {
+      "GWC-PRE-B-01": "Use reconciled intake #1/#2 plus 18 blueprints, 73 contracts, findings, decisions and existing code to derive the complete branch-local candidate implementation backlog.",
+      "GWC-PRE-B-02": "Bind candidate work items to exact contracts, code integration slots, dependencies, collision domains, tests and evidence without introducing parallel authorities.",
+      "GWC-PRE-B-03": "Audit the synthesized backlog/crosswalk for omissions, duplicates, orphan contracts, conflicting ownership, missing dependencies and unbound findings/decisions."
+    },
+    "existingFirstRule": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
+    "runtimeOrderVsBuildOrder": "Keep runtime graph order separate from software build order; build order is dependency-derived."
+  },
+  "reconciliation": {
+    "overallStatus": "INTEGRATION_INSTRUCTION_RECORDED",
+    "canonicalAdoptionPerformed": false,
+    "currentCanonicalContractSheetsChanged": false,
+    "currentBlueprintsChanged": false,
+    "currentWorkflowGraphChanged": false,
+    "candidateWorkDispatched": false,
+    "runtimeTasksCreated": 0,
+    "candidateClaimsCreated": 0,
+    "nextCandidateProgramWorkItem": "GWC-PRE-B-01",
+    "nextCandidateProgramWorkItemStatus": "READY",
+    "note": "When continuation is requested, #1 and #2 must be reconciled together before B-01 backlog synthesis."
+  }
+}

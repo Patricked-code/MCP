@@ -1,0 +1,10 @@
+{
+  "bundle_id": "bnd_mcp-pr95-ded-20260917",
+  "bundle_path": "docs/gwc/canonical-memory/pr95-ded",
+  "completed_blueprints": "GWC-0..GWC-3",
+  "in_progress_blueprint": "GWC-4",
+  "next_action_at_that_checkpoint": "COMPLETE_DETAILED_EVOLUTION_DESIGN_GWC-0_THROUGH_GWC-17",
+  "observed_pr95_head_sha": "75bc728813e1c19f6e17cb953067ddcd196496f4",
+  "status": "IMMUTABLE_HISTORICAL_CHECKPOINT",
+  "superseded_for_current_phase_by": "pr95-task-reconciliation-ready"
+}

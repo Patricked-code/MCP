@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "intakeId": "NEW_INFORMATION_INTAKE-004",
+  "intakeNumber": 4,
+  "mode": "NEW_INFORMATION_INTAKE",
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "observedHeadSha": "7d7f7d2acc2d79b0b0a8bd268b7d8e6eb4a972d6",
+  "source": {
+    "sourceType": "chatgpt",
+    "sourceId": "github-pr95-comment-5739347553",
+    "sourceRef": "PR#95 comment 5739347553",
+    "sourceUpdatedAt": "2026-09-19T04:28:28Z",
+    "sourceDigest": "d86cfebc13145ee6196c9a348a5d7fbd06bab091552943642807db711396f444",
+    "providerConversationRef": null,
+    "providerConversationRefProvenance": "UNAVAILABLE",
+    "rawTranscriptPersisted": false
+  },
+  "requirements": [
+    {
+      "key": "precode.minute-heartbeat-transport",
+      "kind": "REQUIREMENT",
+      "summary": "Every active participating PRECODE agent emits or updates one bounded liveness heartbeat at least every 60 seconds without moving branch HEAD.",
+      "existingFirstTarget": "src/governedContext/candidateContinuity.ts + PR #95 coordination surface"
+    },
+    {
+      "key": "precode.heartbeat-comment-contract",
+      "kind": "REQUIREMENT",
+      "summary": "Use one mutable top-level PR #95 comment per candidateSessionId, machine-identifiable by a stable GWC_PRECODE_LIVENESS marker.",
+      "existingFirstTarget": "PR #95 coordination surface"
+    },
+    {
+      "key": "precode.minute-liveness-supervision",
+      "kind": "REQUIREMENT",
+      "summary": "Validate heartbeat identity, claim, work item, monotone sequence, observed HEAD and bounded action before feeding the existing liveness/supervisor/runner primitives.",
+      "existingFirstTarget": "src/governedContext/candidateContinuity.ts"
+    },
+    {
+      "key": "precode.agent-status-separation",
+      "kind": "REQUIREMENT",
+      "summary": "Supervision must expose ownership, liveness and progress separately; missing or stale heartbeat never transfers claim or authorization.",
+      "existingFirstTarget": "intake #003 liveness/recovery primitives"
+    },
+    {
+      "key": "precode.minute-liveness-acceptance",
+      "kind": "REQUIREMENT",
+      "summary": "GWC-17 universal acceptance must prove minute-heartbeat parsing, sequence integrity, stale/missing fail-closed behavior, YIELDED handling and no heartbeat commits.",
+      "existingFirstTarget": "GWC-17 universal acceptance"
+    }
+  ],
+  "heartbeatPolicy": {
+    "schemaVersion": 1,
+    "emissionIntervalSeconds": 60,
+    "freshForSeconds": 120,
+    "singleMutableCommentPerCandidateSession": true,
+    "headMovingTransportForbidden": true,
+    "versionedHeartbeatPersistenceForbidden": true,
+    "allowedCurrentActions": [
+      "REOBSERVING",
+      "ANALYZING",
+      "EDITING",
+      "RUNNING_TESTS",
+      "WAITING_CI",
+      "SELF_REVIEW",
+      "CHECKPOINTING",
+      "WAITING_USER",
+      "YIELDED",
+      "UNKNOWN"
+    ]
+  },
+  "invariants": [
+    "OWNERSHIP != LIVENESS != PROGRESS",
+    "HEARTBEAT != OWNERSHIP",
+    "HEARTBEAT != AUTHORIZATION",
+    "STALE != RELEASED",
+    "STALE != DEAD",
+    "MISSING_HEARTBEAT != PERMISSION_TO_WRITE",
+    "ONE_MUTABLE_HEARTBEAT_COMMENT_PER_CANDIDATE_SESSION",
+    "NO_HEARTBEAT_COMMITS",
+    "NO_VERSIONED_HEARTBEAT_PERSISTENCE",
+    "NO_RAW_TRANSCRIPT_CHAIN_OF_THOUGHT_SECRET_OR_TOKEN_IN_HEARTBEAT"
+  ],
+  "reconciliationIntent": {
+    "existingFirst": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
+    "targetBlueprints": [
+      "GWC-4",
+      "GWC-17"
+    ],
+    "targetWorkItems": [
+      "GWC-PRE-E-GWC-4",
+      "GWC-PRE-E-GWC-17"
+    ],
+    "newParallelAuthorityAllowed": false,
+    "runtimeTasksCreated": 0,
+    "runtimeLocksUsed": false,
+    "mainMutationAllowed": false,
+    "s1MutationAllowed": false,
+    "productionMutationAllowed": false
+  }
+}

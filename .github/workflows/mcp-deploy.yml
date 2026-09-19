@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   id-token: write
 
 jobs:
@@ -23,14 +24,60 @@ jobs:
       - name: Resolve deployment gate
         id: gate
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+
+          enabled=false
+          admission_kind=''
+          ci_run_id=''
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
             enabled=true
+            admission_kind=workflow_dispatch_manual
           else
-            enabled="$(node -e "const p=require('./.mcp/autodeploy-policy.json'); if (p.schemaVersion !== 1 || typeof p.pushEnabled !== 'boolean') process.exit(2); process.stdout.write(p.pushEnabled ? 'true' : 'false');")"
+            push_enabled="$(node -e "const p=require('./.mcp/autodeploy-policy.json'); if (p.schemaVersion !== 1 || typeof p.pushEnabled !== 'boolean') process.exit(2); process.stdout.write(p.pushEnabled ? 'true' : 'false');")"
+
+            if [ "$push_enabled" = "true" ]; then
+              for attempt in $(seq 1 60); do
+                runs_json=''
+                if ! runs_json="$(curl --fail --silent --show-error --max-time 10 \
+                  --header "Accept: application/vnd.github+json" \
+                  --header "Authorization: Bearer ${GITHUB_TOKEN}" \
+                  --header "X-GitHub-Api-Version: 2022-11-28" \
+                  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/mcp-ci.yml/runs?head_sha=${GITHUB_SHA}&event=push&per_page=20")"; then
+                  sleep 10
+                  continue
+                fi
+
+                ci_state="$(GITHUB_SHA="$GITHUB_SHA" node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw,'utf8') > 1048576) process.exit(1); let body; try { body=JSON.parse(raw); } catch { process.exit(1); } if (!body || !Array.isArray(body.workflow_runs)) process.exit(1); const sha=process.env.GITHUB_SHA; const runs=body.workflow_runs.filter((run) => run && run.head_sha === sha && run.event === 'push' && run.name === 'MCP CI'); if (runs.length === 0) { process.stdout.write('pending'); } else { const run=runs[0]; if (run.status !== 'completed') process.stdout.write('pending'); else if (run.conclusion === 'success' && Number.isSafeInteger(run.id) && run.id > 0) process.stdout.write('success:'+String(run.id)); else process.stdout.write('failed'); }" <<<"$runs_json")"
+
+                case "$ci_state" in
+                  success:*)
+                    enabled=true
+                    admission_kind=push_ci_gate
+                    ci_run_id="${ci_state#success:}"
+                    break
+                    ;;
+                  failed)
+                    enabled=false
+                    break
+                    ;;
+                  pending)
+                    sleep 10
+                    ;;
+                  *)
+                    enabled=false
+                    break
+                    ;;
+                esac
+              done
+            fi
           fi
+
           printf 'enabled=%s\n' "$enabled" >> "$GITHUB_OUTPUT"
+          printf 'admission_kind=%s\n' "$admission_kind" >> "$GITHUB_OUTPUT"
+          printf 'ci_run_id=%s\n' "$ci_run_id" >> "$GITHUB_OUTPUT"
 
       - name: Deploy exact main SHA through MCP
         if: steps.gate.outputs.enabled == 'true'
@@ -38,6 +85,8 @@ jobs:
         env:
           MCP_BASE_URL: https://mcp.wealthtechinnovations.com
           MCP_OIDC_AUDIENCE: https://mcp.wealthtechinnovations.com/deploy/github/s1
+          DEPLOY_ADMISSION_KIND: ${{ steps.gate.outputs.admission_kind }}
+          DEPLOY_CI_RUN_ID: ${{ steps.gate.outputs.ci_run_id }}
         run: |
           set -euo pipefail
 
@@ -60,6 +109,10 @@ jobs:
             printf '%s' "$response" | node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw,'utf8') > 32768) process.exit(1); let body; try { body=JSON.parse(raw); } catch { process.exit(1); } if (!body || typeof body.value !== 'string' || body.value.length < 32 || body.value.length > 16384) process.exit(1); process.stdout.write(body.value);"
           }
 
+          build_start_body() {
+            GITHUB_SHA="$GITHUB_SHA" DEPLOY_ADMISSION_KIND="$DEPLOY_ADMISSION_KIND" DEPLOY_CI_RUN_ID="$DEPLOY_CI_RUN_ID" node -e "const sha=process.env.GITHUB_SHA; const kind=process.env.DEPLOY_ADMISSION_KIND; if (!/^[0-9a-f]{40}$/.test(sha)) process.exit(1); if (kind === 'workflow_dispatch_manual') { process.stdout.write(JSON.stringify({sha})); } else if (kind === 'push_ci_gate') { const ciRunId=Number(process.env.DEPLOY_CI_RUN_ID); if (!Number.isSafeInteger(ciRunId) || ciRunId <= 0) process.exit(1); process.stdout.write(JSON.stringify({sha,admission:{kind:'push_ci_gate',ciRunId,ciHeadSha:sha,ciConclusion:'success'}})); } else { process.exit(1); }"
+          }
+
           validate_start() {
             GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw,'utf8') > 16384) process.exit(1); let body; try { body=JSON.parse(raw); } catch { process.exit(1); } const sha=process.env.GITHUB_SHA; const expected='mcp-s1-'+process.env.GITHUB_RUN_ID+'-'+sha.slice(0, 12); if (!body || body.jobId !== expected || body.requestedSha !== sha || body.status !== 'queued') process.exit(1); process.stdout.write(body.jobId);"
           }
@@ -70,15 +123,16 @@ jobs:
 
           OIDC_TOKEN="$(get_oidc)"
           printf '::add-mask::%s\n' "$OIDC_TOKEN"
+          START_BODY="$(build_start_body)"
           START_RESPONSE="$(curl --fail --silent --show-error --max-time 10 \
             --request POST \
             --header "Authorization: Bearer ${OIDC_TOKEN}" \
             --header 'Content-Type: application/json' \
-            --data "{\"sha\":\"${GITHUB_SHA}\"}" \
+            --data "$START_BODY" \
             "${MCP_BASE_URL}/deploy/github/s1/start")"
           JOB_ID="$(printf '%s' "$START_RESPONSE" | validate_start)"
           printf 'Deployment job accepted: %s for %s\n' "$JOB_ID" "$GITHUB_SHA"
-          unset OIDC_TOKEN START_RESPONSE
+          unset OIDC_TOKEN START_BODY START_RESPONSE
 
           for attempt in $(seq 1 60); do
             OIDC_TOKEN="$(get_oidc)"

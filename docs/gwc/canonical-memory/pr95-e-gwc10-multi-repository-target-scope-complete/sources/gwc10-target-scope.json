@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-10",
+  "blueprint": "GWC-10",
+  "title": "B3 Multi-repository TargetScope",
+  "status": "PASS_WITH_EVIDENCE",
+  "session": {
+    "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "heartbeatCommentId": 5740056645
+  },
+  "decisions": {
+    "od10": "TargetScope is additive optional. Absence preserves exact historical single-repository semantics, is never interpreted as all components, and historical records are never backfilled.",
+    "od11": "Task ownership remains ownerGovernedSessionId plus the exact component subset in TargetScope. Equal intent keys on disjoint component scopes remain independent.",
+    "projectSha": "FORBIDDEN: TargetContext carries independent per-component githubHead/runtimeRevision; no project SHA is synthesized."
+  },
+  "implementation": {
+    "newPrimitive": "src/operationalMemory/targetScope.ts",
+    "extendedAuthorities": [
+      "src/operationalMemory/types.ts",
+      "src/operationalMemory/connectionContext.ts",
+      "src/operationalMemory/sessionService.ts",
+      "src/operationalMemory/taskQueue.ts",
+      "src/operationalMemory/lockService.ts",
+      "src/liveState/types.ts",
+      "src/liveState/reconcile.ts",
+      "src/governedContext/types.ts",
+      "src/governedContext/service.ts"
+    ],
+    "tests": [
+      "tests/governedWorkflowTargetScope.test.ts",
+      "tests/governedWorkflowSessionIntegration.test.ts",
+      "tests/governedWorkflowTaskLockIntegration.test.ts"
+    ],
+    "invariants": [
+      "GitRegistry V2 remains the project/component authority; no second project registry.",
+      "Operational Memory remains the session/task/lock authority; no second state store.",
+      "Live State remains the observation authority; TargetContext is optional inside the same snapshot.",
+      "TargetScope contains identity/ownership only and never SHA authority.",
+      "A missing TargetScope means only the historical single repository, never every project component.",
+      "Unresolved component evidence stays local to that component.",
+      "Component lock scopes are minimal and independent.",
+      "BootstrapReceipt with explicit multi-component TargetScope stores scoped TargetContext and leaves legacy githubHead/runtimeRevision null.",
+      "TargetScope equality is component-order independent.",
+      "TargetContext observedAt alone does not increment Live State stateVersion."
+    ]
+  },
+  "evidence": {
+    "red": {
+      "head": "5c297b6bf229198296dec51651ca0080af9ab6ef",
+      "ciRunNumber": 1314,
+      "ciRunId": 35429785201,
+      "conclusion": "FAILURE_EXPECTED",
+      "failures": 8,
+      "compatibilityControlsGreen": 2
+    },
+    "firstImplementation": {
+      "head": "b5178d7be35f9a81721281ff303976a2656e0b59",
+      "ciRunNumber": 1324,
+      "conclusion": "FAILURE_TYPECHECK_ONLY",
+      "reason": "Two generalized repository target type mismatches."
+    },
+    "runtimeRegression": {
+      "head": "91645e8b45ba4bc1d2440ff986b74e3bed6baeb4",
+      "ciRunNumber": 1325,
+      "conclusion": "FAILURE_THREE_PRE_GWC10_GUARDS_ONLY",
+      "newGwc10TestsGreen": 10
+    },
+    "firstFullGreen": {
+      "head": "d150dc52b49b1cb74ab2063be5445d5e826f1673",
+      "ciRunNumber": 1328,
+      "ciRunId": 35430232400,
+      "conclusion": "SUCCESS"
+    },
+    "selfReview": {
+      "head": "795cde7c69e51af21aaf582fb1a0fe340843e08f",
+      "ciRunNumber": 1329,
+      "ciRunId": 35430563026,
+      "conclusion": "FAILURE_ONE_REAL_DEFECT",
+      "finding": "TargetScope equality depended on component array order; four other adversarial scenarios were green."
+    },
+    "finalGreen": {
+      "head": "67197cd12e13f450734b403c4b85e26dc9760c60",
+      "ciRunNumber": 1330,
+      "ciRunId": 35430621005,
+      "conclusion": "SUCCESS",
+      "checks": [
+        "typecheck",
+        "build",
+        "docs check",
+        "governance tests",
+        "GWC dossier check",
+        "secret scan",
+        "read-only safety including GWC-10 self-review",
+        "whitespace diff check"
+      ]
+    }
+  },
+  "boundaries": {
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deployment": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "secondProjectRegistryCreated": false,
+    "secondOperationalStoreCreated": false,
+    "secondLiveStateCreated": false,
+    "projectShaSynthesized": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete",
+    "releaseRule": "Keep the GWC-10 PRECODE claim ACTIVE until exact-head checkpoint CI succeeds; release only afterward.",
+    "nextWorkItem": "GWC-PRE-E-GWC-11"
+  }
+}

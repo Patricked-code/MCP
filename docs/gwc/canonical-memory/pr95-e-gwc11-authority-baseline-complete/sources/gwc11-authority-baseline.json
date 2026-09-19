@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-11",
+  "blueprint": "GWC-11",
+  "title": "Authority docs / Integration slot / exact GitHub baseline",
+  "status": "PASS_WITH_EVIDENCE",
+  "session": {
+    "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "heartbeatCommentId": 5740056645
+  },
+  "contracts": [
+    {
+      "stepId": "GW-21",
+      "name": "AUTHORITY_DOCUMENT_READ",
+      "output": "AuthorityDocumentSet"
+    },
+    {
+      "stepId": "GW-22",
+      "name": "INTEGRATION_SLOT_RESOLUTION",
+      "output": "IntegrationSlot"
+    },
+    {
+      "stepId": "GW-23",
+      "name": "EXACT_GITHUB_BASELINE",
+      "output": "GithubBaseline"
+    }
+  ],
+  "implementation": {
+    "projectScopedDocumentationGovernance": "scripts/doc-governance-lib.mjs",
+    "authorityModule": "src/governedWorkflow/authority/index.ts",
+    "tests": [
+      "tests/docGovernance.test.ts",
+      "tests/governedWorkflowAuthority.test.ts"
+    ],
+    "behavior": [
+      "MCP canonical documents and canonical-state keys remain the default declaration with identical historical behavior.",
+      "A second project can declare its own canonical root documents and canonical-state keys without editing MCP literals.",
+      "GW-21 consumes only bounded inventory/declaration/cartography digests and counts; drift/stale/unavailable evidence fails closed.",
+      "GW-22 derives an integration slot only from existing Current State module/document/tool inventories and never invents an owner.",
+      "GW-22 refuses stale or unavailable inventory evidence.",
+      "GW-23 reuses current GitHub observation, binds the exact work-branch SHA to the current step, rejects pre-step replay, head contradictions and stale/unavailable required sub-evidence.",
+      "All outputs are read/derive-only, authorizationInferred=false, mutationPerformed=false, with no persistence."
+    ]
+  },
+  "evidence": {
+    "redDocumentation": {
+      "head": "faded07fa88873093afe1ea6bca0ab2607a964ef",
+      "ciRunNumber": 1343,
+      "ciRunId": 35431084677,
+      "conclusion": "FAILURE_EXPECTED",
+      "finding": "Project-scoped documentation governance API absent."
+    },
+    "redAuthority": {
+      "head": "34fb4cf3959a3d7f101a984b4fd9e6476ead242f",
+      "ciRunNumber": 1344,
+      "ciRunId": 35431173144,
+      "conclusion": "FAILURE_EXPECTED",
+      "failures": 7,
+      "governanceTests": "SUCCESS",
+      "finding": "GW-21/22/23 authority module absent."
+    },
+    "firstGreen": {
+      "head": "0cdc2e01436351f41b144a7a45f5b7b15590ae9d",
+      "ciRunNumber": 1345,
+      "ciRunId": 35431267807,
+      "conclusion": "SUCCESS"
+    },
+    "selfReview": {
+      "head": "ac9aad1f3e73fb60e8a102ff46d86fecb29a09d4",
+      "ciRunNumber": 1346,
+      "ciRunId": 35431364462,
+      "conclusion": "FAILURE_TWO_REAL_FRESHNESS_FINDINGS",
+      "findings": [
+        "GW-22 did not carry inventory freshness.",
+        "GW-23 did not reject stale exact-head sub-evidence."
+      ]
+    },
+    "finalGreen": {
+      "head": "2a82e278319dd750db2a6d870fc029fe296a66a6",
+      "ciRunNumber": 1348,
+      "ciRunId": 35431440821,
+      "conclusion": "SUCCESS",
+      "checks": [
+        "typecheck",
+        "build",
+        "docs check",
+        "governance tests",
+        "GWC dossier check",
+        "secret scan",
+        "read-only safety including GWC-11 freshness self-review",
+        "whitespace diff check"
+      ]
+    }
+  },
+  "boundaries": {
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deployment": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "newPersistence": false,
+    "secondDocumentationInventory": false,
+    "secondCartography": false,
+    "secondGithubObserver": false,
+    "capabilityGranted": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc11-authority-baseline-complete",
+    "releaseRule": "Keep the GWC-11 PRECODE claim ACTIVE until exact-head checkpoint CI succeeds; release only afterward.",
+    "nextWorkItem": "GWC-PRE-E-GWC-12"
+  }
+}

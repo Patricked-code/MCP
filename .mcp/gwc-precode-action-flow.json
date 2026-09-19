@@ -1,0 +1,580 @@
+{
+  "schemaVersion": 1,
+  "revision": "R4-CANDIDATE-ACTION-FLOW",
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "source": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+  "parentPlan": "docs/gwc/PRECODE_EXECUTION_PLAN.txt",
+  "projectionOnly": true,
+  "runtimeAuthority": false,
+  "governedTaskQueueAuthority": false,
+  "runtimeTasksCreated": 0,
+  "actionFlowDigestSha256": "e545252b4b998b0fb73bf5771e40d2d86e3a39fa32a0768c75db529371f8b812",
+  "absoluteRule": "ARCHITECTURE_GATE_BEFORE_CANDIDATE_CODE; FINAL_PRECODE_VERSION_ACCEPTED_BEFORE_LIVE_INTEGRATION",
+  "statusVocabulary": [
+    "PENDING",
+    "IN_PROGRESS",
+    "PASS_WITH_EVIDENCE",
+    "BLOCKED",
+    "CONFLICT",
+    "STALE",
+    "N/A"
+  ],
+  "phases": [
+    {
+      "id": "P0",
+      "name": "Current Authority Reconstruction",
+      "dependsOn": [],
+      "exit": "GWC_EXACT_BASELINE_ESTABLISHED"
+    },
+    {
+      "id": "A1",
+      "name": "Existing System Inventory",
+      "dependsOn": [
+        "P0"
+      ],
+      "exit": "EXISTING_SYSTEM_INVENTORY_COMPLETE"
+    },
+    {
+      "id": "A2",
+      "name": "Existing to 73 Contract Mapping",
+      "dependsOn": [
+        "A1"
+      ],
+      "workItems": 73,
+      "exit": "73_CONTRACTS_EXISTING_MAPPING_COMPLETE"
+    },
+    {
+      "id": "A3",
+      "name": "73 Contract Design Sheets",
+      "dependsOn": [
+        "A2"
+      ],
+      "workItems": 73,
+      "exit": "73_CONTRACT_DESIGNS_COMPLETE"
+    },
+    {
+      "id": "A4",
+      "name": "18 Detailed Evolution Designs",
+      "dependsOn": [
+        "A3"
+      ],
+      "workItems": 18,
+      "exit": "18_DETAILED_EVOLUTION_DESIGNS_COMPLETE"
+    },
+    {
+      "id": "A5",
+      "name": "Workflow Graph",
+      "dependsOn": [
+        "A4"
+      ],
+      "exit": "WORKFLOW_GRAPH_VERIFIED"
+    },
+    {
+      "id": "A6",
+      "name": "Authority and Data Contracts",
+      "dependsOn": [
+        "A5"
+      ],
+      "exit": "AUTHORITY_AND_DATA_MODEL_VERIFIED"
+    },
+    {
+      "id": "A7",
+      "name": "Evidence and Attestation",
+      "dependsOn": [
+        "A6"
+      ],
+      "exit": "EVIDENCE_ATTESTATION_MODEL_VERIFIED"
+    },
+    {
+      "id": "A8",
+      "name": "Concurrency Locks Replay",
+      "dependsOn": [
+        "A7"
+      ],
+      "exit": "CONCURRENCY_REPLAY_MODEL_VERIFIED"
+    },
+    {
+      "id": "A9",
+      "name": "Failure Recovery Security",
+      "dependsOn": [
+        "A8"
+      ],
+      "exit": "FAILURE_RECOVERY_SECURITY_VERIFIED"
+    },
+    {
+      "id": "A10",
+      "name": "Backward Compatibility",
+      "dependsOn": [
+        "A9"
+      ],
+      "exit": "BACKWARD_COMPATIBILITY_VERIFIED"
+    },
+    {
+      "id": "A11",
+      "name": "Universal Acceptance Design",
+      "dependsOn": [
+        "A10"
+      ],
+      "exit": "GW73_ACCEPTANCE_DESIGN_COMPLETE"
+    },
+    {
+      "id": "A12",
+      "name": "Implementation Sequence",
+      "dependsOn": [
+        "A11"
+      ],
+      "exit": "IMPLEMENTATION_SEQUENCE_FROZEN"
+    },
+    {
+      "id": "A13",
+      "name": "Global Cross Audit",
+      "dependsOn": [
+        "A12"
+      ],
+      "exit": "GWC_ARCHITECTURE_CROSS_AUDIT_PASS"
+    },
+    {
+      "id": "A14",
+      "name": "Final Canonicalization",
+      "dependsOn": [
+        "A13"
+      ],
+      "exit": "GWC_ARCHITECTURE_CANONICAL"
+    },
+    {
+      "id": "PRECODE_GATE",
+      "name": "Absolute Pre-code Gate",
+      "dependsOn": [
+        "A14"
+      ],
+      "exit": "GWC_ARCHITECTURE_GATE_PASS"
+    },
+    {
+      "id": "B",
+      "name": "Complete Candidate Task Synthesis",
+      "dependsOn": [
+        "PRECODE_GATE"
+      ],
+      "exit": "CANDIDATE_BACKLOG_COMPLETE"
+    },
+    {
+      "id": "C",
+      "name": "Candidate Safety and Foundation Completion",
+      "dependsOn": [
+        "B"
+      ],
+      "items": [
+        "AF-19",
+        "AF-22/AF-30",
+        "PR-STACK"
+      ],
+      "exit": "CANDIDATE_SAFETY_FOUNDATIONS_COMPLETE"
+    },
+    {
+      "id": "D",
+      "name": "Branch-local Candidate Implementation Cycle",
+      "dependsOn": [
+        "C"
+      ],
+      "exit": "CANDIDATE_IMPLEMENTATION_CYCLE_VERIFIED"
+    },
+    {
+      "id": "E",
+      "name": "Blueprint Candidate Build Order",
+      "dependsOn": [
+        "D"
+      ],
+      "workItems": 18,
+      "exit": "18_BLUEPRINT_CANDIDATE_IMPLEMENTATIONS_COMPLETE"
+    },
+    {
+      "id": "F",
+      "name": "Candidate Universal Acceptance",
+      "dependsOn": [
+        "E"
+      ],
+      "exit": "FINAL_PRECODE_VERSION_ACCEPTED"
+    }
+  ],
+  "contractMappingWorkItems": [
+    "GWC-PRE-A2-GW-01",
+    "GWC-PRE-A2-GW-02",
+    "GWC-PRE-A2-GW-03",
+    "GWC-PRE-A2-GW-04",
+    "GWC-PRE-A2-GW-05",
+    "GWC-PRE-A2-GW-06",
+    "GWC-PRE-A2-GW-07",
+    "GWC-PRE-A2-GW-08",
+    "GWC-PRE-A2-GW-09",
+    "GWC-PRE-A2-GW-10",
+    "GWC-PRE-A2-GW-11",
+    "GWC-PRE-A2-GW-12",
+    "GWC-PRE-A2-GW-13",
+    "GWC-PRE-A2-GW-14",
+    "GWC-PRE-A2-GW-15",
+    "GWC-PRE-A2-GW-16",
+    "GWC-PRE-A2-GW-17",
+    "GWC-PRE-A2-GW-18",
+    "GWC-PRE-A2-GW-19",
+    "GWC-PRE-A2-GW-20",
+    "GWC-PRE-A2-GW-21",
+    "GWC-PRE-A2-GW-22",
+    "GWC-PRE-A2-GW-23",
+    "GWC-PRE-A2-GW-24",
+    "GWC-PRE-A2-GW-25",
+    "GWC-PRE-A2-GW-26",
+    "GWC-PRE-A2-GW-27",
+    "GWC-PRE-A2-GW-28",
+    "GWC-PRE-A2-GW-29",
+    "GWC-PRE-A2-GW-30",
+    "GWC-PRE-A2-GW-31",
+    "GWC-PRE-A2-GW-32",
+    "GWC-PRE-A2-GW-33",
+    "GWC-PRE-A2-GW-34",
+    "GWC-PRE-A2-GW-35",
+    "GWC-PRE-A2-GW-36",
+    "GWC-PRE-A2-GW-37",
+    "GWC-PRE-A2-GW-38",
+    "GWC-PRE-A2-GW-39",
+    "GWC-PRE-A2-GW-40",
+    "GWC-PRE-A2-GW-41",
+    "GWC-PRE-A2-GW-42",
+    "GWC-PRE-A2-GW-43",
+    "GWC-PRE-A2-GW-44",
+    "GWC-PRE-A2-GW-45",
+    "GWC-PRE-A2-GW-46",
+    "GWC-PRE-A2-GW-47",
+    "GWC-PRE-A2-GW-48",
+    "GWC-PRE-A2-GW-49",
+    "GWC-PRE-A2-GW-50",
+    "GWC-PRE-A2-GW-51",
+    "GWC-PRE-A2-GW-52",
+    "GWC-PRE-A2-GW-53",
+    "GWC-PRE-A2-GW-54",
+    "GWC-PRE-A2-GW-55",
+    "GWC-PRE-A2-GW-56",
+    "GWC-PRE-A2-GW-57",
+    "GWC-PRE-A2-GW-58",
+    "GWC-PRE-A2-GW-59",
+    "GWC-PRE-A2-GW-60",
+    "GWC-PRE-A2-GW-61",
+    "GWC-PRE-A2-GW-62",
+    "GWC-PRE-A2-GW-63",
+    "GWC-PRE-A2-GW-64",
+    "GWC-PRE-A2-GW-65",
+    "GWC-PRE-A2-GW-66",
+    "GWC-PRE-A2-GW-67",
+    "GWC-PRE-A2-GW-68",
+    "GWC-PRE-A2-GW-69",
+    "GWC-PRE-A2-GW-70",
+    "GWC-PRE-A2-GW-71",
+    "GWC-PRE-A2-GW-72",
+    "GWC-PRE-A2-GW-73"
+  ],
+  "contractDesignWorkItems": [
+    "GWC-PRE-A3-GW-01",
+    "GWC-PRE-A3-GW-02",
+    "GWC-PRE-A3-GW-03",
+    "GWC-PRE-A3-GW-04",
+    "GWC-PRE-A3-GW-05",
+    "GWC-PRE-A3-GW-06",
+    "GWC-PRE-A3-GW-07",
+    "GWC-PRE-A3-GW-08",
+    "GWC-PRE-A3-GW-09",
+    "GWC-PRE-A3-GW-10",
+    "GWC-PRE-A3-GW-11",
+    "GWC-PRE-A3-GW-12",
+    "GWC-PRE-A3-GW-13",
+    "GWC-PRE-A3-GW-14",
+    "GWC-PRE-A3-GW-15",
+    "GWC-PRE-A3-GW-16",
+    "GWC-PRE-A3-GW-17",
+    "GWC-PRE-A3-GW-18",
+    "GWC-PRE-A3-GW-19",
+    "GWC-PRE-A3-GW-20",
+    "GWC-PRE-A3-GW-21",
+    "GWC-PRE-A3-GW-22",
+    "GWC-PRE-A3-GW-23",
+    "GWC-PRE-A3-GW-24",
+    "GWC-PRE-A3-GW-25",
+    "GWC-PRE-A3-GW-26",
+    "GWC-PRE-A3-GW-27",
+    "GWC-PRE-A3-GW-28",
+    "GWC-PRE-A3-GW-29",
+    "GWC-PRE-A3-GW-30",
+    "GWC-PRE-A3-GW-31",
+    "GWC-PRE-A3-GW-32",
+    "GWC-PRE-A3-GW-33",
+    "GWC-PRE-A3-GW-34",
+    "GWC-PRE-A3-GW-35",
+    "GWC-PRE-A3-GW-36",
+    "GWC-PRE-A3-GW-37",
+    "GWC-PRE-A3-GW-38",
+    "GWC-PRE-A3-GW-39",
+    "GWC-PRE-A3-GW-40",
+    "GWC-PRE-A3-GW-41",
+    "GWC-PRE-A3-GW-42",
+    "GWC-PRE-A3-GW-43",
+    "GWC-PRE-A3-GW-44",
+    "GWC-PRE-A3-GW-45",
+    "GWC-PRE-A3-GW-46",
+    "GWC-PRE-A3-GW-47",
+    "GWC-PRE-A3-GW-48",
+    "GWC-PRE-A3-GW-49",
+    "GWC-PRE-A3-GW-50",
+    "GWC-PRE-A3-GW-51",
+    "GWC-PRE-A3-GW-52",
+    "GWC-PRE-A3-GW-53",
+    "GWC-PRE-A3-GW-54",
+    "GWC-PRE-A3-GW-55",
+    "GWC-PRE-A3-GW-56",
+    "GWC-PRE-A3-GW-57",
+    "GWC-PRE-A3-GW-58",
+    "GWC-PRE-A3-GW-59",
+    "GWC-PRE-A3-GW-60",
+    "GWC-PRE-A3-GW-61",
+    "GWC-PRE-A3-GW-62",
+    "GWC-PRE-A3-GW-63",
+    "GWC-PRE-A3-GW-64",
+    "GWC-PRE-A3-GW-65",
+    "GWC-PRE-A3-GW-66",
+    "GWC-PRE-A3-GW-67",
+    "GWC-PRE-A3-GW-68",
+    "GWC-PRE-A3-GW-69",
+    "GWC-PRE-A3-GW-70",
+    "GWC-PRE-A3-GW-71",
+    "GWC-PRE-A3-GW-72",
+    "GWC-PRE-A3-GW-73"
+  ],
+  "blueprintDesignWorkItems": [
+    "GWC-PRE-A4-GWC-0",
+    "GWC-PRE-A4-GWC-1",
+    "GWC-PRE-A4-GWC-2",
+    "GWC-PRE-A4-GWC-3",
+    "GWC-PRE-A4-GWC-4",
+    "GWC-PRE-A4-GWC-5",
+    "GWC-PRE-A4-GWC-6",
+    "GWC-PRE-A4-GWC-7",
+    "GWC-PRE-A4-GWC-8",
+    "GWC-PRE-A4-GWC-9",
+    "GWC-PRE-A4-GWC-10",
+    "GWC-PRE-A4-GWC-11",
+    "GWC-PRE-A4-GWC-12",
+    "GWC-PRE-A4-GWC-13",
+    "GWC-PRE-A4-GWC-14",
+    "GWC-PRE-A4-GWC-15",
+    "GWC-PRE-A4-GWC-16",
+    "GWC-PRE-A4-GWC-17"
+  ],
+  "blueprintNominalOrder": [
+    "GWC-0",
+    "GWC-1",
+    "GWC-2",
+    "GWC-3",
+    [
+      "GWC-4",
+      "GWC-5",
+      [
+        "GWC-6",
+        "GWC-7"
+      ],
+      "GWC-8"
+    ],
+    "GWC-9",
+    "GWC-10",
+    "GWC-11",
+    "GWC-12",
+    "GWC-13",
+    "GWC-14",
+    "GWC-15",
+    "GWC-16",
+    "GWC-17"
+  ],
+  "runtimeTaskRule": "BRANCH_CANDIDATE_WORK_NE_GOVERNED_TASK; live Governed Tasks are considered only during post-candidate real integration under then-current governance",
+  "safetyPrerequisites": [
+    "AF-19",
+    "AF-22/AF-30",
+    "PR-STACK"
+  ],
+  "nextActionRule": "Resolve exact Claude-branch head; if architecture gate is PASS and final candidate gate is not PASS, execute first incomplete branch-local candidate work item B->C->D/E->F. Never use runtime Task Queue or mutate main/S1/prod during candidate build.",
+  "candidateImplementation": {
+    "branch": "claude/ecstatic-edison-v1dyt1",
+    "allowedAfter": "GWC_ARCHITECTURE_GATE_PASS",
+    "codeAllowed": true,
+    "codeExpected": true,
+    "runtimeTaskQueueUsed": false,
+    "liveLocksUsed": false,
+    "mainMutationAllowed": false,
+    "s1MutationAllowed": false,
+    "productionDeploymentAllowed": false,
+    "finalExit": "FINAL_PRECODE_VERSION_ACCEPTED"
+  },
+  "candidateBlueprintWorkItems": [
+    "GWC-PRE-E-GWC-0",
+    "GWC-PRE-E-GWC-1",
+    "GWC-PRE-E-GWC-2",
+    "GWC-PRE-E-GWC-3",
+    "GWC-PRE-E-GWC-4",
+    "GWC-PRE-E-GWC-5",
+    "GWC-PRE-E-GWC-6",
+    "GWC-PRE-E-GWC-7",
+    "GWC-PRE-E-GWC-8",
+    "GWC-PRE-E-GWC-9",
+    "GWC-PRE-E-GWC-10",
+    "GWC-PRE-E-GWC-11",
+    "GWC-PRE-E-GWC-12",
+    "GWC-PRE-E-GWC-13",
+    "GWC-PRE-E-GWC-14",
+    "GWC-PRE-E-GWC-15",
+    "GWC-PRE-E-GWC-16",
+    "GWC-PRE-E-GWC-17"
+  ],
+  "integrationAfterFinalCandidate": {
+    "prerequisite": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "steps": [
+      "REOBSERVE_REAL_MAIN_AND_SERVER",
+      "RECONCILE_DRIFT",
+      "REVALIDATE_INTEGRATION_SLOTS",
+      "GOVERNED_INTEGRATION",
+      "EXACT_HEAD_CI_REVIEW_MERGE",
+      "MAIN_CI_GOVERNED_DEPLOY",
+      "EXACT_SHA_LIVE_VERIFICATION"
+    ]
+  },
+  "phaseBFoundations": [
+    {
+      "id": "GWC-PRE-B-FND-01",
+      "name": "Multi-agent candidate continuity",
+      "status": "PASS_WITH_EVIDENCE",
+      "integrationSlot": "Governed Context / candidate PRECODE coordination",
+      "red": {
+        "run": 1046,
+        "head": "9f6e14df2939e5e4b062e2861dfd5af507d6b157"
+      },
+      "green": {
+        "run": 1048,
+        "head": "138d392942591f8ba0270757bc5df859fdd4b7cb"
+      }
+    },
+    {
+      "id": "GWC-PRE-B-FND-02",
+      "name": "Conversation information intake and reconciliation",
+      "status": "PASS_WITH_EVIDENCE",
+      "integrationSlot": "Governed Context + canonical-memory/candidate-backlog projections",
+      "red": {
+        "run": 1046,
+        "head": "9f6e14df2939e5e4b062e2861dfd5af507d6b157"
+      },
+      "green": {
+        "run": 1048,
+        "head": "138d392942591f8ba0270757bc5df859fdd4b7cb"
+      }
+    },
+    {
+      "id": "GWC-PRE-B-FND-03",
+      "name": "GitHub-first PRECODE connection bootstrap",
+      "status": "PASS_WITH_EVIDENCE",
+      "integrationSlot": "Existing candidate continuity + canonical-memory/status surfaces",
+      "transportModel": "DIRECT_GITHUB_PRECODE",
+      "runtimeMcpRequired": false,
+      "identityRule": "Observe only IDs actually exposed; unavailable provider conversation IDs remain null/UNAVAILABLE",
+      "intentRouting": [
+        "NEW_INFORMATION_INTAKE",
+        "CONTINUE_PRECODE_WORK",
+        "NEW_INFORMATION_THEN_CONTINUE_PRECODE",
+        "ASK_USER"
+      ],
+      "red": {
+        "run": 1061,
+        "head": "a992bc0adf8e841ee38463bce75667650c13689d"
+      },
+      "compatibility": {
+        "run": 1062,
+        "head": "44e19282564578a748ae3563c726741816d304ea"
+      },
+      "green": {
+        "run": 1063,
+        "head": "2264b3da4dc672ae1e271519957203c62b7ae03d"
+      }
+    },
+    {
+      "id": "GWC-PRE-B-FND-04",
+      "name": "Incremental intake continuity, coherence gate and knowledge-revision guard",
+      "status": "PASS_WITH_EVIDENCE",
+      "integrationSlot": "candidateContinuity.ts + canonical-memory/status/work checkpoints",
+      "noNewAuthority": true,
+      "initialCursor": {
+        "latestIntakeSequence": 2,
+        "reconciledThroughSequence": 0,
+        "canonicalRevision": 1,
+        "backlogRevision": 0,
+        "pendingIntakeIds": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ]
+      },
+      "coherenceVerdicts": [
+        "ACCEPT",
+        "ACCEPT_WITH_ADAPTATION",
+        "COMPLEMENT",
+        "DUPLICATE",
+        "DEFER",
+        "HOLD_FOR_REVIEW",
+        "OUT_OF_SCOPE",
+        "REJECT"
+      ],
+      "knowledgeGuards": [
+        "HEAD_SHA",
+        "CANONICAL_REVISION",
+        "BACKLOG_REVISION"
+      ],
+      "localBlockerRule": "LOCAL_BLOCKER_NE_GLOBAL_STOP",
+      "red": {
+        "run": 1080,
+        "head": "c63beb0ac413824a72647a661640ed599cc867a0"
+      },
+      "green": {
+        "run": 1081,
+        "head": "f288d3e93eae772dd4e51654a1e4512a822b3dd6"
+      }
+    }
+  ],
+  "candidateConnectionProtocol": [
+    "CONNECT_DIRECTLY_TO_GITHUB_BRANCH",
+    "NO_MCP_RUNTIME_DEPENDENCY",
+    "REOBSERVE_EXACT_CLAUDE_BRANCH_HEAD",
+    "READ_CANONICAL_MEMORY_STATUS_CHECKPOINT_HANDOFF",
+    "OBSERVE_AVAILABLE_CONNECTION_IDENTIFIERS_ONLY",
+    "RESOLVE_OR_CREATE_BRANCH_LOCAL_CANDIDATE_SESSION",
+    "DETECT_OR_REQUEST_PRECODE_MODE",
+    "RECONCILE_NEW_INFORMATION_WHEN_PRESENT",
+    "RESUME_OR_DISPATCH_BRANCH_LOCAL_WORK",
+    "HEAD_MOVED_RECONCILE_AND_REDISPATCH",
+    "RED_GREEN_REGRESSION_EVIDENCE_CHECKPOINT"
+  ],
+  "conversationIntakeRule": "AI performs semantic understanding; only bounded structured insights/digests/evidence refs are reconciled. Raw transcript is not persisted by the candidate continuity contract.",
+  "intakeContinuity": {
+    "latestIntakeSequence": 2,
+    "reconciledThroughSequence": 0,
+    "canonicalRevision": 1,
+    "backlogRevision": 0,
+    "pendingIntakeIds": [
+      "NEW_INFORMATION_INTAKE-001",
+      "NEW_INFORMATION_INTAKE-002"
+    ],
+    "rule": "Projection/index only; immutable intake bundles remain source evidence; only contiguous reconciled deltas advance the cursor."
+  },
+  "connectionAndKnowledgeProtocol": [
+    "DIRECT_GITHUB_BOOTSTRAP",
+    "REGISTER_MONOTONE_INTAKE_IF_NEW_INFORMATION",
+    "STRUCTURE_SEMANTIC_INSIGHTS",
+    "EVALUATE_COHERENCE_GATE",
+    "RECONCILE_CONTIGUOUS_DELTA",
+    "EMIT_RECEIPT",
+    "ADVANCE_CANONICAL_AND_BACKLOG_REVISIONS_ONLY_ON_ACCEPTED_EFFECTS",
+    "COMPUTE_LOCAL_IMPACT",
+    "VALIDATE_HEAD_AND_KNOWLEDGE_REVISIONS_BEFORE_WRITE",
+    "DISPATCH_ONLY_FROM_RECONCILED_STATE"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-candidate-continuity-ready-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_candidate_continuity",
+      "path": "sources/candidate-continuity.json",
+      "media_type": "application/json",
+      "bytes": 2306,
+      "sha256": "a782a9d0d0568829238da25c212dbef95a1d5c08f2e90d7098460aa19fb29752"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_multi_agent_continuity",
+      "key": "candidate.multi_agent_continuity",
+      "claim_type": "fact",
+      "value": "Authorized agents resume an existing branch-local claim first or receive the next dependency-safe and collision-safe candidate work item; stale-head claims are recomputed.",
+      "source_refs": [
+        "src_candidate_continuity"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_conversation_intake",
+      "key": "candidate.conversation_intake",
+      "claim_type": "fact",
+      "value": "New conversation information is semantically understood by the connected AI, projected as bounded insights, reconciled against canonical memory/work, and may enrich memory/findings/decisions/tasks without persisting raw transcript.",
+      "source_refs": [
+        "src_candidate_continuity"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_no_parallel_authority",
+      "key": "candidate.continuity_authority_boundary",
+      "claim_type": "fact",
+      "value": "The new capability extends Governed Context/PRECODE projections and does not create a second Operational Memory, Task Queue, session or lock authority.",
+      "source_refs": [
+        "src_candidate_continuity"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_continuity_tdd",
+      "key": "candidate.continuity_tdd",
+      "claim_type": "fact",
+      "value": "RED CI #1046; GREEN CI #1048 SUCCESS.",
+      "source_refs": [
+        "src_candidate_continuity"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_phase_b_next",
+      "key": "candidate.next_work_item",
+      "claim_type": "fact",
+      "value": "GWC-PRE-B-01 remains the next program work item.",
+      "source_refs": [
+        "src_candidate_continuity"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

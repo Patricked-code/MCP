@@ -256,3 +256,39 @@ test('l’artefact de gouvernance reproduit exactement les documents actifs suiv
     assert.equal(candidate, source.endsWith('\n') ? source : `${source}\n`, path);
   }
 });
+
+
+test('GWC-11 RED: documentation governance accepts a project-scoped declaration without changing MCP defaults', () => {
+  assert.equal(typeof docGovernance.createDocumentGovernanceDeclaration, 'function');
+  assert.equal(typeof docGovernance.defaultDocumentGovernanceDeclaration, 'object');
+
+  const custom = docGovernance.createDocumentGovernanceDeclaration({
+    projectId: 'example-platform',
+    repository: 'ExampleOrg/platform',
+    canonicalRootDocuments: ['PROJECT_STATUS.md', 'DECISIONS.md'],
+    canonicalStateKeys: ['repository', 'branch']
+  });
+
+  assert.equal(docGovernance.classifyMarkdownPath('PROJECT_STATUS.md', custom), 'canonical');
+  assert.equal(docGovernance.classifyMarkdownPath('SUIVI.md', custom), 'root-documentation');
+  assert.equal(classifyMarkdownPath('SUIVI.md'), 'canonical');
+  assert.deepEqual(docGovernance.defaultDocumentGovernanceDeclaration.canonicalRootDocuments, [
+    'CHANGELOG.md',
+    'DECISIONS_LOG.md',
+    'DEPLOYMENT_PRODUCTION.md',
+    'MCP_ANTI_DISPERSION_GOVERNANCE.md',
+    'SUIVI.md',
+    'TASKS.md',
+    'TODO.md'
+  ]);
+
+  const customA = { repository: 'ExampleOrg/platform', branch: 'main', s1Root: '/a' };
+  const customB = { repository: 'ExampleOrg/platform', branch: 'main', s1Root: '/b' };
+  const validation = docGovernance.validateCanonicalStates([
+    { path: 'PROJECT_STATUS.md', state: customA },
+    { path: 'DECISIONS.md', state: customB }
+  ], custom);
+
+  assert.equal(validation.ok, true);
+  assert.deepEqual(validation.conflicts, []);
+});

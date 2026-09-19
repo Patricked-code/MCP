@@ -1,0 +1,24 @@
+{
+  "observed_at": "2026-09-17T05:29:02+02:00",
+  "repository": "Patricked-code/MCP",
+  "main": {
+    "sha": "d1f303955c4d368950da2307dda41d826fc85d0a",
+    "commit_message": "docs(gwc): define Governed Workflow Contract V1 (#94)"
+  },
+  "pr95": {
+    "number": 95,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "branch": "claude/ecstatic-edison-v1dyt1",
+    "head_sha": "75bc728813e1c19f6e17cb953067ddcd196496f4",
+    "base": "main",
+    "base_sha": "d1f303955c4d368950da2307dda41d826fc85d0a",
+    "latest_commit_message": "docs(gwc): add DED-1 recovery index and GWC-0..3 evolution design",
+    "validate_check": {
+      "head_sha": "75bc728813e1c19f6e17cb953067ddcd196496f4",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  }
+}

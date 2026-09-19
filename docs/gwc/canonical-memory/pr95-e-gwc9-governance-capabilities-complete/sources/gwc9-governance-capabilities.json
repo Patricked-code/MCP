@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-9",
+  "blueprint": "GWC-9",
+  "status": "PASS_WITH_EVIDENCE",
+  "session": {
+    "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "heartbeatCommentId": 5740056645
+  },
+  "baseline": {
+    "redHead": "e1d9caf1ee8704328113524348f273b689b67ecf",
+    "redCiRunNumber": 1298,
+    "redCiRunId": 35428796267,
+    "redConclusion": "FAILURE_EXPECTED_AF32_AND_COMPOSER_ABSENT",
+    "redFailures": 9
+  },
+  "implementation": {
+    "files": [
+      "src/governedWorkflow/governance/effectiveCapabilities.ts",
+      "src/server.ts",
+      "tests/governedWorkflowGovernanceIntegration.test.ts",
+      "package.json"
+    ],
+    "behavior": [
+      "GW-10 composes existing CapabilityReality and GovernanceDecision for one bounded target without creating a second governance authority",
+      "GW-11 derives one EffectiveCapabilitySet monotonically from the existing capability and governance decision",
+      "UNKNOWN capability evidence never becomes permitted",
+      "a client-attested capability cannot override a contradictory server-backed capability embedded in GovernanceDecision",
+      "operation binding mismatches fail closed as CONFLICT",
+      "AF-32 is closed by routing the three governed task operational-write registrations through the existing Scoped Write Gate",
+      "the gate remains shadow/off only and therefore does not change historical execution outcomes",
+      "shadow observation records succeeded/failed/cancelled outcomes and requests reconcile without blocking the original handler",
+      "operational-write surface classification remains unchanged; function cartography therefore remains semantically stable"
+    ],
+    "authorityBoundary": "REUSE_CAPABILITY_REALITY__REUSE_GOVERNANCE_DECISION__REUSE_SCOPED_WRITE_GATE__NO_SECOND_ENGINE__NO_ENFORCEMENT"
+  },
+  "green": {
+    "firstGreenHead": "2cfab21e393bf4f070b725aaf9bcf2360f8dc1b4",
+    "firstGreenCiRunNumber": 1300,
+    "firstGreenCiRunId": 35429138033,
+    "firstGreenConclusion": "SUCCESS",
+    "selfReviewFinding": "AF32_RUNTIME_SHADOW_PARITY_NEEDED",
+    "selfReviewHead": "2097d7ff912aa8f4de06963bd8c8872728c013fe",
+    "selfReviewCiRunNumber": 1301,
+    "selfReviewCiRunId": 35429244201,
+    "selfReviewConclusion": "FAILURE_TEST_FIXTURE_ENV_ONLY",
+    "finalGreenHead": "ff85ab51ae59df044ad179abe0865374e41f2412",
+    "finalGreenCiRunNumber": 1302,
+    "finalGreenCiRunId": 35429302608,
+    "finalGreenConclusion": "SUCCESS",
+    "checks": [
+      "typecheck",
+      "build",
+      "docs check",
+      "governance tests",
+      "GWC dossier check",
+      "secret scan",
+      "read-only safety tests including GWC-9",
+      "function cartography regression",
+      "whitespace diff check"
+    ]
+  },
+  "af32": {
+    "status": "CLOSED_IN_SHADOW",
+    "affectedTools": [
+      "mcp_reconcile_agent_intent",
+      "mcp_claim_next_governed_task",
+      "mcp_transition_governed_task"
+    ],
+    "enforcementModeIntroduced": false,
+    "historicalOutcomeChanged": false,
+    "catalogSurfaceChanged": false,
+    "cartographyDigestRegenerated": false,
+    "rationale": "The registration surface remains operational-write; only the existing shadow-gate observation path is added. Exact cartography regression remained green."
+  },
+  "security": {
+    "monotonicRestriction": true,
+    "unknownNeverPermitted": true,
+    "contradictoryCapabilitySourcesConflict": true,
+    "clientAttestationDoesNotOverrideServerBackedDecision": true,
+    "authorizationInferred": false,
+    "mutationPerformedByComposer": false
+  },
+  "boundaries": {
+    "runtimeTasksCreated": 0,
+    "runtimeLocksUsed": false,
+    "runtimeMcpRequired": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deployment": false,
+    "enforcementModeChange": false,
+    "parallelGovernanceEngineCreated": false,
+    "parallelCapabilityRealityCreated": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc9-governance-capabilities-complete",
+    "claimReleaseRule": "Retain the GWC-9 branch-local claim until this checkpoint projection passes exact-head CI; release only after that validation.",
+    "nextWorkItemAfterRelease": "GWC-PRE-E-GWC-10"
+  },
+  "nextAction": "Create and validate the GWC-9 canonical checkpoint on the exact branch head. After checkpoint CI succeeds, release GWC-9 and dispatch GWC-PRE-E-GWC-10 without replaying GWC-9."
+}

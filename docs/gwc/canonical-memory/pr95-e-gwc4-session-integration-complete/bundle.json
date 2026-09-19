@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc4-session-integration-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc4_session_integration",
+      "path": "sources/gwc4-session-integration.json",
+      "media_type": "application/json",
+      "bytes": 3629,
+      "sha256": "0cae1832654eb09624b19fc3b62eb22a3a4e0bf3cd93fccfd82569897f91d9f9"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc4_pass",
+      "key": "candidate.phase_e.gwc_4",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-4 is PASS_WITH_EVIDENCE. RED CI #1199 proved the session adapter absent; first GREEN CI #1203 passed; self-review found M1 EvidenceRef drift; regression RED CI #1204 proved it; final GREEN CI #1205 passed on 3ad4bcc57e45679352472c383f30a4f0703f5db2.",
+      "source_refs": [
+        "src_gwc4_session_integration"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc4_authority",
+      "key": "candidate.gwc4_authority_boundary",
+      "claim_type": "fact",
+      "value": "GWC-4 adds pure observation wrappers only. Governed Session Service, Operational Memory and Bootstrap Receipt remain the sole lifecycle/persistence/freshness authorities; no session mutation path or persisted schema was changed.",
+      "source_refs": [
+        "src_gwc4_session_integration"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc4_m1",
+      "key": "candidate.gwc4_evidence_binding",
+      "claim_type": "fact",
+      "value": "GWC-4 EvidenceRef projections carry canonical SHA-256 content digests, known headSha binding when available, and rereadable authority-scoped references without secrets or raw transport identifiers.",
+      "source_refs": [
+        "src_gwc4_session_integration"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc5_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-5 becomes dependency-safe after GWC-4; GWC-PRE-E-GWC-6 remains READY. Execute GWC-5 first by nominal sequence.",
+      "source_refs": [
+        "src_gwc4_session_integration"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
