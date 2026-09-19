@@ -706,13 +706,20 @@ export function composeGw41PremergeProof(
 
 function premergeProofReasons(
   expectedHeadSha: string,
-  proof: PremergeProofResult
+  proof: PremergeProofResult,
+  expectedPullRequestNumber?: number
 ): string[] {
   if (proof.contract.stepId !== 'GW-41') return ['PREMERGE_PROOF_CONTRACT_MISMATCH'];
   if (proof.status !== 'SUCCESS' || proof.payload.status !== 'READY') {
     return ['PREMERGE_PROOF_NOT_READY'];
   }
   if (proof.payload.headSha !== expectedHeadSha) return ['PREMERGE_PROOF_HEAD_MISMATCH'];
+  if (
+    expectedPullRequestNumber !== undefined
+    && proof.payload.pullRequestNumber !== expectedPullRequestNumber
+  ) {
+    return ['PREMERGE_PROOF_PR_MISMATCH'];
+  }
   return [];
 }
 
@@ -776,7 +783,11 @@ export function planGw43ExactHeadMerge(
     pullRequestNumber: rawInput.pullRequestNumber,
     expectedHeadSha: rawInput.expectedHeadSha
   });
-  const reasons = premergeProofReasons(input.expectedHeadSha, rawInput.premergeProof);
+  const reasons = premergeProofReasons(
+    input.expectedHeadSha,
+    rawInput.premergeProof,
+    input.pullRequestNumber
+  );
   const payload = Object.freeze({
     repository: input.repository,
     pullRequestNumber: input.pullRequestNumber,
