@@ -884,7 +884,7 @@
           "exact-sha-ci"
         ],
         "title": "AF-19 candidate correction",
-        "status": "IN_PROGRESS",
+        "status": "BLOCKED",
         "priority": 80,
         "sequence": 4,
         "dependencies": [
@@ -896,7 +896,10 @@
           "docs:gwc"
         ],
         "evidence": [
-          "Dispatched to candidate-7afc131430c64c6fe34bcfea @ 5ffadbcddc831c8e8c46299e8e6f2c9b816ac8fd"
+          "Dispatched to candidate-7afc131430c64c6fe34bcfea @ 5ffadbcddc831c8e8c46299e8e6f2c9b816ac8fd",
+          "OD-07 is explicitly OPEN in DECISIONS_LOG.md: workflow gate vs server admission vs job dependency is a governed decision, not derivable from design evidence.",
+          "GWC-15 Detailed Evolution Design rejects workflow_run on OIDC evidence and narrows AF-19 to OIDC-compatible B/C/D; B+C may be complementary.",
+          "Blocker observed at candidate head 2aeca6ea0eeb3919b2a586a7ee800b0ba1e6e657; no AF-19 implementation mutation performed."
         ]
       },
       {
@@ -986,7 +989,7 @@
           "src:deploy",
           "docs:gwc"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -1034,7 +1037,7 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "5ffadbcddc831c8e8c46299e8e6f2c9b816ac8fd",
+        "lastObservedHeadSha": "2aeca6ea0eeb3919b2a586a7ee800b0ba1e6e657",
         "createdAt": "2026-09-19T00:11:00Z",
         "lastSeenAt": "2026-09-19T00:11:00Z",
         "status": "ACTIVE"
@@ -3831,5 +3834,19 @@
       },
       "phaseExit": "CANDIDATE_BACKLOG_COMPLETE"
     }
-  }
+  },
+  "candidateBlockers": [
+    {
+      "blockerId": "OD-07",
+      "workItemId": "GWC-PRE-C1",
+      "status": "HUMAN_DECISION_REQUIRED",
+      "observedAtHead": "2aeca6ea0eeb3919b2a586a7ee800b0ba1e6e657",
+      "question": "Select AF-19 enforcement placement without weakening OIDC: B workflow gate, C server admission, B+C layered defense, or D in-workflow CI job dependency.",
+      "forbidden": "Do not use workflow_run; do not widen allowedEvents; do not relax tokenSha === requestedSha; do not deploy/activate during PRECODE.",
+      "evidence": [
+        "DECISIONS_LOG.md#2026-09-17 — Conception d'évolution détaillée : décisions de conception",
+        "docs/gwc/BLUEPRINTS.md#gwc-15"
+      ]
+    }
+  ]
 }
