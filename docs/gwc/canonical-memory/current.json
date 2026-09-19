@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-c3-capability-reconciliation-complete",
-  "currentBundleId": "bnd_mcp-pr95-c3-capability-reconciliation-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-c3-capability-reconciliation-complete",
+  "currentBundle": "pr95-e-gwc0-contract-substrate-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc0-contract-substrate-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc0-contract-substrate-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -27,8 +27,8 @@
   },
   "currentPrecodeState": {
     "phase": "E",
-    "workItem": "GWC-PRE-E-GWC-0",
-    "work": "GWC_0_CONTRACT_SUBSTRATE",
+    "workItem": "GWC-PRE-E-GWC-1",
+    "work": "GWC_1_INTENT_CAPTURE",
     "status": "READY",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Execute Phase D cycle for GWC-PRE-E-GWC-0 from the exact live branch head: re-read the GWC-0 detailed design and exact-bound backlog item, inspect existing governedWorkflow substrate first, prove RED for the smallest missing contract substrate behavior, implement minimal GREEN, run full regressions, self-review, checkpoint, then dispatch the next dependency-safe Phase E item.",
+    "nextAction": "Execute the Phase D cycle for GWC-PRE-E-GWC-1 from the exact live branch head: re-read the GWC-1 detailed design and GW-01 contract, inspect existing intent/bootstrap/context parsing first, prove the smallest missing IntentContext behavior by RED, implement minimal pure capture/normalization without persistence or authority mutation, run full regressions, self-review, checkpoint, then dispatch GWC-2 when dependency-safe.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -120,6 +120,11 @@
     "Preserve INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK."
   ],
   "previousBundles": [
+    {
+      "name": "pr95-c3-capability-reconciliation-complete",
+      "path": "docs/gwc/canonical-memory/pr95-c3-capability-reconciliation-complete",
+      "status": "IMMUTABLE_HISTORICAL_C3_CAPABILITY_RECONCILIATION_COMPLETE_CHECKPOINT"
+    },
     {
       "name": "pr95-c2-af22-af30-resolved",
       "path": "docs/gwc/canonical-memory/pr95-c2-af22-af30-resolved",
@@ -202,8 +207,8 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "2acc4d132f8b1d04590ddf0e68e5cf0155c73c46",
-  "correctionReason": "GWC-PRE-C3 completed on final GREEN CI #1152. Self-review rejected an earlier technically-green C-90 WRITE landing because GWC-9/AF-32 ordering forbids it; final C3 materializes C-89.2 READ only and defers all C-90 WRITE until after GWC-9.",
+  "observedHeadBeforePointerUpdate": "827b756fda1544535a03b3ec821b69d755b1e3cf",
+  "correctionReason": "GWC-PRE-E-GWC-0 completed with RED CI #1159, peer regression reinforcement at 8a1bd1c9, and final GREEN CI #1163. Contract substrate is pure, immutable, exact-bound to canonical version/digests and creates no workflow persistence.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
@@ -513,5 +518,8 @@
       "writeTools": 43,
       "digest": "3d900237907905a64a572173eac7cd2109b2cf55a535afbed2252bb2f693597f"
     }
+  },
+  "phaseEProgress": {
+    "GWC-0": "PASS_WITH_EVIDENCE"
   }
 }
