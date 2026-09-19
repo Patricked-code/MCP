@@ -28,8 +28,8 @@
   "currentPrecodeState": {
     "phase": "C",
     "workItem": "GWC-PRE-C1",
-    "work": "DERIVE_COMPLETE_BRANCH_LOCAL_CANDIDATE_BACKLOG_FROM_18_BLUEPRINTS_73_CONTRACTS_FINDINGS_AND_EXISTING_CODE",
-    "status": "READY",
+    "work": "AF19_EXACT_SHA_CI_SAFETY_CORRECTION",
+    "status": "BLOCKED",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,8 +40,8 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "blocker": null,
-    "nextAction": "Execute GWC-PRE-C1: inspect the current candidate/main AF-19 deployment path first, add a RED contract proving deployment admission is bound to successful CI for the exact deployed SHA, implement the minimal candidate-only correction, run targeted/regression/typecheck/build/docs/governance/security checks, and do not deploy or activate."
+    "blocker": "OD-07_HUMAN_DECISION_REQUIRED",
+    "nextAction": "Obtain explicit human OD-07 selection for AF-19 enforcement placement: B = existing workflow gate, C = server-side deploy admission, B+C = layered defense, or D = CI job dependency. workflow_run remains forbidden by OIDC evidence. After selection, reobserve HEAD, reclaim GWC-PRE-C1, execute RED -> minimal GREEN -> full regression without deployment/live activation."
   },
   "precodeContinuationPolicy": {
     "hierarchy": "PROGRAM -> ARCHITECTURE_PHASE_OR_CANDIDATE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
@@ -187,7 +187,7 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "95cd5c1dec14c7fc0e26faafa45c1688a9050f1b",
+  "observedHeadBeforePointerUpdate": "e9f63d3139e131983f2f1603bde877a11a3e5296",
   "correctionReason": "Phase B candidate backlog synthesis/binding/completeness is complete. B-03 caught and corrected a B-02 label-normalization projection defect before exit. Next eligible work is Phase C / GWC-PRE-C1.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
@@ -464,5 +464,22 @@
     "localBlockerNotGlobalStop": true,
     "unrelatedDrift": "LOGICAL_REBASE_ALLOWED_AFTER_REFRESH",
     "affectedDrift": "RECONCILE_REQUIRED"
+  },
+  "candidateDecisionGate": {
+    "decisionId": "OD-07",
+    "workItemId": "GWC-PRE-C1",
+    "status": "HUMAN_DECISION_REQUIRED",
+    "branchClaimReleased": true,
+    "forbidden": [
+      "workflow_run",
+      "widen GITHUB_OIDC_POLICY.allowedEvents",
+      "relax tokenSha === requestedSha",
+      "deploy or activate before final PRECODE acceptance"
+    ],
+    "evidence": [
+      "DECISIONS_LOG.md — 2026-09-17 detailed evolution decisions",
+      "docs/gwc/BLUEPRINTS.md — GWC-15 Detailed Evolution Design",
+      ".mcp/gwc-precode-status.json — candidateBlockers/OD-07"
+    ]
   }
 }
