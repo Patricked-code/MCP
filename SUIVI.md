@@ -579,3 +579,17 @@ Date : 2026-08-29
 - FINAL GREEN : CI #1274 @ 9a25bf544769e448e15c17b9006720212b5b888d.
 - Aucun restart, SSH/runtime mutation, Task runtime, lock runtime, main/S1/production/deploy.
 - Checkpoint canonique GWC-7 en validation ; claim conservé jusqu'à CI exact-head SUCCESS.
+
+## 2026-09-19 — GWC-8 Domain Resolver C5 — GREEN final, checkpoint en validation
+
+- Récupération gouvernée : le claim `candidate-52e3b52226bf3462e7b112de` était stale mais non libéré automatiquement. Après réobservation du HEAD `4d887146...` et autorisation humaine explicite (PR #95 comment 5740053066), il a été libéré et transféré uniquement pour GWC-8 à `candidate-gwc8-recovery-4d887146-20260919`.
+- La projection de récupération a été validée par MCP CI #1278 SUCCESS sur `755a75bcdc80bc7f74554d25885a7f84684ab7cc`.
+- RED : MCP CI #1282 FAILURE attendu sur `54a108d591801f9895309476c81cf350883ee122`, 10 tests GWC-8 échouant uniquement par absence du module Domain Resolver.
+- Premier GREEN : MCP CI #1283 SUCCESS sur `197248bd7ebb4d8d3a2a00bc99799c0b72d12f41`.
+- Self-review : compatibilité réelle GitRegistry V2 — `componentRole` est optionnel sur des mappings historiques. CI #1284 a prouvé l'incompatibilité de schéma ; CI #1285 a ensuite isolé l'invention incorrecte d'un rôle `OTHER` dupliqué.
+- Correction finale : une preuve mapping sans rôle explicite fusionne avec une déclaration projet existante du même domaine, sans créer une nouvelle autorité de rôle.
+- GREEN final : MCP CI #1286 SUCCESS sur `d6240484e387770751d9d3db476ac3b9470c74ce` — typecheck, build, docs, governance, GWC verifier, secrets, read-only safety et whitespace tous verts.
+- Politique GW-09 : `NONE` seulement si déclarations et observation courante prouvent l'absence de surface ; observation manquante/stale => `UNVERIFIED`; historicalVhosts exclus explicitement ; conflits de rôle => `AMBIGUOUS`; `protectedDomains` reste une safety list et non un registre.
+- Frontière : resolver `READ_ONLY`; aucune mutation vhost/SSH, aucun probe déclenché, aucune autorisation implicite, aucune écriture main/S1/production.
+- Bundle canonique : `docs/gwc/canonical-memory/pr95-e-gwc8-domain-resolver-complete`, source SHA-256 `d9c420197de25d17198f86687aa56b558755b8996cd7d99b703882602323537c`.
+- Le claim GWC-8 reste `ACTIVE` jusqu'au SUCCESS de la CI exacte du checkpoint ; ensuite seulement : release et dispatch GWC-9.
