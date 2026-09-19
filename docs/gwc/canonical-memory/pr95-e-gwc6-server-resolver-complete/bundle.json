@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc6-server-resolver-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc6_server_resolver",
+      "path": "sources/gwc6-server-resolver.json",
+      "media_type": "application/json",
+      "bytes": 5298,
+      "sha256": "f3ee16a5579dfa74b9847ea130f3db1296afb6b604c42402452e9d830c675a59"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc6_pass",
+      "key": "candidate.phase_e.gwc_6",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-6 is PASS_WITH_EVIDENCE. RED CI #1243 established the server-resolver gap; corrective CI #1255 reduced the failing GWC-6 set to one ordering defect; CI #1256 made the full GWC-6/read-only suite green and exposed whitespace-only drift; final exact-head CI #1258 succeeded completely at 087b0a23230c83b6cb1c9069947f48a5d8cc0357.",
+      "source_refs": [
+        "src_gwc6_server_resolver"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc6_od03",
+      "key": "candidate.gwc6_od03_policy",
+      "claim_type": "fact",
+      "value": "OD-03 is resolved existing-first: canonical server identity comes only from an explicit bounded canonicalServerIds set; case variants may normalize to that set while raw IDs remain evidence; unknown aliases fail closed; paths never become identity; environment remains part of the candidate; server hints only disambiguate an already bound canonical server.",
+      "source_refs": [
+        "src_gwc6_server_resolver"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc6_authority",
+      "key": "candidate.gwc6_authority_boundary",
+      "claim_type": "fact",
+      "value": "GWC-6 is a pure READ_ONLY resolver. GitRegistry remains the server-binding authority and ProjectResolution remains the predecessor project authority. No GitRegistry mutation, SSH mutation, authorization inference, parallel registry or durable GWC workflow authority is introduced.",
+      "source_refs": [
+        "src_gwc6_server_resolver"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc7_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Retain the existing GWC-6 branch-local claim until this checkpoint passes exact-head CI. After validation, release GWC-6 and dispatch GWC-PRE-E-GWC-7 (Runtime Resolver C4) without replaying GWC-6.",
+      "source_refs": [
+        "src_gwc6_server_resolver"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
