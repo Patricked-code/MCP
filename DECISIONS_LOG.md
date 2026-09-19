@@ -821,3 +821,15 @@ Décision historique : `historicalVhosts` ne peut jamais être promu automatique
 Décision de rôle : FRONTEND et API proviennent seulement d'autorités explicites. Un mapping historique sans `componentRole` peut renforcer comme preuve une déclaration projet du même domaine, mais il ne crée pas un nouveau rôle `OTHER` si une autorité plus explicite existe déjà. Plusieurs domaines distincts pour un même rôle restent `AMBIGUOUS` plutôt que d'appliquer une priorité implicite.
 
 Frontière : resolver `READ_ONLY`, sans mutation vhost/SSH, sans probing side effect, sans persistance et sans inférence d'autorisation. Preuve finale : MCP CI #1286 SUCCESS sur `d6240484e387770751d9d3db476ac3b9470c74ce`.
+
+## 2026-09-19 — GWC-9 : composition gouvernance/capabilities et fermeture AF-32
+
+Décision : GW-10/GW-11 ne créent aucune nouvelle autorité. `CapabilityReality` reste la vérité de capacité/callability, `GovernanceDecision` reste la décision composée existante, et `Scoped Write Gate` reste le mécanisme d'observation des écritures. Le composer GWC-9 ne fait que vérifier leur cohérence pour une cible bornée et ne peut qu'être aussi restrictif ou plus restrictif.
+
+Décision sécurité : une valeur `UNKNOWN` ne devient jamais permise. Un snapshot capability différent de celui effectivement utilisé par `GovernanceDecision` produit `CONFLICT`. En particulier, une attestation client permissive ne peut pas supplanter une capability serveur contradictoire. Aucun droit n'est inféré.
+
+Décision AF-32 : les trois outils `mcp_reconcile_agent_intent`, `mcp_claim_next_governed_task` et `mcp_transition_governed_task` restent classés `operational-write`, mais leur enregistrement passe désormais par le même `decorateScopedWriteServer` que les writes scopés. Le mode reste strictement `off | shadow` ; aucun enforcing n'est introduit. Même un verdict shadow `wouldBlock=true` reste observationnel et ne modifie pas le résultat historique du handler.
+
+Décision cartographie : l'ajout du shadow gate ne change pas la surface de registration ni les noms/contrats des outils. La cartographie reste donc inchangée et ne doit pas être régénérée artificiellement ; la régression exacte `functionCartography` de CI #1302 le prouve.
+
+Preuve finale : MCP CI #1302 SUCCESS sur `ff85ab51ae59df044ad179abe0865374e41f2412`.
