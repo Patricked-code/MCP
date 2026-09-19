@@ -5,6 +5,12 @@ import { z } from 'zod';
 import type { AtomicJsonStore } from './atomicStore.js';
 import { NOOP_OPERATIONAL_AUDIT, type OperationalAudit } from './operationalAudit.js';
 import {
+  TargetScopeSchema,
+  targetScopeContainsRepository,
+  targetScopeEquals,
+  type TargetScope
+} from './targetScope.js';
+import {
   GovernedTaskRecordSchema,
   type GovernedTaskRecord,
   type GovernedTaskStatus,
@@ -34,7 +40,7 @@ const ALLOWED_TRANSITIONS: Readonly<Record<GovernedTaskStatus, ReadonlySet<Gover
 const SeedTaskSchema = GovernedTaskRecordSchema.pick({
   taskId: true, repository: true, intentKey: true, title: true, summary: true,
   priority: true, sequence: true, status: true, dependencies: true,
-  resourceScopes: true, blockers: true, nextAction: true
+  resourceScopes: true, targetScope: true, blockers: true, nextAction: true
 }).extend({
   requestDigest: z.string().regex(/^[0-9a-f]{64}$/)
 }).strict();
@@ -52,6 +58,7 @@ export type IntentClassification = 'CONTINUATION' | 'NEW_TASK' | 'DUPLICATE' | '
 
 export type ReconcileIntentInput = {
   repository: string;
+  targetScope?: TargetScope;
   taskId?: string;
   intentKey: string;
   title: string;
@@ -186,13 +193,19 @@ export function createGovernedTaskQueue(
     },
 
     async reconcileIntent(rawInput, governedSessionId) {
-      if (rawInput.repository !== 'Patricked-code/MCP') {
+      const targetScope = rawInput.targetScope
+        ? TargetScopeSchema.parse(rawInput.targetScope)
+        : undefined;
+      const repositoryInScope = targetScope
+        ? targetScopeContainsRepository(targetScope, rawInput.repository)
+        : rawInput.repository === 'Patricked-code/MCP';
+      if (!repositoryInScope) {
         const document = await store.read();
         return { classification: 'OUT_OF_SCOPE', task: null, firstExecutableTask: firstExecutable(document.tasks), storeRevision: document.storeRevision, reasonCode: 'repository_out_of_scope' };
       }
       const input = {
         ...rawInput,
-        repository: 'Patricked-code/MCP' as const,
+        ...(targetScope ? { targetScope } : {}),
         dependencies: [...new Set(rawInput.dependencies)].sort(),
         resourceScopes: [...new Set(rawInput.resourceScopes)].sort()
       };
@@ -203,7 +216,20 @@ export function createGovernedTaskQueue(
       let result: Awaited<ReturnType<GovernedTaskQueue['reconcileIntent']>> | null = null;
       await store.update((document) => {
         const exact = input.taskId ? document.tasks.find((task) => task.taskId === input.taskId) : undefined;
-        const sameIntent = exact ?? document.tasks.find((task) => task.intentKey === input.intentKey);
+        if (exact && !targetScopeEquals(exact.targetScope, input.targetScope)) {
+          result = {
+            classification: 'CONFLICT',
+            task: exact,
+            firstExecutableTask: firstExecutable(document.tasks),
+            storeRevision: document.storeRevision,
+            reasonCode: 'target_scope_mismatch'
+          };
+          return document;
+        }
+        const sameIntent = exact ?? document.tasks.find((task) => (
+          task.intentKey === input.intentKey
+          && targetScopeEquals(task.targetScope, input.targetScope)
+        ));
         if (sameIntent) {
           const classification: IntentClassification = TERMINAL.has(sameIntent.status)
             ? 'DUPLICATE'
@@ -250,7 +276,9 @@ export function createGovernedTaskQueue(
           schemaVersion: 1, taskId, repository: input.repository, intentKey: input.intentKey,
           title: input.title, summary: input.summary, priority: input.priority,
           sequence: document.nextSequence, status: 'READY', dependencies: input.dependencies,
-          resourceScopes: input.resourceScopes, ownerGovernedSessionId: null,
+          resourceScopes: input.resourceScopes,
+          ...(input.targetScope ? { targetScope: input.targetScope } : {}),
+          ownerGovernedSessionId: null,
           workBranch: null, pullRequestNumber: null, observedHeadSha: null, runtimeRevision: null,
           blockers: [], nextAction: 'claim_governed_task',
           source: { kind: 'agent', requestDigest: boundedIntentDigest(input) },
