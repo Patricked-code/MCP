@@ -1,0 +1,68 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc17-universal-acceptance-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc17_universal_acceptance_evidence",
+      "path": "sources/gwc17-universal-acceptance-evidence.json",
+      "media_type": "application/json",
+      "bytes": 5774,
+      "sha256": "4a5428d575cbed22021d0e5b14266e253fbc4afb66cb090045bdc9c37480bbbf"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc17_pass",
+      "key": "candidate.phase_e.gwc_17",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-17 reached final GREEN after RED CI #1451, first GREEN #1454, self-review RED #1456 and final MCP CI #1458 SUCCESS with 598/598 tests and zero skipped scenarios. The claim remains ACTIVE until this checkpoint passes exact-head CI.",
+      "source_refs": [
+        "src_gwc17_universal_acceptance_evidence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc17_universality",
+      "key": "candidate.gwc17.universal_acceptance",
+      "claim_type": "fact",
+      "value": "GW-73 acceptance proves historical MCP compatibility, a real Stablecoin S2/Passenger target, a synthetic multi-component target with independent SHAs and locks, local UNVERIFIED isolation, and Intake #003 recovery invariants through the same existing governed primitives.",
+      "source_refs": [
+        "src_gwc17_universal_acceptance_evidence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc17_test_only",
+      "key": "candidate.gwc17.test_only_boundary",
+      "claim_type": "fact",
+      "value": "GWC-17 adds only tests/governedWorkflowUniversalAcceptance fixtures/harness/tests. Runtime source does not import the acceptance harness; no new runtime authority, workflow state, production behavior or package/workflow registration was introduced.",
+      "source_refs": [
+        "src_gwc17_universal_acceptance_evidence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc17_fail_closed",
+      "key": "candidate.gwc17.fail_closed",
+      "claim_type": "fact",
+      "value": "Required acceptance scenarios cannot be skipped. Anti-hardcode has a negative control, recovery GW-68 is bound through the canonical Contract Registry substrate, and any failed scenario makes GW-73 FAILED while exposing the contracts exercised.",
+      "source_refs": [
+        "src_gwc17_universal_acceptance_evidence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc17_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Keep the GWC-17 branch-local claim ACTIVE until this checkpoint passes exact-head CI. After SUCCESS, release GWC-17 and resolve Phase F/final candidate gates from the versioned PRECODE authorities before any main/S1/production integration.",
+      "source_refs": [
+        "src_gwc17_universal_acceptance_evidence"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
