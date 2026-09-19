@@ -1428,7 +1428,8 @@
           "path:src/tools/writeScoped.ts",
           "path:src/tools/registrationPolicy.ts",
           "path:tests/githubLifecycleControl.test.ts",
-          "path:package.json"
+          "path:package.json",
+          "path:.mcp/function-cartography.json"
         ],
         "evidence": [
           "Derived from GWC-CAND-12 exact-bound candidate backlog.",
@@ -1441,7 +1442,10 @@
           "Historical C3 disposition remains authoritative for GWC-12 materialization: C-88.1 DEFER; C-89.1 SUPERSEDE; C-89.2 SPLIT_MATERIALIZED; C-90.1 and C-90.2 now eligible because GWC-9/AF-32 is closed; C-90.3 remains DEFER.",
           "Current materialization target is exactly 9 capabilities: READ github_get_review_threads; WRITE github_create_branch, github_create_commit, github_create_or_update_file, github_create_pull_request, github_mark_pr_ready, github_reply_review_thread, github_resolve_review_thread, github_merge_pull_request.",
           "Write adapters must consume the existing Scoped Write Gate and require shadow_ready before mutation; no second governance authority. Exact-head binding is required for create/update/ready/review/merge operations.",
-          "Claim expanded before RED mutation to GitHub connection/controlPlane, lifecycle tool registration, registration policy, dedicated tests and package test registration."
+          "Claim expanded before RED mutation to GitHub connection/controlPlane, lifecycle tool registration, registration policy, dedicated tests and package test registration.",
+          "First GREEN attempt CI #1367 @ 079bb190fd0559e468b0b3dd80cb588557a8afeb passed typecheck and build; failed only docs:check with FUNCTION_CARTOGRAPHY_STALE.",
+          "CI #1367 expected runtime cartography is exactly 132 tools (+9 selected GWC-12 capabilities), digest 4bd120417137c0f0ddd55019f0e58072e2c5e645293ed471c4816d3ee6a296c8.",
+          "Claim expanded to path:.mcp/function-cartography.json before cartography mutation; no business-code change is justified by #1367."
         ]
       },
       {
@@ -1805,7 +1809,8 @@
           "path:src/tools/writeScoped.ts",
           "path:src/tools/registrationPolicy.ts",
           "path:tests/githubLifecycleControl.test.ts",
-          "path:package.json"
+          "path:package.json",
+          "path:.mcp/function-cartography.json"
         ],
         "status": "ACTIVE"
       }
@@ -1906,9 +1911,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "45fb8f15ebc7152100925d188177700b08e45f82",
+        "lastObservedHeadSha": "079bb190fd0559e468b0b3dd80cb588557a8afeb",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T08:49:00Z",
+        "lastSeenAt": "2026-09-19T09:54:00Z",
         "status": "ACTIVE"
       }
     ],
