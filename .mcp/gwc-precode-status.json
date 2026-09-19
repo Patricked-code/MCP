@@ -1533,7 +1533,10 @@
           "OD-06 remains the only design decision attached to GWC-14 and must be resolved from existing evidence before any ambiguous mutation.",
           "GWC-14 dispatch transition MCP CI #1391 SUCCESS @ 0660338aa24e559d1dd28afe48b532c30ae597cd.",
           "OD-06 is NARROWED to exact review commit/head binding. Existing C2 evidence already projects reviews.headSha and reviews.exactHead; GWC-14 consumes that authority.",
-          "Claim expanded before RED to tests/governedWorkflowReview.test.ts; package validation discovery requires no package.json change."
+          "Claim expanded before RED to tests/governedWorkflowReview.test.ts; package validation discovery requires no package.json change.",
+          "PROVEN RED CI #1393 FAILURE @ 417f799412d5e3c2003fb22dc7c93290bd74632f: exactly 10 intended GWC-14 failures, one for each GW-34..GW-43; all are ERR_MODULE_NOT_FOUND for src/governedWorkflow/review/index.js.",
+          "RED #1393 has 542 historical tests passing and no unrelated failure; typecheck/build/docs/governance/GWC/secrets remain GREEN.",
+          "OD-06 resolved existing-first from DECISIONS_LOG + GW-41 invariant: exact review head/commit binding is mandatory when review approval policy requires it; do not create a second review authority."
         ]
       },
       {
@@ -5628,7 +5631,29 @@
         "GWC-PRE-E-GWC-13"
       ],
       "scope": "REVIEW_MERGE_CONTRACTS_GW34_TO_GW43",
-      "authorityBoundary": "REUSE_EXISTING_GOVERNED_GITHUB_CONTEXT__REUSE_GWC12_LIFECYCLE__EXACT_HEAD_EVIDENCE"
+      "authorityBoundary": "REUSE_EXISTING_GOVERNED_GITHUB_CONTEXT__REUSE_GWC12_LIFECYCLE__EXACT_HEAD_EVIDENCE",
+      "baseline": {
+        "governedGithubContext": "src/governedContext/github.ts",
+        "governedGithubTypes": "src/governedContext/types.ts",
+        "githubLifecycle": "src/tools/githubLifecycle.ts",
+        "taskAuthority": "src/tools/governedTasks.ts#mcp_transition_governed_task",
+        "sessionCheckpointAuthority": "src/tools/governedSessions.ts#mcp_create_governed_checkpoint",
+        "reviewHeadBinding": "reviews.headSha + reviews.exactHead",
+        "integrationClassification": "REUSE/EXTEND",
+        "newPrimitive": "PremergeProof"
+      },
+      "od06": {
+        "state": "RESOLVED_AUTONOMOUS_EXISTING_FIRST",
+        "policy": "Review approval evidence is required to bind exactly to the current PR head when the active ruleset requires approving reviews; stale or mismatched review evidence fails closed. Blocking review state and required unresolved threads remain blockers."
+      },
+      "red": {
+        "ciRunNumber": 1393,
+        "ciRunId": 35435781365,
+        "head": "417f799412d5e3c2003fb22dc7c93290bd74632f",
+        "result": "FAIL_EXPECTED",
+        "failures": 10,
+        "signature": "GW34_TO_GW43_REVIEW_MODULE_ABSENT"
+      }
     }
   },
   "intake003RecoveryEvolution": {
