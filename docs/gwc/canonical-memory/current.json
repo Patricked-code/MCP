@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-intake-004-minute-liveness-complete",
-  "currentBundleId": "bnd_mcp-pr95-intake-004-minute-liveness-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-intake-004-minute-liveness-complete",
+  "currentBundle": "pr95-e-gwc6-server-resolver-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc6-server-resolver-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -29,7 +29,7 @@
     "phase": "E",
     "workItem": "GWC-PRE-E-GWC-6",
     "work": "GWC_6_SERVER_RESOLVER_C3",
-    "status": "IN_PROGRESS",
+    "status": "CHECKPOINT_VALIDATION",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Reobserve the existing GWC-6 candidate session/claim and minute-heartbeat surface before any GWC-6 write. Heartbeat is currently MISSING => liveness UNKNOWN, so preserve ownership; resume only through the existing session if verifiable, otherwise run reconcile-only recovery without transferring the claim.",
+    "nextAction": "Validate the GWC-6 canonical checkpoint on exact-head CI. Keep its existing branch-local claim ACTIVE until SUCCESS; then release GWC-6 and dispatch GWC-PRE-E-GWC-7 without replaying GWC-6.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -249,10 +249,15 @@
       "name": "pr95-candidate-backlog-complete",
       "path": "docs/gwc/canonical-memory/pr95-candidate-backlog-complete",
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-intake-004-minute-liveness-complete",
+      "path": "docs/gwc/canonical-memory/pr95-intake-004-minute-liveness-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "4f88e8453523bd62f04989bc7d76b1aa3ad3cf65",
+  "updatedFromGitHubObservationAt": "2026-09-19T06:00:58Z",
+  "observedHeadBeforePointerUpdate": "202fa6e3ef53f715878271662aa9b7383d644269",
   "correctionReason": "Intake #004 minute-liveness implementation is scope-green at CI #1252. Its own candidate heartbeat became STALE and the stale claim was released only under explicit human recovery authorization. GWC-6 has MISSING heartbeat => UNKNOWN liveness; its ACTIVE claim and collision domains remain unchanged.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
@@ -612,6 +617,7 @@
     "GWC-3": "PASS_WITH_EVIDENCE",
     "GWC-4": "PASS_WITH_EVIDENCE_INTAKE004_COMPLETE",
     "GWC-5": "PASS_WITH_EVIDENCE",
-    "GWC-6": "IN_PROGRESS_ACTIVE_CLAIM_LIVENESS_UNKNOWN"
+    "GWC-6": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
+    "GWC-7": "PENDING_AFTER_GWC6_CHECKPOINT_RELEASE"
   }
 }
