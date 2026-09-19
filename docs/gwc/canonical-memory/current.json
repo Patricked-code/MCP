@@ -27,9 +27,9 @@
   },
   "currentPrecodeState": {
     "phase": "E",
-    "workItem": "GWC-PRE-E-GWC-6",
-    "work": "GWC_6_SERVER_RESOLVER_C3",
-    "status": "CHECKPOINT_VALIDATION",
+    "workItem": "GWC-PRE-E-GWC-7",
+    "work": "GWC_7_RUNTIME_RESOLVER_C4",
+    "status": "IN_PROGRESS",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Validate the GWC-6 canonical checkpoint on exact-head CI. Keep its existing branch-local claim ACTIVE until SUCCESS; then release GWC-6 and dispatch GWC-PRE-E-GWC-7 without replaying GWC-6.",
+    "nextAction": "Resolve OD-04 existing-first from the current runtime binding/configuration and observation authorities, then execute the GWC-7 RED -> minimal GREEN -> full regression -> self-review cycle without runtime mutation.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -257,7 +257,7 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19T06:00:58Z",
-  "observedHeadBeforePointerUpdate": "202fa6e3ef53f715878271662aa9b7383d644269",
+  "observedHeadBeforePointerUpdate": "9dcb9396252d33a297cbb29b8bed5e1546442bad",
   "correctionReason": "Intake #004 minute-liveness implementation is scope-green at CI #1252. Its own candidate heartbeat became STALE and the stale claim was released only under explicit human recovery authorization. GWC-6 has MISSING heartbeat => UNKNOWN liveness; its ACTIVE claim and collision domains remain unchanged.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
@@ -617,7 +617,7 @@
     "GWC-3": "PASS_WITH_EVIDENCE",
     "GWC-4": "PASS_WITH_EVIDENCE_INTAKE004_COMPLETE",
     "GWC-5": "PASS_WITH_EVIDENCE",
-    "GWC-6": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
-    "GWC-7": "PENDING_AFTER_GWC6_CHECKPOINT_RELEASE"
+    "GWC-6": "PASS_WITH_EVIDENCE",
+    "GWC-7": "IN_PROGRESS_ACTIVE_CLAIM"
   }
 }
