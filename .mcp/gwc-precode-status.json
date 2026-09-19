@@ -1220,12 +1220,17 @@
         ],
         "collisionDomains": [
           "path:src/governedWorkflow/resolvers/runtime",
-          "path:tests/governedWorkflowRuntimeResolver.test.ts"
+          "path:tests/governedWorkflowRuntimeResolver.test.ts",
+          "path:package.json"
         ],
         "evidence": [
           "Derived from GWC-CAND-07 exact-bound candidate backlog.",
           "Dependency GWC-PRE-E-GWC-6 completed with checkpoint CI #1265 SUCCESS.",
-          "Dispatched existing-first to candidate-7afc131430c64c6fe34bcfea after GWC-6 release; OD-04 must be resolved from existing runtime authorities before GREEN."
+          "Dispatched existing-first to candidate-7afc131430c64c6fe34bcfea after GWC-6 release; OD-04 must be resolved from existing runtime authorities before GREEN.",
+          "GWC-7 dispatch projection validated by MCP CI #1267 SUCCESS @ aef801b8cb16dd4aa5fde74f0587bfe8c72c7dba.",
+          "OD-04 resolved for first candidate delivery from existing authorities: RuntimeBinding is bounded typed evidence, not an executor/store; kinds cover NO_RUNTIME, CHECKOUT_ONLY, DOCKER, DOCKER_COMPOSE, SYSTEMD, PROCESS_MANAGER and PASSENGER; SINGLE/MULTI/NO_RUNTIME cardinality is explicit.",
+          "Server observation remains runtime truth; Live State remains reconciled projection; GitRegistry declarations may cross-check but never override observation; missing observation => UNVERIFIED, never NO_RUNTIME.",
+          "No new MCP tool or runtime mutation is allowed in GWC-7; RED is isolated to a new runtime resolver test file registered in the existing read-only safety suite."
         ]
       },
       {
@@ -1612,7 +1617,8 @@
         "workItemId": "GWC-PRE-E-GWC-7",
         "collisionDomains": [
           "path:src/governedWorkflow/resolvers/runtime",
-          "path:tests/governedWorkflowRuntimeResolver.test.ts"
+          "path:tests/governedWorkflowRuntimeResolver.test.ts",
+          "path:package.json"
         ],
         "status": "ACTIVE"
       }
@@ -4896,8 +4902,8 @@
         "head": "7c5c34669b9baa8fbe5e2975debf8205d9e5e05b",
         "result": "SUCCESS"
       },
-      "od04": "TO_RESOLVE_FROM_EXISTING_AUTHORITIES",
-      "authorityBoundary": "READ_ONLY_RUNTIME_RESOLUTION__NO_RESTART_OR_MUTATION"
+      "od04": "RESOLVED_BOUNDED_EPHEMERAL_RUNTIME_BINDING",
+      "authorityBoundary": "SERVER_OBSERVATION_TRUTH__LIVESTATE_RECONCILED_PROJECTION__REGISTRY_DECLARATION_NON_OVERRIDING__READ_ONLY"
     }
   },
   "intake003RecoveryEvolution": {
