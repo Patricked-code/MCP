@@ -143,3 +143,103 @@ test('le parseur refuse les statuts, phases et valeurs non bornés', () => {
     `phase=${'x'.repeat(100)}`
   ].join('\n'), JOB_ID, SHA), /deploy_phase_invalid/);
 });
+
+
+test('GWC-15 self-review: worker emits a V2 attestation with explicit push CI admission evidence', () => {
+  const build = buildS1DeployWorkerScript as unknown as (
+    jobId: string,
+    sha: string,
+    admission: {
+      kind: 'push_ci_gate';
+      ciRunId: number;
+      ciHeadSha: string;
+      ciConclusion: 'success';
+    }
+  ) => string;
+  const script = build(JOB_ID, SHA, {
+    kind: 'push_ci_gate',
+    ciRunId: 1500,
+    ciHeadSha: SHA,
+    ciConclusion: 'success'
+  });
+
+  assert.match(script, /"schema_version": 2/);
+  assert.match(script, /"attestation_id":/);
+  assert.match(script, /"admission_kind": "push_ci_gate"/);
+  assert.match(script, /"ci_run_id": 1500/);
+  assert.match(script, new RegExp(`"ci_head_sha": "${SHA}"`));
+  assert.match(script, /"ci_conclusion": "success"/);
+});
+
+test('GWC-15 self-review: V1 attestation remains readable without inventing CI evidence', async () => {
+  const module = await import('../src/deploy/s1Deploy.js') as unknown as {
+    parseS1DeployAttestation?: (
+      input: string,
+      expectedJobId: string,
+      expectedSha: string
+    ) => {
+      schemaVersion: number;
+      attestationId: string | null;
+      admission: unknown;
+      requestedSha: string;
+    };
+  };
+  assert.equal(typeof module.parseS1DeployAttestation, 'function');
+  const parsed = module.parseS1DeployAttestation!(JSON.stringify({
+    schema_version: 1,
+    job_id: JOB_ID,
+    requested_sha: SHA,
+    previous_git_sha: 'a'.repeat(40),
+    runtime_revision: SHA,
+    result: 'succeeded',
+    phase: 'attested',
+    rollback_status: 'not_needed',
+    health_ok: true,
+    oauth_ok: true,
+    mcp_auth_ok: true,
+    ended_at: '2026-09-19T10:55:00Z'
+  }), JOB_ID, SHA);
+  assert.equal(parsed.schemaVersion, 1);
+  assert.equal(parsed.attestationId, null);
+  assert.equal(parsed.admission, null);
+  assert.equal(parsed.requestedSha, SHA);
+});
+
+test('GWC-15 self-review: V2 attestation parser rejects unbounded result and cross-SHA CI evidence', async () => {
+  const module = await import('../src/deploy/s1Deploy.js') as unknown as {
+    parseS1DeployAttestation?: (input: string, expectedJobId: string, expectedSha: string) => unknown;
+  };
+  assert.equal(typeof module.parseS1DeployAttestation, 'function');
+  const base = {
+    schema_version: 2,
+    attestation_id: `s1-deploy-${JOB_ID}`,
+    job_id: JOB_ID,
+    requested_sha: SHA,
+    previous_git_sha: 'a'.repeat(40),
+    runtime_revision: SHA,
+    result: 'succeeded',
+    phase: 'attested',
+    rollback_status: 'not_needed',
+    health_ok: true,
+    oauth_ok: true,
+    mcp_auth_ok: true,
+    admission_kind: 'push_ci_gate',
+    ci_run_id: 1500,
+    ci_head_sha: SHA,
+    ci_conclusion: 'success',
+    ended_at: '2026-09-19T10:55:00Z'
+  };
+
+  assert.throws(
+    () => module.parseS1DeployAttestation!(JSON.stringify({ ...base, result: 'arbitrary' }), JOB_ID, SHA),
+    /deploy_attestation_result_invalid/
+  );
+  assert.throws(
+    () => module.parseS1DeployAttestation!(
+      JSON.stringify({ ...base, ci_head_sha: 'd'.repeat(40) }),
+      JOB_ID,
+      SHA
+    ),
+    /deploy_attestation_ci_sha_mismatch/
+  );
+});
