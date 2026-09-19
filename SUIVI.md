@@ -623,3 +623,19 @@ Date : 2026-08-29
 - Un composant non résolu reste `UNVERIFIED` localement et ne rend pas ses composants frères faux.
 - Bundle canonique : `docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete`, source SHA-256 `5461517162540bdcffc070759da63edea4aa35f2b1e24e932d488c5ae9795ebe`.
 - Claim GWC-10 retenu jusqu'au SUCCESS exact-head du checkpoint.
+
+## 2026-09-19 — GWC-11 Authority docs / Integration slot / exact GitHub baseline — GREEN final, checkpoint en validation
+
+- La gouvernance documentaire est désormais **project-scoped** tout en conservant exactement la déclaration MCP historique par défaut : mêmes documents canoniques, mêmes clés canonical-state, même CI `docs:check`.
+- GW-21 `AUTHORITY_DOCUMENT_READ` réutilise les digests existants d'inventaire documentaire, de déclaration et de cartographie ; aucune copie de contenu documentaire n'est érigée en nouvelle autorité.
+- GW-22 `INTEGRATION_SLOT_RESOLUTION` est le seul primitive réellement nouveau : resolver pur sur les inventaires Current State existants (modules / Markdown / tools). Il retourne `NONE` plutôt que d'inventer un owner.
+- GW-23 `EXACT_GITHUB_BASELINE` réutilise le `GithubOperationalContext` existant et lie la baseline au SHA exact de la branche observé **après** le début de l'étape.
+- Les preuves stale/unavailable échouent fermées : GW-22 ne résout aucun slot depuis un inventaire stale ; GW-23 refuse une baseline replayée d'une étape précédente, une sous-preuve GitHub stale/unavailable ou un head contradictoire.
+- Aucun nouveau store, observateur GitHub, inventaire documentaire, cartographie, droit ou mutation.
+- RED documentaire CI #1343 sur `faded07fa88873093afe1ea6bca0ab2607a964ef`.
+- RED runtime CI #1344 sur `34fb4cf3959a3d7f101a984b4fd9e6476ead242f` : governance tests verts et exactement 7 tests GW-21/22/23 rouges car module absent.
+- Premier GREEN CI #1345 sur `0cdc2e01436351f41b144a7a45f5b7b15590ae9d`.
+- Self-review CI #1346 sur `ac9aad1f3e73fb60e8a102ff46d86fecb29a09d4` : deux vrais fail-open de fraîcheur détectés puis corrigés.
+- GREEN final CI #1348 sur `2a82e278319dd750db2a6d870fc029fe296a66a6`.
+- Bundle canonique : `docs/gwc/canonical-memory/pr95-e-gwc11-authority-baseline-complete`, source SHA-256 `2dacb7e9fc2fe2dd80280e5730e80463803c1ce35c8d801c63e7eddc43d5c627`.
+- Claim GWC-11 retenu jusqu'au SUCCESS exact-head du checkpoint.
