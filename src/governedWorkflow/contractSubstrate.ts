@@ -31,6 +31,14 @@ export type GovernedContractDefinition = Readonly<{
   blueprintRef: string;
 }>;
 
+export type GovernedGraphEdge = Readonly<{
+  from: GovernedStepId;
+  to: GovernedStepId;
+  kind: 'FORWARD' | 'BACKWARD' | 'SKIP';
+  trigger: 'POSTCONDITION_PASS' | 'POSTCONDITION_FAIL' | 'SKIP_CONDITION' | 'REOBSERVE_REQUIRED';
+  precondition: string;
+}>;
+
 export type GovernedContractEvaluation =
   | Readonly<{
       status: 'PASS';
@@ -61,6 +69,7 @@ export type GovernedContractSubstrate = Readonly<{
   contractIds: readonly GovernedStepId[];
   resolve(stepId: string): GovernedContractDefinition | null;
   evaluate(stepId: string): GovernedContractEvaluation;
+  outgoing(stepId: string): readonly GovernedGraphEdge[];
 }>;
 
 export type CreateGovernedContractSubstrateInput = Readonly<{
@@ -301,14 +310,40 @@ export function createGovernedContractSubstrate(
   if (!Array.isArray(graphRoot.edges)) {
     throw new GovernedContractSubstrateError('INVALID_GRAPH_PROJECTION');
   }
-  for (const value of graphRoot.edges) {
+  const edgeKinds = new Set(['FORWARD', 'BACKWARD', 'SKIP']);
+  const edgeTriggers = new Set([
+    'POSTCONDITION_PASS',
+    'POSTCONDITION_FAIL',
+    'SKIP_CONDITION',
+    'REOBSERVE_REQUIRED'
+  ]);
+  const edges = Object.freeze(graphRoot.edges.map((value): GovernedGraphEdge => {
     const edge = object(value);
     const from = string(edge?.from);
     const to = string(edge?.to);
+    const kind = string(edge?.kind);
+    const trigger = string(edge?.trigger);
+    const precondition = string(edge?.precondition);
     if (!from || !to || !EXPECTED_RUNTIME_IDS.has(from) || !EXPECTED_RUNTIME_IDS.has(to)) {
       throw new GovernedContractSubstrateError('GRAPH_REFERENCES_UNKNOWN_STEP');
     }
-  }
+    if (
+      !kind
+      || !edgeKinds.has(kind)
+      || !trigger
+      || !edgeTriggers.has(trigger)
+      || !precondition
+    ) {
+      throw new GovernedContractSubstrateError('INVALID_GRAPH_PROJECTION');
+    }
+    return Object.freeze({
+      from: from as GovernedStepId,
+      to: to as GovernedStepId,
+      kind: kind as GovernedGraphEdge['kind'],
+      trigger: trigger as GovernedGraphEdge['trigger'],
+      precondition
+    });
+  }));
   assertComputedDigest(
     graphRoot,
     input.expectedGraphRegistryDigest,
@@ -354,6 +389,10 @@ export function createGovernedContractSubstrate(
         contractRegistryDigest,
         graphRegistryDigest
       });
+    },
+    outgoing(stepId: string) {
+      if (!byId.has(stepId as GovernedStepId)) return Object.freeze([]);
+      return Object.freeze(edges.filter((edge) => edge.from === stepId));
     }
   };
 
