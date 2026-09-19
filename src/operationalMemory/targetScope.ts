@@ -255,15 +255,26 @@ export function targetScopeContainsRepository(
   );
 }
 
+function canonicalTargetScope(rawScope: TargetScope): TargetScope {
+  const scope = TargetScopeSchema.parse(rawScope);
+  return {
+    ...scope,
+    components: [...scope.components].sort((left, right) => (
+      left.mappingId.localeCompare(right.mappingId)
+      || left.repositoryId.localeCompare(right.repositoryId)
+      || left.role.localeCompare(right.role)
+    ))
+  };
+}
+
 export function targetScopeEquals(
   left: TargetScope | undefined,
   right: TargetScope | undefined
 ): boolean {
   if (!left && !right) return true;
   if (!left || !right) return false;
-  const a = TargetScopeSchema.parse(left);
-  const b = TargetScopeSchema.parse(right);
-  return JSON.stringify(a) === JSON.stringify(b);
+  return JSON.stringify(canonicalTargetScope(left))
+    === JSON.stringify(canonicalTargetScope(right));
 }
 
 export function describeRecordTargetScope(
