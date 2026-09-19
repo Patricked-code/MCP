@@ -852,7 +852,8 @@
         "evidence": [
           "Dispatched to candidate-7afc131430c64c6fe34bcfea @ b3fd1ca59b0c448ab982ffcbe831c927a25e572a",
           "18/18 candidate backlog items exact-bound from docs/gwc/BLUEPRINTS.md @ 39fdfe454510d38fea9abfb857d473f6037cda60",
-          "73 contract bindings: 72 runtime macroContractRef + GW-73 OUT_OF_RUNTIME_GRAPH"
+          "73 contract bindings: 72 runtime macroContractRef + GW-73 OUT_OF_RUNTIME_GRAPH",
+          "B-03 normalization correction: heterogeneous Detailed Evolution Design labels bound without null loss @ 2c7fb4093d550fbd3b1b4477ef1310ba00e49c2b"
         ]
       },
       {
@@ -860,7 +861,7 @@
         "intentKeys": [
           "candidate-audit"
         ],
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 80,
         "sequence": 3,
         "dependencies": [
@@ -871,7 +872,75 @@
           ".mcp:gwc-precode"
         ],
         "evidence": [
-          "Dispatched to candidate-7afc131430c64c6fe34bcfea @ f098b4fe087e5dfbf223e23e9ef4eb293854bfa9"
+          "Dispatched to candidate-7afc131430c64c6fe34bcfea @ f098b4fe087e5dfbf223e23e9ef4eb293854bfa9",
+          "B-03 PASS @ 2c7fb4093d550fbd3b1b4477ef1310ba00e49c2b: 18/18 blueprints, 73/73 unique contract ownership, 36/36 finding dispositions, 12/12 decision dispositions, 0 binding gaps, 0 dependency orphans/cycles, 0 runtime tasks, 0 parallel authority."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-C1",
+        "intentKeys": [
+          "AF-19",
+          "candidate-safety",
+          "exact-sha-ci"
+        ],
+        "title": "AF-19 candidate correction",
+        "status": "READY",
+        "priority": 80,
+        "sequence": 4,
+        "dependencies": [
+          "GWC-PRE-B-03"
+        ],
+        "collisionDomains": [
+          ".github:workflows",
+          "src:deploy",
+          "docs:gwc"
+        ],
+        "evidence": []
+      },
+      {
+        "workItemId": "GWC-PRE-C2",
+        "intentKeys": [
+          "AF-22",
+          "AF-30",
+          "candidate-safety",
+          "review-evidence"
+        ],
+        "title": "AF-22 / AF-30 candidate correction",
+        "status": "PENDING",
+        "priority": 79,
+        "sequence": 5,
+        "dependencies": [
+          "GWC-PRE-C1"
+        ],
+        "collisionDomains": [
+          "src:governed-context-github",
+          "src:governed-workflow-review",
+          "docs:gwc"
+        ],
+        "evidence": []
+      },
+      {
+        "workItemId": "GWC-PRE-C3",
+        "intentKeys": [
+          "candidate-capability-reconciliation",
+          "PR-88",
+          "PR-89",
+          "PR-90"
+        ],
+        "title": "Candidate capability reconciliation",
+        "status": "PENDING",
+        "priority": 78,
+        "sequence": 6,
+        "dependencies": [
+          "GWC-PRE-C2"
+        ],
+        "collisionDomains": [
+          "src:github",
+          "docs:gwc",
+          ".mcp:gwc-precode"
+        ],
+        "evidence": [
+          "Historical C3 disposition evidence exists; implementation/rework remains required by current PRECODE Phase C."
         ]
       }
     ],
@@ -904,7 +973,7 @@
           "docs:gwc",
           ".mcp:gwc-precode"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -952,7 +1021,7 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "f098b4fe087e5dfbf223e23e9ef4eb293854bfa9",
+        "lastObservedHeadSha": "2c7fb4093d550fbd3b1b4477ef1310ba00e49c2b",
         "createdAt": "2026-09-19T00:11:00Z",
         "lastSeenAt": "2026-09-19T00:11:00Z",
         "status": "ACTIVE"
@@ -1160,7 +1229,7 @@
     "sourceEvolutionDesign": ".mcp/gwc-evolution-design.json",
     "sourceContractRegistry": ".mcp/gwc-contracts.json",
     "reconciledIntakeReceipt": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695",
-    "lifecycle": "B02_EXACT_BINDINGS_COMPLETE_AWAITING_B03_AUDIT",
+    "lifecycle": "B03_AUDIT_PASS_CANDIDATE_BACKLOG_COMPLETE",
     "rootOrchestration": {
       "rootContract": "GWC_ROOT",
       "macroContracts": [
@@ -1319,7 +1388,20 @@
           "collisionDomains": [
             "path:src/governedWorkflow",
             "path:tests/governedWorkflow"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES",
+            "expectedTypesFunctions": "EXPECTED TYPES / FUNCTIONS",
+            "redGreen": "RED TEST PLAN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -1376,17 +1458,17 @@
           "integrationDecision": "NEW pure adapter at GW-01; REUSE Task Queue downstream.",
           "upstreamDependencies": null,
           "downstreamConsumers": null,
-          "expectedExistingFilesToChange": null,
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedExistingFilesToChange": "one orchestration-owned pure module may be justified; bounded raw intent, source enum, normalized intent and reason codes; parse/normalize/digest only.",
+          "expectedNewFiles": "one orchestration-owned pure module may be justified; bounded raw intent, source enum, normalized intent and reason codes; parse/normalize/digest only.",
+          "expectedTypesFunctions": "one orchestration-owned pure module may be justified; bounded raw intent, source enum, normalized intent and reason codes; parse/normalize/digest only.",
           "expectedMcpWorkflowChanges": "none initially.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves pure capture missing",
+          "green": "implements only parse/normalize, never classification, capability or branch choice.",
           "regression": "Task Queue IntentClassification, request digest behavior and historical Task creation.",
-          "backwardCompatibility": null,
-          "migrationCompatibility": null,
-          "security": null,
+          "backwardCompatibility": "introduce in shadow/evaluate-only mode; current Task Queue callers remain valid until wrapped.",
+          "migrationCompatibility": "introduce in shadow/evaluate-only mode; current Task Queue callers remain valid until wrapped.",
+          "security": "no authority transfer; reject oversized/invalid input; user request never implies permission; do not persist raw prompts/secrets.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -1400,7 +1482,20 @@
           "definitionOfDone": "bounded deterministic capture exists with no classification/mutation and legacy Task Queue behavior unchanged.",
           "collisionDomains": [
             "path:src/governedWorkflow/intentCapture"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED FILES / TYPES / FUNCTIONS",
+            "expectedNewFiles": "EXPECTED FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY / MIGRATION",
+            "migrationCompatibility": "BACKWARD COMPATIBILITY / MIGRATION",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -1457,16 +1552,16 @@
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "integration adapters only where necessary; do not move owners.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "orchestration-only modules, ExecutionFrame, evidence semantics, dispositions, fail-closed results, EffectPlan and RecoveryAnchor; exact split remains unfrozen.",
+          "expectedTypesFunctions": "orchestration-only modules, ExecutionFrame, evidence semantics, dispositions, fail-closed results, EffectPlan and RecoveryAnchor; exact split remains unfrozen.",
           "expectedMcpWorkflowChanges": "none initially.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "RED proves missing cross-authority orchestration; minimal GREEN builds a frame, evaluates one contract and chooses a disposition with dispatcher still shadow/disabled.",
+          "green": "RED proves missing cross-authority orchestration; minimal GREEN builds a frame, evaluates one contract and chooses a disposition with dispatcher still shadow/disabled.",
           "regression": "Governed Context nextAction, Task Queue classification, Session/Lock semantics, Event Journal audit and global shadow write gate.",
-          "backwardCompatibility": null,
-          "migrationCompatibility": null,
-          "security": null,
+          "backwardCompatibility": "shadow engine first; compare planned routes/effects with existing behavior before enforce/dispatch activation.",
+          "migrationCompatibility": "shadow engine first; compare planned routes/effects with existing behavior before enforce/dispatch activation.",
+          "security": "engine consumes facts only; dispatcher refuses effects without current authorization, safeNow, evidence and locks; UNKNOWN fails closed; frames store bounded references/digests, not secrets.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -1480,7 +1575,20 @@
           "definitionOfDone": "shadow engine reconstructs/evaluates/routes from current authorities with no new business authority or durable workflow cursor.",
           "collisionDomains": [
             "path:src/governedWorkflow/engine"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / SERVICES",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / SERVICES",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY / MIGRATION",
+            "migrationCompatibility": "BACKWARD COMPATIBILITY / MIGRATION",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -1552,16 +1660,16 @@
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "integration callers/tests only unless a proven seam is missing; avoid resolver semantic changes.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "optional orchestration adapters carrying contract id/version, freshness and evidence refs; call existing resolver and project result.",
+          "expectedTypesFunctions": "optional orchestration adapters carrying contract id/version, freshness and evidence refs; call existing resolver and project result.",
           "expectedMcpWorkflowChanges": "no new MCP tools; likely CI profile extension for the missing repository-resolution suite.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves adapter/CI coverage gap while existing resolver tests stay green",
+          "green": "adds thin adapters and coverage with zero semantic resolver change.",
           "regression": "B1/B2/C2 status/reasons/freshness, GitRegistry V1/V2 compatibility, activation-readiness separation and MCP mapping-only behavior.",
           "backwardCompatibility": "preserve Patricked-code/MCP -> mcp_bridge mapping-only path; GitRegistry V2 activation readiness remains separate from C2 identity.",
           "migrationCompatibility": "shadow/parity wrappers; compare wrapper output against current resolver output before engine routing depends on it.",
-          "security": null,
+          "security": "existing GitHub/GitRegistry owners remain; preserve AMBIGUOUS/UNVERIFIED fail-closed; identity/project never imply permission; outputs remain sanitized.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -1575,7 +1683,20 @@
           "definitionOfDone": "GW-04/05/06 wrappers preserve current behavior exactly, stay multi-repository-compatible downstream and introduce no resolver/registry authority.",
           "collisionDomains": [
             "path:src/governedWorkflow/resolvers/identity"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -1663,16 +1784,16 @@
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "sessionService.ts and governedContext/types.ts type declarations only, for the literal widening; no state machine edit.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "connection/session/receipt contract adapters carrying contract id, version, digest and evidence refs.",
+          "expectedTypesFunctions": "connection/session/receipt contract adapters carrying contract id, version, digest and evidence refs.",
           "expectedMcpWorkflowChanges": "no new MCP tool; the existing governed session tools stay the only session surface.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves no contract wrapper exists and that the literal type rejects a second target, while every current session test stays green",
+          "green": "adds adapters and the widened type with zero lifecycle change.",
           "regression": "session open/resume/auto-resume, revision conflicts, transport binding cleanup, idle expiry, checkpoint shape, bootstrap freshness and the governed dashboard.",
           "backwardCompatibility": "existing single-repository sessions stay readable and resumable; no stored record is rewritten; transport lookup keys are unchanged.",
           "migrationCompatibility": "widen the type first with the current value as the only inhabitant, prove parity, then let GWC-10 populate other targets. No data migration in GWC-4.",
-          "security": null,
+          "security": "session service remains sole session authority; resume secrets stay hashed and never enter contract evidence; acknowledgement never grants capability; bootstrap MISSING/EXPIRED stays fail-closed.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -1687,7 +1808,20 @@
           "collisionDomains": [
             "path:src/governedWorkflow/adapters/session",
             "path:src/operationalMemory/sessionService.ts"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -1792,16 +1926,16 @@
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "lockService.ts for atomic multi-acquisition; type declarations for the widened scope key; no change to ALLOWED_TRANSITIONS.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "lock-set planner and task/lock contract adapters.",
+          "expectedTypesFunctions": "lock-set planner and task/lock contract adapters.",
           "expectedMcpWorkflowChanges": "no new MCP tool. The three existing governed task mutation tools stay the only task write surface.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves that acquiring two locks today is non-atomic and can leave a partial grant, while all current queue/lock tests stay green",
+          "green": "adds atomic acquisition and the planner without touching the lifecycle.",
           "regression": "ALLOWED_TRANSITIONS, claim/ownership, taskRegistryDigest byte-compatibility, lock TTL and renewal, release on session close, reconcileSessionLockIds and live-state reconciliation.",
           "backwardCompatibility": "existing single-scope acquireLock calls keep working unchanged; the planner is additive; historical task records stay readable.",
           "migrationCompatibility": "ship the planner in observation mode first — compute the lock set and compare it against what the current code actually acquires — before letting it drive acquisition.",
-          "security": null,
+          "security": "the queue stays the only source of task truth; a wrapper never invents a task id; locks never confer capability; reasons stay bounded and sanitized.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -1817,7 +1951,20 @@
             "path:src/governedWorkflow/adapters/task",
             "path:src/operationalMemory/taskQueue.ts",
             "path:src/operationalMemory/lockService.ts"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -1873,16 +2020,16 @@
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "none semantically; possibly a widened ServerId type declaration.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "a server resolution module returning status, canonical server identifier, path evidence, verification flags, freshness and reason codes.",
+          "expectedTypesFunctions": "a server resolution module returning status, canonical server identifier, path evidence, verification flags, freshness and reason codes.",
           "expectedMcpWorkflowChanges": "none; existing per-server tools stay as they are.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves a registry mapping naming an unknown server is currently accepted without any resolution signal",
+          "green": "adds the resolver and the consistency check with zero change to SSH behavior.",
           "regression": "registry V1/V2 compatibility, SSH tool bounding, per-server tool routing and mapping validation counters.",
           "backwardCompatibility": "every stored mapping with serverId 's1' or 's2' must resolve exactly as today; normalization must be the identity function on existing values.",
           "migrationCompatibility": "introduce normalization in observation mode and assert identity on all stored mappings before any consumer depends on it.",
-          "security": null,
+          "security": "resolution never widens SSH reach; host, username and key path never appear in resolver output; resolving a server never authorizes a command on it.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -1896,7 +2043,20 @@
           "definitionOfDone": "GW-07 returns a bounded resolution status for any target, proves registry/configuration agreement, preserves the declared-versus-verified distinction and adds no new estate hardcode.",
           "collisionDomains": [
             "path:src/governedWorkflow/resolvers/server"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -1958,16 +2118,16 @@
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "liveState types for the typed projection; registryV2 only if the optional descriptor is added there.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "RuntimeBinding schema and a runtime resolution module mapping existing observations onto it.",
+          "expectedTypesFunctions": "RuntimeBinding schema and a runtime resolution module mapping existing observations onto it.",
           "expectedMcpWorkflowChanges": "no new MCP tool required; existing per-server observation tools remain the evidence source.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves a Passenger or checkout-only target cannot be described today",
+          "green": "adds the model and the mapping with no change to observation tools.",
           "regression": "live state snapshot shape, runtime attestation tool output, deploy status parsing and registry mapping validity.",
           "backwardCompatibility": "existing mappings without a runtime descriptor stay valid and resolve to UNVERIFIED rather than failing.",
           "migrationCompatibility": "additive optional field; populate from observation; never backfill a runtime kind from a guess.",
-          "security": null,
+          "security": "the server remains runtime authority; a declared runtime never overrides an observed one; resolution never restarts, rebuilds or mutates anything; command output stays sanitized.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -1981,7 +2141,20 @@
           "definitionOfDone": "GW-08 returns a typed, freshness-bound RuntimeBinding for MCP, for a Passenger project and for a checkout-only project, with no MCP or S1 hardcode and no restart performed.",
           "collisionDomains": [
             "path:src/governedWorkflow/resolvers/runtime"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -2037,16 +2210,16 @@
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "none semantically; optionally an added optional role annotation.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "a domain resolution module returning status, current surface with roles, excluded historical vhosts, verification flags, freshness and reasons.",
+          "expectedTypesFunctions": "a domain resolution module returning status, current surface with roles, excluded historical vhosts, verification flags, freshness and reasons.",
           "expectedMcpWorkflowChanges": "none; list_domains and curl_domain remain the observation surface.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves a project without a public domain cannot currently be distinguished from an unrecorded one",
+          "green": "adds the resolver with no change to probing or protection.",
           "regression": "registry validity, protectedDomains enforcement, domain listing tools and health-check inputs.",
           "backwardCompatibility": "mappings with domain null keep resolving without error; historicalVhosts keeps its current meaning; protectedDomains behavior is untouched.",
           "migrationCompatibility": "additive, observation-first; no backfill of a role from a domain name pattern.",
-          "security": null,
+          "security": "resolution never mutates a vhost; protectedDomains keeps its blocking role unchanged; a resolved domain never authorizes a write; probe output stays sanitized.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -2060,7 +2233,20 @@
           "definitionOfDone": "GW-09 resolves the current public surface with roles for a multi-endpoint project, returns a proven NONE where applicable, excludes historical vhosts explicitly and adds no new estate hardcode.",
           "collisionDomains": [
             "path:src/governedWorkflow/resolvers/domain"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -2129,16 +2315,16 @@
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "src/server.ts registration of the governed task mutation tools, to add the gate decoration alongside the existing catalog decoration.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "a step-scoped effective-capability composer.",
+          "expectedTypesFunctions": "a step-scoped effective-capability composer.",
           "expectedMcpWorkflowChanges": "no new tool; the cartography surface counters change when the operational-write surface is decorated, so the cartography digest must be regenerated with the repository tooling.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves a governed task mutation currently traverses no write gate",
+          "green": "decorates that surface in shadow mode with an unchanged outcome.",
           "regression": "registration catalog, cartography counters and digest, shadow parity tests, governed dashboard and every write tool's call path.",
           "backwardCompatibility": "gate.mode stays 'off' | 'shadow'; routing the operational-write surface through the gate in shadow mode changes no outcome, only observability.",
           "migrationCompatibility": "shadow parity first — record what the gate would have decided for the three operational-write tools and prove it matches current behavior before any enforcement is contemplated.",
-          "security": null,
+          "security": "this is the security-critical blueprint. UNKNOWN must never be read as permitted; a client attestation must never outrank a server observation; composing two permissive facts must never manufacture a permission neither grants.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -2153,7 +2339,20 @@
           "collisionDomains": [
             "path:src/governedWorkflow/governance",
             "path:src/governedContext"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -2230,16 +2429,16 @@
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "the four literal type declarations, plus optional field additions on the operational record types.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "TargetContext and TargetScope schemas and their derivation from resolver output.",
+          "expectedTypesFunctions": "TargetContext and TargetScope schemas and their derivation from resolver output.",
           "expectedMcpWorkflowChanges": "no new tool; existing tools keep their current target until a second project is governed.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves a two-component project cannot be represented in a session, task or lock today",
+          "green": "adds the optional scope with every existing record unchanged.",
           "regression": "session open/resume, task claim and ownership, lock scoping, receipt shape, live state reconciliation, registry compatibility and the governed dashboard.",
           "backwardCompatibility": "every historical single-repository record stays readable and resumable with no migration and no rewrite. OUT_OF_SCOPE stays the correct answer for a repository outside the governed target.",
           "migrationCompatibility": "additive optional fields; absence means the current single target; never backfill a TargetScope onto a historical record.",
-          "security": null,
+          "security": "a target scope never grants capability; a component's capability must be evaluated per component; one component's approval never authorizes another's mutation.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -2255,7 +2454,20 @@
             "path:src/operationalMemory",
             "path:src/governedContext",
             "path:src/liveState"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -2329,16 +2541,16 @@
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "doc-governance-lib.mjs to accept a project-scoped declaration while defaulting to the current literals.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "authority-document evidence, integration-slot resolution and exact-baseline contract outputs.",
+          "expectedTypesFunctions": "authority-document evidence, integration-slot resolution and exact-baseline contract outputs.",
           "expectedMcpWorkflowChanges": "no new tool; docs:check stays the CI enforcement point.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves a step can currently proceed without asserting which authority-document digest it read",
+          "green": "adds the assertions with no change to CI outcomes.",
           "regression": "docs:check, the 12 governance tests, cartography digest, current-state evidence and the governed dashboard.",
           "backwardCompatibility": "the current canonical document list and canonical keys remain valid as the MCP project's own declaration.",
           "migrationCompatibility": "declare the current literals as the MCP instance of a project-scoped set, prove byte-identical behavior, then allow a second project to declare its own.",
-          "security": null,
+          "security": "reading an authority document never grants capability; a stale digest blocks rather than warns; no document content is attested verbatim, only its digest.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -2352,7 +2564,20 @@
           "definitionOfDone": "GW-21, GW-22 and GW-23 produce evaluable, attestable outputs; the canonical set is project-scoped with identical MCP behavior; and the REUSE-before-NEW rule becomes machine-checkable.",
           "collisionDomains": [
             "path:src/governedWorkflow/authority"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -2386,25 +2611,25 @@
         "bindingStatus": "BOUND",
         "macroContractBindings": [],
         "binding": {
-          "existingIntegrationSlot": null,
-          "existingFilesSymbols": null,
-          "existingTypesSchemas": null,
-          "existingFunctionsCallGraph": null,
+          "existingIntegrationSlot": "Existing bounded GitHub observation surfaces under src/github plus src/governedContext/github.ts; GWC-12 is a disposition layer, not a runtime authority.",
+          "existingFilesSymbols": "bounded GitHub observation exists in src/github/connection.ts, inventory.ts, authorizationDiagnostics.ts, identityResolution.ts, repositoryResolution.ts, projectResolution.ts and src/governedContext/github.ts. There is no GitHub write surface on main beyond the deploy path.",
+          "existingTypesSchemas": "bounded GitHub observation exists in src/github/connection.ts, inventory.ts, authorizationDiagnostics.ts, identityResolution.ts, repositoryResolution.ts, projectResolution.ts and src/governedContext/github.ts. There is no GitHub write surface on main beyond the deploy path.",
+          "existingFunctionsCallGraph": "bounded GitHub observation exists in src/github/connection.ts, inventory.ts, authorizationDiagnostics.ts, identityResolution.ts, repositoryResolution.ts, projectResolution.ts and src/governedContext/github.ts. There is no GitHub write surface on main beyond the deploy path.",
           "exactGap": "families E through H need bounded GitHub read and exact-head write adapters. That capability exists only in a stale stack whose base no longer exists as main, and no contract may depend on it until its disposition is decided.",
           "integrationDecision": "REUSE of the candidate capability where it survives reconciliation; the decision itself is a disposition, not an implementation.",
           "upstreamDependencies": null,
           "downstreamConsumers": null,
-          "expectedExistingFilesToChange": null,
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedExistingFilesToChange": "NO_CODE_REQUIRED_AT_GWC_12_DISPOSITION_LAYER; capability materialization is owned by GWC-PRE-C3 after recorded disposition.",
+          "expectedNewFiles": "NO_CODE_REQUIRED_AT_GWC_12_DISPOSITION_LAYER; capability materialization is owned by GWC-PRE-C3 after recorded disposition.",
+          "expectedTypesFunctions": "NO_CODE_REQUIRED_AT_GWC_12_DISPOSITION_LAYER; capability materialization is owned by GWC-PRE-C3 after recorded disposition.",
           "expectedMcpWorkflowChanges": null,
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "RED: prove stale candidate stack cannot be treated as current runtime capability and cannot be merged by default.",
+          "green": "GREEN: record an explicit bounded disposition for each candidate capability; materialize only through GWC-PRE-C3.",
           "regression": "registered tool surface, cartography digest, current-state evidence, write gate coverage and documentation governance.",
           "backwardCompatibility": "the current 111-tool surface and its digest are the compatibility reference; any change must be a deliberate, documented cartography regeneration.",
-          "migrationCompatibility": null,
-          "security": null,
+          "migrationCompatibility": "No migration at disposition layer; any selected capability must preserve the current 111-tool compatibility baseline until deliberately regenerated.",
+          "security": "`#89` explicitly forbids free Git shell, force-push, reset --hard, clean -fdx, destructive reflog, raw GitHub API, repository deletion, arbitrary publication and secret-value reads. Those prohibitions must survive any reconciliation unchanged. The manifest is explicitly not an authorization and does not replace the Governed Task Queue.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -2414,12 +2639,25 @@
             ".mcp/gwc-contracts.json",
             "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
           ],
-          "attestation": null,
+          "attestation": "Disposition evidence only: exact-head PR/main observation plus recorded capability decision; no runtime attestation is created.",
           "definitionOfDone": "each of `#85`, `#86`, `#88`, `#89` and `#90` has an explicit recorded disposition, and every family E through H contract states which GitHub capability it needs and whether that capability exists on main today.",
           "collisionDomains": [
             "github:pull-requests",
             "path:src/github"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "DERIVED_FROM_SCOPE_AND_CURRENT_MAIN",
+            "existingFilesSymbols": "CURRENT_MAIN IMPLEMENTATION",
+            "existingTypesSchemas": "CURRENT_MAIN IMPLEMENTATION",
+            "existingFunctionsCallGraph": "CURRENT_MAIN IMPLEMENTATION",
+            "expectedExistingFilesToChange": "NO_CODE_REQUIRED_DISPOSITION",
+            "expectedNewFiles": "NO_CODE_REQUIRED_DISPOSITION",
+            "expectedTypesFunctions": "NO_CODE_REQUIRED_DISPOSITION",
+            "redGreen": "DERIVED_FROM_DISPOSITION_INVARIANTS",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "DERIVED_FROM_BACKWARD_COMPATIBILITY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -2534,16 +2772,16 @@
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "package.json for the test profile, and .github/workflows/mcp-ci.yml only if the profile declaration requires it.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "validation profile schema, expected-failure signature and CI observation adapter.",
+          "expectedTypesFunctions": "validation profile schema, expected-failure signature and CI observation adapter.",
           "expectedMcpWorkflowChanges": "a CI step may be added to prove that every test file is covered by the profile.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves two test files are executed nowhere and that a RED observation cannot currently be qualified",
+          "green": "adds discovery-based coverage and the signature, with the existing CI outcome unchanged.",
           "regression": "the whole CI profile, the 343-test read-only safety suite, the 12 governance tests, the whitespace check and the branch governance rules.",
           "backwardCompatibility": "the current profile must be expressible in the new declaration with an identical step set and identical outcomes.",
           "migrationCompatibility": "declare the current profile, prove identical CI results, then replace the literal test enumeration with discovery so AF-31 cannot recur.",
-          "security": null,
+          "security": "CI remains the sole verdict authority; a contract never declares GREEN without a CI conclusion on the exact SHA; failure output must be bounded and sanitized before it becomes a signature.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -2557,7 +2795,20 @@
           "definitionOfDone": "the ten contracts evaluate against the existing CI, a RED must prove its intended failure, the validation profile is declared and project-scoped, and no test file sits outside it.",
           "collisionDomains": [
             "path:src/governedWorkflow/development"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT TYPES / SCHEMAS",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -2668,23 +2919,23 @@
         "binding": {
           "existingIntegrationSlot": "src/governedContext/github.ts review collection, beside the existing check collection that already resolves headSha and exactHead.",
           "existingFilesSymbols": "src/governedContext/github.ts, src/governedContext/types.ts GithubOperationalContext checks/reviews/ruleset/evidence, src/governedContext/service.ts.",
-          "existingTypesSchemas": null,
+          "existingTypesSchemas": "src/governedContext/github.ts already assembles a bounded GitHub evidence block, and src/governedContext/types.ts declares its shape. That declaration is where AF-22 and AF-30 are visible in the code rather than in prose:",
           "existingFunctionsCallGraph": "governed context collection -> GitHub observation -> bounded projection -> governance decision. Review counts enter that projection without a commit binding.",
           "exactGap": "review evidence has no commit binding and no freshness window, so GW-41 premerge revalidation cannot prove that the approvals it counted apply to the head it is about to merge.",
           "integrationDecision": "PARTIAL/EXTEND for GW-35, GW-36 and GW-41; CANDIDATE for GW-34, GW-38 and GW-43; PARTIAL/CANDIDATE for GW-37; REUSE for GW-39, GW-40 and GW-42.",
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "src/governedContext/types.ts reviews block and src/governedContext/github.ts review collection.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "PremergeProof composing checks, reviews, ruleset and mergeability at one exact head.",
+          "expectedTypesFunctions": "PremergeProof composing checks, reviews, ruleset and mergeability at one exact head.",
           "expectedMcpWorkflowChanges": "none on main; the merge capability itself depends on the GWC-12 disposition.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves that an approval on a superseded head is currently counted as satisfying the requirement",
+          "green": "adds the binding and makes GW-41 reject it. This is the second safety prerequisite of the programme and its RED is the direct analogue of AF-19's.",
           "regression": "governed context assembly, the pr55 review regression suites, governance decision inputs and the governed dashboard.",
           "backwardCompatibility": "existing consumers of the three review fields are unaffected; the added fields are optional and nullable.",
           "migrationCompatibility": "add the fields in observation mode, measure how often an approval is on a non-exact head, then make GW-41 depend on them.",
-          "security": null,
+          "security": "this is an integrity-critical blueprint. An approval must never be counted for a head it was not given on; a resolved thread on an old head must not be presented as resolved on a new one; a ruleset read must never be cached across a head change.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -2699,7 +2950,20 @@
           "collisionDomains": [
             "path:src/governedContext/github.ts",
             "path:src/governedWorkflow/review"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT_MAIN IMPLEMENTATION",
+            "existingFunctionsCallGraph": "CURRENT CALL GRAPH",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -2835,23 +3099,23 @@
         "binding": {
           "existingIntegrationSlot": "the existing `gate` step for option B; createGithubDeployRouter's start handler for option C; the workflow job graph for option D.",
           "existingFilesSymbols": ".github/workflows/mcp-deploy.yml gate and deploy steps; src/deploy/githubOidc.ts GITHUB_OIDC_POLICY, validateClaims, verifyGithubOidcToken; src/deploy/routes.ts createGithubDeployRouter; src/deploy/s1Deploy.ts buildS1DeployJobId, buildS1DeployWorkerScript, buildS1DeployLaunchCommand, parseS1DeployStatus; .mcp/autodeploy-policy.json.",
-          "existingTypesSchemas": null,
-          "existingFunctionsCallGraph": null,
+          "existingTypesSchemas": "NO_CURRENT_BLUEPRINT_SPECIFIC_TYPE_OR_SCHEMA",
+          "existingFunctionsCallGraph": "NO_CURRENT_BLUEPRINT_SPECIFIC_FUNCTION_OR_CALL_GRAPH",
           "exactGap": "no contract requires CI success for the exact SHA before deployment admission, and the deployment attestation does not record the CI evidence that authorized it.",
           "integrationDecision": "REUSE/EXTEND for GW-45 and GW-46; REUSE/GENERALIZE for GW-47, GW-49, GW-50, GW-51 and GW-53; REUSE/GENERALIZE/EXTEND for GW-52; PARTIAL/EXTEND for GW-48; REUSE for GW-44, GW-54, GW-55 and GW-57; PARTIAL for GW-56.",
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": ".github/workflows/mcp-deploy.yml gate step and permissions for option B; src/deploy/routes.ts for option C; src/deploy/s1Deploy.ts for the attestation fields.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "CI evidence type, admission predicate and the bounded attestation enumerations.",
+          "expectedTypesFunctions": "CI evidence type, admission predicate and the bounded attestation enumerations.",
           "expectedMcpWorkflowChanges": "a workflow permission addition under option B; no new MCP tool.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "reproduces AF-19 — a deployment admitted for a SHA with no concluded CI — and must fail for exactly that reason and no other",
+          "green": "adds the admission gate. This is the programme's first safety prerequisite, and its implementation is explicitly out of scope for the present design mission.",
           "regression": "the OIDC suite, deploy routes, deploy workflow shell assertions, S1 worker script generation, status parsing, live state update and receipt refresh.",
           "backwardCompatibility": "`workflow_dispatch` currently bypasses the policy gate unconditionally. Whether an explicit manual deployment may also bypass the CI gate is part of OD-07 and must be decided, not inherited silently.",
           "migrationCompatibility": "land the gate in observation mode first — record what it would have decided for recent pushes, including the `d1f3039` case — then enforce.",
-          "security": null,
+          "security": "the OIDC boundary must not be weakened. No option may widen allowedEvents or relax `tokenSha === requestedSha`. An unreachable CI verdict is UNVERIFIED and must refuse, never permit.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -2867,7 +3131,20 @@
             "path:.github/workflows",
             "path:src/deploy",
             "path:src/governedWorkflow/deploy"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT_MAIN IMPLEMENTATION",
+            "existingFunctionsCallGraph": "CURRENT_MAIN IMPLEMENTATION",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -3004,23 +3281,39 @@
         "binding": {
           "existingIntegrationSlot": "after GWC-15 deployment, before the existing closure calls; never inside closeSession.",
           "existingFilesSymbols": "scripts/check-docs.mjs, scripts/check-doc-governance.mjs, docs/governance/markdown-inventory.json, src/operationalMemory/sessionService.ts createCheckpoint/closeSession, src/operationalMemory/lockService.ts releaseLocksForSession, src/operationalMemory/taskQueue.ts reconcileIntent, src/liveState/*.",
-          "existingTypesSchemas": null,
-          "existingFunctionsCallGraph": null,
+          "existingTypesSchemas": [
+            "documentation governance is already enforced in CI: presence, exact inventory, canonical-state consistency and cartography alignment;",
+            "the inventory is exact rather than advisory, which is why adding a Markdown file without updating docs/governance/markdown-inventory.json fails the build — a drift this branch encountered and corrected;",
+            "createCheckpoint already exists on the session service and already carries completedAction, resultCode, pullRequestNumber, observedHeadSha, blockers and nextAction, so GW-70 has a real implementation to reuse;",
+            "releaseLocksForSession and closeSession already exist, so GW-71 and GW-72 reuse existing behavior;",
+            "reconcileIntent already exists on the task queue for the queue-reconciliation half of GW-72;",
+            "bootstrap receipt states MISSING/CURRENT/STALE/EXPIRED already support GW-66;",
+            "liveState reconcile/engine/store already support GW-65."
+          ],
+          "existingFunctionsCallGraph": [
+            "documentation governance is already enforced in CI: presence, exact inventory, canonical-state consistency and cartography alignment;",
+            "the inventory is exact rather than advisory, which is why adding a Markdown file without updating docs/governance/markdown-inventory.json fails the build — a drift this branch encountered and corrected;",
+            "createCheckpoint already exists on the session service and already carries completedAction, resultCode, pullRequestNumber, observedHeadSha, blockers and nextAction, so GW-70 has a real implementation to reuse;",
+            "releaseLocksForSession and closeSession already exist, so GW-71 and GW-72 reuse existing behavior;",
+            "reconcileIntent already exists on the task queue for the queue-reconciliation half of GW-72;",
+            "bootstrap receipt states MISSING/CURRENT/STALE/EXPIRED already support GW-66;",
+            "liveState reconcile/engine/store already support GW-65."
+          ],
           "exactGap": "there is no terminal verification contract that re-observes reality after the documentation deployment and gates DONE on it, and no contract handles the recursion where the documentation change is itself the last deployed SHA.",
           "integrationDecision": "REUSE/GENERALIZE for GW-58 and GW-65; CANDIDATE for GW-59, GW-61 and GW-63; PARTIAL/CANDIDATE for GW-60; REUSE/EXTEND for GW-62 and GW-64; REUSE for GW-66, GW-67, GW-70 and GW-71; PARTIAL/EXTEND for GW-68; PARTIAL/REUSE for GW-69 and GW-72.",
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "none for closure mechanics; documentation contracts consume the existing scripts.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "drift decision, terminal verification predicate and a documentation-recursion guard.",
+          "expectedTypesFunctions": "drift decision, terminal verification predicate and a documentation-recursion guard.",
           "expectedMcpWorkflowChanges": "none beyond what GWC-12 decides.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves DONE can currently be asserted without re-observing reality",
+          "green": "adds terminal verification with no change to checkpoint or closure mechanics.",
           "regression": "documentation governance, checkpoint shape, lock release on session close, session expiry, queue reconciliation and live state.",
           "backwardCompatibility": "the current checkpoint shape and closure semantics are unchanged.",
           "migrationCompatibility": "terminal verification lands in observation mode, recording what it would have blocked, before it gates DONE.",
-          "security": null,
+          "security": "DONE must be derived from verified reality, never from process completion. Releasing a lock must not depend on the task's outcome — a failed task must still release.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -3035,7 +3328,20 @@
           "collisionDomains": [
             "path:src/governedWorkflow/terminal",
             "path:docs"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT FILES / SYMBOLS",
+            "existingTypesSchemas": "CURRENT_MAIN IMPLEMENTATION",
+            "existingFunctionsCallGraph": "CURRENT_MAIN IMPLEMENTATION",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       },
       {
@@ -3086,24 +3392,24 @@
         ],
         "binding": {
           "existingIntegrationSlot": "tests only. The harness must not be importable by runtime code, so it cannot become a hidden dependency.",
-          "existingFilesSymbols": null,
-          "existingTypesSchemas": null,
-          "existingFunctionsCallGraph": null,
+          "existingFilesSymbols": "none. GW-73 is the only contract besides GW-01 classified NEW, and correctly so: there is no acceptance harness today.",
+          "existingTypesSchemas": "none. GW-73 is the only contract besides GW-01 classified NEW, and correctly so: there is no acceptance harness today.",
+          "existingFunctionsCallGraph": "none. GW-73 is the only contract besides GW-01 classified NEW, and correctly so: there is no acceptance harness today.",
           "exactGap": "nothing proves the engine works for a project other than MCP, and nothing prevents a future contributor from reintroducing an MCP assumption.",
           "integrationDecision": "NEW, and justified — an acceptance harness has no existing owner by definition.",
           "upstreamDependencies": null,
           "downstreamConsumers": null,
           "expectedExistingFilesToChange": "package.json to register the suite, and the CI workflow once it is stable.",
-          "expectedNewFiles": null,
-          "expectedTypesFunctions": null,
+          "expectedNewFiles": "the harness, its scenario fixtures and an anti-hardcode assertion that fails when a governed path references a literal repository, server or domain.",
+          "expectedTypesFunctions": "the harness, its scenario fixtures and an anti-hardcode assertion that fails when a governed path references a literal repository, server or domain.",
           "expectedMcpWorkflowChanges": "one CI step once stable — and that step must be discovered by the GWC-13 validation profile rather than enumerated, so AF-31 does not recur here.",
           "expectedTestFiles": null,
-          "red": null,
-          "green": null,
+          "red": "proves a second project cannot be governed today",
+          "green": "is reached only when every scenario passes without a single MCP-specific branch.",
           "regression": "every contract, since acceptance is the whole-system gate.",
           "backwardCompatibility": "the harness must run against the historical single-repository model as well as a multi-component one, proving GWC-10's compatibility rule rather than assuming it.",
           "migrationCompatibility": "start with the MCP scenario to establish the baseline, then add Stablecoin, then a synthetic multi-component project. Adding scenarios must never require editing a contract.",
-          "security": null,
+          "security": "the harness must never touch a real server, a real deployment or a real task queue. Fixtures must contain no credentials and no real host data.",
           "authorityImpact": null,
           "dataPersistenceImpact": null,
           "evidence": [
@@ -3117,7 +3423,20 @@
           "definitionOfDone": "two real projects and one synthetic multi-component project are governed end to end by the same contracts, with no MCP-specific branching, all recovery scenarios passing, and the anti-hardcode assertion enforced.",
           "collisionDomains": [
             "path:tests/governedWorkflowUniversalAcceptance"
-          ]
+          ],
+          "bindingSourceLabels": {
+            "existingIntegrationSlot": "INTEGRATION SLOT",
+            "existingFilesSymbols": "CURRENT_MAIN IMPLEMENTATION",
+            "existingTypesSchemas": "CURRENT_MAIN IMPLEMENTATION",
+            "existingFunctionsCallGraph": "CURRENT_MAIN IMPLEMENTATION",
+            "expectedExistingFilesToChange": "EXPECTED EXISTING FILES TO CHANGE",
+            "expectedNewFiles": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "expectedTypesFunctions": "EXPECTED NEW FILES / TYPES / FUNCTIONS",
+            "redGreen": "RED / GREEN",
+            "backwardCompatibility": "BACKWARD COMPATIBILITY",
+            "migrationCompatibility": "MIGRATION STRATEGY",
+            "security": "AUTHORITY / SECURITY / PRIVACY"
+          }
         }
       }
     ],
@@ -3165,6 +3484,339 @@
         "definitionOfDone"
       ],
       "missingDetailedDesignSections": 0
+    },
+    "findingDispositions": [
+      {
+        "finding": "AF-01",
+        "owner": "GWC-10",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-02",
+        "owner": "GWC-10",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-03",
+        "owner": "GWC-10",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-04",
+        "owner": "GWC-10",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-05",
+        "owner": "GWC-10",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-06",
+        "owner": "GWC-15",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-07",
+        "owner": "GWC-16",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-08",
+        "owner": "GWC-5",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-09",
+        "owner": "GWC-16",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-10",
+        "owner": "GWC-9",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-11",
+        "owner": "GWC-4",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-12",
+        "owner": "GWC-0",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-13",
+        "owner": "GWC-17",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-14",
+        "owner": "GWC-3",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-15",
+        "owner": "GWC-13",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-16",
+        "owner": "GWC-13",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-17",
+        "owner": "GWC-5",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-18",
+        "owner": "GWC-5",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-19",
+        "owner": "GWC-15",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "CURRENT_MAIN_EVIDENCE"
+      },
+      {
+        "finding": "AF-20",
+        "owner": "GWC-0",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-21",
+        "owner": "GWC-0",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-22",
+        "owner": "GWC-14",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "CURRENT_MAIN_EVIDENCE"
+      },
+      {
+        "finding": "AF-23",
+        "owner": "GWC-16",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-24",
+        "owner": "GWC-5",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-25",
+        "owner": "GWC-14",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-26",
+        "owner": "GWC-15",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-27",
+        "owner": "GWC-5",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-28",
+        "owner": "GWC-0",
+        "disposition": "RESOLVED_HISTORICAL_EVIDENCE",
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL"
+      },
+      {
+        "finding": "AF-29",
+        "owner": "GWC-15",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "CURRENT_MAIN_EVIDENCE"
+      },
+      {
+        "finding": "AF-30",
+        "owner": "GWC-14",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "CURRENT_MAIN_EVIDENCE"
+      },
+      {
+        "finding": "AF-31",
+        "owner": "GWC-13",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "CURRENT_MAIN_EVIDENCE"
+      },
+      {
+        "finding": "AF-32",
+        "owner": "GWC-9",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "CURRENT_MAIN_EVIDENCE"
+      },
+      {
+        "finding": "AF-33",
+        "owner": "GWC-0",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "CURRENT_MAIN_EVIDENCE"
+      },
+      {
+        "finding": "AF-34",
+        "owner": "GWC-0",
+        "disposition": "RESOLVED_HISTORICAL_EVIDENCE",
+        "definitionSource": "CURRENT_MAIN_EVIDENCE"
+      },
+      {
+        "finding": "AF-35",
+        "owner": "GWC-5",
+        "disposition": "OWNED_BY_CANDIDATE_BLUEPRINT",
+        "definitionSource": "CURRENT_MAIN_EVIDENCE"
+      },
+      {
+        "finding": "AF-36",
+        "owner": "GWC-0",
+        "disposition": "RESOLVED_HISTORICAL_EVIDENCE",
+        "definitionSource": "CURRENT_MAIN_EVIDENCE"
+      }
+    ],
+    "openDecisionDispositions": [
+      {
+        "decision": "OD-01",
+        "owner": "GWC-1",
+        "state": "NARROWED",
+        "disposition": "PRESERVE_NARROWED_DECISION"
+      },
+      {
+        "decision": "OD-02",
+        "owner": "GWC-1",
+        "state": "NARROWED",
+        "disposition": "PRESERVE_NARROWED_DECISION"
+      },
+      {
+        "decision": "OD-03",
+        "owner": "GWC-6",
+        "state": "OPEN",
+        "disposition": "PRESERVE_OPEN_DECISION"
+      },
+      {
+        "decision": "OD-04",
+        "owner": "GWC-7",
+        "state": "NARROWED",
+        "disposition": "PRESERVE_NARROWED_DECISION"
+      },
+      {
+        "decision": "OD-05",
+        "owner": "GWC-5",
+        "state": "OPEN",
+        "disposition": "PRESERVE_OPEN_DECISION"
+      },
+      {
+        "decision": "OD-06",
+        "owner": "GWC-14",
+        "state": "NARROWED",
+        "disposition": "PRESERVE_NARROWED_DECISION"
+      },
+      {
+        "decision": "OD-07",
+        "owner": "GWC-15",
+        "state": "OPEN_NARROWED",
+        "disposition": "PRESERVE_OPEN_DECISION"
+      },
+      {
+        "decision": "OD-08",
+        "owner": "GWC-4",
+        "state": "OPEN",
+        "disposition": "PRESERVE_OPEN_DECISION"
+      },
+      {
+        "decision": "OD-09",
+        "owner": "GWC-0",
+        "state": "OPEN",
+        "disposition": "PRESERVE_OPEN_DECISION"
+      },
+      {
+        "decision": "OD-10",
+        "owner": "GWC-10",
+        "state": "NARROWED",
+        "disposition": "PRESERVE_NARROWED_DECISION"
+      },
+      {
+        "decision": "OD-11",
+        "owner": "GWC-10",
+        "state": "OPEN",
+        "disposition": "PRESERVE_OPEN_DECISION"
+      },
+      {
+        "decision": "OD-12",
+        "owner": "GWC-15",
+        "state": "OPEN",
+        "disposition": "PRESERVE_OPEN_DECISION"
+      }
+    ],
+    "audit": {
+      "auditedBy": "GWC-PRE-B-03",
+      "auditedAtHead": "2c7fb4093d550fbd3b1b4477ef1310ba00e49c2b",
+      "status": "PASS_WITH_EVIDENCE",
+      "blueprintMissing": [],
+      "duplicateBlueprints": [],
+      "contractMissing": [],
+      "contractDuplicates": [],
+      "findingUnowned": [],
+      "decisionOwnerMissing": [],
+      "bindingGaps": [],
+      "dependencyOrphans": [],
+      "dependencyCycles": [],
+      "collisionDomainMissing": [],
+      "unjustifiedNewPrimitives": [],
+      "authorityAudit": {
+        "globalAuditPresent": true,
+        "parallelAuthorityCreated": false,
+        "existingFirstAllItems": true
+      },
+      "runtimeTaskCreation": {
+        "designRuntimeTasksCreated": 0,
+        "promotedToTaskQueue": false,
+        "status": "PASS"
+      },
+      "conversationDependency": {
+        "unstructured": false,
+        "reconciledReceipt": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695"
+      },
+      "macroCrosswalk": {
+        "bindings": 73,
+        "runtimeBound": 72,
+        "gw73": {
+          "stepId": "GW-73",
+          "macroContractRef": null,
+          "reason": "OUT_OF_RUNTIME_GRAPH"
+        },
+        "missingRuntimeMacroRefs": []
+      },
+      "phaseExit": "CANDIDATE_BACKLOG_COMPLETE"
     }
   }
 }
