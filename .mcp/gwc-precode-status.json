@@ -1087,7 +1087,7 @@
           "GWC-4"
         ],
         "title": "GWC-4 — Connection/Session/Receipt integration",
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 66,
         "sequence": 11,
         "dependencies": [
@@ -1125,7 +1125,8 @@
           "Checkpoint bundle pr95-e-gwc4-intake003-recovery-complete written; claim retained until checkpoint CI succeeds.",
           "INTAKE_003 checkpoint CI #1237 SUCCESS @ 115ac1640b7c75458cf23710e851c1e0e4b14352.",
           "GWC-4 historical baseline plus intake-003 additive recovery delta are complete with evidence; claim released only after checkpoint CI success.",
-          "POST_PASS_REQUEUE: NEW_INFORMATION_INTAKE-004 accepted with adaptation. Preserve intake #003 FINAL GREEN CI #1233; requeue GWC-4 only for additive per-minute heartbeat transport/validation on candidateContinuity + coordination docs. Active GWC-6 claim remains untouched."
+          "POST_PASS_REQUEUE: NEW_INFORMATION_INTAKE-004 accepted with adaptation. Preserve intake #003 FINAL GREEN CI #1233; requeue GWC-4 only for additive per-minute heartbeat transport/validation on candidateContinuity + coordination docs. Active GWC-6 claim remains untouched.",
+          "Intake #004 minute-liveness delta claimed by candidate-minute-liveness-20260919T042806Z @ 621686856786316efe1ec5fe6c9d63ab72382720; scope is disjoint from active GWC-6 server-resolver claim."
         ]
       },
       {
@@ -1578,6 +1579,17 @@
           "path:tests/governedWorkflowGithubResolverAdapters.test.ts"
         ],
         "status": "ACTIVE"
+      },
+      {
+        "candidateSessionId": "candidate-minute-liveness-20260919T042806Z",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-4",
+        "collisionDomains": [
+          "path:src/governedContext/candidateContinuity.ts",
+          "path:tests/candidateContinuity.test.ts",
+          "docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -1628,6 +1640,23 @@
         "lastObservedHeadSha": "666cb280156a880f67ddff6613d75902f5c623d8",
         "createdAt": "2026-09-19T00:11:00Z",
         "lastSeenAt": "2026-09-19T04:02:00Z",
+        "status": "ACTIVE"
+      },
+      {
+        "candidateSessionId": "candidate-minute-liveness-20260919T042806Z",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "provider": "chatgpt",
+        "providerConversationRef": null,
+        "providerConversationRefProvenance": "UNAVAILABLE",
+        "githubActor": "Wealthtechinnovations",
+        "githubConnectionRef": null,
+        "connectionInstanceRef": "precode-chatgpt-minute-liveness-20260919T042806Z-62168685",
+        "repository": "Patricked-code/MCP",
+        "branch": "claude/ecstatic-edison-v1dyt1",
+        "startingHeadSha": "621686856786316efe1ec5fe6c9d63ab72382720",
+        "lastObservedHeadSha": "621686856786316efe1ec5fe6c9d63ab72382720",
+        "createdAt": "2026-09-19T04:28:35Z",
+        "lastSeenAt": "2026-09-19T04:33:24Z",
         "status": "ACTIVE"
       }
     ]
@@ -4780,7 +4809,7 @@
     }
   },
   "intake004MinuteLiveness": {
-    "status": "ACCEPTED_WITH_ADAPTATION_READY_FOR_IMPLEMENTATION",
+    "status": "IMPLEMENTATION_IN_PROGRESS",
     "intakeId": "NEW_INFORMATION_INTAKE-004",
     "receiptDigest": "bdef89603c02b604efcb2da82e0e3647c9d45bac8bcfc26760501fd16a3f2fd0",
     "sourceCommentId": 5739347553,
@@ -4814,6 +4843,9 @@
     "runtimeMutation": false,
     "mainMutation": false,
     "s1Mutation": false,
-    "productionMutation": false
+    "productionMutation": false,
+    "candidateSessionId": "candidate-minute-liveness-20260919T042806Z",
+    "heartbeatCommentId": 5739369708,
+    "claimedAt": "2026-09-19T04:33:24Z"
   }
 }
