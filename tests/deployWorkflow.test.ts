@@ -108,3 +108,16 @@ test('le workflow est borné globalement et ne journalise pas les réponses OIDC
   assert.match(source, /--max-time\s+10/);
   assert.doesNotMatch(source, /set -x|echo\s+\$OIDC_TOKEN|printenv/);
 });
+
+
+test('GWC-15 self-review: push gate propagates its authorizing CI run into the bounded start request', async () => {
+  const source = await workflowSource();
+
+  assert.match(source, /ci_run_id/i);
+  assert.match(source, /push_ci_gate/);
+  assert.match(source, /ciHeadSha|ci_head_sha/);
+  assert.match(source, /ciConclusion|ci_conclusion/);
+  assert.match(source, /workflow_dispatch_manual/);
+  assert.match(source, /steps\.gate\.outputs\./);
+  assert.match(source, /\/deploy\/github\/s1\/start/);
+});
