@@ -1087,7 +1087,7 @@
           "GWC-4"
         ],
         "title": "GWC-4 — Connection/Session/Receipt integration",
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 66,
         "sequence": 11,
         "dependencies": [
@@ -1111,7 +1111,9 @@
           "FINAL GREEN CI #1205 SUCCESS @ 3ad4bcc57e45679352472c383f30a4f0703f5db2.",
           "Persisted Session/Receipt/ConnectionContext schemas and Session Service lifecycle methods remain unchanged.",
           "POST_PASS_REQUEUE: NEW_INFORMATION_INTAKE-003 accepted with adaptation at canonicalRevision=3/backlogRevision=2. Prior GWC-4 PASS and final GREEN CI #1205 remain valid baseline; only additive intake-discovery/liveness/supervisor/runner reconciliation is pending after the current GWC-5 claim.",
-          "GWC-5 completed and released its collision domain. Intake #003 recovery delta is now dispatch-eligible and retains priority 66."
+          "GWC-5 completed and released its collision domain. Intake #003 recovery delta is now dispatch-eligible and retains priority 66.",
+          "Intake #003 delta claimed by candidate-7afc131430c64c6fe34bcfea @ 1c0eaaa69d9782ed3e8e70de76fcdade1e4a0864",
+          "This claim preserves GWC-4 historical PASS/CI #1205 and implements only additive recovery/intake/liveness/supervisor/runner behavior accepted by intake #003."
         ]
       },
       {
@@ -1536,6 +1538,16 @@
           "path:src/operationalMemory/lockService.ts"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-4",
+        "collisionDomains": [
+          "path:src/governedWorkflow/adapters/session",
+          "path:src/operationalMemory/sessionService.ts"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -1583,9 +1595,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "dfce37dc2fea4699ce4796d464146108da976a76",
+        "lastObservedHeadSha": "1c0eaaa69d9782ed3e8e70de76fcdade1e4a0864",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T03:33:00Z",
+        "lastSeenAt": "2026-09-19T03:39:00Z",
         "status": "ACTIVE"
       }
     ]
