@@ -972,7 +972,7 @@
           "GWC-0"
         ],
         "title": "GWC-0 — Contract substrate",
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 70,
         "sequence": 7,
         "dependencies": [
@@ -983,7 +983,9 @@
           "path:tests/governedWorkflow"
         ],
         "evidence": [
-          "Derived from GWC-CAND-00 exact-bound candidate backlog."
+          "Derived from GWC-CAND-00 exact-bound candidate backlog.",
+          "Claimed by candidate-7afc131430c64c6fe34bcfea @ f87b3a89b226a551e07ab3a1a39b4f98f6146b97",
+          "Phase D cycle applies: RED -> proven RED -> minimal GREEN -> full regressions -> self-review -> checkpoint."
         ]
       },
       {
@@ -1417,6 +1419,16 @@
           ".mcp:gwc-precode"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-0",
+        "collisionDomains": [
+          "path:src/governedWorkflow",
+          "path:tests/governedWorkflow"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -1464,9 +1476,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "cb5d125f479d32f8b6bc4613e538da4bccdc9aa6",
+        "lastObservedHeadSha": "f87b3a89b226a551e07ab3a1a39b4f98f6146b97",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T01:56:00Z",
+        "lastSeenAt": "2026-09-19T02:03:00Z",
         "status": "ACTIVE"
       }
     ]
