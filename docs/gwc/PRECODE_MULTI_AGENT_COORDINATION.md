@@ -569,6 +569,89 @@ Implementation: `registerCandidateIntake()`, `evaluateCandidateIntakeGate()`, `r
 
 TDD evidence: RED CI #1080 at `c63beb0ac413824a72647a661640ed599cc867a0`; GREEN CI #1081 at `f288d3e93eae772dd4e51654a1e4512a822b3dd6`.
 
+
+### 17.4 Per-minute candidate liveness heartbeat
+
+Candidate liveness is transient telemetry layered on top of the existing candidate-session and claim projections. It is never an ownership, authorization, lock or work-allocation authority.
+
+Mandatory invariants:
+
+`OWNERSHIP != LIVENESS != PROGRESS`
+
+`HEARTBEAT != OWNERSHIP`
+
+`HEARTBEAT != AUTHORIZATION`
+
+`STALE != RELEASED`
+
+`STALE != DEAD`
+
+`MISSING_OR_AMBIGUOUS_HEARTBEAT != PERMISSION_TO_WRITE`
+
+Every participating `CandidateSession.status=ACTIVE` SHOULD expose liveness through the existing PR #95 coordination surface whenever its provider/executor can update GitHub comments. A writer with an ACTIVE claim MUST do so while actively executing. A reviewer/observer without a claim SHOULD do so while actively evaluating a bounded scope.
+
+Transport contract:
+
+1. Exactly one mutable top-level PR #95 issue comment is used per `candidateSessionId`.
+2. Its first machine-identifiable line is:
+   `<!-- GWC_PRECODE_LIVENESS:<candidateSessionId> -->`.
+3. The same comment is updated in place. A heartbeat MUST NOT create a Git commit, move branch HEAD or write heartbeat state into a versioned file.
+4. Emit immediately after session bootstrap/resume and then no later than every 60 seconds while actively executing, plus on meaningful action transitions.
+5. Before voluntary stop/handoff, emit `currentAction=YIELDED` when the transport is available. A CLOSED candidate session no longer emits heartbeats.
+6. If a provider/executor cannot emit this telemetry, no other agent may fabricate it on that session's behalf. Its liveness remains `UNKNOWN` or becomes `STALE` according to the available evidence.
+
+Bounded heartbeat payload:
+
+- `schemaVersion=1`;
+- `candidateSessionId`;
+- `agentIdentity`;
+- `workItemId`: exact claimed work item for a writer, or `null` for an ACTIVE reviewer/observer with no claim;
+- monotonically increasing `heartbeatSequence`;
+- monotonically increasing `emittedAt`;
+- exact `observedHeadSha`;
+- `currentAction` from `REOBSERVING | ANALYZING | EDITING | RUNNING_TESTS | WAITING_CI | SELF_REVIEW | CHECKPOINTING | WAITING_USER | YIELDED | UNKNOWN`;
+- optional bounded `evidenceRef`.
+
+A heartbeat MUST NOT contain a prompt, raw transcript, chain-of-thought, token, credential, secret or arbitrary unbounded body.
+
+Binding and collection rules:
+
+- the marker session id and payload `candidateSessionId` must match;
+- the candidate session must be ACTIVE;
+- `agentIdentity` must match the candidate session;
+- `observedHeadSha` must equal the currently reobserved online HEAD before it is treated as current liveness;
+- if `workItemId` is non-null, an exact ACTIVE candidate claim for the same session/agent/work item is required;
+- if `workItemId=null`, there must be no ACTIVE claim for that candidate session; this proves session presence only and never manufactures ownership;
+- heartbeat sequence and timestamp are monotone relative to the previous accepted heartbeat;
+- the collector requires exactly one heartbeat comment for a candidate session. Zero means `MISSING`; more than one means `AMBIGUOUS`. It MUST NOT choose the newest duplicate arbitrarily.
+
+Derived minute-liveness:
+
+- age <= 60 seconds and not `YIELDED` => `WORKING_CONFIRMED`;
+- age 61..120 seconds => `RECENTLY_ACTIVE`;
+- age > 120 seconds => `STALE`;
+- no usable heartbeat, invalid heartbeat or ambiguous duplicate surface => `UNKNOWN`;
+- explicit `currentAction=YIELDED` => `YIELDED`.
+
+These thresholds are telemetry policy, not ownership timeouts. No liveness state releases a claim or grants write permission.
+
+Supervisor use:
+
+`heartbeat collection -> binding validation -> minute-liveness -> existing recovery supervisor -> existing governed runner planning`.
+
+The supervisor MUST continue to reobserve HEAD, active claim, checkpoint and CI/evidence. Heartbeat alone never proves progress and commit/CI activity alone never becomes a fabricated heartbeat.
+
+Implementation remains existing-first in `src/governedContext/candidateContinuity.ts` through:
+- `CandidateHeartbeatSchema`;
+- `formatCandidateHeartbeatComment()` / `parseCandidateHeartbeatComment()`;
+- `collectCandidateHeartbeatComments()`;
+- `validateCandidateHeartbeatBinding()`;
+- `assessCandidateMinuteLiveness()`;
+- the previously delivered `assessCandidateLiveness()`, `superviseCandidateRecovery()`, `planCandidateRecoveryRunner()` and `acknowledgeCandidateRecoveryRunner()`.
+
+GWC-17 remains responsible for universal acceptance of restart-storm resistance, acknowledgement-before-resume, claim safety, stale-envelope handling and secret/transcript non-persistence.
+
+
 ## 18. Conflict resolution precedence for this program
 
 Within the specific PR #95 PRECODE evolution program, this revision supersedes any older statement that permanently assigns Claude as primary writer or ChatGPT as reviewer-only.
