@@ -819,7 +819,7 @@
         "intentKeys": [
           "candidate-backlog"
         ],
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 100,
         "sequence": 1,
         "dependencies": [],
@@ -827,7 +827,9 @@
           "docs:gwc",
           ".mcp:gwc-precode"
         ],
-        "evidence": []
+        "evidence": [
+          "SESSION_START PR #95 comment #5737773077 @ 2fb4b67817065edda53231d437e4b276a7a1c0c2"
+        ]
       },
       {
         "workItemId": "GWC-PRE-B-02",
@@ -865,7 +867,18 @@
         "evidence": []
       }
     ],
-    "activeClaims": [],
+    "activeClaims": [
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-B-01",
+        "collisionDomains": [
+          "docs:gwc",
+          ".mcp:gwc-precode"
+        ],
+        "status": "ACTIVE"
+      }
+    ],
     "dispatchPolicy": {
       "resumeSameCandidateSessionFirst": true,
       "dependencySafeOnly": true,
@@ -898,7 +911,25 @@
       "EXECUTE_RED_GREEN_REGRESSION",
       "CHECKPOINT_HANDOFF_UPDATE_MEMORY_AND_NEXT_ACTION"
     ],
-    "candidateSessions": []
+    "candidateSessions": [
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "provider": "chatgpt",
+        "providerConversationRef": null,
+        "providerConversationRefProvenance": "UNAVAILABLE",
+        "githubActor": "Wealthtechinnovations",
+        "githubConnectionRef": null,
+        "connectionInstanceRef": "precode-chatgpt-direct-github-20260919T001100Z-2fb4b678",
+        "repository": "Patricked-code/MCP",
+        "branch": "claude/ecstatic-edison-v1dyt1",
+        "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
+        "lastObservedHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
+        "createdAt": "2026-09-19T00:11:00Z",
+        "lastSeenAt": "2026-09-19T00:11:00Z",
+        "status": "ACTIVE"
+      }
+    ]
   },
   "conversationIntake": {
     "role": "BOUNDED_SEMANTIC_RECONCILIATION_INPUT_TO_EXISTING_AUTHORITIES",
