@@ -1,0 +1,179 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+
+process.env.NODE_ENV = 'test';
+process.env.MCP_AUTH_TOKEN ??= 'test-only-mcp-auth-value-000000';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/test-s1-key';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S2_KEY_PATH ??= '/tmp/test-s2-key';
+process.env.ENABLE_WRITE_TOOLS = 'true';
+process.env.MCP_GOVERNED_SESSIONS_ENABLED = 'true';
+process.env.MCP_WRITE_GATE_MODE = 'shadow';
+process.env.GITHUB_ORG = 'chainsolutions-wealthtech';
+
+const { registerGithubControlPlaneReadTools } =
+  await import('../src/tools/githubControlPlaneRead.js');
+const {
+  registerGithubGwcLifecycleReadTools,
+  registerGithubGwcLifecycleWriteTools
+} = await import('../src/tools/githubGwcLifecycle.js');
+const { WRITE_SCOPED_TOOL_NAMES } =
+  await import('../src/tools/registrationPolicy.js');
+
+const C89_READ = [
+  'github_compare_refs',
+  'github_get_branch_state',
+  'github_get_commit_checks',
+  'github_get_commit_state',
+  'github_get_deployments',
+  'github_get_pull_request_reviews',
+  'github_get_pull_request_state',
+  'github_get_releases',
+  'github_get_repository_state',
+  'github_get_rulesets',
+  'github_get_webhooks',
+  'github_get_workflow_runs'
+] as const;
+
+const C90_REQUIRED_READ = ['github_get_review_threads'] as const;
+const C90_REQUIRED_WRITE = [
+  'github_create_branch',
+  'github_create_commit',
+  'github_create_or_update_file',
+  'github_create_pull_request',
+  'github_mark_pr_ready',
+  'github_merge_pull_request',
+  'github_reply_review_thread',
+  'github_resolve_review_thread'
+] as const;
+const C90_DEFERRED = [
+  'github_delete_branch',
+  'github_delete_file',
+  'github_request_review',
+  'github_update_pull_request',
+  'github_get_tree',
+  'github_get_commits',
+  'github_get_commit_diff',
+  'github_get_mergeability',
+  'github_get_required_checks'
+] as const;
+
+function namesFrom(register: (server: McpServer, dependencies: any) => void, dependencies: any): string[] {
+  const names: string[] = [];
+  const server = {
+    tool(name: string, _description: string, _schema: unknown, _callback: Function) {
+      names.push(name);
+    }
+  } as unknown as McpServer;
+  register(server, dependencies);
+  return names.sort();
+}
+
+test('GWC-PRE-C3 materializes only the C-89.2 READ split', () => {
+  const names = namesFrom(registerGithubControlPlaneReadTools, {
+    configuredOrg: 'chainsolutions-wealthtech',
+    request: async () => ({
+      ok: true, status: 200, json: {}, tokenExpiresAt: null, oauthScopes: []
+    })
+  });
+  assert.deepEqual(names, [...C89_READ].sort());
+});
+
+test('GWC-PRE-C3 materializes only C-90.1 plus C-90.2 and keeps C-90.3 deferred', () => {
+  const readNames = namesFrom(registerGithubGwcLifecycleReadTools, {
+    configuredOrg: 'chainsolutions-wealthtech',
+    request: async () => ({
+      ok: true, status: 200, json: {}, tokenExpiresAt: null, oauthScopes: []
+    })
+  });
+  const writeNames = namesFrom(registerGithubGwcLifecycleWriteTools, {
+    configuredOrg: 'chainsolutions-wealthtech',
+    writeEnabled: () => true,
+    evaluateGovernance: async () => ({
+      mode: 'shadow',
+      toolName: 'ignored',
+      governedSessionId: '11111111-1111-4111-8111-111111111111',
+      currentStateVersion: 10,
+      acknowledgedStateVersion: 10,
+      activeLockConflicts: 0,
+      verdict: 'shadow_ready',
+      wouldBlock: false
+    }),
+    request: async () => ({
+      ok: true, status: 200, json: {}, tokenExpiresAt: null, oauthScopes: []
+    })
+  });
+  assert.deepEqual(readNames, [...C90_REQUIRED_READ]);
+  assert.deepEqual(writeNames, [...C90_REQUIRED_WRITE].sort());
+  for (const deferred of C90_DEFERRED) {
+    assert.equal(readNames.includes(deferred), false, deferred);
+    assert.equal(writeNames.includes(deferred), false, deferred);
+  }
+});
+
+test('every C3 WRITE split remains behind the existing scoped write gate catalogue', () => {
+  for (const name of C90_REQUIRED_WRITE) {
+    assert.equal(WRITE_SCOPED_TOOL_NAMES.has(name), true, name);
+  }
+  for (const deferred of C90_DEFERRED) {
+    assert.equal(WRITE_SCOPED_TOOL_NAMES.has(deferred), false, deferred);
+  }
+});
+
+test('C3 merge refuses a stale head before any mutation', async () => {
+  let handler: Function | null = null;
+  let mutationCalls = 0;
+  const server = {
+    tool(name: string, _description: string, _schema: unknown, callback: Function) {
+      if (name === 'github_merge_pull_request') handler = callback;
+    }
+  } as unknown as McpServer;
+  registerGithubGwcLifecycleWriteTools(server, {
+    configuredOrg: 'chainsolutions-wealthtech',
+    writeEnabled: () => true,
+    evaluateGovernance: async () => ({
+      mode: 'shadow',
+      toolName: 'ignored',
+      governedSessionId: '11111111-1111-4111-8111-111111111111',
+      currentStateVersion: 10,
+      acknowledgedStateVersion: 10,
+      activeLockConflicts: 0,
+      verdict: 'shadow_ready',
+      wouldBlock: false
+    }),
+    request: async (_endpoint: string, options: any = {}) => {
+      if (!options.method || options.method === 'GET') {
+        return {
+          ok: true,
+          status: 200,
+          json: {
+            number: 95,
+            draft: false,
+            merged: false,
+            mergeable: true,
+            head: { sha: 'b'.repeat(40) },
+            base: { ref: 'main' }
+          },
+          tokenExpiresAt: null,
+          oauthScopes: []
+        };
+      }
+      mutationCalls += 1;
+      throw new Error('mutation must not occur');
+    }
+  });
+  assert.ok(handler);
+  await assert.rejects(
+    () => handler!({
+      organization: 'chainsolutions-wealthtech',
+      repository: 'MCP',
+      pullRequestNumber: 95,
+      expectedHeadSha: 'a'.repeat(40),
+      mergeMethod: 'squash'
+    }, {}),
+    /GITHUB_PR_HEAD_STALE/
+  );
+  assert.equal(mutationCalls, 0);
+});
