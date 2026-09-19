@@ -17,7 +17,6 @@ import { registerGovernedSessionTools } from './governedSessions.js';
 import { registerGovernedContextTools } from './governedContext.js';
 import { registerCurrentStateTools } from './currentState.js';
 import { registerGithubControlPlaneReadTools } from './githubControlPlaneRead.js';
-import { registerGithubGwcLifecycleReadTools } from './githubGwcLifecycle.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -55,7 +54,6 @@ export function registerReadOnlyTools(server: McpServer): void {
 
   registerGithubInventoryReadOnlyTools(server);
   registerGithubControlPlaneReadTools(server);
-  registerGithubGwcLifecycleReadTools(server);
   registerGithubAuthorizationReadOnlyTools(server);
   registerDurableAccountReadOnlyTools(server);
   registerGitRegistryV2ReadOnlyTools(server);
