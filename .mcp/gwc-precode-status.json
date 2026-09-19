@@ -1512,7 +1512,7 @@
           "GWC-14"
         ],
         "title": "GWC-14 — Review / merge contracts",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 56,
         "sequence": 21,
         "dependencies": [
@@ -1542,7 +1542,8 @@
           "Self-review RED CI #1400 FAILURE @ 29ff055be9486ca3c0da32a94c86ac86298d6efa proved cross-repository PremergeProof reuse; corrected fail-closed and GREEN CI #1401 SUCCESS @ a1ace467dd063a73df27d4af59164fd4b58a08f1.",
           "Self-review RED CI #1402 FAILURE @ b70324e1a54a3a1d0dbfb7579d2d68ad7a4491c6 proved cross-task PremergeProof reuse; proof now binds task/session/receipt revisions and stateVersion.",
           "FINAL GREEN CI #1404 SUCCESS @ 03979501b3c2337f7ed0dca90c91daac3eec9da5: 552/552 tests pass; validation discovery 73 tests, 72 runner, 1 dedicated.",
-          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete staged; claim remains ACTIVE until exact-head checkpoint CI succeeds."
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete staged; claim remains ACTIVE until exact-head checkpoint CI succeeds.",
+          "CHECKPOINT CI #1408 SUCCESS @ f408b0869109e0e041c29b70a413bc18b1620be1; canonical GWC-14 bundle validated and claim eligible for release."
         ]
       },
       {
@@ -1552,7 +1553,7 @@
           "GWC-15"
         ],
         "title": "GWC-15 — Deployment / exact-SHA evidence",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 55,
         "sequence": 22,
         "dependencies": [
@@ -1564,7 +1565,11 @@
           "path:src/governedWorkflow/deploy"
         ],
         "evidence": [
-          "Derived from GWC-CAND-15 exact-bound candidate backlog."
+          "Derived from GWC-CAND-15 exact-bound candidate backlog.",
+          "Dependency GWC-PRE-E-GWC-14 satisfied by exact-head checkpoint CI #1408 SUCCESS @ f408b0869109e0e041c29b70a413bc18b1620be1.",
+          "Existing-first prerequisite GWC-PRE-C1 is DONE: AF-19 closed by option B, extending the existing mcp-deploy.yml gate; GREEN CI #1112 @ 074f2bd21eef6e23811512453d34670bfecc7485.",
+          "GWC-15 must reuse the existing same-SHA CI gate, unchanged OIDC tokenSha===requestedSha boundary, S1 worker/attestation, Live State and existing task/session authorities; no second deployment engine or lock authority.",
+          "OD-12 remains to be resolved from existing timestamp/freshness carriers for GW-52 before implementation."
         ]
       },
       {
@@ -1890,6 +1895,17 @@
           "path:src/governedWorkflow/review",
           "path:tests/governedWorkflowReview.test.ts"
         ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-15",
+        "collisionDomains": [
+          "path:.github/workflows",
+          "path:src/deploy",
+          "path:src/governedWorkflow/deploy"
+        ],
         "status": "ACTIVE"
       }
     ],
@@ -1989,9 +2005,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "a01b09d741bfde064e455a61379f52846456fc04",
+        "lastObservedHeadSha": "f408b0869109e0e041c29b70a413bc18b1620be1",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T09:22:00Z",
+        "lastSeenAt": "2026-09-19T10:26:36Z",
         "status": "ACTIVE"
       }
     ],
@@ -5631,7 +5647,7 @@
     "gwc14": {
       "workItemId": "GWC-PRE-E-GWC-14",
       "blueprint": "GWC-14",
-      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+      "status": "PASS_WITH_EVIDENCE",
       "dependencies": [
         "GWC-PRE-E-GWC-12",
         "GWC-PRE-E-GWC-13"
@@ -5704,9 +5720,36 @@
       "proofBinding": "REPOSITORY__PULL_REQUEST__HEAD__TASK_REVISION__SESSION_REVISION__BOOTSTRAP_RECEIPT__STATE_VERSION",
       "checkpoint": {
         "bundle": "docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete",
-        "validation": "PENDING_EXACT_HEAD_CI",
-        "claimRelease": "KEEP_ACTIVE_UNTIL_CHECKPOINT_CI_SUCCESS"
+        "validation": "SUCCESS",
+        "ciRunNumber": 1408,
+        "ciRunId": 35437419162,
+        "head": "f408b0869109e0e041c29b70a413bc18b1620be1",
+        "claimRelease": "RELEASED_AFTER_CHECKPOINT_CI_SUCCESS"
       }
+    },
+    "gwc15": {
+      "workItemId": "GWC-PRE-E-GWC-15",
+      "blueprint": "GWC-15",
+      "status": "IN_PROGRESS",
+      "dependency": "GWC-PRE-E-GWC-14",
+      "dependencyEvidence": {
+        "ciRunNumber": 1408,
+        "ciRunId": 35437419162,
+        "head": "f408b0869109e0e041c29b70a413bc18b1620be1",
+        "result": "SUCCESS"
+      },
+      "scope": "DEPLOYMENT_EXACT_SHA_EVIDENCE_GW44_TO_GW57",
+      "authorityBoundary": "REUSE_C1_SAME_SHA_CI_GATE__UNCHANGED_OIDC_SHA_BINDING__REUSE_S1_ATTESTATION_LIVE_STATE_TASK_SESSION__NO_SECOND_DEPLOY_ENGINE",
+      "inheritedSafety": {
+        "af19": "CLOSED_BY_GWC_PRE_C1",
+        "od07": "RESOLVED_OPTION_B_EXISTING_WORKFLOW_GATE",
+        "od07Green": {
+          "ciRunNumber": 1112,
+          "head": "074f2bd21eef6e23811512453d34670bfecc7485"
+        },
+        "oidcRule": "DO_NOT_WIDEN_ALLOWED_EVENTS_OR_RELAX_TOKEN_SHA_EQUALS_REQUESTED_SHA"
+      },
+      "openDecision": "OD-12_INTER_AUTHORITY_FRESHNESS_WINDOW_GW52"
     }
   },
   "intake003RecoveryEvolution": {
@@ -5814,5 +5857,13 @@
       "externalOwnerWorkItemId": "GWC-PRE-E-GWC-6"
     },
     "verdict": "PASS_WITH_EVIDENCE_SCOPE_GREEN_EXTERNAL_GWC6_RED"
+  },
+  "currentPrecodeState": {
+    "phase": "E",
+    "workItem": "GWC-PRE-E-GWC-15",
+    "work": "GWC_15_DEPLOYMENT_EXACT_SHA_EVIDENCE",
+    "status": "IN_PROGRESS",
+    "nextAction": "Audit the current same-SHA CI gate, OIDC binding, S1 deployment attestation, runtime attestation, Live State and receipt/task bindings for GW-44..GW-57; resolve OD-12 from existing freshness carriers; then derive and run a bounded GWC-15 RED without deploying or mutating runtime authorities.",
+    "blocker": null
   }
 }
