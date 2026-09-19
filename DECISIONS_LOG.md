@@ -809,3 +809,15 @@ Frontière : GWC-6 reste `READ_ONLY`; GitRegistry conserve son autorité, Projec
 - L'observation serveur reste l'autorité de vérité runtime ; Live State reste sa projection réconciliée ; GitRegistry ne peut que cross-checker une observation courante.
 - NO_RUNTIME exige une observation explicite ; absence d'observation = UNVERIFIED.
 - La session writer précédente étant STALE, son claim n'a pas été libéré par timeout. Le transfert GWC-7 a été effectué uniquement après autorisation humaine explicite PR #95 comment 5739928009 et revalidation du HEAD/claim/evidence.
+
+## 2026-09-19 — GWC-8 : politique de résolution de domaine et compatibilité historique
+
+Décision : `GW-09 DOMAIN_RESOLUTION` compose les autorités existantes au lieu de créer un registre parallèle. GitRegistry porte les déclarations `publicDomain`, `publicApi`, `historicalVhosts` et domaines de mapping ; l'observation courante du serveur prouve ce qui est effectivement servi. `protectedDomains` reste une liste de sûreté et ne devient jamais une autorité de domaine.
+
+Décision `NONE` : un projet n'est `NONE` que si l'autorité projet déclare explicitement `publicDomain=null` et `publicApi=null`, que les mappings du serveur résolu ne déclarent aucun domaine, et que l'observation courante prouve une surface active vide. Une observation absente, indisponible ou stale reste `UNVERIFIED`.
+
+Décision historique : `historicalVhosts` ne peut jamais être promu automatiquement en surface active. Il est exclu et rapporté. Un domaine observé courant sans déclaration active correspondante échoue fermé.
+
+Décision de rôle : FRONTEND et API proviennent seulement d'autorités explicites. Un mapping historique sans `componentRole` peut renforcer comme preuve une déclaration projet du même domaine, mais il ne crée pas un nouveau rôle `OTHER` si une autorité plus explicite existe déjà. Plusieurs domaines distincts pour un même rôle restent `AMBIGUOUS` plutôt que d'appliquer une priorité implicite.
+
+Frontière : resolver `READ_ONLY`, sans mutation vhost/SSH, sans probing side effect, sans persistance et sans inférence d'autorisation. Preuve finale : MCP CI #1286 SUCCESS sur `d6240484e387770751d9d3db476ac3b9470c74ce`.
