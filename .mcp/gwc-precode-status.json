@@ -1028,7 +1028,7 @@
           "GWC-2"
         ],
         "title": "GWC-2 — Execution Engine Skeleton",
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 68,
         "sequence": 9,
         "dependencies": [
@@ -1040,7 +1040,10 @@
         ],
         "evidence": [
           "Derived from GWC-CAND-02 exact-bound candidate backlog.",
-          "Dependencies GWC-PRE-E-GWC-0 and GWC-PRE-E-GWC-1 completed with GREEN CI #1163/#1171."
+          "Dependencies GWC-PRE-E-GWC-0 and GWC-PRE-E-GWC-1 completed with GREEN CI #1163/#1171.",
+          "Claimed by candidate-7afc131430c64c6fe34bcfea @ be53e4815bbb1166e666d6821048892b1ca2d620",
+          "GWC-2 boundary revalidated: orchestration-only, ephemeral ExecutionFrame, no durable cursor/store, Event Journal audit-only, TaskLifecycleCoordinator not promoted to engine.",
+          "First GREEN will keep dispatcher disabled/shadow and exercise one pure contract route only."
         ]
       },
       {
@@ -1452,6 +1455,15 @@
           "path:src/governedWorkflow/intentCapture"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-2",
+        "collisionDomains": [
+          "path:src/governedWorkflow/engine"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -1499,9 +1511,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "d33c6a55ef6f70706e98a6e46f763f618fd4314e",
+        "lastObservedHeadSha": "be53e4815bbb1166e666d6821048892b1ca2d620",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T02:24:00Z",
+        "lastSeenAt": "2026-09-19T02:29:00Z",
         "status": "ACTIVE"
       }
     ]
