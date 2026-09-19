@@ -307,3 +307,139 @@ test('GWC-12 merge checks exact PR head and required check-runs before PUT merge
   assert.equal(calls.at(-1)?.method, 'PUT');
   assert.deepEqual(calls.at(-1)?.body, { sha: head, merge_method: 'squash' });
 });
+
+
+test('GWC-12 self-review: create commit advances ref non-force only after exact-head reobservation', async () => {
+  const { registerGithubLifecycleWriteTools } = await import('../src/tools/githubLifecycle.js');
+  const registry = serverRegistry();
+  const baseSha = 'a'.repeat(40);
+  const treeSha = 'b'.repeat(40);
+  const blobSha = 'c'.repeat(40);
+  const newTreeSha = 'd'.repeat(40);
+  const commitSha = 'e'.repeat(40);
+  const calls: Array<{ endpoint: string; method?: string; body?: unknown }> = [];
+
+  registerGithubLifecycleWriteTools(registry.server, {
+    configuredOrg: 'chainsolutions-wealthtech',
+    writeEnabled: () => true,
+    evaluateGovernance: async () => READY,
+    request: async (endpoint: string, options?: any) => {
+      calls.push({ endpoint, method: options?.method, body: options?.jsonBody });
+      if (endpoint.endsWith('/branches/mcp%2Fwork')) {
+        return ok({ name: 'mcp/work', commit: { sha: baseSha } });
+      }
+      if (endpoint.endsWith('/git/commits/' + baseSha)) {
+        return ok({ sha: baseSha, tree: { sha: treeSha } });
+      }
+      if (endpoint.endsWith('/git/blobs')) return ok({ sha: blobSha }, 201);
+      if (endpoint.endsWith('/git/trees')) return ok({ sha: newTreeSha }, 201);
+      if (endpoint.endsWith('/git/commits')) return ok({ sha: commitSha }, 201);
+      if (endpoint.endsWith('/git/refs/heads/mcp%2Fwork')) {
+        return ok({ ref: 'refs/heads/mcp/work', object: { sha: commitSha } });
+      }
+      return ok({});
+    }
+  });
+
+  const handler = registry.handlers.get('github_create_commit');
+  await handler?.({
+    organization: 'chainsolutions-wealthtech',
+    repository: 'Repo',
+    branch: 'mcp/work',
+    expectedHeadSha: baseSha,
+    message: 'exact head commit',
+    files: [{ path: 'a.txt', contentBase64: 'YQ==' }]
+  }, {});
+
+  const refUpdate = calls.at(-1);
+  assert.equal(refUpdate?.method, 'PATCH');
+  assert.deepEqual(refUpdate?.body, { sha: commitSha, force: false });
+  assert.equal(calls[0]?.endpoint.endsWith('/branches/mcp%2Fwork'), true);
+});
+
+test('GWC-12 self-review: review thread mutations reject stale PR head before GraphQL mutation', async () => {
+  const { registerGithubLifecycleWriteTools } = await import('../src/tools/githubLifecycle.js');
+
+  for (const toolName of ['github_reply_review_thread', 'github_resolve_review_thread']) {
+    const registry = serverRegistry();
+    const calls: Array<{ endpoint: string; method?: string }> = [];
+    registerGithubLifecycleWriteTools(registry.server, {
+      configuredOrg: 'chainsolutions-wealthtech',
+      writeEnabled: () => true,
+      evaluateGovernance: async () => READY,
+      request: async (endpoint: string, options?: any) => {
+        calls.push({ endpoint, method: options?.method });
+        if (endpoint.endsWith('/pulls/7')) {
+          return ok({
+            number: 7,
+            draft: false,
+            merged: false,
+            mergeable: true,
+            head: { ref: 'mcp/work', sha: 'b'.repeat(40) },
+            base: { ref: 'main', sha: 'c'.repeat(40) }
+          });
+        }
+        return ok({});
+      }
+    });
+
+    const handler = registry.handlers.get(toolName);
+    const input = {
+      organization: 'chainsolutions-wealthtech',
+      repository: 'Repo',
+      pullRequestNumber: 7,
+      expectedHeadSha: 'a'.repeat(40),
+      threadId: 'THREAD_123',
+      ...(toolName === 'github_reply_review_thread' ? { body: 'reply' } : {})
+    };
+    await assert.rejects(() => handler?.(input, {}), /GITHUB_PR_HEAD_STALE/, toolName);
+    assert.equal(calls.length, 1, toolName);
+    assert.equal(calls[0]?.endpoint.endsWith('/pulls/7'), true, toolName);
+  }
+});
+
+test('GWC-12 self-review: merge fails closed when no check-run evidence exists', async () => {
+  const { registerGithubLifecycleWriteTools } = await import('../src/tools/githubLifecycle.js');
+  const registry = serverRegistry();
+  const head = 'a'.repeat(40);
+  let mergeCalls = 0;
+
+  registerGithubLifecycleWriteTools(registry.server, {
+    configuredOrg: 'chainsolutions-wealthtech',
+    writeEnabled: () => true,
+    evaluateGovernance: async () => READY,
+    request: async (endpoint: string) => {
+      if (endpoint.endsWith('/pulls/7')) {
+        return ok({
+          number: 7,
+          draft: false,
+          merged: false,
+          mergeable: true,
+          head: { ref: 'mcp/work', sha: head },
+          base: { ref: 'main', sha: 'c'.repeat(40) }
+        });
+      }
+      if (endpoint.includes('/commits/') && endpoint.includes('/check-runs')) {
+        return ok({ check_runs: [] });
+      }
+      if (endpoint.endsWith('/pulls/7/merge')) {
+        mergeCalls += 1;
+        return ok({ merged: true, sha: 'd'.repeat(40) });
+      }
+      return ok({});
+    }
+  });
+
+  const handler = registry.handlers.get('github_merge_pull_request');
+  await assert.rejects(
+    () => handler?.({
+      organization: 'chainsolutions-wealthtech',
+      repository: 'Repo',
+      pullRequestNumber: 7,
+      expectedHeadSha: head,
+      mergeMethod: 'squash'
+    }, {}),
+    /GITHUB_PR_CHECKS_UNAVAILABLE/
+  );
+  assert.equal(mergeCalls, 0);
+});
