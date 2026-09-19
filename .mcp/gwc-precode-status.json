@@ -1601,7 +1601,10 @@
         "collisionDomains": [
           "path:src/governedWorkflow/terminal",
           "path:docs",
-          "path:tests/governedWorkflowTerminal.test.ts"
+          "path:tests/governedWorkflowTerminal.test.ts",
+          "path:SUIVI.md",
+          "path:CHANGELOG.md",
+          "path:DECISIONS_LOG.md"
         ],
         "evidence": [
           "Derived from GWC-CAND-16 exact-bound candidate backlog.",
@@ -1612,7 +1615,8 @@
           "Claim expanded before RED to path:tests/governedWorkflowTerminal.test.ts; package validation discovery auto-runs *.test.ts, so no package.json mutation is required.",
           "PROVEN RED CI #1433 FAILURE @ c504f22277fa3b5b8dd5fa8ae9a8f79f86f1e906: exactly 15 intended GW-58..GW-72 failures, all ERR_MODULE_NOT_FOUND for src/governedWorkflow/terminal/index.js; 573 historical tests pass, 0 skipped; typecheck/build/docs/governance/GWC/secret checks green.",
           "FIRST GREEN CI #1435 SUCCESS @ 476f676817500f7c7d520933d32cd9022e03c3fb: 588/588 tests pass, 0 skipped; discoveredTests=75, runnerTests=74, dedicatedTests=1; all validation steps green.",
-          "SELF-REVIEW RED CI #1437 FAILURE @ f8ab3ce16132a74248516d805b5cadd233d08af0: 589 tests, 582 pass, exactly 7 intended failures on GW-59/60/61/63/68/69; proves GitHub EffectPlans were not yet exact-tool-schema compatible and GW-68 lacked the canonical final task/receipt/CI/deploy/review/lock evidence matrix."
+          "SELF-REVIEW RED CI #1437 FAILURE @ f8ab3ce16132a74248516d805b5cadd233d08af0: 589 tests, 582 pass, exactly 7 intended failures on GW-59/60/61/63/68/69; proves GitHub EffectPlans were not yet exact-tool-schema compatible and GW-68 lacked the canonical final task/receipt/CI/deploy/review/lock evidence matrix.",
+          "FINAL GREEN CI #1440 SUCCESS @ b8a86c48eb24902f998d4533e6bbeac5144102c6: 589/589 tests pass, 0 skipped; discoveredTests=75, runnerTests=74, dedicatedTests=1; exact GitHub EffectPlan schemas and full GW-68 terminal evidence matrix verified."
         ]
       },
       {
@@ -1942,7 +1946,10 @@
         "collisionDomains": [
           "path:src/governedWorkflow/terminal",
           "path:docs",
-          "path:tests/governedWorkflowTerminal.test.ts"
+          "path:tests/governedWorkflowTerminal.test.ts",
+          "path:SUIVI.md",
+          "path:CHANGELOG.md",
+          "path:DECISIONS_LOG.md"
         ],
         "status": "ACTIVE"
       }
@@ -5883,7 +5890,7 @@
     "gwc16": {
       "workItemId": "GWC-PRE-E-GWC-16",
       "blueprint": "GWC-16",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE_DOCUMENTATION_PENDING",
       "dependency": "GWC-PRE-E-GWC-15",
       "dependencyEvidence": {
         "ciRunNumber": 1429,
@@ -5907,7 +5914,13 @@
       "claimExpansion": {
         "addedCollisionDomain": "path:tests/governedWorkflowTerminal.test.ts",
         "reason": "BOUND_RED_TEST_SURFACE",
-        "packageJsonChangeRequired": false
+        "packageJsonChangeRequired": false,
+        "rootDocumentation": [
+          "path:SUIVI.md",
+          "path:CHANGELOG.md",
+          "path:DECISIONS_LOG.md"
+        ],
+        "rootDocumentationReason": "CLAUDE_MD_REQUIRED_IMPORTANT_ACTION_RECORDING_BEFORE_GWC16_CHECKPOINT"
       },
       "red": {
         "ciRunNumber": 1433,
@@ -5933,7 +5946,7 @@
         "dedicatedTests": 1
       },
       "selfReview": {
-        "status": "RED_PROVEN",
+        "status": "GREEN_AFTER_HARDENING",
         "ciRunNumber": 1437,
         "ciRunId": 35444809630,
         "head": "f8ab3ce16132a74248516d805b5cadd233d08af0",
@@ -5955,7 +5968,27 @@
           "GW-68 must bind task/session/receipt/CI/deployment/review/locks to the same final head/runtime/state and fail closed on foreign lock conflicts.",
           "GW-69 must carry the GW-68 evidence digest as a proof reference while emitting only fields accepted by mcp_transition_governed_task."
         ],
-        "nextAction": "Harden src/governedWorkflow/terminal/index.ts against the seven proven RED cases, preserving pure planning and all existing authorities."
+        "nextAction": "Harden src/governedWorkflow/terminal/index.ts against the seven proven RED cases, preserving pure planning and all existing authorities.",
+        "testCorrection": {
+          "ciRunNumber": 1439,
+          "ciRunId": 35444935709,
+          "head": "77fcd4e85317939b7a24afad2d29630e2504eed5",
+          "result": "FAILURE_TEST_EXPECTATION_ONLY",
+          "detail": "Six self-review fixes were green; the sole remaining failure was the stale GW-63 fixture missing the newly required mergeMethod. Test fixture corrected without relaxing implementation."
+        }
+      },
+      "finalGreen": {
+        "ciRunNumber": 1440,
+        "ciRunId": 35445018928,
+        "head": "b8a86c48eb24902f998d4533e6bbeac5144102c6",
+        "result": "SUCCESS",
+        "tests": 589,
+        "passed": 589,
+        "failed": 0,
+        "skipped": 0,
+        "discoveredTests": 75,
+        "runnerTests": 74,
+        "dedicatedTests": 1
       }
     }
   },
@@ -6069,8 +6102,8 @@
     "phase": "E",
     "workItem": "GWC-PRE-E-GWC-16",
     "work": "GWC_16_DOCUMENTATION_AND_CLOSURE",
-    "status": "IN_PROGRESS",
-    "nextAction": "Implement the bounded GWC-16 terminal contract layer for GW-58..GW-72 using only existing documentation, GitHub lifecycle, Live State, receipt, task, checkpoint, lock and session authorities; then run exact-head CI and self-review the hard no-false-DONE proof.",
+    "status": "PASS_WITH_EVIDENCE_DOCUMENTATION_PENDING",
+    "nextAction": "Record GWC-16 final evidence in governed project documentation, create the canonical GWC-16 checkpoint bundle, validate it on the exact online branch head, then release the claim only after checkpoint CI succeeds.",
     "blocker": null
   }
 }
