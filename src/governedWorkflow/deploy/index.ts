@@ -93,13 +93,17 @@ const DeploymentAttestationSchema = z.object({
   healthOk: z.boolean(),
   oauthOk: z.boolean(),
   mcpAuthOk: z.boolean(),
-  ci: z.object({
-    runId: z.number().int().positive(),
-    workflow: z.literal('MCP CI'),
-    event: z.enum(['push', 'workflow_dispatch']),
-    headSha: ShaSchema,
-    conclusion: z.literal('success')
-  }).strict().optional(),
+  admission: z.union([
+    z.object({
+      kind: z.literal('push_ci_gate'),
+      ciRunId: z.number().int().positive(),
+      ciHeadSha: ShaSchema,
+      ciConclusion: z.literal('success')
+    }).strict(),
+    z.object({
+      kind: z.literal('workflow_dispatch_manual')
+    }).strict()
+  ]).nullable().optional(),
   endedAt: TimestampSchema
 }).strict();
 
@@ -341,11 +345,17 @@ export function observeGw47GithubToS1Sync(
 ) {
   const expectedHeadSha = ShaSchema.parse(rawInput.expectedHeadSha);
   const attestation = DeploymentAttestationSchema.parse(rawInput.attestation);
+  const pushAdmission = attestation.admission?.kind === 'push_ci_gate'
+    ? attestation.admission
+    : null;
   const payload = Object.freeze({
     jobId: attestation.jobId,
     attestationId: attestation.attestationId ?? null,
     requestedSha: attestation.requestedSha,
     previousGitSha: attestation.previousGitSha,
+    admissionKind: attestation.admission?.kind ?? null,
+    ciRunId: pushAdmission?.ciRunId ?? null,
+    ciHeadSha: pushAdmission?.ciHeadSha ?? null,
     endedAt: attestation.endedAt,
     nextStepId: null as 'GW-48' | null
   });
@@ -567,6 +577,39 @@ export function composeGw52ExactDeploymentProof(
     return result({
       stepId: 'GW-52', substrate, status: 'CONFLICT',
       reasonCodes: ['EXACT_SHA_PROOF_MISMATCH'],
+      payload: Object.freeze(payloadBase)
+    });
+  }
+
+  const proofJobIds = [
+    (rawInput.syncProof.payload as { jobId?: unknown }).jobId,
+    (rawInput.buildProof.payload as { jobId?: unknown }).jobId,
+    (rawInput.runtimeStartProof.payload as { jobId?: unknown }).jobId,
+    (rawInput.healthProof.payload as { jobId?: unknown }).jobId,
+    (rawInput.imageProof.payload as { jobId?: unknown }).jobId
+  ];
+  const normalizedJobIds = proofJobIds.filter((value): value is string => typeof value === 'string');
+  if (
+    normalizedJobIds.length !== proofJobIds.length
+    || new Set(normalizedJobIds).size !== 1
+  ) {
+    return result({
+      stepId: 'GW-52', substrate, status: 'CONFLICT',
+      reasonCodes: ['DEPLOYMENT_JOB_MISMATCH'],
+      payload: Object.freeze(payloadBase)
+    });
+  }
+
+  const ciRunId = (rawInput.ciProof.payload as { runId?: unknown }).runId;
+  const attestedCiRunId = (rawInput.syncProof.payload as { ciRunId?: unknown }).ciRunId;
+  if (
+    typeof ciRunId !== 'number'
+    || typeof attestedCiRunId !== 'number'
+    || ciRunId !== attestedCiRunId
+  ) {
+    return result({
+      stepId: 'GW-52', substrate, status: 'CONFLICT',
+      reasonCodes: ['DEPLOYMENT_CI_RUN_MISMATCH'],
       payload: Object.freeze(payloadBase)
     });
   }
