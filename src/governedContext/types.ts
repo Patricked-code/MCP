@@ -16,6 +16,7 @@ import type {
   IdentityAssurance
 } from '../operationalMemory/types.js';
 import type { GovernedRepositoryTarget } from '../operationalMemory/sessionService.js';
+import type { TargetContext, TargetScope } from '../operationalMemory/targetScope.js';
 
 export type GithubEvidenceFreshness = 'CURRENT' | 'STALE' | 'UNAVAILABLE' | 'NOT_APPLICABLE';
 export type GithubEvidenceProvenance = 'github_api' | 'memory_cache';
@@ -128,7 +129,9 @@ export type GovernedOperationalContext = {
   generatedAt: string;
   freshness: 'CURRENT' | 'STALE' | 'DEGRADED';
   repository: GovernedRepositoryTarget;
-  governedBranch: 'main';
+  governedBranch: string;
+  targetContext: TargetContext | null;
+  targetScope: TargetScope | null;
   liveState: LiveStateSnapshot | null;
   github: GithubOperationalContext;
   session: PublicGovernedSession | null;
