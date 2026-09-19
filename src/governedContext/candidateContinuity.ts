@@ -1143,3 +1143,409 @@ export function assessCandidateKnowledgeFreshness(
     backlogRevisionCurrent
   };
 }
+
+// -----------------------------------------------------------------------------
+// NEW_INFORMATION_INTAKE-003 — bounded discovery/liveness/recovery extensions.
+// These primitives are deliberately pure projections over existing PRECODE
+// authorities. They do not persist heartbeat state, transfer claims, authorize
+// writes, execute discovered instructions or create a second session authority.
+// -----------------------------------------------------------------------------
+
+export const CandidateDiscoveredIntakeSourceSchema = z.object({
+  sourceType: CandidateProviderSchema,
+  sourceId: BoundedId,
+  sourceDigest: Sha256HexSchema,
+  observedAt: z.string().datetime({ offset: true })
+}).strict();
+export type CandidateDiscoveredIntakeSource = z.infer<typeof CandidateDiscoveredIntakeSourceSchema>;
+
+export const CandidateIntakeDiscoveryInputSchema = z.object({
+  registeredIntakes: z.array(CandidateRegisteredIntakeSchema).max(10_000),
+  discoveredSources: z.array(CandidateDiscoveredIntakeSourceSchema).max(1_000)
+}).strict();
+export type CandidateIntakeDiscoveryInput = z.infer<typeof CandidateIntakeDiscoveryInputSchema>;
+
+export type CandidateIntakeDiscoveryResult = Readonly<{
+  unseen: readonly CandidateDiscoveredIntakeSource[];
+  duplicateSourceIds: readonly string[];
+  executesInstructions: false;
+}>;
+
+export function discoverCandidateIntakeSources(
+  rawInput: CandidateIntakeDiscoveryInput
+): CandidateIntakeDiscoveryResult {
+  const input = CandidateIntakeDiscoveryInputSchema.parse(rawInput);
+  const knownDigests = new Set(input.registeredIntakes.map((entry) => entry.sourceDigest));
+  const knownSources = new Set(input.registeredIntakes.map(
+    (entry) => `${entry.sourceType}:${entry.sourceId}`
+  ));
+  const batchDigests = new Set<string>();
+  const batchSources = new Set<string>();
+  const unseen: CandidateDiscoveredIntakeSource[] = [];
+  const duplicates: string[] = [];
+
+  const ordered = [...input.discoveredSources].sort((left, right) => (
+    Date.parse(left.observedAt) - Date.parse(right.observedAt)
+    || left.sourceId.localeCompare(right.sourceId)
+    || left.sourceDigest.localeCompare(right.sourceDigest)
+  ));
+
+  for (const source of ordered) {
+    const sourceKey = `${source.sourceType}:${source.sourceId}`;
+    const duplicate = (
+      knownDigests.has(source.sourceDigest)
+      || knownSources.has(sourceKey)
+      || batchDigests.has(source.sourceDigest)
+      || batchSources.has(sourceKey)
+    );
+    if (duplicate) {
+      duplicates.push(source.sourceId);
+      continue;
+    }
+    unseen.push(source);
+    batchDigests.add(source.sourceDigest);
+    batchSources.add(sourceKey);
+  }
+
+  return Object.freeze({
+    unseen: Object.freeze(unseen.map((entry) => Object.freeze({ ...entry }))),
+    duplicateSourceIds: Object.freeze(unique(duplicates)),
+    executesInstructions: false as const
+  });
+}
+
+export const CandidateLivenessInputSchema = z.object({
+  candidateSessionId: BoundedId,
+  agentIdentity: BoundedId,
+  observedHeadSha: GitShaSchema,
+  heartbeatObservedAt: z.string().datetime({ offset: true }).nullable(),
+  observedAt: z.string().datetime({ offset: true }),
+  freshForSeconds: z.number().int().min(1).max(86_400)
+}).strict().superRefine((value, ctx) => {
+  if (
+    value.heartbeatObservedAt !== null
+    && Date.parse(value.heartbeatObservedAt) > Date.parse(value.observedAt)
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['heartbeatObservedAt'],
+      message: 'HEARTBEAT_CANNOT_BE_IN_THE_FUTURE'
+    });
+  }
+});
+export type CandidateLivenessInput = z.infer<typeof CandidateLivenessInputSchema>;
+
+export type CandidateLivenessResult = Readonly<{
+  candidateSessionId: string;
+  agentIdentity: string;
+  observedHeadSha: string;
+  status: 'FRESH' | 'STALE' | 'MISSING';
+  heartbeatObservedAt: string | null;
+  observedAt: string;
+  ageSeconds: number | null;
+  freshForSeconds: number;
+  transient: true;
+  ownershipChanged: false;
+  authorizationGranted: false;
+  claimTransferAllowed: false;
+  mayWrite: false;
+}>;
+
+export function assessCandidateLiveness(
+  rawInput: CandidateLivenessInput
+): CandidateLivenessResult {
+  const input = CandidateLivenessInputSchema.parse(rawInput);
+  const ageSeconds = input.heartbeatObservedAt === null
+    ? null
+    : Math.floor(
+        (Date.parse(input.observedAt) - Date.parse(input.heartbeatObservedAt)) / 1_000
+      );
+  const status: CandidateLivenessResult['status'] = ageSeconds === null
+    ? 'MISSING'
+    : ageSeconds <= input.freshForSeconds
+      ? 'FRESH'
+      : 'STALE';
+
+  return Object.freeze({
+    candidateSessionId: input.candidateSessionId,
+    agentIdentity: input.agentIdentity,
+    observedHeadSha: input.observedHeadSha,
+    status,
+    heartbeatObservedAt: input.heartbeatObservedAt,
+    observedAt: input.observedAt,
+    ageSeconds,
+    freshForSeconds: input.freshForSeconds,
+    transient: true as const,
+    ownershipChanged: false as const,
+    authorizationGranted: false as const,
+    claimTransferAllowed: false as const,
+    mayWrite: false as const
+  });
+}
+
+const CandidateLivenessResultSchema = z.object({
+  candidateSessionId: BoundedId,
+  agentIdentity: BoundedId,
+  observedHeadSha: GitShaSchema,
+  status: z.enum(['FRESH', 'STALE', 'MISSING']),
+  heartbeatObservedAt: z.string().datetime({ offset: true }).nullable(),
+  observedAt: z.string().datetime({ offset: true }),
+  ageSeconds: z.number().int().nonnegative().nullable(),
+  freshForSeconds: z.number().int().min(1).max(86_400),
+  transient: z.literal(true),
+  ownershipChanged: z.literal(false),
+  authorizationGranted: z.literal(false),
+  claimTransferAllowed: z.literal(false),
+  mayWrite: z.literal(false)
+}).strict();
+
+export const CandidateRecoverySupervisorInputSchema = z.object({
+  expectedHeadSha: GitShaSchema,
+  currentHeadSha: GitShaSchema,
+  workItemId: BoundedId,
+  expectedCandidateSessionId: BoundedId,
+  activeClaim: CandidateWorkClaimSchema.nullable(),
+  checkpoint: z.object({
+    status: z.enum(['SUCCESS', 'FAILURE', 'PENDING', 'UNKNOWN']),
+    headSha: GitShaSchema.nullable()
+  }).strict(),
+  liveness: CandidateLivenessResultSchema
+}).strict();
+export type CandidateRecoverySupervisorInput = z.infer<typeof CandidateRecoverySupervisorInputSchema>;
+
+export type CandidateRecoveryDecision =
+  | 'CONTINUE_CURRENT_EXECUTOR'
+  | 'START_REPLACEMENT_RECONCILE_ONLY'
+  | 'REOBSERVE_REQUIRED'
+  | 'WAIT_FOR_CLAIM'
+  | 'WAIT_FOR_CHECKPOINT';
+
+export type CandidateRecoverySupervisorResult = Readonly<{
+  decision: CandidateRecoveryDecision;
+  reasonCode:
+    | 'CURRENT_EXECUTOR_LIVE'
+    | 'LIVENESS_STALE_RECOVERY_ONLY'
+    | 'HEAD_REOBSERVATION_REQUIRED'
+    | 'CLAIM_REOBSERVATION_REQUIRED'
+    | 'CHECKPOINT_REOBSERVATION_REQUIRED';
+  claimTransferAllowed: false;
+  ownershipChanged: false;
+  authorizationGranted: false;
+  requiresReobservationBeforeWrite: boolean;
+}>;
+
+export function superviseCandidateRecovery(
+  rawInput: CandidateRecoverySupervisorInput
+): CandidateRecoverySupervisorResult {
+  const input = CandidateRecoverySupervisorInputSchema.parse(rawInput);
+  const base = {
+    claimTransferAllowed: false as const,
+    ownershipChanged: false as const,
+    authorizationGranted: false as const
+  };
+
+  if (
+    input.expectedHeadSha !== input.currentHeadSha
+    || input.liveness.observedHeadSha !== input.currentHeadSha
+  ) {
+    return Object.freeze({
+      ...base,
+      decision: 'REOBSERVE_REQUIRED' as const,
+      reasonCode: 'HEAD_REOBSERVATION_REQUIRED' as const,
+      requiresReobservationBeforeWrite: true
+    });
+  }
+
+  const claim = input.activeClaim;
+  if (
+    !claim
+    || claim.status !== 'ACTIVE'
+    || claim.workItemId !== input.workItemId
+    || claim.candidateSessionId !== input.expectedCandidateSessionId
+  ) {
+    return Object.freeze({
+      ...base,
+      decision: 'WAIT_FOR_CLAIM' as const,
+      reasonCode: 'CLAIM_REOBSERVATION_REQUIRED' as const,
+      requiresReobservationBeforeWrite: true
+    });
+  }
+
+  if (
+    input.checkpoint.status !== 'SUCCESS'
+    || input.checkpoint.headSha !== input.currentHeadSha
+  ) {
+    return Object.freeze({
+      ...base,
+      decision: 'WAIT_FOR_CHECKPOINT' as const,
+      reasonCode: 'CHECKPOINT_REOBSERVATION_REQUIRED' as const,
+      requiresReobservationBeforeWrite: true
+    });
+  }
+
+  if (input.liveness.status === 'FRESH') {
+    return Object.freeze({
+      ...base,
+      decision: 'CONTINUE_CURRENT_EXECUTOR' as const,
+      reasonCode: 'CURRENT_EXECUTOR_LIVE' as const,
+      requiresReobservationBeforeWrite: false
+    });
+  }
+
+  return Object.freeze({
+    ...base,
+    decision: 'START_REPLACEMENT_RECONCILE_ONLY' as const,
+    reasonCode: 'LIVENESS_STALE_RECOVERY_ONLY' as const,
+    requiresReobservationBeforeWrite: true
+  });
+}
+
+export const CandidateRecoveryRunnerCapabilitySchema = z.object({
+  provider: CandidateProviderSchema,
+  verifiedSessionResumeSupported: z.boolean(),
+  replacementExecutorSupported: z.boolean()
+}).strict();
+export type CandidateRecoveryRunnerCapability =
+  z.infer<typeof CandidateRecoveryRunnerCapabilitySchema>;
+
+export const CandidateRecoveryRunnerInputSchema = z.object({
+  recoveryDecision: z.enum([
+    'CONTINUE_CURRENT_EXECUTOR',
+    'START_REPLACEMENT_RECONCILE_ONLY',
+    'REOBSERVE_REQUIRED',
+    'WAIT_FOR_CLAIM',
+    'WAIT_FOR_CHECKPOINT'
+  ]),
+  candidateSession: CandidateSessionSchema,
+  expectedHeadSha: GitShaSchema,
+  capability: CandidateRecoveryRunnerCapabilitySchema
+}).strict();
+export type CandidateRecoveryRunnerInput = z.infer<typeof CandidateRecoveryRunnerInputSchema>;
+
+export type CandidateRecoveryRunnerPlan = Readonly<{
+  planId: string;
+  action:
+    | 'NO_ACTION'
+    | 'RESUME_VERIFIED_PROVIDER_SESSION'
+    | 'START_REPLACEMENT_EXECUTOR'
+    | 'REOBSERVE_REQUIRED'
+    | 'RUNNER_UNAVAILABLE';
+  candidateSessionId: string;
+  provider: z.infer<typeof CandidateProviderSchema>;
+  providerConversationRef: string | null;
+  expectedHeadSha: string;
+  executionMode: 'RECONCILE_READ_ONLY';
+  authorizationGranted: false;
+  claimTransferAllowed: false;
+}>;
+
+function recoveryPlanId(input: {
+  action: CandidateRecoveryRunnerPlan['action'];
+  candidateSessionId: string;
+  provider: z.infer<typeof CandidateProviderSchema>;
+  providerConversationRef: string | null;
+  expectedHeadSha: string;
+}): string {
+  const digest = createHash('sha256').update(JSON.stringify(input)).digest('hex');
+  return `recovery-${digest.slice(0, 24)}`;
+}
+
+export function planCandidateRecoveryRunner(
+  rawInput: CandidateRecoveryRunnerInput
+): CandidateRecoveryRunnerPlan {
+  const input = CandidateRecoveryRunnerInputSchema.parse(rawInput);
+  const sameProvider = input.capability.provider === input.candidateSession.provider;
+  const headMatches = input.candidateSession.lastObservedHeadSha === input.expectedHeadSha;
+
+  let action: CandidateRecoveryRunnerPlan['action'] = 'NO_ACTION';
+  let providerConversationRef: string | null = null;
+
+  if (!headMatches || input.recoveryDecision === 'REOBSERVE_REQUIRED') {
+    action = 'REOBSERVE_REQUIRED';
+  } else if (input.recoveryDecision === 'START_REPLACEMENT_RECONCILE_ONLY') {
+    const canResumeVerified = (
+      sameProvider
+      && input.capability.verifiedSessionResumeSupported
+      && input.candidateSession.providerConversationRefProvenance === 'PROVIDED_BY_CLIENT'
+      && input.candidateSession.providerConversationRef !== null
+    );
+    if (canResumeVerified) {
+      action = 'RESUME_VERIFIED_PROVIDER_SESSION';
+      providerConversationRef = input.candidateSession.providerConversationRef;
+    } else if (sameProvider && input.capability.replacementExecutorSupported) {
+      action = 'START_REPLACEMENT_EXECUTOR';
+    } else {
+      action = 'RUNNER_UNAVAILABLE';
+    }
+  }
+
+  const idInput = {
+    action,
+    candidateSessionId: input.candidateSession.candidateSessionId,
+    provider: input.candidateSession.provider,
+    providerConversationRef,
+    expectedHeadSha: input.expectedHeadSha
+  };
+
+  return Object.freeze({
+    planId: recoveryPlanId(idInput),
+    action,
+    candidateSessionId: input.candidateSession.candidateSessionId,
+    provider: input.candidateSession.provider,
+    providerConversationRef,
+    expectedHeadSha: input.expectedHeadSha,
+    executionMode: 'RECONCILE_READ_ONLY' as const,
+    authorizationGranted: false as const,
+    claimTransferAllowed: false as const
+  });
+}
+
+export const CandidateRecoveryRunnerAcknowledgementSchema = z.object({
+  planId: BoundedId,
+  candidateSessionId: BoundedId,
+  observedHeadSha: GitShaSchema,
+  acknowledgedAt: z.string().datetime({ offset: true })
+}).strict();
+export type CandidateRecoveryRunnerAcknowledgement =
+  z.infer<typeof CandidateRecoveryRunnerAcknowledgementSchema>;
+
+export type CandidateRecoveryRunnerAcknowledgementResult = Readonly<{
+  status: 'RESUMED' | 'REPLACEMENT_STARTED' | 'UNVERIFIED';
+  planId: string;
+  candidateSessionId: string;
+  observedHeadSha: string;
+  acknowledgedAt: string;
+  authorizationGranted: false;
+  claimTransferAllowed: false;
+}>;
+
+export function acknowledgeCandidateRecoveryRunner(
+  rawPlan: CandidateRecoveryRunnerPlan,
+  rawAcknowledgement: CandidateRecoveryRunnerAcknowledgement
+): CandidateRecoveryRunnerAcknowledgementResult {
+  const plan = Object.freeze({ ...rawPlan });
+  const acknowledgement = CandidateRecoveryRunnerAcknowledgementSchema.parse(rawAcknowledgement);
+  const verified = (
+    acknowledgement.planId === plan.planId
+    && acknowledgement.candidateSessionId === plan.candidateSessionId
+    && acknowledgement.observedHeadSha === plan.expectedHeadSha
+  );
+  const status: CandidateRecoveryRunnerAcknowledgementResult['status'] = !verified
+    ? 'UNVERIFIED'
+    : plan.action === 'RESUME_VERIFIED_PROVIDER_SESSION'
+      ? 'RESUMED'
+      : plan.action === 'START_REPLACEMENT_EXECUTOR'
+        ? 'REPLACEMENT_STARTED'
+        : 'UNVERIFIED';
+
+  return Object.freeze({
+    status,
+    planId: plan.planId,
+    candidateSessionId: acknowledgement.candidateSessionId,
+    observedHeadSha: acknowledgement.observedHeadSha,
+    acknowledgedAt: acknowledgement.acknowledgedAt,
+    authorizationGranted: false as const,
+    claimTransferAllowed: false as const
+  });
+}
+
