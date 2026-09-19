@@ -26,12 +26,14 @@
     "rule": "The Claude branch is the construction surface for the complete evolved MCP candidate: existing skeleton plus additive/backward-compatible code, tests, migrations/compatibility, workflows, documentation, task history and evidence. It is not documentation-only and not a parallel production authority."
   },
   "currentPrecodeState": {
-    "phase": "E",
-    "workItem": "GWC-PRE-E-GWC-17",
-    "work": "GWC_17_UNIVERSAL_ACCEPTANCE",
-    "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+    "phase": "F",
+    "workItem": "GWC-PRE-F-02",
+    "work": "FULL_CANDIDATE_HAPPY_PATH",
+    "status": "IN_PROGRESS",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
+    "phaseE": "18_BLUEPRINT_CANDIDATE_IMPLEMENTATIONS_COMPLETE",
+    "phaseF01": "PASS_WITH_EVIDENCE",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
     "candidateCodeMayModifySrcTestsWorkflowsDocs": true,
     "existingFirstRule": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
@@ -40,7 +42,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Validate the staged GWC-17 checkpoint on the exact online branch head. Keep the GWC-17 claim ACTIVE until MCP CI succeeds; then release it and resolve Phase F / final candidate gates from the versioned PRECODE authorities.",
+    "nextAction": "Prove or implement one tests-only coherent full candidate happy path using existing governed primitives from Intent through DONE. Do not infer final acceptance before F-02..F-06 pass.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -311,9 +313,9 @@
       "status": "IMMUTABLE_HISTORICAL_GWC16_DOCUMENTATION_CLOSURE_COMPLETE_CHECKPOINT"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-19T13:43:25Z",
-  "observedHeadBeforePointerUpdate": "f311bc1323de6f94a7e2319cc28ba2e7c3c66e17",
-  "correctionReason": "GWC-17 reached final GREEN in MCP CI #1458 with 598/598 tests and zero skipped scenarios; root documentation is reconciled and the final Phase E universal-acceptance checkpoint is staged. Its branch-local claim remains ACTIVE until the checkpoint exact-head CI succeeds.",
+  "updatedFromGitHubObservationAt": "2026-09-19T20:29:35Z",
+  "observedHeadBeforePointerUpdate": "3d48d91f23941c5970b4f59e23701748cccafe11",
+  "correctionReason": "GWC-17 and Phase E were released after exact-head checkpoint CI #1466 and release CI #1467. Phase F was materialized; F-01 selected existing non-hardcoded acceptance contexts and passed CI #1468. F-02 full candidate happy path is now the active branch-local gate.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
