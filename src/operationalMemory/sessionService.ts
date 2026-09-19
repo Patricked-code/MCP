@@ -52,8 +52,10 @@ export type ResumeSessionInput = {
   expectedSessionRevision: number;
 };
 
+export type GovernedRepositoryTarget = `${string}/${string}`;
+
 export type AutoResumeCompatibleSessionInput = {
-  repository: 'Patricked-code/MCP';
+  repository: GovernedRepositoryTarget;
 };
 
 export type AutoResumeCompatibleSessionResult =
