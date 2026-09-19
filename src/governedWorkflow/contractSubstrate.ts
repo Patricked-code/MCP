@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 export type GovernedStepId = `GW-${string}`;
 
 export type ContractSubstrateReasonCode =
@@ -112,7 +114,24 @@ function stringArray(value: unknown): readonly string[] | null {
   return Object.freeze([...value]);
 }
 
-function assertDigest(
+function canonical(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.entries(value as Record<string, unknown>)
+      .filter(([, entry]) => entry !== undefined)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, entry]) => `${JSON.stringify(key)}:${canonical(entry)}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function computedRegistryDigest(document: JsonObject): string {
+  return createHash('sha256')
+    .update(canonical({ ...document, registryDigest: undefined }))
+    .digest('hex');
+}
+
+function assertEmbeddedDigest(
   actual: unknown,
   expected: string,
   reasonCode: 'CONTRACT_REGISTRY_DIGEST_MISMATCH' | 'GRAPH_REGISTRY_DIGEST_MISMATCH'
@@ -124,6 +143,16 @@ function assertDigest(
     throw new GovernedContractSubstrateError(reasonCode);
   }
   return actual.toLowerCase();
+}
+
+function assertComputedDigest(
+  document: JsonObject,
+  expected: string,
+  reasonCode: 'CONTRACT_REGISTRY_DIGEST_MISMATCH' | 'GRAPH_REGISTRY_DIGEST_MISMATCH'
+): void {
+  if (computedRegistryDigest(document) !== expected.toLowerCase()) {
+    throw new GovernedContractSubstrateError(reasonCode);
+  }
 }
 
 function parseContract(value: unknown): GovernedContractDefinition {
@@ -218,12 +247,12 @@ export function createGovernedContractSubstrate(
     throw new GovernedContractSubstrateError('UNSUPPORTED_GRAPH_SCHEMA_VERSION');
   }
 
-  const contractRegistryDigest = assertDigest(
+  const contractRegistryDigest = assertEmbeddedDigest(
     contractsRoot.registryDigest,
     input.expectedContractRegistryDigest,
     'CONTRACT_REGISTRY_DIGEST_MISMATCH'
   );
-  const graphRegistryDigest = assertDigest(
+  const graphRegistryDigest = assertEmbeddedDigest(
     graphRoot.registryDigest,
     input.expectedGraphRegistryDigest,
     'GRAPH_REGISTRY_DIGEST_MISMATCH'
@@ -237,6 +266,11 @@ export function createGovernedContractSubstrate(
     throw new GovernedContractSubstrateError('CONTRACT_ID_SET_INVALID');
   }
   validateRuntimeMembership(contracts);
+  assertComputedDigest(
+    contractsRoot,
+    input.expectedContractRegistryDigest,
+    'CONTRACT_REGISTRY_DIGEST_MISMATCH'
+  );
 
   const entry = string(graphRoot.entry);
   const runtimeTerminal = string(graphRoot.runtimeTerminal);
@@ -275,6 +309,11 @@ export function createGovernedContractSubstrate(
       throw new GovernedContractSubstrateError('GRAPH_REFERENCES_UNKNOWN_STEP');
     }
   }
+  assertComputedDigest(
+    graphRoot,
+    input.expectedGraphRegistryDigest,
+    'GRAPH_REGISTRY_DIGEST_MISMATCH'
+  );
 
   const byId = new Map<GovernedStepId, GovernedContractDefinition>(
     contracts.map((contract) => [contract.stepId, contract])
