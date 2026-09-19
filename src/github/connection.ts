@@ -179,6 +179,24 @@ export async function githubJsonRequest(
   }
 }
 
+
+export async function githubJsonRequestWithServerCredential(
+  endpoint: string,
+  options: GitHubJsonRequestOptions = {}
+): Promise<GitHubJsonResponse> {
+  const token = await readToken();
+  if (!token) {
+    return {
+      ok: false,
+      status: null,
+      json: null,
+      tokenExpiresAt: null,
+      oauthScopes: []
+    };
+  }
+  return githubJsonRequest(token, endpoint, options);
+}
+
 function getArrayLength(value: unknown): number | null {
   return Array.isArray(value) ? value.length : null;
 }
