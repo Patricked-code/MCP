@@ -873,3 +873,19 @@ Décision compatibilité outils : un EffectPlan doit être exécutable par l'out
 Décision clôture : ordre canonique après vérification terminale réussie : Task DONE → terminal checkpoint → libération des locks → fermeture de session → réconciliation de la Task Queue. La libération des locks reste indépendante du succès fonctionnel de la Task dès qu'un checkpoint terminal existe ; un échec ne doit pas laisser de lock orphelin.
 
 Preuves : RED #1433, GREEN initial #1435, self-review RED #1437, correction de fixture #1439, GREEN final MCP CI #1440 SUCCESS sur `b8a86c48eb24902f998d4533e6bbeac5144102c6` avec 589/589 tests. Aucun main/S1/production/deploy/runtime mutation n'a été effectué.
+
+## 2026-09-19 — GWC-17 : Universal Acceptance
+
+Décision GW-73 : `UNIVERSAL_ACCEPTANCE` reste volontairement hors du graphe runtime nominal. Il n'est ni un 74e contrat runtime ni une nouvelle autorité de workflow ; il évalue le système candidat implémenté dans son ensemble et produit une preuve d'acceptance test-only.
+
+Décision de périmètre : la classification `NEW` de GWC-17 est limitée à `tests/governedWorkflowUniversalAcceptance/` (harnais + fixtures). Aucun module `src/`, store, outil MCP, Task Queue, Session Manager, Lock Service, Live State ou executor parallèle n'est introduit. Le runtime ne doit jamais importer le harnais d'acceptance.
+
+Décision universalité : l'acceptance doit prouver avec les mêmes contrats au minimum (1) MCP historique mono-repository, (2) un second projet réel — Stablecoin, S2/Passenger — et (3) un projet synthétique multi-composants avec SHAs et locks indépendants. Une cible réelle non résolue, telle que le backend Stablecoin, reste `LIVE_DISCOVERY_REQUIRED` et n'est jamais inventée pour rendre un scénario vert.
+
+Décision recovery : NEW_INFORMATION_INTAKE-003 fait partie de l'acceptance GW-73. Heartbeat/liveness n'accordent ni ownership ni autorisation ; stale/missing ne libère pas un claim ; le supervisor reobserve ; le runner reste un adapter `RECONCILE_READ_ONLY`; l'acknowledgement est obligatoire ; le même état produit le même plan pour éviter les restart storms ; une enveloppe stale est refusée ; aucun transcript brut, resume secret ou authorization header n'est persisté. Les fenêtres de crash `CLAIM_BEFORE_LOCK`, `LOCK_BEFORE_MUTATION` et `DEPLOYMENT_BEFORE_ATTESTATION` doivent rester récupérables/fail-closed via les autorités existantes.
+
+Décision anti-hardcode : le scan des chemins gouvernés est un test de régression, pas une nouvelle autorité. Son détecteur est également testé par contrôle négatif avec des littéraux cible volontairement injectés. La réussite actuelle n'est donc pas seulement l'absence accidentelle de chaînes recherchées.
+
+Décision fail-closed : aucun scénario obligatoire ne peut être SKIPPED. Un scénario échoué fait échouer le rapport global et publie son `reasonCode` ainsi que les contrats réellement exercés dans `failedContracts`. Le scénario recovery lie GW-68 au `createGovernedContractSubstrate` construit depuis les projections canoniques `.mcp/gwc-contracts.json` et `.mcp/gwc-workflow-graph.json`, jamais à un stub permissif.
+
+Preuves : RED #1451, GREEN initial #1454, self-review RED #1456, GREEN final MCP CI #1458 SUCCESS sur `9b32bba86e830845ea63d90f37bf304d800b8f12` avec 598/598 tests et 0 skipped. Aucun main/S1/production/deploy/runtime mutation n'a été effectué.
