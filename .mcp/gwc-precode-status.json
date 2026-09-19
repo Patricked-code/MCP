@@ -1087,7 +1087,7 @@
           "GWC-4"
         ],
         "title": "GWC-4 — Connection/Session/Receipt integration",
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 66,
         "sequence": 11,
         "dependencies": [
@@ -1100,7 +1100,11 @@
         ],
         "evidence": [
           "Derived from GWC-CAND-04 exact-bound candidate backlog.",
-          "Dependency GWC-PRE-E-GWC-3 completed with GREEN CI #1192."
+          "Dependency GWC-PRE-E-GWC-3 completed with GREEN CI #1192.",
+          "Claimed by candidate-7afc131430c64c6fe34bcfea @ 24f6be291ed950fb19bb2a1fd1a53d6120cd9d2f",
+          "Existing session lifecycle, resume proof, transport bindings, optimistic revision control and BootstrapReceipt remain sole authorities.",
+          "GWC-4 will not widen persisted Session/Receipt/ConnectionContext schemas; current persisted repository value remains Patricked-code/MCP until GWC-10.",
+          "Type generalization is limited to non-persisted projection/auto-resume seams so GWC-10 is not blocked."
         ]
       },
       {
@@ -1489,6 +1493,16 @@
           "path:src/governedWorkflow/resolvers/identity"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-4",
+        "collisionDomains": [
+          "path:src/governedWorkflow/adapters/session",
+          "path:src/operationalMemory/sessionService.ts"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -1536,9 +1550,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "6c1a95a1cc2a8f1771d22a8923b0ea617509a0a2",
+        "lastObservedHeadSha": "24f6be291ed950fb19bb2a1fd1a53d6120cd9d2f",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T02:51:00Z",
+        "lastSeenAt": "2026-09-19T02:58:00Z",
         "status": "ACTIVE"
       }
     ]
