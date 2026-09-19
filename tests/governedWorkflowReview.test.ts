@@ -291,6 +291,16 @@ test('GW-43 exact-head merge is non-replayable and refuses a proof from another 
   assert.equal(ready.effectPlan?.toolName, 'github_merge_pull_request');
   assert.equal(ready.effectPlan?.replayClass, 'NON_REPLAYABLE_RECOVER_BY_OBSERVATION');
 
+  const wrongPullRequest = planGw43ExactHeadMerge({
+    repository: 'Patricked-code/MCP',
+    pullRequestNumber: 96,
+    expectedHeadSha: HEAD,
+    premergeProof: proof
+  }, contracts);
+  assert.equal(wrongPullRequest.status, 'BLOCKED');
+  assert.deepEqual(wrongPullRequest.reasonCodes, ['PREMERGE_PROOF_PR_MISMATCH']);
+  assert.equal(wrongPullRequest.effectPlan, null);
+
   const stale = planGw43ExactHeadMerge({
     repository: 'Patricked-code/MCP',
     pullRequestNumber: 95,
