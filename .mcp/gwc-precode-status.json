@@ -1467,7 +1467,7 @@
           "GWC-13"
         ],
         "title": "GWC-13 — Development workflow contracts",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 57,
         "sequence": 20,
         "dependencies": [
@@ -1500,7 +1500,9 @@
           "Self-review RED CI #1384 FAILURE @ 3936ac5871fdadfe3d02145049aecbf8eb372804 proved one real defect: GW-30 accepted self-review evidence bound to an older HEAD.",
           "FINAL GREEN CI #1385 SUCCESS @ debae732d82dce58903b062014c221d40d44e0a2 after fail-closed SELF_REVIEW_HEAD_MISMATCH correction; 542/542 tests pass.",
           "Final validation discovery: 72 tests discovered, 71 runner tests, 1 dedicated test; tests/githubRepositoryResolution.test.ts remains an explicit required runner test while discovery covers the eligible suite.",
-          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete staged; claim retained ACTIVE until exact-head checkpoint CI succeeds."
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete staged; claim retained ACTIVE until exact-head checkpoint CI succeeds.",
+          "Checkpoint MCP CI #1389 SUCCESS @ c360b86bf8d81c293e45dedbcafdfb0ef8e07292 validated the GWC-13 canonical bundle, current pointer, development contracts and full regression before claim release.",
+          "GWC-13 claim released only after exact-head checkpoint SUCCESS."
         ]
       },
       {
@@ -1510,7 +1512,7 @@
           "GWC-14"
         ],
         "title": "GWC-14 — Review / merge contracts",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 56,
         "sequence": 21,
         "dependencies": [
@@ -1522,7 +1524,12 @@
           "path:src/governedWorkflow/review"
         ],
         "evidence": [
-          "Derived from GWC-CAND-14 exact-bound candidate backlog."
+          "Derived from GWC-CAND-14 exact-bound candidate backlog.",
+          "Dependencies GWC-PRE-E-GWC-12 and GWC-PRE-E-GWC-13 are satisfied; GWC-13 closes only after checkpoint CI #1389 SUCCESS.",
+          "Initial collision domains remain path:src/governedContext/github.ts and path:src/governedWorkflow/review; any expansion requires exact-head claim update before mutation.",
+          "GWC-14 covers GW-34..GW-43 and must resolve AF-22/AF-30 using existing Governed GitHub context and GWC-12 lifecycle capabilities, with ReviewEvidence commit binding, PremergeProof and exact-head merge.",
+          "Phase C2 already closed AF-22/AF-30 foundations under EXISTING_GOVERNED_GITHUB_CONTEXT_ONLY; GWC-14 must extend/reuse that authority rather than create a second GitHub truth source.",
+          "OD-06 remains the only design decision attached to GWC-14 and must be resolved from existing evidence before any ambiguous mutation."
         ]
       },
       {
@@ -1858,6 +1865,16 @@
           "path:tests/governedWorkflowDevelopment.test.ts",
           "path:package.json",
           "path:scripts/run-validation-tests.mjs"
+        ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-14",
+        "collisionDomains": [
+          "path:src/governedContext/github.ts",
+          "path:src/governedWorkflow/review"
         ],
         "status": "ACTIVE"
       }
@@ -5523,7 +5540,7 @@
     "gwc13": {
       "workItemId": "GWC-PRE-E-GWC-13",
       "blueprint": "GWC-13",
-      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+      "status": "PASS_WITH_EVIDENCE",
       "dependencies": [
         "GWC-PRE-E-GWC-11",
         "GWC-PRE-E-GWC-12"
@@ -5590,9 +5607,23 @@
       },
       "checkpoint": {
         "bundle": "docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete",
-        "validation": "PENDING_EXACT_HEAD_CI",
-        "claimRelease": "FORBIDDEN_UNTIL_CHECKPOINT_CI_SUCCESS"
+        "validation": "SUCCESS",
+        "ciRunNumber": 1389,
+        "ciRunId": 35435493759,
+        "head": "c360b86bf8d81c293e45dedbcafdfb0ef8e07292",
+        "claimRelease": "RELEASED_AFTER_CHECKPOINT_CI_SUCCESS"
       }
+    },
+    "gwc14": {
+      "workItemId": "GWC-PRE-E-GWC-14",
+      "blueprint": "GWC-14",
+      "status": "IN_PROGRESS",
+      "dependencies": [
+        "GWC-PRE-E-GWC-12",
+        "GWC-PRE-E-GWC-13"
+      ],
+      "scope": "REVIEW_MERGE_CONTRACTS_GW34_TO_GW43",
+      "authorityBoundary": "REUSE_EXISTING_GOVERNED_GITHUB_CONTEXT__REUSE_GWC12_LIFECYCLE__EXACT_HEAD_EVIDENCE"
     }
   },
   "intake003RecoveryEvolution": {
