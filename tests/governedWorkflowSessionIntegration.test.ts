@@ -107,21 +107,21 @@ function receipt(): BootstrapReceipt {
   };
 }
 
-test('GWC-4 generalizes only the non-persisted auto-resume and governed-context repository surfaces', async () => {
+test('GWC-4 repository widening remains compatible after GWC-10 activates optional TargetScope', async () => {
   const sessionService = await readFile('src/operationalMemory/sessionService.ts', 'utf8');
   const governedTypes = await readFile('src/governedContext/types.ts', 'utf8');
 
   assert.match(
     sessionService,
-    /export type GovernedRepositoryTarget = `\$\{string\}\/\$\{string\}`;/
+    /export type GovernedRepositoryTarget = string;/
   );
   assert.match(
     sessionService,
-    /AutoResumeCompatibleSessionInput = \{[\s\S]*repository:\s*GovernedRepositoryTarget;/
+    /AutoResumeCompatibleSessionInput = \{[\s\S]*repository:\s*GovernedRepositoryTarget;[\s\S]*targetScope\?:\s*TargetScope;/
   );
   assert.match(
     governedTypes,
-    /GovernedOperationalContext = \{[\s\S]*repository:\s*GovernedRepositoryTarget;/
+    /GovernedOperationalContext = \{[\s\S]*repository:\s*GovernedRepositoryTarget;[\s\S]*targetContext:\s*TargetContext \| null;[\s\S]*targetScope:\s*TargetScope \| null;/
   );
   assert.doesNotMatch(
     sessionService,
@@ -129,12 +129,14 @@ test('GWC-4 generalizes only the non-persisted auto-resume and governed-context 
   );
 });
 
-test('GWC-4 keeps persisted Session/Receipt/ConnectionContext schemas on the current target until GWC-10', async () => {
+test('GWC-10 widens persisted target identifiers additively while TargetScope remains optional', async () => {
   const source = await readFile('src/operationalMemory/types.ts', 'utf8');
   const connection = await readFile('src/operationalMemory/connectionContext.ts', 'utf8');
-  assert.match(source, /BootstrapReceiptSchema[\s\S]*repository:\s*z\.literal\('Patricked-code\/MCP'\)/);
-  assert.match(source, /GovernedSessionRecordSchema[\s\S]*repository:\s*z\.literal\('Patricked-code\/MCP'\)/);
-  assert.match(connection, /ConnectionContextSchema[\s\S]*repository:\s*z\.literal\('Patricked-code\/MCP'\)/);
+
+  assert.match(source, /BootstrapReceiptSchema[\s\S]*repository:\s*RepositoryTargetSchema,[\s\S]*targetScope:\s*TargetScopeSchema\.optional\(\)/);
+  assert.match(source, /GovernedSessionRecordSchema[\s\S]*repository:\s*RepositoryTargetSchema,[\s\S]*targetScope:\s*TargetScopeSchema\.optional\(\)/);
+  assert.match(connection, /ConnectionContextSchema[\s\S]*repository:\s*RepositoryTargetSchema/);
+  assert.doesNotMatch(source, /schemaVersion:\s*z\.literal\(2\)/);
 });
 
 test('GW-02 bootstrap wrapper preserves MISSING/CURRENT/STALE/EXPIRED without upgrading freshness', async () => {
