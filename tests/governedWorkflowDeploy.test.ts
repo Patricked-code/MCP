@@ -389,3 +389,121 @@ test('GW-57 plans DEPLOYING and runtimeRevision as one governed Task transition'
   assert.equal(result.effectPlan?.payload.runtimeRevision, HEAD);
   assert.equal(result.payload.nextStepId, 'GW-58');
 });
+
+
+test('GWC-15 self-review: GW-52 rejects same-SHA evidence mixed across deployment jobs', async () => {
+  const {
+    observeGw45MainCi,
+    observeGw47GithubToS1Sync,
+    observeGw48DeployBuild,
+    observeGw49RuntimeStart,
+    observeGw50Health,
+    observeGw51RuntimeImage,
+    composeGw52ExactDeploymentProof
+  } = await deployment();
+  const contracts = await substrate();
+  const otherJob = 'mcp-s1-2501-aaaaaaaaaaaa';
+
+  const mixed = composeGw52ExactDeploymentProof({
+    expectedHeadSha: HEAD,
+    ciProof: observeGw45MainCi({ expectedHeadSha: HEAD, ci: mainCi() }, contracts),
+    syncProof: observeGw47GithubToS1Sync({
+      expectedHeadSha: HEAD,
+      attestation: attestation({ jobId: otherJob })
+    }, contracts),
+    buildProof: observeGw48DeployBuild({
+      expectedHeadSha: HEAD,
+      expectedJobId: 'mcp-s1-2500-aaaaaaaaaaaa',
+      evidence: {
+        jobId: 'mcp-s1-2500-aaaaaaaaaaaa',
+        requestedSha: HEAD,
+        buildOk: true,
+        observedAt: NOW
+      }
+    }, contracts),
+    runtimeStartProof: observeGw49RuntimeStart({
+      expectedHeadSha: HEAD,
+      expectedJobId: 'mcp-s1-2500-aaaaaaaaaaaa',
+      evidence: {
+        jobId: 'mcp-s1-2500-aaaaaaaaaaaa',
+        requestedSha: HEAD,
+        runtimeStarted: true,
+        observedAt: NOW
+      }
+    }, contracts),
+    healthProof: observeGw50Health({ expectedHeadSha: HEAD, attestation: attestation() }, contracts),
+    imageProof: observeGw51RuntimeImage({
+      expectedHeadSha: HEAD,
+      expectedJobId: 'mcp-s1-2500-aaaaaaaaaaaa',
+      runtimeRevision: HEAD,
+      observedAt: NOW
+    }, contracts),
+    liveState: liveState()
+  }, contracts);
+
+  assert.equal(mixed.status, 'CONFLICT');
+  assert.deepEqual(mixed.reasonCodes, ['DEPLOYMENT_JOB_MISMATCH']);
+});
+
+test('GWC-15 self-review: GW-52 binds attested CI run to the exact GW-45 MainCiProof', async () => {
+  const {
+    observeGw45MainCi,
+    observeGw47GithubToS1Sync,
+    observeGw48DeployBuild,
+    observeGw49RuntimeStart,
+    observeGw50Health,
+    observeGw51RuntimeImage,
+    composeGw52ExactDeploymentProof
+  } = await deployment();
+  const contracts = await substrate();
+
+  const wrongCiAttestation = attestation({
+    ci: {
+      runId: 1501,
+      workflow: 'MCP CI',
+      event: 'push',
+      headSha: HEAD,
+      conclusion: 'success'
+    }
+  });
+
+  const mixed = composeGw52ExactDeploymentProof({
+    expectedHeadSha: HEAD,
+    ciProof: observeGw45MainCi({ expectedHeadSha: HEAD, ci: mainCi({ runId: 1500 }) }, contracts),
+    syncProof: observeGw47GithubToS1Sync({
+      expectedHeadSha: HEAD,
+      attestation: wrongCiAttestation
+    }, contracts),
+    buildProof: observeGw48DeployBuild({
+      expectedHeadSha: HEAD,
+      expectedJobId: 'mcp-s1-2500-aaaaaaaaaaaa',
+      evidence: {
+        jobId: 'mcp-s1-2500-aaaaaaaaaaaa',
+        requestedSha: HEAD,
+        buildOk: true,
+        observedAt: NOW
+      }
+    }, contracts),
+    runtimeStartProof: observeGw49RuntimeStart({
+      expectedHeadSha: HEAD,
+      expectedJobId: 'mcp-s1-2500-aaaaaaaaaaaa',
+      evidence: {
+        jobId: 'mcp-s1-2500-aaaaaaaaaaaa',
+        requestedSha: HEAD,
+        runtimeStarted: true,
+        observedAt: NOW
+      }
+    }, contracts),
+    healthProof: observeGw50Health({ expectedHeadSha: HEAD, attestation: wrongCiAttestation }, contracts),
+    imageProof: observeGw51RuntimeImage({
+      expectedHeadSha: HEAD,
+      expectedJobId: 'mcp-s1-2500-aaaaaaaaaaaa',
+      runtimeRevision: HEAD,
+      observedAt: NOW
+    }, contracts),
+    liveState: liveState()
+  }, contracts);
+
+  assert.equal(mixed.status, 'CONFLICT');
+  assert.deepEqual(mixed.reasonCodes, ['DEPLOYMENT_CI_RUN_MISMATCH']);
+});
