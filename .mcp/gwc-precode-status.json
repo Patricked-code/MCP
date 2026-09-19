@@ -1372,7 +1372,7 @@
           "GWC-11"
         ],
         "title": "GWC-11 — Authority docs / Integration slot / baseline",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 59,
         "sequence": 18,
         "dependencies": [
@@ -1400,7 +1400,9 @@
           "Self-review CI #1346 found exactly two freshness fail-open defects: stale GW-22 inventory and stale GW-23 exact-head sub-evidence.",
           "FINAL GREEN CI #1348 SUCCESS @ 2a82e278319dd750db2a6d870fc029fe296a66a6 after closing both freshness defects.",
           "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc11-authority-baseline-complete created; source SHA-256 2dacb7e9fc2fe2dd80280e5730e80463803c1ce35c8d801c63e7eddc43d5c627.",
-          "GWC-11 claim retained ACTIVE until exact-head checkpoint CI succeeds."
+          "GWC-11 claim retained ACTIVE until exact-head checkpoint CI succeeds.",
+          "Checkpoint MCP CI #1355 SUCCESS @ 0d65005ed40bda9a9f909232517b632f121b6ec3 validated the GWC-11 canonical bundle, current pointer, coordination projection and project documentation before claim release.",
+          "GWC-11 claim released only after exact-head checkpoint SUCCESS."
         ]
       },
       {
@@ -1410,7 +1412,7 @@
           "GWC-12"
         ],
         "title": "GWC-12 — GitHub Control Plane reconciliation",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 58,
         "sequence": 19,
         "dependencies": [
@@ -1421,7 +1423,10 @@
           "path:src/github"
         ],
         "evidence": [
-          "Derived from GWC-CAND-12 exact-bound candidate backlog."
+          "Derived from GWC-CAND-12 exact-bound candidate backlog.",
+          "Dependency GWC-PRE-E-GWC-11 satisfied at dispatch; GWC-11 closes in this exact-head transition after checkpoint CI #1355 SUCCESS.",
+          "Initial collision domains remain github:pull-requests and path:src/github; any expansion requires exact-head claim update before mutation.",
+          "Blueprint safety invariant: do not merge stale PR #88/#89/#90 stack blindly; reconcile against current main and current candidate authorities first."
         ]
       },
       {
@@ -1769,6 +1774,16 @@
           "path:tests/governedWorkflowAuthority.test.ts",
           "path:package.json"
         ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-12",
+        "collisionDomains": [
+          "github:pull-requests",
+          "path:src/github"
+        ],
         "status": "ACTIVE"
       }
     ],
@@ -1868,9 +1883,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "ded7df7aee7de92806cc5b02b0b6f6521d037db8",
+        "lastObservedHeadSha": "0d65005ed40bda9a9f909232517b632f121b6ec3",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T08:35:00Z",
+        "lastSeenAt": "2026-09-19T08:42:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5306,7 +5321,7 @@
     "gwc11": {
       "workItemId": "GWC-PRE-E-GWC-11",
       "blueprint": "GWC-11",
-      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
+      "status": "PASS_WITH_EVIDENCE",
       "dependencies": [
         "GWC-PRE-E-GWC-2",
         "GWC-PRE-E-GWC-10"
@@ -5351,9 +5366,21 @@
       },
       "checkpoint": {
         "bundle": "docs/gwc/canonical-memory/pr95-e-gwc11-authority-baseline-complete",
-        "validation": "PENDING_EXACT_HEAD_CI",
-        "claimRelease": "RETAINED_PENDING_CHECKPOINT_CI"
+        "validation": "SUCCESS",
+        "ciRunNumber": 1355,
+        "head": "0d65005ed40bda9a9f909232517b632f121b6ec3",
+        "claimRelease": "RELEASED_AFTER_CHECKPOINT_CI_SUCCESS"
       }
+    },
+    "gwc12": {
+      "workItemId": "GWC-PRE-E-GWC-12",
+      "blueprint": "GWC-12",
+      "status": "IN_PROGRESS",
+      "dependencies": [
+        "GWC-PRE-E-GWC-11"
+      ],
+      "scope": "GITHUB_CONTROL_PLANE_RECONCILIATION",
+      "authorityBoundary": "RECONCILE_EXISTING_PR_STACK__NO_BLIND_MERGE__EXACT_HEAD_WRITE_ADAPTERS_ONLY"
     }
   },
   "intake003RecoveryEvolution": {
