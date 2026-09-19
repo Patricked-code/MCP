@@ -710,4 +710,3 @@ Mise à jour : 2026-07-09T20:08:09Z
 - `workflow_run` reste absent/interdit ; politique OIDC exact-SHA inchangée ; `workflow_dispatch` conserve son comportement historique.
 - TDD : RED CI #1110 @ `757ee2a`; GREEN CI #1112 @ `074f2bd2` entièrement réussi.
 - Aucun merge `main`, S1, production ou runtime MCP n'est muté.
-
