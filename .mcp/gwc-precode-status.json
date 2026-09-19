@@ -1119,7 +1119,7 @@
           "GWC-5"
         ],
         "title": "GWC-5 — Task/Lock orchestration wrappers",
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 65,
         "sequence": 12,
         "dependencies": [
@@ -1133,7 +1133,11 @@
         ],
         "evidence": [
           "Derived from GWC-CAND-05 exact-bound candidate backlog.",
-          "Dependencies GWC-PRE-E-GWC-2 and GWC-PRE-E-GWC-4 completed; GWC-4 final GREEN CI #1205."
+          "Dependencies GWC-PRE-E-GWC-2 and GWC-PRE-E-GWC-4 completed; GWC-4 final GREEN CI #1205.",
+          "Claimed by candidate-7afc131430c64c6fe34bcfea @ db01606f3d1f524fdc807bc59e1fbb491385fb75",
+          "Checkpoint GWC-4 confirmed by CI #1209 SUCCESS.",
+          "OD-05 constrained existing-first: deterministic order, all-or-nothing active grant, compensation on cross-store failure, implementation inside existing Lock Service only.",
+          "Task Queue lifecycle/classification and reconcileIntent OUT_OF_SCOPE semantics remain unchanged; no runtime Task materialization in PRECODE."
         ]
       },
       {
@@ -1509,6 +1513,17 @@
           "path:src/operationalMemory/sessionService.ts"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-5",
+        "collisionDomains": [
+          "path:src/governedWorkflow/adapters/task",
+          "path:src/operationalMemory/taskQueue.ts",
+          "path:src/operationalMemory/lockService.ts"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -1556,9 +1571,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "1c79cb863f8f5b048be5241040cf859b7d307c3c",
+        "lastObservedHeadSha": "db01606f3d1f524fdc807bc59e1fbb491385fb75",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T03:08:00Z",
+        "lastSeenAt": "2026-09-19T03:14:00Z",
         "status": "ACTIVE"
       }
     ]
