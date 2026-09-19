@@ -1420,13 +1420,28 @@
         ],
         "collisionDomains": [
           "github:pull-requests",
-          "path:src/github"
+          "path:src/github",
+          "path:src/github/connection.ts",
+          "path:src/github/controlPlane.ts",
+          "path:src/tools/githubLifecycle.ts",
+          "path:src/tools/readOnly.ts",
+          "path:src/tools/writeScoped.ts",
+          "path:src/tools/registrationPolicy.ts",
+          "path:tests/githubLifecycleControl.test.ts",
+          "path:package.json"
         ],
         "evidence": [
           "Derived from GWC-CAND-12 exact-bound candidate backlog.",
           "Dependency GWC-PRE-E-GWC-11 satisfied at dispatch; GWC-11 closes in this exact-head transition after checkpoint CI #1355 SUCCESS.",
           "Initial collision domains remain github:pull-requests and path:src/github; any expansion requires exact-head claim update before mutation.",
-          "Blueprint safety invariant: do not merge stale PR #88/#89/#90 stack blindly; reconcile against current main and current candidate authorities first."
+          "Blueprint safety invariant: do not merge stale PR #88/#89/#90 stack blindly; reconcile against current main and current candidate authorities first.",
+          "GWC-12 dispatch transition MCP CI #1357 SUCCESS @ 45fb8f15ebc7152100925d188177700b08e45f82.",
+          "Live PR reconciliation: #88/#89/#90 remain open stale draft stack; #88 mergeable=false and all three diverged from current main d1f303955c4d368950da2307dda41d826fc85d0a. No blind merge/rebase/close authorized.",
+          "C-89.2 is already materialized byte-identically: src/tools/githubControlPlaneRead.ts and src/tools/readOnly.ts match stale #89 blobs for the bounded READ split.",
+          "Historical C3 disposition remains authoritative for GWC-12 materialization: C-88.1 DEFER; C-89.1 SUPERSEDE; C-89.2 SPLIT_MATERIALIZED; C-90.1 and C-90.2 now eligible because GWC-9/AF-32 is closed; C-90.3 remains DEFER.",
+          "Current materialization target is exactly 9 capabilities: READ github_get_review_threads; WRITE github_create_branch, github_create_commit, github_create_or_update_file, github_create_pull_request, github_mark_pr_ready, github_reply_review_thread, github_resolve_review_thread, github_merge_pull_request.",
+          "Write adapters must consume the existing Scoped Write Gate and require shadow_ready before mutation; no second governance authority. Exact-head binding is required for create/update/ready/review/merge operations.",
+          "Claim expanded before RED mutation to GitHub connection/controlPlane, lifecycle tool registration, registration policy, dedicated tests and package test registration."
         ]
       },
       {
@@ -1782,7 +1797,15 @@
         "workItemId": "GWC-PRE-E-GWC-12",
         "collisionDomains": [
           "github:pull-requests",
-          "path:src/github"
+          "path:src/github",
+          "path:src/github/connection.ts",
+          "path:src/github/controlPlane.ts",
+          "path:src/tools/githubLifecycle.ts",
+          "path:src/tools/readOnly.ts",
+          "path:src/tools/writeScoped.ts",
+          "path:src/tools/registrationPolicy.ts",
+          "path:tests/githubLifecycleControl.test.ts",
+          "path:package.json"
         ],
         "status": "ACTIVE"
       }
@@ -1883,9 +1906,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "0d65005ed40bda9a9f909232517b632f121b6ec3",
+        "lastObservedHeadSha": "45fb8f15ebc7152100925d188177700b08e45f82",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T08:42:00Z",
+        "lastSeenAt": "2026-09-19T08:49:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5380,7 +5403,52 @@
         "GWC-PRE-E-GWC-11"
       ],
       "scope": "GITHUB_CONTROL_PLANE_RECONCILIATION",
-      "authorityBoundary": "RECONCILE_EXISTING_PR_STACK__NO_BLIND_MERGE__EXACT_HEAD_WRITE_ADAPTERS_ONLY"
+      "authorityBoundary": "RECONCILE_EXISTING_PR_STACK__NO_BLIND_MERGE__EXACT_HEAD_WRITE_ADAPTERS_ONLY",
+      "reconciliation": {
+        "mainSha": "d1f303955c4d368950da2307dda41d826fc85d0a",
+        "stalePrs": {
+          "88": {
+            "head": "d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993",
+            "disposition": "DEFER"
+          },
+          "89": {
+            "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+            "disposition": "READ_SPLIT_ALREADY_MATERIALIZED__MANIFEST_SUPERSEDED"
+          },
+          "90": {
+            "head": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+            "disposition": "C90_1_AND_C90_2_REDERIVE_FROM_CURRENT__C90_3_DEFER"
+          }
+        },
+        "selectedCapabilities": {
+          "read": [
+            "github_get_review_threads"
+          ],
+          "write": [
+            "github_create_branch",
+            "github_create_commit",
+            "github_create_or_update_file",
+            "github_create_pull_request",
+            "github_mark_pr_ready",
+            "github_reply_review_thread",
+            "github_resolve_review_thread",
+            "github_merge_pull_request"
+          ]
+        },
+        "forbiddenCarryOver": [
+          "github_create_repository",
+          ".mcp/git-github-capabilities.json",
+          "github_delete_branch",
+          "github_delete_file",
+          "github_request_review",
+          "github_update_pull_request",
+          "github_get_tree",
+          "github_get_commits",
+          "github_get_commit_diff",
+          "github_get_mergeability",
+          "github_get_required_checks"
+        ]
+      }
     }
   },
   "intake003RecoveryEvolution": {
