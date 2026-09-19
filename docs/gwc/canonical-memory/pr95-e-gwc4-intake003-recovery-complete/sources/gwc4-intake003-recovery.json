@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-4",
+  "blueprint": "GWC-4",
+  "delta": "NEW_INFORMATION_INTAKE-003_RECOVERY_CONTINUITY",
+  "status": "PASS_WITH_EVIDENCE",
+  "historicalBaseline": {
+    "status": "PASS_WITH_EVIDENCE",
+    "finalGreenCiRun": 1205,
+    "head": "3ad4bcc57e45679352472c383f30a4f0703f5db2",
+    "preserved": true
+  },
+  "intake": {
+    "intakeId": "NEW_INFORMATION_INTAKE-003",
+    "receiptDigest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555",
+    "reconciliation": "ACCEPT_WITH_ADAPTATION",
+    "existingFirstTarget": "src/governedContext/candidateContinuity.ts"
+  },
+  "red": {
+    "head": "4dd95a4069e7facc97aa7ef55370422221298180",
+    "ciRunId": 35419153643,
+    "ciRunNumber": 1227,
+    "conclusion": "failure",
+    "evidence": [
+      "discoverCandidateIntakeSources was absent.",
+      "assessCandidateLiveness and superviseCandidateRecovery were absent.",
+      "planCandidateRecoveryRunner and acknowledgeCandidateRecoveryRunner were absent.",
+      "All historical tests preceding the six new recovery tests remained green."
+    ]
+  },
+  "firstGreen": {
+    "head": "197f4e8e891c5962962ddc064b6de4f66a6dda12",
+    "ciRunId": 35419384609,
+    "ciRunNumber": 1230,
+    "conclusion": "success",
+    "disposition": "TECHNICALLY_GREEN_SELF_REVIEW_REQUIRED"
+  },
+  "selfReview": {
+    "regressionRed": {
+      "head": "05320d82eb61185bcc2fec3d13027fdaf057df8e",
+      "ciRunId": 35419576124,
+      "ciRunNumber": 1231,
+      "conclusion": "failure"
+    },
+    "findings": [
+      {
+        "code": "LIVENESS_BINDING_MISMATCH",
+        "evidence": "Telemetry bound to another candidateSessionId could be treated as current-executor liveness.",
+        "correction": "Supervisor now requires liveness candidateSessionId and agentIdentity to match the expected active claim before any continue/recovery decision."
+      },
+      {
+        "code": "RUNNER_ENVELOPE_INTEGRITY",
+        "evidence": "A recovery plan modified after planning could still be acknowledged as RESUMED when identifiers matched.",
+        "correction": "Acknowledgement now parses a strict bounded plan envelope and recomputes the deterministic planId from its semantic fields before accepting the acknowledgement."
+      }
+    ]
+  },
+  "finalGreen": {
+    "head": "469da6d09d63367e0e89388369573f6f5fc1e441",
+    "ciRunId": 35419759389,
+    "ciRunNumber": 1233,
+    "conclusion": "success",
+    "tests": 445
+  },
+  "implementation": {
+    "files": [
+      "src/governedContext/candidateContinuity.ts",
+      "tests/candidateContinuity.test.ts"
+    ],
+    "unchangedAuthorities": [
+      "src/operationalMemory/sessionService.ts",
+      "src/governedWorkflow/adapters/session.ts"
+    ],
+    "behavior": [
+      "discoverCandidateIntakeSources performs bounded source discovery and deterministic deduplication before the existing registerCandidateIntake path; it cannot execute instructions and does not persist raw transcript content.",
+      "assessCandidateLiveness is a pure transient projection; heartbeat freshness never changes ownership, authorization, claim status or write permission.",
+      "superviseCandidateRecovery reobserves HEAD, candidate-session binding, active claim, checkpoint and liveness before emitting a bounded decision.",
+      "Timeout, stale heartbeat and missing heartbeat never transfer a claim.",
+      "A stale/missing current executor may only produce START_REPLACEMENT_RECONCILE_ONLY while the existing claim remains authoritative.",
+      "planCandidateRecoveryRunner resumes only a same-provider session whose providerConversationRef was actually PROVIDED_BY_CLIENT and whose provider capability explicitly supports verified resume.",
+      "When verified resume is unavailable, replacement execution is possible only when explicitly supported and remains RECONCILE_READ_ONLY; otherwise RUNNER_UNAVAILABLE fails closed.",
+      "Recovery plan ids are deterministic for restart-storm resistance and acknowledgements verify bounded envelope integrity before RESUMED or REPLACEMENT_STARTED.",
+      "Runner plans and acknowledgements never grant authorization or claim transfer."
+    ]
+  },
+  "invariants": [
+    "OWNERSHIP != LIVENESS != PROGRESS",
+    "HEARTBEAT != OWNERSHIP",
+    "HEARTBEAT != AUTHORIZATION",
+    "STALE != RELEASED",
+    "STALE != DEAD",
+    "MISSING_HEARTBEAT != PERMISSION_TO_WRITE",
+    "RUNNER_IS_EXECUTION_ADAPTER_NOT_AUTHORITY",
+    "TIMEOUT_ALONE_NEVER_TRANSFERS_CLAIM",
+    "NO_HEARTBEAT_COMMITS",
+    "NO_RAW_TRANSCRIPT_OR_SECRET_PERSISTENCE",
+    "INTAKE_DISCOVERY_CANNOT_DIRECTLY_EXECUTE_INSTRUCTIONS"
+  ],
+  "boundaries": {
+    "runtimeMcpRequired": false,
+    "runtimeTasksCreated": 0,
+    "runtimeLocksUsed": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deployment": false,
+    "sessionServiceChanged": false,
+    "historicalSessionAdapterChanged": false,
+    "secondSessionAuthorityCreated": false,
+    "secondIntakeQueueCreated": false,
+    "heartbeatPersisted": false,
+    "claimTransferImplemented": false,
+    "authorizationGrantedByRecovery": false
+  },
+  "deferredToGwc17Acceptance": [
+    "universal restart-storm acceptance",
+    "stale-envelope cancellation under full end-to-end recovery scenarios",
+    "universal acknowledgement-before-RESUMED acceptance",
+    "claim safety across universal failure/recovery scenarios",
+    "secret non-persistence acceptance across all recovery surfaces"
+  ],
+  "nextAction": "Validate this checkpoint by CI, release the GWC-PRE-E-GWC-4 claim only after success, then dispatch the next dependency-safe READY candidate work item. Current live ordering makes GWC-PRE-E-GWC-6 the next candidate."
+}
