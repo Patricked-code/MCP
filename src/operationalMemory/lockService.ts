@@ -329,7 +329,7 @@ export function createGovernedLockService(
       ) fail('LOCK_TTL_INVALID');
       if (!input.reason.trim() || input.reason.length > 240) fail('LOCK_REASON_INVALID');
 
-      await requireSession(
+      const requiredSession = await requireSession(
         input.governedSessionId,
         request,
         input.expectedSessionRevision
@@ -364,6 +364,10 @@ export function createGovernedLockService(
             .filter((lock): lock is GovernedLockRecord => (
               Boolean(lock) && lock!.governedSessionId === input.governedSessionId
             ));
+          const projectedLockIds = new Set(requiredSession.lockIds);
+          if (existingOwned.some((lock) => !projectedLockIds.has(lock.lockId))) {
+            fail('LOCK_SESSION_PROJECTION_UNSETTLED');
+          }
           const ownedScopes = new Set(existingOwned.map((lock) => lock.scope));
           const missingScopes = normalizedScopes.filter((scope) => !ownedScopes.has(scope));
           created = missingScopes.map((scope) => ({
