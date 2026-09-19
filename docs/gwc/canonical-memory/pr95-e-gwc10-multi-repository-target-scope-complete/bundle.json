@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc10-multi-repository-target-scope-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc10_target_scope",
+      "path": "sources/gwc10-target-scope.json",
+      "media_type": "application/json",
+      "bytes": 4834,
+      "sha256": "5461517162540bdcffc070759da63edea4aa35f2b1e24e932d488c5ae9795ebe"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc10_pass",
+      "key": "candidate.phase_e.gwc_10",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-10 is PASS_WITH_EVIDENCE. RED CI #1314 proved the missing multi-repository operational propagation. First full GREEN CI #1328 succeeded. Self-review CI #1329 found one real TargetScope order-sensitivity defect; final CI #1330 succeeded after canonicalizing equality.",
+      "source_refs": [
+        "src_gwc10_target_scope"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc10_compatibility",
+      "key": "candidate.gwc10.compatibility",
+      "claim_type": "fact",
+      "value": "TargetScope is optional and additive on Session, Task, Lock and BootstrapReceipt. Its absence preserves exact historical single-repository semantics and is never interpreted as all project components. No historical store backfill or schemaVersion 2 migration is required.",
+      "source_refs": [
+        "src_gwc10_target_scope"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc10_multi_sha",
+      "key": "candidate.gwc10.multi_repository_sha",
+      "claim_type": "fact",
+      "value": "TargetContext carries independent per-component GitHub and runtime SHAs. No PROJECT_SHA is synthesized. A multi-component BootstrapReceipt stores scoped TargetContext and leaves legacy githubHead/runtimeRevision null.",
+      "source_refs": [
+        "src_gwc10_target_scope"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc10_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Keep the GWC-10 branch-local claim ACTIVE until this checkpoint passes exact-head CI. After SUCCESS, release GWC-10 and dispatch GWC-PRE-E-GWC-11 without replaying GWC-10.",
+      "source_refs": [
+        "src_gwc10_target_scope"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
