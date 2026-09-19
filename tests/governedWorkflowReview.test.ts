@@ -277,7 +277,34 @@ test('GW-43 exact-head merge is non-replayable and refuses a proof from another 
   const contracts = await substrate();
   const proof = composeGw41PremergeProof({
     expectedHeadSha: HEAD,
-    github: githubContext(),
+    github: githubContext({
+      repositoryResolution: {
+        status: 'RESOLVED',
+        observedAt: NOW,
+        requestedRepositoryContext: 'Patricked-code/MCP',
+        selectionSource: 'connection_context',
+        selectedAccountContext: { owner: 'Patricked-code', type: 'user' },
+        selectedRepository: {
+          repositoryId: 'github:Patricked-code/MCP',
+          githubRepositoryId: 1285534440,
+          owner: 'Patricked-code',
+          ownerType: 'user',
+          name: 'MCP',
+          fullName: 'Patricked-code/MCP',
+          defaultBranch: 'main',
+          visibility: 'public',
+          archived: false,
+          fork: false
+        },
+        candidates: [],
+        candidateCount: 0,
+        freshness: 'CURRENT',
+        provenance: ['github_api'],
+        reasonCodes: [],
+        uncertainties: [],
+        registryDigest: 'registry-digest'
+      }
+    }),
     taskStatus: 'REVIEW',
     checkpointHeadSha: HEAD
   }, contracts);
@@ -300,6 +327,16 @@ test('GW-43 exact-head merge is non-replayable and refuses a proof from another 
   assert.equal(wrongPullRequest.status, 'BLOCKED');
   assert.deepEqual(wrongPullRequest.reasonCodes, ['PREMERGE_PROOF_PR_MISMATCH']);
   assert.equal(wrongPullRequest.effectPlan, null);
+
+  const wrongRepository = planGw43ExactHeadMerge({
+    repository: 'Other/MCP',
+    pullRequestNumber: 95,
+    expectedHeadSha: HEAD,
+    premergeProof: proof
+  }, contracts);
+  assert.equal(wrongRepository.status, 'BLOCKED');
+  assert.deepEqual(wrongRepository.reasonCodes, ['PREMERGE_PROOF_REPOSITORY_MISMATCH']);
+  assert.equal(wrongRepository.effectPlan, null);
 
   const stale = planGw43ExactHeadMerge({
     repository: 'Patricked-code/MCP',
