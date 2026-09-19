@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-e-gwc15-deployment-evidence-complete",
-  "currentBundleId": "bnd_mcp-pr95-e-gwc15-deployment-evidence-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete",
+  "currentBundle": "pr95-e-gwc16-documentation-closure-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc16-documentation-closure-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -29,7 +29,7 @@
     "phase": "E",
     "workItem": "GWC-PRE-E-GWC-16",
     "work": "GWC_16_DOCUMENTATION_AND_CLOSURE",
-    "status": "IN_PROGRESS",
+    "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Audit the existing documentation-governance and terminal closure primitives for GW-58..GW-72, then prove RED for false DONE before implementing the single terminal-verification predicate and bounded documentation-recursion guard.",
+    "nextAction": "Validate the staged GWC-16 checkpoint on the exact online branch head. Keep the GWC-16 claim ACTIVE until MCP CI succeeds; then release it and dispatch GWC-PRE-E-GWC-17 without replaying GWC-16.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -299,11 +299,16 @@
       "name": "pr95-e-gwc14-review-merge-complete",
       "path": "docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete",
       "status": "IMMUTABLE_HISTORICAL_GWC14_REVIEW_MERGE_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-e-gwc15-deployment-evidence-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC15_DEPLOYMENT_EVIDENCE_COMPLETE_CHECKPOINT"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-19T12:55:32Z",
-  "observedHeadBeforePointerUpdate": "05f991a5b675c639df4f46aab2460866eafc4503",
-  "correctionReason": "GWC-15 checkpoint CI #1429 succeeded on exact head bc2dbef; its claim is released. GWC-16 is now the active branch-local PRECODE work item. The current bundle remains the immutable GWC-15 completion checkpoint until GWC-16 produces its own validated checkpoint.",
+  "updatedFromGitHubObservationAt": "2026-09-19T13:18:16Z",
+  "observedHeadBeforePointerUpdate": "f38b4b4c1f99c7b5b3c270cc5bdccbf37e4ea67b",
+  "correctionReason": "GWC-16 reached final GREEN in MCP CI #1440 with 589/589 tests; SUIVI.md, CHANGELOG.md and DECISIONS_LOG.md are reconciled; the canonical GWC-16 checkpoint is staged. Its branch-local claim remains ACTIVE until the checkpoint exact-head CI succeeds.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
