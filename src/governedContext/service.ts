@@ -80,7 +80,13 @@ function fallbackGithub(
       required: [],
       requiredSatisfied: null
     },
-    reviews: { approvals: 0, changesRequested: 0, unresolvedThreads: null },
+    reviews: {
+      approvals: 0,
+      changesRequested: 0,
+      unresolvedThreads: null,
+      headSha: null,
+      exactHead: null
+    },
     ruleset: {
       name: null,
       enforcement: null,
