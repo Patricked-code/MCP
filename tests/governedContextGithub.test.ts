@@ -679,3 +679,59 @@ test('un contexte repository invalide ne partage ni cache ni single-flight avec 
   assert.equal(cacheOnly.repositoryResolution?.status, 'UNVERIFIED');
   assert.equal(cacheOnly.repositoryResolution?.selectedRepository, null);
 });
+
+
+test('AF-22/AF-30 bind review evidence to the exact PR head and expose stale review heads', async () => {
+  const currentHead = 'b'.repeat(40);
+  const reviewedHead = 'c'.repeat(40);
+  const fetchImpl: typeof fetch = async (input) => {
+    const url = String(input);
+    if (url.endsWith('/commits/main')) return json({ sha: SHA });
+    if (url.includes('/pulls?')) return json([{
+      number: 95,
+      state: 'open',
+      draft: false,
+      merged_at: null,
+      base: { ref: 'main' },
+      head: { ref: BRANCH, sha: currentHead },
+      user: { login: 'owner' },
+      updated_at: '2026-09-19T00:00:00Z'
+    }]);
+    if (url.includes('/check-runs?')) return json({
+      total_count: 1,
+      check_runs: [
+        { name: 'validate', head_sha: currentHead, status: 'completed', conclusion: 'success' }
+      ]
+    });
+    if (url.includes('/reviews?')) return json([{
+      id: 901,
+      state: 'APPROVED',
+      commit_id: reviewedHead,
+      submitted_at: '2026-09-18T23:55:00Z',
+      user: { id: 77, login: 'reviewer' }
+    }]);
+    if (url.endsWith('/graphql')) return json({
+      data: { repository: { pullRequest: { reviewThreads: { nodes: [] } } } }
+    });
+    if (url.includes('/rulesets?')) return json([]);
+    return json({ message: 'unexpected endpoint' }, 500);
+  };
+  const collector = createGithubOperationalContextCollector({
+    fetchImpl,
+    readToken: async () => 'bounded-test-token',
+    apiBase: 'https://api.github.test',
+    allowedHosts: 'api.github.test',
+    now: () => new Date('2026-09-19T00:00:00.000Z')
+  });
+
+  const result = await collector.reconcileExplicit(BRANCH);
+  const reviews = result.reviews as typeof result.reviews & {
+    headSha?: string | null;
+    exactHead?: boolean | null;
+  };
+
+  assert.equal(reviews.approvals, 1);
+  assert.equal(reviews.headSha, reviewedHead);
+  assert.equal(reviews.exactHead, false);
+  assert.ok(result.reasonCodes.includes('GITHUB_HEAD_MISMATCH'));
+});
