@@ -975,3 +975,96 @@ test('runner plan is never RESUMED until a matching acknowledgement is observed'
   assert.equal(acknowledged.authorizationGranted, false);
   assert.equal(acknowledged.claimTransferAllowed, false);
 });
+
+test('recovery supervisor rejects liveness telemetry bound to another candidate session', async () => {
+  const {
+    assessCandidateLiveness,
+    superviseCandidateRecovery
+  } = await import('../src/governedContext/candidateContinuity.js');
+
+  const liveness = assessCandidateLiveness({
+    candidateSessionId: 'candidate-other-session',
+    agentIdentity: 'chatgpt',
+    observedHeadSha: '8'.repeat(40),
+    heartbeatObservedAt: '2026-09-19T03:09:00Z',
+    observedAt: '2026-09-19T03:10:00Z',
+    freshForSeconds: 300
+  });
+
+  const recovery = superviseCandidateRecovery({
+    expectedHeadSha: '8'.repeat(40),
+    currentHeadSha: '8'.repeat(40),
+    workItemId: 'GWC-PRE-E-GWC-4',
+    expectedCandidateSessionId: 'candidate-expected-session',
+    activeClaim: {
+      candidateSessionId: 'candidate-expected-session',
+      agentIdentity: 'chatgpt',
+      workItemId: 'GWC-PRE-E-GWC-4',
+      collisionDomains: ['path:src/governedContext/candidateContinuity.ts'],
+      status: 'ACTIVE'
+    },
+    checkpoint: {
+      status: 'SUCCESS',
+      headSha: '8'.repeat(40)
+    },
+    liveness
+  });
+
+  assert.equal(recovery.decision, 'REOBSERVE_REQUIRED');
+  assert.equal(recovery.reasonCode, 'LIVENESS_BINDING_MISMATCH');
+  assert.equal(recovery.claimTransferAllowed, false);
+  assert.equal(recovery.authorizationGranted, false);
+  assert.equal(recovery.requiresReobservationBeforeWrite, true);
+});
+
+test('runner acknowledgement rejects a plan whose bounded recovery envelope was tampered after planning', async () => {
+  const {
+    acknowledgeCandidateRecoveryRunner,
+    planCandidateRecoveryRunner
+  } = await import('../src/governedContext/candidateContinuity.js');
+
+  const plan = planCandidateRecoveryRunner({
+    recoveryDecision: 'START_REPLACEMENT_RECONCILE_ONLY',
+    candidateSession: {
+      candidateSessionId: 'candidate-runner-integrity',
+      agentIdentity: 'other-agent',
+      provider: 'other',
+      providerConversationRef: null,
+      providerConversationRefProvenance: 'UNAVAILABLE',
+      githubActor: null,
+      githubConnectionRef: 'github-runner-integrity',
+      connectionInstanceRef: 'connection-runner-integrity',
+      repository: 'Patricked-code/MCP',
+      branch: 'claude/ecstatic-edison-v1dyt1',
+      startingHeadSha: '9'.repeat(40),
+      lastObservedHeadSha: '9'.repeat(40),
+      createdAt: '2026-09-19T03:00:00Z',
+      lastSeenAt: '2026-09-19T03:05:00Z',
+      status: 'ACTIVE'
+    },
+    expectedHeadSha: '9'.repeat(40),
+    capability: {
+      provider: 'other',
+      verifiedSessionResumeSupported: false,
+      replacementExecutorSupported: true
+    }
+  });
+  assert.equal(plan.action, 'START_REPLACEMENT_EXECUTOR');
+
+  const tampered = {
+    ...plan,
+    action: 'RESUME_VERIFIED_PROVIDER_SESSION' as const,
+    providerConversationRef: 'invented-provider-ref'
+  };
+  const acknowledgement = acknowledgeCandidateRecoveryRunner(tampered, {
+    planId: tampered.planId,
+    candidateSessionId: tampered.candidateSessionId,
+    observedHeadSha: tampered.expectedHeadSha,
+    acknowledgedAt: '2026-09-19T03:12:00Z'
+  });
+
+  assert.equal(acknowledgement.status, 'UNVERIFIED');
+  assert.equal(acknowledgement.authorizationGranted, false);
+  assert.equal(acknowledgement.claimTransferAllowed, false);
+});
+
