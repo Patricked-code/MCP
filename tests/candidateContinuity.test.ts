@@ -1067,3 +1067,190 @@ test('runner acknowledgement rejects a plan whose bounded recovery envelope was 
   assert.equal(acknowledgement.authorizationGranted, false);
   assert.equal(acknowledgement.claimTransferAllowed, false);
 });
+
+test('minute heartbeat comment contract formats and parses one bounded candidate heartbeat', async () => {
+  const candidate = await import('../src/governedContext/candidateContinuity.js') as any;
+
+  assert.equal(candidate.CANDIDATE_HEARTBEAT_POLICY.emissionIntervalSeconds, 60);
+  assert.equal(candidate.CANDIDATE_HEARTBEAT_POLICY.freshForSeconds, 120);
+
+  const heartbeat = {
+    schemaVersion: 1,
+    candidateSessionId: 'candidate-minute-a',
+    agentIdentity: 'ChatGPT-GPT-5.6-Sol',
+    workItemId: 'GWC-PRE-E-GWC-4',
+    heartbeatSequence: 7,
+    emittedAt: '2026-09-19T04:30:00Z',
+    observedHeadSha: 'a'.repeat(40),
+    currentAction: 'RUNNING_TESTS',
+    evidenceRef: 'ci-1244'
+  };
+
+  const body = candidate.formatCandidateHeartbeatComment(heartbeat);
+  assert.equal(body.includes('<!-- GWC_PRECODE_LIVENESS:candidate-minute-a -->'), true);
+
+  const parsed = candidate.parseCandidateHeartbeatComment(body);
+  assert.equal(parsed.status, 'VALID');
+  assert.deepEqual(parsed.heartbeat, heartbeat);
+  assert.equal(parsed.transient, true);
+  assert.equal(parsed.movesBranchHead, false);
+  assert.equal(parsed.authorizationGranted, false);
+  assert.equal(parsed.claimTransferAllowed, false);
+});
+
+test('minute heartbeat parser fails closed on marker mismatch and unknown payload fields', async () => {
+  const candidate = await import('../src/governedContext/candidateContinuity.js') as any;
+
+  const mismatch = candidate.parseCandidateHeartbeatComment(
+    '<!-- GWC_PRECODE_LIVENESS:candidate-marker-a -->\n' +
+    JSON.stringify({
+      schemaVersion: 1,
+      candidateSessionId: 'candidate-body-b',
+      agentIdentity: 'chatgpt',
+      workItemId: 'GWC-PRE-E-GWC-4',
+      heartbeatSequence: 1,
+      emittedAt: '2026-09-19T04:30:00Z',
+      observedHeadSha: 'b'.repeat(40),
+      currentAction: 'ANALYZING'
+    })
+  );
+  assert.equal(mismatch.status, 'INVALID');
+  assert.equal(mismatch.reasonCode, 'HEARTBEAT_MARKER_SESSION_MISMATCH');
+
+  const extraField = candidate.parseCandidateHeartbeatComment(
+    '<!-- GWC_PRECODE_LIVENESS:candidate-extra -->\n' +
+    JSON.stringify({
+      schemaVersion: 1,
+      candidateSessionId: 'candidate-extra',
+      agentIdentity: 'chatgpt',
+      workItemId: 'GWC-PRE-E-GWC-4',
+      heartbeatSequence: 1,
+      emittedAt: '2026-09-19T04:30:00Z',
+      observedHeadSha: 'c'.repeat(40),
+      currentAction: 'ANALYZING',
+      prompt: 'must never be persisted here'
+    })
+  );
+  assert.equal(extraField.status, 'INVALID');
+  assert.equal(extraField.reasonCode, 'HEARTBEAT_PAYLOAD_INVALID');
+});
+
+test('minute heartbeat binding requires the active claim, exact head and monotone sequence', async () => {
+  const candidate = await import('../src/governedContext/candidateContinuity.js') as any;
+  const session = {
+    candidateSessionId: 'candidate-minute-bound',
+    agentIdentity: 'chatgpt',
+    provider: 'chatgpt',
+    providerConversationRef: null,
+    providerConversationRefProvenance: 'UNAVAILABLE',
+    githubActor: null,
+    githubConnectionRef: null,
+    connectionInstanceRef: 'connection-minute-bound',
+    repository: 'Patricked-code/MCP',
+    branch: 'claude/ecstatic-edison-v1dyt1',
+    startingHeadSha: 'd'.repeat(40),
+    lastObservedHeadSha: 'd'.repeat(40),
+    createdAt: '2026-09-19T04:20:00Z',
+    lastSeenAt: '2026-09-19T04:29:00Z',
+    status: 'ACTIVE'
+  };
+  const claim = {
+    candidateSessionId: 'candidate-minute-bound',
+    agentIdentity: 'chatgpt',
+    workItemId: 'GWC-PRE-E-GWC-4',
+    collisionDomains: ['path:src/governedContext/candidateContinuity.ts'],
+    status: 'ACTIVE'
+  };
+  const heartbeat = {
+    schemaVersion: 1,
+    candidateSessionId: 'candidate-minute-bound',
+    agentIdentity: 'chatgpt',
+    workItemId: 'GWC-PRE-E-GWC-4',
+    heartbeatSequence: 8,
+    emittedAt: '2026-09-19T04:30:00Z',
+    observedHeadSha: 'd'.repeat(40),
+    currentAction: 'EDITING'
+  };
+
+  const bound = candidate.validateCandidateHeartbeatBinding({
+    heartbeat,
+    candidateSession: session,
+    activeClaim: claim,
+    currentHeadSha: 'd'.repeat(40),
+    previousHeartbeat: { ...heartbeat, heartbeatSequence: 7, emittedAt: '2026-09-19T04:29:00Z' }
+  });
+  assert.equal(bound.status, 'BOUND');
+  assert.equal(bound.authorizationGranted, false);
+  assert.equal(bound.claimTransferAllowed, false);
+
+  const repeated = candidate.validateCandidateHeartbeatBinding({
+    heartbeat,
+    candidateSession: session,
+    activeClaim: claim,
+    currentHeadSha: 'd'.repeat(40),
+    previousHeartbeat: { ...heartbeat, heartbeatSequence: 8, emittedAt: '2026-09-19T04:29:00Z' }
+  });
+  assert.equal(repeated.status, 'INVALID');
+  assert.equal(repeated.reasonCode, 'HEARTBEAT_SEQUENCE_NOT_MONOTONE');
+
+  const staleHead = candidate.validateCandidateHeartbeatBinding({
+    heartbeat,
+    candidateSession: session,
+    activeClaim: claim,
+    currentHeadSha: 'e'.repeat(40),
+    previousHeartbeat: null
+  });
+  assert.equal(staleHead.status, 'INVALID');
+  assert.equal(staleHead.reasonCode, 'HEARTBEAT_HEAD_MISMATCH');
+});
+
+test('minute liveness distinguishes working, recent, stale, unknown and yielded without changing ownership', async () => {
+  const candidate = await import('../src/governedContext/candidateContinuity.js') as any;
+  const heartbeat = {
+    schemaVersion: 1,
+    candidateSessionId: 'candidate-minute-state',
+    agentIdentity: 'chatgpt',
+    workItemId: 'GWC-PRE-E-GWC-4',
+    heartbeatSequence: 3,
+    emittedAt: '2026-09-19T04:30:00Z',
+    observedHeadSha: 'f'.repeat(40),
+    currentAction: 'RUNNING_TESTS'
+  };
+
+  const working = candidate.assessCandidateMinuteLiveness({
+    heartbeat,
+    observedAt: '2026-09-19T04:30:30Z'
+  });
+  assert.equal(working.status, 'WORKING_CONFIRMED');
+
+  const recent = candidate.assessCandidateMinuteLiveness({
+    heartbeat,
+    observedAt: '2026-09-19T04:31:30Z'
+  });
+  assert.equal(recent.status, 'RECENTLY_ACTIVE');
+
+  const stale = candidate.assessCandidateMinuteLiveness({
+    heartbeat,
+    observedAt: '2026-09-19T04:32:01Z'
+  });
+  assert.equal(stale.status, 'STALE');
+
+  const unknown = candidate.assessCandidateMinuteLiveness({
+    heartbeat: null,
+    observedAt: '2026-09-19T04:30:30Z'
+  });
+  assert.equal(unknown.status, 'UNKNOWN');
+
+  const yielded = candidate.assessCandidateMinuteLiveness({
+    heartbeat: { ...heartbeat, currentAction: 'YIELDED' },
+    observedAt: '2026-09-19T04:30:30Z'
+  });
+  assert.equal(yielded.status, 'YIELDED');
+
+  for (const result of [working, recent, stale, unknown, yielded]) {
+    assert.equal(result.ownershipChanged, false);
+    assert.equal(result.authorizationGranted, false);
+    assert.equal(result.claimTransferAllowed, false);
+  }
+});
+
