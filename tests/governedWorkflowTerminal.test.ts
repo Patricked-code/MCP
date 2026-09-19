@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
@@ -9,7 +10,12 @@ const HEAD = 'a'.repeat(40);
 const OTHER_HEAD = 'b'.repeat(40);
 const TASK_ID = 'TASK-20260919-960';
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
+const OTHER_SESSION_ID = '44444444-4444-4444-8444-444444444444';
 const RECEIPT_ID = '22222222-2222-4222-8222-222222222222';
+const DOC_CONTENT_BASE64 = Buffer.from('# docs\n', 'utf8').toString('base64');
+const DOC_CONTENT_DIGEST = createHash('sha256')
+  .update(Buffer.from(DOC_CONTENT_BASE64, 'base64'))
+  .digest('hex');
 const LOCK_ID = '33333333-3333-4333-8333-333333333333';
 
 async function substrate() {
@@ -60,6 +66,47 @@ function liveState(overrides: Record<string, unknown> = {}) {
   };
 }
 
+function terminalEvidence(overrides: Record<string, unknown> = {}) {
+  return {
+    task: {
+      taskId: TASK_ID,
+      taskRevision: 31,
+      status: 'VERIFYING',
+      ownerGovernedSessionId: SESSION_ID,
+      observedHeadSha: HEAD,
+      runtimeRevision: HEAD
+    },
+    receipt: {
+      bootstrapReceiptId: RECEIPT_ID,
+      stateVersion: 400,
+      runtimeRevision: HEAD
+    },
+    ci: {
+      runId: 1500,
+      headSha: HEAD,
+      conclusion: 'success'
+    },
+    deployment: {
+      jobId: 'mcp-s1-2500-aaaaaaaaaaaa',
+      ciRunId: 1500,
+      headSha: HEAD,
+      runtimeRevision: HEAD,
+      result: 'succeeded'
+    },
+    review: {
+      pullRequestNumber: 196,
+      headSha: HEAD,
+      approved: true,
+      unresolvedThreads: 0
+    },
+    locks: {
+      ownActiveLockCount: 1,
+      foreignConflictingLockCount: 0
+    },
+    ...overrides
+  };
+}
+
 test('GW-58 decides documentation drift and skips directly to terminal receipt refresh when aligned', async () => {
   const { evaluateGw58DocumentationDrift } = await terminal();
   const contracts = await substrate();
@@ -91,6 +138,12 @@ test('GW-59 plans the existing GitHub branch capability only when documentation 
   }, await substrate());
   assert.equal(result.status, 'READY');
   assert.equal(result.effectPlan?.toolName, 'github_create_branch');
+  assert.deepEqual(result.effectPlan?.payload, {
+    organization: 'Patricked-code',
+    repository: 'MCP',
+    branch: 'docs/task-20260919-960',
+    baseSha: HEAD
+  });
   assert.equal(result.payload.nextStepId, 'GW-60');
   assert.equal(result.mutationPerformed, false);
 });
@@ -101,10 +154,23 @@ test('GW-60 plans reconciliation through the existing GitHub file mutation capab
     repository: 'Patricked-code/MCP',
     branchName: 'docs/task-20260919-960',
     baseSha: HEAD,
-    changes: [{ path: 'SUIVI.md', contentDigest: 'c'.repeat(64) }]
+    message: 'docs: reconcile governed closure',
+    changes: [{
+      path: 'SUIVI.md',
+      contentBase64: DOC_CONTENT_BASE64,
+      contentDigest: DOC_CONTENT_DIGEST
+    }]
   }, await substrate());
   assert.equal(result.status, 'READY');
-  assert.equal(result.effectPlan?.toolName, 'github_create_or_update_file');
+  assert.equal(result.effectPlan?.toolName, 'github_create_commit');
+  assert.deepEqual(result.effectPlan?.payload, {
+    organization: 'Patricked-code',
+    repository: 'MCP',
+    branch: 'docs/task-20260919-960',
+    expectedHeadSha: HEAD,
+    message: 'docs: reconcile governed closure',
+    files: [{ path: 'SUIVI.md', contentBase64: DOC_CONTENT_BASE64 }]
+  });
   assert.equal(result.payload.nextStepId, 'GW-61');
 });
 
@@ -119,6 +185,16 @@ test('GW-61 plans a documentation PR through the existing GitHub lifecycle capab
   }, await substrate());
   assert.equal(result.status, 'READY');
   assert.equal(result.effectPlan?.toolName, 'github_create_pull_request');
+  assert.deepEqual(result.effectPlan?.payload, {
+    organization: 'Patricked-code',
+    repository: 'MCP',
+    title: 'docs: reconcile governed closure',
+    head: 'docs/task-20260919-960',
+    targetBase: 'main',
+    expectedHeadSha: HEAD,
+    body: '',
+    draft: true
+  });
   assert.equal(result.payload.nextStepId, 'GW-62');
 });
 
@@ -161,10 +237,18 @@ test('GW-63 plans exact-head merge and refuses stale documentation review proof'
     repository: 'Patricked-code/MCP',
     pullRequestNumber: 196,
     expectedHeadSha: HEAD,
+    mergeMethod: 'squash',
     reviewProof: { status: 'SUCCESS', headSha: HEAD, pullRequestNumber: 196 }
   }, contracts);
   assert.equal(ok.status, 'READY');
   assert.equal(ok.effectPlan?.toolName, 'github_merge_pull_request');
+  assert.deepEqual(ok.effectPlan?.payload, {
+    organization: 'Patricked-code',
+    repository: 'MCP',
+    pullRequestNumber: 196,
+    expectedHeadSha: HEAD,
+    mergeMethod: 'squash'
+  });
   assert.equal(ok.payload.nextStepId, 'GW-64');
 
   const stale = planGw63DocumentationExactHeadMerge({
@@ -259,7 +343,8 @@ test('GW-68 is the hard no-false-DONE gate and fails closed on reality mismatch'
     expectedHeadSha: HEAD,
     expectedRuntimeRevision: HEAD,
     liveState: liveState(),
-    documentation: docsState()
+    documentation: docsState(),
+    terminalEvidence: terminalEvidence()
   }, contracts);
   assert.equal(ok.status, 'SUCCESS');
   assert.equal(ok.payload.terminalVerified, true);
@@ -274,11 +359,67 @@ test('GW-68 is the hard no-false-DONE gate and fails closed on reality mismatch'
     expectedHeadSha: HEAD,
     expectedRuntimeRevision: HEAD,
     liveState: liveState({ runtimeRevision: OTHER_HEAD }),
-    documentation: docsState()
+    documentation: docsState(),
+    terminalEvidence: terminalEvidence()
   }, contracts);
   assert.equal(falseDone.status, 'BLOCKED');
   assert.equal(falseDone.payload.terminalVerified, false);
   assert.ok(falseDone.reasonCodes.includes('TERMINAL_REALITY_MISMATCH'));
+});
+
+test('GWC-16 self-review: GW-68 rejects cross-bound final evidence and foreign lock conflicts', async () => {
+  const { evaluateGw68TerminalVerification } = await terminal();
+  const contracts = await substrate();
+  const base = {
+    taskId: TASK_ID,
+    taskStatus: 'VERIFYING',
+    governedSessionId: SESSION_ID,
+    bootstrapReceiptId: RECEIPT_ID,
+    receiptStateVersion: 400,
+    expectedHeadSha: HEAD,
+    expectedRuntimeRevision: HEAD,
+    liveState: liveState(),
+    documentation: docsState()
+  };
+
+  const crossSession = evaluateGw68TerminalVerification({
+    ...base,
+    terminalEvidence: terminalEvidence({
+      task: {
+        taskId: TASK_ID,
+        taskRevision: 31,
+        status: 'VERIFYING',
+        ownerGovernedSessionId: OTHER_SESSION_ID,
+        observedHeadSha: HEAD,
+        runtimeRevision: HEAD
+      }
+    })
+  }, contracts);
+  assert.equal(crossSession.status, 'BLOCKED');
+  assert.ok(crossSession.reasonCodes.includes('TERMINAL_TASK_BINDING_MISMATCH'));
+
+  const crossHead = evaluateGw68TerminalVerification({
+    ...base,
+    terminalEvidence: terminalEvidence({
+      review: {
+        pullRequestNumber: 196,
+        headSha: OTHER_HEAD,
+        approved: true,
+        unresolvedThreads: 0
+      }
+    })
+  }, contracts);
+  assert.equal(crossHead.status, 'BLOCKED');
+  assert.ok(crossHead.reasonCodes.includes('TERMINAL_EVIDENCE_HEAD_MISMATCH'));
+
+  const foreignLock = evaluateGw68TerminalVerification({
+    ...base,
+    terminalEvidence: terminalEvidence({
+      locks: { ownActiveLockCount: 1, foreignConflictingLockCount: 1 }
+    })
+  }, contracts);
+  assert.equal(foreignLock.status, 'BLOCKED');
+  assert.ok(foreignLock.reasonCodes.includes('TERMINAL_FOREIGN_LOCK_CONFLICT'));
 });
 
 test('GW-69 plans DONE only from a successful terminal proof bound to the same task/session/head/state', async () => {
@@ -299,12 +440,23 @@ test('GW-69 plans DONE only from a successful terminal proof bound to the same t
       bootstrapReceiptId: RECEIPT_ID,
       stateVersion: 400,
       headSha: HEAD,
-      runtimeRevision: HEAD
+      runtimeRevision: HEAD,
+      evidenceDigest: 'd'.repeat(64)
     }
   }, await substrate());
   assert.equal(result.status, 'READY');
   assert.equal(result.effectPlan?.toolName, 'mcp_transition_governed_task');
-  assert.equal(result.effectPlan?.payload.status, 'DONE');
+  assert.deepEqual(result.effectPlan?.payload, {
+    governedSessionId: SESSION_ID,
+    expectedSessionRevision: 22,
+    expectedBootstrapReceiptId: RECEIPT_ID,
+    expectedStateVersion: 400,
+    taskId: TASK_ID,
+    expectedTaskRevision: 31,
+    status: 'DONE',
+    observedHeadSha: HEAD,
+    runtimeRevision: HEAD
+  });
   assert.equal(result.payload.nextStepId, 'GW-70');
 });
 
