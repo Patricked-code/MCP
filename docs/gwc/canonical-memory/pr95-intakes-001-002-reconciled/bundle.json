@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-intakes-001-002-reconciled-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_intakes_001_002_reconciliation",
+      "path": "sources/intakes-001-002-reconciliation.json",
+      "media_type": "application/json",
+      "bytes": 7393,
+      "sha256": "0ad23328c1208700a3dd1763bca26dde3b419fe3ea789948737d7cf6cb9a0327"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_intakes_001_002_reconciled",
+      "key": "candidate.intakes_001_002_reconciled",
+      "claim_type": "fact",
+      "value": "NEW_INFORMATION_INTAKE-001 and -002 were reconciled as one contiguous batch; receipt e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695; both verdicts ACCEPT_WITH_ADAPTATION.",
+      "source_refs": [
+        "src_intakes_001_002_reconciliation"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_reconciled_cursor",
+      "key": "candidate.intake_continuity_cursor",
+      "claim_type": "fact",
+      "value": "Reconciled through sequence 2; canonicalRevision=2; backlogRevision=1; pending intakes empty; lastReconciliationDigest=e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695.",
+      "source_refs": [
+        "src_intakes_001_002_reconciliation"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_additive_root_macro_layer",
+      "key": "candidate.gwc_root_macro_crosswalk_adoption",
+      "claim_type": "fact",
+      "value": "GWC_ROOT, MC-A..MC-H, macroContractRef and the Master Construction Crosswalk are accepted only as additive projections over the existing 73 contracts, 72-member runtime graph and 18 blueprints; they do not replace families A..I or create parallel authorities.",
+      "source_refs": [
+        "src_intakes_001_002_reconciliation"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_b01_enriched",
+      "key": "candidate.gwc_pre_b01_reconciled_input",
+      "claim_type": "fact",
+      "value": "GWC-PRE-B-01/B-02/B-03 are enriched by the reconciled intake requirements; no new candidate work item and no runtime Task was created by reconciliation.",
+      "source_refs": [
+        "src_intakes_001_002_reconciliation"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
