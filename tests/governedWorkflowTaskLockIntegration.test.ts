@@ -345,6 +345,52 @@ test('GWC-5 repository lock input type is future-target compatible but runtime g
   );
 });
 
+test('GWC-5 lock EvidenceRef projects repository/task bindings already encoded in lock scope', async () => {
+  const { wrapGw19MinimalLockAcquisition } =
+    await import('../src/governedWorkflow/adapters/task.js');
+  const contractsText = JSON.parse(await (await import('node:fs/promises')).readFile('.mcp/gwc-contracts.json', 'utf8'));
+  const graphText = JSON.parse(await (await import('node:fs/promises')).readFile('.mcp/gwc-workflow-graph.json', 'utf8'));
+  const { createGovernedContractSubstrate } = await import('../src/governedWorkflow/contractSubstrate.js');
+  const substrate = createGovernedContractSubstrate({
+    contractsProjection: contractsText,
+    graphProjection: graphText,
+    expectedSchemaVersion: 1,
+    expectedContractRegistryDigest: contractsText.registryDigest,
+    expectedGraphRegistryDigest: graphText.registryDigest
+  });
+
+  const plan = {
+    normalizedScopes: Object.freeze([
+      'repository:Patricked-code/MCP',
+      'task:TASK-20260919-511'
+    ]),
+    scopeCount: 2,
+    mutationPerformed: false as const
+  };
+  const base = {
+    schemaVersion: 1 as const,
+    governedSessionId: '55555555-5555-4555-8555-555555555555',
+    acquiredAt: NOW,
+    expiresAt: '2026-09-19T03:20:00.000Z',
+    renewedAt: NOW,
+    reason: 'binding proof',
+    status: 'ACTIVE' as const,
+    lockRevision: 1
+  };
+  const wrapped = wrapGw19MinimalLockAcquisition({
+    plan,
+    grantedLocks: [
+      { ...base, lockId: '66666666-6666-4666-8666-666666666666', scope: 'repository:Patricked-code/MCP' },
+      { ...base, lockId: '77777777-7777-4777-8777-777777777777', scope: 'task:TASK-20260919-511' }
+    ]
+  }, substrate);
+
+  assert.equal(wrapped.status, 'GRANTED');
+  assert.equal(wrapped.evidenceRefs[0]?.binding.repository, 'Patricked-code/MCP');
+  assert.equal(wrapped.evidenceRefs[1]?.binding.taskId, 'TASK-20260919-511');
+  assert.equal(wrapped.evidenceRefs.every(evidence => evidence.binding.sessionId === base.governedSessionId), true);
+});
+
 test('GWC-5 task wrappers remain observation-only and preserve OUT_OF_SCOPE verbatim', async () => {
   const {
     wrapGw15TaskCreationIfRequired,
