@@ -833,3 +833,17 @@ Décision AF-32 : les trois outils `mcp_reconcile_agent_intent`, `mcp_claim_next
 Décision cartographie : l'ajout du shadow gate ne change pas la surface de registration ni les noms/contrats des outils. La cartographie reste donc inchangée et ne doit pas être régénérée artificiellement ; la régression exacte `functionCartography` de CI #1302 le prouve.
 
 Preuve finale : MCP CI #1302 SUCCESS sur `ff85ab51ae59df044ad179abe0865374e41f2412`.
+
+## 2026-09-19 — GWC-10 : TargetScope multi-repository
+
+Décision OD-10 : la migration est strictement additive. `TargetScope` est optionnel sur les records opérationnels concernés. Son absence signifie exactement la cible mono-repository historique et **jamais** « tous les composants ». Aucun record existant n'est rétro-rempli et `schemaVersion: 1` reste valide.
+
+Décision OD-11 : `ownerGovernedSessionId` reste l'owner d'une Task ; la Task possède exactement le sous-ensemble de composants nommé par son `TargetScope`. Un même `intentKey` sur deux scopes composants disjoints ne doit pas être fusionné. Les locks composants utilisent un scope minimal indépendant et ne sont jamais élargis automatiquement au projet.
+
+Décision SHA : aucun `PROJECT_SHA` n'existe. `TargetContext` conserve `githubHead` et `runtimeRevision` séparément pour chaque composant. Pour un BootstrapReceipt multi-composant, les champs SHA legacy globaux sont `null` et la preuve exacte vit dans le `targetContext` scoped.
+
+Décision autorité : GitRegistry V2 reste l'autorité projet/composants, Operational Memory reste l'autorité Session/Task/Lock, Live State reste l'autorité d'observation. GWC-10 ne crée aucun second registre, aucun second store ni aucun second Live State.
+
+Décision égalité : deux `TargetScope` portant exactement les mêmes composants sont identiques indépendamment de l'ordre du tableau. Cette règle a été découverte par self-review CI #1329 et prouvée GREEN en CI #1330.
+
+Preuve finale de code : MCP CI #1330 SUCCESS sur `67197cd12e13f450734b403c4b85e26dc9760c60`. Le claim GWC-10 n'est libérable qu'après validation CI du checkpoint canonique exact-head.
