@@ -1348,6 +1348,92 @@ export function parseCandidateHeartbeatComment(rawBody: string): CandidateHeartb
   });
 }
 
+export const CandidateHeartbeatCommentInputSchema = z.object({
+  commentId: z.union([z.number().int().nonnegative(), BoundedId]),
+  updatedAt: z.string().datetime({ offset: true }),
+  body: z.string().max(20_000)
+}).strict();
+export type CandidateHeartbeatCommentInput = z.infer<typeof CandidateHeartbeatCommentInputSchema>;
+
+export const CandidateHeartbeatCollectionInputSchema = z.object({
+  candidateSessionId: CandidateHeartbeatSessionIdSchema,
+  comments: z.array(CandidateHeartbeatCommentInputSchema).max(5_000)
+}).strict();
+export type CandidateHeartbeatCollectionInput = z.infer<typeof CandidateHeartbeatCollectionInputSchema>;
+
+export type CandidateHeartbeatCollectionResult = Readonly<{
+  status: 'FOUND' | 'MISSING' | 'AMBIGUOUS' | 'INVALID';
+  reasonCode:
+    | 'HEARTBEAT_COMMENT_FOUND'
+    | 'HEARTBEAT_COMMENT_MISSING'
+    | 'HEARTBEAT_DUPLICATE_COMMENTS'
+    | 'HEARTBEAT_COMMENT_INVALID';
+  commentId: string | number | null;
+  updatedAt: string | null;
+  heartbeat: CandidateHeartbeat | null;
+  transient: true;
+  authorizationGranted: false;
+  claimTransferAllowed: false;
+  ownershipChanged: false;
+}>;
+
+export function collectCandidateHeartbeatComments(
+  rawInput: CandidateHeartbeatCollectionInput
+): CandidateHeartbeatCollectionResult {
+  const input = CandidateHeartbeatCollectionInputSchema.parse(rawInput);
+  const expectedMarker = candidateHeartbeatMarker(input.candidateSessionId);
+  const matching = input.comments.filter((comment) => comment.body.includes(expectedMarker));
+  const base = {
+    transient: true as const,
+    authorizationGranted: false as const,
+    claimTransferAllowed: false as const,
+    ownershipChanged: false as const
+  };
+
+  if (matching.length === 0) {
+    return Object.freeze({
+      ...base,
+      status: 'MISSING' as const,
+      reasonCode: 'HEARTBEAT_COMMENT_MISSING' as const,
+      commentId: null,
+      updatedAt: null,
+      heartbeat: null
+    });
+  }
+  if (matching.length !== 1) {
+    return Object.freeze({
+      ...base,
+      status: 'AMBIGUOUS' as const,
+      reasonCode: 'HEARTBEAT_DUPLICATE_COMMENTS' as const,
+      commentId: null,
+      updatedAt: null,
+      heartbeat: null
+    });
+  }
+
+  const comment = matching[0]!;
+  const parsed = parseCandidateHeartbeatComment(comment.body);
+  if (parsed.status !== 'VALID' || parsed.heartbeat === null) {
+    return Object.freeze({
+      ...base,
+      status: 'INVALID' as const,
+      reasonCode: 'HEARTBEAT_COMMENT_INVALID' as const,
+      commentId: comment.commentId,
+      updatedAt: comment.updatedAt,
+      heartbeat: null
+    });
+  }
+
+  return Object.freeze({
+    ...base,
+    status: 'FOUND' as const,
+    reasonCode: 'HEARTBEAT_COMMENT_FOUND' as const,
+    commentId: comment.commentId,
+    updatedAt: comment.updatedAt,
+    heartbeat: parsed.heartbeat
+  });
+}
+
 export const CandidateHeartbeatBindingInputSchema = z.object({
   heartbeat: CandidateHeartbeatSchema,
   candidateSession: CandidateSessionSchema,
