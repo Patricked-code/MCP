@@ -111,7 +111,13 @@ export type PremergeProof = Readonly<{
   checksExactHead: boolean | null;
   reviewsExactHead: boolean | null;
   unresolvedThreads: number | null;
+  taskId: string;
+  taskRevision: number;
   taskStatus: string;
+  governedSessionId: string;
+  sessionRevision: number;
+  bootstrapReceiptId: string;
+  stateVersion: number;
   checkpointHeadSha: string;
   evidenceDigest: string;
   nextStepId: 'GW-42' | null;
@@ -656,14 +662,26 @@ export function composeGw41PremergeProof(
   rawInput: Readonly<{
     expectedHeadSha: string;
     github: GithubOperationalContext;
+    taskId: string;
+    taskRevision: number;
     taskStatus: string;
+    governedSessionId: string;
+    sessionRevision: number;
+    bootstrapReceiptId: string;
+    stateVersion: number;
     checkpointHeadSha: string;
   }>,
   substrate: GovernedContractSubstrate
 ): PremergeProofResult {
   const expectedHeadSha = ShaSchema.parse(rawInput.expectedHeadSha);
   const checkpointHeadSha = ShaSchema.parse(rawInput.checkpointHeadSha);
+  const taskId = TaskIdSchema.parse(rawInput.taskId);
+  const taskRevision = RevisionSchema.parse(rawInput.taskRevision);
   const taskStatus = z.string().trim().min(1).max(80).parse(rawInput.taskStatus);
+  const governedSessionId = UuidSchema.parse(rawInput.governedSessionId);
+  const sessionRevision = RevisionSchema.parse(rawInput.sessionRevision);
+  const bootstrapReceiptId = UuidSchema.parse(rawInput.bootstrapReceiptId);
+  const stateVersion = RevisionSchema.parse(rawInput.stateVersion);
   const github = rawInput.github;
   const reasons = premergeReasons(expectedHeadSha, github, taskStatus, checkpointHeadSha);
   const ready = reasons.length === 0;
@@ -685,7 +703,13 @@ export function composeGw41PremergeProof(
     checksExactHead: github.checks.exactHead,
     reviewsExactHead: github.reviews.exactHead ?? null,
     unresolvedThreads: github.reviews.unresolvedThreads,
+    taskId,
+    taskRevision,
     taskStatus,
+    governedSessionId,
+    sessionRevision,
+    bootstrapReceiptId,
+    stateVersion,
     checkpointHeadSha
   };
   const evidenceDigest = digest({
@@ -696,7 +720,13 @@ export function composeGw41PremergeProof(
     reviews: github.reviews,
     ruleset: github.ruleset,
     evidence: github.evidence,
+    taskId,
+    taskRevision,
     taskStatus,
+    governedSessionId,
+    sessionRevision,
+    bootstrapReceiptId,
+    stateVersion,
     checkpointHeadSha
   });
   const payload: PremergeProof = Object.freeze({
@@ -717,7 +747,15 @@ function premergeProofReasons(
   expectedHeadSha: string,
   proof: PremergeProofResult,
   expectedPullRequestNumber?: number,
-  expectedRepository?: string
+  expectedRepository?: string,
+  expectedTaskContext?: Readonly<{
+    taskId: string;
+    taskRevision: number;
+    governedSessionId: string;
+    sessionRevision: number;
+    bootstrapReceiptId: string;
+    stateVersion: number;
+  }>
 ): string[] {
   if (proof.contract.stepId !== 'GW-41') return ['PREMERGE_PROOF_CONTRACT_MISMATCH'];
   if (proof.status !== 'SUCCESS' || proof.payload.status !== 'READY') {
@@ -736,6 +774,26 @@ function premergeProofReasons(
   ) {
     return ['PREMERGE_PROOF_REPOSITORY_MISMATCH'];
   }
+  if (expectedTaskContext !== undefined) {
+    if (proof.payload.taskId !== expectedTaskContext.taskId) {
+      return ['PREMERGE_PROOF_TASK_MISMATCH'];
+    }
+    if (proof.payload.taskRevision !== expectedTaskContext.taskRevision) {
+      return ['PREMERGE_PROOF_TASK_REVISION_MISMATCH'];
+    }
+    if (proof.payload.governedSessionId !== expectedTaskContext.governedSessionId) {
+      return ['PREMERGE_PROOF_SESSION_MISMATCH'];
+    }
+    if (proof.payload.sessionRevision !== expectedTaskContext.sessionRevision) {
+      return ['PREMERGE_PROOF_SESSION_REVISION_MISMATCH'];
+    }
+    if (proof.payload.bootstrapReceiptId !== expectedTaskContext.bootstrapReceiptId) {
+      return ['PREMERGE_PROOF_RECEIPT_MISMATCH'];
+    }
+    if (proof.payload.stateVersion !== expectedTaskContext.stateVersion) {
+      return ['PREMERGE_PROOF_STATE_VERSION_MISMATCH'];
+    }
+  }
   return [];
 }
 
@@ -749,7 +807,20 @@ export function planGw42TaskMergeReady(
   nextStepId: 'GW-43' | null;
 }>> {
   const expectedHeadSha = ShaSchema.parse(rawInput.expectedHeadSha);
-  const reasons = premergeProofReasons(expectedHeadSha, rawInput.premergeProof);
+  const reasons = premergeProofReasons(
+    expectedHeadSha,
+    rawInput.premergeProof,
+    undefined,
+    undefined,
+    {
+      taskId: rawInput.taskId,
+      taskRevision: rawInput.expectedTaskRevision,
+      governedSessionId: rawInput.governedSessionId,
+      sessionRevision: rawInput.expectedSessionRevision,
+      bootstrapReceiptId: rawInput.expectedBootstrapReceiptId,
+      stateVersion: rawInput.expectedStateVersion
+    }
+  );
   if (reasons.length > 0) {
     return result({
       stepId: 'GW-42',
