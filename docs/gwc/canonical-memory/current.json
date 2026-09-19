@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-intake-continuity-coherence-ready",
-  "currentBundleId": "bnd_mcp-pr95-intake-continuity-coherence-ready-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-intake-continuity-coherence-ready",
+  "currentBundle": "pr95-intakes-001-002-reconciled",
+  "currentBundleId": "bnd_mcp-pr95-intakes-001-002-reconciled-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-intakes-001-002-reconciled",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -29,7 +29,7 @@
     "phase": "B",
     "workItem": "GWC-PRE-B-01",
     "work": "DERIVE_COMPLETE_BRANCH_LOCAL_CANDIDATE_BACKLOG_FROM_18_BLUEPRINTS_73_CONTRACTS_FINDINGS_AND_EXISTING_CODE",
-    "status": "READY",
+    "status": "IN_PROGRESS",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -41,7 +41,7 @@
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "blocker": null,
-    "nextAction": "Reconcile pending NEW_INFORMATION_INTAKE-001 and -002 through the coherence gate as one contiguous delta, emit a reconciliation receipt, advance canonical/backlog revisions only for accepted effects, then execute GWC-PRE-B-01 from the reconciled state."
+    "nextAction": "Execute GWC-PRE-B-01 from the reconciled state at canonicalRevision=2/backlogRevision=1: derive the complete branch-local candidate implementation backlog existing-first from 18 blueprints, 73 contracts, 36 findings, 12 open decisions, reconciled intake #001/#002 and current existing code."
   },
   "precodeContinuationPolicy": {
     "hierarchy": "PROGRAM -> ARCHITECTURE_PHASE_OR_CANDIDATE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
@@ -121,6 +121,11 @@
   ],
   "previousBundles": [
     {
+      "name": "pr95-intake-continuity-coherence-ready",
+      "path": "docs/gwc/canonical-memory/pr95-intake-continuity-coherence-ready",
+      "status": "IMMUTABLE_HISTORICAL_INTAKE_CONTINUITY_COHERENCE_CHECKPOINT"
+    },
+    {
       "name": "pr95-new-information-intake-002",
       "path": "docs/gwc/canonical-memory/pr95-new-information-intake-002",
       "status": "IMMUTABLE_HISTORICAL_NEW_INFORMATION_INTAKE_002"
@@ -177,8 +182,8 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "3d57a0c4919dcbb33efd2e0e24d76da3d32ff7d1",
-  "correctionReason": "Canonical memory advanced to the incremental intake continuity/coherence checkpoint. Existing intake #001/#002 remain pending, not automatically adopted; next step is gated reconciliation before B-01.",
+  "observedHeadBeforePointerUpdate": "1a71ea9cb0c372bc4bc77e2fee614eb3561181b2",
+  "correctionReason": "NEW_INFORMATION_INTAKE-001 and -002 were reconciled as one contiguous batch through the coherence gate. Both are ACCEPT_WITH_ADAPTATION; the additive GWC_ROOT/MC-A..MC-H/macroContractRef/Master Crosswalk requirements enrich existing B-01/B-02/B-03 without creating a parallel authority.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
@@ -372,14 +377,11 @@
   },
   "intakeContinuity": {
     "latestIntakeSequence": 2,
-    "reconciledThroughSequence": 0,
-    "canonicalRevision": 1,
-    "backlogRevision": 0,
-    "lastReconciliationDigest": null,
-    "pendingIntakeIds": [
-      "NEW_INFORMATION_INTAKE-001",
-      "NEW_INFORMATION_INTAKE-002"
-    ],
+    "reconciledThroughSequence": 2,
+    "canonicalRevision": 2,
+    "backlogRevision": 1,
+    "lastReconciliationDigest": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695",
+    "pendingIntakeIds": [],
     "sourceBundles": [
       "docs/gwc/canonical-memory/pr95-new-information-intake-001",
       "docs/gwc/canonical-memory/pr95-new-information-intake-002"
@@ -425,7 +427,26 @@
     "contiguousOnly": true,
     "gapResult": "BLOCKED_GAP",
     "receiptRequired": true,
-    "revisionsAdvanceOnlyOnAcceptedEffects": true
+    "revisionsAdvanceOnlyOnAcceptedEffects": true,
+    "lastReceipt": {
+      "fromSequence": 1,
+      "throughSequence": 2,
+      "intakeIds": [
+        "NEW_INFORMATION_INTAKE-001",
+        "NEW_INFORMATION_INTAKE-002"
+      ],
+      "previousCanonicalRevision": 1,
+      "resultingCanonicalRevision": 2,
+      "previousBacklogRevision": 0,
+      "resultingBacklogRevision": 1,
+      "digest": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695",
+      "verdicts": [
+        "ACCEPT_WITH_ADAPTATION",
+        "ACCEPT_WITH_ADAPTATION"
+      ],
+      "candidateWorkItemsCreated": 0,
+      "runtimeTasksCreated": 0
+    }
   },
   "knowledgeFreshness": {
     "implementation": "src/governedContext/candidateContinuity.ts#assessCandidateKnowledgeFreshness",
