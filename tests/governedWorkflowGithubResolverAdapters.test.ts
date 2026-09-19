@@ -241,3 +241,227 @@ test('GWC-3 adapters add only orchestration metadata and no MCP-specific target 
     }
   }
 });
+
+function serverInput(overrides: Record<string, unknown> = {}) {
+  return {
+    project: resolveGithubProject(projectInput()),
+    registry: {
+      available: true,
+      freshness: 'CURRENT',
+      digest: 'b'.repeat(64),
+      candidateDigest: 'c'.repeat(64),
+      mappings: [
+        {
+          mappingId: 'example-api',
+          repositoryId: 'github:ExampleOrg/api',
+          projectId: 'example.platform',
+          projectUid: 'EXAMPLE-001',
+          componentRole: 'API',
+          serverId: 'S2',
+          serverPath: '/srv/example/api',
+          realPath: '/srv/example/api',
+          realPathVerified: true,
+          environment: 'production'
+        },
+        {
+          mappingId: 'example-web',
+          repositoryId: 'github:ExampleOrg/web',
+          projectId: 'example.platform',
+          projectUid: 'EXAMPLE-001',
+          componentRole: 'FRONTEND',
+          serverId: 's2',
+          serverPath: '/srv/example/web',
+          realPath: null,
+          realPathVerified: false,
+          environment: 'production'
+        }
+      ]
+    },
+    canonicalServerIds: ['s1', 's2'],
+    serverHint: null,
+    observedAt: NOW,
+    ...overrides
+  } as any;
+}
+
+async function serverResolver() {
+  return import('../src/governedWorkflow/resolvers/server.js');
+}
+
+test('GWC-6 RED: GW-07 canonicalizes registry server aliases only against explicit managed-server ids', async () => {
+  const { resolveServer } = await serverResolver();
+  const resolved = resolveServer(serverInput());
+
+  assert.equal(resolved.status, 'RESOLVED');
+  assert.equal(resolved.selectedServer?.serverId, 's2');
+  assert.deepEqual(resolved.selectedServer?.rawServerIds, ['S2', 's2']);
+  assert.equal(resolved.selectedServer?.environment, 'production');
+  assert.deepEqual(
+    resolved.selectedServer?.bindings.map((entry: any) => entry.mappingId),
+    ['example-api', 'example-web']
+  );
+  assert.equal(resolved.candidateCount, 1);
+  assert.equal(resolved.registryDigest, 'b'.repeat(64));
+  assert.equal(resolved.candidateDigest, 'c'.repeat(64));
+  assert.equal(resolved.mutationPerformed, false);
+  assert.equal(resolved.sshMutationPerformed, false);
+});
+
+test('GWC-6 OD-03 preserves a canonical lowercase server id and raw registry evidence', async () => {
+  const { resolveServer } = await serverResolver();
+  const resolved = resolveServer(serverInput({
+    registry: {
+      ...serverInput().registry,
+      mappings: [{
+        mappingId: 'example-api',
+        repositoryId: 'github:ExampleOrg/api',
+        projectId: 'example.platform',
+        projectUid: 'EXAMPLE-001',
+        componentRole: 'API',
+        serverId: 's1',
+        serverPath: '/srv/example/api',
+        realPath: null,
+        realPathVerified: false,
+        environment: 'production'
+      }]
+    }
+  }));
+
+  assert.equal(resolved.status, 'RESOLVED');
+  assert.equal(resolved.selectedServer?.serverId, 's1');
+  assert.deepEqual(resolved.selectedServer?.rawServerIds, ['s1']);
+});
+
+test('GWC-6 fails closed when a registry server id is not backed by the explicit canonical server set', async () => {
+  const { resolveServer } = await serverResolver();
+  const resolved = resolveServer(serverInput({
+    registry: {
+      ...serverInput().registry,
+      mappings: [{
+        ...serverInput().registry.mappings[0],
+        serverId: 'S9'
+      }]
+    }
+  }));
+
+  assert.equal(resolved.status, 'UNVERIFIED');
+  assert.equal(resolved.selectedServer, null);
+  assert.deepEqual(resolved.reasonCodes, ['SERVER_ID_UNVERIFIED']);
+  assert.equal(resolved.authorizationInferred, false);
+});
+
+test('GWC-6 returns AMBIGUOUS for multiple canonical server identities and uses a verified hint only to disambiguate', async () => {
+  const { resolveServer } = await serverResolver();
+  const registry = {
+    ...serverInput().registry,
+    mappings: [
+      serverInput().registry.mappings[0],
+      {
+        ...serverInput().registry.mappings[1],
+        serverId: 's1'
+      }
+    ]
+  };
+
+  const ambiguous = resolveServer(serverInput({ registry }));
+  assert.equal(ambiguous.status, 'AMBIGUOUS');
+  assert.equal(ambiguous.candidateCount, 2);
+  assert.deepEqual(
+    ambiguous.candidates.map((entry: any) => entry.serverId),
+    ['s1', 's2']
+  );
+
+  const hinted = resolveServer(serverInput({ registry, serverHint: 'S2' }));
+  assert.equal(hinted.status, 'RESOLVED');
+  assert.equal(hinted.selectedServer?.serverId, 's2');
+  assert.ok(hinted.provenance.includes('explicit_server_hint'));
+});
+
+test('GWC-6 keeps unavailable/stale registry evidence fail-closed and never upgrades freshness', async () => {
+  const { resolveServer } = await serverResolver();
+
+  const unavailable = resolveServer(serverInput({
+    registry: {
+      available: false,
+      freshness: 'UNKNOWN',
+      digest: null,
+      candidateDigest: null,
+      mappings: []
+    }
+  }));
+  assert.equal(unavailable.status, 'UNVERIFIED');
+  assert.equal(unavailable.freshness, 'UNKNOWN');
+  assert.deepEqual(unavailable.reasonCodes, ['SERVER_REGISTRY_UNAVAILABLE']);
+
+  const stale = resolveServer(serverInput({
+    registry: {
+      ...serverInput().registry,
+      freshness: 'STALE'
+    }
+  }));
+  assert.equal(stale.status, 'UNVERIFIED');
+  assert.equal(stale.freshness, 'STALE');
+  assert.deepEqual(stale.reasonCodes, ['SERVER_EVIDENCE_STALE']);
+});
+
+test('GWC-6 rejects a known server hint that is not bound to the resolved project', async () => {
+  const { resolveServer } = await serverResolver();
+  const resolved = resolveServer(serverInput({
+    registry: {
+      ...serverInput().registry,
+      mappings: [serverInput().registry.mappings[0]]
+    },
+    serverHint: 's1'
+  }));
+
+  assert.equal(resolved.status, 'NONE');
+  assert.equal(resolved.selectedServer, null);
+  assert.deepEqual(resolved.reasonCodes, ['SERVER_HINT_NOT_BOUND']);
+});
+
+test('GW-07 wrapper binds the canonical contract and adds no authorization or mutation semantics', async () => {
+  const { resolveGw07Server } = await serverResolver();
+  const wrapped = resolveGw07Server(serverInput(), await substrate());
+
+  assert.deepEqual(wrapped.contract, { stepId: 'GW-07', contractVersion: 1 });
+  assert.equal(wrapped.status, 'RESOLVED');
+  assert.equal(wrapped.payload.selectedServer?.serverId, 's2');
+  assert.equal(wrapped.authorizationInferred, false);
+  assert.equal(wrapped.mutationPerformed, false);
+  assert.equal(wrapped.sshMutationPerformed, false);
+  assert.equal(wrapped.replayModel, 'READ_ONLY');
+  assert.equal(JSON.stringify(wrapped).includes('privateKey'), false);
+  assert.equal(JSON.stringify(wrapped).includes('credentialRef'), false);
+});
+
+test('GWC-6 server resolution is deterministic and server paths never become identity', async () => {
+  const { resolveServer } = await serverResolver();
+  const input = serverInput({
+    registry: {
+      ...serverInput().registry,
+      mappings: [
+        {
+          ...serverInput().registry.mappings[0],
+          serverId: 'S2',
+          serverPath: '/different/a',
+          realPath: '/canonical/a'
+        },
+        {
+          ...serverInput().registry.mappings[1],
+          serverId: 's2',
+          serverPath: '/different/b',
+          realPath: '/canonical/b'
+        }
+      ]
+    }
+  });
+  const first = resolveServer(input);
+  const second = resolveServer(input);
+
+  assert.deepEqual(first, second);
+  assert.equal(first.status, 'RESOLVED');
+  assert.equal(first.candidateCount, 1);
+  assert.equal(first.selectedServer?.serverId, 's2');
+  assert.equal(first.selectedServer?.bindings.length, 2);
+});
+
