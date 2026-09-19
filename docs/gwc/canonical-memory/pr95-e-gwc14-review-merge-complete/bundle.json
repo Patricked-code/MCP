@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc14-review-merge-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc14_review_merge",
+      "path": "sources/gwc14-review-merge.json",
+      "media_type": "application/json",
+      "bytes": 4668,
+      "sha256": "f43792657292872c27b741884101726fdc242562a74b0bb3de47aec17670bc2f"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc14_pass",
+      "key": "candidate.phase_e.gwc_14",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-14 is PASS_WITH_EVIDENCE pending checkpoint validation. RED CI #1393 proved all GW-34..GW-43 contracts absent; CI #1397 reached full GREEN; self-review REDs #1398, #1400 and #1402 exposed cross-PR, cross-repository and cross-task proof-reuse defects; final CI #1404 succeeded after fail-closed binding corrections.",
+      "source_refs": [
+        "src_gwc14_review_merge"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc14_review_binding",
+      "key": "candidate.gwc14.review_binding",
+      "claim_type": "fact",
+      "value": "Review evidence reuses GithubOperationalContext and is bound to the exact current review head when approval policy requires it; stale/mismatched evidence and unresolved required threads fail closed.",
+      "source_refs": [
+        "src_gwc14_review_merge"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc14_premerge",
+      "key": "candidate.gwc14.premerge_proof",
+      "claim_type": "fact",
+      "value": "PremergeProof composes existing evidence and is bound to repository, pull request, exact head, task/revision, governed session/revision, bootstrap receipt and stateVersion; GW-43 merge remains non-replayable and evaluation performs no merge.",
+      "source_refs": [
+        "src_gwc14_review_merge"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc14_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Keep the GWC-14 branch-local claim ACTIVE until this checkpoint passes exact-head CI. After SUCCESS, release GWC-14 and dispatch GWC-PRE-E-GWC-15 without replaying GWC-14.",
+      "source_refs": [
+        "src_gwc14_review_merge"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
