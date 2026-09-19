@@ -27,9 +27,9 @@
   },
   "currentPrecodeState": {
     "phase": "E",
-    "workItem": "GWC-PRE-E-GWC-7",
-    "work": "GWC_7_RUNTIME_RESOLVER_C4_CHECKPOINT",
-    "status": "CHECKPOINT_VALIDATION_PENDING",
+    "workItem": "GWC-PRE-E-GWC-8",
+    "work": "GWC_8_DOMAIN_RESOLVER_C5",
+    "status": "IN_PROGRESS",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Validate the GWC-7 canonical checkpoint with exact-head CI. Only after SUCCESS release the GWC-7 claim and dispatch GWC-PRE-E-GWC-8 without replaying GWC-7.",
+    "nextAction": "Reobserve the exact branch head, inspect existing domain/project/server authorities, preserve DOMAIN NONE as a valid result, then execute GWC-8 RED -> minimal GREEN -> full regression -> self-review -> checkpoint without touching GWC-9/10 scopes.",
     "blocker": null
   },
   "precodeContinuationPolicy": {

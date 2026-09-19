@@ -1212,7 +1212,7 @@
           "GWC-7"
         ],
         "title": "GWC-7 — Runtime Resolver C4",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 63,
         "sequence": 14,
         "dependencies": [
@@ -1237,7 +1237,8 @@
           "First full GREEN CI #1273 SUCCESS @ dffc5c3a73814c97b2a3728826fd2719bddf34dc after correcting only the canonical substrate test fixture.",
           "Self-review found incomplete explicit runtime-kind test coverage; Docker and systemd proofs added without widening resolver behavior.",
           "FINAL GREEN CI #1274 SUCCESS @ 9a25bf544769e448e15c17b9006720212b5b888d: typecheck, build, docs, governance, GWC verifier, secret scan, read-only safety and whitespace all green.",
-          "GWC-7 checkpoint bundle staged; claim retained ACTIVE until exact-head checkpoint CI succeeds."
+          "GWC-7 checkpoint bundle staged; claim retained ACTIVE until exact-head checkpoint CI succeeds.",
+          "Checkpoint MCP CI #1275 SUCCESS @ 98c19178b67521df0b08874ce2fdd6eed17b900b; GWC-7 claim released only after exact-head checkpoint validation."
         ]
       },
       {
@@ -1247,7 +1248,7 @@
           "GWC-8"
         ],
         "title": "GWC-8 — Domain Resolver C5",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 62,
         "sequence": 15,
         "dependencies": [
@@ -1258,7 +1259,8 @@
           "path:src/governedWorkflow/resolvers/domain"
         ],
         "evidence": [
-          "Derived from GWC-CAND-08 exact-bound candidate backlog."
+          "Derived from GWC-CAND-08 exact-bound candidate backlog.",
+          "Dependency-safe dispatch after GWC-7 checkpoint CI #1275 SUCCESS; claimed by candidate-52e3b52226bf3462e7b112de."
         ]
       },
       {
@@ -1637,6 +1639,15 @@
           "path:src/governedWorkflow/resolvers/runtime",
           "path:tests/governedWorkflowRuntimeResolver.test.ts",
           "path:package.json"
+        ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-52e3b52226bf3462e7b112de",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-8",
+        "collisionDomains": [
+          "path:src/governedWorkflow/resolvers/domain"
         ],
         "status": "ACTIVE"
       }
@@ -4973,9 +4984,31 @@
       "authorityBoundary": "SERVER_OBSERVATION_TRUTH__LIVESTATE_RECONCILED_PROJECTION__REGISTRY_DECLARATION_NON_OVERRIDING__READ_ONLY",
       "checkpoint": {
         "bundle": "docs/gwc/canonical-memory/pr95-e-gwc7-runtime-resolver-complete",
-        "validation": "PENDING_EXACT_HEAD_CI",
-        "claimRelease": "RETAINED_PENDING_CHECKPOINT_CI"
+        "validation": "SUCCESS",
+        "claimRelease": "RELEASED_AFTER_CHECKPOINT_CI_SUCCESS",
+        "ciRunNumber": 1275,
+        "head": "98c19178b67521df0b08874ce2fdd6eed17b900b"
       }
+    },
+    "gwc8": {
+      "workItemId": "GWC-PRE-E-GWC-8",
+      "blueprint": "GWC-8",
+      "status": "IN_PROGRESS",
+      "dependencies": [
+        "GWC-PRE-E-GWC-3",
+        "GWC-PRE-E-GWC-6"
+      ],
+      "dependencyEvidence": {
+        "gwc3": {
+          "ciRunNumber": 1192,
+          "result": "SUCCESS"
+        },
+        "gwc6": {
+          "ciRunNumber": 1265,
+          "result": "SUCCESS"
+        }
+      },
+      "authorityBoundary": "TO_RESOLVE_EXISTING_FIRST__DOMAIN_NONE_REMAINS_VALID"
     }
   },
   "intake003RecoveryEvolution": {
