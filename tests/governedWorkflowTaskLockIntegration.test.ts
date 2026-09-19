@@ -229,6 +229,43 @@ test('GWC-5 competing atomic plans cannot deadlock or split ownership across the
   }
 });
 
+test('GWC-5 fails closed when a same-session active lock is not yet projected into the session record', async () => {
+  const f = await fixture();
+  try {
+    const opened = await f.open('TASK-20260919-510', 'transport-gwc5-unsettled');
+    await f.lockStore.update((document) => ({
+      ...document,
+      storeRevision: document.storeRevision + 1,
+      locks: [...document.locks, {
+        schemaVersion: 1,
+        lockId: '44444444-4444-4444-8444-444444444444',
+        scope: 'resource:unsettled/path',
+        governedSessionId: opened.session.governedSessionId,
+        acquiredAt: NOW,
+        expiresAt: '2026-09-19T03:20:00.000Z',
+        renewedAt: NOW,
+        reason: 'simulated inter-store in-flight grant',
+        status: 'ACTIVE',
+        lockRevision: 1
+      }]
+    }));
+
+    const atomic = f.locks as any;
+    await assert.rejects(atomic.acquireLocksAtomically({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      scopes: [{ type: 'resource', key: 'unsettled/path' }],
+      reason: 'must not reuse unsettled grant'
+    }, { transportSessionId: 'transport-gwc5-unsettled', identity: IDENTITY }),
+    /LOCK_SESSION_PROJECTION_UNSETTLED/);
+
+    assert.deepEqual((await f.sessionStore.read()).sessions[0]?.lockIds, []);
+    assert.equal((await f.lockStore.read()).locks[0]?.status, 'ACTIVE');
+  } finally {
+    await rm(f.directory, { recursive: true, force: true });
+  }
+});
+
 test('GWC-5 cross-store failure compensates the whole newly-created lock set', async () => {
   const f = await fixture();
   try {
