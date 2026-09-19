@@ -54,36 +54,42 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
       {
         id: 10,
         state: 'CHANGES_REQUESTED',
+        commit_id: SHA,
         submitted_at: '2026-08-13T07:00:00Z',
         user: { id: 101, login: 'reviewer-one' }
       },
       {
         id: 11,
         state: 'APPROVED',
+        commit_id: SHA,
         submitted_at: '2026-08-13T07:30:00Z',
         user: { id: 101, login: 'reviewer-one' }
       },
       {
         id: 13,
         state: 'COMMENTED',
+        commit_id: SHA,
         submitted_at: '2026-08-13T07:40:00Z',
         user: { id: 101, login: 'reviewer-one' }
       },
       {
         id: 12,
         state: 'CHANGES_REQUESTED',
+        commit_id: SHA,
         submitted_at: '2026-08-13T07:45:00Z',
         user: { id: 202, login: 'reviewer-two' }
       },
       {
         id: 14,
         state: 'COMMENTED',
+        commit_id: SHA,
         submitted_at: '2026-08-13T07:50:00Z',
         user: { id: 202, login: 'reviewer-two' }
       },
       {
         id: 15,
         state: 'DISMISSED',
+        commit_id: SHA,
         submitted_at: '2026-08-13T07:55:00Z',
         user: { id: 303, login: 'reviewer-three' }
       }
@@ -184,7 +190,9 @@ test('collecte PR/checks/reviews/threads/ruleset avec cache et single-flight bor
     reviews: {
       approvals: 1,
       changesRequested: 1,
-      unresolvedThreads: 1
+      unresolvedThreads: 1,
+      headSha: SHA,
+      exactHead: true
     },
     ruleset: {
       name: 'main-protection',
