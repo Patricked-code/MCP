@@ -1521,7 +1521,8 @@
         ],
         "collisionDomains": [
           "path:src/governedContext/github.ts",
-          "path:src/governedWorkflow/review"
+          "path:src/governedWorkflow/review",
+          "path:tests/governedWorkflowReview.test.ts"
         ],
         "evidence": [
           "Derived from GWC-CAND-14 exact-bound candidate backlog.",
@@ -1529,7 +1530,10 @@
           "Initial collision domains remain path:src/governedContext/github.ts and path:src/governedWorkflow/review; any expansion requires exact-head claim update before mutation.",
           "GWC-14 covers GW-34..GW-43 and must resolve AF-22/AF-30 using existing Governed GitHub context and GWC-12 lifecycle capabilities, with ReviewEvidence commit binding, PremergeProof and exact-head merge.",
           "Phase C2 already closed AF-22/AF-30 foundations under EXISTING_GOVERNED_GITHUB_CONTEXT_ONLY; GWC-14 must extend/reuse that authority rather than create a second GitHub truth source.",
-          "OD-06 remains the only design decision attached to GWC-14 and must be resolved from existing evidence before any ambiguous mutation."
+          "OD-06 remains the only design decision attached to GWC-14 and must be resolved from existing evidence before any ambiguous mutation.",
+          "GWC-14 dispatch transition MCP CI #1391 SUCCESS @ 0660338aa24e559d1dd28afe48b532c30ae597cd.",
+          "OD-06 is NARROWED to exact review commit/head binding. Existing C2 evidence already projects reviews.headSha and reviews.exactHead; GWC-14 consumes that authority.",
+          "Claim expanded before RED to tests/governedWorkflowReview.test.ts; package validation discovery requires no package.json change."
         ]
       },
       {
@@ -1874,7 +1878,8 @@
         "workItemId": "GWC-PRE-E-GWC-14",
         "collisionDomains": [
           "path:src/governedContext/github.ts",
-          "path:src/governedWorkflow/review"
+          "path:src/governedWorkflow/review",
+          "path:tests/governedWorkflowReview.test.ts"
         ],
         "status": "ACTIVE"
       }
