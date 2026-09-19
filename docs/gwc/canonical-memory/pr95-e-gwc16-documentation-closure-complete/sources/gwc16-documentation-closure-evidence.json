@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-16",
+  "blueprint": "GWC-16",
+  "title": "Documentation and closure",
+  "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+  "session": {
+    "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "heartbeatCommentId": 5740056645
+  },
+  "dependency": {
+    "workItem": "GWC-PRE-E-GWC-15",
+    "checkpointCiRunNumber": 1429,
+    "checkpointCiRunId": 35439735892,
+    "checkpointHead": "bc2dbefba26dba1a5f6b480325ee8a1201ad1c03",
+    "conclusion": "SUCCESS"
+  },
+  "implementation": {
+    "module": "src/governedWorkflow/terminal/index.ts",
+    "tests": [
+      "tests/governedWorkflowTerminal.test.ts"
+    ],
+    "contracts": [
+      "GW-58",
+      "GW-59",
+      "GW-60",
+      "GW-61",
+      "GW-62",
+      "GW-63",
+      "GW-64",
+      "GW-65",
+      "GW-66",
+      "GW-67",
+      "GW-68",
+      "GW-69",
+      "GW-70",
+      "GW-71",
+      "GW-72"
+    ],
+    "onlyNewPrimitive": "TERMINAL_VERIFICATION_PREDICATE",
+    "reusedAuthorities": [
+      "documentation governance",
+      "GitHub governed lifecycle tools",
+      "Live State",
+      "Bootstrap Receipt / governed context acknowledgement",
+      "Governed Task Queue",
+      "Governed Session checkpoint / close",
+      "Lock Service",
+      "existing Task Queue reconciliation"
+    ],
+    "behavior": [
+      "GW-58 terminates documentation recursion when drift is zero and routes directly to terminal receipt refresh.",
+      "GW-59/GW-60/GW-61/GW-63 emit EffectPlans matching the exact schemas of existing GitHub lifecycle tools; GW-60 reuses github_create_commit for bounded multi-file documentation reconciliation.",
+      "A documentation-only merge/autodeploy may become the final runtime SHA; GW-65 requires CURRENT, fully aligned Live State on that exact SHA before terminal continuation.",
+      "GW-68 implements the NO_FALSE_DONE predicate over one coherent evidence matrix: Task VERIFYING and owner session, Bootstrap Receipt/stateVersion, final CI, final deploy job, review, locks, Live State, documentation state, head SHA and runtime revision.",
+      "Own valid locks may remain during GW-68, but any foreign conflicting lock blocks terminal verification.",
+      "GW-69 plans DONE only from a successful GW-68 proof bound to the same task/session/receipt/state/head/runtime. The proof digest is retained in the planner result/recovery anchor without adding unsupported fields to mcp_transition_governed_task.",
+      "Closure ordering is terminal verification -> DONE -> checkpoint -> lock release -> session close -> queue reconciliation. Lock release is not conditioned on task success once a terminal checkpoint exists.",
+      "Candidate evaluation and planning are side-effect free: authorizationInferred=false and mutationPerformed=false."
+    ]
+  },
+  "evidence": {
+    "red": {
+      "head": "c504f22277fa3b5b8dd5fa8ae9a8f79f86f1e906",
+      "ciRunNumber": 1433,
+      "ciRunId": 35444444887,
+      "conclusion": "FAILURE_EXPECTED",
+      "tests": 588,
+      "passed": 573,
+      "failures": 15,
+      "signature": "GW58_TO_GW72_TERMINAL_MODULE_ABSENT"
+    },
+    "firstFullGreen": {
+      "head": "476f676817500f7c7d520933d32cd9022e03c3fb",
+      "ciRunNumber": 1435,
+      "ciRunId": 35444630013,
+      "conclusion": "SUCCESS",
+      "tests": 588,
+      "passed": 588,
+      "failed": 0
+    },
+    "selfReview": {
+      "head": "f8ab3ce16132a74248516d805b5cadd233d08af0",
+      "ciRunNumber": 1437,
+      "ciRunId": 35444809630,
+      "conclusion": "FAILURE_SEVEN_EXPECTED_FINDINGS",
+      "tests": 589,
+      "passed": 582,
+      "failed": 7,
+      "findings": [
+        "GitHub EffectPlans named existing tools but did not yet match their exact executable input schemas.",
+        "GW-60 modeled a multi-change payload against the single-file github_create_or_update_file tool instead of reusing github_create_commit.",
+        "GW-68 did not yet consume the full canonical final evidence matrix across Task/session/receipt/CI/deploy/review/locks.",
+        "GW-69 needed a bounded terminal-proof digest reference while preserving the historical task-transition tool schema."
+      ]
+    },
+    "testCorrection": {
+      "head": "77fcd4e85317939b7a24afad2d29630e2504eed5",
+      "ciRunNumber": 1439,
+      "ciRunId": 35444935709,
+      "conclusion": "FAILURE_TEST_EXPECTATION_ONLY",
+      "tests": 589,
+      "passed": 588,
+      "failed": 1,
+      "detail": "The only failure was the stale GW-63 test fixture omitting newly required mergeMethod; implementation behavior was correct and was not relaxed."
+    },
+    "finalGreen": {
+      "head": "b8a86c48eb24902f998d4533e6bbeac5144102c6",
+      "ciRunNumber": 1440,
+      "ciRunId": 35445018928,
+      "conclusion": "SUCCESS",
+      "tests": 589,
+      "passed": 589,
+      "failed": 0,
+      "skipped": 0,
+      "discoveredTests": 75,
+      "runnerTests": 74,
+      "dedicatedTests": 1
+    },
+    "documentation": {
+      "suiviCommit": "cb009a430c800fea6d8d3a8037bbd9c96667b96b",
+      "changelogCommit": "0378f5f4dc80ec29ce9037be0334dea8620376d4",
+      "decisionsCommit": "99155a1b476fa522204e6ae1400a5556124b6f26"
+    }
+  },
+  "boundaries": {
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deploymentPerformed": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "runtimeSessionMutated": false,
+    "hiddenMutation": false,
+    "secondClosureAuthority": false,
+    "secondTaskAuthority": false,
+    "secondSessionAuthority": false,
+    "secondLockAuthority": false,
+    "secondDocumentationAuthority": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete",
+    "releaseRule": "Keep the GWC-16 PRECODE claim ACTIVE until exact-head checkpoint CI succeeds; release only afterward.",
+    "nextWorkItem": "GWC-PRE-E-GWC-17"
+  }
+}
