@@ -333,15 +333,23 @@ test('GWC-5 lock planner is pure, bounded, deterministic and uses the existing l
   assert.equal(Object.isFrozen(plan), true);
 });
 
-test('GWC-5 repository lock input type is future-target compatible but runtime grant remains fail-closed before GWC-10', async () => {
+test('GWC-10 activates generalized repository locks while preserving historical normalization', async () => {
   const source = await import('../src/operationalMemory/lockService.js');
-  assert.throws(
-    () => source.normalizeLockScope({ type: 'repository', key: 'ExampleOrg/api' }),
-    /LOCK_SCOPE_INVALID/
+  assert.equal(
+    source.normalizeLockScope({ type: 'repository', key: 'ExampleOrg/api' }),
+    'repository:ExampleOrg/api'
   );
   assert.equal(
     source.normalizeLockScope({ type: 'repository', key: 'Patricked-code/MCP' }),
     'repository:Patricked-code/MCP'
+  );
+  assert.equal(
+    source.normalizeLockScope({
+      type: 'component',
+      targetId: 'EXAMPLE-001',
+      mappingId: 'example-api'
+    }),
+    'component:EXAMPLE-001:example-api'
   );
 });
 
