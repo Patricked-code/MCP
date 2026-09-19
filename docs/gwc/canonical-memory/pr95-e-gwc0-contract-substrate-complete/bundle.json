@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc0-contract-substrate-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc0_contract_substrate",
+      "path": "sources/gwc0-contract-substrate.json",
+      "media_type": "application/json",
+      "bytes": 2323,
+      "sha256": "ea92d02a5e79e9e228ff24fb99c4dc61d7fee51248c3e69e1601709a3b2dbb6d"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc0_pass",
+      "key": "candidate.phase_e.gwc_0",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-0 is PASS_WITH_EVIDENCE. RED CI #1159 failed because the substrate module was absent; GREEN CI #1163 succeeded on head 90745204c8f4b9a897a0ba2e09288817c703e0cd.",
+      "source_refs": [
+        "src_gwc0_contract_substrate"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc0_substrate",
+      "key": "candidate.gwc0_contract_substrate",
+      "claim_type": "fact",
+      "value": "The GWC-0 substrate is immutable and lookup/evaluate-only, validates the exact GW-01..GW-73 namespace and runtime graph boundaries, and recomputes contract/graph registry digests using canonical semantics already used by gwc-verify.",
+      "source_refs": [
+        "src_gwc0_contract_substrate"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc0_boundary",
+      "key": "candidate.gwc0_authority_boundary",
+      "claim_type": "fact",
+      "value": "GWC-0 creates no dispatcher, persistence layer, runtime Task, runtime lock, main mutation, S1 mutation, production mutation or deployment.",
+      "source_refs": [
+        "src_gwc0_contract_substrate"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc1_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Next eligible PRECODE work item is GWC-PRE-E-GWC-1 Intent Capture.",
+      "source_refs": [
+        "src_gwc0_contract_substrate"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
