@@ -1267,7 +1267,12 @@
           "Explicit human recovery authorization recorded in PR #95 comment 5740053066; old claim RELEASED and old candidate session CLOSED without inferring STALE=DEAD.",
           "Replacement candidate candidate-gwc8-recovery-4d887146-20260919 claimed only path:src/governedWorkflow/resolvers/domain after exact-head reconciliation; no other work-item ownership transferred.",
           "Recovery transfer projection validated by MCP CI #1278 SUCCESS @ 755a75bcdc80bc7f74554d25885a7f84684ab7cc before any GWC-8 business-code mutation.",
-          "GWC-8 RED scope expanded only to path:tests/governedWorkflowDomainResolver.test.ts and path:package.json in addition to path:src/governedWorkflow/resolvers/domain."
+          "GWC-8 RED scope expanded only to path:tests/governedWorkflowDomainResolver.test.ts and path:package.json in addition to path:src/governedWorkflow/resolvers/domain.",
+          "PROVEN RED CI #1282 FAILURE @ 54a108d591801f9895309476c81cf350883ee122: 10 GWC-8 tests failed only because src/governedWorkflow/resolvers/domain.ts was absent.",
+          "FIRST FULL GREEN CI #1283 SUCCESS @ 197248bd7ebb4d8d3a2a00bc99799c0b72d12f41.",
+          "Self-review found optional RegistryMapping.componentRole compatibility and roleless-evidence duplication; RED CI #1284 isolated the schema incompatibility and CI #1285 isolated the duplicate OTHER role.",
+          "FINAL GREEN CI #1286 SUCCESS @ d6240484e387770751d9d3db476ac3b9470c74ce after merging roleless mapping evidence into explicit same-domain project role without inventing authority.",
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc8-domain-resolver-complete created with exact source SHA-256 d9c420197de25d17198f86687aa56b558755b8996cd7d99b703882602323537c; claim retained ACTIVE until exact-head checkpoint CI succeeds."
         ]
       },
       {
@@ -1766,9 +1771,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "755a75bcdc80bc7f74554d25885a7f84684ab7cc",
+        "lastObservedHeadSha": "ba659b14b85e51f8e75ec10948717cfea9c89ee9",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T06:50:00Z",
+        "lastSeenAt": "2026-09-19T07:08:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5029,7 +5034,7 @@
     "gwc8": {
       "workItemId": "GWC-PRE-E-GWC-8",
       "blueprint": "GWC-8",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
       "dependencies": [
         "GWC-PRE-E-GWC-3",
         "GWC-PRE-E-GWC-6"
@@ -5044,7 +5049,7 @@
           "result": "SUCCESS"
         }
       },
-      "authorityBoundary": "TO_RESOLVE_EXISTING_FIRST__DOMAIN_NONE_REMAINS_VALID",
+      "authorityBoundary": "GITREGISTRY_DECLARATION__SERVER_VHOST_OBSERVATION_EVIDENCE__PROTECTED_DOMAINS_SAFETY_ONLY__READ_ONLY",
       "recovery": {
         "previousCandidateSessionId": "candidate-52e3b52226bf3462e7b112de",
         "previousHeartbeatSequence": 13,
@@ -5056,6 +5061,46 @@
         "validation": "SUCCESS",
         "ciRunNumber": 1278,
         "validationHead": "755a75bcdc80bc7f74554d25885a7f84684ab7cc"
+      },
+      "red": {
+        "ciRunNumber": 1282,
+        "head": "54a108d591801f9895309476c81cf350883ee122",
+        "result": "FAILURE_EXPECTED_MODULE_ABSENT",
+        "failures": 10
+      },
+      "green": {
+        "first": {
+          "ciRunNumber": 1283,
+          "head": "197248bd7ebb4d8d3a2a00bc99799c0b72d12f41",
+          "result": "SUCCESS"
+        },
+        "selfReview": [
+          {
+            "ciRunNumber": 1284,
+            "head": "4ceb3538ab1261e3d9790266c720cca38ebe9796",
+            "result": "FAILURE_EXPECTED_COMPONENT_ROLE_UNDEFINED"
+          },
+          {
+            "ciRunNumber": 1285,
+            "head": "ba88d43010789e8255b91ca4221f73663c027e6e",
+            "result": "FAILURE_EXPECTED_DUPLICATE_OTHER_ROLE"
+          }
+        ],
+        "final": {
+          "ciRunNumber": 1286,
+          "head": "d6240484e387770751d9d3db476ac3b9470c74ce",
+          "result": "SUCCESS"
+        }
+      },
+      "implementation": [
+        "src/governedWorkflow/resolvers/domain.ts",
+        "tests/governedWorkflowDomainResolver.test.ts",
+        "package.json"
+      ],
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc8-domain-resolver-complete",
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "RETAINED_PENDING_CHECKPOINT_CI"
       }
     }
   },
