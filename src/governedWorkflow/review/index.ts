@@ -741,7 +741,15 @@ export function planGw42TaskMergeReady(
       })
     });
   }
-  const planned = planTaskTransition('GW-42', rawInput, 'MERGE_READY', substrate);
+  const planned = planTaskTransition('GW-42', {
+    taskId: rawInput.taskId,
+    expectedTaskRevision: rawInput.expectedTaskRevision,
+    governedSessionId: rawInput.governedSessionId,
+    expectedSessionRevision: rawInput.expectedSessionRevision,
+    expectedBootstrapReceiptId: rawInput.expectedBootstrapReceiptId,
+    expectedStateVersion: rawInput.expectedStateVersion,
+    expectedHeadSha: rawInput.expectedHeadSha
+  }, 'MERGE_READY', substrate);
   return planned;
 }
 
