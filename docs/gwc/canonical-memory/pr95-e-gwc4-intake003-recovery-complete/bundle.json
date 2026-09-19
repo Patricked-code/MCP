@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc4-intake003-recovery-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc4_intake003_recovery",
+      "path": "sources/gwc4-intake003-recovery.json",
+      "media_type": "application/json",
+      "bytes": 5795,
+      "sha256": "87d90d9d53a711a51ca6233386d491e10fe6ac3019e97d177120724f55d80a93"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc4_intake003_pass",
+      "key": "candidate.phase_e.gwc_4.intake_003_delta",
+      "claim_type": "fact",
+      "value": "The NEW_INFORMATION_INTAKE-003 recovery delta for GWC-4 is PASS_WITH_EVIDENCE. RED CI #1227 proved the bounded discovery/liveness/supervisor/runner primitives absent; first GREEN CI #1230 passed; self-review RED CI #1231 exposed liveness-binding and runner-envelope integrity gaps; final GREEN CI #1233 passed on 469da6d09d63367e0e89388369573f6f5fc1e441 with 445 tests.",
+      "source_refs": [
+        "src_gwc4_intake003_recovery"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc4_intake003_authority",
+      "key": "candidate.gwc4.intake_003.authority_boundary",
+      "claim_type": "fact",
+      "value": "The recovery delta extends the existing candidateContinuity authority only. Session Service and the historical GWC-4 session adapter are unchanged; liveness is transient telemetry, the supervisor is non-authoritative, and the runner never grants write authorization or transfers claims.",
+      "source_refs": [
+        "src_gwc4_intake003_recovery"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc4_intake003_identity",
+      "key": "candidate.gwc4.intake_003.provider_identity",
+      "claim_type": "fact",
+      "value": "Verified provider-session resume is allowed only when a real providerConversationRef has provenance PROVIDED_BY_CLIENT and the same provider advertises verified resume support. Otherwise replacement remains reconcile/read-only or the runner fails closed; no provider session identifier is invented.",
+      "source_refs": [
+        "src_gwc4_intake003_recovery"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc6_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "After this GWC-4 recovery checkpoint is validated and its claim is released, the next dependency-safe READY work item by current priority and sequence is GWC-PRE-E-GWC-6 — Server Resolver C3.",
+      "source_refs": [
+        "src_gwc4_intake003_recovery"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
