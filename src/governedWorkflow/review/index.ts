@@ -101,6 +101,7 @@ export type FindingsResolutionPayload = Readonly<{
 
 export type PremergeProof = Readonly<{
   status: 'READY' | 'BLOCKED';
+  repository: string | null;
   headSha: string;
   pullRequestNumber: number | null;
   observedAt: string;
@@ -666,8 +667,15 @@ export function composeGw41PremergeProof(
   const github = rawInput.github;
   const reasons = premergeReasons(expectedHeadSha, github, taskStatus, checkpointHeadSha);
   const ready = reasons.length === 0;
+  const repository = (
+    github.repositoryResolution?.status === 'RESOLVED'
+    && github.repositoryResolution.freshness === 'CURRENT'
+  )
+    ? github.repositoryResolution.selectedRepository?.fullName ?? null
+    : null;
   const proofBase = {
     status: ready ? 'READY' as const : 'BLOCKED' as const,
+    repository,
     headSha: expectedHeadSha,
     pullRequestNumber: github.pullRequest?.number ?? null,
     observedAt: github.observedAt,
@@ -681,6 +689,7 @@ export function composeGw41PremergeProof(
     checkpointHeadSha
   };
   const evidenceDigest = digest({
+    repository,
     expectedHeadSha,
     pullRequest: github.pullRequest,
     checks: github.checks,
@@ -707,7 +716,8 @@ export function composeGw41PremergeProof(
 function premergeProofReasons(
   expectedHeadSha: string,
   proof: PremergeProofResult,
-  expectedPullRequestNumber?: number
+  expectedPullRequestNumber?: number,
+  expectedRepository?: string
 ): string[] {
   if (proof.contract.stepId !== 'GW-41') return ['PREMERGE_PROOF_CONTRACT_MISMATCH'];
   if (proof.status !== 'SUCCESS' || proof.payload.status !== 'READY') {
@@ -719,6 +729,12 @@ function premergeProofReasons(
     && proof.payload.pullRequestNumber !== expectedPullRequestNumber
   ) {
     return ['PREMERGE_PROOF_PR_MISMATCH'];
+  }
+  if (
+    expectedRepository !== undefined
+    && proof.payload.repository?.toLowerCase() !== expectedRepository.toLowerCase()
+  ) {
+    return ['PREMERGE_PROOF_REPOSITORY_MISMATCH'];
   }
   return [];
 }
@@ -786,7 +802,8 @@ export function planGw43ExactHeadMerge(
   const reasons = premergeProofReasons(
     input.expectedHeadSha,
     rawInput.premergeProof,
-    input.pullRequestNumber
+    input.pullRequestNumber,
+    input.repository
   );
   const payload = Object.freeze({
     repository: input.repository,
