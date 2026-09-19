@@ -1230,7 +1230,9 @@
           "GWC-7 dispatch projection validated by MCP CI #1267 SUCCESS @ aef801b8cb16dd4aa5fde74f0587bfe8c72c7dba.",
           "OD-04 resolved for first candidate delivery from existing authorities: RuntimeBinding is bounded typed evidence, not an executor/store; kinds cover NO_RUNTIME, CHECKOUT_ONLY, DOCKER, DOCKER_COMPOSE, SYSTEMD, PROCESS_MANAGER and PASSENGER; SINGLE/MULTI/NO_RUNTIME cardinality is explicit.",
           "Server observation remains runtime truth; Live State remains reconciled projection; GitRegistry declarations may cross-check but never override observation; missing observation => UNVERIFIED, never NO_RUNTIME.",
-          "No new MCP tool or runtime mutation is allowed in GWC-7; RED is isolated to a new runtime resolver test file registered in the existing read-only safety suite."
+          "No new MCP tool or runtime mutation is allowed in GWC-7; RED is isolated to a new runtime resolver test file registered in the existing read-only safety suite.",
+          "Human-authorized stale-session recovery recorded at PR #95 comment 5739928009: prior session candidate-7afc131430c64c6fe34bcfea CLOSED and its GWC-7 claim RELEASED only after exact-head reobservation @ 2855d0e0a4033feb3670b3d3c71315b2ac83c7e6; replacement session candidate-52e3b52226bf3462e7b112de created in RECONCILE_READ_ONLY mode and assigned the same bounded GWC-7 collision domains.",
+          "Recovery preserves RED checkpoint: CI #1270 FAILURE @ 2855d0e0a4033feb3670b3d3c71315b2ac83c7e6 remains the current expected GWC-7 RED evidence; replacement executor must reobserve and understand this failure before any minimal GREEN write."
         ]
       },
       {
@@ -1620,6 +1622,17 @@
           "path:tests/governedWorkflowRuntimeResolver.test.ts",
           "path:package.json"
         ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-52e3b52226bf3462e7b112de",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-7",
+        "collisionDomains": [
+          "path:src/governedWorkflow/resolvers/runtime",
+          "path:tests/governedWorkflowRuntimeResolver.test.ts",
+          "path:package.json"
+        ],
         "status": "ACTIVE"
       }
     ],
@@ -1671,7 +1684,7 @@
         "lastObservedHeadSha": "0cac9047a39b06de1d6d67f17ed59e53991ca212",
         "createdAt": "2026-09-19T00:11:00Z",
         "lastSeenAt": "2026-09-19T06:00:58Z",
-        "status": "ACTIVE"
+        "status": "CLOSED"
       },
       {
         "candidateSessionId": "candidate-minute-liveness-20260919T042806Z",
@@ -1689,6 +1702,23 @@
         "createdAt": "2026-09-19T04:28:35Z",
         "lastSeenAt": "2026-09-19T04:49:36Z",
         "status": "CLOSED"
+      },
+      {
+        "candidateSessionId": "candidate-52e3b52226bf3462e7b112de",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "provider": "chatgpt",
+        "providerConversationRef": null,
+        "providerConversationRefProvenance": "UNAVAILABLE",
+        "githubActor": "Wealthtechinnovations",
+        "githubConnectionRef": null,
+        "connectionInstanceRef": "precode-chatgpt-replacement-20260919T062747Z-2855d0e0",
+        "repository": "Patricked-code/MCP",
+        "branch": "claude/ecstatic-edison-v1dyt1",
+        "startingHeadSha": "2855d0e0a4033feb3670b3d3c71315b2ac83c7e6",
+        "lastObservedHeadSha": "2855d0e0a4033feb3670b3d3c71315b2ac83c7e6",
+        "createdAt": "2026-09-19T06:27:47Z",
+        "lastSeenAt": "2026-09-19T06:27:47Z",
+        "status": "ACTIVE"
       }
     ],
     "lastLivenessReconciliation": {
