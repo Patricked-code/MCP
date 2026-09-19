@@ -1705,7 +1705,8 @@
           "Phase F authority requires one coherent test/shadow/isolated path: Intent -> Identity -> Repository -> Project -> Server -> Runtime -> Domain -> Governance -> Capability -> Task -> Session -> Locks -> Development -> CI -> Review -> Merge -> Deploy -> Verify -> DONE.",
           "Dependency F-01 satisfied by existing non-hardcoded contexts and CI #1468 SUCCESS.",
           "F-02 must prove one coherent candidate path across the full ordered Phase F chain, not merely independent unit/scenario fragments.",
-          "All otherwise-live mutations must remain simulated/test/shadow/isolated; no main/S1/production activation."
+          "All otherwise-live mutations must remain simulated/test/shadow/isolated; no main/S1/production activation.",
+          "PROVEN RED CI #1471 FAILURE @ 9ae984bb63cc7965d041248fbb62212791159ece: 599 tests, 598 historical/current PASS, exactly 1 intended F-02 failure; runFullCandidateHappyPath is not a function; 0 skipped."
         ]
       },
       {
@@ -6424,7 +6425,7 @@
     "workItem": "GWC-PRE-F-02",
     "work": "FULL_CANDIDATE_HAPPY_PATH",
     "status": "IN_PROGRESS",
-    "nextAction": "Audit whether any existing test already proves the complete ordered candidate happy path. If not, add a tests-only end-to-end acceptance composition that reuses existing governed primitives and one shared task/session/head/runtime binding from Intent through DONE, with all mutation steps represented as EffectPlans/observations only.",
+    "nextAction": "Implement runFullCandidateHappyPath in the tests-only acceptance harness by composing existing governed primitives over one coherent synthetic binding. No runtime source or live authority mutation.",
     "blocker": null
   },
   "phaseF": {
@@ -6525,7 +6526,18 @@
         "DONE"
       ],
       "executionMode": "TEST_SHADOW_ISOLATED_ONLY",
-      "liveMutationAllowed": false
+      "liveMutationAllowed": false,
+      "red": {
+        "ciRunNumber": 1471,
+        "ciRunId": 35467622783,
+        "head": "9ae984bb63cc7965d041248fbb62212791159ece",
+        "result": "FAIL_EXPECTED",
+        "tests": 599,
+        "passed": 598,
+        "failed": 1,
+        "skipped": 0,
+        "signature": "FULL_CANDIDATE_HAPPY_PATH_ABSENT"
+      }
     }
   }
 }
