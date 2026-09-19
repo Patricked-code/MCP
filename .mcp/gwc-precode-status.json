@@ -1610,7 +1610,8 @@
           "AF-07 is the hard closure invariant: DONE must be refused unless terminal reality is re-observed and verified. No second closure authority or persistence layer is allowed.",
           "No blocking open decision remains. Documentation recursion terminates when drift is zero; docs-only deployment may become the final runtime SHA.",
           "Claim expanded before RED to path:tests/governedWorkflowTerminal.test.ts; package validation discovery auto-runs *.test.ts, so no package.json mutation is required.",
-          "PROVEN RED CI #1433 FAILURE @ c504f22277fa3b5b8dd5fa8ae9a8f79f86f1e906: exactly 15 intended GW-58..GW-72 failures, all ERR_MODULE_NOT_FOUND for src/governedWorkflow/terminal/index.js; 573 historical tests pass, 0 skipped; typecheck/build/docs/governance/GWC/secret checks green."
+          "PROVEN RED CI #1433 FAILURE @ c504f22277fa3b5b8dd5fa8ae9a8f79f86f1e906: exactly 15 intended GW-58..GW-72 failures, all ERR_MODULE_NOT_FOUND for src/governedWorkflow/terminal/index.js; 573 historical tests pass, 0 skipped; typecheck/build/docs/governance/GWC/secret checks green.",
+          "FIRST GREEN CI #1435 SUCCESS @ 476f676817500f7c7d520933d32cd9022e03c3fb: 588/588 tests pass, 0 skipped; discoveredTests=75, runnerTests=74, dedicatedTests=1; all validation steps green."
         ]
       },
       {
@@ -5916,6 +5917,24 @@
         "passed": 573,
         "failed": 15,
         "signature": "GW58_TO_GW72_TERMINAL_MODULE_ABSENT"
+      },
+      "firstFullGreen": {
+        "ciRunNumber": 1435,
+        "ciRunId": 35444630013,
+        "head": "476f676817500f7c7d520933d32cd9022e03c3fb",
+        "result": "SUCCESS",
+        "tests": 588,
+        "passed": 588,
+        "failed": 0,
+        "skipped": 0,
+        "discoveredTests": 75,
+        "runnerTests": 74,
+        "dedicatedTests": 1
+      },
+      "selfReview": {
+        "status": "IN_PROGRESS",
+        "identifiedGap": "GW-68 canonical input requires final task/runtime binding plus CI/deploy/Live State/docs/review/receipt/lock coherence; first GREEN proves the basic flow but does not yet fail closed on all cross-proof reuse or foreign-lock conflicts.",
+        "nextAction": "Add bounded RED cases for exact terminal evidence matrix and cross-binding/foreign-lock rejection before hardening GW-68/GW-69."
       }
     }
   },
