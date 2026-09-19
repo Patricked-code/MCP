@@ -553,3 +553,16 @@ Date : 2026-08-29
 - NEXT_ACTION : réobserver la session/claim/heartbeat GWC-6 avant toute écriture GWC-6 ; heartbeat absent = liveness UNKNOWN, jamais permission de voler/libérer le claim.
 
 - Checkpoint self-correction : CI #1253 a correctement rejeté le premier bundle de clôture pour `sha256` source divergent ; cause = ordre de clés JSON différent entre le calcul préparatoire et le contenu réellement sérialisé. Empreinte recalculée sur le contenu Git exact et corrigée sans toucher à GWC-6.
+
+## 2026-09-19 — GWC-6 Server Resolver C3 — GREEN fonctionnel, checkpoint en validation
+
+- Work item : `GWC-PRE-E-GWC-6`; claim existant `candidate-7afc131430c64c6fe34bcfea` repris sans transfert d'ownership après réobservation du HEAD et de la fermeture d'Intake #004.
+- RED initial : `7d7f7d2acc2d79b0b0a8bd268b7d8e6eb4a972d6`, MCP CI #1243.
+- Correction 1 : `d616849f` retire un faux couplage entre les digests du ProjectResolution et ceux de la preuve serveur ; CI #1255 fait passer 6/7 des RED restants.
+- Correction 2 : `616fd993` rend l'ordre des alias bruts déterministe et indépendant de la locale ; CI #1256 rend la suite fonctionnelle GWC-6 entièrement verte, avec seulement un gate whitespace externe.
+- Normalisation EOF sans changement fonctionnel : `28d0c1e3` et `087b0a23`.
+- GREEN final exact-head : MCP CI #1258 SUCCESS sur `087b0a23230c83b6cb1c9069947f48a5d8cc0357` — typecheck, build, docs, governance, GWC verifier, secrets, read-only safety et whitespace tous verts.
+- OD-03 : l'identité serveur canonique provient exclusivement de l'ensemble borné `canonicalServerIds`; les variantes de casse peuvent s'y normaliser, l'ID brut reste preuve, alias inconnu => `UNVERIFIED`, le hint ne peut que désambiguïser un serveur déjà lié au projet, les chemins ne deviennent jamais identité et l'environnement reste préservé.
+- Frontière d'autorité : resolver `READ_ONLY`; aucune mutation GitRegistry, SSH, main, S1, production, Task/lock runtime ou autorisation implicite.
+- Bundle canonique : `docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete`.
+- Le claim GWC-6 reste `ACTIVE` jusqu'au SUCCESS de la CI du checkpoint ; ensuite seulement : release et dispatch `GWC-PRE-E-GWC-7`.
