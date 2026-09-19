@@ -551,3 +551,5 @@ Date : 2026-08-29
 - Aucun fichier source/test de GWC-6 modifié par cette clôture.
 - Aucun merge main, S1, runtime, lock, Governed Task ou déploiement.
 - NEXT_ACTION : réobserver la session/claim/heartbeat GWC-6 avant toute écriture GWC-6 ; heartbeat absent = liveness UNKNOWN, jamais permission de voler/libérer le claim.
+
+- Checkpoint self-correction : CI #1253 a correctement rejeté le premier bundle de clôture pour `sha256` source divergent ; cause = ordre de clés JSON différent entre le calcul préparatoire et le contenu réellement sérialisé. Empreinte recalculée sur le contenu Git exact et corrigée sans toucher à GWC-6.
