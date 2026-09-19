@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "observedHeadBeforeReconciliation": "021718f054946bf95f3be04e6f21523a0e7f4404",
+  "session": {
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "coordinationCommentId": 5738833059,
+    "role": "BOUNDED_INTAKE_RECONCILIATION_WRITER"
+  },
+  "purpose": "Register and reconcile NEW_INFORMATION_INTAKE-003 through the existing contiguous intake/coherence path while GWC-5 is actively claimed. Preserve GWC-4's validated baseline, keep GWC-5 running under LOCAL_BLOCKER != GLOBAL_STOP, and requeue the same GWC-4 work item only for the additive recovery delta after the current claim.",
+  "inputCursor": {
+    "latestIntakeSequence": 2,
+    "reconciledThroughSequence": 2,
+    "canonicalRevision": 2,
+    "backlogRevision": 1,
+    "lastReconciliationDigest": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695",
+    "pendingIntakeIds": []
+  },
+  "registration": {
+    "intakeId": "NEW_INFORMATION_INTAKE-003",
+    "sequence": 3,
+    "status": "RECEIVED",
+    "sourceType": "chatgpt",
+    "sourceId": "github-pr95-comment-5738570504",
+    "sourceDigest": "8edb6d48b43cd0bd44510dd97914fc409aaba7bf6c2a21e5a4a48ab6c649a14c",
+    "observedAt": "2026-09-19T02:56:49Z"
+  },
+  "gate": {
+    "understood": true,
+    "relevance": "RELEVANT",
+    "evidence": "VERIFIED",
+    "evidenceRequired": true,
+    "objectiveAlignment": "ALIGNED",
+    "relationToExisting": "EXTENSION",
+    "architecturalFit": "FITS_WITH_ADAPTATION",
+    "authorityFit": "PRESERVES_EXISTING_AUTHORITIES",
+    "nonRegression": "REQUIRES_COMPATIBILITY_WORK",
+    "impact": "MULTI_CONTRACT",
+    "existingFirstPath": "EXTEND"
+  },
+  "affectedScopes": [
+    "precode-candidate-continuity",
+    "precode-session-auto-resume",
+    "precode-recovery-supervison",
+    "precode-external-runner-adapter",
+    "precode-intake-discovery",
+    "universal-recovery-acceptance"
+  ],
+  "affectedContracts": [
+    "GW-02",
+    "GW-03",
+    "GW-12",
+    "GW-16",
+    "GW-17",
+    "GW-73"
+  ],
+  "affectedBlueprints": [
+    "GWC-4",
+    "GWC-17"
+  ],
+  "affectedWorkItems": [
+    "GWC-PRE-E-GWC-4",
+    "GWC-PRE-E-GWC-17"
+  ],
+  "affectedAuthorities": [
+    "src/governedContext/candidateContinuity.ts",
+    "existing Governed Session authority",
+    "existing BootstrapReceipt/ConnectionContext authority",
+    "PR #95 coordination surface",
+    "canonical-memory/intake continuity projection"
+  ],
+  "canonicalEffect": "ENRICH",
+  "backlogEffect": "ENRICH_EXISTING_WORK",
+  "evaluation": {
+    "verdict": "ACCEPT_WITH_ADAPTATION",
+    "shouldIntegrate": true,
+    "reasonCodes": [
+      "EXISTING_FIRST_ADAPTATION_REQUIRED"
+    ]
+  },
+  "acceptedAdaptation": [
+    "Preserve GWC-4 final GREEN CI #1205 and all existing session/receipt behavior as a valid historical baseline.",
+    "Requeue the existing GWC-PRE-E-GWC-4 work item to READY solely for the accepted intake delta; do not create a nineteenth candidate work item or parallel blueprint. Its prior PASS/CI #1205 remains a valid baseline.",
+    "GWC-4 owns connection/session/receipt and auto-resume integration by extending existing candidate continuity, not by creating a second session authority.",
+    "Liveness is transient telemetry only and never changes ownership or authorization.",
+    "The supervisor reobserves HEAD, claim, CI/checkpoint and liveness before a bounded resume decision; timeout alone never transfers a claim.",
+    "The runner is an execution adapter only: resume a verified same-provider session when a real supported mechanism exists, otherwise start a replacement executor in reconcile/read-only mode or fail closed RUNNER_UNAVAILABLE.",
+    "The intake collector only discovers/deduplicates bounded sources and feeds the existing registerCandidateIntake/coherence/reconciliation path; it cannot directly execute instructions.",
+    "GWC-17 owns universal recovery acceptance, including restart-storm protection, acknowledgement-before-RESUMED, claim safety, stale-envelope cancellation and secret non-persistence."
+  ],
+  "receipt": {
+    "fromSequence": 3,
+    "throughSequence": 3,
+    "intakeIds": [
+      "NEW_INFORMATION_INTAKE-003"
+    ],
+    "previousCanonicalRevision": 2,
+    "resultingCanonicalRevision": 3,
+    "previousBacklogRevision": 1,
+    "resultingBacklogRevision": 2,
+    "effects": {
+      "duplicates": [],
+      "complements": [],
+      "accepted": [],
+      "acceptedWithAdaptation": [
+        "NEW_INFORMATION_INTAKE-003"
+      ],
+      "deferred": [],
+      "heldForReview": [],
+      "outOfScope": [],
+      "rejected": [],
+      "tasksCreated": [],
+      "tasksEnriched": [
+        "GWC-PRE-E-GWC-4",
+        "GWC-PRE-E-GWC-17"
+      ],
+      "tasksReconcileRequired": [
+        "GWC-PRE-E-GWC-4"
+      ]
+    },
+    "digest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555"
+  },
+  "resultingCursor": {
+    "latestIntakeSequence": 3,
+    "reconciledThroughSequence": 3,
+    "canonicalRevision": 3,
+    "backlogRevision": 2,
+    "lastReconciliationDigest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b6666955",
+    "pendingIntakeIds": []
+  },
+  "authorityBoundary": {
+    "parallelAuthorityCreated": false,
+    "runtimeMcpRequired": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "runtimeGovernedSessionCreated": false,
+    "claimTransferred": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false
+  },
+  "concurrency": {
+    "currentConcurrentWorkItem": "GWC-PRE-E-GWC-5",
+    "currentConcurrentClaim": "ACTIVE",
+    "currentCollisionDomains": [
+      "path:src/governedWorkflow/adapters/task",
+      "path:src/operationalMemory/taskQueue.ts",
+      "path:src/operationalMemory/lockService.ts"
+    ],
+    "intakeCollisionDomain": "docs:gwc-intake-003 + .mcp:gwc-precode-intake-cursor",
+    "implementationPathsTouched": false,
+    "knowledgeImpact": "LOCAL_NO_STOP_FOR_ACTIVE_GWC_5__REQUEUE_GWC_4_FOR_POST_CLAIM_ADDITIVE_RECONCILIATION",
+    "unrelatedWorkRule": "LOCAL_BLOCKER_NE_GLOBAL_STOP",
+    "dispatchRule": "Resume the existing ACTIVE GWC-5 claim first. Once it releases, GWC-4 READY has higher priority and is selected before later eligible work."
+  },
+  "nextAction": "Current GWC-5 writer reobserves the HEAD move, records that intake #003 has no local implementation impact on GWC-5, and continues its current claim. After GWC-5 releases, dispatch selects the requeued existing GWC-4 work item for bounded RED->GREEN additive recovery reconciliation before later work proceeds."
+}

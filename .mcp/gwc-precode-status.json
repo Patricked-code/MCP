@@ -1087,7 +1087,7 @@
           "GWC-4"
         ],
         "title": "GWC-4 — Connection/Session/Receipt integration",
-        "status": "DONE",
+        "status": "READY",
         "priority": 66,
         "sequence": 11,
         "dependencies": [
@@ -1109,7 +1109,8 @@
           "First GREEN CI #1203 SUCCESS @ d1695768006093ff8d13a6b30a293cab354a0f97.",
           "Self-review found M1 EvidenceRef digest/binding drift; regression RED CI #1204 FAILURE @ 49533320c646cb1ddabc192e77f3185a6e061709.",
           "FINAL GREEN CI #1205 SUCCESS @ 3ad4bcc57e45679352472c383f30a4f0703f5db2.",
-          "Persisted Session/Receipt/ConnectionContext schemas and Session Service lifecycle methods remain unchanged."
+          "Persisted Session/Receipt/ConnectionContext schemas and Session Service lifecycle methods remain unchanged.",
+          "POST_PASS_REQUEUE: NEW_INFORMATION_INTAKE-003 accepted with adaptation at canonicalRevision=3/backlogRevision=2. Prior GWC-4 PASS and final GREEN CI #1205 remain valid baseline; only additive intake-discovery/liveness/supervisor/runner reconciliation is pending after the current GWC-5 claim."
         ]
       },
       {
@@ -1137,7 +1138,8 @@
           "Claimed by candidate-7afc131430c64c6fe34bcfea @ db01606f3d1f524fdc807bc59e1fbb491385fb75",
           "Checkpoint GWC-4 confirmed by CI #1209 SUCCESS.",
           "OD-05 constrained existing-first: deterministic order, all-or-nothing active grant, compensation on cross-store failure, implementation inside existing Lock Service only.",
-          "Task Queue lifecycle/classification and reconcileIntent OUT_OF_SCOPE semantics remain unchanged; no runtime Task materialization in PRECODE."
+          "Task Queue lifecycle/classification and reconcileIntent OUT_OF_SCOPE semantics remain unchanged; no runtime Task materialization in PRECODE.",
+          "KNOWLEDGE_DRIFT_LOCAL: intake #003 affects GWC-4/GWC-17, not GWC-5 implementation collision domains. Existing ACTIVE GWC-5 claim continues under LOCAL_BLOCKER != GLOBAL_STOP; reobserve/reconcile the HEAD move before the next write."
         ]
       },
       {
@@ -1399,7 +1401,8 @@
           "path:tests/governedWorkflowUniversalAcceptance"
         ],
         "evidence": [
-          "Derived from GWC-CAND-17 exact-bound candidate backlog."
+          "Derived from GWC-CAND-17 exact-bound candidate backlog.",
+          "NEW_INFORMATION_INTAKE-003 binds universal recovery acceptance to GWC-17: liveness, supervisor, runner acknowledgement, intake dedupe, restart-storm protection, claim safety, stale-envelope cancellation and secret non-persistence."
         ]
       }
     ],
@@ -1676,20 +1679,21 @@
   "intakeContinuity": {
     "role": "BRANCH_LOCAL_CONTINUITY_INDEX_NOT_AUTHORITY",
     "implementation": "src/governedContext/candidateContinuity.ts",
-    "latestIntakeSequence": 2,
-    "reconciledThroughSequence": 2,
-    "canonicalRevision": 2,
-    "backlogRevision": 1,
-    "lastReconciliationDigest": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695",
+    "latestIntakeSequence": 3,
+    "reconciledThroughSequence": 3,
+    "canonicalRevision": 3,
+    "backlogRevision": 2,
+    "lastReconciliationDigest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555",
     "pendingIntakeIds": [],
     "sourceBundles": [
       "docs/gwc/canonical-memory/pr95-new-information-intake-001",
-      "docs/gwc/canonical-memory/pr95-new-information-intake-002"
+      "docs/gwc/canonical-memory/pr95-new-information-intake-002",
+      "docs/gwc/canonical-memory/pr95-new-information-intake-003"
     ],
     "rule": "The cursor indexes immutable intake evidence and reconciliation progress. It is not a second queue, memory store or task registry.",
     "sequencePolicy": "NEW_INFORMATION_INTAKE-N is monotone; only contiguous deltas advance reconciledThroughSequence.",
     "revisionPolicy": "Canonical/backlog revisions advance only when a reconciled batch produces accepted effects.",
-    "pendingRule": "Intake #001 and #002 were previously recorded with canonicalAdoptionPerformed=false; under the new gate they remain pending until explicitly evaluated/reconciled."
+    "pendingRule": "Only newly discovered, not-yet-reconciled contiguous intake ids may remain pending; reconciled intake bundles stay immutable evidence."
   },
   "intakeCoherenceGate": {
     "status": "PASS_WITH_EVIDENCE",
@@ -1734,21 +1738,27 @@
   },
   "intakeReconciliation": {
     "status": "RECONCILED",
-    "receiptDigest": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695",
+    "receiptDigest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555",
     "intakeIds": [
-      "NEW_INFORMATION_INTAKE-001",
-      "NEW_INFORMATION_INTAKE-002"
+      "NEW_INFORMATION_INTAKE-003"
     ],
     "verdicts": [
-      "ACCEPT_WITH_ADAPTATION",
       "ACCEPT_WITH_ADAPTATION"
     ],
-    "canonicalRevision": 2,
-    "backlogRevision": 1,
+    "canonicalRevision": 3,
+    "backlogRevision": 2,
     "canonicalEffects": "ENRICH",
     "backlogEffects": "ENRICH_EXISTING_WORK",
     "candidateWorkItemsCreatedByIntake": 0,
-    "runtimeTasksCreated": 0
+    "runtimeTasksCreated": 0,
+    "affectedWorkItems": [
+      "GWC-PRE-E-GWC-4",
+      "GWC-PRE-E-GWC-17"
+    ],
+    "reconcileRequired": [
+      "GWC-PRE-E-GWC-4"
+    ],
+    "currentActiveWorkImpact": "LOCAL_NO_STOP_FOR_GWC-PRE-E-GWC-5"
   },
   "knowledgeFreshnessGuard": {
     "function": "assessCandidateKnowledgeFreshness",
@@ -1769,7 +1779,7 @@
     "affectedWork": "RECONCILE_REQUIRED"
   },
   "updatedForIntakeContinuityAt": "2026-09-19",
-  "updatedForIntakeContinuityHead": "f288d3e93eae772dd4e51654a1e4512a822b3dd6",
+  "updatedForIntakeContinuityHead": "021718f054946bf95f3be04e6f21523a0e7f4404",
   "candidateBacklog": {
     "role": "BRANCH_LOCAL_PRECODE_PROJECTION_NOT_RUNTIME_QUEUE",
     "authority": false,
@@ -4586,7 +4596,38 @@
         "tests/governedWorkflowSessionIntegration.test.ts",
         "package.json"
       ],
-      "authorityBoundary": "PURE_SESSION_OBSERVATION_WRAPPERS_NO_PERSISTED_SCHEMA_OR_LIFECYCLE_CHANGE"
+      "authorityBoundary": "PURE_SESSION_OBSERVATION_WRAPPERS_NO_PERSISTED_SCHEMA_OR_LIFECYCLE_CHANGE",
+      "postPassIntakeReconciliation": {
+        "intakeId": "NEW_INFORMATION_INTAKE-003",
+        "receiptDigest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555",
+        "state": "REQUEUED_READY_AFTER_ACTIVE_GWC5_CLAIM",
+        "baselineStillValid": true,
+        "baselineFinalGreenCiRun": 1205,
+        "rule": "Historical PASS remains valid; only the additive recovery delta is pending."
+      }
     }
+  },
+  "intake003RecoveryEvolution": {
+    "status": "ACCEPTED_WITH_ADAPTATION_NOT_YET_IMPLEMENTED",
+    "intakeId": "NEW_INFORMATION_INTAKE-003",
+    "receiptDigest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555",
+    "existingFirst": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
+    "ownerBlueprints": [
+      "GWC-4",
+      "GWC-17"
+    ],
+    "requirements": [
+      "INTAKE_DISCOVERY",
+      "CANDIDATE_LIVENESS",
+      "NON_AUTHORITATIVE_SUPERVISOR",
+      "GOVERNED_EXTERNAL_RUNNER",
+      "UNIVERSAL_RECOVERY_ACCEPTANCE"
+    ],
+    "currentClaimRule": "GWC-PRE-E-GWC-5 continues; LOCAL_BLOCKER != GLOBAL_STOP. After release, requeued GWC-4 is selected before later work.",
+    "authorityBoundary": "NO_SECOND_SESSION_TASK_LOCK_MEMORY_WATCHER_OR_GOVERNANCE_AUTHORITY",
+    "runtimeMutation": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false
   }
 }

@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-intake-003-reconciled-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_intake_003_reconciliation",
+      "path": "sources/intake-003-reconciliation.json",
+      "media_type": "application/json",
+      "bytes": 6573,
+      "sha256": "5d431b0b902885a912ea3a0dacef087fc12603bae4446a00b45cdd729d427e22"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_intake_003_reconciled",
+      "key": "candidate.intake_003_reconciled",
+      "claim_type": "fact",
+      "value": "NEW_INFORMATION_INTAKE-003 was reconciled with verdict ACCEPT_WITH_ADAPTATION; receipt c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555; no new candidate work item or runtime authority was created.",
+      "source_refs": [
+        "src_intake_003_reconciliation"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intake_003_bindings",
+      "key": "candidate.intake_003_bindings",
+      "claim_type": "fact",
+      "value": "Recovery/continuity implementation is bound existing-first to GWC-4, requeued READY only for this additive delta while preserving its prior PASS/CI #1205; active GWC-5 continues under LOCAL_BLOCKER != GLOBAL_STOP; GWC-17 owns universal recovery acceptance.",
+      "source_refs": [
+        "src_intake_003_reconciliation"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intake_003_cursor",
+      "key": "candidate.intake_continuity_cursor",
+      "claim_type": "fact",
+      "value": "Reconciled through sequence 3; canonicalRevision=3; backlogRevision=2; pending intakes empty; lastReconciliationDigest=c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555.",
+      "source_refs": [
+        "src_intake_003_reconciliation"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
