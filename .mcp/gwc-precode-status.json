@@ -1380,12 +1380,20 @@
           "GWC-PRE-E-GWC-10"
         ],
         "collisionDomains": [
-          "path:src/governedWorkflow/authority"
+          "path:src/governedWorkflow/authority",
+          "path:scripts/doc-governance-lib.mjs",
+          "path:tests/docGovernance.test.ts",
+          "path:tests/governedWorkflowAuthority.test.ts",
+          "path:package.json"
         ],
         "evidence": [
           "Derived from GWC-CAND-11 exact-bound candidate backlog.",
           "Dependencies GWC-PRE-E-GWC-2 and GWC-PRE-E-GWC-10 satisfied at dispatch; GWC-10 closes in this same exact-head transition after checkpoint CI #1337 SUCCESS.",
-          "Initial collision domain is exactly path:src/governedWorkflow/authority; any test/docs expansion requires exact-head claim update before mutation."
+          "Initial collision domain is exactly path:src/governedWorkflow/authority; any test/docs expansion requires exact-head claim update before mutation.",
+          "GWC-11 dispatch transition MCP CI #1339 SUCCESS @ c578623540788787da39e7d5f9afb36b8ac10365.",
+          "Existing-first audit confirms documentation inventory/canonical-state/cartography and GitHub exact-head observations already exist; only the integration-slot resolver is genuinely new.",
+          "GW-21/22/23 canonical sheets require read/derive-only bounded outputs AuthorityDocumentSet, IntegrationSlot and GithubBaseline; no new persistence or capability authority.",
+          "Collision domain expanded before mutation to scripts/doc-governance-lib.mjs, tests/docGovernance.test.ts, tests/governedWorkflowAuthority.test.ts and package.json."
         ]
       },
       {
@@ -1748,7 +1756,11 @@
         "agentIdentity": "ChatGPT-GPT-5.6-Sol",
         "workItemId": "GWC-PRE-E-GWC-11",
         "collisionDomains": [
-          "path:src/governedWorkflow/authority"
+          "path:src/governedWorkflow/authority",
+          "path:scripts/doc-governance-lib.mjs",
+          "path:tests/docGovernance.test.ts",
+          "path:tests/governedWorkflowAuthority.test.ts",
+          "path:package.json"
         ],
         "status": "ACTIVE"
       }
@@ -1849,9 +1861,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "50e05fbc398dad84612a8fff2e11e82084c2239b",
+        "lastObservedHeadSha": "c578623540788787da39e7d5f9afb36b8ac10365",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T08:08:00Z",
+        "lastSeenAt": "2026-09-19T08:12:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5293,7 +5305,14 @@
         "GWC-PRE-E-GWC-10"
       ],
       "scope": "AUTHORITY_DOCS_INTEGRATION_SLOT_BASELINE",
-      "authorityBoundary": "READ_DERIVE_ONLY__FORMALIZE_EXISTING_AUTHORITIES__NO_SECOND_OWNER"
+      "authorityBoundary": "READ_DERIVE_ONLY__FORMALIZE_EXISTING_AUTHORITIES__NO_SECOND_OWNER",
+      "audit": {
+        "docsAuthority": "REUSE_AND_PROJECT_SCOPE_EXISTING_DECLARATION",
+        "integrationSlot": "NEW_PURE_RESOLVER_OVER_EXISTING_INVENTORIES",
+        "githubBaseline": "REUSE_CURRENT_GITHUB_OBSERVATION_WITH_STEP_FRESHNESS_BINDING",
+        "persistence": "NONE",
+        "mutation": "NONE"
+      }
     }
   },
   "intake003RecoveryEvolution": {
