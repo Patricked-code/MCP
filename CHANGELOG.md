@@ -701,3 +701,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - La nouvelle couche GWC Root + 8 Macro Contracts doit être une projection additive avec `macroContractRef`, sans remplacer les familles A..I ni les autorités existantes.
 - Le Master Construction Crosswalk est défini comme consolidation des bindings existants et alimentation de `GWC-PRE-B-01/B-02/B-03`.
 - Aucun contrat, blueprint, graphe, Task Queue, lock, session runtime, main, S1 ou déploiement n'est modifié par cet intake.
+
+## 2026-09-19 — Phase C1 : AF-19 exact-SHA CI gate
+
+- Résolution existing-first de `OD-07` sur l'Integration Slot déjà présent dans `.github/workflows/mcp-deploy.yml`.
+- Ajout de la permission minimale `actions: read` et d'une attente bornée de la CI `MCP CI` pour le `GITHUB_SHA` exact avant autodeploy sur `push`.
+- Fail-closed : pas de CI exacte, CI non terminée au-delà de la fenêtre, CI échouée ou API indisponible => `enabled=false`.
+- `workflow_run` reste absent/interdit ; politique OIDC exact-SHA inchangée ; `workflow_dispatch` conserve son comportement historique.
+- TDD : RED CI #1110 @ `757ee2a`; GREEN CI #1112 @ `074f2bd2` entièrement réussi.
+- Aucun merge `main`, S1, production ou runtime MCP n'est muté.
+
