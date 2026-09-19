@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "observedHeadBeforeReconciliation": "7d7f7d2acc2d79b0b0a8bd268b7d8e6eb4a972d6",
+  "session": {
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "coordinationCommentId": 5739347976,
+    "role": "BOUNDED_INTAKE_RECONCILIATION_WRITER"
+  },
+  "purpose": "Register and reconcile NEW_INFORMATION_INTAKE-004 through the existing contiguous intake/coherence path. Extend the already-delivered intake #003 candidate liveness/recovery primitives with an explicit one-minute heartbeat transport contract while preserving the concurrent GWC-6 server-resolver claim and all existing runtime authorities.",
+  "inputCursor": {
+    "latestIntakeSequence": 3,
+    "reconciledThroughSequence": 3,
+    "canonicalRevision": 3,
+    "backlogRevision": 2,
+    "lastReconciliationDigest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555",
+    "pendingIntakeIds": []
+  },
+  "registration": {
+    "intakeId": "NEW_INFORMATION_INTAKE-004",
+    "sequence": 4,
+    "status": "RECEIVED",
+    "sourceType": "chatgpt",
+    "sourceId": "github-pr95-comment-5739347553",
+    "sourceDigest": "d86cfebc13145ee6196c9a348a5d7fbd06bab091552943642807db711396f444",
+    "observedAt": "2026-09-19T04:28:28Z"
+  },
+  "gate": {
+    "understood": true,
+    "relevance": "RELEVANT",
+    "evidence": "VERIFIED",
+    "evidenceRequired": true,
+    "objectiveAlignment": "ALIGNED",
+    "relationToExisting": "EXTENSION",
+    "architecturalFit": "FITS_WITH_ADAPTATION",
+    "authorityFit": "PRESERVES_EXISTING_AUTHORITIES",
+    "nonRegression": "REQUIRES_COMPATIBILITY_WORK",
+    "impact": "MULTI_CONTRACT",
+    "existingFirstPath": "EXTEND"
+  },
+  "affectedScopes": [
+    "precode-candidate-continuity",
+    "precode-heartbeat-transport",
+    "precode-liveness-supervision",
+    "universal-recovery-acceptance"
+  ],
+  "affectedContracts": [
+    "GW-02",
+    "GW-03",
+    "GW-12",
+    "GW-16",
+    "GW-17",
+    "GW-73"
+  ],
+  "affectedBlueprints": [
+    "GWC-4",
+    "GWC-17"
+  ],
+  "affectedWorkItems": [
+    "GWC-PRE-E-GWC-4",
+    "GWC-PRE-E-GWC-17"
+  ],
+  "affectedAuthorities": [
+    "src/governedContext/candidateContinuity.ts",
+    "PR #95 coordination surface",
+    "docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md",
+    "canonical-memory/intake continuity projection"
+  ],
+  "canonicalEffect": "ENRICH",
+  "backlogEffect": "ENRICH_EXISTING_WORK",
+  "evaluation": {
+    "verdict": "ACCEPT_WITH_ADAPTATION",
+    "shouldIntegrate": true,
+    "reasonCodes": [
+      "EXISTING_FIRST_ADAPTATION_REQUIRED"
+    ]
+  },
+  "acceptedAdaptation": [
+    "Preserve intake #003 GWC-4 final GREEN CI #1233 and its liveness/supervisor/runner semantics as the valid baseline.",
+    "Requeue the existing GWC-PRE-E-GWC-4 work item only for the additive minute-heartbeat transport/validation delta; create no new blueprint or parallel liveness authority.",
+    "Define a strict bounded CandidateHeartbeat contract in candidateContinuity and feed its validated timestamp/head/session/work-item binding into the existing assessCandidateLiveness and superviseCandidateRecovery path.",
+    "Use exactly one mutable PR #95 top-level comment per candidateSessionId; updating heartbeat must not move branch HEAD and must never be persisted as versioned heartbeat state.",
+    "Heartbeat cadence target is 60 seconds while an agent actively executes a claimed mutable scope; freshness policy is centralized/versioned and tolerant of transport jitter.",
+    "The coordination document makes heartbeat emission mandatory for participating writers/reviewers that own or actively evaluate a bounded mutable scope, but heartbeat never confers ownership or authorization.",
+    "GWC-17 owns universal acceptance for sequence monotonicity, binding integrity, stale/missing fail-closed behavior, YIELDED, no heartbeat commits and secret/transcript non-persistence."
+  ],
+  "receipt": {
+    "fromSequence": 4,
+    "throughSequence": 4,
+    "intakeIds": [
+      "NEW_INFORMATION_INTAKE-004"
+    ],
+    "previousCanonicalRevision": 3,
+    "resultingCanonicalRevision": 4,
+    "previousBacklogRevision": 2,
+    "resultingBacklogRevision": 3,
+    "effects": {
+      "duplicates": [],
+      "complements": [],
+      "accepted": [],
+      "acceptedWithAdaptation": [
+        "NEW_INFORMATION_INTAKE-004"
+      ],
+      "deferred": [],
+      "heldForReview": [],
+      "outOfScope": [],
+      "rejected": [],
+      "tasksCreated": [],
+      "tasksEnriched": [
+        "GWC-PRE-E-GWC-4",
+        "GWC-PRE-E-GWC-17"
+      ],
+      "tasksReconcileRequired": [
+        "GWC-PRE-E-GWC-4"
+      ]
+    },
+    "digest": "bdef89603c02b604efcb2da82e0e3647c9d45bac8bcfc26760501fd16a3f2fd0"
+  },
+  "resultingCursor": {
+    "latestIntakeSequence": 4,
+    "reconciledThroughSequence": 4,
+    "canonicalRevision": 4,
+    "backlogRevision": 3,
+    "lastReconciliationDigest": "bdef89603c02b604efcb2da82e0e3647c9d45bac8bcfc26760501fd16a3f2fd0",
+    "pendingIntakeIds": []
+  },
+  "authorityBoundary": {
+    "parallelAuthorityCreated": false,
+    "runtimeMcpRequired": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "runtimeGovernedSessionCreated": false,
+    "claimTransferred": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false
+  },
+  "concurrency": {
+    "currentConcurrentWorkItem": "GWC-PRE-E-GWC-6",
+    "currentConcurrentClaim": "ACTIVE",
+    "currentCollisionDomains": [
+      "path:src/governedWorkflow/resolvers/server",
+      "path:tests/governedWorkflowGithubResolverAdapters.test.ts"
+    ],
+    "intakeCollisionDomain": "docs:gwc-intake-004 + .mcp:gwc-precode-intake-cursor",
+    "implementationPathsTouched": false,
+    "knowledgeImpact": "LOCAL_NO_STOP_FOR_ACTIVE_GWC_6__REQUEUE_GWC_4_ADDITIVE_LIVENESS_TRANSPORT_DELTA",
+    "unrelatedWorkRule": "LOCAL_BLOCKER_NE_GLOBAL_STOP",
+    "dispatchRule": "Preserve the existing ACTIVE GWC-6 claim. A separate writer may take the requeued GWC-4 delta only on disjoint paths with exact-head reconciliation before every write."
+  },
+  "nextAction": "Persist a bounded disjoint GWC-4 claim for the minute-heartbeat delta, then execute RED -> minimal GREEN -> full regression -> self-review -> checkpoint without touching GWC-6 collision domains."
+}

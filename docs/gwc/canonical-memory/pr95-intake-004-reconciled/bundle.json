@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-intake-004-reconciled-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_intake_004_reconciliation",
+      "path": "sources/intake-004-reconciliation.json",
+      "media_type": "application/json",
+      "bytes": 6289,
+      "sha256": "bcb08848f028bcf23a004f9f6ad78c46ed360b0f64fa771703558765cde776a9"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_intake_004_reconciled",
+      "key": "candidate.intake_004_reconciled",
+      "claim_type": "fact",
+      "value": "NEW_INFORMATION_INTAKE-004 was reconciled with verdict ACCEPT_WITH_ADAPTATION; no new candidate work item or runtime authority was created.",
+      "source_refs": [
+        "src_intake_004_reconciliation"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intake_004_bindings",
+      "key": "candidate.intake_004_bindings",
+      "claim_type": "fact",
+      "value": "Minute heartbeat transport is bound existing-first to GWC-4 candidate continuity and PR #95 coordination; GWC-17 owns universal acceptance; the active GWC-6 claim remains untouched.",
+      "source_refs": [
+        "src_intake_004_reconciliation"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intake_004_cursor",
+      "key": "candidate.intake_continuity_cursor",
+      "claim_type": "fact",
+      "value": "Reconciled through sequence 4; canonicalRevision=4; backlogRevision=3; pending intakes empty; lastReconciliationDigest=bdef89603c02b604efcb2da82e0e3647c9d45bac8bcfc26760501fd16a3f2fd0.",
+      "source_refs": [
+        "src_intake_004_reconciliation"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

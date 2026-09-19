@@ -1087,7 +1087,7 @@
           "GWC-4"
         ],
         "title": "GWC-4 — Connection/Session/Receipt integration",
-        "status": "DONE",
+        "status": "READY",
         "priority": 66,
         "sequence": 11,
         "dependencies": [
@@ -1124,7 +1124,8 @@
           "Session Service and historical GWC-4 session adapter remained byte-identical across the intake-003 delta.",
           "Checkpoint bundle pr95-e-gwc4-intake003-recovery-complete written; claim retained until checkpoint CI succeeds.",
           "INTAKE_003 checkpoint CI #1237 SUCCESS @ 115ac1640b7c75458cf23710e851c1e0e4b14352.",
-          "GWC-4 historical baseline plus intake-003 additive recovery delta are complete with evidence; claim released only after checkpoint CI success."
+          "GWC-4 historical baseline plus intake-003 additive recovery delta are complete with evidence; claim released only after checkpoint CI success.",
+          "POST_PASS_REQUEUE: NEW_INFORMATION_INTAKE-004 accepted with adaptation. Preserve intake #003 FINAL GREEN CI #1233; requeue GWC-4 only for additive per-minute heartbeat transport/validation on candidateContinuity + coordination docs. Active GWC-6 claim remains untouched."
         ]
       },
       {
@@ -1729,16 +1730,17 @@
   "intakeContinuity": {
     "role": "BRANCH_LOCAL_CONTINUITY_INDEX_NOT_AUTHORITY",
     "implementation": "src/governedContext/candidateContinuity.ts",
-    "latestIntakeSequence": 3,
-    "reconciledThroughSequence": 3,
-    "canonicalRevision": 3,
-    "backlogRevision": 2,
-    "lastReconciliationDigest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555",
+    "latestIntakeSequence": 4,
+    "reconciledThroughSequence": 4,
+    "canonicalRevision": 4,
+    "backlogRevision": 3,
+    "lastReconciliationDigest": "bdef89603c02b604efcb2da82e0e3647c9d45bac8bcfc26760501fd16a3f2fd0",
     "pendingIntakeIds": [],
     "sourceBundles": [
       "docs/gwc/canonical-memory/pr95-new-information-intake-001",
       "docs/gwc/canonical-memory/pr95-new-information-intake-002",
-      "docs/gwc/canonical-memory/pr95-new-information-intake-003"
+      "docs/gwc/canonical-memory/pr95-new-information-intake-003",
+      "docs/gwc/canonical-memory/pr95-new-information-intake-004"
     ],
     "rule": "The cursor indexes immutable intake evidence and reconciliation progress. It is not a second queue, memory store or task registry.",
     "sequencePolicy": "NEW_INFORMATION_INTAKE-N is monotone; only contiguous deltas advance reconciledThroughSequence.",
@@ -4749,7 +4751,7 @@
     }
   },
   "intake003RecoveryEvolution": {
-    "status": "ACCEPTED_WITH_ADAPTATION_NOT_YET_IMPLEMENTED",
+    "status": "PASS_WITH_EVIDENCE",
     "intakeId": "NEW_INFORMATION_INTAKE-003",
     "receiptDigest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555",
     "existingFirst": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
@@ -4764,7 +4766,50 @@
       "GOVERNED_EXTERNAL_RUNNER",
       "UNIVERSAL_RECOVERY_ACCEPTANCE"
     ],
-    "currentClaimRule": "GWC-PRE-E-GWC-5 continues; LOCAL_BLOCKER != GLOBAL_STOP. After release, requeued GWC-4 is selected before later work.",
+    "currentClaimRule": "GWC-4 intake #003 recovery delta completed with FINAL GREEN CI #1233 and checkpoint CI #1237; no active claim remains for intake #003.",
+    "authorityBoundary": "NO_SECOND_SESSION_TASK_LOCK_MEMORY_WATCHER_OR_GOVERNANCE_AUTHORITY",
+    "runtimeMutation": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "finalGreen": {
+      "head": "469da6d09d63367e0e89388369573f6f5fc1e441",
+      "ciRunNumber": 1233,
+      "checkpointCiRunNumber": 1237,
+      "tests": 445
+    }
+  },
+  "intake004MinuteLiveness": {
+    "status": "ACCEPTED_WITH_ADAPTATION_READY_FOR_IMPLEMENTATION",
+    "intakeId": "NEW_INFORMATION_INTAKE-004",
+    "receiptDigest": "bdef89603c02b604efcb2da82e0e3647c9d45bac8bcfc26760501fd16a3f2fd0",
+    "sourceCommentId": 5739347553,
+    "reconciliationBundle": "docs/gwc/canonical-memory/pr95-intake-004-reconciled",
+    "existingFirst": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
+    "ownerBlueprints": [
+      "GWC-4",
+      "GWC-17"
+    ],
+    "requirements": [
+      "ONE_MUTABLE_HEARTBEAT_COMMENT_PER_CANDIDATE_SESSION",
+      "HEARTBEAT_INTERVAL_60_SECONDS_WHILE_ACTIVE",
+      "STRICT_BOUNDED_HEARTBEAT_SCHEMA",
+      "MONOTONE_HEARTBEAT_SEQUENCE",
+      "SESSION_CLAIM_WORKITEM_HEAD_BINDING",
+      "YIELDED_ACTION",
+      "NO_HEARTBEAT_COMMITS",
+      "OWNERSHIP_LIVENESS_PROGRESS_SEPARATION",
+      "UNIVERSAL_MINUTE_LIVENESS_ACCEPTANCE"
+    ],
+    "transport": {
+      "surface": "PR_95_TOP_LEVEL_MUTABLE_ISSUE_COMMENT",
+      "marker": "<!-- GWC_PRECODE_LIVENESS:<candidateSessionId> -->",
+      "emissionIntervalSeconds": 60,
+      "freshForSeconds": 120,
+      "movesBranchHead": false,
+      "versionedPersistence": false
+    },
+    "concurrentClaimPreserved": "GWC-PRE-E-GWC-6",
     "authorityBoundary": "NO_SECOND_SESSION_TASK_LOCK_MEMORY_WATCHER_OR_GOVERNANCE_AUTHORITY",
     "runtimeMutation": false,
     "mainMutation": false,
