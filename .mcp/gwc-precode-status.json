@@ -1248,7 +1248,7 @@
           "GWC-8"
         ],
         "title": "GWC-8 — Domain Resolver C5",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 62,
         "sequence": 15,
         "dependencies": [
@@ -1272,7 +1272,9 @@
           "FIRST FULL GREEN CI #1283 SUCCESS @ 197248bd7ebb4d8d3a2a00bc99799c0b72d12f41.",
           "Self-review found optional RegistryMapping.componentRole compatibility and roleless-evidence duplication; RED CI #1284 isolated the schema incompatibility and CI #1285 isolated the duplicate OTHER role.",
           "FINAL GREEN CI #1286 SUCCESS @ d6240484e387770751d9d3db476ac3b9470c74ce after merging roleless mapping evidence into explicit same-domain project role without inventing authority.",
-          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc8-domain-resolver-complete created with exact source SHA-256 d9c420197de25d17198f86687aa56b558755b8996cd7d99b703882602323537c; claim retained ACTIVE until exact-head checkpoint CI succeeds."
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc8-domain-resolver-complete created with exact source SHA-256 d9c420197de25d17198f86687aa56b558755b8996cd7d99b703882602323537c; claim retained ACTIVE until exact-head checkpoint CI succeeds.",
+          "Checkpoint MCP CI #1293 SUCCESS @ 4c71dce479274f682a149386b73d22aa08a94a37 validated the GWC-8 canonical bundle, pointer, coordination projection and project documentation before claim release.",
+          "GWC-8 claim released only after exact-head checkpoint SUCCESS; no implicit ownership transfer."
         ]
       },
       {
@@ -1282,7 +1284,7 @@
           "GWC-9"
         ],
         "title": "GWC-9 — Governance inheritance and effective capabilities",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 61,
         "sequence": 16,
         "dependencies": [
@@ -1295,7 +1297,10 @@
           "path:src/governedContext"
         ],
         "evidence": [
-          "Derived from GWC-CAND-09 exact-bound candidate backlog."
+          "Derived from GWC-CAND-09 exact-bound candidate backlog.",
+          "Dependencies GWC-PRE-E-GWC-3, GWC-PRE-E-GWC-4 and GWC-PRE-E-GWC-5 are PASS_WITH_EVIDENCE.",
+          "Dispatched after GWC-8 checkpoint CI #1293 SUCCESS; existing-first baseline confirms CapabilityReality/GovernanceDecision/Scoped Write Gate remain owning authorities.",
+          "Initial GWC-9 collision domains limited to path:src/governedWorkflow/governance and path:src/governedContext; any registration/test scope expansion requires exact-head claim update before mutation."
         ]
       },
       {
@@ -1672,6 +1677,16 @@
           "path:tests/governedWorkflowDomainResolver.test.ts",
           "path:package.json"
         ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-9",
+        "collisionDomains": [
+          "path:src/governedWorkflow/governance",
+          "path:src/governedContext"
+        ],
         "status": "ACTIVE"
       }
     ],
@@ -1771,9 +1786,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "ba659b14b85e51f8e75ec10948717cfea9c89ee9",
+        "lastObservedHeadSha": "4c71dce479274f682a149386b73d22aa08a94a37",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T07:08:00Z",
+        "lastSeenAt": "2026-09-19T07:12:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5034,7 +5049,7 @@
     "gwc8": {
       "workItemId": "GWC-PRE-E-GWC-8",
       "blueprint": "GWC-8",
-      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
+      "status": "PASS_WITH_EVIDENCE",
       "dependencies": [
         "GWC-PRE-E-GWC-3",
         "GWC-PRE-E-GWC-6"
@@ -5099,9 +5114,23 @@
       ],
       "checkpoint": {
         "bundle": "docs/gwc/canonical-memory/pr95-e-gwc8-domain-resolver-complete",
-        "validation": "PENDING_EXACT_HEAD_CI",
-        "claimRelease": "RETAINED_PENDING_CHECKPOINT_CI"
+        "validation": "SUCCESS",
+        "ciRunNumber": 1293,
+        "head": "4c71dce479274f682a149386b73d22aa08a94a37",
+        "claimRelease": "RELEASED_AFTER_CHECKPOINT_CI_SUCCESS"
       }
+    },
+    "gwc9": {
+      "workItemId": "GWC-PRE-E-GWC-9",
+      "blueprint": "GWC-9",
+      "status": "IN_PROGRESS",
+      "dependencies": [
+        "GWC-PRE-E-GWC-3",
+        "GWC-PRE-E-GWC-4",
+        "GWC-PRE-E-GWC-5"
+      ],
+      "authorityBoundary": "REUSE_CAPABILITY_REALITY__REUSE_GOVERNANCE_DECISION__REUSE_SCOPED_WRITE_GATE__NO_SECOND_ENGINE",
+      "af32": "TO_CLOSE_IN_SHADOW_WITHOUT_ENFORCEMENT"
     }
   },
   "intake003RecoveryEvolution": {
