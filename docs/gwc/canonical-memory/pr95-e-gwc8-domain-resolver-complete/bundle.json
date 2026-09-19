@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc8-domain-resolver-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc8_domain_resolver",
+      "path": "sources/gwc8-domain-resolver.json",
+      "media_type": "application/json",
+      "bytes": 5941,
+      "sha256": "d9c420197de25d17198f86687aa56b558755b8996cd7d99b703882602323537c"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc8_pass",
+      "key": "candidate.phase_e.gwc_8",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-8 is PASS_WITH_EVIDENCE. RED CI #1282 proved the missing domain resolver; first full GREEN CI #1283 succeeded; self-review exposed optional componentRole and duplicate-role compatibility gaps through CI #1284/#1285; final exact-head GREEN CI #1286 succeeded at d6240484e387770751d9d3db476ac3b9470c74ce.",
+      "source_refs": [
+        "src_gwc8_domain_resolver"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc8_domain_policy",
+      "key": "candidate.gwc8_domain_policy",
+      "claim_type": "fact",
+      "value": "GW-09 preserves NONE versus UNVERIFIED, binds current observation to the resolved server, excludes historical vhosts, treats protectedDomains only as safety data, fails closed on undeclared/unobserved/conflicting current domains, and preserves legacy roleless mappings without inventing an extra role.",
+      "source_refs": [
+        "src_gwc8_domain_resolver"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc8_authority",
+      "key": "candidate.gwc8_authority_boundary",
+      "claim_type": "fact",
+      "value": "GitRegistry remains the declaration authority for project/domain metadata; current server/vhost observation supplies serving evidence; protectedDomains is not a domain registry. GWC-8 is READ_ONLY and performs no probing side effect, SSH/vhost mutation, persistence or authorization inference.",
+      "source_refs": [
+        "src_gwc8_domain_resolver"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc9_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Retain the GWC-8 branch-local claim until this checkpoint passes exact-head CI. After validation, release GWC-8 and dispatch GWC-PRE-E-GWC-9 without replaying GWC-8.",
+      "source_refs": [
+        "src_gwc8_domain_resolver"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
