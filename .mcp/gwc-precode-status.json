@@ -1449,7 +1449,13 @@
           "Claim expanded to path:.mcp/function-cartography.json before cartography mutation; no business-code change is justified by #1367.",
           "CI #1369 @ 416a37c24ce2594b509efc3807cbf4d17848d1ef: typecheck/build/docs/governance/GWC/secrets all GREEN; all 7 dedicated GWC-12 tests GREEN.",
           "CI #1369 has exactly one remaining failure: historical C3 guard asserting all C-90 capabilities remain deferred until GWC-9 closes. GWC-9 is now DONE/checkpointed by CI #1309, so this guard must be converted to prove the planned transition while preserving C-90.3 DEFER.",
-          "Claim expanded to tests/gwcGithubCapabilitySplit.test.ts before historical guard reconciliation."
+          "Claim expanded to tests/gwcGithubCapabilitySplit.test.ts before historical guard reconciliation.",
+          "PROVEN RED CI #1360 FAILURE @ d605805a189f17f49424e3282cb6e673ac11b368: exactly 7 intended GWC-12 failures; six lifecycle-module gaps plus GET-only transport, no historical regression.",
+          "Historical C3 guard reconciled after GWC-9 closure; FIRST FULL GREEN CI #1371 SUCCESS @ a72863782779591765b23e2055638e394ebd8804 proves selected C-90 split materialized while C-90.3 remains DEFER.",
+          "Self-review CI #1372 FAILURE @ a8d7b4a71ffd4963ee77f8a307596cd6a6164dee found one real defect: merge could proceed when GitHub returned zero check-run evidence.",
+          "FINAL GREEN CI #1373 SUCCESS @ 31af704006e36de0e57d9f84c71140cd00355545 after fail-closed GITHUB_PR_CHECKS_UNAVAILABLE correction.",
+          "GWC-12 runtime cartography is 132 tools / 81 READ / 51 WRITE, digest 4bd120417137c0f0ddd55019f0e58072e2c5e645293ed471c4816d3ee6a296c8.",
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc12-github-control-plane-complete staged; claim retained ACTIVE until exact-head checkpoint CI succeeds."
         ]
       },
       {
@@ -1916,9 +1922,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "079bb190fd0559e468b0b3dd80cb588557a8afeb",
+        "lastObservedHeadSha": "31af704006e36de0e57d9f84c71140cd00355545",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T09:54:00Z",
+        "lastSeenAt": "2026-09-19T09:03:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5408,7 +5414,7 @@
     "gwc12": {
       "workItemId": "GWC-PRE-E-GWC-12",
       "blueprint": "GWC-12",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
       "dependencies": [
         "GWC-PRE-E-GWC-11"
       ],
@@ -5458,6 +5464,22 @@
           "github_get_mergeability",
           "github_get_required_checks"
         ]
+      },
+      "finalGreen": {
+        "ciRunNumber": 1373,
+        "head": "31af704006e36de0e57d9f84c71140cd00355545",
+        "result": "SUCCESS"
+      },
+      "cartography": {
+        "registeredTools": 132,
+        "readTools": 81,
+        "writeTools": 51,
+        "digest": "4bd120417137c0f0ddd55019f0e58072e2c5e645293ed471c4816d3ee6a296c8"
+      },
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc12-github-control-plane-complete",
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "FORBIDDEN_UNTIL_CHECKPOINT_CI_SUCCESS"
       }
     }
   },
