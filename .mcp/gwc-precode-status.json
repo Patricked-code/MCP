@@ -1171,7 +1171,7 @@
           "GWC-6"
         ],
         "title": "GWC-6 — Server Resolver C3",
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 64,
         "sequence": 13,
         "dependencies": [
@@ -1182,7 +1182,9 @@
         ],
         "evidence": [
           "Derived from GWC-CAND-06 exact-bound candidate backlog.",
-          "Dependency GWC-PRE-E-GWC-3 completed with GREEN CI #1192."
+          "Dependency GWC-PRE-E-GWC-3 completed with GREEN CI #1192.",
+          "Claimed by candidate-7afc131430c64c6fe34bcfea @ 666cb280156a880f67ddff6613d75902f5c623d8",
+          "GWC-4 closure projection validated by CI #1239 SUCCESS before GWC-6 claim."
         ]
       },
       {
@@ -1561,6 +1563,15 @@
           "path:tests/candidateContinuity.test.ts"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-6",
+        "collisionDomains": [
+          "path:src/governedWorkflow/resolvers/server"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -1608,9 +1619,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "115ac1640b7c75458cf23710e851c1e0e4b14352",
+        "lastObservedHeadSha": "666cb280156a880f67ddff6613d75902f5c623d8",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T03:58:00Z",
+        "lastSeenAt": "2026-09-19T04:02:00Z",
         "status": "ACTIVE"
       }
     ]
