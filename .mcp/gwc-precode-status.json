@@ -1536,7 +1536,13 @@
           "Claim expanded before RED to tests/governedWorkflowReview.test.ts; package validation discovery requires no package.json change.",
           "PROVEN RED CI #1393 FAILURE @ 417f799412d5e3c2003fb22dc7c93290bd74632f: exactly 10 intended GWC-14 failures, one for each GW-34..GW-43; all are ERR_MODULE_NOT_FOUND for src/governedWorkflow/review/index.js.",
           "RED #1393 has 542 historical tests passing and no unrelated failure; typecheck/build/docs/governance/GWC/secrets remain GREEN.",
-          "OD-06 resolved existing-first from DECISIONS_LOG + GW-41 invariant: exact review head/commit binding is mandatory when review approval policy requires it; do not create a second review authority."
+          "OD-06 resolved existing-first from DECISIONS_LOG + GW-41 invariant: exact review head/commit binding is mandatory when review approval policy requires it; do not create a second review authority.",
+          "FIRST FULL GREEN CI #1397 SUCCESS @ 51dbb2848585faf5b1d90efa58739b4047461c8e after strict GW-42 transition-input correction.",
+          "Self-review RED CI #1398 FAILURE @ 0e885fb998b917b9e73d415bec9d1e8e3a245379 proved cross-PR PremergeProof reuse; corrected fail-closed and GREEN CI #1399 SUCCESS @ f42ce1b2804682c049b287acd7f9dd0d9039f11b.",
+          "Self-review RED CI #1400 FAILURE @ 29ff055be9486ca3c0da32a94c86ac86298d6efa proved cross-repository PremergeProof reuse; corrected fail-closed and GREEN CI #1401 SUCCESS @ a1ace467dd063a73df27d4af59164fd4b58a08f1.",
+          "Self-review RED CI #1402 FAILURE @ b70324e1a54a3a1d0dbfb7579d2d68ad7a4491c6 proved cross-task PremergeProof reuse; proof now binds task/session/receipt revisions and stateVersion.",
+          "FINAL GREEN CI #1404 SUCCESS @ 03979501b3c2337f7ed0dca90c91daac3eec9da5: 552/552 tests pass; validation discovery 73 tests, 72 runner, 1 dedicated.",
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete staged; claim remains ACTIVE until exact-head checkpoint CI succeeds."
         ]
       },
       {
@@ -5625,7 +5631,7 @@
     "gwc14": {
       "workItemId": "GWC-PRE-E-GWC-14",
       "blueprint": "GWC-14",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
       "dependencies": [
         "GWC-PRE-E-GWC-12",
         "GWC-PRE-E-GWC-13"
@@ -5653,6 +5659,53 @@
         "result": "FAIL_EXPECTED",
         "failures": 10,
         "signature": "GW34_TO_GW43_REVIEW_MODULE_ABSENT"
+      },
+      "firstFullGreen": {
+        "ciRunNumber": 1397,
+        "ciRunId": 35436741688,
+        "head": "51dbb2848585faf5b1d90efa58739b4047461c8e",
+        "result": "SUCCESS"
+      },
+      "selfReview": [
+        {
+          "ciRunNumber": 1398,
+          "ciRunId": 35436824963,
+          "head": "0e885fb998b917b9e73d415bec9d1e8e3a245379",
+          "result": "FAILURE_ONE_REAL_FINDING",
+          "finding": "CROSS_PR_PREMERGE_PROOF_REUSE"
+        },
+        {
+          "ciRunNumber": 1400,
+          "ciRunId": 35436977365,
+          "head": "29ff055be9486ca3c0da32a94c86ac86298d6efa",
+          "result": "FAILURE_ONE_REAL_FINDING",
+          "finding": "CROSS_REPOSITORY_PREMERGE_PROOF_REUSE"
+        },
+        {
+          "ciRunNumber": 1402,
+          "ciRunId": 35437136988,
+          "head": "b70324e1a54a3a1d0dbfb7579d2d68ad7a4491c6",
+          "result": "FAILURE_ONE_REAL_FINDING",
+          "finding": "CROSS_TASK_PREMERGE_PROOF_REUSE"
+        }
+      ],
+      "finalGreen": {
+        "ciRunNumber": 1404,
+        "ciRunId": 35437251434,
+        "head": "03979501b3c2337f7ed0dca90c91daac3eec9da5",
+        "result": "SUCCESS",
+        "tests": 552,
+        "passed": 552,
+        "failed": 0,
+        "discoveredTests": 73,
+        "runnerTests": 72,
+        "dedicatedTests": 1
+      },
+      "proofBinding": "REPOSITORY__PULL_REQUEST__HEAD__TASK_REVISION__SESSION_REVISION__BOOTSTRAP_RECEIPT__STATE_VERSION",
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete",
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "KEEP_ACTIVE_UNTIL_CHECKPOINT_CI_SUCCESS"
       }
     }
   },
