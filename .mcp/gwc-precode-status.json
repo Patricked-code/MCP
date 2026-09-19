@@ -1354,7 +1354,13 @@
           "OD-11 resolved existing-first: a Task owns exactly the component subset named by its optional TargetScope while ownerGovernedSessionId remains the task owner; disjoint component scopes stay independently claimable/lockable.",
           "GWC-10 RED scope expanded only to tests/governedWorkflowTargetScope.test.ts and package.json before test mutation.",
           "First GWC-10 runtime GREEN attempt reached read-only regression with all 10 new GWC-10 tests GREEN; only three pre-GWC10 guard tests failed because their names/assertions explicitly freeze behavior 'until/before GWC-10'.",
-          "Historical guard reconciliation scope expanded to governedWorkflowSessionIntegration.test.ts and governedWorkflowTaskLockIntegration.test.ts before editing; tests will be converted to prove additive GWC-10 activation plus legacy compatibility rather than deleted."
+          "Historical guard reconciliation scope expanded to governedWorkflowSessionIntegration.test.ts and governedWorkflowTaskLockIntegration.test.ts before editing; tests will be converted to prove additive GWC-10 activation plus legacy compatibility rather than deleted.",
+          "PROVEN RED CI #1314 FAILURE @ 5c297b6bf229198296dec51651ca0080af9ab6ef: 8 intended GWC-10 failures; two historical compatibility controls already GREEN.",
+          "First full GREEN CI #1328 SUCCESS @ d150dc52b49b1cb74ab2063be5445d5e826f1673 after additive TargetScope/TargetContext propagation and reconciliation of pre-GWC10 guard assertions.",
+          "Self-review CI #1329 found one real defect only: TargetScope equality depended on component ordering; disjoint tasks, disjoint component locks, multi-component receipt and Live State timestamp stability were GREEN.",
+          "FINAL GREEN CI #1330 SUCCESS @ 67197cd12e13f450734b403c4b85e26dc9760c60 after canonicalizing TargetScope equality.",
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete created; source SHA-256 5461517162540bdcffc070759da63edea4aa35f2b1e24e932d488c5ae9795ebe.",
+          "GWC-10 claim retained ACTIVE until exact-head checkpoint CI succeeds."
         ]
       },
       {
@@ -1830,9 +1836,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "e029c7b062abaafdf4b1190b1e964a19ecd4a6bf",
+        "lastObservedHeadSha": "783fbbf1e9bef2dcfc23a70fc64d5345162fd087",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T07:38:00Z",
+        "lastSeenAt": "2026-09-19T08:02:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5215,7 +5221,7 @@
     "gwc10": {
       "workItemId": "GWC-PRE-E-GWC-10",
       "blueprint": "GWC-10",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
       "dependencies": [
         "GWC-PRE-E-GWC-3",
         "GWC-PRE-E-GWC-4",
@@ -5231,6 +5237,36 @@
         "od10": "ADDITIVE_OPTIONAL_TARGET_SCOPE__ABSENT_MEANS_HISTORICAL_SINGLE_REPOSITORY_ONLY__NO_BACKFILL",
         "od11": "TASK_OWNS_EXACT_TARGET_SCOPE_COMPONENT_SUBSET__EXISTING_SESSION_OWNER_PRESERVED__DISJOINT_COMPONENTS_INDEPENDENT",
         "projectSha": "FORBIDDEN"
+      },
+      "red": {
+        "ciRunNumber": 1314,
+        "head": "5c297b6bf229198296dec51651ca0080af9ab6ef",
+        "result": "FAILURE_EXPECTED",
+        "failures": 8
+      },
+      "green": {
+        "first": {
+          "ciRunNumber": 1328,
+          "head": "d150dc52b49b1cb74ab2063be5445d5e826f1673",
+          "result": "SUCCESS"
+        },
+        "selfReview": {
+          "ciRunNumber": 1329,
+          "head": "795cde7c69e51af21aaf582fb1a0fe340843e08f",
+          "result": "FAILURE_ONE_REAL_TARGET_SCOPE_ORDER_DEFECT"
+        },
+        "final": {
+          "ciRunNumber": 1330,
+          "head": "67197cd12e13f450734b403c4b85e26dc9760c60",
+          "result": "SUCCESS"
+        }
+      },
+      "compatibility": "ADDITIVE_OPTIONAL_TARGET_SCOPE__LEGACY_ABSENCE_PRESERVED__NO_BACKFILL",
+      "projectSha": "FORBIDDEN",
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete",
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "RETAINED_PENDING_CHECKPOINT_CI"
       }
     }
   },
