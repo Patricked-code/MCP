@@ -129,3 +129,39 @@ test('GW-73 RED: acceptance is test-only, fail-closed and never imported by runt
   assert.ok(failed.failedContracts.includes('GW-08'));
   assert.equal(failed.scenarios.some((scenario: any) => scenario.status === 'SKIPPED'), false);
 });
+
+test('Phase F-02 RED: one coherent happy path reaches DONE with a single binding and no live mutation', async () => {
+  const { runFullCandidateHappyPath } = await harness();
+  const report = await runFullCandidateHappyPath();
+
+  assert.equal(report.status, 'PASS');
+  assert.deepEqual(report.orderedStages, [
+    'Intent',
+    'Identity',
+    'Repository',
+    'Project',
+    'Server',
+    'Runtime',
+    'Domain',
+    'Governance',
+    'Capability',
+    'Task',
+    'Session',
+    'Locks',
+    'Development',
+    'CI',
+    'Review',
+    'Merge',
+    'Deploy',
+    'Verify',
+    'DONE'
+  ]);
+  assert.equal(report.stages.every((stage: any) => stage.status === 'PASS'), true);
+  assert.equal(report.stages.some((stage: any) => stage.status === 'SKIPPED'), false);
+  assert.equal(report.bindingConsistent, true);
+  assert.equal(report.finalTaskStatus, 'DONE');
+  assert.equal(report.executionMode, 'TEST_SHADOW_ISOLATED');
+  assert.equal(report.mutationPerformed, false);
+  assert.equal(report.liveMutationDispatched, false);
+  assert.equal(report.effectPlansOnly, true);
+});
