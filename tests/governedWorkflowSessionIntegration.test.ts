@@ -107,6 +107,28 @@ function receipt(): BootstrapReceipt {
   };
 }
 
+test('GWC-4 generalizes only the non-persisted auto-resume and governed-context repository surfaces', async () => {
+  const sessionService = await readFile('src/operationalMemory/sessionService.ts', 'utf8');
+  const governedTypes = await readFile('src/governedContext/types.ts', 'utf8');
+
+  assert.match(
+    sessionService,
+    /export type GovernedRepositoryTarget = `\$\{string\}\/\$\{string\}`;/
+  );
+  assert.match(
+    sessionService,
+    /AutoResumeCompatibleSessionInput = \{[\s\S]*repository:\s*GovernedRepositoryTarget;/
+  );
+  assert.match(
+    governedTypes,
+    /GovernedOperationalContext = \{[\s\S]*repository:\s*GovernedRepositoryTarget;/
+  );
+  assert.doesNotMatch(
+    sessionService,
+    /AutoResumeCompatibleSessionInput = \{[\s\S]{0,200}repository:\s*'Patricked-code\/MCP';/
+  );
+});
+
 test('GWC-4 keeps persisted Session/Receipt/ConnectionContext schemas on the current target until GWC-10', async () => {
   const source = await readFile('src/operationalMemory/types.ts', 'utf8');
   const connection = await readFile('src/operationalMemory/connectionContext.ts', 'utf8');
