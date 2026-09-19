@@ -767,3 +767,16 @@ Décision de réconciliation : après `HEAD_MOVED`, le travail intervenu est lu 
 Décision sur `AF-36` : la mémoire canonique n'a de valeur de continuité que si son pointeur se résout. Un pointeur pendant laisse un agent qui reprend sans checkpoint, ce que `CLAUDE.md` §9 vise précisément à empêcher — et il passait une CI verte. La correction porte sur les deux faces, comme pour `AF-34` : l'instance est réparée, et la cause — l'absence de tout contrôle — est refermée par `verifyCanonicalMemory()`. Le contrôle est éprouvé par injection : cinq défauts distincts, cinq rejets.
 
 Décision de portée de la réparation : le pointeur est repointé vers le bundle le plus récent **réellement présent**, et ce bundle est retiré de `previousBundles` pour qu'il ne soit pas à la fois courant et supersédé. Si l'auteur du commit ajoute ultérieurement le bundle manquant, le pointeur pourra être réavancé vers lui : le nouveau contrôle l'acceptera dès lors qu'il se résout et vérifie.
+
+## 2026-09-19 — OD-07 résolue automatiquement par existing-first, sans human gate normal
+
+Décision de continuité : l'exécution PRECODE est autonome par défaut. Les work items, findings, dépendances et nouvelles informations continuent d'être enrichis/réconciliés au fil de l'eau. Une décision technique ouverte n'est pas un human gate : la tâche la résout depuis les autorités, contraintes, preuves, Integration Slots et tests existants dès que le choix est déductible. Un arrêt externe n'est réservé qu'à un empêchement réellement non déductible ou non exécutable.
+
+Décision AF-19 / OD-07 : le mécanisme retenu est **B — extension du gate de déploiement existant**. Ce choix applique `REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW` : le gate était déjà l'Integration Slot documenté ; `workflow_run` reste interdit par la politique OIDC ; l'option B ferme AF-19 sans créer une nouvelle autorité ni déplacer la responsabilité d'admission vers le serveur.
+
+Compatibilité : `GITHUB_OIDC_POLICY.allowedEvents` reste inchangé, `tokenSha === requestedSha` reste inchangé, le nom de l'étape `Deploy exact main SHA through MCP` reste inchangé et le comportement historique de `workflow_dispatch` est conservé. Le push autodeploy exige désormais un `MCP CI` conclu `success` pour le même `GITHUB_SHA`; échec, timeout ou verdict indisponible restent fail-closed.
+
+Preuve TDD : RED `757ee2a525741eef5cbb36796fc69c62c85a47b2` / MCP CI #1110 (échec attendu à `Read-only safety tests` après les contrôles précédents verts), puis GREEN final `074f2bd21eef6e23811512453d34670bfecc7485` / MCP CI #1112 entièrement réussi.
+
+Frontière : aucun merge `main`, aucune écriture S1, aucun déploiement, aucune activation live, aucune Governed Task runtime, aucun runtime lock et aucune Governed Session runtime ne sont produits par cette correction candidate.
+
