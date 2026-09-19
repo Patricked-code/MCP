@@ -8,8 +8,8 @@
       "source_id": "src_intake_003_reconciliation",
       "path": "sources/intake-003-reconciliation.json",
       "media_type": "application/json",
-      "bytes": 6573,
-      "sha256": "5d431b0b902885a912ea3a0dacef087fc12603bae4446a00b45cdd729d427e22"
+      "bytes": 6571,
+      "sha256": "ba955516a35467620c3a4d6b3e8fbc1a249f445db28135d292697bd742ec0156"
     }
   ],
   "claims": [
