@@ -1654,7 +1654,8 @@
           "PROVEN RED CI #1451 FAILURE @ 0b55d140a6b32be82d81192d2df12c3cabd8a893: 597 tests, 589 historical PASS, exactly 8 GW-73 failures, all ERR_MODULE_NOT_FOUND for tests/governedWorkflowUniversalAcceptance/harness.js; 0 skipped; static/build/docs/governance/GWC/secret checks green.",
           "FIRST GREEN CI #1454 SUCCESS @ cf9f62f4b36ccf8eac6f477becb7c45505053174: 597/597 tests pass, 0 skipped; discoveredTests=76, runnerTests=75, dedicatedTests=1; harness remains tests-only and no src/ runtime file changed.",
           "SELF-REVIEW RED CI #1456 FAILURE @ da1ea9fb30d056bf21761dcfe3fa818de9c2c70e: 598 tests, 595 pass, exactly 3 intended failures proving missing canonical-substrate binding, missing anti-hardcode negative-control API, and missing failed-contract attribution; all historical/non-target tests remain green.",
-          "FINAL GREEN CI #1458 SUCCESS @ 9b32bba86e830845ea63d90f37bf304d800b8f12: 598/598 tests pass, 0 skipped; discoveredTests=76, runnerTests=75, dedicatedTests=1; canonical GW-68 substrate binding, anti-hardcode negative control, failed-contract attribution and tests-only isolation all green."
+          "FINAL GREEN CI #1458 SUCCESS @ 9b32bba86e830845ea63d90f37bf304d800b8f12: 598/598 tests pass, 0 skipped; discoveredTests=76, runnerTests=75, dedicatedTests=1; canonical GW-68 substrate binding, anti-hardcode negative control, failed-contract attribution and tests-only isolation all green.",
+          "Canonical GWC-17 checkpoint staged at docs/gwc/canonical-memory/pr95-e-gwc17-universal-acceptance-complete; source=5774 bytes sha256 4a5428d575cbed22021d0e5b14266e253fbc4afb66cb090045bdc9c37480bbbf. Claim retained pending exact-head checkpoint CI."
         ]
       }
     ],
@@ -6038,7 +6039,7 @@
     "gwc17": {
       "workItemId": "GWC-PRE-E-GWC-17",
       "blueprint": "GWC-17",
-      "status": "PASS_WITH_EVIDENCE_DOCUMENTATION_PENDING",
+      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
       "dependencies": [
         "GWC-PRE-E-GWC-10",
         "GWC-PRE-E-GWC-16"
@@ -6138,6 +6139,17 @@
           "path:DECISIONS_LOG.md"
         ],
         "reason": "FINAL_GWC17_DOCUMENTATION_AND_CANONICAL_CHECKPOINT"
+      },
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc17-universal-acceptance-complete",
+        "bundleId": "bnd_mcp-pr95-e-gwc17-universal-acceptance-complete-20260919",
+        "source": {
+          "path": "docs/gwc/canonical-memory/pr95-e-gwc17-universal-acceptance-complete/sources/gwc17-universal-acceptance-evidence.json",
+          "bytes": 5774,
+          "sha256": "4a5428d575cbed22021d0e5b14266e253fbc4afb66cb090045bdc9c37480bbbf"
+        },
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "RETAINED_UNTIL_CHECKPOINT_CI_SUCCESS"
       }
     }
   },
@@ -6251,8 +6263,8 @@
     "phase": "E",
     "workItem": "GWC-PRE-E-GWC-17",
     "work": "GWC_17_UNIVERSAL_ACCEPTANCE",
-    "status": "PASS_WITH_EVIDENCE_DOCUMENTATION_PENDING",
-    "nextAction": "Record GWC-17 universal acceptance evidence in governed documentation, create the canonical GWC-17 checkpoint, validate it on the exact online branch head, then release the final Phase E claim only after checkpoint CI succeeds.",
+    "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+    "nextAction": "Validate the staged GWC-17 universal-acceptance checkpoint on the exact online branch head. Keep the GWC-17 claim ACTIVE until MCP CI succeeds; then release it and resolve Phase F / final candidate gates from the versioned PRECODE authorities.",
     "blocker": null
   }
 }
