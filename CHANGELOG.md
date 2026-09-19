@@ -794,3 +794,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - L'ordre de fermeture reste checkpoint → release locks → close session → queue reconcile après terminal verification/DONE ; la libération des locks ne dépend pas du succès de la Task.
 - TDD : RED #1433 ; premier GREEN #1435 ; self-review RED #1437 ; correction de fixture uniquement #1439 ; GREEN final #1440 sur `b8a86c48eb24902f998d4533e6bbeac5144102c6`, 589/589 tests.
 - Aucun merge main, S1, production, déploiement ou mutation runtime n'a été effectué par ce PRECODE.
+
+## 2026-09-19 — GWC-17 Universal Acceptance
+
+- Ajout d'un harnais d'acceptance strictement test-only sous `tests/governedWorkflowUniversalAcceptance/` pour `GW-73 UNIVERSAL_ACCEPTANCE`, hors graphe runtime.
+- Les scénarios prouvent la compatibilité historique MCP, un second projet réel Stablecoin/S2/Passenger, un projet multi-composants synthétique, l'isolation d'un composant non résolu et les invariants de reprise issus de NEW_INFORMATION_INTAKE-003.
+- Le harnais réutilise les primitives existantes TargetContext/TargetScope, runtime/domain resolvers, Lock Service, candidate continuity/recovery, Execution Engine et terminal GW-68 ; aucune API runtime d'acceptance n'est créée.
+- Le scan anti-hardcode couvre les chemins gouvernés et dispose d'un contrôle négatif injecté ; aucune branche cible MCP/Stablecoin/S1/S2 n'est tolérée dans le workflow gouverné.
+- Les rapports sont fail-closed : aucun scénario SKIPPED ; un scénario en échec produit `FAILED`, un reason code borné et l'ensemble exact des contrats concernés.
+- TDD : RED #1451 ; premier GREEN #1454 ; self-review RED #1456 ; GREEN final #1458 sur `9b32bba86e830845ea63d90f37bf304d800b8f12`, 598/598 tests.
+- Aucun fichier `src/`, runtime authority, main, S1, production ou déploiement n'est modifié par GWC-17.
