@@ -60,7 +60,7 @@ export type ResumeSessionInput = {
   expectedSessionRevision: number;
 };
 
-export type GovernedRepositoryTarget = `${string}/${string}`;
+export type GovernedRepositoryTarget = string;
 
 export type AutoResumeCompatibleSessionInput = {
   repository: GovernedRepositoryTarget;
