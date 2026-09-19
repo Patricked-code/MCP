@@ -1058,7 +1058,7 @@
           "GWC-3"
         ],
         "title": "GWC-3 — Wrap existing B1/B2/C2",
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 67,
         "sequence": 10,
         "dependencies": [
@@ -1069,7 +1069,10 @@
         ],
         "evidence": [
           "Derived from GWC-CAND-03 exact-bound candidate backlog.",
-          "Dependency GWC-PRE-E-GWC-2 completed with final GREEN CI #1182."
+          "Dependency GWC-PRE-E-GWC-2 completed with final GREEN CI #1182.",
+          "Claimed by candidate-7afc131430c64c6fe34bcfea @ 1b6a5da0673464b87ff10a541332d685ae490c98",
+          "Existing-first boundary: resolveGithubIdentity, resolveGithubRepository and resolveGithubProject remain the only resolver algorithms/authorities; GWC-3 may wrap but not alter them.",
+          "CI gap confirmed from package.json: tests/githubRepositoryResolution.test.ts exists but is not in test:readonly-safety."
         ]
       },
       {
@@ -1470,6 +1473,15 @@
           "path:src/governedWorkflow/engine"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-3",
+        "collisionDomains": [
+          "path:src/governedWorkflow/resolvers/identity"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -1517,9 +1529,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "7011c3b685299ad562a0bceeb0c64ad169a4ffd3",
+        "lastObservedHeadSha": "1b6a5da0673464b87ff10a541332d685ae490c98",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T02:37:00Z",
+        "lastSeenAt": "2026-09-19T02:45:00Z",
         "status": "ACTIVE"
       }
     ]
