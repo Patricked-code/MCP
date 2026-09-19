@@ -247,19 +247,6 @@ export function resolveServer(rawInput: ServerResolutionInput): ServerResolution
       freshness: input.registry.freshness
     });
   }
-  if (
-    input.project.registryDigest !== null
-    && input.project.registryDigest !== input.registry.digest
-  ) {
-    return unresolved(input, 'UNVERIFIED', 'SERVER_REGISTRY_MISMATCH');
-  }
-  if (
-    input.project.candidateDigest !== null
-    && input.project.candidateDigest !== input.registry.candidateDigest
-  ) {
-    return unresolved(input, 'UNVERIFIED', 'SERVER_REGISTRY_MISMATCH');
-  }
-
   const canonicalMap = canonicalServerMap(input.canonicalServerIds);
   if (!canonicalMap) {
     return unresolved(input, 'UNVERIFIED', 'SERVER_CANONICAL_ID_SET_INVALID');
