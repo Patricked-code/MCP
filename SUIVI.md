@@ -607,3 +607,19 @@ Date : 2026-08-29
 - La classification catalogue reste `operational-write`, donc le digest/cartographie ne change pas ; la régression `functionCartography` est verte.
 - Bundle canonique : `docs/gwc/canonical-memory/pr95-e-gwc9-governance-capabilities-complete`, source SHA-256 `1df2c7b9a971b2583d041efeb938d492180e97565844beebe8a26921c7cae843`.
 - Claim GWC-9 retenu jusqu'au SUCCESS exact-head du checkpoint.
+
+## 2026-09-19 — GWC-10 Multi-repository TargetScope — GREEN final, checkpoint en validation
+
+- RED CI #1314 sur `5c297b6bf229198296dec51651ca0080af9ab6ef` : 8 échecs GWC-10 attendus ; 2 contrôles de compatibilité historique déjà verts.
+- GREEN complet initial CI #1328 sur `d150dc52b49b1cb74ab2063be5445d5e826f1673`.
+- Self-review CI #1329 : un seul défaut réel détecté — l'égalité de `TargetScope` dépendait de l'ordre du tableau de composants. Les scénarios tâches disjointes, locks composants disjoints, Receipt multi-SHA et stabilité Live State étaient déjà verts.
+- GREEN final CI #1330 sur `67197cd12e13f450734b403c4b85e26dc9760c60` après canonicalisation de l'égalité de scope.
+- `TargetScope` et `TargetContext` sont les seuls nouveaux primitives ; GitRegistry V2, Operational Memory et Live State restent les autorités existantes.
+- Session / Task / Lock / BootstrapReceipt gagnent un `TargetScope` **optionnel**. L'absence conserve exactement la sémantique historique mono-repository ; elle ne signifie jamais « tous les composants » et aucun backfill n'est effectué.
+- Une Task possède le sous-ensemble exact de composants de son `TargetScope` ; `ownerGovernedSessionId` reste l'owner de Task. Deux scopes composants disjoints restent indépendants.
+- Les locks composants sont minimaux (`component:<targetId>:<mappingId>`) et n'élargissent jamais automatiquement au projet.
+- `TargetContext` conserve les SHAs GitHub/runtime indépendants par composant. Aucun `PROJECT_SHA` n'est synthétisé.
+- Un BootstrapReceipt multi-composant conserve le `TargetContext` scoped et met les champs SHA legacy `githubHead` / `runtimeRevision` à `null` au lieu de fabriquer un SHA projet.
+- Un composant non résolu reste `UNVERIFIED` localement et ne rend pas ses composants frères faux.
+- Bundle canonique : `docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete`, source SHA-256 `5461517162540bdcffc070759da63edea4aa35f2b1e24e932d488c5ae9795ebe`.
+- Claim GWC-10 retenu jusqu'au SUCCESS exact-head du checkpoint.
