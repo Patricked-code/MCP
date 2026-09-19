@@ -1731,7 +1731,8 @@
         "evidence": [
           "Phase F authority requires unknown/ambiguous/stale/conflict/duplicate/denied/CI failure/head drift/review rejection/deploy failure/runtime drift/docs drift/stale receipt/reconnect/concurrent agents to fail closed or follow an explicit recovery edge.",
           "Dependency F-02 satisfied by exact-head CI #1476 SUCCESS with 599/599 tests.",
-          "F-03 must exercise every named negative class from the canonical Phase F authority and prove fail-closed or an explicit recovery edge, with zero live mutation."
+          "F-03 must exercise every named negative class from the canonical Phase F authority and prove fail-closed or an explicit recovery edge, with zero live mutation.",
+          "PROVEN RED CI #1478 FAILURE @ 47689fdbb0805a6742a0c731129c1ea60132fc6d: 600 tests, 599 PASS, exactly 1 intended F-03 failure; runFullCandidateNegativeMatrix is not a function; 0 skipped."
         ]
       },
       {
@@ -6439,7 +6440,7 @@
     "workItem": "GWC-PRE-F-03",
     "work": "FULL_NEGATIVE_PATH_MATRIX",
     "status": "IN_PROGRESS",
-    "nextAction": "Build a tests-only Phase F negative matrix over existing governed primitives for every canonical negative class. Each case must prove BLOCKED/CONFLICT/UNVERIFIED/STALE or a named recovery edge; no case may dispatch live mutation or be skipped.",
+    "nextAction": "Implement runFullCandidateNegativeMatrix in the tests-only acceptance harness using existing fail-closed/recovery primitives for all 15 canonical negative classes; no runtime source changes.",
     "blocker": null
   },
   "phaseF": {
@@ -6614,7 +6615,18 @@
         "CONCURRENT_AGENTS"
       ],
       "requirement": "EVERY_CASE_FAIL_CLOSED_OR_EXPLICIT_RECOVERY_EDGE",
-      "liveMutationAllowed": false
+      "liveMutationAllowed": false,
+      "red": {
+        "ciRunNumber": 1478,
+        "ciRunId": 35468429785,
+        "head": "47689fdbb0805a6742a0c731129c1ea60132fc6d",
+        "result": "FAIL_EXPECTED",
+        "tests": 600,
+        "passed": 599,
+        "failed": 1,
+        "skipped": 0,
+        "signature": "FULL_NEGATIVE_MATRIX_ABSENT"
+      }
     }
   }
 }
