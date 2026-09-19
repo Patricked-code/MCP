@@ -90,6 +90,7 @@ const IntegrationInventorySchema = z.object({
 const Gw22InputSchema = z.object({
   repository: RepositorySchema,
   observedAt: z.string().datetime({ offset: true }),
+  inventoryStatus: z.enum(['CURRENT', 'STALE', 'UNAVAILABLE']),
   inventoryDigest: Sha256Schema,
   proposal: IntegrationProposalSchema,
   inventory: IntegrationInventorySchema
@@ -104,7 +105,7 @@ export type IntegrationSlot = Readonly<{
 }>;
 
 export type Gw22IntegrationSlotResult = Readonly<
-  AuthorityContractObservation<'FOUND' | 'NONE' | 'AMBIGUOUS' | 'UNVERIFIED', {
+  AuthorityContractObservation<'FOUND' | 'NONE' | 'AMBIGUOUS' | 'UNVERIFIED' | 'STALE', {
     proposal: z.infer<typeof IntegrationProposalSchema>;
     inventoryDigest: string;
   }>
@@ -294,17 +295,32 @@ export function resolveGw22IntegrationSlot(
   substrate: GovernedContractSubstrate
 ): Gw22IntegrationSlotResult {
   const input = Gw22InputSchema.parse(rawInput);
-  const candidates = integrationCandidates(input);
-  const status: Gw22IntegrationSlotResult['status'] = candidates.length === 0
-    ? 'NONE'
-    : candidates.length === 1
-      ? 'FOUND'
-      : 'AMBIGUOUS';
-  const reasonCodes = status === 'NONE'
-    ? ['INTEGRATION_SLOT_NOT_FOUND']
-    : status === 'AMBIGUOUS'
-      ? ['INTEGRATION_SLOT_AMBIGUOUS']
-      : [];
+  const candidates = input.inventoryStatus === 'CURRENT'
+    ? integrationCandidates(input)
+    : [];
+  const status: Gw22IntegrationSlotResult['status'] = input.inventoryStatus === 'STALE'
+    ? 'STALE'
+    : input.inventoryStatus === 'UNAVAILABLE'
+      ? 'UNVERIFIED'
+      : candidates.length === 0
+        ? 'NONE'
+        : candidates.length === 1
+          ? 'FOUND'
+          : 'AMBIGUOUS';
+  const freshness: Gw22IntegrationSlotResult['freshness'] = input.inventoryStatus === 'STALE'
+    ? 'STALE'
+    : input.inventoryStatus === 'UNAVAILABLE'
+      ? 'UNKNOWN'
+      : 'CURRENT';
+  const reasonCodes = status === 'STALE'
+    ? ['INTEGRATION_SLOT_INVENTORY_STALE']
+    : status === 'UNVERIFIED'
+      ? ['INTEGRATION_SLOT_INVENTORY_UNAVAILABLE']
+      : status === 'NONE'
+        ? ['INTEGRATION_SLOT_NOT_FOUND']
+        : status === 'AMBIGUOUS'
+          ? ['INTEGRATION_SLOT_AMBIGUOUS']
+          : [];
   const payload = Object.freeze({
     proposal: Object.freeze({ ...input.proposal }),
     inventoryDigest: input.inventoryDigest
@@ -312,15 +328,16 @@ export function resolveGw22IntegrationSlot(
   const base = observation({
     contract: contract('GW-22', substrate),
     status,
-    freshness: 'CURRENT',
+    freshness,
     reasonCodes,
     evidenceRefs: [{
       authority: 'Current State inventories',
       kind: 'DERIVATION',
       reference: `integration-slot:${input.proposal.kind.toLowerCase()}:${input.proposal.key}`,
       observedAt: input.observedAt,
-      freshness: 'CURRENT',
+      freshness,
       digest: digest({
+        inventoryStatus: input.inventoryStatus,
         inventoryDigest: input.inventoryDigest,
         proposal: input.proposal,
         candidates
@@ -361,10 +378,27 @@ export function observeGw23ExactGithubBaseline(
   const checksHead = input.github.checks.headSha;
   const pullRequestHead = input.github.pullRequest?.headSha ?? null;
 
+  const requiredEvidence = [
+    ...(input.github.pullRequest ? [input.github.evidence.pullRequest] : []),
+    ...(input.github.checks.total > 0 ? [input.github.evidence.checks] : [])
+  ];
+  const requiredEvidenceStale = requiredEvidence.some((entry) => entry.freshness === 'STALE');
+  const requiredEvidenceUnavailable = requiredEvidence.some(
+    (entry) => entry.freshness === 'UNAVAILABLE'
+  );
+
   if (observedMs < startedMs) {
     status = 'STALE';
     freshness = 'STALE';
     reasonCodes = ['GITHUB_BASELINE_PRE_STEP'];
+  } else if (requiredEvidenceStale) {
+    status = 'STALE';
+    freshness = 'STALE';
+    reasonCodes = ['GITHUB_BASELINE_EVIDENCE_STALE'];
+  } else if (requiredEvidenceUnavailable) {
+    status = 'UNVERIFIED';
+    freshness = 'UNKNOWN';
+    reasonCodes = ['GITHUB_BASELINE_EVIDENCE_UNAVAILABLE'];
   } else if (
     input.github.status !== 'CURRENT'
     || input.github.workBranch !== workBranch
