@@ -1356,4 +1356,3 @@ test('minute heartbeat collector requires exactly one mutable PR comment per can
   assert.equal(ambiguous.authorizationGranted, false);
   assert.equal(ambiguous.claimTransferAllowed, false);
 });
-
