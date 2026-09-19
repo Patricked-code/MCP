@@ -27,9 +27,9 @@
   },
   "currentPrecodeState": {
     "phase": "E",
-    "workItem": "GWC-PRE-E-GWC-15",
-    "work": "GWC_15_DEPLOYMENT_EXACT_SHA_EVIDENCE",
-    "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+    "workItem": "GWC-PRE-E-GWC-16",
+    "work": "GWC_16_DOCUMENTATION_AND_CLOSURE",
+    "status": "IN_PROGRESS",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Validate the staged GWC-15 canonical checkpoint on the exact online head. Keep the GWC-15 claim ACTIVE until MCP CI succeeds; then release it and dispatch GWC-PRE-E-GWC-16 without replaying GWC-15.",
+    "nextAction": "Audit the existing documentation-governance and terminal closure primitives for GW-58..GW-72, then prove RED for false DONE before implementing the single terminal-verification predicate and bounded documentation-recursion guard.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -301,9 +301,9 @@
       "status": "IMMUTABLE_HISTORICAL_GWC14_REVIEW_MERGE_COMPLETE_CHECKPOINT"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-19T11:17:44Z",
-  "observedHeadBeforePointerUpdate": "7b2a6299c37a0facd9ac93b5bff003fe2b623072",
-  "correctionReason": "GWC-15 reached final GREEN CI #1425 at 29e8314a with 573/573 tests after closing V2 deploy-attestation admission evidence and cross-job/cross-CI proof-mixing findings. The claim remains ACTIVE pending exact-head checkpoint CI.",
+  "updatedFromGitHubObservationAt": "2026-09-19T12:55:32Z",
+  "observedHeadBeforePointerUpdate": "05f991a5b675c639df4f46aab2460866eafc4503",
+  "correctionReason": "GWC-15 checkpoint CI #1429 succeeded on exact head bc2dbef; its claim is released. GWC-16 is now the active branch-local PRECODE work item. The current bundle remains the immutable GWC-15 completion checkpoint until GWC-16 produces its own validated checkpoint.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
