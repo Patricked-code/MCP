@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-intakes-001-002-reconciled",
-  "currentBundleId": "bnd_mcp-pr95-intakes-001-002-reconciled-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-intakes-001-002-reconciled",
+  "currentBundle": "pr95-candidate-backlog-complete",
+  "currentBundleId": "bnd_mcp-pr95-candidate-backlog-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-candidate-backlog-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -26,10 +26,10 @@
     "rule": "The Claude branch is the construction surface for the complete evolved MCP candidate: existing skeleton plus additive/backward-compatible code, tests, migrations/compatibility, workflows, documentation, task history and evidence. It is not documentation-only and not a parallel production authority."
   },
   "currentPrecodeState": {
-    "phase": "B",
-    "workItem": "GWC-PRE-B-01",
+    "phase": "C",
+    "workItem": "GWC-PRE-C1",
     "work": "DERIVE_COMPLETE_BRANCH_LOCAL_CANDIDATE_BACKLOG_FROM_18_BLUEPRINTS_73_CONTRACTS_FINDINGS_AND_EXISTING_CODE",
-    "status": "IN_PROGRESS",
+    "status": "READY",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -41,7 +41,7 @@
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "blocker": null,
-    "nextAction": "Execute GWC-PRE-B-01 from the reconciled state at canonicalRevision=2/backlogRevision=1: derive the complete branch-local candidate implementation backlog existing-first from 18 blueprints, 73 contracts, 36 findings, 12 open decisions, reconciled intake #001/#002 and current existing code."
+    "nextAction": "Execute GWC-PRE-C1: inspect the current candidate/main AF-19 deployment path first, add a RED contract proving deployment admission is bound to successful CI for the exact deployed SHA, implement the minimal candidate-only correction, run targeted/regression/typecheck/build/docs/governance/security checks, and do not deploy or activate."
   },
   "precodeContinuationPolicy": {
     "hierarchy": "PROGRAM -> ARCHITECTURE_PHASE_OR_CANDIDATE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
@@ -121,6 +121,11 @@
   ],
   "previousBundles": [
     {
+      "name": "pr95-intakes-001-002-reconciled",
+      "path": "docs/gwc/canonical-memory/pr95-intakes-001-002-reconciled",
+      "status": "IMMUTABLE_HISTORICAL_INTAKE_RECONCILIATION_CHECKPOINT"
+    },
+    {
       "name": "pr95-intake-continuity-coherence-ready",
       "path": "docs/gwc/canonical-memory/pr95-intake-continuity-coherence-ready",
       "status": "IMMUTABLE_HISTORICAL_INTAKE_CONTINUITY_COHERENCE_CHECKPOINT"
@@ -182,8 +187,8 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "1a71ea9cb0c372bc4bc77e2fee614eb3561181b2",
-  "correctionReason": "NEW_INFORMATION_INTAKE-001 and -002 were reconciled as one contiguous batch through the coherence gate. Both are ACCEPT_WITH_ADAPTATION; the additive GWC_ROOT/MC-A..MC-H/macroContractRef/Master Crosswalk requirements enrich existing B-01/B-02/B-03 without creating a parallel authority.",
+  "observedHeadBeforePointerUpdate": "95cd5c1dec14c7fc0e26faafa45c1688a9050f1b",
+  "correctionReason": "Phase B candidate backlog synthesis/binding/completeness is complete. B-03 caught and corrected a B-02 label-normalization projection defect before exit. Next eligible work is Phase C / GWC-PRE-C1.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
