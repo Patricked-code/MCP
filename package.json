@@ -18,7 +18,7 @@
     "cartography:write": "node scripts/check-function-cartography.mjs --write",
     "gwc:verify": "node scripts/gwc-verify.mjs && node scripts/gwc-precode-verify.mjs",
     "test:governance": "tsx --test tests/docGovernance.test.ts",
-    "test:readonly-safety": "node scripts/run-validation-tests.mjs"
+    "test:readonly-safety": "node scripts/run-validation-tests.mjs tests/githubRepositoryResolution.test.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",
