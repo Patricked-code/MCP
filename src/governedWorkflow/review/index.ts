@@ -75,7 +75,9 @@ export type ReviewResult<TPayload> = Readonly<{
 }>;
 
 export type ExactDiffReviewPayload = Readonly<{
-  evidence: Readonly<z.infer<typeof ExactDiffEvidenceSchema>>;
+  evidence: Readonly<Omit<z.infer<typeof ExactDiffEvidenceSchema>, 'changedFiles'> & {
+    changedFiles: readonly string[];
+  }>;
   exactHead: boolean;
   nextStepId: 'GW-36' | null;
 }>;
@@ -474,16 +476,16 @@ type TaskTransitionInput = Readonly<{
   expectedHeadSha: string;
 }>;
 
-function planTaskTransition(
-  stepId: 'GW-39' | 'GW-42',
+function planTaskTransition<TStatus extends 'REVIEW' | 'MERGE_READY'>(
+  stepId: TStatus extends 'REVIEW' ? 'GW-39' : 'GW-42',
   rawInput: TaskTransitionInput,
-  status: 'REVIEW' | 'MERGE_READY',
+  status: TStatus,
   substrate: GovernedContractSubstrate
 ): ReviewResult<Readonly<{
   taskId: string;
   headSha: string;
-  targetStatus: 'REVIEW' | 'MERGE_READY';
-  nextStepId: 'GW-40' | 'GW-43';
+  targetStatus: TStatus;
+  nextStepId: TStatus extends 'REVIEW' ? 'GW-40' : 'GW-43';
 }>> {
   const input = z.object({
     taskId: TaskIdSchema,
@@ -494,7 +496,8 @@ function planTaskTransition(
     expectedStateVersion: RevisionSchema,
     expectedHeadSha: ShaSchema
   }).strict().parse(rawInput);
-  const nextStepId = status === 'REVIEW' ? 'GW-40' as const : 'GW-43' as const;
+  const nextStepId = (status === 'REVIEW' ? 'GW-40' : 'GW-43') as
+    TStatus extends 'REVIEW' ? 'GW-40' : 'GW-43';
   return result({
     stepId,
     substrate,
