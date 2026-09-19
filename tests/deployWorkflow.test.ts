@@ -26,6 +26,21 @@ test('le workflow possède uniquement les permissions minimales OIDC + lecture',
   assert.match(source, /persist-credentials:\s*false/);
 });
 
+test('AF-19 exige une preuve CI success du SHA exact avant tout autodeploy push', async () => {
+  const source = await workflowSource();
+
+  assert.match(source, /actions:\s*read/);
+  assert.match(source, /MCP CI/);
+  assert.match(source, /GITHUB_SHA/);
+  assert.match(source, /head_sha/);
+  assert.match(source, /conclusion/);
+  assert.match(source, /success/);
+  assert.match(source, /for attempt in \$\(seq 1 60\)/);
+  assert.match(source, /sleep 10/);
+  assert.match(source, /enabled=false/);
+  assert.doesNotMatch(source, /workflow_run:/);
+});
+
 test('workflow_dispatch est toujours disponible et push main est gouverné par la politique versionnée', async () => {
   const source = await workflowSource();
 
