@@ -819,7 +819,7 @@
         "intentKeys": [
           "candidate-backlog"
         ],
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 100,
         "sequence": 1,
         "dependencies": [],
@@ -828,7 +828,9 @@
           ".mcp:gwc-precode"
         ],
         "evidence": [
-          "SESSION_START PR #95 comment #5737773077 @ 2fb4b67817065edda53231d437e4b276a7a1c0c2"
+          "SESSION_START PR #95 comment #5737773077 @ 2fb4b67817065edda53231d437e4b276a7a1c0c2",
+          "B-01 derived 18/18 blueprint items, 73/73 contract coverage, 36/36 findings, 12/12 open decisions @ 39accac042702551ed8392cec1b78109127d5a13",
+          "Reconciled intake receipt e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695"
         ]
       },
       {
@@ -837,7 +839,7 @@
           "candidate-bindings",
           "candidate.dispatch"
         ],
-        "status": "PENDING",
+        "status": "READY",
         "priority": 90,
         "sequence": 2,
         "dependencies": [
@@ -876,7 +878,7 @@
           "docs:gwc",
           ".mcp:gwc-precode"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -924,7 +926,7 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
+        "lastObservedHeadSha": "39accac042702551ed8392cec1b78109127d5a13",
         "createdAt": "2026-09-19T00:11:00Z",
         "lastSeenAt": "2026-09-19T00:11:00Z",
         "status": "ACTIVE"
@@ -1030,14 +1032,11 @@
     "role": "BRANCH_LOCAL_CONTINUITY_INDEX_NOT_AUTHORITY",
     "implementation": "src/governedContext/candidateContinuity.ts",
     "latestIntakeSequence": 2,
-    "reconciledThroughSequence": 0,
-    "canonicalRevision": 1,
-    "backlogRevision": 0,
-    "lastReconciliationDigest": null,
-    "pendingIntakeIds": [
-      "NEW_INFORMATION_INTAKE-001",
-      "NEW_INFORMATION_INTAKE-002"
-    ],
+    "reconciledThroughSequence": 2,
+    "canonicalRevision": 2,
+    "backlogRevision": 1,
+    "lastReconciliationDigest": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695",
+    "pendingIntakeIds": [],
     "sourceBundles": [
       "docs/gwc/canonical-memory/pr95-new-information-intake-001",
       "docs/gwc/canonical-memory/pr95-new-information-intake-002"
@@ -1089,22 +1088,22 @@
     }
   },
   "intakeReconciliation": {
-    "batchFunction": "reconcileCandidateIntakeBatch",
-    "receiptRequired": true,
-    "receiptFields": [
-      "fromSequence",
-      "throughSequence",
-      "intakeIds",
-      "previousCanonicalRevision",
-      "resultingCanonicalRevision",
-      "previousBacklogRevision",
-      "resultingBacklogRevision",
-      "effects",
-      "digest"
+    "status": "RECONCILED",
+    "receiptDigest": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695",
+    "intakeIds": [
+      "NEW_INFORMATION_INTAKE-001",
+      "NEW_INFORMATION_INTAKE-002"
     ],
-    "gapPolicy": "FAIL_CLOSED_BLOCKED_GAP",
-    "canonicalRevisionIncrement": "AT_MOST_ONCE_PER_RECONCILIATION_BATCH_IF_ACCEPTED_CANONICAL_EFFECT_EXISTS",
-    "backlogRevisionIncrement": "AT_MOST_ONCE_PER_RECONCILIATION_BATCH_IF_ACCEPTED_BACKLOG_EFFECT_EXISTS"
+    "verdicts": [
+      "ACCEPT_WITH_ADAPTATION",
+      "ACCEPT_WITH_ADAPTATION"
+    ],
+    "canonicalRevision": 2,
+    "backlogRevision": 1,
+    "canonicalEffects": "ENRICH",
+    "backlogEffects": "ENRICH_EXISTING_WORK",
+    "candidateWorkItemsCreatedByIntake": 0,
+    "runtimeTasksCreated": 0
   },
   "knowledgeFreshnessGuard": {
     "function": "assessCandidateKnowledgeFreshness",
@@ -1125,5 +1124,874 @@
     "affectedWork": "RECONCILE_REQUIRED"
   },
   "updatedForIntakeContinuityAt": "2026-09-19",
-  "updatedForIntakeContinuityHead": "f288d3e93eae772dd4e51654a1e4512a822b3dd6"
+  "updatedForIntakeContinuityHead": "f288d3e93eae772dd4e51654a1e4512a822b3dd6",
+  "candidateBacklog": {
+    "role": "BRANCH_LOCAL_PRECODE_PROJECTION_NOT_RUNTIME_QUEUE",
+    "authority": false,
+    "derivedBy": "GWC-PRE-B-01",
+    "derivedAtHead": "39accac042702551ed8392cec1b78109127d5a13",
+    "sourceBlueprintRegistry": ".mcp/gwc-blueprints.json",
+    "sourceEvolutionDesign": ".mcp/gwc-evolution-design.json",
+    "sourceContractRegistry": ".mcp/gwc-contracts.json",
+    "reconciledIntakeReceipt": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695",
+    "lifecycle": "B01_DERIVED_AWAITING_B02_EXACT_BINDING",
+    "rootOrchestration": {
+      "rootContract": "GWC_ROOT",
+      "macroContracts": [
+        {
+          "macroContractId": "MC-A",
+          "name": "Context & Resolution",
+          "runtimeSteps": [
+            "GW-01",
+            "GW-12"
+          ]
+        },
+        {
+          "macroContractId": "MC-B",
+          "name": "Work Orchestration",
+          "runtimeSteps": [
+            "GW-13",
+            "GW-19"
+          ]
+        },
+        {
+          "macroContractId": "MC-C",
+          "name": "Governed Development",
+          "runtimeSteps": [
+            "GW-20",
+            "GW-31"
+          ]
+        },
+        {
+          "macroContractId": "MC-D",
+          "name": "Review & Integration",
+          "runtimeSteps": [
+            "GW-32",
+            "GW-42"
+          ]
+        },
+        {
+          "macroContractId": "MC-E",
+          "name": "Deployment & Runtime",
+          "runtimeSteps": [
+            "GW-43",
+            "GW-53"
+          ]
+        },
+        {
+          "macroContractId": "MC-F",
+          "name": "Documentation Reconciliation",
+          "runtimeSteps": [
+            "GW-54",
+            "GW-61"
+          ]
+        },
+        {
+          "macroContractId": "MC-G",
+          "name": "Verification & Closure",
+          "runtimeSteps": [
+            "GW-62",
+            "GW-70"
+          ]
+        },
+        {
+          "macroContractId": "MC-H",
+          "name": "Program Continuity",
+          "runtimeSteps": [
+            "GW-71",
+            "GW-72"
+          ]
+        }
+      ],
+      "rule": "Additive orchestration projection only; canonical families A..I and GW-01..GW-73 remain unchanged; B-02 binds macroContractRef exactly."
+    },
+    "preexistingFoundations": [
+      "GWC-PRE-B-FND-01",
+      "GWC-PRE-B-FND-02",
+      "GWC-PRE-B-FND-03",
+      "GWC-PRE-B-FND-04"
+    ],
+    "items": [
+      {
+        "candidateWorkItemId": "GWC-CAND-00",
+        "blueprintRef": "GWC-0",
+        "buildSequence": 0,
+        "title": "Contract substrate",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [],
+        "candidateDependencies": [],
+        "contractRefs": [],
+        "findings": [
+          "AF-12",
+          "AF-20",
+          "AF-21",
+          "AF-28",
+          "AF-33",
+          "AF-34",
+          "AF-36"
+        ],
+        "openDecisions": [
+          "OD-09"
+        ],
+        "integrationClassification": "NEW_ORCHESTRATION_ONLY",
+        "resourceScopes": [
+          "path:src/governedWorkflow",
+          "path:tests/governedWorkflow"
+        ],
+        "scope": "GW-01..GW-73 registry; shared types; graph validation; global invariants",
+        "newPrimitives": [
+          {
+            "name": "GovernedStepId + ContractRegistry + evaluator",
+            "justification": "aucun composant runtime ne porte l orchestration de contrats"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-01",
+        "blueprintRef": "GWC-1",
+        "buildSequence": 1,
+        "title": "GW-01 Intent Capture",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-0"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-00"
+        ],
+        "contractRefs": [
+          "GW-01"
+        ],
+        "findings": [],
+        "openDecisions": [
+          "OD-01",
+          "OD-02"
+        ],
+        "integrationClassification": "NEW",
+        "resourceScopes": [
+          "path:src/governedWorkflow/intentCapture"
+        ],
+        "scope": "GW-01 pure parser/normalizer; bounded source/input schema; property tests",
+        "newPrimitives": [
+          {
+            "name": "IntentContext parser",
+            "justification": "aucun composant ne normalise une intention avant classification"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-02",
+        "blueprintRef": "GWC-2",
+        "buildSequence": 2,
+        "title": "Execution Engine Skeleton",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-0",
+          "GWC-1"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-00",
+          "GWC-CAND-01"
+        ],
+        "contractRefs": [],
+        "findings": [],
+        "openDecisions": [
+          "OD-08"
+        ],
+        "integrationClassification": "NEW_ORCHESTRATION_ONLY",
+        "resourceScopes": [
+          "path:src/governedWorkflow/engine"
+        ],
+        "scope": "ExecutionFrame; ContractRegistry; WorkflowGraph; EvidenceBroker interface; GraphRouter; ResumeResolver; WAIT_EXTERNAL; no-progress guard",
+        "newPrimitives": [
+          {
+            "name": "ExecutionFrame + GraphRouter + ResumeResolver",
+            "justification": "aucun composant n orchestre une suite de contrats ; frame ephemere, aucun store durable"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-03",
+        "blueprintRef": "GWC-3",
+        "buildSequence": 3,
+        "title": "Wrap existing B1/B2/C2",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-2"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-02"
+        ],
+        "contractRefs": [
+          "GW-04",
+          "GW-05",
+          "GW-06"
+        ],
+        "findings": [
+          "AF-14"
+        ],
+        "openDecisions": [
+          "OD-10",
+          "OD-11"
+        ],
+        "integrationClassification": "REUSE/WRAP",
+        "resourceScopes": [
+          "path:src/governedWorkflow/resolvers/identity"
+        ],
+        "scope": "GW-04; GW-05; GW-06; resolver adapters; multi-repo-compatible outputs",
+        "newPrimitives": [],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-04",
+        "blueprintRef": "GWC-4",
+        "buildSequence": 4,
+        "title": "Connection/Session/Receipt integration",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-2",
+          "GWC-3"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-02",
+          "GWC-CAND-03"
+        ],
+        "contractRefs": [
+          "GW-02",
+          "GW-03",
+          "GW-12",
+          "GW-16",
+          "GW-17"
+        ],
+        "findings": [
+          "AF-11"
+        ],
+        "openDecisions": [
+          "OD-08",
+          "OD-10"
+        ],
+        "integrationClassification": "REUSE/GENERALIZE",
+        "resourceScopes": [
+          "path:src/governedWorkflow/adapters/session",
+          "path:src/operationalMemory/sessionService.ts"
+        ],
+        "scope": "GW-02; GW-03; GW-12; GW-16; GW-17; contract/graph digest binding",
+        "newPrimitives": [],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-05",
+        "blueprintRef": "GWC-5",
+        "buildSequence": 5,
+        "title": "Task/Lock orchestration wrappers",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-2",
+          "GWC-4"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-02",
+          "GWC-CAND-04"
+        ],
+        "contractRefs": [
+          "GW-13",
+          "GW-14",
+          "GW-15",
+          "GW-18",
+          "GW-19",
+          "GW-20"
+        ],
+        "findings": [
+          "AF-08",
+          "AF-17",
+          "AF-18",
+          "AF-24",
+          "AF-27",
+          "AF-35"
+        ],
+        "openDecisions": [
+          "OD-05",
+          "OD-08",
+          "OD-11"
+        ],
+        "integrationClassification": "REUSE/EXTEND",
+        "resourceScopes": [
+          "path:src/governedWorkflow/adapters/task",
+          "path:src/operationalMemory/taskQueue.ts",
+          "path:src/operationalMemory/lockService.ts"
+        ],
+        "scope": "GW-13..GW-20; minimal-lock planning; EffectPlan integration",
+        "newPrimitives": [
+          {
+            "name": "lock-set planner",
+            "justification": "aucun composant ne calcule l ensemble minimal de verrous ; acquisition atomique placee dans lockService.ts"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-06",
+        "blueprintRef": "GWC-6",
+        "buildSequence": 6,
+        "title": "Server Resolver C3",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-3"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-03"
+        ],
+        "contractRefs": [
+          "GW-07"
+        ],
+        "findings": [],
+        "openDecisions": [
+          "OD-03"
+        ],
+        "integrationClassification": "GENERALIZE/EXTEND",
+        "resourceScopes": [
+          "path:src/governedWorkflow/resolvers/server"
+        ],
+        "scope": "GW-07; server identity/canonicalization; GitRegistry evidence",
+        "newPrimitives": [],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-07",
+        "blueprintRef": "GWC-7",
+        "buildSequence": 7,
+        "title": "Runtime Resolver C4",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-6"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-06"
+        ],
+        "contractRefs": [
+          "GW-08"
+        ],
+        "findings": [],
+        "openDecisions": [
+          "OD-04"
+        ],
+        "integrationClassification": "GENERALIZE/EXTEND",
+        "resourceScopes": [
+          "path:src/governedWorkflow/resolvers/runtime"
+        ],
+        "scope": "GW-08; RuntimeBinding schema; runtime adapters",
+        "newPrimitives": [
+          {
+            "name": "RuntimeBinding",
+            "justification": "aucun composant ne type un runtime ; evidence uniquement, jamais executeur"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-08",
+        "blueprintRef": "GWC-8",
+        "buildSequence": 8,
+        "title": "Domain Resolver C5",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-3",
+          "GWC-6"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-03",
+          "GWC-CAND-06"
+        ],
+        "contractRefs": [
+          "GW-09"
+        ],
+        "findings": [],
+        "openDecisions": [],
+        "integrationClassification": "GENERALIZE/EXTEND",
+        "resourceScopes": [
+          "path:src/governedWorkflow/resolvers/domain"
+        ],
+        "scope": "GW-09; domain roles; historical vhost exclusion",
+        "newPrimitives": [],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-09",
+        "blueprintRef": "GWC-9",
+        "buildSequence": 9,
+        "title": "Governance inheritance and effective capabilities",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-3",
+          "GWC-4",
+          "GWC-5"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-03",
+          "GWC-CAND-04",
+          "GWC-CAND-05"
+        ],
+        "contractRefs": [
+          "GW-10",
+          "GW-11"
+        ],
+        "findings": [
+          "AF-10",
+          "AF-32"
+        ],
+        "openDecisions": [],
+        "integrationClassification": "REUSE/EXTEND",
+        "resourceScopes": [
+          "path:src/governedWorkflow/governance",
+          "path:src/governedContext"
+        ],
+        "scope": "GW-10; GW-11; receipt enrichment",
+        "newPrimitives": [],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-10",
+        "blueprintRef": "GWC-10",
+        "buildSequence": 10,
+        "title": "B3 Multi-repository TargetScope",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-3",
+          "GWC-4",
+          "GWC-5",
+          "GWC-6",
+          "GWC-7",
+          "GWC-8",
+          "GWC-9"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-03",
+          "GWC-CAND-04",
+          "GWC-CAND-05",
+          "GWC-CAND-06",
+          "GWC-CAND-07",
+          "GWC-CAND-08",
+          "GWC-CAND-09"
+        ],
+        "contractRefs": [],
+        "findings": [
+          "AF-01",
+          "AF-02",
+          "AF-03",
+          "AF-04",
+          "AF-05"
+        ],
+        "openDecisions": [
+          "OD-10",
+          "OD-11"
+        ],
+        "integrationClassification": "GENERALIZE",
+        "resourceScopes": [
+          "path:src/operationalMemory",
+          "path:src/governedContext",
+          "path:src/liveState"
+        ],
+        "scope": "TargetContext; TargetScope additive migration; Session/Task/Receipt compatibility; project component roles; independent SHAs",
+        "newPrimitives": [
+          {
+            "name": "TargetContext + TargetScope",
+            "justification": "aucun composant ne porte une cible multi-composants au niveau operationnel ; additif et optionnel"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-11",
+        "blueprintRef": "GWC-11",
+        "buildSequence": 11,
+        "title": "Authority docs / Integration slot / baseline",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-2",
+          "GWC-10"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-02",
+          "GWC-CAND-10"
+        ],
+        "contractRefs": [
+          "GW-21",
+          "GW-22",
+          "GW-23"
+        ],
+        "findings": [],
+        "openDecisions": [],
+        "integrationClassification": "REUSE/EXTEND",
+        "resourceScopes": [
+          "path:src/governedWorkflow/authority"
+        ],
+        "scope": "GW-21; GW-22; GW-23",
+        "newPrimitives": [
+          {
+            "name": "integration-slot resolver",
+            "justification": "rend la regle REUSE-avant-NEW verifiable par machine"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-12",
+        "blueprintRef": "GWC-12",
+        "buildSequence": 12,
+        "title": "GitHub Control Plane reconciliation",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-11"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-11"
+        ],
+        "contractRefs": [],
+        "findings": [],
+        "openDecisions": [],
+        "integrationClassification": "DISPOSITION",
+        "resourceScopes": [
+          "github:pull-requests",
+          "path:src/github"
+        ],
+        "scope": "Reconcile PR #88/#89/#90 with current main; bounded read adapters; exact-head write adapters",
+        "newPrimitives": [],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-13",
+        "blueprintRef": "GWC-13",
+        "buildSequence": 13,
+        "title": "Development workflow contracts",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-11",
+          "GWC-12"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-11",
+          "GWC-CAND-12"
+        ],
+        "contractRefs": [
+          "GW-24",
+          "GW-25",
+          "GW-26",
+          "GW-27",
+          "GW-28",
+          "GW-29",
+          "GW-30",
+          "GW-31",
+          "GW-32",
+          "GW-33"
+        ],
+        "findings": [
+          "AF-15",
+          "AF-16",
+          "AF-31"
+        ],
+        "openDecisions": [],
+        "integrationClassification": "REUSE/EXTEND",
+        "resourceScopes": [
+          "path:src/governedWorkflow/development"
+        ],
+        "scope": "GW-24..GW-33; TDD RED proof; GREEN; self-review; regression loop; project validation profile",
+        "newPrimitives": [
+          {
+            "name": "expected-failure signature + validation profile",
+            "justification": "aucun composant ne type un profil de validation ni ne qualifie un RED"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-14",
+        "blueprintRef": "GWC-14",
+        "buildSequence": 14,
+        "title": "Review / merge contracts",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-12",
+          "GWC-13"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-12",
+          "GWC-CAND-13"
+        ],
+        "contractRefs": [
+          "GW-34",
+          "GW-35",
+          "GW-36",
+          "GW-37",
+          "GW-38",
+          "GW-39",
+          "GW-40",
+          "GW-41",
+          "GW-42",
+          "GW-43"
+        ],
+        "findings": [
+          "AF-22",
+          "AF-25",
+          "AF-30"
+        ],
+        "openDecisions": [
+          "OD-06"
+        ],
+        "integrationClassification": "REUSE/EXTEND",
+        "resourceScopes": [
+          "path:src/governedContext/github.ts",
+          "path:src/governedWorkflow/review"
+        ],
+        "scope": "GW-34..GW-43; ReviewEvidence commit binding; PremergeProof; exact-head merge",
+        "newPrimitives": [
+          {
+            "name": "PremergeProof",
+            "justification": "compose des preuves existantes a un head unique, sans re-observer"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-15",
+        "blueprintRef": "GWC-15",
+        "buildSequence": 15,
+        "title": "Deployment / exact-SHA evidence",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-14"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-14"
+        ],
+        "contractRefs": [
+          "GW-44",
+          "GW-45",
+          "GW-46",
+          "GW-47",
+          "GW-48",
+          "GW-49",
+          "GW-50",
+          "GW-51",
+          "GW-52",
+          "GW-53",
+          "GW-54",
+          "GW-55",
+          "GW-56",
+          "GW-57"
+        ],
+        "findings": [
+          "AF-06",
+          "AF-19",
+          "AF-26",
+          "AF-29"
+        ],
+        "openDecisions": [
+          "OD-07",
+          "OD-12"
+        ],
+        "integrationClassification": "REUSE/EXTEND",
+        "resourceScopes": [
+          "path:.github/workflows",
+          "path:src/deploy",
+          "path:src/governedWorkflow/deploy"
+        ],
+        "scope": "GW-44..GW-57; CI evidence; same deployment job anchor; exact deployment proof; runtime binding",
+        "newPrimitives": [
+          {
+            "name": "CI evidence + admission predicate",
+            "justification": "aucun composant ne conditionne l admission d un deploiement a la CI du meme SHA"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-16",
+        "blueprintRef": "GWC-16",
+        "buildSequence": 16,
+        "title": "Documentation and closure",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-15"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-15"
+        ],
+        "contractRefs": [
+          "GW-58",
+          "GW-59",
+          "GW-60",
+          "GW-61",
+          "GW-62",
+          "GW-63",
+          "GW-64",
+          "GW-65",
+          "GW-66",
+          "GW-67",
+          "GW-68",
+          "GW-69",
+          "GW-70",
+          "GW-71",
+          "GW-72"
+        ],
+        "findings": [
+          "AF-07",
+          "AF-09",
+          "AF-23"
+        ],
+        "openDecisions": [],
+        "integrationClassification": "REUSE/EXTEND",
+        "resourceScopes": [
+          "path:src/governedWorkflow/terminal",
+          "path:docs"
+        ],
+        "scope": "GW-58..GW-72; docs branch path; final runtime binding; terminal verification; hard DONE gate; checkpoint/lock/session closure",
+        "newPrimitives": [
+          {
+            "name": "terminal verification predicate",
+            "justification": "aucun composant ne conditionne DONE a une reobservation de la realite"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      },
+      {
+        "candidateWorkItemId": "GWC-CAND-17",
+        "blueprintRef": "GWC-17",
+        "buildSequence": 17,
+        "title": "Universal Acceptance",
+        "derivationStatus": "DERIVED_UNBOUND",
+        "blueprintDependencies": [
+          "GWC-10",
+          "GWC-16"
+        ],
+        "candidateDependencies": [
+          "GWC-CAND-10",
+          "GWC-CAND-16"
+        ],
+        "contractRefs": [
+          "GW-73"
+        ],
+        "findings": [
+          "AF-13"
+        ],
+        "openDecisions": [],
+        "integrationClassification": "NEW",
+        "resourceScopes": [
+          "path:tests/governedWorkflowUniversalAcceptance"
+        ],
+        "scope": "GW-73; MCP; Stablecoin; multi-repo/AfricaFunds-like model; recovery scenarios; anti-hardcode acceptance",
+        "newPrimitives": [
+          {
+            "name": "acceptance harness + fixtures",
+            "justification": "un harnais d acceptance n a par definition aucun proprietaire existant ; tests uniquement, non importable par le runtime"
+          }
+        ],
+        "existingFirstRequired": true,
+        "intakeBindings": [
+          "NEW_INFORMATION_INTAKE-001",
+          "NEW_INFORMATION_INTAKE-002"
+        ],
+        "b02Required": true
+      }
+    ],
+    "completeness": {
+      "blueprintItems": 18,
+      "expectedBlueprints": 18,
+      "contractsCovered": 73,
+      "expectedContracts": 73,
+      "findingsCovered": 36,
+      "expectedFindings": 36,
+      "openDecisionsCovered": 12,
+      "expectedOpenDecisions": 12,
+      "duplicateBlueprintOwners": 0,
+      "runtimeTasksCreated": 0,
+      "unstructuredConversationDependency": false
+    }
+  }
 }
