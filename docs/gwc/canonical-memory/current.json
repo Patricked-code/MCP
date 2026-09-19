@@ -27,9 +27,9 @@
   },
   "currentPrecodeState": {
     "phase": "E",
-    "workItem": "GWC-PRE-E-GWC-13",
-    "work": "GWC_13_DEVELOPMENT_WORKFLOW_CONTRACTS",
-    "status": "CHECKPOINTING",
+    "workItem": "GWC-PRE-E-GWC-14",
+    "work": "GWC_14_REVIEW_MERGE_CONTRACTS",
+    "status": "IN_PROGRESS",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Validate the GWC-13 canonical checkpoint on exact-head CI. Keep its claim ACTIVE until SUCCESS; then release GWC-13 and dispatch GWC-PRE-E-GWC-14 without replaying GWC-13.",
+    "nextAction": "Inspect existing review/merge authorities and GW-34..GW-43 exact sheets; reuse Phase C2 Governed GitHub context and GWC-12 lifecycle capabilities, resolve OD-06 from evidence, then derive GWC-14 RED acceptance for ReviewEvidence commit binding, PremergeProof and exact-head merge without introducing a second GitHub or task authority.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -291,8 +291,8 @@
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-19T09:43:24Z",
-  "observedHeadBeforePointerUpdate": "d6452681182cd37ad43d2a23736f2bae5bce3e67",
+  "updatedFromGitHubObservationAt": "2026-09-19T09:45:37Z",
+  "observedHeadBeforePointerUpdate": "70b2aa19553af46f64f2ec0d9843d2000f77b79c",
   "correctionReason": "Intake #004 minute-liveness implementation is scope-green at CI #1252. Its own candidate heartbeat became STALE and the stale claim was released only under explicit human recovery authorization. GWC-6 has MISSING heartbeat => UNKNOWN liveness; its ACTIVE claim and collision domains remain unchanged.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
