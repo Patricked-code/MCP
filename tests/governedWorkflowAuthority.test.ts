@@ -148,6 +148,7 @@ test('GWC-11 RED: GW-22 finds only an owner present in existing inventories', as
   const result = resolveGw22IntegrationSlot({
     repository: 'Patricked-code/MCP',
     observedAt: '2026-09-19T08:15:00.000Z',
+    inventoryStatus: 'CURRENT',
     inventoryDigest: '4'.repeat(64),
     proposal: { kind: 'MODULE', key: 'src/operationalMemory/taskQueue.ts' },
     inventory: {
@@ -170,6 +171,7 @@ test('GWC-11 GW-22 returns NONE instead of inventing an integration slot', async
   const result = resolveGw22IntegrationSlot({
     repository: 'Patricked-code/MCP',
     observedAt: '2026-09-19T08:15:00.000Z',
+    inventoryStatus: 'CURRENT',
     inventoryDigest: '4'.repeat(64),
     proposal: { kind: 'MODULE', key: 'src/does-not-exist/newAuthority.ts' },
     inventory: {
