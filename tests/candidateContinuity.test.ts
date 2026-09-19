@@ -1067,4 +1067,3 @@ test('runner acknowledgement rejects a plan whose bounded recovery envelope was 
   assert.equal(acknowledgement.authorizationGranted, false);
   assert.equal(acknowledgement.claimTransferAllowed, false);
 });
-
