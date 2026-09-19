@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc5-task-lock-orchestration-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc5_task_lock_orchestration",
+      "path": "sources/gwc5-task-lock-orchestration.json",
+      "media_type": "application/json",
+      "bytes": 6037,
+      "sha256": "9a38a947fc7d288cee5322a3da33e7f3c85cb60b1996129bf4c6bcc63d0ab48b"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc5_pass",
+      "key": "candidate.phase_e.gwc_5",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-5 is PASS_WITH_EVIDENCE. RED CI #1212 proved non-atomic sequential locking and missing wrappers. First GREEN CI #1216 passed; self-review regression REDs #1217 and #1219 exposed same-session unsettled reuse and incomplete M1 bindings; final GREEN CI #1220 passed on 6ba1b80b7ee1117d254bf930e5d452c3a0c14644.",
+      "source_refs": [
+        "src_gwc5_task_lock_orchestration"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc5_atomic_policy",
+      "key": "candidate.gwc5_od05_policy",
+      "claim_type": "fact",
+      "value": "OD-05 is resolved for the current single-process authority: bounded normalized deterministic lock sets are checked before grant, committed as one lock-store update plus one session projection, and every newly-created lock is compensated if session projection fails. OD-08 distributed concurrency remains open.",
+      "source_refs": [
+        "src_gwc5_task_lock_orchestration"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc5_authority",
+      "key": "candidate.gwc5_authority_boundary",
+      "claim_type": "fact",
+      "value": "Governed Task Queue remains the sole task lifecycle authority and its source blob is unchanged; Governed Lock Service remains the sole lock authority. GWC-5 adds no second queue, lock system, task schema, lock schema or durable workflow cursor.",
+      "source_refs": [
+        "src_gwc5_task_lock_orchestration"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc4_recovery_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "After GWC-5 claim release, dispatch the requeued GWC-PRE-E-GWC-4 intake-003 recovery delta before later eligible work, preserving the prior GWC-4 PASS/CI #1205 as historical baseline.",
+      "source_refs": [
+        "src_gwc5_task_lock_orchestration"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
