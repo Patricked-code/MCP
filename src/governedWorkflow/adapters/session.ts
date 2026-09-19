@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 import type { ConnectionContext } from '../../operationalMemory/connectionContext.js';
 import type {
   AutoResumeCompatibleSessionResult
@@ -34,6 +36,22 @@ export type SessionContractObservation<TStatus extends string, TPayload> = Reado
 export type SessionOpenOrResumeObservation =
   | AutoResumeCompatibleSessionResult
   | Readonly<{ status: 'OPENED'; session: GovernedSessionPublicRecord }>;
+
+function canonical(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.entries(value as Record<string, unknown>)
+      .filter(([, entry]) => entry !== undefined)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, entry]) => `${JSON.stringify(key)}:${canonical(entry)}`)
+      .join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function contentDigest(value: unknown): string {
+  return createHash('sha256').update(canonical(value)).digest('hex');
+}
 
 function binding(
   stepId: GovernedStepId,
@@ -95,10 +113,11 @@ function receiptEvidence(
     reference: `bootstrap-receipt:${receipt.bootstrapReceiptId}`,
     observedAt: receipt.createdAt,
     freshness,
-    digest: null,
+    digest: contentDigest(receipt),
     binding: {
       repository: receipt.repository,
       ...(receipt.governedBranch ? { branch: receipt.governedBranch } : {}),
+      ...(receipt.githubHead ? { headSha: receipt.githubHead } : {}),
       sessionId: receipt.governedSessionId
     }
   };
@@ -114,10 +133,13 @@ function sessionEvidence(
     reference: `governed-session:${session.governedSessionId}:revision:${session.sessionRevision}`,
     observedAt: session.lastHeartbeatAt,
     freshness,
-    digest: null,
+    digest: contentDigest(session),
     binding: {
       repository: session.repository,
       ...(session.workBranch ? { branch: session.workBranch } : {}),
+      ...(session.bootstrapReceipt?.githubHead
+        ? { headSha: session.bootstrapReceipt.githubHead }
+        : {}),
       sessionId: session.governedSessionId
     }
   };
@@ -161,10 +183,10 @@ export function wrapGw03ConnectionContext(
   const evidence: EvidenceRef = {
     authority: 'Governed Session',
     kind: 'OBSERVATION',
-    reference: `connection-context:${context.connectionContextId}`,
+    reference: `governed-session:${context.governedSessionId}:connection-context:${context.connectionContextId}`,
     observedAt: context.createdAt,
     freshness: 'CURRENT',
-    digest: null,
+    digest: contentDigest(context),
     binding: {
       repository: context.repository,
       sessionId: context.governedSessionId
