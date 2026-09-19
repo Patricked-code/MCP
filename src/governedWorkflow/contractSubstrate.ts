@@ -74,7 +74,7 @@ export class GovernedContractSubstrateError extends Error {
 
   constructor(
     reasonCode: Exclude<ContractSubstrateReasonCode, 'UNKNOWN_STEP_ID'>,
-    message = reasonCode
+    message: string = reasonCode
   ) {
     super(message);
     this.name = 'GovernedContractSubstrateError';
