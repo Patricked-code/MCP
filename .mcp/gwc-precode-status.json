@@ -1087,7 +1087,7 @@
           "GWC-4"
         ],
         "title": "GWC-4 — Connection/Session/Receipt integration",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 66,
         "sequence": 11,
         "dependencies": [
@@ -1122,7 +1122,9 @@
           "INTAKE_003 self-review RED CI #1231 FAILURE @ 05320d82eb61185bcc2fec3d13027fdaf057df8e: liveness binding mismatch and runner envelope integrity gaps.",
           "INTAKE_003 FINAL GREEN CI #1233 SUCCESS @ 469da6d09d63367e0e89388369573f6f5fc1e441 with 445 tests.",
           "Session Service and historical GWC-4 session adapter remained byte-identical across the intake-003 delta.",
-          "Checkpoint bundle pr95-e-gwc4-intake003-recovery-complete written; claim retained until checkpoint CI succeeds."
+          "Checkpoint bundle pr95-e-gwc4-intake003-recovery-complete written; claim retained until checkpoint CI succeeds.",
+          "INTAKE_003 checkpoint CI #1237 SUCCESS @ 115ac1640b7c75458cf23710e851c1e0e4b14352.",
+          "GWC-4 historical baseline plus intake-003 additive recovery delta are complete with evidence; claim released only after checkpoint CI success."
         ]
       },
       {
@@ -1558,7 +1560,7 @@
           "path:src/operationalMemory/sessionService.ts",
           "path:tests/candidateContinuity.test.ts"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -1606,9 +1608,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "a15b1feefbb85b139ad5ed458a3047995f589ea4",
+        "lastObservedHeadSha": "115ac1640b7c75458cf23710e851c1e0e4b14352",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T03:55:00Z",
+        "lastSeenAt": "2026-09-19T03:58:00Z",
         "status": "ACTIVE"
       }
     ]
@@ -4632,14 +4634,14 @@
       "postPassIntakeReconciliation": {
         "intakeId": "NEW_INFORMATION_INTAKE-003",
         "receiptDigest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555",
-        "state": "REQUEUED_READY_AFTER_ACTIVE_GWC5_CLAIM",
+        "state": "COMPLETED_WITH_EVIDENCE",
         "baselineStillValid": true,
         "baselineFinalGreenCiRun": 1205,
         "rule": "Historical PASS remains valid; only the additive recovery delta is pending."
       },
       "intake003Delta": {
         "intakeId": "NEW_INFORMATION_INTAKE-003",
-        "status": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
+        "status": "PASS_WITH_EVIDENCE",
         "red": {
           "ciRunNumber": 1227,
           "head": "4dd95a4069e7facc97aa7ef55370422221298180",
@@ -4673,7 +4675,12 @@
         "authorityBoundary": "EXTEND_EXISTING_CANDIDATE_CONTINUITY_ONLY__NO_SECOND_SESSION_OR_INTAKE_AUTHORITY",
         "claimTransfer": "FORBIDDEN",
         "authorizationFromRecovery": "FORBIDDEN",
-        "runtimeMcpRequired": false
+        "runtimeMcpRequired": false,
+        "checkpoint": {
+          "ciRunNumber": 1237,
+          "head": "115ac1640b7c75458cf23710e851c1e0e4b14352",
+          "result": "SUCCESS"
+        }
       }
     },
     "gwc5": {
