@@ -165,3 +165,35 @@ test('Phase F-02 RED: one coherent happy path reaches DONE with a single binding
   assert.equal(report.liveMutationDispatched, false);
   assert.equal(report.effectPlansOnly, true);
 });
+
+test('Phase F-03 RED: every canonical negative class fails closed or follows an explicit recovery edge', async () => {
+  const { runFullCandidateNegativeMatrix } = await harness();
+  const report = await runFullCandidateNegativeMatrix();
+
+  assert.equal(report.status, 'PASS');
+  assert.deepEqual(report.requiredClasses, [
+    'UNKNOWN',
+    'AMBIGUOUS',
+    'STALE',
+    'CONFLICT',
+    'DUPLICATE',
+    'DENIED',
+    'CI_FAILURE',
+    'HEAD_DRIFT',
+    'REVIEW_REJECTION',
+    'DEPLOY_FAILURE',
+    'RUNTIME_DRIFT',
+    'DOCS_DRIFT',
+    'STALE_RECEIPT',
+    'RECONNECT',
+    'CONCURRENT_AGENTS'
+  ]);
+  assert.equal(report.cases.length, report.requiredClasses.length);
+  assert.equal(report.cases.some((entry: any) => entry.status === 'SKIPPED'), false);
+  assert.equal(report.cases.every((entry: any) => (
+    entry.status === 'FAIL_CLOSED' || entry.status === 'RECOVERY_EDGE'
+  )), true);
+  assert.equal(report.cases.every((entry: any) => entry.safe === true), true);
+  assert.equal(report.mutationPerformed, false);
+  assert.equal(report.liveMutationDispatched, false);
+});
