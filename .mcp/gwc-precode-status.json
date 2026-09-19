@@ -1193,7 +1193,14 @@
           "GWC-4 closure projection validated by CI #1239 SUCCESS before GWC-6 claim.",
           "OD-03 observed authority mismatch: src/config/servers.ts canonical ServerId values are s1/s2 while GitRegistry contains historical s1 and newer S2 casing.",
           "OD-03 policy selected for RED: canonicalize only against an explicit bounded set of known managed-server IDs; preserve raw serverId as evidence; unknown aliases remain UNVERIFIED; resolver never mutates GitRegistry or invokes SSH.",
-          "GWC-6 shared resolver test path added to collision domain before RED."
+          "GWC-6 shared resolver test path added to collision domain before RED.",
+          "RED CI #1243 FAILURE @ 7d7f7d2acc2d79b0b0a8bd268b7d8e6eb4a972d6 established the GW-07 server-resolver RED cycle.",
+          "Existing candidate session resumed under explicit user continuation at PR #95 comment 5739786779; liveness transported through mutable heartbeat comment 5739786917 without claim transfer.",
+          "CI #1255 @ d616849fecbbb33b8008befe8c1ca9dae38a4c0a: false cross-evidence digest coupling removed; 6/7 previously failing GWC-6 cases green, one raw-alias ordering case remained.",
+          "CI #1256 @ 616fd99398a2f8c0c1c336df6d468ba19f94d46c: all GWC-6/read-only safety tests green; global failure isolated to pre-existing EOF whitespace gate drift.",
+          "FINAL GREEN CI #1258 SUCCESS @ 087b0a23230c83b6cb1c9069947f48a5d8cc0357: typecheck, build, docs, governance, GWC verifier, secret scan, read-only safety and whitespace all green.",
+          "OD-03 resolved existing-first: explicit canonicalServerIds authority, bounded case normalization, raw IDs preserved, unknown aliases UNVERIFIED, hints only disambiguate bound canonical identities, paths never identity, environment preserved.",
+          "Checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete created; claim retained ACTIVE until exact-head checkpoint CI succeeds."
         ]
       },
       {
@@ -1640,9 +1647,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "666cb280156a880f67ddff6613d75902f5c623d8",
+        "lastObservedHeadSha": "0cac9047a39b06de1d6d67f17ed59e53991ca212",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T04:02:00Z",
+        "lastSeenAt": "2026-09-19T06:00:58Z",
         "status": "ACTIVE"
       },
       {
@@ -4821,6 +4828,46 @@
       "authorityBoundary": "TASK_QUEUE_UNCHANGED__LOCK_SERVICE_EXTENDED_IN_PLACE__NO_SECOND_QUEUE_OR_LOCK_AUTHORITY",
       "od05": "RESOLVED_FOR_CURRENT_SINGLE_PROCESS_STORE_AUTHORITY",
       "od08": "OPEN"
+    },
+    "gwc6": {
+      "workItemId": "GWC-PRE-E-GWC-6",
+      "blueprint": "GWC-6",
+      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
+      "red": {
+        "ciRunNumber": 1243,
+        "head": "7d7f7d2acc2d79b0b0a8bd268b7d8e6eb4a972d6",
+        "result": "FAIL_EXPECTED"
+      },
+      "corrections": [
+        {
+          "finding": "FALSE_CROSS_EVIDENCE_DIGEST_COUPLING",
+          "ciRunNumber": 1255,
+          "head": "d616849fecbbb33b8008befe8c1ca9dae38a4c0a",
+          "result": "PARTIAL_GREEN_6_OF_7_PREVIOUS_REDS"
+        },
+        {
+          "finding": "LOCALE_DEPENDENT_RAW_SERVER_EVIDENCE_ORDER",
+          "ciRunNumber": 1256,
+          "head": "616fd99398a2f8c0c1c336df6d468ba19f94d46c",
+          "result": "GWC6_FUNCTIONAL_GREEN_GLOBAL_WHITESPACE_FAILURE_ONLY"
+        }
+      ],
+      "finalGreen": {
+        "ciRunNumber": 1258,
+        "head": "087b0a23230c83b6cb1c9069947f48a5d8cc0357",
+        "result": "SUCCESS"
+      },
+      "implementation": [
+        "src/governedWorkflow/resolvers/server.ts",
+        "tests/governedWorkflowGithubResolverAdapters.test.ts"
+      ],
+      "od03": "RESOLVED_EXPLICIT_CANONICAL_SERVER_SET",
+      "authorityBoundary": "READ_ONLY_SERVER_RESOLUTION__GITREGISTRY_AUTHORITY_UNCHANGED__NO_SSH_MUTATION_OR_AUTHORIZATION",
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete",
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "AFTER_CHECKPOINT_CI_SUCCESS"
+      }
     }
   },
   "intake003RecoveryEvolution": {
