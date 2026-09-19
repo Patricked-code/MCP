@@ -8,6 +8,11 @@ import {
 } from '../src/governance/operationalDecision.js';
 import { createGovernedContractSubstrate } from '../src/governedWorkflow/contractSubstrate.js';
 
+process.env.MCP_AUTH_TOKEN ??= 'mcp-unit-test-value-20260919-abcdef';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
 process.env.MCP_GOVERNED_SESSIONS_ENABLED ??= 'true';
 
 const NOW = '2026-09-19T07:15:00Z';
