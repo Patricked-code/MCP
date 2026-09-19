@@ -1294,13 +1294,19 @@
         ],
         "collisionDomains": [
           "path:src/governedWorkflow/governance",
-          "path:src/governedContext"
+          "path:src/governedContext",
+          "path:src/server.ts",
+          "path:tests/governedWorkflowGovernanceIntegration.test.ts",
+          "path:package.json"
         ],
         "evidence": [
           "Derived from GWC-CAND-09 exact-bound candidate backlog.",
           "Dependencies GWC-PRE-E-GWC-3, GWC-PRE-E-GWC-4 and GWC-PRE-E-GWC-5 are PASS_WITH_EVIDENCE.",
           "Dispatched after GWC-8 checkpoint CI #1293 SUCCESS; existing-first baseline confirms CapabilityReality/GovernanceDecision/Scoped Write Gate remain owning authorities.",
-          "Initial GWC-9 collision domains limited to path:src/governedWorkflow/governance and path:src/governedContext; any registration/test scope expansion requires exact-head claim update before mutation."
+          "Initial GWC-9 collision domains limited to path:src/governedWorkflow/governance and path:src/governedContext; any registration/test scope expansion requires exact-head claim update before mutation.",
+          "GWC-9 dispatch projection validated by MCP CI #1295 SUCCESS @ 1ff6898c49440bfb3f13cf8e665438a28a4a7866.",
+          "AF-32 exact-head baseline confirmed: registerGovernedTaskMutationTools receives only decorateRegistrationCatalogServer(server, 'operational-write'), while scoped-write registrations additionally pass through decorateScopedWriteServer.",
+          "GWC-9 RED scope expanded before mutation to src/server.ts, tests/governedWorkflowGovernanceIntegration.test.ts and package.json; no enforcement mode change is authorized."
         ]
       },
       {
@@ -1685,7 +1691,10 @@
         "workItemId": "GWC-PRE-E-GWC-9",
         "collisionDomains": [
           "path:src/governedWorkflow/governance",
-          "path:src/governedContext"
+          "path:src/governedContext",
+          "path:src/server.ts",
+          "path:tests/governedWorkflowGovernanceIntegration.test.ts",
+          "path:package.json"
         ],
         "status": "ACTIVE"
       }
@@ -5130,7 +5139,7 @@
         "GWC-PRE-E-GWC-5"
       ],
       "authorityBoundary": "REUSE_CAPABILITY_REALITY__REUSE_GOVERNANCE_DECISION__REUSE_SCOPED_WRITE_GATE__NO_SECOND_ENGINE",
-      "af32": "TO_CLOSE_IN_SHADOW_WITHOUT_ENFORCEMENT"
+      "af32": "PROVEN_BASELINE__RED_TO_CLOSE_IN_SHADOW"
     }
   },
   "intake003RecoveryEvolution": {
