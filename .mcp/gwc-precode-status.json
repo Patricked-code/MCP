@@ -1609,7 +1609,8 @@
           "GWC-16 covers GW-58..GW-72. Existing-first design requires reuse of documentation governance, Bootstrap Receipt freshness, Live State, Task Queue VERIFYING/DONE transitions, session checkpoint/close, lock release and queue reconciliation.",
           "AF-07 is the hard closure invariant: DONE must be refused unless terminal reality is re-observed and verified. No second closure authority or persistence layer is allowed.",
           "No blocking open decision remains. Documentation recursion terminates when drift is zero; docs-only deployment may become the final runtime SHA.",
-          "Claim expanded before RED to path:tests/governedWorkflowTerminal.test.ts; package validation discovery auto-runs *.test.ts, so no package.json mutation is required."
+          "Claim expanded before RED to path:tests/governedWorkflowTerminal.test.ts; package validation discovery auto-runs *.test.ts, so no package.json mutation is required.",
+          "PROVEN RED CI #1433 FAILURE @ c504f22277fa3b5b8dd5fa8ae9a8f79f86f1e906: exactly 15 intended GW-58..GW-72 failures, all ERR_MODULE_NOT_FOUND for src/governedWorkflow/terminal/index.js; 573 historical tests pass, 0 skipped; typecheck/build/docs/governance/GWC/secret checks green."
         ]
       },
       {
@@ -5905,6 +5906,16 @@
         "addedCollisionDomain": "path:tests/governedWorkflowTerminal.test.ts",
         "reason": "BOUND_RED_TEST_SURFACE",
         "packageJsonChangeRequired": false
+      },
+      "red": {
+        "ciRunNumber": 1433,
+        "ciRunId": 35444444887,
+        "head": "c504f22277fa3b5b8dd5fa8ae9a8f79f86f1e906",
+        "result": "FAIL_EXPECTED",
+        "tests": 588,
+        "passed": 573,
+        "failed": 15,
+        "signature": "GW58_TO_GW72_TERMINAL_MODULE_ABSENT"
       }
     }
   },
@@ -6019,7 +6030,7 @@
     "workItem": "GWC-PRE-E-GWC-16",
     "work": "GWC_16_DOCUMENTATION_AND_CLOSURE",
     "status": "IN_PROGRESS",
-    "nextAction": "Audit existing documentation-governance, terminal verification inputs, Bootstrap Receipt freshness, Live State, Task Queue VERIFYING/DONE, checkpoint, lock-release, session-close and queue-reconcile primitives for GW-58..GW-72; then derive a bounded RED proving false DONE is currently possible, without mutating runtime authorities.",
+    "nextAction": "Implement the bounded GWC-16 terminal contract layer for GW-58..GW-72 using only existing documentation, GitHub lifecycle, Live State, receipt, task, checkpoint, lock and session authorities; then run exact-head CI and self-review the hard no-false-DONE proof.",
     "blocker": null
   }
 }
