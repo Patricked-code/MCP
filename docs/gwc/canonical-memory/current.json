@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-e-gwc9-governance-capabilities-complete",
-  "currentBundleId": "bnd_mcp-pr95-e-gwc9-governance-capabilities-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc9-governance-capabilities-complete",
+  "currentBundle": "pr95-e-gwc10-multi-repository-target-scope-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc10-multi-repository-target-scope-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -28,8 +28,8 @@
   "currentPrecodeState": {
     "phase": "E",
     "workItem": "GWC-PRE-E-GWC-10",
-    "work": "GWC_10_B3_MULTI_REPOSITORY_TARGET_SCOPE",
-    "status": "IN_PROGRESS",
+    "work": "GWC_10_MULTI_REPOSITORY_TARGET_SCOPE_CHECKPOINT",
+    "status": "CHECKPOINT_VALIDATION_PENDING",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Audit existing single-repository Session/Task/BootstrapReceipt/LiveState target bindings and implement an additive TargetContext/TargetScope migration that preserves historical records, component roles and independent repository SHAs without creating a parallel state store.",
+    "nextAction": "Validate the GWC-10 canonical checkpoint on exact-head CI. Keep the GWC-10 claim ACTIVE until SUCCESS; then release it and dispatch GWC-PRE-E-GWC-11 without replaying GWC-10.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -269,10 +269,15 @@
       "name": "pr95-e-gwc8-domain-resolver-complete",
       "path": "docs/gwc/canonical-memory/pr95-e-gwc8-domain-resolver-complete",
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-e-gwc9-governance-capabilities-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc9-governance-capabilities-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-19T07:38:00Z",
-  "observedHeadBeforePointerUpdate": "d40843b73e26e72931b4b17be5107cf0c8fe91b4",
+  "updatedFromGitHubObservationAt": "2026-09-19T08:03:00Z",
+  "observedHeadBeforePointerUpdate": "1733238ed00fb31f7f1824727349da1852edc384",
   "correctionReason": "Intake #004 minute-liveness implementation is scope-green at CI #1252. Its own candidate heartbeat became STALE and the stale claim was released only under explicit human recovery authorization. GWC-6 has MISSING heartbeat => UNKNOWN liveness; its ACTIVE claim and collision domains remain unchanged.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
@@ -636,6 +641,7 @@
     "GWC-7": "PASS_WITH_EVIDENCE",
     "GWC-8": "PASS_WITH_EVIDENCE",
     "GWC-9": "PASS_WITH_EVIDENCE",
-    "GWC-10": "IN_PROGRESS_ACTIVE_CLAIM"
+    "GWC-10": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
+    "GWC-11": "PENDING_AFTER_GWC10_CHECKPOINT_RELEASE"
   }
 }
