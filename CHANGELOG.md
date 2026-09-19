@@ -748,3 +748,14 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Compatibilité préservée pour les mappings GitRegistry V2 historiques sans `componentRole`, sans inventer de rôle concurrent.
 - GREEN complet MCP CI #1286 sur `d6240484e387770751d9d3db476ac3b9470c74ce`.
 - Aucun changement main/S1/production, aucun runtime Task/lock et aucune mutation SSH/vhost.
+
+## 2026-09-19 — GWC-9 Governance inheritance and effective capabilities
+
+- Ajout du composer read-only GW-10/GW-11 derrière les autorités existantes `CapabilityReality` et `GovernanceDecision`.
+- Composition cible bornée, monotoniquement restrictive, sans nouvelle autorité ni persistance.
+- UNKNOWN reste fail-closed ; mismatch d'opération ou de capability snapshot => `CONFLICT`.
+- AF-32 fermé en shadow : les trois mutations gouvernées Task `operational-write` traversent désormais `decorateScopedWriteServer`.
+- Aucun mode enforcing ajouté et aucun changement du résultat historique des handlers.
+- Classification des outils inchangée (`operational-write`) ; cartographie/digest conservés et régression verte.
+- RED CI #1298 ; GREEN initial #1300 ; self-review fixture-only #1301 ; GREEN final #1302 sur `ff85ab51ae59df044ad179abe0865374e41f2412`.
+- Aucun changement main/S1/production et aucun second moteur de gouvernance/capability.
