@@ -915,7 +915,7 @@
           "review-evidence"
         ],
         "title": "AF-22 / AF-30 candidate correction",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 79,
         "sequence": 5,
         "dependencies": [
@@ -928,7 +928,10 @@
         ],
         "evidence": [
           "Dependency GWC-PRE-C1 completed with GREEN CI #1112 on exact head 074f2bd21eef6e23811512453d34670bfecc7485.",
-          "Claimed by candidate-7afc131430c64c6fe34bcfea @ cd859746ee68563a427bac1b58b2d7aa0c156291"
+          "Claimed by candidate-7afc131430c64c6fe34bcfea @ cd859746ee68563a427bac1b58b2d7aa0c156291",
+          "RED CI #1124 FAILURE @ 34ec05422ed5942e50bc2393d0b7c7e7496717d4: stale review-head regression reproduced.",
+          "GREEN CI #1128 SUCCESS @ 1ff28755c7749078bc5a5c891ac1162c67ba0883: typecheck/build/docs/governance/GWC/secrets/read-only-safety/whitespace all green.",
+          "Exact-head review binding implemented existing-first in governedContext reviews projection."
         ]
       },
       {
@@ -940,7 +943,7 @@
           "PR-90"
         ],
         "title": "Candidate capability reconciliation",
-        "status": "PENDING",
+        "status": "READY",
         "priority": 78,
         "sequence": 6,
         "dependencies": [
@@ -952,7 +955,8 @@
           ".mcp:gwc-precode"
         ],
         "evidence": [
-          "Historical C3 disposition evidence exists; implementation/rework remains required by current PRECODE Phase C."
+          "Historical C3 disposition evidence exists; implementation/rework remains required by current PRECODE Phase C.",
+          "Dependency GWC-PRE-C2 completed with GREEN CI #1128 @ 1ff28755c7749078bc5a5c891ac1162c67ba0883."
         ]
       }
     ],
@@ -1007,7 +1011,7 @@
           "src:governed-workflow-review",
           "docs:gwc"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -1055,9 +1059,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "cd859746ee68563a427bac1b58b2d7aa0c156291",
+        "lastObservedHeadSha": "b4efb9d035d6aedcf58742566d38a95ff7b50f65",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T01:13:00Z",
+        "lastSeenAt": "2026-09-19T01:22:00Z",
         "status": "ACTIVE"
       }
     ]
@@ -3868,5 +3872,32 @@
         "GREEN CI #1112 @ 074f2bd21eef6e23811512453d34670bfecc7485"
       ]
     }
-  ]
+  ],
+  "phaseC": {
+    "c2": {
+      "workItemId": "GWC-PRE-C2",
+      "status": "PASS_WITH_EVIDENCE",
+      "findings": [
+        "AF-22",
+        "AF-30"
+      ],
+      "red": {
+        "ciRunNumber": 1124,
+        "head": "34ec05422ed5942e50bc2393d0b7c7e7496717d4",
+        "result": "FAIL_EXPECTED"
+      },
+      "green": {
+        "ciRunNumber": 1128,
+        "head": "1ff28755c7749078bc5a5c891ac1162c67ba0883",
+        "result": "SUCCESS"
+      },
+      "implementation": [
+        "src/governedContext/types.ts",
+        "src/governedContext/github.ts",
+        "src/governedContext/service.ts",
+        "tests/governedContextGithub.test.ts"
+      ],
+      "authorityBoundary": "EXISTING_GOVERNED_GITHUB_CONTEXT_ONLY"
+    }
+  }
 }
