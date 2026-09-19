@@ -779,4 +779,3 @@ Compatibilité : `GITHUB_OIDC_POLICY.allowedEvents` reste inchangé, `tokenSha =
 Preuve TDD : RED `757ee2a525741eef5cbb36796fc69c62c85a47b2` / MCP CI #1110 (échec attendu à `Read-only safety tests` après les contrôles précédents verts), puis GREEN final `074f2bd21eef6e23811512453d34670bfecc7485` / MCP CI #1112 entièrement réussi.
 
 Frontière : aucun merge `main`, aucune écriture S1, aucun déploiement, aucune activation live, aucune Governed Task runtime, aucun runtime lock et aucune Governed Session runtime ne sont produits par cette correction candidate.
-
