@@ -943,7 +943,7 @@
           "PR-90"
         ],
         "title": "Candidate capability reconciliation",
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 78,
         "sequence": 6,
         "dependencies": [
@@ -956,7 +956,8 @@
         ],
         "evidence": [
           "Historical C3 disposition evidence exists; implementation/rework remains required by current PRECODE Phase C.",
-          "Dependency GWC-PRE-C2 completed with GREEN CI #1128 @ 1ff28755c7749078bc5a5c891ac1162c67ba0883."
+          "Dependency GWC-PRE-C2 completed with GREEN CI #1128 @ 1ff28755c7749078bc5a5c891ac1162c67ba0883.",
+          "Claimed by candidate-7afc131430c64c6fe34bcfea @ 8c68b872f3df2074c0eecbf09b3160eeba29065c"
         ]
       }
     ],
@@ -1012,6 +1013,17 @@
           "docs:gwc"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-C3",
+        "collisionDomains": [
+          "src:github",
+          "docs:gwc",
+          ".mcp:gwc-precode"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -1059,9 +1071,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "b4efb9d035d6aedcf58742566d38a95ff7b50f65",
+        "lastObservedHeadSha": "8c68b872f3df2074c0eecbf09b3160eeba29065c",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T01:22:00Z",
+        "lastSeenAt": "2026-09-19T01:23:00Z",
         "status": "ACTIVE"
       }
     ]
