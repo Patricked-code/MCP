@@ -1308,3 +1308,52 @@ test('minute heartbeat tracks an active observer session without manufacturing a
   assert.equal(inactive.reasonCode, 'HEARTBEAT_SESSION_INACTIVE');
 });
 
+test('minute heartbeat collector requires exactly one mutable PR comment per candidate session', async () => {
+  const candidate = await import('../src/governedContext/candidateContinuity.js') as any;
+  const heartbeat = {
+    schemaVersion: 1,
+    candidateSessionId: 'candidate-comment-collector',
+    agentIdentity: 'chatgpt',
+    workItemId: null,
+    heartbeatSequence: 4,
+    emittedAt: '2026-09-19T04:43:00Z',
+    observedHeadSha: '2'.repeat(40),
+    currentAction: 'ANALYZING'
+  };
+  const body = candidate.formatCandidateHeartbeatComment(heartbeat);
+
+  const found = candidate.collectCandidateHeartbeatComments({
+    candidateSessionId: 'candidate-comment-collector',
+    comments: [{
+      commentId: 101,
+      updatedAt: '2026-09-19T04:43:01Z',
+      body
+    }]
+  });
+  assert.equal(found.status, 'FOUND');
+  assert.equal(found.reasonCode, 'HEARTBEAT_COMMENT_FOUND');
+  assert.equal(found.commentId, 101);
+  assert.deepEqual(found.heartbeat, heartbeat);
+
+  const missing = candidate.collectCandidateHeartbeatComments({
+    candidateSessionId: 'candidate-comment-collector',
+    comments: []
+  });
+  assert.equal(missing.status, 'MISSING');
+  assert.equal(missing.reasonCode, 'HEARTBEAT_COMMENT_MISSING');
+  assert.equal(missing.heartbeat, null);
+
+  const ambiguous = candidate.collectCandidateHeartbeatComments({
+    candidateSessionId: 'candidate-comment-collector',
+    comments: [
+      { commentId: 101, updatedAt: '2026-09-19T04:43:01Z', body },
+      { commentId: 102, updatedAt: '2026-09-19T04:43:02Z', body }
+    ]
+  });
+  assert.equal(ambiguous.status, 'AMBIGUOUS');
+  assert.equal(ambiguous.reasonCode, 'HEARTBEAT_DUPLICATE_COMMENTS');
+  assert.equal(ambiguous.heartbeat, null);
+  assert.equal(ambiguous.authorizationGranted, false);
+  assert.equal(ambiguous.claimTransferAllowed, false);
+});
+
