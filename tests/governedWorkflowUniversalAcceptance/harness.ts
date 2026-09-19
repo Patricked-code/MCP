@@ -1351,7 +1351,7 @@ export async function runFullCandidateHappyPath() {
     expectedHeadSha: HEAD,
     ci: {
       runId: 1500,
-      workflow: 'Candidate CI',
+      workflow: 'MCP CI',
       event: 'push',
       headSha: HEAD,
       status: 'completed',
