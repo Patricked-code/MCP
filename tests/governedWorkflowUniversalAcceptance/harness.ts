@@ -9,6 +9,7 @@ import {
   planCandidateRecoveryRunner,
   superviseCandidateRecovery
 } from '../../src/governedContext/candidateContinuity.js';
+import { createGovernedContractSubstrate } from '../../src/governedWorkflow/contractSubstrate.js';
 import { parseRecoveryAnchor } from '../../src/governedWorkflow/executionEngine.js';
 import { resolveDomain } from '../../src/governedWorkflow/resolvers/domain.js';
 import { resolveRuntime } from '../../src/governedWorkflow/resolvers/runtime.js';
@@ -35,6 +36,7 @@ export type UniversalAcceptanceScenario = Readonly<{
   scenarioId: string;
   contractsExercised: readonly string[];
   status: AcceptanceScenarioStatus;
+  reasonCode?: string;
   evidence: Readonly<Record<string, unknown>>;
 }>;
 
@@ -42,6 +44,7 @@ export type UniversalAcceptanceReport = Readonly<{
   stepId: 'GW-73';
   status: 'ACCEPTED' | 'FAILED' | 'UNVERIFIED';
   scenarios: readonly UniversalAcceptanceScenario[];
+  failedContracts: readonly string[];
   authorizationInferred: false;
   mutationPerformed: false;
 }>;
@@ -88,18 +91,44 @@ async function governedSourceFiles(): Promise<string[]> {
   return [...new Set(files)].sort();
 }
 
+export function detectTargetHardcodesInSource(
+  source: string
+): readonly Readonly<{ literal: string }>[] {
+  return Object.freeze(
+    FORBIDDEN_GOVERNED_LITERALS
+      .filter((literal) => source.includes(literal))
+      .map((literal) => Object.freeze({ literal }))
+  );
+}
+
 async function scanGovernedHardcodes() {
   const files = await governedSourceFiles();
   const violations: Array<{ path: string; literal: string }> = [];
   for (const file of files) {
     const source = await readFile(file, 'utf8');
-    for (const literal of FORBIDDEN_GOVERNED_LITERALS) {
-      if (source.includes(literal)) violations.push({ path: file, literal });
+    for (const violation of detectTargetHardcodesInSource(source)) {
+      violations.push({ path: file, literal: violation.literal });
     }
   }
   return Object.freeze({
     files: Object.freeze(files),
     violations: Object.freeze(violations)
+  });
+}
+
+async function canonicalContractSubstrate() {
+  const [contractsText, graphText] = await Promise.all([
+    readFile('.mcp/gwc-contracts.json', 'utf8'),
+    readFile('.mcp/gwc-workflow-graph.json', 'utf8')
+  ]);
+  const contracts = JSON.parse(contractsText);
+  const graph = JSON.parse(graphText);
+  return createGovernedContractSubstrate({
+    contractsProjection: contracts,
+    graphProjection: graph,
+    expectedSchemaVersion: 1,
+    expectedContractRegistryDigest: contracts.registryDigest,
+    expectedGraphRegistryDigest: graph.registryDigest
   });
 }
 
@@ -372,7 +401,7 @@ function partialComponentScenario(): UniversalAcceptanceScenario {
   });
 }
 
-function recoveryScenario(): UniversalAcceptanceScenario {
+async function recoveryScenario(): Promise<UniversalAcceptanceScenario> {
   const fixture = RECOVERY_FIXTURE;
   const stale = assessCandidateLiveness({
     candidateSessionId: fixture.candidateSessionId,
@@ -519,6 +548,8 @@ function recoveryScenario(): UniversalAcceptanceScenario {
     duplicateInvocationRule: 'REOBSERVE_THEN_DECIDE'
   }, 'GW-41');
 
+  const substrate = await canonicalContractSubstrate();
+  const gw68Definition = substrate.resolve('GW-68');
   const deploymentBeforeAttestation = evaluateGw68TerminalVerification({
     taskId: 'TASK-20260919-973',
     taskStatus: 'VERIFYING',
@@ -584,13 +615,15 @@ function recoveryScenario(): UniversalAcceptanceScenario {
         foreignConflictingLockCount: 0
       }
     }
-  } as any, {
-    resolve(stepId: string) {
-      return stepId === 'GW-68' ? { stepId: 'GW-68', contractVersion: 1 } : null;
-    },
-    contractRegistryDigest: 'f'.repeat(64),
-    graphRegistryDigest: 'd'.repeat(64)
-  } as any);
+  } as any, substrate);
+
+  const terminalContractRegistryBound = Boolean(
+    gw68Definition
+    && deploymentBeforeAttestation.contract.stepId === gw68Definition.stepId
+    && deploymentBeforeAttestation.contract.contractVersion === gw68Definition.contractVersion
+    && deploymentBeforeAttestation.contract.contractRegistryDigest === substrate.contractRegistryDigest
+    && deploymentBeforeAttestation.contract.graphRegistryDigest === substrate.graphRegistryDigest
+  );
 
   const serialized = JSON.stringify({
     stale,
@@ -620,6 +653,7 @@ function recoveryScenario(): UniversalAcceptanceScenario {
     && intake.executesInstructions === false
     && recoveryAnchor.duplicateInvocationRule === 'REOBSERVE_THEN_DECIDE'
     && deploymentBeforeAttestation.status === 'BLOCKED'
+    && terminalContractRegistryBound
     && !serialized.includes('rawTranscript')
     && !serialized.includes('resumeSecret')
     && !serialized.includes('authorizationHeader')
@@ -637,6 +671,7 @@ function recoveryScenario(): UniversalAcceptanceScenario {
       intakeDuplicateCount: intake.duplicateSourceIds.length,
       restartPlanDeterministic: runnerA.planId === runnerB.planId,
       staleEnvelopeAccepted: staleEnvelope.status !== 'UNVERIFIED',
+      terminalContractRegistryBound,
       rawTranscriptPersisted: serialized.includes('rawTranscript'),
       secretPersisted: (
         serialized.includes('resumeSecret')
@@ -701,14 +736,18 @@ export async function runUniversalAcceptance(
     stablecoinScenario(),
     multiComponentScenario(),
     partialComponentScenario(),
-    recoveryScenario(),
+    await recoveryScenario(),
     await antiHardcodeScenario(scan)
   ];
 
   const forced = options.forceScenarioFailure;
   const adjusted = scenarios.map((scenario) => (
     forced === scenario.scenarioId
-      ? Object.freeze({ ...scenario, status: 'FAIL' as const })
+      ? Object.freeze({
+          ...scenario,
+          status: 'FAIL' as const,
+          reasonCode: 'FORCED_ACCEPTANCE_FAILURE'
+        })
       : scenario
   ));
   const status: UniversalAcceptanceReport['status'] = adjusted.length === 0
@@ -716,11 +755,17 @@ export async function runUniversalAcceptance(
     : adjusted.every((scenario) => scenario.status === 'PASS')
       ? 'ACCEPTED'
       : 'FAILED';
+  const failedContracts = [...new Set(
+    adjusted
+      .filter((scenario) => scenario.status === 'FAIL')
+      .flatMap((scenario) => scenario.contractsExercised)
+  )].sort();
 
   return Object.freeze({
     stepId: 'GW-73',
     status,
     scenarios: Object.freeze(adjusted),
+    failedContracts: Object.freeze(failedContracts),
     authorizationInferred: false as const,
     mutationPerformed: false as const
   });
