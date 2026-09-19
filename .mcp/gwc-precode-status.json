@@ -1692,7 +1692,7 @@
           "full-happy-path"
         ],
         "title": "Phase F-02 — Full candidate happy path",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 51,
         "sequence": 26,
         "dependencies": [
@@ -1706,7 +1706,10 @@
           "Dependency F-01 satisfied by existing non-hardcoded contexts and CI #1468 SUCCESS.",
           "F-02 must prove one coherent candidate path across the full ordered Phase F chain, not merely independent unit/scenario fragments.",
           "All otherwise-live mutations must remain simulated/test/shadow/isolated; no main/S1/production activation.",
-          "PROVEN RED CI #1471 FAILURE @ 9ae984bb63cc7965d041248fbb62212791159ece: 599 tests, 598 historical/current PASS, exactly 1 intended F-02 failure; runFullCandidateHappyPath is not a function; 0 skipped."
+          "PROVEN RED CI #1471 FAILURE @ 9ae984bb63cc7965d041248fbb62212791159ece: 599 tests, 598 historical/current PASS, exactly 1 intended F-02 failure; runFullCandidateHappyPath is not a function; 0 skipped.",
+          "F-02 RED CI #1471 FAILURE @ 9ae984bb63cc7965d041248fbb62212791159ece: 599 tests, 598 PASS, exactly one missing runFullCandidateHappyPath failure.",
+          "Fixture-hardening CI #1473/#1474/#1475 exposed only exact contract fixture mismatches (MCP CI literal, MCP Governed Deploy literal, GW-69 normalized terminal proof); historical tests remained green and runtime contracts were not relaxed.",
+          "F-02 GREEN CI #1476 SUCCESS @ a47919449747a8487821ef5483935dc0edbab508: 599/599 PASS, 0 skipped; complete ordered Intent->...->DONE shadow path, single repository/project/head/task/session/runtime binding, mutationPerformed=false and no live mutation dispatched."
         ]
       },
       {
@@ -1716,7 +1719,7 @@
           "negative-paths"
         ],
         "title": "Phase F-03 — Full negative-path matrix",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 50,
         "sequence": 27,
         "dependencies": [
@@ -1726,7 +1729,9 @@
           "path:tests/governedWorkflowUniversalAcceptance"
         ],
         "evidence": [
-          "Phase F authority requires unknown/ambiguous/stale/conflict/duplicate/denied/CI failure/head drift/review rejection/deploy failure/runtime drift/docs drift/stale receipt/reconnect/concurrent agents to fail closed or follow an explicit recovery edge."
+          "Phase F authority requires unknown/ambiguous/stale/conflict/duplicate/denied/CI failure/head drift/review rejection/deploy failure/runtime drift/docs drift/stale receipt/reconnect/concurrent agents to fail closed or follow an explicit recovery edge.",
+          "Dependency F-02 satisfied by exact-head CI #1476 SUCCESS with 599/599 tests.",
+          "F-03 must exercise every named negative class from the canonical Phase F authority and prove fail-closed or an explicit recovery edge, with zero live mutation."
         ]
       },
       {
@@ -2135,6 +2140,15 @@
         "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
         "agentIdentity": "ChatGPT-GPT-5.6-Sol",
         "workItemId": "GWC-PRE-F-02",
+        "collisionDomains": [
+          "path:tests/governedWorkflowUniversalAcceptance"
+        ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-F-03",
         "collisionDomains": [
           "path:tests/governedWorkflowUniversalAcceptance"
         ],
@@ -6422,10 +6436,10 @@
   },
   "currentPrecodeState": {
     "phase": "F",
-    "workItem": "GWC-PRE-F-02",
-    "work": "FULL_CANDIDATE_HAPPY_PATH",
+    "workItem": "GWC-PRE-F-03",
+    "work": "FULL_NEGATIVE_PATH_MATRIX",
     "status": "IN_PROGRESS",
-    "nextAction": "Implement runFullCandidateHappyPath in the tests-only acceptance harness by composing existing governed primitives over one coherent synthetic binding. No runtime source or live authority mutation.",
+    "nextAction": "Build a tests-only Phase F negative matrix over existing governed primitives for every canonical negative class. Each case must prove BLOCKED/CONFLICT/UNVERIFIED/STALE or a named recovery edge; no case may dispatch live mutation or be skipped.",
     "blocker": null
   },
   "phaseF": {
@@ -6503,7 +6517,7 @@
     },
     "f02": {
       "workItemId": "GWC-PRE-F-02",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE",
       "requiredOrderedPath": [
         "Intent",
         "Identity",
@@ -6537,7 +6551,70 @@
         "failed": 1,
         "skipped": 0,
         "signature": "FULL_CANDIDATE_HAPPY_PATH_ABSENT"
-      }
+      },
+      "validation": {
+        "red": {
+          "ciRunNumber": 1471,
+          "ciRunId": 35467622783,
+          "head": "9ae984bb63cc7965d041248fbb62212791159ece",
+          "result": "FAIL_EXPECTED"
+        },
+        "fixtureHardening": [
+          {
+            "ciRunNumber": 1473,
+            "ciRunId": 35468016206,
+            "head": "11018e28cf81e30796b90981781a937ee4c31da2",
+            "finding": "GW45_CANONICAL_MCP_CI_WORKFLOW"
+          },
+          {
+            "ciRunNumber": 1474,
+            "ciRunId": 35468117404,
+            "head": "370c7c357bb02059e590775ad7e6e32db5e55054",
+            "finding": "GW46_CANONICAL_GOVERNED_DEPLOY_WORKFLOW"
+          },
+          {
+            "ciRunNumber": 1475,
+            "ciRunId": 35468213717,
+            "head": "972457ede1444b8f2730560470ebd9c43760b706",
+            "finding": "GW69_NORMALIZED_TERMINAL_PROOF"
+          }
+        ],
+        "green": {
+          "ciRunNumber": 1476,
+          "ciRunId": 35468300170,
+          "head": "a47919449747a8487821ef5483935dc0edbab508",
+          "result": "SUCCESS",
+          "tests": 599,
+          "passed": 599,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "bindingInvariant": "ONE_SYNTHETIC_REPOSITORY_PROJECT_HEAD_TASK_SESSION_RUNTIME_BINDING_END_TO_END",
+      "mutationBoundary": "EFFECT_PLANS_AND_OBSERVATIONS_ONLY__NO_LIVE_DISPATCH"
+    },
+    "f03": {
+      "workItemId": "GWC-PRE-F-03",
+      "status": "IN_PROGRESS",
+      "requiredNegativeClasses": [
+        "UNKNOWN",
+        "AMBIGUOUS",
+        "STALE",
+        "CONFLICT",
+        "DUPLICATE",
+        "DENIED",
+        "CI_FAILURE",
+        "HEAD_DRIFT",
+        "REVIEW_REJECTION",
+        "DEPLOY_FAILURE",
+        "RUNTIME_DRIFT",
+        "DOCS_DRIFT",
+        "STALE_RECEIPT",
+        "RECONNECT",
+        "CONCURRENT_AGENTS"
+      ],
+      "requirement": "EVERY_CASE_FAIL_CLOSED_OR_EXPLICIT_RECOVERY_EDGE",
+      "liveMutationAllowed": false
     }
   }
 }
