@@ -1493,7 +1493,14 @@
           "AF-15 preserved as EVIDENCE = AGENT_DECLARED + CI_OBSERVED for cognitive development steps; AF-16 preserved as explicit SKIPPABLE_IF findings.length===0 for GW-30/GW-31 path.",
           "Claim expanded before RED to tests/governedWorkflowDevelopment.test.ts, package.json and scripts/run-validation-tests.mjs.",
           "PROVEN RED CI #1378 FAILURE @ a01b09d741bfde064e455a61379f52846456fc04: exactly 10 intended GWC-13 failures; one proves literal test enumeration/profile absence, nine prove src/governedWorkflow/development absent. Typecheck/build/docs/governance/GWC/secrets all GREEN.",
-          "RED #1378 contains no unrelated historical failure; safe to proceed to minimal GREEN."
+          "RED #1378 contains no unrelated historical failure; safe to proceed to minimal GREEN.",
+          "Compatibility repair CI #1380 identified the historical GWC-3 literal-path guard after discovery-runner generalization; the runner now supports explicit required tests without abandoning discovery.",
+          "CI #1382 isolated the corresponding GWC-13 expectation drift; the GWC-13 test now proves both discovery coverage and the explicit repository-resolution requirement.",
+          "FIRST FULL GREEN CI #1383 SUCCESS @ b39b696fe98ade2efb9b345fdb2a7eb25b7db990.",
+          "Self-review RED CI #1384 FAILURE @ 3936ac5871fdadfe3d02145049aecbf8eb372804 proved one real defect: GW-30 accepted self-review evidence bound to an older HEAD.",
+          "FINAL GREEN CI #1385 SUCCESS @ debae732d82dce58903b062014c221d40d44e0a2 after fail-closed SELF_REVIEW_HEAD_MISMATCH correction; 542/542 tests pass.",
+          "Final validation discovery: 72 tests discovered, 71 runner tests, 1 dedicated test; tests/githubRepositoryResolution.test.ts remains an explicit required runner test while discovery covers the eligible suite.",
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete staged; claim retained ACTIVE until exact-head checkpoint CI succeeds."
         ]
       },
       {
@@ -5516,7 +5523,7 @@
     "gwc13": {
       "workItemId": "GWC-PRE-E-GWC-13",
       "blueprint": "GWC-13",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
       "dependencies": [
         "GWC-PRE-E-GWC-11",
         "GWC-PRE-E-GWC-12"
@@ -5541,6 +5548,50 @@
         "result": "FAIL_EXPECTED",
         "failures": 10,
         "signature": "PROFILE_DISCOVERY_ABSENT_PLUS_DEVELOPMENT_MODULE_ABSENT"
+      },
+      "compatibilityCorrections": [
+        {
+          "ciRunNumber": 1380,
+          "ciRunId": 35434666842,
+          "head": "8410beed79ee5c7f70b1909026dc215b72b805fe",
+          "result": "FAILURE_ONE_HISTORICAL_GWC3_GUARD"
+        },
+        {
+          "ciRunNumber": 1382,
+          "ciRunId": 35435066540,
+          "head": "2eb899699b8eea09b3d82988242fd9a16a63be52",
+          "result": "FAILURE_ONE_GWC13_EXPECTATION"
+        }
+      ],
+      "firstFullGreen": {
+        "ciRunNumber": 1383,
+        "ciRunId": 35435148986,
+        "head": "b39b696fe98ade2efb9b345fdb2a7eb25b7db990",
+        "result": "SUCCESS"
+      },
+      "selfReview": {
+        "ciRunNumber": 1384,
+        "ciRunId": 35435214693,
+        "head": "3936ac5871fdadfe3d02145049aecbf8eb372804",
+        "result": "FAILURE_ONE_REAL_FINDING",
+        "finding": "GW-30 accepted self-review evidence from an older HEAD instead of failing closed."
+      },
+      "finalGreen": {
+        "ciRunNumber": 1385,
+        "ciRunId": 35435279941,
+        "head": "debae732d82dce58903b062014c221d40d44e0a2",
+        "result": "SUCCESS",
+        "tests": 542,
+        "passed": 542,
+        "failed": 0,
+        "discoveredTests": 72,
+        "runnerTests": 71,
+        "dedicatedTests": 1
+      },
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete",
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "FORBIDDEN_UNTIL_CHECKPOINT_CI_SUCCESS"
       }
     }
   },
