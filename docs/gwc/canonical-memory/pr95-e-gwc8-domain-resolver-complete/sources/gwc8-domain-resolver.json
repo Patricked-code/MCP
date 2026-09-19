@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-8",
+  "blueprint": "GWC-8",
+  "status": "PASS_WITH_EVIDENCE",
+  "session": {
+    "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "recoveryAuthorizationCommentId": 5740053066,
+    "heartbeatCommentId": 5740056645,
+    "recoveredFromCandidateSessionId": "candidate-52e3b52226bf3462e7b112de"
+  },
+  "recovery": {
+    "previousHeartbeatSequence": 13,
+    "previousHeartbeatAt": "2026-09-19T06:40:21Z",
+    "previousLiveness": "STALE",
+    "transferHead": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
+    "transferProjectionHead": "755a75bcdc80bc7f74554d25885a7f84684ab7cc",
+    "transferValidationCiRunNumber": 1278,
+    "transferValidationCiRunId": 35427869989,
+    "transferValidationConclusion": "SUCCESS",
+    "priorClaimDisposition": "RELEASED_AFTER_EXPLICIT_HUMAN_AUTHORIZATION_AND_EXACT_HEAD_REOBSERVATION",
+    "ownershipTransferredAutomatically": false
+  },
+  "baseline": {
+    "redHead": "54a108d591801f9895309476c81cf350883ee122",
+    "redCiRunNumber": 1282,
+    "redCiRunId": 35428000730,
+    "redConclusion": "FAILURE_EXPECTED_MODULE_ABSENT",
+    "redFailures": 10
+  },
+  "domainPolicy": {
+    "status": "RESOLVED_EXISTING_FIRST",
+    "rules": [
+      "GitRegistry project/publicDomain/publicApi and mapping domain data remain declaration authorities; current server/vhost observation remains evidence of what is actually served",
+      "protectedDomains remains a safety list and is never treated as the domain model",
+      "FRONTEND and API roles are derived only from explicit project or component-role declarations; roleless historical mappings never invent a stronger role",
+      "a roleless mapping on the same domain as an explicit project declaration merges as evidence into that declared role",
+      "multiple distinct current domains for the same declared role fail closed as AMBIGUOUS",
+      "historicalVhosts are excluded from the active surface and reported explicitly; they are never promoted automatically",
+      "NONE is returned only when current project declarations explicitly contain no publicDomain/publicApi, current-server mappings declare no domain and current observation proves an empty active surface",
+      "missing or unavailable observation is UNVERIFIED and never NONE",
+      "stale domain evidence is UNVERIFIED with STALE freshness",
+      "current observed domains not declared by the resolved project fail closed as UNVERIFIED",
+      "declared active domains not present in current observation fail closed as UNVERIFIED",
+      "domain observation is bound to the resolved server",
+      "resolver is READ_ONLY and performs no vhost mutation, authorization inference, persistence or probing side effect"
+    ]
+  },
+  "green": {
+    "firstGreenHead": "197248bd7ebb4d8d3a2a00bc99799c0b72d12f41",
+    "firstGreenCiRunNumber": 1283,
+    "firstGreenCiRunId": 35428112184,
+    "firstGreenConclusion": "SUCCESS",
+    "selfReviewFinding": "LEGACY_V2_MAPPING_COMPONENT_ROLE_OPTIONAL_AND_ROLELESS_EVIDENCE_MUST_NOT_CREATE_DUPLICATE_OTHER_ROLE",
+    "selfReviewRedHead": "4ceb3538ab1261e3d9790266c720cca38ebe9796",
+    "selfReviewRedCiRunNumber": 1284,
+    "selfReviewRedCiRunId": 35428215766,
+    "selfReviewRedConclusion": "FAILURE_EXPECTED_COMPONENT_ROLE_UNDEFINED",
+    "selfReviewSchemaFixHead": "ba88d43010789e8255b91ca4221f73663c027e6e",
+    "selfReviewIntermediateCiRunNumber": 1285,
+    "selfReviewIntermediateCiRunId": 35428275442,
+    "selfReviewIntermediateConclusion": "FAILURE_EXPECTED_DUPLICATE_OTHER_ROLE",
+    "finalGreenHead": "d6240484e387770751d9d3db476ac3b9470c74ce",
+    "finalGreenCiRunNumber": 1286,
+    "finalGreenCiRunId": 35428344475,
+    "finalGreenConclusion": "SUCCESS",
+    "checks": [
+      "typecheck",
+      "build",
+      "docs check",
+      "governance tests",
+      "GWC dossier check",
+      "secret scan",
+      "read-only safety tests including GWC-8",
+      "whitespace diff check"
+    ]
+  },
+  "implementation": {
+    "files": [
+      "src/governedWorkflow/resolvers/domain.ts",
+      "tests/governedWorkflowDomainResolver.test.ts",
+      "package.json"
+    ],
+    "behavior": [
+      "GW-09 resolves typed FRONTEND/API/OTHER domain surface from current project/server/registry/observation evidence",
+      "domainless projects can resolve to proven NONE without conflating missing observation with no domain",
+      "historical vhosts are excluded and reported explicitly",
+      "undeclared observed domains and unobserved declared domains remain fail-closed",
+      "multiple domains for the same role are AMBIGUOUS rather than silently prioritized",
+      "legacy V2 mappings that omit optional componentRole remain compatible without inventing an extra role",
+      "GW-09 wrapper binds canonical contract metadata and remains READ_ONLY"
+    ],
+    "authorityBoundary": "GITREGISTRY_DECLARATION__SERVER_VHOST_OBSERVATION_EVIDENCE__PROTECTED_DOMAINS_SAFETY_ONLY__READ_ONLY"
+  },
+  "boundaries": {
+    "runtimeTasksCreated": 0,
+    "runtimeLocksUsed": false,
+    "runtimeMcpRequired": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deployment": false,
+    "sshMutation": false,
+    "vhostMutation": false,
+    "authorizationInferred": false,
+    "parallelAuthorityCreated": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc8-domain-resolver-complete",
+    "claimReleaseRule": "Retain the GWC-8 branch-local claim until this checkpoint projection passes exact-head CI; release only after that validation.",
+    "nextWorkItemAfterRelease": "GWC-PRE-E-GWC-9"
+  },
+  "nextAction": "Create and validate the GWC-8 canonical checkpoint on the exact branch head. After checkpoint CI succeeds, release GWC-8 and dispatch GWC-PRE-E-GWC-9 without replaying GWC-8."
+}
