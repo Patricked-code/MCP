@@ -999,7 +999,7 @@
           "GWC-1"
         ],
         "title": "GWC-1 — GW-01 Intent Capture",
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 69,
         "sequence": 8,
         "dependencies": [
@@ -1010,7 +1010,10 @@
         ],
         "evidence": [
           "Derived from GWC-CAND-01 exact-bound candidate backlog.",
-          "Dependency GWC-PRE-E-GWC-0 completed with GREEN CI #1163."
+          "Dependency GWC-PRE-E-GWC-0 completed with GREEN CI #1163.",
+          "Claimed by candidate-7afc131430c64c6fe34bcfea @ 3a82afc220492e392ba6b6e4b7ab15906c1b11d2",
+          "OD-01 resolved existing-first: rawIntent max 16,384 UTF-8 bytes; oversize rejects instead of truncating, preserving faithful capture.",
+          "OD-02 resolved existing-first: closed source enum chatgpt|claude|other, reusing candidate conversation/source vocabulary already present on branch."
         ]
       },
       {
@@ -1434,6 +1437,15 @@
           "path:tests/governedWorkflow"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-1",
+        "collisionDomains": [
+          "path:src/governedWorkflow/intentCapture"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -1481,9 +1493,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "3f34c3daa1ead090d5c2f8242836a4c1292b9111",
+        "lastObservedHeadSha": "3a82afc220492e392ba6b6e4b7ab15906c1b11d2",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T02:12:00Z",
+        "lastSeenAt": "2026-09-19T02:19:00Z",
         "status": "ACTIVE"
       }
     ]
