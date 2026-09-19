@@ -5,10 +5,16 @@ import {
   BootstrapReceiptSchema,
   GovernedSessionRecordSchema,
   GovernedTaskRecordSchema,
+  LockStoreDocumentSchema,
+  SessionStoreDocumentSchema,
+  createEmptyLockStoreDocument,
+  createEmptySessionStoreDocument,
   createEmptyTaskStoreDocument
 } from '../src/operationalMemory/types.js';
-import { normalizeLockScope } from '../src/operationalMemory/lockService.js';
+import { createGovernedLockService, normalizeLockScope } from '../src/operationalMemory/lockService.js';
+import { createGovernedSessionService } from '../src/operationalMemory/sessionService.js';
 import { createGovernedTaskQueue } from '../src/operationalMemory/taskQueue.js';
+import { createTransportBindings } from '../src/operationalMemory/transportBindings.js';
 import { reconcileLiveState } from '../src/liveState/reconcile.js';
 
 const SHA_A = 'a'.repeat(40);
@@ -410,4 +416,234 @@ test('GWC-10 Live State treats TargetContext changes as semantic state changes',
   assert.equal(first.stateVersion, 1);
   assert.equal(second.stateVersion, 2);
   assert.equal((second as any).targetContext.components[0].githubHead, SHA_A);
+});
+
+
+function explicitSingleComponentScope(mappingId: 'example-api' | 'example-web') {
+  const component = mappingId === 'example-api'
+    ? { mappingId, repositoryId: 'github:ExampleOrg/api', role: 'API' }
+    : { mappingId, repositoryId: 'github:ExampleOrg/web', role: 'FRONTEND' };
+  return {
+    schemaVersion: 1,
+    targetId: 'EXAMPLE-001',
+    projectId: 'example.platform',
+    projectUid: 'EXAMPLE-001',
+    components: [component]
+  };
+}
+
+function memoryJsonStore<T>(initial: T) {
+  let value = initial;
+  return {
+    async read() { return value; },
+    async update(mutator: (current: T) => T | Promise<T>) {
+      value = await mutator(value);
+      return value;
+    }
+  } as any;
+}
+
+function fullTargetContext(observedAt = '2026-09-19T07:40:00.000Z') {
+  return {
+    schemaVersion: 1,
+    status: 'RESOLVED',
+    targetId: 'EXAMPLE-001',
+    projectId: 'example.platform',
+    projectUid: 'EXAMPLE-001',
+    globalCheckpointRepositoryId: 'github:ExampleOrg/web',
+    centralGovernanceRepositoryId: 'github:ExampleOrg/web',
+    observedAt,
+    components: [
+      {
+        mappingId: 'example-api',
+        repositoryId: 'github:ExampleOrg/api',
+        role: 'API',
+        githubHead: SHA_C,
+        runtimeRevision: SHA_D,
+        freshness: 'CURRENT',
+        reasonCodes: []
+      },
+      {
+        mappingId: 'example-web',
+        repositoryId: 'github:ExampleOrg/web',
+        role: 'FRONTEND',
+        githubHead: SHA_A,
+        runtimeRevision: SHA_B,
+        freshness: 'CURRENT',
+        reasonCodes: []
+      }
+    ]
+  } as const;
+}
+
+test('GWC-10 self-review: TargetScope equality is component-order independent', async () => {
+  const { targetScopeEquals } = await import('../src/operationalMemory/targetScope.js');
+  const forward = explicitScope();
+  const reversed = { ...forward, components: [...forward.components].reverse() };
+
+  assert.equal(targetScopeEquals(forward, reversed), true);
+});
+
+test('GWC-10 self-review: identical intent on disjoint component scopes stays independently representable', async () => {
+  const store = memoryTaskStore();
+  const queue = createGovernedTaskQueue(store, () => new Date('2026-09-19T07:40:00.000Z'));
+  const common = {
+    intentKey: 'example-shared-intent',
+    title: 'Shared logical change',
+    summary: 'Same intent key on different components must not collapse ownership.',
+    priority: 50,
+    dependencies: []
+  };
+
+  const api = await queue.reconcileIntent({
+    repository: 'ExampleOrg/api',
+    targetScope: explicitSingleComponentScope('example-api'),
+    ...common,
+    resourceScopes: ['component:EXAMPLE-001:example-api']
+  } as any, '11111111-1111-4111-8111-111111111111');
+  const web = await queue.reconcileIntent({
+    repository: 'ExampleOrg/web',
+    targetScope: explicitSingleComponentScope('example-web'),
+    ...common,
+    resourceScopes: ['component:EXAMPLE-001:example-web']
+  } as any, '22222222-2222-4222-8222-222222222222');
+
+  assert.equal(api.classification, 'NEW_TASK');
+  assert.equal(web.classification, 'NEW_TASK');
+  assert.notEqual(api.task?.taskId, web.task?.taskId);
+  assert.deepEqual(api.task?.targetScope, explicitSingleComponentScope('example-api'));
+  assert.deepEqual(web.task?.targetScope, explicitSingleComponentScope('example-web'));
+});
+
+test('GWC-10 self-review: component locks on disjoint scopes coexist across sessions', async () => {
+  const sessionStore = memoryJsonStore(createEmptySessionStoreDocument());
+  const lockStore = memoryJsonStore(createEmptyLockStoreDocument());
+  const bindings = createTransportBindings();
+  const sessions = createGovernedSessionService({
+    store: sessionStore,
+    bindings,
+    idleTtlSeconds: 3600,
+    resumeGraceSeconds: 3600,
+    now: () => new Date('2026-09-19T07:40:00.000Z')
+  });
+  const locks = createGovernedLockService({
+    store: lockStore,
+    sessionStore,
+    bindings,
+    defaultTtlSeconds: 300,
+    maxTtlSeconds: 1800,
+    now: () => new Date('2026-09-19T07:40:00.000Z')
+  });
+  const identity = {
+    principalId: null,
+    clientId: 'gwc10-self-review',
+    assurance: 'declared_only' as const
+  };
+
+  const api = await sessions.openSession({
+    repository: 'ExampleOrg/api',
+    targetScope: explicitSingleComponentScope('example-api'),
+    taskScope: 'api-scope',
+    workBranch: 'gwc10/api',
+    agentIdentity: 'gwc10-api',
+    blockers: [],
+    nextAction: null
+  }, { transportSessionId: 'gwc10-api-transport', identity });
+  const web = await sessions.openSession({
+    repository: 'ExampleOrg/web',
+    targetScope: explicitSingleComponentScope('example-web'),
+    taskScope: 'web-scope',
+    workBranch: 'gwc10/web',
+    agentIdentity: 'gwc10-web',
+    blockers: [],
+    nextAction: null
+  }, { transportSessionId: 'gwc10-web-transport', identity });
+
+  const apiLock = await locks.acquireLock({
+    governedSessionId: api.session.governedSessionId,
+    expectedSessionRevision: api.session.sessionRevision,
+    targetScope: explicitSingleComponentScope('example-api'),
+    scope: { type: 'component', targetId: 'EXAMPLE-001', mappingId: 'example-api' },
+    reason: 'api change'
+  }, { transportSessionId: 'gwc10-api-transport', identity });
+  const webLock = await locks.acquireLock({
+    governedSessionId: web.session.governedSessionId,
+    expectedSessionRevision: web.session.sessionRevision,
+    targetScope: explicitSingleComponentScope('example-web'),
+    scope: { type: 'component', targetId: 'EXAMPLE-001', mappingId: 'example-web' },
+    reason: 'web change'
+  }, { transportSessionId: 'gwc10-web-transport', identity });
+
+  assert.equal(apiLock.scope, 'component:EXAMPLE-001:example-api');
+  assert.equal(webLock.scope, 'component:EXAMPLE-001:example-web');
+  assert.equal((await locks.listActiveLocks()).length, 2);
+});
+
+test('GWC-10 self-review: multi-component receipt keeps per-component SHAs and leaves legacy SHA fields null', async () => {
+  const sessionStore = memoryJsonStore(createEmptySessionStoreDocument());
+  const bindings = createTransportBindings();
+  const sessions = createGovernedSessionService({
+    store: sessionStore,
+    bindings,
+    idleTtlSeconds: 3600,
+    resumeGraceSeconds: 3600,
+    now: () => new Date('2026-09-19T07:40:00.000Z'),
+    getLiveState: async () => ({
+      stateVersion: 7,
+      targetContext: fullTargetContext(),
+      github: { head: SHA_A },
+      runtime: { revision: SHA_B }
+    })
+  });
+  const identity = {
+    principalId: null,
+    clientId: 'gwc10-receipt',
+    assurance: 'declared_only' as const
+  };
+  const opened = await sessions.openSession({
+    repository: 'ExampleOrg/api',
+    targetScope: explicitScope(),
+    taskScope: 'multi-component',
+    workBranch: 'gwc10/multi',
+    agentIdentity: 'gwc10',
+    blockers: [],
+    nextAction: null
+  }, { transportSessionId: 'gwc10-receipt-transport', identity });
+
+  const acknowledged = await sessions.acknowledgeContext({
+    governedSessionId: opened.session.governedSessionId,
+    expectedSessionRevision: opened.session.sessionRevision,
+    expectedStateVersion: 7
+  }, { transportSessionId: 'gwc10-receipt-transport', identity });
+
+  assert.equal(acknowledged.bootstrapReceipt?.githubHead, null);
+  assert.equal(acknowledged.bootstrapReceipt?.runtimeRevision, null);
+  assert.deepEqual(
+    acknowledged.bootstrapReceipt?.targetContext?.components.map((component: any) => [
+      component.mappingId,
+      component.githubHead,
+      component.runtimeRevision
+    ]),
+    [
+      ['example-api', SHA_C, SHA_D],
+      ['example-web', SHA_A, SHA_B]
+    ]
+  );
+  assert.equal(JSON.stringify(acknowledged.bootstrapReceipt).includes('projectSha'), false);
+});
+
+test('GWC-10 self-review: TargetContext observedAt alone does not advance Live State version', () => {
+  const first = reconcileLiveState(
+    liveObservations(fullTargetContext('2026-09-19T07:40:00.000Z')),
+    null,
+    new Date('2026-09-19T07:40:00.000Z')
+  );
+  const second = reconcileLiveState(
+    liveObservations(fullTargetContext('2026-09-19T07:41:00.000Z')),
+    first,
+    new Date('2026-09-19T07:41:00.000Z')
+  );
+
+  assert.equal(first.stateVersion, 1);
+  assert.equal(second.stateVersion, 1);
 });
