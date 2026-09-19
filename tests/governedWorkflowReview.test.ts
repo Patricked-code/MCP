@@ -225,7 +225,13 @@ test('GW-41 composes one PremergeProof and rejects stale review/check evidence',
   const ready = composeGw41PremergeProof({
     expectedHeadSha: HEAD,
     github: githubContext(),
+    taskId: 'TASK-20260919-900',
+    taskRevision: 8,
     taskStatus: 'REVIEW',
+    governedSessionId: SESSION_ID,
+    sessionRevision: 5,
+    bootstrapReceiptId: RECEIPT_ID,
+    stateVersion: 13,
     checkpointHeadSha: HEAD
   }, contracts);
   assert.equal(ready.contract.stepId, 'GW-41');
@@ -241,7 +247,13 @@ test('GW-41 composes one PremergeProof and rejects stale review/check evidence',
     github: githubContext({
       reviews: { ...githubContext().reviews, headSha: OLD_HEAD, exactHead: false }
     }),
+    taskId: 'TASK-20260919-900',
+    taskRevision: 8,
     taskStatus: 'REVIEW',
+    governedSessionId: SESSION_ID,
+    sessionRevision: 5,
+    bootstrapReceiptId: RECEIPT_ID,
+    stateVersion: 13,
     checkpointHeadSha: HEAD
   }, contracts);
   assert.equal(stale.status, 'BLOCKED');
@@ -254,7 +266,13 @@ test('GW-42 plans MERGE_READY only from a READY PremergeProof at the same head',
   const proof = composeGw41PremergeProof({
     expectedHeadSha: HEAD,
     github: githubContext(),
+    taskId: 'TASK-20260919-900',
+    taskRevision: 8,
     taskStatus: 'REVIEW',
+    governedSessionId: SESSION_ID,
+    sessionRevision: 5,
+    bootstrapReceiptId: RECEIPT_ID,
+    stateVersion: 13,
     checkpointHeadSha: HEAD
   }, contracts);
   const result = planGw42TaskMergeReady({
@@ -334,7 +352,13 @@ test('GW-43 exact-head merge is non-replayable and refuses a proof from another 
         registryDigest: 'registry-digest'
       }
     }),
+    taskId: 'TASK-20260919-900',
+    taskRevision: 8,
     taskStatus: 'REVIEW',
+    governedSessionId: SESSION_ID,
+    sessionRevision: 5,
+    bootstrapReceiptId: RECEIPT_ID,
+    stateVersion: 13,
     checkpointHeadSha: HEAD
   }, contracts);
   const ready = planGw43ExactHeadMerge({
