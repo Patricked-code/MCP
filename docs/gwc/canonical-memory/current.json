@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-c1-af19-resolved",
-  "currentBundleId": "bnd_mcp-pr95-c1-af19-resolved-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-c1-af19-resolved",
+  "currentBundle": "pr95-c2-af22-af30-resolved",
+  "currentBundleId": "bnd_mcp-pr95-c2-af22-af30-resolved-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-c2-af22-af30-resolved",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -27,8 +27,8 @@
   },
   "currentPrecodeState": {
     "phase": "C",
-    "workItem": "GWC-PRE-C2",
-    "work": "AF22_AF30_EXACT_HEAD_REVIEW_EVIDENCE_CORRECTION",
+    "workItem": "GWC-PRE-C3",
+    "work": "CANDIDATE_CAPABILITY_RECONCILIATION",
     "status": "READY",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
@@ -40,7 +40,8 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Reobserve the exact Claude-branch HEAD, claim GWC-PRE-C2, then implement AF-22 / AF-30 exact-head review evidence binding and stale-head invalidation through RED -> minimal GREEN -> full regression. Continue autonomously; no main/S1/production activation."
+    "nextAction": "Reobserve the exact Claude-branch head, claim GWC-PRE-C3, re-derive only still-needed capabilities from stale PR stack #88/#89/#90 against current branch/main, reuse the historical C3 disposition evidence, and implement/rework/split only the required candidate capabilities without merging stale PRs blindly or activating main/S1/production.",
+    "blocker": null
   },
   "precodeContinuationPolicy": {
     "hierarchy": "PROGRAM -> ARCHITECTURE_PHASE_OR_CANDIDATE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
@@ -120,6 +121,11 @@
   ],
   "previousBundles": [
     {
+      "name": "pr95-c1-af19-resolved",
+      "path": "docs/gwc/canonical-memory/pr95-c1-af19-resolved",
+      "status": "IMMUTABLE_HISTORICAL_C1_AF19_RESOLVED_CHECKPOINT"
+    },
+    {
       "name": "pr95-intakes-001-002-reconciled",
       "path": "docs/gwc/canonical-memory/pr95-intakes-001-002-reconciled",
       "status": "IMMUTABLE_HISTORICAL_INTAKE_RECONCILIATION_CHECKPOINT"
@@ -191,8 +197,8 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "e9f63d3139e131983f2f1603bde877a11a3e5296",
-  "correctionReason": "Phase B candidate backlog synthesis/binding/completeness is complete. B-03 caught and corrected a B-02 label-normalization projection defect before exit. Next eligible work is Phase C / GWC-PRE-C1.",
+  "observedHeadBeforePointerUpdate": "3bfd10b3c63841726a838b33db9eab85d57821a2",
+  "correctionReason": "GWC-PRE-C2 completed with RED CI #1124 and GREEN CI #1128. Review evidence now carries exact commit binding and stale-head mismatch. Next eligible work is C3 capability reconciliation.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
