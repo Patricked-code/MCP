@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-c2-af22-af30-resolved-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_c2_af22_af30_resolved",
+      "path": "sources/c2-af22-af30-resolved.json",
+      "media_type": "application/json",
+      "bytes": 1950,
+      "sha256": "93255df52e37e83904fccd7e342a4453b81a7b5443e7be2e6fb6225b0fac97ee"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_c2_pass",
+      "key": "candidate.gwc_pre_c2",
+      "claim_type": "fact",
+      "value": "GWC-PRE-C2 / AF-22 / AF-30 is PASS_WITH_EVIDENCE. RED CI #1124 failed on missing review head binding; GREEN CI #1128 succeeded on exact head 1ff28755c7749078bc5a5c891ac1162c67ba0883.",
+      "source_refs": [
+        "src_c2_af22_af30_resolved"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_review_binding",
+      "key": "candidate.review_exact_head_binding",
+      "claim_type": "fact",
+      "value": "GithubOperationalContext.reviews now carries nullable optional headSha/exactHead, derived from effective review commit_id values and compared against the current PR head. Stale review evidence produces GITHUB_HEAD_MISMATCH.",
+      "source_refs": [
+        "src_c2_af22_af30_resolved"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_c2_boundary",
+      "key": "candidate.c2_authority_boundary",
+      "claim_type": "fact",
+      "value": "C2 reused the existing governed GitHub context; it created no review authority, runtime Task, runtime lock, runtime session, main mutation, S1 mutation, production mutation or deployment.",
+      "source_refs": [
+        "src_c2_af22_af30_resolved"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_c3_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Next eligible PRECODE work item is GWC-PRE-C3 candidate capability reconciliation.",
+      "source_refs": [
+        "src_c2_af22_af30_resolved"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
