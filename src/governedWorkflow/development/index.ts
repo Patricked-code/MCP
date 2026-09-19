@@ -653,6 +653,14 @@ export function observeGw30RegressionRed(
       payload: ciPayload(ci, false, null, null)
     });
   }
+  if (input.selfReview.payload.headSha !== input.expectedHeadSha) {
+    const ci = CiObservationSchema.parse(input.ci);
+    return result({
+      stepId: 'GW-30', substrate, status: 'BLOCKED',
+      reasonCodes: ['SELF_REVIEW_HEAD_MISMATCH'],
+      payload: ciPayload(ci, false, null, null)
+    });
+  }
   if (input.selfReview.payload.findings.length === 0) {
     const ci = CiObservationSchema.parse(input.ci);
     return result({
