@@ -157,3 +157,44 @@ test('GWC-0 rejects duplicate contract ids and graph edges to unknown ids', asyn
       && error.reasonCode === 'GRAPH_REFERENCES_UNKNOWN_STEP'
   );
 });
+
+
+test('GWC-0 recomputes canonical registry digests and rejects content drift with stale embedded digests', async () => {
+  const { contracts, graph } = await canonicalInputs();
+
+  const driftedContracts = {
+    ...contracts,
+    contracts: contracts.contracts.map((contract: any, index: number) => (
+      index === 0 ? { ...contract, canonicalName: 'TAMPERED_INTENT_CAPTURE' } : contract
+    ))
+  };
+  assert.throws(
+    () => createGovernedContractSubstrate({
+      contractsProjection: driftedContracts,
+      graphProjection: graph,
+      expectedSchemaVersion: 1,
+      expectedContractRegistryDigest: contracts.registryDigest,
+      expectedGraphRegistryDigest: graph.registryDigest
+    }),
+    (error: unknown) => error instanceof GovernedContractSubstrateError
+      && error.reasonCode === 'CONTRACT_REGISTRY_DIGEST_MISMATCH'
+  );
+
+  const driftedGraph = {
+    ...graph,
+    edges: graph.edges.map((edge: any, index: number) => (
+      index === 0 ? { ...edge, precondition: edge.precondition + ' tampered' } : edge
+    ))
+  };
+  assert.throws(
+    () => createGovernedContractSubstrate({
+      contractsProjection: contracts,
+      graphProjection: driftedGraph,
+      expectedSchemaVersion: 1,
+      expectedContractRegistryDigest: contracts.registryDigest,
+      expectedGraphRegistryDigest: graph.registryDigest
+    }),
+    (error: unknown) => error instanceof GovernedContractSubstrateError
+      && error.reasonCode === 'GRAPH_REGISTRY_DIGEST_MISMATCH'
+  );
+});
