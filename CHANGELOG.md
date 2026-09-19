@@ -720,3 +720,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Le claim heartbeat Intake #004 est libéré après constat `STALE` et autorisation humaine explicite ; la staleness seule ne transfère jamais l'ownership.
 - Le claim `GWC-6` reste `ACTIVE`; heartbeat manquant => liveness `UNKNOWN`.
 - Ajout du checkpoint canonique `pr95-intake-004-minute-liveness-complete`.
+
+## 2026-09-19 — GWC-6 Server Resolver C3
+
+- Ajout/fermeture candidate de `GW-07 SERVER_RESOLUTION` en lecture seule.
+- Résolution OD-03 : canonicalisation contre un ensemble explicite et borné de serveurs gérés, conservation des IDs bruts, fail-closed sur alias inconnus, désambiguïsation par hint uniquement sur binding existant, environnement préservé, chemins exclus de l'identité.
+- Suppression du faux couplage entre digests de ProjectResolution et digests de la preuve serveur ; ces preuves restent distinctes tant qu'aucun contrat n'impose leur égalité.
+- Ordonnancement des alias bruts rendu déterministe et indépendant de la locale.
+- GREEN complet MCP CI #1258 sur `087b0a23230c83b6cb1c9069947f48a5d8cc0357`.
+- Aucun changement main/S1/production, aucun runtime Task/lock/session et aucune mutation SSH/GitRegistry.
