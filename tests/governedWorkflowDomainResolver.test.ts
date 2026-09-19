@@ -354,3 +354,36 @@ test('GWC-8 domain resolution is deterministic and never promotes historical/pro
   assert.equal(serialized.includes('/srv/legacy/example'), false);
   assert.equal(serialized.includes('protectedDomains'), false);
 });
+
+test('GWC-8 preserves compatibility with V2 mappings that omit optional componentRole', async () => {
+  const { resolveDomain } = await domainResolver();
+  const resolved = resolveDomain(input({
+    registry: registryEvidence({
+      projects: [{
+        projectId: 'example.platform',
+        publicDomain: 'app.example.com',
+        publicApi: null,
+        historicalVhosts: []
+      }],
+      mappings: [{
+        mappingId: 'legacy-web',
+        repositoryId: 'github:ExampleOrg/web',
+        projectId: 'example.platform',
+        serverId: 'S2',
+        domain: 'app.example.com',
+        domainVerified: false
+      }]
+    }),
+    observation: observation({
+      domains: [
+        { domain: 'app.example.com', verified: true, evidenceRef: 'vhost:app' }
+      ]
+    })
+  }));
+
+  assert.equal(resolved.status, 'RESOLVED');
+  assert.deepEqual(
+    resolved.surface.map((entry: any) => ({ role: entry.role, domain: entry.domain })),
+    [{ role: 'FRONTEND', domain: 'app.example.com' }]
+  );
+});
