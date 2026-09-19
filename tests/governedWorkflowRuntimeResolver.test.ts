@@ -106,6 +106,31 @@ test('GWC-7 RED: resolves a current Docker Compose runtime from bounded observed
   assert.equal(result.authorizationInferred, false);
 });
 
+test('GWC-7 represents Docker and systemd as bounded observed runtime kinds', () => {
+  const docker = resolveRuntime(input({
+    observations: [observation({
+      runtimeKind: 'DOCKER',
+      runtimeId: 'docker:frontend',
+      evidenceRef: 'runtime-observation:docker'
+    })]
+  }));
+  assert.equal(docker.status, 'RESOLVED');
+  assert.equal(docker.bindings[0]?.runtimeKind, 'DOCKER');
+  assert.equal(docker.bindings[0]?.runtimeId, 'docker:frontend');
+
+  const systemd = resolveRuntime(input({
+    observations: [observation({
+      runtimeKind: 'SYSTEMD',
+      runtimeId: 'systemd:frontend.service',
+      revision: null,
+      evidenceRef: 'runtime-observation:systemd'
+    })]
+  }));
+  assert.equal(systemd.status, 'RESOLVED');
+  assert.equal(systemd.bindings[0]?.runtimeKind, 'SYSTEMD');
+  assert.equal(systemd.bindings[0]?.runtimeId, 'systemd:frontend.service');
+});
+
 test('GWC-7 represents Passenger without MCP, S1 or container-specific branching', () => {
   const result = resolveRuntime(input({
     observations: [observation({
