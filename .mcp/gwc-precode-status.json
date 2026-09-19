@@ -1576,7 +1576,12 @@
           "GWC-15 must reuse the existing same-SHA CI gate, unchanged OIDC tokenSha===requestedSha boundary, S1 worker/attestation, Live State and existing task/session authorities; no second deployment engine or lock authority.",
           "OD-12 remains to be resolved from existing timestamp/freshness carriers for GW-52 before implementation.",
           "OD-12 resolved existing-first: immutable exact-SHA/run/job evidence does not expire merely by age; mutable Live State/runtime observations must satisfy their owning freshness carrier. For current Live State this means freshness=CURRENT and ageSeconds<=maxAgeSeconds (schema maxAgeSeconds=60). No arbitrary cross-authority wall-clock window is invented.",
-          "Self-review after FIRST GREEN CI #1413: remaining evidence-chain gap is the real S1 worker attestation, still schema_version=1 with no attestation id or admission/CI reference. C1 explicitly preserves workflow_dispatch; GWC-15 must therefore distinguish push_ci_gate evidence from workflow_dispatch_manual instead of silently changing manual semantics."
+          "Self-review after FIRST GREEN CI #1413: remaining evidence-chain gap is the real S1 worker attestation, still schema_version=1 with no attestation id or admission/CI reference. C1 explicitly preserves workflow_dispatch; GWC-15 must therefore distinguish push_ci_gate evidence from workflow_dispatch_manual instead of silently changing manual semantics.",
+          "PROVEN RED CI #1412: 14 intended GW-44..GW-57 module-absent failures; all historical tests green.",
+          "FIRST GREEN CI #1413 SUCCESS: 566/566 tests.",
+          "Attestation self-review RED CI #1417: exactly five intended evidence-chain defects; GREEN CI #1422 SUCCESS after V2 admission propagation and V1 compatibility.",
+          "Proof-composition self-review RED CI #1423: cross-deploy-job and cross-CI-run evidence mixing reproduced; FINAL GREEN CI #1425 SUCCESS with 573/573 tests and 74 discovered tests.",
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete staged; claim remains ACTIVE until checkpoint CI SUCCESS."
         ]
       },
       {
@@ -5742,7 +5747,7 @@
     "gwc15": {
       "workItemId": "GWC-PRE-E-GWC-15",
       "blueprint": "GWC-15",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
       "dependency": "GWC-PRE-E-GWC-14",
       "dependencyEvidence": {
         "ciRunNumber": 1408,
@@ -5784,6 +5789,70 @@
         "finding": "DEPLOYMENT_ATTESTATION_AUTHORIZATION_EVIDENCE_NOT_DURABLE",
         "currentAttestationSchemaVersion": 1,
         "requiredCompatibility": "V1_READABLE__V2_PUSH_CI_REFERENCE__WORKFLOW_DISPATCH_MANUAL_EXPLICIT"
+      },
+      "red": {
+        "ciRunNumber": 1412,
+        "ciRunId": 35438784032,
+        "head": "f7c2b2447537816919d3cfd653f2c5b37e806822",
+        "result": "FAIL_EXPECTED",
+        "failures": 14,
+        "signature": "GW44_TO_GW57_DEPLOY_MODULE_ABSENT"
+      },
+      "selfReview": [
+        {
+          "ciRunNumber": 1417,
+          "ciRunId": 35439117291,
+          "head": "6c08dc8f1043875fad1689a3287a7b9b1d606d41",
+          "result": "FAILURE_FIVE_REAL_FINDINGS",
+          "findings": [
+            "PUSH_ADMISSION_CI_REFERENCE_NOT_DURABLE",
+            "WORKFLOW_CI_RUN_NOT_PROPAGATED",
+            "S1_ATTESTATION_V1_ONLY",
+            "ATTESTATION_V1_V2_PARSER_ABSENT",
+            "V2_CI_SHA_RESULT_VALIDATION_ABSENT"
+          ]
+        },
+        {
+          "ciRunNumber": 1421,
+          "ciRunId": 35439306994,
+          "head": "653e28060f5e2ec88b6530fd82dce9d215c2fdcb",
+          "result": "FAILURE_TEST_EXPECTATION_ONLY"
+        },
+        {
+          "ciRunNumber": 1423,
+          "ciRunId": 35439459309,
+          "head": "b86a015a8bc6775da9bb946f02b24b4f9a89e26e",
+          "result": "FAILURE_TWO_REAL_FINDINGS",
+          "findings": [
+            "CROSS_DEPLOY_JOB_PROOF_MIXING",
+            "ATTESTED_CI_RUN_NOT_BOUND_TO_GW45"
+          ]
+        }
+      ],
+      "finalGreen": {
+        "ciRunNumber": 1425,
+        "ciRunId": 35439543113,
+        "head": "29e8314a709289d896b9816ed91a870cfb39e6a5",
+        "result": "SUCCESS",
+        "tests": 573,
+        "passed": 573,
+        "failed": 0,
+        "discoveredTests": 74,
+        "runnerTests": 73,
+        "dedicatedTests": 1
+      },
+      "attestation": {
+        "schemaVersion": 2,
+        "historicalV1": "READABLE_NOT_REINTERPRETED",
+        "pushAdmission": "PUSH_CI_GATE_EXACT_SHA_AND_CI_RUN",
+        "manualAdmission": "WORKFLOW_DISPATCH_MANUAL_PRESERVED",
+        "attestationId": "DETERMINISTIC_JOB_BOUND"
+      },
+      "exactDeploymentProof": "SHA__DEPLOY_JOB__CI_RUN__LIVE_STATE_FRESHNESS__FULL_ALIGNMENT__ZERO_CONTRADICTIONS",
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete",
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "RETAINED_UNTIL_CHECKPOINT_CI_SUCCESS"
       }
     }
   },
