@@ -943,7 +943,7 @@
           "PR-90"
         ],
         "title": "Candidate capability reconciliation",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 78,
         "sequence": 6,
         "dependencies": [
@@ -957,7 +957,400 @@
         "evidence": [
           "Historical C3 disposition evidence exists; implementation/rework remains required by current PRECODE Phase C.",
           "Dependency GWC-PRE-C2 completed with GREEN CI #1128 @ 1ff28755c7749078bc5a5c891ac1162c67ba0883.",
-          "Claimed by candidate-7afc131430c64c6fe34bcfea @ 8c68b872f3df2074c0eecbf09b3160eeba29065c"
+          "Claimed by candidate-7afc131430c64c6fe34bcfea @ 8c68b872f3df2074c0eecbf09b3160eeba29065c",
+          "RED CI #1135 proved C3 capability modules absent.",
+          "C-89.2 final split: 12 READ tools only; cartography 123 tools / 80 READ / 43 historical WRITE, digest 3d900237907905a64a572173eac7cd2109b2cf55a535afbed2252bb2f693597f.",
+          "CI #1144 was technically green but rejected by self-review because C-90 WRITE had landed before GWC-9; branch corrected before checkpoint.",
+          "FINAL GREEN CI #1152 SUCCESS @ ed395816177edf091f9a3e39f58948392bcd010d.",
+          "C-90.1/C-90.2 remain split dispositions deferred until after GWC-9 closes AF-32; C-90.3 remains DEFER."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-0",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-0"
+        ],
+        "title": "GWC-0 — Contract substrate",
+        "status": "READY",
+        "priority": 70,
+        "sequence": 7,
+        "dependencies": [
+          "GWC-PRE-C3"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow",
+          "path:tests/governedWorkflow"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-00 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-1",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-1"
+        ],
+        "title": "GWC-1 — GW-01 Intent Capture",
+        "status": "PENDING",
+        "priority": 69,
+        "sequence": 8,
+        "dependencies": [
+          "GWC-PRE-E-GWC-0"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/intentCapture"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-01 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-2",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-2"
+        ],
+        "title": "GWC-2 — Execution Engine Skeleton",
+        "status": "PENDING",
+        "priority": 68,
+        "sequence": 9,
+        "dependencies": [
+          "GWC-PRE-E-GWC-0",
+          "GWC-PRE-E-GWC-1"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/engine"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-02 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-3",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-3"
+        ],
+        "title": "GWC-3 — Wrap existing B1/B2/C2",
+        "status": "PENDING",
+        "priority": 67,
+        "sequence": 10,
+        "dependencies": [
+          "GWC-PRE-E-GWC-2"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/resolvers/identity"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-03 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-4",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-4"
+        ],
+        "title": "GWC-4 — Connection/Session/Receipt integration",
+        "status": "PENDING",
+        "priority": 66,
+        "sequence": 11,
+        "dependencies": [
+          "GWC-PRE-E-GWC-2",
+          "GWC-PRE-E-GWC-3"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/adapters/session",
+          "path:src/operationalMemory/sessionService.ts"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-04 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-5",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-5"
+        ],
+        "title": "GWC-5 — Task/Lock orchestration wrappers",
+        "status": "PENDING",
+        "priority": 65,
+        "sequence": 12,
+        "dependencies": [
+          "GWC-PRE-E-GWC-2",
+          "GWC-PRE-E-GWC-4"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/adapters/task",
+          "path:src/operationalMemory/taskQueue.ts",
+          "path:src/operationalMemory/lockService.ts"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-05 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-6",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-6"
+        ],
+        "title": "GWC-6 — Server Resolver C3",
+        "status": "PENDING",
+        "priority": 64,
+        "sequence": 13,
+        "dependencies": [
+          "GWC-PRE-E-GWC-3"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/resolvers/server"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-06 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-7",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-7"
+        ],
+        "title": "GWC-7 — Runtime Resolver C4",
+        "status": "PENDING",
+        "priority": 63,
+        "sequence": 14,
+        "dependencies": [
+          "GWC-PRE-E-GWC-6"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/resolvers/runtime"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-07 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-8",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-8"
+        ],
+        "title": "GWC-8 — Domain Resolver C5",
+        "status": "PENDING",
+        "priority": 62,
+        "sequence": 15,
+        "dependencies": [
+          "GWC-PRE-E-GWC-3",
+          "GWC-PRE-E-GWC-6"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/resolvers/domain"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-08 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-9",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-9"
+        ],
+        "title": "GWC-9 — Governance inheritance and effective capabilities",
+        "status": "PENDING",
+        "priority": 61,
+        "sequence": 16,
+        "dependencies": [
+          "GWC-PRE-E-GWC-3",
+          "GWC-PRE-E-GWC-4",
+          "GWC-PRE-E-GWC-5"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/governance",
+          "path:src/governedContext"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-09 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-10",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-10"
+        ],
+        "title": "GWC-10 — B3 Multi-repository TargetScope",
+        "status": "PENDING",
+        "priority": 60,
+        "sequence": 17,
+        "dependencies": [
+          "GWC-PRE-E-GWC-3",
+          "GWC-PRE-E-GWC-4",
+          "GWC-PRE-E-GWC-5",
+          "GWC-PRE-E-GWC-6",
+          "GWC-PRE-E-GWC-7",
+          "GWC-PRE-E-GWC-8",
+          "GWC-PRE-E-GWC-9"
+        ],
+        "collisionDomains": [
+          "path:src/operationalMemory",
+          "path:src/governedContext",
+          "path:src/liveState"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-10 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-11",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-11"
+        ],
+        "title": "GWC-11 — Authority docs / Integration slot / baseline",
+        "status": "PENDING",
+        "priority": 59,
+        "sequence": 18,
+        "dependencies": [
+          "GWC-PRE-E-GWC-2",
+          "GWC-PRE-E-GWC-10"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/authority"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-11 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-12",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-12"
+        ],
+        "title": "GWC-12 — GitHub Control Plane reconciliation",
+        "status": "PENDING",
+        "priority": 58,
+        "sequence": 19,
+        "dependencies": [
+          "GWC-PRE-E-GWC-11"
+        ],
+        "collisionDomains": [
+          "github:pull-requests",
+          "path:src/github"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-12 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-13",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-13"
+        ],
+        "title": "GWC-13 — Development workflow contracts",
+        "status": "PENDING",
+        "priority": 57,
+        "sequence": 20,
+        "dependencies": [
+          "GWC-PRE-E-GWC-11",
+          "GWC-PRE-E-GWC-12"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/development"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-13 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-14",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-14"
+        ],
+        "title": "GWC-14 — Review / merge contracts",
+        "status": "PENDING",
+        "priority": 56,
+        "sequence": 21,
+        "dependencies": [
+          "GWC-PRE-E-GWC-12",
+          "GWC-PRE-E-GWC-13"
+        ],
+        "collisionDomains": [
+          "path:src/governedContext/github.ts",
+          "path:src/governedWorkflow/review"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-14 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-15",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-15"
+        ],
+        "title": "GWC-15 — Deployment / exact-SHA evidence",
+        "status": "PENDING",
+        "priority": 55,
+        "sequence": 22,
+        "dependencies": [
+          "GWC-PRE-E-GWC-14"
+        ],
+        "collisionDomains": [
+          "path:.github/workflows",
+          "path:src/deploy",
+          "path:src/governedWorkflow/deploy"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-15 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-16",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-16"
+        ],
+        "title": "GWC-16 — Documentation and closure",
+        "status": "PENDING",
+        "priority": 54,
+        "sequence": 23,
+        "dependencies": [
+          "GWC-PRE-E-GWC-15"
+        ],
+        "collisionDomains": [
+          "path:src/governedWorkflow/terminal",
+          "path:docs"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-16 exact-bound candidate backlog."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-E-GWC-17",
+        "intentKeys": [
+          "phase-e-blueprint-build",
+          "GWC-17"
+        ],
+        "title": "GWC-17 — Universal Acceptance",
+        "status": "PENDING",
+        "priority": 53,
+        "sequence": 24,
+        "dependencies": [
+          "GWC-PRE-E-GWC-10",
+          "GWC-PRE-E-GWC-16"
+        ],
+        "collisionDomains": [
+          "path:tests/governedWorkflowUniversalAcceptance"
+        ],
+        "evidence": [
+          "Derived from GWC-CAND-17 exact-bound candidate backlog."
         ]
       }
     ],
@@ -1023,7 +1416,7 @@
           "docs:gwc",
           ".mcp:gwc-precode"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -1071,9 +1464,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "8c68b872f3df2074c0eecbf09b3160eeba29065c",
+        "lastObservedHeadSha": "cb5d125f479d32f8b6bc4613e538da4bccdc9aa6",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T01:23:00Z",
+        "lastSeenAt": "2026-09-19T01:56:00Z",
         "status": "ACTIVE"
       }
     ]
@@ -1279,7 +1672,7 @@
     "sourceEvolutionDesign": ".mcp/gwc-evolution-design.json",
     "sourceContractRegistry": ".mcp/gwc-contracts.json",
     "reconciledIntakeReceipt": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695",
-    "lifecycle": "B03_AUDIT_PASS_CANDIDATE_BACKLOG_COMPLETE",
+    "lifecycle": "PHASE_C_COMPLETE_PHASE_E_READY",
     "rootOrchestration": {
       "rootContract": "GWC_ROOT",
       "macroContracts": [
@@ -3910,6 +4303,33 @@
         "tests/governedContextGithub.test.ts"
       ],
       "authorityBoundary": "EXISTING_GOVERNED_GITHUB_CONTEXT_ONLY"
-    }
+    },
+    "c3": {
+      "workItemId": "GWC-PRE-C3",
+      "status": "PASS_WITH_EVIDENCE",
+      "finalGreen": {
+        "ciRunNumber": 1152,
+        "head": "ed395816177edf091f9a3e39f58948392bcd010d",
+        "result": "SUCCESS"
+      },
+      "materialized": {
+        "c89_2_readTools": 12,
+        "c90WriteTools": 0,
+        "registeredTools": 123,
+        "readTools": 80,
+        "writeTools": 43,
+        "catalogueDigest": "3d900237907905a64a572173eac7cd2109b2cf55a535afbed2252bb2f693597f"
+      },
+      "disposition": {
+        "c88_1": "DEFER",
+        "c89_1": "SUPERSEDE",
+        "c89_2": "SPLIT_MATERIALIZED",
+        "c90_1": "SPLIT_DEFERRED_AFTER_GWC_9",
+        "c90_2": "SPLIT_DEFERRED_AFTER_GWC_9",
+        "c90_3": "DEFER"
+      },
+      "selfReviewCorrection": "CI #1144 technical green rejected: C-90 WRITE ordering violated GWC-9/AF-32 invariant; corrected before final checkpoint."
+    },
+    "exit": "CANDIDATE_SAFETY_FOUNDATIONS_COMPLETE"
   }
 }
