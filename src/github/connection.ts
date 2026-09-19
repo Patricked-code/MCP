@@ -42,7 +42,7 @@ export type GitHubJsonRequestOptions = {
   apiBase?: string;
   allowedHosts?: string;
   timeoutMs?: number;
-  method?: 'GET' | 'POST' | 'PUT';
+  method?: 'GET' | 'POST' | 'PATCH' | 'PUT';
   jsonBody?: unknown;
 };
 
