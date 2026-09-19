@@ -105,7 +105,10 @@ function declaration(summary = 'bounded declared change') {
 
 test('GWC-13 RED AF-31: package validation profile is project-scoped and test execution is discovery-based', async () => {
   const pkg = await packageJson();
-  assert.equal(pkg.scripts['test:readonly-safety'], 'node scripts/run-validation-tests.mjs');
+  assert.equal(
+    pkg.scripts['test:readonly-safety'],
+    'node scripts/run-validation-tests.mjs tests/githubRepositoryResolution.test.ts'
+  );
   assert.deepEqual(pkg.mcpValidationProfile, profileRaw());
 
   const names = (await readdir('tests'))
@@ -119,6 +122,7 @@ test('GWC-13 RED AF-31: package validation profile is project-scoped and test ex
 
   assert.deepEqual(coverage.uncoveredTests, []);
   assert.equal(coverage.runnerTests.includes('tests/githubRegistryEvidence.test.ts'), true);
+  assert.equal(coverage.runnerTests.includes('tests/githubRepositoryResolution.test.ts'), true);
   assert.equal(coverage.dedicatedTests.includes('tests/docGovernance.test.ts'), true);
   assert.equal(coverage.runnerTests.includes('tests/docGovernance.test.ts'), false);
 });
