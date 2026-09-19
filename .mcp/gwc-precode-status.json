@@ -1110,7 +1110,8 @@
           "Self-review found M1 EvidenceRef digest/binding drift; regression RED CI #1204 FAILURE @ 49533320c646cb1ddabc192e77f3185a6e061709.",
           "FINAL GREEN CI #1205 SUCCESS @ 3ad4bcc57e45679352472c383f30a4f0703f5db2.",
           "Persisted Session/Receipt/ConnectionContext schemas and Session Service lifecycle methods remain unchanged.",
-          "POST_PASS_REQUEUE: NEW_INFORMATION_INTAKE-003 accepted with adaptation at canonicalRevision=3/backlogRevision=2. Prior GWC-4 PASS and final GREEN CI #1205 remain valid baseline; only additive intake-discovery/liveness/supervisor/runner reconciliation is pending after the current GWC-5 claim."
+          "POST_PASS_REQUEUE: NEW_INFORMATION_INTAKE-003 accepted with adaptation at canonicalRevision=3/backlogRevision=2. Prior GWC-4 PASS and final GREEN CI #1205 remain valid baseline; only additive intake-discovery/liveness/supervisor/runner reconciliation is pending after the current GWC-5 claim.",
+          "GWC-5 completed and released its collision domain. Intake #003 recovery delta is now dispatch-eligible and retains priority 66."
         ]
       },
       {
@@ -1120,7 +1121,7 @@
           "GWC-5"
         ],
         "title": "GWC-5 — Task/Lock orchestration wrappers",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 65,
         "sequence": 12,
         "dependencies": [
@@ -1139,7 +1140,15 @@
           "Checkpoint GWC-4 confirmed by CI #1209 SUCCESS.",
           "OD-05 constrained existing-first: deterministic order, all-or-nothing active grant, compensation on cross-store failure, implementation inside existing Lock Service only.",
           "Task Queue lifecycle/classification and reconcileIntent OUT_OF_SCOPE semantics remain unchanged; no runtime Task materialization in PRECODE.",
-          "KNOWLEDGE_DRIFT_LOCAL: intake #003 affects GWC-4/GWC-17, not GWC-5 implementation collision domains. Existing ACTIVE GWC-5 claim continues under LOCAL_BLOCKER != GLOBAL_STOP; reobserve/reconcile the HEAD move before the next write."
+          "KNOWLEDGE_DRIFT_LOCAL: intake #003 affects GWC-4/GWC-17, not GWC-5 implementation collision domains. Existing ACTIVE GWC-5 claim continues under LOCAL_BLOCKER != GLOBAL_STOP; reobserve/reconcile the HEAD move before the next write.",
+          "RED CI #1212 FAILURE @ 021718f054946bf95f3be04e6f21523a0e7f4404: sequential multi-lock acquisition is non-atomic; GWC-5 primitives absent.",
+          "First GREEN CI #1216 SUCCESS @ 98b65523e1a92137704457d0a2176c17c1e8c454.",
+          "Self-review regression RED CI #1217 FAILURE @ da3f5de46355ec2b46a57b7e1d1c381db3c24d1e: same-session unsettled lock reuse was not fail-closed.",
+          "GREEN CI #1218 SUCCESS @ c44eb22203101de2eef9e4579cdffae4db9be635 after unsettled-projection correction.",
+          "M1 regression RED CI #1219 FAILURE @ e7368083f00df4a9e52505f0fdaba60806726be1: lock evidence omitted known repository/task bindings.",
+          "FINAL GREEN CI #1220 SUCCESS @ 6ba1b80b7ee1117d254bf930e5d452c3a0c14644.",
+          "Task Queue source blob remained byte-identical throughout GWC-5; no lifecycle transition semantics changed.",
+          "OD-05 resolved for current single-process/store authority; OD-08 distributed concurrency remains open."
         ]
       },
       {
@@ -1526,7 +1535,7 @@
           "path:src/operationalMemory/taskQueue.ts",
           "path:src/operationalMemory/lockService.ts"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -1574,9 +1583,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "db01606f3d1f524fdc807bc59e1fbb491385fb75",
+        "lastObservedHeadSha": "dfce37dc2fea4699ce4796d464146108da976a76",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T03:14:00Z",
+        "lastSeenAt": "2026-09-19T03:33:00Z",
         "status": "ACTIVE"
       }
     ]
@@ -4605,6 +4614,54 @@
         "baselineFinalGreenCiRun": 1205,
         "rule": "Historical PASS remains valid; only the additive recovery delta is pending."
       }
+    },
+    "gwc5": {
+      "workItemId": "GWC-PRE-E-GWC-5",
+      "blueprint": "GWC-5",
+      "status": "PASS_WITH_EVIDENCE",
+      "red": {
+        "ciRunNumber": 1212,
+        "head": "021718f054946bf95f3be04e6f21523a0e7f4404",
+        "result": "FAIL_EXPECTED"
+      },
+      "firstGreen": {
+        "ciRunNumber": 1216,
+        "head": "98b65523e1a92137704457d0a2176c17c1e8c454",
+        "result": "SUCCESS_REVIEW_REQUIRED"
+      },
+      "selfReview": [
+        {
+          "finding": "SAME_SESSION_UNSETTLED_LOCK_REUSE_RACE",
+          "red": {
+            "ciRunNumber": 1217,
+            "head": "da3f5de46355ec2b46a57b7e1d1c381db3c24d1e"
+          },
+          "green": {
+            "ciRunNumber": 1218,
+            "head": "c44eb22203101de2eef9e4579cdffae4db9be635"
+          }
+        },
+        {
+          "finding": "M1_LOCK_EVIDENCE_BINDING_INCOMPLETE",
+          "red": {
+            "ciRunNumber": 1219,
+            "head": "e7368083f00df4a9e52505f0fdaba60806726be1"
+          },
+          "green": {
+            "ciRunNumber": 1220,
+            "head": "6ba1b80b7ee1117d254bf930e5d452c3a0c14644"
+          }
+        }
+      ],
+      "implementation": [
+        "src/operationalMemory/lockService.ts",
+        "src/governedWorkflow/adapters/task.ts",
+        "tests/governedWorkflowTaskLockIntegration.test.ts",
+        "package.json"
+      ],
+      "authorityBoundary": "TASK_QUEUE_UNCHANGED__LOCK_SERVICE_EXTENDED_IN_PLACE__NO_SECOND_QUEUE_OR_LOCK_AUTHORITY",
+      "od05": "RESOLVED_FOR_CURRENT_SINGLE_PROCESS_STORE_AUTHORITY",
+      "od08": "OPEN"
     }
   },
   "intake003RecoveryEvolution": {
