@@ -1365,7 +1365,7 @@ export async function runFullCandidateHappyPath() {
     deploy: {
       runId: 2500,
       jobId: 'candidate-deploy-2500-aaaaaaaaaaaa',
-      workflow: 'Candidate Governed Deploy',
+      workflow: 'MCP Governed Deploy',
       event: 'push',
       headSha: HEAD,
       status: 'completed',
