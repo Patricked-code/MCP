@@ -161,6 +161,10 @@ test('GW-02 bootstrap wrapper preserves MISSING/CURRENT/STALE/EXPIRED without up
     assert.equal(wrapped.freshness, freshness);
     assert.equal(wrapped.authorizationInferred, false);
     assert.equal(wrapped.mutationPerformed, false);
+    if (wrapped.evidenceRefs[0]) {
+      assert.match(wrapped.evidenceRefs[0].digest ?? '', /^[0-9a-f]{64}$/);
+      assert.equal(wrapped.evidenceRefs[0].binding.headSha, 'a'.repeat(40));
+    }
   }
 });
 
@@ -172,7 +176,11 @@ test('GW-03 connection-context wrapper observes the existing context and never c
   assert.equal(wrapped.freshness, 'CURRENT');
   assert.deepEqual(wrapped.payload, current);
   assert.equal(wrapped.evidenceRefs.length, 1);
-  assert.equal(wrapped.evidenceRefs[0]?.reference, `connection-context:${CONTEXT_ID}`);
+  assert.equal(
+    wrapped.evidenceRefs[0]?.reference,
+    `governed-session:${SESSION_ID}:connection-context:${CONTEXT_ID}`
+  );
+  assert.match(wrapped.evidenceRefs[0]?.digest ?? '', /^[0-9a-f]{64}$/);
   assert.equal(wrapped.authorizationInferred, false);
   assert.equal(wrapped.mutationPerformed, false);
 
@@ -197,6 +205,8 @@ test('GW-12 receipt wrapper carries exact contract/graph binding but does not pe
   assert.equal(JSON.stringify(current), before);
   assert.match(wrapped.contract.contractRegistryDigest, /^[0-9a-f]{64}$/);
   assert.match(wrapped.contract.graphRegistryDigest, /^[0-9a-f]{64}$/);
+  assert.match(wrapped.evidenceRefs[0]?.digest ?? '', /^[0-9a-f]{64}$/);
+  assert.equal(wrapped.evidenceRefs[0]?.binding.headSha, 'a'.repeat(40));
   assert.equal('contractRegistryDigest' in current, false);
   assert.equal('graphRegistryDigest' in current, false);
 });
@@ -225,6 +235,9 @@ test('GW-16 wraps open/attach/resume observations without ever exposing a resume
     assert.equal(serialized.includes('resumeSecret'), false);
     assert.equal(value.authorizationInferred, false);
     assert.equal(value.mutationPerformed, false);
+    for (const evidence of value.evidenceRefs) {
+      assert.match(evidence.digest ?? '', /^[0-9a-f]{64}$/);
+    }
   }
 });
 
@@ -252,6 +265,11 @@ test('GW-17 acknowledgement wrapper fails closed unless session and receipt prov
   assert.equal(pass.mutationPerformed, false);
   assert.match(pass.contract.contractRegistryDigest, /^[0-9a-f]{64}$/);
   assert.match(pass.contract.graphRegistryDigest, /^[0-9a-f]{64}$/);
+  assert.equal(pass.evidenceRefs.length, 2);
+  for (const evidence of pass.evidenceRefs) {
+    assert.match(evidence.digest ?? '', /^[0-9a-f]{64}$/);
+  }
+  assert.equal(pass.evidenceRefs[1]?.binding.headSha, 'a'.repeat(40));
 
   const mismatch = wrapGw17ContextAcknowledgement({
     ...acknowledged,
