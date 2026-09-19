@@ -1176,7 +1176,7 @@
           "GWC-6"
         ],
         "title": "GWC-6 — Server Resolver C3",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 64,
         "sequence": 13,
         "dependencies": [
@@ -1200,7 +1200,9 @@
           "CI #1256 @ 616fd99398a2f8c0c1c336df6d468ba19f94d46c: all GWC-6/read-only safety tests green; global failure isolated to pre-existing EOF whitespace gate drift.",
           "FINAL GREEN CI #1258 SUCCESS @ 087b0a23230c83b6cb1c9069947f48a5d8cc0357: typecheck, build, docs, governance, GWC verifier, secret scan, read-only safety and whitespace all green.",
           "OD-03 resolved existing-first: explicit canonicalServerIds authority, bounded case normalization, raw IDs preserved, unknown aliases UNVERIFIED, hints only disambiguate bound canonical identities, paths never identity, environment preserved.",
-          "Checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete created; claim retained ACTIVE until exact-head checkpoint CI succeeds."
+          "Checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete created; claim retained ACTIVE until exact-head checkpoint CI succeeds.",
+          "Checkpoint MCP CI #1265 SUCCESS @ 7c5c34669b9baa8fbe5e2975debf8205d9e5e05b; canonical bundle, pointer, status and project documentation validated before claim release.",
+          "GWC-6 claim released only after checkpoint CI success; no ownership transfer."
         ]
       },
       {
@@ -1210,17 +1212,20 @@
           "GWC-7"
         ],
         "title": "GWC-7 — Runtime Resolver C4",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 63,
         "sequence": 14,
         "dependencies": [
           "GWC-PRE-E-GWC-6"
         ],
         "collisionDomains": [
-          "path:src/governedWorkflow/resolvers/runtime"
+          "path:src/governedWorkflow/resolvers/runtime",
+          "path:tests/governedWorkflowRuntimeResolver.test.ts"
         ],
         "evidence": [
-          "Derived from GWC-CAND-07 exact-bound candidate backlog."
+          "Derived from GWC-CAND-07 exact-bound candidate backlog.",
+          "Dependency GWC-PRE-E-GWC-6 completed with checkpoint CI #1265 SUCCESS.",
+          "Dispatched existing-first to candidate-7afc131430c64c6fe34bcfea after GWC-6 release; OD-04 must be resolved from existing runtime authorities before GREEN."
         ]
       },
       {
@@ -1588,7 +1593,7 @@
           "path:src/governedWorkflow/resolvers/server",
           "path:tests/governedWorkflowGithubResolverAdapters.test.ts"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       },
       {
         "candidateSessionId": "candidate-minute-liveness-20260919T042806Z",
@@ -1600,6 +1605,16 @@
           "docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-7",
+        "collisionDomains": [
+          "path:src/governedWorkflow/resolvers/runtime",
+          "path:tests/governedWorkflowRuntimeResolver.test.ts"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -4832,7 +4847,7 @@
     "gwc6": {
       "workItemId": "GWC-PRE-E-GWC-6",
       "blueprint": "GWC-6",
-      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
+      "status": "PASS_WITH_EVIDENCE",
       "red": {
         "ciRunNumber": 1243,
         "head": "7d7f7d2acc2d79b0b0a8bd268b7d8e6eb4a972d6",
@@ -4865,9 +4880,24 @@
       "authorityBoundary": "READ_ONLY_SERVER_RESOLUTION__GITREGISTRY_AUTHORITY_UNCHANGED__NO_SSH_MUTATION_OR_AUTHORIZATION",
       "checkpoint": {
         "bundle": "docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete",
-        "validation": "PENDING_EXACT_HEAD_CI",
-        "claimRelease": "AFTER_CHECKPOINT_CI_SUCCESS"
+        "validation": "SUCCESS",
+        "ciRunNumber": 1265,
+        "head": "7c5c34669b9baa8fbe5e2975debf8205d9e5e05b",
+        "claimRelease": "RELEASED_AFTER_CHECKPOINT_CI_SUCCESS"
       }
+    },
+    "gwc7": {
+      "workItemId": "GWC-PRE-E-GWC-7",
+      "blueprint": "GWC-7",
+      "status": "IN_PROGRESS",
+      "dependency": "GWC-PRE-E-GWC-6",
+      "dependencyEvidence": {
+        "ciRunNumber": 1265,
+        "head": "7c5c34669b9baa8fbe5e2975debf8205d9e5e05b",
+        "result": "SUCCESS"
+      },
+      "od04": "TO_RESOLVE_FROM_EXISTING_AUTHORITIES",
+      "authorityBoundary": "READ_ONLY_RUNTIME_RESOLUTION__NO_RESTART_OR_MUTATION"
     }
   },
   "intake003RecoveryEvolution": {
