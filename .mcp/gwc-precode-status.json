@@ -1719,7 +1719,7 @@
           "negative-paths"
         ],
         "title": "Phase F-03 — Full negative-path matrix",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 50,
         "sequence": 27,
         "dependencies": [
@@ -1732,7 +1732,10 @@
           "Phase F authority requires unknown/ambiguous/stale/conflict/duplicate/denied/CI failure/head drift/review rejection/deploy failure/runtime drift/docs drift/stale receipt/reconnect/concurrent agents to fail closed or follow an explicit recovery edge.",
           "Dependency F-02 satisfied by exact-head CI #1476 SUCCESS with 599/599 tests.",
           "F-03 must exercise every named negative class from the canonical Phase F authority and prove fail-closed or an explicit recovery edge, with zero live mutation.",
-          "PROVEN RED CI #1478 FAILURE @ 47689fdbb0805a6742a0c731129c1ea60132fc6d: 600 tests, 599 PASS, exactly 1 intended F-03 failure; runFullCandidateNegativeMatrix is not a function; 0 skipped."
+          "PROVEN RED CI #1478 FAILURE @ 47689fdbb0805a6742a0c731129c1ea60132fc6d: 600 tests, 599 PASS, exactly 1 intended F-03 failure; runFullCandidateNegativeMatrix is not a function; 0 skipped.",
+          "F-03 RED CI #1478 FAILURE @ 47689fdbb0805a6742a0c731129c1ea60132fc6d: 600 tests, 599 PASS, exactly one missing matrix failure.",
+          "F-03 GREEN CI #1480 SUCCESS @ a8dd7553c14a5b0b96bb9e21b3cc134281a0f2dc: 600/600 PASS, 0 skipped; all 15 canonical negative classes executed.",
+          "Negative matrix results are either FAIL_CLOSED or RECOVERY_EDGE; no live mutation dispatched and runtime contracts unchanged."
         ]
       },
       {
@@ -1742,7 +1745,7 @@
           "cross-context-universality"
         ],
         "title": "Phase F-04 — Cross-context universality audit",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 49,
         "sequence": 28,
         "dependencies": [
@@ -1752,7 +1755,10 @@
           "path:tests/governedWorkflowUniversalAcceptance"
         ],
         "evidence": [
-          "Phase F authority forbids hard dependencies on Patricked-code/MCP, Stablecoin, AfricaFunds, fixed server, fixed branch or fixed domain."
+          "Phase F authority forbids hard dependencies on Patricked-code/MCP, Stablecoin, AfricaFunds, fixed server, fixed branch or fixed domain.",
+          "Dependency F-03 satisfied by CI #1480 SUCCESS with 600/600 tests.",
+          "F-04 must prove no governed behavior depends on Patricked-code/MCP, Stablecoin, AfricaFunds, fixed server, fixed branch or fixed domain literals.",
+          "Existing GWC-17 anti-hardcode scan is reusable but Phase F-04 must extend/verify the exact canonical forbidden set, including AfricaFunds and branch hard-dependency checks."
         ]
       },
       {
@@ -2150,6 +2156,15 @@
         "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
         "agentIdentity": "ChatGPT-GPT-5.6-Sol",
         "workItemId": "GWC-PRE-F-03",
+        "collisionDomains": [
+          "path:tests/governedWorkflowUniversalAcceptance"
+        ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-F-04",
         "collisionDomains": [
           "path:tests/governedWorkflowUniversalAcceptance"
         ],
@@ -6437,10 +6452,10 @@
   },
   "currentPrecodeState": {
     "phase": "F",
-    "workItem": "GWC-PRE-F-03",
-    "work": "FULL_NEGATIVE_PATH_MATRIX",
+    "workItem": "GWC-PRE-F-04",
+    "work": "CROSS_CONTEXT_UNIVERSALITY_AUDIT",
     "status": "IN_PROGRESS",
-    "nextAction": "Implement runFullCandidateNegativeMatrix in the tests-only acceptance harness using existing fail-closed/recovery primitives for all 15 canonical negative classes; no runtime source changes.",
+    "nextAction": "Extend the tests-only universality audit to the complete Phase F forbidden set and prove governed source remains parameter-driven across alternate repository/project/server/branch/domain contexts.",
     "blocker": null
   },
   "phaseF": {
@@ -6596,7 +6611,7 @@
     },
     "f03": {
       "workItemId": "GWC-PRE-F-03",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE",
       "requiredNegativeClasses": [
         "UNKNOWN",
         "AMBIGUOUS",
@@ -6626,7 +6641,39 @@
         "failed": 1,
         "skipped": 0,
         "signature": "FULL_NEGATIVE_MATRIX_ABSENT"
-      }
+      },
+      "validation": {
+        "red": {
+          "ciRunNumber": 1478,
+          "ciRunId": 35468429785,
+          "head": "47689fdbb0805a6742a0c731129c1ea60132fc6d",
+          "result": "FAIL_EXPECTED"
+        },
+        "green": {
+          "ciRunNumber": 1480,
+          "ciRunId": 35468579978,
+          "head": "a8dd7553c14a5b0b96bb9e21b3cc134281a0f2dc",
+          "result": "SUCCESS",
+          "tests": 600,
+          "passed": 600,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "verdict": "ALL_15_NEGATIVE_CLASSES_FAIL_CLOSED_OR_EXPLICIT_RECOVERY_EDGE"
+    },
+    "f04": {
+      "workItemId": "GWC-PRE-F-04",
+      "status": "IN_PROGRESS",
+      "forbiddenHardDependencies": [
+        "Patricked-code/MCP",
+        "Stablecoin",
+        "AfricaFunds",
+        "FIXED_SERVER",
+        "FIXED_BRANCH",
+        "FIXED_DOMAIN"
+      ],
+      "requirement": "GENERIC_GOVERNED_PATHS_PARAMETER_DRIVEN__TARGET_LITERALS_FIXTURE_ONLY"
     }
   }
 }
