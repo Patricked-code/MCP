@@ -1646,7 +1646,8 @@
           "GWC-17 owns GW-73 UNIVERSAL_ACCEPTANCE only; GW-73 is outside the nominal runtime graph and evaluates the implemented system as a whole.",
           "Integration classification NEW is limited to an acceptance harness + fixtures. Runtime code, authorities, workflow state and production behavior must not be added for this work item.",
           "NEW_INFORMATION_INTAKE-003 requirements are acceptance obligations: liveness, supervisor decision, runner acknowledgement, intake dedupe, restart-storm protection, claim safety, stale-envelope cancellation and secret non-persistence.",
-          "No blocking open decision remains for GWC-17."
+          "No blocking open decision remains for GWC-17.",
+          "PROVEN RED CI #1451 FAILURE @ 0b55d140a6b32be82d81192d2df12c3cabd8a893: 597 tests, 589 historical PASS, exactly 8 GW-73 failures, all ERR_MODULE_NOT_FOUND for tests/governedWorkflowUniversalAcceptance/harness.js; 0 skipped; static/build/docs/governance/GWC/secret checks green."
         ]
       }
     ],
@@ -6054,7 +6055,18 @@
         "STALE_ENVELOPE_CANCELLATION",
         "SECRET_NON_PERSISTENCE"
       ],
-      "openDecisions": []
+      "openDecisions": [],
+      "red": {
+        "ciRunNumber": 1451,
+        "ciRunId": 35445821981,
+        "head": "0b55d140a6b32be82d81192d2df12c3cabd8a893",
+        "result": "FAIL_EXPECTED",
+        "tests": 597,
+        "passed": 589,
+        "failed": 8,
+        "skipped": 0,
+        "signature": "GW73_ACCEPTANCE_HARNESS_ABSENT"
+      }
     }
   },
   "intake003RecoveryEvolution": {
@@ -6168,7 +6180,7 @@
     "workItem": "GWC-PRE-E-GWC-17",
     "work": "GWC_17_UNIVERSAL_ACCEPTANCE",
     "status": "IN_PROGRESS",
-    "nextAction": "Audit the complete implemented candidate against GW-73 and NEW_INFORMATION_INTAKE-003. Build a tests-only universal acceptance harness under tests/governedWorkflowUniversalAcceptance that proves MCP, generic multi-repository targeting, recovery safety, anti-hardcode behavior and no runtime import/authority creation.",
+    "nextAction": "Implement the tests-only GWC-17 acceptance fixtures and harness under tests/governedWorkflowUniversalAcceptance. Reuse current TargetScope, runtime/domain resolver, lock, terminal and candidate recovery primitives; do not modify runtime source.",
     "blocker": null
   }
 }
