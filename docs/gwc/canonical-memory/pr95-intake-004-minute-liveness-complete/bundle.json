@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-intake-004-minute-liveness-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_intake_004_minute_liveness_completion",
+      "path": "sources/intake-004-minute-liveness-completion.json",
+      "media_type": "application/json",
+      "bytes": 3356,
+      "sha256": "f247cd614c818a6df40d48afa478ff060a4464b1a79c9a88dc1d62512a0994b7"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_intake_004_complete",
+      "key": "candidate.intake_004_minute_liveness_complete",
+      "claim_type": "fact",
+      "value": "NEW_INFORMATION_INTAKE-004 minute-liveness scope is complete with six scoped heartbeat tests passing at CI #1252; the same run's seven failures are exclusively in concurrent GWC-6 RED scope.",
+      "source_refs": [
+        "src_intake_004_minute_liveness_completion"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intake_004_stale_release",
+      "key": "candidate.intake_004_stale_claim_release",
+      "claim_type": "fact",
+      "value": "The Intake #004 candidate heartbeat was STALE at reobservation. Its claim is released only under explicit human recovery authorization, never because staleness itself transfers ownership.",
+      "source_refs": [
+        "src_intake_004_minute_liveness_completion"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc6_preserved",
+      "key": "candidate.gwc6_claim_preserved",
+      "claim_type": "fact",
+      "value": "GWC-6 heartbeat evidence is missing, therefore minute liveness is UNKNOWN; its ACTIVE claim and collision domains are preserved unchanged.",
+      "source_refs": [
+        "src_intake_004_minute_liveness_completion"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

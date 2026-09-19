@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-e-gwc4-intake003-recovery-complete",
-  "currentBundleId": "bnd_mcp-pr95-e-gwc4-intake003-recovery-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc4-intake003-recovery-complete",
+  "currentBundle": "pr95-intake-004-minute-liveness-complete",
+  "currentBundleId": "bnd_mcp-pr95-intake-004-minute-liveness-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-intake-004-minute-liveness-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -29,7 +29,7 @@
     "phase": "E",
     "workItem": "GWC-PRE-E-GWC-6",
     "work": "GWC_6_SERVER_RESOLVER_C3",
-    "status": "READY",
+    "status": "IN_PROGRESS",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Validate the GWC-4 closure/release projection by CI. If SUCCESS and no concurrent claim has appeared, claim GWC-PRE-E-GWC-6 and execute its RED->GREEN cycle from the current live authorities. Do not replay GWC-4 or GWC-5.",
+    "nextAction": "Reobserve the existing GWC-6 candidate session/claim and minute-heartbeat surface before any GWC-6 write. Heartbeat is currently MISSING => liveness UNKNOWN, so preserve ownership; resume only through the existing session if verifiable, otherwise run reconcile-only recovery without transferring the claim.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -120,6 +120,11 @@
     "Preserve INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK."
   ],
   "previousBundles": [
+    {
+      "name": "pr95-e-gwc4-intake003-recovery-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc4-intake003-recovery-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC4_INTAKE003_RECOVERY_COMPLETE_CHECKPOINT"
+    },
     {
       "name": "pr95-e-gwc5-task-lock-orchestration-complete",
       "path": "docs/gwc/canonical-memory/pr95-e-gwc5-task-lock-orchestration-complete",
@@ -247,8 +252,8 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "f8c35d793e2b54a93aa709aa4ca5450f09fcca7a",
-  "correctionReason": "GWC-4 NEW_INFORMATION_INTAKE-003 recovery delta is PASS_WITH_EVIDENCE and checkpoint CI #1237 succeeded. Its claim is released; GWC-PRE-E-GWC-6 is the next current READY work item pending closure-projection CI validation.",
+  "observedHeadBeforePointerUpdate": "4f88e8453523bd62f04989bc7d76b1aa3ad3cf65",
+  "correctionReason": "Intake #004 minute-liveness implementation is scope-green at CI #1252. Its own candidate heartbeat became STALE and the stale claim was released only under explicit human recovery authorization. GWC-6 has MISSING heartbeat => UNKNOWN liveness; its ACTIVE claim and collision domains remain unchanged.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
@@ -400,6 +405,20 @@
         "NO_RAW_TRANSCRIPT_OR_SECRET_PERSISTENCE"
       ],
       "dispatchAfterCurrentClaim": "GWC-PRE-E-GWC-4"
+    },
+    "minuteLivenessEvolution": {
+      "status": "PASS_WITH_EVIDENCE",
+      "intakeId": "NEW_INFORMATION_INTAKE-004",
+      "implementation": "src/governedContext/candidateContinuity.ts",
+      "tests": "tests/candidateContinuity.test.ts",
+      "coordinationContract": "docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md#174-per-minute-candidate-liveness-heartbeat",
+      "transport": "PR_95_TOP_LEVEL_MUTABLE_ISSUE_COMMENT",
+      "emissionIntervalSeconds": 60,
+      "freshForSeconds": 120,
+      "scopedCiEvidence": "CI #1252 @ 4f88e8453523bd62f04989bc7d76b1aa3ad3cf65: six minute-heartbeat tests PASS",
+      "globalCiBoundary": "Same CI has seven failures exclusively in concurrent GWC-6 RED scope; Intake #004 does not modify or release GWC-6.",
+      "staleClaimClosure": "Explicit human recovery authorization recorded at PR #95 comment #5739730790; stale alone did not transfer ownership.",
+      "completionBundle": "docs/gwc/canonical-memory/pr95-intake-004-minute-liveness-complete"
     }
   },
   "githubFirstBootstrap": {
@@ -440,34 +459,37 @@
     }
   },
   "lastInformationIntake": {
-    "intakeId": "NEW_INFORMATION_INTAKE-003",
-    "intakeNumber": 3,
+    "intakeId": "NEW_INFORMATION_INTAKE-004",
+    "intakeNumber": 4,
     "mode": "NEW_INFORMATION_INTAKE",
     "sourceType": "chatgpt",
-    "sourceRef": "PR#95 comment 5738570504",
+    "sourceRef": "PR#95 comment 5739347553",
     "rawTranscriptPersisted": false,
     "canonicalAdoptionPerformed": true,
     "verdict": "ACCEPT_WITH_ADAPTATION",
-    "candidateWorkDispatched": false,
+    "candidateWorkDispatched": true,
     "runtimeTasksCreated": 0,
-    "candidateClaimsCreated": 0,
+    "candidateClaimsCreated": 1,
     "boundWorkItems": [
       "GWC-PRE-E-GWC-4",
       "GWC-PRE-E-GWC-17"
     ],
-    "status": "RECONCILED"
+    "status": "RECONCILED_IMPLEMENTED_PASS_WITH_EVIDENCE"
   },
   "intakeContinuity": {
-    "latestIntakeSequence": 3,
-    "reconciledThroughSequence": 3,
-    "canonicalRevision": 3,
-    "backlogRevision": 2,
-    "lastReconciliationDigest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555",
+    "latestIntakeSequence": 4,
+    "reconciledThroughSequence": 4,
+    "canonicalRevision": 4,
+    "backlogRevision": 3,
+    "lastReconciliationDigest": "bdef89603c02b604efcb2da82e0e3647c9d45bac8bcfc26760501fd16a3f2fd0",
     "pendingIntakeIds": [],
     "sourceBundles": [
       "docs/gwc/canonical-memory/pr95-new-information-intake-001",
       "docs/gwc/canonical-memory/pr95-new-information-intake-002",
-      "docs/gwc/canonical-memory/pr95-new-information-intake-003"
+      "docs/gwc/canonical-memory/pr95-new-information-intake-003",
+      "docs/gwc/canonical-memory/pr95-new-information-intake-004",
+      "docs/gwc/canonical-memory/pr95-intake-004-reconciled",
+      "docs/gwc/canonical-memory/pr95-intake-004-minute-liveness-complete"
     ],
     "projectionOnly": true,
     "authority": false,
@@ -588,8 +610,8 @@
     "GWC-1": "PASS_WITH_EVIDENCE",
     "GWC-2": "PASS_WITH_EVIDENCE",
     "GWC-3": "PASS_WITH_EVIDENCE",
-    "GWC-4": "PASS_WITH_EVIDENCE",
+    "GWC-4": "PASS_WITH_EVIDENCE_INTAKE004_COMPLETE",
     "GWC-5": "PASS_WITH_EVIDENCE",
-    "GWC-6": "READY_AFTER_GWC4_CLOSURE_VALIDATION"
+    "GWC-6": "IN_PROGRESS_ACTIVE_CLAIM_LIVENESS_UNKNOWN"
   }
 }

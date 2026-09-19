@@ -1087,7 +1087,7 @@
           "GWC-4"
         ],
         "title": "GWC-4 — Connection/Session/Receipt integration",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 66,
         "sequence": 11,
         "dependencies": [
@@ -1126,7 +1126,10 @@
           "INTAKE_003 checkpoint CI #1237 SUCCESS @ 115ac1640b7c75458cf23710e851c1e0e4b14352.",
           "GWC-4 historical baseline plus intake-003 additive recovery delta are complete with evidence; claim released only after checkpoint CI success.",
           "POST_PASS_REQUEUE: NEW_INFORMATION_INTAKE-004 accepted with adaptation. Preserve intake #003 FINAL GREEN CI #1233; requeue GWC-4 only for additive per-minute heartbeat transport/validation on candidateContinuity + coordination docs. Active GWC-6 claim remains untouched.",
-          "Intake #004 minute-liveness delta claimed by candidate-minute-liveness-20260919T042806Z @ 621686856786316efe1ec5fe6c9d63ab72382720; scope is disjoint from active GWC-6 server-resolver claim."
+          "Intake #004 minute-liveness delta claimed by candidate-minute-liveness-20260919T042806Z @ 621686856786316efe1ec5fe6c9d63ab72382720; scope is disjoint from active GWC-6 server-resolver claim.",
+          "NEW_INFORMATION_INTAKE-004 minute-liveness scope: six scoped heartbeat tests PASS in CI #1252 @ 4f88e8453523bd62f04989bc7d76b1aa3ad3cf65.",
+          "CI #1252 global failure is external to Intake #004: exactly seven failures, all in GWC-6 server-resolver RED scope.",
+          "Human-authorized stale-claim recovery trace: PR #95 comment #5739730790; Intake #004 stale claim released, GWC-6 claim preserved."
         ]
       },
       {
@@ -1589,7 +1592,7 @@
           "path:tests/candidateContinuity.test.ts",
           "docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -1654,12 +1657,24 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "621686856786316efe1ec5fe6c9d63ab72382720",
-        "lastObservedHeadSha": "621686856786316efe1ec5fe6c9d63ab72382720",
+        "lastObservedHeadSha": "4f88e8453523bd62f04989bc7d76b1aa3ad3cf65",
         "createdAt": "2026-09-19T04:28:35Z",
-        "lastSeenAt": "2026-09-19T04:33:24Z",
-        "status": "ACTIVE"
+        "lastSeenAt": "2026-09-19T04:49:36Z",
+        "status": "CLOSED"
       }
-    ]
+    ],
+    "lastLivenessReconciliation": {
+      "observedAt": "2026-09-19T05:44:26Z",
+      "observedHeadSha": "4f88e8453523bd62f04989bc7d76b1aa3ad3cf65",
+      "intake004CandidateSessionId": "candidate-minute-liveness-20260919T042806Z",
+      "intake004Liveness": "STALE",
+      "intake004ClaimAfter": "RELEASED",
+      "gwc6CandidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+      "gwc6Liveness": "UNKNOWN_MISSING_HEARTBEAT",
+      "gwc6ClaimAfter": "ACTIVE",
+      "humanAuthorizationCommentId": 5739730790,
+      "ownershipTransferred": false
+    }
   },
   "conversationIntake": {
     "role": "BOUNDED_SEMANTIC_RECONCILIATION_INPUT_TO_EXISTING_AUTHORITIES",
@@ -4728,6 +4743,35 @@
           "head": "115ac1640b7c75458cf23710e851c1e0e4b14352",
           "result": "SUCCESS"
         }
+      },
+      "intake004Delta": {
+        "intakeId": "NEW_INFORMATION_INTAKE-004",
+        "status": "PASS_WITH_EVIDENCE",
+        "implementation": [
+          "src/governedContext/candidateContinuity.ts",
+          "tests/candidateContinuity.test.ts",
+          "docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md"
+        ],
+        "scopeValidation": {
+          "ciRunNumber": 1252,
+          "head": "4f88e8453523bd62f04989bc7d76b1aa3ad3cf65",
+          "minuteHeartbeatTests": 6,
+          "result": "PASS_SCOPED__GLOBAL_CI_RED_ONLY_GWC6"
+        },
+        "claimClosure": {
+          "candidateSessionId": "candidate-minute-liveness-20260919T042806Z",
+          "priorStatus": "ACTIVE_STALE",
+          "finalClaimStatus": "RELEASED",
+          "finalSessionStatus": "CLOSED",
+          "authorizationEvidence": "PR#95 comment 5739730790",
+          "automaticTransfer": false
+        },
+        "concurrentGwc6": {
+          "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+          "liveness": "UNKNOWN_MISSING_HEARTBEAT",
+          "claimStatus": "ACTIVE_UNCHANGED",
+          "collisionDomainPreserved": true
+        }
       }
     },
     "gwc5": {
@@ -4809,7 +4853,7 @@
     }
   },
   "intake004MinuteLiveness": {
-    "status": "IMPLEMENTATION_IN_PROGRESS",
+    "status": "PASS_WITH_EVIDENCE",
     "intakeId": "NEW_INFORMATION_INTAKE-004",
     "receiptDigest": "bdef89603c02b604efcb2da82e0e3647c9d45bac8bcfc26760501fd16a3f2fd0",
     "sourceCommentId": 5739347553,
@@ -4846,6 +4890,43 @@
     "productionMutation": false,
     "candidateSessionId": "candidate-minute-liveness-20260919T042806Z",
     "heartbeatCommentId": 5739369708,
-    "claimedAt": "2026-09-19T04:33:24Z"
+    "claimedAt": "2026-09-19T04:33:24Z",
+    "completedAt": "2026-09-19T05:44:26Z",
+    "completionCheckpoint": "docs/gwc/canonical-memory/pr95-intake-004-minute-liveness-complete",
+    "humanRecoveryAuthorizationCommentId": 5739730790,
+    "observedClaims": [
+      {
+        "candidateSessionId": "candidate-minute-liveness-20260919T042806Z",
+        "workItemId": "GWC-PRE-E-GWC-4",
+        "heartbeatCommentId": 5739369708,
+        "heartbeatSequence": 14,
+        "heartbeatEmittedAt": "2026-09-19T04:49:36Z",
+        "heartbeatAgeSecondsAtObservation": 3290,
+        "minuteLiveness": "STALE",
+        "claimDisposition": "RELEASED_AFTER_EXPLICIT_HUMAN_RECOVERY_AUTHORIZATION",
+        "ownershipTransferred": false
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "workItemId": "GWC-PRE-E-GWC-6",
+        "heartbeat": "MISSING",
+        "minuteLiveness": "UNKNOWN",
+        "lastGwc6ImplementationCommit": "7d7f7d2acc2d79b0b0a8bd268b7d8e6eb4a972d6",
+        "lastGwc6ImplementationCommitAt": "2026-09-19T04:11:10Z",
+        "claimDisposition": "ACTIVE_PRESERVED_UNCHANGED",
+        "ownershipTransferred": false
+      }
+    ],
+    "scopeValidation": {
+      "ciRunNumber": 1252,
+      "ciRunId": 35422282094,
+      "head": "4f88e8453523bd62f04989bc7d76b1aa3ad3cf65",
+      "minuteHeartbeatTests": 6,
+      "minuteHeartbeatResult": "PASS",
+      "globalCiResult": "FAILURE_EXTERNAL_CONCURRENT_SCOPE",
+      "externalFailureCount": 7,
+      "externalOwnerWorkItemId": "GWC-PRE-E-GWC-6"
+    },
+    "verdict": "PASS_WITH_EVIDENCE_SCOPE_GREEN_EXTERNAL_GWC6_RED"
   }
 }

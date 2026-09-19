@@ -710,3 +710,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - `workflow_run` reste absent/interdit ; politique OIDC exact-SHA inchangée ; `workflow_dispatch` conserve son comportement historique.
 - TDD : RED CI #1110 @ `757ee2a`; GREEN CI #1112 @ `074f2bd2` entièrement réussi.
 - Aucun merge `main`, S1, production ou runtime MCP n'est muté.
+
+
+### 2026-09-19 — GWC Intake #004 minute-liveness closure
+
+- Finalisation du delta `NEW_INFORMATION_INTAKE-004` après reconstitution des deux claims PRECODE actifs.
+- Validation bornée : 6 tests minute-heartbeat PASS dans MCP CI #1252 au head `4f88e8453523bd62f04989bc7d76b1aa3ad3cf65`.
+- Les 7 échecs du même run appartiennent exclusivement au RED concurrent `GWC-6`; aucun fichier `GWC-6` n'est modifié par la clôture Intake #004.
+- Le claim heartbeat Intake #004 est libéré après constat `STALE` et autorisation humaine explicite ; la staleness seule ne transfère jamais l'ownership.
+- Le claim `GWC-6` reste `ACTIVE`; heartbeat manquant => liveness `UNKNOWN`.
+- Ajout du checkpoint canonique `pr95-intake-004-minute-liveness-complete`.

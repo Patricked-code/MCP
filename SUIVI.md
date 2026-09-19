@@ -534,3 +534,20 @@ Date : 2026-08-29
 - Invariants préservés : OIDC exact-SHA, aucune activation live, aucune mutation main/S1/prod, aucun runtime Task/lock/session.
 - `GWC-PRE-C2` devient `READY`.
 - `NEXT_ACTION` : réobserver HEAD exact, claim branch-local C2, implémenter AF-22/AF-30 exact-head review evidence + stale-head invalidation en RED -> GREEN -> régression, puis continuer automatiquement.
+
+
+## 2026-09-19 — Intake #004 minute-liveness — clôture contrôlée
+
+- Branche : `claude/ecstatic-edison-v1dyt1`.
+- Head réobservé avant mutation : `4f88e8453523bd62f04989bc7d76b1aa3ad3cf65`.
+- Autorisation humaine durable : PR #95 commentaire `5739730790`.
+- Deux claims `ACTIVE` ont été reconstitués :
+  - `candidate-minute-liveness-20260919T042806Z` / `GWC-PRE-E-GWC-4` : heartbeat #14 à `2026-09-19T04:49:36Z`, âge 3290 s à l'observation => `STALE`. Le claim est libéré et la candidate session clôturée uniquement sous l'autorisation humaine explicite ; aucune propriété n'est transférée automatiquement.
+  - `candidate-7afc131430c64c6fe34bcfea` / `GWC-PRE-E-GWC-6` : aucun heartbeat minute utilisable => `UNKNOWN/MISSING_HEARTBEAT`. Claim, session et collision domains conservés `ACTIVE` sans mutation.
+- CI #1252 au head `4f88e8453523bd62f04989bc7d76b1aa3ad3cf65` :
+  - 6/6 tests spécifiques minute-heartbeat : PASS ;
+  - 7 échecs globaux : exclusivement tests RED de `GWC-6`.
+- Verdict Intake #004 : `PASS_WITH_EVIDENCE_SCOPE_GREEN_EXTERNAL_GWC6_RED`.
+- Aucun fichier source/test de GWC-6 modifié par cette clôture.
+- Aucun merge main, S1, runtime, lock, Governed Task ou déploiement.
+- NEXT_ACTION : réobserver la session/claim/heartbeat GWC-6 avant toute écriture GWC-6 ; heartbeat absent = liveness UNKNOWN, jamais permission de voler/libérer le claim.

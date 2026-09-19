@@ -779,3 +779,14 @@ Compatibilité : `GITHUB_OIDC_POLICY.allowedEvents` reste inchangé, `tokenSha =
 Preuve TDD : RED `757ee2a525741eef5cbb36796fc69c62c85a47b2` / MCP CI #1110 (échec attendu à `Read-only safety tests` après les contrôles précédents verts), puis GREEN final `074f2bd21eef6e23811512453d34670bfecc7485` / MCP CI #1112 entièrement réussi.
 
 Frontière : aucun merge `main`, aucune écriture S1, aucun déploiement, aucune activation live, aucune Governed Task runtime, aucun runtime lock et aucune Governed Session runtime ne sont produits par cette correction candidate.
+
+
+## 2026-09-19 — Clôture d'un claim PRECODE stale sous autorisation humaine
+
+Décision appliquée uniquement au programme GWC/PRECODE PR #95 :
+
+- `STALE != DEAD`, `STALE != RELEASED` et `STALE != CLAIM_TRANSFER` restent invariants.
+- Le claim `candidate-minute-liveness-20260919T042806Z` peut être libéré dans cette clôture parce que l'utilisateur a explicitement demandé la récupération et la finalisation, preuve durable PR #95 commentaire `5739730790`, après réobservation du HEAD et du heartbeat.
+- Cette autorisation ne s'étend pas au claim `GWC-PRE-E-GWC-6`.
+- Pour GWC-6, l'absence de heartbeat produit `UNKNOWN/MISSING_HEARTBEAT`, pas une inférence `STALE` ou `DEAD`; son ownership reste inchangé.
+- Une reprise GWC-6 doit d'abord réobserver claim/session/HEAD/heartbeat et utiliser le mécanisme de recovery en mode reconcile-only si l'exécuteur d'origine n'est pas vérifiable.
