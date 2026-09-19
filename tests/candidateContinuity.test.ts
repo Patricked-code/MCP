@@ -685,3 +685,294 @@ test('HEAD_MOVED remains higher priority than knowledge-revision reconciliation'
   assert.equal(result.status, 'HEAD_MOVED');
   assert.equal(result.mayContinueAfterLogicalRebase, false);
 });
+
+test('intake discovery deduplicates bounded sources before registration and never carries executable/raw content', async () => {
+  const { discoverCandidateIntakeSources } = await import('../src/governedContext/candidateContinuity.js');
+
+  const result = discoverCandidateIntakeSources({
+    registeredIntakes: [{
+      intakeId: 'NEW_INFORMATION_INTAKE-003',
+      sequence: 3,
+      status: 'RECEIVED',
+      sourceType: 'chatgpt',
+      sourceId: 'github-pr95-comment-5738570504',
+      sourceDigest: 'a'.repeat(64),
+      observedAt: '2026-09-19T02:56:49Z'
+    }],
+    discoveredSources: [
+      {
+        sourceType: 'chatgpt',
+        sourceId: 'github-pr95-comment-5738570504',
+        sourceDigest: 'a'.repeat(64),
+        observedAt: '2026-09-19T02:56:49Z'
+      },
+      {
+        sourceType: 'claude',
+        sourceId: 'github-pr95-comment-5739000001',
+        sourceDigest: 'b'.repeat(64),
+        observedAt: '2026-09-19T03:40:00Z'
+      },
+      {
+        sourceType: 'other',
+        sourceId: 'duplicate-by-digest',
+        sourceDigest: 'b'.repeat(64),
+        observedAt: '2026-09-19T03:41:00Z'
+      }
+    ]
+  });
+
+  assert.equal(result.unseen.length, 1);
+  assert.equal(result.unseen[0]?.sourceId, 'github-pr95-comment-5739000001');
+  assert.deepEqual(result.duplicateSourceIds, [
+    'duplicate-by-digest',
+    'github-pr95-comment-5738570504'
+  ]);
+  assert.equal(JSON.stringify(result).includes('rawTranscript'), false);
+  assert.equal(JSON.stringify(result).includes('instruction'), false);
+  assert.equal(result.executesInstructions, false);
+});
+
+test('candidate liveness is transient telemetry and stale heartbeat never changes ownership or authorization', async () => {
+  const { assessCandidateLiveness } = await import('../src/governedContext/candidateContinuity.js');
+
+  const stale = assessCandidateLiveness({
+    candidateSessionId: 'candidate-liveness-a',
+    agentIdentity: 'chatgpt',
+    observedHeadSha: '1'.repeat(40),
+    heartbeatObservedAt: '2026-09-19T03:00:00Z',
+    observedAt: '2026-09-19T03:10:01Z',
+    freshForSeconds: 300
+  });
+  assert.equal(stale.status, 'STALE');
+  assert.equal(stale.transient, true);
+  assert.equal(stale.ownershipChanged, false);
+  assert.equal(stale.authorizationGranted, false);
+  assert.equal(stale.claimTransferAllowed, false);
+  assert.equal(stale.mayWrite, false);
+
+  const missing = assessCandidateLiveness({
+    candidateSessionId: 'candidate-liveness-a',
+    agentIdentity: 'chatgpt',
+    observedHeadSha: '1'.repeat(40),
+    heartbeatObservedAt: null,
+    observedAt: '2026-09-19T03:10:01Z',
+    freshForSeconds: 300
+  });
+  assert.equal(missing.status, 'MISSING');
+  assert.equal(missing.claimTransferAllowed, false);
+});
+
+test('recovery supervisor reobserves head claim checkpoint and liveness; timeout alone never transfers a claim', async () => {
+  const {
+    assessCandidateLiveness,
+    superviseCandidateRecovery
+  } = await import('../src/governedContext/candidateContinuity.js');
+
+  const liveness = assessCandidateLiveness({
+    candidateSessionId: 'candidate-supervised',
+    agentIdentity: 'chatgpt',
+    observedHeadSha: '2'.repeat(40),
+    heartbeatObservedAt: '2026-09-19T03:00:00Z',
+    observedAt: '2026-09-19T03:10:01Z',
+    freshForSeconds: 300
+  });
+  const claim = {
+    candidateSessionId: 'candidate-supervised',
+    agentIdentity: 'chatgpt',
+    workItemId: 'GWC-PRE-E-GWC-4',
+    collisionDomains: ['path:src/governedContext/candidateContinuity.ts'],
+    status: 'ACTIVE' as const
+  };
+
+  const recovery = superviseCandidateRecovery({
+    expectedHeadSha: '2'.repeat(40),
+    currentHeadSha: '2'.repeat(40),
+    workItemId: 'GWC-PRE-E-GWC-4',
+    expectedCandidateSessionId: 'candidate-supervised',
+    activeClaim: claim,
+    checkpoint: {
+      status: 'SUCCESS',
+      headSha: '2'.repeat(40)
+    },
+    liveness
+  });
+  assert.equal(recovery.decision, 'START_REPLACEMENT_RECONCILE_ONLY');
+  assert.equal(recovery.claimTransferAllowed, false);
+  assert.equal(recovery.ownershipChanged, false);
+  assert.equal(recovery.authorizationGranted, false);
+  assert.equal(recovery.requiresReobservationBeforeWrite, true);
+
+  const moved = superviseCandidateRecovery({
+    expectedHeadSha: '2'.repeat(40),
+    currentHeadSha: '3'.repeat(40),
+    workItemId: 'GWC-PRE-E-GWC-4',
+    expectedCandidateSessionId: 'candidate-supervised',
+    activeClaim: claim,
+    checkpoint: {
+      status: 'SUCCESS',
+      headSha: '2'.repeat(40)
+    },
+    liveness
+  });
+  assert.equal(moved.decision, 'REOBSERVE_REQUIRED');
+  assert.equal(moved.claimTransferAllowed, false);
+});
+
+test('recovery runner resumes only a verified same-provider session and never invents provider identity', async () => {
+  const {
+    planCandidateRecoveryRunner
+  } = await import('../src/governedContext/candidateContinuity.js');
+
+  const verified = planCandidateRecoveryRunner({
+    recoveryDecision: 'START_REPLACEMENT_RECONCILE_ONLY',
+    candidateSession: {
+      candidateSessionId: 'candidate-runner-a',
+      agentIdentity: 'chatgpt',
+      provider: 'chatgpt',
+      providerConversationRef: 'chatgpt-conversation-real-7',
+      providerConversationRefProvenance: 'PROVIDED_BY_CLIENT',
+      githubActor: 'Patricked-code',
+      githubConnectionRef: 'github-connection-runner-a',
+      connectionInstanceRef: 'connection-runner-a',
+      repository: 'Patricked-code/MCP',
+      branch: 'claude/ecstatic-edison-v1dyt1',
+      startingHeadSha: '4'.repeat(40),
+      lastObservedHeadSha: '4'.repeat(40),
+      createdAt: '2026-09-19T03:00:00Z',
+      lastSeenAt: '2026-09-19T03:05:00Z',
+      status: 'ACTIVE'
+    },
+    expectedHeadSha: '4'.repeat(40),
+    capability: {
+      provider: 'chatgpt',
+      verifiedSessionResumeSupported: true,
+      replacementExecutorSupported: true
+    }
+  });
+  assert.equal(verified.action, 'RESUME_VERIFIED_PROVIDER_SESSION');
+  assert.equal(verified.providerConversationRef, 'chatgpt-conversation-real-7');
+  assert.equal(verified.executionMode, 'RECONCILE_READ_ONLY');
+  assert.equal(verified.authorizationGranted, false);
+
+  const unavailable = planCandidateRecoveryRunner({
+    recoveryDecision: 'START_REPLACEMENT_RECONCILE_ONLY',
+    candidateSession: {
+      candidateSessionId: 'candidate-runner-b',
+      agentIdentity: 'claude',
+      provider: 'claude',
+      providerConversationRef: null,
+      providerConversationRefProvenance: 'UNAVAILABLE',
+      githubActor: null,
+      githubConnectionRef: null,
+      connectionInstanceRef: 'connection-runner-b',
+      repository: 'Patricked-code/MCP',
+      branch: 'claude/ecstatic-edison-v1dyt1',
+      startingHeadSha: '5'.repeat(40),
+      lastObservedHeadSha: '5'.repeat(40),
+      createdAt: '2026-09-19T03:00:00Z',
+      lastSeenAt: '2026-09-19T03:05:00Z',
+      status: 'ACTIVE'
+    },
+    expectedHeadSha: '5'.repeat(40),
+    capability: {
+      provider: 'claude',
+      verifiedSessionResumeSupported: false,
+      replacementExecutorSupported: false
+    }
+  });
+  assert.equal(unavailable.action, 'RUNNER_UNAVAILABLE');
+  assert.equal(unavailable.providerConversationRef, null);
+  assert.equal(JSON.stringify(unavailable).includes('secret'), false);
+});
+
+test('replacement runner plan is reconcile-only and deterministic to prevent restart storms', async () => {
+  const { planCandidateRecoveryRunner } = await import('../src/governedContext/candidateContinuity.js');
+  const input = {
+    recoveryDecision: 'START_REPLACEMENT_RECONCILE_ONLY' as const,
+    candidateSession: {
+      candidateSessionId: 'candidate-runner-c',
+      agentIdentity: 'other-agent',
+      provider: 'other' as const,
+      providerConversationRef: null,
+      providerConversationRefProvenance: 'UNAVAILABLE' as const,
+      githubActor: null,
+      githubConnectionRef: 'github-runner-c',
+      connectionInstanceRef: 'connection-runner-c',
+      repository: 'Patricked-code/MCP' as const,
+      branch: 'claude/ecstatic-edison-v1dyt1' as const,
+      startingHeadSha: '6'.repeat(40),
+      lastObservedHeadSha: '6'.repeat(40),
+      createdAt: '2026-09-19T03:00:00Z',
+      lastSeenAt: '2026-09-19T03:05:00Z',
+      status: 'ACTIVE' as const
+    },
+    expectedHeadSha: '6'.repeat(40),
+    capability: {
+      provider: 'other' as const,
+      verifiedSessionResumeSupported: false,
+      replacementExecutorSupported: true
+    }
+  };
+  const first = planCandidateRecoveryRunner(input);
+  const second = planCandidateRecoveryRunner(input);
+  assert.equal(first.action, 'START_REPLACEMENT_EXECUTOR');
+  assert.equal(first.executionMode, 'RECONCILE_READ_ONLY');
+  assert.equal(first.planId, second.planId);
+  assert.match(first.planId, /^recovery-[0-9a-f]{24}$/);
+  assert.equal(first.authorizationGranted, false);
+});
+
+test('runner plan is never RESUMED until a matching acknowledgement is observed', async () => {
+  const {
+    acknowledgeCandidateRecoveryRunner,
+    planCandidateRecoveryRunner
+  } = await import('../src/governedContext/candidateContinuity.js');
+
+  const plan = planCandidateRecoveryRunner({
+    recoveryDecision: 'START_REPLACEMENT_RECONCILE_ONLY',
+    candidateSession: {
+      candidateSessionId: 'candidate-runner-ack',
+      agentIdentity: 'chatgpt',
+      provider: 'chatgpt',
+      providerConversationRef: 'chatgpt-conversation-ack',
+      providerConversationRefProvenance: 'PROVIDED_BY_CLIENT',
+      githubActor: 'Patricked-code',
+      githubConnectionRef: 'github-runner-ack',
+      connectionInstanceRef: 'connection-runner-ack',
+      repository: 'Patricked-code/MCP',
+      branch: 'claude/ecstatic-edison-v1dyt1',
+      startingHeadSha: '7'.repeat(40),
+      lastObservedHeadSha: '7'.repeat(40),
+      createdAt: '2026-09-19T03:00:00Z',
+      lastSeenAt: '2026-09-19T03:05:00Z',
+      status: 'ACTIVE'
+    },
+    expectedHeadSha: '7'.repeat(40),
+    capability: {
+      provider: 'chatgpt',
+      verifiedSessionResumeSupported: true,
+      replacementExecutorSupported: true
+    }
+  });
+  assert.equal('status' in plan && (plan as { status?: string }).status === 'RESUMED', false);
+
+  const mismatch = acknowledgeCandidateRecoveryRunner(plan, {
+    planId: plan.planId,
+    candidateSessionId: 'candidate-wrong',
+    observedHeadSha: '7'.repeat(40),
+    acknowledgedAt: '2026-09-19T03:12:00Z'
+  });
+  assert.equal(mismatch.status, 'UNVERIFIED');
+  assert.equal(mismatch.authorizationGranted, false);
+
+  const acknowledged = acknowledgeCandidateRecoveryRunner(plan, {
+    planId: plan.planId,
+    candidateSessionId: 'candidate-runner-ack',
+    observedHeadSha: '7'.repeat(40),
+    acknowledgedAt: '2026-09-19T03:12:00Z'
+  });
+  assert.equal(acknowledged.status, 'RESUMED');
+  assert.equal(acknowledged.authorizationGranted, false);
+  assert.equal(acknowledged.claimTransferAllowed, false);
+});
+
