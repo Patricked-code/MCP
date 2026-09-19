@@ -1,0 +1,68 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-c3-capability-reconciliation-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_c3_capability_reconciliation",
+      "path": "sources/c3-capability-reconciliation.json",
+      "media_type": "application/json",
+      "bytes": 3346,
+      "sha256": "32ae7eb16aafe117b9d1087f7632a685123cd10e4102c6700688c10bba733b50"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_c3_complete",
+      "key": "candidate.gwc_pre_c3",
+      "claim_type": "fact",
+      "value": "GWC-PRE-C3 is PASS_WITH_EVIDENCE and Phase C exits CANDIDATE_SAFETY_FOUNDATIONS_COMPLETE on final GREEN CI #1152.",
+      "source_refs": [
+        "src_c3_capability_reconciliation"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_c89_read_split",
+      "key": "candidate.c89_2_read_split",
+      "claim_type": "fact",
+      "value": "Only C-89.2 is materialized now: 12 bounded READ tools. Current candidate cartography is 123 tools = 80 READ + 43 historical WRITE, digest 3d900237907905a64a572173eac7cd2109b2cf55a535afbed2252bb2f693597f.",
+      "source_refs": [
+        "src_c3_capability_reconciliation"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_c90_ordering",
+      "key": "candidate.c90_ordering",
+      "claim_type": "fact",
+      "value": "C-90.1 and C-90.2 remain SPLIT but deferred until after GWC-9 closes AF-32; C-90.3 remains DEFER. No C-90 WRITE is currently registered.",
+      "source_refs": [
+        "src_c3_capability_reconciliation"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_c3_self_review",
+      "key": "candidate.c3_self_review",
+      "claim_type": "fact",
+      "value": "CI #1144 was technically green but rejected by self-review because it landed C-90 WRITE before GWC-9. The branch was corrected before C3 checkpoint and final CI #1152 is green.",
+      "source_refs": [
+        "src_c3_capability_reconciliation"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_phase_e_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Next eligible PRECODE work is the Phase D/E cycle starting with GWC-PRE-E-GWC-0.",
+      "source_refs": [
+        "src_c3_capability_reconciliation"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
