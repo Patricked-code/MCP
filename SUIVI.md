@@ -534,4 +534,3 @@ Date : 2026-08-29
 - Invariants préservés : OIDC exact-SHA, aucune activation live, aucune mutation main/S1/prod, aucun runtime Task/lock/session.
 - `GWC-PRE-C2` devient `READY`.
 - `NEXT_ACTION` : réobserver HEAD exact, claim branch-local C2, implémenter AF-22/AF-30 exact-head review evidence + stale-head invalidation en RED -> GREEN -> régression, puis continuer automatiquement.
-
