@@ -1256,14 +1256,18 @@
           "GWC-PRE-E-GWC-6"
         ],
         "collisionDomains": [
-          "path:src/governedWorkflow/resolvers/domain"
+          "path:src/governedWorkflow/resolvers/domain",
+          "path:tests/governedWorkflowDomainResolver.test.ts",
+          "path:package.json"
         ],
         "evidence": [
           "Derived from GWC-CAND-08 exact-bound candidate backlog.",
           "Dependency-safe dispatch after GWC-7 checkpoint CI #1275 SUCCESS; claimed by candidate-52e3b52226bf3462e7b112de.",
           "Previous GWC-8 candidate candidate-52e3b52226bf3462e7b112de became STALE by minute-liveness (>120s) at unchanged dispatch head 4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa; no newer GWC-8 implementation or test existed.",
           "Explicit human recovery authorization recorded in PR #95 comment 5740053066; old claim RELEASED and old candidate session CLOSED without inferring STALE=DEAD.",
-          "Replacement candidate candidate-gwc8-recovery-4d887146-20260919 claimed only path:src/governedWorkflow/resolvers/domain after exact-head reconciliation; no other work-item ownership transferred."
+          "Replacement candidate candidate-gwc8-recovery-4d887146-20260919 claimed only path:src/governedWorkflow/resolvers/domain after exact-head reconciliation; no other work-item ownership transferred.",
+          "Recovery transfer projection validated by MCP CI #1278 SUCCESS @ 755a75bcdc80bc7f74554d25885a7f84684ab7cc before any GWC-8 business-code mutation.",
+          "GWC-8 RED scope expanded only to path:tests/governedWorkflowDomainResolver.test.ts and path:package.json in addition to path:src/governedWorkflow/resolvers/domain."
         ]
       },
       {
@@ -1659,7 +1663,9 @@
         "agentIdentity": "ChatGPT-GPT-5.6-Sol",
         "workItemId": "GWC-PRE-E-GWC-8",
         "collisionDomains": [
-          "path:src/governedWorkflow/resolvers/domain"
+          "path:src/governedWorkflow/resolvers/domain",
+          "path:tests/governedWorkflowDomainResolver.test.ts",
+          "path:package.json"
         ],
         "status": "ACTIVE"
       }
@@ -1760,9 +1766,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
+        "lastObservedHeadSha": "755a75bcdc80bc7f74554d25885a7f84684ab7cc",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T06:48:00Z",
+        "lastSeenAt": "2026-09-19T06:50:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5023,7 +5029,7 @@
     "gwc8": {
       "workItemId": "GWC-PRE-E-GWC-8",
       "blueprint": "GWC-8",
-      "status": "IN_PROGRESS_RECOVERY_VALIDATION",
+      "status": "IN_PROGRESS",
       "dependencies": [
         "GWC-PRE-E-GWC-3",
         "GWC-PRE-E-GWC-6"
@@ -5047,7 +5053,9 @@
         "humanAuthorizationCommentId": 5740053066,
         "replacementCandidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
         "transferHead": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "validation": "PENDING_EXACT_HEAD_CI"
+        "validation": "SUCCESS",
+        "ciRunNumber": 1278,
+        "validationHead": "755a75bcdc80bc7f74554d25885a7f84684ab7cc"
       }
     }
   },
