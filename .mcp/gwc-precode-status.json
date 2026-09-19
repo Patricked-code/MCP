@@ -1306,7 +1306,12 @@
           "Initial GWC-9 collision domains limited to path:src/governedWorkflow/governance and path:src/governedContext; any registration/test scope expansion requires exact-head claim update before mutation.",
           "GWC-9 dispatch projection validated by MCP CI #1295 SUCCESS @ 1ff6898c49440bfb3f13cf8e665438a28a4a7866.",
           "AF-32 exact-head baseline confirmed: registerGovernedTaskMutationTools receives only decorateRegistrationCatalogServer(server, 'operational-write'), while scoped-write registrations additionally pass through decorateScopedWriteServer.",
-          "GWC-9 RED scope expanded before mutation to src/server.ts, tests/governedWorkflowGovernanceIntegration.test.ts and package.json; no enforcement mode change is authorized."
+          "GWC-9 RED scope expanded before mutation to src/server.ts, tests/governedWorkflowGovernanceIntegration.test.ts and package.json; no enforcement mode change is authorized.",
+          "PROVEN RED CI #1298 FAILURE @ e1d9caf1ee8704328113524348f273b689b67ecf: one AF-32 wiring failure plus eight missing-composer failures, with no unrelated regression.",
+          "FIRST FULL GREEN CI #1300 SUCCESS @ 2cfab21e393bf4f070b725aaf9bcf2360f8dc1b4 after adding the existing-authority composer and shadow gate wiring for operational-write.",
+          "Self-review added runtime AF-32 non-blocking shadow-parity proof. CI #1301 failed only because the new fixture lacked required env variables; no product-code failure.",
+          "FINAL GREEN CI #1302 SUCCESS @ ff85ab51ae59df044ad179abe0865374e41f2412 with AF-32 runtime shadow parity, composer security invariants and full regression.",
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc9-governance-capabilities-complete created with exact source SHA-256 1df2c7b9a971b2583d041efeb938d492180e97565844beebe8a26921c7cae843; claim retained ACTIVE until exact-head checkpoint CI succeeds."
         ]
       },
       {
@@ -1795,9 +1800,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "4c71dce479274f682a149386b73d22aa08a94a37",
+        "lastObservedHeadSha": "39ebd1b4bded2e1698363f1dd5621c476b0aac9b",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T07:12:00Z",
+        "lastSeenAt": "2026-09-19T07:31:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5132,14 +5137,48 @@
     "gwc9": {
       "workItemId": "GWC-PRE-E-GWC-9",
       "blueprint": "GWC-9",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
       "dependencies": [
         "GWC-PRE-E-GWC-3",
         "GWC-PRE-E-GWC-4",
         "GWC-PRE-E-GWC-5"
       ],
-      "authorityBoundary": "REUSE_CAPABILITY_REALITY__REUSE_GOVERNANCE_DECISION__REUSE_SCOPED_WRITE_GATE__NO_SECOND_ENGINE",
-      "af32": "PROVEN_BASELINE__RED_TO_CLOSE_IN_SHADOW"
+      "authorityBoundary": "REUSE_CAPABILITY_REALITY__REUSE_GOVERNANCE_DECISION__REUSE_SCOPED_WRITE_GATE__NO_SECOND_ENGINE__NO_ENFORCEMENT",
+      "af32": "CLOSED_IN_SHADOW",
+      "red": {
+        "ciRunNumber": 1298,
+        "head": "e1d9caf1ee8704328113524348f273b689b67ecf",
+        "result": "FAILURE_EXPECTED_AF32_AND_COMPOSER_ABSENT",
+        "failures": 9
+      },
+      "green": {
+        "first": {
+          "ciRunNumber": 1300,
+          "head": "2cfab21e393bf4f070b725aaf9bcf2360f8dc1b4",
+          "result": "SUCCESS"
+        },
+        "selfReview": {
+          "ciRunNumber": 1301,
+          "head": "2097d7ff912aa8f4de06963bd8c8872728c013fe",
+          "result": "FAILURE_TEST_FIXTURE_ENV_ONLY"
+        },
+        "final": {
+          "ciRunNumber": 1302,
+          "head": "ff85ab51ae59df044ad179abe0865374e41f2412",
+          "result": "SUCCESS"
+        }
+      },
+      "implementation": [
+        "src/governedWorkflow/governance/effectiveCapabilities.ts",
+        "src/server.ts",
+        "tests/governedWorkflowGovernanceIntegration.test.ts",
+        "package.json"
+      ],
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc9-governance-capabilities-complete",
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "RETAINED_PENDING_CHECKPOINT_CI"
+      }
     }
   },
   "intake003RecoveryEvolution": {
