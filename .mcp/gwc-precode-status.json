@@ -1095,8 +1095,10 @@
           "GWC-PRE-E-GWC-3"
         ],
         "collisionDomains": [
+          "path:src/governedContext/candidateContinuity.ts",
           "path:src/governedWorkflow/adapters/session",
-          "path:src/operationalMemory/sessionService.ts"
+          "path:src/operationalMemory/sessionService.ts",
+          "path:tests/candidateContinuity.test.ts"
         ],
         "evidence": [
           "Derived from GWC-CAND-04 exact-bound candidate backlog.",
@@ -1113,7 +1115,8 @@
           "POST_PASS_REQUEUE: NEW_INFORMATION_INTAKE-003 accepted with adaptation at canonicalRevision=3/backlogRevision=2. Prior GWC-4 PASS and final GREEN CI #1205 remain valid baseline; only additive intake-discovery/liveness/supervisor/runner reconciliation is pending after the current GWC-5 claim.",
           "GWC-5 completed and released its collision domain. Intake #003 recovery delta is now dispatch-eligible and retains priority 66.",
           "Intake #003 delta claimed by candidate-7afc131430c64c6fe34bcfea @ 1c0eaaa69d9782ed3e8e70de76fcdade1e4a0864",
-          "This claim preserves GWC-4 historical PASS/CI #1205 and implements only additive recovery/intake/liveness/supervisor/runner behavior accepted by intake #003."
+          "This claim preserves GWC-4 historical PASS/CI #1205 and implements only additive recovery/intake/liveness/supervisor/runner behavior accepted by intake #003.",
+          "INTAKE_003_COLLISION_SCOPE_ALIGNED: src/governedContext/candidateContinuity.ts and tests/candidateContinuity.test.ts added to the existing GWC-4 claim before implementation because intake #003 names candidateContinuity as the existing-first authority."
         ]
       },
       {
@@ -1544,8 +1547,10 @@
         "agentIdentity": "ChatGPT-GPT-5.6-Sol",
         "workItemId": "GWC-PRE-E-GWC-4",
         "collisionDomains": [
+          "path:src/governedContext/candidateContinuity.ts",
           "path:src/governedWorkflow/adapters/session",
-          "path:src/operationalMemory/sessionService.ts"
+          "path:src/operationalMemory/sessionService.ts",
+          "path:tests/candidateContinuity.test.ts"
         ],
         "status": "ACTIVE"
       }
