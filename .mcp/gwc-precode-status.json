@@ -1116,7 +1116,13 @@
           "GWC-5 completed and released its collision domain. Intake #003 recovery delta is now dispatch-eligible and retains priority 66.",
           "Intake #003 delta claimed by candidate-7afc131430c64c6fe34bcfea @ 1c0eaaa69d9782ed3e8e70de76fcdade1e4a0864",
           "This claim preserves GWC-4 historical PASS/CI #1205 and implements only additive recovery/intake/liveness/supervisor/runner behavior accepted by intake #003.",
-          "INTAKE_003_COLLISION_SCOPE_ALIGNED: src/governedContext/candidateContinuity.ts and tests/candidateContinuity.test.ts added to the existing GWC-4 claim before implementation because intake #003 names candidateContinuity as the existing-first authority."
+          "INTAKE_003_COLLISION_SCOPE_ALIGNED: src/governedContext/candidateContinuity.ts and tests/candidateContinuity.test.ts added to the existing GWC-4 claim before implementation because intake #003 names candidateContinuity as the existing-first authority.",
+          "INTAKE_003 RED CI #1227 FAILURE @ 4dd95a4069e7facc97aa7ef55370422221298180: bounded discovery/liveness/supervisor/runner primitives absent.",
+          "INTAKE_003 first GREEN CI #1230 SUCCESS @ 197f4e8e891c5962962ddc064b6de4f66a6dda12.",
+          "INTAKE_003 self-review RED CI #1231 FAILURE @ 05320d82eb61185bcc2fec3d13027fdaf057df8e: liveness binding mismatch and runner envelope integrity gaps.",
+          "INTAKE_003 FINAL GREEN CI #1233 SUCCESS @ 469da6d09d63367e0e89388369573f6f5fc1e441 with 445 tests.",
+          "Session Service and historical GWC-4 session adapter remained byte-identical across the intake-003 delta.",
+          "Checkpoint bundle pr95-e-gwc4-intake003-recovery-complete written; claim retained until checkpoint CI succeeds."
         ]
       },
       {
@@ -1600,9 +1606,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "1c0eaaa69d9782ed3e8e70de76fcdade1e4a0864",
+        "lastObservedHeadSha": "a15b1feefbb85b139ad5ed458a3047995f589ea4",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T03:39:00Z",
+        "lastSeenAt": "2026-09-19T03:55:00Z",
         "status": "ACTIVE"
       }
     ]
@@ -4630,6 +4636,44 @@
         "baselineStillValid": true,
         "baselineFinalGreenCiRun": 1205,
         "rule": "Historical PASS remains valid; only the additive recovery delta is pending."
+      },
+      "intake003Delta": {
+        "intakeId": "NEW_INFORMATION_INTAKE-003",
+        "status": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
+        "red": {
+          "ciRunNumber": 1227,
+          "head": "4dd95a4069e7facc97aa7ef55370422221298180",
+          "result": "FAIL_EXPECTED"
+        },
+        "firstGreen": {
+          "ciRunNumber": 1230,
+          "head": "197f4e8e891c5962962ddc064b6de4f66a6dda12",
+          "result": "SUCCESS_REVIEW_REQUIRED"
+        },
+        "selfReview": {
+          "regressionRed": {
+            "ciRunNumber": 1231,
+            "head": "05320d82eb61185bcc2fec3d13027fdaf057df8e"
+          },
+          "findings": [
+            "LIVENESS_BINDING_MISMATCH",
+            "RUNNER_ENVELOPE_INTEGRITY"
+          ]
+        },
+        "finalGreen": {
+          "ciRunNumber": 1233,
+          "head": "469da6d09d63367e0e89388369573f6f5fc1e441",
+          "result": "SUCCESS",
+          "tests": 445
+        },
+        "implementation": [
+          "src/governedContext/candidateContinuity.ts",
+          "tests/candidateContinuity.test.ts"
+        ],
+        "authorityBoundary": "EXTEND_EXISTING_CANDIDATE_CONTINUITY_ONLY__NO_SECOND_SESSION_OR_INTAKE_AUTHORITY",
+        "claimTransfer": "FORBIDDEN",
+        "authorizationFromRecovery": "FORBIDDEN",
+        "runtimeMcpRequired": false
       }
     },
     "gwc5": {
