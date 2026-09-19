@@ -593,3 +593,17 @@ Date : 2026-08-29
 - Frontière : resolver `READ_ONLY`; aucune mutation vhost/SSH, aucun probe déclenché, aucune autorisation implicite, aucune écriture main/S1/production.
 - Bundle canonique : `docs/gwc/canonical-memory/pr95-e-gwc8-domain-resolver-complete`, source SHA-256 `d9c420197de25d17198f86687aa56b558755b8996cd7d99b703882602323537c`.
 - Le claim GWC-8 reste `ACTIVE` jusqu'au SUCCESS de la CI exacte du checkpoint ; ensuite seulement : release et dispatch GWC-9.
+
+## 2026-09-19 — GWC-9 Governance inheritance / effective capabilities — GREEN final, checkpoint en validation
+
+- RED CI #1298 sur `e1d9caf1ee8704328113524348f273b689b67ecf` : 9 échecs attendus, dont AF-32 (les 3 mutations Task `operational-write` ne traversaient pas le shadow gate) et 8 échecs car le composer GW-10/GW-11 n'existait pas.
+- GREEN initial CI #1300 sur `2cfab21e393bf4f070b725aaf9bcf2360f8dc1b4` : composer existant-first + wiring shadow AF-32 intégralement verts.
+- Self-review : ajout d'une preuve runtime que `wouldBlock=true` reste non bloquant en mode shadow. CI #1301 a échoué uniquement car le nouveau fixture ne définissait pas les variables d'environnement de test requises ; aucun défaut produit.
+- GREEN final CI #1302 sur `ff85ab51ae59df044ad179abe0865374e41f2412` : typecheck, build, docs, gouvernance, GWC verifier, secret scan, read-only safety, cartographie et whitespace tous verts.
+- GW-10/GW-11 réutilisent strictement `CapabilityReality`, `GovernanceDecision` et `Scoped Write Gate`; aucun second moteur de gouvernance ni seconde autorité de capacité.
+- Sécurité : UNKNOWN ne devient jamais permission ; composition monotoniquement restrictive ; conflit entre snapshot capability et capability utilisée par GovernanceDecision => `CONFLICT`; une attestation client ne peut pas écraser une réalité serveur contradictoire.
+- AF-32 fermé en shadow : `mcp_reconcile_agent_intent`, `mcp_claim_next_governed_task`, `mcp_transition_governed_task` traversent désormais le même `decorateScopedWriteServer`.
+- Aucun mode enforcing ajouté ; le résultat historique des handlers reste inchangé.
+- La classification catalogue reste `operational-write`, donc le digest/cartographie ne change pas ; la régression `functionCartography` est verte.
+- Bundle canonique : `docs/gwc/canonical-memory/pr95-e-gwc9-governance-capabilities-complete`, source SHA-256 `1df2c7b9a971b2583d041efeb938d492180e97565844beebe8a26921c7cae843`.
+- Claim GWC-9 retenu jusqu'au SUCCESS exact-head du checkpoint.
