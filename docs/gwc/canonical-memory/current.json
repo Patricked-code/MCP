@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-e-gwc13-development-workflow-complete",
-  "currentBundleId": "bnd_mcp-pr95-e-gwc13-development-workflow-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete",
+  "currentBundle": "pr95-e-gwc14-review-merge-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc14-review-merge-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Inspect existing review/merge authorities and GW-34..GW-43 exact sheets; reuse Phase C2 Governed GitHub context and GWC-12 lifecycle capabilities, resolve OD-06 from evidence, then derive GWC-14 RED acceptance for ReviewEvidence commit binding, PremergeProof and exact-head merge without introducing a second GitHub or task authority.",
+    "nextAction": "Validate this GWC-14 canonical checkpoint on exact-head CI. Keep the existing GWC-14 claim ACTIVE until SUCCESS; then release it and dispatch GWC-PRE-E-GWC-15.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -289,11 +289,16 @@
       "name": "pr95-e-gwc12-github-control-plane-complete",
       "path": "docs/gwc/canonical-memory/pr95-e-gwc12-github-control-plane-complete",
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-e-gwc13-development-workflow-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC13_DEVELOPMENT_WORKFLOW_COMPLETE_CHECKPOINT"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-19T09:45:37Z",
-  "observedHeadBeforePointerUpdate": "70b2aa19553af46f64f2ec0d9843d2000f77b79c",
-  "correctionReason": "Intake #004 minute-liveness implementation is scope-green at CI #1252. Its own candidate heartbeat became STALE and the stale claim was released only under explicit human recovery authorization. GWC-6 has MISSING heartbeat => UNKNOWN liveness; its ACTIVE claim and collision domains remain unchanged.",
+  "updatedFromGitHubObservationAt": "2026-09-19T10:26:21Z",
+  "observedHeadBeforePointerUpdate": "c1a46d20460c99e7b13edefa6b0b07bf026bb4a6",
+  "correctionReason": "GWC-14 review/merge contracts reached final GREEN CI #1404 after three self-review RED findings were corrected; pointer advances to the staged checkpoint while the GWC-14 claim remains ACTIVE pending exact-head checkpoint CI.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
