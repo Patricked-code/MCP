@@ -737,3 +737,14 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Missing/stale/unavailable reste fail-closed ; une déclaration de registry ne remplace jamais l'observation runtime.
 - Recovery gouverné du writer stale avec autorisation humaine explicite ; aucun transfert automatique.
 - RED CI #1270 ; GREEN CI #1273 ; self-review couverture runtime kinds ; FINAL GREEN CI #1274.
+
+## 2026-09-19 — GWC-8 Domain Resolver C5
+
+- Ajout du resolver `GW-09 DOMAIN_RESOLUTION` en lecture seule.
+- Résolution de la surface publique avec rôles FRONTEND/API/OTHER depuis les autorités projet/mapping et l'observation serveur courante.
+- `NONE` distingué strictement de `UNVERIFIED`; absence ou staleness d'observation ne devient jamais un faux `NONE`.
+- Vhosts historiques exclus de la surface active et exposés comme exclusions ; `protectedDomains` conservé comme safety list uniquement.
+- Conflits de domaine pour un même rôle => `AMBIGUOUS`; domaines observés non déclarés ou déclarés non observés => fail-closed.
+- Compatibilité préservée pour les mappings GitRegistry V2 historiques sans `componentRole`, sans inventer de rôle concurrent.
+- GREEN complet MCP CI #1286 sur `d6240484e387770751d9d3db476ac3b9470c74ce`.
+- Aucun changement main/S1/production, aucun runtime Task/lock et aucune mutation SSH/vhost.
