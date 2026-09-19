@@ -42,8 +42,6 @@ export type GitHubJsonRequestOptions = {
   apiBase?: string;
   allowedHosts?: string;
   timeoutMs?: number;
-  method?: 'GET' | 'POST' | 'PATCH' | 'PUT';
-  jsonBody?: unknown;
 };
 
 export type GitHubPrincipalObservationOptions = GitHubJsonRequestOptions & {
@@ -128,19 +126,14 @@ export async function githubJsonRequest(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const method = options.method ?? 'GET';
-    const hasJsonBody = method !== 'GET' && options.jsonBody !== undefined;
     const response = await fetchImpl(url, {
-      method,
-      ...(hasJsonBody ? { body: JSON.stringify(options.jsonBody) } : {}),
       redirect: 'error',
       signal: controller.signal,
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: 'application/vnd.github+json',
         'X-GitHub-Api-Version': '2022-11-28',
-        'User-Agent': 'wealthtech-mcp-guardian',
-        ...(hasJsonBody ? { 'Content-Type': 'application/json' } : {})
+        'User-Agent': 'wealthtech-mcp-guardian'
       }
     });
     const declaredLength = Number(response.headers.get('content-length') ?? '0');
