@@ -839,7 +839,7 @@
           "candidate-bindings",
           "candidate.dispatch"
         ],
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 90,
         "sequence": 2,
         "dependencies": [
@@ -850,7 +850,9 @@
           ".mcp:gwc-precode"
         ],
         "evidence": [
-          "Dispatched to candidate-7afc131430c64c6fe34bcfea @ b3fd1ca59b0c448ab982ffcbe831c927a25e572a"
+          "Dispatched to candidate-7afc131430c64c6fe34bcfea @ b3fd1ca59b0c448ab982ffcbe831c927a25e572a",
+          "18/18 candidate backlog items exact-bound from docs/gwc/BLUEPRINTS.md @ 39fdfe454510d38fea9abfb857d473f6037cda60",
+          "73 contract bindings: 72 runtime macroContractRef + GW-73 OUT_OF_RUNTIME_GRAPH"
         ]
       },
       {
@@ -858,7 +860,7 @@
         "intentKeys": [
           "candidate-audit"
         ],
-        "status": "PENDING",
+        "status": "READY",
         "priority": 80,
         "sequence": 3,
         "dependencies": [
@@ -890,7 +892,7 @@
           "docs:gwc",
           ".mcp:gwc-precode"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -938,7 +940,7 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "b3fd1ca59b0c448ab982ffcbe831c927a25e572a",
+        "lastObservedHeadSha": "39fdfe454510d38fea9abfb857d473f6037cda60",
         "createdAt": "2026-09-19T00:11:00Z",
         "lastSeenAt": "2026-09-19T00:11:00Z",
         "status": "ACTIVE"
@@ -1146,7 +1148,7 @@
     "sourceEvolutionDesign": ".mcp/gwc-evolution-design.json",
     "sourceContractRegistry": ".mcp/gwc-contracts.json",
     "reconciledIntakeReceipt": "e9f2eade95b77110e97b5fc5e4c07d74c000aedb2a44e1fc3cff0220c81b0695",
-    "lifecycle": "B01_DERIVED_AWAITING_B02_EXACT_BINDING",
+    "lifecycle": "B02_EXACT_BINDINGS_COMPLETE_AWAITING_B03_AUDIT",
     "rootOrchestration": {
       "rootContract": "GWC_ROOT",
       "macroContracts": [
@@ -1262,7 +1264,51 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [],
+        "binding": {
+          "existingIntegrationSlot": "orchestration layer between GWC-2 and existing authorities; never inside Task Queue or Operational Memory stores.",
+          "existingFilesSymbols": [
+            ".mcp/gwc-contracts.json",
+            ".mcp/gwc-workflow-graph.json",
+            ".mcp/gwc-blueprints.json",
+            "scripts/gwc-verify.mjs",
+            "src/operationalMemory/taskQueue.ts canonical() is existing deterministic serialization, but is private Task Queue behavior and must not silently become a new global authority."
+          ],
+          "existingTypesSchemas": "design JSON has structural schemas; no runtime TypeScript GWC contract types exist.",
+          "existingFunctionsCallGraph": "design-only GWC Markdown/JSON -> scripts/gwc-verify.mjs -> CI gwc:verify. No runtime GWC call graph exists.",
+          "exactGap": "no runtime orchestration primitive can resolve a stable GW id while proving the contract/graph version and digest used.",
+          "integrationDecision": "NEW for orchestration-only runtime types/registry/evaluator; REUSE for canonical projections and current verifier invariants.",
+          "upstreamDependencies": "canonical contract/graph projections and digests.",
+          "downstreamConsumers": "GWC-1, GWC-2 and all later wrappers.",
+          "expectedExistingFilesToChange": "design/verifier plus exact runtime integration owner once resolved.",
+          "expectedNewFiles": "orchestration modules only if no existing owner can host them; filenames deliberately not frozen.",
+          "expectedTypesFunctions": "stable step id, contract definition projection, evaluation result, bounded reason codes, immutable registry lookup and invariant evaluation.",
+          "expectedMcpWorkflowChanges": "none required except deterministic CI checks if new projections are added.",
+          "expectedTestFiles": "contract registry/evaluator and verifier regression tests.",
+          "red": "unknown id, incompatible version and digest mismatch must currently fail because no runtime substrate exists, without touching authorities.",
+          "green": "immutable load/evaluate only; no dispatcher and no persistence.",
+          "regression": "GWC digests, Task Registry digest behavior, CI gwc:verify and historical stores.",
+          "backwardCompatibility": "no existing runtime path changes in first substrate delivery.",
+          "migrationCompatibility": "additive version support; incompatible changes stay governed by OD-09; no reinterpretation of historical attestations.",
+          "security": "fail closed on unknown id, malformed registry, incompatible version or digest mismatch; no credentials, prompts or secret material.",
+          "authorityImpact": "none.",
+          "dataPersistenceImpact": "additive ephemeral runtime types only; no durable GWC workflow state and no existing Task/Session/Lock migration.",
+          "evidence": [
+            "GWC-0 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "bounded contract id/version/digest/result metadata only; future attestation references evidence but does not replace authority.",
+          "definitionOfDone": "substrate exposes/evaluates canonical contract/graph deterministically without owning business facts or persisting workflow position.",
+          "collisionDomains": [
+            "path:src/governedWorkflow",
+            "path:tests/governedWorkflow"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-01",
@@ -1300,7 +1346,50 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-01",
+            "macroContractRef": "MC-A",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "upstream of Task Queue and task/session mutation.",
+          "existingFilesSymbols": "ReconcileIntentInput, IntentClassification, boundedIntentDigest() and reconcileIntent() in src/operationalMemory/taskQueue.ts.",
+          "existingTypesSchemas": "repository, optional taskId, intentKey, title, summary, priority, dependencies and resourceScopes; no canonical bounded rawIntent/source schema.",
+          "existingFunctionsCallGraph": "MCP task tool -> reconcileIntent() -> classification/conflict/dependency logic -> optional Task persistence. Future GW-01 must run before this path.",
+          "exactGap": "no pure deterministic API accepts bounded raw input plus provenance and returns normalized intent without classification or mutation.",
+          "integrationDecision": "NEW pure adapter at GW-01; REUSE Task Queue downstream.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": null,
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "none initially.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "Task Queue IntentClassification, request digest behavior and historical Task creation.",
+          "backwardCompatibility": null,
+          "migrationCompatibility": null,
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-1 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "bounded status/reason/digest; no attestation beyond capture result.",
+          "definitionOfDone": "bounded deterministic capture exists with no classification/mutation and legacy Task Queue behavior unchanged.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/intentCapture"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-02",
@@ -1337,7 +1426,50 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [],
+        "binding": {
+          "existingIntegrationSlot": "above existing services and below request entry; never in Operational Memory persistence.",
+          "existingFilesSymbols": [
+            "src/governedContext/service.ts createGovernedOperationalContextService",
+            "src/currentState/service.ts createCurrentStateService",
+            "src/operationalMemory/taskLifecycleCoordinator.ts createTaskLifecycleCoordinator",
+            "src/operationalMemory/eventJournal.ts",
+            "src/operationalMemory/atomicStore.ts"
+          ],
+          "existingTypesSchemas": "GovernedOperationalContext, CurrentStateInventory and existing authority records/projections. No ExecutionFrame, EffectPlan, routing disposition or RecoveryAnchor type exists.",
+          "existingFunctionsCallGraph": "current reads compose authorities and derive projections; mutations remain service/tool-specific. No graph-driven evaluator/planner/dispatcher/postcondition loop.",
+          "exactGap": "no component performs OBSERVE -> EVALUATE -> PLAN -> AUTHORIZE -> ACT -> REOBSERVE -> VERIFY -> ROUTE/WAIT/RESUME across GWC.",
+          "integrationDecision": "NEW orchestration skeleton plus REUSE/WRAP existing authority readers, Governance Decision, Capability Reality, Task Queue, locks and mutations.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "integration adapters only where necessary; do not move owners.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "none initially.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "Governed Context nextAction, Task Queue classification, Session/Lock semantics, Event Journal audit and global shadow write gate.",
+          "backwardCompatibility": null,
+          "migrationCompatibility": null,
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-2 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "contract id, disposition, freshness, effect id, reason codes and postcondition; invocation success is never attestation.",
+          "definitionOfDone": "shadow engine reconstructs/evaluates/routes from current authorities with no new business authority or durable workflow cursor.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/engine"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-03",
@@ -1374,7 +1506,65 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-04",
+            "macroContractRef": "MC-A",
+            "reason": null
+          },
+          {
+            "stepId": "GW-05",
+            "macroContractRef": "MC-A",
+            "reason": null
+          },
+          {
+            "stepId": "GW-06",
+            "macroContractRef": "MC-A",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "immediately around current resolver calls in the future EvidenceBroker/ContractEvaluator.",
+          "existingFilesSymbols": [
+            "src/github/identityResolution.ts resolveGithubIdentity",
+            "src/github/repositoryResolution.ts resolveGithubRepository",
+            "src/github/projectResolution.ts resolveGithubProject",
+            "src/github/registryV2.ts RegistryProjectSchema and GitRegistryV2Schema"
+          ],
+          "existingTypesSchemas": "identity/repository/project status, freshness and reason codes; RegistryProjectSchema has projectId, projectUid and repositoryComponents; mappings already include optional projectUid and componentRole.",
+          "existingFunctionsCallGraph": "Governed Context GitHub collection/resolution -> B1 -> B2 -> C2/project evidence; future GWC contracts wrap results and add only orchestration metadata.",
+          "exactGap": "no GWC adapter binds B1/B2/C2 observations to contract id/version/evidence semantics while preserving current status/reason behavior.",
+          "integrationDecision": "REUSE/WRAP; GENERALIZE only through GWC-10 downstream target scope.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "integration callers/tests only unless a proven seam is missing; avoid resolver semantic changes.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "no new MCP tools; likely CI profile extension for the missing repository-resolution suite.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "B1/B2/C2 status/reasons/freshness, GitRegistry V1/V2 compatibility, activation-readiness separation and MCP mapping-only behavior.",
+          "backwardCompatibility": "preserve Patricked-code/MCP -> mcp_bridge mapping-only path; GitRegistry V2 activation readiness remains separate from C2 identity.",
+          "migrationCompatibility": "shadow/parity wrappers; compare wrapper output against current resolver output before engine routing depends on it.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-3 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose contract/result/freshness/reason/evidence refs only; resolver output alone never authorizes mutation.",
+          "definitionOfDone": "GW-04/05/06 wrappers preserve current behavior exactly, stay multi-repository-compatible downstream and introduce no resolver/registry authority.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/resolvers/identity"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-04",
@@ -1416,7 +1606,77 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-02",
+            "macroContractRef": "MC-A",
+            "reason": null
+          },
+          {
+            "stepId": "GW-03",
+            "macroContractRef": "MC-A",
+            "reason": null
+          },
+          {
+            "stepId": "GW-12",
+            "macroContractRef": "MC-A",
+            "reason": null
+          },
+          {
+            "stepId": "GW-16",
+            "macroContractRef": "MC-B",
+            "reason": null
+          },
+          {
+            "stepId": "GW-17",
+            "macroContractRef": "MC-B",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "inside the future EvidenceBroker around existing session service calls; never inside sessionService.ts state transitions.",
+          "existingFilesSymbols": [
+            "src/operationalMemory/connectionContext.ts ConnectionContextSchema, createConnectionContext",
+            "src/operationalMemory/sessionService.ts GovernedSessionService, createGovernedSessionService, AutoResumeCompatibleSessionInput, CreateCheckpointInput",
+            "src/operationalMemory/resumeProof.ts createResumeSecret, hashResumeSecret, verifyResumeSecret",
+            "src/operationalMemory/transportBindings.ts",
+            "src/governedContext/types.ts GovernedOperationalContext.bootstrap"
+          ],
+          "existingTypesSchemas": "ConnectionContextSchema; OpenSessionInput/Result; ResumeSessionInput; AutoResumeCompatibleSessionResult with ATTACHED/RESUMED/NONE/AMBIGUOUS; SessionRevisionInput; CreateCheckpointInput carrying completedAction, resultCode, pullRequestNumber, observedHeadSha, blockers and nextAction.",
+          "existingFunctionsCallGraph": "transport request -> connection context -> governed session open/resume -> governed context assembly -> acknowledgement -> checkpoint. Future GW-02/03/12/16/17 wrappers observe this path and add contract metadata only.",
+          "exactGap": "no contract-level wrapper binds GW-02/03/12/16/17 to the session authority while proving which contract and graph version produced the acknowledgement, and the literal repository type blocks GWC-10 before any GWC code is written.",
+          "integrationDecision": "REUSE/GENERALIZE — matching the canonical classification of GW-02, GW-03, GW-12, GW-16 and GW-17.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "sessionService.ts and governedContext/types.ts type declarations only, for the literal widening; no state machine edit.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "no new MCP tool; the existing governed session tools stay the only session surface.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "session open/resume/auto-resume, revision conflicts, transport binding cleanup, idle expiry, checkpoint shape, bootstrap freshness and the governed dashboard.",
+          "backwardCompatibility": "existing single-repository sessions stay readable and resumable; no stored record is rewritten; transport lookup keys are unchanged.",
+          "migrationCompatibility": "widen the type first with the current value as the only inhabitant, prove parity, then let GWC-10 populate other targets. No data migration in GWC-4.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-4 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose contract id/version/digest, session id, revision and receipt freshness only; never the resume secret.",
+          "definitionOfDone": "the five contracts evaluate against the existing session authority with unchanged behavior, the repository literal no longer blocks a second target, and no new session state is persisted.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/adapters/session",
+            "path:src/operationalMemory/sessionService.ts"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-05",
@@ -1471,7 +1731,82 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-13",
+            "macroContractRef": "MC-B",
+            "reason": null
+          },
+          {
+            "stepId": "GW-14",
+            "macroContractRef": "MC-B",
+            "reason": null
+          },
+          {
+            "stepId": "GW-15",
+            "macroContractRef": "MC-B",
+            "reason": null
+          },
+          {
+            "stepId": "GW-18",
+            "macroContractRef": "MC-B",
+            "reason": null
+          },
+          {
+            "stepId": "GW-19",
+            "macroContractRef": "MC-B",
+            "reason": null
+          },
+          {
+            "stepId": "GW-20",
+            "macroContractRef": "MC-C",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "the EffectPlan stage of the engine, immediately before any queue or lock mutation; never inside the transition map.",
+          "existingFilesSymbols": [
+            "src/operationalMemory/taskQueue.ts ALLOWED_TRANSITIONS, canonical, taskRegistryDigest, initializeSeed, firstExecutable, transitionTask, reconcileIntent",
+            "src/operationalMemory/lockService.ts LockScopeInput, AcquireLockInput, GovernedLockService, createGovernedLockService",
+            "src/operationalMemory/taskLifecycleCoordinator.ts",
+            "src/liveState/reconcile.ts, engine.ts, store.ts, collect.ts"
+          ],
+          "existingTypesSchemas": "LockScopeInput is a union of { type: 'repository'; key: 'Patricked-code/MCP' }, { type: 'task'; key: string } and { type: 'resource'; key: string }; AcquireLockInput carries exactly one scope, an optional ttlSeconds and a reason.",
+          "existingFunctionsCallGraph": "live state reconcile -> task lookup/creation -> claim -> lock acquisition -> IN_PROGRESS transition. The GWC engine wraps each step and never reorders it.",
+          "exactGap": "no contract-level planner expresses the minimal lock set of a step and acquires it atomically, and no contract wrapper binds task/lock observations to contract identity without mutating the queue.",
+          "integrationDecision": "REUSE for GW-14/GW-18/GW-20; REUSE/GENERALIZE for GW-13/GW-15; REUSE/EXTEND for GW-19 where minimal-set planning and atomic multi-acquisition are the only genuinely missing behavior.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "lockService.ts for atomic multi-acquisition; type declarations for the widened scope key; no change to ALLOWED_TRANSITIONS.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "no new MCP tool. The three existing governed task mutation tools stay the only task write surface.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "ALLOWED_TRANSITIONS, claim/ownership, taskRegistryDigest byte-compatibility, lock TTL and renewal, release on session close, reconcileSessionLockIds and live-state reconciliation.",
+          "backwardCompatibility": "existing single-scope acquireLock calls keep working unchanged; the planner is additive; historical task records stay readable.",
+          "migrationCompatibility": "ship the planner in observation mode first — compute the lock set and compare it against what the current code actually acquires — before letting it drive acquisition.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-5 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose contract id/version, task id, task status, planned and granted lock scopes and reasons; never internal store paths.",
+          "definitionOfDone": "the six contracts evaluate over the existing queue and lock authorities, a step's minimal lock set is acquired atomically or not at all, and no lifecycle semantics changed.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/adapters/task",
+            "path:src/operationalMemory/taskQueue.ts",
+            "path:src/operationalMemory/lockService.ts"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-06",
@@ -1503,7 +1838,54 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-07",
+            "macroContractRef": "MC-A",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "alongside the existing B2/C2 resolvers, consumed by the EvidenceBroker; never inside managedServers or the SSH client.",
+          "existingFilesSymbols": [
+            "src/config/servers.ts ServerId, ManagedServerConfig, managedServers",
+            "src/github/registryV2.ts RegistryMappingSchema serverId, serverPath, realPath, realPathVerified, remoteVerified",
+            "src/ssh/client.ts, src/ssh/safety.ts, src/ssh/writeSafety.ts"
+          ],
+          "existingTypesSchemas": "ServerId is a closed two-value TypeScript union; RegistryMappingSchema.serverId is an open z.string().min(1). Nothing cross-validates the two, so a registry mapping can name a server that managedServers does not know.",
+          "existingFunctionsCallGraph": "tool -> managedServers[serverId] -> SSH client -> bounded command. Registry serverId is read separately for evidence and never reconciled against managedServers at load time.",
+          "exactGap": "a governed step can read a serverId but cannot obtain a resolution result stating RESOLVED, NONE, AMBIGUOUS or UNVERIFIED with freshness and bounded reason codes, and cannot prove that the registry and the configuration agree.",
+          "integrationDecision": "GENERALIZE/EXTEND — matching the canonical classification of GW-07. NEW is rejected: the raw material already exists in two places and must be reconciled, not re-invented.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "none semantically; possibly a widened ServerId type declaration.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "none; existing per-server tools stay as they are.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "registry V1/V2 compatibility, SSH tool bounding, per-server tool routing and mapping validation counters.",
+          "backwardCompatibility": "every stored mapping with serverId 's1' or 's2' must resolve exactly as today; normalization must be the identity function on existing values.",
+          "migrationCompatibility": "introduce normalization in observation mode and assert identity on all stored mappings before any consumer depends on it.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-6 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose canonical server identifier, status, verification flags, freshness and reasons only.",
+          "definitionOfDone": "GW-07 returns a bounded resolution status for any target, proves registry/configuration agreement, preserves the declared-versus-verified distinction and adds no new estate hardcode.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/resolvers/server"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-07",
@@ -1540,7 +1922,55 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-08",
+            "macroContractRef": "MC-A",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "after GW-07 server resolution, consumed by GWC-15 deployment contracts; never inside the SSH tools.",
+          "existingFilesSymbols": [
+            "src/liveState/collect.ts, src/liveState/engine.ts, src/liveState/types.ts, src/liveState/reconcile.ts",
+            "src/tools/runtimeAttestation.ts, src/tools/readOnly.ts docker/pm2 status tools",
+            "src/deploy/s1Deploy.ts runtime_revision, health_ok, oauth_ok, mcp_auth_ok",
+            "src/github/registryV2.ts healthChecks, rollbackMethod"
+          ],
+          "existingTypesSchemas": "healthChecks and rollbackMethod are typed; there is no runtime kind enum, no service or container identity, no port, no reverse-proxy binding and no multi-runtime representation. The statement \"registryV2 has no runtime model\" is only correct in that narrow sense and is stated precisely here.",
+          "existingFunctionsCallGraph": "tool -> SSH -> docker/pm2 output -> textual status; live state collectors -> reconcile -> snapshot. No typed runtime object is produced anywhere.",
+          "exactGap": "no typed RuntimeBinding exists, so a deployment contract cannot state which runtime it restarted, which one it attested, or that a target legitimately has none.",
+          "integrationDecision": "GENERALIZE/EXTEND — matching the canonical classification of GW-08.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "liveState types for the typed projection; registryV2 only if the optional descriptor is added there.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "no new MCP tool required; existing per-server observation tools remain the evidence source.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "live state snapshot shape, runtime attestation tool output, deploy status parsing and registry mapping validity.",
+          "backwardCompatibility": "existing mappings without a runtime descriptor stay valid and resolve to UNVERIFIED rather than failing.",
+          "migrationCompatibility": "additive optional field; populate from observation; never backfill a runtime kind from a guess.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-7 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose runtime kind, identity, revision, freshness and reasons; never raw shell output.",
+          "definitionOfDone": "GW-08 returns a typed, freshness-bound RuntimeBinding for MCP, for a Passenger project and for a checkout-only project, with no MCP or S1 hardcode and no restart performed.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/resolvers/runtime"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-08",
@@ -1572,7 +2002,54 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-09",
+            "macroContractRef": "MC-A",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "after GW-05/GW-06 and GW-07, consumed by GWC-15 health-check contracts.",
+          "existingFilesSymbols": [
+            "src/github/registryV2.ts RegistryMappingSchema domain, domainVerified; RegistryProjectSchema publicDomain, publicApi, historicalVhosts",
+            "src/config/servers.ts managedServers protectedDomains",
+            "src/tools/readOnly.ts list_domains_s1, list_domains_s2, curl_domain"
+          ],
+          "existingTypesSchemas": "domain is nullable at mapping level; publicDomain/publicApi/historicalVhosts exist at project level; protectedDomains is a plain string array. Three representations, no common type and no cross-validation.",
+          "existingFunctionsCallGraph": "tool -> SSH vhost listing or HTTP probe -> textual result; registry read -> declared domain. The declared and the observed are never joined.",
+          "exactGap": "no resolver returns the current public surface of a target with roles, verification status and explicit exclusion of historical vhosts, and no contract can state NONE as a proven answer.",
+          "integrationDecision": "GENERALIZE/EXTEND — matching the canonical classification of GW-09.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "none semantically; optionally an added optional role annotation.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "none; list_domains and curl_domain remain the observation surface.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "registry validity, protectedDomains enforcement, domain listing tools and health-check inputs.",
+          "backwardCompatibility": "mappings with domain null keep resolving without error; historicalVhosts keeps its current meaning; protectedDomains behavior is untouched.",
+          "migrationCompatibility": "additive, observation-first; no backfill of a role from a domain name pattern.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-8 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose roles, statuses, verification flags, exclusions, freshness and reasons.",
+          "definitionOfDone": "GW-09 resolves the current public surface with roles for a multi-endpoint project, returns a proven NONE where applicable, excludes historical vhosts explicitly and adds no new estate hardcode.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/resolvers/domain"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-09",
@@ -1611,7 +2088,61 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-10",
+            "macroContractRef": "MC-A",
+            "reason": null
+          },
+          {
+            "stepId": "GW-11",
+            "macroContractRef": "MC-A",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "the GovernanceGateComposer stage of the engine, reading the existing derivations; never a reimplementation of them.",
+          "existingFilesSymbols": [
+            "src/governance/operationalDecision.ts CapabilityReality, deriveCapabilityReality, projectRegisteredCapabilityRealities, deriveGovernancePreconditionReasons, TaskReality, deriveTaskReality, GovernanceDecision, deriveGovernanceDecision",
+            "src/governance/scopedWriteGate.ts ShadowWriteDecision, deriveShadowWriteDecision, decorateScopedWriteServer, getDefaultScopedWriteGateDependencies",
+            "src/tools/registrationPolicy.ts, src/server.ts registration surfaces",
+            "src/governedContext/service.ts, dashboard.ts"
+          ],
+          "existingTypesSchemas": "tri-state statuses are already the norm — CallabilityStatus and TriStateStatus both carry UNKNOWN — which is exactly the fail-closed vocabulary GW-10/GW-11 require.",
+          "existingFunctionsCallGraph": "registration catalog -> capability reality -> governance precondition reasons -> task reality -> governance decision -> governed context -> shadow write gate at call time.",
+          "exactGap": "no contract composes inherited governance with effective capability for a specific step and target, and one registration surface escapes the gate entirely, so \"effective capability\" cannot currently be stated truthfully for every mutation.",
+          "integrationDecision": "PARTIAL/GENERALIZE for GW-10 and REUSE/EXTEND for GW-11, matching the canonical classification.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "src/server.ts registration of the governed task mutation tools, to add the gate decoration alongside the existing catalog decoration.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "no new tool; the cartography surface counters change when the operational-write surface is decorated, so the cartography digest must be regenerated with the repository tooling.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "registration catalog, cartography counters and digest, shadow parity tests, governed dashboard and every write tool's call path.",
+          "backwardCompatibility": "gate.mode stays 'off' | 'shadow'; routing the operational-write surface through the gate in shadow mode changes no outcome, only observability.",
+          "migrationCompatibility": "shadow parity first — record what the gate would have decided for the three operational-write tools and prove it matches current behavior before any enforcement is contemplated.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-9 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose the composed verdict, its inputs, their sources and freshness, and the contract it was evaluated for.",
+          "definitionOfDone": "GW-10 and GW-11 answer per step and per target from existing derivations only, every registered mutation traverses the gate at least in shadow mode, and no composition can widen capability.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/governance",
+            "path:src/governedContext"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-10",
@@ -1667,7 +2198,53 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [],
+        "binding": {
+          "existingIntegrationSlot": "between the resolvers and the operational authorities; never inside GitRegistry.",
+          "existingFilesSymbols": [
+            "src/github/registryV2.ts RegistryProjectSchema repositoryComponents, projectUid, globalCheckpointRepositoryId, centralGovernanceRepositoryId; RegistryMappingSchema projectUid, componentRole",
+            "src/github/projectResolution.ts resolveGithubProject",
+            "src/operationalMemory/sessionService.ts AutoResumeCompatibleSessionInput",
+            "src/operationalMemory/lockService.ts LockScopeInput",
+            "src/operationalMemory/taskQueue.ts reconcileIntent",
+            "src/governedContext/types.ts GovernedOperationalContext"
+          ],
+          "existingTypesSchemas": "the registry is already multi-repository; the operational layer is not. Four literal single-target types block it, and all four are verified at CURRENT_MAIN: AutoResumeCompatibleSessionInput.repository is the literal 'Patricked-code/MCP'; LockScopeInput's repository variant has key typed as the literal 'Patricked-code/MCP'; GovernedOperationalContext declares repository as that same literal and governedBranch as the literal 'main'; reconcileIntent returns OUT_OF_SCOPE for any other repository.",
+          "existingFunctionsCallGraph": "registry project/component evidence reaches the resolvers, but stops at the operational boundary because session, lock and context types cannot carry it.",
+          "exactGap": "there is no TargetContext type carrying a project, its components, their roles and their independent SHAs, and no TargetScope by which a session, task, lock or receipt can name a subset of components.",
+          "integrationDecision": "GENERALIZE — the model exists and must be propagated, not rebuilt. NEW is rejected for the project model and accepted only for the TargetContext/TargetScope types themselves, which have no current owner.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "the four literal type declarations, plus optional field additions on the operational record types.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "no new tool; existing tools keep their current target until a second project is governed.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "session open/resume, task claim and ownership, lock scoping, receipt shape, live state reconciliation, registry compatibility and the governed dashboard.",
+          "backwardCompatibility": "every historical single-repository record stays readable and resumable with no migration and no rewrite. OUT_OF_SCOPE stays the correct answer for a repository outside the governed target.",
+          "migrationCompatibility": "additive optional fields; absence means the current single target; never backfill a TargetScope onto a historical record.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-10 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose project uid, component ids, roles and per-component SHAs and freshness.",
+          "definitionOfDone": "a project with several repository components is expressible end to end with independent SHAs and independent locks, every historical record is unchanged, and no second registry exists.",
+          "collisionDomains": [
+            "path:src/operationalMemory",
+            "path:src/governedContext",
+            "path:src/liveState"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-11",
@@ -1706,7 +2283,65 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-21",
+            "macroContractRef": "MC-C",
+            "reason": null
+          },
+          {
+            "stepId": "GW-22",
+            "macroContractRef": "MC-C",
+            "reason": null
+          },
+          {
+            "stepId": "GW-23",
+            "macroContractRef": "MC-C",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "the engine's precondition stage, before any branch or code contract.",
+          "existingFilesSymbols": [
+            "scripts/check-docs.mjs, scripts/check-doc-governance.mjs, scripts/doc-governance-lib.mjs, scripts/generate-doc-governance-baseline.mjs, scripts/check-function-cartography.mjs",
+            "docs/governance/markdown-inventory.json",
+            "src/currentState/service.ts, src/currentState/toolCatalog.ts",
+            "src/governedContext/github.ts, src/governedContext/types.ts currentState digests"
+          ],
+          "existingTypesSchemas": "the inventory has an explicit schemaVersion, trackedCount, categories and entries; the canonical-state block has a fixed key list; the cartography has catalogueVersion and catalogueDigest.",
+          "existingFunctionsCallGraph": "CI docs:check -> presence, inventory, canonical state, cartography. At runtime, governed context exposes the digests but does not evaluate authority-document currency per step.",
+          "exactGap": "a governed step cannot assert \"I read the authoritative documents at this digest\", \"this change belongs in this existing slot\" or \"my baseline is this exact SHA\" as evaluable, attestable facts.",
+          "integrationDecision": "PARTIAL for GW-21, PARTIAL/EXTEND for GW-22 and PARTIAL/REUSE for GW-23, matching the canonical classification.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "doc-governance-lib.mjs to accept a project-scoped declaration while defaulting to the current literals.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "no new tool; docs:check stays the CI enforcement point.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "docs:check, the 12 governance tests, cartography digest, current-state evidence and the governed dashboard.",
+          "backwardCompatibility": "the current canonical document list and canonical keys remain valid as the MCP project's own declaration.",
+          "migrationCompatibility": "declare the current literals as the MCP instance of a project-scoped set, prove byte-identical behavior, then allow a second project to declare its own.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-11 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose document digests, inventory counts, cartography digest and baseline SHA with freshness.",
+          "definitionOfDone": "GW-21, GW-22 and GW-23 produce evaluable, attestable outputs; the canonical set is project-scoped with identical MCP behavior; and the REUSE-before-NEW rule becomes machine-checkable.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/authority"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-12",
@@ -1735,7 +2370,45 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [],
+        "binding": {
+          "existingIntegrationSlot": null,
+          "existingFilesSymbols": null,
+          "existingTypesSchemas": null,
+          "existingFunctionsCallGraph": null,
+          "exactGap": "families E through H need bounded GitHub read and exact-head write adapters. That capability exists only in a stale stack whose base no longer exists as main, and no contract may depend on it until its disposition is decided.",
+          "integrationDecision": "REUSE of the candidate capability where it survives reconciliation; the decision itself is a disposition, not an implementation.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": null,
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": null,
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "registered tool surface, cartography digest, current-state evidence, write gate coverage and documentation governance.",
+          "backwardCompatibility": "the current 111-tool surface and its digest are the compatibility reference; any change must be a deliberate, documented cartography regeneration.",
+          "migrationCompatibility": null,
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-12 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": null,
+          "definitionOfDone": "each of `#85`, `#86`, `#88`, `#89` and `#90` has an explicit recorded disposition, and every family E through H contract states which GitHub capability it needs and whether that capability exists on main today.",
+          "collisionDomains": [
+            "github:pull-requests",
+            "path:src/github"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-13",
@@ -1785,7 +2458,95 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-24",
+            "macroContractRef": "MC-C",
+            "reason": null
+          },
+          {
+            "stepId": "GW-25",
+            "macroContractRef": "MC-C",
+            "reason": null
+          },
+          {
+            "stepId": "GW-26",
+            "macroContractRef": "MC-C",
+            "reason": null
+          },
+          {
+            "stepId": "GW-27",
+            "macroContractRef": "MC-C",
+            "reason": null
+          },
+          {
+            "stepId": "GW-28",
+            "macroContractRef": "MC-C",
+            "reason": null
+          },
+          {
+            "stepId": "GW-29",
+            "macroContractRef": "MC-C",
+            "reason": null
+          },
+          {
+            "stepId": "GW-30",
+            "macroContractRef": "MC-C",
+            "reason": null
+          },
+          {
+            "stepId": "GW-31",
+            "macroContractRef": "MC-C",
+            "reason": null
+          },
+          {
+            "stepId": "GW-32",
+            "macroContractRef": "MC-D",
+            "reason": null
+          },
+          {
+            "stepId": "GW-33",
+            "macroContractRef": "MC-D",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "around the existing CI observation path in governedContext/github.ts; never a second CI system.",
+          "existingFilesSymbols": ".github/workflows/mcp-ci.yml, package.json scripts, .mcp/branch-governance.json, scripts/check-*.mjs.",
+          "existingTypesSchemas": "the validation profile is a set of npm script names, not a typed object; a contract cannot currently name \"the profile that must pass for this project\".",
+          "existingFunctionsCallGraph": "push or pull_request -> validate job -> ordered steps -> conclusion on an exact head SHA.",
+          "exactGap": "no contract binds an expected failure signature to a RED observation, and no typed validation profile exists that a second project could declare.",
+          "integrationDecision": "CANDIDATE for GW-24; PARTIAL/CANDIDATE for GW-25 and GW-27; PARTIAL/EXTEND for GW-26; REUSE/EXTEND for GW-28; PARTIAL for GW-29, GW-30, GW-31 and GW-33; REUSE for GW-32.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "package.json for the test profile, and .github/workflows/mcp-ci.yml only if the profile declaration requires it.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "a CI step may be added to prove that every test file is covered by the profile.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "the whole CI profile, the 343-test read-only safety suite, the 12 governance tests, the whitespace check and the branch governance rules.",
+          "backwardCompatibility": "the current profile must be expressible in the new declaration with an identical step set and identical outcomes.",
+          "migrationCompatibility": "declare the current profile, prove identical CI results, then replace the literal test enumeration with discovery so AF-31 cannot recur.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-13 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose run id, head SHA, conclusion, profile identity and the matched failure signature.",
+          "definitionOfDone": "the ten contracts evaluate against the existing CI, a RED must prove its intended failure, the validation profile is declared and project-scoped, and no test file sits outside it.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/development"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-14",
@@ -1838,7 +2599,96 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-34",
+            "macroContractRef": "MC-D",
+            "reason": null
+          },
+          {
+            "stepId": "GW-35",
+            "macroContractRef": "MC-D",
+            "reason": null
+          },
+          {
+            "stepId": "GW-36",
+            "macroContractRef": "MC-D",
+            "reason": null
+          },
+          {
+            "stepId": "GW-37",
+            "macroContractRef": "MC-D",
+            "reason": null
+          },
+          {
+            "stepId": "GW-38",
+            "macroContractRef": "MC-D",
+            "reason": null
+          },
+          {
+            "stepId": "GW-39",
+            "macroContractRef": "MC-D",
+            "reason": null
+          },
+          {
+            "stepId": "GW-40",
+            "macroContractRef": "MC-D",
+            "reason": null
+          },
+          {
+            "stepId": "GW-41",
+            "macroContractRef": "MC-D",
+            "reason": null
+          },
+          {
+            "stepId": "GW-42",
+            "macroContractRef": "MC-D",
+            "reason": null
+          },
+          {
+            "stepId": "GW-43",
+            "macroContractRef": "MC-E",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "src/governedContext/github.ts review collection, beside the existing check collection that already resolves headSha and exactHead.",
+          "existingFilesSymbols": "src/governedContext/github.ts, src/governedContext/types.ts GithubOperationalContext checks/reviews/ruleset/evidence, src/governedContext/service.ts.",
+          "existingTypesSchemas": null,
+          "existingFunctionsCallGraph": "governed context collection -> GitHub observation -> bounded projection -> governance decision. Review counts enter that projection without a commit binding.",
+          "exactGap": "review evidence has no commit binding and no freshness window, so GW-41 premerge revalidation cannot prove that the approvals it counted apply to the head it is about to merge.",
+          "integrationDecision": "PARTIAL/EXTEND for GW-35, GW-36 and GW-41; CANDIDATE for GW-34, GW-38 and GW-43; PARTIAL/CANDIDATE for GW-37; REUSE for GW-39, GW-40 and GW-42.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "src/governedContext/types.ts reviews block and src/governedContext/github.ts review collection.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "none on main; the merge capability itself depends on the GWC-12 disposition.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "governed context assembly, the pr55 review regression suites, governance decision inputs and the governed dashboard.",
+          "backwardCompatibility": "existing consumers of the three review fields are unaffected; the added fields are optional and nullable.",
+          "migrationCompatibility": "add the fields in observation mode, measure how often an approval is on a non-exact head, then make GW-41 depend on them.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-14 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose head SHA, exact-head flag, counts, provenance and freshness for every review input.",
+          "definitionOfDone": "review evidence carries a commit binding, a premerge proof is assembled at a single exact head, and an approval on a superseded head can no longer satisfy a merge contract.",
+          "collisionDomains": [
+            "path:src/governedContext/github.ts",
+            "path:src/governedWorkflow/review"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-15",
@@ -1896,7 +2746,117 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-44",
+            "macroContractRef": "MC-E",
+            "reason": null
+          },
+          {
+            "stepId": "GW-45",
+            "macroContractRef": "MC-E",
+            "reason": null
+          },
+          {
+            "stepId": "GW-46",
+            "macroContractRef": "MC-E",
+            "reason": null
+          },
+          {
+            "stepId": "GW-47",
+            "macroContractRef": "MC-E",
+            "reason": null
+          },
+          {
+            "stepId": "GW-48",
+            "macroContractRef": "MC-E",
+            "reason": null
+          },
+          {
+            "stepId": "GW-49",
+            "macroContractRef": "MC-E",
+            "reason": null
+          },
+          {
+            "stepId": "GW-50",
+            "macroContractRef": "MC-E",
+            "reason": null
+          },
+          {
+            "stepId": "GW-51",
+            "macroContractRef": "MC-E",
+            "reason": null
+          },
+          {
+            "stepId": "GW-52",
+            "macroContractRef": "MC-E",
+            "reason": null
+          },
+          {
+            "stepId": "GW-53",
+            "macroContractRef": "MC-E",
+            "reason": null
+          },
+          {
+            "stepId": "GW-54",
+            "macroContractRef": "MC-F",
+            "reason": null
+          },
+          {
+            "stepId": "GW-55",
+            "macroContractRef": "MC-F",
+            "reason": null
+          },
+          {
+            "stepId": "GW-56",
+            "macroContractRef": "MC-F",
+            "reason": null
+          },
+          {
+            "stepId": "GW-57",
+            "macroContractRef": "MC-F",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "the existing `gate` step for option B; createGithubDeployRouter's start handler for option C; the workflow job graph for option D.",
+          "existingFilesSymbols": ".github/workflows/mcp-deploy.yml gate and deploy steps; src/deploy/githubOidc.ts GITHUB_OIDC_POLICY, validateClaims, verifyGithubOidcToken; src/deploy/routes.ts createGithubDeployRouter; src/deploy/s1Deploy.ts buildS1DeployJobId, buildS1DeployWorkerScript, buildS1DeployLaunchCommand, parseS1DeployStatus; .mcp/autodeploy-policy.json.",
+          "existingTypesSchemas": null,
+          "existingFunctionsCallGraph": null,
+          "exactGap": "no contract requires CI success for the exact SHA before deployment admission, and the deployment attestation does not record the CI evidence that authorized it.",
+          "integrationDecision": "REUSE/EXTEND for GW-45 and GW-46; REUSE/GENERALIZE for GW-47, GW-49, GW-50, GW-51 and GW-53; REUSE/GENERALIZE/EXTEND for GW-52; PARTIAL/EXTEND for GW-48; REUSE for GW-44, GW-54, GW-55 and GW-57; PARTIAL for GW-56.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": ".github/workflows/mcp-deploy.yml gate step and permissions for option B; src/deploy/routes.ts for option C; src/deploy/s1Deploy.ts for the attestation fields.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "a workflow permission addition under option B; no new MCP tool.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "the OIDC suite, deploy routes, deploy workflow shell assertions, S1 worker script generation, status parsing, live state update and receipt refresh.",
+          "backwardCompatibility": "`workflow_dispatch` currently bypasses the policy gate unconditionally. Whether an explicit manual deployment may also bypass the CI gate is part of OD-07 and must be decided, not inherited silently.",
+          "migrationCompatibility": "land the gate in observation mode first — record what it would have decided for recent pushes, including the `d1f3039` case — then enforce.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-15 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "the attestation must name the CI run that authorized the deployment, so that the authorization is auditable after the fact and not merely enforced in the moment.",
+          "definitionOfDone": "no deployment of a main SHA can begin without proven CI success for that identical SHA; the OIDC boundary is unchanged or stronger; the attestation records its authorizing CI evidence; and the `d1f3039` scenario is covered by a regression test.",
+          "collisionDomains": [
+            "path:.github/workflows",
+            "path:src/deploy",
+            "path:src/governedWorkflow/deploy"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-16",
@@ -1950,7 +2910,121 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-58",
+            "macroContractRef": "MC-F",
+            "reason": null
+          },
+          {
+            "stepId": "GW-59",
+            "macroContractRef": "MC-F",
+            "reason": null
+          },
+          {
+            "stepId": "GW-60",
+            "macroContractRef": "MC-F",
+            "reason": null
+          },
+          {
+            "stepId": "GW-61",
+            "macroContractRef": "MC-F",
+            "reason": null
+          },
+          {
+            "stepId": "GW-62",
+            "macroContractRef": "MC-G",
+            "reason": null
+          },
+          {
+            "stepId": "GW-63",
+            "macroContractRef": "MC-G",
+            "reason": null
+          },
+          {
+            "stepId": "GW-64",
+            "macroContractRef": "MC-G",
+            "reason": null
+          },
+          {
+            "stepId": "GW-65",
+            "macroContractRef": "MC-G",
+            "reason": null
+          },
+          {
+            "stepId": "GW-66",
+            "macroContractRef": "MC-G",
+            "reason": null
+          },
+          {
+            "stepId": "GW-67",
+            "macroContractRef": "MC-G",
+            "reason": null
+          },
+          {
+            "stepId": "GW-68",
+            "macroContractRef": "MC-G",
+            "reason": null
+          },
+          {
+            "stepId": "GW-69",
+            "macroContractRef": "MC-G",
+            "reason": null
+          },
+          {
+            "stepId": "GW-70",
+            "macroContractRef": "MC-G",
+            "reason": null
+          },
+          {
+            "stepId": "GW-71",
+            "macroContractRef": "MC-H",
+            "reason": null
+          },
+          {
+            "stepId": "GW-72",
+            "macroContractRef": "MC-H",
+            "reason": null
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "after GWC-15 deployment, before the existing closure calls; never inside closeSession.",
+          "existingFilesSymbols": "scripts/check-docs.mjs, scripts/check-doc-governance.mjs, docs/governance/markdown-inventory.json, src/operationalMemory/sessionService.ts createCheckpoint/closeSession, src/operationalMemory/lockService.ts releaseLocksForSession, src/operationalMemory/taskQueue.ts reconcileIntent, src/liveState/*.",
+          "existingTypesSchemas": null,
+          "existingFunctionsCallGraph": null,
+          "exactGap": "there is no terminal verification contract that re-observes reality after the documentation deployment and gates DONE on it, and no contract handles the recursion where the documentation change is itself the last deployed SHA.",
+          "integrationDecision": "REUSE/GENERALIZE for GW-58 and GW-65; CANDIDATE for GW-59, GW-61 and GW-63; PARTIAL/CANDIDATE for GW-60; REUSE/EXTEND for GW-62 and GW-64; REUSE for GW-66, GW-67, GW-70 and GW-71; PARTIAL/EXTEND for GW-68; PARTIAL/REUSE for GW-69 and GW-72.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "none for closure mechanics; documentation contracts consume the existing scripts.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "none beyond what GWC-12 decides.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "documentation governance, checkpoint shape, lock release on session close, session expiry, queue reconciliation and live state.",
+          "backwardCompatibility": "the current checkpoint shape and closure semantics are unchanged.",
+          "migrationCompatibility": "terminal verification lands in observation mode, recording what it would have blocked, before it gates DONE.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-16 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "expose the verification inputs, their freshness and the blocking reason when DONE is refused.",
+          "definitionOfDone": "DONE is gated on verified reality, the documentation recursion terminates, and closure reuses the existing session, lock and queue authorities without adding a second closure path.",
+          "collisionDomains": [
+            "path:src/governedWorkflow/terminal",
+            "path:docs"
+          ]
+        }
       },
       {
         "candidateWorkItemId": "GWC-CAND-17",
@@ -1989,7 +3063,50 @@
           "NEW_INFORMATION_INTAKE-001",
           "NEW_INFORMATION_INTAKE-002"
         ],
-        "b02Required": true
+        "b02Required": true,
+        "bindingStatus": "BOUND",
+        "macroContractBindings": [
+          {
+            "stepId": "GW-73",
+            "macroContractRef": null,
+            "reason": "OUT_OF_RUNTIME_GRAPH"
+          }
+        ],
+        "binding": {
+          "existingIntegrationSlot": "tests only. The harness must not be importable by runtime code, so it cannot become a hidden dependency.",
+          "existingFilesSymbols": null,
+          "existingTypesSchemas": null,
+          "existingFunctionsCallGraph": null,
+          "exactGap": "nothing proves the engine works for a project other than MCP, and nothing prevents a future contributor from reintroducing an MCP assumption.",
+          "integrationDecision": "NEW, and justified — an acceptance harness has no existing owner by definition.",
+          "upstreamDependencies": null,
+          "downstreamConsumers": null,
+          "expectedExistingFilesToChange": "package.json to register the suite, and the CI workflow once it is stable.",
+          "expectedNewFiles": null,
+          "expectedTypesFunctions": null,
+          "expectedMcpWorkflowChanges": "one CI step once stable — and that step must be discovered by the GWC-13 validation profile rather than enumerated, so AF-31 does not recur here.",
+          "expectedTestFiles": null,
+          "red": null,
+          "green": null,
+          "regression": "every contract, since acceptance is the whole-system gate.",
+          "backwardCompatibility": "the harness must run against the historical single-repository model as well as a multi-component one, proving GWC-10's compatibility rule rather than assuming it.",
+          "migrationCompatibility": "start with the MCP scenario to establish the baseline, then add Stablecoin, then a synthetic multi-component project. Adding scenarios must never require editing a contract.",
+          "security": null,
+          "authorityImpact": null,
+          "dataPersistenceImpact": null,
+          "evidence": [
+            "GWC-17 detailed design in docs/gwc/BLUEPRINTS.md",
+            ".mcp/gwc-blueprints.json",
+            ".mcp/gwc-evolution-design.json",
+            ".mcp/gwc-contracts.json",
+            "boundAtHead:39fdfe454510d38fea9abfb857d473f6037cda60"
+          ],
+          "attestation": "the terminal acceptance report names each scenario, the contracts it exercised and its verdict.",
+          "definitionOfDone": "two real projects and one synthetic multi-component project are governed end to end by the same contracts, with no MCP-specific branching, all recovery scenarios passing, and the anti-hardcode assertion enforced.",
+          "collisionDomains": [
+            "path:tests/governedWorkflowUniversalAcceptance"
+          ]
+        }
       }
     ],
     "completeness": {
@@ -2004,6 +3121,38 @@
       "duplicateBlueprintOwners": 0,
       "runtimeTasksCreated": 0,
       "unstructuredConversationDependency": false
+    },
+    "bindingCompleteness": {
+      "itemsBound": 18,
+      "expectedItems": 18,
+      "contractBindings": 73,
+      "runtimeMacroBindings": 72,
+      "outOfRuntimeBindings": 1,
+      "gw73OutOfRuntimeBinding": {
+        "stepId": "GW-73",
+        "macroContractRef": null,
+        "reason": "OUT_OF_RUNTIME_GRAPH"
+      },
+      "requiredBindingFields": [
+        "blueprintRef",
+        "contractRefs",
+        "existingIntegrationSlot",
+        "existingFiles/types/functions",
+        "expectedFiles/types/functions",
+        "integrationDecision",
+        "dependencies",
+        "collisionDomain",
+        "RED",
+        "GREEN",
+        "regression",
+        "backwardCompatibility",
+        "migrationCompatibility",
+        "security",
+        "evidence",
+        "attestation",
+        "definitionOfDone"
+      ],
+      "missingDetailedDesignSections": 0
     }
   }
 }
