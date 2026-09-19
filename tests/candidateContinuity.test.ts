@@ -975,4 +975,3 @@ test('runner plan is never RESUMED until a matching acknowledgement is observed'
   assert.equal(acknowledged.authorizationGranted, false);
   assert.equal(acknowledged.claimTransferAllowed, false);
 });
-
