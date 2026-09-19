@@ -8,6 +8,12 @@ import {
 import type { SessionRequest } from './sessionService.js';
 import type { TransportBindings } from './transportBindings.js';
 import {
+  RepositoryTargetSchema,
+  TargetScopeSchema,
+  targetScopeEquals,
+  type TargetScope
+} from './targetScope.js';
+import {
   MAX_GOVERNED_LOCK_RECORDS,
   type GovernedLockRecord,
   type GovernedSessionRecord,
@@ -17,6 +23,7 @@ import {
 
 export type LockScopeInput =
   | { type: 'repository'; key: string }
+  | { type: 'component'; targetId: string; mappingId: string }
   | { type: 'task'; key: string }
   | { type: 'resource'; key: string };
 
@@ -24,6 +31,7 @@ export type AcquireLockInput = {
   governedSessionId: string;
   expectedSessionRevision: number;
   scope: LockScopeInput;
+  targetScope?: TargetScope;
   ttlSeconds?: number;
   reason: string;
 };
@@ -32,6 +40,7 @@ export type AcquireLocksAtomicallyInput = {
   governedSessionId: string;
   expectedSessionRevision: number;
   scopes: LockScopeInput[];
+  targetScope?: TargetScope;
   ttlSeconds?: number;
   reason: string;
 };
@@ -73,10 +82,23 @@ function fail(code: string): never {
   throw new Error(code);
 }
 
+function boundedScopeId(value: string): string {
+  const normalized = value.trim();
+  if (
+    normalized.length < 1
+    || normalized.length > 160
+    || normalized.includes('..')
+    || !/^[A-Za-z0-9._-]+$/.test(normalized)
+  ) fail('LOCK_SCOPE_INVALID');
+  return normalized;
+}
+
 export function normalizeLockScope(scope: LockScopeInput): string {
   if (scope.type === 'repository') {
-    if (scope.key !== 'Patricked-code/MCP') fail('LOCK_SCOPE_INVALID');
-    return 'repository:Patricked-code/MCP';
+    return `repository:${RepositoryTargetSchema.parse(scope.key)}`;
+  }
+  if (scope.type === 'component') {
+    return `component:${boundedScopeId(scope.targetId)}:${boundedScopeId(scope.mappingId)}`;
   }
   if (scope.type === 'task') {
     if (!/^TASK-[0-9]{8}-[0-9]{3,}$/.test(scope.key)) fail('LOCK_SCOPE_INVALID');
@@ -194,6 +216,27 @@ export function createGovernedLockService(
     return session;
   }
 
+  function validateTargetScope(
+    session: GovernedSessionRecord,
+    inputScope: TargetScope | undefined,
+    scopes: LockScopeInput[]
+  ): TargetScope | undefined {
+    const targetScope = inputScope ? TargetScopeSchema.parse(inputScope) : undefined;
+    if (!targetScopeEquals(session.targetScope, targetScope)) {
+      fail('LOCK_TARGET_SCOPE_MISMATCH');
+    }
+    for (const scope of scopes) {
+      if (scope.type !== 'component') continue;
+      if (!targetScope || targetScope.targetId !== scope.targetId) {
+        fail('LOCK_COMPONENT_SCOPE_UNBOUND');
+      }
+      if (!targetScope.components.some((component) => component.mappingId === scope.mappingId)) {
+        fail('LOCK_COMPONENT_SCOPE_UNBOUND');
+      }
+    }
+    return targetScope;
+  }
+
   async function compensateLock(lockId: string): Promise<void> {
     await options.store.update((document) => ({
       ...document,
@@ -214,11 +257,12 @@ export function createGovernedLockService(
         || ttlSeconds > options.maxTtlSeconds
       ) fail('LOCK_TTL_INVALID');
       if (!input.reason.trim() || input.reason.length > 240) fail('LOCK_REASON_INVALID');
-      await requireSession(
+      const requiredSession = await requireSession(
         input.governedSessionId,
         request,
         input.expectedSessionRevision
       );
+      const targetScope = validateTargetScope(requiredSession, input.targetScope, [input.scope]);
 
       const at = currentTime();
       const lock: GovernedLockRecord = {
@@ -226,6 +270,7 @@ export function createGovernedLockService(
         lockId: randomUUID(),
         scope,
         governedSessionId: input.governedSessionId,
+        ...(targetScope ? { targetScope } : {}),
         acquiredAt: at.toISOString(),
         expiresAt: new Date(at.getTime() + ttlSeconds * 1_000).toISOString(),
         renewedAt: at.toISOString(),
@@ -334,6 +379,7 @@ export function createGovernedLockService(
         request,
         input.expectedSessionRevision
       );
+      const targetScope = validateTargetScope(requiredSession, input.targetScope, input.scopes);
 
       const at = currentTime();
       let granted: GovernedLockRecord[] = [];
@@ -375,6 +421,7 @@ export function createGovernedLockService(
             lockId: randomUUID(),
             scope,
             governedSessionId: input.governedSessionId,
+            ...(targetScope ? { targetScope } : {}),
             acquiredAt: at.toISOString(),
             expiresAt: new Date(at.getTime() + ttlSeconds * 1_000).toISOString(),
             renewedAt: at.toISOString(),
