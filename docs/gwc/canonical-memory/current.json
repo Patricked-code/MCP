@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-candidate-backlog-complete",
-  "currentBundleId": "bnd_mcp-pr95-candidate-backlog-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-candidate-backlog-complete",
+  "currentBundle": "pr95-c1-af19-resolved",
+  "currentBundleId": "bnd_mcp-pr95-c1-af19-resolved-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-c1-af19-resolved",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -27,9 +27,9 @@
   },
   "currentPrecodeState": {
     "phase": "C",
-    "workItem": "GWC-PRE-C1",
-    "work": "AF19_EXACT_SHA_CI_SAFETY_CORRECTION",
-    "status": "BLOCKED",
+    "workItem": "GWC-PRE-C2",
+    "work": "AF22_AF30_EXACT_HEAD_REVIEW_EVIDENCE_CORRECTION",
+    "status": "READY",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,8 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "blocker": "OD-07_HUMAN_DECISION_REQUIRED",
-    "nextAction": "Obtain explicit human OD-07 selection for AF-19 enforcement placement: B = existing workflow gate, C = server-side deploy admission, B+C = layered defense, or D = CI job dependency. workflow_run remains forbidden by OIDC evidence. After selection, reobserve HEAD, reclaim GWC-PRE-C1, execute RED -> minimal GREEN -> full regression without deployment/live activation."
+    "nextAction": "Reobserve the exact Claude-branch HEAD, claim GWC-PRE-C2, then implement AF-22 / AF-30 exact-head review evidence binding and stale-head invalidation through RED -> minimal GREEN -> full regression. Continue autonomously; no main/S1/production activation."
   },
   "precodeContinuationPolicy": {
     "hierarchy": "PROGRAM -> ARCHITECTURE_PHASE_OR_CANDIDATE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
@@ -183,6 +182,11 @@
     {
       "name": "pr95-phase-b-live-reconciliation",
       "path": "docs/gwc/canonical-memory/pr95-phase-b-live-reconciliation",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-candidate-backlog-complete",
+      "path": "docs/gwc/canonical-memory/pr95-candidate-backlog-complete",
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     }
   ],
