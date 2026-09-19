@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 import { createGovernedContractSubstrate } from '../src/governedWorkflow/contractSubstrate.js';
@@ -6,6 +7,22 @@ import { resolveGw08Runtime, resolveRuntime } from '../src/governedWorkflow/reso
 
 const NOW = '2026-09-19T06:10:00Z';
 const REVISION = 'a'.repeat(40);
+
+async function substrate() {
+  const [contractsText, graphText] = await Promise.all([
+    readFile('.mcp/gwc-contracts.json', 'utf8'),
+    readFile('.mcp/gwc-workflow-graph.json', 'utf8')
+  ]);
+  const contracts = JSON.parse(contractsText);
+  const graph = JSON.parse(graphText);
+  return createGovernedContractSubstrate({
+    contractsProjection: contracts,
+    graphProjection: graph,
+    expectedSchemaVersion: 1,
+    expectedContractRegistryDigest: contracts.registryDigest,
+    expectedGraphRegistryDigest: graph.registryDigest
+  });
+}
 
 function serverResolution(serverId = 's2') {
   return {
@@ -232,9 +249,8 @@ test('GWC-7 explicit NO_RUNTIME cannot coexist with another current runtime', ()
   assert.deepEqual(result.reasonCodes, ['RUNTIME_NONE_CONFLICT']);
 });
 
-test('GW-08 wrapper binds the canonical contract and adds no restart, mutation or authorization semantics', () => {
-  const substrate = createGovernedContractSubstrate();
-  const result = resolveGw08Runtime(input(), substrate);
+test('GW-08 wrapper binds the canonical contract and adds no restart, mutation or authorization semantics', async () => {
+  const result = resolveGw08Runtime(input(), await substrate());
   assert.equal(result.contract.stepId, 'GW-08');
   assert.equal(result.contract.contractVersion, 1);
   assert.equal(result.status, 'RESOLVED');
