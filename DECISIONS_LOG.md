@@ -790,3 +790,15 @@ Décision appliquée uniquement au programme GWC/PRECODE PR #95 :
 - Cette autorisation ne s'étend pas au claim `GWC-PRE-E-GWC-6`.
 - Pour GWC-6, l'absence de heartbeat produit `UNKNOWN/MISSING_HEARTBEAT`, pas une inférence `STALE` ou `DEAD`; son ownership reste inchangé.
 - Une reprise GWC-6 doit d'abord réobserver claim/session/HEAD/heartbeat et utiliser le mécanisme de recovery en mode reconcile-only si l'exécuteur d'origine n'est pas vérifiable.
+
+## 2026-09-19 — OD-03 : identité serveur canonique explicite, preuves serveur distinctes
+
+Décision : `GW-07 SERVER_RESOLUTION` ne déduit jamais un serveur d'un chemin, d'un nom historique libre ou d'une simple disponibilité de transport. L'identité canonique est choisie exclusivement dans l'ensemble borné `canonicalServerIds`. Une variante de casse d'un `serverId` GitRegistry peut se normaliser vers cette identité explicite ; l'ID brut est toujours conservé comme preuve. Une valeur sans correspondance canonique reste `UNVERIFIED`.
+
+Décision de désambiguïsation : un `serverHint` est un hint, pas une autorité. Il ne peut sélectionner qu'une identité canonique déjà liée au projet résolu ; sinon le resolver reste fail-closed. L'environnement fait partie du candidat ; `serverPath` et `realPath` restent des preuves et ne deviennent jamais identité.
+
+Décision de liaison de preuve : les digests portés par le `ProjectResolution` et ceux de la preuve de bindings serveur sont des domaines de preuve distincts. Leur égalité n'est pas une précondition implicite de GW-07 ; elle ne pourra être exigée que si un contrat explicite les lie. Le faux couplage a été identifié par le RED GWC-6 et retiré à `d616849f`.
+
+Décision de déterminisme : l'ordre des alias bruts est fixé par un tri de code units, sans `localeCompare`, afin que le même evidence snapshot produise le même résultat indépendamment de la locale d'exécution.
+
+Frontière : GWC-6 reste `READ_ONLY`; GitRegistry conserve son autorité, ProjectResolution reste l'autorité prédécesseur, et aucun SSH, mutation, permission ou deuxième registre n'est introduit. Preuve finale : MCP CI #1258 SUCCESS sur `087b0a23230c83b6cb1c9069947f48a5d8cc0357`.
