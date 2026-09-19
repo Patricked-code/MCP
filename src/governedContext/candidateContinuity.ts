@@ -1326,6 +1326,7 @@ export type CandidateRecoverySupervisorResult = Readonly<{
     | 'CURRENT_EXECUTOR_LIVE'
     | 'LIVENESS_STALE_RECOVERY_ONLY'
     | 'HEAD_REOBSERVATION_REQUIRED'
+    | 'LIVENESS_BINDING_MISMATCH'
     | 'CLAIM_REOBSERVATION_REQUIRED'
     | 'CHECKPOINT_REOBSERVATION_REQUIRED';
   claimTransferAllowed: false;
@@ -1356,6 +1357,15 @@ export function superviseCandidateRecovery(
     });
   }
 
+  if (input.liveness.candidateSessionId !== input.expectedCandidateSessionId) {
+    return Object.freeze({
+      ...base,
+      decision: 'REOBSERVE_REQUIRED' as const,
+      reasonCode: 'LIVENESS_BINDING_MISMATCH' as const,
+      requiresReobservationBeforeWrite: true
+    });
+  }
+
   const claim = input.activeClaim;
   if (
     !claim
@@ -1367,6 +1377,15 @@ export function superviseCandidateRecovery(
       ...base,
       decision: 'WAIT_FOR_CLAIM' as const,
       reasonCode: 'CLAIM_REOBSERVATION_REQUIRED' as const,
+      requiresReobservationBeforeWrite: true
+    });
+  }
+
+  if (input.liveness.agentIdentity !== claim.agentIdentity) {
+    return Object.freeze({
+      ...base,
+      decision: 'REOBSERVE_REQUIRED' as const,
+      reasonCode: 'LIVENESS_BINDING_MISMATCH' as const,
       requiresReobservationBeforeWrite: true
     });
   }
@@ -1438,6 +1457,24 @@ export type CandidateRecoveryRunnerPlan = Readonly<{
   authorizationGranted: false;
   claimTransferAllowed: false;
 }>;
+
+const CandidateRecoveryRunnerPlanSchema = z.object({
+  planId: z.string().regex(/^recovery-[0-9a-f]{24}$/),
+  action: z.enum([
+    'NO_ACTION',
+    'RESUME_VERIFIED_PROVIDER_SESSION',
+    'START_REPLACEMENT_EXECUTOR',
+    'REOBSERVE_REQUIRED',
+    'RUNNER_UNAVAILABLE'
+  ]),
+  candidateSessionId: BoundedId,
+  provider: CandidateProviderSchema,
+  providerConversationRef: BoundedId.nullable(),
+  expectedHeadSha: GitShaSchema,
+  executionMode: z.literal('RECONCILE_READ_ONLY'),
+  authorizationGranted: z.literal(false),
+  claimTransferAllowed: z.literal(false)
+}).strict();
 
 function recoveryPlanId(input: {
   action: CandidateRecoveryRunnerPlan['action'];
@@ -1523,10 +1560,18 @@ export function acknowledgeCandidateRecoveryRunner(
   rawPlan: CandidateRecoveryRunnerPlan,
   rawAcknowledgement: CandidateRecoveryRunnerAcknowledgement
 ): CandidateRecoveryRunnerAcknowledgementResult {
-  const plan = Object.freeze({ ...rawPlan });
+  const plan = CandidateRecoveryRunnerPlanSchema.parse(rawPlan);
   const acknowledgement = CandidateRecoveryRunnerAcknowledgementSchema.parse(rawAcknowledgement);
+  const expectedPlanId = recoveryPlanId({
+    action: plan.action,
+    candidateSessionId: plan.candidateSessionId,
+    provider: plan.provider,
+    providerConversationRef: plan.providerConversationRef,
+    expectedHeadSha: plan.expectedHeadSha
+  });
   const verified = (
-    acknowledgement.planId === plan.planId
+    plan.planId === expectedPlanId
+    && acknowledgement.planId === plan.planId
     && acknowledgement.candidateSessionId === plan.candidateSessionId
     && acknowledgement.observedHeadSha === plan.expectedHeadSha
   );
