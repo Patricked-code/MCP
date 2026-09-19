@@ -1,0 +1,50 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc7-runtime-resolver-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc7_runtime_resolver",
+      "path": "sources/gwc7-runtime-resolver.json",
+      "media_type": "application/json",
+      "bytes": 4542,
+      "sha256": "280ba04c427059e099e6a3b48bb90de267fa8b7ace2960cd7b62ba5fb7e44b90"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc7_pass",
+      "key": "candidate.phase_e.gwc_7",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-7 is PASS_WITH_EVIDENCE. RED CI #1270 proved the missing runtime resolver; first full GREEN CI #1273 succeeded after the canonical substrate test fixture was corrected; self-review added explicit Docker and systemd coverage; final GREEN CI #1274 succeeded at 9a25bf544769e448e15c17b9006720212b5b888d.",
+      "source_refs": ["src_gwc7_runtime_resolver"],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc7_od04",
+      "key": "candidate.gwc7_od04_policy",
+      "claim_type": "fact",
+      "value": "OD-04 is resolved existing-first with a bounded ephemeral RuntimeBinding model covering explicit no-runtime, checkout-only, Docker, Docker Compose, systemd, process manager and Passenger plus single/multi runtime cardinality. Missing or stale observation remains fail-closed.",
+      "source_refs": ["src_gwc7_runtime_resolver"],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc7_authority",
+      "key": "candidate.gwc7_authority_boundary",
+      "claim_type": "fact",
+      "value": "Server observation remains runtime truth, Live State remains the reconciled projection, and registry declarations never override observation. GWC-7 is READ_ONLY and performs no restart, SSH/runtime mutation, persistence or authorization inference.",
+      "source_refs": ["src_gwc7_runtime_resolver"],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc8_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Retain the GWC-7 branch-local claim until the checkpoint passes exact-head CI. After validation, release GWC-7 and dispatch GWC-PRE-E-GWC-8 (Domain Resolver C5) without replaying GWC-7.",
+      "source_refs": ["src_gwc7_runtime_resolver"],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

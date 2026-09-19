@@ -729,3 +729,11 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Ordonnancement des alias bruts rendu déterministe et indépendant de la locale.
 - GREEN complet MCP CI #1258 sur `087b0a23230c83b6cb1c9069947f48a5d8cc0357`.
 - Aucun changement main/S1/production, aucun runtime Task/lock/session et aucune mutation SSH/GitRegistry.
+
+## 2026-09-19 — GWC-7 Runtime Resolver C4 — final GREEN
+
+- Ajout du resolver GW-08 RuntimeBinding borné et read-only.
+- Prise en charge explicite de NO_RUNTIME, CHECKOUT_ONLY, DOCKER, DOCKER_COMPOSE, SYSTEMD, PROCESS_MANAGER et PASSENGER, y compris MULTI_RUNTIME.
+- Missing/stale/unavailable reste fail-closed ; une déclaration de registry ne remplace jamais l'observation runtime.
+- Recovery gouverné du writer stale avec autorisation humaine explicite ; aucun transfert automatique.
+- RED CI #1270 ; GREEN CI #1273 ; self-review couverture runtime kinds ; FINAL GREEN CI #1274.

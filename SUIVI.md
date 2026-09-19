@@ -566,3 +566,16 @@ Date : 2026-08-29
 - Frontière d'autorité : resolver `READ_ONLY`; aucune mutation GitRegistry, SSH, main, S1, production, Task/lock runtime ou autorisation implicite.
 - Bundle canonique : `docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete`.
 - Le claim GWC-6 reste `ACTIVE` jusqu'au SUCCESS de la CI du checkpoint ; ensuite seulement : release et dispatch `GWC-PRE-E-GWC-7`.
+
+## 2026-09-19 — GWC-7 Runtime Resolver — recovery et GREEN final
+
+- GWC-7 a été repris après heartbeat STALE uniquement après autorisation humaine explicite (PR #95 comment 5739928009) et réobservation du HEAD/claim/RED.
+- Ancienne session candidate-7afc131430c64c6fe34bcfea fermée ; claim GWC-7 libéré explicitement ; replacement candidate-52e3b52226bf3462e7b112de en reprend exactement le collision domain.
+- RED de référence : CI #1270 @ 2855d0e0a4033feb3670b3d3c71315b2ac83c7e6, échec attendu car runtime.ts absent.
+- RuntimeBinding ajouté en lecture seule : NO_RUNTIME, CHECKOUT_ONLY, DOCKER, DOCKER_COMPOSE, SYSTEMD, PROCESS_MANAGER, PASSENGER ; cardinalité NO/SINGLE/MULTI_RUNTIME.
+- Vérité runtime = observation serveur ; Live State = projection réconciliée ; déclaration registry = cross-check non overriding ; missing/stale => UNVERIFIED.
+- Premier GREEN complet : CI #1273 @ dffc5c3a73814c97b2a3728826fd2719bddf34dc.
+- Self-review : couverture explicite DOCKER/SYSTEMD ajoutée sans élargir le comportement.
+- FINAL GREEN : CI #1274 @ 9a25bf544769e448e15c17b9006720212b5b888d.
+- Aucun restart, SSH/runtime mutation, Task runtime, lock runtime, main/S1/production/deploy.
+- Checkpoint canonique GWC-7 en validation ; claim conservé jusqu'à CI exact-head SUCCESS.

@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-e-gwc6-server-resolver-complete",
-  "currentBundleId": "bnd_mcp-pr95-e-gwc6-server-resolver-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete",
+  "currentBundle": "pr95-e-gwc7-runtime-resolver-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc7-runtime-resolver-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc7-runtime-resolver-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -28,8 +28,8 @@
   "currentPrecodeState": {
     "phase": "E",
     "workItem": "GWC-PRE-E-GWC-7",
-    "work": "GWC_7_RUNTIME_RESOLVER_C4",
-    "status": "IN_PROGRESS",
+    "work": "GWC_7_RUNTIME_RESOLVER_C4_CHECKPOINT",
+    "status": "CHECKPOINT_VALIDATION_PENDING",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Resolve OD-04 existing-first from the current runtime binding/configuration and observation authorities, then execute the GWC-7 RED -> minimal GREEN -> full regression -> self-review cycle without runtime mutation.",
+    "nextAction": "Validate the GWC-7 canonical checkpoint with exact-head CI. Only after SUCCESS release the GWC-7 claim and dispatch GWC-PRE-E-GWC-8 without replaying GWC-7.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -120,6 +120,11 @@
     "Preserve INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK."
   ],
   "previousBundles": [
+    {
+      "name": "pr95-e-gwc6-server-resolver-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC6_SERVER_RESOLVER_COMPLETE_CHECKPOINT"
+    },
     {
       "name": "pr95-e-gwc4-intake003-recovery-complete",
       "path": "docs/gwc/canonical-memory/pr95-e-gwc4-intake003-recovery-complete",

@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-7",
+  "blueprint": "GWC-7",
+  "status": "PASS_WITH_EVIDENCE",
+  "session": {
+    "candidateSessionId": "candidate-52e3b52226bf3462e7b112de",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "recoveryAuthorizationCommentId": 5739928009,
+    "sessionStartCommentId": 5739932498,
+    "heartbeatCommentId": 5739932705,
+    "recoveredFromCandidateSessionId": "candidate-7afc131430c64c6fe34bcfea"
+  },
+  "baseline": {
+    "redHead": "2855d0e0a4033feb3670b3d3c71315b2ac83c7e6",
+    "redCiRunNumber": 1270,
+    "redCiRunId": 35425957153,
+    "redConclusion": "FAILURE_EXPECTED_MODULE_ABSENT",
+    "recoveryTransferHead": "ff3dcabf918e63969101d3d29f77f275ced104d2"
+  },
+  "od04Resolution": {
+    "status": "RESOLVED_BOUNDED_EPHEMERAL_RUNTIME_BINDING",
+    "policy": [
+      "RuntimeBinding is bounded typed evidence and never an executor or durable runtime store",
+      "runtime kinds are NO_RUNTIME, CHECKOUT_ONLY, DOCKER, DOCKER_COMPOSE, SYSTEMD, PROCESS_MANAGER and PASSENGER",
+      "cardinality is explicit as NO_RUNTIME, SINGLE_RUNTIME, MULTI_RUNTIME or UNKNOWN",
+      "server observation remains runtime truth and Live State remains the reconciled projection",
+      "registry declarations are cross-check evidence only and never override current observed runtime truth",
+      "missing runtime observation remains UNVERIFIED and never becomes NO_RUNTIME",
+      "stale or unavailable runtime evidence fails closed",
+      "component/server bindings are validated before resolution",
+      "resolver performs no restart, rebuild, SSH mutation, authorization inference or persistence",
+      "results contain bounded evidence only and never raw shell output"
+    ]
+  },
+  "recovery": {
+    "priorSessionLiveness": "STALE",
+    "priorClaimDisposition": "RELEASED_AFTER_EXPLICIT_HUMAN_AUTHORIZATION_AND_EXACT_HEAD_REOBSERVATION",
+    "replacementMode": "RECONCILE_READ_ONLY_BEFORE_WRITE",
+    "ownershipTransferredAutomatically": false,
+    "humanAuthorizationCommentId": 5739928009
+  },
+  "green": {
+    "firstGreenHead": "dffc5c3a73814c97b2a3728826fd2719bddf34dc",
+    "firstGreenCiRunNumber": 1273,
+    "firstGreenCiRunId": 35426868279,
+    "firstGreenConclusion": "SUCCESS",
+    "selfReviewFinding": "RUNTIME_KIND_EXPLICIT_TEST_COVERAGE_INCOMPLETE",
+    "selfReviewCorrectionHead": "9a25bf544769e448e15c17b9006720212b5b888d",
+    "finalGreenCiRunNumber": 1274,
+    "finalGreenCiRunId": 35426982284,
+    "finalGreenConclusion": "SUCCESS",
+    "checks": [
+      "typecheck",
+      "build",
+      "docs check",
+      "governance tests",
+      "GWC dossier check",
+      "secret scan",
+      "read-only safety tests",
+      "whitespace diff check"
+    ]
+  },
+  "implementation": {
+    "files": [
+      "src/governedWorkflow/resolvers/runtime.ts",
+      "tests/governedWorkflowRuntimeResolver.test.ts",
+      "package.json"
+    ],
+    "behavior": [
+      "GW-08 resolves typed runtime bindings from current server resolution plus bounded observed runtime evidence",
+      "Docker, Docker Compose, systemd, process-manager, Passenger, checkout-only and explicit no-runtime states are representable",
+      "multi-runtime targets are represented without assuming one runtime per project",
+      "missing/stale/unavailable evidence remains fail-closed",
+      "declarations cannot override observed runtime truth",
+      "GW-08 wrapper binds canonical contract metadata and remains READ_ONLY"
+    ],
+    "authorityBoundary": "SERVER_OBSERVATION_TRUTH__LIVESTATE_RECONCILED_PROJECTION__REGISTRY_DECLARATION_NON_OVERRIDING__READ_ONLY"
+  },
+  "boundaries": {
+    "runtimeTasksCreated": 0,
+    "runtimeLocksUsed": false,
+    "runtimeMcpRequired": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deployment": false,
+    "sshMutation": false,
+    "runtimeMutation": false,
+    "authorizationInferred": false,
+    "parallelAuthorityCreated": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc7-runtime-resolver-complete",
+    "claimReleaseRule": "Retain the GWC-7 branch-local claim until this checkpoint projection passes exact-head CI; release only after that validation.",
+    "nextWorkItemAfterRelease": "GWC-PRE-E-GWC-8"
+  },
+  "nextAction": "Create and validate the GWC-7 canonical checkpoint on the exact branch head. After checkpoint CI succeeds, release GWC-7 and dispatch GWC-PRE-E-GWC-8 without replaying GWC-7."
+}

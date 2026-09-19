@@ -802,3 +802,10 @@ Décision de liaison de preuve : les digests portés par le `ProjectResolution` 
 Décision de déterminisme : l'ordre des alias bruts est fixé par un tri de code units, sans `localeCompare`, afin que le même evidence snapshot produise le même résultat indépendamment de la locale d'exécution.
 
 Frontière : GWC-6 reste `READ_ONLY`; GitRegistry conserve son autorité, ProjectResolution reste l'autorité prédécesseur, et aucun SSH, mutation, permission ou deuxième registre n'est introduit. Preuve finale : MCP CI #1258 SUCCESS sur `087b0a23230c83b6cb1c9069947f48a5d8cc0357`.
+
+## 2026-09-19 — GWC-7 — OD-04 final / recovery ownership
+
+- OD-04 est matérialisé par un RuntimeBinding éphémère et borné, jamais par un nouveau store ou executor.
+- L'observation serveur reste l'autorité de vérité runtime ; Live State reste sa projection réconciliée ; GitRegistry ne peut que cross-checker une observation courante.
+- NO_RUNTIME exige une observation explicite ; absence d'observation = UNVERIFIED.
+- La session writer précédente étant STALE, son claim n'a pas été libéré par timeout. Le transfert GWC-7 a été effectué uniquement après autorisation humaine explicite PR #95 comment 5739928009 et revalidation du HEAD/claim/evidence.

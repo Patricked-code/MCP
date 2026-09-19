@@ -1232,7 +1232,12 @@
           "Server observation remains runtime truth; Live State remains reconciled projection; GitRegistry declarations may cross-check but never override observation; missing observation => UNVERIFIED, never NO_RUNTIME.",
           "No new MCP tool or runtime mutation is allowed in GWC-7; RED is isolated to a new runtime resolver test file registered in the existing read-only safety suite.",
           "Human-authorized stale-session recovery recorded at PR #95 comment 5739928009: prior session candidate-7afc131430c64c6fe34bcfea CLOSED and its GWC-7 claim RELEASED only after exact-head reobservation @ 2855d0e0a4033feb3670b3d3c71315b2ac83c7e6; replacement session candidate-52e3b52226bf3462e7b112de created in RECONCILE_READ_ONLY mode and assigned the same bounded GWC-7 collision domains.",
-          "Recovery preserves RED checkpoint: CI #1270 FAILURE @ 2855d0e0a4033feb3670b3d3c71315b2ac83c7e6 remains the current expected GWC-7 RED evidence; replacement executor must reobserve and understand this failure before any minimal GREEN write."
+          "Recovery preserves RED checkpoint: CI #1270 FAILURE @ 2855d0e0a4033feb3670b3d3c71315b2ac83c7e6 remains the current expected GWC-7 RED evidence; replacement executor must reobserve and understand this failure before any minimal GREEN write.",
+          "Recovery replacement completed GWC-7 from the proven RED without replay: CI #1270 FAILURE @ 2855d0e0a4033feb3670b3d3c71315b2ac83c7e6 proved runtime.ts absent.",
+          "First full GREEN CI #1273 SUCCESS @ dffc5c3a73814c97b2a3728826fd2719bddf34dc after correcting only the canonical substrate test fixture.",
+          "Self-review found incomplete explicit runtime-kind test coverage; Docker and systemd proofs added without widening resolver behavior.",
+          "FINAL GREEN CI #1274 SUCCESS @ 9a25bf544769e448e15c17b9006720212b5b888d: typecheck, build, docs, governance, GWC verifier, secret scan, read-only safety and whitespace all green.",
+          "GWC-7 checkpoint bundle staged; claim retained ACTIVE until exact-head checkpoint CI succeeds."
         ]
       },
       {
@@ -4925,15 +4930,52 @@
     "gwc7": {
       "workItemId": "GWC-PRE-E-GWC-7",
       "blueprint": "GWC-7",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE",
       "dependency": "GWC-PRE-E-GWC-6",
       "dependencyEvidence": {
         "ciRunNumber": 1265,
         "head": "7c5c34669b9baa8fbe5e2975debf8205d9e5e05b",
         "result": "SUCCESS"
       },
+      "red": {
+        "ciRunNumber": 1270,
+        "head": "2855d0e0a4033feb3670b3d3c71315b2ac83c7e6",
+        "result": "FAIL_EXPECTED_MODULE_ABSENT"
+      },
+      "recovery": {
+        "priorCandidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "replacementCandidateSessionId": "candidate-52e3b52226bf3462e7b112de",
+        "authorizationCommentId": 5739928009,
+        "transferHead": "ff3dcabf918e63969101d3d29f77f275ced104d2",
+        "automaticTransfer": false
+      },
+      "firstGreen": {
+        "ciRunNumber": 1273,
+        "head": "dffc5c3a73814c97b2a3728826fd2719bddf34dc",
+        "result": "SUCCESS"
+      },
+      "selfReview": {
+        "finding": "RUNTIME_KIND_EXPLICIT_TEST_COVERAGE_INCOMPLETE",
+        "correctionHead": "9a25bf544769e448e15c17b9006720212b5b888d",
+        "result": "CORRECTED_BEFORE_CHECKPOINT"
+      },
+      "finalGreen": {
+        "ciRunNumber": 1274,
+        "head": "9a25bf544769e448e15c17b9006720212b5b888d",
+        "result": "SUCCESS"
+      },
+      "implementation": [
+        "src/governedWorkflow/resolvers/runtime.ts",
+        "tests/governedWorkflowRuntimeResolver.test.ts",
+        "package.json"
+      ],
       "od04": "RESOLVED_BOUNDED_EPHEMERAL_RUNTIME_BINDING",
-      "authorityBoundary": "SERVER_OBSERVATION_TRUTH__LIVESTATE_RECONCILED_PROJECTION__REGISTRY_DECLARATION_NON_OVERRIDING__READ_ONLY"
+      "authorityBoundary": "SERVER_OBSERVATION_TRUTH__LIVESTATE_RECONCILED_PROJECTION__REGISTRY_DECLARATION_NON_OVERRIDING__READ_ONLY",
+      "checkpoint": {
+        "bundle": "docs/gwc/canonical-memory/pr95-e-gwc7-runtime-resolver-complete",
+        "validation": "PENDING_EXACT_HEAD_CI",
+        "claimRelease": "RETAINED_PENDING_CHECKPOINT_CI"
+      }
     }
   },
   "intake003RecoveryEvolution": {
