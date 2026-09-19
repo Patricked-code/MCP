@@ -759,3 +759,16 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Classification des outils inchangée (`operational-write`) ; cartographie/digest conservés et régression verte.
 - RED CI #1298 ; GREEN initial #1300 ; self-review fixture-only #1301 ; GREEN final #1302 sur `ff85ab51ae59df044ad179abe0865374e41f2412`.
 - Aucun changement main/S1/production et aucun second moteur de gouvernance/capability.
+
+## 2026-09-19 — GWC-10 Multi-repository TargetScope
+
+- Ajout de `TargetContext` et `TargetScope` derrière le modèle projet/composants existant de GitRegistry V2.
+- Extension strictement additive de Session, Task, Lock et BootstrapReceipt avec un `TargetScope` optionnel ; aucun backfill des records historiques.
+- Généralisation des identifiants repository aux cibles gouvernées sans invalider `Patricked-code/MCP`.
+- Ownership Task borné au sous-ensemble exact de composants ; mêmes intents sur composants disjoints restent indépendants.
+- Locks composants indépendants, sans élargissement automatique au projet.
+- Live State transporte le même `TargetContext` optionnel et incrémente `stateVersion` sur changement sémantique de composant, pas sur simple changement d'`observedAt`.
+- BootstrapReceipt multi-composant conserve les SHAs indépendants dans `targetContext` et laisse les champs SHA legacy à `null`.
+- Interdiction confirmée de synthétiser un `PROJECT_SHA`.
+- RED CI #1314 ; GREEN initial #1328 ; self-review #1329 ; GREEN final #1330 sur `67197cd12e13f450734b403c4b85e26dc9760c60`.
+- Aucun changement main/S1/production, aucun second registre projet, store opérationnel ou Live State.
