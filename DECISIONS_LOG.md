@@ -847,3 +847,15 @@ Décision autorité : GitRegistry V2 reste l'autorité projet/composants, Operat
 Décision égalité : deux `TargetScope` portant exactement les mêmes composants sont identiques indépendamment de l'ordre du tableau. Cette règle a été découverte par self-review CI #1329 et prouvée GREEN en CI #1330.
 
 Preuve finale de code : MCP CI #1330 SUCCESS sur `67197cd12e13f450734b403c4b85e26dc9760c60`. Le claim GWC-10 n'est libérable qu'après validation CI du checkpoint canonique exact-head.
+
+## 2026-09-19 — GWC-11 : autorités documentaires, slot d'intégration et baseline GitHub
+
+Décision GW-21 : l'autorité documentaire reste le mécanisme existant d'inventaire/canonical-state/cartographie. GWC-11 ne copie pas le contenu comme nouvelle source de vérité ; il émet seulement une preuve bornée par digests et compteurs. La déclaration devient project-scoped, mais la déclaration MCP par défaut demeure strictement compatible avec les listes historiques.
+
+Décision GW-22 : le resolver d'Integration Slot est une dérivation pure des inventaires Current State existants. Il ne peut retourner `FOUND` que pour un module, document ou outil effectivement présent ; sinon il retourne `NONE` ou `AMBIGUOUS`. Il n'invente jamais un owner. Un inventaire stale/unavailable interdit toute résolution positive.
+
+Décision GW-23 : la baseline GitHub d'une étape doit être observée après le début de cette étape et doit porter le SHA exact de sa branche. Une baseline antérieure n'est jamais rejouée. Les preuves pull request/checks requises doivent elles-mêmes être CURRENT ; toute contradiction de head produit `CONFLICT`.
+
+Décision d'autorité : aucun second inventaire documentaire, aucune seconde cartographie, aucun second observateur GitHub, aucun store GWC et aucune permission ne sont créés. Les trois contrats sont exclusivement READ/DERIVE, avec `authorizationInferred=false` et `mutationPerformed=false`.
+
+Preuve finale de code : MCP CI #1348 SUCCESS sur `2a82e278319dd750db2a6d870fc029fe296a66a6`. Bundle : `docs/gwc/canonical-memory/pr95-e-gwc11-authority-baseline-complete`, source SHA-256 `2dacb7e9fc2fe2dd80280e5730e80463803c1ce35c8d801c63e7eddc43d5c627`. Le claim GWC-11 reste retenu jusqu'au SUCCESS du checkpoint exact-head.
