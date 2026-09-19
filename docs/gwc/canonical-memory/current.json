@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-e-gwc7-runtime-resolver-complete",
-  "currentBundleId": "bnd_mcp-pr95-e-gwc7-runtime-resolver-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc7-runtime-resolver-complete",
+  "currentBundle": "pr95-e-gwc8-domain-resolver-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc8-domain-resolver-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc8-domain-resolver-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -28,8 +28,8 @@
   "currentPrecodeState": {
     "phase": "E",
     "workItem": "GWC-PRE-E-GWC-8",
-    "work": "GWC_8_DOMAIN_RESOLVER_C5",
-    "status": "IN_PROGRESS",
+    "work": "GWC_8_DOMAIN_RESOLVER_C5_CHECKPOINT",
+    "status": "CHECKPOINT_VALIDATION_PENDING",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
     "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "GWC-8 recovery is CI-validated. Build a proven RED for GW-09 DomainResolution from current project/server/GitRegistry/domain-observation authorities, then implement the minimal read-only resolver preserving NONE vs UNVERIFIED and historical-vhost exclusion.",
+    "nextAction": "Validate the GWC-8 canonical checkpoint on exact-head CI. Keep candidate-gwc8-recovery-4d887146-20260919 ACTIVE until SUCCESS; then release GWC-8 and dispatch GWC-PRE-E-GWC-9 without replaying GWC-8.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -259,10 +259,15 @@
       "name": "pr95-intake-004-minute-liveness-complete",
       "path": "docs/gwc/canonical-memory/pr95-intake-004-minute-liveness-complete",
       "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-e-gwc7-runtime-resolver-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc7-runtime-resolver-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
     }
   ],
-  "updatedFromGitHubObservationAt": "2026-09-19T06:50:00Z",
-  "observedHeadBeforePointerUpdate": "7634741e3fe73058b6d491e309e6bbfc9a896675",
+  "updatedFromGitHubObservationAt": "2026-09-19T07:08:00Z",
+  "observedHeadBeforePointerUpdate": "196b06daa12073b908fc1ec66bac963a1af62520",
   "correctionReason": "Intake #004 minute-liveness implementation is scope-green at CI #1252. Its own candidate heartbeat became STALE and the stale claim was released only under explicit human recovery authorization. GWC-6 has MISSING heartbeat => UNKNOWN liveness; its ACTIVE claim and collision domains remain unchanged.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
@@ -624,6 +629,7 @@
     "GWC-5": "PASS_WITH_EVIDENCE",
     "GWC-6": "PASS_WITH_EVIDENCE",
     "GWC-7": "PASS_WITH_EVIDENCE",
-    "GWC-8": "IN_PROGRESS_ACTIVE_CLAIM"
+    "GWC-8": "PASS_WITH_EVIDENCE_CHECKPOINT_VALIDATION_PENDING",
+    "GWC-9": "PENDING_AFTER_GWC8_CHECKPOINT_RELEASE"
   }
 }
