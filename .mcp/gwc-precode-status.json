@@ -915,7 +915,7 @@
           "review-evidence"
         ],
         "title": "AF-22 / AF-30 candidate correction",
-        "status": "READY",
+        "status": "IN_PROGRESS",
         "priority": 79,
         "sequence": 5,
         "dependencies": [
@@ -927,7 +927,8 @@
           "docs:gwc"
         ],
         "evidence": [
-          "Dependency GWC-PRE-C1 completed with GREEN CI #1112 on exact head 074f2bd21eef6e23811512453d34670bfecc7485."
+          "Dependency GWC-PRE-C1 completed with GREEN CI #1112 on exact head 074f2bd21eef6e23811512453d34670bfecc7485.",
+          "Claimed by candidate-7afc131430c64c6fe34bcfea @ cd859746ee68563a427bac1b58b2d7aa0c156291"
         ]
       },
       {
@@ -996,6 +997,17 @@
           "docs:gwc"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-C2",
+        "collisionDomains": [
+          "src:governed-context-github",
+          "src:governed-workflow-review",
+          "docs:gwc"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -1043,9 +1055,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "2aeca6ea0eeb3919b2a586a7ee800b0ba1e6e657",
+        "lastObservedHeadSha": "cd859746ee68563a427bac1b58b2d7aa0c156291",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T00:11:00Z",
+        "lastSeenAt": "2026-09-19T01:13:00Z",
         "status": "ACTIVE"
       }
     ]
