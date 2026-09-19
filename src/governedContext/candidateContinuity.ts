@@ -1214,6 +1214,283 @@ export function discoverCandidateIntakeSources(
   });
 }
 
+export const CANDIDATE_HEARTBEAT_POLICY = Object.freeze({
+  schemaVersion: 1 as const,
+  emissionIntervalSeconds: 60,
+  freshForSeconds: 120,
+  markerPrefix: 'GWC_PRECODE_LIVENESS' as const,
+  transport: 'PR_TOP_LEVEL_MUTABLE_COMMENT' as const,
+  movesBranchHead: false as const,
+  versionedPersistence: false as const
+});
+
+const CandidateHeartbeatSessionIdSchema = z.string()
+  .trim()
+  .min(1)
+  .max(160)
+  .regex(/^[A-Za-z0-9._:-]+$/);
+
+export const CandidateHeartbeatActionSchema = z.enum([
+  'REOBSERVING',
+  'ANALYZING',
+  'EDITING',
+  'RUNNING_TESTS',
+  'WAITING_CI',
+  'SELF_REVIEW',
+  'CHECKPOINTING',
+  'WAITING_USER',
+  'YIELDED',
+  'UNKNOWN'
+]);
+export type CandidateHeartbeatAction = z.infer<typeof CandidateHeartbeatActionSchema>;
+
+export const CandidateHeartbeatSchema = z.object({
+  schemaVersion: z.literal(1),
+  candidateSessionId: CandidateHeartbeatSessionIdSchema,
+  agentIdentity: BoundedId,
+  workItemId: BoundedId,
+  heartbeatSequence: z.number().int().min(1).max(Number.MAX_SAFE_INTEGER),
+  emittedAt: z.string().datetime({ offset: true }),
+  observedHeadSha: GitShaSchema,
+  currentAction: CandidateHeartbeatActionSchema,
+  evidenceRef: BoundedRef.optional()
+}).strict();
+export type CandidateHeartbeat = z.infer<typeof CandidateHeartbeatSchema>;
+
+export function candidateHeartbeatMarker(candidateSessionId: string): string {
+  const sessionId = CandidateHeartbeatSessionIdSchema.parse(candidateSessionId);
+  return `<!-- ${CANDIDATE_HEARTBEAT_POLICY.markerPrefix}:${sessionId} -->`;
+}
+
+export function formatCandidateHeartbeatComment(rawHeartbeat: CandidateHeartbeat): string {
+  const heartbeat = CandidateHeartbeatSchema.parse(rawHeartbeat);
+  return [
+    candidateHeartbeatMarker(heartbeat.candidateSessionId),
+    '```json',
+    JSON.stringify(heartbeat, null, 2),
+    '```'
+  ].join('\n');
+}
+
+export type CandidateHeartbeatParseResult = Readonly<{
+  status: 'VALID' | 'INVALID' | 'NOT_HEARTBEAT';
+  reasonCode:
+    | 'HEARTBEAT_VALID'
+    | 'HEARTBEAT_MARKER_MISSING'
+    | 'HEARTBEAT_MARKER_SESSION_MISMATCH'
+    | 'HEARTBEAT_JSON_INVALID'
+    | 'HEARTBEAT_PAYLOAD_INVALID';
+  heartbeat: CandidateHeartbeat | null;
+  transient: true;
+  movesBranchHead: false;
+  authorizationGranted: false;
+  claimTransferAllowed: false;
+}>;
+
+export function parseCandidateHeartbeatComment(rawBody: string): CandidateHeartbeatParseResult {
+  const body = z.string().max(20_000).parse(rawBody);
+  const markerMatch = body.match(/<!--\s*GWC_PRECODE_LIVENESS:([A-Za-z0-9._:-]{1,160})\s*-->/);
+  const base = {
+    transient: true as const,
+    movesBranchHead: false as const,
+    authorizationGranted: false as const,
+    claimTransferAllowed: false as const
+  };
+  if (!markerMatch) {
+    return Object.freeze({
+      ...base,
+      status: 'NOT_HEARTBEAT' as const,
+      reasonCode: 'HEARTBEAT_MARKER_MISSING' as const,
+      heartbeat: null
+    });
+  }
+
+  const markerSessionId = markerMatch[1]!;
+  const afterMarker = body.slice((markerMatch.index ?? 0) + markerMatch[0].length).trim();
+  const fenced = afterMarker.match(/^```json\s*([\s\S]*?)\s*```/i);
+  const jsonText = fenced?.[1]?.trim() ?? afterMarker;
+
+  let parsedJson: unknown;
+  try {
+    parsedJson = JSON.parse(jsonText);
+  } catch {
+    return Object.freeze({
+      ...base,
+      status: 'INVALID' as const,
+      reasonCode: 'HEARTBEAT_JSON_INVALID' as const,
+      heartbeat: null
+    });
+  }
+
+  const parsedHeartbeat = CandidateHeartbeatSchema.safeParse(parsedJson);
+  if (!parsedHeartbeat.success) {
+    return Object.freeze({
+      ...base,
+      status: 'INVALID' as const,
+      reasonCode: 'HEARTBEAT_PAYLOAD_INVALID' as const,
+      heartbeat: null
+    });
+  }
+  if (parsedHeartbeat.data.candidateSessionId !== markerSessionId) {
+    return Object.freeze({
+      ...base,
+      status: 'INVALID' as const,
+      reasonCode: 'HEARTBEAT_MARKER_SESSION_MISMATCH' as const,
+      heartbeat: null
+    });
+  }
+
+  return Object.freeze({
+    ...base,
+    status: 'VALID' as const,
+    reasonCode: 'HEARTBEAT_VALID' as const,
+    heartbeat: Object.freeze({ ...parsedHeartbeat.data })
+  });
+}
+
+export const CandidateHeartbeatBindingInputSchema = z.object({
+  heartbeat: CandidateHeartbeatSchema,
+  candidateSession: CandidateSessionSchema,
+  activeClaim: CandidateWorkClaimSchema.nullable(),
+  currentHeadSha: GitShaSchema,
+  previousHeartbeat: CandidateHeartbeatSchema.nullable()
+}).strict();
+export type CandidateHeartbeatBindingInput = z.infer<typeof CandidateHeartbeatBindingInputSchema>;
+
+export type CandidateHeartbeatBindingResult = Readonly<{
+  status: 'BOUND' | 'INVALID';
+  reasonCode:
+    | 'HEARTBEAT_BOUND'
+    | 'HEARTBEAT_SESSION_MISMATCH'
+    | 'HEARTBEAT_AGENT_MISMATCH'
+    | 'HEARTBEAT_CLAIM_MISMATCH'
+    | 'HEARTBEAT_HEAD_MISMATCH'
+    | 'HEARTBEAT_SEQUENCE_NOT_MONOTONE'
+    | 'HEARTBEAT_TIME_NOT_MONOTONE';
+  authorizationGranted: false;
+  claimTransferAllowed: false;
+  ownershipChanged: false;
+}>;
+
+export function validateCandidateHeartbeatBinding(
+  rawInput: CandidateHeartbeatBindingInput
+): CandidateHeartbeatBindingResult {
+  const input = CandidateHeartbeatBindingInputSchema.parse(rawInput);
+  const base = {
+    authorizationGranted: false as const,
+    claimTransferAllowed: false as const,
+    ownershipChanged: false as const
+  };
+  const heartbeat = input.heartbeat;
+  const session = input.candidateSession;
+  const claim = input.activeClaim;
+
+  if (heartbeat.candidateSessionId !== session.candidateSessionId) {
+    return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_SESSION_MISMATCH' as const });
+  }
+  if (heartbeat.agentIdentity !== session.agentIdentity) {
+    return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_AGENT_MISMATCH' as const });
+  }
+  if (
+    !claim
+    || claim.status !== 'ACTIVE'
+    || claim.candidateSessionId !== heartbeat.candidateSessionId
+    || claim.agentIdentity !== heartbeat.agentIdentity
+    || claim.workItemId !== heartbeat.workItemId
+  ) {
+    return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_CLAIM_MISMATCH' as const });
+  }
+  if (heartbeat.observedHeadSha !== input.currentHeadSha) {
+    return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_HEAD_MISMATCH' as const });
+  }
+  if (input.previousHeartbeat) {
+    if (
+      input.previousHeartbeat.candidateSessionId !== heartbeat.candidateSessionId
+      || heartbeat.heartbeatSequence <= input.previousHeartbeat.heartbeatSequence
+    ) {
+      return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_SEQUENCE_NOT_MONOTONE' as const });
+    }
+    if (Date.parse(heartbeat.emittedAt) <= Date.parse(input.previousHeartbeat.emittedAt)) {
+      return Object.freeze({ ...base, status: 'INVALID' as const, reasonCode: 'HEARTBEAT_TIME_NOT_MONOTONE' as const });
+    }
+  }
+
+  return Object.freeze({ ...base, status: 'BOUND' as const, reasonCode: 'HEARTBEAT_BOUND' as const });
+}
+
+export const CandidateMinuteLivenessInputSchema = z.object({
+  heartbeat: CandidateHeartbeatSchema.nullable(),
+  observedAt: z.string().datetime({ offset: true })
+}).strict().superRefine((value, ctx) => {
+  if (
+    value.heartbeat !== null
+    && Date.parse(value.heartbeat.emittedAt) > Date.parse(value.observedAt)
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['heartbeat', 'emittedAt'],
+      message: 'HEARTBEAT_CANNOT_BE_IN_THE_FUTURE'
+    });
+  }
+});
+export type CandidateMinuteLivenessInput = z.infer<typeof CandidateMinuteLivenessInputSchema>;
+
+export type CandidateMinuteLivenessResult = Readonly<{
+  status: 'WORKING_CONFIRMED' | 'RECENTLY_ACTIVE' | 'STALE' | 'UNKNOWN' | 'YIELDED';
+  heartbeatObservedAt: string | null;
+  ageSeconds: number | null;
+  currentAction: CandidateHeartbeatAction | null;
+  emissionIntervalSeconds: 60;
+  freshForSeconds: 120;
+  transient: true;
+  ownershipChanged: false;
+  authorizationGranted: false;
+  claimTransferAllowed: false;
+}>;
+
+export function assessCandidateMinuteLiveness(
+  rawInput: CandidateMinuteLivenessInput
+): CandidateMinuteLivenessResult {
+  const input = CandidateMinuteLivenessInputSchema.parse(rawInput);
+  const heartbeat = input.heartbeat;
+  const base = {
+    emissionIntervalSeconds: CANDIDATE_HEARTBEAT_POLICY.emissionIntervalSeconds as 60,
+    freshForSeconds: CANDIDATE_HEARTBEAT_POLICY.freshForSeconds as 120,
+    transient: true as const,
+    ownershipChanged: false as const,
+    authorizationGranted: false as const,
+    claimTransferAllowed: false as const
+  };
+  if (!heartbeat) {
+    return Object.freeze({
+      ...base,
+      status: 'UNKNOWN' as const,
+      heartbeatObservedAt: null,
+      ageSeconds: null,
+      currentAction: null
+    });
+  }
+
+  const ageSeconds = Math.floor(
+    (Date.parse(input.observedAt) - Date.parse(heartbeat.emittedAt)) / 1_000
+  );
+  const status: CandidateMinuteLivenessResult['status'] = heartbeat.currentAction === 'YIELDED'
+    ? 'YIELDED'
+    : ageSeconds <= CANDIDATE_HEARTBEAT_POLICY.emissionIntervalSeconds
+      ? 'WORKING_CONFIRMED'
+      : ageSeconds <= CANDIDATE_HEARTBEAT_POLICY.freshForSeconds
+        ? 'RECENTLY_ACTIVE'
+        : 'STALE';
+
+  return Object.freeze({
+    ...base,
+    status,
+    heartbeatObservedAt: heartbeat.emittedAt,
+    ageSeconds,
+    currentAction: heartbeat.currentAction
+  });
+}
+
 export const CandidateLivenessInputSchema = z.object({
   candidateSessionId: BoundedId,
   agentIdentity: BoundedId,
