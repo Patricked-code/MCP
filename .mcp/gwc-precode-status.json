@@ -1178,13 +1178,17 @@
           "GWC-PRE-E-GWC-3"
         ],
         "collisionDomains": [
-          "path:src/governedWorkflow/resolvers/server"
+          "path:src/governedWorkflow/resolvers/server",
+          "path:tests/governedWorkflowGithubResolverAdapters.test.ts"
         ],
         "evidence": [
           "Derived from GWC-CAND-06 exact-bound candidate backlog.",
           "Dependency GWC-PRE-E-GWC-3 completed with GREEN CI #1192.",
           "Claimed by candidate-7afc131430c64c6fe34bcfea @ 666cb280156a880f67ddff6613d75902f5c623d8",
-          "GWC-4 closure projection validated by CI #1239 SUCCESS before GWC-6 claim."
+          "GWC-4 closure projection validated by CI #1239 SUCCESS before GWC-6 claim.",
+          "OD-03 observed authority mismatch: src/config/servers.ts canonical ServerId values are s1/s2 while GitRegistry contains historical s1 and newer S2 casing.",
+          "OD-03 policy selected for RED: canonicalize only against an explicit bounded set of known managed-server IDs; preserve raw serverId as evidence; unknown aliases remain UNVERIFIED; resolver never mutates GitRegistry or invokes SSH.",
+          "GWC-6 shared resolver test path added to collision domain before RED."
         ]
       },
       {
@@ -1569,7 +1573,8 @@
         "agentIdentity": "ChatGPT-GPT-5.6-Sol",
         "workItemId": "GWC-PRE-E-GWC-6",
         "collisionDomains": [
-          "path:src/governedWorkflow/resolvers/server"
+          "path:src/governedWorkflow/resolvers/server",
+          "path:tests/governedWorkflowGithubResolverAdapters.test.ts"
         ],
         "status": "ACTIVE"
       }
