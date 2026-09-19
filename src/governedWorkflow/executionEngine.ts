@@ -20,12 +20,39 @@ export type EffectPlan = Readonly<{
   safeNow: boolean;
 }>;
 
-export type RecoveryAnchor = Readonly<{
-  stepId: string;
-  evidenceDigest: string;
+export type ReplayClass =
+  | 'PURE'
+  | 'READ_ONLY'
+  | 'IDEMPOTENT_MUTATION'
+  | 'NON_REPLAYABLE_MUTATION';
+
+export type EvidenceBinding = Readonly<{
+  repository?: string;
+  project?: string;
+  component?: string;
+  branch?: string;
+  headSha?: string;
+  sessionId?: string;
+  taskId?: string;
+}>;
+
+export type EvidenceRef = Readonly<{
+  authority: string;
+  kind: 'OBSERVATION' | 'DERIVATION' | 'ATTESTATION' | 'DECLARATION';
+  reference: string;
   observedAt: string;
-  contractRegistryDigest: string;
-  graphRegistryDigest: string;
+  freshness: 'CURRENT' | 'STALE' | 'EXPIRED' | 'UNKNOWN';
+  digest: string | null;
+  binding: EvidenceBinding;
+}>;
+
+export type RecoveryAnchor = Readonly<{
+  anchorId: string;
+  stepId: string;
+  observedPostcondition: EvidenceRef;
+  binding: EvidenceBinding;
+  replayClassOfNextStep: ReplayClass;
+  duplicateInvocationRule: 'REOBSERVE_THEN_DECIDE';
 }>;
 
 export type ExecutionFrame = Readonly<{
@@ -50,7 +77,7 @@ export type ExecutionFrame = Readonly<{
       | 'REOBSERVE_REQUIRED';
   }>[];
   effectPlan: EffectPlan | null;
-  recoveryAnchor: RecoveryAnchor;
+  recoveryAnchor: RecoveryAnchor | null;
   frameDigest: string;
 }>;
 
@@ -78,6 +105,40 @@ export type ShadowExecutionResult = Readonly<{
   effectDispatched: false;
   frame: ExecutionFrame;
 }>;
+
+const EvidenceBindingSchema = z.object({
+  repository: z.string().trim().min(1).max(240).optional(),
+  project: z.string().trim().min(1).max(240).optional(),
+  component: z.string().trim().min(1).max(240).optional(),
+  branch: z.string().trim().min(1).max(240).optional(),
+  headSha: z.string().regex(/^[0-9a-f]{40}$/).optional(),
+  sessionId: z.string().trim().min(1).max(160).optional(),
+  taskId: z.string().trim().min(1).max(160).optional()
+}).strict();
+
+const EvidenceRefSchema = z.object({
+  authority: z.string().trim().min(1).max(120),
+  kind: z.enum(['OBSERVATION', 'DERIVATION', 'ATTESTATION', 'DECLARATION']),
+  reference: z.string().trim().min(1).max(500),
+  observedAt: z.string().datetime({ offset: true }),
+  freshness: z.enum(['CURRENT', 'STALE', 'EXPIRED', 'UNKNOWN']),
+  digest: z.string().regex(/^[0-9a-f]{64}$/).nullable(),
+  binding: EvidenceBindingSchema
+}).strict();
+
+const RecoveryAnchorSchema = z.object({
+  anchorId: z.string().trim().min(1).max(160),
+  stepId: z.string().trim().min(1).max(32),
+  observedPostcondition: EvidenceRefSchema,
+  binding: EvidenceBindingSchema,
+  replayClassOfNextStep: z.enum([
+    'PURE',
+    'READ_ONLY',
+    'IDEMPOTENT_MUTATION',
+    'NON_REPLAYABLE_MUTATION'
+  ]),
+  duplicateInvocationRule: z.literal('REOBSERVE_THEN_DECIDE')
+}).strict();
 
 const EvidenceSchema = z.object({
   freshness: z.enum(['CURRENT', 'STALE', 'UNAVAILABLE']),
@@ -122,7 +183,16 @@ function freezeFrame(input: Omit<ExecutionFrame, 'frameDigest'>): ExecutionFrame
       reasonCodes: Object.freeze([...input.evidence.reasonCodes])
     }),
     routeCandidates: Object.freeze(input.routeCandidates.map((route) => Object.freeze({ ...route }))),
-    recoveryAnchor: Object.freeze({ ...input.recoveryAnchor }),
+    recoveryAnchor: input.recoveryAnchor
+      ? Object.freeze({
+          ...input.recoveryAnchor,
+          observedPostcondition: Object.freeze({
+            ...input.recoveryAnchor.observedPostcondition,
+            binding: Object.freeze({ ...input.recoveryAnchor.observedPostcondition.binding })
+          }),
+          binding: Object.freeze({ ...input.recoveryAnchor.binding })
+        })
+      : null,
     frameDigest: digest
   });
 }
@@ -140,6 +210,31 @@ function result(
     dispatchMode: 'DISABLED' as const,
     effectDispatched: false as const,
     frame
+  });
+}
+
+function sameBinding(left: EvidenceBinding, right: EvidenceBinding): boolean {
+  return canonical(left) === canonical(right);
+}
+
+export function parseRecoveryAnchor(
+  rawInput: unknown,
+  currentStepId: string
+): RecoveryAnchor {
+  const parsed = RecoveryAnchorSchema.parse(rawInput);
+  if (parsed.stepId === currentStepId) {
+    throw new Error('RECOVERY_ANCHOR_CURRENT_STEP_FORBIDDEN');
+  }
+  if (!sameBinding(parsed.binding, parsed.observedPostcondition.binding)) {
+    throw new Error('RECOVERY_ANCHOR_BINDING_MISMATCH');
+  }
+  return Object.freeze({
+    ...parsed,
+    observedPostcondition: Object.freeze({
+      ...parsed.observedPostcondition,
+      binding: Object.freeze({ ...parsed.observedPostcondition.binding })
+    }),
+    binding: Object.freeze({ ...parsed.binding })
   });
 }
 
@@ -173,13 +268,7 @@ export function createShadowExecutionEngine(input: {
         evidence,
         routeCandidates,
         effectPlan: null,
-        recoveryAnchor: {
-          stepId: parsed.stepId,
-          evidenceDigest: evidence.digest,
-          observedAt: evidence.observedAt,
-          contractRegistryDigest: substrate.contractRegistryDigest,
-          graphRegistryDigest: substrate.graphRegistryDigest
-        }
+        recoveryAnchor: null
       });
 
       if (evaluation.status === 'FAIL') {
