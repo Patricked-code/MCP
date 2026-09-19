@@ -972,7 +972,7 @@
           "GWC-0"
         ],
         "title": "GWC-0 — Contract substrate",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 70,
         "sequence": 7,
         "dependencies": [
@@ -985,7 +985,11 @@
         "evidence": [
           "Derived from GWC-CAND-00 exact-bound candidate backlog.",
           "Claimed by candidate-7afc131430c64c6fe34bcfea @ f87b3a89b226a551e07ab3a1a39b4f98f6146b97",
-          "Phase D cycle applies: RED -> proven RED -> minimal GREEN -> full regressions -> self-review -> checkpoint."
+          "Phase D cycle applies: RED -> proven RED -> minimal GREEN -> full regressions -> self-review -> checkpoint.",
+          "RED CI #1159 FAILURE @ c8d823f0091b8f0f480fc2a9b6864c24cd5bcf53: substrate module absent.",
+          "Peer commit 8a1bd1c9cf3a5dbba9f1f9cdd176d91fdae57321 added digest-recomputation regression coverage and was adopted.",
+          "GREEN CI #1163 SUCCESS @ 90745204c8f4b9a897a0ba2e09288817c703e0cd.",
+          "GWC-0 substrate remains pure/immutable with no dispatcher or persistence."
         ]
       },
       {
@@ -995,7 +999,7 @@
           "GWC-1"
         ],
         "title": "GWC-1 — GW-01 Intent Capture",
-        "status": "PENDING",
+        "status": "READY",
         "priority": 69,
         "sequence": 8,
         "dependencies": [
@@ -1005,7 +1009,8 @@
           "path:src/governedWorkflow/intentCapture"
         ],
         "evidence": [
-          "Derived from GWC-CAND-01 exact-bound candidate backlog."
+          "Derived from GWC-CAND-01 exact-bound candidate backlog.",
+          "Dependency GWC-PRE-E-GWC-0 completed with GREEN CI #1163."
         ]
       },
       {
@@ -1428,7 +1433,7 @@
           "path:src/governedWorkflow",
           "path:tests/governedWorkflow"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -1476,9 +1481,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "2fb4b67817065edda53231d437e4b276a7a1c0c2",
-        "lastObservedHeadSha": "f87b3a89b226a551e07ab3a1a39b4f98f6146b97",
+        "lastObservedHeadSha": "3f34c3daa1ead090d5c2f8242836a4c1292b9111",
         "createdAt": "2026-09-19T00:11:00Z",
-        "lastSeenAt": "2026-09-19T02:03:00Z",
+        "lastSeenAt": "2026-09-19T02:12:00Z",
         "status": "ACTIVE"
       }
     ]
@@ -4343,5 +4348,32 @@
       "selfReviewCorrection": "CI #1144 technical green rejected: C-90 WRITE ordering violated GWC-9/AF-32 invariant; corrected before final checkpoint."
     },
     "exit": "CANDIDATE_SAFETY_FOUNDATIONS_COMPLETE"
+  },
+  "phaseE": {
+    "gwc0": {
+      "workItemId": "GWC-PRE-E-GWC-0",
+      "blueprint": "GWC-0",
+      "status": "PASS_WITH_EVIDENCE",
+      "red": {
+        "ciRunNumber": 1159,
+        "head": "c8d823f0091b8f0f480fc2a9b6864c24cd5bcf53",
+        "result": "FAIL_EXPECTED"
+      },
+      "peerReconciliation": {
+        "commit": "8a1bd1c9cf3a5dbba9f1f9cdd176d91fdae57321",
+        "disposition": "ADOPTED_AND_IMPLEMENTED"
+      },
+      "green": {
+        "ciRunNumber": 1163,
+        "head": "90745204c8f4b9a897a0ba2e09288817c703e0cd",
+        "result": "SUCCESS"
+      },
+      "implementation": [
+        "src/governedWorkflow/contractSubstrate.ts",
+        "tests/governedWorkflowContractSubstrate.test.ts",
+        "package.json"
+      ],
+      "authorityBoundary": "PURE_IMMUTABLE_ORCHESTRATION_SUBSTRATE_NO_PERSISTENCE"
+    }
   }
 }
