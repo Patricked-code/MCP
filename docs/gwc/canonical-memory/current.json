@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-e-gwc3-resolver-adapters-complete",
-  "currentBundleId": "bnd_mcp-pr95-e-gwc3-resolver-adapters-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc3-resolver-adapters-complete",
+  "currentBundle": "pr95-e-gwc4-session-integration-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc4-session-integration-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc4-session-integration-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -27,8 +27,8 @@
   },
   "currentPrecodeState": {
     "phase": "E",
-    "workItem": "GWC-PRE-E-GWC-4",
-    "work": "GWC_4_CONNECTION_SESSION_RECEIPT_INTEGRATION",
+    "workItem": "GWC-PRE-E-GWC-5",
+    "work": "GWC_5_TASK_LOCK_ORCHESTRATION_WRAPPERS",
     "status": "READY",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Execute the Phase D cycle for GWC-PRE-E-GWC-4 from the exact live branch head: re-read GWC-4 detailed design and GW-02/GW-03/GW-12/GW-16/GW-17 contracts; inspect existing connection bootstrap, candidate continuity, governed session, connection context and bootstrap receipt flows first; define the smallest wrappers/integration seams that preserve auto-resume and existing session authority; prove missing behavior by RED; implement minimal GREEN without a second session authority or PRECODE runtime dependency; run full regressions; self-review; checkpoint; then dispatch the next dependency-safe work item.",
+    "nextAction": "Execute the Phase D cycle for GWC-PRE-E-GWC-5 from the exact live branch head: re-read the GWC-5 detailed design and GW-13..GW-20 contracts; inspect existing Task Queue, Lock Service, Current State and task lifecycle coordinator first; preserve Task Queue as scheduler/classification authority and Lock Service as grant authority; prove the smallest missing orchestration wrapper/atomicity behavior by RED; implement only dependency-safe behavior without runtime Task materialization in PRECODE; run full regressions, self-review, checkpoint, then dispatch the next compatible blueprint.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -120,6 +120,11 @@
     "Preserve INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK."
   ],
   "previousBundles": [
+    {
+      "name": "pr95-e-gwc3-resolver-adapters-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc3-resolver-adapters-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC3_RESOLVER_ADAPTERS_COMPLETE_CHECKPOINT"
+    },
     {
       "name": "pr95-e-gwc2-execution-engine-complete",
       "path": "docs/gwc/canonical-memory/pr95-e-gwc2-execution-engine-complete",
@@ -222,8 +227,8 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "896899470b4b601039f311709fc52ade576efd37",
-  "correctionReason": "GWC-PRE-E-GWC-3 completed with RED CI #1189 and GREEN CI #1192. Existing B1/B2/C2 resolver algorithms and authorities remain unchanged; only parity wrappers and CI coverage were added.",
+  "observedHeadBeforePointerUpdate": "be28817e0319b48647f299ed2aa3cf0774a49884",
+  "correctionReason": "GWC-PRE-E-GWC-4 completed with RED CI #1199 and final GREEN CI #1205 after self-review corrected M1 evidence digests/bindings. Persisted session/receipt/context schemas and lifecycle authority remain unchanged.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
@@ -538,6 +543,7 @@
     "GWC-0": "PASS_WITH_EVIDENCE",
     "GWC-1": "PASS_WITH_EVIDENCE",
     "GWC-2": "PASS_WITH_EVIDENCE",
-    "GWC-3": "PASS_WITH_EVIDENCE"
+    "GWC-3": "PASS_WITH_EVIDENCE",
+    "GWC-4": "PASS_WITH_EVIDENCE"
   }
 }
