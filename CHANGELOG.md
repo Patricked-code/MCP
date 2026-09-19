@@ -784,3 +784,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Aucun nouvel outil MCP, store, observateur GitHub, inventaire, cartographie ni autorité de permission.
 - RED CI #1343 / #1344 ; premier GREEN #1345 ; self-review #1346 ; GREEN final #1348 sur `2a82e278319dd750db2a6d870fc029fe296a66a6`.
 - Aucun changement main/S1/production.
+
+## 2026-09-19 — GWC-16 Documentation / terminal closure
+
+- Ajout de `src/governedWorkflow/terminal/index.ts` pour les contrats `GW-58..GW-72`, sans effet de bord direct.
+- Les étapes documentaires réutilisent les outils GitHub existants avec leurs schémas exacts ; GW-60 utilise `github_create_commit` pour la réconciliation multi-fichiers.
+- GW-68 introduit l'unique terminal verification predicate : Task/session/receipt/stateVersion/CI/deploy/review/locks/Live State/docs doivent converger vers le même head/runtime final avant qu'une preuve terminale soit émise.
+- GW-69 refuse tout `DONE` sans preuve GW-68 liée au même task/session/receipt/state/head/runtime ; aucun paramètre non supporté n'est ajouté au payload historique `mcp_transition_governed_task`.
+- L'ordre de fermeture reste checkpoint → release locks → close session → queue reconcile après terminal verification/DONE ; la libération des locks ne dépend pas du succès de la Task.
+- TDD : RED #1433 ; premier GREEN #1435 ; self-review RED #1437 ; correction de fixture uniquement #1439 ; GREEN final #1440 sur `b8a86c48eb24902f998d4533e6bbeac5144102c6`, 589/589 tests.
+- Aucun merge main, S1, production, déploiement ou mutation runtime n'a été effectué par ce PRECODE.
