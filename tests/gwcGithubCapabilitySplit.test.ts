@@ -17,6 +17,8 @@ const { registerGithubControlPlaneReadTools } =
   await import('../src/tools/githubControlPlaneRead.js');
 const { WRITE_SCOPED_TOOL_NAMES } =
   await import('../src/tools/registrationPolicy.js');
+const { registerGithubLifecycleReadTools, registerGithubLifecycleWriteTools } =
+  await import('../src/tools/githubLifecycle.js');
 
 const C89_READ = [
   'github_compare_refs',
@@ -81,17 +83,52 @@ test('GWC-PRE-C3 materializes exactly the C-89.2 READ split', () => {
   assert.deepEqual(names, [...C89_READ].sort());
 });
 
-test('GWC-PRE-C3 keeps every C-90 capability deferred until the GWC-9 AF-32 gate closes', () => {
+test('GWC-12 materializes the planned C-90 split only after the GWC-9 AF-32 gate closes', () => {
   const c89Names = new Set(C89_READ);
   for (const name of C90_SPLIT_AFTER_GWC9) {
     assert.equal(c89Names.has(name as (typeof C89_READ)[number]), false, name);
   }
-  for (const name of [...C90_SPLIT_AFTER_GWC9, ...C90_DEFERRED]) {
+
+  const common = {
+    configuredOrg: 'chainsolutions-wealthtech',
+    request: async () => ({
+      ok: true, status: 200, json: {}, tokenExpiresAt: null, oauthScopes: []
+    })
+  };
+  const readNames = namesFrom(registerGithubLifecycleReadTools, common);
+  const writeNames = namesFrom(registerGithubLifecycleWriteTools, {
+    ...common,
+    writeEnabled: () => true,
+    evaluateGovernance: async () => ({
+      mode: 'shadow',
+      toolName: 'test',
+      governedSessionId: '11111111-1111-4111-8111-111111111111',
+      currentStateVersion: 1,
+      acknowledgedStateVersion: 1,
+      activeLockConflicts: 0,
+      verdict: 'shadow_ready',
+      wouldBlock: false
+    })
+  });
+
+  assert.deepEqual(readNames, ['github_get_review_threads']);
+  assert.deepEqual(
+    writeNames,
+    C90_SPLIT_AFTER_GWC9
+      .filter((name) => name !== 'github_get_review_threads')
+      .sort()
+  );
+  for (const name of writeNames) {
+    assert.equal(WRITE_SCOPED_TOOL_NAMES.has(name), true, name);
+  }
+  for (const name of C90_DEFERRED) {
+    assert.equal(readNames.includes(name), false, name);
+    assert.equal(writeNames.includes(name), false, name);
     assert.equal(WRITE_SCOPED_TOOL_NAMES.has(name), false, name);
   }
 });
 
-test('the C-90 partition remains exact and exhaustive while deferred', () => {
+test('the C-90 partition remains exact and exhaustive after the selected split materializes', () => {
   const all = [...C90_SPLIT_AFTER_GWC9, ...C90_DEFERRED];
   assert.equal(all.length, 18);
   assert.equal(new Set(all).size, 18);
