@@ -1454,7 +1454,17 @@ export async function runFullCandidateHappyPath() {
     expectedBootstrapReceiptId: RECEIPT_ID,
     expectedStateVersion: STATE_VERSION,
     expectedHeadSha: HEAD,
-    terminalVerification: verify.payload
+    terminalVerification: {
+      status: verify.status,
+      terminalVerified: verify.payload.terminalVerified,
+      taskId: verify.payload.taskId,
+      governedSessionId: verify.payload.governedSessionId,
+      bootstrapReceiptId: verify.payload.bootstrapReceiptId,
+      stateVersion: verify.payload.stateVersion,
+      headSha: verify.payload.headSha,
+      runtimeRevision: verify.payload.runtimeRevision,
+      evidenceDigest: verify.payload.evidenceDigest
+    }
   } as any, substrate);
   stage('DONE', done.status === 'READY'
     && done.effectPlan?.payload.status === 'DONE');
