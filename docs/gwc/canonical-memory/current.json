@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-e-gwc1-intent-capture-complete",
-  "currentBundleId": "bnd_mcp-pr95-e-gwc1-intent-capture-complete-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc1-intent-capture-complete",
+  "currentBundle": "pr95-e-gwc2-execution-engine-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc2-execution-engine-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc2-execution-engine-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -27,8 +27,8 @@
   },
   "currentPrecodeState": {
     "phase": "E",
-    "workItem": "GWC-PRE-E-GWC-2",
-    "work": "GWC_2_EXECUTION_ENGINE_SKELETON",
+    "workItem": "GWC-PRE-E-GWC-3",
+    "work": "GWC_3_EXISTING_RESOLVER_ADAPTERS",
     "status": "READY",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Execute the Phase D cycle for GWC-PRE-E-GWC-2 from the exact live branch head: re-read GWC-2 detailed design and existing governed/current-state/lifecycle coordinator services, identify the smallest orchestration-only skeleton that composes but does not replace authorities, prove RED for OBSERVE->EVALUATE->PLAN/WAIT routing without hidden mutation, implement minimal GREEN, run full regressions, self-review, checkpoint, then dispatch dependency-safe GWC-3.",
+    "nextAction": "Execute the Phase D cycle for GWC-PRE-E-GWC-3 from the exact live branch head: re-read the GWC-3 design and GW-04/GW-05/GW-06 contracts, inspect resolveGithubIdentity/resolveGithubRepository/resolveGithubProject and their tests first, define adapters that preserve existing result/status/freshness/reason semantics and authority ownership, prove parity by RED, implement minimal wrappers only, run full regressions, self-review, checkpoint, then expose dependency-safe GWC-4 and GWC-6.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -120,6 +120,11 @@
     "Preserve INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK."
   ],
   "previousBundles": [
+    {
+      "name": "pr95-e-gwc1-intent-capture-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc1-intent-capture-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC1_INTENT_CAPTURE_COMPLETE_CHECKPOINT"
+    },
     {
       "name": "pr95-e-gwc0-contract-substrate-complete",
       "path": "docs/gwc/canonical-memory/pr95-e-gwc0-contract-substrate-complete",
@@ -212,8 +217,8 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "bc472a9db87fe3c5080c9529b5312d8a264b1dcd",
-  "correctionReason": "GWC-PRE-E-GWC-1 completed with RED CI #1170 and GREEN CI #1171. Intent Capture resolves OD-01/OD-02 existing-first and remains pure/upstream of Task Queue classification and authorization.",
+  "observedHeadBeforePointerUpdate": "1d1a15b26c8bc11d8ddb37bb81fd57143f48cfa9",
+  "correctionReason": "GWC-PRE-E-GWC-2 completed with RED CI #1178 and final GREEN CI #1182 after self-review corrected the RecoveryAnchor model to canonical M4. Engine remains ephemeral and shadow-only with no activated dispatcher or durable workflow cursor.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
@@ -526,6 +531,7 @@
   },
   "phaseEProgress": {
     "GWC-0": "PASS_WITH_EVIDENCE",
-    "GWC-1": "PASS_WITH_EVIDENCE"
+    "GWC-1": "PASS_WITH_EVIDENCE",
+    "GWC-2": "PASS_WITH_EVIDENCE"
   }
 }
