@@ -1592,7 +1592,7 @@
           "GWC-16"
         ],
         "title": "GWC-16 — Documentation and closure",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 54,
         "sequence": 23,
         "dependencies": [
@@ -1617,7 +1617,8 @@
           "FIRST GREEN CI #1435 SUCCESS @ 476f676817500f7c7d520933d32cd9022e03c3fb: 588/588 tests pass, 0 skipped; discoveredTests=75, runnerTests=74, dedicatedTests=1; all validation steps green.",
           "SELF-REVIEW RED CI #1437 FAILURE @ f8ab3ce16132a74248516d805b5cadd233d08af0: 589 tests, 582 pass, exactly 7 intended failures on GW-59/60/61/63/68/69; proves GitHub EffectPlans were not yet exact-tool-schema compatible and GW-68 lacked the canonical final task/receipt/CI/deploy/review/lock evidence matrix.",
           "FINAL GREEN CI #1440 SUCCESS @ b8a86c48eb24902f998d4533e6bbeac5144102c6: 589/589 tests pass, 0 skipped; discoveredTests=75, runnerTests=74, dedicatedTests=1; exact GitHub EffectPlan schemas and full GW-68 terminal evidence matrix verified.",
-          "Canonical GWC-16 checkpoint staged at docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete; source=6015 bytes sha256 c1d6be7cbbbf3a9110114154787a01f0fe11281d579fea9b58fdacb686ac7be5. Claim retained pending exact-head checkpoint CI."
+          "Canonical GWC-16 checkpoint staged at docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete; source=6015 bytes sha256 c1d6be7cbbbf3a9110114154787a01f0fe11281d579fea9b58fdacb686ac7be5. Claim retained pending exact-head checkpoint CI.",
+          "CHECKPOINT CI #1448 SUCCESS @ a137d575f4d6118ebb7e9886d477aa4da001ec40; GWC-16 canonical checkpoint validated and claim released."
         ]
       },
       {
@@ -1627,7 +1628,7 @@
           "GWC-17"
         ],
         "title": "GWC-17 — Universal Acceptance",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 53,
         "sequence": 24,
         "dependencies": [
@@ -1639,7 +1640,13 @@
         ],
         "evidence": [
           "Derived from GWC-CAND-17 exact-bound candidate backlog.",
-          "NEW_INFORMATION_INTAKE-003 binds universal recovery acceptance to GWC-17: liveness, supervisor, runner acknowledgement, intake dedupe, restart-storm protection, claim safety, stale-envelope cancellation and secret non-persistence."
+          "NEW_INFORMATION_INTAKE-003 binds universal recovery acceptance to GWC-17: liveness, supervisor, runner acknowledgement, intake dedupe, restart-storm protection, claim safety, stale-envelope cancellation and secret non-persistence.",
+          "Dependency GWC-PRE-E-GWC-16 satisfied by exact-head checkpoint CI #1448 SUCCESS @ a137d575f4d6118ebb7e9886d477aa4da001ec40.",
+          "Dependency GWC-PRE-E-GWC-10 already PASS_WITH_EVIDENCE in current Phase E projection.",
+          "GWC-17 owns GW-73 UNIVERSAL_ACCEPTANCE only; GW-73 is outside the nominal runtime graph and evaluates the implemented system as a whole.",
+          "Integration classification NEW is limited to an acceptance harness + fixtures. Runtime code, authorities, workflow state and production behavior must not be added for this work item.",
+          "NEW_INFORMATION_INTAKE-003 requirements are acceptance obligations: liveness, supervisor decision, runner acknowledgement, intake dedupe, restart-storm protection, claim safety, stale-envelope cancellation and secret non-persistence.",
+          "No blocking open decision remains for GWC-17."
         ]
       }
     ],
@@ -1951,6 +1958,15 @@
           "path:SUIVI.md",
           "path:CHANGELOG.md",
           "path:DECISIONS_LOG.md"
+        ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-17",
+        "collisionDomains": [
+          "path:tests/governedWorkflowUniversalAcceptance"
         ],
         "status": "ACTIVE"
       }
@@ -5891,7 +5907,7 @@
     "gwc16": {
       "workItemId": "GWC-PRE-E-GWC-16",
       "blueprint": "GWC-16",
-      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+      "status": "PASS_WITH_EVIDENCE",
       "dependency": "GWC-PRE-E-GWC-15",
       "dependencyEvidence": {
         "ciRunNumber": 1429,
@@ -5999,9 +6015,46 @@
           "bytes": 6015,
           "sha256": "c1d6be7cbbbf3a9110114154787a01f0fe11281d579fea9b58fdacb686ac7be5"
         },
-        "validation": "PENDING_EXACT_HEAD_CI",
-        "claimRelease": "RETAINED_UNTIL_CHECKPOINT_CI_SUCCESS"
+        "validation": "SUCCESS",
+        "claimRelease": "RELEASED_AFTER_CHECKPOINT_CI_SUCCESS",
+        "ciRunNumber": 1448,
+        "ciRunId": 35445383835,
+        "head": "a137d575f4d6118ebb7e9886d477aa4da001ec40",
+        "result": "SUCCESS"
       }
+    },
+    "gwc17": {
+      "workItemId": "GWC-PRE-E-GWC-17",
+      "blueprint": "GWC-17",
+      "status": "IN_PROGRESS",
+      "dependencies": [
+        "GWC-PRE-E-GWC-10",
+        "GWC-PRE-E-GWC-16"
+      ],
+      "dependencyEvidence": {
+        "gwc10": "PASS_WITH_EVIDENCE",
+        "gwc16": {
+          "ciRunNumber": 1448,
+          "ciRunId": 35445383835,
+          "head": "a137d575f4d6118ebb7e9886d477aa4da001ec40",
+          "result": "SUCCESS"
+        }
+      },
+      "scope": "GW73_UNIVERSAL_ACCEPTANCE",
+      "runtimeGraphMember": false,
+      "integrationClassification": "NEW_TEST_ONLY_ACCEPTANCE_HARNESS_AND_FIXTURES",
+      "authorityBoundary": "TESTS_ONLY__NO_RUNTIME_AUTHORITY__NO_RUNTIME_IMPORT__NO_MAIN_S1_PRODUCTION_MUTATION",
+      "intake003Acceptance": [
+        "LIVENESS",
+        "SUPERVISOR_DECISION",
+        "RUNNER_ACKNOWLEDGEMENT",
+        "INTAKE_DEDUPE",
+        "RESTART_STORM_PROTECTION",
+        "CLAIM_SAFETY",
+        "STALE_ENVELOPE_CANCELLATION",
+        "SECRET_NON_PERSISTENCE"
+      ],
+      "openDecisions": []
     }
   },
   "intake003RecoveryEvolution": {
@@ -6112,10 +6165,10 @@
   },
   "currentPrecodeState": {
     "phase": "E",
-    "workItem": "GWC-PRE-E-GWC-16",
-    "work": "GWC_16_DOCUMENTATION_AND_CLOSURE",
-    "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
-    "nextAction": "Validate the staged GWC-16 canonical checkpoint on the exact online branch head. Keep the GWC-16 claim ACTIVE until MCP CI succeeds; then release it and dispatch GWC-PRE-E-GWC-17 without replaying GWC-16.",
+    "workItem": "GWC-PRE-E-GWC-17",
+    "work": "GWC_17_UNIVERSAL_ACCEPTANCE",
+    "status": "IN_PROGRESS",
+    "nextAction": "Audit the complete implemented candidate against GW-73 and NEW_INFORMATION_INTAKE-003. Build a tests-only universal acceptance harness under tests/governedWorkflowUniversalAcceptance that proves MCP, generic multi-repository targeting, recovery safety, anti-hardcode behavior and no runtime import/authority creation.",
     "blocker": null
   }
 }
