@@ -1553,7 +1553,7 @@
           "GWC-15"
         ],
         "title": "GWC-15 — Deployment / exact-SHA evidence",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 55,
         "sequence": 22,
         "dependencies": [
@@ -1581,7 +1581,8 @@
           "FIRST GREEN CI #1413 SUCCESS: 566/566 tests.",
           "Attestation self-review RED CI #1417: exactly five intended evidence-chain defects; GREEN CI #1422 SUCCESS after V2 admission propagation and V1 compatibility.",
           "Proof-composition self-review RED CI #1423: cross-deploy-job and cross-CI-run evidence mixing reproduced; FINAL GREEN CI #1425 SUCCESS with 573/573 tests and 74 discovered tests.",
-          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete staged; claim remains ACTIVE until checkpoint CI SUCCESS."
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete staged; claim remains ACTIVE until checkpoint CI SUCCESS.",
+          "CHECKPOINT CI #1429 SUCCESS @ bc2dbefba26dba1a5f6b480325ee8a1201ad1c03; canonical GWC-15 bundle validated and claim released."
         ]
       },
       {
@@ -1591,7 +1592,7 @@
           "GWC-16"
         ],
         "title": "GWC-16 — Documentation and closure",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 54,
         "sequence": 23,
         "dependencies": [
@@ -1602,7 +1603,11 @@
           "path:docs"
         ],
         "evidence": [
-          "Derived from GWC-CAND-16 exact-bound candidate backlog."
+          "Derived from GWC-CAND-16 exact-bound candidate backlog.",
+          "Dependency GWC-PRE-E-GWC-15 satisfied by exact-head checkpoint CI #1429 SUCCESS @ bc2dbefba26dba1a5f6b480325ee8a1201ad1c03.",
+          "GWC-16 covers GW-58..GW-72. Existing-first design requires reuse of documentation governance, Bootstrap Receipt freshness, Live State, Task Queue VERIFYING/DONE transitions, session checkpoint/close, lock release and queue reconciliation.",
+          "AF-07 is the hard closure invariant: DONE must be refused unless terminal reality is re-observed and verified. No second closure authority or persistence layer is allowed.",
+          "No blocking open decision remains. Documentation recursion terminates when drift is zero; docs-only deployment may become the final runtime SHA."
         ]
       },
       {
@@ -1922,6 +1927,16 @@
           "path:tests/deployRoutes.test.ts",
           "path:tests/deployWorkflow.test.ts",
           "path:tests/deployWorkflowShell.test.ts"
+        ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-16",
+        "collisionDomains": [
+          "path:src/governedWorkflow/terminal",
+          "path:docs"
         ],
         "status": "ACTIVE"
       }
@@ -5747,7 +5762,7 @@
     "gwc15": {
       "workItemId": "GWC-PRE-E-GWC-15",
       "blueprint": "GWC-15",
-      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+      "status": "PASS_WITH_EVIDENCE",
       "dependency": "GWC-PRE-E-GWC-14",
       "dependencyEvidence": {
         "ciRunNumber": 1408,
@@ -5851,9 +5866,38 @@
       "exactDeploymentProof": "SHA__DEPLOY_JOB__CI_RUN__LIVE_STATE_FRESHNESS__FULL_ALIGNMENT__ZERO_CONTRADICTIONS",
       "checkpoint": {
         "bundle": "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete",
-        "validation": "PENDING_EXACT_HEAD_CI",
-        "claimRelease": "RETAINED_UNTIL_CHECKPOINT_CI_SUCCESS"
+        "validation": "SUCCESS",
+        "claimRelease": "RELEASED_AFTER_CHECKPOINT_CI_SUCCESS",
+        "ciRunNumber": 1429,
+        "ciRunId": 35439735892,
+        "head": "bc2dbefba26dba1a5f6b480325ee8a1201ad1c03",
+        "result": "SUCCESS"
       }
+    },
+    "gwc16": {
+      "workItemId": "GWC-PRE-E-GWC-16",
+      "blueprint": "GWC-16",
+      "status": "IN_PROGRESS",
+      "dependency": "GWC-PRE-E-GWC-15",
+      "dependencyEvidence": {
+        "ciRunNumber": 1429,
+        "ciRunId": 35439735892,
+        "head": "bc2dbefba26dba1a5f6b480325ee8a1201ad1c03",
+        "result": "SUCCESS"
+      },
+      "scope": "DOCUMENTATION_AND_TERMINAL_CLOSURE_GW58_TO_GW72",
+      "authorityBoundary": "REUSE_DOC_GOVERNANCE__LIVE_STATE__BOOTSTRAP_RECEIPT__TASK_QUEUE__SESSION_CHECKPOINT_CLOSE__LOCK_RELEASE__QUEUE_RECONCILE__NO_SECOND_CLOSURE_AUTHORITY",
+      "findingsOwned": [
+        "AF-07",
+        "AF-09",
+        "AF-23"
+      ],
+      "openDecisions": [],
+      "newPrimitive": "TERMINAL_VERIFICATION_PREDICATE_ONLY",
+      "closureOrder": "VERIFY__CHECKPOINT__RELEASE_LOCKS__CLOSE_SESSION__RECONCILE_QUEUE",
+      "hardDoneGate": "NO_DONE_WITHOUT_VERIFIED_REALITY",
+      "documentationRecursion": "TERMINATE_WHEN_DRIFT_ZERO",
+      "candidateMutationBoundary": "BRANCH_ONLY__NO_MAIN_S1_PRODUCTION_RUNTIME_MUTATION"
     }
   },
   "intake003RecoveryEvolution": {
@@ -5964,10 +6008,10 @@
   },
   "currentPrecodeState": {
     "phase": "E",
-    "workItem": "GWC-PRE-E-GWC-15",
-    "work": "GWC_15_DEPLOYMENT_EXACT_SHA_EVIDENCE",
+    "workItem": "GWC-PRE-E-GWC-16",
+    "work": "GWC_16_DOCUMENTATION_AND_CLOSURE",
     "status": "IN_PROGRESS",
-    "nextAction": "Audit the current same-SHA CI gate, OIDC binding, S1 deployment attestation, runtime attestation, Live State and receipt/task bindings for GW-44..GW-57; resolve OD-12 from existing freshness carriers; then derive and run a bounded GWC-15 RED without deploying or mutating runtime authorities.",
+    "nextAction": "Audit existing documentation-governance, terminal verification inputs, Bootstrap Receipt freshness, Live State, Task Queue VERIFYING/DONE, checkpoint, lock-release, session-close and queue-reconcile primitives for GW-58..GW-72; then derive a bounded RED proving false DONE is currently possible, without mutating runtime authorities.",
     "blocker": null
   }
 }
