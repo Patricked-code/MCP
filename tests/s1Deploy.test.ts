@@ -165,10 +165,12 @@ test('GWC-15 self-review: worker emits a V2 attestation with explicit push CI ad
 
   assert.match(script, /"schema_version": 2/);
   assert.match(script, /"attestation_id":/);
-  assert.match(script, /"admission_kind": "push_ci_gate"/);
-  assert.match(script, /"ci_run_id": 1500/);
-  assert.match(script, new RegExp(`"ci_head_sha": "${SHA}"`));
-  assert.match(script, /"ci_conclusion": "success"/);
+  assert.match(script, /ADMISSION_KIND='push_ci_gate'/);
+  assert.match(script, /CI_RUN_ID_JSON='1500'/);
+  assert.match(script, new RegExp(`CI_HEAD_SHA_JSON='"${SHA}"'`));
+  assert.match(script, /CI_CONCLUSION_JSON='"success"'/);
+  assert.match(script, /"admission_kind": "%s"/);
+  assert.match(script, /"ci_run_id": %s/);
 });
 
 test('GWC-15 self-review: V1 attestation remains readable without inventing CI evidence', async () => {
