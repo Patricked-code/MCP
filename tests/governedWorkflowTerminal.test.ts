@@ -255,6 +255,7 @@ test('GW-63 plans exact-head merge and refuses stale documentation review proof'
     repository: 'Patricked-code/MCP',
     pullRequestNumber: 196,
     expectedHeadSha: HEAD,
+    mergeMethod: 'squash',
     reviewProof: { status: 'SUCCESS', headSha: OTHER_HEAD, pullRequestNumber: 196 }
   }, contracts);
   assert.equal(stale.status, 'BLOCKED');
