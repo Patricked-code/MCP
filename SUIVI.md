@@ -523,3 +523,15 @@ Date : 2026-08-29
 - Ordre prévu : `GWC-PRE-B-01` synthétise le backlog complet à partir de #1/#2 + 18 blueprints + 73 contrats + findings + decisions + code existant ; `B-02` lie précisément les work items aux integration slots/dépendances/tests/preuves ; `B-03` audite trous, doublons, orphelins, conflits d'ownership et bindings manquants.
 - Règle existing-first maintenue : `REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW`.
 - Cet intake n'exécute pas B-01 : `candidateWorkDispatched=false`, `RUNTIME_TASKS_CREATED=0`.
+
+## 2026-09-19 — GWC-PRE-C1 DONE / reprise automatique vers C2
+
+- Head GREEN validé : `074f2bd21eef6e23811512453d34670bfecc7485`.
+- `GWC-PRE-C1 / AF-19` est fermé sur la branche candidate par extension du gate existant.
+- RED : `757ee2a525741eef5cbb36796fc69c62c85a47b2`, MCP CI #1110, échec attendu dans les tests de sûreté.
+- GREEN : workflow `a92f8d4dfe2cbf7eeab3603a06e26009cda0243e`, final head `074f2bd21eef6e23811512453d34670bfecc7485`, MCP CI #1112 SUCCESS complet.
+- `OD-07` n'est plus un blocker humain : résolue automatiquement par existing-first vers l'option B, sans nouvelle autorité.
+- Invariants préservés : OIDC exact-SHA, aucune activation live, aucune mutation main/S1/prod, aucun runtime Task/lock/session.
+- `GWC-PRE-C2` devient `READY`.
+- `NEXT_ACTION` : réobserver HEAD exact, claim branch-local C2, implémenter AF-22/AF-30 exact-head review evidence + stale-head invalidation en RED -> GREEN -> régression, puis continuer automatiquement.
+
