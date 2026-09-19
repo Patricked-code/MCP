@@ -44,7 +44,30 @@ const ProjectValidationProfileSchema = z.object({
   }).strict()
 }).strict();
 
-export type ProjectValidationProfile = Readonly<z.infer<typeof ProjectValidationProfileSchema>>;
+export type ProjectValidationProfile = Readonly<{
+  schemaVersion: 1;
+  profileId: string;
+  projectId: string;
+  repository: string;
+  ci: Readonly<{
+    workflow: string;
+    job: string;
+  }>;
+  validationScripts: readonly Readonly<{
+    id: string;
+    script: string;
+  }>[];
+  workflowNativeChecks: readonly string[];
+  testDiscovery: Readonly<{
+    root: string;
+    suffix: string;
+    runnerScript: string;
+    dedicated: readonly Readonly<{
+      path: string;
+      script: string;
+    }>[];
+  }>;
+}>;
 
 const ExpectedFailureSignatureSchema = z.object({
   signatureId: IdSchema,
