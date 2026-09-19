@@ -772,3 +772,15 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Interdiction confirmée de synthétiser un `PROJECT_SHA`.
 - RED CI #1314 ; GREEN initial #1328 ; self-review #1329 ; GREEN final #1330 sur `67197cd12e13f450734b403c4b85e26dc9760c60`.
 - Aucun changement main/S1/production, aucun second registre projet, store opérationnel ou Live State.
+
+## 2026-09-19 — GWC-11 Authority documents, integration slot and exact baseline
+
+- Généralisation additive de la déclaration de gouvernance documentaire en configuration project-scoped, avec defaults MCP historiquement identiques.
+- Ajout du module read-only `src/governedWorkflow/authority/index.ts` pour GW-21, GW-22 et GW-23.
+- GW-21 compose les digests/compteurs des autorités documentaires et cartographiques existantes ; drift, stale ou unavailable échouent fermés.
+- GW-22 résout seulement des owners déjà présents dans les inventaires Current State et retourne `NONE` plutôt que d'inventer un slot.
+- GW-22 bloque sur inventaire stale/unavailable.
+- GW-23 lie la baseline au SHA exact de la branche observé pour l'étape courante ; replay pré-step, sous-preuves stale/unavailable et contradictions de head sont refusés.
+- Aucun nouvel outil MCP, store, observateur GitHub, inventaire, cartographie ni autorité de permission.
+- RED CI #1343 / #1344 ; premier GREEN #1345 ; self-review #1346 ; GREEN final #1348 sur `2a82e278319dd750db2a6d870fc029fe296a66a6`.
+- Aucun changement main/S1/production.
