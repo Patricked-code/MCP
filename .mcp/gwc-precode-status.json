@@ -1562,14 +1562,16 @@
         "collisionDomains": [
           "path:.github/workflows",
           "path:src/deploy",
-          "path:src/governedWorkflow/deploy"
+          "path:src/governedWorkflow/deploy",
+          "path:tests/governedWorkflowDeploy.test.ts"
         ],
         "evidence": [
           "Derived from GWC-CAND-15 exact-bound candidate backlog.",
           "Dependency GWC-PRE-E-GWC-14 satisfied by exact-head checkpoint CI #1408 SUCCESS @ f408b0869109e0e041c29b70a413bc18b1620be1.",
           "Existing-first prerequisite GWC-PRE-C1 is DONE: AF-19 closed by option B, extending the existing mcp-deploy.yml gate; GREEN CI #1112 @ 074f2bd21eef6e23811512453d34670bfecc7485.",
           "GWC-15 must reuse the existing same-SHA CI gate, unchanged OIDC tokenSha===requestedSha boundary, S1 worker/attestation, Live State and existing task/session authorities; no second deployment engine or lock authority.",
-          "OD-12 remains to be resolved from existing timestamp/freshness carriers for GW-52 before implementation."
+          "OD-12 remains to be resolved from existing timestamp/freshness carriers for GW-52 before implementation.",
+          "OD-12 resolved existing-first: immutable exact-SHA/run/job evidence does not expire merely by age; mutable Live State/runtime observations must satisfy their owning freshness carrier. For current Live State this means freshness=CURRENT and ageSeconds<=maxAgeSeconds (schema maxAgeSeconds=60). No arbitrary cross-authority wall-clock window is invented."
         ]
       },
       {
@@ -1904,7 +1906,8 @@
         "collisionDomains": [
           "path:.github/workflows",
           "path:src/deploy",
-          "path:src/governedWorkflow/deploy"
+          "path:src/governedWorkflow/deploy",
+          "path:tests/governedWorkflowDeploy.test.ts"
         ],
         "status": "ACTIVE"
       }
@@ -5749,7 +5752,15 @@
         },
         "oidcRule": "DO_NOT_WIDEN_ALLOWED_EVENTS_OR_RELAX_TOKEN_SHA_EQUALS_REQUESTED_SHA"
       },
-      "openDecision": "OD-12_INTER_AUTHORITY_FRESHNESS_WINDOW_GW52"
+      "openDecision": "OD-12_INTER_AUTHORITY_FRESHNESS_WINDOW_GW52",
+      "od12": {
+        "state": "RESOLVED_AUTONOMOUS_EXISTING_FIRST",
+        "policy": "IMMUTABLE_EVIDENCE_IDENTITY_BOUND__MUTABLE_OBSERVATIONS_USE_OWNING_FRESHNESS_POLICY",
+        "liveStateRequirement": "freshness=CURRENT && ageSeconds<=maxAgeSeconds",
+        "currentLiveStateMaxAgeSeconds": 60,
+        "ciEvidenceExpiry": "NONE_WHILE_EXACT_RUN_SHA_IDENTITY_REMAINS_VERIFIABLE",
+        "deploymentAttestationExpiry": "NONE_WHILE_EXACT_JOB_SHA_IDENTITY_REMAINS_VERIFIABLE"
+      }
     }
   },
   "intake003RecoveryEvolution": {
