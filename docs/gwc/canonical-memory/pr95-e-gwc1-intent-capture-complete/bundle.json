@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc1-intent-capture-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc1_intent_capture",
+      "path": "sources/gwc1-intent-capture.json",
+      "media_type": "application/json",
+      "bytes": 2281,
+      "sha256": "1c909ff12415845a6f20ce18eca1eb7b9e2253122cad24fe87cac402bbbb8192"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc1_pass",
+      "key": "candidate.phase_e.gwc_1",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-1 is PASS_WITH_EVIDENCE. RED CI #1170 failed only because Intent Capture was absent; GREEN CI #1171 succeeded on head 2571c51f689abbcf87bc792c715ddae8fcde56cb.",
+      "source_refs": [
+        "src_gwc1_intent_capture"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc1_decisions",
+      "key": "candidate.gwc1_open_decisions",
+      "claim_type": "fact",
+      "value": "OD-01 is resolved at 16,384 UTF-8 bytes with reject/no truncation; OD-02 reuses the closed chatgpt|claude|other source vocabulary.",
+      "source_refs": [
+        "src_gwc1_intent_capture"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc1_boundary",
+      "key": "candidate.gwc1_authority_boundary",
+      "claim_type": "fact",
+      "value": "Intent Capture remains pure and upstream: it performs no Task Queue mutation/classification, target resolution, capability selection or authorization inference.",
+      "source_refs": [
+        "src_gwc1_intent_capture"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc2_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Next eligible PRECODE work item is GWC-PRE-E-GWC-2 Execution Engine Skeleton.",
+      "source_refs": [
+        "src_gwc1_intent_capture"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
