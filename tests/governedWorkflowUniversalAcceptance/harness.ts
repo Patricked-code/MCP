@@ -9,11 +9,56 @@ import {
   planCandidateRecoveryRunner,
   superviseCandidateRecovery
 } from '../../src/governedContext/candidateContinuity.js';
+import {
+  deriveCapabilityReality,
+  deriveGovernanceDecision
+} from '../../src/governance/operationalDecision.js';
+import {
+  planMinimalLockSet,
+  wrapGw14ExistingTaskLookup,
+  wrapGw18TaskClaim,
+  wrapGw19MinimalLockAcquisition,
+  wrapGw20TaskInProgress
+} from '../../src/governedWorkflow/adapters/task.js';
+import {
+  wrapGw16SessionOpenOrResume,
+  wrapGw17ContextAcknowledgement
+} from '../../src/governedWorkflow/adapters/session.js';
 import { createGovernedContractSubstrate } from '../../src/governedWorkflow/contractSubstrate.js';
+import {
+  observeGw28GreenCi,
+  parseProjectValidationProfile,
+  planGw24BranchCreation,
+  validationProfileDigest
+} from '../../src/governedWorkflow/development/index.js';
+import {
+  observeGw44MainMergeCommit,
+  observeGw45MainCi,
+  observeGw46GovernedAutodeploy
+} from '../../src/governedWorkflow/deploy/index.js';
 import { parseRecoveryAnchor } from '../../src/governedWorkflow/executionEngine.js';
+import {
+  composeGovernanceInheritance,
+  deriveEffectiveCapabilitySet
+} from '../../src/governedWorkflow/governance/effectiveCapabilities.js';
+import { captureIntent } from '../../src/governedWorkflow/intentCapture.js';
+import {
+  resolveGw04GithubIdentity,
+  resolveGw05Repository,
+  resolveGw06Project
+} from '../../src/governedWorkflow/resolvers/githubResolvers.js';
 import { resolveDomain } from '../../src/governedWorkflow/resolvers/domain.js';
 import { resolveRuntime } from '../../src/governedWorkflow/resolvers/runtime.js';
-import { evaluateGw68TerminalVerification } from '../../src/governedWorkflow/terminal/index.js';
+import { resolveServer } from '../../src/governedWorkflow/resolvers/server.js';
+import {
+  composeGw41PremergeProof,
+  planGw34DraftPr,
+  planGw43ExactHeadMerge
+} from '../../src/governedWorkflow/review/index.js';
+import {
+  evaluateGw68TerminalVerification,
+  planGw69TaskDone
+} from '../../src/governedWorkflow/terminal/index.js';
 import { normalizeLockScope } from '../../src/operationalMemory/lockService.js';
 import {
   createTargetScope,
@@ -723,6 +768,755 @@ export async function verifyAcceptanceHarnessIsolation(): Promise<Readonly<{
     harnessPath: `${ACCEPTANCE_ROOT}/harness.ts`,
     runtimeImportsAcceptanceHarness: importingFiles.length > 0,
     importingFiles: Object.freeze(importingFiles.sort())
+  });
+}
+
+export async function runFullCandidateHappyPath() {
+  const substrate = await canonicalContractSubstrate();
+  const HEAD = '7'.repeat(40);
+  const REPOSITORY = 'ExampleOrg/api';
+  const REPOSITORY_ID = 'github:ExampleOrg/api';
+  const PROJECT_ID = 'example.platform';
+  const PROJECT_UID = 'EXAMPLE-001';
+  const COMPONENT_ID = 'example-api';
+  const SERVER_ID = 's2';
+  const RUNTIME_ID = 'passenger:example-api';
+  const TASK_ID = 'TASK-20260919-902';
+  const SESSION_ID = '11111111-1111-4111-8111-111111111111';
+  const RECEIPT_ID = '22222222-2222-4222-8222-222222222222';
+  const LOCK_ID = '33333333-3333-4333-8333-333333333333';
+  const CONTEXT_ID = '44444444-4444-4444-8444-444444444444';
+  const PR_NUMBER = 196;
+  const STATE_VERSION = 400;
+  const stages: Array<{ name: string; status: 'PASS' | 'FAIL' }> = [];
+  const stage = (name: string, pass: boolean) => {
+    stages.push(Object.freeze({ name, status: pass ? 'PASS' as const : 'FAIL' as const }));
+  };
+
+  const intent = captureIntent({
+    rawIntent: 'Implement the bounded candidate change for Example Platform.',
+    source: 'other',
+    receivedAt: NOW
+  });
+  stage('Intent', intent.status === 'INTENT_CAPTURED');
+
+  const identityInput = {
+    oauthPrincipalId: 'oauth:example-user',
+    repositoryContext: REPOSITORY,
+    policy: {
+      schemaVersion: 2,
+      updatedAt: NOW,
+      goal: 'bind identity evidence',
+      currentSignals: ['oauth'],
+      limits: ['identity only'],
+      s1GithubDeploymentIdentity: {
+        id: 'TEST_READ_ONLY',
+        type: 'github_deploy_key_ssh',
+        repository: REPOSITORY,
+        fetchAlias: 'example-read-only',
+        contentsRead: true,
+        contentsWrite: false,
+        pushUrl: 'disabled://read-only',
+        privateKeyReadableByMcp: false
+      },
+      requiredSuiviFields: ['date'],
+      githubPrincipalBindings: [{
+        bindingId: 'binding-example',
+        oauthPrincipalId: 'oauth:example-user',
+        provider: 'github',
+        connectionSelector: { owner: 'ExampleOrg', type: 'organization' },
+        expectedAuthenticatedLogin: 'example-user',
+        context: { repository: REPOSITORY },
+        effect: 'IDENTITY_ONLY',
+        enabled: true
+      }]
+    },
+    policyDigest: 'a'.repeat(64),
+    policyValid: true,
+    connections: [{
+      owner: 'ExampleOrg',
+      type: 'organization',
+      configuredStatus: 'active',
+      authenticationContextId: 'authctx-example',
+      principal: {
+        status: 'VERIFIED',
+        observedAt: NOW,
+        freshness: 'CURRENT',
+        login: 'example-user',
+        githubUserId: 42,
+        accountType: 'user',
+        reasonCode: null
+      },
+      accountVerified: true
+    }],
+    observedAt: NOW
+  } as any;
+  const identity = resolveGw04GithubIdentity(identityInput, substrate);
+  stage('Identity', identity.status === 'RESOLVED' && identity.freshness === 'CURRENT');
+
+  const repositoryInput = {
+    identity: identity.payload,
+    identityAuthenticationContextId: 'authctx-example',
+    requestedRepositoryContext: REPOSITORY,
+    registry: {
+      available: true,
+      schemaVersion: 1,
+      mappings: [{ githubOwner: 'ExampleOrg', githubRepo: 'api' }],
+      digest: 'registry-v1'
+    },
+    repositoryObservation: {
+      status: 'VERIFIED',
+      observedAt: NOW,
+      freshness: 'CURRENT',
+      requestedFullName: REPOSITORY,
+      repository: {
+        githubRepositoryId: 101,
+        owner: 'ExampleOrg',
+        ownerType: 'organization',
+        name: 'api',
+        fullName: REPOSITORY,
+        defaultBranch: 'main',
+        visibility: 'private',
+        archived: false,
+        fork: false
+      },
+      reasonCode: null
+    },
+    observedAt: NOW
+  } as any;
+  const repository = resolveGw05Repository(repositoryInput, substrate);
+  stage('Repository', repository.status === 'RESOLVED'
+    && repository.payload.selectedRepository?.fullName === REPOSITORY);
+
+  const projectInput = {
+    repository: repository.payload,
+    registry: {
+      available: true,
+      sourceSchemaVersion: 1,
+      digest: 'registry-v1',
+      candidateDigest: 'registry-v2-candidate',
+      mappings: [{
+        mappingId: COMPONENT_ID,
+        repositoryId: REPOSITORY_ID,
+        projectId: PROJECT_ID,
+        projectUid: PROJECT_UID,
+        componentRole: 'API'
+      }],
+      projects: [{
+        projectId: PROJECT_ID,
+        projectUid: PROJECT_UID,
+        name: 'Example Platform',
+        kind: 'MULTI_REPOSITORY_APPLICATION',
+        repositoryComponents: [
+          { repositoryId: REPOSITORY_ID, mappingId: COMPONENT_ID, role: 'API' }
+        ]
+      }],
+      activationReadiness: [{
+        mappingId: COMPONENT_ID,
+        status: 'READY',
+        reasonCodes: []
+      }]
+    },
+    observedAt: NOW
+  } as any;
+  const project = resolveGw06Project(projectInput, substrate);
+  stage('Project', project.status === 'RESOLVED'
+    && project.payload.selectedProject?.projectUid === PROJECT_UID);
+
+  const server = resolveServer({
+    project: project.payload,
+    registry: {
+      available: true,
+      freshness: 'CURRENT',
+      digest: 'b'.repeat(64),
+      candidateDigest: 'c'.repeat(64),
+      mappings: [{
+        mappingId: COMPONENT_ID,
+        repositoryId: REPOSITORY_ID,
+        projectId: PROJECT_ID,
+        projectUid: PROJECT_UID,
+        componentRole: 'API',
+        serverId: SERVER_ID,
+        serverPath: '/srv/example/api',
+        realPath: '/srv/example/api',
+        realPathVerified: true,
+        environment: 'production'
+      }]
+    },
+    canonicalServerIds: ['s1', SERVER_ID],
+    serverHint: null,
+    observedAt: NOW
+  } as any);
+  stage('Server', server.status === 'RESOLVED'
+    && server.selectedServer?.serverId === SERVER_ID);
+
+  const runtime = resolveRuntime({
+    server,
+    components: [{
+      componentId: COMPONENT_ID,
+      repositoryId: REPOSITORY_ID,
+      componentRole: 'API'
+    }],
+    observations: [{
+      status: 'CURRENT',
+      observedAt: NOW,
+      freshness: 'CURRENT',
+      serverId: SERVER_ID,
+      componentId: COMPONENT_ID,
+      repositoryId: REPOSITORY_ID,
+      componentRole: 'API',
+      runtimeKind: 'PASSENGER',
+      runtimeId: RUNTIME_ID,
+      revision: HEAD,
+      evidenceRef: 'phase-f:runtime'
+    }],
+    declarations: [{
+      serverId: SERVER_ID,
+      componentId: COMPONENT_ID,
+      repositoryId: REPOSITORY_ID,
+      runtimeKind: 'PASSENGER',
+      runtimeId: RUNTIME_ID
+    }],
+    runtimeHint: null,
+    observedAt: NOW
+  } as any);
+  stage('Runtime', runtime.status === 'RESOLVED'
+    && runtime.bindings[0]?.revision === HEAD);
+
+  const domain = resolveDomain({
+    project: {
+      ...project.payload,
+      registryDigest: 'b'.repeat(64),
+      candidateDigest: 'c'.repeat(64)
+    },
+    server,
+    registry: {
+      available: true,
+      freshness: 'CURRENT',
+      digest: 'b'.repeat(64),
+      candidateDigest: 'c'.repeat(64),
+      projects: [{
+        projectId: PROJECT_ID,
+        publicDomain: 'api.example.com',
+        publicApi: 'https://api.example.com/v1',
+        historicalVhosts: []
+      }],
+      mappings: [{
+        mappingId: COMPONENT_ID,
+        repositoryId: REPOSITORY_ID,
+        projectId: PROJECT_ID,
+        componentRole: 'API',
+        serverId: SERVER_ID,
+        domain: 'api.example.com',
+        domainVerified: true
+      }]
+    },
+    observation: {
+      available: true,
+      freshness: 'CURRENT',
+      observedAt: NOW,
+      serverId: SERVER_ID,
+      domains: [{
+        domain: 'api.example.com',
+        verified: true,
+        evidenceRef: 'phase-f:domain'
+      }]
+    },
+    observedAt: NOW
+  } as any);
+  stage('Domain', domain.status === 'RESOLVED');
+
+  const TOOL = 'mcp_transition_governed_task';
+  const capabilityReality = deriveCapabilityReality({
+    toolName: TOOL,
+    registered: true,
+    callability: { status: 'CALLABLE', source: 'SERVER' },
+    authorized: { status: 'TRUE' },
+    governanceSafe: true,
+    observedAt: NOW,
+    provenance: ['phase-f-happy-path']
+  });
+  const governanceDecision = deriveGovernanceDecision({
+    operation: TOOL,
+    capabilityReality,
+    sessionPresent: true,
+    bootstrapCurrent: true,
+    lockConflicts: 0,
+    githubWorkStateAvailable: true,
+    requiresGithubWorkState: false,
+    ownerMatches: true,
+    dependenciesSatisfied: true,
+    runtimeAligned: true,
+    requiresRuntimeAlignment: false,
+    requiredEvidence: [],
+    observedAt: NOW
+  } as any);
+  const governance = composeGovernanceInheritance({
+    target: {
+      targetId: PROJECT_UID,
+      repositoryId: REPOSITORY,
+      componentId: COMPONENT_ID
+    },
+    capabilityReality,
+    governanceDecision,
+    observedAt: NOW
+  } as any);
+  stage('Governance', governance.status === 'SUCCESS' && governance.mayExecute === true);
+  const capabilities = deriveEffectiveCapabilitySet(governance);
+  stage('Capability', capabilities.status === 'SUCCESS'
+    && capabilities.mayExecute === true
+    && capabilities.capabilities.some((entry) => entry.effective));
+
+  const task: any = {
+    schemaVersion: 1,
+    taskId: TASK_ID,
+    repository: REPOSITORY,
+    intentKey: 'phase-f-happy-path',
+    title: 'Phase F happy path',
+    summary: 'Synthetic full candidate acceptance path.',
+    priority: 50,
+    sequence: 1,
+    status: 'IN_PROGRESS',
+    dependencies: [],
+    resourceScopes: [`repository:${REPOSITORY}`],
+    ownerGovernedSessionId: SESSION_ID,
+    workBranch: 'phase-f/happy-path',
+    pullRequestNumber: PR_NUMBER,
+    observedHeadSha: HEAD,
+    runtimeRevision: HEAD,
+    blockers: [],
+    nextAction: 'development',
+    source: { kind: 'agent', requestDigest: 'e'.repeat(64) },
+    createdAt: NOW,
+    updatedAt: NOW,
+    taskRevision: 10
+  };
+  const taskLookup = wrapGw14ExistingTaskLookup(task, substrate);
+  const taskClaim = wrapGw18TaskClaim(task, substrate);
+  const taskProgress = wrapGw20TaskInProgress(task, substrate);
+  stage('Task', taskLookup.status === 'FOUND'
+    && taskClaim.status === 'CLAIMED'
+    && taskProgress.status === 'IN_PROGRESS');
+
+  const receipt: any = {
+    schemaVersion: 1,
+    bootstrapReceiptId: RECEIPT_ID,
+    governedSessionId: SESSION_ID,
+    agentIdentity: 'acceptance-agent',
+    repository: REPOSITORY,
+    governedBranch: 'phase-f/happy-path',
+    stateVersion: STATE_VERSION,
+    githubHead: HEAD,
+    runtimeRevision: HEAD,
+    catalogueDigest: 'b'.repeat(64),
+    governanceDigest: 'c'.repeat(64),
+    taskRegistryDigest: 'd'.repeat(64),
+    createdAt: NOW,
+    expiresAt: '2026-09-19T23:30:00.000Z',
+    status: 'ACKNOWLEDGED',
+    limitations: []
+  };
+  const session: any = {
+    schemaVersion: 1,
+    governedSessionId: SESSION_ID,
+    repository: REPOSITORY,
+    taskScope: TASK_ID,
+    workBranch: 'phase-f/happy-path',
+    agentIdentity: 'acceptance-agent',
+    ownerPrincipalId: 'oauth:example-user',
+    identityAssurance: 'oauth_subject',
+    status: 'ACTIVE',
+    createdAt: NOW,
+    resumedAt: NOW,
+    lastHeartbeatAt: NOW,
+    pausedAt: null,
+    expiredAt: null,
+    closedAt: null,
+    currentTransport: null,
+    lastAcknowledgedStateVersion: STATE_VERSION,
+    bootstrapReceipt: receipt,
+    connectionContext: {
+      schemaVersion: 1,
+      connectionContextId: CONTEXT_ID,
+      governedSessionId: SESSION_ID,
+      repository: REPOSITORY,
+      principalId: 'oauth:example-user',
+      observedClientId: 'chatgpt-client',
+      identityAssurance: 'oauth_subject',
+      clientClassification: 'UNRESOLVED',
+      evidenceSource: 'oauth_auth_info',
+      createdAt: NOW
+    },
+    sessionRevision: 20,
+    lastCheckpoint: null,
+    blockers: [],
+    nextAction: 'continue',
+    lockIds: [LOCK_ID],
+    resumePolicy: 'stable_principal_or_resume_secret'
+  };
+  const sessionOpen = wrapGw16SessionOpenOrResume({ status: 'OPENED', session }, substrate);
+  const sessionAck = wrapGw17ContextAcknowledgement(session, STATE_VERSION, substrate);
+  stage('Session', sessionOpen.status === 'OPENED' && sessionAck.status === 'ACKNOWLEDGED');
+
+  const lockPlan = planMinimalLockSet([{ type: 'repository', key: REPOSITORY }]);
+  const grantedLock: any = {
+    schemaVersion: 1,
+    lockId: LOCK_ID,
+    governedSessionId: SESSION_ID,
+    scope: `repository:${REPOSITORY}`,
+    status: 'ACTIVE',
+    acquiredAt: NOW,
+    renewedAt: NOW,
+    expiresAt: '2026-09-19T23:30:00.000Z',
+    lockRevision: 1,
+    reason: 'phase-f-happy-path'
+  };
+  const locks = wrapGw19MinimalLockAcquisition({
+    plan: lockPlan,
+    grantedLocks: [grantedLock]
+  }, substrate);
+  stage('Locks', locks.status === 'GRANTED');
+
+  const declaration = {
+    declaredAt: NOW,
+    summary: 'bounded phase f happy path change',
+    changeDigest: 'f'.repeat(64)
+  };
+  const development = planGw24BranchCreation({
+    repository: REPOSITORY,
+    branch: 'phase-f/happy-path',
+    baseSha: HEAD,
+    branchPolicyAllowed: true,
+    declaration
+  }, substrate);
+  stage('Development', development.status === 'READY'
+    && development.effectPlan?.expectedHeadSha === HEAD
+    && development.mutationPerformed === false);
+
+  const profile = parseProjectValidationProfile({
+    schemaVersion: 1,
+    profileId: 'example-ci-v1',
+    projectId: PROJECT_ID,
+    repository: REPOSITORY,
+    ci: { workflow: 'Candidate CI', job: 'validate' },
+    validationScripts: [{ id: 'test', script: 'test' }],
+    workflowNativeChecks: [],
+    testDiscovery: {
+      root: 'tests',
+      suffix: '.test.ts',
+      runnerScript: 'test',
+      dedicated: []
+    }
+  });
+  const ci = observeGw28GreenCi({
+    expectedHeadSha: HEAD,
+    profile,
+    ci: {
+      runId: 9002,
+      observedAt: NOW,
+      workflow: 'Candidate CI',
+      job: 'validate',
+      profileId: profile.profileId,
+      profileDigest: validationProfileDigest(profile),
+      headSha: HEAD,
+      status: 'completed',
+      conclusion: 'success',
+      failedSteps: [],
+      failureSignals: []
+    }
+  }, substrate);
+  stage('CI', ci.status === 'SUCCESS' && ci.payload.headSha === HEAD);
+
+  const reviewPlan = planGw34DraftPr({
+    repository: REPOSITORY,
+    sourceBranch: 'phase-f/happy-path',
+    baseBranch: 'main',
+    expectedHeadSha: HEAD,
+    title: 'Phase F candidate happy path'
+  }, substrate);
+  stage('Review', reviewPlan.status === 'READY'
+    && reviewPlan.effectPlan?.expectedHeadSha === HEAD);
+
+  const githubContext: any = {
+    status: 'CURRENT',
+    observedAt: NOW,
+    mainHead: 'c'.repeat(40),
+    workBranch: 'phase-f/happy-path',
+    workBranchHead: HEAD,
+    pullRequest: {
+      number: PR_NUMBER,
+      state: 'open',
+      draft: false,
+      merged: false,
+      base: 'main',
+      head: 'phase-f/happy-path',
+      headSha: HEAD,
+      author: 'acceptance-agent',
+      updatedAt: NOW
+    },
+    checks: {
+      status: 'completed',
+      conclusion: 'success',
+      total: 1,
+      failed: 0,
+      headSha: HEAD,
+      exactHead: true,
+      required: [{ context: 'Candidate CI', status: 'completed', conclusion: 'success' }],
+      requiredSatisfied: true
+    },
+    reviews: {
+      approvals: 1,
+      changesRequested: 0,
+      unresolvedThreads: 0,
+      headSha: HEAD,
+      exactHead: true
+    },
+    ruleset: {
+      name: 'main-protection',
+      enforcement: 'active',
+      requiresPullRequest: true,
+      requiredStatusChecks: ['Candidate CI'],
+      requiresConversationResolution: true,
+      requiredApprovingReviewCount: 1
+    },
+    ownership: { pullRequestAuthor: 'acceptance-agent' },
+    activity: { lastActivityAt: NOW },
+    cache: { status: 'REFRESHED', observedAt: NOW, provenance: 'github_api' },
+    evidence: {
+      main: { freshness: 'CURRENT', observedAt: NOW, provenance: 'github_api' },
+      pullRequest: { freshness: 'CURRENT', observedAt: NOW, provenance: 'github_api' },
+      checks: { freshness: 'CURRENT', observedAt: NOW, provenance: 'github_api' },
+      reviews: { freshness: 'CURRENT', observedAt: NOW, provenance: 'github_api' },
+      ruleset: { freshness: 'CURRENT', observedAt: NOW, provenance: 'github_api' }
+    },
+    reasonCodes: [],
+    uncertainties: [],
+    error: null,
+    repositoryResolution: {
+      status: 'RESOLVED',
+      observedAt: NOW,
+      requestedRepositoryContext: REPOSITORY,
+      selectionSource: 'connection_context',
+      selectedAccountContext: { owner: 'ExampleOrg', type: 'organization' },
+      selectedRepository: {
+        repositoryId: REPOSITORY_ID,
+        githubRepositoryId: 101,
+        owner: 'ExampleOrg',
+        ownerType: 'organization',
+        name: 'api',
+        fullName: REPOSITORY,
+        defaultBranch: 'main',
+        visibility: 'private',
+        archived: false,
+        fork: false
+      },
+      candidates: [],
+      candidateCount: 0,
+      freshness: 'CURRENT',
+      provenance: ['phase-f'],
+      reasonCodes: [],
+      uncertainties: [],
+      registryDigest: 'registry-v1'
+    }
+  };
+  const premerge = composeGw41PremergeProof({
+    expectedHeadSha: HEAD,
+    github: githubContext,
+    taskId: TASK_ID,
+    taskRevision: 10,
+    taskStatus: 'REVIEW',
+    governedSessionId: SESSION_ID,
+    sessionRevision: 20,
+    bootstrapReceiptId: RECEIPT_ID,
+    stateVersion: STATE_VERSION,
+    checkpointHeadSha: HEAD
+  }, substrate);
+  const merge = planGw43ExactHeadMerge({
+    repository: REPOSITORY,
+    pullRequestNumber: PR_NUMBER,
+    expectedHeadSha: HEAD,
+    premergeProof: premerge
+  }, substrate);
+  stage('Merge', premerge.status === 'SUCCESS'
+    && merge.status === 'READY'
+    && merge.effectPlan?.expectedHeadSha === HEAD);
+
+  const merged = observeGw44MainMergeCommit({
+    repository: REPOSITORY,
+    expectedMergeSha: HEAD,
+    mainHeadSha: HEAD,
+    observedAt: NOW
+  }, substrate);
+  const mainCi = observeGw45MainCi({
+    expectedHeadSha: HEAD,
+    ci: {
+      runId: 1500,
+      workflow: 'Candidate CI',
+      event: 'push',
+      headSha: HEAD,
+      status: 'completed',
+      conclusion: 'success',
+      observedAt: NOW
+    }
+  }, substrate);
+  const deploy = observeGw46GovernedAutodeploy({
+    expectedHeadSha: HEAD,
+    ciProof: mainCi,
+    deploy: {
+      runId: 2500,
+      jobId: 'candidate-deploy-2500-aaaaaaaaaaaa',
+      workflow: 'Candidate Governed Deploy',
+      event: 'push',
+      headSha: HEAD,
+      status: 'completed',
+      conclusion: 'success',
+      observedAt: NOW
+    }
+  }, substrate);
+  stage('Deploy', merged.status === 'SUCCESS'
+    && mainCi.status === 'SUCCESS'
+    && deploy.status === 'SUCCESS');
+
+  const verify = evaluateGw68TerminalVerification({
+    taskId: TASK_ID,
+    taskStatus: 'VERIFYING',
+    governedSessionId: SESSION_ID,
+    bootstrapReceiptId: RECEIPT_ID,
+    receiptStateVersion: STATE_VERSION,
+    expectedHeadSha: HEAD,
+    expectedRuntimeRevision: HEAD,
+    liveState: {
+      stateVersion: STATE_VERSION,
+      freshness: 'CURRENT',
+      ageSeconds: 5,
+      maxAgeSeconds: 60,
+      githubHead: HEAD,
+      s1Head: HEAD,
+      runtimeRevision: HEAD,
+      globalAlignment: 'FULLY_ALIGNED',
+      documentationStatus: 'ALIGNED',
+      documentationDrift: false,
+      contradictions: [],
+      observedAt: NOW
+    },
+    documentation: {
+      status: 'ALIGNED',
+      drift: false,
+      observedAt: NOW,
+      trackedHeadSha: HEAD
+    },
+    terminalEvidence: {
+      task: {
+        taskId: TASK_ID,
+        taskRevision: 31,
+        status: 'VERIFYING',
+        ownerGovernedSessionId: SESSION_ID,
+        observedHeadSha: HEAD,
+        runtimeRevision: HEAD
+      },
+      receipt: {
+        bootstrapReceiptId: RECEIPT_ID,
+        stateVersion: STATE_VERSION,
+        runtimeRevision: HEAD
+      },
+      ci: {
+        runId: 1500,
+        headSha: HEAD,
+        conclusion: 'success'
+      },
+      deployment: {
+        jobId: 'candidate-deploy-2500-aaaaaaaaaaaa',
+        ciRunId: 1500,
+        headSha: HEAD,
+        runtimeRevision: HEAD,
+        result: 'succeeded'
+      },
+      review: {
+        pullRequestNumber: PR_NUMBER,
+        headSha: HEAD,
+        approved: true,
+        unresolvedThreads: 0
+      },
+      locks: {
+        ownActiveLockCount: 1,
+        foreignConflictingLockCount: 0
+      }
+    }
+  } as any, substrate);
+  stage('Verify', verify.status === 'SUCCESS'
+    && verify.payload.terminalVerified === true);
+
+  const done = planGw69TaskDone({
+    taskId: TASK_ID,
+    expectedTaskRevision: 31,
+    governedSessionId: SESSION_ID,
+    expectedSessionRevision: 22,
+    expectedBootstrapReceiptId: RECEIPT_ID,
+    expectedStateVersion: STATE_VERSION,
+    expectedHeadSha: HEAD,
+    terminalVerification: verify.payload
+  } as any, substrate);
+  stage('DONE', done.status === 'READY'
+    && done.effectPlan?.payload.status === 'DONE');
+
+  const orderedStages = Object.freeze([
+    'Intent', 'Identity', 'Repository', 'Project', 'Server', 'Runtime', 'Domain',
+    'Governance', 'Capability', 'Task', 'Session', 'Locks', 'Development', 'CI',
+    'Review', 'Merge', 'Deploy', 'Verify', 'DONE'
+  ]);
+
+  const bindingConsistent = Boolean(
+    repository.payload.selectedRepository?.fullName === REPOSITORY
+    && project.payload.selectedProject?.projectUid === PROJECT_UID
+    && server.selectedServer?.serverId === SERVER_ID
+    && runtime.bindings[0]?.repositoryId === REPOSITORY_ID
+    && runtime.bindings[0]?.revision === HEAD
+    && task.repository === REPOSITORY
+    && task.ownerGovernedSessionId === SESSION_ID
+    && task.observedHeadSha === HEAD
+    && session.repository === REPOSITORY
+    && session.governedSessionId === SESSION_ID
+    && receipt.bootstrapReceiptId === RECEIPT_ID
+    && locks.payload.grantedLocks[0]?.governedSessionId === SESSION_ID
+    && development.effectPlan?.expectedHeadSha === HEAD
+    && ci.payload.headSha === HEAD
+    && premerge.payload.taskId === TASK_ID
+    && premerge.payload.governedSessionId === SESSION_ID
+    && premerge.payload.bootstrapReceiptId === RECEIPT_ID
+    && premerge.payload.headSha === HEAD
+    && merge.payload.headSha === HEAD
+    && deploy.payload.headSha === HEAD
+    && verify.payload.taskId === TASK_ID
+    && verify.payload.governedSessionId === SESSION_ID
+    && verify.payload.bootstrapReceiptId === RECEIPT_ID
+    && verify.payload.headSha === HEAD
+    && verify.payload.runtimeRevision === HEAD
+    && done.effectPlan?.payload.taskId === TASK_ID
+    && done.effectPlan?.payload.observedHeadSha === HEAD
+    && done.effectPlan?.payload.runtimeRevision === HEAD
+  );
+
+  const mutationPlans = [development, reviewPlan, merge, done];
+  const effectPlansOnly = mutationPlans.every((value: any) => (
+    value.effectPlan !== null && value.mutationPerformed === false
+  ));
+  const status = stages.length === orderedStages.length
+    && stages.every((entry) => entry.status === 'PASS')
+    && bindingConsistent
+    && effectPlansOnly
+      ? 'PASS' as const
+      : 'FAIL' as const;
+
+  return Object.freeze({
+    status,
+    orderedStages,
+    stages: Object.freeze(stages),
+    bindingConsistent,
+    finalTaskStatus: done.status === 'READY' ? 'DONE' as const : null,
+    executionMode: 'TEST_SHADOW_ISOLATED' as const,
+    mutationPerformed: false as const,
+    liveMutationDispatched: false as const,
+    effectPlansOnly
   });
 }
 
