@@ -884,7 +884,7 @@
           "exact-sha-ci"
         ],
         "title": "AF-19 candidate correction",
-        "status": "BLOCKED",
+        "status": "DONE",
         "priority": 80,
         "sequence": 4,
         "dependencies": [
@@ -899,7 +899,11 @@
           "Dispatched to candidate-7afc131430c64c6fe34bcfea @ 5ffadbcddc831c8e8c46299e8e6f2c9b816ac8fd",
           "OD-07 is explicitly OPEN in DECISIONS_LOG.md: workflow gate vs server admission vs job dependency is a governed decision, not derivable from design evidence.",
           "GWC-15 Detailed Evolution Design rejects workflow_run on OIDC evidence and narrows AF-19 to OIDC-compatible B/C/D; B+C may be complementary.",
-          "Blocker observed at candidate head 2aeca6ea0eeb3919b2a586a7ee800b0ba1e6e657; no AF-19 implementation mutation performed."
+          "Blocker observed at candidate head 2aeca6ea0eeb3919b2a586a7ee800b0ba1e6e657; no AF-19 implementation mutation performed.",
+          "OD-07 resolved existing-first to option B (existing workflow gate); user-confirmed PRECODE policy is autonomous-by-default for deducible technical decisions.",
+          "RED CI #1110 @ 757ee2a525741eef5cbb36796fc69c62c85a47b2 failed at Read-only safety tests after typecheck/build/docs/governance/GWC/secret-scan all succeeded.",
+          "GREEN CI #1112 @ 074f2bd21eef6e23811512453d34670bfecc7485 succeeded across the full MCP CI pipeline.",
+          "AF-19 closure: push autodeploy now requires MCP CI success for the identical GITHUB_SHA; workflow_run stays forbidden; OIDC allowedEvents and tokenSha===requestedSha are unchanged; workflow_dispatch behavior is preserved."
         ]
       },
       {
@@ -911,7 +915,7 @@
           "review-evidence"
         ],
         "title": "AF-22 / AF-30 candidate correction",
-        "status": "PENDING",
+        "status": "READY",
         "priority": 79,
         "sequence": 5,
         "dependencies": [
@@ -922,7 +926,9 @@
           "src:governed-workflow-review",
           "docs:gwc"
         ],
-        "evidence": []
+        "evidence": [
+          "Dependency GWC-PRE-C1 completed with GREEN CI #1112 on exact head 074f2bd21eef6e23811512453d34670bfecc7485."
+        ]
       },
       {
         "workItemId": "GWC-PRE-C3",
@@ -3759,8 +3765,8 @@
       {
         "decision": "OD-07",
         "owner": "GWC-15",
-        "state": "OPEN_NARROWED",
-        "disposition": "PRESERVE_OPEN_DECISION"
+        "state": "RESOLVED",
+        "disposition": "RESOLVED_EXISTING_FIRST_B_WORKFLOW_GATE"
       },
       {
         "decision": "OD-08",
@@ -3839,13 +3845,15 @@
     {
       "blockerId": "OD-07",
       "workItemId": "GWC-PRE-C1",
-      "status": "HUMAN_DECISION_REQUIRED",
-      "observedAtHead": "2aeca6ea0eeb3919b2a586a7ee800b0ba1e6e657",
-      "question": "Select AF-19 enforcement placement without weakening OIDC: B workflow gate, C server admission, B+C layered defense, or D in-workflow CI job dependency.",
+      "status": "RESOLVED_AUTONOMOUS_EXISTING_FIRST",
+      "observedAtHead": "074f2bd21eef6e23811512453d34670bfecc7485",
+      "question": "Resolved: AF-19 uses the existing workflow gate (B) as the minimal existing-first Integration Slot.",
       "forbidden": "Do not use workflow_run; do not widen allowedEvents; do not relax tokenSha === requestedSha; do not deploy/activate during PRECODE.",
       "evidence": [
         "DECISIONS_LOG.md#2026-09-17 — Conception d'évolution détaillée : décisions de conception",
-        "docs/gwc/BLUEPRINTS.md#gwc-15"
+        "docs/gwc/BLUEPRINTS.md#gwc-15",
+        "RED CI #1110 @ 757ee2a525741eef5cbb36796fc69c62c85a47b2",
+        "GREEN CI #1112 @ 074f2bd21eef6e23811512453d34670bfecc7485"
       ]
     }
   ]
