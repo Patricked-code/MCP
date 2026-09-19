@@ -382,12 +382,20 @@ export function resolveDomain(rawInput: DomainResolutionInput): DomainResolution
   for (const mapping of projectMappings) {
     if (!mapping.domain) continue;
     const domain = normalizeDomain(mapping.domain);
+    const evidenceRef = `mapping:${mapping.mappingId}`;
+    if (mapping.componentRole === undefined || mapping.componentRole === null) {
+      const existing = declarations.find((entry) => entry.domain === domain);
+      if (existing) {
+        if (!existing.evidenceRefs.includes(evidenceRef)) existing.evidenceRefs.push(evidenceRef);
+        continue;
+      }
+    }
     addDeclaration(
       declarations,
       roleFromComponentRole(mapping.componentRole),
       domain,
       endpointForDomain(domain),
-      `mapping:${mapping.mappingId}`
+      evidenceRef
     );
   }
 
