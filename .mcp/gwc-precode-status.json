@@ -1412,7 +1412,7 @@
           "GWC-12"
         ],
         "title": "GWC-12 — GitHub Control Plane reconciliation",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 58,
         "sequence": 19,
         "dependencies": [
@@ -1455,7 +1455,9 @@
           "Self-review CI #1372 FAILURE @ a8d7b4a71ffd4963ee77f8a307596cd6a6164dee found one real defect: merge could proceed when GitHub returned zero check-run evidence.",
           "FINAL GREEN CI #1373 SUCCESS @ 31af704006e36de0e57d9f84c71140cd00355545 after fail-closed GITHUB_PR_CHECKS_UNAVAILABLE correction.",
           "GWC-12 runtime cartography is 132 tools / 81 READ / 51 WRITE, digest 4bd120417137c0f0ddd55019f0e58072e2c5e645293ed471c4816d3ee6a296c8.",
-          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc12-github-control-plane-complete staged; claim retained ACTIVE until exact-head checkpoint CI succeeds."
+          "Canonical checkpoint bundle docs/gwc/canonical-memory/pr95-e-gwc12-github-control-plane-complete staged; claim retained ACTIVE until exact-head checkpoint CI succeeds.",
+          "Checkpoint MCP CI #1374 SUCCESS @ 7bb970c3ddc577c3a6d9565aae8d558b4e33bc90 validated the GWC-12 canonical bundle, current pointer, coordination projection, cartography and full regression before claim release.",
+          "GWC-12 claim released only after exact-head checkpoint SUCCESS."
         ]
       },
       {
@@ -1465,7 +1467,7 @@
           "GWC-13"
         ],
         "title": "GWC-13 — Development workflow contracts",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 57,
         "sequence": 20,
         "dependencies": [
@@ -1476,7 +1478,10 @@
           "path:src/governedWorkflow/development"
         ],
         "evidence": [
-          "Derived from GWC-CAND-13 exact-bound candidate backlog."
+          "Derived from GWC-CAND-13 exact-bound candidate backlog.",
+          "Dependency GWC-PRE-E-GWC-12 satisfied at dispatch; GWC-12 closes in this exact-head transition after checkpoint CI #1374 SUCCESS.",
+          "Initial collision domain remains path:src/governedWorkflow/development; any test/package/owner expansion requires exact-head claim update before mutation.",
+          "GWC-13 must reuse current CI/test/governance authorities and make RED prove the intended expected-failure signature rather than arbitrary pipeline failure."
         ]
       },
       {
@@ -1823,6 +1828,15 @@
           "path:.mcp/function-cartography.json",
           "path:tests/gwcGithubCapabilitySplit.test.ts"
         ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-E-GWC-13",
+        "collisionDomains": [
+          "path:src/governedWorkflow/development"
+        ],
         "status": "ACTIVE"
       }
     ],
@@ -1922,9 +1936,9 @@
         "repository": "Patricked-code/MCP",
         "branch": "claude/ecstatic-edison-v1dyt1",
         "startingHeadSha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
-        "lastObservedHeadSha": "31af704006e36de0e57d9f84c71140cd00355545",
+        "lastObservedHeadSha": "7bb970c3ddc577c3a6d9565aae8d558b4e33bc90",
         "createdAt": "2026-09-19T06:48:00Z",
-        "lastSeenAt": "2026-09-19T09:03:00Z",
+        "lastSeenAt": "2026-09-19T09:08:00Z",
         "status": "ACTIVE"
       }
     ],
@@ -5414,7 +5428,7 @@
     "gwc12": {
       "workItemId": "GWC-PRE-E-GWC-12",
       "blueprint": "GWC-12",
-      "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+      "status": "PASS_WITH_EVIDENCE",
       "dependencies": [
         "GWC-PRE-E-GWC-11"
       ],
@@ -5478,9 +5492,22 @@
       },
       "checkpoint": {
         "bundle": "docs/gwc/canonical-memory/pr95-e-gwc12-github-control-plane-complete",
-        "validation": "PENDING_EXACT_HEAD_CI",
-        "claimRelease": "FORBIDDEN_UNTIL_CHECKPOINT_CI_SUCCESS"
+        "validation": "SUCCESS",
+        "ciRunNumber": 1374,
+        "head": "7bb970c3ddc577c3a6d9565aae8d558b4e33bc90",
+        "claimRelease": "RELEASED_AFTER_CHECKPOINT_CI_SUCCESS"
       }
+    },
+    "gwc13": {
+      "workItemId": "GWC-PRE-E-GWC-13",
+      "blueprint": "GWC-13",
+      "status": "IN_PROGRESS",
+      "dependencies": [
+        "GWC-PRE-E-GWC-11",
+        "GWC-PRE-E-GWC-12"
+      ],
+      "scope": "DEVELOPMENT_WORKFLOW_CONTRACTS_GW24_TO_GW33",
+      "authorityBoundary": "REUSE_EXISTING_CI_TEST_GOVERNANCE_AUTHORITIES__EXPECTED_FAILURE_SIGNATURE_REQUIRED"
     }
   },
   "intake003RecoveryEvolution": {
