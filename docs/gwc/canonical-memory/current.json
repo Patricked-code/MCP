@@ -4,9 +4,9 @@
   "repository": "Patricked-code/MCP",
   "branch": "claude/ecstatic-edison-v1dyt1",
   "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
-  "currentBundle": "pr95-c2-af22-af30-resolved",
-  "currentBundleId": "bnd_mcp-pr95-c2-af22-af30-resolved-20260919",
-  "currentBundlePath": "docs/gwc/canonical-memory/pr95-c2-af22-af30-resolved",
+  "currentBundle": "pr95-c3-capability-reconciliation-complete",
+  "currentBundleId": "bnd_mcp-pr95-c3-capability-reconciliation-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-c3-capability-reconciliation-complete",
   "programCatalog": {
     "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
     "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
@@ -26,9 +26,9 @@
     "rule": "The Claude branch is the construction surface for the complete evolved MCP candidate: existing skeleton plus additive/backward-compatible code, tests, migrations/compatibility, workflows, documentation, task history and evidence. It is not documentation-only and not a parallel production authority."
   },
   "currentPrecodeState": {
-    "phase": "C",
-    "workItem": "GWC-PRE-C3",
-    "work": "CANDIDATE_CAPABILITY_RECONCILIATION",
+    "phase": "E",
+    "workItem": "GWC-PRE-E-GWC-0",
+    "work": "GWC_0_CONTRACT_SUBSTRATE",
     "status": "READY",
     "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
     "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
@@ -40,7 +40,7 @@
     "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
     "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
-    "nextAction": "Reobserve the exact Claude-branch head, claim GWC-PRE-C3, re-derive only still-needed capabilities from stale PR stack #88/#89/#90 against current branch/main, reuse the historical C3 disposition evidence, and implement/rework/split only the required candidate capabilities without merging stale PRs blindly or activating main/S1/production.",
+    "nextAction": "Execute Phase D cycle for GWC-PRE-E-GWC-0 from the exact live branch head: re-read the GWC-0 detailed design and exact-bound backlog item, inspect existing governedWorkflow substrate first, prove RED for the smallest missing contract substrate behavior, implement minimal GREEN, run full regressions, self-review, checkpoint, then dispatch the next dependency-safe Phase E item.",
     "blocker": null
   },
   "precodeContinuationPolicy": {
@@ -121,6 +121,11 @@
   ],
   "previousBundles": [
     {
+      "name": "pr95-c2-af22-af30-resolved",
+      "path": "docs/gwc/canonical-memory/pr95-c2-af22-af30-resolved",
+      "status": "IMMUTABLE_HISTORICAL_C2_AF22_AF30_RESOLVED_CHECKPOINT"
+    },
+    {
       "name": "pr95-c1-af19-resolved",
       "path": "docs/gwc/canonical-memory/pr95-c1-af19-resolved",
       "status": "IMMUTABLE_HISTORICAL_C1_AF19_RESOLVED_CHECKPOINT"
@@ -197,8 +202,8 @@
     }
   ],
   "updatedFromGitHubObservationAt": "2026-09-19",
-  "observedHeadBeforePointerUpdate": "3bfd10b3c63841726a838b33db9eab85d57821a2",
-  "correctionReason": "GWC-PRE-C2 completed with RED CI #1124 and GREEN CI #1128. Review evidence now carries exact commit binding and stale-head mismatch. Next eligible work is C3 capability reconciliation.",
+  "observedHeadBeforePointerUpdate": "2acc4d132f8b1d04590ddf0e68e5cf0155c73c46",
+  "correctionReason": "GWC-PRE-C3 completed on final GREEN CI #1152. Self-review rejected an earlier technically-green C-90 WRITE landing because GWC-9/AF-32 ordering forbids it; final C3 materializes C-89.2 READ only and defers all C-90 WRITE until after GWC-9.",
   "historicalPointerIntegrityFinding": {
     "finding": "AF-36",
     "observedAt": "2026-09-18T17:50:00Z",
@@ -491,5 +496,22 @@
       "docs/gwc/BLUEPRINTS.md — GWC-15 Detailed Evolution Design",
       ".mcp/gwc-precode-status.json — candidateBlockers/OD-07"
     ]
+  },
+  "phaseCExit": "CANDIDATE_SAFETY_FOUNDATIONS_COMPLETE",
+  "c3CapabilityDisposition": {
+    "c88_1": "DEFER",
+    "c89_1": "SUPERSEDE",
+    "c89_2": "SPLIT_MATERIALIZED_READ_ONLY",
+    "c90_1": "SPLIT_DEFERRED_UNTIL_AFTER_GWC_9",
+    "c90_2": "SPLIT_DEFERRED_UNTIL_AFTER_GWC_9",
+    "c90_3": "DEFER",
+    "finalGreenCiRun": 1152,
+    "finalGreenHead": "ed395816177edf091f9a3e39f58948392bcd010d",
+    "cartography": {
+      "registeredTools": 123,
+      "readTools": 80,
+      "writeTools": 43,
+      "digest": "3d900237907905a64a572173eac7cd2109b2cf55a535afbed2252bb2f693597f"
+    }
   }
 }
