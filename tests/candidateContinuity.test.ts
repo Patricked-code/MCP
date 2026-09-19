@@ -1254,3 +1254,57 @@ test('minute liveness distinguishes working, recent, stale, unknown and yielded 
   }
 });
 
+test('minute heartbeat tracks an active observer session without manufacturing a work claim', async () => {
+  const candidate = await import('../src/governedContext/candidateContinuity.js') as any;
+  const session = {
+    candidateSessionId: 'candidate-observer-live',
+    agentIdentity: 'review-agent',
+    provider: 'other',
+    providerConversationRef: null,
+    providerConversationRefProvenance: 'UNAVAILABLE',
+    githubActor: null,
+    githubConnectionRef: null,
+    connectionInstanceRef: 'connection-observer-live',
+    repository: 'Patricked-code/MCP',
+    branch: 'claude/ecstatic-edison-v1dyt1',
+    startingHeadSha: '1'.repeat(40),
+    lastObservedHeadSha: '1'.repeat(40),
+    createdAt: '2026-09-19T04:20:00Z',
+    lastSeenAt: '2026-09-19T04:39:00Z',
+    status: 'ACTIVE'
+  };
+  const heartbeat = {
+    schemaVersion: 1,
+    candidateSessionId: 'candidate-observer-live',
+    agentIdentity: 'review-agent',
+    workItemId: null,
+    heartbeatSequence: 2,
+    emittedAt: '2026-09-19T04:39:00Z',
+    observedHeadSha: '1'.repeat(40),
+    currentAction: 'ANALYZING'
+  };
+
+  const bound = candidate.validateCandidateHeartbeatBinding({
+    heartbeat,
+    candidateSession: session,
+    activeClaim: null,
+    currentHeadSha: '1'.repeat(40),
+    previousHeartbeat: { ...heartbeat, heartbeatSequence: 1, emittedAt: '2026-09-19T04:38:00Z' }
+  });
+  assert.equal(bound.status, 'BOUND_SESSION_ONLY');
+  assert.equal(bound.reasonCode, 'HEARTBEAT_SESSION_BOUND_NO_CLAIM');
+  assert.equal(bound.authorizationGranted, false);
+  assert.equal(bound.claimTransferAllowed, false);
+  assert.equal(bound.ownershipChanged, false);
+
+  const inactive = candidate.validateCandidateHeartbeatBinding({
+    heartbeat,
+    candidateSession: { ...session, status: 'CLOSED' },
+    activeClaim: null,
+    currentHeadSha: '1'.repeat(40),
+    previousHeartbeat: null
+  });
+  assert.equal(inactive.status, 'INVALID');
+  assert.equal(inactive.reasonCode, 'HEARTBEAT_SESSION_INACTIVE');
+});
+
