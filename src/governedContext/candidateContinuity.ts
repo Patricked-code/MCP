@@ -1548,4 +1548,3 @@ export function acknowledgeCandidateRecoveryRunner(
     claimTransferAllowed: false as const
   });
 }
-
