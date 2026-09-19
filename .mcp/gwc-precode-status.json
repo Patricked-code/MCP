@@ -1658,6 +1658,136 @@
           "Canonical GWC-17 checkpoint staged at docs/gwc/canonical-memory/pr95-e-gwc17-universal-acceptance-complete; source=5774 bytes sha256 4a5428d575cbed22021d0e5b14266e253fbc4afb66cb090045bdc9c37480bbbf. Claim retained pending exact-head checkpoint CI.",
           "CHECKPOINT CI #1466 SUCCESS @ 4ae2d7f02a6c5b272f60c932c052a70ecc7a31f4; GWC-17 canonical checkpoint validated and claim released."
         ]
+      },
+      {
+        "workItemId": "GWC-PRE-F-01",
+        "intentKeys": [
+          "phase-f-final-candidate-gate",
+          "acceptance-context-selection"
+        ],
+        "title": "Phase F-01 — Non-hardcoded acceptance contexts",
+        "status": "IN_PROGRESS",
+        "priority": 52,
+        "sequence": 25,
+        "dependencies": [
+          "GWC-PRE-E-GWC-17"
+        ],
+        "collisionDomains": [
+          "path:tests/governedWorkflowUniversalAcceptance"
+        ],
+        "evidence": [
+          "Phase F authority: select non-hardcoded candidate acceptance contexts/fixtures.",
+          "Dependency GWC-PRE-E-GWC-17 DONE after exact-head checkpoint CI #1466 SUCCESS; release commit CI #1467 SUCCESS @ 3cf949b32f2589b666d0c03120442368c3276f52.",
+          "Existing-first rule: reuse the GWC-17 acceptance harness/fixtures and only add coverage if an explicit Phase F criterion is not already evidenced."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-F-02",
+        "intentKeys": [
+          "phase-f-final-candidate-gate",
+          "full-happy-path"
+        ],
+        "title": "Phase F-02 — Full candidate happy path",
+        "status": "PENDING",
+        "priority": 51,
+        "sequence": 26,
+        "dependencies": [
+          "GWC-PRE-F-01"
+        ],
+        "collisionDomains": [
+          "path:tests/governedWorkflowUniversalAcceptance"
+        ],
+        "evidence": [
+          "Phase F authority requires one coherent test/shadow/isolated path: Intent -> Identity -> Repository -> Project -> Server -> Runtime -> Domain -> Governance -> Capability -> Task -> Session -> Locks -> Development -> CI -> Review -> Merge -> Deploy -> Verify -> DONE."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-F-03",
+        "intentKeys": [
+          "phase-f-final-candidate-gate",
+          "negative-paths"
+        ],
+        "title": "Phase F-03 — Full negative-path matrix",
+        "status": "PENDING",
+        "priority": 50,
+        "sequence": 27,
+        "dependencies": [
+          "GWC-PRE-F-02"
+        ],
+        "collisionDomains": [
+          "path:tests/governedWorkflowUniversalAcceptance"
+        ],
+        "evidence": [
+          "Phase F authority requires unknown/ambiguous/stale/conflict/duplicate/denied/CI failure/head drift/review rejection/deploy failure/runtime drift/docs drift/stale receipt/reconnect/concurrent agents to fail closed or follow an explicit recovery edge."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-F-04",
+        "intentKeys": [
+          "phase-f-final-candidate-gate",
+          "cross-context-universality"
+        ],
+        "title": "Phase F-04 — Cross-context universality audit",
+        "status": "PENDING",
+        "priority": 49,
+        "sequence": 28,
+        "dependencies": [
+          "GWC-PRE-F-03"
+        ],
+        "collisionDomains": [
+          "path:tests/governedWorkflowUniversalAcceptance"
+        ],
+        "evidence": [
+          "Phase F authority forbids hard dependencies on Patricked-code/MCP, Stablecoin, AfricaFunds, fixed server, fixed branch or fixed domain."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-F-05",
+        "intentKeys": [
+          "phase-f-final-candidate-gate",
+          "full-non-regression"
+        ],
+        "title": "Phase F-05 — Full candidate non-regression",
+        "status": "PENDING",
+        "priority": 48,
+        "sequence": 29,
+        "dependencies": [
+          "GWC-PRE-F-04"
+        ],
+        "collisionDomains": [
+          "path:tests",
+          "path:package.json",
+          "path:scripts",
+          "path:.github/workflows"
+        ],
+        "evidence": [
+          "Phase F authority requires historical behavior + evolved behavior + compatibility/migration + typecheck/build/docs/security on one coherent candidate head."
+        ]
+      },
+      {
+        "workItemId": "GWC-PRE-F-06",
+        "intentKeys": [
+          "phase-f-final-candidate-gate",
+          "integration-package-audit"
+        ],
+        "title": "Phase F-06 — Integration package audit",
+        "status": "PENDING",
+        "priority": 47,
+        "sequence": 30,
+        "dependencies": [
+          "GWC-PRE-F-05"
+        ],
+        "collisionDomains": [
+          "path:docs",
+          "path:DEPLOYMENT_PRODUCTION.md",
+          "path:MIGRATION.md",
+          "path:SUIVI.md",
+          "path:CHANGELOG.md",
+          "path:DECISIONS_LOG.md"
+        ],
+        "evidence": [
+          "Phase F authority requires exact integration instructions, expected main delta, drift reconciliation rules, rollback strategy, required live attestations and post-integration verification."
+        ]
       }
     ],
     "activeClaims": [
@@ -1983,6 +2113,15 @@
           "path:DECISIONS_LOG.md"
         ],
         "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-F-01",
+        "collisionDomains": [
+          "path:tests/governedWorkflowUniversalAcceptance"
+        ],
+        "status": "ACTIVE"
       }
     ],
     "dispatchPolicy": {
@@ -6266,10 +6405,40 @@
   },
   "currentPrecodeState": {
     "phase": "F",
-    "workItem": null,
-    "work": "FINAL_CANDIDATE_GATES_RESOLUTION",
-    "status": "READY_TO_RESOLVE",
-    "nextAction": "Read the versioned Phase F/final candidate gate authorities and determine the exact dependency-safe next work item. Do not infer FINAL_PRECODE_VERSION_ACCEPTED and do not integrate main/S1/production until the explicit gate is satisfied.",
+    "workItem": "GWC-PRE-F-01",
+    "work": "SELECT_NON_HARDCODED_ACCEPTANCE_CONTEXTS",
+    "status": "IN_PROGRESS",
+    "nextAction": "Audit existing GWC-17 acceptance fixtures against Phase F-01. Reuse only contexts whose target data is explicit and whose generic governed behavior does not branch on target literals; add no new fixture unless a required acceptance dimension is missing.",
     "blocker": null
+  },
+  "phaseF": {
+    "status": "IN_PROGRESS",
+    "exit": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "integrationReadyExit": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
+    "workItems": [
+      "GWC-PRE-F-01",
+      "GWC-PRE-F-02",
+      "GWC-PRE-F-03",
+      "GWC-PRE-F-04",
+      "GWC-PRE-F-05",
+      "GWC-PRE-F-06"
+    ],
+    "authority": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt#PHASE_F_CANDIDATE_UNIVERSAL_ACCEPTANCE",
+    "dependencyEvidence": {
+      "phaseE": "18_BLUEPRINT_CANDIDATE_IMPLEMENTATIONS_COMPLETE",
+      "gwc17": {
+        "checkpointCiRunNumber": 1466,
+        "checkpointCiRunId": 35446629951,
+        "checkpointHead": "4ae2d7f02a6c5b272f60c932c052a70ecc7a31f4",
+        "releaseCommit": "3cf949b32f2589b666d0c03120442368c3276f52",
+        "releaseCommitCiRunNumber": 1467,
+        "releaseCommitCiRunId": 35446727870,
+        "result": "SUCCESS"
+      }
+    },
+    "f01": {
+      "status": "IN_PROGRESS",
+      "workItemId": "GWC-PRE-F-01"
+    }
   }
 }
