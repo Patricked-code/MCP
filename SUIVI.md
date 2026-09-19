@@ -639,3 +639,18 @@ Date : 2026-08-29
 - GREEN final CI #1348 sur `2a82e278319dd750db2a6d870fc029fe296a66a6`.
 - Bundle canonique : `docs/gwc/canonical-memory/pr95-e-gwc11-authority-baseline-complete`, source SHA-256 `2dacb7e9fc2fe2dd80280e5730e80463803c1ce35c8d801c63e7eddc43d5c627`.
 - Claim GWC-11 retenu jusqu'au SUCCESS exact-head du checkpoint.
+
+## 2026-09-19 — GWC-16 Documentation and closure — GREEN final, checkpoint en préparation
+
+- Work item : `GWC-PRE-E-GWC-16`; contrats `GW-58..GW-72`; claim candidate `candidate-gwc8-recovery-4d887146-20260919` conservé ACTIVE jusqu'au SUCCESS du checkpoint exact-head.
+- RED initial : MCP CI #1433 sur `c504f22277fa3b5b8dd5fa8ae9a8f79f86f1e906` — 588 tests, 573 PASS, exactement 15 échecs attendus `ERR_MODULE_NOT_FOUND` pour le module terminal absent.
+- Premier GREEN : MCP CI #1435 sur `476f676817500f7c7d520933d32cd9022e03c3fb` — 588/588 PASS.
+- Self-review RED : MCP CI #1437 sur `f8ab3ce16132a74248516d805b5cadd233d08af0` — 589 tests, 582 PASS, exactement 7 échecs sur GW-59/60/61/63/68/69. Deux écarts réels ont été prouvés : payloads EffectPlan GitHub non encore conformes aux schémas exacts des outils existants, et matrice de preuve terminale GW-68 incomplète.
+- Correction existing-first : les plans GitHub utilisent désormais les schémas réels `github_create_branch`, `github_create_commit`, `github_create_pull_request`, `github_merge_pull_request`; GW-60 réutilise le commit multi-fichiers existant au lieu d'inventer une mutation documentaire parallèle.
+- Hard gate GW-68 : `NO_FALSE_DONE` exige une cohérence unique entre Task VERIFYING, owner session, Bootstrap Receipt/stateVersion, CI exacte, déploiement exact, review, locks, Live State courant, documentation alignée et SHA/runtime final. Un conflit de session, SHA, CI/deploy, review ou lock étranger bloque la terminalité.
+- GW-69 ne planifie `DONE` qu'à partir d'une preuve GW-68 liée au même task/session/receipt/state/head/runtime ; son digest de preuve est conservé dans le résultat du planner, tandis que le payload envoyé à `mcp_transition_governed_task` reste strictement compatible avec l'outil existant.
+- Ordre de fermeture préservé : VERIFYING → terminal verification → DONE → checkpoint → release locks → close session → queue reconcile. Les locks sont libérables indépendamment du succès métier dès lors que le checkpoint terminal existe.
+- CI #1439 sur `77fcd4e85317939b7a24afad2d29630e2504eed5` : 588/589 PASS ; seul le fixture stale GW-63 omettait le nouveau `mergeMethod`, sans défaut produit. Fixture corrigé sans relâcher l'implémentation.
+- GREEN final : MCP CI #1440 SUCCESS sur `b8a86c48eb24902f998d4533e6bbeac5144102c6` — 589/589 PASS, 0 skipped, discoveredTests=75, runnerTests=74, dedicatedTests=1 ; typecheck/build/docs/governance/GWC/secrets/read-only/whitespace verts.
+- Frontière : aucun merge main, aucune mutation S1/production, aucun déploiement, aucune Task/lock/session runtime exécutée par le PRECODE ; `src/governedWorkflow/terminal/index.ts` reste une couche pure d'évaluation/EffectPlan et ne crée aucune seconde autorité.
+- NEXT_ACTION : matérialiser le checkpoint canonique GWC-16, valider sa CI sur le HEAD exact, puis seulement libérer le claim et dispatcher `GWC-PRE-E-GWC-17`.
