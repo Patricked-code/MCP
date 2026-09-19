@@ -15,6 +15,7 @@ import type {
   BootstrapReceipt,
   IdentityAssurance
 } from '../operationalMemory/types.js';
+import type { GovernedRepositoryTarget } from '../operationalMemory/sessionService.js';
 
 export type GithubEvidenceFreshness = 'CURRENT' | 'STALE' | 'UNAVAILABLE' | 'NOT_APPLICABLE';
 export type GithubEvidenceProvenance = 'github_api' | 'memory_cache';
@@ -126,7 +127,7 @@ export type GovernedOperationalContext = {
   schemaVersion: 1;
   generatedAt: string;
   freshness: 'CURRENT' | 'STALE' | 'DEGRADED';
-  repository: 'Patricked-code/MCP';
+  repository: GovernedRepositoryTarget;
   governedBranch: 'main';
   liveState: LiveStateSnapshot | null;
   github: GithubOperationalContext;
