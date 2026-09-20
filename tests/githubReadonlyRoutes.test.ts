@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
+import { spawnSync } from 'node:child_process';
 import type { AddressInfo } from 'node:net';
 import express from 'express';
 import test from 'node:test';
@@ -8,6 +9,7 @@ import {
   buildGithubReadonlyEvidenceCommand,
   createGithubReadonlyEvidenceRouter
 } from '../src/evidence/githubReadonlyRoutes.js';
+import { assertReadOnlyCommand } from '../src/ssh/safety.js';
 
 const SHA = 'd'.repeat(40);
 
@@ -172,6 +174,72 @@ test('Stablecoin runtime probe reads only paths, process identity and HTTP statu
   assert.match(command, /https:\/\/stablecoin\.chainsolutions\.fr\//);
   assert.match(command, /https:\/\/api\.stablecoin\.chainsolutions\.fr\/health/);
   assert.doesNotMatch(command, /printenv|env\s|\/proc\/[^\s]+\/environ/);
+});
+
+test('Stablecoin backend/runtime probes satisfy the real runtime read-only policy and Bash syntax', () => {
+  const commands = [
+    buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_git_status'),
+    buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_runtime_status')
+  ];
+  for (const command of commands) {
+    assert.doesNotThrow(() => assertReadOnlyCommand(command));
+    const syntax = spawnSync('bash', ['-n'], {
+      input: command,
+      encoding: 'utf8'
+    });
+    assert.equal(syntax.status, 0, syntax.stderr);
+  }
+});
+
+test('collection failures expose only bounded non-sensitive reason codes', async () => {
+  await withServer(dependencies({
+    runRead: async () => {
+      throw new Error('Timeout SSH après 15000 ms');
+    }
+  }), async (baseUrl) => {
+    const response = await fetch(`${baseUrl}/evidence/github/readonly`, {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer valid-oidc',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sha: SHA,
+        target: 's2',
+        probe: 'stablecoin_backend_git_status',
+        requestId: 'readonly-transport-001'
+      })
+    });
+    assert.equal(response.status, 502);
+    assert.deepEqual(await response.json(), {
+      error: 'readonly_evidence_collection_failed',
+      reasonCode: 'read_transport_failed'
+    });
+  });
+
+  await withServer(dependencies({
+    runRead: async () => ({ code: 23, stdout: '', stderr: 'sensitive stderr must not escape' })
+  }), async (baseUrl) => {
+    const response = await fetch(`${baseUrl}/evidence/github/readonly`, {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer valid-oidc',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sha: SHA,
+        target: 's2',
+        probe: 'stablecoin_runtime_status',
+        requestId: 'readonly-exit-001'
+      })
+    });
+    assert.equal(response.status, 502);
+    assert.deepEqual(await response.json(), {
+      error: 'readonly_evidence_collection_failed',
+      reasonCode: 'remote_exit_nonzero',
+      exitCode: 23
+    });
+  });
 });
 
 test('probe and target combinations are fail-closed', async () => {
