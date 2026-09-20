@@ -60,6 +60,17 @@ test('SSH transport is strict-host-key and protected-environment based', () => {
   assert.match(workflow, /UserKnownHostsFile=/);
 });
 
+test('OIDC failures expose only bounded allowlisted diagnostic fields', () => {
+  assert.match(workflow, /read_policy_rejected/);
+  assert.match(workflow, /read_transport_failed/);
+  assert.match(workflow, /remote_exit_nonzero/);
+  assert.match(workflow, /Read-only evidence endpoint failed:/);
+  assert.match(workflow, /body\.reasonCode/);
+  assert.match(workflow, /body\.exitCode/);
+  assert.doesNotMatch(workflow, /process\.stderr\.write\([^\n]*RESPONSE/);
+  assert.doesNotMatch(workflow, /printf[^\n]*\$RESPONSE/);
+});
+
 test('read-only evidence workflow contains no server mutation primitives', () => {
   const forbidden = [
     /\bgit\s+pull\b/i,
