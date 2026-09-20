@@ -25,13 +25,14 @@ La source d’intégration est la PR #95 et **son HEAD final attesté par le gat
 
 ### Identifiants exacts à résoudre au moment de l’intégration
 
-- `CANDIDATE_HEAD` : SHA final enregistré dans la preuve F-06, à confirmer comme HEAD courant de la PR #95.
+- `PACKAGE_HEAD_F06` : SHA exact du paquet d’intégration documentaire qui a passé la validation F-06 avant le commit de clôture PRECODE.
+- `CANDIDATE_HEAD` : HEAD courant de la PR #95 réobservé **après** le commit de clôture PRECODE ; il doit avoir sa propre CI exact-head verte et ne peut différer de `PACKAGE_HEAD_F06` que par la projection finale de clôture F-06.
 - `MAIN_BEFORE` : `main` GitHub réobservé immédiatement avant réconciliation.
 - `MERGE_SHA` : SHA réellement produit/observé sur GitHub après la fusion autorisée.
 - `DEPLOY_SHA` : doit être **exactement `MERGE_SHA`**.
 - `RUNTIME_SHA` : révision réellement attestée après déploiement, qui doit converger vers `DEPLOY_SHA`.
 
-Ces rôles sont distincts. Une stratégie de merge peut produire un `MERGE_SHA` différent du HEAD de PR ; aucune égalité n’est inventée.
+Ces rôles sont distincts. La preuve F-06 peut enregistrer `PACKAGE_HEAD_F06`, mais elle ne tente jamais d’encoder le SHA de son propre commit de clôture. `CANDIDATE_HEAD` est donc réobservé après cette clôture et doit être le HEAD exact de PR avec CI verte. Une stratégie de merge peut ensuite produire un `MERGE_SHA` différent du HEAD de PR ; aucune égalité n’est inventée.
 
 ### Delta attendu de `main`
 
