@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-13T09:06:00.000Z",
+  "updatedAt": "2026-09-20T17:29:00.000Z",
   "accounts": [
     {
       "id": "chainsolutions-wealthtech:chainsolutions-wealthtech",
@@ -141,6 +141,22 @@
       "deployEnabled": false,
       "createdAt": "2026-09-13T09:06:00.000Z",
       "updatedAt": "2026-09-13T09:06:00.000Z"
+    },
+    {
+      "id": "github:Patricked-code/Stablecoin:s2:stablecoin_frontend",
+      "githubOwner": "Patricked-code",
+      "githubRepo": "Stablecoin",
+      "projectKey": "chainsolutions.stablecoin",
+      "projectId": "chainsolutions.stablecoin",
+      "projectUid": "CS-STABLECOIN-001",
+      "componentRole": "FRONTEND",
+      "serverId": "S2",
+      "serverPath": "/var/www/vhosts/chainsolutions.fr/stablecoin.chainsolutions.fr/stablecoin",
+      "officialBranch": "main",
+      "allowedAccess": "read",
+      "deployEnabled": false,
+      "createdAt": "2026-09-20T17:29:00.000Z",
+      "updatedAt": "2026-09-20T17:29:00.000Z"
     }
   ],
   "auditEvents": [
@@ -181,6 +197,27 @@
         "historicalVhostCount": 2,
         "destructiveActions": false,
         "s2Mutation": false
+      }
+    },
+    {
+      "id": "20260920-172900-stablecoin-readonly-project-mapped",
+      "at": "2026-09-20T17:29:00.000Z",
+      "type": "github.registry.project_mapped",
+      "actor": "chatgpt",
+      "message": "Stablecoin registered as a governed S2 frontend mapping in read-only-first mode; pull/deploy remain disabled pending live Git attestation.",
+      "metadata": {
+        "taskId": "TASK-20260920-003",
+        "projectUid": "CS-STABLECOIN-001",
+        "projectId": "chainsolutions.stablecoin",
+        "componentCount": 1,
+        "frontendRepository": "Patricked-code/Stablecoin",
+        "backendRepository": "LIVE_DISCOVERY_REQUIRED",
+        "serverPath": "/var/www/vhosts/chainsolutions.fr/stablecoin.chainsolutions.fr/stablecoin",
+        "officialBranch": "main",
+        "transport": "existing_mcp_ssh2_s2",
+        "allowedAccess": "read",
+        "deployEnabled": false,
+        "destructiveActions": false
       }
     }
   ],
@@ -237,6 +274,33 @@
           "deploymentSource": false
         }
       ]
+    },
+    {
+      "projectId": "chainsolutions.stablecoin",
+      "projectUid": "CS-STABLECOIN-001",
+      "name": "Stablecoin / E-WARI",
+      "kind": "SINGLE_REPOSITORY_APPLICATION_WITH_EXTERNAL_API_RUNTIME",
+      "productionServerId": "S2",
+      "canonicalBranch": "main",
+      "repositoryComponents": [
+        {
+          "repositoryId": "github:Patricked-code/Stablecoin",
+          "mappingId": "github:Patricked-code/Stablecoin:s2:stablecoin_frontend",
+          "role": "FRONTEND"
+        }
+      ],
+      "globalCheckpointRepositoryId": "github:Patricked-code/Stablecoin",
+      "centralGovernanceRepositoryId": "github:Patricked-code/Stablecoin",
+      "stateModel": "STABLECOIN_STATE",
+      "stateFields": [
+        "FRONTEND_SHA",
+        "BACKEND_RUNTIME_ATTESTATION",
+        "SUIVI_CHECKPOINT",
+        "PRODUCTION_ATTESTATION"
+      ],
+      "publicDomain": "stablecoin.chainsolutions.fr",
+      "publicApi": "https://api.stablecoin.chainsolutions.fr",
+      "historicalVhosts": []
     }
   ]
 }
