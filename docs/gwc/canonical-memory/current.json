@@ -100,7 +100,9 @@
     "Read docs/gwc/README.md.",
     "Read this current.json and resolve currentBundlePath.",
     "Read the current bundle and its digest-bound source evidence.",
-    "Reobserve GitHub main, Live State and Governed Work Queue before any mutation.",
+    "Reobserve GitHub main before any GitHub mutation.",
+    "Read .mcp/github-first-operational-policy.json and resolve the bounded execution need before requesting any runtime/bridge capability.",
+    "Reobserve Governed Work Queue, Governed Session, Bootstrap Receipt, locks, Live State and runtime only when the resolved bounded operation requires that live authority or evidence.",
     "If a compatible executable Governed Task exists, resume it rather than creating duplicate work.",
     "If no executable task exists, reconcile the user's explicit intent; create work only when it is classified NEW_TASK.",
     "Treat PR #95 PRECODE/candidate bundles and branch-local claims as immutable historical provenance, not current execution.",
@@ -699,15 +701,12 @@
     "terminalCheckpoint": "a0cea2a9-441d-4843-a2e4-a882e7330dce"
   },
   "postIntegrationContinuationPolicy": {
-    "hierarchy": "EXPLICIT_INTENT -> REOBSERVE_LIVE_AUTHORITIES -> RECONCILE_INTENT -> EXISTING_TASK_OR_NEW_TASK -> GOVERNED_SESSION -> LOCKS_AS_NEEDED -> GITHUB_CHANGE -> EXACT_HEAD_CI_REVIEW -> MERGE -> GOVERNED_DEPLOY -> LIVE_STATE -> TERMINAL_CHECKPOINT",
+    "hierarchy": "EXPLICIT_INTENT -> GITHUB_FIRST_BOOTSTRAP -> RESOLVE_BOUNDED_EXECUTION_NEED -> GITHUB_ONLY_OR_GITHUB_ACTION_READONLY_EVIDENCE_OR_RUNTIME_REQUIRED -> RECONCILE_REQUIRED_AUTHORITIES -> GITHUB_CHANGE -> EXACT_HEAD_CI_REVIEW -> MERGE -> GOVERNED_DEPLOY_WHEN_APPLICABLE -> LIVE_STATE_WHEN_APPLICABLE -> TERMINAL_CHECKPOINT_WHEN_APPLICABLE",
     "canonicalMemoryRole": "CONTINUITY_AND_PROVENANCE_ONLY",
     "liveAuthorityRequired": true,
     "reobserveBeforeMutation": [
       "GITHUB_MAIN",
-      "WORK_QUEUE",
-      "GOVERNED_SESSION",
-      "LIVE_STATE",
-      "RUNTIME_WHEN_RELEVANT"
+      "AUTHORITIES_REQUIRED_BY_RESOLVED_BOUNDED_OPERATION"
     ],
     "resumeCompatibleTaskFirst": true,
     "createTaskOnlyFromExplicitReconciledIntent": true,
@@ -715,7 +714,28 @@
     "historicalPrecodeBundlesImmutable": true,
     "resurrectPrecodeClaimAsCurrent": false,
     "directS1WriteForbidden": true,
-    "githubToGovernedDeployPathRequired": true
+    "githubToGovernedDeployPathRequired": true,
+    "githubConnectionIsBootstrapPrerequisite": true,
+    "runtimeMcpIsBootstrapPrerequisite": false,
+    "bridgeExposureDefault": false,
+    "liveAuthorityRequiredForEveryBootstrap": false,
+    "runtimeAuthoritiesRequiredWhenResolvedOperationNeedsThem": true,
+    "executionResolver": "src/governedContext/githubFirstOperationalContinuity.ts#resolveGithubFirstOperationalBootstrap",
+    "machinePolicy": ".mcp/github-first-operational-policy.json",
+    "readonlyEvidenceFallback": ".github/workflows/mcp-readonly-evidence.yml",
+    "reobserveBeforeGithubMutation": [
+      "GITHUB_MAIN"
+    ],
+    "reobserveBeforeRuntimeMutation": [
+      "GITHUB_MAIN",
+      "WORK_QUEUE",
+      "GOVERNED_SESSION",
+      "BOOTSTRAP_RECEIPT",
+      "LOCKS",
+      "LIVE_STATE",
+      "RUNTIME_WHEN_RELEVANT"
+    ],
+    "liveAuthorityScope": "REQUIRED_ONLY_FOR_BOUNDED_OPERATIONS_THAT_NEED_RUNTIME_EVIDENCE_OR_MUTATION"
   },
   "historicalPrecodeReadProtocol": [
     "Read CLAUDE.md sections 8-9.",

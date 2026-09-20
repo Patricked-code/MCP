@@ -850,3 +850,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Enregistre MCP CI #1519 et Governed Deploy #46 comme preuves exact-SHA du handoff canonique fusionné.
 - Corrige le dernier `DOCUMENTATION_DRIFT` sans toucher au bundle JSON : le futur merge reste un descendant strictement Markdown et utilise la règle docs-only existante.
 - Aucun code, workflow, script, test, politique ou fichier JSON canonique n'est modifié.
+
+
+## 2026-09-20 — GitHub-first Operational Continuity V1 candidate
+
+- Ajout d'un resolver post-intégration qui fait de GitHub le bootstrap par défaut et n'escalade vers le runtime que pour l'opération bornée qui l'exige.
+- Ajout de `.mcp/github-first-operational-policy.json`.
+- Ajout du workflow `MCP Read-only Evidence`, déclenchable via une issue GitHub structurée et un GitHub Environment protégé.
+- V1 strictement read-only : aucun pull, merge, reset, deploy, restart, scp, rsync, shell arbitraire ou push serveur→GitHub.
+- Le Governed Deploy historique n'est pas modifié.

@@ -949,3 +949,14 @@ Décision Live State : PR #97 contient des JSON canoniques et ne peut pas béné
 Décision anti-auto-référence : le SHA du futur merge n'est jamais prédit ni écrit dans la branche. Après fusion, le moteur doit prouver que le nouveau `main` est un descendant de `21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15` dont le delta est strictement docs-only.
 
 Décision de terminalité : seul Operational Memory peut ensuite faire passer `TASK-20260920-002` à `VERIFYING` puis `DONE` après Live State `FULLY_ALIGNED`; cette documentation ne pré-déclare pas la clôture.
+
+
+## 2026-09-20 — GitHub-first devient le bootstrap opérationnel par défaut
+
+Décision : généraliser au post-intégration le principe déjà éprouvé par le PRECODE : une connexion GitHub suffit pour reconstruire la continuité et poursuivre tout travail borné à GitHub. Le bridge MCP n'est plus un prérequis de bootstrap ; il devient une capacité d'exécution demandée seulement lorsqu'une opération précise en dépend réellement.
+
+Le resolver `resolveGithubFirstOperationalBootstrap()` distingue `GITHUB_ONLY`, `GITHUB_ACTION_READONLY_EVIDENCE` et `RUNTIME_REQUIRED`. Les autorités runtime existantes ne sont ni supprimées ni simulées : lorsqu'elles sont nécessaires, leur absence reste fail-closed.
+
+Le fallback read-only utilise un workflow séparé `mcp-readonly-evidence.yml`, déclenchable par une issue GitHub structurée ou manuellement. Il vérifie l'autorisation de l'acteur, sélectionne uniquement un probe hardcodé, utilise un GitHub Environment protégé et publie une preuve artifactée. Aucun arbitrary shell, Git mutation, deploy, restart ou server-to-GitHub push n'est permis.
+
+La PR #85 est absorbée comme intention historique existing-first : le transport Actions→SSH direct commence strictement en lecture seule. Le Governed Deploy OIDC→MCP→SSH historique reste inchangé.

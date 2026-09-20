@@ -1,0 +1,279 @@
+name: MCP Read-only Evidence
+
+on:
+  issues:
+    types:
+      - opened
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Read-only server target
+        required: true
+        type: choice
+        options:
+          - s1
+          - s2
+      probe:
+        description: Allowlisted read-only probe
+        required: true
+        type: choice
+        options:
+          - mcp_git_status
+          - stablecoin_frontend_git_status
+          - server_disk
+          - docker_status
+      request_id:
+        description: Bounded correlation id
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  authorize:
+    if: github.event_name == 'workflow_dispatch' || github.event.issue.title == 'MCP_READONLY_EVIDENCE_REQUEST'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      target: ${{ steps.request.outputs.target }}
+      probe: ${{ steps.request.outputs.probe }}
+      request_id: ${{ steps.request.outputs.request_id }}
+      environment_name: ${{ steps.request.outputs.environment_name }}
+      issue_number: ${{ steps.request.outputs.issue_number }}
+    steps:
+      - name: Authorize GitHub actor
+        if: github.event_name == 'issues'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUEST_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          response="$(curl --fail --silent --show-error --max-time 10 \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/collaborators/${REQUEST_ACTOR}/permission")"
+          permission="$(printf '%s' "$response" | node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw)>32768) process.exit(2); const body=JSON.parse(raw); process.stdout.write(String(body.permission||''));")"
+          case "$permission" in
+            admin|maintain|write) ;;
+            *)
+              printf 'GitHub actor is not authorized for read-only server evidence.\n' >&2
+              exit 13
+              ;;
+          esac
+
+      - name: Validate bounded evidence request
+        id: request
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          DISPATCH_TARGET: ${{ inputs.target }}
+          DISPATCH_PROBE: ${{ inputs.probe }}
+          DISPATCH_REQUEST_ID: ${{ inputs.request_id }}
+        run: |
+          set -euo pipefail
+          node <<'NODE' >> "$GITHUB_OUTPUT"
+          const eventName = process.env.EVENT_NAME;
+          let request;
+          if (eventName === 'workflow_dispatch') {
+            request = {
+              schemaVersion: 1,
+              target: process.env.DISPATCH_TARGET,
+              probe: process.env.DISPATCH_PROBE,
+              requestId: process.env.DISPATCH_REQUEST_ID
+            };
+          } else {
+            const raw = process.env.ISSUE_BODY || '';
+            if (Buffer.byteLength(raw, 'utf8') > 4096) process.exit(20);
+            try { request = JSON.parse(raw); } catch { process.exit(21); }
+          }
+
+          const keys = Object.keys(request || {}).sort();
+          if (JSON.stringify(keys) !== JSON.stringify(['probe','requestId','schemaVersion','target'])) process.exit(22);
+          if (request.schemaVersion !== 1) process.exit(23);
+          if (!['s1','s2'].includes(request.target)) process.exit(24);
+          if (!['mcp_git_status','stablecoin_frontend_git_status','server_disk','docker_status'].includes(request.probe)) process.exit(25);
+          if (!/^[A-Za-z0-9._-]{8,80}$/.test(request.requestId || '')) process.exit(26);
+          if (request.probe === 'mcp_git_status' && request.target !== 's1') process.exit(27);
+          if (request.probe === 'stablecoin_frontend_git_status' && request.target !== 's2') process.exit(28);
+
+          process.stdout.write('target=' + request.target + '\n');
+          process.stdout.write('probe=' + request.probe + '\n');
+          process.stdout.write('request_id=' + request.requestId + '\n');
+          process.stdout.write('environment_name=mcp-' + request.target + '-readonly\n');
+          process.stdout.write('issue_number=' + (process.env.ISSUE_NUMBER || '') + '\n');
+          NODE
+
+  collect:
+    needs:
+      - authorize
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: ${{ needs.authorize.outputs.environment_name }}
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Validate environment secrets
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.MCP_READONLY_SSH_HOST }}
+          SSH_PORT: ${{ secrets.MCP_READONLY_SSH_PORT }}
+          SSH_USER: ${{ secrets.MCP_READONLY_SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.MCP_READONLY_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.MCP_READONLY_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for name in SSH_HOST SSH_PORT SSH_USER SSH_PRIVATE_KEY SSH_KNOWN_HOSTS; do
+            if [ -z "${!name:-}" ]; then
+              printf 'Required protected environment secret is missing: %s\n' "$name" >&2
+              exit 31
+            fi
+          done
+          case "$SSH_PORT" in
+            ''|*[!0-9]*) exit 32 ;;
+          esac
+
+      - name: Collect allowlisted read-only evidence
+        id: collect
+        shell: bash
+        env:
+          TARGET: ${{ needs.authorize.outputs.target }}
+          PROBE: ${{ needs.authorize.outputs.probe }}
+          REQUEST_ID: ${{ needs.authorize.outputs.request_id }}
+          SSH_HOST: ${{ secrets.MCP_READONLY_SSH_HOST }}
+          SSH_PORT: ${{ secrets.MCP_READONLY_SSH_PORT }}
+          SSH_USER: ${{ secrets.MCP_READONLY_SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.MCP_READONLY_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.MCP_READONLY_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          umask 077
+          evidence_dir="$RUNNER_TEMP/mcp-readonly-evidence"
+          ssh_dir="$RUNNER_TEMP/mcp-readonly-ssh"
+          mkdir -p "$evidence_dir" "$ssh_dir"
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$ssh_dir/key"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$ssh_dir/known_hosts"
+          chmod 600 "$ssh_dir/key" "$ssh_dir/known_hosts"
+
+          case "$PROBE" in
+            mcp_git_status)
+              remote_command="$(cat <<'REMOTE'
+          set -euo pipefail
+          cd /opt/apps/wealthtech-mcp-ssh-bridge
+          printf 'branch=%s\n' "$(git branch --show-current)"
+          printf 'head=%s\n' "$(git rev-parse HEAD)"
+          printf 'working_tree_changes=%s\n' "$(git status --porcelain=v1 --untracked-files=all | wc -l | tr -d ' ')"
+          origin_url="$(git remote get-url origin 2>/dev/null || true)"
+          push_url="$(git remote get-url --push origin 2>/dev/null || true)"
+          printf 'origin_fetch=%s\n' "$(printf '%s' "$origin_url" | sed -E 's#(https?://)[^/@[:space:]]+@#\1***@#g')"
+          printf 'origin_push=%s\n' "$(printf '%s' "$push_url" | sed -E 's#(https?://)[^/@[:space:]]+@#\1***@#g')"
+          REMOTE
+          )"
+              ;;
+            stablecoin_frontend_git_status)
+              remote_command="$(cat <<'REMOTE'
+          set -euo pipefail
+          cd /var/www/vhosts/chainsolutions.fr/stablecoin.chainsolutions.fr/stablecoin
+          printf 'branch=%s\n' "$(git branch --show-current)"
+          printf 'head=%s\n' "$(git rev-parse HEAD)"
+          printf 'working_tree_changes=%s\n' "$(git status --porcelain=v1 --untracked-files=all | wc -l | tr -d ' ')"
+          origin_url="$(git remote get-url origin 2>/dev/null || true)"
+          push_url="$(git remote get-url --push origin 2>/dev/null || true)"
+          printf 'origin_fetch=%s\n' "$(printf '%s' "$origin_url" | sed -E 's#(https?://)[^/@[:space:]]+@#\1***@#g')"
+          printf 'origin_push=%s\n' "$(printf '%s' "$push_url" | sed -E 's#(https?://)[^/@[:space:]]+@#\1***@#g')"
+          REMOTE
+          )"
+              ;;
+            server_disk)
+              remote_command="set -euo pipefail; df -h /"
+              ;;
+            docker_status)
+              remote_command="set -euo pipefail; docker ps --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}'"
+              ;;
+            *)
+              exit 33
+              ;;
+          esac
+
+          ssh -F /dev/null \
+            -i "$ssh_dir/key" \
+            -p "$SSH_PORT" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$ssh_dir/known_hosts" \
+            -o ConnectTimeout=10 \
+            "$SSH_USER@$SSH_HOST" "$remote_command" \
+            > "$evidence_dir/output.txt"
+
+          TARGET="$TARGET" PROBE="$PROBE" REQUEST_ID="$REQUEST_ID" \
+          RUN_ID="$GITHUB_RUN_ID" REPOSITORY="$GITHUB_REPOSITORY" SHA="$GITHUB_SHA" \
+          node <<'NODE' > "$evidence_dir/metadata.json"
+          const fs = require('fs');
+          const crypto = require('crypto');
+          const path = process.env.RUNNER_TEMP + '/mcp-readonly-evidence/output.txt';
+          const output = fs.readFileSync(path);
+          process.stdout.write(JSON.stringify({
+            schemaVersion: 1,
+            policy: 'github-readonly-evidence-v1',
+            requestId: process.env.REQUEST_ID,
+            target: process.env.TARGET,
+            probe: process.env.PROBE,
+            repository: process.env.REPOSITORY,
+            workflowSha: process.env.SHA,
+            workflowRunId: Number(process.env.RUN_ID),
+            observedAt: new Date().toISOString(),
+            outputSha256: crypto.createHash('sha256').update(output).digest('hex'),
+            mutationAllowed: false
+          }, null, 2) + '\n');
+          NODE
+
+          printf 'artifact_name=mcp-readonly-evidence-%s\n' "$REQUEST_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Upload read-only evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.collect.outputs.artifact_name }}
+          path: ${{ runner.temp }}/mcp-readonly-evidence
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Report evidence handle to GitHub issue
+        if: github.event_name == 'issues'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ needs.authorize.outputs.issue_number }}
+          REQUEST_ID: ${{ needs.authorize.outputs.request_id }}
+          TARGET: ${{ needs.authorize.outputs.target }}
+          PROBE: ${{ needs.authorize.outputs.probe }}
+          ARTIFACT_NAME: ${{ steps.collect.outputs.artifact_name }}
+        run: |
+          set -euo pipefail
+          body="$(node -e "process.stdout.write(JSON.stringify({body:[
+            'MCP_READONLY_EVIDENCE_RESULT',
+            'requestId=' + process.env.REQUEST_ID,
+            'target=' + process.env.TARGET,
+            'probe=' + process.env.PROBE,
+            'runId=' + process.env.GITHUB_RUN_ID,
+            'artifact=' + process.env.ARTIFACT_NAME,
+            'status=SUCCESS',
+            'mutationAllowed=false'
+          ].join('\\n')}))")"
+          curl --fail --silent --show-error --max-time 10 \
+            --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            --header "Content-Type: application/json" \
+            --data "$body" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments" \
+            >/dev/null

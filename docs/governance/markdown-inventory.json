@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 215,
+  "trackedCount": 216,
   "categories": {
     "canonical": 7,
     "documentation": 65,
     "engineering-plan": 8,
-    "engineering-spec": 9,
+    "engineering-spec": 10,
     "history": 1,
     "memory": 61,
     "migration-history": 7,
@@ -588,6 +588,10 @@
     },
     {
       "path": "docs/superpowers/specs/2026-09-15-governed-workflow-contract-v1-design.md",
+      "category": "engineering-spec"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-20-github-first-operational-continuity-v1-design.md",
       "category": "engineering-spec"
     },
     {

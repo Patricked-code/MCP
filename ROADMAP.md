@@ -560,3 +560,18 @@ C1 est une tâche runtime réelle : `TASK-20260913-002`. Le premier incrément d
 Le socle déployé implémente un verdict pur, déterministe et non mutant `READY|BLOCKED`. Les critères fail-closed couvrent au minimum : statut non validé, realPath non vérifié, remote non vérifié, domaine requis non vérifié, credential repository non vérifié, migration encore pending, health checks absents et rollback requis non prouvé.
 
 Ce jalon ne réalise pas l'activation V2. Le chemin reste : preuves réelles → mapping `validated` → revue/approbation → activation explicite. GitRegistry V1, les remotes actuels, GitHub→S1, le WRITE gate et les permissions restent inchangés. Les trois gates techniques encore ouverts sont le credential Wealthtechinnovations, les preuves path/remote/domain et la migration MCP pending.
+
+
+### GitHub-first Operational Continuity V1 — implémentation candidate
+
+Objectif : faire de GitHub la porte d'entrée de continuité opérationnelle, sans exiger une exposition interactive du bridge pour le travail repository/PR/CI.
+
+État candidat :
+- resolver post-intégration GitHub-first ;
+- politique machine-readable `.mcp/github-first-operational-policy.json` ;
+- fallback `MCP Read-only Evidence` par GitHub Actions ;
+- requête issue JSON bornée et permission acteur vérifiée ;
+- environnements `mcp-s1-readonly` / `mcp-s2-readonly` ;
+- aucun fallback serveur d'écriture en V1.
+
+Étape suivante après merge : configurer/attester les deux GitHub Environments read-only, puis prouver un probe S1 et un probe Stablecoin S2 sans bridge interactif.

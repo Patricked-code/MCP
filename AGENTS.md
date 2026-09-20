@@ -115,3 +115,19 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+## GitHub-first operational continuity
+
+Current post-integration bootstrap rule:
+
+- GitHub connectivity is sufficient to reconstruct continuity and continue all GitHub-bounded work.
+- Do not request or require `wealthtech_ssh_bridge`, a Governed Session, Task Queue mutation, locks or Live State merely to know where the project is or to perform repository/branch/PR/CI/review work.
+- Read `.mcp/github-first-operational-policy.json` and resolve the next bounded operation with `resolveGithubFirstOperationalBootstrap()`.
+- Use `GITHUB_ONLY` when GitHub is sufficient.
+- Use `GITHUB_ACTION_READONLY_EVIDENCE` when fresh server evidence is required and the protected read-only fallback is configured.
+- Escalate to `RUNTIME_REQUIRED` only for the exact operation that genuinely needs runtime authority, Operational Memory mutation, server write, or a runtime capability without an approved GitHub fallback.
+- Existing runtime authorities remain authoritative in their scopes; GitHub-first defers them when irrelevant and never fabricates their state.
+- The read-only fallback never authorizes pull, deploy, restart, arbitrary shell, server-to-GitHub push or direct server-side versioned-code edits.
+
+Canonical machine policy: `.mcp/github-first-operational-policy.json`.
+Design: `docs/superpowers/specs/2026-09-20-github-first-operational-continuity-v1-design.md`.

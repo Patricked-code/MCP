@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "policyId": "github-first-operational-continuity-v1",
+  "mode": "GITHUB_FIRST_OPERATIONAL_CONTINUITY",
+  "bootstrap": {
+    "githubConnectionSufficient": true,
+    "runtimeMcpIsBootstrapPrerequisite": false,
+    "bridgeExposureDefault": false,
+    "rule": "Resolve the next bounded operation first. Request runtime/bridge capability only when that exact operation cannot be completed through GitHub or the governed read-only evidence fallback."
+  },
+  "executionModes": {
+    "GITHUB_ONLY": {
+      "runtimeMcpRequired": false,
+      "examples": [
+        "repository_read",
+        "branch_write",
+        "pull_request",
+        "ci",
+        "review",
+        "merge_evidence",
+        "canonical_memory_read"
+      ]
+    },
+    "GITHUB_ACTION_READONLY_EVIDENCE": {
+      "runtimeMcpRequired": false,
+      "workflow": ".github/workflows/mcp-readonly-evidence.yml",
+      "trigger": "github_issue",
+      "issueTitle": "MCP_READONLY_EVIDENCE_REQUEST",
+      "mutationAllowed": false
+    },
+    "RUNTIME_REQUIRED": {
+      "runtimeMcpRequired": true,
+      "examples": [
+        "operational_memory_mutation",
+        "governed_lock_mutation",
+        "server_write",
+        "runtime_tool_invocation_without_github_fallback"
+      ]
+    }
+  },
+  "preservedAuthorities": [
+    "GitHub",
+    "Governed Task Queue",
+    "Governed Session",
+    "Bootstrap Receipt",
+    "Governed Locks",
+    "Live State",
+    "Runtime"
+  ],
+  "invariants": [
+    "GITHUB_AUTH_IS_CONTINUITY_NOT_RUNTIME_AUTHORITY",
+    "BRIDGE_IS_CAPABILITY_NOT_BOOTSTRAP_PREREQUISITE",
+    "READONLY_FALLBACK_NEVER_AUTHORIZES_SERVER_WRITE",
+    "NO_ARBITRARY_SHELL",
+    "NO_SERVER_TO_GITHUB_PUSH",
+    "NO_DIRECT_VERSIONED_CODE_EDIT_ON_SERVER",
+    "FAIL_CLOSED_ON_AMBIGUOUS_OR_MISSING_EVIDENCE"
+  ]
+}
