@@ -1,5 +1,18 @@
 # SUIVI.md
 
+## 2026-09-20 — GWC POST-INTEGRATION CANONICAL HANDOFF — TASK-20260920-002
+
+- État terminal de référence avant cette branche : GitHub `main`, S1 HEAD/origin-main et runtime OCI = `5389f3a05ab22da551954c936fcc3fe5ab69872b`.
+- Live State `262` : `FULLY_ALIGNED`, runtime healthy, documentation aligned, zéro contradiction.
+- PR #95 : candidate intégrée ; PR #96 : réconciliation documentaire fusionnée et déployée.
+- `TASK-20260920-001` = `DONE`; Governed Session d’intégration `1a2cee44-658d-4de1-ad58-b48f6c5d62f8` = `CLOSED`; checkpoint terminal `a0cea2a9-441d-4843-a2e4-a882e7330dce`.
+- Finding de continuité : `docs/gwc/canonical-memory/current.json` pointait encore vers un bundle PRECODE Phase F et une branche candidate alors que l’intégration était terminée.
+- Correction existing-first : nouveau bundle `docs/gwc/canonical-memory/post-integration-terminal-handoff-20260920`; les bundles PR #95 restent immuables dans `previousBundles`.
+- Le bundle courant est une projection de continuité/provenance, jamais une autorité d’approbation.
+- Bootstrap futur : lire le bundle courant, réobserver `main` + Live State + Work Queue ; reprendre une tâche compatible si elle existe, sinon réconcilier une intention explicite. Aucun successeur n’est fabriqué par le seul état terminal.
+- `TASK-20260920-002` porte uniquement cette réconciliation de mémoire canonique ; aucun code runtime, workflow, politique ou écriture directe S1 n’est modifié.
+- NEXT_ACTION : valider le pointeur/bundle avec `gwc:verify` et la CI exact-head, ouvrir/revoir la PR de handoff, puis fusionner et réattester Live State avant clôture de la tâche.
+
 ## 2026-09-20 — ÉTAT COURANT APRÈS PR #95 — réconciliation documentaire GW-59→GW-65
 
 - GitHub main : `9da845822e122cc67fc86ad90243d4e7d6a6d4f4`.
