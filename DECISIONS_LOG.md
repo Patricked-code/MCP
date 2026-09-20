@@ -889,3 +889,18 @@ Décision anti-hardcode : le scan des chemins gouvernés est un test de régress
 Décision fail-closed : aucun scénario obligatoire ne peut être SKIPPED. Un scénario échoué fait échouer le rapport global et publie son `reasonCode` ainsi que les contrats réellement exercés dans `failedContracts`. Le scénario recovery lie GW-68 au `createGovernedContractSubstrate` construit depuis les projections canoniques `.mcp/gwc-contracts.json` et `.mcp/gwc-workflow-graph.json`, jamais à un stub permissif.
 
 Preuves : RED #1451, GREEN initial #1454, self-review RED #1456, GREEN final MCP CI #1458 SUCCESS sur `9b32bba86e830845ea63d90f37bf304d800b8f12` avec 598/598 tests et 0 skipped. Aucun main/S1/production/deploy/runtime mutation n'a été effectué.
+
+
+## 2026-09-20 — Phase F-06 : décisions du paquet d’intégration
+
+Décision d’intégration : F-06 ne crée pas de nouvelle autorité. `MIGRATION.md` orchestre les autorités existantes et `DEPLOYMENT_PRODUCTION.md` reste propriétaire de la chaîne de production exact-SHA. PRECODE ne matérialise aucune Governed Task/Session/Lock pour anticiper l’intégration live.
+
+Décision de révisions : `CANDIDATE_HEAD` est le HEAD exact ayant passé le gate candidat avant fusion ; `MERGE_SHA` est le SHA réellement produit/observé sur GitHub `main` ; `DEPLOY_SHA` doit être égal à `MERGE_SHA`. Aucune stratégie de merge ne permet de supposer `CANDIDATE_HEAD === MERGE_SHA`.
+
+Décision de delta : le delta est calculé depuis GitHub entre le `main` alors courant et le HEAD candidat reconcilié de la PR #95. Intégration partielle, cherry-pick sélectif, copie serveur et push direct sur `main` sont exclus. Toute modification de candidate invalide les preuves exact-head affectées.
+
+Décision de drift : un drift sans recouvrement peut être reconcilié sur la branche puis revalidé ; recouvrement concurrent, conflit, preuve stale/UNKNOWN ou contradiction d’autorité échoue fermé. Un drift S1/runtime appartient aux mécanismes live existants, jamais à une correction ad hoc de la branche.
+
+Décision de rollback : après merge, GitHub reste immuable et toute annulation passe par PR de revert/fix-forward. Un échec runtime utilise le rollback d’image existant sans réécriture Git ; l’état reste non terminal jusqu’à nouvelle attestation cohérente.
+
+Décision de clôture : aucun merge ou job de déploiement seul ne suffit à produire `DONE`. La terminalité exige CI main, déploiement exact `MERGE_SHA`, attestation S1/OCI/runtime/Live State, santé HTTP/OAuth/MCP, documentation alignée, absence de locks contradictoires et checkpoint/fermeture des éventuelles autorités Task/Session utilisées.
