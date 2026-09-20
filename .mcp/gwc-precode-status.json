@@ -1772,7 +1772,7 @@
           "full-non-regression"
         ],
         "title": "Phase F-05 — Full candidate non-regression",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 48,
         "sequence": 29,
         "dependencies": [
@@ -1786,7 +1786,12 @@
         ],
         "evidence": [
           "Phase F authority requires historical behavior + evolved behavior + compatibility/migration + typecheck/build/docs/security on one coherent candidate head.",
-          "Dependency F-04 satisfied by exact-head CI #1483 SUCCESS @ 4992f2886359073875af34b095377b8397e7167c with 601/601 tests and complete cross-context universality evidence."
+          "Dependency F-04 satisfied by exact-head CI #1483 SUCCESS @ 4992f2886359073875af34b095377b8397e7167c with 601/601 tests and complete cross-context universality evidence.",
+          "F-05 exact-head non-regression CI #1484 SUCCESS @ 0fd7d9cc1758ae5a2b4e19697af76189c977053a.",
+          "Validation profile mcp-ci-v1 discovered 76 test files: 75 runner tests plus 1 dedicated governance test; full read-only suite 601/601 PASS, 0 skipped, and governance suite 13/13 PASS.",
+          "PR base d1f303955c4d368950da2307dda41d826fc85d0a -> F-05 head removes zero historical tests; 21 new test files extend coverage while six historical test files are modified in place.",
+          "Compatibility/migration coverage is explicit: GWC-10 proves historical Session/Task/BootstrapReceipt records remain semantic-compatible without TargetScope, additive TargetScope preserves schemaVersion 1, and missing TargetScope remains legacy single-repository rather than widening scope.",
+          "The same CI head passed typecheck, build, docs governance, GWC verification, secret scan and whitespace diff."
         ]
       },
       {
@@ -1796,7 +1801,7 @@
           "integration-package-audit"
         ],
         "title": "Phase F-06 — Integration package audit",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 47,
         "sequence": 30,
         "dependencies": [
@@ -1811,7 +1816,8 @@
           "path:DECISIONS_LOG.md"
         ],
         "evidence": [
-          "Phase F authority requires exact integration instructions, expected main delta, drift reconciliation rules, rollback strategy, required live attestations and post-integration verification."
+          "Phase F authority requires exact integration instructions, expected main delta, drift reconciliation rules, rollback strategy, required live attestations and post-integration verification.",
+          "Dependency F-05 satisfied by exact-head CI #1484 SUCCESS @ 0fd7d9cc1758ae5a2b4e19697af76189c977053a with 601/601 full-suite tests and explicit backward-compatibility coverage."
         ]
       }
     ],
@@ -2184,6 +2190,20 @@
           "path:package.json",
           "path:scripts",
           "path:.github/workflows"
+        ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-F-06",
+        "collisionDomains": [
+          "path:docs",
+          "path:DEPLOYMENT_PRODUCTION.md",
+          "path:MIGRATION.md",
+          "path:SUIVI.md",
+          "path:CHANGELOG.md",
+          "path:DECISIONS_LOG.md"
         ],
         "status": "ACTIVE"
       }
@@ -6469,10 +6489,10 @@
   },
   "currentPrecodeState": {
     "phase": "F",
-    "workItem": "GWC-PRE-F-05",
-    "work": "FULL_CANDIDATE_NON_REGRESSION",
+    "workItem": "GWC-PRE-F-06",
+    "work": "INTEGRATION_PACKAGE_AUDIT",
     "status": "IN_PROGRESS",
-    "nextAction": "Prove the complete candidate non-regression surface on one exact head: historical behavior, evolved GWC behavior, compatibility/migration coverage, typecheck, build, documentation governance, security and full discovered tests. Do not mutate main, S1 or production.",
+    "nextAction": "Audit and complete the exact integration package: expected main delta, drift-reconciliation rules, rollback strategy, required live attestations and post-integration verification. Keep main, S1 and production frozen until the final candidate gate passes.",
     "blocker": null
   },
   "phaseF": {
@@ -6735,13 +6755,46 @@
     },
     "f05": {
       "workItemId": "GWC-PRE-F-05",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE",
       "requirement": "HISTORICAL_PLUS_EVOLVED_PLUS_COMPATIBILITY_MIGRATION_PLUS_TYPECHECK_BUILD_DOCS_SECURITY_ON_ONE_EXACT_HEAD",
+      "validation": {
+        "ciRunNumber": 1484,
+        "ciRunId": 35508129968,
+        "head": "0fd7d9cc1758ae5a2b4e19697af76189c977053a",
+        "result": "SUCCESS",
+        "discoveredTests": 76,
+        "runnerTests": 75,
+        "dedicatedTests": 1,
+        "governanceTests": 13,
+        "tests": 601,
+        "passed": 601,
+        "failed": 0,
+        "skipped": 0,
+        "historicalTestsRemoved": 0,
+        "typecheck": "SUCCESS",
+        "build": "SUCCESS",
+        "docs": "SUCCESS",
+        "governance": "SUCCESS",
+        "gwcVerify": "SUCCESS",
+        "secrets": "SUCCESS",
+        "whitespace": "SUCCESS"
+      },
+      "compatibilityMigrationEvidence": [
+        "LEGACY_SESSION_TASK_RECEIPT_WITHOUT_TARGET_SCOPE",
+        "ADDITIVE_TARGET_SCOPE_SCHEMA_VERSION_1",
+        "MISSING_TARGET_SCOPE_REMAINS_LEGACY_SINGLE_REPOSITORY"
+      ],
+      "verdict": "FULL_CANDIDATE_NON_REGRESSION_PASS"
+    },
+    "f06": {
+      "workItemId": "GWC-PRE-F-06",
+      "status": "IN_PROGRESS",
+      "requirement": "EXACT_INTEGRATION_INSTRUCTIONS_PLUS_EXPECTED_MAIN_DELTA_PLUS_DRIFT_RECONCILIATION_PLUS_ROLLBACK_PLUS_LIVE_ATTESTATIONS_PLUS_POST_INTEGRATION_VERIFICATION",
       "dependencyEvidence": {
-        "f04": {
-          "ciRunNumber": 1483,
-          "ciRunId": 35507979110,
-          "head": "4992f2886359073875af34b095377b8397e7167c",
+        "f05": {
+          "ciRunNumber": 1484,
+          "ciRunId": 35508129968,
+          "head": "0fd7d9cc1758ae5a2b4e19697af76189c977053a",
           "result": "SUCCESS"
         }
       }
