@@ -813,3 +813,4 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Ajout d’une matrice de drift, de INTEGRATE-01..07, du rollback par phase, des attestations live minimales et du DoD post-intégration.
 - `DEPLOYMENT_PRODUCTION.md` distingue explicitement HEAD candidat, SHA de fusion et SHA de déploiement tout en conservant la chaîne exact-SHA existante.
 - Aucun nouveau workflow runtime, store, autorité, outil MCP, déploiement, merge `main` ou mutation S1/production.
+- Précision F-06 : séparation explicite de `PACKAGE_HEAD_F06` et du `CANDIDATE_HEAD` final afin que le checkpoint terminal soit certifié par CI/réobservation sans auto-référence de SHA.
