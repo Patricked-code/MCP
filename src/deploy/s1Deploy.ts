@@ -180,7 +180,7 @@ write_attestation() {
     > "$JOB_DIR/attestation.json.tmp"
   chmod 600 "$JOB_DIR/attestation.json.tmp"
   mv "$JOB_DIR/attestation.json.tmp" "$JOB_DIR/attestation.json"
-
+}
 
 http_code() {
   curl --silent --show-error --output /dev/null --write-out '%{http_code}' --max-time 10 "$1" || true
