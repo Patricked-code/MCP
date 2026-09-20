@@ -835,3 +835,11 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Live State 257 confirme GitHub↔S1 et runtime ALIGNED ; seule contradiction restante avant cette PR : `DOCUMENTATION_DRIFT`.
 - Réconciliation `GW-59→GW-65` strictement docs-only : mise en tête de l’état courant dans `SUIVI.md`, mise à jour des champs courants de `PRODUCTION_STATE.json`, conservation intégrale des preuves historiques.
 - Aucun changement de code runtime, workflow, script, test ou politique dans cette branche documentaire.
+
+## 2026-09-20 — GWC : handoff canonique post-intégration
+
+- Ajoute le bundle canonique `post-integration-terminal-handoff-20260920` avec source SHA-256/bytes vérifiable.
+- Repoint `docs/gwc/canonical-memory/current.json` de la candidate PR #95 vers l’état opérationnel post-intégration sur `main`.
+- Préserve `pr95-e-gwc17-universal-acceptance-complete` comme bundle historique immuable dans `previousBundles`.
+- Remplace le protocole de reprise courant PRECODE par : réobserver Live State/Work Queue, reprendre une tâche compatible ou réconcilier une intention explicite.
+- Aucun fichier runtime, workflow, politique, test ou serveur n’est modifié.
