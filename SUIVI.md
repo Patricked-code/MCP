@@ -683,4 +683,5 @@ Date : 2026-08-29
 - Si `main` ou la candidate évolue, réconcilier sur la branche et rejouer les preuves affectées ; conflit/UNKNOWN/stale/ownership concurrent échoue fermé.
 - Rollback : avant merge aucune mutation prod ; après merge Git est revert/fix-forward via PR, jamais réécrit ; échec runtime = rollback d’image existant puis réconciliation GitHub/runtime.
 - Frontière : aucun merge `main`, aucune mutation S1/production et aucun déploiement avant attestation finale F-06.
+- Preuve SHA sans auto-référence : `PACKAGE_HEAD_F06` est le head du paquet validé ; le futur `CANDIDATE_HEAD` est le HEAD de PR réobservé après le commit de clôture F-06 et doit lui-même avoir une CI exact-head verte. Le commit de clôture ne tente pas d’encoder son propre SHA.
 - NEXT_ACTION : valider la CI exacte du paquet F-06 ; si verte, enregistrer la preuve finale, libérer le claim et émettre seulement alors `FINAL_PRECODE_VERSION_ACCEPTED / EVOLVED_CANDIDATE_READY_FOR_INTEGRATION`.
