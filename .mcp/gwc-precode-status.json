@@ -1745,7 +1745,7 @@
           "cross-context-universality"
         ],
         "title": "Phase F-04 — Cross-context universality audit",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 49,
         "sequence": 28,
         "dependencies": [
@@ -1758,7 +1758,11 @@
           "Phase F authority forbids hard dependencies on Patricked-code/MCP, Stablecoin, AfricaFunds, fixed server, fixed branch or fixed domain.",
           "Dependency F-03 satisfied by CI #1480 SUCCESS with 600/600 tests.",
           "F-04 must prove no governed behavior depends on Patricked-code/MCP, Stablecoin, AfricaFunds, fixed server, fixed branch or fixed domain literals.",
-          "Existing GWC-17 anti-hardcode scan is reusable but Phase F-04 must extend/verify the exact canonical forbidden set, including AfricaFunds and branch hard-dependency checks."
+          "Existing GWC-17 anti-hardcode scan is reusable but Phase F-04 must extend/verify the exact canonical forbidden set, including AfricaFunds and branch hard-dependency checks.",
+          "PROVEN RED CI #1482 FAILURE @ 490837daeb75673e239c605be0623b98d42714e1: 601 tests, 600 PASS, exactly 1 intended F-04 failure because runCrossContextUniversalityAudit was absent; F-02 and F-03 remained green.",
+          "F-04 GREEN CI #1483 SUCCESS @ 4992f2886359073875af34b095377b8397e7167c: 601/601 PASS, 0 skipped; typecheck/build/docs/governance/GWC/secrets/read-only/whitespace all green.",
+          "Cross-context audit extends the governed-source anti-hardcode detector to the complete Phase F forbidden set, including AfricaFunds, and executes two distinct synthetic repository/project/server/branch/domain contexts.",
+          "Both alternate contexts preserve their repository, project UID, arbitrary server ID, branch and domain parameters through existing TargetContext/TargetScope, server/domain resolvers and GW-24 branch EffectPlan; no live mutation is dispatched."
         ]
       },
       {
@@ -1768,7 +1772,7 @@
           "full-non-regression"
         ],
         "title": "Phase F-05 — Full candidate non-regression",
-        "status": "PENDING",
+        "status": "IN_PROGRESS",
         "priority": 48,
         "sequence": 29,
         "dependencies": [
@@ -1781,7 +1785,8 @@
           "path:.github/workflows"
         ],
         "evidence": [
-          "Phase F authority requires historical behavior + evolved behavior + compatibility/migration + typecheck/build/docs/security on one coherent candidate head."
+          "Phase F authority requires historical behavior + evolved behavior + compatibility/migration + typecheck/build/docs/security on one coherent candidate head.",
+          "Dependency F-04 satisfied by exact-head CI #1483 SUCCESS @ 4992f2886359073875af34b095377b8397e7167c with 601/601 tests and complete cross-context universality evidence."
         ]
       },
       {
@@ -2167,6 +2172,18 @@
         "workItemId": "GWC-PRE-F-04",
         "collisionDomains": [
           "path:tests/governedWorkflowUniversalAcceptance"
+        ],
+        "status": "RELEASED"
+      },
+      {
+        "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+        "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+        "workItemId": "GWC-PRE-F-05",
+        "collisionDomains": [
+          "path:tests",
+          "path:package.json",
+          "path:scripts",
+          "path:.github/workflows"
         ],
         "status": "ACTIVE"
       }
@@ -6452,10 +6469,10 @@
   },
   "currentPrecodeState": {
     "phase": "F",
-    "workItem": "GWC-PRE-F-04",
-    "work": "CROSS_CONTEXT_UNIVERSALITY_AUDIT",
+    "workItem": "GWC-PRE-F-05",
+    "work": "FULL_CANDIDATE_NON_REGRESSION",
     "status": "IN_PROGRESS",
-    "nextAction": "Extend the tests-only universality audit to the complete Phase F forbidden set and prove governed source remains parameter-driven across alternate repository/project/server/branch/domain contexts.",
+    "nextAction": "Prove the complete candidate non-regression surface on one exact head: historical behavior, evolved GWC behavior, compatibility/migration coverage, typecheck, build, documentation governance, security and full discovered tests. Do not mutate main, S1 or production.",
     "blocker": null
   },
   "phaseF": {
@@ -6664,7 +6681,7 @@
     },
     "f04": {
       "workItemId": "GWC-PRE-F-04",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE",
       "forbiddenHardDependencies": [
         "Patricked-code/MCP",
         "Stablecoin",
@@ -6673,7 +6690,61 @@
         "FIXED_BRANCH",
         "FIXED_DOMAIN"
       ],
-      "requirement": "GENERIC_GOVERNED_PATHS_PARAMETER_DRIVEN__TARGET_LITERALS_FIXTURE_ONLY"
+      "requirement": "GENERIC_GOVERNED_PATHS_PARAMETER_DRIVEN__TARGET_LITERALS_FIXTURE_ONLY",
+      "red": {
+        "ciRunNumber": 1482,
+        "ciRunId": 35507869834,
+        "head": "490837daeb75673e239c605be0623b98d42714e1",
+        "result": "FAIL_EXPECTED",
+        "tests": 601,
+        "passed": 600,
+        "failed": 1,
+        "skipped": 0,
+        "signature": "CROSS_CONTEXT_UNIVERSALITY_AUDIT_ABSENT"
+      },
+      "validation": {
+        "red": {
+          "ciRunNumber": 1482,
+          "ciRunId": 35507869834,
+          "head": "490837daeb75673e239c605be0623b98d42714e1",
+          "result": "FAIL_EXPECTED"
+        },
+        "green": {
+          "ciRunNumber": 1483,
+          "ciRunId": 35507979110,
+          "head": "4992f2886359073875af34b095377b8397e7167c",
+          "result": "SUCCESS",
+          "tests": 601,
+          "passed": 601,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "contexts": {
+        "count": 2,
+        "distinctRepositories": true,
+        "distinctProjects": true,
+        "distinctServers": true,
+        "distinctBranches": true,
+        "distinctDomains": true,
+        "governedSourceViolations": 0,
+        "mutationPerformed": false,
+        "liveMutationDispatched": false
+      },
+      "verdict": "GENERIC_GOVERNED_PATHS_PARAMETER_DRIVEN_ACROSS_ALTERNATE_CONTEXTS"
+    },
+    "f05": {
+      "workItemId": "GWC-PRE-F-05",
+      "status": "IN_PROGRESS",
+      "requirement": "HISTORICAL_PLUS_EVOLVED_PLUS_COMPATIBILITY_MIGRATION_PLUS_TYPECHECK_BUILD_DOCS_SECURITY_ON_ONE_EXACT_HEAD",
+      "dependencyEvidence": {
+        "f04": {
+          "ciRunNumber": 1483,
+          "ciRunId": 35507979110,
+          "head": "4992f2886359073875af34b095377b8397e7167c",
+          "result": "SUCCESS"
+        }
+      }
     }
   }
 }
