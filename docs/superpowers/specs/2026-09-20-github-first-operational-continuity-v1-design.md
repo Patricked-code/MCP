@@ -57,7 +57,7 @@ Allowed V1 probes:
 
 The workflow is triggered either manually or by a GitHub issue titled exactly `MCP_READONLY_EVIDENCE_REQUEST`. Issue-triggered requests require the GitHub actor to have `write`, `maintain` or `admin` permission on the repository.
 
-The workflow never accepts a shell command from the request.
+The workflow never accepts a shell command from the request. Its primary transport is GitHub OIDC to the MCP read-only endpoint; protected direct SSH is attempted only as a secondary fallback after OIDC collection fails.
 
 ### RUNTIME_REQUIRED
 
@@ -70,9 +70,25 @@ Runtime capability is still required for operations whose authority or mutation 
 
 Even in this mode, the agent should finish all safe GitHub work before asking for runtime capability.
 
-## Protected environments
+## Primary GitHub OIDC transport
 
-The V1 read-only fallback expects separate GitHub Environments:
+The normal read-only evidence path requires no interactive MCP OAuth and no GitHub SSH secret:
+
+```
+GitHub issue/workflow
+  -> GitHub Actions OIDC token
+  -> POST /evidence/github/readonly
+  -> strict OIDC policy bound to mcp-readonly-evidence.yml@main
+  -> runReadOnlyCommand(s1|s2)
+  -> bounded JSON
+  -> GitHub artifact
+```
+
+The OIDC audience is `https://mcp.wealthtechinnovations.com/evidence/github/readonly`. The endpoint accepts only the closed `target/probe` catalogue and never accepts a command field.
+
+## Secondary protected SSH fallback
+
+If the OIDC endpoint cannot collect the evidence, the workflow may try separate GitHub Environments:
 
 - `mcp-s1-readonly`
 - `mcp-s2-readonly`
@@ -130,14 +146,9 @@ The historical PR #85 design intent is absorbed as an existing-first input: dire
 
 ## Activation boundary
 
-Merging this V1 is not enough to make read-only SSH evidence operational. The protected GitHub Environments and their secrets must exist.
+The primary OIDC path is operational when the new read-only endpoint is deployed on the MCP runtime. It does not require the protected SSH Environments.
 
-Until they are configured:
-
-- GitHub bootstrap still works;
-- GitHub repository/PR/CI work still proceeds;
-- read-only evidence fallback is reported unavailable;
-- runtime access is requested only if the current bounded operation actually needs server evidence.
+The protected GitHub Environments are optional secondary fallback configuration. If they are absent and the OIDC endpoint fails, the workflow fails closed and reports the configuration blocker without requesting an interactive bridge merely for bootstrap continuity.
 
 ## Non-regression
 

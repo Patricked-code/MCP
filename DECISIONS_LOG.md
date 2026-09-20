@@ -960,3 +960,9 @@ Le resolver `resolveGithubFirstOperationalBootstrap()` distingue `GITHUB_ONLY`, 
 Le fallback read-only utilise un workflow séparé `mcp-readonly-evidence.yml`, déclenchable par une issue GitHub structurée ou manuellement. Il vérifie l'autorisation de l'acteur, sélectionne uniquement un probe hardcodé, utilise un GitHub Environment protégé et publie une preuve artifactée. Aucun arbitrary shell, Git mutation, deploy, restart ou server-to-GitHub push n'est permis.
 
 La PR #85 est absorbée comme intention historique existing-first : le transport Actions→SSH direct commence strictement en lecture seule. Le Governed Deploy OIDC→MCP→SSH historique reste inchangé.
+
+### 2026-09-20 — OIDC est le transport primaire des preuves serveur read-only
+
+Le workflow `MCP Read-only Evidence` obtient un jeton GitHub Actions OIDC lié au repo, à `main`, au workflow `mcp-readonly-evidence.yml`, à son SHA et à l'audience read-only dédiée. Il appelle ensuite un endpoint MCP strictement read-only qui choisit lui-même la commande allowlistée et utilise `runReadOnlyCommand` sur S1/S2.
+
+Conséquence : dans le chemin normal, l'agent n'a besoin que de GitHub. Il n'expose pas `wealthtech_ssh_bridge`, ne fournit pas de token MCP interactif et GitHub ne stocke pas de clé SSH serveur. Le direct SSH protégé reste uniquement une voie de secours après échec du chemin OIDC.

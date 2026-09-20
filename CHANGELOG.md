@@ -859,3 +859,6 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Ajout du workflow `MCP Read-only Evidence`, déclenchable via une issue GitHub structurée et un GitHub Environment protégé.
 - V1 strictement read-only : aucun pull, merge, reset, deploy, restart, scp, rsync, shell arbitraire ou push serveur→GitHub.
 - Le Governed Deploy historique n'est pas modifié.
+
+- Le transport primaire de preuve read-only devient GitHub OIDC → `/evidence/github/readonly` → `runReadOnlyCommand`; aucune authentification MCP interactive ni clé SSH GitHub n'est requise dans le chemin normal.
+- Le SSH direct via GitHub Environment devient un fallback secondaire uniquement après échec OIDC.

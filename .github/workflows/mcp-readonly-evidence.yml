@@ -42,7 +42,7 @@ jobs:
       target: ${{ steps.request.outputs.target }}
       probe: ${{ steps.request.outputs.probe }}
       request_id: ${{ steps.request.outputs.request_id }}
-      environment_name: ${{ steps.request.outputs.environment_name }}
+      fallback_environment_name: ${{ steps.request.outputs.fallback_environment_name }}
       issue_number: ${{ steps.request.outputs.issue_number }}
     steps:
       - name: Authorize GitHub actor
@@ -107,21 +107,154 @@ jobs:
           process.stdout.write('target=' + request.target + '\n');
           process.stdout.write('probe=' + request.probe + '\n');
           process.stdout.write('request_id=' + request.requestId + '\n');
-          process.stdout.write('environment_name=mcp-' + request.target + '-readonly\n');
+          process.stdout.write('fallback_environment_name=mcp-' + request.target + '-readonly\n');
           process.stdout.write('issue_number=' + (process.env.ISSUE_NUMBER || '') + '\n');
           NODE
 
-  collect:
+  collect_oidc:
     needs:
       - authorize
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    environment: ${{ needs.authorize.outputs.environment_name }}
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - name: Collect through GitHub OIDC read-only endpoint
+        id: collect
+        shell: bash
+        env:
+          TARGET: ${{ needs.authorize.outputs.target }}
+          PROBE: ${{ needs.authorize.outputs.probe }}
+          REQUEST_ID: ${{ needs.authorize.outputs.request_id }}
+          MCP_BASE_URL: https://mcp.wealthtechinnovations.com
+          MCP_OIDC_AUDIENCE: https://mcp.wealthtechinnovations.com/evidence/github/readonly
+        run: |
+          set -euo pipefail
+          evidence_dir="$RUNNER_TEMP/mcp-readonly-evidence"
+          mkdir -p "$evidence_dir"
+
+          get_oidc() {
+            if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] || [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
+              printf '%s\n' 'GitHub OIDC request context unavailable.' >&2
+              return 1
+            fi
+            local separator='?'
+            case "$ACTIONS_ID_TOKEN_REQUEST_URL" in
+              *\?*) separator='&' ;;
+            esac
+            local encoded_audience
+            encoded_audience="$(node -e "process.stdout.write(encodeURIComponent(process.env.MCP_OIDC_AUDIENCE || ''))")"
+            local response
+            response="$(curl --fail --silent --show-error --max-time 10 \
+              --header "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+              "${ACTIONS_ID_TOKEN_REQUEST_URL}${separator}audience=${encoded_audience}")"
+            printf '%s' "$response" | node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw,'utf8') > 32768) process.exit(1); const body=JSON.parse(raw); if (!body || typeof body.value !== 'string' || body.value.length < 32 || body.value.length > 16384) process.exit(1); process.stdout.write(body.value);"
+          }
+
+          REQUEST_BODY="$(GITHUB_SHA="$GITHUB_SHA" TARGET="$TARGET" PROBE="$PROBE" REQUEST_ID="$REQUEST_ID" node -e "const sha=process.env.GITHUB_SHA; const target=process.env.TARGET; const probe=process.env.PROBE; const requestId=process.env.REQUEST_ID; if (!/^[0-9a-f]{40}$/.test(sha)) process.exit(1); process.stdout.write(JSON.stringify({sha,target,probe,requestId}));")"
+          OIDC_TOKEN="$(get_oidc)"
+          printf '::add-mask::%s\n' "$OIDC_TOKEN"
+
+          RESPONSE="$(curl --fail --silent --show-error --max-time 20 \
+            --request POST \
+            --header "Authorization: Bearer ${OIDC_TOKEN}" \
+            --header 'Content-Type: application/json' \
+            --data "$REQUEST_BODY" \
+            "${MCP_BASE_URL}/evidence/github/readonly")"
+          unset OIDC_TOKEN REQUEST_BODY
+
+          RESPONSE="$RESPONSE" TARGET="$TARGET" PROBE="$PROBE" REQUEST_ID="$REQUEST_ID" \
+          RUN_ID="$GITHUB_RUN_ID" REPOSITORY="$GITHUB_REPOSITORY" SHA="$GITHUB_SHA" \
+          EVIDENCE_DIR="$evidence_dir" node <<'NODE'
+          const fs = require('fs');
+          const crypto = require('crypto');
+          const raw = process.env.RESPONSE || '';
+          if (Buffer.byteLength(raw, 'utf8') > 65536) process.exit(41);
+          let body;
+          try { body = JSON.parse(raw); } catch { process.exit(42); }
+          if (!body || body.schemaVersion !== 1) process.exit(43);
+          if (body.requestId !== process.env.REQUEST_ID) process.exit(44);
+          if (body.target !== process.env.TARGET || body.probe !== process.env.PROBE) process.exit(45);
+          if (body.sha !== process.env.SHA || body.mutationAllowed !== false) process.exit(46);
+          if (typeof body.output !== 'string' || Buffer.byteLength(body.output, 'utf8') > 32768) process.exit(47);
+
+          const dir = process.env.EVIDENCE_DIR;
+          fs.writeFileSync(dir + '/output.txt', body.output, { mode: 0o600 });
+          fs.writeFileSync(dir + '/metadata.json', JSON.stringify({
+            schemaVersion: 1,
+            policy: 'github-oidc-readonly-evidence-v1',
+            transport: 'github_oidc_mcp_readonly',
+            requestId: process.env.REQUEST_ID,
+            target: process.env.TARGET,
+            probe: process.env.PROBE,
+            repository: process.env.REPOSITORY,
+            workflowSha: process.env.SHA,
+            workflowRunId: Number(process.env.RUN_ID),
+            observedAt: new Date().toISOString(),
+            outputSha256: crypto.createHash('sha256').update(body.output, 'utf8').digest('hex'),
+            mutationAllowed: false
+          }, null, 2) + '\n', { mode: 0o600 });
+          NODE
+
+          printf 'artifact_name=mcp-readonly-evidence-%s\n' "$REQUEST_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Upload OIDC read-only evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.collect.outputs.artifact_name }}
+          path: ${{ runner.temp }}/mcp-readonly-evidence
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Report OIDC evidence handle to GitHub issue
+        if: github.event_name == 'issues'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ needs.authorize.outputs.issue_number }}
+          REQUEST_ID: ${{ needs.authorize.outputs.request_id }}
+          TARGET: ${{ needs.authorize.outputs.target }}
+          PROBE: ${{ needs.authorize.outputs.probe }}
+          ARTIFACT_NAME: ${{ steps.collect.outputs.artifact_name }}
+        run: |
+          set -euo pipefail
+          body="$(node -e "process.stdout.write(JSON.stringify({body:[
+            'MCP_READONLY_EVIDENCE_RESULT',
+            'requestId=' + process.env.REQUEST_ID,
+            'target=' + process.env.TARGET,
+            'probe=' + process.env.PROBE,
+            'runId=' + process.env.GITHUB_RUN_ID,
+            'artifact=' + process.env.ARTIFACT_NAME,
+            'transport=github_oidc_mcp_readonly',
+            'status=SUCCESS',
+            'mutationAllowed=false'
+          ].join('\\n')}))")"
+          curl --fail --silent --show-error --max-time 10 \
+            --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            --header "Content-Type: application/json" \
+            --data "$body" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments" \
+            >/dev/null
+
+  collect_ssh_fallback:
+    needs:
+      - authorize
+      - collect_oidc
+    if: always() && needs.authorize.result == 'success' && needs.collect_oidc.result == 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: ${{ needs.authorize.outputs.fallback_environment_name }}
     permissions:
       contents: read
       issues: write
     steps:
-      - name: Validate environment secrets
+      - name: Validate fallback environment secrets
+        id: secrets
         shell: bash
         env:
           SSH_HOST: ${{ secrets.MCP_READONLY_SSH_HOST }}
@@ -133,7 +266,7 @@ jobs:
           set -euo pipefail
           for name in SSH_HOST SSH_PORT SSH_USER SSH_PRIVATE_KEY SSH_KNOWN_HOSTS; do
             if [ -z "${!name:-}" ]; then
-              printf 'Required protected environment secret is missing: %s\n' "$name" >&2
+              printf 'Required protected fallback secret is missing: %s\n' "$name" >&2
               exit 31
             fi
           done
@@ -141,7 +274,7 @@ jobs:
             ''|*[!0-9]*) exit 32 ;;
           esac
 
-      - name: Collect allowlisted read-only evidence
+      - name: Collect through direct SSH fallback
         id: collect
         shell: bash
         env:
@@ -224,6 +357,7 @@ jobs:
           process.stdout.write(JSON.stringify({
             schemaVersion: 1,
             policy: 'github-readonly-evidence-v1',
+            transport: 'github_actions_ssh_readonly',
             requestId: process.env.REQUEST_ID,
             target: process.env.TARGET,
             probe: process.env.PROBE,
@@ -238,7 +372,7 @@ jobs:
 
           printf 'artifact_name=mcp-readonly-evidence-%s\n' "$REQUEST_ID" >> "$GITHUB_OUTPUT"
 
-      - name: Upload read-only evidence
+      - name: Upload SSH fallback evidence
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.collect.outputs.artifact_name }}
@@ -246,8 +380,8 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      - name: Report evidence handle to GitHub issue
-        if: github.event_name == 'issues'
+      - name: Report SSH fallback evidence handle to GitHub issue
+        if: github.event_name == 'issues' && success()
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -265,7 +399,35 @@ jobs:
             'probe=' + process.env.PROBE,
             'runId=' + process.env.GITHUB_RUN_ID,
             'artifact=' + process.env.ARTIFACT_NAME,
+            'transport=github_actions_ssh_readonly',
             'status=SUCCESS',
+            'mutationAllowed=false'
+          ].join('\\n')}))")"
+          curl --fail --silent --show-error --max-time 10 \
+            --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            --header "Content-Type: application/json" \
+            --data "$body" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments" \
+            >/dev/null
+
+      - name: Report unavailable SSH fallback
+        if: github.event_name == 'issues' && failure()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ needs.authorize.outputs.issue_number }}
+          REQUEST_ID: ${{ needs.authorize.outputs.request_id }}
+        run: |
+          set -euo pipefail
+          body="$(node -e "process.stdout.write(JSON.stringify({body:[
+            'MCP_READONLY_EVIDENCE_RESULT',
+            'requestId=' + process.env.REQUEST_ID,
+            'runId=' + process.env.GITHUB_RUN_ID,
+            'status=BLOCKED',
+            'reason=oidc_endpoint_failed_and_ssh_fallback_unavailable',
             'mutationAllowed=false'
           ].join('\\n')}))")"
           curl --fail --silent --show-error --max-time 10 \

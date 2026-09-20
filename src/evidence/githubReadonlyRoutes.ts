@@ -1,0 +1,153 @@
+import express from 'express';
+import type { Router } from 'express';
+
+import type { GithubOidcClaims } from '../deploy/githubOidc.js';
+
+const SHA_PATTERN = /^[0-9a-f]{40}$/;
+const REQUEST_ID_PATTERN = /^[A-Za-z0-9._-]{8,80}$/;
+const MAX_BEARER_BYTES = 16_384;
+
+export type GithubReadonlyEvidenceTarget = 's1' | 's2';
+export type GithubReadonlyEvidenceProbe =
+  | 'mcp_git_status'
+  | 'stablecoin_frontend_git_status'
+  | 'server_disk'
+  | 'docker_status';
+
+interface CommandResultLike {
+  code: number | null;
+  stdout: string;
+  stderr: string;
+}
+
+export interface GithubReadonlyEvidenceRouteDependencies {
+  verifyOidc: (token: string, requestedSha: string) => Promise<GithubOidcClaims>;
+  runRead: (
+    target: GithubReadonlyEvidenceTarget,
+    command: string
+  ) => Promise<CommandResultLike>;
+}
+
+function bearerToken(value: string | undefined): string | null {
+  if (!value || !value.startsWith('Bearer ')) return null;
+  const token = value.slice('Bearer '.length);
+  if (!token || token.includes(' ') || Buffer.byteLength(token, 'utf8') > MAX_BEARER_BYTES) return null;
+  return token;
+}
+
+function exactRequest(value: unknown): {
+  sha: string;
+  target: GithubReadonlyEvidenceTarget;
+  probe: GithubReadonlyEvidenceProbe;
+  requestId: string;
+} | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const record = value as Record<string, unknown>;
+  if (Object.keys(record).sort().join(',') !== 'probe,requestId,sha,target') return null;
+
+  const sha = typeof record.sha === 'string' ? record.sha.toLowerCase() : '';
+  const target = record.target;
+  const probe = record.probe;
+  const requestId = record.requestId;
+
+  if (!SHA_PATTERN.test(sha)) return null;
+  if (target !== 's1' && target !== 's2') return null;
+  if (
+    probe !== 'mcp_git_status'
+    && probe !== 'stablecoin_frontend_git_status'
+    && probe !== 'server_disk'
+    && probe !== 'docker_status'
+  ) return null;
+  if (typeof requestId !== 'string' || !REQUEST_ID_PATTERN.test(requestId)) return null;
+  if (probe === 'mcp_git_status' && target !== 's1') return null;
+  if (probe === 'stablecoin_frontend_git_status' && target !== 's2') return null;
+
+  return { sha, target, probe, requestId };
+}
+
+function redactedGitStatusCommand(path: string): string {
+  return `set -euo pipefail
+cd '${path}'
+printf 'branch=%s\\n' "$(git branch --show-current)"
+printf 'head=%s\\n' "$(git rev-parse HEAD)"
+printf 'working_tree_changes=%s\\n' "$(git status --porcelain=v1 --untracked-files=all | wc -l | tr -d ' ')"
+origin_url="$(git remote get-url origin 2>/dev/null || true)"
+push_url="$(git remote get-url --push origin 2>/dev/null || true)"
+printf 'origin_fetch=%s\\n' "$(printf '%s' "$origin_url" | sed -E 's#(https?://)[^/@[:space:]]+@#\\1***@#g')"
+printf 'origin_push=%s\\n' "$(printf '%s' "$push_url" | sed -E 's#(https?://)[^/@[:space:]]+@#\\1***@#g')"`;
+}
+
+export function buildGithubReadonlyEvidenceCommand(
+  target: GithubReadonlyEvidenceTarget,
+  probe: GithubReadonlyEvidenceProbe
+): string {
+  if (probe === 'mcp_git_status' && target === 's1') {
+    return redactedGitStatusCommand('/opt/apps/wealthtech-mcp-ssh-bridge');
+  }
+  if (probe === 'stablecoin_frontend_git_status' && target === 's2') {
+    return redactedGitStatusCommand(
+      '/var/www/vhosts/chainsolutions.fr/stablecoin.chainsolutions.fr/stablecoin'
+    );
+  }
+  if (probe === 'server_disk') {
+    return 'set -euo pipefail; df -h /';
+  }
+  if (probe === 'docker_status') {
+    return "set -euo pipefail; docker ps --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}'";
+  }
+  throw new Error('readonly_evidence_probe_target_invalid');
+}
+
+function jsonError(response: express.Response, status: number, error: string) {
+  return response.status(status).json({ error });
+}
+
+export function createGithubReadonlyEvidenceRouter(
+  dependencies: GithubReadonlyEvidenceRouteDependencies
+): Router {
+  const router = express.Router();
+  const json4kb = express.json({ limit: '4kb', strict: true });
+
+  router.post('/evidence/github/readonly', json4kb, async (request, response) => {
+    const token = bearerToken(request.header('authorization'));
+    if (!token) return jsonError(response, 401, 'github_oidc_required');
+
+    const body = exactRequest(request.body);
+    if (!body) return jsonError(response, 400, 'invalid_request');
+
+    try {
+      await dependencies.verifyOidc(token, body.sha);
+    } catch {
+      return jsonError(response, 403, 'github_oidc_invalid');
+    }
+
+    let command: string;
+    try {
+      command = buildGithubReadonlyEvidenceCommand(body.target, body.probe);
+    } catch {
+      return jsonError(response, 400, 'invalid_request');
+    }
+
+    let result: CommandResultLike;
+    try {
+      result = await dependencies.runRead(body.target, command);
+    } catch {
+      return jsonError(response, 502, 'readonly_evidence_collection_failed');
+    }
+    if (result.code !== 0) {
+      return jsonError(response, 502, 'readonly_evidence_collection_failed');
+    }
+
+    return response.status(200).json({
+      schemaVersion: 1,
+      requestId: body.requestId,
+      target: body.target,
+      probe: body.probe,
+      sha: body.sha,
+      mutationAllowed: false,
+      output: result.stdout
+    });
+  });
+
+  return router;
+}

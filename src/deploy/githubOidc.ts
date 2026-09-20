@@ -9,7 +9,19 @@ const RUN_ID_PATTERN = /^[0-9]{1,30}$/;
 const KID_PATTERN = /^[A-Za-z0-9._:-]{1,128}$/;
 const OIDC_JWKS_URL = 'https://token.actions.githubusercontent.com/.well-known/jwks';
 
-export const GITHUB_OIDC_POLICY = Object.freeze({
+export interface GithubOidcPolicy {
+  issuer: string;
+  audience: string;
+  repository: string;
+  repositoryId: string;
+  owner: string;
+  ownerId: string;
+  ref: string;
+  workflowRef: string;
+  allowedEvents: readonly string[];
+}
+
+export const GITHUB_OIDC_POLICY: GithubOidcPolicy = Object.freeze({
   issuer: 'https://token.actions.githubusercontent.com',
   audience: 'https://mcp.wealthtechinnovations.com/deploy/github/s1',
   repository: 'Patricked-code/MCP',
@@ -19,6 +31,18 @@ export const GITHUB_OIDC_POLICY = Object.freeze({
   ref: 'refs/heads/main',
   workflowRef: 'Patricked-code/MCP/.github/workflows/mcp-deploy.yml@refs/heads/main',
   allowedEvents: Object.freeze(['push', 'workflow_dispatch'] as const)
+});
+
+export const GITHUB_READONLY_EVIDENCE_OIDC_POLICY: GithubOidcPolicy = Object.freeze({
+  issuer: 'https://token.actions.githubusercontent.com',
+  audience: 'https://mcp.wealthtechinnovations.com/evidence/github/readonly',
+  repository: 'Patricked-code/MCP',
+  repositoryId: '1285534440',
+  owner: 'Patricked-code',
+  ownerId: '270385782',
+  ref: 'refs/heads/main',
+  workflowRef: 'Patricked-code/MCP/.github/workflows/mcp-readonly-evidence.yml@refs/heads/main',
+  allowedEvents: Object.freeze(['issues', 'workflow_dispatch'] as const)
 });
 
 interface GithubOidcHeader {
@@ -196,34 +220,39 @@ function numericClaim(claims: GithubOidcClaims, key: 'exp' | 'iat' | 'nbf', erro
   return value;
 }
 
-function validateClaims(claims: GithubOidcClaims, requestedSha: string, now: number): void {
-  if (stringClaim(claims, 'iss', 'oidc_issuer_invalid') !== GITHUB_OIDC_POLICY.issuer) {
+function validateClaims(
+  claims: GithubOidcClaims,
+  requestedSha: string,
+  now: number,
+  policy: GithubOidcPolicy
+): void {
+  if (stringClaim(claims, 'iss', 'oidc_issuer_invalid') !== policy.issuer) {
     throw oidcError('oidc_issuer_invalid');
   }
-  if (stringClaim(claims, 'aud', 'oidc_audience_invalid') !== GITHUB_OIDC_POLICY.audience) {
+  if (stringClaim(claims, 'aud', 'oidc_audience_invalid') !== policy.audience) {
     throw oidcError('oidc_audience_invalid');
   }
-  if (stringClaim(claims, 'repository', 'oidc_repository_invalid') !== GITHUB_OIDC_POLICY.repository) {
+  if (stringClaim(claims, 'repository', 'oidc_repository_invalid') !== policy.repository) {
     throw oidcError('oidc_repository_invalid');
   }
-  if (stringClaim(claims, 'repository_id', 'oidc_repository_id_invalid') !== GITHUB_OIDC_POLICY.repositoryId) {
+  if (stringClaim(claims, 'repository_id', 'oidc_repository_id_invalid') !== policy.repositoryId) {
     throw oidcError('oidc_repository_id_invalid');
   }
-  if (stringClaim(claims, 'repository_owner', 'oidc_owner_invalid') !== GITHUB_OIDC_POLICY.owner) {
+  if (stringClaim(claims, 'repository_owner', 'oidc_owner_invalid') !== policy.owner) {
     throw oidcError('oidc_owner_invalid');
   }
-  if (stringClaim(claims, 'repository_owner_id', 'oidc_owner_id_invalid') !== GITHUB_OIDC_POLICY.ownerId) {
+  if (stringClaim(claims, 'repository_owner_id', 'oidc_owner_id_invalid') !== policy.ownerId) {
     throw oidcError('oidc_owner_id_invalid');
   }
-  if (stringClaim(claims, 'ref', 'oidc_ref_invalid') !== GITHUB_OIDC_POLICY.ref) {
+  if (stringClaim(claims, 'ref', 'oidc_ref_invalid') !== policy.ref) {
     throw oidcError('oidc_ref_invalid');
   }
-  if (stringClaim(claims, 'workflow_ref', 'oidc_workflow_invalid') !== GITHUB_OIDC_POLICY.workflowRef) {
+  if (stringClaim(claims, 'workflow_ref', 'oidc_workflow_invalid') !== policy.workflowRef) {
     throw oidcError('oidc_workflow_invalid');
   }
 
   const eventName = stringClaim(claims, 'event_name', 'oidc_event_not_allowed');
-  if (!GITHUB_OIDC_POLICY.allowedEvents.includes(eventName as 'push' | 'workflow_dispatch')) {
+  if (!policy.allowedEvents.includes(eventName)) {
     throw oidcError('oidc_event_not_allowed');
   }
 
@@ -241,9 +270,10 @@ function validateClaims(claims: GithubOidcClaims, requestedSha: string, now: num
   if (iat > now || iat > exp || nbf > exp) throw oidcError('oidc_iat_invalid');
 }
 
-export async function verifyGithubOidcToken(
+async function verifyGithubOidcTokenWithPolicy(
   token: string,
   requestedShaInput: string,
+  policy: GithubOidcPolicy,
   options: VerifyGithubOidcOptions = {}
 ): Promise<GithubOidcClaims> {
   const requestedSha = typeof requestedShaInput === 'string' ? requestedShaInput.toLowerCase() : '';
@@ -271,6 +301,27 @@ export async function verifyGithubOidcToken(
 
   const now = options.nowEpochSeconds ?? Math.floor(Date.now() / 1000);
   if (!Number.isSafeInteger(now) || now < 0) throw oidcError('oidc_now_invalid');
-  validateClaims(parsed.claims, requestedSha, now);
+  validateClaims(parsed.claims, requestedSha, now, policy);
   return parsed.claims;
+}
+
+export async function verifyGithubOidcToken(
+  token: string,
+  requestedShaInput: string,
+  options: VerifyGithubOidcOptions = {}
+): Promise<GithubOidcClaims> {
+  return verifyGithubOidcTokenWithPolicy(token, requestedShaInput, GITHUB_OIDC_POLICY, options);
+}
+
+export async function verifyGithubReadonlyEvidenceOidcToken(
+  token: string,
+  requestedShaInput: string,
+  options: VerifyGithubOidcOptions = {}
+): Promise<GithubOidcClaims> {
+  return verifyGithubOidcTokenWithPolicy(
+    token,
+    requestedShaInput,
+    GITHUB_READONLY_EVIDENCE_OIDC_POLICY,
+    options
+  );
 }

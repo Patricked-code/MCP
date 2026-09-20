@@ -16,10 +16,27 @@ test('GitHub issue can trigger the bounded read-only evidence fallback', () => {
   assert.match(workflow, /MCP_READONLY_EVIDENCE_REQUEST/);
   assert.match(workflow, /collaborators\/\$\{REQUEST_ACTOR\}\/permission/);
   assert.match(workflow, /admin\|maintain\|write/);
-  assert.match(workflow, /environment_name=mcp-/);
+  assert.match(workflow, /fallback_environment_name=mcp-/);
   assert.equal(
     policy.executionModes.GITHUB_ACTION_READONLY_EVIDENCE.issueTitle,
     'MCP_READONLY_EVIDENCE_REQUEST'
+  );
+});
+
+
+test('GitHub OIDC is the primary read-only evidence transport', () => {
+  assert.match(workflow, /collect_oidc:/);
+  assert.match(workflow, /id-token:\s*write/);
+  assert.match(
+    workflow,
+    /https:\/\/mcp\.wealthtechinnovations\.com\/evidence\/github\/readonly/
+  );
+  assert.match(workflow, /\/evidence\/github\/readonly/);
+  assert.match(workflow, /transport:\s*'github_oidc_mcp_readonly'/);
+  assert.match(workflow, /collect_ssh_fallback:/);
+  assert.match(
+    workflow,
+    /needs\.collect_oidc\.result == 'failure'/
   );
 });
 

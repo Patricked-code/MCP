@@ -26,7 +26,11 @@
       "workflow": ".github/workflows/mcp-readonly-evidence.yml",
       "trigger": "github_issue",
       "issueTitle": "MCP_READONLY_EVIDENCE_REQUEST",
-      "mutationAllowed": false
+      "mutationAllowed": false,
+      "primaryTransport": "github_oidc_mcp_readonly",
+      "primaryEndpoint": "https://mcp.wealthtechinnovations.com/evidence/github/readonly",
+      "sshFallback": "protected_environment_only_after_oidc_failure",
+      "runtimeInteractiveAuthRequired": false
     },
     "RUNTIME_REQUIRED": {
       "runtimeMcpRequired": true,
@@ -54,6 +58,7 @@
     "NO_ARBITRARY_SHELL",
     "NO_SERVER_TO_GITHUB_PUSH",
     "NO_DIRECT_VERSIONED_CODE_EDIT_ON_SERVER",
-    "FAIL_CLOSED_ON_AMBIGUOUS_OR_MISSING_EVIDENCE"
+    "FAIL_CLOSED_ON_AMBIGUOUS_OR_MISSING_EVIDENCE",
+    "GITHUB_OIDC_READONLY_EVIDENCE_REQUIRES_NO_INTERACTIVE_MCP_AUTH"
   ]
 }

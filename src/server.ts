@@ -27,7 +27,11 @@ import { startOperationalMemoryMaintenance } from './operationalMemory/maintenan
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
 import { createGithubDeployRouter } from './deploy/routes.js';
-import { verifyGithubOidcToken } from './deploy/githubOidc.js';
+import {
+  verifyGithubOidcToken,
+  verifyGithubReadonlyEvidenceOidcToken
+} from './deploy/githubOidc.js';
+import { createGithubReadonlyEvidenceRouter } from './evidence/githubReadonlyRoutes.js';
 import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
 import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js';
 import {
@@ -378,6 +382,12 @@ export async function startHttpServer(): Promise<void> {
       maxOutputBytes: 8_192
     }),
     runRead: async (command) => runReadOnlyCommand('s1', command, 15_000, 8_192)
+  }));
+  app.use(createGithubReadonlyEvidenceRouter({
+    verifyOidc: verifyGithubReadonlyEvidenceOidcToken,
+    runRead: async (target, command) => (
+      runReadOnlyCommand(target, command, 15_000, 32_768)
+    )
   }));
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: false, limit: '64kb' }));
