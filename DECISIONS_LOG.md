@@ -929,3 +929,13 @@ Décision de production state : seuls les champs décrivant l’état courant so
 Décision de déploiement : le Governed Deploy #44 attempt 2 est la réattestation standard du pipeline après bootstrap, sur le même SHA exact `9da845822e122cc67fc86ad90243d4e7d6a6d4f4`. La PR documentaire suivra ensuite son autodeploy normal `GW-64`; aucun déploiement manuel parallèle ne sera créé.
 
 Décision de scope : la branche `mcp/gwc-documentation-reconciliation-20260920` reste strictement docs-only. Tout changement non documentaire invalide `GW-59→GW-65` et bloque le merge.
+
+## 2026-09-20 — GWC : décisions du handoff canonique post-intégration
+
+Décision de continuité : après terminalité de PR #95/#96, le bundle PRECODE final reste immuable mais cesse d’être le pointeur courant. Un nouveau bundle post-intégration devient le checkpoint courant ; aucun ancien bundle n’est réécrit.
+
+Décision d’autorité : la mémoire canonique reste `CONTINUITY_AND_PROVENANCE_ONLY`. GitHub live, Governed Task Queue, Governed Session, Bootstrap Receipt, locks, Live State et runtime restent les autorités de décision et de mutation.
+
+Décision de bootstrap agent : un nouvel agent réobserve d’abord `main`, Live State et la Work Queue. Il reprend une tâche compatible si elle existe ; si la queue n’a aucun travail exécutable, une nouvelle tâche n’apparaît qu’après réconciliation d’une intention explicite classée `NEW_TASK`.
+
+Décision de non-régression : les règles PRECODE PR #95 sont conservées pour interpréter l’historique mais marquées comme non courantes. Aucun claim candidate, candidateSession ou work item PRECODE n’est ressuscité après intégration terminale.
