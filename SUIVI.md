@@ -1,5 +1,21 @@
 # SUIVI.md
 
+## 2026-09-20 — GWC CANONICAL HANDOFF — réconciliation documentaire terminale
+
+- GitHub main : `21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15`.
+- S1 HEAD : `21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15`.
+- S1 origin/main : `21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15`.
+- Runtime OCI revision : `21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15`.
+- MCP CI post-merge : #1519 / run `35523471448` = SUCCESS sur ce SHA exact.
+- Governed Deploy : #46 / run `35523471407` = SUCCESS ; étape `Deploy exact main SHA through MCP` = SUCCESS.
+- Runtime observé healthy sur ce SHA ; GitHub↔S1 et runtime sont ALIGNED.
+- Le bundle canonique courant est `docs/gwc/canonical-memory/post-integration-terminal-handoff-20260920`, vérifié par CI #1518 avant merge PR #97.
+- Live State a correctement détecté un dernier `DOCUMENTATION_DRIFT` car PR #97 contenait des JSON canoniques et n'était donc pas éligible au waiver descendant docs-only.
+- Cette micro-réconciliation ne modifie que des fichiers Markdown. Le SHA déclaré ci-dessus reste le baseline attesté ; le futur merge de cette branche sera son descendant strictement docs-only et peut donc être reconnu par `documentation_descendant_scope=docs_only` sans inventer son SHA à l'avance.
+- Aucune réécriture du bundle canonique, aucun code runtime, workflow, script, test, politique ou écriture directe S1.
+- `TASK-20260920-002` reste sous Operational Memory jusqu'à réobservation terminale après ce merge ; aucun `DONE` n'est pré-déclaré ici.
+- NEXT_ACTION : CI/review exact-head de cette micro-PR, merge exact-head, Governed Deploy automatique, Live State `FULLY_ALIGNED`, puis clôture runtime de la tâche/session.
+
 ## 2026-09-20 — GWC POST-INTEGRATION CANONICAL HANDOFF — TASK-20260920-002
 
 - État terminal de référence avant cette branche : GitHub `main`, S1 HEAD/origin-main et runtime OCI = `5389f3a05ab22da551954c936fcc3fe5ab69872b`.
