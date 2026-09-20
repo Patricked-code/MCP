@@ -23,7 +23,7 @@ test('Stablecoin is exposed to read-only status but not mutable S2 project tools
   assert.match(statusSchema, /'stablecoin_frontend'/);
   assert.doesNotMatch(mutableSchema, /'stablecoin_frontend'/);
 
-  assert.match(source, /project: StatusProjectKeySchema[\s\S]*?git_status_project_s2/);
+  assert.match(source, /git_status_project_s2[\s\S]*?project: StatusProjectKeySchema/);
   assert.match(source, /git_pull_project_s2[\s\S]*?project: MutableProjectKeySchema/);
   assert.match(source, /deploy_project_s2[\s\S]*?project: MutableProjectKeySchema/);
 });
