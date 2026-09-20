@@ -108,10 +108,22 @@ const GOVERNED_SOURCE_ROOTS = [
   'src/operationalMemory/targetScope.ts'
 ] as const;
 
+const PHASE_F_FORBIDDEN_HARD_DEPENDENCIES = [
+  'Patricked-code/MCP',
+  'Stablecoin',
+  'AfricaFunds',
+  'FIXED_SERVER',
+  'FIXED_BRANCH',
+  'FIXED_DOMAIN'
+] as const;
+
 const FORBIDDEN_GOVERNED_LITERALS = [
   'Patricked-code/MCP',
   'Patricked-code/Stablecoin',
+  'Stablecoin',
+  'AfricaFunds',
   'stablecoin.chainsolutions.fr',
+  'africafunds.chainsolutions.fr',
   'chainsolutions.fr',
   '/opt/apps/wealthtech-mcp-ssh-bridge',
   "'s1'",
@@ -2052,6 +2064,236 @@ export async function runFullCandidateNegativeMatrix() {
     status,
     requiredClasses,
     cases: Object.freeze(cases),
+    mutationPerformed: false as const,
+    liveMutationDispatched: false as const
+  });
+}
+
+export async function runCrossContextUniversalityAudit() {
+  const substrate = await canonicalContractSubstrate();
+  const scan = await scanGovernedHardcodes();
+  const inputs = Object.freeze([
+    Object.freeze({
+      id: 'northstar-api',
+      repository: 'NorthstarOrg/service-api',
+      projectId: 'northstar.platform',
+      projectUid: 'NORTHSTAR-001',
+      componentId: 'northstar-api',
+      serverId: 'edge-a',
+      branch: 'feature/northstar',
+      domain: 'api.northstar.example.test',
+      headSha: '1'.repeat(40)
+    }),
+    Object.freeze({
+      id: 'harbor-web',
+      repository: 'HarborOrg/portal-web',
+      projectId: 'harbor.portal',
+      projectUid: 'HARBOR-002',
+      componentId: 'harbor-web',
+      serverId: 'node-b',
+      branch: 'release/harbor',
+      domain: 'portal.harbor.example.test',
+      headSha: '2'.repeat(40)
+    })
+  ]);
+
+  const contexts = inputs.map((input) => {
+    const repositoryId = `github:${input.repository}`;
+    const target = deriveTargetContext({
+      project: {
+        projectId: input.projectId,
+        projectUid: input.projectUid,
+        globalCheckpointRepositoryId: repositoryId,
+        centralGovernanceRepositoryId: repositoryId,
+        repositoryComponents: [{
+          repositoryId,
+          mappingId: input.componentId,
+          role: 'API'
+        }]
+      },
+      observations: [{
+        mappingId: input.componentId,
+        repositoryId,
+        githubHead: input.headSha,
+        runtimeRevision: input.headSha,
+        freshness: 'CURRENT'
+      }],
+      observedAt: NOW
+    });
+    const scope = createTargetScope(target, [input.componentId]);
+    const project = {
+      status: 'RESOLVED',
+      observedAt: NOW,
+      repositoryId,
+      selectedMapping: {
+        mappingId: input.componentId,
+        repositoryId,
+        projectId: input.projectId,
+        projectUid: input.projectUid,
+        componentRole: 'API'
+      },
+      selectedProject: {
+        projectId: input.projectId,
+        projectUid: input.projectUid,
+        name: input.projectUid,
+        kind: 'MULTI_REPOSITORY_APPLICATION'
+      },
+      candidates: [{ mappingId: input.componentId, projectId: input.projectId }],
+      candidateCount: 1,
+      freshness: 'CURRENT',
+      provenance: [`phase-f04:${input.id}`],
+      reasonCodes: [],
+      registryDigest: 'b'.repeat(64),
+      candidateDigest: 'c'.repeat(64)
+    } as any;
+
+    const server = resolveServer({
+      project,
+      registry: {
+        available: true,
+        freshness: 'CURRENT',
+        digest: 'b'.repeat(64),
+        candidateDigest: 'c'.repeat(64),
+        mappings: [{
+          mappingId: input.componentId,
+          repositoryId,
+          projectId: input.projectId,
+          projectUid: input.projectUid,
+          componentRole: 'API',
+          serverId: input.serverId,
+          serverPath: `/srv/${input.componentId}`,
+          realPath: `/srv/${input.componentId}`,
+          realPathVerified: true,
+          environment: 'production'
+        }]
+      },
+      canonicalServerIds: [input.serverId],
+      serverHint: null,
+      observedAt: NOW
+    } as any);
+
+    const domain = resolveDomain({
+      project,
+      server,
+      registry: {
+        available: true,
+        freshness: 'CURRENT',
+        digest: 'b'.repeat(64),
+        candidateDigest: 'c'.repeat(64),
+        projects: [{
+          projectId: input.projectId,
+          publicDomain: null,
+          publicApi: null,
+          historicalVhosts: []
+        }],
+        mappings: [{
+          mappingId: input.componentId,
+          repositoryId,
+          projectId: input.projectId,
+          componentRole: 'API',
+          serverId: input.serverId,
+          domain: input.domain,
+          domainVerified: true
+        }]
+      },
+      observation: {
+        available: true,
+        freshness: 'CURRENT',
+        observedAt: NOW,
+        serverId: input.serverId,
+        domains: [{
+          domain: input.domain,
+          verified: true,
+          evidenceRef: `phase-f04:${input.id}:domain`
+        }]
+      },
+      observedAt: NOW
+    } as any);
+
+    const branchPlan = planGw24BranchCreation({
+      repository: input.repository,
+      branch: input.branch,
+      baseSha: input.headSha,
+      branchPolicyAllowed: true,
+      declaration: {
+        declaredAt: NOW,
+        summary: `phase f04 parameterization audit for ${input.id}`,
+        changeDigest: input.id === 'northstar-api' ? 'd'.repeat(64) : 'e'.repeat(64)
+      }
+    }, substrate);
+
+    const repositoryParameterPreserved = Boolean(
+      target.components[0]?.repositoryId === repositoryId
+      && scope.components[0]?.repositoryId === repositoryId
+      && branchPlan.effectPlan?.repository === input.repository
+    );
+    const projectParameterPreserved = Boolean(
+      target.projectId === input.projectId
+      && target.projectUid === input.projectUid
+      && scope.projectId === input.projectId
+      && scope.projectUid === input.projectUid
+    );
+    const serverParameterPreserved = Boolean(
+      server.status === 'RESOLVED'
+      && server.selectedServer?.serverId === input.serverId
+      && server.projectId === input.projectId
+    );
+    const branchParameterPreserved = Boolean(
+      branchPlan.status === 'READY'
+      && branchPlan.effectPlan?.branch === input.branch
+      && branchPlan.effectPlan?.expectedHeadSha === input.headSha
+    );
+    const domainParameterPreserved = Boolean(
+      domain.status === 'RESOLVED'
+      && domain.serverId === input.serverId
+      && domain.projectId === input.projectId
+      && domain.surface.some((entry) => entry.domain === input.domain)
+    );
+    const status = (
+      target.status === 'RESOLVED'
+      && repositoryParameterPreserved
+      && projectParameterPreserved
+      && serverParameterPreserved
+      && branchParameterPreserved
+      && domainParameterPreserved
+    ) ? 'PASS' as const : 'FAIL' as const;
+
+    return Object.freeze({
+      id: input.id,
+      status,
+      repository: input.repository,
+      projectUid: input.projectUid,
+      serverId: input.serverId,
+      branch: input.branch,
+      domain: input.domain,
+      repositoryParameterPreserved,
+      projectParameterPreserved,
+      serverParameterPreserved,
+      branchParameterPreserved,
+      domainParameterPreserved
+    });
+  });
+
+  const contextViolations = contexts
+    .filter((entry) => entry.status !== 'PASS')
+    .map((entry) => Object.freeze({
+      path: `phase-f04-context:${entry.id}`,
+      literal: 'PARAMETERIZATION_FAILURE'
+    }));
+  const violations = Object.freeze([
+    ...scan.violations,
+    ...contextViolations
+  ]);
+  const status = violations.length === 0
+    && contexts.every((entry) => entry.status === 'PASS')
+      ? 'PASS' as const
+      : 'FAIL' as const;
+
+  return Object.freeze({
+    status,
+    forbiddenHardDependencies: Object.freeze([...PHASE_F_FORBIDDEN_HARD_DEPENDENCIES]),
+    violations,
+    contexts: Object.freeze(contexts),
     mutationPerformed: false as const,
     liveMutationDispatched: false as const
   });
