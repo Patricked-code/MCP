@@ -1,0 +1,68 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-post-integration-terminal-handoff-20260920",
+  "scope": "github:patricked-code/mcp/main",
+  "sources": [
+    {
+      "source_id": "src_post_integration_terminal_state",
+      "path": "sources/post-integration-terminal-state.json",
+      "media_type": "application/json",
+      "bytes": 3044,
+      "sha256": "50845dec267b87c5fdcf5e6f589eb1071e440426084d309670cba81892b420eb"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_post_integration_terminal",
+      "key": "gwc.integration.terminal_state",
+      "claim_type": "fact",
+      "value": "PR #95 candidate integration and PR #96 documentation reconciliation are complete. GitHub main, S1 HEAD/origin-main and runtime OCI converge on 5389f3a05ab22da551954c936fcc3fe5ab69872b; Live State 262 is FULLY_ALIGNED with zero contradictions.",
+      "source_refs": [
+        "src_post_integration_terminal_state"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_precode_history_immutable",
+      "key": "gwc.precode.history",
+      "claim_type": "fact",
+      "value": "PR #95 PRECODE and candidate bundles are immutable historical provenance after integration. They must not be rewritten or treated as active branch-local execution.",
+      "source_refs": [
+        "src_post_integration_terminal_state"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_post_integration_authority_boundary",
+      "key": "gwc.post_integration.authority_boundary",
+      "claim_type": "fact",
+      "value": "Canonical memory provides continuity/provenance only. Current GitHub state, Governed Task Queue, Governed Session, Bootstrap Receipt, locks, Live State and runtime remain the live authorities for execution and mutation.",
+      "source_refs": [
+        "src_post_integration_terminal_state"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_post_integration_new_agent_bootstrap",
+      "key": "gwc.post_integration.new_agent_bootstrap",
+      "claim_type": "fact",
+      "value": "A new agent resumes from main plus this current bundle, then reobserves Live State and Work Queue. If no executable task exists, successor work is created only from an explicit reconciled intent; terminal state alone never fabricates a task.",
+      "source_refs": [
+        "src_post_integration_terminal_state"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_post_integration_next_action",
+      "key": "gwc.next_action",
+      "claim_type": "fact",
+      "value": "REOBSERVE_LIVE_AUTHORITIES_THEN_RECONCILE_EXPLICIT_INTENT",
+      "source_refs": [
+        "src_post_integration_terminal_state"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}
