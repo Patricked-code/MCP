@@ -1,5 +1,22 @@
 # SUIVI.md
 
+## 2026-09-20 — ÉTAT COURANT APRÈS PR #95 — réconciliation documentaire GW-59→GW-65
+
+- GitHub main : `9da845822e122cc67fc86ad90243d4e7d6a6d4f4`.
+- S1 HEAD : `9da845822e122cc67fc86ad90243d4e7d6a6d4f4`.
+- S1 origin/main : `9da845822e122cc67fc86ad90243d4e7d6a6d4f4`.
+- Runtime OCI revision : `9da845822e122cc67fc86ad90243d4e7d6a6d4f4`.
+- Runtime image : `sha256:87b14c8de8a29a6111d8a4427bf9f67e64c4a70ee071fd4de76ab4a617772b8c`; conteneur `wealthtech_mcp_ssh_bridge` running + healthy.
+- S1 : branche `main`, working tree propre, diff vide, fetch `github.com-mcp-patricked-ro`, push `disabled://mcp-s1-read-only`.
+- PR #95 : fusionnée ; candidate exact-head avant merge `015dc3ebde69aa52aaa55514ef9494b83a76713a`.
+- MCP CI post-merge : #1503 / run `35515690847` = SUCCESS sur le SHA exact de main.
+- Governed Deploy : run #44 / `35515690831`, attempt 2, job `106106391469` = SUCCESS ; étape `Deploy exact main SHA through MCP` = SUCCESS.
+- Live State avant cette PR docs-only : `stateVersion 257`, GitHub↔S1 ALIGNED, runtime ALIGNED ; seule contradiction : `DOCUMENTATION_DRIFT`.
+- Governed Task : `TASK-20260920-001` ; intégration fonctionnelle et déploiement attestés, phase courante = réconciliation documentaire.
+- Cette section décrit l’état courant ; les sections historiques ci-dessous restent inchangées comme preuves RED/GREEN, audits et checkpoints antérieurs.
+- Règle Live State : le baseline déclaré ci-dessus peut devenir un ancêtre du futur `main` uniquement si le delta descendant reste strictement docs-only ; le moteur classe alors `documentation_descendant_scope=docs_only` au lieu de recréer un drift.
+- NEXT_ACTION : CI/review exact-head de cette branche docs-only, merge exact-head, autodeploy automatique, puis Live State final et terminal verification.
+
 ## 2026-09-19 — Intake Continuity / Coherence Gate / Knowledge Revisions
 
 - Extension additive de `candidateContinuity.ts` ; aucune nouvelle Task Queue, Memory DB, session manager ou autorité.
