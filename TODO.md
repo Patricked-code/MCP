@@ -216,9 +216,10 @@ PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a
 - [x] ajouter une politique machine-readable sans nouvelle autorité ;
 - [x] ajouter un workflow GitHub Actions read-only déclenchable par issue structurée ;
 - [x] interdire command input/arbitrary shell et les primitives serveur mutantes par tests ;
-- [ ] configurer le GitHub Environment `mcp-s1-readonly` avec identité SSH read-only/forced-command ;
-- [ ] configurer le GitHub Environment `mcp-s2-readonly` avec identité SSH read-only/forced-command ;
-- [ ] prouver un artifact `mcp_git_status` S1 sans bridge interactif ;
-- [ ] prouver un artifact `stablecoin_frontend_git_status` S2 sans bridge interactif ;
+- [x] ajouter le transport primaire GitHub OIDC → endpoint MCP read-only, sans OAuth MCP interactif ni secret SSH GitHub ;
+- [ ] prouver un artifact `mcp_git_status` S1 via OIDC sans bridge interactif ;
+- [ ] prouver un artifact `stablecoin_frontend_git_status` S2 via OIDC sans bridge interactif ;
+- [ ] optionnel : configurer `mcp-s1-readonly` comme fallback SSH secondaire ;
+- [ ] optionnel : configurer `mcp-s2-readonly` comme fallback SSH secondaire ;
 - [ ] seulement après preuves, décider si le fallback read-only peut être sélectionné automatiquement ;
 - [ ] traiter tout transport serveur WRITE comme un chantier séparé avec parité et gouvernance propres.
