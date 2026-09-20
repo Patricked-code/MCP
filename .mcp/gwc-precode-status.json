@@ -703,14 +703,14 @@
   },
   "historicalLiveSafetyObservationVerdict": "CANDIDATE_STACK_RECONCILED_DISPOSITIONS_RECORDED_NO_MERGE",
   "candidateProgram": {
-    "status": "READY_TO_START",
+    "status": "COMPLETE",
     "architectureComplete": true,
     "candidateImplementationStarted": true,
     "completedArchitecturePhases": "A1-A14 PASS_WITH_EVIDENCE",
     "firstCandidateWorkItem": "GWC-PRE-B-01",
     "blueprintBuildCount": 18,
-    "finalCandidateVerdict": "PENDING",
-    "liveIntegrationBoundary": "FROZEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
+    "finalCandidateVerdict": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "liveIntegrationBoundary": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
     "implementedFoundations": [
       "GWC-PRE-B-FND-01",
       "GWC-PRE-B-FND-02",
@@ -718,7 +718,7 @@
       "GWC-PRE-B-FND-04"
     ]
   },
-  "finalCandidateVerdict": "PENDING",
+  "finalCandidateVerdict": "FINAL_PRECODE_VERSION_ACCEPTED",
   "updatedForCandidateInterpretationAt": "2026-09-18T18:37:00Z",
   "updatedForCandidateInterpretationHead": "bd09af56ff4029f5509a58e1177ed75768bba5e7",
   "candidateCoordination": {
@@ -1801,7 +1801,7 @@
           "integration-package-audit"
         ],
         "title": "Phase F-06 — Integration package audit",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "priority": 47,
         "sequence": 30,
         "dependencies": [
@@ -1817,7 +1817,11 @@
         ],
         "evidence": [
           "Phase F authority requires exact integration instructions, expected main delta, drift reconciliation rules, rollback strategy, required live attestations and post-integration verification.",
-          "Dependency F-05 satisfied by exact-head CI #1484 SUCCESS @ 0fd7d9cc1758ae5a2b4e19697af76189c977053a with 601/601 full-suite tests and explicit backward-compatibility coverage."
+          "Dependency F-05 satisfied by exact-head CI #1484 SUCCESS @ 0fd7d9cc1758ae5a2b4e19697af76189c977053a with 601/601 full-suite tests and explicit backward-compatibility coverage.",
+          "F-06 package materialized existing-first in MIGRATION.md and DEPLOYMENT_PRODUCTION.md, with SUIVI/CHANGELOG/DECISIONS evidence; no runtime authority, workflow or source-code mutation.",
+          "F-06 package exact-head CI #1494 SUCCESS @ caf3b68f9f388a09b42e968e219a0311e7221d25: validation profile discovered 76 tests, governance 13/13 PASS, full suite 601/601 PASS, 0 skipped; typecheck/build/docs/GWC/secrets/whitespace all green.",
+          "Integration package defines complete GitHub-derived main delta, drift reconciliation, INTEGRATE-01..07, rollback by phase, required live attestations and post-integration terminal verification.",
+          "Checkpoint semantics separate PACKAGE_HEAD_F06 from the final PR CANDIDATE_HEAD so no commit attempts to encode its own SHA; the final closure commit requires its own exact-head CI before integration."
         ]
       }
     ],
@@ -2205,7 +2209,7 @@
           "path:CHANGELOG.md",
           "path:DECISIONS_LOG.md"
         ],
-        "status": "ACTIVE"
+        "status": "RELEASED"
       }
     ],
     "dispatchPolicy": {
@@ -6490,14 +6494,17 @@
   "currentPrecodeState": {
     "phase": "F",
     "workItem": "GWC-PRE-F-06",
-    "work": "INTEGRATION_PACKAGE_AUDIT",
-    "status": "IN_PROGRESS",
-    "nextAction": "Audit and complete the exact integration package: expected main delta, drift-reconciliation rules, rollback strategy, required live attestations and post-integration verification. Keep main, S1 and production frozen until the final candidate gate passes.",
+    "work": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "status": "PASS_WITH_EVIDENCE",
+    "nextAction": "Reobserve the final PR #95 HEAD and require its exact-head CI success. Then begin REAL PROJECT INTEGRATION at INTEGRATE-01 with fresh GitHub/main/S1/runtime/governance evidence; do not reuse stale PRECODE observations as live authorization.",
     "blocker": null
   },
   "phaseF": {
-    "status": "IN_PROGRESS",
-    "exit": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "status": "PASS_WITH_EVIDENCE",
+    "exit": [
+      "FINAL_PRECODE_VERSION_ACCEPTED",
+      "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION"
+    ],
     "integrationReadyExit": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
     "workItems": [
       "GWC-PRE-F-01",
@@ -6788,7 +6795,7 @@
     },
     "f06": {
       "workItemId": "GWC-PRE-F-06",
-      "status": "IN_PROGRESS",
+      "status": "PASS_WITH_EVIDENCE",
       "requirement": "EXACT_INTEGRATION_INSTRUCTIONS_PLUS_EXPECTED_MAIN_DELTA_PLUS_DRIFT_RECONCILIATION_PLUS_ROLLBACK_PLUS_LIVE_ATTESTATIONS_PLUS_POST_INTEGRATION_VERIFICATION",
       "dependencyEvidence": {
         "f05": {
@@ -6797,7 +6804,41 @@
           "head": "0fd7d9cc1758ae5a2b4e19697af76189c977053a",
           "result": "SUCCESS"
         }
-      }
+      },
+      "packageValidation": {
+        "packageHeadF06": "caf3b68f9f388a09b42e968e219a0311e7221d25",
+        "ciRunNumber": 1494,
+        "ciRunId": 35508506372,
+        "result": "SUCCESS",
+        "discoveredTests": 76,
+        "runnerTests": 75,
+        "dedicatedTests": 1,
+        "governanceTests": 13,
+        "tests": 601,
+        "passed": 601,
+        "failed": 0,
+        "skipped": 0,
+        "typecheck": "SUCCESS",
+        "build": "SUCCESS",
+        "docs": "SUCCESS",
+        "governance": "SUCCESS",
+        "gwcVerify": "SUCCESS",
+        "secrets": "SUCCESS",
+        "whitespace": "SUCCESS"
+      },
+      "integrationPackage": {
+        "exactIntegrationInstructions": true,
+        "githubDerivedExpectedMainDelta": true,
+        "driftReconciliationRules": true,
+        "rollbackStrategy": true,
+        "requiredLiveAttestations": true,
+        "postIntegrationVerification": true,
+        "candidateHeadSelfReferenceAvoided": true,
+        "mainMutationPerformed": false,
+        "s1MutationPerformed": false,
+        "productionDeploymentPerformed": false
+      },
+      "verdict": "INTEGRATION_PACKAGE_AUDIT_PASS"
     }
   }
 }
