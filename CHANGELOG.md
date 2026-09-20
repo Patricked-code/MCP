@@ -804,3 +804,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Les rapports sont fail-closed : aucun scénario SKIPPED ; un scénario en échec produit `FAILED`, un reason code borné et l'ensemble exact des contrats concernés.
 - TDD : RED #1451 ; premier GREEN #1454 ; self-review RED #1456 ; GREEN final #1458 sur `9b32bba86e830845ea63d90f37bf304d800b8f12`, 598/598 tests.
 - Aucun fichier `src/`, runtime authority, main, S1, production ou déploiement n'est modifié par GWC-17.
+
+
+## 2026-09-20 — Phase F-06 : paquet d’intégration de la candidate GWC
+
+- Enrichissement de `MIGRATION.md` avec le paquet PR #95 : résolution de `CANDIDATE_HEAD`, `MAIN_BEFORE`, `MERGE_SHA`, `DEPLOY_SHA` et `RUNTIME_SHA`.
+- Delta autorisé défini comme le compare GitHub complet après réconciliation, sans cherry-pick partiel ni copie serveur.
+- Ajout d’une matrice de drift, de INTEGRATE-01..07, du rollback par phase, des attestations live minimales et du DoD post-intégration.
+- `DEPLOYMENT_PRODUCTION.md` distingue explicitement HEAD candidat, SHA de fusion et SHA de déploiement tout en conservant la chaîne exact-SHA existante.
+- Aucun nouveau workflow runtime, store, autorité, outil MCP, déploiement, merge `main` ou mutation S1/production.
