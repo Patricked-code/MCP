@@ -30,7 +30,12 @@
       "primaryTransport": "github_oidc_mcp_readonly",
       "primaryEndpoint": "https://mcp.wealthtechinnovations.com/evidence/github/readonly",
       "sshFallback": "protected_environment_only_after_oidc_failure",
-      "runtimeInteractiveAuthRequired": false
+      "runtimeInteractiveAuthRequired": false,
+      "stablecoinReconciliationProbes": [
+        "stablecoin_frontend_git_status",
+        "stablecoin_backend_git_status",
+        "stablecoin_runtime_status"
+      ]
     },
     "RUNTIME_REQUIRED": {
       "runtimeMcpRequired": true,
