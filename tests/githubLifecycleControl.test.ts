@@ -443,3 +443,107 @@ test('GWC-12 self-review: merge fails closed when no check-run evidence exists',
   );
   assert.equal(mergeCalls, 0);
 });
+
+
+test('PR95 review P2: create commit preserves existing executable and symlink modes', async () => {
+  const { registerGithubLifecycleWriteTools } = await import('../src/tools/githubLifecycle.js');
+  const registry = serverRegistry();
+  const expectedHead = 'a'.repeat(40);
+  const baseTreeSha = 'b'.repeat(40);
+  const blobSha = 'c'.repeat(40);
+  const newTreeSha = 'd'.repeat(40);
+  const commitSha = 'e'.repeat(40);
+  let createdTree: any = null;
+
+  registerGithubLifecycleWriteTools(registry.server, {
+    configuredOrg: 'chainsolutions-wealthtech',
+    writeEnabled: () => true,
+    evaluateGovernance: async () => READY,
+    request: async (endpoint: string, options?: any) => {
+      if (endpoint.endsWith('/branches/mcp%2Fwork')) {
+        return ok({ name: 'mcp/work', commit: { sha: expectedHead } });
+      }
+      if (endpoint.endsWith(`/git/commits/${expectedHead}`)) {
+        return ok({ sha: expectedHead, tree: { sha: baseTreeSha } });
+      }
+      if (endpoint.endsWith(`/git/trees/${baseTreeSha}?recursive=1`)) {
+        return ok({
+          truncated: false,
+          tree: [
+            { path: 'scripts/deploy.sh', mode: '100755', type: 'blob', sha: '1'.repeat(40) },
+            { path: 'current-link', mode: '120000', type: 'blob', sha: '2'.repeat(40) }
+          ]
+        });
+      }
+      if (endpoint.endsWith('/git/blobs')) return ok({ sha: blobSha }, 201);
+      if (endpoint.endsWith('/git/trees') && options?.method === 'POST') {
+        createdTree = options.jsonBody;
+        return ok({ sha: newTreeSha }, 201);
+      }
+      if (endpoint.endsWith('/git/commits') && options?.method === 'POST') {
+        return ok({ sha: commitSha }, 201);
+      }
+      if (endpoint.endsWith('/git/refs/heads/mcp%2Fwork') && options?.method === 'PATCH') {
+        return ok({ ref: 'refs/heads/mcp/work', object: { sha: commitSha } });
+      }
+      throw new Error(`unexpected endpoint: ${endpoint}`);
+    }
+  });
+
+  const handler = registry.handlers.get('github_create_commit');
+  await handler?.({
+    organization: 'chainsolutions-wealthtech',
+    repository: 'Repo',
+    branch: 'mcp/work',
+    expectedHeadSha: expectedHead,
+    message: 'preserve modes',
+    files: [
+      { path: 'scripts/deploy.sh', contentBase64: 'YQ==' },
+      { path: 'current-link', contentBase64: 'Yg==' },
+      { path: 'new.txt', contentBase64: 'Yw==' }
+    ]
+  }, {});
+
+  const entries = new Map((createdTree?.tree ?? []).map((entry: any) => [entry.path, entry]));
+  assert.equal((entries.get('scripts/deploy.sh') as any)?.mode, '100755');
+  assert.equal((entries.get('current-link') as any)?.mode, '120000');
+  assert.equal((entries.get('new.txt') as any)?.mode, '100644');
+});
+
+test('PR95 review P2: create commit fails closed when the base tree is truncated', async () => {
+  const { registerGithubLifecycleWriteTools } = await import('../src/tools/githubLifecycle.js');
+  const registry = serverRegistry();
+  const expectedHead = 'a'.repeat(40);
+  const baseTreeSha = 'b'.repeat(40);
+
+  registerGithubLifecycleWriteTools(registry.server, {
+    configuredOrg: 'chainsolutions-wealthtech',
+    writeEnabled: () => true,
+    evaluateGovernance: async () => READY,
+    request: async (endpoint: string) => {
+      if (endpoint.endsWith('/branches/mcp%2Fwork')) {
+        return ok({ name: 'mcp/work', commit: { sha: expectedHead } });
+      }
+      if (endpoint.endsWith(`/git/commits/${expectedHead}`)) {
+        return ok({ sha: expectedHead, tree: { sha: baseTreeSha } });
+      }
+      if (endpoint.endsWith(`/git/trees/${baseTreeSha}?recursive=1`)) {
+        return ok({ truncated: true, tree: [] });
+      }
+      return ok({ sha: 'c'.repeat(40) }, 201);
+    }
+  });
+
+  const handler = registry.handlers.get('github_create_commit');
+  await assert.rejects(
+    () => handler?.({
+      organization: 'chainsolutions-wealthtech',
+      repository: 'Repo',
+      branch: 'mcp/work',
+      expectedHeadSha: expectedHead,
+      message: 'must fail closed',
+      files: [{ path: 'scripts/deploy.sh', contentBase64: 'YQ==' }]
+    }, {}),
+    /GITHUB_BASE_TREE_TRUNCATED/
+  );
+});
