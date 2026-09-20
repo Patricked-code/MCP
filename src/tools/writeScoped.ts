@@ -14,14 +14,24 @@ import {
   assertSafeScriptArgs
 } from '../ssh/writeSafety.js';
 
-const ProjectKeySchema = z.enum([
+const MutableProjectKeySchema = z.enum([
   'api_opcv',
   'front_end_opcvm',
   'legacy_funds_frontend',
   'legacy_funds_api',
   'brvmchainsolution'
 ]);
-type ProjectKey = z.infer<typeof ProjectKeySchema>;
+type MutableProjectKey = z.infer<typeof MutableProjectKeySchema>;
+
+const StatusProjectKeySchema = z.enum([
+  'api_opcv',
+  'front_end_opcvm',
+  'legacy_funds_frontend',
+  'legacy_funds_api',
+  'brvmchainsolution',
+  'stablecoin_frontend'
+]);
+type StatusProjectKey = z.infer<typeof StatusProjectKeySchema>;
 
 const AllowedScriptSchema = z.string()
   .regex(/^scripts\/[A-Za-z0-9_./-]+\.(js|ts)$/, 'Script autorisé uniquement sous scripts/ avec extension .js ou .ts')
@@ -29,7 +39,7 @@ const AllowedScriptSchema = z.string()
 
 type AllowedScript = z.infer<typeof AllowedScriptSchema>;
 
-const projects: Record<ProjectKey, { label: string; path: string; note: string }> = {
+const projects: Record<StatusProjectKey, { label: string; path: string; note: string }> = {
   api_opcv: {
     label: 'API OPCVM / FundAfrica',
     path: '/var/www/vhosts/chainsolutions.fr/africafunds.chainsolutions.fr/api',
@@ -54,10 +64,15 @@ const projects: Record<ProjectKey, { label: string; path: string; note: string }
     label: 'BRVM Chain Solution',
     path: '/opt/apps/brvmchain/BRVMCHAINSOLUTION',
     note: 'Projet BRVM autorisé pour statut Git, pull contrôlé et déploiement Docker Compose contrôlé.'
+  },
+  stablecoin_frontend: {
+    label: 'Stablecoin / E-WARI frontend',
+    path: '/var/www/vhosts/chainsolutions.fr/stablecoin.chainsolutions.fr/stablecoin',
+    note: 'Frontend Stablecoin Plesk/Passenger autorisé en lecture seule pour statut Git; pull et déploiement restent désactivés jusqu’à attestation live.'
   }
 };
 
-function inferScriptProject(script: AllowedScript): ProjectKey {
+function inferScriptProject(script: AllowedScript): MutableProjectKey {
   if (
     script.includes('repair-ost') ||
     script.includes('align-dividend-years') ||
@@ -73,7 +88,7 @@ function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'"'"'`)}'`;
 }
 
-function projectFor(project: ProjectKey) {
+function projectFor(project: StatusProjectKey) {
   return projects[project];
 }
 
@@ -92,7 +107,7 @@ async function runS2(command: string, intent: string, timeoutMs = 30_000) {
   return asText(commandResultToText(result));
 }
 
-function buildGitStatusCommand(project: ProjectKey): string {
+export function buildGitStatusCommand(project: StatusProjectKey): string {
   const config = projectFor(project);
   return `set -euo pipefail
 cd ${shellQuote(config.path)}
@@ -110,7 +125,7 @@ echo 'Remote:'
 git remote -v`;
 }
 
-function buildGitPullCommand(project: ProjectKey): string {
+function buildGitPullCommand(project: MutableProjectKey): string {
   const config = projectFor(project);
   return `set -euo pipefail
 cd ${shellQuote(config.path)}
@@ -171,7 +186,7 @@ echo "État Git final:"
 git status -sb`;
 }
 
-function buildDeployCommand(project: ProjectKey): string {
+function buildDeployCommand(project: MutableProjectKey): string {
   const config = projectFor(project);
   const common = buildGitPullCommand(project);
 
@@ -293,7 +308,7 @@ mysql -N -B ${shellQuote(env.OPCVM_DB_NAME)} -e ${shellQuote(query.trim())}`;
   });
 
   server.tool('git_status_project_s2', 'Affiche l’état Git d’un projet autorisé sur S2.', {
-    project: ProjectKeySchema
+    project: StatusProjectKeySchema
   }, async ({ project }) => runS2(
     buildGitStatusCommand(project),
     `git_status_project_s2:${project}`,
@@ -376,7 +391,7 @@ DOCKER_API_VERSION=1.44 docker logs --tail ${lines} brvm_app 2>&1${filter} | sed
   server.tool('exec_repo_script_s2', 'Exécute uniquement un script autorisé du dépôt API OPCVM ou BRVM sur S2. Le paramètre project force le dépôt cible.', {
     script: AllowedScriptSchema,
     args: z.array(z.string()).default([]),
-    project: ProjectKeySchema.optional()
+    project: MutableProjectKeySchema.optional()
   }, async ({ script, args, project }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     assertSafeScriptArgs(args);
@@ -401,14 +416,14 @@ node ${shellQuote(script)} ${quotedArgs}`;
   });
 
   server.tool('git_pull_project_s2', 'Met à jour automatiquement un projet autorisé sur S2 avec stash, pull --rebase et restauration du stash.', {
-    project: ProjectKeySchema
+    project: MutableProjectKeySchema
   }, async ({ project }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     return runS2(buildGitPullCommand(project), `git_pull_project_s2:${project}`, 300_000);
   });
 
   server.tool('deploy_project_s2', 'Déploie automatiquement un projet autorisé sur S2 avec logs, stash, rebase et recette projet.', {
-    project: ProjectKeySchema
+    project: MutableProjectKeySchema
   }, async ({ project }) => {
     assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
     return runS2(buildDeployCommand(project), `deploy_project_s2:${project}`, 900_000);

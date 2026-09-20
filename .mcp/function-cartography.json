@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "4bd120417137c0f0ddd55019f0e58072e2c5e645293ed471c4816d3ee6a296c8",
+  "catalogueDigest": "649106c3e17cf127c9e07a8a699934aa703774810e9a6ba16305790d2d948636",
   "registeredToolCount": 132,
   "readOnlyToolCount": 81,
   "writeToolCount": 51,
@@ -463,7 +463,8 @@
               "front_end_opcvm",
               "legacy_funds_frontend",
               "legacy_funds_api",
-              "brvmchainsolution"
+              "brvmchainsolution",
+              "stablecoin_frontend"
             ]
           }
         },
@@ -472,7 +473,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "f8f4639b9a7b002fdde481b9be13d8a359955d653ddd39290223689990dd5b0d"
+      "contractDigest": "186bf89bb76d5f86ffa5c0c2acbd2c43d6600793deb231fa60303863a78715d0"
     },
     {
       "name": "github_account_inventory",
