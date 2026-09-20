@@ -685,3 +685,17 @@ Date : 2026-08-29
 - Frontière : aucun merge `main`, aucune mutation S1/production et aucun déploiement avant attestation finale F-06.
 - Preuve SHA sans auto-référence : `PACKAGE_HEAD_F06` est le head du paquet validé ; le futur `CANDIDATE_HEAD` est le HEAD de PR réobservé après le commit de clôture F-06 et doit lui-même avoir une CI exact-head verte. Le commit de clôture ne tente pas d’encoder son propre SHA.
 - NEXT_ACTION : valider la CI exacte du paquet F-06 ; si verte, enregistrer la preuve finale, libérer le claim et émettre seulement alors `FINAL_PRECODE_VERSION_ACCEPTED / EVOLVED_CANDIDATE_READY_FOR_INTEGRATION`.
+
+
+## 2026-09-20 — PR #95 INTEGRATE-04 — findings Codex P1/P2 corrigés en TDD
+
+- Le passage de la PR #95 en `Ready for review` a déclenché une review Codex sur le HEAD `938a7f01b4404c7980711b372746d08c3861f6f7`.
+- P1 confirmé : `src/deploy/s1Deploy.ts` générait un worker Bash où `write_attestation()` n’était pas fermé avant `http_code()`. Conséquence : `bash -n` échouait et un déploiement pouvait rester en polling jusqu’au timeout.
+- P2 confirmé : `src/tools/githubLifecycle.ts` forçait `mode: 100644` lors d’un remplacement de fichier Git, pouvant retirer `100755` à un exécutable ou casser la sémantique d’un symlink `120000`.
+- TDD RED : MCP CI #1497 sur `849e73eba7744413925e9ed79461e7b4fe08999e` — 604 tests, 601 PASS, exactement 3 échecs attendus : syntaxe du worker, préservation `100755/120000`, refus d’un base tree tronqué.
+- GREEN source : MCP CI #1499 SUCCESS sur `a8a32547c05a25da900dc2417f37b6ef3da4f8a8` — 604/604 PASS, 0 skipped ; typecheck, build, docs, gouvernance, GWC, secrets et whitespace verts.
+- Correctif P1 : fermeture explicite de `write_attestation()`; le worker généré est désormais validé par `bash -n`.
+- Correctif P2 : lecture du base tree Git, conservation des modes blob remplaçables `100644`, `100755`, `120000`, défaut `100644` uniquement pour un nouveau chemin et échec fermé `GITHUB_BASE_TREE_TRUNCATED` si GitHub signale un tree tronqué.
+- Les chemins existants non remplaçables comme blob échouent fermé via `GITHUB_EXISTING_PATH_NOT_REPLACEABLE_BLOB`.
+- Gouvernance : `TASK-20260920-001` reste bloquée jusqu’au HEAD documentaire final vert et à la résolution explicite des deux review threads. Aucun merge `main`, aucune mutation S1/runtime et aucun déploiement n’ont été effectués.
+- NEXT_ACTION : valider le HEAD final après traçabilité documentaire, répondre/résoudre les deux threads P1/P2, réobserver `main` + ruleset + check `validate`, puis seulement réouvrir l’admission de merge.
