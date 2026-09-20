@@ -208,3 +208,17 @@ PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a
 - [ ] vérifier les realpaths, remotes et domaines requis sans déduire une preuve absente ;
 - [ ] traiter la migration MCP séparément ; `migration_pending` interdit toute mutation automatique du remote actif ;
 - [ ] seulement après toutes les preuves et gates, concevoir/exécuter la transition explicite d'un mapping `validated → active` ; aucune activation n'est incluse dans le présent jalon.
+
+
+### GitHub-first Operational Continuity V1
+
+- [x] généraliser la décision de bootstrap en `GITHUB_ONLY | GITHUB_ACTION_READONLY_EVIDENCE | RUNTIME_REQUIRED` ;
+- [x] ajouter une politique machine-readable sans nouvelle autorité ;
+- [x] ajouter un workflow GitHub Actions read-only déclenchable par issue structurée ;
+- [x] interdire command input/arbitrary shell et les primitives serveur mutantes par tests ;
+- [ ] configurer le GitHub Environment `mcp-s1-readonly` avec identité SSH read-only/forced-command ;
+- [ ] configurer le GitHub Environment `mcp-s2-readonly` avec identité SSH read-only/forced-command ;
+- [ ] prouver un artifact `mcp_git_status` S1 sans bridge interactif ;
+- [ ] prouver un artifact `stablecoin_frontend_git_status` S2 sans bridge interactif ;
+- [ ] seulement après preuves, décider si le fallback read-only peut être sélectionné automatiquement ;
+- [ ] traiter tout transport serveur WRITE comme un chantier séparé avec parité et gouvernance propres.
