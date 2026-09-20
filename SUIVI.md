@@ -671,3 +671,16 @@ Date : 2026-08-29
 - Fail-closed : un scénario forcé en échec rend le rapport GW-73 `FAILED` et expose l'ensemble exact des `failedContracts`; aucun scénario n'est silencieusement SKIPPED.
 - Frontière : aucune mutation main/S1/production, aucun déploiement, aucune Task/Session/Lock runtime et aucune nouvelle autorité.
 - NEXT_ACTION : matérialiser le checkpoint canonique GWC-17, valider sa CI exact-head, libérer GWC-17 seulement après SUCCESS puis lire les autorités Phase F / final candidate gate avant toute intégration.
+
+
+## 2026-09-20 — Phase F-06 Integration Package Audit — paquet matérialisé, validation exact-head requise
+
+- `GWC-PRE-F-05` est clôturé par MCP CI #1484 SUCCESS sur `0fd7d9cc1758ae5a2b4e19697af76189c977053a` : 76 fichiers de tests découverts, 601/601 tests runner PASS, 13/13 governance PASS, zéro test historique supprimé, typecheck/build/docs/GWC/secrets/whitespace verts.
+- `GWC-PRE-F-06` est le dernier work item du gate candidat ; claim branch-local `candidate-gwc8-recovery-4d887146-20260919`, sans Task/Session/Lock runtime.
+- Audit : `DEPLOYMENT_PRODUCTION.md` possédait déjà la chaîne exact-SHA et le rollback runtime ; `PRECODE_ACTION_TASK_FLOW.txt` possédait déjà INTEGRATE-01..07 ; `MIGRATION.md` ne reliait pas encore de bout en bout delta main, drift, rollback, attestations live et DoD post-intégration.
+- Correction existing-first : enrichissement de `MIGRATION.md` et liaison depuis `DEPLOYMENT_PRODUCTION.md`, sans nouveau moteur, outil, store ni workflow.
+- `CANDIDATE_HEAD` certifie la PR avant fusion ; `MERGE_SHA` est la réalité GitHub après fusion ; `DEPLOY_SHA` doit être exactement `MERGE_SHA`. Aucune égalité HEAD candidat/merge SHA n’est supposée.
+- Si `main` ou la candidate évolue, réconcilier sur la branche et rejouer les preuves affectées ; conflit/UNKNOWN/stale/ownership concurrent échoue fermé.
+- Rollback : avant merge aucune mutation prod ; après merge Git est revert/fix-forward via PR, jamais réécrit ; échec runtime = rollback d’image existant puis réconciliation GitHub/runtime.
+- Frontière : aucun merge `main`, aucune mutation S1/production et aucun déploiement avant attestation finale F-06.
+- NEXT_ACTION : valider la CI exacte du paquet F-06 ; si verte, enregistrer la preuve finale, libérer le claim et émettre seulement alors `FINAL_PRECODE_VERSION_ACCEPTED / EVOLVED_CANDIDATE_READY_FOR_INTEGRATION`.
