@@ -250,14 +250,49 @@ async function createCommitInternal(
     throw new Error('GITHUB_BASE_TREE_INVALID');
   }
 
+  const baseTree = object(await expect(
+    deps,
+    `${repoEndpoint(input.org, input.repo)}/git/trees/${baseTreeSha}?recursive=1`
+  ));
+  if (boolean(baseTree?.truncated) === true) {
+    throw new Error('GITHUB_BASE_TREE_TRUNCATED');
+  }
+
+  const existingEntries = new Map<string, { mode: string | null; type: string | null }>();
+  for (const rawEntry of array(baseTree?.tree)) {
+    const entry = object(rawEntry);
+    const path = string(entry?.path);
+    if (!path) continue;
+    existingEntries.set(path, {
+      mode: string(entry?.mode),
+      type: string(entry?.type)
+    });
+  }
+
+  type ReplaceableBlobMode = '100644' | '100755' | '120000';
+  const replaceableBlobModes = new Set<ReplaceableBlobMode>(['100644', '100755', '120000']);
   const treeEntries: Array<{
     path: string;
-    mode: '100644';
+    mode: ReplaceableBlobMode;
     type: 'blob';
     sha: string;
   }> = [];
+
   for (const file of input.files) {
     const path = safePath(file.path);
+    const existing = existingEntries.get(path);
+    let mode: ReplaceableBlobMode = '100644';
+    if (existing) {
+      if (
+        existing.type !== 'blob'
+        || !existing.mode
+        || !replaceableBlobModes.has(existing.mode as ReplaceableBlobMode)
+      ) {
+        throw new Error('GITHUB_EXISTING_PATH_NOT_REPLACEABLE_BLOB');
+      }
+      mode = existing.mode as ReplaceableBlobMode;
+    }
+
     const blob = object(await expect(
       deps,
       `${repoEndpoint(input.org, input.repo)}/git/blobs`,
@@ -270,7 +305,7 @@ async function createCommitInternal(
     if (!blobSha || !/^[0-9a-f]{40}$/.test(blobSha)) {
       throw new Error('GITHUB_BLOB_SHA_INVALID');
     }
-    treeEntries.push({ path, mode: '100644', type: 'blob', sha: blobSha });
+    treeEntries.push({ path, mode, type: 'blob', sha: blobSha });
   }
 
   const tree = object(await expect(
