@@ -303,7 +303,8 @@
             "front_end_opcvm",
             "legacy_funds_frontend",
             "legacy_funds_api",
-            "brvmchainsolution"
+            "brvmchainsolution",
+            "stablecoin_frontend"
           ]
         }
       },
