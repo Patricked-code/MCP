@@ -906,3 +906,14 @@ Décision de rollback : après merge, GitHub reste immuable et toute annulation 
 Décision de clôture : aucun merge ou job de déploiement seul ne suffit à produire `DONE`. La terminalité exige CI main, déploiement exact `MERGE_SHA`, attestation S1/OCI/runtime/Live State, santé HTTP/OAuth/MCP, documentation alignée, absence de locks contradictoires et checkpoint/fermeture des éventuelles autorités Task/Session utilisées.
 
 Décision de checkpoint final : F-06 distingue le `PACKAGE_HEAD_F06`, validable et enregistrable avant clôture, du `CANDIDATE_HEAD`, qui est le HEAD de PR réobservé après le commit final de projection. Un commit ne tente jamais de certifier son propre SHA dans son contenu ; le HEAD final est certifié par son exécution CI exact-head et par la réobservation externe précédant l’intégration.
+
+
+## 2026-09-20 — PR #95 : décisions suite aux findings Codex P1/P2
+
+Décision P1 : le script Bash réellement généré par `buildS1DeployWorkerScript` fait désormais partie de la surface testée syntaxiquement. Un contrôle textuel du workflow ne suffit pas : le worker produit doit passer `bash -n` afin qu’une erreur de fonction non fermée ne puisse être transformée en job détaché bloqué jusqu’au timeout.
+
+Décision P2 : les outils GitHub gouvernés ne normalisent plus silencieusement un fichier existant vers `100644`. Lors d’un remplacement, le mode du base tree est l’autorité pour les blobs remplaçables `100644`, `100755` et `120000`. `100644` n’est la valeur par défaut que pour un chemin réellement nouveau.
+
+Décision fail-closed : si l’API GitHub signale que le base tree récursif est tronqué, le commit est refusé plutôt que de risquer de traiter un fichier existant comme nouveau. De même, un chemin existant dont le type/mode n’est pas un blob remplaçable est refusé. La sécurité de non-régression des métadonnées Git prime sur la création du commit.
+
+Décision d’intégration : les deux findings sont corrigés sur la branche PR #95 et prouvés par CI #1499, mais les review threads ne sont résolus qu’après validation du HEAD documentaire final. La tâche gouvernée d’intégration reste bloquée jusque-là ; aucun merge ou déploiement n’est anticipé.
