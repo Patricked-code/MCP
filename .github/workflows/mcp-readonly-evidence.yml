@@ -159,13 +159,52 @@ jobs:
           OIDC_TOKEN="$(get_oidc)"
           printf '::add-mask::%s\n' "$OIDC_TOKEN"
 
-          RESPONSE="$(curl --fail --silent --show-error --max-time 20 \
+          response_file="$RUNNER_TEMP/mcp-readonly-evidence-response.json"
+          HTTP_STATUS="$(curl --silent --show-error --max-time 20 \
             --request POST \
             --header "Authorization: Bearer ${OIDC_TOKEN}" \
             --header 'Content-Type: application/json' \
             --data "$REQUEST_BODY" \
+            --output "$response_file" \
+            --write-out '%{http_code}' \
             "${MCP_BASE_URL}/evidence/github/readonly")"
           unset OIDC_TOKEN REQUEST_BODY
+
+          RESPONSE="$(cat "$response_file")"
+          rm -f "$response_file"
+
+          if [ "$HTTP_STATUS" != "200" ]; then
+            HTTP_STATUS="$HTTP_STATUS" RESPONSE="$RESPONSE" node <<'NODE'
+          const raw = process.env.RESPONSE || '';
+          if (Buffer.byteLength(raw, 'utf8') > 4096) process.exit(51);
+          let body;
+          try { body = JSON.parse(raw); } catch { process.exit(52); }
+          const allowedReasons = new Set([
+            'read_policy_rejected',
+            'read_transport_failed',
+            'remote_exit_nonzero'
+          ]);
+          if (
+            !body
+            || body.error !== 'readonly_evidence_collection_failed'
+            || !allowedReasons.has(body.reasonCode)
+          ) process.exit(53);
+          if (
+            body.exitCode !== undefined
+            && (!Number.isSafeInteger(body.exitCode) || body.exitCode < 0 || body.exitCode > 255)
+          ) process.exit(54);
+          const suffix = body.exitCode === undefined ? '' : ' exitCode=' + body.exitCode;
+          process.stderr.write(
+            'Read-only evidence endpoint failed: http='
+            + process.env.HTTP_STATUS
+            + ' reasonCode='
+            + body.reasonCode
+            + suffix
+            + '\n'
+          );
+          process.exit(55);
+          NODE
+          fi
 
           RESPONSE="$RESPONSE" TARGET="$TARGET" PROBE="$PROBE" REQUEST_ID="$REQUEST_ID" \
           RUN_ID="$GITHUB_RUN_ID" REPOSITORY="$GITHUB_REPOSITORY" SHA="$GITHUB_SHA" \
