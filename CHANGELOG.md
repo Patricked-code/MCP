@@ -843,3 +843,10 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Préserve `pr95-e-gwc17-universal-acceptance-complete` comme bundle historique immuable dans `previousBundles`.
 - Remplace le protocole de reprise courant PRECODE par : réobserver Live State/Work Queue, reprendre une tâche compatible ou réconcilier une intention explicite.
 - Aucun fichier runtime, workflow, politique, test ou serveur n’est modifié.
+
+## 2026-09-20 — GWC : réconciliation terminale du handoff canonique
+
+- Ajoute une projection Markdown terminale déclarant `21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15` comme baseline GitHub/S1/runtime attesté après PR #97.
+- Enregistre MCP CI #1519 et Governed Deploy #46 comme preuves exact-SHA du handoff canonique fusionné.
+- Corrige le dernier `DOCUMENTATION_DRIFT` sans toucher au bundle JSON : le futur merge reste un descendant strictement Markdown et utilise la règle docs-only existante.
+- Aucun code, workflow, script, test, politique ou fichier JSON canonique n'est modifié.
