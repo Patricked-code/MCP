@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-candidate-backlog-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_phase_b_candidate_backlog_complete",
+      "path": "sources/candidate-backlog-complete.json",
+      "media_type": "application/json",
+      "bytes": 2014,
+      "sha256": "e89b5f28160fa5972421b772a45bd3dc415be241be15c8cb0bb031ff192b60a9"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_phase_b_complete",
+      "key": "candidate.phase_b_exit",
+      "claim_type": "fact",
+      "value": "GWC-PRE-B-01/B-02/B-03 are complete with evidence and Phase B exits CANDIDATE_BACKLOG_COMPLETE.",
+      "source_refs": [
+        "src_phase_b_candidate_backlog_complete"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_backlog_coverage",
+      "key": "candidate.backlog_coverage",
+      "claim_type": "fact",
+      "value": "18/18 blueprints, 73/73 contracts, 36/36 findings and 12/12 open decisions are represented; 18 items are exact-bound with no remaining binding gaps.",
+      "source_refs": [
+        "src_phase_b_candidate_backlog_complete"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_macro_crosswalk",
+      "key": "candidate.root_macro_crosswalk",
+      "claim_type": "fact",
+      "value": "GWC_ROOT and MC-A..MC-H are additive only; 72 runtime contracts have macro bindings and GW-73 remains explicitly outside the normal runtime graph.",
+      "source_refs": [
+        "src_phase_b_candidate_backlog_complete"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_phase_c_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Next eligible PRECODE work item is GWC-PRE-C1: AF-19 exact deployed-SHA/CI safety correction on the candidate branch, without deployment or live activation.",
+      "source_refs": [
+        "src_phase_b_candidate_backlog_complete"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

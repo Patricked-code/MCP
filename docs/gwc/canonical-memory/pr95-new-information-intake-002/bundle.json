@@ -1,0 +1,68 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-new-information-intake-002-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_new_information_intake_002",
+      "path": "sources/new-information-intake-002.json",
+      "media_type": "application/json",
+      "bytes": 5644,
+      "sha256": "5e4c94985a0dcb9232cd20b6a9c2e511c0cac3424b674e0cd564aed61ff0e8d9"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_intake_002_registered",
+      "key": "candidate.new_information_intake.002",
+      "claim_type": "fact",
+      "value": "NEW_INFORMATION_INTAKE #2 records how intake #1 must be reconciled with existing GWC matrices before candidate backlog synthesis; raw transcript is not persisted.",
+      "source_refs": [
+        "src_new_information_intake_002"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intake_002_existing_matrices",
+      "key": "candidate.gwc_existing_matrices_reuse",
+      "claim_type": "fact",
+      "value": "Existing GWC matrices are structurally coherent: 73 unique contracts, 72 runtime members, GW-73 outside runtime, 91 graph edges, 18 blueprints and 18 evolution designs with no contract-to-blueprint mismatch observed.",
+      "source_refs": [
+        "src_new_information_intake_002"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intake_002_no_parallel_matrix",
+      "key": "candidate.gwc_no_parallel_master_matrix",
+      "claim_type": "fact",
+      "value": "Do not create a second generic contract matrix. Consolidate missing bindings as an additive projection over existing registries and design artifacts.",
+      "source_refs": [
+        "src_new_information_intake_002"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intake_002_macro_binding",
+      "key": "candidate.gwc_macro_contract_binding",
+      "claim_type": "fact",
+      "value": "Additive reconciliation target: GWC Root + MC-A..MC-H macro orchestration layer and macroContractRef bindings, while preserving canonical families A..I and all 73 GW IDs.",
+      "source_refs": [
+        "src_new_information_intake_002"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intake_002_b_phase",
+      "key": "candidate.gwc_b_phase_integration_instruction",
+      "claim_type": "fact",
+      "value": "Use reconciled intake #1/#2 to inform GWC-PRE-B-01 backlog synthesis, GWC-PRE-B-02 exact bindings, and GWC-PRE-B-03 completeness/consistency audit; no candidate work is dispatched by this intake.",
+      "source_refs": [
+        "src_new_information_intake_002"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

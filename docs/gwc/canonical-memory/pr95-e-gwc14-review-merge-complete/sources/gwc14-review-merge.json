@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-14",
+  "blueprint": "GWC-14",
+  "title": "Review / merge contracts",
+  "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+  "session": {
+    "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "heartbeatCommentId": 5740056645
+  },
+  "baseline": {
+    "governedGithubContext": "src/governedContext/github.ts",
+    "governedGithubTypes": "src/governedContext/types.ts",
+    "githubLifecycle": "src/tools/githubLifecycle.ts",
+    "taskAuthority": "src/tools/governedTasks.ts#mcp_transition_governed_task",
+    "sessionCheckpointAuthority": "src/tools/governedSessions.ts#mcp_create_governed_checkpoint",
+    "integrationClassification": "REUSE/EXTEND",
+    "reviewCommitBinding": "reviews.headSha + reviews.exactHead",
+    "premergePrimitive": "PremergeProof",
+    "od06": "RESOLVED_AUTONOMOUS_EXISTING_FIRST"
+  },
+  "implementation": {
+    "module": "src/governedWorkflow/review/index.ts",
+    "contextExtension": "src/governedContext/github.ts",
+    "tests": [
+      "tests/governedWorkflowReview.test.ts"
+    ],
+    "contracts": [
+      "GW-34",
+      "GW-35",
+      "GW-36",
+      "GW-37",
+      "GW-38",
+      "GW-39",
+      "GW-40",
+      "GW-41",
+      "GW-42",
+      "GW-43"
+    ],
+    "behavior": [
+      "GW-34..GW-43 reuse the existing governed GitHub, task-transition and governed-session checkpoint authorities without introducing a second GitHub or task authority.",
+      "Review evidence is commit/head bound; stale or mismatched review evidence fails closed when policy requires approvals and unresolved required threads remain blockers.",
+      "PremergeProof composes existing GitHub/task/session evidence without re-observing and is bound to exact head, pull request and repository.",
+      "PremergeProof is additionally bound to taskId/taskRevision, governedSessionId/sessionRevision, bootstrapReceiptId and stateVersion before GW-42 can plan MERGE_READY.",
+      "GW-43 refuses a proof for another head, pull request or repository and plans only the existing governed exact-head merge capability.",
+      "Exact-head merge remains NON_REPLAYABLE_RECOVER_BY_OBSERVATION and no merge is executed by candidate evaluation code."
+    ]
+  },
+  "evidence": {
+    "red": {
+      "head": "417f799412d5e3c2003fb22dc7c93290bd74632f",
+      "ciRunNumber": 1393,
+      "ciRunId": 35435781365,
+      "conclusion": "FAILURE_EXPECTED",
+      "failures": 10,
+      "signature": "GW34_TO_GW43_REVIEW_MODULE_ABSENT"
+    },
+    "firstFullGreen": {
+      "head": "51dbb2848585faf5b1d90efa58739b4047461c8e",
+      "ciRunNumber": 1397,
+      "ciRunId": 35436741688,
+      "conclusion": "SUCCESS"
+    },
+    "selfReview": [
+      {
+        "head": "0e885fb998b917b9e73d415bec9d1e8e3a245379",
+        "ciRunNumber": 1398,
+        "ciRunId": 35436824963,
+        "conclusion": "FAILURE_ONE_REAL_FINDING",
+        "finding": "GW-43 accepted a PremergeProof produced for a different pull request when the head SHA matched."
+      },
+      {
+        "head": "29ff055be9486ca3c0da32a94c86ac86298d6efa",
+        "ciRunNumber": 1400,
+        "ciRunId": 35436977365,
+        "conclusion": "FAILURE_ONE_REAL_FINDING",
+        "finding": "GW-43 accepted a PremergeProof from a different repository when pull request number and head SHA matched."
+      },
+      {
+        "head": "b70324e1a54a3a1d0dbfb7579d2d68ad7a4491c6",
+        "ciRunNumber": 1402,
+        "ciRunId": 35437136988,
+        "conclusion": "FAILURE_ONE_REAL_FINDING",
+        "finding": "GW-42 accepted a PremergeProof bound to another task because task/session/receipt revisions were not part of the proof."
+      }
+    ],
+    "finalGreen": {
+      "head": "03979501b3c2337f7ed0dca90c91daac3eec9da5",
+      "ciRunNumber": 1404,
+      "ciRunId": 35437251434,
+      "conclusion": "SUCCESS",
+      "tests": 552,
+      "passed": 552,
+      "failed": 0,
+      "discoveredTests": 73,
+      "runnerTests": 72,
+      "dedicatedTests": 1
+    }
+  },
+  "boundaries": {
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deployment": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "mergeExecuted": false,
+    "secondGithubAuthority": false,
+    "secondTaskAuthority": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete",
+    "releaseRule": "Keep the GWC-14 PRECODE claim ACTIVE until exact-head checkpoint CI succeeds; release only afterward.",
+    "nextWorkItem": "GWC-PRE-E-GWC-15"
+  }
+}

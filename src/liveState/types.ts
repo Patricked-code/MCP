@@ -1,3 +1,5 @@
+import type { TargetContext } from '../operationalMemory/targetScope.js';
+
 export type LiveStateSourceStatus = 'CURRENT' | 'STALE' | 'UNAVAILABLE';
 export type LiveStateFreshness = 'CURRENT' | 'STALE';
 export type LiveStatePairAlignment = 'ALIGNED' | 'DRIFTED' | 'UNVERIFIED';
@@ -117,6 +119,7 @@ export type CurrentStateAuditBaselineObservation = {
 
 export type LiveStateObservations = {
   repository: string;
+  targetContext?: TargetContext;
   github: GithubLiveObservation;
   s1: S1LiveObservation;
   runtime: RuntimeLiveObservation;

@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc9-governance-capabilities-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc9_governance_capabilities",
+      "path": "sources/gwc9-governance-capabilities.json",
+      "media_type": "application/json",
+      "bytes": 4578,
+      "sha256": "1df2c7b9a971b2583d041efeb938d492180e97565844beebe8a26921c7cae843"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc9_pass",
+      "key": "candidate.phase_e.gwc_9",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-9 is PASS_WITH_EVIDENCE. RED CI #1298 proved AF-32 plus the missing GW-10/GW-11 composer; first full GREEN CI #1300 succeeded; self-review added runtime shadow-parity coverage; CI #1301 exposed only an incomplete test fixture environment; final GREEN CI #1302 succeeded at ff85ab51ae59df044ad179abe0865374e41f2412.",
+      "source_refs": [
+        "src_gwc9_governance_capabilities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc9_af32",
+      "key": "candidate.gwc9_af32",
+      "claim_type": "fact",
+      "value": "AF-32 is closed in shadow mode: mcp_reconcile_agent_intent, mcp_claim_next_governed_task and mcp_transition_governed_task now traverse the existing Scoped Write Gate while preserving operational-write classification and historical execution outcomes. No enforcing mode was introduced.",
+      "source_refs": [
+        "src_gwc9_governance_capabilities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc9_authority",
+      "key": "candidate.gwc9_authority_boundary",
+      "claim_type": "fact",
+      "value": "GW-10/GW-11 reuse CapabilityReality, GovernanceDecision and Scoped Write Gate. No second governance engine or capability authority exists; composition is monotonic, UNKNOWN never becomes permitted, and contradictory capability source snapshots fail closed.",
+      "source_refs": [
+        "src_gwc9_governance_capabilities"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc10_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Retain the GWC-9 branch-local claim until this checkpoint passes exact-head CI. After validation, release GWC-9 and dispatch GWC-PRE-E-GWC-10 without replaying GWC-9.",
+      "source_refs": [
+        "src_gwc9_governance_capabilities"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

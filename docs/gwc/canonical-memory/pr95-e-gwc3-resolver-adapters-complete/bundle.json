@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc3-resolver-adapters-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc3_resolver_adapters",
+      "path": "sources/gwc3-resolver-adapters.json",
+      "media_type": "application/json",
+      "bytes": 2470,
+      "sha256": "3a13da8068890196bb2d66118a63be0e48e5fdf43af74bbfe74aa9cf40b3ec0b"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc3_pass",
+      "key": "candidate.phase_e.gwc_3",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-3 is PASS_WITH_EVIDENCE. RED CI #1189 proved both the missing adapter seam and the missing githubRepositoryResolution CI coverage; GREEN CI #1192 succeeded on f482b67ebaf9c3bb4bbf613da2084d97cdedeefa.",
+      "source_refs": [
+        "src_gwc3_resolver_adapters"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc3_parity",
+      "key": "candidate.gwc3_resolver_parity",
+      "claim_type": "fact",
+      "value": "GW-04/GW-05/GW-06 are thin parity wrappers over the existing identity/repository/project resolvers, with contract versions resolved from GWC-0 and no resolver or registry authority change.",
+      "source_refs": [
+        "src_gwc3_resolver_adapters"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc3_ci_gap",
+      "key": "candidate.gwc3_repository_ci_gap",
+      "claim_type": "fact",
+      "value": "tests/githubRepositoryResolution.test.ts is now included in test:readonly-safety and executed by CI.",
+      "source_refs": [
+        "src_gwc3_resolver_adapters"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc4_gwc6_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-4 and GWC-PRE-E-GWC-6 become dependency-safe; execute GWC-4 first by nominal sequence.",
+      "source_refs": [
+        "src_gwc3_resolver_adapters"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

@@ -3,12 +3,13 @@ import { randomUUID as createRandomUUID } from 'node:crypto';
 import { z } from 'zod';
 
 import type { RequestIdentity } from './sessionService.js';
+import { RepositoryTargetSchema } from './targetScope.js';
 
 export const ConnectionContextSchema = z.object({
   schemaVersion: z.literal(1),
   connectionContextId: z.string().uuid(),
   governedSessionId: z.string().uuid(),
-  repository: z.literal('Patricked-code/MCP'),
+  repository: RepositoryTargetSchema,
   principalId: z.string().trim().min(1).max(256).startsWith('oauth:'),
   observedClientId: z.string().trim().min(1).max(256).nullable(),
   identityAssurance: z.literal('oauth_subject'),
@@ -21,7 +22,7 @@ export type ConnectionContext = z.infer<typeof ConnectionContextSchema>;
 
 export type CreateConnectionContextInput = {
   governedSessionId: string;
-  repository: 'Patricked-code/MCP';
+  repository: string;
   requestIdentity: RequestIdentity;
   now?: () => Date;
   randomUUID?: () => string;

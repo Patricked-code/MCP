@@ -10,12 +10,12 @@ const SHA = 'c'.repeat(40);
 const RUN_ID = '31318000000';
 const JOB_ID = `mcp-s1-${RUN_ID}-${SHA.slice(0, 12)}`;
 
-function fakeClaims() {
+function fakeClaims(eventName: 'push' | 'workflow_dispatch' = 'workflow_dispatch') {
   return {
     repository: 'Patricked-code/MCP',
     sha: SHA,
     run_id: RUN_ID,
-    event_name: 'push'
+    event_name: eventName
   };
 }
 
@@ -262,5 +262,81 @@ test('le routeur limite son JSON à 4kb', async () => {
       body: JSON.stringify({ sha: SHA, padding: 'x'.repeat(5000) })
     });
     assert.equal(response.status, 413);
+  });
+});
+
+
+test('GWC-15 self-review: push admission requires bounded same-SHA CI evidence while manual dispatch stays explicit', async () => {
+  const pushDependencies = dependencies({
+    verifyOidc: async (token: string, sha: string) => {
+      if (token !== 'valid-oidc') throw new Error('oidc_signature_invalid');
+      if (sha !== SHA) throw new Error('oidc_sha_mismatch');
+      return fakeClaims('push');
+    }
+  });
+  await withServer(pushDependencies, async (baseUrl) => {
+    const missingEvidence = await fetch(`${baseUrl}/deploy/github/s1/start`, {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer valid-oidc',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ sha: SHA })
+    });
+    assert.equal(missingEvidence.status, 400);
+
+    const exact = await fetch(`${baseUrl}/deploy/github/s1/start`, {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer valid-oidc',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sha: SHA,
+        admission: {
+          kind: 'push_ci_gate',
+          ciRunId: 1500,
+          ciHeadSha: SHA,
+          ciConclusion: 'success'
+        }
+      })
+    });
+    assert.equal(exact.status, 202);
+
+    const wrongSha = await fetch(`${baseUrl}/deploy/github/s1/start`, {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer valid-oidc',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sha: SHA,
+        admission: {
+          kind: 'push_ci_gate',
+          ciRunId: 1500,
+          ciHeadSha: 'd'.repeat(40),
+          ciConclusion: 'success'
+        }
+      })
+    });
+    assert.equal(wrongSha.status, 400);
+  });
+
+  await withServer(dependencies({
+    verifyOidc: async (token: string, sha: string) => {
+      if (token !== 'valid-oidc') throw new Error('oidc_signature_invalid');
+      if (sha !== SHA) throw new Error('oidc_sha_mismatch');
+      return fakeClaims('workflow_dispatch');
+    }
+  }), async (baseUrl) => {
+    const manual = await fetch(`${baseUrl}/deploy/github/s1/start`, {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer valid-oidc',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ sha: SHA })
+    });
+    assert.equal(manual.status, 202);
   });
 });

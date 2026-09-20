@@ -80,7 +80,13 @@ function fallbackGithub(
       required: [],
       requiredSatisfied: null
     },
-    reviews: { approvals: 0, changesRequested: 0, unresolvedThreads: null },
+    reviews: {
+      approvals: 0,
+      changesRequested: 0,
+      unresolvedThreads: null,
+      headSha: null,
+      exactHead: null
+    },
     ruleset: {
       name: null,
       enforcement: null,
@@ -417,8 +423,10 @@ export function createGovernedOperationalContextService(
       schemaVersion: 1,
       generatedAt,
       freshness,
-      repository: 'Patricked-code/MCP',
-      governedBranch: 'main',
+      repository: session?.repository ?? 'Patricked-code/MCP',
+      governedBranch: session?.workBranch ?? 'main',
+      targetContext: liveState?.targetContext ?? null,
+      targetScope: session?.targetScope ?? null,
       liveState,
       github,
       session,

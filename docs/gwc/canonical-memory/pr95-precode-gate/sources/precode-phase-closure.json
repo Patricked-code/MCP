@@ -1,0 +1,21 @@
+{
+  "flow": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+  "statusProjection": ".mcp/gwc-precode-status.json",
+  "phasesPassWithEvidence": "A1..A14",
+  "blockedPhasesClosedInThisSession": ["A5", "A7", "A8", "A11"],
+  "closures": {
+    "A5-01": "91/91 aretes portent trigger et precondition types (modele M5)",
+    "A7-01": "modele EvidenceRef type (M1)",
+    "A7-02": "modele StepAttestation type (M2), complete AF-29",
+    "A8-03": "quatre classes de rejeu nommees (M3)",
+    "A8-04": "modele RecoveryAnchor type (M4)",
+    "A11-01": "19/19 scenarios nommes mappes; E2E-22 ajoute pour la resolution de finding de revue"
+  },
+  "correctionsToEarlierAssessment": [
+    "Trois des quatre scenarios A11 initialement declares manquants etaient des faux negatifs d une recherche textuelle naive",
+    "Le premier controle A3 echouait 73/73 a cause d un algorithme d ancre errone, pas d ancres cassees"
+  ],
+  "findingRaised": "AF-34",
+  "runtimeImplementation": "NOT_STARTED",
+  "taskQueueMaterialization": "NOT_STARTED_REQUIRES_LIVE_RECONCILIATION"
+}

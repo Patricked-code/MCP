@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 205,
+  "trackedCount": 215,
   "categories": {
-    "root-documentation": 50,
     "canonical": 7,
-    "migration-history": 7,
-    "documentation": 55,
-    "history": 1,
+    "documentation": 65,
     "engineering-plan": 8,
     "engineering-spec": 9,
+    "history": 1,
     "memory": 61,
+    "migration-history": 7,
+    "root-documentation": 50,
     "runtime-mirror-tracked": 7
   },
   "entries": [
@@ -448,6 +448,46 @@
     },
     {
       "path": "docs/governance/README.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/BLUEPRINTS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/DEPRECATED_CLAIMS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/README.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/REVISION_HISTORY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/archive/ARCHITECTURE_R2_NON_CANONICAL.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/canonical-memory/pr95-ded/sources/ded-checkpoint.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/canonical-memory/pr95-ded/sources/historical-baseline.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/canonical-memory/pr95-ded/sources/mission-directive.md",
       "category": "documentation"
     },
     {

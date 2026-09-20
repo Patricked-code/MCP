@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "observedHeadBeforeBundle": "1d34704e57220eb38f287d661cd55cd850f24ab0",
+  "purpose": "Canonical checkpoint for automatic multi-agent candidate continuity and conversation-information reconciliation.",
+  "architectureBoundary": {
+    "integrationSlot": "Existing Governed Context plus PRECODE canonical-memory/status projections",
+    "noParallelAuthorities": [
+      "Operational Memory",
+      "Governed Task Queue",
+      "Governed Sessions",
+      "Lock Service",
+      "Canonical Memory"
+    ],
+    "runtimeActivation": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionDeployment": false
+  },
+  "multiAgentContinuity": {
+    "implementation": "src/governedContext/candidateContinuity.ts#dispatchCandidateWork",
+    "resumeExistingClaimFirst": true,
+    "dependencySafeDispatch": true,
+    "collisionDomainSafeDispatch": true,
+    "optimisticBranchClaim": "reobserve exact head before persisting candidateCoordination.activeClaims; HEAD_MOVED means redispatch",
+    "currentBranchProjection": ".mcp/gwc-precode-status.json#candidateCoordination"
+  },
+  "conversationIntake": {
+    "implementation": "src/governedContext/candidateContinuity.ts#reconcileConversationIntake",
+    "semanticUnderstandingOwner": "connected AI agent",
+    "rawTranscriptPersistence": false,
+    "dispositions": [
+      "DUPLICATE",
+      "COMPLEMENT",
+      "DECISION",
+      "FINDING",
+      "TASK",
+      "CONTRADICTION",
+      "MEMORY"
+    ],
+    "contradictionPolicy": "HOLD_FOR_REVIEW",
+    "acceptedOutputs": [
+      "canonical-memory enrichment",
+      "decision",
+      "finding",
+      "existing-work enrichment",
+      "candidate-work proposal"
+    ]
+  },
+  "tdd": {
+    "red": {
+      "workflow": "MCP CI",
+      "runNumber": 1046,
+      "head": "9f6e14df2939e5e4b062e2861dfd5af507d6b157",
+      "failure": "ERR_MODULE_NOT_FOUND for candidateContinuity contract"
+    },
+    "green": {
+      "workflow": "MCP CI",
+      "runNumber": 1048,
+      "head": "138d392942591f8ba0270757bc5df859fdd4b7cb",
+      "conclusion": "SUCCESS"
+    }
+  },
+  "nextProgramWork": "GWC-PRE-B-01 remains READY; these two foundations enrich Phase B but do not falsely close candidate backlog synthesis."
+}

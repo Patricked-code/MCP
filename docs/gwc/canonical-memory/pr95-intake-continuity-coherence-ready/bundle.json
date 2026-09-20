@@ -1,0 +1,98 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-intake-continuity-coherence-ready-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_intake_continuity_coherence",
+      "path": "sources/intake-continuity-coherence.json",
+      "media_type": "application/json",
+      "bytes": 4060,
+      "sha256": "b16c09ef66230e71d1a8d5f3643f2add2215ea1df24f70e4604241135a649d32"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_intake_cursor",
+      "key": "candidate.intake_continuity_cursor",
+      "claim_type": "fact",
+      "value": "Intake continuity is incremental: latest=2, reconciledThrough=0, canonicalRevision=1, backlogRevision=0, pending #001/#002; this is a projection/index, not a new authority.",
+      "source_refs": [
+        "src_intake_continuity_coherence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_coherence_gate",
+      "key": "candidate.intake_coherence_gate",
+      "claim_type": "fact",
+      "value": "New information must pass understanding/relevance/evidence/objective/existing/architecture/authority/non-regression/impact checks before canonical or backlog effects.",
+      "source_refs": [
+        "src_intake_continuity_coherence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gate_verdicts",
+      "key": "candidate.intake_gate_verdicts",
+      "claim_type": "fact",
+      "value": "Bounded verdicts: ACCEPT, ACCEPT_WITH_ADAPTATION, COMPLEMENT, DUPLICATE, DEFER, HOLD_FOR_REVIEW, OUT_OF_SCOPE, REJECT.",
+      "source_refs": [
+        "src_intake_continuity_coherence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_receipt",
+      "key": "candidate.intake_reconciliation_receipt",
+      "claim_type": "fact",
+      "value": "Only contiguous intake deltas reconcile; each batch emits a digest-bound receipt and revisions advance only for accepted effects.",
+      "source_refs": [
+        "src_intake_continuity_coherence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_local_impact",
+      "key": "candidate.knowledge_local_impact",
+      "claim_type": "fact",
+      "value": "Knowledge drift is scope-aware: unrelated work may refresh and continue; affected work becomes RECONCILE_REQUIRED; HEAD_MOVED keeps precedence.",
+      "source_refs": [
+        "src_intake_continuity_coherence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_existing_intakes_pending",
+      "key": "candidate.intakes_001_002_pending",
+      "claim_type": "fact",
+      "value": "Existing intake #001/#002 bundles remain immutable and had canonicalAdoptionPerformed=false; they remain pending under the new gate before B-01 consumes accepted effects.",
+      "source_refs": [
+        "src_intake_continuity_coherence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_separation",
+      "key": "candidate.intake_separation",
+      "claim_type": "fact",
+      "value": "INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK.",
+      "source_refs": [
+        "src_intake_continuity_coherence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_tdd",
+      "key": "candidate.intake_continuity_tdd",
+      "claim_type": "fact",
+      "value": "RED CI #1080; GREEN CI #1081 SUCCESS.",
+      "source_refs": [
+        "src_intake_continuity_coherence"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

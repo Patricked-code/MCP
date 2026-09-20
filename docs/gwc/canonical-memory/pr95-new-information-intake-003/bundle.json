@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-new-information-intake-003-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_new_information_intake_003",
+      "path": "sources/new-information-intake-003.json",
+      "media_type": "application/json",
+      "bytes": 3381,
+      "sha256": "a5646f9893703597eaefe41be10706421e91d623aa2a3cdc2e1962e09f7c47b5"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_intake_003_registered",
+      "key": "candidate.new_information_intake.003",
+      "claim_type": "fact",
+      "value": "NEW_INFORMATION_INTAKE-003 records additive PRECODE liveness, supervisor, governed runner and automatic intake discovery requirements; raw transcript is not persisted.",
+      "source_refs": [
+        "src_new_information_intake_003"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intake_003_no_parallel_authority",
+      "key": "candidate.intake_003_authority_boundary",
+      "claim_type": "fact",
+      "value": "The recovery evolution must extend existing candidate continuity and GWC-4/GWC-17; it must not create a second session, task, lock, memory, watcher or governance authority.",
+      "source_refs": [
+        "src_new_information_intake_003"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_intake_003_recovery_chain",
+      "key": "candidate.precode_recovery_chain",
+      "claim_type": "fact",
+      "value": "Target chain: Intake Discovery -> Liveness -> Supervisor Decision -> Governed Runner -> Executor acknowledgement -> Reobserve/Reconcile -> Continue exact work item.",
+      "source_refs": [
+        "src_new_information_intake_003"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

@@ -1,4 +1,4 @@
-const CANONICAL_ROOT_DOCUMENTS = new Set([
+const MCP_CANONICAL_ROOT_DOCUMENTS = [
   'SUIVI.md',
   'TASKS.md',
   'TODO.md',
@@ -6,9 +6,9 @@ const CANONICAL_ROOT_DOCUMENTS = new Set([
   'CHANGELOG.md',
   'DEPLOYMENT_PRODUCTION.md',
   'MCP_ANTI_DISPERSION_GOVERNANCE.md'
-]);
+];
 
-const CANONICAL_KEYS = [
+const MCP_CANONICAL_KEYS = [
   'repository',
   'branch',
   's1Root',
@@ -17,12 +17,72 @@ const CANONICAL_KEYS = [
   'container'
 ];
 
-export function classifyMarkdownPath(path) {
+function boundedUniqueStrings(values, field, { min = 1, max = 64 } = {}) {
+  if (
+    !Array.isArray(values)
+    || values.length < min
+    || values.length > max
+    || values.some((value) => typeof value !== 'string' || !value.trim() || value.length > 300)
+  ) {
+    throw new Error(`document_governance_${field}_invalid`);
+  }
+  const normalized = values.map((value) => value.trim());
+  if (new Set(normalized).size !== normalized.length) {
+    throw new Error(`document_governance_${field}_duplicate`);
+  }
+  return normalized;
+}
+
+export function createDocumentGovernanceDeclaration(input) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    throw new Error('document_governance_declaration_invalid');
+  }
+  const projectId = typeof input.projectId === 'string' ? input.projectId.trim() : '';
+  const repository = typeof input.repository === 'string' ? input.repository.trim() : '';
+  if (!projectId || projectId.length > 160) {
+    throw new Error('document_governance_project_id_invalid');
+  }
+  if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) {
+    throw new Error('document_governance_repository_invalid');
+  }
+  const canonicalRootDocuments = boundedUniqueStrings(
+    input.canonicalRootDocuments,
+    'canonical_root_documents'
+  ).sort();
+  const canonicalStateKeys = boundedUniqueStrings(
+    input.canonicalStateKeys,
+    'canonical_state_keys'
+  ).sort();
+
+  return Object.freeze({
+    schemaVersion: 1,
+    projectId,
+    repository,
+    canonicalRootDocuments: Object.freeze(canonicalRootDocuments),
+    canonicalStateKeys: Object.freeze(canonicalStateKeys)
+  });
+}
+
+export const defaultDocumentGovernanceDeclaration = createDocumentGovernanceDeclaration({
+  projectId: 'wealthtech-mcp-ssh-bridge',
+  repository: 'Patricked-code/MCP',
+  canonicalRootDocuments: MCP_CANONICAL_ROOT_DOCUMENTS,
+  canonicalStateKeys: MCP_CANONICAL_KEYS
+});
+
+function declarationOrDefault(declaration) {
+  return declaration === undefined
+    ? defaultDocumentGovernanceDeclaration
+    : createDocumentGovernanceDeclaration(declaration);
+}
+
+export function classifyMarkdownPath(path, declaration = defaultDocumentGovernanceDeclaration) {
   if (typeof path !== 'string' || !path.endsWith('.md') || path.startsWith('/') || path.includes('..')) {
     return null;
   }
 
-  if (CANONICAL_ROOT_DOCUMENTS.has(path)) return 'canonical';
+  const governed = declarationOrDefault(declaration);
+  if (new Set(governed.canonicalRootDocuments).has(path)) return 'canonical';
   if (path.startsWith('docs/history/')) return 'history';
   if (path.startsWith('docs/superpowers/plans/')) return 'engineering-plan';
   if (path.startsWith('docs/superpowers/specs/')) return 'engineering-spec';
@@ -33,6 +93,30 @@ export function classifyMarkdownPath(path) {
   if (path.startsWith('docs/')) return 'documentation';
   if (!path.includes('/')) return 'root-documentation';
   return null;
+}
+
+export function compareMarkdownInventoryForDeclaration(
+  expectedPaths,
+  actualPaths,
+  declaration = defaultDocumentGovernanceDeclaration
+) {
+  const expected = [...new Set(expectedPaths)].sort();
+  const actual = [...new Set(actualPaths)].sort();
+  const expectedSet = new Set(expected);
+  const actualSet = new Set(actual);
+
+  const missing = expected.filter((path) => !actualSet.has(path));
+  const added = actual.filter((path) => !expectedSet.has(path));
+  const unclassified = actual.filter(
+    (path) => classifyMarkdownPath(path, declaration) === null
+  );
+
+  return {
+    ok: missing.length === 0 && added.length === 0 && unclassified.length === 0,
+    missing,
+    added,
+    unclassified
+  };
 }
 
 export function compareMarkdownInventory(expectedPaths, actualPaths) {
@@ -53,18 +137,18 @@ export function compareMarkdownInventory(expectedPaths, actualPaths) {
   };
 }
 
-export function validateMarkdownBaseline(expectedEntries, actualPaths) {
+export function validateMarkdownBaseline(expectedEntries, actualPaths, declaration = defaultDocumentGovernanceDeclaration) {
   const entries = Array.isArray(expectedEntries) ? expectedEntries : [];
   const expectedPaths = entries
     .map((entry) => entry?.path)
     .filter((path) => typeof path === 'string');
-  const inventory = compareMarkdownInventory(expectedPaths, actualPaths);
+  const inventory = compareMarkdownInventoryForDeclaration(expectedPaths, actualPaths, declaration);
   const categoryDrift = entries
     .filter((entry) => entry && typeof entry.path === 'string')
     .map((entry) => ({
       path: entry.path,
       expected: entry.category ?? null,
-      actual: classifyMarkdownPath(entry.path)
+      actual: classifyMarkdownPath(entry.path, declaration)
     }))
     .filter((entry) => entry.expected !== entry.actual)
     .sort((a, b) => a.path.localeCompare(b.path));
@@ -90,7 +174,10 @@ export function extractCanonicalState(markdown) {
   return parsed;
 }
 
-export function validateCanonicalStates(documents) {
+export function validateCanonicalStates(
+  documents,
+  declaration = defaultDocumentGovernanceDeclaration
+) {
   const conflicts = [];
   const reference = documents.find((document) => document?.state)?.state ?? null;
 
@@ -104,7 +191,7 @@ export function validateCanonicalStates(documents) {
       continue;
     }
 
-    for (const key of CANONICAL_KEYS) {
+    for (const key of declarationOrDefault(declaration).canonicalStateKeys) {
       const expected = reference[key] ?? null;
       const actual = document.state[key] ?? null;
       if (actual !== expected) {
@@ -116,7 +203,11 @@ export function validateCanonicalStates(documents) {
   return { ok: conflicts.length === 0, conflicts };
 }
 
-export function validateRequiredCanonicalStates(requiredPaths, documents) {
+export function validateRequiredCanonicalStates(
+  requiredPaths,
+  documents,
+  declaration = defaultDocumentGovernanceDeclaration
+) {
   const byPath = new Map(documents.map((document) => [document.path, document]));
   const missing = requiredPaths.filter((path) => !byPath.has(path)).sort();
   const withoutState = requiredPaths
@@ -126,7 +217,7 @@ export function validateRequiredCanonicalStates(requiredPaths, documents) {
     .filter((path) => byPath.get(path)?.state)
     .map((path) => byPath.get(path));
   const semantic = presentWithState.length > 0
-    ? validateCanonicalStates(presentWithState)
+    ? validateCanonicalStates(presentWithState, declaration)
     : { ok: false, conflicts: [] };
 
   return {
@@ -280,5 +371,5 @@ export function validateProductionState(state, canonicalState) {
   return { ok: issues.length === 0, issues };
 }
 
-export const canonicalStateKeys = Object.freeze([...CANONICAL_KEYS]);
-export const canonicalRootDocuments = Object.freeze([...CANONICAL_ROOT_DOCUMENTS]);
+export const canonicalStateKeys = Object.freeze([...MCP_CANONICAL_KEYS]);
+export const canonicalRootDocuments = Object.freeze([...MCP_CANONICAL_ROOT_DOCUMENTS]);

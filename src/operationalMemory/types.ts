@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { ConnectionContextSchema } from './connectionContext.js';
+import { RepositoryTargetSchema, TargetContextSchema, TargetScopeSchema } from './targetScope.js';
 
 const TimestampSchema = z.string().datetime({ offset: true });
 const GovernedIdSchema = z.string().uuid();
@@ -37,8 +38,10 @@ export const BootstrapReceiptSchema = z.object({
   bootstrapReceiptId: GovernedIdSchema,
   governedSessionId: GovernedIdSchema,
   agentIdentity: z.string().trim().min(1).max(200),
-  repository: z.literal('Patricked-code/MCP'),
+  repository: RepositoryTargetSchema,
   governedBranch: BranchSchema.nullable(),
+  targetScope: TargetScopeSchema.optional(),
+  targetContext: TargetContextSchema.optional(),
   stateVersion: z.number().int().nonnegative(),
   githubHead: ShaSchema.nullable(),
   runtimeRevision: ShaSchema.nullable(),
@@ -125,7 +128,7 @@ export type ClientToolSurfaceAttestation = z.infer<typeof ClientToolSurfaceAttes
 export const GovernedSessionRecordSchema = z.object({
   schemaVersion: z.literal(1),
   governedSessionId: GovernedIdSchema,
-  repository: z.literal('Patricked-code/MCP'),
+  repository: RepositoryTargetSchema,
   taskScope: z.string().trim().min(1).max(200),
   workBranch: BranchSchema.nullable(),
   agentIdentity: z.string().trim().min(1).max(200),
@@ -140,6 +143,7 @@ export const GovernedSessionRecordSchema = z.object({
   expiredAt: TimestampSchema.nullable(),
   closedAt: TimestampSchema.nullable(),
   currentTransport: SanitizedTransportMetadataSchema.nullable(),
+  targetScope: TargetScopeSchema.optional(),
   lastAcknowledgedStateVersion: z.number().int().nonnegative().nullable(),
   bootstrapReceipt: BootstrapReceiptSchema.nullable().optional(),
   connectionContext: ConnectionContextSchema.nullable().optional(),
@@ -195,6 +199,7 @@ export const GovernedLockRecordSchema = z.object({
   lockId: GovernedIdSchema,
   scope: z.string().trim().min(3).max(256),
   governedSessionId: GovernedIdSchema,
+  targetScope: TargetScopeSchema.optional(),
   acquiredAt: TimestampSchema,
   expiresAt: TimestampSchema,
   renewedAt: TimestampSchema,
@@ -230,7 +235,7 @@ export type GovernedTaskStatus = z.infer<typeof GovernedTaskStatusSchema>;
 export const GovernedTaskRecordSchema = z.object({
   schemaVersion: z.literal(1),
   taskId: z.string().regex(/^TASK-[0-9]{8}-[0-9]{3,}$/),
-  repository: z.literal('Patricked-code/MCP'),
+  repository: RepositoryTargetSchema,
   intentKey: z.string().trim().min(3).max(160).regex(/^[a-z0-9][a-z0-9:._/-]+$/),
   title: z.string().trim().min(1).max(160),
   summary: z.string().trim().min(1).max(500),
@@ -239,6 +244,7 @@ export const GovernedTaskRecordSchema = z.object({
   status: GovernedTaskStatusSchema,
   dependencies: z.array(z.string().regex(/^TASK-[0-9]{8}-[0-9]{3,}$/)).max(64),
   resourceScopes: z.array(z.string().trim().min(3).max(256)).max(64),
+  targetScope: TargetScopeSchema.optional(),
   ownerGovernedSessionId: GovernedIdSchema.nullable(),
   workBranch: BranchSchema.nullable(),
   pullRequestNumber: z.number().int().positive().max(2_147_483_647).nullable(),

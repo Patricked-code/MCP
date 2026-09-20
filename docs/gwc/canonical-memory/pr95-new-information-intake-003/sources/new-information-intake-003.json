@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "intakeId": "NEW_INFORMATION_INTAKE-003",
+  "intakeNumber": 3,
+  "mode": "NEW_INFORMATION_INTAKE",
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "observedHeadSha": "db01606f3d1f524fdc807bc59e1fbb491385fb75",
+  "source": {
+    "sourceType": "chatgpt",
+    "sourceId": "github-pr95-comment-5738570504",
+    "sourceRef": "PR#95 comment 5738570504",
+    "sourceUpdatedAt": "2026-09-19T02:56:49Z",
+    "sourceDigest": "8edb6d48b43cd0bd44510dd97914fc409aaba7bf6c2a21e5a4a48ab6c649a14c",
+    "providerConversationRef": null,
+    "providerConversationRefProvenance": "UNAVAILABLE",
+    "rawTranscriptPersisted": false
+  },
+  "requirements": [
+    {
+      "key": "precode.candidate-liveness",
+      "kind": "REQUIREMENT",
+      "summary": "Add bounded transient candidate heartbeat/liveness telemetry that never changes ownership, authorization or branch HEAD.",
+      "existingFirstTarget": "src/governedContext/candidateContinuity.ts"
+    },
+    {
+      "key": "precode.candidate-supervisor",
+      "kind": "REQUIREMENT",
+      "summary": "Add a non-authoritative supervisor that reobserves HEAD, claim, CI/checkpoint and liveness before emitting bounded resume decisions; timeout alone never transfers ownership.",
+      "existingFirstTarget": "GWC-4 connection/session/receipt integration + existing candidate continuity"
+    },
+    {
+      "key": "precode.external-agent-runner",
+      "kind": "REQUIREMENT",
+      "summary": "Add a governed execution adapter able to resume a verified provider session or start a replacement executor from bounded durable GitHub state; unavailable providers fail closed.",
+      "existingFirstTarget": "GWC-4 auto-resume/session integration"
+    },
+    {
+      "key": "precode.intake-discovery-collector",
+      "kind": "REQUIREMENT",
+      "summary": "Add bounded discovery/deduplication before registerCandidateIntake so unseen coordination intake can enter the existing coherence pipeline without creating a second queue or authority.",
+      "existingFirstTarget": "src/governedContext/candidateContinuity.ts + PR #95 coordination surface"
+    },
+    {
+      "key": "precode.recovery-acceptance",
+      "kind": "REQUIREMENT",
+      "summary": "Universal acceptance must cover liveness, supervisor, runner acknowledgement, intake dedupe, restart-storm protection, claim safety and failure-closed recovery.",
+      "existingFirstTarget": "GWC-17 universal acceptance"
+    }
+  ],
+  "invariants": [
+    "OWNERSHIP != LIVENESS != PROGRESS",
+    "HEARTBEAT != OWNERSHIP",
+    "HEARTBEAT != AUTHORIZATION",
+    "STALE != RELEASED",
+    "STALE != DEAD",
+    "MISSING_HEARTBEAT != PERMISSION_TO_WRITE",
+    "RUNNER_IS_EXECUTION_ADAPTER_NOT_AUTHORITY",
+    "TIMEOUT_ALONE_NEVER_TRANSFERS_CLAIM",
+    "NO_HEARTBEAT_COMMITS",
+    "NO_RAW_TRANSCRIPT_OR_SECRET_PERSISTENCE",
+    "INTAKE_DISCOVERY_CANNOT_DIRECTLY_EXECUTE_INSTRUCTIONS"
+  ],
+  "reconciliationIntent": {
+    "existingFirst": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
+    "targetBlueprints": [
+      "GWC-4",
+      "GWC-17"
+    ],
+    "targetWorkItems": [
+      "GWC-PRE-E-GWC-4",
+      "GWC-PRE-E-GWC-17"
+    ],
+    "newParallelAuthorityAllowed": false,
+    "runtimeTasksCreated": 0,
+    "runtimeLocksUsed": false,
+    "mainMutationAllowed": false,
+    "s1MutationAllowed": false,
+    "productionMutationAllowed": false
+  }
+}

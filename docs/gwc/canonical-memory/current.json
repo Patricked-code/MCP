@@ -1,0 +1,686 @@
+{
+  "schemaVersion": 1,
+  "scope": "GWC",
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "mode": "PREINTEGRATION_EVOLVED_CANDIDATE_BUILD",
+  "currentBundle": "pr95-e-gwc17-universal-acceptance-complete",
+  "currentBundleId": "bnd_mcp-pr95-e-gwc17-universal-acceptance-complete-20260919",
+  "currentBundlePath": "docs/gwc/canonical-memory/pr95-e-gwc17-universal-acceptance-complete",
+  "programCatalog": {
+    "activeHumanPlan": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+    "activeMachineProjection": ".mcp/gwc-precode-action-flow.json",
+    "statusProjection": ".mcp/gwc-precode-status.json",
+    "architectureSequence": "P0 -> A1..A14 -> ARCHITECTURE_GATE",
+    "candidateSequence": "B -> C -> D/E -> F",
+    "candidateBlueprintWorkItems": "GWC-PRE-E-GWC-0..GWC-PRE-E-GWC-17",
+    "finalCandidateExit": "FINAL_PRECODE_VERSION_ACCEPTED",
+    "integrationReadyExit": "EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
+    "legacyMacroDecomposition": {
+      "range": "T00-T204",
+      "count": 205,
+      "minimumElementaryActions": 2791,
+      "status": "HISTORICAL_DECOMPOSITION_PRESERVED_FOR_TRACEABILITY",
+      "note": "The old T196-T204 live-integration interpretation is superseded for current execution by the branch-local candidate B-F flow. Real integration occurs only after the final candidate gate."
+    },
+    "rule": "The Claude branch is the construction surface for the complete evolved MCP candidate: existing skeleton plus additive/backward-compatible code, tests, migrations/compatibility, workflows, documentation, task history and evidence. It is not documentation-only and not a parallel production authority."
+  },
+  "currentPrecodeState": {
+    "phase": "F",
+    "workItem": "GWC-PRE-F-02",
+    "work": "FULL_CANDIDATE_HAPPY_PATH",
+    "status": "IN_PROGRESS",
+    "architecturePhases": "A1-A14_PASS_WITH_EVIDENCE",
+    "architectureGate": "GWC_ARCHITECTURE_GATE_PASS",
+    "phaseE": "18_BLUEPRINT_CANDIDATE_IMPLEMENTATIONS_COMPLETE",
+    "phaseF01": "PASS_WITH_EVIDENCE",
+    "candidateImplementationOnClaudeBranch": "ALLOWED_AND_EXPECTED",
+    "candidateCodeMayModifySrcTestsWorkflowsDocs": true,
+    "existingFirstRule": "REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW",
+    "runtimeGovernedTaskMaterialization": "NOT_USED_FOR_CANDIDATE_BUILD",
+    "runtimeLockAcquisition": "NOT_USED_FOR_CANDIDATE_BUILD",
+    "mainIntegration": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
+    "s1ProductionMutation": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
+    "deployment": "FORBIDDEN_UNTIL_FINAL_PRECODE_VERSION_ACCEPTED",
+    "nextAction": "Prove or implement one tests-only coherent full candidate happy path using existing governed primitives from Intent through DONE. Do not infer final acceptance before F-02..F-06 pass.",
+    "blocker": null
+  },
+  "precodeContinuationPolicy": {
+    "hierarchy": "PROGRAM -> ARCHITECTURE_PHASE_OR_CANDIDATE_PHASE -> WORK_ITEM -> SESSION -> ACTION -> EVIDENCE -> CHECKPOINT -> HANDOFF -> NEXT_ACTION",
+    "autonomousContinuation": true,
+    "nextActionRequired": true,
+    "singleWriterPerCollisionDomain": true,
+    "onlineBranchOnly": true,
+    "branch": "claude/ecstatic-edison-v1dyt1",
+    "runtimeTaskQueueUsedForPrecode": false,
+    "runtimeLocksUsedForPrecode": false,
+    "stopOnlyFor": [
+      "NON_DEDUCIBLE_CANDIDATE_BLOCKER",
+      "HEAD_CONFLICT_REQUIRING_RECONCILIATION",
+      "MISSING_REQUIRED_PERMISSION_FOR_CLAUDE_BRANCH_WRITE",
+      "SECURITY_OR_IRREVERSIBLE_DECISION_REQUIRED",
+      "FINAL_PRECODE_VERSION_ACCEPTED"
+    ],
+    "candidateCodeImplementationAllowed": true,
+    "candidateCodeImplementationExpected": true,
+    "liveIntegrationAllowedBeforeFinalCandidate": false,
+    "conversationInformationMustBeReconciled": true,
+    "autoCandidateDispatch": true,
+    "rawConversationPersistence": false,
+    "githubFirstBootstrap": true,
+    "runtimeMcpRequiredForPrecode": false,
+    "candidateSessionBranchLocal": true,
+    "unknownProviderConversationIdRule": "NULL_UNAVAILABLE_NEVER_INVENT",
+    "intakeContinuityRequired": true,
+    "coherenceGateRequired": true,
+    "agentWorksFromReconciledState": true,
+    "knowledgeGuards": [
+      "HEAD_SHA",
+      "CANONICAL_REVISION",
+      "BACKLOG_REVISION"
+    ]
+  },
+  "historicalRuntimeObservations": {
+    "role": "PROVENANCE_ONLY_NOT_CURRENT_EXECUTION",
+    "bundles": [
+      "pr95-phase-b-live-reconciliation",
+      "pr95-phase-b-resolved"
+    ],
+    "rule": "Runtime/Task Queue observations remain immutable evidence about the existing system. They may inform candidate design/implementation but never become the branch-local execution engine. Real Task Queue/session/lock/main/S1/deploy activity belongs only to the later integration phase after FINAL_PRECODE_VERSION_ACCEPTED."
+  },
+  "readProtocol": [
+    "Read CLAUDE.md sections 8-9.",
+    "Read docs/gwc/README.md.",
+    "Read this current.json and resolve currentBundlePath.",
+    "Read docs/gwc/PRECODE_EXECUTION_PLAN.txt, PRECODE_ACTION_TASK_FLOW.txt and .mcp/gwc-precode-action-flow.json.",
+    "Read .mcp/gwc-precode-status.json for architecture evidence, historical observations and current candidate work.",
+    "Read docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md before any shared-branch write.",
+    "Reobserve the exact online Claude-branch head immediately before every write.",
+    "Inspect the existing implementation before candidate code; apply REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW.",
+    "Candidate code on claude/ecstatic-edison-v1dyt1 is allowed and expected after GWC_ARCHITECTURE_GATE_PASS.",
+    "Candidate work items are not GovernedTaskRecords and do not use runtime Task Queue/locks/sessions.",
+    "Before seeking runtime connectivity, inspect versioned audits, canonical-memory evidence, GitHub live and GitHub-published read-only artifacts.",
+    "MCP OAuth/bridge is NOT_REQUIRED for candidate build; stale/unavailable live proof becomes UNKNOWN/STALE unless a read-only evidence mirror provides it.",
+    "Do not integrate/activate the candidate in main/S1/production before FINAL_PRECODE_VERSION_ACCEPTED.",
+    "Resume from currentPrecodeState.nextAction and continue automatically through B->C->D/E->F until the final candidate gate or a true non-deducible blocker.",
+    "When a new conversation brings material information, semantically analyze it and project bounded insights before candidate work selection.",
+    "Reconcile insights as DUPLICATE/COMPLEMENT/DECISION/FINDING/TASK/CONTRADICTION/MEMORY; accepted non-conflicting changes update canonical memory/backlog, contradictions HOLD_FOR_REVIEW.",
+    "For multi-agent continuation, resume the same ACTIVE branch-local claim first; otherwise select the next READY dependency-safe and collision-safe work item.",
+    "Persist branch-local claims only after exact-head reobservation; HEAD_MOVED requires redispatch.",
+    "PRECODE connection is direct GitHub/versioned-branch coordination; do not open or require MCP runtime sessions for candidate work.",
+    "Resolve/create branch-local candidateSessionId only from identifiers actually observed; a derived candidateSessionId is never a real provider conversation ID.",
+    "If provider conversation ID is unavailable, preserve null/UNAVAILABLE rather than inventing one.",
+    "Route connection intent to NEW_INFORMATION_INTAKE / CONTINUE_PRECODE_WORK / NEW_INFORMATION_THEN_CONTINUE_PRECODE; ask the canonical three-choice question only when intent is not deducible.",
+    "Legacy candidate sessions without connectionInstanceRef remain readable and are enriched on resume.",
+    "Read intakeContinuity cursor before consuming any NEW_INFORMATION_INTAKE evidence.",
+    "A new intake is not canonical by default: evaluate coherence/integration before memory or backlog effects.",
+    "Only contiguous intake deltas advance reconciledThroughSequence; sequence gaps fail closed.",
+    "Emit a digest-bound reconciliation receipt and update canonical/backlog revisions only for accepted effects.",
+    "Before candidate writes validate HEAD_SHA + canonicalRevision + backlogRevision.",
+    "Knowledge drift blocks only affected work items; unrelated scopes may refresh/logically rebase and continue.",
+    "Agents work from reconciled state, never directly from raw/new intake evidence.",
+    "Preserve INTAKE != CANONICAL MEMORY != CANDIDATE WORK ITEM != RUNTIME TASK."
+  ],
+  "previousBundles": [
+    {
+      "name": "pr95-e-gwc6-server-resolver-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC6_SERVER_RESOLVER_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-e-gwc4-intake003-recovery-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc4-intake003-recovery-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC4_INTAKE003_RECOVERY_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-e-gwc5-task-lock-orchestration-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc5-task-lock-orchestration-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC5_COMPLETION_CHECKPOINT"
+    },
+    {
+      "name": "pr95-intake-003-reconciled",
+      "path": "docs/gwc/canonical-memory/pr95-intake-003-reconciled",
+      "status": "IMMUTABLE_HISTORICAL_INTAKE_003_RECONCILED_CHECKPOINT"
+    },
+    {
+      "name": "pr95-new-information-intake-003",
+      "path": "docs/gwc/canonical-memory/pr95-new-information-intake-003",
+      "status": "IMMUTABLE_HISTORICAL_NEW_INFORMATION_INTAKE_003"
+    },
+    {
+      "name": "pr95-e-gwc4-session-integration-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc4-session-integration-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC4_SESSION_INTEGRATION_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-e-gwc3-resolver-adapters-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc3-resolver-adapters-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC3_RESOLVER_ADAPTERS_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-e-gwc2-execution-engine-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc2-execution-engine-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC2_EXECUTION_ENGINE_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-e-gwc1-intent-capture-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc1-intent-capture-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC1_INTENT_CAPTURE_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-e-gwc0-contract-substrate-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc0-contract-substrate-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC0_CONTRACT_SUBSTRATE_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-c3-capability-reconciliation-complete",
+      "path": "docs/gwc/canonical-memory/pr95-c3-capability-reconciliation-complete",
+      "status": "IMMUTABLE_HISTORICAL_C3_CAPABILITY_RECONCILIATION_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-c2-af22-af30-resolved",
+      "path": "docs/gwc/canonical-memory/pr95-c2-af22-af30-resolved",
+      "status": "IMMUTABLE_HISTORICAL_C2_AF22_AF30_RESOLVED_CHECKPOINT"
+    },
+    {
+      "name": "pr95-c1-af19-resolved",
+      "path": "docs/gwc/canonical-memory/pr95-c1-af19-resolved",
+      "status": "IMMUTABLE_HISTORICAL_C1_AF19_RESOLVED_CHECKPOINT"
+    },
+    {
+      "name": "pr95-intakes-001-002-reconciled",
+      "path": "docs/gwc/canonical-memory/pr95-intakes-001-002-reconciled",
+      "status": "IMMUTABLE_HISTORICAL_INTAKE_RECONCILIATION_CHECKPOINT"
+    },
+    {
+      "name": "pr95-intake-continuity-coherence-ready",
+      "path": "docs/gwc/canonical-memory/pr95-intake-continuity-coherence-ready",
+      "status": "IMMUTABLE_HISTORICAL_INTAKE_CONTINUITY_COHERENCE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-new-information-intake-002",
+      "path": "docs/gwc/canonical-memory/pr95-new-information-intake-002",
+      "status": "IMMUTABLE_HISTORICAL_NEW_INFORMATION_INTAKE_002"
+    },
+    {
+      "name": "pr95-new-information-intake-001",
+      "path": "docs/gwc/canonical-memory/pr95-new-information-intake-001",
+      "status": "IMMUTABLE_HISTORICAL_NEW_INFORMATION_INTAKE_001"
+    },
+    {
+      "name": "pr95-github-first-bootstrap-ready",
+      "path": "docs/gwc/canonical-memory/pr95-github-first-bootstrap-ready",
+      "status": "IMMUTABLE_HISTORICAL_GITHUB_FIRST_BOOTSTRAP_BASELINE"
+    },
+    {
+      "name": "pr95-candidate-continuity-ready",
+      "path": "docs/gwc/canonical-memory/pr95-candidate-continuity-ready",
+      "status": "IMMUTABLE_HISTORICAL_CANDIDATE_CONTINUITY_BASELINE"
+    },
+    {
+      "name": "pr95-candidate-build-ready",
+      "path": "docs/gwc/canonical-memory/pr95-candidate-build-ready",
+      "status": "IMMUTABLE_HISTORICAL_CANDIDATE_BUILD_BASELINE"
+    },
+    {
+      "name": "pr95-precode-gate",
+      "path": "docs/gwc/canonical-memory/pr95-precode-gate",
+      "status": "IMMUTABLE_HISTORICAL_ARCHITECTURE_GATE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-phase-b-resolved",
+      "path": "docs/gwc/canonical-memory/pr95-phase-b-resolved",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_NOT_CURRENT_PRECODE_EXECUTION"
+    },
+    {
+      "name": "pr95-precode-architecture-complete",
+      "path": "docs/gwc/canonical-memory/pr95-precode-architecture-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-task-reconciliation-ready",
+      "path": "docs/gwc/canonical-memory/pr95-task-reconciliation-ready",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-ded",
+      "path": "docs/gwc/canonical-memory/pr95-ded",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-phase-b-live-reconciliation",
+      "path": "docs/gwc/canonical-memory/pr95-phase-b-live-reconciliation",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-candidate-backlog-complete",
+      "path": "docs/gwc/canonical-memory/pr95-candidate-backlog-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-intake-004-minute-liveness-complete",
+      "path": "docs/gwc/canonical-memory/pr95-intake-004-minute-liveness-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-e-gwc7-runtime-resolver-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc7-runtime-resolver-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-e-gwc8-domain-resolver-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc8-domain-resolver-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-e-gwc9-governance-capabilities-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc9-governance-capabilities-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-e-gwc10-multi-repository-target-scope-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-e-gwc11-authority-baseline-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc11-authority-baseline-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-e-gwc12-github-control-plane-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc12-github-control-plane-complete",
+      "status": "IMMUTABLE_HISTORICAL_CHECKPOINT_SUPERSEDED_FOR_CURRENT_PHASE"
+    },
+    {
+      "name": "pr95-e-gwc13-development-workflow-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC13_DEVELOPMENT_WORKFLOW_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-e-gwc14-review-merge-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC14_REVIEW_MERGE_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-e-gwc15-deployment-evidence-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC15_DEPLOYMENT_EVIDENCE_COMPLETE_CHECKPOINT"
+    },
+    {
+      "name": "pr95-e-gwc16-documentation-closure-complete",
+      "path": "docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete",
+      "status": "IMMUTABLE_HISTORICAL_GWC16_DOCUMENTATION_CLOSURE_COMPLETE_CHECKPOINT"
+    }
+  ],
+  "updatedFromGitHubObservationAt": "2026-09-19T20:29:35Z",
+  "observedHeadBeforePointerUpdate": "3d48d91f23941c5970b4f59e23701748cccafe11",
+  "correctionReason": "GWC-17 and Phase E were released after exact-head checkpoint CI #1466 and release CI #1467. Phase F was materialized; F-01 selected existing non-hardcoded acceptance contexts and passed CI #1468. F-02 full candidate happy path is now the active branch-local gate.",
+  "historicalPointerIntegrityFinding": {
+    "finding": "AF-36",
+    "observedAt": "2026-09-18T17:50:00Z",
+    "problem": "Entre e22214d et 3f635e9, currentBundlePath a designe un bundle absent de l arbre. La memoire canonique etait irresoluble et la CI est restee verte: aucun controle ne validait ce pointeur.",
+    "instanceFixedBy": "Le commit pair 3f635e9 a repointe vers pr95-phase-b-resolved. La meme reparation avait ete derivee independamment par Claude; celle du pair a atterri en premier.",
+    "rootCauseFix": "verifyCanonicalMemory() dans scripts/gwc-verify.mjs: resolution du pointeur, correspondance du bundle_id, integrite sha256 et taille de chaque source, approval_eligible=false sur chaque claim, existence de chaque bundle precedent declare.",
+    "provenControl": "5 defauts injectes, 5 rejets.",
+    "consequence": "Un pointeur pendant fait desormais echouer gwc:verify, donc la CI, au lieu de passer inapercu."
+  },
+  "pointerCoherenceRepair": {
+    "finding": "AF-36",
+    "scope": "EXTENSION_DU_CONTROLE_INITIAL",
+    "observedAt": "2026-09-18T18:20:00Z",
+    "problem": "Le bundle courant pr95-precode-gate etait simultanement liste dans previousBundles comme supersede. Un agent qui reprend lisait un checkpoint a la fois actif et perime.",
+    "gapInMyOwnCheck": "Le premier controle AF-36 verifiait que chaque bundle precedent existe, mais pas que le bundle courant est absent de cette liste. La lacune est de moi et n a ete vue qu en confrontant le controle a une sortie pair reelle.",
+    "rootCauseFix": "verifyCanonicalMemory() rejette desormais un bundle courant egalement liste comme precedent, par nom et par chemin.",
+    "instanceFix": "Entree dupliquee retiree de previousBundles. Aucun autre bloc du pair modifie."
+  },
+  "precodeEvidencePolicy": {
+    "mode": "GITHUB_AND_VERSIONED_EVIDENCE_FIRST",
+    "bridgeOAuthRequired": false,
+    "runtimeMutationAllowed": false,
+    "sourcePriority": [
+      {
+        "rank": 1,
+        "source": "VERSIONED_AUDIT_EVIDENCE",
+        "locations": [
+          "docs/audits/**",
+          "docs/history/**",
+          "docs/gwc/canonical-memory/**"
+        ],
+        "use": "architecture, historical runtime facts, previously attested server/runtime state, prior inventories and recovery evidence",
+        "freshnessRule": "Always preserve observedAt/source SHA. Historical evidence may prove existence/history but never silently becomes current live truth."
+      },
+      {
+        "rank": 2,
+        "source": "GITHUB_LIVE_EVIDENCE",
+        "locations": [
+          "GitHub branch/commit/PR/checks/workflows/artifacts"
+        ],
+        "use": "current repository, exact-head, CI, review and any server evidence already published as GitHub artifact",
+        "freshnessRule": "Exact ref/SHA/run required."
+      },
+      {
+        "rank": 3,
+        "source": "SERVER_READONLY_EVIDENCE_MIRROR",
+        "status": "PRECODE_DESIGN_ONLY_NOT_IMPLEMENTED",
+        "transport": "GitHub-triggered read-only collection independent of MCP OAuth/bridge",
+        "intendedMechanism": "A dedicated least-privilege read-only server identity or forced-command collector executes only allowlisted audit commands/scripts and uploads a redacted JSON evidence artifact to GitHub Actions. It must not commit, deploy, restart, claim tasks, acquire locks or mutate S1.",
+        "intendedFields": [
+          "schemaVersion",
+          "collectorVersion",
+          "observedAt",
+          "serverId",
+          "repoHead",
+          "originMain",
+          "dirtyCount",
+          "runtimeRevision",
+          "containerState",
+          "containerHealth",
+          "runtimeImageRevision",
+          "httpHealth",
+          "auditRefs",
+          "sha256"
+        ],
+        "freshnessRule": "TTL per field; stale/absent => UNKNOWN, never inferred.",
+        "security": [
+          "dedicated read-only credential",
+          "allowlisted commands only",
+          "no shell write surface",
+          "no secret values",
+          "redaction mandatory",
+          "artifact digest",
+          "no MCP OAuth token"
+        ]
+      }
+    ],
+    "runtimeAuthorityRule": "PRECODE must not require live Task Queue/Governed Session/Lock state for normal progress. If a specific architectural question cannot be answered from versioned audits or a read-only mirror, record UNKNOWN rather than opening a runtime execution session.",
+    "knownReusableEvidence": [
+      "docs/audits/2026-08-05/MCP_RUNTIME_IMAGE_ATTESTATION_READONLY.md",
+      "docs/audits/2026-08-05/MCP_RUNTIME_RECOVERY_ATTESTATION.md",
+      "docs/audits/2026-08-05/MCP_RUNTIME_TOOL_CATALOG_20260805.md",
+      "docs/audits/2026-08-05/MCP_FOUNDATIONS_FINAL_STATE.md",
+      "docs/audits/2026-08-05/MCP_PRE29_RECOVERY_AUDIT.md",
+      "docs/gwc/canonical-memory/pr95-phase-b-resolved/sources/live-authorities.json"
+    ]
+  },
+  "candidateContinuity": {
+    "status": "IMPLEMENTED_BRANCH_LOCAL_NOT_LIVE_ACTIVATED",
+    "integrationSlot": "EXISTING_GOVERNED_CONTEXT_PLUS_PRECODE_PROJECTIONS",
+    "implementation": "src/governedContext/candidateContinuity.ts",
+    "tests": "tests/candidateContinuity.test.ts",
+    "multiAgentDispatch": {
+      "resumeExistingClaimFirst": true,
+      "dependencySafeOnly": true,
+      "collisionSafeOnly": true,
+      "claimProjection": ".mcp/gwc-precode-status.json#candidateCoordination.activeClaims",
+      "claimCommitRule": "Reobserve exact branch head immediately before persisting a claim; if HEAD_MOVED, abort stale write and redispatch."
+    },
+    "conversationInformation": {
+      "semanticUnderstandingOwner": "CONNECTED_AI_AGENT",
+      "rawTranscriptPersistence": false,
+      "deterministicReconciliation": "reconcileConversationIntake",
+      "dispositions": [
+        "DUPLICATE",
+        "COMPLEMENT",
+        "DECISION",
+        "FINDING",
+        "TASK",
+        "CONTRADICTION",
+        "MEMORY"
+      ],
+      "contradictionPolicy": "HOLD_FOR_REVIEW",
+      "acceptedEffects": [
+        "CANONICAL_MEMORY_ENRICHMENT",
+        "DECISION",
+        "FINDING",
+        "EXISTING_WORK_ITEM_ENRICHMENT",
+        "CANDIDATE_WORK_ITEM_PROPOSAL"
+      ]
+    },
+    "authorityBoundary": {
+      "secondOperationalMemory": false,
+      "secondTaskQueue": false,
+      "secondSessionManager": false,
+      "secondLockService": false,
+      "runtimeTaskQueueUsed": false,
+      "runtimeLocksUsed": false,
+      "liveActivationAllowed": false
+    },
+    "evidence": {
+      "red": "MCP CI #1046 @ 9f6e14df2939e5e4b062e2861dfd5af507d6b157",
+      "green": "MCP CI #1048 SUCCESS @ 138d392942591f8ba0270757bc5df859fdd4b7cb"
+    },
+    "recoveryEvolution": {
+      "status": "ACCEPTED_WITH_ADAPTATION_NOT_YET_IMPLEMENTED",
+      "intakeId": "NEW_INFORMATION_INTAKE-003",
+      "ownerBlueprints": [
+        "GWC-4",
+        "GWC-17"
+      ],
+      "pipeline": "INTAKE_DISCOVERY -> LIVENESS -> SUPERVISOR_DECISION -> GOVERNED_RUNNER -> EXECUTOR_ACK -> REOBSERVE_RECONCILE -> CONTINUE",
+      "invariants": [
+        "HEARTBEAT_NOT_OWNERSHIP_OR_AUTHORIZATION",
+        "STALE_NOT_RELEASED_OR_DEAD",
+        "TIMEOUT_ALONE_NEVER_TRANSFERS_CLAIM",
+        "RUNNER_IS_EXECUTION_ADAPTER_NOT_AUTHORITY",
+        "NO_HEARTBEAT_COMMITS",
+        "NO_RAW_TRANSCRIPT_OR_SECRET_PERSISTENCE"
+      ],
+      "dispatchAfterCurrentClaim": "GWC-PRE-E-GWC-4"
+    },
+    "minuteLivenessEvolution": {
+      "status": "PASS_WITH_EVIDENCE",
+      "intakeId": "NEW_INFORMATION_INTAKE-004",
+      "implementation": "src/governedContext/candidateContinuity.ts",
+      "tests": "tests/candidateContinuity.test.ts",
+      "coordinationContract": "docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md#174-per-minute-candidate-liveness-heartbeat",
+      "transport": "PR_95_TOP_LEVEL_MUTABLE_ISSUE_COMMENT",
+      "emissionIntervalSeconds": 60,
+      "freshForSeconds": 120,
+      "scopedCiEvidence": "CI #1252 @ 4f88e8453523bd62f04989bc7d76b1aa3ad3cf65: six minute-heartbeat tests PASS",
+      "globalCiBoundary": "Same CI has seven failures exclusively in concurrent GWC-6 RED scope; Intake #004 does not modify or release GWC-6.",
+      "staleClaimClosure": "Explicit human recovery authorization recorded at PR #95 comment #5739730790; stale alone did not transfer ownership.",
+      "completionBundle": "docs/gwc/canonical-memory/pr95-intake-004-minute-liveness-complete"
+    }
+  },
+  "githubFirstBootstrap": {
+    "status": "PASS_WITH_EVIDENCE",
+    "transportModel": "DIRECT_GITHUB_PRECODE",
+    "runtimeMcpRequired": false,
+    "runtimeGovernedSessionRequired": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "implementation": "src/governedContext/candidateContinuity.ts#bootstrapCandidateConnection",
+    "candidateSession": {
+      "authority": "BRANCH_LOCAL_VERSIONED_PROJECTION",
+      "resolver": "resolveCandidateSession",
+      "matchOrder": [
+        "providerConversationRef",
+        "githubConnectionRef",
+        "connectionInstanceRef",
+        "createNewCandidateSession"
+      ],
+      "providerConversationIdRule": "OBSERVE_IF_EXPOSED_ELSE_NULL_UNAVAILABLE_NEVER_INVENT",
+      "backwardCompatibility": "Legacy candidate sessions without connectionInstanceRef remain readable and are enriched on resume."
+    },
+    "intentRouting": {
+      "router": "routeCandidateConnectionIntent",
+      "modes": [
+        "NEW_INFORMATION_INTAKE",
+        "CONTINUE_PRECODE_WORK",
+        "NEW_INFORMATION_THEN_CONTINUE_PRECODE",
+        "ASK_USER"
+      ],
+      "askOnlyWhenAmbiguous": true,
+      "canonicalQuestion": "Que viens-tu faire sur cette branche : apporter de nouvelles informations, poursuivre le travail PRECODE, ou apporter des informations puis poursuivre automatiquement ?"
+    },
+    "evidence": {
+      "red": "CI #1061 @ a992bc0adf8e841ee38463bce75667650c13689d",
+      "compatibility": "CI #1062 @ 44e19282564578a748ae3563c726741816d304ea",
+      "green": "CI #1063 SUCCESS @ 2264b3da4dc672ae1e271519957203c62b7ae03d"
+    }
+  },
+  "lastInformationIntake": {
+    "intakeId": "NEW_INFORMATION_INTAKE-004",
+    "intakeNumber": 4,
+    "mode": "NEW_INFORMATION_INTAKE",
+    "sourceType": "chatgpt",
+    "sourceRef": "PR#95 comment 5739347553",
+    "rawTranscriptPersisted": false,
+    "canonicalAdoptionPerformed": true,
+    "verdict": "ACCEPT_WITH_ADAPTATION",
+    "candidateWorkDispatched": true,
+    "runtimeTasksCreated": 0,
+    "candidateClaimsCreated": 1,
+    "boundWorkItems": [
+      "GWC-PRE-E-GWC-4",
+      "GWC-PRE-E-GWC-17"
+    ],
+    "status": "RECONCILED_IMPLEMENTED_PASS_WITH_EVIDENCE"
+  },
+  "intakeContinuity": {
+    "latestIntakeSequence": 4,
+    "reconciledThroughSequence": 4,
+    "canonicalRevision": 4,
+    "backlogRevision": 3,
+    "lastReconciliationDigest": "bdef89603c02b604efcb2da82e0e3647c9d45bac8bcfc26760501fd16a3f2fd0",
+    "pendingIntakeIds": [],
+    "sourceBundles": [
+      "docs/gwc/canonical-memory/pr95-new-information-intake-001",
+      "docs/gwc/canonical-memory/pr95-new-information-intake-002",
+      "docs/gwc/canonical-memory/pr95-new-information-intake-003",
+      "docs/gwc/canonical-memory/pr95-new-information-intake-004",
+      "docs/gwc/canonical-memory/pr95-intake-004-reconciled",
+      "docs/gwc/canonical-memory/pr95-intake-004-minute-liveness-complete"
+    ],
+    "projectionOnly": true,
+    "authority": false,
+    "rule": "Only contiguous deltas reconcile. Existing intake bundles remain immutable evidence. This cursor is not a second queue or memory authority."
+  },
+  "intakeCoherenceGate": {
+    "implementation": "src/governedContext/candidateContinuity.ts#evaluateCandidateIntakeGate",
+    "verdicts": [
+      "ACCEPT",
+      "ACCEPT_WITH_ADAPTATION",
+      "COMPLEMENT",
+      "DUPLICATE",
+      "DEFER",
+      "HOLD_FOR_REVIEW",
+      "OUT_OF_SCOPE",
+      "REJECT"
+    ],
+    "dimensions": [
+      "understanding",
+      "relevance",
+      "evidence",
+      "objectiveAlignment",
+      "relationToExisting",
+      "architecturalFit",
+      "authorityFit",
+      "nonRegression",
+      "impact",
+      "existingFirstPath"
+    ],
+    "rules": {
+      "newNotAutomaticallyGood": true,
+      "parallelAuthority": "REJECT",
+      "contradictionSupersessionBreaking": "HOLD_FOR_REVIEW",
+      "evidenceRequiredUnverified": "DEFER",
+      "existingWorkBeforeNewWork": true
+    }
+  },
+  "intakeReconciliation": {
+    "implementation": "src/governedContext/candidateContinuity.ts#reconcileCandidateIntakeBatch",
+    "contiguousOnly": true,
+    "gapResult": "BLOCKED_GAP",
+    "receiptRequired": true,
+    "revisionsAdvanceOnlyOnAcceptedEffects": true,
+    "lastReceipt": {
+      "fromSequence": 3,
+      "throughSequence": 3,
+      "intakeIds": [
+        "NEW_INFORMATION_INTAKE-003"
+      ],
+      "previousCanonicalRevision": 2,
+      "resultingCanonicalRevision": 3,
+      "previousBacklogRevision": 1,
+      "resultingBacklogRevision": 2,
+      "digest": "c537ef860c0a2293bb334b83491564be9899417b45e48b59e143171b66669555",
+      "verdicts": [
+        "ACCEPT_WITH_ADAPTATION"
+      ],
+      "candidateWorkItemsCreated": 0,
+      "runtimeTasksCreated": 0,
+      "affectedWorkItems": [
+        "GWC-PRE-E-GWC-4",
+        "GWC-PRE-E-GWC-17"
+      ],
+      "reconcileRequired": [
+        "GWC-PRE-E-GWC-4"
+      ],
+      "currentActiveWorkImpact": "LOCAL_NO_STOP_FOR_GWC-PRE-E-GWC-5"
+    }
+  },
+  "knowledgeFreshness": {
+    "implementation": "src/governedContext/candidateContinuity.ts#assessCandidateKnowledgeFreshness",
+    "guards": [
+      "HEAD_SHA",
+      "CANONICAL_REVISION",
+      "BACKLOG_REVISION"
+    ],
+    "headMovedPrecedence": true,
+    "localBlockerNotGlobalStop": true,
+    "unrelatedDrift": "LOGICAL_REBASE_ALLOWED_AFTER_REFRESH",
+    "affectedDrift": "RECONCILE_REQUIRED"
+  },
+  "candidateDecisionGate": {
+    "decisionId": "OD-07",
+    "workItemId": "GWC-PRE-C1",
+    "status": "HUMAN_DECISION_REQUIRED",
+    "branchClaimReleased": true,
+    "forbidden": [
+      "workflow_run",
+      "widen GITHUB_OIDC_POLICY.allowedEvents",
+      "relax tokenSha === requestedSha",
+      "deploy or activate before final PRECODE acceptance"
+    ],
+    "evidence": [
+      "DECISIONS_LOG.md — 2026-09-17 detailed evolution decisions",
+      "docs/gwc/BLUEPRINTS.md — GWC-15 Detailed Evolution Design",
+      ".mcp/gwc-precode-status.json — candidateBlockers/OD-07"
+    ]
+  },
+  "phaseCExit": "CANDIDATE_SAFETY_FOUNDATIONS_COMPLETE",
+  "c3CapabilityDisposition": {
+    "c88_1": "DEFER",
+    "c89_1": "SUPERSEDE",
+    "c89_2": "SPLIT_MATERIALIZED_READ_ONLY",
+    "c90_1": "SPLIT_DEFERRED_UNTIL_AFTER_GWC_9",
+    "c90_2": "SPLIT_DEFERRED_UNTIL_AFTER_GWC_9",
+    "c90_3": "DEFER",
+    "finalGreenCiRun": 1152,
+    "finalGreenHead": "ed395816177edf091f9a3e39f58948392bcd010d",
+    "cartography": {
+      "registeredTools": 123,
+      "readTools": 80,
+      "writeTools": 43,
+      "digest": "3d900237907905a64a572173eac7cd2109b2cf55a535afbed2252bb2f693597f"
+    }
+  },
+  "phaseEProgress": {
+    "GWC-0": "PASS_WITH_EVIDENCE",
+    "GWC-1": "PASS_WITH_EVIDENCE",
+    "GWC-2": "PASS_WITH_EVIDENCE",
+    "GWC-3": "PASS_WITH_EVIDENCE",
+    "GWC-4": "PASS_WITH_EVIDENCE_INTAKE004_COMPLETE",
+    "GWC-5": "PASS_WITH_EVIDENCE",
+    "GWC-6": "PASS_WITH_EVIDENCE",
+    "GWC-7": "PASS_WITH_EVIDENCE",
+    "GWC-8": "PASS_WITH_EVIDENCE",
+    "GWC-9": "PASS_WITH_EVIDENCE",
+    "GWC-10": "PASS_WITH_EVIDENCE",
+    "GWC-11": "PASS_WITH_EVIDENCE",
+    "GWC-12": "PASS_WITH_EVIDENCE",
+    "GWC-13": "IN_PROGRESS_ACTIVE_CLAIM"
+  }
+}

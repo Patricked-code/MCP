@@ -1,0 +1,9 @@
+{
+  "contractProcedureStages": ["ENTER", "OBSERVE", "VALIDATE", "DERIVE", "AUTHORIZE_IF_MUTATING", "ACT_OR_RECORD", "VERIFY", "ATTEST", "ROUTE"],
+  "blueprintProcedure": "REOBSERVE -> LIVE TASK QUEUE RECONCILIATION -> CLAIM/MINIMAL LOCK -> EXACT BASELINE -> RED -> MINIMAL GREEN -> REGRESSION -> EXACT-HEAD REVIEW -> GOVERNED MERGE/AUTODEPLOY OBSERVATION -> TERMINAL VERIFY/CLOSE",
+  "materializationRule": "BLUEPRINT != GOVERNED_TASK; ONLY NEW_TASK AFTER LIVE TASK QUEUE RECONCILIATION MAY CREATE RUNTIME WORK",
+  "safetyPrerequisites": ["AF-19", "AF-22/AF-30", "PR-STACK"],
+  "noRuntimeCodeBeforeGate": true,
+  "sourcePlan": "docs/gwc/PRECODE_EXECUTION_PLAN.txt",
+  "machineGate": ".mcp/gwc-precode-gate.json"
+}

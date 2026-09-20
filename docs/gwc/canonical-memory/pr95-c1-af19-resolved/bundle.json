@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-c1-af19-resolved-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_phase_c1_af19_resolved",
+      "path": "sources/c1-af19-resolved.json",
+      "media_type": "application/json",
+      "bytes": 2186,
+      "sha256": "2c8fe0a4dce2fea141f01f8d244b4c2427ca218537b556377354d0e270f72c70"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_c1_done",
+      "key": "candidate.phase_c.c1",
+      "claim_type": "fact",
+      "value": "GWC-PRE-C1 is DONE: AF-19 is closed on the candidate branch by extending the existing deployment gate to require MCP CI success for the identical push SHA before autodeploy.",
+      "source_refs": [
+        "src_phase_c1_af19_resolved"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_od07_resolved",
+      "key": "candidate.decision.od07",
+      "claim_type": "decision",
+      "value": "OD-07 is resolved existing-first to option B (existing workflow gate); workflow_run remains forbidden, OIDC exact-SHA policy is unchanged, and no parallel deployment authority is introduced.",
+      "source_refs": [
+        "src_phase_c1_af19_resolved"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_c1_tdd",
+      "key": "candidate.phase_c.c1_tdd",
+      "claim_type": "fact",
+      "value": "RED CI #1110 failed at read-only safety tests on 757ee2a; GREEN CI #1112 succeeded completely on 074f2bd2.",
+      "source_refs": [
+        "src_phase_c1_af19_resolved"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_c2_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Next eligible PRECODE work item is GWC-PRE-C2: AF-22 / AF-30 exact-head review evidence binding and stale-head invalidation, without main/S1/production activation.",
+      "source_refs": [
+        "src_phase_c1_af19_resolved"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

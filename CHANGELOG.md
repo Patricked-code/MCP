@@ -1,5 +1,120 @@
 # CHANGELOG.md
 
+## 2026-09-19 — Incremental intake continuity and coherence
+
+- Ajout additif de séquençage monotone des `NEW_INFORMATION_INTAKE-NNN`.
+- Ajout du `CandidateIntakeContinuityCursor` et des revisions canonical/backlog.
+- Ajout du Coherence Gate déterministe et de ses verdicts bornés.
+- Ajout de la réconciliation par batch contigu avec `IntakeReconciliationReceipt` digesté.
+- Ajout d'un knowledge freshness guard local : HEAD + canonical revision + backlog revision.
+- Préservation des deux intakes historiques #001/#002 sans adoption automatique ni réécriture.
+- TDD : RED CI #1080, GREEN CI #1081.
+- Aucun runtime MCP, Task Queue runtime, lock, main, S1 ou prod modifié.
+
+
+## 2026-09-19 — GitHub-first PRECODE bootstrap
+
+- Extension additive de `candidateContinuity.ts` avec `resolveCandidateSession()`, `routeCandidateConnectionIntent()` et `bootstrapCandidateConnection()`.
+- Connexion PRECODE directe GitHub ; `runtimeMcpRequired=false`.
+- Identifiants provider/GitHub conservés uniquement s'ils sont réellement observés ; IDs conversation absents restent `null/UNAVAILABLE`.
+- Routage automatique information/continuation/both ; `ASK_USER` uniquement si ambigu.
+- Compatibilité ascendante des anciennes candidate sessions sans `connectionInstanceRef`.
+- TDD : RED CI #1061, correction de compatibilité CI #1062, GREEN CI #1063.
+- Aucun changement live `main`/S1/prod/runtime.
+
+
+## 2026-09-19 — Candidate multi-agent continuity and conversation reconciliation
+
+- Ajout additif de `src/governedContext/candidateContinuity.ts`.
+- Ajout du dispatch PRECODE multi-agent sans Task Queue runtime : reprise du claim courant, dépendances, priorité/séquence et collision domains.
+- Ajout d'un intake borné de nouvelles informations de conversation avec réconciliation mémoire/backlog.
+- Refus de persister le transcript brut ; contradictions fail-closed vers review.
+- Ajout de `tests/candidateContinuity.test.ts` à `test:readonly-safety`.
+- TDD : RED #1046, GREEN #1048.
+- Nouveau bundle canonique `pr95-candidate-continuity-ready`.
+- Aucun merge main, aucune mutation S1/prod, aucun runtime Task/lock, aucun déploiement.
+
+
+## 2026-09-18 — PRECODE devient construction de candidate évoluée
+
+- Correction sémantique majeure : PRECODE signifie désormais pré-intégration de la version évoluée complète, et non « architecture/doc uniquement ».
+- Le gate d'architecture autorise le code candidate sur `claude/ecstatic-edison-v1dyt1`.
+- Phases B→F redéfinies : backlog candidate, safety/foundations, cycle d'implémentation branch-local, construction GWC-0..17, acceptance candidate.
+- Ajout de 18 work items candidate `GWC-PRE-E-GWC-0..17`.
+- Gate machine R4 distingue candidate code autorisé de l'intégration live interdite.
+- Vérificateur PRECODE durci pour contrôler cette frontière.
+- Nouveau bundle canonique `pr95-candidate-build-ready`.
+- Aucune Governed Task runtime créée ; aucun main/S1/prod/deploy touché.
+
+
+
+## 2026-09-18 — PRECODE indépendant du bridge OAuth
+
+- Ajout d'une hiérarchie de preuves PRECODE : audits versionnés → GitHub live/artefacts → miroir serveur read-only futur.
+- OAuth MCP / `wealthtech_ssh_bridge` n'est plus une dépendance de progression PRECODE.
+- Le miroir serveur proposé est GitHub-side, read-only, least-privilege, redacted et sans surface de mutation.
+- Les preuves historiques conservent date/SHA/fraîcheur ; absence de preuve fraîche = `UNKNOWN` / `STALE`.
+- Aucun workflow serveur, credential, runtime ou déploiement n'a été activé : conception PRECODE uniquement.
+
+
+
+## 2026-09-18 — Rétablissement de la frontière PRECODE
+
+- Recentrage de la PR #95 sur la finalisation de la version PRECODE, sans intégration runtime.
+- `CLAUDE.md` et la coordination multi-agent précisent désormais que le passage du gate d'architecture n'autorise pas l'intégration réelle.
+- `.mcp/gwc-precode-status.json` distingue le catalogue complet `T00→T204` de la plage PRECODE courante `T00→T195`; `T196→T204` reste un plan futur.
+- `docs/gwc/canonical-memory/current.json` repointe sur le bundle PRECODE `pr95-precode-gate` et remet `T195/A14` comme travail courant.
+- Les observations Phase B/C antérieures sont conservées pour provenance mais ne sont plus la phase d'exécution courante.
+- Aucun changement `main`, S1, runtime, Governed Task, lock ou déploiement.
+
+
+
+## 2026-09-17 — Flux pré-code exécuté : gate vérifié, AF-34 ouvert puis corrigé
+
+- Exécution de `docs/gwc/PRECODE_ACTION_TASK_FLOW.txt` de `GWC-PRE-000` à `GWC-PRE-GATE-01` sur le head exact. Aucun code runtime, aucune Task, aucun lock, aucun déploiement.
+- Ajout de `.mcp/gwc-precode-status.json` : projection de statut par phase, non autoritative, avec références de preuve relisibles et head exact observé.
+- `.mcp/gwc-workflow-graph.json` : les 91 arêtes portent désormais `trigger` et `precondition` — 70 `POSTCONDITION_PASS`, 16 `SKIP_CONDITION` motivées individuellement, 4 `REOBSERVE_REQUIRED`, 1 `POSTCONDITION_FAIL`.
+- `docs/gwc/BLUEPRINTS.md` : ajout des modèles `M1 EvidenceRef`, `M2 StepAttestation`, `M3 classes de rejeu`, `M4 RecoveryAnchor` et `M5 précondition d'arête`, exigés par les phases `A7`, `A8` et `A5`.
+- `docs/gwc/PRECODE_EXECUTION_PLAN.txt` : ajout d'`E2E-22` (résolution de finding de revue) ; 22 scénarios E2E.
+- `scripts/gwc-verify.mjs` : refus de toute arête sans `trigger` ni `precondition`, vocabulaire `EDGE_TRIGGERS` borné, cohérence `SKIP`/`SKIP_CONDITION` et `FORWARD`/`POSTCONDITION_PASS`. Correction d'un défaut introduit dans le même lot : le contrôle avait été placé dans une fonction qui ne servait qu'à une sonde synthétique.
+- `scripts/gwc-precode-verify.mjs` : recoupement du gate contre la projection de statut — refus d'un `PASS_WITH_EVIDENCE` sans preuve, d'un verdict contredisant le décompte des phases, d'une Task runtime déclarée, ou d'un head exact absent.
+- `AF-34` ajouté puis corrigé : le gate déclarait 14/14 phases satisfaites alors que 10/14 seulement étaient vérifiables. Les six conditions de sortie manquantes ont été comblées et le vérificateur contrôle désormais la réalité, plus la déclaration.
+- Mémoire canonique : nouveau bundle `pr95-precode-gate` (2 sources, intégrité vérifiée, 6 claims tous `approval_eligible: false`), pointeur `current.json` avancé, bundles précédents conservés immuables.
+- Verdict : `GWC_ARCHITECTURE_GATE = PASS`. `GWC_RUNTIME_IMPLEMENTATION = NOT_STARTED`. La Phase B exige une observation live de la Governed Task Queue, indisponible depuis cette session.
+
+## 2026-09-17 — Conception d'évolution détaillée GWC-0..GWC-17 et correction de la CI
+
+- Correctif CI : le job `validate` échouait à `docs:check` (`markdown_inventory_drift`, `markdown_count_drift`, declared 211 / actual 214). `docs/governance/markdown-inventory.json` réaligné sur les 3 sources de `docs/gwc/canonical-memory/pr95-ded/`, régénéré avec `scripts/generate-doc-governance-baseline.mjs` : 211 → 214 Markdown suivis, `categories.documentation` 61 → 64.
+- `docs/gwc/BLUEPRINTS.md` : ajout des 18 fiches de conception détaillée `GWC-0`…`GWC-17`, de 13 registres transverses, de la matrice centrale des 73 contrats, du traitement des 12 décisions ouvertes, du registre des 33 findings, des 4 audits globaux et du verdict terminal.
+- Ajout de `.mcp/gwc-evolution-design.json` : projection machine de la conception, 18 fiches, 73 contrats rattachés, 33 findings, 12 décisions ouvertes, `runtimeTasksCreated: 0`, `promotedToTaskQueue: false`.
+- `scripts/gwc-verify.mjs` : ajout de `verifyEvolutionDesign()` — 18 fiches sans doublon ni manquant, couverture et réciprocité des contrats, classifications bornées, aucun `NEW` sans primitive justifiée, aucune primitive déclarée par deux blueprints, findings rattachés et réciproques, `AF-19`/`AF-22`/`AF-30` chez leur propriétaire, `OD-01` à `OD-12` présentes, 13 registres et 4 audits déclarés, verdict borné.
+- Findings ajoutés : `AF-31` (deux fichiers de tests exécutés dans aucune étape CI), `AF-32` (trois outils `operational-write` hors porte d'écriture), `AF-33` (affectations de findings sans définition versionnée cohérente).
+- `docs/gwc/REVISION_HISTORY.md` : révision `R3-DED`. `docs/gwc/README.md` : contenu, état et contrôles du vérificateur mis à jour.
+- Aucun comportement runtime modifié, aucun outil MCP ajouté, aucune Task créée, aucun lock, aucun merge, aucun déploiement.
+
+## 2026-09-16 — Réconciliation R3 du dossier GWC : corps canonique et blueprints
+
+- `docs/gwc/ARCHITECTURE_73_CONTRACTS.md` devient le **corps canonique** : les 73 Contract Design Sheets au modèle A→BA, baseline `GWC_73_CONTRACT_DESIGN_SHEETS_CANONICAL_R1`. Il ne contient plus aucune affirmation historique.
+- Ajout de `docs/gwc/REVISION_HISTORY.md` (R1 → R2 → R3), `docs/gwc/DEPRECATED_CLAIMS.md` (DC-01 à DC-11) et `docs/gwc/archive/ARCHITECTURE_R2_NON_CANONICAL.md` (archive R2 avec bannière non canonique).
+- Statut d'architecture : `AWAITING_HUMAN_RATIFICATION` → `READY_FOR_GOVERNED_IMPLEMENTATION`.
+- Suppression de `.mcp/gwc-task-seed.json` et de `docs/gwc/BACKLOG.md`, remplacés par `.mcp/gwc-blueprints.json` et `docs/gwc/BLUEPRINTS.md` : 18 blueprints `GWC-0`…`GWC-17`. `TASK BLUEPRINT ≠ GovernedTaskRecord`.
+- Suppression de la Task de ratification humaine `TASK-20260916-001` ; aucun human gate générique n'est créé.
+- `.mcp/gwc-contracts.json` devient une projection compacte et déterministe de la baseline canonique : `stepId`, `canonicalName`, `contractVersion`, `family`, `profiles`, `executionSemantics`, `integrationClassification`, `canonicalSheetRef`, `blueprintRef`, findings et références de graphe.
+- Ajout de `.mcp/gwc-workflow-graph.json` : 80 arêtes, dont 4 à rebours et 7 sauts déclarés. Aucune règle `to > from`.
+- Portées de ressource passées au domaine de collision minimal ; aucune portée globale `repository:Patricked-code/MCP`.
+- `scripts/gwc-verify.mjs` étendu : contrats, graphe, blueprints, réciprocité des références, propriété architecturale des findings, absence de promotion en Task Queue.
+- `docs/governance/markdown-inventory.json` : 208 → 211 Markdown suivis.
+- Aucune Task runtime créée, aucune promotion en Task Queue, aucun déploiement, aucune implémentation GWC runtime démarrée.
+
+## 2026-09-16 — Dossier permanent GWC versionné (documentation et données, sans implémentation)
+
+- Ajout de `docs/gwc/` : `README.md` (protocole agent et procédure d'amendement), `ARCHITECTURE_73_CONTRACTS.md` (architecture R2 complète, 73 fiches, AF-01 à AF-30) et `BACKLOG.md` (projection lisible du backlog).
+- Ajout de `.mcp/gwc-contracts.json` : les 73 contrats en lecture machine, avec maturité, stratégie d'intégration, nature d'action, autorité principale, slot d'intégration, lot et tâche d'implémentation associée.
+- Ajout de `.mcp/gwc-task-seed.json` : 18 tâches candidates au format `TaskRegistrySeed`, en préparation. Ce fichier n'est chargé par aucun code ; seul `.mcp/task-registry.json` est lu par `initializeSeed()`.
+- Ajout de `scripts/gwc-verify.mjs` et du script npm `gwc:verify` : vérification déterministe des deux artefacts, avec la même sérialisation canonique que `src/operationalMemory/taskQueue.ts`.
+- `docs/governance/markdown-inventory.json` : 205 → 208 Markdown suivis, catégorie `documentation` 55 → 58.
+- Aucun comportement runtime modifié, aucun outil MCP ajouté, aucune tâche créée dans la Governed Task Queue, aucun lock, aucun déploiement.
+
 ## 2026-09-15 — C2 Repository → Project Resolution fusionnée et déployée
 
 - Ajout additif du resolver C2 `repositoryId → mappingId → projectId` dans le Governed Context existant, avec `RESOLVED/NONE/AMBIGUOUS/UNVERIFIED`.
@@ -518,3 +633,194 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Livraison : PR #87 fusionnée depuis `289b3b71c8352738395bf290bc1ae10dc405ee15` au merge `dc4698de66b7becfc924ea4fabe8037e089d3336` sous l'autorisation humaine distincte `G3_EXACT_HEAD_MERGE_AUTHORIZATION_V2`; Governed Deploy #39 (run `34919927303`) a attesté l'exact-SHA avec runtimeRevision identique, rollback non requis et health/OAuth/MCP auth sains.
 - Live State atteste GitHub/S1/origin-main/runtime au SHA exact du merge, S1 propre/read-only et runtime healthy. La preuve exact-SHA est projetée sur la tâche (`runtimeRevision` = `dc4698de66b7becfc924ea4fabe8037e089d3336`, `deploymentExactShaSuccess` = `true`, `runtimeAligned` = `true`) sans redéploiement; la tâche est observée `DEPLOYING` révision 10 et la seule contradiction restante avant la présente réconciliation est `DOCUMENTATION_DRIFT`.
 - Aucun DONE n'est anticipé : le statut terminal, le checkpoint terminal, les locks et la fermeture de session restent exclusivement sous Operational Memory.
+
+
+## 2026-09-17 — Flux pré-code GWC exécuté jusqu'au gate, réconciliation live `BLOCKED`
+
+- Exécution du flux `GWC-PRE-000` → `GWC-PRE-GATE-01` documenté dans `docs/gwc/PRECODE_ACTION_TASK_FLOW.txt`, sur la branche existante de PR #95. Aucune nouvelle branche, aucune nouvelle PR.
+- Les 14 phases d'architecture `A1`…`A14` sont `PASS_WITH_EVIDENCE` avec références de preuve relisibles ; `GWC-PRE-GATE-01 = GWC_ARCHITECTURE_GATE_PASS`.
+- `AF-34` ouvert **et corrigé sur ses deux faces**. L'instance : les six conditions de sortie non vérifiables sur le head exact (`A5-01`, `A7-01`, `A7-02`, `A8-03`, `A8-04`, `A11-01`) sont comblées — les 91 arêtes du graphe portent désormais `trigger` et `precondition`, les modèles `EvidenceRef` et `StepAttestation` sont typés, les classes de rejeu et `RecoveryAnchor` sont définies, et le scénario `E2E-22` couvre le dernier cas nommé non couvert. La cause : `scripts/gwc-precode-verify.mjs` ne contrôlait que les compteurs déclarés du gate ; il recoupe maintenant ces compteurs contre `.mcp/gwc-precode-status.json`, refuse un `PASS_WITH_EVIDENCE` sans preuve et refuse un verdict de gate qui contredit le décompte des phases.
+- Phase B — réconciliation live de la Governed Task Queue — exécutée dès que le MCP WealthTech est devenu atteignable. Autorités réellement observées : Task Queue `storeRevision 188` (15 tâches, 11 `DONE`, 3 `SUPERSEDED`, 1 `DEPLOYING`), Live State `stateVersion 246` `FULLY_ALIGNED`, 25 sessions gouvernées, aucun lock détenu.
+- Résultat de la classification : **aucune tâche GWC n'existe dans la file live** (0 des 18 blueprints) ; `TASK-20260915-001` est classée `CONFLICT` ; `GWC-0` à `GWC-17` sont classés `BLOCKED` car le protocole MCP impose que la première tâche exécutable précède les nouvelles.
+- `AF-35` ouvert — la Task Queue déclare `DOCUMENTATION_DRIFT` bloquant à `46d576e5` alors que Live State `246` déclare `documentation: ALIGNED` et 0 contradiction à `d1f30395`, plus récent. Propriétaire `GWC-5`. Non corrigé : la tâche appartient à la session `ACTIVE` d'un autre agent.
+- **`RUNTIME_TASKS_CREATED = 0`.** Aucune session ouverte, aucun Bootstrap Receipt demandé, aucun claim, aucun lock, aucune transition, aucun merge, aucun déploiement, aucune mutation serveur, aucun code runtime, aucun secret.
+- Portée : documentation et données uniquement. Le runtime GWC reste gelé.
+
+
+## 2026-09-18 — Réconciliation de la pile candidate (`GWC-PRE-C3`)
+
+- Exécution de `GWC-PRE-C3` du flux pré-code : disposition bornée, capacité par capacité, des cinq pull requests candidates `#85`, `#86`, `#88`, `#89` et `#90`.
+- Observation live : les cinq candidates sont inchangées depuis les 2026-09-14/15. `main@d1f30395` enregistre 111 outils dont 6 `github_*`, tous d'inventaire ou de diagnostic — aucune capacité de contrôle GitHub n'existe sur `main`.
+- Les 7 contrats classés `CANDIDATE` se réduisent à 4 outils de `#90` : `github_create_branch`, `github_create_pull_request`, `github_mark_pr_ready`, `github_merge_pull_request`. `#88`, racine de la staleness de la pile, n'est requise par aucun des 73 contrats.
+- 8 capacités disposées — 3 `SPLIT`, 1 `SUPERSEDE`, 4 `DEFER` ; aucun `KEEP`, aucun `CLOSE`. Partition des 18 outils de `#90` vérifiée exacte et exhaustive.
+- Contrainte d'ordonnancement enregistrée : `GWC-9` précède l'atterrissage de tout `SPLIT` portant du `WRITE`, parce que `AF-32` reste ouvert et que `#90` ajoute douze outils `WRITE`.
+- `GWC-PRE-C1` (`AF-19`) et `GWC-PRE-C2` (`AF-22`/`AF-30`) restent `PENDING` et sont déclarés tels : hors du périmètre autorisé pour cette session.
+- Portée : documentation et données. `PRS_MUTATED = 0`, `RUNTIME_TASKS_CREATED = 0`, aucun merge, aucun déploiement, aucun code runtime, aucun secret.
+
+
+## 2026-09-18 — Phase B réobservée : `CONFLICT` levé, classification `NEW_TASK`
+
+- Réobservation en lecture seule des autorités runtime après réautorisation du bridge WealthTech, le 2026-09-18T17:08Z.
+- `TASK-20260915-001` observée **`DONE`** avec blockers vides (`taskRevision 12`) ; session propriétaire `499b2ea3` **`CLOSED`** après acquittement du `stateVersion 246`. Le `CONFLICT` enregistré sous `AF-35` est **résolu à la source par l'agent propriétaire**, sans aucune action de cette session.
+- Task Queue `storeRevision 190` : 15 tâches, 12 `DONE`, 3 `SUPERSEDED`, **aucune non terminale**. 25 sessions, **aucune `ACTIVE`**. Live State `stateVersion 246` `FULLY_ALIGNED`, 0 contradiction.
+- Classification mise à jour : `TASK-20260915-001` → `RESOLVED` ; `GWC-0` à `GWC-17` → **`NEW_TASK`**, seule classification autorisant la création d'un `GovernedTaskRecord`.
+- `AF-35` passe de « ouvert, bloque la matérialisation » à « résolu ». Les compteurs de findings et le verdict terminal sont mis à jour en conséquence.
+- Portée : documentation et données. `RUNTIME_TASKS_CREATED = 0`, aucune session ouverte, aucun Bootstrap Receipt demandé, aucun claim, aucun lock, aucune transition, aucun merge, aucun déploiement, aucun secret. La matérialisation est admissible mais non exécutée : elle exige une governed session et une décision humaine explicite.
+
+
+## 2026-09-18 — `AF-36` : le pointeur de mémoire canonique est désormais vérifié
+
+- Réconciliation du commit pair `e22214d` sur la branche partagée, après `HEAD_MOVED`. Merge, aucune réécriture d'historique.
+- **`AF-36` ouvert et corrigé** : `currentBundlePath` désignait un bundle absent de l'arbre, laissant la mémoire canonique irrésoluble — et la CI restait verte, aucun contrôle ne validant ce pointeur.
+- Instance corrigée par le commit pair `3f635e9`, qui repointe vers le bundle le plus récent réellement présent. La même réparation avait été dérivée indépendamment ici ; celle du pair a atterri en premier et a été adoptée telle quelle. Son commit documente également la cause de l'orphelinat : la surface d'écriture GitHub autorisait la mise à jour de fichiers existants mais bloquait la création de nouveaux chemins de mémoire canonique.
+- Cause corrigée : `verifyCanonicalMemory()` ajouté à `scripts/gwc-verify.mjs`. Il contrôle la résolution du pointeur, la correspondance du `bundle_id`, l'intégrité `sha256` et la taille de chaque source, `approval_eligible=false` sur chaque claim, et l'existence de chaque bundle précédent déclaré. Éprouvé par 5 défauts injectés, 5 rejets.
+- Les blocs `currentPhase` et `continuationPolicy` du commit pair sont **conservés intacts** : cette session ne les arbitre pas et ne s'en autorise pas.
+- Portée : documentation, données et vérificateur. Aucun code runtime, `RUNTIME_TASKS_CREATED = 0`, aucun merge, aucun déploiement, aucun secret.
+
+
+## 2026-09-18 — Frontière restreinte à `PRECODE-only` par le pair, README réaligné
+
+- Réconciliation des commits pairs `68cd082` → `6418833`, qui restreignent la frontière du programme : le runtime reste gelé pendant toute la finalisation PRECODE, même avec le gate d'architecture `PASS`. Sortie requise : `FINAL_PRECODE_VERSION_ACCEPTED`.
+- Les phases B→F et `T196→T204` sont reclassées en plan d'intégration futur, non exécutable contre le projet réel. Les autorités runtime restent observables en lecture seule.
+- Mes blocs `phaseB` et `phaseC` sont conservés et annotés par le pair (`executionRole`, `currentExecutionAuthority: false`) plutôt que supprimés : la provenance est préservée, le périmètre courant clarifié.
+- Correction de deux lignes périmées du README, laissées par moi lors du push `AF-36` : le compteur de findings indiquait 35 alors que le registre machine en porte 36, et la ligne « bundle courant » désignait un bundle supersédé. `current.json` est ajouté au tableau de contenu, puisqu'il est désormais vérifié par `verifyCanonicalMemory()`.
+- Portée : documentation. Aucun code runtime, `RUNTIME_TASKS_CREATED = 0`, aucun merge vers `main`, aucun déploiement.
+
+## 2026-09-19 — NEW_INFORMATION_INTAKE #1 enregistré dans la mémoire canonique GWC
+
+- Ajout d'un bundle canonique `pr95-new-information-intake-001` contenant uniquement des insights structurés issus de la conversation ; aucun transcript brut.
+- L'intake propose le modèle `GWC ROOT → 8 Macro Contracts → Step Contracts → deterministic functions` et un template commun de conception par étape.
+- La différence **72 étapes runtime / 73 Contract Design Sheets** est explicitement réconciliée sans modifier le registre : 72 membres runtime restent compatibles avec `GW-73` hors graphe runtime.
+- Aucun blueprint, contrat, source runtime, Task Queue, lock, session runtime, main, S1 ou déploiement n'est modifié.
+- `GWC-PRE-B-01` reste `READY`; aucun travail candidate n'est dispatché par cet intake.
+
+## 2026-09-19 — NEW_INFORMATION_INTAKE #2 : instruction de consolidation GWC
+
+- Enregistre la consigne de réconcilier #1 contre les matrices existantes au lieu de créer une matrice parallèle.
+- La structure actuelle vérifiée reste cohérente : 73 contrats uniques / 72 runtime / GW-73 hors runtime / 91 arêtes / 18 blueprints / 18 evolution designs.
+- La nouvelle couche GWC Root + 8 Macro Contracts doit être une projection additive avec `macroContractRef`, sans remplacer les familles A..I ni les autorités existantes.
+- Le Master Construction Crosswalk est défini comme consolidation des bindings existants et alimentation de `GWC-PRE-B-01/B-02/B-03`.
+- Aucun contrat, blueprint, graphe, Task Queue, lock, session runtime, main, S1 ou déploiement n'est modifié par cet intake.
+
+## 2026-09-19 — Phase C1 : AF-19 exact-SHA CI gate
+
+- Résolution existing-first de `OD-07` sur l'Integration Slot déjà présent dans `.github/workflows/mcp-deploy.yml`.
+- Ajout de la permission minimale `actions: read` et d'une attente bornée de la CI `MCP CI` pour le `GITHUB_SHA` exact avant autodeploy sur `push`.
+- Fail-closed : pas de CI exacte, CI non terminée au-delà de la fenêtre, CI échouée ou API indisponible => `enabled=false`.
+- `workflow_run` reste absent/interdit ; politique OIDC exact-SHA inchangée ; `workflow_dispatch` conserve son comportement historique.
+- TDD : RED CI #1110 @ `757ee2a`; GREEN CI #1112 @ `074f2bd2` entièrement réussi.
+- Aucun merge `main`, S1, production ou runtime MCP n'est muté.
+
+
+### 2026-09-19 — GWC Intake #004 minute-liveness closure
+
+- Finalisation du delta `NEW_INFORMATION_INTAKE-004` après reconstitution des deux claims PRECODE actifs.
+- Validation bornée : 6 tests minute-heartbeat PASS dans MCP CI #1252 au head `4f88e8453523bd62f04989bc7d76b1aa3ad3cf65`.
+- Les 7 échecs du même run appartiennent exclusivement au RED concurrent `GWC-6`; aucun fichier `GWC-6` n'est modifié par la clôture Intake #004.
+- Le claim heartbeat Intake #004 est libéré après constat `STALE` et autorisation humaine explicite ; la staleness seule ne transfère jamais l'ownership.
+- Le claim `GWC-6` reste `ACTIVE`; heartbeat manquant => liveness `UNKNOWN`.
+- Ajout du checkpoint canonique `pr95-intake-004-minute-liveness-complete`.
+
+## 2026-09-19 — GWC-6 Server Resolver C3
+
+- Ajout/fermeture candidate de `GW-07 SERVER_RESOLUTION` en lecture seule.
+- Résolution OD-03 : canonicalisation contre un ensemble explicite et borné de serveurs gérés, conservation des IDs bruts, fail-closed sur alias inconnus, désambiguïsation par hint uniquement sur binding existant, environnement préservé, chemins exclus de l'identité.
+- Suppression du faux couplage entre digests de ProjectResolution et digests de la preuve serveur ; ces preuves restent distinctes tant qu'aucun contrat n'impose leur égalité.
+- Ordonnancement des alias bruts rendu déterministe et indépendant de la locale.
+- GREEN complet MCP CI #1258 sur `087b0a23230c83b6cb1c9069947f48a5d8cc0357`.
+- Aucun changement main/S1/production, aucun runtime Task/lock/session et aucune mutation SSH/GitRegistry.
+
+## 2026-09-19 — GWC-7 Runtime Resolver C4 — final GREEN
+
+- Ajout du resolver GW-08 RuntimeBinding borné et read-only.
+- Prise en charge explicite de NO_RUNTIME, CHECKOUT_ONLY, DOCKER, DOCKER_COMPOSE, SYSTEMD, PROCESS_MANAGER et PASSENGER, y compris MULTI_RUNTIME.
+- Missing/stale/unavailable reste fail-closed ; une déclaration de registry ne remplace jamais l'observation runtime.
+- Recovery gouverné du writer stale avec autorisation humaine explicite ; aucun transfert automatique.
+- RED CI #1270 ; GREEN CI #1273 ; self-review couverture runtime kinds ; FINAL GREEN CI #1274.
+
+## 2026-09-19 — GWC-8 Domain Resolver C5
+
+- Ajout du resolver `GW-09 DOMAIN_RESOLUTION` en lecture seule.
+- Résolution de la surface publique avec rôles FRONTEND/API/OTHER depuis les autorités projet/mapping et l'observation serveur courante.
+- `NONE` distingué strictement de `UNVERIFIED`; absence ou staleness d'observation ne devient jamais un faux `NONE`.
+- Vhosts historiques exclus de la surface active et exposés comme exclusions ; `protectedDomains` conservé comme safety list uniquement.
+- Conflits de domaine pour un même rôle => `AMBIGUOUS`; domaines observés non déclarés ou déclarés non observés => fail-closed.
+- Compatibilité préservée pour les mappings GitRegistry V2 historiques sans `componentRole`, sans inventer de rôle concurrent.
+- GREEN complet MCP CI #1286 sur `d6240484e387770751d9d3db476ac3b9470c74ce`.
+- Aucun changement main/S1/production, aucun runtime Task/lock et aucune mutation SSH/vhost.
+
+## 2026-09-19 — GWC-9 Governance inheritance and effective capabilities
+
+- Ajout du composer read-only GW-10/GW-11 derrière les autorités existantes `CapabilityReality` et `GovernanceDecision`.
+- Composition cible bornée, monotoniquement restrictive, sans nouvelle autorité ni persistance.
+- UNKNOWN reste fail-closed ; mismatch d'opération ou de capability snapshot => `CONFLICT`.
+- AF-32 fermé en shadow : les trois mutations gouvernées Task `operational-write` traversent désormais `decorateScopedWriteServer`.
+- Aucun mode enforcing ajouté et aucun changement du résultat historique des handlers.
+- Classification des outils inchangée (`operational-write`) ; cartographie/digest conservés et régression verte.
+- RED CI #1298 ; GREEN initial #1300 ; self-review fixture-only #1301 ; GREEN final #1302 sur `ff85ab51ae59df044ad179abe0865374e41f2412`.
+- Aucun changement main/S1/production et aucun second moteur de gouvernance/capability.
+
+## 2026-09-19 — GWC-10 Multi-repository TargetScope
+
+- Ajout de `TargetContext` et `TargetScope` derrière le modèle projet/composants existant de GitRegistry V2.
+- Extension strictement additive de Session, Task, Lock et BootstrapReceipt avec un `TargetScope` optionnel ; aucun backfill des records historiques.
+- Généralisation des identifiants repository aux cibles gouvernées sans invalider `Patricked-code/MCP`.
+- Ownership Task borné au sous-ensemble exact de composants ; mêmes intents sur composants disjoints restent indépendants.
+- Locks composants indépendants, sans élargissement automatique au projet.
+- Live State transporte le même `TargetContext` optionnel et incrémente `stateVersion` sur changement sémantique de composant, pas sur simple changement d'`observedAt`.
+- BootstrapReceipt multi-composant conserve les SHAs indépendants dans `targetContext` et laisse les champs SHA legacy à `null`.
+- Interdiction confirmée de synthétiser un `PROJECT_SHA`.
+- RED CI #1314 ; GREEN initial #1328 ; self-review #1329 ; GREEN final #1330 sur `67197cd12e13f450734b403c4b85e26dc9760c60`.
+- Aucun changement main/S1/production, aucun second registre projet, store opérationnel ou Live State.
+
+## 2026-09-19 — GWC-11 Authority documents, integration slot and exact baseline
+
+- Généralisation additive de la déclaration de gouvernance documentaire en configuration project-scoped, avec defaults MCP historiquement identiques.
+- Ajout du module read-only `src/governedWorkflow/authority/index.ts` pour GW-21, GW-22 et GW-23.
+- GW-21 compose les digests/compteurs des autorités documentaires et cartographiques existantes ; drift, stale ou unavailable échouent fermés.
+- GW-22 résout seulement des owners déjà présents dans les inventaires Current State et retourne `NONE` plutôt que d'inventer un slot.
+- GW-22 bloque sur inventaire stale/unavailable.
+- GW-23 lie la baseline au SHA exact de la branche observé pour l'étape courante ; replay pré-step, sous-preuves stale/unavailable et contradictions de head sont refusés.
+- Aucun nouvel outil MCP, store, observateur GitHub, inventaire, cartographie ni autorité de permission.
+- RED CI #1343 / #1344 ; premier GREEN #1345 ; self-review #1346 ; GREEN final #1348 sur `2a82e278319dd750db2a6d870fc029fe296a66a6`.
+- Aucun changement main/S1/production.
+
+## 2026-09-19 — GWC-16 Documentation / terminal closure
+
+- Ajout de `src/governedWorkflow/terminal/index.ts` pour les contrats `GW-58..GW-72`, sans effet de bord direct.
+- Les étapes documentaires réutilisent les outils GitHub existants avec leurs schémas exacts ; GW-60 utilise `github_create_commit` pour la réconciliation multi-fichiers.
+- GW-68 introduit l'unique terminal verification predicate : Task/session/receipt/stateVersion/CI/deploy/review/locks/Live State/docs doivent converger vers le même head/runtime final avant qu'une preuve terminale soit émise.
+- GW-69 refuse tout `DONE` sans preuve GW-68 liée au même task/session/receipt/state/head/runtime ; aucun paramètre non supporté n'est ajouté au payload historique `mcp_transition_governed_task`.
+- L'ordre de fermeture reste checkpoint → release locks → close session → queue reconcile après terminal verification/DONE ; la libération des locks ne dépend pas du succès de la Task.
+- TDD : RED #1433 ; premier GREEN #1435 ; self-review RED #1437 ; correction de fixture uniquement #1439 ; GREEN final #1440 sur `b8a86c48eb24902f998d4533e6bbeac5144102c6`, 589/589 tests.
+- Aucun merge main, S1, production, déploiement ou mutation runtime n'a été effectué par ce PRECODE.
+
+## 2026-09-19 — GWC-17 Universal Acceptance
+
+- Ajout d'un harnais d'acceptance strictement test-only sous `tests/governedWorkflowUniversalAcceptance/` pour `GW-73 UNIVERSAL_ACCEPTANCE`, hors graphe runtime.
+- Les scénarios prouvent la compatibilité historique MCP, un second projet réel Stablecoin/S2/Passenger, un projet multi-composants synthétique, l'isolation d'un composant non résolu et les invariants de reprise issus de NEW_INFORMATION_INTAKE-003.
+- Le harnais réutilise les primitives existantes TargetContext/TargetScope, runtime/domain resolvers, Lock Service, candidate continuity/recovery, Execution Engine et terminal GW-68 ; aucune API runtime d'acceptance n'est créée.
+- Le scan anti-hardcode couvre les chemins gouvernés et dispose d'un contrôle négatif injecté ; aucune branche cible MCP/Stablecoin/S1/S2 n'est tolérée dans le workflow gouverné.
+- Les rapports sont fail-closed : aucun scénario SKIPPED ; un scénario en échec produit `FAILED`, un reason code borné et l'ensemble exact des contrats concernés.
+- TDD : RED #1451 ; premier GREEN #1454 ; self-review RED #1456 ; GREEN final #1458 sur `9b32bba86e830845ea63d90f37bf304d800b8f12`, 598/598 tests.
+- Aucun fichier `src/`, runtime authority, main, S1, production ou déploiement n'est modifié par GWC-17.
+
+
+## 2026-09-20 — Phase F-06 : paquet d’intégration de la candidate GWC
+
+- Enrichissement de `MIGRATION.md` avec le paquet PR #95 : résolution de `CANDIDATE_HEAD`, `MAIN_BEFORE`, `MERGE_SHA`, `DEPLOY_SHA` et `RUNTIME_SHA`.
+- Delta autorisé défini comme le compare GitHub complet après réconciliation, sans cherry-pick partiel ni copie serveur.
+- Ajout d’une matrice de drift, de INTEGRATE-01..07, du rollback par phase, des attestations live minimales et du DoD post-intégration.
+- `DEPLOYMENT_PRODUCTION.md` distingue explicitement HEAD candidat, SHA de fusion et SHA de déploiement tout en conservant la chaîne exact-SHA existante.
+- Aucun nouveau workflow runtime, store, autorité, outil MCP, déploiement, merge `main` ou mutation S1/production.
+- Précision F-06 : séparation explicite de `PACKAGE_HEAD_F06` et du `CANDIDATE_HEAD` final afin que le checkpoint terminal soit certifié par CI/réobservation sans auto-référence de SHA.
+
+
+## 2026-09-20 — PR #95 : correctifs de review P1/P2 avant intégration
+
+- Corrige le worker de déploiement S1 généré afin que `write_attestation()` soit syntaxiquement fermé ; ajout d’un test `bash -n` sur le script généré.
+- Corrige `githubLifecycle` pour préserver le mode Git d’un blob existant lors d’un remplacement : `100644`, `100755` et `120000`.
+- Un nouveau fichier régulier reste créé en `100644`.
+- Un base tree récursif signalé `truncated` est refusé avec `GITHUB_BASE_TREE_TRUNCATED`; un chemin existant non remplaçable comme blob est refusé.
+- Preuve TDD : CI #1497 RED avec exactement 3 échecs attendus, puis CI #1499 GREEN avec 604/604 tests.
+- Aucun merge de `main`, déploiement ou changement direct sur S1 n’est inclus dans ces correctifs.

@@ -1,0 +1,56 @@
+{
+  "source": "MCP_WEALTHTECH_LIVE",
+  "phase": "B",
+  "phaseName": "Live Task Reconciliation",
+  "observedAt": "2026-09-17T13:55:00Z",
+  "observedVia": "wealthtech_ssh_bridge",
+  "note": "Autorites runtime observees aupres de leurs proprietaires reels. Ni GitHub, ni le clone local, ni un document Markdown, ni la memoire canonique ne fondent ces faits.",
+  "taskQueue": {
+    "storeRevision": 188,
+    "nextSequence": 16,
+    "tasks": 15,
+    "byStatus": { "DONE": 11, "SUPERSEDED": 3, "DEPLOYING": 1 },
+    "gwcTasks": 0
+  },
+  "liveState": {
+    "stateVersion": 246,
+    "freshness": "CURRENT",
+    "global": "FULLY_ALIGNED",
+    "documentation": "ALIGNED",
+    "contradictions": 0,
+    "githubHead": "d1f303955c4d368950da2307dda41d826fc85d0a",
+    "s1Head": "d1f303955c4d368950da2307dda41d826fc85d0a",
+    "runtimeRevision": "d1f303955c4d368950da2307dda41d826fc85d0a"
+  },
+  "sessions": { "total": 25, "ACTIVE": 1, "EXPIRED": 1, "CLOSED": 23 },
+  "locks": { "heldByAnySession": 0 },
+  "conflictingTask": {
+    "taskId": "TASK-20260915-001",
+    "lot": "C2",
+    "queueStatus": "DEPLOYING",
+    "queueBlocker": "DOCUMENTATION_DRIFT",
+    "queueBlockerObservedAtSha": "46d576e53820eba0360647b6fd96d41dd4a2bbc6",
+    "owningSession": "499b2ea3",
+    "owningSessionState": "ACTIVE",
+    "owningSessionAgent": "ChatGPT GPT-5.6 Sol via GitHub connector",
+    "owningSessionLastHeartbeat": "2026-09-16T22:52:19Z",
+    "owningSessionAcknowledgedStateVersion": 233,
+    "liveStateVersion": 246,
+    "owningSessionNextActionObsolete": "demande de fusionner PR 92 au head 8b71f14f, deja fusionnee, main avance a d1f30395"
+  },
+  "classification": {
+    "TASK-20260915-001": "CONFLICT",
+    "GWC-0..GWC-17": "BLOCKED"
+  },
+  "rule": "Le protocole MCP impose que la premiere tache executable precede les nouvelles.",
+  "findingRaised": "AF-35",
+  "findingOwner": "GWC-5",
+  "runtimeTasksCreated": 0,
+  "sessionsOpened": 0,
+  "bootstrapReceiptsRequested": 0,
+  "claimsMade": 0,
+  "locksAcquired": 0,
+  "transitionsAttempted": 0,
+  "verdict": "LIVE_TASK_RECONCILIATION_BLOCKED_BY_PRIOR_NON_TERMINAL_TASK",
+  "nextAction": "Resoudre le CONFLICT sur TASK-20260915-001, soit par cloture de l agent proprietaire, soit par decision humaine explicite d expiration ou de supersession. Aucune materialisation GWC avant."
+}

@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-12",
+  "blueprint": "GWC-12",
+  "title": "GitHub Control Plane reconciliation",
+  "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+  "session": {
+    "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "heartbeatCommentId": 5740056645
+  },
+  "reconciliation": {
+    "mainShaObserved": "d1f303955c4d368950da2307dda41d826fc85d0a",
+    "stalePrStack": {
+      "88": {
+        "head": "d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993",
+        "disposition": "DEFER"
+      },
+      "89": {
+        "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+        "readSplit": "ALREADY_MATERIALIZED",
+        "manifest": "SUPERSEDED"
+      },
+      "90": {
+        "head": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+        "selected": "C-90.1_AND_C-90.2_REDERIVED_FROM_CURRENT",
+        "deferred": "C-90.3"
+      }
+    },
+    "selectedCapabilities": {
+      "read": [
+        "github_get_review_threads"
+      ],
+      "write": [
+        "github_create_branch",
+        "github_create_commit",
+        "github_create_or_update_file",
+        "github_create_pull_request",
+        "github_mark_pr_ready",
+        "github_reply_review_thread",
+        "github_resolve_review_thread",
+        "github_merge_pull_request"
+      ]
+    },
+    "stillDeferred": [
+      "github_create_repository",
+      "github_delete_branch",
+      "github_delete_file",
+      "github_request_review",
+      "github_update_pull_request",
+      "github_get_tree",
+      "github_get_commits",
+      "github_get_commit_diff",
+      "github_get_mergeability",
+      "github_get_required_checks"
+    ]
+  },
+  "implementation": {
+    "connectionTransport": "src/github/connection.ts",
+    "lifecycleTools": "src/tools/githubLifecycle.ts",
+    "readRegistration": "src/tools/readOnly.ts",
+    "writeRegistration": "src/tools/writeScoped.ts",
+    "registrationPolicy": "src/tools/registrationPolicy.ts",
+    "cartography": ".mcp/function-cartography.json",
+    "tests": [
+      "tests/githubLifecycleControl.test.ts",
+      "tests/gwcGithubCapabilitySplit.test.ts"
+    ],
+    "behavior": [
+      "GitHub transport is bounded to GET/POST/PATCH/PUT; DELETE remains unavailable.",
+      "Selected mutations require the existing Scoped Write Gate to evaluate shadow_ready before GitHub mutation.",
+      "Commit creation reobserves branch head and advances refs with force=false only from the expected head.",
+      "PR creation reobserves the source branch and rejects stale expectedHeadSha.",
+      "Ready/review-thread/merge mutations reobserve PR head and reject stale evidence.",
+      "Merge rejects Draft, already-merged, explicitly non-mergeable PRs, non-green checks and missing check evidence.",
+      "C-89.2 bounded READ is reused; the stale #89 capability manifest is not a runtime authority.",
+      "PR #88/#89/#90 are not merged, rebased, closed or otherwise mutated by GWC-12."
+    ]
+  },
+  "cartography": {
+    "registeredTools": 132,
+    "readTools": 81,
+    "writeTools": 51,
+    "catalogueDigest": "4bd120417137c0f0ddd55019f0e58072e2c5e645293ed471c4816d3ee6a296c8"
+  },
+  "evidence": {
+    "dispatch": {
+      "head": "45fb8f15ebc7152100925d188177700b08e45f82",
+      "ciRunNumber": 1357,
+      "conclusion": "SUCCESS"
+    },
+    "red": {
+      "head": "d605805a189f17f49424e3282cb6e673ac11b368",
+      "ciRunNumber": 1360,
+      "ciRunId": 35432086471,
+      "conclusion": "FAILURE_EXPECTED",
+      "failures": 7
+    },
+    "cartographyReconciliation": {
+      "head": "079bb190fd0559e468b0b3dd80cb588557a8afeb",
+      "ciRunNumber": 1367,
+      "ciRunId": 35432267762,
+      "conclusion": "FAILURE_EXPECTED_CARTOGRAPHY_ONLY"
+    },
+    "selectedSplitGreen": {
+      "head": "416a37c24ce2594b509efc3807cbf4d17848d1ef",
+      "ciRunNumber": 1369,
+      "ciRunId": 35432505707,
+      "conclusion": "FAILURE_ONE_HISTORICAL_GUARD"
+    },
+    "firstFullGreen": {
+      "head": "a72863782779591765b23e2055638e394ebd8804",
+      "ciRunNumber": 1371,
+      "ciRunId": 35432637705,
+      "conclusion": "SUCCESS"
+    },
+    "selfReview": {
+      "head": "a8d7b4a71ffd4963ee77f8a307596cd6a6164dee",
+      "ciRunNumber": 1372,
+      "ciRunId": 35432732528,
+      "conclusion": "FAILURE_ONE_REAL_FINDING",
+      "finding": "Merge did not fail closed when zero check-runs were returned."
+    },
+    "finalGreen": {
+      "head": "31af704006e36de0e57d9f84c71140cd00355545",
+      "ciRunNumber": 1373,
+      "ciRunId": 35433143135,
+      "conclusion": "SUCCESS"
+    }
+  },
+  "boundaries": {
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deployment": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "newCapabilityManifestAuthority": false,
+    "stalePrMerge": false,
+    "deferredC90_3Materialized": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc12-github-control-plane-complete",
+    "releaseRule": "Keep the GWC-12 PRECODE claim ACTIVE until exact-head checkpoint CI succeeds; release only afterward.",
+    "nextWorkItem": "GWC-PRE-E-GWC-13"
+  }
+}

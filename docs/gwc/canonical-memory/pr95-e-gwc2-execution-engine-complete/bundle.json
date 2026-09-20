@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc2-execution-engine-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc2_execution_engine",
+      "path": "sources/gwc2-execution-engine.json",
+      "media_type": "application/json",
+      "bytes": 2895,
+      "sha256": "22c516badb977b764da72d484c0209c736529283f3f78e1ac0d009eb8690aedf"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc2_pass",
+      "key": "candidate.phase_e.gwc_2",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-2 is PASS_WITH_EVIDENCE. RED CI #1178 proved the engine absent; first GREEN CI #1180 passed; self-review corrected M4 RecoveryAnchor conformance; final GREEN CI #1182 passed on 43ac4c7504e8c4980ea3be3b22d7d13e0303bd03.",
+      "source_refs": [
+        "src_gwc2_execution_engine"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc2_engine_boundary",
+      "key": "candidate.gwc2_engine_boundary",
+      "claim_type": "fact",
+      "value": "The GWC-2 engine is ephemeral and shadow-only: no dispatcher is activated, effectPlan remains null in the first GREEN, no durable workflow cursor/store is created, and Event Journal is not used for recovery.",
+      "source_refs": [
+        "src_gwc2_execution_engine"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc2_m4",
+      "key": "candidate.gwc2_recovery_anchor",
+      "claim_type": "fact",
+      "value": "RecoveryAnchor structurally follows canonical M4, cannot identify the current step, binds an observed postcondition and identical target binding, carries replayClassOfNextStep, and fixes duplicateInvocationRule to REOBSERVE_THEN_DECIDE. The engine does not fabricate an anchor.",
+      "source_refs": [
+        "src_gwc2_execution_engine"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc3_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Next eligible PRECODE work item is GWC-PRE-E-GWC-3 resolver adapters.",
+      "source_refs": [
+        "src_gwc2_execution_engine"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

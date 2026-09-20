@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "revision": "R3",
+  "canonicalBaseline": "GWC_IMPLEMENTATION_TASK_BLUEPRINTS_R1",
+  "generatedAt": "2026-09-16T23:23:04Z",
+  "repository": "Patricked-code/MCP",
+  "architectureStatus": "READY_FOR_GOVERNED_IMPLEMENTATION",
+  "promotedToTaskQueue": false,
+  "runtimeTasksCreated": 0,
+  "note": "Blueprint registry. Un blueprint n’est pas un GovernedTaskRecord et n’est jamais chargé par initializeSeed().",
+  "safetyPrerequisites": [
+    {
+      "order": 1,
+      "finding": "AF-19",
+      "architecturalOwner": "GWC-15",
+      "rationale": "Le SHA de squash déployé n’est pas le SHA validé par le check requis ; faiblesse vivante de l’autodeploy main."
+    },
+    {
+      "order": 2,
+      "finding": "AF-22+AF-30",
+      "architecturalOwner": "GWC-14",
+      "rationale": "ReviewEvidence non liée au head exact ; intégrité de preuve requise avant toute mutation de merge gouvernée."
+    },
+    {
+      "order": 3,
+      "finding": "PR-STACK",
+      "architecturalOwner": "GWC-12",
+      "rationale": "Réconciliation #88/#89/#90 et disposition #85/#86 avant de dépendre du GitHub Control Plane."
+    }
+  ],
+  "registryDigest": "9fed8298fc8c681245ecf73d61707430215e85ff51cccfe6b4e0c94eec694d0a",
+  "blueprints": [
+    {
+      "blueprintId": "GWC-0",
+      "title": "Contract substrate",
+      "objective": "No runtime behavior change.",
+      "dependencies": [],
+      "sequence": 0,
+      "resourceScopes": [
+        "path:src/governedWorkflow",
+        "path:tests/governedWorkflow"
+      ],
+      "scope": "GW-01..GW-73 registry; shared types; graph validation; global invariants",
+      "findings": [],
+      "contractRefs": [],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-1",
+      "title": "GW-01 Intent Capture",
+      "objective": "Pure deterministic, zero side effects.",
+      "dependencies": [
+        "GWC-0"
+      ],
+      "sequence": 1,
+      "resourceScopes": [
+        "path:src/governedWorkflow/intentCapture"
+      ],
+      "scope": "GW-01 pure parser/normalizer; bounded source/input schema; property tests",
+      "findings": [],
+      "contractRefs": [
+        "GW-01"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-2",
+      "title": "Execution Engine Skeleton",
+      "objective": "Shadow/observation first; no global takeover.",
+      "dependencies": [
+        "GWC-0",
+        "GWC-1"
+      ],
+      "sequence": 2,
+      "resourceScopes": [
+        "path:src/governedWorkflow/engine"
+      ],
+      "scope": "ExecutionFrame; ContractRegistry; WorkflowGraph; EvidenceBroker interface; GraphRouter; ResumeResolver; WAIT_EXTERNAL; no-progress guard",
+      "findings": [],
+      "contractRefs": [],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-3",
+      "title": "Wrap existing B1/B2/C2",
+      "objective": "Reuse existing resolvers; no semantic regression.",
+      "dependencies": [
+        "GWC-2"
+      ],
+      "sequence": 3,
+      "resourceScopes": [
+        "path:src/governedWorkflow/resolvers/identity"
+      ],
+      "scope": "GW-04; GW-05; GW-06; resolver adapters; multi-repo-compatible outputs",
+      "findings": [],
+      "contractRefs": [
+        "GW-04",
+        "GW-05",
+        "GW-06"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-4",
+      "title": "Connection/Session/Receipt integration",
+      "objective": "Preserve auto-resume; no second session authority.",
+      "dependencies": [
+        "GWC-2",
+        "GWC-3"
+      ],
+      "sequence": 4,
+      "resourceScopes": [
+        "path:src/governedWorkflow/adapters/session",
+        "path:src/operationalMemory/sessionService.ts"
+      ],
+      "scope": "GW-02; GW-03; GW-12; GW-16; GW-17; contract/graph digest binding",
+      "findings": [],
+      "contractRefs": [
+        "GW-02",
+        "GW-03",
+        "GW-12",
+        "GW-16",
+        "GW-17"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-5",
+      "title": "Task/Lock orchestration wrappers",
+      "objective": "Task Queue remains scheduler/classification authority.",
+      "dependencies": [
+        "GWC-2",
+        "GWC-4"
+      ],
+      "sequence": 5,
+      "resourceScopes": [
+        "path:src/governedWorkflow/adapters/task",
+        "path:src/operationalMemory/taskQueue.ts",
+        "path:src/operationalMemory/lockService.ts"
+      ],
+      "scope": "GW-13..GW-20; minimal-lock planning; EffectPlan integration",
+      "findings": [],
+      "contractRefs": [
+        "GW-13",
+        "GW-14",
+        "GW-15",
+        "GW-18",
+        "GW-19",
+        "GW-20"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-6",
+      "title": "Server Resolver C3",
+      "objective": "Resolve OD-03 with tests.",
+      "dependencies": [
+        "GWC-3"
+      ],
+      "sequence": 6,
+      "resourceScopes": [
+        "path:src/governedWorkflow/resolvers/server"
+      ],
+      "scope": "GW-07; server identity/canonicalization; GitRegistry evidence",
+      "findings": [],
+      "contractRefs": [
+        "GW-07"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-7",
+      "title": "Runtime Resolver C4",
+      "objective": "Resolve OD-04; no MCP container hardcode.",
+      "dependencies": [
+        "GWC-6"
+      ],
+      "sequence": 7,
+      "resourceScopes": [
+        "path:src/governedWorkflow/resolvers/runtime"
+      ],
+      "scope": "GW-08; RuntimeBinding schema; runtime adapters",
+      "findings": [],
+      "contractRefs": [
+        "GW-08"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-8",
+      "title": "Domain Resolver C5",
+      "objective": "Domain NONE remains valid.",
+      "dependencies": [
+        "GWC-3",
+        "GWC-6"
+      ],
+      "sequence": 8,
+      "resourceScopes": [
+        "path:src/governedWorkflow/resolvers/domain"
+      ],
+      "scope": "GW-09; domain roles; historical vhost exclusion",
+      "findings": [],
+      "contractRefs": [
+        "GW-09"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-9",
+      "title": "Governance inheritance and effective capabilities",
+      "objective": "Compose, do not duplicate CapabilityReality/GovernanceDecision.",
+      "dependencies": [
+        "GWC-3",
+        "GWC-4",
+        "GWC-5"
+      ],
+      "sequence": 9,
+      "resourceScopes": [
+        "path:src/governedWorkflow/governance",
+        "path:src/governedContext"
+      ],
+      "scope": "GW-10; GW-11; receipt enrichment",
+      "findings": [],
+      "contractRefs": [
+        "GW-10",
+        "GW-11"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-10",
+      "title": "B3 Multi-repository TargetScope",
+      "objective": "Historical single-repo records stay readable.",
+      "dependencies": [
+        "GWC-3",
+        "GWC-4",
+        "GWC-5",
+        "GWC-6",
+        "GWC-7",
+        "GWC-8",
+        "GWC-9"
+      ],
+      "sequence": 10,
+      "resourceScopes": [
+        "path:src/operationalMemory",
+        "path:src/governedContext",
+        "path:src/liveState"
+      ],
+      "scope": "TargetContext; TargetScope additive migration; Session/Task/Receipt compatibility; project component roles; independent SHAs",
+      "findings": [],
+      "contractRefs": [],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-11",
+      "title": "Authority docs / Integration slot / baseline",
+      "objective": "Formalize authority-document roles and exact baseline.",
+      "dependencies": [
+        "GWC-2",
+        "GWC-10"
+      ],
+      "sequence": 11,
+      "resourceScopes": [
+        "path:src/governedWorkflow/authority"
+      ],
+      "scope": "GW-21; GW-22; GW-23",
+      "findings": [],
+      "contractRefs": [
+        "GW-21",
+        "GW-22",
+        "GW-23"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-12",
+      "title": "GitHub Control Plane reconciliation",
+      "objective": "Do not merge stale PR stack blindly.",
+      "dependencies": [
+        "GWC-11"
+      ],
+      "sequence": 12,
+      "resourceScopes": [
+        "github:pull-requests",
+        "path:src/github"
+      ],
+      "scope": "Reconcile PR #88/#89/#90 with current main; bounded read adapters; exact-head write adapters",
+      "findings": [],
+      "contractRefs": [],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-13",
+      "title": "Development workflow contracts",
+      "objective": "RED must prove intended failure, not arbitrary CI failure.",
+      "dependencies": [
+        "GWC-11",
+        "GWC-12"
+      ],
+      "sequence": 13,
+      "resourceScopes": [
+        "path:src/governedWorkflow/development"
+      ],
+      "scope": "GW-24..GW-33; TDD RED proof; GREEN; self-review; regression loop; project validation profile",
+      "findings": [],
+      "contractRefs": [
+        "GW-24",
+        "GW-25",
+        "GW-26",
+        "GW-27",
+        "GW-28",
+        "GW-29",
+        "GW-30",
+        "GW-31",
+        "GW-32",
+        "GW-33"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-14",
+      "title": "Review / merge contracts",
+      "objective": "Resolve AF-22 and AF-30.",
+      "dependencies": [
+        "GWC-12",
+        "GWC-13"
+      ],
+      "sequence": 14,
+      "resourceScopes": [
+        "path:src/governedContext/github.ts",
+        "path:src/governedWorkflow/review"
+      ],
+      "scope": "GW-34..GW-43; ReviewEvidence commit binding; PremergeProof; exact-head merge",
+      "findings": [
+        "AF-22",
+        "AF-30"
+      ],
+      "contractRefs": [
+        "GW-34",
+        "GW-35",
+        "GW-36",
+        "GW-37",
+        "GW-38",
+        "GW-39",
+        "GW-40",
+        "GW-41",
+        "GW-42",
+        "GW-43"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-15",
+      "title": "Deployment / exact-SHA evidence",
+      "objective": "Resolve AF-19 and OD-12.",
+      "dependencies": [
+        "GWC-14"
+      ],
+      "sequence": 15,
+      "resourceScopes": [
+        "path:.github/workflows",
+        "path:src/deploy",
+        "path:src/governedWorkflow/deploy"
+      ],
+      "scope": "GW-44..GW-57; CI evidence; same deployment job anchor; exact deployment proof; runtime binding",
+      "findings": [
+        "AF-19"
+      ],
+      "contractRefs": [
+        "GW-44",
+        "GW-45",
+        "GW-46",
+        "GW-47",
+        "GW-48",
+        "GW-49",
+        "GW-50",
+        "GW-51",
+        "GW-52",
+        "GW-53",
+        "GW-54",
+        "GW-55",
+        "GW-56",
+        "GW-57"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-16",
+      "title": "Documentation and closure",
+      "objective": "No false DONE; docs-only deploy may become final runtime SHA.",
+      "dependencies": [
+        "GWC-15"
+      ],
+      "sequence": 16,
+      "resourceScopes": [
+        "path:src/governedWorkflow/terminal",
+        "path:docs"
+      ],
+      "scope": "GW-58..GW-72; docs branch path; final runtime binding; terminal verification; hard DONE gate; checkpoint/lock/session closure",
+      "findings": [
+        "AF-07"
+      ],
+      "contractRefs": [
+        "GW-58",
+        "GW-59",
+        "GW-60",
+        "GW-61",
+        "GW-62",
+        "GW-63",
+        "GW-64",
+        "GW-65",
+        "GW-66",
+        "GW-67",
+        "GW-68",
+        "GW-69",
+        "GW-70",
+        "GW-71",
+        "GW-72"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    },
+    {
+      "blueprintId": "GWC-17",
+      "title": "Universal Acceptance",
+      "objective": "Must pass without MCP-specific workflow logic.",
+      "dependencies": [
+        "GWC-10",
+        "GWC-16"
+      ],
+      "sequence": 17,
+      "resourceScopes": [
+        "path:tests/governedWorkflowUniversalAcceptance"
+      ],
+      "scope": "GW-73; MCP; Stablecoin; multi-repo/AfricaFunds-like model; recovery scenarios; anti-hardcode acceptance",
+      "findings": [],
+      "contractRefs": [
+        "GW-73"
+      ],
+      "materialization": "BLUEPRINT_ONLY",
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "INTAKE_004_MINUTE_LIVENESS_COMPLETE",
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "pr": 95,
+  "observedAt": "2026-09-19T05:44:26Z",
+  "observedHeadSha": "4f88e8453523bd62f04989bc7d76b1aa3ad3cf65",
+  "humanRecoveryAuthorization": {
+    "prCommentId": 5739730790,
+    "scope": "reconstruct both ACTIVE claims, determine liveness/staleness, finalize Intake #004 cleanly, preserve GWC-6"
+  },
+  "claims": [
+    {
+      "candidateSessionId": "candidate-minute-liveness-20260919T042806Z",
+      "workItemId": "GWC-PRE-E-GWC-4",
+      "recordedClaimStatusBefore": "ACTIVE",
+      "heartbeatCommentId": 5739369708,
+      "heartbeatSequence": 14,
+      "heartbeatEmittedAt": "2026-09-19T04:49:36Z",
+      "heartbeatAgeSecondsAtObservation": 3290,
+      "minuteLiveness": "STALE",
+      "ownershipInference": "NONE",
+      "recoveryDisposition": "RELEASE_AFTER_EXPLICIT_HUMAN_AUTHORIZATION",
+      "claimStatusAfter": "RELEASED",
+      "candidateSessionStatusAfter": "CLOSED"
+    },
+    {
+      "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+      "workItemId": "GWC-PRE-E-GWC-6",
+      "recordedClaimStatusBefore": "ACTIVE",
+      "heartbeat": "MISSING",
+      "minuteLiveness": "UNKNOWN",
+      "lastObservedSessionSeenAt": "2026-09-19T04:02:00Z",
+      "lastGwc6ImplementationCommit": "7d7f7d2acc2d79b0b0a8bd268b7d8e6eb4a972d6",
+      "lastGwc6ImplementationCommitAt": "2026-09-19T04:11:10Z",
+      "ownershipInference": "NONE",
+      "recoveryDisposition": "PRESERVE_ACTIVE_CLAIM_UNCHANGED",
+      "claimStatusAfter": "ACTIVE",
+      "candidateSessionStatusAfter": "ACTIVE"
+    }
+  ],
+  "scopeValidation": {
+    "ciRunNumber": 1252,
+    "ciRunId": 35422282094,
+    "ciHeadSha": "4f88e8453523bd62f04989bc7d76b1aa3ad3cf65",
+    "minuteHeartbeatTests": {
+      "result": "PASS",
+      "count": 6,
+      "tests": [
+        "minute heartbeat comment contract formats and parses one bounded candidate heartbeat",
+        "minute heartbeat parser fails closed on marker mismatch and unknown payload fields",
+        "minute heartbeat binding requires the active claim, exact head and monotone sequence",
+        "minute liveness distinguishes working, recent, stale, unknown and yielded without changing ownership",
+        "minute heartbeat tracks an active observer session without manufacturing a work claim",
+        "minute heartbeat collector requires exactly one mutable PR comment per candidate session"
+      ]
+    },
+    "globalCiResult": "FAILURE_EXTERNAL_CONCURRENT_SCOPE",
+    "externalFailures": {
+      "count": 7,
+      "ownerWorkItemId": "GWC-PRE-E-GWC-6",
+      "collisionDomains": [
+        "path:src/governedWorkflow/resolvers/server",
+        "path:tests/governedWorkflowGithubResolverAdapters.test.ts"
+      ]
+    }
+  },
+  "authorityBoundary": {
+    "gwc6SourceOrTestsMutatedByClosure": false,
+    "mainMutated": false,
+    "s1Mutated": false,
+    "runtimeMutated": false,
+    "deploymentPerformed": false,
+    "claimTransferPerformed": false
+  },
+  "verdict": "PASS_WITH_EVIDENCE_SCOPE_GREEN_EXTERNAL_GWC6_RED",
+  "nextAction": "Preserve GWC-6 ownership. Reobserve its claim and heartbeat evidence before any GWC-6 write; resume only through its existing session if verifiable, otherwise use reconcile-only recovery without transferring ownership."
+}

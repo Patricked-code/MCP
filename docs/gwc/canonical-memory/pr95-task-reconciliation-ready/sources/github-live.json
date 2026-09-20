@@ -1,0 +1,31 @@
+{
+  "local_clone_used": false,
+  "main": {
+    "commit_message": "docs(gwc): define Governed Workflow Contract V1 (#94)",
+    "protected": true,
+    "ref": "main",
+    "sha": "d1f303955c4d368950da2307dda41d826fc85d0a"
+  },
+  "observed_at": "2026-09-17T06:34:09+02:00",
+  "pr95": {
+    "base": "main",
+    "base_sha": "d1f303955c4d368950da2307dda41d826fc85d0a",
+    "draft": true,
+    "exact_head_ci": {
+      "conclusion": "success",
+      "head_sha": "07e9c3d6c244ec98fa5ba902b7fe6b74b06c4f25",
+      "run_id": 35180874077,
+      "run_number": 977,
+      "status": "completed",
+      "workflow": "MCP CI"
+    },
+    "head_branch": "claude/ecstatic-edison-v1dyt1",
+    "mergeable": true,
+    "merged": false,
+    "number": 95,
+    "observed_head_sha": "07e9c3d6c244ec98fa5ba902b7fe6b74b06c4f25",
+    "state": "open"
+  },
+  "repository": "Patricked-code/MCP",
+  "source": "GITHUB_LIVE"
+}

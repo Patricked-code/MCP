@@ -16,6 +16,8 @@ import { registerRuntimeAttestationReadOnlyTools } from './runtimeAttestation.js
 import { registerGovernedSessionTools } from './governedSessions.js';
 import { registerGovernedContextTools } from './governedContext.js';
 import { registerCurrentStateTools } from './currentState.js';
+import { registerGithubControlPlaneReadTools } from './githubControlPlaneRead.js';
+import { registerGithubLifecycleReadTools } from './githubLifecycle.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -52,6 +54,8 @@ export function registerReadOnlyTools(server: McpServer): void {
   server.tool('curl_domain', 'Exécute un curl -I HTTPS sur un domaine fourni depuis S1.', { domain: z.string().min(3).max(255).regex(/^[a-zA-Z0-9.-]+$/) }, async ({ domain }) => run('s1', `curl -I --max-time 15 https://${domain}`));
 
   registerGithubInventoryReadOnlyTools(server);
+  registerGithubControlPlaneReadTools(server);
+  registerGithubLifecycleReadTools(server);
   registerGithubAuthorizationReadOnlyTools(server);
   registerDurableAccountReadOnlyTools(server);
   registerGitRegistryV2ReadOnlyTools(server);

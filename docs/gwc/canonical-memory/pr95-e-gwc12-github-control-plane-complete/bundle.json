@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc12-github-control-plane-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc12_github_control_plane",
+      "path": "sources/gwc12-github-control-plane.json",
+      "media_type": "application/json",
+      "bytes": 5230,
+      "sha256": "ee4c3ad46795405aa65bca4445ad7bc08f8daaa5e2302bafb565b20629b92ece"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc12_pass",
+      "key": "candidate.phase_e.gwc_12",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-12 is PASS_WITH_EVIDENCE pending checkpoint validation. RED CI #1360 proved the selected lifecycle module/transport gap; CI #1371 reached first full GREEN; self-review CI #1372 found a real fail-open merge path when check evidence was absent; final CI #1373 succeeded after closing it.",
+      "source_refs": [
+        "src_gwc12_github_control_plane"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc12_disposition",
+      "key": "candidate.gwc12.pr_stack_disposition",
+      "claim_type": "fact",
+      "value": "PR #88 remains DEFER, PR #89 bounded READ is reused while its capability manifest stays SUPERSEDED, and only C-90.1/C-90.2 are re-derived from current code after GWC-9 closure. C-90.3 remains DEFER; no stale PR is merged wholesale.",
+      "source_refs": [
+        "src_gwc12_github_control_plane"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc12_safety",
+      "key": "candidate.gwc12.write_safety",
+      "claim_type": "fact",
+      "value": "The selected GitHub writes consume the existing Scoped Write Gate, require shadow_ready before mutation, bind branch/PR-dependent actions to exact head evidence, use non-force ref updates, and fail closed when merge check evidence is absent.",
+      "source_refs": [
+        "src_gwc12_github_control_plane"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc12_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Keep the GWC-12 branch-local claim ACTIVE until this checkpoint passes exact-head CI. After SUCCESS, release GWC-12 and dispatch GWC-PRE-E-GWC-13 without replaying GWC-12.",
+      "source_refs": [
+        "src_gwc12_github_control_plane"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

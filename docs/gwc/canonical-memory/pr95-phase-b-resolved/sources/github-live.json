@@ -1,0 +1,16 @@
+{
+  "source": "GITHUB_LIVE",
+  "repository": "Patricked-code/MCP",
+  "pullRequest": 95,
+  "pullRequestState": "OPEN",
+  "draft": true,
+  "merged": false,
+  "headRef": "claude/ecstatic-edison-v1dyt1",
+  "headShaBeforeThisCheckpoint": "4c1da9b25bcf609cb5c9ee0568845da310e6e600",
+  "baseRef": "main",
+  "baseSha": "d1f303955c4d368950da2307dda41d826fc85d0a",
+  "ciRunOnPreviousHead": 1005,
+  "ciConclusion": "success",
+  "observedAt": "2026-09-18T17:09:26Z",
+  "localCloneUsedAsAuthority": false
+}

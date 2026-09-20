@@ -1,0 +1,13 @@
+{
+  "repository": "Patricked-code/MCP",
+  "pr": 95,
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "observedHeadBeforeMemoryProjection": "d7d653c7e39e92d0ac52dfae6ba63aeaf8ae89ef",
+  "baseMain": "d1f303955c4d368950da2307dda41d826fc85d0a",
+  "state": "OPEN_DRAFT_NOT_MERGED",
+  "ciOnObservedHead": "SUCCESS",
+  "runtimeObservation": "UNAVAILABLE_IN_THIS_SESSION",
+  "taskQueueObservation": "UNAVAILABLE_IN_THIS_SESSION",
+  "rulesetObservation": "UNAVAILABLE_IN_THIS_SESSION",
+  "note": "Observation GitHub avant les commits de projection de cette phase. Re-observer le head en ligne avant toute mutation."
+}

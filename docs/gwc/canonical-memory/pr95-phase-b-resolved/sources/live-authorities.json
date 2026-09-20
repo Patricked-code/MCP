@@ -1,0 +1,60 @@
+{
+  "source": "MCP_WEALTHTECH_LIVE",
+  "phase": "B",
+  "phaseName": "Live Task Reconciliation - reobservation",
+  "observedAt": "2026-09-18T17:08:00Z",
+  "observedVia": "wealthtech_ssh_bridge",
+  "readOnly": true,
+  "note": "Reobservation exigee par la regle: une classification Phase B est une observation datee, jamais un fait permanent.",
+  "taskQueue": {
+    "storeRevision": 190,
+    "nextSequence": 16,
+    "tasks": 15,
+    "byStatus": { "DONE": 12, "SUPERSEDED": 3 },
+    "nonTerminalTasks": 0,
+    "gwcTasks": 0
+  },
+  "liveState": {
+    "stateVersion": 246,
+    "freshness": "CURRENT",
+    "global": "FULLY_ALIGNED",
+    "documentation": "ALIGNED",
+    "documentationDrift": false,
+    "contradictions": 0,
+    "activeTask": null,
+    "githubHead": "d1f303955c4d368950da2307dda41d826fc85d0a",
+    "s1Head": "d1f303955c4d368950da2307dda41d826fc85d0a",
+    "runtimeRevision": "d1f303955c4d368950da2307dda41d826fc85d0a",
+    "runtimeHealth": "healthy"
+  },
+  "sessions": { "total": 25, "ACTIVE": 0, "EXPIRED": 1, "CLOSED": 24 },
+  "resolvedConflict": {
+    "taskId": "TASK-20260915-001",
+    "previousStatus": "DEPLOYING",
+    "currentStatus": "DONE",
+    "previousBlockers": ["DOCUMENTATION_DRIFT"],
+    "currentBlockers": [],
+    "taskRevision": 12,
+    "updatedAt": "2026-09-17T20:27:08.533Z",
+    "owningSession": "499b2ea3-754e-412d-970c-71530015e18a",
+    "owningSessionStatus": "CLOSED",
+    "owningSessionClosedAt": "2026-09-17T20:27:22.935Z",
+    "owningSessionLastAcknowledgedStateVersion": 246,
+    "resolutionPath": "VOIE_A_AGENT_PROPRIETAIRE",
+    "resolvedBy": "OWNING_AGENT_NOT_THIS_SESSION"
+  },
+  "classification": {
+    "TASK-20260915-001": "RESOLVED",
+    "GWC-0..GWC-17": "NEW_TASK"
+  },
+  "materialization": {
+    "admissible": true,
+    "executed": false,
+    "runtimeTasksCreated": 0,
+    "requires": "governed session + Bootstrap Receipt + decision humaine explicite",
+    "granularityRule": "TASK BLUEPRINT != GovernedTaskRecord: jamais les 18 en bloc",
+    "prescribedOrder": "Phase E, a partir de GWC-0",
+    "orderingConstraint": "GWC-9 precede tout SPLIT portant du WRITE (AF-32 ouvert)"
+  },
+  "verdict": "LIVE_TASK_RECONCILIATION_COMPLETE_NEW_TASK_ADMISSIBLE_NOT_MATERIALIZED"
+}

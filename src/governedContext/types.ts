@@ -15,6 +15,8 @@ import type {
   BootstrapReceipt,
   IdentityAssurance
 } from '../operationalMemory/types.js';
+import type { GovernedRepositoryTarget } from '../operationalMemory/sessionService.js';
+import type { TargetContext, TargetScope } from '../operationalMemory/targetScope.js';
 
 export type GithubEvidenceFreshness = 'CURRENT' | 'STALE' | 'UNAVAILABLE' | 'NOT_APPLICABLE';
 export type GithubEvidenceProvenance = 'github_api' | 'memory_cache';
@@ -77,6 +79,10 @@ export type GithubOperationalContext = {
     approvals: number;
     changesRequested: number;
     unresolvedThreads: number | null;
+    /** Commit shared by the effective review evidence when GitHub exposes one exact binding. */
+    headSha?: string | null;
+    /** True only when the effective review evidence is bound to the current pull-request head. */
+    exactHead?: boolean | null;
   };
   ruleset: {
     name: string | null;
@@ -122,8 +128,10 @@ export type GovernedOperationalContext = {
   schemaVersion: 1;
   generatedAt: string;
   freshness: 'CURRENT' | 'STALE' | 'DEGRADED';
-  repository: 'Patricked-code/MCP';
-  governedBranch: 'main';
+  repository: GovernedRepositoryTarget;
+  governedBranch: string;
+  targetContext: TargetContext | null;
+  targetScope: TargetScope | null;
   liveState: LiveStateSnapshot | null;
   github: GithubOperationalContext;
   session: PublicGovernedSession | null;

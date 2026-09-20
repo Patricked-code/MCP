@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-13",
+  "blueprint": "GWC-13",
+  "title": "Development workflow contracts",
+  "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+  "session": {
+    "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "heartbeatCommentId": 5740056645
+  },
+  "baseline": {
+    "ciWorkflow": ".github/workflows/mcp-ci.yml",
+    "validationAuthority": "package.json",
+    "validationProfile": "mcp-ci-v1",
+    "profileStrategy": "PACKAGE_DECLARATION_PLUS_DISCOVERY",
+    "workflowChangeRequired": false,
+    "finalDiscoveredTests": 72,
+    "finalRunnerTests": 71,
+    "finalDedicatedTests": 1,
+    "explicitRequiredRunnerTest": "tests/githubRepositoryResolution.test.ts"
+  },
+  "implementation": {
+    "module": "src/governedWorkflow/development/index.ts",
+    "validationRunner": "scripts/run-validation-tests.mjs",
+    "validationDeclaration": "package.json#mcpValidationProfile",
+    "tests": [
+      "tests/governedWorkflowDevelopment.test.ts"
+    ],
+    "contracts": [
+      "GW-24",
+      "GW-25",
+      "GW-26",
+      "GW-27",
+      "GW-28",
+      "GW-29",
+      "GW-30",
+      "GW-31",
+      "GW-32",
+      "GW-33"
+    ],
+    "behavior": [
+      "GW-24..GW-33 are formalized over existing GitHub, CI, test and documentation authorities without creating a second workflow authority.",
+      "RED observation requires the intended bounded expected-failure signature and exact validation profile rather than accepting arbitrary pipeline failure.",
+      "GREEN and full-regression observations are bound to the exact expected HEAD and validation-profile digest.",
+      "GW-29 self-review routes to GW-30 only when findings exist and otherwise takes the explicit skippable path to GW-32.",
+      "GW-30 rejects self-review evidence bound to an older HEAD before any regression-red proof can succeed.",
+      "GW-33 remains non-terminal and cannot manufacture workflow completion.",
+      "Validation tests are discovered from the declared test root; dedicated tests remain excluded from the runner set.",
+      "The historical GWC-3 repository-resolution guard remains explicit as a required runner test while discovery covers all other eligible tests."
+    ]
+  },
+  "evidence": {
+    "red": {
+      "head": "a01b09d741bfde064e455a61379f52846456fc04",
+      "ciRunNumber": 1378,
+      "ciRunId": 35434381586,
+      "conclusion": "FAILURE_EXPECTED",
+      "failures": 10,
+      "signature": "PROFILE_DISCOVERY_ABSENT_PLUS_DEVELOPMENT_MODULE_ABSENT"
+    },
+    "compatibilityCorrections": [
+      {
+        "head": "8410beed79ee5c7f70b1909026dc215b72b805fe",
+        "ciRunNumber": 1380,
+        "ciRunId": 35434666842,
+        "conclusion": "FAILURE_ONE_HISTORICAL_GWC3_GUARD"
+      },
+      {
+        "head": "2eb899699b8eea09b3d82988242fd9a16a63be52",
+        "ciRunNumber": 1382,
+        "ciRunId": 35435066540,
+        "conclusion": "FAILURE_ONE_GWC13_EXPECTATION"
+      }
+    ],
+    "firstFullGreen": {
+      "head": "b39b696fe98ade2efb9b345fdb2a7eb25b7db990",
+      "ciRunNumber": 1383,
+      "ciRunId": 35435148986,
+      "conclusion": "SUCCESS"
+    },
+    "selfReview": {
+      "head": "3936ac5871fdadfe3d02145049aecbf8eb372804",
+      "ciRunNumber": 1384,
+      "ciRunId": 35435214693,
+      "conclusion": "FAILURE_ONE_REAL_FINDING",
+      "finding": "GW-30 accepted self-review evidence from an older HEAD instead of failing closed."
+    },
+    "finalGreen": {
+      "head": "debae732d82dce58903b062014c221d40d44e0a2",
+      "ciRunNumber": 1385,
+      "ciRunId": 35435279941,
+      "conclusion": "SUCCESS",
+      "tests": 542,
+      "passed": 542,
+      "failed": 0,
+      "discoveredTests": 72,
+      "runnerTests": 71,
+      "dedicatedTests": 1
+    }
+  },
+  "boundaries": {
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deployment": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "secondCiAuthority": false,
+    "secondTaskAuthority": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete",
+    "releaseRule": "Keep the GWC-13 PRECODE claim ACTIVE until exact-head checkpoint CI succeeds; release only afterward.",
+    "nextWorkItem": "GWC-PRE-E-GWC-14"
+  }
+}

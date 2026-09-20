@@ -20,10 +20,25 @@ test('la politique post-bootstrap est versionnée et active le push gouverné', 
 test('le workflow possède uniquement les permissions minimales OIDC + lecture', async () => {
   const source = await workflowSource();
 
-  assert.match(source, /permissions:\s*\n\s+contents:\s*read\s*\n\s+id-token:\s*write/);
+  assert.match(source, /permissions:\s*\n\s+contents:\s*read\s*\n\s+actions:\s*read\s*\n\s+id-token:\s*write/);
   assert.doesNotMatch(source, /contents:\s*write|packages:\s*write|actions:\s*write|pull-requests:\s*write|issues:\s*write/);
   assert.match(source, /actions\/checkout@v4/);
   assert.match(source, /persist-credentials:\s*false/);
+});
+
+test('AF-19 exige une preuve CI success du SHA exact avant tout autodeploy push', async () => {
+  const source = await workflowSource();
+
+  assert.match(source, /actions:\s*read/);
+  assert.match(source, /MCP CI/);
+  assert.match(source, /GITHUB_SHA/);
+  assert.match(source, /head_sha/);
+  assert.match(source, /conclusion/);
+  assert.match(source, /success/);
+  assert.match(source, /for attempt in \$\(seq 1 60\)/);
+  assert.match(source, /sleep 10/);
+  assert.match(source, /enabled=false/);
+  assert.doesNotMatch(source, /workflow_run:/);
 });
 
 test('workflow_dispatch est toujours disponible et push main est gouverné par la politique versionnée', async () => {
@@ -92,4 +107,17 @@ test('le workflow est borné globalement et ne journalise pas les réponses OIDC
   assert.match(source, /timeout-minutes:\s*15/);
   assert.match(source, /--max-time\s+10/);
   assert.doesNotMatch(source, /set -x|echo\s+\$OIDC_TOKEN|printenv/);
+});
+
+
+test('GWC-15 self-review: push gate propagates its authorizing CI run into the bounded start request', async () => {
+  const source = await workflowSource();
+
+  assert.match(source, /ci_run_id/i);
+  assert.match(source, /push_ci_gate/);
+  assert.match(source, /ciHeadSha|ci_head_sha/);
+  assert.match(source, /ciConclusion|ci_conclusion/);
+  assert.match(source, /workflow_dispatch_manual/);
+  assert.match(source, /steps\.gate\.outputs\./);
+  assert.match(source, /\/deploy\/github\/s1\/start/);
 });

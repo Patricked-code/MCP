@@ -1,0 +1,80 @@
+MCP / GWC — Canonical program procedure and continuity constraints
+
+Repository: Patricked-code/MCP
+
+WHY THIS PROGRAM EXISTS
+The GWC program exists to evolve the existing MCP additively from a set of substantial governed capabilities into one universal, contractual, end-to-end governed execution workflow. The goal is that a newly connected agent can recover context, resolve the target, inherit governance, find existing work, continue the correct governed Task, prove every material transition, resume after interruption, and continue to the next safe executable work without reconstructing a long human prompt.
+
+TARGET LIFECYCLE
+INTENT
+→ IDENTITY
+→ REPOSITORY
+→ PROJECT
+→ SERVER
+→ RUNTIME
+→ DOMAIN
+→ GOVERNANCE
+→ EFFECTIVE CAPABILITIES
+→ TASK
+→ SESSION
+→ LOCK
+→ DEVELOPMENT
+→ REVIEW
+→ MERGE
+→ MAIN CI
+→ DEPLOY
+→ EXACT-SHA PROOF
+→ TERMINAL VERIFICATION
+→ DONE
+→ CHECKPOINT / RELEASE / SESSION CLOSE / QUEUE RECONCILIATION
+→ NEXT SAFE WORK
+
+ARCHITECTURE-FIRST PROCEDURE
+1. Observe and map the existing MCP.
+2. Define the 73 stable GWC responsibilities and their authorities, evidence, preconditions, postconditions, transitions, replay, concurrency, failure and recovery behavior.
+3. Apply existing-first integration: REUSE → WRAP → GENERALIZE → EXTEND → NEW.
+4. Consolidate one canonical architecture; historical or deprecated claims remain history and never compete with the canonical body.
+5. Produce detailed evolution design and Task Blueprints without promoting them to runtime Tasks.
+6. Reconcile every future blueprint against the live Governed Task Queue.
+7. Only classification NEW_TASK may create a new runtime Task. CONTINUATION, DUPLICATE, CONFLICT, BLOCKED and OUT_OF_SCOPE must never be converted into duplicate work.
+8. Materialize bounded work according to dependencies, priorities, resource scopes and authority boundaries.
+9. Execute through governed observation, authorization, minimal locks, tests, review, exact-head merge, exact-SHA deployment proof, terminal verification and closure.
+10. Prove universality with GW-73 on a non-MCP target without project-specific hardcodes.
+
+AUTHORITY BOUNDARIES
+GWC is an orchestrator of existing authorities, not a new master authority.
+Do not create a second Task Queue, Live State, Governed Session engine, Lock Service, GitRegistry, Operational Memory, GitHub Control Plane, deployment authority or runtime authority.
+Architecture documentation is not runtime state.
+Canonical memory is continuity evidence, not live approval.
+GitHub live owns current versioned GitHub facts; runtime and operational facts must be re-observed from their actual authorities.
+
+CURRENT MISSION-SPECIFIC SOURCE RULE
+For this canonical-memory placement and verification mission, LOCAL_CLONE_USED = NO.
+All versioned repository conclusions are grounded directly in GitHub live refs and exact SHAs.
+Future missions must obey their own explicit source rule and may never substitute a local checkout for current GitHub truth.
+
+TASK BLUEPRINT ≠ GOVERNED TASK
+A blueprint is a versioned execution specification. It can yield zero, one or several runtime Tasks after live reconciliation. No blueprint becomes a Task merely because it exists in Git.
+
+TARGET AUTONOMOUS LOOP
+OBSERVE
+→ RECONCILE
+→ SELECT
+→ AUTHORIZE
+→ LOCK MINIMAL SCOPE
+→ EXECUTE
+→ VERIFY
+→ ATTEST
+→ CHECKPOINT
+→ TRANSITION
+→ RELEASE
+→ RECONCILE QUEUE
+→ NEXT
+
+Autonomy never means bypassing a real permission, capability, lock, dependency, stale-evidence guard, exact-head gate, CI requirement, or explicit human approval imposed by an actual authority. Do not invent a generic human gate.
+
+CURRENT PROGRAM PHASE
+The R3 architecture and the detailed evolution design GWC-0..GWC-17 are complete on draft PR #95 according to the versioned GWC dossier. The next legitimate program phase is live Governed Task Queue reconciliation before any NEW_TASK materialization or GWC runtime implementation.
+
+MEMORY RULE
+Historical bundles are immutable evidence. A later bundle supersedes earlier phase claims by adding a new snapshot; it does not rewrite old evidence. Every imported-memory claim is approval_eligible=false. Before acting, an agent must re-observe current GitHub, Task Queue, Session, Receipt, Locks, Live State and runtime authorities as applicable.

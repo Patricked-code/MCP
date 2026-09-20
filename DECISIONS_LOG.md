@@ -3,6 +3,140 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-19 — Les nouvelles informations passent un gate avant adoption
+
+Décision : un `NEW_INFORMATION_INTAKE` est une entrée de connaissance, jamais une règle canonique ou une tâche par défaut.
+
+Le système conserve un cursor incrémental dans les projections PRECODE existantes, sans créer d'autorité parallèle. Chaque intake est évalué selon compréhension, pertinence, preuve, objectif GWC, relation à l'existant, architecture, autorités, non-régression, impact et existing-first.
+
+Une proposition de nouvelle autorité parallèle est `REJECT`. Une contradiction/supersession/breaking change est `HOLD_FOR_REVIEW`. Une preuve factuelle requise mais non vérifiée est `DEFER`. Les effets acceptés enrichissent d'abord un work item compatible existant avant toute proposition de nouveau travail.
+
+Les agents travaillent depuis l'état réconcilié et un receipt, jamais directement depuis les intakes bruts. La fraîcheur du travail est gouvernée par `HEAD_SHA + canonicalRevision + backlogRevision`; un drift de connaissance ne bloque que les scopes affectés.
+
+Les intakes #001/#002, déjà versionnés avec `canonicalAdoptionPerformed=false`, restent pending et doivent passer ce gate avant leur consommation par B-01.
+
+
+## 2026-09-19 — PRECODE GitHub-first, sans dépendance MCP runtime
+
+Décision : pendant la construction candidate sur `claude/ecstatic-edison-v1dyt1`, l'agent arrive directement par GitHub et reconstruit son contexte depuis le HEAD et les artefacts versionnés de branche. Le MCP runtime n'est ni un prérequis de connexion, ni une autorité de session, tâche ou lock pour le PRECODE.
+
+Identité : la `candidateSessionId` est une identité branch-local dérivée pour la coordination. Elle ne doit jamais être présentée comme un véritable ID ChatGPT/Claude. Les références provider ne sont stockées que si le client les expose réellement ; sinon elles restent `null/UNAVAILABLE`.
+
+Orientation : si le message permet de déduire information/continuation/both, l'agent route sans question redondante. Si l'intention est indéterminable, il demande les trois choix canoniques avant tout claim.
+
+Évolution sans régression : les anciens enregistrements de candidate session restent lisibles ; les nouveaux champs sont additifs et peuvent être enrichis au prochain resume.
+
+
+## 2026-09-19 — Continuité PRECODE multi-agent et informations de conversation
+
+Décision : toute IA autorisée qui reprend `claude/ecstatic-edison-v1dyt1` doit reconstituer le contexte depuis les autorités de branche, analyser les nouvelles informations de sa conversation, les réconcilier avec la mémoire canonique/backlog, puis reprendre son claim ou recevoir le prochain work item dependency-safe/collision-safe.
+
+Architecture : la capacité étend `Governed Context` et les projections PRECODE existantes. Elle ne crée aucune seconde Operational Memory, Task Queue, Governed Session, Lock Service ou mémoire canonique.
+
+Sémantique : l'IA connectée reste responsable de comprendre le langage naturel. Le code n'essaie pas de persister/comprendre un transcript arbitraire ; il reçoit une projection bornée et effectue une réconciliation déterministe.
+
+Mémoire/tâches : `DUPLICATE` ne duplique rien ; `COMPLEMENT` enrichit ; `DECISION` et `FINDING` sont tracés ; `TASK` enrichit/propose le work candidate ; `CONTRADICTION` et supersession d'une règle active sont `HOLD_FOR_REVIEW`.
+
+Concurrence : un claim n'est durable qu'après relecture du HEAD exact et commit de la projection branch-local. Tout `HEAD_MOVED` invalide le choix non persisté et impose redispatch.
+
+Frontière : aucun effet live avant `FINAL_PRECODE_VERSION_ACCEPTED`.
+
+
+## 2026-09-18 — PRECODE = candidate évoluée complète avant intégration réelle
+
+Décision : `claude/ecstatic-edison-v1dyt1` n'est pas une branche de documentation seulement. Après `GWC_ARCHITECTURE_GATE_PASS`, elle devient la surface de construction de la future version évoluée complète du MCP à partir du squelette réel existant.
+
+Le candidate build doit produire progressivement le code, tests, workflows, types, compatibilité/migrations additives, wrappers, généralisations, extensions et primitives nouvelles justifiées des 18 blueprints, selon `REUSE → WRAP → GENERALIZE → EXTEND → NEW`.
+
+Les work items candidate restent des `GWC-PRE-*` coordonnés par GitHub/canonical-memory/checkpoints. Ils ne sont pas des GovernedTaskRecords et ne nécessitent ni runtime Task Queue, ni runtime locks, ni OAuth bridge.
+
+Frontière : `main`, S1, production, déploiement et activation live sont interdits jusqu'à `FINAL_PRECODE_VERSION_ACCEPTED`. Après ce gate, l'intégration réelle réobserve l'état courant du projet, réconcilie le drift éventuel et intègre la candidate déjà construite, sans redévelopper l'architecture.
+
+
+## 2026-09-18 — PRECODE ne dépend pas de l'OAuth/bridge MCP
+
+Décision : la finalisation PRECODE doit pouvoir fonctionner avec GitHub et les preuves versionnées sans ouvrir de session OAuth contre le serveur MCP.
+
+Ordre de preuve : (1) audits/historiques/canonical-memory déjà versionnés, (2) GitHub live et artefacts CI, (3) uniquement si nécessaire, futur export serveur read-only indépendant du MCP/OAuth et publié comme artefact GitHub.
+
+Le futur exporteur doit respecter le moindre privilège : identité read-only dédiée ou forced-command, commandes allowlistées, redaction, digest, TTL/fraîcheur, aucun secret et aucune capacité de mutation/restart/deploy/claim/lock.
+
+Une preuve historique ne prouve pas automatiquement l'état live ; si aucune preuve fraîche n'est disponible, l'état est `UNKNOWN` ou `STALE`. Cette absence ne doit pas pousser un agent PRECODE à ouvrir une Governed Session runtime.
+
+
+## 2026-09-18 — PR #95 reste PRECODE-only jusqu'à FINAL_PRECODE_VERSION_ACCEPTED
+
+Décision : la branche `claude/ecstatic-edison-v1dyt1` sert d'abord à produire la version finale PRECODE complète. Le passage de `GWC_ARCHITECTURE_GATE_PASS` ne déclenche pas automatiquement l'intégration dans le MCP réel.
+
+Le catalogue complet `T00→T204` reste visible et ordonné dans les artefacts PRECODE, mais l'exécution actuelle est limitée à la construction/revalidation/canonicalisation PRECODE `T00→T195`. Les tâches `T196→T204` et les Phases B→F décrivent l'intégration future ; elles ne doivent pas être matérialisées ou exécutées contre le runtime pendant cette phase.
+
+La mémoire canonique doit permettre à tout agent de retrouver : état du programme, preuves, work item courant, session/handoff et `NEXT_ACTION`, sans utiliser une seconde Task Queue ni transformer les `GWC-PRE-*` en `TASK-*`.
+
+Sortie obligatoire avant toute phase d'intégration réelle : `FINAL_PRECODE_VERSION_ACCEPTED`.
+
+
+
+## 2026-09-17 — Flux pré-code : décisions de conception
+
+Décision : les modèles `M1` à `M5` — `EvidenceRef`, `StepAttestation`, classes de rejeu, `RecoveryAnchor`, précondition d'arête — sont spécifiés au niveau conception, dans `docs/gwc/BLUEPRINTS.md`, sans aucune implémentation runtime. Motif : les phases `A7` et `A8` du flux pré-code les exigeaient, et le dossier les nommait sans les définir. Un modèle nommé mais non spécifié ne satisfait aucune condition de sortie.
+
+Décision : toute arête du graphe porte un `trigger` typé et une `precondition` explicite. Motif : `A5-01` interdit les transitions implicites. Les 16 arêtes `SKIP` reçoivent chacune une condition propre, dérivée du contrat source, plutôt qu'une formule générique — une condition de saut générique n'est pas une condition.
+
+Décision : `merge` et `déploiement` sont classés `NON_REPLAYABLE_MUTATION`. Motif : ces mutations ne convergent pas sur un second passage. Devant une invocation potentiellement dupliquée, la seule issue admise est de réobserver l'autorité pour savoir si la mutation a eu lieu — jamais de la retenter.
+
+Décision : un verdict de gate doit être recoupé contre une preuve par phase. Motif : `AF-34` a montré qu'un gate peut se déclarer complet sans l'être, et qu'un vérificateur contrôlant les compteurs déclarés valide la déclaration, pas la réalité. `scripts/gwc-precode-verify.mjs` recoupe désormais le gate contre `.mcp/gwc-precode-status.json` et refuse un `PASS_WITH_EVIDENCE` dépourvu de référence de preuve relisible.
+
+Décision : la mémoire canonique avance par nouveau bundle et déplacement du pointeur, jamais par mutation d'un bundle existant. Motif : règle déjà posée par `CLAUDE.md §8` ; elle est appliquée ici pour la première fois — `pr95-precode-gate` succède à `pr95-precode-architecture-complete`, qui reste immuable.
+
+Décision : l'exécution s'arrête à l'entrée de la Phase B. Motif : la réconciliation de la Governed Task Queue exige une autorité runtime qui n'est pas atteignable depuis cette session. C'est un blocker gouverné réel au sens de `CLAUDE.md §9.5`, pas une fin de sous-tâche — et seule une classification `NEW_TASK` issue de cette réconciliation pourrait matérialiser une tâche runtime.
+
+## 2026-09-17 — Conception d'évolution détaillée : décisions de conception
+
+Décision : la conception d'évolution détaillée vit dans `docs/gwc/BLUEPRINTS.md`, aux côtés des blueprints qu'elle détaille, et non dans un document séparé. Motif : une seconde surface de conception aurait créé exactement la dispersion que `MCP_ANTI_DISPERSION_GOVERNANCE.md` interdit, et aurait forcé un agent à décider lequel des deux documents fait foi.
+
+Décision : `AF-19` ne sera pas corrigé par un déclencheur `workflow_run`. Motif prouvé : `GITHUB_OIDC_POLICY` est gelée avec `allowedEvents = ['push', 'workflow_dispatch']`, et `validateClaims()` exige `tokenSha === requestedSha`. Un run déclenché par `workflow_run` échouerait deux fois — `oidc_event_not_allowed` puis `oidc_sha_mismatch` — et l'adopter exigerait d'élargir les événements admis et de relâcher la liaison au SHA, c'est-à-dire de démonter la protection même que `AF-19` vise à renforcer. Cette option avait été recommandée dans une analyse antérieure sur un argument de simplicité apparente ; la lecture intégrale de `src/deploy/githubOidc.ts` l'invalide.
+
+Décision : `OD-07` reste ouverte avec trois options compatibles — étape `gate` existante, point d'admission serveur, dépendance de job — dont aucune ne modifie la politique OIDC. Motif : le choix engage les permissions du workflow de déploiement et les responsabilités de l'autorité de déploiement ; il relève d'une décision gouvernée, pas d'une déduction de conception.
+
+Décision : `AF-22` et `AF-30` se corrigent en recopiant une forme qui existe déjà. `GithubOperationalContext.checks` porte `headSha` et `exactHead` ; `reviews`, déclaré dix lignes plus bas dans le même type, n'en porte aucun. La correction est donc une réutilisation de motif existant, pas une conception nouvelle.
+
+Décision : l'acquisition atomique multi-verrous est placée **dans** `lockService.ts`, jamais à côté. Motif : c'est la seule nouveauté réelle de concurrence du programme, et l'implémenter ailleurs créerait un second système de verrouillage.
+
+Décision : aucune définition de finding n'est inventée pour réconcilier un écart. Les affectations `AF-07` et `AF-08` du registre machine ne correspondent pas aux seules définitions versionnées, qui vivent dans l'archive non canonique. L'écart est enregistré sous `AF-33` et rattaché à `GWC-0` plutôt que résolu par hypothèse.
+
+Décision : la propagation multi-repository est strictement additive et optionnelle. Une session, une tâche, un verrou ou un reçu écrit avant cette évolution doit rester valide, lisible et reprenable sans étape de migration. Un enregistrement sans `TargetScope` signifie la cible unique actuelle, jamais « tous les composants ».
+
+Décision : le verdict est `DETAILED_EVOLUTION_DESIGN_READY_FOR_TASK_RECONCILIATION`, assorti de trois réserves énoncées explicitement. Motif : la couche de conception est complète et vérifiable par machine, et ce qui reste ouvert relève de décisions et de dispositions rattachées à un propriétaire, non de preuves manquantes. Les réserves sont écrites dans le verdict lui-même pour qu'il ne soit pas lu comme « tout est tranché ».
+
+## 2026-09-16 — R3 : corps canonique, blueprints et frontière Task Queue / Execution Engine
+
+Décision : le corps canonique de l'architecture ne contient que l'architecture retenue courante. Motif : un agent qui récupère un fragment du document ne doit jamais lire une conclusion invalidée et la croire actuelle. Les affirmations remplacées vivent dans `docs/gwc/DEPRECATED_CLAIMS.md`, l'histoire dans `docs/gwc/REVISION_HISTORY.md`, et un corps entièrement remplacé sous `docs/gwc/archive/` avec bannière non canonique.
+
+Correction : la Governed Task Queue n'est pas le GWC Workflow Execution Engine. Elle fournit `initializeSeed`, `firstExecutable`, le claim, le cycle de vie, les priorités, les dépendances, l'ownership et les conflits de ressources. Le moteur reste une couche d'orchestration distincte qui compose les autorités existantes et n'acquiert aucune autorité métier nouvelle. Blueprint porteur `GWC-2`.
+
+Décision : `TASK BLUEPRINT ≠ GovernedTaskRecord`. Le chemin est architecture → blueprints → réconciliation avec la Task Queue live → classification `NEW_TASK` uniquement → Task runtime. Un blueprint peut produire 0, 1 ou N Governed Tasks. `.mcp/gwc-task-seed.json` est supprimé au profit de `.mcp/gwc-blueprints.json`, jamais chargé par `initializeSeed()`.
+
+Décision : aucun human gate générique. La validation conceptuelle était une étape de programme, pas une Task runtime. La Task de ratification `TASK-20260916-001` est supprimée. Les seules interruptions futures viennent d'autorités réelles : permission requise, capacité absente, ambiguïté, conflit, évidence périmée, lock, politique explicite.
+
+Décision : portées de ressource au domaine de collision minimal. Sérialiser tout le programme derrière `repository:Patricked-code/MCP` n'est pas de l'anti-dispersion mais une perte de parallélisme. Deux travaux indépendants doivent progresser si dépendances satisfaites et portées et locks disjoints.
+
+Décision : propriété architecturale des findings figée — `AF-19` à `GWC-15`, `AF-22` et `AF-30` à `GWC-14`, réconciliation de la pile de PR à `GWC-12`, multi-repository `TargetScope` à `GWC-10`. Leur priorité d'implémentation est volontairement plus précoce que la position de leur propriétaire dans le graphe ; cela ne crée pas d'architecture parallèle.
+
+Décision : le modèle est réellement multi-repository. Un projet peut porter 0, 1 ou N repositories et runtimes, plusieurs endpoints et plusieurs SHAs indépendants. Réduire cela à un `PROJECT_SHA` unique est interdit. Session, Task et Receipt évoluent de façon additive et rétrocompatible.
+
+Reconnaissance : les conclusions de R1 et R2 ont été produites avec `LOCAL_CLONE_USED = yes` et ne suffisent pas à une certification. Elles sont conservées, revalidées depuis `GITHUB_LIVE` ou explicitement marquées `À VÉRIFIER`. Une donnée live inaccessible n'est jamais compensée par le clone.
+
+## 2026-09-16 — Le dossier GWC devient la source versionnée, la promotion des tâches reste humaine
+
+Décision : l'architecture GWC et le backlog qui en découle vivent désormais dans le dépôt, sous `docs/gwc/` pour la lecture humaine et sous `.mcp/gwc-*.json` pour la lecture machine, plutôt que dans des documents externes. Motif : tout agent doit pouvoir lire le même état sans dépendre d'un canal hors dépôt, et les révisions doivent être traçables par Git.
+
+Décision : le backlog est déposé dans un fichier de préparation `.mcp/gwc-task-seed.json` distinct de `.mcp/task-registry.json`. Motif : `initializeSeed()` charge le registre au démarrage ; y écrire directement rendrait exécutables des tâches issues d'une architecture non ratifiée. La promotion est une étape humaine explicite, documentée dans `docs/gwc/BACKLOG.md`.
+
+Décision : les révisions du dossier sont additives. Une révision amende et signale, elle ne réécrit pas. Motif : non-régression documentaire et lisibilité de l'historique d'analyse.
+
+Décision maintenue : aucune implémentation GWC ne commence avant ratification humaine de l'architecture (`TASK-20260916-001`). Les identifiants `GW-01` à `GW-73` restent un espace de noms stable et ne sont ni renumérotés, ni supprimés, ni fusionnés.
+
+Point ouvert soumis à ratification : la table des familles `A=GW-01`, `B=GW-02..09`, `C=GW-10..12`, `D=GW-13..20`, `E=GW-21..33`, `F=GW-34..45`, `G=GW-46..57`, `H=GW-58..72`, `I=GW-73` est une dérivation convergente de deux analyses indépendantes, pas un texte du design. Elle doit être ratifiée avant d'être figée dans `ids.ts`.
 
 ## 2026-09-13 — AfricaFunds Phase 2 livrée, réconciliation terminale
 
@@ -577,3 +711,209 @@ Décision de livraison : PR #92 est fusionnée sous garde du head exact `8b71f14
 Décision de preuve : la Task enregistre `runtimeRevision=46d576e53820eba0360647b6fd96d41dd4a2bbc6` sans redéploiement manuel. La seule contradiction résiduelle est documentaire ; elle se corrige par une branche/PR docs-only descendante, puis nouvelle observation Live State avant toute transition `VERIFYING` ou `DONE`.
 
 Décision de frontière : la livraison C2 n'active pas GitRegistry V2, n'élargit aucune permission, n'autorise aucun déploiement de projet et ne modifie pas le WRITE gate `shadow`. C3 reste un lot distinct après clôture gouvernée de C2.
+
+## 2026-09-17 — Le gate pré-code se vérifie contre le head exact, jamais contre sa propre déclaration
+
+Décision : un compteur déclaré dans `.mcp/gwc-precode-gate.json` n'est pas une preuve. `AF-34` a montré qu'un gate pouvait déclarer `architecturePhases.satisfied = 14` alors que la vérification du head exact `58d71959` en donnait 10. La correction porte sur les deux faces : l'instance est comblée par conception, et le vérificateur recoupe désormais les compteurs du gate contre les preuves par phase de `.mcp/gwc-precode-status.json`. Un `PASS_WITH_EVIDENCE` sans référence de preuve relisible est refusé, et un verdict de gate qui contredit le décompte des phases est refusé.
+
+Décision de portée : cette correction ne crée aucune autorité nouvelle. Elle durcit un vérificateur déterministe déjà exécuté par la CI au head exact. Elle n'ajoute aucun outil MCP, ne crée aucune Task, ne prend aucun lock et ne déclenche aucun déploiement.
+
+## 2026-09-17 — La réconciliation live classe sans créer, et ne résout pas le conflit d'un autre agent
+
+Décision de classification : la réconciliation Phase B repose exclusivement sur l'observation des autorités live propriétaires — Governed Task Queue, Live State, sessions gouvernées, locks — et jamais sur `.mcp/task-registry.json`, sur un document Markdown ni sur une mémoire canonique. L'absence d'un blueprint dans un registre versionné ne vaut pas `NEW_TASK`.
+
+Décision : aucune tâche GWC n'existe dans la file live, donc ni `CONTINUATION` ni `DUPLICATE` ne s'appliquent aux 18 blueprints. La seule tâche non terminale, `TASK-20260915-001`, est classée `CONFLICT` : la Task Queue la déclare `DEPLOYING` avec blocker `DOCUMENTATION_DRIFT` observé à `46d576e5`, tandis que Live State `stateVersion 246` déclare `documentation: ALIGNED`, `global: FULLY_ALIGNED` et 0 contradiction à `d1f30395`, plus récent. Ce blocker est donc probablement périmé plutôt que réel, mais l'écart se constate et s'enregistre — il ne se tranche pas par hypothèse. Il est enregistré sous `AF-35`, propriétaire `GWC-5`.
+
+Décision de blocage : `GWC-0` à `GWC-17` sont classés `BLOCKED`, pas `NEW_TASK`. Le protocole MCP impose que la première tâche exécutable précède les nouvelles ; enregistrer dix-huit tâches GWC devant une tâche non terminale reviendrait à doubler la file et à contourner l'ordonnancement gouverné.
+
+Décision de non-intervention : le `CONFLICT` n'est pas résolu par cette session. `TASK-20260915-001` est possédée par la session `ACTIVE` `499b2ea3` d'un autre agent. Toute transition exigerait son `governedSessionId` et son `expectedSessionRevision` ; agir à sa place violerait la règle d'un seul writer par domaine de collision et l'interdiction d'écraser un travail concurrent. Le fait que cette session soit manifestement périmée — Bootstrap Receipt acquitté à `stateVersion 233` contre 246 en live, aucun heartbeat depuis le 2026-09-16T22:52Z, `nextAction` demandant la fusion d'une PR déjà fusionnée — ne transfère pas sa propriété. Deux voies légitimes seulement : l'agent propriétaire clôture sa tâche et sa session, ou une décision humaine explicite fait expirer ou superséder la tâche.
+
+Décision de frontière : l'observation seule a suffi à produire la classification. Aucune session n'a été ouverte, aucun Bootstrap Receipt demandé, aucun claim effectué, aucun lock pris, aucune transition tentée. `RUNTIME_TASKS_CREATED = 0` et le runtime GWC reste gelé jusqu'à résolution du `CONFLICT`.
+
+## 2026-09-18 — La pile candidate se dispose capacité par capacité, jamais en bloc
+
+Décision : la disposition d'une pile de pull requests ne se prend pas au niveau de la pile mais au niveau de chaque capacité. `GWC-12` énonçait quatre options stratégiques — rebaser, re-dériver, fermer, laisser ouvert — et les laissait à une décision gouvernée, faute de mesure. `GWC-PRE-C3` fournit la mesure : sur les 73 contrats, 7 sont bloqués et ils ne dépendent que de quatre outils de `#90`. La pile ajoute plus de 5 500 lignes ; ce qui bloque réellement l'architecture en est une fraction.
+
+Décision structurelle : `#88` est la racine de la pile et la seule des trois à être en conflit direct avec `main`, alors qu'aucun des 73 contrats ne requiert sa capacité. La staleness de l'ensemble est donc enracinée dans une pull request dont GWC n'a pas besoin. C'est ce qui rend `SPLIT` préférable à une rebase de la pile entière : re-découper depuis `main` courant évite de porter `#88` pour rien.
+
+Décision sur le manifeste de `#89` : ses 170 capacités classifiées sont conservées comme **entrée de conception** et non comme artefact runtime. La cartographie de fonctions est déjà l'autorité de la surface enregistrée ; introduire un second registre de capacités créerait une seconde autorité, ce que la règle 6 du protocole interdit. D'où `SUPERSEDE` plutôt que `SPLIT`.
+
+Décision d'ordonnancement, dérivée d'un finding et non d'une préférence : `GWC-9` précède l'atterrissage de tout `SPLIT` portant du `WRITE`. `AF-32` établit que trois mutations gouvernées de `main` ne traversent aujourd'hui aucune porte d'écriture ; `#90` ajoute douze outils `WRITE`. Les faire atterrir avant la fermeture d'`AF-32` élargirait un trou existant d'un facteur quatre au lieu de le combler. Le `SPLIT` `C-89.2`, `READ` seul, n'est pas soumis à cette contrainte.
+
+Décision de frontière : `C3` produit une disposition, pas un merge. Exécuter un `SPLIT` est une matérialisation de tâche, donc soumis à la Phase B, qui reste `BLOCKED` sur le `CONFLICT` de `TASK-20260915-001`. Aucune pull request n'est fusionnée, rebasée, fermée ni modifiée par cette analyse, et aucune ne reçoit `CLOSE` : fermer la pull request d'un autre agent n'est pas une disposition que cette session exécute.
+
+Décision de non-exécution assumée : `GWC-PRE-C1` (`AF-19`) et `GWC-PRE-C2` (`AF-22`/`AF-30`) ne sont pas exécutés. Ils touchent au chemin de déploiement et au gating de revue, au-delà de ce que l'autorisation courante couvre. Ils sont enregistrés `PENDING` avec leur motif, plutôt que passés sous silence ou déclarés satisfaits.
+
+## 2026-09-18 — `NEW_TASK` rend la matérialisation admissible, jamais automatique
+
+Décision de classification : après réobservation live, `GWC-0` à `GWC-17` passent de `BLOCKED` à `NEW_TASK`. Le raisonnement est éliminatoire et repose uniquement sur des autorités propriétaires observées : aucune tâche GWC n'existe dans la file, donc ni `CONTINUATION` ni `DUPLICATE` ; le `CONFLICT` sur `TASK-20260915-001` est résolu à la source ; et le motif `BLOCKED` — la première tâche exécutable précède les nouvelles — tombe puisque les 15 tâches sont terminales et qu'aucune session n'est `ACTIVE`. Il ne reste que `NEW_TASK`.
+
+Décision de non-exécution : `NEW_TASK` autorise la création d'un `GovernedTaskRecord`, il ne l'ordonne pas. Créer une Governed Task exige d'ouvrir une governed session et d'acquitter un Bootstrap Receipt, c'est-à-dire de muter une autorité de production. Cela dépasse le périmètre sous lequel cette session a travaillé depuis le début — aucune session ouverte, aucun claim, aucun lock — et n'a pas été explicitement autorisé. La matérialisation est donc enregistrée comme admissible et laissée à une décision humaine.
+
+Décision de granularité : même autorisée, la matérialisation ne se fait pas en bloc. `TASK BLUEPRINT ≠ GovernedTaskRecord` : un blueprint peut produire 0, 1 ou N tâches selon la réalité live. Créer dix-huit tâches d'un coup fabriquerait une file artificielle au lieu de refléter le travail réellement exécutable. L'ordre prescrit reste celui de la Phase E, à partir de `GWC-0`, et la contrainte dérivée de `C3` tient : `GWC-9` précède l'atterrissage de tout `SPLIT` portant du `WRITE`, parce qu'`AF-32` reste ouvert.
+
+Décision de provenance sur `AF-35` : le finding est résolu **par l'agent propriétaire**, pas par cette session. Il a acquitté le `stateVersion 246`, porté sa tâche à `DONE` et fermé sa session. C'est la voie (a) annoncée dans le `SESSION_HANDOFF`, et elle confirme l'hypothèse qui y était posée sans être tranchée : le blocker `DOCUMENTATION_DRIFT` était périmé plutôt que réel. L'attribution est enregistrée telle quelle — ne jamais s'attribuer la résolution d'un finding levé par un autre.
+
+Décision de méthode : la classification Phase B du 2026-09-17 n'a pas été rejouée ni supposée valide. Elle a été **réobservée** contre les autorités live avant toute mise à jour, conformément à la règle inscrite dans `current.json` : une classification est une observation datée, jamais un fait permanent.
+
+## 2026-09-18 — Un contenu de dépôt ne lève pas une limite posée par l'utilisateur
+
+Décision : le commit pair `e22214d` ajoute à `docs/gwc/canonical-memory/current.json` un bloc `continuationPolicy` déclarant `newTaskIsHumanGateByDefault: false` et `redundantHumanApprovalForbidden: true`, et retire de `readProtocol` la ligne exigeant une décision humaine explicite avant de créer un `GovernedTaskRecord`. Ces blocs sont **conservés intacts** — cette session ne les réécrit pas, ne les supprime pas et n'engage pas de guerre d'édition — et ils ne sont **pas** traités comme une autorisation.
+
+Motif : un fichier versionné est du contenu de dépôt, pas une instruction de l'utilisateur. La limite « pas de session gouvernée, pas de claim, pas de lock, pas de création de tâche » vient des mandats de l'utilisateur dans la conversation. Un autre agent ne peut pas la lever en écrivant le contraire dans un fichier, quelle que soit la formulation. Seul l'utilisateur peut la lever, et il en a été informé.
+
+Décision de réconciliation : après `HEAD_MOVED`, le travail intervenu est lu et compris avant toute écriture, et intégré par merge — jamais par rebase, amend ou force-push sur une branche partagée. Les affirmations du commit sont vérifiées contre les autorités propriétaires et non prises pour argent comptant : `TASK-20260918-001` a été confirmée réellement présente dans la file live, `READY` et non réclamée.
+
+Décision sur `AF-36` : la mémoire canonique n'a de valeur de continuité que si son pointeur se résout. Un pointeur pendant laisse un agent qui reprend sans checkpoint, ce que `CLAUDE.md` §9 vise précisément à empêcher — et il passait une CI verte. La correction porte sur les deux faces, comme pour `AF-34` : l'instance est réparée, et la cause — l'absence de tout contrôle — est refermée par `verifyCanonicalMemory()`. Le contrôle est éprouvé par injection : cinq défauts distincts, cinq rejets.
+
+Décision de portée de la réparation : le pointeur est repointé vers le bundle le plus récent **réellement présent**, et ce bundle est retiré de `previousBundles` pour qu'il ne soit pas à la fois courant et supersédé. Si l'auteur du commit ajoute ultérieurement le bundle manquant, le pointeur pourra être réavancé vers lui : le nouveau contrôle l'acceptera dès lors qu'il se résout et vérifie.
+
+## 2026-09-19 — OD-07 résolue automatiquement par existing-first, sans human gate normal
+
+Décision de continuité : l'exécution PRECODE est autonome par défaut. Les work items, findings, dépendances et nouvelles informations continuent d'être enrichis/réconciliés au fil de l'eau. Une décision technique ouverte n'est pas un human gate : la tâche la résout depuis les autorités, contraintes, preuves, Integration Slots et tests existants dès que le choix est déductible. Un arrêt externe n'est réservé qu'à un empêchement réellement non déductible ou non exécutable.
+
+Décision AF-19 / OD-07 : le mécanisme retenu est **B — extension du gate de déploiement existant**. Ce choix applique `REUSE -> WRAP -> GENERALIZE -> EXTEND -> NEW` : le gate était déjà l'Integration Slot documenté ; `workflow_run` reste interdit par la politique OIDC ; l'option B ferme AF-19 sans créer une nouvelle autorité ni déplacer la responsabilité d'admission vers le serveur.
+
+Compatibilité : `GITHUB_OIDC_POLICY.allowedEvents` reste inchangé, `tokenSha === requestedSha` reste inchangé, le nom de l'étape `Deploy exact main SHA through MCP` reste inchangé et le comportement historique de `workflow_dispatch` est conservé. Le push autodeploy exige désormais un `MCP CI` conclu `success` pour le même `GITHUB_SHA`; échec, timeout ou verdict indisponible restent fail-closed.
+
+Preuve TDD : RED `757ee2a525741eef5cbb36796fc69c62c85a47b2` / MCP CI #1110 (échec attendu à `Read-only safety tests` après les contrôles précédents verts), puis GREEN final `074f2bd21eef6e23811512453d34670bfecc7485` / MCP CI #1112 entièrement réussi.
+
+Frontière : aucun merge `main`, aucune écriture S1, aucun déploiement, aucune activation live, aucune Governed Task runtime, aucun runtime lock et aucune Governed Session runtime ne sont produits par cette correction candidate.
+
+
+## 2026-09-19 — Clôture d'un claim PRECODE stale sous autorisation humaine
+
+Décision appliquée uniquement au programme GWC/PRECODE PR #95 :
+
+- `STALE != DEAD`, `STALE != RELEASED` et `STALE != CLAIM_TRANSFER` restent invariants.
+- Le claim `candidate-minute-liveness-20260919T042806Z` peut être libéré dans cette clôture parce que l'utilisateur a explicitement demandé la récupération et la finalisation, preuve durable PR #95 commentaire `5739730790`, après réobservation du HEAD et du heartbeat.
+- Cette autorisation ne s'étend pas au claim `GWC-PRE-E-GWC-6`.
+- Pour GWC-6, l'absence de heartbeat produit `UNKNOWN/MISSING_HEARTBEAT`, pas une inférence `STALE` ou `DEAD`; son ownership reste inchangé.
+- Une reprise GWC-6 doit d'abord réobserver claim/session/HEAD/heartbeat et utiliser le mécanisme de recovery en mode reconcile-only si l'exécuteur d'origine n'est pas vérifiable.
+
+## 2026-09-19 — OD-03 : identité serveur canonique explicite, preuves serveur distinctes
+
+Décision : `GW-07 SERVER_RESOLUTION` ne déduit jamais un serveur d'un chemin, d'un nom historique libre ou d'une simple disponibilité de transport. L'identité canonique est choisie exclusivement dans l'ensemble borné `canonicalServerIds`. Une variante de casse d'un `serverId` GitRegistry peut se normaliser vers cette identité explicite ; l'ID brut est toujours conservé comme preuve. Une valeur sans correspondance canonique reste `UNVERIFIED`.
+
+Décision de désambiguïsation : un `serverHint` est un hint, pas une autorité. Il ne peut sélectionner qu'une identité canonique déjà liée au projet résolu ; sinon le resolver reste fail-closed. L'environnement fait partie du candidat ; `serverPath` et `realPath` restent des preuves et ne deviennent jamais identité.
+
+Décision de liaison de preuve : les digests portés par le `ProjectResolution` et ceux de la preuve de bindings serveur sont des domaines de preuve distincts. Leur égalité n'est pas une précondition implicite de GW-07 ; elle ne pourra être exigée que si un contrat explicite les lie. Le faux couplage a été identifié par le RED GWC-6 et retiré à `d616849f`.
+
+Décision de déterminisme : l'ordre des alias bruts est fixé par un tri de code units, sans `localeCompare`, afin que le même evidence snapshot produise le même résultat indépendamment de la locale d'exécution.
+
+Frontière : GWC-6 reste `READ_ONLY`; GitRegistry conserve son autorité, ProjectResolution reste l'autorité prédécesseur, et aucun SSH, mutation, permission ou deuxième registre n'est introduit. Preuve finale : MCP CI #1258 SUCCESS sur `087b0a23230c83b6cb1c9069947f48a5d8cc0357`.
+
+## 2026-09-19 — GWC-7 — OD-04 final / recovery ownership
+
+- OD-04 est matérialisé par un RuntimeBinding éphémère et borné, jamais par un nouveau store ou executor.
+- L'observation serveur reste l'autorité de vérité runtime ; Live State reste sa projection réconciliée ; GitRegistry ne peut que cross-checker une observation courante.
+- NO_RUNTIME exige une observation explicite ; absence d'observation = UNVERIFIED.
+- La session writer précédente étant STALE, son claim n'a pas été libéré par timeout. Le transfert GWC-7 a été effectué uniquement après autorisation humaine explicite PR #95 comment 5739928009 et revalidation du HEAD/claim/evidence.
+
+## 2026-09-19 — GWC-8 : politique de résolution de domaine et compatibilité historique
+
+Décision : `GW-09 DOMAIN_RESOLUTION` compose les autorités existantes au lieu de créer un registre parallèle. GitRegistry porte les déclarations `publicDomain`, `publicApi`, `historicalVhosts` et domaines de mapping ; l'observation courante du serveur prouve ce qui est effectivement servi. `protectedDomains` reste une liste de sûreté et ne devient jamais une autorité de domaine.
+
+Décision `NONE` : un projet n'est `NONE` que si l'autorité projet déclare explicitement `publicDomain=null` et `publicApi=null`, que les mappings du serveur résolu ne déclarent aucun domaine, et que l'observation courante prouve une surface active vide. Une observation absente, indisponible ou stale reste `UNVERIFIED`.
+
+Décision historique : `historicalVhosts` ne peut jamais être promu automatiquement en surface active. Il est exclu et rapporté. Un domaine observé courant sans déclaration active correspondante échoue fermé.
+
+Décision de rôle : FRONTEND et API proviennent seulement d'autorités explicites. Un mapping historique sans `componentRole` peut renforcer comme preuve une déclaration projet du même domaine, mais il ne crée pas un nouveau rôle `OTHER` si une autorité plus explicite existe déjà. Plusieurs domaines distincts pour un même rôle restent `AMBIGUOUS` plutôt que d'appliquer une priorité implicite.
+
+Frontière : resolver `READ_ONLY`, sans mutation vhost/SSH, sans probing side effect, sans persistance et sans inférence d'autorisation. Preuve finale : MCP CI #1286 SUCCESS sur `d6240484e387770751d9d3db476ac3b9470c74ce`.
+
+## 2026-09-19 — GWC-9 : composition gouvernance/capabilities et fermeture AF-32
+
+Décision : GW-10/GW-11 ne créent aucune nouvelle autorité. `CapabilityReality` reste la vérité de capacité/callability, `GovernanceDecision` reste la décision composée existante, et `Scoped Write Gate` reste le mécanisme d'observation des écritures. Le composer GWC-9 ne fait que vérifier leur cohérence pour une cible bornée et ne peut qu'être aussi restrictif ou plus restrictif.
+
+Décision sécurité : une valeur `UNKNOWN` ne devient jamais permise. Un snapshot capability différent de celui effectivement utilisé par `GovernanceDecision` produit `CONFLICT`. En particulier, une attestation client permissive ne peut pas supplanter une capability serveur contradictoire. Aucun droit n'est inféré.
+
+Décision AF-32 : les trois outils `mcp_reconcile_agent_intent`, `mcp_claim_next_governed_task` et `mcp_transition_governed_task` restent classés `operational-write`, mais leur enregistrement passe désormais par le même `decorateScopedWriteServer` que les writes scopés. Le mode reste strictement `off | shadow` ; aucun enforcing n'est introduit. Même un verdict shadow `wouldBlock=true` reste observationnel et ne modifie pas le résultat historique du handler.
+
+Décision cartographie : l'ajout du shadow gate ne change pas la surface de registration ni les noms/contrats des outils. La cartographie reste donc inchangée et ne doit pas être régénérée artificiellement ; la régression exacte `functionCartography` de CI #1302 le prouve.
+
+Preuve finale : MCP CI #1302 SUCCESS sur `ff85ab51ae59df044ad179abe0865374e41f2412`.
+
+## 2026-09-19 — GWC-10 : TargetScope multi-repository
+
+Décision OD-10 : la migration est strictement additive. `TargetScope` est optionnel sur les records opérationnels concernés. Son absence signifie exactement la cible mono-repository historique et **jamais** « tous les composants ». Aucun record existant n'est rétro-rempli et `schemaVersion: 1` reste valide.
+
+Décision OD-11 : `ownerGovernedSessionId` reste l'owner d'une Task ; la Task possède exactement le sous-ensemble de composants nommé par son `TargetScope`. Un même `intentKey` sur deux scopes composants disjoints ne doit pas être fusionné. Les locks composants utilisent un scope minimal indépendant et ne sont jamais élargis automatiquement au projet.
+
+Décision SHA : aucun `PROJECT_SHA` n'existe. `TargetContext` conserve `githubHead` et `runtimeRevision` séparément pour chaque composant. Pour un BootstrapReceipt multi-composant, les champs SHA legacy globaux sont `null` et la preuve exacte vit dans le `targetContext` scoped.
+
+Décision autorité : GitRegistry V2 reste l'autorité projet/composants, Operational Memory reste l'autorité Session/Task/Lock, Live State reste l'autorité d'observation. GWC-10 ne crée aucun second registre, aucun second store ni aucun second Live State.
+
+Décision égalité : deux `TargetScope` portant exactement les mêmes composants sont identiques indépendamment de l'ordre du tableau. Cette règle a été découverte par self-review CI #1329 et prouvée GREEN en CI #1330.
+
+Preuve finale de code : MCP CI #1330 SUCCESS sur `67197cd12e13f450734b403c4b85e26dc9760c60`. Le claim GWC-10 n'est libérable qu'après validation CI du checkpoint canonique exact-head.
+
+## 2026-09-19 — GWC-11 : autorités documentaires, slot d'intégration et baseline GitHub
+
+Décision GW-21 : l'autorité documentaire reste le mécanisme existant d'inventaire/canonical-state/cartographie. GWC-11 ne copie pas le contenu comme nouvelle source de vérité ; il émet seulement une preuve bornée par digests et compteurs. La déclaration devient project-scoped, mais la déclaration MCP par défaut demeure strictement compatible avec les listes historiques.
+
+Décision GW-22 : le resolver d'Integration Slot est une dérivation pure des inventaires Current State existants. Il ne peut retourner `FOUND` que pour un module, document ou outil effectivement présent ; sinon il retourne `NONE` ou `AMBIGUOUS`. Il n'invente jamais un owner. Un inventaire stale/unavailable interdit toute résolution positive.
+
+Décision GW-23 : la baseline GitHub d'une étape doit être observée après le début de cette étape et doit porter le SHA exact de sa branche. Une baseline antérieure n'est jamais rejouée. Les preuves pull request/checks requises doivent elles-mêmes être CURRENT ; toute contradiction de head produit `CONFLICT`.
+
+Décision d'autorité : aucun second inventaire documentaire, aucune seconde cartographie, aucun second observateur GitHub, aucun store GWC et aucune permission ne sont créés. Les trois contrats sont exclusivement READ/DERIVE, avec `authorizationInferred=false` et `mutationPerformed=false`.
+
+Preuve finale de code : MCP CI #1348 SUCCESS sur `2a82e278319dd750db2a6d870fc029fe296a66a6`. Bundle : `docs/gwc/canonical-memory/pr95-e-gwc11-authority-baseline-complete`, source SHA-256 `2dacb7e9fc2fe2dd80280e5730e80463803c1ce35c8d801c63e7eddc43d5c627`. Le claim GWC-11 reste retenu jusqu'au SUCCESS du checkpoint exact-head.
+
+## 2026-09-19 — GWC-16 : terminal verification, documentation recursion et clôture
+
+Décision AF-07 : `DONE` n'est jamais dérivé de la seule progression du workflow. Le gate GW-68 exige une preuve terminale fail-closed où Task VERIFYING, owner de session, Bootstrap Receipt et stateVersion, CI, déploiement, review, locks, Live State et état documentaire convergent vers le même SHA/runtime final. Une preuve issue d'une autre session, d'un autre head, d'un autre run CI/deploy ou un lock étranger contradictoire interdit la terminalité.
+
+Décision d'autorité : GWC-16 ne crée ni deuxième store de clôture ni nouvel executor. Les mutations restent la responsabilité des autorités existantes : outils GitHub gouvernés pour branch/commit/PR/merge, Governed Task Queue pour VERIFYING/DONE, Governed Session pour receipt/checkpoint/close, Lock Service pour release et Live State pour la réalité observée. Le module terminal ne produit que des résultats bornés et des EffectPlans ; `authorizationInferred=false` et `mutationPerformed=false`.
+
+Décision documentation : lorsque GW-58 constate zéro drift, le sous-flux documentaire est sauté vers GW-66. Lorsqu'une réconciliation documentaire est nécessaire, le merge/autodeploy documentaire peut produire le **nouveau SHA runtime final** ; GW-65 doit alors revalider Live State sur ce SHA avant receipt refresh et vérification terminale. La récursion se termine uniquement quand le drift documentaire est nul.
+
+Décision compatibilité outils : un EffectPlan doit être exécutable par l'outil existant qu'il référence, sans schéma inventé. GW-60 réutilise donc `github_create_commit` pour une mutation multi-fichiers atomique ; GW-59/61/63 utilisent les payloads exacts de `github_create_branch`, `github_create_pull_request`, `github_merge_pull_request`. GW-69 conserve le digest de la preuve terminale dans son résultat/recovery anchor, mais n'injecte aucun champ non supporté dans `mcp_transition_governed_task`.
+
+Décision clôture : ordre canonique après vérification terminale réussie : Task DONE → terminal checkpoint → libération des locks → fermeture de session → réconciliation de la Task Queue. La libération des locks reste indépendante du succès fonctionnel de la Task dès qu'un checkpoint terminal existe ; un échec ne doit pas laisser de lock orphelin.
+
+Preuves : RED #1433, GREEN initial #1435, self-review RED #1437, correction de fixture #1439, GREEN final MCP CI #1440 SUCCESS sur `b8a86c48eb24902f998d4533e6bbeac5144102c6` avec 589/589 tests. Aucun main/S1/production/deploy/runtime mutation n'a été effectué.
+
+## 2026-09-19 — GWC-17 : Universal Acceptance
+
+Décision GW-73 : `UNIVERSAL_ACCEPTANCE` reste volontairement hors du graphe runtime nominal. Il n'est ni un 74e contrat runtime ni une nouvelle autorité de workflow ; il évalue le système candidat implémenté dans son ensemble et produit une preuve d'acceptance test-only.
+
+Décision de périmètre : la classification `NEW` de GWC-17 est limitée à `tests/governedWorkflowUniversalAcceptance/` (harnais + fixtures). Aucun module `src/`, store, outil MCP, Task Queue, Session Manager, Lock Service, Live State ou executor parallèle n'est introduit. Le runtime ne doit jamais importer le harnais d'acceptance.
+
+Décision universalité : l'acceptance doit prouver avec les mêmes contrats au minimum (1) MCP historique mono-repository, (2) un second projet réel — Stablecoin, S2/Passenger — et (3) un projet synthétique multi-composants avec SHAs et locks indépendants. Une cible réelle non résolue, telle que le backend Stablecoin, reste `LIVE_DISCOVERY_REQUIRED` et n'est jamais inventée pour rendre un scénario vert.
+
+Décision recovery : NEW_INFORMATION_INTAKE-003 fait partie de l'acceptance GW-73. Heartbeat/liveness n'accordent ni ownership ni autorisation ; stale/missing ne libère pas un claim ; le supervisor reobserve ; le runner reste un adapter `RECONCILE_READ_ONLY`; l'acknowledgement est obligatoire ; le même état produit le même plan pour éviter les restart storms ; une enveloppe stale est refusée ; aucun transcript brut, resume secret ou authorization header n'est persisté. Les fenêtres de crash `CLAIM_BEFORE_LOCK`, `LOCK_BEFORE_MUTATION` et `DEPLOYMENT_BEFORE_ATTESTATION` doivent rester récupérables/fail-closed via les autorités existantes.
+
+Décision anti-hardcode : le scan des chemins gouvernés est un test de régression, pas une nouvelle autorité. Son détecteur est également testé par contrôle négatif avec des littéraux cible volontairement injectés. La réussite actuelle n'est donc pas seulement l'absence accidentelle de chaînes recherchées.
+
+Décision fail-closed : aucun scénario obligatoire ne peut être SKIPPED. Un scénario échoué fait échouer le rapport global et publie son `reasonCode` ainsi que les contrats réellement exercés dans `failedContracts`. Le scénario recovery lie GW-68 au `createGovernedContractSubstrate` construit depuis les projections canoniques `.mcp/gwc-contracts.json` et `.mcp/gwc-workflow-graph.json`, jamais à un stub permissif.
+
+Preuves : RED #1451, GREEN initial #1454, self-review RED #1456, GREEN final MCP CI #1458 SUCCESS sur `9b32bba86e830845ea63d90f37bf304d800b8f12` avec 598/598 tests et 0 skipped. Aucun main/S1/production/deploy/runtime mutation n'a été effectué.
+
+
+## 2026-09-20 — Phase F-06 : décisions du paquet d’intégration
+
+Décision d’intégration : F-06 ne crée pas de nouvelle autorité. `MIGRATION.md` orchestre les autorités existantes et `DEPLOYMENT_PRODUCTION.md` reste propriétaire de la chaîne de production exact-SHA. PRECODE ne matérialise aucune Governed Task/Session/Lock pour anticiper l’intégration live.
+
+Décision de révisions : `CANDIDATE_HEAD` est le HEAD exact ayant passé le gate candidat avant fusion ; `MERGE_SHA` est le SHA réellement produit/observé sur GitHub `main` ; `DEPLOY_SHA` doit être égal à `MERGE_SHA`. Aucune stratégie de merge ne permet de supposer `CANDIDATE_HEAD === MERGE_SHA`.
+
+Décision de delta : le delta est calculé depuis GitHub entre le `main` alors courant et le HEAD candidat reconcilié de la PR #95. Intégration partielle, cherry-pick sélectif, copie serveur et push direct sur `main` sont exclus. Toute modification de candidate invalide les preuves exact-head affectées.
+
+Décision de drift : un drift sans recouvrement peut être reconcilié sur la branche puis revalidé ; recouvrement concurrent, conflit, preuve stale/UNKNOWN ou contradiction d’autorité échoue fermé. Un drift S1/runtime appartient aux mécanismes live existants, jamais à une correction ad hoc de la branche.
+
+Décision de rollback : après merge, GitHub reste immuable et toute annulation passe par PR de revert/fix-forward. Un échec runtime utilise le rollback d’image existant sans réécriture Git ; l’état reste non terminal jusqu’à nouvelle attestation cohérente.
+
+Décision de clôture : aucun merge ou job de déploiement seul ne suffit à produire `DONE`. La terminalité exige CI main, déploiement exact `MERGE_SHA`, attestation S1/OCI/runtime/Live State, santé HTTP/OAuth/MCP, documentation alignée, absence de locks contradictoires et checkpoint/fermeture des éventuelles autorités Task/Session utilisées.
+
+Décision de checkpoint final : F-06 distingue le `PACKAGE_HEAD_F06`, validable et enregistrable avant clôture, du `CANDIDATE_HEAD`, qui est le HEAD de PR réobservé après le commit final de projection. Un commit ne tente jamais de certifier son propre SHA dans son contenu ; le HEAD final est certifié par son exécution CI exact-head et par la réobservation externe précédant l’intégration.
+
+
+## 2026-09-20 — PR #95 : décisions suite aux findings Codex P1/P2
+
+Décision P1 : le script Bash réellement généré par `buildS1DeployWorkerScript` fait désormais partie de la surface testée syntaxiquement. Un contrôle textuel du workflow ne suffit pas : le worker produit doit passer `bash -n` afin qu’une erreur de fonction non fermée ne puisse être transformée en job détaché bloqué jusqu’au timeout.
+
+Décision P2 : les outils GitHub gouvernés ne normalisent plus silencieusement un fichier existant vers `100644`. Lors d’un remplacement, le mode du base tree est l’autorité pour les blobs remplaçables `100644`, `100755` et `120000`. `100644` n’est la valeur par défaut que pour un chemin réellement nouveau.
+
+Décision fail-closed : si l’API GitHub signale que le base tree récursif est tronqué, le commit est refusé plutôt que de risquer de traiter un fichier existant comme nouveau. De même, un chemin existant dont le type/mode n’est pas un blob remplaçable est refusé. La sécurité de non-régression des métadonnées Git prime sur la création du commit.
+
+Décision d’intégration : les deux findings sont corrigés sur la branche PR #95 et prouvés par CI #1499, mais les review threads ne sont résolus qu’après validation du HEAD documentaire final. La tâche gouvernée d’intégration reste bloquée jusque-là ; aucun merge ou déploiement n’est anticipé.

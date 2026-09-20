@@ -63,3 +63,12 @@ Le push de fusion a réussi la CI `32535404248`, job `96935241037`, et l'Autodep
 ## Réconciliation documentaire finale post-PR #47
 
 La présente PR #48 ne modifie que `SUIVI.md`, `TODO.md`, `TASKS.md`, `ACTIVITY_LOG.md`, `CHANGELOG.md`, `DECISIONS_LOG.md`, `DEPLOYMENT_PRODUCTION.md` et `PRODUCTION_STATE.json`. La référence fonctionnelle déclarée est le merge PR #47. Après fusion, Live State ne tolère l'écart descendant GitHub/S1 que si `git merge-base --is-ancestor` réussit, si le diff est strictement documentaire et si les références déclarées GitHub et S1 sont identiques. Tout changement de code reste bloquant.
+
+
+## Liaison avec le paquet d’intégration GWC / PR #95
+
+La Phase F-06 réutilise **cette chaîne de production existante** ; elle n’en crée pas une seconde. La réconciliation, le merge, le rollback et la clôture de la candidate sont définis dans `MIGRATION.md > Paquet d’intégration de la candidate GWC / PR #95 — Phase F-06`.
+
+Après le gate final PRECODE : le HEAD final de PR #95 certifie la candidate avant fusion ; GitHub fournit ensuite le `MERGE_SHA` réel ; la CI `main` doit réussir sur ce `MERGE_SHA` ; le déploiement gouverné doit demander exactement ce même SHA ; l’attestation post-déploiement doit enfin lier GitHub main, S1, image OCI, runtime et Live State au SHA réellement déployé.
+
+Le HEAD candidat et le SHA de fusion ne sont pas interchangeables. Si `main` ou le HEAD de PR bouge, les preuves exact-head affectées sont renouvelées. Si la production échoue après fusion, le rollback runtime utilise l’image précédente selon le runbook existant ; GitHub `main` n’est jamais réécrit sur le serveur.

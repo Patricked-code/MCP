@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-15",
+  "blueprint": "GWC-15",
+  "title": "Deployment / exact-SHA evidence",
+  "status": "PASS_WITH_EVIDENCE_CHECKPOINT_PENDING",
+  "session": {
+    "candidateSessionId": "candidate-gwc8-recovery-4d887146-20260919",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "heartbeatCommentId": 5740056645
+  },
+  "baseline": {
+    "sameShaCiGate": "GWC-PRE-C1 / AF-19 option B",
+    "oidcPolicy": "tokenSha===requestedSha unchanged; allowed events unchanged",
+    "s1Worker": "src/deploy/s1Deploy.ts",
+    "deployRoute": "src/deploy/routes.ts",
+    "deployWorkflow": ".github/workflows/mcp-deploy.yml",
+    "liveStateFreshness": "CURRENT && ageSeconds<=maxAgeSeconds",
+    "currentLiveStateMaxAgeSeconds": 60,
+    "od12": "RESOLVED_AUTONOMOUS_EXISTING_FIRST"
+  },
+  "implementation": {
+    "module": "src/governedWorkflow/deploy/index.ts",
+    "tests": [
+      "tests/governedWorkflowDeploy.test.ts",
+      "tests/s1Deploy.test.ts",
+      "tests/deployRoutes.test.ts",
+      "tests/deployWorkflow.test.ts",
+      "tests/deployWorkflowShell.test.ts"
+    ],
+    "contracts": [
+      "GW-44",
+      "GW-45",
+      "GW-46",
+      "GW-47",
+      "GW-48",
+      "GW-49",
+      "GW-50",
+      "GW-51",
+      "GW-52",
+      "GW-53",
+      "GW-54",
+      "GW-55",
+      "GW-56",
+      "GW-57"
+    ],
+    "behavior": [
+      "GW-44..GW-57 reuse the existing CI, OIDC, S1 deploy worker, Live State, governed session and governed task authorities; candidate evaluation does not deploy or mutate S1.",
+      "Immutable CI/deployment evidence is identity-bound rather than expired by arbitrary age; mutable Live State must satisfy its existing freshness policy.",
+      "Push admission carries the exact authorizing MCP CI run to the deployment route and S1 worker; workflow_dispatch remains an explicit manual admission path as preserved by GWC-PRE-C1.",
+      "S1 deployment attestations are emitted as schema version 2 with deterministic attestation id and bounded admission evidence; historical schema version 1 attestations remain readable with admission=null and are never reinterpreted as V2 proof.",
+      "GW-52 requires one exact SHA, one deploy job across GW-47/48/49/50/51, the exact GW-45 CI run referenced by the V2 push attestation, current fully-aligned Live State and no contradictions.",
+      "GW-55 and GW-57 only produce EffectPlans targeting existing mcp_acknowledge_governed_context and mcp_transition_governed_task authorities; GW-57 binds DEPLOYING and runtimeRevision in one governed task transition."
+    ]
+  },
+  "evidence": {
+    "red": {
+      "head": "f7c2b2447537816919d3cfd653f2c5b37e806822",
+      "ciRunNumber": 1412,
+      "ciRunId": 35438784032,
+      "conclusion": "FAILURE_EXPECTED",
+      "failures": 14,
+      "signature": "GW44_TO_GW57_DEPLOY_MODULE_ABSENT"
+    },
+    "firstFullGreen": {
+      "head": "6e92a0fbdc7decc0a8e070a109b25307ac6aab83",
+      "ciRunNumber": 1413,
+      "ciRunId": 35438885853,
+      "conclusion": "SUCCESS",
+      "tests": 566,
+      "passed": 566,
+      "failed": 0
+    },
+    "selfReview": [
+      {
+        "head": "6c08dc8f1043875fad1689a3287a7b9b1d606d41",
+        "ciRunNumber": 1417,
+        "ciRunId": 35439117291,
+        "conclusion": "FAILURE_FIVE_EXPECTED_FINDINGS",
+        "findings": [
+          "Push admission accepted no durable CI reference.",
+          "Deploy workflow did not propagate the authorizing CI run.",
+          "S1 worker emitted only schema_version=1 attestation.",
+          "No V1/V2 attestation parser existed.",
+          "No fail-closed V2 CI-SHA/result validation existed."
+        ]
+      },
+      {
+        "head": "653e28060f5e2ec88b6530fd82dce9d215c2fdcb",
+        "ciRunNumber": 1421,
+        "ciRunId": 35439306994,
+        "conclusion": "FAILURE_TEST_EXPECTATION_ONLY",
+        "finding": "One assertion expected a literal admission value in the printf format instead of the validated shell binding; implementation behavior was correct."
+      },
+      {
+        "head": "b86a015a8bc6775da9bb946f02b24b4f9a89e26e",
+        "ciRunNumber": 1423,
+        "ciRunId": 35439459309,
+        "conclusion": "FAILURE_TWO_REAL_FINDINGS",
+        "findings": [
+          "GW-52 accepted same-SHA evidence mixed across different deployment jobs.",
+          "GW-52 did not bind the attested CI run to the exact GW-45 MainCiProof."
+        ]
+      }
+    ],
+    "finalGreen": {
+      "head": "29e8314a709289d896b9816ed91a870cfb39e6a5",
+      "ciRunNumber": 1425,
+      "ciRunId": 35439543113,
+      "conclusion": "SUCCESS",
+      "tests": 573,
+      "passed": 573,
+      "failed": 0,
+      "discoveredTests": 74,
+      "runnerTests": 73,
+      "dedicatedTests": 1
+    }
+  },
+  "boundaries": {
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deploymentPerformed": false,
+    "runtimeTaskQueueUsed": false,
+    "runtimeLocksUsed": false,
+    "oidcPolicyRelaxed": false,
+    "workflowRunTriggerAdded": false,
+    "secondDeployEngine": false,
+    "secondTaskAuthority": false,
+    "secondSessionAuthority": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete",
+    "releaseRule": "Keep the GWC-15 PRECODE claim ACTIVE until exact-head checkpoint CI succeeds; release only afterward.",
+    "nextWorkItem": "GWC-PRE-E-GWC-16"
+  }
+}

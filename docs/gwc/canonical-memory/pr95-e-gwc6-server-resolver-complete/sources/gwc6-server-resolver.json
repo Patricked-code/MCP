@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "phase": "E",
+  "workItem": "GWC-PRE-E-GWC-6",
+  "blueprint": "GWC-6",
+  "status": "PASS_WITH_EVIDENCE",
+  "session": {
+    "candidateSessionId": "candidate-7afc131430c64c6fe34bcfea",
+    "agentIdentity": "ChatGPT-GPT-5.6-Sol",
+    "resumeCommentId": 5739786779,
+    "heartbeatCommentId": 5739786917
+  },
+  "baseline": {
+    "observedHeadBeforeResume": "5c7177bfd4d5c6d6c03dee543cd76fb36e8da1fa",
+    "initialImplementationHead": "7d7f7d2acc2d79b0b0a8bd268b7d8e6eb4a972d6",
+    "redCiRunNumber": 1243,
+    "redCiRunId": 35420611129,
+    "redConclusion": "FAILURE_EXPECTED"
+  },
+  "od03Resolution": {
+    "status": "RESOLVED_FOR_GWC_6",
+    "policy": [
+      "canonicalize registry serverId only against an explicit bounded canonicalServerIds set",
+      "case variants may resolve only when they normalize to one explicit canonical server identity",
+      "preserve every raw registry serverId as evidence",
+      "unknown or unsupported server aliases remain UNVERIFIED",
+      "an explicit server hint may disambiguate only a canonical server already bound to the resolved project",
+      "environment is part of candidate identity and remains preserved",
+      "serverPath and realPath are evidence only and never become server identity",
+      "project-resolution registry digests and server-registry evidence digests are distinct evidence domains and are not required to be equal unless an explicit contract binding declares that relation",
+      "raw server evidence ordering is deterministic and locale-independent",
+      "resolver is READ_ONLY and never mutates GitRegistry, infers authorization or invokes SSH mutation"
+    ]
+  },
+  "corrections": [
+    {
+      "head": "d616849fecbbb33b8008befe8c1ca9dae38a4c0a",
+      "ciRunNumber": 1255,
+      "ciRunId": 35425305453,
+      "result": "FAILURE_WITH_6_OF_7_PREVIOUS_GWC6_REDS_GREEN",
+      "finding": "FALSE_CROSS_EVIDENCE_DIGEST_COUPLING",
+      "correction": "Removed premature equality checks between ProjectResolution registry/candidate digests and the independent server-registry evidence digests."
+    },
+    {
+      "head": "616fd99398a2f8c0c1c336df6d468ba19f94d46c",
+      "ciRunNumber": 1256,
+      "ciRunId": 35425363952,
+      "result": "GWC6_FUNCTIONAL_GREEN_GLOBAL_FAILURE_WHITESPACE_ONLY",
+      "finding": "LOCALE_DEPENDENT_RAW_SERVER_EVIDENCE_ORDER",
+      "correction": "Replaced localeCompare ordering for raw server aliases with deterministic default code-unit ordering."
+    },
+    {
+      "heads": [
+        "28d0c1e30a9af5c78d3d7328049e4ca5869a2e3f",
+        "087b0a23230c83b6cb1c9069947f48a5d8cc0357"
+      ],
+      "finding": "PREEXISTING_EOF_WHITESPACE_GATE_DRIFT",
+      "correction": "Normalized one trailing blank line in candidateContinuity and one in the shared resolver adapter test file; no behavior changed."
+    }
+  ],
+  "finalGreen": {
+    "head": "087b0a23230c83b6cb1c9069947f48a5d8cc0357",
+    "ciRunNumber": 1258,
+    "ciRunId": 35425465227,
+    "conclusion": "SUCCESS",
+    "checks": [
+      "typecheck",
+      "build",
+      "docs check",
+      "governance tests",
+      "GWC dossier and canonical-memory verifier",
+      "secret scan",
+      "read-only safety tests including all GWC-6 cases",
+      "whitespace diff check"
+    ]
+  },
+  "implementation": {
+    "files": [
+      "src/governedWorkflow/resolvers/server.ts",
+      "tests/governedWorkflowGithubResolverAdapters.test.ts"
+    ],
+    "behavior": [
+      "GW-07 resolves bounded server candidates from current ProjectResolution plus explicit GitRegistry server evidence.",
+      "Canonical identity is selected only from canonicalServerIds; raw aliases remain evidence.",
+      "Multiple canonical server identities return AMBIGUOUS unless a verified bound hint narrows the result.",
+      "Missing/stale registry evidence, unknown aliases and project/mapping mismatch remain fail-closed.",
+      "GW-07 wrapper binds contract version metadata without adding permission, mutation or SSH semantics.",
+      "Repeated identical input and evidence produce an identical semantic result."
+    ],
+    "authorityBoundary": "GitRegistry remains the server-binding authority; ProjectResolution remains the predecessor project authority; GWC-6 is a pure read-only resolver and creates no second registry, authorization authority or SSH mutation path."
+  },
+  "boundaries": {
+    "runtimeTasksCreated": 0,
+    "runtimeLocksUsed": false,
+    "runtimeMcpRequired": false,
+    "mainMutation": false,
+    "s1Mutation": false,
+    "productionMutation": false,
+    "deployment": false,
+    "gitRegistryMutation": false,
+    "sshMutation": false,
+    "authorizationInferred": false,
+    "parallelAuthorityCreated": false
+  },
+  "checkpoint": {
+    "bundle": "docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete",
+    "claimReleaseRule": "Retain the existing GWC-6 branch-local claim until the checkpoint projection passes exact-head CI; release only after that validation.",
+    "nextWorkItemAfterRelease": "GWC-PRE-E-GWC-7"
+  },
+  "nextAction": "Create and validate the GWC-6 canonical checkpoint on the exact branch head. After checkpoint CI succeeds, release the GWC-6 claim and dispatch GWC-PRE-E-GWC-7 without replaying GWC-6."
+}

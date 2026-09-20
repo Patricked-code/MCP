@@ -1,0 +1,75 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-candidate-build-ready-20260918",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_candidate_build_transition",
+      "path": "sources/candidate-build-transition.json",
+      "media_type": "application/json",
+      "bytes": 1542,
+      "sha256": "5bfeda538b01f927b70925540f0693c4db8ae804e8ad8c04a94744d7126d4e65"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_candidate_semantics",
+      "key": "precode.semantic_definition",
+      "claim_type": "fact",
+      "value": "PRECODE is the pre-integration construction of the complete evolved MCP candidate on claude/ecstatic-edison-v1dyt1; it is not documentation-only.",
+      "source_refs": [
+        "src_candidate_build_transition"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_candidate_code",
+      "key": "candidate.branch_code",
+      "claim_type": "fact",
+      "value": "After GWC_ARCHITECTURE_GATE_PASS, branch-local candidate code/tests/workflows/migrations are allowed and expected.",
+      "source_refs": [
+        "src_candidate_build_transition"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_live_boundary",
+      "key": "candidate.live_boundary",
+      "claim_type": "fact",
+      "value": "Runtime Tasks/claims/locks, main integration, S1 mutation and production deployment remain forbidden until FINAL_PRECODE_VERSION_ACCEPTED.",
+      "source_refs": [
+        "src_candidate_build_transition"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_next_work",
+      "key": "candidate.next_work_item",
+      "claim_type": "fact",
+      "value": "GWC-PRE-B-01",
+      "source_refs": [
+        "src_candidate_build_transition"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_final_exit",
+      "key": "candidate.final_exit",
+      "claim_type": "fact",
+      "value": "FINAL_PRECODE_VERSION_ACCEPTED / EVOLVED_CANDIDATE_READY_FOR_INTEGRATION",
+      "source_refs": [
+        "src_candidate_build_transition"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": [
+    {
+      "edge_id": "sup_precode_doc_only",
+      "superseded_claim_id": "clm_runtime_frozen",
+      "superseding_claim_id": "clm_candidate_code",
+      "reason": "Clarifies that the previous runtime-frozen claim applied to live integration, not to code construction on the Claude candidate branch."
+    }
+  ]
+}

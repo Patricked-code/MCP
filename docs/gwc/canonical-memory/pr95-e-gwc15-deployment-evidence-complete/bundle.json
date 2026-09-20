@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "bundle_kind": "imported_memory",
+  "bundle_id": "bnd_mcp-pr95-e-gwc15-deployment-evidence-complete-20260919",
+  "scope": "github:patricked-code/mcp/pr95",
+  "sources": [
+    {
+      "source_id": "src_gwc15_deployment_evidence",
+      "path": "sources/gwc15-deployment-evidence.json",
+      "media_type": "application/json",
+      "bytes": 5457,
+      "sha256": "577b68750ece7a32f553143cba78240554ebd122a53cb376492c0f393c721e41"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "clm_gwc15_pass",
+      "key": "candidate.phase_e.gwc_15",
+      "claim_type": "fact",
+      "value": "GWC-PRE-E-GWC-15 is PASS_WITH_EVIDENCE pending checkpoint validation. RED CI #1412 proved GW-44..GW-57 absent; first GREEN #1413 succeeded; self-review RED #1417 exposed missing durable deploy admission/attestation evidence; RED #1423 exposed cross-job and cross-CI proof mixing; final CI #1425 succeeded with 573/573 tests.",
+      "source_refs": [
+        "src_gwc15_deployment_evidence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc15_attestation",
+      "key": "candidate.gwc15.deployment_attestation",
+      "claim_type": "fact",
+      "value": "S1 deploy attestation V2 records a deterministic attestation id and bounded admission evidence. Push admission is bound to the exact successful MCP CI run and SHA; workflow_dispatch remains an explicit manual path. Historical V1 attestations remain readable and are never reinterpreted as V2 proof.",
+      "source_refs": [
+        "src_gwc15_deployment_evidence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc15_exact_proof",
+      "key": "candidate.gwc15.exact_deployment_proof",
+      "claim_type": "fact",
+      "value": "GW-52 requires one exact SHA, one deploy job across GW-47..GW-51, the exact GW-45 CI run referenced by the V2 push attestation, current Live State under its owning freshness policy, FULLY_ALIGNED state and zero contradictions.",
+      "source_refs": [
+        "src_gwc15_deployment_evidence"
+      ],
+      "approval_eligible": false
+    },
+    {
+      "claim_id": "clm_gwc15_next",
+      "key": "candidate.next_action",
+      "claim_type": "fact",
+      "value": "Keep the GWC-15 branch-local claim ACTIVE until this checkpoint passes exact-head CI. After SUCCESS, release GWC-15 and dispatch GWC-PRE-E-GWC-16 without replaying GWC-15.",
+      "source_refs": [
+        "src_gwc15_deployment_evidence"
+      ],
+      "approval_eligible": false
+    }
+  ],
+  "supersessions": []
+}

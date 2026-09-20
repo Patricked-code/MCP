@@ -53,6 +53,9 @@ jobs:
       - name: Governance tests
         run: npm run test:governance
 
+      - name: GWC dossier check
+        run: npm run gwc:verify
+
       - name: Secret scan
         run: npm run lint:secrets --if-present
 

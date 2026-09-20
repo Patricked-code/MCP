@@ -303,13 +303,25 @@ test('les contrats historiques restent exacts quand registerScopedWriteTools re�
     await readFile('tests/fixtures/existing-tool-contracts-v1.json', 'utf8')
   ) as Record<string, unknown>;
   const deps = dependencies();
+  const undecorated = captureToolContracts((server) => registerScopedWriteTools(server));
   const actual = captureToolContracts((server) => registerScopedWriteTools(
     decorateScopedWriteServer(server, deps.value)
   ));
 
   for (const name of WRITE_SCOPED_TOOL_NAMES) {
     assert.ok(actual[name], `Outil WRITE décoré absent : ${name}`);
-    assert.deepEqual(actual[name], fixture[name], `Contrat WRITE décoré modifié : ${name}`);
+    assert.deepEqual(
+      actual[name],
+      undecorated[name],
+      `Le décorateur a modifié le contrat WRITE courant : ${name}`
+    );
+    if (Object.hasOwn(fixture, name)) {
+      assert.deepEqual(
+        actual[name],
+        fixture[name],
+        `Contrat WRITE historique modifié : ${name}`
+      );
+    }
   }
   assert.deepEqual(deps.counts(), { evaluates: 0, reconciles: 0 });
   assert.deepEqual(deps.decisions, []);
