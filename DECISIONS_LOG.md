@@ -939,3 +939,13 @@ Décision d’autorité : la mémoire canonique reste `CONTINUITY_AND_PROVENANCE
 Décision de bootstrap agent : un nouvel agent réobserve d’abord `main`, Live State et la Work Queue. Il reprend une tâche compatible si elle existe ; si la queue n’a aucun travail exécutable, une nouvelle tâche n’apparaît qu’après réconciliation d’une intention explicite classée `NEW_TASK`.
 
 Décision de non-régression : les règles PRECODE PR #95 sont conservées pour interpréter l’historique mais marquées comme non courantes. Aucun claim candidate, candidateSession ou work item PRECODE n’est ressuscité après intégration terminale.
+
+## 2026-09-20 — GWC : décision de réconciliation terminale Markdown-only
+
+Décision : ne pas réécrire le bundle canonique post-intégration après son merge. Il décrit correctement le baseline attesté au moment de sa création et impose déjà la réobservation des autorités live.
+
+Décision Live State : PR #97 contient des JSON canoniques et ne peut pas bénéficier du waiver descendant docs-only. La réconciliation terminale utilise donc uniquement des fichiers Markdown et déclare `21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15` comme baseline courant avant son propre merge.
+
+Décision anti-auto-référence : le SHA du futur merge n'est jamais prédit ni écrit dans la branche. Après fusion, le moteur doit prouver que le nouveau `main` est un descendant de `21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15` dont le delta est strictement docs-only.
+
+Décision de terminalité : seul Operational Memory peut ensuite faire passer `TASK-20260920-002` à `VERIFYING` puis `DONE` après Live State `FULLY_ALIGNED`; cette documentation ne pré-déclare pas la clôture.
