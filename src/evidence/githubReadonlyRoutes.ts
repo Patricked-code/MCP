@@ -11,6 +11,8 @@ export type GithubReadonlyEvidenceTarget = 's1' | 's2';
 export type GithubReadonlyEvidenceProbe =
   | 'mcp_git_status'
   | 'stablecoin_frontend_git_status'
+  | 'stablecoin_backend_git_status'
+  | 'stablecoin_runtime_status'
   | 'server_disk'
   | 'docker_status';
 
@@ -55,12 +57,21 @@ function exactRequest(value: unknown): {
   if (
     probe !== 'mcp_git_status'
     && probe !== 'stablecoin_frontend_git_status'
+    && probe !== 'stablecoin_backend_git_status'
+    && probe !== 'stablecoin_runtime_status'
     && probe !== 'server_disk'
     && probe !== 'docker_status'
   ) return null;
   if (typeof requestId !== 'string' || !REQUEST_ID_PATTERN.test(requestId)) return null;
   if (probe === 'mcp_git_status' && target !== 's1') return null;
-  if (probe === 'stablecoin_frontend_git_status' && target !== 's2') return null;
+  if (
+    (
+      probe === 'stablecoin_frontend_git_status'
+      || probe === 'stablecoin_backend_git_status'
+      || probe === 'stablecoin_runtime_status'
+    )
+    && target !== 's2'
+  ) return null;
 
   return { sha, target, probe, requestId };
 }
@@ -77,6 +88,59 @@ printf 'origin_fetch=%s\\n' "$(printf '%s' "$origin_url" | sed -E 's#(https?://)
 printf 'origin_push=%s\\n' "$(printf '%s' "$push_url" | sed -E 's#(https?://)[^/@[:space:]]+@#\\1***@#g')"`;
 }
 
+function optionalRedactedGitStatusCommand(path: string): string {
+  return `set -euo pipefail
+path='${path}'
+printf 'path=%s\\n' "$path"
+if [ ! -d "$path" ]; then
+  printf 'path_exists=false\\n'
+  exit 0
+fi
+printf 'path_exists=true\\n'
+if ! git -C "$path" rev-parse --git-dir >/dev/null 2>&1; then
+  printf 'git_repo=false\\n'
+  exit 0
+fi
+printf 'git_repo=true\\n'
+cd "$path"
+printf 'branch=%s\\n' "$(git branch --show-current)"
+printf 'head=%s\\n' "$(git rev-parse HEAD)"
+printf 'working_tree_changes=%s\\n' "$(git status --porcelain=v1 --untracked-files=all | wc -l | tr -d ' ')"
+origin_url="$(git remote get-url origin 2>/dev/null || true)"
+push_url="$(git remote get-url --push origin 2>/dev/null || true)"
+printf 'origin_fetch=%s\\n' "$(printf '%s' "$origin_url" | sed -E 's#(https?://)[^/@[:space:]]+@#\\1***@#g')"
+printf 'origin_push=%s\\n' "$(printf '%s' "$push_url" | sed -E 's#(https?://)[^/@[:space:]]+@#\\1***@#g')"`;
+}
+
+function stablecoinRuntimeStatusCommand(): string {
+  return `set -euo pipefail
+frontend='/var/www/vhosts/chainsolutions.fr/stablecoin.chainsolutions.fr/stablecoin'
+backend='/var/www/vhosts/chainsolutions.fr/api.stablecoin.chainsolutions.fr'
+printf 'frontend_path_exists=%s\\n' "$([ -d "$frontend" ] && printf true || printf false)"
+printf 'backend_path_exists=%s\\n' "$([ -d "$backend" ] && printf true || printf false)"
+printf 'processes_begin\\n'
+for pid in $(pgrep -f 'Passenger|passenger|node' 2>/dev/null | head -n 80 || true); do
+  [ "$pid" = "$$" ] && continue
+  comm="$(cat "/proc/$pid/comm" 2>/dev/null || true)"
+  cwd="$(readlink -f "/proc/$pid/cwd" 2>/dev/null || true)"
+  case "$comm:$cwd" in
+    *Passenger*|*passenger*|*stablecoin*)
+      printf 'pid=%s comm=%s cwd=%s\\n' "$pid" "$(printf '%s' "$comm" | tr '[:space:]' '_')" "$cwd"
+      ;;
+  esac
+done
+printf 'processes_end\\n'
+for url in \
+  'https://stablecoin.chainsolutions.fr/' \
+  'https://api.stablecoin.chainsolutions.fr/' \
+  'https://api.stablecoin.chainsolutions.fr/health'
+do
+  code="$(curl --silent --show-error --location --max-time 10 --output /dev/null --write-out '%{http_code}' "$url" 2>/dev/null || true)"
+  [ -n "$code" ] || code='000'
+  printf 'http_status=%s %s\\n' "$code" "$url"
+done`;
+}
+
 export function buildGithubReadonlyEvidenceCommand(
   target: GithubReadonlyEvidenceTarget,
   probe: GithubReadonlyEvidenceProbe
@@ -88,6 +152,14 @@ export function buildGithubReadonlyEvidenceCommand(
     return redactedGitStatusCommand(
       '/var/www/vhosts/chainsolutions.fr/stablecoin.chainsolutions.fr/stablecoin'
     );
+  }
+  if (probe === 'stablecoin_backend_git_status' && target === 's2') {
+    return optionalRedactedGitStatusCommand(
+      '/var/www/vhosts/chainsolutions.fr/api.stablecoin.chainsolutions.fr'
+    );
+  }
+  if (probe === 'stablecoin_runtime_status' && target === 's2') {
+    return stablecoinRuntimeStatusCommand();
   }
   if (probe === 'server_disk') {
     return 'set -euo pipefail; df -h /';
