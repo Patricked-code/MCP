@@ -197,3 +197,34 @@ test('Phase F-03 RED: every canonical negative class fails closed or follows an 
   assert.equal(report.mutationPerformed, false);
   assert.equal(report.liveMutationDispatched, false);
 });
+
+
+test('Phase F-04 RED: governed candidate stays parameter-driven across alternate target contexts', async () => {
+  const { runCrossContextUniversalityAudit } = await harness();
+  const report = await runCrossContextUniversalityAudit();
+
+  assert.equal(report.status, 'PASS');
+  assert.deepEqual(report.forbiddenHardDependencies, [
+    'Patricked-code/MCP',
+    'Stablecoin',
+    'AfricaFunds',
+    'FIXED_SERVER',
+    'FIXED_BRANCH',
+    'FIXED_DOMAIN'
+  ]);
+  assert.deepEqual(report.violations, []);
+  assert.equal(report.contexts.length, 2);
+  assert.equal(report.contexts.every((entry: any) => entry.status === 'PASS'), true);
+  assert.equal(report.contexts.every((entry: any) => entry.repositoryParameterPreserved === true), true);
+  assert.equal(report.contexts.every((entry: any) => entry.projectParameterPreserved === true), true);
+  assert.equal(report.contexts.every((entry: any) => entry.serverParameterPreserved === true), true);
+  assert.equal(report.contexts.every((entry: any) => entry.branchParameterPreserved === true), true);
+  assert.equal(report.contexts.every((entry: any) => entry.domainParameterPreserved === true), true);
+  assert.notEqual(report.contexts[0]?.repository, report.contexts[1]?.repository);
+  assert.notEqual(report.contexts[0]?.projectUid, report.contexts[1]?.projectUid);
+  assert.notEqual(report.contexts[0]?.serverId, report.contexts[1]?.serverId);
+  assert.notEqual(report.contexts[0]?.branch, report.contexts[1]?.branch);
+  assert.notEqual(report.contexts[0]?.domain, report.contexts[1]?.domain);
+  assert.equal(report.mutationPerformed, false);
+  assert.equal(report.liveMutationDispatched, false);
+});
