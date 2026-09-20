@@ -814,3 +814,13 @@ Mise à jour : 2026-07-09T20:08:09Z
 - `DEPLOYMENT_PRODUCTION.md` distingue explicitement HEAD candidat, SHA de fusion et SHA de déploiement tout en conservant la chaîne exact-SHA existante.
 - Aucun nouveau workflow runtime, store, autorité, outil MCP, déploiement, merge `main` ou mutation S1/production.
 - Précision F-06 : séparation explicite de `PACKAGE_HEAD_F06` et du `CANDIDATE_HEAD` final afin que le checkpoint terminal soit certifié par CI/réobservation sans auto-référence de SHA.
+
+
+## 2026-09-20 — PR #95 : correctifs de review P1/P2 avant intégration
+
+- Corrige le worker de déploiement S1 généré afin que `write_attestation()` soit syntaxiquement fermé ; ajout d’un test `bash -n` sur le script généré.
+- Corrige `githubLifecycle` pour préserver le mode Git d’un blob existant lors d’un remplacement : `100644`, `100755` et `120000`.
+- Un nouveau fichier régulier reste créé en `100644`.
+- Un base tree récursif signalé `truncated` est refusé avec `GITHUB_BASE_TREE_TRUNCATED`; un chemin existant non remplaçable comme blob est refusé.
+- Preuve TDD : CI #1497 RED avec exactement 3 échecs attendus, puis CI #1499 GREEN avec 604/604 tests.
+- Aucun merge de `main`, déploiement ou changement direct sur S1 n’est inclus dans ces correctifs.
