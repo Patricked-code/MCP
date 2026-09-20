@@ -151,6 +151,29 @@ test('Stablecoin probe maps only to the documented S2 checkout', async () => {
   });
 });
 
+
+
+test('Stablecoin backend probe is bounded to the documented API path', () => {
+  const command = buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_git_status');
+  assert.match(
+    command,
+    /\/var\/www\/vhosts\/chainsolutions\.fr\/api\.stablecoin\.chainsolutions\.fr/
+  );
+  assert.match(command, /path_exists=/);
+  assert.match(command, /git_repo=/);
+});
+
+test('Stablecoin runtime probe reads only paths, process identity and HTTP status', () => {
+  const command = buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_runtime_status');
+  assert.match(command, /frontend_path_exists=/);
+  assert.match(command, /backend_path_exists=/);
+  assert.match(command, /pgrep -f 'Passenger\|passenger\|node'/);
+  assert.match(command, /http_status=/);
+  assert.match(command, /https:\/\/stablecoin\.chainsolutions\.fr\//);
+  assert.match(command, /https:\/\/api\.stablecoin\.chainsolutions\.fr\/health/);
+  assert.doesNotMatch(command, /printenv|env\s|\/proc\/[^\s]+\/environ/);
+});
+
 test('probe and target combinations are fail-closed', async () => {
   await withServer(dependencies(), async (baseUrl) => {
     const response = await fetch(`${baseUrl}/evidence/github/readonly`, {
@@ -162,7 +185,7 @@ test('probe and target combinations are fail-closed', async () => {
       body: JSON.stringify({
         sha: SHA,
         target: 's1',
-        probe: 'stablecoin_frontend_git_status',
+        probe: 'stablecoin_runtime_status',
         requestId: 'readonly-001'
       })
     });
@@ -174,6 +197,8 @@ test('hardcoded evidence commands contain no mutation primitives', () => {
   const commands = [
     buildGithubReadonlyEvidenceCommand('s1', 'mcp_git_status'),
     buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_frontend_git_status'),
+    buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_git_status'),
+    buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_runtime_status'),
     buildGithubReadonlyEvidenceCommand('s1', 'server_disk'),
     buildGithubReadonlyEvidenceCommand('s2', 'docker_status')
   ];
