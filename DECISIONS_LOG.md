@@ -904,3 +904,5 @@ Décision de drift : un drift sans recouvrement peut être reconcilié sur la br
 Décision de rollback : après merge, GitHub reste immuable et toute annulation passe par PR de revert/fix-forward. Un échec runtime utilise le rollback d’image existant sans réécriture Git ; l’état reste non terminal jusqu’à nouvelle attestation cohérente.
 
 Décision de clôture : aucun merge ou job de déploiement seul ne suffit à produire `DONE`. La terminalité exige CI main, déploiement exact `MERGE_SHA`, attestation S1/OCI/runtime/Live State, santé HTTP/OAuth/MCP, documentation alignée, absence de locks contradictoires et checkpoint/fermeture des éventuelles autorités Task/Session utilisées.
+
+Décision de checkpoint final : F-06 distingue le `PACKAGE_HEAD_F06`, validable et enregistrable avant clôture, du `CANDIDATE_HEAD`, qui est le HEAD de PR réobservé après le commit final de projection. Un commit ne tente jamais de certifier son propre SHA dans son contenu ; le HEAD final est certifié par son exécution CI exact-head et par la réobservation externe précédant l’intégration.
