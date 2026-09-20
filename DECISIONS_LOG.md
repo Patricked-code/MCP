@@ -917,3 +917,15 @@ Décision P2 : les outils GitHub gouvernés ne normalisent plus silencieusement 
 Décision fail-closed : si l’API GitHub signale que le base tree récursif est tronqué, le commit est refusé plutôt que de risquer de traiter un fichier existant comme nouveau. De même, un chemin existant dont le type/mode n’est pas un blob remplaçable est refusé. La sécurité de non-régression des métadonnées Git prime sur la création du commit.
 
 Décision d’intégration : les deux findings sont corrigés sur la branche PR #95 et prouvés par CI #1499, mais les review threads ne sont résolus qu’après validation du HEAD documentaire final. La tâche gouvernée d’intégration reste bloquée jusque-là ; aucun merge ou déploiement n’est anticipé.
+
+## 2026-09-20 — PR #95 : décisions de clôture documentaire GW-59→GW-65
+
+Décision de baseline : le SHA fonctionnel attesté `9da845822e122cc67fc86ad90243d4e7d6a6d4f4` est la référence déclarée commune GitHub/S1/runtime pour la réconciliation documentaire. Le futur merge docs-only produira nécessairement un SHA descendant différent ; Live State doit utiliser sa règle existante `documentation_descendant_scope=docs_only`, jamais inventer à l’avance le SHA de merge.
+
+Décision d’historique : aucune preuve RED/GREEN, aucun ancien checkpoint et aucun ancien SHA n’est supprimé ou réécrit. Le nouvel état courant est placé avant l’historique dans `SUIVI.md` afin que le collecteur canonique lise d’abord le baseline actuel.
+
+Décision de production state : seuls les champs décrivant l’état courant sont actualisés et les preuves PR #95 sont ajoutées de manière additive. Les jalons historiques PR #42/#43/#45/#47/#49/#52 restent conservés.
+
+Décision de déploiement : le Governed Deploy #44 attempt 2 est la réattestation standard du pipeline après bootstrap, sur le même SHA exact `9da845822e122cc67fc86ad90243d4e7d6a6d4f4`. La PR documentaire suivra ensuite son autodeploy normal `GW-64`; aucun déploiement manuel parallèle ne sera créé.
+
+Décision de scope : la branche `mcp/gwc-documentation-reconciliation-20260920` reste strictement docs-only. Tout changement non documentaire invalide `GW-59→GW-65` et bloque le merge.

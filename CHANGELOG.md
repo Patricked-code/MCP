@@ -824,3 +824,14 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Un base tree récursif signalé `truncated` est refusé avec `GITHUB_BASE_TREE_TRUNCATED`; un chemin existant non remplaçable comme blob est refusé.
 - Preuve TDD : CI #1497 RED avec exactement 3 échecs attendus, puis CI #1499 GREEN avec 604/604 tests.
 - Aucun merge de `main`, déploiement ou changement direct sur S1 n’est inclus dans ces correctifs.
+
+## 2026-09-20 — PR #95 : intégration, réattestation standard et réconciliation documentaire
+
+- PR #95 fusionnée sur `main` avec merge SHA exact `9da845822e122cc67fc86ad90243d4e7d6a6d4f4`.
+- MCP CI post-merge #1503 / run `35515690847` : SUCCESS.
+- Le premier Governed Deploy #44 a exposé un mismatch de bootstrap entre l’ancien runtime et le nouveau payload `push_ci_gate`; aucune mutation S1 n’avait commencé à cet échec.
+- Bootstrap one-shot documenté exécuté : fast-forward S1 exact-SHA, typecheck, build, restart, puis GitHub/S1/runtime alignés.
+- Governed Deploy #44 relancé en failed-jobs-only après activation du nouveau runtime : attempt 2 / job `106106391469` SUCCESS, étape `Deploy exact main SHA through MCP` SUCCESS.
+- Live State 257 confirme GitHub↔S1 et runtime ALIGNED ; seule contradiction restante avant cette PR : `DOCUMENTATION_DRIFT`.
+- Réconciliation `GW-59→GW-65` strictement docs-only : mise en tête de l’état courant dans `SUIVI.md`, mise à jour des champs courants de `PRODUCTION_STATE.json`, conservation intégrale des preuves historiques.
+- Aucun changement de code runtime, workflow, script, test ou politique dans cette branche documentaire.
