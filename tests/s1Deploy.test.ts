@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 
 import {
@@ -244,4 +245,11 @@ test('GWC-15 self-review: V2 attestation parser rejects unbounded result and cro
     ),
     /deploy_attestation_ci_sha_mismatch/
   );
+});
+
+
+test('PR95 review P1: generated deploy worker passes bash -n', () => {
+  const script = buildS1DeployWorkerScript(JOB_ID, SHA);
+  const result = spawnSync('bash', ['-n'], { input: script, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr || result.stdout || 'bash -n failed');
 });
