@@ -1,5 +1,20 @@
 # SUIVI.md
 
+## 2026-09-21 — Stablecoin GitHub-first bounded WRITE candidate
+
+- Intention explicite : poursuivre la réconciliation Stablecoin et autoriser le fast-forward S2 sans dépendre d'une exposition interactive de `wealthtech_ssh_bridge`.
+- Préflight live S2 : workflow read-only run `35568492676` = SUCCESS ; frontend `main@6216755d318677ed9a56c36731a57531d02bf751`, worktree propre, origin fetch/push `https://github.com/Patricked-code/Stablecoin.git`.
+- Stablecoin GitHub cible observée : `Patricked-code/Stablecoin/main@4e946bd523acfbef3d08d9ff7b0b3dd3f074c3a3`, 58 commits devant S2, zéro divergence et zéro fichier applicatif dans le diff observé.
+- Branche MCP : `mcp/stablecoin-github-first-fast-forward-20260921`, issue de `main@bb81baf7f8424bcb32c3e87b22018335461b1189`.
+- TDD RED : MCP CI #1594 / run `35568803574` = FAILURE avec exactement 3 tests nouveaux en échec pour module/export/workflow absents ; les tests historiques restent verts.
+- GREEN candidat : MCP CI #1599 / run `35569214954` = SUCCESS, y compris typecheck, build, docs, governance, GWC, secret scan, read-only safety et whitespace.
+- Nouvelle surface : GitHub issue/workflow dédié → OIDC dédié → endpoint `/deploy/github/stablecoin/s2/fast-forward` → `runGuardedCommand('s2')`.
+- Le chemin WRITE accepte uniquement `expectedServerSha + targetSha + requestId`; aucun shell libre, aucune clé GitHub, aucun fallback write, aucun build/restart.
+- Garde-fous : branche `main`, worktree propre, origin canonique, HEAD attendu exact, target distant exact, ancestry fast-forward, allowlist stricte des fichiers non applicatifs, refus si `application_files != 0`, postconditions Git + HTTP bornées.
+- Le fallback `GITHUB_ACTION_READONLY_EVIDENCE` reste strictement non-mutant ; le WRITE est une identité OIDC et un workflow séparés.
+- Aucune mutation Stablecoin S2 n'a encore été exécutée depuis cette branche candidate.
+- NEXT_ACTION : finaliser documentation, ouvrir/revoir la PR exact-head, fusionner après CI/review verts, déployer le MCP exact-SHA sur S1, puis utiliser le nouveau workflow pour le fast-forward Stablecoin S2 et réattester le runtime.
+
 ## 2026-09-20 — GWC CANONICAL HANDOFF — réconciliation documentaire terminale
 
 - GitHub main : `21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15`.
