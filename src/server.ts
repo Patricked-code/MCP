@@ -29,9 +29,11 @@ import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from '
 import { createGithubDeployRouter } from './deploy/routes.js';
 import {
   verifyGithubOidcToken,
-  verifyGithubReadonlyEvidenceOidcToken
+  verifyGithubReadonlyEvidenceOidcToken,
+  verifyGithubStablecoinFastForwardOidcToken
 } from './deploy/githubOidc.js';
 import { createGithubReadonlyEvidenceRouter } from './evidence/githubReadonlyRoutes.js';
+import { createStablecoinFastForwardRouter } from './stablecoin/githubFastForward.js';
 import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
 import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js';
 import {
@@ -388,6 +390,15 @@ export async function startHttpServer(): Promise<void> {
     runRead: async (target, command) => (
       runReadOnlyCommand(target, command, 15_000, 32_768)
     )
+  }));
+  app.use(createStablecoinFastForwardRouter({
+    verifyOidc: verifyGithubStablecoinFastForwardOidcToken,
+    writeEnabled: () => env.ENABLE_WRITE_TOOLS,
+    runWrite: async (command) => runGuardedCommand('s2', command, {
+      intent: 'github_oidc_stablecoin_fast_forward',
+      timeoutMs: 120_000,
+      maxOutputBytes: 32_768
+    })
   }));
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: false, limit: '64kb' }));
