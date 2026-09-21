@@ -1,0 +1,221 @@
+name: Stablecoin Bounded Fast Forward
+
+on:
+  issues:
+    types:
+      - opened
+  workflow_dispatch:
+    inputs:
+      expected_server_sha:
+        description: Exact current Stablecoin S2 revision
+        required: true
+        type: string
+      target_sha:
+        description: Exact Stablecoin GitHub main revision
+        required: true
+        type: string
+      request_id:
+        description: Bounded correlation id
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+  id-token: write
+
+jobs:
+  fast_forward:
+    if: github.event_name == 'workflow_dispatch' || github.event.issue.title == 'MCP_STABLECOIN_FAST_FORWARD_REQUEST'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Authorize GitHub actor
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUEST_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          response="$(curl --fail --silent --show-error --max-time 10 \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/collaborators/${REQUEST_ACTOR}/permission")"
+          permission="$(printf '%s' "$response" | node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if(Buffer.byteLength(raw)>32768) process.exit(2); const body=JSON.parse(raw); process.stdout.write(String(body.permission||''));")"
+          case "$permission" in
+            admin|maintain|write) ;;
+            *) exit 13 ;;
+          esac
+
+      - name: Validate bounded request
+        id: request
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          DISPATCH_EXPECTED_SERVER_SHA: ${{ inputs.expected_server_sha }}
+          DISPATCH_TARGET_SHA: ${{ inputs.target_sha }}
+          DISPATCH_REQUEST_ID: ${{ inputs.request_id }}
+        run: |
+          set -euo pipefail
+          node <<'NODE' >> "$GITHUB_OUTPUT"
+          const eventName = process.env.EVENT_NAME;
+          let request;
+          if (eventName === 'workflow_dispatch') {
+            request = {
+              schemaVersion: 1,
+              expectedServerSha: process.env.DISPATCH_EXPECTED_SERVER_SHA,
+              targetSha: process.env.DISPATCH_TARGET_SHA,
+              requestId: process.env.DISPATCH_REQUEST_ID
+            };
+          } else {
+            const raw = process.env.ISSUE_BODY || '';
+            if (Buffer.byteLength(raw, 'utf8') > 4096) process.exit(20);
+            try { request = JSON.parse(raw); } catch { process.exit(21); }
+          }
+
+          const keys = Object.keys(request || {}).sort();
+          if (JSON.stringify(keys) !== JSON.stringify([
+            'expectedServerSha','requestId','schemaVersion','targetSha'
+          ])) process.exit(22);
+          if (request.schemaVersion !== 1) process.exit(23);
+          if (!/^[0-9a-f]{40}$/.test(request.expectedServerSha || '')) process.exit(24);
+          if (!/^[0-9a-f]{40}$/.test(request.targetSha || '')) process.exit(25);
+          if (request.expectedServerSha === request.targetSha) process.exit(26);
+          if (!/^[A-Za-z0-9._-]{8,80}$/.test(request.requestId || '')) process.exit(27);
+
+          process.stdout.write('expected_server_sha=' + request.expectedServerSha + '\n');
+          process.stdout.write('target_sha=' + request.targetSha + '\n');
+          process.stdout.write('request_id=' + request.requestId + '\n');
+          process.stdout.write('issue_number=' + (process.env.ISSUE_NUMBER || '') + '\n');
+          NODE
+
+      - name: Execute bounded fast forward
+        id: execute
+        shell: bash
+        env:
+          EXPECTED_SERVER_SHA: ${{ steps.request.outputs.expected_server_sha }}
+          TARGET_SHA: ${{ steps.request.outputs.target_sha }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          MCP_BASE_URL: https://mcp.wealthtechinnovations.com
+          MCP_OIDC_AUDIENCE: https://mcp.wealthtechinnovations.com/deploy/github/stablecoin/s2
+        run: |
+          set -euo pipefail
+
+          get_oidc() {
+            if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] || [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
+              return 31
+            fi
+            separator='?'
+            case "$ACTIONS_ID_TOKEN_REQUEST_URL" in
+              *\?*) separator='&' ;;
+            esac
+            encoded_audience="$(node -e "process.stdout.write(encodeURIComponent(process.env.MCP_OIDC_AUDIENCE || ''))")"
+            response="$(curl --fail --silent --show-error --max-time 10 \
+              --header "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+              "${ACTIONS_ID_TOKEN_REQUEST_URL}${separator}audience=${encoded_audience}")"
+            printf '%s' "$response" | node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if(Buffer.byteLength(raw,'utf8')>32768) process.exit(1); const body=JSON.parse(raw); if(!body||typeof body.value!=='string'||body.value.length<32||body.value.length>16384) process.exit(1); process.stdout.write(body.value);"
+          }
+
+          OIDC_TOKEN="$(get_oidc)"
+          printf '::add-mask::%s\n' "$OIDC_TOKEN"
+          REQUEST_BODY="$(GITHUB_SHA="$GITHUB_SHA" EXPECTED_SERVER_SHA="$EXPECTED_SERVER_SHA" TARGET_SHA="$TARGET_SHA" REQUEST_ID="$REQUEST_ID" node -e "const sha=process.env.GITHUB_SHA; const expectedServerSha=process.env.EXPECTED_SERVER_SHA; const targetSha=process.env.TARGET_SHA; const requestId=process.env.REQUEST_ID; process.stdout.write(JSON.stringify({sha,expectedServerSha,targetSha,requestId}));")"
+
+          response_file="$RUNNER_TEMP/stablecoin-fast-forward-response.json"
+          HTTP_STATUS="$(curl --silent --show-error --max-time 120 \
+            --request POST \
+            --header "Authorization: Bearer ${OIDC_TOKEN}" \
+            --header 'Content-Type: application/json' \
+            --data "$REQUEST_BODY" \
+            --output "$response_file" \
+            --write-out '%{http_code}' \
+            "${MCP_BASE_URL}/deploy/github/stablecoin/s2/fast-forward")"
+          unset OIDC_TOKEN REQUEST_BODY
+
+          RESPONSE="$(cat "$response_file")"
+          rm -f "$response_file"
+
+          HTTP_STATUS="$HTTP_STATUS" RESPONSE="$RESPONSE" REQUEST_ID="$REQUEST_ID" node <<'NODE' >> "$GITHUB_OUTPUT"
+          const raw = process.env.RESPONSE || '';
+          if (Buffer.byteLength(raw, 'utf8') > 4096) process.exit(40);
+          let body;
+          try { body = JSON.parse(raw); } catch { process.exit(41); }
+          const status = Number(process.env.HTTP_STATUS);
+          if (status !== 200) {
+            const reasons = new Set([
+              'repository_missing','wrong_branch','dirty_worktree','remote_mismatch',
+              'server_head_mismatch','target_sha_mismatch','non_fast_forward',
+              'fast_forward_failed','application_diff_detected','postcondition_failed',
+              'preflight_health_failed','postflight_health_failed','write_transport_failed',
+              'write_failed','attestation_invalid'
+            ]);
+            if (
+              !body
+              || !['stablecoin_fast_forward_rejected','stablecoin_fast_forward_failed'].includes(body.error)
+              || !reasons.has(body.reasonCode)
+            ) process.exit(42);
+            process.stderr.write(
+              'Stablecoin bounded fast forward rejected: http='
+              + status
+              + ' reasonCode='
+              + body.reasonCode
+              + '\n'
+            );
+            process.exit(43);
+          }
+
+          if (
+            !body
+            || body.schemaVersion !== 1
+            || body.requestId !== process.env.REQUEST_ID
+            || body.status !== 'succeeded'
+            || !/^[0-9a-f]{40}$/.test(body.serverBefore || '')
+            || !/^[0-9a-f]{40}$/.test(body.serverAfter || '')
+            || !/^[0-9a-f]{40}$/.test(body.targetSha || '')
+            || body.serverAfter !== body.targetSha
+            || body.applicationFiles !== 0
+            || !Number.isSafeInteger(body.changedFiles)
+          ) process.exit(44);
+
+          for (const key of ['frontendHttp','apiRootHttp','apiHealthHttp']) {
+            if (!Number.isSafeInteger(body[key]) || body[key] < 100 || body[key] > 599) process.exit(45);
+          }
+
+          process.stdout.write('status=succeeded\n');
+          process.stdout.write('server_before=' + body.serverBefore + '\n');
+          process.stdout.write('server_after=' + body.serverAfter + '\n');
+          process.stdout.write('target_sha=' + body.targetSha + '\n');
+          process.stdout.write('changed_files=' + body.changedFiles + '\n');
+          process.stdout.write('application_files=0\n');
+          process.stdout.write('frontend_http=' + body.frontendHttp + '\n');
+          process.stdout.write('api_root_http=' + body.apiRootHttp + '\n');
+          process.stdout.write('api_health_http=' + body.apiHealthHttp + '\n');
+          NODE
+
+      - name: Report bounded result
+        if: success() && github.event_name == 'issues'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ steps.request.outputs.issue_number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          SERVER_BEFORE: ${{ steps.execute.outputs.server_before }}
+          SERVER_AFTER: ${{ steps.execute.outputs.server_after }}
+          TARGET_SHA: ${{ steps.execute.outputs.target_sha }}
+          CHANGED_FILES: ${{ steps.execute.outputs.changed_files }}
+          FRONTEND_HTTP: ${{ steps.execute.outputs.frontend_http }}
+          API_ROOT_HTTP: ${{ steps.execute.outputs.api_root_http }}
+          API_HEALTH_HTTP: ${{ steps.execute.outputs.api_health_http }}
+        run: |
+          set -euo pipefail
+          body="$(REQUEST_ID="$REQUEST_ID" SERVER_BEFORE="$SERVER_BEFORE" SERVER_AFTER="$SERVER_AFTER" TARGET_SHA="$TARGET_SHA" CHANGED_FILES="$CHANGED_FILES" FRONTEND_HTTP="$FRONTEND_HTTP" API_ROOT_HTTP="$API_ROOT_HTTP" API_HEALTH_HTTP="$API_HEALTH_HTTP" node -e "process.stdout.write(JSON.stringify({body:['MCP_STABLECOIN_FAST_FORWARD_RESULT','requestId='+process.env.REQUEST_ID,'status=SUCCESS','serverBefore='+process.env.SERVER_BEFORE,'serverAfter='+process.env.SERVER_AFTER,'targetSha='+process.env.TARGET_SHA,'changedFiles='+process.env.CHANGED_FILES,'applicationFiles=0','frontendHttp='+process.env.FRONTEND_HTTP,'apiRootHttp='+process.env.API_ROOT_HTTP,'apiHealthHttp='+process.env.API_HEALTH_HTTP].join('\\n')}))")"
+          curl --fail --silent --show-error --max-time 10 \
+            --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Content-Type: application/json" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            --data "$body" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments" >/dev/null
