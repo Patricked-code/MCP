@@ -42,8 +42,31 @@
       "examples": [
         "operational_memory_mutation",
         "governed_lock_mutation",
-        "server_write",
+        "server_write_without_approved_github_bounded_write",
         "runtime_tool_invocation_without_github_fallback"
+      ]
+    },
+    "GITHUB_ACTION_BOUNDED_WRITE": {
+      "runtimeMcpRequired": false,
+      "workflow": ".github/workflows/stablecoin-fast-forward.yml",
+      "trigger": "github_issue",
+      "issueTitle": "MCP_STABLECOIN_FAST_FORWARD_REQUEST",
+      "mutationAllowed": true,
+      "operation": "stablecoin_frontend_fast_forward",
+      "primaryTransport": "github_oidc_mcp_bounded_write",
+      "primaryEndpoint": "https://mcp.wealthtechinnovations.com/deploy/github/stablecoin/s2/fast-forward",
+      "runtimeInteractiveAuthRequired": false,
+      "constraints": [
+        "EXACT_EXPECTED_SERVER_SHA_REQUIRED",
+        "EXACT_TARGET_SHA_REQUIRED",
+        "MAIN_BRANCH_REQUIRED",
+        "CLEAN_WORKTREE_REQUIRED",
+        "CANONICAL_ORIGIN_REQUIRED",
+        "FAST_FORWARD_ONLY",
+        "APPLICATION_DIFF_MUST_BE_ZERO",
+        "NO_BUILD",
+        "NO_RESTART",
+        "BOUNDED_ATTESTATION_ONLY"
       ]
     }
   },
@@ -64,6 +87,8 @@
     "NO_SERVER_TO_GITHUB_PUSH",
     "NO_DIRECT_VERSIONED_CODE_EDIT_ON_SERVER",
     "FAIL_CLOSED_ON_AMBIGUOUS_OR_MISSING_EVIDENCE",
-    "GITHUB_OIDC_READONLY_EVIDENCE_REQUIRES_NO_INTERACTIVE_MCP_AUTH"
+    "GITHUB_OIDC_READONLY_EVIDENCE_REQUIRES_NO_INTERACTIVE_MCP_AUTH",
+    "GITHUB_BOUNDED_WRITE_REQUIRES_DEDICATED_OIDC_WORKFLOW_AND_EXACT_SHA",
+    "STABLECOIN_BOUNDED_WRITE_FORBIDS_APPLICATION_DIFF_BUILD_AND_RESTART"
   ]
 }
