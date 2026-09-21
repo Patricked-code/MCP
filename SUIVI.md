@@ -1,5 +1,17 @@
 # SUIVI.md
 
+## 2026-09-21 — AF-09 : source structurée des SHAs documentaires
+
+- Finding reproduit : `buildDocumentationLiveStateCommand()` utilisait le premier SHA 40-hex trouvé dans `SUIVI.md` comme `declaredGithubSha`, ce qui a interprété un SHA Stablecoin S2 comme baseline GitHub du repo MCP.
+- Règle existing-first : `SUIVI.md` reste une trace humaine et peut contenir plusieurs projets ; il ne doit plus être une source machine de SHA.
+- Nouvelle source structurée : `PRODUCTION_STATE.json.githubCommitFull` (fallback compatible `githubState.currentMainCommit`) pour GitHub, et `serverGitState.lastDirectlyVerifiedCommitFull` (fallback `serverCommitFull`) pour S1.
+- Le calcul existant `exact / docs_only / contains_runtime_changes / requires_revalidation` est conservé sans modification.
+- TDD RED : MCP CI #1616 / run `35638171550` = FAILURE exactement sur le nouveau test AF-09, prouvant le grep SHA libre de `SUIVI.md`.
+- Première GREEN candidate #1617 : le test AF-09 passe, mais un ancien test exigeait encore la présence de `SUIVI.md` et a correctement échoué ; ce contrat legacy a été retiré.
+- GREEN final : MCP CI #1618 / run `35638617217` = SUCCESS après alignement du test historique.
+- Aucun changement `PRODUCTION_STATE.json` dans cette branche : la réconciliation des valeurs courantes doit être faite après le merge sur le vrai merge SHA, via une passe documentaire séparée, jamais par auto-référence prédite.
+- NEXT_ACTION : ouvrir/revoir la PR AF-09 exact-head, fusionner après gates verts, attendre CI/deploy exact-SHA, puis créer la réconciliation docs-only de `PRODUCTION_STATE.json`.
+
 ## 2026-09-21 — Règle permanente de préservation de la surface GitHub
 
 - Décision utilisateur confirmée : l'exposition de `wealthtech_ssh_bridge` peut faire disparaître la surface `@GitHub` du client ; ce basculement ne doit plus être demandé par défaut.
