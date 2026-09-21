@@ -873,3 +873,11 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Les sorties serveur brutes ne sont pas renvoyées ; seules des attestations bornées et reason codes allowlistés sortent de l'endpoint/workflow.
 - TDD : RED CI #1594 / run `35568803574`, puis GREEN CI #1599 / run `35569214954`.
 - Aucun fast-forward S2 n'est exécuté par le changement de code lui-même ; l'activation reste post-merge/post-deploy exact-SHA.
+
+## 2026-09-21 — GitHub-first : préservation explicite de la surface client
+
+- Renforce la policy `github-first-operational-continuity-v1` avec une règle explicite de préservation de la surface `@GitHub`.
+- Interdit de demander `wealthtech_ssh_bridge` pour un simple schéma client stale ou un tool runtime non exposé lorsqu'un fallback GitHub approuvé existe.
+- Formalise l'ordre `GITHUB_ONLY → GitHub Actions/OIDC fallback → RUNTIME_REQUIRED`.
+- Ajoute l'invariant anti « surface thrashing » GitHub↔bridge.
+- Documentation/gouvernance uniquement ; aucun code runtime, workflow de déploiement ou serveur n'est modifié.

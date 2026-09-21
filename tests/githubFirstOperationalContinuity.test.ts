@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 
 import { resolveGithubFirstOperationalBootstrap } from '../src/governedContext/githubFirstOperationalContinuity.js';
 
@@ -87,4 +88,39 @@ test('GitHub itself remains the only bootstrap prerequisite', () => {
   assert.equal(result.githubBootstrapAllowed, false);
   assert.equal(result.runtimeMcpRequiredNow, false);
   assert.equal(result.explicitBridgeExposureRequiredNow, false);
+});
+
+
+test('machine policy preserves the GitHub client surface before bridge escalation', () => {
+  const policy = JSON.parse(
+    readFileSync('.mcp/github-first-operational-policy.json', 'utf8')
+  ) as {
+    bootstrap?: { bridgeExposureDefault?: boolean };
+    clientSurfacePreservation?: {
+      githubSurfacePreferred?: boolean;
+      bridgeExposureDefault?: boolean;
+      bridgeExposureMayEvictGithubSurface?: boolean;
+      noSurfaceThrashing?: boolean;
+      staleClientSchemaRule?: string;
+    };
+    invariants?: string[];
+  };
+
+  assert.equal(policy.bootstrap?.bridgeExposureDefault, false);
+  assert.equal(policy.clientSurfacePreservation?.githubSurfacePreferred, true);
+  assert.equal(policy.clientSurfacePreservation?.bridgeExposureDefault, false);
+  assert.equal(policy.clientSurfacePreservation?.bridgeExposureMayEvictGithubSurface, true);
+  assert.equal(policy.clientSurfacePreservation?.noSurfaceThrashing, true);
+  assert.match(
+    policy.clientSurfacePreservation?.staleClientSchemaRule ?? '',
+    /not sufficient reason to request bridge exposure/i
+  );
+  assert.ok(
+    policy.invariants?.includes(
+      'DO_NOT_REQUEST_BRIDGE_FOR_CLIENT_SCHEMA_STALENESS_WHEN_GITHUB_FALLBACK_EXISTS'
+    )
+  );
+  assert.ok(
+    policy.invariants?.includes('NO_CLIENT_SURFACE_THRASHING')
+  );
 });

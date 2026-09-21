@@ -1,5 +1,16 @@
 # SUIVI.md
 
+## 2026-09-21 — Règle permanente de préservation de la surface GitHub
+
+- Décision utilisateur confirmée : l'exposition de `wealthtech_ssh_bridge` peut faire disparaître la surface `@GitHub` du client ; ce basculement ne doit plus être demandé par défaut.
+- Règle : `@GitHub` reste la surface de contrôle prioritaire pour repository/branch/PR/CI/review et pour les fallbacks GitHub Actions/OIDC approuvés.
+- Un schéma runtime client stale ou un tool bridge non exposé n'autorise pas à demander le bridge si un fallback GitHub approuvé couvre l'opération.
+- Ordre de résolution : `GITHUB_ONLY → GITHUB_ACTION_READONLY_EVIDENCE / GITHUB_ACTION_BOUNDED_WRITE → RUNTIME_REQUIRED`.
+- Le bridge ne peut être demandé que pour une opération live précisément identifiée, réellement runtime-only, et sans fallback GitHub approuvé.
+- Cette règle est inscrite dans `.mcp/github-first-operational-policy.json`, `CLAUDE.md` et la spec GitHub-first ; elle ne modifie aucune autorité runtime ni aucun déploiement.
+- AF-09 / le drift documentaire structuré reste un chantier séparé ; cette branche ne tente pas de le masquer.
+- NEXT_ACTION : exact-head CI/review de cette règle de gouvernance, puis merge si tous les contrôles restent verts.
+
 ## 2026-09-21 — Stablecoin GitHub-first bounded WRITE candidate
 
 - Intention explicite : poursuivre la réconciliation Stablecoin et autoriser le fast-forward S2 sans dépendre d'une exposition interactive de `wealthtech_ssh_bridge`.

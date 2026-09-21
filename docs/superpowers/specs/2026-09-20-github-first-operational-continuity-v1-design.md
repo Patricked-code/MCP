@@ -12,6 +12,22 @@ This design generalizes the already-proven PRECODE GitHub-first principle into p
 
 `BRIDGE_IS_CAPABILITY_NOT_BOOTSTRAP_PREREQUISITE`.
 
+## Client surface preservation
+
+GitHub-first continuity also applies to the **client connector surface**, not only to transport/authentication.
+
+Some clients expose GitHub and the runtime bridge as mutually disruptive surfaces: asking the user to expose `wealthtech_ssh_bridge` can remove or hide the GitHub surface needed for branches, PRs, CI and GitHub-triggered fallbacks. Therefore:
+
+1. preserve `@GitHub` as the default active surface;
+2. treat missing/stale client runtime schemas as a client-projection problem, not as automatic justification to switch surfaces;
+3. use the approved GitHub fallback workflow/issue/OIDC path whenever it can obtain the required read-only evidence or perform an explicitly approved bounded write;
+4. escalate to interactive bridge exposure only for a precisely identified live-only operation with no approved GitHub fallback;
+5. never switch surfaces merely to make a tool easier to call;
+6. never let a temporary bridge exposure replace GitHub as the continuity/bootstrap authority.
+
+This is a non-regression rule: client-surface choice must not disable the control plane needed to continue the governed workflow.
+
+
 A GitHub connection is sufficient to start continuity reconstruction and to perform every GitHub-bounded operation that the current GitHub authorization allows.
 
 The system resolves the next bounded operation before deciding whether runtime access is needed.
