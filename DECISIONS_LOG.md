@@ -978,3 +978,15 @@ Conséquence : absence d'un tool runtime dans le client, enum stale ou schéma c
 Règle anti-régression : ne pas alterner les surfaces GitHub↔bridge pour « chercher » un tool. Préserver le control plane GitHub, utiliser les fallbacks versionnés, et échouer fermé si une preuve réellement live-only reste indisponible.
 
 Cette décision étend la règle existante `BRIDGE_IS_CAPABILITY_NOT_BOOTSTRAP_PREREQUISITE` ; elle ne supprime ni Governed Task Queue, ni Sessions, ni Bootstrap Receipts, ni locks, ni Live State, ni runtime lorsqu'ils sont réellement requis.
+
+## 2026-09-21 — Décision AF-09 : SUIVI n'est plus une autorité machine de SHA
+
+Décision : le texte libre de `SUIVI.md` ne peut plus fournir `declaredGithubSha` ni `declaredS1Sha` au Live State.
+
+Raison : `SUIVI.md` est multi-projet et multi-historique. Le premier SHA qu'il contient peut appartenir à Stablecoin, AfricaFunds ou un autre projet ; l'utiliser comme baseline MCP crée un faux `DOCUMENTATION_DRIFT`.
+
+Autorité structurée réutilisée : `PRODUCTION_STATE.json`. Aucun nouveau store, fichier d'état ou second Live State n'est créé.
+
+Compatibilité : les anciens champs structurés sont conservés par fallback (`githubState.currentMainCommit`, `serverCommitFull`). Le waiver descendant docs-only reste inchangé.
+
+Anti-auto-référence : la branche code AF-09 ne tente pas d'écrire son futur merge SHA dans `PRODUCTION_STATE.json`. Après merge et déploiement, une passe docs-only séparée actualisera la baseline au merge SHA réellement observé.
