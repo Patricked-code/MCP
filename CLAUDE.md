@@ -331,5 +331,18 @@ Current post-integration bootstrap rule:
 - Existing runtime authorities remain authoritative in their scopes; GitHub-first defers them when irrelevant and never fabricates their state.
 - The read-only fallback never authorizes pull, deploy, restart, arbitrary shell, server-to-GitHub push or direct server-side versioned-code edits.
 
+### Client-surface preservation rule
+
+This rule is permanent and applies post-integration and during recovery:
+
+- Keep the `@GitHub` surface exposed and usable by default.
+- Do **not** ask the user to expose or switch to `wealthtech_ssh_bridge` merely because a direct runtime tool is absent from the client, its schema is stale, or a server fact is needed.
+- Before requesting the bridge, exhaust the approved GitHub-first paths applicable to the exact operation: `GITHUB_ONLY`, then the dedicated GitHub Actions/OIDC fallback (`GITHUB_ACTION_READONLY_EVIDENCE` or an approved bounded-write workflow).
+- In clients where exposing `wealthtech_ssh_bridge` can evict or hide the `@GitHub` surface, preserving GitHub is mandatory whenever GitHub or an approved fallback can complete the operation.
+- A client-surface switch is never a substitute for the existing GitHub fallback.
+- Request bridge exposure only when all three are true: the exact operation is identified, it genuinely requires live runtime authority, and no approved GitHub fallback exists for that operation.
+- If bridge use becomes genuinely necessary, keep its scope limited to the live-only evidence/action and do not reinterpret that temporary capability as the new bootstrap path.
+- Never alternate GitHub ↔ bridge simply to chase tool availability; prefer continuity of the GitHub control plane and fail closed on unavailable live-only evidence.
+
 Canonical machine policy: `.mcp/github-first-operational-policy.json`.
 Design: `docs/superpowers/specs/2026-09-20-github-first-operational-continuity-v1-design.md`.
