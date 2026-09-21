@@ -97,7 +97,7 @@ test('la collecte documentaire reste bornée aux signaux de reprise', () => {
   assert.doesNotThrow(() => assertReadOnlyCommand(command));
   assert.match(command, /TASKS\.md/);
   assert.match(command, /PRODUCTION_STATE\.json/);
-  assert.match(command, /SUIVI\.md/);
+  assert.doesNotMatch(command, /SUIVI\.md/);
   assert.match(command, /documentation_requires_revalidation/);
   assert.match(command, /git merge-base --is-ancestor/);
   assert.match(command, /git diff --name-only/);
