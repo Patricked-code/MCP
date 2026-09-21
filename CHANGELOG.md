@@ -881,3 +881,11 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Formalise l'ordre `GITHUB_ONLY → GitHub Actions/OIDC fallback → RUNTIME_REQUIRED`.
 - Ajoute l'invariant anti « surface thrashing » GitHub↔bridge.
 - Documentation/gouvernance uniquement ; aucun code runtime, workflow de déploiement ou serveur n'est modifié.
+
+## 2026-09-21 — Live State : correction AF-09 du SHA documentaire
+
+- Remplace l'extraction du premier SHA libre de `SUIVI.md` par la lecture structurée de `PRODUCTION_STATE.json`.
+- GitHub déclaré : `githubCommitFull`, fallback compatible `githubState.currentMainCommit`.
+- S1 déclaré : `serverGitState.lastDirectlyVerifiedCommitFull`, fallback compatible `serverCommitFull`.
+- Préserve sans modification la classification descendante `exact / docs_only / contains_runtime_changes` et le signal `requires_revalidation`.
+- Ajoute un test de non-régression AF-09 ; RED #1616, GREEN final #1618.
