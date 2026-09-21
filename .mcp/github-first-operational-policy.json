@@ -6,7 +6,7 @@
     "githubConnectionSufficient": true,
     "runtimeMcpIsBootstrapPrerequisite": false,
     "bridgeExposureDefault": false,
-    "rule": "Resolve the next bounded operation first. Request runtime/bridge capability only when that exact operation cannot be completed through GitHub or the governed read-only evidence fallback."
+    "rule": "Preserve the GitHub client surface by default. Resolve the next bounded operation through GitHub first, then an approved GitHub Actions fallback. Request/expose runtime bridge capability only when the exact operation requires live runtime authority and no approved GitHub fallback can complete it."
   },
   "executionModes": {
     "GITHUB_ONLY": {
@@ -89,6 +89,30 @@
     "FAIL_CLOSED_ON_AMBIGUOUS_OR_MISSING_EVIDENCE",
     "GITHUB_OIDC_READONLY_EVIDENCE_REQUIRES_NO_INTERACTIVE_MCP_AUTH",
     "GITHUB_BOUNDED_WRITE_REQUIRES_DEDICATED_OIDC_WORKFLOW_AND_EXACT_SHA",
-    "STABLECOIN_BOUNDED_WRITE_FORBIDS_APPLICATION_DIFF_BUILD_AND_RESTART"
-  ]
+    "STABLECOIN_BOUNDED_WRITE_FORBIDS_APPLICATION_DIFF_BUILD_AND_RESTART",
+    "PRESERVE_GITHUB_CLIENT_SURFACE_WHEN_GITHUB_OR_APPROVED_FALLBACK_IS_SUFFICIENT",
+    "DO_NOT_REQUEST_BRIDGE_FOR_CLIENT_SCHEMA_STALENESS_WHEN_GITHUB_FALLBACK_EXISTS",
+    "BRIDGE_ESCALATION_REQUIRES_LIVE_ONLY_JUSTIFICATION_AND_NO_GITHUB_FALLBACK",
+    "NO_CLIENT_SURFACE_THRASHING"
+  ],
+  "clientSurfacePreservation": {
+    "githubSurfacePreferred": true,
+    "bridgeExposureDefault": false,
+    "bridgeExposureMayEvictGithubSurface": true,
+    "mandatoryRule": "Do not request or switch to wealthtech_ssh_bridge while GitHub or an approved GitHub fallback can complete the bounded operation.",
+    "fallbackOrder": [
+      "GITHUB_ONLY",
+      "GITHUB_ACTION_READONLY_EVIDENCE",
+      "GITHUB_ACTION_BOUNDED_WRITE",
+      "RUNTIME_REQUIRED"
+    ],
+    "bridgeEscalationRequires": [
+      "EXACT_OPERATION_IDENTIFIED",
+      "LIVE_RUNTIME_AUTHORITY_REQUIRED",
+      "NO_APPROVED_GITHUB_FALLBACK_AVAILABLE"
+    ],
+    "staleClientSchemaRule": "A stale or missing client-side runtime tool schema is not sufficient reason to request bridge exposure when an approved GitHub workflow/issue/OIDC fallback exists.",
+    "noSurfaceThrashing": true,
+    "rationale": "In clients where exposing the bridge can remove the GitHub surface, unnecessary bridge requests break GitHub-first continuity and can strand the agent away from branch/PR/CI/fallback controls."
+  }
 }
