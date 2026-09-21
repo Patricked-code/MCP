@@ -966,3 +966,15 @@ La PR #85 est absorbée comme intention historique existing-first : le transport
 Le workflow `MCP Read-only Evidence` obtient un jeton GitHub Actions OIDC lié au repo, à `main`, au workflow `mcp-readonly-evidence.yml`, à son SHA et à l'audience read-only dédiée. Il appelle ensuite un endpoint MCP strictement read-only qui choisit lui-même la commande allowlistée et utilise `runReadOnlyCommand` sur S1/S2.
 
 Conséquence : dans le chemin normal, l'agent n'a besoin que de GitHub. Il n'expose pas `wealthtech_ssh_bridge`, ne fournit pas de token MCP interactif et GitHub ne stocke pas de clé SSH serveur. Le direct SSH protégé reste uniquement une voie de secours après échec du chemin OIDC.
+
+## 2026-09-21 — Décision permanente : préserver @GitHub, bridge en dernier recours
+
+Décision : `@GitHub` est la surface client prioritaire et doit rester exposée tant que GitHub ou un fallback GitHub Actions/OIDC approuvé peut accomplir l'opération bornée.
+
+Raison opérationnelle : dans certains clients, demander l'exposition de `wealthtech_ssh_bridge` peut évincer la surface GitHub. Une demande de bridge inutile peut donc casser la continuité précisément au moment où l'agent a besoin de branches, PR, CI, review, issues ou workflows fallback.
+
+Conséquence : absence d'un tool runtime dans le client, enum stale ou schéma client incomplet ne suffit jamais à demander le bridge si un fallback GitHub approuvé existe. Le bridge est escaladé uniquement si l'opération exacte requiert une autorité live/runtime et qu'aucun fallback GitHub approuvé ne couvre cette opération.
+
+Règle anti-régression : ne pas alterner les surfaces GitHub↔bridge pour « chercher » un tool. Préserver le control plane GitHub, utiliser les fallbacks versionnés, et échouer fermé si une preuve réellement live-only reste indisponible.
+
+Cette décision étend la règle existante `BRIDGE_IS_CAPABILITY_NOT_BOOTSTRAP_PREREQUISITE` ; elle ne supprime ni Governed Task Queue, ni Sessions, ni Bootstrap Receipts, ni locks, ni Live State, ni runtime lorsqu'ils sont réellement requis.
