@@ -140,10 +140,10 @@ export function buildDocumentationLiveStateCommand(): string {
 cd ${shellQuote(MCP_ROOT)}
 ACTIVE_TASK="$(grep -E 'TASK-[0-9]{8}-[0-9]+.*EN COURS' TASKS.md 2>/dev/null | head -1 | sed 's/^[[:space:]-]*//' || true)"
 printf 'active_task=%s\\n' "$ACTIVE_TASK"
-DECLARED_GITHUB_SHA="$(grep -Eo '[0-9a-f]{40}' SUIVI.md 2>/dev/null | head -1 || true)"
-if [ -z "$DECLARED_GITHUB_SHA" ]; then DECLARED_GITHUB_SHA="$(grep -E '"githubCommitFull"' PRODUCTION_STATE.json 2>/dev/null | grep -Eo '[0-9a-f]{40}' | head -1 || true)"; fi
+DOCUMENTATION_DECLARATIONS="$(node -e "const fs=require('fs');let p={};try{p=JSON.parse(fs.readFileSync('PRODUCTION_STATE.json','utf8'))}catch{};const sha=v=>typeof v==='string'&&/^[0-9a-f]{40}$/.test(v)?v:'';const gh=sha(p.githubCommitFull)||sha(p.githubState&&p.githubState.currentMainCommit);const s1=sha(p.serverGitState&&p.serverGitState.lastDirectlyVerifiedCommitFull)||sha(p.serverCommitFull);process.stdout.write(gh+'\\n'+s1+'\\n')")"
+DECLARED_GITHUB_SHA="$(printf '%s\\n' "$DOCUMENTATION_DECLARATIONS" | sed -n '1p')"
+DECLARED_S1_SHA="$(printf '%s\\n' "$DOCUMENTATION_DECLARATIONS" | sed -n '2p')"
 printf 'declared_github_sha=%s\\n' "$DECLARED_GITHUB_SHA"
-DECLARED_S1_SHA="$(grep -E 'S1 HEAD|serverCommitFull' SUIVI.md PRODUCTION_STATE.json 2>/dev/null | grep -Eo '[0-9a-f]{40}' | head -1 || true)"
 printf 'declared_s1_sha=%s\\n' "$DECLARED_S1_SHA"
 DOCUMENTATION_DESCENDANT_SCOPE='unknown'
 if [ -n "$DECLARED_GITHUB_SHA" ] && [ "$DECLARED_GITHUB_SHA" = "$(git rev-parse HEAD)" ]; then

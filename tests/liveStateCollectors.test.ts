@@ -97,7 +97,7 @@ test('la collecte documentaire reste bornée aux signaux de reprise', () => {
   assert.doesNotThrow(() => assertReadOnlyCommand(command));
   assert.match(command, /TASKS\.md/);
   assert.match(command, /PRODUCTION_STATE\.json/);
-  assert.match(command, /SUIVI\.md/);
+  assert.doesNotMatch(command, /SUIVI\.md/);
   assert.match(command, /documentation_requires_revalidation/);
   assert.match(command, /git merge-base --is-ancestor/);
   assert.match(command, /git diff --name-only/);
@@ -267,4 +267,22 @@ test('un descendant docs-only ne masque pas une declaration S1 differente de la 
   ].join('\n'), SHA, SHA);
 
   assert.equal(observation.drift, true);
+});
+
+
+test('AF-09: la collecte documentaire utilise PRODUCTION_STATE structure et ignore les SHA libres de SUIVI', () => {
+  const command = buildDocumentationLiveStateCommand();
+
+  assert.match(command, /PRODUCTION_STATE\.json/);
+  assert.match(command, /githubCommitFull/);
+  assert.match(command, /lastDirectlyVerifiedCommitFull|serverCommitFull/);
+
+  assert.doesNotMatch(
+    command,
+    /grep -Eo '\[0-9a-f\]\{40\}' SUIVI\.md/
+  );
+  assert.doesNotMatch(
+    command,
+    /S1 HEAD\|serverCommitFull' SUIVI\.md PRODUCTION_STATE\.json/
+  );
 });
