@@ -35,7 +35,7 @@ async function fixture(options: {
   idleTtlSeconds?: number;
   resumeGraceSeconds?: number;
   taskLifecycleCoordinator?: { run<T>(work: () => Promise<T>): Promise<T> };
-  audit?: { record(input: { type: string }): Promise<void> };
+  audit?: { record(input: { type: string }): Promise<void>; checkpointEventIds?(governedSessionId: string): string[] };
   liveState?: () => {
     stateVersion: number;
     github?: { head: string | null };
@@ -1304,6 +1304,55 @@ test('legacy session continuity never performs a hidden connection context backf
       identity: OAUTH_IDENTITY
     });
     assert.equal(resumed.connectionContext, undefined);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+
+test('AF-23 checkpoint links the bounded operational events observed for its governed session', async () => {
+  const linkedEventIds = [
+    '11111111-1111-4111-8111-111111111111',
+    '22222222-2222-4222-8222-222222222222'
+  ];
+  const { directory, service } = await fixture({
+    audit: {
+      async record() {},
+      checkpointEventIds(governedSessionId) {
+        assert.match(governedSessionId, /^[0-9a-f-]{36}$/);
+        return linkedEventIds;
+      }
+    }
+  });
+
+  try {
+    const request = {
+      transportSessionId: 'transport-af23',
+      identity: OAUTH_IDENTITY
+    };
+    const opened = await service.openSession(OPEN_INPUT, request);
+    const acknowledged = await service.acknowledgeContext({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      expectedStateVersion: 9
+    }, request);
+    const checkpoint = await service.createCheckpoint({
+      governedSessionId: acknowledged.governedSessionId,
+      expectedSessionRevision: acknowledged.sessionRevision,
+      expectedStateVersion: 9,
+      completedAction: 'AF-23 RED',
+      resultCode: 'AF23_EVENT_LINK_RED',
+      pullRequestNumber: null,
+      observedHeadSha: null,
+      blockers: [],
+      nextAction: 'populate checkpoint eventIds from operational audit'
+    }, request);
+
+    assert.deepEqual(checkpoint.eventIds, linkedEventIds);
+    assert.deepEqual(
+      (await service.getVisibleSession(checkpoint.governedSessionId, request))?.lastCheckpoint?.eventIds,
+      linkedEventIds
+    );
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
