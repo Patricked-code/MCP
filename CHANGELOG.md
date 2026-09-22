@@ -889,3 +889,10 @@ Mise à jour : 2026-07-09T20:08:09Z
 - S1 déclaré : `serverGitState.lastDirectlyVerifiedCommitFull`, fallback compatible `serverCommitFull`.
 - Préserve sans modification la classification descendante `exact / docs_only / contains_runtime_changes` et le signal `requires_revalidation`.
 - Ajoute un test de non-régression AF-09 ; RED #1616, GREEN final #1618.
+
+## 2026-09-21 — AF-09 : baseline structurée post-déploiement
+
+- Réconcilie `PRODUCTION_STATE.json` sur le merge AF-09 réellement observé `65e633381e8ae811bb5d4060826d0d679f0c7e80`.
+- Enregistre MCP CI #1623 et Governed Deploy #56 comme preuves exact-SHA.
+- Conserve la règle anti-auto-référence : le SHA du futur merge documentaire n'est pas prédit.
+- La passe reste documentaire : `PRODUCTION_STATE.json` + Markdown uniquement.
