@@ -1356,3 +1356,54 @@ test('minute heartbeat collector requires exactly one mutable PR comment per can
   assert.equal(ambiguous.authorizationGranted, false);
   assert.equal(ambiguous.claimTransferAllowed, false);
 });
+
+
+test('GitHub-first bootstrap retires a merged historical candidate and hands execution to post-integration main', () => {
+  const result = bootstrapCandidateConnection({
+    connection: {
+      repository: 'Patricked-code/MCP',
+      branch: 'claude/ecstatic-edison-v1dyt1',
+      observedHeadSha: '1'.repeat(40),
+      agentIdentity: 'claude',
+      provider: 'claude',
+      providerConversationRef: 'claude-session-historical',
+      providerConversationRefProvenance: 'PROVIDED_BY_CLIENT',
+      githubActor: 'Patricked-code',
+      githubConnectionRef: 'github-connection-historical',
+      connectionInstanceRef: 'connection-historical',
+      observedAt: '2026-09-22T22:00:00+02:00'
+    },
+    intent: {
+      declaredMode: 'CONTINUE_PRECODE_WORK',
+      hasMaterialNewInformation: false,
+      requestsContinuation: true
+    },
+    sessions: [],
+    workItems: [{
+      workItemId: 'GWC-PRE-F-02',
+      intentKeys: ['candidate-acceptance'],
+      title: 'Historical candidate work that must not resume after integration',
+      status: 'READY',
+      priority: 100,
+      sequence: 99,
+      dependencies: [],
+      collisionDomains: ['tests:gwc']
+    }],
+    activeClaims: [],
+    lifecycle: {
+      sourcePullRequestNumber: 95,
+      sourcePullRequestState: 'MERGED',
+      candidateBranchAheadByMain: 0,
+      candidateHeadSha: '1'.repeat(40),
+      currentMainSha: '2'.repeat(40),
+      mainContinuityMode: 'POST_INTEGRATION_OPERATIONAL_CONTINUITY',
+      observedAt: '2026-09-22T22:00:00+02:00'
+    }
+  } as any);
+
+  assert.equal(result.executionDisposition, 'HISTORICAL_CANDIDATE');
+  assert.equal(result.resumeCandidateWork, false);
+  assert.equal(result.currentExecutionRef, 'main');
+  assert.equal(result.nextMode, 'POST_INTEGRATION_OPERATIONAL_CONTINUITY');
+  assert.equal(result.dispatch, null);
+});
