@@ -5,20 +5,23 @@ import test from 'node:test';
 import { validateProgramBacklogConvergence } from '../scripts/program-backlog-convergence-lib.mjs';
 
 test('program backlog convergence covers every known planning source exactly once', async () => {
-  const [projectionRaw, todo, roadmap, gwcRaw] = await Promise.all([
+  const [projectionRaw, todo, roadmap, gwcRaw, taskRegistryRaw] = await Promise.all([
     readFile('docs/governance/program-backlog-convergence.json', 'utf8'),
     readFile('TODO.md', 'utf8'),
     readFile('ROADMAP.md', 'utf8'),
-    readFile('.mcp/gwc-evolution-design.json', 'utf8')
+    readFile('.mcp/gwc-evolution-design.json', 'utf8'),
+    readFile('.mcp/task-registry.json', 'utf8')
   ]);
 
   const projection = JSON.parse(projectionRaw);
   const gwc = JSON.parse(gwcRaw);
+  const taskRegistry = JSON.parse(taskRegistryRaw);
   const result = validateProgramBacklogConvergence({
     projection,
     todo,
     roadmap,
-    gwc
+    gwc,
+    taskRegistry
   });
 
   assert.equal(result.ok, true, JSON.stringify(result, null, 2));
@@ -27,6 +30,7 @@ test('program backlog convergence covers every known planning source exactly onc
   assert.deepEqual(result.missingBlueprints, []);
   assert.deepEqual(result.missingFindings, []);
   assert.deepEqual(result.missingDecisions, []);
+  assert.deepEqual(result.missingTasks, []);
   assert.deepEqual(result.duplicateSourceKeys, []);
   assert.deepEqual(result.duplicateWorkItemIds, []);
   assert.deepEqual(result.integrationSlotCollisions, []);
