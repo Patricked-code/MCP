@@ -643,6 +643,7 @@ export function bootstrapCandidateConnection(
   const historicalCandidate = (
     input.lifecycle?.sourcePullRequestState === 'MERGED'
     && input.lifecycle.candidateBranchAheadByMain === 0
+    && input.lifecycle.candidateHeadSha === input.connection.observedHeadSha
     && input.lifecycle.mainContinuityMode === 'POST_INTEGRATION_OPERATIONAL_CONTINUITY'
   );
 
