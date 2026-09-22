@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## 2026-09-22 — Historical candidate → post-integration continuity
+
+- Extension existing-first de `bootstrapCandidateConnection()` avec une observation lifecycle GitHub bornée ; aucune nouvelle authority, queue, session runtime, lock, store ou transport.
+- Une candidate déjà intégrée est classée `HISTORICAL_CANDIDATE` uniquement si la PR source est mergée, la branche n'a aucun commit unique devant main, le candidate HEAD est lié au HEAD observé et main est en `POST_INTEGRATION_OPERATIONAL_CONTINUITY`.
+- Dans ce cas, le redispatch PRECODE est supprimé : `resumeCandidateWork=false`, `currentExecutionRef=main`.
+- TDD exact : RED CI #1715, self-review RED #1719, GREEN final #1721.
+- PR #146 merge `38f7ab60b4fa30db50536278d2b34ddbcfe2c204`, CI main #1722 et Governed Deploy #63 verts, S1/Docker attestés via GitHub OIDC read-only.
+- PR #149 réconcilie le baseline structuré ; merge descendant `3933852cdb40b05b59b06460faa9116715d597a9`, CI #1727, Governed Deploy #64 et preuves OIDC finales verts.
+- La branche Claude historique reste immuable comme provenance ; un handoff durable est inscrit sur PR #95.
+
 ## 2026-09-19 — Incremental intake continuity and coherence
 
 - Ajout additif de séquençage monotone des `NEW_INFORMATION_INTAKE-NNN`.
@@ -930,3 +940,21 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Confirme les six findings prouvés comme corrigés sans réimplémentation : AF-09, AF-10, AF-18, AF-23, AF-24, AF-27.
 - Enregistre CI #1667, Governed Deploy #61 et les preuves GitHub OIDC S1/Docker.
 - Cette passe finale modifie uniquement `PRODUCTION_STATE.json` et la documentation.
+
+
+## 2026-09-22 — Réconciliation des PR historiques ouvertes
+
+- Ajout de `docs/audits/2026-09-22-legacy-open-pr-intent-reconciliation.md`.
+- Classification current-first de #85/#86/#88/#89/#90 afin d'éviter merge stale, doublon et réimplémentation.
+- #85 et #89 sont absorbées/superseded selon les autorités actuelles ; le fast-forward non applicatif de #86 est remplacé par le chemin Stablecoin bounded-write déjà livré.
+- #88 et le sous-ensemble différé de #90 restent visibles comme backlog candidat, sans création de `TASK-*` ni autorisation runtime.
+- Aucun TypeScript, workflow, permission, secret, S1/S2 ou production n'est modifié.
+
+
+### Audit de chevauchement GitHub différé
+
+- Ajout de `docs/audits/2026-09-22-deferred-github-capability-overlap.md`.
+- `github_get_mergeability` est classé doublon de la surface PR state actuelle.
+- `github_get_commit_diff` est classé composable avec les READ existants, sans nouvelle primitive.
+- Les READ réellement complémentaires sont commits/tree/required-checks.
+- Les mutations PR, repository-admin et suppressions restent des lots distincts à redessiner current-first.

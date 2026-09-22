@@ -575,3 +575,18 @@ Objectif : faire de GitHub la porte d'entrée de continuité opérationnelle, sa
 - aucun fallback serveur d'écriture en V1.
 
 Étape suivante après merge : configurer/attester les deux GitHub Environments read-only, puis prouver un probe S1 et un probe Stablecoin S2 sans bridge interactif.
+
+
+## Programme post-intégration — récupération contrôlée des intentions historiques (2026-09-22)
+
+Les PR ouvertes #85/#86/#88/#89/#90 sont désormais traitées comme des sources historiques d'intention, pas comme des branches à fusionner. Elles ont toutes divergé depuis l'ancienne base `555a51d0648ef796eba4868282942055a2f67a65`.
+
+La récupération suit `REUSE -> SEARCH -> RE-DERIVE MISSING DELTA -> RED -> GREEN` depuis le `main` courant.
+
+- #85 : absorbée dans GitHub-first/OIDC ; aucun second transport général Actions/SSH n'est créé.
+- #86 : le fast-forward non applicatif est remplacé par le bounded-write Stablecoin livré ; un futur déploiement applicatif, s'il est nécessaire, est un chantier distinct.
+- #88 : repository creation reste une capacité candidate différée et doit être redessinée contre l'architecture actuelle.
+- #89 : fondation READ matérialisée ; manifeste historique superseded.
+- #90 : sous-ensemble lifecycle matérialisé via GWC-12 ; dix capacités restent explicitement différées et sont séquencées dans `TODO.md`.
+
+Cette séquence ne crée pas de `TASK-*` avant enregistrement par l'autorité runtime applicable et ne fait jamais des anciennes PR une autorité courante.

@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 216,
+  "trackedCount": 218,
   "categories": {
     "canonical": 7,
-    "documentation": 65,
+    "documentation": 67,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -444,6 +444,14 @@
     },
     {
       "path": "docs/audits/2026-08-05/README.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/audits/2026-09-22-deferred-github-capability-overlap.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/audits/2026-09-22-legacy-open-pr-intent-reconciliation.md",
       "category": "documentation"
     },
     {

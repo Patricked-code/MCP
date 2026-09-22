@@ -222,4 +222,27 @@ PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a
 - [ ] optionnel : configurer `mcp-s1-readonly` comme fallback SSH secondaire ;
 - [ ] optionnel : configurer `mcp-s2-readonly` comme fallback SSH secondaire ;
 - [ ] seulement après preuves, décider si le fallback read-only peut être sélectionné automatiquement ;
-- [ ] traiter tout transport serveur WRITE comme un chantier séparé avec parité et gouvernance propres ;\n  - [x] construire et valider GREEN la candidate Stablecoin fast-forward exact-SHA, OIDC dédié, sans build/restart ;\n  - [ ] fusionner/déployer le MCP exact-SHA puis attester le premier fast-forward Stablecoin S2 ;\n  - [ ] généraliser à d'autres écritures uniquement par chantiers séparés, jamais par shell libre.
+- [ ] traiter tout transport serveur WRITE comme un chantier séparé avec parité et gouvernance propres ;
+  - [x] construire et valider GREEN la candidate Stablecoin fast-forward exact-SHA, OIDC dédié, sans build/restart ;
+  - [x] fusionner/déployer le MCP exact-SHA puis attester le premier fast-forward Stablecoin S2 — PR #117 fusionnée, puis requêtes #118 et #121 SUCCESS ;
+  - [ ] généraliser à d'autres écritures uniquement par chantiers séparés, jamais par shell libre.
+
+
+## Réconciliation des anciennes PR ouvertes — backlog résiduel current-first (2026-09-22)
+
+Source : `docs/audits/2026-09-22-legacy-open-pr-intent-reconciliation.md`.
+
+Règle : aucune reprise directe des branches #85/#86/#88/#89/#90. Chaque item est redérivé depuis le `main` courant après recherche d'équivalent.
+
+- [x] Classer #85 comme intention historique absorbée par GitHub-first/OIDC ; ne pas créer un second transport parallèle.
+- [x] Classer #89 READ comme déjà matérialisé ; conserver son manifeste de capacités comme superseded, non autoritatif.
+- [x] Classer le fast-forward Stablecoin de #86 comme superseded par PR #117 et les fast-forwards attestés #118/#121.
+- [x] Auditer `github_create_repository` (#88/GWC-12 DEFER) contre les primitives GitHub actuelles : capacité unique absente, à redessiner current-first comme lot admin séparé.
+- [ ] Concevoir le lot admin `github_create_repository` depuis le main courant : private-only, org-bounded, idempotent, scoped-write et sans side effects implicites.
+- [x] Auditer le lot READ différé de #90 : `github_get_mergeability` est un doublon de `github_get_pull_request_state`; `github_get_commit_diff` est composable avec `github_get_commit_state` + `github_compare_refs`; commits/tree/required-checks restent complémentaires.
+- [ ] Préparer le lot READ current-first uniquement pour `github_get_commits`, `github_get_tree` et `github_get_required_checks`, avec TDD, sorties bornées et aucune nouvelle autorité.
+- [x] Auditer les mutations différées `github_update_pull_request` et `github_request_review` : elles sont absentes ; l'ancien contrat update PR est trop large et non exact-head selon les standards courants.
+- [ ] Concevoir un lot PR-WRITE current-first : request-review exact-head et update PR réduit/scindé, sans fermeture/changement de base caché.
+- [x] Auditer `github_delete_file` et `github_delete_branch` : capacités destructives absentes ; le transport serveur GitHub courant n'autorise pas DELETE.
+- [ ] Concevoir les suppressions dans un lot destructif séparé ; aucune extension implicite du transport DELETE et aucun assouplissement du scoped WRITE gate.
+- [ ] Si un futur delta Stablecoin devient applicatif, concevoir un chantier distinct build/restart/health/rollback ; ne jamais réactiver le vieux chemin #86 et ne pas modifier le bounded fast-forward non applicatif existant.
