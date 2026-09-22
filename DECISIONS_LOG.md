@@ -1028,3 +1028,13 @@ Sémantique : la liste contient au maximum les 64 événements du même `governe
 Résilience : l'audit demeure best-effort. Seuls les événements réellement écrits obtiennent un ID et entrent dans la fenêtre ; un échec du journal ne bloque pas une opération métier qui ne l'était pas auparavant.
 
 Compatibilité : aucun changement de schéma, aucun nouveau store, aucun nouveau lifecycle et aucune nouvelle permission.
+
+## 2026-09-22 — Décision : le registre machine doit empêcher la réimplémentation des findings clos
+
+Décision : un finding dont la correction a été mergée, validée par CI exact-head, déployée et attestée sur S1/runtime doit être marqué `corrected=true` dans la projection machine existante `.mcp/gwc-evolution-design.json`.
+
+Périmètre de cette réconciliation : `AF-09`, `AF-10`, `AF-18`, `AF-23`, `AF-24`, `AF-27` uniquement. Aucun statut n'est déduit pour les autres findings.
+
+Raison : laisser ces flags à `false` provoquerait précisément le risque de doublon que la gouvernance cherche à éviter : un futur agent pourrait reconstruire un chantier déjà terminé.
+
+Le fichier étant machine-readable sous `.mcp/`, cette modification suit le pipeline normal CI + Governed Deploy et n'est pas déguisée en simple documentation.
