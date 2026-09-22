@@ -1046,3 +1046,19 @@ Décision : lorsqu'un finding dispose d'une chaîne complète RED/GREEN, merge e
 En conséquence, AF-09, AF-10, AF-18, AF-23, AF-24 et AF-27 ne doivent plus être reproposés comme nouveaux chantiers. Toute évolution ultérieure doit partir de l'implémentation existante et être classée comme nouvelle exigence ou extension distincte.
 
 La baseline fonctionnelle attestée de cette réconciliation est `2495647c3ccf3f676aa979bbe3e8337d9dbf12bf`. La présente passe ne prédit pas son propre merge SHA et reste strictement documentaire.
+
+
+## 2026-09-22 — Décision : une PR historique divergée est une source d'intention, pas un patch à réappliquer
+
+Décision : les PR ouvertes #85, #86, #88, #89 et #90, toutes issues de l'ancienne lignée `555a51d0648ef796eba4868282942055a2f67a65`, ne doivent être ni fusionnées ni rebasées en bloc pour récupérer leurs fonctionnalités.
+
+Règle de récupération : lire l'intention et les preuves historiques, rechercher l'implémentation actuelle, reconnaître explicitement ce qui est déjà matérialisé/superseded, puis redériver uniquement le delta réellement manquant depuis le `main` courant.
+
+Application immédiate :
+- #85 est absorbée par GitHub-first/OIDC ;
+- #86 est superseded pour le fast-forward non applicatif par le chemin Stablecoin bounded-write actuel ; build/restart reste un éventuel chantier applicatif séparé ;
+- #88/`github_create_repository` reste `DEFERRED_VALID_INTENT` ;
+- #89 READ est matérialisée et son manifeste historique superseded ;
+- #90 reste la provenance des capacités que GWC-12 a explicitement différées, sans réintégrer celles déjà sélectionnées.
+
+Les capacités différées ne sont pas automatiquement autorisées : elles nécessitent une nouvelle analyse current-first, les gates existants et, pour tout travail runtime, les autorités Governed Task/Session/locks/Live State applicables. Aucun `TASK-*` n'est inventé par la documentation.
