@@ -10,7 +10,10 @@
 - Invariant : `STALE` ou `UNKNOWN` heartbeat ne libère ni ne transfère jamais un claim; liveness et ownership restent séparés.
 - TDD : le premier commit `41ab9e9d...` introduit uniquement les tests RED; le commit `91b56861...` introduit l'implémentation candidate.
 - Aucun store, Task Queue, session manager, lock service ou ownership authority supplémentaire; aucune mutation S1/production.
-- NEXT_ACTION : obtenir CI exact-head, corriger uniquement les régressions éventuelles, puis étendre la projection aux adaptateurs runtime/GitHub-first sans dupliquer les autorités.
+- CI exact-head du premier lot : MCP CI #1739 / run `35792426991` = SUCCESS.
+- Plan d'exécution supervisé matérialisé dans `docs/governance/universal-agent-coordination-plan.md` : UAC-01..UAC-24, incluant adapters runtime, GitHub-first read-only, multi-agent/collision, stale/unknown heartbeat, reconnect, HEAD_MOVED, crash recovery, fermeture terminale, non-régression, merge/deploy et attestation.
+- Boucle de supervision obligatoire inscrite : reobserver main/HEAD/CI/claims/liveness/collisions avant mutation, réconcilier HEAD_MOVED, ne jamais reprendre le claim d'un autre writer par inférence, mettre à jour checkpoint/NEXT_ACTION après chaque étape.
+- NEXT_ACTION : UAC-01 cartographie source→autorité, puis UAC-03..UAC-10 par incréments TDD sans dupliquer les autorités existantes.
 
 ## 2026-09-22 — Handoff automatique des candidates historiques vers main
 
