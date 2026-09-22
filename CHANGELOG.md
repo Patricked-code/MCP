@@ -923,3 +923,10 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Marque `AF-09`, `AF-10`, `AF-18`, `AF-23`, `AF-24` et `AF-27` comme `corrected=true` après preuves de merge, CI, déploiement et attestation S1/runtime.
 - Réconcilie `PRODUCTION_STATE.json` sur le baseline `21cb4860e9ab16ff7d98b294a0398fdcec409879`.
 - Ne modifie aucun autre finding non prouvé dans ce lot.
+
+## 2026-09-22 — Clôture du registre des findings corrigés
+
+- Enregistre `2495647c3ccf3f676aa979bbe3e8337d9dbf12bf` comme baseline fonctionnelle après la fusion de PR #139.
+- Confirme les six findings prouvés comme corrigés sans réimplémentation : AF-09, AF-10, AF-18, AF-23, AF-24, AF-27.
+- Enregistre CI #1667, Governed Deploy #61 et les preuves GitHub OIDC S1/Docker.
+- Cette passe finale modifie uniquement `PRODUCTION_STATE.json` et la documentation.
