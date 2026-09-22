@@ -1,5 +1,16 @@
 # SUIVI.md
 
+## 2026-09-21 — AF-09 : réconciliation structurée post-merge
+
+- PR #126 fusionnée ; merge fonctionnel exact : `65e633381e8ae811bb5d4060826d0d679f0c7e80`.
+- MCP CI post-merge #1623 / run `35639195678` = SUCCESS sur ce SHA exact.
+- Governed Deploy #56 / run `35639195637` = SUCCESS ; étape `Deploy exact main SHA through MCP` = SUCCESS.
+- `PRODUCTION_STATE.json` déclare désormais ce baseline fonctionnel dans `githubCommitFull`, `githubState.currentMainCommit`, `serverGitState.lastDirectlyVerifiedCommitFull` et `serverCommitFull`.
+- Le futur merge de cette branche n'est pas prédit ni inscrit : il sera un descendant strictement documentaire de `65e633381e8ae811bb5d4060826d0d679f0c7e80`.
+- Le collecteur AF-09 corrigé doit donc classifier ce futur descendant via `documentation_descendant_scope=docs_only`, sans lire de SHA libre dans `SUIVI.md`.
+- La preuve Stablecoin read-only précédente a confirmé GitHub Stablecoin = S2 frontend sur `2a8be8219689e6213ce20f13d69b6b45f3693dfe`, worktree propre, via GitHub OIDC, sans bridge et sans mutation.
+- NEXT_ACTION : CI/review exact-head de cette réconciliation docs-only, merge, puis observation GitHub-only des runs exact-SHA. Aucun bridge n'est demandé tant qu'un fallback GitHub couvre la preuve.
+
 ## 2026-09-21 — AF-09 : source structurée des SHAs documentaires
 
 - Finding reproduit : `buildDocumentationLiveStateCommand()` utilisait le premier SHA 40-hex trouvé dans `SUIVI.md` comme `declaredGithubSha`, ce qui a interprété un SHA Stablecoin S2 comme baseline GitHub du repo MCP.
