@@ -1407,3 +1407,54 @@ test('GitHub-first bootstrap retires a merged historical candidate and hands exe
   assert.equal(result.nextMode, 'POST_INTEGRATION_OPERATIONAL_CONTINUITY');
   assert.equal(result.dispatch, null);
 });
+
+
+test('historical candidate handoff fails closed when lifecycle evidence is bound to another candidate head', () => {
+  const result = bootstrapCandidateConnection({
+    connection: {
+      repository: 'Patricked-code/MCP',
+      branch: 'claude/ecstatic-edison-v1dyt1',
+      observedHeadSha: '3'.repeat(40),
+      agentIdentity: 'claude',
+      provider: 'claude',
+      providerConversationRef: 'claude-session-current-head',
+      providerConversationRefProvenance: 'PROVIDED_BY_CLIENT',
+      githubActor: 'Patricked-code',
+      githubConnectionRef: 'github-connection-current-head',
+      connectionInstanceRef: 'connection-current-head',
+      observedAt: '2026-09-22T22:05:00+02:00'
+    },
+    intent: {
+      declaredMode: 'CONTINUE_PRECODE_WORK',
+      hasMaterialNewInformation: false,
+      requestsContinuation: true
+    },
+    sessions: [],
+    workItems: [{
+      workItemId: 'GWC-PRE-F-02',
+      intentKeys: ['candidate-acceptance'],
+      title: 'Candidate work remains current when lifecycle evidence targets another head',
+      status: 'READY',
+      priority: 100,
+      sequence: 99,
+      dependencies: [],
+      collisionDomains: ['tests:gwc']
+    }],
+    activeClaims: [],
+    lifecycle: {
+      sourcePullRequestNumber: 95,
+      sourcePullRequestState: 'MERGED',
+      candidateBranchAheadByMain: 0,
+      candidateHeadSha: '4'.repeat(40),
+      currentMainSha: '5'.repeat(40),
+      mainContinuityMode: 'POST_INTEGRATION_OPERATIONAL_CONTINUITY',
+      observedAt: '2026-09-22T22:05:00+02:00'
+    }
+  });
+
+  assert.equal(result.executionDisposition, 'CANDIDATE_ACTIVE');
+  assert.equal(result.resumeCandidateWork, true);
+  assert.equal(result.currentExecutionRef, 'candidate_branch');
+  assert.equal(result.nextMode, 'PRECODE_CANDIDATE');
+  assert.equal(result.dispatch?.status, 'ASSIGN');
+});
