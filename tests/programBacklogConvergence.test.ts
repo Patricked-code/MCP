@@ -33,6 +33,8 @@ test('program backlog convergence covers every known planning source exactly onc
   assert.deepEqual(result.missingTasks, []);
   assert.deepEqual(result.duplicateSourceKeys, []);
   assert.deepEqual(result.duplicateWorkItemIds, []);
+  assert.deepEqual(result.unreferencedWorkItems, []);
+  assert.deepEqual(result.unknownDependencies, []);
   assert.deepEqual(result.integrationSlotCollisions, []);
 });
 
