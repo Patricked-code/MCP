@@ -6,11 +6,11 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "githubObservedAt": "2026-09-22T19:50:59.827Z",
-  "githubObservationBasis": "af23_pr136_merge_ci1659_deploy60_oidc_evidence",
+  "githubObservedAt": "2026-09-22T20:11:17.219Z",
+  "githubObservationBasis": "corrected_findings_pr139_merge_ci1667_deploy61_oidc_evidence",
   "serverStateFreshness": "current_oidc_readonly_attested",
-  "runtimeStateFreshness": "current_exact_sha_post_governed_deploy60",
-  "githubCommitFull": "21cb4860e9ab16ff7d98b294a0398fdcec409879",
+  "runtimeStateFreshness": "current_exact_sha_post_governed_deploy61",
+  "githubCommitFull": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
   "requiredRules": [
     "GitHub est la source versionnée.",
     "Le serveur MCP est la source exécutée.",
@@ -28,7 +28,7 @@
   },
   "githubState": {
     "currentMainVerified": true,
-    "currentMainCommit": "21cb4860e9ab16ff7d98b294a0398fdcec409879",
+    "currentMainCommit": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
     "pullRequest37Merged": true,
     "pullRequest38Merged": true,
     "pullRequest39Merged": true,
@@ -157,14 +157,23 @@
     "af23DeployRunId": 35776086173,
     "af23DeployRunNumber": 60,
     "af23DeployJobId": 106909532745,
-    "af23State": "merged_ci_green_deployed_oidc_attested"
+    "af23State": "merged_ci_green_deployed_oidc_attested",
+    "correctedFindingsReconciliationPullRequest": 139,
+    "correctedFindingsReconciliationMergeCommit": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
+    "correctedFindingsReconciliationHead": "d614b4833704f030c23668d16d8cefbcf6452a0b",
+    "correctedFindingsReconciliationMainCiRunId": 35778289861,
+    "correctedFindingsReconciliationMainCiRunNumber": 1667,
+    "correctedFindingsReconciliationDeployRunId": 35778290026,
+    "correctedFindingsReconciliationDeployRunNumber": 61,
+    "correctedFindingsReconciliationDeployJobId": 106916978230,
+    "correctedFindingsReconciliationState": "merged_ci_green_deployed_oidc_attested_pending_docs_only_reconciliation"
   },
   "serverGitState": {
     "branch": "main",
-    "lastDirectlyVerifiedCommitAbbrev": "21cb486",
-    "lastDirectlyVerifiedCommitFull": "21cb4860e9ab16ff7d98b294a0398fdcec409879",
-    "originMain": "21cb4860e9ab16ff7d98b294a0398fdcec409879",
-    "lastDirectlyVerifiedAt": "2026-09-22T19:50:53.690Z",
+    "lastDirectlyVerifiedCommitAbbrev": "2495647",
+    "lastDirectlyVerifiedCommitFull": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
+    "originMain": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
+    "lastDirectlyVerifiedAt": "2026-09-22T20:11:17.219Z",
     "lastKnownWorkingTreeClean": true,
     "diffEmpty": true,
     "currentAlignmentAttested": true,
@@ -178,7 +187,7 @@
     "containerStatus": "running",
     "health": "healthy",
     "imageId": "sha256:87b14c8de8a29a6111d8a4427bf9f67e64c4a70ee071fd4de76ab4a617772b8c",
-    "currentRuntimeRevision": "21cb4860e9ab16ff7d98b294a0398fdcec409879",
+    "currentRuntimeRevision": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
     "status": "FULLY_ALIGNED",
     "healthOk": true,
     "oauthOk": true,
@@ -253,10 +262,10 @@
     "mandatoryBootstrapCorrectionDeploymentRunId": 33214825772,
     "mandatoryBootstrapCorrectionDeploymentGithubJobId": 98996005106,
     "latestGovernedDeploymentAttested": true,
-    "latestGovernedDeploymentSha": "21cb4860e9ab16ff7d98b294a0398fdcec409879",
-    "latestGovernedDeploymentRunId": 35776086173,
+    "latestGovernedDeploymentSha": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
+    "latestGovernedDeploymentRunId": 35778290026,
     "latestGovernedDeploymentRunAttempt": 1,
-    "latestGovernedDeploymentGithubJobId": 106909532745,
+    "latestGovernedDeploymentGithubJobId": 106916978230,
     "latestGovernedDeploymentStep": "Deploy exact main SHA through MCP",
     "latestGovernedDeploymentStepConclusion": "success"
   },
@@ -471,7 +480,7 @@
     "correctionReview": "zero_critical_important_minor",
     "pr49LateThreadsResolved": true
   },
-  "serverCommitFull": "21cb4860e9ab16ff7d98b294a0398fdcec409879",
+  "serverCommitFull": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
   "governedWorkflowPr95": {
     "pullRequest": 95,
     "candidateHead": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
@@ -507,7 +516,9 @@
     "mergeShaPredictionUsed": false,
     "docsOnlyFollowUpMerge": "161db894eb5a864eebb5b79e01e76446d6ef7af1",
     "finalS1EvidenceRunId": 35756125439,
-    "finalDockerEvidenceRunId": 35756129988
+    "finalDockerEvidenceRunId": 35756129988,
+    "correctedFindingRegistryMerge": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
+    "correctedFindingRegistryReconciled": true
   },
   "afGovernanceConsistency": {
     "findings": [
@@ -537,11 +548,13 @@
     "mergeShaPredictionUsed": false,
     "docsOnlyFollowUpMerge": "b5d3b2a2c99643c9c6a853570b9f7b417fb1d7b2",
     "finalS1EvidenceRunId": 35759072874,
-    "finalDockerEvidenceRunId": 35759084606
+    "finalDockerEvidenceRunId": 35759084606,
+    "correctedFindingRegistryMerge": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
+    "correctedFindingRegistryReconciled": true
   },
   "af23CheckpointEventLinks": {
     "finding": "AF-23",
-    "status": "CODE_MERGED_DEPLOYED_OIDC_ATTESTED",
+    "status": "CLOSED_BY_CORRECTED_FINDINGS_RECONCILIATION",
     "functionalBaseline": "21cb4860e9ab16ff7d98b294a0398fdcec409879",
     "pullRequest": 136,
     "candidateHead": "68f2305f11e312fc67c71bc68ccc917d958b5d5a",
@@ -560,7 +573,10 @@
     "mutationAllowed": false,
     "eventLinkAuthority": "OperationalAudit",
     "eventWindowMax": 64,
-    "correctedFindingRegistryPending": true
+    "correctedFindingRegistryPending": false,
+    "correctedFindingRegistryMerge": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
+    "finalS1EvidenceRunId": 35778584809,
+    "finalDockerEvidenceRunId": 35778603552
   },
   "correctedFindingsReconciled": {
     "findings": [
@@ -574,5 +590,36 @@
     "evidenceBaseline": "21cb4860e9ab16ff7d98b294a0398fdcec409879",
     "registry": ".mcp/gwc-evolution-design.json",
     "rationale": "prevent_duplicate_reimplementation_after_exact_sha_production_attestation"
+  },
+  "correctedFindingsReconciliation": {
+    "findings": [
+      "AF-09",
+      "AF-10",
+      "AF-18",
+      "AF-23",
+      "AF-24",
+      "AF-27"
+    ],
+    "status": "REGISTRY_MERGED_DEPLOYED_OIDC_ATTESTED_DOCS_ONLY_RECONCILIATION",
+    "functionalBaseline": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
+    "pullRequest": 139,
+    "candidateHead": "d614b4833704f030c23668d16d8cefbcf6452a0b",
+    "preMergeCiRunId": 35778064446,
+    "preMergeCiRunNumber": 1666,
+    "postMergeCiRunId": 35778289861,
+    "postMergeCiRunNumber": 1667,
+    "governedDeployRunId": 35778290026,
+    "governedDeployRunNumber": 61,
+    "governedDeployJobId": 106916978230,
+    "s1EvidenceRunId": 35778584809,
+    "s1EvidenceDigest": "sha256:bd5acdbfcc72bcaf19ce245252b61132e6dc3d69350f8907beb1bb43d4af2e45",
+    "s1EvidenceOutputDigest": "sha256:dc2c9ae026e24a6db12946de99552825fff369adede0280950a2343ffa3a03bf",
+    "dockerEvidenceRunId": 35778603552,
+    "dockerEvidenceDigest": "sha256:b9a506d75bf654bba0b2410d496ba88cf9ffefd619868695f73f43743487c28c",
+    "dockerEvidenceOutputDigest": "sha256:0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af",
+    "oidcTransport": "github_oidc_mcp_readonly",
+    "mutationAllowed": false,
+    "docsOnlyFollowUpRequired": true,
+    "mergeShaPredictionUsed": false
   }
 }

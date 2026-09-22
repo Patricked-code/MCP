@@ -1038,3 +1038,11 @@ Périmètre de cette réconciliation : `AF-09`, `AF-10`, `AF-18`, `AF-23`, `AF-2
 Raison : laisser ces flags à `false` provoquerait précisément le risque de doublon que la gouvernance cherche à éviter : un futur agent pourrait reconstruire un chantier déjà terminé.
 
 Le fichier étant machine-readable sous `.mcp/`, cette modification suit le pipeline normal CI + Governed Deploy et n'est pas déguisée en simple documentation.
+
+## 2026-09-22 — Décision : le registre corrected interdit la réimplémentation des findings prouvés
+
+Décision : lorsqu'un finding dispose d'une chaîne complète RED/GREEN, merge exact-head, CI post-merge, Governed Deploy et attestation GitHub-first, `.mcp/gwc-evolution-design.json.corrected=true` devient l'autorité anti-doublon pour ce finding.
+
+En conséquence, AF-09, AF-10, AF-18, AF-23, AF-24 et AF-27 ne doivent plus être reproposés comme nouveaux chantiers. Toute évolution ultérieure doit partir de l'implémentation existante et être classée comme nouvelle exigence ou extension distincte.
+
+La baseline fonctionnelle attestée de cette réconciliation est `2495647c3ccf3f676aa979bbe3e8337d9dbf12bf`. La présente passe ne prédit pas son propre merge SHA et reste strictement documentaire.

@@ -1,5 +1,18 @@
 # SUIVI.md
 
+## 2026-09-22 — Clôture registry anti-doublon et baseline finale
+
+- PR #139 fusionnée ; baseline fonctionnelle exacte : `2495647c3ccf3f676aa979bbe3e8337d9dbf12bf`.
+- Registre machine réconcilié : `AF-09`, `AF-10`, `AF-18`, `AF-23`, `AF-24`, `AF-27` sont désormais `corrected=true` ; aucun autre finding n'a été modifié par inférence.
+- MCP CI pré-merge #1666 / run `35778064446` = SUCCESS.
+- MCP CI post-merge #1667 / run `35778289861` = SUCCESS.
+- Governed Deploy #61 / run `35778290026` = SUCCESS ; étape `Deploy exact main SHA through MCP` = SUCCESS.
+- Preuve GitHub OIDC S1 / run `35778584809` : `main@2495647c3ccf3f676aa979bbe3e8337d9dbf12bf`, worktree propre, fetch read-only, push désactivé.
+- Preuve GitHub OIDC Docker / run `35778603552` : conteneur `wealthtech_mcp_ssh_bridge` healthy.
+- `PRODUCTION_STATE.json` déclare désormais `2495647c3ccf3f676aa979bbe3e8337d9dbf12bf` comme baseline structurée GitHub/S1/runtime.
+- Cette branche est strictement documentaire ; son futur merge SHA n'est ni deviné ni pré-écrit et devra être accepté comme descendant `docs_only`.
+- NEXT_ACTION : CI/review/merge exact-head de cette clôture documentaire, puis vérification finale GitHub-first de S1/Docker. Aucun bridge interactif requis.
+
 ## 2026-09-22 — Réconciliation anti-doublon des findings corrigés
 
 - Baseline fonctionnelle attestée : `21cb4860e9ab16ff7d98b294a0398fdcec409879` (PR #136 / AF-23).
