@@ -1,3 +1,4 @@
+import { canonicalJson } from '../canonicalJson.js';
 import { createHash } from 'node:crypto';
 
 export type GovernedStepId = `GW-${string}`;
@@ -123,20 +124,9 @@ function stringArray(value: unknown): readonly string[] | null {
   return Object.freeze([...value]);
 }
 
-function canonical(value: unknown): string {
-  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
-  if (value && typeof value === 'object') {
-    return `{${Object.entries(value as Record<string, unknown>)
-      .filter(([, entry]) => entry !== undefined)
-      .sort(([left], [right]) => left.localeCompare(right))
-      .map(([key, entry]) => `${JSON.stringify(key)}:${canonical(entry)}`).join(',')}}`;
-  }
-  return JSON.stringify(value);
-}
-
 function computedRegistryDigest(document: JsonObject): string {
   return createHash('sha256')
-    .update(canonical({ ...document, registryDigest: undefined }))
+    .update(canonicalJson({ ...document, registryDigest: undefined }))
     .digest('hex');
 }
 
