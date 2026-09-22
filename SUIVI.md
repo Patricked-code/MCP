@@ -11,7 +11,9 @@
 - #90 : GWC-12 a matérialisé le sous-ensemble sûr/current-first et conserve explicitement dix capacités en `DEFER`.
 - Audit durable : `docs/audits/2026-09-22-legacy-open-pr-intent-reconciliation.md`.
 - Aucun `TASK-*` runtime n'est créé par cette passe ; aucune mutation S1/S2/production ; aucune ancienne PR n'est fermée ou fusionnée.
-- NEXT_ACTION : à partir du main courant, auditer les dix capacités différées contre les surfaces existantes, puis ne proposer que les deltas réellement manquants, avec séparation READ / WRITE / DELETE / repository-admin.
+- Audit de chevauchement terminé : `github_get_mergeability` = doublon ; `github_get_commit_diff` = composable sans nouvelle primitive ; READ réellement complémentaires = commits/tree/required-checks ; PR-WRITE = request-review + update à redessiner ; admin = create-repository ; destructif = delete-file/delete-branch.
+- Matrice détaillée : `docs/audits/2026-09-22-deferred-github-capability-overlap.md`.
+- NEXT_ACTION : après validation documentaire de cette réconciliation, ouvrir le premier lot current-first READ uniquement pour `github_get_commits`, `github_get_tree` et `github_get_required_checks`; ne pas ressusciter #90.
 
 
 ## 2026-09-22 — Clôture registry anti-doublon et baseline finale
