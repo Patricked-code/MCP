@@ -917,3 +917,9 @@ Mise à jour : 2026-07-09T20:08:09Z
 - La fenêtre est bornée à 64 IDs et réinitialisée après l'événement `checkpoint.created`.
 - Le schéma `GovernedCheckpoint` reste inchangé ; aucune nouvelle autorité ni persistance parallèle.
 - TDD : RED #1651 avec un seul échec AF-23 ; GREEN #1654 avec 648/648 tests et gouvernance 13/13.
+
+## 2026-09-22 — Registre GWC : réconciliation des findings effectivement corrigés
+
+- Marque `AF-09`, `AF-10`, `AF-18`, `AF-23`, `AF-24` et `AF-27` comme `corrected=true` après preuves de merge, CI, déploiement et attestation S1/runtime.
+- Réconcilie `PRODUCTION_STATE.json` sur le baseline `21cb4860e9ab16ff7d98b294a0398fdcec409879`.
+- Ne modifie aucun autre finding non prouvé dans ce lot.

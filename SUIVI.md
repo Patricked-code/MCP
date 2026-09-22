@@ -1,5 +1,17 @@
 # SUIVI.md
 
+## 2026-09-22 — Réconciliation anti-doublon des findings corrigés
+
+- Baseline fonctionnelle attestée : `21cb4860e9ab16ff7d98b294a0398fdcec409879` (PR #136 / AF-23).
+- MCP CI #1659 / run `35776085995` = SUCCESS ; Governed Deploy #60 / run `35776086173` = SUCCESS.
+- Preuve OIDC S1 / run `35776386000` : `main@21cb4860e9ab16ff7d98b294a0398fdcec409879`, worktree propre, push désactivé.
+- Preuve OIDC Docker / run `35776391291` : conteneur MCP healthy.
+- Le registre machine `.mcp/gwc-evolution-design.json` est réconcilié pour éviter tout doublon futur : `AF-09`, `AF-10`, `AF-18`, `AF-23`, `AF-24`, `AF-27` passent à `corrected=true`.
+- Aucun autre finding n'est modifié par inférence ; seuls ceux disposant ici d'une chaîne de preuve complète sont marqués corrigés.
+- `PRODUCTION_STATE.json` est aligné sur `21cb4860e9ab16ff7d98b294a0398fdcec409879`.
+- Cette branche contient un fichier machine `.mcp/*.json` : elle n'est volontairement pas présentée comme `docs_only` et doit suivre CI + Governed Deploy normaux.
+- NEXT_ACTION : CI/review/merge exact-head de cette réconciliation machine, deploy exact-SHA, puis passe finale purement documentaire de baseline.
+
 ## 2026-09-22 — AF-23 : checkpoint ↔ journal opérationnel
 
 - Finding reproduit sur `main@b5d3b2a2c99643c9c6a853570b9f7b417fb1d7b2` : `GovernedCheckpoint.eventIds` était systématiquement `[]`.
