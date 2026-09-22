@@ -896,3 +896,10 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Enregistre MCP CI #1623 et Governed Deploy #56 comme preuves exact-SHA.
 - Conserve la règle anti-auto-référence : le SHA du futur merge documentaire n'est pas prédit.
 - La passe reste documentaire : `PRODUCTION_STATE.json` + Markdown uniquement.
+
+## 2026-09-22 — Gouvernance : correction des findings AF-10, AF-18, AF-24 et AF-27
+
+- Agrège les préconditions de gouvernance au lieu de masquer les blockers suivants.
+- Aligne le tie-break de `firstExecutableTask` entre Current State et Governed Task Queue.
+- Ajoute `MERGE_READY → REVIEW` et `DEPLOYING → SUPERSEDED` aux transitions explicitement permises.
+- TDD : RED #1634 avec exactement 4 échecs ciblés ; GREEN #1637 avec 646/646 tests et gouvernance 13/13.
