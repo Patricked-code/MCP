@@ -236,3 +236,52 @@ test('the versioned registry is valid and has an exact digest', async () => {
   assert.equal(TaskRegistrySeedSchema.safeParse(raw).success, true);
   assert.equal(registryDigest, taskRegistryDigest(unsigned));
 });
+
+
+test('AF-24 allows MERGE_READY to return to REVIEW for renewed review evidence', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    let task = await queue.claimNextTask(SESSION, (await queue.listVisibleTasks()).storeRevision);
+    assert.ok(task);
+    task = await queue.transitionTask({
+      taskId: task.taskId, expectedTaskRevision: task.taskRevision,
+      governedSessionId: SESSION, status: 'IN_PROGRESS'
+    });
+    task = await queue.transitionTask({
+      taskId: task.taskId, expectedTaskRevision: task.taskRevision,
+      governedSessionId: SESSION, status: 'REVIEW'
+    });
+    task = await queue.transitionTask({
+      taskId: task.taskId, expectedTaskRevision: task.taskRevision,
+      governedSessionId: SESSION, status: 'MERGE_READY'
+    });
+    task = await queue.transitionTask({
+      taskId: task.taskId, expectedTaskRevision: task.taskRevision,
+      governedSessionId: SESSION, status: 'REVIEW'
+    });
+    assert.equal(task.status, 'REVIEW');
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('AF-27 allows DEPLOYING to become SUPERSEDED when the governed work is replaced', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    let task = await queue.claimNextTask(SESSION, (await queue.listVisibleTasks()).storeRevision);
+    assert.ok(task);
+    for (const status of ['IN_PROGRESS', 'REVIEW', 'MERGE_READY', 'DEPLOYING'] as const) {
+      task = await queue.transitionTask({
+        taskId: task.taskId, expectedTaskRevision: task.taskRevision,
+        governedSessionId: SESSION, status
+      });
+    }
+    task = await queue.transitionTask({
+      taskId: task.taskId, expectedTaskRevision: task.taskRevision,
+      governedSessionId: SESSION, status: 'SUPERSEDED'
+    });
+    assert.equal(task.status, 'SUPERSEDED');
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
