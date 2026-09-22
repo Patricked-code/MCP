@@ -597,12 +597,28 @@ export function routeCandidateConnectionIntent(
   };
 }
 
+export const CandidateLifecycleObservationSchema = z.object({
+  sourcePullRequestNumber: z.number().int().positive(),
+  sourcePullRequestState: z.enum(['OPEN', 'MERGED', 'CLOSED_UNMERGED']),
+  candidateBranchAheadByMain: z.number().int().nonnegative(),
+  candidateHeadSha: GitShaSchema,
+  currentMainSha: GitShaSchema,
+  mainContinuityMode: z.enum([
+    'PREINTEGRATION_EVOLVED_CANDIDATE_BUILD',
+    'POST_INTEGRATION_OPERATIONAL_CONTINUITY',
+    'OTHER'
+  ]),
+  observedAt: z.string().datetime({ offset: true })
+}).strict();
+export type CandidateLifecycleObservation = z.infer<typeof CandidateLifecycleObservationSchema>;
+
 export const CandidateBootstrapInputSchema = z.object({
   connection: CandidateConnectionObservationSchema,
   intent: CandidateConnectionIntentSchema,
   sessions: z.array(CandidateSessionSchema).max(10_000),
   workItems: z.array(CandidateWorkItemSchema).max(5_000),
-  activeClaims: z.array(CandidateWorkClaimSchema).max(5_000)
+  activeClaims: z.array(CandidateWorkClaimSchema).max(5_000),
+  lifecycle: CandidateLifecycleObservationSchema.optional()
 }).strict();
 export type CandidateBootstrapInput = z.infer<typeof CandidateBootstrapInputSchema>;
 
@@ -612,6 +628,10 @@ export type CandidateBootstrapResult = {
   intent: CandidateConnectionIntentRoute;
   dispatch: CandidateDispatchResult | null;
   requiresUserChoice: boolean;
+  executionDisposition: 'CANDIDATE_ACTIVE' | 'HISTORICAL_CANDIDATE';
+  resumeCandidateWork: boolean;
+  currentExecutionRef: 'candidate_branch' | 'main';
+  nextMode: 'PRECODE_CANDIDATE' | 'POST_INTEGRATION_OPERATIONAL_CONTINUITY';
 };
 
 export function bootstrapCandidateConnection(
@@ -620,6 +640,27 @@ export function bootstrapCandidateConnection(
   const input = CandidateBootstrapInputSchema.parse(rawInput);
   const sessionResolution = resolveCandidateSession(input.connection, input.sessions);
   const intent = routeCandidateConnectionIntent(input.intent);
+  const historicalCandidate = (
+    input.lifecycle?.sourcePullRequestState === 'MERGED'
+    && input.lifecycle.candidateBranchAheadByMain === 0
+    && input.lifecycle.candidateHeadSha === input.connection.observedHeadSha
+    && input.lifecycle.mainContinuityMode === 'POST_INTEGRATION_OPERATIONAL_CONTINUITY'
+  );
+
+  if (historicalCandidate) {
+    return {
+      runtimeMcpRequired: false,
+      sessionResolution,
+      intent,
+      dispatch: null,
+      requiresUserChoice: false,
+      executionDisposition: 'HISTORICAL_CANDIDATE',
+      resumeCandidateWork: false,
+      currentExecutionRef: 'main',
+      nextMode: 'POST_INTEGRATION_OPERATIONAL_CONTINUITY'
+    };
+  }
+
   const shouldDispatch = (
     intent.mode === 'CONTINUE_PRECODE_WORK'
     || intent.mode === 'NEW_INFORMATION_THEN_CONTINUE_PRECODE'
@@ -637,7 +678,11 @@ export function bootstrapCandidateConnection(
           activeClaims: input.activeClaims
         })
       : null,
-    requiresUserChoice: intent.mode === 'ASK_USER'
+    requiresUserChoice: intent.mode === 'ASK_USER',
+    executionDisposition: 'CANDIDATE_ACTIVE',
+    resumeCandidateWork: true,
+    currentExecutionRef: 'candidate_branch',
+    nextMode: 'PRECODE_CANDIDATE'
   };
 }
 
