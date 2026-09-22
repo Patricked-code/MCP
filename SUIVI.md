@@ -1,5 +1,17 @@
 # SUIVI.md
 
+## 2026-09-22 — AF-10 / AF-18 / AF-24 / AF-27 : cohérence Task/Governance
+
+- Lot existing-first `REUSE/EXTEND` sans nouvelle primitive.
+- AF-10 : `deriveGovernancePreconditionReasons()` agrège désormais tous les blockers applicables au lieu de retourner seulement le premier.
+- AF-18 : `CurrentState.firstExecutableTask` applique le même tie-break déterministe que la Task Queue : priorité ↓, sequence ↑, puis `taskId` lexical.
+- AF-24 : transition `MERGE_READY → REVIEW` autorisée pour revenir à une phase de review lorsqu'une preuve doit être renouvelée.
+- AF-27 : transition `DEPLOYING → SUPERSEDED` autorisée lorsqu'un travail en déploiement est remplacé par une autorité plus récente.
+- TDD RED : MCP CI #1634 / run `35756845520` = FAILURE avec exactement 4 tests en échec, un par finding.
+- GREEN : MCP CI #1637 / run `35757094710` = SUCCESS ; gouvernance 13/13 ; suite complète 646/646.
+- Aucun store, schéma, route, workflow ou autorité supplémentaire n'est créé.
+- NEXT_ACTION : exact-head CI sur le HEAD documenté, PR/review/merge exact-head, puis CI/deploy post-merge et preuves GitHub-first read-only.
+
 ## 2026-09-21 — AF-09 : réconciliation structurée post-merge
 
 - PR #126 fusionnée ; merge fonctionnel exact : `65e633381e8ae811bb5d4060826d0d679f0c7e80`.

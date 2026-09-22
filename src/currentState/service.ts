@@ -51,7 +51,7 @@ function firstExecutable(tasks: GovernedTaskRecord[]): GovernedTaskRecord | null
   return [...tasks]
     .filter((task) => task.status === 'READY')
     .filter((task) => task.dependencies.every((dependency) => byId.get(dependency)?.status === 'DONE'))
-    .sort((left, right) => right.priority - left.priority || left.sequence - right.sequence)[0]
+    .sort((left, right) => right.priority - left.priority || left.sequence - right.sequence || left.taskId.localeCompare(right.taskId))[0]
     ?? null;
 }
 

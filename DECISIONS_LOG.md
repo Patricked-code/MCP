@@ -998,3 +998,15 @@ Décision : après le merge de code AF-09, `65e633381e8ae811bb5d4060826d0d679f0c
 La réconciliation documentaire qui suit ne tente pas de connaître son propre futur merge SHA. Elle écrit uniquement la baseline fonctionnelle attestée ; après fusion, le moteur doit démontrer que le nouveau `main` est un descendant dont le delta est strictement documentaire.
 
 Cette décision ferme la boucle AF-09 sans réintroduire une autorité SHA dans `SUIVI.md` et sans créer un nouveau store.
+
+## 2026-09-22 — Décision : cohérence fail-closed des préconditions et transitions de tâche
+
+Décision AF-10 : présenter tous les blockers de préconditions applicables en une seule décision. Cette extension reste fail-closed : elle ajoute de l'information et n'autorise aucune opération auparavant interdite.
+
+Décision AF-18 : la sélection du premier travail exécutable doit être déterministe et identique dans toutes les projections. L'ordre canonique est priorité décroissante, séquence croissante, puis `taskId` lexical.
+
+Décision AF-24 : `MERGE_READY → REVIEW` est un retour contrôlé vers une phase moins avancée pour renouveler une preuve de review ; il ne contourne aucun gate de merge.
+
+Décision AF-27 : `DEPLOYING → SUPERSEDED` permet de terminer proprement une tâche remplacée sans forcer un faux `VERIFYING` ou `DONE`.
+
+Aucun nouveau lifecycle parallèle n'est créé ; les corrections étendent uniquement `ALLOWED_TRANSITIONS` et les projections existantes.

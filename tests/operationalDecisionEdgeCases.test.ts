@@ -4,6 +4,7 @@ import test from 'node:test';
 import {
   deriveCapabilityReality,
   deriveGovernanceDecision,
+  deriveGovernancePreconditionReasons,
   deriveTaskReality
 } from '../src/governance/operationalDecision.js';
 
@@ -119,4 +120,26 @@ test('GitHub failure evidence does not block an operation that does not require 
   });
   assert.equal(decision.mayMutate, true);
   assert.equal(decision.reasonCodes.includes('GITHUB_AUTH_INVALID'), false);
+});
+
+
+test('AF-10 aggregates every governance precondition blocker', () => {
+  assert.deepEqual(deriveGovernancePreconditionReasons({
+    sessionPresent: false,
+    currentStateVersion: null,
+    currentFreshness: null,
+    acknowledgedStateVersion: null,
+    activeLockConflicts: 2,
+    bootstrapReceiptStatus: 'MISSING',
+    currentTaskStatus: null,
+    auditBaselineValid: false
+  }), [
+    'SESSION_UNBOUND',
+    'STATE_VERSION_STALE',
+    'CONTEXT_UNACKNOWLEDGED',
+    'LOCK_CONFLICT',
+    'BOOTSTRAP_RECEIPT_MISSING',
+    'TASK_UNCLAIMED',
+    'AUDIT_BASELINE_INVALID'
+  ]);
 });

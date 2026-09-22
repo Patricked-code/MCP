@@ -120,28 +120,35 @@ export type GovernancePreconditionReason =
 export function deriveGovernancePreconditionReasons(
   input: GovernancePreconditionInput
 ): GovernancePreconditionReason[] {
-  if (!input.sessionPresent) return ['SESSION_UNBOUND'];
+  const reasons: GovernancePreconditionReason[] = [];
+  if (!input.sessionPresent) reasons.push('SESSION_UNBOUND');
   if (input.currentStateVersion === null || input.currentFreshness !== 'CURRENT') {
-    return ['STATE_VERSION_STALE'];
+    reasons.push('STATE_VERSION_STALE');
   }
-  if (input.acknowledgedStateVersion === null) return ['CONTEXT_UNACKNOWLEDGED'];
-  if (input.acknowledgedStateVersion !== input.currentStateVersion) {
-    return ['STATE_VERSION_STALE'];
+  if (input.acknowledgedStateVersion === null) {
+    reasons.push('CONTEXT_UNACKNOWLEDGED');
+  } else if (
+    input.currentStateVersion !== null
+    && input.acknowledgedStateVersion !== input.currentStateVersion
+  ) {
+    reasons.push('STATE_VERSION_STALE');
   }
-  if (input.activeLockConflicts > 0) return ['LOCK_CONFLICT'];
+  if (input.activeLockConflicts > 0) reasons.push('LOCK_CONFLICT');
   if (
     Object.prototype.hasOwnProperty.call(input, 'bootstrapReceiptStatus')
     && input.bootstrapReceiptStatus !== 'CURRENT'
   ) {
-    return input.bootstrapReceiptStatus === 'MISSING' || input.bootstrapReceiptStatus === null
-      ? ['BOOTSTRAP_RECEIPT_MISSING']
-      : ['BOOTSTRAP_RECEIPT_STALE'];
+    reasons.push(
+      input.bootstrapReceiptStatus === 'MISSING' || input.bootstrapReceiptStatus === null
+        ? 'BOOTSTRAP_RECEIPT_MISSING'
+        : 'BOOTSTRAP_RECEIPT_STALE'
+    );
   }
   if (Object.prototype.hasOwnProperty.call(input, 'currentTaskStatus') && !input.currentTaskStatus) {
-    return ['TASK_UNCLAIMED'];
+    reasons.push('TASK_UNCLAIMED');
   }
-  if (input.auditBaselineValid === false) return ['AUDIT_BASELINE_INVALID'];
-  return [];
+  if (input.auditBaselineValid === false) reasons.push('AUDIT_BASELINE_INVALID');
+  return unique(reasons) as GovernancePreconditionReason[];
 }
 
 export type TaskObservedPhase =

@@ -154,3 +154,20 @@ test('currentTask excludes every terminal task and unusable or unbound sessions'
   }], null);
   assert.equal((await unbound.getInventory(CURRENT_STATE_REQUEST)).currentTask, null);
 });
+
+
+test('AF-18 current state uses the same deterministic taskId tie-break as the queue', async () => {
+  const service = currentStateService([
+    {
+      taskId: 'TASK-20260822-010', sequence: 3, priority: 50, status: 'READY',
+      ownerGovernedSessionId: null, dependencies: []
+    },
+    {
+      taskId: 'TASK-20260822-009', sequence: 3, priority: 50, status: 'READY',
+      ownerGovernedSessionId: null, dependencies: []
+    }
+  ], null);
+
+  const inventory = await service.getInventory(CURRENT_STATE_REQUEST);
+  assert.equal(inventory.firstExecutableTask?.taskId, 'TASK-20260822-009');
+});
