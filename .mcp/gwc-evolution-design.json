@@ -506,13 +506,13 @@
       "finding": "AF-09",
       "owner": "GWC-16",
       "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-      "corrected": false
+      "corrected": true
     },
     {
       "finding": "AF-10",
       "owner": "GWC-9",
       "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-      "corrected": false
+      "corrected": true
     },
     {
       "finding": "AF-11",
@@ -560,7 +560,7 @@
       "finding": "AF-18",
       "owner": "GWC-5",
       "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-      "corrected": false
+      "corrected": true
     },
     {
       "finding": "AF-19",
@@ -590,13 +590,13 @@
       "finding": "AF-23",
       "owner": "GWC-16",
       "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-      "corrected": false
+      "corrected": true
     },
     {
       "finding": "AF-24",
       "owner": "GWC-5",
       "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-      "corrected": false
+      "corrected": true
     },
     {
       "finding": "AF-25",
@@ -614,7 +614,7 @@
       "finding": "AF-27",
       "owner": "GWC-5",
       "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-      "corrected": false
+      "corrected": true
     },
     {
       "finding": "AF-28",
