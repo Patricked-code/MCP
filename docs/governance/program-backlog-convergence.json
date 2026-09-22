@@ -1958,7 +1958,14 @@
         "Heartbeat is liveness only",
         "STALE/UNKNOWN never releases ownership",
         "No second queue/session/claim/lock authority"
-      ]
+      ],
+      "externalWork": {
+        "pullRequest": 154,
+        "branch": "mcp/universal-agent-coordination-20260923",
+        "observedHeadSha": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "plan": "docs/governance/universal-agent-coordination-plan.md",
+        "state": "ACTIVE_EXTERNAL_WORK"
+      }
     },
     {
       "id": "PB-GWC-RECONCILE",
