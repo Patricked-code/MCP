@@ -66,7 +66,7 @@ function sourceKey(record) {
   return record.sourceKey;
 }
 
-export function validateProgramBacklogConvergence({ projection, todo, roadmap, gwc }) {
+export function validateProgramBacklogConvergence({ projection, todo, roadmap, gwc, taskRegistry }) {
   const workItems = Array.isArray(projection?.workItems) ? projection.workItems : [];
   const coverage = projection?.sourceCoverage ?? {};
 
@@ -94,6 +94,11 @@ export function validateProgramBacklogConvergence({ projection, todo, roadmap, g
   const decisionActual = (gwc?.openDecisions ?? []).map((entry) => entry.id);
   const decisionProjected = Array.isArray(coverage.decisions)
     ? coverage.decisions.map((entry) => entry.sourceId)
+    : [];
+
+  const taskActual = (taskRegistry?.tasks ?? []).map((entry) => entry.taskId);
+  const taskProjected = Array.isArray(coverage.taskRegistry)
+    ? coverage.taskRegistry.map((entry) => entry.sourceId)
     : [];
 
   const allCoverage = Object.values(coverage)
@@ -155,6 +160,8 @@ export function validateProgramBacklogConvergence({ projection, todo, roadmap, g
     extraFindings: sorted(findingProjected.filter((value) => !findingActual.includes(value))),
     missingDecisions: sorted(decisionActual.filter((value) => !decisionProjected.includes(value))),
     extraDecisions: sorted(decisionProjected.filter((value) => !decisionActual.includes(value))),
+    missingTasks: sorted(taskActual.filter((value) => !taskProjected.includes(value))),
+    extraTasks: sorted(taskProjected.filter((value) => !taskActual.includes(value))),
     duplicateSourceKeys,
     duplicateWorkItemIds,
     unknownCoveredBy,
