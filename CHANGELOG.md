@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## 2026-09-22 — Historical candidate → post-integration continuity
+
+- Extension existing-first de `bootstrapCandidateConnection()` avec une observation lifecycle GitHub bornée ; aucune nouvelle authority, queue, session runtime, lock, store ou transport.
+- Une candidate déjà intégrée est classée `HISTORICAL_CANDIDATE` uniquement si la PR source est mergée, la branche n'a aucun commit unique devant main, le candidate HEAD est lié au HEAD observé et main est en `POST_INTEGRATION_OPERATIONAL_CONTINUITY`.
+- Dans ce cas, le redispatch PRECODE est supprimé : `resumeCandidateWork=false`, `currentExecutionRef=main`.
+- TDD exact : RED CI #1715, self-review RED #1719, GREEN final #1721.
+- PR #146 merge `38f7ab60b4fa30db50536278d2b34ddbcfe2c204`, CI main #1722 et Governed Deploy #63 verts, S1/Docker attestés via GitHub OIDC read-only.
+- PR #149 réconcilie le baseline structuré ; merge descendant `3933852cdb40b05b59b06460faa9116715d597a9`, CI #1727, Governed Deploy #64 et preuves OIDC finales verts.
+- La branche Claude historique reste immuable comme provenance ; un handoff durable est inscrit sur PR #95.
+
 ## 2026-09-19 — Incremental intake continuity and coherence
 
 - Ajout additif de séquençage monotone des `NEW_INFORMATION_INTAKE-NNN`.

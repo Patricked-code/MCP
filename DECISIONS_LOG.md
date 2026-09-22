@@ -3,6 +3,16 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-22 — Une candidate mergée devient provenance, jamais exécution courante
+
+Décision : lorsqu'une branche candidate historique a déjà été intégrée, son `NEXT_ACTION` branch-local ne peut plus être repris comme instruction d'exécution courante. Le bootstrap existant est étendu — sans seconde autorité — pour produire une disposition machine `HISTORICAL_CANDIDATE`.
+
+La disposition n'est admise que sur preuve lifecycle bornée et fail-closed : PR source `MERGED`, `candidateBranchAheadByMain=0`, `candidateHeadSha` identique au HEAD réellement observé de la connexion, et main explicitement en `POST_INTEGRATION_OPERATIONAL_CONTINUITY`. Toute preuve incomplète ou liée à un autre HEAD conserve le comportement candidat historique au lieu d'inférer une bascule.
+
+Conséquence : un agent revenant sur `claude/ecstatic-edison-v1dyt1` ne doit ni rejouer F-02 ni pousser un ancien patch local. Il réobserve GitHub, compare son delta au main courant, abandonne ce qui est déjà absorbé/superseded et ne redérive depuis main que ce qui reste réellement manquant.
+
+Provenance : la branche historique n'est pas déplacée vers main et n'est pas réécrite ; PR #95 conserve son historique. GitHub `main` et les autorités live restent les seules sources de l'exécution post-intégration courante.
+
 ## 2026-09-19 — Les nouvelles informations passent un gate avant adoption
 
 Décision : un `NEW_INFORMATION_INTAKE` est une entrée de connaissance, jamais une règle canonique ou une tâche par défaut.

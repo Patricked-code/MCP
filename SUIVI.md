@@ -1,5 +1,19 @@
 # SUIVI.md
 
+## 2026-09-22 — Handoff automatique des candidates historiques vers main
+
+- Gap confirmé sur le bootstrap PRECODE : les règles documentaires imposaient la réconciliation d'une branche candidate déjà intégrée, mais `bootstrapCandidateConnection()` ne matérialisait pas encore cette disposition.
+- PR #146 fusionnée sous garde exact-head : candidate `8ab1bb9d354e601ba59f76cc83d234ca15232624`, merge fonctionnel `38f7ab60b4fa30db50536278d2b34ddbcfe2c204`.
+- TDD : RED #1715 / run `35788513173`; self-review RED #1719 / run `35788767978`; GREEN final #1721 / run `35788911248`.
+- Le bootstrap retourne désormais `HISTORICAL_CANDIDATE`, `resumeCandidateWork=false`, `currentExecutionRef=main` et aucun dispatch PRECODE uniquement si la preuve lifecycle est bornée : PR source mergée, branche candidate sans commit unique devant main, candidate HEAD lié au HEAD observé et main en `POST_INTEGRATION_OPERATIONAL_CONTINUITY`.
+- MCP CI main #1722 / run `35789164585` = SUCCESS ; Governed Deploy #63 / run `35789164675` = SUCCESS.
+- Preuves GitHub OIDC fonctionnelles : S1 run `35789394632` = `38f7ab60...`, worktree propre, push désactivé ; Docker run `35789399187` = healthy.
+- PR #149 a réconcilié uniquement `PRODUCTION_STATE.json` sans prédire son merge ; merge documentaire/état réel `3933852cdb40b05b59b06460faa9116715d597a9`, CI #1727 SUCCESS, Governed Deploy #64 SUCCESS.
+- Preuves finales du descendant documentaire : S1 run `35790116600` = `3933852c...`, worktree propre, push désactivé ; Docker run `35790119730` = healthy.
+- La branche historique `claude/ecstatic-edison-v1dyt1` n'a pas été réécrite. PR #95 porte un handoff durable indiquant aux agents revenants de comparer tout ancien delta local au `main` courant avant action.
+- PR #145 a été resynchronisée avec le `main` courant par merge non destructif, sans overlap de fichiers et sans force-push ; son backlog current-first reste inchangé.
+- NEXT_ACTION : valider/merger PR #145 exact-head, puis ouvrir le premier lot READ current-first uniquement pour `github_get_commits`, `github_get_tree` et `github_get_required_checks`.
+
 ## 2026-09-22 — Réconciliation des intentions des PR historiques ouvertes
 
 - Baseline GitHub observée avant écriture : `main@87deb6311e13a37f09f6570a78c2f502df12a240`, merge de la PR #142.
