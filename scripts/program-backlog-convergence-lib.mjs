@@ -124,6 +124,24 @@ export function validateProgramBacklogConvergence({ projection, todo, roadmap, g
     .filter((entry) => !ALLOWED_DISPOSITIONS.has(entry.disposition))
     .map((entry) => ({ id: entry.id, disposition: entry.disposition }));
 
+  const referencedWorkItems = new Set(
+    allCoverage
+      .map((entry) => entry.coveredBy)
+      .filter((value) => typeof value === 'string')
+  );
+  const unreferencedWorkItems = workItems
+    .filter((entry) => typeof entry.id === 'string' && !referencedWorkItems.has(entry.id))
+    .map((entry) => entry.id)
+    .sort();
+
+  const unknownDependencies = workItems.flatMap((entry) =>
+    Array.isArray(entry.dependsOn)
+      ? entry.dependsOn
+          .filter((dependency) => !workItemIds.has(dependency))
+          .map((dependency) => ({ id: entry.id, dependency }))
+      : []
+  );
+
   const incompleteWorkItems = workItems
     .filter((entry) => (
       typeof entry.id !== 'string'
@@ -166,6 +184,8 @@ export function validateProgramBacklogConvergence({ projection, todo, roadmap, g
     duplicateWorkItemIds,
     unknownCoveredBy,
     invalidDispositions,
+    unreferencedWorkItems,
+    unknownDependencies,
     incompleteWorkItems,
     integrationSlotCollisions
   };
