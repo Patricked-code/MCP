@@ -1,5 +1,17 @@
 # SUIVI.md
 
+## 2026-09-22 — AF-10 / AF-18 / AF-24 / AF-27 : réconciliation post-déploiement
+
+- PR #130 fusionnée ; baseline fonctionnelle exacte : `9b190a940d700f9b070bf5a9a8c0c8400337e53c`.
+- MCP CI post-merge #1642 / run `35757678558` = SUCCESS.
+- Governed Deploy #58 / run `35757678718` = SUCCESS ; étape `Deploy exact main SHA through MCP` = SUCCESS.
+- Preuve GitHub OIDC read-only S1 / run `35757943186` : `main@9b190a940d700f9b070bf5a9a8c0c8400337e53c`, worktree propre, fetch read-only, push désactivé.
+- Preuve GitHub OIDC read-only Docker / run `35757955482` : conteneur `wealthtech_mcp_ssh_bridge` healthy.
+- `PRODUCTION_STATE.json` déclare désormais `9b190a940d700f9b070bf5a9a8c0c8400337e53c` comme baseline GitHub/S1/runtime structurée.
+- La réconciliation reste docs-only ; son futur merge SHA n'est ni deviné ni pré-écrit.
+- AF-09 précédent est marqué clos par son descendant docs-only `161db894eb5a864eebb5b79e01e76446d6ef7af1`.
+- NEXT_ACTION : CI/review de cette réconciliation docs-only, merge exact-head, puis vérification GitHub-only du descendant documentaire.
+
 ## 2026-09-22 — AF-10 / AF-18 / AF-24 / AF-27 : cohérence Task/Governance
 
 - Lot existing-first `REUSE/EXTEND` sans nouvelle primitive.

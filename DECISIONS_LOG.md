@@ -1010,3 +1010,11 @@ Décision AF-24 : `MERGE_READY → REVIEW` est un retour contrôlé vers une pha
 Décision AF-27 : `DEPLOYING → SUPERSEDED` permet de terminer proprement une tâche remplacée sans forcer un faux `VERIFYING` ou `DONE`.
 
 Aucun nouveau lifecycle parallèle n'est créé ; les corrections étendent uniquement `ALLOWED_TRANSITIONS` et les projections existantes.
+
+## 2026-09-22 — Décision : baseline fonctionnelle AF governance puis descendant docs-only
+
+Décision : `9b190a940d700f9b070bf5a9a8c0c8400337e53c` est la nouvelle baseline fonctionnelle structurée pour le lot AF-10/AF-18/AF-24/AF-27, car CI #1642, Governed Deploy #58, le statut Git S1 et la santé Docker sont tous attestés via GitHub-first.
+
+La branche de réconciliation ne modifie que `PRODUCTION_STATE.json` et la documentation. Son futur merge SHA n'est pas prédit ; le collecteur AF-09 doit l'accepter uniquement si le delta depuis `9b190a940d700f9b070bf5a9a8c0c8400337e53c` est strictement documentaire.
+
+Les preuves live nécessaires ont été obtenues par GitHub OIDC read-only. Aucune exposition du bridge n'a été demandée.

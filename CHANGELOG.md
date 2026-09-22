@@ -903,3 +903,10 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Aligne le tie-break de `firstExecutableTask` entre Current State et Governed Task Queue.
 - Ajoute `MERGE_READY → REVIEW` et `DEPLOYING → SUPERSEDED` aux transitions explicitement permises.
 - TDD : RED #1634 avec exactement 4 échecs ciblés ; GREEN #1637 avec 646/646 tests et gouvernance 13/13.
+
+## 2026-09-22 — Baseline structurée après AF-10 / AF-18 / AF-24 / AF-27
+
+- Réconcilie `PRODUCTION_STATE.json` sur `9b190a940d700f9b070bf5a9a8c0c8400337e53c` après PR #130.
+- Enregistre CI #1642, Governed Deploy #58 et les preuves OIDC read-only S1/Docker.
+- Marque la précédente boucle AF-09 comme close par descendant docs-only.
+- Aucun code runtime, test ou workflow n'est modifié dans cette passe.
