@@ -223,3 +223,19 @@ PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a
 - [ ] optionnel : configurer `mcp-s2-readonly` comme fallback SSH secondaire ;
 - [ ] seulement après preuves, décider si le fallback read-only peut être sélectionné automatiquement ;
 - [ ] traiter tout transport serveur WRITE comme un chantier séparé avec parité et gouvernance propres ;\n  - [x] construire et valider GREEN la candidate Stablecoin fast-forward exact-SHA, OIDC dédié, sans build/restart ;\n  - [ ] fusionner/déployer le MCP exact-SHA puis attester le premier fast-forward Stablecoin S2 ;\n  - [ ] généraliser à d'autres écritures uniquement par chantiers séparés, jamais par shell libre.
+
+
+## Réconciliation des anciennes PR ouvertes — backlog résiduel current-first (2026-09-22)
+
+Source : `docs/audits/2026-09-22-legacy-open-pr-intent-reconciliation.md`.
+
+Règle : aucune reprise directe des branches #85/#86/#88/#89/#90. Chaque item est redérivé depuis le `main` courant après recherche d'équivalent.
+
+- [x] Classer #85 comme intention historique absorbée par GitHub-first/OIDC ; ne pas créer un second transport parallèle.
+- [x] Classer #89 READ comme déjà matérialisé ; conserver son manifeste de capacités comme superseded, non autoritatif.
+- [x] Classer le fast-forward Stablecoin de #86 comme superseded par PR #117 et les fast-forwards attestés #118/#121.
+- [ ] Auditer `github_create_repository` (#88/GWC-12 DEFER) contre les primitives GitHub actuelles ; si toujours manquant, produire un design current-first privé-only, org-bounded, idempotent et scoped-write avant RED.
+- [ ] Auditer le lot READ différé de #90 : `github_get_tree`, `github_get_commits`, `github_get_commit_diff`, `github_get_mergeability`, `github_get_required_checks`; supprimer tout doublon sémantique avec les outils READ/Governed Context actuels avant implémentation.
+- [ ] Traiter séparément les mutations différées `github_update_pull_request` et `github_request_review`, avec exact-head/freshness/gouvernance adaptées ; ne pas les coupler aux suppressions.
+- [ ] Traiter `github_delete_file` et `github_delete_branch` comme un lot destructif séparé ; aucune extension implicite de transport DELETE et aucun assouplissement du scoped WRITE gate.
+- [ ] Si un futur delta Stablecoin devient applicatif, concevoir un chantier distinct build/restart/health/rollback ; ne jamais réactiver le vieux chemin #86 et ne pas modifier le bounded fast-forward non applicatif existant.
