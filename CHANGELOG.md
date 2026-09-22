@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## 2026-09-23 — Exhaustive program backlog convergence
+
+- Ajout d'une projection dérivée non exécutable couvrant TODO, ROADMAP, GWC, findings AF, décisions OD, task-registry, intentions historiques et PR #154.
+- 34 workstreams current-first avec Integration Slot unique, dépendances, autorités réutilisées, sous-tâches, prochaine action et invariants de non-régression.
+- Ajout d'un contrôle automatique de couverture exactly-once et de collision d'Integration Slot.
+- `corrected=false` / `OPEN` / `[ ]` ne déclenchent jamais automatiquement du code : les deltas sont d'abord réconciliés contre le main courant.
+- PR #154/UAC reste référencée comme travail actif externe, non copiée ni réimplémentée.
+- Aucun changement Task Queue, Operational Memory, runtime, S1, permissions ou WRITE gate.
+
 ## 2026-09-22 — Historical candidate → post-integration continuity
 
 - Extension existing-first de `bootstrapCandidateConnection()` avec une observation lifecycle GitHub bornée ; aucune nouvelle authority, queue, session runtime, lock, store ou transport.
