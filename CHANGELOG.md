@@ -930,3 +930,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Confirme les six findings prouvés comme corrigés sans réimplémentation : AF-09, AF-10, AF-18, AF-23, AF-24, AF-27.
 - Enregistre CI #1667, Governed Deploy #61 et les preuves GitHub OIDC S1/Docker.
 - Cette passe finale modifie uniquement `PRODUCTION_STATE.json` et la documentation.
+
+
+## 2026-09-22 — Réconciliation des PR historiques ouvertes
+
+- Ajout de `docs/audits/2026-09-22-legacy-open-pr-intent-reconciliation.md`.
+- Classification current-first de #85/#86/#88/#89/#90 afin d'éviter merge stale, doublon et réimplémentation.
+- #85 et #89 sont absorbées/superseded selon les autorités actuelles ; le fast-forward non applicatif de #86 est remplacé par le chemin Stablecoin bounded-write déjà livré.
+- #88 et le sous-ensemble différé de #90 restent visibles comme backlog candidat, sans création de `TASK-*` ni autorisation runtime.
+- Aucun TypeScript, workflow, permission, secret, S1/S2 ou production n'est modifié.
