@@ -1,3 +1,4 @@
+import { canonicalJson } from '../canonicalJson.js';
 import { createHash } from 'node:crypto';
 
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -58,22 +59,7 @@ const tools = new Map<string, CurrentToolContract>();
 const resources = new Map<string, CurrentResourceContract>();
 let observedAt: string | null = null;
 
-function canonicalize(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(canonicalize);
-  if (value && typeof value === 'object') {
-    return Object.fromEntries(
-      Object.entries(value as JsonObject)
-        .filter(([, entry]) => entry !== undefined)
-        .sort(([left], [right]) => left.localeCompare(right))
-        .map(([key, entry]) => [key, canonicalize(entry)])
-    );
-  }
-  return value;
-}
-
-export function canonicalJson(value: unknown): string {
-  return JSON.stringify(canonicalize(value));
-}
+export { canonicalJson };
 
 function digest(value: unknown): string {
   return createHash('sha256').update(canonicalJson(value)).digest('hex');
