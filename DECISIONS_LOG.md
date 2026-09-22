@@ -990,3 +990,11 @@ Autorité structurée réutilisée : `PRODUCTION_STATE.json`. Aucun nouveau stor
 Compatibilité : les anciens champs structurés sont conservés par fallback (`githubState.currentMainCommit`, `serverCommitFull`). Le waiver descendant docs-only reste inchangé.
 
 Anti-auto-référence : la branche code AF-09 ne tente pas d'écrire son futur merge SHA dans `PRODUCTION_STATE.json`. Après merge et déploiement, une passe docs-only séparée actualisera la baseline au merge SHA réellement observé.
+
+## 2026-09-21 — Décision AF-09 : baseline fonctionnelle puis descendant docs-only
+
+Décision : après le merge de code AF-09, `65e633381e8ae811bb5d4060826d0d679f0c7e80` devient la baseline fonctionnelle structurée car CI #1623 et Governed Deploy #56 ont réussi sur ce SHA exact.
+
+La réconciliation documentaire qui suit ne tente pas de connaître son propre futur merge SHA. Elle écrit uniquement la baseline fonctionnelle attestée ; après fusion, le moteur doit démontrer que le nouveau `main` est un descendant dont le delta est strictement documentaire.
+
+Cette décision ferme la boucle AF-09 sans réintroduire une autorité SHA dans `SUIVI.md` et sans créer un nouveau store.
