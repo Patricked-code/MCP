@@ -1,5 +1,17 @@
 # SUIVI.md
 
+## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
+
+- Autorisation utilisateur : généraliser heartbeat/claim à l'ensemble du flux post-intégration sans créer d'autorité parallèle.
+- Baseline exacte avant écriture : `main@cda7610e1dcd5bc56511f0b42f372f68058ca2fb`.
+- Branche gouvernée : `mcp/universal-agent-coordination-20260923`; PR draft #154.
+- Existing-first : réutilisation des Governed Sessions, Governed Task Queue, claims, collision domains, locks, GitHub et du modèle heartbeat/liveness existant.
+- Nouveau contrat pur/read-only : `src/governedContext/agentCoordination.ts` produit un `READ_ONLY_AGENT_COORDINATION` snapshot non autoritatif.
+- Invariant : `STALE` ou `UNKNOWN` heartbeat ne libère ni ne transfère jamais un claim; liveness et ownership restent séparés.
+- TDD : le premier commit `41ab9e9d...` introduit uniquement les tests RED; le commit `91b56861...` introduit l'implémentation candidate.
+- Aucun store, Task Queue, session manager, lock service ou ownership authority supplémentaire; aucune mutation S1/production.
+- NEXT_ACTION : obtenir CI exact-head, corriger uniquement les régressions éventuelles, puis étendre la projection aux adaptateurs runtime/GitHub-first sans dupliquer les autorités.
+
 ## 2026-09-22 — Handoff automatique des candidates historiques vers main
 
 - Gap confirmé sur le bootstrap PRECODE : les règles documentaires imposaient la réconciliation d'une branche candidate déjà intégrée, mais `bootstrapCandidateConnection()` ne matérialisait pas encore cette disposition.
