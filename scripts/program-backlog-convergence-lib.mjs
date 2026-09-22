@@ -51,8 +51,8 @@ export function extractRoadmapProgramHeadings(markdown) {
     if (!match) continue;
     const title = match[2].trim();
     if (
-      /^CHANTIER [A-J]\s+—/.test(title)
-      || /^[A-J]\d(?:\.\d+)?\s+—/.test(title)
+      /^(?:A1|A2\.[12]|A3|B[1-3]|C[0-5]|D[1-3]|E[1-3]|G[1-3]|I[1-3]|J[1-4])\s+—/.test(title)
+      || /^CHANTIER (?:F|H)\s+—/.test(title)
       || /^GitHub-first Operational Continuity V1\s+—/.test(title)
       || /^Programme post-intégration\s+—/.test(title)
     ) {
