@@ -1,3 +1,4 @@
+import { canonicalJson } from '../canonicalJson.js';
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
 
@@ -47,7 +48,7 @@ function intentDigest(input: {
   source: IntentSource;
   receivedAt: string;
 }): string {
-  return createHash('sha256').update(JSON.stringify(input)).digest('hex');
+  return createHash('sha256').update(canonicalJson(input)).digest('hex');
 }
 
 export function captureIntent(rawInput: unknown): IntentCaptureResult {
