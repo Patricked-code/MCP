@@ -1,5 +1,19 @@
 # SUIVI.md
 
+## 2026-09-22 — Réconciliation des intentions des PR historiques ouvertes
+
+- Baseline GitHub observée avant écriture : `main@87deb6311e13a37f09f6570a78c2f502df12a240`, merge de la PR #142.
+- PR historiques inspectées : #85, #86, #88, #89, #90. Elles divergent toutes de `main` depuis l'ancienne base `555a51d0648ef796eba4868282942055a2f67a65` et ne sont pas des candidats à fusion en bloc.
+- #85 : intention Actions/SSH absorbée par le modèle GitHub-first/OIDC actuel ; provenance seulement.
+- #86 : fast-forward Stablecoin non applicatif superseded par PR #117 et les exécutions SUCCESS #118/#121 ; son ancien build/restart n'est pas réactivé.
+- #88 : `github_create_repository` reste un intent différé valide ; aucun module #88 n'est présent sur `main`.
+- #89 : les 12 READ sont matérialisés dans `githubControlPlaneRead.ts`; son manifeste historique est superseded.
+- #90 : GWC-12 a matérialisé le sous-ensemble sûr/current-first et conserve explicitement dix capacités en `DEFER`.
+- Audit durable : `docs/audits/2026-09-22-legacy-open-pr-intent-reconciliation.md`.
+- Aucun `TASK-*` runtime n'est créé par cette passe ; aucune mutation S1/S2/production ; aucune ancienne PR n'est fermée ou fusionnée.
+- NEXT_ACTION : à partir du main courant, auditer les dix capacités différées contre les surfaces existantes, puis ne proposer que les deltas réellement manquants, avec séparation READ / WRITE / DELETE / repository-admin.
+
+
 ## 2026-09-22 — Clôture registry anti-doublon et baseline finale
 
 - PR #139 fusionnée ; baseline fonctionnelle exacte : `2495647c3ccf3f676aa979bbe3e8337d9dbf12bf`.
