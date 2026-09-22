@@ -910,3 +910,10 @@ Mise à jour : 2026-07-09T20:08:09Z
 - Enregistre CI #1642, Governed Deploy #58 et les preuves OIDC read-only S1/Docker.
 - Marque la précédente boucle AF-09 comme close par descendant docs-only.
 - Aucun code runtime, test ou workflow n'est modifié dans cette passe.
+
+## 2026-09-22 — Operational Memory : correction AF-23 des eventIds de checkpoint
+
+- Les checkpoints lient désormais les événements opérationnels réussis de leur governed session depuis le checkpoint précédent.
+- La fenêtre est bornée à 64 IDs et réinitialisée après l'événement `checkpoint.created`.
+- Le schéma `GovernedCheckpoint` reste inchangé ; aucune nouvelle autorité ni persistance parallèle.
+- TDD : RED #1651 avec un seul échec AF-23 ; GREEN #1654 avec 648/648 tests et gouvernance 13/13.

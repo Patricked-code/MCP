@@ -1018,3 +1018,13 @@ Décision : `9b190a940d700f9b070bf5a9a8c0c8400337e53c` est la nouvelle baseline 
 La branche de réconciliation ne modifie que `PRODUCTION_STATE.json` et la documentation. Son futur merge SHA n'est pas prédit ; le collecteur AF-09 doit l'accepter uniquement si le delta depuis `9b190a940d700f9b070bf5a9a8c0c8400337e53c` est strictement documentaire.
 
 Les preuves live nécessaires ont été obtenues par GitHub OIDC read-only. Aucune exposition du bridge n'a été demandée.
+
+## 2026-09-22 — Décision AF-23 : eventIds provient de l'Operational Audit existant
+
+Décision : conserver `GovernedCheckpoint.eventIds` et le peupler depuis `OperationalAudit`, au lieu de supprimer le champ ou de créer un second journal.
+
+Sémantique : la liste contient au maximum les 64 événements du même `governedSessionId` enregistrés avec succès depuis le dernier `checkpoint.created`. Le checkpoint lui-même n'est pas auto-référencé ; son événement clôt la fenêtre pour le checkpoint suivant.
+
+Résilience : l'audit demeure best-effort. Seuls les événements réellement écrits obtiennent un ID et entrent dans la fenêtre ; un échec du journal ne bloque pas une opération métier qui ne l'était pas auparavant.
+
+Compatibilité : aucun changement de schéma, aucun nouveau store, aucun nouveau lifecycle et aucune nouvelle permission.

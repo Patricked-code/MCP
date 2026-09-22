@@ -1,5 +1,17 @@
 # SUIVI.md
 
+## 2026-09-22 — AF-23 : checkpoint ↔ journal opérationnel
+
+- Finding reproduit sur `main@b5d3b2a2c99643c9c6a853570b9f7b417fb1d7b2` : `GovernedCheckpoint.eventIds` était systématiquement `[]`.
+- Correction existing-first : `OperationalAudit`, déjà autorité d'écriture vers l'Event Journal, conserve une fenêtre bornée des IDs d'événements réussis par governed session depuis le dernier checkpoint.
+- `sessionService.createCheckpoint()` copie cette fenêtre dans `eventIds` ; `checkpoint.created` réinitialise ensuite la fenêtre de la session.
+- Limite maintenue : 64 IDs maximum, identique au schéma `GovernedCheckpointSchema`.
+- Les échecs d'audit restent isolés comme avant : aucun échec du journal n'est transformé en mutation cachée ou en nouvelle autorité.
+- TDD RED : MCP CI #1651 / run `35774964546` = FAILURE avec exactement 1 test en échec, AF-23.
+- GREEN : MCP CI #1654 / run `35775288440` = SUCCESS ; gouvernance 13/13 ; suite complète 648/648.
+- Aucun store, fichier d'état, route ou workflow supplémentaire n'est créé.
+- NEXT_ACTION : CI exact-head du HEAD documenté, PR/review/merge exact-head, Governed Deploy puis preuves GitHub-first S1/Docker ; seulement ensuite marquer AF-23 `corrected=true` dans le registre machine.
+
 ## 2026-09-22 — AF-10 / AF-18 / AF-24 / AF-27 : réconciliation post-déploiement
 
 - PR #130 fusionnée ; baseline fonctionnelle exacte : `9b190a940d700f9b070bf5a9a8c0c8400337e53c`.

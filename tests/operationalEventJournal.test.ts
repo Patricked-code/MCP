@@ -18,6 +18,7 @@ import {
   createOperationalEventJournal,
   type OperationalEvent
 } from '../src/operationalMemory/eventJournal.js';
+import { createOperationalAudit } from '../src/operationalMemory/operationalAudit.js';
 
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
 
@@ -296,6 +297,63 @@ test('le journal refuse un fichier actif symlink sans modifier sa cible', async 
       metadata: { stateVersion: 9 }
     }), /OPERATIONAL_EVENT_SYMLINK/);
     assert.equal(await readFile(target, 'utf8'), 'unchanged');
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+
+test('AF-23 audit links successful session events to the next checkpoint and resets the window', async () => {
+  const { directory, file } = await temporaryJournalPath();
+  const journal = createOperationalEventJournal({
+    filePath: file,
+    maxBytes: 65_536,
+    archives: 2,
+    now: () => new Date('2026-09-22T19:00:00.000Z')
+  });
+  const audit = createOperationalAudit(journal);
+
+  try {
+    await audit.record({
+      type: 'reconcile.requested',
+      governedSessionId: SESSION_ID,
+      stateVersion: 9
+    });
+    await audit.record({
+      type: 'reconcile.requested',
+      governedSessionId: SESSION_ID,
+      stateVersion: 10
+    });
+
+    const eventIds = audit.checkpointEventIds?.(SESSION_ID) ?? [];
+    assert.equal(eventIds.length, 2);
+    assert.ok(eventIds.every((eventId) => /^[0-9a-f-]{36}$/.test(eventId)));
+
+    await audit.record({
+      type: 'checkpoint.created',
+      checkpoint: {
+        checkpointId: '22222222-2222-4222-8222-222222222222',
+        governedSessionId: SESSION_ID,
+        createdAt: '2026-09-22T19:00:00.000Z',
+        taskScope: 'TASK-20260922-AF23',
+        workBranch: 'mcp/af23-checkpoint-event-links-20260922',
+        pullRequestNumber: null,
+        observedHeadSha: null,
+        acknowledgedStateVersion: 10,
+        completedAction: 'Link operational events to checkpoint',
+        resultCode: 'AF23_EVENT_LINK_PASS',
+        blockers: [],
+        nextAction: 'continue',
+        eventIds,
+        sessionRevision: 4
+      }
+    });
+
+    assert.deepEqual(audit.checkpointEventIds?.(SESSION_ID), []);
+    const events = parseLines(await readFile(file, 'utf8'));
+    assert.deepEqual(eventIds, events.slice(0, 2).map((event) => event.eventId));
+    assert.equal(events[2]?.type, 'checkpoint.created');
+    assert.equal(events[2]?.metadata.eventCount, 2);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

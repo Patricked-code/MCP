@@ -106,10 +106,12 @@ export type OperationalAuditInput =
 
 export type OperationalAudit = {
   record(input: OperationalAuditInput): Promise<void>;
+  checkpointEventIds?(governedSessionId: string): string[];
 };
 
 export const NOOP_OPERATIONAL_AUDIT: OperationalAudit = Object.freeze({
-  async record() {}
+  async record() {},
+  checkpointEventIds() { return []; }
 });
 
 function auditText(value: string, maxLength = 200): string {
@@ -314,11 +316,28 @@ export function createOperationalAudit(
   journal: OperationalEventJournal,
   onError?: (eventType: OperationalEventType) => void
 ): OperationalAudit {
+  const pendingEventIds = new Map<string, string[]>();
+
   return {
+    checkpointEventIds(governedSessionId) {
+      return [...(pendingEventIds.get(governedSessionId) ?? [])];
+    },
+
     async record(input) {
       const event = metadataForAuditEvent(input);
       try {
-        await journal.append({ type: input.type, ...event });
+        const appended = await journal.append({ type: input.type, ...event });
+        if (appended.governedSessionId) {
+          if (input.type === 'checkpoint.created') {
+            pendingEventIds.delete(appended.governedSessionId);
+          } else {
+            const current = pendingEventIds.get(appended.governedSessionId) ?? [];
+            pendingEventIds.set(
+              appended.governedSessionId,
+              [...current, appended.eventId].slice(-64)
+            );
+          }
+        }
       } catch {
         try { onError?.(input.type); } catch { /* audit failure remains isolated */ }
       }

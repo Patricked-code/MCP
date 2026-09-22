@@ -553,6 +553,9 @@ export function createGovernedSessionService(
       if (liveState.stateVersion !== input.expectedStateVersion) {
         fail('LIVE_STATE_VERSION_MISMATCH');
       }
+      const eventIds = [...new Set(
+        audit.checkpointEventIds?.(input.governedSessionId) ?? []
+      )].slice(-64);
       let checkpoint: GovernedCheckpoint | null = null;
       await mutateSession(input, request, (session, at) => {
         if (session.lastAcknowledgedStateVersion !== input.expectedStateVersion) {
@@ -571,7 +574,7 @@ export function createGovernedSessionService(
           resultCode: input.resultCode,
           blockers: [...input.blockers],
           nextAction: input.nextAction,
-          eventIds: [],
+          eventIds,
           sessionRevision: session.sessionRevision + 1
         };
         return {
