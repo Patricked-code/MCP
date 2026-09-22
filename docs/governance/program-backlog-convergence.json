@@ -1,0 +1,2118 @@
+{
+  "schemaVersion": 1,
+  "projectionId": "program-backlog-convergence-20260923",
+  "repository": "Patricked-code/MCP",
+  "observedMainSha": "cda7610e1dcd5bc56511f0b42f372f68058ca2fb",
+  "generatedAt": "2026-09-23T01:31:00+02:00",
+  "authority": {
+    "kind": "DERIVED_NON_EXECUTABLE_PROJECTION",
+    "createsRuntimeTasks": false,
+    "replacesTaskQueue": false,
+    "replacesRoadmap": false,
+    "replacesTodo": false,
+    "runtimeAuthorities": [
+      "Operational Memory",
+      "Governed Task Queue",
+      "Governed Session",
+      "claim/lock authorities"
+    ],
+    "sourceOfVersionedCode": "GitHub main"
+  },
+  "methodology": {
+    "order": [
+      "OBSERVE",
+      "UNDERSTAND",
+      "MAP",
+      "RECONCILE",
+      "REUSE",
+      "WRAP",
+      "GENERALIZE",
+      "EXTEND",
+      "NEW",
+      "RED",
+      "GREEN",
+      "REGRESSION",
+      "REVIEW",
+      "MERGE_EXACT_HEAD",
+      "GOVERNED_DEPLOY",
+      "ATTEST",
+      "CHECKPOINT_HANDOFF"
+    ],
+    "existingFirst": [
+      "REUSE",
+      "WRAP",
+      "GENERALIZE",
+      "EXTEND",
+      "NEW"
+    ],
+    "rule": "Never reimplement an acquired capability. Every residual delta is derived from current main and existing authorities."
+  },
+  "allowedDispositions": [
+    "DONE",
+    "ACTIVE",
+    "READY",
+    "PARTIALLY_IMPLEMENTED",
+    "DESIGNED_NOT_IMPLEMENTED",
+    "KNOWN_NOT_ANALYZED",
+    "NEEDS_RECONCILIATION",
+    "DEFERRED",
+    "CONDITIONAL",
+    "SUPERSEDED",
+    "DUPLICATE",
+    "COMPOSABLE",
+    "NEEDS_DECISION"
+  ],
+  "summary": {
+    "workItems": 34,
+    "todoUnchecked": 40,
+    "roadmapLots": 33,
+    "gwcBlueprints": 18,
+    "findings": 36,
+    "openDecisions": 12,
+    "taskRegistryRecords": 2,
+    "historicalPrIntents": 5,
+    "externalActiveRecords": 25,
+    "dispositionCounts": {
+      "DONE": 4,
+      "KNOWN_NOT_ANALYZED": 9,
+      "PARTIALLY_IMPLEMENTED": 5,
+      "DESIGNED_NOT_IMPLEMENTED": 5,
+      "CONDITIONAL": 2,
+      "DEFERRED": 3,
+      "READY": 1,
+      "ACTIVE": 1,
+      "NEEDS_RECONCILIATION": 4
+    }
+  },
+  "sourceCoverage": {
+    "todoUnchecked": [
+      {
+        "sourceKey": "TODO:1",
+        "section": "A2.2 — Verified Client Evidence — restant et conditionnel",
+        "text": "classifier l'identité cliente uniquement lorsqu'une preuve vérifiable et bornée est réellement fournie ;",
+        "coveredBy": "PB-A2.2"
+      },
+      {
+        "sourceKey": "TODO:2",
+        "section": "A2.2 — Verified Client Evidence — restant et conditionnel",
+        "text": "conserver `UNKNOWN` en l'absence de preuve et ne rien déduire du seul `clientId` opaque ;",
+        "coveredBy": "PB-A2.2"
+      },
+      {
+        "sourceKey": "TODO:3",
+        "section": "A2.2 — Verified Client Evidence — restant et conditionnel",
+        "text": "persister une référence conversation/workspace uniquement si elle est fournie, autorisée et sanitizable ;",
+        "coveredBy": "PB-A2.2"
+      },
+      {
+        "sourceKey": "TODO:4",
+        "section": "A2.2 — Verified Client Evidence — restant et conditionnel",
+        "text": "garder A2.2 non bloquant pour B1 lorsque le principal OAuth suffit à la résolution GitHub gouvernée.",
+        "coveredBy": "PB-A2.2"
+      },
+      {
+        "sourceKey": "TODO:5",
+        "section": "Project Binding / GitRegistry V2",
+        "text": "réutiliser GitRegistry V2 comme autorité de binding repo ↔ projet ↔ serveur ↔ domaine ;",
+        "coveredBy": "PB-C1"
+      },
+      {
+        "sourceKey": "TODO:6",
+        "section": "Project Binding / GitRegistry V2",
+        "text": "vérifier `realPath`, remote et domaine pour les mappings qui en ont besoin ;",
+        "coveredBy": "PB-C1"
+      },
+      {
+        "sourceKey": "TODO:7",
+        "section": "Project Binding / GitRegistry V2",
+        "text": "résoudre `repositoryId → mappingId → projectId` avec `RESOLVED` / `NONE` / `AMBIGUOUS` / `UNVERIFIED` ;",
+        "coveredBy": "PB-FOUNDATIONS-DONE"
+      },
+      {
+        "sourceKey": "TODO:8",
+        "section": "Project Binding / GitRegistry V2",
+        "text": "composer `.mcp/server-map.json`, GitRegistry et Live State pour résoudre S1/S2, path, runtime/container et domaine ;",
+        "coveredBy": "PB-C345"
+      },
+      {
+        "sourceKey": "TODO:9",
+        "section": "Project Binding / GitRegistry V2",
+        "text": "ne pas créer de `repository-binding.yaml` éditable comme seconde source de vérité ; une éventuelle matérialisation future doit rester une projection dérivée.",
+        "coveredBy": "PB-C1"
+      },
+      {
+        "sourceKey": "TODO:10",
+        "section": "Governance Inheritance & Effective Capabilities",
+        "text": "hériter automatiquement de la gouvernance existante lorsqu'un mapping est connu ;",
+        "coveredBy": "PB-D1"
+      },
+      {
+        "sourceKey": "TODO:11",
+        "section": "Governance Inheritance & Effective Capabilities",
+        "text": "calculer les capacités effectives en composant OAuth, GitHub, projet, serveur, règles et WRITE gate ;",
+        "coveredBy": "PB-D2"
+      },
+      {
+        "sourceKey": "TODO:12",
+        "section": "Governance Inheritance & Effective Capabilities",
+        "text": "enrichir le Bootstrap Receipt existant avec les références de connexion/repository/project nécessaires sans secret.",
+        "coveredBy": "PB-D3"
+      },
+      {
+        "sourceKey": "TODO:13",
+        "section": "Guided Context Completion",
+        "text": "détecter uniquement les informations réellement manquantes ;",
+        "coveredBy": "PB-E"
+      },
+      {
+        "sourceKey": "TODO:14",
+        "section": "Guided Context Completion",
+        "text": "faire évoluer les surfaces frontend existantes en wizard de complétion plutôt que créer un frontend parallèle ;",
+        "coveredBy": "PB-E"
+      },
+      {
+        "sourceKey": "TODO:15",
+        "section": "Guided Context Completion",
+        "text": "exiger consentement explicite avant toute création ou écriture de ressource inconnue.",
+        "coveredBy": "PB-E"
+      },
+      {
+        "sourceKey": "TODO:16",
+        "section": "Lots ultérieurs déjà identifiés",
+        "text": "Governed Provisioning contrôlé pour les ressources réellement absentes ;",
+        "coveredBy": "PB-F"
+      },
+      {
+        "sourceKey": "TODO:17",
+        "section": "Lots ultérieurs déjà identifiés",
+        "text": "Client Presence et distinction `lastClientObservedAt` / `lastSyntheticProbeAt` ;",
+        "coveredBy": "PB-G12"
+      },
+      {
+        "sourceKey": "TODO:18",
+        "section": "Lots ultérieurs déjà identifiés",
+        "text": "Tool Surface Attestation serveur vs client observé ;",
+        "coveredBy": "PB-G3"
+      },
+      {
+        "sourceKey": "TODO:19",
+        "section": "Lots ultérieurs déjà identifiés",
+        "text": "tracing end-to-end OAuth/MCP/tool/upstream dans l'Event Journal existant ;",
+        "coveredBy": "PB-H"
+      },
+      {
+        "sourceKey": "TODO:20",
+        "section": "Lots ultérieurs déjà identifiés",
+        "text": "monitoring synthétique et enrichissement du dashboard de connexion ;",
+        "coveredBy": "PB-I"
+      },
+      {
+        "sourceKey": "TODO:21",
+        "section": "Lots ultérieurs déjà identifiés",
+        "text": "certifications Claude et ChatGPT ;",
+        "coveredBy": "PB-J12"
+      },
+      {
+        "sourceKey": "TODO:22",
+        "section": "Lots ultérieurs déjà identifiés",
+        "text": "hardening futur selon décisions séparées.",
+        "coveredBy": "PB-J4"
+      },
+      {
+        "sourceKey": "TODO:23",
+        "section": "Maintenance séparée",
+        "text": "Migrer dans une PR dédiée les actions GitHub encore exécutées sous compatibilité Node 24.",
+        "coveredBy": "PB-J3"
+      },
+      {
+        "sourceKey": "TODO:24",
+        "section": "Maintenance séparée",
+        "text": "Évaluer un éventuel passage `WRITE gate shadow → enforce` uniquement après GO distinct, décision architecturale, TDD, PR séparée et preuve de parité; ce n'est pas inclus dans le prochain chantier.",
+        "coveredBy": "PB-J4"
+      },
+      {
+        "sourceKey": "TODO:25",
+        "section": "C1 — GitRegistry V2 verification — travail gouverné en cours",
+        "text": "réconcilier la projection documentaire post-déploiement et exiger le Live State frais ;",
+        "coveredBy": "PB-C1"
+      },
+      {
+        "sourceKey": "TODO:26",
+        "section": "C1 — GitRegistry V2 verification — travail gouverné en cours",
+        "text": "prouver les credentials durables applicables, notamment Wealthtechinnovations ;",
+        "coveredBy": "PB-C1"
+      },
+      {
+        "sourceKey": "TODO:27",
+        "section": "C1 — GitRegistry V2 verification — travail gouverné en cours",
+        "text": "vérifier les realpaths, remotes et domaines requis sans déduire une preuve absente ;",
+        "coveredBy": "PB-C1"
+      },
+      {
+        "sourceKey": "TODO:28",
+        "section": "C1 — GitRegistry V2 verification — travail gouverné en cours",
+        "text": "traiter la migration MCP séparément ; `migration_pending` interdit toute mutation automatique du remote actif ;",
+        "coveredBy": "PB-C1"
+      },
+      {
+        "sourceKey": "TODO:29",
+        "section": "C1 — GitRegistry V2 verification — travail gouverné en cours",
+        "text": "seulement après toutes les preuves et gates, concevoir/exécuter la transition explicite d'un mapping `validated → active` ; aucune activation n'est incluse dans le présent jalon.",
+        "coveredBy": "PB-C1"
+      },
+      {
+        "sourceKey": "TODO:30",
+        "section": "GitHub-first Operational Continuity V1",
+        "text": "prouver un artifact `mcp_git_status` S1 via OIDC sans bridge interactif ;",
+        "coveredBy": "PB-GITHUB-FIRST-PROOF"
+      },
+      {
+        "sourceKey": "TODO:31",
+        "section": "GitHub-first Operational Continuity V1",
+        "text": "optionnel : configurer `mcp-s1-readonly` comme fallback SSH secondaire ;",
+        "coveredBy": "PB-GITHUB-FIRST-FALLBACKS"
+      },
+      {
+        "sourceKey": "TODO:32",
+        "section": "GitHub-first Operational Continuity V1",
+        "text": "optionnel : configurer `mcp-s2-readonly` comme fallback SSH secondaire ;",
+        "coveredBy": "PB-GITHUB-FIRST-FALLBACKS"
+      },
+      {
+        "sourceKey": "TODO:33",
+        "section": "GitHub-first Operational Continuity V1",
+        "text": "seulement après preuves, décider si le fallback read-only peut être sélectionné automatiquement ;",
+        "coveredBy": "PB-GITHUB-FIRST-FALLBACKS"
+      },
+      {
+        "sourceKey": "TODO:34",
+        "section": "GitHub-first Operational Continuity V1",
+        "text": "traiter tout transport serveur WRITE comme un chantier séparé avec parité et gouvernance propres ;",
+        "coveredBy": "PB-GITHUB-FIRST-WRITE"
+      },
+      {
+        "sourceKey": "TODO:35",
+        "section": "GitHub-first Operational Continuity V1",
+        "text": "généraliser à d'autres écritures uniquement par chantiers séparés, jamais par shell libre.",
+        "coveredBy": "PB-GITHUB-FIRST-WRITE"
+      },
+      {
+        "sourceKey": "TODO:36",
+        "section": "Réconciliation des anciennes PR ouvertes — backlog résiduel current-first (2026-09-22)",
+        "text": "Concevoir le lot admin `github_create_repository` depuis le main courant : private-only, org-bounded, idempotent, scoped-write et sans side effects implicites.",
+        "coveredBy": "PB-GITHUB-ADMIN"
+      },
+      {
+        "sourceKey": "TODO:37",
+        "section": "Réconciliation des anciennes PR ouvertes — backlog résiduel current-first (2026-09-22)",
+        "text": "Préparer le lot READ current-first uniquement pour `github_get_commits`, `github_get_tree` et `github_get_required_checks`, avec TDD, sorties bornées et aucune nouvelle autorité.",
+        "coveredBy": "PB-GITHUB-READ"
+      },
+      {
+        "sourceKey": "TODO:38",
+        "section": "Réconciliation des anciennes PR ouvertes — backlog résiduel current-first (2026-09-22)",
+        "text": "Concevoir un lot PR-WRITE current-first : request-review exact-head et update PR réduit/scindé, sans fermeture/changement de base caché.",
+        "coveredBy": "PB-GITHUB-PRWRITE"
+      },
+      {
+        "sourceKey": "TODO:39",
+        "section": "Réconciliation des anciennes PR ouvertes — backlog résiduel current-first (2026-09-22)",
+        "text": "Concevoir les suppressions dans un lot destructif séparé ; aucune extension implicite du transport DELETE et aucun assouplissement du scoped WRITE gate.",
+        "coveredBy": "PB-GITHUB-DESTRUCTIVE"
+      },
+      {
+        "sourceKey": "TODO:40",
+        "section": "Réconciliation des anciennes PR ouvertes — backlog résiduel current-first (2026-09-22)",
+        "text": "Si un futur delta Stablecoin devient applicatif, concevoir un chantier distinct build/restart/health/rollback ; ne jamais réactiver le vieux chemin #86 et ne pas modifier le bounded fast-forward non applicatif existant.",
+        "coveredBy": "PB-STABLECOIN-APPDEPLOY"
+      }
+    ],
+    "roadmap": [
+      {
+        "sourceKey": "ROADMAP:1",
+        "heading": "A1 — Automatic Governed Session Binding — LIVRÉ",
+        "coveredBy": "PB-FOUNDATIONS-DONE"
+      },
+      {
+        "sourceKey": "ROADMAP:2",
+        "heading": "A2.1 — Connection Context minimal — LIVRÉ",
+        "coveredBy": "PB-FOUNDATIONS-DONE"
+      },
+      {
+        "sourceKey": "ROADMAP:3",
+        "heading": "A2.2 — Verified Client Evidence",
+        "coveredBy": "PB-A2.2"
+      },
+      {
+        "sourceKey": "ROADMAP:4",
+        "heading": "A3 — OAuth Auth Attempt Correlation",
+        "coveredBy": "PB-A3"
+      },
+      {
+        "sourceKey": "ROADMAP:5",
+        "heading": "B1 — GitHub Identity Resolution",
+        "coveredBy": "PB-FOUNDATIONS-DONE"
+      },
+      {
+        "sourceKey": "ROADMAP:6",
+        "heading": "B2 — Repository Resolution",
+        "coveredBy": "PB-FOUNDATIONS-DONE"
+      },
+      {
+        "sourceKey": "ROADMAP:7",
+        "heading": "B3 — Multi-repository Governed Context",
+        "coveredBy": "PB-B3"
+      },
+      {
+        "sourceKey": "ROADMAP:8",
+        "heading": "C0 — AfricaFunds project-aware compatibility and mapping",
+        "coveredBy": "PB-FOUNDATIONS-DONE"
+      },
+      {
+        "sourceKey": "ROADMAP:9",
+        "heading": "C1 — GitRegistry V2 verification & activation path",
+        "coveredBy": "PB-C1"
+      },
+      {
+        "sourceKey": "ROADMAP:10",
+        "heading": "C2 — Repository → Project Resolution",
+        "coveredBy": "PB-FOUNDATIONS-DONE"
+      },
+      {
+        "sourceKey": "ROADMAP:11",
+        "heading": "C3 — Server Resolution",
+        "coveredBy": "PB-C345"
+      },
+      {
+        "sourceKey": "ROADMAP:12",
+        "heading": "C4 — Runtime / Container / Reverse Proxy Resolution",
+        "coveredBy": "PB-C345"
+      },
+      {
+        "sourceKey": "ROADMAP:13",
+        "heading": "C5 — Domain Resolution",
+        "coveredBy": "PB-C345"
+      },
+      {
+        "sourceKey": "ROADMAP:14",
+        "heading": "D1 — Existing Governance Inheritance",
+        "coveredBy": "PB-D1"
+      },
+      {
+        "sourceKey": "ROADMAP:15",
+        "heading": "D2 — Effective Capabilities",
+        "coveredBy": "PB-D2"
+      },
+      {
+        "sourceKey": "ROADMAP:16",
+        "heading": "D3 — Bootstrap Receipt Enrichment",
+        "coveredBy": "PB-D3"
+      },
+      {
+        "sourceKey": "ROADMAP:17",
+        "heading": "E1 — Missing-context Detection",
+        "coveredBy": "PB-E"
+      },
+      {
+        "sourceKey": "ROADMAP:18",
+        "heading": "E2 — Context Completion Wizard",
+        "coveredBy": "PB-E"
+      },
+      {
+        "sourceKey": "ROADMAP:19",
+        "heading": "E3 — Consent & Validation",
+        "coveredBy": "PB-E"
+      },
+      {
+        "sourceKey": "ROADMAP:20",
+        "heading": "CHANTIER F — Governed Provisioning",
+        "coveredBy": "PB-F"
+      },
+      {
+        "sourceKey": "ROADMAP:21",
+        "heading": "G1 — Client Presence",
+        "coveredBy": "PB-G12"
+      },
+      {
+        "sourceKey": "ROADMAP:22",
+        "heading": "G2 — Two-clock Presence",
+        "coveredBy": "PB-G12"
+      },
+      {
+        "sourceKey": "ROADMAP:23",
+        "heading": "G3 — Tool Surface Attestation",
+        "coveredBy": "PB-G3"
+      },
+      {
+        "sourceKey": "ROADMAP:24",
+        "heading": "CHANTIER H — End-to-End Tracing",
+        "coveredBy": "PB-H"
+      },
+      {
+        "sourceKey": "ROADMAP:25",
+        "heading": "I1 — Synthetic Monitor",
+        "coveredBy": "PB-I"
+      },
+      {
+        "sourceKey": "ROADMAP:26",
+        "heading": "I2 — Connection-chain Dashboard",
+        "coveredBy": "PB-I"
+      },
+      {
+        "sourceKey": "ROADMAP:27",
+        "heading": "I3 — Alerts",
+        "coveredBy": "PB-I"
+      },
+      {
+        "sourceKey": "ROADMAP:28",
+        "heading": "J1 — Claude certification",
+        "coveredBy": "PB-J12"
+      },
+      {
+        "sourceKey": "ROADMAP:29",
+        "heading": "J2 — ChatGPT certification",
+        "coveredBy": "PB-J12"
+      },
+      {
+        "sourceKey": "ROADMAP:30",
+        "heading": "J3 — GitHub Actions / Node 24 maintenance",
+        "coveredBy": "PB-J3"
+      },
+      {
+        "sourceKey": "ROADMAP:31",
+        "heading": "J4 — WRITE gate `shadow → enforce`",
+        "coveredBy": "PB-J4"
+      },
+      {
+        "sourceKey": "ROADMAP:32",
+        "heading": "GitHub-first Operational Continuity V1 — implémentation candidate",
+        "coveredBy": "PB-GITHUB-FIRST-PROGRAM"
+      },
+      {
+        "sourceKey": "ROADMAP:33",
+        "heading": "Programme post-intégration — récupération contrôlée des intentions historiques (2026-09-22)",
+        "coveredBy": "PB-LEGACY-CONVERGENCE-DONE"
+      }
+    ],
+    "gwcBlueprints": [
+      {
+        "sourceKey": "GWC:GWC-0",
+        "sourceId": "GWC-0",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "NEW_ORCHESTRATION_ONLY",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-1",
+        "sourceId": "GWC-1",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "NEW",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-2",
+        "sourceId": "GWC-2",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "NEW_ORCHESTRATION_ONLY",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-3",
+        "sourceId": "GWC-3",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "REUSE/WRAP",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-4",
+        "sourceId": "GWC-4",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "REUSE/GENERALIZE",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-5",
+        "sourceId": "GWC-5",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "REUSE/EXTEND",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-6",
+        "sourceId": "GWC-6",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "GENERALIZE/EXTEND",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-7",
+        "sourceId": "GWC-7",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "GENERALIZE/EXTEND",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-8",
+        "sourceId": "GWC-8",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "GENERALIZE/EXTEND",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-9",
+        "sourceId": "GWC-9",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "REUSE/EXTEND",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-10",
+        "sourceId": "GWC-10",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "GENERALIZE",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-11",
+        "sourceId": "GWC-11",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "REUSE/EXTEND",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-12",
+        "sourceId": "GWC-12",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "DISPOSITION",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-13",
+        "sourceId": "GWC-13",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "REUSE/EXTEND",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-14",
+        "sourceId": "GWC-14",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "REUSE/EXTEND",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-15",
+        "sourceId": "GWC-15",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "REUSE/EXTEND",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-16",
+        "sourceId": "GWC-16",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "REUSE/EXTEND",
+        "coveredBy": "PB-GWC-RECONCILE"
+      },
+      {
+        "sourceKey": "GWC:GWC-17",
+        "sourceId": "GWC-17",
+        "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
+        "integrationClassification": "NEW",
+        "coveredBy": "PB-GWC-RECONCILE"
+      }
+    ],
+    "findings": [
+      {
+        "sourceKey": "AF:AF-01",
+        "sourceId": "AF-01",
+        "owner": "GWC-10",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-02",
+        "sourceId": "AF-02",
+        "owner": "GWC-10",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-03",
+        "sourceId": "AF-03",
+        "owner": "GWC-10",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-04",
+        "sourceId": "AF-04",
+        "owner": "GWC-10",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-05",
+        "sourceId": "AF-05",
+        "owner": "GWC-10",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-06",
+        "sourceId": "AF-06",
+        "owner": "GWC-15",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-07",
+        "sourceId": "AF-07",
+        "owner": "GWC-16",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-08",
+        "sourceId": "AF-08",
+        "owner": "GWC-5",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-09",
+        "sourceId": "AF-09",
+        "owner": "GWC-16",
+        "corrected": true,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-CLOSED"
+      },
+      {
+        "sourceKey": "AF:AF-10",
+        "sourceId": "AF-10",
+        "owner": "GWC-9",
+        "corrected": true,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-CLOSED"
+      },
+      {
+        "sourceKey": "AF:AF-11",
+        "sourceId": "AF-11",
+        "owner": "GWC-4",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-12",
+        "sourceId": "AF-12",
+        "owner": "GWC-0",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-13",
+        "sourceId": "AF-13",
+        "owner": "GWC-17",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-14",
+        "sourceId": "AF-14",
+        "owner": "GWC-3",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-15",
+        "sourceId": "AF-15",
+        "owner": "GWC-13",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-16",
+        "sourceId": "AF-16",
+        "owner": "GWC-13",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-17",
+        "sourceId": "AF-17",
+        "owner": "GWC-5",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-18",
+        "sourceId": "AF-18",
+        "owner": "GWC-5",
+        "corrected": true,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-CLOSED"
+      },
+      {
+        "sourceKey": "AF:AF-19",
+        "sourceId": "AF-19",
+        "owner": "GWC-15",
+        "corrected": false,
+        "definitionSource": "CURRENT_MAIN_EVIDENCE",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-20",
+        "sourceId": "AF-20",
+        "owner": "GWC-0",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-21",
+        "sourceId": "AF-21",
+        "owner": "GWC-0",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-22",
+        "sourceId": "AF-22",
+        "owner": "GWC-14",
+        "corrected": false,
+        "definitionSource": "CURRENT_MAIN_EVIDENCE",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-23",
+        "sourceId": "AF-23",
+        "owner": "GWC-16",
+        "corrected": true,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-CLOSED"
+      },
+      {
+        "sourceKey": "AF:AF-24",
+        "sourceId": "AF-24",
+        "owner": "GWC-5",
+        "corrected": true,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-CLOSED"
+      },
+      {
+        "sourceKey": "AF:AF-25",
+        "sourceId": "AF-25",
+        "owner": "GWC-14",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-26",
+        "sourceId": "AF-26",
+        "owner": "GWC-15",
+        "corrected": false,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-27",
+        "sourceId": "AF-27",
+        "owner": "GWC-5",
+        "corrected": true,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-CLOSED"
+      },
+      {
+        "sourceKey": "AF:AF-28",
+        "sourceId": "AF-28",
+        "owner": "GWC-0",
+        "corrected": true,
+        "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "coveredBy": "PB-AF-CLOSED"
+      },
+      {
+        "sourceKey": "AF:AF-29",
+        "sourceId": "AF-29",
+        "owner": "GWC-15",
+        "corrected": false,
+        "definitionSource": "CURRENT_MAIN_EVIDENCE",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-30",
+        "sourceId": "AF-30",
+        "owner": "GWC-14",
+        "corrected": false,
+        "definitionSource": "CURRENT_MAIN_EVIDENCE",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-31",
+        "sourceId": "AF-31",
+        "owner": "GWC-13",
+        "corrected": false,
+        "definitionSource": "CURRENT_MAIN_EVIDENCE",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-32",
+        "sourceId": "AF-32",
+        "owner": "GWC-9",
+        "corrected": false,
+        "definitionSource": "CURRENT_MAIN_EVIDENCE",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-33",
+        "sourceId": "AF-33",
+        "owner": "GWC-0",
+        "corrected": false,
+        "definitionSource": "CURRENT_MAIN_EVIDENCE",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-34",
+        "sourceId": "AF-34",
+        "owner": "GWC-0",
+        "corrected": true,
+        "definitionSource": "CURRENT_MAIN_EVIDENCE",
+        "coveredBy": "PB-AF-CLOSED"
+      },
+      {
+        "sourceKey": "AF:AF-35",
+        "sourceId": "AF-35",
+        "owner": "GWC-5",
+        "corrected": false,
+        "definitionSource": "CURRENT_MAIN_EVIDENCE",
+        "coveredBy": "PB-AF-RECONCILE"
+      },
+      {
+        "sourceKey": "AF:AF-36",
+        "sourceId": "AF-36",
+        "owner": "GWC-0",
+        "corrected": true,
+        "definitionSource": "CURRENT_MAIN_EVIDENCE",
+        "coveredBy": "PB-AF-CLOSED"
+      }
+    ],
+    "decisions": [
+      {
+        "sourceKey": "OD:OD-01",
+        "sourceId": "OD-01",
+        "owner": "GWC-1",
+        "state": "NARROWED",
+        "coveredBy": "PB-OD-RECONCILE"
+      },
+      {
+        "sourceKey": "OD:OD-02",
+        "sourceId": "OD-02",
+        "owner": "GWC-1",
+        "state": "NARROWED",
+        "coveredBy": "PB-OD-RECONCILE"
+      },
+      {
+        "sourceKey": "OD:OD-03",
+        "sourceId": "OD-03",
+        "owner": "GWC-6",
+        "state": "OPEN",
+        "coveredBy": "PB-OD-RECONCILE"
+      },
+      {
+        "sourceKey": "OD:OD-04",
+        "sourceId": "OD-04",
+        "owner": "GWC-7",
+        "state": "NARROWED",
+        "coveredBy": "PB-OD-RECONCILE"
+      },
+      {
+        "sourceKey": "OD:OD-05",
+        "sourceId": "OD-05",
+        "owner": "GWC-5",
+        "state": "OPEN",
+        "coveredBy": "PB-OD-RECONCILE"
+      },
+      {
+        "sourceKey": "OD:OD-06",
+        "sourceId": "OD-06",
+        "owner": "GWC-14",
+        "state": "NARROWED",
+        "coveredBy": "PB-OD-RECONCILE"
+      },
+      {
+        "sourceKey": "OD:OD-07",
+        "sourceId": "OD-07",
+        "owner": "GWC-15",
+        "state": "OPEN_NARROWED",
+        "coveredBy": "PB-OD-RECONCILE"
+      },
+      {
+        "sourceKey": "OD:OD-08",
+        "sourceId": "OD-08",
+        "owner": "GWC-4",
+        "state": "OPEN",
+        "coveredBy": "PB-OD-RECONCILE"
+      },
+      {
+        "sourceKey": "OD:OD-09",
+        "sourceId": "OD-09",
+        "owner": "GWC-0",
+        "state": "OPEN",
+        "coveredBy": "PB-OD-RECONCILE"
+      },
+      {
+        "sourceKey": "OD:OD-10",
+        "sourceId": "OD-10",
+        "owner": "GWC-10",
+        "state": "NARROWED",
+        "coveredBy": "PB-OD-RECONCILE"
+      },
+      {
+        "sourceKey": "OD:OD-11",
+        "sourceId": "OD-11",
+        "owner": "GWC-10",
+        "state": "OPEN",
+        "coveredBy": "PB-OD-RECONCILE"
+      },
+      {
+        "sourceKey": "OD:OD-12",
+        "sourceId": "OD-12",
+        "owner": "GWC-15",
+        "state": "OPEN",
+        "coveredBy": "PB-OD-RECONCILE"
+      }
+    ],
+    "taskRegistry": [
+      {
+        "sourceKey": "TASKREG:TASK-20260813-004",
+        "sourceId": "TASK-20260813-004",
+        "status": "DONE",
+        "coveredBy": "PB-FOUNDATIONS-DONE"
+      },
+      {
+        "sourceKey": "TASKREG:TASK-20260822-001",
+        "sourceId": "TASK-20260822-001",
+        "status": "READY",
+        "coveredBy": "PB-TASKREG-RECONCILE"
+      }
+    ],
+    "historicalPrIntents": [
+      {
+        "sourceKey": "PR:85",
+        "sourceId": "PR-85",
+        "sourceDisposition": "SUPERSEDED",
+        "coveredBy": "PB-GITHUB-FIRST-PROGRAM"
+      },
+      {
+        "sourceKey": "PR:86",
+        "sourceId": "PR-86",
+        "sourceDisposition": "SUPERSEDED_NON_APPLICATIVE_CONDITIONAL_APPLICATIVE",
+        "coveredBy": "PB-STABLECOIN-APPDEPLOY"
+      },
+      {
+        "sourceKey": "PR:88",
+        "sourceId": "PR-88",
+        "sourceDisposition": "DESIGNED_NOT_IMPLEMENTED",
+        "coveredBy": "PB-GITHUB-ADMIN"
+      },
+      {
+        "sourceKey": "PR:89",
+        "sourceId": "PR-89",
+        "sourceDisposition": "SUPERSEDED_FOUNDATION_RESIDUAL_READ",
+        "coveredBy": "PB-GITHUB-READ"
+      },
+      {
+        "sourceKey": "PR:90",
+        "sourceId": "PR-90",
+        "sourceDisposition": "DECOMPOSED_CURRENT_FIRST",
+        "coveredBy": "PB-GITHUB-READ",
+        "relatedWorkItems": [
+          "PB-GITHUB-PRWRITE",
+          "PB-GITHUB-DESTRUCTIVE"
+        ]
+      }
+    ],
+    "externalActiveWork": [
+      {
+        "sourceKey": "PR154",
+        "sourceId": "PR-154",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-01",
+        "sourceId": "UAC-01",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-02",
+        "sourceId": "UAC-02",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-03",
+        "sourceId": "UAC-03",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-04",
+        "sourceId": "UAC-04",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-05",
+        "sourceId": "UAC-05",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-06",
+        "sourceId": "UAC-06",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-07",
+        "sourceId": "UAC-07",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-08",
+        "sourceId": "UAC-08",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-09",
+        "sourceId": "UAC-09",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-10",
+        "sourceId": "UAC-10",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-11",
+        "sourceId": "UAC-11",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-12",
+        "sourceId": "UAC-12",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-13",
+        "sourceId": "UAC-13",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-14",
+        "sourceId": "UAC-14",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-15",
+        "sourceId": "UAC-15",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-16",
+        "sourceId": "UAC-16",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-17",
+        "sourceId": "UAC-17",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-18",
+        "sourceId": "UAC-18",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-19",
+        "sourceId": "UAC-19",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-20",
+        "sourceId": "UAC-20",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-21",
+        "sourceId": "UAC-21",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-22",
+        "sourceId": "UAC-22",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-23",
+        "sourceId": "UAC-23",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      },
+      {
+        "sourceKey": "PR154:UAC-24",
+        "sourceId": "UAC-24",
+        "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "coveredBy": "PB-UAC"
+      }
+    ]
+  },
+  "workItems": [
+    {
+      "id": "PB-FOUNDATIONS-DONE",
+      "title": "Delivered connection/repository/project foundations",
+      "disposition": "DONE",
+      "integrationSlot": "program.delivered-foundations",
+      "implementationMode": "REUSE",
+      "existingAuthorities": [
+        "Governed Session",
+        "ConnectionContext",
+        "GitHub Identity Resolution",
+        "Repository Resolution",
+        "GitRegistry V2 compatibility",
+        "Project Resolution"
+      ],
+      "dependsOn": [],
+      "nextAction": "No reimplementation. Reuse these foundations as prerequisites for downstream work.",
+      "subtasks": [
+        "A1 Automatic Governed Session Binding",
+        "A2.1 Connection Context minimal",
+        "B1 GitHub Identity Resolution",
+        "B2 Repository Resolution",
+        "C0 AfricaFunds compatibility",
+        "C2 Repository → Project Resolution"
+      ],
+      "nonRegression": [
+        "Never recreate delivered resolvers or stores",
+        "Preserve historical records and compatibility",
+        "Require new evidence before reopening a delivered behavior"
+      ]
+    },
+    {
+      "id": "PB-A2.2",
+      "title": "A2.2 Verified Client Evidence",
+      "disposition": "KNOWN_NOT_ANALYZED",
+      "integrationSlot": "connection.client-evidence",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "ConnectionContext",
+        "Governed Session",
+        "RequestIdentity"
+      ],
+      "dependsOn": [
+        "PB-FOUNDATIONS-DONE"
+      ],
+      "nextAction": "Inventory client-verifiable evidence already exposed by each client, then extend ConnectionContext only with bounded proven fields.",
+      "subtasks": [
+        "Define accepted client evidence and provenance",
+        "Keep UNKNOWN when proof is absent",
+        "Persist conversation/workspace refs only when explicitly supplied and sanitizable",
+        "Prove A2.2 remains non-blocking when OAuth principal is sufficient"
+      ],
+      "nonRegression": [
+        "No client identity inference from opaque clientId",
+        "No raw token/code/state persistence",
+        "No second client identity store"
+      ]
+    },
+    {
+      "id": "PB-A3",
+      "title": "A3 OAuth Auth Attempt Correlation",
+      "disposition": "KNOWN_NOT_ANALYZED",
+      "integrationSlot": "connection.oauth-attempt-correlation",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "OAuth flow",
+        "Governed Session bootstrap",
+        "Operational Event Journal"
+      ],
+      "dependsOn": [
+        "PB-FOUNDATIONS-DONE"
+      ],
+      "nextAction": "Inventory current OAuth entry/callback/bootstrap correlation and add only the missing bounded correlation fields.",
+      "subtasks": [
+        "Correlate auth entry, callback and logical bootstrap",
+        "Add bounded timestamps/status",
+        "Hash or avoid persisted state material",
+        "Trace failures without secrets"
+      ],
+      "nonRegression": [
+        "Never persist OAuth code/token raw",
+        "Reuse existing audit/event journal",
+        "No second auth session authority"
+      ]
+    },
+    {
+      "id": "PB-B3",
+      "title": "B3 Multi-repository Governed Context",
+      "disposition": "PARTIALLY_IMPLEMENTED",
+      "integrationSlot": "context.multi-repository",
+      "implementationMode": "GENERALIZE",
+      "existingAuthorities": [
+        "TargetScope",
+        "Governed Context",
+        "GitRegistry V2",
+        "GWC-10"
+      ],
+      "dependsOn": [
+        "PB-FOUNDATIONS-DONE"
+      ],
+      "nextAction": "Reconcile GWC-10 TargetScope design against current runtime consumers and generalize only MCP-only contracts that remain.",
+      "subtasks": [
+        "Inventory remaining MCP-only contracts",
+        "Propagate validated repositoryId/mappingId/TargetScope additively",
+        "Preserve single-repository historical semantics",
+        "Add multi-repository E2E coverage"
+      ],
+      "nonRegression": [
+        "No PROJECT_SHA simplification",
+        "No parallel registry",
+        "Records without TargetScope keep historical meaning"
+      ]
+    },
+    {
+      "id": "PB-C1",
+      "title": "C1 GitRegistry V2 verification and activation path",
+      "disposition": "PARTIALLY_IMPLEMENTED",
+      "integrationSlot": "project.gitregistry-verification",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "Project Resolution"
+      ],
+      "dependsOn": [
+        "PB-FOUNDATIONS-DONE"
+      ],
+      "nextAction": "Reobserve current mappings and finish only unproven realPath/remote/domain/credential/activation evidence.",
+      "subtasks": [
+        "Reconcile post-deployment projection",
+        "Prove durable credentials where required",
+        "Verify realPath/remote/domain without inference",
+        "Keep migration_pending fail-closed",
+        "Design validated→active transition only after proofs"
+      ],
+      "nonRegression": [
+        "GitRegistry V2 stays mapping authority",
+        "No repository-binding.yaml authority",
+        "No activation from missing evidence"
+      ]
+    },
+    {
+      "id": "PB-C345",
+      "title": "C3/C4/C5 Server, Runtime and Domain Resolution",
+      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "integrationSlot": "project.server-runtime-domain-resolution",
+      "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "existingAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "server/runtime/domain GWC resolvers"
+      ],
+      "dependsOn": [
+        "PB-C1",
+        "PB-B3"
+      ],
+      "nextAction": "Reconcile existing GWC resolver code/design against current main, then compose one project reality path for server, runtime and domain.",
+      "subtasks": [
+        "Resolve S1/S2 and verified real path",
+        "Resolve container/runtime/reverse proxy/ports from governed evidence",
+        "Resolve existing domain and freshness",
+        "Expose bounded NONE/AMBIGUOUS/UNVERIFIED states",
+        "Add recovery semantics for stale evidence"
+      ],
+      "nonRegression": [
+        "Do not create resources during resolution",
+        "No second server/domain registry",
+        "Stale evidence stays fail-closed"
+      ]
+    },
+    {
+      "id": "PB-D1",
+      "title": "D1 Existing Governance Inheritance",
+      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "integrationSlot": "governance.inheritance",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "Governed Context",
+        "project bindings",
+        "branch/PR rules",
+        "Scoped WRITE Gate"
+      ],
+      "dependsOn": [
+        "PB-C1",
+        "PB-C345"
+      ],
+      "nextAction": "Reconcile GWC-9/current governance projections and automatically inherit existing project rules without recreating them.",
+      "subtasks": [
+        "Compose branch/PR/test/review rules",
+        "Compose GitHub→server deployment rules",
+        "Compose lock/scopes/secrets/write-gate constraints",
+        "Prove inherited rules are project-scoped"
+      ],
+      "nonRegression": [
+        "No copied governance store",
+        "No implicit permission widening",
+        "Existing project rules remain authoritative"
+      ]
+    },
+    {
+      "id": "PB-D2",
+      "title": "D2 Effective Capabilities",
+      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "integrationSlot": "governance.effective-capabilities",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "Governed Context",
+        "OAuth identity",
+        "GitHub context",
+        "GitRegistry",
+        "Scoped WRITE Gate"
+      ],
+      "dependsOn": [
+        "PB-D1"
+      ],
+      "nextAction": "Build the effective-capability projection as an intersection of existing evidence and governance.",
+      "subtasks": [
+        "Compose OAuth/GitHub/project/server evidence",
+        "Intersect with governance and WRITE gate",
+        "Return reason codes for unavailable capabilities",
+        "Prove technical capability never implies authorization"
+      ],
+      "nonRegression": [
+        "No second permission engine",
+        "Fail closed on stale/unknown authority evidence",
+        "Preserve existing shadow-gate semantics"
+      ]
+    },
+    {
+      "id": "PB-D3",
+      "title": "D3 Bootstrap Receipt Enrichment",
+      "disposition": "PARTIALLY_IMPLEMENTED",
+      "integrationSlot": "bootstrap.receipt-enrichment",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "Bootstrap Receipt",
+        "ConnectionContext",
+        "Governed Session"
+      ],
+      "dependsOn": [
+        "PB-D2"
+      ],
+      "nextAction": "Extend the existing receipt with proven connection/repository/project/mapping references only.",
+      "subtasks": [
+        "Attach proven client/connection refs",
+        "Attach repository/project/mapping refs",
+        "Carry provenance/freshness",
+        "Keep receipt free of secrets"
+      ],
+      "nonRegression": [
+        "No second receipt type",
+        "Backward-compatible optional fields",
+        "No unverified binding promotion"
+      ]
+    },
+    {
+      "id": "PB-E",
+      "title": "E1/E2/E3 Guided Context Completion",
+      "disposition": "KNOWN_NOT_ANALYZED",
+      "integrationSlot": "context.guided-completion",
+      "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "existingAuthorities": [
+        "existing /login /git /github surfaces",
+        "Governed Context",
+        "Bootstrap Receipt"
+      ],
+      "dependsOn": [
+        "PB-D3"
+      ],
+      "nextAction": "Inventory current client/frontend completion paths, then add only missing-context detection, guided completion and explicit consent.",
+      "subtasks": [
+        "Detect exactly which required fields are missing",
+        "Restore known governed context automatically",
+        "Ask only for genuinely missing data",
+        "Require explicit consent before creating/mutating unknown resources",
+        "Validate submitted values against governing authorities"
+      ],
+      "nonRegression": [
+        "No parallel frontend",
+        "No repeated questions for known context",
+        "No write from inferred consent"
+      ]
+    },
+    {
+      "id": "PB-F",
+      "title": "F Governed Provisioning",
+      "disposition": "KNOWN_NOT_ANALYZED",
+      "integrationSlot": "provisioning.governed",
+      "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "existingAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "dependsOn": [
+        "PB-E",
+        "PB-D2"
+      ],
+      "nextAction": "Decompose provisioning by resource type and reuse bounded write primitives before adding any new primitive.",
+      "subtasks": [
+        "Repository provisioning",
+        "Project/runtime provisioning",
+        "Domain/binding provisioning",
+        "Backup/rollback/health requirements",
+        "Idempotency and exact-target gates"
+      ],
+      "nonRegression": [
+        "No shell-freeform provisioning",
+        "No resource creation without explicit consent",
+        "No implicit activation"
+      ]
+    },
+    {
+      "id": "PB-G12",
+      "title": "G1/G2 Client Presence and two-clock model",
+      "disposition": "KNOWN_NOT_ANALYZED",
+      "integrationSlot": "presence.client-two-clock",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "ConnectionContext",
+        "Governed Session",
+        "Operational Event Journal"
+      ],
+      "dependsOn": [
+        "PB-A2.2"
+      ],
+      "nextAction": "Separate real client observations from synthetic probes and derive bounded presence states.",
+      "subtasks": [
+        "Add lastClientObservedAt semantics",
+        "Add lastSyntheticProbeAt semantics",
+        "Define ACTIVE_OBSERVED/RECENTLY_OBSERVED/STALE/UNKNOWN/AUTH_EXPIRED/REVOKED",
+        "Keep client presence distinct from agent heartbeat/liveness"
+      ],
+      "nonRegression": [
+        "STALE never means disconnected automatically",
+        "Synthetic probe never proves client presence",
+        "Do not reuse ownership/claim state as presence"
+      ]
+    },
+    {
+      "id": "PB-G3",
+      "title": "G3 Tool Surface Attestation",
+      "disposition": "PARTIALLY_IMPLEMENTED",
+      "integrationSlot": "attestation.tool-surface",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "Current State tool catalog",
+        "G3 attestation contracts",
+        "client-observed evidence"
+      ],
+      "dependsOn": [
+        "PB-FOUNDATIONS-DONE"
+      ],
+      "nextAction": "Reconcile PR #87/GWC G3 work with current clients and finish bounded server-vs-client surface attestation.",
+      "subtasks": [
+        "Server surface remains current-state authority",
+        "Record client-observed surface only when proven",
+        "Return UNKNOWN when client proof is absent",
+        "Bind attestation to session/time/head where applicable"
+      ],
+      "nonRegression": [
+        "No inference from server catalog to client UI",
+        "No stale attestation authorization",
+        "Reuse existing G3 contracts"
+      ]
+    },
+    {
+      "id": "PB-H",
+      "title": "H End-to-End Tracing",
+      "disposition": "KNOWN_NOT_ANALYZED",
+      "integrationSlot": "observability.end-to-end-tracing",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "Operational Event Journal",
+        "request/tool audit",
+        "upstream clients"
+      ],
+      "dependsOn": [
+        "PB-D3"
+      ],
+      "nextAction": "Inventory existing correlation IDs/events and extend the Event Journal instead of creating a second tracing store.",
+      "subtasks": [
+        "Trace client→auth→MCP→tool→governance→service→upstream→response",
+        "Define traceId/requestId/spanId composition",
+        "Classify failure layer",
+        "Redact sensitive arguments and credentials"
+      ],
+      "nonRegression": [
+        "Operational Event Journal stays audit authority",
+        "No raw secret payloads",
+        "Tracing must not mutate business state"
+      ]
+    },
+    {
+      "id": "PB-I",
+      "title": "I1/I2/I3 Synthetic Monitoring, connection dashboard and alerts",
+      "disposition": "KNOWN_NOT_ANALYZED",
+      "integrationSlot": "observability.synthetic-monitoring",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "existing dashboard",
+        "health endpoints",
+        "read-only GitHub/OIDC probes",
+        "Live State"
+      ],
+      "dependsOn": [
+        "PB-H",
+        "PB-G12"
+      ],
+      "nextAction": "Compose existing read-only health/evidence mechanisms into synthetic monitoring and dashboard projections.",
+      "subtasks": [
+        "DNS/TLS/HTTP/MCP/tool-catalog/runtime canary",
+        "Connection-chain dashboard with evidence provenance",
+        "Precise blockers/alerts per layer",
+        "Keep synthetic health separate from client presence"
+      ],
+      "nonRegression": [
+        "No direct S1 writes",
+        "No alert based on invented freshness",
+        "Synthetic probes remain read-only"
+      ]
+    },
+    {
+      "id": "PB-J12",
+      "title": "J1/J2 Claude and ChatGPT certification",
+      "disposition": "KNOWN_NOT_ANALYZED",
+      "integrationSlot": "certification.clients",
+      "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "existingAuthorities": [
+        "client evidence",
+        "bootstrap",
+        "GitHub-first flow",
+        "tool attestation"
+      ],
+      "dependsOn": [
+        "PB-G3",
+        "PB-G12",
+        "PB-I"
+      ],
+      "nextAction": "Define repeatable end-to-end certification suites for Claude and ChatGPT using only evidence each client actually exposes.",
+      "subtasks": [
+        "Claude resume/bootstrap certification",
+        "ChatGPT bootstrap/GitHub-first certification",
+        "Negative/stale evidence scenarios",
+        "Document client-specific limitations without weakening server guarantees"
+      ],
+      "nonRegression": [
+        "No assumption that UI connector state is controllable by repo",
+        "No fake conversation IDs",
+        "Same server governance for all clients"
+      ]
+    },
+    {
+      "id": "PB-J3",
+      "title": "J3 GitHub Actions / Node 24 maintenance",
+      "disposition": "KNOWN_NOT_ANALYZED",
+      "integrationSlot": "maintenance.github-actions-node24",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "GitHub Actions workflows"
+      ],
+      "dependsOn": [],
+      "nextAction": "Inventory actions still running under compatibility mode and migrate them in a dedicated maintenance PR.",
+      "subtasks": [
+        "Inventory affected actions",
+        "Pin compatible maintained versions",
+        "Run full CI/deploy regression",
+        "Keep maintenance separate from feature work"
+      ],
+      "nonRegression": [
+        "No feature coupling",
+        "No permission widening",
+        "No workflow semantic change without explicit test"
+      ]
+    },
+    {
+      "id": "PB-J4",
+      "title": "J4 WRITE gate shadow→enforce",
+      "disposition": "CONDITIONAL",
+      "integrationSlot": "governance.write-gate-enforcement",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "Scoped WRITE Gate",
+        "governance decisions"
+      ],
+      "dependsOn": [
+        "PB-D2"
+      ],
+      "nextAction": "Do nothing until an explicit GO; if authorized, prove shadow/enforce parity in a dedicated TDD program.",
+      "subtasks": [
+        "Define activation criteria",
+        "Prove parity and negative cases",
+        "Dedicated architectural decision",
+        "Separate rollout/rollback plan"
+      ],
+      "nonRegression": [
+        "No automatic transition",
+        "No broad permission increase",
+        "Shadow remains current behavior until distinct approval"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-FIRST-PROGRAM",
+      "title": "GitHub-first Operational Continuity residual program",
+      "disposition": "PARTIALLY_IMPLEMENTED",
+      "integrationSlot": "github-first.continuity-program",
+      "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "existingAuthorities": [
+        "GitHub control plane",
+        "OIDC read-only evidence",
+        "bounded write workflows"
+      ],
+      "dependsOn": [
+        "PB-FOUNDATIONS-DONE"
+      ],
+      "nextAction": "Treat the core as delivered and execute only explicitly remaining transport/evidence deltas.",
+      "subtasks": [
+        "Keep GitHub as preferred control plane",
+        "Use read-only OIDC evidence before bridge escalation",
+        "Keep WRITE transports separated and bounded"
+      ],
+      "nonRegression": [
+        "No surface thrashing",
+        "No bridge request when GitHub fallback covers operation",
+        "No direct S1 development"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-FIRST-PROOF",
+      "title": "GitHub-first S1 read-only evidence proof",
+      "disposition": "DONE",
+      "integrationSlot": "github-first.read-evidence-proof",
+      "implementationMode": "REUSE",
+      "existingAuthorities": [
+        "MCP Read-only Evidence workflow",
+        "GitHub OIDC"
+      ],
+      "dependsOn": [
+        "PB-GITHUB-FIRST-PROGRAM"
+      ],
+      "nextAction": "No new implementation. Reuse existing mcp_git_status/docker_status evidence workflows.",
+      "subtasks": [
+        "mcp_git_status artifact proven repeatedly",
+        "docker_status artifact proven repeatedly"
+      ],
+      "nonRegression": [
+        "Do not reopen without new evidence of failure",
+        "MutationAllowed remains false"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-FIRST-FALLBACKS",
+      "title": "Optional SSH read-only fallback selection",
+      "disposition": "DEFERRED",
+      "integrationSlot": "github-first.optional-readonly-fallbacks",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "GitHub OIDC read-only evidence",
+        "server identities"
+      ],
+      "dependsOn": [
+        "PB-GITHUB-FIRST-PROGRAM"
+      ],
+      "nextAction": "Only analyze fallback SSH identities if OIDC does not cover a proven operational need.",
+      "subtasks": [
+        "Optional mcp-s1-readonly fallback",
+        "Optional mcp-s2-readonly fallback",
+        "Automatic selection only after proof and decision"
+      ],
+      "nonRegression": [
+        "OIDC remains primary",
+        "No fallback write capability",
+        "No secrets in Git"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-FIRST-WRITE",
+      "title": "Additional bounded server WRITE transports",
+      "disposition": "DEFERRED",
+      "integrationSlot": "github-first.server-write-extensions",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "bounded write workflows",
+        "Scoped WRITE Gate"
+      ],
+      "dependsOn": [
+        "PB-D2"
+      ],
+      "nextAction": "Create separate bounded write lots only for concrete proven needs; never generalize to arbitrary shell.",
+      "subtasks": [
+        "Per-operation identity/allowlist",
+        "Exact target/head gates",
+        "Health/rollback where mutation affects runtime"
+      ],
+      "nonRegression": [
+        "No free-form shell",
+        "No read-only identity privilege escalation",
+        "One bounded operation per justified capability"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-READ",
+      "title": "GitHub Control Plane READ R1",
+      "disposition": "READY",
+      "integrationSlot": "github.control-plane.read-complements",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "src/tools/githubControlPlaneRead.ts",
+        "governed GitHub context/rulesets"
+      ],
+      "dependsOn": [
+        "PB-GITHUB-FIRST-PROGRAM"
+      ],
+      "nextAction": "Implement only github_get_commits, github_get_tree and github_get_required_checks after active coordination/backlog gates permit.",
+      "subtasks": [
+        "github_get_commits bounded and paginated",
+        "github_get_tree bounded, no blobs, explicit truncated",
+        "github_get_required_checks reusing current ruleset/check authority"
+      ],
+      "nonRegression": [
+        "Do not add github_get_mergeability duplicate",
+        "Do not add github_get_commit_diff while composable",
+        "No second GitHub cache/authority"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-ADMIN",
+      "title": "Governed github_create_repository",
+      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "integrationSlot": "github.admin.create-repository",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "GitHub lifecycle transport",
+        "Scoped WRITE Gate"
+      ],
+      "dependsOn": [
+        "PB-D2",
+        "PB-F"
+      ],
+      "nextAction": "Redesign current-first as private-only, org-bounded, idempotent and side-effect explicit.",
+      "subtasks": [
+        "Exact organization target",
+        "Private-only default/contract",
+        "Idempotent existing-repository behavior",
+        "No implicit team/webhook/secret setup"
+      ],
+      "nonRegression": [
+        "Do not resurrect PR #88 implementation wholesale",
+        "No organization-wide broad permission assumption",
+        "Provisioning consent remains explicit"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-PRWRITE",
+      "title": "Governed PR write extensions",
+      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "integrationSlot": "github.pr-write.extensions",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "githubLifecycle.ts",
+        "Scoped WRITE Gate"
+      ],
+      "dependsOn": [
+        "PB-D2"
+      ],
+      "nextAction": "Add request-review and a reduced/split update-PR contract with exact-head protection.",
+      "subtasks": [
+        "github_request_review exact-head",
+        "Split metadata update from dangerous lifecycle changes",
+        "No hidden close/base change",
+        "Bounded reviewer targets"
+      ],
+      "nonRegression": [
+        "Do not import broad PR #90 contract",
+        "Preserve existing merge/review-thread behavior",
+        "Exact-head before mutation"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-DESTRUCTIVE",
+      "title": "Destructive GitHub file/branch operations",
+      "disposition": "DEFERRED",
+      "integrationSlot": "github.destructive-writes",
+      "implementationMode": "NEW_JUSTIFIED",
+      "existingAuthorities": [
+        "GitHub tree/ref primitives",
+        "Scoped WRITE Gate"
+      ],
+      "dependsOn": [
+        "PB-D2"
+      ],
+      "nextAction": "Do not implement until a concrete use case and deletion-specific governance are approved.",
+      "subtasks": [
+        "github_delete_file via safe tree generalization if justified",
+        "github_delete_branch with protection/default-branch checks",
+        "Audit and irreversible-action safeguards"
+      ],
+      "nonRegression": [
+        "No transport DELETE expansion by default",
+        "No protected/default branch deletion",
+        "Separate destructive authorization"
+      ]
+    },
+    {
+      "id": "PB-STABLECOIN-APPDEPLOY",
+      "title": "Stablecoin application-changing deploy path",
+      "disposition": "CONDITIONAL",
+      "integrationSlot": "deployment.stablecoin-application",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "Stablecoin bounded fast-forward",
+        "S2 deployment governance"
+      ],
+      "dependsOn": [],
+      "nextAction": "Only design if a future Stablecoin delta contains application files.",
+      "subtasks": [
+        "Build/restart/health/rollback contract",
+        "Exact target SHA",
+        "Keep non-app fast-forward path unchanged"
+      ],
+      "nonRegression": [
+        "Do not reactivate PR #86 path",
+        "No build/restart for metadata-only fast-forward",
+        "Separate rollback proof"
+      ]
+    },
+    {
+      "id": "PB-UAC",
+      "title": "Universal Agent Coordination / heartbeat and claim observability",
+      "disposition": "ACTIVE",
+      "integrationSlot": "coordination.universal",
+      "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "existingAuthorities": [
+        "Governed Session",
+        "Governed Task Queue",
+        "claim/lock authorities",
+        "GitHub context"
+      ],
+      "dependsOn": [
+        "PB-FOUNDATIONS-DONE"
+      ],
+      "nextAction": "Continue PR #154 from its exact head; do not duplicate its 24 UAC work items elsewhere.",
+      "subtasks": [
+        "UAC-01 inventory authorities",
+        "UAC-02 read-only contract",
+        "UAC-03..11 adapters/exposure/compatibility",
+        "UAC-12..18 multi-agent and recovery E2E",
+        "UAC-19 supervision view",
+        "UAC-20..24 governance/regression/merge/deploy/closure"
+      ],
+      "nonRegression": [
+        "Heartbeat is liveness only",
+        "STALE/UNKNOWN never releases ownership",
+        "No second queue/session/claim/lock authority"
+      ]
+    },
+    {
+      "id": "PB-GWC-RECONCILE",
+      "title": "GWC-0..17 implementation-state convergence",
+      "disposition": "NEEDS_RECONCILIATION",
+      "integrationSlot": "governance.gwc-blueprint-convergence",
+      "implementationMode": "RECONCILE_ONLY",
+      "existingAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main implementation",
+        "DECISIONS_LOG"
+      ],
+      "dependsOn": [],
+      "nextAction": "Classify each blueprint against current main; never replay the candidate design as a block.",
+      "subtasks": [
+        "Map each GWC blueprint to current implementation evidence",
+        "Identify only residual implementation deltas",
+        "Attach each residual to an existing backlog work item/Integration Slot"
+      ],
+      "nonRegression": [
+        "PR #95 is historical provenance",
+        "No blueprint reimplementation when current code exists",
+        "No new runtime task from design alone"
+      ]
+    },
+    {
+      "id": "PB-AF-CLOSED",
+      "title": "GWC findings with attested corrections",
+      "disposition": "DONE",
+      "integrationSlot": "governance.gwc-findings-closed",
+      "implementationMode": "REUSE",
+      "existingAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "production evidence"
+      ],
+      "dependsOn": [],
+      "nextAction": "Keep closed findings closed unless new reproducible evidence appears.",
+      "subtasks": [
+        "AF-09",
+        "AF-10",
+        "AF-18",
+        "AF-23",
+        "AF-24",
+        "AF-27",
+        "AF-28",
+        "AF-34",
+        "AF-36"
+      ],
+      "nonRegression": [
+        "No reopening from stale text",
+        "Evidence required for regression claim"
+      ]
+    },
+    {
+      "id": "PB-AF-RECONCILE",
+      "title": "Remaining GWC finding classification",
+      "disposition": "NEEDS_RECONCILIATION",
+      "integrationSlot": "governance.gwc-findings-reconciliation",
+      "implementationMode": "RECONCILE_ONLY",
+      "existingAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main",
+        "DECISIONS_LOG",
+        "tests"
+      ],
+      "dependsOn": [
+        "PB-GWC-RECONCILE"
+      ],
+      "nextAction": "For every corrected=false finding, determine absorbed/superseded/duplicate/composable/open before creating any implementation work.",
+      "subtasks": [
+        "Reproduce against current main when definition is current",
+        "Treat archive-only definitions as historical evidence requiring current validation",
+        "Update corrected/disposition only with proof",
+        "Route true residuals to existing Integration Slots"
+      ],
+      "nonRegression": [
+        "corrected=false never means code automatically",
+        "No 27-task explosion",
+        "No inferred closure without evidence"
+      ]
+    },
+    {
+      "id": "PB-OD-RECONCILE",
+      "title": "OD-01..12 decision-state convergence",
+      "disposition": "NEEDS_RECONCILIATION",
+      "integrationSlot": "governance.open-decisions-reconciliation",
+      "implementationMode": "RECONCILE_ONLY",
+      "existingAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "DECISIONS_LOG",
+        "current main"
+      ],
+      "dependsOn": [
+        "PB-GWC-RECONCILE"
+      ],
+      "nextAction": "Reconcile machine OD states with decisions already recorded and current implementation.",
+      "subtasks": [
+        "Confirm already-resolved/narrowed decisions",
+        "Identify genuinely open decisions",
+        "Attach each open decision to exactly one existing work item"
+      ],
+      "nonRegression": [
+        "No human gate invented where none exists",
+        "No stale OPEN state treated as missing feature",
+        "No duplicate decision authority"
+      ]
+    },
+    {
+      "id": "PB-TASKREG-RECONCILE",
+      "title": "Static task-registry drift reconciliation",
+      "disposition": "NEEDS_RECONCILIATION",
+      "integrationSlot": "governance.task-registry-reconciliation",
+      "implementationMode": "RECONCILE_ONLY",
+      "existingAuthorities": [
+        ".mcp/task-registry.json",
+        "Operational Memory",
+        "Governed Task Queue"
+      ],
+      "dependsOn": [],
+      "nextAction": "Reconcile stale static registry records against runtime authorities; do not mutate runtime tasks from documentation alone.",
+      "subtasks": [
+        "Verify TASK-20260822-001 READY record against delivered PR49/52 lineage and runtime truth",
+        "Keep TASK-20260813-004 DONE evidence",
+        "Document projection freshness"
+      ],
+      "nonRegression": [
+        "Task Queue/Operational Memory remain runtime authority",
+        "No task recreation from stale registry",
+        "No fake session/claim IDs"
+      ]
+    },
+    {
+      "id": "PB-LEGACY-CONVERGENCE-DONE",
+      "title": "Historical PR intent reconciliation",
+      "disposition": "DONE",
+      "integrationSlot": "governance.historical-pr-intents",
+      "implementationMode": "REUSE",
+      "existingAuthorities": [
+        "PR #145 audits",
+        "current main"
+      ],
+      "dependsOn": [],
+      "nextAction": "Use historical PRs only as provenance; execute residuals through the current-first work items already listed.",
+      "subtasks": [
+        "#85 GitHub Actions SSH intent absorbed",
+        "#86 non-app Stablecoin sync superseded",
+        "#88 admin create-repository residual routed",
+        "#89 READ foundation superseded/absorbed",
+        "#90 lifecycle residual decomposed"
+      ],
+      "nonRegression": [
+        "Never wholesale merge/rebase/cherry-pick stale branches",
+        "Historical intent cannot override current architecture"
+      ]
+    }
+  ]
+}
