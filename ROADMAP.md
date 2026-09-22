@@ -485,6 +485,48 @@ Optionnel. Exige un GO distinct, décision architecturale, TDD, PR séparée et 
 
 ---
 
+## Convergence exhaustive du backlog — 2026-09-23
+
+La roadmap reste la vision du programme. La couverture exhaustive et la classification current-first sont projetées dans `docs/governance/program-backlog-convergence.json` sans remplacer ROADMAP, TODO, Operational Memory ni Governed Task Queue.
+
+### Vagues d'exécution
+
+```text
+W0 ACTIVE
+  PB-UAC / PR #154
+        ↓
+W1 RECONCILIATION DE CONNAISSANCE
+  GWC-0..17 ↔ current main
+  AF-01..36 ↔ preuves actuelles
+  OD-01..12 ↔ DECISIONS_LOG/current main
+  task-registry statique ↔ autorités runtime
+        ↓
+W2 CAPACITÉS GITHUB COMPLÉMENTAIRES
+  github_get_commits
+  github_get_tree
+  github_get_required_checks
+        ↓
+W3 CONTINUITÉ / RÉSOLUTION / GOUVERNANCE
+  A2.2 + A3
+  B3 + C1 + C3/C4/C5
+  D1 + D2 + D3
+  E1/E2/E3
+  F
+        ↓
+W4 OBSERVABILITÉ / CERTIFICATION
+  G1/G2 + G3
+  H
+  I1/I2/I3
+  J1/J2
+```
+
+Les lots J3, J4, fallbacks SSH read-only, écritures serveur additionnelles, GitHub destructif et Stablecoin applicatif restent séparés ou conditionnels. Leur présence dans le backlog n'est jamais une autorisation d'exécution.
+
+### Definition of backlog-ready
+
+Un workstream n'est exécutable que s'il possède : objectif, Integration Slot, autorités réutilisées, dépendances, comportement acquis à préserver, delta restant, tests attendus et prochaine action. Une ancienne PR, un finding ou une décision historique ne suffit jamais à créer du code.
+
+
 # Dépendances principales
 
 ```text

@@ -3,6 +3,18 @@
 ## Role
 Journal des decisions structurantes du MCP.
 
+## 2026-09-23 — La convergence du backlog est une projection, jamais une nouvelle autorité
+
+Décision : le programme maintient une projection dérivée `docs/governance/program-backlog-convergence.json` afin de couvrir exhaustivement les intentions connues et d'empêcher les régressions/doublons. Cette projection n'est ni une Task Queue, ni une Operational Memory, ni un registre d'ownership, ni une autorité d'exécution.
+
+Chaque source connue — TODO non coché, lot roadmap exécutable, GWC-0..17, AF-01..36, OD-01..12, task-registry statique, intention de PR historique et travail externe actif explicitement observé — doit être couverte exactement une fois et rattachée à un workstream unique.
+
+Règle de création : `corrected=false`, `OPEN`, `READY`, `[ ]` ou une vieille PR ne signifie jamais « coder ». Toute intention passe d'abord par l'observation du main courant et `REUSE → WRAP → GENERALIZE → EXTEND → NEW`. Les éléments acquis restent acquis ; les sources obsolètes sont classées, pas rejouées.
+
+Règle de collision : deux workstreams ne peuvent pas revendiquer le même Integration Slot. Un besoin complémentaire s'intègre au workstream existant ou déclare une dépendance/composition explicite ; aucune autorité ou implémentation parallèle n'est créée.
+
+PR #154 reste l'unique chantier actif `coordination.universal` et ses UAC-01..24 sont référencés, jamais dupliqués dans une seconde file.
+
 ## 2026-09-22 — Une candidate mergée devient provenance, jamais exécution courante
 
 Décision : lorsqu'une branche candidate historique a déjà été intégrée, son `NEXT_ACTION` branch-local ne peut plus être repris comme instruction d'exécution courante. Le bootstrap existant est étendu — sans seconde autorité — pour produire une disposition machine `HISTORICAL_CANDIDATE`.

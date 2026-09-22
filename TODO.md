@@ -17,6 +17,63 @@
 
 Travaux restant réellement à accomplir. Les états dynamiques de tâche, session, branche et PR sont lus depuis leurs autorités runtime/GitHub et ne sont pas figés ici.
 
+## Convergence exhaustive du backlog — projection dérivée
+
+Cette section est un **index humain**, pas une seconde Task Queue. La projection machine correspondante est `docs/governance/program-backlog-convergence.json`.
+
+Règle permanente : avant toute création de tâche ou tout nouveau code, rechercher l'intention dans cette convergence et dans le `main` courant. Un élément ancien n'est jamais recodé parce qu'il est encore `[ ]`, `OPEN` ou `corrected=false`.
+
+| Workstream | Disposition | Integration Slot | Objet |
+|---|---|---|---|
+| `PB-FOUNDATIONS-DONE` | `DONE` | `program.delivered-foundations` | Delivered connection/repository/project foundations |
+| `PB-A2.2` | `KNOWN_NOT_ANALYZED` | `connection.client-evidence` | A2.2 Verified Client Evidence |
+| `PB-A3` | `KNOWN_NOT_ANALYZED` | `connection.oauth-attempt-correlation` | A3 OAuth Auth Attempt Correlation |
+| `PB-B3` | `PARTIALLY_IMPLEMENTED` | `context.multi-repository` | B3 Multi-repository Governed Context |
+| `PB-C1` | `PARTIALLY_IMPLEMENTED` | `project.gitregistry-verification` | C1 GitRegistry V2 verification and activation path |
+| `PB-C345` | `DESIGNED_NOT_IMPLEMENTED` | `project.server-runtime-domain-resolution` | C3/C4/C5 Server, Runtime and Domain Resolution |
+| `PB-D1` | `DESIGNED_NOT_IMPLEMENTED` | `governance.inheritance` | D1 Existing Governance Inheritance |
+| `PB-D2` | `DESIGNED_NOT_IMPLEMENTED` | `governance.effective-capabilities` | D2 Effective Capabilities |
+| `PB-D3` | `PARTIALLY_IMPLEMENTED` | `bootstrap.receipt-enrichment` | D3 Bootstrap Receipt Enrichment |
+| `PB-E` | `KNOWN_NOT_ANALYZED` | `context.guided-completion` | E1/E2/E3 Guided Context Completion |
+| `PB-F` | `KNOWN_NOT_ANALYZED` | `provisioning.governed` | F Governed Provisioning |
+| `PB-G12` | `KNOWN_NOT_ANALYZED` | `presence.client-two-clock` | G1/G2 Client Presence and two-clock model |
+| `PB-G3` | `PARTIALLY_IMPLEMENTED` | `attestation.tool-surface` | G3 Tool Surface Attestation |
+| `PB-H` | `KNOWN_NOT_ANALYZED` | `observability.end-to-end-tracing` | H End-to-End Tracing |
+| `PB-I` | `KNOWN_NOT_ANALYZED` | `observability.synthetic-monitoring` | I1/I2/I3 Synthetic Monitoring, connection dashboard and alerts |
+| `PB-J12` | `KNOWN_NOT_ANALYZED` | `certification.clients` | J1/J2 Claude and ChatGPT certification |
+| `PB-J3` | `KNOWN_NOT_ANALYZED` | `maintenance.github-actions-node24` | J3 GitHub Actions / Node 24 maintenance |
+| `PB-J4` | `CONDITIONAL` | `governance.write-gate-enforcement` | J4 WRITE gate shadow→enforce |
+| `PB-GITHUB-FIRST-PROGRAM` | `PARTIALLY_IMPLEMENTED` | `github-first.continuity-program` | GitHub-first Operational Continuity residual program |
+| `PB-GITHUB-FIRST-PROOF` | `DONE` | `github-first.read-evidence-proof` | GitHub-first S1 read-only evidence proof |
+| `PB-GITHUB-FIRST-FALLBACKS` | `DEFERRED` | `github-first.optional-readonly-fallbacks` | Optional SSH read-only fallback selection |
+| `PB-GITHUB-FIRST-WRITE` | `DEFERRED` | `github-first.server-write-extensions` | Additional bounded server WRITE transports |
+| `PB-GITHUB-READ` | `READY` | `github.control-plane.read-complements` | GitHub Control Plane READ R1 |
+| `PB-GITHUB-ADMIN` | `DESIGNED_NOT_IMPLEMENTED` | `github.admin.create-repository` | Governed github_create_repository |
+| `PB-GITHUB-PRWRITE` | `DESIGNED_NOT_IMPLEMENTED` | `github.pr-write.extensions` | Governed PR write extensions |
+| `PB-GITHUB-DESTRUCTIVE` | `DEFERRED` | `github.destructive-writes` | Destructive GitHub file/branch operations |
+| `PB-STABLECOIN-APPDEPLOY` | `CONDITIONAL` | `deployment.stablecoin-application` | Stablecoin application-changing deploy path |
+| `PB-UAC` | `ACTIVE` | `coordination.universal` | Universal Agent Coordination / heartbeat and claim observability |
+| `PB-GWC-RECONCILE` | `NEEDS_RECONCILIATION` | `governance.gwc-blueprint-convergence` | GWC-0..17 implementation-state convergence |
+| `PB-AF-CLOSED` | `DONE` | `governance.gwc-findings-closed` | GWC findings with attested corrections |
+| `PB-AF-RECONCILE` | `NEEDS_RECONCILIATION` | `governance.gwc-findings-reconciliation` | Remaining GWC finding classification |
+| `PB-OD-RECONCILE` | `NEEDS_RECONCILIATION` | `governance.open-decisions-reconciliation` | OD-01..12 decision-state convergence |
+| `PB-TASKREG-RECONCILE` | `NEEDS_RECONCILIATION` | `governance.task-registry-reconciliation` | Static task-registry drift reconciliation |
+| `PB-LEGACY-CONVERGENCE-DONE` | `DONE` | `governance.historical-pr-intents` | Historical PR intent reconciliation |
+
+### Ordonnancement courant
+
+- **ACTIVE** : `PB-UAC` reste le chantier d'implémentation actif via PR #154 ; ne pas recopier ses UAC-01..24.
+- **RECONCILE avant nouveau code issu du GWC historique** : `PB-GWC-RECONCILE`, `PB-AF-RECONCILE`, `PB-OD-RECONCILE`, `PB-TASKREG-RECONCILE`.
+- **READY après gates de coordination/convergence** : `PB-GITHUB-READ` uniquement pour `github_get_commits`, `github_get_tree`, `github_get_required_checks`.
+- **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
+- **Observabilité/certification** : G1/G2, G3, H, I, J1/J2 après leurs dépendances.
+- **Séparés/conditionnels** : J3 Node 24, J4 WRITE gate enforce, fallbacks SSH, WRITE serveur additionnels, GitHub destructif, déploiement applicatif Stablecoin.
+
+### Règle anti-régression / anti-doublon
+
+Une intention nouvelle doit être classée contre l'existant selon `REUSE → WRAP → GENERALIZE → EXTEND → NEW`. Si un Integration Slot est déjà porté par un workstream actif ou existant, le nouveau besoin doit être rattaché à ce workstream ou déclaré explicitement dépendant/composable ; il ne crée jamais une implémentation parallèle.
+
+
 ## Règle de dérivation depuis la roadmap
 
 `ROADMAP.md` porte la vision complète des chantiers et lots connus. Ce fichier ne duplique pas toute la roadmap : il ne contient que les éléments qui restent réellement à accomplir ou à vérifier avant qu'un lot puisse être considéré exécutable.
