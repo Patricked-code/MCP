@@ -1,3 +1,4 @@
+import { canonicalJson } from '../../canonicalJson.js';
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
 
@@ -130,20 +131,8 @@ const TerminalEvidenceMatrixSchema = z.object({
   }).strict()
 }).strict();
 
-function canonical(value: unknown): string {
-  if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
-  if (value && typeof value === 'object') {
-    return '{' + Object.entries(value as Record<string, unknown>)
-      .filter(([, entry]) => entry !== undefined)
-      .sort(([left], [right]) => left.localeCompare(right))
-      .map(([key, entry]) => JSON.stringify(key) + ':' + canonical(entry))
-      .join(',') + '}';
-  }
-  return JSON.stringify(value);
-}
-
 function digest(value: unknown): string {
-  return createHash('sha256').update(canonical(value)).digest('hex');
+  return createHash('sha256').update(canonicalJson(value)).digest('hex');
 }
 
 function repositoryParts(repositoryFullName: string): Readonly<{
