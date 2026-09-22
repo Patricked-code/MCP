@@ -939,3 +939,12 @@ Mise à jour : 2026-07-09T20:08:09Z
 - #85 et #89 sont absorbées/superseded selon les autorités actuelles ; le fast-forward non applicatif de #86 est remplacé par le chemin Stablecoin bounded-write déjà livré.
 - #88 et le sous-ensemble différé de #90 restent visibles comme backlog candidat, sans création de `TASK-*` ni autorisation runtime.
 - Aucun TypeScript, workflow, permission, secret, S1/S2 ou production n'est modifié.
+
+
+### Audit de chevauchement GitHub différé
+
+- Ajout de `docs/audits/2026-09-22-deferred-github-capability-overlap.md`.
+- `github_get_mergeability` est classé doublon de la surface PR state actuelle.
+- `github_get_commit_diff` est classé composable avec les READ existants, sans nouvelle primitive.
+- Les READ réellement complémentaires sont commits/tree/required-checks.
+- Les mutations PR, repository-admin et suppressions restent des lots distincts à redessiner current-first.
