@@ -1,3 +1,4 @@
+import { canonicalJson } from '../../canonicalJson.js';
 import { createHash } from 'node:crypto';
 
 import type { LiveStateSnapshot } from '../../liveState/types.js';
@@ -43,20 +44,8 @@ export type TaskContractObservation<TStatus extends string, TPayload> = Readonly
   mutationPerformed: false;
 }>;
 
-function canonical(value: unknown): string {
-  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
-  if (value && typeof value === 'object') {
-    return `{${Object.entries(value as Record<string, unknown>)
-      .filter(([, entry]) => entry !== undefined)
-      .sort(([left], [right]) => left.localeCompare(right))
-      .map(([key, entry]) => `${JSON.stringify(key)}:${canonical(entry)}`)
-      .join(',')}}`;
-  }
-  return JSON.stringify(value);
-}
-
 function digest(value: unknown): string {
-  return createHash('sha256').update(canonical(value)).digest('hex');
+  return createHash('sha256').update(canonicalJson(value)).digest('hex');
 }
 
 function binding(
@@ -244,7 +233,7 @@ export function wrapGw19MinimalLockAcquisition(
 ): TaskContractObservation<'PLANNED_ONLY' | 'GRANTED' | 'MISMATCH', typeof input> {
   const grantedScopes = [...new Set(input.grantedLocks.map((lock) => lock.scope))].sort();
   const expectedScopes = [...input.plan.normalizedScopes];
-  const same = canonical(grantedScopes) === canonical(expectedScopes);
+  const same = canonicalJson(grantedScopes) === canonicalJson(expectedScopes);
   const status = input.grantedLocks.length === 0
     ? 'PLANNED_ONLY'
     : same
