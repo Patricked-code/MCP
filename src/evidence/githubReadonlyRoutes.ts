@@ -12,6 +12,7 @@ export type GithubReadonlyEvidenceProbe =
   | 'mcp_git_status'
   | 'stablecoin_frontend_git_status'
   | 'stablecoin_backend_git_status'
+  | 'stablecoin_backend_inventory'
   | 'stablecoin_runtime_status'
   | 'server_disk'
   | 'docker_status';
@@ -58,6 +59,7 @@ function exactRequest(value: unknown): {
     probe !== 'mcp_git_status'
     && probe !== 'stablecoin_frontend_git_status'
     && probe !== 'stablecoin_backend_git_status'
+    && probe !== 'stablecoin_backend_inventory'
     && probe !== 'stablecoin_runtime_status'
     && probe !== 'server_disk'
     && probe !== 'docker_status'
@@ -68,6 +70,7 @@ function exactRequest(value: unknown): {
     (
       probe === 'stablecoin_frontend_git_status'
       || probe === 'stablecoin_backend_git_status'
+      || probe === 'stablecoin_backend_inventory'
       || probe === 'stablecoin_runtime_status'
     )
     && target !== 's2'
@@ -122,6 +125,196 @@ printf 'head=%s\\n' "$head"
 printf 'working_tree_changes=%s\\n' "$changes"
 printf 'origin_fetch=%s\\n' "$(printf '%s' "$origin_url" | sed -E 's#(https?://)[^/@[:space:]]+@#\\1***@#g')"
 printf 'origin_push=%s\\n' "$(printf '%s' "$push_url" | sed -E 's#(https?://)[^/@[:space:]]+@#\\1***@#g')"
+exit 0`;
+}
+
+function stablecoinBackendInventoryCommand(): string {
+  return `set -u
+root='/var/www/vhosts/chainsolutions.fr/api.stablecoin.chainsolutions.fr'
+printf 'inventory_schema=1\\n'
+if [ ! -d "$root" ]; then
+  printf 'path_exists=false\\n'
+  exit 0
+fi
+printf 'path_exists=true\\n'
+node <<'NODE'
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+
+const root = '/var/www/vhosts/chainsolutions.fr/api.stablecoin.chainsolutions.fr';
+
+function clean(value) {
+  return String(value ?? 'UNKNOWN').replace(/[\\r\\n|]/g, '_').slice(0, 500);
+}
+
+function line(key, value) {
+  process.stdout.write(key + '=' + clean(value) + '\\n');
+}
+
+function sanitizeRepository(value) {
+  if (!value) return 'UNKNOWN';
+  let raw = typeof value === 'string' ? value : value.url;
+  if (!raw) return 'UNKNOWN';
+  raw = String(raw);
+  raw = raw.replace(/(https?:\\/\\/)[^/@\\s]+@/gi, '$1***@');
+  raw = raw.replace(/(https?:\\/\\/)[^/:@\\s]+:[^/@\\s]+@/gi, '$1***@');
+  return raw;
+}
+
+function sha256File(file) {
+  try {
+    const stat = fs.statSync(file);
+    if (!stat.isFile() || stat.size > 2 * 1024 * 1024) return 'SKIPPED';
+    return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+  } catch {
+    return 'UNAVAILABLE';
+  }
+}
+
+const rootStat = fs.statSync(root);
+line('root_realpath', fs.realpathSync(root));
+line('root_uid', rootStat.uid);
+line('root_gid', rootStat.gid);
+line('root_mode', (rootStat.mode & 0o777).toString(8));
+line('root_mtime', rootStat.mtime.toISOString());
+
+const packagePath = path.join(root, 'package.json');
+let pkg = {};
+if (fs.existsSync(packagePath)) {
+  line('package_exists', 'true');
+  try {
+    pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+    line('package_name', pkg.name || 'UNKNOWN');
+    line('package_version', pkg.version || 'UNKNOWN');
+    line('package_main', pkg.main || 'UNKNOWN');
+    line('package_type', pkg.type || 'UNKNOWN');
+    line('package_private', pkg.private === true ? 'true' : pkg.private === false ? 'false' : 'UNKNOWN');
+    line('package_repository', sanitizeRepository(pkg.repository));
+    line('package_homepage', sanitizeRepository(pkg.homepage));
+    line('package_script_names', Object.keys(pkg.scripts || {}).sort().join(',') || 'NONE');
+    line('package_sha256', sha256File(packagePath));
+
+    const deps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
+    for (const dep of [
+      'express','sequelize','mysql2','mysql','pg','pg-hstore','mariadb','sqlite3',
+      'mssql','passport','jsonwebtoken','bcrypt','bcryptjs','cors','dotenv'
+    ]) {
+      line('dependency_' + dep.replace(/-/g, '_'), deps[dep] || 'ABSENT');
+    }
+  } catch {
+    line('package_parse', 'INVALID');
+  }
+} else {
+  line('package_exists', 'false');
+}
+
+const known = [
+  'server.js','app.js','index.js','bin/www',
+  'models','models/wtiapikey.js',
+  'middlewares','middlewares/verifyApiKeyWti.js',
+  'routes','controllers','services',
+  'config','config/config.js','config/config.json',
+  'migrations','seeders',
+  'README.md','package-lock.json','yarn.lock'
+];
+
+for (const rel of known) {
+  const full = path.join(root, rel);
+  try {
+    const stat = fs.lstatSync(full);
+    const kind = stat.isDirectory() ? 'dir' : stat.isSymbolicLink() ? 'symlink' : stat.isFile() ? 'file' : 'other';
+    line('known_file', rel + ':' + kind + ':uid=' + stat.uid + ':gid=' + stat.gid + ':mode=' + (stat.mode & 0o777).toString(8));
+    if (stat.isFile() && [
+      'server.js','app.js','index.js','bin/www',
+      'models/wtiapikey.js','middlewares/verifyApiKeyWti.js',
+      'config/config.js','config/config.json'
+    ].includes(rel)) {
+      line('sha256', rel + ':' + sha256File(full));
+    }
+  } catch {
+    line('known_file', rel + ':absent');
+  }
+}
+
+const scanRoots = ['.', 'config', 'models', 'middlewares', 'routes', 'controllers', 'services'];
+const skipDirs = new Set(['node_modules','.git','tmp','logs','log','public','uploads','dist','build','coverage']);
+const sourceFiles = [];
+const seen = new Set();
+
+function walk(dir, depth) {
+  if (depth > 5 || sourceFiles.length >= 400) return;
+  let entries;
+  try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+  for (const entry of entries) {
+    if (sourceFiles.length >= 400) break;
+    if (entry.name.startsWith('.')) continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (!skipDirs.has(entry.name)) walk(full, depth + 1);
+      continue;
+    }
+    if (!entry.isFile() || !/\\.(?:js|cjs|mjs)$/.test(entry.name)) continue;
+    try {
+      const stat = fs.statSync(full);
+      if (stat.size <= 1024 * 1024) {
+        const rel = path.relative(root, full);
+        if (!seen.has(rel)) {
+          seen.add(rel);
+          sourceFiles.push(full);
+        }
+      }
+    } catch {}
+  }
+}
+
+for (const rel of scanRoots) {
+  const full = path.resolve(root, rel);
+  if (full === root || full.startsWith(root + path.sep)) walk(full, 0);
+}
+
+const envNames = new Set();
+const dialects = new Set();
+const databaseLiterals = new Set();
+
+for (const full of sourceFiles) {
+  let content;
+  try { content = fs.readFileSync(full, 'utf8'); } catch { continue; }
+
+  for (const match of content.matchAll(/process\\.env\\.([A-Z][A-Z0-9_]*)/g)) {
+    if (match[1]) envNames.add(match[1]);
+  }
+  for (const match of content.matchAll(/dialect\\s*:\\s*['"](mysql|postgres|postgresql|sqlite|mariadb|mssql)['"]/gi)) {
+    if (match[1]) dialects.add(match[1].toLowerCase());
+  }
+  for (const match of content.matchAll(/database\\s*:\\s*['"]([A-Za-z0-9_.-]{1,100})['"]/g)) {
+    if (match[1]) databaseLiterals.add(match[1]);
+  }
+}
+
+line('source_file_count', sourceFiles.length);
+for (const name of [...envNames].sort().slice(0, 120)) line('env_ref', name);
+line('db_dialect_hint', [...dialects].sort().join(',') || 'UNKNOWN');
+for (const name of [...databaseLiterals].sort().slice(0, 20)) line('db_database_literal', name);
+
+for (const configRel of ['config/config.json']) {
+  const full = path.join(root, configRel);
+  if (!fs.existsSync(full)) continue;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(full, 'utf8'));
+    for (const envName of ['development','test','production']) {
+      const cfg = parsed && typeof parsed === 'object' ? parsed[envName] : undefined;
+      if (!cfg || typeof cfg !== 'object') continue;
+      if (typeof cfg.dialect === 'string') line('config_dialect', envName + ':' + cfg.dialect);
+      if (typeof cfg.database === 'string' && /^[A-Za-z0-9_.-]{1,100}$/.test(cfg.database)) {
+        line('config_database', envName + ':' + cfg.database);
+      }
+    }
+  } catch {
+    line('config_json_parse', 'INVALID');
+  }
+}
+NODE
 exit 0`;
 }
 
@@ -185,6 +378,9 @@ export function buildGithubReadonlyEvidenceCommand(
     return optionalRedactedGitStatusCommand(
       '/var/www/vhosts/chainsolutions.fr/api.stablecoin.chainsolutions.fr'
     );
+  }
+  if (probe === 'stablecoin_backend_inventory' && target === 's2') {
+    return stablecoinBackendInventoryCommand();
   }
   if (probe === 'stablecoin_runtime_status' && target === 's2') {
     return stablecoinRuntimeStatusCommand();
