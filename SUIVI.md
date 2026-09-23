@@ -11,6 +11,7 @@
 - Les helpers heartbeat PRECODE de `candidateContinuity.ts` restent historique/compatibilité uniquement ; ils ne deviennent pas l'autorité post-intégration.
 - MCP CI #1771 sur le HEAD de réconciliation `c967a068...` a confirmé typecheck + build puis échoué uniquement sur l'inventaire Markdown attendu : le nouveau plan UAC était le 219e Markdown mais le baseline en déclarait 218.
 - Correction de gouvernance incluse dans ce lot : `docs/governance/markdown-inventory.json` suit désormais le plan UAC comme `documentation`, avec compte total 219.
+- MCP CI #1773 / run `35800139450` : 657/657 tests, typecheck/build/docs/governance/GWC/secrets/read-only tous PASS ; seul `git diff --check` a détecté deux espaces finaux historiques sur les lignes d'en-tête du plan UAC. Correction whitespace bornée appliquée dans le commit suivant.
 - Aucun code comportemental, aucun runtime, aucune Task/Session/Lock live et aucune mutation S1/production dans UAC-01.
 - NEXT_ACTION : après SUCCESS du CI exact-head de ce lot UAC-01, démarrer UAC-03 en TDD RED en réutilisant `GovernedSessionRecord`, `GovernedSessionService` et `src/governedWorkflow/adapters/session.ts`; ne créer aucun store/session authority supplémentaire.
 
