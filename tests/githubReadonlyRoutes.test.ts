@@ -176,6 +176,33 @@ test('Stablecoin runtime probe reads only paths, process identity and HTTP statu
   assert.doesNotMatch(command, /printenv|env\s|\/proc\/[^\s]+\/environ/);
 });
 
+test('Stablecoin backend inventory probe emits metadata only and never secret values', () => {
+  const command = buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_inventory');
+
+  assert.match(command, /api\.stablecoin\.chainsolutions\.fr/);
+  assert.match(command, /package_name=/);
+  assert.match(command, /package_version=/);
+  assert.match(command, /package_repository=/);
+  assert.match(command, /dependency_sequelize=/);
+  assert.match(command, /dependency_mysql2=/);
+  assert.match(command, /dependency_pg=/);
+  assert.match(command, /known_file=/);
+  assert.match(command, /sha256=/);
+  assert.match(command, /env_ref=/);
+  assert.match(command, /db_dialect_hint=/);
+  assert.match(command, /root_uid=/);
+  assert.match(command, /root_gid=/);
+
+  assert.doesNotMatch(command, /printenv|\/proc\/[^\s]+\/environ/);
+  assert.doesNotMatch(command, /\.env(?:\.|['"\s])/);
+  assert.doesNotMatch(command, /console\.log\([^\n]*(?:password|secret|token|key)[^\n]*\)/i);
+  assert.doesNotMatch(command, /process\.env\[[^\]]+\]/);
+  assert.doesNotThrow(() => assertReadOnlyCommand(command));
+
+  const syntax = spawnSync('bash', ['-n'], { input: command, encoding: 'utf8' });
+  assert.equal(syntax.status, 0, syntax.stderr);
+});
+
 test('Stablecoin backend/runtime probes satisfy the real runtime read-only policy and Bash syntax', () => {
   const commands = [
     buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_git_status'),
@@ -266,6 +293,7 @@ test('hardcoded evidence commands contain no mutation primitives', () => {
     buildGithubReadonlyEvidenceCommand('s1', 'mcp_git_status'),
     buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_frontend_git_status'),
     buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_git_status'),
+    buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_inventory'),
     buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_runtime_status'),
     buildGithubReadonlyEvidenceCommand('s1', 'server_disk'),
     buildGithubReadonlyEvidenceCommand('s2', 'docker_status')
