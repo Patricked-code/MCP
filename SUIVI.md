@@ -13,7 +13,9 @@
 - Correction de gouvernance incluse dans ce lot : `docs/governance/markdown-inventory.json` suit désormais le plan UAC comme `documentation`, avec compte total 219.
 - MCP CI #1773 / run `35800139450` : 657/657 tests, typecheck/build/docs/governance/GWC/secrets/read-only tous PASS ; seul `git diff --check` a détecté deux espaces finaux historiques sur les lignes d'en-tête du plan UAC. Correction whitespace bornée appliquée dans le commit suivant.
 - Aucun code comportemental, aucun runtime, aucune Task/Session/Lock live et aucune mutation S1/production dans UAC-01.
-- NEXT_ACTION : après SUCCESS du CI exact-head de ce lot UAC-01, démarrer UAC-03 en TDD RED en réutilisant `GovernedSessionRecord`, `GovernedSessionService` et `src/governedWorkflow/adapters/session.ts`; ne créer aucun store/session authority supplémentaire.
+- MCP CI #1775 / run `35800290757` = SUCCESS exact-head sur `9ec4b491b558dfc7bf71889e4ed76fe384c4a08b` ; UAC-01 est validé, y compris 657/657 tests et whitespace gate.
+- UAC-03 RED ouvert ensuite sans implémentation : tests exigent une projection pure du `GovernedSessionPublicRecord` existant, les cinq statuts `OPEN/ACTIVE/PAUSED/EXPIRED/CLOSED`, aucune mutation, aucune autorisation et aucun claim ownership inféré.
+- NEXT_ACTION : obtenir le RED exact-head attendu pour UAC-03, puis implémenter GREEN dans l'adapter Session existant et élargir additivement le schéma de projection aux statuts `OPEN/PAUSED`.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
