@@ -254,3 +254,69 @@ test('UAC-05 derives ownership and collision domains from the governed task with
   assert.equal(unowned.ownerGovernedSessionId, null);
   assert.equal(unowned.takeoverAllowed, false);
 });
+
+
+test('UAC-06 derives liveness from governed session heartbeat evidence only', async () => {
+  const { projectGovernedSessionLivenessForCoordination } = await import(
+    '../src/governedWorkflow/adapters/session.js'
+  );
+  const session = {
+    schemaVersion: 1 as const,
+    governedSessionId: '11111111-1111-4111-8111-111111111111',
+    repository: 'Patricked-code/MCP',
+    taskScope: 'coordination.universal',
+    workBranch: 'mcp/universal-agent-coordination-20260923',
+    agentIdentity: 'chatgpt',
+    ownerPrincipalId: null,
+    identityAssurance: 'declared_only' as const,
+    status: 'ACTIVE' as const,
+    createdAt: '2026-09-23T00:00:00Z',
+    resumedAt: null,
+    lastHeartbeatAt: '2026-09-23T00:00:30Z',
+    pausedAt: null,
+    expiredAt: null,
+    closedAt: null,
+    currentTransport: null,
+    lastAcknowledgedStateVersion: null,
+    bootstrapReceipt: null,
+    connectionContext: null,
+    sessionRevision: 11,
+    lastCheckpoint: null,
+    blockers: [],
+    nextAction: 'continue',
+    lockIds: [],
+    resumePolicy: 'stable_principal_or_resume_secret' as const
+  };
+
+  const fresh = projectGovernedSessionLivenessForCoordination(
+    session, '2026-09-23T00:01:00Z', 120
+  );
+  assert.equal(fresh.authority, 'Governed Session');
+  assert.equal(fresh.liveness, 'FRESH');
+  assert.equal(fresh.heartbeatLastSeenAt, session.lastHeartbeatAt);
+
+  const stale = projectGovernedSessionLivenessForCoordination(
+    session, '2026-09-23T00:10:00Z', 120
+  );
+  assert.equal(stale.liveness, 'STALE');
+
+  const unknown = projectGovernedSessionLivenessForCoordination(
+    null, '2026-09-23T00:10:00Z', 120
+  );
+  assert.equal(unknown.liveness, 'UNKNOWN');
+  assert.equal(unknown.heartbeatLastSeenAt, null);
+
+  const future = projectGovernedSessionLivenessForCoordination(
+    { ...session, lastHeartbeatAt: '2026-09-23T00:11:00Z' },
+    '2026-09-23T00:10:00Z',
+    120
+  );
+  assert.equal(future.liveness, 'UNKNOWN');
+
+  for (const projection of [fresh, stale, unknown, future]) {
+    assert.equal(projection.releaseAllowedByLiveness, false);
+    assert.equal(projection.transferAllowedByLiveness, false);
+    assert.equal(projection.authorizationInferred, false);
+    assert.equal(projection.mutationPerformed, false);
+  }
+});

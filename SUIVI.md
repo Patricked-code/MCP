@@ -26,7 +26,9 @@
 - UAC-05 RED ouvert : ownership dérivé uniquement de `ownerGovernedSessionId`, lifecycle conservé séparément, collision domains dérivés de `resourceScopes`; aucune libération déduite d'un statut terminal, aucun claimId fabriqué, aucun takeover automatique.
 - UAC-05 RED prouvé par MCP CI #1785 / run `35801351086` sur `5221545ac30dea68bc20a18479c6e5096a22fd66` : échec ciblé `projectGovernedTaskClaimForCoordination is not a function`; UAC-03/UAC-04 restent verts.
 - GREEN minimal : ownership = présence réelle de `ownerGovernedSessionId`; lifecycle de tâche conservé séparément; collision domains = `resourceScopes` dédupliqués/triés; `claimId=null`; `releaseInferred=false`; `transferAllowed=false`; `takeoverAllowed=false`. Même une tâche terminale encore owner n'est pas déclarée released.
-- NEXT_ACTION : valider UAC-05 par CI exact-head, puis ouvrir UAC-06 en RED pour dériver FRESH/STALE/UNKNOWN uniquement depuis la preuve heartbeat de Governed Session, sans impact sur ownership.
+- MCP CI #1787 / run `35801497797` = SUCCESS exact-head sur `f55346a1c16d1a90a218eb0b519f3c61945d516d`; UAC-05 validé.
+- UAC-06 RED ouvert : FRESH/STALE depuis `GovernedSession.lastHeartbeatAt`; absence d'une session autoritative observable ou heartbeat futur/incohérent => UNKNOWN; liveness ne libère/transfère jamais ownership.
+- NEXT_ACTION : obtenir le RED exact-head UAC-06, puis GREEN en généralisant la logique liveness existante sans créer de heartbeat store.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
