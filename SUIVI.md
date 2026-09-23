@@ -22,7 +22,9 @@
 - UAC-04 RED ouvert : le test exige une projection pure du `GovernedTaskRecord` existant avec tous les statuts autoritatifs, phase courante, owner, scopes, branche/PR/HEAD et révision, sans mutation ni transfert de claim.
 - UAC-04 RED prouvé par MCP CI #1781 / run `35800964317` sur `6cb37ad36aa2f0e678c65714d7678549df6a770d` : échec ciblé `projectGovernedTaskForCoordination is not a function`; le reste des contrôles précédents reste compatible.
 - GREEN minimal : `src/governedWorkflow/adapters/task.ts` projette le `GovernedTaskRecord` existant (task/status/phase/owner/resourceScopes/branch/PR/HEAD/revision) avec `authorizationInferred=false`, `mutationPerformed=false`, `claimTransferAllowed=false`; le fixture UAC utilise désormais le statut canonique `IN_PROGRESS` au lieu de l'ancien libellé libre `IMPLEMENTING`.
-- NEXT_ACTION : valider UAC-04 par CI exact-head, puis ouvrir UAC-05 en RED pour dériver claim ownership + collision domains exclusivement depuis `GovernedTaskRecord.status`, `ownerGovernedSessionId`, `resourceScopes` et les locks existants; aucun claim store séparé.
+- MCP CI #1783 / run `35801173447` = SUCCESS exact-head sur `7fafd622be9360becc9b69cc154fae07cbaed272`; UAC-04 validé.
+- UAC-05 RED ouvert : ownership dérivé uniquement de `ownerGovernedSessionId`, lifecycle conservé séparément, collision domains dérivés de `resourceScopes`; aucune libération déduite d'un statut terminal, aucun claimId fabriqué, aucun takeover automatique.
+- NEXT_ACTION : obtenir le RED exact-head UAC-05, puis GREEN dans l'adapter Task existant; conserver l'autorité `Governed Task Queue` et ne créer aucun claim store.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 

@@ -196,3 +196,61 @@ test('UAC-04 projects the authoritative governed task record without creating ta
   }
   assert.equal(JSON.stringify(task), before);
 });
+
+
+test('UAC-05 derives ownership and collision domains from the governed task without inventing claim release', async () => {
+  const { projectGovernedTaskClaimForCoordination } = await import(
+    '../src/governedWorkflow/adapters/task.js'
+  );
+  const task = {
+    schemaVersion: 1 as const,
+    taskId: 'TASK-20260923-155',
+    repository: 'Patricked-code/MCP',
+    intentKey: 'coordination.universal.claim',
+    title: 'Claim projection',
+    summary: 'Project existing task ownership only',
+    priority: 90,
+    sequence: 155,
+    status: 'IN_PROGRESS' as const,
+    dependencies: [],
+    resourceScopes: ['coordination.universal', 'repo:Patricked-code/MCP', 'coordination.universal'],
+    ownerGovernedSessionId: '11111111-1111-4111-8111-111111111111',
+    workBranch: 'mcp/universal-agent-coordination-20260923',
+    pullRequestNumber: 154,
+    observedHeadSha: 'a'.repeat(40),
+    runtimeRevision: null,
+    blockers: [],
+    nextAction: 'continue',
+    source: { kind: 'agent' as const, requestDigest: 'c'.repeat(64) },
+    createdAt: '2026-09-23T00:00:00Z',
+    updatedAt: '2026-09-23T00:10:00Z',
+    taskRevision: 10
+  };
+
+  const owned = projectGovernedTaskClaimForCoordination(task);
+  assert.equal(owned.authority, 'Governed Task Queue');
+  assert.equal(owned.taskId, task.taskId);
+  assert.equal(owned.taskStatus, 'IN_PROGRESS');
+  assert.equal(owned.ownershipState, 'OWNED');
+  assert.equal(owned.ownerGovernedSessionId, task.ownerGovernedSessionId);
+  assert.deepEqual(owned.collisionDomains, ['coordination.universal', 'repo:Patricked-code/MCP']);
+  assert.equal(owned.claimId, null);
+  assert.equal(owned.releaseInferred, false);
+  assert.equal(owned.transferAllowed, false);
+  assert.equal(owned.takeoverAllowed, false);
+  assert.equal(owned.mutationPerformed, false);
+
+  const terminalStillOwned = projectGovernedTaskClaimForCoordination({ ...task, status: 'DONE' });
+  assert.equal(terminalStillOwned.ownershipState, 'OWNED');
+  assert.equal(terminalStillOwned.taskStatus, 'DONE');
+  assert.equal(terminalStillOwned.releaseInferred, false);
+
+  const unowned = projectGovernedTaskClaimForCoordination({
+    ...task,
+    status: 'READY',
+    ownerGovernedSessionId: null
+  });
+  assert.equal(unowned.ownershipState, 'UNOWNED');
+  assert.equal(unowned.ownerGovernedSessionId, null);
+  assert.equal(unowned.takeoverAllowed, false);
+});
