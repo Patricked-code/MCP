@@ -45,6 +45,7 @@ test('fallback request schema is closed and contains no command field', () => {
   assert.match(workflow, /mcp_git_status/);
   assert.match(workflow, /stablecoin_frontend_git_status/);
   assert.match(workflow, /stablecoin_backend_git_status/);
+  assert.match(workflow, /stablecoin_backend_inventory/);
   assert.match(workflow, /stablecoin_runtime_status/);
   assert.doesNotMatch(workflow, /['"]command['"]\s*:/);
   assert.doesNotMatch(workflow, /DISPATCH_COMMAND|REQUEST_COMMAND|ISSUE_COMMAND/);
