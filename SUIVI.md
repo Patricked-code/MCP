@@ -49,7 +49,9 @@
 - MCP CI #1807 / run `35802998473` = SUCCESS exact-head sur `645b7ad7dd55f6f9ea555a8ec58907d8a079a61e`; UAC-09 validé.
 - UAC-10 audit existing-first : aucun nouveau code requis. `resolveGithubFirstOperationalBootstrap()` couvre déjà `GITHUB_ONLY` et `GITHUB_ACTION_READONLY_EVIDENCE`; `tests/githubFirstOperationalContinuity.test.ts` prouve que le fallback configuré évite l'exposition bridge; `tests/githubReadonlyEvidenceWorkflow.test.ts` prouve schéma fermé, OIDC primaire, fallback SSH conditionnel et `mutationAllowed=false`.
 - Preuve E2E réelle déjà acquise : issues GitHub #162/#163 → runs `35800800997`/`35800806867` SUCCESS via `github_oidc_mcp_readonly`, `collect_ssh_fallback=skipped`, aucune mutation. UAC-10 est donc REUSE/GREEN et non une nouvelle surface parallèle.
-- NEXT_ACTION : valider exact-head ce checkpoint documentaire UAC-10, puis ouvrir UAC-11 en RED pour l'adapter de compatibilité PRECODE historique : lecture/provenance seulement, jamais réactivation de session/claim historique.
+- MCP CI #1811 / run `35803144917` = SUCCESS exact-head sur `64953736ab260259adbdda392eba5108c5d26960`; UAC-10 validé.
+- UAC-11 RED ouvert sur les primitives PRECODE déjà présentes (`CandidateSession`, `CandidateWorkClaim`, `CandidateWorkItem`) : même une session/claim historique encore marquée `ACTIVE` doit rester provenance uniquement, avec réactivation session/claim, takeover, écriture et autorisation tous à `false`.
+- NEXT_ACTION : obtenir le RED exact-head UAC-11, puis GREEN par wrapper pur dans `candidateContinuity.ts`; ne jamais appeler le dispatcher/résolveur PRECODE pour réactiver l'ancien état.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 

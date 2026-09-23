@@ -595,3 +595,77 @@ test('UAC-09 projects checkpoint blockers and next actions from existing Session
   assert.equal(JSON.stringify(session), beforeSession);
   assert.equal(JSON.stringify(task), beforeTask);
 });
+
+
+test('UAC-11 exposes PRECODE candidate state as historical provenance only', async () => {
+  const { projectHistoricalCandidateCoordination } = await import(
+    '../src/governedContext/candidateContinuity.js'
+  );
+  const session = {
+    candidateSessionId: 'candidate-session-historical-001',
+    agentIdentity: 'claude',
+    provider: 'claude' as const,
+    providerConversationRef: 'conversation-historical-001',
+    providerConversationRefProvenance: 'PROVIDED_BY_CLIENT' as const,
+    githubActor: 'historical-agent',
+    githubConnectionRef: 'github-connection-historical',
+    connectionInstanceRef: 'connection-instance-historical',
+    repository: 'Patricked-code/MCP' as const,
+    branch: 'claude/ecstatic-edison-v1dyt1' as const,
+    startingHeadSha: 'a'.repeat(40),
+    lastObservedHeadSha: 'b'.repeat(40),
+    createdAt: '2026-09-19T00:00:00Z',
+    lastSeenAt: '2026-09-19T00:10:00Z',
+    status: 'ACTIVE' as const
+  };
+  const claim = {
+    candidateSessionId: session.candidateSessionId,
+    agentIdentity: session.agentIdentity,
+    workItemId: 'PRECODE-WORK-001',
+    collisionDomains: ['coordination.universal', 'repo:Patricked-code/MCP'],
+    status: 'ACTIVE' as const
+  };
+  const workItem = {
+    workItemId: 'PRECODE-WORK-001',
+    intentKeys: ['coordination.universal'],
+    title: 'Historical PRECODE work',
+    status: 'IN_PROGRESS' as const,
+    priority: 100,
+    sequence: 1,
+    dependencies: [],
+    collisionDomains: ['coordination.universal', 'repo:Patricked-code/MCP']
+  };
+  const beforeSession = JSON.stringify(session);
+  const beforeClaim = JSON.stringify(claim);
+  const beforeWork = JSON.stringify(workItem);
+
+  const projection = projectHistoricalCandidateCoordination(session, claim, workItem);
+  assert.equal(projection.authority, 'Historical PRECODE Compatibility');
+  assert.equal(projection.historical, true);
+  assert.equal(projection.session.candidateSessionId, session.candidateSessionId);
+  assert.equal(projection.session.status, 'ACTIVE');
+  assert.equal(projection.claim?.status, 'ACTIVE');
+  assert.equal(projection.workItem?.status, 'IN_PROGRESS');
+  assert.deepEqual(projection.claim?.collisionDomains, claim.collisionDomains);
+  assert.equal(projection.sessionReactivationAllowed, false);
+  assert.equal(projection.claimReactivationAllowed, false);
+  assert.equal(projection.takeoverAllowed, false);
+  assert.equal(projection.currentOwnershipAuthority, false);
+  assert.equal(projection.authorizationGranted, false);
+  assert.equal(projection.mayWrite, false);
+  assert.equal(projection.mutationPerformed, false);
+  assert.equal(JSON.stringify(session), beforeSession);
+  assert.equal(JSON.stringify(claim), beforeClaim);
+  assert.equal(JSON.stringify(workItem), beforeWork);
+
+  const closed = projectHistoricalCandidateCoordination(
+    { ...session, status: 'CLOSED' },
+    { ...claim, status: 'RELEASED' },
+    { ...workItem, status: 'DONE' }
+  );
+  assert.equal(closed.session.status, 'CLOSED');
+  assert.equal(closed.claim?.status, 'RELEASED');
+  assert.equal(closed.workItem?.status, 'DONE');
+  assert.equal(closed.currentOwnershipAuthority, false);
+  assert.equal(closed.takeoverAllowed, false);
+});
