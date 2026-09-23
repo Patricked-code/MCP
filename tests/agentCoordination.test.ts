@@ -503,3 +503,95 @@ test('UAC-08 binds the existing GitHub operational context without upgrading exa
   assert.deepEqual(mismatch.reasonCodes, ['GITHUB_HEAD_MISMATCH']);
   assert.equal(mismatch.authorizationInferred, false);
 });
+
+
+test('UAC-09 projects checkpoint blockers and next actions from existing Session and Task authorities', async () => {
+  const { projectCoordinationCheckpoint } = await import(
+    '../src/governedWorkflow/adapters/session.js'
+  );
+  const session = {
+    schemaVersion: 1 as const,
+    governedSessionId: '11111111-1111-4111-8111-111111111111',
+    repository: 'Patricked-code/MCP',
+    taskScope: 'coordination.universal',
+    workBranch: 'mcp/universal-agent-coordination-20260923',
+    agentIdentity: 'chatgpt',
+    ownerPrincipalId: null,
+    identityAssurance: 'declared_only' as const,
+    status: 'ACTIVE' as const,
+    createdAt: '2026-09-23T00:00:00Z',
+    resumedAt: null,
+    lastHeartbeatAt: '2026-09-23T00:30:00Z',
+    pausedAt: null,
+    expiredAt: null,
+    closedAt: null,
+    currentTransport: null,
+    lastAcknowledgedStateVersion: 21,
+    bootstrapReceipt: null,
+    connectionContext: null,
+    sessionRevision: 12,
+    lastCheckpoint: {
+      checkpointId: '55555555-5555-4555-8555-555555555555',
+      governedSessionId: '11111111-1111-4111-8111-111111111111',
+      createdAt: '2026-09-23T00:31:00Z',
+      taskScope: 'coordination.universal',
+      workBranch: 'mcp/universal-agent-coordination-20260923',
+      pullRequestNumber: 154,
+      observedHeadSha: 'd'.repeat(40),
+      acknowledgedStateVersion: 21,
+      completedAction: 'UAC-08 GitHub execution binding',
+      resultCode: 'PASS',
+      blockers: ['checkpoint blocker'],
+      nextAction: 'Open UAC-09',
+      eventIds: ['66666666-6666-4666-8666-666666666666'],
+      sessionRevision: 12
+    },
+    blockers: ['session blocker'],
+    nextAction: 'Continue coordination program',
+    lockIds: [],
+    resumePolicy: 'stable_principal_or_resume_secret' as const
+  };
+  const task = {
+    schemaVersion: 1 as const,
+    taskId: 'TASK-20260923-159',
+    repository: 'Patricked-code/MCP',
+    intentKey: 'coordination.universal',
+    title: 'Universal coordination',
+    summary: 'Continue UAC',
+    priority: 90,
+    sequence: 159,
+    status: 'REVIEW' as const,
+    dependencies: [],
+    resourceScopes: ['coordination.universal'],
+    ownerGovernedSessionId: session.governedSessionId,
+    workBranch: session.workBranch,
+    pullRequestNumber: 154,
+    observedHeadSha: 'd'.repeat(40),
+    runtimeRevision: null,
+    blockers: ['task blocker'],
+    nextAction: 'Run exact-head CI',
+    source: { kind: 'agent' as const, requestDigest: 'e'.repeat(64) },
+    createdAt: '2026-09-23T00:00:00Z',
+    updatedAt: '2026-09-23T00:31:00Z',
+    taskRevision: 14
+  };
+  const beforeSession = JSON.stringify(session);
+  const beforeTask = JSON.stringify(task);
+
+  const projection = projectCoordinationCheckpoint(session, task);
+  assert.deepEqual(projection.authorities, ['Governed Session', 'Governed Task Queue']);
+  assert.equal(projection.currentTaskId, task.taskId);
+  assert.equal(projection.currentStep, 'REVIEW');
+  assert.equal(projection.checkpoint?.checkpointId, session.lastCheckpoint.checkpointId);
+  assert.equal(projection.checkpoint?.completedAction, 'UAC-08 GitHub execution binding');
+  assert.deepEqual(projection.blockers.session, ['session blocker']);
+  assert.deepEqual(projection.blockers.task, ['task blocker']);
+  assert.deepEqual(projection.blockers.checkpoint, ['checkpoint blocker']);
+  assert.equal(projection.nextActions.session, 'Continue coordination program');
+  assert.equal(projection.nextActions.task, 'Run exact-head CI');
+  assert.equal(projection.nextActions.checkpoint, 'Open UAC-09');
+  assert.equal(projection.authorizationInferred, false);
+  assert.equal(projection.mutationPerformed, false);
+  assert.equal(JSON.stringify(session), beforeSession);
+  assert.equal(JSON.stringify(task), beforeTask);
+});
