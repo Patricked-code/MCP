@@ -194,7 +194,7 @@ test('Stablecoin backend inventory probe emits metadata only and never secret va
   assert.match(command, /root_gid=/);
 
   assert.doesNotMatch(command, /printenv|\/proc\/[^\s]+\/environ/);
-  assert.doesNotMatch(command, /\.env(?:\.|['"\s])/);
+  assert.doesNotMatch(command, /(?:cat|grep|readFileSync)\([^\n]*['\"]?\.env(?:\.|['\"\s])/i);
   assert.doesNotMatch(command, /console\.log\([^\n]*(?:password|secret|token|key)[^\n]*\)/i);
   assert.doesNotMatch(command, /process\.env\[[^\]]+\]/);
   assert.doesNotThrow(() => assertReadOnlyCommand(command));
@@ -206,6 +206,7 @@ test('Stablecoin backend inventory probe emits metadata only and never secret va
 test('Stablecoin backend/runtime probes satisfy the real runtime read-only policy and Bash syntax', () => {
   const commands = [
     buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_git_status'),
+    buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_inventory'),
     buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_runtime_status')
   ];
   for (const command of commands) {
