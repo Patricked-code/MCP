@@ -204,10 +204,34 @@ test('Stablecoin backend inventory probe emits metadata only and never secret va
   assert.equal(syntax.status, 0, syntax.stderr);
 });
 
+test('Stablecoin backend runtime ownership probe exposes only bounded Passenger/Plesk metadata', () => {
+  const command = buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_runtime_ownership');
+
+  assert.match(command, /api\.stablecoin\.chainsolutions\.fr/);
+  assert.match(command, /passenger_app_root=/);
+  assert.match(command, /passenger_startup_file=/);
+  assert.match(command, /passenger_nodejs=/);
+  assert.match(command, /backend_process_uid=/);
+  assert.match(command, /backend_process_gid=/);
+  assert.match(command, /backend_process_exe=/);
+  assert.match(command, /restart_file_exists=/);
+  assert.match(command, /restart_file_uid=/);
+  assert.match(command, /plesk_conf_file=/);
+
+  assert.doesNotMatch(command, /printenv|\/proc\/[^\s]+\/environ/);
+  assert.doesNotMatch(command, /SetEnv|PassEnv|env\[/i);
+  assert.doesNotMatch(command, /(?:cat|grep|readFileSync)\([^\n]*['"]?\.env/i);
+  assert.doesNotThrow(() => assertReadOnlyCommand(command));
+
+  const syntax = spawnSync('bash', ['-n'], { input: command, encoding: 'utf8' });
+  assert.equal(syntax.status, 0, syntax.stderr);
+});
+
 test('Stablecoin backend/runtime probes satisfy the real runtime read-only policy and Bash syntax', () => {
   const commands = [
     buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_git_status'),
     buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_inventory'),
+    buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_runtime_ownership'),
     buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_runtime_status')
   ];
   for (const command of commands) {
