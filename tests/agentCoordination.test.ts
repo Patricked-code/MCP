@@ -14,7 +14,7 @@ const base: AgentCoordinationObservation = {
     status: 'ACTIVE',
     lastSeenAt: '2026-09-23T00:00:00Z'
   },
-  task: { taskId: 'TASK-1', status: 'IMPLEMENTING' },
+  task: { taskId: 'TASK-1', status: 'IN_PROGRESS' },
   claim: {
     claimId: 'claim-1',
     status: 'ACTIVE',

@@ -20,7 +20,9 @@
 - MCP CI #1779 / run `35800616051` = SUCCESS exact-head sur `6c0b83735a3ba0f6d6060055557e89ab6d4aa0ea`; UAC-03 validé.
 - Fallback GitHub-first réobservé sans bridge : issues #162/#163 → runs OIDC `35800800997`/`35800806867`, tous deux SUCCESS, `collect_ssh_fallback=skipped`, `mutationAllowed=false`. Preuve S1 : `main@84bbe9b...`, worktree propre, fetch read-only, push désactivé. Preuve Docker : `wealthtech_mcp_ssh_bridge` healthy.
 - UAC-04 RED ouvert : le test exige une projection pure du `GovernedTaskRecord` existant avec tous les statuts autoritatifs, phase courante, owner, scopes, branche/PR/HEAD et révision, sans mutation ni transfert de claim.
-- NEXT_ACTION : obtenir le RED exact-head UAC-04, puis GREEN dans `src/governedWorkflow/adapters/task.ts`; ne créer ni Task Store ni claim authority supplémentaire.
+- UAC-04 RED prouvé par MCP CI #1781 / run `35800964317` sur `6cb37ad36aa2f0e678c65714d7678549df6a770d` : échec ciblé `projectGovernedTaskForCoordination is not a function`; le reste des contrôles précédents reste compatible.
+- GREEN minimal : `src/governedWorkflow/adapters/task.ts` projette le `GovernedTaskRecord` existant (task/status/phase/owner/resourceScopes/branch/PR/HEAD/revision) avec `authorizationInferred=false`, `mutationPerformed=false`, `claimTransferAllowed=false`; le fixture UAC utilise désormais le statut canonique `IN_PROGRESS` au lieu de l'ancien libellé libre `IMPLEMENTING`.
+- NEXT_ACTION : valider UAC-04 par CI exact-head, puis ouvrir UAC-05 en RED pour dériver claim ownership + collision domains exclusivement depuis `GovernedTaskRecord.status`, `ownerGovernedSessionId`, `resourceScopes` et les locks existants; aucun claim store séparé.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 

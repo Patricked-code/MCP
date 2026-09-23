@@ -273,3 +273,42 @@ export function wrapGw20TaskInProgress(
     payload: task
   });
 }
+
+
+export type AgentCoordinationTaskProjection = Readonly<{
+  authority: 'Governed Task Queue';
+  taskId: string;
+  repository: string;
+  status: GovernedTaskRecord['status'];
+  currentPhase: GovernedTaskRecord['status'];
+  ownerGovernedSessionId: string | null;
+  resourceScopes: readonly string[];
+  workBranch: string | null;
+  pullRequestNumber: number | null;
+  observedHeadSha: string | null;
+  taskRevision: number;
+  authorizationInferred: false;
+  mutationPerformed: false;
+  claimTransferAllowed: false;
+}>;
+
+export function projectGovernedTaskForCoordination(
+  task: GovernedTaskRecord
+): AgentCoordinationTaskProjection {
+  return Object.freeze({
+    authority: 'Governed Task Queue',
+    taskId: task.taskId,
+    repository: task.repository,
+    status: task.status,
+    currentPhase: task.status,
+    ownerGovernedSessionId: task.ownerGovernedSessionId,
+    resourceScopes: Object.freeze([...task.resourceScopes]),
+    workBranch: task.workBranch,
+    pullRequestNumber: task.pullRequestNumber,
+    observedHeadSha: task.observedHeadSha,
+    taskRevision: task.taskRevision,
+    authorizationInferred: false,
+    mutationPerformed: false,
+    claimTransferAllowed: false
+  });
+}
