@@ -320,3 +320,91 @@ test('UAC-06 derives liveness from governed session heartbeat evidence only', as
     assert.equal(projection.mutationPerformed, false);
   }
 });
+
+
+test('UAC-07 projects governed lock records and only current ACTIVE scopes as collision domains', async () => {
+  const { projectGovernedLocksForCoordination } = await import(
+    '../src/governedWorkflow/adapters/task.js'
+  );
+  const locks = [
+    {
+      schemaVersion: 1 as const,
+      lockId: '11111111-1111-4111-8111-111111111112',
+      scope: 'resource:coordination.universal',
+      governedSessionId: '11111111-1111-4111-8111-111111111111',
+      acquiredAt: '2026-09-23T00:00:00Z',
+      expiresAt: '2026-09-23T00:20:00Z',
+      renewedAt: '2026-09-23T00:10:00Z',
+      reason: 'active UAC exclusion',
+      status: 'ACTIVE' as const,
+      lockRevision: 3
+    },
+    {
+      schemaVersion: 1 as const,
+      lockId: '22222222-2222-4222-8222-222222222222',
+      scope: 'task:TASK-20260923-155',
+      governedSessionId: '11111111-1111-4111-8111-111111111111',
+      acquiredAt: '2026-09-23T00:00:00Z',
+      expiresAt: '2026-09-23T00:30:00Z',
+      renewedAt: '2026-09-23T00:05:00Z',
+      reason: 'released task lock',
+      status: 'RELEASED' as const,
+      lockRevision: 4
+    },
+    {
+      schemaVersion: 1 as const,
+      lockId: '33333333-3333-4333-8333-333333333333',
+      scope: 'resource:legacy.expired',
+      governedSessionId: '11111111-1111-4111-8111-111111111111',
+      acquiredAt: '2026-09-22T23:00:00Z',
+      expiresAt: '2026-09-23T00:01:00Z',
+      renewedAt: '2026-09-22T23:55:00Z',
+      reason: 'expired lock',
+      status: 'EXPIRED' as const,
+      lockRevision: 2
+    },
+    {
+      schemaVersion: 1 as const,
+      lockId: '44444444-4444-4444-8444-444444444444',
+      scope: 'resource:time.expired.not.reconciled',
+      governedSessionId: '11111111-1111-4111-8111-111111111111',
+      acquiredAt: '2026-09-23T00:00:00Z',
+      expiresAt: '2026-09-23T00:05:00Z',
+      renewedAt: '2026-09-23T00:00:00Z',
+      reason: 'active status but expired by clock',
+      status: 'ACTIVE' as const,
+      lockRevision: 1
+    }
+  ];
+
+  const projection = projectGovernedLocksForCoordination(
+    locks,
+    '2026-09-23T00:10:00Z'
+  );
+  assert.equal(projection.authority, 'Governed Lock Service');
+  assert.deepEqual(projection.activeLockIds, [
+    '11111111-1111-4111-8111-111111111112'
+  ]);
+  assert.deepEqual(projection.collisionDomains, [
+    'resource:coordination.universal'
+  ]);
+  assert.equal(projection.locks[0]?.activeAtObservation, true);
+  assert.equal(projection.locks[1]?.status, 'RELEASED');
+  assert.equal(projection.locks[2]?.status, 'EXPIRED');
+  assert.equal(projection.locks[3]?.activeAtObservation, false);
+  assert.equal(projection.claimReleaseInferred, false);
+  assert.equal(projection.authorizationInferred, false);
+  assert.equal(projection.mutationPerformed, false);
+});
+
+test('UAC-07 universal snapshot names only canonical coordination authorities', () => {
+  const snapshot = buildAgentCoordinationSnapshot(base);
+  assert.deepEqual(snapshot.authorities, [
+    'Governed Session',
+    'Governed Task Queue',
+    'Governed Lock Service',
+    'GitHub'
+  ]);
+  assert.equal(snapshot.authorities.includes('Claim'), false);
+  assert.equal(snapshot.authorities.includes('Lock Service'), false);
+});

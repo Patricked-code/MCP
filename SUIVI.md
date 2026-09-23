@@ -30,7 +30,10 @@
 - UAC-06 RED ouvert : FRESH/STALE depuis `GovernedSession.lastHeartbeatAt`; absence d'une session autoritative observable ou heartbeat futur/incohérent => UNKNOWN; liveness ne libère/transfère jamais ownership.
 - UAC-06 RED prouvé par MCP CI #1789 / run `35801667360` sur `1f3a0c24e241e6c39fb6e8ceabca61ab05a280b1` : échec ciblé `projectGovernedSessionLivenessForCoordination is not a function`; UAC-03/04/05 restent verts.
 - GREEN existing-first : l'ancienne logique privée `deriveLiveness` devient `deriveAgentLivenessFromHeartbeat()` partagée; l'adapter Session la réutilise. Aucune nouvelle persistance heartbeat; `releaseAllowedByLiveness=false` et `transferAllowedByLiveness=false` invariants.
-- NEXT_ACTION : valider UAC-06 par CI exact-head, puis ouvrir UAC-07 en RED sur la projection des `GovernedLockRecord` existants et leurs scopes; expiration/release lock ne vaut jamais release de claim.
+- MCP CI #1791 / run `35801832179` = SUCCESS exact-head sur `fb3ac57b2353aad8b14c68c8c995ee16d6687779`; UAC-06 validé.
+- UAC-07 RED ouvert : projection des `GovernedLockRecord` existants, lock actif seulement si `status=ACTIVE` et `expiresAt > observedAt`, collision domains issus uniquement de ces locks réellement actifs. RELEASED/EXPIRED ou expiration temporelle ne valent jamais release du claim de tâche.
+- Le RED exige aussi la normalisation des autorités du snapshot : supprimer l'étiquette fictive `Claim` (ownership reste Governed Task Queue) et utiliser le nom canonique `Governed Lock Service`.
+- NEXT_ACTION : obtenir le RED exact-head UAC-07, puis GREEN dans l'adapter Task existant et normaliser uniquement la liste d'autorités du snapshot; aucune mutation Lock/Task live.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
