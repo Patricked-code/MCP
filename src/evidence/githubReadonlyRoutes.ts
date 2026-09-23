@@ -13,6 +13,7 @@ export type GithubReadonlyEvidenceProbe =
   | 'stablecoin_frontend_git_status'
   | 'stablecoin_backend_git_status'
   | 'stablecoin_backend_inventory'
+  | 'stablecoin_backend_runtime_ownership'
   | 'stablecoin_runtime_status'
   | 'server_disk'
   | 'docker_status';
@@ -60,6 +61,7 @@ function exactRequest(value: unknown): {
     && probe !== 'stablecoin_frontend_git_status'
     && probe !== 'stablecoin_backend_git_status'
     && probe !== 'stablecoin_backend_inventory'
+    && probe !== 'stablecoin_backend_runtime_ownership'
     && probe !== 'stablecoin_runtime_status'
     && probe !== 'server_disk'
     && probe !== 'docker_status'
@@ -71,6 +73,7 @@ function exactRequest(value: unknown): {
       probe === 'stablecoin_frontend_git_status'
       || probe === 'stablecoin_backend_git_status'
       || probe === 'stablecoin_backend_inventory'
+      || probe === 'stablecoin_backend_runtime_ownership'
       || probe === 'stablecoin_runtime_status'
     )
     && target !== 's2'
@@ -318,6 +321,169 @@ NODE
 exit 0`;
 }
 
+function stablecoinBackendRuntimeOwnershipCommand(): string {
+  return `set -u
+root='/var/www/vhosts/chainsolutions.fr/api.stablecoin.chainsolutions.fr'
+system_root='/var/www/vhosts/system/api.stablecoin.chainsolutions.fr'
+node <<'NODE'
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+
+const root = '/var/www/vhosts/chainsolutions.fr/api.stablecoin.chainsolutions.fr';
+const systemRoot = '/var/www/vhosts/system/api.stablecoin.chainsolutions.fr';
+const confRoot = path.join(systemRoot, 'conf');
+
+function safe(value) {
+  return String(value ?? 'UNKNOWN').replace(/[\\r\\n|]/g, '_').slice(0, 600);
+}
+
+function out(key, value) {
+  process.stdout.write(key + '=' + safe(value) + '\\n');
+}
+
+function statMeta(file, keyPrefix) {
+  try {
+    const st = fs.lstatSync(file);
+    out(keyPrefix + '_exists', 'true');
+    out(keyPrefix + '_uid', st.uid);
+    out(keyPrefix + '_gid', st.gid);
+    out(keyPrefix + '_mode', (st.mode & 0o777).toString(8));
+    out(keyPrefix + '_mtime', st.mtime.toISOString());
+    out(keyPrefix + '_kind', st.isDirectory() ? 'dir' : st.isSymbolicLink() ? 'symlink' : st.isFile() ? 'file' : 'other');
+    if (st.isSymbolicLink()) {
+      let target = 'UNAVAILABLE';
+      try { target = fs.readlinkSync(file); } catch {}
+      out(keyPrefix + '_symlink_target', target);
+    }
+    return st;
+  } catch {
+    out(keyPrefix + '_exists', 'false');
+    return null;
+  }
+}
+
+function sha256Small(file) {
+  try {
+    const st = fs.statSync(file);
+    if (!st.isFile() || st.size > 2 * 1024 * 1024) return 'SKIPPED';
+    return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+  } catch {
+    return 'UNAVAILABLE';
+  }
+}
+
+function sanitizePath(value) {
+  if (typeof value !== 'string') return 'UNKNOWN';
+  const trimmed = value.trim().replace(/^["']|["']$/g, '');
+  return /^[A-Za-z0-9_./:@+-]{1,500}$/.test(trimmed) ? trimmed : 'REDACTED';
+}
+
+function scanPassengerConfig(file) {
+  let content;
+  try {
+    const st = fs.statSync(file);
+    if (!st.isFile() || st.size > 2 * 1024 * 1024) return;
+    content = fs.readFileSync(file, 'utf8');
+  } catch {
+    return;
+  }
+
+  const rules = [
+    ['passenger_app_root', /^(?:\\s*)PassengerAppRoot\\s+(.+)$/i],
+    ['passenger_startup_file', /^(?:\\s*)PassengerStartupFile\\s+(.+)$/i],
+    ['passenger_nodejs', /^(?:\\s*)PassengerNodejs\\s+(.+)$/i],
+    ['passenger_app_type', /^(?:\\s*)PassengerAppType\\s+([A-Za-z0-9_.-]+)\\s*$/i],
+    ['passenger_enabled', /^(?:\\s*)PassengerEnabled\\s+([A-Za-z0-9_.-]+)\\s*$/i],
+    ['document_root', /^(?:\\s*)DocumentRoot\\s+(.+)$/i]
+  ];
+
+  for (const rawLine of content.split(/\\r?\\n/)) {
+    for (const [key, re] of rules) {
+      const m = re.exec(rawLine);
+      if (!m || !m[1]) continue;
+      out(key, sanitizePath(m[1]));
+    }
+  }
+}
+
+out('ownership_schema', 1);
+out('backend_path_exists', fs.existsSync(root) ? 'true' : 'false');
+if (fs.existsSync(root)) {
+  const rootStat = fs.statSync(root);
+  out('backend_root_uid', rootStat.uid);
+  out('backend_root_gid', rootStat.gid);
+  out('backend_root_mode', (rootStat.mode & 0o777).toString(8));
+}
+
+const restartFile = path.join(root, 'tmp', 'restart.txt');
+const restartStat = statMeta(restartFile, 'restart_file');
+if (restartStat && restartStat.isFile()) {
+  out('restart_file_sha256', sha256Small(restartFile));
+}
+
+statMeta(confRoot, 'plesk_conf_root');
+const confCandidates = ['httpd.conf','nginx.conf','last_httpd.conf','last_nginx.conf'];
+for (const name of confCandidates) {
+  const file = path.join(confRoot, name);
+  const st = statMeta(file, 'plesk_conf_' + name.replace(/[^A-Za-z0-9]+/g, '_'));
+  if (st && st.isFile()) {
+    out('plesk_conf_file', name);
+    out('plesk_conf_sha256', name + ':' + sha256Small(file));
+    scanPassengerConfig(file);
+  }
+}
+
+let processCount = 0;
+let procEntries = [];
+try {
+  procEntries = fs.readdirSync('/proc').filter((name) => /^[0-9]+$/.test(name)).slice(0, 50000);
+} catch {}
+
+for (const pid of procEntries) {
+  let cwd = '';
+  let comm = '';
+  try { cwd = fs.realpathSync('/proc/' + pid + '/cwd'); } catch {}
+  if (cwd !== root && !cwd.startsWith(root + path.sep)) continue;
+  try { comm = fs.readFileSync('/proc/' + pid + '/comm', 'utf8').trim(); } catch {}
+
+  let uid = 'UNKNOWN';
+  let gid = 'UNKNOWN';
+  try {
+    const status = fs.readFileSync('/proc/' + pid + '/status', 'utf8');
+    const uidMatch = /^Uid:\\s+(\\d+)/m.exec(status);
+    const gidMatch = /^Gid:\\s+(\\d+)/m.exec(status);
+    if (uidMatch) uid = uidMatch[1];
+    if (gidMatch) gid = gidMatch[1];
+  } catch {}
+
+  let exe = 'UNAVAILABLE';
+  try { exe = fs.realpathSync('/proc/' + pid + '/exe'); } catch {}
+
+  processCount += 1;
+  out('backend_process_pid', pid);
+  out('backend_process_comm', comm || 'UNKNOWN');
+  out('backend_process_cwd', cwd);
+  out('backend_process_uid', uid);
+  out('backend_process_gid', gid);
+  out('backend_process_exe', sanitizePath(exe));
+}
+out('backend_process_count', processCount);
+
+const packagePath = path.join(root, 'package.json');
+if (fs.existsSync(packagePath)) {
+  try {
+    const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+    out('package_main', pkg.main || 'UNKNOWN');
+    out('package_script_names', Object.keys(pkg.scripts || {}).sort().join(',') || 'NONE');
+  } catch {
+    out('package_parse', 'INVALID');
+  }
+}
+NODE
+exit 0`;
+}
+
 function stablecoinRuntimeStatusCommand(): string {
   return `set -u
 frontend='/var/www/vhosts/chainsolutions.fr/stablecoin.chainsolutions.fr/stablecoin'
@@ -381,6 +547,9 @@ export function buildGithubReadonlyEvidenceCommand(
   }
   if (probe === 'stablecoin_backend_inventory' && target === 's2') {
     return stablecoinBackendInventoryCommand();
+  }
+  if (probe === 'stablecoin_backend_runtime_ownership' && target === 's2') {
+    return stablecoinBackendRuntimeOwnershipCommand();
   }
   if (probe === 'stablecoin_runtime_status' && target === 's2') {
     return stablecoinRuntimeStatusCommand();
