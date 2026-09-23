@@ -36,7 +36,9 @@
 - UAC-07 RED prouvé par MCP CI #1793 / run `35802081944` sur `45bc17555aa36f4a476eca92e771ef25b9f2a79d` : deux échecs ciblés seulement — `projectGovernedLocksForCoordination is not a function` et autorités legacy `Claim`/`Lock Service`; UAC-03→06 restent verts.
 - GREEN minimal : projection read-only de chaque `GovernedLockRecord`; un lock n'est `activeAtObservation` que si son statut est `ACTIVE` et `expiresAt > observedAt`, conformément à `listActiveLocks()`. Les collision domains ne viennent que de ces locks courants. RELEASED/EXPIRED ou expiration temporelle conservent leur état mais `claimReleaseInferred=false`.
 - Autorités universelles normalisées : `Governed Session`, `Governed Task Queue`, `Governed Lock Service`, `GitHub`. L'étiquette fictive `Claim` est supprimée sans supprimer l'observation d'ownership dérivée de la Task Queue.
-- NEXT_ACTION : valider UAC-07 par CI exact-head, puis ouvrir UAC-08 en RED en réutilisant `GithubOperationalContext` pour repository/branch/HEAD/PR/checks et exact-head freshness; aucune seconde couche GitHub.
+- MCP CI #1795 / run `35802235503` = SUCCESS exact-head sur `8388b367306d7e8fcdb33e7849de3bcdb2c27100`; UAC-07 validé.
+- UAC-08 RED ouvert : projection du `GithubOperationalContext` existant + repository gouverné englobant; branche/HEAD/PR/checks/reviews/exact-head/reasonCodes doivent être conservés sans upgrade de fraîcheur ni autorisation implicite.
+- NEXT_ACTION : obtenir le RED exact-head UAC-08, puis GREEN directement dans `src/governedContext/github.ts`; ne créer aucun collecteur/cache GitHub parallèle.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 

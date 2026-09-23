@@ -407,3 +407,99 @@ test('UAC-07 universal snapshot names only canonical coordination authorities', 
   assert.equal(snapshot.authorities.includes('Claim'), false);
   assert.equal(snapshot.authorities.includes('Lock Service'), false);
 });
+
+
+test('UAC-08 binds the existing GitHub operational context without upgrading exact-head evidence', async () => {
+  const { projectGithubExecutionForCoordination } = await import(
+    '../src/governedContext/github.js'
+  );
+  const head = 'd'.repeat(40);
+  const github = {
+    status: 'CURRENT' as const,
+    observedAt: '2026-09-23T00:30:00Z',
+    mainHead: 'a'.repeat(40),
+    workBranch: 'mcp/universal-agent-coordination-20260923',
+    workBranchHead: head,
+    pullRequest: {
+      number: 154,
+      state: 'open' as const,
+      draft: true,
+      merged: false,
+      base: 'main',
+      head: 'mcp/universal-agent-coordination-20260923',
+      headSha: head,
+      author: 'Wealthtechinnovations',
+      updatedAt: '2026-09-23T00:29:00Z'
+    },
+    checks: {
+      status: 'completed' as const,
+      conclusion: 'success',
+      total: 1,
+      failed: 0,
+      headSha: head,
+      exactHead: true,
+      required: [{ context: 'MCP CI', status: 'completed', conclusion: 'success' }],
+      requiredSatisfied: true
+    },
+    reviews: {
+      approvals: 0,
+      changesRequested: 0,
+      unresolvedThreads: 0,
+      headSha: head,
+      exactHead: true
+    },
+    ruleset: {
+      name: null,
+      enforcement: null,
+      requiresPullRequest: true,
+      requiredStatusChecks: ['MCP CI'],
+      requiresConversationResolution: true,
+      requiredApprovingReviewCount: 0
+    },
+    ownership: { pullRequestAuthor: 'Wealthtechinnovations' },
+    activity: { lastActivityAt: '2026-09-23T00:29:00Z' },
+    cache: {
+      status: 'REFRESHED' as const,
+      observedAt: '2026-09-23T00:30:00Z',
+      provenance: 'github_api' as const
+    },
+    evidence: {
+      main: { freshness: 'CURRENT' as const, observedAt: '2026-09-23T00:30:00Z', provenance: 'github_api' as const },
+      pullRequest: { freshness: 'CURRENT' as const, observedAt: '2026-09-23T00:30:00Z', provenance: 'github_api' as const },
+      checks: { freshness: 'CURRENT' as const, observedAt: '2026-09-23T00:30:00Z', provenance: 'github_api' as const },
+      reviews: { freshness: 'CURRENT' as const, observedAt: '2026-09-23T00:30:00Z', provenance: 'github_api' as const },
+      ruleset: { freshness: 'CURRENT' as const, observedAt: '2026-09-23T00:30:00Z', provenance: 'github_api' as const }
+    },
+    reasonCodes: [],
+    uncertainties: [],
+    error: null
+  };
+
+  const projection = projectGithubExecutionForCoordination('Patricked-code/MCP', github);
+  assert.equal(projection.authority, 'GitHub');
+  assert.equal(projection.repository, 'Patricked-code/MCP');
+  assert.equal(projection.workBranch, github.workBranch);
+  assert.equal(projection.workBranchHead, head);
+  assert.equal(projection.pullRequest?.number, 154);
+  assert.equal(projection.pullRequest?.headSha, head);
+  assert.equal(projection.checks.headSha, head);
+  assert.equal(projection.checks.exactHead, true);
+  assert.equal(projection.checks.requiredSatisfied, true);
+  assert.equal(projection.reviews.exactHead, true);
+  assert.deepEqual(projection.reasonCodes, []);
+  assert.equal(projection.authorizationInferred, false);
+  assert.equal(projection.mutationPerformed, false);
+
+  const mismatch = projectGithubExecutionForCoordination('Patricked-code/MCP', {
+    ...github,
+    status: 'DEGRADED' as const,
+    checks: { ...github.checks, exactHead: false, requiredSatisfied: false },
+    reviews: { ...github.reviews, exactHead: false },
+    reasonCodes: ['GITHUB_HEAD_MISMATCH' as const]
+  });
+  assert.equal(mismatch.status, 'DEGRADED');
+  assert.equal(mismatch.checks.exactHead, false);
+  assert.equal(mismatch.reviews.exactHead, false);
+  assert.deepEqual(mismatch.reasonCodes, ['GITHUB_HEAD_MISMATCH']);
+  assert.equal(mismatch.authorizationInferred, false);
+});
