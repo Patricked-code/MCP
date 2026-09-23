@@ -1,9 +1,23 @@
 # SUIVI.md
 
+## 2026-09-23 — UAC-01 authority inventory + HEAD reconciliation
+
+- `HEAD_MOVED` traité avant tout nouveau développement : PR #154 était à `a158b1dd269666e6565b32e31827d479f3d21b2f`, 14 commits derrière `main@84bbe9b1684f5f6be73eaf2d6aa21063fb62697a`.
+- Réconciliation Git non destructive effectuée par merge à deux parents, sans force-push : `c967a068a683033580b091405a5e8b7a837d4ecb`; les quatre fichiers UAC existants sont préservés et le delta #159 est intégré.
+- Handoff PR #159 / commentaire #5786329078 réobservé : PR #154 reste l'unique owner ACTIVE de `coordination.universal`; aucune absence/expiration de heartbeat n'a servi à transférer un claim.
+- Les PR historiques #85/#86/#88/#89/#90 restent des intentions déjà réconciliées par le suivi courant ; leur simple ouverture GitHub n'est pas interprétée comme un claim actif UAC.
+- UAC-01 cartographié existing-first dans `docs/governance/universal-agent-coordination-plan.md` : Session → `sessionService/types`; Task + claim → `taskQueue/types`; collisions → `resourceScopes + activeScopeConflict + locks`; heartbeat courant → `GovernedSessionRecord.lastHeartbeatAt`; locks → `lockService`; GitHub → `GithubOperationalContext`; checkpoint/NEXT_ACTION → records Session/Task existants.
+- Finding structurel : aucun claim store séparé n'existe ni ne doit être créé. L'ownership de claim est dérivé du Governed Task Queue record `status + ownerGovernedSessionId`.
+- Les helpers heartbeat PRECODE de `candidateContinuity.ts` restent historique/compatibilité uniquement ; ils ne deviennent pas l'autorité post-intégration.
+- MCP CI #1771 sur le HEAD de réconciliation `c967a068...` a confirmé typecheck + build puis échoué uniquement sur l'inventaire Markdown attendu : le nouveau plan UAC était le 219e Markdown mais le baseline en déclarait 218.
+- Correction de gouvernance incluse dans ce lot : `docs/governance/markdown-inventory.json` suit désormais le plan UAC comme `documentation`, avec compte total 219.
+- Aucun code comportemental, aucun runtime, aucune Task/Session/Lock live et aucune mutation S1/production dans UAC-01.
+- NEXT_ACTION : après SUCCESS du CI exact-head de ce lot UAC-01, démarrer UAC-03 en TDD RED en réutilisant `GovernedSessionRecord`, `GovernedSessionService` et `src/governedWorkflow/adapters/session.ts`; ne créer aucun store/session authority supplémentaire.
+
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
 - Autorisation utilisateur : généraliser heartbeat/claim à l'ensemble du flux post-intégration sans créer d'autorité parallèle.
-- Baseline exacte avant écriture : `main@cda7610e1dcd5bc56511f0b42f372f68058ca2fb`.
+- Baseline initiale du lot : `main@cda7610e1dcd5bc56511f0b42f372f68058ca2fb`; réconciliée non destructivement avec `main@84bbe9b1684f5f6be73eaf2d6aa21063fb62697a` via `c967a068a683033580b091405a5e8b7a837d4ecb`.
 - Branche gouvernée : `mcp/universal-agent-coordination-20260923`; PR draft #154.
 - Existing-first : réutilisation des Governed Sessions, Governed Task Queue, claims, collision domains, locks, GitHub et du modèle heartbeat/liveness existant.
 - Nouveau contrat pur/read-only : `src/governedContext/agentCoordination.ts` produit un `READ_ONLY_AGENT_COORDINATION` snapshot non autoritatif.
