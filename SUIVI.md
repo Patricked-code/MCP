@@ -33,7 +33,10 @@
 - MCP CI #1791 / run `35801832179` = SUCCESS exact-head sur `fb3ac57b2353aad8b14c68c8c995ee16d6687779`; UAC-06 validé.
 - UAC-07 RED ouvert : projection des `GovernedLockRecord` existants, lock actif seulement si `status=ACTIVE` et `expiresAt > observedAt`, collision domains issus uniquement de ces locks réellement actifs. RELEASED/EXPIRED ou expiration temporelle ne valent jamais release du claim de tâche.
 - Le RED exige aussi la normalisation des autorités du snapshot : supprimer l'étiquette fictive `Claim` (ownership reste Governed Task Queue) et utiliser le nom canonique `Governed Lock Service`.
-- NEXT_ACTION : obtenir le RED exact-head UAC-07, puis GREEN dans l'adapter Task existant et normaliser uniquement la liste d'autorités du snapshot; aucune mutation Lock/Task live.
+- UAC-07 RED prouvé par MCP CI #1793 / run `35802081944` sur `45bc17555aa36f4a476eca92e771ef25b9f2a79d` : deux échecs ciblés seulement — `projectGovernedLocksForCoordination is not a function` et autorités legacy `Claim`/`Lock Service`; UAC-03→06 restent verts.
+- GREEN minimal : projection read-only de chaque `GovernedLockRecord`; un lock n'est `activeAtObservation` que si son statut est `ACTIVE` et `expiresAt > observedAt`, conformément à `listActiveLocks()`. Les collision domains ne viennent que de ces locks courants. RELEASED/EXPIRED ou expiration temporelle conservent leur état mais `claimReleaseInferred=false`.
+- Autorités universelles normalisées : `Governed Session`, `Governed Task Queue`, `Governed Lock Service`, `GitHub`. L'étiquette fictive `Claim` est supprimée sans supprimer l'observation d'ownership dérivée de la Task Queue.
+- NEXT_ACTION : valider UAC-07 par CI exact-head, puis ouvrir UAC-08 en RED en réutilisant `GithubOperationalContext` pour repository/branch/HEAD/PR/checks et exact-head freshness; aucune seconde couche GitHub.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 

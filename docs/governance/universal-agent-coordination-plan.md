@@ -41,8 +41,8 @@ This inventory is descriptive and read-only. It identifies the existing owner fo
 
 ### UAC-01 findings
 
-- **UAC-01-F1 — no standalone claim authority:** the current read-only snapshot uses the label `Claim` in its authority list, but the repository source of truth is the Governed Task Queue record (`status + ownerGovernedSessionId`). UAC-05 must normalize this without introducing a claim store.
-- **UAC-01-F2 — lock authority naming:** the repository names the owner `Governed Lock Service`; UAC-07 must project that existing authority precisely rather than imply a new lock surface.
+- **UAC-01-F1 — RESOLVED by UAC-05/UAC-07:** no standalone `Claim` authority remains in the universal authority list; ownership is projected from the Governed Task Queue (`status + ownerGovernedSessionId`) without a claim store.
+- **UAC-01-F2 — RESOLVED by UAC-07:** the universal authority list and lock projection now use the existing canonical owner name `Governed Lock Service`; no parallel lock surface is introduced.
 - **UAC-01-F3 — PRECODE heartbeat is historical:** candidate PR-comment heartbeat code is retained only for UAC-11 compatibility; current post-integration liveness must come from current governed-session evidence or remain `UNKNOWN`.
 - **UAC-01-F4 — GitHub freshness is already modeled:** `GithubOperationalContext` exposes exact-head/check/review freshness and must be reused by UAC-08/UAC-10 rather than rebuilt.
 
@@ -56,7 +56,7 @@ This inventory is descriptive and read-only. It identifies the existing owner fo
 | UAC-04 | Governed Task Queue adapter | GREEN | authoritative task identity/status/phase/owner/scopes projected without mutation |
 | UAC-05 | Claim + collision-domain adapter | GREEN | ownership derived from Task Queue; collision scopes visible; no fabricated release/transfer/takeover |
 | UAC-06 | Heartbeat/liveness adapter | GREEN | shared FRESH/STALE/UNKNOWN derivation from Governed Session heartbeat evidence; no ownership side effect |
-| UAC-07 | Lock projection | TODO | held locks/collision scopes observable read-only |
+| UAC-07 | Lock projection | GREEN | lock lifecycle preserved; only current ACTIVE lock scopes projected as collisions; no claim-release inference |
 | UAC-08 | GitHub execution binding | TODO | repository/branch/exact HEAD/PR/checks bound to snapshot |
 | UAC-09 | Checkpoint + NEXT_ACTION projection | TODO | current step/blockers/next action visible |
 | UAC-10 | GitHub-first read-only exposure | TODO | snapshot obtainable without interactive bridge when fallback exists |

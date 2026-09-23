@@ -47,8 +47,7 @@ test('universal coordination projects a fresh active agent without becoming an a
   assert.deepEqual(snapshot.authorities, [
     'Governed Session',
     'Governed Task Queue',
-    'Claim',
-    'Lock Service',
+    'Governed Lock Service',
     'GitHub'
   ]);
 });

@@ -140,8 +140,7 @@ export function buildAgentCoordinationSnapshot(
     authorities: [
       'Governed Session',
       'Governed Task Queue',
-      'Claim',
-      'Lock Service',
+      'Governed Lock Service',
       'GitHub'
     ],
     reasonCodes

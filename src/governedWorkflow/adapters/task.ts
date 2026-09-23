@@ -347,3 +347,61 @@ export function projectGovernedTaskClaimForCoordination(
     mutationPerformed: false
   });
 }
+
+
+export type AgentCoordinationLockProjection = Readonly<{
+  lockId: string;
+  scope: string;
+  governedSessionId: string;
+  status: GovernedLockRecord['status'];
+  expiresAt: string;
+  renewedAt: string;
+  lockRevision: number;
+  activeAtObservation: boolean;
+}>;
+
+export type AgentCoordinationLocksProjection = Readonly<{
+  authority: 'Governed Lock Service';
+  locks: readonly AgentCoordinationLockProjection[];
+  activeLockIds: readonly string[];
+  collisionDomains: readonly string[];
+  claimReleaseInferred: false;
+  authorizationInferred: false;
+  mutationPerformed: false;
+}>;
+
+export function projectGovernedLocksForCoordination(
+  locks: readonly GovernedLockRecord[],
+  observedAt: string
+): AgentCoordinationLocksProjection {
+  const observedAtMs = Date.parse(observedAt);
+  const projected = locks.map((lock): AgentCoordinationLockProjection => {
+    const expiresAtMs = Date.parse(lock.expiresAt);
+    const activeAtObservation = (
+      lock.status === 'ACTIVE'
+      && Number.isFinite(observedAtMs)
+      && Number.isFinite(expiresAtMs)
+      && expiresAtMs > observedAtMs
+    );
+    return Object.freeze({
+      lockId: lock.lockId,
+      scope: lock.scope,
+      governedSessionId: lock.governedSessionId,
+      status: lock.status,
+      expiresAt: lock.expiresAt,
+      renewedAt: lock.renewedAt,
+      lockRevision: lock.lockRevision,
+      activeAtObservation
+    });
+  });
+  const active = projected.filter((lock) => lock.activeAtObservation);
+  return Object.freeze({
+    authority: 'Governed Lock Service',
+    locks: Object.freeze(projected),
+    activeLockIds: Object.freeze(active.map((lock) => lock.lockId).sort()),
+    collisionDomains: Object.freeze([...new Set(active.map((lock) => lock.scope))].sort()),
+    claimReleaseInferred: false,
+    authorizationInferred: false,
+    mutationPerformed: false
+  });
+}
