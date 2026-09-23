@@ -411,7 +411,7 @@ test('UAC-07 universal snapshot names only canonical coordination authorities', 
 
 test('UAC-08 binds the existing GitHub operational context without upgrading exact-head evidence', async () => {
   const { projectGithubExecutionForCoordination } = await import(
-    '../src/governedContext/github.js'
+    '../src/governedContext/githubFirstOperationalContinuity.js'
   );
   const head = 'd'.repeat(40);
   const github = {

@@ -38,7 +38,9 @@
 - Autorités universelles normalisées : `Governed Session`, `Governed Task Queue`, `Governed Lock Service`, `GitHub`. L'étiquette fictive `Claim` est supprimée sans supprimer l'observation d'ownership dérivée de la Task Queue.
 - MCP CI #1795 / run `35802235503` = SUCCESS exact-head sur `8388b367306d7e8fcdb33e7849de3bcdb2c27100`; UAC-07 validé.
 - UAC-08 RED ouvert : projection du `GithubOperationalContext` existant + repository gouverné englobant; branche/HEAD/PR/checks/reviews/exact-head/reasonCodes doivent être conservés sans upgrade de fraîcheur ni autorisation implicite.
-- NEXT_ACTION : obtenir le RED exact-head UAC-08, puis GREEN directement dans `src/governedContext/github.ts`; ne créer aucun collecteur/cache GitHub parallèle.
+- Premier essai RED UAC-08 / CI #1797 run `35802395304` non retenu comme preuve comportementale : l'import direct de `github.ts` déclenche la validation des variables runtime avant le test (`MCP_AUTH_TOKEN`, S1/S2), donc l'échec ne portait pas sur l'adapter attendu.
+- Correction test-only : UAC-08 cible désormais `githubFirstOperationalContinuity.ts`, module pur existant déjà identifié par UAC-01 pour le wrapping GitHub-first; aucun code GREEN ajouté dans ce commit.
+- NEXT_ACTION : obtenir un RED exact-head UAC-08 ciblé sur l'export absent `projectGithubExecutionForCoordination`, puis GREEN dans `githubFirstOperationalContinuity.ts`; aucun collecteur/cache GitHub parallèle.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
