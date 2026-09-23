@@ -143,3 +143,56 @@ test('UAC-03 universal snapshot accepts OPEN and PAUSED without rewriting lifecy
     assert.equal(snapshot.sessionStatus, status);
   }
 });
+
+
+test('UAC-04 projects the authoritative governed task record without creating task authority', async () => {
+  const { projectGovernedTaskForCoordination } = await import(
+    '../src/governedWorkflow/adapters/task.js'
+  );
+  const statuses = [
+    'DISCOVERED', 'READY', 'CLAIMED', 'IN_PROGRESS', 'REVIEW', 'MERGE_READY',
+    'DEPLOYING', 'VERIFYING', 'DONE', 'BLOCKED', 'CONFLICT', 'CANCELLED', 'SUPERSEDED'
+  ] as const;
+  const task = {
+    schemaVersion: 1 as const,
+    taskId: 'TASK-20260923-154',
+    repository: 'Patricked-code/MCP',
+    intentKey: 'coordination.universal',
+    title: 'Universal coordination',
+    summary: 'Generalize existing coordination observability',
+    priority: 90,
+    sequence: 154,
+    status: 'IN_PROGRESS' as const,
+    dependencies: [],
+    resourceScopes: ['coordination.universal'],
+    ownerGovernedSessionId: '11111111-1111-4111-8111-111111111111',
+    workBranch: 'mcp/universal-agent-coordination-20260923',
+    pullRequestNumber: 154,
+    observedHeadSha: 'a'.repeat(40),
+    runtimeRevision: null,
+    blockers: [],
+    nextAction: 'continue UAC-04',
+    source: { kind: 'agent' as const, requestDigest: 'b'.repeat(64) },
+    createdAt: '2026-09-23T00:00:00Z',
+    updatedAt: '2026-09-23T00:10:00Z',
+    taskRevision: 9
+  };
+  const before = JSON.stringify(task);
+  for (const status of statuses) {
+    const projection = projectGovernedTaskForCoordination({ ...task, status });
+    assert.equal(projection.authority, 'Governed Task Queue');
+    assert.equal(projection.taskId, task.taskId);
+    assert.equal(projection.status, status);
+    assert.equal(projection.currentPhase, status);
+    assert.equal(projection.ownerGovernedSessionId, task.ownerGovernedSessionId);
+    assert.deepEqual(projection.resourceScopes, task.resourceScopes);
+    assert.equal(projection.workBranch, task.workBranch);
+    assert.equal(projection.pullRequestNumber, 154);
+    assert.equal(projection.observedHeadSha, task.observedHeadSha);
+    assert.equal(projection.taskRevision, task.taskRevision);
+    assert.equal(projection.authorizationInferred, false);
+    assert.equal(projection.mutationPerformed, false);
+    assert.equal(projection.claimTransferAllowed, false);
+  }
+  assert.equal(JSON.stringify(task), before);
+});

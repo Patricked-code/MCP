@@ -17,7 +17,10 @@
 - UAC-03 RED ouvert ensuite sans implémentation : tests exigent une projection pure du `GovernedSessionPublicRecord` existant, les cinq statuts `OPEN/ACTIVE/PAUSED/EXPIRED/CLOSED`, aucune mutation, aucune autorisation et aucun claim ownership inféré.
 - UAC-03 RED prouvé par MCP CI #1777 / run `35800450921` sur `eb1a1ace0cbc716e568bf775533f525df1607578` : échec ciblé `projectGovernedSessionForCoordination is not a function`, puis rejet attendu de `OPEN/PAUSED`; aucun autre défaut UAC n'a été introduit.
 - GREEN minimal : `src/governedWorkflow/adapters/session.ts` projette désormais le `GovernedSessionPublicRecord` existant en lecture seule (`authorizationInferred=false`, `mutationPerformed=false`, `claimOwnershipInferred=false`) et `agentCoordination.ts` accepte additivement les cinq statuts Session autoritatifs.
-- NEXT_ACTION : valider UAC-03 par CI exact-head ; ensuite ouvrir UAC-04 en RED sur la projection du `GovernedTaskRecord` existant, sans nouveau Task Store ni claim authority.
+- MCP CI #1779 / run `35800616051` = SUCCESS exact-head sur `6c0b83735a3ba0f6d6060055557e89ab6d4aa0ea`; UAC-03 validé.
+- Fallback GitHub-first réobservé sans bridge : issues #162/#163 → runs OIDC `35800800997`/`35800806867`, tous deux SUCCESS, `collect_ssh_fallback=skipped`, `mutationAllowed=false`. Preuve S1 : `main@84bbe9b...`, worktree propre, fetch read-only, push désactivé. Preuve Docker : `wealthtech_mcp_ssh_bridge` healthy.
+- UAC-04 RED ouvert : le test exige une projection pure du `GovernedTaskRecord` existant avec tous les statuts autoritatifs, phase courante, owner, scopes, branche/PR/HEAD et révision, sans mutation ni transfert de claim.
+- NEXT_ACTION : obtenir le RED exact-head UAC-04, puis GREEN dans `src/governedWorkflow/adapters/task.ts`; ne créer ni Task Store ni claim authority supplémentaire.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
