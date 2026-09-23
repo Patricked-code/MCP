@@ -46,7 +46,10 @@
 - UAC-09 RED ouvert : projection pure de `GovernedSession.lastCheckpoint` + Task courante; current step = statut Task autoritatif; blockers et nextAction restent séparés par source Session/Task/Checkpoint afin de ne pas inventer une nouvelle priorité ou mémoire.
 - UAC-09 RED prouvé par MCP CI #1803 / run `35802857494` sur `cea4c10dfe0cd3586ed09a771d1ccd9b2e2a937e` : échec ciblé `projectCoordinationCheckpoint is not a function`; UAC-03→08 restent verts.
 - GREEN minimal dans l'adapter Session : dernier checkpoint Session, Task courante, blockers et NEXT_ACTION sont projetés séparément par source. `currentStep` reprend uniquement le statut Task autoritatif; aucune priorité/effective action n'est inventée, aucune création ou mutation de checkpoint.
-- NEXT_ACTION : valider UAC-09 par CI exact-head, puis réévaluer UAC-10 contre le mécanisme GitHub-first/fallback déjà existant et les preuves OIDC #162/#163 avant d'ajouter le moindre code.
+- MCP CI #1807 / run `35802998473` = SUCCESS exact-head sur `645b7ad7dd55f6f9ea555a8ec58907d8a079a61e`; UAC-09 validé.
+- UAC-10 audit existing-first : aucun nouveau code requis. `resolveGithubFirstOperationalBootstrap()` couvre déjà `GITHUB_ONLY` et `GITHUB_ACTION_READONLY_EVIDENCE`; `tests/githubFirstOperationalContinuity.test.ts` prouve que le fallback configuré évite l'exposition bridge; `tests/githubReadonlyEvidenceWorkflow.test.ts` prouve schéma fermé, OIDC primaire, fallback SSH conditionnel et `mutationAllowed=false`.
+- Preuve E2E réelle déjà acquise : issues GitHub #162/#163 → runs `35800800997`/`35800806867` SUCCESS via `github_oidc_mcp_readonly`, `collect_ssh_fallback=skipped`, aucune mutation. UAC-10 est donc REUSE/GREEN et non une nouvelle surface parallèle.
+- NEXT_ACTION : valider exact-head ce checkpoint documentaire UAC-10, puis ouvrir UAC-11 en RED pour l'adapter de compatibilité PRECODE historique : lecture/provenance seulement, jamais réactivation de session/claim historique.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
