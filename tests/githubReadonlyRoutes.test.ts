@@ -208,15 +208,14 @@ test('Stablecoin backend runtime ownership probe exposes only bounded Passenger/
   const command = buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_runtime_ownership');
 
   assert.match(command, /api\.stablecoin\.chainsolutions\.fr/);
-  assert.match(command, /passenger_app_root=/);
-  assert.match(command, /passenger_startup_file=/);
-  assert.match(command, /passenger_nodejs=/);
-  assert.match(command, /backend_process_uid=/);
-  assert.match(command, /backend_process_gid=/);
-  assert.match(command, /backend_process_exe=/);
-  assert.match(command, /restart_file_exists=/);
-  assert.match(command, /restart_file_uid=/);
-  assert.match(command, /plesk_conf_file=/);
+  assert.match(command, /'passenger_app_root'/);
+  assert.match(command, /'passenger_startup_file'/);
+  assert.match(command, /'passenger_nodejs'/);
+  assert.match(command, /out\('backend_process_uid'/);
+  assert.match(command, /out\('backend_process_gid'/);
+  assert.match(command, /out\('backend_process_exe'/);
+  assert.match(command, /statMeta\(restartFile, 'restart_file'\)/);
+  assert.match(command, /'plesk_conf_file'/);
 
   assert.doesNotMatch(command, /printenv|\/proc\/[^\s]+\/environ/);
   assert.doesNotMatch(command, /SetEnv|PassEnv|env\[/i);
