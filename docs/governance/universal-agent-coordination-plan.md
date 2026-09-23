@@ -58,7 +58,7 @@ This inventory is descriptive and read-only. It identifies the existing owner fo
 | UAC-06 | Heartbeat/liveness adapter | GREEN | shared FRESH/STALE/UNKNOWN derivation from Governed Session heartbeat evidence; no ownership side effect |
 | UAC-07 | Lock projection | GREEN | lock lifecycle preserved; only current ACTIVE lock scopes projected as collisions; no claim-release inference |
 | UAC-08 | GitHub execution binding | GREEN | existing GitHub context projected with repository/branch/HEAD/PR/checks/reviews exact-head evidence unchanged |
-| UAC-09 | Checkpoint + NEXT_ACTION projection | TODO | current step/blockers/next action visible |
+| UAC-09 | Checkpoint + NEXT_ACTION projection | GREEN | checkpoint/current task/blockers/NEXT_ACTION exposed by source without inventing precedence |
 | UAC-10 | GitHub-first read-only exposure | TODO | snapshot obtainable without interactive bridge when fallback exists |
 | UAC-11 | Historical PRECODE compatibility adapter | TODO | old candidate sessions/claims readable but not reactivated |
 | UAC-12 | Multi-agent collision E2E | TODO | second writer blocked/routed safely |

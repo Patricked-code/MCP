@@ -44,7 +44,9 @@
 - GREEN existing-first dans `githubFirstOperationalContinuity.ts` : repository gouverné + `GithubOperationalContext` sont projetés en lecture seule; branche/HEAD/PR/checks/reviews et les marqueurs `exactHead`/`requiredSatisfied` sont conservés tels quels, y compris `false` ou `null`; reason codes inchangés; aucune autorisation ni mutation inférée.
 - MCP CI #1801 / run `35802717434` = SUCCESS exact-head sur `220ca673e3cf88c227e837d3e42b678fdf4083ef`; UAC-08 validé.
 - UAC-09 RED ouvert : projection pure de `GovernedSession.lastCheckpoint` + Task courante; current step = statut Task autoritatif; blockers et nextAction restent séparés par source Session/Task/Checkpoint afin de ne pas inventer une nouvelle priorité ou mémoire.
-- NEXT_ACTION : obtenir le RED exact-head UAC-09, puis GREEN dans l'adapter Session existant; aucune création/modification de checkpoint.
+- UAC-09 RED prouvé par MCP CI #1803 / run `35802857494` sur `cea4c10dfe0cd3586ed09a771d1ccd9b2e2a937e` : échec ciblé `projectCoordinationCheckpoint is not a function`; UAC-03→08 restent verts.
+- GREEN minimal dans l'adapter Session : dernier checkpoint Session, Task courante, blockers et NEXT_ACTION sont projetés séparément par source. `currentStep` reprend uniquement le statut Task autoritatif; aucune priorité/effective action n'est inventée, aucune création ou mutation de checkpoint.
+- NEXT_ACTION : valider UAC-09 par CI exact-head, puis réévaluer UAC-10 contre le mécanisme GitHub-first/fallback déjà existant et les preuves OIDC #162/#163 avant d'ajouter le moindre code.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
