@@ -312,3 +312,38 @@ export function projectGovernedTaskForCoordination(
     claimTransferAllowed: false
   });
 }
+
+
+export type AgentCoordinationTaskClaimProjection = Readonly<{
+  authority: 'Governed Task Queue';
+  taskId: string;
+  taskStatus: GovernedTaskRecord['status'];
+  ownershipState: 'OWNED' | 'UNOWNED';
+  ownerGovernedSessionId: string | null;
+  collisionDomains: readonly string[];
+  claimId: null;
+  releaseInferred: false;
+  transferAllowed: false;
+  takeoverAllowed: false;
+  authorizationInferred: false;
+  mutationPerformed: false;
+}>;
+
+export function projectGovernedTaskClaimForCoordination(
+  task: GovernedTaskRecord
+): AgentCoordinationTaskClaimProjection {
+  return Object.freeze({
+    authority: 'Governed Task Queue',
+    taskId: task.taskId,
+    taskStatus: task.status,
+    ownershipState: task.ownerGovernedSessionId ? 'OWNED' : 'UNOWNED',
+    ownerGovernedSessionId: task.ownerGovernedSessionId,
+    collisionDomains: Object.freeze([...new Set(task.resourceScopes)].sort()),
+    claimId: null,
+    releaseInferred: false,
+    transferAllowed: false,
+    takeoverAllowed: false,
+    authorizationInferred: false,
+    mutationPerformed: false
+  });
+}
