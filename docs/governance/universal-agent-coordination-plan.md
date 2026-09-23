@@ -55,7 +55,7 @@ This inventory is descriptive and read-only. It identifies the existing owner fo
 | UAC-03 | Governed Session adapter | GREEN | all governed lifecycle states projected without mutation or ownership inference |
 | UAC-04 | Governed Task Queue adapter | GREEN | authoritative task identity/status/phase/owner/scopes projected without mutation |
 | UAC-05 | Claim + collision-domain adapter | GREEN | ownership derived from Task Queue; collision scopes visible; no fabricated release/transfer/takeover |
-| UAC-06 | Heartbeat/liveness adapter | TODO | FRESH/STALE/UNKNOWN derived from authoritative evidence |
+| UAC-06 | Heartbeat/liveness adapter | GREEN | shared FRESH/STALE/UNKNOWN derivation from Governed Session heartbeat evidence; no ownership side effect |
 | UAC-07 | Lock projection | TODO | held locks/collision scopes observable read-only |
 | UAC-08 | GitHub execution binding | TODO | repository/branch/exact HEAD/PR/checks bound to snapshot |
 | UAC-09 | Checkpoint + NEXT_ACTION projection | TODO | current step/blockers/next action visible |

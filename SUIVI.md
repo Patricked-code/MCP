@@ -28,7 +28,9 @@
 - GREEN minimal : ownership = présence réelle de `ownerGovernedSessionId`; lifecycle de tâche conservé séparément; collision domains = `resourceScopes` dédupliqués/triés; `claimId=null`; `releaseInferred=false`; `transferAllowed=false`; `takeoverAllowed=false`. Même une tâche terminale encore owner n'est pas déclarée released.
 - MCP CI #1787 / run `35801497797` = SUCCESS exact-head sur `f55346a1c16d1a90a218eb0b519f3c61945d516d`; UAC-05 validé.
 - UAC-06 RED ouvert : FRESH/STALE depuis `GovernedSession.lastHeartbeatAt`; absence d'une session autoritative observable ou heartbeat futur/incohérent => UNKNOWN; liveness ne libère/transfère jamais ownership.
-- NEXT_ACTION : obtenir le RED exact-head UAC-06, puis GREEN en généralisant la logique liveness existante sans créer de heartbeat store.
+- UAC-06 RED prouvé par MCP CI #1789 / run `35801667360` sur `1f3a0c24e241e6c39fb6e8ceabca61ab05a280b1` : échec ciblé `projectGovernedSessionLivenessForCoordination is not a function`; UAC-03/04/05 restent verts.
+- GREEN existing-first : l'ancienne logique privée `deriveLiveness` devient `deriveAgentLivenessFromHeartbeat()` partagée; l'adapter Session la réutilise. Aucune nouvelle persistance heartbeat; `releaseAllowedByLiveness=false` et `transferAllowedByLiveness=false` invariants.
+- NEXT_ACTION : valider UAC-06 par CI exact-head, puis ouvrir UAC-07 en RED sur la projection des `GovernedLockRecord` existants et leurs scopes; expiration/release lock ne vaut jamais release de claim.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 

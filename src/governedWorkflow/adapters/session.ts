@@ -8,6 +8,10 @@ import type {
   BootstrapReceipt,
   GovernedSessionPublicRecord
 } from '../../operationalMemory/types.js';
+import {
+  deriveAgentLivenessFromHeartbeat,
+  type AgentLiveness
+} from '../../governedContext/agentCoordination.js';
 import type { GovernedOperationalContext } from '../../governedContext/types.js';
 import type {
   GovernedContractSubstrate,
@@ -292,5 +296,38 @@ export function projectGovernedSessionForCoordination(
     authorizationInferred: false,
     mutationPerformed: false,
     claimOwnershipInferred: false
+  });
+}
+
+
+export type AgentCoordinationLivenessProjection = Readonly<{
+  authority: 'Governed Session';
+  governedSessionId: string | null;
+  heartbeatLastSeenAt: string | null;
+  liveness: AgentLiveness;
+  releaseAllowedByLiveness: false;
+  transferAllowedByLiveness: false;
+  authorizationInferred: false;
+  mutationPerformed: false;
+}>;
+
+export function projectGovernedSessionLivenessForCoordination(
+  session: GovernedSessionPublicRecord | null,
+  observedAt: string,
+  freshnessWindowSeconds: number
+): AgentCoordinationLivenessProjection {
+  return Object.freeze({
+    authority: 'Governed Session',
+    governedSessionId: session?.governedSessionId ?? null,
+    heartbeatLastSeenAt: session?.lastHeartbeatAt ?? null,
+    liveness: deriveAgentLivenessFromHeartbeat({
+      heartbeatLastSeenAt: session?.lastHeartbeatAt ?? null,
+      observedAt,
+      freshnessWindowSeconds
+    }),
+    releaseAllowedByLiveness: false,
+    transferAllowedByLiveness: false,
+    authorizationInferred: false,
+    mutationPerformed: false
   });
 }

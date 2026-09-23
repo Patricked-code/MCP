@@ -74,12 +74,27 @@ export type AgentCoordinationSnapshot = {
   reasonCodes: string[];
 };
 
-function deriveLiveness(input: AgentCoordinationObservation): AgentLiveness {
-  if (!input.heartbeat) return 'UNKNOWN';
+export function deriveAgentLivenessFromHeartbeat(input: Readonly<{
+  heartbeatLastSeenAt: string | null;
+  observedAt: string;
+  freshnessWindowSeconds: number;
+}>): AgentLiveness {
+  if (!input.heartbeatLastSeenAt) return 'UNKNOWN';
+  if (!Number.isSafeInteger(input.freshnessWindowSeconds) || input.freshnessWindowSeconds <= 0) {
+    return 'UNKNOWN';
+  }
   const observed = Date.parse(input.observedAt);
-  const heartbeat = Date.parse(input.heartbeat.lastSeenAt);
+  const heartbeat = Date.parse(input.heartbeatLastSeenAt);
   if (!Number.isFinite(observed) || !Number.isFinite(heartbeat) || heartbeat > observed) return 'UNKNOWN';
-  return observed - heartbeat <= input.heartbeat.freshnessWindowSeconds * 1_000 ? 'FRESH' : 'STALE';
+  return observed - heartbeat <= input.freshnessWindowSeconds * 1_000 ? 'FRESH' : 'STALE';
+}
+
+function deriveLiveness(input: AgentCoordinationObservation): AgentLiveness {
+  return deriveAgentLivenessFromHeartbeat({
+    heartbeatLastSeenAt: input.heartbeat?.lastSeenAt ?? null,
+    observedAt: input.observedAt,
+    freshnessWindowSeconds: input.heartbeat?.freshnessWindowSeconds ?? 0
+  });
 }
 
 export function buildAgentCoordinationSnapshot(
