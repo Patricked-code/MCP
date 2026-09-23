@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import type { GithubOperationalContext } from './types.js';
+
 export const OperationalExecutionNeedSchema = z.object({
   repositoryRead: z.boolean().default(false),
   repositoryWrite: z.boolean().default(false),
@@ -136,4 +138,97 @@ export function resolveGithubFirstOperationalBootstrap(
     reasonCode: 'github_surface_sufficient',
     nextAction: 'Continue through GitHub without requesting MCP bridge exposure.'
   };
+}
+
+
+export type AgentCoordinationGithubExecutionProjection = Readonly<{
+  authority: 'GitHub';
+  repository: string;
+  status: GithubOperationalContext['status'];
+  observedAt: string;
+  mainHead: string | null;
+  workBranch: string | null;
+  workBranchHead: string | null;
+  pullRequest: Readonly<{
+    number: number;
+    state: 'open' | 'closed';
+    draft: boolean;
+    merged: boolean;
+    base: string;
+    head: string;
+    headSha: string;
+    updatedAt: string;
+  }> | null;
+  checks: Readonly<{
+    status: GithubOperationalContext['checks']['status'];
+    conclusion: string | null;
+    total: number;
+    failed: number;
+    headSha: string | null;
+    exactHead: boolean | null;
+    requiredSatisfied: boolean | null;
+    required: readonly Readonly<{
+      context: string;
+      status: string;
+      conclusion: string | null;
+    }>[];
+  }>;
+  reviews: Readonly<{
+    headSha: string | null;
+    exactHead: boolean | null;
+    approvals: number;
+    changesRequested: number;
+    unresolvedThreads: number | null;
+  }>;
+  reasonCodes: readonly GithubOperationalContext['reasonCodes'][number][];
+  authorizationInferred: false;
+  mutationPerformed: false;
+}>;
+
+export function projectGithubExecutionForCoordination(
+  repository: string,
+  github: GithubOperationalContext
+): AgentCoordinationGithubExecutionProjection {
+  const boundedRepository = z.string().trim().min(1).max(200).parse(repository);
+  return Object.freeze({
+    authority: 'GitHub',
+    repository: boundedRepository,
+    status: github.status,
+    observedAt: github.observedAt,
+    mainHead: github.mainHead,
+    workBranch: github.workBranch,
+    workBranchHead: github.workBranchHead,
+    pullRequest: github.pullRequest
+      ? Object.freeze({
+          number: github.pullRequest.number,
+          state: github.pullRequest.state,
+          draft: github.pullRequest.draft,
+          merged: github.pullRequest.merged,
+          base: github.pullRequest.base,
+          head: github.pullRequest.head,
+          headSha: github.pullRequest.headSha,
+          updatedAt: github.pullRequest.updatedAt
+        })
+      : null,
+    checks: Object.freeze({
+      status: github.checks.status,
+      conclusion: github.checks.conclusion,
+      total: github.checks.total,
+      failed: github.checks.failed,
+      headSha: github.checks.headSha,
+      exactHead: github.checks.exactHead,
+      requiredSatisfied: github.checks.requiredSatisfied,
+      required: Object.freeze(github.checks.required.map((check) => Object.freeze({ ...check })))
+    }),
+    reviews: Object.freeze({
+      headSha: github.reviews.headSha ?? null,
+      exactHead: github.reviews.exactHead ?? null,
+      approvals: github.reviews.approvals,
+      changesRequested: github.reviews.changesRequested,
+      unresolvedThreads: github.reviews.unresolvedThreads
+    }),
+    reasonCodes: Object.freeze([...github.reasonCodes]),
+    authorizationInferred: false,
+    mutationPerformed: false
+  });
 }

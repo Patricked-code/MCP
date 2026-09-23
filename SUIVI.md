@@ -40,7 +40,9 @@
 - UAC-08 RED ouvert : projection du `GithubOperationalContext` existant + repository gouverné englobant; branche/HEAD/PR/checks/reviews/exact-head/reasonCodes doivent être conservés sans upgrade de fraîcheur ni autorisation implicite.
 - Premier essai RED UAC-08 / CI #1797 run `35802395304` non retenu comme preuve comportementale : l'import direct de `github.ts` déclenche la validation des variables runtime avant le test (`MCP_AUTH_TOKEN`, S1/S2), donc l'échec ne portait pas sur l'adapter attendu.
 - Correction test-only : UAC-08 cible désormais `githubFirstOperationalContinuity.ts`, module pur existant déjà identifié par UAC-01 pour le wrapping GitHub-first; aucun code GREEN ajouté dans ce commit.
-- NEXT_ACTION : obtenir un RED exact-head UAC-08 ciblé sur l'export absent `projectGithubExecutionForCoordination`, puis GREEN dans `githubFirstOperationalContinuity.ts`; aucun collecteur/cache GitHub parallèle.
+- RED UAC-08 valide prouvé par MCP CI #1799 / run `35802556111` sur `f26ff6d4cf9d3f4ee07f981fd1272329a2f6ee5b` : échec ciblé uniquement `projectGithubExecutionForCoordination is not a function`; UAC-03→07 restent verts.
+- GREEN existing-first dans `githubFirstOperationalContinuity.ts` : repository gouverné + `GithubOperationalContext` sont projetés en lecture seule; branche/HEAD/PR/checks/reviews et les marqueurs `exactHead`/`requiredSatisfied` sont conservés tels quels, y compris `false` ou `null`; reason codes inchangés; aucune autorisation ni mutation inférée.
+- NEXT_ACTION : valider UAC-08 par CI exact-head, puis ouvrir UAC-09 en RED sur `GovernedSession.lastCheckpoint`, session/task blockers et `nextAction`; ne créer aucune nouvelle mémoire/checkpoint authority.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
