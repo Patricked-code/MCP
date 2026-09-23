@@ -261,3 +261,36 @@ export function wrapGw17ContextAcknowledgement(
     payload: session
   });
 }
+
+
+export type AgentCoordinationSessionProjection = Readonly<{
+  authority: 'Governed Session';
+  governedSessionId: string;
+  agentIdentity: string;
+  repository: string;
+  workBranch: string | null;
+  status: GovernedSessionPublicRecord['status'];
+  lastHeartbeatAt: string;
+  sessionRevision: number;
+  authorizationInferred: false;
+  mutationPerformed: false;
+  claimOwnershipInferred: false;
+}>;
+
+export function projectGovernedSessionForCoordination(
+  session: GovernedSessionPublicRecord
+): AgentCoordinationSessionProjection {
+  return Object.freeze({
+    authority: 'Governed Session',
+    governedSessionId: session.governedSessionId,
+    agentIdentity: session.agentIdentity,
+    repository: session.repository,
+    workBranch: session.workBranch,
+    status: session.status,
+    lastHeartbeatAt: session.lastHeartbeatAt,
+    sessionRevision: session.sessionRevision,
+    authorizationInferred: false,
+    mutationPerformed: false,
+    claimOwnershipInferred: false
+  });
+}

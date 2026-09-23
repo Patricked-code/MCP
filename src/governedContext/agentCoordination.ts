@@ -9,7 +9,7 @@ export const AgentCoordinationObservationSchema = z.object({
   provider: z.enum(['chatgpt', 'claude', 'codex', 'other']),
   session: z.object({
     sessionId: BoundedId,
-    status: z.enum(['ACTIVE', 'EXPIRED', 'CLOSED']),
+    status: z.enum(['OPEN', 'ACTIVE', 'PAUSED', 'EXPIRED', 'CLOSED']),
     lastSeenAt: Timestamp.nullable()
   }).strict(),
   task: z.object({

@@ -52,7 +52,7 @@ This inventory is descriptive and read-only. It identifies the existing owner fo
 |---|---|---|---|
 | UAC-01 | Inventory existing session/task/claim/lock/heartbeat/GitHub authorities and adapters | GREEN | source-to-authority map above; no duplicate authority; exact-head CI required |
 | UAC-02 | Universal read-only coordination contract | GREEN | `agentCoordination.ts` + tests; CI #1739 SUCCESS |
-| UAC-03 | Governed Session adapter | TODO | active/expired/closed session projected without mutation |
+| UAC-03 | Governed Session adapter | GREEN | all governed lifecycle states projected without mutation or ownership inference |
 | UAC-04 | Governed Task Queue adapter | TODO | task identity/status/current phase projected |
 | UAC-05 | Claim + collision-domain adapter | TODO | ownership projected; collisions visible; no takeover |
 | UAC-06 | Heartbeat/liveness adapter | TODO | FRESH/STALE/UNKNOWN derived from authoritative evidence |

@@ -15,7 +15,9 @@
 - Aucun code comportemental, aucun runtime, aucune Task/Session/Lock live et aucune mutation S1/production dans UAC-01.
 - MCP CI #1775 / run `35800290757` = SUCCESS exact-head sur `9ec4b491b558dfc7bf71889e4ed76fe384c4a08b` ; UAC-01 est validé, y compris 657/657 tests et whitespace gate.
 - UAC-03 RED ouvert ensuite sans implémentation : tests exigent une projection pure du `GovernedSessionPublicRecord` existant, les cinq statuts `OPEN/ACTIVE/PAUSED/EXPIRED/CLOSED`, aucune mutation, aucune autorisation et aucun claim ownership inféré.
-- NEXT_ACTION : obtenir le RED exact-head attendu pour UAC-03, puis implémenter GREEN dans l'adapter Session existant et élargir additivement le schéma de projection aux statuts `OPEN/PAUSED`.
+- UAC-03 RED prouvé par MCP CI #1777 / run `35800450921` sur `eb1a1ace0cbc716e568bf775533f525df1607578` : échec ciblé `projectGovernedSessionForCoordination is not a function`, puis rejet attendu de `OPEN/PAUSED`; aucun autre défaut UAC n'a été introduit.
+- GREEN minimal : `src/governedWorkflow/adapters/session.ts` projette désormais le `GovernedSessionPublicRecord` existant en lecture seule (`authorizationInferred=false`, `mutationPerformed=false`, `claimOwnershipInferred=false`) et `agentCoordination.ts` accepte additivement les cinq statuts Session autoritatifs.
+- NEXT_ACTION : valider UAC-03 par CI exact-head ; ensuite ouvrir UAC-04 en RED sur la projection du `GovernedTaskRecord` existant, sans nouveau Task Store ni claim authority.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
