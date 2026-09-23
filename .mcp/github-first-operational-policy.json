@@ -35,6 +35,7 @@
         "stablecoin_frontend_git_status",
         "stablecoin_backend_git_status",
         "stablecoin_backend_inventory",
+        "stablecoin_backend_runtime_ownership",
         "stablecoin_runtime_status"
       ],
       "backendInventoryOutputPolicy": {
@@ -52,6 +53,24 @@
           "database_dialect_hint",
           "database_name_literal_if_nonsecret",
           "filesystem_uid_gid_mode"
+        ],
+        "sshFallback": "fail_closed_if_primary_oidc_unavailable"
+      },
+      "backendRuntimeOwnershipOutputPolicy": {
+        "secretValuesAllowed": false,
+        "environmentValuesAllowed": false,
+        "argvAllowed": false,
+        "rawConfigOutputAllowed": false,
+        "allowedDerivedMetadata": [
+          "passenger_app_root",
+          "passenger_startup_file",
+          "passenger_nodejs_path",
+          "passenger_app_type",
+          "document_root",
+          "backend_process_uid_gid_exe_cwd",
+          "restart_file_presence_uid_gid_mode_mtime_hash",
+          "plesk_conf_file_presence_uid_gid_mode_mtime_hash",
+          "package_main_and_script_names"
         ],
         "sshFallback": "fail_closed_if_primary_oidc_unavailable"
       }
