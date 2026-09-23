@@ -180,18 +180,19 @@ test('Stablecoin backend inventory probe emits metadata only and never secret va
   const command = buildGithubReadonlyEvidenceCommand('s2', 'stablecoin_backend_inventory');
 
   assert.match(command, /api\.stablecoin\.chainsolutions\.fr/);
-  assert.match(command, /package_name=/);
-  assert.match(command, /package_version=/);
-  assert.match(command, /package_repository=/);
-  assert.match(command, /dependency_sequelize=/);
-  assert.match(command, /dependency_mysql2=/);
-  assert.match(command, /dependency_pg=/);
-  assert.match(command, /known_file=/);
-  assert.match(command, /sha256=/);
-  assert.match(command, /env_ref=/);
-  assert.match(command, /db_dialect_hint=/);
-  assert.match(command, /root_uid=/);
-  assert.match(command, /root_gid=/);
+  assert.match(command, /line\('package_name'/);
+  assert.match(command, /line\('package_version'/);
+  assert.match(command, /line\('package_repository'/);
+  assert.match(command, /'sequelize'/);
+  assert.match(command, /'mysql2'/);
+  assert.match(command, /'pg'/);
+  assert.match(command, /line\('dependency_' \+ dep\.replace/);
+  assert.match(command, /line\('known_file'/);
+  assert.match(command, /line\('sha256'/);
+  assert.match(command, /line\('env_ref'/);
+  assert.match(command, /line\('db_dialect_hint'/);
+  assert.match(command, /line\('root_uid'/);
+  assert.match(command, /line\('root_gid'/);
 
   assert.doesNotMatch(command, /printenv|\/proc\/[^\s]+\/environ/);
   assert.doesNotMatch(command, /(?:cat|grep|readFileSync)\([^\n]*['\"]?\.env(?:\.|['\"\s])/i);
