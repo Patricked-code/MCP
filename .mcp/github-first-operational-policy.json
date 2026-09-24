@@ -34,8 +34,27 @@
       "stablecoinReconciliationProbes": [
         "stablecoin_frontend_git_status",
         "stablecoin_backend_git_status",
+        "stablecoin_backend_inventory",
         "stablecoin_runtime_status"
-      ]
+      ],
+      "backendInventoryOutputPolicy": {
+        "secretValuesAllowed": false,
+        "envFileReadsAllowed": false,
+        "processEnvironmentReadsAllowed": false,
+        "rawSourceOutputAllowed": false,
+        "allowedDerivedMetadata": [
+          "package_identity",
+          "repository_hint",
+          "dependency_versions",
+          "known_path_presence",
+          "file_sha256",
+          "env_reference_names",
+          "database_dialect_hint",
+          "database_name_literal_if_nonsecret",
+          "filesystem_uid_gid_mode"
+        ],
+        "sshFallback": "fail_closed_if_primary_oidc_unavailable"
+      }
     },
     "RUNTIME_REQUIRED": {
       "runtimeMcpRequired": true,
