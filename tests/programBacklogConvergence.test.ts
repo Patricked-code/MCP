@@ -389,14 +389,14 @@ test('TB-W1-06 reconciles all current planning surfaces without rewriting histor
 
   assert.match(todo, /\| `PB-UAC` \| `DONE`/);
   assert.doesNotMatch(todo, /- \[ \] prouver un artifact `mcp_git_status` S1 via OIDC/);
-  assert.match(todo, /TB-W1-07/);
+  assert.match(todo, /TB-W1-01\.\.07/);
 
   assert.doesNotMatch(tasks, /Tâche gouvernée courante — TASK-20260915-001/);
   assert.doesNotMatch(tasks, /Tâche gouvernée actuelle — TASK-20260914-002/);
-  assert.match(tasks, /TB-W1-07/);
+  assert.match(tasks, /TB-W1-01\.\.07 DONE/);
 
-  assert.match(roadmap, /TB-W1-01\.\.06 DONE/);
-  assert.match(roadmap, /TB-W1-07 READY/);
+  assert.match(roadmap, /W1 COMPLETE/);
+  assert.match(roadmap, /TB-W1-01\.\.07 DONE/);
 
   assert.equal(gwc.postIntegrationStatus, 'RECONCILED_CURRENT_MAIN');
   assert.equal(design.postIntegrationVerdict, 'RECONCILED_WITH_DEFERRED_OD08_OD09');
