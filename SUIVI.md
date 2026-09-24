@@ -65,7 +65,10 @@
 - UAC-16 = REUSE/GREEN avec preuve live : `main` avait avancé à `327379a782a7f13940f0edf302dced833b326dca`; PR #154 a été réconciliée par merge deux parents `3c6fc979055922fbb24ea48a86ecbf1516b96d3c`, sans force-push, puis CI #1831 SUCCESS. Le chemin `HEAD_MOVED → RECONCILE → exact-head CI` est donc réellement éprouvé.
 - UAC-17 = REUSE/GREEN : checkpoint exige un contexte/stateVersion acquitté et est persisté; un échec atomique de resume conserve store/binding; requeue de Task après owner terminal est persistée et idempotente même si audit échoue; `reconcileSessionLockIds()` répare une panne inter-store sans dupliquer de mutation.
 - UAC-18 = REUSE/GREEN : close Session est gouverné/idempotent et bloque heartbeat; `releaseLocksForSession()` libère les locks et rend le scope réacquérable; la Task Queue requeue uniquement depuis l'autorité de rétention Session, jamais depuis liveness seule.
-- NEXT_ACTION : UAC-19 — étendre existing-first `CurrentStateService` / `mcp_get_current_state_inventory` avec une vue coordination read-only composée depuis Session + Task Queue + Governed Locks; ne créer ni nouveau service d'autorité ni nouvel outil parallèle si l'inventaire existant suffit.
+- UAC-19 RED prouvé par MCP CI #1841 / run `36026895680` sur `6685e5a6f577e76b4bc66b345a4b00875b7c956c` : échec ciblé uniquement sur la nouvelle attente `coordination` absente (`projectionKind` lu sur `undefined`); typecheck/build/docs/governance/GWC/secrets restent verts.
+- GREEN existing-first candidat : `CurrentStateService` compose désormais les adapters UAC Session/Task/ownership/liveness/locks/checkpoint dans un champ additif `coordination`; `mcp_get_current_state_inventory` et la resource existante restent l'unique surface, et `getCurrentStateService()` réutilise le `Governed Lock Service` déjà instancié.
+- La vue est explicitement `authoritative=false`, `READ_ONLY_AGENT_COORDINATION_SUPERVISION`, `authorizationInferred=false`, `mutationPerformed=false`; aucune Task/Session/Lock n'est mutée et les dépendances de test incomplètes échouent en projection bornée plutôt que d'inventer de l'évidence.
+- NEXT_ACTION : valider UAC-19 par CI exact-head; si vert, passer à UAC-20 pour réconcilier plan/SUIVI/CHANGELOG/DECISIONS/TASKS sans créer de nouvel état dynamique.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 

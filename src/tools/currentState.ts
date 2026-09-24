@@ -12,10 +12,12 @@ let sharedService: CurrentStateService | null = null;
 export function getCurrentStateService(): CurrentStateService {
   if (sharedService) return sharedService;
   const taskDependencies = getGovernedTaskToolDependencies();
+  const operational = getGovernedSessionToolDependencies();
   sharedService = createCurrentStateService({
     liveState: liveStateEngine,
     tasks: taskDependencies.queue,
-    sessions: getGovernedSessionToolDependencies().sessions
+    sessions: operational.sessions,
+    locks: operational.locks
   });
   return sharedService;
 }
