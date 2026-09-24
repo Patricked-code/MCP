@@ -184,7 +184,7 @@
     "universalAgentCoordinationDeployRunId": 36028205582,
     "universalAgentCoordinationDeployRunNumber": 68,
     "universalAgentCoordinationDeployJobId": 107730012049,
-    "universalAgentCoordinationState": "merged_ci_green_deployed_oidc_attested_terminal_docs_reconciliation"
+    "universalAgentCoordinationState": "merged_ci_green_deployed_oidc_attested_terminal_docs_reconciliation_pending_merge"
   },
   "serverGitState": {
     "branch": "main",
@@ -199,7 +199,9 @@
     "connectorSyncToolCallable": true,
     "connectorCatalogStatus": "governed_sync_callable",
     "fetchRemote": "git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",
-    "pushRemote": "disabled://mcp-s1-read-only"
+    "pushRemote": "disabled://mcp-s1-read-only",
+    "originMainFreshness": "historical_not_directly_reobserved_by_mcp_git_status_probe",
+    "originMainObservationBasis": "preserved_previous_value; current alignment proof uses GitHub main plus directly observed S1 branch HEAD"
   },
   "runtimeState": {
     "containerStatus": "running",
