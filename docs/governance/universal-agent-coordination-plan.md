@@ -63,11 +63,11 @@ This inventory is descriptive and read-only. It identifies the existing owner fo
 | UAC-11 | Historical PRECODE compatibility adapter | GREEN | historical CandidateSession/Claim/WorkItem projected read-only; reactivation/takeover/write/authorization all forbidden |
 | UAC-12 | Multi-agent collision E2E | GREEN | existing Task Queue resource-scope + Governed Lock conflict paths fail closed; foreign owner cannot transition; no ownership transfer inferred |
 | UAC-13 | Stale heartbeat E2E | GREEN | exact-head E2E proves STALE liveness leaves authoritative Task ownership unchanged; no release/transfer/takeover |
-| UAC-14 | Unknown heartbeat E2E | TODO | fail-closed; no ownership inference |
-| UAC-15 | Reconnect/resume E2E | TODO | same agent resumes compatible task/claim |
-| UAC-16 | HEAD_MOVED reconciliation E2E | TODO | stale execution reconciles before further mutation |
-| UAC-17 | Crash/checkpoint recovery E2E | TODO | no duplicate mutation; deterministic resume |
-| UAC-18 | Normal terminal closure E2E | TODO | task/session/claim/locks close consistently |
+| UAC-14 | Unknown heartbeat E2E | GREEN | missing Session heartbeat evidence => UNKNOWN; Task ownership remains authoritative; no release/transfer/takeover |
+| UAC-15 | Reconnect/resume E2E | GREEN | existing Governed Session resume preserves governedSessionId across transport change; Task ownership therefore remains bound to same authoritative session |
+| UAC-16 | HEAD_MOVED reconciliation E2E | GREEN | live PR #154 divergence reconciled non-destructively at 3c6fc979; branch 0 behind main; exact-head CI #1831 SUCCESS |
+| UAC-17 | Crash/checkpoint recovery E2E | GREEN | existing checkpoint persistence, failed-resume atomicity, idempotent task requeue and cross-store lock reconciliation prove deterministic recovery |
+| UAC-18 | Normal terminal closure E2E | GREEN | session close is idempotent, releases active locks, blocks heartbeat; terminal-session task ownership is requeued through existing Task Queue lifecycle |
 | UAC-19 | Read-only supervision view | TODO | answer who/what/where/liveness/collision/NEXT_ACTION from evidence |
 | UAC-20 | Governance/docs/cartography reconciliation | TODO | CLAUDE/SUIVI/CHANGELOG/decision or registry updates as applicable |
 | UAC-21 | Full non-regression validation | TODO | typecheck/build/docs/governance/GWC/secrets/tests all green |

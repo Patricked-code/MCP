@@ -60,7 +60,12 @@
 - UAC-13 test-only : projection Session `STALE` + Task `IN_PROGRESS` encore owned par la même Governed Session; ownership observé avant/après identique, `releaseAllowedByLiveness=false`, `transferAllowedByLiveness=false`, `releaseInferred=false`, `takeoverAllowed=false`; aucune mutation runtime.
 - MCP CI #1835 / run `36026030682` = SUCCESS exact-head sur `a07c55badfd8f9b84a2e3ce5e59811c1775f7060`; UAC-13 validé sans régression.
 - UAC-14 vérification ouverte en test-only : liveness `UNKNOWN` par absence de session heartbeat observable doit rester fail-closed et ne jamais modifier l'ownership Task existant.
-- NEXT_ACTION : valider UAC-14 exact-head; si vert, auditer UAC-15 reconnect/resume contre `GovernedSessionService.resumeSession()` / `autoResumeCompatibleSession()` avant toute nouvelle implémentation.
+- MCP CI #1837 / run `36026360164` = SUCCESS exact-head sur `3549f8e4d7399592f239b379996c72731a7d290a`; UAC-14 validé : `UNKNOWN` reste fail-closed et ne change jamais l'ownership Task.
+- UAC-15 = REUSE/GREEN : `GovernedSessionService.resumeSession()` conserve le même `governedSessionId` sur nouveau transport, incrémente la révision et invalide l'ancien binding; `autoResumeCompatibleSession()` reprend seulement un principal OAuth compatible/non ambigu. Comme l'ownership Task référence `ownerGovernedSessionId`, aucune nouvelle claim authority ni transfert n'est créé.
+- UAC-16 = REUSE/GREEN avec preuve live : `main` avait avancé à `327379a782a7f13940f0edf302dced833b326dca`; PR #154 a été réconciliée par merge deux parents `3c6fc979055922fbb24ea48a86ecbf1516b96d3c`, sans force-push, puis CI #1831 SUCCESS. Le chemin `HEAD_MOVED → RECONCILE → exact-head CI` est donc réellement éprouvé.
+- UAC-17 = REUSE/GREEN : checkpoint exige un contexte/stateVersion acquitté et est persisté; un échec atomique de resume conserve store/binding; requeue de Task après owner terminal est persistée et idempotente même si audit échoue; `reconcileSessionLockIds()` répare une panne inter-store sans dupliquer de mutation.
+- UAC-18 = REUSE/GREEN : close Session est gouverné/idempotent et bloque heartbeat; `releaseLocksForSession()` libère les locks et rend le scope réacquérable; la Task Queue requeue uniquement depuis l'autorité de rétention Session, jamais depuis liveness seule.
+- NEXT_ACTION : UAC-19 — étendre existing-first `CurrentStateService` / `mcp_get_current_state_inventory` avec une vue coordination read-only composée depuis Session + Task Queue + Governed Locks; ne créer ni nouveau service d'autorité ni nouvel outil parallèle si l'inventaire existant suffit.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
