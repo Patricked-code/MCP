@@ -2127,7 +2127,6 @@
   ],
   "executionModel": {
     "kind": "VERSIONED_PROGRAM_PLAN",
-    "planningAuthority": "GitHub main versioned projection",
     "runtimeTaskAuthority": "Governed Task Queue",
     "runtimeSessionAuthority": "Governed Session",
     "runtimeCollisionAuthorities": [
@@ -2180,7 +2179,16 @@
         "purpose": "Capabilities that require a concrete need or explicit human/governance gate before implementation.",
         "parallelism": "NO_AUTO_PROMOTION"
       }
-    ]
+    ],
+    "planningSource": "GitHub main versioned derived projection",
+    "readinessPolicy": {
+      "READY": "Planning-eligible only; live Task Queue/Session/locks/main must still be reobserved before runtime materialization.",
+      "BLOCKED": "Re-evaluate after all dependsOn blueprints are completed and checkpointed.",
+      "DEFERRED": "Never auto-promote; requires a concrete proven need and every explicit gate.",
+      "CONDITIONAL": "Never auto-promote; requires all explicit human/governance gates.",
+      "completionRule": "A blueprint completion updates/checkpoints evidence first, then only direct dependents are re-evaluated.",
+      "noRuntimeSideEffect": true
+    }
   },
   "agentHandoffContract": {
     "steps": [
@@ -4147,11 +4155,12 @@
       "waveId": "W3",
       "lotId": "F.1",
       "title": "Repository provisioning",
-      "objective": "Provision a repository only through explicit consent, exact org target, idempotency and bounded write governance.",
+      "objective": "Compose explicit consent/governance with the bounded create-repository primitive to provision a repository idempotently.",
       "integrationSlot": "provisioning.governed",
       "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
       "dependsOn": [
-        "TB-W3-F-01"
+        "TB-W3-F-01",
+        "TB-W3-ADMIN-01"
       ],
       "existingAuthorities": [
         "Scoped WRITE Gate",
@@ -4580,7 +4589,9 @@
       "integrationSlot": "github.admin.create-repository",
       "integrationStrategy": "EXTEND",
       "dependsOn": [
-        "TB-W3-F-02"
+        "TB-W3-F-01",
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
       ],
       "existingAuthorities": [
         "GitHub lifecycle transport",
