@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-09-24 — W1.7 — readiness handoff publié
+
+- RED `7af6f9551db29f9d1d2823787d021c7a74f8abd7`, MCP CI #1894 : un seul échec ciblé, absence du handoff W1.
+- Pré-handoff exact validé : `0ca92d34ca5ba9f8e5656205d4c340614ac5736b`, MCP CI push #1892 / run `36046502620` et PR #1893 / run `36046505705`, tous gates SUCCESS.
+- `TB-W1-01..07 = DONE`; W1 est COMPLETE.
+- Seuls `TB-W2-01 github_get_commits`, `TB-W2-02 github_get_tree`, `TB-W2-03 github_get_required_checks` passent READY.
+- Aucun blueprint W3 ne devient READY; maintenance/conditional/deferred conservent leurs gates.
+- W1 a créé 0 runtime Task, 0 Governed Session et 0 runtime Lock; aucune ancienne branche #85/#86/#88/#89/#90 n'a été reprise.
+- NEXT_ACTION : valider ce head exact, self-review PR #174, fusionner sous garde exact-head, attester main/S1/runtime, puis commencer W2 dans l'Integration Slot existant `src/tools/githubControlPlaneRead.ts`.
+
 ## 2026-09-24 — W1.6 — planning/document coherence gate
 
 - RED `0e831debd7c5b4226c20deedc6de93700db615a9`, MCP CI #1886 : échec ciblé sur la contradiction TODO `PB-UAC=ACTIVE` alors que UAC est terminal.

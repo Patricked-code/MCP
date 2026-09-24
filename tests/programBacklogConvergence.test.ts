@@ -138,7 +138,7 @@ test('the first post-UAC wave is reconciliation and GitHub READ R1 cannot preced
   assert.ok(w1);
   assert.equal(w1.readiness?.state, 'DONE');
   assert.ok(w2);
-  assert.equal(w2.readiness?.state, 'BLOCKED');
+  assert.equal(w2.readiness?.state, 'READY');
   assert.ok(w2.dependsOn.includes('TB-W1-07'));
 });
 
@@ -225,8 +225,8 @@ test('TB-W1-01 freezes the exact post-UAC baseline and unlocks only its direct d
   assert.equal(byId.get('TB-W1-03')?.readiness?.state, 'DONE');
   assert.equal(byId.get('TB-W1-04')?.readiness?.state, 'DONE');
   assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'DONE');
-  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'READY');
-  assert.equal(byId.get('TB-W2-01')?.readiness?.state, 'BLOCKED');
+  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W2-01')?.readiness?.state, 'READY');
 });
 
 test('repository agent entrypoint explicitly loads Program Backlog V2 before selecting work', async () => {
@@ -302,7 +302,7 @@ test('TB-W1-05 retires the stale bootstrap seed without mutating live runtime au
   assert.equal(byId.get('TB-W1-03')?.readiness?.state, 'DONE');
   assert.equal(byId.get('TB-W1-04')?.readiness?.state, 'DONE');
   assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'DONE');
-  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'READY');
+  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'DONE');
 });
 
 
@@ -370,7 +370,7 @@ test('TB-W1-04 resolves implemented OD decisions and preserves real deferred dec
   assert.equal(program.get('TB-W1-03')?.readiness?.state, 'DONE');
   assert.equal(program.get('TB-W1-04')?.readiness?.state, 'DONE');
   assert.equal(program.get('TB-W1-06')?.readiness?.state, 'DONE');
-  assert.equal(program.get('TB-W1-07')?.readiness?.state, 'READY');
+  assert.equal(program.get('TB-W1-07')?.readiness?.state, 'DONE');
 });
 
 
@@ -405,8 +405,8 @@ test('TB-W1-06 reconciles all current planning surfaces without rewriting histor
     projection.taskBlueprints.map((blueprint: any) => [blueprint.id, blueprint])
   );
   assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'DONE');
-  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'READY');
-  assert.equal(byId.get('TB-W2-01')?.readiness?.state, 'BLOCKED');
+  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W2-01')?.readiness?.state, 'READY');
 
   assert.equal((projection.sourceCoverage.externalActiveWork ?? []).length, 0);
   assert.ok((projection.sourceCoverage.completedExternalWork ?? []).length > 0);

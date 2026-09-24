@@ -495,15 +495,11 @@ La roadmap reste la vision du programme. La couverture exhaustive et la classifi
 W0 COMPLETE
   PB-UAC / PR #154 → merged/deployed/attested
         ↓
-W1 ACTIVE — PROGRAM STATE CONVERGENCE
-  TB-W1-01..06 DONE
-  TB-W1-07 READY
+W1 COMPLETE — PROGRAM STATE CONVERGENCE
+  TB-W1-01..07 DONE
   baseline + GWC + AF + OD + task-registry + planning projections reconciled
         ↓
-W1 EXIT
-  publish exact-head readiness handoff, then unlock W2
-        ↓
-W2 CAPACITÉS GITHUB COMPLÉMENTAIRES
+W2 READY — CAPACITÉS GITHUB COMPLÉMENTAIRES
   github_get_commits
   github_get_tree
   github_get_required_checks

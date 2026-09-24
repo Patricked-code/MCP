@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-09-24 — W1 se termine par un handoff, pas par la création anticipée des tâches W2
+
+Décision : le succès W1 déverrouille uniquement la readiness planning des trois READ GitHub. Il ne crée ni ne claim automatiquement aucune Governed Task. Un agent W2 réobserve d'abord main/PRs/scopes et réutilise `src/tools/githubControlPlaneRead.ts`.
+
+Les trois READ W2 ont des collision domains distincts et peuvent être menés indépendamment si l'observation courante confirme l'absence de conflit. Aucun W3 ne devient READY avant leur clôture.
+
 ## 2026-09-24 — Les surfaces de pilotage courantes ne doivent jamais afficher un snapshot runtime ancien comme CURRENT
 
 Décision : les blocs historiques TASKS/ROADMAP/SUIVI restent conservés pour provenance, mais leurs titres et textes doivent indiquer explicitement leur caractère historique lorsqu'ils ne représentent plus le NEXT_ACTION courant. Program Backlog V2 + autorités live déterminent la reprise.

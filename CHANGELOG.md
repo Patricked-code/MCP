@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 2026-09-24 — W1 readiness handoff
+
+- W1 Program State Convergence clôturé : TB-W1-01..07 DONE.
+- W2 GitHub READ R1 devient la seule vague planning-ready avec trois blueprints indépendants et read-only.
+- W3/W4 restent bloqués; aucun runtime Task/Session/Lock n'est précréé par le handoff.
+
 ## 2026-09-24 — W1 planning coherence gate
 
 - Synchronisation current-first de ROADMAP/TODO/TASKS avec Program Backlog V2.

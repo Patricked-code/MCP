@@ -63,9 +63,9 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 ### Ordonnancement courant
 
 - **DONE** : `PB-UAC` / PR #154 est fusionné, déployé et attesté ; ne jamais recopier ses UAC-01..24.
-- **W1 current-first** : `TB-W1-01..06` sont DONE ; GWC-0..17 est acquis, AF-01..36 est réconcilié, OD-08/09 seuls restent différés, et le seed statique est réconcilié.
-- **ACTIVE planning wave** : W1 Program State Convergence. Seul `TB-W1-07` est planning-ready avant relecture live ; aucun blueprint ne crée automatiquement de Task runtime.
-- **READY après W1** : `PB-GITHUB-READ` uniquement pour `github_get_commits`, `github_get_tree`, `github_get_required_checks`.
+- **DONE — W1 Program State Convergence** : `TB-W1-01..07` sont terminés ; GWC/AF/OD/task-registry/planning ont été réconciliés current-first.
+- **ACTIVE planning wave — W2 GitHub READ** : `TB-W2-01`, `TB-W2-02`, `TB-W2-03` sont planning-ready après relecture live et collision check ; aucun blueprint ne crée automatiquement de Task runtime.
+- **W3/W4** : restent bloqués par leurs dépendances ; aucun saut de vague.
 - **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
 - **Observabilité/certification** : G1/G2, G3, H, I, J1/J2 après leurs dépendances.
 - **Séparés/conditionnels** : J3 Node 24, J4 WRITE gate enforce, fallbacks SSH, WRITE serveur additionnels, GitHub destructif, déploiement applicatif Stablecoin.
