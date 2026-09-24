@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-09-24 — W1.1 post-UAC baseline freeze
+
+- `TB-W1-01` figé sur `main@d30b06f4c8b72b4888f32397be207798a56b8bb8` avec CI #1867, Governed Deploy #70 et preuves OIDC #172/#173.
+- Program Backlog V2 expose désormais cette baseline et passe `TB-W1-01` à DONE ; seuls `TB-W1-02` et `TB-W1-05` deviennent planning-ready.
+- `CLAUDE.md` impose explicitement le chargement de Program Backlog V2 et la sélection d'un blueprint READY après reobservation/collision checks.
+- Aucun runtime Task/Session/Lock créé ; W2/W3/W4 restent gouvernés par leurs dépendances.
+
 ## 2026-09-24 — Program Backlog V2
 
 - Extension existing-first de `program-backlog-convergence.json` en plan de programme V2 machine-readable.

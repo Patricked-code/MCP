@@ -50,6 +50,22 @@ Ce fichier doit être enrichi au fur et à mesure de l’intégration des projet
 
 - 2026-07-09 : création racine par écriture contrôlée MCP, sans secret, sans suppression et sans modification applicative.
 
+
+## 7.1 Programme maître post-UAC — Program Backlog V2
+
+Pour toute nouvelle connexion/reprise sur `main` après UAC, l'agent doit charger le programme courant avant de choisir une implémentation :
+
+1. lire `CLAUDE.md` puis le début courant de `SUIVI.md` ;
+2. lire `docs/governance/program-backlog-convergence.json` (**Program Backlog V2**) ;
+3. réobserver GitHub `main`, PR/branches actives et les autorités runtime réellement nécessaires ;
+4. appliquer `SELECT_READY_BLUEPRINT` uniquement sur un blueprint dont `readiness.state = READY` ;
+5. recontrôler dépendances, collision domains, Governed Task Queue, Governed Session et Governed Lock Service avant toute matérialisation/claim runtime ;
+6. ne jamais transformer un Task Blueprint en permission : `createsRuntimeTask=false` reste invariant ;
+7. si le HEAD a bougé, appliquer `HEAD_MOVED → STOP_WRITE → REOBSERVE → RECONCILE → VERIFY → WRITE` ;
+8. laisser preuves, checkpoint et `NEXT_ACTION` afin que le prochain agent reprenne depuis le dépôt, sans dépendre de la conversation précédente.
+
+Un blueprint `DONE` ne se rejoue pas tant que sa preuve reste valide. Un blueprint `BLOCKED`, `DEFERRED` ou `CONDITIONAL` ne devient jamais exécutable par simple initiative de l'agent. La **Governed Task Queue** reste l'unique autorité de tâche runtime.
+
 ## 8. GWC — architecture et mémoire canonique de continuité
 
 Pour toute intervention liée à GWC, au Universal Resolver, aux 73 contrats, aux blueprints GWC ou à leur future matérialisation en Governed Tasks :

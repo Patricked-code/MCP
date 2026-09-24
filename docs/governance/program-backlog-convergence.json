@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "projectionId": "program-backlog-convergence-v2-20260924",
   "repository": "Patricked-code/MCP",
-  "observedMainSha": "ebc7443513627450643d46c8e676b795cc3aa03a",
-  "generatedAt": "2026-09-24T17:05:00Z",
+  "observedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
+  "generatedAt": "2026-09-24T17:53:00Z",
   "authority": {
     "kind": "DERIVED_NON_EXECUTABLE_PROJECTION",
     "createsRuntimeTasks": false,
@@ -2243,10 +2243,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "READY",
-        "autoPromotable": true,
+        "state": "DONE",
+        "autoPromotable": false,
         "requiredExplicitGates": [],
-        "reason": "All currently known prerequisites are satisfied by the versioned plan; live authorities still require reobservation before materialization."
+        "reason": "Post-UAC baseline frozen from exact current main plus CI/deploy/OIDC evidence."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -2276,6 +2276,16 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "observedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
+        "mainCiRunId": 36032772266,
+        "governedDeployRunId": 36032772198,
+        "oidcEvidenceIssues": [
+          172,
+          173
+        ],
+        "noConcurrentW1WriterObserved": true
       }
     },
     {
@@ -2311,10 +2321,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "Direct dependency TB-W1-01 is DONE; live authorities and collisions must still be reobserved before any runtime materialization."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -2517,10 +2527,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "Direct dependency TB-W1-01 is DONE; live authorities and collisions must still be reobserved before any runtime materialization."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5903,5 +5913,51 @@
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
       }
     }
-  ]
+  ],
+  "reconciliationBaseline": {
+    "baselineId": "W1-POST-UAC-BASELINE-20260924",
+    "status": "FROZEN",
+    "observedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
+    "observedAt": "2026-09-24T17:53:00Z",
+    "programBacklogMergePullRequest": 171,
+    "programBacklogMergeCommit": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
+    "mainCiRunId": 36032772266,
+    "mainCiRunNumber": 1867,
+    "governedDeployRunId": 36032772198,
+    "governedDeployRunNumber": 70,
+    "oidcGitEvidence": {
+      "issue": 172,
+      "runId": 36033010867,
+      "status": "SUCCESS",
+      "mutationAllowed": false,
+      "sshFallback": "SKIPPED"
+    },
+    "oidcDockerEvidence": {
+      "issue": 173,
+      "runId": 36033024534,
+      "status": "SUCCESS",
+      "mutationAllowed": false,
+      "sshFallback": "SKIPPED"
+    },
+    "s1Alignment": "main@d30b06f4c8b72b4888f32397be207798a56b8bb8",
+    "s1WorkingTreeClean": true,
+    "s1FetchMode": "READ_ONLY",
+    "s1PushMode": "DISABLED",
+    "dockerHealth": "HEALTHY",
+    "historicalOpenPullRequests": [
+      85,
+      86,
+      88,
+      89,
+      90
+    ],
+    "historicalOpenPullRequestPolicy": "PROVENANCE_ONLY_DO_NOT_RESUME_OR_MERGE_AS_CURRENT_WORK",
+    "runtimeTaskMaterialized": false,
+    "governedSessionCreated": false,
+    "runtimeLockCreated": false,
+    "nextEligibleBlueprints": [
+      "TB-W1-02",
+      "TB-W1-05"
+    ]
+  }
 }

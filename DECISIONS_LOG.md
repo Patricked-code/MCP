@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-09-24 — Toute reprise agent post-UAC commence par Program Backlog V2
+
+Décision : `CLAUDE.md` doit conduire explicitement toute nouvelle session à lire `SUIVI.md` et `docs/governance/program-backlog-convergence.json`, réobserver les autorités pertinentes puis sélectionner uniquement un blueprint `READY`. Un Task Blueprint n'est jamais une permission ni une Task runtime ; la Governed Task Queue, la Governed Session et le Governed Lock Service restent les autorités d'exécution et de collision.
+
+`TB-W1-01` est clos sur la baseline exacte `d30b06f4c8b72b4888f32397be207798a56b8bb8`. Seuls ses dépendants directs `TB-W1-02` et `TB-W1-05` deviennent planning-ready. Aucun saut vers W2/W3/W4 n'est autorisé avant les gates W1 correspondants.
+
 ## 2026-09-24 — Programmer tout le travail restant sans précréer les Tasks runtime
 
 Décision : le programme post-UAC est entièrement pré-découpé en vagues/lots/Task Blueprints dans l'unique projection versionnée `docs/governance/program-backlog-convergence.json`. Aucune deuxième Task Queue, aucun deuxième registre runtime et aucune branche par tâche ne sont créés.

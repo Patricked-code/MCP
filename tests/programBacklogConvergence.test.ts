@@ -136,7 +136,7 @@ test('the first post-UAC wave is reconciliation and GitHub READ R1 cannot preced
   const w2 = blueprints.get('TB-W2-01');
 
   assert.ok(w1);
-  assert.equal(w1.readiness?.state, 'READY');
+  assert.equal(w1.readiness?.state, 'DONE');
   assert.ok(w2);
   assert.equal(w2.readiness?.state, 'BLOCKED');
   assert.ok(w2.dependsOn.includes('TB-W1-07'));

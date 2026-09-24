@@ -1,5 +1,18 @@
 # SUIVI.md
 
+## 2026-09-24 — W1.1 / TB-W1-01 — baseline post-UAC figée
+
+- Baseline current-first : `main=d30b06f4c8b72b4888f32397be207798a56b8bb8`.
+- Preuves associées : MCP CI main #1867 / run `36032772266` SUCCESS ; Governed Deploy #70 / run `36032772198` SUCCESS.
+- OIDC read-only : issue #172 / run `36033010867` pour `mcp_git_status` et issue #173 / run `36033024534` pour `docker_status`, tous deux SUCCESS, `mutationAllowed=false`, SSH fallback SKIPPED.
+- S1 attesté sur le même SHA, worktree propre, fetch read-only, push désactivé ; Docker healthy.
+- Aucune PR W1 concurrente observée. Les PR #85/#86/#88/#89/#90 restent ouvertes physiquement mais classées provenance historique uniquement.
+- TDD RED `2e92a7aa08a181b3451e8b311995363743a23d16`, MCP CI #1869 : 2 échecs ciblés (baseline W1 absente + porte d'entrée agent Program Backlog V2 non explicite), tous les tests antérieurs verts.
+- GREEN : `TB-W1-01 = DONE`; `TB-W1-02` et `TB-W1-05` deviennent les seuls dépendants directs planning-ready ; W2 reste bloqué.
+- `CLAUDE.md` charge désormais explicitement Program Backlog V2 et impose `SELECT_READY_BLUEPRINT`, reobservation live, collisions et `HEAD_MOVED → RECONCILE`.
+- Aucun `TASK-*`, Governed Session ou runtime lock n'a été créé par W1-01.
+- NEXT_ACTION : poursuivre sur la même branche W1 avec `TB-W1-02` (GWC-0..17) et `TB-W1-05` (static task-registry), après reobservation du HEAD et des scopes.
+
 ## 2026-09-24 — Program Backlog V2 — lancement W1 post-UAC
 
 - Baseline observée avant le chantier : `main=ebc7443513627450643d46c8e676b795cc3aa03a`, UAC-01..24 terminal.
