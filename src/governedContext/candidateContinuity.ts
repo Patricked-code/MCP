@@ -2018,3 +2018,65 @@ export function acknowledgeCandidateRecoveryRunner(
     claimTransferAllowed: false as const
   });
 }
+
+
+export type HistoricalCandidateCoordinationProjection = Readonly<{
+  authority: 'Historical PRECODE Compatibility';
+  historical: true;
+  session: CandidateSession;
+  claim: CandidateWorkClaim | null;
+  workItem: CandidateWorkItem | null;
+  sessionReactivationAllowed: false;
+  claimReactivationAllowed: false;
+  takeoverAllowed: false;
+  currentOwnershipAuthority: false;
+  authorizationGranted: false;
+  mayWrite: false;
+  mutationPerformed: false;
+}>;
+
+/**
+ * UAC compatibility projection for historical PRECODE candidate state.
+ *
+ * Historical candidate records remain useful provenance, but they are never
+ * promoted into current execution authority by observation alone.
+ */
+export function projectHistoricalCandidateCoordination(
+  rawSession: CandidateSession,
+  rawClaim: CandidateWorkClaim | null,
+  rawWorkItem: CandidateWorkItem | null
+): HistoricalCandidateCoordinationProjection {
+  const session = CandidateSessionSchema.parse(rawSession);
+  const claim = rawClaim === null ? null : CandidateWorkClaimSchema.parse(rawClaim);
+  const workItem = rawWorkItem === null ? null : CandidateWorkItemSchema.parse(rawWorkItem);
+
+  if (claim && (
+    claim.candidateSessionId !== session.candidateSessionId
+    || claim.agentIdentity !== session.agentIdentity
+  )) {
+    throw new Error('historical candidate claim does not belong to projected session');
+  }
+  if (claim && workItem && claim.workItemId !== workItem.workItemId) {
+    throw new Error('historical candidate claim does not belong to projected work item');
+  }
+
+  return Object.freeze({
+    authority: 'Historical PRECODE Compatibility' as const,
+    historical: true as const,
+    session: Object.freeze({ ...session }),
+    claim: claim ? Object.freeze({ ...claim, collisionDomains: [...claim.collisionDomains] }) : null,
+    workItem: workItem ? Object.freeze({
+      ...workItem,
+      intentKeys: [...workItem.intentKeys],
+      dependencies: [...workItem.dependencies],
+      collisionDomains: [...workItem.collisionDomains]
+    }) : null,
+    sessionReactivationAllowed: false as const,
+    claimReactivationAllowed: false as const,
+    takeoverAllowed: false as const,
+    currentOwnershipAuthority: false as const,
+    authorizationGranted: false as const,
+    mayWrite: false as const,
+    mutationPerformed: false as const
+  });
+}

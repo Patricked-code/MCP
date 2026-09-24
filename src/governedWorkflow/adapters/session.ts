@@ -6,8 +6,13 @@ import type {
 } from '../../operationalMemory/sessionService.js';
 import type {
   BootstrapReceipt,
-  GovernedSessionPublicRecord
+  GovernedSessionPublicRecord,
+  GovernedTaskRecord
 } from '../../operationalMemory/types.js';
+import {
+  deriveAgentLivenessFromHeartbeat,
+  type AgentLiveness
+} from '../../governedContext/agentCoordination.js';
 import type { GovernedOperationalContext } from '../../governedContext/types.js';
 import type {
   GovernedContractSubstrate,
@@ -259,5 +264,144 @@ export function wrapGw17ContextAcknowledgement(
         : [])
     ],
     payload: session
+  });
+}
+
+
+export type AgentCoordinationSessionProjection = Readonly<{
+  authority: 'Governed Session';
+  governedSessionId: string;
+  agentIdentity: string;
+  repository: string;
+  workBranch: string | null;
+  status: GovernedSessionPublicRecord['status'];
+  lastHeartbeatAt: string;
+  sessionRevision: number;
+  authorizationInferred: false;
+  mutationPerformed: false;
+  claimOwnershipInferred: false;
+}>;
+
+export function projectGovernedSessionForCoordination(
+  session: GovernedSessionPublicRecord
+): AgentCoordinationSessionProjection {
+  return Object.freeze({
+    authority: 'Governed Session',
+    governedSessionId: session.governedSessionId,
+    agentIdentity: session.agentIdentity,
+    repository: session.repository,
+    workBranch: session.workBranch,
+    status: session.status,
+    lastHeartbeatAt: session.lastHeartbeatAt,
+    sessionRevision: session.sessionRevision,
+    authorizationInferred: false,
+    mutationPerformed: false,
+    claimOwnershipInferred: false
+  });
+}
+
+
+export type AgentCoordinationLivenessProjection = Readonly<{
+  authority: 'Governed Session';
+  governedSessionId: string | null;
+  heartbeatLastSeenAt: string | null;
+  liveness: AgentLiveness;
+  releaseAllowedByLiveness: false;
+  transferAllowedByLiveness: false;
+  authorizationInferred: false;
+  mutationPerformed: false;
+}>;
+
+export function projectGovernedSessionLivenessForCoordination(
+  session: GovernedSessionPublicRecord | null,
+  observedAt: string,
+  freshnessWindowSeconds: number
+): AgentCoordinationLivenessProjection {
+  return Object.freeze({
+    authority: 'Governed Session',
+    governedSessionId: session?.governedSessionId ?? null,
+    heartbeatLastSeenAt: session?.lastHeartbeatAt ?? null,
+    liveness: deriveAgentLivenessFromHeartbeat({
+      heartbeatLastSeenAt: session?.lastHeartbeatAt ?? null,
+      observedAt,
+      freshnessWindowSeconds
+    }),
+    releaseAllowedByLiveness: false,
+    transferAllowedByLiveness: false,
+    authorizationInferred: false,
+    mutationPerformed: false
+  });
+}
+
+
+export type AgentCoordinationCheckpointProjection = Readonly<{
+  authorities: readonly ['Governed Session', 'Governed Task Queue'];
+  currentTaskId: string | null;
+  currentStep: GovernedTaskRecord['status'] | null;
+  checkpoint: Readonly<{
+    checkpointId: string;
+    createdAt: string;
+    completedAction: string;
+    resultCode: string;
+    pullRequestNumber: number | null;
+    observedHeadSha: string | null;
+    blockers: readonly string[];
+    nextAction: string | null;
+    eventIds: readonly string[];
+    sessionRevision: number;
+  }> | null;
+  blockers: Readonly<{
+    session: readonly string[];
+    task: readonly string[];
+    checkpoint: readonly string[];
+  }>;
+  nextActions: Readonly<{
+    session: string | null;
+    task: string | null;
+    checkpoint: string | null;
+  }>;
+  authorizationInferred: false;
+  mutationPerformed: false;
+}>;
+
+export function projectCoordinationCheckpoint(
+  session: GovernedSessionPublicRecord,
+  currentTask: GovernedTaskRecord | null
+): AgentCoordinationCheckpointProjection {
+  const checkpoint = session.lastCheckpoint
+    ? Object.freeze({
+        checkpointId: session.lastCheckpoint.checkpointId,
+        createdAt: session.lastCheckpoint.createdAt,
+        completedAction: session.lastCheckpoint.completedAction,
+        resultCode: session.lastCheckpoint.resultCode,
+        pullRequestNumber: session.lastCheckpoint.pullRequestNumber,
+        observedHeadSha: session.lastCheckpoint.observedHeadSha,
+        blockers: Object.freeze([...session.lastCheckpoint.blockers]),
+        nextAction: session.lastCheckpoint.nextAction,
+        eventIds: Object.freeze([...session.lastCheckpoint.eventIds]),
+        sessionRevision: session.lastCheckpoint.sessionRevision
+      })
+    : null;
+
+  return Object.freeze({
+    authorities: Object.freeze(['Governed Session', 'Governed Task Queue']) as readonly [
+      'Governed Session',
+      'Governed Task Queue'
+    ],
+    currentTaskId: currentTask?.taskId ?? null,
+    currentStep: currentTask?.status ?? null,
+    checkpoint,
+    blockers: Object.freeze({
+      session: Object.freeze([...session.blockers]),
+      task: Object.freeze([...(currentTask?.blockers ?? [])]),
+      checkpoint: Object.freeze([...(session.lastCheckpoint?.blockers ?? [])])
+    }),
+    nextActions: Object.freeze({
+      session: session.nextAction,
+      task: currentTask?.nextAction ?? null,
+      checkpoint: session.lastCheckpoint?.nextAction ?? null
+    }),
+    authorizationInferred: false,
+    mutationPerformed: false
   });
 }

@@ -273,3 +273,135 @@ export function wrapGw20TaskInProgress(
     payload: task
   });
 }
+
+
+export type AgentCoordinationTaskProjection = Readonly<{
+  authority: 'Governed Task Queue';
+  taskId: string;
+  repository: string;
+  status: GovernedTaskRecord['status'];
+  currentPhase: GovernedTaskRecord['status'];
+  ownerGovernedSessionId: string | null;
+  resourceScopes: readonly string[];
+  workBranch: string | null;
+  pullRequestNumber: number | null;
+  observedHeadSha: string | null;
+  taskRevision: number;
+  authorizationInferred: false;
+  mutationPerformed: false;
+  claimTransferAllowed: false;
+}>;
+
+export function projectGovernedTaskForCoordination(
+  task: GovernedTaskRecord
+): AgentCoordinationTaskProjection {
+  return Object.freeze({
+    authority: 'Governed Task Queue',
+    taskId: task.taskId,
+    repository: task.repository,
+    status: task.status,
+    currentPhase: task.status,
+    ownerGovernedSessionId: task.ownerGovernedSessionId,
+    resourceScopes: Object.freeze([...task.resourceScopes]),
+    workBranch: task.workBranch,
+    pullRequestNumber: task.pullRequestNumber,
+    observedHeadSha: task.observedHeadSha,
+    taskRevision: task.taskRevision,
+    authorizationInferred: false,
+    mutationPerformed: false,
+    claimTransferAllowed: false
+  });
+}
+
+
+export type AgentCoordinationTaskClaimProjection = Readonly<{
+  authority: 'Governed Task Queue';
+  taskId: string;
+  taskStatus: GovernedTaskRecord['status'];
+  ownershipState: 'OWNED' | 'UNOWNED';
+  ownerGovernedSessionId: string | null;
+  collisionDomains: readonly string[];
+  claimId: null;
+  releaseInferred: false;
+  transferAllowed: false;
+  takeoverAllowed: false;
+  authorizationInferred: false;
+  mutationPerformed: false;
+}>;
+
+export function projectGovernedTaskClaimForCoordination(
+  task: GovernedTaskRecord
+): AgentCoordinationTaskClaimProjection {
+  return Object.freeze({
+    authority: 'Governed Task Queue',
+    taskId: task.taskId,
+    taskStatus: task.status,
+    ownershipState: task.ownerGovernedSessionId ? 'OWNED' : 'UNOWNED',
+    ownerGovernedSessionId: task.ownerGovernedSessionId,
+    collisionDomains: Object.freeze([...new Set(task.resourceScopes)].sort()),
+    claimId: null,
+    releaseInferred: false,
+    transferAllowed: false,
+    takeoverAllowed: false,
+    authorizationInferred: false,
+    mutationPerformed: false
+  });
+}
+
+
+export type AgentCoordinationLockProjection = Readonly<{
+  lockId: string;
+  scope: string;
+  governedSessionId: string;
+  status: GovernedLockRecord['status'];
+  expiresAt: string;
+  renewedAt: string;
+  lockRevision: number;
+  activeAtObservation: boolean;
+}>;
+
+export type AgentCoordinationLocksProjection = Readonly<{
+  authority: 'Governed Lock Service';
+  locks: readonly AgentCoordinationLockProjection[];
+  activeLockIds: readonly string[];
+  collisionDomains: readonly string[];
+  claimReleaseInferred: false;
+  authorizationInferred: false;
+  mutationPerformed: false;
+}>;
+
+export function projectGovernedLocksForCoordination(
+  locks: readonly GovernedLockRecord[],
+  observedAt: string
+): AgentCoordinationLocksProjection {
+  const observedAtMs = Date.parse(observedAt);
+  const projected = locks.map((lock): AgentCoordinationLockProjection => {
+    const expiresAtMs = Date.parse(lock.expiresAt);
+    const activeAtObservation = (
+      lock.status === 'ACTIVE'
+      && Number.isFinite(observedAtMs)
+      && Number.isFinite(expiresAtMs)
+      && expiresAtMs > observedAtMs
+    );
+    return Object.freeze({
+      lockId: lock.lockId,
+      scope: lock.scope,
+      governedSessionId: lock.governedSessionId,
+      status: lock.status,
+      expiresAt: lock.expiresAt,
+      renewedAt: lock.renewedAt,
+      lockRevision: lock.lockRevision,
+      activeAtObservation
+    });
+  });
+  const active = projected.filter((lock) => lock.activeAtObservation);
+  return Object.freeze({
+    authority: 'Governed Lock Service',
+    locks: Object.freeze(projected),
+    activeLockIds: Object.freeze(active.map((lock) => lock.lockId).sort()),
+    collisionDomains: Object.freeze([...new Set(active.map((lock) => lock.scope))].sort()),
+    claimReleaseInferred: false,
+    authorizationInferred: false,
+    mutationPerformed: false
+  });
+}

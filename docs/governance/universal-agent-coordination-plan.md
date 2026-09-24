@@ -1,0 +1,97 @@
+# Universal Agent Coordination — execution plan
+
+Status: ACTIVE — PR #154
+Baseline reconciled: `main@327379a782a7f13940f0edf302dced833b326dca` via non-destructive merge commit `3c6fc979055922fbb24ea48a86ecbf1516b96d3c` (previous reconciliation `c967a068a683033580b091405a5e8b7a837d4ecb`)
+Branch: `mcp/universal-agent-coordination-20260923`
+
+## Mission
+
+Generalize the existing heartbeat/claim/session coordination model across governed post-integration work without creating a parallel authority. The coordination surface is a read-only projection over existing authorities.
+
+## Non-negotiable invariants
+
+- Governed Session remains the session authority.
+- Governed Task Queue remains the task authority.
+- Existing claim/lock authorities remain authoritative for ownership and exclusion.
+- Heartbeat is liveness evidence only: `STALE != RELEASED`, `UNKNOWN != RELEASED`.
+- Timeout alone never transfers ownership.
+- No automatic claim takeover.
+- No second queue, session store, lock service, claim store, or memory authority.
+- GitHub-first remains preferred; bridge/runtime exposure is requested only for a proven runtime-only need with no approved fallback.
+- No direct S1 write.
+- Exact-head observation before mutation and exact-head CI/review before merge.
+- Historical PRECODE sessions/claims remain provenance and compatibility inputs, never resurrected as current execution merely because they exist.
+
+## UAC-01 — source-to-authority map
+
+This inventory is descriptive and read-only. It identifies the existing owner for each coordination fact so later UAC adapters compose existing authorities instead of creating a second authority.
+
+| Coordination surface | Existing authority / source | Existing projection or adapter to reuse | UAC rule |
+|---|---|---|---|
+| Governed session / agent identity | `src/operationalMemory/types.ts#GovernedSessionRecordSchema` and `src/operationalMemory/sessionService.ts` | `src/governedWorkflow/adapters/session.ts` (`sessionEvidence`, GW-16/GW-17 wrappers) | Governed Session remains the session authority; UAC only projects it. |
+| Heartbeat / liveness | `GovernedSessionRecord.lastHeartbeatAt` updated through `GovernedSessionService.heartbeat()` | Session evidence already carries `lastHeartbeatAt`; historical PRECODE heartbeat helpers in `candidateContinuity.ts` are compatibility evidence only | Heartbeat proves liveness only. `STALE`/`UNKNOWN` never releases, transfers or fabricates ownership. |
+| Task identity / status | `GovernedTaskRecord` + `GovernedTaskQueue` in `src/operationalMemory/taskQueue.ts` | `src/governedWorkflow/adapters/task.ts` GW-14/GW-15/GW-18/GW-20 wrappers | Governed Task Queue remains the task authority. |
+| Claim / ownership | `GovernedTaskRecord.status` + `ownerGovernedSessionId`; mutation through `claimNextTask()` / governed transitions | GW-18 task-claim wrapper | There is no separate claim store to create. UAC claim fields must be derived from the authoritative task record and must never be transferred from heartbeat age. |
+| Collision domains | `GovernedTaskRecord.resourceScopes`, `activeScopeConflict()`, active lock scopes | `reconcileIntent()`, `claimNextTask()`, `planMinimalLockSet()` | Collision detection precedes mutation; overlapping foreign ownership fails closed. |
+| Governed locks | `GovernedLockRecord` + `src/operationalMemory/lockService.ts` | `src/governedWorkflow/adapters/task.ts` lock evidence / GW-19 wrapper | Governed Lock Service remains authoritative. Lock expiry/release is not claim release. |
+| GitHub execution binding | GitHub live state collected through `src/governedContext/github.ts` | `GithubOperationalContext` + `src/governedContext/githubFirstOperationalContinuity.ts` | Repository, branch, PR, exact HEAD, checks/reviews and freshness stay GitHub-first; stale/mismatched HEAD fails closed. |
+| Checkpoint / blockers / NEXT_ACTION | `GovernedSessionRecord.lastCheckpoint`, `blockers`, `nextAction`; `GovernedCheckpoint`; task `blockers/nextAction` | `GovernedSessionService.createCheckpoint()` and existing read projections | UAC exposes the current checkpoint only; it does not create a checkpoint authority. |
+| Bootstrap / state evidence | Bootstrap Receipt and Live State | Existing session/task wrappers (GW-12/GW-13) | Evidence can constrain a projection but never substitutes for task/session/claim/lock authority. |
+| Historical PRECODE continuity | Immutable canonical-memory / `.mcp/gwc-precode-status.json`; transient candidate heartbeat helpers | `src/governedContext/candidateContinuity.ts` | Historical sessions/claims/heartbeats are provenance/compatibility inputs only and are never reactivated as current execution. |
+
+### UAC-01 findings
+
+- **UAC-01-F1 — RESOLVED by UAC-05/UAC-07:** no standalone `Claim` authority remains in the universal authority list; ownership is projected from the Governed Task Queue (`status + ownerGovernedSessionId`) without a claim store.
+- **UAC-01-F2 — RESOLVED by UAC-07:** the universal authority list and lock projection now use the existing canonical owner name `Governed Lock Service`; no parallel lock surface is introduced.
+- **UAC-01-F3 — PRECODE heartbeat is historical:** candidate PR-comment heartbeat code is retained only for UAC-11 compatibility; current post-integration liveness must come from current governed-session evidence or remain `UNKNOWN`.
+- **UAC-01-F4 — RESOLVED by UAC-08:** `GithubOperationalContext` exact-head/check/review evidence is projected unchanged through the existing GitHub-first continuity module; no second GitHub freshness model is created.
+
+## Work breakdown
+
+| ID | Work | State | Completion evidence |
+|---|---|---|---|
+| UAC-01 | Inventory existing session/task/claim/lock/heartbeat/GitHub authorities and adapters | GREEN | source-to-authority map above; no duplicate authority; exact-head CI required |
+| UAC-02 | Universal read-only coordination contract | GREEN | `agentCoordination.ts` + tests; CI #1739 SUCCESS |
+| UAC-03 | Governed Session adapter | GREEN | all governed lifecycle states projected without mutation or ownership inference |
+| UAC-04 | Governed Task Queue adapter | GREEN | authoritative task identity/status/phase/owner/scopes projected without mutation |
+| UAC-05 | Claim + collision-domain adapter | GREEN | ownership derived from Task Queue; collision scopes visible; no fabricated release/transfer/takeover |
+| UAC-06 | Heartbeat/liveness adapter | GREEN | shared FRESH/STALE/UNKNOWN derivation from Governed Session heartbeat evidence; no ownership side effect |
+| UAC-07 | Lock projection | GREEN | lock lifecycle preserved; only current ACTIVE lock scopes projected as collisions; no claim-release inference |
+| UAC-08 | GitHub execution binding | GREEN | existing GitHub context projected with repository/branch/HEAD/PR/checks/reviews exact-head evidence unchanged |
+| UAC-09 | Checkpoint + NEXT_ACTION projection | GREEN | checkpoint/current task/blockers/NEXT_ACTION exposed by source without inventing precedence |
+| UAC-10 | GitHub-first read-only exposure | GREEN | existing `GITHUB_ACTION_READONLY_EVIDENCE` fallback + non-mutating workflow reused; live OIDC issues #162/#163 succeeded with SSH fallback skipped |
+| UAC-11 | Historical PRECODE compatibility adapter | GREEN | historical CandidateSession/Claim/WorkItem projected read-only; reactivation/takeover/write/authorization all forbidden |
+| UAC-12 | Multi-agent collision E2E | GREEN | existing Task Queue resource-scope + Governed Lock conflict paths fail closed; foreign owner cannot transition; no ownership transfer inferred |
+| UAC-13 | Stale heartbeat E2E | GREEN | exact-head E2E proves STALE liveness leaves authoritative Task ownership unchanged; no release/transfer/takeover |
+| UAC-14 | Unknown heartbeat E2E | GREEN | missing Session heartbeat evidence => UNKNOWN; Task ownership remains authoritative; no release/transfer/takeover |
+| UAC-15 | Reconnect/resume E2E | GREEN | existing Governed Session resume preserves governedSessionId across transport change; Task ownership therefore remains bound to same authoritative session |
+| UAC-16 | HEAD_MOVED reconciliation E2E | GREEN | live PR #154 divergence reconciled non-destructively at 3c6fc979; branch 0 behind main; exact-head CI #1831 SUCCESS |
+| UAC-17 | Crash/checkpoint recovery E2E | GREEN | existing checkpoint persistence, failed-resume atomicity, idempotent task requeue and cross-store lock reconciliation prove deterministic recovery |
+| UAC-18 | Normal terminal closure E2E | GREEN | session close is idempotent, releases active locks, blocks heartbeat; terminal-session task ownership is requeued through existing Task Queue lifecycle |
+| UAC-19 | Read-only supervision view | GREEN | existing CurrentState inventory composes Session/Task/ownership/liveness/locks/checkpoint read-only; CI #1843 SUCCESS |
+| UAC-20 | Governance/docs/cartography reconciliation | GREEN | UAC plan/SUIVI/CHANGELOG/DECISIONS/TASKS cross-linked without creating runtime tasks or parallel authorities |
+| UAC-21 | Full non-regression validation | GREEN | MCP CI #1845 exact-head SUCCESS: typecheck/build/docs/governance/GWC/secrets/read-only/whitespace all green |
+| UAC-22 | Exact-head review and merge readiness | GREEN | self-review findings fixed; CI #1849 SUCCESS; no reviews/threads blocking; main unchanged and PR mergeable |
+| UAC-23 | Post-merge governed deploy and attestation | TODO | GitHub/main/S1/runtime exact-SHA alignment where required |
+| UAC-24 | Terminal handoff/closure | TODO | Live State/current documentation reconciled; no orphan claim/lock |
+
+## Supervision loop
+
+For every material step:
+
+1. Reobserve `main`, PR #154 head, CI/review and changed scope.
+2. Reobserve only the runtime authorities required by the bounded operation.
+3. Check active claims, liveness and collision domains before any write.
+4. If HEAD moved, reconcile before continuing.
+5. If another writer owns an overlapping collision domain, do not take over; route/wait/reconcile.
+6. Execute the smallest existing-first change.
+7. Run RED -> GREEN where behavior changes.
+8. Reobserve exact-head CI and review.
+9. Update the checkpoint/NEXT_ACTION.
+10. Never infer release, ownership transfer, runtime health, or deployment from absence of evidence.
+
+## Definition of done
+
+The program is complete only when a governed agent doing mutating work can be observed as:
+`identity -> session -> task -> claim -> collision domains -> heartbeat/liveness -> locks -> GitHub HEAD -> checkpoint -> NEXT_ACTION`,
+with fail-closed ownership semantics, multi-agent tests, GitHub-first read-only supervision, full regression gates, merge/deploy attestation where required, and terminal cleanup.
