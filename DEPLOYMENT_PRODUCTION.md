@@ -72,3 +72,12 @@ La Phase F-06 réutilise **cette chaîne de production existante** ; elle n’en
 Après le gate final PRECODE : le HEAD final de PR #95 certifie la candidate avant fusion ; GitHub fournit ensuite le `MERGE_SHA` réel ; la CI `main` doit réussir sur ce `MERGE_SHA` ; le déploiement gouverné doit demander exactement ce même SHA ; l’attestation post-déploiement doit enfin lier GitHub main, S1, image OCI, runtime et Live State au SHA réellement déployé.
 
 Le HEAD candidat et le SHA de fusion ne sont pas interchangeables. Si `main` ou le HEAD de PR bouge, les preuves exact-head affectées sont renouvelées. Si la production échoue après fusion, le rollback runtime utilise l’image précédente selon le runbook existant ; GitHub `main` n’est jamais réécrit sur le serveur.
+
+
+## Attestation Universal Agent Coordination — PR #154
+
+PR #154 a fusionné au SHA exact `ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4`. MCP CI main #1852 / run `36028205563` a réussi avant que Governed Deploy #68 / run `36028205582`, job `107730012049`, ne franchisse son gate et n'atteste ce même SHA par OIDC.
+
+Les probes GitHub-first post-déploiement #166/#167 ont ensuite confirmé, sans mutation et sans fallback SSH : S1 sur `main@ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4`, worktree propre, fetch read-only, push désactivé, et conteneur `wealthtech_mcp_ssh_bridge` healthy.
+
+Cette réconciliation terminale prend `ba9acd1...` comme baseline fonctionnelle. Son propre merge documentaire n'est pas prédit et doit rester un descendant strictement docs-only conformément à `buildDocumentationLiveStateCommand()`.

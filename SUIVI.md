@@ -1,5 +1,18 @@
 # SUIVI.md
 
+## 2026-09-24 — Universal Agent Coordination — terminal merge/deploy/attestation
+
+- PR #154 fusionnée sous garde exact-head avec merge commit `ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4`; candidate head fusionné `9100ab750472124d0a7b696f37b1f56e687f63ca`.
+- MCP CI main #1852 / run `36028205563` = SUCCESS sur le merge SHA exact.
+- MCP Governed Deploy #68 / run `36028205582`, job `107730012049` = SUCCESS; le gate a attendu la CI main avant d'exécuter le déploiement OIDC exact-SHA.
+- Attestation Git S1 GitHub-first : issue #166 / run `36028435204` = SUCCESS via `github_oidc_mcp_readonly`, SSH fallback SKIPPED, `mutationAllowed=false`; S1 `main@ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4`, worktree propre, fetch `github.com-mcp-patricked-ro`, push `disabled://mcp-s1-read-only`.
+- Attestation Docker S1 : issue #167 / run `36028438729` = SUCCESS via OIDC, SSH fallback SKIPPED, `mutationAllowed=false`; `wealthtech_mcp_ssh_bridge` est `healthy`.
+- UAC-23 est GREEN : GitHub main = S1 main = runtimeRevision attestée par Governed Deploy sur le même SHA fonctionnel; health/OAuth/MCP et rollback `not_needed` sont des conditions obligatoires du verdict SUCCESS du workflow.
+- UAC-24 : aucun `TASK-*` runtime, Governed Session, claim ou Governed Lock UAC n'a été créé par ce programme GitHub; il n'existe donc aucun ownership/lock UAC live à libérer artificiellement. PRECODE reste provenance historique uniquement.
+- La sous-section Live State de `PRODUCTION_STATE.json` n'est pas promue à CURRENT : aucun probe GitHub-first allowlisté ne fournit directement Live State dans cette passe. La clôture conserve cette preuve historique telle quelle et enregistre séparément les attestations exact-SHA réellement observées.
+- La présente branche est strictement documentaire/état déclaré et prend `ba9acd1...` comme baseline fonctionnelle. Son futur merge est un descendant docs-only accepté par la logique Live State; aucun SHA futur n'est prédit.
+- NEXT_ACTION : valider cette réconciliation terminale par CI exact-head, self-review du diff documentaire, fusionner si les gates restent verts, puis observer la CI/deploy du descendant documentaire sans rouvrir le chantier fonctionnel UAC.
+
 ## 2026-09-23 — UAC-01 authority inventory + HEAD reconciliation
 
 - `HEAD_MOVED` traité avant tout nouveau développement : PR #154 était à `a158b1dd269666e6565b32e31827d479f3d21b2f`, 14 commits derrière `main@84bbe9b1684f5f6be73eaf2d6aa21063fb62697a`.

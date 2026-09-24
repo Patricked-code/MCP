@@ -29,7 +29,8 @@ Projection documentaire uniquement : ce chantier **n'est pas un nouveau `TASK-*`
 - [x] UAC-20 — réconciliation de gouvernance/documentation ;
 - [x] UAC-21 — non-régression complète exact-head ;
 - [x] UAC-22 — self-review, corrections et merge readiness exact-head ;
-- [ ] UAC-23..24 — merge/déploiement/attestation gouvernés puis handoff/closure.
+- [x] UAC-23 — merge, CI main, Governed Deploy et attestations OIDC S1/Docker exact-SHA ;
+- [x] UAC-24 — handoff/closure documentaire terminale, sans Task/session/claim/lock runtime UAC orphelin.
 
 Règles : aucun takeover depuis heartbeat, aucun bridge interactif quand GitHub/fallback suffit, aucun direct S1, aucune nouvelle autorité parallèle.
 

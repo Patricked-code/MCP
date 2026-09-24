@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## 2026-09-24 — Universal Agent Coordination — attestation terminale
+
+- PR #154 fusionnée au merge exact `ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4`.
+- CI main #1852 / run `36028205563` et Governed Deploy #68 / run `36028205582` : SUCCESS.
+- Preuves GitHub OIDC read-only #166/#167 : S1 sur le même SHA, arbre propre, remote fetch read-only, push désactivé, Docker `wealthtech_mcp_ssh_bridge` healthy; fallback SSH non utilisé.
+- Aucun bridge interactif, aucune écriture directe S1, aucun takeover de claim, aucun `TASK-*`/Session/Lock runtime UAC créé pour la clôture.
+- `PRODUCTION_STATE.json` déclare désormais le baseline fonctionnel attesté `ba9acd1...`; la preuve Live State historique n'est pas requalifiée artificiellement faute de probe GitHub-first direct.
+- La réconciliation terminale est docs-only : tout futur merge de cette passe reste un descendant documentaire du baseline fonctionnel attesté.
+
 ## 2026-09-24 — Universal Agent Coordination — PR #154
 
 - Généralisation existing-first de l'observabilité agent/session/task/ownership/heartbeat/locks/GitHub/checkpoint sans nouvelle autorité ni nouveau store.
