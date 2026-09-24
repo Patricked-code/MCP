@@ -87,7 +87,7 @@ type CacheEntry = {
   value: GithubOperationalContext;
 };
 
-type ParsedChecks = {
+export type ParsedChecks = {
   summary: GithubOperationalContext['checks'];
   runs: Array<{ context: string; status: string; conclusion: string | null }>;
 };
@@ -510,7 +510,7 @@ function parsePullRequest(value: unknown): GithubOperationalContext['pullRequest
   };
 }
 
-function parseChecks(value: unknown, expectedHeadSha: string): ParsedChecks | null {
+export function parseChecks(value: unknown, expectedHeadSha: string): ParsedChecks | null {
   const root = object(value);
   if (!root || !Array.isArray(root.check_runs)) return null;
   const rawRuns = root.check_runs.slice(0, 100);
@@ -571,7 +571,7 @@ function parseChecks(value: unknown, expectedHeadSha: string): ParsedChecks | nu
   };
 }
 
-function applyRequiredChecks(
+export function applyRequiredChecks(
   checks: GithubOperationalContext['checks'],
   runs: ParsedChecks['runs'],
   requiredContexts: string[]
@@ -669,18 +669,18 @@ function parseUnresolvedThreads(value: unknown): number | null {
   return nodes.filter((thread) => thread?.isResolved === false).length;
 }
 
-type RulesetSummary = {
+export type RulesetSummary = {
   id: number;
   name: string | null;
   enforcement: string | null;
 };
 
-type ParsedRuleset = {
+export type ParsedRuleset = {
   ruleset: GithubOperationalContext['ruleset'];
-  appliesToMain: boolean;
+  appliesToRef: boolean;
 };
 
-function parseRulesetSummaries(value: unknown): RulesetSummary[] | null {
+export function parseRulesetSummaries(value: unknown): RulesetSummary[] | null {
   if (!Array.isArray(value)) return null;
   const values = value.slice(0, 20).map(object).filter(Boolean);
   if (values.length !== Math.min(value.length, 20)) return null;
@@ -728,9 +728,9 @@ function globToRegExp(pattern: string): RegExp | null {
   }
 }
 
-function refPatternMatches(pattern: string, ref: string): boolean | null {
+function refPatternMatches(pattern: string, ref: string, defaultRef = MAIN_REF): boolean | null {
   if (pattern === '~ALL') return true;
-  if (pattern === '~DEFAULT_BRANCH') return ref === MAIN_REF;
+  if (pattern === '~DEFAULT_BRANCH') return ref === defaultRef;
   const regexp = globToRegExp(pattern);
   return regexp ? regexp.test(ref) : null;
 }
@@ -741,7 +741,11 @@ function parseRefPatterns(value: unknown): string[] | null {
   return patterns.every((entry) => entry !== null) ? patterns as string[] : null;
 }
 
-function rulesetAppliesToMain(value: unknown): boolean | null {
+function rulesetAppliesToRef(
+  value: unknown,
+  ref = MAIN_REF,
+  defaultRef = MAIN_REF
+): boolean | null {
   const ruleset = object(value);
   if (!ruleset) return null;
   const conditions = object(ruleset.conditions);
@@ -752,23 +756,25 @@ function rulesetAppliesToMain(value: unknown): boolean | null {
   const excludes = parseRefPatterns(refName.exclude);
   if (!includes || !excludes) return null;
   for (const pattern of excludes) {
-    const matches = refPatternMatches(pattern, MAIN_REF);
+    const matches = refPatternMatches(pattern, ref, defaultRef);
     if (matches === null) return null;
     if (matches) return false;
   }
   if (includes.length === 0) return true;
   let matched = false;
   for (const pattern of includes) {
-    const matches = refPatternMatches(pattern, MAIN_REF);
+    const matches = refPatternMatches(pattern, ref, defaultRef);
     if (matches === null) return null;
     if (matches) matched = true;
   }
   return matched;
 }
 
-function parseRulesetDetail(
+export function parseRulesetDetail(
   value: unknown,
-  summary: RulesetSummary
+  summary: RulesetSummary,
+  ref = MAIN_REF,
+  defaultRef = MAIN_REF
 ): ParsedRuleset | null {
   const ruleset = object(value);
   if (!ruleset || !Array.isArray(ruleset.rules)) return null;
@@ -797,10 +803,10 @@ function parseRulesetDetail(
   const requiredApprovingReviewCount = approvalCounts.length > 0
     ? Math.max(...approvalCounts)
     : null;
-  const appliesToMain = rulesetAppliesToMain(value);
-  if (appliesToMain === null) return null;
+  const appliesToRef = rulesetAppliesToRef(value, ref, defaultRef);
+  if (appliesToRef === null) return null;
   return {
-    appliesToMain,
+    appliesToRef,
     ruleset: {
       name: string(ruleset.name, 120) ?? summary.name,
       enforcement: string(ruleset.enforcement, 40) ?? summary.enforcement,
@@ -816,10 +822,10 @@ function parseRulesetDetail(
   };
 }
 
-function aggregateRulesets(
+export function aggregateRulesets(
   values: ParsedRuleset[]
 ): GithubOperationalContext['ruleset'] {
-  const applicable = values.filter((value) => value.appliesToMain);
+  const applicable = values.filter((value) => value.appliesToRef);
   if (applicable.length === 0) {
     return {
       name: null,
