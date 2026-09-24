@@ -301,3 +301,70 @@ test('TB-W1-05 retires the stale bootstrap seed without mutating live runtime au
   assert.equal(byId.get('TB-W1-04')?.readiness?.state, 'READY');
   assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'BLOCKED');
 });
+
+
+test('TB-W1-03 reconciles all AF-01..36 without fabricating new implementation work', async () => {
+  const design = JSON.parse(
+    await readFile('.mcp/gwc-evolution-design.json', 'utf8')
+  );
+  const current = design.postIntegrationReconciliation?.findings ?? [];
+
+  assert.equal(current.length, 36);
+  assert.deepEqual(
+    current.map((entry: any) => entry.id).sort(),
+    Array.from({ length: 36 }, (_, index) => `AF-${String(index + 1).padStart(2, '0')}`)
+  );
+
+  for (const finding of current) {
+    assert.ok(
+      ['RESOLVED', 'ABSORBED', 'ACCEPTED_BOUNDARY', 'DEFERRED', 'SUPERSEDED'].includes(finding.disposition),
+      `${finding.id} has invalid disposition ${finding.disposition}`
+    );
+    assert.ok(Array.isArray(finding.evidenceRefs));
+    assert.ok(Array.isArray(finding.residualTaskBlueprints));
+    assert.equal(finding.historicalCandidateReplayAllowed, false);
+  }
+
+  const byId = new Map(current.map((entry: any) => [entry.id, entry]));
+  assert.equal(byId.get('AF-19')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-22')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-30')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-31')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-32')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-35')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-36')?.disposition, 'RESOLVED');
+  assert.ok(byId.get('AF-01')?.residualTaskBlueprints.includes('TB-W3-B3-01'));
+  assert.ok(byId.get('AF-14')?.residualTaskBlueprints.includes('TB-COND-C1-ACTIVATE'));
+});
+
+test('TB-W1-04 resolves implemented OD decisions and preserves real deferred decisions', async () => {
+  const [designRaw, projectionRaw] = await Promise.all([
+    readFile('.mcp/gwc-evolution-design.json', 'utf8'),
+    readFile('docs/governance/program-backlog-convergence.json', 'utf8')
+  ]);
+  const design = JSON.parse(designRaw);
+  const projection = JSON.parse(projectionRaw);
+  const decisions = design.postIntegrationReconciliation?.decisions ?? [];
+
+  assert.equal(decisions.length, 12);
+  const byId = new Map(decisions.map((entry: any) => [entry.id, entry]));
+
+  for (const id of ['OD-01','OD-02','OD-03','OD-04','OD-05','OD-06','OD-07','OD-10','OD-11','OD-12']) {
+    assert.equal(byId.get(id)?.disposition, 'RESOLVED', `${id} should be resolved from integrated evidence`);
+  }
+  assert.equal(byId.get('OD-08')?.disposition, 'DEFERRED');
+  assert.equal(byId.get('OD-09')?.disposition, 'DEFERRED');
+  assert.deepEqual(byId.get('OD-08')?.residualTaskBlueprints, ['TB-COND-OD08']);
+  assert.deepEqual(byId.get('OD-09')?.residualTaskBlueprints, ['TB-COND-OD09']);
+
+  const program = new Map(
+    projection.taskBlueprints.map((blueprint: any) => [blueprint.id, blueprint])
+  );
+  assert.equal(program.get('TB-COND-OD08')?.readiness?.state, 'DEFERRED');
+  assert.equal(program.get('TB-COND-OD08')?.readiness?.autoPromotable, false);
+  assert.equal(program.get('TB-COND-OD09')?.readiness?.state, 'DEFERRED');
+  assert.equal(program.get('TB-COND-OD09')?.readiness?.autoPromotable, false);
+  assert.equal(program.get('TB-W1-03')?.readiness?.state, 'DONE');
+  assert.equal(program.get('TB-W1-04')?.readiness?.state, 'DONE');
+  assert.equal(program.get('TB-W1-06')?.readiness?.state, 'READY');
+});
