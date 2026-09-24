@@ -492,16 +492,26 @@ La roadmap reste la vision du programme. La couverture exhaustive et la classifi
 ### Vagues d'exécution
 
 ```text
-W0 ACTIVE
-  PB-UAC / PR #154
+W0 COMPLETE
+  PB-UAC / PR #154 → merged/deployed/attested
         ↓
-W1 RECONCILIATION DE CONNAISSANCE
+W1 ACTIVE — PROGRAM STATE CONVERGENCE
+  Post-UAC exact-main rebaseline
+  GWC-0..17 ↔ current main
+  AF-01..36 ↔ current evidence
+  OD-01..12 ↔ DECISIONS_LOG/current main
+  static task-registry ↔ runtime authorities
+  ROADMAP/TODO/TASKS/backlog projections
+        ↓
+W1 EXIT
+  machine-readable task blueprints + dependency/readiness graph
+        ↓
+W2 CAPACITÉS GITHUB COMPLÉMENTAIRES
   GWC-0..17 ↔ current main
   AF-01..36 ↔ preuves actuelles
   OD-01..12 ↔ DECISIONS_LOG/current main
   task-registry statique ↔ autorités runtime
         ↓
-W2 CAPACITÉS GITHUB COMPLÉMENTAIRES
   github_get_commits
   github_get_tree
   github_get_required_checks
@@ -521,6 +531,13 @@ W4 OBSERVABILITÉ / CERTIFICATION
 ```
 
 Les lots J3, J4, fallbacks SSH read-only, écritures serveur additionnelles, GitHub destructif et Stablecoin applicatif restent séparés ou conditionnels. Leur présence dans le backlog n'est jamais une autorisation d'exécution.
+
+
+### Program Backlog V2 — matérialisation progressive
+
+Le programme post-UAC est désormais pré-découpé dans `docs/governance/program-backlog-convergence.json` en vagues, lots et Task Blueprints. Cette projection est versionnée mais non exécutable : elle ne crée aucun `GovernedTaskRecord`, ne remplace jamais la Governed Task Queue et ne possède aucune autorité de claim/lock/session.
+
+Un blueprint ne devient une tâche runtime qu'après relecture des autorités live, satisfaction de ses dépendances/readiness, contrôle de collision UAC et matérialisation/claim par les autorités existantes. Les lots `DEFERRED` ou `CONDITIONAL` exigent leurs gates explicites et ne sont jamais auto-promus.
 
 ### Definition of backlog-ready
 

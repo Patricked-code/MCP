@@ -19,7 +19,7 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 `ROADMAP.md` décrit tous les chantiers/lots connus. `TODO.md` contient ce qui reste à accomplir. Ce fichier ne pré-crée pas toutes les tâches futures : une `TASK-...` n'est considérée officielle qu'après son enregistrement dans Operational Memory.
 
-## Chantier GitHub actif — PR #154 Universal Agent Coordination
+## Chantier terminé — PR #154 Universal Agent Coordination
 
 Projection documentaire uniquement : ce chantier **n'est pas un nouveau `TASK-*` runtime**. L'autorité d'exécution dynamique reste la Governed Task Queue/Operational Memory; l'Integration Slot unique est `coordination.universal` dans PR #154 et son plan `docs/governance/universal-agent-coordination-plan.md`.
 
@@ -33,6 +33,21 @@ Projection documentaire uniquement : ce chantier **n'est pas un nouveau `TASK-*`
 - [x] UAC-24 — handoff/closure documentaire terminale, sans Task/session/claim/lock runtime UAC orphelin.
 
 Règles : aucun takeover depuis heartbeat, aucun bridge interactif quand GitHub/fallback suffit, aucun direct S1, aucune nouvelle autorité parallèle.
+
+
+## Programme maître post-UAC — planning versionné, aucune Task runtime précréée
+
+Le programme restant est pré-découpé dans `docs/governance/program-backlog-convergence.json` V2. Ce registre reste une projection **non exécutable** et ne remplace jamais la Governed Task Queue.
+
+- [ ] W1 — Program State Convergence : `TB-W1-01` → `TB-W1-07` ;
+- [ ] W2 — GitHub READ R1 : commits, tree, required checks ;
+- [ ] W3 — A2.2/A3, B3/C1/C3-C5, D1-D3, E1-E3, F et writes GitHub bornés ;
+- [ ] W4 — G1-G3, H, I1-I3, J1/J2 ;
+- [ ] maintenance J3 séparée ;
+- [ ] conditional/deferred : C1 activation, J4 enforce, SSH fallback, extra server WRITE, GitHub destructif, Stablecoin app deploy.
+
+Aucun de ces items n'est un `TASK-*` tant que les autorités runtime ne l'ont pas matérialisé après reobservation, readiness et collision check. Le premier blueprint planning-ready est `TB-W1-01`.
+
 
 ## Tâche gouvernée — AfricaFunds project-aware S2 mapping
 

@@ -62,12 +62,20 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 
 ### Ordonnancement courant
 
-- **ACTIVE** : `PB-UAC` reste le chantier d'implémentation actif via PR #154 ; ne pas recopier ses UAC-01..24.
+- **DONE** : `PB-UAC` / PR #154 est fusionné, déployé et attesté ; ne jamais recopier ses UAC-01..24.
 - **RECONCILE avant nouveau code issu du GWC historique** : `PB-GWC-RECONCILE`, `PB-AF-RECONCILE`, `PB-OD-RECONCILE`, `PB-TASKREG-RECONCILE`.
-- **READY après gates de coordination/convergence** : `PB-GITHUB-READ` uniquement pour `github_get_commits`, `github_get_tree`, `github_get_required_checks`.
+- **ACTIVE planning wave** : W1 Program State Convergence. Seul `TB-W1-01` est planning-ready avant relecture live ; aucun blueprint ne crée automatiquement de Task runtime.
+- **READY après W1** : `PB-GITHUB-READ` uniquement pour `github_get_commits`, `github_get_tree`, `github_get_required_checks`.
 - **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
 - **Observabilité/certification** : G1/G2, G3, H, I, J1/J2 après leurs dépendances.
 - **Séparés/conditionnels** : J3 Node 24, J4 WRITE gate enforce, fallbacks SSH, WRITE serveur additionnels, GitHub destructif, déploiement applicatif Stablecoin.
+
+
+### Program Backlog V2 — règle d'exécution
+
+Les Task Blueprints machine-readable sont portés par `docs/governance/program-backlog-convergence.json`. Ils décrivent à l'avance objectifs, dépendances, Integration Slots, collision domains, autorités, RED/GREEN, régressions et DONE. Ils ne sont pas des `TASK-*` et ne sont jamais chargés automatiquement dans Operational Memory.
+
+Ordre courant : **W1 convergence → W2 GitHub READ → W3 connection/resolution/governance/provisioning → W4 observability/certification**. Maintenance et lots conditionnels restent séparés.
 
 ### Règle anti-régression / anti-doublon
 

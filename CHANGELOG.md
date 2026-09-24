@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## 2026-09-24 — Program Backlog V2
+
+- Extension existing-first de `program-backlog-convergence.json` en plan de programme V2 machine-readable.
+- UAC/PR #154 est reclassé DONE avec ses preuves de merge/deploy/attestation.
+- Ajout des vagues W1→W4, maintenance et conditional, ainsi que des Task Blueprints couvrant tout le travail restant.
+- Chaque blueprint encode dépendances, Integration Slot, stratégie existing-first, autorités, resource/collision scopes, readiness, gates, RED/GREEN, régression, DONE et handoff.
+- Les blueprints sont explicitement planning-only : `createsRuntimeTask=false`; Governed Task Queue/Session/Lock Service restent les autorités runtime.
+- W2 est déjà programmé pour les trois READ manquants `github_get_commits`, `github_get_tree`, `github_get_required_checks`.
+- Lots destructifs, WRITE enforce, SSH fallback, extra server WRITE, C1 activation et Stablecoin app deploy restent explicitement gated/deferred.
+
 ## 2026-09-24 — Universal Agent Coordination — attestation terminale
 
 - PR #154 fusionnée au merge exact `ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4`.

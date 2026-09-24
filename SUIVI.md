@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-09-24 — Program Backlog V2 — lancement W1 post-UAC
+
+- Baseline observée avant le chantier : `main=ebc7443513627450643d46c8e676b795cc3aa03a`, UAC-01..24 terminal.
+- Décision utilisateur : programmer à l'avance l'ensemble des chantiers/lots/tâches futures afin qu'un agent puisse reprendre de manière autonome, tout en conservant la Governed Task Queue comme seule autorité runtime.
+- Existing-first : extension du seul `docs/governance/program-backlog-convergence.json`; aucun nouveau registre de tâches, queue, session manager, claim store ou lock service.
+- TDD RED `3ba4baff4130e1682d05a71d76e7c72bd294f7b7`, MCP CI #1860 / run `36031235310` : 7 échecs ciblés Program Backlog V2; les 616 tests précédents sont restés verts.
+- GREEN candidat : schema V2, vagues W1/W2/W3/W4 + maintenance/conditional, Task Blueprints non exécutables, dépendances, readiness/gates, collision domains, autorités, tests et DONE; UAC devient provenance DONE.
+- Premier lot planning-ready : `TB-W1-01`. Toute matérialisation runtime exige reobservation Task Queue/Session/locks et ne peut jamais être déclenchée par heartbeat/stale.
+- NEXT_ACTION : valider le GREEN exact-head, self-review du graphe/programme, ouvrir une PR et fusionner uniquement si CI/revue exact-head sont vertes.
+
 ## 2026-09-24 — Universal Agent Coordination — terminal merge/deploy/attestation
 
 - PR #154 fusionnée sous garde exact-head avec merge commit `ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4`; candidate head fusionné `9100ab750472124d0a7b696f37b1f56e687f63ca`.
