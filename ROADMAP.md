@@ -507,11 +507,6 @@ W1 EXIT
   machine-readable task blueprints + dependency/readiness graph
         ↓
 W2 CAPACITÉS GITHUB COMPLÉMENTAIRES
-  GWC-0..17 ↔ current main
-  AF-01..36 ↔ preuves actuelles
-  OD-01..12 ↔ DECISIONS_LOG/current main
-  task-registry statique ↔ autorités runtime
-        ↓
   github_get_commits
   github_get_tree
   github_get_required_checks
