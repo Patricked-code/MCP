@@ -17,7 +17,7 @@ export const AgentCoordinationObservationSchema = z.object({
     status: BoundedId
   }).strict().nullable(),
   claim: z.object({
-    claimId: BoundedId,
+    claimId: BoundedId.nullable(),
     status: z.enum(['ACTIVE', 'RELEASED']),
     collisionDomains: z.array(BoundedId).max(100)
   }).strict().nullable(),
@@ -124,7 +124,10 @@ export function buildAgentCoordinationSnapshot(
     taskStatus: input.task?.status ?? null,
     claimId: input.claim?.claimId ?? null,
     claimStatus,
-    collisionDomains: [...new Set(input.claim?.collisionDomains ?? [])].sort(),
+    collisionDomains: [...new Set([
+      ...(input.claim?.collisionDomains ?? []),
+      ...input.locks.map((lock) => lock.collisionDomain)
+    ])].sort(),
     liveness,
     heartbeatLastSeenAt: input.heartbeat?.lastSeenAt ?? null,
     releaseAllowedByLiveness: false,

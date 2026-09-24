@@ -71,7 +71,11 @@
 - MCP CI #1843 / run `36027183893` = SUCCESS exact-head sur `c747f9d6f58fcebe0f123fd32c2c4197c892b8b6`; UAC-19 validé avec typecheck/build/docs/governance/GWC/secrets/read-only/whitespace tous verts.
 - UAC-20 réconcilie uniquement les projections documentaires : `CHANGELOG.md` décrit le delta fonctionnel UAC, `DECISIONS_LOG.md` fixe les invariants liveness/ownership/supervision existing-first, et `TASKS.md` référence PR #154 comme chantier GitHub non-runtime sans inventer de `TASK-*`.
 - Le snapshot `docs/governance/program-backlog-convergence.json` reste une projection historique datée de sa génération; il n'est pas réécrit artificiellement pour simuler une autorité live. PB-UAC continue d'indiquer PR #154 comme Integration Slot unique.
-- NEXT_ACTION : UAC-21 — exécuter/attester la non-régression complète exact-head après cette réconciliation documentaire, puis UAC-22 self-review et merge readiness.
+- MCP CI #1845 / run `36027431353` = SUCCESS exact-head sur `35476f46ad140069d9b8634d9d89318cd990da9a`; UAC-21 full non-régression validé, tous gates verts.
+- UAC-22 self-review : deux incohérences résiduelles reproduites en RED sur `2bc3a3c3e9aea1a70c2b9d15171a53c8a603a999` par MCP CI #1847 / run `36027602685` : (1) `claimId` restait obligatoire dans le contrat universel malgré l'absence de claim store; (2) `collisionDomains` du snapshot universel omettait les domaines de locks.
+- GREEN candidat backward-compatible : `claimId` devient nullable sans casser les anciens IDs fournis; `collisionDomains` agrège et déduplique désormais les scopes Task/claim et lock. Aucune nouvelle autorité, aucune mutation.
+- Aucun review GitHub ni thread non résolu observé sur PR #154 avant cette correction; la protection `main` n'est pas lisible par l'intégration, donc les gates GitHub seront laissés à GitHub/merge endpoint plutôt qu'inférés.
+- NEXT_ACTION : valider les deux corrections UAC-22 exact-head, réobserver reviews/threads/main/mergeability, puis rendre la PR ready et fusionner uniquement si tous les gates restent verts.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
