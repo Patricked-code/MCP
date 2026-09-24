@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 1,
-  "projectionId": "program-backlog-convergence-20260923",
+  "schemaVersion": 2,
+  "projectionId": "program-backlog-convergence-v2-20260924",
   "repository": "Patricked-code/MCP",
-  "observedMainSha": "cda7610e1dcd5bc56511f0b42f372f68058ca2fb",
-  "generatedAt": "2026-09-23T01:31:00+02:00",
+  "observedMainSha": "ebc7443513627450643d46c8e676b795cc3aa03a",
+  "generatedAt": "2026-09-24T17:05:00Z",
   "authority": {
     "kind": "DERIVED_NON_EXECUTABLE_PROJECTION",
     "createsRuntimeTasks": false,
@@ -73,15 +73,15 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 4,
+      "DONE": 6,
       "KNOWN_NOT_ANALYZED": 9,
-      "PARTIALLY_IMPLEMENTED": 5,
+      "PARTIALLY_IMPLEMENTED": 4,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
       "DEFERRED": 3,
-      "READY": 1,
-      "ACTIVE": 1,
-      "NEEDS_RECONCILIATION": 4
+      "READY": 2,
+      "ACTIVE": 0,
+      "NEEDS_RECONCILIATION": 3
     }
   },
   "sourceCoverage": {
@@ -1708,7 +1708,7 @@
     {
       "id": "PB-GITHUB-FIRST-PROGRAM",
       "title": "GitHub-first Operational Continuity residual program",
-      "disposition": "PARTIALLY_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "github-first.continuity-program",
       "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
       "existingAuthorities": [
@@ -1719,7 +1719,7 @@
       "dependsOn": [
         "PB-FOUNDATIONS-DONE"
       ],
-      "nextAction": "Treat the core as delivered and execute only explicitly remaining transport/evidence deltas.",
+      "nextAction": "Core GitHub-first continuity is delivered. Reuse OIDC read-only evidence and bounded write workflows; residual fallbacks/writes remain separate work items.",
       "subtasks": [
         "Keep GitHub as preferred control plane",
         "Use read-only OIDC evidence before bridge escalation",
@@ -1933,7 +1933,7 @@
     {
       "id": "PB-UAC",
       "title": "Universal Agent Coordination / heartbeat and claim observability",
-      "disposition": "ACTIVE",
+      "disposition": "DONE",
       "integrationSlot": "coordination.universal",
       "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
       "existingAuthorities": [
@@ -1945,7 +1945,7 @@
       "dependsOn": [
         "PB-FOUNDATIONS-DONE"
       ],
-      "nextAction": "Continue PR #154 from its exact head; do not duplicate its 24 UAC work items elsewhere.",
+      "nextAction": "No reimplementation. Reuse UAC Current State supervision and coordination invariants; reopen only for a new requirement with new evidence.",
       "subtasks": [
         "UAC-01 inventory authorities",
         "UAC-02 read-only contract",
@@ -1962,15 +1962,18 @@
       "externalWork": {
         "pullRequest": 154,
         "branch": "mcp/universal-agent-coordination-20260923",
-        "observedHeadSha": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+        "candidateHeadSha": "9100ab750472124d0a7b696f37b1f56e687f63ca",
+        "mergeCommit": "ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4",
+        "terminalDocumentationPullRequest": 168,
+        "terminalDocumentationMergeCommit": "ebc7443513627450643d46c8e676b795cc3aa03a",
         "plan": "docs/governance/universal-agent-coordination-plan.md",
-        "state": "ACTIVE_EXTERNAL_WORK"
+        "state": "MERGED_DEPLOYED_ATTESTED"
       }
     },
     {
       "id": "PB-GWC-RECONCILE",
       "title": "GWC-0..17 implementation-state convergence",
-      "disposition": "NEEDS_RECONCILIATION",
+      "disposition": "READY",
       "integrationSlot": "governance.gwc-blueprint-convergence",
       "implementationMode": "RECONCILE_ONLY",
       "existingAuthorities": [
@@ -1979,7 +1982,7 @@
         "DECISIONS_LOG"
       ],
       "dependsOn": [],
-      "nextAction": "Classify each blueprint against current main; never replay the candidate design as a block.",
+      "nextAction": "Start W1 from current main: reconcile GWC-0..17 implementation state against integrated PR #95 and post-UAC main before creating any implementation task.",
       "subtasks": [
         "Map each GWC blueprint to current implementation evidence",
         "Identify only residual implementation deltas",
@@ -2120,6 +2123,3785 @@
         "Never wholesale merge/rebase/cherry-pick stale branches",
         "Historical intent cannot override current architecture"
       ]
+    }
+  ],
+  "executionModel": {
+    "kind": "VERSIONED_PROGRAM_PLAN",
+    "runtimeTaskAuthority": "Governed Task Queue",
+    "runtimeSessionAuthority": "Governed Session",
+    "runtimeCollisionAuthorities": [
+      "Governed Task Queue",
+      "Governed Lock Service"
+    ],
+    "automaticRuntimeTaskCreation": false,
+    "materializationPolicy": "Task blueprints are planning-only. A runtime task may be materialized or claimed only after live authority reobservation, dependency/readiness verification, collision checks and applicable governance.",
+    "existingFirstOrder": [
+      "REUSE",
+      "WRAP",
+      "GENERALIZE",
+      "EXTEND",
+      "NEW"
+    ],
+    "waves": [
+      {
+        "id": "W1",
+        "title": "Program State Convergence",
+        "purpose": "Reconcile post-UAC planning knowledge against current main and live authorities before new feature work.",
+        "parallelism": "BOUNDED_BY_COLLISION_DOMAIN"
+      },
+      {
+        "id": "W2",
+        "title": "GitHub Control Plane READ Complements",
+        "purpose": "Add the three proven-missing bounded GitHub READ capabilities.",
+        "parallelism": "PARALLEL_AFTER_W1_IF_SCOPES_DO_NOT_COLLIDE"
+      },
+      {
+        "id": "W3",
+        "title": "Governed Connection, Resolution, Governance and Provisioning",
+        "purpose": "Complete the product chain from client evidence through governed provisioning using current authorities.",
+        "parallelism": "DEPENDENCY_AND_COLLISION_GATED"
+      },
+      {
+        "id": "W4",
+        "title": "Observability and Certification",
+        "purpose": "Complete presence, tracing, monitoring, dashboards and client certifications.",
+        "parallelism": "DEPENDENCY_AND_COLLISION_GATED"
+      },
+      {
+        "id": "MAINTENANCE",
+        "title": "Separated Maintenance",
+        "purpose": "Maintenance that must not be coupled to feature delivery.",
+        "parallelism": "SEPARATE_PR"
+      },
+      {
+        "id": "CONDITIONAL",
+        "title": "Explicitly Gated / Deferred Capabilities",
+        "purpose": "Capabilities that require a concrete need or explicit human/governance gate before implementation.",
+        "parallelism": "NO_AUTO_PROMOTION"
+      }
+    ],
+    "planningSource": "GitHub main versioned derived projection",
+    "readinessPolicy": {
+      "READY": "Planning-eligible only; live Task Queue/Session/locks/main must still be reobserved before runtime materialization.",
+      "BLOCKED": "Re-evaluate after all dependsOn blueprints are completed and checkpointed.",
+      "DEFERRED": "Never auto-promote; requires a concrete proven need and every explicit gate.",
+      "CONDITIONAL": "Never auto-promote; requires all explicit human/governance gates.",
+      "completionRule": "A blueprint completion updates/checkpoints evidence first, then only direct dependents are re-evaluated.",
+      "noRuntimeSideEffect": true
+    }
+  },
+  "agentHandoffContract": {
+    "steps": [
+      "READ_AUTHORITIES",
+      "REOBSERVE_MAIN",
+      "REOBSERVE_RUNTIME_STATE",
+      "LOAD_PROGRAM_PLAN",
+      "SELECT_READY_BLUEPRINT",
+      "CHECK_COLLISIONS",
+      "MATERIALIZE_OR_CLAIM_RUNTIME_TASK",
+      "EXECUTE_RED_GREEN_REGRESSION_REVIEW",
+      "MERGE_EXACT_HEAD",
+      "GOVERNED_DEPLOY_IF_REQUIRED",
+      "ATTEST",
+      "CHECKPOINT_HANDOFF"
+    ],
+    "heartbeatCanReleaseOwnership": false,
+    "staleCanTriggerTakeover": false,
+    "headMovedRule": "HEAD_MOVED -> STOP_WRITE -> REOBSERVE -> RECONCILE -> VERIFY -> WRITE",
+    "runtimeMaterializationRule": "Blueprint readiness is necessary but never sufficient; Governed Task Queue/Session/locks remain live authority.",
+    "noParallelAuthority": true
+  },
+  "taskBlueprints": [
+    {
+      "id": "TB-W1-01",
+      "workItemId": "PB-GWC-RECONCILE",
+      "waveId": "W1",
+      "lotId": "W1.1",
+      "title": "Freeze post-UAC reconciliation baseline",
+      "objective": "Reobserve current main and freeze the exact post-UAC planning baseline before classifying residual work.",
+      "integrationSlot": "governance.gwc-blueprint-convergence",
+      "integrationStrategy": "RECONCILE_ONLY",
+      "dependsOn": [],
+      "existingAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main implementation",
+        "DECISIONS_LOG"
+      ],
+      "resourceScopes": [
+        "planning:program-baseline"
+      ],
+      "collisionDomains": [
+        "planning:program-baseline"
+      ],
+      "readAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main implementation",
+        "DECISIONS_LOG"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "READY",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "All currently known prerequisites are satisfied by the versioned plan; live authorities still require reobservation before materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for W1.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "W1.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W1-02",
+      "workItemId": "PB-GWC-RECONCILE",
+      "waveId": "W1",
+      "lotId": "W1.2",
+      "title": "Reconcile GWC-0..17 implementation state",
+      "objective": "Classify every GWC blueprint against integrated PR #95/current main as DONE, absorbed, residual or superseded without replaying candidate work.",
+      "integrationSlot": "governance.gwc-blueprint-convergence",
+      "integrationStrategy": "RECONCILE_ONLY",
+      "dependsOn": [
+        "TB-W1-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main implementation",
+        "DECISIONS_LOG"
+      ],
+      "resourceScopes": [
+        "planning:gwc-blueprints"
+      ],
+      "collisionDomains": [
+        "planning:gwc-blueprints"
+      ],
+      "readAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main implementation",
+        "DECISIONS_LOG"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for W1.2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "W1.2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W1-03",
+      "workItemId": "PB-AF-RECONCILE",
+      "waveId": "W1",
+      "lotId": "W1.3",
+      "title": "Reconcile AF-01..36 findings",
+      "objective": "Re-evaluate each finding against current main evidence and route only reproducible residuals to existing Integration Slots.",
+      "integrationSlot": "governance.gwc-findings-reconciliation",
+      "integrationStrategy": "RECONCILE_ONLY",
+      "dependsOn": [
+        "TB-W1-02"
+      ],
+      "existingAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main",
+        "DECISIONS_LOG",
+        "tests"
+      ],
+      "resourceScopes": [
+        "planning:gwc-findings"
+      ],
+      "collisionDomains": [
+        "planning:gwc-findings"
+      ],
+      "readAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main",
+        "DECISIONS_LOG",
+        "tests"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for W1.3 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "W1.3 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W1-04",
+      "workItemId": "PB-OD-RECONCILE",
+      "waveId": "W1",
+      "lotId": "W1.4",
+      "title": "Reconcile OD-01..12 decisions",
+      "objective": "Align machine decision states with DECISIONS_LOG and implemented behavior; retain only genuinely open decisions.",
+      "integrationSlot": "governance.open-decisions-reconciliation",
+      "integrationStrategy": "RECONCILE_ONLY",
+      "dependsOn": [
+        "TB-W1-02"
+      ],
+      "existingAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "DECISIONS_LOG",
+        "current main"
+      ],
+      "resourceScopes": [
+        "planning:open-decisions"
+      ],
+      "collisionDomains": [
+        "planning:open-decisions"
+      ],
+      "readAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "DECISIONS_LOG",
+        "current main"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for W1.4 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "W1.4 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W1-05",
+      "workItemId": "PB-TASKREG-RECONCILE",
+      "waveId": "W1",
+      "lotId": "W1.5",
+      "title": "Reconcile static task-registry drift",
+      "objective": "Compare static task registry records with delivered/runtime authority evidence without recreating runtime tasks.",
+      "integrationSlot": "governance.task-registry-reconciliation",
+      "integrationStrategy": "RECONCILE_ONLY",
+      "dependsOn": [
+        "TB-W1-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/task-registry.json",
+        "Operational Memory",
+        "Governed Task Queue"
+      ],
+      "resourceScopes": [
+        "planning:task-registry"
+      ],
+      "collisionDomains": [
+        "planning:task-registry"
+      ],
+      "readAuthorities": [
+        ".mcp/task-registry.json",
+        "Operational Memory",
+        "Governed Task Queue"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for W1.5 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "W1.5 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W1-06",
+      "workItemId": "PB-GWC-RECONCILE",
+      "waveId": "W1",
+      "lotId": "W1.6",
+      "title": "Reconcile ROADMAP/TODO/TASKS/backlog projections",
+      "objective": "Make all versioned planning surfaces describe the same current-first residual program and close stale UAC/OIDC/C2/G3 prose.",
+      "integrationSlot": "governance.gwc-blueprint-convergence",
+      "integrationStrategy": "RECONCILE_ONLY",
+      "dependsOn": [
+        "TB-W1-02",
+        "TB-W1-03",
+        "TB-W1-04",
+        "TB-W1-05"
+      ],
+      "existingAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main implementation",
+        "DECISIONS_LOG"
+      ],
+      "resourceScopes": [
+        "planning:canonical-docs"
+      ],
+      "collisionDomains": [
+        "planning:canonical-docs"
+      ],
+      "readAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main implementation",
+        "DECISIONS_LOG"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for W1.6 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "W1.6 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W1-07",
+      "workItemId": "PB-GWC-RECONCILE",
+      "waveId": "W1",
+      "lotId": "W1.7",
+      "title": "Publish W1 readiness handoff",
+      "objective": "Validate the dependency graph and expose the first genuinely executable post-convergence blueprints without creating runtime tasks.",
+      "integrationSlot": "governance.gwc-blueprint-convergence",
+      "integrationStrategy": "RECONCILE_ONLY",
+      "dependsOn": [
+        "TB-W1-06"
+      ],
+      "existingAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main implementation",
+        "DECISIONS_LOG"
+      ],
+      "resourceScopes": [
+        "planning:readiness-gate"
+      ],
+      "collisionDomains": [
+        "planning:readiness-gate"
+      ],
+      "readAuthorities": [
+        ".mcp/gwc-evolution-design.json",
+        "current main implementation",
+        "DECISIONS_LOG"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for W1.7 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "W1.7 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W2-01",
+      "workItemId": "PB-GITHUB-READ",
+      "waveId": "W2",
+      "lotId": "W2.R1",
+      "title": "Add github_get_commits",
+      "objective": "Add bounded paginated commit history READ using the existing GitHub control-plane authority.",
+      "integrationSlot": "github.control-plane.read-complements",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W1-07"
+      ],
+      "existingAuthorities": [
+        "src/tools/githubControlPlaneRead.ts",
+        "governed GitHub context/rulesets"
+      ],
+      "resourceScopes": [
+        "github:read:commits"
+      ],
+      "collisionDomains": [
+        "github:read:commits"
+      ],
+      "readAuthorities": [
+        "src/tools/githubControlPlaneRead.ts",
+        "governed GitHub context/rulesets"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [
+        "github_get_commits"
+      ],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves github_get_commits is absent while existing GitHub READ tools remain green."
+      ],
+      "greenAcceptance": [
+        "Bounded pagination/output; no write authority; no second cache or GitHub authority."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W2-02",
+      "workItemId": "PB-GITHUB-READ",
+      "waveId": "W2",
+      "lotId": "W2.R2",
+      "title": "Add github_get_tree",
+      "objective": "Add bounded tree READ with explicit truncation and without blob-content expansion.",
+      "integrationSlot": "github.control-plane.read-complements",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W1-07"
+      ],
+      "existingAuthorities": [
+        "src/tools/githubControlPlaneRead.ts",
+        "governed GitHub context/rulesets"
+      ],
+      "resourceScopes": [
+        "github:read:tree"
+      ],
+      "collisionDomains": [
+        "github:read:tree"
+      ],
+      "readAuthorities": [
+        "src/tools/githubControlPlaneRead.ts",
+        "governed GitHub context/rulesets"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [
+        "github_get_tree"
+      ],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves github_get_tree is absent and requires bounded tree semantics."
+      ],
+      "greenAcceptance": [
+        "Tree entries are bounded; truncation explicit; blob contents not implicitly fetched."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W2-03",
+      "workItemId": "PB-GITHUB-READ",
+      "waveId": "W2",
+      "lotId": "W2.R3",
+      "title": "Add github_get_required_checks",
+      "objective": "Expose required checks by reusing current ruleset/check evidence rather than adding a second policy authority.",
+      "integrationSlot": "github.control-plane.read-complements",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W1-07"
+      ],
+      "existingAuthorities": [
+        "src/tools/githubControlPlaneRead.ts",
+        "governed GitHub context/rulesets"
+      ],
+      "resourceScopes": [
+        "github:read:required-checks"
+      ],
+      "collisionDomains": [
+        "github:read:required-checks"
+      ],
+      "readAuthorities": [
+        "src/tools/githubControlPlaneRead.ts",
+        "governed GitHub context/rulesets"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [
+        "github_get_required_checks"
+      ],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves required-check derivation is not exposed as a bounded READ capability."
+      ],
+      "greenAcceptance": [
+        "Required checks are derived from current GitHub rules/check authority and are head/branch scoped."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-A22-01",
+      "workItemId": "PB-A2.2",
+      "waveId": "W3",
+      "lotId": "A2.2.1",
+      "title": "Inventory verifiable client evidence",
+      "objective": "Identify only client identity/conversation/workspace evidence that is actually supplied and verifiable.",
+      "integrationSlot": "connection.client-evidence",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W2-01",
+        "TB-W2-02",
+        "TB-W2-03"
+      ],
+      "existingAuthorities": [
+        "ConnectionContext",
+        "Governed Session",
+        "RequestIdentity"
+      ],
+      "resourceScopes": [
+        "connection:client-evidence:inventory"
+      ],
+      "collisionDomains": [
+        "connection:client-evidence:inventory"
+      ],
+      "readAuthorities": [
+        "ConnectionContext",
+        "Governed Session",
+        "RequestIdentity"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for A2.2.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "A2.2.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-A22-02",
+      "workItemId": "PB-A2.2",
+      "waveId": "W3",
+      "lotId": "A2.2.2",
+      "title": "Extend ConnectionContext with bounded client evidence",
+      "objective": "Persist only proven sanitizable client references; preserve UNKNOWN when proof is absent.",
+      "integrationSlot": "connection.client-evidence",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-A22-01"
+      ],
+      "existingAuthorities": [
+        "ConnectionContext",
+        "Governed Session",
+        "RequestIdentity"
+      ],
+      "resourceScopes": [
+        "connection:client-evidence"
+      ],
+      "collisionDomains": [
+        "connection:client-evidence"
+      ],
+      "readAuthorities": [
+        "ConnectionContext",
+        "Governed Session",
+        "RequestIdentity"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for A2.2.2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "A2.2.2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-A3-01",
+      "workItemId": "PB-A3",
+      "waveId": "W3",
+      "lotId": "A3.1",
+      "title": "Inventory OAuth correlation surfaces",
+      "objective": "Map OAuth entry, callback, bootstrap and Event Journal correlation already present before adding fields.",
+      "integrationSlot": "connection.oauth-attempt-correlation",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W2-01",
+        "TB-W2-02",
+        "TB-W2-03"
+      ],
+      "existingAuthorities": [
+        "OAuth flow",
+        "Governed Session bootstrap",
+        "Operational Event Journal"
+      ],
+      "resourceScopes": [
+        "connection:oauth-correlation:inventory"
+      ],
+      "collisionDomains": [
+        "connection:oauth-correlation:inventory"
+      ],
+      "readAuthorities": [
+        "OAuth flow",
+        "Governed Session bootstrap",
+        "Operational Event Journal"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for A3.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "A3.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-A3-02",
+      "workItemId": "PB-A3",
+      "waveId": "W3",
+      "lotId": "A3.2",
+      "title": "Add bounded OAuth attempt correlation",
+      "objective": "Correlate auth entry→callback→bootstrap without persisting raw state/code/token material.",
+      "integrationSlot": "connection.oauth-attempt-correlation",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-A3-01"
+      ],
+      "existingAuthorities": [
+        "OAuth flow",
+        "Governed Session bootstrap",
+        "Operational Event Journal"
+      ],
+      "resourceScopes": [
+        "connection:oauth-attempt-correlation"
+      ],
+      "collisionDomains": [
+        "connection:oauth-attempt-correlation"
+      ],
+      "readAuthorities": [
+        "OAuth flow",
+        "Governed Session bootstrap",
+        "Operational Event Journal"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for A3.2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "A3.2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-B3-01",
+      "workItemId": "PB-B3",
+      "waveId": "W3",
+      "lotId": "B3.1",
+      "title": "Reconcile remaining MCP-only target consumers",
+      "objective": "Inventory current TargetScope adoption after PR #95 and identify only residual single-repository assumptions.",
+      "integrationSlot": "context.multi-repository",
+      "integrationStrategy": "GENERALIZE",
+      "dependsOn": [
+        "TB-W2-01",
+        "TB-W2-02",
+        "TB-W2-03"
+      ],
+      "existingAuthorities": [
+        "TargetScope",
+        "Governed Context",
+        "GitRegistry V2",
+        "GWC-10"
+      ],
+      "resourceScopes": [
+        "context:multi-repository:inventory"
+      ],
+      "collisionDomains": [
+        "context:multi-repository:inventory"
+      ],
+      "readAuthorities": [
+        "TargetScope",
+        "Governed Context",
+        "GitRegistry V2",
+        "GWC-10"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for B3.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "B3.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-B3-02",
+      "workItemId": "PB-B3",
+      "waveId": "W3",
+      "lotId": "B3.2",
+      "title": "Generalize remaining consumers to TargetScope",
+      "objective": "Propagate validated repositoryId/mappingId/TargetScope additively while preserving historical single-repository records.",
+      "integrationSlot": "context.multi-repository",
+      "integrationStrategy": "GENERALIZE",
+      "dependsOn": [
+        "TB-W3-B3-01"
+      ],
+      "existingAuthorities": [
+        "TargetScope",
+        "Governed Context",
+        "GitRegistry V2",
+        "GWC-10"
+      ],
+      "resourceScopes": [
+        "context:multi-repository"
+      ],
+      "collisionDomains": [
+        "context:multi-repository"
+      ],
+      "readAuthorities": [
+        "TargetScope",
+        "Governed Context",
+        "GitRegistry V2",
+        "GWC-10"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for B3.2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "B3.2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-C1-01",
+      "workItemId": "PB-C1",
+      "waveId": "W3",
+      "lotId": "C1.1",
+      "title": "Refresh GitRegistry V2 verification evidence",
+      "objective": "Reobserve current mappings and verify only remaining credential/realPath/remote/domain/migration readiness evidence.",
+      "integrationSlot": "project.gitregistry-verification",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W2-01",
+        "TB-W2-02",
+        "TB-W2-03"
+      ],
+      "existingAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "Project Resolution"
+      ],
+      "resourceScopes": [
+        "project:gitregistry-verification"
+      ],
+      "collisionDomains": [
+        "project:gitregistry-verification"
+      ],
+      "readAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "Project Resolution"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for C1.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "C1.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-C3-01",
+      "workItemId": "PB-C345",
+      "waveId": "W3",
+      "lotId": "C3",
+      "title": "Integrate Server Resolution",
+      "objective": "Reuse GWC server resolver to produce bounded S1/S2/realPath project reality from GitRegistry/server-map/live evidence.",
+      "integrationSlot": "project.server-runtime-domain-resolution",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-B3-02",
+        "TB-W3-C1-01"
+      ],
+      "existingAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "server/runtime/domain GWC resolvers"
+      ],
+      "resourceScopes": [
+        "project:server-resolution"
+      ],
+      "collisionDomains": [
+        "project:server-resolution"
+      ],
+      "readAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "server/runtime/domain GWC resolvers"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for C3 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "C3 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-C4-01",
+      "workItemId": "PB-C345",
+      "waveId": "W3",
+      "lotId": "C4",
+      "title": "Integrate Runtime/Container/Proxy Resolution",
+      "objective": "Compose runtime, container, port and reverse-proxy evidence without creating runtime resources.",
+      "integrationSlot": "project.server-runtime-domain-resolution",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-C3-01"
+      ],
+      "existingAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "server/runtime/domain GWC resolvers"
+      ],
+      "resourceScopes": [
+        "project:runtime-resolution"
+      ],
+      "collisionDomains": [
+        "project:runtime-resolution"
+      ],
+      "readAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "server/runtime/domain GWC resolvers"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for C4 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "C4 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-C5-01",
+      "workItemId": "PB-C345",
+      "waveId": "W3",
+      "lotId": "C5",
+      "title": "Integrate Domain Resolution",
+      "objective": "Resolve existing governed domains and historical-vhost exclusions with freshness and fail-closed ambiguity.",
+      "integrationSlot": "project.server-runtime-domain-resolution",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-C3-01"
+      ],
+      "existingAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "server/runtime/domain GWC resolvers"
+      ],
+      "resourceScopes": [
+        "project:domain-resolution"
+      ],
+      "collisionDomains": [
+        "project:domain-resolution"
+      ],
+      "readAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "server/runtime/domain GWC resolvers"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for C5 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "C5 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-C345-02",
+      "workItemId": "PB-C345",
+      "waveId": "W3",
+      "lotId": "C345.E2E",
+      "title": "Project reality acceptance",
+      "objective": "Prove repository→project→server→runtime→domain composition across MCP and multi-repository fixtures.",
+      "integrationSlot": "project.server-runtime-domain-resolution",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-C4-01",
+        "TB-W3-C5-01"
+      ],
+      "existingAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "server/runtime/domain GWC resolvers"
+      ],
+      "resourceScopes": [
+        "project:reality-e2e"
+      ],
+      "collisionDomains": [
+        "project:reality-e2e"
+      ],
+      "readAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "server/runtime/domain GWC resolvers"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for C345.E2E is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "C345.E2E satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-D1-01",
+      "workItemId": "PB-D1",
+      "waveId": "W3",
+      "lotId": "D1",
+      "title": "Existing Governance Inheritance",
+      "objective": "Inherit project-scoped branch/PR/test/deploy/lock/write constraints from existing authorities without copying them.",
+      "integrationSlot": "governance.inheritance",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-C345-02"
+      ],
+      "existingAuthorities": [
+        "Governed Context",
+        "project bindings",
+        "branch/PR rules",
+        "Scoped WRITE Gate"
+      ],
+      "resourceScopes": [
+        "governance:inheritance"
+      ],
+      "collisionDomains": [
+        "governance:inheritance"
+      ],
+      "readAuthorities": [
+        "Governed Context",
+        "project bindings",
+        "branch/PR rules",
+        "Scoped WRITE Gate"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for D1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "D1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-D2-01",
+      "workItemId": "PB-D2",
+      "waveId": "W3",
+      "lotId": "D2",
+      "title": "Effective Capabilities",
+      "objective": "Project effective capabilities as the fail-closed intersection of identity, GitHub, project reality, governance and WRITE gate.",
+      "integrationSlot": "governance.effective-capabilities",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-D1-01"
+      ],
+      "existingAuthorities": [
+        "Governed Context",
+        "OAuth identity",
+        "GitHub context",
+        "GitRegistry",
+        "Scoped WRITE Gate"
+      ],
+      "resourceScopes": [
+        "governance:effective-capabilities"
+      ],
+      "collisionDomains": [
+        "governance:effective-capabilities"
+      ],
+      "readAuthorities": [
+        "Governed Context",
+        "OAuth identity",
+        "GitHub context",
+        "GitRegistry",
+        "Scoped WRITE Gate"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for D2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "D2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-D3-01",
+      "workItemId": "PB-D3",
+      "waveId": "W3",
+      "lotId": "D3",
+      "title": "Bootstrap Receipt Enrichment",
+      "objective": "Extend the existing receipt with proven connection/repository/project/mapping references and provenance, never secrets.",
+      "integrationSlot": "bootstrap.receipt-enrichment",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        "Bootstrap Receipt",
+        "ConnectionContext",
+        "Governed Session"
+      ],
+      "resourceScopes": [
+        "bootstrap:receipt-enrichment"
+      ],
+      "collisionDomains": [
+        "bootstrap:receipt-enrichment"
+      ],
+      "readAuthorities": [
+        "Bootstrap Receipt",
+        "ConnectionContext",
+        "Governed Session"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for D3 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "D3 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-E1-01",
+      "workItemId": "PB-E",
+      "waveId": "W3",
+      "lotId": "E1",
+      "title": "Missing-context Detection",
+      "objective": "Compute exactly which required inputs remain missing after automatic governed resolution.",
+      "integrationSlot": "context.guided-completion",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-D3-01"
+      ],
+      "existingAuthorities": [
+        "existing /login /git /github surfaces",
+        "Governed Context",
+        "Bootstrap Receipt"
+      ],
+      "resourceScopes": [
+        "context:guided-completion:detection"
+      ],
+      "collisionDomains": [
+        "context:guided-completion:detection"
+      ],
+      "readAuthorities": [
+        "existing /login /git /github surfaces",
+        "Governed Context",
+        "Bootstrap Receipt"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for E1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "E1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-E2-01",
+      "workItemId": "PB-E",
+      "waveId": "W3",
+      "lotId": "E2",
+      "title": "Context Completion Wizard",
+      "objective": "Extend existing /login /git /github surfaces to request only genuinely missing context.",
+      "integrationSlot": "context.guided-completion",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-E1-01"
+      ],
+      "existingAuthorities": [
+        "existing /login /git /github surfaces",
+        "Governed Context",
+        "Bootstrap Receipt"
+      ],
+      "resourceScopes": [
+        "context:guided-completion:wizard"
+      ],
+      "collisionDomains": [
+        "context:guided-completion:wizard"
+      ],
+      "readAuthorities": [
+        "existing /login /git /github surfaces",
+        "Governed Context",
+        "Bootstrap Receipt"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for E2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "E2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-E3-01",
+      "workItemId": "PB-E",
+      "waveId": "W3",
+      "lotId": "E3",
+      "title": "Consent and Validation",
+      "objective": "Require explicit consent and authority validation before any creation or mutation of unknown resources.",
+      "integrationSlot": "context.guided-completion",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-E2-01"
+      ],
+      "existingAuthorities": [
+        "existing /login /git /github surfaces",
+        "Governed Context",
+        "Bootstrap Receipt"
+      ],
+      "resourceScopes": [
+        "context:guided-completion:consent"
+      ],
+      "collisionDomains": [
+        "context:guided-completion:consent"
+      ],
+      "readAuthorities": [
+        "existing /login /git /github surfaces",
+        "Governed Context",
+        "Bootstrap Receipt"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for E3 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "E3 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-F-01",
+      "workItemId": "PB-F",
+      "waveId": "W3",
+      "lotId": "F.0",
+      "title": "Provisioning capability decomposition",
+      "objective": "Inventory resource-specific bounded write primitives and define provisioning contracts before adding any new primitive.",
+      "integrationSlot": "provisioning.governed",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-E3-01",
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "resourceScopes": [
+        "provisioning:design"
+      ],
+      "collisionDomains": [
+        "provisioning:design"
+      ],
+      "readAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for F.0 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "F.0 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-F-02",
+      "workItemId": "PB-F",
+      "waveId": "W3",
+      "lotId": "F.1",
+      "title": "Repository provisioning",
+      "objective": "Compose explicit consent/governance with the bounded create-repository primitive to provision a repository idempotently.",
+      "integrationSlot": "provisioning.governed",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-F-01",
+        "TB-W3-ADMIN-01"
+      ],
+      "existingAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "resourceScopes": [
+        "provisioning:repository"
+      ],
+      "collisionDomains": [
+        "provisioning:repository"
+      ],
+      "readAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle bounded writes"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for F.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "F.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-F-03",
+      "workItemId": "PB-F",
+      "waveId": "W3",
+      "lotId": "F.2",
+      "title": "Project/runtime provisioning",
+      "objective": "Provision only genuinely absent project/runtime resources with exact target, backup/rollback and health gates.",
+      "integrationSlot": "provisioning.governed",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-F-01"
+      ],
+      "existingAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "resourceScopes": [
+        "provisioning:project-runtime"
+      ],
+      "collisionDomains": [
+        "provisioning:project-runtime"
+      ],
+      "readAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "deployment governance"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for F.2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "F.2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-F-04",
+      "workItemId": "PB-F",
+      "waveId": "W3",
+      "lotId": "F.3",
+      "title": "Domain/binding provisioning",
+      "objective": "Create or bind a domain only when absent, consented and validated against existing domain/project authorities.",
+      "integrationSlot": "provisioning.governed",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-F-01"
+      ],
+      "existingAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "resourceScopes": [
+        "provisioning:domain-binding"
+      ],
+      "collisionDomains": [
+        "provisioning:domain-binding"
+      ],
+      "readAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "domain/project bounded writes"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for F.3 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "F.3 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-F-05",
+      "workItemId": "PB-F",
+      "waveId": "W3",
+      "lotId": "F.E2E",
+      "title": "Provisioning acceptance and rollback",
+      "objective": "Prove idempotency, exact-target safety, rollback and no-op behavior across supported resource types.",
+      "integrationSlot": "provisioning.governed",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-F-02",
+        "TB-W3-F-03",
+        "TB-W3-F-04"
+      ],
+      "existingAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "resourceScopes": [
+        "provisioning:e2e"
+      ],
+      "collisionDomains": [
+        "provisioning:e2e"
+      ],
+      "readAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for F.E2E is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "F.E2E satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-PRW-01",
+      "workItemId": "PB-GITHUB-PRWRITE",
+      "waveId": "W3",
+      "lotId": "GH.PR.1",
+      "title": "Exact-head request-review",
+      "objective": "Add bounded reviewer request with exact-head reobservation and explicit reviewer targets.",
+      "integrationSlot": "github.pr-write.extensions",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        "githubLifecycle.ts",
+        "Scoped WRITE Gate"
+      ],
+      "resourceScopes": [
+        "github:pr-write:review-request"
+      ],
+      "collisionDomains": [
+        "github:pr-write:review-request"
+      ],
+      "readAuthorities": [
+        "githubLifecycle.ts",
+        "Scoped WRITE Gate"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub PR lifecycle"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for GH.PR.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "GH.PR.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-PRW-02",
+      "workItemId": "PB-GITHUB-PRWRITE",
+      "waveId": "W3",
+      "lotId": "GH.PR.2",
+      "title": "Reduced PR metadata update",
+      "objective": "Split safe PR metadata update from dangerous lifecycle/base/close mutations and protect it with exact-head semantics.",
+      "integrationSlot": "github.pr-write.extensions",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        "githubLifecycle.ts",
+        "Scoped WRITE Gate"
+      ],
+      "resourceScopes": [
+        "github:pr-write:metadata"
+      ],
+      "collisionDomains": [
+        "github:pr-write:metadata"
+      ],
+      "readAuthorities": [
+        "githubLifecycle.ts",
+        "Scoped WRITE Gate"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub PR lifecycle"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for GH.PR.2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "GH.PR.2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-ADMIN-01",
+      "workItemId": "PB-GITHUB-ADMIN",
+      "waveId": "W3",
+      "lotId": "GH.ADMIN.1",
+      "title": "Governed private repository creation",
+      "objective": "Implement private-only, org-bounded, idempotent repository creation as a provisioning primitive with no implicit side effects.",
+      "integrationSlot": "github.admin.create-repository",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-F-01",
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "existingAuthorities": [
+        "GitHub lifecycle transport",
+        "Scoped WRITE Gate"
+      ],
+      "resourceScopes": [
+        "github:admin:create-repository"
+      ],
+      "collisionDomains": [
+        "github:admin:create-repository"
+      ],
+      "readAuthorities": [
+        "GitHub lifecycle transport",
+        "Scoped WRITE Gate"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub organization repository create"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for GH.ADMIN.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "GH.ADMIN.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-G1-01",
+      "workItemId": "PB-G12",
+      "waveId": "W4",
+      "lotId": "G1",
+      "title": "Client Presence",
+      "objective": "Record bounded real-client observation evidence separately from agent liveness and synthetic health.",
+      "integrationSlot": "presence.client-two-clock",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-A22-02"
+      ],
+      "existingAuthorities": [
+        "ConnectionContext",
+        "Governed Session",
+        "Operational Event Journal"
+      ],
+      "resourceScopes": [
+        "presence:client-observation"
+      ],
+      "collisionDomains": [
+        "presence:client-observation"
+      ],
+      "readAuthorities": [
+        "ConnectionContext",
+        "Governed Session",
+        "Operational Event Journal"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for G1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "G1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-G2-01",
+      "workItemId": "PB-G12",
+      "waveId": "W4",
+      "lotId": "G2",
+      "title": "Two-clock Presence",
+      "objective": "Separate lastClientObservedAt from lastSyntheticProbeAt and derive bounded presence states.",
+      "integrationSlot": "presence.client-two-clock",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W4-G1-01"
+      ],
+      "existingAuthorities": [
+        "ConnectionContext",
+        "Governed Session",
+        "Operational Event Journal"
+      ],
+      "resourceScopes": [
+        "presence:two-clock"
+      ],
+      "collisionDomains": [
+        "presence:two-clock"
+      ],
+      "readAuthorities": [
+        "ConnectionContext",
+        "Governed Session",
+        "Operational Event Journal"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for G2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "G2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-G3-01",
+      "workItemId": "PB-G3",
+      "waveId": "W4",
+      "lotId": "G3.RESIDUAL",
+      "title": "Tool Surface Attestation residual",
+      "objective": "Reconcile delivered G3 V1 with current clients and add only missing server-vs-client observation evidence.",
+      "integrationSlot": "attestation.tool-surface",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W4-G2-01"
+      ],
+      "existingAuthorities": [
+        "Current State tool catalog",
+        "G3 attestation contracts",
+        "client-observed evidence"
+      ],
+      "resourceScopes": [
+        "attestation:tool-surface"
+      ],
+      "collisionDomains": [
+        "attestation:tool-surface"
+      ],
+      "readAuthorities": [
+        "Current State tool catalog",
+        "G3 attestation contracts",
+        "client-observed evidence"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for G3.RESIDUAL is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "G3.RESIDUAL satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-H-01",
+      "workItemId": "PB-H",
+      "waveId": "W4",
+      "lotId": "H.1",
+      "title": "Trace evidence inventory",
+      "objective": "Inventory existing request/audit/correlation identifiers and map gaps without creating a second tracing store.",
+      "integrationSlot": "observability.end-to-end-tracing",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-D3-01"
+      ],
+      "existingAuthorities": [
+        "Operational Event Journal",
+        "request/tool audit",
+        "upstream clients"
+      ],
+      "resourceScopes": [
+        "observability:tracing:inventory"
+      ],
+      "collisionDomains": [
+        "observability:tracing:inventory"
+      ],
+      "readAuthorities": [
+        "Operational Event Journal",
+        "request/tool audit",
+        "upstream clients"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for H.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "H.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-H-02",
+      "workItemId": "PB-H",
+      "waveId": "W4",
+      "lotId": "H.2",
+      "title": "Bounded trace context",
+      "objective": "Define trace/request/span correlation with provenance and strict secret redaction.",
+      "integrationSlot": "observability.end-to-end-tracing",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W4-H-01"
+      ],
+      "existingAuthorities": [
+        "Operational Event Journal",
+        "request/tool audit",
+        "upstream clients"
+      ],
+      "resourceScopes": [
+        "observability:tracing:context"
+      ],
+      "collisionDomains": [
+        "observability:tracing:context"
+      ],
+      "readAuthorities": [
+        "Operational Event Journal",
+        "request/tool audit",
+        "upstream clients"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for H.2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "H.2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-H-03",
+      "workItemId": "PB-H",
+      "waveId": "W4",
+      "lotId": "H.3",
+      "title": "Event Journal trace integration",
+      "objective": "Trace client→auth→MCP→tool→governance→service→upstream→response in the existing Event Journal.",
+      "integrationSlot": "observability.end-to-end-tracing",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W4-H-02"
+      ],
+      "existingAuthorities": [
+        "Operational Event Journal",
+        "request/tool audit",
+        "upstream clients"
+      ],
+      "resourceScopes": [
+        "observability:end-to-end-tracing"
+      ],
+      "collisionDomains": [
+        "observability:end-to-end-tracing"
+      ],
+      "readAuthorities": [
+        "Operational Event Journal",
+        "request/tool audit",
+        "upstream clients"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for H.3 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "H.3 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-I1-01",
+      "workItemId": "PB-I",
+      "waveId": "W4",
+      "lotId": "I1",
+      "title": "Synthetic Monitor",
+      "objective": "Compose DNS/TLS/HTTP/MCP/tool/runtime canaries from existing read-only evidence without implying client presence.",
+      "integrationSlot": "observability.synthetic-monitoring",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W4-H-03",
+        "TB-W4-G2-01",
+        "TB-W4-G3-01"
+      ],
+      "existingAuthorities": [
+        "existing dashboard",
+        "health endpoints",
+        "read-only GitHub/OIDC probes",
+        "Live State"
+      ],
+      "resourceScopes": [
+        "observability:synthetic-monitoring"
+      ],
+      "collisionDomains": [
+        "observability:synthetic-monitoring"
+      ],
+      "readAuthorities": [
+        "existing dashboard",
+        "health endpoints",
+        "read-only GitHub/OIDC probes",
+        "Live State"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for I1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "I1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-I2-01",
+      "workItemId": "PB-I",
+      "waveId": "W4",
+      "lotId": "I2",
+      "title": "Connection-chain Dashboard",
+      "objective": "Project client→auth→session→GitHub→repo→project→server/runtime/domain with source/freshness provenance.",
+      "integrationSlot": "observability.synthetic-monitoring",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W4-I1-01"
+      ],
+      "existingAuthorities": [
+        "existing dashboard",
+        "health endpoints",
+        "read-only GitHub/OIDC probes",
+        "Live State"
+      ],
+      "resourceScopes": [
+        "observability:connection-dashboard"
+      ],
+      "collisionDomains": [
+        "observability:connection-dashboard"
+      ],
+      "readAuthorities": [
+        "existing dashboard",
+        "health endpoints",
+        "read-only GitHub/OIDC probes",
+        "Live State"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for I2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "I2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-I3-01",
+      "workItemId": "PB-I",
+      "waveId": "W4",
+      "lotId": "I3",
+      "title": "Layer-specific Alerts",
+      "objective": "Emit precise blockers/alerts per connection layer without direct server mutation.",
+      "integrationSlot": "observability.synthetic-monitoring",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W4-I2-01"
+      ],
+      "existingAuthorities": [
+        "existing dashboard",
+        "health endpoints",
+        "read-only GitHub/OIDC probes",
+        "Live State"
+      ],
+      "resourceScopes": [
+        "observability:alerts"
+      ],
+      "collisionDomains": [
+        "observability:alerts"
+      ],
+      "readAuthorities": [
+        "existing dashboard",
+        "health endpoints",
+        "read-only GitHub/OIDC probes",
+        "Live State"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for I3 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "I3 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-J1-01",
+      "workItemId": "PB-J12",
+      "waveId": "W4",
+      "lotId": "J1",
+      "title": "Claude certification",
+      "objective": "Run repeatable Claude bootstrap/resume/GitHub/tool/negative-path certification using only observable evidence.",
+      "integrationSlot": "certification.clients",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W4-I3-01",
+        "TB-W4-G3-01"
+      ],
+      "existingAuthorities": [
+        "client evidence",
+        "bootstrap",
+        "GitHub-first flow",
+        "tool attestation"
+      ],
+      "resourceScopes": [
+        "certification:claude"
+      ],
+      "collisionDomains": [
+        "certification:claude"
+      ],
+      "readAuthorities": [
+        "client evidence",
+        "bootstrap",
+        "GitHub-first flow",
+        "tool attestation"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for J1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "J1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-J2-01",
+      "workItemId": "PB-J12",
+      "waveId": "W4",
+      "lotId": "J2",
+      "title": "ChatGPT certification",
+      "objective": "Run repeatable ChatGPT GitHub-first/bootstrap/tool/negative-path certification without assuming control of client UI connector state.",
+      "integrationSlot": "certification.clients",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W4-I3-01",
+        "TB-W4-G3-01"
+      ],
+      "existingAuthorities": [
+        "client evidence",
+        "bootstrap",
+        "GitHub-first flow",
+        "tool attestation"
+      ],
+      "resourceScopes": [
+        "certification:chatgpt"
+      ],
+      "collisionDomains": [
+        "certification:chatgpt"
+      ],
+      "readAuthorities": [
+        "client evidence",
+        "bootstrap",
+        "GitHub-first flow",
+        "tool attestation"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for J2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "J2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-M-01",
+      "workItemId": "PB-J3",
+      "waveId": "MAINTENANCE",
+      "lotId": "J3",
+      "title": "GitHub Actions Node 24 maintenance",
+      "objective": "Inventory compatibility-mode actions and migrate maintained versions in a separate maintenance PR with unchanged semantics.",
+      "integrationSlot": "maintenance.github-actions-node24",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [],
+      "existingAuthorities": [
+        "GitHub Actions workflows"
+      ],
+      "resourceScopes": [
+        "maintenance:github-actions-node24"
+      ],
+      "collisionDomains": [
+        "maintenance:github-actions-node24"
+      ],
+      "readAuthorities": [
+        "GitHub Actions workflows"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "DEFERRED",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "SEPARATE_MAINTENANCE_WINDOW"
+        ],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for J3 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "J3 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-COND-C1-ACTIVATE",
+      "workItemId": "PB-C1",
+      "waveId": "CONDITIONAL",
+      "lotId": "C1.ACTIVATE",
+      "title": "GitRegistry V2 validated→active transition",
+      "objective": "Activate a mapping only after all credential/path/remote/domain/migration proofs, review and explicit authorization.",
+      "integrationSlot": "project.gitregistry-verification",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-C1-01",
+        "TB-W3-C345-02"
+      ],
+      "existingAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "Project Resolution"
+      ],
+      "resourceScopes": [
+        "project:gitregistry-activation"
+      ],
+      "collisionDomains": [
+        "project:gitregistry-activation"
+      ],
+      "readAuthorities": [
+        "GitRegistry V2",
+        ".mcp/server-map.json",
+        "Live State",
+        "Project Resolution"
+      ],
+      "writeAuthorities": [
+        "GitRegistry V2 governed mutation"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "CONDITIONAL",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "ALL_C1_EVIDENCE_PROVEN",
+          "EXPLICIT_ACTIVATION_AUTHORIZATION"
+        ],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for C1.ACTIVATE is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "C1.ACTIVATE satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-COND-J4",
+      "workItemId": "PB-J4",
+      "waveId": "CONDITIONAL",
+      "lotId": "J4",
+      "title": "WRITE gate shadow→enforce",
+      "objective": "Switch enforcement only after an explicit GO and demonstrated shadow/enforce parity with rollback.",
+      "integrationSlot": "governance.write-gate-enforcement",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        "Scoped WRITE Gate",
+        "governance decisions"
+      ],
+      "resourceScopes": [
+        "governance:write-gate-enforcement"
+      ],
+      "collisionDomains": [
+        "governance:write-gate-enforcement"
+      ],
+      "readAuthorities": [
+        "Scoped WRITE Gate",
+        "governance decisions"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate governance"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "CONDITIONAL",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "EXPLICIT_GO_WRITE_GATE_ENFORCE",
+          "SHADOW_ENFORCE_PARITY_PROVEN"
+        ],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for J4 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "J4 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-COND-SSH",
+      "workItemId": "PB-GITHUB-FIRST-FALLBACKS",
+      "waveId": "CONDITIONAL",
+      "lotId": "GF.SSH",
+      "title": "Optional read-only SSH fallback selection",
+      "objective": "Add/select SSH read-only fallback only if OIDC demonstrably cannot satisfy a required read-only operation.",
+      "integrationSlot": "github-first.optional-readonly-fallbacks",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W1-07"
+      ],
+      "existingAuthorities": [
+        "GitHub OIDC read-only evidence",
+        "server identities"
+      ],
+      "resourceScopes": [
+        "github-first:readonly-fallback"
+      ],
+      "collisionDomains": [
+        "github-first:readonly-fallback"
+      ],
+      "readAuthorities": [
+        "GitHub OIDC read-only evidence",
+        "server identities"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "DEFERRED",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "PROVEN_OIDC_COVERAGE_GAP"
+        ],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for GF.SSH is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "GF.SSH satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-COND-SERVER-WRITE",
+      "workItemId": "PB-GITHUB-FIRST-WRITE",
+      "waveId": "CONDITIONAL",
+      "lotId": "GF.WRITE",
+      "title": "Additional bounded server WRITE transport",
+      "objective": "Add one allowlisted server mutation only for a concrete proven need; never create arbitrary shell.",
+      "integrationSlot": "github-first.server-write-extensions",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        "bounded write workflows",
+        "Scoped WRITE Gate"
+      ],
+      "resourceScopes": [
+        "github-first:server-write"
+      ],
+      "collisionDomains": [
+        "github-first:server-write"
+      ],
+      "readAuthorities": [
+        "bounded write workflows",
+        "Scoped WRITE Gate"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "DEFERRED",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "CONCRETE_BOUNDED_OPERATION_REQUIRED",
+          "DEDICATED_IDENTITY_AND_ROLLBACK_DESIGN"
+        ],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for GF.WRITE is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "GF.WRITE satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-COND-GH-DELETE",
+      "workItemId": "PB-GITHUB-DESTRUCTIVE",
+      "waveId": "CONDITIONAL",
+      "lotId": "GH.DELETE",
+      "title": "Destructive GitHub operations",
+      "objective": "Design deletion-specific file/branch operations only for a concrete approved use case with irreversible-action safeguards.",
+      "integrationSlot": "github.destructive-writes",
+      "integrationStrategy": "NEW_JUSTIFIED",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        "GitHub tree/ref primitives",
+        "Scoped WRITE Gate"
+      ],
+      "resourceScopes": [
+        "github:destructive-writes"
+      ],
+      "collisionDomains": [
+        "github:destructive-writes"
+      ],
+      "readAuthorities": [
+        "GitHub tree/ref primitives",
+        "Scoped WRITE Gate"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub destructive mutation"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "DEFERRED",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "CONCRETE_DELETION_USE_CASE",
+          "DELETION_GOVERNANCE_APPROVED"
+        ],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for GH.DELETE is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "GH.DELETE satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-COND-STABLECOIN-DEPLOY",
+      "workItemId": "PB-STABLECOIN-APPDEPLOY",
+      "waveId": "CONDITIONAL",
+      "lotId": "STABLECOIN.APPDEPLOY",
+      "title": "Stablecoin application-changing deploy",
+      "objective": "Design build/restart/health/rollback only when a future Stablecoin delta actually changes application files.",
+      "integrationSlot": "deployment.stablecoin-application",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [],
+      "existingAuthorities": [
+        "Stablecoin bounded fast-forward",
+        "S2 deployment governance"
+      ],
+      "resourceScopes": [
+        "deployment:stablecoin-application"
+      ],
+      "collisionDomains": [
+        "deployment:stablecoin-application"
+      ],
+      "readAuthorities": [
+        "Stablecoin bounded fast-forward",
+        "S2 deployment governance"
+      ],
+      "writeAuthorities": [
+        "S2 deployment governance"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "CONDITIONAL",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "APPLICATION_DELTA_PRESENT",
+          "DEDICATED_DEPLOYMENT_REVIEW"
+        ],
+        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual delta for STABLECOIN.APPDEPLOY is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "greenAcceptance": [
+        "STABLECOIN.APPDEPLOY satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
     }
   ]
 }

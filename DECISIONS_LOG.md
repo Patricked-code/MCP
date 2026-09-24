@@ -1,5 +1,15 @@
 # DECISIONS_LOG.md
 
+## 2026-09-24 — Programmer tout le travail restant sans précréer les Tasks runtime
+
+Décision : le programme post-UAC est entièrement pré-découpé en vagues/lots/Task Blueprints dans l'unique projection versionnée `docs/governance/program-backlog-convergence.json`. Aucune deuxième Task Queue, aucun deuxième registre runtime et aucune branche par tâche ne sont créés.
+
+Un Task Blueprint décrit le travail futur mais n'est jamais un `GovernedTaskRecord`. Il peut devenir une tâche runtime uniquement après reobservation de `main`, Operational Memory, Governed Task Queue, Governed Session et Governed Lock Service, satisfaction des dépendances/readiness, contrôle des collision domains et application des gates de gouvernance.
+
+Ordonnancement : W1 convergence de connaissance post-UAC → W2 GitHub READ R1 → W3 continuité/résolution/gouvernance/provisioning → W4 observabilité/certification. J3 reste maintenance séparée. C1 activation, J4 enforce, fallbacks SSH, extra server WRITE, GitHub destructif et Stablecoin applicatif restent conditionnels/deferred et ne sont jamais auto-promus.
+
+UAC conserve ses invariants : heartbeat/liveness ne possède pas l'ownership; STALE/UNKNOWN ne libèrent/transfèrent jamais une Task; un agent reobserve le HEAD et les autorités avant claim/mutation; HEAD_MOVED impose STOP_WRITE→RECONCILE.
+
 ## 2026-09-24 — Universal Agent Coordination reste une projection, jamais une nouvelle autorité
 
 Décision : PR #154 / Integration Slot `coordination.universal` généralise les autorités existantes selon `REUSE → WRAP → GENERALIZE → EXTEND → NEW`. Governed Session reste l'autorité de session/liveness, Governed Task Queue reste l'autorité de Task/ownership, Governed Lock Service reste l'autorité d'exclusion, GitHub reste l'autorité de HEAD/PR/checks et les checkpoints existants restent la continuité opérationnelle.
