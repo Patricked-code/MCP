@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "registryVersion": 2,
-  "generatedAt": "2026-08-22T00:00:00.000Z",
-  "registryDigest": "42bc4a14fe2afb5edd33eafac299dfbd7f5c89e8d9c76f3c37061429ea1e292b",
+  "registryVersion": 3,
+  "generatedAt": "2026-09-24T18:47:00.000Z",
+  "registryDigest": "350497e736a4af0c29fa93a14099b0ea72bc0135b214fb9317ba53e3ace02bc1",
   "tasks": [
     {
       "taskId": "TASK-20260813-004",
@@ -14,7 +14,9 @@
       "sequence": 1,
       "status": "DONE",
       "dependencies": [],
-      "resourceScopes": ["repository:Patricked-code/MCP"],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP"
+      ],
       "blockers": [],
       "nextAction": null,
       "requestDigest": "6afddcbbf3aa489509914d5e1f2e2f488b48486207534b8f116e4f8986d11ab4"
@@ -27,11 +29,15 @@
       "summary": "Derive current state, issue bootstrap receipts and orchestrate governed work in FIFO order.",
       "priority": 80,
       "sequence": 2,
-      "status": "READY",
-      "dependencies": ["TASK-20260813-004"],
-      "resourceScopes": ["repository:Patricked-code/MCP"],
+      "status": "DONE",
+      "dependencies": [
+        "TASK-20260813-004"
+      ],
+      "resourceScopes": [
+        "repository:Patricked-code/MCP"
+      ],
       "blockers": [],
-      "nextAction": "Claim the task, validate the exact PR head, merge, attest exact-SHA deployment and reconcile canonical documentation.",
+      "nextAction": null,
       "requestDigest": "13ba5345de8b8e23c0b3f6a1fb00c779b4fb52f1667573417e623e3700c6852f"
     }
   ]

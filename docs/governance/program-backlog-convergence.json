@@ -3,7 +3,7 @@
   "projectionId": "program-backlog-convergence-v2-20260924",
   "repository": "Patricked-code/MCP",
   "observedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
-  "generatedAt": "2026-09-24T17:53:00Z",
+  "generatedAt": "2026-09-24T18:47:00Z",
   "authority": {
     "kind": "DERIVED_NON_EXECUTABLE_PROJECTION",
     "createsRuntimeTasks": false,
@@ -2025,7 +2025,7 @@
     {
       "id": "PB-AF-RECONCILE",
       "title": "Remaining GWC finding classification",
-      "disposition": "NEEDS_RECONCILIATION",
+      "disposition": "READY",
       "integrationSlot": "governance.gwc-findings-reconciliation",
       "implementationMode": "RECONCILE_ONLY",
       "existingAuthorities": [
@@ -2053,7 +2053,7 @@
     {
       "id": "PB-OD-RECONCILE",
       "title": "OD-01..12 decision-state convergence",
-      "disposition": "NEEDS_RECONCILIATION",
+      "disposition": "READY",
       "integrationSlot": "governance.open-decisions-reconciliation",
       "implementationMode": "RECONCILE_ONLY",
       "existingAuthorities": [
@@ -2079,7 +2079,7 @@
     {
       "id": "PB-TASKREG-RECONCILE",
       "title": "Static task-registry drift reconciliation",
-      "disposition": "NEEDS_RECONCILIATION",
+      "disposition": "DONE",
       "integrationSlot": "governance.task-registry-reconciliation",
       "implementationMode": "RECONCILE_ONLY",
       "existingAuthorities": [
@@ -2088,7 +2088,7 @@
         "Governed Task Queue"
       ],
       "dependsOn": [],
-      "nextAction": "Reconcile stale static registry records against runtime authorities; do not mutate runtime tasks from documentation alone.",
+      "nextAction": "No runtime rewrite. Preserve seed as terminal history and use Governed Task Queue as live authority.",
       "subtasks": [
         "Verify TASK-20260822-001 READY record against delivered PR49/52 lineage and runtime truth",
         "Keep TASK-20260813-004 DONE evidence",
@@ -2321,10 +2321,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "READY",
-        "autoPromotable": true,
+        "state": "DONE",
+        "autoPromotable": false,
         "requiredExplicitGates": [],
-        "reason": "Direct dependency TB-W1-01 is DONE; live authorities and collisions must still be reobserved before any runtime materialization."
+        "reason": "TB-W1-02 reconciled against current main with exact versioned evidence."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -2391,10 +2391,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "TB-W1-02 is DONE; current finding/decision reconciliation may proceed after exact-head/collision reobservation."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -2459,10 +2459,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "TB-W1-02 is DONE; current finding/decision reconciliation may proceed after exact-head/collision reobservation."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -2527,10 +2527,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "READY",
-        "autoPromotable": true,
+        "state": "DONE",
+        "autoPromotable": false,
         "requiredExplicitGates": [],
-        "reason": "Direct dependency TB-W1-01 is DONE; live authorities and collisions must still be reobserved before any runtime materialization."
+        "reason": "TB-W1-05 reconciled against current main with exact versioned evidence."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5959,5 +5959,50 @@
       "TB-W1-02",
       "TB-W1-05"
     ]
+  },
+  "w1Reconciliation": {
+    "gwc": {
+      "blueprint": "TB-W1-02",
+      "status": "DONE",
+      "observedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
+      "blueprintsReconciled": 18,
+      "historicalReplayAllowed": false,
+      "residualRouting": {
+        "GWC-6": [
+          "TB-W3-C3-01"
+        ],
+        "GWC-7": [
+          "TB-W3-C4-01"
+        ],
+        "GWC-8": [
+          "TB-W3-C5-01"
+        ],
+        "GWC-9": [
+          "TB-W3-D1-01",
+          "TB-W3-D2-01",
+          "TB-W3-D3-01"
+        ],
+        "GWC-10": [
+          "TB-W3-B3-01",
+          "TB-W3-B3-02"
+        ],
+        "GWC-12": [
+          "TB-W2-01",
+          "TB-W2-02",
+          "TB-W2-03",
+          "TB-W3-PRW-01",
+          "TB-W3-PRW-02",
+          "TB-W3-ADMIN-01"
+        ]
+      }
+    },
+    "taskRegistry": {
+      "blueprint": "TB-W1-05",
+      "status": "DONE",
+      "registryVersion": 3,
+      "staleSeedRetired": "TASK-20260822-001",
+      "runtimeAuthorityMutated": false,
+      "rule": "Static seed reconciliation affects fresh initialization only; existing live Governed Task Queue records are not rewritten."
+    }
   }
 }

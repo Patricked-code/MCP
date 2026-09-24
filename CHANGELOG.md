@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-09-24 — W1 GWC/task-registry reconciliation
+
+- Ajout d'une disposition post-intégration current-first aux 18 GWC sans altérer leur provenance PRECODE.
+- Les capacités déjà intégrées restent acquises; les seuls résiduels connus sont routés vers les blueprints W2/W3 au lieu de rejouer GWC-0..17.
+- Seed task-registry version 3 : `TASK-20260822-001` terminalisé à DONE pour les nouvelles initialisations, sans mutation de la Task Queue live.
+- W1-03/W1-04 deviennent les prochains lots planning-ready.
+
 ## 2026-09-24 — W1.1 post-UAC baseline freeze
 
 - `TB-W1-01` figé sur `main@d30b06f4c8b72b4888f32397be207798a56b8bb8` avec CI #1867, Governed Deploy #70 et preuves OIDC #172/#173.

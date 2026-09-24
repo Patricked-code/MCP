@@ -1,5 +1,16 @@
 # SUIVI.md
 
+## 2026-09-24 — W1.2/W1.5 — GWC + static task-registry reconciled
+
+- RED `4309473f8e5b0235756b36b964cf40b426ff1a56`, MCP CI #1872 : 2 échecs ciblés seulement — GWC sans disposition post-intégration et `TASK-20260822-001` seed encore READY.
+- W1-02 : les 18 GWC disposent de checkpoints historiques PASS_WITH_EVIDENCE et leurs modules/tests existent dans le main observé. Aucun GWC-0..17 n'est rejoué.
+- GWC sans delta direct = DONE ; GWC-6/7/8/9/10/12 = ABSORBED avec résiduels explicitement routés vers les Task Blueprints W2/W3 actuels.
+- GWC-6→C3, GWC-7→C4, GWC-8→C5, GWC-9→D1/D2/D3, GWC-10→B3, GWC-12→GitHub READ R1 + PR-WRITE/admin bornés.
+- W1-05 : `.mcp/task-registry.json` passe en registryVersion 3 et le seed historique `TASK-20260822-001` devient DONE/nextAction=null. Cela évite qu'un store neuf ressuscite le bootstrap livré.
+- Cette modification du seed ne réécrit aucune Governed Task live existante : `initializeSeed()` ignore les IDs déjà présents et la Governed Task Queue reste l'autorité runtime.
+- `TB-W1-02 = DONE`, `TB-W1-05 = DONE`; `TB-W1-03` (AF-01..36) et `TB-W1-04` (OD-01..12) deviennent planning-ready. W1-06 et W2 restent bloqués.
+- NEXT_ACTION : réobserver HEAD puis exécuter TB-W1-03 + TB-W1-04 sur la même PR #174; ne créer aucune implémentation pour un finding/décision déjà absorbé.
+
 ## 2026-09-24 — W1.1 / TB-W1-01 — baseline post-UAC figée
 
 - Baseline current-first : `main=d30b06f4c8b72b4888f32397be207798a56b8bb8`.

@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-09-24 — GWC intégré est une capacité acquise, pas un backlog à rejouer
+
+Décision : GWC-0..17 reste une architecture/implémentation historique intégrée. La réconciliation W1 lui ajoute uniquement une disposition post-intégration et route les extensions résiduelles vers les Task Blueprints current-first. Aucun agent ne doit transformer un ancien `BLUEPRINT_ONLY` PRECODE en nouvelle implémentation runtime.
+
+Le static task-registry est un seed d'initialisation et non l'autorité live. Une tâche historique livrée peut être terminalisée dans une nouvelle version du seed pour éviter sa résurrection sur un store neuf; cette opération ne modifie jamais un record déjà présent dans la Governed Task Queue.
+
 ## 2026-09-24 — Toute reprise agent post-UAC commence par Program Backlog V2
 
 Décision : `CLAUDE.md` doit conduire explicitement toute nouvelle session à lire `SUIVI.md` et `docs/governance/program-backlog-convergence.json`, réobserver les autorités pertinentes puis sélectionner uniquement un blueprint `READY`. Un Task Blueprint n'est jamais une permission ni une Task runtime ; la Governed Task Queue, la Governed Session et le Governed Lock Service restent les autorités d'exécution et de collision.

@@ -44,7 +44,19 @@
       "findings": [],
       "contractRefs": [],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     },
     {
       "blueprintId": "GWC-1",
@@ -63,7 +75,19 @@
         "GW-01"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     },
     {
       "blueprintId": "GWC-2",
@@ -81,7 +105,19 @@
       "findings": [],
       "contractRefs": [],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     },
     {
       "blueprintId": "GWC-3",
@@ -102,7 +138,19 @@
         "GW-06"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     },
     {
       "blueprintId": "GWC-4",
@@ -127,7 +175,19 @@
         "GW-17"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     },
     {
       "blueprintId": "GWC-5",
@@ -154,7 +214,19 @@
         "GW-20"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     },
     {
       "blueprintId": "GWC-6",
@@ -173,7 +245,21 @@
         "GW-07"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "ABSORBED",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [
+          "TB-W3-C3-01"
+        ],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated; only the listed current-first residual extensions may proceed."
+      }
     },
     {
       "blueprintId": "GWC-7",
@@ -192,7 +278,21 @@
         "GW-08"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "ABSORBED",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [
+          "TB-W3-C4-01"
+        ],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated; only the listed current-first residual extensions may proceed."
+      }
     },
     {
       "blueprintId": "GWC-8",
@@ -212,7 +312,21 @@
         "GW-09"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "ABSORBED",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [
+          "TB-W3-C5-01"
+        ],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated; only the listed current-first residual extensions may proceed."
+      }
     },
     {
       "blueprintId": "GWC-9",
@@ -235,7 +349,23 @@
         "GW-11"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "ABSORBED",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [
+          "TB-W3-D1-01",
+          "TB-W3-D2-01",
+          "TB-W3-D3-01"
+        ],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated; only the listed current-first residual extensions may proceed."
+      }
     },
     {
       "blueprintId": "GWC-10",
@@ -260,7 +390,22 @@
       "findings": [],
       "contractRefs": [],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "ABSORBED",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [
+          "TB-W3-B3-01",
+          "TB-W3-B3-02"
+        ],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated; only the listed current-first residual extensions may proceed."
+      }
     },
     {
       "blueprintId": "GWC-11",
@@ -282,7 +427,19 @@
         "GW-23"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     },
     {
       "blueprintId": "GWC-12",
@@ -300,7 +457,26 @@
       "findings": [],
       "contractRefs": [],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "ABSORBED",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [
+          "TB-W2-01",
+          "TB-W2-02",
+          "TB-W2-03",
+          "TB-W3-PRW-01",
+          "TB-W3-PRW-02",
+          "TB-W3-ADMIN-01"
+        ],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated; only the listed current-first residual extensions may proceed."
+      }
     },
     {
       "blueprintId": "GWC-13",
@@ -329,7 +505,19 @@
         "GW-33"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     },
     {
       "blueprintId": "GWC-14",
@@ -362,7 +550,19 @@
         "GW-43"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     },
     {
       "blueprintId": "GWC-15",
@@ -398,7 +598,19 @@
         "GW-57"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     },
     {
       "blueprintId": "GWC-16",
@@ -434,7 +646,19 @@
         "GW-72"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     },
     {
       "blueprintId": "GWC-17",
@@ -454,7 +678,31 @@
         "GW-73"
       ],
       "materialization": "BLUEPRINT_ONLY",
-      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK."
+      "runtimeTaskPolicy": "A future materializer reconciles this blueprint against the live Governed Task Queue and may produce 0, 1 or several runtime Tasks, only where classification is NEW_TASK.",
+      "postIntegrationReconciliation": {
+        "disposition": "DONE",
+        "historicalCandidateReplayAllowed": false,
+        "integratedMainReuseRequired": true,
+        "residualTaskBlueprints": [],
+        "evidence": {
+          "pr95Merged": true,
+          "canonicalCheckpointPresent": true,
+          "currentMainContainsImplementation": true
+        },
+        "note": "Historical GWC capability is integrated and retained as acquired behavior; no replay or duplicate implementation."
+      }
     }
-  ]
+  ],
+  "postIntegrationReconciliation": {
+    "observedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
+    "observedAt": "2026-09-24T18:47:00Z",
+    "historicalProgram": "PR #95 PRECODE/candidate integration",
+    "rule": "Preserve immutable PRECODE design/history. Current execution reuses integrated main; historical candidate work is never replayed.",
+    "dispositions": [
+      "DONE",
+      "ABSORBED",
+      "RESIDUAL",
+      "SUPERSEDED"
+    ]
+  }
 }

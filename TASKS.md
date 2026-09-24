@@ -39,7 +39,7 @@ Règles : aucun takeover depuis heartbeat, aucun bridge interactif quand GitHub/
 
 Le programme restant est pré-découpé dans `docs/governance/program-backlog-convergence.json` V2. Ce registre reste une projection **non exécutable** et ne remplace jamais la Governed Task Queue.
 
-- [ ] W1 — Program State Convergence : `TB-W1-01` DONE ; `TB-W1-02` et `TB-W1-05` planning-ready ; `TB-W1-03/04/06/07` encore dépendants ;
+- [ ] W1 — Program State Convergence : `TB-W1-01/02/05` DONE ; `TB-W1-03` et `TB-W1-04` planning-ready ; `TB-W1-06/07` encore dépendants ;
 - [ ] W2 — GitHub READ R1 : commits, tree, required checks ;
 - [ ] W3 — A2.2/A3, B3/C1/C3-C5, D1-D3, E1-E3, F et writes GitHub bornés ;
 - [ ] W4 — G1-G3, H, I1-I3, J1/J2 ;
