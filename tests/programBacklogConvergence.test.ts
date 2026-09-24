@@ -417,3 +417,41 @@ test('TB-W1-06 reconciles all current planning surfaces without rewriting histor
     false
   );
 });
+
+
+test('TB-W1-07 publishes the W1 readiness handoff and unlocks only GitHub READ R1', async () => {
+  const [projectionRaw, todo, tasks, roadmap] = await Promise.all([
+    readFile('docs/governance/program-backlog-convergence.json', 'utf8'),
+    readFile('TODO.md', 'utf8'),
+    readFile('TASKS.md', 'utf8'),
+    readFile('ROADMAP.md', 'utf8')
+  ]);
+  const projection = JSON.parse(projectionRaw);
+  const handoff = projection.w1ReadinessHandoff;
+
+  assert.equal(handoff?.status, 'PASS_WITH_EVIDENCE');
+  assert.equal(handoff?.baselineMainSha, 'd30b06f4c8b72b4888f32397be207798a56b8bb8');
+  assert.equal(handoff?.validatedPreHandoffHead, '0ca92d34ca5ba9f8e5656205d4c340614ac5736b');
+  assert.deepEqual(handoff?.validatedCiRuns, [36046502620, 36046505705]);
+  assert.equal(handoff?.runtimeTasksCreatedByW1, 0);
+
+  const blueprints = projection.taskBlueprints ?? [];
+  const byId = new Map(blueprints.map((blueprint: any) => [blueprint.id, blueprint]));
+  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'DONE');
+  for (const id of ['TB-W2-01', 'TB-W2-02', 'TB-W2-03']) {
+    assert.equal(byId.get(id)?.readiness?.state, 'READY', `${id} should be READY after W1 handoff`);
+    assert.deepEqual(byId.get(id)?.writeAuthorities, []);
+  }
+  assert.equal(
+    blueprints.some((blueprint: any) => blueprint.waveId === 'W3' && blueprint.readiness?.state === 'READY'),
+    false
+  );
+  assert.equal(projection.executionModel?.currentWave, 'W2');
+
+  assert.match(roadmap, /W1 COMPLETE/);
+  assert.match(roadmap, /W2 READY/);
+  assert.match(todo, /W1 Program State Convergence.*DONE/s);
+  assert.match(todo, /W2 GitHub READ.*planning-ready/s);
+  assert.match(tasks, /\[x\] W1 — Program State Convergence/);
+  assert.match(tasks, /W2 .*planning-ready/);
+});
