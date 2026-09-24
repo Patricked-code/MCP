@@ -754,3 +754,63 @@ test('UAC-13 stale heartbeat E2E keeps authoritative Task ownership intact', asy
   assert.equal(JSON.stringify(session), beforeSession);
   assert.equal(JSON.stringify(task), beforeTask);
 });
+
+
+test('UAC-14 unknown heartbeat E2E is fail-closed and never changes Task ownership', async () => {
+  const { projectGovernedSessionLivenessForCoordination } = await import(
+    '../src/governedWorkflow/adapters/session.js'
+  );
+  const { projectGovernedTaskClaimForCoordination } = await import(
+    '../src/governedWorkflow/adapters/task.js'
+  );
+
+  const governedSessionId = '77777777-7777-4777-8777-777777777777';
+  const task = {
+    schemaVersion: 1 as const,
+    taskId: 'TASK-20260924-155',
+    repository: 'Patricked-code/MCP',
+    intentKey: 'coordination.universal',
+    title: 'Universal coordination unknown liveness',
+    summary: 'Task authority stays owned when heartbeat evidence is unavailable',
+    priority: 100,
+    sequence: 155,
+    status: 'IN_PROGRESS' as const,
+    dependencies: [],
+    resourceScopes: ['coordination.universal'],
+    ownerGovernedSessionId: governedSessionId,
+    workBranch: 'mcp/universal-agent-coordination-20260923',
+    pullRequestNumber: 154,
+    observedHeadSha: 'f'.repeat(40),
+    runtimeRevision: null,
+    blockers: [],
+    nextAction: 'reobserve governed session evidence',
+    source: { kind: 'agent' as const, requestDigest: 'f'.repeat(64) },
+    createdAt: '2026-09-24T15:00:00Z',
+    updatedAt: '2026-09-24T15:10:00Z',
+    taskRevision: 23
+  };
+  const beforeTask = JSON.stringify(task);
+
+  const liveness = projectGovernedSessionLivenessForCoordination(
+    null,
+    '2026-09-24T15:11:00Z',
+    120
+  );
+  const ownership = projectGovernedTaskClaimForCoordination(task);
+
+  assert.equal(liveness.liveness, 'UNKNOWN');
+  assert.equal(liveness.heartbeatLastSeenAt, null);
+  assert.equal(liveness.releaseAllowedByLiveness, false);
+  assert.equal(liveness.transferAllowedByLiveness, false);
+  assert.equal(liveness.authorizationInferred, false);
+  assert.equal(liveness.mutationPerformed, false);
+
+  assert.equal(ownership.ownershipState, 'OWNED');
+  assert.equal(ownership.ownerGovernedSessionId, governedSessionId);
+  assert.equal(ownership.releaseInferred, false);
+  assert.equal(ownership.transferAllowed, false);
+  assert.equal(ownership.takeoverAllowed, false);
+  assert.equal(ownership.authorizationInferred, false);
+  assert.equal(ownership.mutationPerformed, false);
+  assert.equal(JSON.stringify(task), beforeTask);
+});

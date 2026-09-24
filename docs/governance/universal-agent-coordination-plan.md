@@ -62,7 +62,7 @@ This inventory is descriptive and read-only. It identifies the existing owner fo
 | UAC-10 | GitHub-first read-only exposure | GREEN | existing `GITHUB_ACTION_READONLY_EVIDENCE` fallback + non-mutating workflow reused; live OIDC issues #162/#163 succeeded with SSH fallback skipped |
 | UAC-11 | Historical PRECODE compatibility adapter | GREEN | historical CandidateSession/Claim/WorkItem projected read-only; reactivation/takeover/write/authorization all forbidden |
 | UAC-12 | Multi-agent collision E2E | GREEN | existing Task Queue resource-scope + Governed Lock conflict paths fail closed; foreign owner cannot transition; no ownership transfer inferred |
-| UAC-13 | Stale heartbeat E2E | TODO | stale agent retains claim until authoritative release/recovery |
+| UAC-13 | Stale heartbeat E2E | GREEN | exact-head E2E proves STALE liveness leaves authoritative Task ownership unchanged; no release/transfer/takeover |
 | UAC-14 | Unknown heartbeat E2E | TODO | fail-closed; no ownership inference |
 | UAC-15 | Reconnect/resume E2E | TODO | same agent resumes compatible task/claim |
 | UAC-16 | HEAD_MOVED reconciliation E2E | TODO | stale execution reconciles before further mutation |

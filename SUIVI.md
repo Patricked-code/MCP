@@ -57,7 +57,10 @@
 - `HEAD_MOVED` traité avant UAC-12 : `main` avait avancé à `327379a782a7f13940f0edf302dced833b326dca`. Réconciliation non destructive à deux parents `3c6fc979055922fbb24ea48a86ecbf1516b96d3c`, sans force-push; PR #154 = 27 commits devant `main`, 0 derrière.
 - MCP CI #1831 / run `36025562064` = SUCCESS exact-head sur `3c6fc979055922fbb24ea48a86ecbf1516b96d3c`; typecheck/build/docs/governance/GWC/secrets/read-only/whitespace tous verts après réconciliation.
 - UAC-12 = REUSE/GREEN sans nouveau mécanisme : `GovernedTaskQueue.reconcileIntent()` refuse un `active_resource_scope_conflict` ou `active_lock_scope_conflict`; `claimNextTask()` refuse `TASK_RESOURCE_CONFLICT`/`TASK_LOCK_CONFLICT`; `transitionTask()` refuse `TASK_NOT_OWNED_BY_SESSION`; les tests existants prouvent qu'un conflit de lock ne modifie aucun store et qu'aucun second writer ne reçoit l'ownership.
-- NEXT_ACTION : UAC-13 — prouver E2E qu'un heartbeat STALE ne libère ni ne réattribue une tâche/claim encore autoritativement owned; réutiliser Session + Task Queue + projection liveness existantes, sans nouveau store.
+- UAC-13 test-only : projection Session `STALE` + Task `IN_PROGRESS` encore owned par la même Governed Session; ownership observé avant/après identique, `releaseAllowedByLiveness=false`, `transferAllowedByLiveness=false`, `releaseInferred=false`, `takeoverAllowed=false`; aucune mutation runtime.
+- MCP CI #1835 / run `36026030682` = SUCCESS exact-head sur `a07c55badfd8f9b84a2e3ce5e59811c1775f7060`; UAC-13 validé sans régression.
+- UAC-14 vérification ouverte en test-only : liveness `UNKNOWN` par absence de session heartbeat observable doit rester fail-closed et ne jamais modifier l'ownership Task existant.
+- NEXT_ACTION : valider UAC-14 exact-head; si vert, auditer UAC-15 reconnect/resume contre `GovernedSessionService.resumeSession()` / `autoResumeCompatibleSession()` avant toute nouvelle implémentation.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
