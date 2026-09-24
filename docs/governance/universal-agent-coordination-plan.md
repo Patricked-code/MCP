@@ -1,8 +1,9 @@
 # Universal Agent Coordination — execution plan
 
-Status: ACTIVE — PR #154
+Status: COMPLETE — PR #154 merged, deployed and exact-SHA attested
 Baseline reconciled: `main@327379a782a7f13940f0edf302dced833b326dca` via non-destructive merge commit `3c6fc979055922fbb24ea48a86ecbf1516b96d3c` (previous reconciliation `c967a068a683033580b091405a5e8b7a837d4ecb`)
-Branch: `mcp/universal-agent-coordination-20260923`
+Historical implementation branch: `mcp/universal-agent-coordination-20260923`
+Terminal documentation branch: `mcp/uac-terminal-reconciliation-20260924`
 
 ## Mission
 
@@ -72,8 +73,8 @@ This inventory is descriptive and read-only. It identifies the existing owner fo
 | UAC-20 | Governance/docs/cartography reconciliation | GREEN | UAC plan/SUIVI/CHANGELOG/DECISIONS/TASKS cross-linked without creating runtime tasks or parallel authorities |
 | UAC-21 | Full non-regression validation | GREEN | MCP CI #1845 exact-head SUCCESS: typecheck/build/docs/governance/GWC/secrets/read-only/whitespace all green |
 | UAC-22 | Exact-head review and merge readiness | GREEN | self-review findings fixed; CI #1849 SUCCESS; no reviews/threads blocking; main unchanged and PR mergeable |
-| UAC-23 | Post-merge governed deploy and attestation | TODO | GitHub/main/S1/runtime exact-SHA alignment where required |
-| UAC-24 | Terminal handoff/closure | TODO | Live State/current documentation reconciled; no orphan claim/lock |
+| UAC-23 | Post-merge governed deploy and attestation | GREEN | `main@ba9acd1...`; CI #1852/run 36028205563 SUCCESS; Governed Deploy #68/run 36028205582 SUCCESS; OIDC issues #166/#167 prove S1 exact SHA/clean/read-only and Docker healthy |
+| UAC-24 | Terminal handoff/closure | GREEN | terminal docs reconcile the exact deployed functional baseline; no UAC runtime Task/session/claim/lock was created; historical Live State evidence is preserved and not falsely upgraded without a direct approved probe |
 
 ## Supervision loop
 

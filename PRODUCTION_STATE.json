@@ -6,11 +6,11 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "githubObservedAt": "2026-09-22T21:54:58.596Z",
-  "githubObservationBasis": "historical_candidate_handoff_pr146_merge_ci1722_deploy63_oidc_evidence",
+  "githubObservedAt": "2026-09-24T16:35:48.493Z",
+  "githubObservationBasis": "uac_pr154_merge_ci1852_deploy68_oidc_evidence_issues166_167",
   "serverStateFreshness": "current_oidc_readonly_attested",
-  "runtimeStateFreshness": "current_exact_sha_post_governed_deploy63",
-  "githubCommitFull": "38f7ab60b4fa30db50536278d2b34ddbcfe2c204",
+  "runtimeStateFreshness": "current_exact_sha_post_governed_deploy68",
+  "githubCommitFull": "ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4",
   "requiredRules": [
     "GitHub est la source versionnée.",
     "Le serveur MCP est la source exécutée.",
@@ -28,7 +28,7 @@
   },
   "githubState": {
     "currentMainVerified": true,
-    "currentMainCommit": "38f7ab60b4fa30db50536278d2b34ddbcfe2c204",
+    "currentMainCommit": "ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4",
     "pullRequest37Merged": true,
     "pullRequest38Merged": true,
     "pullRequest39Merged": true,
@@ -175,14 +175,23 @@
     "historicalCandidateHandoffDeployRunId": 35789164675,
     "historicalCandidateHandoffDeployRunNumber": 63,
     "historicalCandidateHandoffDeployJobId": 106953232913,
-    "historicalCandidateHandoffState": "merged_ci_green_deployed_oidc_attested"
+    "historicalCandidateHandoffState": "merged_ci_green_deployed_oidc_attested",
+    "universalAgentCoordinationPullRequest": 154,
+    "universalAgentCoordinationCandidateHead": "9100ab750472124d0a7b696f37b1f56e687f63ca",
+    "universalAgentCoordinationMergeCommit": "ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4",
+    "universalAgentCoordinationMainCiRunId": 36028205563,
+    "universalAgentCoordinationMainCiRunNumber": 1852,
+    "universalAgentCoordinationDeployRunId": 36028205582,
+    "universalAgentCoordinationDeployRunNumber": 68,
+    "universalAgentCoordinationDeployJobId": 107730012049,
+    "universalAgentCoordinationState": "merged_ci_green_deployed_oidc_attested_terminal_docs_reconciliation_pending_merge"
   },
   "serverGitState": {
     "branch": "main",
-    "lastDirectlyVerifiedCommitAbbrev": "38f7ab6",
-    "lastDirectlyVerifiedCommitFull": "38f7ab60b4fa30db50536278d2b34ddbcfe2c204",
+    "lastDirectlyVerifiedCommitAbbrev": "ba9acd1",
+    "lastDirectlyVerifiedCommitFull": "ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4",
     "originMain": "38f7ab60b4fa30db50536278d2b34ddbcfe2c204",
-    "lastDirectlyVerifiedAt": "2026-09-22T21:54:52.914Z",
+    "lastDirectlyVerifiedAt": "2026-09-24T16:35:48.493Z",
     "lastKnownWorkingTreeClean": true,
     "diffEmpty": true,
     "currentAlignmentAttested": true,
@@ -190,13 +199,15 @@
     "connectorSyncToolCallable": true,
     "connectorCatalogStatus": "governed_sync_callable",
     "fetchRemote": "git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",
-    "pushRemote": "disabled://mcp-s1-read-only"
+    "pushRemote": "disabled://mcp-s1-read-only",
+    "originMainFreshness": "historical_not_directly_reobserved_by_mcp_git_status_probe",
+    "originMainObservationBasis": "preserved_previous_value; current alignment proof uses GitHub main plus directly observed S1 branch HEAD"
   },
   "runtimeState": {
     "containerStatus": "running",
     "health": "healthy",
     "imageId": "sha256:87b14c8de8a29a6111d8a4427bf9f67e64c4a70ee071fd4de76ab4a617772b8c",
-    "currentRuntimeRevision": "38f7ab60b4fa30db50536278d2b34ddbcfe2c204",
+    "currentRuntimeRevision": "ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4",
     "status": "FULLY_ALIGNED",
     "healthOk": true,
     "oauthOk": true,
@@ -218,7 +229,13 @@
     ],
     "nextAction": "reconcile_canonical_documentation",
     "declaredFunctionalBaseline": "9da845822e122cc67fc86ad90243d4e7d6a6d4f4",
-    "declaredS1Baseline": "9da845822e122cc67fc86ad90243d4e7d6a6d4f4"
+    "declaredS1Baseline": "9da845822e122cc67fc86ad90243d4e7d6a6d4f4",
+    "postUacObservation": {
+      "status": "NOT_DIRECTLY_REOBSERVED",
+      "reason": "no approved GitHub-first read-only Live State probe in the current allowlist; historical Live State evidence is preserved rather than inferred",
+      "functionalBaseline": "ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4",
+      "exactRuntimeAttestedByDeployRunId": 36028205582
+    }
   },
   "markdownInventory": {
     "trackedGitMarkdown": 196,
@@ -271,12 +288,15 @@
     "mandatoryBootstrapCorrectionDeploymentRunId": 33214825772,
     "mandatoryBootstrapCorrectionDeploymentGithubJobId": 98996005106,
     "latestGovernedDeploymentAttested": true,
-    "latestGovernedDeploymentSha": "38f7ab60b4fa30db50536278d2b34ddbcfe2c204",
-    "latestGovernedDeploymentRunId": 35789164675,
+    "latestGovernedDeploymentSha": "ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4",
+    "latestGovernedDeploymentRunId": 36028205582,
     "latestGovernedDeploymentRunAttempt": 1,
-    "latestGovernedDeploymentGithubJobId": 106953232913,
+    "latestGovernedDeploymentGithubJobId": 107730012049,
     "latestGovernedDeploymentStep": "Deploy exact main SHA through MCP",
-    "latestGovernedDeploymentStepConclusion": "success"
+    "latestGovernedDeploymentStepConclusion": "success",
+    "universalAgentCoordinationOidcGitEvidenceRunId": 36028435204,
+    "universalAgentCoordinationOidcDockerEvidenceRunId": 36028438729,
+    "universalAgentCoordinationOidcEvidenceMutationAllowed": false
   },
   "governedAutodeployV1": {
     "task": "TASK-20260809-003",
