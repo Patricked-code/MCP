@@ -369,3 +369,48 @@ test('TB-W1-04 resolves implemented OD decisions and preserves real deferred dec
   assert.equal(program.get('TB-W1-04')?.readiness?.state, 'DONE');
   assert.equal(program.get('TB-W1-06')?.readiness?.state, 'READY');
 });
+
+
+test('TB-W1-06 reconciles all current planning surfaces without rewriting history', async () => {
+  const [projectionRaw, todo, tasks, roadmap, gwcRaw, designRaw] = await Promise.all([
+    readFile('docs/governance/program-backlog-convergence.json', 'utf8'),
+    readFile('TODO.md', 'utf8'),
+    readFile('TASKS.md', 'utf8'),
+    readFile('ROADMAP.md', 'utf8'),
+    readFile('.mcp/gwc-blueprints.json', 'utf8'),
+    readFile('.mcp/gwc-evolution-design.json', 'utf8')
+  ]);
+  const projection = JSON.parse(projectionRaw);
+  const gwc = JSON.parse(gwcRaw);
+  const design = JSON.parse(designRaw);
+
+  assert.match(todo, /\| `PB-UAC` \| `DONE`/);
+  assert.doesNotMatch(todo, /- \[ \] prouver un artifact `mcp_git_status` S1 via OIDC/);
+  assert.match(todo, /TB-W1-07/);
+
+  assert.doesNotMatch(tasks, /Tâche gouvernée courante — TASK-20260915-001/);
+  assert.doesNotMatch(tasks, /Tâche gouvernée actuelle — TASK-20260914-002/);
+  assert.match(tasks, /TB-W1-07/);
+
+  assert.match(roadmap, /TB-W1-01\.\.06 DONE/);
+  assert.match(roadmap, /TB-W1-07 READY/);
+
+  assert.equal(gwc.postIntegrationStatus, 'RECONCILED_CURRENT_MAIN');
+  assert.equal(design.postIntegrationVerdict, 'RECONCILED_WITH_DEFERRED_OD08_OD09');
+
+  const byId = new Map(
+    projection.taskBlueprints.map((blueprint: any) => [blueprint.id, blueprint])
+  );
+  assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'READY');
+  assert.equal(byId.get('TB-W2-01')?.readiness?.state, 'BLOCKED');
+
+  assert.equal((projection.sourceCoverage.externalActiveWork ?? []).length, 0);
+  assert.ok((projection.sourceCoverage.completedExternalWork ?? []).length > 0);
+  assert.equal(
+    (projection.sourceCoverage.todoUnchecked ?? []).some(
+      (entry: any) => entry.text.includes('mcp_git_status') && entry.text.includes('OIDC')
+    ),
+    false
+  );
+});
