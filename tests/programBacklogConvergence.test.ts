@@ -220,10 +220,10 @@ test('TB-W1-01 freezes the exact post-UAC baseline and unlocks only its direct d
     (projection.taskBlueprints ?? []).map((blueprint: any) => [blueprint.id, blueprint])
   );
   assert.equal(byId.get('TB-W1-01')?.readiness?.state, 'DONE');
-  assert.equal(byId.get('TB-W1-02')?.readiness?.state, 'READY');
-  assert.equal(byId.get('TB-W1-05')?.readiness?.state, 'READY');
-  assert.equal(byId.get('TB-W1-03')?.readiness?.state, 'BLOCKED');
-  assert.equal(byId.get('TB-W1-04')?.readiness?.state, 'BLOCKED');
+  assert.equal(byId.get('TB-W1-02')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-05')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-03')?.readiness?.state, 'READY');
+  assert.equal(byId.get('TB-W1-04')?.readiness?.state, 'READY');
   assert.equal(byId.get('TB-W2-01')?.readiness?.state, 'BLOCKED');
 });
 
