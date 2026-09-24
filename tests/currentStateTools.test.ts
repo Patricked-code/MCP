@@ -171,3 +171,133 @@ test('AF-18 current state uses the same deterministic taskId tie-break as the qu
   const inventory = await service.getInventory(CURRENT_STATE_REQUEST);
   assert.equal(inventory.firstExecutableTask?.taskId, 'TASK-20260822-009');
 });
+
+
+test('UAC-19 current-state inventory composes read-only coordination supervision from existing authorities', async () => {
+  const governedSessionId = '88888888-8888-4888-8888-888888888888';
+  const activeLockId = '99999999-9999-4999-8999-999999999999';
+  const service = createCurrentStateService({
+    liveState: { async getCurrent() { return null; } },
+    tasks: {
+      async listVisibleTasks() {
+        return {
+          schemaVersion: 1,
+          storeRevision: 31,
+          seedRegistryVersion: 1,
+          nextSequence: 156,
+          tasks: [{
+            schemaVersion: 1,
+            taskId: 'TASK-20260924-156',
+            repository: 'Patricked-code/MCP',
+            intentKey: 'coordination.universal',
+            title: 'Universal coordination supervision',
+            summary: 'Expose existing coordination authorities read-only',
+            priority: 100,
+            sequence: 156,
+            status: 'IN_PROGRESS',
+            dependencies: [],
+            resourceScopes: ['resource:coordination.universal'],
+            ownerGovernedSessionId: governedSessionId,
+            workBranch: 'mcp/universal-agent-coordination-20260923',
+            pullRequestNumber: 154,
+            observedHeadSha: 'a'.repeat(40),
+            runtimeRevision: null,
+            blockers: ['task blocker'],
+            nextAction: 'run exact-head CI',
+            source: { kind: 'agent', requestDigest: 'b'.repeat(64) },
+            createdAt: '2026-09-24T15:00:00Z',
+            updatedAt: '2026-09-24T15:05:00Z',
+            taskRevision: 24
+          }]
+        };
+      }
+    },
+    sessions: {
+      async listVisibleSessions() {
+        return [{
+          schemaVersion: 1,
+          governedSessionId,
+          repository: 'Patricked-code/MCP',
+          taskScope: 'coordination.universal',
+          workBranch: 'mcp/universal-agent-coordination-20260923',
+          agentIdentity: 'chatgpt',
+          ownerPrincipalId: 'oauth:test',
+          identityAssurance: 'oauth_subject',
+          status: 'ACTIVE',
+          createdAt: '2026-09-24T15:00:00Z',
+          resumedAt: null,
+          lastHeartbeatAt: '2026-09-24T15:00:00Z',
+          pausedAt: null,
+          expiredAt: null,
+          closedAt: null,
+          currentTransport: null,
+          lastAcknowledgedStateVersion: 31,
+          bootstrapReceipt: null,
+          connectionContext: null,
+          sessionRevision: 25,
+          lastCheckpoint: {
+            checkpointId: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+            governedSessionId,
+            createdAt: '2026-09-24T15:06:00Z',
+            taskScope: 'coordination.universal',
+            workBranch: 'mcp/universal-agent-coordination-20260923',
+            pullRequestNumber: 154,
+            observedHeadSha: 'a'.repeat(40),
+            acknowledgedStateVersion: 31,
+            completedAction: 'UAC-18 terminal lifecycle audit',
+            resultCode: 'PASS',
+            blockers: ['checkpoint blocker'],
+            nextAction: 'build UAC-19 supervision',
+            eventIds: [],
+            sessionRevision: 25
+          },
+          blockers: ['session blocker'],
+          nextAction: 'continue UAC',
+          lockIds: [activeLockId],
+          resumePolicy: 'stable_principal_or_resume_secret'
+        }];
+      },
+      lookupGovernedSessionId() { return governedSessionId; }
+    },
+    locks: {
+      async listActiveLocks() {
+        return [{
+          schemaVersion: 1,
+          lockId: activeLockId,
+          scope: 'resource:coordination.universal',
+          governedSessionId,
+          acquiredAt: '2026-09-24T15:05:00Z',
+          expiresAt: '2026-09-24T15:20:00Z',
+          renewedAt: '2026-09-24T15:05:00Z',
+          reason: 'UAC supervision fixture',
+          status: 'ACTIVE',
+          lockRevision: 3
+        }];
+      }
+    },
+    coordinationLivenessFreshnessSeconds: 120,
+    catalogue: () => ({ counts: { tools: 1 }, catalogDigest: 'c'.repeat(64) }),
+    now: () => new Date('2026-09-24T15:10:00Z')
+  } as never);
+
+  const inventory = await service.getInventory(CURRENT_STATE_REQUEST);
+  const coordination = (inventory as any).coordination;
+  assert.equal(coordination.projectionKind, 'READ_ONLY_AGENT_COORDINATION_SUPERVISION');
+  assert.equal(coordination.authoritative, false);
+  assert.equal(coordination.session.governedSessionId, governedSessionId);
+  assert.equal(coordination.session.agentIdentity, 'chatgpt');
+  assert.equal(coordination.task.taskId, 'TASK-20260924-156');
+  assert.equal(coordination.ownership.ownershipState, 'OWNED');
+  assert.equal(coordination.ownership.ownerGovernedSessionId, governedSessionId);
+  assert.equal(coordination.liveness.liveness, 'STALE');
+  assert.equal(coordination.liveness.releaseAllowedByLiveness, false);
+  assert.equal(coordination.liveness.transferAllowedByLiveness, false);
+  assert.deepEqual(coordination.locks.activeLockIds, [activeLockId]);
+  assert.deepEqual(coordination.collisionDomains, ['resource:coordination.universal']);
+  assert.equal(coordination.checkpoint.currentStep, 'IN_PROGRESS');
+  assert.equal(coordination.checkpoint.nextActions.session, 'continue UAC');
+  assert.equal(coordination.checkpoint.nextActions.task, 'run exact-head CI');
+  assert.equal(coordination.checkpoint.nextActions.checkpoint, 'build UAC-19 supervision');
+  assert.equal(coordination.authorizationInferred, false);
+  assert.equal(coordination.mutationPerformed, false);
+});
