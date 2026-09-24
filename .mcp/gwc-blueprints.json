@@ -28,7 +28,7 @@
       "rationale": "Réconciliation #88/#89/#90 et disposition #85/#86 avant de dépendre du GitHub Control Plane."
     }
   ],
-  "registryDigest": "8d68b30d9c9ccba4035d075accbd98b69db6da280d5764a2a76110d61b4b5ed6",
+  "registryDigest": "05d4ed68a96a310b3c43fca426940ed11fa8f5de5fed643e4b91ffcfa6d57bad",
   "blueprints": [
     {
       "blueprintId": "GWC-0",
