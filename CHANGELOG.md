@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## 2026-09-24 — Universal Agent Coordination — PR #154
+
+- Généralisation existing-first de l'observabilité agent/session/task/ownership/heartbeat/locks/GitHub/checkpoint sans nouvelle autorité ni nouveau store.
+- Heartbeat/liveness strictement séparé de l'ownership : `STALE` et `UNKNOWN` ne libèrent, ne transfèrent et n'autorisent jamais un takeover de Task.
+- Ownership dérivé exclusivement du `Governed Task Queue` (`status + ownerGovernedSessionId`); aucun claim store ni claimId fictif ajouté.
+- Projection des locks depuis le `Governed Lock Service`; expiration/release d'un lock ne vaut jamais release implicite de Task.
+- Compatibilité PRECODE conservée comme provenance historique uniquement, sans réactivation de session/claim/work item.
+- Réutilisation du GitHub-first/OIDC read-only fallback existant; aucun bridge interactif requis lorsque GitHub/fallback suffit.
+- Extension additive de `mcp_get_current_state_inventory` / Current State resource avec `coordination` read-only : Session, Task, ownership, liveness, locks, collision domains, checkpoint et NEXT_ACTION.
+- Scénarios multi-agent, stale/unknown heartbeat, reconnect/resume, HEAD_MOVED, recovery/checkpoint et fermeture terminale validés par les mécanismes/tests existants ou tests UAC ciblés.
+- Réconciliation non destructive de PR #154 avec `main@327379a782a7f13940f0edf302dced833b326dca` via merge à deux parents `3c6fc979055922fbb24ea48a86ecbf1516b96d3c`, sans force-push.
+- UAC-19 validé exact-head par MCP CI #1843 / run `36027183893` sur `c747f9d6f58fcebe0f123fd32c2c4197c892b8b6`.
+
 ## 2026-09-23 — Exhaustive program backlog convergence
 
 - Ajout d'une projection dérivée non exécutable couvrant TODO, ROADMAP, GWC, findings AF, décisions OD, task-registry, intentions historiques et PR #154.

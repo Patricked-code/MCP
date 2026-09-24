@@ -1,5 +1,15 @@
 # DECISIONS_LOG.md
 
+## 2026-09-24 — Universal Agent Coordination reste une projection, jamais une nouvelle autorité
+
+Décision : PR #154 / Integration Slot `coordination.universal` généralise les autorités existantes selon `REUSE → WRAP → GENERALIZE → EXTEND → NEW`. Governed Session reste l'autorité de session/liveness, Governed Task Queue reste l'autorité de Task/ownership, Governed Lock Service reste l'autorité d'exclusion, GitHub reste l'autorité de HEAD/PR/checks et les checkpoints existants restent la continuité opérationnelle.
+
+Invariant : heartbeat est uniquement une preuve de liveness. `STALE`, `UNKNOWN`, absence de heartbeat, timeout ou expiration/release d'un lock ne libèrent ni ne transfèrent jamais l'ownership d'une Task. Aucun takeover automatique n'est autorisé.
+
+Supervision : la vue universelle est composée dans `CurrentStateService` et exposée via la surface existante `mcp_get_current_state_inventory`/resource Current State. Elle est `authoritative=false`, read-only, n'infère aucune autorisation et ne crée ni service de supervision parallèle, ni queue, session store, claim store, lock service ou mémoire supplémentaire.
+
+Compatibilité : les sessions/claims PRECODE historiques sont provenance uniquement. GitHub-first reste prioritaire; les preuves serveur read-only utilisent le workflow OIDC/fallback existant avant toute éventuelle escalade runtime.
+
 ## Role
 Journal des decisions structurantes du MCP.
 

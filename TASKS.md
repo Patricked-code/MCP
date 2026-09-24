@@ -19,6 +19,18 @@ Plan opérationnel exécutable. Les événements détaillés restent dans `ACTIV
 
 `ROADMAP.md` décrit tous les chantiers/lots connus. `TODO.md` contient ce qui reste à accomplir. Ce fichier ne pré-crée pas toutes les tâches futures : une `TASK-...` n'est considérée officielle qu'après son enregistrement dans Operational Memory.
 
+## Chantier GitHub actif — PR #154 Universal Agent Coordination
+
+Projection documentaire uniquement : ce chantier **n'est pas un nouveau `TASK-*` runtime**. L'autorité d'exécution dynamique reste la Governed Task Queue/Operational Memory; l'Integration Slot unique est `coordination.universal` dans PR #154 et son plan `docs/governance/universal-agent-coordination-plan.md`.
+
+- [x] UAC-01..11 — autorités, contrat read-only, adapters Session/Task/ownership/liveness/locks/GitHub/checkpoint et compatibilité PRECODE ;
+- [x] UAC-12..18 — collisions multi-agent, stale/unknown heartbeat, reconnect, HEAD_MOVED, recovery et fermeture terminale ;
+- [x] UAC-19 — supervision read-only intégrée à Current State sans nouvel outil parallèle ;
+- [x] UAC-20 — réconciliation de gouvernance/documentation ;
+- [ ] UAC-21..24 — non-régression finale, review/merge exact-head, déploiement/attestation gouvernés si requis, handoff/closure.
+
+Règles : aucun takeover depuis heartbeat, aucun bridge interactif quand GitHub/fallback suffit, aucun direct S1, aucune nouvelle autorité parallèle.
+
 ## Tâche gouvernée — AfricaFunds project-aware S2 mapping
 
 ### TASK-20260910-001 — livraison fonctionnelle attestée

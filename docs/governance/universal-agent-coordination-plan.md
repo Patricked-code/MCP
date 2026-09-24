@@ -68,8 +68,8 @@ This inventory is descriptive and read-only. It identifies the existing owner fo
 | UAC-16 | HEAD_MOVED reconciliation E2E | GREEN | live PR #154 divergence reconciled non-destructively at 3c6fc979; branch 0 behind main; exact-head CI #1831 SUCCESS |
 | UAC-17 | Crash/checkpoint recovery E2E | GREEN | existing checkpoint persistence, failed-resume atomicity, idempotent task requeue and cross-store lock reconciliation prove deterministic recovery |
 | UAC-18 | Normal terminal closure E2E | GREEN | session close is idempotent, releases active locks, blocks heartbeat; terminal-session task ownership is requeued through existing Task Queue lifecycle |
-| UAC-19 | Read-only supervision view | TODO | answer who/what/where/liveness/collision/NEXT_ACTION from evidence |
-| UAC-20 | Governance/docs/cartography reconciliation | TODO | CLAUDE/SUIVI/CHANGELOG/decision or registry updates as applicable |
+| UAC-19 | Read-only supervision view | GREEN | existing CurrentState inventory composes Session/Task/ownership/liveness/locks/checkpoint read-only; CI #1843 SUCCESS |
+| UAC-20 | Governance/docs/cartography reconciliation | GREEN | UAC plan/SUIVI/CHANGELOG/DECISIONS/TASKS cross-linked without creating runtime tasks or parallel authorities |
 | UAC-21 | Full non-regression validation | TODO | typecheck/build/docs/governance/GWC/secrets/tests all green |
 | UAC-22 | Exact-head review and merge readiness | TODO | no unresolved blocking findings; exact-head gates green |
 | UAC-23 | Post-merge governed deploy and attestation | TODO | GitHub/main/S1/runtime exact-SHA alignment where required |
