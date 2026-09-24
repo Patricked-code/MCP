@@ -455,3 +455,54 @@ test('TB-W1-07 publishes the W1 readiness handoff and unlocks only GitHub READ R
   assert.match(tasks, /\[x\] W1 — Program State Convergence/);
   assert.match(tasks, /W2 .*planning-ready/);
 });
+
+
+test('W2 completion handoff closes GitHub READ R1 and unlocks only its direct W3 dependents', async () => {
+  const [projectionRaw, todo, tasks, roadmap, suivi] = await Promise.all([
+    readFile('docs/governance/program-backlog-convergence.json', 'utf8'),
+    readFile('TODO.md', 'utf8'),
+    readFile('TASKS.md', 'utf8'),
+    readFile('ROADMAP.md', 'utf8'),
+    readFile('SUIVI.md', 'utf8')
+  ]);
+  const projection = JSON.parse(projectionRaw);
+  const handoff = projection.w2ReadinessHandoff;
+
+  assert.equal(handoff?.status, 'PASS_WITH_EVIDENCE');
+  assert.equal(handoff?.validatedImplementationHead, '3904d22d033671b3b7fd13ebf428dbcad018faad');
+  assert.deepEqual(handoff?.validatedCiRuns, [36052669788, 36052673702]);
+  assert.deepEqual(
+    handoff?.completedBlueprints,
+    ['TB-W2-01', 'TB-W2-02', 'TB-W2-03']
+  );
+  assert.deepEqual(
+    handoff?.unlockedBlueprints,
+    ['TB-W3-A22-01', 'TB-W3-A3-01', 'TB-W3-B3-01', 'TB-W3-C1-01']
+  );
+  assert.equal(handoff?.runtimeTasksCreatedByW2, 0);
+  assert.equal(handoff?.governedSessionsCreatedByW2, 0);
+  assert.equal(handoff?.runtimeLocksCreatedByW2, 0);
+
+  const blueprints = projection.taskBlueprints ?? [];
+  const byId = new Map(blueprints.map((blueprint: any) => [blueprint.id, blueprint]));
+  for (const id of ['TB-W2-01', 'TB-W2-02', 'TB-W2-03']) {
+    assert.equal(byId.get(id)?.readiness?.state, 'DONE', `${id} should be DONE after W2 handoff`);
+    assert.deepEqual(byId.get(id)?.writeAuthorities, []);
+  }
+
+  const expectedReady = ['TB-W3-A22-01', 'TB-W3-A3-01', 'TB-W3-B3-01', 'TB-W3-C1-01'];
+  const actualReadyW3 = blueprints
+    .filter((blueprint: any) => blueprint.waveId === 'W3' && blueprint.readiness?.state === 'READY')
+    .map((blueprint: any) => blueprint.id)
+    .sort();
+  assert.deepEqual(actualReadyW3, [...expectedReady].sort());
+  assert.equal(projection.executionModel?.currentWave, 'W3');
+
+  assert.match(roadmap, /W2 COMPLETE/);
+  assert.match(roadmap, /W3 READY/);
+  assert.match(todo, /W2 GitHub READ.*DONE/s);
+  assert.match(todo, /W3.*planning-ready/s);
+  assert.match(tasks, /\[x\] W2 .*GitHub READ/);
+  assert.match(tasks, /W3 .*planning-ready/);
+  assert.match(suivi, /W2 .*GitHub READ R1.*DONE/s);
+});
