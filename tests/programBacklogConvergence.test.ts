@@ -199,3 +199,40 @@ test('agent handoff contract requires authority reobservation before task materi
   assert.equal(projection.agentHandoffContract?.heartbeatCanReleaseOwnership, false);
   assert.equal(projection.agentHandoffContract?.staleCanTriggerTakeover, false);
 });
+
+
+test('TB-W1-01 freezes the exact post-UAC baseline and unlocks only its direct dependents', async () => {
+  const projection = JSON.parse(
+    await readFile('docs/governance/program-backlog-convergence.json', 'utf8')
+  );
+
+  assert.equal(projection.observedMainSha, 'd30b06f4c8b72b4888f32397be207798a56b8bb8');
+  assert.equal(projection.reconciliationBaseline?.status, 'FROZEN');
+  assert.equal(
+    projection.reconciliationBaseline?.observedMainSha,
+    'd30b06f4c8b72b4888f32397be207798a56b8bb8'
+  );
+  assert.equal(projection.reconciliationBaseline?.mainCiRunId, 36032772266);
+  assert.equal(projection.reconciliationBaseline?.governedDeployRunId, 36032772198);
+  assert.deepEqual(projection.reconciliationBaseline?.historicalOpenPullRequests, [85, 86, 88, 89, 90]);
+
+  const byId = new Map(
+    (projection.taskBlueprints ?? []).map((blueprint: any) => [blueprint.id, blueprint])
+  );
+  assert.equal(byId.get('TB-W1-01')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-02')?.readiness?.state, 'READY');
+  assert.equal(byId.get('TB-W1-05')?.readiness?.state, 'READY');
+  assert.equal(byId.get('TB-W1-03')?.readiness?.state, 'BLOCKED');
+  assert.equal(byId.get('TB-W1-04')?.readiness?.state, 'BLOCKED');
+  assert.equal(byId.get('TB-W2-01')?.readiness?.state, 'BLOCKED');
+});
+
+test('repository agent entrypoint explicitly loads Program Backlog V2 before selecting work', async () => {
+  const claude = await readFile('CLAUDE.md', 'utf8');
+
+  assert.match(claude, /Program Backlog V2/);
+  assert.match(claude, /docs\/governance\/program-backlog-convergence\.json/);
+  assert.match(claude, /SELECT_READY_BLUEPRINT/);
+  assert.match(claude, /Governed Task Queue/);
+  assert.match(claude, /HEAD_MOVED/);
+});
