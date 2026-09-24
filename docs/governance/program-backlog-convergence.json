@@ -3,7 +3,7 @@
   "projectionId": "program-backlog-convergence-v2-20260924",
   "repository": "Patricked-code/MCP",
   "observedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
-  "generatedAt": "2026-09-24T18:47:00Z",
+  "generatedAt": "2026-09-24T18:59:00Z",
   "authority": {
     "kind": "DERIVED_NON_EXECUTABLE_PROJECTION",
     "createsRuntimeTasks": false,
@@ -73,15 +73,13 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 6,
+      "DONE": 9,
       "KNOWN_NOT_ANALYZED": 9,
-      "PARTIALLY_IMPLEMENTED": 4,
+      "PARTIALLY_IMPLEMENTED": 5,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
       "DEFERRED": 3,
-      "READY": 2,
-      "ACTIVE": 0,
-      "NEEDS_RECONCILIATION": 3
+      "READY": 1
     }
   },
   "sourceCoverage": {
@@ -1973,7 +1971,7 @@
     {
       "id": "PB-GWC-RECONCILE",
       "title": "GWC-0..17 implementation-state convergence",
-      "disposition": "READY",
+      "disposition": "DONE",
       "integrationSlot": "governance.gwc-blueprint-convergence",
       "implementationMode": "RECONCILE_ONLY",
       "existingAuthorities": [
@@ -1982,7 +1980,7 @@
         "DECISIONS_LOG"
       ],
       "dependsOn": [],
-      "nextAction": "Start W1 from current main: reconcile GWC-0..17 implementation state against integrated PR #95 and post-UAC main before creating any implementation task.",
+      "nextAction": "No historical GWC replay; use routed current-first residual blueprints only.",
       "subtasks": [
         "Map each GWC blueprint to current implementation evidence",
         "Identify only residual implementation deltas",
@@ -2025,7 +2023,7 @@
     {
       "id": "PB-AF-RECONCILE",
       "title": "Remaining GWC finding classification",
-      "disposition": "READY",
+      "disposition": "DONE",
       "integrationSlot": "governance.gwc-findings-reconciliation",
       "implementationMode": "RECONCILE_ONLY",
       "existingAuthorities": [
@@ -2037,7 +2035,7 @@
       "dependsOn": [
         "PB-GWC-RECONCILE"
       ],
-      "nextAction": "For every corrected=false finding, determine absorbed/superseded/duplicate/composable/open before creating any implementation work.",
+      "nextAction": "Reconciliation complete; execute only residual Task Blueprints already routed from current finding dispositions.",
       "subtasks": [
         "Reproduce against current main when definition is current",
         "Treat archive-only definitions as historical evidence requiring current validation",
@@ -2053,7 +2051,7 @@
     {
       "id": "PB-OD-RECONCILE",
       "title": "OD-01..12 decision-state convergence",
-      "disposition": "READY",
+      "disposition": "PARTIALLY_IMPLEMENTED",
       "integrationSlot": "governance.open-decisions-reconciliation",
       "implementationMode": "RECONCILE_ONLY",
       "existingAuthorities": [
@@ -2064,7 +2062,7 @@
       "dependsOn": [
         "PB-GWC-RECONCILE"
       ],
-      "nextAction": "Reconcile machine OD states with decisions already recorded and current implementation.",
+      "nextAction": "OD-01/02/03/04/05/06/07/10/11/12 resolved. OD-08 and OD-09 remain DEFERRED behind explicit evidence gates.",
       "subtasks": [
         "Confirm already-resolved/narrowed decisions",
         "Identify genuinely open decisions",
@@ -2391,10 +2389,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "READY",
-        "autoPromotable": true,
+        "state": "DONE",
+        "autoPromotable": false,
         "requiredExplicitGates": [],
-        "reason": "TB-W1-02 is DONE; current finding/decision reconciliation may proceed after exact-head/collision reobservation."
+        "reason": "TB-W1-03 reconciled against integrated evidence; residual work is routed without historical replay."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -2459,10 +2457,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "READY",
-        "autoPromotable": true,
+        "state": "DONE",
+        "autoPromotable": false,
         "requiredExplicitGates": [],
-        "reason": "TB-W1-02 is DONE; current finding/decision reconciliation may proceed after exact-head/collision reobservation."
+        "reason": "TB-W1-04 reconciled against integrated evidence; residual work is routed without historical replay."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -2598,10 +2596,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "W1-02/03/04/05 are DONE; canonical planning/document projections may now be reconciled."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5912,6 +5910,150 @@
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
       }
+    },
+    {
+      "id": "TB-COND-OD08",
+      "workItemId": "PB-OD-RECONCILE",
+      "waveId": "CONDITIONAL",
+      "lotId": "OD-08",
+      "title": "Distributed Operational Memory concurrency",
+      "objective": "Generalize current single-process/store concurrency only if a real multi-process/shared-store runtime requires it.",
+      "integrationSlot": "operational-memory.distributed-concurrency",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W1-04"
+      ],
+      "existingAuthorities": [
+        "Operational Memory",
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "GWC contract substrate",
+        "DECISIONS_LOG"
+      ],
+      "resourceScopes": [
+        "operational-memory:distributed-concurrency"
+      ],
+      "collisionDomains": [
+        "operational-memory:distributed-concurrency"
+      ],
+      "readAuthorities": [
+        "Operational Memory",
+        "GWC contract substrate",
+        "DECISIONS_LOG"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "DEFERRED",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "MULTI_PROCESS_OR_DISTRIBUTED_OPERATIONAL_MEMORY_REQUIREMENT_PROVEN"
+        ],
+        "reason": "No current requirement justifies implementing this latent capability; current behavior fails closed safely."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED must reproduce a real cross-process ownership/atomicity failure that current single-process stores cannot cover."
+      ],
+      "greenAcceptance": [
+        "Concurrency remains atomic/fail-closed across the proven distributed authority without introducing a second Task/Session/Lock authority.",
+        "No parallel authority or weakening of current fail-closed behavior."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "The explicit trigger/gate is proven from current authorities.",
+        "Implementation reuses current authorities and passes exact-head regression/review.",
+        "Governed deploy/attestation is performed only if runtime-affecting."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate direct dependents only.",
+        "onFailure": "Record exact blocker; do not infer permission, ownership transfer or readiness."
+      }
+    },
+    {
+      "id": "TB-COND-OD09",
+      "workItemId": "PB-OD-RECONCILE",
+      "waveId": "CONDITIONAL",
+      "lotId": "OD-09",
+      "title": "Contract/Graph incompatible schema migration",
+      "objective": "Design an explicit migration/compatibility path only when an incompatible contract or graph schema version is actually introduced.",
+      "integrationSlot": "governed-workflow.schema-migration",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W1-04"
+      ],
+      "existingAuthorities": [
+        "Operational Memory",
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "GWC contract substrate",
+        "DECISIONS_LOG"
+      ],
+      "resourceScopes": [
+        "governed-workflow:schema-migration"
+      ],
+      "collisionDomains": [
+        "governed-workflow:schema-migration"
+      ],
+      "readAuthorities": [
+        "Operational Memory",
+        "GWC contract substrate",
+        "DECISIONS_LOG"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "DEFERRED",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "INCOMPATIBLE_CONTRACT_OR_GRAPH_SCHEMA_VERSION_INTRODUCED"
+        ],
+        "reason": "No current requirement justifies implementing this latent capability; current behavior fails closed safely."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED must prove a concrete new schema cannot be read safely by the existing fail-closed compatibility boundary."
+      ],
+      "greenAcceptance": [
+        "Old and new supported schema versions have explicit migration/compatibility semantics; unsupported versions still fail closed.",
+        "No parallel authority or weakening of current fail-closed behavior."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "The explicit trigger/gate is proven from current authorities.",
+        "Implementation reuses current authorities and passes exact-head regression/review.",
+        "Governed deploy/attestation is performed only if runtime-affecting."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate direct dependents only.",
+        "onFailure": "Record exact blocker; do not infer permission, ownership transfer or readiness."
+      }
     }
   ],
   "reconciliationBaseline": {
@@ -6003,6 +6145,47 @@
       "staleSeedRetired": "TASK-20260822-001",
       "runtimeAuthorityMutated": false,
       "rule": "Static seed reconciliation affects fresh initialization only; existing live Governed Task Queue records are not rewritten."
+    },
+    "findings": {
+      "blueprint": "TB-W1-03",
+      "status": "DONE",
+      "count": 36,
+      "dispositionCounts": {
+        "ABSORBED": 6,
+        "RESOLVED": 24,
+        "ACCEPTED_BOUNDARY": 5,
+        "DEFERRED": 1
+      },
+      "residualIds": [
+        "AF-01",
+        "AF-02",
+        "AF-03",
+        "AF-04",
+        "AF-05",
+        "AF-06",
+        "AF-14"
+      ]
+    },
+    "decisions": {
+      "blueprint": "TB-W1-04",
+      "status": "DONE",
+      "count": 12,
+      "resolved": [
+        "OD-01",
+        "OD-02",
+        "OD-03",
+        "OD-04",
+        "OD-05",
+        "OD-06",
+        "OD-07",
+        "OD-10",
+        "OD-11",
+        "OD-12"
+      ],
+      "deferred": [
+        "OD-08",
+        "OD-09"
+      ]
     }
   }
 }

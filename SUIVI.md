@@ -1,5 +1,18 @@
 # SUIVI.md
 
+## 2026-09-24 — W1.3/W1.4 — AF-01..36 + OD-01..12 reconciled
+
+- RED `2d4129904c9bcf08724ad09a28dd0845d409f0bc`, MCP CI #1880 : 2 échecs ciblés seulement — matrice AF post-intégration absente et matrice OD/résiduels deferred absente.
+- Les 36 findings sont maintenant classés current-first sans écraser leurs champs historiques : RESOLVED, ABSORBED, ACCEPTED_BOUNDARY ou DEFERRED. Aucun `corrected=false` historique ne crée automatiquement une Task.
+- Résiduels structurants : AF-01..05 → B3 current-main residuals ; AF-06 → provisioning project/runtime policy ; AF-14 → activation GitRegistry V2 conditionnelle. Les autres findings sont résolus/absorbés/acceptés avec preuves ou frontières explicites.
+- AF-19, AF-22, AF-30, AF-31, AF-32, AF-35 et AF-36 sont explicitement RESOLVED par leurs corrections/tests/autorités intégrés.
+- OD-01/02/03/04/05/06/07/10/11/12 = RESOLVED depuis les implémentations GWC intégrées et DECISIONS_LOG.
+- OD-08 reste DEFERRED : le modèle actuel garantit l'atomicité dans l'autorité process/store existante, pas une concurrence multi-process distribuée non demandée.
+- OD-09 reste DEFERRED : le substrate échoue fermé sur une version incompatible ; une migration n'est justifiée que lorsqu'une nouvelle version incompatible existe réellement.
+- Deux blueprints planning-only sont ajoutés : `TB-COND-OD08` et `TB-COND-OD09`, tous deux non auto-promotables et gardés par un trigger explicite.
+- `TB-W1-03 = DONE`, `TB-W1-04 = DONE`; `TB-W1-06` devient planning-ready. W2 reste bloqué jusqu'à W1-07.
+- NEXT_ACTION : valider exact-head puis exécuter TB-W1-06 pour réconcilier ROADMAP/TODO/TASKS/backlog/canonical projections, sans modifier l'historique immutable PR95.
+
 ## 2026-09-24 — W1.2/W1.5 — GWC + static task-registry reconciled
 
 - RED `4309473f8e5b0235756b36b964cf40b426ff1a56`, MCP CI #1872 : 2 échecs ciblés seulement — GWC sans disposition post-intégration et `TASK-20260822-001` seed encore READY.

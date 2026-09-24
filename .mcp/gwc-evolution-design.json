@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-17T04:05:02.723Z",
+  "generatedAt": "2026-09-24T18:59:00Z",
   "source": "GITHUB_LIVE",
   "repository": "Patricked-code/MCP",
   "baselineMain": "d1f303955c4d368950da2307dda41d826fc85d0a",
@@ -675,37 +675,37 @@
     {
       "id": "OD-01",
       "owner": "GWC-1",
-      "state": "NARROWED"
+      "state": "RESOLVED"
     },
     {
       "id": "OD-02",
       "owner": "GWC-1",
-      "state": "NARROWED"
+      "state": "RESOLVED"
     },
     {
       "id": "OD-03",
       "owner": "GWC-6",
-      "state": "OPEN"
+      "state": "RESOLVED"
     },
     {
       "id": "OD-04",
       "owner": "GWC-7",
-      "state": "NARROWED"
+      "state": "RESOLVED"
     },
     {
       "id": "OD-05",
       "owner": "GWC-5",
-      "state": "OPEN"
+      "state": "RESOLVED"
     },
     {
       "id": "OD-06",
       "owner": "GWC-14",
-      "state": "NARROWED"
+      "state": "RESOLVED"
     },
     {
       "id": "OD-07",
       "owner": "GWC-15",
-      "state": "OPEN_NARROWED"
+      "state": "RESOLVED"
     },
     {
       "id": "OD-08",
@@ -720,17 +720,674 @@
     {
       "id": "OD-10",
       "owner": "GWC-10",
-      "state": "NARROWED"
+      "state": "RESOLVED"
     },
     {
       "id": "OD-11",
       "owner": "GWC-10",
-      "state": "OPEN"
+      "state": "RESOLVED"
     },
     {
       "id": "OD-12",
       "owner": "GWC-15",
-      "state": "OPEN"
+      "state": "RESOLVED"
     }
-  ]
+  ],
+  "postIntegrationReconciliation": {
+    "observedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
+    "observedAt": "2026-09-24T18:59:00Z",
+    "authorityRule": "Historical corrected/state fields are provenance. These dispositions are the current post-integration planning classification and never create runtime tasks.",
+    "findings": [
+      {
+        "id": "AF-01",
+        "owner": "GWC-10",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "ABSORBED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete/sources/gwc10-target-scope.json"
+        ],
+        "residualTaskBlueprints": [
+          "TB-W3-B3-01",
+          "TB-W3-B3-02"
+        ],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Mono-repository target assumptions were generalized by GWC-10; W3 B3 retains only current-main residual consumer discovery/generalization."
+      },
+      {
+        "id": "AF-02",
+        "owner": "GWC-10",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "ABSORBED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete/sources/gwc10-target-scope.json"
+        ],
+        "residualTaskBlueprints": [
+          "TB-W3-B3-01",
+          "TB-W3-B3-02"
+        ],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Task Queue target scoping was generalized additively by GWC-10; remaining MCP-only consumers are a B3 residual."
+      },
+      {
+        "id": "AF-03",
+        "owner": "GWC-10",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "ABSORBED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete/sources/gwc10-target-scope.json"
+        ],
+        "residualTaskBlueprints": [
+          "TB-W3-B3-01",
+          "TB-W3-B3-02"
+        ],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Lock repository scoping was generalized by TargetScope/component lock support; remaining consumer drift belongs to B3."
+      },
+      {
+        "id": "AF-04",
+        "owner": "GWC-10",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "ABSORBED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete/sources/gwc10-target-scope.json"
+        ],
+        "residualTaskBlueprints": [
+          "TB-W3-B3-01",
+          "TB-W3-B3-02"
+        ],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Live State gained target-aware context; W3 B3 owns any remaining single-target consumer assumptions."
+      },
+      {
+        "id": "AF-05",
+        "owner": "GWC-10",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "ABSORBED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete/sources/gwc10-target-scope.json"
+        ],
+        "residualTaskBlueprints": [
+          "TB-W3-B3-01"
+        ],
+        "historicalCandidateReplayAllowed": false,
+        "note": "GitHub target identity is no longer a reason to replay GWC; W3 B3 inventory will identify remaining hardcoded consumers."
+      },
+      {
+        "id": "AF-06",
+        "owner": "GWC-15",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "ABSORBED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete/sources/gwc15-deployment-evidence.json"
+        ],
+        "residualTaskBlueprints": [
+          "TB-W3-F-03"
+        ],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Current MCP deploy OIDC policy remains intentionally repository-specific; project-scoped policy composition belongs to governed project/runtime provisioning, never policy relaxation."
+      },
+      {
+        "id": "AF-07",
+        "owner": "GWC-16",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete/sources/gwc16-documentation-closure-evidence.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "GWC governance/terminal contracts compose existing safeNow/mayMutate semantics rather than creating a competing mayExecute authority."
+      },
+      {
+        "id": "AF-08",
+        "owner": "GWC-5",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "ACCEPTED_BOUNDARY",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc5-task-lock-orchestration-complete/sources/gwc5-task-lock-orchestration.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "No second global Live State status was created; existing global status remains authoritative."
+      },
+      {
+        "id": "AF-09",
+        "owner": "GWC-16",
+        "historicalCorrected": true,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete/sources/gwc16-documentation-closure-evidence.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Historical documentation-drift weakness was corrected and later terminal/documentation gates use structured current evidence."
+      },
+      {
+        "id": "AF-10",
+        "owner": "GWC-9",
+        "historicalCorrected": true,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc9-governance-capabilities-complete/sources/gwc9-governance-capabilities.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Governance composition exposes bounded reason sets and GWC-9 preserves existing GovernanceDecision authority."
+      },
+      {
+        "id": "AF-11",
+        "owner": "GWC-4",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "ACCEPTED_BOUNDARY",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc4-session-integration-complete/sources/gwc4-session-integration.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Receipt expiry and live freshness are intentionally distinct; stateVersion/current-context acknowledgement carries freshness and stale evidence fails closed."
+      },
+      {
+        "id": "AF-12",
+        "owner": "GWC-0",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "ACCEPTED_BOUNDARY",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc0-contract-substrate-complete/sources/gwc0-contract-substrate.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "This was a positive reference model, not a missing capability; attestation patterns were reused without a second authority."
+      },
+      {
+        "id": "AF-13",
+        "owner": "GWC-17",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc17-universal-acceptance-complete/sources/gwc17-universal-acceptance-evidence.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "GWC-17 universal acceptance covers MCP, Stablecoin-like and synthetic multi-component targets without requiring a target-specific runtime write path."
+      },
+      {
+        "id": "AF-14",
+        "owner": "GWC-3",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "DEFERRED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc3-resolver-adapters-complete/sources/gwc3-resolver-adapters.json"
+        ],
+        "residualTaskBlueprints": [
+          "TB-COND-C1-ACTIVATE"
+        ],
+        "historicalCandidateReplayAllowed": false,
+        "note": "V1/V2 coexistence is acceptable until explicit GitRegistry V2 activation; activation remains separately gated."
+      },
+      {
+        "id": "AF-15",
+        "owner": "GWC-13",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete/sources/gwc13-development-workflow.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "GWC-13 development evidence explicitly combines agent-declared bounded evidence with CI/commit observation."
+      },
+      {
+        "id": "AF-16",
+        "owner": "GWC-13",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete/sources/gwc13-development-workflow.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Conditional development steps preserve stable IDs with explicit skip/routing semantics."
+      },
+      {
+        "id": "AF-17",
+        "owner": "GWC-5",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc5-task-lock-orchestration-complete/sources/gwc5-task-lock-orchestration.json",
+          ".mcp/task-registry.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "W1-05 documents and enforces the seed-vs-live-Task-Queue boundary; static registry is not a runtime mirror."
+      },
+      {
+        "id": "AF-18",
+        "owner": "GWC-5",
+        "historicalCorrected": true,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc5-task-lock-orchestration-complete/sources/gwc5-task-lock-orchestration.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Historical firstExecutable divergence was corrected before post-integration reconciliation."
+      },
+      {
+        "id": "AF-19",
+        "owner": "GWC-15",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "CURRENT_MAIN_EVIDENCE",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete/sources/gwc15-deployment-evidence.json",
+          "DECISIONS_LOG.md"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Deployment push admission now requires successful MCP CI for the exact GITHUB_SHA without relaxing OIDC policy."
+      },
+      {
+        "id": "AF-20",
+        "owner": "GWC-0",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc0-contract-substrate-complete/sources/gwc0-contract-substrate.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "GWC-0 canonical contract registry fixes the contract family/id mapping and graph membership."
+      },
+      {
+        "id": "AF-21",
+        "owner": "GWC-0",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc0-contract-substrate-complete/sources/gwc0-contract-substrate.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "GWC contract substrate and verifier use one canonical digest algorithm for the governed contract/graph projections."
+      },
+      {
+        "id": "AF-22",
+        "owner": "GWC-14",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "CURRENT_MAIN_EVIDENCE",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete/sources/gwc14-review-merge.json",
+          "docs/gwc/canonical-memory/pr95-c2-af22-af30-resolved/sources/c2-af22-af30-resolved.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "ReviewEvidence is exact-head bound and fails closed on stale/mismatched review evidence."
+      },
+      {
+        "id": "AF-23",
+        "owner": "GWC-16",
+        "historicalCorrected": true,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc16-documentation-closure-complete/sources/gwc16-documentation-closure-evidence.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Checkpoint/event evidence handling was corrected in the integrated candidate and no longer represents an open implementation finding."
+      },
+      {
+        "id": "AF-24",
+        "owner": "GWC-5",
+        "historicalCorrected": true,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc5-task-lock-orchestration-complete/sources/gwc5-task-lock-orchestration.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Task lifecycle/review recovery semantics were reconciled before integration and current transitions remain authoritative."
+      },
+      {
+        "id": "AF-25",
+        "owner": "GWC-14",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "ACCEPTED_BOUNDARY",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete/sources/gwc14-review-merge.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "GitHub remains an external authority; the MCP cannot prevent external merges, so safety is exact-head reobservation/fail-closed proof rather than a fictional GitHub lock."
+      },
+      {
+        "id": "AF-26",
+        "owner": "GWC-15",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "ACCEPTED_BOUNDARY",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete/sources/gwc15-deployment-evidence.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "System deploy flock and Governed Lock Service protect different authority layers; they are intentionally not collapsed into one lock authority."
+      },
+      {
+        "id": "AF-27",
+        "owner": "GWC-5",
+        "historicalCorrected": true,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc5-task-lock-orchestration-complete/sources/gwc5-task-lock-orchestration.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Historical finding was corrected before terminal PR95 integration and retained only as provenance."
+      },
+      {
+        "id": "AF-28",
+        "owner": "GWC-0",
+        "historicalCorrected": true,
+        "historicalDefinitionSource": "ARCHIVE_R2_NON_CANONICAL",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc0-contract-substrate-complete/sources/gwc0-contract-substrate.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Graph incoherence was corrected in R3 and verified by deterministic GWC graph checks."
+      },
+      {
+        "id": "AF-29",
+        "owner": "GWC-15",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "CURRENT_MAIN_EVIDENCE",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete/sources/gwc15-deployment-evidence.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "GWC-0 uses bounded typed contract/evidence projections instead of the incomplete historical GovernedStepAttestation design."
+      },
+      {
+        "id": "AF-30",
+        "owner": "GWC-14",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "CURRENT_MAIN_EVIDENCE",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete/sources/gwc14-review-merge.json",
+          "docs/gwc/canonical-memory/pr95-c2-af22-af30-resolved/sources/c2-af22-af30-resolved.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Review head binding was corrected together with AF-22 and strengthened by GWC-14 self-review."
+      },
+      {
+        "id": "AF-31",
+        "owner": "GWC-13",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "CURRENT_MAIN_EVIDENCE",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc13-development-workflow-complete/sources/gwc13-development-workflow.json",
+          "tests/governedWorkflowDevelopment.test.ts"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "GWC-13 validation profile is project-scoped and test execution is discovery-based; current regression test is green."
+      },
+      {
+        "id": "AF-32",
+        "owner": "GWC-9",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "CURRENT_MAIN_EVIDENCE",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc9-governance-capabilities-complete/sources/gwc9-governance-capabilities.json",
+          "DECISIONS_LOG.md"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Operational-write governed task mutations traverse the existing scoped write shadow gate; no new write authority was introduced."
+      },
+      {
+        "id": "AF-33",
+        "owner": "GWC-0",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "CURRENT_MAIN_EVIDENCE",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc0-contract-substrate-complete/sources/gwc0-contract-substrate.json",
+          "DECISIONS_LOG.md"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "R3 stopped inventing finding definitions and the verifier enforces owned, machine-consistent finding mappings."
+      },
+      {
+        "id": "AF-34",
+        "owner": "GWC-0",
+        "historicalCorrected": true,
+        "historicalDefinitionSource": "CURRENT_MAIN_EVIDENCE",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc0-contract-substrate-complete/sources/gwc0-contract-substrate.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Pre-code gate is checked against exact-head phase evidence rather than trusting declared counters."
+      },
+      {
+        "id": "AF-35",
+        "owner": "GWC-5",
+        "historicalCorrected": false,
+        "historicalDefinitionSource": "CURRENT_MAIN_EVIDENCE",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc5-task-lock-orchestration-complete/sources/gwc5-task-lock-orchestration.json",
+          "DECISIONS_LOG.md"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "The stale DOCUMENTATION_DRIFT blocker was resolved by its owning runtime agent and recorded with provenance."
+      },
+      {
+        "id": "AF-36",
+        "owner": "GWC-0",
+        "historicalCorrected": true,
+        "historicalDefinitionSource": "CURRENT_MAIN_EVIDENCE",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc0-contract-substrate-complete/sources/gwc0-contract-substrate.json",
+          "DECISIONS_LOG.md"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Canonical-memory pointer resolution/integrity is enforced by verifyCanonicalMemory with injected negative controls."
+      }
+    ],
+    "decisions": [
+      {
+        "id": "OD-01",
+        "owner": "GWC-1",
+        "historicalState": "NARROWED",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc1-intent-capture-complete/sources/gwc1-intent-capture.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "16,384 UTF-8 byte rawIntent bound; overflow rejected without truncation."
+      },
+      {
+        "id": "OD-02",
+        "owner": "GWC-1",
+        "historicalState": "NARROWED",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc1-intent-capture-complete/sources/gwc1-intent-capture.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Source vocabulary resolved to chatgpt|claude|other."
+      },
+      {
+        "id": "OD-03",
+        "owner": "GWC-6",
+        "historicalState": "OPEN",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc6-server-resolver-complete/sources/gwc6-server-resolver.json",
+          "DECISIONS_LOG.md"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Canonical server identity is selected only from bounded canonicalServerIds; hints cannot create identity."
+      },
+      {
+        "id": "OD-04",
+        "owner": "GWC-7",
+        "historicalState": "NARROWED",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc7-runtime-resolver-complete/sources/gwc7-runtime-resolver.json",
+          "DECISIONS_LOG.md"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "RuntimeBinding is bounded ephemeral evidence; observation remains truth and missing evidence is UNVERIFIED."
+      },
+      {
+        "id": "OD-05",
+        "owner": "GWC-5",
+        "historicalState": "OPEN",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc5-task-lock-orchestration-complete/sources/gwc5-task-lock-orchestration.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Atomic multi-lock policy resolved for the current single-process/store authority."
+      },
+      {
+        "id": "OD-06",
+        "owner": "GWC-14",
+        "historicalState": "NARROWED",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc14-review-merge-complete/sources/gwc14-review-merge.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "ReviewEvidence/premerge proof is exact-head, PR, repo, task, session, receipt and state bound; stale evidence fails closed."
+      },
+      {
+        "id": "OD-07",
+        "owner": "GWC-15",
+        "historicalState": "OPEN_NARROWED",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "DECISIONS_LOG.md",
+          "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete/sources/gwc15-deployment-evidence.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Existing deploy gate extension (option B) selected; exact-SHA CI success gates push deploy without weakening OIDC."
+      },
+      {
+        "id": "OD-08",
+        "owner": "GWC-4",
+        "historicalState": "OPEN",
+        "disposition": "DEFERRED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc5-task-lock-orchestration-complete/sources/gwc5-task-lock-orchestration.json"
+        ],
+        "residualTaskBlueprints": [
+          "TB-COND-OD08"
+        ],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Cross-process/distributed Operational Memory concurrency is intentionally not solved by current single-process atomic stores."
+      },
+      {
+        "id": "OD-09",
+        "owner": "GWC-0",
+        "historicalState": "OPEN",
+        "disposition": "DEFERRED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc0-contract-substrate-complete/sources/gwc0-contract-substrate.json"
+        ],
+        "residualTaskBlueprints": [
+          "TB-COND-OD09"
+        ],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Current schema version fails closed on incompatible projections; a migration protocol is needed only when an incompatible Contract/Graph version is introduced."
+      },
+      {
+        "id": "OD-10",
+        "owner": "GWC-10",
+        "historicalState": "NARROWED",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete/sources/gwc10-target-scope.json",
+          "DECISIONS_LOG.md"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "TargetScope migration is additive/optional; no backfill and legacy single-repository semantics remain exact."
+      },
+      {
+        "id": "OD-11",
+        "owner": "GWC-10",
+        "historicalState": "OPEN",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete/sources/gwc10-target-scope.json",
+          "DECISIONS_LOG.md"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Task owner remains ownerGovernedSessionId plus exact component TargetScope; disjoint component scopes remain independent."
+      },
+      {
+        "id": "OD-12",
+        "owner": "GWC-15",
+        "historicalState": "OPEN",
+        "disposition": "RESOLVED",
+        "evidenceRefs": [
+          "docs/gwc/canonical-memory/pr95-e-gwc15-deployment-evidence-complete/sources/gwc15-deployment-evidence.json"
+        ],
+        "residualTaskBlueprints": [],
+        "historicalCandidateReplayAllowed": false,
+        "note": "Immutable CI/deploy evidence is identity-bound; mutable Live State keeps its own freshness policy and GW-52 binds one exact SHA/job/CI run."
+      }
+    ]
+  }
 }

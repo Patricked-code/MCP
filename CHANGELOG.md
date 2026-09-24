@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-09-24 — W1 AF/OD current-first reconciliation
+
+- Ajout d'une matrice post-intégration pour AF-01..36 et OD-01..12 dans la projection GWC existante.
+- Les champs historiques restent provenance; les dispositions current-first empêchent tout replay automatique.
+- OD-08 et OD-09 restent explicitement deferred et reçoivent deux Task Blueprints planning-only à gates de besoin réel.
+- W1-06 devient le prochain lot planning-ready; W2 reste bloqué jusqu'au handoff W1-07.
+
 ## 2026-09-24 — W1 GWC/task-registry reconciliation
 
 - Ajout d'une disposition post-intégration current-first aux 18 GWC sans altérer leur provenance PRECODE.
