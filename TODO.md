@@ -43,7 +43,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-J12` | `KNOWN_NOT_ANALYZED` | `certification.clients` | J1/J2 Claude and ChatGPT certification |
 | `PB-J3` | `KNOWN_NOT_ANALYZED` | `maintenance.github-actions-node24` | J3 GitHub Actions / Node 24 maintenance |
 | `PB-J4` | `CONDITIONAL` | `governance.write-gate-enforcement` | J4 WRITE gate shadow→enforce |
-| `PB-GITHUB-FIRST-PROGRAM` | `PARTIALLY_IMPLEMENTED` | `github-first.continuity-program` | GitHub-first Operational Continuity residual program |
+| `PB-GITHUB-FIRST-PROGRAM` | `DONE` | `github-first.continuity-program` | GitHub-first Operational Continuity residual program |
 | `PB-GITHUB-FIRST-PROOF` | `DONE` | `github-first.read-evidence-proof` | GitHub-first S1 read-only evidence proof |
 | `PB-GITHUB-FIRST-FALLBACKS` | `DEFERRED` | `github-first.optional-readonly-fallbacks` | Optional SSH read-only fallback selection |
 | `PB-GITHUB-FIRST-WRITE` | `DEFERRED` | `github-first.server-write-extensions` | Additional bounded server WRITE transports |
@@ -52,19 +52,19 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-GITHUB-PRWRITE` | `DESIGNED_NOT_IMPLEMENTED` | `github.pr-write.extensions` | Governed PR write extensions |
 | `PB-GITHUB-DESTRUCTIVE` | `DEFERRED` | `github.destructive-writes` | Destructive GitHub file/branch operations |
 | `PB-STABLECOIN-APPDEPLOY` | `CONDITIONAL` | `deployment.stablecoin-application` | Stablecoin application-changing deploy path |
-| `PB-UAC` | `ACTIVE` | `coordination.universal` | Universal Agent Coordination / heartbeat and claim observability |
-| `PB-GWC-RECONCILE` | `NEEDS_RECONCILIATION` | `governance.gwc-blueprint-convergence` | GWC-0..17 implementation-state convergence |
+| `PB-UAC` | `DONE` | `coordination.universal` | Universal Agent Coordination / heartbeat and claim observability |
+| `PB-GWC-RECONCILE` | `DONE` | `governance.gwc-blueprint-convergence` | GWC-0..17 implementation-state convergence |
 | `PB-AF-CLOSED` | `DONE` | `governance.gwc-findings-closed` | GWC findings with attested corrections |
-| `PB-AF-RECONCILE` | `NEEDS_RECONCILIATION` | `governance.gwc-findings-reconciliation` | Remaining GWC finding classification |
-| `PB-OD-RECONCILE` | `NEEDS_RECONCILIATION` | `governance.open-decisions-reconciliation` | OD-01..12 decision-state convergence |
-| `PB-TASKREG-RECONCILE` | `NEEDS_RECONCILIATION` | `governance.task-registry-reconciliation` | Static task-registry drift reconciliation |
+| `PB-AF-RECONCILE` | `DONE` | `governance.gwc-findings-reconciliation` | Remaining GWC finding classification |
+| `PB-OD-RECONCILE` | `PARTIALLY_IMPLEMENTED` | `governance.open-decisions-reconciliation` | OD-01..12 decision-state convergence |
+| `PB-TASKREG-RECONCILE` | `DONE` | `governance.task-registry-reconciliation` | Static task-registry drift reconciliation |
 | `PB-LEGACY-CONVERGENCE-DONE` | `DONE` | `governance.historical-pr-intents` | Historical PR intent reconciliation |
 
 ### Ordonnancement courant
 
 - **DONE** : `PB-UAC` / PR #154 est fusionné, déployé et attesté ; ne jamais recopier ses UAC-01..24.
-- **RECONCILE avant nouveau code issu du GWC historique** : `PB-GWC-RECONCILE`, `PB-AF-RECONCILE`, `PB-OD-RECONCILE`, `PB-TASKREG-RECONCILE`.
-- **ACTIVE planning wave** : W1 Program State Convergence. Seul `TB-W1-01` est planning-ready avant relecture live ; aucun blueprint ne crée automatiquement de Task runtime.
+- **W1 current-first** : `TB-W1-01..06` sont DONE ; GWC-0..17 est acquis, AF-01..36 est réconcilié, OD-08/09 seuls restent différés, et le seed statique est réconcilié.
+- **ACTIVE planning wave** : W1 Program State Convergence. Seul `TB-W1-07` est planning-ready avant relecture live ; aucun blueprint ne crée automatiquement de Task runtime.
 - **READY après W1** : `PB-GITHUB-READ` uniquement pour `github_get_commits`, `github_get_tree`, `github_get_required_checks`.
 - **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
 - **Observabilité/certification** : G1/G2, G3, H, I, J1/J2 après leurs dépendances.
@@ -282,7 +282,7 @@ PR #80 fusionnée depuis le head exact `18355de8d4892685ee4f68b11d1542fb249e838a
 - [x] ajouter un workflow GitHub Actions read-only déclenchable par issue structurée ;
 - [x] interdire command input/arbitrary shell et les primitives serveur mutantes par tests ;
 - [x] ajouter le transport primaire GitHub OIDC → endpoint MCP read-only, sans OAuth MCP interactif ni secret SSH GitHub ;
-- [ ] prouver un artifact `mcp_git_status` S1 via OIDC sans bridge interactif ;
+- [x] prouver un artifact `mcp_git_status` S1 via OIDC sans bridge interactif — acquis via les attestations OIDC post-UAC/Program Backlog V2, notamment issue #172 / run `36033010867` ;
 - [x] prouver un artifact `stablecoin_frontend_git_status` S2 via OIDC sans bridge interactif ;
 - [ ] optionnel : configurer `mcp-s1-readonly` comme fallback SSH secondaire ;
 - [ ] optionnel : configurer `mcp-s2-readonly` comme fallback SSH secondaire ;

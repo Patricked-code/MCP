@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-09-24 — Les surfaces de pilotage courantes ne doivent jamais afficher un snapshot runtime ancien comme CURRENT
+
+Décision : les blocs historiques TASKS/ROADMAP/SUIVI restent conservés pour provenance, mais leurs titres et textes doivent indiquer explicitement leur caractère historique lorsqu'ils ne représentent plus le NEXT_ACTION courant. Program Backlog V2 + autorités live déterminent la reprise.
+
+Les preuves terminées ne restent pas dans `externalActiveWork` ni comme TODO non coché. Elles migrent vers une catégorie de provenance accomplie sans supprimer leur trace.
+
 ## 2026-09-24 — Les états AF/OD historiques ne sont pas des instructions d'implémentation
 
 Décision : `.mcp/gwc-evolution-design.json` conserve les champs historiques `corrected` et états d'origine comme provenance, mais expose une réconciliation post-intégration current-first. Une valeur historique `corrected=false`, `OPEN` ou `NARROWED` ne peut jamais créer ou autoriser une tâche.

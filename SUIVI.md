@@ -1,5 +1,16 @@
 # SUIVI.md
 
+## 2026-09-24 — W1.6 — planning/document coherence gate
+
+- RED `0e831debd7c5b4226c20deedc6de93700db615a9`, MCP CI #1886 : échec ciblé sur la contradiction TODO `PB-UAC=ACTIVE` alors que UAC est terminal.
+- TODO workstream dispositions sont resynchronisées depuis Program Backlog V2; le probe `mcp_git_status` OIDC S1 est désormais coché acquis.
+- Les entrées UAC ne sont plus dans `externalActiveWork`; elles sont conservées comme `completedExternalWork` avec la preuve OIDC Program Backlog V2.
+- TASKS ne présente plus C2/G3 historiques comme états runtime « courants » et route le résiduel G3 vers `TB-W4-G3-01`.
+- ROADMAP expose `TB-W1-01..06 DONE` et `TB-W1-07 READY`.
+- Les registres GWC conservent leurs champs PRECODE historiques mais exposent explicitement `postIntegrationStatus` / `postIntegrationVerdict` current-first.
+- `TB-W1-06 = DONE`; `TB-W1-07` devient le seul blueprint planning-ready; W2 reste BLOCKED.
+- NEXT_ACTION : valider exact-head, exécuter TB-W1-07 comme handoff/readiness gate, puis seulement déverrouiller W2.
+
 ## 2026-09-24 — W1.3/W1.4 — AF-01..36 + OD-01..12 reconciled
 
 - RED `2d4129904c9bcf08724ad09a28dd0845d409f0bc`, MCP CI #1880 : 2 échecs ciblés seulement — matrice AF post-intégration absente et matrice OD/résiduels deferred absente.

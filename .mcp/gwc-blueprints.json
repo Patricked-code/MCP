@@ -704,5 +704,8 @@
       "RESIDUAL",
       "SUPERSEDED"
     ]
-  }
+  },
+  "postIntegrationStatus": "RECONCILED_CURRENT_MAIN",
+  "postIntegrationObservedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
+  "postIntegrationNextAction": "Use Program Backlog V2 routed residual Task Blueprints; never replay historical candidate GWC work."
 }

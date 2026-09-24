@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 2026-09-24 — W1 planning coherence gate
+
+- Synchronisation current-first de ROADMAP/TODO/TASKS avec Program Backlog V2.
+- UAC et GitHub-first OIDC proof passent des surfaces actives/TODO à provenance accomplie.
+- C2/G3 historiques cessent d'être présentés comme NEXT_ACTION runtime.
+- GWC blueprints/evolution design exposent un statut post-intégration distinct de leurs champs PRECODE historiques.
+- W1-07 devient le seul prochain blueprint planning-ready.
+
 ## 2026-09-24 — W1 AF/OD current-first reconciliation
 
 - Ajout d'une matrice post-intégration pour AF-01..36 et OD-01..12 dans la projection GWC existante.

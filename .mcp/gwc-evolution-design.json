@@ -1389,5 +1389,7 @@
         "note": "Immutable CI/deploy evidence is identity-bound; mutable Live State keeps its own freshness policy and GW-52 binds one exact SHA/job/CI run."
       }
     ]
-  }
+  },
+  "postIntegrationVerdict": "RECONCILED_WITH_DEFERRED_OD08_OD09",
+  "postIntegrationObservedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8"
 }

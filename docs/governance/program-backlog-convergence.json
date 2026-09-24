@@ -3,7 +3,7 @@
   "projectionId": "program-backlog-convergence-v2-20260924",
   "repository": "Patricked-code/MCP",
   "observedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
-  "generatedAt": "2026-09-24T18:59:00Z",
+  "generatedAt": "2026-09-24T19:07:00Z",
   "authority": {
     "kind": "DERIVED_NON_EXECUTABLE_PROJECTION",
     "createsRuntimeTasks": false,
@@ -259,12 +259,6 @@
         "coveredBy": "PB-C1"
       },
       {
-        "sourceKey": "TODO:30",
-        "section": "GitHub-first Operational Continuity V1",
-        "text": "prouver un artifact `mcp_git_status` S1 via OIDC sans bridge interactif ;",
-        "coveredBy": "PB-GITHUB-FIRST-PROOF"
-      },
-      {
         "sourceKey": "TODO:31",
         "section": "GitHub-first Operational Continuity V1",
         "text": "optionnel : configurer `mcp-s1-readonly` comme fallback SSH secondaire ;",
@@ -498,126 +492,144 @@
         "sourceId": "GWC-0",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "NEW_ORCHESTRATION_ONLY",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       },
       {
         "sourceKey": "GWC:GWC-1",
         "sourceId": "GWC-1",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "NEW",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       },
       {
         "sourceKey": "GWC:GWC-2",
         "sourceId": "GWC-2",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "NEW_ORCHESTRATION_ONLY",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       },
       {
         "sourceKey": "GWC:GWC-3",
         "sourceId": "GWC-3",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "REUSE/WRAP",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       },
       {
         "sourceKey": "GWC:GWC-4",
         "sourceId": "GWC-4",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "REUSE/GENERALIZE",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       },
       {
         "sourceKey": "GWC:GWC-5",
         "sourceId": "GWC-5",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "REUSE/EXTEND",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       },
       {
         "sourceKey": "GWC:GWC-6",
         "sourceId": "GWC-6",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "GENERALIZE/EXTEND",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "GWC:GWC-7",
         "sourceId": "GWC-7",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "GENERALIZE/EXTEND",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "GWC:GWC-8",
         "sourceId": "GWC-8",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "GENERALIZE/EXTEND",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "GWC:GWC-9",
         "sourceId": "GWC-9",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "REUSE/EXTEND",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "GWC:GWC-10",
         "sourceId": "GWC-10",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "GENERALIZE",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "GWC:GWC-11",
         "sourceId": "GWC-11",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "REUSE/EXTEND",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       },
       {
         "sourceKey": "GWC:GWC-12",
         "sourceId": "GWC-12",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "DISPOSITION",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "GWC:GWC-13",
         "sourceId": "GWC-13",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "REUSE/EXTEND",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       },
       {
         "sourceKey": "GWC:GWC-14",
         "sourceId": "GWC-14",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "REUSE/EXTEND",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       },
       {
         "sourceKey": "GWC:GWC-15",
         "sourceId": "GWC-15",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "REUSE/EXTEND",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       },
       {
         "sourceKey": "GWC:GWC-16",
         "sourceId": "GWC-16",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "REUSE/EXTEND",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       },
       {
         "sourceKey": "GWC:GWC-17",
         "sourceId": "GWC-17",
         "status": "DETAILED_DESIGN_COMPLETE_WITH_OPEN_DECISIONS",
         "integrationClassification": "NEW",
-        "coveredBy": "PB-GWC-RECONCILE"
+        "coveredBy": "PB-GWC-RECONCILE",
+        "postIntegrationDisposition": "DONE"
       }
     ],
     "findings": [
@@ -627,7 +639,8 @@
         "owner": "GWC-10",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "AF:AF-02",
@@ -635,7 +648,8 @@
         "owner": "GWC-10",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "AF:AF-03",
@@ -643,7 +657,8 @@
         "owner": "GWC-10",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "AF:AF-04",
@@ -651,7 +666,8 @@
         "owner": "GWC-10",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "AF:AF-05",
@@ -659,7 +675,8 @@
         "owner": "GWC-10",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "AF:AF-06",
@@ -667,7 +684,8 @@
         "owner": "GWC-15",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "ABSORBED"
       },
       {
         "sourceKey": "AF:AF-07",
@@ -675,7 +693,8 @@
         "owner": "GWC-16",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-08",
@@ -683,7 +702,8 @@
         "owner": "GWC-5",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "ACCEPTED_BOUNDARY"
       },
       {
         "sourceKey": "AF:AF-09",
@@ -691,7 +711,8 @@
         "owner": "GWC-16",
         "corrected": true,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-CLOSED"
+        "coveredBy": "PB-AF-CLOSED",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-10",
@@ -699,7 +720,8 @@
         "owner": "GWC-9",
         "corrected": true,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-CLOSED"
+        "coveredBy": "PB-AF-CLOSED",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-11",
@@ -707,7 +729,8 @@
         "owner": "GWC-4",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "ACCEPTED_BOUNDARY"
       },
       {
         "sourceKey": "AF:AF-12",
@@ -715,7 +738,8 @@
         "owner": "GWC-0",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "ACCEPTED_BOUNDARY"
       },
       {
         "sourceKey": "AF:AF-13",
@@ -723,7 +747,8 @@
         "owner": "GWC-17",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-14",
@@ -731,7 +756,8 @@
         "owner": "GWC-3",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "DEFERRED"
       },
       {
         "sourceKey": "AF:AF-15",
@@ -739,7 +765,8 @@
         "owner": "GWC-13",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-16",
@@ -747,7 +774,8 @@
         "owner": "GWC-13",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-17",
@@ -755,7 +783,8 @@
         "owner": "GWC-5",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-18",
@@ -763,7 +792,8 @@
         "owner": "GWC-5",
         "corrected": true,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-CLOSED"
+        "coveredBy": "PB-AF-CLOSED",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-19",
@@ -771,7 +801,8 @@
         "owner": "GWC-15",
         "corrected": false,
         "definitionSource": "CURRENT_MAIN_EVIDENCE",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-20",
@@ -779,7 +810,8 @@
         "owner": "GWC-0",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-21",
@@ -787,7 +819,8 @@
         "owner": "GWC-0",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-22",
@@ -795,7 +828,8 @@
         "owner": "GWC-14",
         "corrected": false,
         "definitionSource": "CURRENT_MAIN_EVIDENCE",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-23",
@@ -803,7 +837,8 @@
         "owner": "GWC-16",
         "corrected": true,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-CLOSED"
+        "coveredBy": "PB-AF-CLOSED",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-24",
@@ -811,7 +846,8 @@
         "owner": "GWC-5",
         "corrected": true,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-CLOSED"
+        "coveredBy": "PB-AF-CLOSED",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-25",
@@ -819,7 +855,8 @@
         "owner": "GWC-14",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "ACCEPTED_BOUNDARY"
       },
       {
         "sourceKey": "AF:AF-26",
@@ -827,7 +864,8 @@
         "owner": "GWC-15",
         "corrected": false,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "ACCEPTED_BOUNDARY"
       },
       {
         "sourceKey": "AF:AF-27",
@@ -835,7 +873,8 @@
         "owner": "GWC-5",
         "corrected": true,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-CLOSED"
+        "coveredBy": "PB-AF-CLOSED",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-28",
@@ -843,7 +882,8 @@
         "owner": "GWC-0",
         "corrected": true,
         "definitionSource": "ARCHIVE_R2_NON_CANONICAL",
-        "coveredBy": "PB-AF-CLOSED"
+        "coveredBy": "PB-AF-CLOSED",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-29",
@@ -851,7 +891,8 @@
         "owner": "GWC-15",
         "corrected": false,
         "definitionSource": "CURRENT_MAIN_EVIDENCE",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-30",
@@ -859,7 +900,8 @@
         "owner": "GWC-14",
         "corrected": false,
         "definitionSource": "CURRENT_MAIN_EVIDENCE",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-31",
@@ -867,7 +909,8 @@
         "owner": "GWC-13",
         "corrected": false,
         "definitionSource": "CURRENT_MAIN_EVIDENCE",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-32",
@@ -875,7 +918,8 @@
         "owner": "GWC-9",
         "corrected": false,
         "definitionSource": "CURRENT_MAIN_EVIDENCE",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-33",
@@ -883,7 +927,8 @@
         "owner": "GWC-0",
         "corrected": false,
         "definitionSource": "CURRENT_MAIN_EVIDENCE",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-34",
@@ -891,7 +936,8 @@
         "owner": "GWC-0",
         "corrected": true,
         "definitionSource": "CURRENT_MAIN_EVIDENCE",
-        "coveredBy": "PB-AF-CLOSED"
+        "coveredBy": "PB-AF-CLOSED",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-35",
@@ -899,7 +945,8 @@
         "owner": "GWC-5",
         "corrected": false,
         "definitionSource": "CURRENT_MAIN_EVIDENCE",
-        "coveredBy": "PB-AF-RECONCILE"
+        "coveredBy": "PB-AF-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "AF:AF-36",
@@ -907,7 +954,8 @@
         "owner": "GWC-0",
         "corrected": true,
         "definitionSource": "CURRENT_MAIN_EVIDENCE",
-        "coveredBy": "PB-AF-CLOSED"
+        "coveredBy": "PB-AF-CLOSED",
+        "postIntegrationDisposition": "RESOLVED"
       }
     ],
     "decisions": [
@@ -916,84 +964,96 @@
         "sourceId": "OD-01",
         "owner": "GWC-1",
         "state": "NARROWED",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "OD:OD-02",
         "sourceId": "OD-02",
         "owner": "GWC-1",
         "state": "NARROWED",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "OD:OD-03",
         "sourceId": "OD-03",
         "owner": "GWC-6",
         "state": "OPEN",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "OD:OD-04",
         "sourceId": "OD-04",
         "owner": "GWC-7",
         "state": "NARROWED",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "OD:OD-05",
         "sourceId": "OD-05",
         "owner": "GWC-5",
         "state": "OPEN",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "OD:OD-06",
         "sourceId": "OD-06",
         "owner": "GWC-14",
         "state": "NARROWED",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "OD:OD-07",
         "sourceId": "OD-07",
         "owner": "GWC-15",
         "state": "OPEN_NARROWED",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "OD:OD-08",
         "sourceId": "OD-08",
         "owner": "GWC-4",
         "state": "OPEN",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "DEFERRED"
       },
       {
         "sourceKey": "OD:OD-09",
         "sourceId": "OD-09",
         "owner": "GWC-0",
         "state": "OPEN",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "DEFERRED"
       },
       {
         "sourceKey": "OD:OD-10",
         "sourceId": "OD-10",
         "owner": "GWC-10",
         "state": "NARROWED",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "OD:OD-11",
         "sourceId": "OD-11",
         "owner": "GWC-10",
         "state": "OPEN",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       },
       {
         "sourceKey": "OD:OD-12",
         "sourceId": "OD-12",
         "owner": "GWC-15",
         "state": "OPEN",
-        "coveredBy": "PB-OD-RECONCILE"
+        "coveredBy": "PB-OD-RECONCILE",
+        "postIntegrationDisposition": "RESOLVED"
       }
     ],
     "taskRegistry": [
@@ -1006,7 +1066,7 @@
       {
         "sourceKey": "TASKREG:TASK-20260822-001",
         "sourceId": "TASK-20260822-001",
-        "status": "READY",
+        "status": "DONE",
         "coveredBy": "PB-TASKREG-RECONCILE"
       }
     ],
@@ -1046,156 +1106,192 @@
         ]
       }
     ],
-    "externalActiveWork": [
+    "externalActiveWork": [],
+    "completedExternalWork": [
       {
         "sourceKey": "PR154",
         "sourceId": "PR-154",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-01",
         "sourceId": "UAC-01",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-02",
         "sourceId": "UAC-02",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-03",
         "sourceId": "UAC-03",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-04",
         "sourceId": "UAC-04",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-05",
         "sourceId": "UAC-05",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-06",
         "sourceId": "UAC-06",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-07",
         "sourceId": "UAC-07",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-08",
         "sourceId": "UAC-08",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-09",
         "sourceId": "UAC-09",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-10",
         "sourceId": "UAC-10",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-11",
         "sourceId": "UAC-11",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-12",
         "sourceId": "UAC-12",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-13",
         "sourceId": "UAC-13",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-14",
         "sourceId": "UAC-14",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-15",
         "sourceId": "UAC-15",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-16",
         "sourceId": "UAC-16",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-17",
         "sourceId": "UAC-17",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-18",
         "sourceId": "UAC-18",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-19",
         "sourceId": "UAC-19",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-20",
         "sourceId": "UAC-20",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-21",
         "sourceId": "UAC-21",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-22",
         "sourceId": "UAC-22",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-23",
         "sourceId": "UAC-23",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
       },
       {
         "sourceKey": "PR154:UAC-24",
         "sourceId": "UAC-24",
         "head": "a158b1dd269666e6565b32e31827d479f3d21b2f",
-        "coveredBy": "PB-UAC"
+        "coveredBy": "PB-UAC",
+        "completionState": "MERGED_DEPLOYED_ATTESTED"
+      },
+      {
+        "sourceKey": "OIDC:S1-READONLY-PROOF-20260924",
+        "sourceId": "OIDC-S1-READONLY-PROOF",
+        "state": "SUCCESS",
+        "evidenceIssues": [
+          172,
+          173
+        ],
+        "coveredBy": "PB-GITHUB-FIRST-PROOF"
       }
     ]
   },
@@ -2596,10 +2692,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "READY",
-        "autoPromotable": true,
+        "state": "DONE",
+        "autoPromotable": false,
         "requiredExplicitGates": [],
-        "reason": "W1-02/03/04/05 are DONE; canonical planning/document projections may now be reconciled."
+        "reason": "Current planning/document projections reconciled against W1 baseline and post-integration GWC/AF/OD/task-registry evidence."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -2664,10 +2760,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "W1-01..06 are DONE; exact-head readiness handoff may now validate W2 unlock without creating runtime tasks."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -6186,6 +6282,22 @@
         "OD-08",
         "OD-09"
       ]
+    },
+    "documentation": {
+      "blueprint": "TB-W1-06",
+      "status": "DONE",
+      "currentSurfaces": [
+        "ROADMAP.md",
+        "TODO.md",
+        "TASKS.md",
+        "SUIVI.md",
+        ".mcp/gwc-blueprints.json",
+        ".mcp/gwc-evolution-design.json",
+        ".mcp/task-registry.json",
+        "docs/governance/program-backlog-convergence.json"
+      ],
+      "historicalArchivesMutated": false,
+      "nextEligibleBlueprint": "TB-W1-07"
     }
   }
 }
