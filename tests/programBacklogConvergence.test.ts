@@ -224,7 +224,8 @@ test('TB-W1-01 freezes the exact post-UAC baseline and unlocks only its direct d
   assert.equal(byId.get('TB-W1-05')?.readiness?.state, 'DONE');
   assert.equal(byId.get('TB-W1-03')?.readiness?.state, 'DONE');
   assert.equal(byId.get('TB-W1-04')?.readiness?.state, 'DONE');
-  assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'READY');
+  assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'READY');
   assert.equal(byId.get('TB-W2-01')?.readiness?.state, 'BLOCKED');
 });
 
@@ -300,7 +301,8 @@ test('TB-W1-05 retires the stale bootstrap seed without mutating live runtime au
   assert.equal(byId.get('TB-W1-05')?.readiness?.state, 'DONE');
   assert.equal(byId.get('TB-W1-03')?.readiness?.state, 'DONE');
   assert.equal(byId.get('TB-W1-04')?.readiness?.state, 'DONE');
-  assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'READY');
+  assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'READY');
 });
 
 
@@ -367,7 +369,8 @@ test('TB-W1-04 resolves implemented OD decisions and preserves real deferred dec
   assert.equal(program.get('TB-COND-OD09')?.readiness?.autoPromotable, false);
   assert.equal(program.get('TB-W1-03')?.readiness?.state, 'DONE');
   assert.equal(program.get('TB-W1-04')?.readiness?.state, 'DONE');
-  assert.equal(program.get('TB-W1-06')?.readiness?.state, 'READY');
+  assert.equal(program.get('TB-W1-06')?.readiness?.state, 'DONE');
+  assert.equal(program.get('TB-W1-07')?.readiness?.state, 'READY');
 });
 
 
