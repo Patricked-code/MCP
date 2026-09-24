@@ -236,3 +236,68 @@ test('repository agent entrypoint explicitly loads Program Backlog V2 before sel
   assert.match(claude, /Governed Task Queue/);
   assert.match(claude, /HEAD_MOVED/);
 });
+
+
+test('TB-W1-02 reconciles all GWC-0..17 as integrated history with residuals routed forward', async () => {
+  const [projectionRaw, gwcRaw] = await Promise.all([
+    readFile('docs/governance/program-backlog-convergence.json', 'utf8'),
+    readFile('.mcp/gwc-blueprints.json', 'utf8')
+  ]);
+  const projection = JSON.parse(projectionRaw);
+  const gwc = JSON.parse(gwcRaw);
+
+  assert.equal(gwc.blueprints.length, 18);
+  for (const blueprint of gwc.blueprints) {
+    assert.ok(['DONE', 'ABSORBED', 'RESIDUAL', 'SUPERSEDED'].includes(
+      blueprint.postIntegrationReconciliation?.disposition
+    ), `${blueprint.blueprintId} missing post-integration disposition`);
+    assert.equal(blueprint.postIntegrationReconciliation?.historicalCandidateReplayAllowed, false);
+    assert.equal(blueprint.postIntegrationReconciliation?.evidence?.pr95Merged, true);
+    assert.ok(Array.isArray(blueprint.postIntegrationReconciliation?.residualTaskBlueprints));
+  }
+
+  const byId = new Map(gwc.blueprints.map((blueprint: any) => [blueprint.blueprintId, blueprint]));
+  assert.deepEqual(
+    byId.get('GWC-6')?.postIntegrationReconciliation?.residualTaskBlueprints,
+    ['TB-W3-C3-01']
+  );
+  assert.deepEqual(
+    byId.get('GWC-7')?.postIntegrationReconciliation?.residualTaskBlueprints,
+    ['TB-W3-C4-01']
+  );
+  assert.deepEqual(
+    byId.get('GWC-8')?.postIntegrationReconciliation?.residualTaskBlueprints,
+    ['TB-W3-C5-01']
+  );
+  assert.ok(
+    byId.get('GWC-12')?.postIntegrationReconciliation?.residualTaskBlueprints.includes('TB-W2-01')
+  );
+
+  const programById = new Map(
+    projection.taskBlueprints.map((blueprint: any) => [blueprint.id, blueprint])
+  );
+  assert.equal(programById.get('TB-W1-02')?.readiness?.state, 'DONE');
+});
+
+test('TB-W1-05 retires the stale bootstrap seed without mutating live runtime authority', async () => {
+  const [projectionRaw, registryRaw] = await Promise.all([
+    readFile('docs/governance/program-backlog-convergence.json', 'utf8'),
+    readFile('.mcp/task-registry.json', 'utf8')
+  ]);
+  const projection = JSON.parse(projectionRaw);
+  const registry = JSON.parse(registryRaw);
+  const task = registry.tasks.find((entry: any) => entry.taskId === 'TASK-20260822-001');
+
+  assert.equal(registry.registryVersion, 3);
+  assert.ok(task);
+  assert.equal(task.status, 'DONE');
+  assert.equal(task.nextAction, null);
+
+  const byId = new Map(
+    projection.taskBlueprints.map((blueprint: any) => [blueprint.id, blueprint])
+  );
+  assert.equal(byId.get('TB-W1-05')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-03')?.readiness?.state, 'READY');
+  assert.equal(byId.get('TB-W1-04')?.readiness?.state, 'READY');
+  assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'BLOCKED');
+});
