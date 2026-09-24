@@ -47,16 +47,19 @@ const C90_SPLIT_AFTER_GWC9 = [
   'github_create_or_update_file'
 ] as const;
 
+const W2_READ_R1 = [
+  'github_get_commits',
+  'github_get_required_checks',
+  'github_get_tree'
+] as const;
+
 const C90_DEFERRED = [
   'github_delete_branch',
   'github_delete_file',
   'github_request_review',
   'github_update_pull_request',
-  'github_get_tree',
-  'github_get_commits',
   'github_get_commit_diff',
-  'github_get_mergeability',
-  'github_get_required_checks'
+  'github_get_mergeability'
 ] as const;
 
 function namesFrom(
@@ -73,14 +76,14 @@ function namesFrom(
   return names.sort();
 }
 
-test('GWC-PRE-C3 materializes exactly the C-89.2 READ split', () => {
+test('W2 GitHub READ R1 extends the existing control-plane READ split only', () => {
   const names = namesFrom(registerGithubControlPlaneReadTools, {
     configuredOrg: 'chainsolutions-wealthtech',
     request: async () => ({
       ok: true, status: 200, json: {}, tokenExpiresAt: null, oauthScopes: []
     })
   });
-  assert.deepEqual(names, [...C89_READ].sort());
+  assert.deepEqual(names, [...C89_READ, ...W2_READ_R1].sort());
 });
 
 test('GWC-12 materializes the planned C-90 split only after the GWC-9 AF-32 gate closes', () => {
@@ -128,10 +131,11 @@ test('GWC-12 materializes the planned C-90 split only after the GWC-9 AF-32 gate
   }
 });
 
-test('the C-90 partition remains exact and exhaustive after the selected split materializes', () => {
-  const all = [...C90_SPLIT_AFTER_GWC9, ...C90_DEFERRED];
+test('the C-90 partition remains exact and exhaustive after W2 READ R1 materializes', () => {
+  const all = [...C90_SPLIT_AFTER_GWC9, ...W2_READ_R1, ...C90_DEFERRED];
   assert.equal(all.length, 18);
   assert.equal(new Set(all).size, 18);
   assert.equal(C90_SPLIT_AFTER_GWC9.length, 9);
-  assert.equal(C90_DEFERRED.length, 9);
+  assert.equal(W2_READ_R1.length, 3);
+  assert.equal(C90_DEFERRED.length, 6);
 });
