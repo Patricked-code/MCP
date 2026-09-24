@@ -136,9 +136,9 @@ test('the first post-UAC wave is reconciliation and GitHub READ R1 cannot preced
   const w2 = blueprints.get('TB-W2-01');
 
   assert.ok(w1);
-  assert.equal(w1.readiness?.state, 'READY');
+  assert.equal(w1.readiness?.state, 'DONE');
   assert.ok(w2);
-  assert.equal(w2.readiness?.state, 'BLOCKED');
+  assert.equal(w2.readiness?.state, 'READY');
   assert.ok(w2.dependsOn.includes('TB-W1-07'));
 });
 
@@ -198,4 +198,260 @@ test('agent handoff contract requires authority reobservation before task materi
   ]);
   assert.equal(projection.agentHandoffContract?.heartbeatCanReleaseOwnership, false);
   assert.equal(projection.agentHandoffContract?.staleCanTriggerTakeover, false);
+});
+
+
+test('TB-W1-01 freezes the exact post-UAC baseline and unlocks only its direct dependents', async () => {
+  const projection = JSON.parse(
+    await readFile('docs/governance/program-backlog-convergence.json', 'utf8')
+  );
+
+  assert.equal(projection.observedMainSha, 'd30b06f4c8b72b4888f32397be207798a56b8bb8');
+  assert.equal(projection.reconciliationBaseline?.status, 'FROZEN');
+  assert.equal(
+    projection.reconciliationBaseline?.observedMainSha,
+    'd30b06f4c8b72b4888f32397be207798a56b8bb8'
+  );
+  assert.equal(projection.reconciliationBaseline?.mainCiRunId, 36032772266);
+  assert.equal(projection.reconciliationBaseline?.governedDeployRunId, 36032772198);
+  assert.deepEqual(projection.reconciliationBaseline?.historicalOpenPullRequests, [85, 86, 88, 89, 90]);
+
+  const byId = new Map(
+    (projection.taskBlueprints ?? []).map((blueprint: any) => [blueprint.id, blueprint])
+  );
+  assert.equal(byId.get('TB-W1-01')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-02')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-05')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-03')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-04')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W2-01')?.readiness?.state, 'READY');
+});
+
+test('repository agent entrypoint explicitly loads Program Backlog V2 before selecting work', async () => {
+  const claude = await readFile('CLAUDE.md', 'utf8');
+
+  assert.match(claude, /Program Backlog V2/);
+  assert.match(claude, /docs\/governance\/program-backlog-convergence\.json/);
+  assert.match(claude, /SELECT_READY_BLUEPRINT/);
+  assert.match(claude, /Governed Task Queue/);
+  assert.match(claude, /HEAD_MOVED/);
+});
+
+
+test('TB-W1-02 reconciles all GWC-0..17 as integrated history with residuals routed forward', async () => {
+  const [projectionRaw, gwcRaw] = await Promise.all([
+    readFile('docs/governance/program-backlog-convergence.json', 'utf8'),
+    readFile('.mcp/gwc-blueprints.json', 'utf8')
+  ]);
+  const projection = JSON.parse(projectionRaw);
+  const gwc = JSON.parse(gwcRaw);
+
+  assert.equal(gwc.blueprints.length, 18);
+  for (const blueprint of gwc.blueprints) {
+    assert.ok(['DONE', 'ABSORBED', 'RESIDUAL', 'SUPERSEDED'].includes(
+      blueprint.postIntegrationReconciliation?.disposition
+    ), `${blueprint.blueprintId} missing post-integration disposition`);
+    assert.equal(blueprint.postIntegrationReconciliation?.historicalCandidateReplayAllowed, false);
+    assert.equal(blueprint.postIntegrationReconciliation?.evidence?.pr95Merged, true);
+    assert.ok(Array.isArray(blueprint.postIntegrationReconciliation?.residualTaskBlueprints));
+  }
+
+  const byId = new Map(gwc.blueprints.map((blueprint: any) => [blueprint.blueprintId, blueprint]));
+  assert.deepEqual(
+    byId.get('GWC-6')?.postIntegrationReconciliation?.residualTaskBlueprints,
+    ['TB-W3-C3-01']
+  );
+  assert.deepEqual(
+    byId.get('GWC-7')?.postIntegrationReconciliation?.residualTaskBlueprints,
+    ['TB-W3-C4-01']
+  );
+  assert.deepEqual(
+    byId.get('GWC-8')?.postIntegrationReconciliation?.residualTaskBlueprints,
+    ['TB-W3-C5-01']
+  );
+  assert.ok(
+    byId.get('GWC-12')?.postIntegrationReconciliation?.residualTaskBlueprints.includes('TB-W2-01')
+  );
+
+  const programById = new Map(
+    projection.taskBlueprints.map((blueprint: any) => [blueprint.id, blueprint])
+  );
+  assert.equal(programById.get('TB-W1-02')?.readiness?.state, 'DONE');
+});
+
+test('TB-W1-05 retires the stale bootstrap seed without mutating live runtime authority', async () => {
+  const [projectionRaw, registryRaw] = await Promise.all([
+    readFile('docs/governance/program-backlog-convergence.json', 'utf8'),
+    readFile('.mcp/task-registry.json', 'utf8')
+  ]);
+  const projection = JSON.parse(projectionRaw);
+  const registry = JSON.parse(registryRaw);
+  const task = registry.tasks.find((entry: any) => entry.taskId === 'TASK-20260822-001');
+
+  assert.equal(registry.registryVersion, 3);
+  assert.ok(task);
+  assert.equal(task.status, 'DONE');
+  assert.equal(task.nextAction, null);
+
+  const byId = new Map(
+    projection.taskBlueprints.map((blueprint: any) => [blueprint.id, blueprint])
+  );
+  assert.equal(byId.get('TB-W1-05')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-03')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-04')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'DONE');
+});
+
+
+test('TB-W1-03 reconciles all AF-01..36 without fabricating new implementation work', async () => {
+  const design = JSON.parse(
+    await readFile('.mcp/gwc-evolution-design.json', 'utf8')
+  );
+  const current = design.postIntegrationReconciliation?.findings ?? [];
+
+  assert.equal(current.length, 36);
+  assert.deepEqual(
+    current.map((entry: any) => entry.id).sort(),
+    Array.from({ length: 36 }, (_, index) => `AF-${String(index + 1).padStart(2, '0')}`)
+  );
+
+  for (const finding of current) {
+    assert.ok(
+      ['RESOLVED', 'ABSORBED', 'ACCEPTED_BOUNDARY', 'DEFERRED', 'SUPERSEDED'].includes(finding.disposition),
+      `${finding.id} has invalid disposition ${finding.disposition}`
+    );
+    assert.ok(Array.isArray(finding.evidenceRefs));
+    assert.ok(Array.isArray(finding.residualTaskBlueprints));
+    assert.equal(finding.historicalCandidateReplayAllowed, false);
+  }
+
+  const byId = new Map(current.map((entry: any) => [entry.id, entry]));
+  assert.equal(byId.get('AF-19')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-22')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-30')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-31')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-32')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-35')?.disposition, 'RESOLVED');
+  assert.equal(byId.get('AF-36')?.disposition, 'RESOLVED');
+  assert.ok(byId.get('AF-01')?.residualTaskBlueprints.includes('TB-W3-B3-01'));
+  assert.ok(byId.get('AF-14')?.residualTaskBlueprints.includes('TB-COND-C1-ACTIVATE'));
+});
+
+test('TB-W1-04 resolves implemented OD decisions and preserves real deferred decisions', async () => {
+  const [designRaw, projectionRaw] = await Promise.all([
+    readFile('.mcp/gwc-evolution-design.json', 'utf8'),
+    readFile('docs/governance/program-backlog-convergence.json', 'utf8')
+  ]);
+  const design = JSON.parse(designRaw);
+  const projection = JSON.parse(projectionRaw);
+  const decisions = design.postIntegrationReconciliation?.decisions ?? [];
+
+  assert.equal(decisions.length, 12);
+  const byId = new Map(decisions.map((entry: any) => [entry.id, entry]));
+
+  for (const id of ['OD-01','OD-02','OD-03','OD-04','OD-05','OD-06','OD-07','OD-10','OD-11','OD-12']) {
+    assert.equal(byId.get(id)?.disposition, 'RESOLVED', `${id} should be resolved from integrated evidence`);
+  }
+  assert.equal(byId.get('OD-08')?.disposition, 'DEFERRED');
+  assert.equal(byId.get('OD-09')?.disposition, 'DEFERRED');
+  assert.deepEqual(byId.get('OD-08')?.residualTaskBlueprints, ['TB-COND-OD08']);
+  assert.deepEqual(byId.get('OD-09')?.residualTaskBlueprints, ['TB-COND-OD09']);
+
+  const program = new Map(
+    projection.taskBlueprints.map((blueprint: any) => [blueprint.id, blueprint])
+  );
+  assert.equal(program.get('TB-COND-OD08')?.readiness?.state, 'DEFERRED');
+  assert.equal(program.get('TB-COND-OD08')?.readiness?.autoPromotable, false);
+  assert.equal(program.get('TB-COND-OD09')?.readiness?.state, 'DEFERRED');
+  assert.equal(program.get('TB-COND-OD09')?.readiness?.autoPromotable, false);
+  assert.equal(program.get('TB-W1-03')?.readiness?.state, 'DONE');
+  assert.equal(program.get('TB-W1-04')?.readiness?.state, 'DONE');
+  assert.equal(program.get('TB-W1-06')?.readiness?.state, 'DONE');
+  assert.equal(program.get('TB-W1-07')?.readiness?.state, 'DONE');
+});
+
+
+test('TB-W1-06 reconciles all current planning surfaces without rewriting history', async () => {
+  const [projectionRaw, todo, tasks, roadmap, gwcRaw, designRaw] = await Promise.all([
+    readFile('docs/governance/program-backlog-convergence.json', 'utf8'),
+    readFile('TODO.md', 'utf8'),
+    readFile('TASKS.md', 'utf8'),
+    readFile('ROADMAP.md', 'utf8'),
+    readFile('.mcp/gwc-blueprints.json', 'utf8'),
+    readFile('.mcp/gwc-evolution-design.json', 'utf8')
+  ]);
+  const projection = JSON.parse(projectionRaw);
+  const gwc = JSON.parse(gwcRaw);
+  const design = JSON.parse(designRaw);
+
+  assert.match(todo, /\| `PB-UAC` \| `DONE`/);
+  assert.doesNotMatch(todo, /- \[ \] prouver un artifact `mcp_git_status` S1 via OIDC/);
+  assert.match(todo, /TB-W1-01\.\.07/);
+
+  assert.doesNotMatch(tasks, /Tâche gouvernée courante — TASK-20260915-001/);
+  assert.doesNotMatch(tasks, /Tâche gouvernée actuelle — TASK-20260914-002/);
+  assert.match(tasks, /TB-W1-01\.\.07/);
+
+  assert.match(roadmap, /W1 COMPLETE/);
+  assert.match(roadmap, /TB-W1-01\.\.07 DONE/);
+
+  assert.equal(gwc.postIntegrationStatus, 'RECONCILED_CURRENT_MAIN');
+  assert.equal(design.postIntegrationVerdict, 'RECONCILED_WITH_DEFERRED_OD08_OD09');
+
+  const byId = new Map(
+    projection.taskBlueprints.map((blueprint: any) => [blueprint.id, blueprint])
+  );
+  assert.equal(byId.get('TB-W1-06')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'DONE');
+  assert.equal(byId.get('TB-W2-01')?.readiness?.state, 'READY');
+
+  assert.equal((projection.sourceCoverage.externalActiveWork ?? []).length, 0);
+  assert.ok((projection.sourceCoverage.completedExternalWork ?? []).length > 0);
+  assert.equal(
+    (projection.sourceCoverage.todoUnchecked ?? []).some(
+      (entry: any) => entry.text.includes('mcp_git_status') && entry.text.includes('OIDC')
+    ),
+    false
+  );
+});
+
+
+test('TB-W1-07 publishes the W1 readiness handoff and unlocks only GitHub READ R1', async () => {
+  const [projectionRaw, todo, tasks, roadmap] = await Promise.all([
+    readFile('docs/governance/program-backlog-convergence.json', 'utf8'),
+    readFile('TODO.md', 'utf8'),
+    readFile('TASKS.md', 'utf8'),
+    readFile('ROADMAP.md', 'utf8')
+  ]);
+  const projection = JSON.parse(projectionRaw);
+  const handoff = projection.w1ReadinessHandoff;
+
+  assert.equal(handoff?.status, 'PASS_WITH_EVIDENCE');
+  assert.equal(handoff?.baselineMainSha, 'd30b06f4c8b72b4888f32397be207798a56b8bb8');
+  assert.equal(handoff?.validatedPreHandoffHead, '0ca92d34ca5ba9f8e5656205d4c340614ac5736b');
+  assert.deepEqual(handoff?.validatedCiRuns, [36046502620, 36046505705]);
+  assert.equal(handoff?.runtimeTasksCreatedByW1, 0);
+
+  const blueprints = projection.taskBlueprints ?? [];
+  const byId = new Map(blueprints.map((blueprint: any) => [blueprint.id, blueprint]));
+  assert.equal(byId.get('TB-W1-07')?.readiness?.state, 'DONE');
+  for (const id of ['TB-W2-01', 'TB-W2-02', 'TB-W2-03']) {
+    assert.equal(byId.get(id)?.readiness?.state, 'READY', `${id} should be READY after W1 handoff`);
+    assert.deepEqual(byId.get(id)?.writeAuthorities, []);
+  }
+  assert.equal(
+    blueprints.some((blueprint: any) => blueprint.waveId === 'W3' && blueprint.readiness?.state === 'READY'),
+    false
+  );
+  assert.equal(projection.executionModel?.currentWave, 'W2');
+
+  assert.match(roadmap, /W1 COMPLETE/);
+  assert.match(roadmap, /W2 READY/);
+  assert.match(todo, /W1 Program State Convergence.*DONE/s);
+  assert.match(todo, /W2 GitHub READ.*planning-ready/s);
+  assert.match(tasks, /\[x\] W1 — Program State Convergence/);
+  assert.match(tasks, /W2 .*planning-ready/);
 });

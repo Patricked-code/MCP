@@ -1,5 +1,40 @@
 # CHANGELOG.md
 
+## 2026-09-24 — W1 readiness handoff
+
+- W1 Program State Convergence clôturé : TB-W1-01..07 DONE.
+- W2 GitHub READ R1 devient la seule vague planning-ready avec trois blueprints indépendants et read-only.
+- W3/W4 restent bloqués; aucun runtime Task/Session/Lock n'est précréé par le handoff.
+
+## 2026-09-24 — W1 planning coherence gate
+
+- Synchronisation current-first de ROADMAP/TODO/TASKS avec Program Backlog V2.
+- UAC et GitHub-first OIDC proof passent des surfaces actives/TODO à provenance accomplie.
+- C2/G3 historiques cessent d'être présentés comme NEXT_ACTION runtime.
+- GWC blueprints/evolution design exposent un statut post-intégration distinct de leurs champs PRECODE historiques.
+- W1-07 devient le seul prochain blueprint planning-ready.
+
+## 2026-09-24 — W1 AF/OD current-first reconciliation
+
+- Ajout d'une matrice post-intégration pour AF-01..36 et OD-01..12 dans la projection GWC existante.
+- Les champs historiques restent provenance; les dispositions current-first empêchent tout replay automatique.
+- OD-08 et OD-09 restent explicitement deferred et reçoivent deux Task Blueprints planning-only à gates de besoin réel.
+- W1-06 devient le prochain lot planning-ready; W2 reste bloqué jusqu'au handoff W1-07.
+
+## 2026-09-24 — W1 GWC/task-registry reconciliation
+
+- Ajout d'une disposition post-intégration current-first aux 18 GWC sans altérer leur provenance PRECODE.
+- Les capacités déjà intégrées restent acquises; les seuls résiduels connus sont routés vers les blueprints W2/W3 au lieu de rejouer GWC-0..17.
+- Seed task-registry version 3 : `TASK-20260822-001` terminalisé à DONE pour les nouvelles initialisations, sans mutation de la Task Queue live.
+- W1-03/W1-04 deviennent les prochains lots planning-ready.
+
+## 2026-09-24 — W1.1 post-UAC baseline freeze
+
+- `TB-W1-01` figé sur `main@d30b06f4c8b72b4888f32397be207798a56b8bb8` avec CI #1867, Governed Deploy #70 et preuves OIDC #172/#173.
+- Program Backlog V2 expose désormais cette baseline et passe `TB-W1-01` à DONE ; seuls `TB-W1-02` et `TB-W1-05` deviennent planning-ready.
+- `CLAUDE.md` impose explicitement le chargement de Program Backlog V2 et la sélection d'un blueprint READY après reobservation/collision checks.
+- Aucun runtime Task/Session/Lock créé ; W2/W3/W4 restent gouvernés par leurs dépendances.
+
 ## 2026-09-24 — Program Backlog V2
 
 - Extension existing-first de `program-backlog-convergence.json` en plan de programme V2 machine-readable.

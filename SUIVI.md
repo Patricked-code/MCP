@@ -1,5 +1,63 @@
 # SUIVI.md
 
+## 2026-09-24 — W1.7 — readiness handoff publié
+
+- RED `7af6f9551db29f9d1d2823787d021c7a74f8abd7`, MCP CI #1894 : un seul échec ciblé, absence du handoff W1.
+- Pré-handoff exact validé : `0ca92d34ca5ba9f8e5656205d4c340614ac5736b`, MCP CI push #1892 / run `36046502620` et PR #1893 / run `36046505705`, tous gates SUCCESS.
+- `TB-W1-01..07 = DONE`; W1 est COMPLETE.
+- Seuls `TB-W2-01 github_get_commits`, `TB-W2-02 github_get_tree`, `TB-W2-03 github_get_required_checks` passent READY.
+- Aucun blueprint W3 ne devient READY; maintenance/conditional/deferred conservent leurs gates.
+- W1 a créé 0 runtime Task, 0 Governed Session et 0 runtime Lock; aucune ancienne branche #85/#86/#88/#89/#90 n'a été reprise.
+- NEXT_ACTION : valider ce head exact, self-review PR #174, fusionner sous garde exact-head, attester main/S1/runtime, puis commencer W2 dans l'Integration Slot existant `src/tools/githubControlPlaneRead.ts`.
+
+## 2026-09-24 — W1.6 — planning/document coherence gate
+
+- RED `0e831debd7c5b4226c20deedc6de93700db615a9`, MCP CI #1886 : échec ciblé sur la contradiction TODO `PB-UAC=ACTIVE` alors que UAC est terminal.
+- TODO workstream dispositions sont resynchronisées depuis Program Backlog V2; le probe `mcp_git_status` OIDC S1 est désormais coché acquis.
+- Les entrées UAC ne sont plus dans `externalActiveWork`; elles sont conservées comme `completedExternalWork` avec la preuve OIDC Program Backlog V2.
+- TASKS ne présente plus C2/G3 historiques comme états runtime « courants » et route le résiduel G3 vers `TB-W4-G3-01`.
+- ROADMAP expose `TB-W1-01..06 DONE` et `TB-W1-07 READY`.
+- Les registres GWC conservent leurs champs PRECODE historiques mais exposent explicitement `postIntegrationStatus` / `postIntegrationVerdict` current-first.
+- `TB-W1-06 = DONE`; `TB-W1-07` devient le seul blueprint planning-ready; W2 reste BLOCKED.
+- NEXT_ACTION : valider exact-head, exécuter TB-W1-07 comme handoff/readiness gate, puis seulement déverrouiller W2.
+
+## 2026-09-24 — W1.3/W1.4 — AF-01..36 + OD-01..12 reconciled
+
+- RED `2d4129904c9bcf08724ad09a28dd0845d409f0bc`, MCP CI #1880 : 2 échecs ciblés seulement — matrice AF post-intégration absente et matrice OD/résiduels deferred absente.
+- Les 36 findings sont maintenant classés current-first sans écraser leurs champs historiques : RESOLVED, ABSORBED, ACCEPTED_BOUNDARY ou DEFERRED. Aucun `corrected=false` historique ne crée automatiquement une Task.
+- Résiduels structurants : AF-01..05 → B3 current-main residuals ; AF-06 → provisioning project/runtime policy ; AF-14 → activation GitRegistry V2 conditionnelle. Les autres findings sont résolus/absorbés/acceptés avec preuves ou frontières explicites.
+- AF-19, AF-22, AF-30, AF-31, AF-32, AF-35 et AF-36 sont explicitement RESOLVED par leurs corrections/tests/autorités intégrés.
+- OD-01/02/03/04/05/06/07/10/11/12 = RESOLVED depuis les implémentations GWC intégrées et DECISIONS_LOG.
+- OD-08 reste DEFERRED : le modèle actuel garantit l'atomicité dans l'autorité process/store existante, pas une concurrence multi-process distribuée non demandée.
+- OD-09 reste DEFERRED : le substrate échoue fermé sur une version incompatible ; une migration n'est justifiée que lorsqu'une nouvelle version incompatible existe réellement.
+- Deux blueprints planning-only sont ajoutés : `TB-COND-OD08` et `TB-COND-OD09`, tous deux non auto-promotables et gardés par un trigger explicite.
+- `TB-W1-03 = DONE`, `TB-W1-04 = DONE`; `TB-W1-06` devient planning-ready. W2 reste bloqué jusqu'à W1-07.
+- NEXT_ACTION : valider exact-head puis exécuter TB-W1-06 pour réconcilier ROADMAP/TODO/TASKS/backlog/canonical projections, sans modifier l'historique immutable PR95.
+
+## 2026-09-24 — W1.2/W1.5 — GWC + static task-registry reconciled
+
+- RED `4309473f8e5b0235756b36b964cf40b426ff1a56`, MCP CI #1872 : 2 échecs ciblés seulement — GWC sans disposition post-intégration et `TASK-20260822-001` seed encore READY.
+- W1-02 : les 18 GWC disposent de checkpoints historiques PASS_WITH_EVIDENCE et leurs modules/tests existent dans le main observé. Aucun GWC-0..17 n'est rejoué.
+- GWC sans delta direct = DONE ; GWC-6/7/8/9/10/12 = ABSORBED avec résiduels explicitement routés vers les Task Blueprints W2/W3 actuels.
+- GWC-6→C3, GWC-7→C4, GWC-8→C5, GWC-9→D1/D2/D3, GWC-10→B3, GWC-12→GitHub READ R1 + PR-WRITE/admin bornés.
+- W1-05 : `.mcp/task-registry.json` passe en registryVersion 3 et le seed historique `TASK-20260822-001` devient DONE/nextAction=null. Cela évite qu'un store neuf ressuscite le bootstrap livré.
+- Cette modification du seed ne réécrit aucune Governed Task live existante : `initializeSeed()` ignore les IDs déjà présents et la Governed Task Queue reste l'autorité runtime.
+- `TB-W1-02 = DONE`, `TB-W1-05 = DONE`; `TB-W1-03` (AF-01..36) et `TB-W1-04` (OD-01..12) deviennent planning-ready. W1-06 et W2 restent bloqués.
+- NEXT_ACTION : réobserver HEAD puis exécuter TB-W1-03 + TB-W1-04 sur la même PR #174; ne créer aucune implémentation pour un finding/décision déjà absorbé.
+
+## 2026-09-24 — W1.1 / TB-W1-01 — baseline post-UAC figée
+
+- Baseline current-first : `main=d30b06f4c8b72b4888f32397be207798a56b8bb8`.
+- Preuves associées : MCP CI main #1867 / run `36032772266` SUCCESS ; Governed Deploy #70 / run `36032772198` SUCCESS.
+- OIDC read-only : issue #172 / run `36033010867` pour `mcp_git_status` et issue #173 / run `36033024534` pour `docker_status`, tous deux SUCCESS, `mutationAllowed=false`, SSH fallback SKIPPED.
+- S1 attesté sur le même SHA, worktree propre, fetch read-only, push désactivé ; Docker healthy.
+- Aucune PR W1 concurrente observée. Les PR #85/#86/#88/#89/#90 restent ouvertes physiquement mais classées provenance historique uniquement.
+- TDD RED `2e92a7aa08a181b3451e8b311995363743a23d16`, MCP CI #1869 : 2 échecs ciblés (baseline W1 absente + porte d'entrée agent Program Backlog V2 non explicite), tous les tests antérieurs verts.
+- GREEN : `TB-W1-01 = DONE`; `TB-W1-02` et `TB-W1-05` deviennent les seuls dépendants directs planning-ready ; W2 reste bloqué.
+- `CLAUDE.md` charge désormais explicitement Program Backlog V2 et impose `SELECT_READY_BLUEPRINT`, reobservation live, collisions et `HEAD_MOVED → RECONCILE`.
+- Aucun `TASK-*`, Governed Session ou runtime lock n'a été créé par W1-01.
+- NEXT_ACTION : poursuivre sur la même branche W1 avec `TB-W1-02` (GWC-0..17) et `TB-W1-05` (static task-registry), après reobservation du HEAD et des scopes.
+
 ## 2026-09-24 — Program Backlog V2 — lancement W1 post-UAC
 
 - Baseline observée avant le chantier : `main=ebc7443513627450643d46c8e676b795cc3aa03a`, UAC-01..24 terminal.

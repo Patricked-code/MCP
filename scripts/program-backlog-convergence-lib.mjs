@@ -66,7 +66,7 @@ function sourceKey(record) {
   return record.sourceKey;
 }
 
-const ALLOWED_BLUEPRINT_READINESS = new Set(['READY', 'BLOCKED', 'DEFERRED', 'CONDITIONAL']);
+const ALLOWED_BLUEPRINT_READINESS = new Set(['DONE', 'READY', 'BLOCKED', 'DEFERRED', 'CONDITIONAL']);
 
 function detectBlueprintCycles(blueprints) {
   const byId = new Map(blueprints.map((entry) => [entry.id, entry]));

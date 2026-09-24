@@ -39,14 +39,14 @@ Règles : aucun takeover depuis heartbeat, aucun bridge interactif quand GitHub/
 
 Le programme restant est pré-découpé dans `docs/governance/program-backlog-convergence.json` V2. Ce registre reste une projection **non exécutable** et ne remplace jamais la Governed Task Queue.
 
-- [ ] W1 — Program State Convergence : `TB-W1-01` → `TB-W1-07` ;
-- [ ] W2 — GitHub READ R1 : commits, tree, required checks ;
+- [x] W1 — Program State Convergence : `TB-W1-01..07` DONE ; handoff readiness publié ;
+- [ ] W2 — GitHub READ R1 planning-ready : `TB-W2-01 github_get_commits`, `TB-W2-02 github_get_tree`, `TB-W2-03 github_get_required_checks` ;
 - [ ] W3 — A2.2/A3, B3/C1/C3-C5, D1-D3, E1-E3, F et writes GitHub bornés ;
 - [ ] W4 — G1-G3, H, I1-I3, J1/J2 ;
 - [ ] maintenance J3 séparée ;
 - [ ] conditional/deferred : C1 activation, J4 enforce, SSH fallback, extra server WRITE, GitHub destructif, Stablecoin app deploy.
 
-Aucun de ces items n'est un `TASK-*` tant que les autorités runtime ne l'ont pas matérialisé après reobservation, readiness et collision check. Le premier blueprint planning-ready est `TB-W1-01`.
+Aucun de ces items n'est un `TASK-*` tant que les autorités runtime ne l'ont pas matérialisé après reobservation, readiness et collision check. Les blueprints planning-ready courants sont `TB-W2-01`, `TB-W2-02` et `TB-W2-03`; W3 reste bloqué jusqu'à leur clôture.
 
 
 ## Tâche gouvernée — AfricaFunds project-aware S2 mapping
@@ -226,7 +226,7 @@ Preuves de clôture acquises :
 
 `TASK-20260901-002 — Final A2.1 documentation reconciliation` est la tâche documentaire bornée qui porte la présente mise à jour des six fichiers canoniques. Son état, sa branche, sa PR, ses locks et sa session restent sous l'autorité de la Governed Task Queue, d'Operational Memory et de GitHub; ce document n'anticipe pas son statut terminal.
 
-## Tâche gouvernée courante — TASK-20260915-001 — C2 Repository → Project Resolution
+## Historique C2 — TASK-20260915-001 — ancien checkpoint, ne pas utiliser comme état runtime courant
 
 - [x] enregistrer et claim la Task C2 existante sous Governed Session ;
 - [x] utiliser le lock minimal `resource:project-binding:repository-project-resolution` ;
@@ -240,12 +240,12 @@ Preuves de clôture acquises :
 - [x] observer GitHub/S1/origin-main/runtime exact-SHA, S1 propre/read-only et runtime healthy ;
 - [x] enregistrer `runtimeRevision=46d576e53820eba0360647b6fd96d41dd4a2bbc6` sur la Task sans redéploiement manuel ;
 - [x] ouvrir la réconciliation docs-only `mcp/c2-terminal-documentation-20260915` depuis le merge attesté ;
-- [ ] obtenir CI/revue/merge/autodeploy de la réconciliation documentaire ;
-- [ ] obtenir Live State sans `DOCUMENTATION_DRIFT` ;
-- [ ] transitionner C2 vers `VERIFYING` puis `DONE` uniquement sur preuves ;
-- [ ] checkpoint terminal, release lock, fermeture de session et réconciliation de la queue.
 
-Autorité : Operational Memory observe actuellement C2 en `DEPLOYING` révision 10. Ce fichier ne pré-déclare aucun état terminal.
+
+
+
+
+Ce bloc conserve l'historique de C2 au moment de son exécution. Il ne déclare plus un état runtime courant : toute preuve Task/Session/Lock doit être relue dans les autorités live. Program Backlog V2 classe C2 parmi les foundations livrées et interdit de reprendre ce bloc comme NEXT_ACTION.
 
 ## Prochaines tâches candidates — après C2
 
@@ -301,7 +301,7 @@ Interdictions : aucun nouveau Session Manager, second GitRegistry, seconde Task 
 Autorité : Operational Memory garde le statut/revision/locks/session courants. Le socle de vérification est livré ; GitRegistry V2 n'est pas activé.
 
 
-## Tâche gouvernée actuelle — TASK-20260914-002 — G3 Client Tool Surface Attestation V1
+## Historique G3 V1 — TASK-20260914-002 — ancien checkpoint, résiduel courant dans TB-W4-G3-01
 
 - [x] attester la surface d'outils client via le modèle `CapabilityReality` existant et la provenance `CLIENT_ATTESTATION`, sans store, registre, cache, queue ni service parallèle ;
 - [x] produire le RED `f87baa4e` puis le GREEN `ae7bec13` du slot d'attestation borné ;
@@ -313,9 +313,9 @@ Autorité : Operational Memory garde le statut/revision/locks/session courants. 
 - [x] fusionner #87 sous garde `expected_head_sha` au merge `dc4698de66b7becfc924ea4fabe8037e089d3336` sous `G3_EXACT_HEAD_MERGE_AUTHORIZATION_V2`, puis attester Governed Deploy #39 et MCP CI #920 ;
 - [x] enregistrer le checkpoint post-merge `759d2395-f2fc-4d2a-b2bf-6c6ba440908e` (`G3_MERGED_EXACT_HEAD`) sur Live State `228` ;
 - [x] projeter la preuve de déploiement exact-SHA déjà acquise en enregistrant le `runtimeRevision` attesté `dc4698de66b7becfc924ea4fabe8037e089d3336` sur la tâche, sans redéploiement; `deploymentExactShaSuccess` et `runtimeAligned` valent désormais `true` ;
-- [ ] réconcilier le `DOCUMENTATION_DRIFT` post-déploiement par la présente projection canonique et obtenir un Live State sans contradiction documentaire ;
-- [ ] transitionner `DEPLOYING → VERIFYING → DONE` uniquement si les preuves live le permettent, puis checkpoint terminal, release locks, fermeture de session et réconciliation de la queue.
 
-Autorité : Operational Memory garde le statut, la révision, les locks et la session courants. Statut observé au moment de cette écriture : `DEPLOYING`, révision 10, Governed Session `c4f08e5c-aeba-4297-b711-5e6808227225`. Aucun DONE n'est anticipé par ce fichier.
+
+
+Ce bloc conserve l'observation historique G3 V1 et ne prétend plus représenter Task/Session/Lock courants. Le résiduel current-first est `TB-W4-G3-01`; toute reprise doit partir de Program Backlog V2 et des autorités live.
 
 Frontières : aucune activation GitRegistry V2, aucun transport SSH, aucune délégation d'exécution externe, aucune permission supplémentaire, aucun secret et aucun déploiement manuel dans cette tâche. Le Git/GitHub Control Plane parallèle reste hors scope et ne précède pas C2 sans dépendance live prouvée.

@@ -495,18 +495,11 @@ La roadmap reste la vision du programme. La couverture exhaustive et la classifi
 W0 COMPLETE
   PB-UAC / PR #154 → merged/deployed/attested
         ↓
-W1 ACTIVE — PROGRAM STATE CONVERGENCE
-  Post-UAC exact-main rebaseline
-  GWC-0..17 ↔ current main
-  AF-01..36 ↔ current evidence
-  OD-01..12 ↔ DECISIONS_LOG/current main
-  static task-registry ↔ runtime authorities
-  ROADMAP/TODO/TASKS/backlog projections
+W1 COMPLETE — PROGRAM STATE CONVERGENCE
+  TB-W1-01..07 DONE
+  baseline + GWC + AF + OD + task-registry + planning projections reconciled
         ↓
-W1 EXIT
-  machine-readable task blueprints + dependency/readiness graph
-        ↓
-W2 CAPACITÉS GITHUB COMPLÉMENTAIRES
+W2 READY — CAPACITÉS GITHUB COMPLÉMENTAIRES
   github_get_commits
   github_get_tree
   github_get_required_checks
@@ -628,7 +621,7 @@ Objectif : faire de GitHub la porte d'entrée de continuité opérationnelle, sa
 - environnements `mcp-s1-readonly` / `mcp-s2-readonly` ;
 - aucun fallback serveur d'écriture en V1.
 
-Étape suivante après merge : configurer/attester les deux GitHub Environments read-only, puis prouver un probe S1 et un probe Stablecoin S2 sans bridge interactif.
+État post-merge : le chemin OIDC read-only S1 est attesté sans bridge interactif et le fallback SSH reste conditionnel. Les preuves courantes sont versionnées dans Program Backlog/SUIVI ; tout besoin S2 ou fallback supplémentaire reste un lot séparé et borné.
 
 
 ## Programme post-intégration — récupération contrôlée des intentions historiques (2026-09-22)

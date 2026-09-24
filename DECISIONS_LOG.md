@@ -1,5 +1,35 @@
 # DECISIONS_LOG.md
 
+## 2026-09-24 — W1 se termine par un handoff, pas par la création anticipée des tâches W2
+
+Décision : le succès W1 déverrouille uniquement la readiness planning des trois READ GitHub. Il ne crée ni ne claim automatiquement aucune Governed Task. Un agent W2 réobserve d'abord main/PRs/scopes et réutilise `src/tools/githubControlPlaneRead.ts`.
+
+Les trois READ W2 ont des collision domains distincts et peuvent être menés indépendamment si l'observation courante confirme l'absence de conflit. Aucun W3 ne devient READY avant leur clôture.
+
+## 2026-09-24 — Les surfaces de pilotage courantes ne doivent jamais afficher un snapshot runtime ancien comme CURRENT
+
+Décision : les blocs historiques TASKS/ROADMAP/SUIVI restent conservés pour provenance, mais leurs titres et textes doivent indiquer explicitement leur caractère historique lorsqu'ils ne représentent plus le NEXT_ACTION courant. Program Backlog V2 + autorités live déterminent la reprise.
+
+Les preuves terminées ne restent pas dans `externalActiveWork` ni comme TODO non coché. Elles migrent vers une catégorie de provenance accomplie sans supprimer leur trace.
+
+## 2026-09-24 — Les états AF/OD historiques ne sont pas des instructions d'implémentation
+
+Décision : `.mcp/gwc-evolution-design.json` conserve les champs historiques `corrected` et états d'origine comme provenance, mais expose une réconciliation post-intégration current-first. Une valeur historique `corrected=false`, `OPEN` ou `NARROWED` ne peut jamais créer ou autoriser une tâche.
+
+OD-08 et OD-09 restent volontairement différées. OD-08 ne sera ouverte que si une exigence réelle de concurrence Operational Memory multi-process/distribuée est prouvée. OD-09 ne sera ouverte que si une version Contract/Graph incompatible est effectivement introduite. Le fail-closed actuel reste préférable à une migration spéculative.
+
+## 2026-09-24 — GWC intégré est une capacité acquise, pas un backlog à rejouer
+
+Décision : GWC-0..17 reste une architecture/implémentation historique intégrée. La réconciliation W1 lui ajoute uniquement une disposition post-intégration et route les extensions résiduelles vers les Task Blueprints current-first. Aucun agent ne doit transformer un ancien `BLUEPRINT_ONLY` PRECODE en nouvelle implémentation runtime.
+
+Le static task-registry est un seed d'initialisation et non l'autorité live. Une tâche historique livrée peut être terminalisée dans une nouvelle version du seed pour éviter sa résurrection sur un store neuf; cette opération ne modifie jamais un record déjà présent dans la Governed Task Queue.
+
+## 2026-09-24 — Toute reprise agent post-UAC commence par Program Backlog V2
+
+Décision : `CLAUDE.md` doit conduire explicitement toute nouvelle session à lire `SUIVI.md` et `docs/governance/program-backlog-convergence.json`, réobserver les autorités pertinentes puis sélectionner uniquement un blueprint `READY`. Un Task Blueprint n'est jamais une permission ni une Task runtime ; la Governed Task Queue, la Governed Session et le Governed Lock Service restent les autorités d'exécution et de collision.
+
+`TB-W1-01` est clos sur la baseline exacte `d30b06f4c8b72b4888f32397be207798a56b8bb8`. Seuls ses dépendants directs `TB-W1-02` et `TB-W1-05` deviennent planning-ready. Aucun saut vers W2/W3/W4 n'est autorisé avant les gates W1 correspondants.
+
 ## 2026-09-24 — Programmer tout le travail restant sans précréer les Tasks runtime
 
 Décision : le programme post-UAC est entièrement pré-découpé en vagues/lots/Task Blueprints dans l'unique projection versionnée `docs/governance/program-backlog-convergence.json`. Aucune deuxième Task Queue, aucun deuxième registre runtime et aucune branche par tâche ne sont créés.
