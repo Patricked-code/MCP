@@ -1,7 +1,7 @@
 # Universal Agent Coordination — execution plan
 
 Status: ACTIVE — PR #154
-Baseline reconciled: `main@84bbe9b1684f5f6be73eaf2d6aa21063fb62697a` via non-destructive merge commit `c967a068a683033580b091405a5e8b7a837d4ecb`
+Baseline reconciled: `main@327379a782a7f13940f0edf302dced833b326dca` via non-destructive merge commit `3c6fc979055922fbb24ea48a86ecbf1516b96d3c` (previous reconciliation `c967a068a683033580b091405a5e8b7a837d4ecb`)
 Branch: `mcp/universal-agent-coordination-20260923`
 
 ## Mission
@@ -60,8 +60,8 @@ This inventory is descriptive and read-only. It identifies the existing owner fo
 | UAC-08 | GitHub execution binding | GREEN | existing GitHub context projected with repository/branch/HEAD/PR/checks/reviews exact-head evidence unchanged |
 | UAC-09 | Checkpoint + NEXT_ACTION projection | GREEN | checkpoint/current task/blockers/NEXT_ACTION exposed by source without inventing precedence |
 | UAC-10 | GitHub-first read-only exposure | GREEN | existing `GITHUB_ACTION_READONLY_EVIDENCE` fallback + non-mutating workflow reused; live OIDC issues #162/#163 succeeded with SSH fallback skipped |
-| UAC-11 | Historical PRECODE compatibility adapter | TODO | old candidate sessions/claims readable but not reactivated |
-| UAC-12 | Multi-agent collision E2E | TODO | second writer blocked/routed safely |
+| UAC-11 | Historical PRECODE compatibility adapter | GREEN | historical CandidateSession/Claim/WorkItem projected read-only; reactivation/takeover/write/authorization all forbidden |
+| UAC-12 | Multi-agent collision E2E | GREEN | existing Task Queue resource-scope + Governed Lock conflict paths fail closed; foreign owner cannot transition; no ownership transfer inferred |
 | UAC-13 | Stale heartbeat E2E | TODO | stale agent retains claim until authoritative release/recovery |
 | UAC-14 | Unknown heartbeat E2E | TODO | fail-closed; no ownership inference |
 | UAC-15 | Reconnect/resume E2E | TODO | same agent resumes compatible task/claim |

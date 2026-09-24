@@ -51,7 +51,13 @@
 - Preuve E2E réelle déjà acquise : issues GitHub #162/#163 → runs `35800800997`/`35800806867` SUCCESS via `github_oidc_mcp_readonly`, `collect_ssh_fallback=skipped`, aucune mutation. UAC-10 est donc REUSE/GREEN et non une nouvelle surface parallèle.
 - MCP CI #1811 / run `35803144917` = SUCCESS exact-head sur `64953736ab260259adbdda392eba5108c5d26960`; UAC-10 validé.
 - UAC-11 RED ouvert sur les primitives PRECODE déjà présentes (`CandidateSession`, `CandidateWorkClaim`, `CandidateWorkItem`) : même une session/claim historique encore marquée `ACTIVE` doit rester provenance uniquement, avec réactivation session/claim, takeover, écriture et autorisation tous à `false`.
-- NEXT_ACTION : obtenir le RED exact-head UAC-11, puis GREEN par wrapper pur dans `candidateContinuity.ts`; ne jamais appeler le dispatcher/résolveur PRECODE pour réactiver l'ancien état.
+- UAC-11 RED prouvé par MCP CI #1817 / run `35803319656` sur `f1a83c5a49e677fc4b845701e188a6a613d86940` : échec ciblé `projectHistoricalCandidateCoordination is not a function`; les lots antérieurs restent verts.
+- GREEN existing-first dans `candidateContinuity.ts` : projection immutable de `CandidateSession` / `CandidateWorkClaim` / `CandidateWorkItem` avec `historical=true`, `sessionReactivationAllowed=false`, `claimReactivationAllowed=false`, `takeoverAllowed=false`, `currentOwnershipAuthority=false`, `authorizationGranted=false`, `mayWrite=false`, `mutationPerformed=false`.
+- MCP CI #1829 / run `36025194071` = SUCCESS exact-head sur `df092e00011cc17174d86bb99a671c3f902c423e`; UAC-11 validé.
+- `HEAD_MOVED` traité avant UAC-12 : `main` avait avancé à `327379a782a7f13940f0edf302dced833b326dca`. Réconciliation non destructive à deux parents `3c6fc979055922fbb24ea48a86ecbf1516b96d3c`, sans force-push; PR #154 = 27 commits devant `main`, 0 derrière.
+- MCP CI #1831 / run `36025562064` = SUCCESS exact-head sur `3c6fc979055922fbb24ea48a86ecbf1516b96d3c`; typecheck/build/docs/governance/GWC/secrets/read-only/whitespace tous verts après réconciliation.
+- UAC-12 = REUSE/GREEN sans nouveau mécanisme : `GovernedTaskQueue.reconcileIntent()` refuse un `active_resource_scope_conflict` ou `active_lock_scope_conflict`; `claimNextTask()` refuse `TASK_RESOURCE_CONFLICT`/`TASK_LOCK_CONFLICT`; `transitionTask()` refuse `TASK_NOT_OWNED_BY_SESSION`; les tests existants prouvent qu'un conflit de lock ne modifie aucun store et qu'aucun second writer ne reçoit l'ownership.
+- NEXT_ACTION : UAC-13 — prouver E2E qu'un heartbeat STALE ne libère ni ne réattribue une tâche/claim encore autoritativement owned; réutiliser Session + Task Queue + projection liveness existantes, sans nouveau store.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 
