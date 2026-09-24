@@ -669,3 +669,88 @@ test('UAC-11 exposes PRECODE candidate state as historical provenance only', asy
   assert.equal(closed.currentOwnershipAuthority, false);
   assert.equal(closed.takeoverAllowed, false);
 });
+
+
+test('UAC-13 stale heartbeat E2E keeps authoritative Task ownership intact', async () => {
+  const { projectGovernedSessionLivenessForCoordination } = await import(
+    '../src/governedWorkflow/adapters/session.js'
+  );
+  const { projectGovernedTaskClaimForCoordination } = await import(
+    '../src/governedWorkflow/adapters/task.js'
+  );
+
+  const governedSessionId = '55555555-5555-4555-8555-555555555555';
+  const session = {
+    schemaVersion: 1 as const,
+    governedSessionId,
+    repository: 'Patricked-code/MCP',
+    taskScope: 'coordination.universal',
+    workBranch: 'mcp/universal-agent-coordination-20260923',
+    agentIdentity: 'chatgpt',
+    ownerPrincipalId: null,
+    identityAssurance: 'declared_only' as const,
+    status: 'ACTIVE' as const,
+    createdAt: '2026-09-24T15:00:00Z',
+    resumedAt: null,
+    lastHeartbeatAt: '2026-09-24T15:00:00Z',
+    pausedAt: null,
+    expiredAt: null,
+    closedAt: null,
+    currentTransport: null,
+    lastAcknowledgedStateVersion: null,
+    bootstrapReceipt: null,
+    connectionContext: null,
+    sessionRevision: 21,
+    lastCheckpoint: null,
+    blockers: [],
+    nextAction: 'continue UAC',
+    lockIds: [],
+    resumePolicy: 'stable_principal_or_resume_secret' as const
+  };
+  const task = {
+    schemaVersion: 1 as const,
+    taskId: 'TASK-20260924-154',
+    repository: 'Patricked-code/MCP',
+    intentKey: 'coordination.universal',
+    title: 'Universal coordination',
+    summary: 'Owned task remains authoritative while liveness is stale',
+    priority: 100,
+    sequence: 154,
+    status: 'IN_PROGRESS' as const,
+    dependencies: [],
+    resourceScopes: ['coordination.universal'],
+    ownerGovernedSessionId: governedSessionId,
+    workBranch: 'mcp/universal-agent-coordination-20260923',
+    pullRequestNumber: 154,
+    observedHeadSha: 'd'.repeat(40),
+    runtimeRevision: null,
+    blockers: [],
+    nextAction: 'continue UAC',
+    source: { kind: 'agent' as const, requestDigest: 'e'.repeat(64) },
+    createdAt: '2026-09-24T15:00:00Z',
+    updatedAt: '2026-09-24T15:05:00Z',
+    taskRevision: 22
+  };
+  const beforeSession = JSON.stringify(session);
+  const beforeTask = JSON.stringify(task);
+
+  const ownedBefore = projectGovernedTaskClaimForCoordination(task);
+  const liveness = projectGovernedSessionLivenessForCoordination(
+    session,
+    '2026-09-24T15:10:00Z',
+    120
+  );
+  const ownedAfter = projectGovernedTaskClaimForCoordination(task);
+
+  assert.equal(liveness.liveness, 'STALE');
+  assert.equal(liveness.releaseAllowedByLiveness, false);
+  assert.equal(liveness.transferAllowedByLiveness, false);
+  assert.equal(ownedBefore.ownershipState, 'OWNED');
+  assert.equal(ownedAfter.ownershipState, 'OWNED');
+  assert.equal(ownedAfter.ownerGovernedSessionId, governedSessionId);
+  assert.equal(ownedAfter.releaseInferred, false);
+  assert.equal(ownedAfter.transferAllowed, false);
+  assert.equal(ownedAfter.takeoverAllowed, false);
+  assert.equal(JSON.stringify(session), beforeSession);
+  assert.equal(JSON.stringify(task), beforeTask);
+});
