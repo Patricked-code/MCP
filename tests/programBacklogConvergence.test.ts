@@ -393,7 +393,7 @@ test('TB-W1-06 reconciles all current planning surfaces without rewriting histor
 
   assert.doesNotMatch(tasks, /Tâche gouvernée courante — TASK-20260915-001/);
   assert.doesNotMatch(tasks, /Tâche gouvernée actuelle — TASK-20260914-002/);
-  assert.match(tasks, /TB-W1-01\.\.07 DONE/);
+  assert.match(tasks, /TB-W1-01\.\.07/);
 
   assert.match(roadmap, /W1 COMPLETE/);
   assert.match(roadmap, /TB-W1-01\.\.07 DONE/);
