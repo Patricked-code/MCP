@@ -814,3 +814,38 @@ test('UAC-14 unknown heartbeat E2E is fail-closed and never changes Task ownersh
   assert.equal(ownership.mutationPerformed, false);
   assert.equal(JSON.stringify(task), beforeTask);
 });
+
+
+test('UAC-22 self-review accepts ownership without fabricating a claimId', () => {
+  const snapshot = buildAgentCoordinationSnapshot({
+    ...base,
+    claim: {
+      claimId: null,
+      status: 'ACTIVE',
+      collisionDomains: ['resource:coordination.universal']
+    }
+  } as unknown as AgentCoordinationObservation);
+
+  assert.equal(snapshot.claimId, null);
+  assert.equal(snapshot.claimStatus, 'ACTIVE');
+  assert.equal(snapshot.authorities.includes('Claim'), false);
+});
+
+test('UAC-22 self-review includes lock collision domains in the universal projection', () => {
+  const snapshot = buildAgentCoordinationSnapshot({
+    ...base,
+    claim: {
+      ...base.claim!,
+      collisionDomains: ['resource:task-scope']
+    },
+    locks: [{
+      lockId: 'lock-uac22',
+      collisionDomain: 'resource:lock-scope'
+    }]
+  });
+
+  assert.deepEqual(snapshot.collisionDomains, [
+    'resource:lock-scope',
+    'resource:task-scope'
+  ]);
+});
