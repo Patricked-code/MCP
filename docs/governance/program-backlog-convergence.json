@@ -2283,8 +2283,8 @@
       "completionRule": "A blueprint completion updates/checkpoints evidence first, then only direct dependents are re-evaluated.",
       "noRuntimeSideEffect": true
     },
-    "currentWave": "W2",
-    "currentWaveStatus": "READY_FOR_GITHUB_READ_R1"
+    "currentWave": "W3",
+    "currentWaveStatus": "READY_FOR_W3_FOUNDATION_INVENTORIES"
   },
   "agentHandoffContract": {
     "steps": [
@@ -2830,10 +2830,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "READY",
-        "autoPromotable": true,
+        "state": "DONE",
+        "autoPromotable": false,
         "requiredExplicitGates": [],
-        "reason": "W1-07 PASS_WITH_EVIDENCE; GitHub READ R1 is the next planning wave. Live GitHub/collision reobservation remains mandatory before mutation."
+        "reason": "W2 GitHub READ R1 implemented and validated on the exact implementation head with push/PR CI green; completion handoff checkpointed."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -2862,6 +2862,18 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "validatedImplementationHead": "3904d22d033671b3b7fd13ebf428dbcad018faad",
+        "validatedCiRuns": [
+          36052669788,
+          36052673702
+        ],
+        "pullRequest": 176,
+        "redHead": "6dc54eb63a2142876bc546bae949c213e3697095",
+        "greenHead": "3904d22d033671b3b7fd13ebf428dbcad018faad",
+        "outputCapability": "github_get_commits",
+        "writeAuthoritiesAdded": 0
       }
     },
     {
@@ -2897,10 +2909,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "READY",
-        "autoPromotable": true,
+        "state": "DONE",
+        "autoPromotable": false,
         "requiredExplicitGates": [],
-        "reason": "W1-07 PASS_WITH_EVIDENCE; GitHub READ R1 is the next planning wave. Live GitHub/collision reobservation remains mandatory before mutation."
+        "reason": "W2 GitHub READ R1 implemented and validated on the exact implementation head with push/PR CI green; completion handoff checkpointed."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -2929,6 +2941,18 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "validatedImplementationHead": "3904d22d033671b3b7fd13ebf428dbcad018faad",
+        "validatedCiRuns": [
+          36052669788,
+          36052673702
+        ],
+        "pullRequest": 176,
+        "redHead": "6dc54eb63a2142876bc546bae949c213e3697095",
+        "greenHead": "3904d22d033671b3b7fd13ebf428dbcad018faad",
+        "outputCapability": "github_get_tree",
+        "writeAuthoritiesAdded": 0
       }
     },
     {
@@ -2964,10 +2988,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "READY",
-        "autoPromotable": true,
+        "state": "DONE",
+        "autoPromotable": false,
         "requiredExplicitGates": [],
-        "reason": "W1-07 PASS_WITH_EVIDENCE; GitHub READ R1 is the next planning wave. Live GitHub/collision reobservation remains mandatory before mutation."
+        "reason": "W2 GitHub READ R1 implemented and validated on the exact implementation head with push/PR CI green; completion handoff checkpointed."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -2996,6 +3020,18 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "validatedImplementationHead": "3904d22d033671b3b7fd13ebf428dbcad018faad",
+        "validatedCiRuns": [
+          36052669788,
+          36052673702
+        ],
+        "pullRequest": 176,
+        "redHead": "6dc54eb63a2142876bc546bae949c213e3697095",
+        "greenHead": "3904d22d033671b3b7fd13ebf428dbcad018faad",
+        "outputCapability": "github_get_required_checks",
+        "writeAuthoritiesAdded": 0
       }
     },
     {
@@ -3033,10 +3069,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "W2 PASS_WITH_EVIDENCE; all direct W2 dependencies are DONE. Planning-ready only: live Task Queue/Session/locks/main and collision domains must be reobserved before any runtime materialization or mutation."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -3171,10 +3207,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "W2 PASS_WITH_EVIDENCE; all direct W2 dependencies are DONE. Planning-ready only: live Task Queue/Session/locks/main and collision domains must be reobserved before any runtime materialization or mutation."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -3311,10 +3347,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "W2 PASS_WITH_EVIDENCE; all direct W2 dependencies are DONE. Planning-ready only: live Task Queue/Session/locks/main and collision domains must be reobserved before any runtime materialization or mutation."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -3453,10 +3489,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "W2 PASS_WITH_EVIDENCE; all direct W2 dependencies are DONE. Planning-ready only: live Task Queue/Session/locks/main and collision domains must be reobserved before any runtime materialization or mutation."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -6343,5 +6379,30 @@
     "runtimeLocksCreatedByW1": 0,
     "historicalBranchesResumed": false,
     "nextAction": "Reobserve current main/open PRs and execute GitHub READ R1 from existing githubControlPlaneRead integration slot; W3 remains blocked until all three W2 blueprints are DONE."
+  },
+  "w2ReadinessHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "baselineMainSha": "3d5dd39f4342290fd6ddb9f2fbc4cbadd13b870e",
+    "validatedImplementationHead": "3904d22d033671b3b7fd13ebf428dbcad018faad",
+    "validatedCiRuns": [
+      36052669788,
+      36052673702
+    ],
+    "completedBlueprints": [
+      "TB-W2-01",
+      "TB-W2-02",
+      "TB-W2-03"
+    ],
+    "unlockedBlueprints": [
+      "TB-W3-A22-01",
+      "TB-W3-A3-01",
+      "TB-W3-B3-01",
+      "TB-W3-C1-01"
+    ],
+    "runtimeTasksCreatedByW2": 0,
+    "governedSessionsCreatedByW2": 0,
+    "runtimeLocksCreatedByW2": 0,
+    "historicalBranchesResumed": false,
+    "nextAction": "Self-review and merge PR #176 under exact-head guard; attest main/S1/runtime after governed deploy, then reobserve live authorities and select only a READY W3 direct dependent whose collision domain is free."
   }
 }

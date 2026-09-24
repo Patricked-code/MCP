@@ -1,5 +1,18 @@
 # SUIVI.md
 
+## 2026-09-24 — W2 GitHub READ R1 — DONE / handoff W3
+
+- Base attestée avant W2 : `main = 3d5dd39f4342290fd6ddb9f2fbc4cbadd13b870e`, issue OIDC #175 / run `36051505985`, S1 propre, fetch read-only et push désactivé.
+- RED fonctionnel : `6dc54eb63a2142876bc546bae949c213e3697095` ; 4 échecs ciblés (trois handlers absents + partition READ), aucun test antérieur en régression.
+- GREEN fonctionnel exact : `3904d22d033671b3b7fd13ebf428dbcad018faad` ; MCP CI push #1911 / run `36052669788` et PR #1912 / run `36052673702` SUCCESS, avec typecheck/build/docs/governance/secrets/read-only/whitespace verts.
+- `TB-W2-01 github_get_commits` : pagination interne bornée, limite explicite et projection de commits sans write authority.
+- `TB-W2-02 github_get_tree` : arbre borné, troncature upstream/locale explicite, aucune expansion implicite des blobs.
+- `TB-W2-03 github_get_required_checks` : réutilise/généralise l'autorité ruleset/checks existante et lie les checks au HEAD exact de la branche.
+- RED handoff : `6a53f70163c0155425d5277312dd5163dc56a293`, MCP CI #1913/#1914 : 691 tests, 690 pass, 1 fail ciblé sur l'absence du checkpoint W2.
+- W2 crée 0 runtime Task, 0 Governed Session et 0 runtime Lock ; aucune branche historique #85/#86/#88/#89/#90 n'est reprise.
+- `TB-W2-01..03 = DONE`; seuls `TB-W3-A22-01`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01` deviennent planning-ready.
+- NEXT_ACTION : valider le head exact de ce handoff, self-review PR #176, fusionner sous garde exact-head, attester main/S1/runtime via Governed Deploy + OIDC, puis reobserver les autorités live avant de sélectionner un seul lot W3 READY collision-safe.
+
 ## 2026-09-24 — W1.7 — readiness handoff publié
 
 - RED `7af6f9551db29f9d1d2823787d021c7a74f8abd7`, MCP CI #1894 : un seul échec ciblé, absence du handoff W1.

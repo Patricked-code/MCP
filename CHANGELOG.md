@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 2026-09-24 — W2 GitHub READ R1 completion
+
+- Ajout read-only de `github_get_commits`, `github_get_tree` et `github_get_required_checks` dans l'Integration Slot existant `githubControlPlaneRead`.
+- Généralisation additive des parseurs ruleset/checks existants ; aucune seconde autorité GitHub, aucun write authority ajouté.
+- Cartographie runtime régénérée : 135 outils, dont 84 READ et 51 WRITE/scoped-write.
+- W2 clôturé avec preuve exact-head #1911/#1912 ; seuls les quatre dépendants directs W3 passent planning-ready.
+- Aucun runtime Task, Governed Session ou runtime Lock créé par W2.
+
 ## 2026-09-24 — W1 readiness handoff
 
 - W1 Program State Convergence clôturé : TB-W1-01..07 DONE.
