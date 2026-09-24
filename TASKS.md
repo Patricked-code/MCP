@@ -27,7 +27,9 @@ Projection documentaire uniquement : ce chantier **n'est pas un nouveau `TASK-*`
 - [x] UAC-12..18 — collisions multi-agent, stale/unknown heartbeat, reconnect, HEAD_MOVED, recovery et fermeture terminale ;
 - [x] UAC-19 — supervision read-only intégrée à Current State sans nouvel outil parallèle ;
 - [x] UAC-20 — réconciliation de gouvernance/documentation ;
-- [ ] UAC-21..24 — non-régression finale, review/merge exact-head, déploiement/attestation gouvernés si requis, handoff/closure.
+- [x] UAC-21 — non-régression complète exact-head ;
+- [x] UAC-22 — self-review, corrections et merge readiness exact-head ;
+- [ ] UAC-23..24 — merge/déploiement/attestation gouvernés puis handoff/closure.
 
 Règles : aucun takeover depuis heartbeat, aucun bridge interactif quand GitHub/fallback suffit, aucun direct S1, aucune nouvelle autorité parallèle.
 

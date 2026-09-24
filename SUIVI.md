@@ -75,7 +75,9 @@
 - UAC-22 self-review : deux incohérences résiduelles reproduites en RED sur `2bc3a3c3e9aea1a70c2b9d15171a53c8a603a999` par MCP CI #1847 / run `36027602685` : (1) `claimId` restait obligatoire dans le contrat universel malgré l'absence de claim store; (2) `collisionDomains` du snapshot universel omettait les domaines de locks.
 - GREEN candidat backward-compatible : `claimId` devient nullable sans casser les anciens IDs fournis; `collisionDomains` agrège et déduplique désormais les scopes Task/claim et lock. Aucune nouvelle autorité, aucune mutation.
 - Aucun review GitHub ni thread non résolu observé sur PR #154 avant cette correction; la protection `main` n'est pas lisible par l'intégration, donc les gates GitHub seront laissés à GitHub/merge endpoint plutôt qu'inférés.
-- NEXT_ACTION : valider les deux corrections UAC-22 exact-head, réobserver reviews/threads/main/mergeability, puis rendre la PR ready et fusionner uniquement si tous les gates restent verts.
+- MCP CI #1849 / run `36027808496` = SUCCESS exact-head sur `49f54683051a9969237cb8a22f5bc97209c69684`; les deux findings UAC-22 sont fermés et toute la non-régression reste verte.
+- Réobservation pré-merge : `main=327379a782a7f13940f0edf302dced833b326dca`, PR #154 head exact `49f5468...`, mergeable=true, aucun review et aucun review thread. La protection main n'est pas inférée; le merge endpoint GitHub reste le gate final.
+- NEXT_ACTION : publier ce checkpoint exact-head, obtenir sa CI verte, sortir PR #154 du draft puis fusionner sous garde du HEAD courant; ensuite observer CI main + MCP Governed Deploy et attester S1/Docker via GitHub OIDC read-only pour UAC-23.
 
 ## 2026-09-23 — Universal Agent Coordination — lot 1 read-only
 

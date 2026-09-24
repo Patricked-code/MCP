@@ -71,7 +71,7 @@ This inventory is descriptive and read-only. It identifies the existing owner fo
 | UAC-19 | Read-only supervision view | GREEN | existing CurrentState inventory composes Session/Task/ownership/liveness/locks/checkpoint read-only; CI #1843 SUCCESS |
 | UAC-20 | Governance/docs/cartography reconciliation | GREEN | UAC plan/SUIVI/CHANGELOG/DECISIONS/TASKS cross-linked without creating runtime tasks or parallel authorities |
 | UAC-21 | Full non-regression validation | GREEN | MCP CI #1845 exact-head SUCCESS: typecheck/build/docs/governance/GWC/secrets/read-only/whitespace all green |
-| UAC-22 | Exact-head review and merge readiness | TODO | no unresolved blocking findings; exact-head gates green |
+| UAC-22 | Exact-head review and merge readiness | GREEN | self-review findings fixed; CI #1849 SUCCESS; no reviews/threads blocking; main unchanged and PR mergeable |
 | UAC-23 | Post-merge governed deploy and attestation | TODO | GitHub/main/S1/runtime exact-SHA alignment where required |
 | UAC-24 | Terminal handoff/closure | TODO | Live State/current documentation reconciled; no orphan claim/lock |
 
