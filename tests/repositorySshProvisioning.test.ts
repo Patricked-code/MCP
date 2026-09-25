@@ -102,6 +102,8 @@ test('CA bootstrap workflow has manual plus governed-issue triggers, exact-main,
   assert.match(source, /types:\s*\[opened\]/);
   assert.match(source, /\[Governed SSH CA Bootstrap\]/);
   assert.match(source, /OWNER.*MEMBER.*COLLABORATOR/);
+  assert.match(source, /collaborators\/\$\{REQUEST_ACTOR\}\/permission/);
+  assert.match(source, /admin\|maintain\|write/);
   assert.match(source, /id-token:\s*write/);
   assert.match(source, /contents:\s*read/);
   assert.match(source, /github\.ref == 'refs\/heads\/main'/);
