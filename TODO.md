@@ -47,7 +47,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-GITHUB-FIRST-PROOF` | `DONE` | `github-first.read-evidence-proof` | GitHub-first S1 read-only evidence proof |
 | `PB-GITHUB-FIRST-FALLBACKS` | `DEFERRED` | `github-first.optional-readonly-fallbacks` | Optional SSH read-only fallback selection |
 | `PB-GITHUB-FIRST-WRITE` | `DEFERRED` | `github-first.server-write-extensions` | Additional bounded server WRITE transports |
-| `PB-GITHUB-READ` | `READY` | `github.control-plane.read-complements` | GitHub Control Plane READ R1 |
+| `PB-GITHUB-READ` | `DONE` | `github.control-plane.read-complements` | GitHub Control Plane READ R1 delivered by W2 |
 | `PB-GITHUB-ADMIN` | `DESIGNED_NOT_IMPLEMENTED` | `github.admin.create-repository` | Governed github_create_repository |
 | `PB-GITHUB-PRWRITE` | `DESIGNED_NOT_IMPLEMENTED` | `github.pr-write.extensions` | Governed PR write extensions |
 | `PB-GITHUB-DESTRUCTIVE` | `DEFERRED` | `github.destructive-writes` | Destructive GitHub file/branch operations |
