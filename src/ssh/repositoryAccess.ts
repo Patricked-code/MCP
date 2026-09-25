@@ -44,7 +44,7 @@ export function buildRepositorySshCaBootstrapCommand(): string {
 umask 077
 install -d -m 0700 /opt/apps/wealthtech-mcp-ssh-bridge/keys
 if [ ! -f '${key}' ]; then
-  ssh-keygen -q -t ed25519 -N '' -C 'wealthtech-governed-repo-ssh-ca' -f '${key}'
+  ssh-keygen -t ed25519 -q -N '' -C 'wealthtech-governed-repo-ssh-ca' -f '${key}'
 fi
 test -f '${key}.pub'
 install -m 0644 '${key}.pub' '${pub}'
