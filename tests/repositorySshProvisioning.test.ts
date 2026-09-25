@@ -50,6 +50,7 @@ test('OIDC certificate policy is dynamically bound to the governed repository wo
   const policy = repositorySshOidcPolicyFor('Patricked-code/Gouvern');
   assert.equal(policy.audience, 'https://mcp.wealthtechinnovations.com/access/github/repository-ssh');
   assert.equal(policy.repository, 'Patricked-code/Gouvern');
+  assert.equal(policy.ownerId, '270385782');
   assert.equal(policy.ref, 'refs/heads/main');
   assert.equal(
     policy.workflowRef,
@@ -57,6 +58,8 @@ test('OIDC certificate policy is dynamically bound to the governed repository wo
   );
   assert.deepEqual(policy.allowedEvents, ['issue_comment', 'workflow_dispatch']);
   assert.throws(() => repositorySshOidcPolicyFor('evil-owner/Gouvern'));
+  assert.equal(repositorySshOidcPolicyFor('Wealthtechinnovations/Test').ownerId, '94637590');
+  assert.equal(repositorySshOidcPolicyFor('chainsolutions-wealthtech/Test').ownerId, '299685687');
 });
 
 test('forced SSH gateway exposes only closed read-only discovery commands', async () => {
