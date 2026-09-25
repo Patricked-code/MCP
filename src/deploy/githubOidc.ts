@@ -57,6 +57,19 @@ export const GITHUB_STABLECOIN_FAST_FORWARD_OIDC_POLICY: GithubOidcPolicy = Obje
   allowedEvents: Object.freeze(['issues', 'workflow_dispatch'] as const)
 });
 
+export const GITHUB_REPOSITORY_SSH_CA_BOOTSTRAP_OIDC_POLICY: GithubOidcPolicy = Object.freeze({
+  issuer: 'https://token.actions.githubusercontent.com',
+  audience: 'https://mcp.wealthtechinnovations.com/access/github/repository-ssh/ca/bootstrap',
+  repository: 'Patricked-code/MCP',
+  repositoryId: '1285534440',
+  owner: 'Patricked-code',
+  ownerId: '270385782',
+  ref: 'refs/heads/main',
+  workflowRef: 'Patricked-code/MCP/.github/workflows/repository-ssh-ca-bootstrap.yml@refs/heads/main',
+  allowedEvents: Object.freeze(['workflow_dispatch'] as const)
+});
+
+
 const GOVERNED_REPOSITORY_OWNERS = Object.freeze([
   'Patricked-code',
   'Wealthtechinnovations',
@@ -395,6 +408,19 @@ export async function verifyGithubRepositorySshOidcToken(
     token,
     requestedShaInput,
     repositorySshOidcPolicyFor(repository),
+    options
+  );
+}
+
+export async function verifyGithubRepositorySshCaBootstrapOidcToken(
+  token: string,
+  requestedShaInput: string,
+  options: VerifyGithubOidcOptions = {}
+): Promise<GithubOidcClaims> {
+  return verifyGithubOidcTokenWithPolicy(
+    token,
+    requestedShaInput,
+    GITHUB_REPOSITORY_SSH_CA_BOOTSTRAP_OIDC_POLICY,
     options
   );
 }
