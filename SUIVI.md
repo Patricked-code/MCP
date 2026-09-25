@@ -1,6 +1,6 @@
 # SUIVI.md
 
-## 2026-09-25 — Program Backlog auto-continuation — candidate
+## 2026-09-25 — Program Backlog auto-continuation — DONE / handoff W3
 
 - Baseline : `main=574dccb1eefd4562e72788ea075456261058cd9a`, intake #177 déjà convergé dans Program Backlog V2 ; 75 blueprints, 10 DONE, 65 restants.
 - Objectif : faire progresser automatiquement le programme après chaque lot sans demander une confirmation de routine, tout en conservant les autorités runtime et les gates existantes.
@@ -10,7 +10,12 @@
 - Sélection : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`; `npm run program:next` ne claim ni ne mute et exige ensuite reobservation UAC/Task Queue/Session/locks.
 - CI : `docs:check` inclut désormais `program:readiness`, donc un DONE qui oublie de promouvoir/rebloquer correctement ses dépendants échoue en CI.
 - Continuation : après checkpoint, recalcul → premier candidat collision-safe → exécution → preuve → checkpoint → recalcul, jusqu'à blocker gouverné réel.
-- NEXT_ACTION : valider le GREEN exact-head, self-review, fusion expected-head et attestation post-merge avant de reprendre les quatre W3 READY.
+- GREEN exact-head : `eb2aff8ef30ed349cc8d477cb23e7e364ae088df`, MCP CI push #1930 / run `36100202989` et PR #1931 / run `36100259427` SUCCESS.
+- PR #181 fusionnée sous garde exact-head ; `main=df34fd24e6dd7863b54e2f17b5a295b09997471b`.
+- MCP CI main #1932 / run `36100364890` SUCCESS ; Governed Deploy #74 / run `36100364880` SUCCESS.
+- OIDC post-merge : issue #182 / run `36100492906` (`mcp_git_status`) SUCCESS, issue #183 / run `36100495144` (`docker_status`) SUCCESS, `mutationAllowed=false`.
+- S1 attesté : `main@df34fd24e6dd7863b54e2f17b5a295b09997471b`, worktree propre, fetch read-only, push désactivé ; Docker `wealthtech_mcp_ssh_bridge` healthy.
+- NEXT_ACTION : à toute reprise, `program:readiness` → `program:next` → reobservation UAC/runtime → premier blueprint READY collision-safe. Les quatre candidats actuels restent A2.2.1, A3.1, B3.1 et C1.1 ; aucune confirmation de routine n'est requise entre lots ordinaires.
 
 ## 2026-09-25 — Intake #177 Git/GitHub Capability Completion — convergence current-first matérialisée
 
