@@ -1,5 +1,13 @@
 # DECISIONS_LOG.md
 
+## 2026-09-25 — Les repositories gouvernés utilisent des certificats SSH éphémères, jamais une clé root persistante partagée
+
+Décision : le fallback SSH des repositories issus de `Governed-Repository-Template` ne reçoit pas de clé privée S1 longue durée. Chaque run GitHub Actions génère une paire Ed25519 éphémère, prouve son identité au MCP via OIDC lié au repository/ref/workflow exact, puis reçoit un certificat utilisateur OpenSSH valable au maximum dix minutes.
+
+Le certificat est contraint au principal `root` uniquement pour compatibilité avec l'accès S1 existant, mais il ne donne aucun shell root libre : `ssh-keygen -O clear` supprime PTY/forwarding et un `force-command` fixe dirige toute session vers le gateway read-only. Le gateway accepte uniquement un catalogue fermé de probes de découverte. Toute mutation continue de passer par le Scoped WRITE Gate MCP.
+
+La CA SSH est créée une seule fois sur S1 par un workflow MCP manuel `workflow_dispatch`, authentifié par OIDC et soumis à `ENABLE_WRITE_TOOLS`. Sa clé privée reste dans le volume `keys` S1 monté en lecture seule dans le conteneur MCP ; elle n'est jamais renvoyée, journalisée ou versionnée.
+
 ## 2026-09-25 — A2.2 ne déduit jamais une identité client du clientId, du transport ou du repository
 
 Décision : A2.2.1 distingue la preuve d'identité déjà acquise du simple contexte observé. Le principal OAuth assaini avec assurance `oauth_subject` est réutilisable comme preuve bornée. `AuthInfo.clientId` est seulement un identifiant client observé et n'est jamais une autorité pour conclure « ChatGPT », « Claude », une conversation ou un workspace.
