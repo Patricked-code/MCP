@@ -14,5 +14,5 @@ case "$ORIGINAL" in
   *) printf '%s\n' 'repository_ssh_command_not_allowed' >&2; exit 65 ;;
 esac
 
-cd /opt/apps/wealthtech-mcp-ssh-bridge
-exec node dist/ssh/repositoryGatewayCli.js "$REPOSITORY" "$ORIGINAL"
+exec docker exec wealthtech_mcp_ssh_bridge \
+  node dist/ssh/repositoryGatewayCli.js "$REPOSITORY" "$ORIGINAL"
