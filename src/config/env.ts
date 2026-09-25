@@ -36,6 +36,7 @@ const EnvSchema = z.object({
   GITHUB_API_ALLOWED_HOSTS: z.string().default('api.github.com'),
   GITHUB_REQUEST_TIMEOUT_MS: z.coerce.number().int().min(100).max(120_000).default(15_000),
   MCP_GITHUB_BOOTSTRAPPED: EnvBooleanSchema.default(false),
+  MCP_GITHUB_REPOSITORY_SSH_ENABLED: EnvBooleanSchema.default(false),
   MCP_GOVERNED_SESSIONS_ENABLED: EnvBooleanSchema.default(true),
   MCP_GOVERNED_SESSION_IDLE_TTL_SECONDS: z.coerce.number().int().min(300).max(604_800).default(86_400),
   MCP_GOVERNED_SESSION_RESUME_GRACE_SECONDS: z.coerce.number().int().min(3_600).max(2_592_000).default(604_800),
