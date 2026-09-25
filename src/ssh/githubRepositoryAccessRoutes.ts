@@ -10,7 +10,6 @@ const MAX_BEARER_BYTES = 16_384;
 
 export interface GithubRepositorySshAccessDependencies {
   verifyOidc: (token: string, requestedSha: string, repository: string) => Promise<GithubOidcClaims>;
-  enabled: () => boolean;
   signCertificate: (input: {
     repository: string;
     publicKey: string;
@@ -54,10 +53,6 @@ export function createGithubRepositorySshAccessRouter(
 
     const body = exactBody(request.body);
     if (!body) return response.status(400).json({ error: 'invalid_request' });
-    if (!dependencies.enabled()) {
-      return response.status(503).json({ error: 'repository_ssh_certificate_broker_disabled' });
-    }
-
     let claims: GithubOidcClaims;
     try {
       claims = await dependencies.verifyOidc(token, body.sha, body.repository);
