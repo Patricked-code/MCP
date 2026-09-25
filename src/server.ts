@@ -31,11 +31,13 @@ import {
   verifyGithubOidcToken,
   verifyGithubReadonlyEvidenceOidcToken,
   verifyGithubStablecoinFastForwardOidcToken,
-  verifyGithubRepositorySshOidcToken
+  verifyGithubRepositorySshOidcToken,
+  verifyGithubRepositorySshCaBootstrapOidcToken
 } from './deploy/githubOidc.js';
 import { createGithubReadonlyEvidenceRouter } from './evidence/githubReadonlyRoutes.js';
 import { createStablecoinFastForwardRouter } from './stablecoin/githubFastForward.js';
 import { createGithubRepositorySshAccessRouter } from './ssh/githubRepositoryAccessRoutes.js';
+import { createGithubRepositorySshCaBootstrapRouter } from './ssh/githubRepositoryCaBootstrapRoutes.js';
 import { signRepositorySshCertificate } from './ssh/repositoryCertificate.js';
 import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
 import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js';
@@ -394,9 +396,17 @@ export async function startHttpServer(): Promise<void> {
       runReadOnlyCommand(target, command, 15_000, 32_768)
     )
   }));
+  app.use(createGithubRepositorySshCaBootstrapRouter({
+    verifyOidc: verifyGithubRepositorySshCaBootstrapOidcToken,
+    writeEnabled: () => env.ENABLE_WRITE_TOOLS,
+    runWrite: async (command) => runGuardedCommand('s1', command, {
+      intent: 'github_oidc_repository_ssh_ca_bootstrap',
+      timeoutMs: 60_000,
+      maxOutputBytes: 8_192
+    })
+  }));
   app.use(createGithubRepositorySshAccessRouter({
     verifyOidc: verifyGithubRepositorySshOidcToken,
-    enabled: () => env.MCP_GITHUB_REPOSITORY_SSH_ENABLED,
     signCertificate: signRepositorySshCertificate
   }));
   app.use(createStablecoinFastForwardRouter({
