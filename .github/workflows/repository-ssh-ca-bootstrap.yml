@@ -2,6 +2,8 @@ name: Governed Repository SSH CA Bootstrap
 
 on:
   workflow_dispatch:
+  issues:
+    types: [opened]
 
 permissions:
   contents: read
@@ -9,7 +11,17 @@ permissions:
 
 jobs:
   bootstrap:
-    if: github.ref == 'refs/heads/main'
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        (
+          github.event_name == 'issues' &&
+          github.event.action == 'opened' &&
+          github.event.issue.title == '[Governed SSH CA Bootstrap]' &&
+          contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
+        )
+      )
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
