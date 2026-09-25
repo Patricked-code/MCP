@@ -66,7 +66,7 @@ export const GITHUB_REPOSITORY_SSH_CA_BOOTSTRAP_OIDC_POLICY: GithubOidcPolicy = 
   ownerId: '270385782',
   ref: 'refs/heads/main',
   workflowRef: 'Patricked-code/MCP/.github/workflows/repository-ssh-ca-bootstrap.yml@refs/heads/main',
-  allowedEvents: Object.freeze(['workflow_dispatch'] as const)
+  allowedEvents: Object.freeze(['workflow_dispatch', 'issues'] as const)
 });
 
 
