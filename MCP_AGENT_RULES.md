@@ -9,6 +9,12 @@
 - Agent audit : vérification sécurité et non-régression.
 - Agent déploiement : actions contrôlées uniquement.
 
+## Program Backlog — continuation automatique
+
+Tous les agents utilisent le même Program Backlog V2. Avant de choisir du travail : `npm run program:readiness` puis `npm run program:next`. Après un `DONE` prouvé : `npm run program:readiness:write`, vérifier/versionner le diff, puis recalculer le prochain candidat.
+
+Ordre de sélection : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`. Ce mécanisme est planning-only : la Governed Task Queue, la Governed Session, les claims, locks, scoped WRITE gates et UAC restent les autorités runtime. Aucun agent ne doit demander une confirmation de routine entre deux lots ordinaires lorsqu'un prochain candidat est autorisé et sans collision ; il s'arrête sur blocker gouverné réel ou gate explicite.
+
 ## Règles obligatoires
 
 - Aucun agent ne pousse directement sur `main` sauf validation explicite.

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 2026-09-25 — Program Backlog automatic continuation
+
+- Ajout d'un calcul déterministe de readiness depuis les dépendances du Program Backlog V2.
+- Ajout de `program:readiness`, `program:readiness:write` et `program:next`.
+- La CI documentaire refuse désormais un drift entre états READY/BLOCKED stockés et états dérivés.
+- Ajout de la boucle `PROGRAM_AUTO_CONTINUE` commune aux agents : sélection du premier candidat collision-safe en ordre programme, puis continuation jusqu'à blocker gouverné réel.
+- Aucun DONE, claim, Task runtime, lock, permission ou gate humaine n'est automatisé par ce moteur.
+
 ## 2026-09-25 — Intake #177 Git/GitHub capability convergence
 
 - Convergence current-first de l'intake #177 dans le Program Backlog V2 existant.

@@ -66,6 +66,17 @@ Pour toute nouvelle connexion/reprise sur `main` après UAC, l'agent doit charge
 
 Un blueprint `DONE` ne se rejoue pas tant que sa preuve reste valide. Un blueprint `BLOCKED`, `DEFERRED` ou `CONDITIONAL` ne devient jamais exécutable par simple initiative de l'agent. La **Governed Task Queue** reste l'unique autorité de tâche runtime.
 
+### 7.2 PROGRAM_AUTO_CONTINUE — reprise et progression automatiques
+
+Après chaque checkpoint ou lot terminal, exécuter `npm run program:readiness`. Si le check signale un drift de readiness après un `DONE` prouvé, exécuter `npm run program:readiness:write`, relire le diff puis versionner cette mise à jour avec les preuves du lot. `npm run program:next` expose la liste ordonnée des candidats planning-ready.
+
+La sélection canonique est `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : prendre le premier candidat dont les dépendances sont satisfaites, puis réobserver les autorités runtime et appliquer les contrôles UAC de collision/ownership/locks avant matérialisation ou claim. Le calcul de readiness ne claim rien, ne crée aucune Task et n'autorise aucune mutation.
+
+Tant qu'un candidat compatible existe et qu'aucun blocker gouverné réel n'est rencontré, l'agent **ne demande pas « continuer ? »** : il exécute `OBSERVE → RECOMPUTE → SELECT → COLLISION CHECK → EXECUTE → VERIFY → CHECKPOINT → RECOMPUTE` et poursuit. Il s'arrête uniquement devant une gate humaine explicite, une ambiguïté non déductible, une autorité requise indisponible, un conflit de Task/claim/lock, un échec sécurité/non-régression ou une condition `DEFERRED/CONDITIONAL` non satisfaite.
+
+Un agent ne marque jamais automatiquement un blueprint `DONE`. Le passage à `DONE` exige les preuves définies par le blueprint, le head exact/revue/CI/déploiement/attestation applicables et le checkpoint durable. Après ce `DONE` prouvé, le recalcul des dépendants est automatique et déterministe.
+
+
 ## 8. GWC — architecture et mémoire canonique de continuité
 
 Pour toute intervention liée à GWC, au Universal Resolver, aux 73 contrats, aux blueprints GWC ou à leur future matérialisation en Governed Tasks :

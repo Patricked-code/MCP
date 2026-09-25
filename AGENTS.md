@@ -51,6 +51,14 @@ Ce fichier doit être enrichi au fur et à mesure de l’intégration des projet
 
 - 2026-07-09 : création racine par écriture contrôlée MCP, sans secret, sans suppression et sans modification applicative.
 
+## 7.1 Program Backlog V2 — continuité automatique commune à tous les agents
+
+Tout agent humain ou IA qui reprend le dépôt charge `docs/governance/program-backlog-convergence.json`, exécute `npm run program:readiness` puis consulte `npm run program:next`. La sélection planning suit `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`; les autorités runtime et UAC restent obligatoires avant tout claim ou write.
+
+Boucle commune : `OBSERVE → RECOMPUTE_READINESS → SELECT → CHECK_COLLISIONS → MATERIALIZE/CLAIM → EXECUTE → VERIFY → CHECKPOINT → RECOMPUTE`. Tant qu'un prochain lot est dependency-safe, collision-safe et ne requiert aucune gate humaine, l'agent continue sans demander une confirmation de routine.
+
+Le moteur de readiness est une projection Git versionnée : il ne crée pas de Task, ne claim rien, ne libère aucun ownership, ne contourne aucun lock et ne transforme jamais un `DEFERRED`/`CONDITIONAL` en `READY`.
+
 ## 8. GWC — architecture et mémoire canonique de continuité
 
 Pour toute intervention liée à GWC, au Universal Resolver, aux 73 contrats, aux blueprints GWC ou à leur future matérialisation en Governed Tasks :

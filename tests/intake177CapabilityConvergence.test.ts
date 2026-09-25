@@ -148,17 +148,14 @@ test('intake #177 extends existing waves with residual blueprints and does not a
     assert.ok(byId.has(id), `missing residual blueprint ${id}`);
   }
 
-  const readyW3 = program.taskBlueprints
-    .filter((entry: any) => entry.waveId === 'W3' && entry.readiness?.state === 'READY')
-    .map((entry: any) => entry.id)
-    .sort();
-
-  assert.deepEqual(readyW3, [
+  const intake = program.programIntakes.find((entry: any) => entry.issue === 177);
+  assert.deepEqual(intake.readyBlueprintIdsAtConvergence, [
     'TB-W3-A22-01',
     'TB-W3-A3-01',
     'TB-W3-B3-01',
     'TB-W3-C1-01'
-  ].sort());
+  ]);
+  assert.equal(intake.postConvergenceReadinessIsDerived, true);
 
   for (const id of residualIds) {
     const state = byId.get(id)?.readiness?.state;

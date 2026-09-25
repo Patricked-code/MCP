@@ -2326,7 +2326,31 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "READY_FOR_W3_FOUNDATION_INVENTORIES_WITH_INTAKE_177_CONVERGED"
+    "currentWaveStatus": "READY_FOR_W3_FOUNDATION_INVENTORIES_WITH_INTAKE_177_CONVERGED",
+    "automaticContinuation": {
+      "enabled": true,
+      "readinessMode": "DERIVED_FROM_DEPENDENCIES",
+      "selectionMode": "FIRST_COLLISION_FREE_IN_PROGRAM_ORDER",
+      "recomputeAfter": [
+        "BLUEPRINT_DONE_WITH_EVIDENCE",
+        "CHECKPOINT_HANDOFF",
+        "HEAD_MOVED_RECONCILIATION",
+        "PROGRAM_INTAKE_CONVERGENCE"
+      ],
+      "marksDoneAutomatically": false,
+      "claimsAutomatically": false,
+      "createsRuntimeTasksAutomatically": false,
+      "bypassesHumanGates": false,
+      "stopOnlyOnGovernedBlocker": true,
+      "connectedAgentLoop": "REOBSERVE -> RECOMPUTE_READINESS -> SELECT -> COLLISION_CHECK -> MATERIALIZE/CLAIM -> EXECUTE -> VERIFY -> CHECKPOINT -> RECOMPUTE",
+      "runtimeAuthorityBoundary": "Readiness and ordering are derived planning projections only. Governed Task Queue/Session/Lock Service and scoped governance remain runtime authorities."
+    },
+    "currentReadyBlueprintIds": [
+      "TB-W3-A22-01",
+      "TB-W3-A3-01",
+      "TB-W3-B3-01",
+      "TB-W3-C1-01"
+    ]
   },
   "agentHandoffContract": {
     "steps": [
@@ -2347,7 +2371,14 @@
     "staleCanTriggerTakeover": false,
     "headMovedRule": "HEAD_MOVED -> STOP_WRITE -> REOBSERVE -> RECONCILE -> VERIFY -> WRITE",
     "runtimeMaterializationRule": "Blueprint readiness is necessary but never sufficient; Governed Task Queue/Session/locks remain live authority.",
-    "noParallelAuthority": true
+    "noParallelAuthority": true,
+    "loopAfterCheckpoint": [
+      "RECOMPUTE_PROGRAM_READINESS",
+      "REOBSERVE_RUNTIME_STATE_IF_REQUIRED",
+      "SELECT_FIRST_COLLISION_FREE_READY_BLUEPRINT",
+      "CONTINUE_OR_STOP_ON_GOVERNED_BLOCKER"
+    ],
+    "continuationRule": "A connected agent continues through planning-ready, dependency-safe and collision-safe work without asking for confirmation between ordinary lots. It stops only for a real governed blocker, explicit human gate, unresolved ambiguity, unavailable required authority, collision/ownership conflict, or safety/non-regression failure."
   },
   "taskBlueprints": [
     {
@@ -7990,7 +8021,14 @@
         "TB-M-GGCC-GIT-MAINTENANCE",
         "TB-COND-GIT-HISTORY-REWRITE",
         "TB-COND-GIT-DESTRUCTIVE"
-      ]
+      ],
+      "readyBlueprintIdsAtConvergence": [
+        "TB-W3-A22-01",
+        "TB-W3-A3-01",
+        "TB-W3-B3-01",
+        "TB-W3-C1-01"
+      ],
+      "postConvergenceReadinessIsDerived": true
     }
   ]
 }

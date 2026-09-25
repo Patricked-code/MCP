@@ -12,13 +12,16 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint:secrets": "node scripts/check-no-secrets.mjs",
-    "docs:check": "node scripts/check-docs.mjs && node scripts/check-doc-governance.mjs && node scripts/check-function-cartography.mjs",
+    "docs:check": "node scripts/check-docs.mjs && node scripts/check-doc-governance.mjs && node scripts/check-function-cartography.mjs && npm run program:readiness",
     "current-state:evidence": "node scripts/current-state-evidence.mjs",
     "cartography:check": "node scripts/check-function-cartography.mjs",
     "cartography:write": "node scripts/check-function-cartography.mjs --write",
     "gwc:verify": "node scripts/gwc-verify.mjs && node scripts/gwc-precode-verify.mjs",
     "test:governance": "tsx --test tests/docGovernance.test.ts",
-    "test:readonly-safety": "node scripts/run-validation-tests.mjs tests/githubRepositoryResolution.test.ts"
+    "test:readonly-safety": "node scripts/run-validation-tests.mjs tests/githubRepositoryResolution.test.ts",
+    "program:readiness": "node scripts/program-backlog-readiness.mjs --check",
+    "program:readiness:write": "node scripts/program-backlog-readiness.mjs --write",
+    "program:next": "node scripts/program-backlog-readiness.mjs --next"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",

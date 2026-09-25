@@ -1,5 +1,17 @@
 # SUIVI.md
 
+## 2026-09-25 — Program Backlog auto-continuation — candidate
+
+- Baseline : `main=574dccb1eefd4562e72788ea075456261058cd9a`, intake #177 déjà convergé dans Program Backlog V2 ; 75 blueprints, 10 DONE, 65 restants.
+- Objectif : faire progresser automatiquement le programme après chaque lot sans demander une confirmation de routine, tout en conservant les autorités runtime et les gates existantes.
+- TDD RED : `8db1b8058e00adcf90278307a71381c1fcaecc37`, MCP CI #1927 / run `36099756288`, échec ciblé parce que `deriveProgramReadiness` n'existait pas ; validations antérieures intactes.
+- Existing-first : extension de `scripts/program-backlog-convergence-lib.mjs` et du Program Backlog V2 ; aucune deuxième queue, session, claim, lock, scheduler runtime ou store.
+- Readiness dérivée : DONE reste terminal ; DEFERRED/CONDITIONAL ne sont jamais auto-promus ; sinon READY iff toutes les dépendances sont DONE, BLOCKED sinon.
+- Sélection : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`; `npm run program:next` ne claim ni ne mute et exige ensuite reobservation UAC/Task Queue/Session/locks.
+- CI : `docs:check` inclut désormais `program:readiness`, donc un DONE qui oublie de promouvoir/rebloquer correctement ses dépendants échoue en CI.
+- Continuation : après checkpoint, recalcul → premier candidat collision-safe → exécution → preuve → checkpoint → recalcul, jusqu'à blocker gouverné réel.
+- NEXT_ACTION : valider le GREEN exact-head, self-review, fusion expected-head et attestation post-merge avant de reprendre les quatre W3 READY.
+
 ## 2026-09-25 — Intake #177 Git/GitHub Capability Completion — convergence current-first matérialisée
 
 - Baseline observée : `main=c104e24259232dced2a24a7397640747c052d140`; W1 et W2 DONE, MCP CI #1919 et Governed Deploy #72 SUCCESS.
