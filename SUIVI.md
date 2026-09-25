@@ -1,5 +1,18 @@
 # SUIVI.md
 
+## 2026-09-25 — Intake #177 Git/GitHub Capability Completion — convergence current-first matérialisée
+
+- Baseline observée : `main=c104e24259232dced2a24a7397640747c052d140`; W1 et W2 DONE, MCP CI #1919 et Governed Deploy #72 SUCCESS.
+- Intake humain #177 lu comme source de programme uniquement : aucune Task/Session/Claim/Lock/permission n'est créée par l'issue.
+- RED `7f9826fb69f6924b6aea849c51108e00c22f6659`, MCP CI #1921 / run `36097710012` : 6 échecs ciblés intake #177, tous les tests antérieurs restant verts.
+- Matrice current-first créée : 164 capacités uniques (81 Git local, 83 GitHub), chacune avec statut, implémentation courante, Integration Slot, autorités, risque, gates, tests et blueprint destination.
+- W2 `github_get_commits`, `github_get_tree`, `github_get_required_checks` et les lifecycle GitHub déjà présents sont REUSE/ABSORBED ; `github_create_repository` reste MISSING sur main avec PR #88 comme provenance et `TB-W3-ADMIN-01` comme destination.
+- Git local actuel est partiel/projet-spécifique (`mcp_git_status_s1`, `mcp_git_diff_s1`, `git_status_project_s2`, `mcp_sync_from_github_s1`) : les lots GGCC généralisent ces gardes au lieu d'exposer un shell Git libre.
+- Les résiduels sont intégrés dans W3/W4/MAINTENANCE/CONDITIONAL ; aucun blueprint GGCC n'est auto-promu READY.
+- Les seuls planning-ready restent `TB-W3-A22-01`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01`.
+- Invariants : NO FREE SHELL, NO RAW GITHUB API, NO SECRET READ, NO PARALLEL AUTHORITY, NO SILENT HISTORY REWRITE, NO IMPLICIT DESTRUCTIVE OPERATION.
+- NEXT_ACTION : valider GREEN exact-head et le graphe sans cycles/dépendances inconnues, self-review, fusionner sous expected-head puis attester main/S1/runtime; ensuite sélectionner un seul lot W3 READY collision-safe.
+
 ## 2026-09-24 — W2 GitHub READ R1 — DONE / handoff W3
 
 - Base attestée avant W2 : `main = 3d5dd39f4342290fd6ddb9f2fbc4cbadd13b870e`, issue OIDC #175 / run `36051505985`, S1 propre, fetch read-only et push désactivé.

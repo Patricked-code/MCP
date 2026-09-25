@@ -1,5 +1,13 @@
 # DECISIONS_LOG.md
 
+## 2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle
+
+Décision : les 164 capacités demandées par #177 sont d'abord réconciliées contre le `main` courant et la cartographie runtime. Chaque capability est routée vers un Integration Slot et un Task Blueprint du Program Backlog V2 existant. Les lots GGCC sont des extensions de W3/W4/MAINTENANCE/CONDITIONAL, jamais une seconde roadmap ou Task Queue.
+
+Les capacités présentes sont REUSE/WRAP/GENERALIZE avant tout NEW. PR #88/#89/#90 restent provenance historique. Les capacités destructives/history-rewrite sont séparément gated; les opérations génériques `git_execute`, `github_api`, `shell`, `exec`, `run_git` restent interdites. Les secrets sont write-only : aucune capability ne peut lire leur valeur.
+
+La convergence de #177 ne modifie pas la readiness courante : seuls A2.2.1, A3.1, B3.1 et C1.1 restent planning-ready jusqu'à reobservation live/collision avant matérialisation runtime.
+
 ## 2026-09-24 — W1 se termine par un handoff, pas par la création anticipée des tâches W2
 
 Décision : le succès W1 déverrouille uniquement la readiness planning des trois READ GitHub. Il ne crée ni ne claim automatiquement aucune Governed Task. Un agent W2 réobserve d'abord main/PRs/scopes et réutilise `src/tools/githubControlPlaneRead.ts`.
