@@ -8,7 +8,7 @@
 - Architecture retenue : GitHub Actions génère une clé Ed25519 éphémère ; OIDC exact repo/ref/workflow demande au MCP un certificat OpenSSH <= 10 minutes ; aucune clé privée cliente n'est transmise ou persistée.
 - Le certificat utilise principal `root` mais `-O clear` + `force-command` fixe vers `governed-repository-ssh-gateway.sh`; aucun shell libre, PTY ou forwarding.
 - Gateway allowlist : `ping`, `project-context`, `list-domains-s1/s2`, `docker-status-s1/s2`, `write-tools-context` uniquement ; `mutationAllowed=false`.
-- CA S1 : bootstrap idempotent par workflow MCP manuel OIDC, derrière `ENABLE_WRITE_TOOLS`; clé privée sous `/opt/apps/wealthtech-mcp-ssh-bridge/keys`, montée read-only dans le runtime sous `/app/keys`.
+- CA S1 : bootstrap idempotent via `workflow_dispatch` ou issue exacte `[Governed SSH CA Bootstrap]`; l'issue exige `OWNER/MEMBER/COLLABORATOR` puis une permission GitHub courante `admin|maintain|write`. Dans les deux cas, OIDC exact workflow + `ENABLE_WRITE_TOOLS` restent obligatoires. La clé privée reste sous `/opt/apps/wealthtech-mcp-ssh-bridge/keys`, montée read-only dans le runtime sous `/app/keys`.
 - Le broker retourne le certificat public et la clé hôte publique S1 épinglée pour `StrictHostKeyChecking=yes`; aucun secret `known_hosts` requis côté repo.
 - NEXT_ACTION candidate : obtenir MCP CI exact-head verte, ouvrir/reviewer/merger la PR sous garde HEAD, Governed Deploy du merge, bootstrap CA explicite, puis intégrer et tester `Governed-Repository-Template` V2.6 / `Gouvern`.
 
