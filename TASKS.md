@@ -43,6 +43,7 @@ Le programme restant est pré-découpé dans `docs/governance/program-backlog-co
 - [x] W2 — GitHub READ R1 : `TB-W2-01 github_get_commits`, `TB-W2-02 github_get_tree`, `TB-W2-03 github_get_required_checks` DONE ;
 - [ ] W3 — planning-ready directs : `TB-W3-A22-01`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01` ; aval C3-C5, D1-D3, E1-E3, F et writes GitHub reste dependency-gated ;
 - [x] Intake #177 — Git/GitHub Capability Completion convergé : 164 capacités classées/routées, aucun programme ni Task runtime parallèle ; lots GGCC résiduels intégrés et dependency-gated ;
+- [x] Program auto-continuation — readiness dérivée, sélection `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`, enforcement CI et boucle agent continue jusqu'au prochain blocker gouverné réel ;
 - [ ] W4 — G1-G3, H, I1-I3, J1/J2 ;
 - [ ] maintenance J3 séparée ;
 - [ ] conditional/deferred : C1 activation, J4 enforce, SSH fallback, extra server WRITE, GitHub destructif, Stablecoin app deploy.
