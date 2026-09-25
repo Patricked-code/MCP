@@ -68,6 +68,155 @@ function sourceKey(record) {
 
 const ALLOWED_BLUEPRINT_READINESS = new Set(['DONE', 'READY', 'BLOCKED', 'DEFERRED', 'CONDITIONAL']);
 
+const GUARDED_BLUEPRINT_READINESS = new Set(['DEFERRED', 'CONDITIONAL']);
+
+function programWaveOrder(projection) {
+  return new Map(
+    (projection?.executionModel?.waves ?? []).map((wave, index) => [wave.id, index])
+  );
+}
+
+export function deriveProgramReadiness(projection) {
+  const blueprints = Array.isArray(projection?.taskBlueprints) ? projection.taskBlueprints : [];
+  const byId = new Map(blueprints.map((entry) => [entry.id, entry]));
+  const waveOrder = programWaveOrder(projection);
+
+  const derivedBlueprints = blueprints.map((entry, programOrder) => {
+    const currentState = entry?.readiness?.state ?? 'BLOCKED';
+    const guarded = GUARDED_BLUEPRINT_READINESS.has(currentState)
+      || entry?.readiness?.autoPromotable === false;
+    const dependencies = Array.isArray(entry.dependsOn) ? entry.dependsOn : [];
+    const missingDependencies = dependencies.filter((dependency) => !byId.has(dependency));
+    const incompleteDependencies = dependencies.filter(
+      (dependency) => byId.get(dependency)?.readiness?.state !== 'DONE'
+    );
+
+    let derivedState = currentState;
+    if (currentState === 'DONE') {
+      derivedState = 'DONE';
+    } else if (guarded) {
+      derivedState = currentState;
+    } else if (missingDependencies.length > 0 || incompleteDependencies.length > 0) {
+      derivedState = 'BLOCKED';
+    } else {
+      derivedState = 'READY';
+    }
+
+    return {
+      id: entry.id,
+      waveId: entry.waveId,
+      lotId: entry.lotId,
+      title: entry.title,
+      integrationSlot: entry.integrationSlot,
+      resourceScopes: entry.resourceScopes ?? [],
+      collisionDomains: entry.collisionDomains ?? [],
+      currentState,
+      derivedState,
+      programOrder,
+      waveOrder: waveOrder.get(entry.waveId) ?? Number.MAX_SAFE_INTEGER,
+      dependencies,
+      missingDependencies,
+      incompleteDependencies,
+      guarded,
+      requiredExplicitGates: entry?.readiness?.requiredExplicitGates ?? []
+    };
+  });
+
+  const readyBlueprints = derivedBlueprints
+    .filter((entry) => entry.derivedState === 'READY')
+    .sort((left, right) => (
+      left.waveOrder - right.waveOrder
+      || left.programOrder - right.programOrder
+      || left.id.localeCompare(right.id)
+    ));
+
+  const drift = derivedBlueprints
+    .filter((entry) => entry.currentState !== entry.derivedState)
+    .map((entry) => ({
+      id: entry.id,
+      currentState: entry.currentState,
+      derivedState: entry.derivedState,
+      incompleteDependencies: entry.incompleteDependencies,
+      missingDependencies: entry.missingDependencies
+    }));
+
+  const storedReady = Array.isArray(projection?.executionModel?.currentReadyBlueprintIds)
+    ? projection.executionModel.currentReadyBlueprintIds
+    : null;
+  const derivedReady = readyBlueprints.map((entry) => entry.id);
+  const storedReadyDrift = storedReady === null
+    ? []
+    : (
+      storedReady.length === derivedReady.length
+      && storedReady.every((id, index) => id === derivedReady[index])
+        ? []
+        : [{ storedReadyBlueprintIds: storedReady, derivedReadyBlueprintIds: derivedReady }]
+    );
+
+  return {
+    authority: 'PROGRAM_BACKLOG_DERIVED_READINESS',
+    runtimeSideEffects: false,
+    createsRuntimeTasks: false,
+    blueprints: derivedBlueprints,
+    readyBlueprintIds: derivedReady,
+    drift,
+    storedReadyDrift
+  };
+}
+
+export function selectProgramCandidates(projection) {
+  const derived = deriveProgramReadiness(projection);
+  const byId = new Map((projection?.taskBlueprints ?? []).map((entry) => [entry.id, entry]));
+
+  return {
+    selectionMode: 'FIRST_COLLISION_FREE_IN_PROGRAM_ORDER',
+    runtimeAuthorityConsulted: false,
+    canClaim: false,
+    canMutate: false,
+    requiresLiveCollisionCheck: true,
+    requiresRuntimeAuthorityReobservation: true,
+    candidates: derived.readyBlueprintIds.map((id) => {
+      const entry = byId.get(id);
+      return {
+        id,
+        waveId: entry?.waveId ?? null,
+        lotId: entry?.lotId ?? null,
+        title: entry?.title ?? null,
+        integrationSlot: entry?.integrationSlot ?? null,
+        resourceScopes: entry?.resourceScopes ?? [],
+        collisionDomains: entry?.collisionDomains ?? []
+      };
+    })
+  };
+}
+
+export function applyDerivedProgramReadiness(projection) {
+  const next = structuredClone(projection);
+  const derived = deriveProgramReadiness(next);
+  const byId = new Map(derived.blueprints.map((entry) => [entry.id, entry]));
+
+  for (const blueprint of next.taskBlueprints ?? []) {
+    const state = byId.get(blueprint.id);
+    if (!state) continue;
+    if (blueprint.readiness.state === 'DONE') continue;
+    if (GUARDED_BLUEPRINT_READINESS.has(blueprint.readiness.state)) continue;
+    if (blueprint.readiness.autoPromotable === false) continue;
+    blueprint.readiness.state = state.derivedState;
+  }
+
+  const refreshed = deriveProgramReadiness(next);
+  next.executionModel.currentReadyBlueprintIds = refreshed.readyBlueprintIds;
+  const firstReady = refreshed.blueprints.find(
+    (entry) => entry.id === refreshed.readyBlueprintIds[0]
+  );
+  if (firstReady) next.executionModel.currentWave = firstReady.waveId;
+
+  return {
+    projection: next,
+    derived: refreshed
+  };
+}
+
 function detectBlueprintCycles(blueprints) {
   const byId = new Map(blueprints.map((entry) => [entry.id, entry]));
   const visiting = new Set();

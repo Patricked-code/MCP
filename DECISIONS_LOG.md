@@ -1,5 +1,13 @@
 # DECISIONS_LOG.md
 
+## 2026-09-25 — La progression du Program Backlog est dérivée automatiquement, l'autorité runtime ne l'est pas
+
+Décision : après chaque blueprint `DONE` avec preuves, les états planning `READY/BLOCKED` des blueprints ordinaires sont recalculés automatiquement depuis `dependsOn`. `DONE` reste terminal ; `DEFERRED` et `CONDITIONAL` conservent leurs gates et ne sont jamais auto-promus.
+
+La sélection est déterministe : ordre des vagues puis ordre versionné des blueprints, avec choix du premier candidat `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` après reobservation UAC. Le sélecteur ne consulte ni ne modifie les autorités runtime ; il produit une liste planning. Governed Task Queue, Session, ownership/claims, Lock Service, GitHub current state et scoped WRITE gate gardent leur autorité.
+
+Un agent connecté poursuit automatiquement les lots ordinaires tant qu'un candidat dependency-safe/collision-safe existe. Il ne demande pas de confirmation de routine entre lots. L'arrêt est réservé à un blocker gouverné réel : gate humaine, ambiguïté, autorité indisponible, collision/ownership, sécurité/non-régression, ou condition deferred/conditional.
+
 ## 2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle
 
 Décision : les 164 capacités demandées par #177 sont d'abord réconciliées contre le `main` courant et la cartographie runtime. Chaque capability est routée vers un Integration Slot et un Task Blueprint du Program Backlog V2 existant. Les lots GGCC sont des extensions de W3/W4/MAINTENANCE/CONDITIONAL, jamais une seconde roadmap ou Task Queue.
