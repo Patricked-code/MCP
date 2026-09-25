@@ -30,10 +30,13 @@ import { createGithubDeployRouter } from './deploy/routes.js';
 import {
   verifyGithubOidcToken,
   verifyGithubReadonlyEvidenceOidcToken,
-  verifyGithubStablecoinFastForwardOidcToken
+  verifyGithubStablecoinFastForwardOidcToken,
+  verifyGithubRepositorySshOidcToken
 } from './deploy/githubOidc.js';
 import { createGithubReadonlyEvidenceRouter } from './evidence/githubReadonlyRoutes.js';
 import { createStablecoinFastForwardRouter } from './stablecoin/githubFastForward.js';
+import { createGithubRepositorySshAccessRouter } from './ssh/githubRepositoryAccessRoutes.js';
+import { signRepositorySshCertificate } from './ssh/repositoryCertificate.js';
 import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
 import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js';
 import {
@@ -390,6 +393,11 @@ export async function startHttpServer(): Promise<void> {
     runRead: async (target, command) => (
       runReadOnlyCommand(target, command, 15_000, 32_768)
     )
+  }));
+  app.use(createGithubRepositorySshAccessRouter({
+    verifyOidc: verifyGithubRepositorySshOidcToken,
+    enabled: () => env.MCP_GITHUB_REPOSITORY_SSH_ENABLED,
+    signCertificate: signRepositorySshCertificate
   }));
   app.use(createStablecoinFastForwardRouter({
     verifyOidc: verifyGithubStablecoinFastForwardOidcToken,
