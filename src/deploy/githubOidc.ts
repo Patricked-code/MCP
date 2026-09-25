@@ -68,7 +68,7 @@ export function repositorySshOidcPolicyFor(repository: string): GithubOidcPolicy
   if (!GOVERNED_REPOSITORY_PATTERN.test(repository)) {
     throw oidcError('oidc_repository_invalid');
   }
-  const [owner] = repository.split('/', 1);
+  const owner = repository.slice(0, repository.indexOf('/'));
   if (!GOVERNED_REPOSITORY_OWNERS.includes(owner as typeof GOVERNED_REPOSITORY_OWNERS[number])) {
     throw oidcError('oidc_owner_invalid');
   }
