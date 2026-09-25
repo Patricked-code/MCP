@@ -15,4 +15,4 @@ case "$ORIGINAL" in
 esac
 
 exec docker exec wealthtech_mcp_ssh_bridge \
-  node dist/ssh/repositoryGatewayCli.js "$REPOSITORY" "$ORIGINAL"
+  node dist/src/ssh/repositoryGatewayCli.js "$REPOSITORY" "$ORIGINAL"
