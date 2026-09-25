@@ -4,8 +4,10 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 
+import { managedServers } from '../config/servers.js';
 import {
   GOVERNED_REPOSITORY_SSH_CA_KEY_PATH,
+  GOVERNED_REPOSITORY_SSH_HOST_PUBLIC_KEY_PATH,
   repositorySshForceCommand,
   validateGovernedRepository,
   validateRepositorySshPublicKey
@@ -19,6 +21,10 @@ export interface RepositorySshCertificate {
   principal: 'root';
   fingerprint: string;
   certificate: string;
+  knownHosts: string;
+  host: string;
+  port: number;
+  username: string;
   validForSeconds: number;
   mutationAllowed: false;
 }
@@ -75,11 +81,24 @@ export async function signRepositorySshCertificate(input: {
       throw new Error('repository_ssh_certificate_invalid');
     }
 
+    const hostPublicKeyRaw = (await readFile(GOVERNED_REPOSITORY_SSH_HOST_PUBLIC_KEY_PATH, 'utf8')).trim();
+    const hostParts = hostPublicKeyRaw.split(/\s+/);
+    if (hostParts.length < 2 || hostParts[0] !== 'ssh-ed25519' || !/^[A-Za-z0-9+/]+={0,2}$/.test(hostParts[1]!)) {
+      throw new Error('repository_ssh_host_key_invalid');
+    }
+    const s1 = managedServers.s1;
+    const knownHostName = s1.port === 22 ? s1.host : `[${s1.host}]:${s1.port}`;
+    const knownHosts = `${knownHostName} ${hostParts[0]} ${hostParts[1]}`;
+
     return {
       repository,
       principal: 'root',
       fingerprint,
       certificate,
+      knownHosts,
+      host: s1.host,
+      port: s1.port,
+      username: s1.username,
       validForSeconds: 600,
       mutationAllowed: false
     };
