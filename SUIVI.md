@@ -1,5 +1,17 @@
 # SUIVI.md
 
+## 2026-09-25 — Governed repository SSH certificate provisioning — candidate
+
+- Demande propriétaire intégrée dans le Program Backlog V2 existant : `PB-SSH-ACCESS` / `TB-W3-SSH-ACCESS-01`, sans programme parallèle ni nouvelle Task Queue.
+- Baseline d'implémentation : `main=5c08e865eef7877f5450262db726b17fe2110a2e`; branche `mcp/repository-ssh-access-provisioning-20260925`; collision domain SSH reobservé libre vis-à-vis de la branche de preuve SSH existante.
+- RED : `18bff6c0c48981e89a680bf3af465d56a4f8d005`, MCP CI run `36123311069` ; 705 tests historiques passent et le seul échec attendu est l'absence du nouveau module SSH.
+- Architecture retenue : GitHub Actions génère une clé Ed25519 éphémère ; OIDC exact repo/ref/workflow demande au MCP un certificat OpenSSH <= 10 minutes ; aucune clé privée cliente n'est transmise ou persistée.
+- Le certificat utilise principal `root` mais `-O clear` + `force-command` fixe vers `governed-repository-ssh-gateway.sh`; aucun shell libre, PTY ou forwarding.
+- Gateway allowlist : `ping`, `project-context`, `list-domains-s1/s2`, `docker-status-s1/s2`, `write-tools-context` uniquement ; `mutationAllowed=false`.
+- CA S1 : bootstrap idempotent par workflow MCP manuel OIDC, derrière `ENABLE_WRITE_TOOLS`; clé privée sous `/opt/apps/wealthtech-mcp-ssh-bridge/keys`, montée read-only dans le runtime sous `/app/keys`.
+- Le broker retourne le certificat public et la clé hôte publique S1 épinglée pour `StrictHostKeyChecking=yes`; aucun secret `known_hosts` requis côté repo.
+- NEXT_ACTION candidate : obtenir MCP CI exact-head verte, ouvrir/reviewer/merger la PR sous garde HEAD, Governed Deploy du merge, bootstrap CA explicite, puis intégrer et tester `Governed-Repository-Template` V2.6 / `Gouvern`.
+
 ## 2026-09-25 — W3 A2.2.1 Verified Client Evidence inventory — GREEN candidate
 
 - Baseline live réobservée avant écriture : `main=001ed65dc84d9f70694d2b2ceea84b3b1fc82523`; aucune PR/branche W3 A2.2 active sur le collision domain `connection:client-evidence:inventory`.
