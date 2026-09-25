@@ -70,11 +70,12 @@ export const GITHUB_REPOSITORY_SSH_CA_BOOTSTRAP_OIDC_POLICY: GithubOidcPolicy = 
 });
 
 
-const GOVERNED_REPOSITORY_OWNERS = Object.freeze([
-  'Patricked-code',
-  'Wealthtechinnovations',
-  'chainsolutions-wealthtech'
-] as const);
+const GOVERNED_REPOSITORY_OWNER_IDS = Object.freeze({
+  'Patricked-code': '270385782',
+  'Wealthtechinnovations': '94637590',
+  'chainsolutions-wealthtech': '299685687'
+} as const);
+type GovernedRepositoryOwner = keyof typeof GOVERNED_REPOSITORY_OWNER_IDS;
 const GOVERNED_REPOSITORY_PATTERN = /^[A-Za-z0-9_.-]{1,120}\/[A-Za-z0-9_.-]{1,100}$/;
 
 export function repositorySshOidcPolicyFor(repository: string): GithubOidcPolicy {
@@ -82,14 +83,16 @@ export function repositorySshOidcPolicyFor(repository: string): GithubOidcPolicy
     throw oidcError('oidc_repository_invalid');
   }
   const owner = repository.slice(0, repository.indexOf('/'));
-  if (!GOVERNED_REPOSITORY_OWNERS.includes(owner as typeof GOVERNED_REPOSITORY_OWNERS[number])) {
+  if (!(owner in GOVERNED_REPOSITORY_OWNER_IDS)) {
     throw oidcError('oidc_owner_invalid');
   }
+  const ownerId = GOVERNED_REPOSITORY_OWNER_IDS[owner as GovernedRepositoryOwner];
   return Object.freeze({
     issuer: 'https://token.actions.githubusercontent.com',
     audience: 'https://mcp.wealthtechinnovations.com/access/github/repository-ssh',
     repository,
     owner,
+    ownerId,
     ref: 'refs/heads/main',
     workflowRef: `${repository}/.github/workflows/governed-local-entry.yml@refs/heads/main`,
     allowedEvents: Object.freeze(['issue_comment', 'workflow_dispatch'] as const)
