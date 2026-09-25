@@ -13,6 +13,7 @@ import {
 
 const SERVER = new URL('../src/server.ts', import.meta.url);
 const GATEWAY = new URL('../scripts/governed-repository-ssh-gateway.sh', import.meta.url);
+const BOOTSTRAP_WORKFLOW = new URL('../.github/workflows/repository-ssh-ca-bootstrap.yml', import.meta.url);
 
 test('repository SSH public keys accept only bounded ed25519 material', () => {
   const valid = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG7mYl9jN0VXQm9uZGVkS2V5Rm9yVGVzdA governed-repo:Patricked-code/Gouvern';
@@ -84,4 +85,17 @@ test('server registers the repository SSH certificate broker before general web 
   assert.ok(broker < json, 'SSH broker must be isolated before general web routes');
   assert.match(source, /verifyGithubRepositorySshOidcToken/);
   assert.match(source, /signRepositorySshCertificate/);
+});
+
+
+test('CA bootstrap workflow is manual, exact-main, OIDC-only and contains no SSH secret', async () => {
+  const source = await readFile(BOOTSTRAP_WORKFLOW, 'utf8');
+  assert.match(source, /workflow_dispatch:/);
+  assert.match(source, /id-token:\s*write/);
+  assert.match(source, /contents:\s*read/);
+  assert.match(source, /github\.ref == 'refs\/heads\/main'/);
+  assert.match(source, /access\/github\/repository-ssh\/ca\/bootstrap/);
+  assert.match(source, /ACTIONS_ID_TOKEN_REQUEST_URL/);
+  assert.match(source, /GITHUB_SHA/);
+  assert.doesNotMatch(source, /secrets\.|PRIVATE_KEY|sshpass|scp\s|rsync\s/i);
 });
