@@ -26,6 +26,7 @@ if (mode === '--next') {
 }
 
 if (mode === '--write') {
+  const before = deriveProgramReadiness(program);
   const { projection, derived } = applyDerivedProgramReadiness(program);
   await writeFile(PROGRAM_PATH, JSON.stringify(projection, null, 2) + '\n', 'utf8');
   console.log(JSON.stringify({
@@ -33,7 +34,7 @@ if (mode === '--write') {
     runtimeSideEffects: false,
     createsRuntimeTasks: false,
     readyBlueprintIds: derived.readyBlueprintIds,
-    changedBlueprints: derived.drift.map((entry) => entry.id)
+    changedBlueprints: before.drift.map((entry) => entry.id)
   }, null, 2));
   process.exit(0);
 }
