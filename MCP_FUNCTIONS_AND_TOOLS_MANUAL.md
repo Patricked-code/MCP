@@ -8,7 +8,7 @@ Le fallback SSH des repositories créés depuis le template n'utilise plus de se
 
 Workflow : `.github/workflows/repository-ssh-ca-bootstrap.yml`.
 
-Il est uniquement `workflow_dispatch`, demande un jeton GitHub OIDC avec l'audience `https://mcp.wealthtechinnovations.com/access/github/repository-ssh/ca/bootstrap`, puis appelle le endpoint MCP de bootstrap. Le serveur crée ou réutilise la CA Ed25519, installe `TrustedUserCAKeys`, valide `sshd -t`, recharge SSH et ne retourne que le fingerprint public.
+Il accepte `workflow_dispatch` ou l'ouverture de l'issue exacte `[Governed SSH CA Bootstrap]`. Pour le chemin issue, GitHub doit d'abord confirmer que l'acteur courant possède `admin`, `maintain` ou `write` sur `Patricked-code/MCP`; `OWNER/MEMBER/COLLABORATOR` seul ne suffit pas. Le workflow demande ensuite un jeton GitHub OIDC avec l'audience `https://mcp.wealthtechinnovations.com/access/github/repository-ssh/ca/bootstrap`, puis appelle le endpoint MCP de bootstrap. Le serveur crée ou réutilise la CA Ed25519, installe `TrustedUserCAKeys`, valide `sshd -t`, recharge SSH et ne retourne que le fingerprint public.
 
 ### Délivrance par repository
 
