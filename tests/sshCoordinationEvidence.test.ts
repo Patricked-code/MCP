@@ -44,7 +44,9 @@ test('TB-COND-SSH is closed only after the proven A2.2.2 OIDC coverage gap is bo
   assert.equal(evidence.requiredByBlueprintId, 'TB-W3-A22-02');
   assert.equal(evidence.mutationAllowed, false);
   assert.equal(evidence.transport, 'github_actions_ssh_readonly');
+  assert.equal(evidence.status, 'IMPLEMENTATION_CANDIDATE');
 
-  assert.equal(blueprint?.readiness?.state, 'DONE');
+  assert.equal(blueprint?.readiness?.state, 'CONDITIONAL');
   assert.match(blueprint?.readiness?.reason ?? '', /PROVEN_OIDC_COVERAGE_GAP/);
+  assert.match(blueprint?.readiness?.reason ?? '', /LIVE_SSH_PROBE_REQUIRED/);
 });
