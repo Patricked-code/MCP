@@ -8032,7 +8032,7 @@
     }
   ],
   "w3A22InventoryHandoff": {
-    "status": "PENDING_EXACT_HEAD_GREEN",
+    "status": "PASS_WITH_EVIDENCE",
     "observedMainSha": "001ed65dc84d9f70694d2b2ceea84b3b1fc82523",
     "redHead": "25bef169b1c74f8a856da5440323ed6c2a6bcc10",
     "redCiRunId": 36103455616,
@@ -8051,6 +8051,19 @@
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
-    "serverMutations": 0
+    "serverMutations": 0,
+    "validatedGreenHead": "d976a4e2b13159e28135452a25415550c123d7c9",
+    "validatedGreenCiRunId": 36104100336,
+    "validatedGreenCiRunNumber": 1947,
+    "validationSummary": {
+      "typecheck": "SUCCESS",
+      "build": "SUCCESS",
+      "docsCheck": "SUCCESS",
+      "governanceTests": "SUCCESS",
+      "gwcVerify": "SUCCESS",
+      "secretScan": "SUCCESS",
+      "readOnlySafety": "SUCCESS",
+      "whitespace": "SUCCESS"
+    }
   }
 }
