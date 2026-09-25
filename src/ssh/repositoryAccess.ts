@@ -1,4 +1,4 @@
-const REPOSITORY_PATTERN = /^[A-Za-z0-9_.-]{1,120}\/[A-Za-z0-9_.-]{1,100}$/;
+const REPOSITORY_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38}[A-Za-z0-9])?\/[A-Za-z0-9_.-]{1,100}$/;
 const ED25519_PATTERN = /^ssh-ed25519 ([A-Za-z0-9+/]{40,120}={0,2})(?: ([A-Za-z0-9_.:@\/-]{1,200}))?$/;
 
 export const GOVERNED_REPOSITORY_SSH_CA_HOST_KEY_PATH =
@@ -44,7 +44,7 @@ export function buildRepositorySshCaBootstrapCommand(): string {
 umask 077
 install -d -m 0700 /opt/apps/wealthtech-mcp-ssh-bridge/keys
 if [ ! -f '${key}' ]; then
-  ssh-keygen -q -t ed25519 -N '' -C 'wealthtech-governed-repository-ssh-ca' -f '${key}'
+  ssh-keygen -q -t ed25519 -N '' -C 'wealthtech-governed-repo-ssh-ca' -f '${key}'
 fi
 test -f '${key}.pub'
 install -m 0644 '${key}.pub' '${pub}'
