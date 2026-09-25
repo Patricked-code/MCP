@@ -22,12 +22,10 @@ test('program readiness is a deterministic derived projection over dependency co
   assert.equal(derived.authority, 'PROGRAM_BACKLOG_DERIVED_READINESS');
   assert.deepEqual(derived.drift, []);
 
-  assert.deepEqual(derived.readyBlueprintIds, [
-    'TB-W3-A22-01',
-    'TB-W3-A3-01',
-    'TB-W3-B3-01',
-    'TB-W3-C1-01'
-  ]);
+  assert.deepEqual(
+    derived.readyBlueprintIds,
+    program.executionModel.currentReadyBlueprintIds
+  );
 });
 
 test('completing a blueprint promotes only dependents whose full dependency set is DONE', async () => {
@@ -96,12 +94,10 @@ test('candidate selection is stable, chronological and planning-only', async () 
   assert.equal(selection.canClaim, false);
   assert.equal(selection.canMutate, false);
   assert.equal(selection.requiresLiveCollisionCheck, true);
-  assert.deepEqual(selection.candidates.map((entry: any) => entry.id), [
-    'TB-W3-A22-01',
-    'TB-W3-A3-01',
-    'TB-W3-B3-01',
-    'TB-W3-C1-01'
-  ]);
+  assert.deepEqual(
+    selection.candidates.map((entry: any) => entry.id),
+    program.executionModel.currentReadyBlueprintIds
+  );
 });
 
 test('the program declares an autonomous continuation contract without weakening runtime authority', async () => {

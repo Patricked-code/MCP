@@ -8021,7 +8021,14 @@
         "TB-M-GGCC-GIT-MAINTENANCE",
         "TB-COND-GIT-HISTORY-REWRITE",
         "TB-COND-GIT-DESTRUCTIVE"
-      ]
+      ],
+      "readyBlueprintIdsAtConvergence": [
+        "TB-W3-A22-01",
+        "TB-W3-A3-01",
+        "TB-W3-B3-01",
+        "TB-W3-C1-01"
+      ],
+      "postConvergenceReadinessIsDerived": true
     }
   ]
 }
