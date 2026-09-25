@@ -506,6 +506,8 @@ W2 COMPLETE — CAPACITÉS GITHUB COMPLÉMENTAIRES
         ↓
 W3 READY — CONTINUITÉ / RÉSOLUTION / GOUVERNANCE
   planning-ready directs : TB-W3-A22-01 + TB-W3-A3-01 + TB-W3-B3-01 + TB-W3-C1-01
+  intake #177 Git/GitHub Capability Completion : CONVERGED current-first, 164 capabilities mapped
+  residual GGCC : intégrés dans W3/W4/MAINTENANCE/CONDITIONAL, dependency-gated et non auto-promus
   aval dependency-gated : C3/C4/C5 + D1/D2/D3 + E1/E2/E3 + F
         ↓
 W4 OBSERVABILITÉ / CERTIFICATION
@@ -517,6 +519,15 @@ W4 OBSERVABILITÉ / CERTIFICATION
 
 Les lots J3, J4, fallbacks SSH read-only, écritures serveur additionnelles, GitHub destructif et Stablecoin applicatif restent séparés ou conditionnels. Leur présence dans le backlog n'est jamais une autorisation d'exécution.
 
+
+
+### Intake #177 — Git/GitHub Capability Completion
+
+L'intake humain #177 traverse le Program Backlog V2 existant ; il ne crée aucun backlog, moteur, Task Queue, Session, Claim, Lock, permission model, evidence store ou Capability Reality parallèle. La matrice exhaustive est `docs/governance/git-github-capability-convergence-20260925.json`.
+
+Les 164 capacités demandées (81 Git local, 83 GitHub) sont classées current-first contre `main@c104e24259232dced2a24a7397640747c052d140` puis routées vers les Integration Slots existants ou vers des lots GGCC additifs intégrés aux vagues W3/W4/MAINTENANCE/CONDITIONAL. Les capacités W2 et lifecycle déjà présentes restent acquises ; #88/#89/#90 restent de la provenance uniquement.
+
+Les nouveaux lots GGCC sont tous BLOCKED/DEFERRED/CONDITIONAL. Ils ne modifient pas le set READY W3 courant : `TB-W3-A22-01`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01`.
 
 ### Program Backlog V2 — matérialisation progressive
 

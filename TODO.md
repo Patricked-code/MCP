@@ -47,10 +47,11 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-GITHUB-FIRST-PROOF` | `DONE` | `github-first.read-evidence-proof` | GitHub-first S1 read-only evidence proof |
 | `PB-GITHUB-FIRST-FALLBACKS` | `DEFERRED` | `github-first.optional-readonly-fallbacks` | Optional SSH read-only fallback selection |
 | `PB-GITHUB-FIRST-WRITE` | `DEFERRED` | `github-first.server-write-extensions` | Additional bounded server WRITE transports |
-| `PB-GITHUB-READ` | `READY` | `github.control-plane.read-complements` | GitHub Control Plane READ R1 |
+| `PB-GITHUB-READ` | `DONE` | `github.control-plane.read-complements` | GitHub Control Plane READ R1 delivered by W2 |
 | `PB-GITHUB-ADMIN` | `DESIGNED_NOT_IMPLEMENTED` | `github.admin.create-repository` | Governed github_create_repository |
 | `PB-GITHUB-PRWRITE` | `DESIGNED_NOT_IMPLEMENTED` | `github.pr-write.extensions` | Governed PR write extensions |
 | `PB-GITHUB-DESTRUCTIVE` | `DEFERRED` | `github.destructive-writes` | Destructive GitHub file/branch operations |
+| `PB-GGCC` | `PARTIALLY_IMPLEMENTED` | `control-plane.git-github-capability-completion` | Intake #177 converged; residual typed Git/GitHub capability lots integrated into current waves |
 | `PB-STABLECOIN-APPDEPLOY` | `CONDITIONAL` | `deployment.stablecoin-application` | Stablecoin application-changing deploy path |
 | `PB-UAC` | `DONE` | `coordination.universal` | Universal Agent Coordination / heartbeat and claim observability |
 | `PB-GWC-RECONCILE` | `DONE` | `governance.gwc-blueprint-convergence` | GWC-0..17 implementation-state convergence |
@@ -66,6 +67,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 - **DONE — W1 Program State Convergence** : `TB-W1-01..07` sont terminés ; GWC/AF/OD/task-registry/planning ont été réconciliés current-first.
 - **DONE — W2 GitHub READ** : `TB-W2-01`, `TB-W2-02`, `TB-W2-03` sont terminés et validés exact-head ; les trois capacités restent strictement READ et aucun runtime Task/Session/Lock n'a été créé par W2.
 - **ACTIVE planning wave — W3** : seuls `TB-W3-A22-01`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01` sont planning-ready comme dépendants directs de W2 ; les autres W3 et W4 restent bloqués par leurs dépendances.
+- **CONVERGED — intake #177** : 164 capacités Git/GitHub ont été classées current-first et routées dans le Program Backlog V2 ; les lots GGCC résiduels restent BLOCKED/DEFERRED/CONDITIONAL et ne créent aucune Task runtime.
 - **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
 - **Observabilité/certification** : G1/G2, G3, H, I, J1/J2 après leurs dépendances.
 - **Séparés/conditionnels** : J3 Node 24, J4 WRITE gate enforce, fallbacks SSH, WRITE serveur additionnels, GitHub destructif, déploiement applicatif Stablecoin.

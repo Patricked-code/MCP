@@ -73,13 +73,12 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 9,
+      "DONE": 10,
       "KNOWN_NOT_ANALYZED": 9,
-      "PARTIALLY_IMPLEMENTED": 5,
+      "PARTIALLY_IMPLEMENTED": 6,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
-      "DEFERRED": 3,
-      "READY": 1
+      "DEFERRED": 3
     }
   },
   "sourceCoverage": {
@@ -1293,6 +1292,17 @@
         ],
         "coveredBy": "PB-GITHUB-FIRST-PROOF"
       }
+    ],
+    "programIntakes": [
+      {
+        "sourceKey": "issue:177",
+        "sourceId": "#177",
+        "title": "[PROGRAM INTAKE] GIT/GITHUB CAPABILITY COMPLETION — governed full control plane",
+        "coveredBy": "PB-GGCC",
+        "disposition": "PARTIALLY_IMPLEMENTED",
+        "observedMainSha": "c104e24259232dced2a24a7397640747c052d140",
+        "inventoryPath": "docs/governance/git-github-capability-convergence-20260925.json"
+      }
     ]
   },
   "workItems": [
@@ -1901,7 +1911,7 @@
     {
       "id": "PB-GITHUB-READ",
       "title": "GitHub Control Plane READ R1",
-      "disposition": "READY",
+      "disposition": "DONE",
       "integrationSlot": "github.control-plane.read-complements",
       "implementationMode": "EXTEND",
       "existingAuthorities": [
@@ -1911,7 +1921,7 @@
       "dependsOn": [
         "PB-GITHUB-FIRST-PROGRAM"
       ],
-      "nextAction": "Implement only github_get_commits, github_get_tree and github_get_required_checks after active coordination/backlog gates permit.",
+      "nextAction": "Preserve W2 READ R1 as acquired capability; consume from residual GGCC lots without reimplementation.",
       "subtasks": [
         "github_get_commits bounded and paginated",
         "github_get_tree bounded, no blobs, explicit truncated",
@@ -2217,6 +2227,38 @@
         "Never wholesale merge/rebase/cherry-pick stale branches",
         "Historical intent cannot override current architecture"
       ]
+    },
+    {
+      "id": "PB-GGCC",
+      "title": "Git/GitHub Capability Completion — intake #177 convergence and residual capability completion",
+      "disposition": "PARTIALLY_IMPLEMENTED",
+      "integrationSlot": "control-plane.git-github-capability-completion",
+      "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "nextAction": "Keep the four current W3 foundation inventories as the only planning-ready work; execute GGCC residual blueprints only after their current-program dependencies and live collision/governance gates are satisfied.",
+      "dependsOn": [
+        "PB-GITHUB-READ",
+        "PB-B3",
+        "PB-C1",
+        "PB-D2"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "src/tools/mcpGitSync.ts",
+        "GitRegistry V2 / TargetScope",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Session / Lock Service",
+        "Scoped WRITE Gate"
+      ],
+      "nonRegression": [
+        "No free Git shell or raw GitHub API.",
+        "No parallel Task/Session/Claim/Lock/authorization/evidence authority.",
+        "Existing tools are reused or wrapped before any new capability is added.",
+        "Historical PR #88/#89/#90 remain provenance only.",
+        "Secret values are never readable.",
+        "History rewrite/destructive operations remain explicitly gated."
+      ]
     }
   ],
   "executionModel": {
@@ -2284,7 +2326,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "READY_FOR_W3_FOUNDATION_INVENTORIES"
+    "currentWaveStatus": "READY_FOR_W3_FOUNDATION_INVENTORIES_WITH_INTAKE_177_CONVERGED"
   },
   "agentHandoffContract": {
     "steps": [
@@ -5910,7 +5952,7 @@
       "waveId": "CONDITIONAL",
       "lotId": "GH.DELETE",
       "title": "Destructive GitHub operations",
-      "objective": "Design deletion-specific file/branch operations only for a concrete approved use case with irreversible-action safeguards.",
+      "objective": "Design typed destructive GitHub operations (branch/file/ruleset/webhook/variable and future explicitly approved deletions) only for concrete governed use cases with irreversible-action safeguards; repository/org deletion remains forbidden by default.",
       "integrationSlot": "github.destructive-writes",
       "integrationStrategy": "NEW_JUSTIFIED",
       "dependsOn": [
@@ -5942,7 +5984,8 @@
         "autoPromotable": false,
         "requiredExplicitGates": [
           "CONCRETE_DELETION_USE_CASE",
-          "DELETION_GOVERNANCE_APPROVED"
+          "DELETION_GOVERNANCE_APPROVED",
+          "RESOURCE_SPECIFIC_RECOVERY_OR_IRREVERSIBILITY_ACKNOWLEDGED"
         ],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
       },
@@ -6188,6 +6231,1515 @@
         "onSuccess": "Checkpoint evidence and re-evaluate direct dependents only.",
         "onFailure": "Record exact blocker; do not infer permission, ownership transfer or readiness."
       }
+    },
+    {
+      "id": "TB-W3-GGCC-GIT-READ",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-1",
+      "title": "Generic governed Git READ capability layer",
+      "objective": "Generalize project/MCP-specific Git observations into bounded typed READ capabilities without shell escape hatches.",
+      "integrationSlot": "git.capability.read",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-B3-02",
+        "TB-W3-C1-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "GitRegistry V2 / TargetScope",
+        "src/tools/mcpGitSync.ts bounded existing guards"
+      ],
+      "resourceScopes": [
+        "integration:git.capability.read"
+      ],
+      "collisionDomains": [
+        "integration:git.capability.read"
+      ],
+      "readAuthorities": [
+        "governed repository observation"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-1 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GIT-SYNC",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-2",
+      "title": "Governed Git SYNC capability layer",
+      "objective": "Generalize fetch→compare→prove→fast-forward patterns with exact-head, remote allowlist and no implicit merge.",
+      "integrationSlot": "git.capability.sync",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "GitRegistry V2 / TargetScope",
+        "src/tools/mcpGitSync.ts bounded existing guards"
+      ],
+      "resourceScopes": [
+        "integration:git.capability.sync"
+      ],
+      "collisionDomains": [
+        "integration:git.capability.sync"
+      ],
+      "readAuthorities": [
+        "governed repository observation"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-2 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GIT-BRANCH-COMMIT",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-3",
+      "title": "Governed Git branch/commit/state capability layer",
+      "objective": "Add bounded branch, staging, commit, stash and tag capabilities using exact target and scoped governance.",
+      "integrationSlot": "git.capability.branch-commit",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "GitRegistry V2 / TargetScope",
+        "src/tools/mcpGitSync.ts bounded existing guards"
+      ],
+      "resourceScopes": [
+        "integration:git.capability.branch-commit"
+      ],
+      "collisionDomains": [
+        "integration:git.capability.branch-commit"
+      ],
+      "readAuthorities": [
+        "governed repository observation"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-3 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GIT-INTEGRATION-RECOVERY",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-4",
+      "title": "Governed Git integration/recovery capability layer",
+      "objective": "Add merge/cherry-pick/revert/restore and safe recovery paths while keeping history-rewrite operations separately gated.",
+      "integrationSlot": "git.capability.integration-recovery",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-GGCC-GIT-BRANCH-COMMIT",
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "GitRegistry V2 / TargetScope",
+        "src/tools/mcpGitSync.ts bounded existing guards"
+      ],
+      "resourceScopes": [
+        "integration:git.capability.integration-recovery"
+      ],
+      "collisionDomains": [
+        "integration:git.capability.integration-recovery"
+      ],
+      "readAuthorities": [
+        "governed repository observation"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-4 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GIT-REMOTE-WORKTREE",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-5",
+      "title": "Governed Git remote/worktree capability layer",
+      "objective": "Add allowlisted remote verification/mutation and governed worktree lifecycle without bypassing repository/task rules.",
+      "integrationSlot": "git.capability.remote-worktree",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W3-C345-02",
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "GitRegistry V2 / TargetScope",
+        "src/tools/mcpGitSync.ts bounded existing guards"
+      ],
+      "resourceScopes": [
+        "integration:git.capability.remote-worktree"
+      ],
+      "collisionDomains": [
+        "integration:git.capability.remote-worktree"
+      ],
+      "readAuthorities": [
+        "governed repository observation"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-5 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GH-REPO-BRANCH",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-6",
+      "title": "GitHub repository/branch capability completion",
+      "objective": "Reconcile repository/branch reads with lifecycle/admin residuals; reuse repository state/create branch and existing provisioning blueprints.",
+      "integrationSlot": "github.control-plane.repository-branch",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:github.control-plane.repository-branch"
+      ],
+      "collisionDomains": [
+        "integration:github.control-plane.repository-branch"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-6 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GH-COMMIT-FILE",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-7",
+      "title": "GitHub commit/file/tree capability completion",
+      "objective": "Reuse W2 tree/commit reads and current commit/file writes; add only commit-diff and residual bounded operations.",
+      "integrationSlot": "github.control-plane.commit-file-tree",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W2-02"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:github.control-plane.commit-file-tree"
+      ],
+      "collisionDomains": [
+        "integration:github.control-plane.commit-file-tree"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-7 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GH-PR-REVIEW",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-8",
+      "title": "GitHub PR/review capability completion",
+      "objective": "Reuse current PR/review lifecycle and compose request-review/reduced update residuals under exact-head governance.",
+      "integrationSlot": "github.pr-review",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:github.pr-review"
+      ],
+      "collisionDomains": [
+        "integration:github.pr-review"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-8 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GH-ACTIONS",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-9",
+      "title": "GitHub Actions/checks capability completion",
+      "objective": "Reuse checks/required checks/workflow runs and add jobs/logs/rerun/cancel/dispatch as bounded typed operations.",
+      "integrationSlot": "github.actions-checks",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W2-03"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:github.actions-checks"
+      ],
+      "collisionDomains": [
+        "integration:github.actions-checks"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-9 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GH-RULESETS",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-10",
+      "title": "GitHub rulesets/protections capability completion",
+      "objective": "Reuse ruleset reads and add typed admin mutations/branch-rule projection with explicit policy gates.",
+      "integrationSlot": "github.rulesets-protection",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:github.rulesets-protection"
+      ],
+      "collisionDomains": [
+        "integration:github.rulesets-protection"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-10 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GH-WEBHOOKS",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-11",
+      "title": "GitHub webhook capability completion",
+      "objective": "Reuse webhook reads and add typed create/update/ping/delete without introducing a second event authority.",
+      "integrationSlot": "github.webhooks",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:github.webhooks"
+      ],
+      "collisionDomains": [
+        "integration:github.webhooks"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-11 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-12",
+      "title": "GitHub environments/variables/secrets capability completion",
+      "objective": "Add typed environment/variable operations and write-only secret setting; secret values remain unreadable.",
+      "integrationSlot": "github.environments-variables-secrets",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:github.environments-variables-secrets"
+      ],
+      "collisionDomains": [
+        "integration:github.environments-variables-secrets"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-12 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-13",
+      "title": "GitHub releases/deployments capability completion",
+      "objective": "Reuse release/deployment reads and add bounded tag/release/deployment/status mutations connected to existing deployment governance.",
+      "integrationSlot": "github.releases-deployments",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W3-C345-02"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:github.releases-deployments"
+      ],
+      "collisionDomains": [
+        "integration:github.releases-deployments"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-13 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-14",
+      "title": "GitHub issues/projects capability completion",
+      "objective": "Add bounded issue/project management as a projection/control surface that never replaces the Governed Task Queue.",
+      "integrationSlot": "github.issues-projects",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:github.issues-projects"
+      ],
+      "collisionDomains": [
+        "integration:github.issues-projects"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-14 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W3-GGCC-GH-ORG",
+      "workItemId": "PB-GGCC",
+      "waveId": "W3",
+      "lotId": "GGCC-15",
+      "title": "GitHub organization capability completion",
+      "objective": "Generalize org inventory into typed organization/membership/ruleset reads and explicitly gated admin mutations.",
+      "integrationSlot": "github.organization",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:github.organization"
+      ],
+      "collisionDomains": [
+        "integration:github.organization"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-15 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W4-GGCC-AUDIT",
+      "workItemId": "PB-GGCC",
+      "waveId": "W4",
+      "lotId": "GGCC-16",
+      "title": "GitHub audit/governance-state projection",
+      "objective": "Derive audit, security and governance drift views from existing authorities without creating a second truth store.",
+      "integrationSlot": "github.audit-governance-state",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W4-H-03",
+        "TB-W3-GGCC-GH-REPO-BRANCH",
+        "TB-W3-GGCC-GH-ACTIONS",
+        "TB-W3-GGCC-GH-RULESETS",
+        "TB-W3-GGCC-GH-WEBHOOKS",
+        "TB-W3-GGCC-GH-ORG"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:github.audit-governance-state"
+      ],
+      "collisionDomains": [
+        "integration:github.audit-governance-state"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-16 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-W4-GGCC-E2E",
+      "workItemId": "PB-GGCC",
+      "waveId": "W4",
+      "lotId": "GGCC-18",
+      "title": "E2E autonomous Git/GitHub acceptance",
+      "objective": "Prove the governed repository lifecycle from resolve/observe through branch/development/PR/checks/review/merge/deployment observation/evidence without bypasses.",
+      "integrationSlot": "control-plane.git-github-e2e",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W4-GGCC-AUDIT",
+        "TB-W3-GGCC-GIT-SYNC",
+        "TB-W3-GGCC-GIT-INTEGRATION-RECOVERY",
+        "TB-W3-GGCC-GIT-REMOTE-WORKTREE",
+        "TB-W3-GGCC-GH-COMMIT-FILE",
+        "TB-W3-GGCC-GH-PR-REVIEW",
+        "TB-W3-GGCC-GH-ACTIONS",
+        "TB-W3-GGCC-GH-RULESETS",
+        "TB-W3-GGCC-GH-WEBHOOKS",
+        "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
+        "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
+        "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+        "TB-W3-GGCC-GH-ORG",
+        "TB-W3-ADMIN-01",
+        "TB-W3-PRW-01",
+        "TB-W3-PRW-02"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "src/tools/githubControlPlaneRead.ts",
+        "src/tools/githubLifecycle.ts",
+        "GitHub current authority"
+      ],
+      "resourceScopes": [
+        "integration:control-plane.git-github-e2e"
+      ],
+      "collisionDomains": [
+        "integration:control-plane.git-github-e2e"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-18 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-M-GGCC-GIT-MAINTENANCE",
+      "workItemId": "PB-GGCC",
+      "waveId": "MAINTENANCE",
+      "lotId": "GGCC-5M",
+      "title": "Git maintenance diagnostics",
+      "objective": "Expose only justified maintenance diagnostics/GC operations in a separate maintenance window; destructive prune remains excluded.",
+      "integrationSlot": "maintenance.git-capabilities",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-GGCC-GIT-READ"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "GitRegistry V2 / TargetScope",
+        "src/tools/mcpGitSync.ts bounded existing guards"
+      ],
+      "resourceScopes": [
+        "integration:maintenance.git-capabilities"
+      ],
+      "collisionDomains": [
+        "integration:maintenance.git-capabilities"
+      ],
+      "readAuthorities": [
+        "governed repository observation"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "DEFERRED",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "CONCRETE_MAINTENANCE_NEED",
+          "SEPARATE_MAINTENANCE_WINDOW"
+        ],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-5M capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-COND-GIT-HISTORY-REWRITE",
+      "workItemId": "PB-GGCC",
+      "waveId": "CONDITIONAL",
+      "lotId": "GGCC-HISTORY",
+      "title": "Git history rewrite capabilities",
+      "objective": "Materialize amend/rebase-family operations only for an explicit use case with human gate, exact heads, locks and recovery proof.",
+      "integrationSlot": "git.capability.history-rewrite",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-GGCC-GIT-BRANCH-COMMIT",
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "GitRegistry V2 / TargetScope",
+        "src/tools/mcpGitSync.ts bounded existing guards"
+      ],
+      "resourceScopes": [
+        "integration:git.capability.history-rewrite"
+      ],
+      "collisionDomains": [
+        "integration:git.capability.history-rewrite"
+      ],
+      "readAuthorities": [
+        "governed repository observation"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "CONDITIONAL",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "EXPLICIT_HISTORY_REWRITE_USE_CASE",
+          "EXPLICIT_HUMAN_GATE",
+          "RECOVERY_PLAN_PROVEN"
+        ],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-HISTORY capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
+    },
+    {
+      "id": "TB-COND-GIT-DESTRUCTIVE",
+      "workItemId": "PB-GGCC",
+      "waveId": "CONDITIONAL",
+      "lotId": "GGCC-DESTRUCTIVE",
+      "title": "Destructive local Git lifecycle operations",
+      "objective": "Allow delete/drop/remove/prune lifecycle operations only as dedicated typed capabilities after merge/safety proof and explicit policy gate.",
+      "integrationSlot": "git.capability.destructive",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND_NEW",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W3-GGCC-GIT-READ"
+      ],
+      "existingAuthorities": [
+        ".mcp/function-cartography.json",
+        "Capability Reality / GovernanceDecision",
+        "Governed Task Queue / Governed Session / Governed Lock Service",
+        "GitRegistry V2 / TargetScope",
+        "src/tools/mcpGitSync.ts bounded existing guards"
+      ],
+      "resourceScopes": [
+        "integration:git.capability.destructive"
+      ],
+      "collisionDomains": [
+        "integration:git.capability.destructive"
+      ],
+      "readAuthorities": [
+        "governed repository observation"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate",
+        "typed capability-specific mutation only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "CONDITIONAL",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "CONCRETE_DESTRUCTIVE_USE_CASE",
+          "EXPLICIT_HUMAN_OR_POLICY_GATE",
+          "POSTCONDITION_AND_RECOVERY_PROOF"
+        ],
+        "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves the residual GGCC-DESTRUCTIVE capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "greenAcceptance": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "definitionOfDone": [
+        "Capability inventory rows routed to this lot are either reused/absorbed or implemented without duplication.",
+        "Authorization, exact-head/stateVersion/locks and human gates match risk classification.",
+        "Exact-head CI/review is green and runtime-affecting changes use Governed Deploy/attestation.",
+        "Program Backlog and NEXT_ACTION are reconciled before dependent readiness changes."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
+        "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
+      }
     }
   ],
   "reconciliationBaseline": {
@@ -6404,5 +7956,41 @@
     "runtimeLocksCreatedByW2": 0,
     "historicalBranchesResumed": false,
     "nextAction": "Self-review and merge PR #176 under exact-head guard; attest main/S1/runtime after governed deploy, then reobserve live authorities and select only a READY W3 direct dependent whose collision domain is free."
-  }
+  },
+  "programIntakes": [
+    {
+      "id": "INTAKE-177",
+      "issue": 177,
+      "title": "[PROGRAM INTAKE] GIT/GITHUB CAPABILITY COMPLETION — governed full control plane",
+      "status": "CONVERGED_CURRENT_MAIN",
+      "observedMainSha": "c104e24259232dced2a24a7397640747c052d140",
+      "inventoryPath": "docs/governance/git-github-capability-convergence-20260925.json",
+      "capabilityCount": 164,
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "integrationRule": "Issue #177 evolves the existing Program Backlog V2; capability rows route into existing or additive Integration Slots and never form a second backlog.",
+      "residualBlueprintIds": [
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W3-GGCC-GIT-SYNC",
+        "TB-W3-GGCC-GIT-BRANCH-COMMIT",
+        "TB-W3-GGCC-GIT-INTEGRATION-RECOVERY",
+        "TB-W3-GGCC-GIT-REMOTE-WORKTREE",
+        "TB-W3-GGCC-GH-REPO-BRANCH",
+        "TB-W3-GGCC-GH-COMMIT-FILE",
+        "TB-W3-GGCC-GH-PR-REVIEW",
+        "TB-W3-GGCC-GH-ACTIONS",
+        "TB-W3-GGCC-GH-RULESETS",
+        "TB-W3-GGCC-GH-WEBHOOKS",
+        "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
+        "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
+        "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+        "TB-W3-GGCC-GH-ORG",
+        "TB-W4-GGCC-AUDIT",
+        "TB-W4-GGCC-E2E",
+        "TB-M-GGCC-GIT-MAINTENANCE",
+        "TB-COND-GIT-HISTORY-REWRITE",
+        "TB-COND-GIT-DESTRUCTIVE"
+      ]
+    }
+  ]
 }

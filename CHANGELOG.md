@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## 2026-09-25 — Intake #177 Git/GitHub capability convergence
+
+- Convergence current-first de l'intake #177 dans le Program Backlog V2 existant.
+- Inventaire exhaustif de 164 capacités : 81 Git local et 83 GitHub, avec classification, risques, autorités et destination de programme.
+- Ajout de lots GGCC résiduels dans les vagues W3/W4/MAINTENANCE/CONDITIONAL, sans nouvelle vague parallèle et sans Task runtime précréée.
+- Réutilisation explicite des W2 READ, du lifecycle GitHub courant, des gardes Git existantes et des blueprints provisioning/PR-write/destructive existants.
+- Historique #88/#89/#90 conservé comme provenance seulement.
+- Shell Git libre, raw GitHub API, lecture de valeurs de secrets et bypass des autorités restent interdits.
+
 ## 2026-09-24 — W2 GitHub READ R1 completion
 
 - Ajout read-only de `github_get_commits`, `github_get_tree` et `github_get_required_checks` dans l'Integration Slot existant `githubControlPlaneRead`.
