@@ -14,6 +14,7 @@ import {
 const SERVER = new URL('../src/server.ts', import.meta.url);
 const GATEWAY = new URL('../scripts/governed-repository-ssh-gateway.sh', import.meta.url);
 const BOOTSTRAP_WORKFLOW = new URL('../.github/workflows/repository-ssh-ca-bootstrap.yml', import.meta.url);
+const DOCKERFILE = new URL('../Dockerfile', import.meta.url);
 
 test('repository SSH public keys accept only bounded ed25519 material', () => {
   const valid = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG7mYl9jN0VXQm9uZGVkS2V5Rm9yVGVzdA governed-repo:Patricked-code/Gouvern';
@@ -74,6 +75,7 @@ test('forced SSH gateway exposes only closed read-only discovery commands', asyn
   assert.match(source, /SSH_ORIGINAL_COMMAND/);
   assert.match(source, /repositoryGatewayCli/);
   assert.match(source, /docker exec wealthtech_mcp_ssh_bridge/);
+  assert.match(source, /dist\/src\/ssh\/repositoryGatewayCli\.js/);
   assert.doesNotMatch(source, /\beval\b|\bexec\s+\$SSH_ORIGINAL_COMMAND|bash\s+-c\s+["']?\$SSH_ORIGINAL_COMMAND/);
 });
 
@@ -99,4 +101,10 @@ test('CA bootstrap workflow is manual, exact-main, OIDC-only and contains no SSH
   assert.match(source, /ACTIONS_ID_TOKEN_REQUEST_URL/);
   assert.match(source, /GITHUB_SHA/);
   assert.doesNotMatch(source, /secrets\.|PRIVATE_KEY|sshpass|scp\s|rsync\s/i);
+});
+
+
+test('broker runtime contains ssh-keygen for certificate signing', async () => {
+  const source = await readFile(DOCKERFILE, 'utf8');
+  assert.match(source, /apk add --no-cache openssh-client/);
 });
