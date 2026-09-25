@@ -499,17 +499,14 @@ W1 COMPLETE — PROGRAM STATE CONVERGENCE
   TB-W1-01..07 DONE
   baseline + GWC + AF + OD + task-registry + planning projections reconciled
         ↓
-W2 READY — CAPACITÉS GITHUB COMPLÉMENTAIRES
-  github_get_commits
-  github_get_tree
-  github_get_required_checks
+W2 COMPLETE — CAPACITÉS GITHUB COMPLÉMENTAIRES
+  TB-W2-01 github_get_commits DONE
+  TB-W2-02 github_get_tree DONE
+  TB-W2-03 github_get_required_checks DONE
         ↓
-W3 CONTINUITÉ / RÉSOLUTION / GOUVERNANCE
-  A2.2 + A3
-  B3 + C1 + C3/C4/C5
-  D1 + D2 + D3
-  E1/E2/E3
-  F
+W3 READY — CONTINUITÉ / RÉSOLUTION / GOUVERNANCE
+  planning-ready directs : TB-W3-A22-01 + TB-W3-A3-01 + TB-W3-B3-01 + TB-W3-C1-01
+  aval dependency-gated : C3/C4/C5 + D1/D2/D3 + E1/E2/E3 + F
         ↓
 W4 OBSERVABILITÉ / CERTIFICATION
   G1/G2 + G3

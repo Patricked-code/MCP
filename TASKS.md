@@ -40,13 +40,13 @@ Règles : aucun takeover depuis heartbeat, aucun bridge interactif quand GitHub/
 Le programme restant est pré-découpé dans `docs/governance/program-backlog-convergence.json` V2. Ce registre reste une projection **non exécutable** et ne remplace jamais la Governed Task Queue.
 
 - [x] W1 — Program State Convergence : `TB-W1-01..07` DONE ; handoff readiness publié ;
-- [ ] W2 — GitHub READ R1 planning-ready : `TB-W2-01 github_get_commits`, `TB-W2-02 github_get_tree`, `TB-W2-03 github_get_required_checks` ;
-- [ ] W3 — A2.2/A3, B3/C1/C3-C5, D1-D3, E1-E3, F et writes GitHub bornés ;
+- [x] W2 — GitHub READ R1 : `TB-W2-01 github_get_commits`, `TB-W2-02 github_get_tree`, `TB-W2-03 github_get_required_checks` DONE ;
+- [ ] W3 — planning-ready directs : `TB-W3-A22-01`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01` ; aval C3-C5, D1-D3, E1-E3, F et writes GitHub reste dependency-gated ;
 - [ ] W4 — G1-G3, H, I1-I3, J1/J2 ;
 - [ ] maintenance J3 séparée ;
 - [ ] conditional/deferred : C1 activation, J4 enforce, SSH fallback, extra server WRITE, GitHub destructif, Stablecoin app deploy.
 
-Aucun de ces items n'est un `TASK-*` tant que les autorités runtime ne l'ont pas matérialisé après reobservation, readiness et collision check. Les blueprints planning-ready courants sont `TB-W2-01`, `TB-W2-02` et `TB-W2-03`; W3 reste bloqué jusqu'à leur clôture.
+Aucun de ces items n'est un `TASK-*` tant que les autorités runtime ne l'ont pas matérialisé après reobservation, readiness et collision check. Les blueprints planning-ready courants sont uniquement `TB-W3-A22-01`, `TB-W3-A3-01`, `TB-W3-B3-01` et `TB-W3-C1-01`; W2 est clôturé et les W3 aval restent bloqués jusqu'à leurs dépendances.
 
 
 ## Tâche gouvernée — AfricaFunds project-aware S2 mapping

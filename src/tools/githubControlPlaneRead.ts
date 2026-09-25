@@ -7,12 +7,22 @@ import {
   type GitHubJsonRequestOptions,
   type GitHubJsonResponse
 } from '../github/connection.js';
+import {
+  aggregateRulesets,
+  applyRequiredChecks,
+  parseChecks,
+  parseRulesetDetail,
+  parseRulesetSummaries,
+  type ParsedRuleset
+} from '../governedContext/github.js';
 import { asText } from './format.js';
 
 const OrganizationSchema = z.string().min(1).max(120).regex(/^[A-Za-z0-9_.-]+$/);
 const RepositorySchema = z.string().min(1).max(100).regex(/^[A-Za-z0-9_.-]+$/);
 const RefSchema = z.string().min(1).max(240).regex(/^[A-Za-z0-9._\/-]+$/);
 const PullRequestSchema = z.number().int().min(1);
+const CommitReadLimitSchema = z.number().int().min(1).max(300).optional();
+const TreeReadLimitSchema = z.number().int().min(1).max(1000).optional();
 
 export type GithubControlPlaneReadDependencies = {
   configuredOrg: string;
@@ -266,6 +276,174 @@ export function registerGithubControlPlaneReadTools(
       };
     });
     return respond({ totalCount: number(raw?.total_count), checks });
+  });
+
+  server.tool('github_get_commits', 'Retourne un historique de commits borné avec pagination interne explicite.', {
+    ...repoSchema,
+    ref: RefSchema.optional(),
+    limit: CommitReadLimitSchema
+  }, async ({ organization, repository, ref, limit }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const safeRef = ref ? assertSafeRef(ref) : null;
+    const requestedLimit = limit ?? 100;
+    const commits: ReturnType<typeof commitState>[] = [];
+    let page = 1;
+    let pagesFetched = 0;
+    let truncated = false;
+
+    while (commits.length < requestedLimit && page <= 3) {
+      const params = new URLSearchParams({
+        per_page: '100',
+        page: String(page)
+      });
+      if (safeRef) params.set('sha', safeRef);
+      const raw = await get(
+        dependencies,
+        `${endpointRepo(org, repository)}/commits?${params.toString()}`
+      );
+      if (!Array.isArray(raw)) throw new Error('GITHUB_CONTROL_RESPONSE_INVALID');
+      pagesFetched += 1;
+      const projected = raw.map(commitState);
+      const remaining = requestedLimit - commits.length;
+      commits.push(...projected.slice(0, remaining));
+
+      if (projected.length > remaining) {
+        truncated = true;
+        break;
+      }
+      if (raw.length < 100) {
+        truncated = false;
+        break;
+      }
+      if (commits.length >= requestedLimit) {
+        truncated = true;
+        break;
+      }
+      page += 1;
+    }
+
+    return respond({
+      ref: safeRef,
+      limit: requestedLimit,
+      pagesFetched,
+      returnedCount: commits.length,
+      truncated,
+      commits
+    });
+  });
+
+  server.tool('github_get_tree', 'Retourne un arbre GitHub borné sans développer le contenu des blobs.', {
+    ...repoSchema,
+    ref: RefSchema,
+    recursive: z.boolean().optional(),
+    limit: TreeReadLimitSchema
+  }, async ({ organization, repository, ref, recursive, limit }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const safeRef = assertSafeRef(ref);
+    const requestedLimit = limit ?? 300;
+    const commitRaw = object(await get(
+      dependencies,
+      `${endpointRepo(org, repository)}/commits/${encodeURIComponent(safeRef)}`
+    ));
+    const commitSha = string(commitRaw?.sha);
+    const commitObject = object(commitRaw?.commit);
+    const treeObject = object(commitObject?.tree);
+    const treeSha = string(treeObject?.sha);
+    if (!commitSha || !treeSha) throw new Error('GITHUB_CONTROL_RESPONSE_INVALID');
+
+    const isRecursive = recursive === true;
+    const treeRaw = object(await get(
+      dependencies,
+      `${endpointRepo(org, repository)}/git/trees/${encodeURIComponent(treeSha)}${isRecursive ? '?recursive=1' : ''}`
+    ));
+    if (!treeRaw || !Array.isArray(treeRaw.tree)) {
+      throw new Error('GITHUB_CONTROL_RESPONSE_INVALID');
+    }
+    const rawEntries = treeRaw.tree;
+    const upstreamTruncated = treeRaw.truncated === true;
+    const localTruncated = rawEntries.length > requestedLimit;
+    const entries = rawEntries.slice(0, requestedLimit).map((entry) => {
+      const item = object(entry);
+      return {
+        path: string(item?.path),
+        mode: string(item?.mode),
+        type: string(item?.type),
+        sha: string(item?.sha),
+        size: number(item?.size)
+      };
+    });
+
+    return respond({
+      ref: safeRef,
+      commitSha,
+      treeSha,
+      recursive: isRecursive,
+      limit: requestedLimit,
+      returnedCount: entries.length,
+      upstreamTruncated,
+      localTruncated,
+      truncated: upstreamTruncated || localTruncated,
+      entries
+    });
+  });
+
+  server.tool('github_get_required_checks', 'Résout les required checks actifs pour une branche et les lie à son HEAD exact.', {
+    ...repoSchema,
+    branch: RefSchema
+  }, async ({ organization, repository, branch }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const safeBranch = assertSafeRef(branch);
+    const repoEndpoint = endpointRepo(org, repository);
+
+    const repositoryRaw = object(await get(dependencies, repoEndpoint));
+    const defaultBranch = string(repositoryRaw?.default_branch);
+    if (!defaultBranch) throw new Error('GITHUB_CONTROL_RESPONSE_INVALID');
+
+    const branchRaw = branchState(await get(
+      dependencies,
+      `${repoEndpoint}/branches/${encodeURIComponent(safeBranch)}`
+    ));
+    const headSha = branchRaw.commitSha;
+    if (!headSha) throw new Error('GITHUB_CONTROL_RESPONSE_INVALID');
+
+    const summaries = parseRulesetSummaries(await get(
+      dependencies,
+      `${repoEndpoint}/rulesets?includes_parents=true&per_page=100`
+    ));
+    if (!summaries) throw new Error('GITHUB_CONTROL_RESPONSE_INVALID');
+    const activeSummaries = summaries.filter((summary) => summary.enforcement === 'active');
+    const parsedRulesets: ParsedRuleset[] = [];
+    for (const summary of activeSummaries) {
+      const detail = await get(dependencies, `${repoEndpoint}/rulesets/${summary.id}`);
+      const parsed = parseRulesetDetail(
+        detail,
+        summary,
+        `refs/heads/${safeBranch}`,
+        `refs/heads/${defaultBranch}`
+      );
+      if (!parsed) throw new Error('GITHUB_CONTROL_RESPONSE_INVALID');
+      parsedRulesets.push(parsed);
+    }
+    const ruleset = aggregateRulesets(parsedRulesets);
+
+    const parsedChecks = parseChecks(await get(
+      dependencies,
+      `${repoEndpoint}/commits/${encodeURIComponent(headSha)}/check-runs?per_page=100`
+    ), headSha);
+    if (!parsedChecks) throw new Error('GITHUB_CONTROL_RESPONSE_INVALID');
+    const checks = applyRequiredChecks(
+      parsedChecks.summary,
+      parsedChecks.runs,
+      ruleset.requiredStatusChecks
+    );
+
+    return respond({
+      branch: safeBranch,
+      headSha,
+      defaultBranch,
+      ruleset,
+      checks
+    });
   });
 
   server.tool('github_get_workflow_runs', 'Retourne en lecture les exécutions GitHub Actions d’un repository, filtrables par SHA.', {

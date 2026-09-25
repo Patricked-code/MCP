@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "649106c3e17cf127c9e07a8a699934aa703774810e9a6ba16305790d2d948636",
-  "registeredToolCount": 132,
-  "readOnlyToolCount": 81,
+  "catalogueDigest": "8447f9dcc5078fdc9287068c9a791ab5366cc8f10ead5770f6830ed4aca34f1b",
+  "registeredToolCount": 135,
+  "readOnlyToolCount": 84,
   "writeToolCount": 51,
   "resourceCount": 2,
   "tools": [
@@ -994,6 +994,51 @@
       "contractDigest": "534b71960bd1a6e8ac20baa3ae5546ef4edce21dad22b9702d7e0fce41bb0c4c"
     },
     {
+      "name": "github_get_commits",
+      "title": null,
+      "description": "Retourne un historique de commits borné avec pagination interne explicite.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240,
+            "pattern": "^[A-Za-z0-9._\\/-]+$"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 300
+          }
+        },
+        "required": [
+          "organization",
+          "repository"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "66fa9b32a8659109cf14d64ba85ffe26fa6ee75d188296cc7520da68121c1860"
+    },
+    {
       "name": "github_get_deployments",
       "title": null,
       "description": "Retourne en lecture les deployments du repository.",
@@ -1176,6 +1221,47 @@
       "contractDigest": "8cfe824f46c9d6eb9681581990b9acca429fea103ed11af3506b9ad507815236"
     },
     {
+      "name": "github_get_required_checks",
+      "title": null,
+      "description": "Résout les required checks actifs pour une branche et les lie à son HEAD exact.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240,
+            "pattern": "^[A-Za-z0-9._\\/-]+$"
+          }
+        },
+        "required": [
+          "organization",
+          "repository",
+          "branch"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "0401d85c3567ebab052333b3cdebfec02ebc4e55b879706cc384346579212353"
+    },
+    {
       "name": "github_get_review_threads",
       "title": null,
       "description": "Retourne en lecture les review threads bornés d’une pull request sans payload GraphQL brut.",
@@ -1248,6 +1334,55 @@
         "additionalProperties": false
       },
       "contractDigest": "839e51a705ba5118f9fb3731f5f93a6445ecc0fbec87cbe2a8cb2c3358c6bd7b"
+    },
+    {
+      "name": "github_get_tree",
+      "title": null,
+      "description": "Retourne un arbre GitHub borné sans développer le contenu des blobs.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240,
+            "pattern": "^[A-Za-z0-9._\\/-]+$"
+          },
+          "recursive": {
+            "type": "boolean"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "organization",
+          "repository",
+          "ref"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "66dc3c6aa8cfa5392fe2a3baa44e46f0980d470ddde1627d576ec7407e7eef5a"
     },
     {
       "name": "github_get_webhooks",
