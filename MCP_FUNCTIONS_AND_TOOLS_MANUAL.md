@@ -1,5 +1,36 @@
 # Manuel détaillé fonctions et outils MCP
 
+## Transport SSH éphémère pour repositories gouvernés
+
+Le fallback SSH des repositories créés depuis le template n'utilise plus de secret de clé privée persistant.
+
+### Bootstrap administrateur unique
+
+Workflow : `.github/workflows/repository-ssh-ca-bootstrap.yml`.
+
+Il est uniquement `workflow_dispatch`, demande un jeton GitHub OIDC avec l'audience `https://mcp.wealthtechinnovations.com/access/github/repository-ssh/ca/bootstrap`, puis appelle le endpoint MCP de bootstrap. Le serveur crée ou réutilise la CA Ed25519, installe `TrustedUserCAKeys`, valide `sshd -t`, recharge SSH et ne retourne que le fingerprint public.
+
+### Délivrance par repository
+
+Endpoint : `POST /access/github/repository-ssh/certificate`.
+
+Entrée bornée : SHA exact, `owner/repo`, clé publique `ssh-ed25519`. Le token OIDC doit provenir de `<repo>/.github/workflows/governed-local-entry.yml@refs/heads/main` et d'un owner gouverné.
+
+Sortie : certificat public court, fingerprint, host/port/user S1 et ligne `known_hosts` publique. Aucune clé privée n'est retournée.
+
+### Catalogue SSH read-only
+
+Le gateway accepte uniquement :
+- `ping`
+- `project-context`
+- `list-domains-s1`
+- `list-domains-s2`
+- `docker-status-s1`
+- `docker-status-s2`
+- `write-tools-context`
+
+Toute autre commande est refusée. Le certificat ne constitue jamais une autorité WRITE.
+
 <!-- MCP-FUNCTIONS-TOOLS-MANUAL -->
 
 ## Objectif
