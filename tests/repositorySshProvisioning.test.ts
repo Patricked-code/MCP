@@ -73,6 +73,7 @@ test('forced SSH gateway exposes only closed read-only discovery commands', asyn
   }
   assert.match(source, /SSH_ORIGINAL_COMMAND/);
   assert.match(source, /repositoryGatewayCli/);
+  assert.match(source, /docker exec wealthtech_mcp_ssh_bridge/);
   assert.doesNotMatch(source, /\beval\b|\bexec\s+\$SSH_ORIGINAL_COMMAND|bash\s+-c\s+["']?\$SSH_ORIGINAL_COMMAND/);
 });
 
