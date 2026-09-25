@@ -13,9 +13,9 @@ export interface GithubOidcPolicy {
   issuer: string;
   audience: string;
   repository: string;
-  repositoryId: string;
+  repositoryId?: string;
   owner: string;
-  ownerId: string;
+  ownerId?: string;
   ref: string;
   workflowRef: string;
   allowedEvents: readonly string[];
@@ -56,6 +56,32 @@ export const GITHUB_STABLECOIN_FAST_FORWARD_OIDC_POLICY: GithubOidcPolicy = Obje
   workflowRef: 'Patricked-code/MCP/.github/workflows/stablecoin-fast-forward.yml@refs/heads/main',
   allowedEvents: Object.freeze(['issues', 'workflow_dispatch'] as const)
 });
+
+const GOVERNED_REPOSITORY_OWNERS = Object.freeze([
+  'Patricked-code',
+  'Wealthtechinnovations',
+  'chainsolutions-wealthtech'
+] as const);
+const GOVERNED_REPOSITORY_PATTERN = /^[A-Za-z0-9_.-]{1,120}\/[A-Za-z0-9_.-]{1,100}$/;
+
+export function repositorySshOidcPolicyFor(repository: string): GithubOidcPolicy {
+  if (!GOVERNED_REPOSITORY_PATTERN.test(repository)) {
+    throw oidcError('oidc_repository_invalid');
+  }
+  const [owner] = repository.split('/', 1);
+  if (!GOVERNED_REPOSITORY_OWNERS.includes(owner as typeof GOVERNED_REPOSITORY_OWNERS[number])) {
+    throw oidcError('oidc_owner_invalid');
+  }
+  return Object.freeze({
+    issuer: 'https://token.actions.githubusercontent.com',
+    audience: 'https://mcp.wealthtechinnovations.com/access/github/repository-ssh',
+    repository,
+    owner,
+    ref: 'refs/heads/main',
+    workflowRef: `${repository}/.github/workflows/governed-local-entry.yml@refs/heads/main`,
+    allowedEvents: Object.freeze(['issue_comment', 'workflow_dispatch'] as const)
+  });
+}
 
 interface GithubOidcHeader {
   alg?: unknown;
@@ -247,13 +273,21 @@ function validateClaims(
   if (stringClaim(claims, 'repository', 'oidc_repository_invalid') !== policy.repository) {
     throw oidcError('oidc_repository_invalid');
   }
-  if (stringClaim(claims, 'repository_id', 'oidc_repository_id_invalid') !== policy.repositoryId) {
+  const repositoryId = stringClaim(claims, 'repository_id', 'oidc_repository_id_invalid');
+  if (!/^[0-9]{1,30}$/.test(repositoryId)) {
+    throw oidcError('oidc_repository_id_invalid');
+  }
+  if (policy.repositoryId !== undefined && repositoryId !== policy.repositoryId) {
     throw oidcError('oidc_repository_id_invalid');
   }
   if (stringClaim(claims, 'repository_owner', 'oidc_owner_invalid') !== policy.owner) {
     throw oidcError('oidc_owner_invalid');
   }
-  if (stringClaim(claims, 'repository_owner_id', 'oidc_owner_id_invalid') !== policy.ownerId) {
+  const ownerId = stringClaim(claims, 'repository_owner_id', 'oidc_owner_id_invalid');
+  if (!/^[0-9]{1,30}$/.test(ownerId)) {
+    throw oidcError('oidc_owner_id_invalid');
+  }
+  if (policy.ownerId !== undefined && ownerId !== policy.ownerId) {
     throw oidcError('oidc_owner_id_invalid');
   }
   if (stringClaim(claims, 'ref', 'oidc_ref_invalid') !== policy.ref) {
@@ -347,6 +381,20 @@ export async function verifyGithubStablecoinFastForwardOidcToken(
     token,
     requestedShaInput,
     GITHUB_STABLECOIN_FAST_FORWARD_OIDC_POLICY,
+    options
+  );
+}
+
+export async function verifyGithubRepositorySshOidcToken(
+  token: string,
+  requestedShaInput: string,
+  repository: string,
+  options: VerifyGithubOidcOptions = {}
+): Promise<GithubOidcClaims> {
+  return verifyGithubOidcTokenWithPolicy(
+    token,
+    requestedShaInput,
+    repositorySshOidcPolicyFor(repository),
     options
   );
 }
