@@ -1,5 +1,18 @@
 # SUIVI.md
 
+## 2026-09-25 — W3 A2.2.1 Verified Client Evidence inventory — GREEN candidate
+
+- Baseline live réobservée avant écriture : `main=001ed65dc84d9f70694d2b2ceea84b3b1fc82523`; aucune PR/branche W3 A2.2 active sur le collision domain `connection:client-evidence:inventory`.
+- Exécution GitHub-first uniquement : `TB-W3-A22-01 runtimeRequired=false`, aucune dépendance au bridge interactif et aucune mutation serveur/runtime.
+- RED : commit `25bef169b1c74f8a856da5440323ed6c2a6bcc10`, MCP CI #1938 / run `36103455616` : 706 tests, 704 PASS, exactement 2 FAIL attendus — inventaire absent et A2.2.1 encore READY ; typecheck/build/docs/governance/GWC/secrets antérieurs verts.
+- Inventaire current-first : `RequestIdentity = { principalId, clientId, assurance }`; le principal OAuth assaini est une preuve vérifiable, le `clientId` reste opaque et ne classe aucun client.
+- Aucune référence conversation ou workspace n'est fournie au chemin courant `AuthInfo → RequestIdentity → Governed Session → ConnectionContext`; elles restent donc `UNKNOWN`, sans inférence depuis le transport, le repository ou le clientId.
+- `ClientToolSurfaceAttestation` est conservé comme autorité séparée de callability/capability et n'est pas réinterprété comme preuve d'identité client.
+- Projection machine : `docs/governance/client-evidence-inventory-20260925.json`.
+- Program Backlog : `TB-W3-A22-01 = DONE`; `PB-A2.2 = PARTIALLY_IMPLEMENTED`; `TB-W3-A22-02` devient planning-ready avec A3.1/B3.1/C1.1.
+- Aucun Task runtime, Governed Session, lock, permission, store, endpoint, outil ou code runtime n'est créé par A2.2.1.
+- NEXT_ACTION : valider le GREEN exact-head et la PR; après merge, reobserver le programme puis traiter `TB-W3-A22-02`. Toute preuve serveur/client requise par A2.2.2 doit passer par le workflow GitHub gouverné et son fallback SSH protégé, pas par une dépendance de bootstrap au bridge interactif.
+
 ## 2026-09-25 — Program Backlog auto-continuation — DONE / handoff W3
 
 - Baseline : `main=574dccb1eefd4562e72788ea075456261058cd9a`, intake #177 déjà convergé dans Program Backlog V2 ; 75 blueprints, 10 DONE, 65 restants.
