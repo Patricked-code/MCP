@@ -10,6 +10,7 @@
 - `ClientToolSurfaceAttestation` est conservé comme autorité séparée de callability/capability et n'est pas réinterprété comme preuve d'identité client.
 - Projection machine : `docs/governance/client-evidence-inventory-20260925.json`.
 - Program Backlog : `TB-W3-A22-01 = DONE`; `PB-A2.2 = PARTIALLY_IMPLEMENTED`; `TB-W3-A22-02` devient planning-ready avec A3.1/B3.1/C1.1.
+- GREEN validé : `d976a4e2b13159e28135452a25415550c123d7c9`, MCP CI #1947 / run `36104100336` SUCCESS ; typecheck, build, docs, gouvernance, GWC, secrets, suite complète et whitespace tous verts.
 - Aucun Task runtime, Governed Session, lock, permission, store, endpoint, outil ou code runtime n'est créé par A2.2.1.
 - NEXT_ACTION : valider le GREEN exact-head et la PR; après merge, reobserver le programme puis traiter `TB-W3-A22-02`. Toute preuve serveur/client requise par A2.2.2 doit passer par le workflow GitHub gouverné et son fallback SSH protégé, pas par une dépendance de bootstrap au bridge interactif.
 
