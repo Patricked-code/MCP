@@ -450,7 +450,7 @@ test('TB-W1-07 publishes the W1 readiness handoff and unlocks only GitHub READ R
   assert.match(todo, /W1 Program State Convergence.*DONE/s);
   assert.match(todo, /W2 GitHub READ.*DONE/s);
   assert.match(tasks, /\[x\] W1 — Program State Convergence/);
-  assert.match(tasks, /\\[x\\] W2 .*GitHub READ/);
+  assert.match(tasks, /\[x\] W2 .*GitHub READ/);
 });
 
 
