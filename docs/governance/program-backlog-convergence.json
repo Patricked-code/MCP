@@ -63,7 +63,7 @@
     "NEEDS_DECISION"
   ],
   "summary": {
-    "workItems": 34,
+    "workItems": 35,
     "todoUnchecked": 40,
     "roadmapLots": 33,
     "gwcBlueprints": 18,
@@ -75,7 +75,7 @@
     "dispositionCounts": {
       "DONE": 10,
       "KNOWN_NOT_ANALYZED": 8,
-      "PARTIALLY_IMPLEMENTED": 7,
+      "PARTIALLY_IMPLEMENTED": 8,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
       "DEFERRED": 3
@@ -1302,6 +1302,14 @@
         "disposition": "PARTIALLY_IMPLEMENTED",
         "observedMainSha": "c104e24259232dced2a24a7397640747c052d140",
         "inventoryPath": "docs/governance/git-github-capability-convergence-20260925.json"
+      },
+      {
+        "sourceKey": "user:repository-ssh-provisioning:20260925",
+        "sourceId": "USER-SSH-PROVISIONING-20260925",
+        "title": "Automatic governed SSH provisioning for repositories created from Governed-Repository-Template",
+        "coveredBy": "PB-SSH-ACCESS",
+        "disposition": "PARTIALLY_IMPLEMENTED",
+        "observedMainSha": "5c08e865eef7877f5450262db726b17fe2110a2e"
       }
     ]
   },
@@ -2259,6 +2267,40 @@
         "Secret values are never readable.",
         "History rewrite/destructive operations remain explicitly gated."
       ]
+    },
+    {
+      "id": "PB-SSH-ACCESS",
+      "title": "Governed repository SSH certificate access",
+      "disposition": "PARTIALLY_IMPLEMENTED",
+      "integrationSlot": "transport.repository-ssh",
+      "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "existingAuthorities": [
+        "GitHub Actions OIDC verifier",
+        "src/ssh/client.ts controlled SSH transport",
+        "runReadOnlyCommand read-only policy",
+        "Scoped WRITE Gate",
+        "Governed-Repository-Template local entry"
+      ],
+      "dependsOn": [
+        "PB-UAC"
+      ],
+      "nextAction": "Complete exact-head CI/review, merge and governed deploy; bootstrap the S1 SSH CA once; then switch Governed-Repository-Template to ephemeral OIDC SSH certificates.",
+      "subtasks": [
+        "Repo-bound GitHub OIDC certificate broker",
+        "Short-lived Ed25519 user certificate with fixed force-command",
+        "Pinned S1 host key returned by authenticated MCP broker",
+        "Closed read-only SSH discovery gateway",
+        "One-time OIDC-gated S1 SSH CA bootstrap",
+        "Template V2.6 integration without long-lived repository SSH private keys"
+      ],
+      "nonRegression": [
+        "No arbitrary SSH shell",
+        "No private CA key or repository private key in Git or HTTP responses",
+        "No PTY/agent/port/X11 forwarding",
+        "SSH certificate lifetime bounded to ten minutes",
+        "Server writes remain behind MCP scoped-write governance",
+        "Existing GitHub-first/OIDC read-only and deploy paths remain unchanged"
+      ]
     }
   ],
   "executionModel": {
@@ -2349,7 +2391,8 @@
       "TB-W3-A22-02",
       "TB-W3-A3-01",
       "TB-W3-B3-01",
-      "TB-W3-C1-01"
+      "TB-W3-C1-01",
+      "TB-W3-SSH-ACCESS-01"
     ]
   },
   "agentHandoffContract": {
@@ -7771,6 +7814,99 @@
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents.",
         "onFailure": "Record exact-head blocker/finding; do not widen permissions or use a generic command escape hatch."
       }
+    },
+    {
+      "id": "TB-W3-SSH-ACCESS-01",
+      "workItemId": "PB-SSH-ACCESS",
+      "waveId": "W3",
+      "lotId": "SSH.1",
+      "title": "Governed repository ephemeral SSH certificate transport",
+      "objective": "Allow trusted governed repositories to obtain short-lived, read-only, force-command SSH certificates through exact-repository GitHub OIDC without distributing persistent root private keys.",
+      "integrationSlot": "transport.repository-ssh",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W2-01",
+        "TB-W2-02",
+        "TB-W2-03"
+      ],
+      "existingAuthorities": [
+        "GitHub Actions OIDC",
+        "src/deploy/githubOidc.ts",
+        "src/ssh/client.ts",
+        "runReadOnlyCommand",
+        "Scoped WRITE Gate",
+        "S1 OpenSSH"
+      ],
+      "resourceScopes": [
+        "transport:repository-ssh",
+        "server:s1:ssh-ca",
+        "workflow:governed-local-entry:ssh-fallback"
+      ],
+      "collisionDomains": [
+        "transport:repository-ssh",
+        "path:src/ssh/repositoryAccess",
+        "path:src/ssh/repositoryCertificate",
+        "path:src/deploy/githubOidc"
+      ],
+      "readAuthorities": [
+        "GitHub OIDC claims",
+        "MCP server map",
+        "S1 read-only observation"
+      ],
+      "writeAuthorities": [
+        "Scoped WRITE Gate for one-time CA bootstrap",
+        "S1 sshd TrustedUserCAKeys configuration"
+      ],
+      "outputCapabilities": [
+        "repository_ssh_ephemeral_certificate",
+        "repository_ssh_readonly_gateway"
+      ],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "READY",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "EXPLICIT_CA_BOOTSTRAP_WORKFLOW_DISPATCH"
+        ],
+        "reason": "User explicitly requested automatic SSH provisioning for future governed repositories; exact-main collision review found the dedicated SSH transport surface free."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves repository SSH provisioning is absent while all historical suites remain green.",
+        "RED rejects malformed public keys, repository injection and arbitrary SSH command execution."
+      ],
+      "greenAcceptance": [
+        "Repository identity is bound to exact GitHub OIDC repository/ref/workflow claims.",
+        "Only an Ed25519 public key enters the broker; no client private key is transmitted.",
+        "Issued SSH certificate is <=10 minutes, principal root, force-command constrained and has permissions cleared.",
+        "Gateway exposes only the closed read-only discovery catalogue.",
+        "CA bootstrap is one-time, OIDC-gated, scoped-write-gated and returns only public fingerprint evidence.",
+        "No existing MCP/GitHub/deployment behavior regresses."
+      ],
+      "regressionSuites": [
+        "targeted repository SSH RED/GREEN tests",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head branch and PR CI are green.",
+        "Reviewed candidate is merged without HEAD drift and governed deploy attests the merge SHA.",
+        "S1 CA bootstrap is explicitly dispatched once and returns an attested fingerprint.",
+        "Governed-Repository-Template V2.6 uses ephemeral SSH certificates and no persistent SSH private-key secret.",
+        "Gouvern completes the BOTH transport path with read-only SSH fallback evidence.",
+        "Program Backlog and SUIVI/NEXT_ACTION are reconciled."
+      ],
+      "handoff": {
+        "onSuccess": "Mark the blueprint DONE only after MCP deploy + CA bootstrap + template V2.6 E2E evidence.",
+        "onFailure": "Keep the broker fail-closed; do not fall back to a shared root private key or arbitrary SSH shell."
+      }
     }
   ],
   "reconciliationBaseline": {
@@ -8029,6 +8165,18 @@
         "TB-W3-C1-01"
       ],
       "postConvergenceReadinessIsDerived": true
+    },
+    {
+      "id": "INTAKE-SSH-REPO-20260925",
+      "title": "Automatic governed SSH provisioning for repositories created from Governed-Repository-Template",
+      "status": "IMPLEMENTATION_CANDIDATE",
+      "observedMainSha": "5c08e865eef7877f5450262db726b17fe2110a2e",
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "integrationRule": "Extends Program Backlog V2 through PB-SSH-ACCESS / TB-W3-SSH-ACCESS-01; does not create a second SSH, task, permission or governance authority.",
+      "targetBlueprintIds": [
+        "TB-W3-SSH-ACCESS-01"
+      ]
     }
   ],
   "w3A22InventoryHandoff": {

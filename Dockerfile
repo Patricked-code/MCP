@@ -3,6 +3,7 @@ ARG GIT_REVISION=unknown
 LABEL org.opencontainers.image.source="https://github.com/Patricked-code/MCP"
 LABEL org.opencontainers.image.revision="${GIT_REVISION}"
 WORKDIR /app
+RUN apk add --no-cache openssh-client
 COPY package*.json ./
 RUN npm install
 COPY tsconfig.json ./
