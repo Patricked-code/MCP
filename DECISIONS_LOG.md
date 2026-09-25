@@ -1,5 +1,13 @@
 # DECISIONS_LOG.md
 
+## 2026-09-25 — A2.2 ne déduit jamais une identité client du clientId, du transport ou du repository
+
+Décision : A2.2.1 distingue la preuve d'identité déjà acquise du simple contexte observé. Le principal OAuth assaini avec assurance `oauth_subject` est réutilisable comme preuve bornée. `AuthInfo.clientId` est seulement un identifiant client observé et n'est jamais une autorité pour conclure « ChatGPT », « Claude », une conversation ou un workspace.
+
+Le chemin courant ne fournit aucune référence conversation/workspace à `RequestIdentity` ou `ConnectionContext`. Leur absence reste `UNKNOWN`; aucun identifiant n'est dérivé du `mcp-session-id`, du repository, du nom d'agent ou de métadonnées non allowlistées. `ClientToolSurfaceAttestation` reste une preuve séparée de callability/capability et ne devient pas une identité client.
+
+A2.2.2 peut uniquement persister une référence réellement fournie, autorisée, sanitizable et vérifiable. Si une preuve live est nécessaire, l'ordre reste GitHub-first puis workflow gouverné avec fallback SSH protégé; le bridge interactif n'est pas un prérequis de continuité.
+
 ## 2026-09-25 — La progression du Program Backlog est dérivée automatiquement, l'autorité runtime ne l'est pas
 
 Décision : après chaque blueprint `DONE` avec preuves, les états planning `READY/BLOCKED` des blueprints ordinaires sont recalculés automatiquement depuis `dependsOn`. `DONE` reste terminal ; `DEFERRED` et `CONDITIONAL` conservent leurs gates et ne sont jamais auto-promus.

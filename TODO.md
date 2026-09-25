@@ -26,7 +26,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | Workstream | Disposition | Integration Slot | Objet |
 |---|---|---|---|
 | `PB-FOUNDATIONS-DONE` | `DONE` | `program.delivered-foundations` | Delivered connection/repository/project foundations |
-| `PB-A2.2` | `KNOWN_NOT_ANALYZED` | `connection.client-evidence` | A2.2 Verified Client Evidence |
+| `PB-A2.2` | `PARTIALLY_IMPLEMENTED` | `connection.client-evidence` | A2.2 Verified Client Evidence — A2.2.1 inventory DONE, A2.2.2 extension READY |
 | `PB-A3` | `KNOWN_NOT_ANALYZED` | `connection.oauth-attempt-correlation` | A3 OAuth Auth Attempt Correlation |
 | `PB-B3` | `PARTIALLY_IMPLEMENTED` | `context.multi-repository` | B3 Multi-repository Governed Context |
 | `PB-C1` | `PARTIALLY_IMPLEMENTED` | `project.gitregistry-verification` | C1 GitRegistry V2 verification and activation path |
@@ -66,7 +66,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 - **DONE** : `PB-UAC` / PR #154 est fusionné, déployé et attesté ; ne jamais recopier ses UAC-01..24.
 - **DONE — W1 Program State Convergence** : `TB-W1-01..07` sont terminés ; GWC/AF/OD/task-registry/planning ont été réconciliés current-first.
 - **DONE — W2 GitHub READ** : `TB-W2-01`, `TB-W2-02`, `TB-W2-03` sont terminés et validés exact-head ; les trois capacités restent strictement READ et aucun runtime Task/Session/Lock n'a été créé par W2.
-- **ACTIVE planning wave — W3** : seuls `TB-W3-A22-01`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01` sont planning-ready comme dépendants directs de W2 ; les autres W3 et W4 restent bloqués par leurs dépendances.
+- **ACTIVE planning wave — W3** : `TB-W3-A22-01` inventory est DONE ; `TB-W3-A22-02`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01` sont planning-ready ; les autres W3 et W4 restent bloqués par leurs dépendances.
 - **CONVERGED — intake #177** : 164 capacités Git/GitHub ont été classées current-first et routées dans le Program Backlog V2 ; les lots GGCC résiduels restent BLOCKED/DEFERRED/CONDITIONAL et ne créent aucune Task runtime.
 - **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
 - **Observabilité/certification** : G1/G2, G3, H, I, J1/J2 après leurs dépendances.

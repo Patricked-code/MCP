@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "inventoryId": "w3-a22-client-evidence-inventory-20260925",
+  "repository": "Patricked-code/MCP",
+  "observedMainSha": "001ed65dc84d9f70694d2b2ceea84b3b1fc82523",
+  "observedAt": "2026-09-25T06:35:18Z",
+  "blueprintId": "TB-W3-A22-01",
+  "workItemId": "PB-A2.2",
+  "lotId": "A2.2.1",
+  "integrationSlot": "connection.client-evidence",
+  "status": "PASS_WITH_EVIDENCE",
+  "runtimeRequired": false,
+  "githubOnlyPossible": true,
+  "scope": "CURRENT_MCP_REQUEST_TO_GOVERNED_SESSION_PATH",
+  "currentRequestIdentityFields": [
+    "principalId",
+    "clientId",
+    "assurance"
+  ],
+  "oauthSubject": {
+    "supplied": true,
+    "verifiable": true,
+    "source": "AuthInfo.extra.governedPrincipalId",
+    "assurance": "oauth_subject",
+    "persistedAs": "ConnectionContext.principalId"
+  },
+  "oauthClientId": {
+    "observed": true,
+    "source": "AuthInfo.clientId",
+    "persistedAs": "ConnectionContext.observedClientId",
+    "opaque": true,
+    "classificationAuthority": false
+  },
+  "conversationReference": {
+    "supplied": false,
+    "verifiable": false,
+    "currentSource": null
+  },
+  "workspaceReference": {
+    "supplied": false,
+    "verifiable": false,
+    "currentSource": null
+  },
+  "clientToolSurfaceAttestation": {
+    "presentAsSeparateAuthority": true,
+    "identityClassificationAuthority": false,
+    "note": "Capability/callability attestation is orthogonal to client identity, conversation, and workspace evidence."
+  },
+  "classificationVerdict": "UNKNOWN_UNTIL_VERIFIABLE_CLIENT_EVIDENCE",
+  "forbiddenInferences": [
+    "CLIENT_CLASS_FROM_CLIENT_ID_ONLY",
+    "CONVERSATION_FROM_TRANSPORT_SESSION",
+    "WORKSPACE_FROM_REPOSITORY"
+  ],
+  "evidenceRefs": [
+    "src/auth.ts",
+    "src/tools/governedSessions.ts",
+    "src/operationalMemory/sessionService.ts",
+    "src/operationalMemory/connectionContext.ts",
+    "src/operationalMemory/types.ts",
+    "tests/connectionContext.test.ts",
+    "docs/superpowers/specs/2026-09-01-governed-connection-context-minimal-design.md",
+    "ROADMAP.md"
+  ],
+  "findings": [
+    {
+      "code": "OAUTH_SUBJECT_VERIFIABLE",
+      "disposition": "REUSE",
+      "detail": "The sanitized OAuth principal is already carried with oauth_subject assurance and persisted in ConnectionContext."
+    },
+    {
+      "code": "CLIENT_ID_OPAQUE",
+      "disposition": "PRESERVE_UNRESOLVED",
+      "detail": "The observed OAuth clientId is bounded and persisted but is not authority to classify ChatGPT, Claude, a workspace, or a conversation."
+    },
+    {
+      "code": "CONVERSATION_REFERENCE_NOT_SUPPLIED",
+      "disposition": "UNKNOWN",
+      "detail": "No conversation reference is supplied into RequestIdentity or ConnectionContext on the current MCP request/session path."
+    },
+    {
+      "code": "WORKSPACE_REFERENCE_NOT_SUPPLIED",
+      "disposition": "UNKNOWN",
+      "detail": "No workspace reference is supplied into RequestIdentity or ConnectionContext on the current MCP request/session path."
+    }
+  ],
+  "nextBlueprint": {
+    "id": "TB-W3-A22-02",
+    "requiredBehavior": "Persist only proven sanitizable client references and preserve UNKNOWN when proof is absent.",
+    "runtimeEvidenceRule": "When fresh server/client evidence is required, use the governed GitHub Actions evidence path and its protected SSH fallback; do not require interactive wealthtech_ssh_bridge exposure."
+  },
+  "runtimeSideEffects": {
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "redEvidence": {
+    "commit": "25bef169b1c74f8a856da5440323ed6c2a6bcc10",
+    "ciRunId": 36103455616,
+    "tests": 706,
+    "passed": 704,
+    "failed": 2,
+    "expectedFailures": [
+      "client evidence inventory file absent",
+      "TB-W3-A22-01 still READY instead of DONE"
+    ]
+  }
+}

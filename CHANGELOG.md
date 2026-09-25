@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-09-25 — W3 A2.2.1 bounded client-evidence inventory
+
+- Ajout d'un inventaire machine-readable des preuves client réellement disponibles dans le chemin MCP courant.
+- Le principal OAuth assaini reste une preuve vérifiable; le `clientId` observé reste opaque et n'autorise aucune classification de client.
+- Aucune référence conversation/workspace n'est actuellement fournie à `RequestIdentity`/`ConnectionContext`; l'état reste explicitement `UNKNOWN`.
+- `TB-W3-A22-01` est clôturé comme inventaire GitHub-only et déverrouille uniquement `TB-W3-A22-02`; aucun changement runtime n'est introduit.
+
 ## 2026-09-25 — Program Backlog automatic continuation
 
 - Ajout d'un calcul déterministe de readiness depuis les dépendances du Program Backlog V2.
