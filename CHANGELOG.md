@@ -6,7 +6,7 @@
 - Les futurs repos gouvernés génèrent une clé Ed25519 éphémère côté runner ; seule la clé publique atteint le MCP.
 - Le certificat est limité à 10 minutes, principal `root`, permissions SSH effacées et `force-command` vers un gateway read-only fermé.
 - Le broker renvoie aussi la clé hôte publique S1 épinglée afin d'utiliser `StrictHostKeyChecking=yes` sans secret `known_hosts`.
-- Ajout d'un bootstrap CA S1 idempotent, déclenchable uniquement depuis un workflow MCP `workflow_dispatch` OIDC et derrière `ENABLE_WRITE_TOOLS`.
+- Ajout d'un bootstrap CA S1 idempotent : `workflow_dispatch` ou issue exacte `[Governed SSH CA Bootstrap]`; le chemin issue vérifie une permission GitHub courante `admin|maintain|write`. OIDC exact workflow et `ENABLE_WRITE_TOOLS` restent obligatoires.
 - Aucun secret SSH longue durée n'est ajouté aux repositories cibles ; les écritures serveur restent dans les outils MCP scoped-write.
 
 ## 2026-09-25 — W3 A2.2.1 bounded client-evidence inventory

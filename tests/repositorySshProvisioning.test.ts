@@ -8,6 +8,7 @@ import {
   validateRepositorySshPublicKey
 } from '../src/ssh/repositoryAccess.js';
 import {
+  GITHUB_REPOSITORY_SSH_CA_BOOTSTRAP_OIDC_POLICY,
   repositorySshOidcPolicyFor
 } from '../src/deploy/githubOidc.js';
 
@@ -94,9 +95,15 @@ test('server registers the repository SSH certificate broker before general web 
 });
 
 
-test('CA bootstrap workflow is manual, exact-main, OIDC-only and contains no SSH secret', async () => {
+test('CA bootstrap workflow has manual plus governed-issue triggers, exact-main, OIDC-only and no SSH secret', async () => {
   const source = await readFile(BOOTSTRAP_WORKFLOW, 'utf8');
   assert.match(source, /workflow_dispatch:/);
+  assert.match(source, /issues:/);
+  assert.match(source, /types:\s*\[opened\]/);
+  assert.match(source, /\[Governed SSH CA Bootstrap\]/);
+  assert.match(source, /OWNER.*MEMBER.*COLLABORATOR/);
+  assert.match(source, /collaborators\/\$\{REQUEST_ACTOR\}\/permission/);
+  assert.match(source, /admin\|maintain\|write/);
   assert.match(source, /id-token:\s*write/);
   assert.match(source, /contents:\s*read/);
   assert.match(source, /github\.ref == 'refs\/heads\/main'/);
@@ -110,4 +117,17 @@ test('CA bootstrap workflow is manual, exact-main, OIDC-only and contains no SSH
 test('broker runtime contains ssh-keygen for certificate signing', async () => {
   const source = await readFile(DOCKERFILE, 'utf8');
   assert.match(source, /apk add --no-cache openssh-client/);
+});
+
+
+test('CA bootstrap OIDC policy permits only manual dispatch or the governed issues workflow', () => {
+  assert.deepEqual(
+    GITHUB_REPOSITORY_SSH_CA_BOOTSTRAP_OIDC_POLICY.allowedEvents,
+    ['workflow_dispatch', 'issues']
+  );
+  assert.equal(
+    GITHUB_REPOSITORY_SSH_CA_BOOTSTRAP_OIDC_POLICY.workflowRef,
+    'Patricked-code/MCP/.github/workflows/repository-ssh-ca-bootstrap.yml@refs/heads/main'
+  );
+  assert.equal(GITHUB_REPOSITORY_SSH_CA_BOOTSTRAP_OIDC_POLICY.ownerId, '270385782');
 });
