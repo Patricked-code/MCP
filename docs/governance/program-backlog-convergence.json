@@ -1302,6 +1302,14 @@
         "disposition": "PARTIALLY_IMPLEMENTED",
         "observedMainSha": "c104e24259232dced2a24a7397640747c052d140",
         "inventoryPath": "docs/governance/git-github-capability-convergence-20260925.json"
+      },
+      {
+        "sourceKey": "user:repository-ssh-provisioning:20260925",
+        "sourceId": "USER-SSH-PROVISIONING-20260925",
+        "title": "Automatic governed SSH provisioning for repositories created from Governed-Repository-Template",
+        "coveredBy": "PB-SSH-ACCESS",
+        "disposition": "PARTIALLY_IMPLEMENTED",
+        "observedMainSha": "5c08e865eef7877f5450262db726b17fe2110a2e"
       }
     ]
   },
@@ -7864,7 +7872,7 @@
         "reason": "User explicitly requested automatic SSH provisioning for future governed repositories; exact-main collision review found the dedicated SSH transport surface free."
       },
       "materialization": {
-        "mode": "CURRENT_IMPLEMENTATION_CANDIDATE",
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
         "createsRuntimeTask": false,
         "runtimeAuthority": "Governed Task Queue",
         "requiresRuntimeAuthorityReobservation": true,
