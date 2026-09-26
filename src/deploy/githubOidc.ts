@@ -95,7 +95,7 @@ export function repositorySshOidcPolicyFor(repository: string): GithubOidcPolicy
     ownerId,
     ref: 'refs/heads/main',
     workflowRef: `${repository}/.github/workflows/governed-local-entry.yml@refs/heads/main`,
-    allowedEvents: Object.freeze(['issue_comment', 'workflow_dispatch'] as const)
+    allowedEvents: Object.freeze(['issue_comment', 'workflow_dispatch', 'repository_dispatch'] as const)
   });
 }
 
