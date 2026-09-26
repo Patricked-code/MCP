@@ -52,6 +52,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-GITHUB-PRWRITE` | `DESIGNED_NOT_IMPLEMENTED` | `github.pr-write.extensions` | Governed PR write extensions |
 | `PB-GITHUB-DESTRUCTIVE` | `DEFERRED` | `github.destructive-writes` | Destructive GitHub file/branch operations |
 | `PB-GGCC` | `PARTIALLY_IMPLEMENTED` | `control-plane.git-github-capability-completion` | Intake #177 converged; residual typed Git/GitHub capability lots integrated into current waves |
+| `PB-SSH-ACCESS` | `PARTIALLY_IMPLEMENTED` | `transport.repository-ssh` | Intake #192 converged; bounded repository_dispatch claim fix in PR #191, deploy + Gouvern E2E still required |
 | `PB-STABLECOIN-APPDEPLOY` | `CONDITIONAL` | `deployment.stablecoin-application` | Stablecoin application-changing deploy path |
 | `PB-UAC` | `DONE` | `coordination.universal` | Universal Agent Coordination / heartbeat and claim observability |
 | `PB-GWC-RECONCILE` | `DONE` | `governance.gwc-blueprint-convergence` | GWC-0..17 implementation-state convergence |
@@ -66,8 +67,9 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 - **DONE** : `PB-UAC` / PR #154 est fusionné, déployé et attesté ; ne jamais recopier ses UAC-01..24.
 - **DONE — W1 Program State Convergence** : `TB-W1-01..07` sont terminés ; GWC/AF/OD/task-registry/planning ont été réconciliés current-first.
 - **DONE — W2 GitHub READ** : `TB-W2-01`, `TB-W2-02`, `TB-W2-03` sont terminés et validés exact-head ; les trois capacités restent strictement READ et aucun runtime Task/Session/Lock n'a été créé par W2.
-- **ACTIVE planning wave — W3** : `TB-W3-A22-01` inventory est DONE ; `TB-W3-A22-02`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01` sont planning-ready ; les autres W3 et W4 restent bloqués par leurs dépendances.
+- **ACTIVE planning wave — W3** : `TB-W3-A22-01` inventory est DONE ; `TB-W3-A22-02`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01`, `TB-W3-SSH-ACCESS-01` sont planning-ready ; les autres W3 et W4 restent bloqués par leurs dépendances.
 - **CONVERGED — intake #177** : 164 capacités Git/GitHub ont été classées current-first et routées dans le Program Backlog V2 ; les lots GGCC résiduels restent BLOCKED/DEFERRED/CONDITIONAL et ne créent aucune Task runtime.
+- **CONVERGED — intake #192** : le 403 Gouvern est un claim mismatch `repository_dispatch` du broker SSH existant ; PR #191 porte la correction bornée, sans nouveau transport/registre/Task, et reste à valider/déployer/retester E2E.
 - **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
 - **Observabilité/certification** : G1/G2, G3, H, I, J1/J2 après leurs dépendances.
 - **Séparés/conditionnels** : J3 Node 24, J4 WRITE gate enforce, fallbacks SSH, WRITE serveur additionnels, GitHub destructif, déploiement applicatif Stablecoin.

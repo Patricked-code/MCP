@@ -60,6 +60,17 @@ test('intake #177 residuals follow the pre-177 backbone instead of creating a pa
   assert.equal(intake.createsRuntimeTasks, false);
 });
 
+test('intake #192 converges into the existing repository SSH blueprint without a parallel lane', async () => {
+  const program = await loadProgram();
+  const intake = program.programIntakes.find((entry: any) => entry.issue === 192);
+
+  assert.ok(intake);
+  assert.equal(intake.createsParallelProgram, false);
+  assert.equal(intake.createsRuntimeTasks, false);
+  assert.deepEqual(intake.targetBlueprintIds, ['TB-W3-SSH-ACCESS-01']);
+  assert.equal(intake.integrationVerdict, 'COMPLEMENT');
+});
+
 test('conditional and deferred blueprints are never auto-promoted even when dependencies are DONE', async () => {
   const program = await loadProgram();
   const copy = structuredClone(program);

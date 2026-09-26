@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## 2026-09-26 — Governed repository SSH OIDC intake #192
+
+- Convergence de l'intake #192 dans `PB-SSH-ACCESS / TB-W3-SSH-ACCESS-01`, sans nouvelle Task Queue, autorité, registre ou transport parallèle.
+- Le run Gouvern `36252888826` prouve que le 403 venait de l'événement `repository_dispatch` absent de l'allowlist OIDC SSH existante.
+- Ajout borné de `repository_dispatch` tout en conservant repository/ref/workflow/SHA exacts et l'owner allowlist.
+- Ajout d'un statut de refus non secret `CLAIM_MISMATCH|FORBIDDEN_BY_POLICY`; succès explicite `AUTHORIZED` avec certificat.
+- La discovery MCP directe initialement proposée par PR #191 est retirée du diff courant et différée : le fallback SSH existant suffit à résoudre l'intake.
+- Program Backlog/TASKS/TODO/ROADMAP/SUIVI réconciliés ; E2E Gouvern post-deploy reste la condition de clôture.
+
+
 ## 2026-09-25 — Governed repository ephemeral SSH access
 
 - Ajout d'un broker de certificats SSH utilisateurs courts, authentifié par GitHub Actions OIDC et lié au repository/ref/workflow exact.
