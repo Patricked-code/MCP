@@ -1,5 +1,18 @@
 # SUIVI.md
 
+## 2026-09-26 — Intake #192 repository SSH OIDC 403 — convergé / GREEN candidate PR #191
+
+- Reprise current-first : `main=31f47325f92b9652d0564ebc66131d7bd3cca397`; PR #191 était Draft, base exacte main, sans drift, mais non convergée au programme et CI rouge.
+- Intake #192 lu sans créer Task/Session/Claim/Lock/permission : pilote `Patricked-code/Gouvern@a8a8e04d16c5bb4347bed5b5f9ce0caf0efff728`, workflow run `36252888826`, événement réel `repository_dispatch`.
+- Diagnostic : le broker SSH `main` exigeait déjà repository/ref/workflow/SHA exacts mais n'autorisait que `issue_comment|workflow_dispatch`; le 403 est donc `CLAIM_MISMATCH`, pas une absence de CA ni un besoin de secret.
+- Registration : le contrat courant n'impose pas d'enregistrement repository individuel ; il borne les owners autorisés puis exige les claims GitHub OIDC exacts. Aucun nouveau registre d'autorisation n'est créé.
+- PR #191 adaptée existing-first : la voie `repository-mcp/discovery` non programmée a été retirée du diff ; elle reste différée jusqu'à routage explicite dans un Integration Slot existant.
+- RED : `e5c450a1bd69ccc2c3c340fbd49f1995330b6a5a` exige `repository_dispatch` + refus machine borné ; `a34cca5878a6396ee94a6332937e52ce7ee7e653` exige la convergence Program Backlog de #192.
+- GREEN code : `0263c764d7f77aa8e93cc9e8f8c2296e4de26868` ajoute uniquement `repository_dispatch` à la policy SSH exacte ; `d02692f71b61947807f0cc4550fe30a99d786b5c` ajoute `authorizationStatus=CLAIM_MISMATCH|FORBIDDEN_BY_POLICY` sans exposer les claims bruts.
+- Program Backlog : `INTAKE-192` → `PB-SSH-ACCESS / TB-W3-SSH-ACCESS-01`, verdict `COMPLEMENT`, aucun programme parallèle ; compteur workItems réconcilié 36/36 et les cinq READY W3 sont explicitement conservés.
+- NEXT_ACTION : obtenir CI exact-head verte sur PR #191, self-review/revue, fusionner sous garde HEAD, Governed Deploy du merge, puis rerun E2E Governed-Repository-Template/Gouvern. Le blueprint SSH reste non-DONE tant que ce rerun n'a pas prouvé le transport BOTH.
+
+
 ## 2026-09-25 — Governed repository SSH certificate provisioning — candidate
 
 - Demande propriétaire intégrée dans le Program Backlog V2 existant : `PB-SSH-ACCESS` / `TB-W3-SSH-ACCESS-01`, sans programme parallèle ni nouvelle Task Queue.
