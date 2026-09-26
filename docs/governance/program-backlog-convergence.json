@@ -73,9 +73,9 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 10,
+      "DONE": 11,
+      "PARTIALLY_IMPLEMENTED": 7,
       "KNOWN_NOT_ANALYZED": 8,
-      "PARTIALLY_IMPLEMENTED": 8,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
       "DEFERRED": 3
@@ -2271,7 +2271,7 @@
     {
       "id": "PB-SSH-ACCESS",
       "title": "Governed repository SSH certificate access",
-      "disposition": "PARTIALLY_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "transport.repository-ssh",
       "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
       "existingAuthorities": [
@@ -2284,7 +2284,7 @@
       "dependsOn": [
         "PB-UAC"
       ],
-      "nextAction": "Land the bounded intake #192 claim-contract correction in PR #191, obtain exact-head CI/review, merge and governed deploy, then rerun Governed-Repository-Template/Gouvern BOTH transport E2E before marking the SSH blueprint DONE.",
+      "nextAction": "Reuse the attested repository SSH certificate transport as an existing authority; do not reimplement it. Any later extension must enter the Program Backlog through the existing transport.repository-ssh Integration Slot.",
       "subtasks": [
         "Repo-bound GitHub OIDC certificate broker",
         "Short-lived Ed25519 user certificate with fixed force-command",
@@ -2392,8 +2392,7 @@
       "TB-W3-A22-02",
       "TB-W3-A3-01",
       "TB-W3-B3-01",
-      "TB-W3-C1-01",
-      "TB-W3-SSH-ACCESS-01"
+      "TB-W3-C1-01"
     ]
   },
   "agentHandoffContract": {
@@ -7865,10 +7864,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": false,
         "requiredExplicitGates": [],
-        "reason": "CA bootstrap is already deployed; intake #192 proves the remaining Gouvern E2E blocker is a repository_dispatch OIDC claim mismatch on the existing SSH broker. The bounded contract correction is the current candidate and remains subject to exact-head CI/review/deploy before E2E closure."
+        "reason": "PR #191 exact-head CI, protected merge, governed deploy and the Gouvern V2.6.8 BOTH E2E are all attested. The direct token remained unavailable, while the intended GitHub OIDC ephemeral SSH read-only fallback passed and advanced the pilot beyond MCP discovery."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -7907,6 +7906,40 @@
       "handoff": {
         "onSuccess": "Mark the blueprint DONE only after MCP deploy + CA bootstrap + template V2.6 E2E evidence.",
         "onFailure": "Keep the broker fail-closed; do not fall back to a shared root private key or arbitrary SSH shell."
+      },
+      "completionEvidence": {
+        "candidateHeadSha": "b121b867c948c4981912a3b79e57252514e88467",
+        "pullRequest": 191,
+        "prPushCiRunId": 36254826124,
+        "prCiRunId": 36254828240,
+        "mergeSha": "0eb55a511c821bb4082e147325cf211404a8e5f6",
+        "mainCiRunId": 36255009457,
+        "governedDeployRunId": 36255009423,
+        "sshCaBootstrapRunId": 36130501105,
+        "templateVersion": "2.6.8",
+        "templateControlPlaneRunId": 36255225239,
+        "pilotRepository": "Patricked-code/Gouvern",
+        "pilotHeadSha": "74ebe14783285285143a3556c37a55693f3cc6e1",
+        "pilotWorkflowRunId": 36255238655,
+        "pilotWorkflowEvent": "repository_dispatch",
+        "pilotTransport": "BOTH",
+        "directMcpStatus": "UNAVAILABLE_CREDENTIAL",
+        "directMcpReason": "GOVERNED_MCP_AUTH_TOKEN_MISSING",
+        "sshCertificateStatus": "PASS",
+        "sshAuthentication": "GITHUB_OIDC_EPHEMERAL_SSH_CERTIFICATE",
+        "sshMutationAllowed": false,
+        "sshCertificateValidForSeconds": 600,
+        "readOnlyProbeStatuses": {
+          "ping": "PASS",
+          "get_project_context": "PASS",
+          "list_domains_s1": "PASS",
+          "list_domains_s2": "PASS",
+          "get_write_tools_context": "PASS"
+        },
+        "pilotResultingStatus": "WAITING_FOR_SETUP_ANSWER",
+        "pilotResultingPhase": "Q_DOMAIN_BINDING",
+        "pilotResultingRevision": 28,
+        "observedAt": "2026-09-26T16:22:54+00:00"
       }
     }
   ],
@@ -8170,21 +8203,33 @@
     {
       "id": "INTAKE-SSH-REPO-20260925",
       "title": "Automatic governed SSH provisioning for repositories created from Governed-Repository-Template",
-      "status": "IMPLEMENTATION_CANDIDATE",
+      "status": "CONVERGED_CURRENT_MAIN",
       "observedMainSha": "5c08e865eef7877f5450262db726b17fe2110a2e",
       "createsParallelProgram": false,
       "createsRuntimeTasks": false,
       "integrationRule": "Extends Program Backlog V2 through PB-SSH-ACCESS / TB-W3-SSH-ACCESS-01; does not create a second SSH, task, permission or governance authority.",
       "targetBlueprintIds": [
         "TB-W3-SSH-ACCESS-01"
-      ]
+      ],
+      "completionEvidence": {
+        "mergeSha": "0eb55a511c821bb4082e147325cf211404a8e5f6",
+        "mainCiRunId": 36255009457,
+        "governedDeployRunId": 36255009423,
+        "sshCaBootstrapRunId": 36130501105,
+        "pilotRepository": "Patricked-code/Gouvern",
+        "pilotHeadSha": "74ebe14783285285143a3556c37a55693f3cc6e1",
+        "pilotWorkflowRunId": 36255238655,
+        "sshFallbackStatus": "PASS",
+        "mutationAllowed": false,
+        "resultingPhase": "Q_DOMAIN_BINDING"
+      }
     },
     {
       "id": "INTAKE-192",
       "issue": 192,
       "title": "[PROGRAM INTAKE] Governed Repository Template — repository-ssh OIDC certificate broker returns 403",
-      "status": "CONVERGED_CANDIDATE",
-      "observedMainSha": "31f47325f92b9652d0564ebc66131d7bd3cca397",
+      "status": "CONVERGED_CURRENT_MAIN",
+      "observedMainSha": "0eb55a511c821bb4082e147325cf211404a8e5f6",
       "createsParallelProgram": false,
       "createsRuntimeTasks": false,
       "integrationRule": "Complements the existing PB-SSH-ACCESS / TB-W3-SSH-ACCESS-01 workstream; the observed 403 is reconciled as an exact OIDC claim-contract mismatch and does not create a second transport, queue, permission authority or program.",
@@ -8208,7 +8253,20 @@
         "TB-W3-SSH-ACCESS-01"
       ],
       "relatedPullRequest": 191,
-      "deferredCandidate": "Direct repository MCP discovery is not required to resolve intake #192 and remains deferred until routed through an existing Program Backlog Integration Slot."
+      "deferredCandidate": "Direct repository MCP discovery is not required to resolve intake #192 and remains deferred until routed through an existing Program Backlog Integration Slot.",
+      "completionEvidence": {
+        "mergeSha": "0eb55a511c821bb4082e147325cf211404a8e5f6",
+        "mainCiRunId": 36255009457,
+        "governedDeployRunId": 36255009423,
+        "sshCaBootstrapRunId": 36130501105,
+        "pilotRepository": "Patricked-code/Gouvern",
+        "pilotHeadSha": "74ebe14783285285143a3556c37a55693f3cc6e1",
+        "pilotWorkflowRunId": 36255238655,
+        "sshFallbackStatus": "PASS",
+        "mutationAllowed": false,
+        "resultingPhase": "Q_DOMAIN_BINDING"
+      },
+      "resolution": "The deployed broker now accepts the governed-local-entry repository_dispatch event under the same exact owner/repository/ref/workflow/SHA claims. The V2.6.8 pilot obtained a short-lived read-only SSH certificate and completed all required discovery probes."
     }
   ],
   "w3A22InventoryHandoff": {

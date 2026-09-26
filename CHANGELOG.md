@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## 2026-09-26 — Repository SSH workstream terminally attested
+
+- PR #191 merged at `0eb55a511c821bb4082e147325cf211404a8e5f6`; main CI `36255009457` and Governed Deploy `36255009423` succeeded.
+- Governed-Repository-Template V2.6.8 dispatched an exact-head retry through control-plane run `36255225239`.
+- Gouvern run `36255238655` succeeded: DIRECT MCP remained unavailable by missing credential, while the GitHub OIDC ephemeral SSH certificate fallback passed with `mutationAllowed=false` and all bounded read-only probes passing.
+- Pilot state advanced from retryable MCP discovery failure to `Q_DOMAIN_BINDING`.
+- `PB-SSH-ACCESS` and `TB-W3-SSH-ACCESS-01` are closed as DONE; intake #192 is resolved into the existing architecture with no parallel authority.
+
+
 ## 2026-09-26 — Governed repository SSH OIDC intake #192
 
 - Convergence de l'intake #192 dans `PB-SSH-ACCESS / TB-W3-SSH-ACCESS-01`, sans nouvelle Task Queue, autorité, registre ou transport parallèle.

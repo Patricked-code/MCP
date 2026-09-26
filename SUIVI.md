@@ -1,5 +1,18 @@
 # SUIVI.md
 
+## 2026-09-26 — Repository SSH / intake #192 — DONE et E2E attesté
+
+- PR #191 fusionnée sous garde exact-head depuis `b121b867c948c4981912a3b79e57252514e88467` au merge `0eb55a511c821bb4082e147325cf211404a8e5f6`.
+- CI exact-head PR `36254828240` et push `36254826124` : SUCCESS ; CI main `36255009457` : SUCCESS.
+- Governed Deploy `36255009423` : SUCCESS sur le merge exact ; le bootstrap CA antérieur reste attesté par run `36130501105`.
+- Retry gouverné lancé depuis Governed-Repository-Template via run central `36255225239` vers `Patricked-code/Gouvern@74ebe14783285285143a3556c37a55693f3cc6e1`.
+- E2E Gouvern run `36255238655` : SUCCESS ; `BOTH` reste explicitement dégradé côté DIRECT MCP (`GOVERNED_MCP_AUTH_TOKEN_MISSING`) mais le fallback `GITHUB_OIDC_EPHEMERAL_SSH_CERTIFICATE` est `PASS`.
+- Certificat SSH éphémère : durée 600 s, `mutationAllowed=false`; probes `ping`, `get_project_context`, `list_domains_s1`, `list_domains_s2`, `get_write_tools_context` : PASS.
+- Le pilote a quitté `MCP_DISCOVERY_FAILED_RETRYABLE` et atteint `WAITING_FOR_SETUP_ANSWER / Q_DOMAIN_BINDING`, revision 28.
+- Program Backlog : `PB-SSH-ACCESS=DONE`, `TB-W3-SSH-ACCESS-01=DONE`, intakes SSH/#192 `CONVERGED_CURRENT_MAIN`; aucun Task runtime ou programme parallèle créé.
+- NEXT_ACTION MCP : recalculer/reprendre W3 selon `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`; planning-ready restant : `TB-W3-A22-02`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01`.
+
+
 ## 2026-09-26 — Intake #192 repository SSH OIDC 403 — convergé / GREEN candidate PR #191
 
 - Reprise current-first : `main=31f47325f92b9652d0564ebc66131d7bd3cca397`; PR #191 était Draft, base exacte main, sans drift, mais non convergée au programme et CI rouge.
