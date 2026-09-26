@@ -1,5 +1,16 @@
 # DECISIONS_LOG.md
 
+## 2026-09-26 — Intake #192 réutilise le broker SSH existant ; pas de nouveau registre ni transport
+
+Décision : le 403 observé par `Patricked-code/Gouvern` run `36252888826` est classé `CLAIM_MISMATCH`. Le workflow exact `.github/workflows/governed-local-entry.yml@refs/heads/main` était correct, ainsi que le repository/ref/SHA ; l'événement GitHub réel était `repository_dispatch`, absent de l'allowlist du broker SSH déployé.
+
+Correction : étendre uniquement `repositorySshOidcPolicyFor()` à `repository_dispatch`. Les autres contraintes restent inchangées : owner borné, repository exact, ref `main`, workflow exact, SHA exact, token OIDC éphémère, certificat court, force-command read-only, aucune clé privée persistante.
+
+Le broker actuel n'utilise pas de registre repository individuel : un repository sous un owner explicitement admis reste soumis aux claims exacts ci-dessus. Aucun `NOT_REGISTERED` artificiel ni second registre d'autorisation n'est créé. Les refus exposent seulement une classification machine non secrète `CLAIM_MISMATCH` ou `FORBIDDEN_BY_POLICY`.
+
+La capacité de discovery MCP directe proposée initialement dans PR #191 est `DEFER` pour cet intake : elle n'est pas nécessaire à la résolution de #192 et ne sera reprise que si elle est routée existing-first dans un Integration Slot du Program Backlog.
+
+
 ## 2026-09-25 — Les repositories gouvernés utilisent des certificats SSH éphémères, jamais une clé root persistante partagée
 
 Décision : le fallback SSH des repositories issus de `Governed-Repository-Template` ne reçoit pas de clé privée S1 longue durée. Chaque run GitHub Actions génère une paire Ed25519 éphémère, prouve son identité au MCP via OIDC lié au repository/ref/workflow exact, puis reçoit un certificat utilisateur OpenSSH valable au maximum dix minutes.
