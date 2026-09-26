@@ -95,28 +95,7 @@ export function repositorySshOidcPolicyFor(repository: string): GithubOidcPolicy
     ownerId,
     ref: 'refs/heads/main',
     workflowRef: `${repository}/.github/workflows/governed-local-entry.yml@refs/heads/main`,
-    allowedEvents: Object.freeze(['issue_comment', 'workflow_dispatch', 'repository_dispatch'] as const)
-  });
-}
-
-export function repositoryMcpDiscoveryOidcPolicyFor(repository: string): GithubOidcPolicy {
-  if (!GOVERNED_REPOSITORY_PATTERN.test(repository)) {
-    throw oidcError('oidc_repository_invalid');
-  }
-  const owner = repository.slice(0, repository.indexOf('/'));
-  if (!(owner in GOVERNED_REPOSITORY_OWNER_IDS)) {
-    throw oidcError('oidc_owner_invalid');
-  }
-  const ownerId = GOVERNED_REPOSITORY_OWNER_IDS[owner as GovernedRepositoryOwner];
-  return Object.freeze({
-    issuer: 'https://token.actions.githubusercontent.com',
-    audience: 'https://mcp.wealthtechinnovations.com/access/github/repository-mcp/discovery',
-    repository,
-    owner,
-    ownerId,
-    ref: 'refs/heads/main',
-    workflowRef: `${repository}/.github/workflows/governed-local-entry.yml@refs/heads/main`,
-    allowedEvents: Object.freeze(['issue_comment', 'workflow_dispatch', 'repository_dispatch'] as const)
+    allowedEvents: Object.freeze(['issue_comment', 'workflow_dispatch'] as const)
   });
 }
 
@@ -432,20 +411,6 @@ export async function verifyGithubRepositorySshOidcToken(
     token,
     requestedShaInput,
     repositorySshOidcPolicyFor(repository),
-    options
-  );
-}
-
-export async function verifyGithubRepositoryMcpDiscoveryOidcToken(
-  token: string,
-  requestedShaInput: string,
-  repository: string,
-  options: VerifyGithubOidcOptions = {}
-): Promise<GithubOidcClaims> {
-  return verifyGithubOidcTokenWithPolicy(
-    token,
-    requestedShaInput,
-    repositoryMcpDiscoveryOidcPolicyFor(repository),
     options
   );
 }
