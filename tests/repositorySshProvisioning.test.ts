@@ -11,6 +11,7 @@ import {
   GITHUB_REPOSITORY_SSH_CA_BOOTSTRAP_OIDC_POLICY,
   repositorySshOidcPolicyFor
 } from '../src/deploy/githubOidc.js';
+import { classifyRepositorySshOidcFailure } from '../src/ssh/githubRepositoryAccessRoutes.js';
 
 const SERVER = new URL('../src/server.ts', import.meta.url);
 const GATEWAY = new URL('../scripts/governed-repository-ssh-gateway.sh', import.meta.url);
@@ -57,10 +58,19 @@ test('OIDC certificate policy is dynamically bound to the governed repository wo
     policy.workflowRef,
     'Patricked-code/Gouvern/.github/workflows/governed-local-entry.yml@refs/heads/main'
   );
-  assert.deepEqual(policy.allowedEvents, ['issue_comment', 'workflow_dispatch']);
+  assert.deepEqual(policy.allowedEvents, ['issue_comment', 'workflow_dispatch', 'repository_dispatch']);
   assert.throws(() => repositorySshOidcPolicyFor('evil-owner/Gouvern'));
   assert.equal(repositorySshOidcPolicyFor('Wealthtechinnovations/Test').ownerId, '94637590');
   assert.equal(repositorySshOidcPolicyFor('chainsolutions-wealthtech/Test').ownerId, '299685687');
+});
+
+test('repository SSH broker exposes bounded machine-readable refusal classes', () => {
+  assert.equal(classifyRepositorySshOidcFailure(new Error('oidc_event_not_allowed')), 'CLAIM_MISMATCH');
+  assert.equal(classifyRepositorySshOidcFailure(new Error('oidc_workflow_invalid')), 'CLAIM_MISMATCH');
+  assert.equal(classifyRepositorySshOidcFailure(new Error('oidc_ref_invalid')), 'CLAIM_MISMATCH');
+  assert.equal(classifyRepositorySshOidcFailure(new Error('oidc_owner_invalid')), 'FORBIDDEN_BY_POLICY');
+  assert.equal(classifyRepositorySshOidcFailure(new Error('oidc_signature_invalid')), 'FORBIDDEN_BY_POLICY');
+  assert.equal(classifyRepositorySshOidcFailure('unexpected'), 'FORBIDDEN_BY_POLICY');
 });
 
 test('forced SSH gateway exposes only closed read-only discovery commands', async () => {
