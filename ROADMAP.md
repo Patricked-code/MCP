@@ -505,10 +505,10 @@ W2 COMPLETE — CAPACITÉS GITHUB COMPLÉMENTAIRES
   TB-W2-03 github_get_required_checks DONE
         ↓
 W3 READY — CONTINUITÉ / RÉSOLUTION / GOUVERNANCE
-  A2.2.1 inventory DONE ; planning-ready directs : TB-W3-A22-02 + TB-W3-A3-01 + TB-W3-B3-01 + TB-W3-C1-01 + TB-W3-SSH-ACCESS-01
+  A2.2.1 inventory DONE ; planning-ready directs : TB-W3-A22-02 + TB-W3-A3-01 + TB-W3-B3-01 + TB-W3-C1-01
   intake #177 Git/GitHub Capability Completion : CONVERGED current-first, 164 capabilities mapped
   residual GGCC : intégrés dans W3/W4/MAINTENANCE/CONDITIONAL, dependency-gated et non auto-promus
-  intake #192 : CONVERGED dans PB-SSH-ACCESS ; correction claim repository_dispatch PR #191 puis deploy + E2E Gouvern
+  repository SSH / intake #192 : DONE — PR #191 merge/deploy exact-SHA + Gouvern V2.6.8 E2E read-only PASS
   aval dependency-gated : C3/C4/C5 + D1/D2/D3 + E1/E2/E3 + F
         ↓
 W4 OBSERVABILITÉ / CERTIFICATION
