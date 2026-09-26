@@ -32,13 +32,16 @@ import {
   verifyGithubReadonlyEvidenceOidcToken,
   verifyGithubStablecoinFastForwardOidcToken,
   verifyGithubRepositorySshOidcToken,
+  verifyGithubRepositoryMcpDiscoveryOidcToken,
   verifyGithubRepositorySshCaBootstrapOidcToken
 } from './deploy/githubOidc.js';
 import { createGithubReadonlyEvidenceRouter } from './evidence/githubReadonlyRoutes.js';
+import { createGithubRepositoryDiscoveryRouter } from './evidence/githubRepositoryDiscoveryRoutes.js';
 import { createStablecoinFastForwardRouter } from './stablecoin/githubFastForward.js';
 import { createGithubRepositorySshAccessRouter } from './ssh/githubRepositoryAccessRoutes.js';
 import { createGithubRepositorySshCaBootstrapRouter } from './ssh/githubRepositoryCaBootstrapRoutes.js';
 import { signRepositorySshCertificate } from './ssh/repositoryCertificate.js';
+import { executeRepositoryDiscoveryGateway } from './ssh/repositoryGateway.js';
 import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
 import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js';
 import {
@@ -408,6 +411,12 @@ export async function startHttpServer(): Promise<void> {
   app.use(createGithubRepositorySshAccessRouter({
     verifyOidc: verifyGithubRepositorySshOidcToken,
     signCertificate: signRepositorySshCertificate
+  }));
+  app.use(createGithubRepositoryDiscoveryRouter({
+    verifyOidc: verifyGithubRepositoryMcpDiscoveryOidcToken,
+    executeDiscovery: async (repository, command) => (
+      executeRepositoryDiscoveryGateway(repository, command, 'github_oidc_direct_discovery')
+    )
   }));
   app.use(createStablecoinFastForwardRouter({
     verifyOidc: verifyGithubStablecoinFastForwardOidcToken,
