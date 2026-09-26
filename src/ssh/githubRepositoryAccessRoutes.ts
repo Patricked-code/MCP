@@ -18,7 +18,8 @@ const CLAIM_MISMATCH_CODES = new Set([
   'oidc_ref_invalid',
   'oidc_workflow_invalid',
   'oidc_event_not_allowed',
-  'oidc_sha_mismatch'
+  'oidc_sha_mismatch',
+  'oidc_run_id_invalid'
 ]);
 
 export function classifyRepositorySshOidcFailure(error: unknown): RepositorySshAuthorizationStatus {
@@ -81,7 +82,10 @@ export function createGithubRepositorySshAccessRouter(
       });
     }
     if (typeof claims.run_id !== 'string') {
-      return response.status(403).json({ error: 'github_oidc_invalid' });
+      return response.status(403).json({
+        error: 'github_oidc_invalid',
+        authorizationStatus: 'CLAIM_MISMATCH'
+      });
     }
 
     try {
