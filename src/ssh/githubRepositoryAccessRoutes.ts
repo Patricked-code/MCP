@@ -8,6 +8,24 @@ import { validateGovernedRepository, validateRepositorySshPublicKey } from './re
 const SHA_PATTERN = /^[0-9a-f]{40}$/;
 const MAX_BEARER_BYTES = 16_384;
 
+export type RepositorySshAuthorizationStatus = 'CLAIM_MISMATCH' | 'FORBIDDEN_BY_POLICY';
+
+const CLAIM_MISMATCH_CODES = new Set([
+  'oidc_audience_invalid',
+  'oidc_repository_invalid',
+  'oidc_repository_id_invalid',
+  'oidc_owner_id_invalid',
+  'oidc_ref_invalid',
+  'oidc_workflow_invalid',
+  'oidc_event_not_allowed',
+  'oidc_sha_mismatch'
+]);
+
+export function classifyRepositorySshOidcFailure(error: unknown): RepositorySshAuthorizationStatus {
+  const code = error instanceof Error ? error.message : '';
+  return CLAIM_MISMATCH_CODES.has(code) ? 'CLAIM_MISMATCH' : 'FORBIDDEN_BY_POLICY';
+}
+
 export interface GithubRepositorySshAccessDependencies {
   verifyOidc: (token: string, requestedSha: string, repository: string) => Promise<GithubOidcClaims>;
   signCertificate: (input: {
@@ -56,8 +74,11 @@ export function createGithubRepositorySshAccessRouter(
     let claims: GithubOidcClaims;
     try {
       claims = await dependencies.verifyOidc(token, body.sha, body.repository);
-    } catch {
-      return response.status(403).json({ error: 'github_oidc_invalid' });
+    } catch (error) {
+      return response.status(403).json({
+        error: 'github_oidc_invalid',
+        authorizationStatus: classifyRepositorySshOidcFailure(error)
+      });
     }
     if (typeof claims.run_id !== 'string') {
       return response.status(403).json({ error: 'github_oidc_invalid' });
@@ -69,7 +90,10 @@ export function createGithubRepositorySshAccessRouter(
         publicKey: body.publicKey,
         runId: claims.run_id
       });
-      return response.status(201).json(certificate);
+      return response.status(201).json({
+        authorizationStatus: 'AUTHORIZED',
+        ...certificate
+      });
     } catch (error) {
       const code = error instanceof Error ? error.message : '';
       if (code === 'repository_ssh_ca_unavailable') {
