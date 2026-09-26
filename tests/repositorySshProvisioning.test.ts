@@ -9,6 +9,7 @@ import {
 } from '../src/ssh/repositoryAccess.js';
 import {
   GITHUB_REPOSITORY_SSH_CA_BOOTSTRAP_OIDC_POLICY,
+  repositoryMcpDiscoveryOidcPolicyFor,
   repositorySshOidcPolicyFor
 } from '../src/deploy/githubOidc.js';
 
@@ -57,10 +58,27 @@ test('OIDC certificate policy is dynamically bound to the governed repository wo
     policy.workflowRef,
     'Patricked-code/Gouvern/.github/workflows/governed-local-entry.yml@refs/heads/main'
   );
-  assert.deepEqual(policy.allowedEvents, ['issue_comment', 'workflow_dispatch']);
+  assert.deepEqual(policy.allowedEvents, ['issue_comment', 'workflow_dispatch', 'repository_dispatch']);
   assert.throws(() => repositorySshOidcPolicyFor('evil-owner/Gouvern'));
   assert.equal(repositorySshOidcPolicyFor('Wealthtechinnovations/Test').ownerId, '94637590');
   assert.equal(repositorySshOidcPolicyFor('chainsolutions-wealthtech/Test').ownerId, '299685687');
+});
+
+test('repository direct discovery OIDC policy is repo-bound and secretless', () => {
+  const policy = repositoryMcpDiscoveryOidcPolicyFor('Patricked-code/Gouvern');
+  assert.equal(
+    policy.audience,
+    'https://mcp.wealthtechinnovations.com/access/github/repository-mcp/discovery'
+  );
+  assert.equal(policy.repository, 'Patricked-code/Gouvern');
+  assert.equal(policy.ownerId, '270385782');
+  assert.equal(policy.ref, 'refs/heads/main');
+  assert.equal(
+    policy.workflowRef,
+    'Patricked-code/Gouvern/.github/workflows/governed-local-entry.yml@refs/heads/main'
+  );
+  assert.deepEqual(policy.allowedEvents, ['issue_comment', 'workflow_dispatch', 'repository_dispatch']);
+  assert.throws(() => repositoryMcpDiscoveryOidcPolicyFor('evil-owner/Gouvern'));
 });
 
 test('forced SSH gateway exposes only closed read-only discovery commands', async () => {
