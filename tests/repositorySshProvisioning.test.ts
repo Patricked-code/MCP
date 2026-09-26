@@ -68,6 +68,7 @@ test('repository SSH broker exposes bounded machine-readable refusal classes', (
   assert.equal(classifyRepositorySshOidcFailure(new Error('oidc_event_not_allowed')), 'CLAIM_MISMATCH');
   assert.equal(classifyRepositorySshOidcFailure(new Error('oidc_workflow_invalid')), 'CLAIM_MISMATCH');
   assert.equal(classifyRepositorySshOidcFailure(new Error('oidc_ref_invalid')), 'CLAIM_MISMATCH');
+  assert.equal(classifyRepositorySshOidcFailure(new Error('oidc_run_id_invalid')), 'CLAIM_MISMATCH');
   assert.equal(classifyRepositorySshOidcFailure(new Error('oidc_owner_invalid')), 'FORBIDDEN_BY_POLICY');
   assert.equal(classifyRepositorySshOidcFailure(new Error('oidc_signature_invalid')), 'FORBIDDEN_BY_POLICY');
   assert.equal(classifyRepositorySshOidcFailure('unexpected'), 'FORBIDDEN_BY_POLICY');
