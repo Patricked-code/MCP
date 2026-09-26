@@ -62,7 +62,6 @@ test('A2.2.1 completion unlocks only the bounded A2.2.2 extension while preservi
     'TB-W3-A22-02',
     'TB-W3-A3-01',
     'TB-W3-B3-01',
-    'TB-W3-C1-01',
-    'TB-W3-SSH-ACCESS-01'
+    'TB-W3-C1-01'
   ]);
 });
