@@ -63,7 +63,7 @@
     "NEEDS_DECISION"
   ],
   "summary": {
-    "workItems": 35,
+    "workItems": 36,
     "todoUnchecked": 40,
     "roadmapLots": 33,
     "gwcBlueprints": 18,
@@ -2284,14 +2284,15 @@
       "dependsOn": [
         "PB-UAC"
       ],
-      "nextAction": "Complete exact-head CI/review, merge and governed deploy; bootstrap the S1 SSH CA once; then switch Governed-Repository-Template to ephemeral OIDC SSH certificates.",
+      "nextAction": "Land the bounded intake #192 claim-contract correction in PR #191, obtain exact-head CI/review, merge and governed deploy, then rerun Governed-Repository-Template/Gouvern BOTH transport E2E before marking the SSH blueprint DONE.",
       "subtasks": [
         "Repo-bound GitHub OIDC certificate broker",
         "Short-lived Ed25519 user certificate with fixed force-command",
         "Pinned S1 host key returned by authenticated MCP broker",
         "Closed read-only SSH discovery gateway",
         "One-time OIDC-gated S1 SSH CA bootstrap",
-        "Template V2.6 integration without long-lived repository SSH private keys"
+        "Template V2.6 integration without long-lived repository SSH private keys",
+        "Repository-dispatch OIDC claim compatibility and bounded refusal classification"
       ],
       "nonRegression": [
         "No arbitrary SSH shell",
@@ -7866,10 +7867,8 @@
       "readiness": {
         "state": "READY",
         "autoPromotable": false,
-        "requiredExplicitGates": [
-          "EXPLICIT_CA_BOOTSTRAP_WORKFLOW_DISPATCH"
-        ],
-        "reason": "User explicitly requested automatic SSH provisioning for future governed repositories; exact-main collision review found the dedicated SSH transport surface free."
+        "requiredExplicitGates": [],
+        "reason": "CA bootstrap is already deployed; intake #192 proves the remaining Gouvern E2E blocker is a repository_dispatch OIDC claim mismatch on the existing SSH broker. The bounded contract correction is the current candidate and remains subject to exact-head CI/review/deploy before E2E closure."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -7888,7 +7887,9 @@
         "Issued SSH certificate is <=10 minutes, principal root, force-command constrained and has permissions cleared.",
         "Gateway exposes only the closed read-only discovery catalogue.",
         "CA bootstrap is one-time, OIDC-gated, scoped-write-gated and returns only public fingerprint evidence.",
-        "No existing MCP/GitHub/deployment behavior regresses."
+        "No existing MCP/GitHub/deployment behavior regresses.",
+        "The exact governed-local-entry repository_dispatch event is accepted only when repository/ref/workflow/SHA claims still match the existing policy.",
+        "OIDC refusal responses expose only bounded non-secret classes (CLAIM_MISMATCH or FORBIDDEN_BY_POLICY); the current broker does not require per-repository registration inside an allowed owner."
       ],
       "regressionSuites": [
         "targeted repository SSH RED/GREEN tests",
@@ -8177,6 +8178,37 @@
       "targetBlueprintIds": [
         "TB-W3-SSH-ACCESS-01"
       ]
+    },
+    {
+      "id": "INTAKE-192",
+      "issue": 192,
+      "title": "[PROGRAM INTAKE] Governed Repository Template — repository-ssh OIDC certificate broker returns 403",
+      "status": "CONVERGED_CANDIDATE",
+      "observedMainSha": "31f47325f92b9652d0564ebc66131d7bd3cca397",
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "integrationRule": "Complements the existing PB-SSH-ACCESS / TB-W3-SSH-ACCESS-01 workstream; the observed 403 is reconciled as an exact OIDC claim-contract mismatch and does not create a second transport, queue, permission authority or program.",
+      "integrationVerdict": "COMPLEMENT",
+      "diagnosis": {
+        "pilotRepository": "Patricked-code/Gouvern",
+        "pilotHeadSha": "a8a8e04d16c5bb4347bed5b5f9ce0caf0efff728",
+        "workflowRunId": 36252888826,
+        "workflowPath": ".github/workflows/governed-local-entry.yml",
+        "observedEvent": "repository_dispatch",
+        "currentBrokerAllowedEvents": [
+          "issue_comment",
+          "workflow_dispatch"
+        ],
+        "classification": "CLAIM_MISMATCH",
+        "repositoryRegistrationRequired": false,
+        "ownerPolicy": "bounded owner allowlist + exact repository/ref/workflow/SHA GitHub OIDC claims",
+        "canonicalFix": "extend the existing repository SSH OIDC policy to repository_dispatch and return bounded machine-readable refusal classes"
+      },
+      "targetBlueprintIds": [
+        "TB-W3-SSH-ACCESS-01"
+      ],
+      "relatedPullRequest": 191,
+      "deferredCandidate": "Direct repository MCP discovery is not required to resolve intake #192 and remains deferred until routed through an existing Program Backlog Integration Slot."
     }
   ],
   "w3A22InventoryHandoff": {
