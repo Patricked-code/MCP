@@ -180,6 +180,8 @@ Critère `DONE` :
 
 #### A2.2 — Verified Client Evidence
 
+Statut courant : A2.2.2 DONE — PR #194 fusionnée au SHA `70ee280c89d5ca3747f762a89287923dde320add`, CI main #2078, Governed Deploy #81 et attestations OIDC S1 SUCCESS. `deriveClientEvidence()` projette dans `proof.clientEvidence` : principal OAuth `VERIFIED`, `clientId` opaque non classant, classification/conversation/workspace `UNKNOWN`. Aucun champ n'est persisté.
+
 Objectif : enrichir le contexte minimal avec une identité ou référence cliente uniquement lorsqu'une preuve vérifiable est réellement fournie.
 
 Dépend de :
@@ -505,7 +507,7 @@ W2 COMPLETE — CAPACITÉS GITHUB COMPLÉMENTAIRES
   TB-W2-03 github_get_required_checks DONE
         ↓
 W3 READY — CONTINUITÉ / RÉSOLUTION / GOUVERNANCE
-  A2.2.1 inventory DONE ; planning-ready directs : TB-W3-A22-02 + TB-W3-A3-01 + TB-W3-B3-01 + TB-W3-C1-01
+  A2.2.1 inventory DONE ; A2.2.2 bounded client evidence DONE (PR #194, deploy exact-SHA attesté) ; planning-ready directs : TB-W3-A3-01 + TB-W3-B3-01 + TB-W3-C1-01 (+ TB-W4-G1-01)
   intake #177 Git/GitHub Capability Completion : CONVERGED current-first, 164 capabilities mapped
   residual GGCC : intégrés dans W3/W4/MAINTENANCE/CONDITIONAL, dependency-gated et non auto-promus
   repository SSH / intake #192 : DONE — PR #191 merge/deploy exact-SHA + Gouvern V2.6.8 E2E read-only PASS
@@ -528,7 +530,7 @@ L'intake humain #177 traverse le Program Backlog V2 existant ; il ne crée aucun
 
 Les 164 capacités demandées (81 Git local, 83 GitHub) sont classées current-first contre `main@c104e24259232dced2a24a7397640747c052d140` puis routées vers les Integration Slots existants ou vers des lots GGCC additifs intégrés aux vagues W3/W4/MAINTENANCE/CONDITIONAL. Les capacités W2 et lifecycle déjà présentes restent acquises ; #88/#89/#90 restent de la provenance uniquement.
 
-Les nouveaux lots GGCC sont tous BLOCKED/DEFERRED/CONDITIONAL. Après clôture de l'inventaire A2.2.1, le set READY W3 courant est : `TB-W3-A22-02`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01`.
+Les nouveaux lots GGCC sont tous BLOCKED/DEFERRED/CONDITIONAL. Après clôture de A2.2 (A2.2.1 inventaire puis A2.2.2 projection bornée), le set READY courant est : `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01`, `TB-W4-G1-01`.
 
 ### Program Backlog V2 — matérialisation progressive
 

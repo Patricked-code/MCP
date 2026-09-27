@@ -64,7 +64,7 @@
   ],
   "summary": {
     "workItems": 36,
-    "todoUnchecked": 40,
+    "todoUnchecked": 35,
     "roadmapLots": 33,
     "gwcBlueprints": 18,
     "findings": 36,
@@ -73,8 +73,8 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 11,
-      "PARTIALLY_IMPLEMENTED": 7,
+      "DONE": 12,
+      "PARTIALLY_IMPLEMENTED": 6,
       "KNOWN_NOT_ANALYZED": 8,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
@@ -83,30 +83,6 @@
   },
   "sourceCoverage": {
     "todoUnchecked": [
-      {
-        "sourceKey": "TODO:1",
-        "section": "A2.2 — Verified Client Evidence — restant et conditionnel",
-        "text": "classifier l'identité cliente uniquement lorsqu'une preuve vérifiable et bornée est réellement fournie ;",
-        "coveredBy": "PB-A2.2"
-      },
-      {
-        "sourceKey": "TODO:2",
-        "section": "A2.2 — Verified Client Evidence — restant et conditionnel",
-        "text": "conserver `UNKNOWN` en l'absence de preuve et ne rien déduire du seul `clientId` opaque ;",
-        "coveredBy": "PB-A2.2"
-      },
-      {
-        "sourceKey": "TODO:3",
-        "section": "A2.2 — Verified Client Evidence — restant et conditionnel",
-        "text": "persister une référence conversation/workspace uniquement si elle est fournie, autorisée et sanitizable ;",
-        "coveredBy": "PB-A2.2"
-      },
-      {
-        "sourceKey": "TODO:4",
-        "section": "A2.2 — Verified Client Evidence — restant et conditionnel",
-        "text": "garder A2.2 non bloquant pour B1 lorsque le principal OAuth suffit à la résolution GitHub gouvernée.",
-        "coveredBy": "PB-A2.2"
-      },
       {
         "sourceKey": "TODO:5",
         "section": "Project Binding / GitRegistry V2",
@@ -1347,7 +1323,7 @@
     {
       "id": "PB-A2.2",
       "title": "A2.2 Verified Client Evidence",
-      "disposition": "PARTIALLY_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "connection.client-evidence",
       "implementationMode": "EXTEND",
       "existingAuthorities": [
@@ -1358,7 +1334,7 @@
       "dependsOn": [
         "PB-FOUNDATIONS-DONE"
       ],
-      "nextAction": "Execute TB-W3-A22-02 only with proven sanitizable client evidence; otherwise preserve UNKNOWN without inferring client, conversation or workspace identity.",
+      "nextAction": "Reuse deriveClientEvidence()/ClientEvidenceSchema as the existing client-evidence authority; do not infer client, conversation or workspace. A new verifiable client-reference source must enter through the connection.client-evidence Integration Slot with its own RED/GREEN lot.",
       "subtasks": [
         "Define accepted client evidence and provenance",
         "Keep UNKNOWN when proof is absent",
@@ -2369,7 +2345,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_A22_INVENTORY_DONE_A22_EXTENSION_READY",
+    "currentWaveStatus": "W3_A22_DONE_A3_B3_C1_READY_G1_READY",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2389,10 +2365,10 @@
       "runtimeAuthorityBoundary": "Readiness and ordering are derived planning projections only. Governed Task Queue/Session/Lock Service and scoped governance remain runtime authorities."
     },
     "currentReadyBlueprintIds": [
-      "TB-W3-A22-02",
       "TB-W3-A3-01",
       "TB-W3-B3-01",
-      "TB-W3-C1-01"
+      "TB-W3-C1-01",
+      "TB-W4-G1-01"
     ]
   },
   "agentHandoffContract": {
@@ -3253,10 +3229,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "TB-W3-A22-01 PASS_WITH_EVIDENCE. Extension is planning-ready; it must preserve UNKNOWN unless a bounded sanitizable client reference is actually supplied and verified."
+        "reason": "PR #194 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are all attested. Only the OAuth subject is VERIFIED client evidence; the opaque clientId never classifies, classification/conversation/workspace stay UNKNOWN, and nothing new is persisted."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -3286,6 +3262,55 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 194,
+        "redHeadSha": "6b8b84c346eaeb73c9862a4efaf90f2a0ddeaa36",
+        "redCiRunId": 36292027817,
+        "redExpectedFailures": 7,
+        "greenHeadSha": "69add8179ab6f3d6ea72d8251a83932c13e35953",
+        "candidateHeadSha": "a63198fa4525e5489d01142480bb300f42804e50",
+        "greenCiRunIds": [
+          36292162709,
+          36292300342
+        ],
+        "testCount": 726,
+        "mergeSha": "70ee280c89d5ca3747f762a89287923dde320add",
+        "mainCiRunId": 36292779495,
+        "governedDeployRunId": 36292779401,
+        "governedDeployRuntimeRevision": "70ee280c89d5ca3747f762a89287923dde320add",
+        "governedDeployAttestation": "RUNTIME_REVISION_HEALTH_OAUTH_MCP_AUTH_ATTESTED_NO_ROLLBACK",
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 36292897917,
+            "requestId": "a22-02-post-deploy-git-20260927",
+            "workflowSha": "70ee280c89d5ca3747f762a89287923dde320add",
+            "status": "SUCCESS",
+            "observed": "main@70ee280c89d5ca3747f762a89287923dde320add, working_tree_changes=0, fetch read-only, push disabled",
+            "artifactDigest": "sha256:de73dd7ddf8930bd54d3d4d7fd214d2e8ba4d3096f8c19ecba5fd7326ac4462a",
+            "outputSha256": "52512cf17e07e89449e9bb5b238e807b749e6ebfd3e5e37a4020416418af9644",
+            "mutationAllowed": false,
+            "observedAt": "2026-09-27T03:58:03.014Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 36292899030,
+            "requestId": "a22-02-post-deploy-docker-20260927",
+            "workflowSha": "70ee280c89d5ca3747f762a89287923dde320add",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy",
+            "artifactDigest": "sha256:d2437bc65f2decf4fd119d06ccd0a87f6d8811c7cb4b5281194cf74cc9015cb3",
+            "outputSha256": "0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af",
+            "mutationAllowed": false,
+            "observedAt": "2026-09-27T03:57:30.800Z"
+          }
+        },
+        "persistedFormatChanged": false,
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-09-27T03:58:03Z"
       }
     },
     {
@@ -4941,10 +4966,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "TB-W3-A22-02 DONE with deploy attestation. Planning-ready only: client presence must stay separate from agent liveness and synthetic health, consume the existing ClientEvidence projection and never infer client identity."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",

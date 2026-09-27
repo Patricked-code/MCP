@@ -26,7 +26,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | Workstream | Disposition | Integration Slot | Objet |
 |---|---|---|---|
 | `PB-FOUNDATIONS-DONE` | `DONE` | `program.delivered-foundations` | Delivered connection/repository/project foundations |
-| `PB-A2.2` | `PARTIALLY_IMPLEMENTED` | `connection.client-evidence` | A2.2 Verified Client Evidence — A2.2.1 inventory DONE, A2.2.2 extension READY |
+| `PB-A2.2` | `DONE` | `connection.client-evidence` | A2.2 Verified Client Evidence — A2.2.1 inventory + A2.2.2 bounded evidence projection DONE ; PR #194 merge/deploy exact-SHA attestés |
 | `PB-A3` | `KNOWN_NOT_ANALYZED` | `connection.oauth-attempt-correlation` | A3 OAuth Auth Attempt Correlation |
 | `PB-B3` | `PARTIALLY_IMPLEMENTED` | `context.multi-repository` | B3 Multi-repository Governed Context |
 | `PB-C1` | `PARTIALLY_IMPLEMENTED` | `project.gitregistry-verification` | C1 GitRegistry V2 verification and activation path |
@@ -67,7 +67,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 - **DONE** : `PB-UAC` / PR #154 est fusionné, déployé et attesté ; ne jamais recopier ses UAC-01..24.
 - **DONE — W1 Program State Convergence** : `TB-W1-01..07` sont terminés ; GWC/AF/OD/task-registry/planning ont été réconciliés current-first.
 - **DONE — W2 GitHub READ** : `TB-W2-01`, `TB-W2-02`, `TB-W2-03` sont terminés et validés exact-head ; les trois capacités restent strictement READ et aucun runtime Task/Session/Lock n'a été créé par W2.
-- **ACTIVE planning wave — W3** : `TB-W3-A22-01` inventory est DONE ; `TB-W3-A22-02`, `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01` sont planning-ready ; `TB-W3-SSH-ACCESS-01` est DONE ; les autres W3 et W4 restent bloqués par leurs dépendances.
+- **ACTIVE planning wave — W3** : `TB-W3-A22-01` et `TB-W3-A22-02` sont DONE (A2.2 clôturé) ; `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01` sont planning-ready, ainsi que `TB-W4-G1-01` débloqué par A2.2.2 ; `TB-W3-SSH-ACCESS-01` est DONE ; les autres W3 et W4 restent bloqués par leurs dépendances.
 - **CONVERGED — intake #177** : 164 capacités Git/GitHub ont été classées current-first et routées dans le Program Backlog V2 ; les lots GGCC résiduels restent BLOCKED/DEFERRED/CONDITIONAL et ne créent aucune Task runtime.
 - **DONE — intake #192 / repository SSH** : PR #191 fusionnée/déployée exact-SHA ; Gouvern V2.6.8 run `36255238655` a obtenu le certificat OIDC SSH éphémère read-only et a franchi MCP discovery vers `Q_DOMAIN_BINDING`.
 - **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
@@ -166,12 +166,13 @@ La séquence détaillée, les dépendances et les contrats d'intégration resten
 - [x] fusionner la réconciliation documentaire PR #70 au SHA `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4`, réussir CI main #746 et Governed Deploy #25, obtenir Live State `83` `FULLY_ALIGNED`, puis clôturer `TASK-20260901-001` à `DONE` selon le plan approuvé.
 - Note d'autorité : checkpoint, lock, session et état courant de la queue restent lus depuis Operational Memory; cette preuve historique ne crée aucune tâche B1.
 
-### A2.2 — Verified Client Evidence — restant et conditionnel
+### A2.2 — Verified Client Evidence — livré et clôturé
 
-- [ ] classifier l'identité cliente uniquement lorsqu'une preuve vérifiable et bornée est réellement fournie ;
-- [ ] conserver `UNKNOWN` en l'absence de preuve et ne rien déduire du seul `clientId` opaque ;
-- [ ] persister une référence conversation/workspace uniquement si elle est fournie, autorisée et sanitizable ;
-- [ ] garder A2.2 non bloquant pour B1 lorsque le principal OAuth suffit à la résolution GitHub gouvernée.
+- [x] classifier l'identité cliente uniquement lorsqu'une preuve vérifiable et bornée est réellement fournie ;
+- [x] conserver `UNKNOWN` en l'absence de preuve et ne rien déduire du seul `clientId` opaque ;
+- [x] persister une référence conversation/workspace uniquement si elle est fournie, autorisée et sanitizable ;
+- [x] garder A2.2 non bloquant pour B1 lorsque le principal OAuth suffit à la résolution GitHub gouvernée.
+- Preuve : `TB-W3-A22-02` / PR #194, merge `70ee280c89d5ca3747f762a89287923dde320add`, CI main #2078, Governed Deploy #81 et attestations OIDC S1 `mcp_git_status`/`docker_status` SUCCESS. Seul le principal OAuth est `VERIFIED` ; aucune source vérifiable de référence conversation/workspace n'existe aujourd'hui, donc rien n'est persisté.
 
 ### B1 — GitHub Identity Resolution — livré et clôturé avant B2
 

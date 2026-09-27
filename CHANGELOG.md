@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-09-27 — W3 A2.2.2 bounded client evidence livré et attesté
+
+- PR #194 fusionnée au SHA `70ee280c89d5ca3747f762a89287923dde320add` ; CI main `36292779495` et Governed Deploy `36292779401` réussis (révision runtime, santé, OAuth et auth MCP attestés, sans rollback).
+- Preuves OIDC read-only S1 : `mcp_git_status` `36292897917` (main@70ee280, arbre propre, read-only) et `docker_status` `36292899030` (healthy).
+- `TB-W3-A22-02` et `PB-A2.2` sont clôturés DONE ; `TB-W4-G1-01` devient planning-ready ; aucun champ persisté ni Task runtime.
+
+
 ## 2026-09-27 — W3 A2.2.2 bounded client evidence projection (candidate)
 
 - Ajout de `deriveClientEvidence()` et d'un `ClientEvidenceSchema` fermé dans le module `ConnectionContext` existant.
