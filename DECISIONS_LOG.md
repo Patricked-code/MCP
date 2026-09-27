@@ -1,5 +1,14 @@
 # DECISIONS_LOG.md
 
+## 2026-09-27 — A2.2.2 dérive la preuve cliente de ConnectionContext et ne persiste aucune référence non prouvée
+
+Décision : la preuve cliente bornée est une projection pure et dérivée de l'autorité `ConnectionContext` existante (`deriveClientEvidence()`), exposée par le contexte gouverné dans `proof.clientEvidence`. Elle n'est pas persistée : l'absence de preuve reste une absence, et les enregistrements de session conservent exactement leur forme actuelle.
+
+Le principal OAuth (`oauth_subject`, source `oauth_auth_info`) est la seule preuve `VERIFIED`. Le `clientId` observé reste opaque et sans autorité de classification. En effet, le serveur OAuth n'enregistre aucun client : le `client_id` est choisi par le client. Classification, conversation et workspace restent `UNKNOWN` avec reason codes explicites. Le schéma fermé refuse toute valeur de classification ou toute référence tant qu'aucune source vérifiable n'existe.
+
+Aucun canal vérifiable de référence conversation/workspace n'existe aujourd'hui. `AuthInfo.extra`, `_meta`, les headers, l'identifiant de transport, le repository et `agentIdentity` restent exclus. L'ajout futur d'un tel canal exigera une source vérifiable prouvée, un lot dédié et son propre RED/GREEN. Cette décision ne crée aucune Task, session, permission, store ou autorité, et ne bloque pas B1 lorsque le principal OAuth suffit.
+
+
 ## 2026-09-26 — Intake #192 réutilise le broker SSH existant ; pas de nouveau registre ni transport
 
 Décision : le 403 observé par `Patricked-code/Gouvern` run `36252888826` est classé `CLAIM_MISMATCH`. Le workflow exact `.github/workflows/governed-local-entry.yml@refs/heads/main` était correct, ainsi que le repository/ref/SHA ; l'événement GitHub réel était `repository_dispatch`, absent de l'allowlist du broker SSH déployé.

@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## 2026-09-27 — W3 A2.2.2 bounded client evidence projection (candidate)
+
+- Ajout de `deriveClientEvidence()` et d'un `ClientEvidenceSchema` fermé dans le module `ConnectionContext` existant.
+- Le principal OAuth assaini est la seule preuve cliente `VERIFIED` ; le `clientId` observé reste opaque et ne classe aucun client.
+- Classification, conversation et workspace sont projetés explicitement `UNKNOWN` avec reason codes ; un contexte absent ou invalide échoue fermé.
+- Le contexte gouverné expose la projection dans `proof.clientEvidence` sans bloquer la résolution d'identité B1.
+- Aucun champ persisté, store, outil, endpoint, permission ou autorité n'est ajouté ; l'audit `context.read` garde son allowlist.
+- Candidate PR #194 : RED run `36292027817`, GREEN run `36292162709` ; `TB-W3-A22-02` reste READY jusqu'au merge, au déploiement et à l'attestation.
+
+
 ## 2026-09-26 — Repository SSH workstream terminally attested
 
 - PR #191 merged at `0eb55a511c821bb4082e147325cf211404a8e5f6`; main CI `36255009457` and Governed Deploy `36255009423` succeeded.
