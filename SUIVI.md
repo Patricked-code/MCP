@@ -1,5 +1,20 @@
 # SUIVI.md
 
+## 2026-09-27 — W3 A2.2.2 Verified Client Evidence — GREEN candidate PR #194
+
+- Reprise current-first : `main=b3eb823429a4357b3a7abc49421bd8bd5cbf232a` (merge PR #193), MCP CI #2074 et Governed Deploy #80 SUCCESS ; `program:readiness` OK sans drift ; `program:next` sélectionne `TB-W3-A22-02` (`FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`).
+- Collision check : aucune PR/branche active sur `connection:client-evidence` ; les PR #85/#86/#88/#89/#90 restent provenance historique. Écriture sur la branche de session `claude/trusting-ride-knf5tu`, PR draft #194 ; HEAD `main` réobservé avant chaque push.
+- Exécution GitHub-first : aucune dépendance au bridge interactif ; aucun Task runtime, Governed Session, lock, permission, store ou mutation serveur créé par ce lot.
+- RED : `6b8b84c346eaeb73c9862a4efaf90f2a0ddeaa36`, MCP CI #2075 / run `36292027817` : 726 tests, 719 PASS, exactement 7 FAIL attendus (projection absente du module ConnectionContext et de `proof`). Deux garde-fous passent déjà sur la base : `ConnectionContext` ne persiste que les champs prouvés ; `RequestIdentity` ignore les indices conversation/workspace venant de `AuthInfo.extra`, `_meta` ou des headers.
+- GREEN : `69add8179ab6f3d6ea72d8251a83932c13e35953`, MCP CI #2076 / run `36292162709` SUCCESS ; local : typecheck, build, docs:check, governance, gwc:verify, secrets, read-only safety 726/726, whitespace.
+- EXTEND existing-first : `deriveClientEvidence()` et `ClientEvidenceSchema` fermé dans `src/operationalMemory/connectionContext.ts` ; projection dérivée `GovernedOperationalContext.proof.clientEvidence`.
+- Preuve acceptée : seul le principal OAuth (`oauth_subject` / `oauth_auth_info`) est `VERIFIED` ; le `clientId` observé reste opaque (`classificationAuthority=false`) ; classification, conversation et workspace restent `UNKNOWN` avec reason codes ; contexte absent/invalide → `UNKNOWN` fail-closed ; le schéma ne peut représenter ni classification ni référence non prouvée.
+- Constat : aucun canal vérifiable ne fournit aujourd'hui de référence conversation/workspace (OAuth sans enregistrement client : le `client_id` est choisi par le client). Aucune référence n'est donc persistée ; A2.2 reste non bloquant pour B1 (identité GitHub `RESOLVED` en test).
+- Non-régression : aucun nouveau champ persisté (enregistrements de session identiques et relisibles après rollback), audit `context.read` inchangé (allowlist), aucun outil/endpoint/autorité.
+- Program Backlog : `TB-W3-A22-02` reste `READY` (lot runtime-affecting) jusqu'au merge exact-head, au Governed Deploy et à l'attestation post-deploy ; aucun DONE anticipé.
+- NEXT_ACTION : décision propriétaire de merge exact-head de la PR #194 ; ensuite Governed Deploy du merge, attestation OIDC read-only S1/runtime, PR terminale `TB-W3-A22-02 = DONE`, recalcul (`TB-W4-G1-01` dépend de A2.2.2) puis `TB-W3-A3-01`.
+
+
 ## 2026-09-26 — Repository SSH / intake #192 — DONE et E2E attesté
 
 - PR #191 fusionnée sous garde exact-head depuis `b121b867c948c4981912a3b79e57252514e88467` au merge `0eb55a511c821bb4082e147325cf211404a8e5f6`.

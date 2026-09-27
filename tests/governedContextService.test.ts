@@ -404,3 +404,37 @@ test('des dépendances qui lèvent synchroniquement sont converties en vue dégr
   ]);
   assert.equal(JSON.stringify(result).includes('sensitive dependency failure'), false);
 });
+
+test('A2.2.2 projects bounded client evidence in proof without blocking B1 identity resolution', async () => {
+  const current = await context();
+  const evidence = (current.result.proof as Record<string, any>).clientEvidence;
+
+  assert.ok(evidence, 'governed context proof must project A2.2.2 client evidence');
+  assert.equal(current.result.github.identity?.status, 'RESOLVED');
+  assert.equal(current.result.proof.identityAssurance, 'oauth_subject');
+  assert.deepEqual(evidence.principal, {
+    status: 'VERIFIED',
+    assurance: 'oauth_subject',
+    evidenceSource: 'oauth_auth_info'
+  });
+  assert.equal(evidence.connectionContextId, SESSION.connectionContext?.connectionContextId);
+  assert.equal(evidence.observedAt, SESSION.connectionContext?.createdAt);
+  assert.equal(evidence.oauthClientId.observed, true);
+  assert.equal(evidence.oauthClientId.classificationAuthority, false);
+  assert.equal(evidence.clientClassification.status, 'UNKNOWN');
+  assert.equal(evidence.conversationReference.status, 'UNKNOWN');
+  assert.equal(evidence.workspaceReference.status, 'UNKNOWN');
+  assert.equal(evidence.blocksOauthPrincipalResolution, false);
+  assert.equal(JSON.stringify(evidence).includes('chatgpt-client'), false);
+
+  for (const session of [{ ...SESSION, connectionContext: undefined }, { ...SESSION, connectionContext: null }, null]) {
+    const absent = await context({ session });
+    const absentEvidence = (absent.result.proof as Record<string, any>).clientEvidence;
+    assert.deepEqual(absentEvidence?.principal, {
+      status: 'UNKNOWN',
+      reasonCode: 'CONNECTION_CONTEXT_ABSENT'
+    });
+    assert.equal(absentEvidence?.clientClassification.status, 'UNKNOWN');
+    assert.equal(absentEvidence?.blocksOauthPrincipalResolution, false);
+  }
+});
