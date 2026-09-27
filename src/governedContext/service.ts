@@ -6,6 +6,7 @@ import {
   deriveTaskReality,
   projectRegisteredCapabilityRealities
 } from '../governance/operationalDecision.js';
+import { deriveClientEvidence } from '../operationalMemory/connectionContext.js';
 import type { GovernedLockService } from '../operationalMemory/lockService.js';
 import {
   NOOP_OPERATIONAL_AUDIT,
@@ -469,7 +470,8 @@ export function createGovernedOperationalContextService(
       proof: {
         identityAssurance: session?.identityAssurance ?? null,
         runtimeRealtimeAvailable,
-        limitations: [...new Set(limitations)].slice(0, 20)
+        limitations: [...new Set(limitations)].slice(0, 20),
+        clientEvidence: deriveClientEvidence(session?.connectionContext)
       }
     };
     await audit.record({ type: 'context.read', context });

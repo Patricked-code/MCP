@@ -20,6 +20,76 @@ export const ConnectionContextSchema = z.object({
 
 export type ConnectionContext = z.infer<typeof ConnectionContextSchema>;
 
+const ForbiddenClientInferencesSchema = z.tuple([
+  z.literal('CLIENT_CLASS_FROM_CLIENT_ID_ONLY'),
+  z.literal('CONVERSATION_FROM_TRANSPORT_SESSION'),
+  z.literal('WORKSPACE_FROM_REPOSITORY')
+]);
+
+const FORBIDDEN_CLIENT_INFERENCES: z.infer<typeof ForbiddenClientInferencesSchema> = [
+  'CLIENT_CLASS_FROM_CLIENT_ID_ONLY',
+  'CONVERSATION_FROM_TRANSPORT_SESSION',
+  'WORKSPACE_FROM_REPOSITORY'
+];
+
+export const ClientEvidenceSchema = z.object({
+  schemaVersion: z.literal(1),
+  source: z.literal('connection_context'),
+  connectionContextId: z.string().uuid().nullable(),
+  observedAt: z.string().datetime({ offset: true }).nullable(),
+  principal: z.discriminatedUnion('status', [
+    z.object({
+      status: z.literal('VERIFIED'),
+      assurance: z.literal('oauth_subject'),
+      evidenceSource: z.literal('oauth_auth_info')
+    }).strict(),
+    z.object({
+      status: z.literal('UNKNOWN'),
+      reasonCode: z.enum(['CONNECTION_CONTEXT_ABSENT', 'CONNECTION_CONTEXT_INVALID'])
+    }).strict()
+  ]),
+  oauthClientId: z.object({
+    observed: z.boolean(),
+    opaque: z.literal(true),
+    classificationAuthority: z.literal(false)
+  }).strict(),
+  clientClassification: z.object({
+    status: z.literal('UNKNOWN'),
+    reasonCode: z.literal('UNKNOWN_UNTIL_VERIFIABLE_CLIENT_EVIDENCE')
+  }).strict(),
+  conversationReference: z.object({
+    status: z.literal('UNKNOWN'),
+    reasonCode: z.literal('CONVERSATION_REFERENCE_NOT_SUPPLIED')
+  }).strict(),
+  workspaceReference: z.object({
+    status: z.literal('UNKNOWN'),
+    reasonCode: z.literal('WORKSPACE_REFERENCE_NOT_SUPPLIED')
+  }).strict(),
+  forbiddenInferences: ForbiddenClientInferencesSchema,
+  blocksOauthPrincipalResolution: z.literal(false)
+}).strict().superRefine((evidence, context) => {
+  const verified = evidence.principal.status === 'VERIFIED';
+  const anchored = evidence.connectionContextId !== null && evidence.observedAt !== null;
+
+  if (verified !== anchored) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['principal'],
+      message: 'the connection context anchor must be present exactly when the principal is verified'
+    });
+  }
+
+  if (!verified && evidence.oauthClientId.observed) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['oauthClientId', 'observed'],
+      message: 'an OAuth clientId can only be observed on a verified connection context'
+    });
+  }
+});
+
+export type ClientEvidence = z.infer<typeof ClientEvidenceSchema>;
+
 export type CreateConnectionContextInput = {
   governedSessionId: string;
   repository: string;
@@ -46,5 +116,55 @@ export function createConnectionContext(
     clientClassification: 'UNRESOLVED',
     evidenceSource: 'oauth_auth_info',
     createdAt: (input.now ?? (() => new Date()))().toISOString()
+  });
+}
+
+/**
+ * Projects the client evidence proven by a persisted ConnectionContext.
+ *
+ * Only the OAuth subject is verified evidence. The observed clientId stays opaque,
+ * and classification, conversation and workspace stay UNKNOWN until a verifiable
+ * source supplies them. Nothing is persisted: absence stays absence.
+ */
+export function deriveClientEvidence(
+  context: ConnectionContext | null | undefined
+): ClientEvidence {
+  const parsed = context ? ConnectionContextSchema.safeParse(context) : null;
+  const current = parsed?.success ? parsed.data : null;
+
+  return ClientEvidenceSchema.parse({
+    schemaVersion: 1,
+    source: 'connection_context',
+    connectionContextId: current?.connectionContextId ?? null,
+    observedAt: current?.createdAt ?? null,
+    principal: current
+      ? {
+          status: 'VERIFIED',
+          assurance: current.identityAssurance,
+          evidenceSource: current.evidenceSource
+        }
+      : {
+          status: 'UNKNOWN',
+          reasonCode: context ? 'CONNECTION_CONTEXT_INVALID' : 'CONNECTION_CONTEXT_ABSENT'
+        },
+    oauthClientId: {
+      observed: current !== null && current.observedClientId !== null,
+      opaque: true,
+      classificationAuthority: false
+    },
+    clientClassification: {
+      status: 'UNKNOWN',
+      reasonCode: 'UNKNOWN_UNTIL_VERIFIABLE_CLIENT_EVIDENCE'
+    },
+    conversationReference: {
+      status: 'UNKNOWN',
+      reasonCode: 'CONVERSATION_REFERENCE_NOT_SUPPLIED'
+    },
+    workspaceReference: {
+      status: 'UNKNOWN',
+      reasonCode: 'WORKSPACE_REFERENCE_NOT_SUPPLIED'
+    },
+    forbiddenInferences: FORBIDDEN_CLIENT_INFERENCES,
+    blocksOauthPrincipalResolution: false
   });
 }

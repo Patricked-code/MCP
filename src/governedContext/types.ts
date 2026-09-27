@@ -7,6 +7,7 @@ import type {
   GovernanceDecision,
   TaskReality
 } from '../governance/operationalDecision.js';
+import type { ClientEvidence } from '../operationalMemory/connectionContext.js';
 import type {
   GovernedCheckpoint,
   GovernedLockRecord,
@@ -175,5 +176,7 @@ export type GovernedOperationalContext = {
     identityAssurance: IdentityAssurance | null;
     runtimeRealtimeAvailable: boolean;
     limitations: string[];
+    /** Always projected by the governed service after A2.2.2; optional for historical consumers. */
+    clientEvidence?: ClientEvidence;
   };
 };
