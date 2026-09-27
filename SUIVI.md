@@ -1,5 +1,17 @@
 # SUIVI.md
 
+## 2026-09-27 — W3 A2.2.2 Verified Client Evidence — DONE et attesté
+
+- PR #194 fusionnée sous garde exact-head depuis `a63198fa4525e5489d01142480bb300f42804e50` au merge `70ee280c89d5ca3747f762a89287923dde320add` ; `main=b3eb823` réobservé juste avant le merge, sans drift.
+- CI main #2078 / run `36292779495` SUCCESS ; Governed Deploy #81 / run `36292779401` SUCCESS : déploiement attesté pour le SHA exact (révision runtime, santé, OAuth, auth MCP), sans rollback ; un 503 transitoire pendant le redémarrage a été absorbé par la boucle de statut.
+- Attestation OIDC read-only (workflow_dispatch, `mutationAllowed=false`) : `mcp_git_status` run `36292897917` → S1 `main@70ee280c89d5ca3747f762a89287923dde320add`, working_tree_changes=0, fetch read-only, push désactivé ; `docker_status` run `36292899030` → `wealthtech_mcp_ssh_bridge` healthy.
+- Program Backlog : `TB-W3-A22-02 = DONE` avec `completionEvidence` ; `PB-A2.2 = DONE` ; recalcul dérivé : seul le dépendant direct `TB-W4-G1-01` passe READY ; set READY courant `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01`, `TB-W4-G1-01`.
+- TODO A2.2 coché ; couverture `todoUnchecked` réconciliée à 35 items (le compteur de synthèse affichait 40 pour 39 items réels ; il est réaligné sur la couverture).
+- PR terminale #195 : RED `41d74ea` (729 tests, exactement 3 échecs ciblés), puis GREEN documentaire ; aucun changement `src/`.
+- Aucun Task runtime, Governed Session, lock, permission, store ou champ persisté créé par A2.2.
+- NEXT_ACTION : après merge de #195, `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-A3-01` (inventaire des surfaces de corrélation OAuth, GitHub-only).
+
+
 ## 2026-09-27 — W3 A2.2.2 Verified Client Evidence — GREEN candidate PR #194
 
 - Reprise current-first : `main=b3eb823429a4357b3a7abc49421bd8bd5cbf232a` (merge PR #193), MCP CI #2074 et Governed Deploy #80 SUCCESS ; `program:readiness` OK sans drift ; `program:next` sélectionne `TB-W3-A22-02` (`FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`).
