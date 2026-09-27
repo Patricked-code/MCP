@@ -232,3 +232,56 @@ test('existing open, get, list and resume surfaces expose only the sanitized con
     assert.equal(serialized.includes('resumeSecretHash'), false);
   }
 });
+
+test('A2.2.2 request identity ignores client reference hints outside the verified OAuth allowlist', async () => {
+  let observedRequest: unknown = null;
+  const sessions = {
+    async openSession(_input: unknown, request: unknown) {
+      observedRequest = request;
+      return { session: PUBLIC_SESSION, resumeSecret: 'resume-secret-public-once' };
+    }
+  } as unknown as GovernedSessionService;
+  const handler = capture({ sessions, locks: {} as GovernedLockService })
+    .get('mcp_open_governed_session');
+  const base = extra();
+  await handler?.({
+    repository: 'Patricked-code/MCP',
+    taskScope: 'TASK-20260927-001',
+    workBranch: null,
+    agentIdentity: 'claude-code',
+    blockers: [],
+    nextAction: null
+  }, {
+    ...base,
+    _meta: {
+      'openai/session': 'conversation-meta-hint',
+      'openai/subject': 'subject-meta-hint',
+      workspace: 'workspace-meta-hint'
+    },
+    requestInfo: {
+      headers: {
+        'x-conversation-id': 'conversation-header-hint',
+        'x-workspace-id': 'workspace-header-hint'
+      }
+    },
+    authInfo: {
+      ...base.authInfo,
+      extra: {
+        ...base.authInfo.extra,
+        conversationId: 'conversation-auth-hint',
+        workspaceId: 'workspace-auth-hint',
+        clientClassification: 'chatgpt'
+      }
+    }
+  });
+
+  assert.deepEqual(observedRequest, {
+    transportSessionId: 'transport-raw-A',
+    identity: {
+      principalId: 'oauth:wealthtech-mcp-admin',
+      clientId: 'chatgpt-client',
+      assurance: 'oauth_subject'
+    }
+  });
+  assert.equal(JSON.stringify(observedRequest).includes('hint'), false);
+});
