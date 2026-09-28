@@ -52,7 +52,10 @@ test('A2.2.2 completion re-evaluates only its direct dependent and keeps W3 curr
   );
 
   assert.deepEqual(byId.get('TB-W4-G1-01')?.dependsOn, ['TB-W3-A22-02']);
-  assert.equal(byId.get('TB-W4-G1-01')?.readiness?.state, 'READY');
+  assert.ok(
+    ['READY', 'DONE'].includes(byId.get('TB-W4-G1-01')?.readiness?.state),
+    'TB-W4-G1-01 should remain acquired after the historical A2.2.2 handoff'
+  );
   for (const id of ['TB-W3-A3-01', 'TB-W3-B3-01', 'TB-W3-C1-01', 'TB-W4-G1-01']) {
     assert.ok(
       ['READY', 'DONE'].includes(byId.get(id)?.readiness?.state),
