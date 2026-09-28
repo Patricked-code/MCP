@@ -1,5 +1,13 @@
 # DECISIONS_LOG.md
 
+## 2026-09-28 — A3.2 reste planning-READY mais aucune exécution n'est autorisée sans réobservation des autorités runtime
+
+Décision : la readiness du Program Backlog reste une projection de dépendances, pas une permission d'exécution. Après A3.1, `TB-W3-A3-02` reste donc `READY` parce que sa dépendance est satisfaite. Cette readiness ne doit pas être rétrogradée artificiellement parce qu'un client ne peut pas observer une autorité runtime.
+
+En revanche, A3.2 porte `runtimeRequired=true`, `githubOnlyPossible=false` et `requiresRuntimeAuthorityReobservation=true`. Avant toute matérialisation/claim/écriture A3.2, il faut une observation fraîche de Governed Task Queue, Governed Session et Governed Lock Service. Les preuves GitHub OIDC `mcp_git_status` et `docker_status` attestent l'alignement serveur et la santé, mais ne sont pas des substituts à ces autorités.
+
+Tant qu'aucun probe GitHub approuvé ne couvre ces trois autorités, l'exécution échoue fermée avec `RUNTIME_AUTHORITY_REOBSERVATION_UNAVAILABLE_VIA_APPROVED_GITHUB_FALLBACK`. La reprise doit soit utiliser une voie runtime gouvernée explicitement autorisée, soit étendre existing-first le catalogue read-only ; aucun état de Task/Session/Lock ne doit être inventé ou inféré depuis Git/Docker.
+
 ## 2026-09-28 — A3 réutilise le chemin OAuth et l'Event Journal ; aucun identifiant client/transport brut ne devient une autorité de corrélation
 
 Décision : A3.1 classe les surfaces existantes avant toute extension. Le paramètre OAuth `state` est fourni par le client et seulement réémis ; il ne devient pas un identifiant serveur vérifié. Le code d'autorisation est éphémère, one-shot et supprimé lors de l'échange ; il ne devient pas un identifiant durable de journal. Le `jti` du token est signé mais n'est actuellement pas projeté par `VerifiedOauthIdentity`.

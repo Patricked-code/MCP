@@ -6,6 +6,7 @@
 - Le `state` reste une valeur client echo-only, le code d'autorisation reste un handle one-shot en mémoire et le `jti` signé n'est pas propagé dans `VerifiedOauthIdentity/AuthInfo`.
 - Aucun identifiant d'auth attempt ne relie aujourd'hui OAuth, MCP initialize, Governed Session et Operational Event Journal ; les identifiants de transport bruts restent interdits dans le journal.
 - `TB-W3-A3-01` est clôturé comme inventaire GitHub-only et déverrouille uniquement `TB-W3-A3-02`; aucun changement runtime n'est introduit.
+- PR #196 fusionnée au merge `c65a83f203932ee2c464eb2116c02b0204216fd0` ; CI main #2088 et Governed Deploy #83 SUCCESS ; preuves OIDC read-only #197/#198 confirment S1 aligné/propre et Docker healthy.
 
 ## 2026-09-27 — W3 A2.2.2 bounded client evidence livré et attesté
 
