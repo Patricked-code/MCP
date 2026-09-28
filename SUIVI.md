@@ -9,10 +9,11 @@
 - Le chemin `OAuth → AuthInfo → MCP initialize → Governed Session → Operational Event Journal` transporte le principal OAuth et le `clientId` opaque, mais aucun identifiant borné d'auth attempt de bout en bout.
 - Le journal existant corrèle les événements gouvernés par `governedSessionId`, `eventId` et `processSequence`; il n'a aucun type d'événement OAuth et interdit explicitement `mcpSessionId` / `transportSessionId` dans les métadonnées.
 - Projection machine : `docs/governance/oauth-correlation-inventory-20260928.json`.
+- GREEN exact-head validé : `90d8116bdc112afc5374b411a461c84ef26ef680`, MCP CI #2086 / run `36459037790` SUCCESS ; typecheck, build, docs, gouvernance, GWC, secret scan, suite read-only complète et whitespace tous verts.
 - Program Backlog : `TB-W3-A3-01 = DONE`; `PB-A3 = PARTIALLY_IMPLEMENTED`; `TB-W3-A3-02 = READY`; B3.1, C1.1 et G1 restent planning-ready.
 - Correction de non-régression : le test historique A2.2.2 ne fige plus un snapshot READY éternel ; il accepte qu'un blueprint déjà débloqué soit ensuite `DONE`, comme le précédent W2/A2.2.1.
 - Aucun Task runtime, Governed Session, lock, permission, store, endpoint, outil ou code runtime n'est créé par A3.1.
-- NEXT_ACTION : valider la CI du HEAD documentaire exact de PR #196, effectuer la self-review/revue sans finding bloquant, puis fusionner exact-head. A3.1 est docs/tests-only : aucun Governed Deploy n'est requis par ce lot ; après merge, reobserver `main` et poursuivre `TB-W3-A3-02` selon `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.
+- NEXT_ACTION : valider le HEAD de fermeture exact de PR #196, effectuer la self-review/revue sans finding bloquant, puis fusionner exact-head. A3.1 est docs/tests-only : aucun Governed Deploy n'est requis par ce lot ; après merge, reobserver `main` et poursuivre `TB-W3-A3-02` selon `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.
 
 ## 2026-09-27 — W3 A2.2.2 Verified Client Evidence — DONE et attesté
 

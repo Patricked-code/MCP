@@ -8349,6 +8349,19 @@
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
-    "serverMutations": 0
+    "serverMutations": 0,
+    "validatedGreenHead": "90d8116bdc112afc5374b411a461c84ef26ef680",
+    "validatedGreenCiRunId": 36459037790,
+    "validatedGreenCiRunNumber": 2086,
+    "validationSummary": {
+      "typecheck": "SUCCESS",
+      "build": "SUCCESS",
+      "docsCheck": "SUCCESS",
+      "governanceTests": "SUCCESS",
+      "gwcVerify": "SUCCESS",
+      "secretScan": "SUCCESS",
+      "readOnlySafety": "SUCCESS",
+      "whitespace": "SUCCESS"
+    }
   }
 }

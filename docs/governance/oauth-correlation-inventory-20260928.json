@@ -163,5 +163,20 @@
       "OAuth correlation inventory file absent",
       "TB-W3-A3-01 still READY and TB-W3-A3-02 still BLOCKED"
     ]
+  },
+  "greenEvidence": {
+    "validatedHead": "90d8116bdc112afc5374b411a461c84ef26ef680",
+    "ciRunId": 36459037790,
+    "ciRunNumber": 2086,
+    "validationSummary": {
+      "typecheck": "SUCCESS",
+      "build": "SUCCESS",
+      "docsCheck": "SUCCESS",
+      "governanceTests": "SUCCESS",
+      "gwcVerify": "SUCCESS",
+      "secretScan": "SUCCESS",
+      "readOnlySafety": "SUCCESS",
+      "whitespace": "SUCCESS"
+    }
   }
 }
