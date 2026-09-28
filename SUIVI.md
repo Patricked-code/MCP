@@ -1,5 +1,20 @@
 # SUIVI.md
 
+## 2026-09-28 — W3 A3.1 OAuth attempt correlation inventory — GREEN candidate PR #196
+
+- Baseline live réobservée avant écriture : `main=eb1667d2a377a6fd2d15f715a6fcedd819386f0c` ; aucune PR/branche A3 active sur le collision domain `connection:oauth-correlation:inventory`.
+- Exécution GitHub-first uniquement : `TB-W3-A3-01 runtimeRequired=false`, `writeAuthorities=[]` ; aucune dépendance au bridge interactif et aucune mutation serveur/runtime.
+- RED : `be1200c15392af40f47e0d84d3cb509a461f4da5`, MCP CI #2082 / run `36458111487` : tous les gates jusqu'au secret scan verts, puis exactement 2 FAIL attendus dans la suite read-only — inventaire absent et A3.1 encore READY/A3.2 BLOCKED.
+- Inventaire current-first : le `state` OAuth est fourni par le client et seulement réémis ; le code d'autorisation est un handle aléatoire one-shot en mémoire ; le token signé possède un `jti`, mais `VerifiedOauthIdentity` ne le projette pas.
+- Le chemin `OAuth → AuthInfo → MCP initialize → Governed Session → Operational Event Journal` transporte le principal OAuth et le `clientId` opaque, mais aucun identifiant borné d'auth attempt de bout en bout.
+- Le journal existant corrèle les événements gouvernés par `governedSessionId`, `eventId` et `processSequence`; il n'a aucun type d'événement OAuth et interdit explicitement `mcpSessionId` / `transportSessionId` dans les métadonnées.
+- Projection machine : `docs/governance/oauth-correlation-inventory-20260928.json`.
+- GREEN exact-head validé : `90d8116bdc112afc5374b411a461c84ef26ef680`, MCP CI #2086 / run `36459037790` SUCCESS ; typecheck, build, docs, gouvernance, GWC, secret scan, suite read-only complète et whitespace tous verts.
+- Program Backlog : `TB-W3-A3-01 = DONE`; `PB-A3 = PARTIALLY_IMPLEMENTED`; `TB-W3-A3-02 = READY`; B3.1, C1.1 et G1 restent planning-ready.
+- Correction de non-régression : le test historique A2.2.2 ne fige plus un snapshot READY éternel ; il accepte qu'un blueprint déjà débloqué soit ensuite `DONE`, comme le précédent W2/A2.2.1.
+- Aucun Task runtime, Governed Session, lock, permission, store, endpoint, outil ou code runtime n'est créé par A3.1.
+- NEXT_ACTION : valider le HEAD de fermeture exact de PR #196, effectuer la self-review/revue sans finding bloquant, puis fusionner exact-head. A3.1 est docs/tests-only : aucun Governed Deploy n'est requis par ce lot ; après merge, reobserver `main` et poursuivre `TB-W3-A3-02` selon `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.
+
 ## 2026-09-27 — W3 A2.2.2 Verified Client Evidence — DONE et attesté
 
 - PR #194 fusionnée sous garde exact-head depuis `a63198fa4525e5489d01142480bb300f42804e50` au merge `70ee280c89d5ca3747f762a89287923dde320add` ; `main=b3eb823` réobservé juste avant le merge, sans drift.
