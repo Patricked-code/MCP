@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "inventoryId": "w3-a3-oauth-correlation-inventory-20260928",
+  "repository": "Patricked-code/MCP",
+  "observedMainSha": "eb1667d2a377a6fd2d15f715a6fcedd819386f0c",
+  "observedAt": "2026-09-28T17:26:00Z",
+  "blueprintId": "TB-W3-A3-01",
+  "workItemId": "PB-A3",
+  "lotId": "A3.1",
+  "integrationSlot": "connection.oauth-attempt-correlation",
+  "status": "PASS_WITH_EVIDENCE",
+  "runtimeRequired": false,
+  "githubOnlyPossible": true,
+  "scope": "CURRENT_OAUTH_TO_GOVERNED_SESSION_CORRELATION_PATH",
+  "authorizationRequest": {
+    "stateObserved": true,
+    "stateEchoedToClient": true,
+    "statePersistedServerSide": false,
+    "statePropagatedToToken": false,
+    "statePropagatedToAuthInfo": false,
+    "statePropagatedToGovernedSession": false,
+    "source": "src/oauth.ts handleAuthorize"
+  },
+  "authorizationCode": {
+    "storage": "EPHEMERAL_IN_MEMORY_MAP",
+    "oneTime": true,
+    "deletedOnTokenExchangeAttempt": true,
+    "fields": [
+      "clientId",
+      "redirectUri",
+      "scope",
+      "resource",
+      "codeChallenge",
+      "codeChallengeMethod",
+      "expiresAt",
+      "subject"
+    ],
+    "correlationAttemptIdPresent": false,
+    "statePresent": false
+  },
+  "accessToken": {
+    "jtiGenerated": true,
+    "jtiSignedInToken": true,
+    "jtiExposedByVerifiedIdentity": false,
+    "verifiedIdentityFields": [
+      "subject",
+      "clientId",
+      "scopes",
+      "expiresAt"
+    ]
+  },
+  "authInfo": {
+    "oauthPrincipalPropagated": true,
+    "clientIdPropagated": true,
+    "identityAssurancePropagated": true,
+    "oauthAttemptCorrelationPresent": false,
+    "fieldsUsedForGovernedIdentity": [
+      "extra.governedPrincipalId",
+      "extra.identityAssurance",
+      "clientId"
+    ]
+  },
+  "mcpInitialize": {
+    "transportSessionGenerated": true,
+    "authenticatedAuthInfoCaptured": true,
+    "autoResumeUsesPrincipalAndRepository": true,
+    "oauthAttemptCorrelationPresent": false,
+    "rawTransportSessionLogged": false
+  },
+  "governedSession": {
+    "ownerPrincipalCorrelationPresent": true,
+    "governedSessionIdPresent": true,
+    "oauthAttemptCorrelationPresent": false,
+    "connectionContextCarriesOAuthPrincipal": true,
+    "connectionContextCarriesOpaqueClientId": true
+  },
+  "eventJournal": {
+    "governedSessionIdCorrelationPresent": true,
+    "eventIdPresent": true,
+    "processSequencePresent": true,
+    "oauthEventTypesPresent": false,
+    "oauthAttemptCorrelationPresent": false,
+    "rawTransportSessionIdForbidden": true,
+    "transportFingerprintAllowedAfterGovernedBinding": true
+  },
+  "correlationVerdict": "NO_END_TO_END_OAUTH_ATTEMPT_CORRELATION",
+  "existingReusableSurfaces": [
+    "OAuth state echo",
+    "one-time authorization code lifecycle",
+    "signed token jti",
+    "verified OAuth subject/clientId",
+    "MCP transport initialization hook",
+    "Governed Session principal ownership",
+    "Operational Event Journal governedSessionId/eventId/processSequence"
+  ],
+  "missingLinks": [
+    "No server-generated bounded OAuth attempt reference is carried from authorize to token exchange.",
+    "OAuth state is client-supplied and echoed but is not stored as server correlation authority.",
+    "Token jti is signed but is not exposed by VerifiedOauthIdentity/AuthInfo.",
+    "No OAuth attempt reference reaches MCP initialize, ConnectionContext, Governed Session or Operational Event Journal.",
+    "Operational Event Journal has no OAuth authorization/token event types."
+  ],
+  "forbiddenInferences": [
+    "DO_NOT_TREAT_CLIENT_SUPPLIED_STATE_AS_SERVER_VERIFIED_ATTEMPT_ID",
+    "DO_NOT_USE_RAW_AUTHORIZATION_CODE_AS_DURABLE_CORRELATION_ID",
+    "DO_NOT_USE_RAW_TRANSPORT_SESSION_ID_IN_EVENT_JOURNAL",
+    "DO_NOT_INFER_CLIENT_IDENTITY_FROM_CORRELATION_METADATA"
+  ],
+  "evidenceRefs": [
+    "src/oauth.ts",
+    "src/auth.ts",
+    "src/server.ts",
+    "src/tools/governedSessions.ts",
+    "src/operationalMemory/connectionContext.ts",
+    "src/operationalMemory/sessionService.ts",
+    "src/operationalMemory/eventJournal.ts",
+    "src/operationalMemory/operationalAudit.ts",
+    "tests/serverGovernedConnectionBootstrap.test.ts",
+    "tests/operationalEventJournal.test.ts"
+  ],
+  "findings": [
+    {
+      "code": "OAUTH_STATE_ECHO_ONLY",
+      "disposition": "PRESERVE_AS_PROTOCOL_INPUT_NOT_AUTHORITY",
+      "detail": "The authorization request state value is accepted and echoed to the redirect, but it is not persisted in AuthorizationCodeRecord and is not propagated to token/AuthInfo/session state."
+    },
+    {
+      "code": "AUTH_CODE_EPHEMERAL_ONE_TIME",
+      "disposition": "REUSE_LIFECYCLE_NOT_IDENTIFIER",
+      "detail": "The authorization code is a random one-time opaque handle stored only in memory and deleted on token exchange; it should not become a durable journal correlation identifier."
+    },
+    {
+      "code": "TOKEN_JTI_NOT_PROPAGATED",
+      "disposition": "RESIDUAL_DELTA",
+      "detail": "A signed token jti exists, but inspectOauthAccessToken intentionally projects only subject, clientId, scopes and expiresAt, so no token correlation reference reaches AuthInfo."
+    },
+    {
+      "code": "EVENT_JOURNAL_STARTS_AFTER_GOVERNED_SESSION",
+      "disposition": "RESIDUAL_DELTA",
+      "detail": "The Operational Event Journal correlates governed lifecycle events by governedSessionId/eventId/processSequence and has no OAuth authorization or token-exchange event types."
+    },
+    {
+      "code": "RAW_TRANSPORT_IDS_FORBIDDEN",
+      "disposition": "PRESERVE_SAFETY_INVARIANT",
+      "detail": "mcpSessionId and transportSessionId are forbidden metadata keys; any future A3.2 correlation must use a bounded non-secret reference rather than raw transport identifiers."
+    }
+  ],
+  "nextBlueprint": {
+    "id": "TB-W3-A3-02",
+    "requiredBehavior": "Add only a bounded non-secret OAuth attempt correlation reference across the existing OAuth/AuthInfo/bootstrap/Event Journal path, preserving raw transport-ID prohibition and without creating a parallel journal or identity authority."
+  },
+  "runtimeSideEffects": {
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "redEvidence": {
+    "commit": "be1200c15392af40f47e0d84d3cb509a461f4da5",
+    "ciRunId": 36458111487,
+    "ciRunNumber": 2082,
+    "expectedFailures": [
+      "OAuth correlation inventory file absent",
+      "TB-W3-A3-01 still READY and TB-W3-A3-02 still BLOCKED"
+    ]
+  }
+}
