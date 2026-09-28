@@ -3,7 +3,7 @@
   "projectionId": "program-backlog-convergence-v2-20260924",
   "repository": "Patricked-code/MCP",
   "observedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
-  "generatedAt": "2026-09-28T17:26:00Z",
+  "generatedAt": "2026-09-28T17:41:00Z",
   "authority": {
     "kind": "DERIVED_NON_EXECUTABLE_PROJECTION",
     "createsRuntimeTasks": false,
@@ -8362,6 +8362,63 @@
       "secretScan": "SUCCESS",
       "readOnlySafety": "SUCCESS",
       "whitespace": "SUCCESS"
+    },
+    "mergeEvidence": {
+      "pullRequest": 196,
+      "candidateHeadSha": "54b400b48f0a053471550c07ee6d600b1f389da7",
+      "mergeSha": "c65a83f203932ee2c464eb2116c02b0204216fd0",
+      "mainCiRunId": 36459581811,
+      "mainCiRunNumber": 2088,
+      "governedDeployRunId": 36459581847,
+      "governedDeployRunNumber": 83,
+      "readonlyEvidence": {
+        "mcpGitStatus": {
+          "issue": 197,
+          "runId": 36459819473,
+          "runNumber": 65,
+          "artifactId": 10987013552,
+          "requestId": "a3-02-mcp-git-c65a83f2",
+          "transport": "github_oidc_mcp_readonly",
+          "mutationAllowed": false,
+          "observedAt": "2026-09-28T17:40:54.982Z",
+          "branch": "main",
+          "head": "c65a83f203932ee2c464eb2116c02b0204216fd0",
+          "workingTreeChanges": 0,
+          "originFetch": "git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",
+          "originPush": "disabled://mcp-s1-read-only"
+        },
+        "dockerStatus": {
+          "issue": 198,
+          "runId": 36459821439,
+          "runNumber": 66,
+          "artifactId": 10987285185,
+          "requestId": "a3-02-docker-c65a83f2",
+          "transport": "github_oidc_mcp_readonly",
+          "mutationAllowed": false,
+          "observedAt": "2026-09-28T17:40:55.521Z",
+          "service": "wealthtech_mcp_ssh_bridge",
+          "status": "healthy"
+        }
+      }
+    },
+    "a32ExecutionGate": {
+      "blueprintId": "TB-W3-A3-02",
+      "planningReadiness": "READY",
+      "executionStatus": "BLOCKED_PENDING_RUNTIME_REOBSERVATION",
+      "requiredRuntimeAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service"
+      ],
+      "githubFallbackCoverage": {
+        "mcpGitStatus": true,
+        "dockerStatus": true,
+        "governedTaskQueue": false,
+        "governedSession": false,
+        "governedLockService": false
+      },
+      "reasonCode": "RUNTIME_AUTHORITY_REOBSERVATION_UNAVAILABLE_VIA_APPROVED_GITHUB_FALLBACK",
+      "nextAction": "Obtain fresh read-only evidence for Governed Task Queue, Governed Session and Governed Lock Service through an approved governed runtime channel or extend the approved GitHub read-only evidence catalogue, then re-check collision/ownership before any A3.2 write."
     }
   }
 }

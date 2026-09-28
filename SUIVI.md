@@ -1,6 +1,6 @@
 # SUIVI.md
 
-## 2026-09-28 — W3 A3.1 OAuth attempt correlation inventory — GREEN candidate PR #196
+## 2026-09-28 — W3 A3.1 OAuth attempt correlation inventory — DONE / post-merge handoff
 
 - Baseline live réobservée avant écriture : `main=eb1667d2a377a6fd2d15f715a6fcedd819386f0c` ; aucune PR/branche A3 active sur le collision domain `connection:oauth-correlation:inventory`.
 - Exécution GitHub-first uniquement : `TB-W3-A3-01 runtimeRequired=false`, `writeAuthorities=[]` ; aucune dépendance au bridge interactif et aucune mutation serveur/runtime.
@@ -10,10 +10,14 @@
 - Le journal existant corrèle les événements gouvernés par `governedSessionId`, `eventId` et `processSequence`; il n'a aucun type d'événement OAuth et interdit explicitement `mcpSessionId` / `transportSessionId` dans les métadonnées.
 - Projection machine : `docs/governance/oauth-correlation-inventory-20260928.json`.
 - GREEN exact-head validé : `90d8116bdc112afc5374b411a461c84ef26ef680`, MCP CI #2086 / run `36459037790` SUCCESS ; typecheck, build, docs, gouvernance, GWC, secret scan, suite read-only complète et whitespace tous verts.
+- Fermeture : PR #196 fusionnée sous garde exact-head depuis `54b400b48f0a053471550c07ee6d600b1f389da7` au merge `c65a83f203932ee2c464eb2116c02b0204216fd0` ; MCP CI main #2088 / run `36459581811` SUCCESS ; Governed Deploy #83 / run `36459581847` SUCCESS.
+- Attestation GitHub OIDC read-only post-deploy : issue #197 / run #65 `mcp_git_status` SUCCESS → S1 `main@c65a83f203932ee2c464eb2116c02b0204216fd0`, worktree=0, fetch via identité read-only et push `disabled://mcp-s1-read-only`; issue #198 / run #66 `docker_status` SUCCESS → `wealthtech_mcp_ssh_bridge` healthy. Les deux preuves sont `mutationAllowed=false`.
+- Recalcul post-merge : `TB-W3-A3-02` est le premier blueprint planning-ready, suivi de B3.1, C1.1 et G1.
+- Gate d'exécution A3.2 : la gouvernance exige de réobserver Governed Task Queue, Governed Session et Governed Lock Service avant toute matérialisation/claim. Le fallback GitHub approuvé couvre Git/Docker mais n'expose actuellement aucun de ces trois états ; l'exécution A3.2 est donc fail-closed sans modifier sa readiness planning `READY`.
 - Program Backlog : `TB-W3-A3-01 = DONE`; `PB-A3 = PARTIALLY_IMPLEMENTED`; `TB-W3-A3-02 = READY`; B3.1, C1.1 et G1 restent planning-ready.
 - Correction de non-régression : le test historique A2.2.2 ne fige plus un snapshot READY éternel ; il accepte qu'un blueprint déjà débloqué soit ensuite `DONE`, comme le précédent W2/A2.2.1.
 - Aucun Task runtime, Governed Session, lock, permission, store, endpoint, outil ou code runtime n'est créé par A3.1.
-- NEXT_ACTION : valider le HEAD de fermeture exact de PR #196, effectuer la self-review/revue sans finding bloquant, puis fusionner exact-head. A3.1 est docs/tests-only : aucun Governed Deploy n'est requis par ce lot ; après merge, reobserver `main` et poursuivre `TB-W3-A3-02` selon `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.
+- NEXT_ACTION : obtenir une preuve fraîche et bornée de Governed Task Queue + Governed Session + Governed Lock Service par une voie runtime gouvernée approuvée, ou étendre le catalogue GitHub read-only pour ces trois probes ; puis recontrôler collision/ownership et seulement alors matérialiser A3.2. Ne pas utiliser Git/Docker comme substitut à ces autorités et ne pas coder A3.2 sur un état runtime supposé.
 
 ## 2026-09-27 — W3 A2.2.2 Verified Client Evidence — DONE et attesté
 
