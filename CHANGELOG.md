@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-09-28 — W3 A3.1 bounded OAuth correlation inventory
+
+- Ajout d'un inventaire machine-readable du chemin de corrélation OAuth courant, sans modifier le runtime.
+- Le `state` reste une valeur client echo-only, le code d'autorisation reste un handle one-shot en mémoire et le `jti` signé n'est pas propagé dans `VerifiedOauthIdentity/AuthInfo`.
+- Aucun identifiant d'auth attempt ne relie aujourd'hui OAuth, MCP initialize, Governed Session et Operational Event Journal ; les identifiants de transport bruts restent interdits dans le journal.
+- `TB-W3-A3-01` est clôturé comme inventaire GitHub-only et déverrouille uniquement `TB-W3-A3-02`; aucun changement runtime n'est introduit.
+
 ## 2026-09-27 — W3 A2.2.2 bounded client evidence livré et attesté
 
 - PR #194 fusionnée au SHA `70ee280c89d5ca3747f762a89287923dde320add` ; CI main `36292779495` et Governed Deploy `36292779401` réussis (révision runtime, santé, OAuth et auth MCP attestés, sans rollback).

@@ -1,5 +1,13 @@
 # DECISIONS_LOG.md
 
+## 2026-09-28 — A3 réutilise le chemin OAuth et l'Event Journal ; aucun identifiant client/transport brut ne devient une autorité de corrélation
+
+Décision : A3.1 classe les surfaces existantes avant toute extension. Le paramètre OAuth `state` est fourni par le client et seulement réémis ; il ne devient pas un identifiant serveur vérifié. Le code d'autorisation est éphémère, one-shot et supprimé lors de l'échange ; il ne devient pas un identifiant durable de journal. Le `jti` du token est signé mais n'est actuellement pas projeté par `VerifiedOauthIdentity`.
+
+A3.2 devra étendre existing-first le chemin `OAuth → AuthInfo → MCP initialize → Governed Session → Operational Event Journal` avec une référence d'attempt bornée, non secrète et explicitement sanitizable. Aucun second journal, second store d'identité ou autorité parallèle n'est autorisé.
+
+Les invariants de confidentialité restent prioritaires : `mcpSessionId` et `transportSessionId` demeurent interdits dans les métadonnées du journal ; le `clientId`, le `state`, le repository ou la corrélation technique ne peuvent pas servir à inférer l'identité du client, une conversation ou un workspace.
+
 ## 2026-09-27 — A2.2.2 dérive la preuve cliente de ConnectionContext et ne persiste aucune référence non prouvée
 
 Décision : la preuve cliente bornée est une projection pure et dérivée de l'autorité `ConnectionContext` existante (`deriveClientEvidence()`), exposée par le contexte gouverné dans `proof.clientEvidence`. Elle n'est pas persistée : l'absence de preuve reste une absence, et les enregistrements de session conservent exactement leur forme actuelle.

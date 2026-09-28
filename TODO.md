@@ -27,7 +27,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 |---|---|---|---|
 | `PB-FOUNDATIONS-DONE` | `DONE` | `program.delivered-foundations` | Delivered connection/repository/project foundations |
 | `PB-A2.2` | `DONE` | `connection.client-evidence` | A2.2 Verified Client Evidence — A2.2.1 inventory + A2.2.2 bounded evidence projection DONE ; PR #194 merge/deploy exact-SHA attestés |
-| `PB-A3` | `KNOWN_NOT_ANALYZED` | `connection.oauth-attempt-correlation` | A3 OAuth Auth Attempt Correlation |
+| `PB-A3` | `PARTIALLY_IMPLEMENTED` | `connection.oauth-attempt-correlation` | A3 OAuth Auth Attempt Correlation — A3.1 inventory DONE, A3.2 bounded implementation READY |
 | `PB-B3` | `PARTIALLY_IMPLEMENTED` | `context.multi-repository` | B3 Multi-repository Governed Context |
 | `PB-C1` | `PARTIALLY_IMPLEMENTED` | `project.gitregistry-verification` | C1 GitRegistry V2 verification and activation path |
 | `PB-C345` | `DESIGNED_NOT_IMPLEMENTED` | `project.server-runtime-domain-resolution` | C3/C4/C5 Server, Runtime and Domain Resolution |
@@ -67,7 +67,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 - **DONE** : `PB-UAC` / PR #154 est fusionné, déployé et attesté ; ne jamais recopier ses UAC-01..24.
 - **DONE — W1 Program State Convergence** : `TB-W1-01..07` sont terminés ; GWC/AF/OD/task-registry/planning ont été réconciliés current-first.
 - **DONE — W2 GitHub READ** : `TB-W2-01`, `TB-W2-02`, `TB-W2-03` sont terminés et validés exact-head ; les trois capacités restent strictement READ et aucun runtime Task/Session/Lock n'a été créé par W2.
-- **ACTIVE planning wave — W3** : `TB-W3-A22-01` et `TB-W3-A22-02` sont DONE (A2.2 clôturé) ; `TB-W3-A3-01`, `TB-W3-B3-01`, `TB-W3-C1-01` sont planning-ready, ainsi que `TB-W4-G1-01` débloqué par A2.2.2 ; `TB-W3-SSH-ACCESS-01` est DONE ; les autres W3 et W4 restent bloqués par leurs dépendances.
+- **ACTIVE planning wave — W3** : A2.2 est clôturé et `TB-W3-A3-01` est DONE avec inventaire OAuth correlation ; `TB-W3-A3-02`, `TB-W3-B3-01`, `TB-W3-C1-01` sont planning-ready, ainsi que `TB-W4-G1-01` ; `TB-W3-SSH-ACCESS-01` est DONE ; les autres W3 et W4 restent bloqués par leurs dépendances.
 - **CONVERGED — intake #177** : 164 capacités Git/GitHub ont été classées current-first et routées dans le Program Backlog V2 ; les lots GGCC résiduels restent BLOCKED/DEFERRED/CONDITIONAL et ne créent aucune Task runtime.
 - **DONE — intake #192 / repository SSH** : PR #191 fusionnée/déployée exact-SHA ; Gouvern V2.6.8 run `36255238655` a obtenu le certificat OIDC SSH éphémère read-only et a franchi MCP discovery vers `Q_DOMAIN_BINDING`.
 - **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
