@@ -37,6 +37,8 @@ const EnvSchema = z.object({
   GITHUB_REQUEST_TIMEOUT_MS: z.coerce.number().int().min(100).max(120_000).default(15_000),
   MCP_GITHUB_BOOTSTRAPPED: EnvBooleanSchema.default(false),
   MCP_GOVERNED_SESSIONS_ENABLED: EnvBooleanSchema.default(true),
+  MCP_OAUTH_REFRESH_IDLE_TTL_SECONDS: z.coerce.number().int().min(3_600).max(31_536_000).default(2_592_000),
+  MCP_OAUTH_REFRESH_MAX_TTL_SECONDS: z.coerce.number().int().min(86_400).max(31_536_000).default(7_776_000),
   MCP_GOVERNED_SESSION_IDLE_TTL_SECONDS: z.coerce.number().int().min(300).max(604_800).default(86_400),
   MCP_GOVERNED_SESSION_RESUME_GRACE_SECONDS: z.coerce.number().int().min(3_600).max(2_592_000).default(604_800),
   MCP_GOVERNED_LOCK_DEFAULT_TTL_SECONDS: z.coerce.number().int().min(30).max(1_800).default(300),
@@ -45,6 +47,13 @@ const EnvSchema = z.object({
   MCP_OPERATIONAL_EVENT_MAX_BYTES: z.coerce.number().int().min(65_536).max(52_428_800).default(10_485_760),
   MCP_OPERATIONAL_EVENT_ARCHIVES: z.coerce.number().int().min(1).max(10).default(5)
 }).superRefine((value, context) => {
+  if (value.MCP_OAUTH_REFRESH_IDLE_TTL_SECONDS > value.MCP_OAUTH_REFRESH_MAX_TTL_SECONDS) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['MCP_OAUTH_REFRESH_IDLE_TTL_SECONDS'],
+      message: 'Le TTL idle OAuth refresh ne peut pas dépasser le TTL maximal'
+    });
+  }
   if (value.MCP_GOVERNED_LOCK_DEFAULT_TTL_SECONDS > value.MCP_GOVERNED_LOCK_MAX_TTL_SECONDS) {
     context.addIssue({
       code: z.ZodIssueCode.custom,
