@@ -116,10 +116,18 @@ function requestIdentity(authInfo: AuthInfo | undefined): RequestIdentity {
     && typeof principalId === 'string'
     && principalId.startsWith('oauth:')
   ) {
+    const oauthAttemptRef = authInfo?.extra?.oauthAttemptRef;
+    const oauthGrantId = authInfo?.extra?.oauthGrantId;
     return {
       principalId,
       clientId: authInfo?.clientId ?? null,
-      assurance
+      assurance,
+      ...(typeof oauthAttemptRef === 'string' && /^oa_[A-Za-z0-9_-]{22,64}$/.test(oauthAttemptRef)
+        ? { oauthAttemptRef }
+        : {}),
+      ...(typeof oauthGrantId === 'string' && /^[0-9a-f-]{36}$/i.test(oauthGrantId)
+        ? { oauthGrantId }
+        : {})
     };
   }
   if (assurance === 'shared_credential' && principalId === null) {
