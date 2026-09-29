@@ -1,5 +1,19 @@
 # SUIVI.md
 
+## 2026-09-30 — W3 A3 OAuth continuity — TLS REMEDIATED / candidate PR #207 / runtime claim pending
+
+- Baseline current-first : GitHub `main=9511d434f3a66a2b92e847eabfd26596200e5f5c`; aucun mouvement de main pendant la construction candidate.
+- Incident TLS #201 remédié par la voie infrastructure autorisée : certificat public réémis dans Plesk ; Governed Deploy #87 attempt 2 SUCCESS sur le SHA exact `9511d434f3a66a2b92e847eabfd26596200e5f5c`; issue #201 fermée `completed`.
+- Réobservation runtime post-TLS par le fallback GitHub OIDC read-only approuvé : `mcp_governed_tasks` issue #204/run #68 SUCCESS, `mcp_governed_sessions` issue #205/run #69 SUCCESS, `mcp_governed_locks` issue #206/run #70 SUCCESS ; `truncated=false` partout, aucun lock actif et aucune collision sur `connection:oauth-attempt-correlation`.
+- La réobservation lève le blocker TLS/runtime-observation mais ne crée aucune permission de mutation : le fallback GitHub reste read-only et aucune voie GitHub approuvée ne matérialise/claim une Governed Task. A3.2 reste donc planning READY mais exécution `BLOCKED_PENDING_RUNTIME_MATERIALIZATION_AUTHORITY`.
+- Demande propriétaire de continuité OAuth durable convergée existing-first dans `PB-A3`, sans programme parallèle : `TB-W3-A3-03` est ajouté après A3.2 et dépend de lui. A3.3 ajoute `offline_access` + rotation de refresh token seulement après la corrélation A3.2.
+- Candidate uniquement : branche `mcp/w3-a3-oauth-continuity-20260930`, draft PR #207. RED `b94efc4d62cb3a112c3a48f56bb53d9aa1aafedb`; implémentation additive : access token court inchangé, refresh opt-in, store persistant hash-only dans `/app/data`, rotation par génération, révocation de famille sur replay, propagation uniquement de `oauthAttemptRef` / `oauthGrantId` vers AuthInfo/ConnectionContext.
+- Compatibilité : sans `offline_access`, `authorization_code + PKCE` et la forme historique de réponse restent inchangés ; les anciens access tokens sans nouvelles références restent acceptés. Aucun state/code/access/refresh token brut n'est persisté.
+- GREEN de code avant la réconciliation documentaire : exact head `9d44a619a459de694e9c503b096863ae0b952955`, MCP CI push #2134 SUCCESS et PR #2135 SUCCESS. Les commits documentaires/tests ultérieurs doivent obtenir leur propre CI exact-head avant toute revue terminale.
+- Aucun Task runtime, Governed Session, claim, lock, merge ou déploiement n'est créé par la construction candidate. La voie interactive runtime précédemment refusée n'est pas réessayée.
+- NEXT_ACTION : obtenir par une voie runtime autorisée une Governed Session/bootstrap valide puis matérialiser/claim A3.2 dans la Governed Task Queue ; ensuite revalider le HEAD exact de PR #207, review/merge/deploy/attest A3.2. A3.3 ne devient READY qu'après A3.2 DONE avec preuves.
+
+
 ## 2026-09-29 — Intake #201 TLS recovery — CONVERGED / REMEDIATION STILL GATED
 
 - Intake GitHub #201 lu current-first : le programme `Governed-Repository-Template` / `Patricked-code/Ekyc` confirme le même certificat public expiré sur `mcp.wealthtechinnovations.com`, y compris avant l'acquisition du certificat SSH éphémère du mode BOTH.
