@@ -10,6 +10,10 @@ const policy = JSON.parse(await readFile(
   new URL('../.mcp/github-first-operational-policy.json', import.meta.url),
   'utf8'
 ));
+const serverSource = await readFile(
+  new URL('../src/server.ts', import.meta.url),
+  'utf8'
+);
 
 test('GitHub issue can trigger the bounded read-only evidence fallback', () => {
   assert.match(workflow, /issues:\s*[\s\S]*?opened/);
@@ -110,4 +114,30 @@ test('evidence result is artifact-backed and explicitly non-mutating', () => {
     policy.executionModes.GITHUB_ACTION_READONLY_EVIDENCE.mutationAllowed,
     false
   );
+});
+
+
+test('GitHub read-only evidence covers the three governed runtime authorities without raw store reads', () => {
+  const probes = [
+    'mcp_governed_tasks',
+    'mcp_governed_sessions',
+    'mcp_governed_locks'
+  ];
+
+  for (const probe of probes) {
+    assert.match(workflow, new RegExp(probe));
+  }
+
+  assert.deepEqual(
+    policy.executionModes.GITHUB_ACTION_READONLY_EVIDENCE.operationalAuthorityProbes,
+    probes
+  );
+  assert.match(serverSource, /runOperationalRead/);
+  assert.doesNotMatch(workflow, /\/app\/data\/mcp-governed-/);
+  assert.doesNotMatch(workflow, /docker\s+exec[^\n]*mcp-governed-/i);
+});
+
+test('SSH fallback fails closed for governed runtime authority probes', () => {
+  assert.match(workflow, /mcp_governed_tasks\|mcp_governed_sessions\|mcp_governed_locks/);
+  assert.match(workflow, /operational_probe_requires_oidc_endpoint/);
 });

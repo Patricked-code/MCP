@@ -285,3 +285,21 @@ test('AF-27 allows DEPLOYING to become SUPERSEDED when the governed work is repl
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+
+test('task collision evidence is bounded and excludes free-form task text', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    const state = await queue.readCollisionState();
+    assert.equal(state.totalNonTerminal, 1);
+    assert.equal(state.truncated, false);
+    assert.equal(state.tasks[0]?.taskId, 'TASK-20260822-001');
+    assert.deepEqual(state.tasks[0]?.resourceScopes, ['resource:existing']);
+    assert.equal('title' in (state.tasks[0] ?? {}), false);
+    assert.equal('summary' in (state.tasks[0] ?? {}), false);
+    assert.equal('nextAction' in (state.tasks[0] ?? {}), false);
+    assert.equal('blockers' in (state.tasks[0] ?? {}), false);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});

@@ -51,6 +51,21 @@ export type ReleaseLockInput = {
   expectedLockRevision: number;
 };
 
+export type GovernedLockCollisionProjection = {
+  lockId: string;
+  scope: string;
+  governedSessionId: string;
+  expiresAt: string;
+  lockRevision: number;
+};
+
+export type GovernedLockCollisionState = {
+  storeRevision: number;
+  totalActive: number;
+  truncated: boolean;
+  locks: GovernedLockCollisionProjection[];
+};
+
 export type GovernedLockService = {
   acquireLock(input: AcquireLockInput, request: SessionRequest): Promise<GovernedLockRecord>;
   acquireLocksAtomically(
@@ -65,6 +80,7 @@ export type GovernedLockService = {
   ): Promise<GovernedLockRecord[]>;
   expireLocks(now?: Date): Promise<number>;
   reconcileSessionLockIds(): Promise<number>;
+  readCollisionState(): Promise<GovernedLockCollisionState>;
   listActiveLocks(): Promise<GovernedLockRecord[]>;
 };
 
@@ -699,6 +715,27 @@ export function createGovernedLockService(
           : { ...document, storeRevision: document.storeRevision + 1, sessions };
       });
       return repaired;
+    },
+
+    async readCollisionState() {
+      const at = currentTime().getTime();
+      const document = await options.store.read();
+      const active = document.locks
+        .filter((candidate) => candidate.status === 'ACTIVE' && Date.parse(candidate.expiresAt) > at)
+        .sort((left, right) => left.scope.localeCompare(right.scope) || left.lockId.localeCompare(right.lockId));
+      const recordLimit = 128;
+      return {
+        storeRevision: document.storeRevision,
+        totalActive: active.length,
+        truncated: active.length > recordLimit,
+        locks: active.slice(0, recordLimit).map((candidate) => ({
+          lockId: candidate.lockId,
+          scope: candidate.scope,
+          governedSessionId: candidate.governedSessionId,
+          expiresAt: candidate.expiresAt,
+          lockRevision: candidate.lockRevision
+        }))
+      };
     },
 
     async listActiveLocks() {

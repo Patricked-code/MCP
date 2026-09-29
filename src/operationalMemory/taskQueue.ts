@@ -81,6 +81,23 @@ export type TransitionTaskInput = {
   runtimeRevision?: string | null;
 };
 
+export type GovernedTaskCollisionProjection = {
+  taskId: string;
+  repository: string;
+  status: GovernedTaskStatus;
+  ownerGovernedSessionId: string | null;
+  resourceScopes: string[];
+  resourceScopesTruncated: boolean;
+  taskRevision: number;
+};
+
+export type GovernedTaskCollisionState = {
+  storeRevision: number;
+  totalNonTerminal: number;
+  truncated: boolean;
+  tasks: GovernedTaskCollisionProjection[];
+};
+
 export type GovernedTaskQueue = {
   initializeSeed(seed: TaskRegistrySeed): Promise<TaskStoreDocument>;
   reconcileIntent(input: ReconcileIntentInput, governedSessionId: string): Promise<{
@@ -93,6 +110,7 @@ export type GovernedTaskQueue = {
   claimNextTask(governedSessionId: string, expectedStoreRevision: number): Promise<GovernedTaskRecord | null>;
   transitionTask(input: TransitionTaskInput): Promise<GovernedTaskRecord>;
   requeueTerminalSessionTasks(): Promise<number>;
+  readCollisionState(): Promise<GovernedTaskCollisionState>;
   listVisibleTasks(): Promise<TaskStoreDocument>;
   getVisibleTask(taskId: string): Promise<GovernedTaskRecord | null>;
 };
@@ -444,6 +462,30 @@ export function createGovernedTaskQueue(
         });
       }
       return requeued.length;
+    },
+
+    async readCollisionState() {
+      const document = await store.read();
+      const nonTerminal = document.tasks
+        .filter((candidate) => !TERMINAL.has(candidate.status))
+        .sort((left, right) => left.sequence - right.sequence || left.taskId.localeCompare(right.taskId));
+      const recordLimit = 64;
+      const scopeLimit = 16;
+      const scopeTruncated = nonTerminal.some((candidate) => candidate.resourceScopes.length > scopeLimit);
+      return {
+        storeRevision: document.storeRevision,
+        totalNonTerminal: nonTerminal.length,
+        truncated: nonTerminal.length > recordLimit || scopeTruncated,
+        tasks: nonTerminal.slice(0, recordLimit).map((candidate) => ({
+          taskId: candidate.taskId,
+          repository: candidate.repository,
+          status: candidate.status,
+          ownerGovernedSessionId: candidate.ownerGovernedSessionId,
+          resourceScopes: [...candidate.resourceScopes].sort().slice(0, scopeLimit),
+          resourceScopesTruncated: candidate.resourceScopes.length > scopeLimit,
+          taskRevision: candidate.taskRevision
+        }))
+      };
     },
 
     listVisibleTasks() {

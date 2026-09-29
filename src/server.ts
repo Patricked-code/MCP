@@ -394,7 +394,41 @@ export async function startHttpServer(): Promise<void> {
     verifyOidc: verifyGithubReadonlyEvidenceOidcToken,
     runRead: async (target, command) => (
       runReadOnlyCommand(target, command, 15_000, 32_768)
-    )
+    ),
+    runOperationalRead: async (probe) => {
+      if (!operationalMemoryConfig.enabled) {
+        return JSON.stringify({
+          schemaVersion: 1,
+          operationalMemoryEnabled: false,
+          probe,
+          reasonCode: 'OPERATIONAL_MEMORY_DISABLED'
+        });
+      }
+
+      const operational = getGovernedSessionToolDependencies();
+      if (probe === 'mcp_governed_tasks') {
+        return JSON.stringify({
+          schemaVersion: 1,
+          operationalMemoryEnabled: true,
+          authority: 'Governed Task Queue',
+          ...(await getGovernedTaskToolDependencies().queue.readCollisionState())
+        });
+      }
+      if (probe === 'mcp_governed_sessions') {
+        return JSON.stringify({
+          schemaVersion: 1,
+          operationalMemoryEnabled: true,
+          authority: 'Governed Session',
+          ...(await operational.sessions.readCollisionState())
+        });
+      }
+      return JSON.stringify({
+        schemaVersion: 1,
+        operationalMemoryEnabled: true,
+        authority: 'Governed Lock Service',
+        ...(await operational.locks.readCollisionState())
+      });
+    }
   }));
   app.use(createGithubRepositorySshCaBootstrapRouter({
     verifyOidc: verifyGithubRepositorySshCaBootstrapOidcToken,

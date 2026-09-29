@@ -325,3 +325,76 @@ test('hardcoded evidence commands contain no mutation primitives', () => {
     }
   }
 });
+
+
+test('governed runtime authority probes are S1-only and never use the SSH command runner', async () => {
+  let shellReads = 0;
+  const observed: string[] = [];
+  const active = dependencies({
+    runRead: async () => {
+      shellReads += 1;
+      return { code: 0, stdout: 'unexpected-shell-read', stderr: '' };
+    }
+  });
+  (active as typeof active & {
+    runOperationalRead: (probe: string) => Promise<string>;
+  }).runOperationalRead = async (probe) => {
+    observed.push(probe);
+    return JSON.stringify({
+      schemaVersion: 1,
+      authority: probe,
+      truncated: false,
+      records: []
+    });
+  };
+
+  await withServer(active, async (baseUrl) => {
+    for (const probe of [
+      'mcp_governed_tasks',
+      'mcp_governed_sessions',
+      'mcp_governed_locks'
+    ]) {
+      const response = await fetch(`${baseUrl}/evidence/github/readonly`, {
+        method: 'POST',
+        headers: {
+          authorization: 'Bearer valid-oidc',
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          sha: SHA,
+          target: 's1',
+          probe,
+          requestId: `runtime-${probe}`
+        })
+      });
+      assert.equal(response.status, 200, probe);
+      const body = await response.json() as Record<string, unknown>;
+      assert.equal(body.mutationAllowed, false, probe);
+      assert.equal(body.target, 's1', probe);
+      assert.equal(body.probe, probe, probe);
+      assert.match(String(body.output), /"truncated":false/, probe);
+    }
+
+    const wrongTarget = await fetch(`${baseUrl}/evidence/github/readonly`, {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer valid-oidc',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sha: SHA,
+        target: 's2',
+        probe: 'mcp_governed_tasks',
+        requestId: 'runtime-wrong-target'
+      })
+    });
+    assert.equal(wrongTarget.status, 400);
+  });
+
+  assert.equal(shellReads, 0);
+  assert.deepEqual(observed, [
+    'mcp_governed_tasks',
+    'mcp_governed_sessions',
+    'mcp_governed_locks'
+  ]);
+});

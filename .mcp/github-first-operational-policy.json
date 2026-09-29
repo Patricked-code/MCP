@@ -54,6 +54,20 @@
           "filesystem_uid_gid_mode"
         ],
         "sshFallback": "fail_closed_if_primary_oidc_unavailable"
+      },
+      "operationalAuthorityProbes": [
+        "mcp_governed_tasks",
+        "mcp_governed_sessions",
+        "mcp_governed_locks"
+      ],
+      "operationalAuthorityOutputPolicy": {
+        "rawStoreDocumentsAllowed": false,
+        "rawPrincipalIdentityAllowed": false,
+        "rawResumeSecretAllowed": false,
+        "freeFormTaskTextAllowed": false,
+        "recordProjection": "collision_and_ownership_metadata_only",
+        "recordLimitBehavior": "TRUNCATED_TRUE_FAIL_CLOSED",
+        "sshFallback": "FAIL_CLOSED_OIDC_ENDPOINT_REQUIRED"
       }
     },
     "RUNTIME_REQUIRED": {

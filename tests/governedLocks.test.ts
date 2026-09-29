@@ -573,3 +573,29 @@ test('acquire traite un lock ACTIVE au TTL ecoule comme supprimable au plafond',
     await rm(f.directory, { recursive: true, force: true });
   }
 });
+
+
+test('lock collision evidence exposes active ownership metadata without lock reason text', async () => {
+  const f = await fixture();
+  try {
+    const opened = await f.open('TASK-20260813-004', 'transport-collision-lock');
+    await f.locks.acquireLock({
+      governedSessionId: opened.session.governedSessionId,
+      expectedSessionRevision: opened.session.sessionRevision,
+      scope: { type: 'resource', key: 'connection:oauth-attempt-correlation' },
+      reason: 'sensitive free-form reason must not be projected'
+    }, {
+      transportSessionId: 'transport-collision-lock',
+      identity: IDENTITY
+    });
+    const state = await f.locks.readCollisionState();
+    assert.equal(state.totalActive, 1);
+    assert.equal(state.truncated, false);
+    assert.equal(state.locks[0]?.scope, 'resource:connection:oauth-attempt-correlation');
+    assert.equal(state.locks[0]?.governedSessionId, opened.session.governedSessionId);
+    assert.equal('reason' in (state.locks[0] ?? {}), false);
+    assert.equal('targetScope' in (state.locks[0] ?? {}), false);
+  } finally {
+    await rm(f.directory, { recursive: true, force: true });
+  }
+});

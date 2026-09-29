@@ -73,6 +73,24 @@ export type AutoResumeCompatibleSessionResult =
   | { status: 'NONE' }
   | { status: 'AMBIGUOUS' };
 
+export type GovernedSessionCollisionProjection = {
+  governedSessionId: string;
+  repository: string;
+  status: GovernedSessionPublicRecord['status'];
+  lastHeartbeatAt: string;
+  expiredAt: string | null;
+  sessionRevision: number;
+  lockIds: string[];
+  lockIdsTruncated: boolean;
+};
+
+export type GovernedSessionCollisionState = {
+  storeRevision: number;
+  totalNonClosed: number;
+  truncated: boolean;
+  sessions: GovernedSessionCollisionProjection[];
+};
+
 export type GovernedSessionService = {
   openSession(input: OpenSessionInput, request: SessionRequest): Promise<OpenSessionResult>;
   resumeSession(
@@ -96,6 +114,7 @@ export type GovernedSessionService = {
     governedSessionId: string,
     request: SessionRequest
   ): Promise<GovernedSessionPublicRecord | null>;
+  readCollisionState(): Promise<GovernedSessionCollisionState>;
   countActiveSessions(): Promise<number>;
   listTaskOwnerSessionIdsToRetain(): Promise<string[]>;
   expireIdleSessions(): Promise<number>;
@@ -643,6 +662,31 @@ export function createGovernedSessionService(
         (candidate) => candidate.governedSessionId === governedSessionId
       );
       return session && canAccess(session, request) ? publicSession(session) : null;
+    },
+
+    async readCollisionState() {
+      const document = await options.store.read();
+      const nonClosed = document.sessions
+        .filter((candidate) => candidate.status !== 'CLOSED')
+        .sort((left, right) => left.governedSessionId.localeCompare(right.governedSessionId));
+      const recordLimit = 64;
+      const lockIdLimit = 16;
+      const lockIdsTruncated = nonClosed.some((candidate) => candidate.lockIds.length > lockIdLimit);
+      return {
+        storeRevision: document.storeRevision,
+        totalNonClosed: nonClosed.length,
+        truncated: nonClosed.length > recordLimit || lockIdsTruncated,
+        sessions: nonClosed.slice(0, recordLimit).map((candidate) => ({
+          governedSessionId: candidate.governedSessionId,
+          repository: candidate.repository,
+          status: candidate.status,
+          lastHeartbeatAt: candidate.lastHeartbeatAt,
+          expiredAt: candidate.expiredAt,
+          sessionRevision: candidate.sessionRevision,
+          lockIds: [...candidate.lockIds].sort().slice(0, lockIdLimit),
+          lockIdsTruncated: candidate.lockIds.length > lockIdLimit
+        }))
+      };
     },
 
     async countActiveSessions() {
