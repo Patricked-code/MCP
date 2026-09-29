@@ -1,5 +1,19 @@
 # SUIVI.md
 
+## 2026-09-29 — W3 A3.2 runtime-authority evidence path — MERGED / DEPLOY BLOCKED BY EXPIRED TLS
+
+- Reprise current-first : `main=54f195973362da30d0e03c6623bbe6bb7e39f4ea`; A3.2 planning-ready mais exécution fail-closed faute de preuve fraîche Governed Task Queue / Governed Session / Governed Lock Service.
+- Existing-first : PR #200 étend uniquement le workflow/endpoint GitHub OIDC read-only existant avec `mcp_governed_tasks`, `mcp_governed_sessions`, `mcp_governed_locks`. Les lectures sont faites in-process via les autorités existantes ; aucun raw store read, `docker exec`, shell libre, second store, seconde queue/session/lock authority ou mutation runtime.
+- Projection bornée : tâches non terminales = taskId/repository/status/owner governed-session/resourceScopes/révision ; sessions non closes = governedSessionId/repository/status/heartbeat/expiration/révision/lockIds ; locks actifs = lockId/scope/governedSessionId/expiration/révision. Textes libres, identité principale/agent, transport, resume secret et reason de lock sont exclus. Toute troncature est explicite et doit rester fail-closed.
+- RED exact-head `fe30066342dcb36abab2f29560f289ccd5d00bac` : MCP CI push #2094 + PR #2095 en FAILURE avec exactement 3 échecs ciblés sur probes/allowlist/fail-closed absents.
+- GREEN exact-head `34e265430ba152f595f22b92ddbc11edd3f46468` : MCP CI push #2100 et PR #2101 SUCCESS ; typecheck/build/docs/governance/GWC/secret scan/read-only safety/whitespace verts.
+- PR #200 fusionnée sous garde exact-head au merge `d53b9de48617920eae7a0bba46f5a7387bc11ab8`; MCP CI main #2102 SUCCESS.
+- Governed Deploy #85 : FAILURE attempt 1 puis FAILURE attempt 2 avant création d'un job de déploiement ; cause exacte `curl: (60) SSL certificate problem: certificate has expired` sur `https://mcp.wealthtechinnovations.com/deploy/github/s1`.
+- Aucun contournement TLS (`-k`, désactivation de validation ou baisse de sécurité) n'est autorisé. La voie runtime interactive a demandé une approbation/connexion qui n'a pas été accordée ; elle n'a pas été réessayée.
+- L'inventaire GitHub du dépôt ne contient aucune procédure de renouvellement TLS/ACME/Plesk existante à réutiliser ; aucune nouvelle voie parallèle n'a été créée.
+- A3.2 reste `READY` au niveau planning mais `BLOCKED_PENDING_RUNTIME_REOBSERVATION` en exécution. La présence du code des probes sur `main` ne constitue pas une preuve runtime tant que le SHA n'est pas déployé et que les trois artifacts OIDC n'ont pas été collectés et contrôlés.
+- NEXT_ACTION : renouveler/rétablir de façon gouvernée un certificat TLS valide pour `mcp.wealthtechinnovations.com`; relancer Governed Deploy #85 (ou le deploy exact-SHA équivalent) sans modification applicative ; exécuter ensuite les trois probes OIDC sur S1 et vérifier `truncated=false`, ownership et collision sur `connection:oauth-attempt-correlation`. Seulement alors matérialiser/claim A3.2.
+
 ## 2026-09-28 — W3 A3.1 OAuth attempt correlation inventory — DONE / post-merge handoff
 
 - Baseline live réobservée avant écriture : `main=eb1667d2a377a6fd2d15f715a6fcedd819386f0c` ; aucune PR/branche A3 active sur le collision domain `connection:oauth-correlation:inventory`.
