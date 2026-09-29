@@ -15,7 +15,27 @@ export type GithubReadonlyEvidenceProbe =
   | 'stablecoin_backend_inventory'
   | 'stablecoin_runtime_status'
   | 'server_disk'
-  | 'docker_status';
+  | 'docker_status'
+  | 'mcp_governed_tasks'
+  | 'mcp_governed_sessions'
+  | 'mcp_governed_locks';
+
+export type GithubOperationalAuthorityProbe =
+  | 'mcp_governed_tasks'
+  | 'mcp_governed_sessions'
+  | 'mcp_governed_locks';
+
+const OPERATIONAL_AUTHORITY_PROBES = new Set<GithubReadonlyEvidenceProbe>([
+  'mcp_governed_tasks',
+  'mcp_governed_sessions',
+  'mcp_governed_locks'
+]);
+
+export function isGithubOperationalAuthorityProbe(
+  probe: GithubReadonlyEvidenceProbe
+): probe is GithubOperationalAuthorityProbe {
+  return OPERATIONAL_AUTHORITY_PROBES.has(probe);
+}
 
 interface CommandResultLike {
   code: number | null;
@@ -29,6 +49,7 @@ export interface GithubReadonlyEvidenceRouteDependencies {
     target: GithubReadonlyEvidenceTarget,
     command: string
   ) => Promise<CommandResultLike>;
+  runOperationalRead?: (probe: GithubOperationalAuthorityProbe) => Promise<string>;
 }
 
 function bearerToken(value: string | undefined): string | null {
@@ -63,9 +84,20 @@ function exactRequest(value: unknown): {
     && probe !== 'stablecoin_runtime_status'
     && probe !== 'server_disk'
     && probe !== 'docker_status'
+    && probe !== 'mcp_governed_tasks'
+    && probe !== 'mcp_governed_sessions'
+    && probe !== 'mcp_governed_locks'
   ) return null;
   if (typeof requestId !== 'string' || !REQUEST_ID_PATTERN.test(requestId)) return null;
   if (probe === 'mcp_git_status' && target !== 's1') return null;
+  if (
+    (
+      probe === 'mcp_governed_tasks'
+      || probe === 'mcp_governed_sessions'
+      || probe === 'mcp_governed_locks'
+    )
+    && target !== 's1'
+  ) return null;
   if (
     (
       probe === 'stablecoin_frontend_git_status'
@@ -415,6 +447,35 @@ export function createGithubReadonlyEvidenceRouter(
       await dependencies.verifyOidc(token, body.sha);
     } catch {
       return jsonError(response, 403, 'github_oidc_invalid');
+    }
+
+    if (isGithubOperationalAuthorityProbe(body.probe)) {
+      if (!dependencies.runOperationalRead) {
+        return response.status(502).json({
+          error: 'readonly_evidence_collection_failed',
+          reasonCode: 'read_transport_failed'
+        });
+      }
+      try {
+        const output = await dependencies.runOperationalRead(body.probe);
+        if (typeof output !== 'string' || Buffer.byteLength(output, 'utf8') > 32_768) {
+          throw new Error('operational_read_output_invalid');
+        }
+        return response.status(200).json({
+          schemaVersion: 1,
+          requestId: body.requestId,
+          target: body.target,
+          probe: body.probe,
+          sha: body.sha,
+          mutationAllowed: false,
+          output
+        });
+      } catch {
+        return response.status(502).json({
+          error: 'readonly_evidence_collection_failed',
+          reasonCode: 'read_transport_failed'
+        });
+      }
     }
 
     let command: string;
