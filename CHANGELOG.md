@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 2026-09-29 — Intake #201 converged into conditional bounded server WRITE
+
+- L'incident de certificat TLS expiré remonté par Governed-Repository-Template est convergé dans `PB-GITHUB-FIRST-WRITE / TB-COND-SERVER-WRITE`, sans programme parallèle.
+- Le besoin concret `s1_public_tls_certificate_restore` satisfait uniquement le gate `CONCRETE_BOUNDED_OPERATION_REQUIRED`.
+- L'identité/rollback dédiés restent non définis, D2 reste incomplet et le blueprint reste `DEFERRED`.
+- Le fallback SSH read-only n'obtient aucun droit d'écriture ; aucun shell arbitraire ni bypass de validation TLS n'est introduit.
+- Aucune Task runtime, Governed Session ou lock n'est créé par cette convergence.
+
 ## 2026-09-29 — GitHub OIDC runtime-authority evidence for A3.2
 
 - PR #200 ajoute trois probes read-only bornés sur les autorités existantes : Governed Task Queue, Governed Session et Governed Lock Service.
