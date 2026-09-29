@@ -1357,3 +1357,29 @@ test('AF-23 checkpoint links the bounded operational events observed for its gov
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+
+test('session collision evidence excludes principal, agent and task text', async () => {
+  const { directory, service } = await fixture();
+  try {
+    const opened = await service.openSession(OPEN_INPUT, {
+      transportSessionId: 'transport-collision-evidence',
+      identity: OAUTH_IDENTITY
+    });
+    const state = await service.readCollisionState();
+    const projected = state.sessions.find(
+      (entry) => entry.governedSessionId === opened.session.governedSessionId
+    );
+    assert.ok(projected);
+    assert.equal(projected.repository, 'Patricked-code/MCP');
+    assert.equal(projected.status, 'OPEN');
+    assert.equal('ownerPrincipalId' in projected, false);
+    assert.equal('agentIdentity' in projected, false);
+    assert.equal('taskScope' in projected, false);
+    assert.equal('nextAction' in projected, false);
+    assert.equal('currentTransport' in projected, false);
+    assert.equal('resumeSecretHash' in projected, false);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
