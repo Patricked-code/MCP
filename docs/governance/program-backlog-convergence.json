@@ -3461,6 +3461,17 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "materializationEvidence": {
+        "runtimeTaskId": "TASK-20260929-001",
+        "status": "READY",
+        "taskRevision": 1,
+        "storeRevision": 242,
+        "ownerGovernedSessionId": null,
+        "materializedAt": "2026-09-29T23:46:24.185Z",
+        "resourceScopes": [
+          "connection:oauth-attempt-correlation"
+        ]
       }
     },
     {
@@ -8628,7 +8639,7 @@
     "a32ExecutionGate": {
       "blueprintId": "TB-W3-A3-02",
       "planningReadiness": "READY",
-      "executionStatus": "BLOCKED_PENDING_RUNTIME_MATERIALIZATION_AUTHORITY",
+      "executionStatus": "MATERIALIZED_READY_PENDING_DEDICATED_CLAIM",
       "requiredRuntimeAuthorities": [
         "Governed Task Queue",
         "Governed Session",
@@ -8642,8 +8653,8 @@
         "governedLockService": true,
         "mutationOrClaim": false
       },
-      "reasonCode": "RUNTIME_REOBSERVATION_CLEAN_MATERIALIZATION_PATH_UNAVAILABLE",
-      "nextAction": "Materialize and claim A3.2 through an authorized Governed Session / Governed Task Queue runtime path. Runtime reobservation is clean and collision-free, but the approved GitHub fallback is read-only and must not be widened to create or claim tasks.",
+      "reasonCode": "RUNTIME_TASK_MATERIALIZED_DEDICATED_SESSION_REQUIRED_FOR_CLAIM",
+      "nextAction": "On a fresh transport or otherwise non-conflicting dedicated Governed Session scoped to A3.2, reobserve current Live State/Task Queue/locks, acknowledge the fresh bootstrap receipt, then claim TASK-20260929-001. Do not claim it from the currently transport-bound Stablecoin session.",
       "sourceCapability": {
         "mergeSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c",
         "pullRequestNumber": 200,
@@ -8686,6 +8697,19 @@
             "activeLocks": 0
           }
         }
+      },
+      "runtimeTask": {
+        "taskId": "TASK-20260929-001",
+        "status": "READY",
+        "taskRevision": 1,
+        "storeRevisionAfterMaterialization": 242,
+        "ownerGovernedSessionId": null,
+        "resourceScopes": [
+          "connection:oauth-attempt-correlation"
+        ],
+        "materializedAt": "2026-09-29T23:46:24.185Z",
+        "sourceClassification": "NEW_TASK",
+        "sourceReasonCode": "new_task_enqueued"
       }
     }
   }
