@@ -1,7 +1,8 @@
 import type { Express, Request, Response } from 'express';
-import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHash, createHmac, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 import { env } from './config/env.js';
 import { logger } from './logger.js';
+import { getDefaultOAuthRefreshGrantService } from './oauthRefreshTokens.js';
 
 const DEFAULT_ISSUER = 'https://mcp.wealthtechinnovations.com';
 const ACCESS_TOKEN_TTL_SECONDS = Math.max(
@@ -13,7 +14,7 @@ const AUTHORIZATION_CODE_TTL_MS = Math.max(
   Number.parseInt(process.env.MCP_OAUTH_CODE_TTL_SECONDS || '300', 10)
 ) * 1000;
 
-const SUPPORTED_SCOPES = ['mcp:read', 'mcp:write'] as const;
+const SUPPORTED_SCOPES = ['mcp:read', 'mcp:write', 'offline_access'] as const;
 
 type SupportedScope = typeof SUPPORTED_SCOPES[number];
 
@@ -26,6 +27,7 @@ type AuthorizationCodeRecord = {
   codeChallengeMethod: 'S256';
   expiresAt: number;
   subject: string;
+  oauthAttemptRef: string;
 };
 
 type OAuthTokenPayload = {
@@ -39,6 +41,8 @@ type OAuthTokenPayload = {
   iat: number;
   exp: number;
   jti: string;
+  oauth_attempt_ref?: string;
+  grant_id?: string;
 };
 
 export type VerifiedOauthIdentity = {
@@ -46,6 +50,8 @@ export type VerifiedOauthIdentity = {
   clientId: string;
   scopes: string[];
   expiresAt: number;
+  oauthAttemptRef?: string;
+  oauthGrantId?: string;
 };
 
 type RegisterOAuthRoutesOptions = {
@@ -179,7 +185,7 @@ function buildAuthorizationServerMetadata() {
     authorization_endpoint: `${issuer}/oauth/authorize`,
     token_endpoint: `${issuer}/oauth/token`,
     response_types_supported: ['code'],
-    grant_types_supported: ['authorization_code'],
+    grant_types_supported: ['authorization_code', 'refresh_token'],
     code_challenge_methods_supported: ['S256'],
     token_endpoint_auth_methods_supported: ['none'],
     scopes_supported: SUPPORTED_SCOPES,
@@ -290,11 +296,26 @@ export function inspectOauthAccessToken(
     return null;
   }
 
+  if (
+    payload.oauth_attempt_ref !== undefined
+    && !/^oa_[A-Za-z0-9_-]{22,64}$/.test(payload.oauth_attempt_ref)
+  ) {
+    return null;
+  }
+  if (
+    payload.grant_id !== undefined
+    && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(payload.grant_id)
+  ) {
+    return null;
+  }
+
   return {
     subject: payload.sub,
     clientId: payload.client_id,
     scopes,
-    expiresAt: payload.exp
+    expiresAt: payload.exp,
+    ...(payload.oauth_attempt_ref ? { oauthAttemptRef: payload.oauth_attempt_ref } : {}),
+    ...(payload.grant_id ? { oauthGrantId: payload.grant_id } : {})
   };
 }
 
@@ -353,6 +374,7 @@ function handleAuthorize(req: Request, res: Response, isAuthenticated: (req: Req
     return;
   }
 
+  const oauthAttemptRef = `oa_${base64Url(randomBytes(16))}`;
   const code = issueAuthorizationCode({
     clientId,
     redirectUri,
@@ -361,7 +383,8 @@ function handleAuthorize(req: Request, res: Response, isAuthenticated: (req: Req
     codeChallenge,
     codeChallengeMethod: 'S256',
     expiresAt: Date.now() + AUTHORIZATION_CODE_TTL_MS,
-    subject: 'wealthtech-mcp-admin'
+    subject: 'wealthtech-mcp-admin',
+    oauthAttemptRef
   });
 
   const redirectTarget = new URL(redirectUri);
@@ -373,24 +396,94 @@ function handleAuthorize(req: Request, res: Response, isAuthenticated: (req: Req
 
   redirectTarget.searchParams.set('iss', oauthIssuer());
 
-  logger.info({ clientId, scope, resource }, 'Code OAuth MCP généré');
+  logger.info({ clientId, scope, resource, oauthAttemptRef }, 'Code OAuth MCP généré');
   res.redirect(302, redirectTarget.toString());
 }
 
-function handleToken(req: Request, res: Response): void {
+function issueAccessToken(input: {
+  subject: string;
+  clientId: string;
+  scope: string;
+  oauthAttemptRef: string;
+  oauthGrantId: string;
+}): string {
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  return signAccessToken({
+    typ: 'wealthtech-mcp-oauth',
+    iss: oauthIssuer(),
+    aud: oauthIssuer(),
+    resource: oauthIssuer(),
+    sub: input.subject,
+    client_id: input.clientId,
+    scope: input.scope,
+    iat: nowSeconds,
+    exp: nowSeconds + ACCESS_TOKEN_TTL_SECONDS,
+    jti: base64Url(randomBytes(16)),
+    oauth_attempt_ref: input.oauthAttemptRef,
+    grant_id: input.oauthGrantId
+  });
+}
+
+async function handleToken(req: Request, res: Response): Promise<void> {
   pruneExpiredAuthorizationCodes();
 
   const grantType = getSingleBodyParam(req, 'grant_type');
+  const refreshService = getDefaultOAuthRefreshGrantService();
+
+  if (grantType === 'refresh_token') {
+    const refreshToken = getSingleBodyParam(req, 'refresh_token');
+    const clientId = getSingleBodyParam(req, 'client_id');
+    const resource = normalizeResourceAlias(getSingleBodyParam(req, 'resource') || oauthIssuer());
+
+    if (!refreshToken) {
+      sendOAuthError(res, 400, 'invalid_request', 'refresh_token est obligatoire.');
+      return;
+    }
+    if (!isValidOAuthResource(resource)) {
+      sendOAuthError(res, 400, 'invalid_target', 'Le paramètre resource ne correspond pas au serveur MCP WealthTech.');
+      return;
+    }
+
+    try {
+      const rotated = await refreshService.rotate({
+        refreshToken,
+        ...(clientId ? { clientId } : {}),
+        resource
+      });
+      const accessToken = issueAccessToken({
+        subject: rotated.subject,
+        clientId: rotated.clientId,
+        scope: rotated.scopes.join(' '),
+        oauthAttemptRef: rotated.oauthAttemptRef,
+        oauthGrantId: rotated.grantId
+      });
+
+      res.json({
+        access_token: accessToken,
+        refresh_token: rotated.refreshToken,
+        token_type: 'Bearer',
+        expires_in: ACCESS_TOKEN_TTL_SECONDS,
+        scope: rotated.scopes.join(' ')
+      });
+      return;
+    } catch (error) {
+      const code = error instanceof Error ? error.message : 'OAUTH_REFRESH_FAILED';
+      logger.warn({ reasonCode: code }, 'Refresh OAuth MCP refusé');
+      sendOAuthError(res, 400, 'invalid_grant', 'Refresh token absent, expiré, révoqué ou rejoué.');
+      return;
+    }
+  }
+
+  if (grantType !== 'authorization_code') {
+    sendOAuthError(res, 400, 'unsupported_grant_type', 'grant_type doit être authorization_code ou refresh_token.');
+    return;
+  }
+
   const code = getSingleBodyParam(req, 'code');
   const redirectUri = getSingleBodyParam(req, 'redirect_uri');
   const clientId = getSingleBodyParam(req, 'client_id');
   const codeVerifier = getSingleBodyParam(req, 'code_verifier');
   const resource = normalizeResourceAlias(getSingleBodyParam(req, 'resource') || oauthIssuer());
-
-  if (grantType !== 'authorization_code') {
-    sendOAuthError(res, 400, 'unsupported_grant_type', 'Seul grant_type=authorization_code est supporté.');
-    return;
-  }
 
   if (!code || !redirectUri || !clientId || !codeVerifier) {
     sendOAuthError(res, 400, 'invalid_request', 'code, redirect_uri, client_id et code_verifier sont obligatoires.');
@@ -417,19 +510,33 @@ function handleToken(req: Request, res: Response): void {
     return;
   }
 
-  const nowSeconds = Math.floor(Date.now() / 1000);
-  const accessToken = signAccessToken({
-    typ: 'wealthtech-mcp-oauth',
-    iss: oauthIssuer(),
-    aud: oauthIssuer(),
-    resource: oauthIssuer(),
-    sub: record.subject,
-    client_id: clientId,
+  const oauthGrantId = randomUUID();
+  const accessToken = issueAccessToken({
+    subject: record.subject,
+    clientId,
     scope: record.scope,
-    iat: nowSeconds,
-    exp: nowSeconds + ACCESS_TOKEN_TTL_SECONDS,
-    jti: base64Url(randomBytes(16))
+    oauthAttemptRef: record.oauthAttemptRef,
+    oauthGrantId
   });
+
+  if (record.scope.split(/\s+/).includes('offline_access')) {
+    const refresh = await refreshService.issue({
+      subject: record.subject,
+      clientId,
+      resource,
+      scopes: record.scope.split(/\s+/).filter(Boolean),
+      oauthAttemptRef: record.oauthAttemptRef,
+      grantId: oauthGrantId
+    });
+    res.json({
+      access_token: accessToken,
+      refresh_token: refresh.refreshToken,
+      token_type: 'Bearer',
+      expires_in: ACCESS_TOKEN_TTL_SECONDS,
+      scope: record.scope
+    });
+    return;
+  }
 
   res.json({
     access_token: accessToken,
@@ -452,7 +559,14 @@ export function registerOauthRoutes(app: Express, options: RegisterOAuthRoutesOp
     handleAuthorize(req, res, options.isAuthenticated);
   });
 
-  app.post('/oauth/token', (req, res) => {
-    handleToken(req, res);
+  app.post('/oauth/token', async (req, res) => {
+    try {
+      await handleToken(req, res);
+    } catch (error) {
+      logger.error({ error }, 'Erreur token OAuth MCP');
+      if (!res.headersSent) {
+        sendOAuthError(res, 500, 'server_error', 'Le serveur OAuth n’a pas pu traiter la requête.');
+      }
+    }
   });
 }
