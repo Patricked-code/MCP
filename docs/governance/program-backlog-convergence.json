@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "projectionId": "program-backlog-convergence-v2-20260924",
   "repository": "Patricked-code/MCP",
-  "observedMainSha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
+  "observedMainSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c",
   "generatedAt": "2026-09-28T17:41:00Z",
   "authority": {
     "kind": "DERIVED_NON_EXECUTABLE_PROJECTION",
@@ -1361,17 +1361,21 @@
       "dependsOn": [
         "PB-FOUNDATIONS-DONE"
       ],
-      "nextAction": "Execute TB-W3-A3-02 by extending the existing OAuth/AuthInfo/bootstrap/Event Journal path with only a bounded non-secret attempt correlation reference; preserve raw transport-ID prohibition and do not create a parallel journal or identity authority.",
+      "nextAction": "Complete TB-W3-A3-02 through an authorized Governed Task Queue materialization/claim, then merge/deploy its bounded OAuth correlation. After A3.2 is DONE with runtime evidence, execute TB-W3-A3-03 to add opt-in durable OAuth refresh continuity without replacing authorization_code + PKCE.",
       "subtasks": [
         "Correlate auth entry, callback and logical bootstrap",
         "Add bounded timestamps/status",
         "Hash or avoid persisted state material",
-        "Trace failures without secrets"
+        "Trace failures without secrets",
+        "Add an opt-in durable OAuth authorization grant for clients requesting offline_access",
+        "Rotate refresh tokens on every use and revoke the family on replay"
       ],
       "nonRegression": [
         "Never persist OAuth code/token raw",
         "Reuse existing audit/event journal",
-        "No second auth session authority"
+        "No second auth session authority",
+        "Never persist raw refresh tokens; persist only bounded hashes and non-secret grant references",
+        "Clients that do not request offline_access retain the existing authorization_code + PKCE response shape"
       ]
     },
     {
@@ -2353,7 +2357,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_A22_DONE_A31_DONE_A32_B3_C1_G1_READY",
+    "currentWaveStatus": "W3_A22_DONE_A31_DONE_A32_RUNTIME_REOBSERVED_MATERIALIZATION_PENDING_B3_C1_G1_READY",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -3442,6 +3446,79 @@
       "greenAcceptance": [
         "A3.2 satisfies its bounded objective using existing authorities first.",
         "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head when code/docs change is required.",
+        "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
+        "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-A3-03",
+      "workItemId": "PB-A3",
+      "waveId": "W3",
+      "lotId": "A3.3",
+      "title": "Add durable OAuth grant and refresh-token rotation",
+      "objective": "Keep short-lived MCP access tokens while allowing compatible clients to renew authorization through opt-in, rotating, replay-detecting refresh tokens without persisting raw token material.",
+      "integrationSlot": "connection.oauth-attempt-correlation",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-A3-02"
+      ],
+      "existingAuthorities": [
+        "OAuth flow",
+        "ConnectionContext",
+        "Governed Session bootstrap",
+        "Operational Event Journal",
+        "Atomic operational store"
+      ],
+      "resourceScopes": [
+        "connection:oauth-durable-authorization"
+      ],
+      "collisionDomains": [
+        "connection:oauth-durable-authorization"
+      ],
+      "readAuthorities": [
+        "OAuth flow",
+        "ConnectionContext",
+        "Governed Session bootstrap"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "TB-W3-A3-02 must first complete bounded OAuth attempt correlation and session propagation. A3.3 then extends the same authority chain with opt-in offline_access and rotating refresh-token continuity."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves refresh_token/offline_access, bounded grant references, hash-only persistence and replay revocation are absent on the exact observed head without weakening authorization_code + PKCE."
+      ],
+      "greenAcceptance": [
+        "Existing authorization_code + PKCE remains compatible when offline_access is absent.",
+        "offline_access can issue a persistent refresh authorization whose raw refresh token is never stored.",
+        "Every refresh rotates the token; replay revokes the active family.",
+        "Only bounded oauthAttemptRef/oauthGrantId cross into AuthInfo/ConnectionContext; raw state/code/access/refresh tokens never persist.",
+        "No second session, identity or Event Journal authority is introduced."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -8331,7 +8408,7 @@
       "id": "INTAKE-201",
       "issue": 201,
       "title": "[PROGRAM INTAKE] Governed Repository Template — expired public MCP TLS certificate blocks BOTH discovery",
-      "status": "CONVERGED_CURRENT_MAIN",
+      "status": "REMEDIATED_CLOSED",
       "observedMainSha": "7945d2e7bb1bd3fc7a2edd372c036cdb9cc26999",
       "createsParallelProgram": false,
       "createsRuntimeTasks": false,
@@ -8340,7 +8417,7 @@
       "targetBlueprintIds": [
         "TB-COND-SERVER-WRITE"
       ],
-      "runtimeRemediationStatus": "BLOCKED_BY_EXISTING_GATES",
+      "runtimeRemediationStatus": "COMPLETED_BY_AUTHORIZED_INFRASTRUCTURE_PATH",
       "diagnosis": {
         "targetHost": "mcp.wealthtechinnovations.com",
         "operation": "s1_public_tls_certificate_restore",
@@ -8379,7 +8456,66 @@
       "runtimeTasksCreatedByConvergence": 0,
       "governedSessionsCreatedByConvergence": 0,
       "runtimeLocksCreatedByConvergence": 0,
-      "nextAction": "Define and approve a dedicated TLS-recovery identity and rollback design inside the existing github-first.server-write-extensions slot without reusing the read-only SSH identity. Until that gate and dependencies are satisfied, restore the certificate only through an already-authorized human/infrastructure path; then redeploy exact main and collect fresh runtime-authority evidence before A3.2 materialization."
+      "nextAction": "TLS incident is closed. Keep TB-COND-SERVER-WRITE deferred for future concrete write-transport needs; do not infer a generic server-write authority from this manually remediated incident.",
+      "remediationEvidence": {
+        "issueState": "closed",
+        "issueStateReason": "completed",
+        "tlsRestored": true,
+        "restorationPath": "authorized_human_infrastructure_plesk",
+        "governedDeploy": {
+          "runNumber": 87,
+          "runId": 36625479517,
+          "attempt": 2,
+          "conclusion": "success",
+          "headSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c"
+        },
+        "runtimeAuthorityProbes": [
+          {
+            "probe": "mcp_governed_tasks",
+            "issue": 204,
+            "runNumber": 68,
+            "runId": 36642161060,
+            "conclusion": "success",
+            "truncated": false
+          },
+          {
+            "probe": "mcp_governed_sessions",
+            "issue": 205,
+            "runNumber": 69,
+            "runId": 36642163866,
+            "conclusion": "success",
+            "truncated": false
+          },
+          {
+            "probe": "mcp_governed_locks",
+            "issue": 206,
+            "runNumber": 70,
+            "runId": 36642167257,
+            "conclusion": "success",
+            "truncated": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "INTAKE-OAUTH-REFRESH-20260930",
+      "sourceKey": "user:oauth-refresh-continuity:20260930",
+      "sourceId": "USER-OAUTH-REFRESH-20260930",
+      "title": "Durable OAuth refresh continuity for ChatGPT/Claude MCP clients",
+      "status": "CONVERGED_CURRENT_BRANCH",
+      "observedMainSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c",
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "integrationVerdict": "COMPLEMENT",
+      "coveredBy": "PB-A3",
+      "targetBlueprintIds": [
+        "TB-W3-A3-02",
+        "TB-W3-A3-03"
+      ],
+      "integrationRule": "Complete A3.2 bounded auth-attempt correlation first, then extend the same OAuth/ConnectionContext/Governed Session authority chain with opt-in rotating refresh tokens. Preserve authorization_code + PKCE and never persist raw token material.",
+      "runtimeTasksCreatedByConvergence": 0,
+      "governedSessionsCreatedByConvergence": 0,
+      "runtimeLocksCreatedByConvergence": 0
     }
   ],
   "w3A22InventoryHandoff": {
@@ -8492,7 +8628,7 @@
     "a32ExecutionGate": {
       "blueprintId": "TB-W3-A3-02",
       "planningReadiness": "READY",
-      "executionStatus": "BLOCKED_PENDING_RUNTIME_REOBSERVATION",
+      "executionStatus": "BLOCKED_PENDING_RUNTIME_MATERIALIZATION_AUTHORITY",
       "requiredRuntimeAuthorities": [
         "Governed Task Queue",
         "Governed Session",
@@ -8501,14 +8637,15 @@
       "githubFallbackCoverage": {
         "mcpGitStatus": true,
         "dockerStatus": true,
-        "governedTaskQueue": false,
-        "governedSession": false,
-        "governedLockService": false
+        "governedTaskQueue": true,
+        "governedSession": true,
+        "governedLockService": true,
+        "mutationOrClaim": false
       },
-      "reasonCode": "RUNTIME_AUTHORITY_PROBES_MERGED_NOT_DEPLOYED_TLS_CERT_EXPIRED",
-      "nextAction": "Restore a valid TLS certificate for mcp.wealthtechinnovations.com through a governed infrastructure path, redeploy exact main SHA d53b9de48617920eae7a0bba46f5a7387bc11ab8, then collect fresh mcp_governed_tasks, mcp_governed_sessions and mcp_governed_locks OIDC evidence and verify truncation/ownership/collision before any A3.2 materialization.",
+      "reasonCode": "RUNTIME_REOBSERVATION_CLEAN_MATERIALIZATION_PATH_UNAVAILABLE",
+      "nextAction": "Materialize and claim A3.2 through an authorized Governed Session / Governed Task Queue runtime path. Runtime reobservation is clean and collision-free, but the approved GitHub fallback is read-only and must not be widened to create or claim tasks.",
       "sourceCapability": {
-        "mergeSha": "d53b9de48617920eae7a0bba46f5a7387bc11ab8",
+        "mergeSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c",
         "pullRequestNumber": 200,
         "probes": [
           "mcp_governed_tasks",
@@ -8517,8 +8654,38 @@
         ],
         "exactHeadCi": "SUCCESS",
         "mainCi": "SUCCESS",
-        "runtimeDeployment": "BLOCKED",
-        "runtimeBlocker": "TLS_CERTIFICATE_EXPIRED"
+        "runtimeDeployment": "SUCCESS",
+        "runtimeBlocker": null,
+        "governedDeploy": {
+          "runNumber": 87,
+          "runId": 36625479517,
+          "attempt": 2,
+          "conclusion": "success",
+          "headSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c"
+        },
+        "runtimeEvidence": {
+          "governedTasks": {
+            "issue": 204,
+            "runNumber": 68,
+            "runId": 36642161060,
+            "truncated": false,
+            "collision": false
+          },
+          "governedSessions": {
+            "issue": 205,
+            "runNumber": 69,
+            "runId": 36642163866,
+            "truncated": false,
+            "activeSessions": 0
+          },
+          "governedLocks": {
+            "issue": 206,
+            "runNumber": 70,
+            "runId": 36642167257,
+            "truncated": false,
+            "activeLocks": 0
+          }
+        }
       }
     }
   }
