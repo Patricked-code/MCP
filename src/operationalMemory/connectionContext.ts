@@ -117,8 +117,12 @@ export function createConnectionContext(
     identityAssurance: 'oauth_subject',
     clientClassification: 'UNRESOLVED',
     evidenceSource: 'oauth_auth_info',
-    oauthAttemptRef: input.requestIdentity.oauthAttemptRef ?? null,
-    oauthGrantId: input.requestIdentity.oauthGrantId ?? null,
+    ...(input.requestIdentity.oauthAttemptRef
+      ? { oauthAttemptRef: input.requestIdentity.oauthAttemptRef }
+      : {}),
+    ...(input.requestIdentity.oauthGrantId
+      ? { oauthGrantId: input.requestIdentity.oauthGrantId }
+      : {}),
     createdAt: (input.now ?? (() => new Date()))().toISOString()
   });
 }
