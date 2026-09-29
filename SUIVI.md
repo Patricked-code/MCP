@@ -1,5 +1,16 @@
 # SUIVI.md
 
+## 2026-09-30 — W3 A3.2 — RUNTIME TASK MATERIALIZED / claim intentionally pending
+
+- Runtime current-first : Live State réconcilié à `stateVersion=847`; GitHub/S1/runtime tous alignés sur `9511d434f3a66a2b92e847eabfd26596200e5f5c`, conteneur healthy.
+- Le transport courant était déjà lié à la Governed Session Stablecoin `663c4f8d-d1a2-4bca-b30b-bffbdaf5cfdb`; tentative d'ouverture d'une seconde session refusée correctement par `TRANSPORT_BINDING_CONFLICT`.
+- Aucun transfert, fermeture, pause ou réaffectation de cette session/tâche Stablecoin n'a été effectué.
+- Le Bootstrap Receipt ancien a été refusé comme base d'action ; la session authentifiée a explicitement acquitté le Live State frais `847`, receipt `5d0c9ee3-2f38-4312-afff-24f6520f5966`, session revision `49`.
+- Matérialisation A3.2 effectuée par l'autorité runtime existante `mcp_reconcile_agent_intent` : classification `NEW_TASK`, `TASK-20260929-001`, sequence 20, priority 95, status `READY`, taskRevision 1, storeRevision 242, owner null, scope unique `connection:oauth-attempt-correlation`, nextAction `claim_governed_task`.
+- Aucun claim ni lock n'a été pris : le `taskScope` de la session transport courante reste Stablecoin et n'est pas détourné pour A3.2.
+- NEXT_ACTION : depuis une Governed Session dédiée A3.2 sur un transport non conflictuel, réobserver Live State/Task Queue/locks, acquitter le receipt frais, puis claim `TASK-20260929-001`. Ensuite rattacher PR #207 et poursuivre review/merge/deploy/attestation sous exact-head.
+
+
 ## 2026-09-30 — W3 A3 OAuth continuity — TLS REMEDIATED / candidate PR #207 / runtime claim pending
 
 - Baseline current-first : GitHub `main=9511d434f3a66a2b92e847eabfd26596200e5f5c`; aucun mouvement de main pendant la construction candidate.
