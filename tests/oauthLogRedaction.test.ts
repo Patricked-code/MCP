@@ -22,6 +22,13 @@ test('la politique de logs masque les identifiants OAuth, transport et les URL d
     'transportSessionId',
     '*.transportSessionId',
     'req.query.client_id',
+    'refreshToken',
+    '*.refreshToken',
+    'refresh_token',
+    '*.refresh_token',
+    'req.body.refresh_token',
+    'req.body.code',
+    'req.body.code_verifier',
     'req.url',
     'req.originalUrl'
   ]) {
@@ -48,6 +55,7 @@ test('Pino ne restitue ni clientId, ni transport session brut, ni query string O
   const sensitiveClientId = 'https://client.example/callback?tenant=wealthtech&nonce=private-value';
   const sensitiveSessionId = 'mcp-transport-session-private-123456789';
   const sensitiveUrl = `/oauth/authorize?client_id=${encodeURIComponent(sensitiveClientId)}&state=private-state`;
+  const sensitiveRefreshToken = 'mcp_rt1.11111111-1111-4111-8111-111111111111.0.private-refresh-secret';
 
   testLogger.info({
     clientId: sensitiveClientId,
@@ -58,10 +66,17 @@ test('Pino ne restitue ni clientId, ni transport session brut, ni query string O
       sessionId: sensitiveSessionId,
       transportSessionId: sensitiveSessionId
     },
+    refreshToken: sensitiveRefreshToken,
+    nestedRefresh: { refresh_token: sensitiveRefreshToken },
     req: {
       url: sensitiveUrl,
       originalUrl: sensitiveUrl,
-      query: { client_id: sensitiveClientId }
+      query: { client_id: sensitiveClientId },
+      body: {
+        refresh_token: sensitiveRefreshToken,
+        code: 'private-oauth-code',
+        code_verifier: 'private-code-verifier'
+      }
     }
   }, 'Code OAuth MCP genere');
 
@@ -75,8 +90,16 @@ test('Pino ne restitue ni clientId, ni transport session brut, ni query string O
   assert.equal(record.req.url, '[REDACTED]');
   assert.equal(record.req.originalUrl, '[REDACTED]');
   assert.equal(record.req.query.client_id, '[REDACTED]');
+  assert.equal(record.refreshToken, '[REDACTED]');
+  assert.equal(record.nestedRefresh.refresh_token, '[REDACTED]');
+  assert.equal(record.req.body.refresh_token, '[REDACTED]');
+  assert.equal(record.req.body.code, '[REDACTED]');
+  assert.equal(record.req.body.code_verifier, '[REDACTED]');
   assert.equal(output.includes('mcp-transport-session-private'), false);
   assert.equal(output.includes('private-value'), false);
   assert.equal(output.includes('private-state'), false);
   assert.equal(output.includes('client.example'), false);
+  assert.equal(output.includes('private-refresh-secret'), false);
+  assert.equal(output.includes('private-oauth-code'), false);
+  assert.equal(output.includes('private-code-verifier'), false);
 });
