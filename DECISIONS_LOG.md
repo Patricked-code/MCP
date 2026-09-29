@@ -1,5 +1,13 @@
 # DECISIONS_LOG.md
 
+## 2026-09-29 — L'intake TLS #201 active un besoin concret, pas une permission de réutiliser le fallback SSH read-only
+
+Décision : l'expiration du certificat public de `mcp.wealthtechinnovations.com` constitue le premier besoin concret pour `TB-COND-SERVER-WRITE`, l'Integration Slot déjà prévu pour des mutations serveur GitHub-first additionnelles. #201 est donc convergé dans ce lot au lieu de créer une nouvelle roadmap ou une nouvelle autorité.
+
+Cette convergence ne rend pas le blueprint exécutable. `DEDICATED_IDENTITY_AND_ROLLBACK_DESIGN` reste non satisfait et la dépendance `TB-W3-D2-01` n'est pas DONE. La clé du fallback `MCP_READONLY_SSH_*` reste strictement read-only : l'utiliser pour renouveler le certificat serait une élévation de privilège interdite. `curl -k`, la désactivation de la validation TLS et tout shell libre restent également interdits.
+
+Le programme enregistre ainsi un bootstrap gap réel : le bounded write primaire dépend du host TLS en panne, tandis que le seul transport SSH autonome approuvé ne peut pas écrire. La correction future doit créer une identité de récupération dédiée et bornée avec rollback/attestation, ou passer par une opération humaine/infrastructure déjà autorisée ; elle ne doit pas détourner les autorités existantes.
+
 ## 2026-09-29 — Un probe fusionné n'est pas une preuve runtime ; TLS expiré bloque A3.2 sans downgrade de sécurité
 
 Décision : les trois probes GitHub/OIDC de Task Queue, Governed Session et Governed Lock Service sont désormais versionnés sur `main`, mais ils ne deviennent une autorité de décision A3.2 qu'après déploiement attesté de leur SHA exact et collecte fraîche de leurs artifacts runtime.

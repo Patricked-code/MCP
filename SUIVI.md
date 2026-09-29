@@ -1,5 +1,16 @@
 # SUIVI.md
 
+## 2026-09-29 — Intake #201 TLS recovery — CONVERGED / REMEDIATION STILL GATED
+
+- Intake GitHub #201 lu current-first : le programme `Governed-Repository-Template` / `Patricked-code/Ekyc` confirme le même certificat public expiré sur `mcp.wealthtechinnovations.com`, y compris avant l'acquisition du certificat SSH éphémère du mode BOTH.
+- Convergence existing-first : #201 est rattaché à `PB-GITHUB-FIRST-WRITE / TB-COND-SERVER-WRITE` (`github-first.server-write-extensions`), sans nouveau programme, blueprint parallèle, Task runtime, Governed Session, lock ou autorité d'écriture.
+- Le gate `CONCRETE_BOUNDED_OPERATION_REQUIRED` est désormais prouvé par #201 pour l'opération bornée `s1_public_tls_certificate_restore`.
+- `DEDICATED_IDENTITY_AND_ROLLBACK_DESIGN` reste NON satisfait et `TB-W3-D2-01` n'est pas DONE ; le blueprint reste donc `DEFERRED` et non auto-promotable.
+- Bootstrap gap explicite : les writes gouvernés actuels dépendent du host TLS en panne, alors que le fallback SSH protégé est strictement read-only. La règle `READONLY_FALLBACK_NEVER_AUTHORIZES_SERVER_WRITE` reste inchangée ; aucune réutilisation de cette clé pour muter S1, aucun shell arbitraire et aucun bypass TLS ne sont autorisés.
+- A3.2 reste planning `READY` mais exécution `BLOCKED_PENDING_RUNTIME_REOBSERVATION`.
+- RED : `ec3807695bccc926716b11a26369a603819c1555`, MCP CI push #2108 : exactement 2 échecs ciblés parce que #201 et ses gate evidences n'étaient pas encore convergés.
+- NEXT_ACTION : définir/approuver une identité de récupération TLS dédiée et un rollback borné dans l'Integration Slot existant, ou faire restaurer le certificat par une voie humaine/infrastructure déjà autorisée. Une fois TLS valide : redeploy exact-main → trois probes runtime OIDC → collision/ownership → seulement ensuite A3.2.
+
 ## 2026-09-29 — W3 A3.2 runtime-authority evidence path — MERGED / DEPLOY BLOCKED BY EXPIRED TLS
 
 - Reprise current-first : `main=54f195973362da30d0e03c6623bbe6bb7e39f4ea`; A3.2 planning-ready mais exécution fail-closed faute de preuve fraîche Governed Task Queue / Governed Session / Governed Lock Service.

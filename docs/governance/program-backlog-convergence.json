@@ -1890,6 +1890,14 @@
         "No free-form shell",
         "No read-only identity privilege escalation",
         "One bounded operation per justified capability"
+      ],
+      "currentConcreteNeeds": [
+        {
+          "issue": 201,
+          "operation": "s1_public_tls_certificate_restore",
+          "status": "DESIGN_GATED",
+          "targetBlueprintId": "TB-COND-SERVER-WRITE"
+        }
       ]
     },
     {
@@ -6043,6 +6051,32 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "conditionalGateEvidence": {
+        "concreteBoundedOperationRequired": {
+          "satisfied": true,
+          "sourceIssue": 201,
+          "operation": "s1_public_tls_certificate_restore",
+          "targetHost": "mcp.wealthtechinnovations.com",
+          "evidence": [
+            "Governed Deploy #85 failed twice with curl(60) certificate has expired",
+            "Governed Deploy #86 failed with curl(60) certificate has expired",
+            "Governed-Repository-Template target run 36621624763 failed TLS verification before BOTH discovery"
+          ]
+        },
+        "dedicatedIdentityAndRollbackDesign": {
+          "satisfied": false,
+          "reasonCode": "DEDICATED_TLS_RECOVERY_IDENTITY_AND_ROLLBACK_NOT_DEFINED",
+          "constraints": [
+            "READONLY_FALLBACK_NEVER_AUTHORIZES_SERVER_WRITE",
+            "NO_ARBITRARY_SHELL",
+            "NO_TLS_VERIFICATION_BYPASS",
+            "DEDICATED_RECOVERY_IDENTITY_REQUIRED",
+            "POST_RENEWAL_TLS_HTTP_MCP_ATTESTATION_REQUIRED"
+          ]
+        },
+        "dependencyD2Complete": false,
+        "bootstrapGapReasonCode": "PUBLIC_TLS_OUTAGE_BLOCKS_PRIMARY_BOUNDED_WRITE_AND_RUNTIME_REOBSERVATION"
       }
     },
     {
@@ -8292,6 +8326,60 @@
         "resultingPhase": "Q_DOMAIN_BINDING"
       },
       "resolution": "The deployed broker now accepts the governed-local-entry repository_dispatch event under the same exact owner/repository/ref/workflow/SHA claims. The V2.6.8 pilot obtained a short-lived read-only SSH certificate and completed all required discovery probes."
+    },
+    {
+      "id": "INTAKE-201",
+      "issue": 201,
+      "title": "[PROGRAM INTAKE] Governed Repository Template — expired public MCP TLS certificate blocks BOTH discovery",
+      "status": "CONVERGED_CURRENT_MAIN",
+      "observedMainSha": "7945d2e7bb1bd3fc7a2edd372c036cdb9cc26999",
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "integrationRule": "Complements the existing PB-GITHUB-FIRST-WRITE / TB-COND-SERVER-WRITE integration slot. The intake proves one concrete bounded S1 TLS restore need, but it does not authorize reusing the read-only SSH fallback for writes, bypassing TLS verification, creating arbitrary shell, or creating a second write authority.",
+      "integrationVerdict": "COMPLEMENT",
+      "targetBlueprintIds": [
+        "TB-COND-SERVER-WRITE"
+      ],
+      "runtimeRemediationStatus": "BLOCKED_BY_EXISTING_GATES",
+      "diagnosis": {
+        "targetHost": "mcp.wealthtechinnovations.com",
+        "operation": "s1_public_tls_certificate_restore",
+        "externalConsumer": "chainsolutions-wealthtech/Governed-Repository-Template",
+        "pilotRepository": "Patricked-code/Ekyc",
+        "pilotHeadSha": "87c28f4fd4e36aa3d65cfc384309a054c1640e4c",
+        "pilotWorkflowRunId": 36621624763,
+        "observedFailure": "SSL_CERTIFICATE_VERIFY_FAILED_CERTIFICATE_EXPIRED",
+        "localGovernedDeployRuns": [
+          {
+            "runNumber": 85,
+            "runId": 36620933098,
+            "conclusion": "failure"
+          },
+          {
+            "runNumber": 86,
+            "runId": 36622636726,
+            "conclusion": "failure"
+          }
+        ],
+        "localFailure": "CURL_60_SSL_CERTIFICATE_HAS_EXPIRED"
+      },
+      "gateEvidence": {
+        "concreteBoundedOperationRequired": "SATISFIED_BY_INTAKE_201",
+        "dedicatedIdentityAndRollbackDesign": "NOT_SATISFIED",
+        "dependencyD2": "NOT_DONE"
+      },
+      "bootstrapRecoveryGap": {
+        "reasonCode": "PUBLIC_TLS_OUTAGE_BLOCKS_PRIMARY_BOUNDED_WRITE_AND_RUNTIME_REOBSERVATION",
+        "primaryBoundedWriteDependsOnPublicTls": true,
+        "readonlySshFallbackMayAuthorizeWrite": false,
+        "arbitraryShellAllowed": false,
+        "tlsVerificationBypassAllowed": false,
+        "dedicatedRecoveryIdentityObserved": false
+      },
+      "runtimeTasksCreatedByConvergence": 0,
+      "governedSessionsCreatedByConvergence": 0,
+      "runtimeLocksCreatedByConvergence": 0,
+      "nextAction": "Define and approve a dedicated TLS-recovery identity and rollback design inside the existing github-first.server-write-extensions slot without reusing the read-only SSH identity. Until that gate and dependencies are satisfied, restore the certificate only through an already-authorized human/infrastructure path; then redeploy exact main and collect fresh runtime-authority evidence before A3.2 materialization."
     }
   ],
   "w3A22InventoryHandoff": {
