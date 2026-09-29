@@ -128,3 +128,27 @@ test('le serveur OAuth annonce refresh_token et offline_access de façon additiv
   assert.match(source, /refresh_token/);
   assert.match(source, /offline_access/);
 });
+
+
+test('A3.3 est un complément bloqué derrière A3.2 et ne crée aucune autorité runtime', async () => {
+  const program = JSON.parse(
+    await readFile(new URL('../docs/governance/program-backlog-convergence.json', import.meta.url), 'utf8')
+  );
+  const a32 = (program.taskBlueprints ?? []).find((entry: any) => entry.id === 'TB-W3-A3-02');
+  const a33 = (program.taskBlueprints ?? []).find((entry: any) => entry.id === 'TB-W3-A3-03');
+
+  assert.equal(a32?.readiness?.state, 'READY');
+  assert.ok(a33);
+  assert.deepEqual(a33.dependsOn, ['TB-W3-A3-02']);
+  assert.equal(a33.readiness?.state, 'BLOCKED');
+  assert.equal(a33.integrationStrategy, 'EXTEND');
+  assert.equal(a33.materialization?.createsRuntimeTask, false);
+  assert.equal(program.executionModel?.currentReadyBlueprintIds?.includes('TB-W3-A3-03'), false);
+
+  const intake = (program.programIntakes ?? []).find(
+    (entry: any) => entry.id === 'INTAKE-OAUTH-REFRESH-20260930'
+  );
+  assert.equal(intake?.createsParallelProgram, false);
+  assert.equal(intake?.createsRuntimeTasks, false);
+  assert.deepEqual(intake?.targetBlueprintIds, ['TB-W3-A3-02', 'TB-W3-A3-03']);
+});
