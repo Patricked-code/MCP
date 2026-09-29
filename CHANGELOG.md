@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## 2026-09-30 — Candidate OAuth continuity: bounded correlation + rotating refresh grants
+
+- Ajout candidat de références non secrètes `oauthAttemptRef` / `oauthGrantId` de l'autorisation OAuth jusqu'à AuthInfo et ConnectionContext.
+- Ajout opt-in de `offline_access` et du grant `refresh_token`, sans remplacer `authorization_code + PKCE`.
+- Les refresh tokens sont rotatifs ; seul leur SHA-256 courant est persisté dans `/app/data/mcp-oauth-refresh-grants.json`. Un replay d'une génération ancienne révoque la famille.
+- TTL par défaut candidat : access token 1 h (inchangé), refresh idle 30 jours, maximum absolu 90 jours.
+- Les anciennes réponses OAuth restent inchangées lorsqu'`offline_access` n'est pas demandé.
+- Program Backlog V2 étendu additivement avec `TB-W3-A3-03`, dépendant de `TB-W3-A3-02`; aucun programme parallèle ni autorité runtime supplémentaire.
+- TLS #201 est remédié et fermé ; le merge de la candidate reste gouverné par la matérialisation/claim runtime A3.2.
+
+
 ## 2026-09-29 — Intake #201 converged into conditional bounded server WRITE
 
 - L'incident de certificat TLS expiré remonté par Governed-Repository-Template est convergé dans `PB-GITHUB-FIRST-WRITE / TB-COND-SERVER-WRITE`, sans programme parallèle.

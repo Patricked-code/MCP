@@ -25,7 +25,7 @@ Le serveur conserve l'authentification historique :
 Authorization: Bearer <MCP_AUTH_TOKEN>
 ```
 
-Pour être découvrable par ChatGPT Apps SDK sans exposer `MCP_AUTH_TOKEN`, le serveur expose aussi une couche OAuth minimale compatible Authorization Code + PKCE :
+Pour être découvrable par les clients MCP sans exposer `MCP_AUTH_TOKEN`, le serveur expose une couche OAuth compatible Authorization Code + PKCE. Les clients compatibles peuvent demander `offline_access` pour recevoir en plus un refresh token rotatif :
 
 ```text
 GET  /.well-known/oauth-protected-resource
@@ -38,7 +38,12 @@ Principes de sécurité :
 
 - `/mcp` reste protégé ;
 - l'ancien `MCP_AUTH_TOKEN` reste accepté pour les tests administrateur et les scripts existants ;
-- ChatGPT reçoit uniquement des access tokens OAuth temporaires signés côté serveur ;
+- les access tokens OAuth restent temporaires (1 heure par défaut) et signés côté serveur ;
+- sans `offline_access`, la réponse OAuth historique reste inchangée ;
+- avec `offline_access`, `/oauth/token` peut émettre un refresh token durable et accepter ensuite `grant_type=refresh_token` ;
+- un refresh token est remplacé à chaque usage ; la réutilisation d'une génération ancienne révoque la famille ;
+- le refresh token brut n'est jamais persisté : seul son hash courant et des références non secrètes de grant/corrélation sont stockés sous `/app/data` ;
+- les TTL refresh sont configurables, avec 30 jours d'inactivité et 90 jours maximum par défaut ;
 - `MCP_AUTH_TOKEN` n'est jamais renvoyé dans les réponses OAuth ;
 - le login web existant `/login` sert d'écran d'autorisation administrateur ;
 - le serveur renvoie un header `WWW-Authenticate` sur les `401` MCP pour permettre à ChatGPT de découvrir `/.well-known/oauth-protected-resource`.
@@ -110,7 +115,7 @@ Avant toute modification, lire :
 - Reverse proxy : Nginx/Plesk vers `127.0.0.1:8787`
 - HTTPS obligatoire
 - Authentification historique : header `Authorization: Bearer <MCP_AUTH_TOKEN>`
-- Authentification ChatGPT : OAuth minimal via les routes `.well-known` et `/oauth/*`
+- Authentification clients MCP : OAuth Authorization Code + PKCE, avec `offline_access` / refresh-token rotatif optionnel via les routes `.well-known` et `/oauth/*`
 
 ## Règle de sécurité
 

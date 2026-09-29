@@ -1,5 +1,18 @@
 # DECISIONS_LOG.md
 
+## 2026-09-30 — Décision OAuth : autorisation durable sans credential permanent
+
+Décision : conserver les access tokens MCP courts et ajouter, uniquement sur demande `offline_access`, un refresh token rotatif. `authorization_code + PKCE` reste le flux de base et les clients historiques qui ne demandent pas `offline_access` conservent leur comportement actuel.
+
+Décision d'autorité : le refresh token n'est pas lié au `Mcp-Session-Id` de transport. Une autorisation logique durable est identifiée par un `oauthGrantId` et reliée au flux initial par un `oauthAttemptRef`; ces deux références non secrètes peuvent traverser AuthInfo et ConnectionContext. La Governed Session reste une autorité distincte et peut être reprise sur un autre transport.
+
+Décision de sécurité : aucun refresh token brut n'est persisté. Le store existant atomique est réutilisé sous `/app/data` et conserve uniquement le hash SHA-256 du token courant, une génération et des métadonnées bornées. Chaque usage fait tourner le token ; la réutilisation d'une ancienne génération révoque toute la famille. Les codes OAuth, access tokens, state et refresh tokens bruts restent exclus des stores et des logs.
+
+Décision de programme : cette évolution ne dilate pas silencieusement A3.2. `TB-W3-A3-02` termine d'abord la corrélation OAuth bornée ; le complément durable devient `TB-W3-A3-03`, dépendant d'A3.2 dans le même `PB-A3 / connection.oauth-attempt-correlation`. Aucune Task runtime n'est créée par cette projection.
+
+Décision de déploiement : PR #207 reste draft et ne doit pas être fusionnée/déployée tant que l'autorité runtime requise pour matérialiser/claim A3.2 n'est pas obtenue. Le fallback GitHub OIDC Task/Session/Locks reste strictement read-only et ne doit pas être élargi implicitement.
+
+
 ## 2026-09-29 — L'intake TLS #201 active un besoin concret, pas une permission de réutiliser le fallback SSH read-only
 
 Décision : l'expiration du certificat public de `mcp.wealthtechinnovations.com` constitue le premier besoin concret pour `TB-COND-SERVER-WRITE`, l'Integration Slot déjà prévu pour des mutations serveur GitHub-first additionnelles. #201 est donc convergé dans ce lot au lieu de créer une nouvelle roadmap ou une nouvelle autorité.
