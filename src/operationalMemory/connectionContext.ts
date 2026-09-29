@@ -15,6 +15,8 @@ export const ConnectionContextSchema = z.object({
   identityAssurance: z.literal('oauth_subject'),
   clientClassification: z.literal('UNRESOLVED'),
   evidenceSource: z.literal('oauth_auth_info'),
+  oauthAttemptRef: z.string().regex(/^oa_[A-Za-z0-9_-]{22,64}$/).nullable().optional(),
+  oauthGrantId: z.string().uuid().nullable().optional(),
   createdAt: z.string().datetime({ offset: true })
 }).strict();
 
@@ -115,6 +117,8 @@ export function createConnectionContext(
     identityAssurance: 'oauth_subject',
     clientClassification: 'UNRESOLVED',
     evidenceSource: 'oauth_auth_info',
+    oauthAttemptRef: input.requestIdentity.oauthAttemptRef ?? null,
+    oauthGrantId: input.requestIdentity.oauthGrantId ?? null,
     createdAt: (input.now ?? (() => new Date()))().toISOString()
   });
 }
