@@ -8417,8 +8417,21 @@
         "governedSession": false,
         "governedLockService": false
       },
-      "reasonCode": "RUNTIME_AUTHORITY_REOBSERVATION_UNAVAILABLE_VIA_APPROVED_GITHUB_FALLBACK",
-      "nextAction": "Obtain fresh read-only evidence for Governed Task Queue, Governed Session and Governed Lock Service through an approved governed runtime channel or extend the approved GitHub read-only evidence catalogue, then re-check collision/ownership before any A3.2 write."
+      "reasonCode": "RUNTIME_AUTHORITY_PROBES_MERGED_NOT_DEPLOYED_TLS_CERT_EXPIRED",
+      "nextAction": "Restore a valid TLS certificate for mcp.wealthtechinnovations.com through a governed infrastructure path, redeploy exact main SHA d53b9de48617920eae7a0bba46f5a7387bc11ab8, then collect fresh mcp_governed_tasks, mcp_governed_sessions and mcp_governed_locks OIDC evidence and verify truncation/ownership/collision before any A3.2 materialization.",
+      "sourceCapability": {
+        "mergeSha": "d53b9de48617920eae7a0bba46f5a7387bc11ab8",
+        "pullRequestNumber": 200,
+        "probes": [
+          "mcp_governed_tasks",
+          "mcp_governed_sessions",
+          "mcp_governed_locks"
+        ],
+        "exactHeadCi": "SUCCESS",
+        "mainCi": "SUCCESS",
+        "runtimeDeployment": "BLOCKED",
+        "runtimeBlocker": "TLS_CERTIFICATE_EXPIRED"
+      }
     }
   }
 }

@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## 2026-09-29 — GitHub OIDC runtime-authority evidence for A3.2
+
+- PR #200 ajoute trois probes read-only bornés sur les autorités existantes : Governed Task Queue, Governed Session et Governed Lock Service.
+- Les probes sont servis in-process et n'utilisent ni raw store reads, ni `docker exec`, ni shell libre ; SSH fallback échoue fermé pour ces probes.
+- Les projections excluent identités/secrets/transports/textes libres et signalent toute troncature.
+- RED #2094/#2095 ciblé ; GREEN #2100/#2101 et CI main #2102 SUCCESS.
+- Merge `d53b9de48617920eae7a0bba46f5a7387bc11ab8`.
+- Governed Deploy #85 reste bloqué par le certificat TLS expiré de `mcp.wealthtechinnovations.com` (`curl (60)`) sur deux attempts ; aucun contournement TLS n'est introduit.
+
 ## 2026-09-28 — W3 A3.1 bounded OAuth correlation inventory
 
 - Ajout d'un inventaire machine-readable du chemin de corrélation OAuth courant, sans modifier le runtime.

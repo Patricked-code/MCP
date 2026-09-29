@@ -1,5 +1,13 @@
 # DECISIONS_LOG.md
 
+## 2026-09-29 — Un probe fusionné n'est pas une preuve runtime ; TLS expiré bloque A3.2 sans downgrade de sécurité
+
+Décision : les trois probes GitHub/OIDC de Task Queue, Governed Session et Governed Lock Service sont désormais versionnés sur `main`, mais ils ne deviennent une autorité de décision A3.2 qu'après déploiement attesté de leur SHA exact et collecte fraîche de leurs artifacts runtime.
+
+Le Governed Deploy du merge `d53b9de48617920eae7a0bba46f5a7387bc11ab8` échoue avant admission runtime parce que le certificat présenté par `mcp.wealthtechinnovations.com` est expiré (`curl (60)`), constaté sur deux attempts. Cette panne de transport ne doit être contournée ni par `curl -k`, ni par désactivation de validation TLS, ni par lecture directe des stores. Il faut restaurer le certificat via une voie gouvernée, puis redéployer et réobserver.
+
+Tant que cela n'est pas fait, `TB-W3-A3-02` reste planning-READY mais exécution fail-closed. GitHub main, Docker status historique ou la seule présence du code ne peuvent pas être substitués à Governed Task Queue / Governed Session / Governed Lock Service live.
+
 ## 2026-09-28 — A3.2 reste planning-READY mais aucune exécution n'est autorisée sans réobservation des autorités runtime
 
 Décision : la readiness du Program Backlog reste une projection de dépendances, pas une permission d'exécution. Après A3.1, `TB-W3-A3-02` reste donc `READY` parce que sa dépendance est satisfaite. Cette readiness ne doit pas être rétrogradée artificiellement parce qu'un client ne peut pas observer une autorité runtime.
