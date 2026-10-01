@@ -2410,7 +2410,7 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-B3-01",
+      "TB-W3-B3-02",
       "TB-W3-C1-01",
       "TB-W4-G1-01"
     ]
@@ -3532,10 +3532,10 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "W2 PASS_WITH_EVIDENCE; all direct W2 dependencies are DONE. Planning-ready only: live Task Queue/Session/locks/main and collision domains must be reobserved before any runtime materialization or mutation."
+        "reason": "PASS_WITH_EVIDENCE: core session/task/lock/context authorities already accept TargetScope, but no MCP tool exposes it; 8 residual single-repository consumers (5 to generalize, 3 historical defaults) and 7 accepted self-management boundaries are classified and machine-checked."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -3602,10 +3602,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "TB-W3-B3-01 PASS_WITH_EVIDENCE. Planning-ready: generalize only the five GENERALIZE_IN_B3_2 consumers of docs/governance/multi-repository-inventory-20261001.json additively, preserving historical single-repository records and defaults."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -8694,5 +8694,31 @@
         "runtimeBlocker": "TLS_CERTIFICATE_EXPIRED"
       }
     }
+  },
+  "w3B3InventoryHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "661a0517aebb3bc6dafe4eec4afc3677820ed510",
+    "inventoryPath": "docs/governance/multi-repository-inventory-20261001.json",
+    "completedBlueprints": [
+      "TB-W3-B3-01"
+    ],
+    "unlockedBlueprints": [
+      "TB-W3-B3-02"
+    ],
+    "preservedReadyBlueprints": [
+      "TB-W3-A3-02",
+      "TB-W3-C1-01",
+      "TB-W4-G1-01"
+    ],
+    "skippedForCollision": [
+      {
+        "blueprintId": "TB-W3-A3-02",
+        "reason": "Runtime TASK-20260929-001 and PR #207 own connection:oauth-attempt-correlation"
+      }
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
   }
 }
