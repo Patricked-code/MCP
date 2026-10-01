@@ -9083,5 +9083,52 @@
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
     "serverMutations": 0
+  },
+  "w4G3ToolSurfaceHandoff": {
+    "status": "GREEN_CANDIDATE",
+    "observedMainSha": "ba950c51462e7e2076afaafe412429860ff744ae",
+    "blueprintId": "TB-W4-G3-01",
+    "lotId": "G3",
+    "reconciledV1": "PR #87 delivered the bounded ClientToolSurfaceAttestation schema (session/connection binding, <= 5 min) and CapabilityReality contracts; nothing wrote or consumed the attestation.",
+    "scope": "Add the missing server-vs-client observation evidence: a governed write path for the client-observed surface and its read-only comparison with the Current State tool catalogue.",
+    "delivered": [
+      "mcp_attest_client_tool_surface: client declares surface and per-tool callability; the server assigns attestationId, observedAt (server time), expiresAt (<= 300 s), session and connection-context binding, source CLIENT_ATTESTATION and client_attestation provenance",
+      "GovernedSessionService.attestClientToolSurface with expectedSessionRevision, binding/ownership checks and audit event client.tool_surface_attested",
+      "projectRegisteredCapabilityRealities merges a current attestation into callability only (stale -> UNKNOWN with client_attestation:stale); authorization stays UNKNOWN",
+      "governed context proof.toolSurface: server catalogue digest/count vs client status ATTESTED/EXPIRED/UNKNOWN and bounded comparison"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 36940483774,
+      "sessionsRunId": 36940487533,
+      "locksRunId": 36940490728,
+      "observedAt": "2026-10-01T23:23:06Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionOnAttestationToolSurface": false
+    },
+    "invariants": [
+      "CLIENT_ATTESTATION_NEVER_AUTHORIZES",
+      "SERVER_CATALOGUE_NEVER_PROVES_CLIENT_SURFACE",
+      "ABSENT_ATTESTATION_IS_UNKNOWN",
+      "EXPIRED_ATTESTATION_IS_NOT_CURRENT_EVIDENCE",
+      "SERVER_ASSIGNED_TIME_AND_BINDING",
+      "NO_NEW_STORE_OR_AUTHORITY"
+    ],
+    "catalogue": {
+      "registeredToolCountBefore": 135,
+      "registeredToolCountAfter": 136,
+      "newTool": "mcp_attest_client_tool_surface"
+    },
+    "doneRequires": [
+      "exact-head CI",
+      "merge exact head",
+      "Governed Deploy runtimeRevision==merge SHA",
+      "read-only OIDC attestation (mcp_git_status, docker_status)"
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
   }
 }

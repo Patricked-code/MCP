@@ -9,6 +9,7 @@ import type {
 } from '../governance/operationalDecision.js';
 import type { ClientEvidence } from '../operationalMemory/connectionContext.js';
 import type { ClientPresence } from '../operationalMemory/clientPresence.js';
+import type { ToolSurfaceProjection } from '../governance/toolSurfaceAttestation.js';
 import type {
   GovernedCheckpoint,
   GovernedLockRecord,
@@ -180,5 +181,6 @@ export type GovernedOperationalContext = {
     /** Always projected by the governed service after A2.2.2; optional for historical consumers. */
     clientEvidence?: ClientEvidence;
     clientPresence?: ClientPresence;
+    toolSurface?: ToolSurfaceProjection;
   };
 };

@@ -6,6 +6,7 @@ import {
   deriveTaskReality,
   projectRegisteredCapabilityRealities
 } from '../governance/operationalDecision.js';
+import { deriveToolSurfaceProjection } from '../governance/toolSurfaceAttestation.js';
 import { deriveClientEvidence } from '../operationalMemory/connectionContext.js';
 import type { ClientObservationRecorder } from '../operationalMemory/clientPresence.js';
 import type { GovernedLockService } from '../operationalMemory/lockService.js';
@@ -314,7 +315,8 @@ export function createGovernedOperationalContextService(
       ?? null;
     const capabilityReality = projectRegisteredCapabilityRealities(
       currentState?.catalogue?.tools ?? [],
-      generatedAt
+      generatedAt,
+      session?.clientToolSurfaceAttestation ?? null
     );
     const githubWorkStateAvailable = github.status === 'CURRENT';
     const runtimeAligned = Boolean(
@@ -474,6 +476,12 @@ export function createGovernedOperationalContextService(
         runtimeRealtimeAvailable,
         limitations: [...new Set(limitations)].slice(0, 20),
         clientEvidence: deriveClientEvidence(session?.connectionContext),
+        toolSurface: deriveToolSurfaceProjection({
+          catalogueTools: currentState?.catalogue?.tools ?? [],
+          catalogueDigest: currentState?.source.catalogueDigest ?? liveState?.capabilities?.catalogueDigest ?? null,
+          attestation: session?.clientToolSurfaceAttestation ?? null,
+          now: generatedAt
+        }),
         ...(options.clientPresence
           ? { clientPresence: options.clientPresence.presenceFor(session?.ownerPrincipalId ?? null) }
           : {})

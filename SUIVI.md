@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-10-01 — W4 G3 Tool Surface Attestation (résiduel) — GREEN candidate
+
+- Reprise current-first : `main=ba950c51462e7e2076afaafe412429860ff744ae`. Sélection : A3.2 (collision PR #207), B3.2 (gate propriétaire) écartés ; `TB-W4-G3-01` retenu.
+- Préflight runtime OIDC (runs `36940483774` / `36940487533` / `36940490728`, 23:23Z, `truncated=false`) : 0 lock, aucune session active, aucune collision sur `attestation:tool-surface`. PR #207 ne modifie que le type `RequestIdentity` et `requestIdentity()` : aucun chevauchement avec ce lot. Aucun claim/session/lock créé.
+- Réconciliation de G3 V1 (PR #87) : le schéma d'attestation et les contrats `CapabilityReality` existaient, mais rien n'écrivait ni ne consommait l'attestation.
+- Livré : outil `mcp_attest_client_tool_surface` (le client déclare la surface et la callabilité par outil ; le serveur fixe identifiant, horodatage, expiration ≤ 300 s, liaison session/contexte de connexion et provenance) ; méthode de session avec révision attendue et événement d'audit `client.tool_surface_attested` ; fusion de la callabilité attestée dans la réalité des capacités (périmée → `UNKNOWN`) ; projection `proof.toolSurface` (catalogue serveur vs attestation client). Une attestation ne vaut jamais autorisation : `safeNow` et `mayMutate` restent faux.
+- Catalogue : 135 → 136 outils, cartographie régénérée avec l'outillage du dépôt.
+- Tests : RED vérifié pour les bonnes raisons (module absent, projection absente, 12e outil absent) ; suite locale 785/785 ; tous les gates verts.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale G3 DONE.
+
 ## 2026-10-01 — B3.2 : gate de décision propriétaire (sélection du projet cible)
 
 - Reprise current-first : `main=18e227fa08178272c0f5d678379351377425af0a`. Réexamen de B3.2 (finding d'interblocage) avant toute exécution.

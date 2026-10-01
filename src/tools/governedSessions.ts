@@ -26,6 +26,7 @@ import {
   type TaskLifecycleCoordinator
 } from '../operationalMemory/taskLifecycleCoordinator.js';
 import {
+  ClientToolSurfaceCapabilitySchema,
   LockStoreDocumentSchema,
   SessionStoreDocumentSchema,
   createEmptyLockStoreDocument,
@@ -346,6 +347,25 @@ export function registerGovernedSessionTools(
       expectedLockRevision: z.number().int().nonnegative()
     },
     async (input, extra) => handled(() => activeDependencies.locks.releaseLock(
+      input,
+      sessionRequestFromToolExtra(extra)
+    ))
+  );
+
+  server.tool(
+    'mcp_attest_client_tool_surface',
+    'Enregistre une attestation bornée (≤ 5 min, horodatée par le serveur) de la surface d’outils observée par le client. Elle informe la callabilité, ne vaut jamais autorisation.',
+    {
+      governedSessionId: GovernedSessionIdSchema,
+      expectedSessionRevision: ExpectedSessionRevisionSchema,
+      surface: z.string().trim().min(1).max(80).regex(/^[a-z0-9][a-z0-9._:-]*$/),
+      capabilities: z.array(ClientToolSurfaceCapabilitySchema.omit({ source: true })).min(1).max(256),
+      provenance: z.array(
+        z.string().trim().min(1).max(80).regex(/^[a-z0-9][a-z0-9._:-]*$/)
+      ).max(19).default([]),
+      validitySeconds: z.number().int().min(1).max(300).default(300)
+    },
+    async (input, extra) => handled(() => activeDependencies.sessions.attestClientToolSurface(
       input,
       sessionRequestFromToolExtra(extra)
     ))

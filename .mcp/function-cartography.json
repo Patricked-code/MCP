@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "8447f9dcc5078fdc9287068c9a791ab5366cc8f10ead5770f6830ed4aca34f1b",
-  "registeredToolCount": 135,
-  "readOnlyToolCount": 84,
+  "catalogueDigest": "e5bb71f47a15c5cd6ed7616b67886d0a6e300c54602d0a6fc1cffbc4b6490264",
+  "registeredToolCount": 136,
+  "readOnlyToolCount": 85,
   "writeToolCount": 51,
   "resourceCount": 2,
   "tools": [
@@ -2709,6 +2709,106 @@
         "additionalProperties": false
       },
       "contractDigest": "18f922dd066050a145cef5bc8920f82717270e4d9a0a42fe8efca7b6642317c9"
+    },
+    {
+      "name": "mcp_attest_client_tool_surface",
+      "title": null,
+      "description": "Enregistre une attestation bornée (≤ 5 min, horodatée par le serveur) de la surface d’outils observée par le client. Elle informe la callabilité, ne vaut jamais autorisation.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "surface": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+          },
+          "capabilities": {
+            "minItems": 1,
+            "maxItems": 256,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+                },
+                "callability": {
+                  "type": "string",
+                  "enum": [
+                    "CALLABLE",
+                    "NOT_CALLABLE",
+                    "UNKNOWN"
+                  ]
+                },
+                "provider": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80,
+                  "pattern": "^[a-z0-9][a-z0-9._-]*$"
+                },
+                "repositoryScope": {
+                  "type": "string",
+                  "const": "Patricked-code/MCP"
+                }
+              },
+              "required": [
+                "name",
+                "callability",
+                "provider",
+                "repositoryScope"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "provenance": {
+            "default": [],
+            "maxItems": 19,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+            }
+          },
+          "validitySeconds": {
+            "default": 300,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 300
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision",
+          "surface",
+          "capabilities",
+          "provenance",
+          "validitySeconds"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "232350d256d5b19f7bee36ed34ba2f88e8951848d52ab9acedeb8448ca64ad46"
     },
     {
       "name": "mcp_bridge",
