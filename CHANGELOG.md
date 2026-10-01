@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 2026-10-01 — OAuth authorization consent livré et attesté
+
+- PR #208 fusionnée au SHA `2febc46` ; CI main `36905634628` et Governed Deploy `36905634643` réussis ; preuves OIDC S1 `36905914920` / `36905918563`.
+- `TB-W3-OAUTH-CONSENT-01` et `PB-OAUTH-CONSENT` clôturés DONE.
+
+
 ## 2026-10-01 — OAuth authorization consent (candidate)
 
 - `/oauth/authorize` affiche désormais une page de consentement opérateur (client, hôte de redirection, accès demandé) au lieu d'émettre directement un code.
