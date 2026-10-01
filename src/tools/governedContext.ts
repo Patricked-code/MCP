@@ -10,6 +10,8 @@ import {
 import { liveStateEngine } from '../liveState/engine.js';
 import type { GovernedSessionService } from '../operationalMemory/sessionService.js';
 import { operationalMemoryConfig } from '../operationalMemory/config.js';
+import { getDefaultClientObservationRecorder } from '../operationalMemory/clientPresence.js';
+import { getDefaultOperationalEventJournal } from '../operationalMemory/eventJournal.js';
 import {
   getGovernedSessionToolDependencies,
   sessionRequestFromToolExtra,
@@ -54,7 +56,16 @@ export function getGovernedContextToolDependencies(): GovernedContextToolDepende
       gateMode: operationalMemoryConfig.writeGateMode,
       existingWriteToolsEnabled: env.ENABLE_WRITE_TOOLS,
       currentState: getCurrentStateService(),
-      audit: operational.audit
+      audit: operational.audit,
+      ...(operationalMemoryConfig.enabled
+        ? {
+            clientPresence: getDefaultClientObservationRecorder(getDefaultOperationalEventJournal({
+              filePath: operationalMemoryConfig.eventJournalPath,
+              maxBytes: operationalMemoryConfig.eventMaxBytes,
+              archives: operationalMemoryConfig.eventArchives
+            }))
+          }
+        : {})
     }),
     sessions: operational.sessions
   };

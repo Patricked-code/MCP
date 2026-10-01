@@ -7,6 +7,7 @@ import {
   projectRegisteredCapabilityRealities
 } from '../governance/operationalDecision.js';
 import { deriveClientEvidence } from '../operationalMemory/connectionContext.js';
+import type { ClientObservationRecorder } from '../operationalMemory/clientPresence.js';
 import type { GovernedLockService } from '../operationalMemory/lockService.js';
 import {
   NOOP_OPERATIONAL_AUDIT,
@@ -47,6 +48,7 @@ type ContextServiceOptions = {
   now?: () => Date;
   audit?: OperationalAudit;
   currentState?: Pick<CurrentStateService, 'getInventory'>;
+  clientPresence?: Pick<ClientObservationRecorder, 'presenceFor'>;
 };
 
 export type GovernedOperationalContextService = {
@@ -471,7 +473,10 @@ export function createGovernedOperationalContextService(
         identityAssurance: session?.identityAssurance ?? null,
         runtimeRealtimeAvailable,
         limitations: [...new Set(limitations)].slice(0, 20),
-        clientEvidence: deriveClientEvidence(session?.connectionContext)
+        clientEvidence: deriveClientEvidence(session?.connectionContext),
+        ...(options.clientPresence
+          ? { clientPresence: options.clientPresence.presenceFor(session?.ownerPrincipalId ?? null) }
+          : {})
       }
     };
     await audit.record({ type: 'context.read', context });

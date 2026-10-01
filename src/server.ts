@@ -23,7 +23,10 @@ import {
 } from './governance/scopedWriteGate.js';
 import { operationalMemoryConfig } from './operationalMemory/config.js';
 import { getDefaultOperationalEventJournal } from './operationalMemory/eventJournal.js';
-import { createClientObservationRecorder } from './operationalMemory/clientPresence.js';
+import {
+  getDefaultClientObservationRecorder,
+  getDefaultSyntheticProbeClock
+} from './operationalMemory/clientPresence.js';
 import { startOperationalMemoryMaintenance } from './operationalMemory/maintenance.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 import {
@@ -469,7 +472,9 @@ export async function startHttpServer(): Promise<void> {
     isAuthenticated: isWebAuthenticated
   });
 
+  const syntheticProbeClock = getDefaultSyntheticProbeClock();
   app.get('/health', (_req, res) => {
+    syntheticProbeClock.record('health_probe');
     res.json({
       ok: true,
       service: 'wealthtech_ssh_bridge',
@@ -632,13 +637,11 @@ export async function startHttpServer(): Promise<void> {
   // G1 Client Presence: only OAuth-authenticated MCP traffic is journaled as a
   // real client observation; it never blocks or fails the request.
   const clientObservationRecorder = operationalMemoryConfig.enabled
-    ? createClientObservationRecorder({
-        journal: getDefaultOperationalEventJournal({
-          filePath: operationalMemoryConfig.eventJournalPath,
-          maxBytes: operationalMemoryConfig.eventMaxBytes,
-          archives: operationalMemoryConfig.eventArchives
-        })
-      })
+    ? getDefaultClientObservationRecorder(getDefaultOperationalEventJournal({
+        filePath: operationalMemoryConfig.eventJournalPath,
+        maxBytes: operationalMemoryConfig.eventMaxBytes,
+        archives: operationalMemoryConfig.eventArchives
+      }))
     : null;
   app.use('/mcp', (req, _res, next) => {
     if (clientObservationRecorder) {

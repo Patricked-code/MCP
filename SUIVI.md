@@ -1,5 +1,14 @@
 # SUIVI.md
 
+## 2026-10-01 — W4 G2 Two-clock Presence — GREEN candidate
+
+- Reprise current-first après une interruption d'environ 4 h (limite d'usage) : `main=261d2976bf373a097a080becda48f5df1c97c84d` inchangé, PR #207 inchangée, aucune nouvelle PR. Sélection : A3.2 (collision PR #207), B3.2 (attente TargetContext validé) écartés ; `TB-W4-G2-01` retenu.
+- Préflight runtime OIDC **rafraîchi** (runs `36938631259` / `36938634495` / `36938636965`, 23:03Z, `truncated=false`) : 0 lock, aucune session active, file inchangée (`storeRevision=242`), aucune collision sur `presence:two-clock`. Le préflight de 19:00Z n'a pas été réutilisé comme preuve courante. Aucun claim/session/lock créé.
+- Implémentation : deux horloges en mémoire, séparées. `lastClientObservedAt` n'avance que sur le trafic `/mcp` OAuth ; `lastSyntheticProbeAt` n'avance que sur `/health` et sur le token partagé (automatisation, attestation de déploiement). États dérivés : `ACTIVE_OBSERVED` (≤ 5 min), `RECENTLY_OBSERVED` (≤ 60 min), `STALE` (jamais « déconnecté »), `UNKNOWN`, `AUTH_EXPIRED` (dernier jeton observé expiré) ; `REVOKED` n'est jamais produit sans preuve de révocation.
+- Projection lecture seule `proof.clientPresence` dans le contexte gouverné, pour le principal OAuth propriétaire de la session ; `authoritative=false`, aucune décision d'ownership, de claim ou de liveness n'en dépend.
+- Tests : 5 tests ciblés (RED : fonctions absentes) ; suite locale verte ; tous les gates verts.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale G2 DONE, puis recalcul du programme.
+
 ## 2026-10-01 — W4 G1 Client Presence — DONE et attesté
 
 - PR #213 fusionnée sous garde exact-head depuis `4d8009bbb9ba15fc04902a7ee859e7b7fdcacb46` au merge `90df50b2497cdc17eb01a60c9223ca06fc715893` ; CI PR `36909784123`, CI main `36909975085`, Governed Deploy `36909975077` SUCCESS.

@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-01 — W4 G2 Two-clock Presence (candidate)
+
+- Deux horloges séparées : observation client réelle (OAuth) et sonde synthétique (`/health`, token partagé).
+- États de présence bornés (`ACTIVE_OBSERVED`, `RECENTLY_OBSERVED`, `STALE`, `UNKNOWN`, `AUTH_EXPIRED`) projetés en lecture seule dans `proof.clientPresence` du contexte gouverné. Aucun nouveau store.
+
 ## 2026-10-01 — W4 G1 Client Presence livré et attesté
 
 - PR #213 fusionnée au SHA `90df50b` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `36910252863` / `36910256304`.
