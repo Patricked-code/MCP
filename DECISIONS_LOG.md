@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-10-01 — B3.2 relève d'une décision propriétaire : quel projet un serveur cible-t-il ?
+
+Précision de la décision du même jour (« B3.2 attend un TargetContext validé ») : le réexamen montre que ce n'est pas un simple producteur manquant mais une question d'architecture ouverte, déjà listée comme telle par le document canonique des 73 contrats. Le `TargetContext` de Live State est singulier ; il faut choisir comment un serveur sélectionne son projet cible parmi les projets GitRegistry V2. Les options (configuration opérateur par serveur, Live State multi-projets, résolution par session, maintien d'une surface d'outils mono-dépôt) ont des compromis réels et l'une d'elles demanderait d'amender un invariant GWC-10.
+
+L'agent ne tranche pas : `TB-W3-B3-02` est gardé `CONDITIONAL` derrière la gate `OWNER_DECISION_B3_TARGET_PROJECT_SELECTION`. Recommandation documentée : configuration opérateur d'un projet cible par serveur, l'incrément le plus petit et réversible qui respecte tous les invariants GWC-10. Quel que soit le choix, un TargetScope reste une identité/ownership sans autorité d'écriture, de déploiement ou de SHA, et son absence garde le sens historique mono-dépôt.
+
 ## 2026-10-01 — La présence client est une projection à deux horloges, jamais une autorité
 
 Décision : la présence est dérivée uniquement de l'horloge client (trafic `/mcp` OAuth). L'horloge synthétique (`/health`, token partagé) est exposée à côté pour distinguer « serveur sain » et « client réellement présent », mais ne prouve jamais une présence client. `STALE` signifie seulement « non observé récemment », jamais « déconnecté ». `REVOKED` reste réservé à une future preuve de révocation et n'est jamais déduit.
