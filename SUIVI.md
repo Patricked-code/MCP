@@ -1,5 +1,13 @@
 # SUIVI.md
 
+## 2026-10-01 — W4 G2 Two-clock Presence — DONE et attesté ; PB-G12 DONE
+
+- PR #215 fusionnée sous garde exact-head depuis `15320ecc925aae36fafd56ee19d6a16cd6ad3a82` au merge `e21320990a4e8534f4c261b3bec6021417b4efb6` ; CI PR `36938833569`, CI main `36938973433`, Governed Deploy `36938973474` SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `36939139244` → S1 `main@e213209`, worktree propre, push désactivé ; `docker_status` run `36939142926` → conteneur healthy.
+- Program Backlog : `TB-W4-G2-01 = DONE` ; `PB-G12 = DONE` (tous ses blueprints attestés, sous-objectifs et non-régressions couverts) ; compteurs de disposition recalculés (DONE 14). `TB-W4-G3-01` (Tool Surface Attestation) devient READY. Aucun Task, session, lock ou mutation.
+- Finding de planification à réconcilier : B3.2 est en amont de presque tout le reste du programme (C3→C4/C5→C345→D→E→F, H, I, J). Ma condition « TargetContext validé par le registre » ne peut être satisfaite qu'après `TB-COND-C1-ACTIVATE`, qui dépend lui-même de C345-02, donc de B3.2 : la lecture stricte crée un interblocage. À réexaminer avant toute exécution de B3.2.
+- NEXT_ACTION : réexaminer B3.2 (sens de « validated » vs autorité GitRegistry V2 et absence d'élargissement de permission) ; sinon `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W4-G3-01`.
+
 ## 2026-10-01 — W4 G2 Two-clock Presence — GREEN candidate
 
 - Reprise current-first après une interruption d'environ 4 h (limite d'usage) : `main=261d2976bf373a097a080becda48f5df1c97c84d` inchangé, PR #207 inchangée, aucune nouvelle PR. Sélection : A3.2 (collision PR #207), B3.2 (attente TargetContext validé) écartés ; `TB-W4-G2-01` retenu.

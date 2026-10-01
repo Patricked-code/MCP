@@ -73,9 +73,9 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 13,
+      "DONE": 14,
       "PARTIALLY_IMPLEMENTED": 7,
-      "KNOWN_NOT_ANALYZED": 7,
+      "KNOWN_NOT_ANALYZED": 6,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
       "DEFERRED": 3
@@ -1615,7 +1615,7 @@
     {
       "id": "PB-G12",
       "title": "G1/G2 Client Presence and two-clock model",
-      "disposition": "KNOWN_NOT_ANALYZED",
+      "disposition": "DONE",
       "integrationSlot": "presence.client-two-clock",
       "implementationMode": "EXTEND",
       "existingAuthorities": [
@@ -1626,7 +1626,7 @@
       "dependsOn": [
         "PB-A2.2"
       ],
-      "nextAction": "Separate real client observations from synthetic probes and derive bounded presence states.",
+      "nextAction": "Reuse classifyClientObservation()/createClientObservationRecorder() and proof.clientPresence as the existing presence projection; never derive ownership, claim, lock or liveness from it. A verifiable revocation source must enter through the presence.client-two-clock Integration Slot with its own RED/GREEN lot before REVOKED can be produced.",
       "subtasks": [
         "Add lastClientObservedAt semantics",
         "Add lastSyntheticProbeAt semantics",
@@ -2411,7 +2411,7 @@
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
       "TB-W3-B3-02",
-      "TB-W4-G2-01"
+      "TB-W4-G3-01"
     ]
   },
   "agentHandoffContract": {
@@ -5187,10 +5187,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #215 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. lastClientObservedAt (OAuth /mcp only) and lastSyntheticProbeAt (/health, shared credential) are separate clocks; bounded presence states are projected read-only in governed context proof.clientPresence."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5220,6 +5220,48 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 215,
+        "redHeadSha": "b543c9e3f320b7df37b7c1ebf396b8f18de2fcf3",
+        "candidateHeadSha": "15320ecc925aae36fafd56ee19d6a16cd6ad3a82",
+        "prCiRunId": 36938833569,
+        "testCount": 773,
+        "mergeSha": "e21320990a4e8534f4c261b3bec6021417b4efb6",
+        "mainCiRunId": 36938973433,
+        "governedDeployRunId": 36938973474,
+        "governedDeployRuntimeRevision": "e21320990a4e8534f4c261b3bec6021417b4efb6",
+        "runtimePreflightRunIds": [
+          36938631259,
+          36938634495,
+          36938636965
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 36939139244,
+            "workflowSha": "e21320990a4e8534f4c261b3bec6021417b4efb6",
+            "status": "SUCCESS",
+            "observed": "main@e21320990a4e8534f4c261b3bec6021417b4efb6, working_tree_changes=0, fetch read-only, push disabled",
+            "artifactDigest": "sha256:7b293804965028ec2f6a8c80b8870a996aab8c2c135dfce0ae1f964448d8e5f7",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-01T23:08:44.304Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 36939142926,
+            "workflowSha": "e21320990a4e8534f4c261b3bec6021417b4efb6",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy",
+            "artifactDigest": "sha256:e9ae63209c171906bc007ad8bf13d8046b309735a66b52bad16da062a75972a7",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-01T23:08:43.617Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-01T23:09:00Z"
       }
     },
     {
@@ -5255,7 +5297,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -8928,7 +8970,7 @@
     ]
   },
   "w4G2PresenceHandoff": {
-    "status": "GREEN_CANDIDATE",
+    "status": "PASS_WITH_EVIDENCE",
     "observedMainSha": "261d2976bf373a097a080becda48f5df1c97c84d",
     "blueprintId": "TB-W4-G2-01",
     "lotId": "G2",
@@ -8969,6 +9011,13 @@
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
-    "serverMutations": 0
+    "serverMutations": 0,
+    "mergeSha": "e21320990a4e8534f4c261b3bec6021417b4efb6",
+    "completedBlueprints": [
+      "TB-W4-G2-01"
+    ],
+    "unlockedBlueprints": [
+      "TB-W4-G3-01"
+    ]
   }
 }
