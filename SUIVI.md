@@ -1,5 +1,12 @@
 # SUIVI.md
 
+## 2026-10-01 — W4 G1 Client Presence — DONE et attesté
+
+- PR #213 fusionnée sous garde exact-head depuis `4d8009bbb9ba15fc04902a7ee859e7b7fdcacb46` au merge `90df50b2497cdc17eb01a60c9223ca06fc715893` ; CI PR `36909784123`, CI main `36909975085`, Governed Deploy `36909975077` SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `36910252863` → S1 `main@90df50b`, worktree propre, push désactivé ; `docker_status` run `36910256304` → conteneur healthy.
+- Program Backlog : `TB-W4-G1-01 = DONE` ; `TB-W4-G2-01` (Two-clock Presence) devient READY. Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → A3.2 (collision PR #207), B3.2 (attente TargetContext validé), puis `TB-W4-G2-01`.
+
 ## 2026-10-01 — W4 G1 Client Presence (observation client réelle) — GREEN candidate
 
 - Reprise current-first : `main=1a2303722b4e30f02d056c455ff5088739bd57ac`. Sélection : A3.2 (collision PR #207), B3.2 (attente TargetContext validé) écartés ; `TB-W4-G1-01` retenu.
