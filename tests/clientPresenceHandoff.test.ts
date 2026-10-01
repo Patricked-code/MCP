@@ -30,6 +30,6 @@ test('TB-W4-G1-01 is DONE only with exact-head, deploy and read-only attestation
   assert.equal(evidence?.runtimeTasksCreated, 0);
   assert.equal(evidence?.runtimeLocksCreated, 0);
 
-  assert.equal(byId.get('TB-W4-G2-01')?.readiness?.state, 'READY');
+  assert.ok(['READY', 'DONE'].includes(byId.get('TB-W4-G2-01')?.readiness?.state));
   assert.equal(program.w4G1PresenceHandoff?.status, 'PASS_WITH_EVIDENCE');
 });

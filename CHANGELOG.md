@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-01 — W4 G2 Two-clock Presence livré et attesté
+
+- PR #215 fusionnée au SHA `e213209` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `36939139244` / `36939142926`.
+- `TB-W4-G2-01` et `PB-G12` clôturés DONE ; `TB-W4-G3-01` débloqué.
+
 ## 2026-10-01 — W4 G2 Two-clock Presence (candidate)
 
 - Deux horloges séparées : observation client réelle (OAuth) et sonde synthétique (`/health`, token partagé).
