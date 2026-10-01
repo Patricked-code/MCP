@@ -23,6 +23,7 @@ import {
 } from './governance/scopedWriteGate.js';
 import { operationalMemoryConfig } from './operationalMemory/config.js';
 import { getDefaultOperationalEventJournal } from './operationalMemory/eventJournal.js';
+import { createClientObservationRecorder } from './operationalMemory/clientPresence.js';
 import { startOperationalMemoryMaintenance } from './operationalMemory/maintenance.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
 import {
@@ -627,6 +628,27 @@ export async function startHttpServer(): Promise<void> {
   });
 
   app.use('/mcp', requireBearerToken);
+
+  // G1 Client Presence: only OAuth-authenticated MCP traffic is journaled as a
+  // real client observation; it never blocks or fails the request.
+  const clientObservationRecorder = operationalMemoryConfig.enabled
+    ? createClientObservationRecorder({
+        journal: getDefaultOperationalEventJournal({
+          filePath: operationalMemoryConfig.eventJournalPath,
+          maxBytes: operationalMemoryConfig.eventMaxBytes,
+          archives: operationalMemoryConfig.eventArchives
+        })
+      })
+    : null;
+  app.use('/mcp', (req, _res, next) => {
+    if (clientObservationRecorder) {
+      const authInfo = (req as express.Request & {
+        auth?: import('@modelcontextprotocol/sdk/server/auth/types.js').AuthInfo;
+      }).auth;
+      void clientObservationRecorder.observe(authInfo);
+    }
+    next();
+  });
 
   const transports: Record<string, StreamableHTTPServerTransport> = {};
   const transportBootstraps: Record<string, Promise<void>> = {};

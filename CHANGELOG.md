@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-01 — W4 G1 Client Presence (candidate)
+
+- Les requêtes MCP authentifiées par OAuth sont journalisées comme observation client réelle (`client.observed`, digest du principal, au plus une par minute et par principal).
+- Le token partagé, les sondes `/health` et les heartbeats d'agent ne comptent jamais comme présence client. Aucun nouveau store.
+
 ## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness livré et attesté
 
 - PR #211 fusionnée au SHA `e714350` ; CI main et Governed Deploy réussis ; probe S1 `36908751224` : 5 mappings, tous BLOCKED.
