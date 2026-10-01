@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 2026-10-01 — OAuth authorization consent (candidate)
+
+- `/oauth/authorize` affiche désormais une page de consentement opérateur (client, hôte de redirection, accès demandé) au lieu d'émettre directement un code.
+- Le code n'est émis qu'après une approbation POST same-origin, authentifiée et portant un ticket HMAC lié à la demande exacte (10 minutes) ; un refus renvoie `access_denied`.
+- Échange de token, PKCE, login et validations inchangés ; aucun nouveau store ni autorité.
+- Program Backlog : `PB-OAUTH-CONSENT` / `TB-W3-OAUTH-CONSENT-01` (décision propriétaire, option 1).
+
+
 ## 2026-09-29 — Intake #201 converged into conditional bounded server WRITE
 
 - L'incident de certificat TLS expiré remonté par Governed-Repository-Template est convergé dans `PB-GITHUB-FIRST-WRITE / TB-COND-SERVER-WRITE`, sans programme parallèle.

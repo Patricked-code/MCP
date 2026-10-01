@@ -63,7 +63,7 @@
     "NEEDS_DECISION"
   ],
   "summary": {
-    "workItems": 36,
+    "workItems": 37,
     "todoUnchecked": 35,
     "roadmapLots": 33,
     "gwcBlueprints": 18,
@@ -74,7 +74,7 @@
     "externalActiveRecords": 25,
     "dispositionCounts": {
       "DONE": 12,
-      "PARTIALLY_IMPLEMENTED": 7,
+      "PARTIALLY_IMPLEMENTED": 8,
       "KNOWN_NOT_ANALYZED": 7,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
@@ -1286,6 +1286,14 @@
         "coveredBy": "PB-SSH-ACCESS",
         "disposition": "PARTIALLY_IMPLEMENTED",
         "observedMainSha": "5c08e865eef7877f5450262db726b17fe2110a2e"
+      },
+      {
+        "sourceKey": "user:oauth-authorization-consent:20260930",
+        "sourceId": "USER-OAUTH-CONSENT-20260930",
+        "title": "Explicit operator approval before an OAuth authorization code is issued",
+        "coveredBy": "PB-OAUTH-CONSENT",
+        "disposition": "PARTIALLY_IMPLEMENTED",
+        "observedMainSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c"
       }
     ]
   },
@@ -2286,6 +2294,34 @@
         "Server writes remain behind MCP scoped-write governance",
         "Existing GitHub-first/OIDC read-only and deploy paths remain unchanged"
       ]
+    },
+    {
+      "id": "PB-OAUTH-CONSENT",
+      "title": "OAuth authorization explicit operator consent",
+      "disposition": "PARTIALLY_IMPLEMENTED",
+      "integrationSlot": "connection.oauth-authorization-consent",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "OAuth authorization endpoint (src/oauth.ts)",
+        "Operator web session (src/server.ts)",
+        "OAuth token endpoint and PKCE verification"
+      ],
+      "dependsOn": [
+        "PB-A3"
+      ],
+      "nextAction": "Land TB-W3-OAUTH-CONSENT-01 through exact-head CI, protected merge, governed deploy and read-only attestation; keep the code-issuance block intact so PR #207 A3.2 correlation merges without semantic conflict.",
+      "subtasks": [
+        "Render an explicit consent page for authenticated authorize requests instead of issuing a code",
+        "Issue the code only on an approved, same-origin POST carrying an HMAC ticket bound to the exact request",
+        "Redirect a denied consent with access_denied and no code",
+        "Keep token exchange, PKCE, login redirect and request validation unchanged"
+      ],
+      "nonRegression": [
+        "No new store, session authority or client registry",
+        "No raw code, state, verifier or token persisted or logged",
+        "Existing authorization_code + PKCE token exchange unchanged",
+        "Unauthenticated authorize still redirects to the operator login"
+      ]
     }
   ],
   "executionModel": {
@@ -2376,6 +2412,7 @@
       "TB-W3-A3-02",
       "TB-W3-B3-01",
       "TB-W3-C1-01",
+      "TB-W3-OAUTH-CONSENT-01",
       "TB-W4-G1-01"
     ]
   },
@@ -8000,6 +8037,76 @@
         "pilotResultingRevision": 28,
         "observedAt": "2026-09-26T16:22:54+00:00"
       }
+    },
+    {
+      "id": "TB-W3-OAUTH-CONSENT-01",
+      "workItemId": "PB-OAUTH-CONSENT",
+      "waveId": "W3",
+      "lotId": "OAUTH-CONSENT.1",
+      "title": "Explicit operator consent before OAuth code issuance",
+      "objective": "Require an explicit, same-origin, ticket-bound operator approval before /oauth/authorize issues an authorization code, without changing the token exchange or adding any store or authority.",
+      "integrationSlot": "connection.oauth-authorization-consent",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-A3-01"
+      ],
+      "existingAuthorities": [
+        "OAuth authorization endpoint",
+        "Operator web session",
+        "OAuth token endpoint"
+      ],
+      "resourceScopes": [
+        "connection:oauth-authorization-consent"
+      ],
+      "collisionDomains": [
+        "connection:oauth-authorization-consent"
+      ],
+      "readAuthorities": [
+        "OAuth authorization endpoint",
+        "Operator web session"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "READY",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Owner-directed hardening (option 1) converged on main@9511d43; TB-W3-A3-01 inventory is DONE. Runtime preflight probes show no task, session or lock on connection:oauth-authorization-consent."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "RED proves an authenticated authorize request issues a code without explicit consent and that no consent decision endpoint exists.",
+        "Guards keep the unauthenticated login redirect and request validation unchanged."
+      ],
+      "greenAcceptance": [
+        "GET renders a no-store, non-framable consent page and never issues a code.",
+        "Only an approved, authenticated, same-origin POST with a valid unexpired ticket bound to the exact request issues a code.",
+        "Deny redirects with access_denied; tampered, missing or expired tickets are refused.",
+        "authorization_code + PKCE token exchange still succeeds after approval."
+      ],
+      "regressionSuites": [
+        "targeted OAuth consent RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA and read-only OIDC probes confirm S1/runtime.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence; PR #207 merges main and keeps its correlation reference inside the approved issuance branch.",
+        "onFailure": "Keep the consent requirement fail-closed; never fall back to issuing codes without approval."
+      }
     }
   ],
   "reconciliationBaseline": {
@@ -8380,6 +8487,18 @@
       "governedSessionsCreatedByConvergence": 0,
       "runtimeLocksCreatedByConvergence": 0,
       "nextAction": "Define and approve a dedicated TLS-recovery identity and rollback design inside the existing github-first.server-write-extensions slot without reusing the read-only SSH identity. Until that gate and dependencies are satisfied, restore the certificate only through an already-authorized human/infrastructure path; then redeploy exact main and collect fresh runtime-authority evidence before A3.2 materialization."
+    },
+    {
+      "id": "INTAKE-OAUTH-CONSENT-20260930",
+      "title": "Explicit operator approval before an OAuth authorization code is issued",
+      "status": "CONVERGED_CURRENT_MAIN",
+      "observedMainSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c",
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "integrationRule": "Owner decision (option 1) converged as PB-OAUTH-CONSENT / TB-W3-OAUTH-CONSENT-01 in the existing OAuth authorization surface; no second session, store, client registry or program.",
+      "targetBlueprintIds": [
+        "TB-W3-OAUTH-CONSENT-01"
+      ]
     }
   ],
   "w3A22InventoryHandoff": {

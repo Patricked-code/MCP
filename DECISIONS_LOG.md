@@ -1,5 +1,14 @@
 # DECISIONS_LOG.md
 
+## 2026-10-01 — Toute émission de code OAuth exige un consentement opérateur explicite
+
+Décision propriétaire (option 1) : une session opérateur valide ne suffit plus à émettre un code d'autorisation. `GET /oauth/authorize` affiche une page de consentement ; seul un `POST /oauth/authorize` same-origin, authentifié et porteur d'un ticket HMAC lié à la demande exacte et non expiré peut émettre le code. Un refus renvoie `access_denied`.
+
+Alternatives écartées : une allowlist d'hôtes de redirection (maintenance, risque de casser des clients légitimes) et un cookie `SameSite=Strict` (ressaisie du token MCP à chaque connexion). Le ticket est sans état : aucun store, registre client ou autorité n'est ajouté.
+
+Le bloc d'émission du code reste inchangé pour que la corrélation A3.2 (PR #207) s'y intègre sans conflit sémantique. L'application effective du scope `mcp:write` reste hors de ce lot : les tokens existants des connecteurs pourraient ne porter que `mcp:read`, et l'imposer sans inventaire casserait des flux d'écriture ; ce point exige un lot dédié.
+
+
 ## 2026-09-29 — L'intake TLS #201 active un besoin concret, pas une permission de réutiliser le fallback SSH read-only
 
 Décision : l'expiration du certificat public de `mcp.wealthtechinnovations.com` constitue le premier besoin concret pour `TB-COND-SERVER-WRITE`, l'Integration Slot déjà prévu pour des mutations serveur GitHub-first additionnelles. #201 est donc convergé dans ce lot au lieu de créer une nouvelle roadmap ou une nouvelle autorité.

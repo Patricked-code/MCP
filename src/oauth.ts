@@ -13,6 +13,8 @@ const AUTHORIZATION_CODE_TTL_MS = Math.max(
   Number.parseInt(process.env.MCP_OAUTH_CODE_TTL_SECONDS || '300', 10)
 ) * 1000;
 
+const AUTHORIZATION_CONSENT_TTL_MS = 10 * 60 * 1000;
+
 const SUPPORTED_SCOPES = ['mcp:read', 'mcp:write'] as const;
 
 type SupportedScope = typeof SUPPORTED_SCOPES[number];
@@ -313,20 +315,190 @@ function redirectToLogin(req: Request, res: Response): void {
   res.redirect(`/login?next=${encodeURIComponent(req.originalUrl || '/oauth/authorize')}`);
 }
 
-function handleAuthorize(req: Request, res: Response, isAuthenticated: (req: Request) => boolean): void {
+type AuthorizationConsentRequest = {
+  responseType: string;
+  clientId: string;
+  redirectUri: string;
+  state: string | undefined;
+  scope: string;
+  resource: string;
+  codeChallenge: string;
+  codeChallengeMethod: string;
+};
+
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function consentTicketSignature(request: AuthorizationConsentRequest, expiresAt: number): string {
+  return hmac(`wealthtech-mcp-oauth-consent:v1\n${JSON.stringify([
+    expiresAt,
+    request.responseType,
+    request.clientId,
+    request.redirectUri,
+    request.state ?? '',
+    request.scope,
+    request.resource,
+    request.codeChallenge,
+    request.codeChallengeMethod
+  ])}`);
+}
+
+function issueConsentTicket(request: AuthorizationConsentRequest): string {
+  const expiresAt = Date.now() + AUTHORIZATION_CONSENT_TTL_MS;
+  return `${expiresAt}.${consentTicketSignature(request, expiresAt)}`;
+}
+
+function verifyConsentTicket(request: AuthorizationConsentRequest, ticket: string | undefined): boolean {
+  const [expiresRaw, signature, extra] = (ticket ?? '').split('.');
+  const expiresAt = Number(expiresRaw);
+
+  if (extra !== undefined || !signature || !Number.isSafeInteger(expiresAt) || expiresAt <= Date.now()) {
+    return false;
+  }
+
+  return safeEqualString(signature, consentTicketSignature(request, expiresAt));
+}
+
+function isSameOriginSubmission(req: Request): boolean {
+  const fetchSite = req.header('sec-fetch-site');
+  if (fetchSite !== undefined && fetchSite !== 'same-origin') {
+    return false;
+  }
+
+  const origin = req.header('origin');
+  return origin === undefined || origin === new URL(oauthIssuer()).origin;
+}
+
+function renderAuthorizationConsent(res: Response, request: AuthorizationConsentRequest): void {
+  const redirectOrigin = new URL(request.redirectUri).origin;
+  const hidden = (name: string, value: string) => (
+    `<input type="hidden" name="${name}" value="${escapeHtml(value)}">`
+  );
+
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader(
+    'Content-Security-Policy',
+    `default-src 'none'; style-src 'unsafe-inline'; form-action 'self' ${redirectOrigin}; frame-ancestors 'none'; base-uri 'none'`
+  );
+  res.status(200).type('html').send(`<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Autoriser une connexion MCP</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #f5f6f8; color: #1f2933; margin: 0; padding: 24px 16px; }
+    main { max-width: 520px; margin: 40px auto; background: #fff; border: 1px solid #d9dee5; border-radius: 10px; padding: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    dl { margin: 0 0 16px; }
+    dt { font-size: 12px; color: #52606d; margin-top: 12px; }
+    dd { margin: 4px 0 0; font-family: ui-monospace, monospace; word-break: break-all; }
+    p { font-size: 14px; line-height: 1.5; }
+    .actions { display: flex; gap: 12px; margin-top: 20px; }
+    button { flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #9aa5b1; background: #fff; font-size: 15px; cursor: pointer; }
+    button[value="approve"] { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Autoriser une connexion MCP</h1>
+    <p>Une application demande un accès au serveur MCP WealthTech avec votre session opérateur.</p>
+    <dl>
+      <dt>Redirection vers</dt>
+      <dd>${escapeHtml(redirectOrigin)}</dd>
+      <dt>Client</dt>
+      <dd>${escapeHtml(request.clientId)}</dd>
+      <dt>Accès demandé</dt>
+      <dd>${escapeHtml(request.scope)}</dd>
+    </dl>
+    <p>N'autorisez que si vous venez de lancer cette connexion depuis cette application.</p>
+    <form method="post" action="/oauth/authorize">
+      ${hidden('response_type', request.responseType)}
+      ${hidden('client_id', request.clientId)}
+      ${hidden('redirect_uri', request.redirectUri)}
+      ${request.state === undefined ? '' : hidden('state', request.state)}
+      ${hidden('scope', request.scope)}
+      ${hidden('resource', request.resource)}
+      ${hidden('code_challenge', request.codeChallenge)}
+      ${hidden('code_challenge_method', request.codeChallengeMethod)}
+      ${hidden('consent_ticket', issueConsentTicket(request))}
+      <div class="actions">
+        <button type="submit" name="decision" value="deny">Refuser</button>
+        <button type="submit" name="decision" value="approve">Autoriser</button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>`);
+}
+
+function denyAuthorization(res: Response, request: AuthorizationConsentRequest): void {
+  const redirectTarget = new URL(request.redirectUri);
+  redirectTarget.searchParams.set('error', 'access_denied');
+
+  if (request.state) {
+    redirectTarget.searchParams.set('state', request.state);
+  }
+
+  redirectTarget.searchParams.set('iss', oauthIssuer());
+
+  logger.info({ clientId: request.clientId, reasonCode: 'oauth_consent_denied' }, 'Autorisation OAuth MCP refusée');
+  res.redirect(302, redirectTarget.toString());
+}
+
+function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (req: Request) => boolean): void {
+  if (!isAuthenticated(req)) {
+    sendOAuthError(res, 401, 'access_denied', 'Une session opérateur est requise pour autoriser une connexion.');
+    return;
+  }
+
+  if (!isSameOriginSubmission(req)) {
+    sendOAuthError(res, 403, 'access_denied', "La décision d'autorisation doit provenir de la page de consentement.");
+    return;
+  }
+
+  const decision = getSingleBodyParam(req, 'decision');
+  if (decision === 'approve') {
+    handleAuthorize(req, res, isAuthenticated, getSingleBodyParam, 'APPROVED');
+    return;
+  }
+
+  if (decision === 'deny') {
+    handleAuthorize(req, res, isAuthenticated, getSingleBodyParam, 'DENIED');
+    return;
+  }
+
+  sendOAuthError(res, 400, 'invalid_request', 'decision doit valoir approve ou deny.');
+}
+
+function handleAuthorize(
+  req: Request,
+  res: Response,
+  isAuthenticated: (req: Request) => boolean,
+  readParam: (req: Request, name: string) => string | undefined = getSingleQueryParam,
+  consent: 'REQUIRED' | 'APPROVED' | 'DENIED' = 'REQUIRED'
+): void {
   if (!isAuthenticated(req)) {
     redirectToLogin(req, res);
     return;
   }
 
-  const responseType = getSingleQueryParam(req, 'response_type');
-  const clientId = getSingleQueryParam(req, 'client_id');
-  const redirectUri = getSingleQueryParam(req, 'redirect_uri');
-  const state = getSingleQueryParam(req, 'state');
-  const scope = normalizeScopeString(getSingleQueryParam(req, 'scope'));
-  const resource = normalizeResourceAlias(getSingleQueryParam(req, 'resource') || oauthIssuer());
-  const codeChallenge = getSingleQueryParam(req, 'code_challenge');
-  const codeChallengeMethod = getSingleQueryParam(req, 'code_challenge_method');
+  const responseType = readParam(req, 'response_type');
+  const clientId = readParam(req, 'client_id');
+  const redirectUri = readParam(req, 'redirect_uri');
+  const state = readParam(req, 'state');
+  const scope = normalizeScopeString(readParam(req, 'scope'));
+  const resource = normalizeResourceAlias(readParam(req, 'resource') || oauthIssuer());
+  const codeChallenge = readParam(req, 'code_challenge');
+  const codeChallengeMethod = readParam(req, 'code_challenge_method');
 
   if (responseType !== 'code') {
     sendOAuthError(res, 400, 'unsupported_response_type', 'Seul response_type=code est supporté.');
@@ -350,6 +522,32 @@ function handleAuthorize(req: Request, res: Response, isAuthenticated: (req: Req
 
   if (!isValidOAuthResource(resource)) {
     sendOAuthError(res, 400, 'invalid_target', 'Le paramètre resource ne correspond pas au serveur MCP WealthTech.');
+    return;
+  }
+
+  const consentRequest: AuthorizationConsentRequest = {
+    responseType,
+    clientId,
+    redirectUri,
+    state,
+    scope,
+    resource,
+    codeChallenge,
+    codeChallengeMethod
+  };
+
+  if (consent === 'REQUIRED') {
+    renderAuthorizationConsent(res, consentRequest);
+    return;
+  }
+
+  if (!verifyConsentTicket(consentRequest, readParam(req, 'consent_ticket'))) {
+    sendOAuthError(res, 400, 'invalid_request', 'Consentement absent, expiré ou ne correspondant pas à la demande.');
+    return;
+  }
+
+  if (consent === 'DENIED') {
+    denyAuthorization(res, consentRequest);
     return;
   }
 
@@ -450,6 +648,10 @@ export function registerOauthRoutes(app: Express, options: RegisterOAuthRoutesOp
 
   app.get('/oauth/authorize', (req, res) => {
     handleAuthorize(req, res, options.isAuthenticated);
+  });
+
+  app.post('/oauth/authorize', (req, res) => {
+    handleAuthorizeDecision(req, res, options.isAuthenticated);
   });
 
   app.post('/oauth/token', (req, res) => {
