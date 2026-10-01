@@ -31,6 +31,10 @@ export type OperationalAuditInput =
       reasonCode?: SessionReasonCode;
     }
   | {
+      type: 'client.tool_surface_attested';
+      session: GovernedSessionPublicRecord;
+    }
+  | {
       type: 'transport.bound';
       session: GovernedSessionPublicRecord;
       bindingResult: BindingResult;
@@ -160,6 +164,16 @@ function metadataForAuditEvent(input: OperationalAuditInput): {
           status: input.session.status,
           sessionRevision: input.session.sessionRevision,
           lockCount: input.session.lockIds.length
+        }
+      };
+    case 'client.tool_surface_attested':
+      return {
+        governedSessionId: input.session.governedSessionId,
+        metadata: {
+          attestationId: input.session.clientToolSurfaceAttestation?.attestationId ?? null,
+          surface: input.session.clientToolSurfaceAttestation?.surface ?? null,
+          capabilityCount: input.session.clientToolSurfaceAttestation?.capabilities.length ?? 0,
+          sessionRevision: input.session.sessionRevision
         }
       };
     case 'session.paused':

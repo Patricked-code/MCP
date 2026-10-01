@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-10-01 — La surface client est attestée par le client, horodatée et bornée par le serveur
+
+Décision : seul le client sait quels outils il voit réellement ; il le déclare via `mcp_attest_client_tool_surface`. Le serveur ne fait jamais confiance à un horodatage, un identifiant ou une liaison fournis par le client : il les attribue lui-même (heure serveur, expiration ≤ 300 s, session et contexte de connexion courants, provenance `client_attestation`). Une attestation expirée n'est plus une preuve courante.
+
+L'attestation n'informe que la callabilité. L'autorisation reste `UNKNOWN`, donc `safeNow` et `mayMutate` restent faux : aucune décision d'écriture ne peut s'appuyer sur une déclaration du client. Le catalogue serveur reste l'autorité de la surface exposée et ne prouve jamais ce que le client voit. Aucun store ni autorité n'est ajouté : l'attestation vit dans l'enregistrement de session existant.
+
 ## 2026-10-01 — B3.2 relève d'une décision propriétaire : quel projet un serveur cible-t-il ?
 
 Précision de la décision du même jour (« B3.2 attend un TargetContext validé ») : le réexamen montre que ce n'est pas un simple producteur manquant mais une question d'architecture ouverte, déjà listée comme telle par le document canonique des 73 contrats. Le `TargetContext` de Live State est singulier ; il faut choisir comment un serveur sélectionne son projet cible parmi les projets GitRegistry V2. Les options (configuration opérateur par serveur, Live State multi-projets, résolution par session, maintien d'une surface d'outils mono-dépôt) ont des compromis réels et l'une d'elles demanderait d'amender un invariant GWC-10.

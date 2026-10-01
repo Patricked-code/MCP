@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-01 — W4 G3 Tool Surface Attestation (candidate)
+
+- Nouvel outil `mcp_attest_client_tool_surface` : attestation bornée (≤ 5 min, horodatée par le serveur, liée à la session) de la surface d'outils observée par le client.
+- Le contexte gouverné compare le catalogue serveur et la surface attestée (`proof.toolSurface`) ; la callabilité attestée alimente la réalité des capacités sans jamais valoir autorisation.
+
 ## 2026-10-01 — W4 G2 Two-clock Presence livré et attesté
 
 - PR #215 fusionnée au SHA `e213209` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `36939139244` / `36939142926`.

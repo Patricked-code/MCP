@@ -16,8 +16,10 @@ import {
   type TargetScope
 } from './targetScope.js';
 import {
+  ClientToolSurfaceAttestationSchema,
   MAX_GOVERNED_SESSION_RECORDS,
   type BootstrapReceipt,
+  type ClientToolSurfaceCapability,
   type GovernedCheckpoint,
   type GovernedSessionPublicRecord,
   type GovernedSessionRecord,
@@ -109,6 +111,10 @@ export type GovernedSessionService = {
   createCheckpoint(input: CreateCheckpointInput, request: SessionRequest): Promise<GovernedCheckpoint>;
   pauseSession(input: SessionRevisionInput, request: SessionRequest): Promise<GovernedSessionPublicRecord>;
   closeSession(input: SessionRevisionInput, request: SessionRequest): Promise<GovernedSessionPublicRecord>;
+  attestClientToolSurface(
+    input: AttestClientToolSurfaceInput,
+    request: SessionRequest
+  ): Promise<GovernedSessionPublicRecord>;
   listVisibleSessions(request: SessionRequest): Promise<GovernedSessionPublicRecord[]>;
   getVisibleSession(
     governedSessionId: string,
@@ -126,6 +132,16 @@ export type SessionRevisionInput = {
   governedSessionId: string;
   expectedSessionRevision: number;
 };
+
+/** G3: the client declares what it observes; time, ids and binding are server-assigned. */
+export type AttestClientToolSurfaceInput = SessionRevisionInput & {
+  surface: string;
+  capabilities: Array<Omit<ClientToolSurfaceCapability, 'source'>>;
+  provenance?: string[];
+  validitySeconds?: number;
+};
+
+const MAX_CLIENT_TOOL_SURFACE_VALIDITY_SECONDS = 300;
 
 export type CreateCheckpointInput = SessionRevisionInput & {
   expectedStateVersion: number;
@@ -650,6 +666,37 @@ export function createGovernedSessionService(
         });
       }
       return closed;
+    },
+
+    async attestClientToolSurface(input, request) {
+      const validitySeconds = Math.min(
+        Math.max(Math.trunc(input.validitySeconds ?? MAX_CLIENT_TOOL_SURFACE_VALIDITY_SECONDS), 1),
+        MAX_CLIENT_TOOL_SURFACE_VALIDITY_SECONDS
+      );
+      const updated = await mutateSession(input, request, (session, at) => {
+        const attestation = ClientToolSurfaceAttestationSchema.safeParse({
+          schemaVersion: 1,
+          attestationId: randomUUID(),
+          governedSessionId: session.governedSessionId,
+          connectionContextId: session.connectionContext?.connectionContextId ?? null,
+          surface: input.surface,
+          observedAt: at.toISOString(),
+          expiresAt: new Date(at.getTime() + validitySeconds * 1_000).toISOString(),
+          capabilities: input.capabilities.map((capability) => ({
+            ...capability,
+            source: 'CLIENT_ATTESTATION'
+          })),
+          provenance: [...new Set(['client_attestation', ...(input.provenance ?? [])])]
+        });
+        if (!attestation.success) fail('CLIENT_TOOL_SURFACE_ATTESTATION_INVALID');
+        return {
+          ...session,
+          clientToolSurfaceAttestation: attestation.data,
+          sessionRevision: session.sessionRevision + 1
+        };
+      });
+      await audit.record({ type: 'client.tool_surface_attested', session: updated });
+      return updated;
     },
 
     async listVisibleSessions(request) {
