@@ -93,7 +93,7 @@ function extra(transportSessionId = 'transport-raw-A') {
   };
 }
 
-test('les onze outils additifs sont enregistrés indépendamment des outils WRITE historiques', () => {
+test('les douze outils additifs sont enregistrés indépendamment des outils WRITE historiques', () => {
   const dependencies = {
     sessions: {} as GovernedSessionService,
     locks: {} as GovernedLockService
@@ -102,6 +102,7 @@ test('les onze outils additifs sont enregistrés indépendamment des outils WRIT
   assert.deepEqual(names, [
     'mcp_acknowledge_governed_context',
     'mcp_acquire_governed_lock',
+    'mcp_attest_client_tool_surface',
     'mcp_close_governed_session',
     'mcp_create_governed_checkpoint',
     'mcp_get_governed_session',
