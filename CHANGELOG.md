@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness livré et attesté
+
+- PR #211 fusionnée au SHA `e714350` ; CI main et Governed Deploy réussis ; probe S1 `36908751224` : 5 mappings, tous BLOCKED.
+- `TB-W3-C1-01` clôturé DONE ; activation du registre toujours fail-closed.
+
 ## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness evidence probe (candidate)
 
 - Nouveau probe GitHub OIDC read-only `mcp_git_registry_readiness` (S1) : readiness d'activation GitRegistry V2 par mapping, reason codes et digests uniquement.

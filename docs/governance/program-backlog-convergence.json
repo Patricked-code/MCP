@@ -2411,7 +2411,6 @@
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
       "TB-W3-B3-02",
-      "TB-W3-C1-01",
       "TB-W4-G1-01"
     ]
   },
@@ -3674,10 +3673,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "W2 PASS_WITH_EVIDENCE; all direct W2 dependencies are DONE. Planning-ready only: live Task Queue/Session/locks/main and collision domains must be reobserved before any runtime materialization or mutation."
+        "reason": "PR #211 exact-head CI, protected merge, governed deploy and the new OIDC read-only registry probe are attested. GitRegistry V2 readiness is reobservable without the runtime bridge; all 5 current mappings remain BLOCKED, so activation stays fail-closed."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -3707,6 +3706,74 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 211,
+        "redHeadSha": "b3a46af94f10af78f31156c8c266592aa94f4191",
+        "candidateHeadSha": "fe4331f64674915f290bb0452e974625f999fc51",
+        "prCiRunId": 36908240855,
+        "testCount": 759,
+        "mergeSha": "e7143506ea30acc666805f67f3a186eea4d1060b",
+        "mainCiRunId": 36908452378,
+        "governedDeployRunId": 36908452245,
+        "governedDeployRuntimeRevision": "e7143506ea30acc666805f67f3a186eea4d1060b",
+        "runtimePreflightRunIds": [
+          36907737336,
+          36907741192,
+          36907744688
+        ],
+        "readonlyEvidence": {
+          "mcp_git_registry_readiness": {
+            "target": "s1",
+            "runId": 36908751224,
+            "workflowSha": "e7143506ea30acc666805f67f3a186eea4d1060b",
+            "status": "SUCCESS",
+            "artifactDigest": "sha256:be36b42ee41883bf843b6469ef88cc1a7ecbbf178f33789bdf99fa9522a5b8b4",
+            "outputSha256": "450099574ed3bda0186aa1f89649418767ec2c2c0ad4e3137ab5cf7f2e3d9da2",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-01T18:42:02.995Z",
+            "sourceSchemaVersion": 1,
+            "registryDigest": "3a4462d21c50280f5225065fdb151727b89ce131a57fecc80a62210b80474179",
+            "candidateDigest": "f752d565f5cce6c0e9ed4c443406edacbaef868cba2cd9f5d3a04517be45c171",
+            "counts": {
+              "mappings": 5,
+              "projects": 2,
+              "ready": 0,
+              "blocked": 5
+            },
+            "truncated": false,
+            "reasonCodeTotals": {
+              "MAPPING_STATUS_NOT_VALIDATED": 5,
+              "MAPPING_PATH_UNVERIFIED": 5,
+              "MAPPING_REMOTE_UNVERIFIED": 5,
+              "REPOSITORY_CREDENTIAL_UNVERIFIED": 5,
+              "HEALTH_CHECKS_UNVERIFIED": 4,
+              "ROLLBACK_UNVERIFIED": 5,
+              "MAPPING_DOMAIN_UNVERIFIED": 1,
+              "MIGRATION_PENDING": 1
+            },
+            "redactedMappingIds": 4
+          },
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 36908755029,
+            "workflowSha": "e7143506ea30acc666805f67f3a186eea4d1060b",
+            "status": "SUCCESS",
+            "observed": "main@e7143506ea30acc666805f67f3a186eea4d1060b, working_tree_changes=0, fetch read-only, push disabled",
+            "artifactDigest": "sha256:c77116210d8f49ed0f6551c1cc0a6ef4d796d185a0d114bb04cfd2d6370c2e29",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-01T18:42:05.416Z"
+          }
+        },
+        "findings": [
+          "GitRegistry source is still schemaVersion 1 on S1; V2 migration not applied",
+          "No mapping is validated: realPath, remote, credential and rollback evidence are absent for all 5 mappings",
+          "B3.2 remains waiting on a validated TargetContext producer (NO_VALIDATED_TARGET_CONTEXT_PRODUCER)"
+        ],
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-01T18:43:00Z"
       }
     },
     {
@@ -8722,7 +8789,7 @@
     "serverMutations": 0
   },
   "w3C1RegistryEvidenceHandoff": {
-    "status": "GREEN_CANDIDATE",
+    "status": "PASS_WITH_EVIDENCE",
     "observedMainSha": "153ef45218285bbfe9586755854e2937a021d85e",
     "blueprintId": "TB-W3-C1-01",
     "lotId": "C1.1",
@@ -8760,6 +8827,15 @@
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
-    "serverMutations": 0
+    "serverMutations": 0,
+    "mergeSha": "e7143506ea30acc666805f67f3a186eea4d1060b",
+    "completedBlueprints": [
+      "TB-W3-C1-01"
+    ],
+    "dependentsReevaluated": {
+      "TB-COND-C1-ACTIVATE": "CONDITIONAL (also needs TB-W3-C345-02; no mapping READY)",
+      "TB-W3-C3-01": "BLOCKED (needs TB-W3-B3-02)",
+      "TB-W3-GGCC-GIT-READ": "BLOCKED (needs TB-W3-B3-02)"
+    }
   }
 }

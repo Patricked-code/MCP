@@ -1,5 +1,13 @@
 # SUIVI.md
 
+## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness evidence — DONE et attesté
+
+- PR #211 fusionnée sous garde exact-head depuis `fe4331f64674915f290bb0452e974625f999fc51` au merge `e7143506ea30acc666805f67f3a186eea4d1060b` ; CI PR `36908240855`, CI main `36908452378` et Governed Deploy `36908452245` SUCCESS.
+- Probe `mcp_git_registry_readiness` run `36908751224` (`mutationAllowed=false`, `truncated=false`) : registre S1 encore en schéma V1 ; 5 mappings, 2 projets, 0 READY, 5 BLOCKED. Raisons : statut non validé, chemin, remote, credential et rollback non vérifiés (5/5), health checks (4/5), domaine et migration en attente (1/5). 4 identifiants de mapping non conformes publiés uniquement en digest.
+- `mcp_git_status` run `36908755029` : S1 `main@e714350`, worktree propre, push désactivé.
+- Program Backlog : `TB-W3-C1-01 = DONE` ; dépendants réévalués sans promotion : `TB-COND-C1-ACTIVATE` reste CONDITIONAL (aucun mapping READY, dépend aussi de C345-02), `TB-W3-C3-01` et `TB-W3-GGCC-GIT-READ` restent BLOCKED (B3.2). Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-A3-02` (collision PR #207), `TB-W3-B3-02` (attente TargetContext validé), puis `TB-W4-G1-01` (Client Presence).
+
 ## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness evidence probe — GREEN candidate
 
 - Reprise current-first : `main=153ef45218285bbfe9586755854e2937a021d85e`. Sélection `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : `TB-W3-A3-02` écarté (collision `TASK-20260929-001` / PR #207) ; `TB-W3-B3-02` écarté pour autorité manquante (`NO_VALIDATED_TARGET_CONTEXT_PRODUCER`) ; `TB-W3-C1-01` retenu.
