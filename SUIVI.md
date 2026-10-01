@@ -1,5 +1,14 @@
 # SUIVI.md
 
+## 2026-10-01 — W4 G3 Tool Surface Attestation — DONE et attesté ; PB-G3 DONE
+
+- PR #218 fusionnée sous garde exact-head depuis `603bd4810902402da408aa4ffb736a814da26cb5` au merge `02f2da91741da4ff36eea3f138b00155ff49bad7` ; CI PR `36941087506`, CI main `36941224841`, Governed Deploy `36941224817` SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `36941423280` → S1 `main@02f2da9`, worktree propre, push désactivé ; `docker_status` run `36941426233` → conteneur healthy.
+- Program Backlog : `TB-W4-G3-01 = DONE`, `PB-G3 = DONE` (DONE 15) ; le lien à un « head » Git n'est pas applicable à une surface d'outils client (liaison session/contexte/heure serveur, validité ≤ 300 s, comparaison au digest courant du catalogue). Ses dépendants (I1, J1, J2) restent bloqués par la chaîne H/B3.2.
+- État du programme : seul `TB-W3-A3-02` reste READY, mais sa tâche runtime `TASK-20260929-001` n'est réclamée par personne et sa réclamation exige la Governed Task Queue runtime, indisponible pour cet agent GitHub-only ; la PR draft #207 porte le travail. `TB-W3-B3-02` attend la décision propriétaire `OWNER_DECISION_B3_TARGET_PROJECT_SELECTION`. Aucun autre lot n'est exécutable.
+- Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : décision propriétaire sur B3.2 (option recommandée : configuration opérateur d'un projet cible par serveur) ; reprise de A3.2 par une session runtime capable de réclamer `TASK-20260929-001` (ou relance de la PR #207) ; puis recalcul du programme.
+
 ## 2026-10-01 — W4 G3 Tool Surface Attestation (résiduel) — GREEN candidate
 
 - Reprise current-first : `main=ba950c51462e7e2076afaafe412429860ff744ae`. Sélection : A3.2 (collision PR #207), B3.2 (gate propriétaire) écartés ; `TB-W4-G3-01` retenu.

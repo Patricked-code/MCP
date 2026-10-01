@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-01 — W4 G3 Tool Surface Attestation livré et attesté
+
+- PR #218 fusionnée au SHA `02f2da9` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `36941423280` / `36941426233`.
+- `TB-W4-G3-01` et `PB-G3` clôturés DONE.
+
 ## 2026-10-01 — W4 G3 Tool Surface Attestation (candidate)
 
 - Nouvel outil `mcp_attest_client_tool_surface` : attestation bornée (≤ 5 min, horodatée par le serveur, liée à la session) de la surface d'outils observée par le client.
