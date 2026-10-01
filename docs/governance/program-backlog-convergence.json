@@ -73,8 +73,8 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 14,
-      "PARTIALLY_IMPLEMENTED": 7,
+      "DONE": 15,
+      "PARTIALLY_IMPLEMENTED": 6,
       "KNOWN_NOT_ANALYZED": 6,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
@@ -1642,7 +1642,7 @@
     {
       "id": "PB-G3",
       "title": "G3 Tool Surface Attestation",
-      "disposition": "PARTIALLY_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "attestation.tool-surface",
       "implementationMode": "EXTEND",
       "existingAuthorities": [
@@ -1653,7 +1653,7 @@
       "dependsOn": [
         "PB-FOUNDATIONS-DONE"
       ],
-      "nextAction": "Reconcile PR #87/GWC G3 work with current clients and finish bounded server-vs-client surface attestation.",
+      "nextAction": "Reuse mcp_attest_client_tool_surface / deriveToolSurfaceProjection and proof.toolSurface as the existing server-vs-client surface evidence; a client attestation never authorizes and the server catalogue never proves the client surface.",
       "subtasks": [
         "Server surface remains current-state authority",
         "Record client-observed surface only when proven",
@@ -2409,8 +2409,7 @@
       "runtimeAuthorityBoundary": "Readiness and ordering are derived planning projections only. Governed Task Queue/Session/Lock Service and scoped governance remain runtime authorities."
     },
     "currentReadyBlueprintIds": [
-      "TB-W3-A3-02",
-      "TB-W4-G3-01"
+      "TB-W3-A3-02"
     ]
   },
   "agentHandoffContract": {
@@ -5298,10 +5297,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #218 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. The client-observed tool surface is recorded through a bounded, server-stamped session attestation and compared read-only with the Current State tool catalogue; client attestation never authorizes."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5331,6 +5330,49 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 218,
+        "redHeadSha": "3d457e21751fc22288787e704cc2f650ae935d2d",
+        "candidateHeadSha": "603bd4810902402da408aa4ffb736a814da26cb5",
+        "prCiRunId": 36941087506,
+        "testCount": 785,
+        "mergeSha": "02f2da91741da4ff36eea3f138b00155ff49bad7",
+        "mainCiRunId": 36941224841,
+        "governedDeployRunId": 36941224817,
+        "governedDeployRuntimeRevision": "02f2da91741da4ff36eea3f138b00155ff49bad7",
+        "runtimePreflightRunIds": [
+          36940483774,
+          36940487533,
+          36940490728
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 36941423280,
+            "workflowSha": "02f2da91741da4ff36eea3f138b00155ff49bad7",
+            "status": "SUCCESS",
+            "observed": "main@02f2da91741da4ff36eea3f138b00155ff49bad7, working_tree_changes=0, fetch read-only, push disabled",
+            "artifactDigest": "sha256:a3a666a47c421371545207a2906ea768db8b750489c0e3f07ffeaed5e7e5b806",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-01T23:33:32.099Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 36941426233,
+            "workflowSha": "02f2da91741da4ff36eea3f138b00155ff49bad7",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy",
+            "artifactDigest": "sha256:7eac79ac622194ba3b6978f7de991eb2b8a8d97e5c3635a06584ff40986cbe69",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-01T23:33:34.578Z"
+          }
+        },
+        "boundary": "Head binding is not applicable to a client tool surface: attestations are bound to session, connection context and server time, staleness is bounded by the <= 300 s validity, and the comparison always uses the current catalogue digest.",
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-01T23:34:00Z"
       }
     },
     {
@@ -9085,7 +9127,7 @@
     "serverMutations": 0
   },
   "w4G3ToolSurfaceHandoff": {
-    "status": "GREEN_CANDIDATE",
+    "status": "PASS_WITH_EVIDENCE",
     "observedMainSha": "ba950c51462e7e2076afaafe412429860ff744ae",
     "blueprintId": "TB-W4-G3-01",
     "lotId": "G3",
@@ -9129,6 +9171,21 @@
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
-    "serverMutations": 0
+    "serverMutations": 0,
+    "mergeSha": "02f2da91741da4ff36eea3f138b00155ff49bad7",
+    "completedBlueprints": [
+      "TB-W4-G3-01"
+    ],
+    "unlockedBlueprints": [],
+    "remainingProgramBlockers": [
+      {
+        "blueprintId": "TB-W3-B3-02",
+        "reason": "OWNER_DECISION_B3_TARGET_PROJECT_SELECTION pending (w3B3TargetSelectionGate)"
+      },
+      {
+        "blueprintId": "TB-W3-A3-02",
+        "reason": "Runtime TASK-20260929-001 (connection:oauth-attempt-correlation) is READY but unclaimed and PR #207 holds the draft work; claiming requires the runtime Governed Task Queue, unavailable to this GitHub-only agent"
+      }
+    ]
   }
 }

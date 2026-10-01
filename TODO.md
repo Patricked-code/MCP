@@ -37,7 +37,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-E` | `KNOWN_NOT_ANALYZED` | `context.guided-completion` | E1/E2/E3 Guided Context Completion |
 | `PB-F` | `KNOWN_NOT_ANALYZED` | `provisioning.governed` | F Governed Provisioning |
 | `PB-G12` | `DONE` | `presence.client-two-clock` | G1/G2 Client Presence and two-clock model — G1 DONE (`client.observed` OAuth uniquement), G2 DONE (deux horloges, `proof.clientPresence`) |
-| `PB-G3` | `PARTIALLY_IMPLEMENTED` | `attestation.tool-surface` | G3 Tool Surface Attestation |
+| `PB-G3` | `DONE` | `attestation.tool-surface` | G3 Tool Surface Attestation — attestation client bornée (`mcp_attest_client_tool_surface`) et comparaison serveur/client (`proof.toolSurface`) |
 | `PB-H` | `KNOWN_NOT_ANALYZED` | `observability.end-to-end-tracing` | H End-to-End Tracing |
 | `PB-I` | `KNOWN_NOT_ANALYZED` | `observability.synthetic-monitoring` | I1/I2/I3 Synthetic Monitoring, connection dashboard and alerts |
 | `PB-J12` | `KNOWN_NOT_ANALYZED` | `certification.clients` | J1/J2 Claude and ChatGPT certification |
