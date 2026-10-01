@@ -25,7 +25,12 @@ import { operationalMemoryConfig } from './operationalMemory/config.js';
 import { getDefaultOperationalEventJournal } from './operationalMemory/eventJournal.js';
 import { startOperationalMemoryMaintenance } from './operationalMemory/maintenance.js';
 import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
-import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
+import {
+  readGitRegistry,
+  readGitRegistryProjectEvidence,
+  recordGithubConnection,
+  renderGitSettingsPage
+} from './github/registry.js';
 import { createGithubDeployRouter } from './deploy/routes.js';
 import {
   verifyGithubOidcToken,
@@ -35,6 +40,7 @@ import {
   verifyGithubRepositorySshCaBootstrapOidcToken
 } from './deploy/githubOidc.js';
 import { createGithubReadonlyEvidenceRouter } from './evidence/githubReadonlyRoutes.js';
+import { projectGitRegistryReadinessEvidence } from './evidence/gitRegistryReadinessProbe.js';
 import { createStablecoinFastForwardRouter } from './stablecoin/githubFastForward.js';
 import { createGithubRepositorySshAccessRouter } from './ssh/githubRepositoryAccessRoutes.js';
 import { createGithubRepositorySshCaBootstrapRouter } from './ssh/githubRepositoryCaBootstrapRoutes.js';
@@ -394,6 +400,9 @@ export async function startHttpServer(): Promise<void> {
     verifyOidc: verifyGithubReadonlyEvidenceOidcToken,
     runRead: async (target, command) => (
       runReadOnlyCommand(target, command, 15_000, 32_768)
+    ),
+    runRegistryRead: async () => (
+      projectGitRegistryReadinessEvidence(await readGitRegistryProjectEvidence())
     ),
     runOperationalRead: async (probe) => {
       if (!operationalMemoryConfig.enabled) {

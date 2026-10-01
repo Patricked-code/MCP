@@ -68,6 +68,22 @@
         "recordProjection": "collision_and_ownership_metadata_only",
         "recordLimitBehavior": "TRUNCATED_TRUE_FAIL_CLOSED",
         "sshFallback": "FAIL_CLOSED_OIDC_ENDPOINT_REQUIRED"
+      },
+      "registryEvidenceProbes": [
+        "mcp_git_registry_readiness"
+      ],
+      "registryEvidenceOutputPolicy": {
+        "authority": "GitRegistry V2",
+        "projection": "mapping_id_readiness_reason_codes_and_digests_only",
+        "repositoryIdentifiersAllowed": false,
+        "projectNamesAllowed": false,
+        "serverPathsAllowed": false,
+        "domainsAllowed": false,
+        "credentialReferencesAllowed": false,
+        "unsafeMappingIdBehavior": "REPLACED_BY_SHA256_DIGEST",
+        "recordLimit": 200,
+        "recordLimitBehavior": "TRUNCATED_TRUE",
+        "sshFallback": "FAIL_CLOSED_OIDC_ENDPOINT_REQUIRED"
       }
     },
     "RUNTIME_REQUIRED": {

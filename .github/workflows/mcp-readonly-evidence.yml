@@ -28,6 +28,7 @@ on:
           - mcp_governed_tasks
           - mcp_governed_sessions
           - mcp_governed_locks
+          - mcp_git_registry_readiness
       request_id:
         description: Bounded correlation id
         required: true
@@ -105,10 +106,10 @@ jobs:
           if (JSON.stringify(keys) !== JSON.stringify(['probe','requestId','schemaVersion','target'])) process.exit(22);
           if (request.schemaVersion !== 1) process.exit(23);
           if (!['s1','s2'].includes(request.target)) process.exit(24);
-          if (!['mcp_git_status','stablecoin_frontend_git_status','stablecoin_backend_git_status','stablecoin_backend_inventory','stablecoin_runtime_status','server_disk','docker_status','mcp_governed_tasks','mcp_governed_sessions','mcp_governed_locks'].includes(request.probe)) process.exit(25);
+          if (!['mcp_git_status','stablecoin_frontend_git_status','stablecoin_backend_git_status','stablecoin_backend_inventory','stablecoin_runtime_status','server_disk','docker_status','mcp_governed_tasks','mcp_governed_sessions','mcp_governed_locks','mcp_git_registry_readiness'].includes(request.probe)) process.exit(25);
           if (!/^[A-Za-z0-9._-]{8,80}$/.test(request.requestId || '')) process.exit(26);
           if (request.probe === 'mcp_git_status' && request.target !== 's1') process.exit(27);
-          if (['mcp_governed_tasks','mcp_governed_sessions','mcp_governed_locks'].includes(request.probe) && request.target !== 's1') process.exit(29);
+          if (['mcp_governed_tasks','mcp_governed_sessions','mcp_governed_locks','mcp_git_registry_readiness'].includes(request.probe) && request.target !== 's1') process.exit(29);
           if (['stablecoin_frontend_git_status','stablecoin_backend_git_status','stablecoin_backend_inventory','stablecoin_runtime_status'].includes(request.probe) && request.target !== 's2') process.exit(28);
 
           process.stdout.write('target=' + request.target + '\n');
@@ -448,7 +449,7 @@ jobs:
           REMOTE
           )"
               ;;
-            mcp_governed_tasks|mcp_governed_sessions|mcp_governed_locks)
+            mcp_governed_tasks|mcp_governed_sessions|mcp_governed_locks|mcp_git_registry_readiness)
               printf '%s\n' 'operational_probe_requires_oidc_endpoint' >&2
               exit 34
               ;;

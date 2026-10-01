@@ -8720,5 +8720,46 @@
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
     "serverMutations": 0
+  },
+  "w3C1RegistryEvidenceHandoff": {
+    "status": "GREEN_CANDIDATE",
+    "observedMainSha": "153ef45218285bbfe9586755854e2937a021d85e",
+    "blueprintId": "TB-W3-C1-01",
+    "lotId": "C1.1",
+    "scope": "Add the bounded GitHub OIDC read-only probe mcp_git_registry_readiness so GitRegistry V2 activation readiness can be reobserved without the runtime bridge.",
+    "runtimePreflight": {
+      "tasksRunId": 36907737336,
+      "sessionsRunId": 36907741192,
+      "locksRunId": 36907744688,
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "nonTerminalTasks": [
+        "TASK-20260920-003 BLOCKED (gitregistry:stablecoin write scope, owner session expired)",
+        "TASK-20260929-001 READY unclaimed (connection:oauth-attempt-correlation)"
+      ],
+      "collisionOnProjectGitregistryVerification": false
+    },
+    "skippedForCollisionOrAuthority": [
+      {
+        "blueprintId": "TB-W3-A3-02",
+        "reason": "Runtime TASK-20260929-001 and PR #207 own connection:oauth-attempt-correlation"
+      },
+      {
+        "blueprintId": "TB-W3-B3-02",
+        "reason": "NO_VALIDATED_TARGET_CONTEXT_PRODUCER: Live State never populates targetContext and GitRegistry V2 is dry-run only; exposing TargetScope on tools now would accept agent-supplied scope (hidden permission widening). Resume after C1 provides a validated registry-backed TargetContext."
+      }
+    ],
+    "doneRequires": [
+      "exact-head CI",
+      "merge exact head",
+      "Governed Deploy runtimeRevision==merge SHA",
+      "mcp_git_registry_readiness OIDC run SUCCESS on S1 with mutationAllowed=false",
+      "readiness reason codes recorded"
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
   }
 }

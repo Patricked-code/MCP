@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness evidence probe (candidate)
+
+- Nouveau probe GitHub OIDC read-only `mcp_git_registry_readiness` (S1) : readiness d'activation GitRegistry V2 par mapping, reason codes et digests uniquement.
+- Aucun nom de dépôt/projet, chemin, domaine ou credential publié ; fallback SSH fail-closed ; aucune mutation.
+
 ## 2026-10-01 — W3 B3.1 multi-repository residual inventory
 
 - Inventaire machine-vérifié des hypothèses mono-dépôt restantes : cœur `TargetScope` multi-dépôt, surface d'outils encore figée sur `Patricked-code/MCP`.

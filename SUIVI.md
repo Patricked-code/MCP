@@ -1,5 +1,14 @@
 # SUIVI.md
 
+## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness evidence probe — GREEN candidate
+
+- Reprise current-first : `main=153ef45218285bbfe9586755854e2937a021d85e`. Sélection `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : `TB-W3-A3-02` écarté (collision `TASK-20260929-001` / PR #207) ; `TB-W3-B3-02` écarté pour autorité manquante (`NO_VALIDATED_TARGET_CONTEXT_PRODUCER`) ; `TB-W3-C1-01` retenu.
+- Constat B3.2 : Live State ne remplit jamais `targetContext` et GitRegistry V2 n'est disponible qu'en dry-run ; exposer `TargetScope` sur les outils accepterait un scope fourni par l'agent (élargissement de permission caché, interdit par l'acceptance B3.2). B3.2 reprend après qu'un TargetContext validé par le registre existe (chemin C1).
+- Préflight runtime OIDC read-only (runs `36907737336` / `36907741192` / `36907744688`, `truncated=false`) : 0 lock, aucune session active, tâches non terminales `TASK-20260920-003` (BLOCKED, écriture `gitregistry:stablecoin`, session expirée) et `TASK-20260929-001` (READY non claimée). Aucune collision sur `project:gitregistry-verification` ; aucun claim/session/lock créé.
+- Implémentation : probe OIDC `mcp_git_registry_readiness` (S1 uniquement, lecture in-process via `readGitRegistryProjectEvidence`, jamais via SSH ; fallback SSH fail-closed). Sortie bornée : digests registre/candidat, compteurs, totaux de reason codes, et par mapping `mappingId` + digest du dépôt + statut + reason codes ; aucun nom de dépôt/projet, chemin, domaine ni référence de credential ; 200 mappings max avec `truncated`.
+- Tests : 5 tests ciblés (RED : module absent) ; suite locale 759/759 ; typecheck, build, docs, gouvernance, GWC, secrets verts.
+- NEXT_ACTION : CI exact-head, merge exact-head, Governed Deploy, exécuter `mcp_git_registry_readiness` sur S1 et enregistrer les reason codes ; puis PR terminale C1.1 DONE.
+
 ## 2026-10-01 — W3 B3.1 multi-repository residual inventory — GREEN candidate
 
 - Reprise current-first : `main=661a0517aebb3bc6dafe4eec4afc3677820ed510`. Sélection `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : `TB-W3-A3-02` écarté pour collision (tâche runtime `TASK-20260929-001` + PR #207 d'un autre agent sur `connection:oauth-attempt-correlation`) ; `TB-W3-B3-01` retenu (GitHub-only, `runtimeRequired=false`).
