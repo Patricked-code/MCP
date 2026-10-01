@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-10-01 — B3.2 attend un TargetContext validé ; la readiness registre passe par un probe OIDC redacted
+
+Décision : `TB-W3-B3-02` n'expose pas `TargetScope` sur les outils tant qu'aucune autorité serveur ne produit un `TargetContext` validé (Live State ne le remplit pas ; GitRegistry V2 reste en dry-run). Accepter un scope fourni par l'agent serait un élargissement de permission caché. B3.2 reste planning-READY mais n'est pas exécuté.
+
+Pour avancer C1 sans dépendre du bridge runtime, la readiness d'activation GitRegistry V2 est exposée par un probe OIDC read-only supplémentaire, servi in-process comme les probes d'autorités runtime. Comme les artifacts d'un dépôt public sont lisibles largement, la projection ne publie que des identifiants de mapping sûrs, des reason codes et des digests SHA-256 ; un identifiant de mapping non conforme est remplacé par son digest.
+
 ## 2026-10-01 — Toute émission de code OAuth exige un consentement opérateur explicite
 
 Décision propriétaire (option 1) : une session opérateur valide ne suffit plus à émettre un code d'autorisation. `GET /oauth/authorize` affiche une page de consentement ; seul un `POST /oauth/authorize` same-origin, authentifié et porteur d'un ticket HMAC lié à la demande exacte et non expiré peut émettre le code. Un refus renvoie `access_denied`.
