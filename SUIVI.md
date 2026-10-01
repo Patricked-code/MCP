@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-10-01 — W3 B3.1 multi-repository residual inventory — GREEN candidate
+
+- Reprise current-first : `main=661a0517aebb3bc6dafe4eec4afc3677820ed510`. Sélection `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : `TB-W3-A3-02` écarté pour collision (tâche runtime `TASK-20260929-001` + PR #207 d'un autre agent sur `connection:oauth-attempt-correlation`) ; `TB-W3-B3-01` retenu (GitHub-only, `runtimeRequired=false`).
+- Constat : les autorités cœur (Governed Session, Task Queue, Lock, Bootstrap Receipt, Governed Context) acceptent déjà `TargetScope`, mais aucun outil MCP ne l'expose ; les entrées `mcp_open/resume_governed_session`, `mcp_acquire_governed_lock` et `mcp_reconcile_agent_intent` figent `Patricked-code/MCP`.
+- Inventaire `docs/governance/multi-repository-inventory-20261001.json` : 8 consommateurs résiduels (5 `GENERALIZE_IN_B3_2` : outils session/lock, outil tâche, attestation client, Current State, observateur GitHub du contexte ; 3 défauts historiques conservés : task queue sans scope, auto-reprise transport, repli du contexte) et 7 frontières d'auto-gestion acceptées (OIDC/deploy/Live State/self-management/git sync/candidate PRECODE).
+- Le test vérifie par machine que chaque littéral `Patricked-code/MCP` de `src/` est classé exactement une fois ; tout nouveau littéral non classé fera échouer la CI.
+- Program Backlog : `TB-W3-B3-01 = DONE`, `TB-W3-B3-02` READY ; aucun Task, session, lock ou mutation.
+- NEXT_ACTION : CI exact-head, merge ; puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` (B3.2 ou C1.1 selon l'ordre et les collisions).
+
+
 ## 2026-10-01 — OAuth authorization consent — DONE et attesté
 
 - PR #208 fusionnée sous garde exact-head depuis `ee78ec1cecea5d21de9f2fbccfdfaa5a53140945` au merge `2febc46dda1ddfbe275658957ebfd8c5bdbc7128` ; `main=9511d43` et PR #207 réobservés inchangés juste avant.

@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 2026-10-01 — W3 B3.1 multi-repository residual inventory
+
+- Inventaire machine-vérifié des hypothèses mono-dépôt restantes : cœur `TargetScope` multi-dépôt, surface d'outils encore figée sur `Patricked-code/MCP`.
+- `TB-W3-B3-01` DONE, `TB-W3-B3-02` débloqué ; aucun changement runtime.
+
+
 ## 2026-10-01 — OAuth authorization consent livré et attesté
 
 - PR #208 fusionnée au SHA `2febc46` ; CI main `36905634628` et Governed Deploy `36905634643` réussis ; preuves OIDC S1 `36905914920` / `36905918563`.
