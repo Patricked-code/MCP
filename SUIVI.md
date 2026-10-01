@@ -1,5 +1,13 @@
 # SUIVI.md
 
+## 2026-10-01 — B3.2 : gate de décision propriétaire (sélection du projet cible)
+
+- Reprise current-first : `main=18e227fa08178272c0f5d678379351377425af0a`. Réexamen de B3.2 (finding d'interblocage) avant toute exécution.
+- Constats : (1) le document d'architecture canonique classe « B3 TargetScope migration pour Session/Task/Receipt » en **question ouverte** ; (2) GWC-10 a livré les primitives (TargetScope/TargetContext, optionnels) mais aucun producteur ne remplit le `targetContext` de Live State et aucun outil n'expose de scope ; (3) le registre S1 (C1.1) contient des projets applicatifs, le dépôt MCP y est un mapping mais pas établi comme composant de projet, donc un producteur « projet contenant le dépôt observé » ne produirait rien ; (4) exiger des mappings activés crée un interblocage avec `TB-COND-C1-ACTIVATE`.
+- Conclusion : le choix du projet cible d'un serveur est une décision d'architecture non déductible. `TB-W3-B3-02` passe `CONDITIONAL` (`autoPromotable=false`, gate `OWNER_DECISION_B3_TARGET_PROJECT_SELECTION`), avec 4 options documentées et une recommandation dans `w3B3TargetSelectionGate`. Blocage local uniquement : `TB-W4-G3-01` reste exécutable.
+- Aucun Task, session, lock ou mutation ; aucune modification runtime.
+- NEXT_ACTION : obtenir la décision du propriétaire sur la sélection du projet cible ; en attendant, `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W4-G3-01` (A3.2 reste en collision avec PR #207).
+
 ## 2026-10-01 — W4 G2 Two-clock Presence — DONE et attesté ; PB-G12 DONE
 
 - PR #215 fusionnée sous garde exact-head depuis `15320ecc925aae36fafd56ee19d6a16cd6ad3a82` au merge `e21320990a4e8534f4c261b3bec6021417b4efb6` ; CI PR `36938833569`, CI main `36938973433`, Governed Deploy `36938973474` SUCCESS.

@@ -38,9 +38,19 @@ test('completing a blueprint promotes only dependents whose full dependency set 
   const derived = deriveProgramReadiness(copy);
   const stateById = new Map(derived.blueprints.map((entry: any) => [entry.id, entry.derivedState]));
 
-  assert.equal(stateById.get('TB-W3-B3-02'), 'READY');
+  // B3.2 is guarded behind OWNER_DECISION_B3_TARGET_PROJECT_SELECTION: never auto-promoted.
+  assert.equal(stateById.get('TB-W3-B3-02'), 'CONDITIONAL');
   assert.equal(stateById.get('TB-W3-GGCC-GIT-READ'), 'BLOCKED');
   assert.equal(stateById.get('TB-W3-C3-01'), 'BLOCKED');
+
+  // Once B3.2 is DONE, only dependents whose whole dependency set is DONE are promoted.
+  byId.get('TB-W3-B3-02').readiness.state = 'DONE';
+  const afterB32 = new Map(
+    deriveProgramReadiness(copy).blueprints.map((entry: any) => [entry.id, entry.derivedState])
+  );
+  assert.equal(afterB32.get('TB-W3-C3-01'), 'READY');
+  assert.equal(afterB32.get('TB-W3-GGCC-GIT-READ'), 'READY');
+  assert.equal(afterB32.get('TB-W3-C4-01'), 'BLOCKED');
 });
 
 test('intake #177 residuals follow the pre-177 backbone instead of creating a parallel execution lane', async () => {

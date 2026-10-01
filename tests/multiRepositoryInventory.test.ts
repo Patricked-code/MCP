@@ -62,7 +62,8 @@ test('B3.1 completion unlocks only B3.2 and preserves the other ready blueprints
   const byId = new Map((program.taskBlueprints ?? []).map((entry: any) => [entry.id, entry]));
 
   assert.equal(byId.get('TB-W3-B3-01')?.readiness?.state, 'DONE');
-  assert.ok(['READY', 'DONE'].includes(byId.get('TB-W3-B3-02')?.readiness?.state));
+  // B3.2 may since wait on OWNER_DECISION_B3_TARGET_PROJECT_SELECTION (w3B3TargetSelectionGate).
+  assert.ok(['READY', 'CONDITIONAL', 'DONE'].includes(byId.get('TB-W3-B3-02')?.readiness?.state));
   assert.equal(program.w3B3InventoryHandoff?.status, 'PASS_WITH_EVIDENCE');
   assert.equal(program.w3B3InventoryHandoff?.runtimeTasksCreated, 0);
   for (const id of ['TB-W3-A3-02', 'TB-W3-C1-01', 'TB-W4-G1-01']) {

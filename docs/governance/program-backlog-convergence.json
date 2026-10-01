@@ -2410,7 +2410,6 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-B3-02",
       "TB-W4-G3-01"
     ]
   },
@@ -3601,10 +3600,12 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
-        "autoPromotable": true,
-        "requiredExplicitGates": [],
-        "reason": "TB-W3-B3-01 PASS_WITH_EVIDENCE. Planning-ready: generalize only the five GENERALIZE_IN_B3_2 consumers of docs/governance/multi-repository-inventory-20261001.json additively, preserving historical single-repository records and defaults."
+        "state": "CONDITIONAL",
+        "autoPromotable": false,
+        "requiredExplicitGates": [
+          "OWNER_DECISION_B3_TARGET_PROJECT_SELECTION"
+        ],
+        "reason": "B3.1 PASS_WITH_EVIDENCE, but the canonical architecture lists \"B3 TargetScope migration pour Session/Task/Receipt\" as an open question: no versioned authority decides which GitRegistry V2 project a server TargetContext represents. The production registry holds application projects (the MCP repository is a mapping, not established as a project component), so a producer keyed on the observed repository would produce nothing, and requiring activation-validated mappings deadlocks with TB-COND-C1-ACTIVATE. Owner decision required; see w3B3TargetSelectionGate."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -9019,5 +9020,68 @@
     "unlockedBlueprints": [
       "TB-W4-G3-01"
     ]
+  },
+  "w3B3TargetSelectionGate": {
+    "status": "OWNER_DECISION_REQUIRED",
+    "gateId": "OWNER_DECISION_B3_TARGET_PROJECT_SELECTION",
+    "blueprintId": "TB-W3-B3-02",
+    "observedMainSha": "18e227fa08178272c0f5d678379351377425af0a",
+    "canonicalOpenQuestion": {
+      "path": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md",
+      "section": "AS — Open questions",
+      "text": "B3 TargetScope migration pour Session/Task/Receipt."
+    },
+    "canonicalInvariants": "docs/gwc/canonical-memory/pr95-e-gwc10-multi-repository-target-scope-complete/sources/gwc10-target-scope.json",
+    "evidence": [
+      "GWC-10 implemented TargetScope/TargetContext primitives additively, but no producer populates Live State targetContext and no tool exposes TargetScope (B3.1 inventory).",
+      "TB-W3-C1-01 DONE: the S1 registry is schema V1 with 5 mappings and 2 projects, all mappings BLOCKED for activation; the mcp-s1-production mapping targets github:patricked-code/mcp.",
+      "Registry projects model application projects (for example a multi-repository application on S2); the MCP repository acts as governance repository, so selecting the project that contains the observed repository yields no TargetContext.",
+      "Requiring activation-validated mappings would make B3.2 wait on TB-COND-C1-ACTIVATE, which depends on TB-W3-C345-02, itself downstream of B3.2: a planning deadlock."
+    ],
+    "options": [
+      {
+        "id": "OPERATOR_CONFIGURED_SERVER_TARGET",
+        "summary": "An operator configuration names one GitRegistry V2 project per MCP server; Live State derives the singular TargetContext from it (components without observation stay UNVERIFIED). Absent configuration keeps today's behaviour.",
+        "tradeOff": "Smallest, additive and fully compatible with the GWC-10 singular TargetContext, but one target project per server at a time."
+      },
+      {
+        "id": "MULTI_PROJECT_LIVE_STATE",
+        "summary": "Live State observes and carries one TargetContext per registered project (bounded); a session projects the context whose targetId matches its TargetScope.",
+        "tradeOff": "Keeps Live State as the only observation authority for every project, but changes the snapshot shape and makes stateVersion move on any project push, forcing more context re-acknowledgements."
+      },
+      {
+        "id": "PER_SESSION_REGISTRY_RESOLUTION",
+        "summary": "A session selects a registered project and component mapping ids; the server derives that TargetContext at open/acknowledge time from the registry, identity-only with UNVERIFIED evidence.",
+        "tradeOff": "No global stateVersion churn and supports several projects, but places TargetContext outside the Live State snapshot, contrary to a GWC-10 invariant that would need an explicit amendment."
+      },
+      {
+        "id": "KEEP_SINGLE_REPOSITORY_TOOL_SURFACE",
+        "summary": "Do not expose TargetScope at the tool surface for now; re-plan TB-W3-C3-01 and TB-W3-GGCC-GIT-READ so they no longer depend on B3.2.",
+        "tradeOff": "No runtime change at all, but multi-repository governed work stays impossible and the C/D/E/F chain needs a dependency re-plan."
+      }
+    ],
+    "recommendedOption": "OPERATOR_CONFIGURED_SERVER_TARGET",
+    "recommendationRationale": "Smallest reversible increment that honours every GWC-10 invariant as implemented (GitRegistry V2 = project/component authority, Live State = observation authority, singular TargetContext, absent scope = historical meaning) and unblocks the C/D/E/F chain; MULTI_PROJECT_LIVE_STATE remains the evolution path if one server must govern several projects at once.",
+    "invariantsWhateverTheChoice": [
+      "TARGET_SCOPE_IS_IDENTITY_AND_OWNERSHIP_ONLY",
+      "TARGET_SCOPE_NEVER_GRANTS_WRITE_DEPLOY_OR_SHA_AUTHORITY",
+      "ABSENT_TARGET_SCOPE_KEEPS_HISTORICAL_SINGLE_REPOSITORY_MEANING",
+      "GITREGISTRY_V2_REMAINS_PROJECT_COMPONENT_AUTHORITY",
+      "NO_AGENT_SUPPLIED_UNREGISTERED_SCOPE",
+      "NO_ACTIVATION_FROM_MISSING_EVIDENCE"
+    ],
+    "blockedDirectDependents": [
+      "TB-W3-C3-01",
+      "TB-W3-GGCC-GIT-READ"
+    ],
+    "unaffectedReadyBlueprints": [
+      "TB-W3-A3-02",
+      "TB-W4-G3-01"
+    ],
+    "localBlockerNotGlobalStop": true,
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
   }
 }
