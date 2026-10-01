@@ -2411,7 +2411,7 @@
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
       "TB-W3-B3-02",
-      "TB-W4-G1-01"
+      "TB-W4-G2-01"
     ]
   },
   "agentHandoffContract": {
@@ -5077,10 +5077,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "TB-W3-A22-02 DONE with deploy attestation. Planning-ready only: client presence must stay separate from agent liveness and synthetic health, consume the existing ClientEvidence projection and never infer client identity."
+        "reason": "PR #213 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. Real-client observations (OAuth-authenticated /mcp only) are journaled as client.observed, separate from agent heartbeat and synthetic health."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5110,6 +5110,48 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 213,
+        "redHeadSha": "a8fad7ce0154ea7dd1ff2a10d2968200a596412b",
+        "candidateHeadSha": "4d8009bbb9ba15fc04902a7ee859e7b7fdcacb46",
+        "prCiRunId": 36909784123,
+        "testCount": 767,
+        "mergeSha": "90df50b2497cdc17eb01a60c9223ca06fc715893",
+        "mainCiRunId": 36909975085,
+        "governedDeployRunId": 36909975077,
+        "governedDeployRuntimeRevision": "90df50b2497cdc17eb01a60c9223ca06fc715893",
+        "runtimePreflightRunIds": [
+          36909543905,
+          36909548006,
+          36909552129
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 36910252863,
+            "workflowSha": "90df50b2497cdc17eb01a60c9223ca06fc715893",
+            "status": "SUCCESS",
+            "observed": "main@90df50b2497cdc17eb01a60c9223ca06fc715893, working_tree_changes=0, fetch read-only, push disabled",
+            "artifactDigest": "sha256:a70db9291035a82b0fdd5b0a9681dc1f6432665f6d99cde5339beb56b8e99cd4",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-01T18:54:15.508Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 36910256304,
+            "workflowSha": "90df50b2497cdc17eb01a60c9223ca06fc715893",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy",
+            "artifactDigest": "sha256:447cce2f5eb541e28231d974017b251c3b0bc5db9dfe9511797119cbf6fb3b56",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-01T18:54:07.264Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-01T18:55:00Z"
       }
     },
     {
@@ -5145,7 +5187,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -8839,7 +8881,7 @@
     }
   },
   "w4G1PresenceHandoff": {
-    "status": "GREEN_CANDIDATE",
+    "status": "PASS_WITH_EVIDENCE",
     "observedMainSha": "1a2303722b4e30f02d056c455ff5088739bd57ac",
     "blueprintId": "TB-W4-G1-01",
     "lotId": "G1",
@@ -8876,6 +8918,13 @@
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
-    "serverMutations": 0
+    "serverMutations": 0,
+    "mergeSha": "90df50b2497cdc17eb01a60c9223ca06fc715893",
+    "completedBlueprints": [
+      "TB-W4-G1-01"
+    ],
+    "unlockedBlueprints": [
+      "TB-W4-G2-01"
+    ]
   }
 }

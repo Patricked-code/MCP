@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-01 — W4 G1 Client Presence livré et attesté
+
+- PR #213 fusionnée au SHA `90df50b` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `36910252863` / `36910256304`.
+- `TB-W4-G1-01` clôturé DONE ; `TB-W4-G2-01` débloqué.
+
 ## 2026-10-01 — W4 G1 Client Presence (candidate)
 
 - Les requêtes MCP authentifiées par OAuth sont journalisées comme observation client réelle (`client.observed`, digest du principal, au plus une par minute et par principal).
