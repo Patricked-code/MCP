@@ -73,8 +73,8 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 12,
-      "PARTIALLY_IMPLEMENTED": 8,
+      "DONE": 13,
+      "PARTIALLY_IMPLEMENTED": 7,
       "KNOWN_NOT_ANALYZED": 7,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
@@ -1292,7 +1292,7 @@
         "sourceId": "USER-OAUTH-CONSENT-20260930",
         "title": "Explicit operator approval before an OAuth authorization code is issued",
         "coveredBy": "PB-OAUTH-CONSENT",
-        "disposition": "PARTIALLY_IMPLEMENTED",
+        "disposition": "DONE",
         "observedMainSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c"
       }
     ]
@@ -2298,7 +2298,7 @@
     {
       "id": "PB-OAUTH-CONSENT",
       "title": "OAuth authorization explicit operator consent",
-      "disposition": "PARTIALLY_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "connection.oauth-authorization-consent",
       "implementationMode": "EXTEND",
       "existingAuthorities": [
@@ -2309,7 +2309,7 @@
       "dependsOn": [
         "PB-A3"
       ],
-      "nextAction": "Land TB-W3-OAUTH-CONSENT-01 through exact-head CI, protected merge, governed deploy and read-only attestation; keep the code-issuance block intact so PR #207 A3.2 correlation merges without semantic conflict.",
+      "nextAction": "Reuse the deployed consent step as the authorization authority; PR #207 must merge main and keep its attempt reference inside the approved issuance branch. mcp:write enforcement requires its own lot.",
       "subtasks": [
         "Render an explicit consent page for authenticated authorize requests instead of issuing a code",
         "Issue the code only on an approved, same-origin POST carrying an HMAC ticket bound to the exact request",
@@ -2412,7 +2412,6 @@
       "TB-W3-A3-02",
       "TB-W3-B3-01",
       "TB-W3-C1-01",
-      "TB-W3-OAUTH-CONSENT-01",
       "TB-W4-G1-01"
     ]
   },
@@ -8070,10 +8069,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Owner-directed hardening (option 1) converged on main@9511d43; TB-W3-A3-01 inventory is DONE. Runtime preflight probes show no task, session or lock on connection:oauth-authorization-consent."
+        "reason": "PR #208 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. Authorization codes are only issued after an explicit, same-origin, ticket-bound operator approval."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -8106,6 +8105,52 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence; PR #207 merges main and keeps its correlation reference inside the approved issuance branch.",
         "onFailure": "Keep the consent requirement fail-closed; never fall back to issuing codes without approval."
+      },
+      "completionEvidence": {
+        "pullRequest": 208,
+        "redHeadSha": "de1d079bf850f4401dd75d6bdab76442754c0aa5",
+        "redExpectedFailures": 9,
+        "candidateHeadSha": "ee78ec1cecea5d21de9f2fbccfdfaa5a53140945",
+        "prCiRunId": 36905443559,
+        "testCount": 750,
+        "mergeSha": "2febc46dda1ddfbe275658957ebfd8c5bdbc7128",
+        "mainCiRunId": 36905634628,
+        "governedDeployRunId": 36905634643,
+        "governedDeployRuntimeRevision": "2febc46dda1ddfbe275658957ebfd8c5bdbc7128",
+        "runtimePreflightRunIds": [
+          36904693423,
+          36904699765,
+          36904703701,
+          36904708914,
+          36904713109
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 36905914920,
+            "workflowSha": "2febc46dda1ddfbe275658957ebfd8c5bdbc7128",
+            "status": "SUCCESS",
+            "observed": "main@2febc46dda1ddfbe275658957ebfd8c5bdbc7128, working_tree_changes=0, fetch read-only, push disabled",
+            "artifactDigest": "sha256:e80fe6695301334ef777e8223d77844c6c76182478c4a765b549c374124f5b59",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-01T18:19:16.457Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 36905918563,
+            "workflowSha": "2febc46dda1ddfbe275658957ebfd8c5bdbc7128",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy",
+            "artifactDigest": "sha256:d257fe6daa4e89a4653e8a7010d57b5218764a011ffc6214b7e91b4b67be3ff2",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-01T18:19:17.746Z"
+          }
+        },
+        "liveRouteObservation": "unauthenticated POST /oauth/authorize returns 401 in production",
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-01T18:20:00Z"
       }
     }
   ],
@@ -8498,7 +8543,16 @@
       "integrationRule": "Owner decision (option 1) converged as PB-OAUTH-CONSENT / TB-W3-OAUTH-CONSENT-01 in the existing OAuth authorization surface; no second session, store, client registry or program.",
       "targetBlueprintIds": [
         "TB-W3-OAUTH-CONSENT-01"
-      ]
+      ],
+      "completionEvidence": {
+        "mergeSha": "2febc46dda1ddfbe275658957ebfd8c5bdbc7128",
+        "mainCiRunId": 36905634628,
+        "governedDeployRunId": 36905634643,
+        "readonlyEvidenceRunIds": [
+          36905914920,
+          36905918563
+        ]
+      }
     }
   ],
   "w3A22InventoryHandoff": {

@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-10-01 — OAuth authorization consent — DONE et attesté
+
+- PR #208 fusionnée sous garde exact-head depuis `ee78ec1cecea5d21de9f2fbccfdfaa5a53140945` au merge `2febc46dda1ddfbe275658957ebfd8c5bdbc7128` ; `main=9511d43` et PR #207 réobservés inchangés juste avant.
+- CI PR #2158 / run `36905443559` SUCCESS ; CI main #2159 / run `36905634628` SUCCESS ; Governed Deploy #88 / run `36905634643` SUCCESS (révision runtime, santé, OAuth, auth MCP attestés).
+- Attestation OIDC read-only : `mcp_git_status` run `36905914920` → S1 `main@2febc46`, worktree propre, push désactivé ; `docker_status` run `36905918563` → healthy. Observation publique : `POST /oauth/authorize` sans session → 401.
+- Program Backlog : `TB-W3-OAUTH-CONSENT-01 = DONE`, `PB-OAUTH-CONSENT = DONE`. Aucun Task runtime, session ou lock créé.
+- Impact utilisateur : la prochaine connexion ChatGPT/Claude affiche « Autoriser une connexion MCP ».
+- NEXT_ACTION : PR #207 (A3.2/A3.3) doit fusionner `main` (le bloc d'émission est inchangé) puis suivre son gate runtime `TASK-20260929-001` ; prochains READY sans collision : `TB-W3-B3-01`, `TB-W3-C1-01`, `TB-W4-G1-01`. Lot séparé à décider : application réelle du scope `mcp:write`.
+
+
 ## 2026-10-01 — OAuth authorization consent (option 1 propriétaire) — GREEN candidate
 
 - Reprise current-first : `HEAD_MOVED` constaté (`eb1667d` → `9511d434f3a66a2b92e847eabfd26596200e5f5c`, 19 commits) ; lecture complète des lots A3.1, A3.2 (probes runtime #200, TLS #201/#203) et de la PR draft #207 (refresh tokens / corrélation A3.2) avant toute écriture.
