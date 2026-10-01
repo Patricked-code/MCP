@@ -31,6 +31,7 @@ Pour être découvrable par ChatGPT Apps SDK sans exposer `MCP_AUTH_TOKEN`, le s
 GET  /.well-known/oauth-protected-resource
 GET  /.well-known/oauth-authorization-server
 GET  /oauth/authorize
+POST /oauth/authorize
 POST /oauth/token
 ```
 
@@ -40,7 +41,8 @@ Principes de sécurité :
 - l'ancien `MCP_AUTH_TOKEN` reste accepté pour les tests administrateur et les scripts existants ;
 - ChatGPT reçoit uniquement des access tokens OAuth temporaires signés côté serveur ;
 - `MCP_AUTH_TOKEN` n'est jamais renvoyé dans les réponses OAuth ;
-- le login web existant `/login` sert d'écran d'autorisation administrateur ;
+- le login web existant `/login` authentifie l'opérateur ;
+- chaque connexion OAuth affiche ensuite une page de consentement (client, hôte de redirection, accès demandé) : le code n'est émis qu'après un clic « Autoriser » sur cette page, via un POST same-origin lié à la demande exacte et valable 10 minutes ; « Refuser » renvoie `access_denied` au client ;
 - le serveur renvoie un header `WWW-Authenticate` sur les `401` MCP pour permettre à ChatGPT de découvrir `/.well-known/oauth-protected-resource`.
 
 Tests publics attendus :

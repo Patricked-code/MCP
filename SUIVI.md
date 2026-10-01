@@ -1,5 +1,18 @@
 # SUIVI.md
 
+## 2026-10-01 — OAuth authorization consent (option 1 propriétaire) — GREEN candidate
+
+- Reprise current-first : `HEAD_MOVED` constaté (`eb1667d` → `9511d434f3a66a2b92e847eabfd26596200e5f5c`, 19 commits) ; lecture complète des lots A3.1, A3.2 (probes runtime #200, TLS #201/#203) et de la PR draft #207 (refresh tokens / corrélation A3.2) avant toute écriture.
+- TLS public rétabli : `/health` répond 200 avec un certificat valide ; le Governed Deploy est de nouveau opérationnel (Deploy #87 selon la PR #207).
+- Décision propriétaire : option 1 — consentement explicite avant toute émission de code OAuth. Convergence existing-first : `INTAKE-OAUTH-CONSENT-20260930` → `PB-OAUTH-CONSENT` / `TB-W3-OAUTH-CONSENT-01` (`connection.oauth-authorization-consent`), sans programme, store, registre client ni autorité parallèle.
+- Préflight runtime GitHub OIDC read-only (runs #71–#75, `truncated=false`, `mutationAllowed=false`) : Task Queue = `TASK-20260929-001` (A3.2, READY, non claimée, `connection:oauth-attempt-correlation`) + une tâche Stablecoin BLOCKED ; aucune session active ; 0 lock ; S1 `main@9511d43` propre ; conteneur healthy. Aucun conflit sur `connection:oauth-authorization-consent`. Aucun claim/lock/session créé (pas de voie runtime gouvernée disponible depuis cet agent) ; même modèle que A2.2.2.
+- Implémentation : GET `/oauth/authorize` authentifié rend une page de consentement (no-store, non framable, CSP) au lieu d'émettre un code ; POST `/oauth/authorize` exige session opérateur, soumission same-origin et ticket HMAC (10 min) lié à la demande exacte ; `approve` émet le code par le bloc d'émission inchangé, `deny` renvoie `access_denied` ; ticket absent/altéré/expiré → 400.
+- Compatibilité PR #207 : le bloc d'émission du code reste textuellement identique ; #207 pourra fusionner `main` et conserver sa référence d'attempt dans la branche approuvée.
+- Non-régression : échange `authorization_code` + PKCE inchangé et testé de bout en bout ; redirection login et validations existantes inchangées ; aucun code/state/verifier/token persisté ou journalisé.
+- Tests : 10 tests OAuth ciblés (8 RED attendus + 2 garde-fous) et convergence backlog ; suite locale 750/750, tous les gates verts.
+- NEXT_ACTION : CI exact-head verte, merge exact-head, Governed Deploy, preuves OIDC S1, PR terminale DONE ; les connecteurs ChatGPT/Claude afficheront désormais un écran « Autoriser » à la prochaine connexion.
+
+
 ## 2026-09-29 — Intake #201 TLS recovery — CONVERGED / REMEDIATION STILL GATED
 
 - Intake GitHub #201 lu current-first : le programme `Governed-Repository-Template` / `Patricked-code/Ekyc` confirme le même certificat public expiré sur `mcp.wealthtechinnovations.com`, y compris avant l'acquisition du certificat SSH éphémère du mode BOTH.
