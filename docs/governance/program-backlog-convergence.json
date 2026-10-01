@@ -8926,5 +8926,49 @@
     "unlockedBlueprints": [
       "TB-W4-G2-01"
     ]
+  },
+  "w4G2PresenceHandoff": {
+    "status": "GREEN_CANDIDATE",
+    "observedMainSha": "261d2976bf373a097a080becda48f5df1c97c84d",
+    "blueprintId": "TB-W4-G2-01",
+    "lotId": "G2",
+    "scope": "Keep lastClientObservedAt (OAuth-authenticated MCP traffic only) separate from lastSyntheticProbeAt (/health and shared-credential automation) and derive bounded presence states, projected read-only in governed context proof.clientPresence.",
+    "runtimePreflight": {
+      "tasksRunId": 36938631259,
+      "sessionsRunId": 36938634495,
+      "locksRunId": 36938636965,
+      "observedAt": "2026-10-01T23:03:18Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionOnPresenceTwoClock": false,
+      "note": "Refreshed after a ~4h interruption; the earlier 19:00Z preflight (36910849001/36910853538/36910859107) was not reused as current evidence."
+    },
+    "states": {
+      "ACTIVE_OBSERVED": "last client observation <= 5 min",
+      "RECENTLY_OBSERVED": "<= 60 min",
+      "STALE": "> 60 min, never means disconnected",
+      "UNKNOWN": "never observed or no OAuth principal",
+      "AUTH_EXPIRED": "last observed token expired",
+      "REVOKED": "never produced without revocation evidence (REVOCATION_EVIDENCE_UNAVAILABLE)"
+    },
+    "invariants": [
+      "SYNTHETIC_PROBE_NEVER_PROVES_CLIENT_PRESENCE",
+      "STALE_NEVER_MEANS_DISCONNECTED",
+      "PRESENCE_IS_READ_ONLY_PROJECTION_NOT_AUTHORITY",
+      "HEARTBEAT_REMAINS_AGENT_LIVENESS",
+      "NO_OWNERSHIP_OR_CLAIM_DERIVED_FROM_PRESENCE",
+      "IN_MEMORY_CLOCKS_NO_NEW_STORE"
+    ],
+    "doneRequires": [
+      "exact-head CI",
+      "merge exact head",
+      "Governed Deploy runtimeRevision==merge SHA",
+      "read-only OIDC attestation (mcp_git_status, docker_status)"
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
   }
 }

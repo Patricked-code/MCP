@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-10-01 — La présence client est une projection à deux horloges, jamais une autorité
+
+Décision : la présence est dérivée uniquement de l'horloge client (trafic `/mcp` OAuth). L'horloge synthétique (`/health`, token partagé) est exposée à côté pour distinguer « serveur sain » et « client réellement présent », mais ne prouve jamais une présence client. `STALE` signifie seulement « non observé récemment », jamais « déconnecté ». `REVOKED` reste réservé à une future preuve de révocation et n'est jamais déduit.
+
+Les horloges sont en mémoire (réinitialisées au redémarrage, ce qui donne `UNKNOWN` jusqu'à la prochaine observation) : aucun store ni registre n'est ajouté, et le journal `client.observed` de G1 reste la trace durable. La projection `proof.clientPresence` est marquée `authoritative=false` ; aucune décision d'ownership, de claim, de lock ou de liveness ne peut s'appuyer dessus.
+
 ## 2026-10-01 — La présence client se prouve par le trafic OAuth, pas par le heartbeat ni la santé synthétique
 
 Décision : une observation client réelle est une requête `/mcp` authentifiée par un jeton OAuth (`oauth_subject`). Le token partagé sert aux automatisations et à l'attestation de déploiement ; il ne prouve aucune présence client. `/health` est une sonde synthétique. Le heartbeat de Governed Session reste l'horloge de liveness de l'agent.
