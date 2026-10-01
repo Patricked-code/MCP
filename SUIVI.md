@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-10-01 — W4 G1 Client Presence (observation client réelle) — GREEN candidate
+
+- Reprise current-first : `main=1a2303722b4e30f02d056c455ff5088739bd57ac`. Sélection : A3.2 (collision PR #207), B3.2 (attente TargetContext validé) écartés ; `TB-W4-G1-01` retenu.
+- Préflight runtime OIDC (runs `36909543905` / `36909548006` / `36909552129`, `truncated=false`) : 0 lock, aucune session active, aucune collision sur `presence:client-observation`. PR #207 ne touche ni `server.ts`, ni le journal. Aucun claim/session/lock créé.
+- Constat : aujourd'hui, `heartbeat` met à jour ensemble `lastHeartbeatAt` (liveness agent) et `currentTransport.lastSeenAt` ; aucune preuve ne distingue un client réel d'un appel d'automatisation ou d'une sonde.
+- Implémentation : `src/operationalMemory/clientPresence.ts` classe chaque requête `/mcp` ; seules les requêtes OAuth (`oauth_subject`) sont une observation client réelle. Le token partagé (automatisation, attestation de déploiement) et `/health` ne le sont jamais. Événement `client.observed` dans le journal opérationnel existant (digest du principal, une écriture par principal et par 60 s, best-effort sans jamais bloquer la requête).
+- Reporté à G2 : horloge `lastSyntheticProbeAt`, états de présence et projection dans le contexte gouverné.
+- Tests : 7 tests ciblés (RED : module absent) ; suite locale 767/767 ; tous les gates verts.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale G1 DONE, puis G2.
+
 ## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness evidence — DONE et attesté
 
 - PR #211 fusionnée sous garde exact-head depuis `fe4331f64674915f290bb0452e974625f999fc51` au merge `e7143506ea30acc666805f67f3a186eea4d1060b` ; CI PR `36908240855`, CI main `36908452378` et Governed Deploy `36908452245` SUCCESS.

@@ -31,7 +31,8 @@ export type OperationalEventType =
   | 'scoped_write.shadow'
   | 'reconcile.requested'
   | 'reconcile.completed'
-  | 'blocker.detected';
+  | 'blocker.detected'
+  | 'client.observed';
 
 export type OperationalEventMetadataValue = string | number | boolean | null;
 export type OperationalEventMetadata = Record<string, OperationalEventMetadataValue>;
@@ -104,7 +105,8 @@ const ALLOWED_METADATA_KEYS: Record<OperationalEventType, ReadonlySet<string>> =
   'scoped_write.shadow': new Set(['toolName', 'decision', 'stateVersion', 'sessionRevision', 'lockConflict']),
   'reconcile.requested': new Set(['reasonCode', 'stateVersion']),
   'reconcile.completed': new Set(['resultCode', 'previousStateVersion', 'stateVersion', 'globalAlignment']),
-  'blocker.detected': new Set(['blockerCode', 'scope', 'stateVersion', 'sessionRevision'])
+  'blocker.detected': new Set(['blockerCode', 'scope', 'stateVersion', 'sessionRevision']),
+  'client.observed': new Set(['source', 'identityAssurance', 'principalDigest', 'throttleWindowSeconds'])
 };
 
 const OPAQUE_METADATA_KEYS: Partial<Record<OperationalEventType, ReadonlySet<string>>> = {

@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-10-01 — La présence client se prouve par le trafic OAuth, pas par le heartbeat ni la santé synthétique
+
+Décision : une observation client réelle est une requête `/mcp` authentifiée par un jeton OAuth (`oauth_subject`). Le token partagé sert aux automatisations et à l'attestation de déploiement ; il ne prouve aucune présence client. `/health` est une sonde synthétique. Le heartbeat de Governed Session reste l'horloge de liveness de l'agent.
+
+L'observation est journalisée dans l'Operational Event Journal existant (aucun store ni registre parallèle), avec un digest du principal, sans identifiant client, conversation ou espace de travail. Elle est limitée à une écriture par principal et par minute et ne peut jamais faire échouer la requête. Les états de présence et la seconde horloge (`lastSyntheticProbeAt`) relèvent de G2.
+
 ## 2026-10-01 — B3.2 attend un TargetContext validé ; la readiness registre passe par un probe OIDC redacted
 
 Décision : `TB-W3-B3-02` n'expose pas `TargetScope` sur les outils tant qu'aucune autorité serveur ne produit un `TargetContext` validé (Live State ne le remplit pas ; GitRegistry V2 reste en dry-run). Accepter un scope fourni par l'agent serait un élargissement de permission caché. B3.2 reste planning-READY mais n'est pas exécuté.

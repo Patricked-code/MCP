@@ -8837,5 +8837,45 @@
       "TB-W3-C3-01": "BLOCKED (needs TB-W3-B3-02)",
       "TB-W3-GGCC-GIT-READ": "BLOCKED (needs TB-W3-B3-02)"
     }
+  },
+  "w4G1PresenceHandoff": {
+    "status": "GREEN_CANDIDATE",
+    "observedMainSha": "1a2303722b4e30f02d056c455ff5088739bd57ac",
+    "blueprintId": "TB-W4-G1-01",
+    "lotId": "G1",
+    "scope": "Journal bounded real-client observations (OAuth-authenticated MCP requests only) as client.observed in the existing Operational Event Journal, separate from agent heartbeat and synthetic health.",
+    "runtimePreflight": {
+      "tasksRunId": 36909543905,
+      "sessionsRunId": 36909548006,
+      "locksRunId": 36909552129,
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionOnPresenceClientObservation": false
+    },
+    "invariants": [
+      "SHARED_CREDENTIAL_IS_NOT_CLIENT_PRESENCE",
+      "HEALTH_PROBES_ARE_NOT_CLIENT_PRESENCE",
+      "HEARTBEAT_IS_AGENT_LIVENESS_NOT_CLIENT_PRESENCE",
+      "PRINCIPAL_JOURNALED_AS_DIGEST_ONLY",
+      "NO_CLIENT_CLASS_CONVERSATION_OR_WORKSPACE_INFERENCE",
+      "THROTTLED_ONE_EVENT_PER_PRINCIPAL_PER_60S",
+      "BEST_EFFORT_NEVER_BLOCKS_MCP_REQUEST"
+    ],
+    "deferredToG2": [
+      "lastSyntheticProbeAt",
+      "presence states ACTIVE_OBSERVED/RECENTLY_OBSERVED/STALE/UNKNOWN/AUTH_EXPIRED/REVOKED",
+      "governed-context projection"
+    ],
+    "doneRequires": [
+      "exact-head CI",
+      "merge exact head",
+      "Governed Deploy runtimeRevision==merge SHA",
+      "read-only OIDC attestation (mcp_git_status, docker_status)"
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
   }
 }
