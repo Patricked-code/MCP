@@ -1,5 +1,12 @@
 # SUIVI.md
 
+## 2026-10-02 — Lecture intégrale read-only et mémoire maître de reprise
+
+- Lecture seule de l'intégralité du dépôt (`main@52f6129`, 599 fichiers suivis), classée en autorité actuelle / projection / provenance historique / superseded / projets spécifiques.
+- Livré : `docs/governance/MASTER_RESUME_MEMORY.md` (projection non autoritative) et son entrée dans `markdown-inventory.json`. Aucun code, Task, session, lock ou mutation runtime.
+- Findings consignés : `PRODUCTION_STATE.json` figé à `ba9acd1` ; `ACTIVITY_LOG.md` arrêté au 2026-08-28 ; `.mcp/agents.json` (`canDeploy=false`) à réconcilier avec le Governed Deploy (À vérifier) ; 20 doublons `docs/*.md` périmés.
+- NEXT_ACTION : inchangée — décision propriétaire B3.2 (`OWNER_DECISION_B3_TARGET_PROJECT_SELECTION`) et décision `mcp:write` ; A3.2 via session runtime réclamant `TASK-20260929-001` / PR #207.
+
 ## 2026-10-01 — W4 G3 Tool Surface Attestation — DONE et attesté ; PB-G3 DONE
 
 - PR #218 fusionnée sous garde exact-head depuis `603bd4810902402da408aa4ffb736a814da26cb5` au merge `02f2da91741da4ff36eea3f138b00155ff49bad7` ; CI PR `36941087506`, CI main `36941224841`, Governed Deploy `36941224817` SUCCESS.
