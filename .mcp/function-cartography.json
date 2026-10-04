@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "1f4c039cc3fae0468cad063cd7b732dcc29abdf08390a359e55c325f8eb6220e",
-  "registeredToolCount": 136,
+  "catalogueDigest": "07d94665f35ae4150207146e0a040c58593de95408da1bbd3e0709b5ed0b31e1",
+  "registeredToolCount": 137,
   "readOnlyToolCount": 85,
-  "writeToolCount": 51,
+  "writeToolCount": 52,
   "resourceCount": 2,
   "tools": [
     {
@@ -3288,6 +3288,55 @@
         "additionalProperties": false
       },
       "contractDigest": "24e8acfcf06e5009cc3320a4ef5340839b8974d58f26afd5d809c356df025453"
+    },
+    {
+      "name": "mcp_materialize_program_blueprint",
+      "title": null,
+      "description": "Matérialise au plus une tâche runtime gouvernée pour un blueprint READY du Program Backlog déployé : idempotent, sans claim, scopes issus des collision domains du blueprint. Réservé à une session MCP non ciblée et bootstrappée.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expectedBootstrapReceiptId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedStateVersion": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "programBlueprintId": {
+            "type": "string",
+            "pattern": "^TB-[A-Z0-9][A-Z0-9-]{1,80}$"
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision",
+          "expectedBootstrapReceiptId",
+          "expectedStateVersion",
+          "programBlueprintId"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "cc1e54e7c6d24dad04f5a49ab2db3a95a3acd7f1bc45854d4489ffc4e3b8b392"
     },
     {
       "name": "mcp_open_governed_session",

@@ -29,7 +29,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-A2.2` | `DONE` | `connection.client-evidence` | A2.2 Verified Client Evidence — A2.2.1 inventory + A2.2.2 bounded evidence projection DONE ; PR #194 merge/deploy exact-SHA attestés |
 | `PB-A3` | `PARTIALLY_IMPLEMENTED` | `connection.oauth-attempt-correlation` | A3 OAuth Auth Attempt Correlation — A3.1 inventory DONE, A3.2 bounded implementation READY |
 | `PB-B3` | `DONE` | `context.multi-repository` | B3 Multi-repository Governed Context — B3.1 inventory DONE ; B3.2 DONE (PR #225, décision #220) : cible opérateur `.mcp/server-map.json`, `TargetContext` Live State, `targetMappingIds` construits par le serveur ; aucune cible configurée sur `main` |
-| `PB-DISPATCH` | `DESIGNED_NOT_IMPLEMENTED` | `orchestration.autonomous-dispatch-loop` | Intake #222 — boucle autonome de dispatch : matérialisation liée au blueprint, claim resume-owned-first, projection next-work ; séquencée juste après B3.2 (`TB-W3-DISPATCH-01..03`) |
+| `PB-DISPATCH` | `DESIGNED_NOT_IMPLEMENTED` | `orchestration.autonomous-dispatch-loop` | Intake #222 — boucle autonome de dispatch : DISPATCH-01 GREEN candidate (`mcp_materialize_program_blueprint`), puis claim resume-owned-first et projection next-work (`TB-W3-DISPATCH-02..03`) |
 | `PB-C1` | `PARTIALLY_IMPLEMENTED` | `project.gitregistry-verification` | C1 GitRegistry V2 verification and activation path — C1.1 DONE (probe OIDC `mcp_git_registry_readiness` ; 5/5 mappings BLOCKED, registre S1 en schéma V1) |
 | `PB-C345` | `DESIGNED_NOT_IMPLEMENTED` | `project.server-runtime-domain-resolution` | C3/C4/C5 Server, Runtime and Domain Resolution |
 | `PB-D1` | `DESIGNED_NOT_IMPLEMENTED` | `governance.inheritance` | D1 Existing Governance Inheritance |

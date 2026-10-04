@@ -200,6 +200,7 @@ Les surfaces current-state et orchestration exposent notamment :
 - `mcp_get_current_state_inventory` ;
 - `mcp_get_work_queue` et `mcp_get_governed_task` ;
 - `mcp_reconcile_agent_intent` ;
+- `mcp_materialize_program_blueprint` (au plus une tâche par blueprint READY du Program Backlog déployé, sans claim) ;
 - `mcp_claim_next_governed_task` ;
 - `mcp_transition_governed_task` ;
 - les outils Live State, Governed Context, sessions, checkpoints et locks existants.

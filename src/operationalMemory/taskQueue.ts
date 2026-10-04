@@ -66,6 +66,12 @@ export type ReconcileIntentInput = {
   priority: number;
   dependencies: string[];
   resourceScopes: string[];
+  /**
+   * DISPATCH-01: server-built program intents treat an active task holding
+   * exactly the same scopes (same repository and TargetScope) as the
+   * equivalent task to reuse instead of a mere collision.
+   */
+  equivalence?: 'EXACT_ACTIVE_SCOPE_SET';
 };
 
 export type TransitionTaskInput = {
@@ -150,6 +156,12 @@ function firstExecutable(tasks: GovernedTaskRecord[]): GovernedTaskRecord | null
     .filter((task) => task.dependencies.every((dependency) => byId.get(dependency)?.status === 'DONE'))
     .sort((left, right) => right.priority - left.priority || left.sequence - right.sequence || left.taskId.localeCompare(right.taskId))[0]
     ?? null;
+}
+
+function sameScopeSet(left: readonly string[], right: readonly string[]): boolean {
+  const a = [...new Set(left)].sort();
+  const b = [...new Set(right)].sort();
+  return a.length === b.length && a.every((scope, index) => scope === b[index]);
 }
 
 function activeScopeConflict(tasks: GovernedTaskRecord[], scopes: string[], taskId?: string): GovernedTaskRecord | null {
@@ -278,7 +290,22 @@ export function createGovernedTaskQueue(
         }
         const conflict = activeScopeConflict(document.tasks, input.resourceScopes);
         if (conflict) {
-          result = { classification: 'CONFLICT', task: conflict, firstExecutableTask: firstExecutable(document.tasks), storeRevision: document.storeRevision, reasonCode: 'active_resource_scope_conflict' };
+          const equivalent = input.equivalence === 'EXACT_ACTIVE_SCOPE_SET'
+            && conflict.repository === input.repository
+            && sameScopeSet(conflict.resourceScopes, input.resourceScopes)
+            && targetScopeEquals(conflict.targetScope, input.targetScope);
+          const ownedElsewhere = Boolean(
+            conflict.ownerGovernedSessionId && conflict.ownerGovernedSessionId !== governedSessionId
+          );
+          result = equivalent
+            ? {
+                classification: ownedElsewhere ? 'CONFLICT' : 'CONTINUATION',
+                task: conflict,
+                firstExecutableTask: firstExecutable(document.tasks),
+                storeRevision: document.storeRevision,
+                reasonCode: ownedElsewhere ? 'equivalent_active_task_owned_elsewhere' : 'equivalent_active_task'
+              }
+            : { classification: 'CONFLICT', task: conflict, firstExecutableTask: firstExecutable(document.tasks), storeRevision: document.storeRevision, reasonCode: 'active_resource_scope_conflict' };
           return document;
         }
         if (document.tasks.length >= 5_000) fail('TASK_STORE_CAPACITY_EXCEEDED');
