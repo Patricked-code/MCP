@@ -1,5 +1,12 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 DISPATCH-03 Connected-agent next-work projection — DONE et attesté ; PB-DISPATCH DONE
+
+- PR #231 fusionnée sous garde exact-head depuis `ed100d68e7d8204c5c66761f5efe3c8055f86099` au merge `6df23b91551a97cdf10968c22071036d5942f11b` ; RED CI #2207 (1 échec attendu), CI PR `37223273561` (#2208, 837/837), CI main `37223380722` (#2209), Governed Deploy `37223380611` (#108) SUCCESS (« Deployment attested for exact SHA »).
+- Attestation OIDC read-only : `mcp_git_status` run `37223532065` → S1 `main@6df23b9`, worktree propre, push désactivé ; `docker_status` run `37223533843` → conteneur healthy.
+- Program Backlog : `TB-W3-DISPATCH-03 = DONE` ; `PB-DISPATCH = DONE` (DISPATCH-01..03 attestés) ; couverture `issue:222` DONE ; READY recalculés : `TB-W3-A3-02`, `TB-W3-C3-01`, `TB-W3-GGCC-GIT-READ`. Évolutions différées conservées chez leurs propriétaires (D2, MULTI_PROJECT_LIVE_STATE, H/I, DONE runtime → blueprint). Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : clôturer l'intake #222 après fusion, puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C3-01` (A3.2 restant réservé à une session runtime).
+
 ## 2026-10-04 — W3 DISPATCH-03 Connected-agent next-work projection — GREEN candidate
 
 - Reprise current-first : `main=3177919faabc2fe4615746651d1ab26de9b62682` (DISPATCH-02 clôturé). Réobservation des intakes : aucune nouvelle intake ni supervision propriétaire (#222 ne porte que le commentaire de convergence). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-DISPATCH-03` retenu.

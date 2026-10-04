@@ -33,7 +33,7 @@ test('TB-W3-DISPATCH-02 is DONE only with exact-head, deploy and read-only attes
 
   assert.equal(program.w3DispatchResumeClaimHandoff?.status, 'PASS_WITH_EVIDENCE');
   const workItem = (program.workItems ?? []).find((entry: any) => entry.id === 'PB-DISPATCH');
-  assert.equal(workItem?.disposition, 'PARTIALLY_IMPLEMENTED');
+  assert.ok(['PARTIALLY_IMPLEMENTED', 'DONE'].includes(workItem?.disposition));
   const counted = (program.workItems ?? []).filter((entry: any) => entry.disposition === 'DONE').length;
   assert.equal(program.summary?.dispositionCounts?.DONE, counted);
   assert.ok(['READY', 'DONE'].includes(byId.get('TB-W3-DISPATCH-03')?.readiness?.state));
