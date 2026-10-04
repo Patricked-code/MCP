@@ -1,5 +1,13 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 DISPATCH-02 Resume-owned-first governed claim — GREEN candidate
+
+- Reprise current-first : `main=ef22f55ed715c664154f1b9ee550888a82654f00` (DISPATCH-01 clôturé). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-DISPATCH-02` retenu ; aucune nouvelle intake.
+- Livré (extension de `queue.claimNextTask` / `mcp_claim_next_governed_task`) : une session reprend d'abord sa tâche active possédée (CLAIMED à VERIFYING) — lecture sans mutation — avant tout nouveau claim ; une tâche possédée BLOCKED ne la bloque pas ; aucune tâche possédée n'est prise par une autre session ; l'outil transmet le TargetScope de la session (sans scope : tâches historiques seulement ; avec scope : tâches incluses dans le scope). Appel interne sans option : comportement inchangé.
+- Préflight runtime OIDC (17:37Z, `truncated=false`) : file `storeRevision=242` (`37221201045`), aucune session active (`37221202752`), 0 lock (`37221204492`) ; aucune collision sur `orchestration:task-dispatch`. Aucun claim/session/lock créé.
+- Tests : RED `fd1bfdd` (4 échecs ciblés, 1 garde-fou déjà vert) ; 5 tests ciblés sur une vraie file atomique ; suite locale 825/825.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale DISPATCH-02 DONE, puis `TB-W3-DISPATCH-03`.
+
 ## 2026-10-04 — W3 DISPATCH-01 Blueprint-bound governed materialization — DONE et attesté
 
 - PR #227 fusionnée sous garde exact-head depuis `66bd5b768296217a195fc5119e3b778e87a2f348` au merge `c5fc1d78ea4213791fa38ba67f3fcf4b7ed535d0` ; RED CI #2195 (2 échecs attendus), CI PR `37220630483`, CI main `37220729943` (#2197), Governed Deploy `37220729894` (#104) SUCCESS.

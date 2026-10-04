@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-10-04 — DISPATCH-02 : reprendre d'abord sa propre tâche active, sans jamais en prendre une autre
+
+Décision technique (déduite, #221) : `claimNextTask` rend d'abord la tâche active déjà possédée par la session (CLAIMED, IN_PROGRESS, REVIEW, MERGE_READY, DEPLOYING, VERIFYING) — sans mutation ni nouvel événement de claim — avant toute nouvelle réclamation. Une tâche BLOCKED attend son blocker et n'empêche pas la session de travailler ailleurs. La propriété ne change que par les transitions existantes ou la remise en file d'une session terminale ; un heartbeat absent ou ancien ne libère ni ne transfère rien.
+
+L'éligibilité suit le TargetScope construit par le serveur : l'outil transmet celui de la session ; une session sans scope ne réclame que des tâches historiques, une session ciblée seulement des tâches de la même cible dont les composants appartiennent à son scope. Un appelant interne qui ne transmet rien garde la sélection historique. Le filtrage par capacités effectives (D2) reste différé.
+
 ## 2026-10-04 — DISPATCH-01 : un outil dédié matérialise un blueprint READY via la file existante
 
 Décision technique (déduite, #221) : plutôt que d'ajouter un mode optionnel à `mcp_reconcile_agent_intent` (champs requis devenus optionnels, valeurs par défaut indiscernables), un outil dédié `mcp_materialize_program_blueprint` expose la même autorité (`queue.reconcileIntent`) avec un contrat sans ambiguïté : seuls l'identifiant du blueprint et le bootstrap sont fournis ; titre, résumé, clé d'intention et scopes sont construits par le serveur.

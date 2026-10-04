@@ -18,6 +18,11 @@ import {
 } from './types.js';
 
 const TERMINAL = new Set<GovernedTaskStatus>(['DONE', 'CANCELLED', 'SUPERSEDED']);
+// DISPATCH-02: owned work a session resumes before claiming anything new
+// (BLOCKED work waits on its blocker and never stalls the session).
+const RESUMABLE = new Set<GovernedTaskStatus>([
+  'CLAIMED', 'IN_PROGRESS', 'REVIEW', 'MERGE_READY', 'DEPLOYING', 'VERIFYING'
+]);
 const ACTIVE = new Set<GovernedTaskStatus>([
   'READY', 'CLAIMED', 'IN_PROGRESS', 'REVIEW', 'MERGE_READY', 'DEPLOYING', 'VERIFYING', 'BLOCKED'
 ]);
@@ -74,6 +79,15 @@ export type ReconcileIntentInput = {
   equivalence?: 'EXACT_ACTIVE_SCOPE_SET';
 };
 
+export type ClaimNextTaskOptions = {
+  /**
+   * DISPATCH-02: when stated (null = unscoped session), only tasks eligible
+   * for this session TargetScope can be claimed. Absent keeps the
+   * historical, scope-agnostic selection for internal callers.
+   */
+  sessionTargetScope?: TargetScope | null;
+};
+
 export type TransitionTaskInput = {
   taskId: string;
   expectedTaskRevision: number;
@@ -113,7 +127,11 @@ export type GovernedTaskQueue = {
     storeRevision: number;
     reasonCode: string;
   }>;
-  claimNextTask(governedSessionId: string, expectedStoreRevision: number): Promise<GovernedTaskRecord | null>;
+  claimNextTask(
+    governedSessionId: string,
+    expectedStoreRevision: number,
+    options?: ClaimNextTaskOptions
+  ): Promise<GovernedTaskRecord | null>;
   transitionTask(input: TransitionTaskInput): Promise<GovernedTaskRecord>;
   requeueTerminalSessionTasks(): Promise<number>;
   readCollisionState(): Promise<GovernedTaskCollisionState>;
@@ -149,10 +167,27 @@ function fail(code: string): never {
   throw new Error(code);
 }
 
-function firstExecutable(tasks: GovernedTaskRecord[]): GovernedTaskRecord | null {
+function eligibleForSession(task: GovernedTaskRecord, options?: ClaimNextTaskOptions): boolean {
+  if (!options || !Object.prototype.hasOwnProperty.call(options, 'sessionTargetScope')) return true;
+  const scope = options.sessionTargetScope ?? null;
+  if (!scope) return task.targetScope === undefined;
+  if (!task.targetScope) return false;
+  if (task.targetScope.targetId !== scope.targetId || task.targetScope.projectId !== scope.projectId) return false;
+  const allowed = new Map(scope.components.map((component) => [component.mappingId, component]));
+  return task.targetScope.components.every((component) => {
+    const granted = allowed.get(component.mappingId);
+    return Boolean(granted && granted.repositoryId === component.repositoryId && granted.role === component.role);
+  });
+}
+
+function firstExecutable(
+  tasks: GovernedTaskRecord[],
+  eligible: (task: GovernedTaskRecord) => boolean = () => true
+): GovernedTaskRecord | null {
   const byId = new Map(tasks.map((task) => [task.taskId, task]));
   return [...tasks]
     .filter((task) => task.status === 'READY')
+    .filter(eligible)
     .filter((task) => task.dependencies.every((dependency) => byId.get(dependency)?.status === 'DONE'))
     .sort((left, right) => right.priority - left.priority || left.sequence - right.sequence || left.taskId.localeCompare(right.taskId))[0]
     ?? null;
@@ -357,11 +392,21 @@ export function createGovernedTaskQueue(
       return reconciled;
     },
 
-    async claimNextTask(governedSessionId, expectedStoreRevision) {
+    async claimNextTask(governedSessionId, expectedStoreRevision, options) {
       let claimed: GovernedTaskRecord | null = null;
+      let resumed: GovernedTaskRecord | null = null;
       await store.update(async (document) => {
         if (document.storeRevision !== expectedStoreRevision) fail('TASK_STORE_REVISION_MISMATCH');
-        const candidate = firstExecutable(document.tasks);
+        // DISPATCH-02: the session's own active work comes first; resuming it
+        // is a read, never a new claim.
+        const owned = document.tasks
+          .filter((task) => task.ownerGovernedSessionId === governedSessionId && RESUMABLE.has(task.status))
+          .sort((left, right) => right.priority - left.priority || left.sequence - right.sequence || left.taskId.localeCompare(right.taskId))[0];
+        if (owned) {
+          resumed = owned;
+          return document;
+        }
+        const candidate = firstExecutable(document.tasks, (task) => eligibleForSession(task, options));
         if (!candidate) return document;
         if (activeScopeConflict(document.tasks, candidate.resourceScopes, candidate.taskId)) fail('TASK_RESOURCE_CONFLICT');
         const candidateScopes = new Set(candidate.resourceScopes);
@@ -377,6 +422,7 @@ export function createGovernedTaskQueue(
           tasks: document.tasks.map((task) => task.taskId === candidate.taskId ? claimed as GovernedTaskRecord : task)
         };
       });
+      if (resumed) return resumed;
       if (claimed) {
         await safeAudit({
           type: 'task.claimed', governedSessionId, task: claimed,
