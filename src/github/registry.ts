@@ -27,6 +27,23 @@ export type GitRegistryEvidence = {
   digest: string | null;
 };
 
+/**
+ * C3: server binding evidence of one GitRegistry V2 mapping. `serverPath` is
+ * declared; only `realPath` with `realPathVerified=true` is verified.
+ */
+export type GitRegistryServerBindingEvidence = {
+  mappingId: string;
+  repositoryId: string;
+  projectId: string;
+  projectUid: string | null;
+  componentRole: string | null;
+  serverId: string;
+  serverPath: string;
+  realPath: string | null;
+  realPathVerified: boolean;
+  environment: 'development' | 'staging' | 'production';
+};
+
 export type GitRegistryProjectEvidence = {
   available: boolean;
   sourceSchemaVersion: 1 | 2 | null;
@@ -57,6 +74,8 @@ export type GitRegistryProjectEvidence = {
     status: 'READY' | 'BLOCKED';
     reasonCodes: GitRegistryV2ActivationReasonCode[];
   }>;
+  /** Always set by the reader since C3; optional for historical constructors. */
+  serverBindings?: GitRegistryServerBindingEvidence[];
 };
 
 const now = () => new Date().toISOString();
@@ -194,7 +213,19 @@ export async function readGitRegistryProjectEvidence(): Promise<GitRegistryProje
           role: component.role
         }))
       })),
-      activationReadiness
+      activationReadiness,
+      serverBindings: candidate.mappings.slice(0, 1000).map((mapping) => ({
+        mappingId: mapping.mappingId,
+        repositoryId: mapping.repositoryId,
+        projectId: mapping.projectId,
+        projectUid: mapping.projectUid ?? null,
+        componentRole: mapping.componentRole ?? null,
+        serverId: mapping.serverId,
+        serverPath: mapping.serverPath,
+        realPath: mapping.realPath,
+        realPathVerified: mapping.realPathVerified,
+        environment: mapping.environment
+      }))
     };
   } catch {
     return {
@@ -204,7 +235,8 @@ export async function readGitRegistryProjectEvidence(): Promise<GitRegistryProje
       candidateDigest: null,
       mappings: [],
       projects: [],
-      activationReadiness: []
+      activationReadiness: [],
+      serverBindings: []
     };
   }
 }

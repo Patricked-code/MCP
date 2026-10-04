@@ -2,6 +2,7 @@ import type { LiveStateSnapshot } from '../liveState/types.js';
 import type { GithubIdentityResolution } from '../github/identityResolution.js';
 import type { GithubRepositoryResolution } from '../github/repositoryResolution.js';
 import type { GithubProjectResolution } from '../github/projectResolution.js';
+import type { ServerResolution } from '../governedWorkflow/resolvers/server.js';
 import type {
   CapabilityReality,
   GovernanceDecision,
@@ -107,6 +108,8 @@ export type GithubOperationalContext = {
   repositoryResolution?: GithubRepositoryResolution;
   /** Always projected with an identity scope after C2; optional for historical consumers. */
   projectResolution?: GithubProjectResolution;
+  /** C3: GW-07 server resolution, projected with an identity scope after C3. */
+  serverResolution?: ServerResolution;
   cache: {
     status: 'MISS' | 'HIT' | 'REFRESHED';
     observedAt: string;
