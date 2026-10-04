@@ -42,6 +42,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-H` | `KNOWN_NOT_ANALYZED` | `observability.end-to-end-tracing` | H End-to-End Tracing |
 | `PB-I` | `KNOWN_NOT_ANALYZED` | `observability.synthetic-monitoring` | I1/I2/I3 Synthetic Monitoring, connection dashboard and alerts |
 | `PB-J12` | `KNOWN_NOT_ANALYZED` | `certification.clients` | J1/J2 Claude and ChatGPT certification |
+| `PB-K` | `DESIGNED_NOT_IMPLEMENTED` | `cockpit.super-admin` | Intake #236 — Super Admin Cockpit : `TB-W4-K-01..12` étendent le dashboard Express SSR existant (aucun nouveau framework, aucune autorité parallèle) ; K-01 (shell, design system, baseline sécurité, Command Center read-only) READY ; vues read-only après leurs projections, actions gouvernées après D2/PR WRITE/GGCC ; inventaire `docs/governance/super-admin-cockpit-convergence-20261004.json` |
 | `PB-J3` | `KNOWN_NOT_ANALYZED` | `maintenance.github-actions-node24` | J3 GitHub Actions / Node 24 maintenance |
 | `PB-J4` | `CONDITIONAL` | `governance.write-gate-enforcement` | J4 WRITE gate shadow→enforce |
 | `PB-GITHUB-FIRST-PROGRAM` | `DONE` | `github-first.continuity-program` | GitHub-first Operational Continuity residual program |
@@ -63,6 +64,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-OD-RECONCILE` | `PARTIALLY_IMPLEMENTED` | `governance.open-decisions-reconciliation` | OD-01..12 decision-state convergence |
 | `PB-TASKREG-RECONCILE` | `DONE` | `governance.task-registry-reconciliation` | Static task-registry drift reconciliation |
 | `PB-LEGACY-CONVERGENCE-DONE` | `DONE` | `governance.historical-pr-intents` | Historical PR intent reconciliation |
+| `PB-MCP-TERMINAL` | `DESIGNED_NOT_IMPLEMENTED` | `program.global-terminal-acceptance` | Intake #235 — acceptation terminale globale `TB-W4-MCP-FINAL-ACCEPTANCE` (`GLOBAL_MCP_COMPLETE`) : dépend des preuves des quatre dimensions (backend/control plane, certifications clients, cockpit, global) ; tout blueprint obligatoire en est un ancêtre (`terminalAcceptanceGaps`) ; jamais déclarée automatiquement |
 
 ### Ordonnancement courant
 
@@ -71,6 +73,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 - **DONE — W2 GitHub READ** : `TB-W2-01`, `TB-W2-02`, `TB-W2-03` sont terminés et validés exact-head ; les trois capacités restent strictement READ et aucun runtime Task/Session/Lock n'a été créé par W2.
 - **ACTIVE planning wave — W3** : A2.2 est clôturé et `TB-W3-A3-01` est DONE avec inventaire OAuth correlation ; `TB-W3-A3-02`, `TB-W3-B3-01`, `TB-W3-C1-01` sont planning-ready, ainsi que `TB-W4-G1-01` ; `TB-W3-SSH-ACCESS-01` est DONE ; les autres W3 et W4 restent bloqués par leurs dépendances.
 - **CONVERGED — intakes #220/#221/#222** : décision B3.2 enregistrée (B3.2 READY) ; règle `NO_SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISIONS` contrôlée par la lib du programme ; boucle de dispatch séquencée après B3.2. B3.2 (PR #225), DISPATCH-01 (PR #227) et DISPATCH-02 (PR #229) sont DONE ; prochain lot exécutable par un agent GitHub-only : `TB-W3-DISPATCH-03` (A3.2 attend une session runtime capable de réclamer `TASK-20260929-001`).
+- **CONVERGED — intakes #235/#236** (PR #237, `main@0ac9ecf`) : #235 renforce `PROGRAM_AUTO_CONTINUE` sans seconde boucle (22 sections cartographiées) et ajoute la condition terminale `GLOBAL_MCP_COMPLETE` + le rapport d'arrêt global (`agentHandoffContract.globalStopReport`) ; #236 devient `PB-K` (`TB-W4-K-01..12`, W4). READY : `TB-W3-A3-02` (blocage local, claim runtime ailleurs), `TB-W3-C4-01`, `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01` ; prochain lot : `TB-W3-C4-01`.
 - **CONVERGED — intake #177** : 164 capacités Git/GitHub ont été classées current-first et routées dans le Program Backlog V2 ; les lots GGCC résiduels restent BLOCKED/DEFERRED/CONDITIONAL et ne créent aucune Task runtime.
 - **DONE — intake #192 / repository SSH** : PR #191 fusionnée/déployée exact-SHA ; Gouvern V2.6.8 run `36255238655` a obtenu le certificat OIDC SSH éphémère read-only et a franchi MCP discovery vers `Q_DOMAIN_BINDING`.
 - **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
@@ -82,7 +85,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 
 Les Task Blueprints machine-readable sont portés par `docs/governance/program-backlog-convergence.json`. Ils décrivent à l'avance objectifs, dépendances, Integration Slots, collision domains, autorités, RED/GREEN, régressions et DONE. Ils ne sont pas des `TASK-*` et ne sont jamais chargés automatiquement dans Operational Memory.
 
-Ordre courant : **W1 convergence → W2 GitHub READ → W3 connection/resolution/governance/provisioning → W4 observability/certification**. Maintenance et lots conditionnels restent séparés.
+Ordre courant : **W1 convergence → W2 GitHub READ → W3 connection/resolution/governance/provisioning → W4 observability/cockpit/certification → acceptation terminale globale**. Maintenance et lots conditionnels restent séparés et ne bloquent jamais `GLOBAL_MCP_COMPLETE` tant qu'ils ne sont pas déclenchés.
 
 ### Règle anti-régression / anti-doublon
 

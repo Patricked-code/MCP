@@ -1,5 +1,29 @@
 # DECISIONS_LOG.md
 
+## 2026-10-04 — Le Super Admin Cockpit (#236) étend le dashboard Express existant, en vague W4
+
+Décision propriétaire (intake #236) : la cible finale complète du MCP inclut un Super Admin Cockpit. Il est convergé en `PB-K` (slot `cockpit.super-admin`) avec douze blueprints `TB-W4-K-01..12`, et `COCKPIT_ACCEPTANCE` devient une dimension de la condition terminale. Inventaire §44 : `docs/governance/super-admin-cockpit-convergence-20261004.json`.
+
+Décisions techniques (déduites de l'inventaire, #221) :
+- La stack reste le rendu serveur Express avec la session web existante. Aucun framework, bundler ni backend-for-frontend supplémentaire n'est justifié aujourd'hui. K-01 factorise les cinq helpers d'échappement dupliqués et étend aux pages du Cockpit la CSP de la page de consentement OAuth.
+- Les vues read-only utilisent la session web. Une mutation exige une identité gouvernée et une capacité effective D2, revalidées côté serveur via une capability existante. La session à jeton partagé n'est pas une identité personnelle et n'autorise jamais seule une mutation (`SUPER ADMIN UI ≠ BYPASS GOVERNANCE`).
+- Le Cockpit est placé en W4, après les candidats W3 qu'il ne préempte pas. K-01 ne dépend que d'autorités DONE et est READY. Les vues suivent leurs projections, les actions suivent D2, PR WRITE et GGCC, et le provisioning suit E/F.
+- I2 reste propriétaire de la projection de chaîne de connexion. Le Cockpit la rend (K-11) sans la dupliquer.
+- Le Cockpit est servi par le serveur MCP existant et déployé par le Governed Deploy existant, sans cible de déploiement séparée.
+
+## 2026-10-04 — L'intake #235 renforce la boucle existante et ajoute une condition terminale contrôlée par machine
+
+Décision (intake #235) : la directive de finalisation complète renforce `PROGRAM_AUTO_CONTINUE`. Elle ne crée ni seconde boucle ni second programme. Ses 22 sections sont cartographiées sur les autorités existantes (`INTAKE-235.sectionMapping`). Elle n'apporte que deux compléments :
+- la condition terminale `GLOBAL_MCP_COMPLETE` (`executionModel.terminalCondition`, §16/§22), portée par `TB-W4-MCP-FINAL-ACCEPTANCE` ;
+- le rapport d'arrêt global (`agentHandoffContract.globalStopReport`, §21), qui affine `humanGatePolicy.globalStopOnlyWhen` sans le remplacer.
+
+Décision technique (déduite, #221) : l'acceptation terminale dépend directement des preuves de chaque dimension :
+- backend : puits du sous-graphe backend `TB-W3-F-05`, `TB-W4-I3-01`, `TB-W4-GGCC-E2E` et `TB-W3-OAUTH-WRITE-SCOPE-01` ;
+- certifications clients : `TB-W4-J1-01` et `TB-W4-J2-01` ;
+- cockpit : `TB-W4-K-12`.
+
+La validation existante du programme (`terminalAcceptanceGaps`) vérifie deux points : tout blueprint obligatoire (ni DONE, ni CONDITIONAL/DEFERRED) est un ancêtre de cette acceptation, et aucun lot gardé ne la bloque. Un travail obligatoire ajouté plus tard sans y être rattaché fait donc échouer la CI. Une capacité conditionnelle non déclenchée n'est jamais implémentée ni activée pour clore le programme, et `GLOBAL_MCP_COMPLETE` n'est jamais déclaré automatiquement.
+
 ## 2026-10-04 — C3 : GW-07 chaîné après C2 avec l'identité serveur gérée et déclarée
 
 Décision technique (déduite, #221) : la résolution serveur suit la chaîne de connexion existante (B1 identité → B2 repository → C2 projet → C3 serveur) dans le collecteur GitHub gouverné, avec son cache unique, plutôt qu'un nouvel observateur. L'ensemble canonique OD-03 est l'intersection des serveurs gérés par la configuration runtime et des serveurs déclarés dans `.mcp/server-map.json` ; il garde l'orthographe des ids gérés, de sorte que les mappings stockés (`s1`, `s2`) se résolvent à l'identique (normalisation identité, rétrocompatibilité GWC-6). Un serveur connu d'une seule source n'est jamais canonique et ses liaisons restent `SERVER_ID_UNVERIFIED` : blocage local, pas d'arrêt global.

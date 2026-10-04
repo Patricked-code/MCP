@@ -63,9 +63,9 @@
     "NEEDS_DECISION"
   ],
   "summary": {
-    "workItems": 39,
+    "workItems": 41,
     "todoUnchecked": 35,
-    "roadmapLots": 33,
+    "roadmapLots": 34,
     "gwcBlueprints": 18,
     "findings": 36,
     "openDecisions": 12,
@@ -76,7 +76,7 @@
       "DONE": 17,
       "PARTIALLY_IMPLEMENTED": 6,
       "KNOWN_NOT_ANALYZED": 6,
-      "DESIGNED_NOT_IMPLEMENTED": 5,
+      "DESIGNED_NOT_IMPLEMENTED": 7,
       "CONDITIONAL": 2,
       "DEFERRED": 3
     }
@@ -459,6 +459,11 @@
         "sourceKey": "ROADMAP:33",
         "heading": "Programme post-intégration — récupération contrôlée des intentions historiques (2026-09-22)",
         "coveredBy": "PB-LEGACY-CONVERGENCE-DONE"
+      },
+      {
+        "sourceKey": "ROADMAP:34",
+        "heading": "CHANTIER K — Super Admin Cockpit",
+        "coveredBy": "PB-K"
       }
     ],
     "gwcBlueprints": [
@@ -1318,6 +1323,23 @@
         "coveredBy": "PB-OAUTH-WRITE-SCOPE",
         "disposition": "DESIGNED_NOT_IMPLEMENTED",
         "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0"
+      },
+      {
+        "sourceKey": "issue:235",
+        "sourceId": "#235",
+        "title": "[PROGRAM INTAKE] MCP COMPLETE-TO-TERMINAL — continuous governed completion",
+        "coveredBy": "PB-MCP-TERMINAL",
+        "disposition": "DESIGNED_NOT_IMPLEMENTED",
+        "observedMainSha": "0ac9ecf70adab117f2175ef2451fc62fe15abac7"
+      },
+      {
+        "sourceKey": "issue:236",
+        "sourceId": "#236",
+        "title": "[PROGRAM INTAKE] MCP SUPER ADMIN COCKPIT — total governed control-plane frontend",
+        "coveredBy": "PB-K",
+        "disposition": "DESIGNED_NOT_IMPLEMENTED",
+        "observedMainSha": "0ac9ecf70adab117f2175ef2451fc62fe15abac7",
+        "inventoryPath": "docs/governance/super-admin-cockpit-convergence-20261004.json"
       }
     ]
   },
@@ -1806,6 +1828,55 @@
         "No assumption that UI connector state is controllable by repo",
         "No fake conversation IDs",
         "Same server governance for all clients"
+      ]
+    },
+    {
+      "id": "PB-K",
+      "title": "K — Super Admin Cockpit",
+      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "integrationSlot": "cockpit.super-admin",
+      "implementationMode": "EXTEND",
+      "source": "issue:236",
+      "existingAuthorities": [
+        "Express web server, login and web session (src/server.ts)",
+        "Governed dashboard projection (src/governedContext/dashboard.ts)",
+        "Current State inventory and nextWork projection",
+        "Program Backlog V2 derived readiness",
+        "Capability Reality and Governed Context",
+        "GitHub control-plane READ and governed lifecycle capabilities"
+      ],
+      "dependsOn": [
+        "PB-DISPATCH",
+        "PB-G12",
+        "PB-G3",
+        "PB-C345",
+        "PB-A3",
+        "PB-D2",
+        "PB-OAUTH-WRITE-SCOPE",
+        "PB-GITHUB-PRWRITE",
+        "PB-GGCC",
+        "PB-E",
+        "PB-F",
+        "PB-H",
+        "PB-I"
+      ],
+      "nextAction": "After the W3 candidates ahead of it in program order, execute TB-W4-K-01 (shell, design system, security baseline and read-only Command Center over existing projections); later lots follow their backend dependencies.",
+      "subtasks": [
+        "K-01 shell, design system, security baseline and read-only Command Center",
+        "K-02..K-07 read-only explorers as their projections become stable",
+        "K-08..K-10 governed actions and provisioning after D2, PR WRITE, GGCC and E/F",
+        "K-11 observability explorers composing H/I/GGCC audit",
+        "K-12 E2E journeys, browser certification and operational documentation"
+      ],
+      "nonRegression": [
+        "UI_VISIBILITY != CALLABLE != AUTHORIZED != SAFE_NOW",
+        "SUPER_ADMIN_UI_NEVER_BYPASSES_GOVERNANCE",
+        "NO_PARALLEL_AUTHORITY_OR_STORE",
+        "SECRETS_WRITE_ONLY_NEVER_RENDERED",
+        "UNKNOWN_NEVER_RENDERED_AS_OFFLINE_OR_INACTIVE",
+        "NO_FREE_SHELL_RAW_API_OR_ARBITRARY_COMMAND",
+        "EXISTING_DASHBOARD_AND_WEB_ROUTES_KEEP_WORKING",
+        "createsRuntimeTask=false for readiness and blueprints"
       ]
     },
     {
@@ -2405,6 +2476,50 @@
         "No new token store or authority",
         "Deducible technical lot: never an owner gate (#221)"
       ]
+    },
+    {
+      "id": "PB-MCP-TERMINAL",
+      "title": "Global MCP terminal acceptance",
+      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "integrationSlot": "program.global-terminal-acceptance",
+      "implementationMode": "COMPOSE",
+      "source": "issue:235",
+      "existingAuthorities": [
+        "Program Backlog V2 derived readiness",
+        "CLAUDE.md PROGRAM_AUTO_CONTINUE",
+        "Governed Task Queue, Session and Lock Service",
+        "GitHub exact-head CI, Governed Deploy and OIDC read-only evidence",
+        "Live State"
+      ],
+      "dependsOn": [
+        "PB-A3",
+        "PB-C345",
+        "PB-D1",
+        "PB-D2",
+        "PB-D3",
+        "PB-E",
+        "PB-F",
+        "PB-GITHUB-PRWRITE",
+        "PB-GITHUB-ADMIN",
+        "PB-H",
+        "PB-I",
+        "PB-J12",
+        "PB-K",
+        "PB-GGCC",
+        "PB-OAUTH-WRITE-SCOPE"
+      ],
+      "nextAction": "Becomes executable only when every dimension proof blueprint is DONE; then prove the #235 §16 positive and negative paths and declare GLOBAL_MCP_COMPLETE durably.",
+      "subtasks": [
+        "Prove BACKEND_CONTROL_PLANE_ACCEPTANCE, CLIENT_CERTIFICATIONS and COCKPIT_ACCEPTANCE",
+        "Prove the positive terminal path and the negative paths",
+        "Declare GLOBAL_MCP_COMPLETE with exact-head CI, deploy and runtime evidence"
+      ],
+      "nonRegression": [
+        "Never declared automatically",
+        "Untriggered CONDITIONAL/DEFERRED capabilities are not implemented or activated to close the program",
+        "No parallel authority, store or second orchestration loop",
+        "createsRuntimeTask=false"
+      ]
     }
   ],
   "executionModel": {
@@ -2446,7 +2561,7 @@
       {
         "id": "W4",
         "title": "Observability and Certification",
-        "purpose": "Complete presence, tracing, monitoring, dashboards and client certifications.",
+        "purpose": "Complete presence, tracing, monitoring, dashboards, the Super Admin Cockpit, client certifications and the global terminal acceptance.",
         "parallelism": "DEPENDENCY_AND_COLLISION_GATED"
       },
       {
@@ -2472,7 +2587,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_C3_DONE_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_C4_C5_READY",
+    "currentWaveStatus": "W3_C3_DONE_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_C4_C5_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2495,7 +2610,8 @@
       "TB-W3-A3-02",
       "TB-W3-C4-01",
       "TB-W3-C5-01",
-      "TB-W3-GGCC-GIT-READ"
+      "TB-W3-GGCC-GIT-READ",
+      "TB-W4-K-01"
     ],
     "humanGatePolicy": {
       "invariant": "NO_SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISIONS",
@@ -2727,6 +2843,121 @@
           ]
         }
       }
+    },
+    "terminalCondition": {
+      "sources": [
+        "issue:235",
+        "issue:236"
+      ],
+      "declaration": "GLOBAL_MCP_COMPLETE",
+      "globalAcceptanceBlueprintId": "TB-W4-MCP-FINAL-ACCEPTANCE",
+      "declaredAutomatically": false,
+      "guardedBlueprintsBlockCompletion": false,
+      "rule": "GLOBAL_MCP_COMPLETE is declared only when every mandatory (non-guarded) blueprint is DONE with its evidence and each acceptance dimension is proven; untriggered CONDITIONAL/DEFERRED capabilities stay behind their gates and never block completion.",
+      "dimensions": [
+        {
+          "id": "BACKEND_CONTROL_PLANE_ACCEPTANCE",
+          "provenBy": [
+            "TB-W3-F-05",
+            "TB-W4-I3-01",
+            "TB-W4-GGCC-E2E",
+            "TB-W3-OAUTH-WRITE-SCOPE-01"
+          ],
+          "scope": "Project Reality, governance and effective capabilities, receipts, guided completion, provisioning, Git/GitHub E2E, tracing, monitoring, alerts and OAuth write scope, with every ancestor lot DONE."
+        },
+        {
+          "id": "CLIENT_CERTIFICATIONS",
+          "provenBy": [
+            "TB-W4-J1-01",
+            "TB-W4-J2-01"
+          ],
+          "scope": "Claude and ChatGPT end-to-end certifications from observable evidence only."
+        },
+        {
+          "id": "COCKPIT_ACCEPTANCE",
+          "provenBy": [
+            "TB-W4-K-12"
+          ],
+          "scope": "Super Admin Cockpit acceptance (#236 §41)."
+        },
+        {
+          "id": "GLOBAL_MCP_ACCEPTANCE",
+          "provenBy": [
+            "TB-W4-MCP-FINAL-ACCEPTANCE"
+          ],
+          "scope": "Backend/control plane, client certifications and cockpit proven coherent together (#236 §42)."
+        }
+      ],
+      "successCriteria": [
+        "ALL_MANDATORY_BLUEPRINTS_DONE_WITH_EVIDENCE",
+        "GUARDED_ITEMS_CLASSIFIED_AND_HIDING_NO_MANDATORY_WORK",
+        "NO_UNRESOLVED_AUTHORITY_DIVERGENCE",
+        "NO_SILENTLY_ABANDONED_TASK_CLAIM_OR_LOCK",
+        "REQUIRED_E2E_CERTIFICATIONS_PASSED",
+        "GOVERNED_GIT_GITHUB_E2E_ACCEPTED",
+        "PROJECT_REALITY_ACCEPTED",
+        "AUTHORIZATION_AND_EFFECTIVE_CAPABILITIES_ACCEPTED",
+        "REQUIRED_PROVISIONING_ACCEPTED_WITH_ROLLBACK",
+        "REQUIRED_OBSERVABILITY_AND_MONITORING_ACCEPTED",
+        "DOCUMENTATION_SUIVI_CHANGELOG_DECISIONS_AND_BACKLOG_CONSISTENT",
+        "LAST_REQUIRED_EXACT_HEAD_HAS_CI_DEPLOY_AND_RUNTIME_EVIDENCE",
+        "TERMINAL_CONDITION_DECLARABLE_WITHOUT_ASSUMPTION"
+      ],
+      "positivePath": [
+        "AGENT_CLIENT_ARRIVAL",
+        "BOOTSTRAP",
+        "IDENTITY_AUTH",
+        "REPOSITORY_RESOLUTION",
+        "PROJECT_RESOLUTION",
+        "SERVER_RESOLUTION",
+        "RUNTIME_RESOLUTION",
+        "DOMAIN_RESOLUTION",
+        "GOVERNANCE_INHERITANCE",
+        "EFFECTIVE_CAPABILITIES",
+        "BOOTSTRAP_RECEIPT_CONTEXT",
+        "NEXT_WORK",
+        "RESUME_OWNED_OR_GOVERNED_MATERIALIZATION_CLAIM",
+        "LOCK_WHERE_REQUIRED",
+        "BOUNDED_IMPLEMENTATION",
+        "GOVERNED_GIT_GITHUB",
+        "CI",
+        "REVIEW",
+        "EXACT_HEAD_MERGE",
+        "GOVERNED_DEPLOY_WHEN_APPLICABLE",
+        "RUNTIME_VERIFICATION",
+        "EVIDENCE",
+        "TASK_TERMINAL_STATE",
+        "CHECKPOINT",
+        "RELEASE_LOCK_WHEN_AUTHORIZED",
+        "SESSION_CLOSURE_WHEN_APPROPRIATE",
+        "QUEUE_READINESS_RECOMPUTATION",
+        "NEXT_WORK"
+      ],
+      "negativePaths": [
+        "UNKNOWN",
+        "STALE",
+        "AMBIGUOUS",
+        "CONFLICT",
+        "DUPLICATE",
+        "DENIED",
+        "MISSING_TASK_SESSION_CLAIM_OR_LOCK",
+        "HEAD_MOVED",
+        "STALE_STATE_VERSION",
+        "CI_FAILURE",
+        "REVIEW_REJECTION",
+        "DEPLOY_FAILURE",
+        "RUNTIME_DRIFT",
+        "AUTHORITY_DIVERGENCE",
+        "STALE_RECEIPT",
+        "RECONNECT",
+        "CONCURRENT_AGENTS",
+        "PARTIAL_FAILURE",
+        "POSTCONDITION_MISMATCH",
+        "SAFE_ROLLBACK_RECOVERY"
+      ],
+      "machineCheck": "scripts/program-backlog-convergence-lib.mjs validateProgramBacklogConvergence -> terminalAcceptanceGaps",
+      "createsRuntimeTask": false,
+      "grantsPermission": false
     }
   },
   "agentHandoffContract": {
@@ -2758,7 +2989,47 @@
     ],
     "continuationRule": "A connected agent continues through planning-ready, dependency-safe and collision-safe work without asking for confirmation between ordinary lots. It stops only for a real governed blocker, explicit human gate, unresolved ambiguity, unavailable required authority, collision/ownership conflict, or safety/non-regression failure.",
     "programIntakeDiscovery": "Before selecting work, list open GitHub issues titled \"[PROGRAM INTAKE]\" and owner supervision comments on recent PRs/issues, then reconcile every unconsumed one through programIntakes before any other lot.",
-    "humanGateRule": "An agent never stops on a gate it created for a deducible technical decision; see executionModel.humanGatePolicy."
+    "humanGateRule": "An agent never stops on a gate it created for a deducible technical decision; see executionModel.humanGatePolicy.",
+    "globalStopReport": {
+      "source": "issue:235",
+      "refines": "executionModel.humanGatePolicy.globalStopOnlyWhen",
+      "allowedStopConditions": [
+        "NO_COMPATIBLE_CANDIDATE",
+        "ALL_REMAINING_CANDIDATES_BLOCKED_DEFERRED_OR_CONDITIONAL_WITH_UNSATISFIED_CONDITIONS",
+        "ADMISSIBLE_EXPLICIT_HUMAN_GATE",
+        "REQUIRED_PERMISSION_SECRET_OR_AUTHORITY_UNAVAILABLE",
+        "CONFLICT_OR_COLLISION_COVERING_ALL_REMAINING_WORK",
+        "SECURITY_OR_NON_REGRESSION_REQUIRES_STOP",
+        "EXTERNAL_INFRASTRUCTURE_PREVENTS_ALL_COMPATIBLE_PROGRESS"
+      ],
+      "requiredFields": [
+        "CURRENT_HEAD",
+        "CURRENT_PROGRAM_STATE",
+        "WORK_COMPLETED_THIS_RUN",
+        "READY_CANDIDATES",
+        "BLOCKED_CANDIDATES",
+        "OWNED_WORK",
+        "OBSERVED_SESSIONS",
+        "OBSERVED_CLAIMS",
+        "OBSERVED_LOCKS",
+        "COLLISION_DOMAINS",
+        "CI_STATE",
+        "DEPLOY_STATE",
+        "EXACT_BLOCKER",
+        "BLOCKER_AUTHORITY",
+        "WHY_NO_OTHER_COMPATIBLE_WORK_EXISTS",
+        "HUMAN_ACTION_REQUIRED",
+        "NEXT_ACTION"
+      ],
+      "bareBlockedStatusIsInsufficient": true,
+      "humanActionRequiredOnlyIfTrulyRequired": true,
+      "localBlockerIsNotGlobalStop": true,
+      "durableLocations": [
+        "SUIVI.md",
+        "the PR or issue of the blocked lot"
+      ],
+      "createsRuntimeTask": false
+    }
   },
   "taskBlueprints": [
     {
@@ -6717,6 +6988,903 @@
       }
     },
     {
+      "id": "TB-W4-K-01",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.1",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "Cockpit shell, design system, security baseline and read-only Command Center",
+      "objective": "Build the Super Admin Cockpit foundation on the existing Express server-rendered stack, behind the existing web session and under a dedicated route namespace: application shell and navigation over the #236 information architecture, one shared escaping/rendering helper replacing the duplicated ones, normalized honest-state badges, a security baseline (Content-Security-Policy, no secret rendering, no client-side permission) and a read-only Command Center that composes only existing projections and shows every unavailable source as UNAVAILABLE/UNKNOWN.",
+      "integrationStrategy": "REUSE_COMPOSE_EXTEND",
+      "dependsOn": [
+        "TB-W3-DISPATCH-03",
+        "TB-W4-G3-01"
+      ],
+      "existingAuthorities": [
+        "Express web server, login and web session (src/server.ts)",
+        "Governed dashboard projection (src/governedContext/dashboard.ts)",
+        "Current State inventory and nextWork projection (src/currentState/service.ts)",
+        "Program Backlog V2 derived readiness",
+        "Client presence two-clock and tool surface attestation (G1-G3)"
+      ],
+      "collisionDomains": [
+        "cockpit:shell"
+      ],
+      "redTests": [
+        "RED proves no cockpit shell, navigation or Command Center route exists on the exact observed head.",
+        "RED proves the duplicated HTML escaping helpers have no shared tested implementation and dashboard pages send no Content-Security-Policy.",
+        "RED proves an unavailable projection is not rendered as an explicit UNAVAILABLE/UNKNOWN state."
+      ],
+      "greenAcceptance": [
+        "Cockpit routes reuse the existing Express server and web session; no frontend framework, bundler or second backend is introduced, and /dashboard keeps working.",
+        "Every rendered value goes through one shared escaping helper; tests neutralize XSS payloads in every rendered field.",
+        "Cockpit responses carry a restrictive Content-Security-Policy and never render a token, secret, authorization code or PKCE verifier.",
+        "The Command Center composes existing projections only (health, presence, Current State inventory, nextWork, program readiness, governed context); each card links to its source and shows observedAt/freshness.",
+        "Honest states: UNKNOWN, UNAVAILABLE and STALE are rendered as such, never as OFFLINE, INACTIVE or zero activity.",
+        "UI_VISIBILITY != CALLABLE != AUTHORIZED != SAFE_NOW: the read-only shell exposes no mutation control."
+      ],
+      "readAuthorities": [
+        "Express web server, login and web session (src/server.ts)",
+        "Governed dashboard projection (src/governedContext/dashboard.ts)",
+        "Current State inventory and nextWork projection (src/currentState/service.ts)",
+        "Program Backlog V2 derived readiness",
+        "Client presence two-clock and tool surface attestation (G1-G3)"
+      ],
+      "resourceScopes": [
+        "cockpit:shell"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "READY",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-K-02",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.2",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "Program, Sessions, Tasks/nextWork and Claims & Locks explorers with global search (read-only)",
+      "objective": "Render read-only drill-down explorers over Program Backlog V2 (workstreams, blueprint graph, readiness, intakes, NEXT_ACTION), Governed Sessions, the Governed Task Queue with nextWork, and claims/locks with collisions, plus a bounded server-side global search that keeps TargetScope and provenance; Program Blueprint, runtime Governed Task and nextWork stay visually distinct.",
+      "integrationStrategy": "COMPOSE_EXTEND",
+      "dependsOn": [
+        "TB-W4-K-01"
+      ],
+      "existingAuthorities": [
+        "Program Backlog V2 derived readiness",
+        "Governed Task Queue",
+        "Governed Session and Bootstrap Receipt",
+        "Governed Lock Service",
+        "nextWork projection (TB-W3-DISPATCH-03)"
+      ],
+      "collisionDomains": [
+        "cockpit:program-work"
+      ],
+      "redTests": [
+        "RED proves no read-only program, session, task, claim or lock explorer exists in the cockpit.",
+        "RED proves Program Blueprint, runtime Task and nextWork are not distinguished in a rendered view."
+      ],
+      "greenAcceptance": [
+        "Program, sessions, tasks, nextWork, claims and locks are rendered read-only with provenance and freshness; no control can mark a blueprint DONE or claim, transfer or release work.",
+        "Program Blueprint, runtime Governed Task and nextWork projection are never merged in one view.",
+        "An expired or absent heartbeat is shown as such and never offers a take-over action.",
+        "Search results are bounded, filtered server-side and keep TargetScope and provenance."
+      ],
+      "readAuthorities": [
+        "Program Backlog V2 derived readiness",
+        "Governed Task Queue",
+        "Governed Session and Bootstrap Receipt",
+        "Governed Lock Service",
+        "nextWork projection (TB-W3-DISPATCH-03)"
+      ],
+      "resourceScopes": [
+        "cockpit:program-work"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-K-03",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.3",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "Agents & Clients and Tool Catalogue/Inspector (read-only)",
+      "objective": "Render observable clients and agents (provider, client instance, two-clock presence, current work, TargetScope, provenance) and the tool catalogue (READ/WRITE classification, integration slot, required authorities, attestation, schema) without ever inventing a provider conversation, session, workspace or device identifier.",
+      "integrationStrategy": "COMPOSE_EXTEND",
+      "dependsOn": [
+        "TB-W4-K-01"
+      ],
+      "existingAuthorities": [
+        "Client evidence (A2.2)",
+        "Client presence two-clock (G1/G2)",
+        "Tool surface attestation (G3)",
+        "Function cartography (.mcp/function-cartography.json)",
+        "Universal Agent Coordination snapshot"
+      ],
+      "collisionDomains": [
+        "cockpit:agents-tools"
+      ],
+      "redTests": [
+        "RED proves no cockpit agents/clients or tool catalogue view exists.",
+        "RED proves a missing provider identifier is not rendered as UNAVAILABLE."
+      ],
+      "greenAcceptance": [
+        "Absent provider conversation, session or workspace identifiers are rendered UNAVAILABLE/UNKNOWN, never fabricated.",
+        "SYSTEM HEALTH, CLIENT PRESENCE, SESSION LIVENESS and AGENT ACTIVITY are rendered as distinct signals.",
+        "The tool inspector offers no arbitrary invocation console; a probe is offered only where its contract defines a safe one."
+      ],
+      "readAuthorities": [
+        "Client evidence (A2.2)",
+        "Client presence two-clock (G1/G2)",
+        "Tool surface attestation (G3)",
+        "Function cartography (.mcp/function-cartography.json)",
+        "Universal Agent Coordination snapshot"
+      ],
+      "resourceScopes": [
+        "cockpit:agents-tools"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-K-04",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.4",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "Pull Request and CI/Checks operations center (read-only)",
+      "objective": "Render PR state (base/head, exact head, mergeability, reviews and threads, required checks, files, governance requirements) and CI (workflow runs, jobs, checks, required vs optional, exact SHA, artifacts) through the existing bounded GitHub read capabilities, linked to tasks, commits and deployments.",
+      "integrationStrategy": "COMPOSE_EXTEND",
+      "dependsOn": [
+        "TB-W4-K-01"
+      ],
+      "existingAuthorities": [
+        "GitHub control-plane READ (src/tools/githubControlPlaneRead.ts)",
+        "GitHub review-thread READ (src/tools/githubLifecycle.ts)",
+        "Required checks (TB-W2-03)"
+      ],
+      "collisionDomains": [
+        "cockpit:pr-ci"
+      ],
+      "redTests": [
+        "RED proves no cockpit PR or CI view exists on the exact observed head."
+      ],
+      "greenAcceptance": [
+        "PR and CI views use only existing bounded GitHub read capabilities; no raw GitHub API proxy is exposed.",
+        "Merge conditions are shown satisfied/unsatisfied against the exact head; no mutation control is exposed in this lot.",
+        "Log and artifact access follows existing permissions and redaction."
+      ],
+      "readAuthorities": [
+        "GitHub control-plane READ (src/tools/githubControlPlaneRead.ts)",
+        "GitHub review-thread READ (src/tools/githubLifecycle.ts)",
+        "Required checks (TB-W2-03)"
+      ],
+      "resourceScopes": [
+        "cockpit:pr-ci"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-K-05",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.5",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "Project Reality Explorer and Repository/Git workspace (read-only)",
+      "objective": "Render Repository -> Project -> Server -> Runtime -> Reverse Proxy -> Domain with field-level value, authority, provenance, observedAt, freshness and verification state, and the repository/Git workspace (exact HEAD, clean/dirty, ahead/behind, remotes, worktrees, GitRegistry binding) from the C345 and GGCC Git READ projections; contradictions stay visible.",
+      "integrationStrategy": "COMPOSE_EXTEND",
+      "dependsOn": [
+        "TB-W4-K-01",
+        "TB-W3-C345-02",
+        "TB-W3-GGCC-GIT-READ"
+      ],
+      "existingAuthorities": [
+        "GitHub repository, project and server resolution (B2/C2/C3)",
+        "Runtime and domain resolution (C4/C5)",
+        "GitRegistry V2",
+        "Live State",
+        "Typed Git READ capability (GGCC)"
+      ],
+      "collisionDomains": [
+        "cockpit:project-reality"
+      ],
+      "redTests": [
+        "RED proves no project reality or repository workspace view exists in the cockpit."
+      ],
+      "greenAcceptance": [
+        "VERIFIED, UNVERIFIED, UNKNOWN, STALE, AMBIGUOUS, CONFLICT and NONE are rendered with their reason codes; contradictions are never normalized away.",
+        "Declared, observed and verified values stay distinct for every field.",
+        "No Git terminal or free Git command is exposed."
+      ],
+      "readAuthorities": [
+        "GitHub repository, project and server resolution (B2/C2/C3)",
+        "Runtime and domain resolution (C4/C5)",
+        "GitRegistry V2",
+        "Live State",
+        "Typed Git READ capability (GGCC)"
+      ],
+      "resourceScopes": [
+        "cockpit:project-reality"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-K-06",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.6",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "Deployments, runtime and Evidence/Receipts center (read-only)",
+      "objective": "Render deployments (source SHA, target, server, runtime/container, state, health, pre/post evidence, rollback availability, Live State reconciliation, drift) and a navigable evidence view (Bootstrap Receipts, exact-head CI evidence, deploy attestations, runtime observations, task terminal evidence) derived from existing authorities.",
+      "integrationStrategy": "COMPOSE_EXTEND",
+      "dependsOn": [
+        "TB-W4-K-01",
+        "TB-W3-C4-01"
+      ],
+      "existingAuthorities": [
+        "Governed Deploy workflow and attestation",
+        "GitHub OIDC read-only evidence",
+        "Runtime image attestation (mcp_runtime_image_attestation_s1)",
+        "Live State",
+        "Bootstrap Receipt",
+        "Runtime resolution (C4)"
+      ],
+      "collisionDomains": [
+        "cockpit:deploy-evidence"
+      ],
+      "redTests": [
+        "RED proves no cockpit deployment/runtime or evidence view exists."
+      ],
+      "greenAcceptance": [
+        "Every displayed state links back to its evidence; no new evidence store is created.",
+        "A deployed SHA is shown as proven only with attestation evidence, otherwise UNVERIFIED/UNKNOWN.",
+        "No deploy, restart or rollback control is exposed in this lot."
+      ],
+      "readAuthorities": [
+        "Governed Deploy workflow and attestation",
+        "GitHub OIDC read-only evidence",
+        "Runtime image attestation (mcp_runtime_image_attestation_s1)",
+        "Live State",
+        "Bootstrap Receipt",
+        "Runtime resolution (C4)"
+      ],
+      "resourceScopes": [
+        "cockpit:deploy-evidence"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-K-07",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.7",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "Identity/OAuth, Capability Reality matrix, Governance center and System configuration (read-only)",
+      "objective": "Render the current principal, non-secret OAuth state, scopes, RequestIdentity, TargetScope, effective capabilities with denial reasons, the explainable capability x identity x target x operation x governance x SAFE_NOW matrix, the governance center (policies, invariants, gate catalog, WRITE gates, collision and exact-head policies) and the administrable configuration, strictly separating user, system, secret and governance configuration.",
+      "integrationStrategy": "COMPOSE_EXTEND",
+      "dependsOn": [
+        "TB-W4-K-01",
+        "TB-W3-D2-01",
+        "TB-W3-A3-02",
+        "TB-W3-OAUTH-WRITE-SCOPE-01"
+      ],
+      "existingAuthorities": [
+        "OAuth token verification and consent (src/oauth.ts)",
+        "MCP request identity",
+        "Capability Reality",
+        "Effective capabilities (D2)",
+        "Human gate policy and gate catalog",
+        "Scoped WRITE gate"
+      ],
+      "collisionDomains": [
+        "cockpit:identity-governance"
+      ],
+      "redTests": [
+        "RED proves no cockpit identity, capability matrix or governance view exists.",
+        "RED proves a disabled capability is not explained by its reason codes."
+      ],
+      "greenAcceptance": [
+        "Each capability shows exists, callable, authorized, safe-now, required Task/Session/Claim/Lock, exact-head/stateVersion requirements, human gate and reason codes; UI_VISIBILITY != CALLABLE != AUTHORIZED != SAFE_NOW.",
+        "No token, code, verifier or secret value is ever rendered.",
+        "Governance is displayed from its versioned authorities; the cockpit is never an arbitrary JSON governance editor."
+      ],
+      "readAuthorities": [
+        "OAuth token verification and consent (src/oauth.ts)",
+        "MCP request identity",
+        "Capability Reality",
+        "Effective capabilities (D2)",
+        "Human gate policy and gate catalog",
+        "Scoped WRITE gate"
+      ],
+      "resourceScopes": [
+        "cockpit:identity-governance"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-K-08",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.8",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "Governed action pipeline and PR/CI actions",
+      "objective": "Add the cockpit action pipeline (exact target -> effective capability -> preview -> required gate/consent -> bounded mutation through an existing governed MCP capability -> postcondition -> evidence -> refreshed projection) and wire the first action family: PR request-review, bounded metadata update, mark ready, review-thread reply/resolve and exact-head-aware merge, plus CI rerun/dispatch only where a governed capability authorizes it.",
+      "integrationStrategy": "WRAP_EXTEND",
+      "dependsOn": [
+        "TB-W4-K-07",
+        "TB-W4-K-04",
+        "TB-W3-PRW-01",
+        "TB-W3-PRW-02",
+        "TB-W3-GGCC-GH-PR-REVIEW",
+        "TB-W3-GGCC-GH-ACTIONS"
+      ],
+      "existingAuthorities": [
+        "Governed GitHub lifecycle capabilities",
+        "PR WRITE extensions (PRW)",
+        "Effective capabilities (D2)",
+        "Scoped WRITE gate",
+        "Governed Task Queue, Session and Lock Service",
+        "Operational Event Journal"
+      ],
+      "collisionDomains": [
+        "cockpit:governed-actions"
+      ],
+      "redTests": [
+        "RED proves an unauthorized cockpit mutation is not denied server-side when the UI control is hidden.",
+        "RED proves a HEAD_MOVED or stateVersion change during confirmation does not fail closed."
+      ],
+      "greenAcceptance": [
+        "Every mutation is revalidated server-side through an existing governed capability under a resolved identity and D2 effective capability; the shared-token web session alone never authorizes a mutation.",
+        "SUPER ADMIN UI never bypasses governance: the UI role creates no permission and gates and consent stay canonical.",
+        "HEAD_MOVED, a stateVersion change, a foreign lock or a blocked task during confirmation fail closed and refresh the projection.",
+        "Mutating forms carry anti-forgery protection, every mutation is audited with evidence and retries are idempotent."
+      ],
+      "readAuthorities": [
+        "Governed GitHub lifecycle capabilities",
+        "PR WRITE extensions (PRW)",
+        "Effective capabilities (D2)",
+        "Scoped WRITE gate",
+        "Governed Task Queue, Session and Lock Service",
+        "Operational Event Journal"
+      ],
+      "resourceScopes": [
+        "cockpit:governed-actions"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-K-09",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.9",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "GitHub control plane, Git and deployment/runtime governed actions",
+      "objective": "Extend the cockpit to the full GGCC GitHub control plane (repositories, branches, commits/files, rulesets, webhooks, environments, variables, write-only secret status, releases, deployments, issues/projects, organization) and to typed Git and governed deploy/restart/rollback/verify actions, all through the TB-W4-K-08 pipeline and only for capabilities that are governed and authorized.",
+      "integrationStrategy": "COMPOSE_EXTEND",
+      "dependsOn": [
+        "TB-W4-K-08",
+        "TB-W4-K-05",
+        "TB-W4-K-06",
+        "TB-W4-GGCC-E2E"
+      ],
+      "existingAuthorities": [
+        "GGCC typed Git and GitHub capabilities",
+        "Governed Deploy",
+        "Effective capabilities (D2)",
+        "Scoped WRITE gate"
+      ],
+      "collisionDomains": [
+        "cockpit:control-plane-actions"
+      ],
+      "redTests": [
+        "RED proves no cockpit view or governed action exists for the GGCC control plane."
+      ],
+      "greenAcceptance": [
+        "Secrets are write-only: no view or action can reveal a secret value.",
+        "Destructive, history-rewrite and admin actions reflect their classification and canonical gates; CONDITIONAL capabilities stay disabled until their gates are satisfied.",
+        "No free Git/SSH shell, raw GitHub API or arbitrary command field exists."
+      ],
+      "readAuthorities": [
+        "GGCC typed Git and GitHub capabilities",
+        "Governed Deploy",
+        "Effective capabilities (D2)",
+        "Scoped WRITE gate"
+      ],
+      "resourceScopes": [
+        "cockpit:control-plane-actions"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-K-10",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.10",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "Provisioning Center",
+      "objective": "Provide the governed provisioning wizard over E/F: restore known context -> resolve automatically -> show missing context -> ask only missing values -> validate -> preview plan -> gates/consent -> bounded steps -> postconditions -> evidence -> governed rollback.",
+      "integrationStrategy": "COMPOSE_EXTEND",
+      "dependsOn": [
+        "TB-W4-K-08",
+        "TB-W3-E3-01",
+        "TB-W3-F-05"
+      ],
+      "existingAuthorities": [
+        "Missing-context detection and completion wizard (E1/E2)",
+        "Consent and validation (E3)",
+        "Governed provisioning (F)"
+      ],
+      "collisionDomains": [
+        "cockpit:provisioning"
+      ],
+      "redTests": [
+        "RED proves no cockpit provisioning wizard exists and that provisioning cannot run without explicit consent."
+      ],
+      "greenAcceptance": [
+        "Only genuinely missing information is requested; known context is restored and resolved first.",
+        "Explicit consent is obtained when governance requires it; no silent mutation.",
+        "Postconditions, evidence and governed rollback are shown for every provisioning step."
+      ],
+      "readAuthorities": [
+        "Missing-context detection and completion wizard (E1/E2)",
+        "Consent and validation (E3)",
+        "Governed provisioning (F)"
+      ],
+      "resourceScopes": [
+        "cockpit:provisioning"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-K-11",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.11",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "Events/Tracing, Monitoring, Alerts/Incidents and Audit/Drift explorers",
+      "objective": "Compose the H tracing, I1/I2/I3 monitoring, connection-chain and alert projections and the GGCC audit/drift projection into searchable cockpit explorers (trace timeline, layer-specific failures, health per layer, alerts with severity/layer/reason/evidence, expected vs observed drift).",
+      "integrationStrategy": "COMPOSE",
+      "dependsOn": [
+        "TB-W4-K-01",
+        "TB-W4-H-03",
+        "TB-W4-I3-01",
+        "TB-W4-GGCC-AUDIT"
+      ],
+      "existingAuthorities": [
+        "Operational Event Journal and end-to-end tracing (H)",
+        "Synthetic monitoring, connection-chain dashboard and alerts (I1-I3)",
+        "GGCC audit/drift projection"
+      ],
+      "collisionDomains": [
+        "cockpit:observability"
+      ],
+      "redTests": [
+        "RED proves no cockpit tracing, monitoring, alert or drift explorer exists."
+      ],
+      "greenAcceptance": [
+        "The cockpit renders the existing projections and creates no second event, audit, alert or monitoring store.",
+        "Alerts identify the failing layer instead of a generic MCP down state.",
+        "Secrets never appear in traces, logs or alerts."
+      ],
+      "readAuthorities": [
+        "Operational Event Journal and end-to-end tracing (H)",
+        "Synthetic monitoring, connection-chain dashboard and alerts (I1-I3)",
+        "GGCC audit/drift projection"
+      ],
+      "resourceScopes": [
+        "cockpit:observability"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W4-K-12",
+      "workItemId": "PB-K",
+      "waveId": "W4",
+      "lotId": "K.12",
+      "integrationSlot": "cockpit.super-admin",
+      "writeAuthorities": [],
+      "title": "Cockpit E2E acceptance, browser certification and operational documentation",
+      "objective": "Certify the cockpit end to end against #236 §38-§41 on the retained browser targets and document architecture, routes, data sources, permission model, mutation flow, troubleshooting, deployment, rollback, observability, test strategy, known limitations and the operator guide in the existing documentation authorities.",
+      "integrationStrategy": "COMPOSE",
+      "dependsOn": [
+        "TB-W4-K-02",
+        "TB-W4-K-03",
+        "TB-W4-K-04",
+        "TB-W4-K-05",
+        "TB-W4-K-06",
+        "TB-W4-K-07",
+        "TB-W4-K-08",
+        "TB-W4-K-09",
+        "TB-W4-K-10",
+        "TB-W4-K-11"
+      ],
+      "existingAuthorities": [
+        "Cockpit modules TB-W4-K-01..11",
+        "Governed Deploy and attestation",
+        "Existing documentation authorities (SUIVI, CHANGELOG, DECISIONS_LOG, ARCHITECTURE)"
+      ],
+      "collisionDomains": [
+        "cockpit:acceptance"
+      ],
+      "redTests": [
+        "RED proves the cockpit journeys of #236 §38 are not yet certified on the exact observed head."
+      ],
+      "greenAcceptance": [
+        "READ_ONLY journey: login/connect -> Command Center -> agent/session -> task -> project reality -> PR -> CI -> deploy -> evidence.",
+        "GOVERNED_WRITE journey: identity -> effective capability -> exact target -> preview -> gate/consent -> bounded mutation -> postcondition -> evidence -> refreshed UI.",
+        "CONCURRENCY journey: two concurrent sessions show the collision, preserve ownership, deny the unsafe action and never take over silently.",
+        "HEAD_DRIFT journey: an action opened at HEAD X fails closed when HEAD becomes Y and reports HEAD_MOVED with the reobserve path.",
+        "STALE_EVIDENCE journey: stale state is clearly displayed and freshness-requiring mutations are blocked.",
+        "NEGATIVE_SECURITY journey: unauthorized mutation is denied server-side, secrets are never returned or rendered and no arbitrary Git/SSH/GitHub command exists.",
+        "PROVISIONING journey: missing context -> wizard -> explicit consent -> provisioning -> verification -> rollback evidence.",
+        "The browser support matrix is defined explicitly in the acceptance design before certification, and post-deploy smoke tests are green on the attested SHA."
+      ],
+      "readAuthorities": [
+        "Cockpit modules TB-W4-K-01..11",
+        "Governed Deploy and attestation",
+        "Existing documentation authorities (SUIVI, CHANGELOG, DECISIONS_LOG, ARCHITECTURE)"
+      ],
+      "resourceScopes": [
+        "cockpit:acceptance"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
       "id": "TB-M-01",
       "workItemId": "PB-J3",
       "waveId": "MAINTENANCE",
@@ -9195,6 +10363,88 @@
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
       }
+    },
+    {
+      "id": "TB-W4-MCP-FINAL-ACCEPTANCE",
+      "workItemId": "PB-MCP-TERMINAL",
+      "waveId": "W4",
+      "lotId": "MCP-FINAL",
+      "title": "Global MCP terminal acceptance (GLOBAL_MCP_COMPLETE)",
+      "objective": "Prove, from canonical authorities and exact-head evidence only, the terminal positive path and the relevant negative paths of #235 §16 across the four acceptance dimensions, then declare GLOBAL_MCP_COMPLETE durably; untriggered CONDITIONAL/DEFERRED capabilities stay behind their gates.",
+      "integrationSlot": "program.global-terminal-acceptance",
+      "integrationStrategy": "COMPOSE",
+      "dependsOn": [
+        "TB-W3-F-05",
+        "TB-W4-I3-01",
+        "TB-W4-J1-01",
+        "TB-W4-J2-01",
+        "TB-W4-K-12",
+        "TB-W4-GGCC-E2E",
+        "TB-W3-OAUTH-WRITE-SCOPE-01"
+      ],
+      "existingAuthorities": [
+        "Program Backlog V2 derived readiness",
+        "Governed Task Queue, Session and Lock Service",
+        "GitHub exact-head CI and Governed Deploy",
+        "GitHub OIDC read-only evidence",
+        "Live State",
+        "SUIVI.md, CHANGELOG.md and DECISIONS_LOG.md"
+      ],
+      "resourceScopes": [
+        "program:global-acceptance"
+      ],
+      "collisionDomains": [
+        "program:global-acceptance"
+      ],
+      "writeAuthorities": [],
+      "redTests": [
+        "RED proves at least one mandatory blueprint is not DONE with evidence, or one acceptance dimension lacks proof, on the exact observed head."
+      ],
+      "greenAcceptance": [
+        "Every mandatory blueprint is DONE with its required evidence; every remaining CONDITIONAL/DEFERRED item is classified with a valid justification and hides no mandatory work.",
+        "BACKEND_CONTROL_PLANE_ACCEPTANCE, CLIENT_CERTIFICATIONS and COCKPIT_ACCEPTANCE are each proven before GLOBAL_MCP_ACCEPTANCE is declared.",
+        "The positive terminal path of executionModel.terminalCondition.positivePath is proven end to end.",
+        "Every negative path of executionModel.terminalCondition.negativePaths fails closed with evidence.",
+        "No unresolved authority divergence and no silently abandoned task, claim or lock remain.",
+        "Documentation, SUIVI, CHANGELOG, DECISIONS and the program backlog are consistent with code and runtime, and the last required exact HEAD has CI, deploy and runtime evidence."
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependencies are DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "definitionOfDone": [
+        "GLOBAL_MCP_COMPLETE is declared only from canonical authorities with every success criterion of executionModel.terminalCondition proven, never automatically.",
+        "Exact-head CI, governed deploy attestation and runtime evidence exist for the last required HEAD.",
+        "SUIVI, CHANGELOG, DECISIONS_LOG and NEXT_ACTION record the terminal state reproducibly."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "readAuthorities": [
+        "Program Backlog V2 derived readiness",
+        "Governed Task Queue, Session and Lock Service",
+        "GitHub exact-head CI and Governed Deploy",
+        "GitHub OIDC read-only evidence",
+        "Live State",
+        "SUIVI.md, CHANGELOG.md and DECISIONS_LOG.md"
+      ]
     }
   ],
   "reconciliationBaseline": {
@@ -9779,6 +11029,177 @@
       ],
       "otherAgentsRuntimeState": "UNKNOWN",
       "correction": "agentHandoffContract.steps gains REOBSERVE_PROGRAM_INTAKES and programIntakeDiscovery; CLAUDE.md §7.1 step 3 lists open [PROGRAM INTAKE] issues."
+    },
+    {
+      "id": "INTAKE-235",
+      "issue": 235,
+      "title": "[PROGRAM INTAKE] MCP COMPLETE-TO-TERMINAL — continuous governed completion",
+      "status": "CONVERGED_CURRENT_MAIN",
+      "observedMainSha": "0ac9ecf70adab117f2175ef2451fc62fe15abac7",
+      "createsParallelProgram": false,
+      "createsSecondOrchestrationLoop": false,
+      "createsRuntimeTasks": false,
+      "authorizesRuntimeMutation": false,
+      "integrationVerdict": "ACCEPT_WITH_ADAPTATION",
+      "integrationRule": "Reinforces CLAUDE.md PROGRAM_AUTO_CONTINUE: every section maps onto an existing authority; only the terminal condition (§16/§22) and the global stop report (§21) are added, as executionModel.terminalCondition, TB-W4-MCP-FINAL-ACCEPTANCE and agentHandoffContract.globalStopReport.",
+      "targetBlueprintIds": [
+        "TB-W4-MCP-FINAL-ACCEPTANCE"
+      ],
+      "sectionMapping": [
+        {
+          "section": "§1",
+          "classification": "DUPLICATE",
+          "authority": "CLAUDE.md §7.1/§8/GitHub-first + agentHandoffContract.steps READ_AUTHORITIES"
+        },
+        {
+          "section": "§2",
+          "classification": "DUPLICATE",
+          "authority": "CLAUDE.md §7.2 PROGRAM_AUTO_CONTINUE + executionModel.automaticContinuation"
+        },
+        {
+          "section": "§3",
+          "classification": "DUPLICATE",
+          "authority": "TB-W3-DISPATCH-02 resume-owned-first + agentHandoffContract (heartbeat never transfers ownership)"
+        },
+        {
+          "section": "§4",
+          "classification": "DUPLICATE",
+          "authority": "agentHandoffContract.headMovedRule"
+        },
+        {
+          "section": "§5",
+          "classification": "DUPLICATE",
+          "authority": "executionModel.existingFirstOrder + noParallelAuthority"
+        },
+        {
+          "section": "§6",
+          "classification": "DUPLICATE",
+          "authority": "TB-W3-C3-01 (DONE), TB-W3-C4-01, TB-W3-C5-01, TB-W3-C345-02"
+        },
+        {
+          "section": "§7",
+          "classification": "DUPLICATE",
+          "authority": "TB-W3-A3-02, TB-W3-OAUTH-WRITE-SCOPE-01"
+        },
+        {
+          "section": "§8",
+          "classification": "DUPLICATE",
+          "authority": "TB-W3-D1-01, TB-W3-D2-01, TB-W3-D3-01"
+        },
+        {
+          "section": "§9",
+          "classification": "DUPLICATE",
+          "authority": "TB-W3-E1-01, TB-W3-E2-01, TB-W3-E3-01"
+        },
+        {
+          "section": "§10",
+          "classification": "DUPLICATE",
+          "authority": "TB-W3-F-01..TB-W3-F-05"
+        },
+        {
+          "section": "§11",
+          "classification": "DUPLICATE",
+          "authority": "TB-W3-PRW-01, TB-W3-PRW-02"
+        },
+        {
+          "section": "§12",
+          "classification": "DUPLICATE",
+          "authority": "INTAKE-177 GGCC blueprints (docs/governance/git-github-capability-convergence-20260925.json)"
+        },
+        {
+          "section": "§13",
+          "classification": "DUPLICATE",
+          "authority": "TB-W4-H-01..TB-W4-H-03"
+        },
+        {
+          "section": "§14",
+          "classification": "DUPLICATE",
+          "authority": "TB-W4-I1-01, TB-W4-I2-01, TB-W4-I3-01"
+        },
+        {
+          "section": "§15",
+          "classification": "DUPLICATE",
+          "authority": "TB-W4-J1-01, TB-W4-J2-01"
+        },
+        {
+          "section": "§16",
+          "classification": "COMPLEMENT",
+          "authority": "executionModel.terminalCondition + PB-MCP-TERMINAL / TB-W4-MCP-FINAL-ACCEPTANCE"
+        },
+        {
+          "section": "§17",
+          "classification": "DUPLICATE",
+          "authority": "executionModel.readinessPolicy + guarded CONDITIONAL/DEFERRED blueprints"
+        },
+        {
+          "section": "§18",
+          "classification": "DUPLICATE",
+          "authority": "executionModel.humanGatePolicy (INTAKE-221)"
+        },
+        {
+          "section": "§19",
+          "classification": "DUPLICATE",
+          "authority": "blueprint redTests/greenAcceptance/regressionSuites"
+        },
+        {
+          "section": "§20",
+          "classification": "DUPLICATE",
+          "authority": "CLAUDE.md §9.2 durable checkpoint + blueprint definitionOfDone"
+        },
+        {
+          "section": "§21",
+          "classification": "COMPLEMENT",
+          "authority": "agentHandoffContract.globalStopReport"
+        },
+        {
+          "section": "§22",
+          "classification": "COMPLEMENT",
+          "authority": "executionModel.terminalCondition.successCriteria"
+        }
+      ],
+      "readyBlueprintIdsAtConvergence": [
+        "TB-W3-A3-02",
+        "TB-W3-C4-01",
+        "TB-W3-C5-01",
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W4-K-01"
+      ],
+      "postConvergenceReadinessIsDerived": true
+    },
+    {
+      "id": "INTAKE-236",
+      "issue": 236,
+      "title": "[PROGRAM INTAKE] MCP SUPER ADMIN COCKPIT — total governed control-plane frontend",
+      "status": "CONVERGED_CURRENT_MAIN",
+      "observedMainSha": "0ac9ecf70adab117f2175ef2451fc62fe15abac7",
+      "inventoryPath": "docs/governance/super-admin-cockpit-convergence-20261004.json",
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "authorizesRuntimeMutation": false,
+      "integrationVerdict": "ACCEPT_WITH_ADAPTATION",
+      "integrationRule": "Converged as PB-K (slot cockpit.super-admin) with twelve W4 blueprints that extend the existing Express server-rendered dashboard and compose existing projections; read-only modules follow their projections, governed actions follow D2/PR WRITE/GGCC, and COCKPIT_ACCEPTANCE is a terminal dimension.",
+      "targetBlueprintIds": [
+        "TB-W4-K-01",
+        "TB-W4-K-02",
+        "TB-W4-K-03",
+        "TB-W4-K-04",
+        "TB-W4-K-05",
+        "TB-W4-K-06",
+        "TB-W4-K-07",
+        "TB-W4-K-08",
+        "TB-W4-K-09",
+        "TB-W4-K-10",
+        "TB-W4-K-11",
+        "TB-W4-K-12"
+      ],
+      "readyBlueprintIdsAtConvergence": [
+        "TB-W3-A3-02",
+        "TB-W3-C4-01",
+        "TB-W3-C5-01",
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W4-K-01"
+      ],
+      "postConvergenceReadinessIsDerived": true
     }
   ],
   "w3A22InventoryHandoff": {
@@ -10251,18 +11672,32 @@
     ]
   },
   "programIntakeConvergence": {
-    "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0",
-    "observedAt": "2026-10-04T00:00:00Z",
+    "observedMainSha": "0ac9ecf70adab117f2175ef2451fc62fe15abac7",
+    "observedAt": "2026-10-04T22:40:08Z",
     "intakes": [
-      "INTAKE-220",
-      "INTAKE-221",
-      "INTAKE-222",
-      "SUPERVISION-219-20261002"
+      "INTAKE-235",
+      "INTAKE-236"
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
-    "serverMutations": 0
+    "serverMutations": 0,
+    "history": [
+      {
+        "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0",
+        "observedAt": "2026-10-04T00:00:00Z",
+        "intakes": [
+          "INTAKE-220",
+          "INTAKE-221",
+          "INTAKE-222",
+          "SUPERVISION-219-20261002"
+        ],
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "serverMutations": 0
+      }
+    ]
   },
   "w3B3TargetScopeHandoff": {
     "status": "PASS_WITH_EVIDENCE",

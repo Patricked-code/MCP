@@ -1,0 +1,1027 @@
+{
+  "schemaVersion": 1,
+  "sourceIssue": 236,
+  "sourceTitle": "[PROGRAM INTAKE] MCP SUPER ADMIN COCKPIT — total governed control-plane frontend",
+  "companionIssue": 235,
+  "observedMainSha": "0ac9ecf70adab117f2175ef2451fc62fe15abac7",
+  "generatedAt": "2026-10-04T22:40:08Z",
+  "authority": {
+    "kind": "DERIVED_NON_EXECUTABLE_PROJECTION",
+    "createsRuntimeTasks": false,
+    "createsParallelBacklog": false,
+    "replacesProgramBacklog": false,
+    "replacesCapabilityReality": false,
+    "programProjection": "docs/governance/program-backlog-convergence.json"
+  },
+  "convergence": {
+    "CURRENT_HEAD": {
+      "repository": "Patricked-code/MCP",
+      "branch": "main",
+      "sha": "0ac9ecf70adab117f2175ef2451fc62fe15abac7",
+      "observedAt": "2026-10-04T22:40:08Z",
+      "evidence": {
+        "mergedPullRequest": 234,
+        "mainCi": {
+          "workflow": "MCP CI",
+          "runNumber": 2218,
+          "runId": 37239857289,
+          "conclusion": "success"
+        },
+        "governedDeploy": {
+          "workflow": "MCP Governed Deploy",
+          "runNumber": 111,
+          "runId": 37239857290,
+          "conclusion": "success"
+        }
+      }
+    },
+    "CURRENT_PROGRAM_STATE": {
+      "blueprintStateCounts": {
+        "DONE": 25,
+        "READY": 5,
+        "BLOCKED": 52,
+        "DEFERRED": 7,
+        "CONDITIONAL": 5
+      },
+      "workItemsDone": 17,
+      "workItemsTotal": 41,
+      "readyBlueprintIds": [
+        "TB-W3-A3-02",
+        "TB-W3-C4-01",
+        "TB-W3-C5-01",
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W4-K-01"
+      ],
+      "localBlockers": [
+        {
+          "blueprintId": "TB-W3-A3-02",
+          "reasonCode": "RUNTIME_CLAIM_OWNED_ELSEWHERE",
+          "detail": "Runtime claim and draft PR #207 belong to another session; never stolen or transferred on liveness."
+        }
+      ]
+    },
+    "EXISTING_FRONTEND_SURFACE": {
+      "routes": [
+        {
+          "path": "/",
+          "methods": [
+            "GET"
+          ],
+          "kind": "LANDING",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/login",
+          "methods": [
+            "GET",
+            "POST"
+          ],
+          "kind": "HTML_FORM",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/logout",
+          "methods": [
+            "GET"
+          ],
+          "kind": "SESSION",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/dashboard",
+          "methods": [
+            "GET"
+          ],
+          "kind": "HTML_PAGE",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/git",
+          "methods": [
+            "GET"
+          ],
+          "kind": "HTML_PAGE",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/git/status",
+          "methods": [
+            "GET"
+          ],
+          "kind": "JSON",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/git/connect",
+          "methods": [
+            "POST"
+          ],
+          "kind": "HTML_FORM_POST",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/github",
+          "methods": [
+            "GET"
+          ],
+          "kind": "HTML_PAGE",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/github/:account",
+          "methods": [
+            "GET"
+          ],
+          "kind": "HTML_PAGE",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/github/status",
+          "methods": [
+            "GET"
+          ],
+          "kind": "JSON",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/github/connect",
+          "methods": [
+            "POST"
+          ],
+          "kind": "HTML_FORM_POST",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/health",
+          "methods": [
+            "GET"
+          ],
+          "kind": "JSON",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/mcp",
+          "methods": [
+            "GET",
+            "POST"
+          ],
+          "kind": "MCP_TRANSPORT",
+          "source": "src/server.ts"
+        },
+        {
+          "path": "/oauth/authorize",
+          "methods": [
+            "GET",
+            "POST"
+          ],
+          "kind": "OAUTH_CONSENT_PAGE",
+          "source": "src/oauth.ts"
+        },
+        {
+          "path": "/oauth/token",
+          "methods": [
+            "POST"
+          ],
+          "kind": "OAUTH_TOKEN",
+          "source": "src/oauth.ts"
+        }
+      ],
+      "mountedRouters": [
+        {
+          "name": "Governed GitHub OIDC deploy",
+          "source": "src/deploy/routes.ts"
+        },
+        {
+          "name": "GitHub OIDC read-only evidence",
+          "source": "src/evidence/githubReadonlyRoutes.ts"
+        },
+        {
+          "name": "Repository SSH CA bootstrap",
+          "source": "src/ssh/githubRepositoryCaBootstrapRoutes.ts"
+        },
+        {
+          "name": "Repository SSH access",
+          "source": "src/ssh/githubRepositoryAccessRoutes.ts"
+        },
+        {
+          "name": "Stablecoin fast-forward",
+          "source": "src/stablecoin/githubFastForward.ts"
+        }
+      ],
+      "webAuthentication": "Shared MCP token login creating an HMAC-signed HttpOnly SameSite=Lax session cookie (Secure in production or over https); a Bearer token is also accepted. The session is not a per-person identity.",
+      "dashboardContent": "GitHub connection, MCP mode, Git registry counts and the governed context section (Live State, bootstrap, queue, locks, GitHub identity/repository, capability reality counts).",
+      "clientSideScripts": "NONE_OBSERVED"
+    },
+    "EXISTING_UI_STACK": {
+      "server": "Express 5.2.1 (package.json: express latest)",
+      "rendering": "SERVER_RENDERED_TEMPLATE_STRINGS",
+      "frontendFramework": null,
+      "bundler": null,
+      "staticAssets": [],
+      "styling": "Inline CSS per page",
+      "escapeHelpers": [
+        {
+          "path": "src/server.ts",
+          "symbol": "function escapeHtml"
+        },
+        {
+          "path": "src/governedContext/dashboard.ts",
+          "symbol": "function escapeHtml"
+        },
+        {
+          "path": "src/oauth.ts",
+          "symbol": "function escapeHtml"
+        },
+        {
+          "path": "src/github/connection.ts",
+          "symbol": "function escapeHtml"
+        },
+        {
+          "path": "src/github/registry.ts",
+          "symbol": "const esc ="
+        }
+      ],
+      "contentSecurityPolicy": "Only the OAuth consent page sends one (src/oauth.ts).",
+      "browserTooling": "No browser test dependency in package.json; Chromium is available in cloud agent sessions.",
+      "newStackIntroduced": false,
+      "decision": "REUSE the Express server-rendered stack and its web session; extract shared rendering helpers; no frontend framework or bundler without a proven need."
+    },
+    "EXISTING_API_PROJECTIONS": [
+      {
+        "name": "/health",
+        "kind": "HTTP_JSON",
+        "source": "src/server.ts",
+        "feeds": [
+          "TB-W4-K-01"
+        ]
+      },
+      {
+        "name": "/git/status",
+        "kind": "HTTP_JSON",
+        "source": "src/server.ts",
+        "feeds": [
+          "TB-W4-K-05"
+        ]
+      },
+      {
+        "name": "/github/status",
+        "kind": "HTTP_JSON",
+        "source": "src/server.ts",
+        "feeds": [
+          "TB-W4-K-01",
+          "TB-W4-K-07"
+        ]
+      },
+      {
+        "name": "mcp_get_current_state_inventory (tasks, sessions, locks, nextWork)",
+        "kind": "MCP_TOOL",
+        "source": "src/tools/currentState.ts",
+        "feeds": [
+          "TB-W4-K-01",
+          "TB-W4-K-02"
+        ]
+      },
+      {
+        "name": "mcp_get_governed_context (capability reality, governance decision, gate, GitHub, project and server resolution)",
+        "kind": "MCP_TOOL",
+        "source": "src/tools/governedContext.ts",
+        "feeds": [
+          "TB-W4-K-01",
+          "TB-W4-K-05",
+          "TB-W4-K-07"
+        ]
+      },
+      {
+        "name": "mcp_get_live_state",
+        "kind": "MCP_TOOL",
+        "source": "src/tools/liveState.ts",
+        "feeds": [
+          "TB-W4-K-05",
+          "TB-W4-K-06"
+        ]
+      },
+      {
+        "name": "mcp_get_work_queue / mcp_get_governed_task",
+        "kind": "MCP_TOOL",
+        "source": "src/tools/governedTasks.ts",
+        "feeds": [
+          "TB-W4-K-02"
+        ]
+      },
+      {
+        "name": "mcp_list_governed_sessions / mcp_get_governed_session / mcp_attest_client_tool_surface",
+        "kind": "MCP_TOOL",
+        "source": "src/tools/governedSessions.ts",
+        "feeds": [
+          "TB-W4-K-02",
+          "TB-W4-K-03"
+        ]
+      },
+      {
+        "name": "GitHub control-plane READ (repository, branch, commit, compare, PR, reviews, checks, commits, tree, required checks, workflow runs, rulesets, webhooks, releases, deployments)",
+        "kind": "MCP_TOOL",
+        "source": "src/tools/githubControlPlaneRead.ts",
+        "feeds": [
+          "TB-W4-K-04",
+          "TB-W4-K-06",
+          "TB-W4-K-09"
+        ]
+      },
+      {
+        "name": "github_get_review_threads",
+        "kind": "MCP_TOOL",
+        "source": "src/tools/githubLifecycle.ts",
+        "feeds": [
+          "TB-W4-K-04"
+        ]
+      },
+      {
+        "name": "mcp_runtime_image_attestation_s1",
+        "kind": "MCP_TOOL",
+        "source": "src/tools/runtimeAttestation.ts",
+        "feeds": [
+          "TB-W4-K-06"
+        ]
+      },
+      {
+        "name": "Governed observability projection (deriveGovernedObservability)",
+        "kind": "INTERNAL_SERVICE",
+        "source": "src/governedContext/dashboard.ts",
+        "feeds": [
+          "TB-W4-K-01",
+          "TB-W4-K-07"
+        ]
+      },
+      {
+        "name": "Program Backlog V2 projection and derived readiness",
+        "kind": "VERSIONED_PROJECTION",
+        "source": "scripts/program-backlog-convergence-lib.mjs",
+        "feeds": [
+          "TB-W4-K-01",
+          "TB-W4-K-02"
+        ]
+      },
+      {
+        "name": "Function cartography (tool catalogue)",
+        "kind": "VERSIONED_PROJECTION",
+        "source": ".mcp/function-cartography.json",
+        "feeds": [
+          "TB-W4-K-03"
+        ]
+      },
+      {
+        "name": "Operational Event Journal",
+        "kind": "INTERNAL_SERVICE",
+        "source": "src/operationalMemory/eventJournal.ts",
+        "feeds": [
+          "TB-W4-K-02",
+          "TB-W4-K-11"
+        ]
+      },
+      {
+        "name": "Client presence two-clock",
+        "kind": "INTERNAL_SERVICE",
+        "source": "src/operationalMemory/clientPresence.ts",
+        "feeds": [
+          "TB-W4-K-01",
+          "TB-W4-K-03"
+        ]
+      },
+      {
+        "name": "GitHub OIDC read-only evidence",
+        "kind": "HTTP_OIDC_ROUTE",
+        "source": "src/evidence/githubReadonlyRoutes.ts",
+        "feeds": [
+          "TB-W4-K-06"
+        ]
+      }
+    ],
+    "EXISTING_I1_I2_I3_COMPONENTS": {
+      "I1": {
+        "blueprintId": "TB-W4-I1-01",
+        "status": "BLOCKED",
+        "seeds": [
+          "Synthetic probe clock recorded by /health (getDefaultSyntheticProbeClock in src/operationalMemory/clientPresence.ts)",
+          "GitHub OIDC read-only evidence probes"
+        ]
+      },
+      "I2": {
+        "blueprintId": "TB-W4-I2-01",
+        "status": "BLOCKED",
+        "seeds": [
+          "Governed dashboard section (renderGovernedContextDashboardSection / deriveGovernedObservability in src/governedContext/dashboard.ts)"
+        ],
+        "ownership": "I2 owns the connection-chain projection; the cockpit renders it (TB-W4-K-11) and never duplicates it."
+      },
+      "I3": {
+        "blueprintId": "TB-W4-I3-01",
+        "status": "BLOCKED",
+        "seeds": [
+          "Reason codes already carried by governed context and GitHub resolution; no alert projection exists yet"
+        ]
+      }
+    },
+    "REUSABLE_COMPONENTS": [
+      {
+        "name": "Web login, session and requireWebLogin",
+        "path": "src/server.ts"
+      },
+      {
+        "name": "Governed dashboard section and observability projection",
+        "path": "src/governedContext/dashboard.ts"
+      },
+      {
+        "name": "Current State service (inventory and nextWork)",
+        "path": "src/currentState/service.ts"
+      },
+      {
+        "name": "nextWork projection",
+        "path": "src/governance/nextWorkProjection.ts"
+      },
+      {
+        "name": "Governed context service",
+        "path": "src/governedContext/service.ts"
+      },
+      {
+        "name": "Universal Agent Coordination snapshot",
+        "path": "src/governedContext/agentCoordination.ts"
+      },
+      {
+        "name": "Client presence two-clock",
+        "path": "src/operationalMemory/clientPresence.ts"
+      },
+      {
+        "name": "Operational Event Journal",
+        "path": "src/operationalMemory/eventJournal.ts"
+      },
+      {
+        "name": "Governed Task Queue",
+        "path": "src/operationalMemory/taskQueue.ts"
+      },
+      {
+        "name": "Governed Lock Service",
+        "path": "src/operationalMemory/lockService.ts"
+      },
+      {
+        "name": "Program readiness library",
+        "path": "scripts/program-backlog-convergence-lib.mjs"
+      },
+      {
+        "name": "GitHub control-plane READ tools",
+        "path": "src/tools/githubControlPlaneRead.ts"
+      },
+      {
+        "name": "Governed GitHub lifecycle tools",
+        "path": "src/tools/githubLifecycle.ts"
+      },
+      {
+        "name": "Project resolution (C2)",
+        "path": "src/github/projectResolution.ts"
+      },
+      {
+        "name": "Server resolution (C3)",
+        "path": "src/github/serverResolution.ts"
+      },
+      {
+        "name": "Function cartography",
+        "path": ".mcp/function-cartography.json"
+      },
+      {
+        "name": "Content-Security-Policy pattern of the OAuth consent page",
+        "path": "src/oauth.ts"
+      },
+      {
+        "name": "HTTP route test pattern (ephemeral Express app + fetch)",
+        "path": "tests/oauthAuthorizeConsent.test.ts"
+      },
+      {
+        "name": "Dashboard rendering tests",
+        "path": "tests/governedDashboard.test.ts"
+      },
+      {
+        "name": "Observability projection tests",
+        "path": "tests/governedObservability.test.ts"
+      }
+    ],
+    "MISSING_COCKPIT_CAPABILITIES": [
+      {
+        "capability": "Application shell, navigation, design system and honest-state badges (K1, §34)",
+        "blueprintId": "TB-W4-K-01"
+      },
+      {
+        "capability": "One shared escaping/rendering helper (five duplicated helpers today)",
+        "blueprintId": "TB-W4-K-01"
+      },
+      {
+        "capability": "Content-Security-Policy and security headers on dashboard/cockpit pages",
+        "blueprintId": "TB-W4-K-01"
+      },
+      {
+        "capability": "Command Center (K2)",
+        "blueprintId": "TB-W4-K-01"
+      },
+      {
+        "capability": "Program control center with dependency graph, sessions, tasks/nextWork, claims & locks, global search (K3, K5-K7, §30)",
+        "blueprintId": "TB-W4-K-02"
+      },
+      {
+        "capability": "Agents & clients and tool catalogue/inspector (K4, K17)",
+        "blueprintId": "TB-W4-K-03"
+      },
+      {
+        "capability": "PR operations and CI/checks views (K11-K12 read)",
+        "blueprintId": "TB-W4-K-04"
+      },
+      {
+        "capability": "Project Reality explorer and repository/Git workspace (K8-K9)",
+        "blueprintId": "TB-W4-K-05"
+      },
+      {
+        "capability": "Deployments/runtime and evidence/receipts center (K13 read, K21)",
+        "blueprintId": "TB-W4-K-06"
+      },
+      {
+        "capability": "Identity/OAuth, capability/permission matrix, governance center, system configuration (K15, K16, K23, K24)",
+        "blueprintId": "TB-W4-K-07"
+      },
+      {
+        "capability": "Governed action pipeline, anti-forgery protection, identity-bound writes and PR/CI actions (§1, §33)",
+        "blueprintId": "TB-W4-K-08"
+      },
+      {
+        "capability": "GitHub control plane, Git and deploy/runtime actions (K9 actions, K10, K13 actions)",
+        "blueprintId": "TB-W4-K-09"
+      },
+      {
+        "capability": "Provisioning center (K14)",
+        "blueprintId": "TB-W4-K-10"
+      },
+      {
+        "capability": "Events/tracing, monitoring, alerts and audit/drift explorers (K18-K20, K22)",
+        "blueprintId": "TB-W4-K-11"
+      },
+      {
+        "capability": "Cockpit E2E acceptance, browser certification and operational documentation (K25-K27)",
+        "blueprintId": "TB-W4-K-12"
+      }
+    ],
+    "BACKEND_DEPENDENCIES": [
+      {
+        "blueprintId": "TB-W4-K-01",
+        "dependsOn": [
+          {
+            "id": "TB-W3-DISPATCH-03",
+            "stateAtConvergence": "DONE"
+          },
+          {
+            "id": "TB-W4-G3-01",
+            "stateAtConvergence": "DONE"
+          }
+        ]
+      },
+      {
+        "blueprintId": "TB-W4-K-02",
+        "dependsOn": [
+          {
+            "id": "TB-W4-K-01",
+            "stateAtConvergence": "READY"
+          }
+        ]
+      },
+      {
+        "blueprintId": "TB-W4-K-03",
+        "dependsOn": [
+          {
+            "id": "TB-W4-K-01",
+            "stateAtConvergence": "READY"
+          }
+        ]
+      },
+      {
+        "blueprintId": "TB-W4-K-04",
+        "dependsOn": [
+          {
+            "id": "TB-W4-K-01",
+            "stateAtConvergence": "READY"
+          }
+        ]
+      },
+      {
+        "blueprintId": "TB-W4-K-05",
+        "dependsOn": [
+          {
+            "id": "TB-W4-K-01",
+            "stateAtConvergence": "READY"
+          },
+          {
+            "id": "TB-W3-C345-02",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W3-GGCC-GIT-READ",
+            "stateAtConvergence": "READY"
+          }
+        ]
+      },
+      {
+        "blueprintId": "TB-W4-K-06",
+        "dependsOn": [
+          {
+            "id": "TB-W4-K-01",
+            "stateAtConvergence": "READY"
+          },
+          {
+            "id": "TB-W3-C4-01",
+            "stateAtConvergence": "READY"
+          }
+        ]
+      },
+      {
+        "blueprintId": "TB-W4-K-07",
+        "dependsOn": [
+          {
+            "id": "TB-W4-K-01",
+            "stateAtConvergence": "READY"
+          },
+          {
+            "id": "TB-W3-D2-01",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W3-A3-02",
+            "stateAtConvergence": "READY"
+          },
+          {
+            "id": "TB-W3-OAUTH-WRITE-SCOPE-01",
+            "stateAtConvergence": "BLOCKED"
+          }
+        ]
+      },
+      {
+        "blueprintId": "TB-W4-K-08",
+        "dependsOn": [
+          {
+            "id": "TB-W4-K-07",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-04",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W3-PRW-01",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W3-PRW-02",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W3-GGCC-GH-PR-REVIEW",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W3-GGCC-GH-ACTIONS",
+            "stateAtConvergence": "BLOCKED"
+          }
+        ]
+      },
+      {
+        "blueprintId": "TB-W4-K-09",
+        "dependsOn": [
+          {
+            "id": "TB-W4-K-08",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-05",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-06",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-GGCC-E2E",
+            "stateAtConvergence": "BLOCKED"
+          }
+        ]
+      },
+      {
+        "blueprintId": "TB-W4-K-10",
+        "dependsOn": [
+          {
+            "id": "TB-W4-K-08",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W3-E3-01",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W3-F-05",
+            "stateAtConvergence": "BLOCKED"
+          }
+        ]
+      },
+      {
+        "blueprintId": "TB-W4-K-11",
+        "dependsOn": [
+          {
+            "id": "TB-W4-K-01",
+            "stateAtConvergence": "READY"
+          },
+          {
+            "id": "TB-W4-H-03",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-I3-01",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-GGCC-AUDIT",
+            "stateAtConvergence": "BLOCKED"
+          }
+        ]
+      },
+      {
+        "blueprintId": "TB-W4-K-12",
+        "dependsOn": [
+          {
+            "id": "TB-W4-K-02",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-03",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-04",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-05",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-06",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-07",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-08",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-09",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-10",
+            "stateAtConvergence": "BLOCKED"
+          },
+          {
+            "id": "TB-W4-K-11",
+            "stateAtConvergence": "BLOCKED"
+          }
+        ]
+      }
+    ],
+    "FRONTEND_INDEPENDENT_WORK": [
+      {
+        "blueprintId": "TB-W4-K-01",
+        "reason": "Depends only on DONE authorities (TB-W3-DISPATCH-03, TB-W4-G3-01)."
+      },
+      {
+        "blueprintId": "TB-W4-K-02",
+        "reason": "Read-only over existing program, queue, session and lock projections once K-01 is DONE."
+      },
+      {
+        "blueprintId": "TB-W4-K-03",
+        "reason": "Read-only over existing presence, attestation and cartography once K-01 is DONE."
+      },
+      {
+        "blueprintId": "TB-W4-K-04",
+        "reason": "Read-only over existing GitHub READ capabilities once K-01 is DONE."
+      }
+    ],
+    "PROPOSED_INTEGRATION_SLOTS": {
+      "slots": [
+        {
+          "slot": "cockpit.super-admin",
+          "workItemId": "PB-K",
+          "rule": "One slot; modules are separated by collision domain, not by slot."
+        },
+        {
+          "slot": "program.global-terminal-acceptance",
+          "workItemId": "PB-MCP-TERMINAL",
+          "rule": "Global terminal acceptance across the four dimensions."
+        }
+      ],
+      "composedSlots": [
+        "observability.synthetic-monitoring (I2 owns the connection-chain projection)",
+        "observability.end-to-end-tracing",
+        "control-plane.git-github-capability-completion",
+        "governance.effective-capabilities",
+        "context.guided-completion",
+        "provisioning.governed"
+      ],
+      "proposedRouteNamespace": "/cockpit",
+      "legacyRoutesPreserved": [
+        "/dashboard",
+        "/git",
+        "/github"
+      ]
+    },
+    "COLLISION_DOMAINS": [
+      {
+        "blueprintId": "TB-W4-K-01",
+        "collisionDomain": "cockpit:shell"
+      },
+      {
+        "blueprintId": "TB-W4-K-02",
+        "collisionDomain": "cockpit:program-work"
+      },
+      {
+        "blueprintId": "TB-W4-K-03",
+        "collisionDomain": "cockpit:agents-tools"
+      },
+      {
+        "blueprintId": "TB-W4-K-04",
+        "collisionDomain": "cockpit:pr-ci"
+      },
+      {
+        "blueprintId": "TB-W4-K-05",
+        "collisionDomain": "cockpit:project-reality"
+      },
+      {
+        "blueprintId": "TB-W4-K-06",
+        "collisionDomain": "cockpit:deploy-evidence"
+      },
+      {
+        "blueprintId": "TB-W4-K-07",
+        "collisionDomain": "cockpit:identity-governance"
+      },
+      {
+        "blueprintId": "TB-W4-K-08",
+        "collisionDomain": "cockpit:governed-actions"
+      },
+      {
+        "blueprintId": "TB-W4-K-09",
+        "collisionDomain": "cockpit:control-plane-actions"
+      },
+      {
+        "blueprintId": "TB-W4-K-10",
+        "collisionDomain": "cockpit:provisioning"
+      },
+      {
+        "blueprintId": "TB-W4-K-11",
+        "collisionDomain": "cockpit:observability"
+      },
+      {
+        "blueprintId": "TB-W4-K-12",
+        "collisionDomain": "cockpit:acceptance"
+      }
+    ],
+    "PROGRAM_BLUEPRINTS_ADDED_OR_UPDATED": [
+      {
+        "id": "TB-W4-K-01",
+        "action": "ADDED",
+        "readinessAtConvergence": "READY"
+      },
+      {
+        "id": "TB-W4-K-02",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      },
+      {
+        "id": "TB-W4-K-03",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      },
+      {
+        "id": "TB-W4-K-04",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      },
+      {
+        "id": "TB-W4-K-05",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      },
+      {
+        "id": "TB-W4-K-06",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      },
+      {
+        "id": "TB-W4-K-07",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      },
+      {
+        "id": "TB-W4-K-08",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      },
+      {
+        "id": "TB-W4-K-09",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      },
+      {
+        "id": "TB-W4-K-10",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      },
+      {
+        "id": "TB-W4-K-11",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      },
+      {
+        "id": "TB-W4-K-12",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      },
+      {
+        "id": "TB-W4-MCP-FINAL-ACCEPTANCE",
+        "action": "ADDED",
+        "readinessAtConvergence": "BLOCKED"
+      }
+    ],
+    "READINESS": {
+      "readyAtConvergence": [
+        "TB-W3-A3-02",
+        "TB-W3-C4-01",
+        "TB-W3-C5-01",
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W4-K-01"
+      ],
+      "firstCockpitReady": "TB-W4-K-01",
+      "cockpitBlocked": [
+        "TB-W4-K-02",
+        "TB-W4-K-03",
+        "TB-W4-K-04",
+        "TB-W4-K-05",
+        "TB-W4-K-06",
+        "TB-W4-K-07",
+        "TB-W4-K-08",
+        "TB-W4-K-09",
+        "TB-W4-K-10",
+        "TB-W4-K-11",
+        "TB-W4-K-12"
+      ],
+      "finalAcceptance": "BLOCKED",
+      "ordering": "FIRST_COLLISION_FREE_IN_PROGRAM_ORDER: W4 cockpit lots follow the W3 candidates."
+    },
+    "TEST_STRATEGY": {
+      "perLot": "DESIGN -> RED -> GREEN -> regression -> exact-head CI -> governed deploy -> OIDC attestation -> cockpit smoke",
+      "unit": "Pure rendering and projection functions with node:test + tsx (pattern of tests/governedDashboard.test.ts).",
+      "http": "Ephemeral Express app + fetch for routes, authentication, headers and absence of mutation routes (pattern of tests/oauthAuthorizeConsent.test.ts).",
+      "security": [
+        "XSS payloads in every rendered field",
+        "Content-Security-Policy present on cockpit routes",
+        "login required",
+        "no secret value rendered",
+        "server-side denial of unauthorized mutations",
+        "anti-forgery protection on mutating forms"
+      ],
+      "states": [
+        "loading",
+        "empty",
+        "unavailable",
+        "unknown",
+        "stale",
+        "ambiguous",
+        "conflict",
+        "unauthorized",
+        "forbidden",
+        "blocked",
+        "partial",
+        "error",
+        "retryable",
+        "success",
+        "terminal"
+      ],
+      "e2e": "Browser journeys of #236 §38 in TB-W4-K-12; the browser matrix is defined in its acceptance design.",
+      "regression": "Full suite and docs/governance/secrets/read-only safety gates; /dashboard, /git, /github and OAuth routes keep their behaviour."
+    },
+    "DEPLOYMENT_TARGET_IF_KNOWN": {
+      "status": "KNOWN_BY_ARCHITECTURE",
+      "target": "The existing MCP Express server on S1 (/opt/apps/wealthtech-mcp-ssh-bridge), deployed by the existing Governed Deploy workflow (.github/workflows/mcp-deploy.yml) on merge to main.",
+      "separateFrontendDeployment": false,
+      "attestation": "Governed Deploy SHA attestation, GitHub OIDC read-only probes and a post-deploy cockpit smoke check."
+    },
+    "NEXT_EXECUTABLE_ACTION": {
+      "blueprintId": "TB-W3-C4-01",
+      "selection": "FIRST_COLLISION_FREE_IN_PROGRAM_ORDER",
+      "reason": "TB-W3-A3-02 is first but locally blocked (runtime claim owned elsewhere); TB-W3-C4-01 is the next compatible W3 candidate. TB-W4-K-01 is READY and follows the W3 candidates.",
+      "createsRuntimeTask": false
+    }
+  }
+}
