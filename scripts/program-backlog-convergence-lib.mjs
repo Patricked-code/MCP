@@ -52,7 +52,7 @@ export function extractRoadmapProgramHeadings(markdown) {
     const title = match[2].trim();
     if (
       /^(?:A1|A2\.[12]|A3|B[1-3]|C[0-5]|D[1-3]|E[1-3]|G[1-3]|I[1-3]|J[1-4])\s+—/.test(title)
-      || /^CHANTIER (?:F|H)\s+—/.test(title)
+      || /^CHANTIER (?:F|H|K)\s+—/.test(title)
       || /^GitHub-first Operational Continuity V1\s+—/.test(title)
       || /^Programme post-intégration\s+—/.test(title)
     ) {
@@ -345,6 +345,50 @@ function detectBlueprintCycles(blueprints) {
   return [...cycles].sort();
 }
 
+function isGuardedBlueprint(entry) {
+  return entry?.readiness?.state !== 'DONE' && (
+    GUARDED_BLUEPRINT_READINESS.has(entry?.readiness?.state)
+    || entry?.readiness?.autoPromotable === false
+  );
+}
+
+/**
+ * Intakes #235/#236: the global terminal acceptance must be reachable from
+ * every mandatory (non-DONE, non-guarded) blueprint, and an untriggered
+ * CONDITIONAL/DEFERRED lot must never gate it. Pure check: nothing is claimed.
+ */
+function validateTerminalAcceptance(projection, blueprints) {
+  const terminalId = projection?.executionModel?.terminalCondition?.globalAcceptanceBlueprintId;
+  if (terminalId === undefined) return [];
+  const byId = new Map(blueprints.map((entry) => [entry.id, entry]));
+  const terminal = typeof terminalId === 'string' ? byId.get(terminalId) : undefined;
+  if (!terminal) return [{ id: terminalId ?? null, reasonCode: 'TERMINAL_ACCEPTANCE_BLUEPRINT_MISSING' }];
+  if (isGuardedBlueprint(terminal)) return [{ id: terminalId, reasonCode: 'TERMINAL_ACCEPTANCE_BLUEPRINT_GUARDED' }];
+
+  const dependencies = (entry) => (Array.isArray(entry?.dependsOn) ? entry.dependsOn : []);
+  const ancestors = new Set();
+  const pending = [...dependencies(terminal)];
+  while (pending.length > 0) {
+    const id = pending.pop();
+    if (ancestors.has(id)) continue;
+    ancestors.add(id);
+    pending.push(...dependencies(byId.get(id)));
+  }
+
+  const gaps = [];
+  for (const entry of blueprints) {
+    if (entry.id === terminalId || entry?.readiness?.state === 'DONE') continue;
+    if (isGuardedBlueprint(entry)) {
+      if (ancestors.has(entry.id)) {
+        gaps.push({ id: entry.id, reasonCode: 'GUARDED_BLUEPRINT_BLOCKS_TERMINAL_ACCEPTANCE' });
+      }
+    } else if (!ancestors.has(entry.id)) {
+      gaps.push({ id: entry.id ?? null, reasonCode: 'NOT_ANCESTOR_OF_TERMINAL_ACCEPTANCE' });
+    }
+  }
+  return gaps.sort((left, right) => String(left.id).localeCompare(String(right.id)));
+}
+
 function validateTaskBlueprints(projection, workItems) {
   const blueprints = Array.isArray(projection?.taskBlueprints) ? projection.taskBlueprints : [];
   const waves = Array.isArray(projection?.executionModel?.waves) ? projection.executionModel.waves : [];
@@ -416,6 +460,7 @@ function validateTaskBlueprints(projection, workItems) {
     .map((entry) => entry.id ?? null);
   const blueprintCycles = detectBlueprintCycles(blueprints);
   const { uncataloguedGates, inadmissibleHumanGates } = validateExplicitGates(projection, blueprints);
+  const terminalAcceptanceGaps = validateTerminalAcceptance(projection, blueprints);
 
   const covered = new Set(blueprints.map((entry) => entry.workItemId));
   const missingFutureBlueprintCoverage = workItems
@@ -434,6 +479,7 @@ function validateTaskBlueprints(projection, workItems) {
     invalidGuardedBlueprints,
     uncataloguedGates,
     inadmissibleHumanGates,
+    terminalAcceptanceGaps,
     blueprintCycles,
     missingFutureBlueprintCoverage
   };

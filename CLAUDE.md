@@ -87,6 +87,14 @@ Une gate humaine n'est admissible que si elle cite une condition admissible (aut
 Contrôle machine : chaque gate de `requiredExplicitGates` est cataloguée dans `executionModel.humanGatePolicy.gateCatalog` ; `validateProgramBacklogConvergence` échoue (`uncataloguedGates` / `inadmissibleHumanGates`) sur une gate non cataloguée ou une gate humaine auto-créée. Un blocker local reste local : l'agent passe au candidat compatible suivant ; l'arrêt global n'a lieu qu'en l'absence de tout travail compatible ou sur ordre d'une autorité globale.
 
 
+### 7.4 Condition terminale globale, rapport d'arrêt et invariants du Cockpit (intakes #235/#236)
+
+L'intake #235 renforce `PROGRAM_AUTO_CONTINUE` sans créer de seconde boucle : une fin de lot, une PR verte, un merge, un déploiement ou un checkpoint ne sont jamais un arrêt (`REOBSERVE → RECONCILE → RECOMPUTE → CONTINUE`).
+
+- **Condition terminale** : `executionModel.terminalCondition` (`GLOBAL_MCP_COMPLETE`) est portée par `TB-W4-MCP-FINAL-ACCEPTANCE`, qui dépend des preuves des dimensions `BACKEND_CONTROL_PLANE_ACCEPTANCE`, `CLIENT_CERTIFICATIONS` et `COCKPIT_ACCEPTANCE`. Tout blueprint obligatoire en est un ancêtre et un lot `CONDITIONAL`/`DEFERRED` non déclenché ne la bloque jamais ; sinon `validateProgramBacklogConvergence` échoue (`terminalAcceptanceGaps`). La déclaration n'est jamais automatique.
+- **Arrêt global** : uniquement dans les conditions de `agentHandoffContract.globalStopReport.allowedStopConditions`, en laissant durablement (SUIVI.md et PR/issue du lot bloqué) tous les champs de `globalStopReport.requiredFields` ; un simple « bloqué » est insuffisant et `HUMAN_ACTION_REQUIRED` n'est renseigné que si c'est réellement requis.
+- **Super Admin Cockpit** (#236, `PB-K`) : projection et surface d'action gouvernée du MCP sur la stack Express server-rendered existante, jamais une autorité supérieure. Invariants : `UI_VISIBILITY != CALLABLE != AUTHORIZED != SAFE_NOW` ; `SUPER ADMIN UI ≠ BYPASS GOVERNANCE` ; toute mutation est revalidée côté serveur via une capability gouvernée existante et n'est jamais autorisée par la seule session web à jeton partagé ; secrets write-only jamais rendus ; `UNKNOWN` jamais affiché comme `OFFLINE`/`INACTIVE`.
+
 ## 8. GWC — architecture et mémoire canonique de continuité
 
 Pour toute intervention liée à GWC, au Universal Resolver, aux 73 contrats, aux blueprints GWC ou à leur future matérialisation en Governed Tasks :

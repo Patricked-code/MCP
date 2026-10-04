@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## 2026-10-04 — Convergence des intakes #235 et #236
+
+- **Program Backlog V2 :**
+  - nouveaux work items `PB-K` (Super Admin Cockpit, `TB-W4-K-01..12`) et `PB-MCP-TERMINAL` (`TB-W4-MCP-FINAL-ACCEPTANCE`) ;
+  - condition terminale `GLOBAL_MCP_COMPLETE` à quatre dimensions ;
+  - rapport d'arrêt global `agentHandoffContract.globalStopReport`.
+- **Contrôle machine :** `validateProgramBacklogConvergence` expose `terminalAcceptanceGaps`. Il signale un blueprint obligatoire non rattaché à l'acceptation terminale, un lot gardé qui la bloquerait, ou l'absence du blueprint terminal.
+- **Couverture ROADMAP :** l'extracteur couvre `CHANTIER K`.
+- **Inventaire de convergence du Cockpit :** `docs/governance/super-admin-cockpit-convergence-20261004.json`.
+- **READY dérivés :** `TB-W3-A3-02`, `TB-W3-C4-01`, `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+
 ## 2026-10-04 — W3 C3 livré et attesté
 
 - PR #233 fusionnée au SHA `dbc5a50` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37225118082` / `37225120093`.

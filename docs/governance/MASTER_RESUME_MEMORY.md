@@ -1,19 +1,20 @@
 # Mémoire maître de reprise — MCP WealthTech
 
-Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275f0f5e74cb5fbd` (599 fichiers suivis) ; section 1 mise à jour le 2026-10-04 après la clôture de C3.
+Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275f0f5e74cb5fbd` (599 fichiers suivis) ; section 1 mise à jour le 2026-10-04 après la convergence des intakes #235/#236.
 
 > Ce document est une **projection de reprise**. Il n'a aucune autorité. Il oriente la lecture et ne remplace aucune source. En cas d'écart, la source citée l'emporte, et l'état live doit toujours être réobservé : GitHub, S1, Live State, Task Queue, sessions et locks. Les mentions « À vérifier » désignent des données non confirmées par cette lecture.
 
-## 1. Où en est le projet (état au 2026-10-04, après C3)
+## 1. Où en est le projet (état au 2026-10-04, après C3 et la convergence #235/#236)
 
 | Élément | Valeur | Source |
 |---|---|---|
 | Programme courant | Program Backlog V2 (`program-backlog-convergence-v2-20260924`) | `docs/governance/program-backlog-convergence.json` |
-| Blueprints | 81 au total : 25 DONE, 4 READY, 5 CONDITIONAL, 40 BLOCKED, 7 DEFERRED | `npm run program:readiness` |
-| Work items | 17 DONE sur 39 | même fichier, `summary.dispositionCounts` |
-| Candidats READY | `TB-W3-A3-02` (A3.2), `TB-W3-C4-01`, `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ` | `npm run program:next` |
+| Blueprints | 94 au total : 25 DONE, 5 READY, 5 CONDITIONAL, 52 BLOCKED, 7 DEFERRED | `npm run program:readiness` |
+| Work items | 17 DONE sur 41 (dont `PB-K` Super Admin Cockpit et `PB-MCP-TERMINAL`) | même fichier, `summary.dispositionCounts` |
+| Candidats READY | `TB-W3-A3-02` (A3.2), `TB-W3-C4-01`, `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01` | `npm run program:next` |
 | Mode de continuité GWC | `POST_INTEGRATION_OPERATIONAL_CONTINUITY` (bundle `post-integration-terminal-handoff-20260920`) | `docs/gwc/canonical-memory/current.json` |
-| Dernier lot livré | C3 — résolution serveur GW-07 après C2 (PR #233 → `dbc5a50`) ; boucle de dispatch #222 complète depuis DISPATCH-03 | `SUIVI.md` |
+| Dernier lot livré | C3 — résolution serveur GW-07 après C2 (PR #233 → `dbc5a50`) ; puis convergence des intakes #235/#236 (PR #237) | `SUIVI.md` |
+| Condition terminale | `GLOBAL_MCP_COMPLETE` via `TB-W4-MCP-FINAL-ACCEPTANCE` (dimensions backend, certifications clients, cockpit, global) ; contrôle `terminalAcceptanceGaps` | `executionModel.terminalCondition` |
 
 Points de reprise :
 
@@ -22,6 +23,8 @@ Points de reprise :
 3. **A3.2 (`TB-W3-A3-02`) — READY, blocker local.** Il faut réclamer `TASK-20260929-001` dans la Governed Task Queue ; le travail est porté par la PR draft #207. Seule une session runtime peut faire ce claim.
 4. **B3.2 est DONE**, mais aucune cible n'est configurée sur `main` (`.mcp/server-map.json > servers.S1.targetProjectIds: []`). Configurer une cible = une PR revue sur ce fichier, puis Governed Deploy.
 5. **`mcp:write`** : lot technique `TB-W3-OAUTH-WRITE-SCOPE-01` après A3.2 — ce n'est pas une décision propriétaire (#221).
+6. **Super Admin Cockpit (#236, `PB-K`)** : `TB-W4-K-01` (shell, design system, baseline sécurité, Command Center read-only sur la stack Express existante) est READY en W4, après les candidats W3. Inventaire : `docs/governance/super-admin-cockpit-convergence-20261004.json`.
+7. **Arrêt global (#235)** : uniquement dans les conditions de `agentHandoffContract.globalStopReport`, en laissant tous ses champs (`CLAUDE.md` §7.4).
 
 Règle de reprise : relire les issues ouvertes `[PROGRAM INTAKE]` avant toute sélection (`REOBSERVE_PROGRAM_INTAKES`), et ne jamais créer de gate humaine pour un choix technique déductible (`CLAUDE.md` §7.3).
 

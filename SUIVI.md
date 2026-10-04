@@ -1,5 +1,34 @@
 # SUIVI.md
 
+## 2026-10-04 — Convergence des intakes #235 (finalisation continue) et #236 (Super Admin Cockpit) — GREEN candidate
+
+- **Reprise current-first** (`main=0ac9ecf70adab117f2175ef2451fc62fe15abac7`, C3 clôturé ; CI main #2218 `37239857289` et Governed Deploy #111 `37239857290` SUCCESS).
+  - Réobservation des intakes : #235 et #236 ouvertes et non consommées. CLAUDE.md §7.1 étape 3 impose de les réconcilier avant tout autre lot ; C4 attend donc cette convergence.
+  - PR ouvertes : #207 (A3.2, autre session) et des drafts historiques, sans collision.
+- **#235** (`INTAKE-235`, `ACCEPT_WITH_ADAPTATION`) : renforcement de `PROGRAM_AUTO_CONTINUE`, sans seconde boucle.
+  - Les 22 sections sont cartographiées sur les autorités existantes : 19 `DUPLICATE`, 3 `COMPLEMENT`.
+  - Complément §16/§22 : `executionModel.terminalCondition`, dont la déclaration est `GLOBAL_MCP_COMPLETE`. Elle compte 4 dimensions et 13 critères de succès. Le chemin positif et les chemins négatifs y sont explicites.
+  - Complément §16 : `PB-MCP-TERMINAL` / `TB-W4-MCP-FINAL-ACCEPTANCE`, qui dépend des preuves des dimensions : `TB-W3-F-05`, `TB-W4-I3-01`, `TB-W4-J1-01`, `TB-W4-J2-01`, `TB-W4-K-12`, `TB-W4-GGCC-E2E` et `TB-W3-OAUTH-WRITE-SCOPE-01`.
+  - Complément §21 : `agentHandoffContract.globalStopReport`, avec 17 champs obligatoires et 7 conditions d'arrêt. Il affine `globalStopOnlyWhen` sans le remplacer.
+- **#236** (`INTAKE-236`, `ACCEPT_WITH_ADAPTATION`) : `PB-K` (slot `cockpit.super-admin`, mode `EXTEND`) reçoit `TB-W4-K-01..12` en W4. Chaque lot a un collision domain `cockpit:*` dédié.
+  - K-01 (shell, design system, baseline sécurité, Command Center read-only) est READY : il ne dépend que de `TB-W3-DISPATCH-03` et `TB-W4-G3-01`, tous deux DONE.
+  - Vues read-only après leurs projections : K-05 après C345/GGCC Git READ, K-06 après C4, K-07 après D2/A3.2/`mcp:write`.
+  - Actions après D2/PRW/GGCC (K-08/K-09), provisioning après E/F (K-10), observabilité après H/I/audit GGCC (K-11), acceptation E2E en K-12.
+  - Inventaire §44 : `docs/governance/super-admin-cockpit-convergence-20261004.json`. Stack Express SSR conservée : 5 helpers d'échappement à factoriser, CSP seulement sur la page de consentement OAuth, aucun script client. Déploiement : serveur MCP existant via le Governed Deploy.
+- **Contrôle machine** : `validateProgramBacklogConvergence` → `terminalAcceptanceGaps`. Il signale :
+  - un blueprint obligatoire qui n'est pas un ancêtre de l'acceptation terminale ;
+  - un lot `CONDITIONAL`/`DEFERRED` qui la bloquerait ;
+  - un blueprint terminal absent.
+  L'extracteur ROADMAP couvre aussi `CHANTIER K` (`ROADMAP:34`).
+- **Program Backlog** : 94 blueprints (25 DONE, 5 READY, 52 BLOCKED, 7 DEFERRED, 5 CONDITIONAL) ; 41 work items (17 DONE). Contrôle structurel : aucun blueprint ni work item existant modifié.
+  - READY dérivés : `TB-W3-A3-02` (blocage local), `TB-W3-C4-01`, `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, claim, lock ou mutation serveur.
+- **Tests** : RED `cfc922c` (`tests/programIntakes235to236Convergence.test.ts`, 7/7 en échec attendu) ; GREEN 7/7 en local.
+- **NEXT_ACTION** :
+  1. CI exact-head, puis merge.
+  2. Commentaires de convergence sur #235 et #236, qui restent ouvertes : #235 jusqu'à `GLOBAL_MCP_COMPLETE`, #236 jusqu'à `PB-K` DONE.
+  3. Ensuite `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C4-01`.
+
 ## 2026-10-04 — W3 C3 Server Resolution — DONE et attesté
 
 - PR #233 fusionnée sous garde exact-head depuis `eaacf048f50ab9ecbaec252b55b0492a43ff0629` au merge `dbc5a5062716ae2fd186d36c4f54e97204ede9a3` ; RED CI #2213 (1 échec attendu), CI PR `37224921479` (#2214), CI main `37225005005` (#2215), Governed Deploy `37225005052` (#110) SUCCESS (« Deployment attested for exact SHA »).
