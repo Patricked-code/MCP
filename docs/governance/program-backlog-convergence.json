@@ -1533,7 +1533,7 @@
         "PB-C1",
         "PB-B3"
       ],
-      "nextAction": "C3 DONE (GW-07 serverResolution after C2 in the governed GitHub context). Next: TB-W3-C4-01 runtime resolution (GW-08) and TB-W3-C5-01 domain resolution, both consuming serverResolution; then TB-W3-C345-02 end-to-end.",
+      "nextAction": "C3 and C4 DONE (GW-07 serverResolution and GW-08 runtimeResolution in the governed GitHub context). Next: TB-W3-C5-01 domain resolution (GW-09) consuming the project and server resolutions; then TB-W3-C345-02 end-to-end, including the ingress residual carried from C4.",
       "subtasks": [
         "Resolve S1/S2 and verified real path",
         "Resolve container/runtime/reverse proxy/ports from governed evidence",
@@ -2587,7 +2587,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_C3_DONE_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_C4_C5_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
+    "currentWaveStatus": "W3_C4_DONE_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_C5_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2608,7 +2608,6 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-C4-01",
       "TB-W3-C5-01",
       "TB-W3-GGCC-GIT-READ",
       "TB-W4-K-01"
@@ -4936,10 +4935,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #238 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. The governed GitHub context projects the GW-08 runtimeResolution after the C3 serverResolution from GitRegistry-declared project components and the bounded runtime observations of the existing observation authorities (Live State), read-only and fail-closed; port and reverse-proxy evidence, which has no runtime observation authority, is carried by TB-W3-C345-02."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -4969,6 +4968,53 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 238,
+        "contract": "GW-08",
+        "projection": "GithubOperationalContext.runtimeResolution",
+        "redHeadSha": "5957c6977d7bbb5b825bc27590399b45f85416bb",
+        "redCiRunNumber": 2222,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "130a839d94eeacd521b9dde41ac75fba19c9215f",
+        "prCiRunId": 37242618489,
+        "prCiRunNumber": 2223,
+        "testCount": 861,
+        "mergeSha": "4654c9edb57e37806eb9783f2b5d863301b50d01",
+        "mainCiRunId": 37242741995,
+        "governedDeployRunId": 37242742016,
+        "governedDeployRuntimeRevision": "4654c9edb57e37806eb9783f2b5d863301b50d01",
+        "runtimePreflightRunIds": [
+          37241845033,
+          37241846646,
+          37241848464
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37242868231,
+            "workflowSha": "4654c9edb57e37806eb9783f2b5d863301b50d01",
+            "status": "SUCCESS",
+            "observed": "main@4654c9edb57e37806eb9783f2b5d863301b50d01, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "69846b2c831b2eac9f481ad1304e53d320ad0d42b5fc4907837df076f50d935d",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-04T23:11:57.555Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37242870056,
+            "workflowSha": "4654c9edb57e37806eb9783f2b5d863301b50d01",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #113), published 127.0.0.1:8787->8787/tcp",
+            "outputSha256": "c083f9286ac6b326e6f88a1e3ce168c0beb9fa4c550950e83e5de71deab41cba",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-04T23:12:00.757Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-04T23:15:00Z"
       }
     },
     {
@@ -5094,7 +5140,9 @@
       ],
       "greenAcceptance": [
         "C345.E2E satisfies its bounded objective using existing authorities first.",
-        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
+        "The domain -> reverse proxy -> port -> runtime ingress link is proven by a bounded, dedicated read-only observation or reported UNVERIFIED with a reason code; it is never inferred from declarations (residual of TB-W3-C4-01: the runtime attestation excludes networks by design, published ports are visible to agents only through the OIDC docker_status probe).",
+        "Live TargetContext components receive exact-head and runtime-revision observations only from proven C3/C4 resolutions; a component the registry does not declare (such as the V1 Patricked-code/MCP mapping without a role) stays UNVERIFIED (residual of TB-W3-C4-01)."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -11870,6 +11918,50 @@
     "deferred": [
       "Per-component live path verification belongs to runtime observations (C4); declared paths are never promoted to verified",
       "Runtime / container / reverse proxy resolution (C4, GW-08) and domain resolution (C5) consume serverResolution"
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3C4RuntimeResolutionHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "4654c9edb57e37806eb9783f2b5d863301b50d01",
+    "blueprintId": "TB-W3-C4-01",
+    "lotId": "C4",
+    "contract": "GW-08",
+    "delivered": [
+      "src/github/runtimeResolution.ts composes the existing GWC GW-08 resolver with GitRegistry-declared project components (registered project components, or the selected mapping alone when it declares its role) and bounded server runtime observations bound to the component of their repository",
+      "src/liveState/runtimeObservation.ts projects the current Live State runtime observation (the MCP container on the server Live State reads) without a new collection; parseRuntimeObservation keeps the bounded compose project label so DOCKER_COMPOSE is told apart from DOCKER",
+      "The governed GitHub collector projects runtimeResolution after serverResolution with the existing cache: memory_cache provenance on hit, RUNTIME_SERVER_UNVERIFIED on miss, UNVERIFIED/STALE without bindings once expired",
+      "Fail-closed: RUNTIME_SERVER_UNVERIFIED, RUNTIME_COMPONENT_UNVERIFIED, RUNTIME_OBSERVATION_MISSING, RUNTIME_OBSERVATION_UNAVAILABLE, RUNTIME_EVIDENCE_STALE and RUNTIME_SERVER_MISMATCH; missing evidence is never NO_RUNTIME and no declaration is invented"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37241845033,
+      "sessionsRunId": 37241846646,
+      "locksRunId": 37241848464,
+      "observedAt": "2026-10-04T22:55:43Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "project:runtime-resolution",
+      "collision": false
+    },
+    "notObserved": [
+      {
+        "evidence": "PORT_BINDINGS",
+        "reason": "No runtime observation authority: the runtime attestation deliberately excludes networks; the OIDC docker_status probe shows published ports to agents only.",
+        "carriedBy": "TB-W3-C345-02"
+      },
+      {
+        "evidence": "REVERSE_PROXY",
+        "reason": "No observation authority for reverse-proxy or vhost configuration in the runtime.",
+        "carriedBy": "TB-W3-C345-02"
+      }
+    ],
+    "knownLimitations": [
+      "The versioned Patricked-code/MCP mapping is GitRegistry V1 without componentRole or registered project: its runtime resolution stays RUNTIME_COMPONENT_UNVERIFIED until the registry declares the component.",
+      "Projects on S2 have no runtime observation authority in the runtime: RUNTIME_OBSERVATION_MISSING."
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
