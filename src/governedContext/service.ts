@@ -57,6 +57,8 @@ export type GovernedOperationalContextService = {
   reconcileExplicit(input: GovernedContextInput): Promise<GovernedOperationalContext>;
 };
 
+const HISTORICAL_REPOSITORY = 'Patricked-code/MCP';
+
 function fallbackGithub(
   at: string,
   workBranch: string | null,
@@ -262,12 +264,20 @@ export function createGovernedOperationalContextService(
     const activeLocks: PublicGovernedLock[] = (rawLocks ?? []).slice(0, 100);
     const workBranch = session?.workBranch ?? currentState?.currentTask?.workBranch ?? input.workBranch;
     const identityScope = githubIdentityScope(session);
-    const github = await safeRead(
-      () => explicit
-        ? options.github.reconcileExplicit(workBranch, identityScope)
-        : options.github.getCurrent(workBranch, identityScope),
-      fallbackGithub(generatedAt, workBranch, identityScope)
-    );
+    // B3.2: the GitHub observer covers the MCP governance repository only; a
+    // session bound to another (TargetScope) repository gets an explicit
+    // UNAVAILABLE instead of MCP data presented as its own state.
+    const github = session && session.repository !== HISTORICAL_REPOSITORY
+      ? {
+          ...fallbackGithub(generatedAt, workBranch, identityScope),
+          error: 'github_target_repository_not_observed'
+        }
+      : await safeRead(
+          () => explicit
+            ? options.github.reconcileExplicit(workBranch, identityScope)
+            : options.github.getCurrent(workBranch, identityScope),
+          fallbackGithub(generatedAt, workBranch, identityScope)
+        );
     if (github.status !== 'CURRENT') {
       limitations.push(github.error ?? 'github_context_degraded');
     }
@@ -428,7 +438,7 @@ export function createGovernedOperationalContextService(
       schemaVersion: 1,
       generatedAt,
       freshness,
-      repository: session?.repository ?? 'Patricked-code/MCP',
+      repository: session?.repository ?? HISTORICAL_REPOSITORY,
       governedBranch: session?.workBranch ?? 'main',
       targetContext: liveState?.targetContext ?? null,
       targetScope: session?.targetScope ?? null,

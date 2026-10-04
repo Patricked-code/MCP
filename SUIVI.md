@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 B3.2 Operator-configured server target — GREEN candidate
+
+- Reprise current-first : `main=5bf4b799e2feefd4ddff82d525177d04b9e3fe8c` (convergence #220/#221/#222 fusionnée, CI main #2188 et Governed Deploy #101 SUCCESS). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime `TASK-20260929-001` / PR #207), `TB-W3-B3-02` retenu.
+- Préflight runtime OIDC (16:57Z, `truncated=false`) : S1 `main@5bf4b79` propre (`37218643822`) ; file `storeRevision=242`, 2 tâches non terminales hors périmètre (`37218645430`) ; aucune session active (`37218647193`) ; 0 lock (`37218648802`). Aucune collision sur `context:multi-repository`. Aucun claim/session/lock créé.
+- Livré (décision #220, V1 additive) : `.mcp/server-map.json > servers.S1.targetProjectIds` (vide = comportement historique, copié dans l'image comme `identity-policy.json`) ; `src/liveState/targetProject.ts` dérive le `TargetContext` singulier depuis le projet GitRegistry V2 configuré (composants non observés `UNVERIFIED`) ; cible non résolue → pas de `TargetContext` + contradiction `TARGET_PROJECT_*` ; snapshot inchangé octet pour octet sans configuration.
+- Surface d'outils : `targetMappingIds` sur ouverture/reprise de session et réconciliation d'intention, scope de lock `component` — le `TargetScope` est toujours construit par le serveur (Live State ou session), jamais fourni par l'agent ; sans scope, seul `Patricked-code/MCP` est accepté (`REPOSITORY_OUT_OF_SCOPE`). Attestations client limitées au dépôt MCP ou au scope de session. Contexte gouverné : état GitHub `UNAVAILABLE` (`github_target_repository_not_observed`) pour une session sur un autre dépôt.
+- Classification : `docs/governance/multi-repository-target-scope-20261004.json` remplace la classification B3.1 pour le garde-fou des littéraux (inventaire B3.1 conservé immuable) ; `currentState/service.ts` reclassé frontière d'auto-gestion ; observation GitHub multi-dépôt routée vers les lots GGCC GitHub et C3/C4.
+- Tests : RED `5f14005` (module producteur et `narrowTargetScope` absents) ; 17 tests ciblés ; suite locale verte ; cartographie régénérée (136 outils, schémas open/resume/lock/intent/attestation élargis).
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, puis PR terminale B3.2 DONE et recalcul (C3.1, GGCC-GIT-READ, DISPATCH-01).
+
 ## 2026-10-04 — Intakes #220/#221/#222 et supervision #219 — convergence dans le Program Backlog
 
 - Reprise current-first : `main=0f8ceebbae386832f66028fd9163e81871e746f0` (HEAD des intakes : `52f6129`, seule la PR documentaire #223 est intervenue). Trois intakes ouverts le 2026-10-01 et un commentaire de supervision (#219, 2026-10-02 00:01Z) n'avaient pas été consommés ; la PR #223 consignait encore B3.2 comme « décision propriétaire en attente ».

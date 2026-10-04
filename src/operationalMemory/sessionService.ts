@@ -10,7 +10,9 @@ import { createResumeSecret, hashResumeSecret, verifyResumeSecret } from './resu
 import type { TransportBindings } from './transportBindings.js';
 import type { TaskLifecycleCoordinator } from './taskLifecycleCoordinator.js';
 import {
+  createTargetScope,
   projectTargetContext,
+  targetScopeContainsRepository,
   targetScopeEquals,
   type TargetContext,
   type TargetScope
@@ -41,6 +43,8 @@ export type SessionRequest = {
 export type OpenSessionInput = {
   repository: GovernedRepositoryTarget;
   targetScope?: TargetScope;
+  /** B3.2: mapping ids resolved server-side against the Live State TargetContext. */
+  targetMappingIds?: string[];
   taskScope: string;
   workBranch: string | null;
   agentIdentity: string;
@@ -58,11 +62,15 @@ export type ResumeSessionInput = {
   resumeSecret?: string;
   repository: GovernedRepositoryTarget;
   targetScope?: TargetScope;
+  /** B3.2: mapping ids resolved server-side against the Live State TargetContext. */
+  targetMappingIds?: string[];
   taskScope: string;
   expectedSessionRevision: number;
 };
 
 export type GovernedRepositoryTarget = string;
+
+const HISTORICAL_REPOSITORY = 'Patricked-code/MCP';
 
 export type AutoResumeCompatibleSessionInput = {
   repository: GovernedRepositoryTarget;
@@ -231,6 +239,26 @@ export function createGovernedSessionService(
     ?? (async () => ({ stateVersion: 0 }));
   const audit = options.audit ?? NOOP_OPERATIONAL_AUDIT;
 
+  /**
+   * B3.2: a scope requested by mapping ids is built from the Live State
+   * TargetContext (GitRegistry V2 identity), never taken from the agent.
+   */
+  async function resolveRequestedTargetScope(input: {
+    repository: GovernedRepositoryTarget;
+    targetScope?: TargetScope;
+    targetMappingIds?: string[];
+  }): Promise<TargetScope | undefined> {
+    if (input.targetMappingIds === undefined) return input.targetScope;
+    if (input.targetScope) fail('TARGET_SCOPE_INPUT_AMBIGUOUS');
+    const liveState = await getLiveState();
+    if (!liveState.targetContext) fail('TARGET_CONTEXT_UNAVAILABLE');
+    const scope = createTargetScope(liveState.targetContext, input.targetMappingIds);
+    if (!targetScopeContainsRepository(scope, input.repository)) {
+      fail('TARGET_SCOPE_REPOSITORY_MISMATCH');
+    }
+    return scope;
+  }
+
   function assertTransportAvailable(
     transportSessionId: string,
     governedSessionId?: string
@@ -292,6 +320,7 @@ export function createGovernedSessionService(
   const service: GovernedSessionService = {
     async openSession(input, request) {
       assertTransportAvailable(request.transportSessionId);
+      const targetScope = await resolveRequestedTargetScope(input);
       const resumeSecret = createResumeSecret();
       const resumeSecretHash = await hashResumeSecret(resumeSecret);
       const governedSessionId = randomUUID();
@@ -313,7 +342,7 @@ export function createGovernedSessionService(
         schemaVersion: 1,
         governedSessionId,
         repository: input.repository,
-        ...(input.targetScope ? { targetScope: input.targetScope } : {}),
+        ...(targetScope ? { targetScope } : {}),
         taskScope: input.taskScope,
         workBranch: input.workBranch,
         agentIdentity: input.agentIdentity,
@@ -367,6 +396,7 @@ export function createGovernedSessionService(
 
     async resumeSession(input, request) {
       assertTransportAvailable(request.transportSessionId, input.governedSessionId);
+      const requestedTargetScope = await resolveRequestedTargetScope(input);
       const resumedAt = now();
       let resumed: GovernedSessionRecord | null = null;
       let previousTransportFingerprint: string | null = null;
@@ -390,7 +420,7 @@ export function createGovernedSessionService(
         if (
           current.repository !== input.repository
           || current.taskScope !== input.taskScope
-          || !targetScopeEquals(current.targetScope, input.targetScope)
+          || !targetScopeEquals(current.targetScope, requestedTargetScope)
         ) {
           fail('SESSION_SCOPE_MISMATCH');
         }
@@ -689,6 +719,13 @@ export function createGovernedSessionService(
           provenance: [...new Set(['client_attestation', ...(input.provenance ?? [])])]
         });
         if (!attestation.success) fail('CLIENT_TOOL_SURFACE_ATTESTATION_INVALID');
+        // B3.2: a capability may name the MCP governance repository or a
+        // repository inside the session's server-built TargetScope only.
+        if (!attestation.data.capabilities.every((capability) => (
+          capability.repositoryScope === HISTORICAL_REPOSITORY
+          || (session.targetScope
+            && targetScopeContainsRepository(session.targetScope, capability.repositoryScope))
+        ))) fail('CLIENT_TOOL_SURFACE_ATTESTATION_INVALID');
         return {
           ...session,
           clientToolSurfaceAttestation: attestation.data,

@@ -22,6 +22,10 @@ import {
 } from '../operationalMemory/sessionService.js';
 import { createTransportBindings } from '../operationalMemory/transportBindings.js';
 import {
+  RepositoryTargetSchema,
+  targetScopeContainsRepository
+} from '../operationalMemory/targetScope.js';
+import {
   createTaskLifecycleCoordinator,
   type TaskLifecycleCoordinator
 } from '../operationalMemory/taskLifecycleCoordinator.js';
@@ -50,6 +54,15 @@ const ExpectedSessionRevisionSchema = z.number().int().nonnegative();
 const NullableBranchSchema = z.string().trim().min(1).max(255).nullable().default(null);
 const BlockersSchema = z.array(z.string().trim().min(1).max(240)).max(20).default([]);
 const NullableNextActionSchema = z.string().trim().min(1).max(500).nullable().default(null);
+const HISTORICAL_REPOSITORY = 'Patricked-code/MCP';
+const MappingIdSchema = z.string().trim().min(1).max(300);
+// B3.2: the agent only names registered mapping ids; the server builds the TargetScope.
+const TargetMappingIdsSchema = z.array(MappingIdSchema).min(1).max(20).optional();
+
+/** Without a server-built TargetScope a repository keeps its historical MCP-only meaning. */
+function assertHistoricalRepository(repository: string, scoped: boolean): void {
+  if (!scoped && repository !== HISTORICAL_REPOSITORY) fail('REPOSITORY_OUT_OF_SCOPE');
+}
 
 let sharedDependencies: GovernedSessionToolDependencies | null = null;
 
@@ -187,35 +200,37 @@ export function registerGovernedSessionTools(
 
   server.tool(
     'mcp_open_governed_session',
-    'Ouvre une governed session durable, distincte de la session de transport MCP.',
+    'Ouvre une governed session durable, distincte de la session de transport MCP. targetMappingIds (optionnel) cible des composants du projet configuré ; sans eux, seul Patricked-code/MCP est accepté.',
     {
-      repository: z.literal('Patricked-code/MCP'),
+      repository: RepositoryTargetSchema,
+      targetMappingIds: TargetMappingIdsSchema,
       taskScope: z.string().trim().min(1).max(200),
       workBranch: NullableBranchSchema,
       agentIdentity: z.string().trim().min(1).max(200),
       blockers: BlockersSchema,
       nextAction: NullableNextActionSchema
     },
-    async (input, extra) => handled(() => activeDependencies.sessions.openSession(
-      input,
-      sessionRequestFromToolExtra(extra)
-    ))
+    async (input, extra) => handled(async () => {
+      assertHistoricalRepository(input.repository, input.targetMappingIds !== undefined);
+      return activeDependencies.sessions.openSession(input, sessionRequestFromToolExtra(extra));
+    })
   );
 
   server.tool(
     'mcp_resume_governed_session',
-    'Reprend une governed session légitime sur le transport MCP courant.',
+    'Reprend une governed session légitime sur le transport MCP courant. Une session ciblée se reprend avec les mêmes targetMappingIds.',
     {
       governedSessionId: GovernedSessionIdSchema,
       resumeSecret: z.string().min(32).max(256).optional(),
-      repository: z.literal('Patricked-code/MCP'),
+      repository: RepositoryTargetSchema,
+      targetMappingIds: TargetMappingIdsSchema,
       taskScope: z.string().trim().min(1).max(200),
       expectedSessionRevision: ExpectedSessionRevisionSchema
     },
-    async (input, extra) => handled(() => activeDependencies.sessions.resumeSession(
-      input,
-      sessionRequestFromToolExtra(extra)
-    ))
+    async (input, extra) => handled(async () => {
+      assertHistoricalRepository(input.repository, input.targetMappingIds !== undefined);
+      return activeDependencies.sessions.resumeSession(input, sessionRequestFromToolExtra(extra));
+    })
   );
 
   server.tool(
@@ -311,14 +326,18 @@ export function registerGovernedSessionTools(
 
   server.tool(
     'mcp_acquire_governed_lock',
-    'Acquiert un lock temporaire borné appartenant à la governed session.',
+    'Acquiert un lock temporaire borné appartenant à la governed session. Les scopes component et les dépôts hors Patricked-code/MCP dérivent du TargetScope construit par le serveur pour la session.',
     {
       governedSessionId: GovernedSessionIdSchema,
       expectedSessionRevision: ExpectedSessionRevisionSchema,
       scope: z.discriminatedUnion('type', [
         z.object({
           type: z.literal('repository'),
-          key: z.literal('Patricked-code/MCP')
+          key: RepositoryTargetSchema
+        }).strict(),
+        z.object({
+          type: z.literal('component'),
+          mappingId: MappingIdSchema
         }).strict(),
         z.object({
           type: z.literal('task'),
@@ -332,10 +351,37 @@ export function registerGovernedSessionTools(
       ttlSeconds: z.number().int().min(30).max(1_800).optional(),
       reason: z.string().trim().min(1).max(240)
     },
-    async (input, extra) => handled(() => activeDependencies.locks.acquireLock(
-      input,
-      sessionRequestFromToolExtra(extra)
-    ))
+    async (input, extra) => handled(async () => {
+      const request = sessionRequestFromToolExtra(extra);
+      // B3.2: component and repository scopes derive from the session's own
+      // server-built TargetScope, never from the agent.
+      // An invisible session still reaches the lock service, which keeps its
+      // historical SESSION_NOT_FOUND / SESSION_NOT_BOUND answers.
+      const session = await activeDependencies.sessions.getVisibleSession(input.governedSessionId, request);
+      const targetScope = session?.targetScope;
+      let scope: Parameters<GovernedLockService['acquireLock']>[0]['scope'];
+      if (input.scope.type === 'component') {
+        if (!session) fail('SESSION_NOT_BOUND');
+        if (!targetScope) fail('LOCK_COMPONENT_SCOPE_UNBOUND');
+        scope = { type: 'component', targetId: targetScope.targetId, mappingId: input.scope.mappingId };
+      } else {
+        if (input.scope.type === 'repository') {
+          assertHistoricalRepository(input.scope.key, Boolean(targetScope));
+          if (targetScope && !targetScopeContainsRepository(targetScope, input.scope.key)) {
+            fail('LOCK_REPOSITORY_OUT_OF_TARGET_SCOPE');
+          }
+        }
+        scope = input.scope;
+      }
+      return activeDependencies.locks.acquireLock({
+        governedSessionId: input.governedSessionId,
+        expectedSessionRevision: input.expectedSessionRevision,
+        scope,
+        ...(targetScope ? { targetScope } : {}),
+        ...(input.ttlSeconds === undefined ? {} : { ttlSeconds: input.ttlSeconds }),
+        reason: input.reason
+      }, request);
+    })
   );
 
   server.tool(

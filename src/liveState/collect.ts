@@ -12,6 +12,7 @@ import type {
   S1LiveObservation
 } from './types.js';
 import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
+import { collectTargetProjectObservation } from './targetProject.js';
 
 const REPOSITORY = 'Patricked-code/MCP';
 const BRANCH = 'main';
@@ -453,11 +454,20 @@ export async function collectDocumentationObservation(
 }
 
 export async function collectLiveStateObservations(): Promise<LiveStateObservations> {
-  const [github, s1, runtime, inventory] = await Promise.all([
+  const [github, s1, runtime, inventory, targetProject] = await Promise.all([
     collectGithubObservation(),
     collectS1Observation(),
     collectRuntimeObservation(),
-    collectCurrentStateEvidence()
+    collectCurrentStateEvidence(),
+    collectTargetProjectObservation().catch(() => ({
+      targetSelection: {
+        source: 'server_map' as const,
+        serverId: 'S1',
+        status: 'UNRESOLVED' as const,
+        projectIds: [],
+        reasonCodes: ['TARGET_PROJECT_COLLECTION_FAILED']
+      }
+    }))
   ]);
   const documentation = await collectDocumentationObservation(github.head, s1.head);
   const capabilities = collectCapabilityObservation();
@@ -488,7 +498,9 @@ export async function collectLiveStateObservations(): Promise<LiveStateObservati
     ...(inventory.error ? { error: inventory.error } : {})
   };
   return {
-    repository: REPOSITORY, github, s1, runtime, documentation,
+    repository: REPOSITORY,
+    ...targetProject,
+    github, s1, runtime, documentation,
     capabilities, governance, auditBaseline, inventory
   };
 }

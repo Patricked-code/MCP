@@ -9,6 +9,7 @@ const MAX_AGE_SECONDS = 60 as const;
 function semanticValue(state: LiveStateSnapshot): string {
   return JSON.stringify({
     repository: state.repository,
+    targetSelection: state.targetSelection,
     targetContext: state.targetContext ? {
       schemaVersion: state.targetContext.schemaVersion,
       status: state.targetContext.status,
@@ -90,6 +91,9 @@ function buildAlignment(input: LiveStateObservations): {
   }
   if (input.governance?.status !== undefined && input.governance.status !== 'CURRENT') {
     contradictions.push('GOVERNANCE_EVIDENCE_UNAVAILABLE');
+  }
+  if (input.targetSelection?.status === 'UNRESOLVED') {
+    contradictions.push(...input.targetSelection.reasonCodes);
   }
   if (input.auditBaseline && !input.auditBaseline.valid) {
     contradictions.push(...input.auditBaseline.invalidReasons.map((reason) => `AUDIT_BASELINE_${reason}`));

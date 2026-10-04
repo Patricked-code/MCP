@@ -78,7 +78,9 @@ export const ClientToolSurfaceCapabilitySchema = z.object({
   callability: z.enum(['CALLABLE', 'NOT_CALLABLE', 'UNKNOWN']),
   source: z.literal('CLIENT_ATTESTATION'),
   provider: z.string().trim().min(1).max(80).regex(/^[a-z0-9][a-z0-9._-]*$/),
-  repositoryScope: z.literal('Patricked-code/MCP')
+  // B3.2: the session service still restricts this to the MCP repository or
+  // a repository inside the session TargetScope.
+  repositoryScope: RepositoryTargetSchema
 }).strict();
 export type ClientToolSurfaceCapability = z.infer<typeof ClientToolSurfaceCapabilitySchema>;
 
