@@ -1,5 +1,13 @@
 # DECISIONS_LOG.md
 
+## 2026-10-04 — DISPATCH-01 : un outil dédié matérialise un blueprint READY via la file existante
+
+Décision technique (déduite, #221) : plutôt que d'ajouter un mode optionnel à `mcp_reconcile_agent_intent` (champs requis devenus optionnels, valeurs par défaut indiscernables), un outil dédié `mcp_materialize_program_blueprint` expose la même autorité (`queue.reconcileIntent`) avec un contrat sans ambiguïté : seuls l'identifiant du blueprint et le bootstrap sont fournis ; titre, résumé, clé d'intention et scopes sont construits par le serveur.
+
+La readiness est recalculée au moment de l'appel depuis la projection versionnée livrée avec le déploiement exact-SHA, par la même bibliothèque que le dépôt : aucune seconde implémentation ni seconde autorité. La liaison au blueprint vit dans la clé d'intention (`program:<id>`) et le résumé (digest de projection), sans changement de schéma des tâches, ce qui garde un retour arrière sûr.
+
+Une tâche active tenant exactement les mêmes scopes est l'équivalent à réutiliser (un seul writer par domaine) ; un chevauchement partiel reste un conflit. La matérialisation n'est ouverte qu'à une session MCP non ciblée : le Program Backlog est le programme propre du dépôt MCP.
+
 ## 2026-10-04 — B3.2 : la cible d'un serveur vit dans la carte serveur versionnée ; le TargetScope est toujours construit par le serveur
 
 Décision technique (déduite des autorités, sans gate humaine — #221) : la « configuration opérateur gouvernée » de #220 est `.mcp/server-map.json`, déjà autorité machine des serveurs et entrée prévue de C3/C4. Une modification passe donc par une PR revue, une CI exact-head et le Governed Deploy, sans écriture serveur hors gouvernance ; le fichier est copié dans l'image comme `identity-policy.json`. La liste `targetProjectIds` garde l'extension `MULTI_PROJECT_LIVE_STATE` additive ; la V1 en résout au plus un.

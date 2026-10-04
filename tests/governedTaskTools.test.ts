@@ -75,12 +75,13 @@ function capture(overrides: Record<string, unknown> = {}) {
   return { handlers, mutationCount: () => mutationCount, readyCount: () => readyCount };
 }
 
-test('registers queue reads plus three operational mutations', () => {
+test('registers queue reads plus four operational mutations', () => {
   const { handlers } = capture();
   assert.deepEqual([...handlers.keys()].sort(), [
     'mcp_claim_next_governed_task',
     'mcp_get_governed_task',
     'mcp_get_work_queue',
+    'mcp_materialize_program_blueprint',
     'mcp_reconcile_agent_intent',
     'mcp_transition_governed_task'
   ]);

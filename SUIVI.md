@@ -1,5 +1,14 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 DISPATCH-01 Blueprint-bound governed materialization — GREEN candidate
+
+- Reprise current-first : `main=21dc3e43984fd684f5013991dc4de57885b9fd4e` (B3.2 clôturé, #220 fermé). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-DISPATCH-01` retenu ; aucune nouvelle intake ni consigne propriétaire.
+- Livré (intake #222, EXPOSE sur l'autorité existante) : outil `mcp_materialize_program_blueprint` → `queue.reconcileIntent` avec une intention construite par le serveur (`intentKey = program:<id>`, scopes = collision domains du blueprint, résumé portant le digest de la projection). La readiness est recalculée depuis la projection déployée avec la bibliothèque du dépôt (copiées dans l'image) ; BLOCKED/DEFERRED/CONDITIONAL/DONE/inconnu/sans domaine → refus fail-closed.
+- Idempotence : relance → `CONTINUATION` ; tâche active équivalente (même ensemble exact de scopes) réutilisée ; tâche terminale → `DUPLICATE` ; tâche tenue par une autre session → `CONFLICT`. Jamais de claim implicite ; session MCP non ciblée et bootstrappée exigée.
+- Préflight runtime OIDC (17:23Z, `truncated=false`) : file `storeRevision=242` (`37220297251`), aucune session active (`37220298984`), 0 lock (`37220300886`) ; aucune collision sur `orchestration:task-dispatch`. Aucun claim/session/lock créé.
+- Tests : RED `63ebe38` (module et outil absents) ; 7 tests ciblés sur une vraie file atomique ; suite locale 819/819 ; cartographie régénérée (137 outils) ; liste AF-32 des mutations observées en shadow mise à jour.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale DISPATCH-01 DONE, puis `TB-W3-DISPATCH-02`.
+
 ## 2026-10-04 — W3 B3.2 Operator-configured server target — DONE et attesté ; PB-B3 DONE
 
 - PR #225 fusionnée sous garde exact-head depuis `2d3d6ab4cae9ba65d80bab52066da2f8ddd84f14` au merge `93d631e5dbc61354047f0847b96d23d5cb23ba21` ; RED CI #2189 (2 échecs attendus), CI PR `37219464215`, CI main `37219562852` (#2191), Governed Deploy `37219562851` (#102) SUCCESS.

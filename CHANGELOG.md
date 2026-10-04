@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 DISPATCH-01 Blueprint-bound governed materialization (candidate)
+
+- Nouvel outil `mcp_materialize_program_blueprint` : au plus une tâche runtime par blueprint READY du Program Backlog déployé, via la Governed Task Queue existante, sans claim implicite.
+
 ## 2026-10-04 — W3 B3.2 Operator-configured server target livré et attesté
 
 - PR #225 fusionnée au SHA `93d631e` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37219684472` / `37219686641`.

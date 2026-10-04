@@ -4019,9 +4019,9 @@
       "waveId": "W3",
       "lotId": "DISPATCH.1",
       "title": "Blueprint-bound governed materialization gate",
-      "objective": "Extend mcp_reconcile_agent_intent so an eligible bootstrapped session can materialize exactly one runtime task for a planning-READY blueprint, bound to its id and the deployed program projection, idempotently and without implying a claim.",
+      "objective": "Expose mcp_materialize_program_blueprint on the existing Governed Task Queue intent reconciliation so an eligible bootstrapped MCP session can materialize exactly one runtime task for a planning-READY blueprint, bound to its id and the deployed program projection, idempotently and without implying a claim.",
       "integrationSlot": "orchestration.autonomous-dispatch-loop",
-      "integrationStrategy": "EXTEND",
+      "integrationStrategy": "EXPOSE",
       "dependsOn": [
         "TB-W3-B3-02"
       ],
