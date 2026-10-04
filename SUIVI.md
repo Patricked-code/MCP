@@ -1,5 +1,12 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 C3 Server Resolution — DONE et attesté
+
+- PR #233 fusionnée sous garde exact-head depuis `eaacf048f50ab9ecbaec252b55b0492a43ff0629` au merge `dbc5a5062716ae2fd186d36c4f54e97204ede9a3` ; RED CI #2213 (1 échec attendu), CI PR `37224921479` (#2214), CI main `37225005005` (#2215), Governed Deploy `37225005052` (#110) SUCCESS (« Deployment attested for exact SHA »).
+- Attestation OIDC read-only : `mcp_git_status` run `37225118082` → S1 `main@dbc5a50`, worktree propre, push désactivé ; `docker_status` run `37225120093` → conteneur healthy.
+- Program Backlog : `TB-W3-C3-01 = DONE` ; `PB-C345` passe `PARTIALLY_IMPLEMENTED` ; dépendants directs recalculés : `TB-W3-C4-01` et `TB-W3-C5-01` READY (`TB-W3-C345-02` reste BLOCKED). READY : `TB-W3-A3-02`, `TB-W3-C4-01`, `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ`. Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C4-01` (résolution runtime GW-08 consommant `serverResolution`), A3.2 restant réservé à une session runtime.
+
 ## 2026-10-04 — W3 C3 Server Resolution — GREEN candidate
 
 - Reprise current-first : `main=9a79c7a1b822e5717f2931c069369516f94a241a` (DISPATCH-03 et `PB-DISPATCH` clôturés, #222 fermée). Réobservation des intakes : aucune intake ouverte ni supervision nouvelle. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-C3-01` retenu.

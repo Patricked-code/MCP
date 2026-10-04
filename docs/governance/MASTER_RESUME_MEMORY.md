@@ -1,23 +1,23 @@
 # Mémoire maître de reprise — MCP WealthTech
 
-Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275f0f5e74cb5fbd` (599 fichiers suivis) ; section 1 mise à jour le 2026-10-04 après la clôture de DISPATCH-03.
+Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275f0f5e74cb5fbd` (599 fichiers suivis) ; section 1 mise à jour le 2026-10-04 après la clôture de C3.
 
 > Ce document est une **projection de reprise**. Il n'a aucune autorité. Il oriente la lecture et ne remplace aucune source. En cas d'écart, la source citée l'emporte, et l'état live doit toujours être réobservé : GitHub, S1, Live State, Task Queue, sessions et locks. Les mentions « À vérifier » désignent des données non confirmées par cette lecture.
 
-## 1. Où en est le projet (état au 2026-10-04, après DISPATCH-03)
+## 1. Où en est le projet (état au 2026-10-04, après C3)
 
 | Élément | Valeur | Source |
 |---|---|---|
 | Programme courant | Program Backlog V2 (`program-backlog-convergence-v2-20260924`) | `docs/governance/program-backlog-convergence.json` |
-| Blueprints | 81 au total : 24 DONE, 3 READY, 5 CONDITIONAL, 42 BLOCKED, 7 DEFERRED | `npm run program:readiness` |
+| Blueprints | 81 au total : 25 DONE, 4 READY, 5 CONDITIONAL, 40 BLOCKED, 7 DEFERRED | `npm run program:readiness` |
 | Work items | 17 DONE sur 39 | même fichier, `summary.dispositionCounts` |
-| Candidats READY | `TB-W3-A3-02` (A3.2), `TB-W3-C3-01`, `TB-W3-GGCC-GIT-READ` | `npm run program:next` |
+| Candidats READY | `TB-W3-A3-02` (A3.2), `TB-W3-C4-01`, `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ` | `npm run program:next` |
 | Mode de continuité GWC | `POST_INTEGRATION_OPERATIONAL_CONTINUITY` (bundle `post-integration-terminal-handoff-20260920`) | `docs/gwc/canonical-memory/current.json` |
-| Dernier lot livré | DISPATCH-03 — projection next-work (PR #231 → `6df23b9`) ; boucle de dispatch #222 complète (`PB-DISPATCH` DONE) | `SUIVI.md` |
+| Dernier lot livré | C3 — résolution serveur GW-07 après C2 (PR #233 → `dbc5a50`) ; boucle de dispatch #222 complète depuis DISPATCH-03 | `SUIVI.md` |
 
 Points de reprise :
 
-1. **`TB-W3-C3-01` — prochain lot.** Server Resolution (`PB-C345`) : réutiliser le résolveur serveur GWC pour une réalité projet bornée (S1/S2/realPath) à partir de GitRegistry V2, `.mcp/server-map.json` et des preuves live.
+1. **`TB-W3-C4-01` — prochain lot.** Runtime / Container Resolution (`PB-C345`, GW-08) : composer `serverResolution` (C3, projeté dans le contexte GitHub gouverné) avec les observations runtime gouvernées, sans hardcode du conteneur MCP ; `TB-W3-C5-01` (domaine) est aussi READY.
 2. **Boucle de dispatch (#222) complète.** Une session connectée lit `nextWork` dans le Current-State Inventory (reprise, claim compatible ou blueprint READY sans collision) et suit `nextAction` ; rien n'est réclamé ni créé automatiquement.
 3. **A3.2 (`TB-W3-A3-02`) — READY, blocker local.** Il faut réclamer `TASK-20260929-001` dans la Governed Task Queue ; le travail est porté par la PR draft #207. Seule une session runtime peut faire ce claim.
 4. **B3.2 est DONE**, mais aucune cible n'est configurée sur `main` (`.mcp/server-map.json > servers.S1.targetProjectIds: []`). Configurer une cible = une PR revue sur ce fichier, puis Governed Deploy.
@@ -25,7 +25,7 @@ Points de reprise :
 
 Règle de reprise : relire les issues ouvertes `[PROGRAM INTAKE]` avant toute sélection (`REOBSERVE_PROGRAM_INTAKES`), et ne jamais créer de gate humaine pour un choix technique déductible (`CLAUDE.md` §7.3).
 
-NEXT_ACTION unique : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C3-01`.
+NEXT_ACTION unique : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C4-01`.
 
 ## 2. Autorités actuelles (qui fait foi)
 

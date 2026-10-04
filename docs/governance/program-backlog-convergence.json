@@ -74,9 +74,9 @@
     "externalActiveRecords": 25,
     "dispositionCounts": {
       "DONE": 17,
-      "PARTIALLY_IMPLEMENTED": 5,
+      "PARTIALLY_IMPLEMENTED": 6,
       "KNOWN_NOT_ANALYZED": 6,
-      "DESIGNED_NOT_IMPLEMENTED": 6,
+      "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
       "DEFERRED": 3
     }
@@ -1498,7 +1498,7 @@
     {
       "id": "PB-C345",
       "title": "C3/C4/C5 Server, Runtime and Domain Resolution",
-      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "disposition": "PARTIALLY_IMPLEMENTED",
       "integrationSlot": "project.server-runtime-domain-resolution",
       "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
       "existingAuthorities": [
@@ -1511,7 +1511,7 @@
         "PB-C1",
         "PB-B3"
       ],
-      "nextAction": "Reconcile existing GWC resolver code/design against current main, then compose one project reality path for server, runtime and domain.",
+      "nextAction": "C3 DONE (GW-07 serverResolution after C2 in the governed GitHub context). Next: TB-W3-C4-01 runtime resolution (GW-08) and TB-W3-C5-01 domain resolution, both consuming serverResolution; then TB-W3-C345-02 end-to-end.",
       "subtasks": [
         "Resolve S1/S2 and verified real path",
         "Resolve container/runtime/reverse proxy/ports from governed evidence",
@@ -2472,7 +2472,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_DISPATCH_DONE_A32_READY_RUNTIME_CLAIM_C31_GGCC_GIT_READ_READY",
+    "currentWaveStatus": "W3_C3_DONE_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_C4_C5_READY",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2493,7 +2493,8 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-C3-01",
+      "TB-W3-C4-01",
+      "TB-W3-C5-01",
       "TB-W3-GGCC-GIT-READ"
     ],
     "humanGatePolicy": {
@@ -4548,10 +4549,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #233 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. The governed GitHub context projects the GW-07 serverResolution after the C2 project resolution from GitRegistry V2 server bindings and the canonical server identity set (managed runtime servers declared in .mcp/server-map.json), read-only and fail-closed."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -4581,6 +4582,52 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 233,
+        "contract": "GW-07",
+        "projection": "GithubOperationalContext.serverResolution",
+        "redHeadSha": "a8b86709754b7838aed97f97a30eb50d8632f70d",
+        "redCiRunNumber": 2213,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "eaacf048f50ab9ecbaec252b55b0492a43ff0629",
+        "prCiRunId": 37224921479,
+        "testCount": 845,
+        "mergeSha": "dbc5a5062716ae2fd186d36c4f54e97204ede9a3",
+        "mainCiRunId": 37225005005,
+        "governedDeployRunId": 37225005052,
+        "governedDeployRuntimeRevision": "dbc5a5062716ae2fd186d36c4f54e97204ede9a3",
+        "runtimePreflightRunIds": [
+          37224598839,
+          37224600485,
+          37224602027
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37225118082,
+            "workflowSha": "dbc5a5062716ae2fd186d36c4f54e97204ede9a3",
+            "status": "SUCCESS",
+            "observed": "main@dbc5a5062716ae2fd186d36c4f54e97204ede9a3, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "e083259b9b95d2f92b909297b8215dbc7d713319656e5e994cb3f2bf6bd0625e",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-04T18:37:17.318Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37225120093,
+            "workflowSha": "dbc5a5062716ae2fd186d36c4f54e97204ede9a3",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #110)",
+            "outputSha256": "629492910b5e10ea8b5cf856cf58ce714a09440b351d8d515a7fc230fa271ee2",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-04T18:37:18.580Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-04T18:40:00Z"
       }
     },
     {
@@ -4618,7 +4665,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -4688,7 +4735,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -10356,6 +10403,38 @@
       "Multiple TargetContexts per server (MULTI_PROJECT_LIVE_STATE)",
       "Provider wake/notification of connected agents (H tracing / I synthetic monitoring)",
       "Runtime DONE -> blueprint DONE stays a versioned exact-head evidence step"
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3C3ServerResolutionHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "dbc5a5062716ae2fd186d36c4f54e97204ede9a3",
+    "blueprintId": "TB-W3-C3-01",
+    "lotId": "C3",
+    "contract": "GW-07",
+    "delivered": [
+      "GitRegistryProjectEvidence.serverBindings: serverId, serverPath, realPath, realPathVerified and environment of the GitRegistry V2 candidate; declared paths stay declared",
+      "src/github/serverResolution.ts composes the existing GWC resolver with the canonical server identity set: managed runtime servers also declared in .mcp/server-map.json, spelled as managed so stored ids resolve to themselves (OD-03 identity normalization)",
+      "The governed GitHub collector projects serverResolution after projectResolution with the existing cache: memory_cache provenance on hit, SERVER_PROJECT_UNVERIFIED on miss, UNVERIFIED/STALE without server or candidates once expired",
+      "Fail-closed: invalid or missing registry evidence -> SERVER_REGISTRY_UNAVAILABLE; unknown or undeclared server -> SERVER_ID_UNVERIFIED; empty canonical set -> SERVER_CANONICAL_ID_SET_INVALID (GW-07 no longer throws); V1-migrated registries are flagged"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37224598839,
+      "sessionsRunId": 37224600485,
+      "locksRunId": 37224602027,
+      "observedAt": "2026-10-04T18:29:12Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "project:server-resolution",
+      "collision": false
+    },
+    "deferred": [
+      "Per-component live path verification belongs to runtime observations (C4); declared paths are never promoted to verified",
+      "Runtime / container / reverse proxy resolution (C4, GW-08) and domain resolution (C5) consume serverResolution"
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
