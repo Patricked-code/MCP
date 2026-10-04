@@ -1,5 +1,12 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 DISPATCH-01 Blueprint-bound governed materialization — DONE et attesté
+
+- PR #227 fusionnée sous garde exact-head depuis `66bd5b768296217a195fc5119e3b778e87a2f348` au merge `c5fc1d78ea4213791fa38ba67f3fcf4b7ed535d0` ; RED CI #2195 (2 échecs attendus), CI PR `37220630483`, CI main `37220729943` (#2197), Governed Deploy `37220729894` (#104) SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `37220863383` → S1 `main@c5fc1d7`, worktree propre, push désactivé ; `docker_status` run `37220865029` → conteneur healthy.
+- Program Backlog : `TB-W3-DISPATCH-01 = DONE` ; `PB-DISPATCH = PARTIALLY_IMPLEMENTED` ; `TB-W3-DISPATCH-02` devient READY. Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-DISPATCH-02` (claim resume-owned-first), A3.2 restant réservé à une session runtime.
+
 ## 2026-10-04 — W3 DISPATCH-01 Blueprint-bound governed materialization — GREEN candidate
 
 - Reprise current-first : `main=21dc3e43984fd684f5013991dc4de57885b9fd4e` (B3.2 clôturé, #220 fermé). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-DISPATCH-01` retenu ; aucune nouvelle intake ni consigne propriétaire.

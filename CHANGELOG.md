@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 DISPATCH-01 livré et attesté
+
+- PR #227 fusionnée au SHA `c5fc1d7` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37220863383` / `37220865029`.
+- `TB-W3-DISPATCH-01` clôturé DONE ; `TB-W3-DISPATCH-02` devient READY.
+
 ## 2026-10-04 — W3 DISPATCH-01 Blueprint-bound governed materialization (candidate)
 
 - Nouvel outil `mcp_materialize_program_blueprint` : au plus une tâche runtime par blueprint READY du Program Backlog déployé, via la Governed Task Queue existante, sans claim implicite.
