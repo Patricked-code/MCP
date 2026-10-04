@@ -63,7 +63,7 @@
     "NEEDS_DECISION"
   ],
   "summary": {
-    "workItems": 37,
+    "workItems": 39,
     "todoUnchecked": 35,
     "roadmapLots": 33,
     "gwcBlueprints": 18,
@@ -76,7 +76,7 @@
       "DONE": 15,
       "PARTIALLY_IMPLEMENTED": 6,
       "KNOWN_NOT_ANALYZED": 6,
-      "DESIGNED_NOT_IMPLEMENTED": 5,
+      "DESIGNED_NOT_IMPLEMENTED": 7,
       "CONDITIONAL": 2,
       "DEFERRED": 3
     }
@@ -1294,6 +1294,30 @@
         "coveredBy": "PB-OAUTH-CONSENT",
         "disposition": "DONE",
         "observedMainSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c"
+      },
+      {
+        "sourceKey": "issue:220",
+        "sourceId": "#220",
+        "title": "[PROGRAM INTAKE] B3.2 — owner decision: operator-configured server target, extensible multi-project",
+        "coveredBy": "PB-B3",
+        "disposition": "PARTIALLY_IMPLEMENTED",
+        "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0"
+      },
+      {
+        "sourceKey": "issue:222",
+        "sourceId": "#222",
+        "title": "[PROGRAM INTAKE] Autonomous task dispatch loop — converge to canonical target architecture",
+        "coveredBy": "PB-DISPATCH",
+        "disposition": "DESIGNED_NOT_IMPLEMENTED",
+        "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0"
+      },
+      {
+        "sourceKey": "decisions-log:2026-10-01:mcp-write-enforcement-lot",
+        "sourceId": "DECISIONS_LOG 2026-10-01 OAuth consent",
+        "title": "mcp:write scope enforcement requires its own lot",
+        "coveredBy": "PB-OAUTH-WRITE-SCOPE",
+        "disposition": "DESIGNED_NOT_IMPLEMENTED",
+        "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0"
       }
     ]
   },
@@ -1408,6 +1432,38 @@
         "No PROJECT_SHA simplification",
         "No parallel registry",
         "Records without TargetScope keep historical meaning"
+      ]
+    },
+    {
+      "id": "PB-DISPATCH",
+      "title": "Autonomous governed task-dispatch loop",
+      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "integrationSlot": "orchestration.autonomous-dispatch-loop",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "Mandatory Agent Bootstrap & Work Orchestration V1",
+        "Governed Task Queue",
+        "Governed Session and Bootstrap Receipt",
+        "Governed Lock Service",
+        "Program Backlog V2 derived readiness",
+        "GitHub-first operational continuity"
+      ],
+      "dependsOn": [
+        "PB-B3",
+        "PB-UAC"
+      ],
+      "nextAction": "After B3.2 is DONE, execute TB-W3-DISPATCH-01 (blueprint-bound materialization through mcp_reconcile_agent_intent), then -02 (resume-owned-first claim), then -03 (connected-agent next-work projection).",
+      "subtasks": [
+        "Bind materialization to an exact blueprint identity and its derived READY state, idempotently, through the existing intent reconciliation",
+        "Resume the session-owned active task before claiming new work; never steal or transfer on liveness",
+        "Project the deterministic next work for a connected bootstrapped session without auto-claiming",
+        "Keep GitHub-only work free of runtime prerequisites"
+      ],
+      "nonRegression": [
+        "createsRuntimeTask=false for readiness, program:next and blueprints",
+        "Governed Task Queue remains the unique runtime task authority",
+        "No second queue, dispatcher, agent-assignment store, session, claim or lock authority",
+        "Materialization never implies claim"
       ]
     },
     {
@@ -2322,6 +2378,33 @@
         "Existing authorization_code + PKCE token exchange unchanged",
         "Unauthenticated authorize still redirects to the operator login"
       ]
+    },
+    {
+      "id": "PB-OAUTH-WRITE-SCOPE",
+      "title": "OAuth mcp:write scope enforcement",
+      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "integrationSlot": "connection.oauth-write-scope-enforcement",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "OAuth token issuance and verification (src/oauth.ts)",
+        "MCP request identity",
+        "Scoped WRITE gate"
+      ],
+      "dependsOn": [
+        "PB-OAUTH-CONSENT",
+        "PB-A3"
+      ],
+      "nextAction": "After A3.2 (PR #207 touches requestIdentity), inventory the scopes carried by real connector tokens through read-only evidence, then enforce mcp:write on write tools with a backward-compatible path.",
+      "subtasks": [
+        "Inventory scopes carried by existing connector tokens (bounded, read-only evidence)",
+        "Require mcp:write for write tools without breaking existing write flows",
+        "Keep token issuance, PKCE and consent unchanged"
+      ],
+      "nonRegression": [
+        "Do not break existing connector write flows without inventory evidence",
+        "No new token store or authority",
+        "Deducible technical lot: never an owner gate (#221)"
+      ]
     }
   ],
   "executionModel": {
@@ -2384,12 +2467,12 @@
       "READY": "Planning-eligible only; live Task Queue/Session/locks/main must still be reobserved before runtime materialization.",
       "BLOCKED": "Re-evaluate after all dependsOn blueprints are completed and checkpointed.",
       "DEFERRED": "Never auto-promote; requires a concrete proven need and every explicit gate.",
-      "CONDITIONAL": "Never auto-promote; requires all explicit human/governance gates.",
+      "CONDITIONAL": "Never auto-promote; requires every explicit gate. Each gate is catalogued in humanGatePolicy.gateCatalog; a HUMAN_DECISION gate must cite an admissible condition and a pre-existing authority outside this projection.",
       "completionRule": "A blueprint completion updates/checkpoints evidence first, then only direct dependents are re-evaluated.",
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_A22_DONE_A31_DONE_A32_B3_C1_G1_READY",
+    "currentWaveStatus": "W3_A32_READY_RUNTIME_CLAIM_B32_READY_OWNER_DECISION_220_DISPATCH_SEQUENCED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2409,13 +2492,246 @@
       "runtimeAuthorityBoundary": "Readiness and ordering are derived planning projections only. Governed Task Queue/Session/Lock Service and scoped governance remain runtime authorities."
     },
     "currentReadyBlueprintIds": [
-      "TB-W3-A3-02"
-    ]
+      "TB-W3-A3-02",
+      "TB-W3-B3-02"
+    ],
+    "humanGatePolicy": {
+      "invariant": "NO_SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISIONS",
+      "principle": "HUMAN_GATE_EXISTING != AGENT_MAY_CREATE_HUMAN_GATE",
+      "source": "issue:221",
+      "resolutionOrderBeforeEscalation": [
+        "CANONICAL_DECISION_OR_AUTHORITY",
+        "CANONICAL_TARGET_ARCHITECTURE",
+        "APPLICABLE_INVARIANTS",
+        "DEPENDENCIES_AND_PROGRAM_BACKLOG",
+        "REUSE_COMPOSE_WRAP_EXPOSE_GENERALIZE_EXTEND_NEW",
+        "MINIMAL_ADDITIVE_SOLUTION",
+        "BACKWARD_COMPATIBILITY_AND_NON_REGRESSION",
+        "REVERSIBILITY",
+        "UNIT_AND_INTEGRATION_TESTS",
+        "GOVERNANCE_AND_SECURITY_TESTS",
+        "LIVE_EVIDENCE_EXACT_HEAD_AND_CI",
+        "COLLISION_TASK_SESSION_CLAIM_LOCK_AND_RUNTIME_AUTHORITIES",
+        "FIRST_COLLISION_FREE_IN_PROGRAM_ORDER"
+      ],
+      "onDeducibleCompliantSolution": "AUTO_DECIDE -> EXECUTE -> VERIFY -> CHECKPOINT -> RECOMPUTE -> CONTINUE",
+      "admissibleHumanGateConditions": [
+        "PREEXISTING_AUTHORITY_RESERVES_DECISION",
+        "UNRESOLVABLE_SAME_RANK_AUTHORITY_CONTRADICTION",
+        "NO_COMPLIANT_SOLUTION_DEDUCIBLE",
+        "DESTRUCTIVE_OR_IRREVERSIBLE_NOT_AUTHORIZED",
+        "EXTERNAL_HUMAN_PERMISSION_OR_CONSENT_REQUIRED",
+        "REQUIRED_SECRET_UNOBTAINABLE",
+        "SECURITY_OR_COMPLIANCE_GATE_REQUIRES_HUMAN",
+        "EQUIVALENT_SOLUTIONS_CHANGE_UNDEFINED_OWNER_POLICY"
+      ],
+      "humanReservedEvenWhenDeducible": [
+        "PREEXISTING_AUTHORITY_RESERVES_DECISION",
+        "DESTRUCTIVE_OR_IRREVERSIBLE_NOT_AUTHORIZED",
+        "EXTERNAL_HUMAN_PERMISSION_OR_CONSENT_REQUIRED",
+        "REQUIRED_SECRET_UNOBTAINABLE",
+        "SECURITY_OR_COMPLIANCE_GATE_REQUIRES_HUMAN"
+      ],
+      "inadmissibleAlone": [
+        "MULTIPLE_POSSIBLE_IMPLEMENTATIONS",
+        "TECHNICAL_ARCHITECTURE_PREFERENCE",
+        "SUBTASK_END",
+        "PHASE_CHANGE",
+        "GREEN_TESTS",
+        "COMMIT_PR_OR_MERGE",
+        "NO_RECENT_HUMAN_CONVERSATION",
+        "CONFIRMATION_OUT_OF_CAUTION",
+        "RECOMMENDED_MINIMAL_REVERSIBLE_SOLUTION_ALREADY_DEDUCED",
+        "RESOLVABLE_BY_ARCHITECTURE_INVARIANTS_EXISTING_FIRST_NON_REGRESSION_REVERSIBILITY_OR_EVIDENCE"
+      ],
+      "humanGateRequiresPreexistingAuthoritySource": true,
+      "selfReferencesAreNotAuthority": [
+        "docs/governance/program-backlog-convergence.json"
+      ],
+      "localBlockerNotGlobalStop": true,
+      "globalStopOnlyWhen": [
+        "NO_COMPATIBLE_WORK_ITEM",
+        "GLOBAL_AUTHORITY_REQUIRES_STOP"
+      ],
+      "enforcement": "scripts/program-backlog-convergence-lib.mjs validateProgramBacklogConvergence -> uncataloguedGates / inadmissibleHumanGates",
+      "createsRuntimeTask": false,
+      "grantsPermission": false,
+      "parallelDecisionEngine": false,
+      "gateCatalog": {
+        "SEPARATE_MAINTENANCE_WINDOW": {
+          "kind": "POLICY_CONDITION",
+          "description": "Maintenance runs as its own dedicated lot/PR, never mixed with feature lots.",
+          "authoritySources": [
+            "ROADMAP.md#J3 — GitHub Actions / Node 24 maintenance",
+            "DECISIONS_LOG.md#2026-09-24 — Programmer tout le travail restant sans précréer les Tasks runtime"
+          ]
+        },
+        "ALL_C1_EVIDENCE_PROVEN": {
+          "kind": "EVIDENCE",
+          "description": "Every C1 readiness evidence (credential, path, remote, domain, migration) is proven for the mapping.",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-13 — C1 GitRegistry V2 : activation uniquement après preuves explicites"
+          ]
+        },
+        "EXPLICIT_ACTIVATION_AUTHORIZATION": {
+          "kind": "HUMAN_DECISION",
+          "admissibleCondition": "PREEXISTING_AUTHORITY_RESERVES_DECISION",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-13 — C1 GitRegistry V2 : activation uniquement après preuves explicites",
+            "DECISIONS_LOG.md#2026-09-24 — Programmer tout le travail restant sans précréer les Tasks runtime"
+          ],
+          "description": "GitRegistry V2 activation is reserved to an explicit authorization and is never deduced from deployed readiness."
+        },
+        "EXPLICIT_GO_WRITE_GATE_ENFORCE": {
+          "kind": "HUMAN_DECISION",
+          "admissibleCondition": "PREEXISTING_AUTHORITY_RESERVES_DECISION",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-08-29 — Unified Operational Work State sans autorité parallèle",
+            "ROADMAP.md#J4 — WRITE gate shadow → enforce"
+          ],
+          "description": "Any WRITE gate shadow -> enforce switch requires a distinct GO, decision and PR."
+        },
+        "SHADOW_ENFORCE_PARITY_PROVEN": {
+          "kind": "EVIDENCE",
+          "description": "Shadow verdicts are proven to match current WRITE behaviour before enforcement.",
+          "authoritySources": [
+            "ROADMAP.md#J4 — WRITE gate shadow → enforce"
+          ]
+        },
+        "PROVEN_OIDC_COVERAGE_GAP": {
+          "kind": "CONCRETE_NEED",
+          "description": "A read-only evidence need that the OIDC fallback cannot serve is proven.",
+          "authoritySources": []
+        },
+        "CONCRETE_BOUNDED_OPERATION_REQUIRED": {
+          "kind": "CONCRETE_NEED",
+          "description": "A concrete bounded server operation is required (satisfied by intake #201 for s1_public_tls_certificate_restore).",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-29 — L'intake TLS #201 active un besoin concret, pas une permission de réutiliser le fallback SSH read-only"
+          ]
+        },
+        "DEDICATED_IDENTITY_AND_ROLLBACK_DESIGN": {
+          "kind": "EVIDENCE",
+          "description": "A dedicated least-privilege identity and rollback design exists and is proven; any credential it needs is provisioned separately.",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-29 — L'intake TLS #201 active un besoin concret, pas une permission de réutiliser le fallback SSH read-only"
+          ]
+        },
+        "CONCRETE_DELETION_USE_CASE": {
+          "kind": "CONCRETE_NEED",
+          "description": "A concrete GitHub deletion use case is proven.",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle"
+          ]
+        },
+        "DELETION_GOVERNANCE_APPROVED": {
+          "kind": "HUMAN_DECISION",
+          "admissibleCondition": "DESTRUCTIVE_OR_IRREVERSIBLE_NOT_AUTHORIZED",
+          "authoritySources": [
+            "CLAUDE.md#Règle permanente — double présence, non-régression et amélioration continue",
+            "DECISIONS_LOG.md#2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle"
+          ],
+          "description": "Destructive deletion requires backup, justification and validation."
+        },
+        "RESOURCE_SPECIFIC_RECOVERY_OR_IRREVERSIBILITY_ACKNOWLEDGED": {
+          "kind": "HUMAN_DECISION",
+          "admissibleCondition": "DESTRUCTIVE_OR_IRREVERSIBLE_NOT_AUTHORIZED",
+          "authoritySources": [
+            "CLAUDE.md#Règle permanente — double présence, non-régression et amélioration continue",
+            "DECISIONS_LOG.md#2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle"
+          ],
+          "description": "Irreversibility or the recovery path of the exact resource is acknowledged before deletion."
+        },
+        "APPLICATION_DELTA_PRESENT": {
+          "kind": "CONCRETE_NEED",
+          "description": "A Stablecoin delta actually contains application files.",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-22 — Décision : une PR historique divergée est une source d'intention, pas un patch à réappliquer"
+          ]
+        },
+        "DEDICATED_DEPLOYMENT_REVIEW": {
+          "kind": "EVIDENCE",
+          "description": "A dedicated build/restart/health/rollback deployment design and review exist for the application delta.",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-22 — Décision : une PR historique divergée est une source d'intention, pas un patch à réappliquer",
+            "DECISIONS_LOG.md#2026-09-24 — Programmer tout le travail restant sans précréer les Tasks runtime"
+          ]
+        },
+        "MULTI_PROCESS_OR_DISTRIBUTED_OPERATIONAL_MEMORY_REQUIREMENT_PROVEN": {
+          "kind": "CONCRETE_NEED",
+          "description": "A multi-process or distributed Operational Memory requirement is proven.",
+          "authoritySources": [
+            "docs/governance/program-backlog-convergence.json#PB-OD-RECONCILE"
+          ]
+        },
+        "INCOMPATIBLE_CONTRACT_OR_GRAPH_SCHEMA_VERSION_INTRODUCED": {
+          "kind": "CONCRETE_NEED",
+          "description": "An incompatible contract or graph schema version is actually introduced.",
+          "authoritySources": [
+            "docs/governance/program-backlog-convergence.json#PB-OD-RECONCILE"
+          ]
+        },
+        "CONCRETE_MAINTENANCE_NEED": {
+          "kind": "CONCRETE_NEED",
+          "description": "A concrete Git maintenance need is proven.",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle"
+          ]
+        },
+        "EXPLICIT_HISTORY_REWRITE_USE_CASE": {
+          "kind": "CONCRETE_NEED",
+          "description": "A concrete history-rewrite use case is proven.",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle"
+          ]
+        },
+        "EXPLICIT_HUMAN_GATE": {
+          "kind": "HUMAN_DECISION",
+          "admissibleCondition": "DESTRUCTIVE_OR_IRREVERSIBLE_NOT_AUTHORIZED",
+          "authoritySources": [
+            "CLAUDE.md#Règle permanente — double présence, non-régression et amélioration continue",
+            "DECISIONS_LOG.md#2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle"
+          ],
+          "description": "History rewrite is destructive for shared history and stays human-gated."
+        },
+        "RECOVERY_PLAN_PROVEN": {
+          "kind": "EVIDENCE",
+          "description": "A tested recovery plan exists for the rewrite.",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle"
+          ]
+        },
+        "CONCRETE_DESTRUCTIVE_USE_CASE": {
+          "kind": "CONCRETE_NEED",
+          "description": "A concrete destructive local Git use case is proven.",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle"
+          ]
+        },
+        "EXPLICIT_HUMAN_OR_POLICY_GATE": {
+          "kind": "HUMAN_DECISION",
+          "admissibleCondition": "DESTRUCTIVE_OR_IRREVERSIBLE_NOT_AUTHORIZED",
+          "authoritySources": [
+            "CLAUDE.md#Règle permanente — double présence, non-régression et amélioration continue",
+            "DECISIONS_LOG.md#2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle"
+          ],
+          "description": "Destructive local Git lifecycle operations stay human- or policy-gated."
+        },
+        "POSTCONDITION_AND_RECOVERY_PROOF": {
+          "kind": "EVIDENCE",
+          "description": "Postconditions and recovery are proven for the destructive operation.",
+          "authoritySources": [
+            "DECISIONS_LOG.md#2026-09-25 — L'intake #177 fait évoluer le programme existant, il ne crée pas de control plane parallèle"
+          ]
+        }
+      }
+    }
   },
   "agentHandoffContract": {
     "steps": [
       "READ_AUTHORITIES",
       "REOBSERVE_MAIN",
+      "REOBSERVE_PROGRAM_INTAKES",
       "REOBSERVE_RUNTIME_STATE",
       "LOAD_PROGRAM_PLAN",
       "SELECT_READY_BLUEPRINT",
@@ -2438,7 +2754,9 @@
       "SELECT_FIRST_COLLISION_FREE_READY_BLUEPRINT",
       "CONTINUE_OR_STOP_ON_GOVERNED_BLOCKER"
     ],
-    "continuationRule": "A connected agent continues through planning-ready, dependency-safe and collision-safe work without asking for confirmation between ordinary lots. It stops only for a real governed blocker, explicit human gate, unresolved ambiguity, unavailable required authority, collision/ownership conflict, or safety/non-regression failure."
+    "continuationRule": "A connected agent continues through planning-ready, dependency-safe and collision-safe work without asking for confirmation between ordinary lots. It stops only for a real governed blocker, explicit human gate, unresolved ambiguity, unavailable required authority, collision/ownership conflict, or safety/non-regression failure.",
+    "programIntakeDiscovery": "Before selecting work, list open GitHub issues titled \"[PROGRAM INTAKE]\" and owner supervision comments on recent PRs/issues, then reconcile every unconsumed one through programIntakes before any other lot.",
+    "humanGateRule": "An agent never stops on a gate it created for a deducible technical decision; see executionModel.humanGatePolicy."
   },
   "taskBlueprints": [
     {
@@ -3569,8 +3887,8 @@
       "workItemId": "PB-B3",
       "waveId": "W3",
       "lotId": "B3.2",
-      "title": "Generalize remaining consumers to TargetScope",
-      "objective": "Propagate validated repositoryId/mappingId/TargetScope additively while preserving historical single-repository records.",
+      "title": "Operator-configured server target project and TargetScope propagation",
+      "objective": "Let an explicit operator configuration name one registered GitRegistry V2 project for this MCP server; Live State derives its singular TargetContext from it (components without observation stay UNVERIFIED/UNKNOWN) and validated repositoryId/mappingId/TargetScope propagate additively, while an absent configuration keeps the historical single-repository behaviour.",
       "integrationSlot": "context.multi-repository",
       "integrationStrategy": "GENERALIZE",
       "dependsOn": [
@@ -3599,12 +3917,8 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "CONDITIONAL",
-        "autoPromotable": false,
-        "requiredExplicitGates": [
-          "OWNER_DECISION_B3_TARGET_PROJECT_SELECTION"
-        ],
-        "reason": "B3.1 PASS_WITH_EVIDENCE, but the canonical architecture lists \"B3 TargetScope migration pour Session/Task/Receipt\" as an open question: no versioned authority decides which GitRegistry V2 project a server TargetContext represents. The production registry holds application projects (the MCP repository is a mapping, not established as a project component), so a producer keyed on the observed repository would produce nothing, and requiring activation-validated mappings deadlocks with TB-COND-C1-ACTIVATE. Owner decision required; see w3B3TargetSelectionGate."
+        "state": "READY",
+        "reason": "Owner decision #220 recorded (OPERATOR_CONFIGURED_SERVER_TARGET as the first additive V1, extensible to MULTI_PROJECT_LIVE_STATE) and TB-W3-B3-01 is DONE. Planning-ready only: runtime authorities are reobserved before any materialization."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -3614,10 +3928,15 @@
         "requiresCollisionCheck": true
       },
       "redTests": [
-        "RED proves the residual delta for B3.2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+        "RED proves no operator target-project configuration exists and Live State never derives a TargetContext on the exact observed head.",
+        "RED proves an unregistered or malformed target project is not refused fail-closed.",
+        "Guards keep the snapshot, stateVersion and every consumer unchanged when no target project is configured."
       ],
       "greenAcceptance": [
-        "B3.2 satisfies its bounded objective using existing authorities first.",
+        "A configured, registered GitRegistry V2 project yields one singular, identity-only TargetContext derived by Live State; components without observation evidence stay UNVERIFIED/UNKNOWN.",
+        "An absent target project keeps the historical single-repository behaviour byte-for-byte for snapshots, receipts and tools.",
+        "An unregistered, malformed or unreadable target project fails closed without granting write, deploy, SHA or activation authority.",
+        "Interfaces stay additive so a later MULTI_PROJECT_LIVE_STATE (1 server -> N projects -> N TargetContexts) needs no breaking migration.",
         "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
       ],
       "regressionSuites": [
@@ -3630,6 +3949,223 @@
         "Merge uses the exact reviewed head when code/docs change is required.",
         "Governed deploy and post-deploy attestation are required only when runtime-affecting.",
         "SUIVI/NEXT_ACTION are reconciled and dependent blueprints are re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "decisionSource": "issue:220"
+    },
+    {
+      "id": "TB-W3-DISPATCH-01",
+      "workItemId": "PB-DISPATCH",
+      "waveId": "W3",
+      "lotId": "DISPATCH.1",
+      "title": "Blueprint-bound governed materialization gate",
+      "objective": "Extend mcp_reconcile_agent_intent so an eligible bootstrapped session can materialize exactly one runtime task for a planning-READY blueprint, bound to its id and the deployed program projection, idempotently and without implying a claim.",
+      "integrationSlot": "orchestration.autonomous-dispatch-loop",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-B3-02"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Bootstrap Receipt",
+        "Governed Lock Service",
+        "Program Backlog V2"
+      ],
+      "resourceScopes": [
+        "orchestration:task-dispatch"
+      ],
+      "collisionDomains": [
+        "orchestration:task-dispatch"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Bootstrap Receipt",
+        "Governed Lock Service",
+        "Program Backlog V2"
+      ],
+      "writeAuthorities": [],
+      "redTests": [
+        "RED proves a READY blueprint has no governed materialization path bound to its identity and readiness on the exact observed head.",
+        "RED proves retried or concurrent materialization of the same blueprint is not proven to yield exactly one task."
+      ],
+      "greenAcceptance": [
+        "Readiness, program:next and the blueprint itself never create a task; only the governed reconciliation does, after bootstrap, dependency, collision, lock and state checks.",
+        "Materialization never proceeds for a BLOCKED, DEFERRED, CONDITIONAL, unknown or missing-evidence blueprint.",
+        "An existing equivalent task (same blueprint intent, active or terminal) is reused; retries and concurrent attempts yield exactly one task.",
+        "Resource scopes come from the blueprint collision domains, never from the agent; TargetScope, when present, is validated against the B3.2 TargetContext.",
+        "Materialization never implies a claim."
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependency is DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA and read-only OIDC probes confirm S1/runtime.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-DISPATCH-02",
+      "workItemId": "PB-DISPATCH",
+      "waveId": "W3",
+      "lotId": "DISPATCH.2",
+      "title": "Resume-owned-first governed claim",
+      "objective": "Extend mcp_claim_next_governed_task so a session resumes the active task it already owns before claiming new work, with no stealing and no liveness-based transfer.",
+      "integrationSlot": "orchestration.autonomous-dispatch-loop",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-DISPATCH-01"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Bootstrap Receipt",
+        "Governed Lock Service",
+        "Program Backlog V2"
+      ],
+      "resourceScopes": [
+        "orchestration:task-dispatch"
+      ],
+      "collisionDomains": [
+        "orchestration:task-dispatch"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Bootstrap Receipt",
+        "Governed Lock Service",
+        "Program Backlog V2"
+      ],
+      "writeAuthorities": [],
+      "redTests": [
+        "RED proves a session that owns an active task can still claim another first-executable task."
+      ],
+      "greenAcceptance": [
+        "An owned active task is returned before any new claim; an unbootstrapped, foreign or ineligible session cannot claim.",
+        "Collision domains and active locks keep one writer per domain; stale or absent heartbeat never releases or transfers a claim."
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependency is DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA and read-only OIDC probes confirm S1/runtime.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-DISPATCH-03",
+      "workItemId": "PB-DISPATCH",
+      "waveId": "W3",
+      "lotId": "DISPATCH.3",
+      "title": "Connected-agent next-work projection and terminal recompute",
+      "objective": "Project, for a connected bootstrapped session, the deterministic next work (resume owned -> claim first executable -> materialize first READY blueprint) recomputed after terminal task evidence, without auto-claiming.",
+      "integrationSlot": "orchestration.autonomous-dispatch-loop",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-DISPATCH-02"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Bootstrap Receipt",
+        "Governed Lock Service",
+        "Program Backlog V2"
+      ],
+      "resourceScopes": [
+        "orchestration:task-dispatch"
+      ],
+      "collisionDomains": [
+        "orchestration:task-dispatch"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Bootstrap Receipt",
+        "Governed Lock Service",
+        "Program Backlog V2"
+      ],
+      "writeAuthorities": [],
+      "redTests": [
+        "RED proves no bounded next-work projection exists for a bootstrapped session on the exact observed head."
+      ],
+      "greenAcceptance": [
+        "Task completion with terminal evidence recomputes the next eligible collision-free work without human distribution.",
+        "A locally blocked item is skipped when another compatible candidate exists.",
+        "GitHub-only operations never require runtime; runtime mutation always requires governed runtime authority.",
+        "No parallel queue, session, claim, lock, dispatcher or store is introduced."
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependency is DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA and read-only OIDC probes confirm S1/runtime.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
       ],
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
@@ -8346,6 +8882,72 @@
         "runtimeLocksCreated": 0,
         "observedAt": "2026-10-01T18:20:00Z"
       }
+    },
+    {
+      "id": "TB-W3-OAUTH-WRITE-SCOPE-01",
+      "workItemId": "PB-OAUTH-WRITE-SCOPE",
+      "waveId": "W3",
+      "lotId": "OAUTH-WRITE-SCOPE.1",
+      "title": "Enforce mcp:write after a token-scope inventory",
+      "objective": "Require the mcp:write OAuth scope for write tools once a bounded inventory proves which scopes real connector tokens carry, without breaking existing write flows.",
+      "integrationSlot": "connection.oauth-write-scope-enforcement",
+      "integrationStrategy": "EXTEND",
+      "dependsOn": [
+        "TB-W3-A3-02"
+      ],
+      "existingAuthorities": [
+        "OAuth token verification",
+        "MCP request identity",
+        "Scoped WRITE gate"
+      ],
+      "resourceScopes": [
+        "connection:oauth-write-scope"
+      ],
+      "collisionDomains": [
+        "connection:oauth-write-scope"
+      ],
+      "readAuthorities": [
+        "OAuth token verification",
+        "MCP request identity"
+      ],
+      "writeAuthorities": [],
+      "redTests": [
+        "RED proves the scope inventory of real connector tokens is absent before any enforcement.",
+        "RED proves a write tool accepts a token without mcp:write."
+      ],
+      "greenAcceptance": [
+        "Write tools require mcp:write with a backward-compatible path proven by the inventory.",
+        "Token issuance, PKCE and operator consent stay unchanged."
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "reason": "Dependency-gated; recomputed automatically after its dependency is DONE with evidence."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head tests and review are green with no unresolved blocking finding.",
+        "Merge uses the exact reviewed head.",
+        "Governed deploy attests the merge SHA and read-only OIDC probes confirm S1/runtime.",
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
     }
   ],
   "reconciliationBaseline": {
@@ -8747,6 +9349,159 @@
           36905918563
         ]
       }
+    },
+    {
+      "id": "INTAKE-220",
+      "issue": 220,
+      "title": "[PROGRAM INTAKE] B3.2 — owner decision: operator-configured server target, extensible multi-project",
+      "status": "CONVERGED_CURRENT_MAIN",
+      "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0",
+      "intakeBaselineMainSha": "52f6129d519ba637e0073443275f0f5e74cb5fbd",
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "authorizesRuntimeMutation": false,
+      "integrationVerdict": "ACCEPT",
+      "integrationRule": "Satisfies OWNER_DECISION_B3_TARGET_PROJECT_SELECTION inside w3B3TargetSelectionGate and releases TB-W3-B3-02 to derived readiness; implementation extends Live State, GitRegistry V2 and GWC-10 TargetScope only.",
+      "targetBlueprintIds": [
+        "TB-W3-B3-02"
+      ]
+    },
+    {
+      "id": "INTAKE-221",
+      "issue": 221,
+      "title": "[PROGRAM INTAKE] PROGRAM_AUTO_CONTINUE — forbid self-created human gates for deducible technical decisions",
+      "status": "CONVERGED_CURRENT_MAIN",
+      "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0",
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "integrationVerdict": "ACCEPT",
+      "integrationRule": "Converged into CLAUDE.md §7.2, executionModel.humanGatePolicy and the existing program lib validation (uncataloguedGates / inadmissibleHumanGates); no new engine or store.",
+      "targetBlueprintIds": [],
+      "appliedTo": [
+        "w3B3TargetSelectionGate",
+        "PB-OAUTH-WRITE-SCOPE"
+      ]
+    },
+    {
+      "id": "INTAKE-222",
+      "issue": 222,
+      "title": "[PROGRAM INTAKE] Autonomous task dispatch loop — converge to canonical target architecture",
+      "status": "CONVERGED_CURRENT_MAIN",
+      "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0",
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "integrationVerdict": "ACCEPT_WITH_ADAPTATION",
+      "integrationRule": "Sequenced as PB-DISPATCH / TB-W3-DISPATCH-01..03 directly after B3.2, extending the existing Mandatory Bootstrap & Work Orchestration tools; readiness stays planning-only (createsRuntimeTask=false).",
+      "targetBlueprintIds": [
+        "TB-W3-DISPATCH-01",
+        "TB-W3-DISPATCH-02",
+        "TB-W3-DISPATCH-03"
+      ],
+      "architectureMapping": {
+        "existing": [
+          {
+            "component": "Mandatory Agent Bootstrap & Work Orchestration V1",
+            "owner": "docs/superpowers/specs/2026-08-22-mandatory-agent-bootstrap-work-orchestration-v1-design.md"
+          },
+          {
+            "component": "Governed Session + Bootstrap Receipt",
+            "owner": "src/tools/governedSessions.ts (open/resume/acknowledge), assertBootstrap in src/tools/governedTasks.ts"
+          },
+          {
+            "component": "mcp_claim_next_governed_task",
+            "owner": "src/operationalMemory/taskQueue.ts claimNextTask: priority -> sequence, DONE dependencies, scope and lock conflicts, optimistic store revision"
+          },
+          {
+            "component": "mcp_transition_governed_task",
+            "owner": "src/operationalMemory/taskQueue.ts transitionTask: allowlisted, owner-only transitions"
+          },
+          {
+            "component": "Governed Lock Service",
+            "owner": "src/operationalMemory/lockService.ts"
+          },
+          {
+            "component": "Automatic governed connection/session binding",
+            "owner": "src/operationalMemory/transportBindings.ts"
+          },
+          {
+            "component": "Universal Agent Coordination snapshot",
+            "owner": "src/governedContext/agentCoordination.ts"
+          },
+          {
+            "component": "Program Backlog V2 readiness and selection",
+            "owner": "scripts/program-backlog-convergence-lib.mjs (planning only)"
+          },
+          {
+            "component": "GitHub-first operational continuity",
+            "owner": ".mcp/github-first-operational-policy.json"
+          }
+        ],
+        "partial": [
+          {
+            "component": "mcp_reconcile_agent_intent",
+            "gap": "Idempotent per intentKey/TargetScope with dependency, lock and scope checks, but agent-supplied: not bound to a blueprint identity or its derived readiness, and resource scopes come from the agent."
+          },
+          {
+            "component": "mcp_claim_next_governed_task",
+            "gap": "Claims the first executable task even when the session already owns an active task (no resume-owned-first precedence)."
+          },
+          {
+            "component": "Program readiness",
+            "gap": "Derived and versioned in Git; no runtime next-work projection for a connected session."
+          }
+        ],
+        "gapsClosed": [
+          {
+            "gap": "GOVERNED_MATERIALIZATION_GATE",
+            "blueprintId": "TB-W3-DISPATCH-01"
+          },
+          {
+            "gap": "RESUME_OWNED_FIRST_CLAIM",
+            "blueprintId": "TB-W3-DISPATCH-02"
+          },
+          {
+            "gap": "CONNECTED_AGENT_NEXT_WORK_AND_TERMINAL_RECOMPUTE",
+            "blueprintId": "TB-W3-DISPATCH-03"
+          }
+        ],
+        "deferred": [
+          {
+            "component": "Capability-aware task eligibility",
+            "reason": "Depends on D2 Effective Capabilities (TB-W3-D2-01); interfaces stay additive."
+          },
+          {
+            "component": "Multiple TargetContexts per server",
+            "reason": "MULTI_PROJECT_LIVE_STATE evolution of B3.2."
+          },
+          {
+            "component": "Provider wake/notification of connected agents",
+            "reason": "Belongs to H tracing / I synthetic monitoring."
+          },
+          {
+            "component": "Runtime DONE -> blueprint DONE",
+            "reason": "Stays a versioned exact-head evidence step; never automatic."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SUPERVISION-219-20261002",
+      "source": "issue-comment:219@2026-10-02T00:01:19Z",
+      "title": "SUPERVISION / INFORMATION INTAKE — reobserve and resume through existing governance",
+      "status": "CONVERGED_CURRENT_MAIN",
+      "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0",
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "integrationVerdict": "COMPLEMENT",
+      "classification": "ENROLMENT_WAKE_REOBSERVE_GAP",
+      "evidence": [
+        "Intakes #220-#222 were opened on 2026-10-01 between 23:41:59Z and 23:50:22Z; the supervision comment followed at 2026-10-02T00:01:19Z.",
+        "A GitHub-only session then completed a full read-only pass of main@52f6129 and merged PR #223 at 2026-10-02T00:27Z, still recording B3.2 as waiting on an owner decision: the intakes were not consumed.",
+        "GitHub access was available throughout, so this is not missing runtime authority.",
+        "CLAUDE.md §7.1 step 3 and agentHandoffContract.steps listed main, PRs/branches and runtime authorities but no open [PROGRAM INTAKE] issues or owner supervision comments; no previously wired discovery was removed, so this is not a regression."
+      ],
+      "otherAgentsRuntimeState": "UNKNOWN",
+      "correction": "agentHandoffContract.steps gains REOBSERVE_PROGRAM_INTAKES and programIntakeDiscovery; CLAUDE.md §7.1 step 3 lists open [PROGRAM INTAKE] issues."
     }
   ],
   "w3A22InventoryHandoff": {
@@ -9064,7 +9819,7 @@
     ]
   },
   "w3B3TargetSelectionGate": {
-    "status": "OWNER_DECISION_REQUIRED",
+    "status": "OWNER_DECISION_RECORDED",
     "gateId": "OWNER_DECISION_B3_TARGET_PROJECT_SELECTION",
     "blueprintId": "TB-W3-B3-02",
     "observedMainSha": "18e227fa08178272c0f5d678379351377425af0a",
@@ -9124,7 +9879,37 @@
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
-    "serverMutations": 0
+    "serverMutations": 0,
+    "decision": {
+      "option": "OPERATOR_CONFIGURED_SERVER_TARGET",
+      "source": "issue:220",
+      "sourceTitle": "[PROGRAM INTAKE] B3.2 — owner decision: operator-configured server target, extensible multi-project",
+      "decidedAt": "2026-10-01T23:41:59Z",
+      "intakeBaselineMainSha": "52f6129d519ba637e0073443275f0f5e74cb5fbd",
+      "reconciledOnMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0",
+      "scope": "FIRST_ADDITIVE_MINIMAL_REVERSIBLE_BACKWARD_COMPATIBLE_V1",
+      "freezesSingleProjectPerServer": false,
+      "extensionPath": "MULTI_PROJECT_LIVE_STATE",
+      "targetTopology": "1 MCP server -> N GitRegistry V2 projects -> N bounded TargetContexts (future, additive)",
+      "v1Behaviour": "An explicit operator configuration (existing governed operator configuration or its minimal extension) names one registered GitRegistry V2 project; Live State stays the observation authority and derives its singular TargetContext from it; components without observation evidence stay UNVERIFIED/UNKNOWN.",
+      "absentTargetProjectKeepsHistoricalBehavior": true,
+      "authorizesRuntimeMutation": false,
+      "additionalInvariants": [
+        "MISSING_EVIDENCE_NEVER_BECOMES_ALLOWED_OR_ACTIVE",
+        "HEARTBEAT_OR_LIVENESS_NEVER_TRANSFERS_OWNERSHIP",
+        "TARGET_SCOPE_NEVER_BYPASSES_TASK_SESSION_CLAIM_LOCK_EXACT_HEAD_STATE_VERSION_OR_AUTHORIZATION",
+        "TARGETING_A_PROJECT_NEVER_WRITES_OR_ACTIVATES"
+      ],
+      "a32Independence": "A3.2 / PR #207 stays independent; its ownership is preserved by the runtime authorities."
+    },
+    "gateAdmissibilityFinding": {
+      "source": "issue:221",
+      "classification": "SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISION",
+      "observation": "The gate was created by an agent although it already derived a minimal, reversible, invariant-compliant recommended option; the canonical open question did not reserve the choice to a human.",
+      "correctedBy": "executionModel.humanGatePolicy (NO_SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISIONS)",
+      "replaysB32Decision": false
+    },
+    "releasedOnMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0"
   },
   "w4G3ToolSurfaceHandoff": {
     "status": "PASS_WITH_EVIDENCE",
@@ -9187,5 +9972,19 @@
         "reason": "Runtime TASK-20260929-001 (connection:oauth-attempt-correlation) is READY but unclaimed and PR #207 holds the draft work; claiming requires the runtime Governed Task Queue, unavailable to this GitHub-only agent"
       }
     ]
+  },
+  "programIntakeConvergence": {
+    "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0",
+    "observedAt": "2026-10-04T00:00:00Z",
+    "intakes": [
+      "INTAKE-220",
+      "INTAKE-221",
+      "INTAKE-222",
+      "SUPERVISION-219-20261002"
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
   }
 }

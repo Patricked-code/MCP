@@ -1,5 +1,21 @@
 # DECISIONS_LOG.md
 
+## 2026-10-04 — B3.2 : la décision propriétaire #220 retient la configuration opérateur, sans figer un projet par serveur
+
+Décision propriétaire (intake #220) : `OPERATOR_CONFIGURED_SERVER_TARGET` est la première implémentation de B3.2 — additive, minimale, réversible et rétrocompatible. Une configuration opérateur explicite (configuration gouvernée existante ou son extension minimale) nomme un projet GitRegistry V2 enregistré ; Live State reste l'autorité d'observation et en dérive son `TargetContext` singulier ; les composants sans preuve restent `UNVERIFIED`/`UNKNOWN`. Sans configuration, le comportement historique mono-dépôt est conservé à l'identique.
+
+La V1 ne doit introduire aucune hypothèse empêchant plus tard `1 serveur MCP → N projets → N TargetContexts bornés` (`MULTI_PROJECT_LIVE_STATE`). Les invariants de `w3B3TargetSelectionGate` restent non négociables, complétés par : aucune preuve manquante ne devient ALLOWED/ACTIVE, aucun heartbeat ne transfère d'ownership, aucun TargetScope ne contourne Task/Session/Claim/Lock/exact-head/stateVersion/autorisation, cibler un projet n'écrit ni n'active rien. Cette décision n'autorise aucune mutation runtime ; A3.2 / PR #207 reste indépendant.
+
+## 2026-10-04 — Un agent ne crée pas de gate humaine pour une décision technique déductible
+
+Décision (intake #221) : `HUMAN_GATE_EXISTING != AGENT_MAY_CREATE_HUMAN_GATE`. La gate `OWNER_DECISION_B3_TARGET_PROJECT_SELECTION` du 2026-10-01 était une gate auto-créée : l'agent avait lui-même déduit une option minimale, réversible et conforme aux invariants. Désormais une gate humaine n'est admissible que si elle cite une condition admissible et une source d'autorité préexistante extérieure à la projection du programme ; un choix technique déductible suit `AUTO_DECIDE → EXECUTE → VERIFY → CHECKPOINT → RECOMPUTE → CONTINUE`.
+
+Mise en œuvre sans moteur parallèle : `executionModel.humanGatePolicy` catalogue chaque gate de `requiredExplicitGates`, et la validation existante du programme (`uncataloguedGates`, `inadmissibleHumanGates`) échoue en CI sur toute gate non cataloguée ou humaine auto-créée. Les gates destructives/irréversibles, réservées par une décision préexistante (activation C1, enforce J4) ou de sécurité restent humaines même si une solution technique est déductible. Un blocker local reste local.
+
+## 2026-10-04 — La boucle autonome de dispatch étend l'orchestration existante, après B3.2
+
+Décision (intake #222) : la chaîne `READINESS → GOVERNED MATERIALIZATION GATE → GOVERNED TASK QUEUE → CLAIM → EXECUTION → CHECKPOINT → RECOMPUTE → NEXT` est construite en étendant `mcp_reconcile_agent_intent` (matérialisation liée à l'identité et à la readiness dérivée d'un blueprint, idempotente, sans claim implicite), `mcp_claim_next_governed_task` (reprise prioritaire du travail déjà possédé) et le contexte gouverné (projection next-work), via `TB-W3-DISPATCH-01..03` séquencés juste après B3.2. La readiness reste une projection de planification (`createsRuntimeTask=false`) ; la Governed Task Queue reste l'unique autorité de tâche runtime. Différés : éligibilité par capacités (D2), multi-TargetContexts, réveil des agents (H/I), et le passage d'un blueprint à DONE qui reste une preuve versionnée exact-head.
+
 ## 2026-10-01 — La surface client est attestée par le client, horodatée et bornée par le serveur
 
 Décision : seul le client sait quels outils il voit réellement ; il le déclare via `mcp_attest_client_tool_surface`. Le serveur ne fait jamais confiance à un horodatage, un identifiant ou une liaison fournis par le client : il les attribue lui-même (heure serveur, expiration ≤ 300 s, session et contexte de connexion courants, provenance `client_attestation`). Une attestation expirée n'est plus une preuve courante.

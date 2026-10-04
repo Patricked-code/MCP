@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-10-04 — Intakes #220/#221/#222 et supervision #219 — convergence dans le Program Backlog
+
+- Reprise current-first : `main=0f8ceebbae386832f66028fd9163e81871e746f0` (HEAD des intakes : `52f6129`, seule la PR documentaire #223 est intervenue). Trois intakes ouverts le 2026-10-01 et un commentaire de supervision (#219, 2026-10-02 00:01Z) n'avaient pas été consommés ; la PR #223 consignait encore B3.2 comme « décision propriétaire en attente ».
+- Classification #219 (preuves dans `SUPERVISION-219-20261002`) : `ENROLMENT_WAKE_REOBSERVE_GAP` — l'accès GitHub était disponible, mais ni `CLAUDE.md` §7.1 ni `agentHandoffContract.steps` n'imposaient de relire les issues `[PROGRAM INTAKE]` ouvertes. Correction : étape `REOBSERVE_PROGRAM_INTAKES` et §7.1 enrichi. État runtime des autres agents : `UNKNOWN`.
+- #220 (`ACCEPT`) : décision propriétaire enregistrée dans `w3B3TargetSelectionGate` (`OWNER_DECISION_RECORDED`) — `OPERATOR_CONFIGURED_SERVER_TARGET` en V1 additive, minimale, réversible et rétrocompatible, sans figer « un serveur = un projet », extensible vers `MULTI_PROJECT_LIVE_STATE`. `TB-W3-B3-02` repasse en readiness dérivée : **READY**.
+- #221 (`ACCEPT`) : règle `NO_SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISIONS` (`CLAUDE.md` §7.3, `executionModel.humanGatePolicy`). Les 22 gates existantes sont cataloguées (6 `HUMAN_DECISION` avec condition admissible et source préexistante, 16 preuve/besoin/politique) ; `validateProgramBacklogConvergence` échoue désormais sur une gate non cataloguée ou une gate humaine auto-créée. La gate B3.2 est consignée comme finding de gate auto-créée ; `mcp:write` est requalifié en lot technique (`TB-W3-OAUTH-WRITE-SCOPE-01`, après A3.2), pas en décision propriétaire.
+- #222 (`ACCEPT_WITH_ADAPTATION`) : cartographie existant/partiel/gaps/différé ; `PB-DISPATCH` et `TB-W3-DISPATCH-01..03` (matérialisation liée au blueprint via `mcp_reconcile_agent_intent`, claim resume-owned-first, projection next-work) séquencés juste après B3.2. `createsRuntimeTask=false` inchangé.
+- Readiness : `TB-W3-A3-02`, `TB-W3-B3-02`. Aucun Task, session, lock ou mutation runtime.
+- NEXT_ACTION : CI exact-head et merge de la convergence, puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-B3-02` (A3.2 reste réservé à une session runtime capable de réclamer `TASK-20260929-001`).
+
 ## 2026-10-02 — Lecture intégrale read-only et mémoire maître de reprise
 
 - Lecture seule de l'intégralité du dépôt (`main@52f6129`, 599 fichiers suivis), classée en autorité actuelle / projection / provenance historique / superseded / projets spécifiques.

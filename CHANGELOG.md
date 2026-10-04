@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-10-04 — Convergence des intakes #220/#221/#222
+
+- B3.2 : décision propriétaire #220 enregistrée ; `TB-W3-B3-02` READY (V1 `OPERATOR_CONFIGURED_SERVER_TARGET`, extensible multi-projet).
+- Gates humaines : politique `humanGatePolicy` et catalogue des 22 gates ; la validation du programme refuse une gate non cataloguée ou une gate humaine auto-créée (`CLAUDE.md` §7.3).
+- Boucle de dispatch : `PB-DISPATCH` / `TB-W3-DISPATCH-01..03` séquencés après B3.2 ; lot `mcp:write` enregistré après A3.2.
+- Reprise : étape `REOBSERVE_PROGRAM_INTAKES` ajoutée au contrat de handoff.
+
 ## 2026-10-01 — W4 G3 Tool Surface Attestation livré et attesté
 
 - PR #218 fusionnée au SHA `02f2da9` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `36941423280` / `36941426233`.

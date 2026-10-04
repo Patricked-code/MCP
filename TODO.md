@@ -28,7 +28,8 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-FOUNDATIONS-DONE` | `DONE` | `program.delivered-foundations` | Delivered connection/repository/project foundations |
 | `PB-A2.2` | `DONE` | `connection.client-evidence` | A2.2 Verified Client Evidence — A2.2.1 inventory + A2.2.2 bounded evidence projection DONE ; PR #194 merge/deploy exact-SHA attestés |
 | `PB-A3` | `PARTIALLY_IMPLEMENTED` | `connection.oauth-attempt-correlation` | A3 OAuth Auth Attempt Correlation — A3.1 inventory DONE, A3.2 bounded implementation READY |
-| `PB-B3` | `PARTIALLY_IMPLEMENTED` | `context.multi-repository` | B3 Multi-repository Governed Context — B3.1 inventory DONE (cœur multi-dépôt, surface outils mono-dépôt), B3.2 CONDITIONAL : décision propriétaire requise sur la sélection du projet cible |
+| `PB-B3` | `PARTIALLY_IMPLEMENTED` | `context.multi-repository` | B3 Multi-repository Governed Context — B3.1 inventory DONE (cœur multi-dépôt, surface outils mono-dépôt), B3.2 READY : décision propriétaire #220 enregistrée (`OPERATOR_CONFIGURED_SERVER_TARGET` en V1 additive, extensible vers `MULTI_PROJECT_LIVE_STATE`) |
+| `PB-DISPATCH` | `DESIGNED_NOT_IMPLEMENTED` | `orchestration.autonomous-dispatch-loop` | Intake #222 — boucle autonome de dispatch : matérialisation liée au blueprint, claim resume-owned-first, projection next-work ; séquencée juste après B3.2 (`TB-W3-DISPATCH-01..03`) |
 | `PB-C1` | `PARTIALLY_IMPLEMENTED` | `project.gitregistry-verification` | C1 GitRegistry V2 verification and activation path — C1.1 DONE (probe OIDC `mcp_git_registry_readiness` ; 5/5 mappings BLOCKED, registre S1 en schéma V1) |
 | `PB-C345` | `DESIGNED_NOT_IMPLEMENTED` | `project.server-runtime-domain-resolution` | C3/C4/C5 Server, Runtime and Domain Resolution |
 | `PB-D1` | `DESIGNED_NOT_IMPLEMENTED` | `governance.inheritance` | D1 Existing Governance Inheritance |
@@ -52,6 +53,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-GITHUB-PRWRITE` | `DESIGNED_NOT_IMPLEMENTED` | `github.pr-write.extensions` | Governed PR write extensions |
 | `PB-GITHUB-DESTRUCTIVE` | `DEFERRED` | `github.destructive-writes` | Destructive GitHub file/branch operations |
 | `PB-GGCC` | `PARTIALLY_IMPLEMENTED` | `control-plane.git-github-capability-completion` | Intake #177 converged; residual typed Git/GitHub capability lots integrated into current waves |
+| `PB-OAUTH-WRITE-SCOPE` | `DESIGNED_NOT_IMPLEMENTED` | `connection.oauth-write-scope-enforcement` | Application du scope `mcp:write` après inventaire des scopes réels des tokens ; lot technique séquencé après A3.2 (PR #207 touche `requestIdentity`), jamais une gate propriétaire |
 | `PB-SSH-ACCESS` | `DONE` | `transport.repository-ssh` | PR #191 merged/deployed exact-SHA; V2.6.8 Gouvern BOTH E2E passed through ephemeral read-only SSH certificate fallback |
 | `PB-STABLECOIN-APPDEPLOY` | `CONDITIONAL` | `deployment.stablecoin-application` | Stablecoin application-changing deploy path |
 | `PB-UAC` | `DONE` | `coordination.universal` | Universal Agent Coordination / heartbeat and claim observability |
@@ -68,6 +70,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 - **DONE — W1 Program State Convergence** : `TB-W1-01..07` sont terminés ; GWC/AF/OD/task-registry/planning ont été réconciliés current-first.
 - **DONE — W2 GitHub READ** : `TB-W2-01`, `TB-W2-02`, `TB-W2-03` sont terminés et validés exact-head ; les trois capacités restent strictement READ et aucun runtime Task/Session/Lock n'a été créé par W2.
 - **ACTIVE planning wave — W3** : A2.2 est clôturé et `TB-W3-A3-01` est DONE avec inventaire OAuth correlation ; `TB-W3-A3-02`, `TB-W3-B3-01`, `TB-W3-C1-01` sont planning-ready, ainsi que `TB-W4-G1-01` ; `TB-W3-SSH-ACCESS-01` est DONE ; les autres W3 et W4 restent bloqués par leurs dépendances.
+- **CONVERGED — intakes #220/#221/#222** : décision B3.2 enregistrée (B3.2 READY) ; règle `NO_SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISIONS` contrôlée par la lib du programme ; boucle de dispatch séquencée après B3.2. Prochain lot exécutable par un agent GitHub-only : `TB-W3-B3-02` (A3.2 attend une session runtime capable de réclamer `TASK-20260929-001`).
 - **CONVERGED — intake #177** : 164 capacités Git/GitHub ont été classées current-first et routées dans le Program Backlog V2 ; les lots GGCC résiduels restent BLOCKED/DEFERRED/CONDITIONAL et ne créent aucune Task runtime.
 - **DONE — intake #192 / repository SSH** : PR #191 fusionnée/déployée exact-SHA ; Gouvern V2.6.8 run `36255238655` a obtenu le certificat OIDC SSH éphémère read-only et a franchi MCP discovery vers `Q_DOMAIN_BINDING`.
 - **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
