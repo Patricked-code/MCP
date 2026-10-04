@@ -33,8 +33,19 @@ test('TB-W3-C1-01 is DONE only with exact-head, deploy and registry readiness ev
   assert.equal(evidence?.runtimeTasksCreated, 0);
   assert.equal(evidence?.runtimeLocksCreated, 0);
 
-  // Activation stays fail-closed: every mapping is still BLOCKED, so dependents must not start.
+  // Activation stays fail-closed (every mapping BLOCKED). C1.1 alone never unlocks the
+  // read-only dependents: they become READY only once B3.2 is DONE as well.
   assert.equal(byId.get('TB-COND-C1-ACTIVATE')?.readiness?.state, 'CONDITIONAL');
-  assert.equal(byId.get('TB-W3-C3-01')?.readiness?.state, 'BLOCKED');
-  assert.equal(byId.get('TB-W3-GGCC-GIT-READ')?.readiness?.state, 'BLOCKED');
+  for (const id of ['TB-W3-C3-01', 'TB-W3-GGCC-GIT-READ']) {
+    const dependent: any = byId.get(id);
+    const dependenciesDone = dependent.dependsOn.every(
+      (dependency: string) => (byId.get(dependency) as any)?.readiness?.state === 'DONE'
+    );
+    assert.ok(dependent.dependsOn.includes('TB-W3-B3-02'), id);
+    assert.equal(dependent.dependsOn.includes('TB-COND-C1-ACTIVATE'), false, id);
+    assert.ok(
+      dependenciesDone ? ['READY', 'DONE'].includes(dependent.readiness.state) : dependent.readiness.state === 'BLOCKED',
+      `${id} readiness must follow its dependencies`
+    );
+  }
 });
