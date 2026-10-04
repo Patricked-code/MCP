@@ -11,7 +11,7 @@ Le moteur d’onboarding exécute le bootstrap obligatoire d’un agent sur le r
 4. Reprendre une governed session compatible ou appeler `mcp_open_governed_session`.
 5. Appeler `mcp_acknowledge_governed_context` pour créer un Bootstrap Receipt sanitizé.
 6. Projeter la nouvelle instruction sous forme bornée et appeler `mcp_reconcile_agent_intent` ; pour un blueprint READY du Program Backlog sans tâche runtime équivalente, `mcp_materialize_program_blueprint` crée au plus une tâche (idempotent, scopes issus du blueprint, jamais de claim implicite).
-7. Appeler `mcp_claim_next_governed_task` : la première tâche exécutable par priorité puis séquence est traitée avant la nouvelle.
+7. Appeler `mcp_claim_next_governed_task` : la tâche active déjà possédée par la session est reprise en premier ; sinon la première tâche exécutable et éligible pour son TargetScope, par priorité puis séquence, est traitée avant la nouvelle.
 8. Exécuter sous locks et révisions optimistes, puis suivre CI, reviews, merge, déploiement exact-SHA, attestation et checkpoint.
 
 Les surfaces runtime réelles sont des outils et ressources MCP. Aucune route HTTP d’onboarding distincte n’est déclarée.

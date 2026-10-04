@@ -235,8 +235,10 @@ function registerGovernedTaskMutationToolsWithDependencies(
     inputSchema: { ...BootstrapInputShape, expectedStoreRevision: ExpectedRevisionSchema },
     annotations: mutationAnnotations
   }, async (input, extra) => handled(() => active.lifecycle.run(async () => {
-      await assertBootstrap(input, extra, active);
-      return active.queue.claimNextTask(input.governedSessionId, input.expectedStoreRevision);
+      const session = await assertBootstrap(input, extra, active);
+      return active.queue.claimNextTask(input.governedSessionId, input.expectedStoreRevision, {
+        sessionTargetScope: session.targetScope ?? null
+      });
     })));
 
   server.registerTool('mcp_transition_governed_task', {

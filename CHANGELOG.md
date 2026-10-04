@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 DISPATCH-02 Resume-owned-first governed claim (candidate)
+
+- `mcp_claim_next_governed_task` rend d'abord la tâche active déjà possédée par la session, puis ne réclame que des tâches éligibles pour son TargetScope ; jamais de vol de tâche.
+
 ## 2026-10-04 — W3 DISPATCH-01 livré et attesté
 
 - PR #227 fusionnée au SHA `c5fc1d7` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37220863383` / `37220865029`.
