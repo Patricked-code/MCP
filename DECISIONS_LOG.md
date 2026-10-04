@@ -1,5 +1,13 @@
 # DECISIONS_LOG.md
 
+## 2026-10-04 — B3.2 : la cible d'un serveur vit dans la carte serveur versionnée ; le TargetScope est toujours construit par le serveur
+
+Décision technique (déduite des autorités, sans gate humaine — #221) : la « configuration opérateur gouvernée » de #220 est `.mcp/server-map.json`, déjà autorité machine des serveurs et entrée prévue de C3/C4. Une modification passe donc par une PR revue, une CI exact-head et le Governed Deploy, sans écriture serveur hors gouvernance ; le fichier est copié dans l'image comme `identity-policy.json`. La liste `targetProjectIds` garde l'extension `MULTI_PROJECT_LIVE_STATE` additive ; la V1 en résout au plus un.
+
+Live State reste l'unique autorité d'observation : il dérive le `TargetContext` du projet GitRegistry V2 configuré, sans observation de composant (tout reste `UNVERIFIED` jusqu'aux résolveurs C3/C4). Une cible non résolue ne produit jamais de contexte partiel : elle ajoute une contradiction `TARGET_PROJECT_*` sans changer l'alignement global du MCP. Sans configuration, le snapshot est identique octet pour octet.
+
+Les outils n'acceptent que des identifiants de mapping ; le scope est construit depuis Live State (ouverture/reprise) ou depuis la session (intentions, locks). Sans scope, seul `Patricked-code/MCP` est accepté. L'inventaire courant (Current-State) décrit le serveur MCP lui-même et devient une frontière d'auto-gestion ; l'observation GitHub d'autres dépôts n'est pas simulée (`UNAVAILABLE`) et relève des lots GGCC GitHub et C3/C4.
+
 ## 2026-10-04 — B3.2 : la décision propriétaire #220 retient la configuration opérateur, sans figer un projet par serveur
 
 Décision propriétaire (intake #220) : `OPERATOR_CONFIGURED_SERVER_TARGET` est la première implémentation de B3.2 — additive, minimale, réversible et rétrocompatible. Une configuration opérateur explicite (configuration gouvernée existante ou son extension minimale) nomme un projet GitRegistry V2 enregistré ; Live State reste l'autorité d'observation et en dérive son `TargetContext` singulier ; les composants sans preuve restent `UNVERIFIED`/`UNKNOWN`. Sans configuration, le comportement historique mono-dépôt est conservé à l'identique.

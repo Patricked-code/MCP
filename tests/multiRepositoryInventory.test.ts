@@ -4,6 +4,8 @@ import path from 'node:path';
 import test from 'node:test';
 
 const INVENTORY_PATH = 'docs/governance/multi-repository-inventory-20261001.json';
+// B3.2 supersedes the literal classification; the B3.1 inventory stays immutable evidence.
+const CURRENT_CLASSIFICATION_PATH = 'docs/governance/multi-repository-target-scope-20261004.json';
 const PROGRAM_PATH = 'docs/governance/program-backlog-convergence.json';
 const LITERAL = 'Patricked-code/MCP';
 
@@ -35,7 +37,8 @@ test('TB-W3-B3-01 publishes a bounded inventory of residual single-repository as
 });
 
 test('every hard-coded repository literal in src is classified exactly once', async () => {
-  const inventory = JSON.parse(await readFile(INVENTORY_PATH, 'utf8'));
+  const inventory = JSON.parse(await readFile(CURRENT_CLASSIFICATION_PATH, 'utf8'));
+  assert.equal(inventory.supersedesClassificationOf, INVENTORY_PATH);
   const residual: string[] = inventory.residualSingleRepositoryConsumers.map((entry: any) => entry.path);
   const boundaries: string[] = inventory.legitimateSelfManagementBoundaries.map((entry: any) => entry.path);
   const classified = [...residual, ...boundaries];

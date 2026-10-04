@@ -18,6 +18,10 @@ import {
 } from '../operationalMemory/types.js';
 import type { GovernedSessionService } from '../operationalMemory/sessionService.js';
 import {
+  RepositoryTargetSchema,
+  narrowTargetScope
+} from '../operationalMemory/targetScope.js';
+import {
   NOOP_TASK_LIFECYCLE_COORDINATOR,
   type TaskLifecycleCoordinator
 } from '../operationalMemory/taskLifecycleCoordinator.js';
@@ -155,10 +159,12 @@ function registerGovernedTaskMutationToolsWithDependencies(
   const mutationAnnotations = { readOnlyHint: false, destructiveHint: false, idempotentHint: false } as const;
 
   server.registerTool('mcp_reconcile_agent_intent', {
-    description: 'Classe une projection bornée de la nouvelle instruction et ajoute uniquement une nouvelle tâche sûre.',
+    description: 'Classe une projection bornée de la nouvelle instruction et ajoute uniquement une nouvelle tâche sûre. Une session ciblée transmet son TargetScope, restreint au besoin par targetMappingIds.',
     inputSchema: {
       ...BootstrapInputShape,
-      repository: z.literal('Patricked-code/MCP'),
+      repository: RepositoryTargetSchema,
+      // B3.2: narrows the session's server-built TargetScope; never an agent scope.
+      targetMappingIds: z.array(z.string().trim().min(1).max(300)).min(1).max(20).optional(),
       taskId: TaskIdSchema.optional(),
       intentKey: z.string().trim().min(3).max(160).regex(/^[a-z0-9][a-z0-9:._/-]+$/),
       title: z.string().trim().min(1).max(160),
@@ -169,9 +175,24 @@ function registerGovernedTaskMutationToolsWithDependencies(
     },
     annotations: mutationAnnotations
   }, async (input, extra) => handled(() => active.lifecycle.run(async () => {
-      await assertBootstrap(input, extra, active);
-      const { governedSessionId, expectedSessionRevision: _revision, expectedBootstrapReceiptId: _receipt, expectedStateVersion: _state, ...intent } = input;
-      return active.queue.reconcileIntent(intent, governedSessionId);
+      const session = await assertBootstrap(input, extra, active);
+      const {
+        governedSessionId,
+        expectedSessionRevision: _revision,
+        expectedBootstrapReceiptId: _receipt,
+        expectedStateVersion: _state,
+        targetMappingIds,
+        ...intent
+      } = input;
+      let targetScope = session.targetScope;
+      if (targetMappingIds !== undefined) {
+        if (!targetScope) throw new Error('TARGET_SCOPE_REQUIRES_SCOPED_SESSION');
+        targetScope = narrowTargetScope(targetScope, targetMappingIds);
+      }
+      return active.queue.reconcileIntent(
+        { ...intent, ...(targetScope ? { targetScope } : {}) },
+        governedSessionId
+      );
     })));
 
   server.registerTool('mcp_claim_next_governed_task', {

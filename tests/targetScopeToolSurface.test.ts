@@ -201,7 +201,8 @@ test('resumeSession rebuilds the scope from the same mapping ids and refuses a d
     taskScope: 'b32-scope',
     expectedSessionRevision: opened.session.sessionRevision
   } as any, { transportSessionId: 'b32-resume-b', identity: IDENTITY });
-  assert.equal(resumed.session.governedSessionId, opened.session.governedSessionId);
+  assert.equal(resumed.governedSessionId, opened.session.governedSessionId);
+  assert.deepEqual(resumed.targetScope, FULL_SCOPE);
 });
 
 test('client tool attestations may name the MCP repository or a repository inside the session TargetScope only', async () => {
@@ -415,4 +416,24 @@ test('governed context never presents MCP GitHub state as the state of another s
   assert.equal(context.github.status, 'UNAVAILABLE');
   assert.equal(context.github.error, 'github_target_repository_not_observed');
   assert.deepEqual(context.targetScope, FULL_SCOPE);
+});
+
+test('the B3.2 classification records a server-built TargetScope surface and resolved consumers', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const classification = JSON.parse(
+    await readFile('docs/governance/multi-repository-target-scope-20261004.json', 'utf8')
+  );
+  assert.equal(classification.blueprintId, 'TB-W3-B3-02');
+  assert.equal(classification.decisionSource, 'issue:220');
+  assert.equal(classification.historicalInventoryKeptImmutable, true);
+  assert.equal(classification.toolSurface.targetScopeExposedByAnyTool, true);
+  assert.equal(classification.toolSurface.agentSuppliedTargetScopeAccepted, false);
+  assert.equal(classification.targetSelection.extensionPath, 'MULTI_PROJECT_LIVE_STATE');
+  for (const resolved of classification.resolvedConsumers) {
+    assert.equal((await readFile(resolved.path, 'utf8')).includes('Patricked-code/MCP'), false, resolved.path);
+  }
+  const historical = JSON.parse(
+    await readFile('docs/governance/multi-repository-inventory-20261001.json', 'utf8')
+  );
+  assert.equal(historical.toolSurface.targetScopeExposedByAnyTool, false, 'B3.1 evidence stays immutable');
 });

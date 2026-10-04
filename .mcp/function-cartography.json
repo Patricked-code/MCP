@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "e5bb71f47a15c5cd6ed7616b67886d0a6e300c54602d0a6fc1cffbc4b6490264",
+  "catalogueDigest": "1f4c039cc3fae0468cad063cd7b732dcc29abdf08390a359e55c325f8eb6220e",
   "registeredToolCount": 136,
   "readOnlyToolCount": 85,
   "writeToolCount": 51,
@@ -2609,7 +2609,7 @@
     {
       "name": "mcp_acquire_governed_lock",
       "title": null,
-      "description": "Acquiert un lock temporaire borné appartenant à la governed session.",
+      "description": "Acquiert un lock temporaire borné appartenant à la governed session. Les scopes component et les dépôts hors Patricked-code/MCP dérivent du TargetScope construit par le serveur pour la session.",
       "surface": "read",
       "annotations": {
         "readOnlyHint": null,
@@ -2640,12 +2640,33 @@
                   },
                   "key": {
                     "type": "string",
-                    "const": "Patricked-code/MCP"
+                    "minLength": 3,
+                    "maxLength": 300,
+                    "pattern": "^[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+$"
                   }
                 },
                 "required": [
                   "type",
                   "key"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "component"
+                  },
+                  "mappingId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 300
+                  }
+                },
+                "required": [
+                  "type",
+                  "mappingId"
                 ],
                 "additionalProperties": false
               },
@@ -2708,7 +2729,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "18f922dd066050a145cef5bc8920f82717270e4d9a0a42fe8efca7b6642317c9"
+      "contractDigest": "4e930712edcdb441f75d5bd6e9cece9131adc8463590ef80e7ce5a2681ee5eab"
     },
     {
       "name": "mcp_attest_client_tool_surface",
@@ -2768,7 +2789,9 @@
                 },
                 "repositoryScope": {
                   "type": "string",
-                  "const": "Patricked-code/MCP"
+                  "minLength": 3,
+                  "maxLength": 300,
+                  "pattern": "^[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+$"
                 }
               },
               "required": [
@@ -2808,7 +2831,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "232350d256d5b19f7bee36ed34ba2f88e8951848d52ab9acedeb8448ca64ad46"
+      "contractDigest": "54ff12b324b109689cdb026e92c1255cea7d99623b017606252b0733a58aa5c3"
     },
     {
       "name": "mcp_bridge",
@@ -3269,7 +3292,7 @@
     {
       "name": "mcp_open_governed_session",
       "title": null,
-      "description": "Ouvre une governed session durable, distincte de la session de transport MCP.",
+      "description": "Ouvre une governed session durable, distincte de la session de transport MCP. targetMappingIds (optionnel) cible des composants du projet configuré ; sans eux, seul Patricked-code/MCP est accepté.",
       "surface": "read",
       "annotations": {
         "readOnlyHint": null,
@@ -3281,7 +3304,19 @@
         "properties": {
           "repository": {
             "type": "string",
-            "const": "Patricked-code/MCP"
+            "minLength": 3,
+            "maxLength": 300,
+            "pattern": "^[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+$"
+          },
+          "targetMappingIds": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            }
           },
           "taskScope": {
             "type": "string",
@@ -3340,7 +3375,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "7162ef851eb6e82d962f06a654c16b0f1257fe522b18ac0ef34366fda224d1f9"
+      "contractDigest": "db141f024faf2267a79eb8205e511b5b1c15aa59ce90941001f933f78fc100ba"
     },
     {
       "name": "mcp_pause_governed_session",
@@ -3377,7 +3412,7 @@
     {
       "name": "mcp_reconcile_agent_intent",
       "title": null,
-      "description": "Classe une projection bornée de la nouvelle instruction et ajoute uniquement une nouvelle tâche sûre.",
+      "description": "Classe une projection bornée de la nouvelle instruction et ajoute uniquement une nouvelle tâche sûre. Une session ciblée transmet son TargetScope, restreint au besoin par targetMappingIds.",
       "surface": "operational-write",
       "annotations": {
         "readOnlyHint": false,
@@ -3409,7 +3444,19 @@
           },
           "repository": {
             "type": "string",
-            "const": "Patricked-code/MCP"
+            "minLength": 3,
+            "maxLength": 300,
+            "pattern": "^[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+$"
+          },
+          "targetMappingIds": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            }
           },
           "taskId": {
             "type": "string",
@@ -3472,7 +3519,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "c03766ec1cfb8bc9a2a983a616b5528edb60146dbebac044cdb6335f152caed9"
+      "contractDigest": "4e57c2c4ed61b9f31c4ab473971b9349957e8f6627fc4e85ca06471aea4ca2f3"
     },
     {
       "name": "mcp_reconcile_governed_context",
@@ -3549,7 +3596,7 @@
     {
       "name": "mcp_resume_governed_session",
       "title": null,
-      "description": "Reprend une governed session légitime sur le transport MCP courant.",
+      "description": "Reprend une governed session légitime sur le transport MCP courant. Une session ciblée se reprend avec les mêmes targetMappingIds.",
       "surface": "read",
       "annotations": {
         "readOnlyHint": null,
@@ -3571,7 +3618,19 @@
           },
           "repository": {
             "type": "string",
-            "const": "Patricked-code/MCP"
+            "minLength": 3,
+            "maxLength": 300,
+            "pattern": "^[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+$"
+          },
+          "targetMappingIds": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            }
           },
           "taskScope": {
             "type": "string",
@@ -3592,7 +3651,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "6f2f10186e7887272232f88e2d110d3a10ecfc44ca7eb50b21e45bb78d41193b"
+      "contractDigest": "fc027da949a023b992a0992689ee6eff34d4e9027e332ded82ad89033da980d0"
     },
     {
       "name": "mcp_runtime_image_attestation_s1",

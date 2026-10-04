@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "inventoryId": "w3-b32-target-scope-classification-20261004",
+  "repository": "Patricked-code/MCP",
+  "observedMainSha": "5bf4b799e2feefd4ddff82d525177d04b9e3fe8c",
+  "observedAt": "2026-10-04T17:00:00Z",
+  "blueprintId": "TB-W3-B3-02",
+  "workItemId": "PB-B3",
+  "lotId": "B3.2",
+  "integrationSlot": "context.multi-repository",
+  "decisionSource": "issue:220",
+  "status": "CURRENT_CLASSIFICATION",
+  "supersedesClassificationOf": "docs/governance/multi-repository-inventory-20261001.json",
+  "historicalInventoryKeptImmutable": true,
+  "targetSelection": {
+    "operatorConfiguration": ".mcp/server-map.json servers.S1.targetProjectIds",
+    "configuredOnObservedMain": [],
+    "producer": "src/liveState/targetProject.ts",
+    "observationAuthority": "Live State",
+    "projectComponentAuthority": "GitRegistry V2",
+    "absentConfiguration": "HISTORICAL_SINGLE_REPOSITORY_UNCHANGED",
+    "v1Cardinality": "AT_MOST_ONE_PROJECT",
+    "extensionPath": "MULTI_PROJECT_LIVE_STATE"
+  },
+  "toolSurface": {
+    "targetScopeExposedByAnyTool": true,
+    "scopeSource": "SERVER_BUILT_FROM_REGISTERED_MAPPING_IDS",
+    "agentSuppliedTargetScopeAccepted": false,
+    "mappingIdInputs": [
+      "mcp_open_governed_session.targetMappingIds",
+      "mcp_resume_governed_session.targetMappingIds",
+      "mcp_reconcile_agent_intent.targetMappingIds",
+      "mcp_acquire_governed_lock.scope{type=component}.mappingId"
+    ],
+    "historicalDefault": "Without targetMappingIds only Patricked-code/MCP is accepted (REPOSITORY_OUT_OF_SCOPE otherwise)."
+  },
+  "residualSingleRepositoryConsumers": [
+    {
+      "path": "src/tools/governedSessions.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Open/resume/lock keep Patricked-code/MCP as the only repository without a TargetScope; other repositories require server-built mapping-id scopes."
+    },
+    {
+      "path": "src/operationalMemory/sessionService.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Client tool attestations may name the MCP governance repository or a repository inside the session TargetScope only."
+    },
+    {
+      "path": "src/operationalMemory/taskQueue.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Without TargetScope the historical MCP repository is the only in-scope target; with TargetScope membership is checked."
+    },
+    {
+      "path": "src/server.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Transport auto-resume asks for MCP-repository sessions only; scoped sessions resume explicitly with their mapping ids."
+    },
+    {
+      "path": "src/governedContext/service.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Falls back to the MCP repository only without a bound session; a session bound to another repository gets an explicit UNAVAILABLE GitHub work state."
+    },
+    {
+      "path": "src/governedContext/github.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "The GitHub work-state observer covers the MCP governance repository; multi-repository GitHub observation is routed to the GGCC GitHub capability lots and C3/C4 component evidence."
+    }
+  ],
+  "legitimateSelfManagementBoundaries": [
+    {
+      "path": "src/currentState/service.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Reclassified by B3.2: the Current-State Inventory describes the MCP server itself; target identity is exposed by Live State TargetContext through the governed context."
+    },
+    {
+      "path": "src/deploy/githubOidc.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "OIDC policies bind MCP own workflows (deploy, evidence, CA bootstrap, stablecoin dispatcher) to this exact repository by design."
+    },
+    {
+      "path": "src/deploy/s1Deploy.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Governed deploy of the MCP runtime itself on S1."
+    },
+    {
+      "path": "src/liveState/engine.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Live State observes the MCP runtime/repository alignment; the target project is an additive TargetContext."
+    },
+    {
+      "path": "src/liveState/collect.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Live State collectors for the MCP runtime."
+    },
+    {
+      "path": "src/tools/selfManagement.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Self-management project card of the MCP bridge."
+    },
+    {
+      "path": "src/tools/mcpGitSync.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Read-only/guarded git sync of the MCP checkout on S1."
+    },
+    {
+      "path": "src/governedContext/candidateContinuity.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Historical PRECODE candidate continuity bound to the PR #95 branch; not a runtime multi-repository consumer."
+    }
+  ],
+  "resolvedConsumers": [
+    {
+      "path": "src/tools/governedTasks.ts",
+      "resolution": "mcp_reconcile_agent_intent accepts any repository; the TargetScope is inherited from, or narrowed within, the session's server-built scope."
+    },
+    {
+      "path": "src/operationalMemory/types.ts",
+      "resolution": "ClientToolSurfaceCapability.repositoryScope accepts any owner/repo; the session service restricts it to MCP or the session TargetScope."
+    }
+  ],
+  "forbiddenSimplifications": [
+    "PROJECT_SHA_SIMPLIFICATION",
+    "PARALLEL_REGISTRY",
+    "REINTERPRETING_RECORDS_WITHOUT_TARGET_SCOPE",
+    "AGENT_SUPPLIED_TARGET_SCOPE"
+  ],
+  "runtimeSideEffects": {
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  }
+}

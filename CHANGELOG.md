@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 B3.2 Operator-configured server target (candidate)
+
+- `.mcp/server-map.json` accepte `servers.S1.targetProjectIds` ; Live State en dérive un `TargetContext` identité seule depuis GitRegistry V2 ; sans configuration, rien ne change.
+- Sessions, reprises, intentions et locks acceptent des `targetMappingIds` : le `TargetScope` est construit par le serveur, jamais par l'agent.
+
 ## 2026-10-04 — Convergence des intakes #220/#221/#222
 
 - B3.2 : décision propriétaire #220 enregistrée ; `TB-W3-B3-02` READY (V1 `OPERATOR_CONFIGURED_SERVER_TARGET`, extensible multi-projet).

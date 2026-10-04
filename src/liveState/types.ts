@@ -117,8 +117,22 @@ export type CurrentStateAuditBaselineObservation = {
   error?: string | null;
 };
 
+/**
+ * B3.2: how this server's operator-configured target project was resolved.
+ * Present only when a target is configured; absent means the historical
+ * single-repository meaning and leaves the snapshot unchanged.
+ */
+export type LiveStateTargetSelection = {
+  source: 'server_map';
+  serverId: string;
+  status: 'RESOLVED' | 'UNRESOLVED';
+  projectIds: string[];
+  reasonCodes: string[];
+};
+
 export type LiveStateObservations = {
   repository: string;
+  targetSelection?: LiveStateTargetSelection;
   targetContext?: TargetContext;
   github: GithubLiveObservation;
   s1: S1LiveObservation;

@@ -44,6 +44,8 @@ export type GitRegistryProjectEvidence = {
     projectUid: string;
     name: string;
     kind: string;
+    globalCheckpointRepositoryId: string;
+    centralGovernanceRepositoryId: string;
     repositoryComponents: Array<{
       repositoryId: string;
       mappingId: string;
@@ -184,6 +186,8 @@ export async function readGitRegistryProjectEvidence(): Promise<GitRegistryProje
         projectUid: project.projectUid,
         name: project.name,
         kind: project.kind,
+        globalCheckpointRepositoryId: project.globalCheckpointRepositoryId,
+        centralGovernanceRepositoryId: project.centralGovernanceRepositoryId,
         repositoryComponents: project.repositoryComponents.slice(0, 20).map((component) => ({
           repositoryId: component.repositoryId,
           mappingId: component.mappingId,
