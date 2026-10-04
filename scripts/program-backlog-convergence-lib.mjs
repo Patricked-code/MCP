@@ -70,6 +70,106 @@ const ALLOWED_BLUEPRINT_READINESS = new Set(['DONE', 'READY', 'BLOCKED', 'DEFERR
 
 const GUARDED_BLUEPRINT_READINESS = new Set(['DEFERRED', 'CONDITIONAL']);
 
+const NON_HUMAN_GATE_KINDS = new Set(['EVIDENCE', 'CONCRETE_NEED', 'POLICY_CONDITION']);
+
+// Human gate conditions that stay human even when a technically compliant solution is deducible.
+const HUMAN_RESERVED_GATE_CONDITIONS = new Set([
+  'PREEXISTING_AUTHORITY_RESERVES_DECISION',
+  'DESTRUCTIVE_OR_IRREVERSIBLE_NOT_AUTHORIZED',
+  'EXTERNAL_HUMAN_PERMISSION_OR_CONSENT_REQUIRED',
+  'REQUIRED_SECRET_UNOBTAINABLE',
+  'SECURITY_OR_COMPLIANCE_GATE_REQUIRES_HUMAN'
+]);
+
+function isSelfReference(source, selfReferences) {
+  return selfReferences.some((reference) => (
+    source === reference
+    || source.startsWith(`${reference}#`)
+    || source.startsWith(`${reference}:`)
+  ));
+}
+
+/**
+ * Intake #221: a gate may stop autonomy as a human gate only when it cites an
+ * admissible condition and a pre-existing authority outside the program
+ * projection itself. A deducible technical choice is decided, not escalated.
+ * Pure evaluation: no task, claim, lock or permission is ever produced.
+ */
+export function evaluateHumanGateAdmissibility(gate, policy) {
+  const base = {
+    gateId: gate?.id ?? null,
+    createsRuntimeTask: false,
+    grantsPermission: false
+  };
+  const kind = gate?.kind;
+  if (NON_HUMAN_GATE_KINDS.has(kind)) {
+    return { ...base, verdict: 'EVIDENCE_GATE', reasonCode: `${kind}_GATE` };
+  }
+  if (kind !== 'HUMAN_DECISION') {
+    return { ...base, verdict: 'INADMISSIBLE', reasonCode: 'UNKNOWN_GATE_KIND' };
+  }
+
+  const admissibleConditions = new Set(policy?.admissibleHumanGateConditions ?? []);
+  const condition = gate.admissibleCondition;
+  if (typeof condition !== 'string' || !admissibleConditions.has(condition)) {
+    return { ...base, verdict: 'INADMISSIBLE', reasonCode: 'NO_ADMISSIBLE_HUMAN_GATE_CONDITION' };
+  }
+
+  const selfReferences = (policy?.selfReferencesAreNotAuthority ?? [])
+    .filter((value) => typeof value === 'string' && value.length > 0);
+  const sources = (Array.isArray(gate.authoritySources) ? gate.authoritySources : [])
+    .filter((value) => typeof value === 'string' && value.trim().length > 0);
+  const preexisting = sources.filter((source) => !isSelfReference(source, selfReferences));
+  if (preexisting.length === 0) {
+    return {
+      ...base,
+      verdict: 'INADMISSIBLE',
+      reasonCode: sources.length === 0 ? 'NO_PREEXISTING_AUTHORITY_SOURCE' : 'SELF_CREATED_HUMAN_GATE'
+    };
+  }
+
+  if (gate.deducibleCompliantSolution === true && !HUMAN_RESERVED_GATE_CONDITIONS.has(condition)) {
+    return { ...base, verdict: 'AUTO_DECIDE', reasonCode: 'DEDUCIBLE_TECHNICAL_DECISION' };
+  }
+  if (condition === 'UNRESOLVABLE_SAME_RANK_AUTHORITY_CONTRADICTION') {
+    return { ...base, verdict: 'FAIL_CLOSED_HUMAN_GATE', reasonCode: condition };
+  }
+  return { ...base, verdict: 'HUMAN_GATE', reasonCode: condition };
+}
+
+const ADMISSIBLE_GATE_VERDICTS = new Set(['HUMAN_GATE', 'FAIL_CLOSED_HUMAN_GATE', 'EVIDENCE_GATE']);
+
+function validateExplicitGates(projection, blueprints) {
+  const policy = projection?.executionModel?.humanGatePolicy;
+  const catalog = policy?.gateCatalog && typeof policy.gateCatalog === 'object' ? policy.gateCatalog : {};
+  const uncataloguedGates = [];
+  const inadmissibleHumanGates = [];
+
+  for (const entry of blueprints) {
+    const gates = Array.isArray(entry?.readiness?.requiredExplicitGates)
+      ? entry.readiness.requiredExplicitGates
+      : [];
+    for (const gateId of gates) {
+      const gate = Object.prototype.hasOwnProperty.call(catalog, gateId) ? catalog[gateId] : null;
+      if (!gate) {
+        uncataloguedGates.push({ id: entry.id ?? null, gateId });
+        continue;
+      }
+      const evaluation = evaluateHumanGateAdmissibility({ id: gateId, ...gate }, policy);
+      if (!ADMISSIBLE_GATE_VERDICTS.has(evaluation.verdict)) {
+        inadmissibleHumanGates.push({
+          id: entry.id ?? null,
+          gateId,
+          verdict: evaluation.verdict,
+          reasonCode: evaluation.reasonCode
+        });
+      }
+    }
+  }
+
+  return { uncataloguedGates, inadmissibleHumanGates };
+}
+
 function programWaveOrder(projection) {
   return new Map(
     (projection?.executionModel?.waves ?? []).map((wave, index) => [wave.id, index])
@@ -315,6 +415,7 @@ function validateTaskBlueprints(projection, workItems) {
     ))
     .map((entry) => entry.id ?? null);
   const blueprintCycles = detectBlueprintCycles(blueprints);
+  const { uncataloguedGates, inadmissibleHumanGates } = validateExplicitGates(projection, blueprints);
 
   const covered = new Set(blueprints.map((entry) => entry.workItemId));
   const missingFutureBlueprintCoverage = workItems
@@ -331,6 +432,8 @@ function validateTaskBlueprints(projection, workItems) {
     invalidBlueprintReadiness,
     invalidBlueprintMaterialization,
     invalidGuardedBlueprints,
+    uncataloguedGates,
+    inadmissibleHumanGates,
     blueprintCycles,
     missingFutureBlueprintCoverage
   };

@@ -57,7 +57,7 @@ Pour toute nouvelle connexion/reprise sur `main` après UAC, l'agent doit charge
 
 1. lire `CLAUDE.md` puis le début courant de `SUIVI.md` ;
 2. lire `docs/governance/program-backlog-convergence.json` (**Program Backlog V2**) ;
-3. réobserver GitHub `main`, PR/branches actives et les autorités runtime réellement nécessaires ;
+3. réobserver GitHub `main`, PR/branches actives, les issues ouvertes `[PROGRAM INTAKE]` et les commentaires de supervision du propriétaire, puis les autorités runtime réellement nécessaires ; tout intake non consommé est réconcilié via `programIntakes` avant de sélectionner un autre lot ;
 4. appliquer `SELECT_READY_BLUEPRINT` uniquement sur un blueprint dont `readiness.state = READY` ;
 5. recontrôler dépendances, collision domains, Governed Task Queue, Governed Session et Governed Lock Service avant toute matérialisation/claim runtime ;
 6. ne jamais transformer un Task Blueprint en permission : `createsRuntimeTask=false` reste invariant ;
@@ -75,6 +75,16 @@ La sélection canonique est `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : prendre le
 Tant qu'un candidat compatible existe et qu'aucun blocker gouverné réel n'est rencontré, l'agent **ne demande pas « continuer ? »** : il exécute `OBSERVE → RECOMPUTE → SELECT → COLLISION CHECK → EXECUTE → VERIFY → CHECKPOINT → RECOMPUTE` et poursuit. Il s'arrête uniquement devant une gate humaine explicite, une ambiguïté non déductible, une autorité requise indisponible, un conflit de Task/claim/lock, un échec sécurité/non-régression ou une condition `DEFERRED/CONDITIONAL` non satisfaite.
 
 Un agent ne marque jamais automatiquement un blueprint `DONE`. Le passage à `DONE` exige les preuves définies par le blueprint, le head exact/revue/CI/déploiement/attestation applicables et le checkpoint durable. Après ce `DONE` prouvé, le recalcul des dépendants est automatique et déterministe.
+
+### 7.3 Gates humaines — `NO_SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISIONS` (intake #221)
+
+`HUMAN_GATE_EXISTING != AGENT_MAY_CREATE_HUMAN_GATE`. Un agent ne transforme jamais de sa propre initiative un choix technique déductible en gate humaine/propriétaire pour interrompre `PROGRAM_AUTO_CONTINUE`. Plusieurs implémentations possibles ne constituent pas, à elles seules, une ambiguïté humaine.
+
+Avant toute escalade, résoudre dans l'ordre : décision/autorité canonique → architecture cible → invariants → dépendances et Program Backlog → `REUSE → COMPOSE → WRAP → EXPOSE → GENERALIZE → EXTEND → NEW` → solution minimale additive → non-régression → réversibilité → tests → gouvernance/sécurité → preuves exact-head/CI → collisions Task/Session/Claim/Lock → `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`. Si une solution conforme, sûre, réversible et testable en sort : `AUTO_DECIDE → EXECUTE → VERIFY → CHECKPOINT → RECOMPUTE → CONTINUE`.
+
+Une gate humaine n'est admissible que si elle cite une condition admissible (autorité préexistante qui réserve la décision, contradiction d'autorités de même rang non départageable, absence de solution conforme déductible, choix destructif/irréversible non autorisé, consentement humain externe, secret inobtenable par les voies gouvernées, gate sécurité/compliance exigeant un humain, solutions équivalentes modifiant une politique propriétaire non définie) **et** une source d'autorité préexistante extérieure à la projection du programme. Écrire `OWNER_DECISION_REQUIRED` ne rend jamais une décision humaine.
+
+Contrôle machine : chaque gate de `requiredExplicitGates` est cataloguée dans `executionModel.humanGatePolicy.gateCatalog` ; `validateProgramBacklogConvergence` échoue (`uncataloguedGates` / `inadmissibleHumanGates`) sur une gate non cataloguée ou une gate humaine auto-créée. Un blocker local reste local : l'agent passe au candidat compatible suivant ; l'arrêt global n'a lieu qu'en l'absence de tout travail compatible ou sur ordre d'une autorité globale.
 
 
 ## 8. GWC — architecture et mémoire canonique de continuité

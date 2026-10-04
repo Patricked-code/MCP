@@ -38,10 +38,11 @@ test('completing a blueprint promotes only dependents whose full dependency set 
   const derived = deriveProgramReadiness(copy);
   const stateById = new Map(derived.blueprints.map((entry: any) => [entry.id, entry.derivedState]));
 
-  // B3.2 is guarded behind OWNER_DECISION_B3_TARGET_PROJECT_SELECTION: never auto-promoted.
-  assert.equal(stateById.get('TB-W3-B3-02'), 'CONDITIONAL');
+  // The owner decision (#220) released B3.2: it follows its dependencies again.
+  assert.equal(stateById.get('TB-W3-B3-02'), 'READY');
   assert.equal(stateById.get('TB-W3-GGCC-GIT-READ'), 'BLOCKED');
   assert.equal(stateById.get('TB-W3-C3-01'), 'BLOCKED');
+  assert.equal(stateById.get('TB-W3-DISPATCH-01'), 'BLOCKED');
 
   // Once B3.2 is DONE, only dependents whose whole dependency set is DONE are promoted.
   byId.get('TB-W3-B3-02').readiness.state = 'DONE';
@@ -50,6 +51,8 @@ test('completing a blueprint promotes only dependents whose full dependency set 
   );
   assert.equal(afterB32.get('TB-W3-C3-01'), 'READY');
   assert.equal(afterB32.get('TB-W3-GGCC-GIT-READ'), 'READY');
+  assert.equal(afterB32.get('TB-W3-DISPATCH-01'), 'READY');
+  assert.equal(afterB32.get('TB-W3-DISPATCH-02'), 'BLOCKED');
   assert.equal(afterB32.get('TB-W3-C4-01'), 'BLOCKED');
 });
 

@@ -5,23 +5,23 @@ import test from 'node:test';
 const PROGRAM_PATH = 'docs/governance/program-backlog-convergence.json';
 const GATE = 'OWNER_DECISION_B3_TARGET_PROJECT_SELECTION';
 
-test('B3.2 waits on an explicit owner decision for target project selection', async () => {
+test('the recorded owner decision (#220) releases B3.2 to derived readiness', async () => {
   const program = JSON.parse(await readFile(PROGRAM_PATH, 'utf8'));
   const byId = new Map((program.taskBlueprints ?? []).map((entry: any) => [entry.id, entry]));
   const blueprint: any = byId.get('TB-W3-B3-02');
 
-  assert.equal(blueprint?.readiness?.state, 'CONDITIONAL');
-  assert.equal(blueprint?.readiness?.autoPromotable, false);
-  assert.deepEqual(blueprint?.readiness?.requiredExplicitGates, [GATE]);
+  assert.ok(['READY', 'DONE'].includes(blueprint?.readiness?.state));
+  assert.ok((blueprint?.readiness?.requiredExplicitGates ?? []).length === 0);
+  assert.equal(blueprint?.decisionSource, 'issue:220');
   assert.equal(blueprint?.materialization?.createsRuntimeTask, false);
-  assert.equal(program.executionModel?.currentReadyBlueprintIds?.includes('TB-W3-B3-02'), false);
 });
 
 test('the gate record cites the canonical open question, the options and the blocked dependents', async () => {
   const program = JSON.parse(await readFile(PROGRAM_PATH, 'utf8'));
   const gate = program.w3B3TargetSelectionGate;
 
-  assert.equal(gate?.status, 'OWNER_DECISION_REQUIRED');
+  assert.equal(gate?.status, 'OWNER_DECISION_RECORDED');
+  assert.equal(gate?.decision?.option, gate?.recommendedOption);
   assert.equal(gate?.gateId, GATE);
   assert.equal(gate?.blueprintId, 'TB-W3-B3-02');
   assert.equal(gate?.canonicalOpenQuestion?.path, 'docs/gwc/ARCHITECTURE_73_CONTRACTS.md');
