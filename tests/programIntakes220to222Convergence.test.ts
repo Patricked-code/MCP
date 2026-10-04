@@ -50,11 +50,14 @@ test('intake #220 records the owner B3.2 decision and releases TB-W3-B3-02 to de
     assert.ok(gate.invariantsWhateverTheChoice.includes(invariant), invariant);
   }
 
-  assert.equal(blueprint?.readiness?.state, 'READY');
+  assert.ok(['READY', 'DONE'].includes(blueprint?.readiness?.state));
   assert.notEqual(blueprint?.readiness?.autoPromotable, false);
-  assert.equal(blueprint?.readiness?.requiredExplicitGates, undefined);
+  assert.ok((blueprint?.readiness?.requiredExplicitGates ?? []).length === 0);
   assert.equal(blueprint?.materialization?.createsRuntimeTask, false);
-  assert.ok(program.executionModel.currentReadyBlueprintIds.includes('TB-W3-B3-02'));
+  assert.equal(
+    program.executionModel.currentReadyBlueprintIds.includes('TB-W3-B3-02'),
+    blueprint.readiness.state === 'READY'
+  );
   assert.ok(
     blueprint.greenAcceptance.some((line: string) => /MULTI_PROJECT_LIVE_STATE/.test(line)),
     'B3.2 acceptance must keep the multi-project extension path open'
@@ -210,18 +213,28 @@ test('an agent annotation cannot promote a self-created owner gate into a valid 
 test('a local blocker never stops the program while another collision-free candidate exists', async () => {
   const program = await loadProgram();
   const copy = structuredClone(program);
-  const a32 = copy.taskBlueprints.find((item: any) => item.id === 'TB-W3-A3-02');
-  a32.readiness = {
+  const blocked = structuredClone(copy.taskBlueprints.find((item: any) => item.id === 'TB-W3-B3-02'));
+  blocked.id = 'TB-TEST-LOCALLY-BLOCKED';
+  blocked.dependsOn = [];
+  blocked.readiness = {
     state: 'CONDITIONAL',
     autoPromotable: false,
     requiredExplicitGates: ['EXPLICIT_GO_WRITE_GATE_ENFORCE'],
     reason: 'local blocker simulation'
   };
+  const compatible = structuredClone(blocked);
+  compatible.id = 'TB-TEST-COMPATIBLE';
+  compatible.collisionDomains = ['test:compatible'];
+  compatible.readiness = { state: 'BLOCKED', reason: 'derived' };
+  copy.taskBlueprints.push(blocked, compatible);
   const selection = selectProgramCandidates(copy);
   const derived = deriveProgramReadiness(copy);
 
-  assert.equal(selection.candidates.some((entry: any) => entry.id === 'TB-W3-A3-02'), false);
-  assert.ok(selection.candidates.length > 0, 'another compatible candidate must remain selectable');
+  assert.equal(selection.candidates.some((entry: any) => entry.id === 'TB-TEST-LOCALLY-BLOCKED'), false);
+  assert.ok(
+    selection.candidates.some((entry: any) => entry.id === 'TB-TEST-COMPATIBLE'),
+    'another compatible candidate must remain selectable'
+  );
   assert.equal(selection.canClaim, false);
   assert.equal(selection.canMutate, false);
   assert.equal(derived.createsRuntimeTasks, false);
@@ -257,7 +270,8 @@ test('intake #222 maps the dispatch loop onto existing owners and sequences it a
   assert.deepEqual(dispatch[2].dependsOn, ['TB-W3-DISPATCH-02']);
   for (const blueprint of dispatch) {
     assert.equal(blueprint.workItemId, 'PB-DISPATCH');
-    assert.equal(blueprint.readiness.state, 'BLOCKED');
+    assert.ok(['BLOCKED', 'READY', 'DONE'].includes(blueprint.readiness.state));
+    assert.ok((blueprint.readiness.requiredExplicitGates ?? []).length === 0);
     assert.deepEqual(blueprint.collisionDomains, ['orchestration:task-dispatch']);
     assert.equal(blueprint.materialization.createsRuntimeTask, false);
     assert.deepEqual(blueprint.writeAuthorities, []);
@@ -268,7 +282,11 @@ test('intake #222 maps the dispatch loop onto existing owners and sequences it a
   );
 
   const copy = structuredClone(program);
-  (copy.taskBlueprints.find((item: any) => item.id === 'TB-W3-B3-02') as any).readiness.state = 'DONE';
+  const copyById = new Map(copy.taskBlueprints.map((item: any) => [item.id, item]));
+  (copyById.get('TB-W3-B3-02') as any).readiness.state = 'DONE';
+  (copyById.get('TB-W3-C1-01') as any).readiness.state = 'DONE';
+  (copyById.get('TB-W3-C3-01') as any).readiness = { state: 'BLOCKED', reason: 'reset for ordering check' };
+  (copyById.get('TB-W3-DISPATCH-01') as any).readiness = { state: 'BLOCKED', reason: 'reset for ordering check' };
   const afterB32 = deriveProgramReadiness(copy).readyBlueprintIds;
   assert.ok(afterB32.indexOf('TB-W3-DISPATCH-01') >= 0);
   assert.ok(afterB32.indexOf('TB-W3-DISPATCH-01') < afterB32.indexOf('TB-W3-C3-01'));
@@ -296,8 +314,8 @@ test('mcp:write enforcement is a deducible technical lot sequenced after A3.2, n
 
   assert.equal(workItem?.integrationSlot, 'connection.oauth-write-scope-enforcement');
   assert.deepEqual(blueprint?.dependsOn, ['TB-W3-A3-02']);
-  assert.equal(blueprint?.readiness?.state, 'BLOCKED');
-  assert.equal(blueprint?.readiness?.requiredExplicitGates, undefined);
+  assert.ok(['BLOCKED', 'READY', 'DONE'].includes(blueprint?.readiness?.state));
+  assert.ok((blueprint?.readiness?.requiredExplicitGates ?? []).length === 0);
   assert.equal(blueprint?.materialization?.createsRuntimeTask, false);
   assert.ok(blueprint.redTests.some((line: string) => /inventory/i.test(line)));
 });

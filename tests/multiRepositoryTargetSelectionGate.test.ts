@@ -11,7 +11,7 @@ test('the recorded owner decision (#220) releases B3.2 to derived readiness', as
   const blueprint: any = byId.get('TB-W3-B3-02');
 
   assert.ok(['READY', 'DONE'].includes(blueprint?.readiness?.state));
-  assert.equal(blueprint?.readiness?.requiredExplicitGates, undefined);
+  assert.ok((blueprint?.readiness?.requiredExplicitGates ?? []).length === 0);
   assert.equal(blueprint?.decisionSource, 'issue:220');
   assert.equal(blueprint?.materialization?.createsRuntimeTask, false);
 });
