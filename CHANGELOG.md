@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 C4 livré et attesté
+
+- PR #238 fusionnée au SHA `4654c9e` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37242868231` / `37242870056`.
+- `TB-W3-C4-01` clôturé DONE ; le résiduel d'ingress (ports, reverse proxy) est porté par `TB-W3-C345-02` ; `TB-W3-C5-01` reste READY.
+
 ## 2026-10-04 — W3 C4 Runtime Resolution (candidate)
 
 - Le contexte GitHub gouverné projette `runtimeResolution` (GW-08) après `serverResolution` (C3). Il rattache les observations runtime bornées des autorités existantes (Live State pour le runtime MCP) aux composants du projet déclarés par le GitRegistry V2, en lecture seule et fail-closed.

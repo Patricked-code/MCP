@@ -1,5 +1,19 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 C4 Runtime Resolution — DONE et attesté
+
+- **Fusion.** PR #238 fusionnée sous garde exact-head : head `130a839d94eeacd521b9dde41ac75fba19c9215f`, merge `4654c9edb57e37806eb9783f2b5d863301b50d01`.
+- **CI et déploiement.** RED CI #2222 (1 échec attendu) ; CI PR `37242618489` (#2223) ; CI main `37242741995` (#2224) ; Governed Deploy `37242742016` (#113) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only.**
+  - `mcp_git_status` run `37242868231` : S1 `main@4654c9e`, worktree propre, push désactivé.
+  - `docker_status` run `37242870056` : conteneur healthy, publié sur `127.0.0.1:8787` (preuve côté agent uniquement).
+- **Program Backlog.**
+  - `TB-W3-C4-01 = DONE` ; `PB-C345` reste `PARTIALLY_IMPLEMENTED`.
+  - Résiduels explicites portés par `TB-W3-C345-02` : lien d'ingress domaine → proxy → port → runtime, et composants TargetContext non déclarés.
+  - READY : `TB-W3-A3-02` (blocage local), `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, lock ou mutation.
+- **NEXT_ACTION.** `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C5-01` (résolution domaine GW-09, après C2/C3).
+
 ## 2026-10-04 — W3 C4 Runtime Resolution — GREEN candidate
 
 - **Reprise current-first.**
