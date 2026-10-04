@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 C3 livré et attesté
+
+- PR #233 fusionnée au SHA `dbc5a50` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37225118082` / `37225120093`.
+- `TB-W3-C3-01` clôturé DONE ; `TB-W3-C4-01` et `TB-W3-C5-01` deviennent READY.
+
 ## 2026-10-04 — W3 C3 Server Resolution (candidate)
 
 - Le contexte GitHub gouverné projette `serverResolution` (GW-07) après la résolution projet C2 : serveur canonique, liaisons et chemins déclarés/vérifiés issus du GitRegistry V2, en lecture seule et fail-closed.
