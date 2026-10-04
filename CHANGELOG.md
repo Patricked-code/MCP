@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 C4 Runtime Resolution (candidate)
+
+- Le contexte GitHub gouverné projette `runtimeResolution` (GW-08) après `serverResolution` (C3). Il rattache les observations runtime bornées des autorités existantes (Live State pour le runtime MCP) aux composants du projet déclarés par le GitRegistry V2, en lecture seule et fail-closed.
+- Live State conserve le label compose borné de son conteneur observé (`composeProject`), ce qui permet de distinguer `DOCKER_COMPOSE` de `DOCKER`.
+
 ## 2026-10-04 — Convergence des intakes #235 et #236
 
 - **Program Backlog V2 :**

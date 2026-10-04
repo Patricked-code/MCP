@@ -1,5 +1,18 @@
 # DECISIONS_LOG.md
 
+## 2026-10-04 — C4 : GW-08 chaîné après C3, sur les seules observations runtime existantes
+
+Décision technique (déduite, #221 ; OD-04 RESOLVED) : la résolution runtime suit la chaîne de connexion du collecteur GitHub gouverné (C2 projet → C3 serveur → C4 runtime) et réutilise le résolveur GW-08, sans nouvel observateur.
+
+- **Composants.** Ce sont ceux que le GitRegistry V2 déclare : composants du projet enregistré, ou le seul mapping sélectionné s'il déclare son rôle. Une relation non prouvable reste `RUNTIME_COMPONENT_UNVERIFIED`, sans rôle ni composant deviné.
+- **Observations.** Elles viennent des autorités d'observation existantes. Aujourd'hui, seule Live State observe un runtime : celui du MCP, sur le serveur qu'elle lit.
+  - Live State est lue sans nouvelle collecte, et sa fraîcheur s'applique telle quelle.
+  - Le type de runtime vient du label compose observé sur le conteneur : le label `com.docker.compose.project`, déjà collecté par la commande allowlistée, est désormais conservé borné.
+- **Rattachement.** Une observation n'est rattachée qu'au composant de son dépôt. Une observation d'un autre dépôt n'est pas celle du projet ; un dépôt partagé par deux composants reste non prouvable.
+- **Déclarations.** Le GitRegistry V2 ne déclare aucun runtime : aucune déclaration n'est recoupée et aucune n'est inventée. Une déclaration ne remplace jamais une observation.
+- **Ports et reverse proxy.** Ils n'ont aucune autorité d'observation runtime, puisque l'attestation runtime exclut volontairement le réseau. Ils ne sont pas inventés. Le lien domaine → proxy → port → runtime reste un résiduel explicite de C5/C345, qui exigera une observation bornée dédiée.
+- **Conséquence courante.** Le mapping `Patricked-code/MCP` du registre versionné est V1, sans rôle de composant : sa résolution runtime reste `UNVERIFIED` tant que le registre ne déclare pas ce composant.
+
 ## 2026-10-04 — Le Super Admin Cockpit (#236) étend le dashboard Express existant, en vague W4
 
 Décision propriétaire (intake #236) : la cible finale complète du MCP inclut un Super Admin Cockpit. Il est convergé en `PB-K` (slot `cockpit.super-admin`) avec douze blueprints `TB-W4-K-01..12`, et `COCKPIT_ACCEPTANCE` devient une dimension de la condition terminale. Inventaire §44 : `docs/governance/super-admin-cockpit-convergence-20261004.json`.

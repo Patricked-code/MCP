@@ -173,6 +173,21 @@ registre lue en direct. Elle reste en lecture seule : aucun appel SSH, aucune
 projetée ; une preuve absente, invalide ou expirée reste `UNVERIFIED` avec une
 raison bornée. Le cache GitHub existant reste l'unique cache.
 
+La résolution C4 prolonge la chaîne au contrat GW-08 : après `serverResolution`,
+`runtimeResolution` appelle le résolveur GWC existant avec les composants du
+projet déclarés par le GitRegistry V2 (composants du projet enregistré, ou le
+seul mapping sélectionné s'il déclare son rôle) et les observations runtime des
+autorités d'observation existantes. Aujourd'hui, seule Live State observe un
+runtime : celui du MCP sur le serveur qu'elle lit. Le type
+(`DOCKER_COMPOSE`/`DOCKER`) vient du label compose observé sur le conteneur.
+Une observation n'est rattachée qu'au composant de son dépôt (OD-04 :
+l'observation fait foi, une déclaration ne la remplace jamais ; le GitRegistry
+V2 ne déclare aucun runtime). Ports et reverse proxy n'ont pas d'autorité
+d'observation runtime, car l'attestation exclut volontairement le réseau : ils
+ne sont pas inventés. Une observation absente, périmée, indisponible, ambiguë
+ou contradictoire reste `UNVERIFIED`, jamais `NO_RUNTIME`. Lecture seule : aucun
+SSH, redémarrage, rebuild ni store ; Live State est lue sans nouvelle collecte.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.
