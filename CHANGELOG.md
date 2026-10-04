@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 DISPATCH-02 livré et attesté
+
+- PR #229 fusionnée au SHA `870305f` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37221611227` / `37221613056`.
+- `TB-W3-DISPATCH-02` clôturé DONE ; `TB-W3-DISPATCH-03` devient READY.
+
 ## 2026-10-04 — W3 DISPATCH-02 Resume-owned-first governed claim (candidate)
 
 - `mcp_claim_next_governed_task` rend d'abord la tâche active déjà possédée par la session, puis ne réclame que des tâches éligibles pour son TargetScope ; jamais de vol de tâche.
