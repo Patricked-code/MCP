@@ -1,5 +1,12 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 DISPATCH-02 Resume-owned-first governed claim — DONE et attesté
+
+- PR #229 fusionnée sous garde exact-head depuis `95783727c9c18ee48846a02d4a4d1a1b1aad8af3` au merge `870305fc814773d8fb10f0a4fc2480a74885e46f` ; RED CI #2201 (4 échecs attendus), CI PR `37221364113`, CI main `37221468356` (#2203), Governed Deploy `37221468346` (#106) SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `37221611227` → S1 `main@870305f`, worktree propre, push désactivé ; `docker_status` run `37221613056` → conteneur healthy.
+- Program Backlog : `TB-W3-DISPATCH-02 = DONE` ; `PB-DISPATCH` reste `PARTIALLY_IMPLEMENTED` ; `TB-W3-DISPATCH-03` devient READY. Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-DISPATCH-03` (projection next-work), A3.2 restant réservé à une session runtime.
+
 ## 2026-10-04 — W3 DISPATCH-02 Resume-owned-first governed claim — GREEN candidate
 
 - Reprise current-first : `main=ef22f55ed715c664154f1b9ee550888a82654f00` (DISPATCH-01 clôturé). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-DISPATCH-02` retenu ; aucune nouvelle intake.

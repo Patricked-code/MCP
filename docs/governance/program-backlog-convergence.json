@@ -1452,7 +1452,7 @@
         "PB-B3",
         "PB-UAC"
       ],
-      "nextAction": "DISPATCH-01 DONE (mcp_materialize_program_blueprint). Next: TB-W3-DISPATCH-02 resume-owned-first claim, then TB-W3-DISPATCH-03 connected-agent next-work projection.",
+      "nextAction": "DISPATCH-01 (materialization) and DISPATCH-02 (resume-owned-first claim) DONE. Next: TB-W3-DISPATCH-03 connected-agent next-work projection.",
       "subtasks": [
         "Bind materialization to an exact blueprint identity and its derived READY state, idempotently, through the existing intent reconciliation",
         "Resume the session-owned active task before claiming new work; never steal or transfer on liveness",
@@ -2472,7 +2472,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_DISPATCH01_DONE_A32_READY_RUNTIME_CLAIM_DISPATCH02_C31_GGCC_GIT_READ_READY",
+    "currentWaveStatus": "W3_DISPATCH02_DONE_A32_READY_RUNTIME_CLAIM_DISPATCH03_C31_GGCC_GIT_READ_READY",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2493,7 +2493,7 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-DISPATCH-02",
+      "TB-W3-DISPATCH-03",
       "TB-W3-C3-01",
       "TB-W3-GGCC-GIT-READ"
     ],
@@ -4179,8 +4179,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
-        "reason": "Dependency-gated; recomputed automatically after its dependency is DONE with evidence."
+        "state": "DONE",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "PR #229 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. mcp_claim_next_governed_task resumes the session own active task before any new claim, never moves owned work, and only claims tasks eligible for the session TargetScope."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -4203,6 +4205,52 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 229,
+        "intake": 222,
+        "tool": "mcp_claim_next_governed_task",
+        "redHeadSha": "fd1bfdd507b0a60954f8bfd2063a7d02561f2c9b",
+        "redCiRunNumber": 2201,
+        "redExpectedFailures": 4,
+        "candidateHeadSha": "95783727c9c18ee48846a02d4a4d1a1b1aad8af3",
+        "prCiRunId": 37221364113,
+        "testCount": 825,
+        "mergeSha": "870305fc814773d8fb10f0a4fc2480a74885e46f",
+        "mainCiRunId": 37221468356,
+        "governedDeployRunId": 37221468346,
+        "governedDeployRuntimeRevision": "870305fc814773d8fb10f0a4fc2480a74885e46f",
+        "runtimePreflightRunIds": [
+          37221201045,
+          37221202752,
+          37221204492
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37221611227,
+            "workflowSha": "870305fc814773d8fb10f0a4fc2480a74885e46f",
+            "status": "SUCCESS",
+            "observed": "main@870305fc814773d8fb10f0a4fc2480a74885e46f, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "aebb4870e0945afd6e4afc871e19a6adbfada0b664f41ac70152ec6190d05172",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-04T17:43:55.950Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37221613056,
+            "workflowSha": "870305fc814773d8fb10f0a4fc2480a74885e46f",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #106)",
+            "outputSha256": "f1c96e884006309bea20e60da83b9a8db3a3a66338759996fa2aff66c9c00788",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-04T17:43:59.266Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-04T17:45:00Z"
       }
     },
     {
@@ -4251,7 +4299,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "reason": "Dependency-gated; recomputed automatically after its dependency is DONE with evidence."
       },
       "materialization": {
@@ -9604,6 +9652,12 @@
           "state": "DONE",
           "pullRequest": 227,
           "mergeSha": "c5fc1d78ea4213791fa38ba67f3fcf4b7ed535d0"
+        },
+        {
+          "blueprintId": "TB-W3-DISPATCH-02",
+          "state": "DONE",
+          "pullRequest": 229,
+          "mergeSha": "870305fc814773d8fb10f0a4fc2480a74885e46f"
         }
       ]
     },
@@ -10185,6 +10239,36 @@
       "collisionDomain": "orchestration:task-dispatch",
       "collision": false
     },
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3DispatchResumeClaimHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "870305fc814773d8fb10f0a4fc2480a74885e46f",
+    "blueprintId": "TB-W3-DISPATCH-02",
+    "lotId": "DISPATCH.2",
+    "intake": 222,
+    "delivered": [
+      "queue.claimNextTask returns the session own active task (CLAIMED..VERIFYING) before any new claim, as a read without mutation; owned BLOCKED work never stalls the session",
+      "Owned work is never claimed by another session; heartbeat or liveness never releases or transfers it",
+      "mcp_claim_next_governed_task passes the session TargetScope: unscoped sessions claim historical tasks only, scoped sessions only tasks inside their scope; internal callers without the option keep the historical selection"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37221201045,
+      "sessionsRunId": 37221202752,
+      "locksRunId": 37221204492,
+      "observedAt": "2026-10-04T17:37:26Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "orchestration:task-dispatch",
+      "collision": false
+    },
+    "deferred": [
+      "Capability-aware eligibility (D2 Effective Capabilities)"
+    ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
