@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-10-04 — DISPATCH-03 : projection next-work pure, dérivée des règles existantes
+
+Décision technique (déduite, #221) : le prochain travail d'une session connectée est une projection pure (`deriveNextWork`) recalculée à chaque lecture du Current-State Inventory, et non un dispatcher, une file ou un store. Elle réutilise les règles exportées par `taskQueue.ts` (reprise possédée, candidats exécutables, éligibilité TargetScope, conflits de scope et de lock) et le constructeur d'intention de `mcp_materialize_program_blueprint` : un blueprint n'est projeté que si l'outil le matérialiserait. Elle ne réclame rien et ne crée rien ; l'outil suggéré revérifie tout sous ses propres gardes. Un échec de calcul ne fait jamais échouer l'inventaire (`NEXT_WORK_PROJECTION_UNAVAILABLE`).
+
+Un blocage local n'est pas un arrêt global : la projection et `claimNextTask` sautent un candidat bloqué (scope actif ou lock d'une autre session) au profit du suivant compatible ; sans candidat compatible, le claim conserve le code historique du premier candidat. Dans le contexte gouverné, la projection n'est suivie que si elle a été calculée pour la session du contexte (elle porte son `governedSessionId`) ; une tâche possédée reprenable garde sa propre action, une tâche possédée non reprenable (BLOCKED) cède la place au travail compatible projeté ; sans projection, l'ordre historique est inchangé. La projection est chargée une seule fois par processus : elle est livrée avec la révision déployée.
+
 ## 2026-10-04 — DISPATCH-02 : reprendre d'abord sa propre tâche active, sans jamais en prendre une autre
 
 Décision technique (déduite, #221) : `claimNextTask` rend d'abord la tâche active déjà possédée par la session (CLAIMED, IN_PROGRESS, REVIEW, MERGE_READY, DEPLOYING, VERIFYING) — sans mutation ni nouvel événement de claim — avant toute nouvelle réclamation. Une tâche BLOCKED attend son blocker et n'empêche pas la session de travailler ailleurs. La propriété ne change que par les transitions existantes ou la remise en file d'une session terminale ; un heartbeat absent ou ancien ne libère ni ne transfère rien.

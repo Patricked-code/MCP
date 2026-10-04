@@ -165,6 +165,7 @@ test('next work is a read-only projection: resume owned work first, then claim, 
   for (const flag of ['authoritative', 'claimsAutomatically', 'createsRuntimeTask'] as const) {
     assert.equal(owned[flag], false, flag);
   }
+  assert.equal(owned.governedSessionId, SESSION);
 
   const claim = next({ tasks: [task(2)] });
   assert.equal(claim.mode, 'CLAIM_EXISTING');
@@ -275,6 +276,7 @@ test('the projection recomputes deterministically after terminal task evidence',
 test('unbound, scoped, non-MCP or program-less sessions never get a materialization suggestion', () => {
   assert.deepEqual(next({ sessionId: null }).reasonCodes, ['SESSION_UNBOUND']);
   assert.equal(next({ sessionId: null }).mode, 'NONE');
+  assert.equal(next({ sessionId: null }).governedSessionId, null);
   const scoped = next({
     sessionTargetScope: {
       schemaVersion: 1, targetId: 'T-1', projectId: 'p', projectUid: 'T-1',
@@ -368,6 +370,16 @@ test('the Current-State Inventory carries the next-work projection for the reque
   }).getInventory(REQUEST);
   assert.equal(failing.nextWork?.mode, 'NONE');
   assert.ok(failing.nextWork?.reasonCodes.includes('PROGRAM_PROJECTION_UNAVAILABLE'));
+
+  const partial = await inventoryService({
+    tasks: async () => ({
+      schemaVersion: 1, storeRevision: 5, seedRegistryVersion: 1, nextSequence: 2,
+      tasks: [{ taskId: 'TASK-20261004-001', sequence: 1, status: 'IN_PROGRESS', ownerGovernedSessionId: SESSION, dependencies: [] }]
+    }),
+    program: async () => program()
+  }).getInventory(REQUEST);
+  assert.equal(partial.currentTask?.taskId, 'TASK-20261004-001', 'the advisory projection never breaks the inventory');
+  assert.deepEqual(partial.nextWork?.reasonCodes, ['NEXT_WORK_PROJECTION_UNAVAILABLE']);
 });
 
 test('terminal evidence recomputes the next eligible work through the real queue without human distribution', async () => {
@@ -449,19 +461,19 @@ test('the governed context next action follows the next-work projection', async 
     now: () => new Date(NOW)
   } as any).getCurrent({ governedSessionId: SESSION, workBranch: null, request: { transportSessionId: 't', identity: { principalId: null, clientId: null, assurance: 'declared_only' } } } as any);
 
-  const materialize = await contextFor({ mode: 'MATERIALIZE_BLUEPRINT', tool: 'mcp_materialize_program_blueprint', blueprintId: 'TB-T-ONE' });
+  const materialize = await contextFor({ governedSessionId: SESSION, mode: 'MATERIALIZE_BLUEPRINT', tool: 'mcp_materialize_program_blueprint', blueprintId: 'TB-T-ONE' });
   assert.equal(materialize.nextAction, 'mcp_materialize_program_blueprint');
-  const ineligible = await contextFor({ mode: 'NONE', tool: null, reasonCodes: ['NO_COMPATIBLE_WORK'] }, task(5));
+  const ineligible = await contextFor({ governedSessionId: SESSION, mode: 'NONE', tool: null, reasonCodes: ['NO_COMPATIBLE_WORK'] }, task(5));
   assert.notEqual(ineligible.nextAction, 'mcp_claim_next_governed_task');
   const legacy = await contextFor(undefined, task(5));
   assert.equal(legacy.nextAction, 'mcp_claim_next_governed_task');
 
-  const claimWork = { mode: 'CLAIM_EXISTING', tool: 'mcp_claim_next_governed_task', taskId: 'TASK-20261004-005' };
+  const claimWork = { governedSessionId: SESSION, mode: 'CLAIM_EXISTING', tool: 'mcp_claim_next_governed_task', taskId: 'TASK-20261004-005' };
   const blockedOwned = await contextFor(claimWork, task(5), task(4, {
     status: 'BLOCKED', ownerGovernedSessionId: SESSION, nextAction: 'wait_for_review'
   }));
   assert.equal(blockedOwned.nextAction, 'mcp_claim_next_governed_task', 'owned blocked work never stalls the session');
-  const blockedOnly = await contextFor({ mode: 'NONE', tool: null, reasonCodes: ['NO_COMPATIBLE_WORK'] }, null, task(4, {
+  const blockedOnly = await contextFor({ governedSessionId: SESSION, mode: 'NONE', tool: null, reasonCodes: ['NO_COMPATIBLE_WORK'] }, null, task(4, {
     status: 'BLOCKED', ownerGovernedSessionId: SESSION, nextAction: 'wait_for_review'
   }));
   assert.equal(blockedOnly.nextAction, 'wait_for_review');
@@ -469,4 +481,9 @@ test('the governed context next action follows the next-work projection', async 
     status: 'IN_PROGRESS', ownerGovernedSessionId: SESSION, nextAction: 'open_pull_request'
   }));
   assert.equal(activeOwned.nextAction, 'open_pull_request', 'resumable owned work keeps its own next action');
+
+  const otherSession = await contextFor({ governedSessionId: OTHER, mode: 'NONE', tool: null, reasonCodes: ['NO_COMPATIBLE_WORK'] }, task(5));
+  assert.equal(otherSession.nextAction, 'mcp_claim_next_governed_task', 'a projection computed for another session is ignored');
+  const unbound = await contextFor({ governedSessionId: null, mode: 'NONE', tool: null, reasonCodes: ['SESSION_UNBOUND'] }, task(5));
+  assert.equal(unbound.nextAction, 'mcp_claim_next_governed_task');
 });
