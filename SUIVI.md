@@ -1,5 +1,41 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 C4 Runtime Resolution — GREEN candidate
+
+- **Reprise current-first.**
+  - `main=e6ea0d853e03f3100c0cd13fad297650f688e936` : convergence #235/#236 fusionnée, CI main #2221 et Governed Deploy #112 SUCCESS.
+  - Commentaires de convergence postés sur #235 et #236, qui restent ouvertes ; aucune nouvelle intake.
+  - `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : `TB-W3-A3-02` reste un blocage local (`TASK-20260929-001` READY non réclamée, mais un claim exige une session runtime) ; `TB-W3-C4-01` est retenu.
+- **Livré (chaîne B1 → B2 → C2 → C3 → C4 du collecteur GitHub gouverné).** `runtimeResolution` est projeté après `serverResolution`.
+  - `src/github/runtimeResolution.ts` appelle le résolveur GW-08 (`resolveRuntime`) avec :
+    - les composants du projet déclarés par le GitRegistry V2 (projet enregistré, ou mapping sélectionné s'il déclare son rôle) ;
+    - les observations des autorités d'observation existantes, rattachées au composant de leur dépôt.
+  - Live State fournit l'observation du runtime MCP (`src/liveState/runtimeObservation.ts`, lu sans nouvelle collecte). `parseRuntimeObservation` conserve le label compose borné (`composeProject`), d'où `DOCKER_COMPOSE` ou `DOCKER`. L'identifiant du serveur lu par Live State devient une constante partagée.
+  - Le GitRegistry V2 ne déclare aucun runtime : rien n'est recoupé ni inventé.
+  - Ports et reverse proxy : aucune autorité d'observation runtime (l'attestation exclut le réseau). Résiduel explicite pour C5/C345.
+- **Fail-closed.** Chaque cas reste `UNVERIFIED`, jamais `NO_RUNTIME` :
+  - serveur non résolu → `RUNTIME_SERVER_UNVERIFIED` ;
+  - composant non prouvable (mapping V1 sans rôle, projets multiples, dépôt partagé par deux composants) → `RUNTIME_COMPONENT_UNVERIFIED` ;
+  - aucune observation pour le projet → `RUNTIME_OBSERVATION_MISSING` ;
+  - observation illisible ou malformée → `RUNTIME_OBSERVATION_UNAVAILABLE` ;
+  - Live State périmée → `RUNTIME_EVIDENCE_STALE` ;
+  - serveur du registre différent du serveur observé → `RUNTIME_SERVER_MISMATCH` ;
+  - cache miss → `RUNTIME_SERVER_UNVERIFIED` ; cache expiré → `UNVERIFIED/STALE` sans liaisons.
+- **Réalité courante.** Le mapping `Patricked-code/MCP` du registre versionné est V1, sans `componentRole` ni projet enregistré : sa résolution runtime reste `RUNTIME_COMPONENT_UNVERIFIED` tant que le registre ne déclare pas ce composant. Les projets S2 n'ont aucune autorité d'observation runtime.
+- **Préflight runtime OIDC** (22:55Z, `workflowSha=e6ea0d8`, `truncated=false`) :
+  - file `storeRevision=242` (`37241845033`) ;
+  - 2 sessions non closes, toutes EXPIRED (`37241846646`) ;
+  - 0 lock (`37241848464`) ;
+  - aucune collision sur `project:runtime-resolution`. Aucun claim, session ou lock créé.
+- **Tests.**
+  - RED `5957c69` : modules C4 absents.
+  - 7 tests ciblés : label compose, adaptateur Live State, composants, composition GW-08, fail-closed, lecture seule, collecteur miss/hit/stale/indisponible.
+  - Suite locale 861/861 ; gates typecheck, build, docs, gouvernance, GWC, secrets et readiness vertes.
+- **NEXT_ACTION.**
+  1. CI exact-head, merge, Governed Deploy, attestation OIDC S1.
+  2. PR terminale C4 DONE.
+  3. Recalcul : C345-02 dépend de C4 et C5 ; prochain lot `TB-W3-C5-01`.
+
 ## 2026-10-04 — Convergence des intakes #235 (finalisation continue) et #236 (Super Admin Cockpit) — GREEN candidate
 
 - **Reprise current-first** (`main=0ac9ecf70adab117f2175ef2451fc62fe15abac7`, C3 clôturé ; CI main #2218 `37239857289` et Governed Deploy #111 `37239857290` SUCCESS).

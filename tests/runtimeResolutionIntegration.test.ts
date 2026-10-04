@@ -212,7 +212,12 @@ test('C4 Live State projects its runtime as a bounded server observation, never 
   assert.equal(LIVE_STATE_SERVER_ID, 's1');
 
   assert.equal(liveStateRuntimeObservation(snapshot({}, { composeProject: null }), now)?.runtimeKind, 'DOCKER');
-  assert.equal(liveStateRuntimeObservation(snapshot({}, { composeProject: undefined }), now)?.runtimeKind, 'DOCKER');
+  // A snapshot written before the compose label was parsed has not observed the kind.
+  assert.equal(liveStateRuntimeObservation(snapshot({}, { composeProject: undefined }), now), null);
+  assert.equal(
+    liveStateRuntimeObservation(snapshot({}, { composeProject: undefined, status: 'UNAVAILABLE', revision: null }), now)?.status,
+    'UNAVAILABLE'
+  );
 
   const stale = liveStateRuntimeObservation(snapshot({ lastReconciledAt: '2026-10-04T23:08:00.000Z' }), now);
   assert.equal(stale?.status, 'STALE');

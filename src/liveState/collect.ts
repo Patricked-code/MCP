@@ -13,6 +13,7 @@ import type {
 } from './types.js';
 import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
 import { collectTargetProjectObservation } from './targetProject.js';
+import { LIVE_STATE_SERVER_ID } from './runtimeObservation.js';
 
 const REPOSITORY = 'Patricked-code/MCP';
 const BRANCH = 'main';
@@ -24,6 +25,7 @@ const DEFAULT_GITHUB_ALLOWED_HOSTS = 'api.github.com';
 const DEFAULT_GITHUB_TIMEOUT_MS = 15_000;
 const SHA_PATTERN = /^[0-9a-f]{40}$/i;
 const DIGEST_PATTERN = /^[0-9a-f]{64}$/i;
+const COMPOSE_PROJECT_PATTERN = /^[a-z0-9][a-z0-9_-]{0,62}$/;
 
 function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'"'"'`)}'`;
@@ -125,6 +127,7 @@ export function parseRuntimeObservation(output: string): RuntimeLiveObservation 
   const containerName = (values.container_name || MCP_CONTAINER).replace(/^\//, '');
   const revision = shaOrNull(values['container_label.org.opencontainers.image.revision'])
     ?? shaOrNull(values['image_label.org.opencontainers.image.revision']);
+  const composeProject = values['container_label.com.docker.compose.project'];
 
   return {
     status: 'CURRENT',
@@ -132,7 +135,8 @@ export function parseRuntimeObservation(output: string): RuntimeLiveObservation 
     containerStatus: values.container_status || null,
     health: values.container_health || null,
     imageId: values.container_image_id || values.image_id || null,
-    revision
+    revision,
+    composeProject: composeProject && COMPOSE_PROJECT_PATTERN.test(composeProject) ? composeProject : null
   };
 }
 
@@ -389,7 +393,7 @@ export async function collectGithubObservation(): Promise<GithubLiveObservation>
 
 async function runS1ReadOnly(command: string) {
   const { runReadOnlyCommand } = await import('../ssh/client.js');
-  return runReadOnlyCommand('s1', command);
+  return runReadOnlyCommand(LIVE_STATE_SERVER_ID, command);
 }
 
 export async function collectS1Observation(): Promise<S1LiveObservation> {

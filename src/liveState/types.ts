@@ -40,6 +40,8 @@ export type RuntimeLiveObservation = {
   health: string | null;
   imageId: string | null;
   revision: string | null;
+  /** C4: bounded `com.docker.compose.project` label; absent in older snapshots. */
+  composeProject?: string | null;
   error?: string | null;
 };
 
