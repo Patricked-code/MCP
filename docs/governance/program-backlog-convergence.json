@@ -73,8 +73,8 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 15,
-      "PARTIALLY_IMPLEMENTED": 6,
+      "DONE": 16,
+      "PARTIALLY_IMPLEMENTED": 5,
       "KNOWN_NOT_ANALYZED": 6,
       "DESIGNED_NOT_IMPLEMENTED": 7,
       "CONDITIONAL": 2,
@@ -1300,7 +1300,7 @@
         "sourceId": "#220",
         "title": "[PROGRAM INTAKE] B3.2 — owner decision: operator-configured server target, extensible multi-project",
         "coveredBy": "PB-B3",
-        "disposition": "PARTIALLY_IMPLEMENTED",
+        "disposition": "DONE",
         "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0"
       },
       {
@@ -1409,7 +1409,7 @@
     {
       "id": "PB-B3",
       "title": "B3 Multi-repository Governed Context",
-      "disposition": "PARTIALLY_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "context.multi-repository",
       "implementationMode": "GENERALIZE",
       "existingAuthorities": [
@@ -1421,7 +1421,7 @@
       "dependsOn": [
         "PB-FOUNDATIONS-DONE"
       ],
-      "nextAction": "Reconcile GWC-10 TargetScope design against current runtime consumers and generalize only MCP-only contracts that remain.",
+      "nextAction": "No reimplementation. Reuse the operator-configured server target, the Live State TargetContext and server-built TargetScopes; MULTI_PROJECT_LIVE_STATE stays the additive extension path.",
       "subtasks": [
         "Inventory remaining MCP-only contracts",
         "Propagate validated repositoryId/mappingId/TargetScope additively",
@@ -2472,7 +2472,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_A32_READY_RUNTIME_CLAIM_B32_READY_OWNER_DECISION_220_DISPATCH_SEQUENCED",
+    "currentWaveStatus": "W3_B32_DONE_A32_READY_RUNTIME_CLAIM_DISPATCH01_C31_GGCC_GIT_READ_READY",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2493,7 +2493,9 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-B3-02"
+      "TB-W3-DISPATCH-01",
+      "TB-W3-C3-01",
+      "TB-W3-GGCC-GIT-READ"
     ],
     "humanGatePolicy": {
       "invariant": "NO_SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISIONS",
@@ -3917,8 +3919,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
-        "reason": "Owner decision #220 recorded (OPERATOR_CONFIGURED_SERVER_TARGET as the first additive V1, extensible to MULTI_PROJECT_LIVE_STATE) and TB-W3-B3-01 is DONE. Planning-ready only: runtime authorities are reobserved before any materialization."
+        "state": "DONE",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "PR #225 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. An operator-configured server target (.mcp/server-map.json) yields a Live State TargetContext derived from GitRegistry V2; tools accept mapping ids only and the server builds every TargetScope. No target is configured on main, so runtime behaviour stays historical."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -3954,7 +3958,60 @@
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
       },
-      "decisionSource": "issue:220"
+      "decisionSource": "issue:220",
+      "completionEvidence": {
+        "pullRequest": 225,
+        "decisionSource": "issue:220",
+        "redHeadSha": "5f14005b6cb5cb99f3f0dddc30e63730a666c428",
+        "redCiRunNumber": 2189,
+        "redExpectedFailures": 2,
+        "candidateHeadSha": "2d3d6ab4cae9ba65d80bab52066da2f8ddd84f14",
+        "prCiRunId": 37219464215,
+        "testCount": 811,
+        "mergeSha": "93d631e5dbc61354047f0847b96d23d5cb23ba21",
+        "mainCiRunId": 37219562852,
+        "governedDeployRunId": 37219562851,
+        "governedDeployRuntimeRevision": "93d631e5dbc61354047f0847b96d23d5cb23ba21",
+        "runtimePreflightRunIds": [
+          37218643822,
+          37218645430,
+          37218647193,
+          37218648802
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37219684472,
+            "workflowSha": "93d631e5dbc61354047f0847b96d23d5cb23ba21",
+            "status": "SUCCESS",
+            "observed": "main@93d631e5dbc61354047f0847b96d23d5cb23ba21, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "69c3201b196cc7ac0ba58030bff91b38a2442b17146b5b5e75e7136997d3ed5a",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-04T17:13:44.023Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37219686641,
+            "workflowSha": "93d631e5dbc61354047f0847b96d23d5cb23ba21",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #102)",
+            "outputSha256": "f1c96e884006309bea20e60da83b9a8db3a3a66338759996fa2aff66c9c00788",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-04T17:13:44.252Z"
+          }
+        },
+        "classification": "docs/governance/multi-repository-target-scope-20261004.json",
+        "operatorTargetConfiguredOnMain": false,
+        "multiRepositoryAcceptance": [
+          "tests/governedWorkflowUniversalAcceptance/universalAcceptance.test.ts (GW-73 Stablecoin, synthetic multi-component, partial component isolation)",
+          "tests/serverTargetProjectSelection.test.ts",
+          "tests/targetScopeToolSurface.test.ts"
+        ],
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-04T17:14:00Z"
+      }
     },
     {
       "id": "TB-W3-DISPATCH-01",
@@ -4004,7 +4061,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "reason": "Dependency-gated; recomputed automatically after its dependency is DONE with evidence."
       },
       "materialization": {
@@ -4348,7 +4405,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -7165,7 +7222,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
@@ -9364,7 +9421,17 @@
       "integrationRule": "Satisfies OWNER_DECISION_B3_TARGET_PROJECT_SELECTION inside w3B3TargetSelectionGate and releases TB-W3-B3-02 to derived readiness; implementation extends Live State, GitRegistry V2 and GWC-10 TargetScope only.",
       "targetBlueprintIds": [
         "TB-W3-B3-02"
-      ]
+      ],
+      "completionEvidence": {
+        "pullRequest": 225,
+        "mergeSha": "93d631e5dbc61354047f0847b96d23d5cb23ba21",
+        "mainCiRunId": 37219562852,
+        "governedDeployRunId": 37219562851,
+        "readonlyEvidenceRunIds": [
+          37219684472,
+          37219686641
+        ]
+      }
     },
     {
       "id": "INTAKE-221",
@@ -9981,6 +10048,58 @@
       "INTAKE-221",
       "INTAKE-222",
       "SUPERVISION-219-20261002"
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3B3TargetScopeHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "93d631e5dbc61354047f0847b96d23d5cb23ba21",
+    "blueprintId": "TB-W3-B3-02",
+    "lotId": "B3.2",
+    "decisionSource": "issue:220",
+    "delivered": [
+      ".mcp/server-map.json servers.S1.targetProjectIds (empty on main = historical behaviour), shipped in the runtime image",
+      "src/liveState/targetProject.ts derives the singular TargetContext from the configured GitRegistry V2 project; unobserved components stay UNVERIFIED; unresolved targets fail closed with TARGET_PROJECT_* contradictions",
+      "Session open/resume, intent reconciliation and component locks accept mapping ids only; every TargetScope is server-built; without one only Patricked-code/MCP is accepted",
+      "Client tool attestations name MCP or a session-scope repository only; the governed context reports GitHub state UNAVAILABLE for non-MCP sessions"
+    ],
+    "runtimePreflight": {
+      "gitRunId": 37218643822,
+      "tasksRunId": 37218645430,
+      "sessionsRunId": 37218647193,
+      "locksRunId": 37218648802,
+      "observedAt": "2026-10-04T16:57:10Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "context:multi-repository",
+      "collision": false
+    },
+    "routedResiduals": [
+      {
+        "residual": "Multi-repository GitHub work-state observation",
+        "routedTo": [
+          "TB-W3-GGCC-GH-REPO-BRANCH",
+          "TB-W3-GGCC-GH-PR-REVIEW",
+          "TB-W3-C3-01"
+        ]
+      },
+      {
+        "residual": "Component exact-head observations for the target project",
+        "routedTo": [
+          "TB-W3-C3-01",
+          "TB-W3-C4-01"
+        ]
+      },
+      {
+        "residual": "Several target projects per server",
+        "routedTo": [
+          "MULTI_PROJECT_LIVE_STATE extension (additive, not scheduled)"
+        ]
+      }
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,

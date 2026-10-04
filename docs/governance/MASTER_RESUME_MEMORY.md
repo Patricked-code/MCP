@@ -1,30 +1,30 @@
 # Mémoire maître de reprise — MCP WealthTech
 
-Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275f0f5e74cb5fbd` (599 fichiers suivis) ; section 1 mise à jour le 2026-10-04 après convergence des intakes #220/#221/#222.
+Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275f0f5e74cb5fbd` (599 fichiers suivis) ; section 1 mise à jour le 2026-10-04 après la clôture de B3.2.
 
 > Ce document est une **projection de reprise**. Il n'a aucune autorité. Il oriente la lecture et ne remplace aucune source. En cas d'écart, la source citée l'emporte, et l'état live doit toujours être réobservé : GitHub, S1, Live State, Task Queue, sessions et locks. Les mentions « À vérifier » désignent des données non confirmées par cette lecture.
 
-## 1. Où en est le projet (état au 2026-10-04)
+## 1. Où en est le projet (état au 2026-10-04, après B3.2)
 
 | Élément | Valeur | Source |
 |---|---|---|
 | Programme courant | Program Backlog V2 (`program-backlog-convergence-v2-20260924`) | `docs/governance/program-backlog-convergence.json` |
-| Blueprints | 81 au total : 20 DONE, 2 READY, 5 CONDITIONAL, 47 BLOCKED, 7 DEFERRED | `npm run program:readiness` |
-| Work items | 15 DONE sur 39 | même fichier, `summary.dispositionCounts` |
-| Candidats READY | `TB-W3-A3-02` (A3.2), `TB-W3-B3-02` (B3.2) | `npm run program:next` |
+| Blueprints | 81 au total : 21 DONE, 4 READY, 5 CONDITIONAL, 44 BLOCKED, 7 DEFERRED | `npm run program:readiness` |
+| Work items | 16 DONE sur 39 | même fichier, `summary.dispositionCounts` |
+| Candidats READY | `TB-W3-A3-02` (A3.2), `TB-W3-DISPATCH-01`, `TB-W3-C3-01`, `TB-W3-GGCC-GIT-READ` | `npm run program:next` |
 | Mode de continuité GWC | `POST_INTEGRATION_OPERATIONAL_CONTINUITY` (bundle `post-integration-terminal-handoff-20260920`) | `docs/gwc/canonical-memory/current.json` |
-| Dernière convergence | Intakes #220/#221/#222 et supervision #219 (2026-10-04) | `SUIVI.md`, `programIntakes` |
+| Dernier lot livré | B3.2 — cible opérateur du serveur (PR #225 → `93d631e`, décision #220) | `SUIVI.md` |
 
 Points de reprise :
 
-1. **B3.2 (`TB-W3-B3-02`) — READY.** La décision propriétaire #220 retient `OPERATOR_CONFIGURED_SERVER_TARGET` comme V1 additive, réversible et rétrocompatible, extensible vers `MULTI_PROJECT_LIVE_STATE` (`w3B3TargetSelectionGate.decision`). C'est le prochain lot exécutable par un agent GitHub-only ; il est en amont de C3→C4/C5→C345→D→E→F, H, I, J et de la boucle de dispatch.
-2. **A3.2 (`TB-W3-A3-02`) — READY, blocker local.** Il faut réclamer la tâche runtime `TASK-20260929-001` (READY, non réclamée) dans la Governed Task Queue ; le travail est porté par la PR draft #207. Seule une session runtime peut faire ce claim.
-3. **Boucle de dispatch (#222)** : `TB-W3-DISPATCH-01..03` suivent B3.2 dans l'ordre du programme.
+1. **`TB-W3-DISPATCH-01` — prochain lot GitHub-only.** Matérialisation d'une tâche runtime liée à un blueprint READY, via `mcp_reconcile_agent_intent` (intake #222).
+2. **A3.2 (`TB-W3-A3-02`) — READY, blocker local.** Il faut réclamer `TASK-20260929-001` dans la Governed Task Queue ; le travail est porté par la PR draft #207. Seule une session runtime peut faire ce claim.
+3. **B3.2 est DONE**, mais aucune cible n'est configurée sur `main` (`.mcp/server-map.json > servers.S1.targetProjectIds: []`). Configurer une cible = une PR revue sur ce fichier, puis Governed Deploy.
 4. **`mcp:write`** : lot technique `TB-W3-OAUTH-WRITE-SCOPE-01` après A3.2 — ce n'est pas une décision propriétaire (#221).
 
 Règle de reprise : relire les issues ouvertes `[PROGRAM INTAKE]` avant toute sélection (`REOBSERVE_PROGRAM_INTAKES`), et ne jamais créer de gate humaine pour un choix technique déductible (`CLAUDE.md` §7.3).
 
-NEXT_ACTION unique : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-B3-02`.
+NEXT_ACTION unique : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-DISPATCH-01`.
 
 ## 2. Autorités actuelles (qui fait foi)
 

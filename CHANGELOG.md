@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 B3.2 Operator-configured server target livré et attesté
+
+- PR #225 fusionnée au SHA `93d631e` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37219684472` / `37219686641`.
+- `TB-W3-B3-02` et `PB-B3` clôturés DONE ; `TB-W3-DISPATCH-01`, `TB-W3-C3-01` et `TB-W3-GGCC-GIT-READ` deviennent READY.
+
 ## 2026-10-04 — W3 B3.2 Operator-configured server target (candidate)
 
 - `.mcp/server-map.json` accepte `servers.S1.targetProjectIds` ; Live State en dérive un `TargetContext` identité seule depuis GitRegistry V2 ; sans configuration, rien ne change.

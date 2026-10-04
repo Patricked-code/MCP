@@ -33,7 +33,12 @@ test('completing a blueprint promotes only dependents whose full dependency set 
   const copy = structuredClone(program);
   const byId = new Map(copy.taskBlueprints.map((entry: any) => [entry.id, entry]));
 
+  // Reset the chain under test so the scenario stays valid as the program advances.
+  for (const id of ['TB-W3-B3-02', 'TB-W3-C3-01', 'TB-W3-GGCC-GIT-READ', 'TB-W3-DISPATCH-01', 'TB-W3-DISPATCH-02', 'TB-W3-C4-01']) {
+    byId.get(id).readiness = { state: 'BLOCKED', reason: 'reset for the promotion scenario' };
+  }
   byId.get('TB-W3-B3-01').readiness.state = 'DONE';
+  byId.get('TB-W3-C1-01').readiness.state = 'DONE';
 
   const derived = deriveProgramReadiness(copy);
   const stateById = new Map(derived.blueprints.map((entry: any) => [entry.id, entry.derivedState]));

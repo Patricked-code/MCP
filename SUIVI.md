@@ -1,5 +1,14 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 B3.2 Operator-configured server target — DONE et attesté ; PB-B3 DONE
+
+- PR #225 fusionnée sous garde exact-head depuis `2d3d6ab4cae9ba65d80bab52066da2f8ddd84f14` au merge `93d631e5dbc61354047f0847b96d23d5cb23ba21` ; RED CI #2189 (2 échecs attendus), CI PR `37219464215`, CI main `37219562852` (#2191), Governed Deploy `37219562851` (#102) SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `37219684472` → S1 `main@93d631e`, worktree propre, push désactivé ; `docker_status` run `37219686641` → conteneur healthy (redémarré par le déploiement).
+- Program Backlog : `TB-W3-B3-02 = DONE`, `PB-B3 = DONE` (DONE 16) ; aucune cible n'est configurée sur `main` (`targetProjectIds: []`), le runtime reste donc historique jusqu'à une PR de configuration revue. Couverture multi-dépôt : acceptance GW-73 + tests B3.2. Résidus routés : observation GitHub multi-dépôt (GGCC GitHub, C3.1), preuves de composants (C3/C4), multi-projet (`MULTI_PROJECT_LIVE_STATE`).
+- READY recalculé : `TB-W3-A3-02` (claim runtime `TASK-20260929-001`, local), `TB-W3-DISPATCH-01`, `TB-W3-C3-01`, `TB-W3-GGCC-GIT-READ`.
+- Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-DISPATCH-01` (matérialisation liée au blueprint, intake #222), A3.2 restant réservé à une session runtime.
+
 ## 2026-10-04 — W3 B3.2 Operator-configured server target — GREEN candidate
 
 - Reprise current-first : `main=5bf4b799e2feefd4ddff82d525177d04b9e3fe8c` (convergence #220/#221/#222 fusionnée, CI main #2188 et Governed Deploy #101 SUCCESS). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime `TASK-20260929-001` / PR #207), `TB-W3-B3-02` retenu.
