@@ -1,5 +1,14 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 C3 Server Resolution — GREEN candidate
+
+- Reprise current-first : `main=9a79c7a1b822e5717f2931c069369516f94a241a` (DISPATCH-03 et `PB-DISPATCH` clôturés, #222 fermée). Réobservation des intakes : aucune intake ouverte ni supervision nouvelle. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-C3-01` retenu.
+- Livré (chaîne B1 → B2 → C2 → C3 du collecteur GitHub gouverné existant) : `serverResolution` est projeté juste après `projectResolution` en appelant le résolveur GWC GW-07 (`resolveServer`) ; `src/github/serverResolution.ts` compose les liaisons serveur du GitRegistry V2 (`GitRegistryProjectEvidence.serverBindings`, additif), l'identité serveur canonique (serveurs gérés par le runtime également déclarés dans `.mcp/server-map.json`, sans renommer les ids stockés) et la preuve registre lue en direct. Chemin déclaré ≠ chemin vérifié : seul `realPathVerified` du registre atteste un chemin réel ; un registre V1 migré en mémoire est signalé (`git_registry_v2_candidate_from_v1`).
+- Fail-closed : registre absent ou invalide → `SERVER_REGISTRY_UNAVAILABLE` ; serveur inconnu ou non déclaré → `SERVER_ID_UNVERIFIED` ; carte serveur absente → `SERVER_CANONICAL_ID_SET_INVALID` (le résolveur GW-07 retourne désormais cette raison pour un ensemble canonique vide au lieu d'une exception) ; cache miss → `SERVER_PROJECT_UNVERIFIED` ; preuve expirée → `UNVERIFIED/STALE` sans serveur ni candidats. Aucun appel SSH, aucune écriture GitRegistry, aucune autorisation inférée, aucune donnée de connexion projetée.
+- Préflight runtime OIDC (18:29Z, `truncated=false`) : file `storeRevision=242` (`37224598839`), 2 sessions non closes toutes EXPIRED (`37224600485`), 0 lock (`37224602027`) ; aucune collision sur `project:server-resolution`. Aucun claim/session/lock créé.
+- Tests : RED `a8b8670` (CI #2213 : 839/840, 1 échec attendu) ; 6 tests ciblés (preuve registre, composition GW-07, désaccord registre/configuration, fail-closed, lecture seule, collecteur miss/hit/stale) ; suite locale 845/845.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale C3 DONE, puis recalcul (C4/C5 dépendent de C3).
+
 ## 2026-10-04 — W3 DISPATCH-03 Connected-agent next-work projection — DONE et attesté ; PB-DISPATCH DONE
 
 - PR #231 fusionnée sous garde exact-head depuis `ed100d68e7d8204c5c66761f5efe3c8055f86099` au merge `6df23b91551a97cdf10968c22071036d5942f11b` ; RED CI #2207 (1 échec attendu), CI PR `37223273561` (#2208, 837/837), CI main `37223380722` (#2209), Governed Deploy `37223380611` (#108) SUCCESS (« Deployment attested for exact SHA »).

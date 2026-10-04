@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-10-04 — C3 : GW-07 chaîné après C2 avec l'identité serveur gérée et déclarée
+
+Décision technique (déduite, #221) : la résolution serveur suit la chaîne de connexion existante (B1 identité → B2 repository → C2 projet → C3 serveur) dans le collecteur GitHub gouverné, avec son cache unique, plutôt qu'un nouvel observateur. L'ensemble canonique OD-03 est l'intersection des serveurs gérés par la configuration runtime et des serveurs déclarés dans `.mcp/server-map.json` ; il garde l'orthographe des ids gérés, de sorte que les mappings stockés (`s1`, `s2`) se résolvent à l'identique (normalisation identité, rétrocompatibilité GWC-6). Un serveur connu d'une seule source n'est jamais canonique et ses liaisons restent `SERVER_ID_UNVERIFIED` : blocage local, pas d'arrêt global.
+
+Le résolveur GW-07 est généralisé minimalement : un ensemble canonique vide devient `SERVER_CANONICAL_ID_SET_INVALID` au lieu d'une exception de schéma. Des liaisons invalides rendent le registre indisponible (fail-closed). Aucun chemin déclaré n'est promu en chemin vérifié : seule la preuve GitRegistry `realPathVerified` compte ; la vérification live par composant relève des observations runtime (C4), Live State restant l'autorité d'observation du runtime MCP.
+
 ## 2026-10-04 — DISPATCH-03 : projection next-work pure, dérivée des règles existantes
 
 Décision technique (déduite, #221) : le prochain travail d'une session connectée est une projection pure (`deriveNextWork`) recalculée à chaque lecture du Current-State Inventory, et non un dispatcher, une file ou un store. Elle réutilise les règles exportées par `taskQueue.ts` (reprise possédée, candidats exécutables, éligibilité TargetScope, conflits de scope et de lock) et le constructeur d'intention de `mcp_materialize_program_blueprint` : un blueprint n'est projeté que si l'outil le matérialiserait. Elle ne réclame rien et ne crée rien ; l'outil suggéré revérifie tout sous ses propres gardes. Un échec de calcul ne fait jamais échouer l'inventaire (`NEXT_WORK_PROJECTION_UNAVAILABLE`).

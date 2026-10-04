@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 C3 Server Resolution (candidate)
+
+- Le contexte GitHub gouverné projette `serverResolution` (GW-07) après la résolution projet C2 : serveur canonique, liaisons et chemins déclarés/vérifiés issus du GitRegistry V2, en lecture seule et fail-closed.
+- `GitRegistryProjectEvidence.serverBindings` expose les liaisons serveur du candidat V2 sans changer les autres projections.
+
 ## 2026-10-04 — W3 DISPATCH-03 livré et attesté ; boucle de dispatch #222 complète
 
 - PR #231 fusionnée au SHA `6df23b9` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37223532065` / `37223533843`.

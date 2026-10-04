@@ -163,6 +163,16 @@ normaliser avant validation, afin qu'un contexte invalide ne puisse pas partager
 la collecte d'un contexte valide. La vue d'évidence GitRegistry V1 borne enfin la
 lecture à 1 MiB et 1 000 mappings avant toute résolution.
 
+La résolution C3 prolonge la même chaîne au contrat GW-07 : après la résolution
+projet C2, `serverResolution` appelle le résolveur GWC existant avec les liaisons
+serveur du GitRegistry V2 (chemin déclaré ; seul `realPathVerified` atteste un
+chemin réel), l'identité serveur canonique (serveurs gérés par le runtime et
+déclarés dans `.mcp/server-map.json`, sans renommer les ids stockés) et la preuve
+registre lue en direct. Elle reste en lecture seule : aucun appel SSH, aucune
+écriture GitRegistry, aucune autorisation inférée, aucune donnée de connexion
+projetée ; une preuve absente, invalide ou expirée reste `UNVERIFIED` avec une
+raison bornée. Le cache GitHub existant reste l'unique cache.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.
