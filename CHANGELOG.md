@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 DISPATCH-03 Connected-agent next-work projection (candidate)
+
+- Le Current-State Inventory expose `nextWork`, projection read-only du prochain travail de la session (reprise, claim compatible ou blueprint READY sans collision), sans claim ni création de tâche ; le contexte gouverné en dérive `nextAction`.
+- `mcp_claim_next_governed_task` saute un candidat bloqué localement lorsqu'un autre candidat compatible existe.
+
 ## 2026-10-04 — W3 DISPATCH-02 livré et attesté
 
 - PR #229 fusionnée au SHA `870305f` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37221611227` / `37221613056`.

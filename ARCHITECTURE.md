@@ -85,7 +85,8 @@ Le moteur incrémente `stateVersion` uniquement lorsque la preuve sémantique ch
 - inventaire Markdown, audits et historique ;
 - digests des politiques `.mcp/` ;
 - version et digest de la task registry ;
-- contradictions de gouvernance détectées.
+- contradictions de gouvernance détectées ;
+- projection read-only `nextWork` de la session demandeuse (reprise, claim compatible ou blueprint READY sans collision), dérivée des règles de la queue et de la matérialisation, sans claim ni tâche créée.
 
 Le collecteur ne lit que les fichiers suivis par Git, refuse les sorties de racine et les fichiers trop volumineux, n’ouvre aucun réseau et ne lit aucun secret.
 
@@ -100,7 +101,7 @@ Le collecteur ne lit que les fichiers suivis par Git, refuse les sorties de raci
 - le journal d’événements append-only et sanitizé ;
 - la Governed Task Queue persistante et révisée atomiquement.
 
-La queue ordonne les tâches par priorité puis FIFO, vérifie leurs dépendances et conflits de scope, et applique une machine d’états allowlistée. Une intention identique est réconciliée de manière idempotente au lieu de créer un doublon.
+La queue ordonne les tâches par priorité puis FIFO, vérifie leurs dépendances et conflits de scope, et applique une machine d’états allowlistée. Un candidat bloqué localement (scope actif ou lock d'une autre session) est sauté au profit du suivant compatible ; sans candidat compatible, le code de conflit historique est conservé. Une intention identique est réconciliée de manière idempotente au lieu de créer un doublon.
 
 ### Governed Context et bootstrap
 
@@ -112,7 +113,7 @@ La queue ordonne les tâches par priorité puis FIFO, vérifie leurs dépendance
 4. lecture ou reprise de la session ;
 5. acquittement du contexte et création d’un Bootstrap Receipt ;
 6. réconciliation de la nouvelle intention avec la queue ;
-7. claim de la première tâche exécutable antérieure ou courante ;
+7. reprise de la tâche active possédée, sinon claim de la première tâche exécutable compatible ;
 8. exécution depuis le dernier checkpoint.
 
 Le receipt relie la session, l’identité agent/client, la version Live State, les SHA GitHub/runtime et les digests catalogue, gouvernance et task registry. Il ne contient ni prompt brut, ni jeton, ni secret de reprise.

@@ -6,12 +6,12 @@ Le moteur d’onboarding exécute le bootstrap obligatoire d’un agent sur le r
 
 ## Procédure
 1. Appeler `ping`, puis `mcp_reconcile_governed_context`.
-2. Lire `mcp://wealthtech/current-state/inventory` ou `mcp_get_current_state_inventory`.
+2. Lire `mcp://wealthtech/current-state/inventory` ou `mcp_get_current_state_inventory` ; son champ `nextWork` projette en lecture seule le prochain travail de la session (reprise de sa tâche active, claim d'une tâche compatible ou matérialisation du premier blueprint READY sans collision), sans jamais réclamer ni créer de tâche.
 3. Vérifier Live State, SHA GitHub/S1/runtime, catalogue, architecture, audits, politiques et contradictions.
 4. Reprendre une governed session compatible ou appeler `mcp_open_governed_session`.
 5. Appeler `mcp_acknowledge_governed_context` pour créer un Bootstrap Receipt sanitizé.
 6. Projeter la nouvelle instruction sous forme bornée et appeler `mcp_reconcile_agent_intent` ; pour un blueprint READY du Program Backlog sans tâche runtime équivalente, `mcp_materialize_program_blueprint` crée au plus une tâche (idempotent, scopes issus du blueprint, jamais de claim implicite).
-7. Appeler `mcp_claim_next_governed_task` : la tâche active déjà possédée par la session est reprise en premier ; sinon la première tâche exécutable et éligible pour son TargetScope, par priorité puis séquence, est traitée avant la nouvelle.
+7. Appeler `mcp_claim_next_governed_task` : la tâche active déjà possédée par la session est reprise en premier ; sinon la première tâche exécutable et éligible pour son TargetScope, par priorité puis séquence, est traitée avant la nouvelle ; un candidat bloqué localement (scope actif ou lock d'une autre session) est sauté si un autre candidat compatible existe.
 8. Exécuter sous locks et révisions optimistes, puis suivre CI, reviews, merge, déploiement exact-SHA, attestation et checkpoint.
 
 Les surfaces runtime réelles sont des outils et ressources MCP. Aucune route HTTP d’onboarding distincte n’est déclarée.

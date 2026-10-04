@@ -1,6 +1,8 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 import { createCurrentStateService, type CurrentStateService } from '../currentState/service.js';
+import type { ProgramNextWorkSource } from '../governance/nextWorkProjection.js';
+import { loadProgramProjection, loadReadinessLibrary } from '../governance/programBlueprintMaterialization.js';
 import { liveStateEngine } from '../liveState/engine.js';
 import { sessionRequestFromToolExtra, getGovernedSessionToolDependencies, type GovernedSessionToolExtra } from './governedSessions.js';
 import { getGovernedTaskToolDependencies } from './governedTasks.js';
@@ -8,6 +10,21 @@ import { getGovernedTaskToolDependencies } from './governedTasks.js';
 export const CURRENT_STATE_RESOURCE_URI = 'mcp://wealthtech/current-state/inventory';
 
 let sharedService: CurrentStateService | null = null;
+let deployedProgram: Promise<ProgramNextWorkSource> | null = null;
+
+/**
+ * DISPATCH-03: the program projection and readiness library ship with the
+ * deployed revision, so one successful load serves the process; a failed load
+ * is retried on the next read and the inventory reports it as unavailable.
+ */
+export function loadDeployedProgramSource(): Promise<ProgramNextWorkSource | null> {
+  const pending = deployedProgram ??= Promise.all([loadProgramProjection(), loadReadinessLibrary()])
+    .then(([snapshot, library]) => ({ ...snapshot, library }));
+  return pending.catch(() => {
+    if (deployedProgram === pending) deployedProgram = null;
+    return null;
+  });
+}
 
 export function getCurrentStateService(): CurrentStateService {
   if (sharedService) return sharedService;
@@ -17,7 +34,8 @@ export function getCurrentStateService(): CurrentStateService {
     liveState: liveStateEngine,
     tasks: taskDependencies.queue,
     sessions: operational.sessions,
-    locks: operational.locks
+    locks: operational.locks,
+    program: loadDeployedProgramSource
   });
   return sharedService;
 }

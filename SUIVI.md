@@ -1,5 +1,14 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 DISPATCH-03 Connected-agent next-work projection — GREEN candidate
+
+- Reprise current-first : `main=3177919faabc2fe4615746651d1ab26de9b62682` (DISPATCH-02 clôturé). Réobservation des intakes : aucune nouvelle intake ni supervision propriétaire (#222 ne porte que le commentaire de convergence). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-DISPATCH-03` retenu.
+- Livré : `src/governance/nextWorkProjection.ts` (`deriveNextWork`, fonction pure) projette pour la session demandeuse, dans l'ordre, la reprise de sa tâche active, le claim de la première tâche exécutable compatible, puis la matérialisation du premier blueprint READY sans collision ; un candidat bloqué localement (scope actif, lock d'une autre session, intention terminale ou équivalente active) est sauté et listé (20 au plus). Les règles de sélection sont celles de la file (exports partagés de `taskQueue.ts`) et l'intention est celle de `mcp_materialize_program_blueprint` : aucune logique parallèle.
+- Current-State Inventory : champ `nextWork` (projection chargée une fois par processus depuis la révision déployée ; échec → `PROGRAM_PROJECTION_UNAVAILABLE`, jamais d'inventaire en échec) ; `mcp_materialize_program_blueprint` ajouté à `bootstrap.order` avant le claim. `claimNextTask` saute un candidat bloqué localement si un autre est compatible et conserve sinon `TASK_RESOURCE_CONFLICT` / `TASK_LOCK_CONFLICT`. Le `nextAction` du contexte gouverné suit `nextWork` lorsqu'il a été calculé pour sa session ; une tâche possédée reprenable garde sa propre action, une tâche possédée BLOCKED ne bloque plus la session ; sans `nextWork`, comportement historique.
+- Préflight runtime OIDC (17:58Z, `truncated=false`) : file `storeRevision=242` (`37222548025`), 2 sessions non closes toutes EXPIRED (`37222549516`), 0 lock (`37222551125`) ; aucune collision sur `orchestration:task-dispatch`. Aucun claim/session/lock créé.
+- Tests : RED `8e772a9` (CI #2207 : 826/827, 1 échec attendu) ; 11 tests ciblés (projection pure, cohérence avec l'outil de matérialisation, file atomique réelle bout-en-bout, inventaire, contexte gouverné) ; suite locale 837/837.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale DISPATCH-03 DONE (et `PB-DISPATCH` DONE), fermeture de #222, puis `TB-W3-C3-01`.
+
 ## 2026-10-04 — W3 DISPATCH-02 Resume-owned-first governed claim — DONE et attesté
 
 - PR #229 fusionnée sous garde exact-head depuis `95783727c9c18ee48846a02d4a4d1a1b1aad8af3` au merge `870305fc814773d8fb10f0a4fc2480a74885e46f` ; RED CI #2201 (4 échecs attendus), CI PR `37221364113`, CI main `37221468356` (#2203), Governed Deploy `37221468346` (#106) SUCCESS.

@@ -10,6 +10,7 @@ import { deriveToolSurfaceProjection } from '../governance/toolSurfaceAttestatio
 import { deriveClientEvidence } from '../operationalMemory/connectionContext.js';
 import type { ClientObservationRecorder } from '../operationalMemory/clientPresence.js';
 import type { GovernedLockService } from '../operationalMemory/lockService.js';
+import { RESUMABLE_TASK_STATUSES } from '../operationalMemory/taskQueue.js';
 import {
   NOOP_OPERATIONAL_AUDIT,
   type OperationalAudit
@@ -167,14 +168,26 @@ function nextAction(
   bootstrapStatus: GovernedOperationalContext['bootstrap']['status'],
   currentTask: CurrentStateInventory['currentTask'],
   firstExecutableTask: CurrentStateInventory['firstExecutableTask'],
+  nextWork: CurrentStateInventory['nextWork'] | null,
   github: GithubOperationalContext,
   foreignLock: boolean
 ): string | null {
   if (liveState?.nextAction) return liveState.nextAction;
   if (!session) return 'mcp_open_governed_session';
   if (bootstrapStatus !== 'CURRENT') return 'mcp_acknowledge_governed_context';
-  if (currentTask) return currentTask.nextAction ?? 'mcp_transition_governed_task';
-  if (firstExecutableTask) return 'mcp_claim_next_governed_task';
+  // DISPATCH-03: the next-work projection drives the action only when it was
+  // computed for this session. Resumable owned work keeps its own next action;
+  // owned work that is not resumable (e.g. BLOCKED) never stalls the session
+  // when compatible work is projected.
+  const projected = nextWork?.governedSessionId === session.governedSessionId ? nextWork : null;
+  if (currentTask && (RESUMABLE_TASK_STATUSES.has(currentTask.status) || !projected?.tool)) {
+    return currentTask.nextAction ?? 'mcp_transition_governed_task';
+  }
+  if (projected) {
+    if (projected.tool) return projected.tool;
+  } else if (firstExecutableTask) {
+    return 'mcp_claim_next_governed_task';
+  }
   if (foreignLock) return 'wait_for_governed_lock';
   if (github.checks.failed > 0 || github.checks.conclusion === 'failure') {
     return 'resolve_github_checks';
@@ -372,6 +385,7 @@ export function createGovernedOperationalContextService(
       liveState, session, bootstrapStatus,
       currentTask,
       firstExecutableTask,
+      currentState?.nextWork ?? null,
       github, foreignLock
     );
     const operation = computedNextAction ?? 'observe_operational_context';

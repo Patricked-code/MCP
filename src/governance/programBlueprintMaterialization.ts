@@ -30,9 +30,11 @@ export type ProgramBlueprintBinding = {
   programProjectionDigest: string;
 };
 
-type ReadinessLibrary = {
+export type ReadinessLibrary = {
   deriveProgramReadiness(projection: unknown): {
     blueprints: Array<{ id: string; currentState: string; derivedState: string }>;
+    /** Derived READY blueprints in program order (FIRST_COLLISION_FREE_IN_PROGRAM_ORDER). */
+    readyBlueprintIds: string[];
   };
 };
 
