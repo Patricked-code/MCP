@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 DISPATCH-03 livré et attesté ; boucle de dispatch #222 complète
+
+- PR #231 fusionnée au SHA `6df23b9` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37223532065` / `37223533843`.
+- `TB-W3-DISPATCH-03` et `PB-DISPATCH` clôturés DONE ; READY recalculés : `TB-W3-A3-02`, `TB-W3-C3-01`, `TB-W3-GGCC-GIT-READ`.
+
 ## 2026-10-04 — W3 DISPATCH-03 Connected-agent next-work projection (candidate)
 
 - Le Current-State Inventory expose `nextWork`, projection read-only du prochain travail de la session (reprise, claim compatible ou blueprint READY sans collision), sans claim ni création de tâche ; le contexte gouverné en dérive `nextAction`.

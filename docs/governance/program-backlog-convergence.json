@@ -73,8 +73,8 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 16,
-      "PARTIALLY_IMPLEMENTED": 6,
+      "DONE": 17,
+      "PARTIALLY_IMPLEMENTED": 5,
       "KNOWN_NOT_ANALYZED": 6,
       "DESIGNED_NOT_IMPLEMENTED": 6,
       "CONDITIONAL": 2,
@@ -1308,7 +1308,7 @@
         "sourceId": "#222",
         "title": "[PROGRAM INTAKE] Autonomous task dispatch loop — converge to canonical target architecture",
         "coveredBy": "PB-DISPATCH",
-        "disposition": "PARTIALLY_IMPLEMENTED",
+        "disposition": "DONE",
         "observedMainSha": "0f8ceebbae386832f66028fd9163e81871e746f0"
       },
       {
@@ -1437,7 +1437,7 @@
     {
       "id": "PB-DISPATCH",
       "title": "Autonomous governed task-dispatch loop",
-      "disposition": "PARTIALLY_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "orchestration.autonomous-dispatch-loop",
       "implementationMode": "EXTEND",
       "existingAuthorities": [
@@ -1452,7 +1452,7 @@
         "PB-B3",
         "PB-UAC"
       ],
-      "nextAction": "DISPATCH-01 (materialization) and DISPATCH-02 (resume-owned-first claim) DONE. Next: TB-W3-DISPATCH-03 connected-agent next-work projection.",
+      "nextAction": "DONE: DISPATCH-01 (materialization), DISPATCH-02 (resume-owned-first claim) and DISPATCH-03 (connected-agent next-work projection) are attested. Deferred evolutions stay with their owners: capability-aware eligibility (D2), multiple TargetContexts (MULTI_PROJECT_LIVE_STATE), agent wake (H/I), runtime DONE -> blueprint DONE (versioned exact-head step).",
       "subtasks": [
         "Bind materialization to an exact blueprint identity and its derived READY state, idempotently, through the existing intent reconciliation",
         "Resume the session-owned active task before claiming new work; never steal or transfer on liveness",
@@ -2472,7 +2472,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_DISPATCH02_DONE_A32_READY_RUNTIME_CLAIM_DISPATCH03_C31_GGCC_GIT_READ_READY",
+    "currentWaveStatus": "W3_DISPATCH_DONE_A32_READY_RUNTIME_CLAIM_C31_GGCC_GIT_READ_READY",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2493,7 +2493,6 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-DISPATCH-03",
       "TB-W3-C3-01",
       "TB-W3-GGCC-GIT-READ"
     ],
@@ -4299,8 +4298,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
-        "reason": "Dependency-gated; recomputed automatically after its dependency is DONE with evidence."
+        "state": "DONE",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "PR #231 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. The Current-State Inventory projects, read-only, the next work of the requesting session (resume owned, claim the first compatible task, materialize the first collision-free READY blueprint), recomputed on every read; claims skip locally blocked candidates; nothing is claimed or created automatically."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -4323,6 +4324,52 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 231,
+        "intake": 222,
+        "projection": "mcp://wealthtech/current-state/inventory#nextWork",
+        "redHeadSha": "8e772a9976686c63fd8e9382b9dc2896118be1b7",
+        "redCiRunNumber": 2207,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "ed100d68e7d8204c5c66761f5efe3c8055f86099",
+        "prCiRunId": 37223273561,
+        "testCount": 837,
+        "mergeSha": "6df23b91551a97cdf10968c22071036d5942f11b",
+        "mainCiRunId": 37223380722,
+        "governedDeployRunId": 37223380611,
+        "governedDeployRuntimeRevision": "6df23b91551a97cdf10968c22071036d5942f11b",
+        "runtimePreflightRunIds": [
+          37222548025,
+          37222549516,
+          37222551125
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37223532065,
+            "workflowSha": "6df23b91551a97cdf10968c22071036d5942f11b",
+            "status": "SUCCESS",
+            "observed": "main@6df23b91551a97cdf10968c22071036d5942f11b, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "1fb7bcfc9ab54ac109e23f7133498e37f17e145d0fcd1051cfe906b152bf3867",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-04T18:12:51.282Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37223533843,
+            "workflowSha": "6df23b91551a97cdf10968c22071036d5942f11b",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #108)",
+            "outputSha256": "0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-04T18:13:29.414Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-04T18:15:00Z"
       }
     },
     {
@@ -9658,6 +9705,12 @@
           "state": "DONE",
           "pullRequest": 229,
           "mergeSha": "870305fc814773d8fb10f0a4fc2480a74885e46f"
+        },
+        {
+          "blueprintId": "TB-W3-DISPATCH-03",
+          "state": "DONE",
+          "pullRequest": 231,
+          "mergeSha": "6df23b91551a97cdf10968c22071036d5942f11b"
         }
       ]
     },
@@ -10268,6 +10321,41 @@
     },
     "deferred": [
       "Capability-aware eligibility (D2 Effective Capabilities)"
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3DispatchNextWorkHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "6df23b91551a97cdf10968c22071036d5942f11b",
+    "blueprintId": "TB-W3-DISPATCH-03",
+    "lotId": "DISPATCH.3",
+    "intake": 222,
+    "delivered": [
+      "Current-State Inventory nextWork: pure, read-only projection for the requesting session (resume owned -> claim first compatible task -> materialize first collision-free READY blueprint), recomputed on every read, bound to its governedSessionId",
+      "One selection logic: the projection reuses the queue rules exported by taskQueue.ts and the materialization intent builder; a blueprint is projected only if mcp_materialize_program_blueprint would build it",
+      "Local blocker != global stop: the projection and claimNextTask skip a candidate blocked by an active scope or a foreign lock when a compatible one exists; with none the claim keeps TASK_RESOURCE_CONFLICT / TASK_LOCK_CONFLICT",
+      "Governed context nextAction follows nextWork for its own session; resumable owned work keeps its own action; owned BLOCKED work no longer stalls the session; without nextWork the historical order is unchanged",
+      "The deployed program projection is loaded once per process; any failure degrades nextWork to NONE and never fails the inventory"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37222548025,
+      "sessionsRunId": 37222549516,
+      "locksRunId": 37222551125,
+      "observedAt": "2026-10-04T17:58:41Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "orchestration:task-dispatch",
+      "collision": false
+    },
+    "deferred": [
+      "Capability-aware eligibility (D2 Effective Capabilities)",
+      "Multiple TargetContexts per server (MULTI_PROJECT_LIVE_STATE)",
+      "Provider wake/notification of connected agents (H tracing / I synthetic monitoring)",
+      "Runtime DONE -> blueprint DONE stays a versioned exact-head evidence step"
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
