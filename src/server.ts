@@ -35,6 +35,7 @@ import {
   recordGithubConnection,
   renderGitSettingsPage
 } from './github/registry.js';
+import { deriveRepositoryMappingCompletion, safeWebReturnPath } from './governedContext/contextCompletion.js';
 import { createGithubDeployRouter } from './deploy/routes.js';
 import {
   verifyGithubOidcToken,
@@ -155,6 +156,10 @@ function requireWebLogin(req: express.Request, res: express.Response, next: expr
 
 function renderLoginPage(error?: string, next = '/dashboard'): string {
   const safeError = error ? `<p style="color:#b91c1c;font-weight:700">${escapeHtml(error)}</p>` : '';
+  // E2: a completion link returns to the surface that asks for the missing context.
+  const destination = next === '/dashboard'
+    ? ''
+    : `<p>Après connexion : retour à <code>${escapeHtml(next)}</code> pour compléter le contexte demandé.</p>`;
 
   return `<!doctype html>
 <html lang="fr">
@@ -167,6 +172,7 @@ function renderLoginPage(error?: string, next = '/dashboard'): string {
   <main style="max-width:540px;margin:10vh auto;background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:28px">
     <h1>Connexion MCP WealthTech</h1>
     <p>Entre le token MCP pour accéder au tableau de bord.</p>
+    ${destination}
     ${safeError}
     <form method="post" action="/login">
       <input type="hidden" name="next" value="${escapeHtml(next)}" />
@@ -490,13 +496,13 @@ export async function startHttpServer(): Promise<void> {
   });
 
   app.get('/login', (req, res) => {
-    const next = typeof req.query.next === 'string' ? req.query.next : '/dashboard';
+    const next = safeWebReturnPath(req.query.next);
     res.type('html').send(renderLoginPage(undefined, next));
   });
 
   app.post('/login', (req, res) => {
     const token = typeof req.body.token === 'string' ? req.body.token : '';
-    const next = typeof req.body.next === 'string' && req.body.next.startsWith('/') ? req.body.next : '/dashboard';
+    const next = safeWebReturnPath(req.body.next);
 
     if (!tokenMatches(token)) {
       res.status(401).type('html').send(renderLoginPage('Token MCP invalide.', next));
@@ -521,11 +527,15 @@ export async function startHttpServer(): Promise<void> {
     }
   });
 
-  app.get('/git', requireWebLogin, async (_req, res) => {
+  app.get('/git', requireWebLogin, async (req, res) => {
     try {
       const status = await getGithubConnectionStatus();
       const registry = await readGitRegistry();
-      res.type('html').send(renderGitSettingsPage(status, registry));
+      // E2: a completion link names the repository whose mapping is shown.
+      const mapping = typeof req.query.repository === 'string'
+        ? deriveRepositoryMappingCompletion(req.query.repository, await readGitRegistryProjectEvidence())
+        : undefined;
+      res.type('html').send(renderGitSettingsPage(status, registry, mapping ? { mapping } : {}));
     } catch (error) {
       logger.error({ error }, 'Erreur page /git');
       res.status(500).type('text').send('Erreur page paramétrage Git.');

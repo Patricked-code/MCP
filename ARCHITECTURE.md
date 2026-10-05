@@ -345,6 +345,50 @@ dans l'ordre de leurs dépendances :
   principal, un login ou un identifiant. La complétion guidée (E2) et le
   consentement explicite (E3) restent à livrer.
 
+La complétion guidée E2 (`TB-W3-E2-01`,
+`src/governedContext/contextCompletion.ts`,
+`src/github/credentialCompletion.ts`) fait évoluer les surfaces existantes
+`/login`, `/git` et `/github` sans créer de second frontend. Une session
+gouvernée n'est visible que de son transport lié ou de son propriétaire OAuth.
+La session web à jeton partagé ne voit donc jamais le contexte manquant d'une
+session, et E2 n'élargit pas cette visibilité. Le lien entre les deux passe
+par la surface que nomme E1.
+
+- **Côté agent.** `GovernedOperationalContext.contextCompletion` traduit la
+  première lacune d'E1 en une seule étape :
+  - `CALL_TOOL` : une lacune automatique est restaurée par l'outil nommé,
+    sans question ;
+  - `ASK_OPERATOR` : seule cette lacune est demandée, avec le lien absolu de
+    la surface web existante sur l'origine publique configurée (l'émetteur
+    OAuth) : `/github`, ou `/git?repository=Owner/Name` ;
+  - `PROPOSE_GOVERNED_CHANGE` : `.mcp/identity-policy.json` par PR
+    gouvernée, ou `data/github-accounts.json` ;
+  - `RECONCILE` ou `UNAVAILABLE`.
+  `doNotAsk` liste les entrées jamais demandées : le contexte connu et
+  l'aval qui attend.
+- **`/github` et `/git`.** Chaque surface redérive côté serveur l'identifiant
+  GitHub qu'elle porte (les statuts HTTP de `GET /user` et du contrôle de
+  l'organisation).
+  - **Demandé seulement s'il le faut.** Le token n'est demandé que s'il est
+    absent, refusé (401) ou aveugle à l'organisation (403/404).
+  - **Contexte restauré.** Un identifiant valide est affiché comme restauré ;
+    son remplacement reste facultatif.
+  - **Observation impossible.** Une observation que GitHub n'a pas pu
+    fournir ne demande rien.
+  - **Questions statiques.** La liste fixe de questions de paramétrage de
+    `/github` est remplacée par un renvoi vers `/git`.
+- **`/git?repository=Owner/Name`.** La page affiche le mapping GitRegistry de
+  ce dépôt avec la règle d'appariement du résolveur de projet
+  (`projectMappingCandidates`) :
+  - mapping présent : affiché, jamais redemandé ;
+  - mapping absent : demandé, par le chemin gouverné du registre ;
+  - plusieurs mappings : choix à faire ;
+  - registre illisible : rien n'est demandé.
+- **`/login`.** La connexion ne renvoie qu'à un chemin de la même origine et
+  affiche la surface à laquelle elle ramène.
+- **Hors périmètre.** E2 ne crée ni ne modifie aucune ressource. Le
+  consentement explicite avant toute création ou mutation relève d'E3.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.

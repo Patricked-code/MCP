@@ -37,6 +37,7 @@ import type {
   PublicGovernedSession
 } from './types.js';
 import type { GithubIdentityScope } from './github.js';
+import { deriveContextCompletion } from './contextCompletion.js';
 import { deriveMissingContext } from './missingContext.js';
 import type { CurrentStateInventory, CurrentStateService } from '../currentState/service.js';
 
@@ -65,6 +66,8 @@ type ContextServiceOptions = {
   clientPresence?: Pick<ClientObservationRecorder, 'presenceFor'>;
   /** D1: reads the versioned MCP branch governance policy; defaults to `.mcp/branch-governance.json`. */
   readBranchGovernance?: () => Promise<unknown>;
+  /** E2: the configured public MCP origin; completion links are omitted without it. */
+  publicBaseUrl?: string | null;
 };
 
 export type GovernedOperationalContextService = {
@@ -532,6 +535,11 @@ export function createGovernedOperationalContextService(
       github,
       projectReality
     });
+    // E2: that gap as one completion step, linked to the existing surface.
+    const contextCompletion = deriveContextCompletion(missingContext, {
+      baseUrl: options.publicBaseUrl ?? null,
+      repository: session?.repository ?? null
+    });
 
     const context: GovernedOperationalContext = {
       schemaVersion: 1,
@@ -547,6 +555,7 @@ export function createGovernedOperationalContextService(
       governanceInheritance,
       effectiveCapabilities,
       missingContext,
+      contextCompletion,
       session,
       bootstrap: {
         required: true,

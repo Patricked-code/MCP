@@ -1,5 +1,19 @@
 # DECISIONS_LOG.md
 
+## 2026-10-05 — E2 : complétion guidée sur les surfaces existantes, sans élargir la visibilité des sessions
+
+Décision technique (déduite, #221 ; ROADMAP chantier E : « faire évoluer les surfaces frontend existantes `/login`, `/git`, `/github` en complétion guidée ; demander uniquement les informations manquantes ; restaurer automatiquement un contexte déjà gouverné ») :
+
+- **Contrainte.** Une session gouvernée n'est visible que de son transport lié ou de son propriétaire OAuth. La session web à jeton partagé n'a pas de principal. Afficher le contexte manquant d'une session sur le web exigerait un nouvel accès : ce serait un élargissement de permission, écarté.
+- **Pont agent ↔ web.** E1 nomme la surface. `contextCompletion` donne à l'agent une étape unique, avec le lien absolu vers la surface web sur l'origine publique déjà configurée (l'émetteur OAuth, conformément à `EXISTING_MCP_EXPOSURE_FIRST`). La surface redérive côté serveur ce qu'elle porte et ne demande que ce qui manque réellement ; un paramètre d'URL n'est qu'un indice d'affichage validé, jamais une preuve.
+- **Identifiant GitHub.** La classification repose sur les statuts HTTP, enregistrés sous forme structurée et non plus déduits d'un message :
+  - 401 : identifiant refusé, le token est demandé ;
+  - 403 ou 404 sur l'organisation : identifiant aveugle à l'organisation, le token est demandé ;
+  - autre statut ou aucune réponse : rien n'est demandé, car l'inconnu ne justifie jamais une question.
+- **Mapping.** `/git` réutilise la règle d'appariement du résolveur de projet, extraite dans `projectMappingCandidates` sans changement de comportement. Un mapping absent est demandé par le chemin gouverné du registre ; E2 n'en crée aucun.
+- **Retour de connexion.** `/login` ne renvoie qu'à un chemin de la même origine. Le lien de complétion ramène l'opérateur à la surface qui demande la lacune.
+- **Module pur.** Les aides de complétion de l'identifiant vivent dans `src/github/credentialCompletion.ts`, sans configuration : le rendu du registre reste importable sans l'environnement d'exécution.
+
 ## 2026-10-05 — E1 : contexte manquant détecté depuis les autorités existantes, première lacune seulement
 
 Décision technique (déduite, #221 ; `PB-E` `REUSE_WRAP_GENERALIZE_EXTEND`) : E1 lit les preuves que le contexte gouverné compose déjà. Il n'ajoute ni source, ni surface, ni question. Il respecte les non-régressions de PB-E : « No parallel frontend », « No repeated questions for known context », « No write from inferred consent ».

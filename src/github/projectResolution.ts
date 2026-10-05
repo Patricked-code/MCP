@@ -69,6 +69,19 @@ function same(left: string, right: string): boolean {
   return left.toLowerCase() === right.toLowerCase();
 }
 
+/**
+ * The GitRegistry mappings of a repository, ordered by mapping id: the
+ * matching rule of the project resolution, shared with the E2 completion.
+ */
+export function projectMappingCandidates(
+  registry: Pick<GitRegistryProjectEvidence, 'mappings'>,
+  repositoryId: string
+): GitRegistryProjectEvidence['mappings'] {
+  return registry.mappings
+    .filter((mapping) => same(mapping.repositoryId, repositoryId))
+    .sort((left, right) => left.mappingId.localeCompare(right.mappingId));
+}
+
 function unresolved(
   input: GithubProjectResolutionInput,
   status: Exclude<GithubProjectStatus, 'RESOLVED'>,
@@ -125,13 +138,11 @@ export function resolveGithubProject(
   }
 
   const repositoryId = input.repository.selectedRepository.repositoryId;
-  const matches = input.registry.mappings
-    .filter((mapping) => same(mapping.repositoryId, repositoryId))
+  const matches = projectMappingCandidates(input.registry, repositoryId)
     .map((mapping) => ({
       mapping,
       candidate: { mappingId: mapping.mappingId, projectId: mapping.projectId }
-    }))
-    .sort((left, right) => left.mapping.mappingId.localeCompare(right.mapping.mappingId));
+    }));
 
   if (matches.length === 0) {
     return unresolved(input, 'NONE', 'GITHUB_PROJECT_MAPPING_NOT_FOUND', { repositoryId });

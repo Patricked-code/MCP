@@ -8,6 +8,7 @@ import {
   type GovernedOperationalContextService
 } from '../governedContext/service.js';
 import { liveStateEngine } from '../liveState/engine.js';
+import { oauthIssuer } from '../oauth.js';
 import type { GovernedSessionService } from '../operationalMemory/sessionService.js';
 import { operationalMemoryConfig } from '../operationalMemory/config.js';
 import { getDefaultClientObservationRecorder } from '../operationalMemory/clientPresence.js';
@@ -57,6 +58,7 @@ export function getGovernedContextToolDependencies(): GovernedContextToolDepende
       existingWriteToolsEnabled: env.ENABLE_WRITE_TOOLS,
       currentState: getCurrentStateService(),
       audit: operational.audit,
+      publicBaseUrl: oauthIssuer(),
       ...(operationalMemoryConfig.enabled
         ? {
             clientPresence: getDefaultClientObservationRecorder(getDefaultOperationalEventJournal({
