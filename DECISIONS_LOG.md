@@ -1,5 +1,17 @@
 # DECISIONS_LOG.md
 
+## 2026-10-05 — E3 : consentement explicite et validé côté serveur avant les mutations de complétion
+
+Décision technique (déduite, #221 ; ROADMAP chantier E : « exiger un consentement explicite avant toute création ou mutation de ressource qui n'existe pas encore » ; critère d'acceptation d'E3 posé à la clôture d'E2) :
+
+- **Périmètre.** Les seules mutations atteignables depuis une étape de complétion sont les formulaires de connexion GitHub de `/github` et `/git`. Une soumission y remplaçait l'identifiant du conteneur, enregistrait le compte dans GitRegistry et, si la connexion réussissait, ajoutait un mapping pour chaque dépôt visible. Cette dernière opération créait des ressources inconnues sans consentement distinct. Les bindings d'identité (`.mcp/identity-policy.json`) passent par une PR gouvernée et les connexions durables (`data/github-accounts.json`) n'ont aucune surface web : rien à protéger de plus ici.
+- **Deux consentements explicites**, chacun nommant sa ressource et son autorité :
+  - l'identifiant, dans le fichier secret du conteneur et dans GitRegistry ;
+  - la découverte, dans GitRegistry.
+  Ils sont décochés par défaut. La découverte n'est jamais déduite de la connexion.
+- **Validation côté serveur, réutilisée.** Le ticket de consentement signé du lot de consentement OAuth et son contrôle de même origine sont généralisés (`issueWebConsentTicket`, `verifyWebConsentTicket`, `isSameOriginSubmission`). Le domaine du ticket est séparé de l'OAuth, et le ticket est lié à son objet et à la session web. La décision (`decideConnectConsent`) précède tout appel GitHub ou toute écriture ; un refus ne modifie rien.
+- **Traçabilité.** Le consentement est enregistré dans l'audit GitRegistry de la connexion.
+
 ## 2026-10-05 — E2 : complétion guidée sur les surfaces existantes, sans élargir la visibilité des sessions
 
 Décision technique (déduite, #221 ; ROADMAP chantier E : « faire évoluer les surfaces frontend existantes `/login`, `/git`, `/github` en complétion guidée ; demander uniquement les informations manquantes ; restaurer automatiquement un contexte déjà gouverné ») :

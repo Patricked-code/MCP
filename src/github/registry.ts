@@ -2,6 +2,7 @@ import { mkdir, open, readFile, writeFile, chmod } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { createHash } from 'node:crypto';
 import type { GitHubConnectionStatus } from './connection.js';
+import { renderConnectConsentFields } from './connectConsent.js';
 import { renderGithubCredentialCompletion, renderGithubCredentialRequest } from './credentialCompletion.js';
 import type { RepositoryMappingCompletion } from '../governedContext/contextCompletion.js';
 import {
@@ -381,7 +382,19 @@ async function autoDiscover(status: GitHubConnectionStatus, actor: string): Prom
   }
 }
 
-export async function recordGithubConnection(status: GitHubConnectionStatus, requestedModeInput: unknown, actor = 'mcp-web'): Promise<GitRegistry> {
+/** E3: the explicit consents of a connect form; discovery runs only with its own consent. */
+export type GithubConnectionConsent = { credential: boolean; discovery: boolean };
+
+export async function recordGithubConnection(
+  status: GitHubConnectionStatus,
+  requestedModeInput: unknown,
+  actor = 'mcp-web',
+  options: { consent?: GithubConnectionConsent } = {}
+): Promise<GitRegistry> {
+  const consent: GithubConnectionConsent = {
+    credential: options.consent?.credential === true,
+    discovery: options.consent?.discovery === true
+  };
   const r = await readGitRegistry();
   const requestedMode = mode(requestedModeInput);
   const login = status.login || status.org || 'unknown';
@@ -390,9 +403,9 @@ export async function recordGithubConnection(status: GitHubConnectionStatus, req
   const at = now();
   const entry: GitHubAccountRegistryEntry = { id, login, org: status.org, accountType: status.org && status.org === login ? 'organization' : 'user', authMode: 'pat', requestedMode, connectedAt: existing?.connectedAt || at, lastCheckedAt: at, tokenExpiresAt: status.tokenExpiresAt, reposVisible: status.reposVisible, orgAccessible: status.orgAccessible, canReadReposHint: status.canReadReposHint, canWriteReposHint: status.canWriteReposHint, canAdminOrgHint: status.canAdminOrgHint, enabledOnPublicMcpDomain: existing?.enabledOnPublicMcpDomain ?? true, status: status.connected && status.warnings.length === 0 ? 'connected' : status.connected ? 'warning' : 'error', warnings: status.warnings };
   r.accounts = [entry, ...r.accounts.filter((x) => x.id !== id)];
-  r.auditEvents.push({ id: eid(), at, type: 'github.connection.recorded', actor, message: `GitHub account ${login} recorded with requested mode ${requestedMode}`, metadata: { org: status.org, reposVisible: status.reposVisible, orgAccessible: status.orgAccessible, autoDiscoveryRequested: status.connected, destructiveActions: false } });
+  r.auditEvents.push({ id: eid(), at, type: 'github.connection.recorded', actor, message: `GitHub account ${login} recorded with requested mode ${requestedMode}`, metadata: { org: status.org, reposVisible: status.reposVisible, orgAccessible: status.orgAccessible, autoDiscoveryRequested: status.connected && consent.discovery, consent, destructiveActions: false } });
   await writeGitRegistry(r);
-  return attach(status.connected ? await autoDiscover(status, actor) : r);
+  return attach(status.connected && consent.discovery ? await autoDiscover(status, actor) : r);
 }
 
 function ctxHtml(r: GitRegistry): string {
@@ -426,7 +439,7 @@ function mappingCompletionHtml(mapping: RepositoryMappingCompletion | undefined)
 export function renderGitSettingsPage(
   status: GitHubConnectionStatus,
   registry: GitRegistry,
-  options: { mapping?: RepositoryMappingCompletion } = {}
+  options: { mapping?: RepositoryMappingCompletion; consentTicket?: string } = {}
 ): string {
-  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"/><title>MCP WealthTech - Git</title><style>body{font-family:system-ui;margin:32px}.card{border:1px solid #ddd;border-radius:12px;padding:16px;margin:16px 0}.warning{background:#fff7ed}td,th{border-bottom:1px solid #eee;padding:6px;text-align:left}table{border-collapse:collapse;width:100%}code{background:#f3f4f6;padding:2px 4px}</style></head><body><h1>MCP WealthTech - Git</h1><p><a href="/dashboard">Dashboard</a> | <a href="/github/status">GitHub JSON</a> | <a href="/git/status">Registry JSON</a></p>${renderGithubCredentialCompletion(status)}${mappingCompletionHtml(options.mapping)}${ctxHtml(registry)}<section class="card"><h2>GitHub status</h2><p>connected=${status.connected ? 'yes' : 'no'} login=${esc(status.login || 'none')} org=${esc(status.org || org())} repos=${esc(status.reposVisible ?? 'n/a')}</p><p>Auto-discovery: valid connection synchronizes visible repositories additively. No clone, no delete, no deploy, no force push.</p></section>${renderGithubCredentialRequest(status, { request: 'Connect GitHub', optional: 'Reconnect GitHub (optional)' }, `<form method="post" action="/git/connect"><input name="org" value="${esc(status.org || org())}"/><input name="token" type="password" required/><select name="mode"><option value="read">read</option><option value="write">write</option><option value="admin">admin</option><option value="org_admin">org_admin</option></select><button type="submit">Connect and auto-discover repositories</button></form>`)}<section class="card"><h2>Mappings matching active GitHub</h2><table><tbody>${matched(registry, status)}</tbody></table></section><section class="card"><h2>All repo/server mappings</h2><table><thead><tr><th>Repo</th><th>Project</th><th>Server</th><th>Path</th><th>Branch</th><th>Access</th><th>Deploy</th></tr></thead><tbody>${rows(registry)}</tbody></table></section></body></html>`;
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"/><title>MCP WealthTech - Git</title><style>body{font-family:system-ui;margin:32px}.card{border:1px solid #ddd;border-radius:12px;padding:16px;margin:16px 0}.warning{background:#fff7ed}td,th{border-bottom:1px solid #eee;padding:6px;text-align:left}table{border-collapse:collapse;width:100%}code{background:#f3f4f6;padding:2px 4px}</style></head><body><h1>MCP WealthTech - Git</h1><p><a href="/dashboard">Dashboard</a> | <a href="/github/status">GitHub JSON</a> | <a href="/git/status">Registry JSON</a></p>${renderGithubCredentialCompletion(status)}${mappingCompletionHtml(options.mapping)}${ctxHtml(registry)}<section class="card"><h2>GitHub status</h2><p>connected=${status.connected ? 'yes' : 'no'} login=${esc(status.login || 'none')} org=${esc(status.org || org())} repos=${esc(status.reposVisible ?? 'n/a')}</p><p>Auto-discovery runs only with its explicit consent and synchronizes visible repositories additively. No clone, no delete, no deploy, no force push.</p></section>${renderGithubCredentialRequest(status, { request: 'Connect GitHub', optional: 'Reconnect GitHub (optional)' }, `<form method="post" action="/git/connect"><input name="org" value="${esc(status.org || org())}"/><input name="token" type="password" required/><select name="mode"><option value="read">read</option><option value="write">write</option><option value="admin">admin</option><option value="org_admin">org_admin</option></select>${renderConnectConsentFields({ ticket: options.consentTicket ?? '', org: status.org || org() })}<button type="submit">Connect GitHub</button></form>`)}<section class="card"><h2>Mappings matching active GitHub</h2><table><tbody>${matched(registry, status)}</tbody></table></section><section class="card"><h2>All repo/server mappings</h2><table><thead><tr><th>Repo</th><th>Project</th><th>Server</th><th>Path</th><th>Branch</th><th>Access</th><th>Deploy</th></tr></thead><tbody>${rows(registry)}</tbody></table></section></body></html>`;
 }

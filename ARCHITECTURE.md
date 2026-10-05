@@ -389,6 +389,30 @@ par la surface que nomme E1.
 - **Hors périmètre.** E2 ne crée ni ne modifie aucune ressource. Le
   consentement explicite avant toute création ou mutation relève d'E3.
 
+Le consentement E3 (`TB-W3-E3-01`, `src/github/connectConsent.ts`) protège les
+seules mutations atteignables depuis une étape de complétion : les
+formulaires de connexion GitHub de `/github` et `/git`.
+
+- **Deux consentements, chacun nommant sa ressource et son autorité.**
+  - Remplacer l'identifiant GitHub stocké dans le fichier secret du conteneur
+    et enregistrer la connexion dans GitRegistry (`REPLACE_GITHUB_CREDENTIAL`).
+  - Facultatif : ajouter à GitRegistry un mapping par dépôt visible encore
+    inconnu (`ADD_DISCOVERED_MAPPINGS`).
+  Les deux cases sont décochées par défaut.
+- **Validation côté serveur, avant tout appel GitHub ou toute écriture.** La
+  soumission doit :
+  - venir de la même origine (le contrôle de la page de consentement OAuth) ;
+  - porter un ticket de consentement signé et expirant (10 minutes),
+    séparé du domaine OAuth et lié à son objet (`github-connect`) et à la
+    session web qui a rendu le formulaire ;
+  - porter le consentement explicite de l'identifiant.
+  Sinon la requête est refusée (403) sans aucune modification.
+- **Découverte automatique.** Elle ne s'exécute plus à chaque connexion,
+  seulement avec son propre consentement. Le consentement est enregistré
+  dans l'événement d'audit GitRegistry `github.connection.recorded`.
+- **Limite connue.** Un ticket reste réutilisable par la même session web
+  pendant sa durée de validité.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.

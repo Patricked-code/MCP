@@ -1,5 +1,21 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 E3 Consent & Validation — GREEN candidate
+
+- **Reprise current-first.** `main=fecbb6fe178ef1ffd74416b565081ef1f299678e` (E2 clôturé, PR #254). Aucune nouvelle intake ni consigne propriétaire. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-E3-01` est retenu.
+- **Préflight runtime (18:49Z)** :
+  - tasks `37358791835` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY) ;
+  - sessions `37358795511` (2 EXPIRED) ;
+  - locks `37358798532` (0 actif).
+  Aucune collision sur `context:guided-completion:consent`.
+- **Constat.** Les formulaires de connexion GitHub de `/github` et `/git` sont les seules mutations atteignables depuis une étape de complétion. Une soumission y remplaçait l'identifiant, enregistrait le compte et découvrait automatiquement un mapping pour chaque dépôt visible, sans consentement distinct.
+- **Livré.**
+  - `src/github/connectConsent.ts` : deux consentements explicites, décochés par défaut, chacun nommant sa ressource et son autorité (identifiant dans le fichier secret du conteneur et dans GitRegistry ; découverte dans GitRegistry), et la décision `decideConnectConsent`.
+  - `src/oauth.ts` : le ticket de consentement OAuth est généralisé (`issueWebConsentTicket`, `verifyWebConsentTicket`). Le ticket signé et expirant est séparé du domaine OAuth et lié à son objet et à la session web ; `isSameOriginSubmission` est exporté.
+  - `/github/connect` et `/git/connect` décident du consentement avant tout appel GitHub ou toute écriture ; un refus (403) ne modifie rien. `recordGithubConnection` ne découvre qu'avec son consentement et l'enregistre dans l'audit.
+- **Preuves** : RED `3444400`, CI #2273 (`37359005082`) : 931 tests, 1 échec attendu (module absent). GREEN local : typecheck et build verts ; suite complète 935/935.
+- **NEXT_ACTION** : CI exact-head de la PR #255, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-E3-01` (dernier lot de `PB-E`).
+
 ## 2026-10-05 — W3 E2 Context Completion Wizard — DONE et attesté
 
 - **Fusion et CI** : PR #253 fusionnée sous garde exact-head depuis `ec6f47342d9b7bd7b5c83f56478f112c6bb795b6` au merge `e51e9958b211186560b2054595fe7bc3fc564d19`.

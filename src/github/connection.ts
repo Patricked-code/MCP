@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile, chmod, stat } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { env } from '../config/env.js';
 import { resolveGithubApiBase } from './authorizationDiagnostics.js';
+import { renderConnectConsentFields } from './connectConsent.js';
 import {
   deriveGithubCredentialCompletion,
   renderGithubCredentialCompletion,
@@ -423,7 +424,10 @@ function escapeHtml(value: unknown): string {
     .replaceAll("'", '&#39;');
 }
 
-export function renderGithubConnectionPage(status: GitHubConnectionStatus): string {
+export function renderGithubConnectionPage(
+  status: GitHubConnectionStatus,
+  options: { consentTicket?: string } = {}
+): string {
   const scopes = status.oauthScopes.length ? status.oauthScopes.join(', ') : 'non communiqué / token finement limité possible';
   const warnings = status.warnings.length
     ? `<ul>${status.warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join('')}</ul>`
@@ -490,6 +494,7 @@ export function renderGithubConnectionPage(status: GitHubConnectionStatus): stri
         <option value="admin">Administration repos</option>
         <option value="org_admin">Administration organisation</option>
       </select>
+      ${renderConnectConsentFields({ ticket: options.consentTicket ?? '', org: status.org || env.GITHUB_ORG || null })}
       <button type="submit">Vérifier et connecter</button>
     </form>`)}
 
