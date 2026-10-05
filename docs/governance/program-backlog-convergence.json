@@ -74,8 +74,8 @@
     "externalActiveRecords": 25,
     "dispositionCounts": {
       "DONE": 22,
-      "PARTIALLY_IMPLEMENTED": 4,
-      "KNOWN_NOT_ANALYZED": 5,
+      "PARTIALLY_IMPLEMENTED": 5,
+      "KNOWN_NOT_ANALYZED": 4,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
       "DEFERRED": 3
@@ -1671,7 +1671,7 @@
     {
       "id": "PB-F",
       "title": "F Governed Provisioning",
-      "disposition": "KNOWN_NOT_ANALYZED",
+      "disposition": "PARTIALLY_IMPLEMENTED",
       "integrationSlot": "provisioning.governed",
       "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
       "existingAuthorities": [
@@ -1684,7 +1684,7 @@
         "PB-E",
         "PB-D2"
       ],
-      "nextAction": "Decompose provisioning by resource type and reuse bounded write primitives before adding any new primitive.",
+      "nextAction": "F.0 DONE: .mcp/provisioning-contracts.json classifies every registered write primitive and defines the repository, project-runtime and domain-binding contracts; no resource type is provisionable yet. ADMIN-01 (repository creation primitive), F.2 (project runtime) and F.3 (domain binding) are READY; F.1 composes ADMIN-01; F.E2E proves the contracts.",
       "subtasks": [
         "Repository provisioning",
         "Project/runtime provisioning",
@@ -2600,7 +2600,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_E_DONE_F01_PRW_GGCC_GH_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_H01_READY_TERMINAL_ACCEPTANCE_WIRED",
+    "currentWaveStatus": "W3_F01_DONE_ADMIN01_F03_F04_PRW_GGCC_GH_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_H01_READY_TERMINAL_ACCEPTANCE_WIRED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2621,9 +2621,11 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-F-01",
+      "TB-W3-F-03",
+      "TB-W3-F-04",
       "TB-W3-PRW-01",
       "TB-W3-PRW-02",
+      "TB-W3-ADMIN-01",
       "TB-W3-GGCC-GIT-READ",
       "TB-W3-GGCC-GH-REPO-BRANCH",
       "TB-W3-GGCC-GH-COMMIT-FILE",
@@ -6040,10 +6042,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #257 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. The versioned policy .mcp/provisioning-contracts.json classifies every write-capable MCP tool, mutating HTTP route and workflow, and defines one contract per resource type (repository, project runtime, domain binding): exact target, absence proven by the existing resolvers, no-op on a matching resource and block on a conflicting one, the E3 consent naming the resource and its authority, an own consent for activation, bounded steps, health and a non-destructive rollback. Every missing primitive is a gap carried by an open blueprint; the pure validator fails closed on drift, and no resource type is provisionable yet."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -6074,6 +6076,66 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 257,
+        "policy": ".mcp/provisioning-contracts.json",
+        "validator": "src/governance/provisioningContracts.ts",
+        "classified": {
+          "writeCapableTools": 62,
+          "mutatingRoutes": 12,
+          "workflows": 5,
+          "primitives": 89
+        },
+        "contracts": [
+          "REPOSITORY",
+          "PROJECT_RUNTIME",
+          "DOMAIN_BINDING"
+        ],
+        "redHeadSha": "5d8b93c71dc1cc4f54402e396d4ae77cac1ffcdd",
+        "redCiRunId": 37389622528,
+        "redCiRunNumber": 2279,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "fe7b3024b5f00bc946b1bd6886edd1d24e3597f3",
+        "prCiRunId": 37390269900,
+        "prCiRunNumber": 2280,
+        "testCount": 941,
+        "mergeSha": "d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1",
+        "mainCiRunId": 37390441248,
+        "governedDeployRunId": 37390442113,
+        "governedDeployRuntimeRevision": "d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1",
+        "runtimePreflightRunIds": [
+          37388743442,
+          37388745496,
+          37388747546
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37390662478,
+            "workflowSha": "d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1",
+            "status": "SUCCESS",
+            "observed": "main@d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "c11896f554b9883dc1663cbff53e84f8cc5f9ba48ff20ecc41f9756023b296c3",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T23:49:39.256Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37390664427,
+            "workflowSha": "d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #132), published 127.0.0.1:8787->8787/tcp",
+            "observedFr": "conteneur healthy (redémarré par le deploy #132)",
+            "outputSha256": "c083f9286ac6b326e6f88a1e3ce168c0beb9fa4c550950e83e5de71deab41cba",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T23:49:39.057Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-05T23:50:50Z"
       }
     },
     {
@@ -6132,7 +6194,8 @@
       ],
       "greenAcceptance": [
         "F.1 satisfies its bounded objective using existing authorities first.",
-        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
+        "F.1 composes the REPOSITORY contract of .mcp/provisioning-contracts.json: the E3 consent provision-repository is decided server-side before the creation primitive, the GitRegistry mapping is bound to the exact provisioned repository by generalizing syncGithubReposToRegistry, and a failure never deletes or archives the repository."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -6188,7 +6251,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -6205,7 +6268,8 @@
       ],
       "greenAcceptance": [
         "F.2 satisfies its bounded objective using existing authorities first.",
-        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
+        "F.2 implements the PROJECT_RUNTIME contract of .mcp/provisioning-contracts.json: absence proven by a positive C4 NO_RUNTIME, target-bounded backup and creation, activation under its own consent, health, and a restore generalized from the Governed Deploy previous-image rollback; project-bound tools are never generalized implicitly."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -6261,7 +6325,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -6278,7 +6342,8 @@
       ],
       "greenAcceptance": [
         "F.3 satisfies its bounded objective using existing authorities first.",
-        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
+        "F.3 implements the DOMAIN_BINDING contract of .mcp/provisioning-contracts.json: a bounded served-domain observation for C5 first, then backup, binding, certificate and activation under its own consent, health, and a restore that removes only the binding it created; DNS stays observed only and protected applications are never provisioned."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -6350,7 +6415,8 @@
       ],
       "greenAcceptance": [
         "F.E2E satisfies its bounded objective using existing authorities first.",
-        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
+        "F.E2E proves each contract of .mcp/provisioning-contracts.json end to end: no-op on a matching resource, block on a conflicting one, exact-target safety, a refused consent changes nothing, and a rollback restores without destruction."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -6542,7 +6608,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -6559,7 +6625,8 @@
       ],
       "greenAcceptance": [
         "GH.ADMIN.1 satisfies its bounded objective using existing authorities first.",
-        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
+        "The repository creation primitive satisfies the REPOSITORY contract of .mcp/provisioning-contracts.json (F.0): private and organization-bounded, a name already taken is existence and never an overwrite, no implicit team access, webhook, secret, environment, deploy key or ruleset; registering it reclassifies the primitive and the create-repository gap in the policy."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -8176,7 +8243,8 @@
       "greenAcceptance": [
         "Only genuinely missing information is requested; known context is restored and resolved first.",
         "Explicit consent is obtained when governance requires it; no silent mutation.",
-        "Postconditions, evidence and governed rollback are shown for every provisioning step."
+        "Postconditions, evidence and governed rollback are shown for every provisioning step.",
+        "The Provisioning Center renders the steps, consents and gaps of .mcp/provisioning-contracts.json (deriveProvisioningCapabilities) and never offers a step whose primitive is still a gap."
       ],
       "readAuthorities": [
         "Missing-context detection and completion wizard (E1/E2)",
@@ -12827,6 +12895,65 @@
     "knownLimitations": [
       "A web consent ticket stays reusable by the same web session within its 10-minute validity; it never verifies for another purpose or another web session.",
       "Identity bindings (.mcp/identity-policy.json) are consented through their governed pull request and durable connections (data/github-accounts.json) have no web surface: no other completion mutation exists."
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3F01ProvisioningHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1",
+    "blueprintId": "TB-W3-F-01",
+    "lotId": "F.0",
+    "delivered": [
+      ".mcp/provisioning-contracts.json: a versioned contract projection (grants nothing, creates no task, adds no primitive) classifying 62 write-capable MCP tools, 12 mutating HTTP routes and 5 workflows as composable, observe, project-bound, MCP self-management, destructive or not provisioning; only the GitHub lifecycle writes are composable",
+      "Three contracts (repository, project runtime, domain binding): exact target, absence proven by the existing resolvers (missing evidence is never absence), no-op on a matching resource and block on a conflicting one, the E3 consent naming the resource and its authority, an own consent for activation, bounded steps, health and a non-destructive rollback, nothing implicit",
+      "src/governance/provisioningContracts.ts: validateProvisioningContracts fails closed against the CI-verified function cartography, the source routes and the Program Backlog; deriveProvisioningCapabilities projects the composable steps and the carried gaps"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37388743442,
+      "sessionsRunId": 37388745496,
+      "locksRunId": 37388747546,
+      "observedAt": "2026-10-05T23:29:22Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "provisioning:design",
+      "collision": false
+    },
+    "notObserved": [],
+    "deferred": [
+      {
+        "capability": "REPOSITORY_CREATION_AND_EXACT_MAPPING",
+        "carriedBy": [
+          "TB-W3-ADMIN-01",
+          "TB-W3-F-02"
+        ]
+      },
+      {
+        "capability": "REPOSITORY_PROTECTIONS",
+        "carriedBy": [
+          "TB-W3-GGCC-GH-RULESETS"
+        ]
+      },
+      {
+        "capability": "PROJECT_RUNTIME_PROVISIONING",
+        "carriedBy": [
+          "TB-W3-F-03"
+        ]
+      },
+      {
+        "capability": "DOMAIN_BINDING_PROVISIONING",
+        "carriedBy": [
+          "TB-W3-F-04",
+          "TB-W4-I1-01"
+        ]
+      }
+    ],
+    "knownLimitations": [
+      "The inventory is bound to the registered surface: a new write primitive, mutating route or workflow fails the suite until it is classified in .mcp/provisioning-contracts.json.",
+      "The contracts are a projection, not an enforcement: no provisioning surface exists yet, and an MCP tool call, an allow_write flag or an agent instruction is never a provisioning consent."
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,

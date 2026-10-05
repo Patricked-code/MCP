@@ -1,5 +1,21 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 F.0 Provisioning capability decomposition — DONE et attesté
+
+- **Fusion et CI** : PR #257 fusionnée sous garde exact-head depuis `fe7b3024b5f00bc946b1bd6886edd1d24e3597f3` au merge `d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1`.
+  - RED CI #2279 (1 échec attendu) ; CI PR `37390269900` (#2280, 941 tests) ; CI main `37390441248` (#2281).
+  - Governed Deploy `37390442113` (#132) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37390662478` : S1 `main@d34899b`, worktree propre, push désactivé.
+  - `docker_status` run `37390664427` : conteneur healthy (redémarré par le deploy #132).
+- **Program Backlog** :
+  - `TB-W3-F-01 = DONE` ; `PB-F` passe à `PARTIALLY_IMPLEMENTED` (F.0 livré, aucun type de ressource encore provisionnable).
+  - Les contrats F.0 sont transmis à ADMIN-01, F-02 à F-05 et K-10. Deviennent READY : `TB-W3-ADMIN-01` (primitive de création de dépôt), `TB-W3-F-03` (projet/runtime) et `TB-W3-F-04` (binding de domaine). `TB-W3-F-02` attend ADMIN-01.
+  - Limite connue : toute nouvelle primitive d'écriture, route mutante ou workflow fait échouer la suite tant qu'elle n'est pas classée dans `.mcp/provisioning-contracts.json`.
+  - Aucun Task, session, lock ou mutation.
+- **Intakes** : aucune nouvelle intake ni consigne propriétaire.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-F-03` (A3.2 reste un blocage local).
+
 ## 2026-10-05 — W3 F.0 Provisioning capability decomposition — GREEN candidate
 
 - **Reprise current-first.** `main=bf7312e6e8f52e660f2743b8ba40c779e98fe8d0` (E3 clôturé par la PR #256 ; `PB-E` DONE). Aucune nouvelle intake ni consigne propriétaire. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-F-01` est retenu.
