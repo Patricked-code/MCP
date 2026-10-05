@@ -1,5 +1,18 @@
 # DECISIONS_LOG.md
 
+## 2026-10-04 — C5 : GW-09 chaîné après C2/C3 ; sans observation, aucun domaine n'est prouvé
+
+Décision technique (déduite, #221 ; politique GWC-8) : la résolution de domaine suit la chaîne du collecteur GitHub gouverné (C2 projet → C3 serveur → C5 domaine) et réutilise le résolveur GW-09.
+
+- **Déclarations.** Les déclarations du GitRegistry V2 sont exposées de façon additive (`domainEvidence`) :
+  - côté projet : `publicDomain`, `publicApi` et `historicalVhosts` ;
+  - côté mapping : `domain` et `domainVerified`.
+- **Observation.** Seule une observation courante de ce que sert le serveur résolu prouve un domaine. Or aucune autorité d'observation de domaine n'existe aujourd'hui dans le runtime. L'attestation runtime exclut le réseau, et une sonde DNS/TLS/HTTP relève du moniteur synthétique I1. Le point d'injection `readDomainObservation` reste donc vide par défaut, et la surface reste `UNVERIFIED`, jamais `NONE`.
+- **`domainVerified`.** C'est un drapeau du registre sans fraîcheur : il n'est jamais promu en observation.
+- **Listes protégées.** `protectedApplications` reste une liste de sécurité, jamais le modèle de domaine.
+- **Vhosts historiques.** Un vhost historique n'est jamais réactivé.
+- **Résiduel.** La preuve de service des domaines déclarés (domaine → proxy → port → runtime) relève de `TB-W3-C345-02` et de l'observation I1.
+
 ## 2026-10-04 — C4 : GW-08 chaîné après C3, sur les seules observations runtime existantes
 
 Décision technique (déduite, #221 ; OD-04 RESOLVED) : la résolution runtime suit la chaîne de connexion du collecteur GitHub gouverné (C2 projet → C3 serveur → C4 runtime) et réutilise le résolveur GW-08, sans nouvel observateur.

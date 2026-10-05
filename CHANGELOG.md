@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-04 — W3 C5 Domain Resolution (candidate)
+
+- Le contexte GitHub gouverné projette `domainResolution` (GW-09) après les résolutions projet (C2) et serveur (C3). La projection repose sur les déclarations de domaine du GitRegistry V2 (`GitRegistryProjectEvidence.domainEvidence`) et sur l'observation courante du serveur.
+- Sans autorité d'observation de domaine, la surface reste `UNVERIFIED` (`DOMAIN_OBSERVATION_UNAVAILABLE`), jamais `NONE`.
+
 ## 2026-10-04 — W3 C4 livré et attesté
 
 - PR #238 fusionnée au SHA `4654c9e` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37242868231` / `37242870056`.

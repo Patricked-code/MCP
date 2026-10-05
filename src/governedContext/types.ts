@@ -2,6 +2,7 @@ import type { LiveStateSnapshot } from '../liveState/types.js';
 import type { GithubIdentityResolution } from '../github/identityResolution.js';
 import type { GithubRepositoryResolution } from '../github/repositoryResolution.js';
 import type { GithubProjectResolution } from '../github/projectResolution.js';
+import type { DomainResolution } from '../governedWorkflow/resolvers/domain.js';
 import type { RuntimeResolution } from '../governedWorkflow/resolvers/runtime.js';
 import type { ServerResolution } from '../governedWorkflow/resolvers/server.js';
 import type {
@@ -113,6 +114,8 @@ export type GithubOperationalContext = {
   serverResolution?: ServerResolution;
   /** C4: GW-08 runtime resolution chained after the server resolution. */
   runtimeResolution?: RuntimeResolution;
+  /** C5: GW-09 domain resolution chained after the project and server resolutions. */
+  domainResolution?: DomainResolution;
   cache: {
     status: 'MISS' | 'HIT' | 'REFRESHED';
     observedAt: string;
