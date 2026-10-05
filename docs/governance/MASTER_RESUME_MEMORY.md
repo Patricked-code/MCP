@@ -1,24 +1,24 @@
 # Mémoire maître de reprise — MCP WealthTech
 
-Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275f0f5e74cb5fbd` (599 fichiers suivis) ; section 1 mise à jour le 2026-10-05 après la clôture de E2.
+Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275f0f5e74cb5fbd` (599 fichiers suivis) ; section 1 mise à jour le 2026-10-05 après la clôture de E3.
 
 > Ce document est une **projection de reprise**. Il n'a aucune autorité. Il oriente la lecture et ne remplace aucune source. En cas d'écart, la source citée l'emporte, et l'état live doit toujours être réobservé : GitHub, S1, Live State, Task Queue, sessions et locks. Les mentions « À vérifier » désignent des données non confirmées par cette lecture.
 
-## 1. Où en est le projet (état au 2026-10-05, après E2)
+## 1. Où en est le projet (état au 2026-10-05, après E3)
 
 | Élément | Valeur | Source |
 |---|---|---|
 | Programme courant | Program Backlog V2 (`program-backlog-convergence-v2-20260924`) | `docs/governance/program-backlog-convergence.json` |
-| Blueprints | 94 au total : 33 DONE, 13 READY, 5 CONDITIONAL, 36 BLOCKED, 7 DEFERRED | `npm run program:readiness` |
-| Work items | 21 DONE sur 41 (dont `PB-C345`, `PB-D1`, `PB-D2` et `PB-D3` ; `PB-E` partiellement livré avec E1 et E2 ; `PB-K` Super Admin Cockpit et `PB-MCP-TERMINAL` restent ouverts) | même fichier, `summary.dispositionCounts` |
-| Candidats READY | `TB-W3-A3-02` (A3.2), `TB-W3-E3-01`, `TB-W3-PRW-01`, `TB-W3-PRW-02`, `TB-W3-GGCC-GIT-READ`, six couches GGCC GitHub, `TB-W4-H-01`, `TB-W4-K-01` | `npm run program:next` |
+| Blueprints | 94 au total : 34 DONE, 17 READY, 5 CONDITIONAL, 31 BLOCKED, 7 DEFERRED | `npm run program:readiness` |
+| Work items | 22 DONE sur 41 (dont `PB-C345`, `PB-D1`, `PB-D2`, `PB-D3` et `PB-E` ; `PB-K` Super Admin Cockpit et `PB-MCP-TERMINAL` restent ouverts) | même fichier, `summary.dispositionCounts` |
+| Candidats READY | `TB-W3-A3-02` (A3.2), `TB-W3-F-01`, `TB-W3-PRW-01`, `TB-W3-PRW-02`, `TB-W3-GGCC-GIT-READ`, dix couches GGCC GitHub, `TB-W4-H-01`, `TB-W4-K-01` | `npm run program:next` |
 | Mode de continuité GWC | `POST_INTEGRATION_OPERATIONAL_CONTINUITY` (bundle `post-integration-terminal-handoff-20260920`) | `docs/gwc/canonical-memory/current.json` |
-| Dernier lot livré | E2 — complétion guidée sur `/login`, `/git`, `/github` et étape `contextCompletion` de l'agent (PR #253 → `e51e995`) | `SUIVI.md` |
+| Dernier lot livré | E3 — consentement explicite et validé côté serveur avant les mutations de complétion ; chantier E terminé (PR #255 → `61b90a1`) | `SUIVI.md` |
 | Condition terminale | `GLOBAL_MCP_COMPLETE` via `TB-W4-MCP-FINAL-ACCEPTANCE` (dimensions backend, certifications clients, cockpit, global) ; contrôle `terminalAcceptanceGaps` | `executionModel.terminalCondition` |
 
 Points de reprise :
 
-1. **`TB-W3-E3-01` — prochain lot.** Consent & Validation : exiger un consentement explicite, validé côté serveur auprès de l'autorité propriétaire, avant toute création ou mutation atteinte depuis une étape de complétion (mapping GitRegistry, connexion durable, binding d'identité, découverte automatique de dépôts). Aujourd'hui, la connexion d'un token sur `/github` ou `/git` déclenche la découverte automatique sans consentement distinct. `PB-E` est partiellement livré : E1 (`missingContext`) et E2 (`contextCompletion` ; `/github` et `/git` ne demandent que ce qui manque ; `/git?repository=` montre le mapping ; `/login` à retour même origine). Résiduels portés : entrées des sessions TargetScope non observées (`TB-W3-GGCC-GH-REPO-BRANCH`) ; autorisation attestée et éligibilité de dispatch par capacités (`TB-W3-OAUTH-WRITE-SCOPE-01`) ; rulesets des dépôts cibles (`TB-W3-GGCC-GH-RULESETS`) ; canal Governed Deploy (`TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS`) ; ingress et service des domaines (`TB-W4-I1-01`) ; tête exacte des composants du TargetContext (`TB-W3-GGCC-GIT-READ`).
+1. **`TB-W3-F-01` — prochain lot.** Provisioning capability decomposition : inventorier, par type de ressource (dépôt, projet/runtime, domaine/binding), les primitives d'écriture bornées existantes et définir les contrats de provisioning avant toute nouvelle primitive (`REUSE → WRAP → GENERALIZE → EXTEND`). Autorités existantes : Scoped WRITE Gate, écritures GitHub lifecycle, GitRegistry V2, gouvernance de déploiement. Toute création ou mutation de provisioning réutilise le consentement E3 (ressource et autorité nommées, décision côté serveur avant tout appel externe ou écriture, jamais inférée). `PB-E` est DONE : E1 (`missingContext`), E2 (`contextCompletion`), E3 (consentement explicite des formulaires de connexion GitHub ; découverte automatique sur consentement distinct). Résiduels portés : entrées des sessions TargetScope non observées (`TB-W3-GGCC-GH-REPO-BRANCH`) ; autorisation attestée et éligibilité de dispatch par capacités (`TB-W3-OAUTH-WRITE-SCOPE-01`) ; rulesets des dépôts cibles (`TB-W3-GGCC-GH-RULESETS`) ; canal Governed Deploy (`TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS`) ; ingress et service des domaines (`TB-W4-I1-01`) ; tête exacte des composants du TargetContext (`TB-W3-GGCC-GIT-READ`).
 2. **Boucle de dispatch (#222) complète.** Une session connectée lit `nextWork` dans le Current-State Inventory (reprise, claim compatible ou blueprint READY sans collision) et suit `nextAction` ; rien n'est réclamé ni créé automatiquement.
 3. **A3.2 (`TB-W3-A3-02`) — READY, blocker local.** Il faut réclamer `TASK-20260929-001` dans la Governed Task Queue ; le travail est porté par la PR draft #207. Seule une session runtime peut faire ce claim.
 4. **B3.2 est DONE**, mais aucune cible n'est configurée sur `main` (`.mcp/server-map.json > servers.S1.targetProjectIds: []`). Configurer une cible = une PR revue sur ce fichier, puis Governed Deploy.
@@ -28,7 +28,7 @@ Points de reprise :
 
 Règle de reprise : relire les issues ouvertes `[PROGRAM INTAKE]` avant toute sélection (`REOBSERVE_PROGRAM_INTAKES`), et ne jamais créer de gate humaine pour un choix technique déductible (`CLAUDE.md` §7.3).
 
-NEXT_ACTION unique : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E3-01`.
+NEXT_ACTION unique : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-F-01`.
 
 ## 2. Autorités actuelles (qui fait foi)
 

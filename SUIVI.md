@@ -1,5 +1,21 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 E3 Consent & Validation — DONE et attesté ; `PB-E` DONE
+
+- **Fusion et CI** : PR #255 fusionnée sous garde exact-head depuis `855e2954a912d98ad136f5ab0c6e229eda6c56a5` au merge `61b90a1eca532b088ec213b7ae6ad9e2241eece4`.
+  - RED CI #2273 (1 échec attendu) ; CI PR `37359371129` (#2274, 935 tests) ; CI main `37359562990` (#2275).
+  - Governed Deploy `37359563522` (#130) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37359797521` : S1 `main@61b90a1`, worktree propre, push désactivé.
+  - `docker_status` run `37359801316` : conteneur healthy (redémarré par le deploy #130).
+- **Program Backlog** :
+  - `TB-W3-E3-01 = DONE` ; c'était le dernier lot de `PB-E`, d'où `PB-E = DONE` (22 work items DONE).
+  - Deviennent READY : `TB-W3-F-01` (décomposition du provisioning, qui réutilise le consentement E3) et quatre couches GGCC GitHub (rulesets, webhooks, environnements/variables/secrets, organisation).
+  - Limite connue : un ticket de consentement reste réutilisable par la même session web pendant sa validité.
+  - Aucun Task, session, lock ou mutation.
+- **Intakes** : aucune nouvelle intake ni consigne propriétaire.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-F-01` (A3.2 reste un blocage local).
+
 ## 2026-10-05 — W3 E3 Consent & Validation — GREEN candidate
 
 - **Reprise current-first.** `main=fecbb6fe178ef1ffd74416b565081ef1f299678e` (E2 clôturé, PR #254). Aucune nouvelle intake ni consigne propriétaire. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-E3-01` est retenu.

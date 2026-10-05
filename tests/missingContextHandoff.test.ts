@@ -59,9 +59,10 @@ test('E1 completion carries scoped-session inputs and hands the gap to the guide
   assert.deepEqual(consent.dependsOn, ['TB-W3-E2-01']);
   if (wizard.readiness.state !== 'DONE') assert.equal(consent.readiness.state, 'BLOCKED');
 
-  // E2 and E3 remain: PB-E is partially implemented, not done.
+  // PB-E is partially implemented until E2 and E3 are DONE, then closes.
   const workItem = (program.workItems ?? []).find((entry: any) => entry.id === 'PB-E');
-  assert.equal(workItem?.disposition, 'PARTIALLY_IMPLEMENTED');
+  const closed = wizard.readiness.state === 'DONE' && consent.readiness.state === 'DONE';
+  assert.equal(workItem?.disposition, closed ? 'DONE' : 'PARTIALLY_IMPLEMENTED');
   const counted = (program.workItems ?? []).filter((entry: any) => entry.disposition === 'PARTIALLY_IMPLEMENTED').length;
   assert.equal(program.summary?.dispositionCounts?.PARTIALLY_IMPLEMENTED, counted);
   assert.equal(program.summary?.dispositionCounts?.DONE, (program.workItems ?? []).filter((entry: any) => entry.disposition === 'DONE').length);
