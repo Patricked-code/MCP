@@ -1,5 +1,33 @@
 # SUIVI.md
 
+## 2026-10-04 — W3 C5 Domain Resolution — GREEN candidate
+
+- **Reprise current-first.** `main=538394a290c6f461f3d6c87a173ef87d08751f56` (C4 clôturé, PR #239). Aucune nouvelle intake ni consigne propriétaire. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 est un blocage local (claim runtime), `TB-W3-C5-01` est retenu.
+- **Livré (chaîne C2 → C3 → C5 du collecteur GitHub gouverné).** `domainResolution` est projeté après les résolutions projet et serveur.
+  - `GitRegistryProjectEvidence.domainEvidence` (additif) porte les déclarations du GitRegistry V2 :
+    - côté projet : `publicDomain`, `publicApi`, `historicalVhosts` ;
+    - côté mapping : `domain`, `domainVerified`.
+  - `src/github/domainResolution.ts` appelle le résolveur GW-09 (`resolveDomain`) avec ces déclarations et l'observation courante du serveur résolu.
+- **Observation absente.** Aucune autorité d'observation de domaine n'existe dans le runtime. Le point d'injection `readDomainObservation` ne répond rien par défaut, d'où `DOMAIN_OBSERVATION_UNAVAILABLE` (`UNVERIFIED`, jamais `NONE`). Le résiduel est porté par C345-02 et I1.
+- **Fail-closed.**
+  - Projet `NONE`/`AMBIGUOUS`/non vérifié.
+  - Serveur non résolu → `DOMAIN_SERVER_UNVERIFIED`.
+  - Déclarations absentes ou invalides → `DOMAIN_REGISTRY_UNAVAILABLE`.
+  - Observation malformée → `DOMAIN_OBSERVATION_UNAVAILABLE`.
+  - Observation périmée → `DOMAIN_EVIDENCE_STALE`.
+  - Serveur observé différent → `DOMAIN_SERVER_MISMATCH`.
+  - Domaine observé non déclaré ou déclaré non observé → `UNVERIFIED`.
+  - Vhost historique déclaré actif → `DOMAIN_HISTORICAL_DECLARATION_CONFLICT`.
+  - `protectedApplications` n'est jamais lu.
+  - Cache : miss → `DOMAIN_PROJECT_UNVERIFIED` ; expiré → `UNVERIFIED/STALE` sans surface.
+- **Réalité courante (registre versionné).** Le mapping MCP migré `mcp-s1-production` déclare `mcp.wealthtechinnovations.com` ; AfricaFunds et Stablecoin déclarent leurs domaines publics. Tous restent `UNVERIFIED` faute d'observation.
+- **Préflight runtime OIDC** (23:22Z, `workflowSha=538394a`, `truncated=false`) : file `storeRevision=242` (`37243482320`) ; 2 sessions non closes, toutes EXPIRED (`37243484120`) ; 0 lock (`37243485726`). Aucune collision sur `project:domain-resolution` ; aucun claim, session ou lock créé.
+- **Tests.** RED `b02b58e` (module C5 absent). 6 tests ciblés : preuve registre, composition GW-09, absence d'autorité, fail-closed, lecture seule et listes protégées, collecteur miss/hit/stale/absence. Suite locale 869/869 ; gates typecheck, build, docs, gouvernance, GWC, secrets et readiness vertes.
+- **NEXT_ACTION.**
+  1. CI exact-head, merge, Governed Deploy, attestation OIDC S1.
+  2. PR terminale C5 DONE.
+  3. Recalcul : `TB-W3-C345-02` devient READY.
+
 ## 2026-10-04 — W3 C4 Runtime Resolution — DONE et attesté
 
 - **Fusion.** PR #238 fusionnée sous garde exact-head : head `130a839d94eeacd521b9dde41ac75fba19c9215f`, merge `4654c9edb57e37806eb9783f2b5d863301b50d01`.

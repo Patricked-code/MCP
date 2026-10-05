@@ -188,6 +188,18 @@ ne sont pas inventés. Une observation absente, périmée, indisponible, ambigu�
 ou contradictoire reste `UNVERIFIED`, jamais `NO_RUNTIME`. Lecture seule : aucun
 SSH, redémarrage, rebuild ni store ; Live State est lue sans nouvelle collecte.
 
+La résolution C5 prolonge la chaîne au contrat GW-09 : après C2/C3,
+`domainResolution` appelle le résolveur GWC existant avec les déclarations de
+domaine du GitRegistry V2 (`publicDomain`, `publicApi` et `historicalVhosts` du
+projet ; `domain`/`domainVerified` des mappings) et l'observation courante de ce
+que sert le serveur résolu. Aucune autorité d'observation de domaine n'existe
+encore dans le runtime : le point d'injection ne répond rien par défaut et la
+surface reste `UNVERIFIED` (`DOMAIN_OBSERVATION_UNAVAILABLE`), jamais `NONE`.
+Les vhosts historiques ne deviennent jamais actifs. La liste
+`protectedApplications` de la carte serveur reste une liste de sécurité et
+jamais le modèle de domaine. Lecture seule : aucune sonde DNS/TLS/HTTP, aucun
+store, aucune modification de vhost.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.

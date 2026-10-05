@@ -44,6 +44,34 @@ export type GitRegistryServerBindingEvidence = {
   environment: 'development' | 'staging' | 'production';
 };
 
+/** C5: GitRegistry domain declarations; only observation proves what a server serves. */
+export type GitRegistryDomainEvidence = {
+  projects: Array<{
+    projectId: string;
+    publicDomain: string | null;
+    publicApi: string | null;
+    historicalVhosts: Array<{
+      historicalVhostId: string;
+      classification: 'HISTORICAL_VHOST';
+      serverId: string;
+      serverPath: string;
+      domain: string;
+      repositoryId: null;
+      current: false;
+      deploymentSource: false;
+    }>;
+  }>;
+  mappings: Array<{
+    mappingId: string;
+    repositoryId: string;
+    projectId: string;
+    componentRole: string | null;
+    serverId: string;
+    domain: string | null;
+    domainVerified: boolean;
+  }>;
+};
+
 export type GitRegistryProjectEvidence = {
   available: boolean;
   sourceSchemaVersion: 1 | 2 | null;
@@ -76,6 +104,8 @@ export type GitRegistryProjectEvidence = {
   }>;
   /** Always set by the reader since C3; optional for historical constructors. */
   serverBindings?: GitRegistryServerBindingEvidence[];
+  /** Always set by the reader since C5; optional for historical constructors. */
+  domainEvidence?: GitRegistryDomainEvidence;
 };
 
 const now = () => new Date().toISOString();
@@ -225,7 +255,33 @@ export async function readGitRegistryProjectEvidence(): Promise<GitRegistryProje
         realPath: mapping.realPath,
         realPathVerified: mapping.realPathVerified,
         environment: mapping.environment
-      }))
+      })),
+      domainEvidence: {
+        projects: projects.slice(0, 200).map((project) => ({
+          projectId: project.projectId,
+          publicDomain: project.publicDomain,
+          publicApi: project.publicApi,
+          historicalVhosts: project.historicalVhosts.slice(0, 50).map((vhost) => ({
+            historicalVhostId: vhost.historicalVhostId,
+            classification: vhost.classification,
+            serverId: vhost.serverId,
+            serverPath: vhost.serverPath,
+            domain: vhost.domain,
+            repositoryId: vhost.repositoryId,
+            current: vhost.current,
+            deploymentSource: vhost.deploymentSource
+          }))
+        })),
+        mappings: candidate.mappings.slice(0, 1000).map((mapping) => ({
+          mappingId: mapping.mappingId,
+          repositoryId: mapping.repositoryId,
+          projectId: mapping.projectId,
+          componentRole: mapping.componentRole ?? null,
+          serverId: mapping.serverId,
+          domain: mapping.domain,
+          domainVerified: mapping.domainVerified
+        }))
+      }
     };
   } catch {
     return {
@@ -236,7 +292,8 @@ export async function readGitRegistryProjectEvidence(): Promise<GitRegistryProje
       mappings: [],
       projects: [],
       activationReadiness: [],
-      serverBindings: []
+      serverBindings: [],
+      domainEvidence: { projects: [], mappings: [] }
     };
   }
 }
