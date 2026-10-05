@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 C345-02 livré et attesté
+
+- PR #242 fusionnée au SHA `d4a9898` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37261508259` / `37261509926`.
+- `TB-W3-C345-02` clôturé DONE ; `PB-C345` DONE. L'observation d'ingress et le service des domaines sont portés par `TB-W4-I1-01`, la tête exacte des composants du TargetContext par `TB-W3-GGCC-GIT-READ`. `TB-W3-D1-01` devient READY.
+
 ## 2026-10-05 — W3 C345-02 Project Reality acceptance (candidate)
 
 - Le contexte opérationnel gouverné projette `projectReality` : `src/github/projectReality.ts` compose les couches dépôt (GW-05), projet (GW-06), serveur (GW-07), runtime (GW-08), ingress et domaine (GW-09), une seule fois dans le service, quel que soit le chemin de cache.
