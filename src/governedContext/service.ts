@@ -7,6 +7,7 @@ import {
   projectRegisteredCapabilityRealities
 } from '../governance/operationalDecision.js';
 import { deriveToolSurfaceProjection } from '../governance/toolSurfaceAttestation.js';
+import { deriveProjectReality } from '../github/projectReality.js';
 import { deriveClientEvidence } from '../operationalMemory/connectionContext.js';
 import type { ClientObservationRecorder } from '../operationalMemory/clientPresence.js';
 import type { GovernedLockService } from '../operationalMemory/lockService.js';
@@ -294,6 +295,16 @@ export function createGovernedOperationalContextService(
     if (github.status !== 'CURRENT') {
       limitations.push(github.error ?? 'github_context_degraded');
     }
+    // C345-02: one composition of the chained resolutions, whatever cache path
+    // produced them, so the project reality never outlives its layers.
+    const projectReality = deriveProjectReality({
+      repository: github.repositoryResolution ?? null,
+      project: github.projectResolution ?? null,
+      server: github.serverResolution ?? null,
+      runtime: github.runtimeResolution ?? null,
+      domain: github.domainResolution ?? null,
+      observedAt: generatedAt
+    });
 
     const foreignLock = activeLocks.some((lock) => (
       lock.status === 'ACTIVE'
@@ -458,6 +469,7 @@ export function createGovernedOperationalContextService(
       targetScope: session?.targetScope ?? null,
       liveState,
       github,
+      projectReality,
       session,
       bootstrap: {
         required: true,

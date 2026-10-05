@@ -2,6 +2,7 @@ import type { LiveStateSnapshot } from '../liveState/types.js';
 import type { GithubIdentityResolution } from '../github/identityResolution.js';
 import type { GithubRepositoryResolution } from '../github/repositoryResolution.js';
 import type { GithubProjectResolution } from '../github/projectResolution.js';
+import type { ProjectReality } from '../github/projectReality.js';
 import type { DomainResolution } from '../governedWorkflow/resolvers/domain.js';
 import type { RuntimeResolution } from '../governedWorkflow/resolvers/runtime.js';
 import type { ServerResolution } from '../governedWorkflow/resolvers/server.js';
@@ -146,6 +147,12 @@ export type GovernedOperationalContext = {
   targetScope: TargetScope | null;
   liveState: LiveStateSnapshot | null;
   github: GithubOperationalContext;
+  /**
+   * C345-02: repository -> project -> server -> runtime -> ingress -> domain
+   * composed from the GitHub context resolutions. Always projected by the
+   * governed service; optional for historical in-process consumers.
+   */
+  projectReality?: ProjectReality;
   session: PublicGovernedSession | null;
   bootstrap: {
     required: true;

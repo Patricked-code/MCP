@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 C345-02 Project Reality acceptance (candidate)
+
+- Le contexte opérationnel gouverné projette `projectReality` : `src/github/projectReality.ts` compose les couches dépôt (GW-05), projet (GW-06), serveur (GW-07), runtime (GW-08), ingress et domaine (GW-09), une seule fois dans le service, quel que soit le chemin de cache.
+- Chaque couche est `VERIFIED`, `UNVERIFIED`, `STALE`, `AMBIGUOUS`, `CONFLICT` ou `NONE`. La réalité indique la première couche bloquante, les contradictions et les identifiants issus des seules couches vérifiées.
+- L'ingress n'a pas d'autorité d'observation : il reste `UNVERIFIED`, sauf surface publique confirmée absente.
+
 ## 2026-10-05 — W3 C5 livré et attesté
 
 - PR #240 fusionnée au SHA `9131bd8` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37259482198` / `37259484407`.

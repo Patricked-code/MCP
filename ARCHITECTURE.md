@@ -200,6 +200,31 @@ Les vhosts historiques ne deviennent jamais actifs. La liste
 jamais le modèle de domaine. Lecture seule : aucune sonde DNS/TLS/HTTP, aucun
 store, aucune modification de vhost.
 
+L'acceptation C345-02 compose ces résolutions en une **réalité projet**
+(`src/github/projectReality.ts`, `GovernedOperationalContext.projectReality`).
+La composition est calculée une seule fois par le service de contexte gouverné,
+quel que soit le chemin de cache qui a produit les résolutions. Les couches
+ordonnées sont `REPOSITORY` (GW-05), `PROJECT` (GW-06), `SERVER` (GW-07),
+`RUNTIME` (GW-08), `INGRESS` (domaine → reverse proxy → port → runtime, sans
+autorité) et `DOMAIN` (GW-09). Chaque couche a pour état `VERIFIED`,
+`UNVERIFIED`, `STALE`, `AMBIGUOUS`, `CONFLICT` ou `NONE` et garde les codes et
+la provenance de son résolveur.
+
+- **Vérification.** Une couche n'est `VERIFIED` que si sa résolution est
+  courante, si les couches sur lesquelles elle se compose sont `VERIFIED` et si
+  elle leur est liée (même dépôt, même projet, même serveur).
+- **En aval d'une couche non prouvée.** Une telle couche n'est jamais vérifiée
+  ni prouvée absente : elle prend `PROJECT_REALITY_UPSTREAM_UNVERIFIED`.
+- **Contradictions.** Les contradictions des résolveurs et les liaisons
+  incohérentes restent visibles et rendent la réalité `CONFLICT`.
+- **Absences acceptées.** Seules sont acceptées comme `NONE` l'absence de
+  runtime observée, l'absence confirmée de surface publique et l'absence
+  d'ingress qui en découle.
+- **Ingress.** Faute d'observation, l'ingress reste `UNVERIFIED`
+  (`INGRESS_OBSERVATION_UNAVAILABLE`).
+- **TargetContext.** Le `TargetContext` Live State n'est pas enrichi.
+- **Lecture seule.** La composition n'infère aucune autorisation.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.
