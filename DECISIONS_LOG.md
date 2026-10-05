@@ -1,5 +1,16 @@
 # DECISIONS_LOG.md
 
+## 2026-10-05 — C345-02 : réalité projet composée, jamais vérifiée au-delà de la preuve
+
+Décision technique (déduite, #221 ; OD-04, politique GWC-8) : l'acceptation Project Reality est une composition pure des résolutions existantes (GW-05 → GW-09), sans nouvel observateur ni nouvelle autorité.
+
+- **Emplacement.** La composition est calculée une seule fois dans le service de contexte gouverné (`projectReality`), à partir des résolutions du contexte GitHub. Elle reste cohérente avec les chemins de cache (miss, hit, expiré) sans les dupliquer.
+- **Preuve en chaîne.** Une couche n'est `VERIFIED` que si sa résolution est courante, que les couches sur lesquelles elle se compose sont `VERIFIED` et qu'elle leur est liée (dépôt → projet → serveur → runtime/domaine). Une couche en aval d'une couche non prouvée prend `PROJECT_REALITY_UPSTREAM_UNVERIFIED`.
+- **Contradictions.** Les contradictions sont classées `CONFLICT` et jamais normalisées : désaccord de contexte de compte, registre incohérent, observation d'un autre serveur, NO_RUNTIME contradictoire, domaine observé non déclaré ou déclaré non observé, vhost historique déclaré actif, liaison inter-couches incohérente. Une simple absence de preuve reste `UNVERIFIED`.
+- **Absences acceptées.** Seules sont acceptées comme `NONE` non bloquant : le runtime observé `NO_RUNTIME`, la surface publique confirmée absente (`DOMAIN_NONE_CONFIRMED`) et l'ingress qui en découle (`INGRESS_NONE_WITHOUT_DOMAIN`). Un `NONE` sur dépôt, projet ou serveur arrête la chaîne.
+- **Ingress.** Aucune autorité d'observation de ports ou de reverse proxy n'existe. L'ingress reste `UNVERIFIED` (`INGRESS_OBSERVATION_UNAVAILABLE`) et n'est jamais déduit des déclarations.
+- **TargetContext.** Le `TargetContext` Live State n'est pas enrichi. Les révisions runtime prouvées restent exposées par les liaisons GW-08, indexées par `mappingId`. Une tête exacte par composant exige une autorité d'observation Git par dépôt qui n'existe pas encore (GGCC Git READ). Aucun composant ne reçoit donc d'observation non prouvée.
+
 ## 2026-10-04 — C5 : GW-09 chaîné après C2/C3 ; sans observation, aucun domaine n'est prouvé
 
 Décision technique (déduite, #221 ; politique GWC-8) : la résolution de domaine suit la chaîne du collecteur GitHub gouverné (C2 projet → C3 serveur → C5 domaine) et réutilise le résolveur GW-09.

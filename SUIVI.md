@@ -1,5 +1,37 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 C345-02 Project Reality acceptance — GREEN candidate
+
+- **Reprise current-first.** `main=9afadd753e9c4d4cf882ad5fc7e0d4154cb4a25d` (C5 clôturé, PR #241) ; CI main #2233 et Governed Deploy #116 réussis. Aucune nouvelle intake ni consigne propriétaire (#235/#236/#177 déjà réconciliées). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 est un blocage local (claim runtime) ; `TB-W3-C345-02` est retenu.
+- **Livré.** `src/github/projectReality.ts` compose les résolutions existantes en une réalité projet. Le service de contexte gouverné la projette (`GovernedOperationalContext.projectReality`), calculée une seule fois quel que soit le chemin de cache.
+  - Couches : `REPOSITORY` (GW-05), `PROJECT` (GW-06), `SERVER` (GW-07), `RUNTIME` (GW-08), `INGRESS` (sans autorité), `DOMAIN` (GW-09).
+  - États : `VERIFIED`/`UNVERIFIED`/`STALE`/`AMBIGUOUS`/`CONFLICT`/`NONE`, avec codes et provenance du résolveur, première couche bloquante, contradictions, et identifiants issus des seules couches vérifiées.
+- **Preuve en chaîne.** Une couche n'est `VERIFIED` que si sa résolution est courante, que les couches amont sont `VERIFIED` et qu'elle leur est liée. Sinon, `PROJECT_REALITY_UPSTREAM_UNVERIFIED` ou un `CONFLICT` sur `PROJECT_REALITY_*_BINDING_MISMATCH`. Les contradictions des résolveurs restent visibles.
+- **Acceptation sur fixtures réelles.**
+  - Registre versionné et carte serveur réels.
+  - AfricaFunds multi-dépôts (`api_opcv` + `front_end_opcvm` sur `s2`, MULTI_RUNTIME, surface API + FRONTEND observée) : les deux dépôts composent la même réalité. Elle reste `UNVERIFIED` sur `INGRESS`.
+  - Chaîne MCP réelle (mapping V1 sans rôle) : `RUNTIME_COMPONENT_UNVERIFIED`, domaine `DOMAIN_OBSERVATION_UNAVAILABLE`, ingress `INGRESS_OBSERVATION_UNAVAILABLE`.
+  - Chaîne MCP de bout en bout (session → service → collecteur) : miss, rafraîchissement, hit (`memory_cache`) et expiré (`STALE`).
+  - Session liée à un autre dépôt (B3.2) : aucune réalité empruntée.
+  - Absence prouvée (`NO_RUNTIME`, `DOMAIN_NONE_CONFIRMED`, `INGRESS_NONE_WITHOUT_DOMAIN`) : `VERIFIED`.
+- **Résiduels C4/C5.**
+  - Ingress `UNVERIFIED` faute d'autorité.
+  - Domaines prouvés seulement par observation courante.
+  - `TargetContext` Live State inchangé : aucun composant ne reçoit d'observation non prouvée. La tête exacte par composant relève d'une autorité Git par dépôt (GGCC Git READ).
+- **Préflight runtime OIDC** (03:48Z, `workflowSha=9afadd7`, `truncated=false`) :
+  - file `storeRevision=242` (`37260856626`) ;
+  - 2 sessions non closes, toutes EXPIRED (`37260858362`) ;
+  - 0 lock (`37260859925`).
+  - Aucune collision sur `project:reality-e2e` ; aucun claim, session ou lock créé.
+- **Tests.**
+  - RED `1556dfa` : module absent.
+  - 8 tests d'acceptation.
+  - Suite locale 879/879 ; gates typecheck, build, docs, gouvernance, GWC, secrets et readiness vertes.
+- **NEXT_ACTION.**
+  1. CI exact-head, merge, Governed Deploy, attestation OIDC S1.
+  2. PR terminale C345-02 DONE.
+  3. Recalcul : `TB-W3-D1-01` devient READY.
+
 ## 2026-10-05 — W3 C5 Domain Resolution — DONE et attesté
 
 - **Fusion et CI** : PR #240 fusionnée sous garde exact-head depuis `12dda80aa3bbb6f3097a9aa1be3a4f5ba8b932ba` au merge `9131bd8c2983377a62afbdb559bc3cf2392f1b5d`.
