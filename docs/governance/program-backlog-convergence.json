@@ -73,10 +73,10 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 19,
+      "DONE": 20,
       "PARTIALLY_IMPLEMENTED": 5,
       "KNOWN_NOT_ANALYZED": 6,
-      "DESIGNED_NOT_IMPLEMENTED": 6,
+      "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
       "DEFERRED": 3
     }
@@ -1579,7 +1579,7 @@
     {
       "id": "PB-D2",
       "title": "D2 Effective Capabilities",
-      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "governance.effective-capabilities",
       "implementationMode": "EXTEND",
       "existingAuthorities": [
@@ -1592,7 +1592,7 @@
       "dependsOn": [
         "PB-D1"
       ],
-      "nextAction": "Build the effective-capability projection as an intersection of existing evidence and governance.",
+      "nextAction": "D2 DONE: GovernedOperationalContext.effectiveCapabilities (GW-11) projects, per GitRegistry capability class of the proven scope, the fail-closed intersection of validated declaration, identity, reality, GitHub, D1 rules, WRITE gate preconditions and attested authorization, with blocking rules, obligations and reason codes. Residuals carried by TB-W3-OAUTH-WRITE-SCOPE-01: attested authorization from OAuth scope evidence and capability-aware dispatch eligibility. Next consumers: D3 receipt enrichment, PR WRITE, provisioning and GGCC layers.",
       "subtasks": [
         "Compose OAuth/GitHub/project/server evidence",
         "Intersect with governance and WRITE gate",
@@ -2587,7 +2587,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_D1_DONE_D2_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
+    "currentWaveStatus": "W3_D2_DONE_D3_PRW_GGCC_GH_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2608,8 +2608,16 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-D2-01",
+      "TB-W3-D3-01",
+      "TB-W3-PRW-01",
+      "TB-W3-PRW-02",
       "TB-W3-GGCC-GIT-READ",
+      "TB-W3-GGCC-GH-REPO-BRANCH",
+      "TB-W3-GGCC-GH-COMMIT-FILE",
+      "TB-W3-GGCC-GH-PR-REVIEW",
+      "TB-W3-GGCC-GH-ACTIONS",
+      "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
+      "TB-W3-GGCC-GH-ISSUES-PROJECTS",
       "TB-W4-K-01"
     ],
     "humanGatePolicy": {
@@ -5417,10 +5425,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #246 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. The governed operational context projects effectiveCapabilities (GW-11, SLOT-11): for each GitRegistry capability class of the scope proven by projectReality and inherited by D1, the fail-closed intersection of the validated registry declaration, the OAuth/GitHub identity of the same principal, the reality layers, the GitHub work state of this repository, the D1 rules, the scoped WRITE gate preconditions and attested authorization; no authority attests authorization yet, which is carried by TB-W3-OAUTH-WRITE-SCOPE-01 with capability-aware dispatch eligibility."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5450,6 +5458,54 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 246,
+        "contract": "GW-11",
+        "projection": "GovernedOperationalContext.effectiveCapabilities",
+        "redHeadSha": "699aaadffa0ab8dd43a076c9c79c3c089e8b1221",
+        "redCiRunId": 37286285263,
+        "redCiRunNumber": 2246,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "28c1e0ca82892c20db731c050f68f1d8be2a50f8",
+        "prCiRunId": 37286750114,
+        "prCiRunNumber": 2247,
+        "testCount": 898,
+        "mergeSha": "1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a",
+        "mainCiRunId": 37286964026,
+        "governedDeployRunId": 37286964083,
+        "governedDeployRuntimeRevision": "1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a",
+        "runtimePreflightRunIds": [
+          37284843087,
+          37284845657,
+          37284848385
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37287158288,
+            "workflowSha": "1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a",
+            "status": "SUCCESS",
+            "observed": "main@1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "6c25d37c2b8b8db960ff3a6cf2b0d8c90a36eeed1666f3baa5a6b23850c05524",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T09:00:17.866Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37287161565,
+            "workflowSha": "1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #121), published 127.0.0.1:8787->8787/tcp",
+            "outputSha256": "a6445190ae8dbcf85406591ca4d4f28e328078ef02483476f8d6be6f8c79dcfe",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T09:00:19.142Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-05T09:02:00Z"
       }
     },
     {
@@ -5485,7 +5541,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -6121,7 +6177,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -6190,7 +6246,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -9152,7 +9208,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
@@ -9227,7 +9283,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
@@ -9301,7 +9357,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
@@ -9376,7 +9432,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
@@ -9677,7 +9733,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
@@ -9752,7 +9808,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
@@ -10535,7 +10591,9 @@
       ],
       "greenAcceptance": [
         "Write tools require mcp:write with a backward-compatible path proven by the inventory.",
-        "Token issuance, PKCE and operator consent stay unchanged."
+        "Token issuance, PKCE and operator consent stay unchanged.",
+        "The OAuth scope evidence of the connection (mcp:read, mcp:write) feeds the AUTHORIZATION dimension of the D2 effective capabilities for the capability classes it covers; identity, registry declarations and tool presence never stand in for it, and until then every effective capability stays UNKNOWN with AUTHORIZATION_UNATTESTED (residual of TB-W3-D2-01).",
+        "Capability-aware dispatch eligibility (deferred by DISPATCH-02/03 to D2) is decided once that authorization evidence exists: claim and nextWork skip work whose required capability class is BLOCKED for the session scope, and an UNKNOWN capability neither excludes nor permits (residual of TB-W3-D2-01)."
       ],
       "outputCapabilities": [],
       "runtimeRequired": true,
@@ -12281,6 +12339,56 @@
     ],
     "knownLimitations": [
       "The migrated V1 registry declares conservative candidate capabilities (no write, no deploy) and a migration_pending MCP mapping: the inherited DEPLOY and WRITE_* rules are FORBID until the registry declares otherwise."
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3D2EffectiveCapabilitiesHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a",
+    "blueprintId": "TB-W3-D2-01",
+    "lotId": "D2",
+    "contract": "GW-11",
+    "delivered": [
+      "src/governedWorkflow/governance/projectCapabilities.ts derives one effective capability per GitRegistry capability class (inventory, readFiles, searchCode, readLogs, gitStatus, writeFiles, createBranch, commit, pushBranch, build, deploy, rollback, quarantine, purge), classified READ, WRITE, PRODUCTION_EFFECT or DESTRUCTIVE and bound to the repository or the server",
+      "Seven dimensions, each SATISFIED, UNSATISFIED, UNKNOWN or NOT_REQUIRED: DECLARED (validated or active mapping only), IDENTITY (OAuth subject and current GitHub identity of the same principal), TARGET (reality layers), GITHUB (work state of this repository, repository mutations only), GOVERNANCE (D1 rules), PRECONDITIONS (scoped WRITE gate inputs over every active lock) and AUTHORIZATION",
+      "A proven negative blocks, an unknown leaves the capability UNVERIFIED, blocking rules and obligations are named; technical capability, identity, registry declarations and tool presence never imply authorization",
+      "The scoped WRITE gate stays shadow: its precondition derivation is reproduced, never changed; no proven scope yields no capability and a governance or reality contradiction makes the set CONFLICT",
+      "The governed operational context service projects effectiveCapabilities once per composition"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37284843087,
+      "sessionsRunId": 37284845657,
+      "locksRunId": 37284848385,
+      "observedAt": "2026-10-05T08:38:26Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "governance:effective-capabilities",
+      "collision": false
+    },
+    "notObserved": [
+      {
+        "evidence": "AUTHORIZATION_ATTESTATION",
+        "reason": "No authority attests authorization per capability yet: OAuth scopes are checked at the transport but not carried with the connection context, so every effective capability keeps AUTHORIZATION UNKNOWN and none is effective.",
+        "carriedBy": [
+          "TB-W3-OAUTH-WRITE-SCOPE-01"
+        ]
+      }
+    ],
+    "deferred": [
+      {
+        "evolution": "CAPABILITY_AWARE_DISPATCH_ELIGIBILITY",
+        "reason": "Deferred by DISPATCH-02/03 to D2. Wiring it now would exclude all work while authorization stays unattested, and tasks do not declare the capability classes they require.",
+        "carriedBy": [
+          "TB-W3-OAUTH-WRITE-SCOPE-01"
+        ]
+      }
+    ],
+    "knownLimitations": [
+      "The migrated V1 registry is a candidate with a migration_pending MCP mapping: declared reads stay UNKNOWN (CAPABILITY_DECLARATION_UNVALIDATED) and readLogs and every mutation stay BLOCKED until a validated mapping declares them."
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
