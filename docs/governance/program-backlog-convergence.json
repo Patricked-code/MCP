@@ -74,8 +74,8 @@
     "externalActiveRecords": 25,
     "dispositionCounts": {
       "DONE": 21,
-      "PARTIALLY_IMPLEMENTED": 4,
-      "KNOWN_NOT_ANALYZED": 6,
+      "PARTIALLY_IMPLEMENTED": 5,
+      "KNOWN_NOT_ANALYZED": 5,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
       "DEFERRED": 3
@@ -1643,7 +1643,7 @@
     {
       "id": "PB-E",
       "title": "E1/E2/E3 Guided Context Completion",
-      "disposition": "KNOWN_NOT_ANALYZED",
+      "disposition": "PARTIALLY_IMPLEMENTED",
       "integrationSlot": "context.guided-completion",
       "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
       "existingAuthorities": [
@@ -1654,7 +1654,7 @@
       "dependsOn": [
         "PB-D3"
       ],
-      "nextAction": "Inventory current client/frontend completion paths, then add only missing-context detection, guided completion and explicit consent.",
+      "nextAction": "E1 DONE: GovernedOperationalContext.missingContext computes the mandatory inputs still missing after automatic governed resolution (OAuth identity, GitHub identity, repository, project mapping, server binding), surfaces only the first gap with its kind and the existing authority that completes it, and never asks for known context. Next: E2 extends the existing /login /git /github surfaces to request only the gap E1 surfaces, then E3 requires explicit consent before any creation or mutation.",
       "subtasks": [
         "Detect exactly which required fields are missing",
         "Restore known governed context automatically",
@@ -2600,7 +2600,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_D3_DONE_E1_PRW_GGCC_GH_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_H01_READY_TERMINAL_ACCEPTANCE_WIRED",
+    "currentWaveStatus": "W3_E1_DONE_E2_PRW_GGCC_GH_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_H01_READY_TERMINAL_ACCEPTANCE_WIRED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2621,7 +2621,7 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-E1-01",
+      "TB-W3-E2-01",
       "TB-W3-PRW-01",
       "TB-W3-PRW-02",
       "TB-W3-GGCC-GIT-READ",
@@ -5671,10 +5671,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #251 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. GovernedOperationalContext.missingContext computes, in dependency order, which mandatory inputs (OAuth identity, GitHub identity, repository, project mapping, server binding) remain missing after automatic governed resolution; only the first gap is surfaced, with its kind and the existing authority that completes it, known context is never asked again and nothing is authorized or written; the inputs of sessions bound to an unobserved TargetScope repository stay UNOBSERVABLE until TB-W3-GGCC-GH-REPO-BRANCH."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5704,6 +5704,54 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 251,
+        "projection": "GovernedOperationalContext.missingContext",
+        "redHeadSha": "b08dca3bec321eac3c8713433a37b8d366d6aadf",
+        "redCiRunId": 37320386619,
+        "redCiRunNumber": 2261,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "33803ec191dbbe92fca726017cb7ffc1b2c9f3d6",
+        "prCiRunId": 37321306246,
+        "prCiRunNumber": 2262,
+        "testCount": 917,
+        "mergeSha": "4dcc90d4296e380574acd0da68001b586992d5b5",
+        "mainCiRunId": 37321550003,
+        "governedDeployRunId": 37321550025,
+        "governedDeployRuntimeRevision": "4dcc90d4296e380574acd0da68001b586992d5b5",
+        "runtimePreflightRunIds": [
+          37318531228,
+          37318535138,
+          37318539233
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37321828298,
+            "workflowSha": "4dcc90d4296e380574acd0da68001b586992d5b5",
+            "status": "SUCCESS",
+            "observed": "main@4dcc90d4296e380574acd0da68001b586992d5b5, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "bdf47e1ada46e029ef87cc2793d27b54a71a5aa899d7d78e22f89767c84f160d",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T14:05:13.771Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37321832535,
+            "workflowSha": "4dcc90d4296e380574acd0da68001b586992d5b5",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #126), published 127.0.0.1:8787->8787/tcp",
+            "observedFr": "conteneur healthy (redémarré par le deploy #126)",
+            "outputSha256": "910d5185c49bf3a3f7cf5b216a522789502e46670c01c204a84c9228cf4f8835",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T14:05:13.543Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-05T14:06:00Z"
       }
     },
     {
@@ -5739,7 +5787,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -5756,7 +5804,8 @@
       ],
       "greenAcceptance": [
         "E2 satisfies its bounded objective using existing authorities first.",
-        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
+        "E2 consumes GovernedOperationalContext.missingContext (E1): AUTOMATIC gaps are restored through the named tool without a question, only the next OPERATOR_INPUT or OPERATOR_CHOICE gap is requested on the existing surface E1 names, RESOLVED and BLOCKED_UPSTREAM inputs are never requested, CONFLICT gaps go to reconciliation and UNOBSERVABLE stays explicit."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -9295,7 +9344,8 @@
         "Existing tools/authorities are reused or wrapped before extension.",
         "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
         "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct.",
-        "Repository observations of TargetScope repositories feed the governed context of a session bound to them, for its own repository only, so that its project reality and its bootstrap receipt references can be proven; until then the receipt of such a session keeps RECEIPT_REPOSITORY_UNVERIFIED next to its server-built TargetScope (residual of TB-W3-D3-01)."
+        "Repository observations of TargetScope repositories feed the governed context of a session bound to them, for its own repository only, so that its project reality and its bootstrap receipt references can be proven; until then the receipt of such a session keeps RECEIPT_REPOSITORY_UNVERIFIED next to its server-built TargetScope (residual of TB-W3-D3-01).",
+        "With those repository observations, E1 missing-context detection evaluates the GitHub identity, repository, project mapping and server binding of a session bound to a TargetScope repository instead of reporting it UNOBSERVABLE (residual of TB-W3-E1-01)."
       ],
       "regressionSuites": [
         "targeted RED/GREEN",
@@ -12538,6 +12588,57 @@
     ],
     "knownLimitations": [
       "The references are those of the governed context at acknowledgement time; a later change of the project reality is seen at the next acknowledgement, never rewritten into an existing receipt."
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3E1MissingContextHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "4dcc90d4296e380574acd0da68001b586992d5b5",
+    "blueprintId": "TB-W3-E1-01",
+    "lotId": "E1",
+    "delivered": [
+      "GovernedOperationalContext.missingContext (src/governedContext/missingContext.ts): OAUTH_IDENTITY, GITHUB_IDENTITY, REPOSITORY, PROJECT_MAPPING and SERVER_BINDING in dependency order, read from the session OAuth connection context, the B1 GitHub identity and the GW-05..07 project reality layers",
+      "Only the first unresolved input is surfaced (next); known context stays RESOLVED and downstream inputs are BLOCKED_UPSTREAM, never asked",
+      "Each gap carries its kind (MISSING, AMBIGUOUS, CONFLICT, UNOBSERVED) and the existing authority that completes it: /oauth/authorize, .mcp/identity-policy.json, data/github-accounts.json, /github, /git, mcp_open_governed_session or mcp_reconcile_governed_context",
+      "Contradicting authorities are reconciled, never re-asked or re-observed in a loop; a TargetScope repository the GitHub observer does not cover is UNOBSERVABLE",
+      "isOauthConnectionContext (ConnectionContext authority) is the single OAuth predicate of the GitHub identity scope and of E1",
+      "Pure, frozen, reason codes only: no principal, login or identifier, no question, authorization or write"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37318531228,
+      "sessionsRunId": 37318535138,
+      "locksRunId": 37318539233,
+      "observedAt": "2026-10-05T13:40:00Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "context:guided-completion:detection",
+      "collision": false
+    },
+    "notObserved": [
+      {
+        "evidence": "TARGET_SCOPE_MISSING_CONTEXT",
+        "reason": "The governed GitHub observer covers the MCP repository only (B3.2): for a session bound to a TargetScope repository, E1 reports UNOBSERVABLE instead of evaluating its GitHub identity, repository, mapping and server inputs.",
+        "carriedBy": [
+          "TB-W3-GGCC-GH-REPO-BRANCH"
+        ]
+      }
+    ],
+    "deferred": [
+      {
+        "capability": "GUIDED_COMPLETION_AND_EXPLICIT_CONSENT",
+        "reason": "E1 detects and names the gap only; requesting it on the existing surfaces and requiring explicit consent before any creation or mutation are the next lots of PB-E.",
+        "carriedBy": [
+          "TB-W3-E2-01",
+          "TB-W3-E3-01"
+        ]
+      }
+    ],
+    "knownLimitations": [
+      "A credential gap names /github, the existing surface of the default GitHub credential; a durable account with a dedicated credential file stays with the secret storage, which E1 never reads."
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
