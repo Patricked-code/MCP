@@ -1,5 +1,17 @@
 # DECISIONS_LOG.md
 
+## 2026-10-05 — D3 : références prouvées dans le Bootstrap Receipt existant, sans second receipt ni promotion
+
+Décision technique (déduite, #221 ; GW-12 `REUSE/GENERALIZE`, GWC-9 « receipt enrichment ») : le receipt existant gagne un champ optionnel `references` plutôt qu'un nouveau type ou un nouveau store.
+
+- **Sources.**
+  - La connexion vient du `ConnectionContext` OAuth que la session possède déjà : identifiant, assurance, source de preuve et date. Le principal et le client OAuth ne sont pas recopiés.
+  - Le dépôt, le projet et le mapping viennent de la réalité projet C345-02 du dépôt de la session et du périmètre D1.
+- **Pas de promotion.** Seules les couches `VERIFIED` deviennent des références. Une couche non prouvée coupe tout ce qui est en dessous : pas de projet sans dépôt, pas de mapping sans projet.
+- **Défense en profondeur.** Le service de session écarte des références observées pour un autre dépôt et refuse tout ce qui sort du schéma borné et fermé.
+- **Câblage.** Le service de session reçoit un observateur optionnel. En production, il lit le contexte gouverné de la même session, chargé paresseusement pour éviter le cycle des outils, comme les imports paresseux existants du Live State. Il n'est appelé que pour une session visible de l'appelant.
+- **Compatibilité.** Une observation en échec ne bloque jamais l'acquittement et reste explicite (`RECEIPT_PROJECT_REFERENCES_UNOBSERVED`). Sans observateur, et pour les receipts historiques, la forme reste inchangée.
+
 ## 2026-10-05 — D2 : capacités effectives par périmètre projet, intersection en échec fermé, autorisation jamais inférée
 
 Décision technique (déduite, #221 ; GW-11 `REUSE/EXTEND`, SLOT-11 de `MCP_PERMISSIONS_MODEL.md`) : les capacités effectives composent séparément les autorités existantes, sans second moteur de permissions. GWC-9 l'imposait déjà : une restriction monotone de `CapabilityReality` et de `GovernanceDecision`.

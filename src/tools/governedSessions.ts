@@ -2,6 +2,7 @@ import type { AuthInfo } from '@modelcontextprotocol/sdk/server/auth/types.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
+import { deriveBootstrapProjectReferences } from '../governedContext/receiptReferences.js';
 import { liveStateEngine } from '../liveState/engine.js';
 import { createAtomicJsonStore } from '../operationalMemory/atomicStore.js';
 import { operationalMemoryConfig } from '../operationalMemory/config.js';
@@ -104,7 +105,18 @@ export function getGovernedSessionToolDependencies(): GovernedSessionToolDepende
     releaseLocksForSession: (governedSessionId) => (
       locks.releaseLocksForSession(governedSessionId)
     ),
-    taskLifecycleCoordinator: taskLifecycle
+    taskLifecycleCoordinator: taskLifecycle,
+    // D3: the receipt references come from the governed context of the same
+    // session. Loaded lazily: the context tools compose this module.
+    observeProjectReferences: async (governedSessionId, request) => {
+      const { getGovernedContextToolDependencies } = await import('./governedContext.js');
+      const context = await getGovernedContextToolDependencies().context.getCurrent({
+        governedSessionId,
+        workBranch: null,
+        request
+      });
+      return deriveBootstrapProjectReferences(context);
+    }
   });
   locks = createGovernedLockService({
     store: lockStore,
