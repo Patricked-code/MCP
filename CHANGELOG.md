@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 E1 livré et attesté
+
+- PR #251 fusionnée au SHA `4dcc90d` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37321828298` / `37321832535`.
+- `TB-W3-E1-01` clôturé DONE ; `PB-E` PARTIALLY_IMPLEMENTED. Les entrées des sessions TargetScope non observées sont portées par `TB-W3-GGCC-GH-REPO-BRANCH`. `TB-W3-E2-01` devient READY.
+
 ## 2026-10-05 — W3 E1 Missing-context Detection (candidate)
 
 - Le contexte gouverné projette `missingContext` : les entrées obligatoires encore absentes après la résolution automatique, dans l'ordre de leurs dépendances (identité OAuth, identité GitHub, dépôt, mapping projet, binding serveur). Seule la première lacune est exposée, avec sa nature (saisie, choix, réconciliation ou ré-observation) et l'autorité existante qui la complète.

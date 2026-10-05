@@ -1,24 +1,24 @@
 # Mémoire maître de reprise — MCP WealthTech
 
-Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275f0f5e74cb5fbd` (599 fichiers suivis) ; section 1 mise à jour le 2026-10-05 après la clôture de D3.
+Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275f0f5e74cb5fbd` (599 fichiers suivis) ; section 1 mise à jour le 2026-10-05 après la clôture de E1.
 
 > Ce document est une **projection de reprise**. Il n'a aucune autorité. Il oriente la lecture et ne remplace aucune source. En cas d'écart, la source citée l'emporte, et l'état live doit toujours être réobservé : GitHub, S1, Live State, Task Queue, sessions et locks. Les mentions « À vérifier » désignent des données non confirmées par cette lecture.
 
-## 1. Où en est le projet (état au 2026-10-05, après D3)
+## 1. Où en est le projet (état au 2026-10-05, après E1)
 
 | Élément | Valeur | Source |
 |---|---|---|
 | Programme courant | Program Backlog V2 (`program-backlog-convergence-v2-20260924`) | `docs/governance/program-backlog-convergence.json` |
-| Blueprints | 94 au total : 31 DONE, 13 READY, 5 CONDITIONAL, 38 BLOCKED, 7 DEFERRED | `npm run program:readiness` |
-| Work items | 21 DONE sur 41 (dont `PB-C345`, `PB-D1`, `PB-D2` et `PB-D3` ; `PB-K` Super Admin Cockpit et `PB-MCP-TERMINAL` restent ouverts) | même fichier, `summary.dispositionCounts` |
-| Candidats READY | `TB-W3-A3-02` (A3.2), `TB-W3-E1-01`, `TB-W3-PRW-01`, `TB-W3-PRW-02`, `TB-W3-GGCC-GIT-READ`, six couches GGCC GitHub, `TB-W4-H-01`, `TB-W4-K-01` | `npm run program:next` |
+| Blueprints | 94 au total : 32 DONE, 13 READY, 5 CONDITIONAL, 37 BLOCKED, 7 DEFERRED | `npm run program:readiness` |
+| Work items | 21 DONE sur 41 (dont `PB-C345`, `PB-D1`, `PB-D2` et `PB-D3` ; `PB-E` partiellement livré avec E1 ; `PB-K` Super Admin Cockpit et `PB-MCP-TERMINAL` restent ouverts) | même fichier, `summary.dispositionCounts` |
+| Candidats READY | `TB-W3-A3-02` (A3.2), `TB-W3-E2-01`, `TB-W3-PRW-01`, `TB-W3-PRW-02`, `TB-W3-GGCC-GIT-READ`, six couches GGCC GitHub, `TB-W4-H-01`, `TB-W4-K-01` | `npm run program:next` |
 | Mode de continuité GWC | `POST_INTEGRATION_OPERATIONAL_CONTINUITY` (bundle `post-integration-terminal-handoff-20260920`) | `docs/gwc/canonical-memory/current.json` |
-| Dernier lot livré | D3 — références prouvées dans le Bootstrap Receipt (`BootstrapReceipt.references`, GW-12) (PR #248 → `7c93316`) | `SUIVI.md` |
+| Dernier lot livré | E1 — détection du contexte manquant (`missingContext`) : première lacune seulement, avec l'autorité existante qui la complète (PR #251 → `4dcc90d`) | `SUIVI.md` |
 | Condition terminale | `GLOBAL_MCP_COMPLETE` via `TB-W4-MCP-FINAL-ACCEPTANCE` (dimensions backend, certifications clients, cockpit, global) ; contrôle `terminalAcceptanceGaps` | `executionModel.terminalCondition` |
 
 Points de reprise :
 
-1. **`TB-W3-E1-01` — prochain lot.** Missing-context Detection. `PB-D3` est DONE : le receipt existant porte `references` (connexion OAuth de la session, dépôt, projet et mapping des seules couches `VERIFIED` et du périmètre D1, provenance et fraîcheur, sans secret). Résiduels portés : références des sessions TargetScope non observées (`TB-W3-GGCC-GH-REPO-BRANCH`) ; autorisation attestée et éligibilité de dispatch par capacités (`TB-W3-OAUTH-WRITE-SCOPE-01`) ; rulesets des dépôts cibles (`TB-W3-GGCC-GH-RULESETS`) ; canal Governed Deploy (`TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS`) ; ingress et service des domaines (`TB-W4-I1-01`) ; tête exacte des composants du TargetContext (`TB-W3-GGCC-GIT-READ`).
+1. **`TB-W3-E2-01` — prochain lot.** Context Completion Wizard : étendre les surfaces existantes `/login`, `/git` et `/github` pour ne demander que la lacune exposée par `missingContext` (E1). `PB-E` est partiellement livré : E1 calcule les entrées obligatoires encore absentes (identité OAuth, identité GitHub, dépôt, mapping projet, binding serveur) et n'expose que la première, avec sa nature et l'autorité existante qui la complète. Résiduels portés : entrées des sessions TargetScope non observées (`TB-W3-GGCC-GH-REPO-BRANCH`) ; complétion guidée et consentement explicite (`TB-W3-E2-01`, `TB-W3-E3-01`) ; autorisation attestée et éligibilité de dispatch par capacités (`TB-W3-OAUTH-WRITE-SCOPE-01`) ; rulesets des dépôts cibles (`TB-W3-GGCC-GH-RULESETS`) ; canal Governed Deploy (`TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS`) ; ingress et service des domaines (`TB-W4-I1-01`) ; tête exacte des composants du TargetContext (`TB-W3-GGCC-GIT-READ`).
 2. **Boucle de dispatch (#222) complète.** Une session connectée lit `nextWork` dans le Current-State Inventory (reprise, claim compatible ou blueprint READY sans collision) et suit `nextAction` ; rien n'est réclamé ni créé automatiquement.
 3. **A3.2 (`TB-W3-A3-02`) — READY, blocker local.** Il faut réclamer `TASK-20260929-001` dans la Governed Task Queue ; le travail est porté par la PR draft #207. Seule une session runtime peut faire ce claim.
 4. **B3.2 est DONE**, mais aucune cible n'est configurée sur `main` (`.mcp/server-map.json > servers.S1.targetProjectIds: []`). Configurer une cible = une PR revue sur ce fichier, puis Governed Deploy.
@@ -28,7 +28,7 @@ Points de reprise :
 
 Règle de reprise : relire les issues ouvertes `[PROGRAM INTAKE]` avant toute sélection (`REOBSERVE_PROGRAM_INTAKES`), et ne jamais créer de gate humaine pour un choix technique déductible (`CLAUDE.md` §7.3).
 
-NEXT_ACTION unique : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E1-01`.
+NEXT_ACTION unique : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E2-01`.
 
 ## 2. Autorités actuelles (qui fait foi)
 

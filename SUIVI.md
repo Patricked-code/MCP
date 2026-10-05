@@ -1,5 +1,21 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 E1 Missing-context Detection — DONE et attesté
+
+- **Fusion et CI** : PR #251 fusionnée sous garde exact-head depuis `33803ec191dbbe92fca726017cb7ffc1b2c9f3d6` au merge `4dcc90d4296e380574acd0da68001b586992d5b5`.
+  - RED CI #2261 (1 échec attendu) ; CI PR `37321306246` (#2262, 917 tests) ; CI main `37321550003` (#2263).
+  - Governed Deploy `37321550025` (#126) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37321828298` : S1 `main@4dcc90d`, worktree propre, push désactivé.
+  - `docker_status` run `37321832535` : conteneur healthy (redémarré par le deploy #126).
+- **Program Backlog** :
+  - `TB-W3-E1-01 = DONE` ; `PB-E` passe `PARTIALLY_IMPLEMENTED` (E2 et E3 restent à livrer).
+  - Résiduel porté par `TB-W3-GGCC-GH-REPO-BRANCH` : les entrées d'une session liée à un dépôt TargetScope non observé (B3.2) restent `UNOBSERVABLE` jusqu'à l'observation de ce dépôt.
+  - `TB-W3-E2-01` (Context Completion Wizard) devient READY ; son critère d'acceptation consomme `missingContext` : restauration automatique sans question, seule la lacune `next` est demandée sur la surface existante nommée, les conflits vont à la réconciliation.
+  - Aucun Task, session, lock ou mutation.
+- **Intakes** : aucune nouvelle intake ni consigne propriétaire depuis la clarification #236 convergée.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E2-01` (A3.2 reste un blocage local).
+
 ## 2026-10-05 — W3 E1 Missing-context Detection — GREEN candidate
 
 - **Reprise current-first.** `main=df4a99e5e3b953a595a7c3defc33471538b0dc57` (clarification #236 convergée, PR #250). Réobservation à 13:57Z : aucune nouvelle intake ni consigne propriétaire ; les intakes ouvertes #177, #235 et #236 sont réconciliées. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-E1-01` est retenu.
