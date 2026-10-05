@@ -1,5 +1,22 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 E1 Missing-context Detection — GREEN candidate
+
+- **Reprise current-first.** `main=df4a99e5e3b953a595a7c3defc33471538b0dc57` (clarification #236 convergée, PR #250). Réobservation à 13:57Z : aucune nouvelle intake ni consigne propriétaire ; les intakes ouvertes #177, #235 et #236 sont réconciliées. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-E1-01` est retenu.
+- **Préflight runtime (13:40Z)** :
+  - tasks `37318531228` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY) ;
+  - sessions `37318535138` (2 EXPIRED) ;
+  - locks `37318539233` (0 actif).
+  Aucune collision sur `context:guided-completion:detection`.
+- **Livré.** `GovernedOperationalContext.missingContext` (`src/governedContext/missingContext.ts`) donne, dans l'ordre des dépendances, l'état des entrées obligatoires `OAUTH_IDENTITY`, `GITHUB_IDENTITY`, `REPOSITORY`, `PROJECT_MAPPING` et `SERVER_BINDING` :
+  - seule la première lacune est exposée (`next`), le contexte connu reste `RESOLVED`, l'aval attend (`BLOCKED_UPSTREAM`) ;
+  - nature de la lacune : `MISSING`, `AMBIGUOUS`, `CONFLICT` ou `UNOBSERVED` ; statut `COMPLETE`, `AUTOMATIC`, `INPUT_REQUIRED`, `RECONCILIATION_REQUIRED` ou `UNOBSERVABLE` ;
+  - autorité existante qui complète chaque lacune : `/oauth/authorize`, `.mcp/identity-policy.json`, `data/github-accounts.json`, `/github`, `/git`, `mcp_open_governed_session` ou `mcp_reconcile_governed_context` ;
+  - un dépôt TargetScope non observé (B3.2) est `UNOBSERVABLE`, jamais ré-observé en boucle ; seuls des codes de raison circulent.
+- **Réutilisation.** `isOauthConnectionContext` (autorité `ConnectionContext`) devient le prédicat unique du scope d'identité GitHub et d'E1.
+- **Preuves** : RED `b08dca3`, CI #2261 (`37320386619`) : 911 tests, 1 échec attendu (module absent). GREEN local : typecheck et build verts ; suite complète 917/917.
+- **NEXT_ACTION** : CI exact-head de la PR #251, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-E1-01`.
+
 ## 2026-10-05 — Intake #236 : clarification propriétaire `EXISTING_MCP_EXPOSURE_FIRST` réconciliée
 
 - **Source.** Commentaire propriétaire du 2026-10-05T09:16Z sur l'issue #236 (`issue:236#issuecomment-5991560741`), observé à la reprise après D3. Il affine PB-K sans créer de chantier, d'architecture, de cible de déploiement, de domaine, de Task, de session, de claim ou de lock.

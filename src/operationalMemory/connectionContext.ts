@@ -120,6 +120,21 @@ export function createConnectionContext(
 }
 
 /**
+ * True only for a connection context proven by OAuth: the one context that
+ * carries a principal for the GitHub identity scope and for E1 detection.
+ */
+export function isOauthConnectionContext(
+  context: ConnectionContext | null | undefined
+): context is ConnectionContext {
+  return Boolean(
+    context
+    && context.identityAssurance === 'oauth_subject'
+    && context.evidenceSource === 'oauth_auth_info'
+    && context.principalId.startsWith('oauth:')
+  );
+}
+
+/**
  * Projects the client evidence proven by a persisted ConnectionContext.
  *
  * Only the OAuth subject is verified evidence. The observed clientId stays opaque,

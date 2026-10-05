@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 E1 Missing-context Detection (candidate)
+
+- Le contexte gouverné projette `missingContext` : les entrées obligatoires encore absentes après la résolution automatique, dans l'ordre de leurs dépendances (identité OAuth, identité GitHub, dépôt, mapping projet, binding serveur). Seule la première lacune est exposée, avec sa nature (saisie, choix, réconciliation ou ré-observation) et l'autorité existante qui la complète.
+- Le prédicat OAuth du scope d'identité GitHub devient `isOauthConnectionContext`, partagé avec E1. Aucune question, autorisation, écriture ou nouvelle surface.
+
 ## 2026-10-05 — Intake #236 : clarification `EXISTING_MCP_EXPOSURE_FIRST`
 
 - Clarification propriétaire absorbée dans PB-K (`CLARIFICATION-236-20261005`, `PB-K.nonRegression`, critères de `TB-W4-K-01`) : le cockpit se compose dans l'exposition MCP existante et le Governed Deploy, sans nouveau domaine ni route spéculative avant l'inventaire des routes, de l'authentification et de la sécurité. La readiness n'est pas modifiée.
