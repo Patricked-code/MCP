@@ -18,17 +18,17 @@ Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275
 
 Points de reprise :
 
-1. **`TB-W3-E1-01` — prochain lot**, après la réconciliation de la clarification #236. Missing-context Detection. `PB-D3` est DONE : le receipt existant porte `references` (connexion OAuth de la session, dépôt, projet et mapping des seules couches `VERIFIED` et du périmètre D1, provenance et fraîcheur, sans secret). Résiduels portés : références des sessions TargetScope non observées (`TB-W3-GGCC-GH-REPO-BRANCH`) ; autorisation attestée et éligibilité de dispatch par capacités (`TB-W3-OAUTH-WRITE-SCOPE-01`) ; rulesets des dépôts cibles (`TB-W3-GGCC-GH-RULESETS`) ; canal Governed Deploy (`TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS`) ; ingress et service des domaines (`TB-W4-I1-01`) ; tête exacte des composants du TargetContext (`TB-W3-GGCC-GIT-READ`).
+1. **`TB-W3-E1-01` — prochain lot.** Missing-context Detection. `PB-D3` est DONE : le receipt existant porte `references` (connexion OAuth de la session, dépôt, projet et mapping des seules couches `VERIFIED` et du périmètre D1, provenance et fraîcheur, sans secret). Résiduels portés : références des sessions TargetScope non observées (`TB-W3-GGCC-GH-REPO-BRANCH`) ; autorisation attestée et éligibilité de dispatch par capacités (`TB-W3-OAUTH-WRITE-SCOPE-01`) ; rulesets des dépôts cibles (`TB-W3-GGCC-GH-RULESETS`) ; canal Governed Deploy (`TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS`) ; ingress et service des domaines (`TB-W4-I1-01`) ; tête exacte des composants du TargetContext (`TB-W3-GGCC-GIT-READ`).
 2. **Boucle de dispatch (#222) complète.** Une session connectée lit `nextWork` dans le Current-State Inventory (reprise, claim compatible ou blueprint READY sans collision) et suit `nextAction` ; rien n'est réclamé ni créé automatiquement.
 3. **A3.2 (`TB-W3-A3-02`) — READY, blocker local.** Il faut réclamer `TASK-20260929-001` dans la Governed Task Queue ; le travail est porté par la PR draft #207. Seule une session runtime peut faire ce claim.
 4. **B3.2 est DONE**, mais aucune cible n'est configurée sur `main` (`.mcp/server-map.json > servers.S1.targetProjectIds: []`). Configurer une cible = une PR revue sur ce fichier, puis Governed Deploy.
 5. **`mcp:write`** : lot technique `TB-W3-OAUTH-WRITE-SCOPE-01` après A3.2 — ce n'est pas une décision propriétaire (#221). Il porte aussi l'autorisation attestée des capacités effectives D2 et l'éligibilité de dispatch fondée sur les capacités.
-6. **Super Admin Cockpit (#236, `PB-K`)** : `TB-W4-K-01` (shell, design system, baseline sécurité, Command Center read-only sur la stack Express existante) est READY en W4, après les candidats W3. Inventaire : `docs/governance/super-admin-cockpit-convergence-20261004.json`.
+6. **Super Admin Cockpit (#236, `PB-K`)** : `TB-W4-K-01` (shell, design system, baseline sécurité, Command Center read-only sur la stack Express existante) est READY en W4, après les candidats W3. Règle `EXISTING_MCP_EXPOSURE_FIRST` (clarification propriétaire du 2026-10-05) : réobserver l'exposition MCP publique, puis composer le cockpit dans l'exposition existante et le Governed Deploy ; le `/cockpit` de l'inventaire n'est qu'une proposition. Inventaire : `docs/governance/super-admin-cockpit-convergence-20261004.json`.
 7. **Arrêt global (#235)** : uniquement dans les conditions de `agentHandoffContract.globalStopReport`, en laissant tous ses champs (`CLAUDE.md` §7.4).
 
 Règle de reprise : relire les issues ouvertes `[PROGRAM INTAKE]` avant toute sélection (`REOBSERVE_PROGRAM_INTAKES`), et ne jamais créer de gate humaine pour un choix technique déductible (`CLAUDE.md` §7.3).
 
-NEXT_ACTION unique : réconcilier la clarification propriétaire #236 (`EXISTING_MCP_EXPOSURE_FIRST`), puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E1-01`.
+NEXT_ACTION unique : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E1-01`.
 
 ## 2. Autorités actuelles (qui fait foi)
 

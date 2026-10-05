@@ -1,5 +1,18 @@
 # DECISIONS_LOG.md
 
+## 2026-10-05 — #236 : exposition MCP existante d'abord pour le Super Admin Cockpit
+
+Décision de gouvernance (clarification propriétaire du 2026-10-05 sur #236, absorbée comme `COMPLEMENT`) : le cockpit devient la surface visuelle et opérationnelle gouvernée du MCP existant, pas un second déploiement.
+
+- **Avant toute décision** de route, d'URL publique, de reverse proxy, de TLS, de DNS ou de surface de déploiement, réobserver :
+  - `main` ;
+  - la réalité projet, GitRegistry, la carte serveur et le Live State de MCP ;
+  - l'exposition publique observée : domaine, DNS, TLS, reverse proxy, routes publiques existantes et frontières d'authentification.
+- **Par défaut.** Le cockpit se compose dans l'exposition existante et le Governed Deploy. Il n'y a ni nouveau domaine, ni second reverse proxy, runtime ou plan de contrôle. Les endpoints publics MCP (protocole, OAuth, santé) restent intacts. Aucune route spéculative (`/admin`, `/cockpit`) n'est fixée avant l'inventaire. Le `/cockpit` de l'inventaire dérivé n'est qu'une proposition.
+- **Séparation.** Elle n'est retenue que sur preuve technique ou de sécurité enregistrée, par le chemin gouverné de décision et de provisioning existant.
+- **Route ajoutée au domaine MCP.** Toute route ajoutée a une authentification et une autorisation explicites, des en-têtes CSP et de sécurité, une analyse de collision, des tests et un smoke post-déploiement. Les endpoints publics du protocole restent séparés en sécurité des surfaces privilégiées, même sur un hôte partagé.
+- **Preuves de K-01.** Elles comprennent `OBSERVED_MCP_PUBLIC_DOMAIN`, `DOMAIN_AUTHORITY`, `DNS_STATE`, `TLS_STATE`, `REVERSE_PROXY_STATE`, `EXISTING_PUBLIC_ROUTES`, `COCKPIT_ROUTE_OR_EXPOSURE_DECISION`, `AUTH_BOUNDARY`, `WHY_REUSE_IS_SAFE` ou `OR_WHY_SEPARATION_IS_REQUIRED`, `REGRESSION_TESTS_FOR_EXISTING_ENDPOINTS`, `EXACT_DEPLOYED_SHA` et `POST_DEPLOY_SMOKE_EVIDENCE`.
+
 ## 2026-10-05 — D3 : références prouvées dans le Bootstrap Receipt existant, sans second receipt ni promotion
 
 Décision technique (déduite, #221 ; GW-12 `REUSE/GENERALIZE`, GWC-9 « receipt enrichment ») : le receipt existant gagne un champ optionnel `references` plutôt qu'un nouveau type ou un nouveau store.

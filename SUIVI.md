@@ -1,5 +1,16 @@
 # SUIVI.md
 
+## 2026-10-05 — Intake #236 : clarification propriétaire `EXISTING_MCP_EXPOSURE_FIRST` réconciliée
+
+- **Source.** Commentaire propriétaire du 2026-10-05T09:16Z sur l'issue #236 (`issue:236#issuecomment-5991560741`), observé à la reprise après D3. Il affine PB-K sans créer de chantier, d'architecture, de cible de déploiement, de domaine, de Task, de session, de claim ou de lock.
+- **Verdict.** `COMPLEMENT`, absorbé dans le slot existant `cockpit.super-admin` :
+  - l'entrée `CLARIFICATION-236-20261005` de `programIntakes` (comme `SUPERVISION-219-20261002`) porte la clarification, sa règle d'intégration et les 13 champs de preuve de déploiement attendus ; `INTAKE-236.refinedBy` y renvoie et `sourceCoverage.programIntakes` la rattache à PB-K ;
+  - `PB-K.nonRegression` gagne `EXISTING_MCP_EXPOSURE_FIRST`, `NO_NEW_DOMAIN_REVERSE_PROXY_RUNTIME_OR_CONTROL_PLANE_BY_DEFAULT`, `EXISTING_MCP_PUBLIC_ENDPOINTS_PRESERVED`, `NO_SPECULATIVE_ROUTE_BEFORE_ROUTE_AUTH_SECURITY_INVENTORY` et `PUBLIC_MCP_PROTOCOL_AND_PRIVILEGED_COCKPIT_SURFACES_SECURITY_SEPARATED` ;
+  - `TB-W4-K-01` gagne trois critères d'acceptation (réobservation de l'exposition avant toute décision de route, de domaine, de TLS ou de déploiement ; pas de domaine, reverse proxy ou route spéculative par défaut ; preuves de déploiement), un test RED (inventaire d'exposition et tests de régression des endpoints publics absents) et un critère de clôture.
+- **Supersession explicite.** Le `proposedRouteNamespace` `/cockpit` de l'inventaire dérivé du 2026-10-04 n'est qu'une proposition : la route ou l'exposition est décidée par K-01 après l'inventaire des routes, de l'authentification et de la sécurité.
+- **Effets.** Aucune readiness modifiée (drift vide), aucun Task, session, lock ou mutation. `CLAUDE.md` §7.4 rappelle l'invariant.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E1-01` (A3.2 reste un blocage local).
+
 ## 2026-10-05 — W3 D3 Bootstrap Receipt Enrichment — DONE et attesté
 
 - **Fusion et CI** : PR #248 fusionnée sous garde exact-head depuis `884414ff68b7e4b381f99252cab55f9cdaad7011` au merge `7c9331695b034dea1c9f1fecfab775ff0e328358`.

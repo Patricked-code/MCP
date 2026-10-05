@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 2026-10-05 — Intake #236 : clarification `EXISTING_MCP_EXPOSURE_FIRST`
+
+- Clarification propriétaire absorbée dans PB-K (`CLARIFICATION-236-20261005`, `PB-K.nonRegression`, critères de `TB-W4-K-01`) : le cockpit se compose dans l'exposition MCP existante et le Governed Deploy, sans nouveau domaine ni route spéculative avant l'inventaire des routes, de l'authentification et de la sécurité. La readiness n'est pas modifiée.
+
 ## 2026-10-05 — W3 D3 livré et attesté
 
 - PR #248 fusionnée au SHA `7c93316` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37317336321` / `37317340325`.
