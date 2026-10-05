@@ -225,6 +225,41 @@ la provenance de son résolveur.
 - **TargetContext.** Le `TargetContext` Live State n'est pas enrichi.
 - **Lecture seule.** La composition n'infère aucune autorisation.
 
+L'héritage de gouvernance D1 (GW-10, `src/governedWorkflow/governance/projectInheritance.ts`,
+`GovernedOperationalContext.governanceInheritance`) projette sur le périmètre
+projet prouvé par la réalité projet les contraintes que portent déjà les
+autorités existantes, sans les copier :
+
+- **Mapping GitRegistry.** La gouvernance déclarée du mapping sélectionné
+  (`selectedMapping.governance` : branche officielle, préfixes, push direct
+  interdit, statut, capacités, sauvegarde), issue de
+  `GitRegistryProjectEvidence.governanceEvidence`.
+- **Ruleset GitHub.** Observé pour le seul dépôt qu'il couvre ; il n'est
+  jamais prêté à un autre dépôt (`GOVERNANCE_RULESET_NOT_OBSERVED`).
+- **Politique de branches MCP.** `.mcp/branch-governance.json`, lue de façon
+  bornée et livrée dans l'image ; ses règles de `main` ne parlent que pour une
+  branche officielle `main`.
+- **Governed Lock Service.** Seuls les locks actifs d'une autre session sur le
+  périmètre du projet contraignent.
+- **WRITE gate.** Mode et activation des outils d'écriture.
+
+Chaque règle (`OFFICIAL_BRANCH`, `DIRECT_PUSH_TO_OFFICIAL_BRANCH`,
+`BRANCH_PREFIXES`, `PULL_REQUEST`, `DRAFT_PULL_REQUEST`,
+`REQUIRED_STATUS_CHECKS`, `REQUIRED_APPROVALS`, `CONVERSATION_RESOLUTION`,
+`DEPLOY`, `BACKUP_BEFORE_DEPLOY`, `WRITE_FILES`, `CREATE_BRANCH`, `COMMIT`,
+`PUSH_BRANCH`, `WRITE_TOOLS`, `PROJECT_LOCKS`, `CLEAN_WORKTREE`) a pour effet
+`REQUIRE`, `FORBID`, `PERMIT` ou `UNKNOWN` et nomme les autorités qui l'ont
+déterminée.
+
+- **Composition stricte.** La contrainte la plus stricte l'emporte : une seule
+  autorité qui interdit suffit, le silence ne permet jamais, et une preuve
+  périmée ou non observée reste `UNKNOWN`.
+- **Déploiement.** Il n'est hérité que sur un serveur prouvé.
+- **Périmètre non prouvé.** Rien n'est hérité (`UNVERIFIED`), jamais un
+  défaut global.
+- **Lecture seule.** Aucune autorisation n'est dérivée ; D2 compose ensuite
+  les capacités effectives.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.

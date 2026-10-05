@@ -8,6 +8,12 @@ import {
 } from '../governance/operationalDecision.js';
 import { deriveToolSurfaceProjection } from '../governance/toolSurfaceAttestation.js';
 import { deriveProjectReality } from '../github/projectReality.js';
+import {
+  parseBranchGovernancePolicy,
+  readBranchGovernancePolicy,
+  unavailableBranchGovernance
+} from '../governance/branchGovernance.js';
+import { deriveProjectGovernanceInheritance } from '../governedWorkflow/governance/projectInheritance.js';
 import { deriveClientEvidence } from '../operationalMemory/connectionContext.js';
 import type { ClientObservationRecorder } from '../operationalMemory/clientPresence.js';
 import type { GovernedLockService } from '../operationalMemory/lockService.js';
@@ -52,6 +58,8 @@ type ContextServiceOptions = {
   audit?: OperationalAudit;
   currentState?: Pick<CurrentStateService, 'getInventory'>;
   clientPresence?: Pick<ClientObservationRecorder, 'presenceFor'>;
+  /** D1: reads the versioned MCP branch governance policy; defaults to `.mcp/branch-governance.json`. */
+  readBranchGovernance?: () => Promise<unknown>;
 };
 
 export type GovernedOperationalContextService = {
@@ -305,6 +313,33 @@ export function createGovernedOperationalContextService(
       domain: github.domainResolution ?? null,
       observedAt: generatedAt
     });
+    // D1: the proven project scope inherits the constraints of the authorities
+    // that own them; nothing is copied, nothing is authorized.
+    const branchGovernance = await safeRead(
+      async () => parseBranchGovernancePolicy(
+        await (options.readBranchGovernance ?? readBranchGovernancePolicy)()
+      ),
+      unavailableBranchGovernance('GOVERNANCE_POLICY_UNREADABLE')
+    );
+    const governanceInheritance = deriveProjectGovernanceInheritance({
+      projectReality,
+      project: github.projectResolution ?? null,
+      // Historical in-process contexts may carry no ruleset evidence: UNAVAILABLE.
+      ruleset: github.ruleset && github.evidence?.ruleset
+        ? {
+            repositoryId: `github:${HISTORICAL_REPOSITORY}`,
+            freshness: github.evidence.ruleset.freshness,
+            observedAt: github.evidence.ruleset.observedAt,
+            value: github.ruleset
+          }
+        : null,
+      policy: branchGovernance,
+      // Every active lock, not the bounded projection: an unseen lock must never permit.
+      locks: rawLocks,
+      governedSessionId: session?.governedSessionId ?? null,
+      gate: { mode: options.gateMode, existingWriteToolsEnabled: options.existingWriteToolsEnabled },
+      observedAt: generatedAt
+    });
 
     const foreignLock = activeLocks.some((lock) => (
       lock.status === 'ACTIVE'
@@ -470,6 +505,7 @@ export function createGovernedOperationalContextService(
       liveState,
       github,
       projectReality,
+      governanceInheritance,
       session,
       bootstrap: {
         required: true,

@@ -396,6 +396,15 @@ test('D1 projects the inherited governance in the governed operational context',
     locks: [lock('repository:Patricked-code/MCP')]
   }).getCurrent(input)).governanceInheritance as any;
   assert.equal(rule(locked, 'PROJECT_LOCKS').effect, 'FORBID');
+  // A project lock beyond the bounded lock projection of the context still forbids.
+  const crowded = (await service({
+    readBranchGovernance: async () => REAL_POLICY,
+    locks: [
+      ...Array.from({ length: 120 }, (_, index) => lock(`resource:elsewhere-${index}`)),
+      lock('repository:Patricked-code/MCP')
+    ]
+  }).getCurrent(input)).governanceInheritance as any;
+  assert.equal(rule(crowded, 'PROJECT_LOCKS').effect, 'FORBID');
 
   const unreadable = (await service({ readBranchGovernance: async () => { throw new Error('unreadable'); } }).getCurrent(input)).governanceInheritance as any;
   assert.equal(unreadable.sources.find((source: any) => source.authority === 'MCP_BRANCH_GOVERNANCE')?.state, 'UNAVAILABLE');
@@ -413,7 +422,8 @@ test('D1 projects the inherited governance in the governed operational context',
 
 test('D1 inheritance is pure, frozen, deterministic and read-only', async () => {
   const source = await readFile(MODULE_PATH, 'utf8');
-  for (const forbidden of [/from 'node:fs/, /writeFile/, /child_process/, /fetch\(/, /from '\.\.\/\.\.\/ssh\//]) {
+  // File writes, not the registry's declared writeFiles capability flag.
+  for (const forbidden of [/from 'node:fs/, /writeFile(Sync)?\(/, /child_process/, /fetch\(/, /from '\.\.\/\.\.\/ssh\//]) {
     assert.doesNotMatch(source, forbidden);
   }
   const first = inherit();
