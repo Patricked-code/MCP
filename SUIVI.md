@@ -1,5 +1,21 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 D2 Effective Capabilities — DONE et attesté
+
+- **Fusion et CI** : PR #246 fusionnée sous garde exact-head depuis `28c1e0ca82892c20db731c050f68f1d8be2a50f8` au merge `1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a`.
+  - RED CI #2246 (1 échec attendu) ; CI PR `37286750114` (#2247, 898 tests) ; CI main `37286964026` (#2248).
+  - Governed Deploy `37286964083` (#121) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37287158288` : S1 `main@1e4b78f`, worktree propre, push désactivé.
+  - `docker_status` run `37287161565` : conteneur healthy (redémarré par le deploy #121).
+- **Program Backlog** :
+  - `TB-W3-D2-01 = DONE` ; c'est l'unique lot de `PB-D2`, d'où `PB-D2 = DONE` (20 work items DONE).
+  - Portés par `TB-W3-OAUTH-WRITE-SCOPE-01` : l'autorisation attestée (preuve de scopes OAuth de la connexion ; d'ici là, chaque capacité reste `AUTHORIZATION_UNATTESTED`) et l'éligibilité de dispatch fondée sur les capacités (différée par DISPATCH-02/03 vers D2).
+  - Limite connue : le registre V1 migré (`migration_pending`) laisse les lectures déclarées `UNKNOWN` et `readLogs` et toutes les mutations `BLOCKED` jusqu'à un mapping validé.
+  - Deviennent READY : `TB-W3-D3-01`, `TB-W3-PRW-01`, `TB-W3-PRW-02` et les couches GGCC GitHub `REPO-BRANCH`, `COMMIT-FILE`, `PR-REVIEW`, `ACTIONS`, `RELEASES-DEPLOYMENTS`, `ISSUES-PROJECTS`. Restent READY : `TB-W3-A3-02` (blocage local), `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, lock ou mutation.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-D3-01`, Bootstrap Receipt Enrichment : références prouvées de connexion, dépôt, projet et mapping dans le receipt existant, sans secret.
+
 ## 2026-10-05 — W3 D2 Effective Capabilities — GREEN candidate
 
 - **Reprise current-first.** `main=9936325c773de58c9e1114f0094b2e477a6fde12` (D1 clôturé, PR #245). Aucune nouvelle intake ni consigne propriétaire (#235/#236/#177 déjà réconciliées). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-D2-01` est retenu.

@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 D2 livré et attesté
+
+- PR #246 fusionnée au SHA `1e4b78f` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37287158288` / `37287161565`.
+- `TB-W3-D2-01` clôturé DONE ; `PB-D2` DONE. L'autorisation attestée et l'éligibilité de dispatch fondée sur les capacités sont portées par `TB-W3-OAUTH-WRITE-SCOPE-01`. `TB-W3-D3-01`, les lots PR WRITE et les couches GGCC GitHub deviennent READY.
+
 ## 2026-10-05 — W3 D2 Effective Capabilities (candidate)
 
 - Le contexte opérationnel gouverné projette `effectiveCapabilities` (GW-11) : pour chacune des quatorze classes de capacité GitRegistry du périmètre projet prouvé, l'intersection en échec fermé de la déclaration du mapping validé, de l'identité OAuth/GitHub, des couches de réalité, de l'état GitHub du dépôt, des règles héritées D1, des préconditions du WRITE gate et de l'autorisation attestée.
