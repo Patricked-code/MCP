@@ -73,8 +73,8 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 17,
-      "PARTIALLY_IMPLEMENTED": 6,
+      "DONE": 18,
+      "PARTIALLY_IMPLEMENTED": 5,
       "KNOWN_NOT_ANALYZED": 6,
       "DESIGNED_NOT_IMPLEMENTED": 7,
       "CONDITIONAL": 2,
@@ -1520,7 +1520,7 @@
     {
       "id": "PB-C345",
       "title": "C3/C4/C5 Server, Runtime and Domain Resolution",
-      "disposition": "PARTIALLY_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "project.server-runtime-domain-resolution",
       "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
       "existingAuthorities": [
@@ -1533,7 +1533,7 @@
         "PB-C1",
         "PB-B3"
       ],
-      "nextAction": "C3, C4 and C5 DONE (GW-07 serverResolution, GW-08 runtimeResolution, GW-09 domainResolution in the governed GitHub context). Next: TB-W3-C345-02 project reality acceptance across MCP and multi-repository fixtures, carrying the ingress, component and domain-serving residuals of C4/C5.",
+      "nextAction": "C3, C4, C5 and C345-02 DONE: serverResolution (GW-07), runtimeResolution (GW-08) and domainResolution (GW-09) in the governed GitHub context, composed with the repository and project resolutions into GovernedOperationalContext.projectReality. Residuals carried explicitly: the ingress observation (TB-W4-I1-01) and the exact-head observation of TargetContext components (TB-W3-GGCC-GIT-READ). Next consumer: TB-W3-D1-01.",
       "subtasks": [
         "Resolve S1/S2 and verified real path",
         "Resolve container/runtime/reverse proxy/ports from governed evidence",
@@ -2587,7 +2587,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_C5_DONE_C345_02_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
+    "currentWaveStatus": "W3_C345_DONE_D1_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2608,7 +2608,7 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-C345-02",
+      "TB-W3-D1-01",
       "TB-W3-GGCC-GIT-READ",
       "TB-W4-K-01"
     ],
@@ -5170,10 +5170,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #242 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. The governed operational context projects projectReality, the repository (GW-05) -> project (GW-06) -> server (GW-07) -> runtime (GW-08) -> ingress -> domain (GW-09) composition of the existing resolutions, accepted on the MCP chain and the multi-repository AfricaFunds project of the versioned registry; the ingress link has no observation authority and stays UNVERIFIED (carried by TB-W4-I1-01), and exact-head observations of TargetContext components are carried by TB-W3-GGCC-GIT-READ."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5206,6 +5206,60 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 242,
+        "projection": "GovernedOperationalContext.projectReality",
+        "contracts": [
+          "GW-05",
+          "GW-06",
+          "GW-07",
+          "GW-08",
+          "GW-09"
+        ],
+        "redHeadSha": "1556dfa82cdd330fc530d761da0b49ae7cbcf8a4",
+        "redCiRunId": 37260886553,
+        "redCiRunNumber": 2234,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "9baa2da768c7f904a67bf74fe812092111045659",
+        "prCiRunId": 37261237037,
+        "prCiRunNumber": 2235,
+        "testCount": 879,
+        "mergeSha": "d4a98988b6e5327cb1b802a3d2099f634d29b82d",
+        "mainCiRunId": 37261351989,
+        "governedDeployRunId": 37261351824,
+        "governedDeployRuntimeRevision": "d4a98988b6e5327cb1b802a3d2099f634d29b82d",
+        "runtimePreflightRunIds": [
+          37260856626,
+          37260858362,
+          37260859925
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37261508259,
+            "workflowSha": "d4a98988b6e5327cb1b802a3d2099f634d29b82d",
+            "status": "SUCCESS",
+            "observed": "main@d4a98988b6e5327cb1b802a3d2099f634d29b82d, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "cca716b6feeeeda63f15a01accd054bc1b9a2d541c8b13175dbe9061a3ae3655",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T03:58:16.157Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37261509926,
+            "workflowSha": "d4a98988b6e5327cb1b802a3d2099f634d29b82d",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #117), published 127.0.0.1:8787->8787/tcp",
+            "outputSha256": "2d61d1c97893d917406ad15089a16adce4a9abbaa0681e497367b0bf621b0e0e",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T03:58:15.813Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-05T04:00:00Z"
       }
     },
     {
@@ -5243,7 +5297,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -6784,7 +6838,8 @@
       "greenAcceptance": [
         "I1 satisfies its bounded objective using existing authorities first.",
         "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
-        "The synthetic monitor can supply the bounded, read-only current domain observation (DNS/TLS/HTTP) that GW-09 consumes through readDomainObservation, bound to the resolved server and never inferred from declarations (residual of TB-W3-C5-01)."
+        "The synthetic monitor can supply the bounded, read-only current domain observation (DNS/TLS/HTTP) that GW-09 consumes through readDomainObservation, bound to the resolved server and never inferred from declarations (residual of TB-W3-C5-01).",
+        "The synthetic monitor can supply the bounded, read-only ingress observation (domain -> reverse proxy -> port -> runtime) that the INGRESS layer of the project reality needs, bound to the resolved server and runtime and never inferred from declarations; until then that layer stays UNVERIFIED with INGRESS_OBSERVATION_UNAVAILABLE (residual of TB-W3-C345-02)."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -8696,7 +8751,8 @@
       "greenAcceptance": [
         "Existing tools/authorities are reused or wrapped before extension.",
         "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
-        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct.",
+        "Exact-head observations of TargetContext component repositories come only from this bounded typed Git READ capability and are bound to the proven runtime layer (GW-08 bindings keyed by mappingId) of the project reality; until then TargetContext components stay UNVERIFIED (residual of TB-W3-C345-02)."
       ],
       "regressionSuites": [
         "targeted RED/GREEN",
@@ -12052,6 +12108,81 @@
     ],
     "knownLimitations": [
       "Declared domains (mcp.wealthtechinnovations.com on the migrated MCP mapping, the AfricaFunds and Stablecoin public domains) stay UNVERIFIED until a domain observation authority exists."
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3C345ProjectRealityHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "d4a98988b6e5327cb1b802a3d2099f634d29b82d",
+    "blueprintId": "TB-W3-C345-02",
+    "lotId": "C345.E2E",
+    "contracts": [
+      "GW-05",
+      "GW-06",
+      "GW-07",
+      "GW-08",
+      "GW-09"
+    ],
+    "delivered": [
+      "src/github/projectReality.ts composes the repository, project, server, runtime and domain resolutions with the ingress link into one project reality: per-layer state (VERIFIED, UNVERIFIED, STALE, AMBIGUOUS, CONFLICT, NONE), resolver reason codes and provenance, first blocking layer, contradictions and identifiers from VERIFIED layers only",
+      "The governed operational context service derives GovernedOperationalContext.projectReality once from the GitHub context resolutions, consistent with every cache path (miss, hit, expired) without duplicating them",
+      "A layer is VERIFIED only when its resolution is current, every layer it composes on is VERIFIED and it is bound to them; otherwise PROJECT_REALITY_UPSTREAM_UNVERIFIED or a CONFLICT on PROJECT_REALITY_*_BINDING_MISMATCH; resolver contradictions are never normalized",
+      "Only an observed NO_RUNTIME, a confirmed absence of public surface (DOMAIN_NONE_CONFIRMED) and the resulting absence of ingress are accepted as NONE; a NONE on repository, project or server stops the chain",
+      "Acceptance on the versioned registry and server map: the multi-repository AfricaFunds project (api_opcv and front_end_opcvm on s2) composes one reality from either repository; the real MCP chain keeps RUNTIME_COMPONENT_UNVERIFIED, DOMAIN_OBSERVATION_UNAVAILABLE and INGRESS_OBSERVATION_UNAVAILABLE"
+    ],
+    "residualsResolved": [
+      {
+        "residual": "C4 ingress (ports, reverse proxy)",
+        "outcome": "Reported UNVERIFIED with INGRESS_OBSERVATION_UNAVAILABLE; never inferred from declarations"
+      },
+      {
+        "residual": "C4 undeclared components",
+        "outcome": "The V1 Patricked-code/MCP mapping without a role stays RUNTIME_COMPONENT_UNVERIFIED; the Live TargetContext receives no unproven observation"
+      },
+      {
+        "residual": "C5 domain serving",
+        "outcome": "Declared domains are VERIFIED only by a current domain observation of the resolved server; otherwise DOMAIN_OBSERVATION_UNAVAILABLE"
+      }
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37260856626,
+      "sessionsRunId": 37260858362,
+      "locksRunId": 37260859925,
+      "observedAt": "2026-10-05T03:48:07Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "project:reality-e2e",
+      "collision": false
+    },
+    "notObserved": [
+      {
+        "evidence": "INGRESS_LINK",
+        "reason": "No observation authority for published ports or reverse-proxy routing in the runtime: the runtime attestation excludes networks and the OIDC docker_status probe shows published ports to agents only.",
+        "carriedBy": [
+          "TB-W4-I1-01"
+        ]
+      },
+      {
+        "evidence": "TARGET_COMPONENT_EXACT_HEAD",
+        "reason": "The governed GitHub observer covers the governance repository only (B3.2); no per-repository exact-head observation authority exists for TargetContext components, so the Live TargetContext is not enriched (proven runtime revisions stay exposed by the GW-08 bindings keyed by mappingId).",
+        "carriedBy": [
+          "TB-W3-GGCC-GIT-READ"
+        ]
+      },
+      {
+        "evidence": "DOMAIN_SERVING",
+        "reason": "No domain observation authority in the runtime (residual of TB-W3-C5-01).",
+        "carriedBy": [
+          "TB-W4-I1-01"
+        ]
+      }
+    ],
+    "knownLimitations": [
+      "No project reality is VERIFIED in production today: every chain with a public domain stops at INGRESS, and the migrated V1 MCP mapping stops at RUNTIME (RUNTIME_COMPONENT_UNVERIFIED) until the registry declares its component."
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,

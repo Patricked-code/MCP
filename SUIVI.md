@@ -1,5 +1,20 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 C345-02 Project Reality acceptance — DONE et attesté
+
+- **Fusion et CI** : PR #242 fusionnée sous garde exact-head depuis `9baa2da768c7f904a67bf74fe812092111045659` au merge `d4a98988b6e5327cb1b802a3d2099f634d29b82d`.
+  - RED CI #2234 (1 échec attendu) ; CI PR `37261237037` (#2235) ; CI main `37261351989` (#2236).
+  - Governed Deploy `37261351824` (#117) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37261508259` : S1 `main@d4a9898`, worktree propre, push désactivé.
+  - `docker_status` run `37261509926` : conteneur healthy (redémarré par le deploy #117).
+- **Program Backlog** :
+  - `TB-W3-C345-02 = DONE` ; tous les lots `PB-C345` sont DONE, d'où `PB-C345 = DONE` (18 work items DONE).
+  - Résiduels sans autorité d'observation portés explicitement : observation d'ingress (domaine → reverse proxy → port → runtime) et service des domaines par `TB-W4-I1-01` ; tête exacte des composants du TargetContext par `TB-W3-GGCC-GIT-READ`.
+  - `TB-W3-D1-01` devient READY. READY : `TB-W3-A3-02` (blocage local), `TB-W3-D1-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, lock ou mutation.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-D1-01`, Existing Governance Inheritance (GW-10) sur la réalité projet prouvée.
+
 ## 2026-10-05 — W3 C345-02 Project Reality acceptance — GREEN candidate
 
 - **Reprise current-first.** `main=9afadd753e9c4d4cf882ad5fc7e0d4154cb4a25d` (C5 clôturé, PR #241) ; CI main #2233 et Governed Deploy #116 réussis. Aucune nouvelle intake ni consigne propriétaire (#235/#236/#177 déjà réconciliées). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 est un blocage local (claim runtime) ; `TB-W3-C345-02` est retenu.
