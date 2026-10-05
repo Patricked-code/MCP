@@ -1,0 +1,1064 @@
+{
+  "schemaVersion": 1,
+  "policyId": "provisioning-contracts-v1",
+  "blueprintId": "TB-W3-F-01",
+  "workItemId": "PB-F",
+  "observedMainSha": "bf7312e6e8f52e660f2743b8ba40c779e98fe8d0",
+  "generatedAt": "2026-10-05T23:45:00Z",
+  "authority": {
+    "kind": "DERIVED_CONTRACT_PROJECTION",
+    "grantsPermission": false,
+    "createsRuntimeTasks": false,
+    "addsPrimitive": false,
+    "replacesExistingAuthorities": false
+  },
+  "invariants": [
+    "NO_SHELL_FREEFORM_PROVISIONING",
+    "NO_RESOURCE_CREATION_WITHOUT_EXPLICIT_CONSENT",
+    "NO_IMPLICIT_ACTIVATION",
+    "NO_IMPLICIT_SIDE_EFFECTS",
+    "EXACT_TARGET_REQUIRED",
+    "ABSENCE_PROVEN_NEVER_ASSUMED",
+    "EXISTING_MATCHING_RESOURCE_IS_NO_OP",
+    "EXISTING_CONFLICTING_RESOURCE_BLOCKS",
+    "NO_AUTOMATIC_DESTRUCTIVE_ROLLBACK",
+    "GAPS_CARRIED_NEVER_IMPROVISED",
+    "NO_PARALLEL_AUTHORITY",
+    "PROJECT_BOUND_NEVER_GENERALIZED_IMPLICITLY",
+    "PROTECTED_APPLICATIONS_NEVER_PROVISIONED"
+  ],
+  "consent": {
+    "mechanism": "The E3 web consent (TB-W3-E3-01): a same-origin submission carrying a signed, expiring consent ticket bound to its purpose and to the session (issueWebConsentTicket, verifyWebConsentTicket, isSameOriginSubmission), decided server-side before any external call or write.",
+    "requires": [
+      "SAME_ORIGIN_SUBMISSION",
+      "SIGNED_EXPIRING_TICKET_BOUND_TO_PURPOSE_AND_SESSION",
+      "EXPLICIT_VALUE_NAMING_RESOURCE_AND_AUTHORITY"
+    ],
+    "neverConsent": [
+      "ALLOW_WRITE_FLAG",
+      "ENABLE_WRITE_TOOLS",
+      "AGENT_INSTRUCTION",
+      "COMPLETION_STEP",
+      "LINK",
+      "PREVIOUS_CONSENT"
+    ]
+  },
+  "classes": {
+    "COMPOSABLE": "Target-bounded write a provisioning step may compose: exact organization or target, exact-head or exact-SHA guard, fail-closed governance, no free shell.",
+    "OBSERVE": "Read-only observation a step may use to prove existence, absence, health or a postcondition; missing evidence never proves absence.",
+    "PROJECT_BOUND": "Bounded to an allowlisted existing project: it never creates a new resource of its type and is never generalized implicitly into a provisioning primitive.",
+    "SELF_MANAGEMENT": "Operates the MCP runtime itself, which changes only through the Governed Deploy.",
+    "DESTRUCTIVE": "Deletes or empties content: never a provisioning step and never an automatic rollback.",
+    "NOT_PROVISIONING": "Coordination, review, authentication, transport or observation reserved to the controlled write mode: not a provisioning primitive."
+  },
+  "primitives": [
+    {
+      "name": "github_create_branch",
+      "kind": "MCP_TOOL",
+      "class": "COMPOSABLE",
+      "resourceTypes": [
+        "REPOSITORY",
+        "PROJECT_RUNTIME"
+      ],
+      "guards": [
+        "organization equal to the configured GITHUB_ORG",
+        "exact head SHA re-read before the write",
+        "non-force reference update",
+        "ENABLE_WRITE_TOOLS and a shadow_ready Scoped WRITE Gate verdict"
+      ]
+    },
+    {
+      "name": "github_create_commit",
+      "kind": "MCP_TOOL",
+      "class": "COMPOSABLE",
+      "resourceTypes": [
+        "REPOSITORY",
+        "PROJECT_RUNTIME"
+      ],
+      "guards": [
+        "organization equal to the configured GITHUB_ORG",
+        "exact head SHA re-read before the write",
+        "non-force reference update",
+        "ENABLE_WRITE_TOOLS and a shadow_ready Scoped WRITE Gate verdict"
+      ]
+    },
+    {
+      "name": "github_create_or_update_file",
+      "kind": "MCP_TOOL",
+      "class": "COMPOSABLE",
+      "resourceTypes": [
+        "REPOSITORY",
+        "PROJECT_RUNTIME"
+      ],
+      "guards": [
+        "organization equal to the configured GITHUB_ORG",
+        "exact head SHA re-read before the write",
+        "non-force reference update",
+        "ENABLE_WRITE_TOOLS and a shadow_ready Scoped WRITE Gate verdict"
+      ]
+    },
+    {
+      "name": "github_create_pull_request",
+      "kind": "MCP_TOOL",
+      "class": "COMPOSABLE",
+      "resourceTypes": [
+        "REPOSITORY",
+        "PROJECT_RUNTIME"
+      ],
+      "guards": [
+        "organization equal to the configured GITHUB_ORG",
+        "exact head SHA re-read before the write",
+        "non-force reference update",
+        "ENABLE_WRITE_TOOLS and a shadow_ready Scoped WRITE Gate verdict"
+      ]
+    },
+    {
+      "name": "github_mark_pr_ready",
+      "kind": "MCP_TOOL",
+      "class": "COMPOSABLE",
+      "resourceTypes": [
+        "REPOSITORY",
+        "PROJECT_RUNTIME"
+      ],
+      "guards": [
+        "organization equal to the configured GITHUB_ORG",
+        "exact head SHA re-read before the write",
+        "non-force reference update",
+        "ENABLE_WRITE_TOOLS and a shadow_ready Scoped WRITE Gate verdict"
+      ]
+    },
+    {
+      "name": "github_merge_pull_request",
+      "kind": "MCP_TOOL",
+      "class": "COMPOSABLE",
+      "resourceTypes": [
+        "REPOSITORY",
+        "PROJECT_RUNTIME"
+      ],
+      "guards": [
+        "organization equal to the configured GITHUB_ORG",
+        "exact head SHA re-read before the write",
+        "non-force reference update",
+        "ENABLE_WRITE_TOOLS and a shadow_ready Scoped WRITE Gate verdict",
+        "non-draft pull request with observed green check-runs"
+      ]
+    },
+    {
+      "name": "github_get_repository_state",
+      "kind": "MCP_TOOL",
+      "class": "OBSERVE",
+      "resourceTypes": [
+        "REPOSITORY"
+      ]
+    },
+    {
+      "name": "github_get_branch_state",
+      "kind": "MCP_TOOL",
+      "class": "OBSERVE",
+      "resourceTypes": [
+        "REPOSITORY"
+      ]
+    },
+    {
+      "name": "github_get_rulesets",
+      "kind": "MCP_TOOL",
+      "class": "OBSERVE",
+      "resourceTypes": [
+        "REPOSITORY"
+      ]
+    },
+    {
+      "name": "docker_status_s1",
+      "kind": "MCP_TOOL",
+      "class": "OBSERVE",
+      "resourceTypes": [
+        "PROJECT_RUNTIME"
+      ]
+    },
+    {
+      "name": "docker_status_s2",
+      "kind": "MCP_TOOL",
+      "class": "OBSERVE",
+      "resourceTypes": [
+        "PROJECT_RUNTIME"
+      ]
+    },
+    {
+      "name": "pm2_status_s1",
+      "kind": "MCP_TOOL",
+      "class": "OBSERVE",
+      "resourceTypes": [
+        "PROJECT_RUNTIME"
+      ]
+    },
+    {
+      "name": "pm2_status_s2",
+      "kind": "MCP_TOOL",
+      "class": "OBSERVE",
+      "resourceTypes": [
+        "PROJECT_RUNTIME"
+      ]
+    },
+    {
+      "name": "curl_domain",
+      "kind": "MCP_TOOL",
+      "class": "OBSERVE",
+      "resourceTypes": [
+        "PROJECT_RUNTIME",
+        "DOMAIN_BINDING"
+      ]
+    },
+    {
+      "name": "list_domains_s1",
+      "kind": "MCP_TOOL",
+      "class": "OBSERVE",
+      "resourceTypes": [
+        "DOMAIN_BINDING"
+      ],
+      "note": "SSH inventory of the Plesk virtual hosts; not bound to C5 as a served-domain observation authority."
+    },
+    {
+      "name": "list_domains_s2",
+      "kind": "MCP_TOOL",
+      "class": "OBSERVE",
+      "resourceTypes": [
+        "DOMAIN_BINDING"
+      ],
+      "note": "SSH inventory of the Plesk virtual hosts; not bound to C5 as a served-domain observation authority."
+    },
+    {
+      "name": "POST /evidence/github/readonly",
+      "kind": "HTTP_ROUTE",
+      "class": "OBSERVE",
+      "note": "GitHub OIDC read-only evidence of allowlisted probes; mutationAllowed is false."
+    },
+    {
+      "name": "mcp-readonly-evidence.yml",
+      "kind": "WORKFLOW",
+      "class": "OBSERVE",
+      "resourceTypes": [
+        "PROJECT_RUNTIME"
+      ]
+    },
+    {
+      "name": "amf_registry_native_export",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "amf_registry_publish_download",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "deploy_brvm_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "deploy_project_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "deploy_sadiaaf_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "exec_repo_script_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND",
+      "note": "Runs only allowlisted scripts of the OPCVM API or BRVM repository; never a provisioning step."
+    },
+    {
+      "name": "git_pull_project_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "legacy_funds_api_test_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "legacy_funds_frontend_build_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "legacy_vhost_commit_push_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "legacy_vhost_deploy_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "legacy_vhost_git_init_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "legacy_vhost_quality_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "legacy_vhost_write_file_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "nigeria_bootstrap_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND",
+      "note": "Clones Patricked-code/Nigeria only; the pattern a target-bounded runtime creation would wrap."
+    },
+    {
+      "name": "nigeria_commit_push_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "nigeria_deploy_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "nigeria_patch_file_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "restart_legacy_funds_api_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "restart_legacy_funds_frontend_s2",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "rollback_sadiaaf_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "sadiaaf_commit_push_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "sadiaaf_deploy_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "sadiaaf_patch_file_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "sadiaaf_prepare_branch_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "sadiaaf_quality_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "sadiaaf_restore_quarantine_s1",
+      "kind": "MCP_TOOL",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "POST /deploy/github/stablecoin/s2/fast-forward",
+      "kind": "HTTP_ROUTE",
+      "class": "PROJECT_BOUND",
+      "note": "Stablecoin S2 fast-forward admitted by GitHub OIDC from its own workflow."
+    },
+    {
+      "name": "stablecoin-fast-forward.yml",
+      "kind": "WORKFLOW",
+      "class": "PROJECT_BOUND"
+    },
+    {
+      "name": "mcp_build_s1",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT"
+    },
+    {
+      "name": "mcp_sync_from_github_s1",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT"
+    },
+    {
+      "name": "mcp_typecheck_s1",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT"
+    },
+    {
+      "name": "patch_mcp_code_file_s1",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT",
+      "note": "A direct server-side edit of versioned code, excluded by the GitHub-first rule."
+    },
+    {
+      "name": "restart_mcp_bridge_s1",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT"
+    },
+    {
+      "name": "POST /deploy/github/s1/start",
+      "kind": "HTTP_ROUTE",
+      "class": "SELF_MANAGEMENT",
+      "note": "Governed Deploy admission: exact SHA, CI gate, previous-image rollback, health and attestation."
+    },
+    {
+      "name": "mcp-deploy.yml",
+      "kind": "WORKFLOW",
+      "class": "SELF_MANAGEMENT"
+    },
+    {
+      "name": "legacy_vhost_delete_path_s1",
+      "kind": "MCP_TOOL",
+      "class": "DESTRUCTIVE"
+    },
+    {
+      "name": "legacy_vhost_purge_s1",
+      "kind": "MCP_TOOL",
+      "class": "DESTRUCTIVE"
+    },
+    {
+      "name": "sadiaaf_quarantine_contents_s1",
+      "kind": "MCP_TOOL",
+      "class": "DESTRUCTIVE"
+    },
+    {
+      "name": "amf_registry_native_chunk",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "amf_registry_native_info",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "brvm_container_logs_s2",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "brvm_run_sql_readonly_s2",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "legacy_vhost_git_status_s1",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "legacy_vhost_inventory_s1",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "legacy_vhost_read_file_s1",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "legacy_vhost_search_s1",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "legacy_vhosts_context_s1",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "sadiaaf_git_diff_s1",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "sadiaaf_git_status_s1",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "sadiaaf_list_files_s1",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "sadiaaf_projects_context_s1",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "sadiaaf_read_file_s1",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "sadiaaf_search_code_s1",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Observation reserved to the controlled write mode."
+    },
+    {
+      "name": "github_reply_review_thread",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Pull request review lifecycle."
+    },
+    {
+      "name": "github_resolve_review_thread",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Pull request review lifecycle."
+    },
+    {
+      "name": "mcp_claim_next_governed_task",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Governed Task Queue coordination."
+    },
+    {
+      "name": "mcp_materialize_program_blueprint",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Governed Task Queue coordination."
+    },
+    {
+      "name": "mcp_reconcile_agent_intent",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Governed Task Queue coordination."
+    },
+    {
+      "name": "mcp_transition_governed_task",
+      "kind": "MCP_TOOL",
+      "class": "NOT_PROVISIONING",
+      "note": "Governed Task Queue coordination."
+    },
+    {
+      "name": "POST /login",
+      "kind": "HTTP_ROUTE",
+      "class": "NOT_PROVISIONING",
+      "note": "Web session."
+    },
+    {
+      "name": "POST /oauth/authorize",
+      "kind": "HTTP_ROUTE",
+      "class": "NOT_PROVISIONING",
+      "note": "OAuth consent."
+    },
+    {
+      "name": "POST /oauth/token",
+      "kind": "HTTP_ROUTE",
+      "class": "NOT_PROVISIONING",
+      "note": "OAuth token exchange."
+    },
+    {
+      "name": "POST /mcp",
+      "kind": "HTTP_ROUTE",
+      "class": "NOT_PROVISIONING",
+      "note": "MCP transport; its tools are classified one by one."
+    },
+    {
+      "name": "DELETE /mcp",
+      "kind": "HTTP_ROUTE",
+      "class": "NOT_PROVISIONING",
+      "note": "MCP transport session end."
+    },
+    {
+      "name": "POST /git/connect",
+      "kind": "HTTP_ROUTE",
+      "class": "NOT_PROVISIONING",
+      "note": "E3-consented connection management; its discovery records every visible unknown repository, not an exact target."
+    },
+    {
+      "name": "POST /github/connect",
+      "kind": "HTTP_ROUTE",
+      "class": "NOT_PROVISIONING",
+      "note": "E3-consented connection management; its discovery records every visible unknown repository, not an exact target."
+    },
+    {
+      "name": "POST /access/github/repository-ssh/certificate",
+      "kind": "HTTP_ROUTE",
+      "class": "NOT_PROVISIONING",
+      "note": "Ephemeral repository SSH certificate transport."
+    },
+    {
+      "name": "POST /access/github/repository-ssh/ca/bootstrap",
+      "kind": "HTTP_ROUTE",
+      "class": "NOT_PROVISIONING",
+      "note": "Repository SSH certificate authority bootstrap."
+    },
+    {
+      "name": "mcp-ci.yml",
+      "kind": "WORKFLOW",
+      "class": "NOT_PROVISIONING",
+      "note": "Continuous integration."
+    },
+    {
+      "name": "repository-ssh-ca-bootstrap.yml",
+      "kind": "WORKFLOW",
+      "class": "NOT_PROVISIONING",
+      "note": "Repository SSH certificate authority bootstrap."
+    }
+  ],
+  "contracts": [
+    {
+      "resourceType": "REPOSITORY",
+      "owningAuthorities": [
+        "GitHub organization GITHUB_ORG, through the GitHub lifecycle transport",
+        "GitRegistry, for the repository mapping"
+      ],
+      "exactTarget": [
+        "organization equal to the configured GITHUB_ORG",
+        "repository name",
+        "private visibility"
+      ],
+      "absenceProof": {
+        "provenBy": "Existence is observed, absence is never assumed: a repository read under the configured organization proves existence, and the creation primitive treats a name already taken as existence, never as an overwrite.",
+        "neverAbsentWhen": [
+          "GITHUB_REPOSITORY_NOT_FOUND_OR_INVISIBLE",
+          "GITHUB_REPOSITORY_PERMISSION_DENIED",
+          "GITHUB_REPOSITORY_AUTH_MISSING",
+          "GITHUB_REPOSITORY_AUTH_INVALID",
+          "GITHUB_REPOSITORY_API_UNAVAILABLE",
+          "GITHUB_REPOSITORY_EVIDENCE_STALE"
+        ]
+      },
+      "existingResource": {
+        "matching": "NO_OP",
+        "conflicting": "BLOCKED",
+        "matchingMeans": "same organization and name, private and not archived"
+      },
+      "consent": {
+        "purpose": "provision-repository",
+        "value": "CREATE_PRIVATE_REPOSITORY",
+        "names": [
+          "repository full name",
+          "GitHub organization"
+        ]
+      },
+      "steps": [
+        {
+          "id": "observe-existing",
+          "action": "OBSERVE",
+          "required": true,
+          "mutates": false,
+          "consent": "NONE",
+          "primitives": [
+            "github_get_repository_state"
+          ]
+        },
+        {
+          "id": "create-repository",
+          "action": "CREATE",
+          "required": true,
+          "mutates": true,
+          "consent": "CONTRACT",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-ADMIN-01",
+              "TB-W3-F-02"
+            ],
+            "reason": "No repository creation primitive is registered: ADMIN-01 adds the private-only, organization-bounded and idempotent primitive, F-02 composes it with the E3 consent.",
+            "reuse": "EXTEND the GitHub lifecycle transport (organization assertion, Scoped WRITE Gate) rather than resurrecting PR #88"
+          }
+        },
+        {
+          "id": "record-mapping",
+          "action": "RECORD",
+          "required": true,
+          "mutates": true,
+          "consent": "CONTRACT",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-F-02"
+            ],
+            "reason": "GitRegistry mappings are only added by the consented discovery of every visible unknown repository (/git/connect, /github/connect); no write is bound to the exact provisioned repository.",
+            "reuse": "GENERALIZE the consented discovery (syncGithubReposToRegistry) to the exact provisioned repository"
+          }
+        },
+        {
+          "id": "initialize-content",
+          "action": "INITIALIZE",
+          "required": false,
+          "mutates": true,
+          "consent": "GOVERNED_PULL_REQUEST",
+          "primitives": [
+            "github_create_branch",
+            "github_create_commit",
+            "github_create_or_update_file",
+            "github_create_pull_request",
+            "github_mark_pr_ready",
+            "github_merge_pull_request"
+          ],
+          "note": "Composable once the repository has its initial commit; content arrives through a reviewed pull request."
+        },
+        {
+          "id": "protect-default-branch",
+          "action": "PROTECT",
+          "required": false,
+          "mutates": true,
+          "consent": "OWN",
+          "consentValue": "PROTECT_REPOSITORY_BRANCHES",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-GGCC-GH-RULESETS"
+            ],
+            "reason": "Rulesets are only read (github_get_rulesets); typed ruleset mutations with explicit policy gates do not exist yet."
+          }
+        },
+        {
+          "id": "verify",
+          "action": "VERIFY",
+          "required": true,
+          "mutates": false,
+          "consent": "NONE",
+          "primitives": [
+            "github_get_repository_state",
+            "github_get_branch_state"
+          ]
+        }
+      ],
+      "rollback": {
+        "mode": "NO_AUTOMATIC_DESTRUCTIVE_ROLLBACK",
+        "detail": "A created repository is never deleted or archived automatically: a failed provisioning leaves it in place and reports it with its evidence; deletion is a separate destructive operation outside provisioning."
+      },
+      "neverImplicit": [
+        "team access",
+        "webhooks",
+        "secrets",
+        "environments",
+        "deploy keys",
+        "rulesets",
+        "public visibility"
+      ]
+    },
+    {
+      "resourceType": "PROJECT_RUNTIME",
+      "owningAuthorities": [
+        ".mcp/server-map.json (servers.<id>.targetProjectIds), changed only by a reviewed pull request",
+        "GitRegistry project and mapping",
+        "the server runtime observation resolved by C4 (GW-08)",
+        "the Governed Deploy, for the MCP runtime itself"
+      ],
+      "exactTarget": [
+        "GitRegistry project and mapping id",
+        "server id declared in .mcp/server-map.json",
+        "runtime component: repository and runtime kind"
+      ],
+      "absenceProof": {
+        "provenBy": "A current C4 runtime resolution RESOLVED with the NO_RUNTIME cardinality, from a bounded observation of the declared server; missing, unavailable or stale evidence stays UNVERIFIED.",
+        "neverAbsentWhen": [
+          "RUNTIME_OBSERVATION_MISSING",
+          "RUNTIME_OBSERVATION_UNAVAILABLE",
+          "RUNTIME_EVIDENCE_STALE",
+          "RUNTIME_SERVER_UNVERIFIED",
+          "RUNTIME_SERVER_MISMATCH",
+          "RUNTIME_COMPONENT_UNVERIFIED"
+        ]
+      },
+      "existingResource": {
+        "matching": "NO_OP",
+        "conflicting": "BLOCKED",
+        "matchingMeans": "the same component already runs for the same project on the same server"
+      },
+      "consent": {
+        "purpose": "provision-project-runtime",
+        "value": "CREATE_PROJECT_RUNTIME",
+        "names": [
+          "project and mapping",
+          "server",
+          "runtime component"
+        ]
+      },
+      "steps": [
+        {
+          "id": "observe-runtime",
+          "action": "OBSERVE",
+          "required": true,
+          "mutates": false,
+          "consent": "NONE",
+          "primitives": [
+            "mcp-readonly-evidence.yml",
+            "docker_status_s1",
+            "docker_status_s2",
+            "pm2_status_s1",
+            "pm2_status_s2"
+          ]
+        },
+        {
+          "id": "bind-target",
+          "action": "BIND_TARGET",
+          "required": true,
+          "mutates": true,
+          "consent": "GOVERNED_PULL_REQUEST",
+          "primitives": [
+            "github_create_branch",
+            "github_create_commit",
+            "github_create_or_update_file",
+            "github_create_pull_request",
+            "github_mark_pr_ready",
+            "github_merge_pull_request"
+          ],
+          "note": "The server target is declared in .mcp/server-map.json by a reviewed pull request; the MCP picks it up only through its Governed Deploy."
+        },
+        {
+          "id": "backup",
+          "action": "BACKUP",
+          "required": true,
+          "mutates": true,
+          "consent": "CONTRACT",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-F-03"
+            ],
+            "reason": "No target-bounded backup exists for a project runtime; backups exist only inside project-bound deploy tools.",
+            "reuse": "GENERALIZE the Governed Deploy retention of the previous image to the target runtime"
+          }
+        },
+        {
+          "id": "create-runtime",
+          "action": "CREATE",
+          "required": true,
+          "mutates": true,
+          "consent": "CONTRACT",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-F-03"
+            ],
+            "reason": "Runtime creation tools are bound to allowlisted existing projects (deploy_project_s2, legacy_vhost_git_init_s1, nigeria_bootstrap_s2); no generic target-bounded primitive exists and none is improvised through a shell.",
+            "reuse": "WRAP the project-bound bootstrap pattern behind an exact target and the E3 consent"
+          }
+        },
+        {
+          "id": "activate",
+          "action": "ACTIVATE",
+          "required": true,
+          "mutates": true,
+          "consent": "OWN",
+          "consentValue": "ACTIVATE_PROJECT_RUNTIME",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-F-03"
+            ],
+            "reason": "Only the MCP runtime (Governed Deploy) and allowlisted projects have an activation channel.",
+            "reuse": "WRAP the Governed Deploy admission (exact SHA, CI gate, health, attestation) for target runtimes"
+          }
+        },
+        {
+          "id": "health",
+          "action": "HEALTH",
+          "required": true,
+          "mutates": false,
+          "consent": "NONE",
+          "primitives": [
+            "mcp-readonly-evidence.yml",
+            "docker_status_s1",
+            "docker_status_s2",
+            "curl_domain"
+          ]
+        },
+        {
+          "id": "rollback",
+          "action": "ROLLBACK",
+          "required": true,
+          "mutates": true,
+          "consent": "CONTRACT",
+          "when": "ON_FAILURE",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-F-03"
+            ],
+            "reason": "No target-bounded restore exists outside the project-bound rollback_sadiaaf_s1.",
+            "reuse": "GENERALIZE the Governed Deploy previous-image rollback on a failed health check"
+          }
+        }
+      ],
+      "rollback": {
+        "mode": "RESTORE_BACKUP",
+        "detail": "On a failed health check, restore the backup taken before the change, as the Governed Deploy restores the previous image; nothing outside the exact target is touched."
+      },
+      "neverImplicit": [
+        "activation",
+        "port or reverse-proxy binding",
+        "database creation",
+        "secrets",
+        "removal of an existing runtime"
+      ]
+    },
+    {
+      "resourceType": "DOMAIN_BINDING",
+      "owningAuthorities": [
+        "GitRegistry project and mapping domain declarations",
+        "the served-domain observation of the resolved server (C5, GW-09)",
+        "DNS, an external authority that is observed only"
+      ],
+      "exactTarget": [
+        "fully qualified domain name",
+        "GitRegistry project and mapping id",
+        "server id declared in .mcp/server-map.json"
+      ],
+      "absenceProof": {
+        "provenBy": "A current C5 domain resolution NONE with DOMAIN_NONE_CONFIRMED for the resolved server; no served-domain observation authority exists yet, so absence cannot be proven today.",
+        "neverAbsentWhen": [
+          "DOMAIN_OBSERVATION_UNAVAILABLE",
+          "DOMAIN_EVIDENCE_STALE",
+          "DOMAIN_SERVER_UNVERIFIED",
+          "DOMAIN_PROJECT_UNVERIFIED",
+          "DOMAIN_REGISTRY_UNAVAILABLE",
+          "DOMAIN_REGISTRY_MISMATCH"
+        ]
+      },
+      "existingResource": {
+        "matching": "NO_OP",
+        "conflicting": "BLOCKED",
+        "matchingMeans": "the domain is already served for the same project by the same server"
+      },
+      "consent": {
+        "purpose": "provision-domain-binding",
+        "value": "BIND_DOMAIN",
+        "names": [
+          "fully qualified domain name",
+          "project",
+          "server"
+        ]
+      },
+      "steps": [
+        {
+          "id": "observe-binding",
+          "action": "OBSERVE",
+          "required": true,
+          "mutates": false,
+          "consent": "NONE",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-F-04",
+              "TB-W4-I1-01"
+            ],
+            "reason": "C5 has no served-domain observation authority and stays UNVERIFIED; list_domains_s1 and list_domains_s2 are unbound SSH inventories.",
+            "reuse": "WRAP list_domains_s1, list_domains_s2 and the read-only canaries into the bounded served-domain observation C5 lacks"
+          }
+        },
+        {
+          "id": "backup",
+          "action": "BACKUP",
+          "required": true,
+          "mutates": true,
+          "consent": "CONTRACT",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-F-04"
+            ],
+            "reason": "No target-bounded backup of the ingress configuration exists."
+          }
+        },
+        {
+          "id": "bind-domain",
+          "action": "BIND",
+          "required": true,
+          "mutates": true,
+          "consent": "CONTRACT",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-F-04"
+            ],
+            "reason": "No domain or virtual host binding primitive exists outside the project-bound legacy virtual host tools."
+          }
+        },
+        {
+          "id": "certificate",
+          "action": "CERTIFICATE",
+          "required": true,
+          "mutates": true,
+          "consent": "CONTRACT",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-F-04"
+            ],
+            "reason": "No TLS certificate issuance primitive exists."
+          }
+        },
+        {
+          "id": "activate",
+          "action": "ACTIVATE",
+          "required": true,
+          "mutates": true,
+          "consent": "OWN",
+          "consentValue": "ACTIVATE_DOMAIN_BINDING",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-F-04"
+            ],
+            "reason": "No ingress or virtual host reload primitive exists."
+          }
+        },
+        {
+          "id": "health",
+          "action": "HEALTH",
+          "required": true,
+          "mutates": false,
+          "consent": "NONE",
+          "primitives": [
+            "curl_domain"
+          ]
+        },
+        {
+          "id": "rollback",
+          "action": "ROLLBACK",
+          "required": true,
+          "mutates": true,
+          "consent": "CONTRACT",
+          "when": "ON_FAILURE",
+          "gap": {
+            "carriedBy": [
+              "TB-W3-F-04"
+            ],
+            "reason": "No unbind primitive exists; a rollback removes only the binding this provisioning created."
+          }
+        }
+      ],
+      "rollback": {
+        "mode": "RESTORE_BACKUP",
+        "detail": "On a failed health check, remove only the binding this provisioning created and restore the previous ingress configuration; other virtual hosts are never touched."
+      },
+      "neverImplicit": [
+        "DNS records",
+        "protected applications of .mcp/server-map.json",
+        "rebinding a domain served for another project",
+        "wildcard certificates"
+      ]
+    }
+  ]
+}

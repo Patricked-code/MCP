@@ -1,5 +1,27 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 F.0 Provisioning capability decomposition — GREEN candidate
+
+- **Reprise current-first.** `main=bf7312e6e8f52e660f2743b8ba40c779e98fe8d0` (E3 clôturé par la PR #256 ; `PB-E` DONE). Aucune nouvelle intake ni consigne propriétaire. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-F-01` est retenu.
+- **Préflight runtime (23:29Z)** :
+  - tasks `37388743442` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY) ;
+  - sessions `37388745496` (2 EXPIRED) ;
+  - locks `37388747546` (0 actif).
+  Aucune collision sur `provisioning:design`.
+- **Constat.** Il n'existait ni inventaire des primitives d'écriture ni contrat de provisioning.
+  - 62 outils MCP peuvent écrire, dont 10 enregistrés sur la surface de lecture avec un drapeau `allow_write`. Seules les écritures du cycle de vie GitHub sont génériques et bornées à une cible. Les autres sont liées à un projet, gèrent le MCP lui-même, sont destructives ou relèvent de la coordination.
+  - 12 routes HTTP mutent et 5 workflows s'exécutent.
+  - Les résolveurs C4 et C5 ne prouvent une absence que par une observation positive, et C5 n'a encore aucune autorité d'observation.
+- **Livré.**
+  - `.mcp/provisioning-contracts.json` : classement des 89 primitives et trois contrats (dépôt, projet/runtime, binding de domaine).
+  - `src/governance/provisioningContracts.ts` :
+    - `validateProvisioningContracts` échoue fermé sur : primitive non classée ou périmée, étape non composable, consentement absent, activation implicite, lacune non portée ou portée par un blueprint terminé, absence non observée en premier, santé, rollback ou sauvegarde manquants ;
+    - `deriveProvisioningCapabilities` montre qu'aucun type de ressource n'est provisionnable aujourd'hui.
+- **Preuves.**
+  - RED `5d8b93c`, CI #2279 (`37389622528`) : 938 tests, 1 échec attendu (module et politique absents).
+  - GREEN local : typecheck, build et gates verts ; suite complète 941/941.
+- **NEXT_ACTION** : CI exact-head de la PR #257, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-F-01`.
+
 ## 2026-10-05 — W3 E3 Consent & Validation — DONE et attesté ; `PB-E` DONE
 
 - **Fusion et CI** : PR #255 fusionnée sous garde exact-head depuis `855e2954a912d98ad136f5ab0c6e229eda6c56a5` au merge `61b90a1eca532b088ec213b7ae6ad9e2241eece4`.

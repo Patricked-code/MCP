@@ -1,5 +1,39 @@
 # DECISIONS_LOG.md
 
+## 2026-10-05 — F.0 : décomposition du provisioning en contrats avant toute primitive
+
+Décision technique, déduite selon #221. Sources : le chantier F de la ROADMAP et l'objectif du blueprint `TB-W3-F-01` : « inventorier les primitives d'écriture bornées par ressource et définir les contrats de provisioning avant d'ajouter toute nouvelle primitive ».
+
+- **Une politique machine versionnée, pas une autorité.** `.mcp/provisioning-contracts.json` est une projection de contrats. Elle n'accorde aucune permission, ne crée aucune tâche, n'ajoute aucune primitive et ne remplace aucune autorité existante. Un agent la lit depuis GitHub, sans le runtime.
+- **Un inventaire lié à la surface réelle.** Sont classés : les 62 outils MCP capables d'écrire (dont 10 enregistrés sur la surface de lecture avec un drapeau `allow_write`), les 12 routes HTTP mutantes et les 5 workflows. Le validateur les confronte à trois sources :
+  - la cartographie des fonctions, vérifiée en CI ;
+  - les routes du code source ;
+  - le Program Backlog.
+
+  La suite échoue sur une primitive d'écriture non classée, une entrée périmée ou une lacune attribuée à un blueprint terminé.
+- **Six classes.** Seules les écritures du cycle de vie GitHub sont composables : organisation configurée, head exact, mise à jour sans force et WRITE gate. Les catégories suivantes ne composent jamais une étape de provisioning :
+  - les outils liés à un projet existant ;
+  - l'auto-gestion du MCP ;
+  - les outils destructifs ;
+  - l'exécuteur de scripts ;
+  - les éditions de fichiers côté serveur.
+- **Trois contrats** : dépôt, projet/runtime, binding de domaine. Chacun fixe :
+  - une cible exacte ;
+  - une preuve d'absence par le résolveur existant ;
+  - un no-op sur une ressource identique et un blocage sur une ressource en conflit ;
+  - le consentement E3, qui nomme la ressource et l'autorité ;
+  - un consentement propre pour l'activation ;
+  - un contrôle de santé et un rollback non destructif.
+
+  Un dépôt créé n'est jamais supprimé automatiquement. Aucun effet n'est implicite : équipes, webhooks, secrets, environnements, clés de déploiement, rulesets, enregistrements DNS.
+- **Des lacunes portées, jamais improvisées :**
+  - création du dépôt et mapping exact : `TB-W3-ADMIN-01`, `TB-W3-F-02` ;
+  - sauvegarde, création, activation et restauration d'un runtime : `TB-W3-F-03` ;
+  - observation, sauvegarde, binding, certificat, activation et restauration d'un domaine : `TB-W3-F-04`, `TB-W4-I1-01` ;
+  - protections du dépôt : `TB-W3-GGCC-GH-RULESETS`.
+
+  Chaque lacune nomme ce qu'il faut réutiliser ou généraliser.
+
 ## 2026-10-05 — E3 : consentement explicite et validé côté serveur avant les mutations de complétion
 
 Décision technique (déduite, #221 ; ROADMAP chantier E : « exiger un consentement explicite avant toute création ou mutation de ressource qui n'existe pas encore » ; critère d'acceptation d'E3 posé à la clôture d'E2) :
