@@ -73,10 +73,10 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 18,
+      "DONE": 19,
       "PARTIALLY_IMPLEMENTED": 5,
       "KNOWN_NOT_ANALYZED": 6,
-      "DESIGNED_NOT_IMPLEMENTED": 7,
+      "DESIGNED_NOT_IMPLEMENTED": 6,
       "CONDITIONAL": 2,
       "DEFERRED": 3
     }
@@ -1550,7 +1550,7 @@
     {
       "id": "PB-D1",
       "title": "D1 Existing Governance Inheritance",
-      "disposition": "DESIGNED_NOT_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "governance.inheritance",
       "implementationMode": "EXTEND",
       "existingAuthorities": [
@@ -1563,7 +1563,7 @@
         "PB-C1",
         "PB-C345"
       ],
-      "nextAction": "Reconcile GWC-9/current governance projections and automatically inherit existing project rules without recreating them.",
+      "nextAction": "D1 DONE: GovernedOperationalContext.governanceInheritance (GW-10) inherits, on the scope proven by projectReality, the constraints of the GitRegistry mapping, the observed GitHub ruleset, .mcp/branch-governance.json, the Governed Lock Service and the WRITE gate, strictly and without copy. Residuals carried: target repository rulesets (TB-W3-GGCC-GH-RULESETS) and the Governed Deploy channel (TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS). Next consumer: TB-W3-D2-01 effective capabilities.",
       "subtasks": [
         "Compose branch/PR/test/review rules",
         "Compose GitHub→server deployment rules",
@@ -2587,7 +2587,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_C345_DONE_D1_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
+    "currentWaveStatus": "W3_D1_DONE_D2_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2608,7 +2608,7 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-D1-01",
+      "TB-W3-D2-01",
       "TB-W3-GGCC-GIT-READ",
       "TB-W4-K-01"
     ],
@@ -5297,10 +5297,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #244 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. The governed operational context projects governanceInheritance (GW-10): on the project scope proven by projectReality, the branch, pull-request, test, deploy, lock and write constraints of the GitRegistry mapping, the GitHub ruleset observed for its own repository, the versioned MCP branch governance policy, the Governed Lock Service and the WRITE gate, composed strictly without copy; rulesets of other repositories are carried by TB-W3-GGCC-GH-RULESETS and the Governed Deploy channel by TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5330,6 +5330,54 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 244,
+        "contract": "GW-10",
+        "projection": "GovernedOperationalContext.governanceInheritance",
+        "redHeadSha": "15c0f88dd623f8d2af0918dc4c6edbbe0bcb5235",
+        "redCiRunId": 37262334254,
+        "redCiRunNumber": 2240,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "57a5ef852c9412a8bb3447f3991b8921be7c8abf",
+        "prCiRunId": 37283787763,
+        "prCiRunNumber": 2241,
+        "testCount": 889,
+        "mergeSha": "87109f4153cea8d208c861e7ba456e617e3e4d24",
+        "mainCiRunId": 37284001092,
+        "governedDeployRunId": 37284001114,
+        "governedDeployRuntimeRevision": "87109f4153cea8d208c861e7ba456e617e3e4d24",
+        "runtimePreflightRunIds": [
+          37283486704,
+          37283489776,
+          37283492893
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37284270816,
+            "workflowSha": "87109f4153cea8d208c861e7ba456e617e3e4d24",
+            "status": "SUCCESS",
+            "observed": "main@87109f4153cea8d208c861e7ba456e617e3e4d24, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "fef2f7f7cf22fa8c11e5ff1ded2df93fb20ed7f759640558187e2ed6c30e505c",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T08:32:43.066Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37284273785,
+            "workflowSha": "87109f4153cea8d208c861e7ba456e617e3e4d24",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #119), published 127.0.0.1:8787->8787/tcp",
+            "outputSha256": "0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T08:32:46.388Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-05T08:35:00Z"
       }
     },
     {
@@ -5369,7 +5417,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -9422,7 +9470,8 @@
       "greenAcceptance": [
         "Existing tools/authorities are reused or wrapped before extension.",
         "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
-        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct.",
+        "Rulesets and branch protections of target project repositories are observed through this bounded capability and feed the D1 governance inheritance for their own repository only; until then the inherited pull-request, check and review rules of those repositories stay UNKNOWN with GOVERNANCE_RULESET_NOT_OBSERVED (residual of TB-W3-D1-01)."
       ],
       "regressionSuites": [
         "targeted RED/GREEN",
@@ -9647,7 +9696,8 @@
       "greenAcceptance": [
         "Existing tools/authorities are reused or wrapped before extension.",
         "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
-        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct.",
+        "The governed deployment channel of a project (for MCP: the Governed Deploy workflow, admitted by the main CI gate and attested for the exact SHA) is projected as inherited deployment governance next to the DEPLOY rule of the registry mapping, never as a permission by itself (residual of TB-W3-D1-01)."
       ],
       "regressionSuites": [
         "targeted RED/GREEN",
@@ -12183,6 +12233,54 @@
     ],
     "knownLimitations": [
       "No project reality is VERIFIED in production today: every chain with a public domain stops at INGRESS, and the migrated V1 MCP mapping stops at RUNTIME (RUNTIME_COMPONENT_UNVERIFIED) until the registry declares its component."
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3D1GovernanceInheritanceHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "87109f4153cea8d208c861e7ba456e617e3e4d24",
+    "blueprintId": "TB-W3-D1-01",
+    "lotId": "D1",
+    "contract": "GW-10",
+    "delivered": [
+      "GitRegistryProjectEvidence.governanceEvidence (additive): the declared governance of each mapping (official branch, branch prefixes, direct main push, status, capabilities, backup, rollback), carried on the selected mapping of the project resolution with its V1 candidate provenance",
+      "src/governance/branchGovernance.ts reads the versioned .mcp/branch-governance.json bounded and fail-closed (no default policy) and the runtime image ships it",
+      "src/governedWorkflow/governance/projectInheritance.ts derives 17 inherited rules (branch, pull request, checks, review, deploy, write, locks, worktree), each REQUIRE, FORBID, PERMIT or UNKNOWN with the authorities that determined it, on the scope proven by projectReality only",
+      "Strict composition: one forbidding authority suffices, silence or stale evidence is UNKNOWN and never a permission, disjoint branch prefixes are a CONFLICT, deployment is inherited only on a proven server, main-branch rules speak only for an official main branch, rulesets are never lent to another repository, every active lock is read",
+      "The governed operational context service projects governanceInheritance once per composition, fail-closed for historical in-process contexts without ruleset evidence"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37283486704,
+      "sessionsRunId": 37283489776,
+      "locksRunId": 37283492893,
+      "observedAt": "2026-10-05T08:25:16Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "governance:inheritance",
+      "collision": false
+    },
+    "notObserved": [
+      {
+        "evidence": "TARGET_REPOSITORY_RULESETS",
+        "reason": "The governed GitHub observer reads the ruleset of the governance repository only (B3.2); rulesets and protections of target project repositories have no observation authority yet, so their inherited pull-request, check and review rules stay UNKNOWN.",
+        "carriedBy": [
+          "TB-W3-GGCC-GH-RULESETS"
+        ]
+      },
+      {
+        "evidence": "GOVERNED_DEPLOY_CHANNEL",
+        "reason": "The DEPLOY rule reflects the registry mapping; the Governed Deploy workflow that deploys MCP itself (main CI gate, exact-SHA attestation) is governed by its own workflow and is not yet projected as inherited deployment governance.",
+        "carriedBy": [
+          "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS"
+        ]
+      }
+    ],
+    "knownLimitations": [
+      "The migrated V1 registry declares conservative candidate capabilities (no write, no deploy) and a migration_pending MCP mapping: the inherited DEPLOY and WRITE_* rules are FORBID until the registry declares otherwise."
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,

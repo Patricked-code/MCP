@@ -1,5 +1,21 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 D1 Existing Governance Inheritance — DONE et attesté
+
+- **Fusion et CI** : PR #244 fusionnée sous garde exact-head depuis `57a5ef852c9412a8bb3447f3991b8921be7c8abf` au merge `87109f4153cea8d208c861e7ba456e617e3e4d24`.
+  - RED CI #2240 (1 échec attendu) ; CI PR `37283787763` (#2241, 889 tests) ; CI main `37284001092` (#2242).
+  - Governed Deploy `37284001114` (#119) SUCCESS, « Deployment attested for exact SHA » (un 502 transitoire pendant le redémarrage, puis succès).
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37284270816` : S1 `main@87109f4`, worktree propre, push désactivé.
+  - `docker_status` run `37284273785` : conteneur healthy (redémarré par le deploy #119) ; l'image embarque désormais `.mcp/branch-governance.json`.
+- **Program Backlog** :
+  - `TB-W3-D1-01 = DONE` ; c'est l'unique lot de `PB-D1`, d'où `PB-D1 = DONE` (19 work items DONE).
+  - Résiduels sans autorité d'observation portés explicitement : rulesets et protections des dépôts cibles par `TB-W3-GGCC-GH-RULESETS` (règles PR/checks/revues héritées `UNKNOWN` avec `GOVERNANCE_RULESET_NOT_OBSERVED` jusque-là) ; canal Governed Deploy du MCP par `TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS`.
+  - Limite connue : le registre V1 migré déclare des capacités candidates conservatrices (ni écriture ni déploiement) et un mapping MCP `migration_pending` ; `DEPLOY` et `WRITE_*` hérités restent `FORBID` tant que le registre ne déclare pas autre chose.
+  - `TB-W3-D2-01` devient READY. READY : `TB-W3-A3-02` (blocage local), `TB-W3-D2-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, lock ou mutation.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-D2-01`, Effective Capabilities : intersection fail-closed de l'identité, du contexte GitHub, de la réalité projet, de la gouvernance héritée et du WRITE gate.
+
 ## 2026-10-05 — W3 D1 Existing Governance Inheritance — GREEN candidate
 
 - **Reprise current-first.** `main=c4fb286efb38bb084013b62c6bdce533725021aa` (C345-02 clôturé, PR #243). Aucune nouvelle intake ni consigne propriétaire, y compris après la pause de limite d'usage (réobservé à 08:24Z, HEAD inchangé). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 est un blocage local (claim runtime), `TB-W3-D1-01` est retenu.

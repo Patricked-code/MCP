@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 D1 livré et attesté
+
+- PR #244 fusionnée au SHA `87109f4` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37284270816` / `37284273785`.
+- `TB-W3-D1-01` clôturé DONE ; `PB-D1` DONE. Les rulesets des dépôts cibles sont portés par `TB-W3-GGCC-GH-RULESETS`, le canal Governed Deploy par `TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS`. `TB-W3-D2-01` devient READY.
+
 ## 2026-10-05 — W3 D1 Existing Governance Inheritance (candidate)
 
 - Le contexte opérationnel gouverné projette `governanceInheritance` (GW-10) : contraintes branche, pull request, tests, déploiement, locks et écriture héritées par le périmètre projet prouvé, depuis le mapping GitRegistry (`governanceEvidence` additif, `selectedMapping.governance`), le ruleset GitHub observé, `.mcp/branch-governance.json` (lecteur borné, livré dans l'image), le Governed Lock Service et le WRITE gate.
