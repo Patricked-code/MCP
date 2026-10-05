@@ -1,5 +1,21 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 D3 Bootstrap Receipt Enrichment — DONE et attesté
+
+- **Fusion et CI** : PR #248 fusionnée sous garde exact-head depuis `884414ff68b7e4b381f99252cab55f9cdaad7011` au merge `7c9331695b034dea1c9f1fecfab775ff0e328358`.
+  - RED CI #2252 (1 échec attendu) ; CI PR `37316739836` (#2253, 905 tests) ; CI main `37317001429` (#2254).
+  - Governed Deploy `37317001064` (#123) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37317336321` : S1 `main@7c93316`, worktree propre, push désactivé.
+  - `docker_status` run `37317340325` : conteneur healthy (redémarré par le deploy #123).
+- **Program Backlog** :
+  - `TB-W3-D3-01 = DONE` ; c'est l'unique lot de `PB-D3`, d'où `PB-D3 = DONE` (21 work items DONE).
+  - Résiduel porté par `TB-W3-GGCC-GH-REPO-BRANCH` : les références prouvées d'une session liée à un dépôt TargetScope non observé (l'observateur GitHub ne couvre que MCP, B3.2) ; d'ici là son receipt garde `RECEIPT_REPOSITORY_UNVERIFIED` à côté de sa TargetScope.
+  - Deviennent READY : `TB-W3-E1-01` (Missing-context Detection) et `TB-W4-H-01` (Trace evidence inventory).
+  - Aucun Task, session, lock ou mutation.
+- **Intake #236** : une clarification propriétaire (`EXISTING_MCP_EXPOSURE_FIRST`, 2026-10-05T09:16Z) est à réconcilier avant toute nouvelle sélection.
+- **NEXT_ACTION** : réconcilier la clarification #236 dans PB-K / `TB-W4-K-01`, puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E1-01`.
+
 ## 2026-10-05 — W3 D3 Bootstrap Receipt Enrichment — GREEN candidate
 
 - **Reprise current-first.** `main=a22293fc78212e0375569c628af9964de2a28960` (D2 clôturé, PR #247). Aucune nouvelle intake ni consigne propriétaire, y compris après la reprise de limite d'usage. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-D3-01` est retenu.

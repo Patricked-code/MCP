@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 D3 livré et attesté
+
+- PR #248 fusionnée au SHA `7c93316` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37317336321` / `37317340325`.
+- `TB-W3-D3-01` clôturé DONE ; `PB-D3` DONE. Les références prouvées des sessions liées à un dépôt TargetScope non observé sont portées par `TB-W3-GGCC-GH-REPO-BRANCH`. `TB-W3-E1-01` et `TB-W4-H-01` deviennent READY.
+
 ## 2026-10-05 — W3 D3 Bootstrap Receipt Enrichment (candidate)
 
 - Le Bootstrap Receipt existant gagne un champ optionnel et borné `references` (GW-12) : la connexion OAuth de la session, ainsi que le dépôt, le projet et le mapping prouvés par la réalité projet et le périmètre D1, avec leur provenance et leur heure d'observation.
