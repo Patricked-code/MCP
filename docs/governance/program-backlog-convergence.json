@@ -1654,7 +1654,7 @@
       "dependsOn": [
         "PB-D3"
       ],
-      "nextAction": "E1 DONE: GovernedOperationalContext.missingContext computes the mandatory inputs still missing after automatic governed resolution (OAuth identity, GitHub identity, repository, project mapping, server binding), surfaces only the first gap with its kind and the existing authority that completes it, and never asks for known context. Next: E2 extends the existing /login /git /github surfaces to request only the gap E1 surfaces, then E3 requires explicit consent before any creation or mutation.",
+      "nextAction": "E1 and E2 DONE: missingContext computes the first missing mandatory input; contextCompletion turns it into one step linked to the existing surface; /github and /git ask only for the missing GitHub credential, /git?repository= shows the mapping and /login returns to a same-origin path. Next: E3 requires explicit consent and authority validation before any creation or mutation of unknown resources.",
       "subtasks": [
         "Detect exactly which required fields are missing",
         "Restore known governed context automatically",
@@ -2600,7 +2600,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_E1_DONE_E2_PRW_GGCC_GH_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_H01_READY_TERMINAL_ACCEPTANCE_WIRED",
+    "currentWaveStatus": "W3_E2_DONE_E3_PRW_GGCC_GH_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_H01_READY_TERMINAL_ACCEPTANCE_WIRED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2621,7 +2621,7 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-E2-01",
+      "TB-W3-E3-01",
       "TB-W3-PRW-01",
       "TB-W3-PRW-02",
       "TB-W3-GGCC-GIT-READ",
@@ -5787,10 +5787,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #253 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. GovernedOperationalContext.contextCompletion turns the E1 gap into one step (call the named tool, ask the operator with the absolute link of the existing /github or /git surface, propose a governed change, reconcile or report it unavailable) and lists the inputs never asked; /github and /git request the GitHub credential only when it is missing, refused or blind to the organization and restore a valid one, /git?repository= shows the GitRegistry mapping of the repository, and /login returns only to a same-origin path. No session visibility is widened and no resource is created or changed."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5821,6 +5821,59 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 253,
+        "projection": "GovernedOperationalContext.contextCompletion",
+        "surfaces": [
+          "/login",
+          "/git",
+          "/github"
+        ],
+        "redHeadSha": "a5e018614be21ed1db348c6ecb0eee2bcae45f54",
+        "redCiRunId": 37356773083,
+        "redCiRunNumber": 2267,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "ec6f47342d9b7bd7b5c83f56478f112c6bb795b6",
+        "prCiRunId": 37357705265,
+        "prCiRunNumber": 2268,
+        "testCount": 928,
+        "mergeSha": "e51e9958b211186560b2054595fe7bc3fc564d19",
+        "mainCiRunId": 37357946975,
+        "governedDeployRunId": 37357947034,
+        "governedDeployRuntimeRevision": "e51e9958b211186560b2054595fe7bc3fc564d19",
+        "runtimePreflightRunIds": [
+          37355631550,
+          37355635567,
+          37355639794
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37358211199,
+            "workflowSha": "e51e9958b211186560b2054595fe7bc3fc564d19",
+            "status": "SUCCESS",
+            "observed": "main@e51e9958b211186560b2054595fe7bc3fc564d19, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "a0327e52904b071e583822b55b015426dc96756afe444f950086e0afe6b15cb6",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T18:44:35.322Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37358214601,
+            "workflowSha": "e51e9958b211186560b2054595fe7bc3fc564d19",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #128), published 127.0.0.1:8787->8787/tcp",
+            "observedFr": "conteneur healthy (redémarré par le deploy #128)",
+            "outputSha256": "8a69b5b2fc68252974e2b580abf73b2a2e6c7ef82f45b6e3a95aa60d363196ac",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T18:44:38.926Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-05T18:46:00Z"
       }
     },
     {
@@ -5856,7 +5909,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -5873,7 +5926,8 @@
       ],
       "greenAcceptance": [
         "E3 satisfies its bounded objective using existing authorities first.",
-        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
+        "E3 consumes the E2 completion: any creation or mutation reached from a completion step (a GitRegistry mapping, a durable GitHub connection, an identity binding, the auto-discovery of repositories) requires explicit consent naming the resource and its owning authority, validated server-side against that authority, and is never inferred from a completion link or step."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -12639,6 +12693,47 @@
     ],
     "knownLimitations": [
       "A credential gap names /github, the existing surface of the default GitHub credential; a durable account with a dedicated credential file stays with the secret storage, which E1 never reads."
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3E2ContextCompletionHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "e51e9958b211186560b2054595fe7bc3fc564d19",
+    "blueprintId": "TB-W3-E2-01",
+    "lotId": "E2",
+    "delivered": [
+      "GovernedOperationalContext.contextCompletion (src/governedContext/contextCompletion.ts): the E1 gap as one step (CALL_TOOL, ASK_OPERATOR with the absolute link of /github or /git?repository= on the OAuth issuer origin, PROPOSE_GOVERNED_CHANGE, RECONCILE, UNAVAILABLE) and doNotAsk",
+      "/github and /git (src/github/credentialCompletion.ts): the GitHub credential is requested only when missing, refused (401) or blind to the organization (403/404); a valid one is restored with an optional replacement; an unanswered observation asks nothing; validateGithubToken records the HTTP statuses",
+      "/git?repository=Owner/Name shows the GitRegistry mapping of the repository with the project resolver matching rule (projectMappingCandidates)",
+      "/login returns only to a same-origin path and names the surface it returns to; the static setup questions of /github are replaced by a pointer to /git"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37355631550,
+      "sessionsRunId": 37355635567,
+      "locksRunId": 37355639794,
+      "observedAt": "2026-10-05T18:24:21Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "context:guided-completion:wizard",
+      "collision": false
+    },
+    "notObserved": [],
+    "deferred": [
+      {
+        "capability": "EXPLICIT_CONSENT_BEFORE_CREATION_OR_MUTATION",
+        "reason": "E2 asks for the missing context and creates or changes nothing; the explicit consent and authority validation of any creation or mutation reached from a completion step belong to E3.",
+        "carriedBy": [
+          "TB-W3-E3-01"
+        ]
+      }
+    ],
+    "knownLimitations": [
+      "The shared-token web session carries no principal, so the web surfaces never display the missing context of a governed session: the agent carries its gap to the surface through the contextCompletion link, and the surface re-derives what it owns.",
+      "The /git mapping view reports the mappings GitRegistry declares for the repository; the verified project and server binding of a session stay those of its project reality."
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,

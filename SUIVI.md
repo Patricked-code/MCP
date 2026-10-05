@@ -1,5 +1,21 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 E2 Context Completion Wizard — DONE et attesté
+
+- **Fusion et CI** : PR #253 fusionnée sous garde exact-head depuis `ec6f47342d9b7bd7b5c83f56478f112c6bb795b6` au merge `e51e9958b211186560b2054595fe7bc3fc564d19`.
+  - RED CI #2267 (1 échec attendu) ; CI PR `37357705265` (#2268, 928 tests) ; CI main `37357946975` (#2269).
+  - Governed Deploy `37357947034` (#128) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37358211199` : S1 `main@e51e995`, worktree propre, push désactivé.
+  - `docker_status` run `37358214601` : conteneur healthy (redémarré par le deploy #128).
+- **Program Backlog** :
+  - `TB-W3-E2-01 = DONE` ; `PB-E` reste `PARTIALLY_IMPLEMENTED` (E3 reste à livrer).
+  - Report : le consentement explicite de toute création ou mutation atteinte depuis une étape de complétion (mapping GitRegistry, connexion durable, binding d'identité, découverte automatique de dépôts) est porté par `TB-W3-E3-01`, qui devient READY ; son critère d'acceptation consomme la complétion E2.
+  - Limite connue : la session web à jeton partagé n'a pas de principal ; les surfaces web n'affichent donc jamais le contexte manquant d'une session.
+  - Aucun Task, session, lock ou mutation.
+- **Intakes** : aucune nouvelle intake ni consigne propriétaire.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E3-01` (A3.2 reste un blocage local).
+
 ## 2026-10-05 — W3 E2 Context Completion Wizard — GREEN candidate
 
 - **Reprise current-first.** Le travail reprend après la réinitialisation de la limite d'usage, sur `main=59d02d590b0baeca8f5d5f75f90c9131e46aeff0` (E1 clôturé, PR #252).
