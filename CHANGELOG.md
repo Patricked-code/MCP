@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 C5 livré et attesté
+
+- PR #240 fusionnée au SHA `9131bd8` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37259482198` / `37259484407`.
+- `TB-W3-C5-01` clôturé DONE ; le service des domaines non observé est porté par `TB-W3-C345-02` et `TB-W4-I1-01` ; `TB-W3-C345-02` devient READY.
+
 ## 2026-10-04 — W3 C5 Domain Resolution (candidate)
 
 - Le contexte GitHub gouverné projette `domainResolution` (GW-09) après les résolutions projet (C2) et serveur (C3). La projection repose sur les déclarations de domaine du GitRegistry V2 (`GitRegistryProjectEvidence.domainEvidence`) et sur l'observation courante du serveur.
