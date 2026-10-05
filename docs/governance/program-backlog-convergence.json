@@ -73,8 +73,8 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 20,
-      "PARTIALLY_IMPLEMENTED": 5,
+      "DONE": 21,
+      "PARTIALLY_IMPLEMENTED": 4,
       "KNOWN_NOT_ANALYZED": 6,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
@@ -1608,7 +1608,7 @@
     {
       "id": "PB-D3",
       "title": "D3 Bootstrap Receipt Enrichment",
-      "disposition": "PARTIALLY_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "bootstrap.receipt-enrichment",
       "implementationMode": "EXTEND",
       "existingAuthorities": [
@@ -1619,7 +1619,7 @@
       "dependsOn": [
         "PB-D2"
       ],
-      "nextAction": "Extend the existing receipt with proven connection/repository/project/mapping references only.",
+      "nextAction": "D3 DONE: the existing BootstrapReceipt carries optional references (GW-12): the OAuth connection context of the session and the repository, project and mapping proven by the VERIFIED project reality layers and the D1 scope, with provenance and freshness, never a secret, never a promoted binding, never blocking the acknowledgement. Residual carried by TB-W3-GGCC-GH-REPO-BRANCH: proven references for sessions bound to an unobserved TargetScope repository. Next consumers: E1 missing-context detection, H trace evidence.",
       "subtasks": [
         "Attach proven client/connection refs",
         "Attach repository/project/mapping refs",
@@ -2587,7 +2587,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_D2_DONE_D3_PRW_GGCC_GH_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
+    "currentWaveStatus": "W3_D3_DONE_E1_PRW_GGCC_GH_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_H01_READY_TERMINAL_ACCEPTANCE_WIRED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2608,7 +2608,7 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-D3-01",
+      "TB-W3-E1-01",
       "TB-W3-PRW-01",
       "TB-W3-PRW-02",
       "TB-W3-GGCC-GIT-READ",
@@ -2618,6 +2618,7 @@
       "TB-W3-GGCC-GH-ACTIONS",
       "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
       "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+      "TB-W4-H-01",
       "TB-W4-K-01"
     ],
     "humanGatePolicy": {
@@ -5541,10 +5542,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #248 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. The existing bootstrap receipt carries an optional, bounded and closed references record (GW-12): the OAuth connection context of the session and the repository, project and mapping proven by the VERIFIED project reality layers of the session repository and the D1 scope, with provenance and observation time, never a secret; references of sessions bound to an unobserved TargetScope repository are carried by TB-W3-GGCC-GH-REPO-BRANCH."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5574,6 +5575,54 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 248,
+        "contract": "GW-12",
+        "projection": "BootstrapReceipt.references",
+        "redHeadSha": "fbcb140418968e173168094cf7d5fe75c8bd769c",
+        "redCiRunId": 37288080576,
+        "redCiRunNumber": 2252,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "884414ff68b7e4b381f99252cab55f9cdaad7011",
+        "prCiRunId": 37316739836,
+        "prCiRunNumber": 2253,
+        "testCount": 905,
+        "mergeSha": "7c9331695b034dea1c9f1fecfab775ff0e328358",
+        "mainCiRunId": 37317001429,
+        "governedDeployRunId": 37317001064,
+        "governedDeployRuntimeRevision": "7c9331695b034dea1c9f1fecfab775ff0e328358",
+        "runtimePreflightRunIds": [
+          37287663409,
+          37287666548,
+          37287669617
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37317336321,
+            "workflowSha": "7c9331695b034dea1c9f1fecfab775ff0e328358",
+            "status": "SUCCESS",
+            "observed": "main@7c9331695b034dea1c9f1fecfab775ff0e328358, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "ada2de8ff07bb7e24298690bb3491dd0420e8f91cf4642ddfe9bb00c1f2443fd",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T13:30:48.369Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37317340325,
+            "workflowSha": "7c9331695b034dea1c9f1fecfab775ff0e328358",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #123), published 127.0.0.1:8787->8787/tcp",
+            "outputSha256": "0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T13:30:49.441Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-05T13:32:00Z"
       }
     },
     {
@@ -5609,7 +5658,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -6716,7 +6765,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -9227,7 +9276,8 @@
       "greenAcceptance": [
         "Existing tools/authorities are reused or wrapped before extension.",
         "Typed bounded capability exposes only the scoped behavior classified by intake #177.",
-        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct."
+        "CALLABLE, AUTHORIZED and SAFE_NOW remain distinct.",
+        "Repository observations of TargetScope repositories feed the governed context of a session bound to them, for its own repository only, so that its project reality and its bootstrap receipt references can be proven; until then the receipt of such a session keeps RECEIPT_REPOSITORY_UNVERIFIED next to its server-built TargetScope (residual of TB-W3-D3-01)."
       ],
       "regressionSuites": [
         "targeted RED/GREEN",
@@ -12389,6 +12439,47 @@
     ],
     "knownLimitations": [
       "The migrated V1 registry is a candidate with a migration_pending MCP mapping: declared reads stay UNKNOWN (CAPABILITY_DECLARATION_UNVALIDATED) and readLogs and every mutation stay BLOCKED until a validated mapping declares them."
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3D3ReceiptReferencesHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "7c9331695b034dea1c9f1fecfab775ff0e328358",
+    "blueprintId": "TB-W3-D3-01",
+    "lotId": "D3",
+    "contract": "GW-12",
+    "delivered": [
+      "BootstrapReceipt.references (optional, bounded, closed): the receipt keeps its type and every historical receipt stays valid",
+      "connection: the OAuth ConnectionContext of the session (id, assurance, evidence source, creation time), never the principal or the OAuth client",
+      "src/governedContext/receiptReferences.ts derives the repository, project and mapping references from the VERIFIED project reality layers of the session repository and the D1 scope, with provenance and observation time; no project without a repository, no mapping without a project",
+      "The session service drops references observed for another repository and anything outside the bounded schema; a failed observation never blocks the acknowledgement and stays explicit",
+      "The session service observer is optional and called for a visible session only; in production the session tools read the governed context of the same session lazily"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37287663409,
+      "sessionsRunId": 37287666548,
+      "locksRunId": 37287669617,
+      "observedAt": "2026-10-05T09:05:36Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "bootstrap:receipt-enrichment",
+      "collision": false
+    },
+    "notObserved": [
+      {
+        "evidence": "TARGET_SCOPE_RECEIPT_REFERENCES",
+        "reason": "The governed GitHub observer covers the MCP repository only (B3.2): a session bound to a TargetScope repository has no proven project reality, so its receipt carries RECEIPT_REPOSITORY_UNVERIFIED next to its server-built TargetScope and TargetContext.",
+        "carriedBy": [
+          "TB-W3-GGCC-GH-REPO-BRANCH"
+        ]
+      }
+    ],
+    "knownLimitations": [
+      "The references are those of the governed context at acknowledgement time; a later change of the project reality is seen at the next acknowledgement, never rewritten into an existing receipt."
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
