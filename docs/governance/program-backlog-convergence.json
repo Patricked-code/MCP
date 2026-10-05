@@ -1340,6 +1340,14 @@
         "disposition": "DESIGNED_NOT_IMPLEMENTED",
         "observedMainSha": "0ac9ecf70adab117f2175ef2451fc62fe15abac7",
         "inventoryPath": "docs/governance/super-admin-cockpit-convergence-20261004.json"
+      },
+      {
+        "sourceKey": "issue-comment:236@2026-10-05T09:16:08Z",
+        "sourceId": "#236 owner clarification",
+        "title": "Complementary convergence clarification — EXISTING MCP EXPOSURE FIRST",
+        "coveredBy": "PB-K",
+        "disposition": "DESIGNED_NOT_IMPLEMENTED",
+        "observedMainSha": "121fba9c4ff7ddfb7526a00673ca67b253c9cd4b"
       }
     ]
   },
@@ -1876,7 +1884,12 @@
         "UNKNOWN_NEVER_RENDERED_AS_OFFLINE_OR_INACTIVE",
         "NO_FREE_SHELL_RAW_API_OR_ARBITRARY_COMMAND",
         "EXISTING_DASHBOARD_AND_WEB_ROUTES_KEEP_WORKING",
-        "createsRuntimeTask=false for readiness and blueprints"
+        "createsRuntimeTask=false for readiness and blueprints",
+        "EXISTING_MCP_EXPOSURE_FIRST",
+        "NO_NEW_DOMAIN_REVERSE_PROXY_RUNTIME_OR_CONTROL_PLANE_BY_DEFAULT",
+        "EXISTING_MCP_PUBLIC_ENDPOINTS_PRESERVED",
+        "NO_SPECULATIVE_ROUTE_BEFORE_ROUTE_AUTH_SECURITY_INVENTORY",
+        "PUBLIC_MCP_PROTOCOL_AND_PRIVILEGED_COCKPIT_SURFACES_SECURITY_SEPARATED"
       ]
     },
     {
@@ -7319,7 +7332,8 @@
       "redTests": [
         "RED proves no cockpit shell, navigation or Command Center route exists on the exact observed head.",
         "RED proves the duplicated HTML escaping helpers have no shared tested implementation and dashboard pages send no Content-Security-Policy.",
-        "RED proves an unavailable projection is not rendered as an explicit UNAVAILABLE/UNKNOWN state."
+        "RED proves an unavailable projection is not rendered as an explicit UNAVAILABLE/UNKNOWN state.",
+        "RED proves the exposure inventory (observed public MCP domain, DNS, TLS, reverse proxy, existing public routes and authentication boundary) and the regression tests of the existing public MCP endpoints are absent on the exact observed head."
       ],
       "greenAcceptance": [
         "Cockpit routes reuse the existing Express server and web session; no frontend framework, bundler or second backend is introduced, and /dashboard keeps working.",
@@ -7327,7 +7341,10 @@
         "Cockpit responses carry a restrictive Content-Security-Policy and never render a token, secret, authorization code or PKCE verifier.",
         "The Command Center composes existing projections only (health, presence, Current State inventory, nextWork, program readiness, governed context); each card links to its source and shows observedAt/freshness.",
         "Honest states: UNKNOWN, UNAVAILABLE and STALE are rendered as such, never as OFFLINE, INACTIVE or zero activity.",
-        "UI_VISIBILITY != CALLABLE != AUTHORIZED != SAFE_NOW: the read-only shell exposes no mutation control."
+        "UI_VISIBILITY != CALLABLE != AUTHORIZED != SAFE_NOW: the read-only shell exposes no mutation control.",
+        "EXISTING_MCP_EXPOSURE_FIRST (owner clarification on #236): before any cockpit route, public URL, reverse proxy, TLS, DNS or deployment-surface decision, current main, the MCP project reality, GitRegistry, server map and Live State and the observed public MCP exposure (domain, DNS, TLS, reverse proxy, routing, existing public routes, authentication and session boundaries) are re-observed; the cockpit composes into the existing MCP exposure and Governed Deploy unless recorded evidence proves a separate exposure necessary, which then follows the existing governed decision and provisioning path.",
+        "No new domain, reverse proxy, runtime or control plane by default, no speculative route namespace (such as /admin or /cockpit) hard-coded before the route, authentication and security inventory, and the existing public MCP endpoints (MCP protocol, OAuth, health) keep their behavior; any route added to the MCP domain has explicit authentication and authorization, CSP and security headers, collision analysis, tests and a post-deploy smoke check, and public MCP protocol endpoints stay security-separated from privileged cockpit UI/API surfaces even on a shared hostname and runtime.",
+        "The K-01 deployment evidence records OBSERVED_MCP_PUBLIC_DOMAIN, DOMAIN_AUTHORITY, DNS_STATE, TLS_STATE, REVERSE_PROXY_STATE, EXISTING_PUBLIC_ROUTES, COCKPIT_ROUTE_OR_EXPOSURE_DECISION, AUTH_BOUNDARY, WHY_REUSE_IS_SAFE, OR_WHY_SEPARATION_IS_REQUIRED, REGRESSION_TESTS_FOR_EXISTING_ENDPOINTS, EXACT_DEPLOYED_SHA, POST_DEPLOY_SMOKE_EVIDENCE."
       ],
       "readAuthorities": [
         "Express web server, login and web session (src/server.ts)",
@@ -7363,7 +7380,8 @@
         "Exact-head tests and review are green with no unresolved blocking finding.",
         "Merge uses the exact reviewed head.",
         "Governed deploy attests the merge SHA, read-only OIDC probes confirm S1/runtime and the cockpit smoke check is green.",
-        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated."
+        "SUIVI/NEXT_ACTION are reconciled and dependents re-evaluated.",
+        "The deployment evidence carries every EXISTING_MCP_EXPOSURE_FIRST field, including the route or exposure decision and why reuse is safe or why separation is required."
       ],
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
@@ -11510,7 +11528,47 @@
         "TB-W3-GGCC-GIT-READ",
         "TB-W4-K-01"
       ],
-      "postConvergenceReadinessIsDerived": true
+      "postConvergenceReadinessIsDerived": true,
+      "refinedBy": [
+        "CLARIFICATION-236-20261005"
+      ]
+    },
+    {
+      "id": "CLARIFICATION-236-20261005",
+      "source": "issue-comment:236@2026-10-05T09:16:08Z",
+      "sourceCommentId": 5991560741,
+      "title": "Complementary convergence clarification — EXISTING MCP EXPOSURE FIRST",
+      "status": "CONVERGED_CURRENT_MAIN",
+      "observedMainSha": "121fba9c4ff7ddfb7526a00673ca67b253c9cd4b",
+      "refinesIntake": "INTAKE-236",
+      "principle": "EXISTING_MCP_EXPOSURE_FIRST",
+      "integrationVerdict": "COMPLEMENT",
+      "integrationRule": "Absorbed into the existing cockpit.super-admin slot (PB-K): no new workstream, architecture, deployment target, domain decision, Task, Session, Claim or Lock. Before any cockpit route, public URL, reverse proxy, TLS, DNS or deployment-surface decision, the current main, the MCP project reality, GitRegistry, server map, Live State and the observed public MCP exposure are re-observed; the cockpit composes into the existing MCP exposure and Governed Deploy unless recorded evidence proves a separate exposure necessary, which then follows the existing governed decision and provisioning path.",
+      "supersedesAsDecision": [
+        "super-admin-cockpit-convergence-20261004.json PROPOSED_INTEGRATION_SLOTS.proposedRouteNamespace (/cockpit): a proposal only, decided by K-01 after the route, authentication and security inventory"
+      ],
+      "appliedTo": [
+        "PB-K",
+        "TB-W4-K-01"
+      ],
+      "requiredDeploymentEvidence": [
+        "OBSERVED_MCP_PUBLIC_DOMAIN",
+        "DOMAIN_AUTHORITY",
+        "DNS_STATE",
+        "TLS_STATE",
+        "REVERSE_PROXY_STATE",
+        "EXISTING_PUBLIC_ROUTES",
+        "COCKPIT_ROUTE_OR_EXPOSURE_DECISION",
+        "AUTH_BOUNDARY",
+        "WHY_REUSE_IS_SAFE",
+        "OR_WHY_SEPARATION_IS_REQUIRED",
+        "REGRESSION_TESTS_FOR_EXISTING_ENDPOINTS",
+        "EXACT_DEPLOYED_SHA",
+        "POST_DEPLOY_SMOKE_EVIDENCE"
+      ],
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "authorizesRuntimeMutation": false
     }
   ],
   "w3A22InventoryHandoff": {
