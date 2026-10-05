@@ -413,6 +413,34 @@ formulaires de connexion GitHub de `/github` et `/git`.
 - **Limite connue.** Un ticket reste réutilisable par la même session web
   pendant sa durée de validité.
 
+### Provisioning gouverné : décomposition F.0
+
+La décomposition du provisioning (`TB-W3-F-01`) est une politique machine
+versionnée, `.mcp/provisioning-contracts.json`, contrôlée par le validateur
+pur `src/governance/provisioningContracts.ts`. Elle n'ajoute aucune
+primitive, n'accorde aucune permission et ne crée aucune tâche.
+
+- **Inventaire.** Sont classés : chaque outil MCP capable d'écrire (surface
+  d'écriture ou drapeau `allow_write`), chaque route HTTP mutante et chaque
+  workflow. Six classes : composable, observation, lié à un projet existant,
+  auto-gestion du MCP, destructif, hors provisioning. Seules les écritures
+  du cycle de vie GitHub sont composables. Le validateur échoue dès qu'une
+  primitive d'écriture enregistrée n'est pas classée ou qu'une entrée n'est
+  plus enregistrée.
+- **Contrats.** Un contrat par type de ressource (dépôt, projet/runtime,
+  binding de domaine) fixe :
+  - la cible exacte ;
+  - la preuve d'absence, par le résolveur existant ; une preuve manquante
+    n'est jamais une absence ;
+  - le comportement sur une ressource existante : no-op si elle est
+    identique, blocage si elle est en conflit ;
+  - le consentement E3, qui nomme la ressource et son autorité ;
+    l'activation exige toujours son propre consentement ;
+  - les étapes bornées, la santé et un rollback non destructif.
+- **Lacunes.** Une étape sans primitive composable est une lacune portée par
+  un blueprint ouvert du Program Backlog, avec ce qu'il faut réutiliser ou
+  généraliser. Aucun type de ressource n'est provisionnable aujourd'hui.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.

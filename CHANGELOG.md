@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 F.0 Provisioning capability decomposition (candidate)
+
+- Nouvelle politique machine `.mcp/provisioning-contracts.json`. Elle classe toutes les primitives d'écriture enregistrées, les routes HTTP mutantes et les workflows. Elle définit un contrat par type de ressource : dépôt, projet/runtime, binding de domaine. Aucune primitive ni permission n'est ajoutée.
+- `src/governance/provisioningContracts.ts` valide cette politique contre la surface enregistrée et le Program Backlog. Il indique aussi ce qui est provisionnable : aucun type de ressource ne l'est encore, et chaque lacune est portée par un blueprint ouvert.
+
 ## 2026-10-05 — W3 E3 livré et attesté ; chantier E terminé
 
 - PR #255 fusionnée au SHA `61b90a1` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37359797521` / `37359801316`.
