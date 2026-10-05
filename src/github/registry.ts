@@ -2,6 +2,8 @@ import { mkdir, open, readFile, writeFile, chmod } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { createHash } from 'node:crypto';
 import type { GitHubConnectionStatus } from './connection.js';
+import { renderGithubCredentialCompletion, renderGithubCredentialRequest } from './credentialCompletion.js';
+import type { RepositoryMappingCompletion } from '../governedContext/contextCompletion.js';
 import {
   assessGitRegistryV2ActivationReadiness,
   dryRunGitRegistryV2,
@@ -405,6 +407,26 @@ function matched(r: GitRegistry, s: GitHubConnectionStatus): string {
   return getRepoMappingsForGithubStatus(r, s).map((m) => `<tr><td>${esc(`${m.githubOwner}/${m.githubRepo}`)}</td><td>${esc(m.projectKey)}</td><td>${esc(m.serverId)}</td><td><code>${esc(m.serverPath)}</code></td></tr>`).join('') || '<tr><td colspan="4">No matching mapping for active GitHub account.</td></tr>';
 }
 
-export function renderGitSettingsPage(status: GitHubConnectionStatus, registry: GitRegistry): string {
-  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"/><title>MCP WealthTech - Git</title><style>body{font-family:system-ui;margin:32px}.card{border:1px solid #ddd;border-radius:12px;padding:16px;margin:16px 0}.warning{background:#fff7ed}td,th{border-bottom:1px solid #eee;padding:6px;text-align:left}table{border-collapse:collapse;width:100%}code{background:#f3f4f6;padding:2px 4px}</style></head><body><h1>MCP WealthTech - Git</h1><p><a href="/dashboard">Dashboard</a> | <a href="/github/status">GitHub JSON</a> | <a href="/git/status">Registry JSON</a></p>${ctxHtml(registry)}<section class="card"><h2>GitHub status</h2><p>connected=${status.connected ? 'yes' : 'no'} login=${esc(status.login || 'none')} org=${esc(status.org || org())} repos=${esc(status.reposVisible ?? 'n/a')}</p><p>Auto-discovery: valid connection synchronizes visible repositories additively. No clone, no delete, no deploy, no force push.</p></section><section class="card"><h2>Connect GitHub</h2><form method="post" action="/git/connect"><input name="org" value="${esc(status.org || org())}"/><input name="token" type="password" required/><select name="mode"><option value="read">read</option><option value="write">write</option><option value="admin">admin</option><option value="org_admin">org_admin</option></select><button type="submit">Connect and auto-discover repositories</button></form></section><section class="card"><h2>Mappings matching active GitHub</h2><table><tbody>${matched(registry, status)}</tbody></table></section><section class="card"><h2>All repo/server mappings</h2><table><thead><tr><th>Repo</th><th>Project</th><th>Server</th><th>Path</th><th>Branch</th><th>Access</th><th>Deploy</th></tr></thead><tbody>${rows(registry)}</tbody></table></section></body></html>`;
+/** E2: the GitRegistry mapping of the repository a completion link names; nothing when none is named. */
+function mappingCompletionHtml(mapping: RepositoryMappingCompletion | undefined): string {
+  if (!mapping || mapping.state === 'NOT_REQUESTED') return '';
+  const repository = esc(mapping.repository);
+  const candidates = mapping.candidates
+    .map((entry) => `<li><code>${esc(entry.mappingId)}</code> — projet <code>${esc(entry.projectId)}</code></li>`)
+    .join('');
+  const message = {
+    RESOLVED: `<strong>Rien à fournir</strong> : le mapping <code>${esc(mapping.candidates[0]?.mappingId)}</code> (projet <code>${esc(mapping.candidates[0]?.projectId)}</code>) est déjà gouverné dans GitRegistry.`,
+    MISSING: `<strong>Mapping absent</strong> : aucun mapping GitRegistry ne déclare ${repository}. À fournir : un mapping dépôt ↔ projet ↔ serveur, par le chemin gouverné du registre.`,
+    AMBIGUOUS: `<strong>Choix à faire</strong> : plusieurs mappings GitRegistry déclarent ${repository}.<ul>${candidates}</ul>`,
+    UNOBSERVED: '<strong>GitRegistry illisible</strong> : rien n’est demandé.'
+  }[mapping.state];
+  return `<section class="card${mapping.ask ? ' warning' : ''}"${mapping.ask ? ' id="mapping-request"' : ''}><h2>Mapping du dépôt ${repository}</h2><p>${message}</p><p><code>${esc(mapping.reasonCode)}</code></p></section>`;
+}
+
+export function renderGitSettingsPage(
+  status: GitHubConnectionStatus,
+  registry: GitRegistry,
+  options: { mapping?: RepositoryMappingCompletion } = {}
+): string {
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"/><title>MCP WealthTech - Git</title><style>body{font-family:system-ui;margin:32px}.card{border:1px solid #ddd;border-radius:12px;padding:16px;margin:16px 0}.warning{background:#fff7ed}td,th{border-bottom:1px solid #eee;padding:6px;text-align:left}table{border-collapse:collapse;width:100%}code{background:#f3f4f6;padding:2px 4px}</style></head><body><h1>MCP WealthTech - Git</h1><p><a href="/dashboard">Dashboard</a> | <a href="/github/status">GitHub JSON</a> | <a href="/git/status">Registry JSON</a></p>${renderGithubCredentialCompletion(status)}${mappingCompletionHtml(options.mapping)}${ctxHtml(registry)}<section class="card"><h2>GitHub status</h2><p>connected=${status.connected ? 'yes' : 'no'} login=${esc(status.login || 'none')} org=${esc(status.org || org())} repos=${esc(status.reposVisible ?? 'n/a')}</p><p>Auto-discovery: valid connection synchronizes visible repositories additively. No clone, no delete, no deploy, no force push.</p></section>${renderGithubCredentialRequest(status, { request: 'Connect GitHub', optional: 'Reconnect GitHub (optional)' }, `<form method="post" action="/git/connect"><input name="org" value="${esc(status.org || org())}"/><input name="token" type="password" required/><select name="mode"><option value="read">read</option><option value="write">write</option><option value="admin">admin</option><option value="org_admin">org_admin</option></select><button type="submit">Connect and auto-discover repositories</button></form>`)}<section class="card"><h2>Mappings matching active GitHub</h2><table><tbody>${matched(registry, status)}</tbody></table></section><section class="card"><h2>All repo/server mappings</h2><table><thead><tr><th>Repo</th><th>Project</th><th>Server</th><th>Path</th><th>Branch</th><th>Access</th><th>Deploy</th></tr></thead><tbody>${rows(registry)}</tbody></table></section></body></html>`;
 }

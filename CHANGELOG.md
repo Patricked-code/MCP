@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 E2 Context Completion Wizard (candidate)
+
+- Le contexte gouverné projette `contextCompletion`, l'étape unique de la première lacune d'E1 : appeler l'outil nommé, demander à l'opérateur avec le lien de la surface existante, proposer un changement gouverné, réconcilier ou signaler l'inobservable. Les entrées à ne pas demander sont listées.
+- `/github` et `/git` ne demandent le token GitHub que s'il est absent, refusé ou aveugle à l'organisation ; un identifiant valide est restauré, son remplacement devient facultatif, et une observation impossible ne demande rien. `/git?repository=Owner/Name` montre le mapping GitRegistry du dépôt.
+- `/login` ne renvoie qu'à un chemin de la même origine. La liste fixe de questions de paramétrage de `/github` est retirée. Aucune ressource n'est créée ni modifiée.
+
 ## 2026-10-05 — W3 E1 livré et attesté
 
 - PR #251 fusionnée au SHA `4dcc90d` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37321828298` / `37321832535`.

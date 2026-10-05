@@ -2,6 +2,18 @@ import { mkdir, readFile, writeFile, chmod, stat } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { env } from '../config/env.js';
 import { resolveGithubApiBase } from './authorizationDiagnostics.js';
+import {
+  deriveGithubCredentialCompletion,
+  renderGithubCredentialCompletion,
+  renderGithubCredentialRequest
+} from './credentialCompletion.js';
+
+export {
+  deriveGithubCredentialCompletion,
+  renderGithubCredentialCompletion,
+  renderGithubCredentialRequest,
+  type GithubCredentialCompletion
+} from './credentialCompletion.js';
 import type {
   GithubAuthenticatedPrincipalObservation,
   GithubIdentityReasonCode
@@ -27,6 +39,10 @@ export type GitHubConnectionStatus = {
   canAdminOrgHint: boolean;
   warnings: string[];
   error: string | null;
+  /** E2: HTTP status of the `GET /user` check; null without a token or a response. */
+  userCheckStatus?: number | null;
+  /** E2: HTTP status of the organization check; null when it did not run. */
+  orgCheckStatus?: number | null;
 };
 
 export type GitHubJsonResponse = {
@@ -302,12 +318,14 @@ export async function validateGithubToken(token: string, org: string): Promise<G
   let orgAccessible = false;
   let reposVisible: number | null = null;
   let error: string | null = null;
+  let orgCheckStatus: number | null = null;
 
   if (!user.ok || !login) {
     error = `GitHub user check failed with HTTP ${user.status}`;
   } else if (org) {
     const orgCheck = await githubJsonRequest(token, `/orgs/${encodeURIComponent(org)}`);
     orgAccessible = orgCheck.ok;
+    orgCheckStatus = orgCheck.status;
     if (!orgCheck.ok) {
       error = `GitHub org check failed for ${org} with HTTP ${orgCheck.status}`;
     } else {
@@ -343,7 +361,9 @@ export async function validateGithubToken(token: string, org: string): Promise<G
     canWriteReposHint: canWrite || scopes.length === 0,
     canAdminOrgHint: canAdmin || scopes.length === 0,
     warnings,
-    error
+    error,
+    userCheckStatus: user.status,
+    orgCheckStatus
   };
 }
 
@@ -370,7 +390,9 @@ export async function getGithubConnectionStatus(): Promise<GitHubConnectionStatu
       canWriteReposHint: false,
       canAdminOrgHint: false,
       warnings: ['No GitHub token file visible from the MCP container.'],
-      error: null
+      error: null,
+      userCheckStatus: null,
+      orgCheckStatus: null
     };
   }
 
@@ -429,6 +451,7 @@ export function renderGithubConnectionPage(status: GitHubConnectionStatus): stri
 </head>
 <body>
   <h1>WealthTech MCP — Connexion GitHub</h1>
+  ${renderGithubCredentialCompletion(status)}
   <div class="card">
     <h2>État actuel</h2>
     <p>Connexion : <span class="${status.connected ? 'ok' : 'ko'}">${status.connected ? 'connectée' : 'non connectée'}</span></p>
@@ -450,9 +473,11 @@ export function renderGithubConnectionPage(status: GitHubConnectionStatus): stri
     ${warnings}
   </div>
 
-  <div class="card">
-    <h2>Connecter ou remplacer le token GitHub</h2>
-    <p>Le token sera stocké dans le fichier secret du conteneur MCP. Il ne doit jamais être commité dans Git.</p>
+
+  ${renderGithubCredentialRequest(status, {
+    request: 'Connecter le token GitHub',
+    optional: 'Remplacer le token GitHub (facultatif)'
+  }, `<p>Le token sera stocké dans le fichier secret du conteneur MCP. Il ne doit jamais être commité dans Git.</p>
     <form method="post" action="/github/connect">
       <label>Organisation GitHub</label>
       <input name="org" value="${escapeHtml(status.org || env.GITHUB_ORG || 'chainsolutions-wealthtech')}" />
@@ -466,20 +491,11 @@ export function renderGithubConnectionPage(status: GitHubConnectionStatus): stri
         <option value="org_admin">Administration organisation</option>
       </select>
       <button type="submit">Vérifier et connecter</button>
-    </form>
-  </div>
+    </form>`)}
 
   <div class="card">
-    <h2>Questions de paramétrage à traiter ensuite</h2>
-    <ol>
-      <li>Faut-il lier un repo GitHub existant à un dossier serveur ?</li>
-      <li>Faut-il inventorier tous les dossiers serveur S1/S2 ?</li>
-      <li>Faut-il créer un nouveau repo projet ?</li>
-      <li>Quelle branche unique sera officielle : <code>main</code> ou <code>final</code> ?</li>
-      <li>Quel projet peut écrire sur quel chemin serveur ?</li>
-      <li>Quels fichiers mémoire et loopback doivent être installés ?</li>
-    </ol>
-    <p>Prochaine étape MCP : créer les outils <code>github_org_inventory</code>, <code>github_link_repo_to_server_path</code>, <code>github_bootstrap_project_memory</code> et <code>mcp_server_inventory</code>.</p>
+    <h2>Contexte projet</h2>
+    <p>Le mapping dépôt ↔ projet ↔ serveur d’un dépôt se consulte sur <a href="/git">/git</a> (<code>/git?repository=Owner/Name</code>) : seules les informations manquantes y sont demandées.</p>
   </div>
 </body>
 </html>`;

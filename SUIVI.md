@@ -1,5 +1,25 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 E2 Context Completion Wizard — GREEN candidate
+
+- **Reprise current-first.** Le travail reprend après la réinitialisation de la limite d'usage, sur `main=59d02d590b0baeca8f5d5f75f90c9131e46aeff0` (E1 clôturé, PR #252).
+  - Réobservation à 18:25Z : aucune nouvelle intake ni consigne propriétaire depuis 14:00Z ; les PR ouvertes sont d'anciens brouillons d'autres lots.
+  - `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-E2-01` est retenu.
+- **Préflight runtime (18:24Z)** :
+  - tasks `37355631550` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY) ;
+  - sessions `37355635567` (2 EXPIRED) ;
+  - locks `37355639794` (0 actif).
+  Aucune collision sur `context:guided-completion:wizard`.
+- **Contrainte de conception.** Une session n'est visible que de son transport lié ou de son propriétaire OAuth. La session web à jeton partagé ne voit donc jamais le contexte manquant d'une session, et E2 n'élargit pas cette visibilité : E1 nomme la surface, la surface redérive ce qu'elle porte.
+- **Livré.**
+  - `GovernedOperationalContext.contextCompletion` (`src/governedContext/contextCompletion.ts`) donne l'étape unique de la lacune : `CALL_TOOL`, `ASK_OPERATOR` (lien absolu de `/github` ou `/git?repository=` sur l'origine de l'émetteur OAuth), `PROPOSE_GOVERNED_CHANGE`, `RECONCILE` ou `UNAVAILABLE`, avec `doNotAsk`.
+  - `/github` et `/git` (`src/github/credentialCompletion.ts`) ne demandent le token que s'il est absent, refusé (401) ou aveugle à l'organisation (403/404). Un identifiant valide est restauré et son remplacement devient facultatif ; une observation impossible ne demande rien. `validateGithubToken` enregistre les statuts HTTP.
+  - `/git?repository=Owner/Name` montre le mapping GitRegistry du dépôt avec la règle du résolveur (`projectMappingCandidates`).
+  - `/login` ne renvoie qu'à un chemin de la même origine.
+  - La liste fixe de questions de `/github` est remplacée par un renvoi vers `/git`.
+- **Preuves** : RED `a5e0186`, CI #2267 (`37356773083`) : 920 tests, 1 échec attendu (module absent). GREEN local : typecheck et build verts ; suite complète 928/928.
+- **NEXT_ACTION** : CI exact-head de la PR #253, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-E2-01`.
+
 ## 2026-10-05 — W3 E1 Missing-context Detection — DONE et attesté
 
 - **Fusion et CI** : PR #251 fusionnée sous garde exact-head depuis `33803ec191dbbe92fca726017cb7ffc1b2c9f3d6` au merge `4dcc90d4296e380574acd0da68001b586992d5b5`.
