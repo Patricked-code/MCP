@@ -14,6 +14,7 @@ const AUTHORIZATION_CODE_TTL_MS = Math.max(
 ) * 1000;
 
 const AUTHORIZATION_CONSENT_TTL_MS = 10 * 60 * 1000;
+const WEB_CONSENT_TTL_MS = 10 * 60 * 1000;
 
 const SUPPORTED_SCOPES = ['mcp:read', 'mcp:write'] as const;
 
@@ -365,7 +366,37 @@ function verifyConsentTicket(request: AuthorizationConsentRequest, ticket: strin
   return safeEqualString(signature, consentTicketSignature(request, expiresAt));
 }
 
-function isSameOriginSubmission(req: Request): boolean {
+function webConsentSignature(purpose: string, binding: string, expiresAt: number): string {
+  return hmac(`wealthtech-mcp-web-consent:v1\n${JSON.stringify([expiresAt, purpose, binding])}`);
+}
+
+/**
+ * E3 (TB-W3-E3-01): a signed, expiring consent ticket for a web mutation,
+ * domain-separated from the OAuth consent and bound to its purpose and to the
+ * web session that rendered the consent.
+ */
+export function issueWebConsentTicket(purpose: string, binding: string, now = Date.now()): string {
+  const expiresAt = now + WEB_CONSENT_TTL_MS;
+  return `${expiresAt}.${webConsentSignature(purpose, binding, expiresAt)}`;
+}
+
+export function verifyWebConsentTicket(purpose: string, ticket: unknown, binding: string, now = Date.now()): boolean {
+  if (typeof ticket !== 'string') return false;
+  const [expiresRaw, signature, extra] = ticket.split('.');
+  const expiresAt = Number(expiresRaw);
+  if (
+    extra !== undefined
+    || !signature
+    || !Number.isSafeInteger(expiresAt)
+    || expiresAt <= now
+    || expiresAt > now + WEB_CONSENT_TTL_MS
+  ) {
+    return false;
+  }
+  return safeEqualString(signature, webConsentSignature(purpose, binding, expiresAt));
+}
+
+export function isSameOriginSubmission(req: Request): boolean {
   const fetchSite = req.header('sec-fetch-site');
   if (fetchSite !== undefined && fetchSite !== 'same-origin') {
     return false;

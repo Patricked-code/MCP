@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 E3 Consent & Validation (candidate)
+
+- Les formulaires de connexion GitHub de `/github` et `/git` exigent un consentement explicite, validé côté serveur avant tout appel GitHub ou toute écriture : même origine, ticket signé et expirant lié à la session web, consentement de remplacement de l'identifiant. Un refus ne modifie rien.
+- La découverte automatique des dépôts n'est plus déclenchée à chaque connexion : elle exige son propre consentement, enregistré dans l'audit GitRegistry.
+
 ## 2026-10-05 — W3 E2 livré et attesté
 
 - PR #253 fusionnée au SHA `e51e995` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37358211199` / `37358214601`.

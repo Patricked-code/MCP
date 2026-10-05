@@ -5,7 +5,12 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { env } from './config/env.js';
 import { requireBearerToken } from './auth.js';
-import { registerOauthRoutes } from './oauth.js';
+import {
+  isSameOriginSubmission,
+  issueWebConsentTicket,
+  registerOauthRoutes,
+  verifyWebConsentTicket
+} from './oauth.js';
 import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
@@ -36,6 +41,7 @@ import {
   renderGitSettingsPage
 } from './github/registry.js';
 import { deriveRepositoryMappingCompletion, safeWebReturnPath } from './governedContext/contextCompletion.js';
+import { decideConnectConsent } from './github/connectConsent.js';
 import { createGithubDeployRouter } from './deploy/routes.js';
 import {
   verifyGithubOidcToken,
@@ -128,6 +134,11 @@ function createWebSessionCookie(): string {
 
 function clearWebSessionCookie(): string {
   return `${WEB_SESSION_COOKIE}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0${secureCookieAttribute()}`;
+}
+
+/** E3: consent tickets are bound to the web session that rendered the consent. */
+function webConsentBinding(req: express.Request): string {
+  return parseCookies(req.header('cookie'))[WEB_SESSION_COOKIE] ?? '';
 }
 
 function isWebAuthenticated(req: express.Request): boolean {
@@ -535,7 +546,10 @@ export async function startHttpServer(): Promise<void> {
       const mapping = typeof req.query.repository === 'string'
         ? deriveRepositoryMappingCompletion(req.query.repository, await readGitRegistryProjectEvidence())
         : undefined;
-      res.type('html').send(renderGitSettingsPage(status, registry, mapping ? { mapping } : {}));
+      res.type('html').send(renderGitSettingsPage(status, registry, {
+        ...(mapping ? { mapping } : {}),
+        consentTicket: issueWebConsentTicket('github-connect', webConsentBinding(req))
+      }));
     } catch (error) {
       logger.error({ error }, 'Erreur page /git');
       res.status(500).type('text').send('Erreur page paramétrage Git.');
@@ -555,6 +569,18 @@ export async function startHttpServer(): Promise<void> {
 
   app.post('/git/connect', requireWebLogin, async (req, res) => {
     try {
+      // E3: explicit consent, decided before any GitHub call or write.
+      const consent = decideConnectConsent({
+        sameOrigin: isSameOriginSubmission(req),
+        ticketValid: verifyWebConsentTicket('github-connect', req.body.consent_ticket, webConsentBinding(req)),
+        credentialConsent: req.body.consent_credential,
+        discoveryConsent: req.body.consent_discovery
+      });
+      if (!consent.allowed) {
+        res.status(403).type('text').send(`Consentement explicite requis (${consent.reasonCode}) : aucune donnée n’a été modifiée.`);
+        return;
+      }
+
       const token = typeof req.body.token === 'string' ? req.body.token.trim() : '';
       const org = typeof req.body.org === 'string' ? req.body.org.trim() : env.GITHUB_ORG;
       const mode = typeof req.body.mode === 'string' ? req.body.mode : 'read';
@@ -571,7 +597,9 @@ export async function startHttpServer(): Promise<void> {
       }
 
       await saveGithubToken(token);
-      await recordGithubConnection(validation, mode, 'mcp-web:/git/connect');
+      await recordGithubConnection(validation, mode, 'mcp-web:/git/connect', {
+        consent: { credential: true, discovery: consent.discover }
+      });
       logger.info({ org, login: validation.login, mode }, 'Token GitHub MCP connecté depuis la page /git');
       res.redirect('/git');
     } catch (error) {
@@ -589,10 +617,12 @@ export async function startHttpServer(): Promise<void> {
     }
   });
 
-  app.get('/github', requireWebLogin, async (_req, res) => {
+  app.get('/github', requireWebLogin, async (req, res) => {
     try {
       const status = await getGithubConnectionStatus();
-      res.type('html').send(addGithubNav(renderGithubConnectionPage(status)));
+      res.type('html').send(addGithubNav(renderGithubConnectionPage(status, {
+        consentTicket: issueWebConsentTicket('github-connect', webConsentBinding(req))
+      })));
     } catch (error) {
       logger.error({ error }, 'Erreur GitHub page');
       res.status(500).type('text').send('Erreur GitHub page');
@@ -608,7 +638,9 @@ export async function startHttpServer(): Promise<void> {
       }
 
       const status = await getGithubConnectionStatus();
-      res.type('html').send(renderAccountPage(account, renderGithubConnectionPage(status)));
+      res.type('html').send(renderAccountPage(account, renderGithubConnectionPage(status, {
+        consentTicket: issueWebConsentTicket('github-connect', webConsentBinding(req))
+      })));
     } catch (error) {
       logger.error({ error }, 'Erreur GitHub account page');
       res.status(500).type('text').send('Erreur page compte GitHub.');
@@ -617,6 +649,18 @@ export async function startHttpServer(): Promise<void> {
 
   app.post('/github/connect', requireWebLogin, async (req, res) => {
     try {
+      // E3: explicit consent, decided before any GitHub call or write.
+      const consent = decideConnectConsent({
+        sameOrigin: isSameOriginSubmission(req),
+        ticketValid: verifyWebConsentTicket('github-connect', req.body.consent_ticket, webConsentBinding(req)),
+        credentialConsent: req.body.consent_credential,
+        discoveryConsent: req.body.consent_discovery
+      });
+      if (!consent.allowed) {
+        res.status(403).type('text').send(`Consentement explicite requis (${consent.reasonCode}) : aucune donnée n’a été modifiée.`);
+        return;
+      }
+
       const token = typeof req.body.token === 'string' ? req.body.token.trim() : '';
       const org = typeof req.body.org === 'string' ? req.body.org.trim() : env.GITHUB_ORG;
       const mode = typeof req.body.mode === 'string' ? req.body.mode : 'read';
@@ -633,7 +677,9 @@ export async function startHttpServer(): Promise<void> {
       }
 
       await saveGithubToken(token);
-      await recordGithubConnection(validation, mode, 'mcp-web:/github/connect');
+      await recordGithubConnection(validation, mode, 'mcp-web:/github/connect', {
+        consent: { credential: true, discovery: consent.discover }
+      });
       logger.info({ org, login: validation.login, mode }, 'Token GitHub MCP connecté depuis la page /github');
       res.redirect(`/github/${encodeURIComponent(validation.login ?? org ?? 'github')}`);
     } catch (error) {
