@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 F.0 livré et attesté
+
+- PR #257 fusionnée au SHA `d34899b` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37390662478` / `37390664427`.
+- `TB-W3-F-01` clôturé DONE ; `PB-F` partiellement livré. `TB-W3-ADMIN-01`, `TB-W3-F-03` et `TB-W3-F-04` deviennent READY.
+
 ## 2026-10-05 — W3 F.0 Provisioning capability decomposition (candidate)
 
 - Nouvelle politique machine `.mcp/provisioning-contracts.json`. Elle classe toutes les primitives d'écriture enregistrées, les routes HTTP mutantes et les workflows. Elle définit un contrat par type de ressource : dépôt, projet/runtime, binding de domaine. Aucune primitive ni permission n'est ajoutée.
