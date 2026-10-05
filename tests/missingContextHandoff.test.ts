@@ -54,8 +54,10 @@ test('E1 completion carries scoped-session inputs and hands the gap to the guide
   assert.ok(wizard.greenAcceptance.some((line: string) => /missingContext/.test(line) && /BLOCKED_UPSTREAM/.test(line)));
   assert.ok(wizard.dependsOn.every((dependency: string) => (byId.get(dependency) as any)?.readiness?.state === 'DONE'));
   assert.ok(['READY', 'DONE'].includes(wizard.readiness.state));
+  // E3 waits for E2: it stays BLOCKED until the guided completion is DONE.
   const consent: any = byId.get('TB-W3-E3-01');
-  assert.equal(consent.readiness.state, 'BLOCKED');
+  assert.deepEqual(consent.dependsOn, ['TB-W3-E2-01']);
+  if (wizard.readiness.state !== 'DONE') assert.equal(consent.readiness.state, 'BLOCKED');
 
   // E2 and E3 remain: PB-E is partially implemented, not done.
   const workItem = (program.workItems ?? []).find((entry: any) => entry.id === 'PB-E');

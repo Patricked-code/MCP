@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 E2 livré et attesté
+
+- PR #253 fusionnée au SHA `e51e995` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37358211199` / `37358214601`.
+- `TB-W3-E2-01` clôturé DONE ; `PB-E` reste PARTIALLY_IMPLEMENTED. Le consentement explicite des créations et mutations est porté par `TB-W3-E3-01`, qui devient READY.
+
 ## 2026-10-05 — W3 E2 Context Completion Wizard (candidate)
 
 - Le contexte gouverné projette `contextCompletion`, l'étape unique de la première lacune d'E1 : appeler l'outil nommé, demander à l'opérateur avec le lien de la surface existante, proposer un changement gouverné, réconcilier ou signaler l'inobservable. Les entrées à ne pas demander sont listées.
