@@ -1,5 +1,21 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 D2 Effective Capabilities — GREEN candidate
+
+- **Reprise current-first.** `main=9936325c773de58c9e1114f0094b2e477a6fde12` (D1 clôturé, PR #245). Aucune nouvelle intake ni consigne propriétaire (#235/#236/#177 déjà réconciliées). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-D2-01` est retenu.
+- **Préflight runtime (08:38Z)** : tasks `37284843087` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY), sessions `37284845657` (2 EXPIRED), locks `37284848385` (0 actif). Aucune collision sur `governance:effective-capabilities`.
+- **Livré (GW-11, SLOT-11).** `GovernedOperationalContext.effectiveCapabilities` (`src/governedWorkflow/governance/projectCapabilities.ts`) : une entrée par classe GitRegistry du périmètre prouvé (`READ`, `WRITE`, `PRODUCTION_EFFECT`, `DESTRUCTIVE` ; dépôt ou serveur), intersection en échec fermé de sept dimensions :
+  - `DECLARED` : mapping `validated`/`active` seulement ;
+  - `IDENTITY` : sujet OAuth et identité GitHub courante du même principal ;
+  - `TARGET` : couches de réalité ;
+  - `GITHUB` : état de travail de ce dépôt, pour les mutations du dépôt ;
+  - `GOVERNANCE` : règles D1, avec règles bloquantes et obligations nommées ;
+  - `PRECONDITIONS` : entrées exactes du WRITE gate, sur la liste complète des locks ;
+  - `AUTHORIZATION` : `UNKNOWN`, faute d'autorité qui l'atteste.
+- **Résultat sur MCP** (registre V1 migré, `migration_pending`) : lectures déclarées `UNVERIFIED` (déclaration non validée, autorisation inattestée), `readLogs` et toutes les mutations `BLOCKED`. Aucune capacité n'est effective ; le gate reste shadow.
+- **Preuves** : RED `699aaad`, CI #2246 (`37286285263`) : 892 tests, 1 échec attendu (module absent). GREEN local : typecheck, build, docs, gouvernance, GWC, secrets, readiness et `git diff --check` verts ; suite complète 898/898.
+- **NEXT_ACTION** : CI exact-head de la PR #246, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-D2-01`.
+
 ## 2026-10-05 — W3 D1 Existing Governance Inheritance — DONE et attesté
 
 - **Fusion et CI** : PR #244 fusionnée sous garde exact-head depuis `57a5ef852c9412a8bb3447f3991b8921be7c8abf` au merge `87109f4153cea8d208c861e7ba456e617e3e4d24`.

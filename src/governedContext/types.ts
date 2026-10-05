@@ -3,6 +3,7 @@ import type { GithubIdentityResolution } from '../github/identityResolution.js';
 import type { GithubRepositoryResolution } from '../github/repositoryResolution.js';
 import type { GithubProjectResolution } from '../github/projectResolution.js';
 import type { ProjectReality } from '../github/projectReality.js';
+import type { ProjectEffectiveCapabilities } from '../governedWorkflow/governance/projectCapabilities.js';
 import type { ProjectGovernanceInheritance } from '../governedWorkflow/governance/projectInheritance.js';
 import type { DomainResolution } from '../governedWorkflow/resolvers/domain.js';
 import type { RuntimeResolution } from '../governedWorkflow/resolvers/runtime.js';
@@ -160,6 +161,13 @@ export type GovernedOperationalContext = {
    * by the governed service; optional for historical in-process consumers.
    */
   governanceInheritance?: ProjectGovernanceInheritance;
+  /**
+   * D2: per capability class of the proven project scope, the fail-closed
+   * intersection of declaration, identity, target, GitHub, inherited
+   * governance, WRITE gate preconditions and attested authorization. Always
+   * projected by the governed service; optional for historical consumers.
+   */
+  effectiveCapabilities?: ProjectEffectiveCapabilities;
   session: PublicGovernedSession | null;
   bootstrap: {
     required: true;

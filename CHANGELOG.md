@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 D2 Effective Capabilities (candidate)
+
+- Le contexte opérationnel gouverné projette `effectiveCapabilities` (GW-11) : pour chacune des quatorze classes de capacité GitRegistry du périmètre projet prouvé, l'intersection en échec fermé de la déclaration du mapping validé, de l'identité OAuth/GitHub, des couches de réalité, de l'état GitHub du dépôt, des règles héritées D1, des préconditions du WRITE gate et de l'autorisation attestée.
+- Une dimension non prouvée ne permet jamais : la capacité technique, l'identité ou la déclaration du registre n'impliquent aucune autorisation. Faute d'attestation, l'autorisation reste `UNKNOWN` et aucune capacité n'est effective. Le WRITE gate shadow est inchangé.
+
 ## 2026-10-05 — W3 D1 livré et attesté
 
 - PR #244 fusionnée au SHA `87109f4` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37284270816` / `37284273785`.

@@ -13,6 +13,7 @@ import {
   readBranchGovernancePolicy,
   unavailableBranchGovernance
 } from '../governance/branchGovernance.js';
+import { deriveProjectEffectiveCapabilities } from '../governedWorkflow/governance/projectCapabilities.js';
 import { deriveProjectGovernanceInheritance } from '../governedWorkflow/governance/projectInheritance.js';
 import { deriveClientEvidence } from '../operationalMemory/connectionContext.js';
 import type { ClientObservationRecorder } from '../operationalMemory/clientPresence.js';
@@ -493,6 +494,36 @@ export function createGovernedOperationalContextService(
           }
         : null
     });
+    // D2: each capability class of the proven scope, as the fail-closed
+    // intersection of the authorities above. The preconditions are the scoped
+    // WRITE gate's own inputs, over every active lock: its shadow verdict is
+    // reproduced, never changed, and nothing is authorized.
+    const effectiveCapabilities = deriveProjectEffectiveCapabilities({
+      projectReality,
+      governanceInheritance,
+      project: github.projectResolution ?? null,
+      identity: {
+        assurance: session?.identityAssurance ?? null,
+        principalId: session?.connectionContext?.principalId ?? null,
+        github: github.identity ?? null
+      },
+      github: { repositoryId: `github:${HISTORICAL_REPOSITORY}`, status: github.status },
+      preconditions: {
+        sessionPresent: Boolean(session),
+        currentStateVersion: liveState?.stateVersion ?? null,
+        currentFreshness: liveState?.freshness ?? null,
+        acknowledgedStateVersion: session?.lastAcknowledgedStateVersion ?? null,
+        activeLockConflicts: rawLocks
+          ? rawLocks.filter((lock) => (
+              lock.status === 'ACTIVE' && lock.governedSessionId !== session?.governedSessionId
+            )).length
+          : null,
+        bootstrapReceiptStatus: bootstrapStatus,
+        currentTaskStatus: currentTask?.status ?? null,
+        auditBaselineValid
+      },
+      observedAt: generatedAt
+    });
 
     const context: GovernedOperationalContext = {
       schemaVersion: 1,
@@ -506,6 +537,7 @@ export function createGovernedOperationalContextService(
       github,
       projectReality,
       governanceInheritance,
+      effectiveCapabilities,
       session,
       bootstrap: {
         required: true,

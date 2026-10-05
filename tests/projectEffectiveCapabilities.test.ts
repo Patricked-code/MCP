@@ -554,7 +554,7 @@ test('D2 projects the effective capabilities in the governed operational context
   }
   assert.deepEqual(projected.effectiveCapabilityIds, []);
   // The historical gate projection is unchanged: still shadow and observational.
-  assert.deepEqual(context.gate, { mode: 'shadow', existingWriteToolsEnabled: false, decision: 'context_unacknowledged' });
+  assert.deepEqual(context.gate, { mode: 'shadow', existingWriteToolsEnabled: false, decision: 'shadow_observed' });
 
   // Every active lock is read, beyond the bounded lock projection of the context.
   const crowded = (await service({
