@@ -15,7 +15,10 @@ import {
 } from '../governance/branchGovernance.js';
 import { deriveProjectEffectiveCapabilities } from '../governedWorkflow/governance/projectCapabilities.js';
 import { deriveProjectGovernanceInheritance } from '../governedWorkflow/governance/projectInheritance.js';
-import { deriveClientEvidence } from '../operationalMemory/connectionContext.js';
+import {
+  deriveClientEvidence,
+  isOauthConnectionContext
+} from '../operationalMemory/connectionContext.js';
 import type { ClientObservationRecorder } from '../operationalMemory/clientPresence.js';
 import type { GovernedLockService } from '../operationalMemory/lockService.js';
 import { RESUMABLE_TASK_STATUSES } from '../operationalMemory/taskQueue.js';
@@ -34,6 +37,7 @@ import type {
   PublicGovernedSession
 } from './types.js';
 import type { GithubIdentityScope } from './github.js';
+import { deriveMissingContext } from './missingContext.js';
 import type { CurrentStateInventory, CurrentStateService } from '../currentState/service.js';
 
 export type GovernedContextInput = {
@@ -160,15 +164,10 @@ function githubIdentityScope(
   session: PublicGovernedSession | null
 ): GithubIdentityScope {
   const context = session?.connectionContext;
-  const compatible = Boolean(
-    context
-    && context.identityAssurance === 'oauth_subject'
-    && context.evidenceSource === 'oauth_auth_info'
-    && context.principalId.startsWith('oauth:')
-  );
+  const compatible = isOauthConnectionContext(context);
   return {
-    oauthPrincipalId: compatible ? context!.principalId : null,
-    repositoryContext: compatible ? context!.repository : null
+    oauthPrincipalId: compatible ? context.principalId : null,
+    repositoryContext: compatible ? context.repository : null
   };
 }
 
@@ -524,6 +523,15 @@ export function createGovernedOperationalContextService(
       },
       observedAt: generatedAt
     });
+    // E1: the mandatory inputs still missing after the automatic resolution
+    // above, the first one only, with the existing authority completing it.
+    const missingContext = deriveMissingContext({
+      generatedAt,
+      repository: session?.repository ?? HISTORICAL_REPOSITORY,
+      session,
+      github,
+      projectReality
+    });
 
     const context: GovernedOperationalContext = {
       schemaVersion: 1,
@@ -538,6 +546,7 @@ export function createGovernedOperationalContextService(
       projectReality,
       governanceInheritance,
       effectiveCapabilities,
+      missingContext,
       session,
       bootstrap: {
         required: true,

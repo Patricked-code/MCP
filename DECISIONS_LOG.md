@@ -1,5 +1,23 @@
 # DECISIONS_LOG.md
 
+## 2026-10-05 — E1 : contexte manquant détecté depuis les autorités existantes, première lacune seulement
+
+Décision technique (déduite, #221 ; `PB-E` `REUSE_WRAP_GENERALIZE_EXTEND`) : E1 lit les preuves que le contexte gouverné compose déjà. Il n'ajoute ni source, ni surface, ni question. Il respecte les non-régressions de PB-E : « No parallel frontend », « No repeated questions for known context », « No write from inferred consent ».
+
+- **Entrées et ordre.** Identité OAuth, identité GitHub, dépôt, mapping projet, binding serveur, dans l'ordre de leurs dépendances. Comme pour les couches de la réalité projet, une entrée n'est jamais résolue au-delà de celle dont elle dépend.
+- **Première lacune seulement.** Le contexte connu reste résolu. Seule la première lacune est exposée ; les suivantes attendent sans être demandées.
+- **Autorité de complétion.** Chaque lacune nomme l'autorité existante qui la complète, selon la carte d'autorités B1 :
+  - `.mcp/identity-policy.json` : le binding ;
+  - `data/github-accounts.json` : la connexion configurée ;
+  - `/github` : le credential et le compte ;
+  - `/git` : les mappings GitRegistry dépôt ↔ projet ↔ serveur ;
+  - `mcp_open_governed_session` : le dépôt demandé et la liaison OAuth de la session ;
+  - `/oauth/authorize` : un client non OAuth.
+- **Réconciliation plutôt que boucle.** Des autorités qui se contredisent sont à réconcilier, jamais redemandées ni ré-observées en boucle. C'est le cas d'une couche `CONFLICT`, d'un principal différent, d'une policy invalide, d'un serveur non canonique ou d'un mapping absent des bindings serveur.
+- **Dépôt non observé.** Une session liée à un dépôt TargetScope que l'observateur GitHub ne couvre pas reçoit `UNOBSERVABLE`, jamais une ré-observation illusoire.
+- **Prédicat partagé.** `isOauthConnectionContext`, porté par l'autorité `ConnectionContext`, devient le prédicat unique du scope d'identité GitHub et d'E1. E1 ne voit donc jamais un principal que la résolution ne pourrait pas utiliser.
+- **Hors périmètre.** E2 (restauration automatique et guidage) et E3 (consentement explicite). E1 n'écrit rien.
+
 ## 2026-10-05 — #236 : exposition MCP existante d'abord pour le Super Admin Cockpit
 
 Décision de gouvernance (clarification propriétaire du 2026-10-05 sur #236, absorbée comme `COMPLEMENT`) : le cockpit devient la surface visuelle et opérationnelle gouvernée du MCP existant, pas un second déploiement.

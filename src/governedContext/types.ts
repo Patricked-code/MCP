@@ -26,6 +26,7 @@ import type {
 } from '../operationalMemory/types.js';
 import type { GovernedRepositoryTarget } from '../operationalMemory/sessionService.js';
 import type { TargetContext, TargetScope } from '../operationalMemory/targetScope.js';
+import type { MissingContext } from './missingContext.js';
 
 export type GithubEvidenceFreshness = 'CURRENT' | 'STALE' | 'UNAVAILABLE' | 'NOT_APPLICABLE';
 export type GithubEvidenceProvenance = 'github_api' | 'memory_cache';
@@ -168,6 +169,14 @@ export type GovernedOperationalContext = {
    * projected by the governed service; optional for historical consumers.
    */
   effectiveCapabilities?: ProjectEffectiveCapabilities;
+  /**
+   * E1: the mandatory inputs (OAuth identity, GitHub identity, repository,
+   * project mapping, server binding) still missing after automatic governed
+   * resolution; only the first one is surfaced, with the existing authority
+   * that completes it. Always projected by the governed service; optional for
+   * historical consumers.
+   */
+  missingContext?: MissingContext;
   session: PublicGovernedSession | null;
   bootstrap: {
     required: true;

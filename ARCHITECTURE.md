@@ -309,6 +309,42 @@ vaut `SATISFIED`, `UNSATISFIED`, `UNKNOWN` ou `NOT_REQUIRED` :
 - **Contradictions.** Une contradiction de gouvernance ou de réalité rend
   l'ensemble `CONFLICT`.
 
+La détection du contexte manquant E1 (`TB-W3-E1-01`,
+`src/governedContext/missingContext.ts`,
+`GovernedOperationalContext.missingContext`) calcule les entrées obligatoires
+encore absentes après la résolution gouvernée automatique. Elle ne lit que les
+preuves que le contexte gouverné compose déjà. Les cinq entrées sont évaluées
+dans l'ordre de leurs dépendances :
+
+| Entrée | Preuve lue | Autorité existante qui la complète |
+|---|---|---|
+| `OAUTH_IDENTITY` | `ConnectionContext` OAuth de la session, avec le prédicat du scope d'identité GitHub | `mcp_open_governed_session` (automatique) ; `/oauth/authorize` pour un client non OAuth |
+| `GITHUB_IDENTITY` | Résolution d'identité GitHub B1 | `.mcp/identity-policy.json` (binding) ; `data/github-accounts.json` (connexion configurée) ; `/github` (credential et compte) |
+| `REPOSITORY` | Couche dépôt de la réalité projet, liée au dépôt de la session | `mcp_open_governed_session` (dépôt demandé) ; `/github` (accès) |
+| `PROJECT_MAPPING` | Couche projet de la réalité projet | `/git` (mappings GitRegistry) |
+| `SERVER_BINDING` | Couche serveur de la réalité projet | `/git` (mappings GitRegistry) |
+
+- **Première lacune seulement.** Une entrée connue reste `RESOLVED` et n'est
+  jamais redemandée. Seule la première entrée non résolue est exposée
+  (`next`). Les suivantes attendent (`BLOCKED_UPSTREAM`) sans être demandées.
+- **Nature de la lacune.** Quatre natures :
+  - `MISSING` : saisie de l'opérateur ;
+  - `AMBIGUOUS` : choix de l'opérateur ;
+  - `CONFLICT` : réconciliation d'autorités qui se contredisent, jamais redemandée ni ré-observée en boucle ;
+  - `UNOBSERVED` : ré-observation automatique par `mcp_reconcile_governed_context`.
+- **Statut.** `COMPLETE`, `AUTOMATIC`, `INPUT_REQUIRED`,
+  `RECONCILIATION_REQUIRED` ou `UNOBSERVABLE`.
+- **Dépôt non observé.** Pour un dépôt TargetScope que l'observateur GitHub ne
+  couvre pas (B3.2), E1 dit `UNOBSERVABLE`. Il ne prétend jamais qu'une
+  ré-observation y suffit.
+- **Observations, pas des entrées.** Le runtime, l'ingress et le domaine sont
+  des observations dont l'absence prouvée est acceptée. Ils ne sont jamais
+  demandés.
+- **Lecture seule.** Aucune question n'est posée, aucune autorisation n'est
+  déduite et rien n'est écrit. Seuls des codes de raison circulent, jamais un
+  principal, un login ou un identifiant. La complétion guidée (E2) et le
+  consentement explicite (E3) restent à livrer.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.
