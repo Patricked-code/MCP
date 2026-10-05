@@ -260,6 +260,45 @@ déterminée.
 - **Lecture seule.** Aucune autorisation n'est dérivée ; D2 compose ensuite
   les capacités effectives.
 
+Les capacités effectives D2 (GW-11, SLOT-11 de `MCP_PERMISSIONS_MODEL.md`,
+`src/governedWorkflow/governance/projectCapabilities.ts`,
+`GovernedOperationalContext.effectiveCapabilities`) projettent, sur le
+périmètre prouvé par la réalité projet et hérité par D1, une entrée par classe
+de capacité du vocabulaire GitRegistry. Les classes sont `inventory`,
+`readFiles`, `searchCode`, `readLogs`, `gitStatus`, `writeFiles`,
+`createBranch`, `commit`, `pushBranch`, `build`, `deploy`, `rollback`,
+`quarantine` et `purge`. Chaque entrée est classée `READ`, `WRITE`,
+`PRODUCTION_EFFECT` ou `DESTRUCTIVE`, et liée au dépôt ou au serveur.
+
+Une capacité est l'intersection, en échec fermé, de sept dimensions. Chacune
+vaut `SATISFIED`, `UNSATISFIED`, `UNKNOWN` ou `NOT_REQUIRED` :
+
+| Dimension | Source |
+|---|---|
+| `DECLARED` | Déclaration du mapping, retenue seulement pour un mapping `validated` ou `active`. Un candidat V1 n'est pas une déclaration. |
+| `IDENTITY` | Sujet OAuth de la session, et identité GitHub courante liée au même principal. |
+| `TARGET` | Couches dépôt et projet, plus serveur pour les classes liées au serveur. |
+| `GITHUB` | État de travail courant observé pour ce dépôt. Requis pour les mutations du dépôt seulement. |
+| `GOVERNANCE` | Règles héritées D1 de la classe. |
+| `PRECONDITIONS` | Préconditions observées par le WRITE gate scoped : session, version d'état, acquittement, locks, receipt, tâche, baseline d'audit. |
+| `AUTHORIZATION` | Autorisation attestée. |
+
+- **Statut.** Une dimension prouvée insatisfaite rend la capacité `BLOCKED`.
+  Sinon, une dimension inconnue la laisse `UNVERIFIED`.
+- **Règles bloquantes et obligations.** Les règles héritées qui interdisent ou
+  restent inconnues sont nommées. Les obligations (branche, PR, checks,
+  sauvegarde, worktree propre) sont des contraintes à honorer, jamais des
+  permissions.
+- **Autorisation.** Aucune autorité n'atteste encore l'autorisation : elle
+  reste `UNKNOWN` (`AUTHORIZATION_UNATTESTED`). La capacité technique,
+  l'identité, la déclaration du registre et la présence d'un outil ne
+  l'impliquent jamais.
+- **WRITE gate.** Le gate reste `shadow`. Ses préconditions sont reproduites
+  par la même dérivation, jamais modifiées.
+- **Périmètre non prouvé.** Aucune capacité (`UNVERIFIED`).
+- **Contradictions.** Une contradiction de gouvernance ou de réalité rend
+  l'ensemble `CONFLICT`.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.

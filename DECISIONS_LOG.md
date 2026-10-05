@@ -1,5 +1,17 @@
 # DECISIONS_LOG.md
 
+## 2026-10-05 — D2 : capacités effectives par périmètre projet, intersection en échec fermé, autorisation jamais inférée
+
+Décision technique (déduite, #221 ; GW-11 `REUSE/EXTEND`, SLOT-11 de `MCP_PERMISSIONS_MODEL.md`) : les capacités effectives composent séparément les autorités existantes, sans second moteur de permissions. GWC-9 l'imposait déjà : une restriction monotone de `CapabilityReality` et de `GovernanceDecision`.
+
+- **Vocabulaire.** Les quatorze classes de capacité du GitRegistry sont la seule liste. Il n'y a pas de classification par outil : la surface d'enregistrement n'est pas une sémantique d'opération, et l'inventaire #177 n'est pas une autorité. Les capacités typées GGCC s'y rattacheront.
+- **Déclaration.** Seul un mapping `validated` ou `active` déclare : le spec V2 exige des capacités explicites avant `active`. Un mapping `proposed` ou un candidat V1 migré reste `UNKNOWN`. Une capacité déclarée `false` bloque toujours.
+- **Identité.** Il faut le sujet OAuth de la session et une identité GitHub `RESOLVED` et courante pour le même principal. Une autre assurance ou un autre principal bloque.
+- **Cible et GitHub.** Les classes liées au serveur exigent la couche serveur vérifiée. Les mutations du dépôt exigent l'état de travail GitHub courant de ce même dépôt : l'observateur MCP n'est jamais prêté à un autre dépôt.
+- **Gouvernance et préconditions.** Les règles D1 de chaque classe décident : une règle qui interdit bloque, une règle inconnue laisse `UNKNOWN`. Les préconditions reprennent exactement les entrées du WRITE gate scoped, sur la liste complète des locks. Le verdict shadow est reproduit, jamais modifié.
+- **Autorisation.** Aucune autorité ne l'atteste encore : `UNKNOWN` (`AUTHORIZATION_UNATTESTED`). Aucune capacité n'est donc effective aujourd'hui. L'attestation viendra de l'inventaire des scopes OAuth (`TB-W3-OAUTH-WRITE-SCOPE-01`).
+- **Éligibilité.** L'éligibilité de dispatch fondée sur les capacités, différée par DISPATCH-02/03, n'est pas câblée. Elle exclurait tout travail tant que l'autorisation reste inattestée, et les tâches ne déclarent pas encore les capacités requises.
+
 ## 2026-10-05 — D1 : héritage de gouvernance par périmètre projet prouvé, sans copie ni élargissement
 
 Décision technique (déduite, #221 ; GWC-9 `REUSE/EXTEND`, GW-10) : l'héritage de gouvernance compose les autorités existantes sur le périmètre prouvé par la réalité projet (C345-02). Il ne crée ni magasin de gouvernance ni nouvelle autorité.
