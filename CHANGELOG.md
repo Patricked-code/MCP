@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 E3 livré et attesté ; chantier E terminé
+
+- PR #255 fusionnée au SHA `61b90a1` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37359797521` / `37359801316`.
+- `TB-W3-E3-01` clôturé DONE ; `PB-E` DONE. `TB-W3-F-01` et quatre couches GGCC GitHub deviennent READY.
+
 ## 2026-10-05 — W3 E3 Consent & Validation (candidate)
 
 - Les formulaires de connexion GitHub de `/github` et `/git` exigent un consentement explicite, validé côté serveur avant tout appel GitHub ou toute écriture : même origine, ticket signé et expirant lié à la session web, consentement de remplacement de l'identifiant. Un refus ne modifie rien.

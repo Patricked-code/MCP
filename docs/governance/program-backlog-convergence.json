@@ -73,8 +73,8 @@
     "historicalPrIntents": 5,
     "externalActiveRecords": 25,
     "dispositionCounts": {
-      "DONE": 21,
-      "PARTIALLY_IMPLEMENTED": 5,
+      "DONE": 22,
+      "PARTIALLY_IMPLEMENTED": 4,
       "KNOWN_NOT_ANALYZED": 5,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
@@ -1643,7 +1643,7 @@
     {
       "id": "PB-E",
       "title": "E1/E2/E3 Guided Context Completion",
-      "disposition": "PARTIALLY_IMPLEMENTED",
+      "disposition": "DONE",
       "integrationSlot": "context.guided-completion",
       "implementationMode": "REUSE_WRAP_GENERALIZE_EXTEND",
       "existingAuthorities": [
@@ -1654,7 +1654,7 @@
       "dependsOn": [
         "PB-D3"
       ],
-      "nextAction": "E1 and E2 DONE: missingContext computes the first missing mandatory input; contextCompletion turns it into one step linked to the existing surface; /github and /git ask only for the missing GitHub credential, /git?repository= shows the mapping and /login returns to a same-origin path. Next: E3 requires explicit consent and authority validation before any creation or mutation of unknown resources.",
+      "nextAction": "E1, E2 and E3 DONE: missingContext detects the first missing mandatory input; contextCompletion turns it into one step linked to the existing surface; /github and /git ask only for what is missing and their connect forms require explicit, server-validated consent (credential replacement; auto-discovery of mappings only on its own consent). Consumers: F governed provisioning reuses the E3 consent.",
       "subtasks": [
         "Detect exactly which required fields are missing",
         "Restore known governed context automatically",
@@ -2600,7 +2600,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_E2_DONE_E3_PRW_GGCC_GH_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_H01_READY_TERMINAL_ACCEPTANCE_WIRED",
+    "currentWaveStatus": "W3_E_DONE_F01_PRW_GGCC_GH_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_H01_READY_TERMINAL_ACCEPTANCE_WIRED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2621,7 +2621,7 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-E3-01",
+      "TB-W3-F-01",
       "TB-W3-PRW-01",
       "TB-W3-PRW-02",
       "TB-W3-GGCC-GIT-READ",
@@ -2629,8 +2629,12 @@
       "TB-W3-GGCC-GH-COMMIT-FILE",
       "TB-W3-GGCC-GH-PR-REVIEW",
       "TB-W3-GGCC-GH-ACTIONS",
+      "TB-W3-GGCC-GH-RULESETS",
+      "TB-W3-GGCC-GH-WEBHOOKS",
+      "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
       "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
       "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+      "TB-W3-GGCC-GH-ORG",
       "TB-W4-H-01",
       "TB-W4-K-01"
     ],
@@ -5909,10 +5913,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #255 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. The GitHub connect forms of /github and /git, the only mutations reachable from a completion step, require two explicit consents naming their resource and owning authority (the container credential and its GitRegistry record; the discovered GitRegistry mappings), validated server-side before any GitHub call or write: same-origin submission, signed and expiring web consent ticket bound to its purpose and to the web session, and the explicit credential consent. Auto-discovery runs only with its own consent, recorded in the GitRegistry audit."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5943,6 +5947,61 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 255,
+        "surfaces": [
+          "/github/connect",
+          "/git/connect"
+        ],
+        "consents": [
+          "REPLACE_GITHUB_CREDENTIAL",
+          "ADD_DISCOVERED_MAPPINGS"
+        ],
+        "redHeadSha": "3444400f3f1b0acf4201402c84e9f59b1003e2d7",
+        "redCiRunId": 37359005082,
+        "redCiRunNumber": 2273,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "855e2954a912d98ad136f5ab0c6e229eda6c56a5",
+        "prCiRunId": 37359371129,
+        "prCiRunNumber": 2274,
+        "testCount": 935,
+        "mergeSha": "61b90a1eca532b088ec213b7ae6ad9e2241eece4",
+        "mainCiRunId": 37359562990,
+        "governedDeployRunId": 37359563522,
+        "governedDeployRuntimeRevision": "61b90a1eca532b088ec213b7ae6ad9e2241eece4",
+        "runtimePreflightRunIds": [
+          37358791835,
+          37358795511,
+          37358798532
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37359797521,
+            "workflowSha": "61b90a1eca532b088ec213b7ae6ad9e2241eece4",
+            "status": "SUCCESS",
+            "observed": "main@61b90a1eca532b088ec213b7ae6ad9e2241eece4, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "fe31c04499668878b6a79468f5212e6348a6baa9611bc084ff7db313b6edba10",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T18:57:18.554Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37359801316,
+            "workflowSha": "61b90a1eca532b088ec213b7ae6ad9e2241eece4",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #130), published 127.0.0.1:8787->8787/tcp",
+            "observedFr": "conteneur healthy (redémarré par le deploy #130)",
+            "outputSha256": "0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T18:57:45.564Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-05T18:59:54Z"
       }
     },
     {
@@ -5981,7 +6040,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -5998,7 +6057,8 @@
       ],
       "greenAcceptance": [
         "F.0 satisfies its bounded objective using existing authorities first.",
-        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
+        "F reuses the E3 consent for any provisioning surface: each creation or mutation names its resource and owning authority, is decided server-side before any external call or write from a same-origin submission carrying a signed, expiring consent ticket bound to its purpose and to the session, and is never inferred from a completion step, a link or a previous consent."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -9679,7 +9739,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
@@ -9755,7 +9815,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
@@ -9830,7 +9890,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
@@ -10055,7 +10115,7 @@
       "runtimeRequired": false,
       "githubOnlyPossible": true,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Intake #177 is converged, but implementation remains dependency-gated by the existing W3/W4 program and live UAC collision/governance reobservation."
@@ -12734,6 +12794,39 @@
     "knownLimitations": [
       "The shared-token web session carries no principal, so the web surfaces never display the missing context of a governed session: the agent carries its gap to the surface through the contextCompletion link, and the surface re-derives what it owns.",
       "The /git mapping view reports the mappings GitRegistry declares for the repository; the verified project and server binding of a session stay those of its project reality."
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3E3ConsentHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "61b90a1eca532b088ec213b7ae6ad9e2241eece4",
+    "blueprintId": "TB-W3-E3-01",
+    "lotId": "E3",
+    "delivered": [
+      "src/github/connectConsent.ts: two explicit consents, unchecked by default, each naming its resource and owning authority (REPLACE_GITHUB_CREDENTIAL: the container secret file and the GitRegistry connection record; ADD_DISCOVERED_MAPPINGS: new GitRegistry mappings), decided by the pure decideConnectConsent",
+      "src/oauth.ts: issueWebConsentTicket / verifyWebConsentTicket generalize the OAuth consent ticket (signed, 10-minute expiry, domain-separated, bound to its purpose and to the web session); isSameOriginSubmission is shared",
+      "/github/connect and /git/connect decide consent before any GitHub call or write; a refusal (403) changes nothing; /github, /github/:account and /git issue a fresh ticket",
+      "recordGithubConnection discovers repositories only with its own consent and records the consent in the github.connection.recorded audit event"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37358791835,
+      "sessionsRunId": 37358795511,
+      "locksRunId": 37358798532,
+      "observedAt": "2026-10-05T18:49:14Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "context:guided-completion:consent",
+      "collision": false
+    },
+    "notObserved": [],
+    "deferred": [],
+    "knownLimitations": [
+      "A web consent ticket stays reusable by the same web session within its 10-minute validity; it never verifies for another purpose or another web session.",
+      "Identity bindings (.mcp/identity-policy.json) are consented through their governed pull request and durable connections (data/github-accounts.json) have no web surface: no other completion mutation exists."
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,

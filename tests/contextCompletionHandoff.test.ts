@@ -52,9 +52,9 @@ test('E2 completion hands creations and mutations to explicit consent and releas
   assert.ok(consent.dependsOn.every((dependency: string) => (byId.get(dependency) as any)?.readiness?.state === 'DONE'));
   assert.ok(['READY', 'DONE'].includes(consent.readiness.state));
 
-  // E3 remains: PB-E stays partially implemented.
+  // PB-E stays partially implemented until E3 is DONE, then closes.
   const workItem = (program.workItems ?? []).find((entry: any) => entry.id === 'PB-E');
-  assert.equal(workItem?.disposition, 'PARTIALLY_IMPLEMENTED');
+  assert.equal(workItem?.disposition, consent.readiness.state === 'DONE' ? 'DONE' : 'PARTIALLY_IMPLEMENTED');
   assert.match(workItem?.nextAction ?? '', /E3/);
   const counted = (program.workItems ?? []).filter((entry: any) => entry.disposition === 'DONE').length;
   assert.equal(program.summary?.dispositionCounts?.DONE, counted);
