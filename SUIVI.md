@@ -1,5 +1,20 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 C5 Domain Resolution — DONE et attesté
+
+- **Fusion et CI** : PR #240 fusionnée sous garde exact-head depuis `12dda80aa3bbb6f3097a9aa1be3a4f5ba8b932ba` au merge `9131bd8c2983377a62afbdb559bc3cf2392f1b5d`.
+  - RED CI #2228 (1 échec attendu) ; CI PR `37259206625` (#2229) ; CI main `37259332125` (#2230).
+  - Governed Deploy `37259332214` (#115) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37259482198` : S1 `main@9131bd8`, worktree propre, push désactivé.
+  - `docker_status` run `37259484407` : conteneur healthy.
+- **Program Backlog** :
+  - `TB-W3-C5-01 = DONE` ; `PB-C345` reste `PARTIALLY_IMPLEMENTED`.
+  - Le résiduel « service des domaines » (aucune autorité d'observation de domaine) est porté explicitement par `TB-W3-C345-02` et `TB-W4-I1-01`.
+  - `TB-W3-C345-02` devient READY. READY : `TB-W3-A3-02` (blocage local), `TB-W3-C345-02`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, lock ou mutation.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C345-02`, acceptation Project Reality (repository → project → server → runtime → domain sur fixtures MCP et multi-dépôts, avec les résiduels C4/C5).
+
 ## 2026-10-04 — W3 C5 Domain Resolution — GREEN candidate
 
 - **Reprise current-first.** `main=538394a290c6f461f3d6c87a173ef87d08751f56` (C4 clôturé, PR #239). Aucune nouvelle intake ni consigne propriétaire. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 est un blocage local (claim runtime), `TB-W3-C5-01` est retenu.

@@ -1533,7 +1533,7 @@
         "PB-C1",
         "PB-B3"
       ],
-      "nextAction": "C3 and C4 DONE (GW-07 serverResolution and GW-08 runtimeResolution in the governed GitHub context). Next: TB-W3-C5-01 domain resolution (GW-09) consuming the project and server resolutions; then TB-W3-C345-02 end-to-end, including the ingress residual carried from C4.",
+      "nextAction": "C3, C4 and C5 DONE (GW-07 serverResolution, GW-08 runtimeResolution, GW-09 domainResolution in the governed GitHub context). Next: TB-W3-C345-02 project reality acceptance across MCP and multi-repository fixtures, carrying the ingress, component and domain-serving residuals of C4/C5.",
       "subtasks": [
         "Resolve S1/S2 and verified real path",
         "Resolve container/runtime/reverse proxy/ports from governed evidence",
@@ -2587,7 +2587,7 @@
       "noRuntimeSideEffect": true
     },
     "currentWave": "W3",
-    "currentWaveStatus": "W3_C4_DONE_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_C5_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
+    "currentWaveStatus": "W3_C5_DONE_C345_02_READY_A32_READY_RUNTIME_CLAIM_GGCC_GIT_READ_READY_W4_K01_READY_TERMINAL_ACCEPTANCE_WIRED",
     "automaticContinuation": {
       "enabled": true,
       "readinessMode": "DERIVED_FROM_DEPENDENCIES",
@@ -2608,7 +2608,7 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-C5-01",
+      "TB-W3-C345-02",
       "TB-W3-GGCC-GIT-READ",
       "TB-W4-K-01"
     ],
@@ -5052,10 +5052,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #240 exact-head CI, protected merge, governed deploy and read-only OIDC attestation are attested. The governed GitHub context projects the GW-09 domainResolution after the C2/C3 resolutions from GitRegistry domain declarations and the current domain observation of the resolved server; no domain observation authority exists in the runtime yet, so declared domains stay UNVERIFIED (carried by TB-W3-C345-02 and TB-W4-I1-01)."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -5085,6 +5085,53 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 240,
+        "contract": "GW-09",
+        "projection": "GithubOperationalContext.domainResolution",
+        "redHeadSha": "b02b58e03b8c6ad6f7cf91cb102d43678f74aa83",
+        "redCiRunNumber": 2228,
+        "redExpectedFailures": 1,
+        "candidateHeadSha": "12dda80aa3bbb6f3097a9aa1be3a4f5ba8b932ba",
+        "prCiRunId": 37259206625,
+        "prCiRunNumber": 2229,
+        "testCount": 869,
+        "mergeSha": "9131bd8c2983377a62afbdb559bc3cf2392f1b5d",
+        "mainCiRunId": 37259332125,
+        "governedDeployRunId": 37259332214,
+        "governedDeployRuntimeRevision": "9131bd8c2983377a62afbdb559bc3cf2392f1b5d",
+        "runtimePreflightRunIds": [
+          37243482320,
+          37243484120,
+          37243485726
+        ],
+        "readonlyEvidence": {
+          "mcp_git_status": {
+            "target": "s1",
+            "runId": 37259482198,
+            "workflowSha": "9131bd8c2983377a62afbdb559bc3cf2392f1b5d",
+            "status": "SUCCESS",
+            "observed": "main@9131bd8c2983377a62afbdb559bc3cf2392f1b5d, working_tree_changes=0, fetch read-only, push disabled",
+            "outputSha256": "ecf1976ee3b1b0be101f3c65a5aee721427451b12f2c8fe04829876a604074cb",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T03:27:14.463Z"
+          },
+          "docker_status": {
+            "target": "s1",
+            "runId": 37259484407,
+            "workflowSha": "9131bd8c2983377a62afbdb559bc3cf2392f1b5d",
+            "status": "SUCCESS",
+            "observed": "wealthtech_mcp_ssh_bridge healthy (restarted by Governed Deploy #115), published 127.0.0.1:8787->8787/tcp",
+            "outputSha256": "44aafc8fc34cbb5d66d6145d04e0addec727957456f2dc5e0ec135dc9761aad3",
+            "mutationAllowed": false,
+            "observedAt": "2026-10-05T03:27:14.100Z"
+          }
+        },
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-05T03:30:00Z"
       }
     },
     {
@@ -5123,7 +5170,7 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "BLOCKED",
+        "state": "READY",
         "autoPromotable": true,
         "requiredExplicitGates": [],
         "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
@@ -5142,7 +5189,8 @@
         "C345.E2E satisfies its bounded objective using existing authorities first.",
         "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
         "The domain -> reverse proxy -> port -> runtime ingress link is proven by a bounded, dedicated read-only observation or reported UNVERIFIED with a reason code; it is never inferred from declarations (residual of TB-W3-C4-01: the runtime attestation excludes networks by design, published ports are visible to agents only through the OIDC docker_status probe).",
-        "Live TargetContext components receive exact-head and runtime-revision observations only from proven C3/C4 resolutions; a component the registry does not declare (such as the V1 Patricked-code/MCP mapping without a role) stays UNVERIFIED (residual of TB-W3-C4-01)."
+        "Live TargetContext components receive exact-head and runtime-revision observations only from proven C3/C4 resolutions; a component the registry does not declare (such as the V1 Patricked-code/MCP mapping without a role) stays UNVERIFIED (residual of TB-W3-C4-01).",
+        "Declared domains are proven only by a bounded current domain observation of the resolved server (the readDomainObservation seam of GW-09); until such an observation authority exists they stay UNVERIFIED with DOMAIN_OBSERVATION_UNAVAILABLE and are never inferred from registry declarations or domainVerified (residual of TB-W3-C5-01)."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -6735,7 +6783,8 @@
       ],
       "greenAcceptance": [
         "I1 satisfies its bounded objective using existing authorities first.",
-        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced.",
+        "The synthetic monitor can supply the bounded, read-only current domain observation (DNS/TLS/HTTP) that GW-09 consumes through readDomainObservation, bound to the resolved server and never inferred from declarations (residual of TB-W3-C5-01)."
       ],
       "regressionSuites": [
         "targeted RED/GREEN tests",
@@ -11962,6 +12011,47 @@
     "knownLimitations": [
       "The versioned Patricked-code/MCP mapping is GitRegistry V1 without componentRole or registered project: its runtime resolution stays RUNTIME_COMPONENT_UNVERIFIED until the registry declares the component.",
       "Projects on S2 have no runtime observation authority in the runtime: RUNTIME_OBSERVATION_MISSING."
+    ],
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  },
+  "w3C5DomainResolutionHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "9131bd8c2983377a62afbdb559bc3cf2392f1b5d",
+    "blueprintId": "TB-W3-C5-01",
+    "lotId": "C5",
+    "contract": "GW-09",
+    "delivered": [
+      "GitRegistryProjectEvidence.domainEvidence: project publicDomain, publicApi and historicalVhosts, mapping domain and domainVerified of the GitRegistry V2 candidate (additive)",
+      "src/github/domainResolution.ts composes the existing GWC GW-09 resolver with those declarations and the current domain observation of the resolved server; invalid declarations or observations fail closed",
+      "The governed GitHub collector projects domainResolution after the C2/C3 resolutions with the existing cache: memory_cache provenance on hit, DOMAIN_PROJECT_UNVERIFIED on miss, UNVERIFIED/STALE with an empty surface once expired",
+      "domainVerified is never promoted to an observation, historical vhosts never become active and protected-domain safety lists are never the domain model"
+    ],
+    "runtimePreflight": {
+      "tasksRunId": 37243482320,
+      "sessionsRunId": 37243484120,
+      "locksRunId": 37243485726,
+      "observedAt": "2026-10-04T23:22:08Z",
+      "truncated": false,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "collisionDomain": "project:domain-resolution",
+      "collision": false
+    },
+    "notObserved": [
+      {
+        "evidence": "DOMAIN_SERVING",
+        "reason": "No domain observation authority in the runtime: the runtime attestation excludes networks and DNS/TLS/HTTP probing belongs to the I1 synthetic monitor; the readDomainObservation seam answers nothing by default (DOMAIN_OBSERVATION_UNAVAILABLE).",
+        "carriedBy": [
+          "TB-W3-C345-02",
+          "TB-W4-I1-01"
+        ]
+      }
+    ],
+    "knownLimitations": [
+      "Declared domains (mcp.wealthtechinnovations.com on the migrated MCP mapping, the AfricaFunds and Stablecoin public domains) stay UNVERIFIED until a domain observation authority exists."
     ],
     "runtimeTasksCreated": 0,
     "governedSessionsCreated": 0,
