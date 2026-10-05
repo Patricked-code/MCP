@@ -118,6 +118,16 @@ La queue ordonne les tâches par priorité puis FIFO, vérifie leurs dépendance
 
 Le receipt relie la session, l’identité agent/client, la version Live State, les SHA GitHub/runtime et les digests catalogue, gouvernance et task registry. Il ne contient ni prompt brut, ni jeton, ni secret de reprise.
 
+D3 (GW-12, `src/governedContext/receiptReferences.ts`) enrichit ce même receipt d'un champ optionnel et borné `references`. Il ne crée pas de second type de receipt.
+
+- **Connexion.** Le `ConnectionContext` OAuth de la session, sans le principal ni le client.
+- **Dépôt, projet et mapping.** Ils ne viennent que des couches `VERIFIED` de la réalité projet du dépôt de la session et du périmètre D1, chacun avec sa provenance et son heure d'observation.
+- **Pas de promotion.** Une couche non prouvée n'est jamais promue, et ce qui est sous elle n'est pas promu non plus.
+- **Autre dépôt.** Des références observées pour un autre dépôt sont écartées (`RECEIPT_REFERENCE_BINDING_MISMATCH`).
+- **Observation en échec.** Elle n'empêche jamais l'acquittement (`RECEIPT_PROJECT_REFERENCES_UNOBSERVED`).
+- **Compatibilité.** Un receipt sans `references` reste valide.
+- **Câblage.** L'observation passe par le contexte gouverné de la même session, chargé paresseusement par les outils de session, et seulement pour une session visible de l'appelant.
+
 Pour l'observation GitHub d'un travail en cours, la branche est résolue dans cet ordre : branche déjà liée à la Governed Session, puis branche portée par la tâche courante, puis branche explicitement fournie à l'entrée. Une session d'intake sans branche ne perd donc pas la continuité de la tâche déjà gouvernée.
 
 La résolution B1 enrichit ce même collecteur GitHub et son cache existant ; elle

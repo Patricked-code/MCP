@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 D3 Bootstrap Receipt Enrichment (candidate)
+
+- Le Bootstrap Receipt existant gagne un champ optionnel et borné `references` (GW-12) : la connexion OAuth de la session, ainsi que le dépôt, le projet et le mapping prouvés par la réalité projet et le périmètre D1, avec leur provenance et leur heure d'observation.
+- Aucune couche non prouvée n'est promue, les références d'un autre dépôt sont écartées, une observation en échec ne bloque jamais l'acquittement, et aucun principal, client, transport ou secret n'est enregistré. Un receipt sans références reste valide.
+
 ## 2026-10-05 — W3 D2 livré et attesté
 
 - PR #246 fusionnée au SHA `1e4b78f` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37287158288` / `37287161565`.

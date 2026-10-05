@@ -33,6 +33,41 @@ export const SanitizedTransportMetadataSchema = z.object({
 }).strict();
 export type SanitizedTransportMetadata = z.infer<typeof SanitizedTransportMetadataSchema>;
 
+const ReceiptReasonCodeSchema = z.string().regex(/^[A-Z0-9_.:-]{2,80}$/);
+const ReceiptReferenceIdSchema = z.string().trim().min(1).max(300);
+
+/** D3: a binding proven by its project reality layer, with the layer's provenance. */
+export const BootstrapReceiptLayerReferenceSchema = z.object({
+  id: ReceiptReferenceIdSchema,
+  observedAt: TimestampSchema.nullable(),
+  provenance: z.array(z.string().regex(/^[a-z0-9][a-z0-9_.:-]{0,79}$/)).max(10)
+}).strict();
+
+/** D3 (GW-12): proven connection, repository, project and mapping references; never a secret. */
+export const BootstrapReceiptReferencesSchema = z.object({
+  schemaVersion: z.literal(1),
+  observedAt: TimestampSchema,
+  connection: z.object({
+    connectionContextId: z.string().uuid(),
+    identityAssurance: z.literal('oauth_subject'),
+    evidenceSource: z.literal('oauth_auth_info'),
+    createdAt: TimestampSchema
+  }).strict().nullable(),
+  repository: BootstrapReceiptLayerReferenceSchema.nullable(),
+  project: BootstrapReceiptLayerReferenceSchema.nullable(),
+  mapping: z.object({
+    mappingId: ReceiptReferenceIdSchema,
+    componentRole: z.string().trim().min(1).max(100).nullable()
+  }).strict().nullable(),
+  reasonCodes: z.array(ReceiptReasonCodeSchema).max(10)
+}).strict();
+export type BootstrapReceiptReferences = z.infer<typeof BootstrapReceiptReferencesSchema>;
+/** The project part of the references, observed outside the session store. */
+export type BootstrapProjectReferences = Pick<
+  BootstrapReceiptReferences,
+  'observedAt' | 'repository' | 'project' | 'mapping' | 'reasonCodes'
+>;
+
 export const BootstrapReceiptSchema = z.object({
   schemaVersion: z.literal(1),
   bootstrapReceiptId: GovernedIdSchema,
@@ -51,7 +86,8 @@ export const BootstrapReceiptSchema = z.object({
   createdAt: TimestampSchema,
   expiresAt: TimestampSchema,
   status: z.literal('ACKNOWLEDGED'),
-  limitations: z.array(z.string().regex(/^[A-Z0-9_.:-]{2,80}$/)).max(20)
+  limitations: z.array(z.string().regex(/^[A-Z0-9_.:-]{2,80}$/)).max(20),
+  references: BootstrapReceiptReferencesSchema.optional()
 }).strict();
 export type BootstrapReceipt = z.infer<typeof BootstrapReceiptSchema>;
 

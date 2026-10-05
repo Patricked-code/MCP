@@ -1,5 +1,17 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 D3 Bootstrap Receipt Enrichment — GREEN candidate
+
+- **Reprise current-first.** `main=a22293fc78212e0375569c628af9964de2a28960` (D2 clôturé, PR #247). Aucune nouvelle intake ni consigne propriétaire, y compris après la reprise de limite d'usage. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-D3-01` est retenu.
+- **Préflight runtime (09:05Z)** : tasks `37287663409` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY), sessions `37287666548` (2 EXPIRED), locks `37287669617` (0 actif). Aucune collision sur `bootstrap:receipt-enrichment`.
+- **Livré (GW-12).** `BootstrapReceipt.references`, optionnel, borné et fermé, dans le receipt existant :
+  - `connection` : le `ConnectionContext` OAuth de la session (identifiant, assurance, source de preuve, date), sans principal ni client ;
+  - `repository`, `project`, `mapping` : `src/governedContext/receiptReferences.ts` ne les tire que des couches `VERIFIED` de la réalité projet du dépôt de la session et du périmètre D1, avec provenance et heure d'observation ; pas de projet sans dépôt, pas de mapping sans projet ;
+  - codes explicites : `RECEIPT_CONNECTION_UNVERIFIED`, `RECEIPT_REPOSITORY_UNVERIFIED`, `RECEIPT_PROJECT_UNVERIFIED`, `RECEIPT_MAPPING_UNVERIFIED`, `RECEIPT_REFERENCE_BINDING_MISMATCH`, `RECEIPT_PROJECT_REFERENCES_UNOBSERVED`.
+- **Câblage.** Le service de session reçoit un observateur optionnel, appelé seulement pour une session visible. En production, les outils de session lisent paresseusement le contexte gouverné de la même session. Une observation en échec ne bloque jamais l'acquittement ; sans observateur, la forme historique est inchangée.
+- **Preuves** : RED `fbcb140`, CI #2252 (`37288080576`) : 901 tests, 1 échec attendu (module absent). GREEN local : typecheck, build, docs, gouvernance, GWC, secrets, readiness et `git diff --check` verts ; suite complète 905/905.
+- **NEXT_ACTION** : CI exact-head de la PR #248, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-D3-01`.
+
 ## 2026-10-05 — W3 D2 Effective Capabilities — DONE et attesté
 
 - **Fusion et CI** : PR #246 fusionnée sous garde exact-head depuis `28c1e0ca82892c20db731c050f68f1d8be2a50f8` au merge `1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a`.
