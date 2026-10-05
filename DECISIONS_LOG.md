@@ -1,5 +1,27 @@
 # DECISIONS_LOG.md
 
+## 2026-10-05 — D1 : héritage de gouvernance par périmètre projet prouvé, sans copie ni élargissement
+
+Décision technique (déduite, #221 ; GWC-9 `REUSE/EXTEND`, GW-10) : l'héritage de gouvernance compose les autorités existantes sur le périmètre prouvé par la réalité projet (C345-02). Il ne crée ni magasin de gouvernance ni nouvelle autorité.
+
+- **Sources.**
+  - Gouvernance déclarée du mapping GitRegistry, portée par le mapping sélectionné de la résolution projet (comme `activationReadiness`). Un registre V1 migré garde la provenance de candidat.
+  - Ruleset GitHub observé, pour son seul dépôt.
+  - Politique `.mcp/branch-governance.json`, lue de façon bornée et livrée dans l'image comme la carte serveur. Il n'y a pas de politique par défaut si elle est absente ou invalide.
+  - Locks actifs.
+  - Mode du WRITE gate.
+- **Composition.** La contrainte la plus stricte l'emporte. Une autorité qui interdit suffit. Le silence ou une preuve périmée donne `UNKNOWN`, jamais `PERMIT`. Deux listes de préfixes disjointes sont une contradiction (`CONFLICT`).
+- **Portée.** Les règles de `main` de la politique et du ruleset ne parlent que pour une branche officielle `main` : AfricaFunds hérite de sa branche officielle déclarée. Un ruleset observé pour `Patricked-code/MCP` n'est jamais prêté à un autre dépôt.
+- **Déploiement.** Il exige à la fois :
+  - la capacité `deploy` ;
+  - un mapping `validated` ou `active` ;
+  - une activation `READY` ;
+  - un serveur prouvé.
+
+  Le canal Governed Deploy de MCP reste gouverné par son propre workflow.
+- **Locks.** Seuls les locks actifs d'une autre session sur le dépôt, le composant ou le projet du périmètre contraignent, lus sur la liste complète des locks et non sur la projection bornée.
+- **Sans périmètre prouvé.** `UNVERIFIED`, aucune règle. Les capacités effectives (D2) composent ensuite cet héritage avec l'identité, GitHub, la réalité projet et le WRITE gate.
+
 ## 2026-10-05 — C345-02 : réalité projet composée, jamais vérifiée au-delà de la preuve
 
 Décision technique (déduite, #221 ; OD-04, politique GWC-8) : l'acceptation Project Reality est une composition pure des résolutions existantes (GW-05 → GW-09), sans nouvel observateur ni nouvelle autorité.

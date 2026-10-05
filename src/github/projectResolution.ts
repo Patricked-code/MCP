@@ -1,5 +1,6 @@
 import type { GithubRepositoryResolution } from './repositoryResolution.js';
 import type {
+  GitRegistryMappingGovernance,
   GitRegistryProjectEvidence
 } from './registry.js';
 import type {
@@ -32,6 +33,8 @@ export type GithubProjectResolution = {
     componentRole: string | null;
     activationReadiness: 'READY' | 'BLOCKED' | 'UNKNOWN';
     activationReasonCodes: GitRegistryV2ActivationReasonCode[];
+    /** D1: the mapping's declared governance, when the registry evidence carries it. */
+    governance?: GithubMappingGovernance;
   } | null;
   selectedProject: {
     projectId: string;
@@ -49,6 +52,11 @@ export type GithubProjectResolution = {
   reasonCodes: GithubProjectReasonCode[];
   registryDigest: string | null;
   candidateDigest: string | null;
+};
+
+export type GithubMappingGovernance = GitRegistryMappingGovernance & {
+  /** True when the declarations come from a V1 registry migrated in memory. */
+  candidateFromV1: boolean;
 };
 
 export type GithubProjectResolutionInput = {
@@ -164,6 +172,9 @@ export function resolveGithubProject(
   const readiness = input.registry.activationReadiness.find(
     (entry) => entry.mappingId === mapping.mappingId
   );
+  const declared = input.registry.governanceEvidence?.mappings.find((entry) => (
+    entry.mappingId === mapping.mappingId && same(entry.repositoryId, mapping.repositoryId)
+  ));
 
   return {
     status: 'RESOLVED',
@@ -176,7 +187,19 @@ export function resolveGithubProject(
       projectUid: mapping.projectUid,
       componentRole: mapping.componentRole,
       activationReadiness: readiness?.status ?? 'UNKNOWN',
-      activationReasonCodes: readiness?.reasonCodes ?? []
+      activationReasonCodes: readiness?.reasonCodes ?? [],
+      ...(declared ? {
+        governance: {
+          officialBranch: declared.officialBranch,
+          allowedBranchPrefixes: [...declared.allowedBranchPrefixes],
+          directMainPush: declared.directMainPush,
+          status: declared.status,
+          capabilities: { ...declared.capabilities },
+          backupRequired: declared.backupRequired,
+          rollbackMethod: declared.rollbackMethod,
+          candidateFromV1: input.registry.sourceSchemaVersion === 1
+        }
+      } : {})
     },
     selectedProject: project
       ? {

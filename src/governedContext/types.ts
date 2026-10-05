@@ -3,6 +3,7 @@ import type { GithubIdentityResolution } from '../github/identityResolution.js';
 import type { GithubRepositoryResolution } from '../github/repositoryResolution.js';
 import type { GithubProjectResolution } from '../github/projectResolution.js';
 import type { ProjectReality } from '../github/projectReality.js';
+import type { ProjectGovernanceInheritance } from '../governedWorkflow/governance/projectInheritance.js';
 import type { DomainResolution } from '../governedWorkflow/resolvers/domain.js';
 import type { RuntimeResolution } from '../governedWorkflow/resolvers/runtime.js';
 import type { ServerResolution } from '../governedWorkflow/resolvers/server.js';
@@ -153,6 +154,12 @@ export type GovernedOperationalContext = {
    * governed service; optional for historical in-process consumers.
    */
   projectReality?: ProjectReality;
+  /**
+   * D1: branch, pull-request, test, deploy, lock and write constraints the
+   * proven project scope inherits from existing authorities. Always projected
+   * by the governed service; optional for historical in-process consumers.
+   */
+  governanceInheritance?: ProjectGovernanceInheritance;
   session: PublicGovernedSession | null;
   bootstrap: {
     required: true;

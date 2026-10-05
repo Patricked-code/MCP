@@ -1,5 +1,35 @@
 # SUIVI.md
 
+## 2026-10-05 — W3 D1 Existing Governance Inheritance — GREEN candidate
+
+- **Reprise current-first.** `main=c4fb286efb38bb084013b62c6bdce533725021aa` (C345-02 clôturé, PR #243). Aucune nouvelle intake ni consigne propriétaire, y compris après la pause de limite d'usage (réobservé à 08:24Z, HEAD inchangé). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 est un blocage local (claim runtime), `TB-W3-D1-01` est retenu.
+- **Livré (GW-10, extension GWC-9).** `GovernedOperationalContext.governanceInheritance` projette, sur le périmètre prouvé par `projectReality`, les contraintes des autorités existantes, sans copie :
+  - Gouvernance déclarée du mapping GitRegistry : `GitRegistryProjectEvidence.governanceEvidence` (additif), portée par `selectedMapping.governance`, avec provenance candidate pour un registre V1 migré.
+  - Ruleset GitHub observé, pour son seul dépôt.
+  - `.mcp/branch-governance.json` : lecteur borné `src/governance/branchGovernance.ts`, livré dans l'image (`Dockerfile`), sans politique par défaut.
+  - Locks actifs (liste complète) et WRITE gate.
+- **Règles.** 17 règles (branche, PR, checks, revues, déploiement, écriture, locks, worktree), chacune `REQUIRE`/`FORBID`/`PERMIT`/`UNKNOWN` avec ses autorités.
+  - La contrainte la plus stricte l'emporte.
+  - Le silence ou une preuve périmée donne `UNKNOWN`.
+  - Des préfixes disjoints donnent `CONFLICT`.
+  - Le déploiement n'est hérité que sur un serveur prouvé.
+  - Sans périmètre prouvé : `UNVERIFIED`, aucune règle.
+- **Réalité courante.**
+  - MCP (`mcp-s1-production`) : branche `main`, push direct interdit (mapping, ruleset, politique), PR et brouillon requis, checks du ruleset, `DEPLOY`/`WRITE_*` interdits (capacités candidates par défaut).
+  - AfricaFunds : hérite de sa branche officielle déclarée `claude/code-review-improvements-ikvuj`, sans ruleset prêté (`GOVERNANCE_RULESET_NOT_OBSERVED`).
+- **Préflight runtime OIDC.**
+  - 04:10Z, puis rafraîchi à 08:25Z après la pause (`workflowSha=c4fb286`, `truncated=false`).
+  - File `storeRevision=242` (`37283486704`) ; 2 sessions EXPIRED (`37283489776`) ; 0 lock (`37283492893`).
+  - Aucune collision sur `governance:inheritance` ; aucun claim, session ou lock créé.
+- **Tests.**
+  - RED `15c0f88` : modules D1 absents.
+  - 8 tests d'acceptation, dont un lock de projet situé au-delà de la projection bornée.
+  - Suite locale verte ; gates typecheck, build, docs, gouvernance, GWC, secrets et readiness vertes.
+- **NEXT_ACTION.**
+  1. CI exact-head, merge, Governed Deploy (image avec la politique), attestation OIDC S1.
+  2. PR terminale D1 DONE.
+  3. Recalcul : `TB-W3-D2-01` devient READY.
+
 ## 2026-10-05 — W3 C345-02 Project Reality acceptance — DONE et attesté
 
 - **Fusion et CI** : PR #242 fusionnée sous garde exact-head depuis `9baa2da768c7f904a67bf74fe812092111045659` au merge `d4a98988b6e5327cb1b802a3d2099f634d29b82d`.

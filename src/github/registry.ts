@@ -5,7 +5,9 @@ import type { GitHubConnectionStatus } from './connection.js';
 import {
   assessGitRegistryV2ActivationReadiness,
   dryRunGitRegistryV2,
-  type GitRegistryV2ActivationReasonCode
+  type GitRegistryV2,
+  type GitRegistryV2ActivationReasonCode,
+  type RegistryCapabilities
 } from './registryV2.js';
 
 const FILE = '/app/data/mcp-git-registry.json';
@@ -72,6 +74,29 @@ export type GitRegistryDomainEvidence = {
   }>;
 };
 
+/**
+ * D1: the governance each GitRegistry mapping declares (branch, status,
+ * capabilities, backup). Declarations stay owned by the registry: they are
+ * projected, never copied into another store.
+ */
+export type GitRegistryMappingGovernance = {
+  officialBranch: string;
+  allowedBranchPrefixes: string[];
+  directMainPush: false;
+  status: GitRegistryV2['mappings'][number]['status'];
+  capabilities: RegistryCapabilities;
+  backupRequired: boolean;
+  rollbackMethod: string | null;
+};
+
+export type GitRegistryGovernanceEvidence = {
+  mappings: Array<GitRegistryMappingGovernance & {
+    mappingId: string;
+    repositoryId: string;
+    projectId: string;
+  }>;
+};
+
 export type GitRegistryProjectEvidence = {
   available: boolean;
   sourceSchemaVersion: 1 | 2 | null;
@@ -106,6 +131,8 @@ export type GitRegistryProjectEvidence = {
   serverBindings?: GitRegistryServerBindingEvidence[];
   /** Always set by the reader since C5; optional for historical constructors. */
   domainEvidence?: GitRegistryDomainEvidence;
+  /** Always set by the reader since D1; optional for historical constructors. */
+  governanceEvidence?: GitRegistryGovernanceEvidence;
 };
 
 const now = () => new Date().toISOString();
@@ -281,6 +308,20 @@ export async function readGitRegistryProjectEvidence(): Promise<GitRegistryProje
           domain: mapping.domain,
           domainVerified: mapping.domainVerified
         }))
+      },
+      governanceEvidence: {
+        mappings: candidate.mappings.slice(0, 1000).map((mapping) => ({
+          mappingId: mapping.mappingId,
+          repositoryId: mapping.repositoryId,
+          projectId: mapping.projectId,
+          officialBranch: mapping.officialBranch.slice(0, 255),
+          allowedBranchPrefixes: mapping.allowedBranchPrefixes.slice(0, 20).map((prefix) => prefix.slice(0, 100)),
+          directMainPush: mapping.directMainPush,
+          status: mapping.status,
+          capabilities: { ...mapping.capabilities },
+          backupRequired: mapping.backupRequired,
+          rollbackMethod: mapping.rollbackMethod === null ? null : mapping.rollbackMethod.slice(0, 200)
+        }))
       }
     };
   } catch {
@@ -293,7 +334,8 @@ export async function readGitRegistryProjectEvidence(): Promise<GitRegistryProje
       projects: [],
       activationReadiness: [],
       serverBindings: [],
-      domainEvidence: { projects: [], mappings: [] }
+      domainEvidence: { projects: [], mappings: [] },
+      governanceEvidence: { mappings: [] }
     };
   }
 }

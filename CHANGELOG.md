@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-05 — W3 D1 Existing Governance Inheritance (candidate)
+
+- Le contexte opérationnel gouverné projette `governanceInheritance` (GW-10) : contraintes branche, pull request, tests, déploiement, locks et écriture héritées par le périmètre projet prouvé, depuis le mapping GitRegistry (`governanceEvidence` additif, `selectedMapping.governance`), le ruleset GitHub observé, `.mcp/branch-governance.json` (lecteur borné, livré dans l'image), le Governed Lock Service et le WRITE gate.
+- La contrainte la plus stricte l'emporte. Toute preuve absente, périmée ou non observée donne `UNKNOWN`, jamais une permission. Rien n'est hérité sans périmètre prouvé.
+
 ## 2026-10-05 — W3 C345-02 livré et attesté
 
 - PR #242 fusionnée au SHA `d4a9898` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37261508259` / `37261509926`.
