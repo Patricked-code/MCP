@@ -441,6 +441,32 @@ primitive, n'accorde aucune permission et ne crée aucune tâche.
   un blueprint ouvert du Program Backlog, avec ce qu'il faut réutiliser ou
   généraliser. Aucun type de ressource n'est provisionnable aujourd'hui.
 
+Le provisioning d'un runtime de projet (F.2, `TB-W3-F-03`) est livré par
+incréments sous le contrat `PROJECT_RUNTIME`. Le premier incrément est en
+lecture seule ; il établit la preuve d'absence et le plan
+(`src/provisioning/projectRuntime.ts`).
+
+- **Cible exacte.** Un composant est provisionné au chemin que GitRegistry
+  déclare pour lui sur S1, seulement sous `/opt/apps` et hors du checkout du
+  MCP. Le serveur S2 (migration source, applications protégées) n'est jamais
+  ciblé.
+- **Preuve d'absence.** Live State inventorie, en lecture seule et seulement
+  pour la cible configurée de `.mcp/server-map.json`, deux choses :
+  - le chemin déclaré ;
+  - l'espace Docker provisionné (conteneurs étiquetés avec le dépôt).
+
+  C4 reçoit soit le runtime trouvé, soit un `NO_RUNTIME` positif quand les
+  deux sont vides. Un chemin présent sans runtime provisionné, un Docker
+  illisible ou une réponse malformée ne prouvent rien.
+- **Plan.** Le plan d'un composant est :
+  - `BLOCKED` à la première porte qui échoue ;
+  - `NO_OP` quand la même révision tourne déjà ;
+  - `CONSENT_REQUIRED` tant que le consentement de création manque ;
+  - `READY` sinon.
+
+  L'activation garde son propre consentement. Un runtime existant n'est
+  jamais écrasé.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.

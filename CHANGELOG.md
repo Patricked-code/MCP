@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 1 (candidate)
+
+- Live State inventorie en lecture seule le chemin déclaré et l'espace Docker provisionné des composants de la cible configurée ; C4 peut prouver un `NO_RUNTIME` ou constater le runtime provisionné.
+- `src/provisioning/projectRuntime.ts` planifie le provisioning d'un runtime de projet selon le contrat `PROJECT_RUNTIME`. Il cible le chemin exact déclaré et gouverné, ne crée qu'un runtime réellement absent, garde des consentements distincts pour la création et l'activation, et n'écrase jamais l'existant. Aucune exécution.
+
 ## 2026-10-05 — W3 F.0 livré et attesté
 
 - PR #257 fusionnée au SHA `d34899b` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37390662478` / `37390664427`.

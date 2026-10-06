@@ -1,4 +1,5 @@
 import type { TargetContext } from '../operationalMemory/targetScope.js';
+import type { ProvisionedRuntimeInventory } from '../provisioning/projectRuntime.js';
 
 export type LiveStateSourceStatus = 'CURRENT' | 'STALE' | 'UNAVAILABLE';
 export type LiveStateFreshness = 'CURRENT' | 'STALE';
@@ -136,6 +137,8 @@ export type LiveStateObservations = {
   repository: string;
   targetSelection?: LiveStateTargetSelection;
   targetContext?: TargetContext;
+  /** F.2: read-only inventory of the configured target's runtimes; absent without a resolved target. */
+  provisionedRuntimes?: ProvisionedRuntimeInventory;
   github: GithubLiveObservation;
   s1: S1LiveObservation;
   runtime: RuntimeLiveObservation;
