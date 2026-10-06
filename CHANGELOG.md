@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
+
+- Exécuteur borné à la cible (`src/provisioning/runtimeExecutor.ts`), encore relié à aucune surface. Il re-observe et replanifie avant toute écriture, télécharge la révision exacte, prépare, contrôle le modèle Compose, crée avec un marqueur, puis active sous son propre consentement. En cas d'échec, il s'arrête sans les volumes et met en quarantaine, sans rien supprimer ; chaque job est attesté.
+- Politique Compose (`src/provisioning/composePolicy.ts`) et téléchargement d'archive borné à `codeload.github.com` (`src/provisioning/sourceArchive.ts`).
+
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 1 (candidate)
 
 - Live State inventorie en lecture seule le chemin déclaré et l'espace Docker provisionné des composants de la cible configurée ; C4 peut prouver un `NO_RUNTIME` ou constater le runtime provisionné.

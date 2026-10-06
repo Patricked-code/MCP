@@ -24,6 +24,9 @@ export const PROVISIONING_SERVER_MAP_ID = 'S1';
 export const GOVERNED_RUNTIME_ROOT = '/opt/apps';
 export const PROVISIONING_LABEL_REPOSITORY = 'com.wealthtech.mcp.provisioning.repository';
 export const PROVISIONING_LABEL_REVISION = 'com.wealthtech.mcp.provisioning.revision';
+export const PROVISIONING_LABEL_PROJECT = 'com.wealthtech.mcp.provisioning.project';
+/** Written at the root of a created runtime; read back to recognize it. */
+export const PROVISIONING_MARKER_FILE = '.mcp-provisioning.json';
 export const PROVISIONED_RUNTIME_PROVENANCE = 'live_state_provisioned_runtime_inventory';
 
 const MCP_ROOT = '/opt/apps/wealthtech-mcp-ssh-bridge';
@@ -31,6 +34,9 @@ const COMPOSE_PROJECT_LABEL = 'com.docker.compose.project';
 const MAX_TARGETS = 20;
 const MAX_CONTAINERS = 20;
 const UNAVAILABLE_SENTINEL = '__unavailable__';
+const MAX_MARKER_BYTES = 4096;
+const COMPOSE_FILES = new Set(['compose.yaml', 'compose.yml', 'docker-compose.yaml', 'docker-compose.yml']);
+const JOB_ID_PATTERN = /^prov-\d{8}T\d{6}Z-[0-9a-f]{8}$/;
 const REPOSITORY_ID_PATTERN = /^github:[A-Za-z0-9][A-Za-z0-9-]{0,38}\/[A-Za-z0-9._-]{1,100}$/;
 const PATH_SEGMENT_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/;
 const CONTAINER_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$/;
@@ -62,6 +68,19 @@ export type ProvisionedContainer = Readonly<{
   revision: string | null;
 }>;
 
+/** The marker of a runtime created by provisioning, as written at its root. */
+export type ProvisioningMarker = Readonly<{
+  schemaVersion: 1;
+  jobId: string;
+  projectId: string;
+  mappingId: string;
+  repositoryId: string;
+  revision: string;
+  composeProject: string;
+  composeFile: string;
+  createdAt: string;
+}>;
+
 export type ProvisionedComponentFacts = Readonly<{
   mappingId: string;
   repositoryId: string;
@@ -69,6 +88,8 @@ export type ProvisionedComponentFacts = Readonly<{
   readable: boolean;
   pathPresent: boolean | null;
   containers: readonly ProvisionedContainer[];
+  /** The marker of a created runtime; null when absent or unreadable. */
+  marker: ProvisioningMarker | null;
 }>;
 
 export type ProvisionedRuntimeInventory = Readonly<{
@@ -120,7 +141,8 @@ export function buildProvisionedRuntimeInventoryCommand(targets: readonly Provis
     lines.push(
       `if [ -e ${shellQuote(target.serverPath)} ]; then printf 'component.${index}.path=present\\n'; else printf 'component.${index}.path=absent\\n'; fi`,
       `c="$(docker ps -a --filter ${shellQuote(`label=${PROVISIONING_LABEL_REPOSITORY}=${target.repositoryId}`)} --format ${shellQuote(format)} 2>/dev/null)" || c=${shellQuote(UNAVAILABLE_SENTINEL)}`,
-      `printf 'component.${index}.containers=%s\\n' "$(printf '%s\\n' "$c" | head -n ${MAX_CONTAINERS + 1} | paste -sd, -)"`
+      `printf 'component.${index}.containers=%s\\n' "$(printf '%s\\n' "$c" | head -n ${MAX_CONTAINERS + 1} | paste -sd, -)"`,
+      `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then printf 'component.${index}.marker=%s\\n' "$(head -c ${MAX_MARKER_BYTES} ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} | base64 | tr -d '\\n')"; fi`
     );
   });
   return lines.join('\n');
@@ -157,6 +179,25 @@ function parseContainers(value: string | undefined): ProvisionedContainer[] | nu
   return containers;
 }
 
+/** A marker read back from a created runtime, valid only for its own component. */
+export function parseProvisioningMarker(
+  encoded: string | undefined,
+  target: ProvisioningInventoryTarget
+): ProvisioningMarker | null {
+  if (!encoded || encoded.length > MAX_MARKER_BYTES * 2) return null;
+  let value: unknown;
+  try {
+    value = JSON.parse(Buffer.from(encoded, 'base64').toString('utf8'));
+  } catch {
+    return null;
+  }
+  const parsed = MarkerSchema.safeParse(value);
+  if (!parsed.success) return null;
+  const marker = parsed.data;
+  if (marker.mappingId !== target.mappingId || marker.repositoryId !== target.repositoryId) return null;
+  return Object.freeze(marker);
+}
+
 /** An inventory that observed nothing: every component stays unproven. */
 export function unavailableProvisionedRuntimeInventory(
   targets: readonly ProvisioningInventoryTarget[],
@@ -171,7 +212,8 @@ export function unavailableProvisionedRuntimeInventory(
       ...target,
       readable: false,
       pathPresent: null,
-      containers: Object.freeze([])
+      containers: Object.freeze([]),
+      marker: null
     })))
   });
 }
@@ -197,7 +239,8 @@ export function parseProvisionedRuntimeInventory(
         ...target,
         readable: docker === 'ok' && pathPresent !== null && containers !== null,
         pathPresent,
-        containers: Object.freeze(containers ?? [])
+        containers: Object.freeze(containers ?? []),
+        marker: pathPresent ? parseProvisioningMarker(values.get(`component.${index}.marker`), target) : null
       });
     }))
   });
@@ -257,6 +300,17 @@ export function provisionedRuntimeObservations(
         runtimeId: null,
         revision: null
       }));
+      continue;
+    }
+    if (component.marker) {
+      observations.push(Object.freeze({
+        ...base,
+        status: freshness,
+        freshness,
+        runtimeKind: 'CHECKOUT_ONLY' as const,
+        runtimeId: component.marker.composeProject,
+        revision: component.marker.revision
+      }));
     }
   }
   return observations;
@@ -286,6 +340,18 @@ export function provisioningInventoryTargets(
   return targets.slice(0, MAX_TARGETS);
 }
 
+const MarkerSchema = z.object({
+  schemaVersion: z.literal(1),
+  jobId: z.string().regex(JOB_ID_PATTERN),
+  projectId: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$/),
+  mappingId: z.string().min(1).max(300),
+  repositoryId: z.string().regex(REPOSITORY_ID_PATTERN),
+  revision: z.string().regex(SHA_PATTERN),
+  composeProject: z.string().regex(COMPOSE_PROJECT_PATTERN),
+  composeFile: z.string().refine((value) => COMPOSE_FILES.has(value)),
+  createdAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/)
+}).strict();
+
 const RequestSchema = z.object({
   serverId: z.string().min(1).max(20),
   projectId: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$/),
@@ -310,7 +376,8 @@ export type ProjectRuntimeReasonCode =
   | 'EXISTING_RUNTIME_CONFLICT'
   | 'TARGET_PATH_PRESENT'
   | 'CREATION_CONSENT_REQUIRED'
-  | 'ACTIVATION_CONSENT_REQUIRED';
+  | 'ACTIVATION_CONSENT_REQUIRED'
+  | 'RUNTIME_CREATED_NOT_ACTIVATED';
 
 export type ProjectRuntimeStepState =
   | 'DONE'
@@ -332,8 +399,12 @@ export type ProjectRuntimeTarget = Readonly<{
   revision: string;
 }>;
 
+export type ProjectRuntimeExecutionMode = 'CREATE' | 'CREATE_AND_ACTIVATE' | 'ACTIVATE';
+
 export type ProjectRuntimeProvisioningPlan = Readonly<{
   decision: 'BLOCKED' | 'NO_OP' | 'CONSENT_REQUIRED' | 'READY';
+  /** What a READY plan executes; null otherwise. */
+  mode: ProjectRuntimeExecutionMode | null;
   reasonCodes: readonly ProjectRuntimeReasonCode[];
   target: ProjectRuntimeTarget | null;
   governance: Readonly<{ backupRequired: boolean; rollbackMethod: string | null }> | null;
@@ -364,10 +435,12 @@ function freezePlan(
   reasonCodes: ProjectRuntimeReasonCode[],
   target: ProjectRuntimeTarget | null,
   governance: ProjectRuntimeProvisioningPlan['governance'],
-  states: Record<(typeof PROJECT_RUNTIME_STEP_IDS)[number], ProjectRuntimeStepState>
+  states: Record<(typeof PROJECT_RUNTIME_STEP_IDS)[number], ProjectRuntimeStepState>,
+  mode: ProjectRuntimeExecutionMode | null = null
 ): ProjectRuntimeProvisioningPlan {
   return Object.freeze({
     decision,
+    mode: decision === 'READY' ? mode : null,
     reasonCodes: Object.freeze(reasonCodes),
     target,
     governance,
@@ -461,7 +534,29 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
       'bind-target': 'DONE'
     });
   }
-  if (facts.pathPresent !== false) return block('TARGET_PATH_PRESENT', target, governance);
+  if (facts.pathPresent !== false) {
+    const marker = facts.marker;
+    // Only the marker this provisioning wrote makes a present path a created runtime.
+    if (!marker) return block('TARGET_PATH_PRESENT', target, governance);
+    if (marker.revision !== request.revision || marker.composeProject !== target.composeProject) {
+      return block('EXISTING_RUNTIME_CONFLICT', target, governance);
+    }
+    const created = {
+      'observe-runtime': 'DONE', 'bind-target': 'DONE', backup: 'DONE', 'create-runtime': 'DONE', rollback: 'ON_FAILURE'
+    } as const;
+    if (!input.consent.activation) {
+      return freezePlan('CONSENT_REQUIRED', ['RUNTIME_CREATED_NOT_ACTIVATED', 'ACTIVATION_CONSENT_REQUIRED'], target, governance, {
+        ...created,
+        activate: 'OWN_CONSENT_REQUIRED',
+        health: 'NOT_APPLICABLE'
+      });
+    }
+    return freezePlan('READY', ['RUNTIME_CREATED_NOT_ACTIVATED'], target, governance, {
+      ...created,
+      activate: 'PENDING',
+      health: 'PENDING'
+    }, 'ACTIVATE');
+  }
 
   const observed = { 'observe-runtime': 'DONE', 'bind-target': 'DONE', rollback: 'ON_FAILURE' } as const;
   if (!input.consent.creation) {
@@ -480,5 +575,5 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
     'create-runtime': 'PENDING',
     activate: activation ? 'PENDING' : 'OWN_CONSENT_REQUIRED',
     health: activation ? 'PENDING' : 'NOT_APPLICABLE'
-  });
+  }, activation ? 'CREATE_AND_ACTIVATE' : 'CREATE');
 }

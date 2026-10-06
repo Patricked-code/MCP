@@ -1,5 +1,27 @@
 # DECISIONS_LOG.md
 
+## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
+
+Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME` (F.0), le plan de l'incrément 1, et les invariants `NO_SHELL_FREEFORM_PROVISIONING`, `NO_IMPLICIT_SIDE_EFFECTS` et `NO_AUTOMATIC_DESTRUCTIVE_ROLLBACK`.
+
+- **Pas de preuve périmée.** L'exécuteur ne consomme jamais l'instantané de Live State. Juste avant toute écriture, il relit la cible, le registre et l'inventaire, puis replanifie. Sur S1, le script de préparation reprouve l'absence avant d'extraire, et la promotion revérifie que la cible est absente.
+- **Source exacte sans nouvel identifiant sur l'hôte.**
+  - S1 ne détient qu'une clé de lecture du MCP, et le client SSH ne transmet pas de flux.
+  - Le MCP télécharge donc l'archive GitHub de la révision exacte avec l'identifiant serveur existant, dans son volume `data`, que l'hôte lit.
+  - L'identifiant ne part que vers l'API, jamais vers l'URL signée de `codeload.github.com`. Toute autre redirection est refusée.
+  - L'archive est bornée, et son empreinte est vérifiée sur S1 avant l'extraction.
+- **Politique Compose : rien d'implicite.** Le modèle normalisé (`docker compose config`, lancé dans un environnement vide) doit rester dans le projet.
+  - Sont refusés :
+    - le mode privilégié, les capacités ajoutées, les périphériques, les espaces de noms de l'hôte et les profils non confinés ;
+    - un port publié hors de la boucle locale (un binding n'est jamais implicite) ;
+    - un montage, une construction ou un Dockerfile hors du projet, et une construction SSH ;
+    - un réseau, un volume, un lien ou un secret externe, et un nom de conteneur fixe.
+  - Le script refuse aussi les clés qui lisent des fichiers de l'hôte au chargement (`env_file`, `extends`, `include`, `label_file`) et les liens symboliques sortant du projet. Ce contrôle est portable et refuse quand il ne peut pas conclure.
+- **Création et activation séparées.** La création promeut le répertoire préparé et écrit un marqueur. Sans consentement d'activation, le runtime reste un checkout, que C4 voit comme `CHECKOUT_ONLY`. L'activation, sous son propre consentement, étiquette les services (dépôt, révision, projet), démarre le projet et attend la santé.
+- **Échec non destructif.** Le projet Compose est arrêté sans ses volumes (`down --remove-orphans`, jamais `-v`). Une cible créée par le job part en quarantaine ; une cible créée auparavant garde ses fichiers. Rien n'est supprimé.
+- **Un seul provisioning à la fois.** Chaque job est attesté dans `data/provisioning/<job>/attestation.json`.
+- **Pas encore de surface.** Le troisième incrément ajoutera la surface consentie (E3) qui décide des consentements côté serveur et appelle l'exécuteur.
+
 ## 2026-10-06 — F.2 incrément 1 : preuve d'absence et plan du provisioning d'un runtime de projet
 
 Décision technique, déduite selon #221. Sources :

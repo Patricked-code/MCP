@@ -1,5 +1,28 @@
 # SUIVI.md
 
+## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 — GREEN candidate
+
+- **Incrément 1 livré.**
+  - PR #259 fusionnée au merge `0d4f3d429026cc84dff340fada64bd3a5aec2b61`. CI PR `37392438549` (#2286, 948 tests) ; CI main `37392611476` (#2287).
+  - Governed Deploy `37392611525` (#134) SUCCESS.
+  - Attestation OIDC read-only : `mcp_git_status` `37392814336` (S1 `main@0d4f3d4`, worktree propre) ; `docker_status` `37392816627` (conteneur healthy).
+- **Reprise.** Aucune nouvelle intake ni consigne propriétaire. Les commentaires du bot Codex ne signalent qu'une limite d'usage.
+- **Livré (incrément 2, non relié à une surface).**
+  - `src/provisioning/runtimeExecutor.ts` :
+    - re-observation et replanification avant toute écriture ;
+    - préparation (absence reprouvée sur S1, empreinte vérifiée avant extraction, clés Compose lisant l'hôte et liens sortants refusés) ;
+    - création avec marqueur, puis activation sous son propre consentement avec contrôle de santé ;
+    - rollback non destructif (arrêt sans volumes, quarantaine) ;
+    - un seul job à la fois, chaque job attesté.
+  - `src/provisioning/composePolicy.ts` : politique de sûreté du modèle Compose.
+  - `src/provisioning/sourceArchive.ts` : archive GitHub de la révision exacte. L'identifiant ne part que vers l'API ; seule une redirection vers `codeload.github.com` est suivie ; taille bornée, empreinte calculée.
+  - `src/provisioning/projectRuntime.ts` : marqueur d'un runtime créé (`CHECKOUT_ONLY` pour C4) ; plan `ACTIVATE` pour un runtime créé, sous son seul consentement d'activation.
+- **Contrôle du garde des liens symboliques** : exécuté sous `dash` et sous `bash`. Un lien interne passe, un lien sortant bloque (`symlink_outside`).
+- **Preuves.**
+  - RED `0882f82` : modules absents.
+  - GREEN local : typecheck, build et gates verts ; suite complète 958/958.
+- **NEXT_ACTION** : CI exact-head de la PR #260, merge exact-head, Governed Deploy, attestation, puis incrément 3 de `TB-W3-F-03` : surface consentie (E3) et câblage de l'exécuteur.
+
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 1 — GREEN candidate
 
 - **Reprise current-first.** `main=3700bcb48188c1134d948d03504e94e6e905134c` (F.0 clôturé, PR #258). Aucune nouvelle intake ni consigne propriétaire. Les commentaires du bot Codex sur #256, #257 et #258 ne signalent qu'une limite d'usage, sans aucun constat. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-F-03` est retenu.

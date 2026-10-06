@@ -467,6 +467,38 @@ lecture seule ; il établit la preuve d'absence et le plan
   L'activation garde son propre consentement. Un runtime existant n'est
   jamais écrasé.
 
+Le deuxième incrément livre l'exécuteur borné à la cible
+(`src/provisioning/runtimeExecutor.ts`). Il n'est encore relié à aucune
+surface.
+
+- **Re-observation avant toute écriture.** Juste avant d'écrire,
+  l'exécuteur relit la cible, le registre et l'inventaire, puis replanifie.
+  Seul un plan `READY` s'exécute, avec le mode écriture actif et un seul
+  provisioning à la fois.
+- **Création.**
+  - La révision exacte est téléchargée depuis GitHub
+    (`src/provisioning/sourceArchive.ts`). L'identifiant ne part que vers
+    l'API, et seule une redirection vers `codeload.github.com` est suivie.
+  - Sur S1, l'absence est reprouvée et l'empreinte de l'archive vérifiée
+    avant l'extraction, faite à côté de la cible.
+  - Le modèle Compose est ensuite contrôlé
+    (`src/provisioning/composePolicy.ts`), puis promu avec un marqueur.
+- **Activation, sous son propre consentement.** Elle étiquette les services,
+  démarre le projet Compose et attend la santé. Un runtime créé mais non
+  activé reste un checkout (`CHECKOUT_ONLY` pour C4).
+- **Politique Compose.** Tout reste dans le projet. Sont refusés :
+  - le mode privilégié, les capacités ajoutées, les périphériques et les
+    espaces de noms de l'hôte ;
+  - un port publié ailleurs que sur la boucle locale ;
+  - un montage, une construction ou un Dockerfile hors du projet ;
+  - un réseau, un volume ou un lien externe, et un nom de conteneur fixe ;
+  - les clés Compose qui lisent des fichiers de l'hôte ;
+  - les liens symboliques sortant du projet.
+- **Échec non destructif.** Le projet Compose est arrêté sans ses volumes,
+  et les fichiers créés par le job partent en quarantaine
+  (`/opt/apps/mcp-provisioning-quarantine`). Rien n'est supprimé. Chaque job
+  est attesté.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.
