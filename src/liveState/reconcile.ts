@@ -20,6 +20,11 @@ function semanticValue(state: LiveStateSnapshot): string {
       centralGovernanceRepositoryId: state.targetContext.centralGovernanceRepositoryId,
       components: state.targetContext.components
     } : null,
+    provisionedRuntimes: state.provisionedRuntimes ? {
+      status: state.provisionedRuntimes.status,
+      dockerAvailable: state.provisionedRuntimes.dockerAvailable,
+      components: state.provisionedRuntimes.components
+    } : null,
     github: state.github,
     s1: state.s1,
     runtime: state.runtime,

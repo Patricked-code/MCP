@@ -1,5 +1,21 @@
 # DECISIONS_LOG.md
 
+## 2026-10-06 — F.2 incrément 1 : preuve d'absence et plan du provisioning d'un runtime de projet
+
+Décision technique, déduite selon #221. Sources :
+- le contrat `PROJECT_RUNTIME` de `.mcp/provisioning-contracts.json` (F.0) ;
+- l'objectif du blueprint `TB-W3-F-03` : « ne provisionner que des ressources projet/runtime réellement absentes, avec cible exacte, sauvegarde/rollback et contrôle de santé ».
+
+- **Livraison par incréments.** Le provisioning d'un runtime touche l'hôte de production. Le lot est donc livré en trois incréments :
+  1. la preuve d'absence et le plan, en lecture seule ;
+  2. la surface consentie (E3) dans l'exposition Express existante ;
+  3. l'exécuteur borné à la cible : sauvegarde, création, activation, santé, restauration.
+
+  Le blueprint n'est clôturé qu'après le dernier incrément.
+- **Cible exacte réutilisée, pas inventée.** Le chemin d'un composant est celui que GitRegistry V2 déclare pour lui sur S1. Il n'est accepté que sous `/opt/apps` et hors du checkout du MCP. Les déclarations de sauvegarde et de méthode de rollback de D1 sont reprises dans le plan. S1 est le seul serveur ciblable : il est l'hôte du MCP et porte la liste de cibles de B3.2. S2 n'est jamais ciblé : c'est le serveur source de migration, avec des applications protégées.
+- **L'absence est prouvée, jamais supposée.** Live State est l'autorité d'observation existante. Pour la seule cible configurée, il inventorie en lecture seule le chemin déclaré et l'espace Docker provisionné, c'est-à-dire les conteneurs étiquetés `com.wealthtech.mcp.provisioning.repository`. C4 reçoit un `NO_RUNTIME` positif seulement si les deux sont vides. Un chemin présent sans runtime provisionné bloque (`TARGET_PATH_PRESENT`). Aucune absence n'est déclarée pour le dépôt que Live State observe déjà (le MCP).
+- **Plan sans exécution.** Le plan ne déduit jamais un consentement. La création et l'activation ont chacune leur consentement. La même révision donne un no-op ; toute autre ressource existante bloque. Rien n'est exécuté, créé ou autorisé par cet incrément.
+
 ## 2026-10-05 — F.0 : décomposition du provisioning en contrats avant toute primitive
 
 Décision technique, déduite selon #221. Sources : le chantier F de la ROADMAP et l'objectif du blueprint `TB-W3-F-01` : « inventorier les primitives d'écriture bornées par ressource et définir les contrats de provisioning avant d'ajouter toute nouvelle primitive ».

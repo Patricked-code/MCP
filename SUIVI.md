@@ -1,5 +1,28 @@
 # SUIVI.md
 
+## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 1 — GREEN candidate
+
+- **Reprise current-first.** `main=3700bcb48188c1134d948d03504e94e6e905134c` (F.0 clôturé, PR #258). Aucune nouvelle intake ni consigne propriétaire. Les commentaires du bot Codex sur #256, #257 et #258 ne signalent qu'une limite d'usage, sans aucun constat. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-F-03` est retenu.
+- **Préflight runtime (00:03Z)** :
+  - tasks `37391887896` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY) ;
+  - sessions `37391890259` (2 EXPIRED) ;
+  - locks `37391892666` (0 actif).
+  Aucune collision sur `provisioning:project-runtime`.
+- **Constat.**
+  - Live State n'observe que le runtime du MCP lui-même. Pour un projet cible, C4 reste `UNVERIFIED`, et l'absence exigée par le contrat `PROJECT_RUNTIME` est donc improuvable.
+  - S1 n'a aucun identifiant pour récupérer un autre dépôt que le MCP, et le client SSH ne transmet pas de flux. L'exécuteur sera traité dans un incrément distinct.
+- **Livré (incrément 1, lecture seule).**
+  - `src/provisioning/projectRuntime.ts` :
+    - chemin gouverné (`/opt/apps`, hors checkout du MCP) ;
+    - inventaire en lecture seule du chemin déclaré et de l'espace Docker provisionné ;
+    - observations pour C4 (`NO_RUNTIME` positif, runtime provisionné ou indisponible) ;
+    - plan `BLOCKED`, `NO_OP`, `CONSENT_REQUIRED` ou `READY`, aux étapes alignées sur le contrat.
+  - `src/liveState/provisionedRuntime.ts` et Live State : l'inventaire n'est collecté que pour la cible configurée, et transmis à C4 avec la fraîcheur du snapshot.
+- **Preuves.**
+  - RED `86e8d1e` : module absent.
+  - GREEN local : typecheck, build et gates verts ; suite complète 948/948.
+- **NEXT_ACTION** : CI exact-head de la PR #259, merge exact-head, Governed Deploy, attestation OIDC read-only, puis incrément 2 de `TB-W3-F-03` : la surface consentie.
+
 ## 2026-10-05 — W3 F.0 Provisioning capability decomposition — DONE et attesté
 
 - **Fusion et CI** : PR #257 fusionnée sous garde exact-head depuis `fe7b3024b5f00bc946b1bd6886edd1d24e3597f3` au merge `d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1`.

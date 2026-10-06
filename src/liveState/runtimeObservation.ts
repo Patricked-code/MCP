@@ -1,4 +1,5 @@
 import type { ServerRuntimeObservation } from '../github/runtimeResolution.js';
+import { provisionedRuntimeObservations } from '../provisioning/projectRuntime.js';
 import { applyFreshness } from './reconcile.js';
 import type { LiveStateSnapshot } from './types.js';
 
@@ -45,11 +46,30 @@ export function liveStateRuntimeObservation(
   };
 }
 
-/** The current Live State runtime observation, read without a new collection. */
+/**
+ * F.2 (TB-W3-F-03): the MCP's own runtime observation, then the provisioned
+ * runtimes of the configured target, with the snapshot's freshness. A
+ * provisioned absence is never claimed for the repository Live State observes.
+ */
+export function liveStateRuntimeObservations(
+  snapshot: LiveStateSnapshot | null,
+  now = new Date()
+): ServerRuntimeObservation[] {
+  const own = liveStateRuntimeObservation(snapshot, now);
+  const inventory = snapshot?.provisionedRuntimes;
+  if (!snapshot || !inventory) return own ? [own] : [];
+  const freshness = applyFreshness(snapshot, now).freshness === 'STALE' ? 'STALE' : 'CURRENT';
+  const evidenceRef = `live_state:state_version:${Number.isSafeInteger(snapshot.stateVersion) ? snapshot.stateVersion : 'unknown'}`;
+  const ownRepository = own?.repositoryId.toLowerCase();
+  const provisioned = provisionedRuntimeObservations(inventory, freshness, evidenceRef)
+    .filter((observation) => observation.repositoryId.toLowerCase() !== ownRepository);
+  return [...(own ? [own] : []), ...provisioned];
+}
+
+/** The current Live State runtime observations, read without a new collection. */
 export async function readLiveStateRuntimeObservations(
   now: () => Date = () => new Date()
 ): Promise<ServerRuntimeObservation[]> {
   const { liveStateEngine } = await import('./engine.js');
-  const observation = liveStateRuntimeObservation(await liveStateEngine.getCurrent(), now());
-  return observation ? [observation] : [];
+  return liveStateRuntimeObservations(await liveStateEngine.getCurrent(), now());
 }
