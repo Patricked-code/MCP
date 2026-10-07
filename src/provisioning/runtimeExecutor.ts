@@ -71,12 +71,12 @@ export const PROVISIONING_TREE_DIGEST_SHELL = String.raw`tree_digest() {
   [ -d "$1" ] || return 1
   [ -z "$(find "$1" ! -readable -print -quit 2>/dev/null)" ] || return 1
   td_files="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${LABELS_FILE}' \) -prune -o -type f -exec sha256sum -- {} +)" || return 1
-  td_exec="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${LABELS_FILE}' \) -prune -o -type f -perm -u+x -exec sha256sum -- {} +)" || return 1
+  td_modes="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${LABELS_FILE}' \) -prune -o \( -type f -o -type d \) -printf '%y %m %p\n')" || return 1
   td_links="$(cd "$1" && find . -type l -exec sh -c 'for l do t="$(readlink -- "$l")" || exit 1; printf "%s %s\n" "$(printf "%s" "$l" | sha256sum | cut -d" " -f1)" "$(printf "%s" "$t" | sha256sum | cut -d" " -f1)"; done' tree-link {} +)" || return 1
   td_files="$(printf '%s\n' "$td_files" | LC_ALL=C sort)" || return 1
-  td_exec="$(printf '%s\n' "$td_exec" | LC_ALL=C sort)" || return 1
+  td_modes="$(printf '%s\n' "$td_modes" | LC_ALL=C sort)" || return 1
   td_links="$(printf '%s\n' "$td_links" | LC_ALL=C sort)" || return 1
-  printf 'files\n%s\nexecutables\n%s\nlinks\n%s\n' "$td_files" "$td_exec" "$td_links" | sha256sum | cut -d' ' -f1
+  printf 'files\n%s\nmodes\n%s\nlinks\n%s\n' "$td_files" "$td_modes" "$td_links" | sha256sum | cut -d' ' -f1
 }`;
 
 /** Bounds of an archive's expanded content, checked before any extraction. */
@@ -235,6 +235,9 @@ export function buildStageScript(input: { jobId: string; target: ProjectRuntimeT
     // The component's own compose project: another component of the same repository never blocks it.
     `c="$(docker ps -aq --filter ${shellQuote(`label=com.docker.compose.project=${input.target.composeProject}`)} 2>/dev/null)" || fail docker_unavailable`,
     '[ -z "$c" ] || fail compose_project_present',
+    // Volumes kept by an earlier failed job's rollback are existing state: a creation never reattaches them.
+    `v="$(docker volume ls -q --filter ${shellQuote(`label=com.docker.compose.project=${input.target.composeProject}`)} 2>/dev/null)" || fail docker_unavailable`,
+    '[ -z "$v" ] || fail compose_project_volumes_present',
     `[ -f ${shellQuote(archive)} ] || fail archive_missing`,
     `[ "$(sha256sum ${shellQuote(archive)} | cut -d' ' -f1)" = ${shellQuote(input.archiveSha256)} ] || fail archive_digest`,
     ...buildArchiveBoundsLines(archive, PROVISIONING_ARCHIVE_LIMITS),

@@ -39,6 +39,7 @@ export type ComposeSafetyCode =
   | 'COMPOSE_BIND_OUTSIDE_PROJECT'
   | 'COMPOSE_BUILD_OUTSIDE_PROJECT'
   | 'COMPOSE_BUILD_SSH'
+  | 'COMPOSE_BUILD_TAG'
   | 'COMPOSE_CONTAINER_NAME'
   | 'COMPOSE_EXTERNAL_RESOURCE'
   | 'COMPOSE_FILE_SOURCE_OUTSIDE_PROJECT'
@@ -81,10 +82,11 @@ const SERVICE_KEYS: ReadonlySet<string> = new Set([
   'stop_grace_period', 'stop_signal', 'sysctls', 'tmpfs', 'tty', 'ulimits', 'user', 'userns_mode', 'uts', 'volumes',
   'volumes_from', 'working_dir'
 ]);
-// A build never gets privileges or entitlements, nor a cache read from or written to a host path.
+// A build never gets privileges or entitlements, a cache read from or written to a host path, nor extra
+// tags: a built image only takes the project's default name, never one another workload runs.
 const BUILD_KEYS: ReadonlySet<string> = new Set([
   'additional_contexts', 'args', 'context', 'dockerfile', 'dockerfile_inline', 'extra_hosts', 'labels', 'network',
-  'no_cache', 'no_cache_filter', 'platforms', 'pull', 'secrets', 'shm_size', 'ssh', 'tags', 'target', 'ulimits'
+  'no_cache', 'no_cache_filter', 'platforms', 'pull', 'secrets', 'shm_size', 'ssh', 'target', 'ulimits'
 ]);
 // A seccomp profile file, an AppArmor profile or an SELinux type can lift the confinement as surely as "unconfined".
 const SECURITY_OPTION = /^no-new-privileges([:=](true|false))?$/;
@@ -230,6 +232,8 @@ function checkService(
       add('COMPOSE_HOST_NAMESPACE', name);
     }
     if (nonEmpty(build?.ssh)) add('COMPOSE_BUILD_SSH', name);
+    // An image name on a build tags the result host-wide: another workload running that name would run it.
+    if (service.image !== undefined) add('COMPOSE_BUILD_TAG', name);
   }
 }
 

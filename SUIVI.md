@@ -46,6 +46,10 @@
     - Un projet typique (build, ports locaux, volumes, `depends_on`, santé, ancres YAML) passe les deux contrôles.
     - Un test d'intégration rejoue ces comportements quand Compose est installé, et se déclare ignoré sinon.
   - **CI #2295 (`37679310603`) rouge sur `3321dde`.** Ce test d'intégration supposait que l'option empêchait toute lecture ; Compose v2.38.2 du runner la lit quand même. L'option n'est plus exigée (elle ne garantissait rien) et le test fixe les deux comportements connus. Échec reproduit en local avec le binaire v2.38.2 officiel (empreinte vérifiée), correction verte avec v2.38.2 et v5.1.1.
+- **Quatrième revue Codex (trois constats, corrigés).**
+  - Volumes conservés par le rollback d'un job échoué : la préparation refuse désormais toute création tant que le projet Compose a encore des volumes (`compose_project_volumes_present`), sans rien supprimer.
+  - Nom d'image d'un build : `build.tags` et `image` sur un service construit sont refusés (`COMPOSE_BUILD_TAG`) ; une image construite garde le nom par défaut du projet.
+  - Empreinte de l'arbre : elle inclut le mode complet de chaque fichier et dossier, plus seulement le bit d'exécution du propriétaire.
 - **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
 - **Preuves.**
   - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.

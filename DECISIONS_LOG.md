@@ -48,6 +48,10 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
   - **Isolation réseau.** Le pont par défaut du moteur est partagé avec tous les conteneurs de l'hôte : seuls le réseau du projet, `none` et l'espace réseau d'un service du projet sont admis. Un réseau ou un volume nommé autrement que `<projet>_<clé>` rejoint ce qui porte déjà ce nom : il est traité comme externe.
   - **Confinement et périphériques.** Seule `no-new-privileges` est admise comme option de sécurité ; seuls les pilotes de journalisation locaux, car les autres émettent depuis le moteur, sur le réseau de l'hôte ; une réservation de périphérique vaut un périphérique.
   - **Prouvé contre Compose réel.** Ces comportements ont été vérifiés avec Docker Compose v5.1.1 et v2.38.2. Un test d'intégration les rejoue là où Compose est installé ; c'est lui qui a montré, en CI, que v2.38.2 lit les fichiers d'environnement malgré l'option.
+- **Après la quatrième revue de la PR #261 :**
+  - **Volumes conservés = état existant.** Le rollback ne supprime jamais les volumes ; une nouvelle création qui les rattacherait est donc refusée par la préparation. Les volumes restent à traiter hors provisioning.
+  - **Aucun nom d'image partagé.** Un build ne prend que le nom par défaut `<projet>-<service>` : `build.tags` et `image` sur un build retaggeraient une image utilisée ailleurs sur l'hôte.
+  - **Mode complet dans l'empreinte.** Tout changement de mode modifie l'empreinte du checkout.
 
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
 
