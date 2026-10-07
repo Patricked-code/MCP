@@ -176,7 +176,10 @@ test('the compose safety policy admits only a project-contained, locally bound r
     [{ security_opt: ['label=type:spc_t'] }, {}, 'COMPOSE_SECURITY_OPT_UNCONFINED'],
     // A logging driver sends from the engine, on the host network.
     [{ logging: { driver: 'syslog', options: { 'syslog-address': 'tcp://127.0.0.1:6379' } } }, {}, 'COMPOSE_LOGGING_DRIVER'],
-    [{ deploy: { resources: { reservations: { devices: [{ capabilities: ['gpu'] }] } } } }, {}, 'COMPOSE_DEVICE']
+    [{ deploy: { resources: { reservations: { devices: [{ capabilities: ['gpu'] }] } } } }, {}, 'COMPOSE_DEVICE'],
+    // A built image never takes a name another workload runs: build tags and an image name on a build are refused.
+    [{ build: { context: dir, tags: ['postgres:16'] } }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ image: 'postgres:16' }, {}, 'COMPOSE_BUILD_TAG']
   ];
   for (const [service, extra, code] of unsafe) {
     const result = evaluateComposeSafety(composeConfig(dir, service, extra), dir) as any;
@@ -331,6 +334,8 @@ test('host scripts quote every value, verify before extracting and never delete'
   }
   assert.throws(() => buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', sourceSha256: 'x' }));
   assert.ok(stage!.indexOf('sha256sum') < stage!.indexOf('tar '), 'the archive digest is verified before extraction');
+  // Volumes a failed earlier job left behind are existing state: creation never reattaches them.
+  assert.ok(stage!.indexOf('docker volume ls') > 0 && stage!.indexOf('compose_project_volumes_present') < stage!.indexOf('mkdir -p'));
   // Only the component's own compose project counts: another component of the same repository never blocks it.
   assert.doesNotMatch(stage!, /provisioning\.repository/);
   assert.match(stage!, /label=com\.docker\.compose\.project=mcp-portal-0123456789ab/);
@@ -663,6 +668,8 @@ test('the tree digest ignores the provisioning files and changes with any conten
     const changes: Array<[() => Promise<void>, () => Promise<void>]> = [
       [() => writeFile(join(directory, 'a.txt'), 'alpha!\n'), () => writeFile(join(directory, 'a.txt'), 'alpha\n')],
       [() => chmod(join(directory, 'run.sh'), 0o644), () => chmod(join(directory, 'run.sh'), 0o755)],
+      // Any mode change counts, not only the owner's execute bit.
+      [() => chmod(join(directory, 'a.txt'), 0o654), () => chmod(join(directory, 'a.txt'), 0o644)],
       [async () => { await unlink(join(directory, 'link')); await symlink('a.txt', join(directory, 'link')); },
         async () => { await unlink(join(directory, 'link')); await symlink('sub/b.txt', join(directory, 'link')); }],
       [() => writeFile(join(directory, 'sub', 'new.txt'), 'new\n'), () => unlink(join(directory, 'sub', 'new.txt'))]
