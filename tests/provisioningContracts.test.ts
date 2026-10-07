@@ -99,6 +99,7 @@ test('the provisioning policy classifies every registered write primitive, mutat
     'POST /git/connect': 'NOT_PROVISIONING',
     'POST /deploy/github/s1/start': 'SELF_MANAGEMENT',
     'POST /evidence/github/readonly': 'OBSERVE',
+    'POST /provisioning/project-runtime': 'COMPOSABLE',
     'mcp-deploy.yml': 'SELF_MANAGEMENT',
     'mcp-readonly-evidence.yml': 'OBSERVE'
   };
@@ -155,13 +156,13 @@ test('each resource contract requires an exact target, proven absence, explicit 
   assert.ok(contract(current, 'DOMAIN_BINDING').neverImplicit.includes('protected applications of .mcp/server-map.json'));
 });
 
-test('gaps are carried by open program blueprints and no resource type is provisionable yet', async () => {
+test('gaps are carried by open program blueprints; F.2 makes the project runtime provisionable', async () => {
   const current = await policy();
   const capabilities = deriveProvisioningCapabilities(current);
   assert.ok(Object.isFrozen(capabilities));
   const byType = Object.fromEntries(capabilities.map((entry: any) => [entry.resourceType, entry]));
   for (const entry of capabilities as any[]) {
-    assert.equal(entry.state, 'BLOCKED_BY_GAPS', entry.resourceType);
+    assert.equal(entry.state, entry.resourceType === 'PROJECT_RUNTIME' ? 'PROVISIONABLE' : 'BLOCKED_BY_GAPS', entry.resourceType);
     assert.equal(entry.authorizationInferred, false);
     assert.equal(entry.mutationPerformed, false);
     assert.ok(Object.isFrozen(entry));
@@ -170,8 +171,19 @@ test('gaps are carried by open program blueprints and no resource type is provis
     byType[resourceType].gaps.find((gap: any) => gap.step === id)?.carriedBy
   );
   assert.deepEqual(carriers('REPOSITORY', 'create-repository'), ['TB-W3-ADMIN-01', 'TB-W3-F-02']);
-  assert.deepEqual(carriers('PROJECT_RUNTIME', 'create-runtime'), ['TB-W3-F-03']);
   assert.deepEqual(carriers('DOMAIN_BINDING', 'bind-domain'), ['TB-W3-F-04']);
+  // The consented route composes every mutating step of the runtime contract, and only of that contract.
+  const runtime = contract(current, 'PROJECT_RUNTIME');
+  assert.deepEqual(byType.PROJECT_RUNTIME.gaps, []);
+  assert.deepEqual(byType.PROJECT_RUNTIME.composableSteps, runtime.steps.map((entry: any) => entry.id));
+  for (const id of ['backup', 'create-runtime', 'activate', 'rollback']) {
+    assert.deepEqual(step(current, 'PROJECT_RUNTIME', id).primitives, ['POST /provisioning/project-runtime'], id);
+  }
+  const route = current.primitives.find((entry: any) => entry.name === 'POST /provisioning/project-runtime');
+  assert.deepEqual([route.kind, route.class, route.resourceTypes], ['HTTP_ROUTE', 'COMPOSABLE', ['PROJECT_RUNTIME']]);
+  for (const guard of [/E3/, /ENABLE_WRITE_TOOLS/, /targetProjectIds/, /default branch/]) {
+    assert.ok(route.guards.some((entry: string) => guard.test(entry)), String(guard));
+  }
   assert.deepEqual(carriers('DOMAIN_BINDING', 'observe-binding'), ['TB-W3-F-04', 'TB-W4-I1-01']);
   // What exists is reused: governed pull requests initialize content and bind a server target.
   assert.ok(byType.REPOSITORY.composableSteps.includes('initialize-content'));
@@ -179,7 +191,7 @@ test('gaps are carried by open program blueprints and no resource type is provis
   assert.deepEqual(step(current, 'PROJECT_RUNTIME', 'bind-target').consent, 'GOVERNED_PULL_REQUEST');
   // A gap names what to generalize before anything new is added.
   assert.match(step(current, 'REPOSITORY', 'record-mapping').gap.reuse, /syncGithubReposToRegistry/);
-  assert.match(step(current, 'PROJECT_RUNTIME', 'rollback').gap.reuse, /Governed Deploy/);
+  assert.match(step(current, 'PROJECT_RUNTIME', 'rollback').note, /Governed Deploy/);
 });
 
 test('the validator fails closed on drift, improvisation and implicit side effects', async () => {
@@ -231,10 +243,10 @@ test('the validator fails closed on drift, improvisation and implicit side effec
 
   // A gap is carried by an open blueprint, never dropped or attributed to a finished one.
   assert.ok((await findings((raw) => {
-    step(raw, 'PROJECT_RUNTIME', 'create-runtime').gap.carriedBy = ['TB-W3-E3-01'];
+    step(raw, 'DOMAIN_BINDING', 'bind-domain').gap.carriedBy = ['TB-W3-E3-01'];
   })).includes('GAP_CARRIER_DONE'));
   assert.ok((await findings((raw) => {
-    step(raw, 'PROJECT_RUNTIME', 'create-runtime').gap.carriedBy = ['TB-W9-UNKNOWN-01'];
+    step(raw, 'DOMAIN_BINDING', 'bind-domain').gap.carriedBy = ['TB-W9-UNKNOWN-01'];
   })).includes('GAP_CARRIER_UNKNOWN'));
 
   // Absence is observed first, observation never mutates, runtimes keep health and rollback.

@@ -150,11 +150,30 @@ test('host scripts quote every value, verify before extracting and never delete'
   assert.match(stage!, /env -i /);
   assert.match(create!, new RegExp(PROVISIONING_MARKER_FILE.replaceAll('.', '\\.')));
   assert.match(activate!, /up -d --build/);
-  assert.match(rollback!, /compose -p 'mcp-portal-0123456789ab'[^\n]* down/);
+  assert.match(rollback!, /^project='mcp-portal-0123456789ab'$/m);
+  assert.match(rollback!, /docker compose -p "\$project"[^\n]* down --remove-orphans/);
   assert.match(rollback!, /mcp-provisioning-quarantine/);
   assert.equal(stagingPath(PLAN_TARGET.serverPath, jobId), `/opt/apps/portal-api.mcp-staging-${jobId}`);
   assert.throws(() => buildStageScript({ jobId: 'x; reboot', target: PLAN_TARGET, archiveSha256: 'f'.repeat(64) }));
   assert.throws(() => buildStageScript({ jobId, target: { ...PLAN_TARGET, serverPath: '/etc' }, archiveSha256: 'f'.repeat(64) }));
+});
+
+test('target names stay off the docker compose command lines, so the write guard never misreads them', () => {
+  const jobId = 'prov-20261006T050000Z-0a1b2c3d';
+  // A path or compose project such as "api-v" must not read as a volume flag of docker compose.
+  const target = { ...PLAN_TARGET, serverPath: '/opt/apps/api-v', composeProject: 'mcp-api-v-0123456789ab' };
+  const scripts = [
+    buildStageScript({ jobId, target, archiveSha256: 'f'.repeat(64) }),
+    buildComposeConfigScript({ target, composeFile: 'compose.yaml' }),
+    buildActivateScript({ jobId, target, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180 }),
+    buildRollbackScript({ jobId, target, composeFile: 'compose.yaml', createdInThisJob: true })
+  ];
+  for (const script of scripts) {
+    assert.doesNotThrow(() => assertNoCatastrophicCommand(script));
+    for (const line of script.split('\n').filter((entry) => /docker compose/.test(entry))) {
+      assert.doesNotMatch(line, /\/opt\/apps|mcp-api-v/, line);
+    }
+  }
 });
 
 test('a created runtime keeps its marker: it is a checkout until its own activation consent', () => {
@@ -221,6 +240,13 @@ function harness(overrides: Record<string, unknown> = {}) {
       calls.push({ kind: 'observe', detail: targets.map((entry) => entry.mappingId).join(',') });
       return parseProvisionedRuntimeInventory(inventory, targets, OBSERVED_AT);
     },
+    admitRevision: async (input: any) => {
+      calls.push({ kind: 'admit', detail: `${input.repositoryId}@${input.revision}` });
+      return Object.freeze({
+        admitted: true, kind: 'CI_GATE', reasonCode: 'REVISION_ADMITTED', defaultBranch: 'main', defaultBranchHead: REVISION,
+        checkRuns: 1, statuses: 0
+      });
+    },
     fetchSource: async (input: any) => {
       calls.push({ kind: 'fetch', detail: `${input.repositoryId}@${input.revision}` });
       return { ok: true, sha256: 'f'.repeat(64), bytes: 1024 };
@@ -254,10 +280,11 @@ test('the executor re-observes, then creates and activates a genuinely absent ru
   assert.equal(result.result, 'SUCCEEDED');
   assert.equal(result.mode, 'CREATE_AND_ACTIVATE');
   assert.match(result.jobId, /^prov-20261006T050000Z-0a1b2c3d$/);
-  assert.deepEqual(h.calls.map((call) => call.kind).slice(0, 2), ['observe', 'fetch']);
+  assert.deepEqual(h.calls.map((call) => call.kind).slice(0, 3), ['observe', 'admit', 'fetch']);
   assert.deepEqual(hostPhases(h), ['stage', 'create', 'activate']);
   const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
   assert.equal(attestation.result, 'SUCCEEDED');
+  assert.deepEqual([attestation.admission.kind, attestation.admission.defaultBranch], ['CI_GATE', 'main']);
   assert.equal(attestation.archiveSha256, 'f'.repeat(64));
   assert.equal(attestation.authorizationInferred, false);
   assert.deepEqual(attestation.consent, { creation: true, activation: true });
@@ -284,6 +311,34 @@ test('the executor refuses without fresh evidence, consent or write mode, and ne
   // The source is fetched before any host write; a failed fetch writes nothing.
   const offline = harness({ fetchSource: async () => ({ ok: false, sha256: null, bytes: 0 }) });
   assert.deepEqual([(await run(offline, { creation: true })).result, hostPhases(offline)], ['FAILED', []]);
+});
+
+test('a revision outside the reviewed default branch or with a failing CI is refused before any write', async () => {
+  for (const reasonCode of ['REVISION_NOT_ON_DEFAULT_BRANCH', 'REVISION_CI_FAILED', 'REVISION_CI_PENDING']) {
+    const h = harness({
+      admitRevision: async () => Object.freeze({ admitted: false, kind: null, reasonCode, defaultBranch: 'main', defaultBranchHead: null, checkRuns: null, statuses: null })
+    });
+    const refused = await run(h, { creation: true, activation: true });
+    assert.deepEqual([refused.result, refused.reasonCodes, refused.jobId], ['REFUSED', [reasonCode], null], reasonCode);
+    assert.equal(h.calls.some((call) => call.kind === 'fetch' || call.kind === 'host' || call.kind === 'write-file'), false, reasonCode);
+  }
+  // An admission that cannot be read refuses too: it is never assumed.
+  const offline = harness({ admitRevision: async () => { throw new Error('github'); } });
+  assert.deepEqual((await run(offline, { creation: true })).reasonCodes, ['REVISION_ADMISSION_UNAVAILABLE']);
+  assert.deepEqual(hostPhases(offline), []);
+  // The activation of a created runtime is admitted again: a revision is never trusted from an earlier job.
+  const created = harness({
+    admitRevision: async () => Object.freeze({ admitted: false, kind: null, reasonCode: 'REVISION_CI_FAILED', defaultBranch: 'main', defaultBranchHead: null, checkRuns: 1, statuses: 0 })
+  });
+  const composeProject = (planProjectRuntimeProvisioning({
+    request: REQUEST, serverTarget: { status: 'CONFIGURED', projectIds: ['portal'] }, registry: registry(),
+    inventory: parseProvisionedRuntimeInventory('docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=\n', [TARGET], OBSERVED_AT),
+    consent: { creation: true, activation: false }
+  }) as any).target.composeProject;
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT });
+  created.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
+  assert.deepEqual((await run(created, { activation: true })).reasonCodes, ['REVISION_CI_FAILED']);
+  assert.deepEqual(hostPhases(created), []);
 });
 
 test('an unsafe compose model or a bad archive is discarded to quarantine, never deleted', async () => {
