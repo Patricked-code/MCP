@@ -186,9 +186,13 @@ function renderPlan(plan: ProjectRuntimeProvisioningPlan, request: ProvisioningR
 
 function renderExecution(execution: ProjectRuntimeExecution): string {
   const target = execution.target;
-  const job = execution.jobId
-    ? `${code(execution.jobId)}, attesté dans ${code(`data/provisioning/${execution.jobId}/attestation.json`)}`
-    : 'aucun : refusé avant toute écriture';
+  // An attestation that could not be written is never presented as durable evidence.
+  const unattested = execution.reasonCodes.includes('ATTESTATION_UNWRITTEN');
+  const job = !execution.jobId
+    ? 'aucun : refusé avant toute écriture'
+    : unattested
+      ? `${code(execution.jobId)} : <strong>attestation non écrite</strong> (${code('ATTESTATION_UNWRITTEN')}). La mutation a eu lieu sans preuve durable ; l’état réel de S1 doit être relu.`
+      : `${code(execution.jobId)}, attesté dans ${code(`data/provisioning/${execution.jobId}/attestation.json`)}`;
   const findings = execution.findings.length > 0
     ? `<p>Constats sur le modèle Compose : ${codes(execution.findings.map((finding) => `${finding.code}:${finding.service ?? '-'}`))}</p>`
     : '';
@@ -201,6 +205,7 @@ function renderExecution(execution: ProjectRuntimeExecution): string {
 }
 
 function statusOf(execution: ProjectRuntimeExecution): number {
+  if (execution.reasonCodes.includes('ATTESTATION_UNWRITTEN')) return 500;
   if (execution.result === 'SUCCEEDED' || execution.result === 'NO_OP') return 200;
   if (execution.result === 'REFUSED' || execution.result === 'BLOCKED') return 409;
   return 502;

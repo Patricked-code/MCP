@@ -69,6 +69,7 @@ import { readServerMapConfiguration } from './liveState/targetProject.js';
 import { createProjectRuntimeProvisioningRouter } from './provisioning/routes.js';
 import { executeProjectRuntimeProvisioning } from './provisioning/runtimeExecutor.js';
 import { createProjectRuntimeExecutionDependencies } from './provisioning/wiring.js';
+import { isActiveGovernedTaskStatus } from './operationalMemory/taskQueue.js';
 import {
   getGovernedTaskToolDependencies,
   registerGovernedTaskMutationTools,
@@ -509,7 +510,22 @@ export async function startHttpServer(): Promise<void> {
     runReadOnly: (command) => runReadOnlyCommand('s1', command),
     runGuarded: (command, options) => runGuardedCommand('s1', command, options),
     downloadArchive: downloadGithubArchiveWithServerCredential,
-    githubRequest: (endpoint) => githubJsonRequestWithServerCredential(endpoint)
+    githubRequest: (endpoint) => githubJsonRequestWithServerCredential(endpoint),
+    // UAC: the work claimed or locked by agents is re-read before any provisioning write.
+    readCoordination: async () => {
+      if (!operationalMemoryConfig.enabled) return null;
+      const [taskDocument, locks] = await Promise.all([
+        getGovernedTaskToolDependencies().queue.listVisibleTasks(),
+        getGovernedSessionToolDependencies().locks.listActiveLocks()
+      ]);
+      return {
+        complete: true,
+        tasks: taskDocument.tasks
+          .filter((task) => isActiveGovernedTaskStatus(task.status))
+          .map((task) => ({ taskId: task.taskId, resourceScopes: task.resourceScopes })),
+        locks: locks.map((lock) => ({ scope: lock.scope, projectId: lock.targetScope?.projectId ?? null }))
+      };
+    }
   });
   app.use(createProjectRuntimeProvisioningRouter({
     requireLogin: requireWebLogin,

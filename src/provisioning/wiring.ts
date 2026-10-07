@@ -11,7 +11,8 @@ import { admitProvisioningRevision, type GithubRead } from './revisionAdmission.
 import {
   PROVISIONING_DATA_ROOT_CONTAINER,
   previewProjectRuntimeProvisioning,
-  type ProjectRuntimeExecutionDependencies
+  type ProjectRuntimeExecutionDependencies,
+  type ProvisioningCoordination
 } from './runtimeExecutor.js';
 import type { ArchiveDownloadResult } from './sourceArchive.js';
 
@@ -52,6 +53,8 @@ export type ProjectRuntimeProvisioningIo = {
     maxBytes: number;
   }) => Promise<ArchiveDownloadResult>;
   githubRequest: GithubRead;
+  /** The Governed Task Queue and Lock Service, read afresh; null when they cannot be read. */
+  readCoordination: () => Promise<ProvisioningCoordination | null>;
   now?: () => Date;
 };
 
@@ -107,6 +110,7 @@ export function createProjectRuntimeExecutionDependencies(
     readServerTarget,
     readRegistry,
     observe: (targets) => observeProvisionedRuntimes(targets, io.runReadOnly, now().toISOString()),
+    readCoordination: () => io.readCoordination(),
     admitRevision: (input) => admitProvisioningRevision(input, io.githubRequest),
     fetchSource: (input) => io.downloadArchive({
       repositoryId: input.repositoryId,

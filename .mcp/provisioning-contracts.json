@@ -4,7 +4,7 @@
   "blueprintId": "TB-W3-F-01",
   "workItemId": "PB-F",
   "observedMainSha": "73bd0ff908ce53e2f177e1bc246cc62050b47a05",
-  "generatedAt": "2026-10-07T15:21:57Z",
+  "generatedAt": "2026-10-07T19:18:07Z",
   "authority": {
     "kind": "DERIVED_CONTRACT_PROJECTION",
     "grantsPermission": false,
@@ -633,6 +633,8 @@
         "server target declared in .mcp/server-map.json (servers.S1.targetProjectIds) and a single governed GitRegistry path under /opt/apps",
         "fresh re-observation and re-plan before any write: a positive NO_RUNTIME, a matching runtime is a no-op, anything else blocks",
         "revision admitted afresh: reviewed default branch history and a non-failing CI gate",
+        "GitRegistry DEPLOY rule shared with D1: declared deploy capability, deployable status and READY activation",
+        "Governed Task Queue and Lock Service re-read before any write: work claimed or locked on the component refuses",
         "guarded S1 channel only, one job at a time, non-destructive rollback and an attestation per job"
       ],
       "note": "F.2 (TB-W3-F-03): the consented surface of the target-bounded executor of src/provisioning/runtimeExecutor.ts."

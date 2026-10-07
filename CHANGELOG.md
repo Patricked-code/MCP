@@ -12,6 +12,15 @@
   - inventaire limité au projet Compose du composant (deux composants d'un même dépôt restent distincts) ;
   - cibles illisibles affichées `UNKNOWN` ;
   - branche par défaut encodée comme un seul paramètre.
+- Après la seconde revue :
+  - Task Queue et verrous relus avant toute écriture ;
+  - règle `DEPLOY` de GitRegistry partagée avec D1 ;
+  - pilotes Compose limités aux valeurs par défaut ;
+  - empreinte sans pipeline ;
+  - archive bornée avant extraction ;
+  - attestation non écrite signalée ;
+  - base d'API GitHub Enterprise Server conservée ;
+  - `NO_OP` réservé au runtime complet et sain.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
 

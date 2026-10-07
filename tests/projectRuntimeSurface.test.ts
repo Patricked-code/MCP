@@ -54,12 +54,19 @@ function registry(): any {
       globalCheckpointRepositoryId: TARGET.repositoryId, centralGovernanceRepositoryId: TARGET.repositoryId,
       repositoryComponents: [{ repositoryId: TARGET.repositoryId, mappingId: TARGET.mappingId, role: 'api' }]
     }],
-    activationReadiness: [],
+    activationReadiness: [{ mappingId: TARGET.mappingId, status: 'READY', reasonCodes: [] }],
     serverBindings: [{
       mappingId: TARGET.mappingId, repositoryId: TARGET.repositoryId, projectId: 'portal', projectUid: 'uid',
       componentRole: 'api', serverId: 's1', serverPath: TARGET.serverPath, realPath: null, realPathVerified: false,
       environment: 'production'
-    }]
+    }],
+    governanceEvidence: {
+      mappings: [{
+        mappingId: TARGET.mappingId, repositoryId: TARGET.repositoryId, projectId: 'portal',
+        officialBranch: 'main', allowedBranchPrefixes: ['claude/'], directMainPush: false, status: 'active',
+        capabilities: { deploy: true }, backupRequired: true, rollbackMethod: 'restore_previous_release'
+      }]
+    }
   };
 }
 
@@ -77,7 +84,7 @@ function plan(consent: Record<string, boolean> = {}, inventory = ABSENT): any {
 function createdInventory(): string {
   const marker = provisioningMarker({
     jobId: 'prov-20261006T050000Z-00000000', target: plan().target, composeFile: 'compose.yaml', createdAt: OBSERVED_AT,
-    treeDigest: 'e'.repeat(64)
+    treeDigest: 'e'.repeat(64), services: ['api']
   });
   return `docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`;
 }
@@ -402,6 +409,15 @@ test('a submission executes only with a same-origin, ticketed, explicit consent 
     assert.ok(page.includes('prov-20261007T150000Z-0a1b2c3d'));
     assert.deepEqual(seen.executions, [{ request: REQUEST, consent: { creation: true, activation: false }, expectedTarget: RESOLVED }]);
   });
+  // A job whose attestation could not be written is never reported as an ordinary, attested success.
+  await withSurface({ execute: async () => execution('SUCCEEDED', ['ATTESTATION_UNWRITTEN']) }, async (baseUrl) => {
+    const response = await submit(baseUrl, FIELDS);
+    assert.equal(response.status, 500);
+    const page = await response.text();
+    assert.match(page, /ATTESTATION_UNWRITTEN/);
+    assert.match(page, /non écrite/);
+    assert.doesNotMatch(page, /attesté dans/);
+  });
   // Refusals and failures keep their meaning in the answer.
   for (const [outcome, status] of [[execution('REFUSED', ['REVISION_CI_FAILED']), 409], [execution('ROLLED_BACK', ['HEALTH_CHECK_FAILED']), 502]] as const) {
     await withSurface({ execute: async () => outcome }, async (baseUrl) => {
@@ -461,7 +477,8 @@ test('the production wiring observes read-only, writes through the guarded chann
       downloads.push(input);
       return { ok: true, sha256: 'f'.repeat(64), bytes: 1 };
     },
-    githubRequest: async () => ({ ok: false, status: null, json: null })
+    githubRequest: async () => ({ ok: false, status: null, json: null }),
+    readCoordination: async () => ({ complete: true, locks: [], tasks: [] })
   };
   const deps = createProjectRuntimeExecutionDependencies(io as any) as any;
   assert.equal(deps.writeEnabled(), true);
@@ -504,6 +521,8 @@ test('the production wiring observes read-only, writes through the guarded chann
   const admission = await deps.admitRevision({ repositoryId: TARGET.repositoryId, revision: REVISION });
   assert.deepEqual([admission.admitted, admission.reasonCode], [false, 'REVISION_ADMISSION_UNAVAILABLE']);
   assert.match(deps.randomHex(), /^[0-9a-f]{8}$/);
+  // The coordination authorities are read through the given I/O, never cached.
+  assert.deepEqual(await deps.readCoordination(), { complete: true, locks: [], tasks: [] });
 
   // Job files stay inside the data volume and are never overwritten.
   const root = await mkdtemp(join(tmpdir(), 'mcp-f03-jobs-'));
@@ -542,6 +561,11 @@ test('the server mounts the consented surface behind the web login, with the wri
   assert.match(io, /runReadOnlyCommand\('s1'/);
   assert.match(io, /downloadGithubArchiveWithServerCredential/);
   assert.match(io, /githubJsonRequestWithServerCredential/);
+  // The Governed Task Queue and Lock Service are re-read before any write; disabled, provisioning has no coordination.
+  assert.match(io, /readCoordination:/);
+  assert.match(io, /listVisibleTasks\(\)/);
+  assert.match(io, /listActiveLocks\(\)/);
+  assert.match(io, /operationalMemoryConfig\.enabled/);
   // The dashboard links the surface.
   assert.match(server, /href="\/provisioning\/project-runtime"/);
 });

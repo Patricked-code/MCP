@@ -24,10 +24,19 @@
   - L'inventaire et la préparation ne regardent plus que le projet Compose du composant. Deux composants d'un même dépôt gardent ainsi des runtimes distincts ; avant, le second paraissait déjà en place.
   - Des cibles illisibles s'affichent `UNKNOWN`, jamais « aucune cible ».
   - Une branche par défaut contenant `/` est envoyée comme un seul paramètre encodé.
+- **Seconde revue Codex (huit constats, tous vérifiés et corrigés).**
+  - **UAC.** La Governed Task Queue et le Governed Lock Service sont relus juste avant toute écriture. Un travail réservé ou verrouillé sur le composant (règle de portée de D1) refuse (`TARGET_CLAIMED_BY_TASK`, `TARGET_LOCKED`). Une coordination illisible refuse aussi (`COORDINATION_UNAVAILABLE`).
+  - **Règle `DEPLOY` de GitRegistry.** Elle est extraite de D1 et partagée par le plan : capacité de déploiement déclarée, statut déployable et activation `READY`.
+  - **Politique Compose.** Les volumes et réseaux nommés gardent leur pilote par défaut, sans options. Un volume `local` avec des options de bind montait n'importe quel chemin de l'hôte.
+  - **Empreinte de l'arbre.** Chaque étape est capturée et vérifiée : un fichier illisible ou disparu fait échouer l'empreinte au lieu de produire un digest partiel.
+  - **Archive.** Elle est bornée avant toute extraction : au plus 100 000 entrées et 1 Gio une fois décompressée.
+  - **Attestation.** Une attestation non écrite est affichée comme telle (HTTP 500), jamais comme un succès attesté.
+  - **GitHub Enterprise Server.** Le chemin `/api/v3` de la base est conservé, et une redirection vers l'hôte de l'API est acceptée.
+  - **`NO_OP`.** Il exige le runtime complet : chaque service déclaré par le marqueur tourne, en bonne santé. Sinon le plan est `EXISTING_RUNTIME_DEGRADED`.
 - **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
 - **Preuves.**
   - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.
-  - GREEN local : typecheck, build et gates verts ; suite complète 972/972 (968 avant la revue). Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`).
+  - GREEN local : typecheck, build et gates verts ; suite complète 976/976 (968 avant les revues). Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`).
 - **NEXT_ACTION** : CI exact-head de la PR #261, merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 — GREEN candidate

@@ -495,6 +495,8 @@ une surface consentie.
   - un port publié ailleurs que sur la boucle locale ;
   - un montage, une construction ou un Dockerfile hors du projet ;
   - un réseau, un volume ou un lien externe, et un nom de conteneur fixe ;
+  - un pilote de volume ou de réseau autre que celui par défaut, ou des
+    options de pilote ;
   - les clés Compose qui lisent des fichiers de l'hôte ;
   - les liens symboliques sortant du projet.
 - **Échec non destructif.** Le projet Compose est arrêté sans ses volumes,
@@ -517,6 +519,11 @@ existante : `/provisioning/project-runtime`, derrière la connexion web
 - **Cible résolue.** Le ticket lie aussi le dépôt, le chemin et le projet
   Compose que la page a nommés. L'exécuteur refuse si son plan frais en
   résout d'autres.
+- **Autorités relues avant toute écriture.**
+  - La règle `DEPLOY` de GitRegistry, partagée avec D1.
+  - La Governed Task Queue et le Governed Lock Service : un travail réservé
+    ou verrouillé sur le composant refuse.
+  - L'archive, bornée avant extraction.
 - **Checkout vérifié.** La création enregistre l'empreinte de l'arbre dans le
   marqueur ; l'activation la recalcule avant tout démarrage et refuse un
   checkout modifié.

@@ -12,6 +12,8 @@ import {
  * or unconfined profile; published ports bound to the loopback only; bind
  * mounts, build contexts, Dockerfiles and file-based secrets inside the
  * project; no external network, volume or link and no fixed container name.
+ * Named volumes and networks keep their default drivers without options: a
+ * driver option can bind a host path or attach to the host network.
  * Any doubt fails closed. Pure.
  */
 export type ComposeSafetyCode =
@@ -28,7 +30,9 @@ export type ComposeSafetyCode =
   | 'COMPOSE_BUILD_SSH'
   | 'COMPOSE_CONTAINER_NAME'
   | 'COMPOSE_EXTERNAL_RESOURCE'
-  | 'COMPOSE_FILE_SOURCE_OUTSIDE_PROJECT';
+  | 'COMPOSE_FILE_SOURCE_OUTSIDE_PROJECT'
+  | 'COMPOSE_VOLUME_DRIVER'
+  | 'COMPOSE_NETWORK_DRIVER';
 
 export type ComposeSafetyFinding = Readonly<{ code: ComposeSafetyCode; service: string | null }>;
 
@@ -147,8 +151,15 @@ function checkTopLevel(
   for (const key of ['networks', 'volumes'] as const) {
     const entries = record(config[key]);
     if (config[key] !== undefined && !entries) add('COMPOSE_CONFIG_INVALID', null);
+    // Only the default driver, without options: a `local` volume with bind options mounts any host path.
+    const defaultDriver = key === 'volumes' ? 'local' : 'bridge';
+    const driverCode = key === 'volumes' ? 'COMPOSE_VOLUME_DRIVER' : 'COMPOSE_NETWORK_DRIVER';
     for (const entry of Object.values(entries ?? {})) {
-      if (record(entry)?.external) add('COMPOSE_EXTERNAL_RESOURCE', null);
+      const definition = record(entry);
+      if (definition?.external) add('COMPOSE_EXTERNAL_RESOURCE', null);
+      if ((definition?.driver !== undefined && definition.driver !== defaultDriver) || nonEmpty(definition?.driver_opts)) {
+        add(driverCode, null);
+      }
     }
   }
   for (const key of ['secrets', 'configs'] as const) {

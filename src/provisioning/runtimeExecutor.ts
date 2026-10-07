@@ -1,4 +1,5 @@
 import type { GitRegistryProjectEvidence } from '../github/registry.js';
+import { scopeCoversProjectComponent } from '../governedWorkflow/governance/projectInheritance.js';
 import type { ServerTargetConfiguration } from '../liveState/targetProject.js';
 import { evaluateComposeSafety, provisioningLabelsOverride, type ComposeSafetyFinding } from './composePolicy.js';
 import {
@@ -51,21 +52,45 @@ const FORBIDDEN_COMPOSE_KEYS = '^[[:space:]-]*(env_file|extends|include|label_fi
  * executable bits and the symbolic links, sorted, without the files this
  * provisioning writes. Creation records it in the marker; an activation
  * recomputes it first, so a checkout edited since its creation never starts
- * under the revision it claims. Unreadable content fails instead of
- * digesting a partial tree.
+ * under the revision it claims. Each step is captured and checked on its own,
+ * so a file that vanishes or fails to read fails the digest instead of
+ * digesting a partial tree: no pipeline status is ever trusted.
  */
 export const PROVISIONING_TREE_DIGEST_SHELL = String.raw`tree_digest() {
   [ -d "$1" ] || return 1
   [ -z "$(find "$1" ! -readable -print -quit 2>/dev/null)" ] || return 1
-  (
-    cd "$1" || exit 1
-    find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${LABELS_FILE}' \) -prune -o -type f -print0 | LC_ALL=C sort -z | xargs -0 -r sha256sum --
-    printf 'mcp-tree:executables\n'
-    find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${LABELS_FILE}' \) -prune -o -type f -perm -u+x -print0 | LC_ALL=C sort -z
-    printf 'mcp-tree:links\n'
-    find . -type l -print0 | LC_ALL=C sort -z | xargs -0 -r -n 1 sh -c 'printf "%s\0" "$1"; readlink -- "$1"' tree-link
-  ) | sha256sum | cut -d' ' -f1
+  td_files="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${LABELS_FILE}' \) -prune -o -type f -exec sha256sum -- {} +)" || return 1
+  td_exec="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${LABELS_FILE}' \) -prune -o -type f -perm -u+x -exec sha256sum -- {} +)" || return 1
+  td_links="$(cd "$1" && find . -type l -exec sh -c 'for l do t="$(readlink -- "$l")" || exit 1; printf "%s %s\n" "$(printf "%s" "$l" | sha256sum | cut -d" " -f1)" "$(printf "%s" "$t" | sha256sum | cut -d" " -f1)"; done' tree-link {} +)" || return 1
+  td_files="$(printf '%s\n' "$td_files" | LC_ALL=C sort)" || return 1
+  td_exec="$(printf '%s\n' "$td_exec" | LC_ALL=C sort)" || return 1
+  td_links="$(printf '%s\n' "$td_links" | LC_ALL=C sort)" || return 1
+  printf 'files\n%s\nexecutables\n%s\nlinks\n%s\n' "$td_files" "$td_exec" "$td_links" | sha256sum | cut -d' ' -f1
 }`;
+
+/** Bounds of an archive's expanded content, checked before any extraction. */
+export const PROVISIONING_ARCHIVE_LIMITS = Object.freeze({ maxEntries: 100_000, maxBytes: 1024 * 1024 * 1024 });
+
+/**
+ * Lists an archive without extracting it and fails when its entry count or
+ * expanded size exceeds the bounds: a small compressed archive never fills
+ * the host. A listing that reads nothing fails too.
+ */
+export function buildArchiveBoundsLines(archive: string, limits: { maxEntries: number; maxBytes: number }): string[] {
+  if (!/^\/[A-Za-z0-9._/-]{1,300}$/.test(archive) || archive.split('/').includes('..')) {
+    throw new Error('PROVISIONING_ARCHIVE_PATH_INVALID');
+  }
+  const maxEntries = Math.trunc(limits.maxEntries);
+  const maxBytes = Math.trunc(limits.maxBytes);
+  if (!(maxEntries > 0) || !(maxBytes > 0)) throw new Error('PROVISIONING_ARCHIVE_LIMITS_INVALID');
+  return [
+    `bounds="$(tar -tvzf ${shellQuote(archive)} 2>/dev/null | awk '{ n++; s += $3 } END { printf "%d %.0f", n, s }')"`,
+    'entries="${bounds% *}"; expanded="${bounds#* }"',
+    '[ -n "$bounds" ] && [ "$entries" -gt 0 ] 2>/dev/null || fail archive_listing',
+    `[ "$entries" -le ${maxEntries} ] 2>/dev/null || fail archive_too_many_entries`,
+    `[ "$expanded" -le ${maxBytes} ] 2>/dev/null || fail archive_expanded_too_large`
+  ];
+}
 
 function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'"'"'`)}'`;
@@ -115,11 +140,19 @@ export function provisioningMarker(input: {
   composeFile: string;
   createdAt: string;
   treeDigest: string;
+  services: readonly string[];
 }): ProvisioningMarker {
   assertJobId(input.jobId);
   assertTarget(input.target);
   assertComposeFile(input.composeFile);
   assertTreeDigest(input.treeDigest);
+  if (
+    input.services.length === 0
+    || input.services.length > 20
+    || !input.services.every((service) => /^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,62}$/.test(service))
+  ) {
+    throw new Error('PROVISIONING_SERVICES_INVALID');
+  }
   return Object.freeze({
     schemaVersion: 1 as const,
     jobId: input.jobId,
@@ -130,7 +163,8 @@ export function provisioningMarker(input: {
     composeProject: input.target.composeProject,
     composeFile: input.composeFile,
     createdAt: input.createdAt,
-    treeDigest: input.treeDigest
+    treeDigest: input.treeDigest,
+    services: Object.freeze([...input.services])
   });
 }
 
@@ -188,6 +222,7 @@ export function buildStageScript(input: { jobId: string; target: ProjectRuntimeT
     '[ -z "$c" ] || fail compose_project_present',
     `[ -f ${shellQuote(archive)} ] || fail archive_missing`,
     `[ "$(sha256sum ${shellQuote(archive)} | cut -d' ' -f1)" = ${shellQuote(input.archiveSha256)} ] || fail archive_digest`,
+    ...buildArchiveBoundsLines(archive, PROVISIONING_ARCHIVE_LIMITS),
     `mkdir -p ${shellQuote(staging)} || fail extract`,
     `tar -xzf ${shellQuote(archive)} -C ${shellQuote(staging)} --strip-components=1 --no-same-owner --no-same-permissions || fail extract`,
     "file=''",
@@ -216,6 +251,7 @@ export function buildCreateScript(input: {
   composeFile: string;
   createdAt: string;
   treeDigest: string;
+  services: readonly string[];
 }): string {
   const marker = provisioningMarker(input);
   const staging = stagingPath(input.target.serverPath, input.jobId);
@@ -353,6 +389,17 @@ export type ProjectRuntimeExecution = Readonly<{
 
 type HostResult = { code: number | null; stdout: string; stderr?: string };
 
+/**
+ * What the Governed Task Queue and the Governed Lock Service hold: active
+ * locks with their scope and target project, active tasks with their resource
+ * scopes. Incomplete or unreadable coordination never permits a write.
+ */
+export type ProvisioningCoordination = Readonly<{
+  complete: boolean;
+  locks: ReadonlyArray<Readonly<{ scope: string; projectId: string | null }>>;
+  tasks: ReadonlyArray<Readonly<{ taskId: string; resourceScopes: readonly string[] }>>;
+}>;
+
 export type ProjectRuntimeExecutionDependencies = {
   writeEnabled: () => boolean;
   now: () => Date;
@@ -361,6 +408,8 @@ export type ProjectRuntimeExecutionDependencies = {
   readRegistry: () => Promise<GitRegistryProjectEvidence>;
   /** A fresh read-only inventory of the targets, never a cached snapshot. */
   observe: (targets: ProvisioningInventoryTarget[]) => Promise<ProvisionedRuntimeInventory>;
+  /** The coordination authorities, read afresh before any write; null when they cannot be read. */
+  readCoordination: () => Promise<ProvisioningCoordination | null>;
   /** The admission of the exact revision, read afresh from GitHub before any write. */
   admitRevision: (input: { repositoryId: string; revision: string }) => Promise<RevisionAdmission>;
   fetchSource: (input: { repositoryId: string; revision: string; destination: string }) => Promise<
@@ -483,6 +532,17 @@ async function execute(
   ) {
     return refused(['TARGET_CHANGED_SINCE_CONSENT'], 'REFUSED', target);
   }
+  // Work claimed or locked on this component is never overtaken: the coordination authorities stay
+  // mandatory before any write (UAC), and what cannot be read refuses.
+  const coordination = await deps.readCoordination().catch(() => null);
+  if (!coordination || coordination.complete !== true) return refused(['COORDINATION_UNAVAILABLE'], 'REFUSED', target);
+  const component = { repositoryId: target.repositoryId, mappingId: target.mappingId };
+  if (coordination.locks.some((lock) => scopeCoversProjectComponent(lock.scope, component) || lock.projectId === target.projectId)) {
+    return refused(['TARGET_LOCKED'], 'REFUSED', target);
+  }
+  if (coordination.tasks.some((task) => task.resourceScopes.some((scope) => scopeCoversProjectComponent(scope, component)))) {
+    return refused(['TARGET_CLAIMED_BY_TASK'], 'REFUSED', target);
+  }
   // The revision is admitted afresh before any write, even for a runtime created by an earlier job.
   const admission = await deps.admitRevision({ repositoryId: target.repositoryId, revision: target.revision }).catch(() => null);
   if (!admission?.admitted || (admission.kind !== 'CI_GATE' && admission.kind !== 'MANUAL_CONSENT')) {
@@ -525,6 +585,7 @@ async function execute(
       consent,
       planReasonCodes: plan.reasonCodes,
       governance: plan.governance,
+      coordination: { locks: coordination.locks.length, tasks: coordination.tasks.length },
       admission,
       steps,
       archiveSha256,
@@ -594,7 +655,7 @@ async function execute(
     composeFile = file;
     services = safety.services;
 
-    const created = await host('create', buildCreateScript({ jobId, target, composeFile, createdAt: deps.now().toISOString(), treeDigest }));
+    const created = await host('create', buildCreateScript({ jobId, target, composeFile, createdAt: deps.now().toISOString(), treeDigest, services }));
     if (created.get('result') !== 'created') {
       steps.push({ id: 'create-runtime', status: 'FAILED' });
       await discard();
@@ -654,5 +715,8 @@ export type ProjectRuntimeRefusalCode =
   | ProjectRuntimeReasonCode
   | Exclude<RevisionAdmissionReasonCode, 'REVISION_ADMITTED'>
   | 'TARGET_CHANGED_SINCE_CONSENT'
+  | 'COORDINATION_UNAVAILABLE'
+  | 'TARGET_LOCKED'
+  | 'TARGET_CLAIMED_BY_TASK'
   | 'WRITE_TOOLS_DISABLED'
   | 'PROVISIONING_IN_PROGRESS';

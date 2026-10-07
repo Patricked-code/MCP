@@ -144,6 +144,46 @@ function repositoryKey(value: string): string {
   return value.trim().replace(/^github:/i, '').toLowerCase();
 }
 
+/**
+ * Whether a lock or task scope covers a project component: its repository,
+ * or a component scope of its mapping. Shared by D1 and the F.2 provisioning
+ * executor, which re-reads the coordination authorities before any write.
+ */
+export function scopeCoversProjectComponent(
+  scope: string,
+  component: Readonly<{ repositoryId: string; mappingId: string }>
+): boolean {
+  return scope.toLowerCase() === `repository:${repositoryKey(component.repositoryId)}`
+    || (scope.startsWith('component:') && scope.endsWith(`:${component.mappingId}`));
+}
+
+export type RegistryDeployDecision = Readonly<{
+  effect: 'PERMIT' | 'FORBID' | 'UNKNOWN';
+  reasonCode: string | null;
+}>;
+
+/**
+ * The GitRegistry's verdict on deploying a mapping: its declared deploy
+ * capability, a deployable status, a READY activation and a proven server.
+ * Shared by D1 and the F.2 provisioning plan, so a mapping the registry does
+ * not let deploy is never provisioned. Silence never permits.
+ */
+export function registryDeployDecision(input: {
+  governance: Readonly<{ status: string; capabilities: Readonly<{ deploy?: boolean }> }> | null | undefined;
+  activation: string | null | undefined;
+  serverVerified: boolean;
+}): RegistryDeployDecision {
+  const decide = (effect: RegistryDeployDecision['effect'], reasonCode: string | null) => Object.freeze({ effect, reasonCode });
+  const governance = input.governance;
+  if (!governance) return decide('UNKNOWN', 'GOVERNANCE_MAPPING_UNDECLARED');
+  if (!governance.capabilities.deploy) return decide('FORBID', 'GOVERNANCE_DEPLOY_CAPABILITY_DISABLED');
+  if (!DEPLOYABLE_STATUSES.has(governance.status)) return decide('FORBID', 'GOVERNANCE_MAPPING_NOT_ACTIVE');
+  if (input.activation === 'BLOCKED') return decide('FORBID', 'GOVERNANCE_ACTIVATION_BLOCKED');
+  if (input.activation !== 'READY') return decide('UNKNOWN', 'GOVERNANCE_ACTIVATION_UNKNOWN');
+  if (!input.serverVerified) return decide('UNKNOWN', 'GOVERNANCE_SERVER_UNVERIFIED');
+  return decide('PERMIT', null);
+}
+
 function frozenValue(value: InheritedRuleValue): InheritedRuleValue {
   return Array.isArray(value) ? Object.freeze([...value]) : value;
 }
@@ -374,19 +414,15 @@ export function deriveProjectGovernanceInheritance(
     rules.push(unknown('DEPLOY', 'DEPLOY', [mappingReason]));
     rules.push(unknown('BACKUP_BEFORE_DEPLOY', 'DEPLOY', [mappingReason]));
   } else {
-    const activation = mapping.activationReadiness;
-    if (!governance.capabilities.deploy) {
-      rules.push(rule('DEPLOY', 'DEPLOY', 'FORBID', governance.status, ['GIT_REGISTRY_MAPPING'], ['GOVERNANCE_DEPLOY_CAPABILITY_DISABLED']));
-    } else if (!DEPLOYABLE_STATUSES.has(governance.status)) {
-      rules.push(rule('DEPLOY', 'DEPLOY', 'FORBID', governance.status, ['GIT_REGISTRY_MAPPING'], ['GOVERNANCE_MAPPING_NOT_ACTIVE']));
-    } else if (activation === 'BLOCKED') {
-      rules.push(rule('DEPLOY', 'DEPLOY', 'FORBID', governance.status, ['GIT_REGISTRY_MAPPING'], ['GOVERNANCE_ACTIVATION_BLOCKED']));
-    } else if (activation !== 'READY') {
-      rules.push(unknown('DEPLOY', 'DEPLOY', ['GOVERNANCE_ACTIVATION_UNKNOWN']));
-    } else if (!scope.serverId) {
-      rules.push(unknown('DEPLOY', 'DEPLOY', ['GOVERNANCE_SERVER_UNVERIFIED']));
+    const deploy = registryDeployDecision({
+      governance,
+      activation: mapping.activationReadiness,
+      serverVerified: Boolean(scope.serverId)
+    });
+    if (deploy.effect === 'UNKNOWN') {
+      rules.push(unknown('DEPLOY', 'DEPLOY', [deploy.reasonCode!]));
     } else {
-      rules.push(rule('DEPLOY', 'DEPLOY', 'PERMIT', governance.status, ['GIT_REGISTRY_MAPPING']));
+      rules.push(rule('DEPLOY', 'DEPLOY', deploy.effect, governance.status, ['GIT_REGISTRY_MAPPING'], deploy.reasonCode ? [deploy.reasonCode] : []));
     }
     rules.push(rule(
       'BACKUP_BEFORE_DEPLOY', 'DEPLOY', governance.backupRequired ? 'REQUIRE' : 'PERMIT',
@@ -414,15 +450,10 @@ export function deriveProjectGovernanceInheritance(
   if (!input.locks) {
     rules.push(unknown('PROJECT_LOCKS', 'LOCK', ['GOVERNANCE_LOCKS_UNAVAILABLE']));
   } else {
-    const repositoryScope = `repository:${repositoryKey(scope.repositoryId)}`;
     const held = input.locks.filter((lock) => (
       lock.status === 'ACTIVE'
       && lock.governedSessionId !== input.governedSessionId
-      && (
-        lock.scope.toLowerCase() === repositoryScope
-        || (lock.scope.startsWith('component:') && lock.scope.endsWith(`:${scope.mappingId}`))
-        || lock.targetScope?.projectId === scope.projectId
-      )
+      && (scopeCoversProjectComponent(lock.scope, scope) || lock.targetScope?.projectId === scope.projectId)
     )).map((lock) => lock.scope);
     rules.push(held.length > 0
       ? rule('PROJECT_LOCKS', 'LOCK', 'FORBID', uniqueSorted(held), ['GOVERNED_LOCK_SERVICE'], ['GOVERNANCE_PROJECT_LOCKED'])

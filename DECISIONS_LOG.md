@@ -28,6 +28,17 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
     - Un contenu illisible échoue au lieu de produire une empreinte partielle.
   - **Un runtime par composant.** Les conteneurs d'un composant sont ceux de son projet Compose, dérivé du projet et du mapping. Un autre composant du même dépôt ne le masque plus et ne le bloque plus. C4 reste par dépôt : un mélange de `NO_RUNTIME` et d'un runtime y reste `UNKNOWN`.
   - **Cible illisible ≠ absence.** Une configuration ou un registre illisible laisse les cibles `UNKNOWN`. Seule une configuration absente signifie « aucune cible ».
+- **Après la seconde revue de la PR #261 :**
+  - **Autorités de coordination (UAC, AGENTS.md §7.1).** Une soumission web reste une écriture.
+    - Juste avant d'écrire, l'exécuteur relit la Governed Task Queue et le Governed Lock Service. Il applique la règle de portée de D1 : dépôt du composant, portée `component:` de son mapping, ou verrou ciblant son projet. Un travail réservé ou verrouillé refuse, et une coordination illisible ou désactivée refuse aussi.
+    - La Governed Session et le Bootstrap Receipt sont liés au transport MCP d'un agent ; ils n'ont pas de sens pour un opérateur web. L'autorité par requête de celui-ci reste le consentement E3, lié à sa session et à la cible exacte.
+  - **Règle `DEPLOY` de GitRegistry, sans copie.** La décision de D1 (capacité `deploy`, statut `validated`/`active`, activation `READY`) devient une fonction partagée. Le plan de provisioning bloque avec les mêmes codes qu'elle.
+  - **Pilotes Compose.** Seuls `local` (volumes) et `bridge` (réseaux) sont admis, sans `driver_opts` : une option de pilote peut lier un chemin de l'hôte ou rejoindre son réseau.
+  - **Empreinte sans pipeline.** Chaque liste (fichiers, exécutables, liens) est capturée et vérifiée séparément, car le statut d'un pipeline POSIX masque les échecs internes.
+  - **Archive bornée avant extraction.** Elle est listée sans être extraite, puis limitée à 100 000 entrées et 1 Gio décompressés.
+  - **Pas de succès sans preuve.** Une attestation non écrite rend la réponse en erreur (HTTP 500) et le dit.
+  - **Base d'API conservée.** Le chemin de la base reste dans l'URL (GitHub Enterprise Server), et la seule redirection admise en plus de `codeload.github.com` est l'hôte de l'API configurée.
+  - **`NO_OP` complet.** Le marqueur enregistre les services du modèle Compose, et l'inventaire lit le service et la santé de chaque conteneur. Un runtime partiel, arrêté, malade ou sans marqueur est `EXISTING_RUNTIME_DEGRADED`, jamais « déjà en place ». Le réparer reste hors du provisioning, qui ne modifie jamais un runtime existant.
 
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
 

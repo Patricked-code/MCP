@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 import type { GitRegistryProjectEvidence } from '../github/registry.js';
 import type { ServerRuntimeObservation } from '../github/runtimeResolution.js';
+import { registryDeployDecision } from '../governedWorkflow/governance/projectInheritance.js';
 import type { ServerTargetConfiguration } from '../liveState/targetProject.js';
 
 /**
@@ -31,6 +32,9 @@ export const PROVISIONED_RUNTIME_PROVENANCE = 'live_state_provisioned_runtime_in
 
 const MCP_ROOT = '/opt/apps/wealthtech-mcp-ssh-bridge';
 const COMPOSE_PROJECT_LABEL = 'com.docker.compose.project';
+const COMPOSE_SERVICE_LABEL = 'com.docker.compose.service';
+const SERVICE_NAME_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,62}$/;
+const CONTAINER_STATUS_PATTERN = /^[A-Za-z0-9 ():.-]{0,100}$/;
 const MAX_TARGETS = 20;
 const MAX_CONTAINERS = 20;
 const UNAVAILABLE_SENTINEL = '__unavailable__';
@@ -68,6 +72,10 @@ export type ProvisionedContainer = Readonly<{
   state: string;
   composeProject: string | null;
   revision: string | null;
+  /** The compose service the container runs; null when unlabelled. */
+  service: string | null;
+  /** Docker's health of the container, from its status. */
+  health: 'healthy' | 'unhealthy' | 'starting' | 'none';
 }>;
 
 /** The marker of a runtime created by provisioning, as written at its root. */
@@ -83,6 +91,8 @@ export type ProvisioningMarker = Readonly<{
   createdAt: string;
   /** The digest of the checkout as created; an activation verifies it first. */
   treeDigest: string;
+  /** The services its compose model declared: a no-op needs every one running and healthy. */
+  services: readonly string[];
 }>;
 
 export type ProvisionedComponentFacts = Readonly<{
@@ -137,7 +147,7 @@ export function buildProvisionedRuntimeInventoryCommand(targets: readonly Provis
   if (targets.length === 0 || targets.length > MAX_TARGETS || !targets.every(validTarget)) {
     throw new Error('PROVISIONING_INVENTORY_TARGETS_INVALID');
   }
-  const format = `{{.Names}}|{{.State}}|{{.Label "${COMPOSE_PROJECT_LABEL}"}}|{{.Label "${PROVISIONING_LABEL_REVISION}"}}`;
+  const format = `{{.Names}}|{{.State}}|{{.Label "${COMPOSE_PROJECT_LABEL}"}}|{{.Label "${PROVISIONING_LABEL_REVISION}"}}|{{.Label "${COMPOSE_SERVICE_LABEL}"}}|{{.Status}}`;
   const lines = [
     'set -u',
     `if docker info --format '{{.ServerVersion}}' >/dev/null 2>&1; then printf 'docker=ok\\n'; else printf 'docker=unavailable\\n'; fi`
@@ -163,6 +173,13 @@ function keyValues(output: string): Map<string, string> {
   return values;
 }
 
+function containerHealth(status: string): ProvisionedContainer['health'] {
+  if (status.includes('(unhealthy)')) return 'unhealthy';
+  if (status.includes('(health: starting)')) return 'starting';
+  if (status.includes('(healthy)')) return 'healthy';
+  return 'none';
+}
+
 function parseContainers(value: string | undefined): ProvisionedContainer[] | null {
   if (value === undefined || value === UNAVAILABLE_SENTINEL) return null;
   if (value === '') return [];
@@ -170,15 +187,18 @@ function parseContainers(value: string | undefined): ProvisionedContainer[] | nu
   if (entries.length > MAX_CONTAINERS) return null;
   const containers: ProvisionedContainer[] = [];
   for (const entry of entries) {
-    const [name, state, composeProject, revision, ...rest] = entry.split('|');
-    if (rest.length > 0 || !name || !CONTAINER_NAME_PATTERN.test(name) || !state || !CONTAINER_STATES.has(state)) return null;
+    const [name, state, composeProject, revision, service, status, ...rest] = entry.split('|');
+    if (rest.length > 0 || status === undefined || !name || !CONTAINER_NAME_PATTERN.test(name) || !state || !CONTAINER_STATES.has(state)) return null;
     if (composeProject && !COMPOSE_PROJECT_PATTERN.test(composeProject)) return null;
     if (revision && !SHA_PATTERN.test(revision)) return null;
+    if ((service && !SERVICE_NAME_PATTERN.test(service)) || !CONTAINER_STATUS_PATTERN.test(status)) return null;
     containers.push(Object.freeze({
       name,
       state,
       composeProject: composeProject || null,
-      revision: revision || null
+      revision: revision || null,
+      service: service || null,
+      health: containerHealth(status)
     }));
   }
   return containers;
@@ -360,7 +380,8 @@ const MarkerSchema = z.object({
   composeProject: z.string().regex(COMPOSE_PROJECT_PATTERN),
   composeFile: z.string().refine((value) => COMPOSE_FILES.has(value)),
   createdAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/),
-  treeDigest: z.string().regex(/^[0-9a-f]{64}$/)
+  treeDigest: z.string().regex(/^[0-9a-f]{64}$/),
+  services: z.array(z.string().regex(SERVICE_NAME_PATTERN)).min(1).max(20)
 }).strict();
 
 const RequestSchema = z.object({
@@ -383,8 +404,15 @@ export type ProjectRuntimeReasonCode =
   | 'TARGET_PATH_AMBIGUOUS'
   | 'TARGET_PATH_OUTSIDE_GOVERNED_ROOT'
   | 'RUNTIME_ABSENCE_UNPROVEN'
+  | 'GOVERNANCE_MAPPING_UNDECLARED'
+  | 'GOVERNANCE_DEPLOY_CAPABILITY_DISABLED'
+  | 'GOVERNANCE_MAPPING_NOT_ACTIVE'
+  | 'GOVERNANCE_ACTIVATION_BLOCKED'
+  | 'GOVERNANCE_ACTIVATION_UNKNOWN'
+  | 'GOVERNANCE_SERVER_UNVERIFIED'
   | 'EXISTING_RUNTIME_MATCHING'
   | 'EXISTING_RUNTIME_CONFLICT'
+  | 'EXISTING_RUNTIME_DEGRADED'
   | 'TARGET_PATH_PRESENT'
   | 'CREATION_CONSENT_REQUIRED'
   | 'ACTIVATION_CONSENT_REQUIRED'
@@ -520,6 +548,16 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
     backupRequired: declared?.backupRequired ?? true,
     rollbackMethod: declared?.rollbackMethod ?? null
   });
+  // The registry's own deployment rule (D1): a mapping it does not let deploy is never provisioned.
+  // The server is the configured S1 binding the MCP itself observes.
+  const deploy = registryDeployDecision({
+    governance: declared ?? null,
+    activation: registry.activationReadiness.find((entry) => entry.mappingId === component.mappingId)?.status ?? null,
+    serverVerified: true
+  });
+  if (deploy.effect !== 'PERMIT') {
+    return block((deploy.reasonCode ?? 'GOVERNANCE_MAPPING_UNDECLARED') as ProjectRuntimeReasonCode, target, governance);
+  }
 
   const inventory = input.inventory;
   const facts = inventory?.components.find((entry) => entry.mappingId === component.mappingId);
@@ -535,10 +573,23 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
     return block('RUNTIME_ABSENCE_UNPROVEN', target, governance);
   }
   if (facts.containers.length > 0) {
-    const matching = facts.containers.every((container) => (
-      container.revision === request.revision && container.state === 'running'
-    ));
-    if (!matching) return block('EXISTING_RUNTIME_CONFLICT', target, governance);
+    if (!facts.containers.every((container) => container.revision === request.revision)) {
+      return block('EXISTING_RUNTIME_CONFLICT', target, governance);
+    }
+    // A no-op needs the whole runtime this provisioning created: every declared service running and healthy.
+    const marker = facts.marker;
+    const complete = marker !== null
+      && marker.revision === request.revision
+      && marker.composeProject === target.composeProject
+      && facts.containers.every((container) => (
+        container.state === 'running'
+        && container.health !== 'unhealthy'
+        && container.health !== 'starting'
+        && container.service !== null
+        && marker.services.includes(container.service)
+      ))
+      && marker.services.every((service) => facts.containers.some((container) => container.service === service));
+    if (!complete) return block('EXISTING_RUNTIME_DEGRADED', target, governance);
     return freezePlan('NO_OP', ['EXISTING_RUNTIME_MATCHING'], target, governance, {
       ...everyStep('NOT_APPLICABLE'),
       'observe-runtime': 'DONE',
