@@ -52,6 +52,10 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
   - **Volumes conservés = état existant.** Le rollback ne supprime jamais les volumes ; une nouvelle création qui les rattacherait est donc refusée par la préparation. Les volumes restent à traiter hors provisioning.
   - **Aucun nom d'image partagé.** Un build ne prend que le nom par défaut `<projet>-<service>` : `build.tags` et `image` sur un build retaggeraient une image utilisée ailleurs sur l'hôte.
   - **Mode complet dans l'empreinte.** Tout changement de mode modifie l'empreinte du checkout.
+- **Après la cinquième revue de la PR #261 :**
+  - **Ce qui tourne est ce qui a été consenti.** Une image tirée est épinglée par empreinte ; un runtime n'est « déjà en place » que si son checkout digère comme à sa création (recalcul en lecture seule).
+  - **Borne de conteneurs.** Le total des réplicas reste dans la limite de 20 de l'inventaire, sinon le runtime ne serait plus observable.
+  - **Propriétaire dans l'empreinte.** Un `chown` du checkout change ce que le conteneur peut lire ou exécuter : il modifie l'empreinte.
 
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
 

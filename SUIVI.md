@@ -50,6 +50,11 @@
   - Volumes conservés par le rollback d'un job échoué : la préparation refuse désormais toute création tant que le projet Compose a encore des volumes (`compose_project_volumes_present`), sans rien supprimer.
   - Nom d'image d'un build : `build.tags` et `image` sur un service construit sont refusés (`COMPOSE_BUILD_TAG`) ; une image construite garde le nom par défaut du projet.
   - Empreinte de l'arbre : elle inclut le mode complet de chaque fichier et dossier, plus seulement le bit d'exécution du propriétaire.
+- **Cinquième revue Codex (quatre constats, corrigés).**
+  - Réplicas : `scale` et `deploy.replicas` sont bornés à 20 conteneurs au total (`COMPOSE_REPLICAS`), la limite de l'inventaire.
+  - Images tirées : une image sans build doit être épinglée par empreinte (`@sha256:`), sinon `COMPOSE_IMAGE_UNPINNED`.
+  - `NO_OP` vérifié : l'inventaire en lecture seule recalcule l'empreinte d'un checkout marqué ; un runtime en cours ne vaut `NO_OP` que si elle égale celle du marqueur.
+  - Empreinte : elle inclut aussi le propriétaire et le groupe de chaque fichier et dossier.
 - **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
 - **Preuves.**
   - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.

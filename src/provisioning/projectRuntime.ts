@@ -104,6 +104,8 @@ export type ProvisionedComponentFacts = Readonly<{
   containers: readonly ProvisionedContainer[];
   /** The marker of a created runtime; null when absent or unreadable. */
   marker: ProvisioningMarker | null;
+  /** The digest of the marked checkout as observed now; null when absent or not computable. */
+  treeDigest: string | null;
 }>;
 
 export type ProvisionedRuntimeInventory = Readonly<{
@@ -143,6 +145,30 @@ function validTarget(target: ProvisioningInventoryTarget): boolean {
 }
 
 /** The read-only inventory command of the declared paths and the provisioned namespace. */
+/** The labels override the activation writes beside the marker; neither is part of the checkout. */
+export const PROVISIONING_LABELS_FILE = '.mcp-provisioning.labels.json';
+
+/**
+ * The digest of a checkout as the host sees it: every file's content, the
+ * modes, owners and the symbolic links, sorted, without the files this
+ * provisioning writes. Creation records it in the marker; an activation
+ * recomputes it first, so a checkout edited since its creation never starts
+ * under the revision it claims. Each step is captured and checked on its own,
+ * so a file that vanishes or fails to read fails the digest instead of
+ * digesting a partial tree: no pipeline status is ever trusted.
+ */
+export const PROVISIONING_TREE_DIGEST_SHELL = String.raw`tree_digest() {
+  [ -d "$1" ] || return 1
+  [ -z "$(find "$1" ! -readable -print -quit 2>/dev/null)" ] || return 1
+  td_files="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${PROVISIONING_LABELS_FILE}' \) -prune -o -type f -exec sha256sum -- {} +)" || return 1
+  td_modes="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${PROVISIONING_LABELS_FILE}' \) -prune -o \( -type f -o -type d \) -printf '%y %m %U %G %p\n')" || return 1
+  td_links="$(cd "$1" && find . -type l -exec sh -c 'for l do t="$(readlink -- "$l")" || exit 1; printf "%s %s\n" "$(printf "%s" "$l" | sha256sum | cut -d" " -f1)" "$(printf "%s" "$t" | sha256sum | cut -d" " -f1)"; done' tree-link {} +)" || return 1
+  td_files="$(printf '%s\n' "$td_files" | LC_ALL=C sort)" || return 1
+  td_modes="$(printf '%s\n' "$td_modes" | LC_ALL=C sort)" || return 1
+  td_links="$(printf '%s\n' "$td_links" | LC_ALL=C sort)" || return 1
+  printf 'files\n%s\nmodes\n%s\nlinks\n%s\n' "$td_files" "$td_modes" "$td_links" | sha256sum | cut -d' ' -f1
+}`;
+
 export function buildProvisionedRuntimeInventoryCommand(targets: readonly ProvisioningInventoryTarget[]): string {
   if (targets.length === 0 || targets.length > MAX_TARGETS || !targets.every(validTarget)) {
     throw new Error('PROVISIONING_INVENTORY_TARGETS_INVALID');
@@ -150,6 +176,7 @@ export function buildProvisionedRuntimeInventoryCommand(targets: readonly Provis
   const format = `{{.Names}}|{{.State}}|{{.Label "${COMPOSE_PROJECT_LABEL}"}}|{{.Label "${PROVISIONING_LABEL_REVISION}"}}|{{.Label "${COMPOSE_SERVICE_LABEL}"}}|{{.Status}}`;
   const lines = [
     'set -u',
+    PROVISIONING_TREE_DIGEST_SHELL,
     `if docker info --format '{{.ServerVersion}}' >/dev/null 2>&1; then printf 'docker=ok\\n'; else printf 'docker=unavailable\\n'; fi`
   ];
   targets.forEach((target, index) => {
@@ -157,7 +184,9 @@ export function buildProvisionedRuntimeInventoryCommand(targets: readonly Provis
       `if [ -e ${shellQuote(target.serverPath)} ]; then printf 'component.${index}.path=present\\n'; else printf 'component.${index}.path=absent\\n'; fi`,
       `c="$(docker ps -a --filter ${shellQuote(`label=${COMPOSE_PROJECT_LABEL}=${target.composeProject}`)} --format ${shellQuote(format)} 2>/dev/null)" || c=${shellQuote(UNAVAILABLE_SENTINEL)}`,
       `printf 'component.${index}.containers=%s\\n' "$(printf '%s\\n' "$c" | head -n ${MAX_CONTAINERS + 1} | paste -sd, -)"`,
-      `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then printf 'component.${index}.marker=%s\\n' "$(head -c ${MAX_MARKER_BYTES} ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} | base64 | tr -d '\\n')"; fi`
+      `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then printf 'component.${index}.marker=%s\\n' "$(head -c ${MAX_MARKER_BYTES} ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} | base64 | tr -d '\\n')"; fi`,
+      // A marked checkout is digested again: a running runtime matches only the checkout of its creation.
+      `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then t="$(tree_digest ${shellQuote(target.serverPath)})" || t=unavailable; printf 'component.${index}.tree=%s\\n' "$t"; fi`
     );
   });
   return lines.join('\n');
@@ -238,7 +267,8 @@ export function unavailableProvisionedRuntimeInventory(
       readable: false,
       pathPresent: null,
       containers: Object.freeze([]),
-      marker: null
+      marker: null,
+      treeDigest: null
     })))
   });
 }
@@ -265,7 +295,8 @@ export function parseProvisionedRuntimeInventory(
         readable: docker === 'ok' && pathPresent !== null && containers !== null,
         pathPresent,
         containers: Object.freeze(containers ?? []),
-        marker: pathPresent ? parseProvisioningMarker(values.get(`component.${index}.marker`), target) : null
+        marker: pathPresent ? parseProvisioningMarker(values.get(`component.${index}.marker`), target) : null,
+        treeDigest: pathPresent && /^[0-9a-f]{64}$/.test(values.get(`component.${index}.tree`) ?? '') ? values.get(`component.${index}.tree`)! : null
       });
     }))
   });
@@ -581,6 +612,8 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
     const complete = marker !== null
       && marker.revision === request.revision
       && marker.composeProject === target.composeProject
+      // The checkout still digests as at its creation: an edited one is not the admitted revision.
+      && facts.treeDigest === marker.treeDigest
       && facts.containers.every((container) => (
         container.state === 'running'
         && container.health !== 'unhealthy'

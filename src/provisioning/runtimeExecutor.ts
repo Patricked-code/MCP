@@ -11,7 +11,9 @@ import {
   type ComposeSafetyFinding
 } from './composePolicy.js';
 import {
+  PROVISIONING_LABELS_FILE,
   PROVISIONING_MARKER_FILE,
+  PROVISIONING_TREE_DIGEST_SHELL,
   governedRuntimePath,
   planProjectRuntimeProvisioning,
   provisioningInventoryTargets,
@@ -25,7 +27,7 @@ import {
 } from './projectRuntime.js';
 import type { RevisionAdmission, RevisionAdmissionReasonCode } from './revisionAdmission.js';
 
-export { PROVISIONING_MARKER_FILE } from './projectRuntime.js';
+export { PROVISIONING_MARKER_FILE, PROVISIONING_TREE_DIGEST_SHELL } from './projectRuntime.js';
 
 /**
  * F.2 (TB-W3-F-03), increment 2: the target-bounded executor of the
@@ -45,7 +47,7 @@ export { PROVISIONING_MARKER_FILE } from './projectRuntime.js';
 export const PROVISIONING_DATA_ROOT_CONTAINER = '/app/data/provisioning';
 export const PROVISIONING_DATA_ROOT_HOST = '/opt/apps/wealthtech-mcp-ssh-bridge/data/provisioning';
 export const PROVISIONING_QUARANTINE_ROOT = '/opt/apps/mcp-provisioning-quarantine';
-const LABELS_FILE = '.mcp-provisioning.labels.json';
+const LABELS_FILE = PROVISIONING_LABELS_FILE;
 const JOB_ID_PATTERN = /^prov-\d{8}T\d{6}Z-[0-9a-f]{8}$/;
 const COMPOSE_PROJECT_PATTERN = /^[a-z0-9][a-z0-9_-]{0,62}$/;
 const REPOSITORY_ID_PATTERN = /^github:[A-Za-z0-9][A-Za-z0-9-]{0,38}\/[A-Za-z0-9._-]{1,100}$/;
@@ -58,26 +60,7 @@ const CLEAN_ENV = 'env -i PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
 // whatever their spelling (evaluateComposeSource); this line match stays a second guard on the host.
 const FORBIDDEN_COMPOSE_KEYS = '^[[:space:]-]*(env_file|extends|include|label_file)[[:space:]]*:';
 
-/**
- * The digest of a checkout as the host sees it: every file's content, the
- * executable bits and the symbolic links, sorted, without the files this
- * provisioning writes. Creation records it in the marker; an activation
- * recomputes it first, so a checkout edited since its creation never starts
- * under the revision it claims. Each step is captured and checked on its own,
- * so a file that vanishes or fails to read fails the digest instead of
- * digesting a partial tree: no pipeline status is ever trusted.
- */
-export const PROVISIONING_TREE_DIGEST_SHELL = String.raw`tree_digest() {
-  [ -d "$1" ] || return 1
-  [ -z "$(find "$1" ! -readable -print -quit 2>/dev/null)" ] || return 1
-  td_files="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${LABELS_FILE}' \) -prune -o -type f -exec sha256sum -- {} +)" || return 1
-  td_modes="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${LABELS_FILE}' \) -prune -o \( -type f -o -type d \) -printf '%y %m %p\n')" || return 1
-  td_links="$(cd "$1" && find . -type l -exec sh -c 'for l do t="$(readlink -- "$l")" || exit 1; printf "%s %s\n" "$(printf "%s" "$l" | sha256sum | cut -d" " -f1)" "$(printf "%s" "$t" | sha256sum | cut -d" " -f1)"; done' tree-link {} +)" || return 1
-  td_files="$(printf '%s\n' "$td_files" | LC_ALL=C sort)" || return 1
-  td_modes="$(printf '%s\n' "$td_modes" | LC_ALL=C sort)" || return 1
-  td_links="$(printf '%s\n' "$td_links" | LC_ALL=C sort)" || return 1
-  printf 'files\n%s\nmodes\n%s\nlinks\n%s\n' "$td_files" "$td_modes" "$td_links" | sha256sum | cut -d' ' -f1
-}`;
+
 
 /** Bounds of an archive's expanded content, checked before any extraction. */
 export const PROVISIONING_ARCHIVE_LIMITS = Object.freeze({ maxEntries: 100_000, maxBytes: 1024 * 1024 * 1024 });

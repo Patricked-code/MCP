@@ -40,6 +40,8 @@ export type ComposeSafetyCode =
   | 'COMPOSE_BUILD_OUTSIDE_PROJECT'
   | 'COMPOSE_BUILD_SSH'
   | 'COMPOSE_BUILD_TAG'
+  | 'COMPOSE_IMAGE_UNPINNED'
+  | 'COMPOSE_REPLICAS'
   | 'COMPOSE_CONTAINER_NAME'
   | 'COMPOSE_EXTERNAL_RESOURCE'
   | 'COMPOSE_FILE_SOURCE_OUTSIDE_PROJECT'
@@ -89,6 +91,8 @@ const BUILD_KEYS: ReadonlySet<string> = new Set([
   'no_cache', 'no_cache_filter', 'platforms', 'pull', 'secrets', 'shm_size', 'ssh', 'target', 'ulimits'
 ]);
 // A seccomp profile file, an AppArmor profile or an SELinux type can lift the confinement as surely as "unconfined".
+const IMAGE_DIGEST = /@sha256:[0-9a-f]{64}$/;
+const MAX_CONTAINERS = 20;
 const SECURITY_OPTION = /^no-new-privileges([:=](true|false))?$/;
 // Any other logging driver sends from the engine, on the host network.
 const LOGGING_DRIVERS: ReadonlySet<string> = new Set(['json-file', 'local', 'none']);
@@ -234,6 +238,9 @@ function checkService(
     if (nonEmpty(build?.ssh)) add('COMPOSE_BUILD_SSH', name);
     // An image name on a build tags the result host-wide: another workload running that name would run it.
     if (service.image !== undefined) add('COMPOSE_BUILD_TAG', name);
+  } else if (typeof service.image !== 'string' || !IMAGE_DIGEST.test(service.image)) {
+    // A pulled image is pinned by digest: a tag can serve other bytes at a later activation.
+    add('COMPOSE_IMAGE_UNPINNED', name);
   }
 }
 
@@ -296,6 +303,15 @@ export function evaluateComposeSafety(config: unknown, projectDir: string): Comp
     }
     checkService(name, service, services, projectDir, add);
   }
+  // Every replica is a container of the bounded inventory: past it, the runtime could no longer be observed.
+  let containers = 0;
+  for (const name of names) {
+    const service = record(serviceEntries[name]);
+    const replicas = service?.deploy !== undefined && record(service.deploy)?.replicas !== undefined ? record(service.deploy)!.replicas : service?.scale ?? 1;
+    if (typeof replicas !== 'number' || !Number.isInteger(replicas) || replicas < 0) add('COMPOSE_REPLICAS', name);
+    else containers += replicas;
+  }
+  if (containers > MAX_CONTAINERS) add('COMPOSE_REPLICAS', null);
   checkTopLevel(root, projectDir, add);
   return verdict(names, findings);
 }

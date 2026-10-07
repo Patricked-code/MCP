@@ -28,6 +28,7 @@
   - options de sécurité, journalisation et réservations de périphériques bornées ;
   - constats nommant la clé refusée.
 - Après la quatrième revue : volumes restants d'un job échoué bloquant une nouvelle création ; noms d'image de build refusés ; empreinte incluant le mode complet.
+- Après la cinquième revue : réplicas bornés, images épinglées par empreinte, `NO_OP` vérifié par l'empreinte du checkout, propriétaire et groupe dans l'empreinte.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
 
