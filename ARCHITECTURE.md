@@ -485,9 +485,10 @@ une surface consentie.
   - Sur S1, l'absence est reprouvée et l'empreinte de l'archive vérifiée
     avant l'extraction, faite à côté de la cible.
   - Le fichier Compose est d'abord analysé, avant que Compose ne charge quoi
-    que ce soit. Compose construit ensuite le modèle depuis ce fichier exact,
-    sans lire les fichiers d'environnement. Ce modèle est contrôlé
-    (`src/provisioning/composePolicy.ts`), puis promu avec un marqueur.
+    que ce soit. Compose construit ensuite le modèle depuis ce fichier exact
+    (avec `--no-env-resolution` quand il la connaît, en seconde garde
+    seulement). Ce modèle est contrôlé (`src/provisioning/composePolicy.ts`),
+    puis promu avec un marqueur.
 - **Activation, sous son propre consentement.** Le fichier Compose du
   checkout inchangé est analysé et son modèle contrôlé à nouveau. Elle
   étiquette ensuite les services, démarre le projet Compose et attend la

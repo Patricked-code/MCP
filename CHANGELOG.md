@@ -23,7 +23,7 @@
   - `NO_OP` réservé au runtime complet et sain.
 - Après la troisième revue :
   - fichier Compose analysé (`yaml` 2.9.1, épinglé) avant tout chargement par Compose, avec des listes de clés revues : `include`, `extends`, `env_file`, `label_file` et `use_api_socket` sont refusés quelle que soit leur écriture YAML ;
-  - modèle construit par `docker compose config --no-env-resolution` depuis ce fichier exact, contrôlé avec les mêmes listes ;
+  - modèle construit depuis ce fichier exact et contrôlé avec les mêmes listes (`--no-env-resolution` passée quand Compose la connaît, en seconde garde seulement) ;
   - pont par défaut du moteur et réseaux ou volumes nommés hors du projet refusés ;
   - options de sécurité, journalisation et réservations de périphériques bornées ;
   - constats nommant la clé refusée.

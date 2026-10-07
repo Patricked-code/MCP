@@ -36,15 +36,16 @@
 - **Troisième revue Codex (trois constats, tous vérifiés et corrigés à la racine).**
   - **Cause commune.** La politique Compose refusait une liste de clés connues, et une recherche ligne à ligne gardait les clés qui lisent des fichiers de l'hôte. Une clé entre guillemets ou dans un mapping en ligne lui échappait ; `use_api_socket` (moteur Docker confié au conteneur) n'était pas refusée.
   - **Fichier Compose analysé avant Compose.** La préparation n'exécute plus Compose : elle imprime le fichier (régulier, jamais un lien, 100 000 octets au plus) avec son empreinte. Le MCP l'analyse avec `yaml` 2.9.1, épinglé, et n'admet que les clés Compose revues, quelle que soit leur écriture YAML. Toute ambiguïté échoue fermée : étiquette inconnue ou binaire, clé dupliquée ou non textuelle, plusieurs documents, trop d'alias.
-  - **Modèle construit depuis ce fichier exact.** Le script `config` vérifie l'empreinte du fichier analysé, puis lance `docker compose config --no-env-resolution` : aucun fichier d'environnement n'est lu. Un Compose sans cette option ne construit rien (`CONFIG_COMPOSE_VERSION_UNSUPPORTED`). Le modèle est contrôlé avec les mêmes listes de clés.
+  - **Modèle construit depuis ce fichier exact.** Le script `config` vérifie l'empreinte du fichier analysé, puis construit le modèle, contrôlé avec les mêmes listes de clés. L'option `--no-env-resolution` est passée quand Compose la connaît, en seconde garde seulement : le contrôle reste l'analyse du fichier, qui refuse `env_file` avant que Compose ne le lise.
   - **Runtime créé plus tôt.** Son fichier Compose est de nouveau analysé, depuis le checkout dont le marqueur garde l'empreinte, avant tout chargement par Compose.
   - **Réseau.** `network_mode: bridge` ou `default` est refusé (`COMPOSE_SHARED_NETWORK`). Un réseau ou un volume nommé hors du projet est traité comme externe.
   - **Même famille, même correction.** Option de sécurité limitée à `no-new-privileges` (un profil seccomp en fichier ou un type SELinux levaient le confinement) ; journalisation locale seulement ; réservation de périphérique refusée. Un constat nomme désormais la clé refusée.
-  - **Vérifié avec Compose réel (v5.1.1).**
-    - Sans l'option, la valeur d'un fichier d'environnement de l'hôte est injectée dans le modèle et `env_file` en disparaît. Avec l'option, `env_file` reste dans le modèle, non lu.
+  - **Vérifié avec Compose réel (v5.1.1 en local, v2.38.2 en CI).**
+    - Sans l'option, la valeur d'un fichier d'environnement de l'hôte est injectée dans le modèle et `env_file` en disparaît. Avec l'option, v5.1.1 garde `env_file` dans le modèle, non lu ; v2.38.2 le lit quand même (l'option n'y saute qu'une seconde résolution).
     - `label_file`, `extends` et `include` sont lus et ne laissent aucune trace dans le modèle : seule l'analyse du fichier les voit.
     - Un projet typique (build, ports locaux, volumes, `depends_on`, santé, ancres YAML) passe les deux contrôles.
     - Un test d'intégration rejoue ces comportements quand Compose est installé, et se déclare ignoré sinon.
+  - **CI #2295 (`37679310603`) rouge sur `3321dde`.** Ce test d'intégration supposait que l'option empêchait toute lecture ; Compose v2.38.2 du runner la lit quand même. L'option n'est plus exigée (elle ne garantissait rien) et le test fixe les deux comportements connus. Échec reproduit en local avec le binaire v2.38.2 officiel (empreinte vérifiée), correction verte avec v2.38.2 et v5.1.1.
 - **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
 - **Preuves.**
   - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.

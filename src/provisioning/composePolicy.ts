@@ -9,7 +9,8 @@ import {
 /**
  * F.2 (TB-W3-F-03), increment 2: what a provisioned Docker Compose model may
  * ask of the host, checked on the normalized model `docker compose config
- * --no-env-resolution --format json` prints for the project directory.
+ * --format json` prints for the project directory (with `--no-env-resolution`
+ * where Compose knows it).
  * Everything stays inside the project: only reviewed Compose keys, so a key
  * that loads a host file, hands the engine to a container, runs a host
  * program or hook or reaches the host another way never runs, a key Compose

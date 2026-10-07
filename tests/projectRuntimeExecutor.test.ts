@@ -320,11 +320,14 @@ test('host scripts quote every value, verify before extracting and never delete'
   assert.ok(source!.indexOf('checkout_modified') > 0 && source!.indexOf('checkout_modified') < source!.indexOf('compose_source_b64='));
   for (const [script, directory] of [[config!, PLAN_TARGET.serverPath], [stagedConfig!, stagingPath(PLAN_TARGET.serverPath, jobId)]] as const) {
     assert.match(script, new RegExp(`^directory='${directory.replaceAll('.', '\\.')}'$`, 'm'));
-    const load = script.indexOf('config --no-env-resolution --format json');
-    assert.ok(load > 0, 'env files are never read while the model is built');
+    const load = script.indexOf('config $resolution --format json');
+    assert.ok(load > 0);
     // The file Compose loads is the one whose parsed source was admitted.
     assert.ok(script.includes(sourceDigest) && script.indexOf('compose_source_changed') < load);
-    assert.ok(script.indexOf('compose_version_unsupported') > 0 && script.indexOf('compose_version_unsupported') < load);
+    // --no-env-resolution is passed where Compose knows it: a second guard, never a version gate.
+    const option = script.indexOf("resolution='--no-env-resolution'");
+    assert.ok(option > 0 && option < load);
+    assert.doesNotMatch(script, /compose_version_unsupported/);
   }
   assert.throws(() => buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', sourceSha256: 'x' }));
   assert.ok(stage!.indexOf('sha256sum') < stage!.indexOf('tar '), 'the archive digest is verified before extraction');
@@ -533,12 +536,12 @@ test('a compose source that loads a host file is refused before Compose ever rea
     assert.deepEqual(hostPhases(unreadable), ['stage', 'discard']);
   }
 
-  // A Compose without --no-env-resolution never builds the model: the staging is discarded.
-  const old = harness();
-  old.results['config-staging'] = 'result=failed\nreason=compose_version_unsupported\n';
-  const unsupported = await run(old, { creation: true, activation: true });
-  assert.deepEqual([unsupported.result, unsupported.reasonCodes], ['FAILED', ['CONFIG_COMPOSE_VERSION_UNSUPPORTED']]);
-  assert.deepEqual(hostPhases(old), ['stage', 'config', 'discard']);
+  // A model Compose cannot build creates nothing: the staging is discarded.
+  const unbuilt = harness();
+  unbuilt.results['config-staging'] = 'result=failed\nreason=compose_invalid\n';
+  const invalid = await run(unbuilt, { creation: true, activation: true });
+  assert.deepEqual([invalid.result, invalid.reasonCodes], ['FAILED', ['CONFIG_COMPOSE_INVALID']]);
+  assert.deepEqual(hostPhases(unbuilt), ['stage', 'config', 'discard']);
 
   // A runtime created earlier has its source parsed again, from the checkout its marker digests.
   const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
@@ -709,7 +712,7 @@ test('the host prints the compose file whole and only from a regular file of an 
   }
 });
 
-test('the installed Compose keeps env files unread, while a host file it extends leaves no trace in the model', async (t) => {
+test('the installed Compose loads host files the model may not show: only the parsed source refuses them all', async (t) => {
   const help = spawnSync('docker', ['compose', 'config', '--help'], { encoding: 'utf8', timeout: 30_000 });
   if (help.status !== 0 || !help.stdout.includes('--no-env-resolution')) {
     t.skip('no Docker Compose with config --no-env-resolution on this host');
@@ -735,10 +738,16 @@ test('the installed Compose keeps env files unread, while a host file it extends
     // The fixture project builds a model the policy admits.
     const admitted = await model(SOURCE);
     assert.deepEqual(evaluateComposeSafety(admitted.json, project).findings, []);
-    // An env file stays in the model, unread, and the model refuses it by name.
-    const envFile = await model(`services:\n  api:\n    image: x\n    "env_file": ${join(host, 'host.env')}\n`);
-    assert.doesNotMatch(envFile.text, /from-the-host-env-file/);
-    assert.ok(evaluateComposeSafety(envFile.json, project).findings.some((finding: any) => finding.key === 'env_file'));
+    // An env file: Docker Compose v5.1.1 keeps it in the model, unread, and the model refuses it by name;
+    // v2.38.2 reads it anyway and keeps no trace of where the value came from. The parse refuses it on both.
+    const quoted = `services:\n  api:\n    image: x\n    "env_file": ${join(host, 'host.env')}\n`;
+    const envFile = await model(quoted);
+    if (envFile.text.includes('from-the-host-env-file')) {
+      assert.doesNotMatch(envFile.text, /env_file/);
+    } else {
+      assert.ok(evaluateComposeSafety(envFile.json, project).findings.some((finding: any) => finding.key === 'env_file'));
+    }
+    assert.ok(evaluateComposeSource(quoted).findings.some((finding: any) => finding.key === 'env_file'));
     // A host file extended through a quoted key is read and merged without a trace: only the parsed source refuses it.
     const extended = `services:\n  api:\n    "extends": {file: ${join(host, 'compose.yaml')}, service: db}\n`;
     const loaded = await model(extended);

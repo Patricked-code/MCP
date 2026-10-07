@@ -297,8 +297,10 @@ export function buildComposeSourceScript(input: { target: ProjectRuntimeTarget; 
 /**
  * Prints the compose model of a checkout, staged by the job or created
  * earlier, built from the exact file whose parsed source was admitted, after
- * the link checks. Env files are never read while the model is built: a
- * Compose that cannot leave them unread builds nothing.
+ * the link checks. The parsed source is the control for the keys that load
+ * host files. `--no-env-resolution` is a second guard where Compose honours
+ * it: Docker Compose v5.1.1 keeps an `env_file` in the model, unread, while
+ * v2.38.2 still reads it, so the option is passed when known, never relied on.
  */
 export function buildComposeConfigScript(input: {
   target: ProjectRuntimeTarget;
@@ -319,8 +321,9 @@ export function buildComposeConfigScript(input: {
     `if grep -Eq ${shellQuote(FORBIDDEN_COMPOSE_KEYS)} "$directory/$file"; then fail compose_feature_forbidden; fi`,
     symlinkGuard(directory),
     '[ -z "$outside" ] || fail symlink_outside',
-    `${CLEAN_ENV} docker compose config --help 2>/dev/null | grep -q -- --no-env-resolution || fail compose_version_unsupported`,
-    `config="$(cd "$directory" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" config --no-env-resolution --format json 2>/dev/null)" || fail compose_invalid`,
+    "resolution=''",
+    `if ${CLEAN_ENV} docker compose config --help 2>/dev/null | grep -q -- --no-env-resolution; then resolution='--no-env-resolution'; fi`,
+    `config="$(cd "$directory" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" config $resolution --format json 2>/dev/null)" || fail compose_invalid`,
     "printf 'result=configured\\n'",
     `printf 'compose_file=%s\\n' "$file"`,
     `printf 'compose_config_b64=%s\\n' "$(printf '%s' "$config" | head -c ${MAX_COMPOSE_CONFIG_BYTES} | base64 | tr -d '\\n')"`
