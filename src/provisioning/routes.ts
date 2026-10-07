@@ -194,7 +194,7 @@ function renderExecution(execution: ProjectRuntimeExecution): string {
       ? `${code(execution.jobId)} : <strong>attestation non écrite</strong> (${code('ATTESTATION_UNWRITTEN')}). La mutation a eu lieu sans preuve durable ; l’état réel de S1 doit être relu.`
       : `${code(execution.jobId)}, attesté dans ${code(`data/provisioning/${execution.jobId}/attestation.json`)}`;
   const findings = execution.findings.length > 0
-    ? `<p>Constats sur le modèle Compose : ${codes(execution.findings.map((finding) => `${finding.code}:${finding.service ?? '-'}`))}</p>`
+    ? `<p>Constats sur le modèle Compose : ${codes(execution.findings.map((finding) => `${finding.code}:${finding.service ?? '-'}${finding.key ? `:${finding.key}` : ''}`))}</p>`
     : '';
   return `<p>Résultat : <strong>${escapeHtml(execution.result)}</strong>${execution.mode ? ` (mode ${code(execution.mode)})` : ''}</p>
     <p>Job : ${job}</p>

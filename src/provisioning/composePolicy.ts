@@ -1,3 +1,5 @@
+import { parseDocument } from 'yaml';
+
 import {
   PROVISIONING_LABEL_PROJECT,
   PROVISIONING_LABEL_REPOSITORY,
@@ -7,23 +9,31 @@ import {
 /**
  * F.2 (TB-W3-F-03), increment 2: what a provisioned Docker Compose model may
  * ask of the host, checked on the normalized model `docker compose config
- * --format json` prints for the project directory. Everything stays inside
- * the project: no privileged mode, added capability, device, host namespace
- * or unconfined profile; published ports bound to the loopback only; bind
- * mounts, build contexts, Dockerfiles and file-based secrets inside the
- * project; no external network, volume or link and no fixed container name.
+ * --no-env-resolution --format json` prints for the project directory.
+ * Everything stays inside the project: only reviewed Compose keys, so a key
+ * that loads a host file, hands the engine to a container, runs a host
+ * program or hook or reaches the host another way never runs, a key Compose
+ * adds later included; no privileged mode, added capability, device, host
+ * namespace, shared network or loosened confinement; published ports bound to
+ * the loopback only; bind mounts, build contexts, Dockerfiles and file-based
+ * secrets inside the project; no external or foreign-named network or volume,
+ * no external link or fixed container name; the engine's local logging only.
  * Named volumes and networks keep their default drivers without options: a
  * driver option can bind a host path or attach to the host network.
  * Any doubt fails closed. Pure.
  */
 export type ComposeSafetyCode =
   | 'COMPOSE_CONFIG_INVALID'
+  | 'COMPOSE_SOURCE_INVALID'
   | 'COMPOSE_SERVICES_INVALID'
+  | 'COMPOSE_KEY_UNSUPPORTED'
   | 'COMPOSE_PRIVILEGED'
   | 'COMPOSE_CAPABILITY_ADDED'
   | 'COMPOSE_DEVICE'
   | 'COMPOSE_HOST_NAMESPACE'
+  | 'COMPOSE_SHARED_NETWORK'
   | 'COMPOSE_SECURITY_OPT_UNCONFINED'
+  | 'COMPOSE_LOGGING_DRIVER'
   | 'COMPOSE_PORT_NOT_LOCAL'
   | 'COMPOSE_BIND_OUTSIDE_PROJECT'
   | 'COMPOSE_BUILD_OUTSIDE_PROJECT'
@@ -34,7 +44,8 @@ export type ComposeSafetyCode =
   | 'COMPOSE_VOLUME_DRIVER'
   | 'COMPOSE_NETWORK_DRIVER';
 
-export type ComposeSafetyFinding = Readonly<{ code: ComposeSafetyCode; service: string | null }>;
+/** A finding names the key it refuses, as the repository wrote it, when there is one. */
+export type ComposeSafetyFinding = Readonly<{ code: ComposeSafetyCode; service: string | null; key: string | null }>;
 
 export type ComposeSafety = Readonly<{
   ok: boolean;
@@ -42,10 +53,44 @@ export type ComposeSafety = Readonly<{
   findings: readonly ComposeSafetyFinding[];
 }>;
 
+/** The largest compose file the host prints and the parse reads. */
+export const COMPOSE_SOURCE_MAX_BYTES = 100_000;
+
 const SERVICE_NAME_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,62}$/;
 const MAX_SERVICES = 20;
+const MAX_ALIASES = 100;
+const MAX_KEY_LENGTH = 100;
 const LOOPBACK = new Set(['127.0.0.1', '::1']);
 const NAMESPACE_KEYS = ['pid', 'ipc', 'userns_mode', 'cgroup', 'uts'] as const;
+
+// The reviewed Compose keys, as the compose specification names them. Anything else is unsupported,
+// a key Compose adds later included: `include`, `extends`, `env_file` and `label_file` load other
+// files, `use_api_socket` hands the engine to the container, `provider` and the lifecycle hooks run
+// programs, and `net`, `log_driver`, `volume_driver`, `runtime`, `cgroup_parent`, `gpus` or `models`
+// reach the host past the checks below. Extension fields (`x-`) are ignored by Compose.
+const TOP_LEVEL_KEYS: ReadonlySet<string> = new Set(['version', 'name', 'services', 'networks', 'volumes', 'secrets', 'configs']);
+const SERVICE_KEYS: ReadonlySet<string> = new Set([
+  'annotations', 'attach', 'build', 'cap_add', 'cap_drop', 'cgroup', 'command', 'configs', 'container_name',
+  'cpu_count', 'cpu_percent', 'cpu_period', 'cpu_quota', 'cpu_shares', 'cpus', 'cpuset', 'depends_on', 'deploy',
+  'develop', 'device_cgroup_rules', 'devices', 'dns', 'dns_opt', 'dns_search', 'domainname', 'entrypoint',
+  'environment', 'expose', 'external_links', 'extra_hosts', 'group_add', 'healthcheck', 'hostname', 'image', 'init',
+  'ipc', 'labels', 'links', 'logging', 'mac_address', 'mem_limit', 'mem_reservation', 'mem_swappiness',
+  'memswap_limit', 'network_mode', 'networks', 'pid', 'pids_limit', 'platform', 'ports', 'privileged', 'profiles',
+  'pull_policy', 'read_only', 'restart', 'scale', 'secrets', 'security_opt', 'shm_size', 'stdin_open',
+  'stop_grace_period', 'stop_signal', 'sysctls', 'tmpfs', 'tty', 'ulimits', 'user', 'userns_mode', 'uts', 'volumes',
+  'volumes_from', 'working_dir'
+]);
+// A build never gets privileges or entitlements, nor a cache read from or written to a host path.
+const BUILD_KEYS: ReadonlySet<string> = new Set([
+  'additional_contexts', 'args', 'context', 'dockerfile', 'dockerfile_inline', 'extra_hosts', 'labels', 'network',
+  'no_cache', 'no_cache_filter', 'platforms', 'pull', 'secrets', 'shm_size', 'ssh', 'tags', 'target', 'ulimits'
+]);
+// A seccomp profile file, an AppArmor profile or an SELinux type can lift the confinement as surely as "unconfined".
+const SECURITY_OPTION = /^no-new-privileges([:=](true|false))?$/;
+// Any other logging driver sends from the engine, on the host network.
+const LOGGING_DRIVERS: ReadonlySet<string> = new Set(['json-file', 'local', 'none']);
+
+type Add = (code: ComposeSafetyCode, service: string | null, key?: string | null) => void;
 
 function record(value: unknown): Record<string, unknown> | null {
   return value && typeof value === 'object' && !Array.isArray(value)
@@ -66,24 +111,65 @@ function insideProject(path: unknown, projectDir: string): boolean {
   return normalized === projectDir || normalized.startsWith(`${projectDir}/`);
 }
 
+function collector(): { findings: ComposeSafetyFinding[]; add: Add } {
+  const findings: ComposeSafetyFinding[] = [];
+  const add: Add = (code, service, key = null) => {
+    const bounded = key === null ? null : key.slice(0, MAX_KEY_LENGTH);
+    if (!findings.some((finding) => finding.code === code && finding.service === service && finding.key === bounded)) {
+      findings.push(Object.freeze({ code, service, key: bounded }));
+    }
+  };
+  return { findings, add };
+}
+
+function verdict(services: readonly string[], findings: ComposeSafetyFinding[]): ComposeSafety {
+  return Object.freeze({
+    ok: findings.length === 0,
+    services: Object.freeze([...services].sort()),
+    findings: Object.freeze(findings)
+  });
+}
+
+function rejected(code: ComposeSafetyCode): ComposeSafety {
+  return Object.freeze({ ok: false, services: Object.freeze([]), findings: Object.freeze([Object.freeze({ code, service: null, key: null })]) });
+}
+
+function checkKeys(keys: Iterable<string>, allowed: ReadonlySet<string>, service: string | null, prefix: string, add: Add): void {
+  for (const key of keys) {
+    if (!allowed.has(key) && !key.startsWith('x-')) add('COMPOSE_KEY_UNSUPPORTED', service, `${prefix}${key}`);
+  }
+}
+
+function validServiceNames(names: readonly unknown[]): names is string[] {
+  return names.length > 0 && names.length <= MAX_SERVICES
+    && names.every((name) => typeof name === 'string' && SERVICE_NAME_PATTERN.test(name));
+}
+
 function checkService(
   name: string,
   service: Record<string, unknown>,
   services: ReadonlySet<string>,
   projectDir: string,
-  add: (code: ComposeSafetyCode, service: string | null) => void
+  add: Add
 ): void {
+  checkKeys(Object.keys(service), SERVICE_KEYS, name, '', add);
   if (service.privileged === true) add('COMPOSE_PRIVILEGED', name);
   if (nonEmpty(service.cap_add)) add('COMPOSE_CAPABILITY_ADDED', name);
   if (nonEmpty(service.devices) || nonEmpty(service.device_cgroup_rules)) add('COMPOSE_DEVICE', name);
+  // A device reservation (a GPU) reaches the host devices as surely as `devices`.
+  if (nonEmpty(record(record(record(service.deploy)?.resources)?.reservations)?.devices)) add('COMPOSE_DEVICE', name);
   if (service.container_name !== undefined) add('COMPOSE_CONTAINER_NAME', name);
   if (nonEmpty(service.external_links)) add('COMPOSE_EXTERNAL_RESOURCE', name);
 
   const networkMode = service.network_mode;
-  if (networkMode !== undefined) {
-    const allowed = networkMode === 'bridge' || networkMode === 'none' || networkMode === 'default'
-      || (typeof networkMode === 'string' && networkMode.startsWith('service:') && services.has(networkMode.slice(8)));
-    if (!allowed) add('COMPOSE_HOST_NAMESPACE', name);
+  if (networkMode === 'bridge' || networkMode === 'default') {
+    // The engine's default bridge is shared with every container of the host, outside the project.
+    add('COMPOSE_SHARED_NETWORK', name);
+  } else if (
+    networkMode !== undefined && networkMode !== 'none'
+    && !(typeof networkMode === 'string' && networkMode.startsWith('service:') && services.has(networkMode.slice(8)))
+  ) {
+    add('COMPOSE_HOST_NAMESPACE', name);
   }
   for (const key of NAMESPACE_KEYS) {
     const value = service[key];
@@ -93,10 +179,12 @@ function checkService(
     if (!allowed) add('COMPOSE_HOST_NAMESPACE', name);
   }
   const securityOptions = Array.isArray(service.security_opt) ? service.security_opt : service.security_opt === undefined ? [] : null;
-  if (securityOptions === null || securityOptions.some((option) => (
-    typeof option !== 'string' || /unconfined|label[:=]disable/i.test(option)
-  ))) {
+  if (securityOptions === null || securityOptions.some((option) => typeof option !== 'string' || !SECURITY_OPTION.test(option))) {
     add('COMPOSE_SECURITY_OPT_UNCONFINED', name);
+  }
+  const logging = service.logging === undefined ? {} : record(service.logging);
+  if (!logging || (logging.driver !== undefined && !LOGGING_DRIVERS.has(String(logging.driver)))) {
+    add('COMPOSE_LOGGING_DRIVER', name);
   }
 
   const ports = service.ports === undefined ? [] : Array.isArray(service.ports) ? service.ports : null;
@@ -123,6 +211,7 @@ function checkService(
 
   if (service.build !== undefined) {
     const build = record(service.build);
+    if (build) checkKeys(Object.keys(build), BUILD_KEYS, name, 'build.', add);
     if (!build || !insideProject(build.context, projectDir)) add('COMPOSE_BUILD_OUTSIDE_PROJECT', name);
     const dockerfile = build?.dockerfile;
     if (
@@ -146,17 +235,24 @@ function checkService(
 function checkTopLevel(
   config: Record<string, unknown>,
   projectDir: string,
-  add: (code: ComposeSafetyCode, service: string | null) => void
+  add: Add
 ): void {
+  checkKeys(Object.keys(config), TOP_LEVEL_KEYS, null, '', add);
+  const project = typeof config.name === 'string' ? config.name : null;
   for (const key of ['networks', 'volumes'] as const) {
     const entries = record(config[key]);
     if (config[key] !== undefined && !entries) add('COMPOSE_CONFIG_INVALID', null);
     // Only the default driver, without options: a `local` volume with bind options mounts any host path.
     const defaultDriver = key === 'volumes' ? 'local' : 'bridge';
     const driverCode = key === 'volumes' ? 'COMPOSE_VOLUME_DRIVER' : 'COMPOSE_NETWORK_DRIVER';
-    for (const entry of Object.values(entries ?? {})) {
+    for (const [entryName, entry] of Object.entries(entries ?? {})) {
       const definition = record(entry);
-      if (definition?.external) add('COMPOSE_EXTERNAL_RESOURCE', null);
+      if (definition?.external) {
+        add('COMPOSE_EXTERNAL_RESOURCE', null, `${key}.${entryName}`);
+      } else if (definition?.name !== undefined && definition.name !== `${project}_${entryName}`) {
+        // Compose names a project resource `<project>_<key>`: another name joins whatever already carries it.
+        add('COMPOSE_EXTERNAL_RESOURCE', null, `${key}.${entryName}`);
+      }
       if ((definition?.driver !== undefined && definition.driver !== defaultDriver) || nonEmpty(definition?.driver_opts)) {
         add(driverCode, null);
       }
@@ -180,21 +276,12 @@ function checkTopLevel(
 
 /** The safety of a normalized compose model for the given project directory. */
 export function evaluateComposeSafety(config: unknown, projectDir: string): ComposeSafety {
-  const findings: ComposeSafetyFinding[] = [];
-  const add = (code: ComposeSafetyCode, service: string | null) => {
-    if (!findings.some((finding) => finding.code === code && finding.service === service)) {
-      findings.push(Object.freeze({ code, service }));
-    }
-  };
   const root = record(config);
   const serviceEntries = record(root?.services);
-  if (!root || !serviceEntries) {
-    return Object.freeze({ ok: false, services: Object.freeze([]), findings: Object.freeze([{ code: 'COMPOSE_CONFIG_INVALID' as const, service: null }]) });
-  }
+  if (!root || !serviceEntries) return rejected('COMPOSE_CONFIG_INVALID');
   const names = Object.keys(serviceEntries);
-  if (names.length === 0 || names.length > MAX_SERVICES || !names.every((name) => SERVICE_NAME_PATTERN.test(name))) {
-    return Object.freeze({ ok: false, services: Object.freeze([]), findings: Object.freeze([{ code: 'COMPOSE_SERVICES_INVALID' as const, service: null }]) });
-  }
+  if (!validServiceNames(names)) return rejected('COMPOSE_SERVICES_INVALID');
+  const { findings, add } = collector();
   const services = new Set(names);
   for (const name of names) {
     const service = record(serviceEntries[name]);
@@ -205,11 +292,56 @@ export function evaluateComposeSafety(config: unknown, projectDir: string): Comp
     checkService(name, service, services, projectDir, add);
   }
   checkTopLevel(root, projectDir, add);
-  return Object.freeze({
-    ok: findings.length === 0,
-    services: Object.freeze([...names].sort()),
-    findings: Object.freeze(findings)
-  });
+  return verdict(names, findings);
+}
+
+function stringKeyed(value: unknown): value is Map<string, unknown> {
+  return value instanceof Map && [...value.keys()].every((key) => typeof key === 'string');
+}
+
+/**
+ * The keys of the compose file itself, parsed before Compose ever loads it.
+ * Compose resolves `include`, `extends`, `env_file` and `label_file` while it
+ * loads the project, reading files the normalized model no longer names; a
+ * line match misses a key that is quoted, in a flow mapping, escaped, merged
+ * or aliased. The parse sees every spelling and the same allowlists refuse
+ * them. What it cannot read exactly as Compose would fails closed: an error
+ * or a warning (an unknown tag included), several documents, a duplicate or
+ * non-string key, too many aliases or an oversized file. Pure.
+ */
+export function evaluateComposeSource(source: unknown): ComposeSafety {
+  if (typeof source !== 'string' || source.length === 0 || Buffer.byteLength(source, 'utf8') > COMPOSE_SOURCE_MAX_BYTES) {
+    return rejected('COMPOSE_SOURCE_INVALID');
+  }
+  let root: unknown;
+  try {
+    const document = parseDocument(source, { merge: true, uniqueKeys: true, strict: true, prettyErrors: false });
+    if (document.errors.length > 0 || document.warnings.length > 0) return rejected('COMPOSE_SOURCE_INVALID');
+    root = document.toJS({ mapAsMap: true, maxAliasCount: MAX_ALIASES });
+  } catch {
+    return rejected('COMPOSE_SOURCE_INVALID');
+  }
+  if (!stringKeyed(root)) return rejected('COMPOSE_SOURCE_INVALID');
+  const serviceEntries = root.get('services');
+  if (!stringKeyed(serviceEntries)) return rejected('COMPOSE_SERVICES_INVALID');
+  const names = [...serviceEntries.keys()];
+  if (!validServiceNames(names)) return rejected('COMPOSE_SERVICES_INVALID');
+  const { findings, add } = collector();
+  checkKeys(root.keys(), TOP_LEVEL_KEYS, null, '', add);
+  for (const name of names) {
+    const service = serviceEntries.get(name);
+    if (!stringKeyed(service)) {
+      add('COMPOSE_SERVICES_INVALID', name);
+      continue;
+    }
+    checkKeys(service.keys(), SERVICE_KEYS, name, '', add);
+    const build = service.get('build');
+    if (build instanceof Map) {
+      if (stringKeyed(build)) checkKeys(build.keys(), BUILD_KEYS, name, 'build.', add);
+      else add('COMPOSE_SERVICES_INVALID', name);
+    }
+  }
+  return verdict(names, findings);
 }
 
 /** The compose override that labels every service with the provisioned repository, revision and project. */

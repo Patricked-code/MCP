@@ -1,7 +1,15 @@
+import { createHash } from 'node:crypto';
+
 import type { GitRegistryProjectEvidence } from '../github/registry.js';
 import { scopeCoversProjectComponent } from '../governedWorkflow/governance/projectInheritance.js';
 import type { ServerTargetConfiguration } from '../liveState/targetProject.js';
-import { evaluateComposeSafety, provisioningLabelsOverride, type ComposeSafetyFinding } from './composePolicy.js';
+import {
+  COMPOSE_SOURCE_MAX_BYTES,
+  evaluateComposeSafety,
+  evaluateComposeSource,
+  provisioningLabelsOverride,
+  type ComposeSafetyFinding
+} from './composePolicy.js';
 import {
   PROVISIONING_MARKER_FILE,
   governedRuntimePath,
@@ -26,9 +34,11 @@ export { PROVISIONING_MARKER_FILE } from './projectRuntime.js';
  * runs, with write mode on and one provisioning at a time. The revision is
  * then admitted afresh (increment 3): reviewed default-branch history and a
  * non-failing CI gate. Creation fetches the exact revision, stages it beside
- * the target, checks the compose model, then promotes it and writes the
- * marker; activation, under its own consent, labels and starts the compose
- * project and waits for its health. A failure stops the project without its
+ * the target, parses its compose file before Compose loads anything, has
+ * Compose build the model from that exact file and checks it, then promotes
+ * it and writes the marker; activation, under its own consent, parses the
+ * file again, labels and starts the compose project and waits for its
+ * health. A failure stops the project without its
  * volumes and moves files to quarantine: nothing is deleted. Every run that
  * reaches a job is attested.
  */
@@ -44,7 +54,8 @@ const SHA256_PATTERN = /^[0-9a-f]{64}$/;
 const COMPOSE_FILES = new Set(['compose.yaml', 'compose.yml', 'docker-compose.yaml', 'docker-compose.yml']);
 const MAX_COMPOSE_CONFIG_BYTES = 200_000;
 const CLEAN_ENV = 'env -i PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin HOME="$HOME"';
-// Compose keys that read host files outside the project at load time.
+// Compose keys that read host files outside the project at load time. The parsed source refuses them
+// whatever their spelling (evaluateComposeSource); this line match stays a second guard on the host.
 const FORBIDDEN_COMPOSE_KEYS = '^[[:space:]-]*(env_file|extends|include|label_file)[[:space:]]*:';
 
 /**
@@ -191,21 +202,25 @@ function composeNames(project: string, file: string): string[] {
   return [`project=${shellQuote(project)}`, `file=${shellQuote(file)}`];
 }
 
-function composeConfigLines(directory: string, project: string, file: string, done: string): string[] {
-  return [
-    `if grep -Eq ${shellQuote(FORBIDDEN_COMPOSE_KEYS)} ${shellQuote(`${directory}/${file}`)}; then fail compose_feature_forbidden; fi`,
-    symlinkGuard(directory),
-    '[ -z "$outside" ] || fail symlink_outside',
-    `directory=${shellQuote(directory)}`,
-    ...composeNames(project, file),
-    `config="$(cd "$directory" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" config --format json 2>/dev/null)" || fail compose_invalid`,
-    `printf 'result=${done}\\n'`,
-    `printf 'compose_file=%s\\n' ${shellQuote(file)}`,
-    `printf 'compose_config_b64=%s\\n' "$(printf '%s' "$config" | head -c ${MAX_COMPOSE_CONFIG_BYTES} | base64 | tr -d '\\n')"`
-  ];
-}
+// Reads the compose file "$file" of "$directory", a regular file and never a link to a host file, and
+// prints it whole with its digest: Compose has not read it yet, and loads it only once its parse is admitted.
+const COMPOSE_SOURCE_LINES = [
+  '[ -f "$directory/$file" ] && [ ! -L "$directory/$file" ] || fail compose_not_regular',
+  `size="$(wc -c < "$directory/$file" | tr -d ' ')" || fail compose_source`,
+  `[ "$size" -le ${COMPOSE_SOURCE_MAX_BYTES} ] 2>/dev/null || fail compose_source_too_large`,
+  `encoded="$(base64 < "$directory/$file" | tr -d '\\n')" || fail compose_source`,
+  `digest="$(sha256sum < "$directory/$file" | cut -d' ' -f1)" || fail compose_source`
+];
+const COMPOSE_SOURCE_PRINT_LINES = [
+  `printf 'compose_file=%s\\n' "$file"`,
+  `printf 'compose_source_b64=%s\\n' "$encoded"`,
+  `printf 'compose_source_sha256=%s\\n' "$digest"`
+];
 
-/** Re-proves absence on the host, verifies the archive, extracts it beside the target and prints its compose model. */
+/**
+ * Re-proves absence on the host, verifies and bounds the archive, extracts it
+ * beside the target and prints its compose file without loading it.
+ */
 export function buildStageScript(input: { jobId: string; target: ProjectRuntimeTarget; archiveSha256: string }): string {
   assertJobId(input.jobId);
   assertTarget(input.target);
@@ -225,21 +240,16 @@ export function buildStageScript(input: { jobId: string; target: ProjectRuntimeT
     ...buildArchiveBoundsLines(archive, PROVISIONING_ARCHIVE_LIMITS),
     `mkdir -p ${shellQuote(staging)} || fail extract`,
     `tar -xzf ${shellQuote(archive)} -C ${shellQuote(staging)} --strip-components=1 --no-same-owner --no-same-permissions || fail extract`,
+    `directory=${shellQuote(staging)}`,
     "file=''",
     'for candidate in compose.yaml compose.yml docker-compose.yaml docker-compose.yml; do',
-    `  if [ -f ${shellQuote(staging)}/"$candidate" ]; then file="$candidate"; break; fi`,
+    '  if [ -e "$directory/$candidate" ] || [ -L "$directory/$candidate" ]; then file="$candidate"; break; fi',
     'done',
     '[ -n "$file" ] || fail compose_missing',
-    `if grep -Eq ${shellQuote(FORBIDDEN_COMPOSE_KEYS)} ${shellQuote(staging)}/"$file"; then fail compose_feature_forbidden; fi`,
-    symlinkGuard(staging),
-    '[ -z "$outside" ] || fail symlink_outside',
-    `staging=${shellQuote(staging)}`,
-    `project=${shellQuote(input.target.composeProject)}`,
-    `config="$(cd "$staging" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" config --format json 2>/dev/null)" || fail compose_invalid`,
-    'tree="$(tree_digest "$staging")" || fail tree_digest',
+    ...COMPOSE_SOURCE_LINES,
+    'tree="$(tree_digest "$directory")" || fail tree_digest',
     "printf 'result=staged\\n'",
-    `printf 'compose_file=%s\\n' "$file"`,
-    `printf 'compose_config_b64=%s\\n' "$(printf '%s' "$config" | head -c ${MAX_COMPOSE_CONFIG_BYTES} | base64 | tr -d '\\n')"`,
+    ...COMPOSE_SOURCE_PRINT_LINES,
     "printf 'tree_digest=%s\\n' \"$tree\""
   ].join('\n');
 }
@@ -266,14 +276,54 @@ export function buildCreateScript(input: {
   ].join('\n');
 }
 
-/** Prints the compose model of an already created runtime, after the same file and link checks. */
-export function buildComposeConfigScript(input: { target: ProjectRuntimeTarget; composeFile: string }): string {
+/** Prints the compose file of a created runtime whose checkout still matches the digest of its creation. */
+export function buildComposeSourceScript(input: { target: ProjectRuntimeTarget; composeFile: string; treeDigest: string }): string {
   assertTarget(input.target);
   assertComposeFile(input.composeFile);
+  assertTreeDigest(input.treeDigest);
+  return [
+    ...header('source'),
+    PROVISIONING_TREE_DIGEST_SHELL,
+    `directory=${shellQuote(input.target.serverPath)}`,
+    `file=${shellQuote(input.composeFile)}`,
+    'tree="$(tree_digest "$directory")" || fail tree_digest',
+    `[ "$tree" = ${shellQuote(input.treeDigest)} ] || fail checkout_modified`,
+    ...COMPOSE_SOURCE_LINES,
+    "printf 'result=sourced\\n'",
+    ...COMPOSE_SOURCE_PRINT_LINES
+  ].join('\n');
+}
+
+/**
+ * Prints the compose model of a checkout, staged by the job or created
+ * earlier, built from the exact file whose parsed source was admitted, after
+ * the link checks. Env files are never read while the model is built: a
+ * Compose that cannot leave them unread builds nothing.
+ */
+export function buildComposeConfigScript(input: {
+  target: ProjectRuntimeTarget;
+  composeFile: string;
+  sourceSha256: string;
+  jobId?: string;
+}): string {
+  assertTarget(input.target);
+  assertComposeFile(input.composeFile);
+  if (!SHA256_PATTERN.test(input.sourceSha256)) throw new Error('PROVISIONING_COMPOSE_SOURCE_DIGEST_INVALID');
+  const directory = input.jobId === undefined ? input.target.serverPath : stagingPath(input.target.serverPath, input.jobId);
   return [
     ...header('config'),
-    `[ -f ${shellQuote(`${input.target.serverPath}/${input.composeFile}`)} ] || fail compose_missing`,
-    ...composeConfigLines(input.target.serverPath, input.target.composeProject, input.composeFile, 'configured')
+    `directory=${shellQuote(directory)}`,
+    ...composeNames(input.target.composeProject, input.composeFile),
+    '[ -f "$directory/$file" ] && [ ! -L "$directory/$file" ] || fail compose_missing',
+    `[ "$(sha256sum < "$directory/$file" | cut -d' ' -f1)" = ${shellQuote(input.sourceSha256)} ] || fail compose_source_changed`,
+    `if grep -Eq ${shellQuote(FORBIDDEN_COMPOSE_KEYS)} "$directory/$file"; then fail compose_feature_forbidden; fi`,
+    symlinkGuard(directory),
+    '[ -z "$outside" ] || fail symlink_outside',
+    `${CLEAN_ENV} docker compose config --help 2>/dev/null | grep -q -- --no-env-resolution || fail compose_version_unsupported`,
+    `config="$(cd "$directory" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" config --no-env-resolution --format json 2>/dev/null)" || fail compose_invalid`,
+    "printf 'result=configured\\n'",
+    `printf 'compose_file=%s\\n' "$file"`,
+    `printf 'compose_config_b64=%s\\n' "$(printf '%s' "$config" | head -c ${MAX_COMPOSE_CONFIG_BYTES} | base64 | tr -d '\\n')"`
   ].join('\n');
 }
 
@@ -421,6 +471,7 @@ export type ProjectRuntimeExecutionDependencies = {
 
 const PHASE_LIMITS: Record<string, { timeoutMs: number; maxOutputBytes: number }> = {
   stage: { timeoutMs: 300_000, maxOutputBytes: 400_000 },
+  source: { timeoutMs: 300_000, maxOutputBytes: 400_000 },
   create: { timeoutMs: 60_000, maxOutputBytes: 8_192 },
   config: { timeoutMs: 120_000, maxOutputBytes: 400_000 },
   activate: { timeoutMs: 1_200_000, maxOutputBytes: 8_192 },
@@ -443,6 +494,22 @@ function composeModel(values: Map<string, string>): unknown {
   } catch {
     return null;
   }
+}
+
+/** The compose file the host printed, only when it arrived whole: bounded, UTF-8 and matching its digest. */
+function printedComposeSource(values: Map<string, string>): { source: string; sha256: string } | null {
+  const digest = values.get('compose_source_sha256') ?? '';
+  const encoded = values.get('compose_source_b64') ?? '';
+  if (!SHA256_PATTERN.test(digest) || !/^[A-Za-z0-9+/]+={0,2}$/.test(encoded)) return null;
+  const bytes = Buffer.from(encoded, 'base64');
+  if (bytes.length === 0 || bytes.length > COMPOSE_SOURCE_MAX_BYTES) return null;
+  if (createHash('sha256').update(bytes).digest('hex') !== digest) return null;
+  const source = bytes.toString('utf8');
+  return Buffer.from(source, 'utf8').equals(bytes) ? { source, sha256: digest } : null;
+}
+
+function hostReason(prefix: string, values: Map<string, string>): string {
+  return `${prefix}_${(values.get('reason') ?? 'failed').toUpperCase().replace(/[^A-Z_]/g, '_')}`;
 }
 
 type ObservationDependencies = Pick<ProjectRuntimeExecutionDependencies, 'readServerTarget' | 'readRegistry' | 'observe'>;
@@ -553,6 +620,7 @@ async function execute(
   const jobId = provisioningJobId(deps.now(), deps.randomHex());
   const steps: Array<{ id: string; status: string }> = [];
   let archiveSha256: string | null = null;
+  let composeSourceSha256: string | null = null;
   let findings: readonly ComposeSafetyFinding[] = [];
   let rollback: ProjectRuntimeExecution['rollback'] = 'NOT_NEEDED';
 
@@ -589,6 +657,7 @@ async function execute(
       admission,
       steps,
       archiveSha256,
+      composeSourceSha256,
       composeFindings: findings,
       result,
       reasonCodes,
@@ -608,6 +677,43 @@ async function execute(
   const discard = async () => {
     const values = await host('discard', buildDiscardStagingScript({ jobId, target }));
     steps.push({ id: 'discard-staging', status: values.get('result') === 'discarded' ? 'DONE' : 'FAILED' });
+  };
+
+  type ComposeCheck = { services: readonly string[] } | { result: ProjectRuntimeExecutionResult; reasonCodes: string[] };
+  // The compose file is parsed before Compose loads anything: a key that reads a host file, however it is
+  // spelled, never runs. Compose then builds the model from that exact file, which is checked in turn.
+  const checkCompose = async (printed: Map<string, string>, composeFile: string, unreadable: string, staged: boolean): Promise<ComposeCheck> => {
+    const source = COMPOSE_FILES.has(composeFile) && printed.get('compose_file') === composeFile ? printedComposeSource(printed) : null;
+    if (!source) {
+      steps.push({ id: 'compose-source', status: 'FAILED' });
+      return { result: 'FAILED', reasonCodes: [unreadable] };
+    }
+    composeSourceSha256 = source.sha256;
+    const parsed = evaluateComposeSource(source.source);
+    findings = parsed.findings;
+    if (!parsed.ok) {
+      steps.push({ id: 'compose-source', status: 'BLOCKED' });
+      return { result: 'BLOCKED', reasonCodes: ['COMPOSE_UNSAFE'] };
+    }
+    steps.push({ id: 'compose-source', status: 'DONE' });
+    const configured = await host('config', buildComposeConfigScript({
+      target,
+      composeFile,
+      sourceSha256: source.sha256,
+      ...(staged ? { jobId } : {})
+    }));
+    if (configured.get('result') !== 'configured') {
+      steps.push({ id: 'compose-policy', status: 'FAILED' });
+      return { result: 'FAILED', reasonCodes: [hostReason('CONFIG', configured)] };
+    }
+    const safety = evaluateComposeSafety(composeModel(configured), staged ? stagingPath(target.serverPath, jobId) : target.serverPath);
+    findings = safety.findings;
+    if (!safety.ok) {
+      steps.push({ id: 'compose-policy', status: 'BLOCKED' });
+      return { result: 'BLOCKED', reasonCodes: ['COMPOSE_UNSAFE'] };
+    }
+    steps.push({ id: 'compose-policy', status: 'DONE' });
+    return { services: safety.services };
   };
 
   let composeFile: string;
@@ -630,7 +736,7 @@ async function execute(
     if (staged.get('result') !== 'staged') {
       steps.push({ id: 'backup', status: 'FAILED' });
       await discard();
-      return finish('FAILED', [`STAGE_${(staged.get('reason') ?? 'failed').toUpperCase().replace(/[^A-Z_]/g, '_')}`]);
+      return finish('FAILED', [hostReason('STAGE', staged)]);
     }
     const stagedDigest = staged.get('tree_digest') ?? '';
     if (!SHA256_PATTERN.test(stagedDigest)) {
@@ -642,18 +748,13 @@ async function execute(
     // The pre-state is proven empty on the host: the backup records that absence.
     steps.push({ id: 'backup', status: 'DONE' });
     const file = staged.get('compose_file') ?? '';
-    const safety = COMPOSE_FILES.has(file)
-      ? evaluateComposeSafety(composeModel(staged), stagingPath(target.serverPath, jobId))
-      : evaluateComposeSafety(null, target.serverPath);
-    findings = safety.findings;
-    if (!safety.ok) {
-      steps.push({ id: 'compose-policy', status: 'BLOCKED' });
+    const checked = await checkCompose(staged, file, 'STAGE_SOURCE_UNREADABLE', true);
+    if ('result' in checked) {
       await discard();
-      return finish('BLOCKED', ['COMPOSE_UNSAFE']);
+      return finish(checked.result, checked.reasonCodes);
     }
-    steps.push({ id: 'compose-policy', status: 'DONE' });
     composeFile = file;
-    services = safety.services;
+    services = checked.services;
 
     const created = await host('create', buildCreateScript({ jobId, target, composeFile, createdAt: deps.now().toISOString(), treeDigest, services }));
     if (created.get('result') !== 'created') {
@@ -668,17 +769,15 @@ async function execute(
     if (!marker) return finish('FAILED', ['MARKER_UNAVAILABLE']);
     composeFile = marker.composeFile;
     treeDigest = marker.treeDigest;
-    const configured = await host('config', buildComposeConfigScript({ target, composeFile }));
-    const safety = configured.get('result') === 'configured'
-      ? evaluateComposeSafety(composeModel(configured), target.serverPath)
-      : evaluateComposeSafety(null, target.serverPath);
-    findings = safety.findings;
-    if (!safety.ok) {
-      steps.push({ id: 'compose-policy', status: 'BLOCKED' });
-      return finish('BLOCKED', ['COMPOSE_UNSAFE']);
+    // The source of a created runtime is parsed again, from the checkout its marker digests.
+    const sourced = await host('source', buildComposeSourceScript({ target, composeFile, treeDigest }));
+    if (sourced.get('result') !== 'sourced') {
+      steps.push({ id: 'compose-source', status: 'FAILED' });
+      return finish('FAILED', [hostReason('SOURCE', sourced)]);
     }
-    steps.push({ id: 'compose-policy', status: 'DONE' });
-    services = safety.services;
+    const checked = await checkCompose(sourced, composeFile, 'SOURCE_UNREADABLE', false);
+    if ('result' in checked) return finish(checked.result, checked.reasonCodes);
+    services = checked.services;
   }
 
   const labelsOverride = provisioningLabelsOverride(services, {

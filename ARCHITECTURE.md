@@ -484,21 +484,37 @@ une surface consentie.
     l'API, et seule une redirection vers `codeload.github.com` est suivie.
   - Sur S1, l'absence est reprouvée et l'empreinte de l'archive vérifiée
     avant l'extraction, faite à côté de la cible.
-  - Le modèle Compose est ensuite contrôlé
+  - Le fichier Compose est d'abord analysé, avant que Compose ne charge quoi
+    que ce soit. Compose construit ensuite le modèle depuis ce fichier exact,
+    sans lire les fichiers d'environnement. Ce modèle est contrôlé
     (`src/provisioning/composePolicy.ts`), puis promu avec un marqueur.
-- **Activation, sous son propre consentement.** Elle étiquette les services,
-  démarre le projet Compose et attend la santé. Un runtime créé mais non
-  activé reste un checkout (`CHECKOUT_ONLY` pour C4).
-- **Politique Compose.** Tout reste dans le projet. Sont refusés :
-  - le mode privilégié, les capacités ajoutées, les périphériques et les
-    espaces de noms de l'hôte ;
-  - un port publié ailleurs que sur la boucle locale ;
-  - un montage, une construction ou un Dockerfile hors du projet ;
-  - un réseau, un volume ou un lien externe, et un nom de conteneur fixe ;
-  - un pilote de volume ou de réseau autre que celui par défaut, ou des
-    options de pilote ;
-  - les clés Compose qui lisent des fichiers de l'hôte ;
-  - les liens symboliques sortant du projet.
+- **Activation, sous son propre consentement.** Le fichier Compose du
+  checkout inchangé est analysé et son modèle contrôlé à nouveau. Elle
+  étiquette ensuite les services, démarre le projet Compose et attend la
+  santé. Un runtime créé mais non activé reste un checkout (`CHECKOUT_ONLY`
+  pour C4).
+- **Politique Compose.** Tout reste dans le projet.
+  - **Clés revues seulement.** Le fichier et le modèle n'emploient que des
+    clés Compose revues ; toute autre clé est refusée, y compris une clé que
+    Compose ajoutera plus tard. Compose résout `include`, `extends`,
+    `env_file` et `label_file` en chargeant le projet, sans en garder trace
+    dans le modèle : seule l'analyse du fichier les voit, quelle que soit
+    leur écriture YAML (clé entre guillemets, mapping en ligne, échappement,
+    fusion ou alias).
+  - Sont aussi refusés :
+    - le mode privilégié, les capacités ajoutées, les périphériques (même
+      réservés par `deploy`) et les espaces de noms de l'hôte ;
+    - le pont par défaut du moteur (`network_mode: bridge`), partagé avec
+      tous les conteneurs de l'hôte ;
+    - un port publié ailleurs que sur la boucle locale ;
+    - un montage, une construction ou un Dockerfile hors du projet ;
+    - un réseau, un volume ou un lien externe, un réseau ou un volume nommé
+      hors du projet, et un nom de conteneur fixe ;
+    - un pilote de volume ou de réseau autre que celui par défaut, ou des
+      options de pilote ;
+    - une option de sécurité autre que `no-new-privileges`, et un pilote de
+      journalisation autre que local ;
+    - les liens symboliques sortant du projet.
 - **Échec non destructif.** Le projet Compose est arrêté sans ses volumes,
   et les fichiers créés par le job partent en quarantaine
   (`/opt/apps/mcp-provisioning-quarantine`). Rien n'est supprimé. Chaque job

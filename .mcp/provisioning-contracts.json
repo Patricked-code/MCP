@@ -873,7 +873,7 @@
           "primitives": [
             "POST /provisioning/project-runtime"
           ],
-          "note": "Exact revision fetched from GitHub, digest verified on S1, staged beside the target, compose model checked, then promoted with a marker: the project-bound bootstrap pattern wrapped behind the exact target and the E3 consent."
+          "note": "Exact revision fetched from GitHub, digest verified on S1, staged beside the target, compose file parsed against the reviewed keys before Compose loads it, model built from that file checked, then promoted with a marker: the project-bound bootstrap pattern behind the exact target and E3 consent."
         },
         {
           "id": "activate",
@@ -885,7 +885,7 @@
           "primitives": [
             "POST /provisioning/project-runtime"
           ],
-          "note": "Under its own consent: the revision is admitted again, the services are labelled, the compose project is started and its health awaited. The Governed Deploy admission, wrapped for target runtimes."
+          "note": "Under its own consent: the revision is admitted again, the compose file of the unchanged checkout parsed and its model checked again, the services labelled, the compose project started and its health awaited. The Governed Deploy admission, wrapped for target runtimes."
         },
         {
           "id": "health",

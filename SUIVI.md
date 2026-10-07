@@ -33,10 +33,24 @@
   - **Attestation.** Une attestation non écrite est affichée comme telle (HTTP 500), jamais comme un succès attesté.
   - **GitHub Enterprise Server.** Le chemin `/api/v3` de la base est conservé, et une redirection vers l'hôte de l'API est acceptée.
   - **`NO_OP`.** Il exige le runtime complet : chaque service déclaré par le marqueur tourne, en bonne santé. Sinon le plan est `EXISTING_RUNTIME_DEGRADED`.
+- **Troisième revue Codex (trois constats, tous vérifiés et corrigés à la racine).**
+  - **Cause commune.** La politique Compose refusait une liste de clés connues, et une recherche ligne à ligne gardait les clés qui lisent des fichiers de l'hôte. Une clé entre guillemets ou dans un mapping en ligne lui échappait ; `use_api_socket` (moteur Docker confié au conteneur) n'était pas refusée.
+  - **Fichier Compose analysé avant Compose.** La préparation n'exécute plus Compose : elle imprime le fichier (régulier, jamais un lien, 100 000 octets au plus) avec son empreinte. Le MCP l'analyse avec `yaml` 2.9.1, épinglé, et n'admet que les clés Compose revues, quelle que soit leur écriture YAML. Toute ambiguïté échoue fermée : étiquette inconnue ou binaire, clé dupliquée ou non textuelle, plusieurs documents, trop d'alias.
+  - **Modèle construit depuis ce fichier exact.** Le script `config` vérifie l'empreinte du fichier analysé, puis lance `docker compose config --no-env-resolution` : aucun fichier d'environnement n'est lu. Un Compose sans cette option ne construit rien (`CONFIG_COMPOSE_VERSION_UNSUPPORTED`). Le modèle est contrôlé avec les mêmes listes de clés.
+  - **Runtime créé plus tôt.** Son fichier Compose est de nouveau analysé, depuis le checkout dont le marqueur garde l'empreinte, avant tout chargement par Compose.
+  - **Réseau.** `network_mode: bridge` ou `default` est refusé (`COMPOSE_SHARED_NETWORK`). Un réseau ou un volume nommé hors du projet est traité comme externe.
+  - **Même famille, même correction.** Option de sécurité limitée à `no-new-privileges` (un profil seccomp en fichier ou un type SELinux levaient le confinement) ; journalisation locale seulement ; réservation de périphérique refusée. Un constat nomme désormais la clé refusée.
+  - **Vérifié avec Compose réel (v5.1.1).**
+    - Sans l'option, la valeur d'un fichier d'environnement de l'hôte est injectée dans le modèle et `env_file` en disparaît. Avec l'option, `env_file` reste dans le modèle, non lu.
+    - `label_file`, `extends` et `include` sont lus et ne laissent aucune trace dans le modèle : seule l'analyse du fichier les voit.
+    - Un projet typique (build, ports locaux, volumes, `depends_on`, santé, ancres YAML) passe les deux contrôles.
+    - Un test d'intégration rejoue ces comportements quand Compose est installé, et se déclare ignoré sinon.
 - **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
 - **Preuves.**
   - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.
-  - GREEN local : typecheck, build et gates verts ; suite complète 976/976 (968 avant les revues). Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`).
+  - RED de la troisième revue `8e36322` : 12 tests en échec (analyse du fichier, listes de clés, réseau partagé, scripts et parcours).
+  - CI exact-head de la seconde revue : `3f1098b`, run `37673610028` (#2294), verte.
+  - GREEN local : typecheck, build et gates verts ; suite complète 980/980 (968 avant les revues). Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
 - **NEXT_ACTION** : CI exact-head de la PR #261, merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 — GREEN candidate

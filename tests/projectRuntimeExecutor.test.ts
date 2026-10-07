@@ -338,7 +338,9 @@ test('host scripts quote every value, verify before extracting and never delete'
   assert.match(create!, new RegExp(`"treeDigest":"${TREE}"`));
   assert.ok(activate!.indexOf('checkout_modified') > 0 && activate!.indexOf('checkout_modified') < activate!.indexOf('up -d --build'));
   assert.match(stage!, /--no-same-owner/);
-  assert.match(stage!, /env -i /);
+  // Compose runs with a clean environment.
+  assert.match(config!, /env -i /);
+  assert.match(stagedConfig!, /env -i /);
   assert.match(create!, new RegExp(PROVISIONING_MARKER_FILE.replaceAll('.', '\\.')));
   assert.match(activate!, /up -d --build/);
   assert.match(rollback!, /^project='mcp-portal-0123456789ab'$/m);
@@ -670,6 +672,81 @@ test('the tree digest ignores the provisioning files and changes with any conten
     }
   } finally {
     await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('the host prints the compose file whole and only from a regular file of an unchanged checkout', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-f03-source-'));
+  const outside = await mkdtemp(join(tmpdir(), 'mcp-f03-outside-'));
+  try {
+    const digest = () => spawnSync('sh', ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory], { encoding: 'utf8' }).stdout.trim();
+    const print = (treeDigest = digest()) => {
+      const script = buildComposeSourceScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', treeDigest })
+        .replace(`directory='${PLAN_TARGET.serverPath}'`, `directory='${directory}'`);
+      const results = ['sh', 'bash'].map((shell) => spawnSync(shell, ['-c', script], { encoding: 'utf8', timeout: 10_000 }).stdout);
+      assert.equal(results[0], results[1]);
+      return new Map(results[0]!.trim().split('\n').map((line) => [line.slice(0, line.indexOf('=')), line.slice(line.indexOf('=') + 1)]));
+    };
+    await writeFile(join(directory, 'compose.yaml'), SOURCE);
+    const printed = print();
+    assert.equal(printed.get('result'), 'sourced');
+    assert.equal(Buffer.from(printed.get('compose_source_b64')!, 'base64').toString('utf8'), SOURCE);
+    assert.equal(printed.get('compose_source_sha256'), sha256(SOURCE));
+    // A checkout edited since its creation is never read.
+    assert.equal(print('0'.repeat(64)).get('reason'), 'checkout_modified');
+    // A link, even to a file of the checkout, is never followed to print a host file.
+    await writeFile(join(outside, 'secret.yaml'), 'services: {}\n');
+    await unlink(join(directory, 'compose.yaml'));
+    await symlink(join(outside, 'secret.yaml'), join(directory, 'compose.yaml'));
+    assert.equal(print().get('reason'), 'compose_not_regular');
+    // An oversized file is never printed.
+    await unlink(join(directory, 'compose.yaml'));
+    await writeFile(join(directory, 'compose.yaml'), `${SOURCE}#${'x'.repeat(100_000)}\n`);
+    assert.equal(print().get('reason'), 'compose_source_too_large');
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+    await rm(outside, { recursive: true, force: true });
+  }
+});
+
+test('the installed Compose keeps env files unread, while a host file it extends leaves no trace in the model', async (t) => {
+  const help = spawnSync('docker', ['compose', 'config', '--help'], { encoding: 'utf8', timeout: 30_000 });
+  if (help.status !== 0 || !help.stdout.includes('--no-env-resolution')) {
+    t.skip('no Docker Compose with config --no-env-resolution on this host');
+    return;
+  }
+  const work = await mkdtemp(join(tmpdir(), 'mcp-f03-compose-'));
+  try {
+    const host = join(work, 'host');
+    const project = join(work, 'project');
+    await mkdir(host);
+    await mkdir(join(project, 'data'), { recursive: true });
+    await writeFile(join(host, 'host.env'), 'LEAKED=from-the-host-env-file\n');
+    await writeFile(join(host, 'compose.yaml'), 'services:\n  db:\n    image: postgres\n    environment:\n      PASSWORD: from-the-host-compose-file\n');
+    // The executor's own invocation, with a clean environment.
+    const model = async (source: string) => {
+      await writeFile(join(project, 'compose.yaml'), source);
+      const result = spawnSync('docker', ['compose', '-p', 'mcp-probe', '-f', 'compose.yaml', 'config', '--no-env-resolution', '--format', 'json'], {
+        cwd: project, encoding: 'utf8', timeout: 30_000, env: { PATH: process.env.PATH ?? '/usr/bin:/bin', HOME: process.env.HOME ?? '/root' }
+      });
+      assert.equal(result.status, 0, result.stderr);
+      return { text: result.stdout, json: JSON.parse(result.stdout) };
+    };
+    // The fixture project builds a model the policy admits.
+    const admitted = await model(SOURCE);
+    assert.deepEqual(evaluateComposeSafety(admitted.json, project).findings, []);
+    // An env file stays in the model, unread, and the model refuses it by name.
+    const envFile = await model(`services:\n  api:\n    image: x\n    "env_file": ${join(host, 'host.env')}\n`);
+    assert.doesNotMatch(envFile.text, /from-the-host-env-file/);
+    assert.ok(evaluateComposeSafety(envFile.json, project).findings.some((finding: any) => finding.key === 'env_file'));
+    // A host file extended through a quoted key is read and merged without a trace: only the parsed source refuses it.
+    const extended = `services:\n  api:\n    "extends": {file: ${join(host, 'compose.yaml')}, service: db}\n`;
+    const loaded = await model(extended);
+    assert.match(loaded.text, /from-the-host-compose-file/);
+    assert.doesNotMatch(loaded.text, /"extends"/);
+    assert.ok(evaluateComposeSource(extended).findings.some((finding: any) => finding.key === 'extends'));
+  } finally {
+    await rm(work, { recursive: true, force: true });
   }
 });
 

@@ -21,6 +21,12 @@
   - attestation non écrite signalée ;
   - base d'API GitHub Enterprise Server conservée ;
   - `NO_OP` réservé au runtime complet et sain.
+- Après la troisième revue :
+  - fichier Compose analysé (`yaml` 2.9.1, épinglé) avant tout chargement par Compose, avec des listes de clés revues : `include`, `extends`, `env_file`, `label_file` et `use_api_socket` sont refusés quelle que soit leur écriture YAML ;
+  - modèle construit par `docker compose config --no-env-resolution` depuis ce fichier exact, contrôlé avec les mêmes listes ;
+  - pont par défaut du moteur et réseaux ou volumes nommés hors du projet refusés ;
+  - options de sécurité, journalisation et réservations de périphériques bornées ;
+  - constats nommant la clé refusée.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
 
