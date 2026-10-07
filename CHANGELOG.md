@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-10-07 — W3 F.2 Project runtime provisioning, incrément 3 (candidate)
+
+- Surface consentie `/provisioning/project-runtime`, derrière la connexion web. Elle offre un plan en lecture seule, une soumission sous consentement E3 et une page de statut. Le consentement exige une origine identique et un ticket lié à la session et à la cible exacte ; création et activation sont séparées. Rien ne s'exécute sans `ENABLE_WRITE_TOOLS` ni cible configurée.
+- Admission de la révision avant toute écriture : historique revu de la branche par défaut et CI ni en échec ni en cours (`src/provisioning/revisionAdmission.ts`).
+- Câblage de production de l'exécuteur (`src/provisioning/wiring.ts`). Les noms de la cible ne figurent plus sur les lignes `docker compose`.
+- `.mcp/provisioning-contracts.json` : la route est classée et rend le runtime de projet provisionnable.
+
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
 
 - Exécuteur borné à la cible (`src/provisioning/runtimeExecutor.ts`), encore relié à aucune surface. Il re-observe et replanifie avant toute écriture, télécharge la révision exacte, prépare, contrôle le modèle Compose, crée avec un marqueur, puis active sous son propre consentement. En cas d'échec, il s'arrête sans les volumes et met en quarantaine, sans rien supprimer ; chaque job est attesté.

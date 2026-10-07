@@ -8,12 +8,14 @@ import {
   planProjectRuntimeProvisioning,
   provisioningInventoryTargets,
   type ProjectRuntimeExecutionMode,
+  type ProjectRuntimeProvisioningPlan,
   type ProjectRuntimeReasonCode,
   type ProjectRuntimeTarget,
   type ProvisionedRuntimeInventory,
   type ProvisioningInventoryTarget,
   type ProvisioningMarker
 } from './projectRuntime.js';
+import type { RevisionAdmission, RevisionAdmissionReasonCode } from './revisionAdmission.js';
 
 export { PROVISIONING_MARKER_FILE } from './projectRuntime.js';
 
@@ -21,12 +23,14 @@ export { PROVISIONING_MARKER_FILE } from './projectRuntime.js';
  * F.2 (TB-W3-F-03), increment 2: the target-bounded executor of the
  * PROJECT_RUNTIME contract. Right before any write it re-reads the target,
  * the registry and the runtime inventory and re-plans: only a READY plan
- * runs, with write mode on and one provisioning at a time. Creation fetches
- * the exact revision, stages it beside the target, checks the compose model,
- * then promotes it and writes the marker; activation, under its own consent,
- * labels and starts the compose project and waits for its health. A failure
- * stops the project without its volumes and moves files to quarantine:
- * nothing is deleted. Every run that reaches a job is attested.
+ * runs, with write mode on and one provisioning at a time. The revision is
+ * then admitted afresh (increment 3): reviewed default-branch history and a
+ * non-failing CI gate. Creation fetches the exact revision, stages it beside
+ * the target, checks the compose model, then promotes it and writes the
+ * marker; activation, under its own consent, labels and starts the compose
+ * project and waits for its health. A failure stops the project without its
+ * volumes and moves files to quarantine: nothing is deleted. Every run that
+ * reaches a job is attested.
  */
 export const PROVISIONING_DATA_ROOT_CONTAINER = '/app/data/provisioning';
 export const PROVISIONING_DATA_ROOT_HOST = '/opt/apps/wealthtech-mcp-ssh-bridge/data/provisioning';
@@ -120,12 +124,20 @@ function symlinkGuard(directory: string): string {
   return `outside="$(find ${shellQuote(directory)} -type l -exec sh -c ${shellQuote(SYMLINK_CHECK)} symlink-guard ${shellQuote(directory)} {} +)" || fail symlink_check`;
 }
 
+// Target names stay in variables: a docker compose line carries only its flags, never a name the
+// write guard could misread as one (a path or project such as "api-v" reads like "-v").
+function composeNames(project: string, file: string): string[] {
+  return [`project=${shellQuote(project)}`, `file=${shellQuote(file)}`];
+}
+
 function composeConfigLines(directory: string, project: string, file: string, done: string): string[] {
   return [
     `if grep -Eq ${shellQuote(FORBIDDEN_COMPOSE_KEYS)} ${shellQuote(`${directory}/${file}`)}; then fail compose_feature_forbidden; fi`,
     symlinkGuard(directory),
     '[ -z "$outside" ] || fail symlink_outside',
-    `config="$(cd ${shellQuote(directory)} && ${CLEAN_ENV} docker compose -p ${shellQuote(project)} -f ${shellQuote(file)} config --format json 2>/dev/null)" || fail compose_invalid`,
+    `directory=${shellQuote(directory)}`,
+    ...composeNames(project, file),
+    `config="$(cd "$directory" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" config --format json 2>/dev/null)" || fail compose_invalid`,
     `printf 'result=${done}\\n'`,
     `printf 'compose_file=%s\\n' ${shellQuote(file)}`,
     `printf 'compose_config_b64=%s\\n' "$(printf '%s' "$config" | head -c ${MAX_COMPOSE_CONFIG_BYTES} | base64 | tr -d '\\n')"`
@@ -159,7 +171,9 @@ export function buildStageScript(input: { jobId: string; target: ProjectRuntimeT
     `if grep -Eq ${shellQuote(FORBIDDEN_COMPOSE_KEYS)} ${shellQuote(staging)}/"$file"; then fail compose_feature_forbidden; fi`,
     symlinkGuard(staging),
     '[ -z "$outside" ] || fail symlink_outside',
-    `config="$(cd ${shellQuote(staging)} && ${CLEAN_ENV} docker compose -p ${shellQuote(input.target.composeProject)} -f "$file" config --format json 2>/dev/null)" || fail compose_invalid`,
+    `staging=${shellQuote(staging)}`,
+    `project=${shellQuote(input.target.composeProject)}`,
+    `config="$(cd "$staging" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" config --format json 2>/dev/null)" || fail compose_invalid`,
     "printf 'result=staged\\n'",
     `printf 'compose_file=%s\\n' "$file"`,
     `printf 'compose_config_b64=%s\\n' "$(printf '%s' "$config" | head -c ${MAX_COMPOSE_CONFIG_BYTES} | base64 | tr -d '\\n')"`
@@ -208,13 +222,15 @@ export function buildActivateScript(input: {
   const directory = shellQuote(input.target.serverPath);
   const marker = shellQuote(`${input.target.serverPath}/${PROVISIONING_MARKER_FILE}`);
   const labels = shellQuote(`${input.target.serverPath}/${LABELS_FILE}`);
-  const compose = `${CLEAN_ENV} docker compose -p ${shellQuote(input.target.composeProject)} -f ${shellQuote(input.composeFile)} -f ${labels}`;
+  const compose = `${CLEAN_ENV} docker compose -p "$project" -f "$file" -f "$labels"`;
   return [
     ...header('activate'),
     `[ -f ${marker} ] || fail marker_missing`,
     `grep -q ${shellQuote(`"revision":"${input.target.revision}"`)} ${marker} || fail marker_mismatch`,
     `grep -q ${shellQuote(`"composeProject":"${input.target.composeProject}"`)} ${marker} || fail marker_mismatch`,
     `printf '%s\\n' ${shellQuote(input.labelsOverride)} > ${labels} || fail labels`,
+    ...composeNames(input.target.composeProject, input.composeFile),
+    `labels=${labels}`,
     `cd ${directory} || fail target_missing`,
     `if ! ${compose} up -d --build >/dev/null 2>&1; then printf 'result=unhealthy\\nhealth=start_failed\\n'; exit 0; fi`,
     `deadline=$(( $(date +%s) + ${timeout} ))`,
@@ -248,8 +264,10 @@ export function buildRollbackScript(input: {
   const lines = [
     ...header('rollback'),
     'status=rolled_back',
-    `if [ -d ${directory} ]; then`,
-    `  (cd ${directory} && ${CLEAN_ENV} docker compose -p ${shellQuote(input.target.composeProject)} -f ${shellQuote(input.composeFile)} down --remove-orphans >/dev/null 2>&1) || status=failed`,
+    `directory=${directory}`,
+    ...composeNames(input.target.composeProject, input.composeFile),
+    'if [ -d "$directory" ]; then',
+    `  (cd "$directory" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" down --remove-orphans >/dev/null 2>&1) || status=failed`,
     'fi'
   ];
   if (input.createdInThisJob) {
@@ -298,6 +316,8 @@ export type ProjectRuntimeExecutionDependencies = {
   readRegistry: () => Promise<GitRegistryProjectEvidence>;
   /** A fresh read-only inventory of the targets, never a cached snapshot. */
   observe: (targets: ProvisioningInventoryTarget[]) => Promise<ProvisionedRuntimeInventory>;
+  /** The admission of the exact revision, read afresh from GitHub before any write. */
+  admitRevision: (input: { repositoryId: string; revision: string }) => Promise<RevisionAdmission>;
   fetchSource: (input: { repositoryId: string; revision: string; destination: string }) => Promise<
     { ok: boolean; sha256?: string | null; bytes?: number }
   >;
@@ -329,6 +349,30 @@ function composeModel(values: Map<string, string>): unknown {
   } catch {
     return null;
   }
+}
+
+type ObservationDependencies = Pick<ProjectRuntimeExecutionDependencies, 'readServerTarget' | 'readRegistry' | 'observe'>;
+
+/** Reads the target, the registry and the inventory afresh, then plans: the same path for a preview and a run. */
+async function observeAndPlan(
+  request: unknown,
+  consent: { creation: boolean; activation: boolean },
+  deps: ObservationDependencies
+): Promise<{ plan: ProjectRuntimeProvisioningPlan; inventory: ProvisionedRuntimeInventory | null }> {
+  const [serverTarget, registry] = await Promise.all([deps.readServerTarget(), deps.readRegistry()]);
+  const fields = request && typeof request === 'object' ? request as Record<string, unknown> : {};
+  const targets = typeof fields.projectId === 'string' ? provisioningInventoryTargets(registry, fields.projectId) : [];
+  const mappingTargets = targets.filter((entry) => entry.mappingId === fields.mappingId);
+  const inventory = mappingTargets.length === 1 ? await deps.observe(mappingTargets) : null;
+  return { plan: planProjectRuntimeProvisioning({ request, serverTarget, registry, inventory, consent }), inventory };
+}
+
+/** The plan of a request on fresh evidence and without any consent: what the surface shows before asking. Read-only. */
+export async function previewProjectRuntimeProvisioning(
+  request: unknown,
+  deps: ObservationDependencies
+): Promise<ProjectRuntimeProvisioningPlan> {
+  return (await observeAndPlan(request, { creation: false, activation: false }, deps)).plan;
 }
 
 let inFlight = false;
@@ -369,17 +413,18 @@ async function execute(
   deps: ProjectRuntimeExecutionDependencies
 ): Promise<ProjectRuntimeExecution> {
   const consent = { creation: input.consent.creation === true, activation: input.consent.activation === true };
-  const [serverTarget, registry] = await Promise.all([deps.readServerTarget(), deps.readRegistry()]);
-  const request = input.request && typeof input.request === 'object' ? input.request as Record<string, unknown> : {};
-  const targets = typeof request.projectId === 'string' ? provisioningInventoryTargets(registry, request.projectId) : [];
-  const mappingTargets = targets.filter((entry) => entry.mappingId === request.mappingId);
-  const inventory = mappingTargets.length === 1 ? await deps.observe(mappingTargets) : null;
-  const plan = planProjectRuntimeProvisioning({ request: input.request, serverTarget, registry, inventory, consent });
+  const { plan, inventory } = await observeAndPlan(input.request, consent, deps);
   if (plan.decision === 'NO_OP') return refused(plan.reasonCodes, 'NO_OP', plan.target);
   if (plan.decision !== 'READY' || !plan.target || !plan.mode) return refused(plan.reasonCodes, 'REFUSED', plan.target);
 
   const target = plan.target;
   const mode = plan.mode;
+  // The revision is admitted afresh before any write, even for a runtime created by an earlier job.
+  const admission = await deps.admitRevision({ repositoryId: target.repositoryId, revision: target.revision }).catch(() => null);
+  if (!admission?.admitted || (admission.kind !== 'CI_GATE' && admission.kind !== 'MANUAL_CONSENT')) {
+    const reasonCode = admission && admission.reasonCode !== 'REVISION_ADMITTED' ? admission.reasonCode : 'REVISION_ADMISSION_UNAVAILABLE';
+    return refused([reasonCode], 'REFUSED', target);
+  }
   const startedAt = deps.now().toISOString();
   const jobId = provisioningJobId(deps.now(), deps.randomHex());
   const steps: Array<{ id: string; status: string }> = [];
@@ -416,6 +461,7 @@ async function execute(
       consent,
       planReasonCodes: plan.reasonCodes,
       governance: plan.governance,
+      admission,
       steps,
       archiveSha256,
       composeFindings: findings,
@@ -524,4 +570,8 @@ async function execute(
 }
 
 /** The reason codes of a plan that does not run, as the executor reports them. */
-export type ProjectRuntimeRefusalCode = ProjectRuntimeReasonCode | 'WRITE_TOOLS_DISABLED' | 'PROVISIONING_IN_PROGRESS';
+export type ProjectRuntimeRefusalCode =
+  | ProjectRuntimeReasonCode
+  | Exclude<RevisionAdmissionReasonCode, 'REVISION_ADMITTED'>
+  | 'WRITE_TOOLS_DISABLED'
+  | 'PROVISIONING_IN_PROGRESS';

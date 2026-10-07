@@ -439,7 +439,8 @@ primitive, n'accorde aucune permission et ne crée aucune tâche.
   - les étapes bornées, la santé et un rollback non destructif.
 - **Lacunes.** Une étape sans primitive composable est une lacune portée par
   un blueprint ouvert du Program Backlog, avec ce qu'il faut réutiliser ou
-  généraliser. Aucun type de ressource n'est provisionnable aujourd'hui.
+  généraliser. Depuis F.2, seul le runtime de projet est provisionnable ;
+  les dépôts et les bindings de domaine restent bloqués par leurs lacunes.
 
 Le provisioning d'un runtime de projet (F.2, `TB-W3-F-03`) est livré par
 incréments sous le contrat `PROJECT_RUNTIME`. Le premier incrément est en
@@ -468,8 +469,8 @@ lecture seule ; il établit la preuve d'absence et le plan
   jamais écrasé.
 
 Le deuxième incrément livre l'exécuteur borné à la cible
-(`src/provisioning/runtimeExecutor.ts`). Il n'est encore relié à aucune
-surface.
+(`src/provisioning/runtimeExecutor.ts`). Le troisième incrément le relie à
+une surface consentie.
 
 - **Re-observation avant toute écriture.** Juste avant d'écrire,
   l'exécuteur relit la cible, le registre et l'inventaire, puis replanifie.
@@ -498,6 +499,24 @@ surface.
   et les fichiers créés par le job partent en quarantaine
   (`/opt/apps/mcp-provisioning-quarantine`). Rien n'est supprimé. Chaque job
   est attesté.
+
+Le troisième incrément relie l'exécuteur à une surface de l'exposition
+existante : `/provisioning/project-runtime`, derrière la connexion web
+(`src/provisioning/routes.ts`).
+
+- **Plan sans exécution.** La page liste les composants des projets cibles de
+  S1, puis observe et planifie une révision exacte sans rien écrire.
+- **Consentement E3.** La soumission exige une origine identique, un ticket
+  lié à la session et à la cible exacte, et des valeurs explicites. Création
+  et activation restent séparées (`src/provisioning/consent.ts`).
+- **Admission de la révision.** Juste avant toute écriture, la révision doit
+  appartenir à l'historique revu de la branche par défaut, avec une CI ni en
+  échec ni en cours (`src/provisioning/revisionAdmission.ts`).
+- **Câblage.** L'inventaire est lu en lecture seule sur S1 et les écritures
+  passent par le canal S1 gardé. Le mode écriture du serveur reste requis
+  (`src/provisioning/wiring.ts`).
+- **Job long.** La réponse renvoie vers une page de statut ; chaque job reste
+  attesté.
 
 ### Unified Operational Work State
 

@@ -1,5 +1,26 @@
 # DECISIONS_LOG.md
 
+## 2026-10-07 — F.2 incrément 3 : surface consentie et câblage du provisioning d'un runtime de projet
+
+Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME` et le consentement E3 de `.mcp/provisioning-contracts.json`, l'admission du Governed Deploy, `EXISTING_MCP_EXPOSURE_FIRST` (#236), et les invariants `NO_RESOURCE_CREATION_WITHOUT_EXPLICIT_CONSENT` et `NO_IMPLICIT_ACTIVATION`.
+
+- **Une page de l'exposition existante, pas un outil MCP.** Le consentement E3 est une soumission web de même origine. Un appel d'outil, un drapeau `allow_write` ou une instruction d'agent n'en sont jamais un. La surface est donc une route Express derrière la connexion web, sans nouveau domaine ni proxy.
+- **Un ticket par cible exacte.** Le ticket est lié à sa finalité, à la session web et à la cible (projet, mapping, révision). Un consentement rendu pour une révision ne vaut jamais pour une autre. Création et activation restent deux valeurs explicites, décochées par défaut.
+- **La session web seule n'autorise rien.** Avant d'écrire, le serveur exige :
+  - le consentement E3 ;
+  - le mode écriture (`ENABLE_WRITE_TOOLS`), interrupteur partagé avec les autres routes d'écriture web et jamais un consentement ;
+  - la cible déclarée par une pull request revue (`servers.S1.targetProjectIds`) ;
+  - une re-observation fraîche et un plan `READY`.
+
+  Le verdict fantôme du Scoped WRITE Gate (session gouvernée, verrous, reçu) est propre au transport MCP : il n'a pas de sens pour une requête web.
+- **Admission de la révision, généralisée du Governed Deploy.**
+  - La révision doit appartenir à l'historique revu de la branche par défaut, avec une CI ni en échec ni en cours ; tout est lu en entier.
+  - Sans aucune CI, le consentement explicite vaut admission manuelle, comme le dispatch manuel du Governed Deploy.
+  - L'admission est relue juste avant toute écriture, y compris pour activer un runtime créé plus tôt. Ce qui est illisible refuse.
+- **Un job long ne bloque pas la requête.** La réponse attend 25 s au plus, puis renvoie vers la page de statut. Le job continue et reste attesté dans son dossier.
+- **Le garde des commandes ne doit pas mal lire un nom.** Les noms de la cible passent par des variables : une ligne `docker compose` ne porte que ses drapeaux. Une commande que la politique refuse n'atteint jamais l'hôte et échoue avec la raison `command_policy`.
+- **La route comble les lacunes.** Classée `COMPOSABLE` pour le seul `PROJECT_RUNTIME`, elle compose la sauvegarde, la création, l'activation et le rollback du contrat, désormais provisionnable. Les dépôts et les bindings de domaine restent bloqués par leurs lacunes.
+
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
 
 Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME` (F.0), le plan de l'incrément 1, et les invariants `NO_SHELL_FREEFORM_PROVISIONING`, `NO_IMPLICIT_SIDE_EFFECTS` et `NO_AUTOMATIC_DESTRUCTIVE_ROLLBACK`.

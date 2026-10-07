@@ -33,7 +33,14 @@ import {
   getDefaultSyntheticProbeClock
 } from './operationalMemory/clientPresence.js';
 import { startOperationalMemoryMaintenance } from './operationalMemory/maintenance.js';
-import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
+import {
+  downloadGithubArchiveWithServerCredential,
+  getGithubConnectionStatus,
+  githubJsonRequestWithServerCredential,
+  renderGithubConnectionPage,
+  saveGithubToken,
+  validateGithubToken
+} from './github/connection.js';
 import {
   readGitRegistry,
   readGitRegistryProjectEvidence,
@@ -58,6 +65,10 @@ import { createGithubRepositorySshCaBootstrapRouter } from './ssh/githubReposito
 import { signRepositorySshCertificate } from './ssh/repositoryCertificate.js';
 import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
 import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js';
+import { readServerMapConfiguration } from './liveState/targetProject.js';
+import { createProjectRuntimeProvisioningRouter } from './provisioning/routes.js';
+import { executeProjectRuntimeProvisioning } from './provisioning/runtimeExecutor.js';
+import { createProjectRuntimeExecutionDependencies } from './provisioning/wiring.js';
 import {
   getGovernedTaskToolDependencies,
   registerGovernedTaskMutationTools,
@@ -208,6 +219,7 @@ function nav(): string {
     <a href="/github/status">Statut JSON</a> ·
     <a href="/github/Patricked-code">Patricked-code</a> ·
     <a href="/github/chainsolutions-wealthtech">chainsolutions-wealthtech</a> ·
+    <a href="/provisioning/project-runtime">Provisioning</a> ·
     <a href="/logout">Déconnexion</a>
   </p>`;
 }
@@ -488,6 +500,27 @@ export async function startHttpServer(): Promise<void> {
   registerOauthRoutes(app, {
     isAuthenticated: isWebAuthenticated
   });
+
+  // F.2 (TB-W3-F-03): project runtime provisioning under the E3 consent, behind the web login.
+  const projectRuntimeProvisioning = createProjectRuntimeExecutionDependencies({
+    writeEnabled: () => env.ENABLE_WRITE_TOOLS,
+    readServerMap: () => readServerMapConfiguration(),
+    readRegistry: () => readGitRegistryProjectEvidence(),
+    runReadOnly: (command) => runReadOnlyCommand('s1', command),
+    runGuarded: (command, options) => runGuardedCommand('s1', command, options),
+    downloadArchive: downloadGithubArchiveWithServerCredential,
+    githubRequest: (endpoint) => githubJsonRequestWithServerCredential(endpoint)
+  });
+  app.use(createProjectRuntimeProvisioningRouter({
+    requireLogin: requireWebLogin,
+    consentSession: webConsentBinding,
+    isSameOrigin: isSameOriginSubmission,
+    issueTicket: issueWebConsentTicket,
+    verifyTicket: verifyWebConsentTicket,
+    listTargets: projectRuntimeProvisioning.listTargets,
+    preview: projectRuntimeProvisioning.preview,
+    execute: (input) => executeProjectRuntimeProvisioning(input, projectRuntimeProvisioning)
+  }));
 
   const syntheticProbeClock = getDefaultSyntheticProbeClock();
   app.get('/health', (_req, res) => {

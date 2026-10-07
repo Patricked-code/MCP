@@ -4,7 +4,8 @@ import {
   parseProvisionedRuntimeInventory,
   provisioningInventoryTargets,
   unavailableProvisionedRuntimeInventory,
-  type ProvisionedRuntimeInventory
+  type ProvisionedRuntimeInventory,
+  type ProvisioningInventoryTarget
 } from '../provisioning/projectRuntime.js';
 import type { TargetProjectObservation } from './targetProject.js';
 
@@ -34,8 +35,21 @@ export async function collectProvisionedRuntimes(input: {
   }
   const targets = provisioningInventoryTargets(registry, projectId);
   if (targets.length === 0) return undefined;
+  return observeProvisionedRuntimes(targets, input.runReadOnly, observedAt);
+}
+
+/**
+ * One bounded read-only inventory of the given targets; a failed or malformed
+ * read is unavailable, never an absence. Shared by Live State and the
+ * provisioning executor, which re-observes right before any write.
+ */
+export async function observeProvisionedRuntimes(
+  targets: ProvisioningInventoryTarget[],
+  runReadOnly: (command: string) => Promise<{ code: number | null; stdout: string }>,
+  observedAt: string
+): Promise<ProvisionedRuntimeInventory> {
   try {
-    const result = await input.runReadOnly(buildProvisionedRuntimeInventoryCommand(targets));
+    const result = await runReadOnly(buildProvisionedRuntimeInventoryCommand(targets));
     if (result.code !== 0) return unavailableProvisionedRuntimeInventory(targets, observedAt);
     return parseProvisionedRuntimeInventory(result.stdout, targets, observedAt);
   } catch {

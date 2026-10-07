@@ -1,5 +1,29 @@
 # SUIVI.md
 
+## 2026-10-07 — W3 F.2 Project runtime provisioning, incrément 3 — GREEN candidate
+
+- **Incrément 2 livré.**
+  - PR #260 fusionnée au merge `73bd0ff908ce53e2f177e1bc246cc62050b47a05`. CI PR `37414479092` (#2289, 958 tests) ; CI main `37414610066` (#2290).
+  - Governed Deploy `37414610072` (#135) SUCCESS.
+  - Attestation OIDC read-only : `mcp_git_status` `37641494346` (S1 `main@73bd0ff`, worktree propre) ; `docker_status` `37641499894` (conteneur healthy).
+- **Reprise.** Aucune nouvelle intake ni consigne propriétaire ; #235 et #236 sont déjà réconciliées. Les notifications en attente concernaient la PR #260, déjà fusionnée.
+- **Push.** GitHub a d'abord refusé la mise à jour de la branche (« Internal Server Error », même sans nouvel objet). Le push a réussi au deuxième essai, sans contourner la politique du proxy.
+- **Livré (incrément 3).**
+  - `src/provisioning/consent.ts` : consentement E3 du contrat `PROJECT_RUNTIME`, création et activation séparées, ticket lié à la session et à la cible exacte.
+  - `src/provisioning/revisionAdmission.ts` : admission de la révision, généralisée du Governed Deploy (historique revu de la branche par défaut, CI ni en échec ni en cours ; sans aucune CI, admission manuelle par le consentement).
+  - `src/provisioning/runtimeExecutor.ts` :
+    - admission relue avant toute écriture, y compris pour activer un runtime créé plus tôt ;
+    - aperçu en lecture seule ;
+    - noms de la cible hors des lignes `docker compose`.
+  - `src/provisioning/wiring.ts` : câblage de production. L'inventaire est en lecture seule et les écritures passent par le canal S1 gardé. L'archive est bornée ; les fichiers de job restent dans le volume de données, sans écrasement.
+  - `src/provisioning/routes.ts` et `src/server.ts` : surface `/provisioning/project-runtime` derrière la connexion web (plan, soumission consentie, page de statut).
+  - `.mcp/provisioning-contracts.json` : la route est classée `COMPOSABLE` et comble les quatre lacunes du contrat `PROJECT_RUNTIME`, désormais provisionnable.
+- **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
+- **Preuves.**
+  - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.
+  - GREEN local : typecheck, build et gates verts ; suite complète 968/968. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`).
+- **NEXT_ACTION** : CI exact-head de la PR #261, merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
+
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 — GREEN candidate
 
 - **Incrément 1 livré.**

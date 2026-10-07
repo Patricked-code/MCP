@@ -3,8 +3,8 @@
   "policyId": "provisioning-contracts-v1",
   "blueprintId": "TB-W3-F-01",
   "workItemId": "PB-F",
-  "observedMainSha": "bf7312e6e8f52e660f2743b8ba40c779e98fe8d0",
-  "generatedAt": "2026-10-05T23:45:00Z",
+  "observedMainSha": "73bd0ff908ce53e2f177e1bc246cc62050b47a05",
+  "generatedAt": "2026-10-07T15:21:57Z",
   "authority": {
     "kind": "DERIVED_CONTRACT_PROJECTION",
     "grantsPermission": false,
@@ -621,6 +621,23 @@
       "note": "Repository SSH certificate authority bootstrap."
     },
     {
+      "name": "POST /provisioning/project-runtime",
+      "kind": "HTTP_ROUTE",
+      "class": "COMPOSABLE",
+      "resourceTypes": [
+        "PROJECT_RUNTIME"
+      ],
+      "guards": [
+        "web login and the E3 consent: same-origin form, ticket bound to the session and the exact target, explicit creation and activation values",
+        "ENABLE_WRITE_TOOLS server switch, never a consent",
+        "server target declared in .mcp/server-map.json (servers.S1.targetProjectIds) and a single governed GitRegistry path under /opt/apps",
+        "fresh re-observation and re-plan before any write: a positive NO_RUNTIME, a matching runtime is a no-op, anything else blocks",
+        "revision admitted afresh: reviewed default branch history and a non-failing CI gate",
+        "guarded S1 channel only, one job at a time, non-destructive rollback and an attestation per job"
+      ],
+      "note": "F.2 (TB-W3-F-03): the consented surface of the target-bounded executor of src/provisioning/runtimeExecutor.ts."
+    },
+    {
       "name": "mcp-ci.yml",
       "kind": "WORKFLOW",
       "class": "NOT_PROVISIONING",
@@ -840,13 +857,10 @@
           "required": true,
           "mutates": true,
           "consent": "CONTRACT",
-          "gap": {
-            "carriedBy": [
-              "TB-W3-F-03"
-            ],
-            "reason": "No target-bounded backup exists for a project runtime; backups exist only inside project-bound deploy tools.",
-            "reuse": "GENERALIZE the Governed Deploy retention of the previous image to the target runtime"
-          }
+          "primitives": [
+            "POST /provisioning/project-runtime"
+          ],
+          "note": "The pre-state is proven on the host before any write: absence before extraction, or the stopped checkout of a created runtime. The rollback restores it, as the Governed Deploy keeps its previous image."
         },
         {
           "id": "create-runtime",
@@ -854,13 +868,10 @@
           "required": true,
           "mutates": true,
           "consent": "CONTRACT",
-          "gap": {
-            "carriedBy": [
-              "TB-W3-F-03"
-            ],
-            "reason": "Runtime creation tools are bound to allowlisted existing projects (deploy_project_s2, legacy_vhost_git_init_s1, nigeria_bootstrap_s2); no generic target-bounded primitive exists and none is improvised through a shell.",
-            "reuse": "WRAP the project-bound bootstrap pattern behind an exact target and the E3 consent"
-          }
+          "primitives": [
+            "POST /provisioning/project-runtime"
+          ],
+          "note": "Exact revision fetched from GitHub, digest verified on S1, staged beside the target, compose model checked, then promoted with a marker: the project-bound bootstrap pattern wrapped behind the exact target and the E3 consent."
         },
         {
           "id": "activate",
@@ -869,13 +880,10 @@
           "mutates": true,
           "consent": "OWN",
           "consentValue": "ACTIVATE_PROJECT_RUNTIME",
-          "gap": {
-            "carriedBy": [
-              "TB-W3-F-03"
-            ],
-            "reason": "Only the MCP runtime (Governed Deploy) and allowlisted projects have an activation channel.",
-            "reuse": "WRAP the Governed Deploy admission (exact SHA, CI gate, health, attestation) for target runtimes"
-          }
+          "primitives": [
+            "POST /provisioning/project-runtime"
+          ],
+          "note": "Under its own consent: the revision is admitted again, the services are labelled, the compose project is started and its health awaited. The Governed Deploy admission, wrapped for target runtimes."
         },
         {
           "id": "health",
@@ -897,13 +905,10 @@
           "mutates": true,
           "consent": "CONTRACT",
           "when": "ON_FAILURE",
-          "gap": {
-            "carriedBy": [
-              "TB-W3-F-03"
-            ],
-            "reason": "No target-bounded restore exists outside the project-bound rollback_sadiaaf_s1.",
-            "reuse": "GENERALIZE the Governed Deploy previous-image rollback on a failed health check"
-          }
+          "primitives": [
+            "POST /provisioning/project-runtime"
+          ],
+          "note": "On a failed health check the compose project stops without its volumes and the files the job created move to quarantine, nothing deleted: the pre-state is restored as the Governed Deploy restores the previous image."
         }
       ],
       "rollback": {
