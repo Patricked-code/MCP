@@ -77,7 +77,7 @@ function marker(services: string[] = ['api']): string {
   })).toString('base64')}`;
 }
 
-const PRESENT_SAME = ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`, marker()];
+const PRESENT_SAME = ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`, marker(), `component.0.tree=${'e'.repeat(64)}`];
 
 test('the provisioned-runtime inventory is bounded, read-only and quotes every value', () => {
   const command = buildProvisionedRuntimeInventoryCommand([TARGET]);
@@ -88,6 +88,8 @@ test('the provisioned-runtime inventory is bounded, read-only and quotes every v
   // A component's provisioned containers are those of its own compose project, not of its whole repository.
   assert.ok(command.includes(`label=com.docker.compose.project=${TARGET.composeProject}`));
   assert.equal(command.includes(PROVISIONING_LABEL_REPOSITORY), false);
+  // A marked checkout is digested again, so a running runtime is matched against its creation digest.
+  assert.match(command, /component\.0\.tree=/);
   assert.doesNotMatch(command, /\becho\b/);
   // Hostile declarations never reach the shell: only governed, normalized paths are inventoried.
   assert.throws(() => buildProvisionedRuntimeInventoryCommand([{ ...TARGET, serverPath: "/opt/apps/x'; rm -rf /" }]));
@@ -209,7 +211,10 @@ test('provisioning plans only a genuinely absent runtime at its exact, declared 
     ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api', 'Up 2 minutes (unhealthy)')}`, marker()],
     ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api', 'Up 5 seconds (health: starting)')}`, marker()],
     ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api', 'Exited (1) 2 minutes ago', 'exited')}`, marker()],
-    ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`]
+    ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`],
+    // A checkout edited since its creation, or one that could not be digested, is never the admitted revision.
+    [...PRESENT_SAME.slice(0, 4), `component.0.tree=${'f'.repeat(64)}`],
+    [...PRESENT_SAME.slice(0, 4), 'component.0.tree=unavailable']
   ];
   for (const lines of degraded) {
     const result = plan({ inventory: inventory(lines) });

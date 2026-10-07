@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { chmod, mkdir, mkdtemp, readFile, rm, symlink, unlink, writeFile } from 'node:fs/promises';
+import { chmod, chown, mkdir, mkdtemp, readFile, rm, symlink, unlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -179,7 +179,12 @@ test('the compose safety policy admits only a project-contained, locally bound r
     [{ deploy: { resources: { reservations: { devices: [{ capabilities: ['gpu'] }] } } } }, {}, 'COMPOSE_DEVICE'],
     // A built image never takes a name another workload runs: build tags and an image name on a build are refused.
     [{ build: { context: dir, tags: ['postgres:16'] } }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
-    [{ image: 'postgres:16' }, {}, 'COMPOSE_BUILD_TAG']
+    [{ image: 'postgres:16' }, {}, 'COMPOSE_BUILD_TAG'],
+    // A pulled image is pinned by digest: a tag can serve other bytes at a later activation.
+    [{ build: undefined, image: 'vendor/app:latest' }, {}, 'COMPOSE_IMAGE_UNPINNED'],
+    // Replicas stay within the bounded inventory.
+    [{ scale: 21 }, {}, 'COMPOSE_REPLICAS'],
+    [{ deploy: { replicas: 30 } }, {}, 'COMPOSE_REPLICAS']
   ];
   for (const [service, extra, code] of unsafe) {
     const result = evaluateComposeSafety(composeConfig(dir, service, extra), dir) as any;
@@ -205,7 +210,7 @@ test('the compose safety policy admits only a project-contained, locally bound r
   }), dir) as any;
   assert.deepEqual(local.findings, []);
   const shared = composeConfig(dir);
-  shared.services.worker = { image: 'busybox', network_mode: 'service:api' };
+  shared.services.worker = { image: `busybox@sha256:${'a'.repeat(64)}`, network_mode: 'service:api', deploy: { replicas: 2 } };
   assert.deepEqual((evaluateComposeSafety(shared, dir) as any).findings, []);
   for (const invalid of [null, {}, { services: {} }, { services: { 'bad name': {} } }, 'x']) {
     assert.equal((evaluateComposeSafety(invalid, dir) as any).ok, false, JSON.stringify(invalid));
@@ -670,6 +675,8 @@ test('the tree digest ignores the provisioning files and changes with any conten
       [() => chmod(join(directory, 'run.sh'), 0o644), () => chmod(join(directory, 'run.sh'), 0o755)],
       // Any mode change counts, not only the owner's execute bit.
       [() => chmod(join(directory, 'a.txt'), 0o654), () => chmod(join(directory, 'a.txt'), 0o644)],
+      // Ownership too, where the test may change it.
+      ...(process.getuid?.() === 0 ? [[() => chown(join(directory, 'a.txt'), 1000, 1000), () => chown(join(directory, 'a.txt'), 0, 0)] as [() => Promise<void>, () => Promise<void>]] : []),
       [async () => { await unlink(join(directory, 'link')); await symlink('a.txt', join(directory, 'link')); },
         async () => { await unlink(join(directory, 'link')); await symlink('sub/b.txt', join(directory, 'link')); }],
       [() => writeFile(join(directory, 'sub', 'new.txt'), 'new\n'), () => unlink(join(directory, 'sub', 'new.txt'))]
