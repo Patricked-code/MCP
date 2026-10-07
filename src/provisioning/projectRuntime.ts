@@ -59,6 +59,8 @@ export type ProvisioningInventoryTarget = Readonly<{
   mappingId: string;
   repositoryId: string;
   serverPath: string;
+  /** The component's own compose project: its provisioned containers are those of this project only. */
+  composeProject: string;
 }>;
 
 export type ProvisionedContainer = Readonly<{
@@ -79,6 +81,8 @@ export type ProvisioningMarker = Readonly<{
   composeProject: string;
   composeFile: string;
   createdAt: string;
+  /** The digest of the checkout as created; an activation verifies it first. */
+  treeDigest: string;
 }>;
 
 export type ProvisionedComponentFacts = Readonly<{
@@ -121,6 +125,7 @@ export function governedRuntimePath(value: unknown): string | null {
 
 function validTarget(target: ProvisioningInventoryTarget): boolean {
   return REPOSITORY_ID_PATTERN.test(target.repositoryId)
+    && COMPOSE_PROJECT_PATTERN.test(target.composeProject)
     && governedRuntimePath(target.serverPath) === target.serverPath
     && typeof target.mappingId === 'string'
     && target.mappingId.length > 0
@@ -140,7 +145,7 @@ export function buildProvisionedRuntimeInventoryCommand(targets: readonly Provis
   targets.forEach((target, index) => {
     lines.push(
       `if [ -e ${shellQuote(target.serverPath)} ]; then printf 'component.${index}.path=present\\n'; else printf 'component.${index}.path=absent\\n'; fi`,
-      `c="$(docker ps -a --filter ${shellQuote(`label=${PROVISIONING_LABEL_REPOSITORY}=${target.repositoryId}`)} --format ${shellQuote(format)} 2>/dev/null)" || c=${shellQuote(UNAVAILABLE_SENTINEL)}`,
+      `c="$(docker ps -a --filter ${shellQuote(`label=${COMPOSE_PROJECT_LABEL}=${target.composeProject}`)} --format ${shellQuote(format)} 2>/dev/null)" || c=${shellQuote(UNAVAILABLE_SENTINEL)}`,
       `printf 'component.${index}.containers=%s\\n' "$(printf '%s\\n' "$c" | head -n ${MAX_CONTAINERS + 1} | paste -sd, -)"`,
       `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then printf 'component.${index}.marker=%s\\n' "$(head -c ${MAX_MARKER_BYTES} ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} | base64 | tr -d '\\n')"; fi`
     );
@@ -335,7 +340,12 @@ export function provisioningInventoryTargets(
     const paths = s1Bindings(registry, component.mappingId);
     const serverPath = paths.length === 1 ? governedRuntimePath(paths[0]) : null;
     if (!serverPath || !REPOSITORY_ID_PATTERN.test(component.repositoryId)) continue;
-    targets.push(Object.freeze({ mappingId: component.mappingId, repositoryId: component.repositoryId, serverPath }));
+    targets.push(Object.freeze({
+      mappingId: component.mappingId,
+      repositoryId: component.repositoryId,
+      serverPath,
+      composeProject: provisionedComposeProject(projectId, component.mappingId, component.repositoryId)
+    }));
   }
   return targets.slice(0, MAX_TARGETS);
 }
@@ -349,7 +359,8 @@ const MarkerSchema = z.object({
   revision: z.string().regex(SHA_PATTERN),
   composeProject: z.string().regex(COMPOSE_PROJECT_PATTERN),
   composeFile: z.string().refine((value) => COMPOSE_FILES.has(value)),
-  createdAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/)
+  createdAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/),
+  treeDigest: z.string().regex(/^[0-9a-f]{64}$/)
 }).strict();
 
 const RequestSchema = z.object({

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { chmod, mkdir, mkdtemp, readFile, rm, symlink, unlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -13,6 +14,7 @@ const {
 } = await import('../src/provisioning/composePolicy.js');
 const {
   PROVISIONING_MARKER_FILE,
+  PROVISIONING_TREE_DIGEST_SHELL,
   buildActivateScript,
   buildComposeConfigScript,
   buildCreateScript,
@@ -26,17 +28,22 @@ const {
 const {
   parseProvisionedRuntimeInventory,
   planProjectRuntimeProvisioning,
+  provisionedComposeProject,
   provisionedRuntimeObservations
 } = await import('../src/provisioning/projectRuntime.js');
 const { downloadGithubArchive } = await import('../src/provisioning/sourceArchive.js');
 
 const REVISION = 'a'.repeat(40);
+const TREE = 'e'.repeat(64);
 const OBSERVED_AT = '2026-10-06T05:00:00.000Z';
 const TARGET = Object.freeze({
   mappingId: 'github:Patricked-code/Portal:s1:portal_api',
   repositoryId: 'github:Patricked-code/Portal',
-  serverPath: '/opt/apps/portal-api'
+  serverPath: '/opt/apps/portal-api',
+  composeProject: provisionedComposeProject('portal', 'github:Patricked-code/Portal:s1:portal_api', 'github:Patricked-code/Portal')
 });
+/** What the consent page named: the resolved target the executor must still find. */
+const EXPECTED = Object.freeze({ repositoryId: TARGET.repositoryId, serverPath: TARGET.serverPath, composeProject: TARGET.composeProject });
 const REQUEST = Object.freeze({ serverId: 'S1', projectId: 'portal', mappingId: TARGET.mappingId, revision: REVISION });
 const PLAN_TARGET = Object.freeze({
   serverId: 'S1', projectId: 'portal', mappingId: TARGET.mappingId, repositoryId: TARGET.repositoryId,
@@ -133,9 +140,9 @@ test('host scripts quote every value, verify before extracting and never delete'
   const jobId = 'prov-20261006T050000Z-0a1b2c3d';
   const scripts = [
     buildStageScript({ jobId, target: PLAN_TARGET, archiveSha256: 'f'.repeat(64) }),
-    buildCreateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT }),
+    buildCreateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE }),
     buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml' }),
-    buildActivateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180 }),
+    buildActivateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE }),
     buildRollbackScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true }),
     buildDiscardStagingScript({ jobId, target: PLAN_TARGET })
   ];
@@ -146,6 +153,13 @@ test('host scripts quote every value, verify before extracting and never delete'
   }
   const [stage, create, , activate, rollback] = scripts;
   assert.ok(stage!.indexOf('sha256sum') < stage!.indexOf('tar '), 'the archive digest is verified before extraction');
+  // Only the component's own compose project counts: another component of the same repository never blocks it.
+  assert.doesNotMatch(stage!, /provisioning\.repository/);
+  assert.match(stage!, /label=com\.docker\.compose\.project=mcp-portal-0123456789ab/);
+  // The staged tree is digested; the marker keeps the digest and the activation verifies it before starting anything.
+  assert.match(stage!, /tree_digest=/);
+  assert.match(create!, new RegExp(`"treeDigest":"${TREE}"`));
+  assert.ok(activate!.indexOf('checkout_modified') > 0 && activate!.indexOf('checkout_modified') < activate!.indexOf('up -d --build'));
   assert.match(stage!, /--no-same-owner/);
   assert.match(stage!, /env -i /);
   assert.match(create!, new RegExp(PROVISIONING_MARKER_FILE.replaceAll('.', '\\.')));
@@ -165,7 +179,7 @@ test('target names stay off the docker compose command lines, so the write guard
   const scripts = [
     buildStageScript({ jobId, target, archiveSha256: 'f'.repeat(64) }),
     buildComposeConfigScript({ target, composeFile: 'compose.yaml' }),
-    buildActivateScript({ jobId, target, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180 }),
+    buildActivateScript({ jobId, target, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE }),
     buildRollbackScript({ jobId, target, composeFile: 'compose.yaml', createdInThisJob: true })
   ];
   for (const script of scripts) {
@@ -177,7 +191,7 @@ test('target names stay off the docker compose command lines, so the write guard
 });
 
 test('a created runtime keeps its marker: it is a checkout until its own activation consent', () => {
-  const marker = provisioningMarker({ jobId: 'prov-20261006T050000Z-0a1b2c3d', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT });
+  const marker = provisioningMarker({ jobId: 'prov-20261006T050000Z-0a1b2c3d', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE });
   const encoded = Buffer.from(JSON.stringify(marker)).toString('base64');
   const inventory = parseProvisionedRuntimeInventory(
     `docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${encoded}\n`, [TARGET], OBSERVED_AT
@@ -221,9 +235,10 @@ type Call = { kind: string; detail: string };
 function harness(overrides: Record<string, unknown> = {}) {
   const calls: Call[] = [];
   const files = new Map<string, string>();
+  const scripts = new Map<string, string>();
   let inventory = 'docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=\n';
   const results: Record<string, string> = {
-    stage: `result=staged\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d'))).toString('base64')}\n`,
+    stage: `result=staged\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d'))).toString('base64')}\ntree_digest=${TREE}\n`,
     create: 'result=created\n',
     config: `result=configured\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api'))).toString('base64')}\n`,
     activate: 'result=activated\nhealth=healthy\n',
@@ -258,18 +273,21 @@ function harness(overrides: Record<string, unknown> = {}) {
     runWrite: async (command: string) => {
       const phase = command.match(/^# mcp-provisioning:([a-z-]+)/m)?.[1] ?? 'unknown';
       calls.push({ kind: 'host', detail: phase });
+      scripts.set(phase, command);
       return { code: 0, stdout: results[phase] ?? '', stderr: '' };
     },
     ...overrides
   };
   return {
-    calls, files, results, deps,
+    calls, files, results, scripts, deps,
     setInventory(value: string) { inventory = value; }
   };
 }
 
-async function run(h: ReturnType<typeof harness>, consent: Record<string, boolean>) {
-  return executeProjectRuntimeProvisioning({ request: REQUEST, consent: { creation: false, activation: false, ...consent } }, h.deps as any) as any;
+async function run(h: ReturnType<typeof harness>, consent: Record<string, boolean>, expectedTarget: unknown = EXPECTED) {
+  return executeProjectRuntimeProvisioning({
+    request: REQUEST, consent: { creation: false, activation: false, ...consent }, expectedTarget
+  } as any, h.deps as any) as any;
 }
 
 const hostPhases = (h: ReturnType<typeof harness>) => h.calls.filter((call) => call.kind === 'host').map((call) => call.detail);
@@ -335,15 +353,93 @@ test('a revision outside the reviewed default branch or with a failing CI is ref
     inventory: parseProvisionedRuntimeInventory('docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=\n', [TARGET], OBSERVED_AT),
     consent: { creation: true, activation: false }
   }) as any).target.composeProject;
-  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT });
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE });
   created.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
   assert.deepEqual((await run(created, { activation: true })).reasonCodes, ['REVISION_CI_FAILED']);
   assert.deepEqual(hostPhases(created), []);
 });
 
+test('a consent given for another resolved target never runs', async () => {
+  for (const expected of [{ ...EXPECTED, serverPath: '/opt/apps/portal-old' }, { ...EXPECTED, repositoryId: 'github:Patricked-code/Other' }, null]) {
+    const h = harness();
+    const refused = await run(h, { creation: true, activation: true }, expected);
+    assert.deepEqual([refused.result, refused.reasonCodes], ['REFUSED', ['TARGET_CHANGED_SINCE_CONSENT']], JSON.stringify(expected));
+    assert.equal(h.calls.some((call) => ['admit', 'fetch', 'host', 'write-file'].includes(call.kind)), false);
+  }
+});
+
+test('the checkout is verified against its creation digest before any activation', async () => {
+  // Creation records the digest of the staged tree; the same job's activation verifies it.
+  const created = harness();
+  assert.equal((await run(created, { creation: true, activation: true })).result, 'SUCCEEDED');
+  assert.match(created.scripts.get('create')!, new RegExp(`"treeDigest":"${TREE}"`));
+  assert.ok(created.scripts.get('activate')!.includes(TREE));
+  // A stage that reports no digest creates nothing.
+  const undigested = harness();
+  undigested.results.stage = undigested.results.stage!.replace(/tree_digest=.*\n/, '');
+  const failed = await run(undigested, { creation: true });
+  assert.deepEqual([failed.result, failed.reasonCodes], ['FAILED', ['STAGE_TREE_DIGEST_MISSING']]);
+  assert.deepEqual(hostPhases(undigested), ['stage', 'discard']);
+
+  // A runtime created earlier is activated only if its checkout still matches the digest of its marker.
+  const composeProject = TARGET.composeProject;
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE });
+  const edited = harness();
+  edited.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
+  edited.results.activate = 'result=failed\nreason=checkout_modified\n';
+  const refused = await run(edited, { activation: true });
+  assert.deepEqual([refused.mode, refused.result, refused.reasonCodes, refused.rollback], ['ACTIVATE', 'FAILED', ['ACTIVATE_CHECKOUT_MODIFIED'], 'NOT_NEEDED']);
+  assert.deepEqual(hostPhases(edited), ['config', 'activate']);
+  assert.ok(edited.scripts.get('activate')!.includes(TREE));
+  // A marker without a digest is not a created runtime: the present path blocks.
+  const { treeDigest: _digest, ...legacy } = marker as any;
+  const old = harness();
+  old.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(legacy)).toString('base64')}\n`);
+  assert.deepEqual((await run(old, { activation: true })).reasonCodes, ['TARGET_PATH_PRESENT']);
+});
+
+test('the tree digest ignores the provisioning files and changes with any content, mode or link change', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-f03-tree-'));
+  try {
+    const digest = (shell: string) => {
+      const result = spawnSync(shell, ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory], { encoding: 'utf8', timeout: 10_000 });
+      assert.equal(result.status, 0, result.stderr);
+      return result.stdout.trim();
+    };
+    await mkdir(join(directory, 'sub'));
+    await writeFile(join(directory, 'a.txt'), 'alpha\n');
+    await writeFile(join(directory, 'sub', 'b.txt'), 'beta\n');
+    await writeFile(join(directory, 'run.sh'), '#!/bin/sh\n');
+    await chmod(join(directory, 'run.sh'), 0o755);
+    await symlink('sub/b.txt', join(directory, 'link'));
+    const base = digest('sh');
+    assert.match(base, /^[0-9a-f]{64}$/);
+    assert.equal(digest('bash'), base);
+    // The marker and the labels written by provisioning are not part of the checkout.
+    await writeFile(join(directory, PROVISIONING_MARKER_FILE), '{}\n');
+    await writeFile(join(directory, '.mcp-provisioning.labels.json'), '{}\n');
+    assert.equal(digest('sh'), base);
+    const changes: Array<[() => Promise<void>, () => Promise<void>]> = [
+      [() => writeFile(join(directory, 'a.txt'), 'alpha!\n'), () => writeFile(join(directory, 'a.txt'), 'alpha\n')],
+      [() => chmod(join(directory, 'run.sh'), 0o644), () => chmod(join(directory, 'run.sh'), 0o755)],
+      [async () => { await unlink(join(directory, 'link')); await symlink('a.txt', join(directory, 'link')); },
+        async () => { await unlink(join(directory, 'link')); await symlink('sub/b.txt', join(directory, 'link')); }],
+      [() => writeFile(join(directory, 'sub', 'new.txt'), 'new\n'), () => unlink(join(directory, 'sub', 'new.txt'))]
+    ];
+    for (const [change, revert] of changes) {
+      await change();
+      assert.notEqual(digest('sh'), base);
+      await revert();
+      assert.equal(digest('sh'), base);
+    }
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test('an unsafe compose model or a bad archive is discarded to quarantine, never deleted', async () => {
   const unsafe = harness();
-  unsafe.results.stage = `result=staged\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d', { privileged: true }))).toString('base64')}\n`;
+  unsafe.results.stage = `result=staged\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d', { privileged: true }))).toString('base64')}\ntree_digest=${TREE}\n`;
   const blocked = await run(unsafe, { creation: true, activation: true });
   assert.equal(blocked.result, 'BLOCKED');
   assert.ok(blocked.findings.some((finding: any) => finding.code === 'COMPOSE_PRIVILEGED'));
@@ -366,7 +462,7 @@ test('a failed health check rolls back without destruction, and the activation o
   assert.match(rollbackCommand, /mv /);
 
   // A runtime created earlier is activated alone: no fetch and no stage; its rollback keeps the files.
-  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT });
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE });
   const activateOnly = harness();
   const plan = planProjectRuntimeProvisioning({
     request: REQUEST, serverTarget: { status: 'CONFIGURED', projectIds: ['portal'] }, registry: registry(),

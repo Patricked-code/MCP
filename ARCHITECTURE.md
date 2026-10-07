@@ -454,7 +454,9 @@ lecture seule ; il établit la preuve d'absence et le plan
 - **Preuve d'absence.** Live State inventorie, en lecture seule et seulement
   pour la cible configurée de `.mcp/server-map.json`, deux choses :
   - le chemin déclaré ;
-  - l'espace Docker provisionné (conteneurs étiquetés avec le dépôt).
+  - l'espace Docker provisionné du composant (les conteneurs de son projet
+    Compose, propre au composant même quand deux composants partagent un
+    dépôt).
 
   C4 reçoit soit le runtime trouvé, soit un `NO_RUNTIME` positif quand les
   deux sont vides. Un chemin présent sans runtime provisionné, un Docker
@@ -512,6 +514,12 @@ existante : `/provisioning/project-runtime`, derrière la connexion web
 - **Admission de la révision.** Juste avant toute écriture, la révision doit
   appartenir à l'historique revu de la branche par défaut, avec une CI ni en
   échec ni en cours (`src/provisioning/revisionAdmission.ts`).
+- **Cible résolue.** Le ticket lie aussi le dépôt, le chemin et le projet
+  Compose que la page a nommés. L'exécuteur refuse si son plan frais en
+  résout d'autres.
+- **Checkout vérifié.** La création enregistre l'empreinte de l'arbre dans le
+  marqueur ; l'activation la recalcule avant tout démarrage et refuse un
+  checkout modifié.
 - **Câblage.** L'inventaire est lu en lecture seule sur S1 et les écritures
   passent par le canal S1 gardé. Le mode écriture du serveur reste requis
   (`src/provisioning/wiring.ts`).

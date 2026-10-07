@@ -18,10 +18,16 @@
   - `src/provisioning/wiring.ts` : câblage de production. L'inventaire est en lecture seule et les écritures passent par le canal S1 gardé. L'archive est bornée ; les fichiers de job restent dans le volume de données, sans écrasement.
   - `src/provisioning/routes.ts` et `src/server.ts` : surface `/provisioning/project-runtime` derrière la connexion web (plan, soumission consentie, page de statut).
   - `.mcp/provisioning-contracts.json` : la route est classée `COMPOSABLE` et comble les quatre lacunes du contrat `PROJECT_RUNTIME`, désormais provisionnable.
+- **Revue Codex de la PR #261 (cinq constats, tous vérifiés et corrigés).**
+  - Le consentement est lié à la cible résolue nommée par la page (dépôt, chemin, projet Compose). L'exécuteur refuse (`TARGET_CHANGED_SINCE_CONSENT`) si son plan frais en résout une autre.
+  - Le checkout créé est vérifié avant toute activation : la création enregistre l'empreinte de l'arbre dans le marqueur, et l'activation la recalcule avant de démarrer (`ACTIVATE_CHECKOUT_MODIFIED`). Un marqueur sans empreinte n'est pas un runtime créé.
+  - L'inventaire et la préparation ne regardent plus que le projet Compose du composant. Deux composants d'un même dépôt gardent ainsi des runtimes distincts ; avant, le second paraissait déjà en place.
+  - Des cibles illisibles s'affichent `UNKNOWN`, jamais « aucune cible ».
+  - Une branche par défaut contenant `/` est envoyée comme un seul paramètre encodé.
 - **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
 - **Preuves.**
   - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.
-  - GREEN local : typecheck, build et gates verts ; suite complète 968/968. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`).
+  - GREEN local : typecheck, build et gates verts ; suite complète 972/972 (968 avant la revue). Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`).
 - **NEXT_ACTION** : CI exact-head de la PR #261, merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 — GREEN candidate

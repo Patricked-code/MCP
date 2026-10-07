@@ -6,6 +6,12 @@
 - Admission de la révision avant toute écriture : historique revu de la branche par défaut et CI ni en échec ni en cours (`src/provisioning/revisionAdmission.ts`).
 - Câblage de production de l'exécuteur (`src/provisioning/wiring.ts`). Les noms de la cible ne figurent plus sur les lignes `docker compose`.
 - `.mcp/provisioning-contracts.json` : la route est classée et rend le runtime de projet provisionnable.
+- Après revue :
+  - consentement lié à la cible résolue ;
+  - checkout vérifié par son empreinte avant toute activation ;
+  - inventaire limité au projet Compose du composant (deux composants d'un même dépôt restent distincts) ;
+  - cibles illisibles affichées `UNKNOWN` ;
+  - branche par défaut encodée comme un seul paramètre.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
 

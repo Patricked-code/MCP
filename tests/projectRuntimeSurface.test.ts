@@ -27,7 +27,8 @@ const {
 const { provisioningMarker } = await import('../src/provisioning/runtimeExecutor.js');
 const {
   parseProvisionedRuntimeInventory,
-  planProjectRuntimeProvisioning
+  planProjectRuntimeProvisioning,
+  provisionedComposeProject
 } = await import('../src/provisioning/projectRuntime.js');
 
 const REVISION = 'a'.repeat(40);
@@ -36,9 +37,12 @@ const OBSERVED_AT = '2026-10-07T15:00:00.000Z';
 const TARGET = Object.freeze({
   mappingId: 'github:Patricked-code/Portal:s1:portal_api',
   repositoryId: 'github:Patricked-code/Portal',
-  serverPath: '/opt/apps/portal-api'
+  serverPath: '/opt/apps/portal-api',
+  composeProject: provisionedComposeProject('portal', 'github:Patricked-code/Portal:s1:portal_api', 'github:Patricked-code/Portal')
 });
 const REQUEST = Object.freeze({ serverId: 'S1', projectId: 'portal', mappingId: TARGET.mappingId, revision: REVISION });
+/** The resolved target the consent page names, and the one the consent is bound to. */
+const RESOLVED = Object.freeze({ repositoryId: TARGET.repositoryId, serverPath: TARGET.serverPath, composeProject: TARGET.composeProject });
 const ABSENT = 'docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=\n';
 
 function registry(): any {
@@ -72,7 +76,8 @@ function plan(consent: Record<string, boolean> = {}, inventory = ABSENT): any {
 /** The inventory of a runtime created earlier by provisioning: present, marked, not running. */
 function createdInventory(): string {
   const marker = provisioningMarker({
-    jobId: 'prov-20261006T050000Z-00000000', target: plan().target, composeFile: 'compose.yaml', createdAt: OBSERVED_AT
+    jobId: 'prov-20261006T050000Z-00000000', target: plan().target, composeFile: 'compose.yaml', createdAt: OBSERVED_AT,
+    treeDigest: 'e'.repeat(64)
   });
   return `docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`;
 }
@@ -109,13 +114,16 @@ test('the provisioning consent is explicit, same-origin and bound to the session
     assert.deepEqual({ ...decide(input) }, { allowed: false, creation: false, activation: false, reasonCode }, reasonCode);
   }
 
-  // A ticket names its session and its exact target: it never consents to another one.
-  const binding = provisioningConsentBinding('session-1', REQUEST);
+  // A ticket names its session, the request and the resolved target: it never consents to another one.
+  const binding = provisioningConsentBinding('session-1', REQUEST, RESOLVED);
   for (const other of [
-    provisioningConsentBinding('session-2', REQUEST),
-    provisioningConsentBinding('session-1', { ...REQUEST, revision: HEAD }),
-    provisioningConsentBinding('session-1', { ...REQUEST, mappingId: 'github:Patricked-code/Portal:s1:other' }),
-    provisioningConsentBinding('session-1', { ...REQUEST, projectId: 'other' })
+    provisioningConsentBinding('session-2', REQUEST, RESOLVED),
+    provisioningConsentBinding('session-1', { ...REQUEST, revision: HEAD }, RESOLVED),
+    provisioningConsentBinding('session-1', { ...REQUEST, mappingId: 'github:Patricked-code/Portal:s1:other' }, RESOLVED),
+    provisioningConsentBinding('session-1', { ...REQUEST, projectId: 'other' }, RESOLVED),
+    provisioningConsentBinding('session-1', REQUEST, { ...RESOLVED, repositoryId: 'github:Patricked-code/Other' }),
+    provisioningConsentBinding('session-1', REQUEST, { ...RESOLVED, serverPath: '/opt/apps/portal-old' }),
+    provisioningConsentBinding('session-1', REQUEST, { ...RESOLVED, composeProject: 'mcp-portal-000000000000' })
   ]) {
     assert.notEqual(other, binding);
   }
@@ -217,6 +225,13 @@ test('a revision is admitted only from the default branch history with a non-fai
   const { result: head, calls: headCalls } = await admit({}, { revision: HEAD });
   assert.equal(head.reasonCode, 'REVISION_ADMITTED');
   assert.equal(headCalls.some((endpoint) => endpoint.includes('/compare/')), false);
+  // A default branch with a slash is one encoded path parameter, as the other GitHub branch readers send it.
+  const { result: slashed, calls: slashedCalls } = await admit({
+    '/repos/Patricked-code/Portal': { ok: true, status: 200, json: { default_branch: 'release/1.0' } },
+    '/repos/Patricked-code/Portal/branches/release%2F1.0': { ok: true, status: 200, json: { commit: { sha: HEAD } } }
+  });
+  assert.deepEqual([slashed.admitted, slashed.defaultBranch], [true, 'release/1.0']);
+  assert.ok(slashedCalls.includes('/repos/Patricked-code/Portal/branches/release%2F1.0'));
   // An invalid repository or revision is never requested.
   for (const input of [{ revision: 'main' }, { repositoryId: 'github:Patricked-code/Portal;x' }]) {
     const { result, calls: none } = await admit({}, input);
@@ -279,8 +294,8 @@ async function withSurface(
 
 const LOGGED_IN = { 'x-test-login': 'yes', 'x-test-session': 'session-1' };
 
-function ticketFor(session: string, request: Record<string, string>): string {
-  return `ticket:${PROVISIONING_CONSENT_PURPOSE}:${Buffer.from(provisioningConsentBinding(session, request)).toString('base64url')}`;
+function ticketFor(session: string, request: Record<string, string>, resolved: Record<string, string> = RESOLVED): string {
+  return `ticket:${PROVISIONING_CONSENT_PURPOSE}:${Buffer.from(provisioningConsentBinding(session, request as any, resolved as any)).toString('base64url')}`;
 }
 
 async function submit(baseUrl: string, fields: Record<string, string>, headers: Record<string, string> = {}) {
@@ -296,6 +311,9 @@ const FIELDS = Object.freeze({
   projectId: 'portal',
   mappingId: TARGET.mappingId,
   revision: REVISION,
+  repositoryId: RESOLVED.repositoryId,
+  serverPath: RESOLVED.serverPath,
+  composeProject: RESOLVED.composeProject,
   consent_ticket: ticketFor('session-1', REQUEST),
   consent_creation: CREATION_CONSENT
 });
@@ -320,6 +338,12 @@ test('the provisioning page requires the web login and observes nothing before a
     assert.match(page, /targetProjectIds/);
     assert.deepEqual(seen.previews, []);
   });
+  // Unreadable targets are unknown, never reported as an absence of target.
+  await withSurface({ listTargets: async () => { throw new Error('PROVISIONING_TARGETS_UNKNOWN'); } }, async (baseUrl) => {
+    const page = await (await fetch(`${baseUrl}/provisioning/project-runtime`, { headers: LOGGED_IN })).text();
+    assert.match(page, /UNKNOWN/);
+    assert.doesNotMatch(page, /Aucune cible/);
+  });
 });
 
 test('the plan page renders the exact target and asks for the explicit consent, without executing', async () => {
@@ -334,6 +358,8 @@ test('the plan page renders the exact target and asks for the explicit consent, 
     assert.match(page, /method="post" action="\/provisioning\/project-runtime"/);
     assert.ok(page.includes(`value="${ticketFor('session-1', REQUEST)}"`));
     assert.match(page, new RegExp(`name="consent_creation" value="${CREATION_CONSENT}"`));
+    // The form carries the resolved target the consent names, bound by the ticket.
+    for (const [name, value] of Object.entries(RESOLVED)) assert.ok(page.includes(`name="${name}" value="${value}"`), name);
   });
   // A blocked or matching runtime offers no consent at all.
   for (const [decided, code] of [
@@ -356,6 +382,9 @@ test('a submission executes only with a same-origin, ticketed, explicit consent 
       [{ ...FIELDS, consent_ticket: 'forged' }, {}, 'CONSENT_TICKET_INVALID'],
       [{ ...FIELDS, consent_ticket: ticketFor('session-1', { ...REQUEST, revision: HEAD }) }, {}, 'CONSENT_TICKET_INVALID'],
       [FIELDS, { 'x-test-session': 'session-2' }, 'CONSENT_TICKET_INVALID'],
+      // A target edited in the form is not the target the ticket was rendered for.
+      [{ ...FIELDS, serverPath: '/opt/apps/elsewhere' }, {}, 'CONSENT_TICKET_INVALID'],
+      [Object.fromEntries(Object.entries(FIELDS).filter(([name]) => name !== 'composeProject')), {}, 'CONSENT_TICKET_INVALID'],
       [{ ...FIELDS, consent_creation: 'on' }, {}, 'CONSENT_MISSING']
     ];
     for (const [fields, headers, reasonCode] of refusals) {
@@ -371,7 +400,7 @@ test('a submission executes only with a same-origin, ticketed, explicit consent 
     const page = await granted.text();
     assert.match(page, /SUCCEEDED/);
     assert.ok(page.includes('prov-20261007T150000Z-0a1b2c3d'));
-    assert.deepEqual(seen.executions, [{ request: REQUEST, consent: { creation: true, activation: false } }]);
+    assert.deepEqual(seen.executions, [{ request: REQUEST, consent: { creation: true, activation: false }, expectedTarget: RESOLVED }]);
   });
   // Refusals and failures keep their meaning in the answer.
   for (const [outcome, status] of [[execution('REFUSED', ['REVISION_CI_FAILED']), 409], [execution('ROLLED_BACK', ['HEALTH_CHECK_FAILED']), 502]] as const) {
@@ -448,6 +477,11 @@ test('the production wiring observes read-only, writes through the guarded chann
   assert.deepEqual(await unreadable.readServerTarget(), { status: 'INVALID', reasonCode: 'TARGET_PROJECT_CONFIGURATION_UNREADABLE' });
   const noRegistry = createProjectRuntimeExecutionDependencies({ ...io, readRegistry: async () => { throw new Error('io'); } } as any) as any;
   assert.equal((await noRegistry.readRegistry()).available, false);
+  // An unreadable configuration or registry leaves the targets unknown; only a missing configuration means none.
+  await assert.rejects(unreadable.listTargets());
+  await assert.rejects(noRegistry.listTargets());
+  const unconfigured = createProjectRuntimeExecutionDependencies({ ...io, readServerMap: async () => null } as any) as any;
+  assert.deepEqual(await unconfigured.listTargets(), []);
 
   // The preview observes and plans with no consent; it never writes.
   const preview = await deps.preview(REQUEST);

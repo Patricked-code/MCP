@@ -2,7 +2,6 @@ import type { GitRegistryProjectEvidence } from '../github/registry.js';
 import type { ServerTargetConfiguration } from '../liveState/targetProject.js';
 import { evaluateComposeSafety, provisioningLabelsOverride, type ComposeSafetyFinding } from './composePolicy.js';
 import {
-  PROVISIONING_LABEL_REPOSITORY,
   PROVISIONING_MARKER_FILE,
   governedRuntimePath,
   planProjectRuntimeProvisioning,
@@ -47,6 +46,27 @@ const CLEAN_ENV = 'env -i PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
 // Compose keys that read host files outside the project at load time.
 const FORBIDDEN_COMPOSE_KEYS = '^[[:space:]-]*(env_file|extends|include|label_file)[[:space:]]*:';
 
+/**
+ * The digest of a checkout as the host sees it: every file's content, the
+ * executable bits and the symbolic links, sorted, without the files this
+ * provisioning writes. Creation records it in the marker; an activation
+ * recomputes it first, so a checkout edited since its creation never starts
+ * under the revision it claims. Unreadable content fails instead of
+ * digesting a partial tree.
+ */
+export const PROVISIONING_TREE_DIGEST_SHELL = String.raw`tree_digest() {
+  [ -d "$1" ] || return 1
+  [ -z "$(find "$1" ! -readable -print -quit 2>/dev/null)" ] || return 1
+  (
+    cd "$1" || exit 1
+    find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${LABELS_FILE}' \) -prune -o -type f -print0 | LC_ALL=C sort -z | xargs -0 -r sha256sum --
+    printf 'mcp-tree:executables\n'
+    find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${LABELS_FILE}' \) -prune -o -type f -perm -u+x -print0 | LC_ALL=C sort -z
+    printf 'mcp-tree:links\n'
+    find . -type l -print0 | LC_ALL=C sort -z | xargs -0 -r -n 1 sh -c 'printf "%s\0" "$1"; readlink -- "$1"' tree-link
+  ) | sha256sum | cut -d' ' -f1
+}`;
+
 function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'"'"'`)}'`;
 }
@@ -85,15 +105,21 @@ export function provisioningJobId(now: Date, randomHex: string): string {
   return jobId;
 }
 
+function assertTreeDigest(treeDigest: string): void {
+  if (!SHA256_PATTERN.test(treeDigest)) throw new Error('PROVISIONING_TREE_DIGEST_INVALID');
+}
+
 export function provisioningMarker(input: {
   jobId: string;
   target: ProjectRuntimeTarget;
   composeFile: string;
   createdAt: string;
+  treeDigest: string;
 }): ProvisioningMarker {
   assertJobId(input.jobId);
   assertTarget(input.target);
   assertComposeFile(input.composeFile);
+  assertTreeDigest(input.treeDigest);
   return Object.freeze({
     schemaVersion: 1 as const,
     jobId: input.jobId,
@@ -103,7 +129,8 @@ export function provisioningMarker(input: {
     revision: input.target.revision,
     composeProject: input.target.composeProject,
     composeFile: input.composeFile,
-    createdAt: input.createdAt
+    createdAt: input.createdAt,
+    treeDigest: input.treeDigest
   });
 }
 
@@ -153,10 +180,10 @@ export function buildStageScript(input: { jobId: string; target: ProjectRuntimeT
   const archive = `${PROVISIONING_DATA_ROOT_HOST}/${input.jobId}/source.tar.gz`;
   return [
     ...header('stage'),
+    PROVISIONING_TREE_DIGEST_SHELL,
     `[ ! -e ${shellQuote(input.target.serverPath)} ] || fail target_present`,
     `[ ! -e ${shellQuote(staging)} ] || fail staging_present`,
-    `c="$(docker ps -aq --filter ${shellQuote(`label=${PROVISIONING_LABEL_REPOSITORY}=${input.target.repositoryId}`)} 2>/dev/null)" || fail docker_unavailable`,
-    '[ -z "$c" ] || fail runtime_present',
+    // The component's own compose project: another component of the same repository never blocks it.
     `c="$(docker ps -aq --filter ${shellQuote(`label=com.docker.compose.project=${input.target.composeProject}`)} 2>/dev/null)" || fail docker_unavailable`,
     '[ -z "$c" ] || fail compose_project_present',
     `[ -f ${shellQuote(archive)} ] || fail archive_missing`,
@@ -174,14 +201,22 @@ export function buildStageScript(input: { jobId: string; target: ProjectRuntimeT
     `staging=${shellQuote(staging)}`,
     `project=${shellQuote(input.target.composeProject)}`,
     `config="$(cd "$staging" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" config --format json 2>/dev/null)" || fail compose_invalid`,
+    'tree="$(tree_digest "$staging")" || fail tree_digest',
     "printf 'result=staged\\n'",
     `printf 'compose_file=%s\\n' "$file"`,
-    `printf 'compose_config_b64=%s\\n' "$(printf '%s' "$config" | head -c ${MAX_COMPOSE_CONFIG_BYTES} | base64 | tr -d '\\n')"`
+    `printf 'compose_config_b64=%s\\n' "$(printf '%s' "$config" | head -c ${MAX_COMPOSE_CONFIG_BYTES} | base64 | tr -d '\\n')"`,
+    "printf 'tree_digest=%s\\n' \"$tree\""
   ].join('\n');
 }
 
 /** Promotes the staging directory to the target and writes the marker; a failed marker undoes the promotion. */
-export function buildCreateScript(input: { jobId: string; target: ProjectRuntimeTarget; composeFile: string; createdAt: string }): string {
+export function buildCreateScript(input: {
+  jobId: string;
+  target: ProjectRuntimeTarget;
+  composeFile: string;
+  createdAt: string;
+  treeDigest: string;
+}): string {
   const marker = provisioningMarker(input);
   const staging = stagingPath(input.target.serverPath, input.jobId);
   const target = shellQuote(input.target.serverPath);
@@ -206,17 +241,23 @@ export function buildComposeConfigScript(input: { target: ProjectRuntimeTarget; 
   ].join('\n');
 }
 
-/** Labels and starts the compose project of a created runtime, then waits for every container to be healthy. */
+/**
+ * Verifies that the checkout still matches the digest of its creation, then
+ * labels and starts the compose project and waits for every container to be
+ * healthy.
+ */
 export function buildActivateScript(input: {
   jobId: string;
   target: ProjectRuntimeTarget;
   composeFile: string;
   labelsOverride: string;
   healthTimeoutSeconds: number;
+  treeDigest: string;
 }): string {
   assertJobId(input.jobId);
   assertTarget(input.target);
   assertComposeFile(input.composeFile);
+  assertTreeDigest(input.treeDigest);
   JSON.parse(input.labelsOverride);
   const timeout = Math.max(30, Math.min(900, Math.trunc(input.healthTimeoutSeconds)));
   const directory = shellQuote(input.target.serverPath);
@@ -225,9 +266,13 @@ export function buildActivateScript(input: {
   const compose = `${CLEAN_ENV} docker compose -p "$project" -f "$file" -f "$labels"`;
   return [
     ...header('activate'),
+    PROVISIONING_TREE_DIGEST_SHELL,
     `[ -f ${marker} ] || fail marker_missing`,
     `grep -q ${shellQuote(`"revision":"${input.target.revision}"`)} ${marker} || fail marker_mismatch`,
     `grep -q ${shellQuote(`"composeProject":"${input.target.composeProject}"`)} ${marker} || fail marker_mismatch`,
+    `grep -q ${shellQuote(`"treeDigest":"${input.treeDigest}"`)} ${marker} || fail marker_mismatch`,
+    `tree="$(tree_digest ${directory})" || fail tree_digest`,
+    `[ "$tree" = ${shellQuote(input.treeDigest)} ] || fail checkout_modified`,
     `printf '%s\\n' ${shellQuote(input.labelsOverride)} > ${labels} || fail labels`,
     ...composeNames(input.target.composeProject, input.composeFile),
     `labels=${labels}`,
@@ -390,12 +435,21 @@ function refused(reasonCodes: readonly string[], result: ProjectRuntimeExecution
   });
 }
 
+/** The resolved target a consent named: a run refuses if the fresh plan resolves another one. */
+export type ProvisioningConsentedTarget = Readonly<{ repositoryId: string; serverPath: string; composeProject: string }>;
+
+export type ProjectRuntimeExecutionInput = {
+  request: unknown;
+  consent: { creation: boolean; activation: boolean };
+  expectedTarget: ProvisioningConsentedTarget | null;
+};
+
 /**
  * Executes a READY plan of one component runtime. Consents are decided
  * server-side by the caller (E3) and never inferred here.
  */
 export async function executeProjectRuntimeProvisioning(
-  input: { request: unknown; consent: { creation: boolean; activation: boolean } },
+  input: ProjectRuntimeExecutionInput,
   deps: ProjectRuntimeExecutionDependencies
 ): Promise<ProjectRuntimeExecution> {
   if (!deps.writeEnabled()) return refused(['WRITE_TOOLS_DISABLED']);
@@ -409,7 +463,7 @@ export async function executeProjectRuntimeProvisioning(
 }
 
 async function execute(
-  input: { request: unknown; consent: { creation: boolean; activation: boolean } },
+  input: ProjectRuntimeExecutionInput,
   deps: ProjectRuntimeExecutionDependencies
 ): Promise<ProjectRuntimeExecution> {
   const consent = { creation: input.consent.creation === true, activation: input.consent.activation === true };
@@ -419,6 +473,16 @@ async function execute(
 
   const target = plan.target;
   const mode = plan.mode;
+  // The consent named a resolved target: a registry change since then never redirects it.
+  const expected = input.expectedTarget;
+  if (
+    !expected
+    || expected.repositoryId !== target.repositoryId
+    || expected.serverPath !== target.serverPath
+    || expected.composeProject !== target.composeProject
+  ) {
+    return refused(['TARGET_CHANGED_SINCE_CONSENT'], 'REFUSED', target);
+  }
   // The revision is admitted afresh before any write, even for a runtime created by an earlier job.
   const admission = await deps.admitRevision({ repositoryId: target.repositoryId, revision: target.revision }).catch(() => null);
   if (!admission?.admitted || (admission.kind !== 'CI_GATE' && admission.kind !== 'MANUAL_CONSENT')) {
@@ -487,6 +551,7 @@ async function execute(
 
   let composeFile: string;
   let services: readonly string[];
+  let treeDigest: string;
   if (mode === 'CREATE' || mode === 'CREATE_AND_ACTIVATE') {
     const fetched = await deps.fetchSource({
       repositoryId: target.repositoryId,
@@ -506,6 +571,13 @@ async function execute(
       await discard();
       return finish('FAILED', [`STAGE_${(staged.get('reason') ?? 'failed').toUpperCase().replace(/[^A-Z_]/g, '_')}`]);
     }
+    const stagedDigest = staged.get('tree_digest') ?? '';
+    if (!SHA256_PATTERN.test(stagedDigest)) {
+      steps.push({ id: 'backup', status: 'FAILED' });
+      await discard();
+      return finish('FAILED', ['STAGE_TREE_DIGEST_MISSING']);
+    }
+    treeDigest = stagedDigest;
     // The pre-state is proven empty on the host: the backup records that absence.
     steps.push({ id: 'backup', status: 'DONE' });
     const file = staged.get('compose_file') ?? '';
@@ -522,7 +594,7 @@ async function execute(
     composeFile = file;
     services = safety.services;
 
-    const created = await host('create', buildCreateScript({ jobId, target, composeFile, createdAt: deps.now().toISOString() }));
+    const created = await host('create', buildCreateScript({ jobId, target, composeFile, createdAt: deps.now().toISOString(), treeDigest }));
     if (created.get('result') !== 'created') {
       steps.push({ id: 'create-runtime', status: 'FAILED' });
       await discard();
@@ -534,6 +606,7 @@ async function execute(
     const marker = inventory?.components[0]?.marker;
     if (!marker) return finish('FAILED', ['MARKER_UNAVAILABLE']);
     composeFile = marker.composeFile;
+    treeDigest = marker.treeDigest;
     const configured = await host('config', buildComposeConfigScript({ target, composeFile }));
     const safety = configured.get('result') === 'configured'
       ? evaluateComposeSafety(composeModel(configured), target.serverPath)
@@ -552,10 +625,17 @@ async function execute(
     revision: target.revision,
     projectId: target.projectId
   });
-  const activated = await host('activate', buildActivateScript({ jobId, target, composeFile, labelsOverride, healthTimeoutSeconds: 180 }));
+  const activated = await host('activate', buildActivateScript({ jobId, target, composeFile, labelsOverride, healthTimeoutSeconds: 180, treeDigest }));
   if (activated.get('result') === 'activated' && activated.get('health') === 'healthy') {
     steps.push({ id: 'activate', status: 'DONE' }, { id: 'health', status: 'DONE' });
     return finish('SUCCEEDED', []);
+  }
+  const failedReason = activated.get('result') === 'failed' ? activated.get('reason') ?? 'failed' : null;
+  const reasonCode = failedReason ? `ACTIVATE_${failedReason.toUpperCase().replace(/[^A-Z_]/g, '_')}` : 'HEALTH_CHECK_FAILED';
+  // The script refused before starting anything; files created by an earlier job are kept as they are.
+  if (mode === 'ACTIVATE' && failedReason && failedReason !== 'host_exit' && failedReason !== 'host_unavailable') {
+    steps.push({ id: 'activate', status: 'FAILED' });
+    return finish('FAILED', [reasonCode]);
   }
   steps.push({ id: 'activate', status: 'FAILED' }, { id: 'health', status: activated.get('health') ?? 'unknown' });
   const rolledBack = await host('rollback', buildRollbackScript({
@@ -566,12 +646,13 @@ async function execute(
   }));
   rollback = rolledBack.get('result') === 'rolled_back' ? 'SUCCEEDED' : 'FAILED';
   steps.push({ id: 'rollback', status: rollback });
-  return finish(rollback === 'SUCCEEDED' ? 'ROLLED_BACK' : 'FAILED', ['HEALTH_CHECK_FAILED']);
+  return finish(rollback === 'SUCCEEDED' ? 'ROLLED_BACK' : 'FAILED', [reasonCode]);
 }
 
 /** The reason codes of a plan that does not run, as the executor reports them. */
 export type ProjectRuntimeRefusalCode =
   | ProjectRuntimeReasonCode
   | Exclude<RevisionAdmissionReasonCode, 'REVISION_ADMITTED'>
+  | 'TARGET_CHANGED_SINCE_CONSENT'
   | 'WRITE_TOOLS_DISABLED'
   | 'PROVISIONING_IN_PROGRESS';

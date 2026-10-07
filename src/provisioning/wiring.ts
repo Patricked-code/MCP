@@ -61,6 +61,7 @@ export type ProjectRuntimeProvisioningTarget = Readonly<{
   mappingId: string;
   repositoryId: string;
   serverPath: string;
+  composeProject: string;
 }>;
 
 export type ProjectRuntimeProvisioningDependencies = ProjectRuntimeExecutionDependencies & {
@@ -128,8 +129,11 @@ export function createProjectRuntimeExecutionDependencies(
     },
     listTargets: async () => {
       const configuration = await readServerTarget();
-      if (configuration.status !== 'CONFIGURED') return [];
+      if (configuration.status === 'NOT_CONFIGURED') return [];
+      // An unreadable configuration or registry leaves the targets unknown, never absent.
+      if (configuration.status !== 'CONFIGURED') throw new Error('PROVISIONING_TARGETS_UNKNOWN');
       const registry = await readRegistry();
+      if (!registry.available) throw new Error('PROVISIONING_TARGETS_UNKNOWN');
       return configuration.projectIds.flatMap((projectId) => provisioningInventoryTargets(registry, projectId)
         .map((target) => Object.freeze({ projectId, ...target })));
     },

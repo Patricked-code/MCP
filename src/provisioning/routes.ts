@@ -8,7 +8,7 @@ import {
   renderProvisioningConsentFields
 } from './consent.js';
 import type { ProjectRuntimeProvisioningPlan } from './projectRuntime.js';
-import type { ProjectRuntimeExecution } from './runtimeExecutor.js';
+import type { ProjectRuntimeExecution, ProvisioningConsentedTarget } from './runtimeExecutor.js';
 import type { ProjectRuntimeProvisioningTarget } from './wiring.js';
 
 /**
@@ -39,6 +39,7 @@ export type ProjectRuntimeProvisioningRouteDependencies = {
   execute: (input: {
     request: ProvisioningRequest;
     consent: { creation: boolean; activation: boolean };
+    expectedTarget: ProvisioningConsentedTarget;
   }) => Promise<ProjectRuntimeExecution>;
   /** How long a submission waits for its job before answering that it runs on. */
   responseWaitMs?: number;
@@ -114,6 +115,15 @@ function requestFrom(source: unknown): ProvisioningRequest | null {
   return Object.freeze({ serverId: 'S1' as const, projectId, mappingId, revision: revision.toLowerCase() });
 }
 
+/** The resolved target a submitted consent names, as the plan page rendered it. */
+function consentedTargetFrom(source: Record<string, unknown>): ProvisioningConsentedTarget | null {
+  const repositoryId = field(source, 'repositoryId');
+  const serverPath = field(source, 'serverPath');
+  const composeProject = field(source, 'composeProject');
+  if (!repositoryId || !serverPath || !composeProject) return null;
+  return { repositoryId, serverPath, composeProject };
+}
+
 async function renderTargets(deps: ProjectRuntimeProvisioningRouteDependencies): Promise<string> {
   const intro = '<p>Provisionne le runtime d’un composant d’un projet cible de S1, seulement s’il est réellement absent. Rien n’est exécuté sans votre consentement explicite.</p>';
   let targets: readonly ProjectRuntimeProvisioningTarget[];
@@ -154,11 +164,14 @@ function renderPlan(plan: ProjectRuntimeProvisioningPlan, request: ProvisioningR
     <p>Gouvernance héritée : sauvegarde ${plan.governance?.backupRequired ? 'requise' : 'non requise'}, méthode de retour ${code(plan.governance?.rollbackMethod ?? 'non déclarée')}.</p>`
     : '<p>Cible non résolue.</p>';
   const steps = plan.steps.map((step) => `<tr><td>${code(step.id)}</td><td>${code(step.state)}</td></tr>`).join('');
-  const form = plan.decision === 'CONSENT_REQUIRED' && ticket
+  const form = plan.decision === 'CONSENT_REQUIRED' && ticket && target
     ? `<form method="post" action="${PAGE_PATH}">
       <input type="hidden" name="projectId" value="${escapeHtml(request.projectId)}" />
       <input type="hidden" name="mappingId" value="${escapeHtml(request.mappingId)}" />
       <input type="hidden" name="revision" value="${escapeHtml(request.revision)}" />
+      <input type="hidden" name="repositoryId" value="${escapeHtml(target.repositoryId)}" />
+      <input type="hidden" name="serverPath" value="${escapeHtml(target.serverPath)}" />
+      <input type="hidden" name="composeProject" value="${escapeHtml(target.composeProject)}" />
       ${renderProvisioningConsentFields({ ticket, plan })}
       <p>Avant toute écriture, le serveur relit la cible, l’inventaire et la révision. Le mode écriture du serveur (${code('ENABLE_WRITE_TOOLS')}) reste requis et n’est jamais un consentement.</p>
       <button type="submit">Provisionner</button>
@@ -226,7 +239,9 @@ export function createProjectRuntimeProvisioningRouter(deps: ProjectRuntimeProvi
   const waitMs = deps.responseWaitMs ?? DEFAULT_RESPONSE_WAIT_MS;
   let running: { request: ProvisioningRequest; startedAt: string } | null = null;
   let last: { execution: ProjectRuntimeExecution; finishedAt: string } | null = null;
-  const binding = (req: Request, request: ProvisioningRequest) => provisioningConsentBinding(deps.consentSession(req), request);
+  const binding = (req: Request, request: ProvisioningRequest, target: ProvisioningConsentedTarget) => (
+    provisioningConsentBinding(deps.consentSession(req), request, target)
+  );
 
   router.get('/provisioning/project-runtime/status', deps.requireLogin, (_req, res) => {
     secure(res);
@@ -253,8 +268,9 @@ export function createProjectRuntimeProvisioningRouter(deps: ProjectRuntimeProvi
       res.status(503).type('html').send(page('Provisioning d’un runtime de projet', '<p><strong>UNKNOWN</strong> : l’observation est indisponible, aucun plan n’est établi.</p>'));
       return;
     }
-    const ticket = plan.decision === 'CONSENT_REQUIRED'
-      ? deps.issueTicket(PROVISIONING_CONSENT_PURPOSE, binding(req, request))
+    // The ticket binds the resolved target the page names, not only the request.
+    const ticket = plan.decision === 'CONSENT_REQUIRED' && plan.target
+      ? deps.issueTicket(PROVISIONING_CONSENT_PURPOSE, binding(req, request, plan.target))
       : null;
     res.status(200).type('html').send(page('Plan de provisioning', renderPlan(plan, request, ticket)));
   });
@@ -263,14 +279,16 @@ export function createProjectRuntimeProvisioningRouter(deps: ProjectRuntimeProvi
     secure(res);
     const body = req.body && typeof req.body === 'object' ? req.body as Record<string, unknown> : {};
     const request = requestFrom(body);
+    const target = consentedTargetFrom(body);
     // Consent is decided here, before any GitHub call or write, and never inferred.
     const consent = decideProvisioningConsent({
       sameOrigin: deps.isSameOrigin(req),
-      ticketValid: request !== null && deps.verifyTicket(PROVISIONING_CONSENT_PURPOSE, body.consent_ticket, binding(req, request)),
+      ticketValid: request !== null && target !== null
+        && deps.verifyTicket(PROVISIONING_CONSENT_PURPOSE, body.consent_ticket, binding(req, request, target)),
       creationConsent: body.consent_creation,
       activationConsent: body.consent_activation
     });
-    if (!request || !consent.allowed) {
+    if (!request || !target || !consent.allowed) {
       res.status(403).type('html').send(page('Consentement refusé', `<p>Aucun provisioning n’a été lancé : ${code(consent.reasonCode)}.</p><p><a href="${PAGE_PATH}">Revenir au plan</a> pour rendre un nouveau consentement.</p>`));
       return;
     }
@@ -279,7 +297,8 @@ export function createProjectRuntimeProvisioningRouter(deps: ProjectRuntimeProvi
       return;
     }
     running = { request, startedAt: now().toISOString() };
-    const job = deps.execute({ request, consent: { creation: consent.creation, activation: consent.activation } })
+    // The executor refuses if its fresh plan no longer resolves the target this consent named.
+    const job = deps.execute({ request, consent: { creation: consent.creation, activation: consent.activation }, expectedTarget: target })
       .catch(() => unavailableExecution())
       .then((execution) => {
         last = { execution, finishedAt: now().toISOString() };

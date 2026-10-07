@@ -67,7 +67,8 @@ export async function admitProvisioningRevision(
     return decide('REVISION_ADMISSION_UNAVAILABLE');
   }
   defaultBranch = branch;
-  const head = await get(`/branches/${branch.split('/').map(encodeURIComponent).join('/')}`);
+  // One encoded path parameter, slashes included, as the other GitHub branch readers send it.
+  const head = await get(`/branches/${encodeURIComponent(branch)}`);
   const headSha = record(record(head.json)?.commit)?.sha;
   if (!head.ok || typeof headSha !== 'string' || !SHA_PATTERN.test(headSha)) return decide('REVISION_ADMISSION_UNAVAILABLE');
   defaultBranchHead = headSha;

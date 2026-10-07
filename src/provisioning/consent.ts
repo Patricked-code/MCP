@@ -36,12 +36,20 @@ function escapeHtml(value: unknown): string {
     .replaceAll("'", '&#39;');
 }
 
-/** The binding of a consent ticket: the web session and the exact target it names. */
+/**
+ * The binding of a consent ticket: the web session, the request and the
+ * resolved target the consent page named. A registry change since the page
+ * was rendered makes the ticket worthless for the new target.
+ */
 export function provisioningConsentBinding(
   session: string,
-  request: { projectId: string; mappingId: string; revision: string }
+  request: { projectId: string; mappingId: string; revision: string },
+  target: { repositoryId: string; serverPath: string; composeProject: string }
 ): string {
-  return JSON.stringify([session, 'S1', request.projectId, request.mappingId, request.revision]);
+  return JSON.stringify([
+    session, 'S1', request.projectId, request.mappingId, request.revision,
+    target.repositoryId, target.serverPath, target.composeProject
+  ]);
 }
 
 export function decideProvisioningConsent(input: ProvisioningConsentInput): ProvisioningConsentDecision {

@@ -20,6 +20,14 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
 - **Un job long ne bloque pas la requête.** La réponse attend 25 s au plus, puis renvoie vers la page de statut. Le job continue et reste attesté dans son dossier.
 - **Le garde des commandes ne doit pas mal lire un nom.** Les noms de la cible passent par des variables : une ligne `docker compose` ne porte que ses drapeaux. Une commande que la politique refuse n'atteint jamais l'hôte et échoue avec la raison `command_policy`.
 - **La route comble les lacunes.** Classée `COMPOSABLE` pour le seul `PROJECT_RUNTIME`, elle compose la sauvegarde, la création, l'activation et le rollback du contrat, désormais provisionnable. Les dépôts et les bindings de domaine restent bloqués par leurs lacunes.
+- **Après la revue de la PR #261 :**
+  - **Consentement lié à la cible résolue.** Le ticket lie aussi le dépôt, le chemin et le projet Compose que la page a nommés. L'exécuteur refuse si son plan frais en résout d'autres : un changement du registre pendant la vie du ticket ne redirige jamais un consentement.
+  - **Checkout vérifié avant l'activation.**
+    - La création enregistre dans le marqueur l'empreinte de l'arbre préparé : contenu, bits d'exécution et liens, hors des fichiers que le provisioning écrit.
+    - L'activation la recalcule avant tout démarrage. Un checkout modifié depuis sa création ne démarre jamais sous la révision qu'il revendique.
+    - Un contenu illisible échoue au lieu de produire une empreinte partielle.
+  - **Un runtime par composant.** Les conteneurs d'un composant sont ceux de son projet Compose, dérivé du projet et du mapping. Un autre composant du même dépôt ne le masque plus et ne le bloque plus. C4 reste par dépôt : un mélange de `NO_RUNTIME` et d'un runtime y reste `UNKNOWN`.
+  - **Cible illisible ≠ absence.** Une configuration ou un registre illisible laisse les cibles `UNKNOWN`. Seule une configuration absente signifie « aucune cible ».
 
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
 

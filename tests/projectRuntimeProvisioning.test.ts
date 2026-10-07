@@ -10,7 +10,9 @@ const {
   governedRuntimePath,
   parseProvisionedRuntimeInventory,
   planProjectRuntimeProvisioning,
-  provisionedRuntimeObservations
+  provisionedComposeProject,
+  provisionedRuntimeObservations,
+  provisioningInventoryTargets
 } = await import('../src/provisioning/projectRuntime.js');
 const { collectProvisionedRuntimes } = await import('../src/liveState/provisionedRuntime.js');
 const { liveStateRuntimeObservations } = await import('../src/liveState/runtimeObservation.js');
@@ -22,7 +24,8 @@ const OTHER_REVISION = 'b'.repeat(40);
 const TARGET = Object.freeze({
   mappingId: 'github:Patricked-code/Portal:s1:portal_api',
   repositoryId: 'github:Patricked-code/Portal',
-  serverPath: '/opt/apps/portal-api'
+  serverPath: '/opt/apps/portal-api',
+  composeProject: provisionedComposeProject('portal', 'github:Patricked-code/Portal:s1:portal_api', 'github:Patricked-code/Portal')
 });
 
 function registry(overrides: Record<string, unknown> = {}): any {
@@ -65,12 +68,47 @@ test('the provisioned-runtime inventory is bounded, read-only and quotes every v
   const command = buildProvisionedRuntimeInventoryCommand([TARGET]);
   assert.doesNotThrow(() => assertReadOnlyCommand(command));
   assert.match(command, /'\/opt\/apps\/portal-api'/);
-  assert.match(command, new RegExp(`label=${PROVISIONING_LABEL_REPOSITORY.replaceAll('.', '\\.')}=github:Patricked-code/Portal`));
+  // A component's provisioned containers are those of its own compose project, not of its whole repository.
+  assert.ok(command.includes(`label=com.docker.compose.project=${TARGET.composeProject}`));
+  assert.equal(command.includes(PROVISIONING_LABEL_REPOSITORY), false);
   assert.doesNotMatch(command, /\becho\b/);
   // Hostile declarations never reach the shell: only governed, normalized paths are inventoried.
   assert.throws(() => buildProvisionedRuntimeInventoryCommand([{ ...TARGET, serverPath: "/opt/apps/x'; rm -rf /" }]));
   assert.throws(() => buildProvisionedRuntimeInventoryCommand([{ ...TARGET, repositoryId: "github:o/r' --format x" }]));
   assert.throws(() => buildProvisionedRuntimeInventoryCommand(Array.from({ length: 21 }, () => TARGET)));
+  assert.throws(() => buildProvisionedRuntimeInventoryCommand([{ ...TARGET, composeProject: "x' --all" }]));
+});
+
+test('two components of one repository keep distinct runtimes', () => {
+  // A monorepo: the same repository mapped twice, at two declared paths.
+  const second = { mappingId: 'github:Patricked-code/Portal:s1:portal_worker', serverPath: '/opt/apps/portal-worker' };
+  const base = registry();
+  const monorepo = registry({
+    mappings: [...base.mappings, { ...base.mappings[0], mappingId: second.mappingId, componentRole: 'worker' }],
+    projects: [{
+      ...base.projects[0],
+      repositoryComponents: [...base.projects[0].repositoryComponents, { repositoryId: TARGET.repositoryId, mappingId: second.mappingId, role: 'worker' }]
+    }],
+    serverBindings: [...base.serverBindings, { ...base.serverBindings[0], mappingId: second.mappingId, componentRole: 'worker', serverPath: second.serverPath }]
+  });
+  const targets = provisioningInventoryTargets(monorepo, 'portal') as any[];
+  assert.deepEqual(targets.map((entry) => entry.serverPath), [TARGET.serverPath, second.serverPath]);
+  assert.notEqual(targets[0].composeProject, targets[1].composeProject);
+  const command = buildProvisionedRuntimeInventoryCommand(targets);
+  for (const entry of targets) assert.ok(command.includes(`label=com.docker.compose.project=${entry.composeProject}`));
+
+  // The first component runs; the second is absent and is planned for creation, never a no-op.
+  const running = parseProvisionedRuntimeInventory([
+    'docker=ok',
+    'component.0.path=present', `component.0.containers=portal-api-1|running|${targets[0].composeProject}|${REVISION}`,
+    'component.1.path=absent', 'component.1.containers='
+  ].join('\n'), targets, OBSERVED_AT);
+  const plan = planProjectRuntimeProvisioning({
+    request: { serverId: 'S1', projectId: 'portal', mappingId: second.mappingId, revision: REVISION },
+    serverTarget: { status: 'CONFIGURED', projectIds: ['portal'] }, registry: monorepo, inventory: running,
+    consent: { creation: false, activation: false }
+  }) as any;
+  assert.deepEqual([plan.decision, plan.reasonCodes, plan.target.serverPath], ['CONSENT_REQUIRED', ['CREATION_CONSENT_REQUIRED'], second.serverPath]);
 });
 
 test('a governed runtime path lives under /opt/apps, outside the MCP checkout', () => {
