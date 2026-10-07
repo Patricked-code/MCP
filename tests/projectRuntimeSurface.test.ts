@@ -426,6 +426,22 @@ test('a submission executes only with a same-origin, ticketed, explicit consent 
       assert.ok((await response.text()).includes(outcome.reasonCodes[0]!));
     });
   }
+  // A refused compose key is named, escaped as the repository wrote it.
+  const blocked = Object.freeze({
+    ...execution('BLOCKED', ['COMPOSE_UNSAFE']),
+    findings: Object.freeze([
+      { code: 'COMPOSE_KEY_UNSUPPORTED', service: 'api', key: 'use_api_socket' },
+      { code: 'COMPOSE_KEY_UNSUPPORTED', service: null, key: '<script>' }
+    ])
+  });
+  await withSurface({ execute: async () => blocked }, async (baseUrl) => {
+    const response = await submit(baseUrl, FIELDS);
+    assert.equal(response.status, 409);
+    const page = await response.text();
+    assert.ok(page.includes('COMPOSE_KEY_UNSUPPORTED:api:use_api_socket'));
+    assert.ok(page.includes('COMPOSE_KEY_UNSUPPORTED:-:&lt;script&gt;'));
+    assert.doesNotMatch(page, /<script>/);
+  });
 });
 
 test('a long provisioning answers that it runs on, admits no second job and reports its outcome', async () => {

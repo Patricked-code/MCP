@@ -10,6 +10,7 @@ import { assertNoCatastrophicCommand } from '../src/ssh/writeSafety.js';
 
 const {
   evaluateComposeSafety,
+  evaluateComposeSource,
   provisioningLabelsOverride
 } = await import('../src/provisioning/composePolicy.js');
 const {
@@ -18,6 +19,7 @@ const {
   buildActivateScript,
   buildArchiveBoundsLines,
   buildComposeConfigScript,
+  buildComposeSourceScript,
   buildCreateScript,
   buildDiscardStagingScript,
   buildRollbackScript,
@@ -36,6 +38,23 @@ const { downloadGithubArchive } = await import('../src/provisioning/sourceArchiv
 
 const REVISION = 'a'.repeat(40);
 const TREE = 'e'.repeat(64);
+/** The compose file of the fixture repository, as the host prints it before Compose ever reads it. */
+const SOURCE = [
+  'services:',
+  '  api:',
+  '    build: .',
+  '    ports:',
+  '      - "127.0.0.1:3100:3000"',
+  '    volumes:',
+  '      - ./data:/data',
+  '      - db:/var/lib/db',
+  'volumes:',
+  '  db: {}',
+  ''
+].join('\n');
+const sha256 = (value: string) => createHash('sha256').update(value).digest('hex');
+const sourceLines = (source = SOURCE, digest = sha256(source)) =>
+  `compose_source_b64=${Buffer.from(source).toString('base64')}\ncompose_source_sha256=${digest}\n`;
 const OBSERVED_AT = '2026-10-06T05:00:00.000Z';
 const TARGET = Object.freeze({
   mappingId: 'github:Patricked-code/Portal:s1:portal_api',
@@ -127,21 +146,138 @@ test('the compose safety policy admits only a project-contained, locally bound r
     [{}, { volumes: { db: { name: 'db', driver: 'local', driver_opts: { type: 'none', o: 'bind', device: '/etc' } } } }, 'COMPOSE_VOLUME_DRIVER'],
     [{}, { volumes: { db: { name: 'db', driver: 'nfs' } } }, 'COMPOSE_VOLUME_DRIVER'],
     [{}, { networks: { default: { name: 'n', driver: 'macvlan' } } }, 'COMPOSE_NETWORK_DRIVER'],
-    [{}, { networks: { default: { name: 'n', driver: 'bridge', driver_opts: { 'com.docker.network.bridge.host_binding_ipv4': '0.0.0.0' } } } }, 'COMPOSE_NETWORK_DRIVER']
+    [{}, { networks: { default: { name: 'n', driver: 'bridge', driver_opts: { 'com.docker.network.bridge.host_binding_ipv4': '0.0.0.0' } } } }, 'COMPOSE_NETWORK_DRIVER'],
+    // Only reviewed keys run: one that hands the engine to a container, reads a host file, runs a host
+    // program or hook, or reaches the host another way is unsupported, a Compose feature to come included.
+    [{ use_api_socket: true }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ env_file: [{ path: '/etc/environment', required: true }] }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ label_file: ['/etc/hostname'] }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ post_start: [{ command: ['id'], privileged: true }] }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ provider: { type: 'model', options: {} } }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ net: 'host' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ log_driver: 'syslog' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ volume_driver: 'local-persist' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ cgroup_parent: '/' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ runtime: 'runc' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ gpus: 'all' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ build: { context: dir, privileged: true } }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ build: { context: dir, entitlements: ['network.host'] } }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ build: { context: dir, cache_to: ['type=local,dest=/etc'] } }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{}, { models: { llm: { model: 'ai/x' } } }, 'COMPOSE_KEY_UNSUPPORTED'],
+    // The engine's default bridge is shared with every container on the host: never the project network.
+    [{ network_mode: 'bridge' }, {}, 'COMPOSE_SHARED_NETWORK'],
+    [{ network_mode: 'default' }, {}, 'COMPOSE_SHARED_NETWORK'],
+    [{ network_mode: 'service:elsewhere' }, {}, 'COMPOSE_HOST_NAMESPACE'],
+    // A network or volume named outside the project joins whatever already carries that name.
+    [{}, { networks: { default: { name: 'bridge' } } }, 'COMPOSE_EXTERNAL_RESOURCE'],
+    [{}, { volumes: { db: { name: 'other_app_data' } } }, 'COMPOSE_EXTERNAL_RESOURCE'],
+    // A profile file or a type outside the allowed set can lift the confinement as surely as "unconfined".
+    [{ security_opt: ['seccomp=/opt/apps/portal-api/permissive.json'] }, {}, 'COMPOSE_SECURITY_OPT_UNCONFINED'],
+    [{ security_opt: ['label=type:spc_t'] }, {}, 'COMPOSE_SECURITY_OPT_UNCONFINED'],
+    // A logging driver sends from the engine, on the host network.
+    [{ logging: { driver: 'syslog', options: { 'syslog-address': 'tcp://127.0.0.1:6379' } } }, {}, 'COMPOSE_LOGGING_DRIVER'],
+    [{ deploy: { resources: { reservations: { devices: [{ capabilities: ['gpu'] }] } } } }, {}, 'COMPOSE_DEVICE']
   ];
   for (const [service, extra, code] of unsafe) {
     const result = evaluateComposeSafety(composeConfig(dir, service, extra), dir) as any;
     assert.equal(result.ok, false, code);
     assert.ok(result.findings.some((finding: any) => finding.code === code), `${code}: ${JSON.stringify(result.findings)}`);
   }
-  // The default drivers stay admitted.
-  const local = evaluateComposeSafety(composeConfig(dir, {}, {
-    volumes: { db: { name: 'db', driver: 'local' } }, networks: { default: { name: 'n', driver: 'bridge' } }
+  // A finding names the key it refuses.
+  assert.deepEqual(
+    (evaluateComposeSafety(composeConfig(dir, { use_api_socket: true }), dir) as any).findings,
+    [{ code: 'COMPOSE_KEY_UNSUPPORTED', service: 'api', key: 'use_api_socket' }]
+  );
+  // The default drivers, the project's own names and the confined options stay admitted.
+  const local = evaluateComposeSafety(composeConfig(dir, {
+    network_mode: 'none',
+    security_opt: ['no-new-privileges:true'],
+    logging: { driver: 'json-file', options: { 'max-size': '10m' } },
+    deploy: { resources: { limits: { cpus: '1', memory: '512M' } } },
+    'x-team': 'portal'
+  }, {
+    volumes: { db: { name: 'mcp-portal-0123456789ab_db', driver: 'local' } },
+    networks: { default: { name: 'mcp-portal-0123456789ab_default', driver: 'bridge' } },
+    'x-common': { restart: 'unless-stopped' }
   }), dir) as any;
   assert.deepEqual(local.findings, []);
+  const shared = composeConfig(dir);
+  shared.services.worker = { image: 'busybox', network_mode: 'service:api' };
+  assert.deepEqual((evaluateComposeSafety(shared, dir) as any).findings, []);
   for (const invalid of [null, {}, { services: {} }, { services: { 'bad name': {} } }, 'x']) {
     assert.equal((evaluateComposeSafety(invalid, dir) as any).ok, false, JSON.stringify(invalid));
   }
+});
+
+test('the compose source is parsed before Compose loads it, whatever the YAML spells a key as', () => {
+  const safe = evaluateComposeSource(SOURCE) as any;
+  assert.deepEqual({ ok: safe.ok, services: safe.services, findings: safe.findings }, { ok: true, services: ['api'], findings: [] });
+  assert.ok(Object.isFrozen(safe));
+  // Anchors, merges, an obsolete version and extension fields are ordinary Compose.
+  const anchored = [
+    'version: "3.8"',
+    'x-common: &common',
+    '  restart: unless-stopped',
+    '  logging: {driver: json-file}',
+    'services:',
+    '  api:',
+    '    <<: *common',
+    '    image: node:20',
+    '    x-team: portal',
+    '    build: {context: ., dockerfile: Dockerfile, args: {NODE_ENV: production}}',
+    ''
+  ].join('\n');
+  assert.deepEqual((evaluateComposeSource(anchored) as any).findings, []);
+
+  // Compose loads these files before the model exists, and the model no longer says where its values came from.
+  const unsupported: Array<[string, string | null, string]> = [
+    ['services:\n  api:\n    image: x\n    env_file: /etc/environment\n', 'api', 'env_file'],
+    ['services:\n  api:\n    image: x\n    "env_file": /etc/environment\n', 'api', 'env_file'],
+    ["services:\n  api:\n    image: x\n    'env_file': /etc/environment\n", 'api', 'env_file'],
+    ['services: {api: {image: x, "env_file": /etc/environment}}\n', 'api', 'env_file'],
+    ['services:\n  api:\n    image: x\n    "\\x65nv_file": /etc/environment\n', 'api', 'env_file'],
+    ['services:\n  api:\n    image: x\n    ? "env\\\n      _file"\n    : /etc/environment\n', 'api', 'env_file'],
+    ['x-k: &k env_file\nservices:\n  api:\n    image: x\n    *k : /etc/environment\n', 'api', 'env_file'],
+    ['x-base: &base\n  extends: {file: /opt/apps/other/compose.yaml, service: db}\nservices:\n  api:\n    <<: *base\n', 'api', 'extends'],
+    ['services:\n  api:\n    "extends": {file: /opt/apps/other/compose.yaml, service: db}\n', 'api', 'extends'],
+    ['"include": [/opt/apps/other/compose.yaml]\nservices:\n  api:\n    image: x\n', null, 'include'],
+    ['services:\n  api:\n    image: x\n    label_file: /etc/hostname\n', 'api', 'label_file'],
+    ['services:\n  api:\n    image: x\n    use_api_socket: true\n', 'api', 'use_api_socket'],
+    ['services:\n  api:\n    image: x\n    "<<": {env_file: /etc/environment}\n', 'api', '<<'],
+    ['services:\n  api:\n    build: {context: ., privileged: true}\n', 'api', 'build.privileged'],
+    ['models:\n  llm: {model: ai/x}\nservices:\n  api:\n    image: x\n', null, 'models']
+  ];
+  for (const [source, service, key] of unsupported) {
+    const result = evaluateComposeSource(source) as any;
+    assert.equal(result.ok, false, source);
+    assert.ok(
+      result.findings.some((finding: any) => finding.code === 'COMPOSE_KEY_UNSUPPORTED' && finding.service === service && finding.key === key),
+      `${source}: ${JSON.stringify(result.findings)}`
+    );
+  }
+  // What the parse cannot read exactly as Compose would fails closed: unknown or binary tags, duplicate
+  // keys, several documents, non-string keys, too many aliases, or no services at all.
+  const invalid = [
+    'services:\n  api:\n    image: x\n    ports: !reset []\n',
+    'services:\n  api:\n    image: x\n    ? !!binary ZXh0ZW5kcw==\n    : {file: /etc/a.yml, service: s}\n',
+    'services:\n  api:\n    image: x\n    image: y\n',
+    'services:\n  api:\n    image: x\n---\nservices: {}\n',
+    'services:\n  api:\n    image: x\n    ? [a, b]\n    : x\n',
+    'a: &a [x,x,x,x,x,x,x,x,x,x]\nb: &b [*a,*a,*a,*a,*a,*a,*a,*a,*a,*a]\nc: &c [*b,*b,*b,*b,*b,*b,*b,*b,*b,*b]\nservices: {api: {image: x, labels: [*c,*c]}}\n',
+    'services: []\n',
+    'version: "3"\n',
+    '',
+    null
+  ];
+  for (const source of invalid) {
+    const result = evaluateComposeSource(source) as any;
+    assert.equal(result.ok, false, String(source));
+    assert.ok(
+      result.findings.some((finding: any) => finding.code === 'COMPOSE_SOURCE_INVALID' || finding.code === 'COMPOSE_SERVICES_INVALID'),
+      `${source}: ${JSON.stringify(result.findings)}`
+    );
+  }
+  assert.equal((evaluateComposeSource(`services:\n  api:\n    image: x\n    labels: [${'"x",'.repeat(40_000)}]\n`) as any).ok, false);
 });
 
 test('the labels override marks every service with the provisioned repository and revision', () => {
@@ -156,20 +292,41 @@ test('the labels override marks every service with the provisioned repository an
 
 test('host scripts quote every value, verify before extracting and never delete', () => {
   const jobId = 'prov-20261006T050000Z-0a1b2c3d';
+  const sourceDigest = sha256(SOURCE);
   const scripts = [
     buildStageScript({ jobId, target: PLAN_TARGET, archiveSha256: 'f'.repeat(64) }),
     buildCreateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] }),
-    buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml' }),
+    buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', sourceSha256: sourceDigest }),
     buildActivateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE }),
     buildRollbackScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true }),
-    buildDiscardStagingScript({ jobId, target: PLAN_TARGET })
+    buildDiscardStagingScript({ jobId, target: PLAN_TARGET }),
+    buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', sourceSha256: sourceDigest, jobId }),
+    buildComposeSourceScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', treeDigest: TREE })
   ];
   for (const script of scripts) {
     assert.doesNotThrow(() => assertNoCatastrophicCommand(script));
     assert.doesNotMatch(script, /(^|[\s;&|])rm\s/m);
     assert.doesNotMatch(script, /--volumes|\s-v(\s|$)/);
   }
-  const [stage, create, , activate, rollback] = scripts;
+  const [stage, create, config, activate, rollback, , stagedConfig, source] = scripts;
+  // Compose never loads a file the parsed source has not admitted: the stage and the source script only print it.
+  for (const printer of [stage!, source!]) {
+    assert.doesNotMatch(printer, /docker compose/);
+    assert.match(printer, /compose_source_b64=/);
+    assert.match(printer, /compose_source_sha256=/);
+    // Only a regular file is read, never a link to a host file.
+    assert.ok(printer.indexOf('[ ! -L') > 0 && printer.indexOf('[ ! -L') < printer.indexOf('compose_source_b64='));
+  }
+  assert.ok(source!.indexOf('checkout_modified') > 0 && source!.indexOf('checkout_modified') < source!.indexOf('compose_source_b64='));
+  for (const [script, directory] of [[config!, PLAN_TARGET.serverPath], [stagedConfig!, stagingPath(PLAN_TARGET.serverPath, jobId)]] as const) {
+    assert.match(script, new RegExp(`^directory='${directory.replaceAll('.', '\\.')}'$`, 'm'));
+    const load = script.indexOf('config --no-env-resolution --format json');
+    assert.ok(load > 0, 'env files are never read while the model is built');
+    // The file Compose loads is the one whose parsed source was admitted.
+    assert.ok(script.includes(sourceDigest) && script.indexOf('compose_source_changed') < load);
+    assert.ok(script.indexOf('compose_version_unsupported') > 0 && script.indexOf('compose_version_unsupported') < load);
+  }
+  assert.throws(() => buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', sourceSha256: 'x' }));
   assert.ok(stage!.indexOf('sha256sum') < stage!.indexOf('tar '), 'the archive digest is verified before extraction');
   // Only the component's own compose project counts: another component of the same repository never blocks it.
   assert.doesNotMatch(stage!, /provisioning\.repository/);
@@ -198,7 +355,9 @@ test('target names stay off the docker compose command lines, so the write guard
   const target = { ...PLAN_TARGET, serverPath: '/opt/apps/api-v', composeProject: 'mcp-api-v-0123456789ab' };
   const scripts = [
     buildStageScript({ jobId, target, archiveSha256: 'f'.repeat(64) }),
-    buildComposeConfigScript({ target, composeFile: 'compose.yaml' }),
+    buildComposeConfigScript({ target, composeFile: 'compose.yaml', sourceSha256: sha256(SOURCE) }),
+    buildComposeConfigScript({ target, composeFile: 'compose.yaml', sourceSha256: sha256(SOURCE), jobId }),
+    buildComposeSourceScript({ target, composeFile: 'compose.yaml', treeDigest: TREE }),
     buildActivateScript({ jobId, target, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE }),
     buildRollbackScript({ jobId, target, composeFile: 'compose.yaml', createdInThisJob: true })
   ];
@@ -258,9 +417,12 @@ function harness(overrides: Record<string, unknown> = {}) {
   const scripts = new Map<string, string>();
   let inventory = 'docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=\n';
   const results: Record<string, string> = {
-    stage: `result=staged\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d'))).toString('base64')}\ntree_digest=${TREE}\n`,
+    stage: `result=staged\ncompose_file=compose.yaml\n${sourceLines()}tree_digest=${TREE}\n`,
+    // The model Compose prints for the staged checkout of a creation, then for a created runtime.
+    'config-staging': `result=configured\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d'))).toString('base64')}\n`,
+    source: `result=sourced\ncompose_file=compose.yaml\n${sourceLines()}`,
     create: 'result=created\n',
-    config: `result=configured\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api'))).toString('base64')}\n`,
+    config: `result=configured\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api'))).toString('base64')}\n`,
     activate: 'result=activated\nhealth=healthy\n',
     rollback: 'result=rolled_back\n',
     discard: 'result=discarded\n'
@@ -298,7 +460,8 @@ function harness(overrides: Record<string, unknown> = {}) {
       const phase = command.match(/^# mcp-provisioning:([a-z-]+)/m)?.[1] ?? 'unknown';
       calls.push({ kind: 'host', detail: phase });
       scripts.set(phase, command);
-      return { code: 0, stdout: results[phase] ?? '', stderr: '' };
+      const key = phase === 'config' && command.includes('.mcp-staging-') ? 'config-staging' : phase;
+      return { code: 0, stdout: results[key] ?? '', stderr: '' };
     },
     ...overrides
   };
@@ -323,9 +486,13 @@ test('the executor re-observes, then creates and activates a genuinely absent ru
   assert.equal(result.mode, 'CREATE_AND_ACTIVATE');
   assert.match(result.jobId, /^prov-20261006T050000Z-0a1b2c3d$/);
   assert.deepEqual(h.calls.map((call) => call.kind).slice(0, 4), ['observe', 'coordinate', 'admit', 'fetch']);
-  assert.deepEqual(hostPhases(h), ['stage', 'create', 'activate']);
+  // The staged source is parsed first; Compose then loads exactly that file, in the staging directory.
+  assert.deepEqual(hostPhases(h), ['stage', 'config', 'create', 'activate']);
+  assert.ok(h.scripts.get('config')!.includes(sha256(SOURCE)));
+  assert.ok(h.scripts.get('config')!.includes(`directory='${stagingPath(TARGET.serverPath, result.jobId)}'`));
   const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
   assert.equal(attestation.result, 'SUCCEEDED');
+  assert.equal(attestation.composeSourceSha256, sha256(SOURCE));
   assert.deepEqual([attestation.admission.kind, attestation.admission.defaultBranch], ['CI_GATE', 'main']);
   assert.deepEqual(attestation.coordination, { locks: 0, tasks: 0 });
   assert.equal(attestation.archiveSha256, 'f'.repeat(64));
@@ -336,7 +503,51 @@ test('the executor re-observes, then creates and activates a genuinely absent ru
   // Creation alone stops before any container starts.
   const created = harness();
   assert.equal((await run(created, { creation: true })).result, 'SUCCEEDED');
-  assert.deepEqual(hostPhases(created), ['stage', 'create']);
+  assert.deepEqual(hostPhases(created), ['stage', 'config', 'create']);
+});
+
+test('a compose source that loads a host file is refused before Compose ever reads it', async () => {
+  // A quoted key the line guard of the host would not see: the parse refuses it, and nothing loads it.
+  const quoted = harness();
+  quoted.results.stage = `result=staged\ncompose_file=compose.yaml\n${sourceLines(`${SOURCE.replace('    build: .\n', '    build: .\n    "env_file": /etc/environment\n')}`)}tree_digest=${TREE}\n`;
+  const blocked = await run(quoted, { creation: true, activation: true });
+  assert.deepEqual([blocked.result, blocked.reasonCodes], ['BLOCKED', ['COMPOSE_UNSAFE']]);
+  assert.deepEqual(blocked.findings, [{ code: 'COMPOSE_KEY_UNSUPPORTED', service: 'api', key: 'env_file' }]);
+  assert.deepEqual(hostPhases(quoted), ['stage', 'discard']);
+  const attestation = JSON.parse(quoted.files.get(`/app/data/provisioning/${blocked.jobId}/attestation.json`)!);
+  assert.deepEqual(attestation.steps.map((step: any) => `${step.id}:${step.status}`), [
+    'fetch-source:DONE', 'backup:DONE', 'compose-source:BLOCKED', 'discard-staging:DONE'
+  ]);
+
+  // A source that does not match its digest, or that the host could not print whole, is never parsed.
+  for (const stage of [
+    `result=staged\ncompose_file=compose.yaml\n${sourceLines(SOURCE, 'b'.repeat(64))}tree_digest=${TREE}\n`,
+    `result=staged\ncompose_file=compose.yaml\ntree_digest=${TREE}\n`
+  ]) {
+    const unreadable = harness();
+    unreadable.results.stage = stage;
+    const failed = await run(unreadable, { creation: true });
+    assert.deepEqual([failed.result, failed.reasonCodes], ['FAILED', ['STAGE_SOURCE_UNREADABLE']]);
+    assert.deepEqual(hostPhases(unreadable), ['stage', 'discard']);
+  }
+
+  // A Compose without --no-env-resolution never builds the model: the staging is discarded.
+  const old = harness();
+  old.results['config-staging'] = 'result=failed\nreason=compose_version_unsupported\n';
+  const unsupported = await run(old, { creation: true, activation: true });
+  assert.deepEqual([unsupported.result, unsupported.reasonCodes], ['FAILED', ['CONFIG_COMPOSE_VERSION_UNSUPPORTED']]);
+  assert.deepEqual(hostPhases(old), ['stage', 'config', 'discard']);
+
+  // A runtime created earlier has its source parsed again, from the checkout its marker digests.
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  const existing = harness();
+  existing.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify({ ...marker, composeProject: TARGET.composeProject })).toString('base64')}\n`);
+  existing.results.source = `result=sourced\ncompose_file=compose.yaml\n${sourceLines('include: [/opt/apps/other/compose.yaml]\nservices:\n  api:\n    image: x\n')}`;
+  const refused = await run(existing, { activation: true });
+  assert.deepEqual([refused.mode, refused.result, refused.reasonCodes], ['ACTIVATE', 'BLOCKED', ['COMPOSE_UNSAFE']]);
+  assert.deepEqual(refused.findings, [{ code: 'COMPOSE_KEY_UNSUPPORTED', service: null, key: 'include' }]);
+  assert.deepEqual(hostPhases(existing), ['source']);
+  assert.ok(existing.scripts.get('source')!.includes(TREE));
 });
 
 test('the executor refuses without fresh evidence, consent or write mode, and never writes then', async () => {
@@ -414,7 +625,7 @@ test('the checkout is verified against its creation digest before any activation
   edited.results.activate = 'result=failed\nreason=checkout_modified\n';
   const refused = await run(edited, { activation: true });
   assert.deepEqual([refused.mode, refused.result, refused.reasonCodes, refused.rollback], ['ACTIVATE', 'FAILED', ['ACTIVATE_CHECKOUT_MODIFIED'], 'NOT_NEEDED']);
-  assert.deepEqual(hostPhases(edited), ['config', 'activate']);
+  assert.deepEqual(hostPhases(edited), ['source', 'config', 'activate']);
   assert.ok(edited.scripts.get('activate')!.includes(TREE));
   // A marker without a digest is not a created runtime: the present path blocks.
   const { treeDigest: _digest, ...legacy } = marker as any;
@@ -552,11 +763,11 @@ test('an archive is bounded by its expanded size and entry count before any extr
 
 test('an unsafe compose model or a bad archive is discarded to quarantine, never deleted', async () => {
   const unsafe = harness();
-  unsafe.results.stage = `result=staged\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d', { privileged: true }))).toString('base64')}\ntree_digest=${TREE}\n`;
+  unsafe.results['config-staging'] = `result=configured\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d', { privileged: true }))).toString('base64')}\n`;
   const blocked = await run(unsafe, { creation: true, activation: true });
   assert.equal(blocked.result, 'BLOCKED');
   assert.ok(blocked.findings.some((finding: any) => finding.code === 'COMPOSE_PRIVILEGED'));
-  assert.deepEqual(hostPhases(unsafe), ['stage', 'discard']);
+  assert.deepEqual(hostPhases(unsafe), ['stage', 'config', 'discard']);
 
   const tampered = harness();
   tampered.results.stage = 'result=failed\nreason=archive_digest\n';
@@ -570,7 +781,7 @@ test('a failed health check rolls back without destruction, and the activation o
   unhealthy.results.activate = 'result=unhealthy\nhealth=unhealthy\n';
   const rolledBack = await run(unhealthy, { creation: true, activation: true });
   assert.deepEqual([rolledBack.result, rolledBack.rollback], ['ROLLED_BACK', 'SUCCEEDED']);
-  assert.deepEqual(hostPhases(unhealthy), ['stage', 'create', 'activate', 'rollback']);
+  assert.deepEqual(hostPhases(unhealthy), ['stage', 'config', 'create', 'activate', 'rollback']);
   const rollbackCommand = buildRollbackScript({ jobId: rolledBack.jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true });
   assert.match(rollbackCommand, /mv /);
 
@@ -592,7 +803,7 @@ test('a failed health check rolls back without destruction, and the activation o
   const kept = await run(activateOnly, { activation: true });
   assert.deepEqual([kept.mode, kept.result], ['ACTIVATE', 'ROLLED_BACK']);
   assert.equal(activateOnly.calls.some((call) => call.kind === 'fetch'), false);
-  assert.deepEqual(hostPhases(activateOnly), ['config', 'activate', 'rollback']);
+  assert.deepEqual(hostPhases(activateOnly), ['source', 'config', 'activate', 'rollback']);
   assert.doesNotMatch(buildRollbackScript({ jobId: kept.jobId, target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdInThisJob: false }), /mcp-provisioning-quarantine/);
 });
 
