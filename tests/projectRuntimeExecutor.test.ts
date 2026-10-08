@@ -1046,15 +1046,15 @@ test('build Dockerfiles are read from the digested checkout and their images att
   const pinned = `FROM node@sha256:${'a'.repeat(64)}\nRUN true\n`;
   const h = harness();
   h.results.dockerfiles = `result=printed\ndockerfile.0=${Buffer.from(pinned).toString('base64')}\n`;
-  h.results.activate = `result=activated\nhealth=healthy\nimages=sha256:${'c'.repeat(64)}\n`;
+  h.results.activate = `result=activated\nhealth=healthy\nimages=api=sha256:${'c'.repeat(64)}\n`;
   const result = await run(h, { creation: true, activation: true });
   assert.equal(result.result, 'SUCCEEDED');
   assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'dockerfiles', 'create', 'activate']);
   assert.ok(h.scripts.get('dockerfiles')!.includes(TREE));
   const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
-  assert.deepEqual(attestation.builtImages, [`sha256:${'c'.repeat(64)}`]);
+  assert.deepEqual(attestation.builtImages, [`api=sha256:${'c'.repeat(64)}`]);
   // The images are recorded in the job data too, out of the runtime's reach, for NO_OP to compare.
-  assert.deepEqual(JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/images.json`)!), [`sha256:${'c'.repeat(64)}`]);
+  assert.deepEqual(JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/images.json`)!), [`api=sha256:${'c'.repeat(64)}`]);
   // An unpinned base image never reaches the promotion.
   const floating = harness();
   floating.results.dockerfiles = `result=printed\ndockerfile.0=${Buffer.from('FROM node:20\n').toString('base64')}\n`;
@@ -1119,7 +1119,7 @@ test('logs are bounded, address pools stay default and no-new-privileges is neve
 
 test('activation fails when the image record cannot be written, and checks its marker after health', async () => {
   const h = harness();
-  h.results.activate = `result=activated\nhealth=healthy\nimages=sha256:${'c'.repeat(64)}\n`;
+  h.results.activate = `result=activated\nhealth=healthy\nimages=api=sha256:${'c'.repeat(64)}\n`;
   const write = h.deps.writeJobFile;
   h.deps.writeJobFile = (async (path: string, content: string) => {
     if (path.endsWith('/images.json')) throw new Error('read-only');
@@ -1160,15 +1160,53 @@ test('a change of the official branch stops the job, and a reactivation keeps on
   const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject: TARGET.composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
   const again = harness();
   again.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
-  again.files.set(`/app/data/provisioning/${marker.jobId}/images.json`, `["sha256:${'d'.repeat(64)}"]\n`);
+  again.files.set(`/app/data/provisioning/${marker.jobId}/images.json`, `["api=sha256:${'d'.repeat(64)}"]\n`);
   const write = again.deps.writeJobFile;
   again.deps.writeJobFile = (async (path: string, content: string) => {
     if (again.files.has(path)) throw new Error('exists');
     return write(path, content);
   }) as any;
-  again.results.activate = `result=activated\nhealth=healthy\nimages=sha256:${'c'.repeat(64)}\n`;
+  again.results.activate = `result=activated\nhealth=healthy\nimages=api=sha256:${'c'.repeat(64)}\n`;
   const reactivated = await run(again, { activation: true });
   assert.deepEqual([reactivated.result, reactivated.reasonCodes], ['ROLLED_BACK', ['IMAGES_RECORD_UNWRITTEN']]);
+});
+
+test('stop grace periods stay within the rollback budget, and a newline in a path fails the digest', async () => {
+  const dir = '/opt/apps/portal-api';
+  const codes = (service: Record<string, unknown>) => (evaluateComposeSafety(composeConfig(dir, service), dir) as any).findings.map((f: any) => f.code);
+  assert.deepEqual(codes({ stop_grace_period: '30s' }), []);
+  assert.deepEqual(codes({ stop_grace_period: '1m30s' }), ['COMPOSE_STOP_GRACE_PERIOD']);
+  assert.deepEqual(codes({ stop_grace_period: 'forever' }), ['COMPOSE_STOP_GRACE_PERIOD']);
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-f03-newline-'));
+  try {
+    await writeFile(join(directory, 'a.txt'), 'alpha\n');
+    await mkdir(join(directory, 'b\nd 755 0 0 .'));
+    for (const shell of ['sh', 'bash']) {
+      assert.notEqual(spawnSync(shell, ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory]).status, 0, shell);
+    }
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('an unreadable marker record fails an activation, and a collision before a discard leaves the staging', async () => {
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject: TARGET.composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  const h = harness();
+  h.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
+  let reads = 0;
+  const read = h.deps.readJobFile;
+  h.deps.readJobFile = (async (path: string) => (path.endsWith('/marker.json') && ++reads > 1 ? null : read(path))) as any;
+  const result = await run(h, { activation: true });
+  assert.deepEqual([result.result, result.reasonCodes], ['FAILED', ['MARKER_RECORD_UNREADABLE']]);
+  assert.equal(hostPhases(h).includes('activate'), false);
+  // An unsafe model after the source was staged: if work was claimed meanwhile, the staging stays where it is.
+  const unsafe = harness();
+  unsafe.results['config-staging'] = `result=configured\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d', { privileged: true }))).toString('base64')}\n`;
+  let coordination = 0;
+  unsafe.deps.readCoordination = (async () => (++coordination <= 2 ? { complete: true, locks: [], tasks: [] } : { complete: true, locks: [{ scope: `component:portal:${TARGET.mappingId}`, projectId: null }], tasks: [] })) as any;
+  const blocked = await run(unsafe, { creation: true });
+  assert.equal(blocked.result, 'BLOCKED');
+  assert.equal(hostPhases(unsafe).includes('discard'), false);
 });
 
 test('bind sources are named by the policy, relative to the project', () => {
