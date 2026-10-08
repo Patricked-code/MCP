@@ -42,6 +42,7 @@ export type ComposeSafetyCode =
   | 'COMPOSE_BUILD_TAG'
   | 'COMPOSE_IMAGE_UNPINNED'
   | 'COMPOSE_REPLICAS'
+  | 'COMPOSE_RESOURCES_UNBOUNDED'
   | 'COMPOSE_CONTAINER_NAME'
   | 'COMPOSE_EXTERNAL_RESOURCE'
   | 'COMPOSE_FILE_SOURCE_OUTSIDE_PROJECT'
@@ -206,6 +207,14 @@ function checkService(
   const logging = service.logging === undefined ? {} : record(service.logging);
   if (!logging || (logging.driver !== undefined && !LOGGING_DRIVERS.has(String(logging.driver)))) {
     add('COMPOSE_LOGGING_DRIVER', name);
+  }
+
+  // Memory, CPU and process ceilings on every service: an unbounded container could exhaust the host before any health gate.
+  const limits = record(record(record(service.deploy)?.resources)?.limits);
+  const bounded = (value: unknown) => (typeof value === 'number' || (typeof value === 'string' && /^[0-9.]+$/.test(value)))
+    && Number.isFinite(Number(value)) && Number(value) > 0;
+  if (!bounded(service.mem_limit ?? limits?.memory) || !bounded(service.cpus ?? limits?.cpus) || !bounded(service.pids_limit ?? limits?.pids)) {
+    add('COMPOSE_RESOURCES_UNBOUNDED', name);
   }
 
   const ports = service.ports === undefined ? [] : Array.isArray(service.ports) ? service.ports : null;

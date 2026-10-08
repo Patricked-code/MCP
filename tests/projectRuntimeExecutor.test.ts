@@ -45,6 +45,9 @@ const SOURCE = [
   'services:',
   '  api:',
   '    build: .',
+  '    mem_limit: 512m',
+  '    cpus: 0.5',
+  '    pids_limit: 200',
   '    ports:',
   '      - "127.0.0.1:3100:3000"',
   '    volumes:',
@@ -216,7 +219,7 @@ test('the compose safety policy admits only a project-contained, locally bound r
   }), dir) as any;
   assert.deepEqual(local.findings, []);
   const shared = composeConfig(dir);
-  shared.services.worker = { image: `busybox@sha256:${'a'.repeat(64)}`, network_mode: 'service:api', deploy: { replicas: 2 } };
+  shared.services.worker = { image: `busybox@sha256:${'a'.repeat(64)}`, network_mode: 'service:api', deploy: { replicas: 2, resources: { limits: { memory: '1', cpus: 1, pids: 10 } } } };
   assert.deepEqual((evaluateComposeSafety(shared, dir) as any).findings, []);
   // The expected containers of each service are part of the verdict.
   assert.deepEqual((evaluateComposeSafety(shared, dir) as any).replicas, { api: 1, worker: 2 });
@@ -551,9 +554,9 @@ test('the executor re-observes, then creates and activates a genuinely absent ru
   assert.equal(result.result, 'SUCCEEDED');
   assert.equal(result.mode, 'CREATE_AND_ACTIVATE');
   assert.match(result.jobId, /^prov-20261006T050000Z-0a1b2c3d$/);
-  assert.deepEqual(h.calls.map((call) => call.kind).slice(0, 4), ['observe', 'coordinate', 'admit', 'fetch']);
+  assert.deepEqual(h.calls.map((call) => call.kind).slice(0, 5), ['observe', 'coordinate', 'admit', 'host', 'fetch']);
   // The staged source is parsed first; Compose then loads exactly that file, in the staging directory.
-  assert.deepEqual(hostPhases(h), ['stage', 'config', 'create', 'activate']);
+  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'create', 'activate']);
   assert.ok(h.scripts.get('config')!.includes(sha256(SOURCE)));
   assert.ok(h.scripts.get('config')!.includes(`directory='${stagingPath(TARGET.serverPath, result.jobId)}'`));
   const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
@@ -569,7 +572,7 @@ test('the executor re-observes, then creates and activates a genuinely absent ru
   // Creation alone stops before any container starts.
   const created = harness();
   assert.equal((await run(created, { creation: true })).result, 'SUCCEEDED');
-  assert.deepEqual(hostPhases(created), ['stage', 'config', 'create']);
+  assert.deepEqual(hostPhases(created), ['preflight', 'stage', 'config', 'create']);
 });
 
 test('a compose source that loads a host file is refused before Compose ever reads it', async () => {
@@ -579,10 +582,10 @@ test('a compose source that loads a host file is refused before Compose ever rea
   const blocked = await run(quoted, { creation: true, activation: true });
   assert.deepEqual([blocked.result, blocked.reasonCodes], ['BLOCKED', ['COMPOSE_UNSAFE']]);
   assert.deepEqual(blocked.findings, [{ code: 'COMPOSE_KEY_UNSUPPORTED', service: 'api', key: 'env_file' }]);
-  assert.deepEqual(hostPhases(quoted), ['stage', 'discard']);
+  assert.deepEqual(hostPhases(quoted), ['preflight', 'stage', 'discard']);
   const attestation = JSON.parse(quoted.files.get(`/app/data/provisioning/${blocked.jobId}/attestation.json`)!);
   assert.deepEqual(attestation.steps.map((step: any) => `${step.id}:${step.status}`), [
-    'fetch-source:DONE', 'backup:DONE', 'compose-source:BLOCKED', 'discard-staging:DONE'
+    'preflight:DONE', 'fetch-source:DONE', 'backup:DONE', 'compose-source:BLOCKED', 'discard-staging:DONE'
   ]);
 
   // A source that does not match its digest, or that the host could not print whole, is never parsed.
@@ -594,7 +597,7 @@ test('a compose source that loads a host file is refused before Compose ever rea
     unreadable.results.stage = stage;
     const failed = await run(unreadable, { creation: true });
     assert.deepEqual([failed.result, failed.reasonCodes], ['FAILED', ['STAGE_SOURCE_UNREADABLE']]);
-    assert.deepEqual(hostPhases(unreadable), ['stage', 'discard']);
+    assert.deepEqual(hostPhases(unreadable), ['preflight', 'stage', 'discard']);
   }
 
   // A model Compose cannot build creates nothing: the staging is discarded.
@@ -602,7 +605,7 @@ test('a compose source that loads a host file is refused before Compose ever rea
   unbuilt.results['config-staging'] = 'result=failed\nreason=compose_invalid\n';
   const invalid = await run(unbuilt, { creation: true, activation: true });
   assert.deepEqual([invalid.result, invalid.reasonCodes], ['FAILED', ['CONFIG_COMPOSE_INVALID']]);
-  assert.deepEqual(hostPhases(unbuilt), ['stage', 'config', 'discard']);
+  assert.deepEqual(hostPhases(unbuilt), ['preflight', 'stage', 'config', 'discard']);
 
   // A runtime created earlier has its source parsed again, from the checkout its marker digests.
   const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
@@ -630,7 +633,7 @@ test('the executor refuses without fresh evidence, consent or write mode, and ne
   assert.deepEqual(hostPhases(drift), []);
   // The source is fetched before any host write; a failed fetch writes nothing.
   const offline = harness({ fetchSource: async () => ({ ok: false, sha256: null, bytes: 0 }) });
-  assert.deepEqual([(await run(offline, { creation: true })).result, hostPhases(offline)], ['FAILED', []]);
+  assert.deepEqual([(await run(offline, { creation: true })).result, hostPhases(offline)], ['FAILED', ['preflight']]);
 });
 
 test('a revision outside the reviewed official branch or with a failing CI is refused before any write', async () => {
@@ -647,7 +650,7 @@ test('a revision outside the reviewed official branch or with a failing CI is re
     readRegistry: async () => { const value = registry(); value.governanceEvidence.mappings[0].officialBranch = 'production'; return value; }
   });
   assert.equal((await run(production, { creation: true })).result, 'SUCCEEDED');
-  assert.deepEqual(production.calls.filter((call) => call.kind === 'admit').map((call) => call.detail), [`${TARGET.repositoryId}@${REVISION}#production`]);
+  assert.deepEqual([...new Set(production.calls.filter((call) => call.kind === 'admit').map((call) => call.detail))], [`${TARGET.repositoryId}@${REVISION}#production`]);
   // An admission that cannot be read refuses too: it is never assumed.
   const offline = harness({ admitRevision: async () => { throw new Error('github'); } });
   assert.deepEqual((await run(offline, { creation: true })).reasonCodes, ['REVISION_ADMISSION_UNAVAILABLE']);
@@ -687,7 +690,7 @@ test('the checkout is verified against its creation digest before any activation
   undigested.results.stage = undigested.results.stage!.replace(/tree_digest=.*\n/, '');
   const failed = await run(undigested, { creation: true });
   assert.deepEqual([failed.result, failed.reasonCodes], ['FAILED', ['STAGE_TREE_DIGEST_MISSING']]);
-  assert.deepEqual(hostPhases(undigested), ['stage', 'discard']);
+  assert.deepEqual(hostPhases(undigested), ['preflight', 'stage', 'discard']);
 
   // A runtime created earlier is activated only if its checkout still matches the digest of its marker.
   const composeProject = TARGET.composeProject;
@@ -956,26 +959,26 @@ test('the coordination authorities are read again immediately before every host 
   // Read before the job starts, then right before each write: no GitHub call or download sits between the last read and a write.
   const full = changing(99, clear);
   assert.equal((await run(full, { creation: true, activation: true })).result, 'SUCCEEDED');
-  assert.deepEqual(sequence(full), ['coordinate', 'coordinate', 'stage', 'config', 'coordinate', 'create', 'coordinate', 'activate']);
+  assert.deepEqual(sequence(full), ['coordinate', 'preflight', 'coordinate', 'stage', 'config', 'coordinate', 'create', 'coordinate', 'activate']);
 
   // Locked while the admission and the download ran: nothing is staged.
   const beforeStage = changing(1, locked);
   const lockedResult = await run(beforeStage, { creation: true, activation: true });
   assert.deepEqual([lockedResult.result, lockedResult.reasonCodes], ['BLOCKED', ['TARGET_LOCKED']]);
-  assert.deepEqual(hostPhases(beforeStage), []);
-  assert.deepEqual(steps(beforeStage, lockedResult.jobId), ['fetch-source:DONE', 'backup:BLOCKED']);
+  assert.deepEqual(hostPhases(beforeStage), ['preflight']);
+  assert.deepEqual(steps(beforeStage, lockedResult.jobId), ['preflight:DONE', 'fetch-source:DONE', 'backup:BLOCKED']);
 
   // Claimed once the source was checked: the staging is discarded, nothing is promoted.
   const beforeCreate = changing(2, claimed);
   const claimedResult = await run(beforeCreate, { creation: true, activation: true });
   assert.deepEqual([claimedResult.result, claimedResult.reasonCodes], ['BLOCKED', ['TARGET_CLAIMED_BY_TASK']]);
-  assert.deepEqual(hostPhases(beforeCreate), ['stage', 'config', 'discard']);
+  assert.deepEqual(hostPhases(beforeCreate), ['preflight', 'stage', 'config', 'discard']);
 
   // Unreadable before the activation: the created checkout stays as a creation alone leaves it, and nothing starts.
   const beforeActivate = changing(3, null);
   const unreadable = await run(beforeActivate, { creation: true, activation: true });
   assert.deepEqual([unreadable.result, unreadable.reasonCodes, unreadable.rollback], ['BLOCKED', ['COORDINATION_UNAVAILABLE'], 'NOT_NEEDED']);
-  assert.deepEqual(hostPhases(beforeActivate), ['stage', 'config', 'create']);
+  assert.deepEqual(hostPhases(beforeActivate), ['preflight', 'stage', 'config', 'create']);
 
   // The activation of a runtime created earlier reads them again after checking its source, right before starting.
   const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject: TARGET.composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
@@ -995,13 +998,13 @@ test('a rollback reads the coordination authorities again and never writes over 
   h.deps.readCoordination = (async () => { reads += 1; return reads <= 4 ? clear : locked; }) as any;
   const result = await run(h, { creation: true, activation: true });
   assert.deepEqual([result.result, result.rollback, result.reasonCodes], ['FAILED', 'FAILED', ['HEALTH_CHECK_FAILED', 'TARGET_LOCKED']]);
-  assert.deepEqual(hostPhases(h), ['stage', 'config', 'create', 'activate']);
+  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'create', 'activate']);
   // Unclaimed, the same failure rolls back.
   const free = harness();
   free.results.activate = 'result=unhealthy\nhealth=unhealthy\n';
   assert.deepEqual(hostPhases(free).length, 0);
   assert.equal((await run(free, { creation: true, activation: true })).result, 'ROLLED_BACK');
-  assert.deepEqual(hostPhases(free), ['stage', 'config', 'create', 'activate', 'rollback']);
+  assert.deepEqual(hostPhases(free), ['preflight', 'stage', 'config', 'create', 'activate', 'rollback']);
 });
 
 test('every service runs under memory, CPU and process ceilings', () => {
@@ -1148,13 +1151,13 @@ test('an unsafe compose model or a bad archive is discarded to quarantine, never
   const blocked = await run(unsafe, { creation: true, activation: true });
   assert.equal(blocked.result, 'BLOCKED');
   assert.ok(blocked.findings.some((finding: any) => finding.code === 'COMPOSE_PRIVILEGED'));
-  assert.deepEqual(hostPhases(unsafe), ['stage', 'config', 'discard']);
+  assert.deepEqual(hostPhases(unsafe), ['preflight', 'stage', 'config', 'discard']);
 
   const tampered = harness();
   tampered.results.stage = 'result=failed\nreason=archive_digest\n';
   const failed = await run(tampered, { creation: true });
   assert.deepEqual([failed.result, failed.reasonCodes], ['FAILED', ['STAGE_ARCHIVE_DIGEST']]);
-  assert.deepEqual(hostPhases(tampered), ['stage', 'discard']);
+  assert.deepEqual(hostPhases(tampered), ['preflight', 'stage', 'discard']);
 });
 
 test('a failed health check rolls back without destruction, and the activation of a created runtime keeps its files', async () => {
@@ -1162,7 +1165,7 @@ test('a failed health check rolls back without destruction, and the activation o
   unhealthy.results.activate = 'result=unhealthy\nhealth=unhealthy\n';
   const rolledBack = await run(unhealthy, { creation: true, activation: true });
   assert.deepEqual([rolledBack.result, rolledBack.rollback], ['ROLLED_BACK', 'SUCCEEDED']);
-  assert.deepEqual(hostPhases(unhealthy), ['stage', 'config', 'create', 'activate', 'rollback']);
+  assert.deepEqual(hostPhases(unhealthy), ['preflight', 'stage', 'config', 'create', 'activate', 'rollback']);
   const rollbackCommand = buildRollbackScript({ jobId: rolledBack.jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true, treeDigest: TREE });
   assert.match(rollbackCommand, /mv /);
 

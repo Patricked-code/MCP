@@ -79,6 +79,12 @@
   - Rollback par labels : la politique de redémarrage des conteneurs est effacée (`docker update --restart=no`) avant leur arrêt ; un redémarrage du démon ne les relance pas.
   - Empreinte : les capacités de fichier (`getcap -r`) y entrent ; une ACL la fait échouer. Sans `getcap` sur l'hôte, l'empreinte échoue (fermé).
   - Sources de bind : chacune doit exister dans le checkout avant la promotion et avant l'activation (`bind_source_missing`) ; Docker ne crée donc plus de dossier après l'empreinte.
+- **Dixième revue Codex (cinq constats, corrigés).**
+  - Rollback par labels : il voit aussi les conteneurs arrêtés (`docker ps -aq`).
+  - Santé : seul un conteneur `healthy` selon son propre contrôle de santé compte, à l'activation comme pour `NO_OP` ; un service sans contrôle de santé n'est jamais déclaré sain.
+  - Ressources : chaque service doit borner sa mémoire, son CPU et ses processus (`COMPOSE_RESOURCES_UNBOUNDED`).
+  - Pré-contrôle en lecture seule avant le téléchargement (parents, quarantaine, capacité, volume de données du MCP compris).
+  - Admission relue après le téléchargement, juste avant la première écriture.
 - **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
 - **Preuves.**
   - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.
@@ -86,8 +92,9 @@
   - CI exact-head de la seconde revue : `3f1098b`, run `37673610028` (#2294), verte.
   - CI exact-head des revues suivantes, toutes vertes : `372d5f3` run `37680073334` (#2296) ; `dd7746e` run `37703798530` (#2297) ; `c6f8921` run `37705027955` (#2298) ; `cbd93f9` run `37706373960` (#2299) ; `1268e1b` run `37707609873` (#2300).
   - RED de la huitième revue `f7f3296` : 8 tests en échec (relecture de la coordination, liens physiques, capacité, branche officielle). GREEN `80cd60e`, CI run `37709709982` verte.
-  - RED de la neuvième revue `b384753` : 4 tests en échec (rollback, redémarrage, capacités et ACL, sources de bind).
-  - GREEN local après la neuvième revue : typecheck, build et gates verts ; suite complète 986/986 (968 avant les revues), tests de l'exécuteur verts aussi avec Compose v2.38.2. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
+  - RED de la neuvième revue `b384753` : 4 tests en échec (rollback, redémarrage, capacités et ACL, sources de bind). GREEN `341192e`, CI verte.
+  - RED de la dixième revue `cc4845d` : 4 tests en échec (conteneurs arrêtés, santé exigée, plafonds de ressources, pré-contrôle et réadmission).
+  - GREEN local après la dixième revue : typecheck, build et gates verts ; suite complète 988/988 (968 avant les revues), tests de l'exécuteur verts aussi avec Compose v2.38.2. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
 - **En attente du propriétaire** (deux fils de revue ouverts) : politique des entrées des builds (recommandation : `FROM` épinglés et `build.pull` refusé, plus enregistrement et attestation des images construites) et borne stricte du stockage des builds (configuration du démon Docker sur S1).
 - **NEXT_ACTION** : CI exact-head de la PR #261 et nouvelle revue Codex ; décisions du propriétaire puis leur mise en œuvre ; merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
 

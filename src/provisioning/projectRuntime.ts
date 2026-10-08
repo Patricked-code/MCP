@@ -630,8 +630,8 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
       && facts.treeDigest === marker.treeDigest
       && facts.containers.every((container) => (
         container.state === 'running'
-        && container.health !== 'unhealthy'
-        && container.health !== 'starting'
+        // Healthy by its own health check: running alone proves nothing about the service.
+        && container.health === 'healthy'
         && container.service !== null
         && (marker.replicas[container.service] ?? 0) > 0
       ))

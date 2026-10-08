@@ -76,6 +76,10 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
   - **Un conteneur arrêté ne revient pas seul.** Sa politique de redémarrage est effacée avant l'arrêt par labels.
   - **Ce qu'un fichier peut faire.** Les capacités de fichier entrent dans l'empreinte ; une ACL la fait échouer (une archive Git n'en porte pas). `getcap` est requis sur l'hôte, sinon l'empreinte échoue fermée.
   - **Sources de bind présentes.** Docker crée une source absente après l'empreinte ; une source manquante est donc refusée avant la promotion et l'activation. Un projet versionne le dossier (par exemple avec un `.gitkeep`).
+- **Après la dixième revue de la PR #261 :**
+  - **Pas de santé sans preuve.** Un conteneur seulement « en cours » ne prouve rien : chaque service doit avoir un contrôle de santé qui le déclare `healthy`, sinon l'activation échoue et revient en arrière. Même règle que les images épinglées : ce qui est attesté doit être prouvé.
+  - **Plafonds de ressources.** Mémoire, CPU et processus bornés par service, sinon refus : un conteneur sans plafond peut épuiser S1, MCP compris. Les valeurs restent celles du projet ; une borne globale relèverait d'une décision propriétaire.
+  - **Rien téléchargé sans place.** Le pré-contrôle en lecture seule précède le téléchargement ; l'admission est relue entre le téléchargement et la première écriture.
 
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
 

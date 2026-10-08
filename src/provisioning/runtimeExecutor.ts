@@ -89,13 +89,13 @@ export function buildParentGuardLines(target: string, root = GOVERNED_ROOT, onFa
  * move across filesystems copies. A directory not created yet is measured on
  * its nearest existing ancestor. Runs after the parent guard sets real_parent.
  */
-export function buildCapacityLines(quarantineRoot = PROVISIONING_QUARANTINE_ROOT): string[] {
-  if (!/^\/[A-Za-z0-9._/-]{1,300}$/.test(quarantineRoot) || quarantineRoot.split('/').includes('..')) {
+export function buildCapacityLines(quarantineRoot = PROVISIONING_QUARANTINE_ROOT, others: readonly string[] = []): string[] {
+  if ([quarantineRoot, ...others].some((root) => !/^\/[A-Za-z0-9._/-]{1,300}$/.test(root) || root.split('/').includes('..'))) {
     throw new Error('PROVISIONING_QUARANTINE_ROOT_INVALID');
   }
   return [
     'existing_dir() { d="$1"; while [ ! -d "$d" ]; do d="$(dirname "$d")"; done; printf \'%s\' "$d"; }',
-    `for fs in "$(existing_dir "$real_parent")" "$(existing_dir ${shellQuote(quarantineRoot)})"; do`,
+    `for fs in "$(existing_dir "$real_parent")" "$(existing_dir ${shellQuote(quarantineRoot)})"${others.map((root) => ` "$(existing_dir ${shellQuote(root)})"`).join('')}; do`,
     `  avail="$(df -Pk "$fs" | awk 'NR==2 {print $4}')"`,
     `  [ "$avail" -ge ${MIN_FREE_KIB} ] 2>/dev/null || fail host_capacity`,
     `  inodes="$(df -Pi "$fs" | awk 'NR==2 {print $4}')"`,
@@ -262,6 +262,22 @@ const COMPOSE_SOURCE_PRINT_LINES = [
   `printf 'compose_source_b64=%s\\n' "$encoded"`,
   `printf 'compose_source_sha256=%s\\n' "$digest"`
 ];
+
+/**
+ * Read-only checks before anything is downloaded: the target's parents, a bounded quarantine and room on every
+ * filesystem the job writes, the data volume that keeps the archive included.
+ */
+export function buildPreflightScript(input: { target: ProjectRuntimeTarget }): string {
+  assertTarget(input.target);
+  return [
+    ...header('preflight'),
+    ...buildParentGuardLines(input.target.serverPath),
+    `q="$(ls -A ${shellQuote(PROVISIONING_QUARANTINE_ROOT)} 2>/dev/null | wc -l | tr -d ' ')"`,
+    `[ "\${q:-0}" -lt ${MAX_QUARANTINED} ] 2>/dev/null || fail quarantine_full`,
+    ...buildCapacityLines(PROVISIONING_QUARANTINE_ROOT, [PROVISIONING_DATA_ROOT_HOST]),
+    "printf 'result=ready\\n'"
+  ].join('\n');
+}
 
 /**
  * Re-proves absence on the host, verifies and bounds the archive, extracts it
@@ -446,7 +462,7 @@ export function buildActivateScript(input: {
     `  states="$(${compose} ps --all --format '{{.State}}|{{.Health}}' 2>/dev/null)" || { health=unknown; break; }`,
     '  if [ -z "$states" ]; then health=absent; break; fi',
     `  if printf '%s\\n' "$states" | grep -Eq '^(exited|dead|removing|restarting)[|]|[|]unhealthy$'; then health=unhealthy; break; fi`,
-    `  if printf '%s\\n' "$states" | grep -Evq '^running[|](healthy)?$'; then sleep 3; continue; fi`,
+    `  if printf '%s\\n' "$states" | grep -Evq '^running[|]healthy$'; then sleep 3; continue; fi`,
     `  if [ "$(printf '%s\\n' "$states" | wc -l | tr -d ' ')" -ne ${expected} ]; then sleep 3; continue; fi`,
     '  health=healthy; break',
     'done',
@@ -484,7 +500,7 @@ export function buildRollbackScript(input: {
     `if [ "$parent_ok" = yes ] && [ -d "$directory" ] && tree="$(tree_digest "$directory")" && [ "$tree" = ${shellQuote(input.treeDigest)} ]; then`,
     `  (cd "$directory" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" down --remove-orphans >/dev/null 2>&1) || status=failed`,
     'else',
-    `  ids="$(docker ps -q --filter ${shellQuote(`label=com.docker.compose.project=${input.target.composeProject}`)} 2>/dev/null)" || status=failed`,
+    `  ids="$(docker ps -aq --filter ${shellQuote(`label=com.docker.compose.project=${input.target.composeProject}`)} 2>/dev/null)" || status=failed`,
     // A stopped container keeps its restart policy: cleared first, a daemon restart never brings it back.
     '  if [ -n "$ids" ]; then docker update --restart=no $ids >/dev/null 2>&1 || status=failed; docker stop $ids >/dev/null 2>&1 || status=failed; fi',
     "  printf 'teardown=stopped\\n'",
@@ -561,6 +577,7 @@ export type ProjectRuntimeExecutionDependencies = {
 };
 
 const PHASE_LIMITS: Record<string, { timeoutMs: number; maxOutputBytes: number }> = {
+  preflight: { timeoutMs: 60_000, maxOutputBytes: 8_192 },
   stage: { timeoutMs: 300_000, maxOutputBytes: 400_000 },
   source: { timeoutMs: 300_000, maxOutputBytes: 400_000 },
   create: { timeoutMs: 60_000, maxOutputBytes: 8_192 },
@@ -861,6 +878,13 @@ async function execute(
   let bindSources: readonly string[];
   let treeDigest: string;
   if (mode === 'CREATE' || mode === 'CREATE_AND_ACTIVATE') {
+    // Nothing is downloaded onto a host without room: the read-only preflight runs first.
+    const preflight = await host('preflight', buildPreflightScript({ target }));
+    if (preflight.get('result') !== 'ready') {
+      steps.push({ id: 'preflight', status: 'FAILED' });
+      return finish('FAILED', [hostReason('PREFLIGHT', preflight)]);
+    }
+    steps.push({ id: 'preflight', status: 'DONE' });
     const fetched = await deps.fetchSource({
       repositoryId: target.repositoryId,
       revision: target.revision,
@@ -873,6 +897,12 @@ async function execute(
     archiveSha256 = fetched.sha256;
     steps.push({ id: 'fetch-source', status: 'DONE' });
 
+    // The admission is read again after the download: a branch or CI change meanwhile never reaches the host.
+    const readmitted = await deps.admitRevision({ repositoryId: target.repositoryId, revision: target.revision, branch: branch! }).catch(() => null);
+    if (!readmitted?.admitted) {
+      steps.push({ id: 'backup', status: 'BLOCKED' });
+      return finish('BLOCKED', [readmitted && readmitted.reasonCode !== 'REVISION_ADMITTED' ? readmitted.reasonCode : 'REVISION_ADMISSION_UNAVAILABLE']);
+    }
     const beforeStage = await recheck();
     if (beforeStage) {
       steps.push({ id: 'backup', status: 'BLOCKED' });
