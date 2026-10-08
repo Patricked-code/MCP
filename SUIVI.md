@@ -1,5 +1,19 @@
 # SUIVI.md
 
+## 2026-10-08 — W3 `TB-W3-F-04` Domain binding, incrément 1 (observe-binding) — GREEN candidate
+
+- **Reprise depuis `main@bc1d986`.** Les intakes ont été réobservées : aucune nouvelle `[PROGRAM INTAKE]` depuis #235/#236, et l'issue #262 reste ouverte. Les Governed Sessions, claims et verrous runtime sont `UNKNOWN` depuis cette session : le proxy GitHub refuse les artefacts, et le bridge n'est pas requis (GitHub-first). Aucun claim n'est pris ni repris.
+- **Sélection `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.** `TB-W3-A3-02` reste réservé : il demande un claim runtime et entre en collision avec la PR #207 (`mcp/w3-a3-oauth-continuity`) d'un autre agent. Le lot suivant compatible est donc `TB-W3-F-04`.
+- **Livré (incrément 1, étape `observe-binding` du contrat `DOMAIN_BINDING`).**
+  - `src/liveState/servedDomains.ts` : Live State fait un inventaire en lecture seule et borné (1000 entrées) des vhosts Plesk de S1. Il en tire l'observation de domaine C5.
+    - Une lecture en échec, malformée ou hors borne reste indisponible ; elle ne devient jamais une absence.
+    - Un autre serveur n'obtient aucune observation.
+    - Un vhost prouve un binding sur le serveur, ni le DNS ni un certificat.
+  - `src/governedContext/github.ts` : `readDomainObservation` lit par défaut l'observation de Live State. C5 peut donc conclure `RESOLVED` ou `DOMAIN_NONE_CONFIRMED` au lieu de toujours rester `UNVERIFIED`.
+  - Tests : `tests/servedDomainObservation.test.ts`. RED : module absent. GREEN : 5/5. La chaîne CI locale passe (typecheck, build, docs:check, governance, gwc:verify, readonly-safety à 1006 tests).
+- **Aucune écriture S1** : aucun binding, certificat ou DNS n'est créé ou modifié.
+- **NEXT_ACTION** : PR draft, CI verte, revue, fusion, Governed Deploy et attestation ; ensuite l'incrément 2 de F-04 (backup et bind-domain consentis).
+
 ## 2026-10-08 — W3 F.2 Project runtime provisioning — clôture `TB-W3-F-03` (DONE)
 
 - **Incrément 3 livré.** PR #261 fusionnée au merge `6576b5287f23566684005adf6032734e2ecdea50` (head `d0bc1ee`, CI PR #2309 `37817615298`, 1001 tests). CI main #2310 `37817792888` verte.

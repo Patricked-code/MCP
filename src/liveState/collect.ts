@@ -13,6 +13,7 @@ import type {
 } from './types.js';
 import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
 import { readGitRegistryProjectEvidence } from '../github/registry.js';
+import { collectServedDomains } from './servedDomains.js';
 import { collectProvisionedRuntimes } from './provisionedRuntime.js';
 import { collectTargetProjectObservation } from './targetProject.js';
 import { LIVE_STATE_SERVER_ID } from './runtimeObservation.js';
@@ -482,6 +483,8 @@ export async function collectLiveStateObservations(): Promise<LiveStateObservati
     runReadOnly: runS1ReadOnly,
     now: () => new Date()
   }).catch(() => undefined);
+  const servedDomains = await collectServedDomains({ runReadOnly: runS1ReadOnly, now: () => new Date() })
+    .catch(() => undefined);
   const capabilities = collectCapabilityObservation();
   const inventoryContradictions = inventory.contradictions.map((entry) => entry.code);
   const governance: CurrentStateGovernanceObservation = {
@@ -513,6 +516,7 @@ export async function collectLiveStateObservations(): Promise<LiveStateObservati
     repository: REPOSITORY,
     ...targetProject,
     ...(provisionedRuntimes ? { provisionedRuntimes } : {}),
+    ...(servedDomains ? { servedDomains } : {}),
     github, s1, runtime, documentation,
     capabilities, governance, auditBaseline, inventory
   };

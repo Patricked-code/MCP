@@ -13,8 +13,9 @@ import type { GitRegistryProjectEvidence } from './registry.js';
  * C5 (TB-W3-C5-01): the GWC domain resolver (GW-09) composed after the C2
  * project and C3 server resolutions. GitRegistry project and mapping domains
  * are declarations; only a current observation of what the resolved server
- * serves proves a domain. No such observation authority exists in the runtime
- * yet, so the surface stays UNVERIFIED, never NONE. Protected-domain safety
+ * serves proves a domain. F-04 observe-binding supplies it from Live State
+ * (the vhosts of the server Live State observes); without it the surface stays
+ * UNVERIFIED, never NONE. Protected-domain safety
  * lists are never the domain model. Read-only: no probe, store or vhost change.
  */
 const UNRESOLVED_SERVER = 'unresolved';

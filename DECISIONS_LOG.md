@@ -1,5 +1,13 @@
 # DECISIONS_LOG.md
 
+## 2026-10-08 — F-04 incrément 1 : l'observation des domaines servis vient de Live State
+
+Décision technique, déduite selon #221. Sources : l'étape `observe-binding` du contrat `DOMAIN_BINDING` (`.mcp/provisioning-contracts.json`), le motif C4 (`liveStateRuntimeObservation`) et l'interdiction d'autorité parallèle.
+
+- **WRAP de l'existant.** L'observation enveloppe le listage read-only des vhosts (`list_domains_s1`) dans le cycle de Live State. Aucun nouveau store ni collecteur autonome n'est créé, et la fraîcheur est celle du snapshot.
+- **Échec fermé.** Au-delà de 1000 entrées, en cas d'échec ou de sortie illisible, l'observation est indisponible : jamais une absence partielle.
+- **Portée.** L'observation ne vaut que pour le serveur observé par Live State (`s1`). Un vhost prouve le binding côté serveur, pas le DNS ni le certificat, qui restent du ressort des étapes suivantes.
+
 ## 2026-10-07 — F.2 incrément 3 : surface consentie et câblage du provisioning d'un runtime de projet
 
 Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME` et le consentement E3 de `.mcp/provisioning-contracts.json`, l'admission du Governed Deploy, `EXISTING_MCP_EXPOSURE_FIRST` (#236), et les invariants `NO_RESOURCE_CREATION_WITHOUT_EXPLICIT_CONSENT` et `NO_IMPLICIT_ACTIVATION`.

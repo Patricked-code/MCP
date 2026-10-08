@@ -25,6 +25,10 @@ function semanticValue(state: LiveStateSnapshot): string {
       dockerAvailable: state.provisionedRuntimes.dockerAvailable,
       components: state.provisionedRuntimes.components
     } : null,
+    servedDomains: state.servedDomains ? {
+      status: state.servedDomains.status,
+      domains: state.servedDomains.domains
+    } : null,
     github: state.github,
     s1: state.s1,
     runtime: state.runtime,

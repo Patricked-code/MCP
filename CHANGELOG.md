@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 2026-10-08 — W3 `TB-W3-F-04` Domain binding, incrément 1 (candidate)
+
+- Live State inventorie en lecture seule les vhosts de S1 (`src/liveState/servedDomains.ts`). La résolution de domaine C5 consomme cette observation par défaut : un domaine déclaré et servi se résout, et une absence observée devient `DOMAIN_NONE_CONFIRMED`. Une lecture indisponible reste `UNVERIFIED`.
+
 ## 2026-10-08 — W3 F.2 clôture
 
 - `TB-W3-F-03` DONE : PR #261 fusionnée, déployée et attestée ; le runtime de projet est provisionnable via la surface consentie (inerte sans cible S1). Limites connues : issue #262.
