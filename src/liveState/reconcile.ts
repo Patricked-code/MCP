@@ -25,10 +25,11 @@ function semanticValue(state: LiveStateSnapshot): string {
       dockerAvailable: state.provisionedRuntimes.dockerAvailable,
       components: state.provisionedRuntimes.components
     } : null,
-    servedDomains: state.servedDomains ? {
-      status: state.servedDomains.status,
-      domains: state.servedDomains.domains
-    } : null,
+    servedDomains: state.servedDomains ? Object.fromEntries(
+      Object.entries(state.servedDomains).map(([serverId, inventory]) => [
+        serverId, inventory ? { status: inventory.status, domains: inventory.domains } : null
+      ])
+    ) : null,
     github: state.github,
     s1: state.s1,
     runtime: state.runtime,

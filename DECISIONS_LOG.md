@@ -6,7 +6,8 @@ Décision technique, déduite selon #221. Sources : l'étape `observe-binding` d
 
 - **WRAP de l'existant.** L'observation enveloppe le listage read-only des vhosts (`list_domains_s1`) dans le cycle de Live State. Aucun nouveau store ni collecteur autonome n'est créé, et la fraîcheur est celle du snapshot.
 - **Échec fermé.** Au-delà de 1000 entrées, en cas d'échec ou de sortie illisible, l'observation est indisponible : jamais une absence partielle.
-- **Portée.** L'observation ne vaut que pour le serveur observé par Live State (`s1`). Un vhost prouve le binding côté serveur, pas le DNS ni le certificat, qui restent du ressort des étapes suivantes.
+- **Portée.** L'observation ne vaut que pour un serveur géré (voir la révision après revue ci-dessous). Un vhost prouve le binding côté serveur, pas le DNS ni le certificat, qui restent du ressort des étapes suivantes.
+- **Après revue (PR #267).** L'inventaire couvre chaque serveur géré (S1 et S2) au niveau `system/<domaine>` de Plesk. L'observation transmise à C5 est restreinte aux domaines que GitRegistry déclare pour le projet sélectionné : un serveur partagé sert d'autres projets, dont les domaines ne sont ni des preuves ni des contradictions pour celui-ci.
 
 ## 2026-10-07 — F.2 incrément 3 : surface consentie et câblage du provisioning d'un runtime de projet
 

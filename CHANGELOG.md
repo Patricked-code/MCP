@@ -2,7 +2,8 @@
 
 ## 2026-10-08 — W3 `TB-W3-F-04` Domain binding, incrément 1 (candidate)
 
-- Live State inventorie en lecture seule les vhosts de S1 (`src/liveState/servedDomains.ts`). La résolution de domaine C5 consomme cette observation par défaut : un domaine déclaré et servi se résout, et une absence observée devient `DOMAIN_NONE_CONFIRMED`. Une lecture indisponible reste `UNVERIFIED`.
+- Live State inventorie en lecture seule les domaines servis par S1 et S2 (`src/liveState/servedDomains.ts`). La résolution de domaine C5 consomme cette observation par défaut : un domaine déclaré et servi se résout, et une absence observée devient `DOMAIN_NONE_CONFIRMED`. Une lecture indisponible reste `UNVERIFIED`.
+- Après revue : inventaire au niveau par domaine de Plesk (domaines imbriqués compris), échec de `find` propagé, entrée non conforme rendant l'inventaire indisponible, un inventaire par serveur (S1 et S2), observation restreinte aux domaines déclarés du projet sélectionné.
 
 ## 2026-10-08 — W3 F.2 clôture
 

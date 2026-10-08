@@ -43,7 +43,11 @@ import type { DomainResolution } from '../governedWorkflow/resolvers/domain.js';
 import type { RuntimeResolution } from '../governedWorkflow/resolvers/runtime.js';
 import type { ServerResolution } from '../governedWorkflow/resolvers/server.js';
 import { readLiveStateRuntimeObservations } from '../liveState/runtimeObservation.js';
-import { readLiveStateDomainObservation } from '../liveState/servedDomains.js';
+import {
+  declaredProjectDomains,
+  readLiveStateDomainObservation,
+  scopeDomainObservation
+} from '../liveState/servedDomains.js';
 import { readServerMapConfiguration } from '../liveState/targetProject.js';
 import {
   loadDurableGithubObservationBatch,
@@ -1138,7 +1142,15 @@ export function createGithubOperationalContextCollector(
     // C5: GW-09 domain resolution chained after the C2/C3 resolutions.
     let domainObservation: unknown;
     try {
-      domainObservation = await (options.readDomainObservation ?? ((serverId) => readLiveStateDomainObservation(serverId, now)))(
+      domainObservation = await (options.readDomainObservation ?? (async (serverId) => {
+        // Live State observes a shared server: keep the part about the selected project.
+        const projectId = projectResolution.selectedProject?.projectId;
+        const observation = await readLiveStateDomainObservation(serverId, now);
+        const declared = projectRegistry.domainEvidence;
+        return projectId && serverId && declared && observation
+          ? scopeDomainObservation(observation, declaredProjectDomains(declared, projectId, serverId))
+          : observation;
+      }))(
         serverResolution.selectedServer?.serverId ?? null
       );
     } catch {

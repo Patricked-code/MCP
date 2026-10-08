@@ -1,4 +1,4 @@
-import type { ServedDomainInventory } from './servedDomains.js';
+import type { ServedDomainInventories } from './servedDomains.js';
 import type { TargetContext } from '../operationalMemory/targetScope.js';
 import type { ProvisionedRuntimeInventory } from '../provisioning/projectRuntime.js';
 
@@ -140,8 +140,8 @@ export type LiveStateObservations = {
   targetContext?: TargetContext;
   /** F.2: read-only inventory of the configured target's runtimes; absent without a resolved target. */
   provisionedRuntimes?: ProvisionedRuntimeInventory;
-  /** F-04: read-only inventory of the vhosts the observed server serves; absent when not collected. */
-  servedDomains?: ServedDomainInventory;
+  /** F-04: read-only inventory, per managed server, of the domains its Plesk serves; absent when not collected. */
+  servedDomains?: ServedDomainInventories;
   github: GithubLiveObservation;
   s1: S1LiveObservation;
   runtime: RuntimeLiveObservation;

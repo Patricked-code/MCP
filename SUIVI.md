@@ -5,12 +5,19 @@
 - **Reprise depuis `main@bc1d986`.** Les intakes ont été réobservées : aucune nouvelle `[PROGRAM INTAKE]` depuis #235/#236, et l'issue #262 reste ouverte. Les Governed Sessions, claims et verrous runtime sont `UNKNOWN` depuis cette session : le proxy GitHub refuse les artefacts, et le bridge n'est pas requis (GitHub-first). Aucun claim n'est pris ni repris.
 - **Sélection `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.** `TB-W3-A3-02` reste réservé : il demande un claim runtime et entre en collision avec la PR #207 (`mcp/w3-a3-oauth-continuity`) d'un autre agent. Le lot suivant compatible est donc `TB-W3-F-04`.
 - **Livré (incrément 1, étape `observe-binding` du contrat `DOMAIN_BINDING`).**
-  - `src/liveState/servedDomains.ts` : Live State fait un inventaire en lecture seule et borné (1000 entrées) des vhosts Plesk de S1. Il en tire l'observation de domaine C5.
+  - `src/liveState/servedDomains.ts` : Live State fait un inventaire en lecture seule et borné (1000 entrées) des domaines Plesk de chaque serveur géré. Il en tire l'observation de domaine C5.
     - Une lecture en échec, malformée ou hors borne reste indisponible ; elle ne devient jamais une absence.
-    - Un autre serveur n'obtient aucune observation.
+    - Un serveur non géré n'obtient aucune observation.
     - Un vhost prouve un binding sur le serveur, ni le DNS ni un certificat.
   - `src/governedContext/github.ts` : `readDomainObservation` lit par défaut l'observation de Live State. C5 peut donc conclure `RESOLVED` ou `DOMAIN_NONE_CONFIRMED` au lieu de toujours rester `UNVERIFIED`.
   - Tests : `tests/servedDomainObservation.test.ts`. RED : module absent. GREEN : 5/5. La chaîne CI locale passe (typecheck, build, docs:check, governance, gwc:verify, readonly-safety à 1006 tests).
+- **Revue Codex de la PR #267 (cinq constats, tous vérifiés et corrigés).**
+  - L'inventaire lit `/var/www/vhosts/system/<domaine>`, le niveau par domaine de Plesk : les domaines imbriqués sous une souscription sont vus.
+  - La commande n'a plus de pipe : un `find` en échec fait échouer la lecture au lieu de passer pour une absence.
+  - Toute entrée qui n'est pas un domaine (marqueur de troncature compris) rend l'inventaire indisponible.
+  - Un inventaire par serveur géré (S1 et S2) : un projet résolu sur S2 obtient aussi son observation.
+  - L'observation est restreinte aux domaines que GitRegistry déclare pour le projet sélectionné sur ce serveur : un autre locataire du serveur ne passe plus pour non déclaré.
+  - RED : 5 tests sur 6 échouent sur l'ancien source. GREEN : 6/6. La chaîne CI locale passe (1007 tests).
 - **Aucune écriture S1** : aucun binding, certificat ou DNS n'est créé ou modifié.
 - **NEXT_ACTION** : PR draft, CI verte, revue, fusion, Governed Deploy et attestation ; ensuite l'incrément 2 de F-04 (backup et bind-domain consentis).
 

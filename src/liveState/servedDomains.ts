@@ -1,19 +1,23 @@
+import type { ServerId } from '../config/servers.js';
 import type { DomainResolutionInput } from '../governedWorkflow/resolvers/domain.js';
+import type { GitRegistryDomainEvidence } from '../github/registry.js';
 import { applyFreshness } from './reconcile.js';
-import { LIVE_STATE_SERVER_ID } from './runtimeObservation.js';
 import type { LiveStateSnapshot } from './types.js';
 
 /**
  * F-04 (TB-W3-F-04), observe-binding: Live State inventories, read-only, the
- * Plesk vhosts the server it observes serves, and projects them as the C5
- * domain observation (GW-09). A vhost directory proves a binding exists on the
- * server, never DNS nor a certificate. A failed, malformed or unbounded read
- * stays unavailable and never becomes an absence. Nothing is bound or changed.
+ * domains each managed server's Plesk serves and projects them as the C5
+ * domain observation (GW-09). Plesk keeps one `system/<domain>` directory per
+ * served domain, nested subscription domains included, so that level is read.
+ * A failed, malformed or unbounded read stays unavailable and never becomes
+ * an absence. A vhost proves a binding on the server, never DNS nor a
+ * certificate. Nothing is bound or changed.
  */
 export const SERVED_DOMAINS_MAX = 1000;
-export const SERVED_DOMAINS_COMMAND = `find /var/www/vhosts -mindepth 1 -maxdepth 1 -type d -printf '%f\\n' 2>/dev/null | LC_ALL=C sort | head -n ${SERVED_DOMAINS_MAX + 1}`;
+// No pipe: a missing or unreadable directory fails find itself, so the read fails.
+export const SERVED_DOMAINS_COMMAND = "find /var/www/vhosts/system -mindepth 1 -maxdepth 1 -type d -printf '%f\\n'";
+export const SERVED_DOMAIN_SERVERS: readonly ServerId[] = ['s1', 's2'];
 
-// A host name with at least two labels; Plesk system entries (system, default, chroot, fs, .skel) never match.
 const DOMAIN = /^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/;
 
 export type ServedDomainInventory = {
@@ -22,10 +26,13 @@ export type ServedDomainInventory = {
   domains: string[];
 };
 
+export type ServedDomainInventories = Partial<Record<ServerId, ServedDomainInventory>>;
+
 export function unavailableServedDomainInventory(observedAt: string): ServedDomainInventory {
   return { status: 'UNAVAILABLE', observedAt, domains: [] };
 }
 
+/** Every entry must be a domain: anything else (a truncation marker included) is unavailable. */
 export function parseServedDomainInventory(stdout: string, observedAt: string): ServedDomainInventory {
   if (typeof stdout !== 'string') return unavailableServedDomainInventory(observedAt);
   const entries = stdout.split('\n').map((line) => line.trim()).filter(Boolean);
@@ -33,7 +40,8 @@ export function parseServedDomainInventory(stdout: string, observedAt: string): 
   const domains = new Set<string>();
   for (const entry of entries) {
     const domain = entry.toLowerCase();
-    if (DOMAIN.test(domain)) domains.add(domain);
+    if (!DOMAIN.test(domain)) return unavailableServedDomainInventory(observedAt);
+    domains.add(domain);
   }
   return { status: 'CURRENT', observedAt, domains: [...domains].sort() };
 }
@@ -52,28 +60,91 @@ export async function collectServedDomains(input: {
   }
 }
 
-/** The C5 observation of the server Live State observes; null for any other server. */
+/** One inventory per managed server; a server that fails stays unavailable alone. */
+export async function collectServedDomainInventories(input: {
+  runReadOnly: (serverId: ServerId, command: string) => Promise<{ code: number | null; stdout: string }>;
+  now: () => Date;
+}): Promise<ServedDomainInventories> {
+  const entries = await Promise.all(SERVED_DOMAIN_SERVERS.map(async (serverId) => [
+    serverId,
+    await collectServedDomains({ runReadOnly: (command) => input.runReadOnly(serverId, command), now: input.now })
+  ] as const));
+  return Object.fromEntries(entries);
+}
+
+/** The C5 observation of one managed server, unscoped; null when Live State holds none for it. */
 export function liveStateDomainObservation(
   snapshot: LiveStateSnapshot | null,
   serverId: string | null,
   now = new Date()
 ): DomainResolutionInput['observation'] | null {
-  const inventory = snapshot?.servedDomains;
-  if (!snapshot || !inventory || typeof serverId !== 'string') return null;
-  if (serverId.toLowerCase() !== LIVE_STATE_SERVER_ID) return null;
+  if (!snapshot || typeof serverId !== 'string') return null;
+  const id = serverId.toLowerCase();
+  if (!(SERVED_DOMAIN_SERVERS as readonly string[]).includes(id)) return null;
+  const inventory = snapshot.servedDomains?.[id as ServerId];
+  if (!inventory) return null;
   const reconciledAt = Date.parse(snapshot.lastReconciledAt);
   if (!Number.isFinite(reconciledAt)) return null;
   const observedAt = new Date(reconciledAt).toISOString();
   if (inventory.status !== 'CURRENT') {
-    return { available: false, freshness: 'UNKNOWN', observedAt, serverId: LIVE_STATE_SERVER_ID, domains: [] };
+    return { available: false, freshness: 'UNKNOWN', observedAt, serverId: id, domains: [] };
   }
   const evidenceRef = `live_state:state_version:${Number.isSafeInteger(snapshot.stateVersion) ? snapshot.stateVersion : 'unknown'}:vhost`;
   return {
     available: true,
     freshness: applyFreshness(snapshot, now).freshness === 'STALE' ? 'STALE' : 'CURRENT',
     observedAt,
-    serverId: LIVE_STATE_SERVER_ID,
+    serverId: id,
     domains: inventory.domains.slice(0, SERVED_DOMAINS_MAX).map((domain) => ({ domain, verified: true, evidenceRef }))
+  };
+}
+
+function normalize(domain: string): string {
+  return domain.trim().toLowerCase().replace(/\.$/, '');
+}
+
+/** The domains GitRegistry declares for one project on one server. */
+export function declaredProjectDomains(
+  registry: GitRegistryDomainEvidence,
+  projectId: string,
+  serverId: string
+): Set<string> {
+  const domains = new Set<string>();
+  for (const project of registry.projects) {
+    if (project.projectId !== projectId) continue;
+    if (project.publicDomain) domains.add(normalize(project.publicDomain));
+    if (project.publicApi) {
+      try {
+        domains.add(normalize(new URL(project.publicApi).hostname));
+      } catch {
+        // An invalid API URL declares nothing here; the resolver reports it.
+      }
+    }
+  }
+  for (const mapping of registry.mappings) {
+    if (mapping.projectId === projectId && mapping.serverId.toLowerCase() === serverId.toLowerCase() && mapping.domain) {
+      domains.add(normalize(mapping.domain));
+    }
+  }
+  return domains;
+}
+
+/**
+ * A shared server serves other projects' domains too: the observation the
+ * resolver compares with one project's declarations is the part about that
+ * project's declared domains, so another tenant never reads as undeclared.
+ */
+export function scopeDomainObservation(observation: unknown, declared: ReadonlySet<string>): unknown {
+  const record = observation && typeof observation === 'object' && !Array.isArray(observation)
+    ? observation as { domains?: unknown }
+    : null;
+  if (!record || !Array.isArray(record.domains)) return observation;
+  return {
+    ...record,
+    domains: record.domains.filter((entry) => (
+      entry && typeof entry === 'object' && typeof (entry as { domain?: unknown }).domain === 'string'
+      && declared.has(normalize((entry as { domain: string }).domain))
+    ))
   };
 }
 

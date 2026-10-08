@@ -1,3 +1,4 @@
+import type { ServerId } from '../config/servers.js';
 import { readFile } from 'node:fs/promises';
 
 import type {
@@ -13,7 +14,7 @@ import type {
 } from './types.js';
 import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
 import { readGitRegistryProjectEvidence } from '../github/registry.js';
-import { collectServedDomains } from './servedDomains.js';
+import { collectServedDomainInventories } from './servedDomains.js';
 import { collectProvisionedRuntimes } from './provisionedRuntime.js';
 import { collectTargetProjectObservation } from './targetProject.js';
 import { LIVE_STATE_SERVER_ID } from './runtimeObservation.js';
@@ -394,6 +395,11 @@ export async function collectGithubObservation(): Promise<GithubLiveObservation>
   }
 }
 
+async function runServerReadOnly(serverId: ServerId, command: string) {
+  const { runReadOnlyCommand } = await import('../ssh/client.js');
+  return runReadOnlyCommand(serverId, command);
+}
+
 async function runS1ReadOnly(command: string) {
   const { runReadOnlyCommand } = await import('../ssh/client.js');
   return runReadOnlyCommand(LIVE_STATE_SERVER_ID, command);
@@ -483,7 +489,7 @@ export async function collectLiveStateObservations(): Promise<LiveStateObservati
     runReadOnly: runS1ReadOnly,
     now: () => new Date()
   }).catch(() => undefined);
-  const servedDomains = await collectServedDomains({ runReadOnly: runS1ReadOnly, now: () => new Date() })
+  const servedDomains = await collectServedDomainInventories({ runReadOnly: runServerReadOnly, now: () => new Date() })
     .catch(() => undefined);
   const capabilities = collectCapabilityObservation();
   const inventoryContradictions = inventory.contradictions.map((entry) => entry.code);
