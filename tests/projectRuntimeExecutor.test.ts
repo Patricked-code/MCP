@@ -1050,6 +1050,8 @@ test('build Dockerfiles are read from the digested checkout and their images att
   assert.ok(h.scripts.get('dockerfiles')!.includes(TREE));
   const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
   assert.deepEqual(attestation.builtImages, [`sha256:${'c'.repeat(64)}`]);
+  // The images are recorded in the job data too, out of the runtime's reach, for NO_OP to compare.
+  assert.deepEqual(JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/images.json`)!), [`sha256:${'c'.repeat(64)}`]);
   // An unpinned base image never reaches the promotion.
   const floating = harness();
   floating.results.dockerfiles = `result=printed\ndockerfile.0=${Buffer.from('FROM node:20\n').toString('base64')}\n`;
@@ -1060,6 +1062,19 @@ test('build Dockerfiles are read from the digested checkout and their images att
   // The activation reports the images it built.
   const script = buildActivateScript({ jobId: 'prov-20261006T050000Z-0a1b2c3d', target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE });
   assert.match(script, /images=/);
+});
+
+test('the attestation records the admission that authorized the first write', async () => {
+  let admissions = 0;
+  const h = harness({
+    admitRevision: async () => {
+      admissions += 1;
+      return Object.freeze({ admitted: true, kind: 'CI_GATE', reasonCode: 'REVISION_ADMITTED', branch: 'main', branchHead: admissions === 1 ? 'a'.repeat(40) : 'b'.repeat(40), checkRuns: admissions, statuses: 0 });
+    }
+  });
+  const result = await run(h, { creation: true });
+  const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
+  assert.deepEqual([attestation.admission.branchHead, attestation.admission.checkRuns], ['b'.repeat(40), 2]);
 });
 
 test('bind sources are named by the policy, relative to the project', () => {

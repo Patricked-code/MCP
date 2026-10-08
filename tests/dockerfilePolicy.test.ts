@@ -33,6 +33,9 @@ test('the frontend is pinned too, and an unreadable Dockerfile fails closed', ()
   assert.deepEqual(codes(`# syntax=docker/dockerfile:1@sha256:${'b'.repeat(64)}\nFROM ${PIN}\n`), []);
   assert.ok(codes(`# syntax=docker/dockerfile:1\nFROM ${PIN}\n`).includes('DOCKERFILE_FRONTEND_UNPINNED'));
   assert.ok(codes(`#syntax = docker/dockerfile:1\nFROM ${PIN}\n`).includes('DOCKERFILE_FRONTEND_UNPINNED'));
+  // Only the Dockerfile frontend this scan understands: a custom one could read the file otherwise.
+  assert.ok(codes(`# syntax=ghcr.io/acme/front@sha256:${'b'.repeat(64)}\nFROM ${PIN}\n`).includes('DOCKERFILE_FRONTEND_UNSUPPORTED'));
+  assert.deepEqual(codes(`# syntax=docker.io/docker/dockerfile:1.7@sha256:${'b'.repeat(64)}\nFROM ${PIN}\n`), []);
   assert.deepEqual(codes('\u0000'), ['DOCKERFILE_INVALID']);
   assert.deepEqual(codes('x'.repeat(100_001)), ['DOCKERFILE_INVALID']);
   assert.deepEqual(codes('RUN true\n'), ['DOCKERFILE_INVALID']);

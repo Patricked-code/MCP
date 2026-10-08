@@ -57,8 +57,12 @@ function registry(overrides: Record<string, unknown> = {}): any {
   };
 }
 
-function inventory(lines: string[]): any {
-  return parseProvisionedRuntimeInventory(`${lines.join('\n')}\n`, [TARGET], OBSERVED_AT);
+const IMAGE = `sha256:${'c'.repeat(64)}`;
+
+/** An inventory whose created runtime has its image record in the job data, as the executor reads it. */
+function inventory(lines: string[], expectedImages: string[] | null = [IMAGE]): any {
+  const parsed = parseProvisionedRuntimeInventory(`${lines.join('\n')}\n`, [TARGET], OBSERVED_AT) as any;
+  return { ...parsed, components: parsed.components.map((component: any) => ({ ...component, expectedImages })) };
 }
 
 const ABSENT = ['docker=ok', 'component.0.path=absent', 'component.0.containers='];
@@ -78,7 +82,7 @@ function marker(services: string[] = ['api']): string {
   })).toString('base64')}`;
 }
 
-const PRESENT_SAME = ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`, marker(), `component.0.tree=${'e'.repeat(64)}`];
+const PRESENT_SAME = ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`, marker(), `component.0.tree=${'e'.repeat(64)}`, `component.0.images=sha256:${'c'.repeat(64)}`];
 
 test('the provisioned-runtime inventory is bounded, read-only and quotes every value', () => {
   const command = buildProvisionedRuntimeInventoryCommand([TARGET]);
@@ -221,6 +225,10 @@ test('provisioning plans only a genuinely absent runtime at its exact, declared 
     // A service missing one of its expected replicas is incomplete.
     ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')},${container('portal-worker-1', 'worker')}`, marker(['api', 'worker']), `component.0.tree=${'e'.repeat(64)}`]
   ];
+  // Containers running other image bytes than the activation recorded are not the admitted runtime.
+  assert.deepEqual(plan({ inventory: inventory([...PRESENT_SAME.slice(0, 5), `component.0.images=sha256:${'d'.repeat(64)}`]) }).reasonCodes, ['EXISTING_RUNTIME_DEGRADED']);
+  assert.deepEqual(plan({ inventory: inventory(PRESENT_SAME, null) }).reasonCodes, ['EXISTING_RUNTIME_DEGRADED']);
+  assert.match(buildProvisionedRuntimeInventoryCommand([TARGET]), /component\.0\.images=/);
   for (const lines of degraded) {
     const result = plan({ inventory: inventory(lines) });
     assert.deepEqual([result.decision, result.reasonCodes], ['BLOCKED', ['EXISTING_RUNTIME_DEGRADED']], lines.join(' '));
