@@ -6,6 +6,7 @@
 - Après revue : inventaire au niveau par domaine de Plesk (domaines imbriqués compris), échec de `find` propagé, entrée non conforme rendant l'inventaire indisponible, un inventaire par serveur (S1 et S2), observation restreinte aux domaines déclarés du projet sélectionné.
 - Second round : nom brut validé avant normalisation, répertoires wildcard Plesk exclus, aucune observation pour un projet sans domaine déclaré. Les alias Plesk restaient non inventoriés.
 - Troisième round : l'inventaire lit les enregistrements Plesk des noms actifs servis (domaines actifs avec service web et alias web actifs), au lieu des répertoires que conserve un site suspendu ; TLD Punycode acceptés.
+- Quatrième round : abonnement actif exigé, labels Punycode validés par IDNA, fraîcheur calculée par inventaire. L'alias `www.` généré par Plesk reste non inventorié (limite connue, échec fermé).
 
 ## 2026-10-08 — W3 F.2 clôture
 

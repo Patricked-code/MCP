@@ -33,9 +33,10 @@ function snapshot(servedDomains: unknown, reconciledAt = OBSERVED_AT) {
 test('F-04 observe-binding: the inventory reads Plesk records of active served names, read-only', () => {
   assert.doesNotThrow(() => assertReadOnlyCommand(SERVED_DOMAINS_COMMAND));
   // A suspended or disabled site keeps its directory: only Plesk's status says it is served.
-  assert.match(SERVED_DOMAINS_COMMAND, /FROM domains WHERE status = 0 AND htype <> 'none'/);
+  assert.match(SERVED_DOMAINS_COMMAND, /FROM domains d WHERE d\.status = 0 AND d\.webspace_status = 0 AND d\.htype <> 'none'/);
   // An alias has no directory of its own; active web aliases are served names too.
-  assert.match(SERVED_DOMAINS_COMMAND, /FROM domain_aliases WHERE status = 0 AND web = 'true'/);
+  // An alias is served only while its domain and subscription are active.
+  assert.match(SERVED_DOMAINS_COMMAND, /FROM domain_aliases a JOIN domains d ON d\.id = a\.dom_id WHERE a\.status = 0 AND a\.web = 'true' AND d\.status = 0 AND d\.webspace_status = 0/);
   // No pipe: a failing read keeps its own exit status.
   assert.doesNotMatch(SERVED_DOMAINS_COMMAND, /\||2>/);
 });
@@ -56,6 +57,9 @@ test('F-04 observe-binding: parsing normalizes domains; any other entry makes th
   assert.equal(parseServedDomainInventory('*.bad_\n', OBSERVED_AT).status, 'UNAVAILABLE');
   // Internationalized names are kept in Punycode, a Punycode TLD included.
   assert.deepEqual(parseServedDomainInventory('example.xn--p1ai\nxn--80ak6aa92e.com\n', OBSERVED_AT).domains, ['example.xn--p1ai', 'xn--80ak6aa92e.com']);
+  // A label that only looks like Punycode is not a domain.
+  assert.equal(parseServedDomainInventory('example.xn--a\n', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.equal(parseServedDomainInventory('example.xn--foo-\n', OBSERVED_AT).status, 'UNAVAILABLE');
 });
 
 test('F-04 observe-binding: an inventory over the bound is unavailable, never a partial absence', () => {
@@ -109,6 +113,11 @@ test('F-04 observe-binding: Live State projects a schema-valid C5 observation fo
   assert.equal(unavailable.freshness, 'UNKNOWN');
   const stale = liveStateDomainObservation(snapshot(inventories), 's1', new Date(Date.parse(OBSERVED_AT) + 3_600_000)) as any;
   assert.equal(stale.freshness, 'STALE');
+  // Each inventory ages from its own read: a later reconciliation does not refresh it.
+  const late = new Date(Date.parse(OBSERVED_AT) + 90_000);
+  const aged = liveStateDomainObservation(snapshot(inventories, late.toISOString()), 's1', late) as any;
+  assert.equal(aged.freshness, 'STALE');
+  assert.equal(aged.observedAt, OBSERVED_AT);
 });
 
 test('F-04 observe-binding: the observation is scoped to the selected project on a shared server', () => {

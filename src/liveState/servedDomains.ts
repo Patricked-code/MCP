@@ -1,7 +1,7 @@
+import { domainToASCII, domainToUnicode } from 'node:url';
 import type { ServerId } from '../config/servers.js';
 import type { DomainResolutionInput } from '../governedWorkflow/resolvers/domain.js';
 import type { GitRegistryDomainEvidence } from '../github/registry.js';
-import { applyFreshness } from './reconcile.js';
 import type { LiveStateSnapshot } from './types.js';
 
 /**
@@ -15,12 +15,21 @@ import type { LiveStateSnapshot } from './types.js';
  * certificate. Nothing is bound or changed.
  */
 export const SERVED_DOMAINS_MAX = 1000;
-// Plesk status 0 is active; htype 'none' is a domain without web service.
-export const SERVED_DOMAINS_COMMAND = "plesk db -Ne \"SELECT name FROM domains WHERE status = 0 AND htype <> 'none' UNION SELECT name FROM domain_aliases WHERE status = 0 AND web = 'true'\"";
+// Plesk status 0 is active, for the domain and for its subscription (webspace);
+// htype 'none' is a domain without web service. An alias is served only while its domain is.
+export const SERVED_DOMAINS_COMMAND = "plesk db -Ne \"SELECT d.name FROM domains d WHERE d.status = 0 AND d.webspace_status = 0 AND d.htype <> 'none' UNION SELECT a.name FROM domain_aliases a JOIN domains d ON d.id = a.dom_id WHERE a.status = 0 AND a.web = 'true' AND d.status = 0 AND d.webspace_status = 0 AND d.htype <> 'none'\"";
 export const SERVED_DOMAIN_SERVERS: readonly ServerId[] = ['s1', 's2'];
 
 // Plesk keeps names in their ASCII (Punycode) form; a TLD may itself be Punycode.
 const DOMAIN = /^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:[a-z]{2,63}|xn--[a-z0-9-]{1,59})$/;
+
+/** A Punycode label must be real IDNA: it converts to Unicode and back unchanged. */
+function validDomain(domain: string): boolean {
+  if (!DOMAIN.test(domain)) return false;
+  if (!domain.split('.').some((label) => label.startsWith('xn--'))) return true;
+  const unicode = domainToUnicode(domain);
+  return unicode !== '' && domainToASCII(unicode) === domain;
+}
 
 export type ServedDomainInventory = {
   status: 'CURRENT' | 'UNAVAILABLE';
@@ -49,7 +58,7 @@ export function parseServedDomainInventory(stdout: string, observedAt: string): 
   for (const entry of entries) {
     const wildcard = entry.startsWith('*.');
     const domain = (wildcard ? entry.slice(2) : entry).toLowerCase();
-    if (!DOMAIN.test(domain)) return unavailableServedDomainInventory(observedAt);
+    if (!validDomain(domain)) return unavailableServedDomainInventory(observedAt);
     if (!wildcard) domains.add(domain);
   }
   return { status: 'CURRENT', observedAt, domains: [...domains].sort() };
@@ -92,16 +101,19 @@ export function liveStateDomainObservation(
   if (!(SERVED_DOMAIN_SERVERS as readonly string[]).includes(id)) return null;
   const inventory = snapshot.servedDomains?.[id as ServerId];
   if (!inventory) return null;
-  const reconciledAt = Date.parse(snapshot.lastReconciledAt);
-  if (!Number.isFinite(reconciledAt)) return null;
-  const observedAt = new Date(reconciledAt).toISOString();
+  // Each server's inventory ages from its own read, not from the snapshot that carries it.
+  const readAt = Date.parse(inventory.observedAt);
+  if (!Number.isFinite(readAt)) return null;
+  const observedAt = new Date(readAt).toISOString();
   if (inventory.status !== 'CURRENT') {
     return { available: false, freshness: 'UNKNOWN', observedAt, serverId: id, domains: [] };
   }
+  const maxAgeSeconds = Number.isFinite(snapshot.maxAgeSeconds) ? snapshot.maxAgeSeconds : 60;
+  const stale = (now.getTime() - readAt) / 1000 > maxAgeSeconds;
   const evidenceRef = `live_state:state_version:${Number.isSafeInteger(snapshot.stateVersion) ? snapshot.stateVersion : 'unknown'}:vhost`;
   return {
     available: true,
-    freshness: applyFreshness(snapshot, now).freshness === 'STALE' ? 'STALE' : 'CURRENT',
+    freshness: stale ? 'STALE' : 'CURRENT',
     observedAt,
     serverId: id,
     domains: inventory.domains.slice(0, SERVED_DOMAINS_MAX).map((domain) => ({ domain, verified: true, evidenceRef }))

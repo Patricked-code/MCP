@@ -28,6 +28,12 @@
   - Un site suspendu ou désactivé garde son répertoire `system/<domaine>` : la présence du répertoire ne prouve pas qu'il est servi. L'inventaire lit désormais les enregistrements Plesk (`plesk db`) : domaines au statut actif (`status = 0`) avec un service web (`htype <> 'none'`), et alias web actifs. Cela couvre aussi les alias du round précédent. Les sous-domaines wildcard (`*.`) sont exclus.
   - Les noms internationalisés sont acceptés sous leur forme Punycode, TLD Punycode compris (`xn--…`).
   - **À vérifier** sur S1 et S2 après le déploiement : que `plesk db` est disponible pour l'utilisateur SSH en lecture seule. Sinon l'inventaire est `UNAVAILABLE` et C5 reste `UNVERIFIED`, comme avant cette PR (échec fermé).
+- **Quatrième round Codex (quatre constats).**
+  - Corrigés :
+    - un domaine n'est servi que si son abonnement l'est aussi (`webspace_status = 0`) ; un alias seulement si son domaine l'est ;
+    - les labels Punycode sont validés par aller-retour IDNA (`domainToUnicode`/`domainToASCII`), et un faux label rend l'inventaire indisponible ;
+    - chaque inventaire vieillit depuis sa propre lecture (`observedAt`), pas depuis la réconciliation du snapshot.
+  - **Limite connue** : l'alias `www.` généré par Plesk n'est pas inventorié. Une déclaration `www.<domaine>` reste `DOMAIN_DECLARATION_UNOBSERVED`, donc `UNVERIFIED` : un faux négatif fermé, jamais un faux positif.
 - **Aucune écriture S1** : aucun binding, certificat ou DNS n'est créé ou modifié.
 - **NEXT_ACTION** : PR draft, CI verte, revue, fusion, Governed Deploy et attestation ; ensuite l'incrément 2 de F-04 (backup et bind-domain consentis).
 
