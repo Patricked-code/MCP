@@ -531,19 +531,25 @@ existante : `/provisioning/project-runtime`, derrière la connexion web
   lié à la session et à la cible exacte, et des valeurs explicites. Création
   et activation restent séparées (`src/provisioning/consent.ts`).
 - **Admission de la révision.** Juste avant toute écriture, la révision doit
-  appartenir à l'historique revu de la branche par défaut, avec une CI ni en
-  échec ni en cours (`src/provisioning/revisionAdmission.ts`).
+  appartenir à l'historique revu de la branche officielle que nomme son
+  mapping GitRegistry (règle `OFFICIAL_BRANCH` de D1), jamais seulement de la
+  branche par défaut, avec une CI ni en échec ni en cours
+  (`src/provisioning/revisionAdmission.ts`).
 - **Cible résolue.** Le ticket lie aussi le dépôt, le chemin et le projet
   Compose que la page a nommés. L'exécuteur refuse si son plan frais en
   résout d'autres.
 - **Autorités relues avant toute écriture.**
   - La règle `DEPLOY` de GitRegistry, partagée avec D1.
-  - La Governed Task Queue et le Governed Lock Service : un travail réservé
-    ou verrouillé sur le composant refuse.
-  - L'archive, bornée avant extraction.
+  - La Governed Task Queue et le Governed Lock Service, lus avant le job puis
+    de nouveau juste avant chaque écriture sur l'hôte : un travail réservé ou
+    verrouillé sur le composant refuse le job, ou l'arrête avant l'écriture
+    suivante.
+  - L'archive, bornée avant extraction, et les planchers de capacité, mesurés
+    sur chaque système de fichiers écrit (parent de la cible, quarantaine).
 - **Checkout vérifié.** La création enregistre l'empreinte de l'arbre dans le
   marqueur ; l'activation la recalcule avant tout démarrage et refuse un
-  checkout modifié.
+  checkout modifié. Une entrée spéciale ou un lien physique fait échouer
+  l'empreinte.
 - **Câblage.** L'inventaire est lu en lecture seule sur S1 et les écritures
   passent par le canal S1 gardé. Le mode écriture du serveur reste requis
   (`src/provisioning/wiring.ts`).

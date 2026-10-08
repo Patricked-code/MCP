@@ -10,7 +10,7 @@
 - **Push.** GitHub a d'abord refusé la mise à jour de la branche (« Internal Server Error », même sans nouvel objet). Le push a réussi au deuxième essai, sans contourner la politique du proxy.
 - **Livré (incrément 3).**
   - `src/provisioning/consent.ts` : consentement E3 du contrat `PROJECT_RUNTIME`, création et activation séparées, ticket lié à la session et à la cible exacte.
-  - `src/provisioning/revisionAdmission.ts` : admission de la révision, généralisée du Governed Deploy (historique revu de la branche par défaut, CI ni en échec ni en cours ; sans aucune CI, admission manuelle par le consentement).
+  - `src/provisioning/revisionAdmission.ts` : admission de la révision, généralisée du Governed Deploy (historique revu de la branche officielle du mapping, CI ni en échec ni en cours ; sans aucune CI, admission manuelle par le consentement).
   - `src/provisioning/runtimeExecutor.ts` :
     - admission relue avant toute écriture, y compris pour activer un runtime créé plus tôt ;
     - aperçu en lecture seule ;
@@ -69,13 +69,21 @@
   - Empreinte : un FIFO, socket ou périphérique dans le checkout fait échouer l'empreinte.
   - Profils : non reproduit. Compose v5.1.1 et v2.38.2 retirent du modèle les services d'un profil inactif ; ils ne comptent donc pas dans les conteneurs attendus.
   - Stockage des builds : plancher de 10 Gio libres sur le stockage Docker avant l'activation (`docker_capacity`). Une borne stricte par build relève de la configuration du démon : **décision propriétaire**, comme les entrées des builds.
+- **Huitième revue Codex (quatre constats, corrigés).**
+  - Coordination : la Task Queue et les verrous sont relus juste avant chaque écriture sur l'hôte (préparation, promotion, activation), plus seulement avant l'admission et le téléchargement. Un travail réservé ou verrouillé entre-temps arrête le job avant l'écriture suivante (`BLOCKED`), sans défaire ce qui est déjà créé ; une préparation non promue est mise en quarantaine. Le Lock Service n'accorde de verrou qu'à une Governed Session : un opérateur web n'en a pas, d'où une relecture au plus près plutôt qu'un verrou tenu (voir DECISIONS_LOG).
+  - Branche officielle : la révision est admise depuis la branche que nomme le mapping GitRegistry (règle `OFFICIAL_BRANCH` de D1), jamais depuis la seule branche par défaut (`REVISION_NOT_ON_OFFICIAL_BRANCH`).
+  - Liens physiques : un fichier à plusieurs liens fait échouer l'empreinte, donc l'activation et `NO_OP`.
+  - Capacité : les planchers (2 Gio, 200 000 inodes) sont mesurés sur le système de fichiers du parent de la cible et sur celui de la quarantaine, au plus proche dossier existant.
 - **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
 - **Preuves.**
   - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.
   - RED de la troisième revue `8e36322` : 12 tests en échec (analyse du fichier, listes de clés, réseau partagé, scripts et parcours).
   - CI exact-head de la seconde revue : `3f1098b`, run `37673610028` (#2294), verte.
-  - GREEN local : typecheck, build et gates verts ; suite complète 980/980 (968 avant les revues). Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
-- **NEXT_ACTION** : CI exact-head de la PR #261, merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
+  - CI exact-head des revues suivantes, toutes vertes : `372d5f3` run `37680073334` (#2296) ; `dd7746e` run `37703798530` (#2297) ; `c6f8921` run `37705027955` (#2298) ; `cbd93f9` run `37706373960` (#2299) ; `1268e1b` run `37707609873` (#2300).
+  - RED de la huitième revue `f7f3296` : 8 tests en échec (relecture de la coordination, liens physiques, capacité, branche officielle).
+  - GREEN local après la huitième revue : typecheck, build et gates verts ; suite complète 984/984 (968 avant les revues), tests de l'exécuteur verts aussi avec Compose v2.38.2. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
+- **En attente du propriétaire** (deux fils de revue ouverts) : politique des entrées des builds (recommandation : `FROM` épinglés et `build.pull` refusé, plus enregistrement et attestation des images construites) et borne stricte du stockage des builds (configuration du démon Docker sur S1).
+- **NEXT_ACTION** : CI exact-head de la PR #261 et nouvelle revue Codex ; décisions du propriétaire puis leur mise en œuvre ; merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 — GREEN candidate
 

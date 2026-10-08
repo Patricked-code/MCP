@@ -83,6 +83,27 @@ export function buildParentGuardLines(target: string, root = GOVERNED_ROOT, onFa
   ];
 }
 
+/**
+ * The capacity floors, held on every filesystem a job writes: the target's
+ * resolved parent, where the archive is extracted, and the quarantine, where a
+ * move across filesystems copies. A directory not created yet is measured on
+ * its nearest existing ancestor. Runs after the parent guard sets real_parent.
+ */
+export function buildCapacityLines(quarantineRoot = PROVISIONING_QUARANTINE_ROOT): string[] {
+  if (!/^\/[A-Za-z0-9._/-]{1,300}$/.test(quarantineRoot) || quarantineRoot.split('/').includes('..')) {
+    throw new Error('PROVISIONING_QUARANTINE_ROOT_INVALID');
+  }
+  return [
+    'existing_dir() { d="$1"; while [ ! -d "$d" ]; do d="$(dirname "$d")"; done; printf \'%s\' "$d"; }',
+    `for fs in "$(existing_dir "$real_parent")" "$(existing_dir ${shellQuote(quarantineRoot)})"; do`,
+    `  avail="$(df -Pk "$fs" | awk 'NR==2 {print $4}')"`,
+    `  [ "$avail" -ge ${MIN_FREE_KIB} ] 2>/dev/null || fail host_capacity`,
+    `  inodes="$(df -Pi "$fs" | awk 'NR==2 {print $4}')"`,
+    `  [ "$inodes" -ge ${MIN_FREE_INODES} ] 2>/dev/null || fail host_inodes`,
+    'done'
+  ];
+}
+
 /** Bounds of an archive's expanded content, checked before any extraction. */
 export const PROVISIONING_ARCHIVE_LIMITS = Object.freeze({ maxEntries: 100_000, maxBytes: 1024 * 1024 * 1024 });
 
@@ -259,10 +280,7 @@ export function buildStageScript(input: { jobId: string; target: ProjectRuntimeT
     // Failed jobs keep their files, never deleted: a bounded quarantine and a capacity floor keep the host whole.
     `q="$(ls -A ${shellQuote(PROVISIONING_QUARANTINE_ROOT)} 2>/dev/null | wc -l | tr -d ' ')"`,
     `[ "\${q:-0}" -lt ${MAX_QUARANTINED} ] 2>/dev/null || fail quarantine_full`,
-    `avail="$(df -Pk /opt/apps | awk 'NR==2 {print $4}')"`,
-    `[ "$avail" -ge ${MIN_FREE_KIB} ] 2>/dev/null || fail host_capacity`,
-    `inodes="$(df -Pi /opt/apps | awk 'NR==2 {print $4}')"`,
-    `[ "$inodes" -ge ${MIN_FREE_INODES} ] 2>/dev/null || fail host_inodes`,
+    ...buildCapacityLines(),
     `[ -f ${shellQuote(archive)} ] || fail archive_missing`,
     `[ "$(sha256sum ${shellQuote(archive)} | cut -d' ' -f1)" = ${shellQuote(input.archiveSha256)} ] || fail archive_digest`,
     ...buildArchiveBoundsLines(archive, PROVISIONING_ARCHIVE_LIMITS),
@@ -515,8 +533,8 @@ export type ProjectRuntimeExecutionDependencies = {
   observe: (targets: ProvisioningInventoryTarget[]) => Promise<ProvisionedRuntimeInventory>;
   /** The coordination authorities, read afresh before any write; null when they cannot be read. */
   readCoordination: () => Promise<ProvisioningCoordination | null>;
-  /** The admission of the exact revision, read afresh from GitHub before any write. */
-  admitRevision: (input: { repositoryId: string; revision: string }) => Promise<RevisionAdmission>;
+  /** The admission of the exact revision on the mapping's official branch, read afresh from GitHub before any write. */
+  admitRevision: (input: { repositoryId: string; revision: string; branch: string }) => Promise<RevisionAdmission>;
   fetchSource: (input: { repositoryId: string; revision: string; destination: string }) => Promise<
     { ok: boolean; sha256?: string | null; bytes?: number }
   >;
@@ -638,6 +656,8 @@ function refused(reasonCodes: readonly string[], result: ProjectRuntimeExecution
 /** The resolved target a consent named: a run refuses if the fresh plan resolves another one. */
 export type ProvisioningConsentedTarget = Readonly<{ repositoryId: string; serverPath: string; composeProject: string }>;
 
+type CoordinationRefusal = 'COORDINATION_UNAVAILABLE' | 'TARGET_LOCKED' | 'TARGET_CLAIMED_BY_TASK';
+
 export type ProjectRuntimeExecutionInput = {
   request: unknown;
   consent: { creation: boolean; activation: boolean };
@@ -683,19 +703,30 @@ async function execute(
   ) {
     return refused(['TARGET_CHANGED_SINCE_CONSENT'], 'REFUSED', target);
   }
-  // Work claimed or locked on this component is never overtaken: the coordination authorities stay
-  // mandatory before any write (UAC), and what cannot be read refuses.
-  const coordination = await deps.readCoordination().catch(() => null);
-  if (!coordination || coordination.complete !== true) return refused(['COORDINATION_UNAVAILABLE'], 'REFUSED', target);
+  // Work claimed or locked on this component is never overtaken (UAC): the coordination authorities are
+  // read before the job starts and again immediately before every host write, so no GitHub call or download
+  // sits between the last read and a write. What cannot be read refuses.
   const component = { repositoryId: target.repositoryId, mappingId: target.mappingId };
-  if (coordination.locks.some((lock) => scopeCoversProjectComponent(lock.scope, component) || lock.projectId === target.projectId)) {
-    return refused(['TARGET_LOCKED'], 'REFUSED', target);
-  }
-  if (coordination.tasks.some((task) => task.resourceScopes.some((scope) => scopeCoversProjectComponent(scope, component)))) {
-    return refused(['TARGET_CLAIMED_BY_TASK'], 'REFUSED', target);
-  }
-  // The revision is admitted afresh before any write, even for a runtime created by an earlier job.
-  const admission = await deps.admitRevision({ repositoryId: target.repositoryId, revision: target.revision }).catch(() => null);
+  const collision = (read: ProvisioningCoordination | null): CoordinationRefusal | null => {
+    if (!read || read.complete !== true) return 'COORDINATION_UNAVAILABLE';
+    if (read.locks.some((lock) => scopeCoversProjectComponent(lock.scope, component) || lock.projectId === target.projectId)) {
+      return 'TARGET_LOCKED';
+    }
+    if (read.tasks.some((task) => task.resourceScopes.some((scope) => scopeCoversProjectComponent(scope, component)))) {
+      return 'TARGET_CLAIMED_BY_TASK';
+    }
+    return null;
+  };
+  const initial = await deps.readCoordination().catch(() => null);
+  const initialCollision = collision(initial);
+  if (initialCollision || !initial) return refused([initialCollision ?? 'COORDINATION_UNAVAILABLE'], 'REFUSED', target);
+  let coordination: ProvisioningCoordination = initial;
+  // The revision is admitted afresh before any write, even for a runtime created by an earlier job, and only
+  // from the official branch the mapping names.
+  const branch = plan.governance?.officialBranch ?? null;
+  const admission = branch === null
+    ? null
+    : await deps.admitRevision({ repositoryId: target.repositoryId, revision: target.revision, branch }).catch(() => null);
   if (!admission?.admitted || (admission.kind !== 'CI_GATE' && admission.kind !== 'MANUAL_CONSENT')) {
     const reasonCode = admission && admission.reasonCode !== 'REVISION_ADMITTED' ? admission.reasonCode : 'REVISION_ADMISSION_UNAVAILABLE';
     return refused([reasonCode], 'REFUSED', target);
@@ -716,6 +747,14 @@ async function execute(
     } catch {
       return new Map([['result', 'failed'], ['reason', 'host_unavailable']]);
     }
+  };
+
+  /** The last coordination read before a host write; a collision found then blocks that write. */
+  const recheck = async (): Promise<CoordinationRefusal | null> => {
+    const read = await deps.readCoordination().catch(() => null);
+    const found = collision(read);
+    if (!found && read) coordination = read;
+    return found;
   };
 
   const finish = async (result: ProjectRuntimeExecutionResult, reasonCodes: string[]): Promise<ProjectRuntimeExecution> => {
@@ -817,6 +856,11 @@ async function execute(
     archiveSha256 = fetched.sha256;
     steps.push({ id: 'fetch-source', status: 'DONE' });
 
+    const beforeStage = await recheck();
+    if (beforeStage) {
+      steps.push({ id: 'backup', status: 'BLOCKED' });
+      return finish('BLOCKED', [beforeStage]);
+    }
     const staged = await host('stage', buildStageScript({ jobId, target, archiveSha256 }));
     if (staged.get('result') !== 'staged') {
       steps.push({ id: 'backup', status: 'FAILED' });
@@ -851,6 +895,12 @@ async function execute(
       await discard();
       return finish('FAILED', ['MARKER_RECORD_UNWRITTEN']);
     }
+    const beforeCreate = await recheck();
+    if (beforeCreate) {
+      steps.push({ id: 'create-runtime', status: 'BLOCKED' });
+      await discard();
+      return finish('BLOCKED', [beforeCreate]);
+    }
     const created = await host('create', buildCreateScript(markerInput));
     if (created.get('result') !== 'created') {
       steps.push({ id: 'create-runtime', status: 'FAILED' });
@@ -877,6 +927,12 @@ async function execute(
     replicas = marker.replicas;
   }
 
+  // A creation stopped here keeps its checkout, as a creation alone leaves it; nothing starts.
+  const beforeActivate = await recheck();
+  if (beforeActivate) {
+    steps.push({ id: 'activate', status: 'BLOCKED' });
+    return finish('BLOCKED', [beforeActivate]);
+  }
   const labelsOverride = provisioningLabelsOverride(services, {
     repositoryId: target.repositoryId,
     revision: target.revision,

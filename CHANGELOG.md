@@ -3,7 +3,7 @@
 ## 2026-10-07 — W3 F.2 Project runtime provisioning, incrément 3 (candidate)
 
 - Surface consentie `/provisioning/project-runtime`, derrière la connexion web. Elle offre un plan en lecture seule, une soumission sous consentement E3 et une page de statut. Le consentement exige une origine identique et un ticket lié à la session et à la cible exacte ; création et activation sont séparées. Rien ne s'exécute sans `ENABLE_WRITE_TOOLS` ni cible configurée.
-- Admission de la révision avant toute écriture : historique revu de la branche par défaut et CI ni en échec ni en cours (`src/provisioning/revisionAdmission.ts`).
+- Admission de la révision avant toute écriture : historique revu de la branche officielle du mapping et CI ni en échec ni en cours (`src/provisioning/revisionAdmission.ts`).
 - Câblage de production de l'exécuteur (`src/provisioning/wiring.ts`). Les noms de la cible ne figurent plus sur les lignes `docker compose`.
 - `.mcp/provisioning-contracts.json` : la route est classée et rend le runtime de projet provisionnable.
 - Après revue :
@@ -31,6 +31,7 @@
 - Après la cinquième revue : réplicas bornés, images épinglées par empreinte, `NO_OP` vérifié par l'empreinte du checkout, propriétaire et groupe dans l'empreinte.
 - Après la sixième revue : marqueur de confiance enregistré dans les données du job ; réseaux conservés bloquants ; réplicas attendus vérifiés ; IPAM par défaut ; plancher de capacité et quarantaine bornée.
 - Après la septième revue : noms réservés refusés ; parents de la cible résolus avant chaque écriture ; rollback sans recharger un fichier modifié ; entrées spéciales refusées par l'empreinte ; plancher de stockage Docker.
+- Après la huitième revue : Task Queue et verrous relus juste avant chaque écriture sur l'hôte ; révision admise depuis la branche officielle du mapping ; liens physiques refusés par l'empreinte ; capacité mesurée sur le parent de la cible et sur la quarantaine.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
 

@@ -157,12 +157,15 @@ export const PROVISIONING_LABELS_FILE = '.mcp-provisioning.labels.json';
  * recomputes it first, so a checkout edited since its creation never starts
  * under the revision it claims. Each step is captured and checked on its own,
  * so a file that vanishes or fails to read fails the digest instead of
- * digesting a partial tree: no pipeline status is ever trusted.
+ * digesting a partial tree: no pipeline status is ever trusted. A FIFO,
+ * socket or device fails it too, and so does a hard link: a checkout from a
+ * Git archive has none, and two names of one file change together.
  */
 export const PROVISIONING_TREE_DIGEST_SHELL = String.raw`tree_digest() {
   [ -d "$1" ] || return 1
   [ -z "$(find "$1" ! -readable -print -quit 2>/dev/null)" ] || return 1
   [ -z "$(find "$1" ! -type f ! -type d ! -type l -print -quit 2>/dev/null)" ] || return 1
+  [ -z "$(find "$1" ! -type d -links +1 -print -quit 2>/dev/null)" ] || return 1
   td_files="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${PROVISIONING_LABELS_FILE}' \) -prune -o -type f -exec sha256sum -- {} +)" || return 1
   td_modes="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${PROVISIONING_LABELS_FILE}' \) -prune -o \( -type f -o -type d \) -printf '%y %m %U %G %p\n')" || return 1
   td_links="$(cd "$1" && find . -type l -exec sh -c 'for l do t="$(readlink -- "$l")" || exit 1; printf "%s %s\n" "$(printf "%s" "$l" | sha256sum | cut -d" " -f1)" "$(printf "%s" "$t" | sha256sum | cut -d" " -f1)"; done' tree-link {} +)" || return 1
@@ -481,7 +484,8 @@ export type ProjectRuntimeProvisioningPlan = Readonly<{
   mode: ProjectRuntimeExecutionMode | null;
   reasonCodes: readonly ProjectRuntimeReasonCode[];
   target: ProjectRuntimeTarget | null;
-  governance: Readonly<{ backupRequired: boolean; rollbackMethod: string | null }> | null;
+  /** What D1 declares for the mapping: its backup, its rollback method and the official branch a revision is admitted from. */
+  governance: Readonly<{ backupRequired: boolean; rollbackMethod: string | null; officialBranch: string | null }> | null;
   steps: ReadonlyArray<Readonly<{ id: (typeof PROJECT_RUNTIME_STEP_IDS)[number]; state: ProjectRuntimeStepState }>>;
   authorizationInferred: false;
   mutationPerformed: false;
@@ -581,7 +585,8 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
   // The contract always backs up before a creation; D1 can only add its rollback method.
   const governance = Object.freeze({
     backupRequired: declared?.backupRequired ?? true,
-    rollbackMethod: declared?.rollbackMethod ?? null
+    rollbackMethod: declared?.rollbackMethod ?? null,
+    officialBranch: declared?.officialBranch ?? null
   });
   // The registry's own deployment rule (D1): a mapping it does not let deploy is never provisioned.
   // The server is the configured S1 binding the MCP itself observes.

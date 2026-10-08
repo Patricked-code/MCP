@@ -181,7 +181,7 @@ test('gaps are carried by open program blueprints; F.2 makes the project runtime
   }
   const route = current.primitives.find((entry: any) => entry.name === 'POST /provisioning/project-runtime');
   assert.deepEqual([route.kind, route.class, route.resourceTypes], ['HTTP_ROUTE', 'COMPOSABLE', ['PROJECT_RUNTIME']]);
-  for (const guard of [/E3/, /ENABLE_WRITE_TOOLS/, /targetProjectIds/, /default branch/]) {
+  for (const guard of [/E3/, /ENABLE_WRITE_TOOLS/, /targetProjectIds/, /official branch the mapping names/, /immediately before every host write/]) {
     assert.ok(route.guards.some((entry: string) => guard.test(entry)), String(guard));
   }
   assert.deepEqual(carriers('DOMAIN_BINDING', 'observe-binding'), ['TB-W3-F-04', 'TB-W4-I1-01']);

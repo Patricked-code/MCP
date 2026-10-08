@@ -14,7 +14,7 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
 
   Le verdict fantôme du Scoped WRITE Gate (session gouvernée, verrous, reçu) est propre au transport MCP : il n'a pas de sens pour une requête web.
 - **Admission de la révision, généralisée du Governed Deploy.**
-  - La révision doit appartenir à l'historique revu de la branche par défaut, avec une CI ni en échec ni en cours ; tout est lu en entier.
+  - La révision doit appartenir à l'historique revu de la branche officielle de son mapping (depuis la huitième revue ; auparavant la branche par défaut), avec une CI ni en échec ni en cours ; tout est lu en entier.
   - Sans aucune CI, le consentement explicite vaut admission manuelle, comme le dispatch manuel du Governed Deploy.
   - L'admission est relue juste avant toute écriture, y compris pour activer un runtime créé plus tôt. Ce qui est illisible refuse.
 - **Un job long ne bloque pas la requête.** La réponse attend 25 s au plus, puis renvoie vers la page de statut. Le job continue et reste attesté dans son dossier.
@@ -66,6 +66,11 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
   - **Le rollback ne charge pas un fichier non vérifié.** Sans empreinte intacte, l'arrêt passe par les labels des conteneurs.
   - **Seuls fichiers, dossiers et liens.** Tout autre type d'entrée fait échouer l'empreinte.
   - **Quota des builds : décision propriétaire.** Un plancher protège l'hôte ; une borne stricte demande une configuration du démon Docker hors de ce dépôt.
+- **Après la huitième revue de la PR #261 :**
+  - **Coordination relue au plus près de chaque écriture.** Le Governed Lock Service n'accorde un verrou qu'à une Governed Session, liée au transport MCP d'un agent ; un opérateur web n'en a pas, et en fabriquer une pour le job créerait une autorité parallèle. La Task Queue et les verrous sont donc relus juste avant chaque écriture sur l'hôte (préparation, promotion, activation) : aucun appel GitHub ni téléchargement ne s'intercale plus entre la dernière lecture et l'écriture. Un travail réservé entre deux écritures arrête le job avant la suivante (`BLOCKED`). Le rollback et l'abandon de la préparation, qui ne défont que ce que le job a fait, ne sont jamais bloqués. Limite assumée : une réservation prise pendant une écriture en cours n'est vue qu'à l'écriture suivante ; la tenir pendant tout le job demandera qu'un opérateur web agisse sous une Governed Session (Cockpit, PB-K).
+  - **Branche officielle de D1.** La révision est admise depuis la branche que nomme le mapping (règle `OFFICIAL_BRANCH`), jamais depuis la seule branche par défaut du dépôt : une autre ligne de version n'est pas admise.
+  - **Pas de lien physique.** Une archive Git n'en contient aucun ; deux noms d'un même fichier changent ensemble, ce qu'aucune empreinte de contenu ou de mode ne montre. Un lien physique fait donc échouer l'empreinte.
+  - **Capacité là où le job écrit.** Les planchers sont mesurés sur le système de fichiers du parent de la cible et sur celui de la quarantaine, qu'un déplacement entre systèmes de fichiers copie.
 
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
 

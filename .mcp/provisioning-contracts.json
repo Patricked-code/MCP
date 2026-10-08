@@ -632,9 +632,9 @@
         "ENABLE_WRITE_TOOLS server switch, never a consent",
         "server target declared in .mcp/server-map.json (servers.S1.targetProjectIds) and a single governed GitRegistry path under /opt/apps",
         "fresh re-observation and re-plan before any write: a positive NO_RUNTIME, a matching runtime is a no-op, anything else blocks",
-        "revision admitted afresh: reviewed default branch history and a non-failing CI gate",
+        "revision admitted afresh: reviewed history of the official branch the mapping names (D1 OFFICIAL_BRANCH) and a non-failing CI gate",
         "GitRegistry DEPLOY rule shared with D1: declared deploy capability, deployable status and READY activation",
-        "Governed Task Queue and Lock Service re-read before any write: work claimed or locked on the component refuses",
+        "Governed Task Queue and Lock Service read before the job and again immediately before every host write: work claimed or locked on the component refuses or stops it",
         "guarded S1 channel only, one job at a time, non-destructive rollback and an attestation per job"
       ],
       "note": "F.2 (TB-W3-F-03): the consented surface of the target-bounded executor of src/provisioning/runtimeExecutor.ts."
