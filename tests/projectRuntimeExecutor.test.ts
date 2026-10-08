@@ -368,6 +368,14 @@ test('host scripts quote every value, verify before extracting and never delete'
   assert.ok(activate!.indexOf('docker_capacity') > 0 && activate!.indexOf('docker_capacity') < activate!.indexOf('up -d'));
   // A rollback loads the compose file only when the checkout is still the one it digested; otherwise it stops by label.
   assert.ok(rollback!.indexOf('tree_digest') < rollback!.indexOf('docker compose') && /docker stop/.test(rollback!));
+  // A container stopped by label keeps no restart policy: a daemon restart never brings it back.
+  assert.ok(rollback!.indexOf('docker update --restart=no') > 0 && rollback!.indexOf('docker update --restart=no') < rollback!.indexOf('docker stop'));
+  // A bind source missing from the checkout is never created by Docker after the digest: promotion and activation refuse it.
+  const binds = buildCreateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'], bindSources: ['data'] });
+  assert.ok(binds.indexOf('bind_source_missing') > 0 && binds.indexOf('bind_source_missing') < binds.indexOf('mv '));
+  const activateBinds = buildActivateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE, bindSources: ['data'] });
+  assert.ok(activateBinds.indexOf('bind_source_missing') > 0 && activateBinds.indexOf('bind_source_missing') < activateBinds.indexOf('up -d'));
+  assert.match(binds, /'\/opt\/apps\/portal-api\.mcp-staging-[^']+\/data'/);
   // Only the component's own compose project counts: another component of the same repository never blocks it.
   assert.doesNotMatch(stage!, /provisioning\.repository/);
   assert.match(stage!, /label=com\.docker\.compose\.project=mcp-portal-0123456789ab/);
@@ -766,6 +774,24 @@ test('the tree digest ignores the provisioning files and changes with any conten
     await unlink(join(directory, 'twin.txt'));
     await writeFile(join(directory, 'twin.txt'), 'alpha\n');
     assert.equal(digest('sh'), twin);
+    // A file capability changes what a file may do, with the same content and mode: it changes the digest.
+    if (process.getuid?.() === 0 && spawnSync('setcap', ['cap_net_bind_service=ep', join(directory, 'run.sh')]).status === 0) {
+      assert.notEqual(digest('sh'), twin);
+      assert.equal(spawnSync('setcap', ['-r', join(directory, 'run.sh')]).status, 0);
+      assert.equal(digest('sh'), twin);
+    }
+    // An access control list is never digested as plain modes: the digest fails.
+    const shim = await mkdtemp(join(tmpdir(), 'mcp-f03-acl-'));
+    try {
+      await writeFile(join(shim, 'ls'), '#!/bin/sh\nprintf -- "-rw-r--r--+ 1 0 0 6 Oct  8 00:00 %s\\n" "$@"\n');
+      await chmod(join(shim, 'ls'), 0o755);
+      const acl = spawnSync('sh', ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory], {
+        encoding: 'utf8', env: { ...process.env, PATH: `${shim}:${process.env.PATH}` }
+      });
+      assert.notEqual(acl.status, 0);
+    } finally {
+      await rm(shim, { recursive: true, force: true });
+    }
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
@@ -951,6 +977,33 @@ test('the coordination authorities are read again immediately before every host 
   const activation = await run(existing, { activation: true });
   assert.deepEqual([activation.mode, activation.result, activation.reasonCodes], ['ACTIVATE', 'BLOCKED', ['TARGET_LOCKED']]);
   assert.deepEqual(hostPhases(existing), ['source', 'config']);
+});
+
+test('a rollback reads the coordination authorities again and never writes over newly claimed work', async () => {
+  const clear = Object.freeze({ complete: true, locks: [], tasks: [] });
+  const locked = Object.freeze({ complete: true, locks: [{ scope: `component:portal:${TARGET.mappingId}`, projectId: null }], tasks: [] });
+  const h = harness();
+  h.results.activate = 'result=unhealthy\nhealth=unhealthy\n';
+  let reads = 0;
+  h.deps.readCoordination = (async () => { reads += 1; return reads <= 4 ? clear : locked; }) as any;
+  const result = await run(h, { creation: true, activation: true });
+  assert.deepEqual([result.result, result.rollback, result.reasonCodes], ['FAILED', 'FAILED', ['HEALTH_CHECK_FAILED', 'TARGET_LOCKED']]);
+  assert.deepEqual(hostPhases(h), ['stage', 'config', 'create', 'activate']);
+  // Unclaimed, the same failure rolls back.
+  const free = harness();
+  free.results.activate = 'result=unhealthy\nhealth=unhealthy\n';
+  assert.deepEqual(hostPhases(free).length, 0);
+  assert.equal((await run(free, { creation: true, activation: true })).result, 'ROLLED_BACK');
+  assert.deepEqual(hostPhases(free), ['stage', 'config', 'create', 'activate', 'rollback']);
+});
+
+test('bind sources are named by the policy, relative to the project', () => {
+  const dir = '/opt/apps/portal-api';
+  const safety = evaluateComposeSafety(composeConfig(dir), dir) as any;
+  assert.equal(safety.ok, true);
+  assert.deepEqual(safety.bindSources, ['data']);
+  const odd = evaluateComposeSafety(composeConfig(dir, { volumes: [{ type: 'bind', source: `${dir}/da ta`, target: '/x' }] }), dir) as any;
+  assert.equal(odd.ok, false);
 });
 
 test('the capacity floors hold on the filesystems the job writes, not only on /opt/apps', async () => {
