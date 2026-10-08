@@ -6,19 +6,21 @@ import type { LiveStateSnapshot } from './types.js';
 
 /**
  * F-04 (TB-W3-F-04), observe-binding: Live State inventories, read-only, the
- * domains each managed server's Plesk serves and projects them as the C5
- * domain observation (GW-09). Plesk keeps one `system/<domain>` directory per
- * served domain, nested subscription domains included, so that level is read.
- * A failed, malformed or unbounded read stays unavailable and never becomes
- * an absence. A vhost proves a binding on the server, never DNS nor a
+ * names each managed server's Plesk actively serves and projects them as the
+ * C5 domain observation (GW-09). Plesk's own records are read rather than its
+ * directories: a suspended or disabled site keeps its files, and an alias has
+ * none. Only active web hosting or forwarding and active web aliases count. A
+ * failed, malformed or unbounded read stays unavailable and never becomes an
+ * absence. A served name proves a binding on the server, never DNS nor a
  * certificate. Nothing is bound or changed.
  */
 export const SERVED_DOMAINS_MAX = 1000;
-// No pipe: a missing or unreadable directory fails find itself, so the read fails.
-export const SERVED_DOMAINS_COMMAND = "find /var/www/vhosts/system -mindepth 1 -maxdepth 1 -type d -printf '%f\\n'";
+// Plesk status 0 is active; htype 'none' is a domain without web service.
+export const SERVED_DOMAINS_COMMAND = "plesk db -Ne \"SELECT name FROM domains WHERE status = 0 AND htype <> 'none' UNION SELECT name FROM domain_aliases WHERE status = 0 AND web = 'true'\"";
 export const SERVED_DOMAIN_SERVERS: readonly ServerId[] = ['s1', 's2'];
 
-const DOMAIN = /^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/;
+// Plesk keeps names in their ASCII (Punycode) form; a TLD may itself be Punycode.
+const DOMAIN = /^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:[a-z]{2,63}|xn--[a-z0-9-]{1,59})$/;
 
 export type ServedDomainInventory = {
   status: 'CURRENT' | 'UNAVAILABLE';
@@ -35,8 +37,8 @@ export function unavailableServedDomainInventory(observedAt: string): ServedDoma
 /**
  * Every entry must be exactly a domain, checked before any normalization:
  * anything else (padding, an empty name, a truncation marker) is unavailable.
- * Plesk's wildcard vhost directories (`_<domain>`) are deliberately excluded:
- * they configure a wildcard, not one served name.
+ * A wildcard subdomain (`*.<domain>`) is deliberately excluded: it configures a
+ * wildcard, not one served name.
  */
 export function parseServedDomainInventory(stdout: string, observedAt: string): ServedDomainInventory {
   if (typeof stdout !== 'string') return unavailableServedDomainInventory(observedAt);
@@ -45,8 +47,8 @@ export function parseServedDomainInventory(stdout: string, observedAt: string): 
   if (entries.length > SERVED_DOMAINS_MAX) return unavailableServedDomainInventory(observedAt);
   const domains = new Set<string>();
   for (const entry of entries) {
-    const wildcard = entry.startsWith('_');
-    const domain = (wildcard ? entry.slice(1) : entry).toLowerCase();
+    const wildcard = entry.startsWith('*.');
+    const domain = (wildcard ? entry.slice(2) : entry).toLowerCase();
     if (!DOMAIN.test(domain)) return unavailableServedDomainInventory(observedAt);
     if (!wildcard) domains.add(domain);
   }

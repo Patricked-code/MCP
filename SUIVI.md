@@ -12,7 +12,7 @@
   - `src/governedContext/github.ts` : `readDomainObservation` lit par défaut l'observation de Live State. C5 peut donc conclure `RESOLVED` ou `DOMAIN_NONE_CONFIRMED` au lieu de toujours rester `UNVERIFIED`.
   - Tests : `tests/servedDomainObservation.test.ts`. RED : module absent. GREEN : 5/5. La chaîne CI locale passe (typecheck, build, docs:check, governance, gwc:verify, readonly-safety à 1006 tests).
 - **Revue Codex de la PR #267 (cinq constats, tous vérifiés et corrigés).**
-  - L'inventaire lit `/var/www/vhosts/system/<domaine>`, le niveau par domaine de Plesk : les domaines imbriqués sous une souscription sont vus.
+  - L'inventaire lit le niveau par domaine de Plesk (d'abord `/var/www/vhosts/system/<domaine>`, puis ses enregistrements au troisième round) : les domaines imbriqués sous une souscription sont vus.
   - La commande n'a plus de pipe : un `find` en échec fait échouer la lecture au lieu de passer pour une absence.
   - Toute entrée qui n'est pas un domaine (marqueur de troncature compris) rend l'inventaire indisponible.
   - Un inventaire par serveur géré (S1 et S2) : un projet résolu sur S2 obtient aussi son observation.
@@ -21,9 +21,13 @@
 - **Second round Codex (quatre constats).**
   - Corrigés :
     - le nom brut est validé avant toute normalisation ;
-    - les répertoires wildcard Plesk `_<domaine>` sont exclus et ne sont plus pris pour une corruption ;
+    - les entrées wildcard sont exclues et ne sont plus prises pour une corruption ;
     - un projet qui ne déclare aucun domaine n'obtient aucune observation (`UNKNOWN`) : l'inventaire n'établit aucune propriété, donc aucun `DOMAIN_NONE_CONFIRMED` supposé.
-  - **Limite connue** : les alias Plesk (`ServerAlias`/`server_name`) ne sont pas inventoriés. Un domaine déclaré servi seulement comme alias reste `DOMAIN_DECLARATION_UNOBSERVED`, donc `UNVERIFIED` : un faux négatif fermé, jamais un faux positif. L'inventaire des alias revient à un incrément suivant de F-04.
+  - Les alias Plesk n'étaient pas inventoriés ; c'est résolu au troisième round.
+- **Troisième round Codex (deux constats, corrigés).**
+  - Un site suspendu ou désactivé garde son répertoire `system/<domaine>` : la présence du répertoire ne prouve pas qu'il est servi. L'inventaire lit désormais les enregistrements Plesk (`plesk db`) : domaines au statut actif (`status = 0`) avec un service web (`htype <> 'none'`), et alias web actifs. Cela couvre aussi les alias du round précédent. Les sous-domaines wildcard (`*.`) sont exclus.
+  - Les noms internationalisés sont acceptés sous leur forme Punycode, TLD Punycode compris (`xn--…`).
+  - **À vérifier** sur S1 et S2 après le déploiement : que `plesk db` est disponible pour l'utilisateur SSH en lecture seule. Sinon l'inventaire est `UNAVAILABLE` et C5 reste `UNVERIFIED`, comme avant cette PR (échec fermé).
 - **Aucune écriture S1** : aucun binding, certificat ou DNS n'est créé ou modifié.
 - **NEXT_ACTION** : PR draft, CI verte, revue, fusion, Governed Deploy et attestation ; ensuite l'incrément 2 de F-04 (backup et bind-domain consentis).
 

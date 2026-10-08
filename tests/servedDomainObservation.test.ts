@@ -30,11 +30,13 @@ function snapshot(servedDomains: unknown, reconciledAt = OBSERVED_AT) {
   } as any;
 }
 
-test('F-04 observe-binding: the inventory reads the per-domain Plesk level, read-only, without a pipe', () => {
+test('F-04 observe-binding: the inventory reads Plesk records of active served names, read-only', () => {
   assert.doesNotThrow(() => assertReadOnlyCommand(SERVED_DOMAINS_COMMAND));
-  // Nested subscription domains each have their own system/<domain> directory.
-  assert.match(SERVED_DOMAINS_COMMAND, /\/var\/www\/vhosts\/system /);
-  // A pipe would hide a failing find behind the exit status of its last stage.
+  // A suspended or disabled site keeps its directory: only Plesk's status says it is served.
+  assert.match(SERVED_DOMAINS_COMMAND, /FROM domains WHERE status = 0 AND htype <> 'none'/);
+  // An alias has no directory of its own; active web aliases are served names too.
+  assert.match(SERVED_DOMAINS_COMMAND, /FROM domain_aliases WHERE status = 0 AND web = 'true'/);
+  // No pipe: a failing read keeps its own exit status.
   assert.doesNotMatch(SERVED_DOMAINS_COMMAND, /\||2>/);
 });
 
@@ -49,9 +51,11 @@ test('F-04 observe-binding: parsing normalizes domains; any other entry makes th
   assert.equal(parseServedDomainInventory('example.com\n \n', OBSERVED_AT).status, 'UNAVAILABLE');
   assert.equal(parseServedDomainInventory('example.com\n\nother.example.com\n', OBSERVED_AT).status, 'UNAVAILABLE');
   assert.deepEqual(parseServedDomainInventory('', OBSERVED_AT), { status: 'CURRENT', observedAt: OBSERVED_AT, domains: [] });
-  // A Plesk wildcard vhost directory is excluded, not corruption.
-  assert.deepEqual(parseServedDomainInventory('_example.com\nexample.com\n', OBSERVED_AT).domains, ['example.com']);
-  assert.equal(parseServedDomainInventory('_bad_\n', OBSERVED_AT).status, 'UNAVAILABLE');
+  // A wildcard subdomain is excluded, not corruption.
+  assert.deepEqual(parseServedDomainInventory('*.example.com\nexample.com\n', OBSERVED_AT).domains, ['example.com']);
+  assert.equal(parseServedDomainInventory('*.bad_\n', OBSERVED_AT).status, 'UNAVAILABLE');
+  // Internationalized names are kept in Punycode, a Punycode TLD included.
+  assert.deepEqual(parseServedDomainInventory('example.xn--p1ai\nxn--80ak6aa92e.com\n', OBSERVED_AT).domains, ['example.xn--p1ai', 'xn--80ak6aa92e.com']);
 });
 
 test('F-04 observe-binding: an inventory over the bound is unavailable, never a partial absence', () => {

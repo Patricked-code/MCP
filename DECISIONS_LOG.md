@@ -8,6 +8,7 @@ Décision technique, déduite selon #221. Sources : l'étape `observe-binding` d
 - **Échec fermé.** Au-delà de 1000 entrées, en cas d'échec ou de sortie illisible, l'observation est indisponible : jamais une absence partielle.
 - **Portée.** L'observation ne vaut que pour un serveur géré (voir la révision après revue ci-dessous). Un vhost prouve le binding côté serveur, pas le DNS ni le certificat, qui restent du ressort des étapes suivantes.
 - **Après revue (PR #267).** L'inventaire couvre chaque serveur géré (S1 et S2) au niveau `system/<domaine>` de Plesk. L'observation transmise à C5 est restreinte aux domaines que GitRegistry déclare pour le projet sélectionné : un serveur partagé sert d'autres projets, dont les domaines ne sont ni des preuves ni des contradictions pour celui-ci.
+- **Source de l'inventaire (troisième round).** Les enregistrements Plesk remplacent les répertoires de vhost : un répertoire survit à la suspension d'un site et un alias n'en a pas. Seul le statut actif prouve qu'un nom est servi. C'est un écart assumé par rapport à « envelopper `list_domains_s1/s2` » du contrat `DOMAIN_BINDING` : ces outils listent des répertoires, qui ne suffisent pas à prouver un service actif. Un projet sans domaine déclaré n'obtient aucune observation, car l'inventaire n'établit pas qui possède un nom.
 
 ## 2026-10-07 — F.2 incrément 3 : surface consentie et câblage du provisioning d'un runtime de projet
 
