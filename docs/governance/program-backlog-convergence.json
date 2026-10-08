@@ -2621,7 +2621,6 @@
     },
     "currentReadyBlueprintIds": [
       "TB-W3-A3-02",
-      "TB-W3-F-03",
       "TB-W3-F-04",
       "TB-W3-PRW-01",
       "TB-W3-PRW-02",
@@ -6251,10 +6250,10 @@
       "runtimeRequired": true,
       "githubOnlyPossible": false,
       "readiness": {
-        "state": "READY",
+        "state": "DONE",
         "autoPromotable": true,
         "requiredExplicitGates": [],
-        "reason": "Dependency or explicit gate must be satisfied before runtime materialization."
+        "reason": "PR #261 exact-head CI, protected merge, governed deploy attested for the exact SHA and read-only OIDC probes are attested. The PROJECT_RUNTIME contract is provisionable through the consented surface /provisioning/project-runtime: E3 consent bound to the exact resolved target, revision admitted from the mapping's official branch with a non-failing CI gate, compose source parsed before Compose and model checked against reviewed allowlists, Dockerfile image inputs pinned by digest, coordination, admission and plan re-read before every host write, checkout, marker, images and live limits verified, non-destructive rollback and an attestation per job. Production stays inert while servers.S1.targetProjectIds is empty; S1-dependent limits are tracked in issue #262 (owner decision)."
       },
       "materialization": {
         "mode": "ON_DEMAND_AFTER_REOBSERVATION",
@@ -6285,6 +6284,59 @@
       "handoff": {
         "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
         "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      },
+      "completionEvidence": {
+        "pullRequest": 261,
+        "increments": [
+          259,
+          260,
+          261
+        ],
+        "surface": "/provisioning/project-runtime",
+        "modules": [
+          "src/provisioning/runtimeExecutor.ts",
+          "src/provisioning/composePolicy.ts",
+          "src/provisioning/dockerfilePolicy.ts",
+          "src/provisioning/revisionAdmission.ts",
+          "src/provisioning/consent.ts",
+          "src/provisioning/routes.ts",
+          "src/provisioning/wiring.ts",
+          "src/provisioning/projectRuntime.ts"
+        ],
+        "reviewRounds": 16,
+        "ownerDecisions": [
+          "build inputs: pinned Dockerfile images and attested built images (options 1 + 3)",
+          "build storage: 10 GiB floor only",
+          "merge after round 16 with S1-dependent known limits tracked in issue #262"
+        ],
+        "knownLimitsIssue": 262,
+        "redHeadSha": "85a2315",
+        "redCiRunId": 37642746277,
+        "redCiRunNumber": 2291,
+        "redExpectedFailures": 7,
+        "candidateHeadSha": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+        "prCiRunId": 37817615298,
+        "prCiRunNumber": 2309,
+        "testCount": 1001,
+        "mergeSha": "6576b5287f23566684005adf6032734e2ecdea50",
+        "mainCiRunId": 37817792888,
+        "mainCiRunNumber": 2310,
+        "governedDeployRunId": 37817792904,
+        "governedDeployRunNumber": 136,
+        "governedDeployRuntimeRevision": "6576b5287f23566684005adf6032734e2ecdea50",
+        "governedDeployAttestation": "Deployment attested for exact SHA 6576b52 (phase attested, healthOk, oauthOk, mcpAuthOk, rollback not_needed)",
+        "readOnlyAttestation": {
+          "mcpGitStatusRunId": 37818111681,
+          "dockerStatusRunId": 37818115270,
+          "transport": "github_oidc_mcp_readonly",
+          "mutationAllowed": false,
+          "note": "Both probes succeeded and validated sha and mutationAllowed=false; their artifact contents are not downloadable through this session's GitHub proxy."
+        },
+        "productionTargetsConfigured": 0,
+        "runtimeTasksCreated": 0,
+        "governedSessionsCreated": 0,
+        "runtimeLocksCreated": 0,
+        "observedAt": "2026-10-08T17:45:00Z"
       }
     },
     {
@@ -12959,5 +13011,18 @@
     "governedSessionsCreated": 0,
     "runtimeLocksCreated": 0,
     "serverMutations": 0
+  },
+  "w3F03ProvisioningHandoff": {
+    "status": "PASS_WITH_EVIDENCE",
+    "observedMainSha": "6576b5287f23566684005adf6032734e2ecdea50",
+    "blueprintId": "TB-W3-F-03",
+    "lotId": "F.2",
+    "delivered": [
+      "Consented web surface /provisioning/project-runtime (E3, same-origin ticket bound to session and exact resolved target)",
+      "Target-bounded executor: preflight, exact archive, parsed compose source, checked model and Dockerfiles, trusted marker, activation with health, checkout, marker and image verification, non-destructive rollback, attestation per job",
+      "PROJECT_RUNTIME contract provisionable; repositories and domain bindings stay carried by their blueprints"
+    ],
+    "knownLimits": "issue #262: per-service maxima, build resources, writable storage quota, archive permissions — to settle before the first S1 target",
+    "nextAction": "FIRST_COLLISION_FREE_IN_PROGRAM_ORDER after re-observing intakes and runtime authorities."
   }
 }
