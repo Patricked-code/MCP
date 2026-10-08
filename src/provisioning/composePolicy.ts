@@ -108,7 +108,8 @@ const BUILD_KEYS: ReadonlySet<string> = new Set([
 // A seccomp profile file, an AppArmor profile or an SELinux type can lift the confinement as surely as "unconfined".
 const IMAGE_DIGEST = /@sha256:[0-9a-f]{64}$/;
 const MAX_CONTAINERS = 20;
-const SECURITY_OPTION = /^no-new-privileges([:=](true|false))?$/;
+// The flag itself or an explicit true: `false` would lift a daemon's default protection.
+const SECURITY_OPTION = /^no-new-privileges([:=]true)?$/;
 // Any other logging driver sends from the engine, on the host network.
 const LOGGING_DRIVERS: ReadonlySet<string> = new Set(['json-file', 'local', 'none']);
 
@@ -217,10 +218,13 @@ function checkService(
   if (securityOptions === null || securityOptions.some((option) => typeof option !== 'string' || !SECURITY_OPTION.test(option))) {
     add('COMPOSE_SECURITY_OPT_UNCONFINED', name);
   }
-  const logging = service.logging === undefined ? {} : record(service.logging);
-  if (!logging || (logging.driver !== undefined && !LOGGING_DRIVERS.has(String(logging.driver)))) {
-    add('COMPOSE_LOGGING_DRIVER', name);
-  }
+  // Logs are bounded on the host: `local` rotates by default, `json-file` only with explicit rotation, and the
+  // daemon's own default is unknown, so the driver is always named.
+  const logging = record(service.logging);
+  const logOptions = record(logging?.options);
+  const boundedLogs = logging !== null && LOGGING_DRIVERS.has(String(logging.driver))
+    && (logging.driver !== 'json-file' || (logOptions?.['max-size'] !== undefined && logOptions?.['max-file'] !== undefined));
+  if (!boundedLogs) add('COMPOSE_LOGGING_DRIVER', name);
 
   // Memory, CPU and process ceilings on every service: an unbounded container could exhaust the host before any health gate.
   const limits = record(record(record(service.deploy)?.resources)?.limits);
@@ -330,7 +334,8 @@ function checkTopLevel(
       }
       // Address management keeps its default driver, without options: a plugin acts on the host.
       const ipam = record(definition?.ipam);
-      if (key === 'networks' && ipam && ((ipam.driver !== undefined && ipam.driver !== 'default') || nonEmpty(ipam.options))) {
+      // Address pools stay Docker's own: a chosen subnet could overlap the host's networks.
+      if (key === 'networks' && ipam && ((ipam.driver !== undefined && ipam.driver !== 'default') || nonEmpty(ipam.options) || nonEmpty(ipam.config))) {
         add(driverCode, null);
       }
     }

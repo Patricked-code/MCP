@@ -425,6 +425,8 @@ export function buildActivateScript(input: {
   treeDigest: string;
   /** The containers the compose model runs: health counts them all. */
   expectedContainers?: number;
+  /** The digest of the trusted marker record: the marker is checked again after the health gate. */
+  markerSha256?: string;
   bindSources?: readonly string[];
 }): string {
   assertJobId(input.jobId);
@@ -469,6 +471,9 @@ export function buildActivateScript(input: {
     '  health=healthy; break',
     'done',
     // The images the runtime runs, built or pulled, are reported for the attestation.
+    ...(input.markerSha256 && SHA256_PATTERN.test(input.markerSha256)
+      ? [`if [ "$health" = healthy ] && [ "$(sha256sum < ${marker} 2>/dev/null | cut -d' ' -f1)" != ${shellQuote(input.markerSha256)} ]; then health=marker_modified; fi`]
+      : []),
     // A service that rewrote the checkout while starting never succeeds: it is digested again after the health gate.
     `if [ "$health" = healthy ]; then after="$(tree_digest ${directory})" && [ "$after" = ${shellQuote(input.treeDigest)} ] || health=checkout_modified; fi`,
     // The images the runtime runs are reported for the attestation, one valid ID for every expected container.
@@ -816,6 +821,7 @@ async function execute(
   let archiveSha256: string | null = null;
   let composeSourceSha256: string | null = null;
   let builtImages: string[] = [];
+  let imagesUnrecorded = false;
   let findings: readonly ComposeSafetyFinding[] = [];
   let rollback: ProjectRuntimeExecution['rollback'] = 'NOT_NEEDED';
 
@@ -827,6 +833,20 @@ async function execute(
     } catch {
       return new Map([['result', 'failed'], ['reason', 'host_unavailable']]);
     }
+  };
+
+  /** The target and runtime planned again before a write: the consented target must still be the one READY. */
+  const replan = async (): Promise<string | null> => {
+    const fresh = await observeAndPlan(input.request, consent, deps).catch(() => null);
+    const again = fresh?.plan.target;
+    if (
+      fresh?.plan.decision === 'READY' && again
+      && again.repositoryId === target.repositoryId && again.serverPath === target.serverPath
+      && again.composeProject === target.composeProject && again.revision === target.revision
+    ) {
+      return null;
+    }
+    return fresh?.plan.reasonCodes[0] ?? 'TARGET_CHANGED_SINCE_CONSENT';
   };
 
   /** The admission read again before a write; the one that authorizes the write is the one attested. */
@@ -975,6 +995,7 @@ async function execute(
   let replicas: Readonly<Record<string, number>>;
   let bindSources: readonly string[];
   let treeDigest: string;
+  let markerSha256: string | undefined;
   if (mode === 'CREATE' || mode === 'CREATE_AND_ACTIVATE') {
     // Nothing is downloaded onto a host without room: the read-only preflight runs first.
     const preflight = await host('preflight', buildPreflightScript({ target }));
@@ -1034,12 +1055,19 @@ async function execute(
 
     // The marker is recorded in the job data first: the checkout's own copy counts only when it matches.
     const markerInput = { jobId, target, composeFile, createdAt: deps.now().toISOString(), treeDigest, services, replicas };
+    markerSha256 = createHash('sha256').update(`${JSON.stringify(provisioningMarker(markerInput))}\n`).digest('hex');
     try {
       await deps.writeJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${jobId}/marker.json`, `${JSON.stringify(provisioningMarker(markerInput))}\n`);
     } catch {
       steps.push({ id: 'create-runtime', status: 'FAILED' });
       await discard();
       return finish('FAILED', ['MARKER_RECORD_UNWRITTEN']);
+    }
+    const beforeCreatePlan = await replan();
+    if (beforeCreatePlan) {
+      steps.push({ id: 'create-runtime', status: 'BLOCKED' });
+      await discard();
+      return finish('BLOCKED', [beforeCreatePlan]);
     }
     const beforeCreateAdmission = await readmit();
     if (beforeCreateAdmission) {
@@ -1064,6 +1092,8 @@ async function execute(
   } else {
     const marker = inventory?.components[0]?.marker;
     if (!marker) return finish('FAILED', ['MARKER_UNAVAILABLE']);
+    const record = await deps.readJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${marker.jobId}/marker.json`).catch(() => null);
+    if (record !== null) markerSha256 = createHash('sha256').update(record.endsWith('\n') ? record : `${record}\n`).digest('hex');
     composeFile = marker.composeFile;
     treeDigest = marker.treeDigest;
     // The source of a created runtime is parsed again, from the checkout its marker digests.
@@ -1081,6 +1111,11 @@ async function execute(
   }
 
   // A creation stopped here keeps its checkout, as a creation alone leaves it; nothing starts.
+  const beforeActivatePlan = await replan();
+  if (beforeActivatePlan) {
+    steps.push({ id: 'activate', status: 'BLOCKED' });
+    return finish('BLOCKED', [beforeActivatePlan]);
+  }
   const beforeActivateAdmission = await readmit();
   if (beforeActivateAdmission) {
     steps.push({ id: 'activate', status: 'BLOCKED' });
@@ -1097,21 +1132,26 @@ async function execute(
     projectId: target.projectId
   });
   const activated = await host('activate', buildActivateScript({ jobId, target, composeFile, labelsOverride, healthTimeoutSeconds: 180, treeDigest,
-    expectedContainers: Object.values(replicas).reduce((sum, count) => sum + count, 0), bindSources }));
+    expectedContainers: Object.values(replicas).reduce((sum, count) => sum + count, 0), bindSources, ...(markerSha256 ? { markerSha256 } : {}) }));
   builtImages = (activated.get('images') ?? '').split(',').filter((image) => /^sha256:[0-9a-f]{64}$/.test(image)).sort();
   if (activated.get('result') === 'activated' && activated.get('health') === 'healthy') {
-    steps.push({ id: 'activate', status: 'DONE' }, { id: 'health', status: 'DONE' });
     // The images are recorded once per created runtime, in the job data the runtime cannot reach: NO_OP compares them.
     const recordJob = mode === 'ACTIVATE' ? inventory?.components[0]?.marker?.jobId ?? jobId : jobId;
+    let recorded = true;
     try {
       await deps.writeJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${recordJob}/images.json`, `${JSON.stringify(builtImages)}\n`);
     } catch {
-      return finish('SUCCEEDED', ['IMAGES_RECORD_UNWRITTEN']);
+      // A record kept from an earlier activation is the one NO_OP compares; a missing one fails this activation.
+      recorded = mode === 'ACTIVATE' && await deps.readJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${recordJob}/images.json`).catch(() => null) !== null;
     }
-    return finish('SUCCEEDED', []);
+    if (recorded) {
+      steps.push({ id: 'activate', status: 'DONE' }, { id: 'health', status: 'DONE' });
+      return finish('SUCCEEDED', []);
+    }
+    imagesUnrecorded = true;
   }
   const failedReason = activated.get('result') === 'failed' ? activated.get('reason') ?? 'failed' : null;
-  const reasonCode = failedReason ? `ACTIVATE_${failedReason.toUpperCase().replace(/[^A-Z_]/g, '_')}` : 'HEALTH_CHECK_FAILED';
+  const reasonCode = imagesUnrecorded ? 'IMAGES_RECORD_UNWRITTEN' : failedReason ? `ACTIVATE_${failedReason.toUpperCase().replace(/[^A-Z_]/g, '_')}` : 'HEALTH_CHECK_FAILED';
   // The script refused before starting anything; files created by an earlier job are kept as they are.
   if (mode === 'ACTIVATE' && failedReason && failedReason !== 'host_exit' && failedReason !== 'host_unavailable') {
     steps.push({ id: 'activate', status: 'FAILED' });

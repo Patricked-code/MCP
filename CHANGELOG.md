@@ -37,6 +37,7 @@
 - Décision du propriétaire sur les builds : images des Dockerfiles épinglées par empreinte, `build.pull` et arguments `BUILDKIT_*` refusés, images exécutées attestées ; plancher de stockage conservé.
 - Après la douzième revue : `NO_OP` vérifie les images exécutées ; seul le frontend `docker/dockerfile` épinglé est admis ; l'attestation garde l'admission finale.
 - Après la treizième revue : admission relue avant chaque écriture ; empreinte recalculée après la santé ; images complètes exigées ; aucune écriture après une collision.
+- Après la quatorzième revue : journaux bornés, plages d'adresses par défaut, `no-new-privileges` jamais désactivé, enregistrement des images obligatoire, marqueur revérifié après la santé, replanification avant chaque écriture.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
 
