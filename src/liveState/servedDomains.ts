@@ -32,16 +32,23 @@ export function unavailableServedDomainInventory(observedAt: string): ServedDoma
   return { status: 'UNAVAILABLE', observedAt, domains: [] };
 }
 
-/** Every entry must be a domain: anything else (a truncation marker included) is unavailable. */
+/**
+ * Every entry must be exactly a domain, checked before any normalization:
+ * anything else (padding, an empty name, a truncation marker) is unavailable.
+ * Plesk's wildcard vhost directories (`_<domain>`) are deliberately excluded:
+ * they configure a wildcard, not one served name.
+ */
 export function parseServedDomainInventory(stdout: string, observedAt: string): ServedDomainInventory {
   if (typeof stdout !== 'string') return unavailableServedDomainInventory(observedAt);
-  const entries = stdout.split('\n').map((line) => line.trim()).filter(Boolean);
+  const entries = stdout === '' ? [] : stdout.split('\n');
+  if (entries.length > 0 && entries[entries.length - 1] === '') entries.pop();
   if (entries.length > SERVED_DOMAINS_MAX) return unavailableServedDomainInventory(observedAt);
   const domains = new Set<string>();
   for (const entry of entries) {
-    const domain = entry.toLowerCase();
+    const wildcard = entry.startsWith('_');
+    const domain = (wildcard ? entry.slice(1) : entry).toLowerCase();
     if (!DOMAIN.test(domain)) return unavailableServedDomainInventory(observedAt);
-    domains.add(domain);
+    if (!wildcard) domains.add(domain);
   }
   return { status: 'CURRENT', observedAt, domains: [...domains].sort() };
 }
@@ -133,12 +140,15 @@ export function declaredProjectDomains(
  * A shared server serves other projects' domains too: the observation the
  * resolver compares with one project's declarations is the part about that
  * project's declared domains, so another tenant never reads as undeclared.
+ * The inventory carries no ownership, so a project that declares no domain
+ * gets no observation: an absence there would be assumed, not observed.
  */
 export function scopeDomainObservation(observation: unknown, declared: ReadonlySet<string>): unknown {
   const record = observation && typeof observation === 'object' && !Array.isArray(observation)
     ? observation as { domains?: unknown }
     : null;
   if (!record || !Array.isArray(record.domains)) return observation;
+  if (declared.size === 0) return { ...record, available: false, freshness: 'UNKNOWN', domains: [] };
   return {
     ...record,
     domains: record.domains.filter((entry) => (

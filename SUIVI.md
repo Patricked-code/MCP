@@ -18,6 +18,12 @@
   - Un inventaire par serveur géré (S1 et S2) : un projet résolu sur S2 obtient aussi son observation.
   - L'observation est restreinte aux domaines que GitRegistry déclare pour le projet sélectionné sur ce serveur : un autre locataire du serveur ne passe plus pour non déclaré.
   - RED : 5 tests sur 6 échouent sur l'ancien source. GREEN : 6/6. La chaîne CI locale passe (1007 tests).
+- **Second round Codex (quatre constats).**
+  - Corrigés :
+    - le nom brut est validé avant toute normalisation ;
+    - les répertoires wildcard Plesk `_<domaine>` sont exclus et ne sont plus pris pour une corruption ;
+    - un projet qui ne déclare aucun domaine n'obtient aucune observation (`UNKNOWN`) : l'inventaire n'établit aucune propriété, donc aucun `DOMAIN_NONE_CONFIRMED` supposé.
+  - **Limite connue** : les alias Plesk (`ServerAlias`/`server_name`) ne sont pas inventoriés. Un domaine déclaré servi seulement comme alias reste `DOMAIN_DECLARATION_UNOBSERVED`, donc `UNVERIFIED` : un faux négatif fermé, jamais un faux positif. L'inventaire des alias revient à un incrément suivant de F-04.
 - **Aucune écriture S1** : aucun binding, certificat ou DNS n'est créé ou modifié.
 - **NEXT_ACTION** : PR draft, CI verte, revue, fusion, Governed Deploy et attestation ; ensuite l'incrément 2 de F-04 (backup et bind-domain consentis).
 

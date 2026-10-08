@@ -44,6 +44,14 @@ test('F-04 observe-binding: parsing normalizes domains; any other entry makes th
   assert.deepEqual(inventory.domains, ['api.sadiaaf.example.com', 'example.com']);
   assert.equal(parseServedDomainInventory('example.com\nbad_name\n', OBSERVED_AT).status, 'UNAVAILABLE');
   assert.equal(parseServedDomainInventory('example.com\n...[sortie plafonnée par le MCP]', OBSERVED_AT).status, 'UNAVAILABLE');
+  // The raw name is checked before any normalization: padding or an empty name is not a domain.
+  assert.equal(parseServedDomainInventory(' example.com\n', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.equal(parseServedDomainInventory('example.com\n \n', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.equal(parseServedDomainInventory('example.com\n\nother.example.com\n', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.deepEqual(parseServedDomainInventory('', OBSERVED_AT), { status: 'CURRENT', observedAt: OBSERVED_AT, domains: [] });
+  // A Plesk wildcard vhost directory is excluded, not corruption.
+  assert.deepEqual(parseServedDomainInventory('_example.com\nexample.com\n', OBSERVED_AT).domains, ['example.com']);
+  assert.equal(parseServedDomainInventory('_bad_\n', OBSERVED_AT).status, 'UNAVAILABLE');
 });
 
 test('F-04 observe-binding: an inventory over the bound is unavailable, never a partial absence', () => {
@@ -120,6 +128,11 @@ test('F-04 observe-binding: the observation is scoped to the selected project on
   const scoped = scopeDomainObservation(observation, declared) as any;
   assert.deepEqual(scoped.domains.map((entry: any) => entry.domain), ['alpha.example.com']);
   assert.equal(scoped.available, true);
+  // No declared domain: the inventory carries no ownership, so no absence is claimed.
+  const undeclared = scopeDomainObservation(observation, declaredProjectDomains(registry, 'gamma', 's1')) as any;
+  assert.equal(undeclared.available, false);
+  assert.equal(undeclared.freshness, 'UNKNOWN');
+  assert.deepEqual(undeclared.domains, []);
   // Nothing to scope in an unavailable or absent observation.
   assert.equal(scopeDomainObservation(null, declared), null);
 });
