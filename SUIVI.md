@@ -74,14 +74,20 @@
   - Branche officielle : la révision est admise depuis la branche que nomme le mapping GitRegistry (règle `OFFICIAL_BRANCH` de D1), jamais depuis la seule branche par défaut (`REVISION_NOT_ON_OFFICIAL_BRANCH`).
   - Liens physiques : un fichier à plusieurs liens fait échouer l'empreinte, donc l'activation et `NO_OP`.
   - Capacité : les planchers (2 Gio, 200 000 inodes) sont mesurés sur le système de fichiers du parent de la cible et sur celui de la quarantaine, au plus proche dossier existant.
+- **Neuvième revue Codex (quatre constats, corrigés).**
+  - Rollback : la coordination est relue juste avant ; un travail réservé ou verrouillé pendant le contrôle de santé n'est jamais écrasé (rollback non exécuté, job `FAILED` avec la raison).
+  - Rollback par labels : la politique de redémarrage des conteneurs est effacée (`docker update --restart=no`) avant leur arrêt ; un redémarrage du démon ne les relance pas.
+  - Empreinte : les capacités de fichier (`getcap -r`) y entrent ; une ACL la fait échouer. Sans `getcap` sur l'hôte, l'empreinte échoue (fermé).
+  - Sources de bind : chacune doit exister dans le checkout avant la promotion et avant l'activation (`bind_source_missing`) ; Docker ne crée donc plus de dossier après l'empreinte.
 - **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
 - **Preuves.**
   - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.
   - RED de la troisième revue `8e36322` : 12 tests en échec (analyse du fichier, listes de clés, réseau partagé, scripts et parcours).
   - CI exact-head de la seconde revue : `3f1098b`, run `37673610028` (#2294), verte.
   - CI exact-head des revues suivantes, toutes vertes : `372d5f3` run `37680073334` (#2296) ; `dd7746e` run `37703798530` (#2297) ; `c6f8921` run `37705027955` (#2298) ; `cbd93f9` run `37706373960` (#2299) ; `1268e1b` run `37707609873` (#2300).
-  - RED de la huitième revue `f7f3296` : 8 tests en échec (relecture de la coordination, liens physiques, capacité, branche officielle).
-  - GREEN local après la huitième revue : typecheck, build et gates verts ; suite complète 984/984 (968 avant les revues), tests de l'exécuteur verts aussi avec Compose v2.38.2. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
+  - RED de la huitième revue `f7f3296` : 8 tests en échec (relecture de la coordination, liens physiques, capacité, branche officielle). GREEN `80cd60e`, CI run `37709709982` verte.
+  - RED de la neuvième revue `b384753` : 4 tests en échec (rollback, redémarrage, capacités et ACL, sources de bind).
+  - GREEN local après la neuvième revue : typecheck, build et gates verts ; suite complète 986/986 (968 avant les revues), tests de l'exécuteur verts aussi avec Compose v2.38.2. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
 - **En attente du propriétaire** (deux fils de revue ouverts) : politique des entrées des builds (recommandation : `FROM` épinglés et `build.pull` refusé, plus enregistrement et attestation des images construites) et borne stricte du stockage des builds (configuration du démon Docker sur S1).
 - **NEXT_ACTION** : CI exact-head de la PR #261 et nouvelle revue Codex ; décisions du propriétaire puis leur mise en œuvre ; merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
 

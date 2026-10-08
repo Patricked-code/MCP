@@ -548,8 +548,9 @@ existante : `/provisioning/project-runtime`, derrière la connexion web
     sur chaque système de fichiers écrit (parent de la cible, quarantaine).
 - **Checkout vérifié.** La création enregistre l'empreinte de l'arbre dans le
   marqueur ; l'activation la recalcule avant tout démarrage et refuse un
-  checkout modifié. Une entrée spéciale ou un lien physique fait échouer
-  l'empreinte.
+  checkout modifié. Une entrée spéciale, un lien physique ou une ACL fait
+  échouer l'empreinte ; les capacités de fichier y entrent. Chaque source de
+  bind doit exister dans le checkout.
 - **Câblage.** L'inventaire est lu en lecture seule sur S1 et les écritures
   passent par le canal S1 gardé. Le mode écriture du serveur reste requis
   (`src/provisioning/wiring.ts`).

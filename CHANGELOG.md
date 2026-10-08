@@ -32,6 +32,7 @@
 - Après la sixième revue : marqueur de confiance enregistré dans les données du job ; réseaux conservés bloquants ; réplicas attendus vérifiés ; IPAM par défaut ; plancher de capacité et quarantaine bornée.
 - Après la septième revue : noms réservés refusés ; parents de la cible résolus avant chaque écriture ; rollback sans recharger un fichier modifié ; entrées spéciales refusées par l'empreinte ; plancher de stockage Docker.
 - Après la huitième revue : Task Queue et verrous relus juste avant chaque écriture sur l'hôte ; révision admise depuis la branche officielle du mapping ; liens physiques refusés par l'empreinte ; capacité mesurée sur le parent de la cible et sur la quarantaine.
+- Après la neuvième revue : coordination relue avant le rollback ; politique de redémarrage effacée avant l'arrêt par labels ; capacités de fichier dans l'empreinte et ACL refusées ; sources de bind exigées dans le checkout.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
 

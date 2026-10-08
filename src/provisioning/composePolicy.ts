@@ -56,6 +56,8 @@ export type ComposeSafety = Readonly<{
   services: readonly string[];
   /** The containers each service runs (its replicas): activation and no-op count them. */
   replicas: Readonly<Record<string, number>>;
+  /** Bind sources, relative to the project: they must exist in the checkout, so Docker never creates one after the digest. */
+  bindSources: readonly string[];
   findings: readonly ComposeSafetyFinding[];
 }>;
 
@@ -113,6 +115,8 @@ function nonEmpty(value: unknown): boolean {
 }
 
 /** True when an absolute, normalized path lies in the project directory. */
+const BIND_SEGMENT = /^[A-Za-z0-9._@+-]{1,100}$/;
+
 function insideProject(path: unknown, projectDir: string): boolean {
   if (typeof path !== 'string' || !path.startsWith('/')) return false;
   if (path.split('/').some((segment) => segment === '..' || segment === '.')) return false;
@@ -131,17 +135,23 @@ function collector(): { findings: ComposeSafetyFinding[]; add: Add } {
   return { findings, add };
 }
 
-function verdict(services: readonly string[], findings: ComposeSafetyFinding[], replicas: Record<string, number> = {}): ComposeSafety {
+function verdict(
+  services: readonly string[],
+  findings: ComposeSafetyFinding[],
+  replicas: Record<string, number> = {},
+  bindSources: readonly string[] = []
+): ComposeSafety {
   return Object.freeze({
     ok: findings.length === 0,
     services: Object.freeze([...services].sort()),
     replicas: Object.freeze({ ...replicas }),
+    bindSources: Object.freeze([...new Set(bindSources)].sort()),
     findings: Object.freeze(findings)
   });
 }
 
 function rejected(code: ComposeSafetyCode): ComposeSafety {
-  return Object.freeze({ ok: false, services: Object.freeze([]), replicas: Object.freeze({}), findings: Object.freeze([Object.freeze({ code, service: null, key: null })]) });
+  return Object.freeze({ ok: false, services: Object.freeze([]), replicas: Object.freeze({}), bindSources: Object.freeze([]), findings: Object.freeze([Object.freeze({ code, service: null, key: null })]) });
 }
 
 function checkKeys(keys: Iterable<string>, allowed: ReadonlySet<string>, service: string | null, prefix: string, add: Add): void {
@@ -160,7 +170,8 @@ function checkService(
   service: Record<string, unknown>,
   services: ReadonlySet<string>,
   projectDir: string,
-  add: Add
+  add: Add,
+  bindSources?: string[]
 ): void {
   checkKeys(Object.keys(service), SERVICE_KEYS, name, '', add);
   if (service.privileged === true) add('COMPOSE_PRIVILEGED', name);
@@ -207,7 +218,14 @@ function checkService(
     const volume = record(entry);
     const type = volume?.type;
     if (type === 'volume' || type === 'tmpfs') continue;
-    if (type === 'bind' && insideProject(volume?.source, projectDir)) continue;
+    if (type === 'bind' && insideProject(volume?.source, projectDir)) {
+      const relative = String(volume!.source).slice(projectDir.length).replace(/^\//, '').replace(/\/$/, '');
+      // Plain names only: the host checks each source exists before anything starts.
+      if (relative === '' || relative.split('/').every((segment) => BIND_SEGMENT.test(segment))) {
+        if (relative !== '') bindSources?.push(relative);
+        continue;
+      }
+    }
     add('COMPOSE_BIND_OUTSIDE_PROJECT', name);
   }
   if (nonEmpty(service.volumes_from)) {
@@ -303,13 +321,14 @@ export function evaluateComposeSafety(config: unknown, projectDir: string): Comp
   if (!validServiceNames(names)) return rejected('COMPOSE_SERVICES_INVALID');
   const { findings, add } = collector();
   const services = new Set(names);
+  const bindSources: string[] = [];
   for (const name of names) {
     const service = record(serviceEntries[name]);
     if (!service) {
       add('COMPOSE_SERVICES_INVALID', name);
       continue;
     }
-    checkService(name, service, services, projectDir, add);
+    checkService(name, service, services, projectDir, add, bindSources);
   }
   // Every replica is a container of the bounded inventory: past it, the runtime could no longer be observed.
   let containers = 0;
@@ -325,7 +344,7 @@ export function evaluateComposeSafety(config: unknown, projectDir: string): Comp
   }
   if (containers > MAX_CONTAINERS || containers === 0) add('COMPOSE_REPLICAS', null);
   checkTopLevel(root, projectDir, add);
-  return verdict(names, findings, replicaCounts);
+  return verdict(names, findings, replicaCounts, bindSources);
 }
 
 function stringKeyed(value: unknown): value is Map<string, unknown> {

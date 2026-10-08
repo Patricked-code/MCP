@@ -104,6 +104,17 @@ export function buildCapacityLines(quarantineRoot = PROVISIONING_QUARANTINE_ROOT
   ];
 }
 
+/** Each bind source must already exist in the checkout: Docker would create a missing one after the digest. */
+function bindSourceLines(directory: string, bindSources: readonly string[] = []): string[] {
+  return bindSources.map((source) => {
+    if (!source.split('/').every((segment) => /^[A-Za-z0-9._@+-]{1,100}$/.test(segment) && segment !== '..' && segment !== '.')) {
+      throw new Error('PROVISIONING_BIND_SOURCE_INVALID');
+    }
+    const path = shellQuote(`${directory}/${source}`);
+    return `{ [ -e ${path} ] || [ -L ${path} ]; } || fail bind_source_missing`;
+  });
+}
+
 /** Bounds of an archive's expanded content, checked before any extraction. */
 export const PROVISIONING_ARCHIVE_LIMITS = Object.freeze({ maxEntries: 100_000, maxBytes: 1024 * 1024 * 1024 });
 
@@ -311,6 +322,7 @@ export function buildCreateScript(input: {
   treeDigest: string;
   services: readonly string[];
   replicas?: Readonly<Record<string, number>>;
+  bindSources?: readonly string[];
 }): string {
   const marker = provisioningMarker(input);
   const staging = stagingPath(input.target.serverPath, input.jobId);
@@ -319,6 +331,7 @@ export function buildCreateScript(input: {
     ...header('create'),
     ...buildParentGuardLines(input.target.serverPath),
     `[ -d ${shellQuote(staging)} ] || fail staging_missing`,
+    ...bindSourceLines(staging, input.bindSources),
     `[ ! -e ${target} ] || fail target_present`,
     `mv ${shellQuote(staging)} ${target} || fail promote`,
     `if ! printf '%s\\n' ${shellQuote(JSON.stringify(marker))} > ${shellQuote(`${input.target.serverPath}/${PROVISIONING_MARKER_FILE}`)}; then mv ${target} ${shellQuote(staging)}; fail marker; fi`,
@@ -394,6 +407,7 @@ export function buildActivateScript(input: {
   treeDigest: string;
   /** The containers the compose model runs: health counts them all. */
   expectedContainers?: number;
+  bindSources?: readonly string[];
 }): string {
   assertJobId(input.jobId);
   assertTarget(input.target);
@@ -416,6 +430,7 @@ export function buildActivateScript(input: {
     `grep -q ${shellQuote(`"treeDigest":"${input.treeDigest}"`)} ${marker} || fail marker_mismatch`,
     `tree="$(tree_digest ${directory})" || fail tree_digest`,
     `[ "$tree" = ${shellQuote(input.treeDigest)} ] || fail checkout_modified`,
+    ...bindSourceLines(input.target.serverPath, input.bindSources),
     `printf '%s\\n' ${shellQuote(input.labelsOverride)} > ${labels} || fail labels`,
     ...composeNames(input.target.composeProject, input.composeFile),
     `labels=${labels}`,
@@ -470,7 +485,8 @@ export function buildRollbackScript(input: {
     `  (cd "$directory" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" down --remove-orphans >/dev/null 2>&1) || status=failed`,
     'else',
     `  ids="$(docker ps -q --filter ${shellQuote(`label=com.docker.compose.project=${input.target.composeProject}`)} 2>/dev/null)" || status=failed`,
-    '  if [ -n "$ids" ]; then docker stop $ids >/dev/null 2>&1 || status=failed; fi',
+    // A stopped container keeps its restart policy: cleared first, a daemon restart never brings it back.
+    '  if [ -n "$ids" ]; then docker update --restart=no $ids >/dev/null 2>&1 || status=failed; docker stop $ids >/dev/null 2>&1 || status=failed; fi',
     "  printf 'teardown=stopped\\n'",
     'fi'
   ];
@@ -802,7 +818,7 @@ async function execute(
     steps.push({ id: 'discard-staging', status: values.get('result') === 'discarded' ? 'DONE' : 'FAILED' });
   };
 
-  type ComposeCheck = { services: readonly string[]; replicas: Readonly<Record<string, number>> } | { result: ProjectRuntimeExecutionResult; reasonCodes: string[] };
+  type ComposeCheck = { services: readonly string[]; replicas: Readonly<Record<string, number>>; bindSources: readonly string[] } | { result: ProjectRuntimeExecutionResult; reasonCodes: string[] };
   // The compose file is parsed before Compose loads anything: a key that reads a host file, however it is
   // spelled, never runs. Compose then builds the model from that exact file, which is checked in turn.
   const checkCompose = async (printed: Map<string, string>, composeFile: string, unreadable: string, staged: boolean): Promise<ComposeCheck> => {
@@ -836,12 +852,13 @@ async function execute(
       return { result: 'BLOCKED', reasonCodes: ['COMPOSE_UNSAFE'] };
     }
     steps.push({ id: 'compose-policy', status: 'DONE' });
-    return { services: safety.services, replicas: safety.replicas };
+    return { services: safety.services, replicas: safety.replicas, bindSources: safety.bindSources };
   };
 
   let composeFile: string;
   let services: readonly string[];
   let replicas: Readonly<Record<string, number>>;
+  let bindSources: readonly string[];
   let treeDigest: string;
   if (mode === 'CREATE' || mode === 'CREATE_AND_ACTIVATE') {
     const fetched = await deps.fetchSource({
@@ -885,6 +902,7 @@ async function execute(
     composeFile = file;
     services = checked.services;
     replicas = checked.replicas;
+    bindSources = checked.bindSources;
 
     // The marker is recorded in the job data first: the checkout's own copy counts only when it matches.
     const markerInput = { jobId, target, composeFile, createdAt: deps.now().toISOString(), treeDigest, services, replicas };
@@ -901,7 +919,7 @@ async function execute(
       await discard();
       return finish('BLOCKED', [beforeCreate]);
     }
-    const created = await host('create', buildCreateScript(markerInput));
+    const created = await host('create', buildCreateScript({ ...markerInput, bindSources }));
     if (created.get('result') !== 'created') {
       steps.push({ id: 'create-runtime', status: 'FAILED' });
       await discard();
@@ -923,6 +941,7 @@ async function execute(
     const checked = await checkCompose(sourced, composeFile, 'SOURCE_UNREADABLE', false);
     if ('result' in checked) return finish(checked.result, checked.reasonCodes);
     services = checked.services;
+    bindSources = checked.bindSources;
     // The recorded replicas, not those of a model rebuilt now.
     replicas = marker.replicas;
   }
@@ -939,7 +958,7 @@ async function execute(
     projectId: target.projectId
   });
   const activated = await host('activate', buildActivateScript({ jobId, target, composeFile, labelsOverride, healthTimeoutSeconds: 180, treeDigest,
-    expectedContainers: Object.values(replicas).reduce((sum, count) => sum + count, 0) }));
+    expectedContainers: Object.values(replicas).reduce((sum, count) => sum + count, 0), bindSources }));
   if (activated.get('result') === 'activated' && activated.get('health') === 'healthy') {
     steps.push({ id: 'activate', status: 'DONE' }, { id: 'health', status: 'DONE' });
     return finish('SUCCEEDED', []);
@@ -952,6 +971,13 @@ async function execute(
     return finish('FAILED', [reasonCode]);
   }
   steps.push({ id: 'activate', status: 'FAILED' }, { id: 'health', status: activated.get('health') ?? 'unknown' });
+  // Work claimed while the health check ran owns the component now: the rollback never writes over it.
+  const beforeRollback = await recheck();
+  if (beforeRollback) {
+    rollback = 'FAILED';
+    steps.push({ id: 'rollback', status: 'BLOCKED' });
+    return finish('FAILED', [reasonCode, beforeRollback]);
+  }
   const rolledBack = await host('rollback', buildRollbackScript({
     treeDigest,
     jobId,

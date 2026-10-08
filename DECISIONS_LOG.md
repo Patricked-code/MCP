@@ -71,6 +71,11 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
   - **Branche officielle de D1.** La révision est admise depuis la branche que nomme le mapping (règle `OFFICIAL_BRANCH`), jamais depuis la seule branche par défaut du dépôt : une autre ligne de version n'est pas admise.
   - **Pas de lien physique.** Une archive Git n'en contient aucun ; deux noms d'un même fichier changent ensemble, ce qu'aucune empreinte de contenu ou de mode ne montre. Un lien physique fait donc échouer l'empreinte.
   - **Capacité là où le job écrit.** Les planchers sont mesurés sur le système de fichiers du parent de la cible et sur celui de la quarantaine, qu'un déplacement entre systèmes de fichiers copie.
+- **Après la neuvième revue de la PR #261 :**
+  - **Le rollback aussi cède au travail réservé.** Il est précédé d'une relecture ; un composant réservé pendant le contrôle de santé reste à son nouveau propriétaire, le job échoue en le disant.
+  - **Un conteneur arrêté ne revient pas seul.** Sa politique de redémarrage est effacée avant l'arrêt par labels.
+  - **Ce qu'un fichier peut faire.** Les capacités de fichier entrent dans l'empreinte ; une ACL la fait échouer (une archive Git n'en porte pas). `getcap` est requis sur l'hôte, sinon l'empreinte échoue fermée.
+  - **Sources de bind présentes.** Docker crée une source absente après l'empreinte ; une source manquante est donc refusée avant la promotion et l'activation. Un projet versionne le dossier (par exemple avec un `.gitkeep`).
 
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
 
