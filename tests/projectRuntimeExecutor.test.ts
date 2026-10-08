@@ -974,7 +974,8 @@ test('the coordination authorities are read again immediately before every host 
   const beforeCreate = changing(2, claimed);
   const claimedResult = await run(beforeCreate, { creation: true, activation: true });
   assert.deepEqual([claimedResult.result, claimedResult.reasonCodes], ['BLOCKED', ['TARGET_CLAIMED_BY_TASK']]);
-  assert.deepEqual(hostPhases(beforeCreate), ['preflight', 'stage', 'config', 'dockerfiles', 'discard']);
+  // Claimed work owns the component now: not even the staging is moved.
+  assert.deepEqual(hostPhases(beforeCreate), ['preflight', 'stage', 'config', 'dockerfiles']);
 
   // Unreadable before the activation: the created checkout stays as a creation alone leaves it, and nothing starts.
   const beforeActivate = changing(3, null);
@@ -1075,6 +1076,31 @@ test('the attestation records the admission that authorized the first write', as
   const result = await run(h, { creation: true });
   const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
   assert.deepEqual([attestation.admission.branchHead, attestation.admission.checkRuns], ['b'.repeat(40), 2]);
+});
+
+test('the revision is admitted again before the promotion and before the activation', async () => {
+  for (const [failAt, phases] of [[3, ['preflight', 'stage', 'config', 'dockerfiles', 'discard']], [4, ['preflight', 'stage', 'config', 'dockerfiles', 'create']]] as const) {
+    let admissions = 0;
+    const h = harness({
+      admitRevision: async () => {
+        admissions += 1;
+        const ok = admissions < failAt;
+        return Object.freeze({ admitted: ok, kind: ok ? 'CI_GATE' : null, reasonCode: ok ? 'REVISION_ADMITTED' : 'REVISION_NOT_ON_OFFICIAL_BRANCH', branch: 'main', branchHead: REVISION, checkRuns: 1, statuses: 0 });
+      }
+    });
+    const result = await run(h, { creation: true, activation: true });
+    assert.deepEqual([result.result, result.reasonCodes], ['BLOCKED', ['REVISION_NOT_ON_OFFICIAL_BRANCH']], String(failAt));
+    assert.deepEqual(hostPhases(h), phases, String(failAt));
+  }
+});
+
+test('activation succeeds only with the checkout unchanged and an image for every container', () => {
+  const script = buildActivateScript({ jobId: 'prov-20261006T050000Z-0a1b2c3d', target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE, expectedContainers: 2 });
+  const healthy = script.indexOf('health=healthy; break');
+  // After the health gate the checkout is digested again: a service that rewrote it never succeeds.
+  assert.ok(script.indexOf('health=checkout_modified', healthy) > healthy);
+  // Every expected container must report a valid image ID.
+  assert.ok(script.indexOf('health=images_unknown', healthy) > healthy);
 });
 
 test('bind sources are named by the policy, relative to the project', () => {
