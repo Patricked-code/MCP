@@ -1148,6 +1148,29 @@ test('the target and runtime are planned again before the promotion and the acti
   assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'dockerfiles', 'discard']);
 });
 
+test('a change of the official branch stops the job, and a reactivation keeps only identical images', async () => {
+  let reads = 0;
+  const h = harness({
+    readRegistry: async () => { reads += 1; const value = registry(); if (reads > 1) value.governanceEvidence.mappings[0].officialBranch = 'production'; return value; }
+  });
+  const result = await run(h, { creation: true, activation: true });
+  assert.deepEqual([result.result, result.reasonCodes], ['BLOCKED', ['GOVERNANCE_OFFICIAL_BRANCH_CHANGED']]);
+  assert.deepEqual(hostPhases(h), ['preflight']);
+  // A later activation whose earlier record names other images fails and rolls back.
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject: TARGET.composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  const again = harness();
+  again.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
+  again.files.set(`/app/data/provisioning/${marker.jobId}/images.json`, `["sha256:${'d'.repeat(64)}"]\n`);
+  const write = again.deps.writeJobFile;
+  again.deps.writeJobFile = (async (path: string, content: string) => {
+    if (again.files.has(path)) throw new Error('exists');
+    return write(path, content);
+  }) as any;
+  again.results.activate = `result=activated\nhealth=healthy\nimages=sha256:${'c'.repeat(64)}\n`;
+  const reactivated = await run(again, { activation: true });
+  assert.deepEqual([reactivated.result, reactivated.reasonCodes], ['ROLLED_BACK', ['IMAGES_RECORD_UNWRITTEN']]);
+});
+
 test('bind sources are named by the policy, relative to the project', () => {
   const dir = '/opt/apps/portal-api';
   const safety = evaluateComposeSafety(composeConfig(dir), dir) as any;

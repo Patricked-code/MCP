@@ -82,7 +82,7 @@ function marker(services: string[] = ['api']): string {
   })).toString('base64')}`;
 }
 
-const PRESENT_SAME = ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`, marker(), `component.0.tree=${'e'.repeat(64)}`, `component.0.images=sha256:${'c'.repeat(64)}`];
+const PRESENT_SAME = ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`, marker(), `component.0.tree=${'e'.repeat(64)}`, `component.0.images=sha256:${'c'.repeat(64)}`, 'component.0.limits=536870912 500000000 0 200'];
 
 test('the provisioned-runtime inventory is bounded, read-only and quotes every value', () => {
   const command = buildProvisionedRuntimeInventoryCommand([TARGET]);
@@ -228,6 +228,11 @@ test('provisioning plans only a genuinely absent runtime at its exact, declared 
   // Containers running other image bytes than the activation recorded are not the admitted runtime.
   assert.deepEqual(plan({ inventory: inventory([...PRESENT_SAME.slice(0, 5), `component.0.images=sha256:${'d'.repeat(64)}`]) }).reasonCodes, ['EXISTING_RUNTIME_DEGRADED']);
   assert.deepEqual(plan({ inventory: inventory(PRESENT_SAME, null) }).reasonCodes, ['EXISTING_RUNTIME_DEGRADED']);
+  // A container whose limits were lifted after activation is not the admitted runtime.
+  for (const limits of ['536870912 500000000 0 -1', '0 500000000 0 200', '536870912 0 0 200', '']) {
+    assert.deepEqual(plan({ inventory: inventory([...PRESENT_SAME.slice(0, 6), `component.0.limits=${limits}`]) }).reasonCodes, ['EXISTING_RUNTIME_DEGRADED'], limits);
+  }
+  assert.match(buildProvisionedRuntimeInventoryCommand([TARGET]), /component\.0\.limits=/);
   assert.match(buildProvisionedRuntimeInventoryCommand([TARGET]), /component\.0\.images=/);
   for (const lines of degraded) {
     const result = plan({ inventory: inventory(lines) });
