@@ -48,6 +48,7 @@ const SOURCE = [
   '    mem_limit: 512m',
   '    cpus: 0.5',
   '    pids_limit: 200',
+  '    logging: {driver: local}',
   '    ports:',
   '      - "127.0.0.1:3100:3000"',
   '    volumes:',
@@ -107,6 +108,7 @@ function composeConfig(dir: string, service: Record<string, unknown> = {}, extra
       api: {
         build: { context: dir, dockerfile: 'Dockerfile' },
         mem_limit: '536870912', cpus: 0.5, pids_limit: 200,
+        logging: { driver: 'local' },
         ports: [{ mode: 'ingress', host_ip: '127.0.0.1', target: 3000, published: '3100', protocol: 'tcp' }],
         volumes: [
           { type: 'bind', source: `${dir}/data`, target: '/data' },
@@ -209,7 +211,7 @@ test('the compose safety policy admits only a project-contained, locally bound r
   const local = evaluateComposeSafety(composeConfig(dir, {
     network_mode: 'none',
     security_opt: ['no-new-privileges:true'],
-    logging: { driver: 'json-file', options: { 'max-size': '10m' } },
+    logging: { driver: 'json-file', options: { 'max-size': '10m', 'max-file': '3' } },
     deploy: { resources: { limits: { cpus: '1', memory: '512M' } } },
     'x-team': 'portal'
   }, {
@@ -219,7 +221,7 @@ test('the compose safety policy admits only a project-contained, locally bound r
   }), dir) as any;
   assert.deepEqual(local.findings, []);
   const shared = composeConfig(dir);
-  shared.services.worker = { image: `busybox@sha256:${'a'.repeat(64)}`, network_mode: 'service:api', deploy: { replicas: 2, resources: { limits: { memory: '1', cpus: 1, pids: 10 } } } };
+  shared.services.worker = { image: `busybox@sha256:${'a'.repeat(64)}`, logging: { driver: 'none' }, network_mode: 'service:api', deploy: { replicas: 2, resources: { limits: { memory: '1', cpus: 1, pids: 10 } } } };
   assert.deepEqual((evaluateComposeSafety(shared, dir) as any).findings, []);
   // The expected containers of each service are part of the verdict.
   assert.deepEqual((evaluateComposeSafety(shared, dir) as any).replicas, { api: 1, worker: 2 });
@@ -1101,6 +1103,49 @@ test('activation succeeds only with the checkout unchanged and an image for ever
   assert.ok(script.indexOf('health=checkout_modified', healthy) > healthy);
   // Every expected container must report a valid image ID.
   assert.ok(script.indexOf('health=images_unknown', healthy) > healthy);
+});
+
+test('logs are bounded, address pools stay default and no-new-privileges is never disabled', () => {
+  const dir = '/opt/apps/portal-api';
+  const codes = (service: Record<string, unknown>, extra: Record<string, unknown> = {}) => (evaluateComposeSafety(composeConfig(dir, service, extra), dir) as any).findings.map((f: any) => f.code);
+  // The daemon's default driver is unknown, and json-file without rotation can fill the disk.
+  assert.deepEqual(codes({ logging: undefined }), ['COMPOSE_LOGGING_DRIVER']);
+  assert.deepEqual(codes({ logging: { driver: 'json-file' } }), ['COMPOSE_LOGGING_DRIVER']);
+  assert.deepEqual(codes({ logging: { driver: 'json-file', options: { 'max-size': '10m' } } }), ['COMPOSE_LOGGING_DRIVER']);
+  assert.deepEqual(codes({ security_opt: ['no-new-privileges:false'] }), ['COMPOSE_SECURITY_OPT_UNCONFINED']);
+  assert.deepEqual(codes({ security_opt: ['no-new-privileges=false'] }), ['COMPOSE_SECURITY_OPT_UNCONFINED']);
+  assert.deepEqual(codes({}, { networks: { default: { name: 'mcp-portal-0123456789ab_default', ipam: { config: [{ subnet: '10.0.0.0/8' }] } } } }), ['COMPOSE_NETWORK_DRIVER']);
+});
+
+test('activation fails when the image record cannot be written, and checks its marker after health', async () => {
+  const h = harness();
+  h.results.activate = `result=activated\nhealth=healthy\nimages=sha256:${'c'.repeat(64)}\n`;
+  const write = h.deps.writeJobFile;
+  h.deps.writeJobFile = (async (path: string, content: string) => {
+    if (path.endsWith('/images.json')) throw new Error('read-only');
+    return write(path, content);
+  }) as any;
+  const result = await run(h, { creation: true, activation: true });
+  assert.deepEqual([result.result, result.reasonCodes], ['ROLLED_BACK', ['IMAGES_RECORD_UNWRITTEN']]);
+  assert.equal(hostPhases(h).at(-1), 'rollback');
+  const script = buildActivateScript({ jobId: 'prov-20261006T050000Z-0a1b2c3d', target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE, markerSha256: 'd'.repeat(64) });
+  const healthy = script.indexOf('health=healthy; break');
+  assert.ok(script.indexOf('health=marker_modified', healthy) > healthy && script.includes('d'.repeat(64)));
+});
+
+test('the target and runtime are planned again before the promotion and the activation', async () => {
+  const h = harness();
+  let observations = 0;
+  const observe = h.deps.observe;
+  h.deps.observe = (async (targets: any[]) => {
+    observations += 1;
+    // Another process created the project once the source was checked.
+    if (observations === 2) h.setInventory('docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=other|running|x|y|api|Up\n');
+    return observe(targets);
+  }) as any;
+  const result = await run(h, { creation: true, activation: true });
+  assert.equal(result.result, 'BLOCKED');
+  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'dockerfiles', 'discard']);
 });
 
 test('bind sources are named by the policy, relative to the project', () => {
