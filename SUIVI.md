@@ -94,8 +94,11 @@
   - RED de la huitième revue `f7f3296` : 8 tests en échec (relecture de la coordination, liens physiques, capacité, branche officielle). GREEN `80cd60e`, CI run `37709709982` verte.
   - RED de la neuvième revue `b384753` : 4 tests en échec (rollback, redémarrage, capacités et ACL, sources de bind). GREEN `341192e`, CI verte.
   - RED de la dixième revue `cc4845d` : 4 tests en échec (conteneurs arrêtés, santé exigée, plafonds de ressources, pré-contrôle et réadmission).
-  - GREEN local après la dixième revue : typecheck, build et gates verts ; suite complète 988/988 (968 avant les revues), tests de l'exécuteur verts aussi avec Compose v2.38.2. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
-- **En attente du propriétaire** (deux fils de revue ouverts) : politique des entrées des builds (recommandation : `FROM` épinglés et `build.pull` refusé, plus enregistrement et attestation des images construites) et borne stricte du stockage des builds (configuration du démon Docker sur S1).
+  - GREEN local après la décision sur les builds : typecheck, build et gates verts ; suite complète 992/992 (968 avant les revues), tests de l'exécuteur verts aussi avec Compose v2.38.2. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
+- **Décision du propriétaire (2026-10-08)** : entrées des builds, options 1 + 3 ; stockage des builds, le plancher de 10 Gio suffit.
+  - Mise en œuvre (`src/provisioning/dockerfilePolicy.ts`) : chaque Dockerfile d'un service construit est lu depuis le checkout digéré (phase `dockerfiles`) ou pris en ligne ; `FROM`, `--from=`, `from=` d'un montage et le frontend `# syntax=` doivent être épinglés par empreinte (sinon `DOCKERFILE_IMAGE_UNPINNED` / `DOCKERFILE_FRONTEND_UNPINNED`), seuls les étapes déjà définies, `scratch` et les contextes nommés sont locaux. Lecture en échec fermé (jointures sous les deux caractères d'échappement et lignes physiques).
+  - `build.pull` et les arguments `BUILDKIT_*` sont refusés.
+  - Les images que le runtime exécute (`docker inspect`) sont enregistrées dans l'attestation (`builtImages`).
 - **NEXT_ACTION** : CI exact-head de la PR #261 et nouvelle revue Codex ; décisions du propriétaire puis leur mise en œuvre ; merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 — GREEN candidate

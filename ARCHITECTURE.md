@@ -551,6 +551,8 @@ existante : `/provisioning/project-runtime`, derrière la connexion web
   checkout modifié. Une entrée spéciale, un lien physique ou une ACL fait
   échouer l'empreinte ; les capacités de fichier y entrent. Chaque source de
   bind doit exister dans le checkout.
+- **Entrées des builds.** Les images d'un Dockerfile (`FROM`, `--from`, montages,
+  frontend) sont épinglées par empreinte ; les images exécutées sont attestées.
 - **Santé et ressources.** Seul un conteneur `healthy` par son contrôle de
   santé compte ; chaque service borne sa mémoire, son CPU et ses processus.
 - **Câblage.** L'inventaire est lu en lecture seule sur S1 et les écritures

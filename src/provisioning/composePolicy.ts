@@ -43,6 +43,11 @@ export type ComposeSafetyCode =
   | 'COMPOSE_IMAGE_UNPINNED'
   | 'COMPOSE_REPLICAS'
   | 'COMPOSE_RESOURCES_UNBOUNDED'
+  | 'COMPOSE_BUILD_PULL'
+  | 'COMPOSE_BUILD_ARG_RESERVED'
+  | 'DOCKERFILE_INVALID'
+  | 'DOCKERFILE_IMAGE_UNPINNED'
+  | 'DOCKERFILE_FRONTEND_UNPINNED'
   | 'COMPOSE_CONTAINER_NAME'
   | 'COMPOSE_EXTERNAL_RESOURCE'
   | 'COMPOSE_FILE_SOURCE_OUTSIDE_PROJECT'
@@ -52,6 +57,8 @@ export type ComposeSafetyCode =
 /** A finding names the key it refuses, as the repository wrote it, when there is one. */
 export type ComposeSafetyFinding = Readonly<{ code: ComposeSafetyCode; service: string | null; key: string | null }>;
 
+export type ComposeDockerfile = Readonly<{ service: string; path: string | null; inline: string | null; contexts: readonly string[] }>;
+
 export type ComposeSafety = Readonly<{
   ok: boolean;
   services: readonly string[];
@@ -59,6 +66,8 @@ export type ComposeSafety = Readonly<{
   replicas: Readonly<Record<string, number>>;
   /** Bind sources, relative to the project: they must exist in the checkout, so Docker never creates one after the digest. */
   bindSources: readonly string[];
+  /** The Dockerfile of each built service: a path relative to the project, or the inline text, and its named contexts. */
+  dockerfiles: readonly ComposeDockerfile[];
   findings: readonly ComposeSafetyFinding[];
 }>;
 
@@ -140,19 +149,21 @@ function verdict(
   services: readonly string[],
   findings: ComposeSafetyFinding[],
   replicas: Record<string, number> = {},
-  bindSources: readonly string[] = []
+  bindSources: readonly string[] = [],
+  dockerfiles: readonly ComposeDockerfile[] = []
 ): ComposeSafety {
   return Object.freeze({
     ok: findings.length === 0,
     services: Object.freeze([...services].sort()),
     replicas: Object.freeze({ ...replicas }),
     bindSources: Object.freeze([...new Set(bindSources)].sort()),
+    dockerfiles: Object.freeze([...dockerfiles]),
     findings: Object.freeze(findings)
   });
 }
 
 function rejected(code: ComposeSafetyCode): ComposeSafety {
-  return Object.freeze({ ok: false, services: Object.freeze([]), replicas: Object.freeze({}), bindSources: Object.freeze([]), findings: Object.freeze([Object.freeze({ code, service: null, key: null })]) });
+  return Object.freeze({ ok: false, services: Object.freeze([]), replicas: Object.freeze({}), bindSources: Object.freeze([]), dockerfiles: Object.freeze([]), findings: Object.freeze([Object.freeze({ code, service: null, key: null })]) });
 }
 
 function checkKeys(keys: Iterable<string>, allowed: ReadonlySet<string>, service: string | null, prefix: string, add: Add): void {
@@ -172,7 +183,8 @@ function checkService(
   services: ReadonlySet<string>,
   projectDir: string,
   add: Add,
-  bindSources?: string[]
+  bindSources?: string[],
+  dockerfiles?: ComposeDockerfile[]
 ): void {
   checkKeys(Object.keys(service), SERVICE_KEYS, name, '', add);
   if (service.privileged === true) add('COMPOSE_PRIVILEGED', name);
@@ -266,6 +278,23 @@ function checkService(
       add('COMPOSE_HOST_NAMESPACE', name);
     }
     if (nonEmpty(build?.ssh)) add('COMPOSE_BUILD_SSH', name);
+    // Owner decision on PR #261: a build pulls only pinned images, so a refreshed pull and BuildKit's own arguments are refused.
+    if (build?.pull === true || build?.pull === 'true') add('COMPOSE_BUILD_PULL', name);
+    const args = record(build?.args);
+    for (const key of Object.keys(args ?? {})) if (/^BUILDKIT_/i.test(key)) add('COMPOSE_BUILD_ARG_RESERVED', name, `build.args.${key}`);
+    const contextNames = Object.keys(record(build?.additional_contexts) ?? {});
+    if (build && typeof build.dockerfile_inline === 'string') {
+      dockerfiles?.push(Object.freeze({ service: name, path: null, inline: build.dockerfile_inline, contexts: Object.freeze(contextNames) }));
+    } else if (build && typeof build.context === 'string' && insideProject(build.context, projectDir)) {
+      const file = typeof build.dockerfile === 'string' ? build.dockerfile : 'Dockerfile';
+      const absolute = file.startsWith('/') ? file : `${build.context}/${file}`;
+      const relative = absolute.slice(projectDir.length).replace(/^\//, '');
+      if (insideProject(absolute, projectDir) && relative !== '' && relative.split('/').every((segment) => BIND_SEGMENT.test(segment))) {
+        dockerfiles?.push(Object.freeze({ service: name, path: relative, inline: null, contexts: Object.freeze(contextNames) }));
+      } else {
+        add('COMPOSE_BUILD_OUTSIDE_PROJECT', name);
+      }
+    }
     // An image name on a build tags the result host-wide: another workload running that name would run it.
     if (service.image !== undefined) add('COMPOSE_BUILD_TAG', name);
   } else if (typeof service.image !== 'string' || !IMAGE_DIGEST.test(service.image)) {
@@ -331,13 +360,14 @@ export function evaluateComposeSafety(config: unknown, projectDir: string): Comp
   const { findings, add } = collector();
   const services = new Set(names);
   const bindSources: string[] = [];
+  const dockerfiles: ComposeDockerfile[] = [];
   for (const name of names) {
     const service = record(serviceEntries[name]);
     if (!service) {
       add('COMPOSE_SERVICES_INVALID', name);
       continue;
     }
-    checkService(name, service, services, projectDir, add, bindSources);
+    checkService(name, service, services, projectDir, add, bindSources, dockerfiles);
   }
   // Every replica is a container of the bounded inventory: past it, the runtime could no longer be observed.
   let containers = 0;
@@ -353,7 +383,7 @@ export function evaluateComposeSafety(config: unknown, projectDir: string): Comp
   }
   if (containers > MAX_CONTAINERS || containers === 0) add('COMPOSE_REPLICAS', null);
   checkTopLevel(root, projectDir, add);
-  return verdict(names, findings, replicaCounts, bindSources);
+  return verdict(names, findings, replicaCounts, bindSources, dockerfiles);
 }
 
 function stringKeyed(value: unknown): value is Map<string, unknown> {

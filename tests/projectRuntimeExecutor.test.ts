@@ -477,6 +477,8 @@ function harness(overrides: Record<string, unknown> = {}) {
   let inventory = 'docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=\n';
   const results: Record<string, string> = {
     preflight: 'result=ready\n',
+    // The build Dockerfile of the fixture, its base image pinned by digest.
+    dockerfiles: `result=printed\ndockerfile.0=${Buffer.from(`FROM node@sha256:${'a'.repeat(64)}\n`).toString('base64')}\n`,
     stage: `result=staged\ncompose_file=compose.yaml\n${sourceLines()}tree_digest=${TREE}\n`,
     // The model Compose prints for the staged checkout of a creation, then for a created runtime.
     'config-staging': `result=configured\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d'))).toString('base64')}\n`,
@@ -556,7 +558,7 @@ test('the executor re-observes, then creates and activates a genuinely absent ru
   assert.match(result.jobId, /^prov-20261006T050000Z-0a1b2c3d$/);
   assert.deepEqual(h.calls.map((call) => call.kind).slice(0, 5), ['observe', 'coordinate', 'admit', 'host', 'fetch']);
   // The staged source is parsed first; Compose then loads exactly that file, in the staging directory.
-  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'create', 'activate']);
+  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'dockerfiles', 'create', 'activate']);
   assert.ok(h.scripts.get('config')!.includes(sha256(SOURCE)));
   assert.ok(h.scripts.get('config')!.includes(`directory='${stagingPath(TARGET.serverPath, result.jobId)}'`));
   const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
@@ -572,7 +574,7 @@ test('the executor re-observes, then creates and activates a genuinely absent ru
   // Creation alone stops before any container starts.
   const created = harness();
   assert.equal((await run(created, { creation: true })).result, 'SUCCEEDED');
-  assert.deepEqual(hostPhases(created), ['preflight', 'stage', 'config', 'create']);
+  assert.deepEqual(hostPhases(created), ['preflight', 'stage', 'config', 'dockerfiles', 'create']);
 });
 
 test('a compose source that loads a host file is refused before Compose ever reads it', async () => {
@@ -700,7 +702,7 @@ test('the checkout is verified against its creation digest before any activation
   edited.results.activate = 'result=failed\nreason=checkout_modified\n';
   const refused = await run(edited, { activation: true });
   assert.deepEqual([refused.mode, refused.result, refused.reasonCodes, refused.rollback], ['ACTIVATE', 'FAILED', ['ACTIVATE_CHECKOUT_MODIFIED'], 'NOT_NEEDED']);
-  assert.deepEqual(hostPhases(edited), ['source', 'config', 'activate']);
+  assert.deepEqual(hostPhases(edited), ['source', 'config', 'dockerfiles', 'activate']);
   assert.ok(edited.scripts.get('activate')!.includes(TREE));
   // A marker without a digest is not a created runtime: the present path blocks.
   const { treeDigest: _digest, ...legacy } = marker as any;
@@ -959,7 +961,7 @@ test('the coordination authorities are read again immediately before every host 
   // Read before the job starts, then right before each write: no GitHub call or download sits between the last read and a write.
   const full = changing(99, clear);
   assert.equal((await run(full, { creation: true, activation: true })).result, 'SUCCEEDED');
-  assert.deepEqual(sequence(full), ['coordinate', 'preflight', 'coordinate', 'stage', 'config', 'coordinate', 'create', 'coordinate', 'activate']);
+  assert.deepEqual(sequence(full), ['coordinate', 'preflight', 'coordinate', 'stage', 'config', 'dockerfiles', 'coordinate', 'create', 'coordinate', 'activate']);
 
   // Locked while the admission and the download ran: nothing is staged.
   const beforeStage = changing(1, locked);
@@ -972,13 +974,13 @@ test('the coordination authorities are read again immediately before every host 
   const beforeCreate = changing(2, claimed);
   const claimedResult = await run(beforeCreate, { creation: true, activation: true });
   assert.deepEqual([claimedResult.result, claimedResult.reasonCodes], ['BLOCKED', ['TARGET_CLAIMED_BY_TASK']]);
-  assert.deepEqual(hostPhases(beforeCreate), ['preflight', 'stage', 'config', 'discard']);
+  assert.deepEqual(hostPhases(beforeCreate), ['preflight', 'stage', 'config', 'dockerfiles', 'discard']);
 
   // Unreadable before the activation: the created checkout stays as a creation alone leaves it, and nothing starts.
   const beforeActivate = changing(3, null);
   const unreadable = await run(beforeActivate, { creation: true, activation: true });
   assert.deepEqual([unreadable.result, unreadable.reasonCodes, unreadable.rollback], ['BLOCKED', ['COORDINATION_UNAVAILABLE'], 'NOT_NEEDED']);
-  assert.deepEqual(hostPhases(beforeActivate), ['preflight', 'stage', 'config', 'create']);
+  assert.deepEqual(hostPhases(beforeActivate), ['preflight', 'stage', 'config', 'dockerfiles', 'create']);
 
   // The activation of a runtime created earlier reads them again after checking its source, right before starting.
   const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject: TARGET.composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
@@ -986,7 +988,7 @@ test('the coordination authorities are read again immediately before every host 
   existing.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
   const activation = await run(existing, { activation: true });
   assert.deepEqual([activation.mode, activation.result, activation.reasonCodes], ['ACTIVATE', 'BLOCKED', ['TARGET_LOCKED']]);
-  assert.deepEqual(hostPhases(existing), ['source', 'config']);
+  assert.deepEqual(hostPhases(existing), ['source', 'config', 'dockerfiles']);
 });
 
 test('a rollback reads the coordination authorities again and never writes over newly claimed work', async () => {
@@ -998,13 +1000,13 @@ test('a rollback reads the coordination authorities again and never writes over 
   h.deps.readCoordination = (async () => { reads += 1; return reads <= 4 ? clear : locked; }) as any;
   const result = await run(h, { creation: true, activation: true });
   assert.deepEqual([result.result, result.rollback, result.reasonCodes], ['FAILED', 'FAILED', ['HEALTH_CHECK_FAILED', 'TARGET_LOCKED']]);
-  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'create', 'activate']);
+  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'dockerfiles', 'create', 'activate']);
   // Unclaimed, the same failure rolls back.
   const free = harness();
   free.results.activate = 'result=unhealthy\nhealth=unhealthy\n';
   assert.deepEqual(hostPhases(free).length, 0);
   assert.equal((await run(free, { creation: true, activation: true })).result, 'ROLLED_BACK');
-  assert.deepEqual(hostPhases(free), ['preflight', 'stage', 'config', 'create', 'activate', 'rollback']);
+  assert.deepEqual(hostPhases(free), ['preflight', 'stage', 'config', 'dockerfiles', 'create', 'activate', 'rollback']);
 });
 
 test('every service runs under memory, CPU and process ceilings', () => {
@@ -1188,7 +1190,7 @@ test('a failed health check rolls back without destruction, and the activation o
   unhealthy.results.activate = 'result=unhealthy\nhealth=unhealthy\n';
   const rolledBack = await run(unhealthy, { creation: true, activation: true });
   assert.deepEqual([rolledBack.result, rolledBack.rollback], ['ROLLED_BACK', 'SUCCEEDED']);
-  assert.deepEqual(hostPhases(unhealthy), ['preflight', 'stage', 'config', 'create', 'activate', 'rollback']);
+  assert.deepEqual(hostPhases(unhealthy), ['preflight', 'stage', 'config', 'dockerfiles', 'create', 'activate', 'rollback']);
   const rollbackCommand = buildRollbackScript({ jobId: rolledBack.jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true, treeDigest: TREE });
   assert.match(rollbackCommand, /mv /);
 
@@ -1210,7 +1212,7 @@ test('a failed health check rolls back without destruction, and the activation o
   const kept = await run(activateOnly, { activation: true });
   assert.deepEqual([kept.mode, kept.result], ['ACTIVATE', 'ROLLED_BACK']);
   assert.equal(activateOnly.calls.some((call) => call.kind === 'fetch'), false);
-  assert.deepEqual(hostPhases(activateOnly), ['source', 'config', 'activate', 'rollback']);
+  assert.deepEqual(hostPhases(activateOnly), ['source', 'config', 'dockerfiles', 'activate', 'rollback']);
   assert.doesNotMatch(buildRollbackScript({ jobId: kept.jobId, target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdInThisJob: false, treeDigest: TREE }), /mcp-provisioning-quarantine/);
 });
 

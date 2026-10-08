@@ -8,8 +8,10 @@ import {
   evaluateComposeSafety,
   evaluateComposeSource,
   provisioningLabelsOverride,
+  type ComposeDockerfile,
   type ComposeSafetyFinding
 } from './composePolicy.js';
+import { DOCKERFILE_MAX_BYTES, evaluateDockerfile } from './dockerfilePolicy.js';
 import {
   PROVISIONING_LABELS_FILE,
   PROVISIONING_MARKER_FILE,
@@ -466,6 +468,8 @@ export function buildActivateScript(input: {
     `  if [ "$(printf '%s\\n' "$states" | wc -l | tr -d ' ')" -ne ${expected} ]; then sleep 3; continue; fi`,
     '  health=healthy; break',
     'done',
+    // The images the runtime runs, built or pulled, are reported for the attestation.
+    `if [ "$health" = healthy ]; then ids="$(${compose} ps -aq 2>/dev/null)"; images="$(docker inspect --format '{{.Image}}' $ids 2>/dev/null | sort -u | paste -sd, -)"; printf 'images=%s\\n' "$images"; fi`,
     `if [ "$health" = healthy ]; then printf 'result=activated\\n'; else printf 'result=unhealthy\\n'; fi`,
     `printf 'health=%s\\n' "$health"`
   ].join('\n');
@@ -513,6 +517,33 @@ export function buildRollbackScript(input: {
     );
   }
   lines.push(`printf 'result=%s\\n' "$status"`);
+  return lines.join('\n');
+}
+
+/** Prints the Dockerfiles of a checkout whose tree still matches its digest: regular files only, each bounded. */
+export function buildDockerfilesScript(input: { directory: string; treeDigest: string; paths: readonly string[] }): string {
+  if (governedRuntimePath(input.directory) !== input.directory) throw new Error('PROVISIONING_TARGET_INVALID');
+  assertTreeDigest(input.treeDigest);
+  if (input.paths.length === 0 || input.paths.length > 20) throw new Error('PROVISIONING_DOCKERFILES_INVALID');
+  const lines = [
+    ...header('dockerfiles'),
+    PROVISIONING_TREE_DIGEST_SHELL,
+    `directory=${shellQuote(input.directory)}`,
+    'tree="$(tree_digest "$directory")" || fail tree_digest',
+    `[ "$tree" = ${shellQuote(input.treeDigest)} ] || fail checkout_modified`
+  ];
+  input.paths.forEach((path, index) => {
+    if (!path.split('/').every((segment) => /^[A-Za-z0-9._@+-]{1,100}$/.test(segment) && segment !== '..' && segment !== '.')) {
+      throw new Error('PROVISIONING_DOCKERFILES_INVALID');
+    }
+    const file = shellQuote(`${input.directory}/${path}`);
+    lines.push(
+      `{ [ -f ${file} ] && [ ! -L ${file} ]; } || fail dockerfile_missing`,
+      `[ "$(wc -c < ${file} | tr -d ' ')" -le ${DOCKERFILE_MAX_BYTES} ] || fail dockerfile_too_large`,
+      `printf 'dockerfile.${index}=%s\\n' "$(base64 < ${file} | tr -d '\\n')"`
+    );
+  });
+  lines.push("printf 'result=printed\\n'");
   return lines.join('\n');
 }
 
@@ -582,6 +613,7 @@ const PHASE_LIMITS: Record<string, { timeoutMs: number; maxOutputBytes: number }
   source: { timeoutMs: 300_000, maxOutputBytes: 400_000 },
   create: { timeoutMs: 60_000, maxOutputBytes: 8_192 },
   config: { timeoutMs: 120_000, maxOutputBytes: 400_000 },
+  dockerfiles: { timeoutMs: 300_000, maxOutputBytes: 3_000_000 },
   activate: { timeoutMs: 1_200_000, maxOutputBytes: 8_192 },
   rollback: { timeoutMs: 300_000, maxOutputBytes: 8_192 },
   discard: { timeoutMs: 60_000, maxOutputBytes: 8_192 }
@@ -769,6 +801,7 @@ async function execute(
   const steps: Array<{ id: string; status: string }> = [];
   let archiveSha256: string | null = null;
   let composeSourceSha256: string | null = null;
+  let builtImages: string[] = [];
   let findings: readonly ComposeSafetyFinding[] = [];
   let rollback: ProjectRuntimeExecution['rollback'] = 'NOT_NEEDED';
 
@@ -814,6 +847,7 @@ async function execute(
       steps,
       archiveSha256,
       composeSourceSha256,
+      builtImages,
       composeFindings: findings,
       result,
       reasonCodes,
@@ -835,10 +869,47 @@ async function execute(
     steps.push({ id: 'discard-staging', status: values.get('result') === 'discarded' ? 'DONE' : 'FAILED' });
   };
 
+  const checkBuildInputs = async (
+    dockerfiles: readonly ComposeDockerfile[],
+    directory: string,
+    digest: string
+  ): Promise<{ result: ProjectRuntimeExecutionResult; reasonCodes: string[] } | null> => {
+    if (dockerfiles.length === 0) return null;
+    const onDisk = dockerfiles.filter((entry) => entry.path !== null);
+    const paths = [...new Set(onDisk.map((entry) => entry.path!))];
+    let printed = new Map<string, string>();
+    if (paths.length > 0) {
+      printed = await host('dockerfiles', buildDockerfilesScript({ directory, treeDigest: digest, paths }));
+      if (printed.get('result') !== 'printed') {
+        steps.push({ id: 'build-inputs', status: 'FAILED' });
+        return { result: 'FAILED', reasonCodes: [hostReason('DOCKERFILES', printed)] };
+      }
+    }
+    const found: ComposeSafetyFinding[] = [];
+    for (const entry of dockerfiles) {
+      let text: string | null = entry.inline;
+      if (entry.path !== null) {
+        const encoded = printed.get(`dockerfile.${paths.indexOf(entry.path)}`) ?? '';
+        const bytes = /^[A-Za-z0-9+/]*={0,2}$/.test(encoded) ? Buffer.from(encoded, 'base64') : null;
+        text = bytes && bytes.length <= DOCKERFILE_MAX_BYTES && Buffer.from(bytes.toString('utf8'), 'utf8').equals(bytes) ? bytes.toString('utf8') : null;
+      }
+      for (const finding of evaluateDockerfile(text ?? '\u0000', entry.contexts)) {
+        found.push(Object.freeze({ code: finding.code, service: entry.service, key: finding.key }));
+      }
+    }
+    if (found.length > 0) {
+      findings = found;
+      steps.push({ id: 'build-inputs', status: 'BLOCKED' });
+      return { result: 'BLOCKED', reasonCodes: ['COMPOSE_UNSAFE'] };
+    }
+    steps.push({ id: 'build-inputs', status: 'DONE' });
+    return null;
+  };
+
   type ComposeCheck = { services: readonly string[]; replicas: Readonly<Record<string, number>>; bindSources: readonly string[] } | { result: ProjectRuntimeExecutionResult; reasonCodes: string[] };
   // The compose file is parsed before Compose loads anything: a key that reads a host file, however it is
   // spelled, never runs. Compose then builds the model from that exact file, which is checked in turn.
-  const checkCompose = async (printed: Map<string, string>, composeFile: string, unreadable: string, staged: boolean): Promise<ComposeCheck> => {
+  const checkCompose = async (printed: Map<string, string>, composeFile: string, unreadable: string, staged: boolean, digest: string): Promise<ComposeCheck> => {
     const source = COMPOSE_FILES.has(composeFile) && printed.get('compose_file') === composeFile ? printedComposeSource(printed) : null;
     if (!source) {
       steps.push({ id: 'compose-source', status: 'FAILED' });
@@ -869,6 +940,9 @@ async function execute(
       return { result: 'BLOCKED', reasonCodes: ['COMPOSE_UNSAFE'] };
     }
     steps.push({ id: 'compose-policy', status: 'DONE' });
+    // Owner decision on PR #261: every image a build pulls is pinned, read from the digested checkout itself.
+    const inputs = await checkBuildInputs(safety.dockerfiles, staged ? stagingPath(target.serverPath, jobId) : target.serverPath, digest);
+    if (inputs) return inputs;
     return { services: safety.services, replicas: safety.replicas, bindSources: safety.bindSources };
   };
 
@@ -924,7 +998,7 @@ async function execute(
     // The pre-state is proven empty on the host: the backup records that absence.
     steps.push({ id: 'backup', status: 'DONE' });
     const file = staged.get('compose_file') ?? '';
-    const checked = await checkCompose(staged, file, 'STAGE_SOURCE_UNREADABLE', true);
+    const checked = await checkCompose(staged, file, 'STAGE_SOURCE_UNREADABLE', true, stagedDigest);
     if ('result' in checked) {
       await discard();
       return finish(checked.result, checked.reasonCodes);
@@ -968,7 +1042,7 @@ async function execute(
       steps.push({ id: 'compose-source', status: 'FAILED' });
       return finish('FAILED', [hostReason('SOURCE', sourced)]);
     }
-    const checked = await checkCompose(sourced, composeFile, 'SOURCE_UNREADABLE', false);
+    const checked = await checkCompose(sourced, composeFile, 'SOURCE_UNREADABLE', false, treeDigest);
     if ('result' in checked) return finish(checked.result, checked.reasonCodes);
     services = checked.services;
     bindSources = checked.bindSources;
@@ -989,6 +1063,7 @@ async function execute(
   });
   const activated = await host('activate', buildActivateScript({ jobId, target, composeFile, labelsOverride, healthTimeoutSeconds: 180, treeDigest,
     expectedContainers: Object.values(replicas).reduce((sum, count) => sum + count, 0), bindSources }));
+  builtImages = (activated.get('images') ?? '').split(',').filter((image) => /^sha256:[0-9a-f]{64}$/.test(image)).sort();
   if (activated.get('result') === 'activated' && activated.get('health') === 'healthy') {
     steps.push({ id: 'activate', status: 'DONE' }, { id: 'health', status: 'DONE' });
     return finish('SUCCEEDED', []);
