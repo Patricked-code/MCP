@@ -62,6 +62,13 @@
   - IPAM : pilote par défaut sans options seulement.
   - Capacité : la préparation exige 2 Gio et 200 000 inodes libres sous `/opt/apps` et refuse au-delà de 20 entrées en quarantaine.
   - **En attente du propriétaire** : épingler toutes les entrées d'un build (`FROM`, réseau des `RUN`). Voir le fil de revue ; décision de politique, pas de correction unilatérale.
+- **Septième revue Codex (six constats : quatre corrigés, un sans reproduction, un partiel soumis au propriétaire).**
+  - Noms réservés : un dépôt contenant `.mcp-provisioning.json` ou `.mcp-provisioning.labels.json` est refusé (`reserved_name_present`).
+  - Parents de la cible : chaque script qui écrit résout le parent de la cible ; seul `/opt/apps` peut être un lien sur l'hôte, rien en dessous (`target_parent_outside`).
+  - Rollback : Compose ne recharge le fichier que si le checkout a encore son empreinte ; sinon les conteneurs du projet sont arrêtés par label, sans charger un fichier réécrit.
+  - Empreinte : un FIFO, socket ou périphérique dans le checkout fait échouer l'empreinte.
+  - Profils : non reproduit. Compose v5.1.1 et v2.38.2 retirent du modèle les services d'un profil inactif ; ils ne comptent donc pas dans les conteneurs attendus.
+  - Stockage des builds : plancher de 10 Gio libres sur le stockage Docker avant l'activation (`docker_capacity`). Une borne stricte par build relève de la configuration du démon : **décision propriétaire**, comme les entrées des builds.
 - **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
 - **Preuves.**
   - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.

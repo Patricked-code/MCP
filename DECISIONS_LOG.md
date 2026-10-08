@@ -61,6 +61,11 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
   - **Rien de conservé n'est réutilisé.** Volumes et réseaux laissés par un rollback bloquent une nouvelle création ; la quarantaine est bornée et un plancher de capacité protège l'hôte, sans rien supprimer.
   - **Réplicas attendus enregistrés.** Un runtime n'est complet qu'avec exactement ses réplicas.
   - **Entrées des builds : décision propriétaire.** Exiger des `FROM` épinglés et un build sans réseau changerait ce que les projets peuvent faire ; la question est posée au propriétaire au lieu d'être tranchée par l'agent.
+- **Après la septième revue de la PR #261 :**
+  - **Le checkout n'écrit que là où son chemin le dit.** Le parent de la cible est résolu sur l'hôte avant chaque écriture ; les noms que le provisioning réserve sont refusés dans le dépôt.
+  - **Le rollback ne charge pas un fichier non vérifié.** Sans empreinte intacte, l'arrêt passe par les labels des conteneurs.
+  - **Seuls fichiers, dossiers et liens.** Tout autre type d'entrée fait échouer l'empreinte.
+  - **Quota des builds : décision propriétaire.** Un plancher protège l'hôte ; une borne stricte demande une configuration du démon Docker hors de ce dépôt.
 
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
 

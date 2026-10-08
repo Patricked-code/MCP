@@ -66,6 +66,23 @@ const FORBIDDEN_COMPOSE_KEYS = '^[[:space:]-]*(env_file|extends|include|label_fi
 
 
 
+const GOVERNED_ROOT = '/opt/apps';
+// Room Docker keeps for a build before activation starts it.
+const MIN_DOCKER_FREE_KIB = 10 * 1024 * 1024;
+
+/**
+ * Resolves the target's parent on the host and fails unless it lies exactly
+ * where its path says below the governed root: the root itself may be a link
+ * on the host, nothing below it may redirect a write elsewhere.
+ */
+export function buildParentGuardLines(target: string, root = GOVERNED_ROOT, onFail = 'fail target_parent_outside'): string[] {
+  const parent = target.slice(0, target.lastIndexOf('/'));
+  if (!target.startsWith(`${root}/`) || (parent !== root && !parent.startsWith(`${root}/`))) throw new Error('PROVISIONING_TARGET_INVALID');
+  return [
+    `real_root="$(readlink -f -- ${shellQuote(root)})" && real_parent="$(readlink -f -- ${shellQuote(parent)})" && [ "$real_parent" = "$real_root"${shellQuote(parent.slice(root.length))} ] || ${onFail}`
+  ];
+}
+
 /** Bounds of an archive's expanded content, checked before any extraction. */
 export const PROVISIONING_ARCHIVE_LIMITS = Object.freeze({ maxEntries: 100_000, maxBytes: 1024 * 1024 * 1024 });
 
@@ -227,6 +244,7 @@ export function buildStageScript(input: { jobId: string; target: ProjectRuntimeT
   return [
     ...header('stage'),
     PROVISIONING_TREE_DIGEST_SHELL,
+    ...buildParentGuardLines(input.target.serverPath),
     `[ ! -e ${shellQuote(input.target.serverPath)} ] || fail target_present`,
     `[ ! -e ${shellQuote(staging)} ] || fail staging_present`,
     // The component's own compose project: another component of the same repository never blocks it.
@@ -251,6 +269,8 @@ export function buildStageScript(input: { jobId: string; target: ProjectRuntimeT
     `mkdir -p ${shellQuote(staging)} || fail extract`,
     `tar -xzf ${shellQuote(archive)} -C ${shellQuote(staging)} --strip-components=1 --no-same-owner --no-same-permissions || fail extract`,
     `directory=${shellQuote(staging)}`,
+    // The repository never ships the files provisioning writes and the digest leaves out.
+    `for reserved in ${shellQuote(PROVISIONING_MARKER_FILE)} ${shellQuote(LABELS_FILE)}; do if [ -e "$directory/$reserved" ] || [ -L "$directory/$reserved" ]; then fail reserved_name_present; fi; done`,
     "file=''",
     'for candidate in compose.yaml compose.yml docker-compose.yaml docker-compose.yml; do',
     '  if [ -e "$directory/$candidate" ] || [ -L "$directory/$candidate" ]; then file="$candidate"; break; fi',
@@ -279,6 +299,7 @@ export function buildCreateScript(input: {
   const target = shellQuote(input.target.serverPath);
   return [
     ...header('create'),
+    ...buildParentGuardLines(input.target.serverPath),
     `[ -d ${shellQuote(staging)} ] || fail staging_missing`,
     `[ ! -e ${target} ] || fail target_present`,
     `mv ${shellQuote(staging)} ${target} || fail promote`,
@@ -370,6 +391,7 @@ export function buildActivateScript(input: {
   return [
     ...header('activate'),
     PROVISIONING_TREE_DIGEST_SHELL,
+    ...buildParentGuardLines(input.target.serverPath),
     `[ -f ${marker} ] || fail marker_missing`,
     `grep -q ${shellQuote(`"revision":"${input.target.revision}"`)} ${marker} || fail marker_mismatch`,
     `grep -q ${shellQuote(`"composeProject":"${input.target.composeProject}"`)} ${marker} || fail marker_mismatch`,
@@ -380,6 +402,10 @@ export function buildActivateScript(input: {
     ...composeNames(input.target.composeProject, input.composeFile),
     `labels=${labels}`,
     `cd ${directory} || fail target_missing`,
+    // A build fills Docker's own storage: it keeps a floor of room before anything is built.
+    `docker_root="$(docker info --format '{{.DockerRootDir}}' 2>/dev/null)" || fail docker_unavailable`,
+    `docker_avail="$(df -Pk "$docker_root" | awk 'NR==2 {print $4}')"`,
+    `[ "$docker_avail" -ge ${MIN_DOCKER_FREE_KIB} ] 2>/dev/null || fail docker_capacity`,
     `if ! ${compose} up -d --build >/dev/null 2>&1; then printf 'result=unhealthy\\nhealth=start_failed\\n'; exit 0; fi`,
     `deadline=$(( $(date +%s) + ${timeout} ))`,
     'health=starting',
@@ -405,24 +431,35 @@ export function buildRollbackScript(input: {
   target: ProjectRuntimeTarget;
   composeFile: string;
   createdInThisJob: boolean;
+  /** The digest the checkout had when it was validated: Compose loads it again only if unchanged. */
+  treeDigest: string;
 }): string {
   assertJobId(input.jobId);
   assertTarget(input.target);
   assertComposeFile(input.composeFile);
+  assertTreeDigest(input.treeDigest);
   const directory = shellQuote(input.target.serverPath);
   const lines = [
     ...header('rollback'),
+    PROVISIONING_TREE_DIGEST_SHELL,
     'status=rolled_back',
+    'parent_ok=yes',
+    ...buildParentGuardLines(input.target.serverPath, GOVERNED_ROOT, "{ parent_ok=no; status=failed; printf 'warning=target_parent_outside\\n'; }"),
     `directory=${directory}`,
     ...composeNames(input.target.composeProject, input.composeFile),
-    'if [ -d "$directory" ]; then',
+    // A running service may have rewritten its compose file: Compose loads it only if the checkout is the one validated.
+    `if [ "$parent_ok" = yes ] && [ -d "$directory" ] && tree="$(tree_digest "$directory")" && [ "$tree" = ${shellQuote(input.treeDigest)} ]; then`,
     `  (cd "$directory" && ${CLEAN_ENV} docker compose -p "$project" -f "$file" down --remove-orphans >/dev/null 2>&1) || status=failed`,
+    'else',
+    `  ids="$(docker ps -q --filter ${shellQuote(`label=com.docker.compose.project=${input.target.composeProject}`)} 2>/dev/null)" || status=failed`,
+    '  if [ -n "$ids" ]; then docker stop $ids >/dev/null 2>&1 || status=failed; fi',
+    "  printf 'teardown=stopped\\n'",
     'fi'
   ];
   if (input.createdInThisJob) {
     lines.push(
-      `mkdir -p ${shellQuote(PROVISIONING_QUARANTINE_ROOT)} || status=failed`,
-      `if [ -e ${directory} ]; then mv ${directory} ${shellQuote(`${PROVISIONING_QUARANTINE_ROOT}/${input.jobId}`)} || status=failed; fi`
+      `if [ "$parent_ok" = yes ]; then mkdir -p ${shellQuote(PROVISIONING_QUARANTINE_ROOT)} || status=failed; fi`,
+      `if [ "$parent_ok" = yes ] && [ -e ${directory} ]; then mv ${directory} ${shellQuote(`${PROVISIONING_QUARANTINE_ROOT}/${input.jobId}`)} || status=failed; fi`
     );
   }
   lines.push(`printf 'result=%s\\n' "$status"`);
@@ -860,6 +897,7 @@ async function execute(
   }
   steps.push({ id: 'activate', status: 'FAILED' }, { id: 'health', status: activated.get('health') ?? 'unknown' });
   const rolledBack = await host('rollback', buildRollbackScript({
+    treeDigest,
     jobId,
     target,
     composeFile,

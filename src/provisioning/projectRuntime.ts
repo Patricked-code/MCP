@@ -162,6 +162,7 @@ export const PROVISIONING_LABELS_FILE = '.mcp-provisioning.labels.json';
 export const PROVISIONING_TREE_DIGEST_SHELL = String.raw`tree_digest() {
   [ -d "$1" ] || return 1
   [ -z "$(find "$1" ! -readable -print -quit 2>/dev/null)" ] || return 1
+  [ -z "$(find "$1" ! -type f ! -type d ! -type l -print -quit 2>/dev/null)" ] || return 1
   td_files="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${PROVISIONING_LABELS_FILE}' \) -prune -o -type f -exec sha256sum -- {} +)" || return 1
   td_modes="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${PROVISIONING_LABELS_FILE}' \) -prune -o \( -type f -o -type d \) -printf '%y %m %U %G %p\n')" || return 1
   td_links="$(cd "$1" && find . -type l -exec sh -c 'for l do t="$(readlink -- "$l")" || exit 1; printf "%s %s\n" "$(printf "%s" "$l" | sha256sum | cut -d" " -f1)" "$(printf "%s" "$t" | sha256sum | cut -d" " -f1)"; done' tree-link {} +)" || return 1
