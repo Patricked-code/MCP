@@ -1,3 +1,4 @@
+import { domainToASCII } from 'node:url';
 import { z } from 'zod';
 
 import type {
@@ -170,8 +171,11 @@ type DomainDeclaration = {
   evidenceRefs: string[];
 };
 
+/** Declarations compare in the ASCII (Punycode) form servers report; an invalid name stays as written. */
 function normalizeDomain(value: string): string {
-  return value.trim().toLowerCase().replace(/\.$/, '');
+  const name = value.trim().toLowerCase().replace(/\.$/, '');
+  if (/^[\x00-\x7f]*$/.test(name)) return name;
+  return domainToASCII(name) || name;
 }
 
 function sameId(left: string, right: string): boolean {

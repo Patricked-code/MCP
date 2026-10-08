@@ -467,7 +467,8 @@ export async function collectDocumentationObservation(
 }
 
 export async function collectLiveStateObservations(): Promise<LiveStateObservations> {
-  const [github, s1, runtime, inventory, targetProject] = await Promise.all([
+  // Every source is read concurrently, so none ages behind another before reconciliation.
+  const [github, s1, runtime, inventory, targetProject, servedDomains] = await Promise.all([
     collectGithubObservation(),
     collectS1Observation(),
     collectRuntimeObservation(),
@@ -480,7 +481,8 @@ export async function collectLiveStateObservations(): Promise<LiveStateObservati
         projectIds: [],
         reasonCodes: ['TARGET_PROJECT_COLLECTION_FAILED']
       }
-    }))
+    })),
+    collectServedDomainInventories({ runReadOnly: runServerReadOnly, now: () => new Date() }).catch(() => undefined)
   ]);
   const documentation = await collectDocumentationObservation(github.head, s1.head);
   const provisionedRuntimes = await collectProvisionedRuntimes({
@@ -489,8 +491,6 @@ export async function collectLiveStateObservations(): Promise<LiveStateObservati
     runReadOnly: runS1ReadOnly,
     now: () => new Date()
   }).catch(() => undefined);
-  const servedDomains = await collectServedDomainInventories({ runReadOnly: runServerReadOnly, now: () => new Date() })
-    .catch(() => undefined);
   const capabilities = collectCapabilityObservation();
   const inventoryContradictions = inventory.contradictions.map((entry) => entry.code);
   const governance: CurrentStateGovernanceObservation = {

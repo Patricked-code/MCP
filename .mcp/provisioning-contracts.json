@@ -215,7 +215,7 @@
       "resourceTypes": [
         "DOMAIN_BINDING"
       ],
-      "note": "SSH inventory of the Plesk virtual hosts; not bound to C5 as a served-domain observation authority."
+      "note": "SSH inventory of the Plesk virtual host directories; the C5 served-domain observation reads Plesk records through Live State instead (src/liveState/servedDomains.ts)."
     },
     {
       "name": "list_domains_s2",
@@ -224,7 +224,7 @@
       "resourceTypes": [
         "DOMAIN_BINDING"
       ],
-      "note": "SSH inventory of the Plesk virtual hosts; not bound to C5 as a served-domain observation authority."
+      "note": "SSH inventory of the Plesk virtual host directories; the C5 served-domain observation reads Plesk records through Live State instead (src/liveState/servedDomains.ts)."
     },
     {
       "name": "POST /evidence/github/readonly",
@@ -938,7 +938,7 @@
         "server id declared in .mcp/server-map.json"
       ],
       "absenceProof": {
-        "provenBy": "A current C5 domain resolution NONE with DOMAIN_NONE_CONFIRMED for the resolved server; no served-domain observation authority exists yet, so absence cannot be proven today.",
+        "provenBy": "A current C5 domain resolution NONE with DOMAIN_NONE_CONFIRMED for the resolved server, from the Live State served-domain observation of the Plesk subscriptions GitRegistry binds to the project (TB-W3-F-04 increment 1); without such a binding the observation is unavailable and absence is not proven.",
         "neverAbsentWhen": [
           "DOMAIN_OBSERVATION_UNAVAILABLE",
           "DOMAIN_EVIDENCE_STALE",
@@ -974,8 +974,8 @@
               "TB-W3-F-04",
               "TB-W4-I1-01"
             ],
-            "reason": "C5 has no served-domain observation authority and stays UNVERIFIED; list_domains_s1 and list_domains_s2 are unbound SSH inventories.",
-            "reuse": "WRAP list_domains_s1, list_domains_s2 and the read-only canaries into the bounded served-domain observation C5 lacks"
+            "reason": "Increment 1 delivers the Live State served-domain observation (Plesk records of active names, scoped to the subscriptions GitRegistry binds to the project) as the C5 authority; the step stays carried until it is deployed and attested, and the generated www alias is not yet observed.",
+            "reuse": "WRAP the Live State collection and the read-only SSH channel into the bounded served-domain observation (src/liveState/servedDomains.ts); list_domains_s1/s2 stay directory inventories"
           }
         },
         {

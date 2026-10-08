@@ -35,6 +35,13 @@
     - chaque inventaire vieillit depuis sa propre lecture (`observedAt`), pas depuis la réconciliation du snapshot.
   - **Limite connue** : l'alias `www.` généré par Plesk n'est pas inventorié. Une déclaration `www.<domaine>` reste `DOMAIN_DECLARATION_UNOBSERVED`, donc `UNVERIFIED` : un faux négatif fermé, jamais un faux positif.
 - **Cinquième round Codex (un constat, corrigé).** Filtrer l'observation sur les seuls noms déclarés masquait un nom actif non déclaré servi par l'abonnement du projet : GW-09 pouvait conclure `RESOLVED` au lieu de `DOMAIN_OBSERVATION_UNDECLARED`. L'inventaire porte désormais l'abonnement Plesk de chaque nom (`webspace_id`). L'observation garde tous les noms actifs des abonnements qui servent un domaine déclaré du projet ; les autres abonnements sont exclus. Un nom sans abonnement lisible rend l'observation indisponible.
+- **Sixième round Codex (cinq constats, corrigés).**
+  - **Propriété** : un abonnement n'est plus attribué au projet parce qu'il sert un nom déclaré, car un nom rattaché par erreur à l'abonnement d'un autre client aurait suffi à `RESOLVED`. La propriété vient désormais du `serverPath` revu de chaque mapping GitRegistry (`/var/www/vhosts/<domaine principal>`), et l'inventaire porte le domaine principal de l'abonnement de chaque nom. Sans un tel binding, l'observation est indisponible.
+  - La requête est plafonnée à 1001 lignes : un inventaire trop grand est détecté sans être lu entièrement.
+  - Les inventaires de domaines sont collectés en même temps que les autres sources de Live State, sans retarder l'horodatage commun.
+  - GW-09 compare les déclarations Unicode sous leur forme Punycode (`domainToASCII`).
+  - `.mcp/provisioning-contracts.json` décrit l'observation livrée (preuve d'absence, étape `observe-binding`). L'étape reste portée par `TB-W3-F-04` jusqu'au déploiement attesté.
+  - RED : 6 tests sur 18 échouent sur l'ancien source. GREEN : 18/18. Chaîne CI locale : 1008 tests.
 - **Aucune écriture S1** : aucun binding, certificat ou DNS n'est créé ou modifié.
 - **NEXT_ACTION** : PR draft, CI verte, revue, fusion, Governed Deploy et attestation ; ensuite l'incrément 2 de F-04 (backup et bind-domain consentis).
 
