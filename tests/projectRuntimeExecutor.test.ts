@@ -184,7 +184,10 @@ test('the compose safety policy admits only a project-contained, locally bound r
     [{ build: undefined, image: 'vendor/app:latest' }, {}, 'COMPOSE_IMAGE_UNPINNED'],
     // Replicas stay within the bounded inventory.
     [{ scale: 21 }, {}, 'COMPOSE_REPLICAS'],
-    [{ deploy: { replicas: 30 } }, {}, 'COMPOSE_REPLICAS']
+    [{ deploy: { replicas: 30 } }, {}, 'COMPOSE_REPLICAS'],
+    // A network keeps the default address management, without a host plugin or options.
+    [{}, { networks: { default: { name: 'mcp-portal-0123456789ab_default', ipam: { driver: 'host-plugin' } } } }, 'COMPOSE_NETWORK_DRIVER'],
+    [{}, { networks: { default: { name: 'mcp-portal-0123456789ab_default', ipam: { options: { x: 'y' } } } } }, 'COMPOSE_NETWORK_DRIVER']
   ];
   for (const [service, extra, code] of unsafe) {
     const result = evaluateComposeSafety(composeConfig(dir, service, extra), dir) as any;
@@ -212,6 +215,8 @@ test('the compose safety policy admits only a project-contained, locally bound r
   const shared = composeConfig(dir);
   shared.services.worker = { image: `busybox@sha256:${'a'.repeat(64)}`, network_mode: 'service:api', deploy: { replicas: 2 } };
   assert.deepEqual((evaluateComposeSafety(shared, dir) as any).findings, []);
+  // The expected containers of each service are part of the verdict.
+  assert.deepEqual((evaluateComposeSafety(shared, dir) as any).replicas, { api: 1, worker: 2 });
   for (const invalid of [null, {}, { services: {} }, { services: { 'bad name': {} } }, 'x']) {
     assert.equal((evaluateComposeSafety(invalid, dir) as any).ok, false, JSON.stringify(invalid));
   }
@@ -341,6 +346,12 @@ test('host scripts quote every value, verify before extracting and never delete'
   assert.ok(stage!.indexOf('sha256sum') < stage!.indexOf('tar '), 'the archive digest is verified before extraction');
   // Volumes a failed earlier job left behind are existing state: creation never reattaches them.
   assert.ok(stage!.indexOf('docker volume ls') > 0 && stage!.indexOf('compose_project_volumes_present') < stage!.indexOf('mkdir -p'));
+  // A network kept by a failed rollback is existing state too, and the host keeps room before extracting.
+  for (const reason of ['compose_project_networks_present', 'quarantine_full', 'host_capacity', 'host_inodes']) {
+    assert.ok(stage!.indexOf(reason) > 0 && stage!.indexOf(reason) < stage!.indexOf('mkdir -p'), reason);
+  }
+  // Activation waits for the expected number of containers, not only for healthy ones.
+  assert.match(activate!, /wc -l/);
   // Only the component's own compose project counts: another component of the same repository never blocks it.
   assert.doesNotMatch(stage!, /provisioning\.repository/);
   assert.match(stage!, /label=com\.docker\.compose\.project=mcp-portal-0123456789ab/);
@@ -467,6 +478,7 @@ function harness(overrides: Record<string, unknown> = {}) {
       calls.push({ kind: 'fetch', detail: `${input.repositoryId}@${input.revision}` });
       return { ok: true, sha256: 'f'.repeat(64), bytes: 1024 };
     },
+    readJobFile: async (path: string) => files.get(path) ?? null,
     writeJobFile: async (path: string, content: string) => {
       calls.push({ kind: 'write-file', detail: path });
       files.set(path, content);
@@ -482,7 +494,15 @@ function harness(overrides: Record<string, unknown> = {}) {
   };
   return {
     calls, files, results, scripts, deps,
-    setInventory(value: string) { inventory = value; }
+    setInventory(value: string, trusted = true) {
+      inventory = value;
+      // A runtime created by provisioning has its marker recorded in the job data, out of the checkout's reach.
+      const encoded = value.match(/component\.0\.marker=(\S+)/)?.[1];
+      if (trusted && encoded) {
+        const marker = JSON.parse(Buffer.from(encoded, 'base64').toString('utf8'));
+        files.set(`/app/data/provisioning/${marker.jobId}/marker.json`, JSON.stringify(marker));
+      }
+    }
   };
 }
 
@@ -647,6 +667,25 @@ test('the checkout is verified against its creation digest before any activation
   const old = harness();
   old.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(legacy)).toString('base64')}\n`);
   assert.deepEqual((await run(old, { activation: true })).reasonCodes, ['TARGET_PATH_PRESENT']);
+});
+
+test('a checkout marker is trusted only when the job data recorded the same one', async () => {
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject: TARGET.composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  const inventory = `docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`;
+  // A marker the job data never recorded, or one rewritten with another digest, is no created runtime.
+  for (const record of [null, JSON.stringify({ ...marker, treeDigest: 'd'.repeat(64) })]) {
+    const h = harness();
+    h.setInventory(inventory, false);
+    if (record) h.files.set(`/app/data/provisioning/${marker.jobId}/marker.json`, record);
+    assert.deepEqual((await run(h, { activation: true })).reasonCodes, ['TARGET_PATH_PRESENT']);
+    assert.deepEqual(hostPhases(h), []);
+  }
+  // Creation records the marker in the job data before writing the checkout.
+  const created = harness();
+  const result = await run(created, { creation: true });
+  const recorded = JSON.parse(created.files.get(`/app/data/provisioning/${result.jobId}/marker.json`)!);
+  assert.deepEqual([recorded.treeDigest, recorded.replicas], [TREE, { api: 1 }]);
+  assert.ok(created.calls.findIndex((call) => call.detail.endsWith('/marker.json')) < created.calls.findIndex((call) => call.detail === 'create'));
 });
 
 test('the tree digest ignores the provisioning files and changes with any content, mode or link change', async () => {

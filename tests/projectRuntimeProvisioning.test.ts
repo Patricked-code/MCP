@@ -73,7 +73,8 @@ function marker(services: string[] = ['api']): string {
   return `component.0.marker=${Buffer.from(JSON.stringify({
     schemaVersion: 1, jobId: 'prov-20261006T000000Z-00000000', projectId: 'portal', mappingId: TARGET.mappingId,
     repositoryId: TARGET.repositoryId, revision: REVISION, composeProject: TARGET.composeProject, composeFile: 'compose.yaml',
-    createdAt: OBSERVED_AT, treeDigest: 'e'.repeat(64), services
+    createdAt: OBSERVED_AT, treeDigest: 'e'.repeat(64), services,
+    replicas: Object.fromEntries(services.map((service) => [service, service === 'worker' ? 2 : 1]))
   })).toString('base64')}`;
 }
 
@@ -214,7 +215,9 @@ test('provisioning plans only a genuinely absent runtime at its exact, declared 
     ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`],
     // A checkout edited since its creation, or one that could not be digested, is never the admitted revision.
     [...PRESENT_SAME.slice(0, 4), `component.0.tree=${'f'.repeat(64)}`],
-    [...PRESENT_SAME.slice(0, 4), 'component.0.tree=unavailable']
+    [...PRESENT_SAME.slice(0, 4), 'component.0.tree=unavailable'],
+    // A service missing one of its expected replicas is incomplete.
+    ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')},${container('portal-worker-1', 'worker')}`, marker(['api', 'worker']), `component.0.tree=${'e'.repeat(64)}`]
   ];
   for (const lines of degraded) {
     const result = plan({ inventory: inventory(lines) });
