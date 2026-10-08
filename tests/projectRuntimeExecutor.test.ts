@@ -1037,6 +1037,29 @@ test('the revision is admitted again after the download, and the host preflight 
   assert.equal(full.calls.some((call) => call.kind === 'fetch'), false);
 });
 
+test('build Dockerfiles are read from the digested checkout and their images attested', async () => {
+  const pinned = `FROM node@sha256:${'a'.repeat(64)}\nRUN true\n`;
+  const h = harness();
+  h.results.dockerfiles = `result=printed\ndockerfile.0=${Buffer.from(pinned).toString('base64')}\n`;
+  h.results.activate = `result=activated\nhealth=healthy\nimages=sha256:${'c'.repeat(64)}\n`;
+  const result = await run(h, { creation: true, activation: true });
+  assert.equal(result.result, 'SUCCEEDED');
+  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'dockerfiles', 'create', 'activate']);
+  assert.ok(h.scripts.get('dockerfiles')!.includes(TREE));
+  const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
+  assert.deepEqual(attestation.builtImages, [`sha256:${'c'.repeat(64)}`]);
+  // An unpinned base image never reaches the promotion.
+  const floating = harness();
+  floating.results.dockerfiles = `result=printed\ndockerfile.0=${Buffer.from('FROM node:20\n').toString('base64')}\n`;
+  const blocked = await run(floating, { creation: true, activation: true });
+  assert.deepEqual([blocked.result, blocked.reasonCodes], ['BLOCKED', ['COMPOSE_UNSAFE']]);
+  assert.deepEqual(blocked.findings, [{ code: 'DOCKERFILE_IMAGE_UNPINNED', service: 'api', key: 'node:20' }]);
+  assert.deepEqual(hostPhases(floating), ['preflight', 'stage', 'config', 'dockerfiles', 'discard']);
+  // The activation reports the images it built.
+  const script = buildActivateScript({ jobId: 'prov-20261006T050000Z-0a1b2c3d', target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE });
+  assert.match(script, /images=/);
+});
+
 test('bind sources are named by the policy, relative to the project', () => {
   const dir = '/opt/apps/portal-api';
   const safety = evaluateComposeSafety(composeConfig(dir), dir) as any;
