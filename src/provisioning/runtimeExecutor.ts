@@ -676,7 +676,16 @@ async function withTrustedMarkers(inventory: ProvisionedRuntimeInventory, deps: 
     } catch {
       trusted = false;
     }
-    return trusted ? component : Object.freeze({ ...component, marker: null, treeDigest: null });
+    if (!trusted) return Object.freeze({ ...component, marker: null, treeDigest: null, expectedImages: null });
+    const recordedImages = await deps.readJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${component.marker.jobId}/images.json`).catch(() => null);
+    let expectedImages: string[] | null = null;
+    try {
+      const parsed = recordedImages === null ? null : JSON.parse(recordedImages);
+      expectedImages = Array.isArray(parsed) && parsed.every((image) => typeof image === 'string' && /^sha256:[0-9a-f]{64}$/.test(image)) ? parsed : null;
+    } catch {
+      expectedImages = null;
+    }
+    return Object.freeze({ ...component, expectedImages });
   }));
   return Object.freeze({ ...inventory, components: Object.freeze(components) });
 }
@@ -789,7 +798,7 @@ async function execute(
   // The revision is admitted afresh before any write, even for a runtime created by an earlier job, and only
   // from the official branch the mapping names.
   const branch = plan.governance?.officialBranch ?? null;
-  const admission = branch === null
+  let admission = branch === null
     ? null
     : await deps.admitRevision({ repositoryId: target.repositoryId, revision: target.revision, branch }).catch(() => null);
   if (!admission?.admitted || (admission.kind !== 'CI_GATE' && admission.kind !== 'MANUAL_CONSENT')) {
@@ -973,6 +982,7 @@ async function execute(
 
     // The admission is read again after the download: a branch or CI change meanwhile never reaches the host.
     const readmitted = await deps.admitRevision({ repositoryId: target.repositoryId, revision: target.revision, branch: branch! }).catch(() => null);
+    if (readmitted?.admitted) admission = readmitted;
     if (!readmitted?.admitted) {
       steps.push({ id: 'backup', status: 'BLOCKED' });
       return finish('BLOCKED', [readmitted && readmitted.reasonCode !== 'REVISION_ADMITTED' ? readmitted.reasonCode : 'REVISION_ADMISSION_UNAVAILABLE']);
@@ -1066,6 +1076,13 @@ async function execute(
   builtImages = (activated.get('images') ?? '').split(',').filter((image) => /^sha256:[0-9a-f]{64}$/.test(image)).sort();
   if (activated.get('result') === 'activated' && activated.get('health') === 'healthy') {
     steps.push({ id: 'activate', status: 'DONE' }, { id: 'health', status: 'DONE' });
+    // The images are recorded once per created runtime, in the job data the runtime cannot reach: NO_OP compares them.
+    const recordJob = mode === 'ACTIVATE' ? inventory?.components[0]?.marker?.jobId ?? jobId : jobId;
+    try {
+      await deps.writeJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${recordJob}/images.json`, `${JSON.stringify(builtImages)}\n`);
+    } catch {
+      return finish('SUCCEEDED', ['IMAGES_RECORD_UNWRITTEN']);
+    }
     return finish('SUCCEEDED', []);
   }
   const failedReason = activated.get('result') === 'failed' ? activated.get('reason') ?? 'failed' : null;

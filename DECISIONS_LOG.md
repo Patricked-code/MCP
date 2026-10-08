@@ -80,6 +80,8 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
   - **Pas de santé sans preuve.** Un conteneur seulement « en cours » ne prouve rien : chaque service doit avoir un contrôle de santé qui le déclare `healthy`, sinon l'activation échoue et revient en arrière. Même règle que les images épinglées : ce qui est attesté doit être prouvé.
   - **Plafonds de ressources.** Mémoire, CPU et processus bornés par service, sinon refus : un conteneur sans plafond peut épuiser S1, MCP compris. Les valeurs restent celles du projet ; une borne globale relèverait d'une décision propriétaire.
   - **Entrées des builds (décision du propriétaire, options 1 + 3).** Toute image qu'un build tire est épinglée par empreinte, comme une image de service ; le réseau pendant le build reste permis, et les images exécutées sont attestées pour rendre visible toute dérive. Stockage : le plancher de 10 Gio suffit, aucune configuration du démon.
+  - **Images vérifiées au `NO_OP`.** Le réseau reste permis pendant le build ; l'enregistrement des images exécutées, hors de portée du runtime, rend donc une reconstruction différente visible comme `EXISTING_RUNTIME_DEGRADED`.
+  - **Un seul frontend.** Le scan ne lit que la grammaire Dockerfile : un frontend personnalisé, même épinglé, est refusé.
   - **Rien téléchargé sans place.** Le pré-contrôle en lecture seule précède le téléchargement ; l'admission est relue entre le téléchargement et la première écriture.
 
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet

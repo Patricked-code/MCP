@@ -13,13 +13,15 @@
  * looks like an instruction (a heredoc line starting with `from`) is refused
  * too: a false refusal is fixed by the project, a missed pull is not. Pure.
  */
-export type DockerfileFindingCode = 'DOCKERFILE_INVALID' | 'DOCKERFILE_IMAGE_UNPINNED' | 'DOCKERFILE_FRONTEND_UNPINNED';
+export type DockerfileFindingCode = 'DOCKERFILE_INVALID' | 'DOCKERFILE_IMAGE_UNPINNED' | 'DOCKERFILE_FRONTEND_UNPINNED' | 'DOCKERFILE_FRONTEND_UNSUPPORTED';
 
 export type DockerfileFinding = Readonly<{ code: DockerfileFindingCode; key: string | null }>;
 
 export const DOCKERFILE_MAX_BYTES = 100_000;
 const DIGEST = /@sha256:[0-9a-f]{64}$/;
 const SYNTAX = /^\s*#\s*syntax\s*=\s*(\S*)/i;
+// The only frontend whose grammar this scan reads: a custom one could interpret the file otherwise.
+const DOCKERFILE_FRONTEND = /^(?:docker\.io\/)?docker\/dockerfile(?::[A-Za-z0-9._-]+)?@sha256:[0-9a-f]{64}$/;
 const FROM_FLAG = /(?:^|[\s,"'=])(?:--)?from=["']?([^\s,"']*)/gi;
 
 function joined(lines: readonly string[], escape: string): string[] {
@@ -53,7 +55,10 @@ export function evaluateDockerfile(source: string, contexts: readonly string[] =
   const lines = source.split('\n');
   for (const line of lines) {
     const syntax = SYNTAX.exec(line);
-    if (syntax && !DIGEST.test(syntax[1] ?? '')) add('DOCKERFILE_FRONTEND_UNPINNED', syntax[1] || null);
+    if (!syntax) continue;
+    const frontend = syntax[1] ?? '';
+    if (!DIGEST.test(frontend)) add('DOCKERFILE_FRONTEND_UNPINNED', frontend || null);
+    else if (!DOCKERFILE_FRONTEND.test(frontend)) add('DOCKERFILE_FRONTEND_UNSUPPORTED', frontend);
   }
   const named = new Set(contexts);
   const local = (image: string, stages: ReadonlySet<string>) => !image.includes('$') && (

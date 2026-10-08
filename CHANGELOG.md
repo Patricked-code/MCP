@@ -35,6 +35,7 @@
 - Après la neuvième revue : coordination relue avant le rollback ; politique de redémarrage effacée avant l'arrêt par labels ; capacités de fichier dans l'empreinte et ACL refusées ; sources de bind exigées dans le checkout.
 - Après la dixième revue : conteneurs arrêtés inclus dans le rollback par labels ; santé `healthy` exigée ; plafonds mémoire, CPU et processus exigés ; pré-contrôle avant téléchargement ; admission relue après téléchargement.
 - Décision du propriétaire sur les builds : images des Dockerfiles épinglées par empreinte, `build.pull` et arguments `BUILDKIT_*` refusés, images exécutées attestées ; plancher de stockage conservé.
+- Après la douzième revue : `NO_OP` vérifie les images exécutées ; seul le frontend `docker/dockerfile` épinglé est admis ; l'attestation garde l'admission finale.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
 

@@ -108,6 +108,10 @@ export type ProvisionedComponentFacts = Readonly<{
   marker: ProvisioningMarker | null;
   /** The digest of the marked checkout as observed now; null when absent or not computable. */
   treeDigest: string | null;
+  /** The image IDs the project's containers run now; null when not observed. */
+  images?: readonly string[] | null;
+  /** The image IDs its activation recorded in the job data; null when no trusted record exists. */
+  expectedImages?: readonly string[] | null;
 }>;
 
 export type ProvisionedRuntimeInventory = Readonly<{
@@ -197,6 +201,7 @@ export function buildProvisionedRuntimeInventoryCommand(targets: readonly Provis
       `printf 'component.${index}.containers=%s\\n' "$(printf '%s\\n' "$c" | head -n ${MAX_CONTAINERS + 1} | paste -sd, -)"`,
       `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then printf 'component.${index}.marker=%s\\n' "$(head -c ${MAX_MARKER_BYTES} ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} | base64 | tr -d '\\n')"; fi`,
       // A marked checkout is digested again: a running runtime matches only the checkout of its creation.
+      `i="$(docker ps -aq --filter ${shellQuote(`label=${COMPOSE_PROJECT_LABEL}=${target.composeProject}`)} 2>/dev/null)"; if [ -n "$i" ]; then printf 'component.${index}.images=%s\\n' "$(docker inspect --format '{{.Image}}' $i 2>/dev/null | sort -u | paste -sd, -)"; fi`,
       `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then t="$(tree_digest ${shellQuote(target.serverPath)})" || t=unavailable; printf 'component.${index}.tree=%s\\n' "$t"; fi`
     );
   });
@@ -211,6 +216,12 @@ function keyValues(output: string): Map<string, string> {
     values.set(line.slice(0, separator).trim(), line.slice(separator + 1).trim());
   }
   return values;
+}
+
+function parseImages(value: string | undefined): readonly string[] | null {
+  if (value === undefined || value === '') return null;
+  const images = value.split(',');
+  return images.length <= MAX_CONTAINERS && images.every((image) => /^sha256:[0-9a-f]{64}$/.test(image)) ? Object.freeze([...images].sort()) : null;
 }
 
 function containerHealth(status: string): ProvisionedContainer['health'] {
@@ -307,7 +318,9 @@ export function parseProvisionedRuntimeInventory(
         pathPresent,
         containers: Object.freeze(containers ?? []),
         marker: pathPresent ? parseProvisioningMarker(values.get(`component.${index}.marker`), target) : null,
-        treeDigest: pathPresent && /^[0-9a-f]{64}$/.test(values.get(`component.${index}.tree`) ?? '') ? values.get(`component.${index}.tree`)! : null
+        treeDigest: pathPresent && /^[0-9a-f]{64}$/.test(values.get(`component.${index}.tree`) ?? '') ? values.get(`component.${index}.tree`)! : null,
+        images: parseImages(values.get(`component.${index}.images`)),
+        expectedImages: null
       });
     }))
   });
@@ -628,6 +641,10 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
       && marker.composeProject === target.composeProject
       // The checkout still digests as at its creation: an edited one is not the admitted revision.
       && facts.treeDigest === marker.treeDigest
+      // The containers run the image bytes the activation recorded: a rebuild that changed them is not this runtime.
+      && Array.isArray(facts.expectedImages) && Array.isArray(facts.images)
+      && facts.expectedImages.length > 0
+      && JSON.stringify([...facts.images].sort()) === JSON.stringify([...facts.expectedImages].sort())
       && facts.containers.every((container) => (
         container.state === 'running'
         // Healthy by its own health check: running alone proves nothing about the service.
