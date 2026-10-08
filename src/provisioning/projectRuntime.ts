@@ -93,6 +93,8 @@ export type ProvisioningMarker = Readonly<{
   treeDigest: string;
   /** The services its compose model declared: a no-op needs every one running and healthy. */
   services: readonly string[];
+  /** The containers each service runs: a no-op needs exactly these. */
+  replicas: Readonly<Record<string, number>>;
 }>;
 
 export type ProvisionedComponentFacts = Readonly<{
@@ -412,7 +414,8 @@ const MarkerSchema = z.object({
   composeFile: z.string().refine((value) => COMPOSE_FILES.has(value)),
   createdAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/),
   treeDigest: z.string().regex(/^[0-9a-f]{64}$/),
-  services: z.array(z.string().regex(SERVICE_NAME_PATTERN)).min(1).max(20)
+  services: z.array(z.string().regex(SERVICE_NAME_PATTERN)).min(1).max(20),
+  replicas: z.record(z.string().regex(SERVICE_NAME_PATTERN), z.number().int().min(0).max(20))
 }).strict();
 
 const RequestSchema = z.object({
@@ -619,9 +622,12 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
         && container.health !== 'unhealthy'
         && container.health !== 'starting'
         && container.service !== null
-        && marker.services.includes(container.service)
+        && (marker.replicas[container.service] ?? 0) > 0
       ))
-      && marker.services.every((service) => facts.containers.some((container) => container.service === service));
+      // Every expected replica, no fewer and no more.
+      && Object.entries(marker.replicas).every(([service, count]) => (
+        facts.containers.filter((container) => container.service === service).length === count
+      ));
     if (!complete) return block('EXISTING_RUNTIME_DEGRADED', target, governance);
     return freezePlan('NO_OP', ['EXISTING_RUNTIME_MATCHING'], target, governance, {
       ...everyStep('NOT_APPLICABLE'),

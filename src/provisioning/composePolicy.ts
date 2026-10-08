@@ -54,6 +54,8 @@ export type ComposeSafetyFinding = Readonly<{ code: ComposeSafetyCode; service: 
 export type ComposeSafety = Readonly<{
   ok: boolean;
   services: readonly string[];
+  /** The containers each service runs (its replicas): activation and no-op count them. */
+  replicas: Readonly<Record<string, number>>;
   findings: readonly ComposeSafetyFinding[];
 }>;
 
@@ -129,16 +131,17 @@ function collector(): { findings: ComposeSafetyFinding[]; add: Add } {
   return { findings, add };
 }
 
-function verdict(services: readonly string[], findings: ComposeSafetyFinding[]): ComposeSafety {
+function verdict(services: readonly string[], findings: ComposeSafetyFinding[], replicas: Record<string, number> = {}): ComposeSafety {
   return Object.freeze({
     ok: findings.length === 0,
     services: Object.freeze([...services].sort()),
+    replicas: Object.freeze({ ...replicas }),
     findings: Object.freeze(findings)
   });
 }
 
 function rejected(code: ComposeSafetyCode): ComposeSafety {
-  return Object.freeze({ ok: false, services: Object.freeze([]), findings: Object.freeze([Object.freeze({ code, service: null, key: null })]) });
+  return Object.freeze({ ok: false, services: Object.freeze([]), replicas: Object.freeze({}), findings: Object.freeze([Object.freeze({ code, service: null, key: null })]) });
 }
 
 function checkKeys(keys: Iterable<string>, allowed: ReadonlySet<string>, service: string | null, prefix: string, add: Add): void {
@@ -268,6 +271,11 @@ function checkTopLevel(
       if ((definition?.driver !== undefined && definition.driver !== defaultDriver) || nonEmpty(definition?.driver_opts)) {
         add(driverCode, null);
       }
+      // Address management keeps its default driver, without options: a plugin acts on the host.
+      const ipam = record(definition?.ipam);
+      if (key === 'networks' && ipam && ((ipam.driver !== undefined && ipam.driver !== 'default') || nonEmpty(ipam.options))) {
+        add(driverCode, null);
+      }
     }
   }
   for (const key of ['secrets', 'configs'] as const) {
@@ -305,15 +313,19 @@ export function evaluateComposeSafety(config: unknown, projectDir: string): Comp
   }
   // Every replica is a container of the bounded inventory: past it, the runtime could no longer be observed.
   let containers = 0;
+  const replicaCounts: Record<string, number> = {};
   for (const name of names) {
     const service = record(serviceEntries[name]);
     const replicas = service?.deploy !== undefined && record(service.deploy)?.replicas !== undefined ? record(service.deploy)!.replicas : service?.scale ?? 1;
     if (typeof replicas !== 'number' || !Number.isInteger(replicas) || replicas < 0) add('COMPOSE_REPLICAS', name);
-    else containers += replicas;
+    else {
+      containers += replicas;
+      replicaCounts[name] = replicas;
+    }
   }
-  if (containers > MAX_CONTAINERS) add('COMPOSE_REPLICAS', null);
+  if (containers > MAX_CONTAINERS || containers === 0) add('COMPOSE_REPLICAS', null);
   checkTopLevel(root, projectDir, add);
-  return verdict(names, findings);
+  return verdict(names, findings, replicaCounts);
 }
 
 function stringKeyed(value: unknown): value is Map<string, unknown> {

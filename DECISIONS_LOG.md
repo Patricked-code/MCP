@@ -56,6 +56,11 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
   - **Ce qui tourne est ce qui a été consenti.** Une image tirée est épinglée par empreinte ; un runtime n'est « déjà en place » que si son checkout digère comme à sa création (recalcul en lecture seule).
   - **Borne de conteneurs.** Le total des réplicas reste dans la limite de 20 de l'inventaire, sinon le runtime ne serait plus observable.
   - **Propriétaire dans l'empreinte.** Un `chown` du checkout change ce que le conteneur peut lire ou exécuter : il modifie l'empreinte.
+- **Après la sixième revue de la PR #261 :**
+  - **La confiance vient des données du job.** Le marqueur du checkout est accessible au runtime ; seul l'enregistrement du volume de données du MCP fait foi.
+  - **Rien de conservé n'est réutilisé.** Volumes et réseaux laissés par un rollback bloquent une nouvelle création ; la quarantaine est bornée et un plancher de capacité protège l'hôte, sans rien supprimer.
+  - **Réplicas attendus enregistrés.** Un runtime n'est complet qu'avec exactement ses réplicas.
+  - **Entrées des builds : décision propriétaire.** Exiger des `FROM` épinglés et un build sans réseau changerait ce que les projets peuvent faire ; la question est posée au propriétaire au lieu d'être tranchée par l'agent.
 
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
 

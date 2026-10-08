@@ -48,6 +48,10 @@ export const PROVISIONING_DATA_ROOT_CONTAINER = '/app/data/provisioning';
 export const PROVISIONING_DATA_ROOT_HOST = '/opt/apps/wealthtech-mcp-ssh-bridge/data/provisioning';
 export const PROVISIONING_QUARANTINE_ROOT = '/opt/apps/mcp-provisioning-quarantine';
 const LABELS_FILE = PROVISIONING_LABELS_FILE;
+const MAX_QUARANTINED = 20;
+// Room for the largest expanded archive (1 GiB) twice over, and its entries.
+const MIN_FREE_KIB = 2 * 1024 * 1024;
+const MIN_FREE_INODES = 200_000;
 const JOB_ID_PATTERN = /^prov-\d{8}T\d{6}Z-[0-9a-f]{8}$/;
 const COMPOSE_PROJECT_PATTERN = /^[a-z0-9][a-z0-9_-]{0,62}$/;
 const REPOSITORY_ID_PATTERN = /^github:[A-Za-z0-9][A-Za-z0-9-]{0,38}\/[A-Za-z0-9._-]{1,100}$/;
@@ -135,6 +139,8 @@ export function provisioningMarker(input: {
   createdAt: string;
   treeDigest: string;
   services: readonly string[];
+  /** The containers each service runs; one each when not given. */
+  replicas?: Readonly<Record<string, number>>;
 }): ProvisioningMarker {
   assertJobId(input.jobId);
   assertTarget(input.target);
@@ -147,6 +153,13 @@ export function provisioningMarker(input: {
   ) {
     throw new Error('PROVISIONING_SERVICES_INVALID');
   }
+  const replicas = input.replicas ?? Object.fromEntries(input.services.map((service) => [service, 1]));
+  if (
+    Object.keys(replicas).some((service) => !input.services.includes(service))
+    || Object.values(replicas).some((count) => !Number.isInteger(count) || count < 0 || count > 20)
+  ) {
+    throw new Error('PROVISIONING_REPLICAS_INVALID');
+  }
   return Object.freeze({
     schemaVersion: 1 as const,
     jobId: input.jobId,
@@ -158,7 +171,8 @@ export function provisioningMarker(input: {
     composeFile: input.composeFile,
     createdAt: input.createdAt,
     treeDigest: input.treeDigest,
-    services: Object.freeze([...input.services])
+    services: Object.freeze([...input.services]),
+    replicas: Object.freeze({ ...replicas })
   });
 }
 
@@ -221,6 +235,16 @@ export function buildStageScript(input: { jobId: string; target: ProjectRuntimeT
     // Volumes kept by an earlier failed job's rollback are existing state: a creation never reattaches them.
     `v="$(docker volume ls -q --filter ${shellQuote(`label=com.docker.compose.project=${input.target.composeProject}`)} 2>/dev/null)" || fail docker_unavailable`,
     '[ -z "$v" ] || fail compose_project_volumes_present',
+    // So are networks a rollback could not remove while a foreign container stayed attached.
+    `n="$(docker network ls -q --filter ${shellQuote(`label=com.docker.compose.project=${input.target.composeProject}`)} 2>/dev/null)" || fail docker_unavailable`,
+    '[ -z "$n" ] || fail compose_project_networks_present',
+    // Failed jobs keep their files, never deleted: a bounded quarantine and a capacity floor keep the host whole.
+    `q="$(ls -A ${shellQuote(PROVISIONING_QUARANTINE_ROOT)} 2>/dev/null | wc -l | tr -d ' ')"`,
+    `[ "\${q:-0}" -lt ${MAX_QUARANTINED} ] 2>/dev/null || fail quarantine_full`,
+    `avail="$(df -Pk /opt/apps | awk 'NR==2 {print $4}')"`,
+    `[ "$avail" -ge ${MIN_FREE_KIB} ] 2>/dev/null || fail host_capacity`,
+    `inodes="$(df -Pi /opt/apps | awk 'NR==2 {print $4}')"`,
+    `[ "$inodes" -ge ${MIN_FREE_INODES} ] 2>/dev/null || fail host_inodes`,
     `[ -f ${shellQuote(archive)} ] || fail archive_missing`,
     `[ "$(sha256sum ${shellQuote(archive)} | cut -d' ' -f1)" = ${shellQuote(input.archiveSha256)} ] || fail archive_digest`,
     ...buildArchiveBoundsLines(archive, PROVISIONING_ARCHIVE_LIMITS),
@@ -248,6 +272,7 @@ export function buildCreateScript(input: {
   createdAt: string;
   treeDigest: string;
   services: readonly string[];
+  replicas?: Readonly<Record<string, number>>;
 }): string {
   const marker = provisioningMarker(input);
   const staging = stagingPath(input.target.serverPath, input.jobId);
@@ -328,6 +353,8 @@ export function buildActivateScript(input: {
   labelsOverride: string;
   healthTimeoutSeconds: number;
   treeDigest: string;
+  /** The containers the compose model runs: health counts them all. */
+  expectedContainers?: number;
 }): string {
   assertJobId(input.jobId);
   assertTarget(input.target);
@@ -335,6 +362,7 @@ export function buildActivateScript(input: {
   assertTreeDigest(input.treeDigest);
   JSON.parse(input.labelsOverride);
   const timeout = Math.max(30, Math.min(900, Math.trunc(input.healthTimeoutSeconds)));
+  const expected = Math.max(1, Math.min(20, Math.trunc(input.expectedContainers ?? 1)));
   const directory = shellQuote(input.target.serverPath);
   const marker = shellQuote(`${input.target.serverPath}/${PROVISIONING_MARKER_FILE}`);
   const labels = shellQuote(`${input.target.serverPath}/${LABELS_FILE}`);
@@ -360,6 +388,7 @@ export function buildActivateScript(input: {
     '  if [ -z "$states" ]; then health=absent; break; fi',
     `  if printf '%s\\n' "$states" | grep -Eq '^(exited|dead|removing|restarting)[|]|[|]unhealthy$'; then health=unhealthy; break; fi`,
     `  if printf '%s\\n' "$states" | grep -Evq '^running[|](healthy)?$'; then sleep 3; continue; fi`,
+    `  if [ "$(printf '%s\\n' "$states" | wc -l | tr -d ' ')" -ne ${expected} ]; then sleep 3; continue; fi`,
     '  health=healthy; break',
     'done',
     `if [ "$health" = healthy ]; then printf 'result=activated\\n'; else printf 'result=unhealthy\\n'; fi`,
@@ -455,6 +484,8 @@ export type ProjectRuntimeExecutionDependencies = {
     { ok: boolean; sha256?: string | null; bytes?: number }
   >;
   writeJobFile: (path: string, content: string) => Promise<void>;
+  /** A job file of the data volume; null when absent or unreadable. */
+  readJobFile: (path: string) => Promise<string | null>;
   runWrite: (command: string, options: { phase: string; timeoutMs: number; maxOutputBytes: number }) => Promise<HostResult>;
 };
 
@@ -501,7 +532,34 @@ function hostReason(prefix: string, values: Map<string, string>): string {
   return `${prefix}_${(values.get('reason') ?? 'failed').toUpperCase().replace(/[^A-Z_]/g, '_')}`;
 }
 
-type ObservationDependencies = Pick<ProjectRuntimeExecutionDependencies, 'readServerTarget' | 'readRegistry' | 'observe'>;
+type ObservationDependencies = Pick<ProjectRuntimeExecutionDependencies, 'readServerTarget' | 'readRegistry' | 'observe' | 'readJobFile'>;
+
+function markerIdentity(marker: ProvisioningMarker): string {
+  return JSON.stringify([
+    marker.jobId, marker.mappingId, marker.repositoryId, marker.revision, marker.composeProject, marker.composeFile,
+    marker.treeDigest, [...marker.services].sort(), Object.entries(marker.replicas).sort(([a], [b]) => a.localeCompare(b))
+  ]);
+}
+
+/**
+ * The checkout's marker counts only when the job data recorded the same one:
+ * a runtime that writes into its own checkout could rewrite the marker, never
+ * the record kept in the MCP data volume.
+ */
+async function withTrustedMarkers(inventory: ProvisionedRuntimeInventory, deps: Pick<ObservationDependencies, 'readJobFile'>): Promise<ProvisionedRuntimeInventory> {
+  const components = await Promise.all(inventory.components.map(async (component) => {
+    if (!component.marker) return component;
+    const recorded = await deps.readJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${component.marker.jobId}/marker.json`).catch(() => null);
+    let trusted = false;
+    try {
+      trusted = recorded !== null && markerIdentity(JSON.parse(recorded) as ProvisioningMarker) === markerIdentity(component.marker);
+    } catch {
+      trusted = false;
+    }
+    return trusted ? component : Object.freeze({ ...component, marker: null, treeDigest: null });
+  }));
+  return Object.freeze({ ...inventory, components: Object.freeze(components) });
+}
 
 /** Reads the target, the registry and the inventory afresh, then plans: the same path for a preview and a run. */
 async function observeAndPlan(
@@ -513,7 +571,7 @@ async function observeAndPlan(
   const fields = request && typeof request === 'object' ? request as Record<string, unknown> : {};
   const targets = typeof fields.projectId === 'string' ? provisioningInventoryTargets(registry, fields.projectId) : [];
   const mappingTargets = targets.filter((entry) => entry.mappingId === fields.mappingId);
-  const inventory = mappingTargets.length === 1 ? await deps.observe(mappingTargets) : null;
+  const inventory = mappingTargets.length === 1 ? await withTrustedMarkers(await deps.observe(mappingTargets), deps) : null;
   return { plan: planProjectRuntimeProvisioning({ request, serverTarget, registry, inventory, consent }), inventory };
 }
 
@@ -668,7 +726,7 @@ async function execute(
     steps.push({ id: 'discard-staging', status: values.get('result') === 'discarded' ? 'DONE' : 'FAILED' });
   };
 
-  type ComposeCheck = { services: readonly string[] } | { result: ProjectRuntimeExecutionResult; reasonCodes: string[] };
+  type ComposeCheck = { services: readonly string[]; replicas: Readonly<Record<string, number>> } | { result: ProjectRuntimeExecutionResult; reasonCodes: string[] };
   // The compose file is parsed before Compose loads anything: a key that reads a host file, however it is
   // spelled, never runs. Compose then builds the model from that exact file, which is checked in turn.
   const checkCompose = async (printed: Map<string, string>, composeFile: string, unreadable: string, staged: boolean): Promise<ComposeCheck> => {
@@ -702,11 +760,12 @@ async function execute(
       return { result: 'BLOCKED', reasonCodes: ['COMPOSE_UNSAFE'] };
     }
     steps.push({ id: 'compose-policy', status: 'DONE' });
-    return { services: safety.services };
+    return { services: safety.services, replicas: safety.replicas };
   };
 
   let composeFile: string;
   let services: readonly string[];
+  let replicas: Readonly<Record<string, number>>;
   let treeDigest: string;
   if (mode === 'CREATE' || mode === 'CREATE_AND_ACTIVATE') {
     const fetched = await deps.fetchSource({
@@ -744,8 +803,18 @@ async function execute(
     }
     composeFile = file;
     services = checked.services;
+    replicas = checked.replicas;
 
-    const created = await host('create', buildCreateScript({ jobId, target, composeFile, createdAt: deps.now().toISOString(), treeDigest, services }));
+    // The marker is recorded in the job data first: the checkout's own copy counts only when it matches.
+    const markerInput = { jobId, target, composeFile, createdAt: deps.now().toISOString(), treeDigest, services, replicas };
+    try {
+      await deps.writeJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${jobId}/marker.json`, `${JSON.stringify(provisioningMarker(markerInput))}\n`);
+    } catch {
+      steps.push({ id: 'create-runtime', status: 'FAILED' });
+      await discard();
+      return finish('FAILED', ['MARKER_RECORD_UNWRITTEN']);
+    }
+    const created = await host('create', buildCreateScript(markerInput));
     if (created.get('result') !== 'created') {
       steps.push({ id: 'create-runtime', status: 'FAILED' });
       await discard();
@@ -767,6 +836,8 @@ async function execute(
     const checked = await checkCompose(sourced, composeFile, 'SOURCE_UNREADABLE', false);
     if ('result' in checked) return finish(checked.result, checked.reasonCodes);
     services = checked.services;
+    // The recorded replicas, not those of a model rebuilt now.
+    replicas = marker.replicas;
   }
 
   const labelsOverride = provisioningLabelsOverride(services, {
@@ -774,7 +845,8 @@ async function execute(
     revision: target.revision,
     projectId: target.projectId
   });
-  const activated = await host('activate', buildActivateScript({ jobId, target, composeFile, labelsOverride, healthTimeoutSeconds: 180, treeDigest }));
+  const activated = await host('activate', buildActivateScript({ jobId, target, composeFile, labelsOverride, healthTimeoutSeconds: 180, treeDigest,
+    expectedContainers: Object.values(replicas).reduce((sum, count) => sum + count, 0) }));
   if (activated.get('result') === 'activated' && activated.get('health') === 'healthy') {
     steps.push({ id: 'activate', status: 'DONE' }, { id: 'health', status: 'DONE' });
     return finish('SUCCEEDED', []);

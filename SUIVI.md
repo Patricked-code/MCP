@@ -55,6 +55,13 @@
   - Images tirées : une image sans build doit être épinglée par empreinte (`@sha256:`), sinon `COMPOSE_IMAGE_UNPINNED`.
   - `NO_OP` vérifié : l'inventaire en lecture seule recalcule l'empreinte d'un checkout marqué ; un runtime en cours ne vaut `NO_OP` que si elle égale celle du marqueur.
   - Empreinte : elle inclut aussi le propriétaire et le groupe de chaque fichier et dossier.
+- **Sixième revue Codex (six constats : cinq corrigés, un soumis au propriétaire).**
+  - Marqueur de confiance : la création enregistre le marqueur dans les données du job (volume du MCP) avant d'écrire le checkout ; un marqueur du checkout ne compte que s'il est identique à cet enregistrement. Un runtime qui réécrirait son propre marqueur n'est plus un runtime créé.
+  - Réseaux conservés : la préparation refuse aussi tant qu'un réseau du projet Compose subsiste (`compose_project_networks_present`).
+  - Réplicas : le marqueur enregistre les conteneurs attendus par service ; l'activation attend ce nombre et `NO_OP` l'exige exactement.
+  - IPAM : pilote par défaut sans options seulement.
+  - Capacité : la préparation exige 2 Gio et 200 000 inodes libres sous `/opt/apps` et refuse au-delà de 20 entrées en quarantaine.
+  - **En attente du propriétaire** : épingler toutes les entrées d'un build (`FROM`, réseau des `RUN`). Voir le fil de revue ; décision de politique, pas de correction unilatérale.
 - **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
 - **Preuves.**
   - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.

@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve, sep } from 'node:path';
 
 import type { GitRegistryProjectEvidence } from '../github/registry.js';
@@ -85,6 +85,18 @@ export async function writeProvisioningJobFile(
   await writeFile(target, content, { flag: 'wx', mode: 0o644 });
 }
 
+/** Reads a job file, inside the provisioning data root only; null when absent or unreadable. */
+export async function readProvisioningJobFile(path: string, root = PROVISIONING_DATA_ROOT_CONTAINER): Promise<string | null> {
+  const base = resolve(root);
+  const target = resolve(path);
+  if (!target.startsWith(`${base}${sep}`)) return null;
+  try {
+    return await readFile(target, 'utf8');
+  } catch {
+    return null;
+  }
+}
+
 export function createProjectRuntimeExecutionDependencies(
   io: ProjectRuntimeProvisioningIo
 ): ProjectRuntimeProvisioningDependencies {
@@ -119,6 +131,7 @@ export function createProjectRuntimeExecutionDependencies(
       maxBytes: PROVISIONING_MAX_ARCHIVE_BYTES
     }),
     writeJobFile: (path, content) => writeProvisioningJobFile(path, content),
+    readJobFile: (path) => readProvisioningJobFile(path),
     runWrite: async (command, options) => {
       try {
         assertNoCatastrophicCommand(command);
