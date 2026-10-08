@@ -112,6 +112,8 @@ export type ProvisionedComponentFacts = Readonly<{
   images?: readonly string[] | null;
   /** The image IDs its activation recorded in the job data; null when no trusted record exists. */
   expectedImages?: readonly string[] | null;
+  /** Per container: memory, nano-CPUs, CPU quota and PID limit as Docker holds them now; null when not observed. */
+  limits?: ReadonlyArray<readonly [number, number, number, number]> | null;
 }>;
 
 export type ProvisionedRuntimeInventory = Readonly<{
@@ -201,6 +203,7 @@ export function buildProvisionedRuntimeInventoryCommand(targets: readonly Provis
       `printf 'component.${index}.containers=%s\\n' "$(printf '%s\\n' "$c" | head -n ${MAX_CONTAINERS + 1} | paste -sd, -)"`,
       `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then printf 'component.${index}.marker=%s\\n' "$(head -c ${MAX_MARKER_BYTES} ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} | base64 | tr -d '\\n')"; fi`,
       // A marked checkout is digested again: a running runtime matches only the checkout of its creation.
+      `l="$(docker ps -aq --filter ${shellQuote(`label=${COMPOSE_PROJECT_LABEL}=${target.composeProject}`)} 2>/dev/null)"; if [ -n "$l" ]; then printf 'component.${index}.limits=%s\\n' "$(docker inspect --format '{{.HostConfig.Memory}} {{.HostConfig.NanoCpus}} {{.HostConfig.CpuQuota}} {{.HostConfig.PidsLimit}}' $l 2>/dev/null | paste -sd, -)"; fi`,
       `i="$(docker ps -aq --filter ${shellQuote(`label=${COMPOSE_PROJECT_LABEL}=${target.composeProject}`)} 2>/dev/null)"; if [ -n "$i" ]; then printf 'component.${index}.images=%s\\n' "$(docker inspect --format '{{.Image}}' $i 2>/dev/null | sort -u | paste -sd, -)"; fi`,
       `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then t="$(tree_digest ${shellQuote(target.serverPath)})" || t=unavailable; printf 'component.${index}.tree=%s\\n' "$t"; fi`
     );
@@ -222,6 +225,15 @@ function parseImages(value: string | undefined): readonly string[] | null {
   if (value === undefined || value === '') return null;
   const images = value.split(',');
   return images.length <= MAX_CONTAINERS && images.every((image) => /^sha256:[0-9a-f]{64}$/.test(image)) ? Object.freeze([...images].sort()) : null;
+}
+
+function parseLimits(value: string | undefined): ReadonlyArray<readonly [number, number, number, number]> | null {
+  if (value === undefined || value === '') return null;
+  const entries = value.split(',');
+  if (entries.length > MAX_CONTAINERS) return null;
+  const parsed = entries.map((entry) => entry.trim().split(/\s+/).map(Number));
+  if (!parsed.every((numbers) => numbers.length === 4 && numbers.every(Number.isSafeInteger))) return null;
+  return Object.freeze(parsed.map((numbers) => Object.freeze(numbers as unknown as [number, number, number, number])));
 }
 
 function containerHealth(status: string): ProvisionedContainer['health'] {
@@ -320,6 +332,7 @@ export function parseProvisionedRuntimeInventory(
         marker: pathPresent ? parseProvisioningMarker(values.get(`component.${index}.marker`), target) : null,
         treeDigest: pathPresent && /^[0-9a-f]{64}$/.test(values.get(`component.${index}.tree`) ?? '') ? values.get(`component.${index}.tree`)! : null,
         images: parseImages(values.get(`component.${index}.images`)),
+        limits: parseLimits(values.get(`component.${index}.limits`)),
         expectedImages: null
       });
     }))
@@ -644,6 +657,9 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
       // The containers run the image bytes the activation recorded: a rebuild that changed them is not this runtime.
       && Array.isArray(facts.expectedImages) && Array.isArray(facts.images)
       && facts.expectedImages.length > 0
+      // The limits the policy required still hold on every container: an update that lifted one is not this runtime.
+      && Array.isArray(facts.limits) && facts.limits.length === facts.containers.length
+      && facts.limits.every(([memory, nanoCpus, cpuQuota, pids]) => memory > 0 && (nanoCpus > 0 || cpuQuota > 0) && pids > 0)
       && JSON.stringify([...facts.images].sort()) === JSON.stringify([...facts.expectedImages].sort())
       && facts.containers.every((container) => (
         container.state === 'running'

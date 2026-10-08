@@ -839,6 +839,8 @@ async function execute(
   const replan = async (): Promise<string | null> => {
     const fresh = await observeAndPlan(input.request, consent, deps).catch(() => null);
     const again = fresh?.plan.target;
+    // The official branch admissions use is the one the mapping still names.
+    if (fresh?.plan.decision === 'READY' && (fresh.plan.governance?.officialBranch ?? null) !== branch) return 'GOVERNANCE_OFFICIAL_BRANCH_CHANGED';
     if (
       fresh?.plan.decision === 'READY' && again
       && again.repositoryId === target.repositoryId && again.serverPath === target.serverPath
@@ -1017,6 +1019,11 @@ async function execute(
     steps.push({ id: 'fetch-source', status: 'DONE' });
 
     // The admission is read again after the download: a branch or CI change meanwhile never reaches the host.
+    const beforeStagePlan = await replan();
+    if (beforeStagePlan) {
+      steps.push({ id: 'backup', status: 'BLOCKED' });
+      return finish('BLOCKED', [beforeStagePlan]);
+    }
     const beforeStageAdmission = await readmit();
     if (beforeStageAdmission) {
       steps.push({ id: 'backup', status: 'BLOCKED' });
@@ -1142,7 +1149,13 @@ async function execute(
       await deps.writeJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${recordJob}/images.json`, `${JSON.stringify(builtImages)}\n`);
     } catch {
       // A record kept from an earlier activation is the one NO_OP compares; a missing one fails this activation.
-      recorded = mode === 'ACTIVATE' && await deps.readJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${recordJob}/images.json`).catch(() => null) !== null;
+      // An earlier record stands only when this activation runs exactly the same images.
+      const earlier = mode === 'ACTIVATE' ? await deps.readJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${recordJob}/images.json`).catch(() => null) : null;
+      try {
+        recorded = earlier !== null && JSON.stringify([...JSON.parse(earlier)].sort()) === JSON.stringify(builtImages);
+      } catch {
+        recorded = false;
+      }
     }
     if (recorded) {
       steps.push({ id: 'activate', status: 'DONE' }, { id: 'health', status: 'DONE' });

@@ -1140,7 +1140,7 @@ test('the target and runtime are planned again before the promotion and the acti
   h.deps.observe = (async (targets: any[]) => {
     observations += 1;
     // Another process created the project once the source was checked.
-    if (observations === 2) h.setInventory('docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=other|running|x|y|api|Up\n');
+    if (observations === 3) h.setInventory('docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=other|running|x|y|api|Up\n');
     return observe(targets);
   }) as any;
   const result = await run(h, { creation: true, activation: true });
