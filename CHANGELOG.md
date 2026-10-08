@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 2026-10-08 — W3 F.2 clôture
+
+- `TB-W3-F-03` DONE : PR #261 fusionnée, déployée et attestée ; le runtime de projet est provisionnable via la surface consentie (inerte sans cible S1). Limites connues : issue #262.
+
 ## 2026-10-07 — W3 F.2 Project runtime provisioning, incrément 3 (candidate)
 
 - Surface consentie `/provisioning/project-runtime`, derrière la connexion web. Elle offre un plan en lecture seule, une soumission sous consentement E3 et une page de statut. Le consentement exige une origine identique et un ticket lié à la session et à la cible exacte ; création et activation sont séparées. Rien ne s'exécute sans `ENABLE_WRITE_TOOLS` ni cible configurée.

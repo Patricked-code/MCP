@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-10-08 — W3 F.2 Project runtime provisioning — clôture `TB-W3-F-03` (DONE)
+
+- **Incrément 3 livré.** PR #261 fusionnée au merge `6576b5287f23566684005adf6032734e2ecdea50` (head `d0bc1ee`, CI PR #2309 `37817615298`, 1001 tests). CI main #2310 `37817792888` verte.
+- **Governed Deploy** #136 `37817792904` SUCCESS, attesté pour le SHA exact `6576b52` (santé, OAuth et auth MCP vérifiées, rollback non nécessaire).
+- **Attestation OIDC read-only** : `mcp_git_status` #193 `37818111681` et `docker_status` #194 `37818115270` réussis (SHA et `mutationAllowed=false` validés par le workflow ; contenu des artefacts non téléchargeable via le proxy GitHub de cette session).
+- **Seize rounds de revue Codex** ; décisions du propriétaire : entrées de build épinglées et images attestées, plancher de stockage seul, fusion après le round 16 avec limites connues dépendantes de S1 suivies dans l'issue #262.
+- **`TB-W3-F-03` → DONE** (`completionEvidence`, `w3F03ProvisioningHandoff`), readiness recalculée (`npm run program:readiness:write`).
+- **Production inerte** tant que `servers.S1.targetProjectIds` est vide ; l'issue #262 doit être réglée avant la première cible.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` après réobservation des intakes et autorités runtime ; candidats : `TB-W3-A3-02` (blocage local connu), puis `TB-W3-F-04`.
+
 ## 2026-10-07 — W3 F.2 Project runtime provisioning, incrément 3 — GREEN candidate
 
 - **Incrément 2 livré.**
