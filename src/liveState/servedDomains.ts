@@ -20,8 +20,10 @@ export const SERVED_DOMAINS_MAX = 1000;
 // Each name comes with its subscription's main domain, which names its /var/www/vhosts root.
 // The result is capped one row over the bound, so an oversized inventory is detected, never streamed.
 const SUBSCRIPTION = 'IF(d.webspace_id = 0, d.name, w.name)';
-// A hosted row is served only with its active web service record; an inconsistent row is not.
-const ACTIVE = "d.status = 0 AND d.webspace_status = 0 AND d.htype <> 'none' AND EXISTS (SELECT 1 FROM DomainServices s WHERE s.dom_id = d.id AND s.type = 'web' AND s.status = 0)";
+// A hosted row is served only with its active web service record bound to an IP address,
+// joined as Plesk's own domain/IP inventory does; an inconsistent row is not.
+const WEB_SERVICE = "SELECT 1 FROM DomainServices s JOIN IpAddressesCollections c ON c.ipCollectionId = s.ipCollectionId JOIN IP_Addresses i ON i.id = c.ipAddressId WHERE s.dom_id = d.id AND s.type = 'web' AND s.status = 0";
+const ACTIVE = `d.status = 0 AND d.webspace_status = 0 AND d.htype <> 'none' AND EXISTS (${WEB_SERVICE})`;
 const OWNER = 'LEFT JOIN domains w ON w.id = d.webspace_id';
 export const SERVED_DOMAINS_COMMAND = `plesk db -Ne "SELECT name, subscription FROM (SELECT d.name AS name, ${SUBSCRIPTION} AS subscription FROM domains d ${OWNER} WHERE ${ACTIVE} UNION SELECT a.name, ${SUBSCRIPTION} FROM domain_aliases a JOIN domains d ON d.id = a.dom_id ${OWNER} WHERE a.status = 0 AND a.web = 'true' AND ${ACTIVE}) served LIMIT ${SERVED_DOMAINS_MAX + 1}"`;
 export const SERVED_DOMAIN_SERVERS: readonly ServerId[] = ['s1', 's2'];

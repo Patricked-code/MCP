@@ -47,6 +47,7 @@
   - Un abonnement vérifié pour plusieurs projets du registre ne peut pas être découpé par cet inventaire : l'observation est indisponible pour chacun.
   - Un nom n'est servi qu'avec son enregistrement `DomainServices` web actif ; une ligne incohérente n'est pas certifiée.
   - **Effet actuel** : aucun mapping du registre (`data/mcp-git-registry.json`) n'a encore de `realPath` vérifié, et AfricaFunds et Stablecoin partagent l'abonnement `chainsolutions.fr` sur S2. L'observation est donc indisponible pour tous les projets actuels : C5 reste `UNVERIFIED`, comme avant cette PR. Le mécanisme devient effectif dès qu'un chemin réel est vérifié pour un abonnement non partagé.
+- **Huitième round Codex (un constat, corrigé).** L'enregistrement web `DomainServices` actif doit aussi être lié à une adresse IP (`IpAddressesCollections` puis `IP_Addresses`, comme la requête d'inventaire de Plesk) ; sans IP, le site ne peut pas être servi. Les colonnes Plesk lues restent **à vérifier** sur S1 et S2 ; une requête en échec rend l'inventaire `UNAVAILABLE`.
 - **Aucune écriture S1** : aucun binding, certificat ou DNS n'est créé ou modifié.
 - **NEXT_ACTION** : PR draft, CI verte, revue, fusion, Governed Deploy et attestation ; ensuite l'incrément 2 de F-04 (backup et bind-domain consentis).
 

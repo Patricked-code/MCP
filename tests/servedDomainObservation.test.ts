@@ -47,7 +47,9 @@ test('F-04 observe-binding: the inventory reads Plesk records of active served n
   // No pipe: a failing read keeps its own exit status.
   assert.doesNotMatch(SERVED_DOMAINS_COMMAND, /\||2>/);
   // A hosted row without its active web service record is inconsistent, not served.
-  assert.match(SERVED_DOMAINS_COMMAND, /EXISTS \(SELECT 1 FROM DomainServices s WHERE s\.dom_id = d\.id AND s\.type = 'web' AND s\.status = 0\)/);
+  // ... and that record must be bound to an IP address, or the site cannot be served.
+  assert.match(SERVED_DOMAINS_COMMAND, /EXISTS \(SELECT 1 FROM DomainServices s JOIN IpAddressesCollections c ON c\.ipCollectionId = s\.ipCollectionId JOIN IP_Addresses i ON i\.id = c\.ipAddressId WHERE s\.dom_id = d\.id AND s\.type = 'web' AND s\.status = 0\)/);
+  assert.equal(SERVED_DOMAINS_COMMAND.match(/FROM DomainServices s JOIN IpAddressesCollections/g)?.length, 2);
 });
 
 test('F-04 observe-binding: parsing normalizes domains; any other entry makes the inventory unavailable', () => {
