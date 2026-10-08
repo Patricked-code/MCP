@@ -23,6 +23,11 @@ const { DomainResolutionInputSchema } = await import('../src/governedWorkflow/re
 
 const OBSERVED_AT = '2026-10-08T10:00:00.000Z';
 
+/** Plesk rows: one `<name>\t<subscription>` line each; a bare name gets subscription 1. */
+function rows(...names: string[]): string {
+  return names.map((name) => (name.includes('\t') ? name : `${name}\t1`)).join('\n') + '\n';
+}
+
 function snapshot(servedDomains: unknown, reconciledAt = OBSERVED_AT) {
   return {
     repository: 'Patricked-code/MCP', stateVersion: 4, lastReconciledAt: reconciledAt, generatedAt: reconciledAt,
@@ -42,28 +47,34 @@ test('F-04 observe-binding: the inventory reads Plesk records of active served n
 });
 
 test('F-04 observe-binding: parsing normalizes domains; any other entry makes the inventory unavailable', () => {
-  const inventory = parseServedDomainInventory('Example.COM\napi.sadiaaf.example.com\nexample.com\n', OBSERVED_AT);
+  const inventory = parseServedDomainInventory(rows('Example.COM', 'api.sadiaaf.example.com'), OBSERVED_AT);
   assert.equal(inventory.status, 'CURRENT');
   assert.deepEqual(inventory.domains, ['api.sadiaaf.example.com', 'example.com']);
-  assert.equal(parseServedDomainInventory('example.com\nbad_name\n', OBSERVED_AT).status, 'UNAVAILABLE');
-  assert.equal(parseServedDomainInventory('example.com\n...[sortie plafonnée par le MCP]', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.deepEqual(inventory.subscriptions, { 'api.sadiaaf.example.com': '1', 'example.com': '1' });
+  assert.equal(parseServedDomainInventory(rows('example.com', 'bad_name'), OBSERVED_AT).status, 'UNAVAILABLE');
+  // Every row carries exactly one subscription id, and a name belongs to one subscription.
+  assert.equal(parseServedDomainInventory('example.com\n', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.equal(parseServedDomainInventory('example.com\t0\n', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.equal(parseServedDomainInventory('example.com\t1\t2\n', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.equal(parseServedDomainInventory(rows('example.com\t1', 'example.com\t2'), OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.equal(parseServedDomainInventory('example.com\t1\n...[sortie plafonnée par le MCP]', OBSERVED_AT).status, 'UNAVAILABLE');
   // The raw name is checked before any normalization: padding or an empty name is not a domain.
-  assert.equal(parseServedDomainInventory(' example.com\n', OBSERVED_AT).status, 'UNAVAILABLE');
-  assert.equal(parseServedDomainInventory('example.com\n \n', OBSERVED_AT).status, 'UNAVAILABLE');
-  assert.equal(parseServedDomainInventory('example.com\n\nother.example.com\n', OBSERVED_AT).status, 'UNAVAILABLE');
-  assert.deepEqual(parseServedDomainInventory('', OBSERVED_AT), { status: 'CURRENT', observedAt: OBSERVED_AT, domains: [] });
+  assert.equal(parseServedDomainInventory(rows(' example.com'), OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.equal(parseServedDomainInventory('example.com\t1\n \n', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.equal(parseServedDomainInventory('example.com\t1\n\nother.example.com\t1\n', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.deepEqual(parseServedDomainInventory('', OBSERVED_AT), { status: 'CURRENT', observedAt: OBSERVED_AT, domains: [], subscriptions: {} });
   // A wildcard subdomain is excluded, not corruption.
-  assert.deepEqual(parseServedDomainInventory('*.example.com\nexample.com\n', OBSERVED_AT).domains, ['example.com']);
-  assert.equal(parseServedDomainInventory('*.bad_\n', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.deepEqual(parseServedDomainInventory(rows('*.example.com', 'example.com'), OBSERVED_AT).domains, ['example.com']);
+  assert.equal(parseServedDomainInventory(rows('*.bad_'), OBSERVED_AT).status, 'UNAVAILABLE');
   // Internationalized names are kept in Punycode, a Punycode TLD included.
-  assert.deepEqual(parseServedDomainInventory('example.xn--p1ai\nxn--80ak6aa92e.com\n', OBSERVED_AT).domains, ['example.xn--p1ai', 'xn--80ak6aa92e.com']);
+  assert.deepEqual(parseServedDomainInventory(rows('example.xn--p1ai', 'xn--80ak6aa92e.com'), OBSERVED_AT).domains, ['example.xn--p1ai', 'xn--80ak6aa92e.com']);
   // A label that only looks like Punycode is not a domain.
-  assert.equal(parseServedDomainInventory('example.xn--a\n', OBSERVED_AT).status, 'UNAVAILABLE');
-  assert.equal(parseServedDomainInventory('example.xn--foo-\n', OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.equal(parseServedDomainInventory(rows('example.xn--a'), OBSERVED_AT).status, 'UNAVAILABLE');
+  assert.equal(parseServedDomainInventory(rows('example.xn--foo-'), OBSERVED_AT).status, 'UNAVAILABLE');
 });
 
 test('F-04 observe-binding: an inventory over the bound is unavailable, never a partial absence', () => {
-  const lines = Array.from({ length: SERVED_DOMAINS_MAX + 1 }, (_, index) => `d${index}.example.com`).join('\n');
+  const lines = Array.from({ length: SERVED_DOMAINS_MAX + 1 }, (_, index) => `d${index}.example.com\t1`).join('\n');
   const inventory = parseServedDomainInventory(lines, OBSERVED_AT);
   assert.equal(inventory.status, 'UNAVAILABLE');
   assert.deepEqual(inventory.domains, []);
@@ -78,7 +89,7 @@ test('F-04 observe-binding: a failed or throwing read stays unavailable, per ser
   const inventories = await collectServedDomainInventories({
     runReadOnly: async (serverId, command) => {
       calls.push(`${serverId}:${command}`);
-      return serverId === 's1' ? { code: 0, stdout: 'example.com\n' } : { code: 1, stdout: '' };
+      return serverId === 's1' ? { code: 0, stdout: rows('example.com') } : { code: 1, stdout: '' };
     },
     now: () => new Date(OBSERVED_AT)
   });
@@ -89,8 +100,8 @@ test('F-04 observe-binding: a failed or throwing read stays unavailable, per ser
 
 test('F-04 observe-binding: Live State projects a schema-valid C5 observation for each managed server', () => {
   const inventories = {
-    s1: parseServedDomainInventory('example.com\n', OBSERVED_AT),
-    s2: parseServedDomainInventory('africafunds.example.org\n', OBSERVED_AT)
+    s1: parseServedDomainInventory(rows('example.com'), OBSERVED_AT),
+    s2: parseServedDomainInventory(rows('africafunds.example.org'), OBSERVED_AT)
   };
   const s1 = liveStateDomainObservation(snapshot(inventories), 'S1', new Date(OBSERVED_AT)) as any;
   assert.ok(DomainResolutionInputSchema.shape.observation.safeParse(s1).success);
@@ -120,7 +131,7 @@ test('F-04 observe-binding: Live State projects a schema-valid C5 observation fo
   assert.equal(aged.observedAt, OBSERVED_AT);
 });
 
-test('F-04 observe-binding: the observation is scoped to the selected project on a shared server', () => {
+test('F-04 observe-binding: the observation is scoped to the subscriptions of the selected project', () => {
   const registry = {
     projects: [
       { projectId: 'alpha', publicDomain: 'Alpha.example.com.', publicApi: 'https://api.alpha.example.com/v1', historicalVhosts: [] },
@@ -133,19 +144,30 @@ test('F-04 observe-binding: the observation is scoped to the selected project on
   } as any;
   const declared = declaredProjectDomains(registry, 'alpha', 's1');
   assert.deepEqual([...declared].sort(), ['admin.alpha.example.com', 'alpha.example.com', 'api.alpha.example.com']);
-  const observation = liveStateDomainObservation(
-    snapshot({ s1: parseServedDomainInventory('alpha.example.com\nbeta.example.com\nlegacy.example.net\n', OBSERVED_AT) }),
-    's1',
-    new Date(OBSERVED_AT)
+  // Subscription 7 serves alpha and an undeclared legacy name; subscription 9 serves another project.
+  const inventory = parseServedDomainInventory(
+    rows('alpha.example.com\t7', 'legacy.alpha.example.net\t7', 'beta.example.com\t9', 'other.example.org\t9'),
+    OBSERVED_AT
   );
-  const scoped = scopeDomainObservation(observation, declared) as any;
-  assert.deepEqual(scoped.domains.map((entry: any) => entry.domain), ['alpha.example.com']);
+  const observation = liveStateDomainObservation(snapshot({ s1: inventory }), 's1', new Date(OBSERVED_AT));
+  const scoped = scopeDomainObservation(observation, inventory, declared) as any;
+  // Another subscription is left out; an undeclared name of the project's own subscription is kept.
+  assert.deepEqual(scoped.domains.map((entry: any) => entry.domain), ['alpha.example.com', 'legacy.alpha.example.net']);
   assert.equal(scoped.available, true);
-  // No declared domain: the inventory carries no ownership, so no absence is claimed.
-  const undeclared = scopeDomainObservation(observation, declaredProjectDomains(registry, 'gamma', 's1')) as any;
+  assert.ok(DomainResolutionInputSchema.shape.observation.safeParse(scoped).success);
+
+  // No declared name served: no subscription is owned, so nothing is observed for the project.
+  const unserved = scopeDomainObservation(observation, inventory, new Set(['gamma.example.com'])) as any;
+  assert.equal(unserved.available, true);
+  assert.deepEqual(unserved.domains, []);
+
+  // No declared domain: the inventory establishes no ownership, so no absence is claimed.
+  const undeclared = scopeDomainObservation(observation, inventory, declaredProjectDomains(registry, 'gamma', 's1')) as any;
   assert.equal(undeclared.available, false);
   assert.equal(undeclared.freshness, 'UNKNOWN');
   assert.deepEqual(undeclared.domains, []);
+  // Without the inventory's ownership evidence, nothing is scoped.
+  assert.equal((scopeDomainObservation(observation, undefined, declared) as any).available, false);
   // Nothing to scope in an unavailable or absent observation.
-  assert.equal(scopeDomainObservation(null, declared), null);
+  assert.equal(scopeDomainObservation(null, inventory, declared), null);
 });

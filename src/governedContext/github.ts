@@ -46,7 +46,7 @@ import { readLiveStateRuntimeObservations } from '../liveState/runtimeObservatio
 import {
   declaredProjectDomains,
   readLiveStateDomainObservation,
-  scopeDomainObservation
+  readLiveStateProjectDomainObservation
 } from '../liveState/servedDomains.js';
 import { readServerMapConfiguration } from '../liveState/targetProject.js';
 import {
@@ -1143,13 +1143,11 @@ export function createGithubOperationalContextCollector(
     let domainObservation: unknown;
     try {
       domainObservation = await (options.readDomainObservation ?? (async (serverId) => {
-        // Live State observes a shared server: keep the part about the selected project.
+        // Live State observes a shared server: keep the selected project's subscriptions.
         const projectId = projectResolution.selectedProject?.projectId;
-        const observation = await readLiveStateDomainObservation(serverId, now);
         const declared = projectRegistry.domainEvidence;
-        return projectId && serverId && declared && observation
-          ? scopeDomainObservation(observation, declaredProjectDomains(declared, projectId, serverId))
-          : observation;
+        if (!projectId || !serverId || !declared) return readLiveStateDomainObservation(serverId, now);
+        return readLiveStateProjectDomainObservation(serverId, declaredProjectDomains(declared, projectId, serverId), now);
       }))(
         serverResolution.selectedServer?.serverId ?? null
       );

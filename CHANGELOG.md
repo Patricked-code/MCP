@@ -7,6 +7,7 @@
 - Second round : nom brut validé avant normalisation, répertoires wildcard Plesk exclus, aucune observation pour un projet sans domaine déclaré. Les alias Plesk restaient non inventoriés.
 - Troisième round : l'inventaire lit les enregistrements Plesk des noms actifs servis (domaines actifs avec service web et alias web actifs), au lieu des répertoires que conserve un site suspendu ; TLD Punycode acceptés.
 - Quatrième round : abonnement actif exigé, labels Punycode validés par IDNA, fraîcheur calculée par inventaire. L'alias `www.` généré par Plesk reste non inventorié (limite connue, échec fermé).
+- Cinquième round : l'observation est restreinte par abonnement Plesk (propriété observée) et non plus par liste de noms déclarés ; un nom non déclaré de l'abonnement du projet reste visible.
 
 ## 2026-10-08 — W3 F.2 clôture
 

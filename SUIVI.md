@@ -34,6 +34,7 @@
     - les labels Punycode sont validés par aller-retour IDNA (`domainToUnicode`/`domainToASCII`), et un faux label rend l'inventaire indisponible ;
     - chaque inventaire vieillit depuis sa propre lecture (`observedAt`), pas depuis la réconciliation du snapshot.
   - **Limite connue** : l'alias `www.` généré par Plesk n'est pas inventorié. Une déclaration `www.<domaine>` reste `DOMAIN_DECLARATION_UNOBSERVED`, donc `UNVERIFIED` : un faux négatif fermé, jamais un faux positif.
+- **Cinquième round Codex (un constat, corrigé).** Filtrer l'observation sur les seuls noms déclarés masquait un nom actif non déclaré servi par l'abonnement du projet : GW-09 pouvait conclure `RESOLVED` au lieu de `DOMAIN_OBSERVATION_UNDECLARED`. L'inventaire porte désormais l'abonnement Plesk de chaque nom (`webspace_id`). L'observation garde tous les noms actifs des abonnements qui servent un domaine déclaré du projet ; les autres abonnements sont exclus. Un nom sans abonnement lisible rend l'observation indisponible.
 - **Aucune écriture S1** : aucun binding, certificat ou DNS n'est créé ou modifié.
 - **NEXT_ACTION** : PR draft, CI verte, revue, fusion, Governed Deploy et attestation ; ensuite l'incrément 2 de F-04 (backup et bind-domain consentis).
 

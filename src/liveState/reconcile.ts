@@ -27,7 +27,7 @@ function semanticValue(state: LiveStateSnapshot): string {
     } : null,
     servedDomains: state.servedDomains ? Object.fromEntries(
       Object.entries(state.servedDomains).map(([serverId, inventory]) => [
-        serverId, inventory ? { status: inventory.status, domains: inventory.domains } : null
+        serverId, inventory ? { status: inventory.status, domains: inventory.domains, subscriptions: inventory.subscriptions } : null
       ])
     ) : null,
     github: state.github,
