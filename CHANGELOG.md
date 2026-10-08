@@ -39,6 +39,7 @@
 - Après la treizième revue : admission relue avant chaque écriture ; empreinte recalculée après la santé ; images complètes exigées ; aucune écriture après une collision.
 - Après la quatorzième revue : journaux bornés, plages d'adresses par défaut, `no-new-privileges` jamais désactivé, enregistrement des images obligatoire, marqueur revérifié après la santé, replanification avant chaque écriture.
 - Après la quinzième revue : branche officielle relue avant chaque écriture, images de réactivation identiques exigées, limites réelles vérifiées au `NO_OP`.
+- Après la seizième revue : images comparées par service, `stop_grace_period` ≤ 60 s, chemins à caractères de contrôle refusés, enregistrement de marqueur exigé, abandon de préparation soumis à la coordination.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
 

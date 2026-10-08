@@ -173,6 +173,7 @@ export const PROVISIONING_TREE_DIGEST_SHELL = String.raw`tree_digest() {
   [ -z "$(find "$1" ! -readable -print -quit 2>/dev/null)" ] || return 1
   [ -z "$(find "$1" ! -type f ! -type d ! -type l -print -quit 2>/dev/null)" ] || return 1
   [ -z "$(find "$1" ! -type d -links +1 -print -quit 2>/dev/null)" ] || return 1
+  [ -z "$(LC_ALL=C find "$1" -name "$(printf '*[\001-\037\177]*')" -print -quit 2>/dev/null)" ] || return 1
   td_acl="$(cd "$1" && find . \( -type f -o -type d \) -exec ls -ldn -- {} +)" || return 1
   case "$(printf '%s\n' "$td_acl" | cut -c11)" in *+*) return 1 ;; esac
   td_caps="$(cd "$1" && PATH="$PATH:/usr/sbin:/sbin" getcap -r . 2>/dev/null)" || return 1
@@ -204,7 +205,7 @@ export function buildProvisionedRuntimeInventoryCommand(targets: readonly Provis
       `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then printf 'component.${index}.marker=%s\\n' "$(head -c ${MAX_MARKER_BYTES} ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} | base64 | tr -d '\\n')"; fi`,
       // A marked checkout is digested again: a running runtime matches only the checkout of its creation.
       `l="$(docker ps -aq --filter ${shellQuote(`label=${COMPOSE_PROJECT_LABEL}=${target.composeProject}`)} 2>/dev/null)"; if [ -n "$l" ]; then printf 'component.${index}.limits=%s\\n' "$(docker inspect --format '{{.HostConfig.Memory}} {{.HostConfig.NanoCpus}} {{.HostConfig.CpuQuota}} {{.HostConfig.PidsLimit}}' $l 2>/dev/null | paste -sd, -)"; fi`,
-      `i="$(docker ps -aq --filter ${shellQuote(`label=${COMPOSE_PROJECT_LABEL}=${target.composeProject}`)} 2>/dev/null)"; if [ -n "$i" ]; then printf 'component.${index}.images=%s\\n' "$(docker inspect --format '{{.Image}}' $i 2>/dev/null | sort -u | paste -sd, -)"; fi`,
+      `i="$(docker ps -aq --filter ${shellQuote(`label=${COMPOSE_PROJECT_LABEL}=${target.composeProject}`)} 2>/dev/null)"; if [ -n "$i" ]; then printf 'component.${index}.images=%s\\n' "$(docker inspect --format '{{index .Config.Labels \"com.docker.compose.service\"}}={{.Image}}' $i 2>/dev/null | LC_ALL=C sort | paste -sd, -)"; fi`,
       `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then t="$(tree_digest ${shellQuote(target.serverPath)})" || t=unavailable; printf 'component.${index}.tree=%s\\n' "$t"; fi`
     );
   });
@@ -224,7 +225,7 @@ function keyValues(output: string): Map<string, string> {
 function parseImages(value: string | undefined): readonly string[] | null {
   if (value === undefined || value === '') return null;
   const images = value.split(',');
-  return images.length <= MAX_CONTAINERS && images.every((image) => /^sha256:[0-9a-f]{64}$/.test(image)) ? Object.freeze([...images].sort()) : null;
+  return images.length <= MAX_CONTAINERS && images.every((image) => /^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}=sha256:[0-9a-f]{64}$/.test(image)) ? Object.freeze([...images].sort()) : null;
 }
 
 function parseLimits(value: string | undefined): ReadonlyArray<readonly [number, number, number, number]> | null {

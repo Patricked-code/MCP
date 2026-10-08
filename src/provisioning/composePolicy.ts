@@ -44,6 +44,7 @@ export type ComposeSafetyCode =
   | 'COMPOSE_REPLICAS'
   | 'COMPOSE_RESOURCES_UNBOUNDED'
   | 'COMPOSE_BUILD_PULL'
+  | 'COMPOSE_STOP_GRACE_PERIOD'
   | 'COMPOSE_BUILD_ARG_RESERVED'
   | 'DOCKERFILE_INVALID'
   | 'DOCKERFILE_IMAGE_UNPINNED'
@@ -128,6 +129,12 @@ function nonEmpty(value: unknown): boolean {
 
 /** True when an absolute, normalized path lies in the project directory. */
 const BIND_SEGMENT = /^[A-Za-z0-9._@+-]{1,100}$/;
+
+function graceSeconds(value: unknown): number {
+  const match = typeof value === 'string' ? /^(?:(\d+)h)?(?:(\d+)m(?!s))?(?:(\d+(?:\.\d+)?)s)?(?:(\d+)ms)?$/.exec(value) : null;
+  if (!match || value === '') return Number.POSITIVE_INFINITY;
+  return Number(match[1] ?? 0) * 3600 + Number(match[2] ?? 0) * 60 + Number(match[3] ?? 0) + Number(match[4] ?? 0) / 1000;
+}
 
 function insideProject(path: unknown, projectDir: string): boolean {
   if (typeof path !== 'string' || !path.startsWith('/')) return false;
@@ -225,6 +232,9 @@ function checkService(
   const boundedLogs = logging !== null && LOGGING_DRIVERS.has(String(logging.driver))
     && (logging.driver !== 'json-file' || (logOptions?.['max-size'] !== undefined && logOptions?.['max-file'] !== undefined));
   if (!boundedLogs) add('COMPOSE_LOGGING_DRIVER', name);
+
+  // A rollback stops the project within its own timeout: a longer grace period would outlast it.
+  if (service.stop_grace_period !== undefined && !(graceSeconds(service.stop_grace_period) <= 60)) add('COMPOSE_STOP_GRACE_PERIOD', name);
 
   // Memory, CPU and process ceilings on every service: an unbounded container could exhaust the host before any health gate.
   const limits = record(record(record(service.deploy)?.resources)?.limits);

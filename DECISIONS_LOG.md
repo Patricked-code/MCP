@@ -82,6 +82,7 @@ Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME`
   - **Entrées des builds (décision du propriétaire, options 1 + 3).** Toute image qu'un build tire est épinglée par empreinte, comme une image de service ; le réseau pendant le build reste permis, et les images exécutées sont attestées pour rendre visible toute dérive. Stockage : le plancher de 10 Gio suffit, aucune configuration du démon.
   - **Images vérifiées au `NO_OP`.** Le réseau reste permis pendant le build ; l'enregistrement des images exécutées, hors de portée du runtime, rend donc une reconstruction différente visible comme `EXISTING_RUNTIME_DEGRADED`.
   - **Un seul frontend.** Le scan ne lit que la grammaire Dockerfile : un frontend personnalisé, même épinglé, est refusé.
+  - **Fin des itérations de revue (décision du propriétaire).** Après seize rounds, les constats déductibles sont corrigés et ceux qui dépendent de valeurs propres à S1 ou d'une configuration hors dépôt deviennent des limites connues, préalables à la configuration de la première cible : plafonds maximaux par service, limites des builds, quota du stockage inscriptible, droits des archives. Tant que `servers.S1.targetProjectIds` est vide, rien de tout cela n'est atteignable en production.
   - **Rien téléchargé sans place.** Le pré-contrôle en lecture seule précède le téléchargement ; l'admission est relue entre le téléchargement et la première écriture.
 
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet

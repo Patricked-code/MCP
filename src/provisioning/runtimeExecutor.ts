@@ -69,6 +69,9 @@ const FORBIDDEN_COMPOSE_KEYS = '^[[:space:]-]*(env_file|extends|include|label_fi
 
 
 const GOVERNED_ROOT = '/opt/apps';
+/** A container's image, named by its Compose service: images are compared per service, never as a bare set. */
+const SERVICE_IMAGE = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}=sha256:[0-9a-f]{64}$/;
+
 // Room Docker keeps for a build before activation starts it.
 const MIN_DOCKER_FREE_KIB = 10 * 1024 * 1024;
 
@@ -477,9 +480,9 @@ export function buildActivateScript(input: {
     // A service that rewrote the checkout while starting never succeeds: it is digested again after the health gate.
     `if [ "$health" = healthy ]; then after="$(tree_digest ${directory})" && [ "$after" = ${shellQuote(input.treeDigest)} ] || health=checkout_modified; fi`,
     // The images the runtime runs are reported for the attestation, one valid ID for every expected container.
-    `if [ "$health" = healthy ]; then ids="$(${compose} ps -aq 2>/dev/null)" && all="$(docker inspect --format '{{.Image}}' $ids 2>/dev/null)" || health=images_unknown; fi`,
-    `if [ "$health" = healthy ] && { [ "$(printf '%s\\n' "$all" | grep -cE '^sha256:[0-9a-f]{64}$')" -ne ${expected} ] || [ "$(printf '%s\\n' "$all" | wc -l | tr -d ' ')" -ne ${expected} ]; }; then health=images_unknown; fi`,
-    `if [ "$health" = healthy ]; then printf 'images=%s\\n' "$(printf '%s\\n' "$all" | sort -u | paste -sd, -)"; fi`,
+    `if [ "$health" = healthy ]; then ids="$(${compose} ps -aq 2>/dev/null)" && all="$(docker inspect --format '{{index .Config.Labels \"com.docker.compose.service\"}}={{.Image}}' $ids 2>/dev/null)" || health=images_unknown; fi`,
+    `if [ "$health" = healthy ] && { [ "$(printf '%s\\n' "$all" | grep -cE '^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}=sha256:[0-9a-f]{64}$')" -ne ${expected} ] || [ "$(printf '%s\\n' "$all" | wc -l | tr -d ' ')" -ne ${expected} ]; }; then health=images_unknown; fi`,
+    `if [ "$health" = healthy ]; then printf 'images=%s\\n' "$(printf '%s\\n' "$all" | LC_ALL=C sort | paste -sd, -)"; fi`,
     `if [ "$health" = healthy ]; then printf 'result=activated\\n'; else printf 'result=unhealthy\\n'; fi`,
     `printf 'health=%s\\n' "$health"`
   ].join('\n');
@@ -691,7 +694,7 @@ async function withTrustedMarkers(inventory: ProvisionedRuntimeInventory, deps: 
     let expectedImages: string[] | null = null;
     try {
       const parsed = recordedImages === null ? null : JSON.parse(recordedImages);
-      expectedImages = Array.isArray(parsed) && parsed.every((image) => typeof image === 'string' && /^sha256:[0-9a-f]{64}$/.test(image)) ? parsed : null;
+      expectedImages = Array.isArray(parsed) && parsed.every((image) => typeof image === 'string' && SERVICE_IMAGE.test(image)) ? parsed : null;
     } catch {
       expectedImages = null;
     }
@@ -911,6 +914,11 @@ async function execute(
   };
 
   const discard = async () => {
+    // Moving the staging is a host write too: work claimed meanwhile owns the component, so the staging stays.
+    if (await recheck()) {
+      steps.push({ id: 'discard-staging', status: 'BLOCKED' });
+      return;
+    }
     const values = await host('discard', buildDiscardStagingScript({ jobId, target }));
     steps.push({ id: 'discard-staging', status: values.get('result') === 'discarded' ? 'DONE' : 'FAILED' });
   };
@@ -1100,7 +1108,9 @@ async function execute(
     const marker = inventory?.components[0]?.marker;
     if (!marker) return finish('FAILED', ['MARKER_UNAVAILABLE']);
     const record = await deps.readJobFile(`${PROVISIONING_DATA_ROOT_CONTAINER}/${marker.jobId}/marker.json`).catch(() => null);
-    if (record !== null) markerSha256 = createHash('sha256').update(record.endsWith('\n') ? record : `${record}\n`).digest('hex');
+    // The marker is verified after the health gate against this record: without it, nothing starts.
+    if (record === null) return finish('FAILED', ['MARKER_RECORD_UNREADABLE']);
+    markerSha256 = createHash('sha256').update(record.endsWith('\n') ? record : `${record}\n`).digest('hex');
     composeFile = marker.composeFile;
     treeDigest = marker.treeDigest;
     // The source of a created runtime is parsed again, from the checkout its marker digests.
@@ -1140,7 +1150,7 @@ async function execute(
   });
   const activated = await host('activate', buildActivateScript({ jobId, target, composeFile, labelsOverride, healthTimeoutSeconds: 180, treeDigest,
     expectedContainers: Object.values(replicas).reduce((sum, count) => sum + count, 0), bindSources, ...(markerSha256 ? { markerSha256 } : {}) }));
-  builtImages = (activated.get('images') ?? '').split(',').filter((image) => /^sha256:[0-9a-f]{64}$/.test(image)).sort();
+  builtImages = (activated.get('images') ?? '').split(',').filter((image) => SERVICE_IMAGE.test(image)).sort();
   if (activated.get('result') === 'activated' && activated.get('health') === 'healthy') {
     // The images are recorded once per created runtime, in the job data the runtime cannot reach: NO_OP compares them.
     const recordJob = mode === 'ACTIVATE' ? inventory?.components[0]?.marker?.jobId ?? jobId : jobId;
