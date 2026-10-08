@@ -22,6 +22,7 @@ const {
   buildComposeSourceScript,
   buildCreateScript,
   buildDiscardStagingScript,
+  buildParentGuardLines,
   buildRollbackScript,
   buildStageScript,
   executeProjectRuntimeProvisioning,
@@ -311,7 +312,7 @@ test('host scripts quote every value, verify before extracting and never delete'
     buildCreateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] }),
     buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', sourceSha256: sourceDigest }),
     buildActivateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE }),
-    buildRollbackScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true }),
+    buildRollbackScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true, treeDigest: TREE }),
     buildDiscardStagingScript({ jobId, target: PLAN_TARGET }),
     buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', sourceSha256: sourceDigest, jobId }),
     buildComposeSourceScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', treeDigest: TREE })
@@ -352,6 +353,16 @@ test('host scripts quote every value, verify before extracting and never delete'
   }
   // Activation waits for the expected number of containers, not only for healthy ones.
   assert.match(activate!, /wc -l/);
+  // A repository never ships the files provisioning writes, which the digest leaves out.
+  assert.ok(stage!.indexOf('reserved_name_present') > stage!.indexOf('tar -xzf') && stage!.indexOf('reserved_name_present') < stage!.indexOf('compose_source_b64='));
+  // Every writing script resolves the target's parents first: a link below /opt/apps never redirects a write.
+  for (const [script, write] of [[stage!, 'mkdir -p'], [create!, 'mv '], [activate!, 'up -d'], [rollback!, 'docker compose']] as const) {
+    assert.ok(script.indexOf('target_parent_outside') > 0 && script.indexOf('target_parent_outside') < script.indexOf(write), write);
+  }
+  // Docker keeps room for the build before anything starts.
+  assert.ok(activate!.indexOf('docker_capacity') > 0 && activate!.indexOf('docker_capacity') < activate!.indexOf('up -d'));
+  // A rollback loads the compose file only when the checkout is still the one it digested; otherwise it stops by label.
+  assert.ok(rollback!.indexOf('tree_digest') < rollback!.indexOf('docker compose') && /docker stop/.test(rollback!));
   // Only the component's own compose project counts: another component of the same repository never blocks it.
   assert.doesNotMatch(stage!, /provisioning\.repository/);
   assert.match(stage!, /label=com\.docker\.compose\.project=mcp-portal-0123456789ab/);
@@ -385,7 +396,7 @@ test('target names stay off the docker compose command lines, so the write guard
     buildComposeConfigScript({ target, composeFile: 'compose.yaml', sourceSha256: sha256(SOURCE), jobId }),
     buildComposeSourceScript({ target, composeFile: 'compose.yaml', treeDigest: TREE }),
     buildActivateScript({ jobId, target, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE }),
-    buildRollbackScript({ jobId, target, composeFile: 'compose.yaml', createdInThisJob: true })
+    buildRollbackScript({ jobId, target, composeFile: 'compose.yaml', createdInThisJob: true, treeDigest: TREE })
   ];
   for (const script of scripts) {
     assert.doesNotThrow(() => assertNoCatastrophicCommand(script));
@@ -726,8 +737,35 @@ test('the tree digest ignores the provisioning files and changes with any conten
       await revert();
       assert.equal(digest('sh'), base);
     }
+    // A FIFO, socket or device in the checkout is never digested as an ordinary tree.
+    assert.equal(spawnSync('mkfifo', [join(directory, 'pipe')]).status, 0);
+    for (const shell of ['sh', 'bash']) {
+      assert.notEqual(spawnSync(shell, ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory]).status, 0, shell);
+    }
+    await unlink(join(directory, 'pipe'));
+    assert.equal(digest('sh'), base);
   } finally {
     await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('the parent guard admits a linked root but no link below it', async () => {
+  const work = await mkdtemp(join(tmpdir(), 'mcp-f03-parents-'));
+  try {
+    await mkdir(join(work, 'real', 'apps', 'group'), { recursive: true });
+    await mkdir(join(work, 'elsewhere'));
+    await symlink(join(work, 'real', 'apps'), join(work, 'apps'));
+    await symlink(join(work, 'elsewhere'), join(work, 'real', 'apps', 'linked'));
+    const guard = (target: string) => spawnSync('sh', ['-c', [
+      "fail() { printf 'result=failed\\nreason=%s\\n' \"$1\"; exit 0; }",
+      ...buildParentGuardLines(target, join(work, 'apps')),
+      "printf 'result=ok\\n'"
+    ].join('\n')], { encoding: 'utf8' }).stdout;
+    assert.match(guard(join(work, 'apps', 'group', 'portal')), /result=ok/);
+    assert.match(guard(join(work, 'apps', 'portal')), /result=ok/);
+    assert.match(guard(join(work, 'apps', 'linked', 'portal')), /reason=target_parent_outside/);
+  } finally {
+    await rm(work, { recursive: true, force: true });
   }
 });
 
@@ -921,7 +959,7 @@ test('a failed health check rolls back without destruction, and the activation o
   const rolledBack = await run(unhealthy, { creation: true, activation: true });
   assert.deepEqual([rolledBack.result, rolledBack.rollback], ['ROLLED_BACK', 'SUCCEEDED']);
   assert.deepEqual(hostPhases(unhealthy), ['stage', 'config', 'create', 'activate', 'rollback']);
-  const rollbackCommand = buildRollbackScript({ jobId: rolledBack.jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true });
+  const rollbackCommand = buildRollbackScript({ jobId: rolledBack.jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true, treeDigest: TREE });
   assert.match(rollbackCommand, /mv /);
 
   // A runtime created earlier is activated alone: no fetch and no stage; its rollback keeps the files.
@@ -943,7 +981,7 @@ test('a failed health check rolls back without destruction, and the activation o
   assert.deepEqual([kept.mode, kept.result], ['ACTIVATE', 'ROLLED_BACK']);
   assert.equal(activateOnly.calls.some((call) => call.kind === 'fetch'), false);
   assert.deepEqual(hostPhases(activateOnly), ['source', 'config', 'activate', 'rollback']);
-  assert.doesNotMatch(buildRollbackScript({ jobId: kept.jobId, target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdInThisJob: false }), /mcp-provisioning-quarantine/);
+  assert.doesNotMatch(buildRollbackScript({ jobId: kept.jobId, target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdInThisJob: false, treeDigest: TREE }), /mcp-provisioning-quarantine/);
 });
 
 test('one provisioning runs at a time', async () => {
