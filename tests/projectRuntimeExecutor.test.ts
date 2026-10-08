@@ -1065,7 +1065,7 @@ test('build Dockerfiles are read from the digested checkout and their images att
   assert.match(script, /images=/);
 });
 
-test('the attestation records the admission that authorized the first write', async () => {
+test('the attestation records the admission that authorized the last write', async () => {
   let admissions = 0;
   const h = harness({
     admitRevision: async () => {
@@ -1075,7 +1075,7 @@ test('the attestation records the admission that authorized the first write', as
   });
   const result = await run(h, { creation: true });
   const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
-  assert.deepEqual([attestation.admission.branchHead, attestation.admission.checkRuns], ['b'.repeat(40), 2]);
+  assert.deepEqual([attestation.admission.branchHead, attestation.admission.checkRuns], ['b'.repeat(40), admissions]);
 });
 
 test('the revision is admitted again before the promotion and before the activation', async () => {

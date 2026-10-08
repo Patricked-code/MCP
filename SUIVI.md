@@ -94,7 +94,7 @@
   - RED de la huitième revue `f7f3296` : 8 tests en échec (relecture de la coordination, liens physiques, capacité, branche officielle). GREEN `80cd60e`, CI run `37709709982` verte.
   - RED de la neuvième revue `b384753` : 4 tests en échec (rollback, redémarrage, capacités et ACL, sources de bind). GREEN `341192e`, CI verte.
   - RED de la dixième revue `cc4845d` : 4 tests en échec (conteneurs arrêtés, santé exigée, plafonds de ressources, pré-contrôle et réadmission).
-  - GREEN local après la décision sur les builds : typecheck, build et gates verts ; suite complète 993/993 (968 avant les revues), tests de l'exécuteur verts aussi avec Compose v2.38.2. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
+  - GREEN local après la décision sur les builds : typecheck, build et gates verts ; suite complète 995/995 (968 avant les revues), tests de l'exécuteur verts aussi avec Compose v2.38.2. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
 - **Décision du propriétaire (2026-10-08)** : entrées des builds, options 1 + 3 ; stockage des builds, le plancher de 10 Gio suffit.
   - Mise en œuvre (`src/provisioning/dockerfilePolicy.ts`) : chaque Dockerfile d'un service construit est lu depuis le checkout digéré (phase `dockerfiles`) ou pris en ligne ; `FROM`, `--from=`, `from=` d'un montage et le frontend `# syntax=` doivent être épinglés par empreinte (sinon `DOCKERFILE_IMAGE_UNPINNED` / `DOCKERFILE_FRONTEND_UNPINNED`), seuls les étapes déjà définies, `scratch` et les contextes nommés sont locaux. Lecture en échec fermé (jointures sous les deux caractères d'échappement et lignes physiques).
   - `build.pull` et les arguments `BUILDKIT_*` sont refusés.
@@ -104,6 +104,12 @@
   - Frontend : seul `docker/dockerfile` épinglé est admis (`DOCKERFILE_FRONTEND_UNSUPPORTED` sinon).
   - L'attestation garde l'admission relue après téléchargement, celle qui autorise l'écriture.
   - Ressources CPU et mémoire des builds : configuration du builder ou du démon sur S1, hors dépôt ; soumis au propriétaire.
+- **Treizième revue Codex (six constats : quatre corrigés, deux soumis au propriétaire).**
+  - Admission relue avant la promotion et avant l'activation, pas seulement avant la préparation.
+  - Empreinte recalculée après le contrôle de santé : un service qui réécrit le checkout au démarrage n'est jamais un succès.
+  - Une image valide exigée pour chaque conteneur attendu, sinon échec (`images_unknown`).
+  - Après une collision de coordination, plus aucune écriture, même le déplacement de la préparation en quarantaine.
+  - Soumis au propriétaire : plafonds maximaux de ressources par service (valeurs propres à S1) et droits des archives de sources (utilisateur du canal S1 à vérifier).
 - **NEXT_ACTION** : CI exact-head de la PR #261 et nouvelle revue Codex ; décisions du propriétaire puis leur mise en œuvre ; merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
 
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 — GREEN candidate

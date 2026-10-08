@@ -469,7 +469,12 @@ export function buildActivateScript(input: {
     '  health=healthy; break',
     'done',
     // The images the runtime runs, built or pulled, are reported for the attestation.
-    `if [ "$health" = healthy ]; then ids="$(${compose} ps -aq 2>/dev/null)"; images="$(docker inspect --format '{{.Image}}' $ids 2>/dev/null | sort -u | paste -sd, -)"; printf 'images=%s\\n' "$images"; fi`,
+    // A service that rewrote the checkout while starting never succeeds: it is digested again after the health gate.
+    `if [ "$health" = healthy ]; then after="$(tree_digest ${directory})" && [ "$after" = ${shellQuote(input.treeDigest)} ] || health=checkout_modified; fi`,
+    // The images the runtime runs are reported for the attestation, one valid ID for every expected container.
+    `if [ "$health" = healthy ]; then ids="$(${compose} ps -aq 2>/dev/null)" && all="$(docker inspect --format '{{.Image}}' $ids 2>/dev/null)" || health=images_unknown; fi`,
+    `if [ "$health" = healthy ] && { [ "$(printf '%s\\n' "$all" | grep -cE '^sha256:[0-9a-f]{64}$')" -ne ${expected} ] || [ "$(printf '%s\\n' "$all" | wc -l | tr -d ' ')" -ne ${expected} ]; }; then health=images_unknown; fi`,
+    `if [ "$health" = healthy ]; then printf 'images=%s\\n' "$(printf '%s\\n' "$all" | sort -u | paste -sd, -)"; fi`,
     `if [ "$health" = healthy ]; then printf 'result=activated\\n'; else printf 'result=unhealthy\\n'; fi`,
     `printf 'health=%s\\n' "$health"`
   ].join('\n');
@@ -824,6 +829,16 @@ async function execute(
     }
   };
 
+  /** The admission read again before a write; the one that authorizes the write is the one attested. */
+  const readmit = async (): Promise<string | null> => {
+    const readmitted = await deps.admitRevision({ repositoryId: target.repositoryId, revision: target.revision, branch: branch! }).catch(() => null);
+    if (readmitted?.admitted && (readmitted.kind === 'CI_GATE' || readmitted.kind === 'MANUAL_CONSENT')) {
+      admission = readmitted;
+      return null;
+    }
+    return readmitted && readmitted.reasonCode !== 'REVISION_ADMITTED' ? readmitted.reasonCode : 'REVISION_ADMISSION_UNAVAILABLE';
+  };
+
   /** The last coordination read before a host write; a collision found then blocks that write. */
   const recheck = async (): Promise<CoordinationRefusal | null> => {
     const read = await deps.readCoordination().catch(() => null);
@@ -981,11 +996,10 @@ async function execute(
     steps.push({ id: 'fetch-source', status: 'DONE' });
 
     // The admission is read again after the download: a branch or CI change meanwhile never reaches the host.
-    const readmitted = await deps.admitRevision({ repositoryId: target.repositoryId, revision: target.revision, branch: branch! }).catch(() => null);
-    if (readmitted?.admitted) admission = readmitted;
-    if (!readmitted?.admitted) {
+    const beforeStageAdmission = await readmit();
+    if (beforeStageAdmission) {
       steps.push({ id: 'backup', status: 'BLOCKED' });
-      return finish('BLOCKED', [readmitted && readmitted.reasonCode !== 'REVISION_ADMITTED' ? readmitted.reasonCode : 'REVISION_ADMISSION_UNAVAILABLE']);
+      return finish('BLOCKED', [beforeStageAdmission]);
     }
     const beforeStage = await recheck();
     if (beforeStage) {
@@ -1027,10 +1041,16 @@ async function execute(
       await discard();
       return finish('FAILED', ['MARKER_RECORD_UNWRITTEN']);
     }
-    const beforeCreate = await recheck();
-    if (beforeCreate) {
+    const beforeCreateAdmission = await readmit();
+    if (beforeCreateAdmission) {
       steps.push({ id: 'create-runtime', status: 'BLOCKED' });
       await discard();
+      return finish('BLOCKED', [beforeCreateAdmission]);
+    }
+    const beforeCreate = await recheck();
+    if (beforeCreate) {
+      // The component is claimed now: nothing more is written, not even the staging's move to quarantine.
+      steps.push({ id: 'create-runtime', status: 'BLOCKED' });
       return finish('BLOCKED', [beforeCreate]);
     }
     const created = await host('create', buildCreateScript({ ...markerInput, bindSources }));
@@ -1061,6 +1081,11 @@ async function execute(
   }
 
   // A creation stopped here keeps its checkout, as a creation alone leaves it; nothing starts.
+  const beforeActivateAdmission = await readmit();
+  if (beforeActivateAdmission) {
+    steps.push({ id: 'activate', status: 'BLOCKED' });
+    return finish('BLOCKED', [beforeActivateAdmission]);
+  }
   const beforeActivate = await recheck();
   if (beforeActivate) {
     steps.push({ id: 'activate', status: 'BLOCKED' });
