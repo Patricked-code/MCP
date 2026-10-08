@@ -103,6 +103,7 @@ function composeConfig(dir: string, service: Record<string, unknown> = {}, extra
     services: {
       api: {
         build: { context: dir, dockerfile: 'Dockerfile' },
+        mem_limit: '536870912', cpus: 0.5, pids_limit: 200,
         ports: [{ mode: 'ingress', host_ip: '127.0.0.1', target: 3000, published: '3100', protocol: 'tcp' }],
         volumes: [
           { type: 'bind', source: `${dir}/data`, target: '/data' },
@@ -358,6 +359,11 @@ test('host scripts quote every value, verify before extracting and never delete'
   assert.doesNotMatch(stage!, /df -P[ki] \/opt\/apps/);
   // Activation waits for the expected number of containers, not only for healthy ones.
   assert.match(activate!, /wc -l/);
+  // Only a container its health check reports healthy counts: running without one proves nothing.
+  assert.doesNotMatch(activate!, /\(healthy\)\?/);
+  assert.match(activate!, /\^running\[\|\]healthy\$/);
+  // The label fallback sees stopped containers too.
+  assert.match(rollback!, /docker ps -aq --filter/);
   // A repository never ships the files provisioning writes, which the digest leaves out.
   assert.ok(stage!.indexOf('reserved_name_present') > stage!.indexOf('tar -xzf') && stage!.indexOf('reserved_name_present') < stage!.indexOf('compose_source_b64='));
   // Every writing script resolves the target's parents first: a link below /opt/apps never redirects a write.
@@ -467,6 +473,7 @@ function harness(overrides: Record<string, unknown> = {}) {
   const scripts = new Map<string, string>();
   let inventory = 'docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=\n';
   const results: Record<string, string> = {
+    preflight: 'result=ready\n',
     stage: `result=staged\ncompose_file=compose.yaml\n${sourceLines()}tree_digest=${TREE}\n`,
     // The model Compose prints for the staged checkout of a creation, then for a created runtime.
     'config-staging': `result=configured\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d'))).toString('base64')}\n`,
@@ -995,6 +1002,36 @@ test('a rollback reads the coordination authorities again and never writes over 
   assert.deepEqual(hostPhases(free).length, 0);
   assert.equal((await run(free, { creation: true, activation: true })).result, 'ROLLED_BACK');
   assert.deepEqual(hostPhases(free), ['stage', 'config', 'create', 'activate', 'rollback']);
+});
+
+test('every service runs under memory, CPU and process ceilings', () => {
+  const dir = '/opt/apps/portal-api';
+  assert.equal(evaluateComposeSafety(composeConfig(dir), dir).ok, true);
+  const deployed = composeConfig(dir, { mem_limit: undefined, cpus: undefined, pids_limit: undefined, deploy: { resources: { limits: { memory: '268435456', cpus: 1, pids: 50 } } } });
+  assert.equal(evaluateComposeSafety(deployed, dir).ok, true);
+  for (const missing of ['mem_limit', 'cpus', 'pids_limit']) {
+    const unbounded = evaluateComposeSafety(composeConfig(dir, { [missing]: undefined }), dir);
+    assert.deepEqual(unbounded.findings.map((finding: any) => finding.code), ['COMPOSE_RESOURCES_UNBOUNDED'], missing);
+  }
+});
+
+test('the revision is admitted again after the download, and the host preflight runs before it', async () => {
+  let admissions = 0;
+  const h = harness({
+    admitRevision: async () => {
+      admissions += 1;
+      return Object.freeze({ admitted: admissions === 1, kind: admissions === 1 ? 'CI_GATE' : null, reasonCode: admissions === 1 ? 'REVISION_ADMITTED' : 'REVISION_CI_FAILED', branch: 'main', branchHead: REVISION, checkRuns: 1, statuses: 0 });
+    }
+  });
+  const result = await run(h, { creation: true, activation: true });
+  assert.deepEqual([result.result, result.reasonCodes], ['BLOCKED', ['REVISION_CI_FAILED']]);
+  assert.deepEqual(hostPhases(h), ['preflight']);
+  // A host without room or with a full quarantine fails before anything is downloaded.
+  const full = harness();
+  full.results.preflight = 'result=failed\nreason=quarantine_full\n';
+  const refused = await run(full, { creation: true });
+  assert.deepEqual([refused.result, refused.reasonCodes], ['FAILED', ['PREFLIGHT_QUARANTINE_FULL']]);
+  assert.equal(full.calls.some((call) => call.kind === 'fetch'), false);
 });
 
 test('bind sources are named by the policy, relative to the project', () => {

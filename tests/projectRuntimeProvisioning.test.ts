@@ -212,6 +212,8 @@ test('provisioning plans only a genuinely absent runtime at its exact, declared 
     ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api', 'Up 2 minutes (unhealthy)')}`, marker()],
     ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api', 'Up 5 seconds (health: starting)')}`, marker()],
     ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api', 'Exited (1) 2 minutes ago', 'exited')}`, marker()],
+    // Running without a health check proves nothing about the service.
+    [...PRESENT_SAME.slice(0, 2), `component.0.containers=${container('portal-api-1', 'api', 'Up 2 minutes')}`, ...PRESENT_SAME.slice(3)],
     ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`],
     // A checkout edited since its creation, or one that could not be digested, is never the admitted revision.
     [...PRESENT_SAME.slice(0, 4), `component.0.tree=${'f'.repeat(64)}`],
