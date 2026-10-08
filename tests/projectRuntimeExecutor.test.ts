@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { chmod, chown, mkdir, mkdtemp, readFile, rm, symlink, unlink, writeFile } from 'node:fs/promises';
+import { chmod, chown, link, mkdir, mkdtemp, readFile, rm, symlink, unlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -18,6 +18,7 @@ const {
   PROVISIONING_TREE_DIGEST_SHELL,
   buildActivateScript,
   buildArchiveBoundsLines,
+  buildCapacityLines,
   buildComposeConfigScript,
   buildComposeSourceScript,
   buildCreateScript,
@@ -351,6 +352,10 @@ test('host scripts quote every value, verify before extracting and never delete'
   for (const reason of ['compose_project_networks_present', 'quarantine_full', 'host_capacity', 'host_inodes']) {
     assert.ok(stage!.indexOf(reason) > 0 && stage!.indexOf(reason) < stage!.indexOf('mkdir -p'), reason);
   }
+  // The floors hold on the filesystems the job writes, measured after the parent is resolved.
+  assert.ok(stage!.includes(buildCapacityLines().join('\n')));
+  assert.ok(stage!.indexOf('target_parent_outside') < stage!.indexOf('host_capacity'));
+  assert.doesNotMatch(stage!, /df -P[ki] \/opt\/apps/);
   // Activation waits for the expected number of containers, not only for healthy ones.
   assert.match(activate!, /wc -l/);
   // A repository never ships the files provisioning writes, which the digest leaves out.
@@ -479,9 +484,9 @@ function harness(overrides: Record<string, unknown> = {}) {
       return Object.freeze({ complete: true, locks: [], tasks: [] });
     },
     admitRevision: async (input: any) => {
-      calls.push({ kind: 'admit', detail: `${input.repositoryId}@${input.revision}` });
+      calls.push({ kind: 'admit', detail: `${input.repositoryId}@${input.revision}#${input.branch}` });
       return Object.freeze({
-        admitted: true, kind: 'CI_GATE', reasonCode: 'REVISION_ADMITTED', defaultBranch: 'main', defaultBranchHead: REVISION,
+        admitted: true, kind: 'CI_GATE', reasonCode: 'REVISION_ADMITTED', branch: input.branch, branchHead: REVISION,
         checkRuns: 1, statuses: 0
       });
     },
@@ -539,7 +544,7 @@ test('the executor re-observes, then creates and activates a genuinely absent ru
   const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
   assert.equal(attestation.result, 'SUCCEEDED');
   assert.equal(attestation.composeSourceSha256, sha256(SOURCE));
-  assert.deepEqual([attestation.admission.kind, attestation.admission.defaultBranch], ['CI_GATE', 'main']);
+  assert.deepEqual([attestation.admission.kind, attestation.admission.branch], ['CI_GATE', 'main']);
   assert.deepEqual(attestation.coordination, { locks: 0, tasks: 0 });
   assert.equal(attestation.archiveSha256, 'f'.repeat(64));
   assert.equal(attestation.authorizationInferred, false);
@@ -613,22 +618,28 @@ test('the executor refuses without fresh evidence, consent or write mode, and ne
   assert.deepEqual([(await run(offline, { creation: true })).result, hostPhases(offline)], ['FAILED', []]);
 });
 
-test('a revision outside the reviewed default branch or with a failing CI is refused before any write', async () => {
-  for (const reasonCode of ['REVISION_NOT_ON_DEFAULT_BRANCH', 'REVISION_CI_FAILED', 'REVISION_CI_PENDING']) {
+test('a revision outside the reviewed official branch or with a failing CI is refused before any write', async () => {
+  for (const reasonCode of ['REVISION_NOT_ON_OFFICIAL_BRANCH', 'REVISION_CI_FAILED', 'REVISION_CI_PENDING']) {
     const h = harness({
-      admitRevision: async () => Object.freeze({ admitted: false, kind: null, reasonCode, defaultBranch: 'main', defaultBranchHead: null, checkRuns: null, statuses: null })
+      admitRevision: async () => Object.freeze({ admitted: false, kind: null, reasonCode, branch: 'main', branchHead: null, checkRuns: null, statuses: null })
     });
     const refused = await run(h, { creation: true, activation: true });
     assert.deepEqual([refused.result, refused.reasonCodes, refused.jobId], ['REFUSED', [reasonCode], null], reasonCode);
     assert.equal(h.calls.some((call) => call.kind === 'fetch' || call.kind === 'host' || call.kind === 'write-file'), false, reasonCode);
   }
+  // The admission proves the revision on the branch the mapping names, which may differ from the default branch.
+  const production = harness({
+    readRegistry: async () => { const value = registry(); value.governanceEvidence.mappings[0].officialBranch = 'production'; return value; }
+  });
+  assert.equal((await run(production, { creation: true })).result, 'SUCCEEDED');
+  assert.deepEqual(production.calls.filter((call) => call.kind === 'admit').map((call) => call.detail), [`${TARGET.repositoryId}@${REVISION}#production`]);
   // An admission that cannot be read refuses too: it is never assumed.
   const offline = harness({ admitRevision: async () => { throw new Error('github'); } });
   assert.deepEqual((await run(offline, { creation: true })).reasonCodes, ['REVISION_ADMISSION_UNAVAILABLE']);
   assert.deepEqual(hostPhases(offline), []);
   // The activation of a created runtime is admitted again: a revision is never trusted from an earlier job.
   const created = harness({
-    admitRevision: async () => Object.freeze({ admitted: false, kind: null, reasonCode: 'REVISION_CI_FAILED', defaultBranch: 'main', defaultBranchHead: null, checkRuns: 1, statuses: 0 })
+    admitRevision: async () => Object.freeze({ admitted: false, kind: null, reasonCode: 'REVISION_CI_FAILED', branch: 'main', branchHead: null, checkRuns: 1, statuses: 0 })
   });
   const composeProject = (planProjectRuntimeProvisioning({
     request: REQUEST, serverTarget: { status: 'CONFIGURED', projectIds: ['portal'] }, registry: registry(),
@@ -744,6 +755,17 @@ test('the tree digest ignores the provisioning files and changes with any conten
     }
     await unlink(join(directory, 'pipe'));
     assert.equal(digest('sh'), base);
+    // Nor a hard link: two names of one file would change together, which no digest of contents and modes shows.
+    await writeFile(join(directory, 'twin.txt'), 'alpha\n');
+    const twin = digest('sh');
+    await unlink(join(directory, 'twin.txt'));
+    await link(join(directory, 'a.txt'), join(directory, 'twin.txt'));
+    for (const shell of ['sh', 'bash']) {
+      assert.notEqual(spawnSync(shell, ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory]).status, 0, shell);
+    }
+    await unlink(join(directory, 'twin.txt'));
+    await writeFile(join(directory, 'twin.txt'), 'alpha\n');
+    assert.equal(digest('sh'), twin);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
@@ -875,6 +897,98 @@ test('work claimed or locked on the component, or unreadable coordination, refus
     tasks: [{ taskId: 'TASK-2', resourceScopes: ['provisioning:project-runtime'] }]
   }) });
   assert.equal((await run(unrelated, { creation: true })).result, 'SUCCEEDED');
+});
+
+test('the coordination authorities are read again immediately before every host write', async () => {
+  const clear = Object.freeze({ complete: true, locks: [], tasks: [] });
+  const locked = Object.freeze({ complete: true, locks: [{ scope: `component:portal:${TARGET.mappingId}`, projectId: null }], tasks: [] });
+  const claimed = Object.freeze({ complete: true, locks: [], tasks: [{ taskId: 'TASK-20261008-001', resourceScopes: ['repository:patricked-code/portal'] }] });
+  /** Coordination that changes after a number of clear reads, as work claimed or locked while the job runs. */
+  const changing = (clearReads: number, then: unknown) => {
+    const h = harness();
+    let reads = 0;
+    h.deps.readCoordination = (async () => {
+      h.calls.push({ kind: 'coordinate', detail: '' });
+      reads += 1;
+      return reads <= clearReads ? clear : then;
+    }) as any;
+    return h;
+  };
+  const sequence = (h: ReturnType<typeof harness>) => h.calls
+    .filter((call) => call.kind === 'coordinate' || call.kind === 'host')
+    .map((call) => (call.kind === 'host' ? call.detail : 'coordinate'));
+  const steps = (h: ReturnType<typeof harness>, jobId: string) => JSON.parse(h.files.get(`/app/data/provisioning/${jobId}/attestation.json`)!)
+    .steps.map((step: any) => `${step.id}:${step.status}`);
+
+  // Read before the job starts, then right before each write: no GitHub call or download sits between the last read and a write.
+  const full = changing(99, clear);
+  assert.equal((await run(full, { creation: true, activation: true })).result, 'SUCCEEDED');
+  assert.deepEqual(sequence(full), ['coordinate', 'coordinate', 'stage', 'config', 'coordinate', 'create', 'coordinate', 'activate']);
+
+  // Locked while the admission and the download ran: nothing is staged.
+  const beforeStage = changing(1, locked);
+  const lockedResult = await run(beforeStage, { creation: true, activation: true });
+  assert.deepEqual([lockedResult.result, lockedResult.reasonCodes], ['BLOCKED', ['TARGET_LOCKED']]);
+  assert.deepEqual(hostPhases(beforeStage), []);
+  assert.deepEqual(steps(beforeStage, lockedResult.jobId), ['fetch-source:DONE', 'backup:BLOCKED']);
+
+  // Claimed once the source was checked: the staging is discarded, nothing is promoted.
+  const beforeCreate = changing(2, claimed);
+  const claimedResult = await run(beforeCreate, { creation: true, activation: true });
+  assert.deepEqual([claimedResult.result, claimedResult.reasonCodes], ['BLOCKED', ['TARGET_CLAIMED_BY_TASK']]);
+  assert.deepEqual(hostPhases(beforeCreate), ['stage', 'config', 'discard']);
+
+  // Unreadable before the activation: the created checkout stays as a creation alone leaves it, and nothing starts.
+  const beforeActivate = changing(3, null);
+  const unreadable = await run(beforeActivate, { creation: true, activation: true });
+  assert.deepEqual([unreadable.result, unreadable.reasonCodes, unreadable.rollback], ['BLOCKED', ['COORDINATION_UNAVAILABLE'], 'NOT_NEEDED']);
+  assert.deepEqual(hostPhases(beforeActivate), ['stage', 'config', 'create']);
+
+  // The activation of a runtime created earlier reads them again after checking its source, right before starting.
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject: TARGET.composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  const existing = changing(1, locked);
+  existing.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
+  const activation = await run(existing, { activation: true });
+  assert.deepEqual([activation.mode, activation.result, activation.reasonCodes], ['ACTIVATE', 'BLOCKED', ['TARGET_LOCKED']]);
+  assert.deepEqual(hostPhases(existing), ['source', 'config']);
+});
+
+test('the capacity floors hold on the filesystems the job writes, not only on /opt/apps', async () => {
+  const work = await mkdtemp(join(tmpdir(), 'mcp-f03-capacity-'));
+  try {
+    await mkdir(join(work, 'bin'));
+    await mkdir(join(work, 'customers'));
+    const log = join(work, 'df.log');
+    // A df that reports plenty everywhere except on the filesystem the test names.
+    await writeFile(join(work, 'bin', 'df'), [
+      '#!/bin/sh',
+      'for a; do last="$a"; done',
+      'printf "%s\\n" "$*" >> "$DF_LOG"',
+      'value=999999999',
+      'if [ "$1" = -Pk ] && [ "$last" = "${LOW_SPACE:-}" ]; then value=1; fi',
+      'if [ "$1" = -Pi ] && [ "$last" = "${LOW_INODES:-}" ]; then value=1; fi',
+      'printf "Filesystem 1024-blocks Used Available Capacity Mounted\\nfs 1 1 %s 1%% /\\n" "$value"',
+      ''
+    ].join('\n'));
+    await chmod(join(work, 'bin', 'df'), 0o755);
+    const check = (env: Record<string, string> = {}) => spawnSync('sh', ['-c', [
+      "fail() { printf 'result=failed\\nreason=%s\\n' \"$1\"; exit 0; }",
+      `real_parent='${join(work, 'customers')}'`,
+      ...buildCapacityLines(join(work, 'quarantine', 'root')),
+      "printf 'result=ok\\n'"
+    ].join('\n')], { encoding: 'utf8', env: { ...process.env, PATH: `${join(work, 'bin')}:${process.env.PATH}`, DF_LOG: log, ...env } }).stdout;
+    assert.match(check(), /result=ok/);
+    // The staging parent's own filesystem is measured, then the quarantine's through its nearest existing directory.
+    assert.deepEqual((await readFile(log, 'utf8')).trim().split('\n'), [
+      `-Pk ${join(work, 'customers')}`, `-Pi ${join(work, 'customers')}`, `-Pk ${work}`, `-Pi ${work}`
+    ]);
+    assert.match(check({ LOW_SPACE: join(work, 'customers') }), /reason=host_capacity/);
+    assert.match(check({ LOW_INODES: join(work, 'customers') }), /reason=host_inodes/);
+    assert.match(check({ LOW_SPACE: work }), /reason=host_capacity/);
+    assert.match(check({ LOW_INODES: work }), /reason=host_inodes/);
+  } finally {
+    await rm(work, { recursive: true, force: true });
+  }
 });
 
 test('a mapping the registry does not let deploy is never provisioned', async () => {

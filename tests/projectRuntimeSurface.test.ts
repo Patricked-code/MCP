@@ -183,29 +183,29 @@ function github(overrides: Record<string, unknown> = {}) {
   };
 }
 
-test('a revision is admitted only from the default branch history with a non-failing CI gate', async () => {
+test('a revision is admitted only from the mapping official branch history with a non-failing CI gate', async () => {
   const admit = async (overrides: Record<string, unknown> = {}, input: Record<string, string> = {}) => {
     const fake = github(overrides);
-    const result = await admitProvisioningRevision({ repositoryId: TARGET.repositoryId, revision: REVISION, ...input }, fake.request) as any;
+    const result = await admitProvisioningRevision({ repositoryId: TARGET.repositoryId, revision: REVISION, branch: 'main', ...input }, fake.request) as any;
     return { result, calls: fake.calls };
   };
   const { result: admitted, calls } = await admit();
   assert.deepEqual(
-    { admitted: admitted.admitted, kind: admitted.kind, reasonCode: admitted.reasonCode, defaultBranch: admitted.defaultBranch, defaultBranchHead: admitted.defaultBranchHead },
-    { admitted: true, kind: 'CI_GATE', reasonCode: 'REVISION_ADMITTED', defaultBranch: 'main', defaultBranchHead: HEAD }
+    { admitted: admitted.admitted, kind: admitted.kind, reasonCode: admitted.reasonCode, branch: admitted.branch, branchHead: admitted.branchHead },
+    { admitted: true, kind: 'CI_GATE', reasonCode: 'REVISION_ADMITTED', branch: 'main', branchHead: HEAD }
   );
   assert.ok(Object.isFrozen(admitted));
-  assert.ok(calls.every((endpoint) => endpoint.startsWith('/repos/Patricked-code/Portal')));
+  assert.ok(calls.every((endpoint) => endpoint.startsWith('/repos/Patricked-code/Portal/')));
 
   const base = '/repos/Patricked-code/Portal';
   const compare = `${base}/compare/${REVISION}...${HEAD}`;
   const checks = `${base}/commits/${REVISION}/check-runs?per_page=100`;
   const statuses = `${base}/commits/${REVISION}/status`;
   const cases: Array<[Record<string, unknown>, string]> = [
-    // Only the reviewed history of the default branch is admitted.
-    [{ [compare]: { ok: true, status: 200, json: { status: 'diverged' } } }, 'REVISION_NOT_ON_DEFAULT_BRANCH'],
-    [{ [compare]: { ok: true, status: 200, json: { status: 'behind' } } }, 'REVISION_NOT_ON_DEFAULT_BRANCH'],
-    [{ [compare]: { ok: false, status: 404, json: null } }, 'REVISION_NOT_ON_DEFAULT_BRANCH'],
+    // Only the reviewed history of the official branch is admitted.
+    [{ [compare]: { ok: true, status: 200, json: { status: 'diverged' } } }, 'REVISION_NOT_ON_OFFICIAL_BRANCH'],
+    [{ [compare]: { ok: true, status: 200, json: { status: 'behind' } } }, 'REVISION_NOT_ON_OFFICIAL_BRANCH'],
+    [{ [compare]: { ok: false, status: 404, json: null } }, 'REVISION_NOT_ON_OFFICIAL_BRANCH'],
     // A failing or unfinished CI gate is never admitted, from check runs or commit statuses.
     [{ [checks]: { ok: true, status: 200, json: { total_count: 1, check_runs: [{ status: 'completed', conclusion: 'failure' }] } } }, 'REVISION_CI_FAILED'],
     [{ [checks]: { ok: true, status: 200, json: { total_count: 1, check_runs: [{ status: 'completed', conclusion: 'timed_out' }] } } }, 'REVISION_CI_FAILED'],
@@ -215,8 +215,8 @@ test('a revision is admitted only from the default branch history with a non-fai
     // A gate that cannot be read in full proves nothing.
     [{ [checks]: { ok: true, status: 200, json: { total_count: 150, check_runs: Array.from({ length: 100 }, () => ({ status: 'completed', conclusion: 'success' })) } } }, 'REVISION_CI_UNVERIFIABLE'],
     [{ [checks]: { ok: false, status: null, json: null } }, 'REVISION_ADMISSION_UNAVAILABLE'],
-    [{ [base]: { ok: false, status: null, json: null } }, 'REVISION_ADMISSION_UNAVAILABLE'],
-    [{ [base]: { ok: true, status: 200, json: { default_branch: '../x' } } }, 'REVISION_ADMISSION_UNAVAILABLE']
+    [{ [`${base}/branches/main`]: { ok: false, status: null, json: null } }, 'REVISION_ADMISSION_UNAVAILABLE'],
+    [{ [`${base}/branches/main`]: { ok: true, status: 200, json: { commit: { sha: 'main' } } } }, 'REVISION_ADMISSION_UNAVAILABLE']
   ];
   for (const [overrides, reasonCode] of cases) {
     const { result } = await admit(overrides);
@@ -228,21 +228,29 @@ test('a revision is admitted only from the default branch history with a non-fai
     [checks]: { ok: true, status: 200, json: { total_count: 0, check_runs: [] } }
   });
   assert.deepEqual([manual.admitted, manual.kind], [true, 'MANUAL_CONSENT']);
-  // The default branch head itself needs no comparison.
+  // The official branch head itself needs no comparison.
   const { result: head, calls: headCalls } = await admit({}, { revision: HEAD });
   assert.equal(head.reasonCode, 'REVISION_ADMITTED');
   assert.equal(headCalls.some((endpoint) => endpoint.includes('/compare/')), false);
-  // A default branch with a slash is one encoded path parameter, as the other GitHub branch readers send it.
+  // The branch is the one the mapping names, never the repository default: a revision of another line is refused.
+  const production = 'c'.repeat(40);
+  const { result: official, calls: officialCalls } = await admit({
+    [`${base}/branches/production`]: { ok: true, status: 200, json: { commit: { sha: production } } },
+    [`${base}/compare/${REVISION}...${production}`]: { ok: true, status: 200, json: { status: 'diverged' } }
+  }, { branch: 'production' });
+  assert.deepEqual([official.admitted, official.reasonCode, official.branch, official.branchHead], [false, 'REVISION_NOT_ON_OFFICIAL_BRANCH', 'production', production]);
+  assert.equal(officialCalls.includes(base), false);
+  assert.equal(officialCalls.some((endpoint) => endpoint.endsWith('/branches/main')), false);
+  // A branch with a slash is one encoded path parameter, as the other GitHub branch readers send it.
   const { result: slashed, calls: slashedCalls } = await admit({
-    '/repos/Patricked-code/Portal': { ok: true, status: 200, json: { default_branch: 'release/1.0' } },
     '/repos/Patricked-code/Portal/branches/release%2F1.0': { ok: true, status: 200, json: { commit: { sha: HEAD } } }
-  });
-  assert.deepEqual([slashed.admitted, slashed.defaultBranch], [true, 'release/1.0']);
+  }, { branch: 'release/1.0' });
+  assert.deepEqual([slashed.admitted, slashed.branch], [true, 'release/1.0']);
   assert.ok(slashedCalls.includes('/repos/Patricked-code/Portal/branches/release%2F1.0'));
-  // An invalid repository or revision is never requested.
-  for (const input of [{ revision: 'main' }, { repositoryId: 'github:Patricked-code/Portal;x' }]) {
+  // An invalid repository, revision or branch is never requested.
+  for (const input of [{ revision: 'main' }, { repositoryId: 'github:Patricked-code/Portal;x' }, { branch: '../x' }, { branch: '' }, { branch: 'a b' }]) {
     const { result, calls: none } = await admit({}, input);
-    assert.deepEqual([result.admitted, result.reasonCode, none.length], [false, 'REVISION_ADMISSION_UNAVAILABLE', 0]);
+    assert.deepEqual([result.admitted, result.reasonCode, none.length], [false, 'REVISION_ADMISSION_UNAVAILABLE', 0], JSON.stringify(input));
   }
 });
 
@@ -534,7 +542,7 @@ test('the production wiring observes read-only, writes through the guarded chann
   assert.deepEqual(downloads, [{
     repositoryId: TARGET.repositoryId, revision: REVISION, destination: '/app/data/provisioning/prov-x/source.tar.gz', maxBytes: PROVISIONING_MAX_ARCHIVE_BYTES
   }]);
-  const admission = await deps.admitRevision({ repositoryId: TARGET.repositoryId, revision: REVISION });
+  const admission = await deps.admitRevision({ repositoryId: TARGET.repositoryId, revision: REVISION, branch: 'main' });
   assert.deepEqual([admission.admitted, admission.reasonCode], [false, 'REVISION_ADMISSION_UNAVAILABLE']);
   assert.match(deps.randomHex(), /^[0-9a-f]{8}$/);
   // The coordination authorities are read through the given I/O, never cached.

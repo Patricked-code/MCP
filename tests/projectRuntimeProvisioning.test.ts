@@ -186,7 +186,7 @@ test('provisioning plans only a genuinely absent runtime at its exact, declared 
     componentRole: 'api', serverPath: TARGET.serverPath, composeProject: pending.target.composeProject, revision: REVISION
   });
   assert.match(pending.target.composeProject, /^mcp-[a-z0-9-]{1,40}-[0-9a-f]{12}$/);
-  assert.deepEqual(pending.governance, { backupRequired: true, rollbackMethod: 'restore_previous_release' });
+  assert.deepEqual(pending.governance, { backupRequired: true, rollbackMethod: 'restore_previous_release', officialBranch: 'main' });
   assert.equal(pending.authorizationInferred, false);
   assert.equal(pending.mutationPerformed, false);
   assert.ok(Object.isFrozen(pending) && Object.isFrozen(pending.steps));
