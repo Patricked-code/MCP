@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { chmod, chown, link, mkdir, mkdtemp, readFile, rm, symlink, unlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -9,14 +10,20 @@ import { assertNoCatastrophicCommand } from '../src/ssh/writeSafety.js';
 
 const {
   evaluateComposeSafety,
+  evaluateComposeSource,
   provisioningLabelsOverride
 } = await import('../src/provisioning/composePolicy.js');
 const {
   PROVISIONING_MARKER_FILE,
+  PROVISIONING_TREE_DIGEST_SHELL,
   buildActivateScript,
+  buildArchiveBoundsLines,
+  buildCapacityLines,
   buildComposeConfigScript,
+  buildComposeSourceScript,
   buildCreateScript,
   buildDiscardStagingScript,
+  buildParentGuardLines,
   buildRollbackScript,
   buildStageScript,
   executeProjectRuntimeProvisioning,
@@ -26,17 +33,43 @@ const {
 const {
   parseProvisionedRuntimeInventory,
   planProjectRuntimeProvisioning,
+  provisionedComposeProject,
   provisionedRuntimeObservations
 } = await import('../src/provisioning/projectRuntime.js');
 const { downloadGithubArchive } = await import('../src/provisioning/sourceArchive.js');
 
 const REVISION = 'a'.repeat(40);
+const TREE = 'e'.repeat(64);
+/** The compose file of the fixture repository, as the host prints it before Compose ever reads it. */
+const SOURCE = [
+  'services:',
+  '  api:',
+  '    build: .',
+  '    mem_limit: 512m',
+  '    cpus: 0.5',
+  '    pids_limit: 200',
+  '    logging: {driver: local}',
+  '    ports:',
+  '      - "127.0.0.1:3100:3000"',
+  '    volumes:',
+  '      - ./data:/data',
+  '      - db:/var/lib/db',
+  'volumes:',
+  '  db: {}',
+  ''
+].join('\n');
+const sha256 = (value: string) => createHash('sha256').update(value).digest('hex');
+const sourceLines = (source = SOURCE, digest = sha256(source)) =>
+  `compose_source_b64=${Buffer.from(source).toString('base64')}\ncompose_source_sha256=${digest}\n`;
 const OBSERVED_AT = '2026-10-06T05:00:00.000Z';
 const TARGET = Object.freeze({
   mappingId: 'github:Patricked-code/Portal:s1:portal_api',
   repositoryId: 'github:Patricked-code/Portal',
-  serverPath: '/opt/apps/portal-api'
+  serverPath: '/opt/apps/portal-api',
+  composeProject: provisionedComposeProject('portal', 'github:Patricked-code/Portal:s1:portal_api', 'github:Patricked-code/Portal')
 });
+/** What the consent page named: the resolved target the executor must still find. */
+const EXPECTED = Object.freeze({ repositoryId: TARGET.repositoryId, serverPath: TARGET.serverPath, composeProject: TARGET.composeProject });
 const REQUEST = Object.freeze({ serverId: 'S1', projectId: 'portal', mappingId: TARGET.mappingId, revision: REVISION });
 const PLAN_TARGET = Object.freeze({
   serverId: 'S1', projectId: 'portal', mappingId: TARGET.mappingId, repositoryId: TARGET.repositoryId,
@@ -52,12 +85,19 @@ function registry(): any {
       globalCheckpointRepositoryId: TARGET.repositoryId, centralGovernanceRepositoryId: TARGET.repositoryId,
       repositoryComponents: [{ repositoryId: TARGET.repositoryId, mappingId: TARGET.mappingId, role: 'api' }]
     }],
-    activationReadiness: [],
+    activationReadiness: [{ mappingId: TARGET.mappingId, status: 'READY', reasonCodes: [] }],
     serverBindings: [{
       mappingId: TARGET.mappingId, repositoryId: TARGET.repositoryId, projectId: 'portal', projectUid: 'uid',
       componentRole: 'api', serverId: 's1', serverPath: TARGET.serverPath, realPath: null, realPathVerified: false,
       environment: 'production'
-    }]
+    }],
+    governanceEvidence: {
+      mappings: [{
+        mappingId: TARGET.mappingId, repositoryId: TARGET.repositoryId, projectId: 'portal',
+        officialBranch: 'main', allowedBranchPrefixes: ['claude/'], directMainPush: false, status: 'active',
+        capabilities: { deploy: true }, backupRequired: true, rollbackMethod: 'restore_previous_release'
+      }]
+    }
   };
 }
 
@@ -67,6 +107,8 @@ function composeConfig(dir: string, service: Record<string, unknown> = {}, extra
     services: {
       api: {
         build: { context: dir, dockerfile: 'Dockerfile' },
+        mem_limit: '536870912', cpus: 0.5, pids_limit: 200,
+        logging: { driver: 'local' },
         ports: [{ mode: 'ingress', host_ip: '127.0.0.1', target: 3000, published: '3100', protocol: 'tcp' }],
         volumes: [
           { type: 'bind', source: `${dir}/data`, target: '/data' },
@@ -107,16 +149,156 @@ test('the compose safety policy admits only a project-contained, locally bound r
     [{ external_links: ['wealthtech_mcp_ssh_bridge'] }, {}, 'COMPOSE_EXTERNAL_RESOURCE'],
     [{}, { networks: { shared: { name: 'shared', external: true } } }, 'COMPOSE_EXTERNAL_RESOURCE'],
     [{}, { volumes: { db: { name: 'other_app_data', external: true } } }, 'COMPOSE_EXTERNAL_RESOURCE'],
-    [{}, { secrets: { key: { file: '/root/.ssh/id_ed25519' } } }, 'COMPOSE_FILE_SOURCE_OUTSIDE_PROJECT']
+    [{}, { secrets: { key: { file: '/root/.ssh/id_ed25519' } } }, 'COMPOSE_FILE_SOURCE_OUTSIDE_PROJECT'],
+    // A named volume or network can bind a host path or join the host network through its driver.
+    [{}, { volumes: { db: { name: 'db', driver: 'local', driver_opts: { type: 'none', o: 'bind', device: '/etc' } } } }, 'COMPOSE_VOLUME_DRIVER'],
+    [{}, { volumes: { db: { name: 'db', driver: 'nfs' } } }, 'COMPOSE_VOLUME_DRIVER'],
+    [{}, { networks: { default: { name: 'n', driver: 'macvlan' } } }, 'COMPOSE_NETWORK_DRIVER'],
+    [{}, { networks: { default: { name: 'n', driver: 'bridge', driver_opts: { 'com.docker.network.bridge.host_binding_ipv4': '0.0.0.0' } } } }, 'COMPOSE_NETWORK_DRIVER'],
+    // Only reviewed keys run: one that hands the engine to a container, reads a host file, runs a host
+    // program or hook, or reaches the host another way is unsupported, a Compose feature to come included.
+    [{ use_api_socket: true }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ env_file: [{ path: '/etc/environment', required: true }] }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ label_file: ['/etc/hostname'] }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ post_start: [{ command: ['id'], privileged: true }] }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ provider: { type: 'model', options: {} } }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ net: 'host' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ log_driver: 'syslog' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ volume_driver: 'local-persist' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ cgroup_parent: '/' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ runtime: 'runc' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ gpus: 'all' }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ build: { context: dir, privileged: true } }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ build: { context: dir, entitlements: ['network.host'] } }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ build: { context: dir, cache_to: ['type=local,dest=/etc'] } }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{}, { models: { llm: { model: 'ai/x' } } }, 'COMPOSE_KEY_UNSUPPORTED'],
+    // The engine's default bridge is shared with every container on the host: never the project network.
+    [{ network_mode: 'bridge' }, {}, 'COMPOSE_SHARED_NETWORK'],
+    [{ network_mode: 'default' }, {}, 'COMPOSE_SHARED_NETWORK'],
+    [{ network_mode: 'service:elsewhere' }, {}, 'COMPOSE_HOST_NAMESPACE'],
+    // A network or volume named outside the project joins whatever already carries that name.
+    [{}, { networks: { default: { name: 'bridge' } } }, 'COMPOSE_EXTERNAL_RESOURCE'],
+    [{}, { volumes: { db: { name: 'other_app_data' } } }, 'COMPOSE_EXTERNAL_RESOURCE'],
+    // A profile file or a type outside the allowed set can lift the confinement as surely as "unconfined".
+    [{ security_opt: ['seccomp=/opt/apps/portal-api/permissive.json'] }, {}, 'COMPOSE_SECURITY_OPT_UNCONFINED'],
+    [{ security_opt: ['label=type:spc_t'] }, {}, 'COMPOSE_SECURITY_OPT_UNCONFINED'],
+    // A logging driver sends from the engine, on the host network.
+    [{ logging: { driver: 'syslog', options: { 'syslog-address': 'tcp://127.0.0.1:6379' } } }, {}, 'COMPOSE_LOGGING_DRIVER'],
+    [{ deploy: { resources: { reservations: { devices: [{ capabilities: ['gpu'] }] } } } }, {}, 'COMPOSE_DEVICE'],
+    // A built image never takes a name another workload runs: build tags and an image name on a build are refused.
+    [{ build: { context: dir, tags: ['postgres:16'] } }, {}, 'COMPOSE_KEY_UNSUPPORTED'],
+    [{ image: 'postgres:16' }, {}, 'COMPOSE_BUILD_TAG'],
+    // A pulled image is pinned by digest: a tag can serve other bytes at a later activation.
+    [{ build: undefined, image: 'vendor/app:latest' }, {}, 'COMPOSE_IMAGE_UNPINNED'],
+    // Replicas stay within the bounded inventory.
+    [{ scale: 21 }, {}, 'COMPOSE_REPLICAS'],
+    [{ deploy: { replicas: 30 } }, {}, 'COMPOSE_REPLICAS'],
+    // A network keeps the default address management, without a host plugin or options.
+    [{}, { networks: { default: { name: 'mcp-portal-0123456789ab_default', ipam: { driver: 'host-plugin' } } } }, 'COMPOSE_NETWORK_DRIVER'],
+    [{}, { networks: { default: { name: 'mcp-portal-0123456789ab_default', ipam: { options: { x: 'y' } } } } }, 'COMPOSE_NETWORK_DRIVER']
   ];
   for (const [service, extra, code] of unsafe) {
     const result = evaluateComposeSafety(composeConfig(dir, service, extra), dir) as any;
     assert.equal(result.ok, false, code);
     assert.ok(result.findings.some((finding: any) => finding.code === code), `${code}: ${JSON.stringify(result.findings)}`);
   }
+  // A finding names the key it refuses.
+  assert.deepEqual(
+    (evaluateComposeSafety(composeConfig(dir, { use_api_socket: true }), dir) as any).findings,
+    [{ code: 'COMPOSE_KEY_UNSUPPORTED', service: 'api', key: 'use_api_socket' }]
+  );
+  // The default drivers, the project's own names and the confined options stay admitted.
+  const local = evaluateComposeSafety(composeConfig(dir, {
+    network_mode: 'none',
+    security_opt: ['no-new-privileges:true'],
+    logging: { driver: 'json-file', options: { 'max-size': '10m', 'max-file': '3' } },
+    deploy: { resources: { limits: { cpus: '1', memory: '512M' } } },
+    'x-team': 'portal'
+  }, {
+    volumes: { db: { name: 'mcp-portal-0123456789ab_db', driver: 'local' } },
+    networks: { default: { name: 'mcp-portal-0123456789ab_default', driver: 'bridge' } },
+    'x-common': { restart: 'unless-stopped' }
+  }), dir) as any;
+  assert.deepEqual(local.findings, []);
+  const shared = composeConfig(dir);
+  shared.services.worker = { image: `busybox@sha256:${'a'.repeat(64)}`, logging: { driver: 'none' }, network_mode: 'service:api', deploy: { replicas: 2, resources: { limits: { memory: '1', cpus: 1, pids: 10 } } } };
+  assert.deepEqual((evaluateComposeSafety(shared, dir) as any).findings, []);
+  // The expected containers of each service are part of the verdict.
+  assert.deepEqual((evaluateComposeSafety(shared, dir) as any).replicas, { api: 1, worker: 2 });
   for (const invalid of [null, {}, { services: {} }, { services: { 'bad name': {} } }, 'x']) {
     assert.equal((evaluateComposeSafety(invalid, dir) as any).ok, false, JSON.stringify(invalid));
   }
+});
+
+test('the compose source is parsed before Compose loads it, whatever the YAML spells a key as', () => {
+  const safe = evaluateComposeSource(SOURCE) as any;
+  assert.deepEqual({ ok: safe.ok, services: safe.services, findings: safe.findings }, { ok: true, services: ['api'], findings: [] });
+  assert.ok(Object.isFrozen(safe));
+  // Anchors, merges, an obsolete version and extension fields are ordinary Compose.
+  const anchored = [
+    'version: "3.8"',
+    'x-common: &common',
+    '  restart: unless-stopped',
+    '  logging: {driver: json-file}',
+    'services:',
+    '  api:',
+    '    <<: *common',
+    '    image: node:20',
+    '    x-team: portal',
+    '    build: {context: ., dockerfile: Dockerfile, args: {NODE_ENV: production}}',
+    ''
+  ].join('\n');
+  assert.deepEqual((evaluateComposeSource(anchored) as any).findings, []);
+
+  // Compose loads these files before the model exists, and the model no longer says where its values came from.
+  const unsupported: Array<[string, string | null, string]> = [
+    ['services:\n  api:\n    image: x\n    env_file: /etc/environment\n', 'api', 'env_file'],
+    ['services:\n  api:\n    image: x\n    "env_file": /etc/environment\n', 'api', 'env_file'],
+    ["services:\n  api:\n    image: x\n    'env_file': /etc/environment\n", 'api', 'env_file'],
+    ['services: {api: {image: x, "env_file": /etc/environment}}\n', 'api', 'env_file'],
+    ['services:\n  api:\n    image: x\n    "\\x65nv_file": /etc/environment\n', 'api', 'env_file'],
+    ['services:\n  api:\n    image: x\n    ? "env\\\n      _file"\n    : /etc/environment\n', 'api', 'env_file'],
+    ['x-k: &k env_file\nservices:\n  api:\n    image: x\n    *k : /etc/environment\n', 'api', 'env_file'],
+    ['x-base: &base\n  extends: {file: /opt/apps/other/compose.yaml, service: db}\nservices:\n  api:\n    <<: *base\n', 'api', 'extends'],
+    ['services:\n  api:\n    "extends": {file: /opt/apps/other/compose.yaml, service: db}\n', 'api', 'extends'],
+    ['"include": [/opt/apps/other/compose.yaml]\nservices:\n  api:\n    image: x\n', null, 'include'],
+    ['services:\n  api:\n    image: x\n    label_file: /etc/hostname\n', 'api', 'label_file'],
+    ['services:\n  api:\n    image: x\n    use_api_socket: true\n', 'api', 'use_api_socket'],
+    ['services:\n  api:\n    image: x\n    "<<": {env_file: /etc/environment}\n', 'api', '<<'],
+    ['services:\n  api:\n    build: {context: ., privileged: true}\n', 'api', 'build.privileged'],
+    ['models:\n  llm: {model: ai/x}\nservices:\n  api:\n    image: x\n', null, 'models']
+  ];
+  for (const [source, service, key] of unsupported) {
+    const result = evaluateComposeSource(source) as any;
+    assert.equal(result.ok, false, source);
+    assert.ok(
+      result.findings.some((finding: any) => finding.code === 'COMPOSE_KEY_UNSUPPORTED' && finding.service === service && finding.key === key),
+      `${source}: ${JSON.stringify(result.findings)}`
+    );
+  }
+  // What the parse cannot read exactly as Compose would fails closed: unknown or binary tags, duplicate
+  // keys, several documents, non-string keys, too many aliases, or no services at all.
+  const invalid = [
+    'services:\n  api:\n    image: x\n    ports: !reset []\n',
+    'services:\n  api:\n    image: x\n    ? !!binary ZXh0ZW5kcw==\n    : {file: /etc/a.yml, service: s}\n',
+    'services:\n  api:\n    image: x\n    image: y\n',
+    'services:\n  api:\n    image: x\n---\nservices: {}\n',
+    'services:\n  api:\n    image: x\n    ? [a, b]\n    : x\n',
+    'a: &a [x,x,x,x,x,x,x,x,x,x]\nb: &b [*a,*a,*a,*a,*a,*a,*a,*a,*a,*a]\nc: &c [*b,*b,*b,*b,*b,*b,*b,*b,*b,*b]\nservices: {api: {image: x, labels: [*c,*c]}}\n',
+    'services: []\n',
+    'version: "3"\n',
+    '',
+    null
+  ];
+  for (const source of invalid) {
+    const result = evaluateComposeSource(source) as any;
+    assert.equal(result.ok, false, String(source));
+    assert.ok(
+      result.findings.some((finding: any) => finding.code === 'COMPOSE_SOURCE_INVALID' || finding.code === 'COMPOSE_SERVICES_INVALID'),
+      `${source}: ${JSON.stringify(result.findings)}`
+    );
+  }
+  assert.equal((evaluateComposeSource(`services:\n  api:\n    image: x\n    labels: [${'"x",'.repeat(40_000)}]\n`) as any).ok, false);
 });
 
 test('the labels override marks every service with the provisioned repository and revision', () => {
@@ -131,34 +313,125 @@ test('the labels override marks every service with the provisioned repository an
 
 test('host scripts quote every value, verify before extracting and never delete', () => {
   const jobId = 'prov-20261006T050000Z-0a1b2c3d';
+  const sourceDigest = sha256(SOURCE);
   const scripts = [
     buildStageScript({ jobId, target: PLAN_TARGET, archiveSha256: 'f'.repeat(64) }),
-    buildCreateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT }),
-    buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml' }),
-    buildActivateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180 }),
-    buildRollbackScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true }),
-    buildDiscardStagingScript({ jobId, target: PLAN_TARGET })
+    buildCreateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] }),
+    buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', sourceSha256: sourceDigest }),
+    buildActivateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE }),
+    buildRollbackScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true, treeDigest: TREE }),
+    buildDiscardStagingScript({ jobId, target: PLAN_TARGET }),
+    buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', sourceSha256: sourceDigest, jobId }),
+    buildComposeSourceScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', treeDigest: TREE })
   ];
   for (const script of scripts) {
     assert.doesNotThrow(() => assertNoCatastrophicCommand(script));
     assert.doesNotMatch(script, /(^|[\s;&|])rm\s/m);
     assert.doesNotMatch(script, /--volumes|\s-v(\s|$)/);
   }
-  const [stage, create, , activate, rollback] = scripts;
+  const [stage, create, config, activate, rollback, , stagedConfig, source] = scripts;
+  // Compose never loads a file the parsed source has not admitted: the stage and the source script only print it.
+  for (const printer of [stage!, source!]) {
+    assert.doesNotMatch(printer, /docker compose/);
+    assert.match(printer, /compose_source_b64=/);
+    assert.match(printer, /compose_source_sha256=/);
+    // Only a regular file is read, never a link to a host file.
+    assert.ok(printer.indexOf('[ ! -L') > 0 && printer.indexOf('[ ! -L') < printer.indexOf('compose_source_b64='));
+  }
+  assert.ok(source!.indexOf('checkout_modified') > 0 && source!.indexOf('checkout_modified') < source!.indexOf('compose_source_b64='));
+  for (const [script, directory] of [[config!, PLAN_TARGET.serverPath], [stagedConfig!, stagingPath(PLAN_TARGET.serverPath, jobId)]] as const) {
+    assert.match(script, new RegExp(`^directory='${directory.replaceAll('.', '\\.')}'$`, 'm'));
+    const load = script.indexOf('config $resolution --format json');
+    assert.ok(load > 0);
+    // The file Compose loads is the one whose parsed source was admitted.
+    assert.ok(script.includes(sourceDigest) && script.indexOf('compose_source_changed') < load);
+    // --no-env-resolution is passed where Compose knows it: a second guard, never a version gate.
+    const option = script.indexOf("resolution='--no-env-resolution'");
+    assert.ok(option > 0 && option < load);
+    assert.doesNotMatch(script, /compose_version_unsupported/);
+  }
+  assert.throws(() => buildComposeConfigScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', sourceSha256: 'x' }));
   assert.ok(stage!.indexOf('sha256sum') < stage!.indexOf('tar '), 'the archive digest is verified before extraction');
+  // Volumes a failed earlier job left behind are existing state: creation never reattaches them.
+  assert.ok(stage!.indexOf('docker volume ls') > 0 && stage!.indexOf('compose_project_volumes_present') < stage!.indexOf('mkdir -p'));
+  // A network kept by a failed rollback is existing state too, and the host keeps room before extracting.
+  for (const reason of ['compose_project_networks_present', 'quarantine_full', 'host_capacity', 'host_inodes']) {
+    assert.ok(stage!.indexOf(reason) > 0 && stage!.indexOf(reason) < stage!.indexOf('mkdir -p'), reason);
+  }
+  // The floors hold on the filesystems the job writes, measured after the parent is resolved.
+  assert.ok(stage!.includes(buildCapacityLines().join('\n')));
+  assert.ok(stage!.indexOf('target_parent_outside') < stage!.indexOf('host_capacity'));
+  assert.doesNotMatch(stage!, /df -P[ki] \/opt\/apps/);
+  // Activation waits for the expected number of containers, not only for healthy ones.
+  assert.match(activate!, /wc -l/);
+  // Only a container its health check reports healthy counts: running without one proves nothing.
+  assert.doesNotMatch(activate!, /\(healthy\)\?/);
+  assert.match(activate!, /\^running\[\|\]healthy\$/);
+  // The label fallback sees stopped containers too.
+  assert.match(rollback!, /docker ps -aq --filter/);
+  // A repository never ships the files provisioning writes, which the digest leaves out.
+  assert.ok(stage!.indexOf('reserved_name_present') > stage!.indexOf('tar -xzf') && stage!.indexOf('reserved_name_present') < stage!.indexOf('compose_source_b64='));
+  // Every writing script resolves the target's parents first: a link below /opt/apps never redirects a write.
+  for (const [script, write] of [[stage!, 'mkdir -p'], [create!, 'mv '], [activate!, 'up -d'], [rollback!, 'docker compose']] as const) {
+    assert.ok(script.indexOf('target_parent_outside') > 0 && script.indexOf('target_parent_outside') < script.indexOf(write), write);
+  }
+  // Docker keeps room for the build before anything starts.
+  assert.ok(activate!.indexOf('docker_capacity') > 0 && activate!.indexOf('docker_capacity') < activate!.indexOf('up -d'));
+  // A rollback loads the compose file only when the checkout is still the one it digested; otherwise it stops by label.
+  assert.ok(rollback!.indexOf('tree_digest') < rollback!.indexOf('docker compose') && /docker stop/.test(rollback!));
+  // A container stopped by label keeps no restart policy: a daemon restart never brings it back.
+  assert.ok(rollback!.indexOf('docker update --restart=no') > 0 && rollback!.indexOf('docker update --restart=no') < rollback!.indexOf('docker stop'));
+  // A bind source missing from the checkout is never created by Docker after the digest: promotion and activation refuse it.
+  const binds = buildCreateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'], bindSources: ['data'] });
+  assert.ok(binds.indexOf('bind_source_missing') > 0 && binds.indexOf('bind_source_missing') < binds.indexOf('mv '));
+  const activateBinds = buildActivateScript({ jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE, bindSources: ['data'] });
+  assert.ok(activateBinds.indexOf('bind_source_missing') > 0 && activateBinds.indexOf('bind_source_missing') < activateBinds.indexOf('up -d'));
+  assert.match(binds, /'\/opt\/apps\/portal-api\.mcp-staging-[^']+\/data'/);
+  // Only the component's own compose project counts: another component of the same repository never blocks it.
+  assert.doesNotMatch(stage!, /provisioning\.repository/);
+  assert.match(stage!, /label=com\.docker\.compose\.project=mcp-portal-0123456789ab/);
+  // The staged tree is digested; the marker keeps the digest and the activation verifies it before starting anything.
+  assert.match(stage!, /tree_digest=/);
+  assert.ok(stage!.indexOf('tar -tvzf') > 0 && stage!.indexOf('tar -tvzf') < stage!.indexOf('tar -xzf'), 'the archive is bounded before extraction');
+  assert.match(create!, /"services":\["api"\]/);
+  assert.match(create!, new RegExp(`"treeDigest":"${TREE}"`));
+  assert.ok(activate!.indexOf('checkout_modified') > 0 && activate!.indexOf('checkout_modified') < activate!.indexOf('up -d --build'));
   assert.match(stage!, /--no-same-owner/);
-  assert.match(stage!, /env -i /);
+  // Compose runs with a clean environment.
+  assert.match(config!, /env -i /);
+  assert.match(stagedConfig!, /env -i /);
   assert.match(create!, new RegExp(PROVISIONING_MARKER_FILE.replaceAll('.', '\\.')));
   assert.match(activate!, /up -d --build/);
-  assert.match(rollback!, /compose -p 'mcp-portal-0123456789ab'[^\n]* down/);
+  assert.match(rollback!, /^project='mcp-portal-0123456789ab'$/m);
+  assert.match(rollback!, /docker compose -p "\$project"[^\n]* down --remove-orphans/);
   assert.match(rollback!, /mcp-provisioning-quarantine/);
   assert.equal(stagingPath(PLAN_TARGET.serverPath, jobId), `/opt/apps/portal-api.mcp-staging-${jobId}`);
   assert.throws(() => buildStageScript({ jobId: 'x; reboot', target: PLAN_TARGET, archiveSha256: 'f'.repeat(64) }));
   assert.throws(() => buildStageScript({ jobId, target: { ...PLAN_TARGET, serverPath: '/etc' }, archiveSha256: 'f'.repeat(64) }));
 });
 
+test('target names stay off the docker compose command lines, so the write guard never misreads them', () => {
+  const jobId = 'prov-20261006T050000Z-0a1b2c3d';
+  // A path or compose project such as "api-v" must not read as a volume flag of docker compose.
+  const target = { ...PLAN_TARGET, serverPath: '/opt/apps/api-v', composeProject: 'mcp-api-v-0123456789ab' };
+  const scripts = [
+    buildStageScript({ jobId, target, archiveSha256: 'f'.repeat(64) }),
+    buildComposeConfigScript({ target, composeFile: 'compose.yaml', sourceSha256: sha256(SOURCE) }),
+    buildComposeConfigScript({ target, composeFile: 'compose.yaml', sourceSha256: sha256(SOURCE), jobId }),
+    buildComposeSourceScript({ target, composeFile: 'compose.yaml', treeDigest: TREE }),
+    buildActivateScript({ jobId, target, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE }),
+    buildRollbackScript({ jobId, target, composeFile: 'compose.yaml', createdInThisJob: true, treeDigest: TREE })
+  ];
+  for (const script of scripts) {
+    assert.doesNotThrow(() => assertNoCatastrophicCommand(script));
+    for (const line of script.split('\n').filter((entry) => /docker compose/.test(entry))) {
+      assert.doesNotMatch(line, /\/opt\/apps|mcp-api-v/, line);
+    }
+  }
+});
+
 test('a created runtime keeps its marker: it is a checkout until its own activation consent', () => {
-  const marker = provisioningMarker({ jobId: 'prov-20261006T050000Z-0a1b2c3d', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT });
+  const marker = provisioningMarker({ jobId: 'prov-20261006T050000Z-0a1b2c3d', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
   const encoded = Buffer.from(JSON.stringify(marker)).toString('base64');
   const inventory = parseProvisionedRuntimeInventory(
     `docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${encoded}\n`, [TARGET], OBSERVED_AT
@@ -202,11 +475,18 @@ type Call = { kind: string; detail: string };
 function harness(overrides: Record<string, unknown> = {}) {
   const calls: Call[] = [];
   const files = new Map<string, string>();
+  const scripts = new Map<string, string>();
   let inventory = 'docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=\n';
   const results: Record<string, string> = {
-    stage: `result=staged\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d'))).toString('base64')}\n`,
+    preflight: 'result=ready\n',
+    // The build Dockerfile of the fixture, its base image pinned by digest.
+    dockerfiles: `result=printed\ndockerfile.0=${Buffer.from(`FROM node@sha256:${'a'.repeat(64)}\n`).toString('base64')}\n`,
+    stage: `result=staged\ncompose_file=compose.yaml\n${sourceLines()}tree_digest=${TREE}\n`,
+    // The model Compose prints for the staged checkout of a creation, then for a created runtime.
+    'config-staging': `result=configured\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d'))).toString('base64')}\n`,
+    source: `result=sourced\ncompose_file=compose.yaml\n${sourceLines()}`,
     create: 'result=created\n',
-    config: `result=configured\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api'))).toString('base64')}\n`,
+    config: `result=configured\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api'))).toString('base64')}\n`,
     activate: 'result=activated\nhealth=healthy\n',
     rollback: 'result=rolled_back\n',
     discard: 'result=discarded\n'
@@ -221,10 +501,22 @@ function harness(overrides: Record<string, unknown> = {}) {
       calls.push({ kind: 'observe', detail: targets.map((entry) => entry.mappingId).join(',') });
       return parseProvisionedRuntimeInventory(inventory, targets, OBSERVED_AT);
     },
+    readCoordination: async () => {
+      calls.push({ kind: 'coordinate', detail: '' });
+      return Object.freeze({ complete: true, locks: [], tasks: [] });
+    },
+    admitRevision: async (input: any) => {
+      calls.push({ kind: 'admit', detail: `${input.repositoryId}@${input.revision}#${input.branch}` });
+      return Object.freeze({
+        admitted: true, kind: 'CI_GATE', reasonCode: 'REVISION_ADMITTED', branch: input.branch, branchHead: REVISION,
+        checkRuns: 1, statuses: 0
+      });
+    },
     fetchSource: async (input: any) => {
       calls.push({ kind: 'fetch', detail: `${input.repositoryId}@${input.revision}` });
       return { ok: true, sha256: 'f'.repeat(64), bytes: 1024 };
     },
+    readJobFile: async (path: string) => files.get(path) ?? null,
     writeJobFile: async (path: string, content: string) => {
       calls.push({ kind: 'write-file', detail: path });
       files.set(path, content);
@@ -232,18 +524,30 @@ function harness(overrides: Record<string, unknown> = {}) {
     runWrite: async (command: string) => {
       const phase = command.match(/^# mcp-provisioning:([a-z-]+)/m)?.[1] ?? 'unknown';
       calls.push({ kind: 'host', detail: phase });
-      return { code: 0, stdout: results[phase] ?? '', stderr: '' };
+      scripts.set(phase, command);
+      const key = phase === 'config' && command.includes('.mcp-staging-') ? 'config-staging' : phase;
+      return { code: 0, stdout: results[key] ?? '', stderr: '' };
     },
     ...overrides
   };
   return {
-    calls, files, results, deps,
-    setInventory(value: string) { inventory = value; }
+    calls, files, results, scripts, deps,
+    setInventory(value: string, trusted = true) {
+      inventory = value;
+      // A runtime created by provisioning has its marker recorded in the job data, out of the checkout's reach.
+      const encoded = value.match(/component\.0\.marker=(\S+)/)?.[1];
+      if (trusted && encoded) {
+        const marker = JSON.parse(Buffer.from(encoded, 'base64').toString('utf8'));
+        files.set(`/app/data/provisioning/${marker.jobId}/marker.json`, JSON.stringify(marker));
+      }
+    }
   };
 }
 
-async function run(h: ReturnType<typeof harness>, consent: Record<string, boolean>) {
-  return executeProjectRuntimeProvisioning({ request: REQUEST, consent: { creation: false, activation: false, ...consent } }, h.deps as any) as any;
+async function run(h: ReturnType<typeof harness>, consent: Record<string, boolean>, expectedTarget: unknown = EXPECTED) {
+  return executeProjectRuntimeProvisioning({
+    request: REQUEST, consent: { creation: false, activation: false, ...consent }, expectedTarget
+  } as any, h.deps as any) as any;
 }
 
 const hostPhases = (h: ReturnType<typeof harness>) => h.calls.filter((call) => call.kind === 'host').map((call) => call.detail);
@@ -254,10 +558,16 @@ test('the executor re-observes, then creates and activates a genuinely absent ru
   assert.equal(result.result, 'SUCCEEDED');
   assert.equal(result.mode, 'CREATE_AND_ACTIVATE');
   assert.match(result.jobId, /^prov-20261006T050000Z-0a1b2c3d$/);
-  assert.deepEqual(h.calls.map((call) => call.kind).slice(0, 2), ['observe', 'fetch']);
-  assert.deepEqual(hostPhases(h), ['stage', 'create', 'activate']);
+  assert.deepEqual(h.calls.map((call) => call.kind).slice(0, 5), ['observe', 'coordinate', 'admit', 'host', 'fetch']);
+  // The staged source is parsed first; Compose then loads exactly that file, in the staging directory.
+  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'dockerfiles', 'create', 'activate']);
+  assert.ok(h.scripts.get('config')!.includes(sha256(SOURCE)));
+  assert.ok(h.scripts.get('config')!.includes(`directory='${stagingPath(TARGET.serverPath, result.jobId)}'`));
   const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
   assert.equal(attestation.result, 'SUCCEEDED');
+  assert.equal(attestation.composeSourceSha256, sha256(SOURCE));
+  assert.deepEqual([attestation.admission.kind, attestation.admission.branch], ['CI_GATE', 'main']);
+  assert.deepEqual(attestation.coordination, { locks: 0, tasks: 0 });
   assert.equal(attestation.archiveSha256, 'f'.repeat(64));
   assert.equal(attestation.authorizationInferred, false);
   assert.deepEqual(attestation.consent, { creation: true, activation: true });
@@ -266,7 +576,51 @@ test('the executor re-observes, then creates and activates a genuinely absent ru
   // Creation alone stops before any container starts.
   const created = harness();
   assert.equal((await run(created, { creation: true })).result, 'SUCCEEDED');
-  assert.deepEqual(hostPhases(created), ['stage', 'create']);
+  assert.deepEqual(hostPhases(created), ['preflight', 'stage', 'config', 'dockerfiles', 'create']);
+});
+
+test('a compose source that loads a host file is refused before Compose ever reads it', async () => {
+  // A quoted key the line guard of the host would not see: the parse refuses it, and nothing loads it.
+  const quoted = harness();
+  quoted.results.stage = `result=staged\ncompose_file=compose.yaml\n${sourceLines(`${SOURCE.replace('    build: .\n', '    build: .\n    "env_file": /etc/environment\n')}`)}tree_digest=${TREE}\n`;
+  const blocked = await run(quoted, { creation: true, activation: true });
+  assert.deepEqual([blocked.result, blocked.reasonCodes], ['BLOCKED', ['COMPOSE_UNSAFE']]);
+  assert.deepEqual(blocked.findings, [{ code: 'COMPOSE_KEY_UNSUPPORTED', service: 'api', key: 'env_file' }]);
+  assert.deepEqual(hostPhases(quoted), ['preflight', 'stage', 'discard']);
+  const attestation = JSON.parse(quoted.files.get(`/app/data/provisioning/${blocked.jobId}/attestation.json`)!);
+  assert.deepEqual(attestation.steps.map((step: any) => `${step.id}:${step.status}`), [
+    'preflight:DONE', 'fetch-source:DONE', 'backup:DONE', 'compose-source:BLOCKED', 'discard-staging:DONE'
+  ]);
+
+  // A source that does not match its digest, or that the host could not print whole, is never parsed.
+  for (const stage of [
+    `result=staged\ncompose_file=compose.yaml\n${sourceLines(SOURCE, 'b'.repeat(64))}tree_digest=${TREE}\n`,
+    `result=staged\ncompose_file=compose.yaml\ntree_digest=${TREE}\n`
+  ]) {
+    const unreadable = harness();
+    unreadable.results.stage = stage;
+    const failed = await run(unreadable, { creation: true });
+    assert.deepEqual([failed.result, failed.reasonCodes], ['FAILED', ['STAGE_SOURCE_UNREADABLE']]);
+    assert.deepEqual(hostPhases(unreadable), ['preflight', 'stage', 'discard']);
+  }
+
+  // A model Compose cannot build creates nothing: the staging is discarded.
+  const unbuilt = harness();
+  unbuilt.results['config-staging'] = 'result=failed\nreason=compose_invalid\n';
+  const invalid = await run(unbuilt, { creation: true, activation: true });
+  assert.deepEqual([invalid.result, invalid.reasonCodes], ['FAILED', ['CONFIG_COMPOSE_INVALID']]);
+  assert.deepEqual(hostPhases(unbuilt), ['preflight', 'stage', 'config', 'discard']);
+
+  // A runtime created earlier has its source parsed again, from the checkout its marker digests.
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  const existing = harness();
+  existing.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify({ ...marker, composeProject: TARGET.composeProject })).toString('base64')}\n`);
+  existing.results.source = `result=sourced\ncompose_file=compose.yaml\n${sourceLines('include: [/opt/apps/other/compose.yaml]\nservices:\n  api:\n    image: x\n')}`;
+  const refused = await run(existing, { activation: true });
+  assert.deepEqual([refused.mode, refused.result, refused.reasonCodes], ['ACTIVATE', 'BLOCKED', ['COMPOSE_UNSAFE']]);
+  assert.deepEqual(refused.findings, [{ code: 'COMPOSE_KEY_UNSUPPORTED', service: null, key: 'include' }]);
+  assert.deepEqual(hostPhases(existing), ['source']);
+  assert.ok(existing.scripts.get('source')!.includes(TREE));
 });
 
 test('the executor refuses without fresh evidence, consent or write mode, and never writes then', async () => {
@@ -283,22 +637,699 @@ test('the executor refuses without fresh evidence, consent or write mode, and ne
   assert.deepEqual(hostPhases(drift), []);
   // The source is fetched before any host write; a failed fetch writes nothing.
   const offline = harness({ fetchSource: async () => ({ ok: false, sha256: null, bytes: 0 }) });
-  assert.deepEqual([(await run(offline, { creation: true })).result, hostPhases(offline)], ['FAILED', []]);
+  assert.deepEqual([(await run(offline, { creation: true })).result, hostPhases(offline)], ['FAILED', ['preflight']]);
+});
+
+test('a revision outside the reviewed official branch or with a failing CI is refused before any write', async () => {
+  for (const reasonCode of ['REVISION_NOT_ON_OFFICIAL_BRANCH', 'REVISION_CI_FAILED', 'REVISION_CI_PENDING']) {
+    const h = harness({
+      admitRevision: async () => Object.freeze({ admitted: false, kind: null, reasonCode, branch: 'main', branchHead: null, checkRuns: null, statuses: null })
+    });
+    const refused = await run(h, { creation: true, activation: true });
+    assert.deepEqual([refused.result, refused.reasonCodes, refused.jobId], ['REFUSED', [reasonCode], null], reasonCode);
+    assert.equal(h.calls.some((call) => call.kind === 'fetch' || call.kind === 'host' || call.kind === 'write-file'), false, reasonCode);
+  }
+  // The admission proves the revision on the branch the mapping names, which may differ from the default branch.
+  const production = harness({
+    readRegistry: async () => { const value = registry(); value.governanceEvidence.mappings[0].officialBranch = 'production'; return value; }
+  });
+  assert.equal((await run(production, { creation: true })).result, 'SUCCEEDED');
+  assert.deepEqual([...new Set(production.calls.filter((call) => call.kind === 'admit').map((call) => call.detail))], [`${TARGET.repositoryId}@${REVISION}#production`]);
+  // An admission that cannot be read refuses too: it is never assumed.
+  const offline = harness({ admitRevision: async () => { throw new Error('github'); } });
+  assert.deepEqual((await run(offline, { creation: true })).reasonCodes, ['REVISION_ADMISSION_UNAVAILABLE']);
+  assert.deepEqual(hostPhases(offline), []);
+  // The activation of a created runtime is admitted again: a revision is never trusted from an earlier job.
+  const created = harness({
+    admitRevision: async () => Object.freeze({ admitted: false, kind: null, reasonCode: 'REVISION_CI_FAILED', branch: 'main', branchHead: null, checkRuns: 1, statuses: 0 })
+  });
+  const composeProject = (planProjectRuntimeProvisioning({
+    request: REQUEST, serverTarget: { status: 'CONFIGURED', projectIds: ['portal'] }, registry: registry(),
+    inventory: parseProvisionedRuntimeInventory('docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=\n', [TARGET], OBSERVED_AT),
+    consent: { creation: true, activation: false }
+  }) as any).target.composeProject;
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  created.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
+  assert.deepEqual((await run(created, { activation: true })).reasonCodes, ['REVISION_CI_FAILED']);
+  assert.deepEqual(hostPhases(created), []);
+});
+
+test('a consent given for another resolved target never runs', async () => {
+  for (const expected of [{ ...EXPECTED, serverPath: '/opt/apps/portal-old' }, { ...EXPECTED, repositoryId: 'github:Patricked-code/Other' }, null]) {
+    const h = harness();
+    const refused = await run(h, { creation: true, activation: true }, expected);
+    assert.deepEqual([refused.result, refused.reasonCodes], ['REFUSED', ['TARGET_CHANGED_SINCE_CONSENT']], JSON.stringify(expected));
+    assert.equal(h.calls.some((call) => ['admit', 'fetch', 'host', 'write-file'].includes(call.kind)), false);
+  }
+});
+
+test('the checkout is verified against its creation digest before any activation', async () => {
+  // Creation records the digest of the staged tree; the same job's activation verifies it.
+  const created = harness();
+  assert.equal((await run(created, { creation: true, activation: true })).result, 'SUCCEEDED');
+  assert.match(created.scripts.get('create')!, new RegExp(`"treeDigest":"${TREE}"`));
+  assert.ok(created.scripts.get('activate')!.includes(TREE));
+  // A stage that reports no digest creates nothing.
+  const undigested = harness();
+  undigested.results.stage = undigested.results.stage!.replace(/tree_digest=.*\n/, '');
+  const failed = await run(undigested, { creation: true });
+  assert.deepEqual([failed.result, failed.reasonCodes], ['FAILED', ['STAGE_TREE_DIGEST_MISSING']]);
+  assert.deepEqual(hostPhases(undigested), ['preflight', 'stage', 'discard']);
+
+  // A runtime created earlier is activated only if its checkout still matches the digest of its marker.
+  const composeProject = TARGET.composeProject;
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  const edited = harness();
+  edited.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
+  edited.results.activate = 'result=failed\nreason=checkout_modified\n';
+  const refused = await run(edited, { activation: true });
+  assert.deepEqual([refused.mode, refused.result, refused.reasonCodes, refused.rollback], ['ACTIVATE', 'FAILED', ['ACTIVATE_CHECKOUT_MODIFIED'], 'NOT_NEEDED']);
+  assert.deepEqual(hostPhases(edited), ['source', 'config', 'dockerfiles', 'activate']);
+  assert.ok(edited.scripts.get('activate')!.includes(TREE));
+  // A marker without a digest is not a created runtime: the present path blocks.
+  const { treeDigest: _digest, ...legacy } = marker as any;
+  const old = harness();
+  old.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(legacy)).toString('base64')}\n`);
+  assert.deepEqual((await run(old, { activation: true })).reasonCodes, ['TARGET_PATH_PRESENT']);
+});
+
+test('a checkout marker is trusted only when the job data recorded the same one', async () => {
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject: TARGET.composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  const inventory = `docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`;
+  // A marker the job data never recorded, or one rewritten with another digest, is no created runtime.
+  for (const record of [null, JSON.stringify({ ...marker, treeDigest: 'd'.repeat(64) })]) {
+    const h = harness();
+    h.setInventory(inventory, false);
+    if (record) h.files.set(`/app/data/provisioning/${marker.jobId}/marker.json`, record);
+    assert.deepEqual((await run(h, { activation: true })).reasonCodes, ['TARGET_PATH_PRESENT']);
+    assert.deepEqual(hostPhases(h), []);
+  }
+  // Creation records the marker in the job data before writing the checkout.
+  const created = harness();
+  const result = await run(created, { creation: true });
+  const recorded = JSON.parse(created.files.get(`/app/data/provisioning/${result.jobId}/marker.json`)!);
+  assert.deepEqual([recorded.treeDigest, recorded.replicas], [TREE, { api: 1 }]);
+  assert.ok(created.calls.findIndex((call) => call.detail.endsWith('/marker.json')) < created.calls.findIndex((call) => call.detail === 'create'));
+});
+
+test('the tree digest ignores the provisioning files and changes with any content, mode or link change', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-f03-tree-'));
+  try {
+    const digest = (shell: string) => {
+      const result = spawnSync(shell, ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory], { encoding: 'utf8', timeout: 10_000 });
+      assert.equal(result.status, 0, result.stderr);
+      return result.stdout.trim();
+    };
+    await mkdir(join(directory, 'sub'));
+    await writeFile(join(directory, 'a.txt'), 'alpha\n');
+    await writeFile(join(directory, 'sub', 'b.txt'), 'beta\n');
+    await writeFile(join(directory, 'run.sh'), '#!/bin/sh\n');
+    await chmod(join(directory, 'run.sh'), 0o755);
+    await symlink('sub/b.txt', join(directory, 'link'));
+    const base = digest('sh');
+    assert.match(base, /^[0-9a-f]{64}$/);
+    assert.equal(digest('bash'), base);
+    // The marker and the labels written by provisioning are not part of the checkout.
+    await writeFile(join(directory, PROVISIONING_MARKER_FILE), '{}\n');
+    await writeFile(join(directory, '.mcp-provisioning.labels.json'), '{}\n');
+    assert.equal(digest('sh'), base);
+    const changes: Array<[() => Promise<void>, () => Promise<void>]> = [
+      [() => writeFile(join(directory, 'a.txt'), 'alpha!\n'), () => writeFile(join(directory, 'a.txt'), 'alpha\n')],
+      [() => chmod(join(directory, 'run.sh'), 0o644), () => chmod(join(directory, 'run.sh'), 0o755)],
+      // Any mode change counts, not only the owner's execute bit.
+      [() => chmod(join(directory, 'a.txt'), 0o654), () => chmod(join(directory, 'a.txt'), 0o644)],
+      // Ownership too, where the test may change it.
+      ...(process.getuid?.() === 0 ? [[() => chown(join(directory, 'a.txt'), 1000, 1000), () => chown(join(directory, 'a.txt'), 0, 0)] as [() => Promise<void>, () => Promise<void>]] : []),
+      [async () => { await unlink(join(directory, 'link')); await symlink('a.txt', join(directory, 'link')); },
+        async () => { await unlink(join(directory, 'link')); await symlink('sub/b.txt', join(directory, 'link')); }],
+      [() => writeFile(join(directory, 'sub', 'new.txt'), 'new\n'), () => unlink(join(directory, 'sub', 'new.txt'))]
+    ];
+    for (const [change, revert] of changes) {
+      await change();
+      assert.notEqual(digest('sh'), base);
+      await revert();
+      assert.equal(digest('sh'), base);
+    }
+    // A FIFO, socket or device in the checkout is never digested as an ordinary tree.
+    assert.equal(spawnSync('mkfifo', [join(directory, 'pipe')]).status, 0);
+    for (const shell of ['sh', 'bash']) {
+      assert.notEqual(spawnSync(shell, ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory]).status, 0, shell);
+    }
+    await unlink(join(directory, 'pipe'));
+    assert.equal(digest('sh'), base);
+    // Nor a hard link: two names of one file would change together, which no digest of contents and modes shows.
+    await writeFile(join(directory, 'twin.txt'), 'alpha\n');
+    const twin = digest('sh');
+    await unlink(join(directory, 'twin.txt'));
+    await link(join(directory, 'a.txt'), join(directory, 'twin.txt'));
+    for (const shell of ['sh', 'bash']) {
+      assert.notEqual(spawnSync(shell, ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory]).status, 0, shell);
+    }
+    await unlink(join(directory, 'twin.txt'));
+    await writeFile(join(directory, 'twin.txt'), 'alpha\n');
+    assert.equal(digest('sh'), twin);
+    // A file capability changes what a file may do, with the same content and mode: it changes the digest.
+    if (process.getuid?.() === 0 && spawnSync('setcap', ['cap_net_bind_service=ep', join(directory, 'run.sh')]).status === 0) {
+      assert.notEqual(digest('sh'), twin);
+      assert.equal(spawnSync('setcap', ['-r', join(directory, 'run.sh')]).status, 0);
+      assert.equal(digest('sh'), twin);
+    }
+    // An access control list is never digested as plain modes: the digest fails.
+    const shim = await mkdtemp(join(tmpdir(), 'mcp-f03-acl-'));
+    try {
+      await writeFile(join(shim, 'ls'), '#!/bin/sh\nprintf -- "-rw-r--r--+ 1 0 0 6 Oct  8 00:00 %s\\n" "$@"\n');
+      await chmod(join(shim, 'ls'), 0o755);
+      const acl = spawnSync('sh', ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory], {
+        encoding: 'utf8', env: { ...process.env, PATH: `${shim}:${process.env.PATH}` }
+      });
+      assert.notEqual(acl.status, 0);
+    } finally {
+      await rm(shim, { recursive: true, force: true });
+    }
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('the parent guard admits a linked root but no link below it', async () => {
+  const work = await mkdtemp(join(tmpdir(), 'mcp-f03-parents-'));
+  try {
+    await mkdir(join(work, 'real', 'apps', 'group'), { recursive: true });
+    await mkdir(join(work, 'elsewhere'));
+    await symlink(join(work, 'real', 'apps'), join(work, 'apps'));
+    await symlink(join(work, 'elsewhere'), join(work, 'real', 'apps', 'linked'));
+    const guard = (target: string) => spawnSync('sh', ['-c', [
+      "fail() { printf 'result=failed\\nreason=%s\\n' \"$1\"; exit 0; }",
+      ...buildParentGuardLines(target, join(work, 'apps')),
+      "printf 'result=ok\\n'"
+    ].join('\n')], { encoding: 'utf8' }).stdout;
+    assert.match(guard(join(work, 'apps', 'group', 'portal')), /result=ok/);
+    assert.match(guard(join(work, 'apps', 'portal')), /result=ok/);
+    assert.match(guard(join(work, 'apps', 'linked', 'portal')), /reason=target_parent_outside/);
+  } finally {
+    await rm(work, { recursive: true, force: true });
+  }
+});
+
+test('the host prints the compose file whole and only from a regular file of an unchanged checkout', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-f03-source-'));
+  const outside = await mkdtemp(join(tmpdir(), 'mcp-f03-outside-'));
+  try {
+    const digest = () => spawnSync('sh', ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory], { encoding: 'utf8' }).stdout.trim();
+    const print = (treeDigest = digest()) => {
+      const script = buildComposeSourceScript({ target: PLAN_TARGET, composeFile: 'compose.yaml', treeDigest })
+        .replace(`directory='${PLAN_TARGET.serverPath}'`, `directory='${directory}'`);
+      const results = ['sh', 'bash'].map((shell) => spawnSync(shell, ['-c', script], { encoding: 'utf8', timeout: 10_000 }).stdout);
+      assert.equal(results[0], results[1]);
+      return new Map(results[0]!.trim().split('\n').map((line) => [line.slice(0, line.indexOf('=')), line.slice(line.indexOf('=') + 1)]));
+    };
+    await writeFile(join(directory, 'compose.yaml'), SOURCE);
+    const printed = print();
+    assert.equal(printed.get('result'), 'sourced');
+    assert.equal(Buffer.from(printed.get('compose_source_b64')!, 'base64').toString('utf8'), SOURCE);
+    assert.equal(printed.get('compose_source_sha256'), sha256(SOURCE));
+    // A checkout edited since its creation is never read.
+    assert.equal(print('0'.repeat(64)).get('reason'), 'checkout_modified');
+    // A link, even to a file of the checkout, is never followed to print a host file.
+    await writeFile(join(outside, 'secret.yaml'), 'services: {}\n');
+    await unlink(join(directory, 'compose.yaml'));
+    await symlink(join(outside, 'secret.yaml'), join(directory, 'compose.yaml'));
+    assert.equal(print().get('reason'), 'compose_not_regular');
+    // An oversized file is never printed.
+    await unlink(join(directory, 'compose.yaml'));
+    await writeFile(join(directory, 'compose.yaml'), `${SOURCE}#${'x'.repeat(100_000)}\n`);
+    assert.equal(print().get('reason'), 'compose_source_too_large');
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+    await rm(outside, { recursive: true, force: true });
+  }
+});
+
+test('the installed Compose loads host files the model may not show: only the parsed source refuses them all', async (t) => {
+  const help = spawnSync('docker', ['compose', 'config', '--help'], { encoding: 'utf8', timeout: 30_000 });
+  if (help.status !== 0 || !help.stdout.includes('--no-env-resolution')) {
+    t.skip('no Docker Compose with config --no-env-resolution on this host');
+    return;
+  }
+  const work = await mkdtemp(join(tmpdir(), 'mcp-f03-compose-'));
+  try {
+    const host = join(work, 'host');
+    const project = join(work, 'project');
+    await mkdir(host);
+    await mkdir(join(project, 'data'), { recursive: true });
+    await writeFile(join(host, 'host.env'), 'LEAKED=from-the-host-env-file\n');
+    await writeFile(join(host, 'compose.yaml'), 'services:\n  db:\n    image: postgres\n    environment:\n      PASSWORD: from-the-host-compose-file\n');
+    // The executor's own invocation, with a clean environment.
+    const model = async (source: string) => {
+      await writeFile(join(project, 'compose.yaml'), source);
+      const result = spawnSync('docker', ['compose', '-p', 'mcp-probe', '-f', 'compose.yaml', 'config', '--no-env-resolution', '--format', 'json'], {
+        cwd: project, encoding: 'utf8', timeout: 30_000, env: { PATH: process.env.PATH ?? '/usr/bin:/bin', HOME: process.env.HOME ?? '/root' }
+      });
+      assert.equal(result.status, 0, result.stderr);
+      return { text: result.stdout, json: JSON.parse(result.stdout) };
+    };
+    // The fixture project builds a model the policy admits.
+    const admitted = await model(SOURCE);
+    assert.deepEqual(evaluateComposeSafety(admitted.json, project).findings, []);
+    // An env file: Docker Compose v5.1.1 keeps it in the model, unread, and the model refuses it by name;
+    // v2.38.2 reads it anyway and keeps no trace of where the value came from. The parse refuses it on both.
+    const quoted = `services:\n  api:\n    image: x\n    "env_file": ${join(host, 'host.env')}\n`;
+    const envFile = await model(quoted);
+    if (envFile.text.includes('from-the-host-env-file')) {
+      assert.doesNotMatch(envFile.text, /env_file/);
+    } else {
+      assert.ok(evaluateComposeSafety(envFile.json, project).findings.some((finding: any) => finding.key === 'env_file'));
+    }
+    assert.ok(evaluateComposeSource(quoted).findings.some((finding: any) => finding.key === 'env_file'));
+    // A host file extended through a quoted key is read and merged without a trace: only the parsed source refuses it.
+    const extended = `services:\n  api:\n    "extends": {file: ${join(host, 'compose.yaml')}, service: db}\n`;
+    const loaded = await model(extended);
+    assert.match(loaded.text, /from-the-host-compose-file/);
+    assert.doesNotMatch(loaded.text, /"extends"/);
+    assert.ok(evaluateComposeSource(extended).findings.some((finding: any) => finding.key === 'extends'));
+  } finally {
+    await rm(work, { recursive: true, force: true });
+  }
+});
+
+test('work claimed or locked on the component, or unreadable coordination, refuses before any write', async () => {
+  const repositoryScope = 'repository:patricked-code/portal';
+  const cases: Array<[unknown, string]> = [
+    [{ complete: true, locks: [{ scope: repositoryScope, projectId: null }], tasks: [] }, 'TARGET_LOCKED'],
+    [{ complete: true, locks: [{ scope: `component:portal:${TARGET.mappingId}`, projectId: null }], tasks: [] }, 'TARGET_LOCKED'],
+    [{ complete: true, locks: [{ scope: 'resource:other', projectId: 'portal' }], tasks: [] }, 'TARGET_LOCKED'],
+    [{ complete: true, locks: [], tasks: [{ taskId: 'TASK-1', resourceScopes: [repositoryScope] }] }, 'TARGET_CLAIMED_BY_TASK'],
+    [{ complete: false, locks: [], tasks: [] }, 'COORDINATION_UNAVAILABLE'],
+    [null, 'COORDINATION_UNAVAILABLE']
+  ];
+  for (const [coordination, reasonCode] of cases) {
+    const h = harness({ readCoordination: async () => coordination });
+    const refused = await run(h, { creation: true, activation: true });
+    assert.deepEqual([refused.result, refused.reasonCodes], ['REFUSED', [reasonCode]], reasonCode);
+    assert.equal(h.calls.some((call) => ['admit', 'fetch', 'host', 'write-file'].includes(call.kind)), false, reasonCode);
+  }
+  const failing = harness({ readCoordination: async () => { throw new Error('store'); } });
+  assert.deepEqual((await run(failing, { creation: true })).reasonCodes, ['COORDINATION_UNAVAILABLE']);
+  // Another repository's or component's work never blocks this one.
+  const unrelated = harness({ readCoordination: async () => ({
+    complete: true,
+    locks: [{ scope: 'repository:patricked-code/mcp', projectId: 'mcp' }, { scope: 'component:portal:github:Patricked-code/Portal:s1:other', projectId: null }],
+    tasks: [{ taskId: 'TASK-2', resourceScopes: ['provisioning:project-runtime'] }]
+  }) });
+  assert.equal((await run(unrelated, { creation: true })).result, 'SUCCEEDED');
+});
+
+test('the coordination authorities are read again immediately before every host write', async () => {
+  const clear = Object.freeze({ complete: true, locks: [], tasks: [] });
+  const locked = Object.freeze({ complete: true, locks: [{ scope: `component:portal:${TARGET.mappingId}`, projectId: null }], tasks: [] });
+  const claimed = Object.freeze({ complete: true, locks: [], tasks: [{ taskId: 'TASK-20261008-001', resourceScopes: ['repository:patricked-code/portal'] }] });
+  /** Coordination that changes after a number of clear reads, as work claimed or locked while the job runs. */
+  const changing = (clearReads: number, then: unknown) => {
+    const h = harness();
+    let reads = 0;
+    h.deps.readCoordination = (async () => {
+      h.calls.push({ kind: 'coordinate', detail: '' });
+      reads += 1;
+      return reads <= clearReads ? clear : then;
+    }) as any;
+    return h;
+  };
+  const sequence = (h: ReturnType<typeof harness>) => h.calls
+    .filter((call) => call.kind === 'coordinate' || call.kind === 'host')
+    .map((call) => (call.kind === 'host' ? call.detail : 'coordinate'));
+  const steps = (h: ReturnType<typeof harness>, jobId: string) => JSON.parse(h.files.get(`/app/data/provisioning/${jobId}/attestation.json`)!)
+    .steps.map((step: any) => `${step.id}:${step.status}`);
+
+  // Read before the job starts, then right before each write: no GitHub call or download sits between the last read and a write.
+  const full = changing(99, clear);
+  assert.equal((await run(full, { creation: true, activation: true })).result, 'SUCCEEDED');
+  assert.deepEqual(sequence(full), ['coordinate', 'preflight', 'coordinate', 'stage', 'config', 'dockerfiles', 'coordinate', 'create', 'coordinate', 'activate']);
+
+  // Locked while the admission and the download ran: nothing is staged.
+  const beforeStage = changing(1, locked);
+  const lockedResult = await run(beforeStage, { creation: true, activation: true });
+  assert.deepEqual([lockedResult.result, lockedResult.reasonCodes], ['BLOCKED', ['TARGET_LOCKED']]);
+  assert.deepEqual(hostPhases(beforeStage), ['preflight']);
+  assert.deepEqual(steps(beforeStage, lockedResult.jobId), ['preflight:DONE', 'fetch-source:DONE', 'backup:BLOCKED']);
+
+  // Claimed once the source was checked: the staging is discarded, nothing is promoted.
+  const beforeCreate = changing(2, claimed);
+  const claimedResult = await run(beforeCreate, { creation: true, activation: true });
+  assert.deepEqual([claimedResult.result, claimedResult.reasonCodes], ['BLOCKED', ['TARGET_CLAIMED_BY_TASK']]);
+  // Claimed work owns the component now: not even the staging is moved.
+  assert.deepEqual(hostPhases(beforeCreate), ['preflight', 'stage', 'config', 'dockerfiles']);
+
+  // Unreadable before the activation: the created checkout stays as a creation alone leaves it, and nothing starts.
+  const beforeActivate = changing(3, null);
+  const unreadable = await run(beforeActivate, { creation: true, activation: true });
+  assert.deepEqual([unreadable.result, unreadable.reasonCodes, unreadable.rollback], ['BLOCKED', ['COORDINATION_UNAVAILABLE'], 'NOT_NEEDED']);
+  assert.deepEqual(hostPhases(beforeActivate), ['preflight', 'stage', 'config', 'dockerfiles', 'create']);
+
+  // The activation of a runtime created earlier reads them again after checking its source, right before starting.
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject: TARGET.composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  const existing = changing(1, locked);
+  existing.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
+  const activation = await run(existing, { activation: true });
+  assert.deepEqual([activation.mode, activation.result, activation.reasonCodes], ['ACTIVATE', 'BLOCKED', ['TARGET_LOCKED']]);
+  assert.deepEqual(hostPhases(existing), ['source', 'config', 'dockerfiles']);
+});
+
+test('a rollback reads the coordination authorities again and never writes over newly claimed work', async () => {
+  const clear = Object.freeze({ complete: true, locks: [], tasks: [] });
+  const locked = Object.freeze({ complete: true, locks: [{ scope: `component:portal:${TARGET.mappingId}`, projectId: null }], tasks: [] });
+  const h = harness();
+  h.results.activate = 'result=unhealthy\nhealth=unhealthy\n';
+  let reads = 0;
+  h.deps.readCoordination = (async () => { reads += 1; return reads <= 4 ? clear : locked; }) as any;
+  const result = await run(h, { creation: true, activation: true });
+  assert.deepEqual([result.result, result.rollback, result.reasonCodes], ['FAILED', 'FAILED', ['HEALTH_CHECK_FAILED', 'TARGET_LOCKED']]);
+  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'dockerfiles', 'create', 'activate']);
+  // Unclaimed, the same failure rolls back.
+  const free = harness();
+  free.results.activate = 'result=unhealthy\nhealth=unhealthy\n';
+  assert.deepEqual(hostPhases(free).length, 0);
+  assert.equal((await run(free, { creation: true, activation: true })).result, 'ROLLED_BACK');
+  assert.deepEqual(hostPhases(free), ['preflight', 'stage', 'config', 'dockerfiles', 'create', 'activate', 'rollback']);
+});
+
+test('every service runs under memory, CPU and process ceilings', () => {
+  const dir = '/opt/apps/portal-api';
+  assert.equal(evaluateComposeSafety(composeConfig(dir), dir).ok, true);
+  const deployed = composeConfig(dir, { mem_limit: undefined, cpus: undefined, pids_limit: undefined, deploy: { resources: { limits: { memory: '268435456', cpus: 1, pids: 50 } } } });
+  assert.equal(evaluateComposeSafety(deployed, dir).ok, true);
+  for (const missing of ['mem_limit', 'cpus', 'pids_limit']) {
+    const unbounded = evaluateComposeSafety(composeConfig(dir, { [missing]: undefined }), dir);
+    assert.deepEqual(unbounded.findings.map((finding: any) => finding.code), ['COMPOSE_RESOURCES_UNBOUNDED'], missing);
+  }
+});
+
+test('the revision is admitted again after the download, and the host preflight runs before it', async () => {
+  let admissions = 0;
+  const h = harness({
+    admitRevision: async () => {
+      admissions += 1;
+      return Object.freeze({ admitted: admissions === 1, kind: admissions === 1 ? 'CI_GATE' : null, reasonCode: admissions === 1 ? 'REVISION_ADMITTED' : 'REVISION_CI_FAILED', branch: 'main', branchHead: REVISION, checkRuns: 1, statuses: 0 });
+    }
+  });
+  const result = await run(h, { creation: true, activation: true });
+  assert.deepEqual([result.result, result.reasonCodes], ['BLOCKED', ['REVISION_CI_FAILED']]);
+  assert.deepEqual(hostPhases(h), ['preflight']);
+  // A host without room or with a full quarantine fails before anything is downloaded.
+  const full = harness();
+  full.results.preflight = 'result=failed\nreason=quarantine_full\n';
+  const refused = await run(full, { creation: true });
+  assert.deepEqual([refused.result, refused.reasonCodes], ['FAILED', ['PREFLIGHT_QUARANTINE_FULL']]);
+  assert.equal(full.calls.some((call) => call.kind === 'fetch'), false);
+});
+
+test('build Dockerfiles are read from the digested checkout and their images attested', async () => {
+  const pinned = `FROM node@sha256:${'a'.repeat(64)}\nRUN true\n`;
+  const h = harness();
+  h.results.dockerfiles = `result=printed\ndockerfile.0=${Buffer.from(pinned).toString('base64')}\n`;
+  h.results.activate = `result=activated\nhealth=healthy\nimages=api=sha256:${'c'.repeat(64)}\n`;
+  const result = await run(h, { creation: true, activation: true });
+  assert.equal(result.result, 'SUCCEEDED');
+  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'dockerfiles', 'create', 'activate']);
+  assert.ok(h.scripts.get('dockerfiles')!.includes(TREE));
+  const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
+  assert.deepEqual(attestation.builtImages, [`api=sha256:${'c'.repeat(64)}`]);
+  // The images are recorded in the job data too, out of the runtime's reach, for NO_OP to compare.
+  assert.deepEqual(JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/images.json`)!), [`api=sha256:${'c'.repeat(64)}`]);
+  // An unpinned base image never reaches the promotion.
+  const floating = harness();
+  floating.results.dockerfiles = `result=printed\ndockerfile.0=${Buffer.from('FROM node:20\n').toString('base64')}\n`;
+  const blocked = await run(floating, { creation: true, activation: true });
+  assert.deepEqual([blocked.result, blocked.reasonCodes], ['BLOCKED', ['COMPOSE_UNSAFE']]);
+  assert.deepEqual(blocked.findings, [{ code: 'DOCKERFILE_IMAGE_UNPINNED', service: 'api', key: 'node:20' }]);
+  assert.deepEqual(hostPhases(floating), ['preflight', 'stage', 'config', 'dockerfiles', 'discard']);
+  // The activation reports the images it built.
+  const script = buildActivateScript({ jobId: 'prov-20261006T050000Z-0a1b2c3d', target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE });
+  assert.match(script, /images=/);
+});
+
+test('the attestation records the admission that authorized the last write', async () => {
+  let admissions = 0;
+  const h = harness({
+    admitRevision: async () => {
+      admissions += 1;
+      return Object.freeze({ admitted: true, kind: 'CI_GATE', reasonCode: 'REVISION_ADMITTED', branch: 'main', branchHead: admissions === 1 ? 'a'.repeat(40) : 'b'.repeat(40), checkRuns: admissions, statuses: 0 });
+    }
+  });
+  const result = await run(h, { creation: true });
+  const attestation = JSON.parse(h.files.get(`/app/data/provisioning/${result.jobId}/attestation.json`)!);
+  assert.deepEqual([attestation.admission.branchHead, attestation.admission.checkRuns], ['b'.repeat(40), admissions]);
+});
+
+test('the revision is admitted again before the promotion and before the activation', async () => {
+  for (const [failAt, phases] of [[3, ['preflight', 'stage', 'config', 'dockerfiles', 'discard']], [4, ['preflight', 'stage', 'config', 'dockerfiles', 'create']]] as const) {
+    let admissions = 0;
+    const h = harness({
+      admitRevision: async () => {
+        admissions += 1;
+        const ok = admissions < failAt;
+        return Object.freeze({ admitted: ok, kind: ok ? 'CI_GATE' : null, reasonCode: ok ? 'REVISION_ADMITTED' : 'REVISION_NOT_ON_OFFICIAL_BRANCH', branch: 'main', branchHead: REVISION, checkRuns: 1, statuses: 0 });
+      }
+    });
+    const result = await run(h, { creation: true, activation: true });
+    assert.deepEqual([result.result, result.reasonCodes], ['BLOCKED', ['REVISION_NOT_ON_OFFICIAL_BRANCH']], String(failAt));
+    assert.deepEqual(hostPhases(h), phases, String(failAt));
+  }
+});
+
+test('activation succeeds only with the checkout unchanged and an image for every container', () => {
+  const script = buildActivateScript({ jobId: 'prov-20261006T050000Z-0a1b2c3d', target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE, expectedContainers: 2 });
+  const healthy = script.indexOf('health=healthy; break');
+  // After the health gate the checkout is digested again: a service that rewrote it never succeeds.
+  assert.ok(script.indexOf('health=checkout_modified', healthy) > healthy);
+  // Every expected container must report a valid image ID.
+  assert.ok(script.indexOf('health=images_unknown', healthy) > healthy);
+});
+
+test('logs are bounded, address pools stay default and no-new-privileges is never disabled', () => {
+  const dir = '/opt/apps/portal-api';
+  const codes = (service: Record<string, unknown>, extra: Record<string, unknown> = {}) => (evaluateComposeSafety(composeConfig(dir, service, extra), dir) as any).findings.map((f: any) => f.code);
+  // The daemon's default driver is unknown, and json-file without rotation can fill the disk.
+  assert.deepEqual(codes({ logging: undefined }), ['COMPOSE_LOGGING_DRIVER']);
+  assert.deepEqual(codes({ logging: { driver: 'json-file' } }), ['COMPOSE_LOGGING_DRIVER']);
+  assert.deepEqual(codes({ logging: { driver: 'json-file', options: { 'max-size': '10m' } } }), ['COMPOSE_LOGGING_DRIVER']);
+  assert.deepEqual(codes({ security_opt: ['no-new-privileges:false'] }), ['COMPOSE_SECURITY_OPT_UNCONFINED']);
+  assert.deepEqual(codes({ security_opt: ['no-new-privileges=false'] }), ['COMPOSE_SECURITY_OPT_UNCONFINED']);
+  assert.deepEqual(codes({}, { networks: { default: { name: 'mcp-portal-0123456789ab_default', ipam: { config: [{ subnet: '10.0.0.0/8' }] } } } }), ['COMPOSE_NETWORK_DRIVER']);
+});
+
+test('activation fails when the image record cannot be written, and checks its marker after health', async () => {
+  const h = harness();
+  h.results.activate = `result=activated\nhealth=healthy\nimages=api=sha256:${'c'.repeat(64)}\n`;
+  const write = h.deps.writeJobFile;
+  h.deps.writeJobFile = (async (path: string, content: string) => {
+    if (path.endsWith('/images.json')) throw new Error('read-only');
+    return write(path, content);
+  }) as any;
+  const result = await run(h, { creation: true, activation: true });
+  assert.deepEqual([result.result, result.reasonCodes], ['ROLLED_BACK', ['IMAGES_RECORD_UNWRITTEN']]);
+  assert.equal(hostPhases(h).at(-1), 'rollback');
+  const script = buildActivateScript({ jobId: 'prov-20261006T050000Z-0a1b2c3d', target: PLAN_TARGET, composeFile: 'compose.yaml', labelsOverride: '{"services":{}}', healthTimeoutSeconds: 180, treeDigest: TREE, markerSha256: 'd'.repeat(64) });
+  const healthy = script.indexOf('health=healthy; break');
+  assert.ok(script.indexOf('health=marker_modified', healthy) > healthy && script.includes('d'.repeat(64)));
+});
+
+test('the target and runtime are planned again before the promotion and the activation', async () => {
+  const h = harness();
+  let observations = 0;
+  const observe = h.deps.observe;
+  h.deps.observe = (async (targets: any[]) => {
+    observations += 1;
+    // Another process created the project once the source was checked.
+    if (observations === 3) h.setInventory('docker=ok\ncomponent.0.path=absent\ncomponent.0.containers=other|running|x|y|api|Up\n');
+    return observe(targets);
+  }) as any;
+  const result = await run(h, { creation: true, activation: true });
+  assert.equal(result.result, 'BLOCKED');
+  assert.deepEqual(hostPhases(h), ['preflight', 'stage', 'config', 'dockerfiles', 'discard']);
+});
+
+test('a change of the official branch stops the job, and a reactivation keeps only identical images', async () => {
+  let reads = 0;
+  const h = harness({
+    readRegistry: async () => { reads += 1; const value = registry(); if (reads > 1) value.governanceEvidence.mappings[0].officialBranch = 'production'; return value; }
+  });
+  const result = await run(h, { creation: true, activation: true });
+  assert.deepEqual([result.result, result.reasonCodes], ['BLOCKED', ['GOVERNANCE_OFFICIAL_BRANCH_CHANGED']]);
+  assert.deepEqual(hostPhases(h), ['preflight']);
+  // A later activation whose earlier record names other images fails and rolls back.
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject: TARGET.composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  const again = harness();
+  again.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
+  again.files.set(`/app/data/provisioning/${marker.jobId}/images.json`, `["api=sha256:${'d'.repeat(64)}"]\n`);
+  const write = again.deps.writeJobFile;
+  again.deps.writeJobFile = (async (path: string, content: string) => {
+    if (again.files.has(path)) throw new Error('exists');
+    return write(path, content);
+  }) as any;
+  again.results.activate = `result=activated\nhealth=healthy\nimages=api=sha256:${'c'.repeat(64)}\n`;
+  const reactivated = await run(again, { activation: true });
+  assert.deepEqual([reactivated.result, reactivated.reasonCodes], ['ROLLED_BACK', ['IMAGES_RECORD_UNWRITTEN']]);
+});
+
+test('stop grace periods stay within the rollback budget, and a newline in a path fails the digest', async () => {
+  const dir = '/opt/apps/portal-api';
+  const codes = (service: Record<string, unknown>) => (evaluateComposeSafety(composeConfig(dir, service), dir) as any).findings.map((f: any) => f.code);
+  assert.deepEqual(codes({ stop_grace_period: '30s' }), []);
+  assert.deepEqual(codes({ stop_grace_period: '1m30s' }), ['COMPOSE_STOP_GRACE_PERIOD']);
+  assert.deepEqual(codes({ stop_grace_period: 'forever' }), ['COMPOSE_STOP_GRACE_PERIOD']);
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-f03-newline-'));
+  try {
+    await writeFile(join(directory, 'a.txt'), 'alpha\n');
+    await mkdir(join(directory, 'b\nd 755 0 0 .'));
+    for (const shell of ['sh', 'bash']) {
+      assert.notEqual(spawnSync(shell, ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\ntree_digest "$1"`, 'tree-digest', directory]).status, 0, shell);
+    }
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('an unreadable marker record fails an activation, and a collision before a discard leaves the staging', async () => {
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: { ...PLAN_TARGET, composeProject: TARGET.composeProject }, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
+  const h = harness();
+  h.setInventory(`docker=ok\ncomponent.0.path=present\ncomponent.0.containers=\ncomponent.0.marker=${Buffer.from(JSON.stringify(marker)).toString('base64')}\n`);
+  let reads = 0;
+  const read = h.deps.readJobFile;
+  h.deps.readJobFile = (async (path: string) => (path.endsWith('/marker.json') && ++reads > 1 ? null : read(path))) as any;
+  const result = await run(h, { activation: true });
+  assert.deepEqual([result.result, result.reasonCodes], ['FAILED', ['MARKER_RECORD_UNREADABLE']]);
+  assert.equal(hostPhases(h).includes('activate'), false);
+  // An unsafe model after the source was staged: if work was claimed meanwhile, the staging stays where it is.
+  const unsafe = harness();
+  unsafe.results['config-staging'] = `result=configured\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d', { privileged: true }))).toString('base64')}\n`;
+  let coordination = 0;
+  unsafe.deps.readCoordination = (async () => (++coordination <= 2 ? { complete: true, locks: [], tasks: [] } : { complete: true, locks: [{ scope: `component:portal:${TARGET.mappingId}`, projectId: null }], tasks: [] })) as any;
+  const blocked = await run(unsafe, { creation: true });
+  assert.equal(blocked.result, 'BLOCKED');
+  assert.equal(hostPhases(unsafe).includes('discard'), false);
+});
+
+test('bind sources are named by the policy, relative to the project', () => {
+  const dir = '/opt/apps/portal-api';
+  const safety = evaluateComposeSafety(composeConfig(dir), dir) as any;
+  assert.equal(safety.ok, true);
+  assert.deepEqual(safety.bindSources, ['data']);
+  const odd = evaluateComposeSafety(composeConfig(dir, { volumes: [{ type: 'bind', source: `${dir}/da ta`, target: '/x' }] }), dir) as any;
+  assert.equal(odd.ok, false);
+});
+
+test('the capacity floors hold on the filesystems the job writes, not only on /opt/apps', async () => {
+  const work = await mkdtemp(join(tmpdir(), 'mcp-f03-capacity-'));
+  try {
+    await mkdir(join(work, 'bin'));
+    await mkdir(join(work, 'customers'));
+    const log = join(work, 'df.log');
+    // A df that reports plenty everywhere except on the filesystem the test names.
+    await writeFile(join(work, 'bin', 'df'), [
+      '#!/bin/sh',
+      'for a; do last="$a"; done',
+      'printf "%s\\n" "$*" >> "$DF_LOG"',
+      'value=999999999',
+      'if [ "$1" = -Pk ] && [ "$last" = "${LOW_SPACE:-}" ]; then value=1; fi',
+      'if [ "$1" = -Pi ] && [ "$last" = "${LOW_INODES:-}" ]; then value=1; fi',
+      'printf "Filesystem 1024-blocks Used Available Capacity Mounted\\nfs 1 1 %s 1%% /\\n" "$value"',
+      ''
+    ].join('\n'));
+    await chmod(join(work, 'bin', 'df'), 0o755);
+    const check = (env: Record<string, string> = {}) => spawnSync('sh', ['-c', [
+      "fail() { printf 'result=failed\\nreason=%s\\n' \"$1\"; exit 0; }",
+      `real_parent='${join(work, 'customers')}'`,
+      ...buildCapacityLines(join(work, 'quarantine', 'root')),
+      "printf 'result=ok\\n'"
+    ].join('\n')], { encoding: 'utf8', env: { ...process.env, PATH: `${join(work, 'bin')}:${process.env.PATH}`, DF_LOG: log, ...env } }).stdout;
+    assert.match(check(), /result=ok/);
+    // The staging parent's own filesystem is measured, then the quarantine's through its nearest existing directory.
+    assert.deepEqual((await readFile(log, 'utf8')).trim().split('\n'), [
+      `-Pk ${join(work, 'customers')}`, `-Pi ${join(work, 'customers')}`, `-Pk ${work}`, `-Pi ${work}`
+    ]);
+    assert.match(check({ LOW_SPACE: join(work, 'customers') }), /reason=host_capacity/);
+    assert.match(check({ LOW_INODES: join(work, 'customers') }), /reason=host_inodes/);
+    assert.match(check({ LOW_SPACE: work }), /reason=host_capacity/);
+    assert.match(check({ LOW_INODES: work }), /reason=host_inodes/);
+  } finally {
+    await rm(work, { recursive: true, force: true });
+  }
+});
+
+test('a mapping the registry does not let deploy is never provisioned', async () => {
+  const governed = (change: (registry: any) => void) => harness({
+    readRegistry: async () => { const value = registry(); change(value); return value; }
+  });
+  const cases: Array<[(registry: any) => void, string]> = [
+    [(value) => { value.governanceEvidence.mappings[0].capabilities.deploy = false; }, 'GOVERNANCE_DEPLOY_CAPABILITY_DISABLED'],
+    [(value) => { value.governanceEvidence.mappings[0].status = 'suspended'; }, 'GOVERNANCE_MAPPING_NOT_ACTIVE'],
+    [(value) => { value.activationReadiness[0].status = 'BLOCKED'; }, 'GOVERNANCE_ACTIVATION_BLOCKED'],
+    [(value) => { value.activationReadiness = []; }, 'GOVERNANCE_ACTIVATION_UNKNOWN'],
+    [(value) => { delete value.governanceEvidence; }, 'GOVERNANCE_MAPPING_UNDECLARED']
+  ];
+  for (const [change, reasonCode] of cases) {
+    const h = governed(change);
+    const refused = await run(h, { creation: true, activation: true });
+    assert.deepEqual([refused.result, refused.reasonCodes], ['REFUSED', [reasonCode]], reasonCode);
+    assert.deepEqual(hostPhases(h), []);
+  }
+});
+
+test('the tree digest fails instead of digesting a partial tree', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-f03-partial-'));
+  const shim = await mkdtemp(join(tmpdir(), 'mcp-f03-shim-'));
+  try {
+    await writeFile(join(directory, 'a.txt'), 'alpha\n');
+    const real = spawnSync('sh', ['-c', 'command -v sha256sum'], { encoding: 'utf8' }).stdout.trim();
+    // A file read that fails mid-digest, as a vanished or unreadable file would.
+    await writeFile(join(shim, 'sha256sum'), `#!/bin/sh\nif [ "$1" = "--" ]; then exit 1; fi\nexec ${real} "$@"\n`);
+    await chmod(join(shim, 'sha256sum'), 0o755);
+    for (const shell of ['sh', 'bash']) {
+      const result = spawnSync(shell, ['-c', `${PROVISIONING_TREE_DIGEST_SHELL}\nif tree_digest "$1"; then echo digested; else echo failed; fi`, 'tree-digest', directory], {
+        encoding: 'utf8', timeout: 10_000, env: { ...process.env, PATH: `${shim}:${process.env.PATH}` }
+      });
+      assert.equal(result.stdout.trim().split('\n').at(-1), 'failed', `${shell}: ${result.stdout}${result.stderr}`);
+    }
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+    await rm(shim, { recursive: true, force: true });
+  }
+});
+
+test('an archive is bounded by its expanded size and entry count before any extraction', async () => {
+  const work = await mkdtemp(join(tmpdir(), 'mcp-f03-bomb-'));
+  try {
+    await mkdir(join(work, 'repo'));
+    await writeFile(join(work, 'repo', 'zeros.bin'), Buffer.alloc(2 * 1024 * 1024));
+    await writeFile(join(work, 'repo', 'a.txt'), 'alpha\n');
+    const archive = join(work, 'source.tar.gz');
+    assert.equal(spawnSync('tar', ['-czf', archive, '-C', work, 'repo']).status, 0);
+    const check = (limits: { maxEntries: number; maxBytes: number }) => {
+      const script = ["fail() { printf 'result=failed\\nreason=%s\\n' \"$1\"; exit 0; }", ...buildArchiveBoundsLines(archive, limits), "printf 'result=bounded\\n'"].join('\n');
+      return spawnSync('sh', ['-c', script], { encoding: 'utf8', timeout: 10_000 }).stdout;
+    };
+    assert.match(check({ maxEntries: 100, maxBytes: 10 * 1024 * 1024 }), /result=bounded/);
+    assert.match(check({ maxEntries: 100, maxBytes: 1024 * 1024 }), /reason=archive_expanded_too_large/);
+    assert.match(check({ maxEntries: 2, maxBytes: 10 * 1024 * 1024 }), /reason=archive_too_many_entries/);
+    assert.throws(() => buildArchiveBoundsLines("/tmp/x'; reboot", { maxEntries: 1, maxBytes: 1 }));
+  } finally {
+    await rm(work, { recursive: true, force: true });
+  }
 });
 
 test('an unsafe compose model or a bad archive is discarded to quarantine, never deleted', async () => {
   const unsafe = harness();
-  unsafe.results.stage = `result=staged\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d', { privileged: true }))).toString('base64')}\n`;
+  unsafe.results['config-staging'] = `result=configured\ncompose_file=compose.yaml\ncompose_config_b64=${Buffer.from(JSON.stringify(composeConfig('/opt/apps/portal-api.mcp-staging-prov-20261006T050000Z-0a1b2c3d', { privileged: true }))).toString('base64')}\n`;
   const blocked = await run(unsafe, { creation: true, activation: true });
   assert.equal(blocked.result, 'BLOCKED');
   assert.ok(blocked.findings.some((finding: any) => finding.code === 'COMPOSE_PRIVILEGED'));
-  assert.deepEqual(hostPhases(unsafe), ['stage', 'discard']);
+  assert.deepEqual(hostPhases(unsafe), ['preflight', 'stage', 'config', 'discard']);
 
   const tampered = harness();
   tampered.results.stage = 'result=failed\nreason=archive_digest\n';
   const failed = await run(tampered, { creation: true });
   assert.deepEqual([failed.result, failed.reasonCodes], ['FAILED', ['STAGE_ARCHIVE_DIGEST']]);
-  assert.deepEqual(hostPhases(tampered), ['stage', 'discard']);
+  assert.deepEqual(hostPhases(tampered), ['preflight', 'stage', 'discard']);
 });
 
 test('a failed health check rolls back without destruction, and the activation of a created runtime keeps its files', async () => {
@@ -306,12 +1337,12 @@ test('a failed health check rolls back without destruction, and the activation o
   unhealthy.results.activate = 'result=unhealthy\nhealth=unhealthy\n';
   const rolledBack = await run(unhealthy, { creation: true, activation: true });
   assert.deepEqual([rolledBack.result, rolledBack.rollback], ['ROLLED_BACK', 'SUCCEEDED']);
-  assert.deepEqual(hostPhases(unhealthy), ['stage', 'create', 'activate', 'rollback']);
-  const rollbackCommand = buildRollbackScript({ jobId: rolledBack.jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true });
+  assert.deepEqual(hostPhases(unhealthy), ['preflight', 'stage', 'config', 'dockerfiles', 'create', 'activate', 'rollback']);
+  const rollbackCommand = buildRollbackScript({ jobId: rolledBack.jobId, target: PLAN_TARGET, composeFile: 'compose.yaml', createdInThisJob: true, treeDigest: TREE });
   assert.match(rollbackCommand, /mv /);
 
   // A runtime created earlier is activated alone: no fetch and no stage; its rollback keeps the files.
-  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT });
+  const marker = provisioningMarker({ jobId: 'prov-20261005T050000Z-00000000', target: PLAN_TARGET, composeFile: 'compose.yaml', createdAt: OBSERVED_AT, treeDigest: TREE, services: ['api'] });
   const activateOnly = harness();
   const plan = planProjectRuntimeProvisioning({
     request: REQUEST, serverTarget: { status: 'CONFIGURED', projectIds: ['portal'] }, registry: registry(),
@@ -328,8 +1359,8 @@ test('a failed health check rolls back without destruction, and the activation o
   const kept = await run(activateOnly, { activation: true });
   assert.deepEqual([kept.mode, kept.result], ['ACTIVATE', 'ROLLED_BACK']);
   assert.equal(activateOnly.calls.some((call) => call.kind === 'fetch'), false);
-  assert.deepEqual(hostPhases(activateOnly), ['config', 'activate', 'rollback']);
-  assert.doesNotMatch(buildRollbackScript({ jobId: kept.jobId, target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdInThisJob: false }), /mcp-provisioning-quarantine/);
+  assert.deepEqual(hostPhases(activateOnly), ['source', 'config', 'dockerfiles', 'activate', 'rollback']);
+  assert.doesNotMatch(buildRollbackScript({ jobId: kept.jobId, target: { ...PLAN_TARGET, composeProject }, composeFile: 'compose.yaml', createdInThisJob: false, treeDigest: TREE }), /mcp-provisioning-quarantine/);
 });
 
 test('one provisioning runs at a time', async () => {
@@ -381,6 +1412,19 @@ test('the source archive is downloaded once, from codeload only, bounded and dig
       destination: join(directory, 'y.tar.gz'), maxBytes: 4, fetchImpl: fetchImpl as any
     });
     assert.equal(tooLarge.ok, false);
+    // GitHub Enterprise Server keeps its /api/v3 path and serves archives from its own host.
+    const enterprise: string[] = [];
+    const ghes = async (url: string) => {
+      enterprise.push(url);
+      return url.startsWith('https://ghe.example.com/api/v3/')
+        ? new Response(null, { status: 302, headers: { location: 'https://ghe.example.com/_codeload/o/r/legacy.tar.gz/sha?token=signed' } })
+        : new Response(body, { status: 200 });
+    };
+    assert.equal((await downloadGithubArchive({
+      token: 't', apiBase: 'https://ghe.example.com/api/v3', repositoryId: TARGET.repositoryId, revision: REVISION,
+      destination: join(directory, 'ghes.tar.gz'), maxBytes: 1024, fetchImpl: ghes as any
+    })).ok, true);
+    assert.equal(enterprise[0], `https://ghe.example.com/api/v3/repos/Patricked-code/Portal/tarball/${REVISION}`);
     assert.equal((await downloadGithubArchive({
       token: 't', apiBase: 'https://api.github.com', repositoryId: 'github:o/r', revision: 'main',
       destination: join(directory, 'z.tar.gz'), maxBytes: 4, fetchImpl: fetchImpl as any

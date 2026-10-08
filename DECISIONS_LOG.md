@@ -1,5 +1,90 @@
 # DECISIONS_LOG.md
 
+## 2026-10-07 — F.2 incrément 3 : surface consentie et câblage du provisioning d'un runtime de projet
+
+Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME` et le consentement E3 de `.mcp/provisioning-contracts.json`, l'admission du Governed Deploy, `EXISTING_MCP_EXPOSURE_FIRST` (#236), et les invariants `NO_RESOURCE_CREATION_WITHOUT_EXPLICIT_CONSENT` et `NO_IMPLICIT_ACTIVATION`.
+
+- **Une page de l'exposition existante, pas un outil MCP.** Le consentement E3 est une soumission web de même origine. Un appel d'outil, un drapeau `allow_write` ou une instruction d'agent n'en sont jamais un. La surface est donc une route Express derrière la connexion web, sans nouveau domaine ni proxy.
+- **Un ticket par cible exacte.** Le ticket est lié à sa finalité, à la session web et à la cible (projet, mapping, révision). Un consentement rendu pour une révision ne vaut jamais pour une autre. Création et activation restent deux valeurs explicites, décochées par défaut.
+- **La session web seule n'autorise rien.** Avant d'écrire, le serveur exige :
+  - le consentement E3 ;
+  - le mode écriture (`ENABLE_WRITE_TOOLS`), interrupteur partagé avec les autres routes d'écriture web et jamais un consentement ;
+  - la cible déclarée par une pull request revue (`servers.S1.targetProjectIds`) ;
+  - une re-observation fraîche et un plan `READY`.
+
+  Le verdict fantôme du Scoped WRITE Gate (session gouvernée, verrous, reçu) est propre au transport MCP : il n'a pas de sens pour une requête web.
+- **Admission de la révision, généralisée du Governed Deploy.**
+  - La révision doit appartenir à l'historique revu de la branche officielle de son mapping (depuis la huitième revue ; auparavant la branche par défaut), avec une CI ni en échec ni en cours ; tout est lu en entier.
+  - Sans aucune CI, le consentement explicite vaut admission manuelle, comme le dispatch manuel du Governed Deploy.
+  - L'admission est relue juste avant toute écriture, y compris pour activer un runtime créé plus tôt. Ce qui est illisible refuse.
+- **Un job long ne bloque pas la requête.** La réponse attend 25 s au plus, puis renvoie vers la page de statut. Le job continue et reste attesté dans son dossier.
+- **Le garde des commandes ne doit pas mal lire un nom.** Les noms de la cible passent par des variables : une ligne `docker compose` ne porte que ses drapeaux. Une commande que la politique refuse n'atteint jamais l'hôte et échoue avec la raison `command_policy`.
+- **La route comble les lacunes.** Classée `COMPOSABLE` pour le seul `PROJECT_RUNTIME`, elle compose la sauvegarde, la création, l'activation et le rollback du contrat, désormais provisionnable. Les dépôts et les bindings de domaine restent bloqués par leurs lacunes.
+- **Après la revue de la PR #261 :**
+  - **Consentement lié à la cible résolue.** Le ticket lie aussi le dépôt, le chemin et le projet Compose que la page a nommés. L'exécuteur refuse si son plan frais en résout d'autres : un changement du registre pendant la vie du ticket ne redirige jamais un consentement.
+  - **Checkout vérifié avant l'activation.**
+    - La création enregistre dans le marqueur l'empreinte de l'arbre préparé : contenu, bits d'exécution et liens, hors des fichiers que le provisioning écrit.
+    - L'activation la recalcule avant tout démarrage. Un checkout modifié depuis sa création ne démarre jamais sous la révision qu'il revendique.
+    - Un contenu illisible échoue au lieu de produire une empreinte partielle.
+  - **Un runtime par composant.** Les conteneurs d'un composant sont ceux de son projet Compose, dérivé du projet et du mapping. Un autre composant du même dépôt ne le masque plus et ne le bloque plus. C4 reste par dépôt : un mélange de `NO_RUNTIME` et d'un runtime y reste `UNKNOWN`.
+  - **Cible illisible ≠ absence.** Une configuration ou un registre illisible laisse les cibles `UNKNOWN`. Seule une configuration absente signifie « aucune cible ».
+- **Après la seconde revue de la PR #261 :**
+  - **Autorités de coordination (UAC, AGENTS.md §7.1).** Une soumission web reste une écriture.
+    - Juste avant d'écrire, l'exécuteur relit la Governed Task Queue et le Governed Lock Service. Il applique la règle de portée de D1 : dépôt du composant, portée `component:` de son mapping, ou verrou ciblant son projet. Un travail réservé ou verrouillé refuse, et une coordination illisible ou désactivée refuse aussi.
+    - La Governed Session et le Bootstrap Receipt sont liés au transport MCP d'un agent ; ils n'ont pas de sens pour un opérateur web. L'autorité par requête de celui-ci reste le consentement E3, lié à sa session et à la cible exacte.
+  - **Règle `DEPLOY` de GitRegistry, sans copie.** La décision de D1 (capacité `deploy`, statut `validated`/`active`, activation `READY`) devient une fonction partagée. Le plan de provisioning bloque avec les mêmes codes qu'elle.
+  - **Pilotes Compose.** Seuls `local` (volumes) et `bridge` (réseaux) sont admis, sans `driver_opts` : une option de pilote peut lier un chemin de l'hôte ou rejoindre son réseau.
+  - **Empreinte sans pipeline.** Chaque liste (fichiers, exécutables, liens) est capturée et vérifiée séparément, car le statut d'un pipeline POSIX masque les échecs internes.
+  - **Archive bornée avant extraction.** Elle est listée sans être extraite, puis limitée à 100 000 entrées et 1 Gio décompressés.
+  - **Pas de succès sans preuve.** Une attestation non écrite rend la réponse en erreur (HTTP 500) et le dit.
+  - **Base d'API conservée.** Le chemin de la base reste dans l'URL (GitHub Enterprise Server), et la seule redirection admise en plus de `codeload.github.com` est l'hôte de l'API configurée.
+  - **`NO_OP` complet.** Le marqueur enregistre les services du modèle Compose, et l'inventaire lit le service et la santé de chaque conteneur. Un runtime partiel, arrêté, malade ou sans marqueur est `EXISTING_RUNTIME_DEGRADED`, jamais « déjà en place ». Le réparer reste hors du provisioning, qui ne modifie jamais un runtime existant.
+- **Après la troisième revue de la PR #261 :**
+  - **Liste de clés revues, plus de liste noire.** Chaque revue trouvait une autre clé Compose qui atteint l'hôte (`use_api_socket`, puis les clés héritées `net`, `log_driver`, `volume_driver`, les hooks, `provider`…). La politique n'admet plus que les clés revues de la spécification Compose ; toute autre clé, y compris une clé à venir, est refusée et nommée.
+  - **Le fichier est analysé avant Compose.** Compose résout `include`, `extends`, `env_file` et `label_file` en chargeant le projet, puis n'en garde aucune trace dans le modèle ; une recherche ligne à ligne ne voit ni une clé entre guillemets, ni un mapping en ligne, ni un échappement. Le MCP analyse donc le fichier lui-même et applique les mêmes listes de clés, avant que Compose ne le lise.
+  - **Une dépendance, épinglée.** Aucun analyseur YAML n'existait dans le dépôt ; en écrire un serait moins sûr. `yaml` 2.9.1 (ISC, sans dépendance, publiée il y a plus de deux semaines) est épinglée à la version exacte. Un écart entre deux analyseurs échoue fermé : une clé lue autrement n'est jamais une clé admise.
+  - **Compose lit ce qui a été analysé, et rien d'autre.** Le script `config` vérifie l'empreinte du fichier analysé avant de construire le modèle.
+  - **`--no-env-resolution` est une seconde garde, pas un contrôle.** Compose v5.1.1 garde alors `env_file` dans le modèle, non lu, et le modèle le refuse. Compose v2.38.2 le lit quand même : l'option n'y saute qu'une seconde résolution. Elle est donc passée quand Compose la connaît, jamais exigée, car l'exiger n'apporterait aucune garantie. Le contrôle reste l'analyse du fichier.
+  - **Isolation réseau.** Le pont par défaut du moteur est partagé avec tous les conteneurs de l'hôte : seuls le réseau du projet, `none` et l'espace réseau d'un service du projet sont admis. Un réseau ou un volume nommé autrement que `<projet>_<clé>` rejoint ce qui porte déjà ce nom : il est traité comme externe.
+  - **Confinement et périphériques.** Seule `no-new-privileges` est admise comme option de sécurité ; seuls les pilotes de journalisation locaux, car les autres émettent depuis le moteur, sur le réseau de l'hôte ; une réservation de périphérique vaut un périphérique.
+  - **Prouvé contre Compose réel.** Ces comportements ont été vérifiés avec Docker Compose v5.1.1 et v2.38.2. Un test d'intégration les rejoue là où Compose est installé ; c'est lui qui a montré, en CI, que v2.38.2 lit les fichiers d'environnement malgré l'option.
+- **Après la quatrième revue de la PR #261 :**
+  - **Volumes conservés = état existant.** Le rollback ne supprime jamais les volumes ; une nouvelle création qui les rattacherait est donc refusée par la préparation. Les volumes restent à traiter hors provisioning.
+  - **Aucun nom d'image partagé.** Un build ne prend que le nom par défaut `<projet>-<service>` : `build.tags` et `image` sur un build retaggeraient une image utilisée ailleurs sur l'hôte.
+  - **Mode complet dans l'empreinte.** Tout changement de mode modifie l'empreinte du checkout.
+- **Après la cinquième revue de la PR #261 :**
+  - **Ce qui tourne est ce qui a été consenti.** Une image tirée est épinglée par empreinte ; un runtime n'est « déjà en place » que si son checkout digère comme à sa création (recalcul en lecture seule).
+  - **Borne de conteneurs.** Le total des réplicas reste dans la limite de 20 de l'inventaire, sinon le runtime ne serait plus observable.
+  - **Propriétaire dans l'empreinte.** Un `chown` du checkout change ce que le conteneur peut lire ou exécuter : il modifie l'empreinte.
+- **Après la sixième revue de la PR #261 :**
+  - **La confiance vient des données du job.** Le marqueur du checkout est accessible au runtime ; seul l'enregistrement du volume de données du MCP fait foi.
+  - **Rien de conservé n'est réutilisé.** Volumes et réseaux laissés par un rollback bloquent une nouvelle création ; la quarantaine est bornée et un plancher de capacité protège l'hôte, sans rien supprimer.
+  - **Réplicas attendus enregistrés.** Un runtime n'est complet qu'avec exactement ses réplicas.
+  - **Entrées des builds : décision propriétaire.** Exiger des `FROM` épinglés et un build sans réseau changerait ce que les projets peuvent faire ; la question est posée au propriétaire au lieu d'être tranchée par l'agent.
+- **Après la septième revue de la PR #261 :**
+  - **Le checkout n'écrit que là où son chemin le dit.** Le parent de la cible est résolu sur l'hôte avant chaque écriture ; les noms que le provisioning réserve sont refusés dans le dépôt.
+  - **Le rollback ne charge pas un fichier non vérifié.** Sans empreinte intacte, l'arrêt passe par les labels des conteneurs.
+  - **Seuls fichiers, dossiers et liens.** Tout autre type d'entrée fait échouer l'empreinte.
+  - **Quota des builds : décision propriétaire.** Un plancher protège l'hôte ; une borne stricte demande une configuration du démon Docker hors de ce dépôt.
+- **Après la huitième revue de la PR #261 :**
+  - **Coordination relue au plus près de chaque écriture.** Le Governed Lock Service n'accorde un verrou qu'à une Governed Session, liée au transport MCP d'un agent ; un opérateur web n'en a pas, et en fabriquer une pour le job créerait une autorité parallèle. La Task Queue et les verrous sont donc relus juste avant chaque écriture sur l'hôte (préparation, promotion, activation) : aucun appel GitHub ni téléchargement ne s'intercale plus entre la dernière lecture et l'écriture. Un travail réservé entre deux écritures arrête le job avant la suivante (`BLOCKED`). Le rollback et l'abandon de la préparation, qui ne défont que ce que le job a fait, ne sont jamais bloqués. Limite assumée : une réservation prise pendant une écriture en cours n'est vue qu'à l'écriture suivante ; la tenir pendant tout le job demandera qu'un opérateur web agisse sous une Governed Session (Cockpit, PB-K).
+  - **Branche officielle de D1.** La révision est admise depuis la branche que nomme le mapping (règle `OFFICIAL_BRANCH`), jamais depuis la seule branche par défaut du dépôt : une autre ligne de version n'est pas admise.
+  - **Pas de lien physique.** Une archive Git n'en contient aucun ; deux noms d'un même fichier changent ensemble, ce qu'aucune empreinte de contenu ou de mode ne montre. Un lien physique fait donc échouer l'empreinte.
+  - **Capacité là où le job écrit.** Les planchers sont mesurés sur le système de fichiers du parent de la cible et sur celui de la quarantaine, qu'un déplacement entre systèmes de fichiers copie.
+- **Après la neuvième revue de la PR #261 :**
+  - **Le rollback aussi cède au travail réservé.** Il est précédé d'une relecture ; un composant réservé pendant le contrôle de santé reste à son nouveau propriétaire, le job échoue en le disant.
+  - **Un conteneur arrêté ne revient pas seul.** Sa politique de redémarrage est effacée avant l'arrêt par labels.
+  - **Ce qu'un fichier peut faire.** Les capacités de fichier entrent dans l'empreinte ; une ACL la fait échouer (une archive Git n'en porte pas). `getcap` est requis sur l'hôte, sinon l'empreinte échoue fermée.
+  - **Sources de bind présentes.** Docker crée une source absente après l'empreinte ; une source manquante est donc refusée avant la promotion et l'activation. Un projet versionne le dossier (par exemple avec un `.gitkeep`).
+- **Après la dixième revue de la PR #261 :**
+  - **Pas de santé sans preuve.** Un conteneur seulement « en cours » ne prouve rien : chaque service doit avoir un contrôle de santé qui le déclare `healthy`, sinon l'activation échoue et revient en arrière. Même règle que les images épinglées : ce qui est attesté doit être prouvé.
+  - **Plafonds de ressources.** Mémoire, CPU et processus bornés par service, sinon refus : un conteneur sans plafond peut épuiser S1, MCP compris. Les valeurs restent celles du projet ; une borne globale relèverait d'une décision propriétaire.
+  - **Entrées des builds (décision du propriétaire, options 1 + 3).** Toute image qu'un build tire est épinglée par empreinte, comme une image de service ; le réseau pendant le build reste permis, et les images exécutées sont attestées pour rendre visible toute dérive. Stockage : le plancher de 10 Gio suffit, aucune configuration du démon.
+  - **Images vérifiées au `NO_OP`.** Le réseau reste permis pendant le build ; l'enregistrement des images exécutées, hors de portée du runtime, rend donc une reconstruction différente visible comme `EXISTING_RUNTIME_DEGRADED`.
+  - **Un seul frontend.** Le scan ne lit que la grammaire Dockerfile : un frontend personnalisé, même épinglé, est refusé.
+  - **Fin des itérations de revue (décision du propriétaire).** Après seize rounds, les constats déductibles sont corrigés et ceux qui dépendent de valeurs propres à S1 ou d'une configuration hors dépôt deviennent des limites connues, préalables à la configuration de la première cible : plafonds maximaux par service, limites des builds, quota du stockage inscriptible, droits des archives. Tant que `servers.S1.targetProjectIds` est vide, rien de tout cela n'est atteignable en production.
+  - **Rien téléchargé sans place.** Le pré-contrôle en lecture seule précède le téléchargement ; l'admission est relue entre le téléchargement et la première écriture.
+
 ## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
 
 Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME` (F.0), le plan de l'incrément 1, et les invariants `NO_SHELL_FREEFORM_PROVISIONING`, `NO_IMPLICIT_SIDE_EFFECTS` et `NO_AUTOMATIC_DESTRUCTIVE_ROLLBACK`.

@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
+const { deriveProvisioningCapabilities } = await import('../src/governance/provisioningContracts.js');
+
 const PROGRAM_PATH = 'docs/governance/program-backlog-convergence.json';
 const POLICY_PATH = '.mcp/provisioning-contracts.json';
 const MERGE_SHA = 'd34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1';
@@ -63,7 +65,11 @@ test('F.0 hands its contracts to the provisioning lots and releases those it unb
     contract.steps.flatMap((step: any) => step.gap?.carriedBy ?? [])
   )));
   const handedCarriers = new Set((handoff?.deferred ?? []).flatMap((entry: any) => entry.carriedBy));
-  assert.deepEqual([...handedCarriers].sort(), [...policyCarriers].sort());
+  for (const carrier of policyCarriers) assert.ok(handedCarriers.has(carrier), carrier);
+  // A carrier leaves the policy only by delivering its primitive: F.2 resolves the project runtime contract.
+  const runtime: any = deriveProvisioningCapabilities(policy).find((entry: any) => entry.resourceType === 'PROJECT_RUNTIME');
+  const resolved = [...handedCarriers].filter((carrier) => !policyCarriers.has(carrier)).sort();
+  assert.deepEqual(resolved, runtime.state === 'PROVISIONABLE' ? ['TB-W3-F-03'] : []);
   assert.ok((handoff?.knownLimitations ?? []).some((line: string) => /classified/.test(line)));
 
   // F.0 delivers contracts, not provisioning: PB-F stays partially implemented until every lot is DONE.

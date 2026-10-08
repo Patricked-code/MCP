@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 import type { GitRegistryProjectEvidence } from '../github/registry.js';
 import type { ServerRuntimeObservation } from '../github/runtimeResolution.js';
+import { registryDeployDecision } from '../governedWorkflow/governance/projectInheritance.js';
 import type { ServerTargetConfiguration } from '../liveState/targetProject.js';
 
 /**
@@ -31,6 +32,9 @@ export const PROVISIONED_RUNTIME_PROVENANCE = 'live_state_provisioned_runtime_in
 
 const MCP_ROOT = '/opt/apps/wealthtech-mcp-ssh-bridge';
 const COMPOSE_PROJECT_LABEL = 'com.docker.compose.project';
+const COMPOSE_SERVICE_LABEL = 'com.docker.compose.service';
+const SERVICE_NAME_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,62}$/;
+const CONTAINER_STATUS_PATTERN = /^[A-Za-z0-9 ():.-]{0,100}$/;
 const MAX_TARGETS = 20;
 const MAX_CONTAINERS = 20;
 const UNAVAILABLE_SENTINEL = '__unavailable__';
@@ -59,6 +63,8 @@ export type ProvisioningInventoryTarget = Readonly<{
   mappingId: string;
   repositoryId: string;
   serverPath: string;
+  /** The component's own compose project: its provisioned containers are those of this project only. */
+  composeProject: string;
 }>;
 
 export type ProvisionedContainer = Readonly<{
@@ -66,6 +72,10 @@ export type ProvisionedContainer = Readonly<{
   state: string;
   composeProject: string | null;
   revision: string | null;
+  /** The compose service the container runs; null when unlabelled. */
+  service: string | null;
+  /** Docker's health of the container, from its status. */
+  health: 'healthy' | 'unhealthy' | 'starting' | 'none';
 }>;
 
 /** The marker of a runtime created by provisioning, as written at its root. */
@@ -79,6 +89,12 @@ export type ProvisioningMarker = Readonly<{
   composeProject: string;
   composeFile: string;
   createdAt: string;
+  /** The digest of the checkout as created; an activation verifies it first. */
+  treeDigest: string;
+  /** The services its compose model declared: a no-op needs every one running and healthy. */
+  services: readonly string[];
+  /** The containers each service runs: a no-op needs exactly these. */
+  replicas: Readonly<Record<string, number>>;
 }>;
 
 export type ProvisionedComponentFacts = Readonly<{
@@ -90,6 +106,14 @@ export type ProvisionedComponentFacts = Readonly<{
   containers: readonly ProvisionedContainer[];
   /** The marker of a created runtime; null when absent or unreadable. */
   marker: ProvisioningMarker | null;
+  /** The digest of the marked checkout as observed now; null when absent or not computable. */
+  treeDigest: string | null;
+  /** The image IDs the project's containers run now; null when not observed. */
+  images?: readonly string[] | null;
+  /** The image IDs its activation recorded in the job data; null when no trusted record exists. */
+  expectedImages?: readonly string[] | null;
+  /** Per container: memory, nano-CPUs, CPU quota and PID limit as Docker holds them now; null when not observed. */
+  limits?: ReadonlyArray<readonly [number, number, number, number]> | null;
 }>;
 
 export type ProvisionedRuntimeInventory = Readonly<{
@@ -121,6 +145,7 @@ export function governedRuntimePath(value: unknown): string | null {
 
 function validTarget(target: ProvisioningInventoryTarget): boolean {
   return REPOSITORY_ID_PATTERN.test(target.repositoryId)
+    && COMPOSE_PROJECT_PATTERN.test(target.composeProject)
     && governedRuntimePath(target.serverPath) === target.serverPath
     && typeof target.mappingId === 'string'
     && target.mappingId.length > 0
@@ -128,21 +153,60 @@ function validTarget(target: ProvisioningInventoryTarget): boolean {
 }
 
 /** The read-only inventory command of the declared paths and the provisioned namespace. */
+/** The labels override the activation writes beside the marker; neither is part of the checkout. */
+export const PROVISIONING_LABELS_FILE = '.mcp-provisioning.labels.json';
+
+/**
+ * The digest of a checkout as the host sees it: every file's content, the
+ * modes, owners and the symbolic links, sorted, without the files this
+ * provisioning writes. Creation records it in the marker; an activation
+ * recomputes it first, so a checkout edited since its creation never starts
+ * under the revision it claims. Each step is captured and checked on its own,
+ * so a file that vanishes or fails to read fails the digest instead of
+ * digesting a partial tree: no pipeline status is ever trusted. A FIFO,
+ * socket or device fails it too, and so does a hard link: a checkout from a
+ * Git archive has none, and two names of one file change together. File
+ * capabilities are digested; an access control list fails the digest.
+ */
+export const PROVISIONING_TREE_DIGEST_SHELL = String.raw`tree_digest() {
+  [ -d "$1" ] || return 1
+  [ -z "$(find "$1" ! -readable -print -quit 2>/dev/null)" ] || return 1
+  [ -z "$(find "$1" ! -type f ! -type d ! -type l -print -quit 2>/dev/null)" ] || return 1
+  [ -z "$(find "$1" ! -type d -links +1 -print -quit 2>/dev/null)" ] || return 1
+  [ -z "$(LC_ALL=C find "$1" -name "$(printf '*[\001-\037\177]*')" -print -quit 2>/dev/null)" ] || return 1
+  td_acl="$(cd "$1" && find . \( -type f -o -type d \) -exec ls -ldn -- {} +)" || return 1
+  case "$(printf '%s\n' "$td_acl" | cut -c11)" in *+*) return 1 ;; esac
+  td_caps="$(cd "$1" && PATH="$PATH:/usr/sbin:/sbin" getcap -r . 2>/dev/null)" || return 1
+  td_files="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${PROVISIONING_LABELS_FILE}' \) -prune -o -type f -exec sha256sum -- {} +)" || return 1
+  td_modes="$(cd "$1" && find . \( -path './${PROVISIONING_MARKER_FILE}' -o -path './${PROVISIONING_LABELS_FILE}' \) -prune -o \( -type f -o -type d \) -printf '%y %m %U %G %p\n')" || return 1
+  td_links="$(cd "$1" && find . -type l -exec sh -c 'for l do t="$(readlink -- "$l")" || exit 1; printf "%s %s\n" "$(printf "%s" "$l" | sha256sum | cut -d" " -f1)" "$(printf "%s" "$t" | sha256sum | cut -d" " -f1)"; done' tree-link {} +)" || return 1
+  td_files="$(printf '%s\n' "$td_files" | LC_ALL=C sort)" || return 1
+  td_modes="$(printf '%s\n' "$td_modes" | LC_ALL=C sort)" || return 1
+  td_links="$(printf '%s\n' "$td_links" | LC_ALL=C sort)" || return 1
+  td_caps="$(printf '%s\n' "$td_caps" | LC_ALL=C sort)" || return 1
+  printf 'files\n%s\nmodes\n%s\nlinks\n%s\ncaps\n%s\n' "$td_files" "$td_modes" "$td_links" "$td_caps" | sha256sum | cut -d' ' -f1
+}`;
+
 export function buildProvisionedRuntimeInventoryCommand(targets: readonly ProvisioningInventoryTarget[]): string {
   if (targets.length === 0 || targets.length > MAX_TARGETS || !targets.every(validTarget)) {
     throw new Error('PROVISIONING_INVENTORY_TARGETS_INVALID');
   }
-  const format = `{{.Names}}|{{.State}}|{{.Label "${COMPOSE_PROJECT_LABEL}"}}|{{.Label "${PROVISIONING_LABEL_REVISION}"}}`;
+  const format = `{{.Names}}|{{.State}}|{{.Label "${COMPOSE_PROJECT_LABEL}"}}|{{.Label "${PROVISIONING_LABEL_REVISION}"}}|{{.Label "${COMPOSE_SERVICE_LABEL}"}}|{{.Status}}`;
   const lines = [
     'set -u',
+    PROVISIONING_TREE_DIGEST_SHELL,
     `if docker info --format '{{.ServerVersion}}' >/dev/null 2>&1; then printf 'docker=ok\\n'; else printf 'docker=unavailable\\n'; fi`
   ];
   targets.forEach((target, index) => {
     lines.push(
       `if [ -e ${shellQuote(target.serverPath)} ]; then printf 'component.${index}.path=present\\n'; else printf 'component.${index}.path=absent\\n'; fi`,
-      `c="$(docker ps -a --filter ${shellQuote(`label=${PROVISIONING_LABEL_REPOSITORY}=${target.repositoryId}`)} --format ${shellQuote(format)} 2>/dev/null)" || c=${shellQuote(UNAVAILABLE_SENTINEL)}`,
+      `c="$(docker ps -a --filter ${shellQuote(`label=${COMPOSE_PROJECT_LABEL}=${target.composeProject}`)} --format ${shellQuote(format)} 2>/dev/null)" || c=${shellQuote(UNAVAILABLE_SENTINEL)}`,
       `printf 'component.${index}.containers=%s\\n' "$(printf '%s\\n' "$c" | head -n ${MAX_CONTAINERS + 1} | paste -sd, -)"`,
-      `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then printf 'component.${index}.marker=%s\\n' "$(head -c ${MAX_MARKER_BYTES} ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} | base64 | tr -d '\\n')"; fi`
+      `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then printf 'component.${index}.marker=%s\\n' "$(head -c ${MAX_MARKER_BYTES} ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} | base64 | tr -d '\\n')"; fi`,
+      // A marked checkout is digested again: a running runtime matches only the checkout of its creation.
+      `l="$(docker ps -aq --filter ${shellQuote(`label=${COMPOSE_PROJECT_LABEL}=${target.composeProject}`)} 2>/dev/null)"; if [ -n "$l" ]; then printf 'component.${index}.limits=%s\\n' "$(docker inspect --format '{{.HostConfig.Memory}} {{.HostConfig.NanoCpus}} {{.HostConfig.CpuQuota}} {{.HostConfig.PidsLimit}}' $l 2>/dev/null | paste -sd, -)"; fi`,
+      `i="$(docker ps -aq --filter ${shellQuote(`label=${COMPOSE_PROJECT_LABEL}=${target.composeProject}`)} 2>/dev/null)"; if [ -n "$i" ]; then printf 'component.${index}.images=%s\\n' "$(docker inspect --format '{{index .Config.Labels \"com.docker.compose.service\"}}={{.Image}}' $i 2>/dev/null | LC_ALL=C sort | paste -sd, -)"; fi`,
+      `if [ -f ${shellQuote(`${target.serverPath}/${PROVISIONING_MARKER_FILE}`)} ]; then t="$(tree_digest ${shellQuote(target.serverPath)})" || t=unavailable; printf 'component.${index}.tree=%s\\n' "$t"; fi`
     );
   });
   return lines.join('\n');
@@ -158,6 +222,28 @@ function keyValues(output: string): Map<string, string> {
   return values;
 }
 
+function parseImages(value: string | undefined): readonly string[] | null {
+  if (value === undefined || value === '') return null;
+  const images = value.split(',');
+  return images.length <= MAX_CONTAINERS && images.every((image) => /^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}=sha256:[0-9a-f]{64}$/.test(image)) ? Object.freeze([...images].sort()) : null;
+}
+
+function parseLimits(value: string | undefined): ReadonlyArray<readonly [number, number, number, number]> | null {
+  if (value === undefined || value === '') return null;
+  const entries = value.split(',');
+  if (entries.length > MAX_CONTAINERS) return null;
+  const parsed = entries.map((entry) => entry.trim().split(/\s+/).map(Number));
+  if (!parsed.every((numbers) => numbers.length === 4 && numbers.every(Number.isSafeInteger))) return null;
+  return Object.freeze(parsed.map((numbers) => Object.freeze(numbers as unknown as [number, number, number, number])));
+}
+
+function containerHealth(status: string): ProvisionedContainer['health'] {
+  if (status.includes('(unhealthy)')) return 'unhealthy';
+  if (status.includes('(health: starting)')) return 'starting';
+  if (status.includes('(healthy)')) return 'healthy';
+  return 'none';
+}
+
 function parseContainers(value: string | undefined): ProvisionedContainer[] | null {
   if (value === undefined || value === UNAVAILABLE_SENTINEL) return null;
   if (value === '') return [];
@@ -165,15 +251,18 @@ function parseContainers(value: string | undefined): ProvisionedContainer[] | nu
   if (entries.length > MAX_CONTAINERS) return null;
   const containers: ProvisionedContainer[] = [];
   for (const entry of entries) {
-    const [name, state, composeProject, revision, ...rest] = entry.split('|');
-    if (rest.length > 0 || !name || !CONTAINER_NAME_PATTERN.test(name) || !state || !CONTAINER_STATES.has(state)) return null;
+    const [name, state, composeProject, revision, service, status, ...rest] = entry.split('|');
+    if (rest.length > 0 || status === undefined || !name || !CONTAINER_NAME_PATTERN.test(name) || !state || !CONTAINER_STATES.has(state)) return null;
     if (composeProject && !COMPOSE_PROJECT_PATTERN.test(composeProject)) return null;
     if (revision && !SHA_PATTERN.test(revision)) return null;
+    if ((service && !SERVICE_NAME_PATTERN.test(service)) || !CONTAINER_STATUS_PATTERN.test(status)) return null;
     containers.push(Object.freeze({
       name,
       state,
       composeProject: composeProject || null,
-      revision: revision || null
+      revision: revision || null,
+      service: service || null,
+      health: containerHealth(status)
     }));
   }
   return containers;
@@ -213,7 +302,8 @@ export function unavailableProvisionedRuntimeInventory(
       readable: false,
       pathPresent: null,
       containers: Object.freeze([]),
-      marker: null
+      marker: null,
+      treeDigest: null
     })))
   });
 }
@@ -240,7 +330,11 @@ export function parseProvisionedRuntimeInventory(
         readable: docker === 'ok' && pathPresent !== null && containers !== null,
         pathPresent,
         containers: Object.freeze(containers ?? []),
-        marker: pathPresent ? parseProvisioningMarker(values.get(`component.${index}.marker`), target) : null
+        marker: pathPresent ? parseProvisioningMarker(values.get(`component.${index}.marker`), target) : null,
+        treeDigest: pathPresent && /^[0-9a-f]{64}$/.test(values.get(`component.${index}.tree`) ?? '') ? values.get(`component.${index}.tree`)! : null,
+        images: parseImages(values.get(`component.${index}.images`)),
+        limits: parseLimits(values.get(`component.${index}.limits`)),
+        expectedImages: null
       });
     }))
   });
@@ -335,7 +429,12 @@ export function provisioningInventoryTargets(
     const paths = s1Bindings(registry, component.mappingId);
     const serverPath = paths.length === 1 ? governedRuntimePath(paths[0]) : null;
     if (!serverPath || !REPOSITORY_ID_PATTERN.test(component.repositoryId)) continue;
-    targets.push(Object.freeze({ mappingId: component.mappingId, repositoryId: component.repositoryId, serverPath }));
+    targets.push(Object.freeze({
+      mappingId: component.mappingId,
+      repositoryId: component.repositoryId,
+      serverPath,
+      composeProject: provisionedComposeProject(projectId, component.mappingId, component.repositoryId)
+    }));
   }
   return targets.slice(0, MAX_TARGETS);
 }
@@ -349,7 +448,10 @@ const MarkerSchema = z.object({
   revision: z.string().regex(SHA_PATTERN),
   composeProject: z.string().regex(COMPOSE_PROJECT_PATTERN),
   composeFile: z.string().refine((value) => COMPOSE_FILES.has(value)),
-  createdAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/)
+  createdAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/),
+  treeDigest: z.string().regex(/^[0-9a-f]{64}$/),
+  services: z.array(z.string().regex(SERVICE_NAME_PATTERN)).min(1).max(20),
+  replicas: z.record(z.string().regex(SERVICE_NAME_PATTERN), z.number().int().min(0).max(20))
 }).strict();
 
 const RequestSchema = z.object({
@@ -372,8 +474,15 @@ export type ProjectRuntimeReasonCode =
   | 'TARGET_PATH_AMBIGUOUS'
   | 'TARGET_PATH_OUTSIDE_GOVERNED_ROOT'
   | 'RUNTIME_ABSENCE_UNPROVEN'
+  | 'GOVERNANCE_MAPPING_UNDECLARED'
+  | 'GOVERNANCE_DEPLOY_CAPABILITY_DISABLED'
+  | 'GOVERNANCE_MAPPING_NOT_ACTIVE'
+  | 'GOVERNANCE_ACTIVATION_BLOCKED'
+  | 'GOVERNANCE_ACTIVATION_UNKNOWN'
+  | 'GOVERNANCE_SERVER_UNVERIFIED'
   | 'EXISTING_RUNTIME_MATCHING'
   | 'EXISTING_RUNTIME_CONFLICT'
+  | 'EXISTING_RUNTIME_DEGRADED'
   | 'TARGET_PATH_PRESENT'
   | 'CREATION_CONSENT_REQUIRED'
   | 'ACTIVATION_CONSENT_REQUIRED'
@@ -407,7 +516,8 @@ export type ProjectRuntimeProvisioningPlan = Readonly<{
   mode: ProjectRuntimeExecutionMode | null;
   reasonCodes: readonly ProjectRuntimeReasonCode[];
   target: ProjectRuntimeTarget | null;
-  governance: Readonly<{ backupRequired: boolean; rollbackMethod: string | null }> | null;
+  /** What D1 declares for the mapping: its backup, its rollback method and the official branch a revision is admitted from. */
+  governance: Readonly<{ backupRequired: boolean; rollbackMethod: string | null; officialBranch: string | null }> | null;
   steps: ReadonlyArray<Readonly<{ id: (typeof PROJECT_RUNTIME_STEP_IDS)[number]; state: ProjectRuntimeStepState }>>;
   authorizationInferred: false;
   mutationPerformed: false;
@@ -507,8 +617,19 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
   // The contract always backs up before a creation; D1 can only add its rollback method.
   const governance = Object.freeze({
     backupRequired: declared?.backupRequired ?? true,
-    rollbackMethod: declared?.rollbackMethod ?? null
+    rollbackMethod: declared?.rollbackMethod ?? null,
+    officialBranch: declared?.officialBranch ?? null
   });
+  // The registry's own deployment rule (D1): a mapping it does not let deploy is never provisioned.
+  // The server is the configured S1 binding the MCP itself observes.
+  const deploy = registryDeployDecision({
+    governance: declared ?? null,
+    activation: registry.activationReadiness.find((entry) => entry.mappingId === component.mappingId)?.status ?? null,
+    serverVerified: true
+  });
+  if (deploy.effect !== 'PERMIT') {
+    return block((deploy.reasonCode ?? 'GOVERNANCE_MAPPING_UNDECLARED') as ProjectRuntimeReasonCode, target, governance);
+  }
 
   const inventory = input.inventory;
   const facts = inventory?.components.find((entry) => entry.mappingId === component.mappingId);
@@ -524,10 +645,35 @@ export function planProjectRuntimeProvisioning(input: ProjectRuntimeProvisioning
     return block('RUNTIME_ABSENCE_UNPROVEN', target, governance);
   }
   if (facts.containers.length > 0) {
-    const matching = facts.containers.every((container) => (
-      container.revision === request.revision && container.state === 'running'
-    ));
-    if (!matching) return block('EXISTING_RUNTIME_CONFLICT', target, governance);
+    if (!facts.containers.every((container) => container.revision === request.revision)) {
+      return block('EXISTING_RUNTIME_CONFLICT', target, governance);
+    }
+    // A no-op needs the whole runtime this provisioning created: every declared service running and healthy.
+    const marker = facts.marker;
+    const complete = marker !== null
+      && marker.revision === request.revision
+      && marker.composeProject === target.composeProject
+      // The checkout still digests as at its creation: an edited one is not the admitted revision.
+      && facts.treeDigest === marker.treeDigest
+      // The containers run the image bytes the activation recorded: a rebuild that changed them is not this runtime.
+      && Array.isArray(facts.expectedImages) && Array.isArray(facts.images)
+      && facts.expectedImages.length > 0
+      // The limits the policy required still hold on every container: an update that lifted one is not this runtime.
+      && Array.isArray(facts.limits) && facts.limits.length === facts.containers.length
+      && facts.limits.every(([memory, nanoCpus, cpuQuota, pids]) => memory > 0 && (nanoCpus > 0 || cpuQuota > 0) && pids > 0)
+      && JSON.stringify([...facts.images].sort()) === JSON.stringify([...facts.expectedImages].sort())
+      && facts.containers.every((container) => (
+        container.state === 'running'
+        // Healthy by its own health check: running alone proves nothing about the service.
+        && container.health === 'healthy'
+        && container.service !== null
+        && (marker.replicas[container.service] ?? 0) > 0
+      ))
+      // Every expected replica, no fewer and no more.
+      && Object.entries(marker.replicas).every(([service, count]) => (
+        facts.containers.filter((container) => container.service === service).length === count
+      ));
+    if (!complete) return block('EXISTING_RUNTIME_DEGRADED', target, governance);
     return freezePlan('NO_OP', ['EXISTING_RUNTIME_MATCHING'], target, governance, {
       ...everyStep('NOT_APPLICABLE'),
       'observe-runtime': 'DONE',

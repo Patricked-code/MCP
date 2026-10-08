@@ -1,5 +1,46 @@
 # CHANGELOG.md
 
+## 2026-10-07 — W3 F.2 Project runtime provisioning, incrément 3 (candidate)
+
+- Surface consentie `/provisioning/project-runtime`, derrière la connexion web. Elle offre un plan en lecture seule, une soumission sous consentement E3 et une page de statut. Le consentement exige une origine identique et un ticket lié à la session et à la cible exacte ; création et activation sont séparées. Rien ne s'exécute sans `ENABLE_WRITE_TOOLS` ni cible configurée.
+- Admission de la révision avant toute écriture : historique revu de la branche officielle du mapping et CI ni en échec ni en cours (`src/provisioning/revisionAdmission.ts`).
+- Câblage de production de l'exécuteur (`src/provisioning/wiring.ts`). Les noms de la cible ne figurent plus sur les lignes `docker compose`.
+- `.mcp/provisioning-contracts.json` : la route est classée et rend le runtime de projet provisionnable.
+- Après revue :
+  - consentement lié à la cible résolue ;
+  - checkout vérifié par son empreinte avant toute activation ;
+  - inventaire limité au projet Compose du composant (deux composants d'un même dépôt restent distincts) ;
+  - cibles illisibles affichées `UNKNOWN` ;
+  - branche par défaut encodée comme un seul paramètre.
+- Après la seconde revue :
+  - Task Queue et verrous relus avant toute écriture ;
+  - règle `DEPLOY` de GitRegistry partagée avec D1 ;
+  - pilotes Compose limités aux valeurs par défaut ;
+  - empreinte sans pipeline ;
+  - archive bornée avant extraction ;
+  - attestation non écrite signalée ;
+  - base d'API GitHub Enterprise Server conservée ;
+  - `NO_OP` réservé au runtime complet et sain.
+- Après la troisième revue :
+  - fichier Compose analysé (`yaml` 2.9.1, épinglé) avant tout chargement par Compose, avec des listes de clés revues : `include`, `extends`, `env_file`, `label_file` et `use_api_socket` sont refusés quelle que soit leur écriture YAML ;
+  - modèle construit depuis ce fichier exact et contrôlé avec les mêmes listes (`--no-env-resolution` passée quand Compose la connaît, en seconde garde seulement) ;
+  - pont par défaut du moteur et réseaux ou volumes nommés hors du projet refusés ;
+  - options de sécurité, journalisation et réservations de périphériques bornées ;
+  - constats nommant la clé refusée.
+- Après la quatrième revue : volumes restants d'un job échoué bloquant une nouvelle création ; noms d'image de build refusés ; empreinte incluant le mode complet.
+- Après la cinquième revue : réplicas bornés, images épinglées par empreinte, `NO_OP` vérifié par l'empreinte du checkout, propriétaire et groupe dans l'empreinte.
+- Après la sixième revue : marqueur de confiance enregistré dans les données du job ; réseaux conservés bloquants ; réplicas attendus vérifiés ; IPAM par défaut ; plancher de capacité et quarantaine bornée.
+- Après la septième revue : noms réservés refusés ; parents de la cible résolus avant chaque écriture ; rollback sans recharger un fichier modifié ; entrées spéciales refusées par l'empreinte ; plancher de stockage Docker.
+- Après la huitième revue : Task Queue et verrous relus juste avant chaque écriture sur l'hôte ; révision admise depuis la branche officielle du mapping ; liens physiques refusés par l'empreinte ; capacité mesurée sur le parent de la cible et sur la quarantaine.
+- Après la neuvième revue : coordination relue avant le rollback ; politique de redémarrage effacée avant l'arrêt par labels ; capacités de fichier dans l'empreinte et ACL refusées ; sources de bind exigées dans le checkout.
+- Après la dixième revue : conteneurs arrêtés inclus dans le rollback par labels ; santé `healthy` exigée ; plafonds mémoire, CPU et processus exigés ; pré-contrôle avant téléchargement ; admission relue après téléchargement.
+- Décision du propriétaire sur les builds : images des Dockerfiles épinglées par empreinte, `build.pull` et arguments `BUILDKIT_*` refusés, images exécutées attestées ; plancher de stockage conservé.
+- Après la douzième revue : `NO_OP` vérifie les images exécutées ; seul le frontend `docker/dockerfile` épinglé est admis ; l'attestation garde l'admission finale.
+- Après la treizième revue : admission relue avant chaque écriture ; empreinte recalculée après la santé ; images complètes exigées ; aucune écriture après une collision.
+- Après la quatorzième revue : journaux bornés, plages d'adresses par défaut, `no-new-privileges` jamais désactivé, enregistrement des images obligatoire, marqueur revérifié après la santé, replanification avant chaque écriture.
+- Après la quinzième revue : branche officielle relue avant chaque écriture, images de réactivation identiques exigées, limites réelles vérifiées au `NO_OP`.
+- Après la seizième revue : images comparées par service, `stop_grace_period` ≤ 60 s, chemins à caractères de contrôle refusés, enregistrement de marqueur exigé, abandon de préparation soumis à la coordination.
+
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
 
 - Exécuteur borné à la cible (`src/provisioning/runtimeExecutor.ts`), encore relié à aucune surface. Il re-observe et replanifie avant toute écriture, télécharge la révision exacte, prépare, contrôle le modèle Compose, crée avec un marqueur, puis active sous son propre consentement. En cas d'échec, il s'arrête sans les volumes et met en quarantaine, sans rien supprimer ; chaque job est attesté.

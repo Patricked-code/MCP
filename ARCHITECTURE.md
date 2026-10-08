@@ -439,7 +439,8 @@ primitive, n'accorde aucune permission et ne crée aucune tâche.
   - les étapes bornées, la santé et un rollback non destructif.
 - **Lacunes.** Une étape sans primitive composable est une lacune portée par
   un blueprint ouvert du Program Backlog, avec ce qu'il faut réutiliser ou
-  généraliser. Aucun type de ressource n'est provisionnable aujourd'hui.
+  généraliser. Depuis F.2, seul le runtime de projet est provisionnable ;
+  les dépôts et les bindings de domaine restent bloqués par leurs lacunes.
 
 Le provisioning d'un runtime de projet (F.2, `TB-W3-F-03`) est livré par
 incréments sous le contrat `PROJECT_RUNTIME`. Le premier incrément est en
@@ -453,7 +454,9 @@ lecture seule ; il établit la preuve d'absence et le plan
 - **Preuve d'absence.** Live State inventorie, en lecture seule et seulement
   pour la cible configurée de `.mcp/server-map.json`, deux choses :
   - le chemin déclaré ;
-  - l'espace Docker provisionné (conteneurs étiquetés avec le dépôt).
+  - l'espace Docker provisionné du composant (les conteneurs de son projet
+    Compose, propre au composant même quand deux composants partagent un
+    dépôt).
 
   C4 reçoit soit le runtime trouvé, soit un `NO_RUNTIME` positif quand les
   deux sont vides. Un chemin présent sans runtime provisionné, un Docker
@@ -468,8 +471,8 @@ lecture seule ; il établit la preuve d'absence et le plan
   jamais écrasé.
 
 Le deuxième incrément livre l'exécuteur borné à la cible
-(`src/provisioning/runtimeExecutor.ts`). Il n'est encore relié à aucune
-surface.
+(`src/provisioning/runtimeExecutor.ts`). Le troisième incrément le relie à
+une surface consentie.
 
 - **Re-observation avant toute écriture.** Juste avant d'écrire,
   l'exécuteur relit la cible, le registre et l'inventaire, puis replanifie.
@@ -481,23 +484,82 @@ surface.
     l'API, et seule une redirection vers `codeload.github.com` est suivie.
   - Sur S1, l'absence est reprouvée et l'empreinte de l'archive vérifiée
     avant l'extraction, faite à côté de la cible.
-  - Le modèle Compose est ensuite contrôlé
-    (`src/provisioning/composePolicy.ts`), puis promu avec un marqueur.
-- **Activation, sous son propre consentement.** Elle étiquette les services,
-  démarre le projet Compose et attend la santé. Un runtime créé mais non
-  activé reste un checkout (`CHECKOUT_ONLY` pour C4).
-- **Politique Compose.** Tout reste dans le projet. Sont refusés :
-  - le mode privilégié, les capacités ajoutées, les périphériques et les
-    espaces de noms de l'hôte ;
-  - un port publié ailleurs que sur la boucle locale ;
-  - un montage, une construction ou un Dockerfile hors du projet ;
-  - un réseau, un volume ou un lien externe, et un nom de conteneur fixe ;
-  - les clés Compose qui lisent des fichiers de l'hôte ;
-  - les liens symboliques sortant du projet.
+  - Le fichier Compose est d'abord analysé, avant que Compose ne charge quoi
+    que ce soit. Compose construit ensuite le modèle depuis ce fichier exact
+    (avec `--no-env-resolution` quand il la connaît, en seconde garde
+    seulement). Ce modèle est contrôlé (`src/provisioning/composePolicy.ts`),
+    puis promu avec un marqueur.
+- **Activation, sous son propre consentement.** Le fichier Compose du
+  checkout inchangé est analysé et son modèle contrôlé à nouveau. Elle
+  étiquette ensuite les services, démarre le projet Compose et attend la
+  santé. Un runtime créé mais non activé reste un checkout (`CHECKOUT_ONLY`
+  pour C4).
+- **Politique Compose.** Tout reste dans le projet.
+  - **Clés revues seulement.** Le fichier et le modèle n'emploient que des
+    clés Compose revues ; toute autre clé est refusée, y compris une clé que
+    Compose ajoutera plus tard. Compose résout `include`, `extends`,
+    `env_file` et `label_file` en chargeant le projet, sans en garder trace
+    dans le modèle : seule l'analyse du fichier les voit, quelle que soit
+    leur écriture YAML (clé entre guillemets, mapping en ligne, échappement,
+    fusion ou alias).
+  - Sont aussi refusés :
+    - le mode privilégié, les capacités ajoutées, les périphériques (même
+      réservés par `deploy`) et les espaces de noms de l'hôte ;
+    - le pont par défaut du moteur (`network_mode: bridge`), partagé avec
+      tous les conteneurs de l'hôte ;
+    - un port publié ailleurs que sur la boucle locale ;
+    - un montage, une construction ou un Dockerfile hors du projet ;
+    - un réseau, un volume ou un lien externe, un réseau ou un volume nommé
+      hors du projet, et un nom de conteneur fixe ;
+    - un pilote de volume ou de réseau autre que celui par défaut, ou des
+      options de pilote ;
+    - une option de sécurité autre que `no-new-privileges`, et un pilote de
+      journalisation autre que local ;
+    - les liens symboliques sortant du projet.
 - **Échec non destructif.** Le projet Compose est arrêté sans ses volumes,
   et les fichiers créés par le job partent en quarantaine
   (`/opt/apps/mcp-provisioning-quarantine`). Rien n'est supprimé. Chaque job
   est attesté.
+
+Le troisième incrément relie l'exécuteur à une surface de l'exposition
+existante : `/provisioning/project-runtime`, derrière la connexion web
+(`src/provisioning/routes.ts`).
+
+- **Plan sans exécution.** La page liste les composants des projets cibles de
+  S1, puis observe et planifie une révision exacte sans rien écrire.
+- **Consentement E3.** La soumission exige une origine identique, un ticket
+  lié à la session et à la cible exacte, et des valeurs explicites. Création
+  et activation restent séparées (`src/provisioning/consent.ts`).
+- **Admission de la révision.** Juste avant toute écriture, la révision doit
+  appartenir à l'historique revu de la branche officielle que nomme son
+  mapping GitRegistry (règle `OFFICIAL_BRANCH` de D1), jamais seulement de la
+  branche par défaut, avec une CI ni en échec ni en cours
+  (`src/provisioning/revisionAdmission.ts`).
+- **Cible résolue.** Le ticket lie aussi le dépôt, le chemin et le projet
+  Compose que la page a nommés. L'exécuteur refuse si son plan frais en
+  résout d'autres.
+- **Autorités relues avant toute écriture.**
+  - La règle `DEPLOY` de GitRegistry, partagée avec D1.
+  - La Governed Task Queue et le Governed Lock Service, lus avant le job puis
+    de nouveau juste avant chaque écriture sur l'hôte : un travail réservé ou
+    verrouillé sur le composant refuse le job, ou l'arrête avant l'écriture
+    suivante.
+  - L'archive, bornée avant extraction, et les planchers de capacité, mesurés
+    sur chaque système de fichiers écrit (parent de la cible, quarantaine).
+- **Checkout vérifié.** La création enregistre l'empreinte de l'arbre dans le
+  marqueur ; l'activation la recalcule avant tout démarrage et refuse un
+  checkout modifié. Une entrée spéciale, un lien physique ou une ACL fait
+  échouer l'empreinte ; les capacités de fichier y entrent. Chaque source de
+  bind doit exister dans le checkout.
+- **Entrées des builds.** Les images d'un Dockerfile (`FROM`, `--from`, montages,
+  frontend) sont épinglées par empreinte ; les images exécutées sont attestées.
+- **Santé et ressources.** Seul un conteneur `healthy` par son contrôle de
+  santé compte ; chaque service borne sa mémoire, son CPU et ses processus.
+- **Câblage.** L'inventaire est lu en lecture seule sur S1 et les écritures
+  passent par le canal S1 gardé. Le mode écriture du serveur reste requis
+  (`src/provisioning/wiring.ts`).
+- **Job long.** La réponse renvoie vers une page de statut ; chaque job reste
+  attesté.
 
 ### Unified Operational Work State
 

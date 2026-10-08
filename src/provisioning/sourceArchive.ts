@@ -5,8 +5,9 @@ import { dirname } from 'node:path';
 /**
  * F.2 (TB-W3-F-03): the source of a provisioned runtime is the GitHub tarball
  * of the mapped repository at the exact revision. The API answers with one
- * redirect to a signed codeload URL: the credential goes to the API only,
- * never to codeload, any other redirect target is refused, and the archive
+ * redirect to a signed codeload URL (or, on GitHub Enterprise Server, to the
+ * configured API host): the credential goes to the API only, never to the
+ * archive URL, any other redirect target is refused, and the archive
  * is bounded and digested while it is written. Free of configuration: the
  * caller supplies the credential and the API base.
  */
@@ -49,7 +50,9 @@ export async function downloadGithubArchive(input: ArchiveDownloadInput): Promis
   const timer = setTimeout(() => controller.abort(), input.timeoutMs ?? DEFAULT_TIMEOUT_MS);
   const headers = { 'User-Agent': 'wealthtech-mcp-guardian' };
   try {
-    const endpoint = `${api.origin}/repos/${repository[1]}/${repository[2]}/tarball/${input.revision}`;
+    // The configured base keeps its path, such as /api/v3 on GitHub Enterprise Server.
+    const base = `${api.origin}${api.pathname.replace(/\/+$/, '')}`;
+    const endpoint = `${base}/repos/${repository[1]}/${repository[2]}/tarball/${input.revision}`;
     const redirect = await fetchImpl(endpoint, {
       method: 'GET',
       redirect: 'manual',
@@ -68,7 +71,9 @@ export async function downloadGithubArchive(input: ArchiveDownloadInput): Promis
     } catch {
       return failure('ARCHIVE_REDIRECT_INVALID');
     }
-    if (location.protocol !== 'https:' || !ARCHIVE_HOSTS.has(location.hostname)) return failure('ARCHIVE_REDIRECT_REFUSED');
+    if (location.protocol !== 'https:' || !(ARCHIVE_HOSTS.has(location.hostname) || location.hostname === api.hostname)) {
+      return failure('ARCHIVE_REDIRECT_REFUSED');
+    }
 
     // The signed URL carries its own authorization: the credential is never forwarded.
     const archive = await fetchImpl(location.toString(), { method: 'GET', redirect: 'error', signal: controller.signal, headers });

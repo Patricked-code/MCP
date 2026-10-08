@@ -1,5 +1,135 @@
 # SUIVI.md
 
+## 2026-10-07 — W3 F.2 Project runtime provisioning, incrément 3 — GREEN candidate
+
+- **Incrément 2 livré.**
+  - PR #260 fusionnée au merge `73bd0ff908ce53e2f177e1bc246cc62050b47a05`. CI PR `37414479092` (#2289, 958 tests) ; CI main `37414610066` (#2290).
+  - Governed Deploy `37414610072` (#135) SUCCESS.
+  - Attestation OIDC read-only : `mcp_git_status` `37641494346` (S1 `main@73bd0ff`, worktree propre) ; `docker_status` `37641499894` (conteneur healthy).
+- **Reprise.** Aucune nouvelle intake ni consigne propriétaire ; #235 et #236 sont déjà réconciliées. Les notifications en attente concernaient la PR #260, déjà fusionnée.
+- **Push.** GitHub a d'abord refusé la mise à jour de la branche (« Internal Server Error », même sans nouvel objet). Le push a réussi au deuxième essai, sans contourner la politique du proxy.
+- **Livré (incrément 3).**
+  - `src/provisioning/consent.ts` : consentement E3 du contrat `PROJECT_RUNTIME`, création et activation séparées, ticket lié à la session et à la cible exacte.
+  - `src/provisioning/revisionAdmission.ts` : admission de la révision, généralisée du Governed Deploy (historique revu de la branche officielle du mapping, CI ni en échec ni en cours ; sans aucune CI, admission manuelle par le consentement).
+  - `src/provisioning/runtimeExecutor.ts` :
+    - admission relue avant toute écriture, y compris pour activer un runtime créé plus tôt ;
+    - aperçu en lecture seule ;
+    - noms de la cible hors des lignes `docker compose`.
+  - `src/provisioning/wiring.ts` : câblage de production. L'inventaire est en lecture seule et les écritures passent par le canal S1 gardé. L'archive est bornée ; les fichiers de job restent dans le volume de données, sans écrasement.
+  - `src/provisioning/routes.ts` et `src/server.ts` : surface `/provisioning/project-runtime` derrière la connexion web (plan, soumission consentie, page de statut).
+  - `.mcp/provisioning-contracts.json` : la route est classée `COMPOSABLE` et comble les quatre lacunes du contrat `PROJECT_RUNTIME`, désormais provisionnable.
+- **Revue Codex de la PR #261 (cinq constats, tous vérifiés et corrigés).**
+  - Le consentement est lié à la cible résolue nommée par la page (dépôt, chemin, projet Compose). L'exécuteur refuse (`TARGET_CHANGED_SINCE_CONSENT`) si son plan frais en résout une autre.
+  - Le checkout créé est vérifié avant toute activation : la création enregistre l'empreinte de l'arbre dans le marqueur, et l'activation la recalcule avant de démarrer (`ACTIVATE_CHECKOUT_MODIFIED`). Un marqueur sans empreinte n'est pas un runtime créé.
+  - L'inventaire et la préparation ne regardent plus que le projet Compose du composant. Deux composants d'un même dépôt gardent ainsi des runtimes distincts ; avant, le second paraissait déjà en place.
+  - Des cibles illisibles s'affichent `UNKNOWN`, jamais « aucune cible ».
+  - Une branche par défaut contenant `/` est envoyée comme un seul paramètre encodé.
+- **Seconde revue Codex (huit constats, tous vérifiés et corrigés).**
+  - **UAC.** La Governed Task Queue et le Governed Lock Service sont relus juste avant toute écriture. Un travail réservé ou verrouillé sur le composant (règle de portée de D1) refuse (`TARGET_CLAIMED_BY_TASK`, `TARGET_LOCKED`). Une coordination illisible refuse aussi (`COORDINATION_UNAVAILABLE`).
+  - **Règle `DEPLOY` de GitRegistry.** Elle est extraite de D1 et partagée par le plan : capacité de déploiement déclarée, statut déployable et activation `READY`.
+  - **Politique Compose.** Les volumes et réseaux nommés gardent leur pilote par défaut, sans options. Un volume `local` avec des options de bind montait n'importe quel chemin de l'hôte.
+  - **Empreinte de l'arbre.** Chaque étape est capturée et vérifiée : un fichier illisible ou disparu fait échouer l'empreinte au lieu de produire un digest partiel.
+  - **Archive.** Elle est bornée avant toute extraction : au plus 100 000 entrées et 1 Gio une fois décompressée.
+  - **Attestation.** Une attestation non écrite est affichée comme telle (HTTP 500), jamais comme un succès attesté.
+  - **GitHub Enterprise Server.** Le chemin `/api/v3` de la base est conservé, et une redirection vers l'hôte de l'API est acceptée.
+  - **`NO_OP`.** Il exige le runtime complet : chaque service déclaré par le marqueur tourne, en bonne santé. Sinon le plan est `EXISTING_RUNTIME_DEGRADED`.
+- **Troisième revue Codex (trois constats, tous vérifiés et corrigés à la racine).**
+  - **Cause commune.** La politique Compose refusait une liste de clés connues, et une recherche ligne à ligne gardait les clés qui lisent des fichiers de l'hôte. Une clé entre guillemets ou dans un mapping en ligne lui échappait ; `use_api_socket` (moteur Docker confié au conteneur) n'était pas refusée.
+  - **Fichier Compose analysé avant Compose.** La préparation n'exécute plus Compose : elle imprime le fichier (régulier, jamais un lien, 100 000 octets au plus) avec son empreinte. Le MCP l'analyse avec `yaml` 2.9.1, épinglé, et n'admet que les clés Compose revues, quelle que soit leur écriture YAML. Toute ambiguïté échoue fermée : étiquette inconnue ou binaire, clé dupliquée ou non textuelle, plusieurs documents, trop d'alias.
+  - **Modèle construit depuis ce fichier exact.** Le script `config` vérifie l'empreinte du fichier analysé, puis construit le modèle, contrôlé avec les mêmes listes de clés. L'option `--no-env-resolution` est passée quand Compose la connaît, en seconde garde seulement : le contrôle reste l'analyse du fichier, qui refuse `env_file` avant que Compose ne le lise.
+  - **Runtime créé plus tôt.** Son fichier Compose est de nouveau analysé, depuis le checkout dont le marqueur garde l'empreinte, avant tout chargement par Compose.
+  - **Réseau.** `network_mode: bridge` ou `default` est refusé (`COMPOSE_SHARED_NETWORK`). Un réseau ou un volume nommé hors du projet est traité comme externe.
+  - **Même famille, même correction.** Option de sécurité limitée à `no-new-privileges` (un profil seccomp en fichier ou un type SELinux levaient le confinement) ; journalisation locale seulement ; réservation de périphérique refusée. Un constat nomme désormais la clé refusée.
+  - **Vérifié avec Compose réel (v5.1.1 en local, v2.38.2 en CI).**
+    - Sans l'option, la valeur d'un fichier d'environnement de l'hôte est injectée dans le modèle et `env_file` en disparaît. Avec l'option, v5.1.1 garde `env_file` dans le modèle, non lu ; v2.38.2 le lit quand même (l'option n'y saute qu'une seconde résolution).
+    - `label_file`, `extends` et `include` sont lus et ne laissent aucune trace dans le modèle : seule l'analyse du fichier les voit.
+    - Un projet typique (build, ports locaux, volumes, `depends_on`, santé, ancres YAML) passe les deux contrôles.
+    - Un test d'intégration rejoue ces comportements quand Compose est installé, et se déclare ignoré sinon.
+  - **CI #2295 (`37679310603`) rouge sur `3321dde`.** Ce test d'intégration supposait que l'option empêchait toute lecture ; Compose v2.38.2 du runner la lit quand même. L'option n'est plus exigée (elle ne garantissait rien) et le test fixe les deux comportements connus. Échec reproduit en local avec le binaire v2.38.2 officiel (empreinte vérifiée), correction verte avec v2.38.2 et v5.1.1.
+- **Quatrième revue Codex (trois constats, corrigés).**
+  - Volumes conservés par le rollback d'un job échoué : la préparation refuse désormais toute création tant que le projet Compose a encore des volumes (`compose_project_volumes_present`), sans rien supprimer.
+  - Nom d'image d'un build : `build.tags` et `image` sur un service construit sont refusés (`COMPOSE_BUILD_TAG`) ; une image construite garde le nom par défaut du projet.
+  - Empreinte de l'arbre : elle inclut le mode complet de chaque fichier et dossier, plus seulement le bit d'exécution du propriétaire.
+- **Cinquième revue Codex (quatre constats, corrigés).**
+  - Réplicas : `scale` et `deploy.replicas` sont bornés à 20 conteneurs au total (`COMPOSE_REPLICAS`), la limite de l'inventaire.
+  - Images tirées : une image sans build doit être épinglée par empreinte (`@sha256:`), sinon `COMPOSE_IMAGE_UNPINNED`.
+  - `NO_OP` vérifié : l'inventaire en lecture seule recalcule l'empreinte d'un checkout marqué ; un runtime en cours ne vaut `NO_OP` que si elle égale celle du marqueur.
+  - Empreinte : elle inclut aussi le propriétaire et le groupe de chaque fichier et dossier.
+- **Sixième revue Codex (six constats : cinq corrigés, un soumis au propriétaire).**
+  - Marqueur de confiance : la création enregistre le marqueur dans les données du job (volume du MCP) avant d'écrire le checkout ; un marqueur du checkout ne compte que s'il est identique à cet enregistrement. Un runtime qui réécrirait son propre marqueur n'est plus un runtime créé.
+  - Réseaux conservés : la préparation refuse aussi tant qu'un réseau du projet Compose subsiste (`compose_project_networks_present`).
+  - Réplicas : le marqueur enregistre les conteneurs attendus par service ; l'activation attend ce nombre et `NO_OP` l'exige exactement.
+  - IPAM : pilote par défaut sans options seulement.
+  - Capacité : la préparation exige 2 Gio et 200 000 inodes libres sous `/opt/apps` et refuse au-delà de 20 entrées en quarantaine.
+  - **En attente du propriétaire** : épingler toutes les entrées d'un build (`FROM`, réseau des `RUN`). Voir le fil de revue ; décision de politique, pas de correction unilatérale.
+- **Septième revue Codex (six constats : quatre corrigés, un sans reproduction, un partiel soumis au propriétaire).**
+  - Noms réservés : un dépôt contenant `.mcp-provisioning.json` ou `.mcp-provisioning.labels.json` est refusé (`reserved_name_present`).
+  - Parents de la cible : chaque script qui écrit résout le parent de la cible ; seul `/opt/apps` peut être un lien sur l'hôte, rien en dessous (`target_parent_outside`).
+  - Rollback : Compose ne recharge le fichier que si le checkout a encore son empreinte ; sinon les conteneurs du projet sont arrêtés par label, sans charger un fichier réécrit.
+  - Empreinte : un FIFO, socket ou périphérique dans le checkout fait échouer l'empreinte.
+  - Profils : non reproduit. Compose v5.1.1 et v2.38.2 retirent du modèle les services d'un profil inactif ; ils ne comptent donc pas dans les conteneurs attendus.
+  - Stockage des builds : plancher de 10 Gio libres sur le stockage Docker avant l'activation (`docker_capacity`). Une borne stricte par build relève de la configuration du démon : **décision propriétaire**, comme les entrées des builds.
+- **Huitième revue Codex (quatre constats, corrigés).**
+  - Coordination : la Task Queue et les verrous sont relus juste avant chaque écriture sur l'hôte (préparation, promotion, activation), plus seulement avant l'admission et le téléchargement. Un travail réservé ou verrouillé entre-temps arrête le job avant l'écriture suivante (`BLOCKED`), sans défaire ce qui est déjà créé ; une préparation non promue est mise en quarantaine. Le Lock Service n'accorde de verrou qu'à une Governed Session : un opérateur web n'en a pas, d'où une relecture au plus près plutôt qu'un verrou tenu (voir DECISIONS_LOG).
+  - Branche officielle : la révision est admise depuis la branche que nomme le mapping GitRegistry (règle `OFFICIAL_BRANCH` de D1), jamais depuis la seule branche par défaut (`REVISION_NOT_ON_OFFICIAL_BRANCH`).
+  - Liens physiques : un fichier à plusieurs liens fait échouer l'empreinte, donc l'activation et `NO_OP`.
+  - Capacité : les planchers (2 Gio, 200 000 inodes) sont mesurés sur le système de fichiers du parent de la cible et sur celui de la quarantaine, au plus proche dossier existant.
+- **Neuvième revue Codex (quatre constats, corrigés).**
+  - Rollback : la coordination est relue juste avant ; un travail réservé ou verrouillé pendant le contrôle de santé n'est jamais écrasé (rollback non exécuté, job `FAILED` avec la raison).
+  - Rollback par labels : la politique de redémarrage des conteneurs est effacée (`docker update --restart=no`) avant leur arrêt ; un redémarrage du démon ne les relance pas.
+  - Empreinte : les capacités de fichier (`getcap -r`) y entrent ; une ACL la fait échouer. Sans `getcap` sur l'hôte, l'empreinte échoue (fermé).
+  - Sources de bind : chacune doit exister dans le checkout avant la promotion et avant l'activation (`bind_source_missing`) ; Docker ne crée donc plus de dossier après l'empreinte.
+- **Dixième revue Codex (cinq constats, corrigés).**
+  - Rollback par labels : il voit aussi les conteneurs arrêtés (`docker ps -aq`).
+  - Santé : seul un conteneur `healthy` selon son propre contrôle de santé compte, à l'activation comme pour `NO_OP` ; un service sans contrôle de santé n'est jamais déclaré sain.
+  - Ressources : chaque service doit borner sa mémoire, son CPU et ses processus (`COMPOSE_RESOURCES_UNBOUNDED`).
+  - Pré-contrôle en lecture seule avant le téléchargement (parents, quarantaine, capacité, volume de données du MCP compris).
+  - Admission relue après le téléchargement, juste avant la première écriture.
+- **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
+- **Preuves.**
+  - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.
+  - RED de la troisième revue `8e36322` : 12 tests en échec (analyse du fichier, listes de clés, réseau partagé, scripts et parcours).
+  - CI exact-head de la seconde revue : `3f1098b`, run `37673610028` (#2294), verte.
+  - CI exact-head des revues suivantes, toutes vertes : `372d5f3` run `37680073334` (#2296) ; `dd7746e` run `37703798530` (#2297) ; `c6f8921` run `37705027955` (#2298) ; `cbd93f9` run `37706373960` (#2299) ; `1268e1b` run `37707609873` (#2300).
+  - RED de la huitième revue `f7f3296` : 8 tests en échec (relecture de la coordination, liens physiques, capacité, branche officielle). GREEN `80cd60e`, CI run `37709709982` verte.
+  - RED de la neuvième revue `b384753` : 4 tests en échec (rollback, redémarrage, capacités et ACL, sources de bind). GREEN `341192e`, CI verte.
+  - RED de la dixième revue `cc4845d` : 4 tests en échec (conteneurs arrêtés, santé exigée, plafonds de ressources, pré-contrôle et réadmission).
+  - GREEN local après la décision sur les builds : typecheck, build et gates verts ; suite complète 1001/1001 (968 avant les revues), tests de l'exécuteur verts aussi avec Compose v2.38.2. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
+- **Décision du propriétaire (2026-10-08)** : entrées des builds, options 1 + 3 ; stockage des builds, le plancher de 10 Gio suffit.
+  - Mise en œuvre (`src/provisioning/dockerfilePolicy.ts`) : chaque Dockerfile d'un service construit est lu depuis le checkout digéré (phase `dockerfiles`) ou pris en ligne ; `FROM`, `--from=`, `from=` d'un montage et le frontend `# syntax=` doivent être épinglés par empreinte (sinon `DOCKERFILE_IMAGE_UNPINNED` / `DOCKERFILE_FRONTEND_UNPINNED`), seuls les étapes déjà définies, `scratch` et les contextes nommés sont locaux. Lecture en échec fermé (jointures sous les deux caractères d'échappement et lignes physiques).
+  - `build.pull` et les arguments `BUILDKIT_*` sont refusés.
+  - Les images que le runtime exécute (`docker inspect`) sont enregistrées dans l'attestation (`builtImages`).
+- **Douzième revue Codex (quatre constats : trois corrigés, un soumis au propriétaire).**
+  - `NO_OP` compare les images exécutées à l'enregistrement de l'activation (`images.json` dans les données du job) ; sans enregistrement ou avec d'autres octets, le runtime est dégradé.
+  - Frontend : seul `docker/dockerfile` épinglé est admis (`DOCKERFILE_FRONTEND_UNSUPPORTED` sinon).
+  - L'attestation garde l'admission relue après téléchargement, celle qui autorise l'écriture.
+  - Ressources CPU et mémoire des builds : configuration du builder ou du démon sur S1, hors dépôt ; soumis au propriétaire.
+- **Treizième revue Codex (six constats : quatre corrigés, deux soumis au propriétaire).**
+  - Admission relue avant la promotion et avant l'activation, pas seulement avant la préparation.
+  - Empreinte recalculée après le contrôle de santé : un service qui réécrit le checkout au démarrage n'est jamais un succès.
+  - Une image valide exigée pour chaque conteneur attendu, sinon échec (`images_unknown`).
+  - Après une collision de coordination, plus aucune écriture, même le déplacement de la préparation en quarantaine.
+  - Soumis au propriétaire : plafonds maximaux de ressources par service (valeurs propres à S1) et droits des archives de sources (utilisateur du canal S1 à vérifier).
+- **Quatorzième revue Codex (six constats, corrigés).**
+  - Journaux bornés : pilote nommé, `local` ou `none`, ou `json-file` avec `max-size` et `max-file`.
+  - Plages d'adresses : `ipam.config` refusé.
+  - `no-new-privileges:false` refusé.
+  - Enregistrement des images non écrit : activation en échec et retour arrière.
+  - Marqueur comparé à l'enregistrement de confiance après le contrôle de santé (`marker_modified`).
+  - Cible et runtime replanifiés avant la promotion et avant l'activation.
+- **Quinzième revue Codex (trois constats, corrigés).**
+  - Branche officielle relue à chaque replanification (aussi avant la préparation) ; un changement arrête le job (`GOVERNANCE_OFFICIAL_BRANCH_CHANGED`).
+  - Réactivation : l'enregistrement d'images existant ne vaut que s'il est identique aux images exécutées, sinon échec et retour arrière.
+  - `NO_OP` vérifie les limites réelles de chaque conteneur (mémoire, CPU, PID) via `docker inspect`.
+- **Seizième revue Codex (sept constats : cinq corrigés, deux en limites connues).**
+  - Images enregistrées et comparées par service Compose (`service=sha256:…`), plus comme simple ensemble.
+  - `stop_grace_period` limité à 60 s, sous le budget du rollback (`COMPOSE_STOP_GRACE_PERIOD`).
+  - Un nom de chemin contenant un caractère de contrôle (saut de ligne) fait échouer l'empreinte.
+  - Activation d'un runtime créé : enregistrement de marqueur illisible → échec (`MARKER_RECORD_UNREADABLE`).
+  - L'abandon de la préparation relit la coordination ; si le composant est réservé entre-temps, la préparation reste en place.
+- **Décision du propriétaire (2026-10-08) : corriger ce round puis fusionner ; points dépendant de S1 en limites connues.** À vérifier avant de configurer la première cible S1 : plafonds maximaux par service (mémoire, CPU, PID), limites CPU et mémoire des builds, quota du stockage inscriptible des conteneurs et volumes, droits `0600`/`0700` des archives et dossiers de job selon l'utilisateur du canal S1. Les rounds Codex suivants alimentent une issue de suivi.
+- **NEXT_ACTION** : CI exact-head de la PR #261 et nouvelle revue Codex ; décisions du propriétaire puis leur mise en œuvre ; merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
+
 ## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 — GREEN candidate
 
 - **Incrément 1 livré.**

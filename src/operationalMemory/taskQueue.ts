@@ -224,6 +224,11 @@ function sameScopeSet(left: readonly string[], right: readonly string[]): boolea
   return a.length === b.length && a.every((scope, index) => scope === b[index]);
 }
 
+/** Whether a task still holds its resource scopes: non-terminal, as the queue's own collision rule counts it. */
+export function isActiveGovernedTaskStatus(status: GovernedTaskStatus): boolean {
+  return ACTIVE.has(status);
+}
+
 export function activeScopeConflict(
   tasks: readonly GovernedTaskRecord[],
   scopes: readonly string[],

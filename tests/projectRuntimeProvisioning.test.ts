@@ -10,7 +10,9 @@ const {
   governedRuntimePath,
   parseProvisionedRuntimeInventory,
   planProjectRuntimeProvisioning,
-  provisionedRuntimeObservations
+  provisionedComposeProject,
+  provisionedRuntimeObservations,
+  provisioningInventoryTargets
 } = await import('../src/provisioning/projectRuntime.js');
 const { collectProvisionedRuntimes } = await import('../src/liveState/provisionedRuntime.js');
 const { liveStateRuntimeObservations } = await import('../src/liveState/runtimeObservation.js');
@@ -22,7 +24,8 @@ const OTHER_REVISION = 'b'.repeat(40);
 const TARGET = Object.freeze({
   mappingId: 'github:Patricked-code/Portal:s1:portal_api',
   repositoryId: 'github:Patricked-code/Portal',
-  serverPath: '/opt/apps/portal-api'
+  serverPath: '/opt/apps/portal-api',
+  composeProject: provisionedComposeProject('portal', 'github:Patricked-code/Portal:s1:portal_api', 'github:Patricked-code/Portal')
 });
 
 function registry(overrides: Record<string, unknown> = {}): any {
@@ -37,7 +40,7 @@ function registry(overrides: Record<string, unknown> = {}): any {
       globalCheckpointRepositoryId: TARGET.repositoryId, centralGovernanceRepositoryId: TARGET.repositoryId,
       repositoryComponents: [{ repositoryId: TARGET.repositoryId, mappingId: TARGET.mappingId, role: 'api' }]
     }],
-    activationReadiness: [],
+    activationReadiness: [{ mappingId: TARGET.mappingId, status: 'READY', reasonCodes: [] }],
     serverBindings: [{
       mappingId: TARGET.mappingId, repositoryId: TARGET.repositoryId, projectId: 'portal', projectUid: 'uid-portal',
       componentRole: 'api', serverId: 's1', serverPath: TARGET.serverPath, realPath: null, realPathVerified: false,
@@ -47,30 +50,91 @@ function registry(overrides: Record<string, unknown> = {}): any {
       mappings: [{
         mappingId: TARGET.mappingId, repositoryId: TARGET.repositoryId, projectId: 'portal',
         officialBranch: 'main', allowedBranchPrefixes: ['claude/'], directMainPush: false, status: 'active',
-        capabilities: {}, backupRequired: true, rollbackMethod: 'restore_previous_release'
+        capabilities: { deploy: true }, backupRequired: true, rollbackMethod: 'restore_previous_release'
       }]
     },
     ...overrides
   };
 }
 
-function inventory(lines: string[]): any {
-  return parseProvisionedRuntimeInventory(`${lines.join('\n')}\n`, [TARGET], OBSERVED_AT);
+const IMAGE = `api=sha256:${'c'.repeat(64)}`;
+
+/** An inventory whose created runtime has its image record in the job data, as the executor reads it. */
+function inventory(lines: string[], expectedImages: string[] | null = [IMAGE]): any {
+  const parsed = parseProvisionedRuntimeInventory(`${lines.join('\n')}\n`, [TARGET], OBSERVED_AT) as any;
+  return { ...parsed, components: parsed.components.map((component: any) => ({ ...component, expectedImages })) };
 }
 
 const ABSENT = ['docker=ok', 'component.0.path=absent', 'component.0.containers='];
-const PRESENT_SAME = ['docker=ok', 'component.0.path=present', `component.0.containers=mcp-portal-1|running|mcp-portal|${REVISION}`];
+
+/** A provisioned container line: name, state, compose project, revision, compose service and status. */
+function container(name: string, service: string, status = 'Up 2 minutes (healthy)', state = 'running', revision = REVISION): string {
+  return `${name}|${state}|${TARGET.composeProject}|${revision}|${service}|${status}`;
+}
+
+/** The marker of the runtime this provisioning created, with the services its compose model declared. */
+function marker(services: string[] = ['api']): string {
+  return `component.0.marker=${Buffer.from(JSON.stringify({
+    schemaVersion: 1, jobId: 'prov-20261006T000000Z-00000000', projectId: 'portal', mappingId: TARGET.mappingId,
+    repositoryId: TARGET.repositoryId, revision: REVISION, composeProject: TARGET.composeProject, composeFile: 'compose.yaml',
+    createdAt: OBSERVED_AT, treeDigest: 'e'.repeat(64), services,
+    replicas: Object.fromEntries(services.map((service) => [service, service === 'worker' ? 2 : 1]))
+  })).toString('base64')}`;
+}
+
+const PRESENT_SAME = ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`, marker(), `component.0.tree=${'e'.repeat(64)}`, `component.0.images=api=sha256:${'c'.repeat(64)}`, 'component.0.limits=536870912 500000000 0 200'];
 
 test('the provisioned-runtime inventory is bounded, read-only and quotes every value', () => {
   const command = buildProvisionedRuntimeInventoryCommand([TARGET]);
   assert.doesNotThrow(() => assertReadOnlyCommand(command));
   assert.match(command, /'\/opt\/apps\/portal-api'/);
-  assert.match(command, new RegExp(`label=${PROVISIONING_LABEL_REPOSITORY.replaceAll('.', '\\.')}=github:Patricked-code/Portal`));
+  // Each container reports its compose service and status, so a partial or unhealthy runtime is never a no-op.
+  assert.ok(command.includes('{{.Label "com.docker.compose.service"}}|{{.Status}}'));
+  // A component's provisioned containers are those of its own compose project, not of its whole repository.
+  assert.ok(command.includes(`label=com.docker.compose.project=${TARGET.composeProject}`));
+  assert.equal(command.includes(PROVISIONING_LABEL_REPOSITORY), false);
+  // A marked checkout is digested again, so a running runtime is matched against its creation digest.
+  assert.match(command, /component\.0\.tree=/);
   assert.doesNotMatch(command, /\becho\b/);
   // Hostile declarations never reach the shell: only governed, normalized paths are inventoried.
   assert.throws(() => buildProvisionedRuntimeInventoryCommand([{ ...TARGET, serverPath: "/opt/apps/x'; rm -rf /" }]));
   assert.throws(() => buildProvisionedRuntimeInventoryCommand([{ ...TARGET, repositoryId: "github:o/r' --format x" }]));
   assert.throws(() => buildProvisionedRuntimeInventoryCommand(Array.from({ length: 21 }, () => TARGET)));
+  assert.throws(() => buildProvisionedRuntimeInventoryCommand([{ ...TARGET, composeProject: "x' --all" }]));
+});
+
+test('two components of one repository keep distinct runtimes', () => {
+  // A monorepo: the same repository mapped twice, at two declared paths.
+  const second = { mappingId: 'github:Patricked-code/Portal:s1:portal_worker', serverPath: '/opt/apps/portal-worker' };
+  const base = registry();
+  const monorepo = registry({
+    mappings: [...base.mappings, { ...base.mappings[0], mappingId: second.mappingId, componentRole: 'worker' }],
+    activationReadiness: [...base.activationReadiness, { mappingId: second.mappingId, status: 'READY', reasonCodes: [] }],
+    governanceEvidence: { mappings: [...base.governanceEvidence.mappings, { ...base.governanceEvidence.mappings[0], mappingId: second.mappingId }] },
+    projects: [{
+      ...base.projects[0],
+      repositoryComponents: [...base.projects[0].repositoryComponents, { repositoryId: TARGET.repositoryId, mappingId: second.mappingId, role: 'worker' }]
+    }],
+    serverBindings: [...base.serverBindings, { ...base.serverBindings[0], mappingId: second.mappingId, componentRole: 'worker', serverPath: second.serverPath }]
+  });
+  const targets = provisioningInventoryTargets(monorepo, 'portal') as any[];
+  assert.deepEqual(targets.map((entry) => entry.serverPath), [TARGET.serverPath, second.serverPath]);
+  assert.notEqual(targets[0].composeProject, targets[1].composeProject);
+  const command = buildProvisionedRuntimeInventoryCommand(targets);
+  for (const entry of targets) assert.ok(command.includes(`label=com.docker.compose.project=${entry.composeProject}`));
+
+  // The first component runs; the second is absent and is planned for creation, never a no-op.
+  const running = parseProvisionedRuntimeInventory([
+    'docker=ok',
+    'component.0.path=present', `component.0.containers=portal-api-1|running|${targets[0].composeProject}|${REVISION}|api|Up 2 minutes (healthy)`,
+    'component.1.path=absent', 'component.1.containers='
+  ].join('\n'), targets, OBSERVED_AT);
+  const plan = planProjectRuntimeProvisioning({
+    request: { serverId: 'S1', projectId: 'portal', mappingId: second.mappingId, revision: REVISION },
+    serverTarget: { status: 'CONFIGURED', projectIds: ['portal'] }, registry: monorepo, inventory: running,
+    consent: { creation: false, activation: false }
+  }) as any;
+  assert.deepEqual([plan.decision, plan.reasonCodes, plan.target.serverPath], ['CONSENT_REQUIRED', ['CREATION_CONSENT_REQUIRED'], second.serverPath]);
 });
 
 test('a governed runtime path lives under /opt/apps, outside the MCP checkout', () => {
@@ -96,7 +160,7 @@ test('absence is proven only when the declared path and the provisioned namespac
 
   const [running] = provisionedRuntimeObservations(inventory(PRESENT_SAME), 'CURRENT', 'ref');
   assert.equal(running.runtimeKind, 'DOCKER_COMPOSE');
-  assert.equal(running.runtimeId, 'mcp-portal');
+  assert.equal(running.runtimeId, TARGET.composeProject);
   assert.equal(running.revision, REVISION);
 
   // A present path without a provisioned runtime, or an unreadable Docker, proves nothing.
@@ -126,7 +190,7 @@ test('provisioning plans only a genuinely absent runtime at its exact, declared 
     componentRole: 'api', serverPath: TARGET.serverPath, composeProject: pending.target.composeProject, revision: REVISION
   });
   assert.match(pending.target.composeProject, /^mcp-[a-z0-9-]{1,40}-[0-9a-f]{12}$/);
-  assert.deepEqual(pending.governance, { backupRequired: true, rollbackMethod: 'restore_previous_release' });
+  assert.deepEqual(pending.governance, { backupRequired: true, rollbackMethod: 'restore_previous_release', officialBranch: 'main' });
   assert.equal(pending.authorizationInferred, false);
   assert.equal(pending.mutationPerformed, false);
   assert.ok(Object.isFrozen(pending) && Object.isFrozen(pending.steps));
@@ -142,10 +206,40 @@ test('provisioning plans only a genuinely absent runtime at its exact, declared 
   const activated = plan({ consent: { creation: true, activation: true } });
   assert.equal(Object.fromEntries(activated.steps.map((step: any) => [step.id, step.state])).health, 'PENDING');
 
-  // An existing runtime is never overwritten: the same revision is a no-op, another one blocks.
+  // An existing runtime is never overwritten: complete and healthy at the same revision it is a no-op, another one blocks.
   assert.equal(plan({ inventory: inventory(PRESENT_SAME) }).decision, 'NO_OP');
   const conflict = plan({ request: { ...request, revision: OTHER_REVISION }, inventory: inventory(PRESENT_SAME) });
   assert.deepEqual([conflict.decision, conflict.reasonCodes], ['BLOCKED', ['EXISTING_RUNTIME_CONFLICT']]);
+  // A partial, unhealthy, stopped or unmarked runtime at that revision is degraded, never already in place.
+  const degraded: string[][] = [
+    ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`, marker(['api', 'worker'])],
+    ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api', 'Up 2 minutes (unhealthy)')}`, marker()],
+    ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api', 'Up 5 seconds (health: starting)')}`, marker()],
+    ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api', 'Exited (1) 2 minutes ago', 'exited')}`, marker()],
+    // Running without a health check proves nothing about the service.
+    [...PRESENT_SAME.slice(0, 2), `component.0.containers=${container('portal-api-1', 'api', 'Up 2 minutes')}`, ...PRESENT_SAME.slice(3)],
+    ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')}`],
+    // A checkout edited since its creation, or one that could not be digested, is never the admitted revision.
+    [...PRESENT_SAME.slice(0, 4), `component.0.tree=${'f'.repeat(64)}`],
+    [...PRESENT_SAME.slice(0, 4), 'component.0.tree=unavailable'],
+    // A service missing one of its expected replicas is incomplete.
+    ['docker=ok', 'component.0.path=present', `component.0.containers=${container('portal-api-1', 'api')},${container('portal-worker-1', 'worker')}`, marker(['api', 'worker']), `component.0.tree=${'e'.repeat(64)}`]
+  ];
+  // Containers running other image bytes than the activation recorded are not the admitted runtime.
+  assert.deepEqual(plan({ inventory: inventory([...PRESENT_SAME.slice(0, 5), `component.0.images=api=sha256:${'d'.repeat(64)}`]) }).reasonCodes, ['EXISTING_RUNTIME_DEGRADED']);
+  assert.deepEqual(plan({ inventory: inventory(PRESENT_SAME, null) }).reasonCodes, ['EXISTING_RUNTIME_DEGRADED']);
+  // Images are compared per service: the same set swapped between services is not the admitted runtime.
+  assert.match(buildProvisionedRuntimeInventoryCommand([TARGET]), /com\.docker\.compose\.service/);
+  // A container whose limits were lifted after activation is not the admitted runtime.
+  for (const limits of ['536870912 500000000 0 -1', '0 500000000 0 200', '536870912 0 0 200', '']) {
+    assert.deepEqual(plan({ inventory: inventory([...PRESENT_SAME.slice(0, 6), `component.0.limits=${limits}`]) }).reasonCodes, ['EXISTING_RUNTIME_DEGRADED'], limits);
+  }
+  assert.match(buildProvisionedRuntimeInventoryCommand([TARGET]), /component\.0\.limits=/);
+  assert.match(buildProvisionedRuntimeInventoryCommand([TARGET]), /component\.0\.images=/);
+  for (const lines of degraded) {
+    const result = plan({ inventory: inventory(lines) });
+    assert.deepEqual([result.decision, result.reasonCodes], ['BLOCKED', ['EXISTING_RUNTIME_DEGRADED']], lines.join(' '));
+  }
 
   const blocked: Array<[Record<string, unknown>, string]> = [
     [{ request: { ...request, revision: 'main' } }, 'PROVISIONING_REQUEST_INVALID'],
@@ -159,6 +253,12 @@ test('provisioning plans only a genuinely absent runtime at its exact, declared 
     [{ registry: registry({ serverBindings: [] }) }, 'TARGET_PATH_UNDECLARED'],
     [{ registry: registry({ serverBindings: [...registry().serverBindings, { ...registry().serverBindings[0], serverPath: '/opt/apps/portal-2' }] }) }, 'TARGET_PATH_AMBIGUOUS'],
     [{ registry: registry({ serverBindings: [{ ...registry().serverBindings[0], serverPath: '/var/www/vhosts/portal' }] }) }, 'TARGET_PATH_OUTSIDE_GOVERNED_ROOT'],
+    // The registry's own deployment rule (D1) applies before anything is observed or written.
+    [{ registry: registry({ governanceEvidence: { mappings: [{ ...registry().governanceEvidence.mappings[0], capabilities: { deploy: false } }] } }) }, 'GOVERNANCE_DEPLOY_CAPABILITY_DISABLED'],
+    [{ registry: registry({ governanceEvidence: { mappings: [{ ...registry().governanceEvidence.mappings[0], status: 'suspended' }] } }) }, 'GOVERNANCE_MAPPING_NOT_ACTIVE'],
+    [{ registry: registry({ activationReadiness: [{ mappingId: TARGET.mappingId, status: 'BLOCKED', reasonCodes: [] }] }) }, 'GOVERNANCE_ACTIVATION_BLOCKED'],
+    [{ registry: registry({ activationReadiness: [] }) }, 'GOVERNANCE_ACTIVATION_UNKNOWN'],
+    [{ registry: registry({ governanceEvidence: undefined }) }, 'GOVERNANCE_MAPPING_UNDECLARED'],
     [{ inventory: null }, 'RUNTIME_ABSENCE_UNPROVEN'],
     [{ inventory: inventory(['docker=unavailable', 'component.0.path=absent', 'component.0.containers=']) }, 'RUNTIME_ABSENCE_UNPROVEN'],
     [{ inventory: inventory(['docker=ok', 'component.0.path=present', 'component.0.containers=']) }, 'TARGET_PATH_PRESENT']

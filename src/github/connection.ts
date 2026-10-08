@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile, chmod, stat } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { env } from '../config/env.js';
+import { downloadGithubArchive, type ArchiveDownloadResult } from '../provisioning/sourceArchive.js';
 import { resolveGithubApiBase } from './authorizationDiagnostics.js';
 import { renderConnectConsentFields } from './connectConsent.js';
 import {
@@ -213,6 +214,28 @@ export async function githubJsonRequestWithServerCredential(
     };
   }
   return githubJsonRequest(token, endpoint, options);
+}
+
+/**
+ * F.2 (TB-W3-F-03): the archive of an exact revision, fetched with the server
+ * credential through the allowlisted API host; the credential never leaves
+ * this module and never reaches the signed archive URL.
+ */
+export async function downloadGithubArchiveWithServerCredential(input: {
+  repositoryId: string;
+  revision: string;
+  destination: string;
+  maxBytes: number;
+}): Promise<ArchiveDownloadResult> {
+  const token = await readToken();
+  if (!token) return Object.freeze({ ok: false as const, reasonCode: 'ARCHIVE_CREDENTIAL_MISSING' });
+  let apiBase: string;
+  try {
+    apiBase = resolveGithubApiBase(githubApiBase(), env.GITHUB_API_ALLOWED_HOSTS);
+  } catch {
+    return Object.freeze({ ok: false as const, reasonCode: 'ARCHIVE_REQUEST_INVALID' });
+  }
+  return downloadGithubArchive({ ...input, token, apiBase });
 }
 
 function getArrayLength(value: unknown): number | null {
