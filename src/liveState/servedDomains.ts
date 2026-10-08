@@ -20,7 +20,8 @@ export const SERVED_DOMAINS_MAX = 1000;
 // Each name comes with its subscription's main domain, which names its /var/www/vhosts root.
 // The result is capped one row over the bound, so an oversized inventory is detected, never streamed.
 const SUBSCRIPTION = 'IF(d.webspace_id = 0, d.name, w.name)';
-const ACTIVE = "d.status = 0 AND d.webspace_status = 0 AND d.htype <> 'none'";
+// A hosted row is served only with its active web service record; an inconsistent row is not.
+const ACTIVE = "d.status = 0 AND d.webspace_status = 0 AND d.htype <> 'none' AND EXISTS (SELECT 1 FROM DomainServices s WHERE s.dom_id = d.id AND s.type = 'web' AND s.status = 0)";
 const OWNER = 'LEFT JOIN domains w ON w.id = d.webspace_id';
 export const SERVED_DOMAINS_COMMAND = `plesk db -Ne "SELECT name, subscription FROM (SELECT d.name AS name, ${SUBSCRIPTION} AS subscription FROM domains d ${OWNER} WHERE ${ACTIVE} UNION SELECT a.name, ${SUBSCRIPTION} FROM domain_aliases a JOIN domains d ON d.id = a.dom_id ${OWNER} WHERE a.status = 0 AND a.web = 'true' AND ${ACTIVE}) served LIMIT ${SERVED_DOMAINS_MAX + 1}"`;
 export const SERVED_DOMAIN_SERVERS: readonly ServerId[] = ['s1', 's2'];
@@ -137,23 +138,37 @@ export function liveStateDomainObservation(
 const VHOSTS_ROOT = /^\/var\/www\/vhosts\/([^/]+)(?:\/|$)/;
 
 /**
- * The Plesk subscriptions GitRegistry binds to one project on one server: the
- * reviewed `serverPath` of each mapping names its subscription root,
- * `/var/www/vhosts/<main domain>`. This is the ownership evidence; a name the
- * project merely declares is never one.
+ * The Plesk subscriptions GitRegistry binds to one project on one server: a
+ * verified `realPath` (`realPathVerified=true`) names its subscription root,
+ * `/var/www/vhosts/<main domain>`. A declared `serverPath` alone is not
+ * evidence, and neither is a name the project declares. A subscription bound
+ * to more than one registry project cannot be split by this inventory, so it
+ * is reported as shared and makes the observation unavailable.
  */
 export function projectSubscriptions(
   bindings: readonly GitRegistryServerBindingEvidence[],
   projectId: string,
   serverId: string
-): Set<string> {
-  const subscriptions = new Set<string>();
+): { owned: Set<string>; shared: boolean } {
+  const owners = new Map<string, Set<string>>();
   for (const binding of bindings) {
-    if (binding.projectId !== projectId || binding.serverId.toLowerCase() !== serverId.toLowerCase()) continue;
-    const root = VHOSTS_ROOT.exec(binding.serverPath);
-    if (root && validDomain(root[1]!.toLowerCase())) subscriptions.add(root[1]!.toLowerCase());
+    if (binding.serverId.toLowerCase() !== serverId.toLowerCase()) continue;
+    if (binding.realPathVerified !== true || typeof binding.realPath !== 'string') continue;
+    const root = VHOSTS_ROOT.exec(binding.realPath);
+    const subscription = root?.[1]?.toLowerCase();
+    if (!subscription || !validDomain(subscription)) continue;
+    const projects = owners.get(subscription) ?? new Set<string>();
+    projects.add(binding.projectId);
+    owners.set(subscription, projects);
   }
-  return subscriptions;
+  const owned = new Set<string>();
+  let shared = false;
+  for (const [subscription, projects] of owners) {
+    if (!projects.has(projectId)) continue;
+    owned.add(subscription);
+    if (projects.size > 1) shared = true;
+  }
+  return { owned, shared };
 }
 
 /**
@@ -161,17 +176,19 @@ export function projectSubscriptions(
  * compares with one project's declarations is every active name of the Plesk
  * subscriptions GitRegistry binds to that project: another subscription never
  * reads as undeclared, while an undeclared name of the project's own
- * subscription still does. Without such a binding, or for a name without a
- * subscription, ownership is unknown and nothing is observed.
+ * subscription still does. Without such a binding, with a subscription
+ * shared by several projects, or for a name without a subscription,
+ * ownership is unknown and nothing is observed.
  */
 export function scopeDomainObservation(
   observation: DomainResolutionInput['observation'] | null,
   inventory: ServedDomainInventory | undefined,
-  owned: ReadonlySet<string>
+  ownership: { owned: ReadonlySet<string>; shared: boolean }
 ): DomainResolutionInput['observation'] | null {
   if (!observation || !observation.available) return observation;
   const unavailable = { ...observation, available: false, freshness: 'UNKNOWN' as const, domains: [] };
-  if (!inventory || owned.size === 0) return unavailable;
+  const { owned } = ownership;
+  if (!inventory || owned.size === 0 || ownership.shared) return unavailable;
   const domains = [];
   for (const entry of observation.domains) {
     const subscription = inventory.subscriptions[entry.domain];
@@ -193,12 +210,12 @@ export async function readLiveStateDomainObservation(
 /** The current Live State domain observation of one project's subscriptions. */
 export async function readLiveStateProjectDomainObservation(
   serverId: string | null,
-  owned: ReadonlySet<string>,
+  ownership: { owned: ReadonlySet<string>; shared: boolean },
   now: () => Date = () => new Date()
 ): Promise<DomainResolutionInput['observation'] | null> {
   const { liveStateEngine } = await import('./engine.js');
   const snapshot = await liveStateEngine.getCurrent();
   const observation = liveStateDomainObservation(snapshot, serverId, now());
   const inventory = serverId ? snapshot?.servedDomains?.[serverId.toLowerCase() as ServerId] : undefined;
-  return scopeDomainObservation(observation, inventory, owned);
+  return scopeDomainObservation(observation, inventory, ownership);
 }

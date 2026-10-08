@@ -46,6 +46,8 @@ test('F-04 observe-binding: the inventory reads Plesk records of active served n
   assert.match(SERVED_DOMAINS_COMMAND, /FROM domain_aliases a JOIN domains d ON d\.id = a\.dom_id LEFT JOIN domains w ON w\.id = d\.webspace_id WHERE a\.status = 0 AND a\.web = 'true' AND d\.status = 0 AND d\.webspace_status = 0/);
   // No pipe: a failing read keeps its own exit status.
   assert.doesNotMatch(SERVED_DOMAINS_COMMAND, /\||2>/);
+  // A hosted row without its active web service record is inconsistent, not served.
+  assert.match(SERVED_DOMAINS_COMMAND, /EXISTS \(SELECT 1 FROM DomainServices s WHERE s\.dom_id = d\.id AND s\.type = 'web' AND s\.status = 0\)/);
 });
 
 test('F-04 observe-binding: parsing normalizes domains; any other entry makes the inventory unavailable', () => {
@@ -133,33 +135,45 @@ test('F-04 observe-binding: Live State projects a schema-valid C5 observation fo
   assert.equal(aged.observedAt, OBSERVED_AT);
 });
 
-test('F-04 observe-binding: the observation is scoped to the subscriptions GitRegistry binds to the project', () => {
+test('F-04 observe-binding: the observation is scoped to the subscriptions verified for the project', () => {
+  const binding = (projectId: string, serverId: string, realPath: string | null, realPathVerified: boolean) => ({
+    mappingId: `${projectId}-${serverId}`, repositoryId: 'github:o/a', projectId, projectUid: null, componentRole: null,
+    serverId, serverPath: '/var/www/vhosts/declared.example.com', realPath, realPathVerified, environment: 'production'
+  });
   const bindings = [
-    { mappingId: 'm1', repositoryId: 'github:o/a', projectId: 'alpha', projectUid: null, componentRole: null, serverId: 'S1', serverPath: '/var/www/vhosts/Alpha.example.com/httpdocs', realPath: null, realPathVerified: false, environment: 'production' },
-    { mappingId: 'm2', repositoryId: 'github:o/a', projectId: 'alpha', projectUid: null, componentRole: null, serverId: 's2', serverPath: '/var/www/vhosts/other.example.org', realPath: null, realPathVerified: false, environment: 'production' },
-    { mappingId: 'm3', repositoryId: 'github:o/c', projectId: 'alpha', projectUid: null, componentRole: null, serverId: 's1', serverPath: '/opt/apps/alpha', realPath: null, realPathVerified: false, environment: 'production' }
+    binding('alpha', 'S1', '/var/www/vhosts/Alpha.example.com/httpdocs', true),
+    binding('alpha', 's2', '/var/www/vhosts/other.example.org', true),
+    binding('alpha', 's1', '/var/www/vhosts/unverified.example.com', false),
+    binding('alpha', 's1', '/opt/apps/alpha', true)
   ] as any;
-  const owned = projectSubscriptions(bindings, 'alpha', 's1');
-  assert.deepEqual([...owned], ['alpha.example.com']);
+  const ownership = projectSubscriptions(bindings, 'alpha', 's1');
+  // Only a verified real path names a subscription; a declared server path never does.
+  assert.deepEqual([...ownership.owned], ['alpha.example.com']);
+  assert.equal(ownership.shared, false);
   // Subscription alpha serves alpha and an undeclared legacy name; beta is another customer's subscription.
   const inventory = parseServedDomainInventory(
     rows('alpha.example.com', 'legacy.alpha.example.net\talpha.example.com', 'beta.example.com', 'api.alpha.example.com\tbeta.example.com'),
     OBSERVED_AT
   );
   const observation = liveStateDomainObservation(snapshot({ s1: inventory }), 's1', new Date(OBSERVED_AT));
-  const scoped = scopeDomainObservation(observation, inventory, owned) as any;
+  const scoped = scopeDomainObservation(observation, inventory, ownership) as any;
   // A declared-looking name bound under another subscription is never attributed to the project.
   assert.deepEqual(scoped.domains.map((entry: any) => entry.domain), ['alpha.example.com', 'legacy.alpha.example.net']);
   assert.equal(scoped.available, true);
   assert.ok(DomainResolutionInputSchema.shape.observation.safeParse(scoped).success);
 
-  // No subscription bound to the project: ownership is unknown, so nothing is observed.
-  const unbound = scopeDomainObservation(observation, inventory, projectSubscriptions(bindings, 'gamma', 's1')) as any;
+  // Only unverified paths: ownership is unknown, so nothing is observed.
+  const unverified = projectSubscriptions([binding('gamma', 's1', '/var/www/vhosts/alpha.example.com', false)] as any, 'gamma', 's1');
+  const unbound = scopeDomainObservation(observation, inventory, unverified) as any;
   assert.equal(unbound.available, false);
   assert.equal(unbound.freshness, 'UNKNOWN');
   assert.deepEqual(unbound.domains, []);
+  // A subscription verified for two projects cannot be split: nothing is observed for either.
+  const shared = projectSubscriptions([...bindings, binding('delta', 's1', '/var/www/vhosts/alpha.example.com/delta', true)] as any, 'alpha', 's1');
+  assert.equal(shared.shared, true);
+  assert.equal((scopeDomainObservation(observation, inventory, shared) as any).available, false);
   // Without the inventory's ownership evidence, nothing is scoped.
-  assert.equal((scopeDomainObservation(observation, undefined, owned) as any).available, false);
+  assert.equal((scopeDomainObservation(observation, undefined, ownership) as any).available, false);
   // Nothing to scope in an unavailable or absent observation.
-  assert.equal(scopeDomainObservation(null, inventory, owned), null);
+  assert.equal(scopeDomainObservation(null, inventory, ownership), null);
 });

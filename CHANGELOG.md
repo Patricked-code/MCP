@@ -9,6 +9,7 @@
 - Quatrième round : abonnement actif exigé, labels Punycode validés par IDNA, fraîcheur calculée par inventaire. L'alias `www.` généré par Plesk reste non inventorié (limite connue, échec fermé).
 - Cinquième round : l'observation est restreinte par abonnement Plesk (propriété observée) et non plus par liste de noms déclarés ; un nom non déclaré de l'abonnement du projet reste visible.
 - Sixième round : propriété d'abonnement tirée des `serverPath` GitRegistry, requête plafonnée, collecte concurrente, déclarations Unicode comparées en Punycode, contrat `DOMAIN_BINDING` mis à jour.
+- Septième round : propriété limitée aux `realPath` vérifiés, abonnement partagé entre projets rendu indisponible, enregistrement web `DomainServices` actif exigé. Aucun projet actuel n'a encore de chemin vérifié : C5 reste `UNVERIFIED` pour eux.
 
 ## 2026-10-08 — W3 F.2 clôture
 

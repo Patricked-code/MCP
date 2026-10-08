@@ -42,6 +42,11 @@
   - GW-09 compare les déclarations Unicode sous leur forme Punycode (`domainToASCII`).
   - `.mcp/provisioning-contracts.json` décrit l'observation livrée (preuve d'absence, étape `observe-binding`). L'étape reste portée par `TB-W3-F-04` jusqu'au déploiement attesté.
   - RED : 6 tests sur 18 échouent sur l'ancien source. GREEN : 18/18. Chaîne CI locale : 1008 tests.
+- **Septième round Codex (trois constats, corrigés en échec fermé).**
+  - La propriété exige un `realPath` vérifié (`realPathVerified=true`) sous `/var/www/vhosts/<domaine principal>` : un `serverPath` seulement déclaré n'est pas une preuve.
+  - Un abonnement vérifié pour plusieurs projets du registre ne peut pas être découpé par cet inventaire : l'observation est indisponible pour chacun.
+  - Un nom n'est servi qu'avec son enregistrement `DomainServices` web actif ; une ligne incohérente n'est pas certifiée.
+  - **Effet actuel** : aucun mapping du registre (`data/mcp-git-registry.json`) n'a encore de `realPath` vérifié, et AfricaFunds et Stablecoin partagent l'abonnement `chainsolutions.fr` sur S2. L'observation est donc indisponible pour tous les projets actuels : C5 reste `UNVERIFIED`, comme avant cette PR. Le mécanisme devient effectif dès qu'un chemin réel est vérifié pour un abonnement non partagé.
 - **Aucune écriture S1** : aucun binding, certificat ou DNS n'est créé ou modifié.
 - **NEXT_ACTION** : PR draft, CI verte, revue, fusion, Governed Deploy et attestation ; ensuite l'incrément 2 de F-04 (backup et bind-domain consentis).
 
