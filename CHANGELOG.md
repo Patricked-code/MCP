@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## 2026-10-08 — W3 `TB-W3-F-04` Domain binding, incrément 1 (candidate)
+
+- Live State inventorie en lecture seule les domaines servis par S1 et S2 (`src/liveState/servedDomains.ts`). La résolution de domaine C5 consomme cette observation par défaut : un domaine déclaré et servi se résout, et une absence observée devient `DOMAIN_NONE_CONFIRMED`. Une lecture indisponible reste `UNVERIFIED`.
+- Après revue : inventaire au niveau par domaine de Plesk (domaines imbriqués compris), échec de `find` propagé, entrée non conforme rendant l'inventaire indisponible, un inventaire par serveur (S1 et S2), observation restreinte aux domaines déclarés du projet sélectionné.
+- Second round : nom brut validé avant normalisation, répertoires wildcard Plesk exclus, aucune observation pour un projet sans domaine déclaré. Les alias Plesk restaient non inventoriés.
+- Troisième round : l'inventaire lit les enregistrements Plesk des noms actifs servis (domaines actifs avec service web et alias web actifs), au lieu des répertoires que conserve un site suspendu ; TLD Punycode acceptés.
+- Quatrième round : abonnement actif exigé, labels Punycode validés par IDNA, fraîcheur calculée par inventaire. L'alias `www.` généré par Plesk reste non inventorié (limite connue, échec fermé).
+- Cinquième round : l'observation est restreinte par abonnement Plesk (propriété observée) et non plus par liste de noms déclarés ; un nom non déclaré de l'abonnement du projet reste visible.
+- Sixième round : propriété d'abonnement tirée des `serverPath` GitRegistry, requête plafonnée, collecte concurrente, déclarations Unicode comparées en Punycode, contrat `DOMAIN_BINDING` mis à jour.
+- Septième round : propriété limitée aux `realPath` vérifiés, abonnement partagé entre projets rendu indisponible, enregistrement web `DomainServices` actif exigé. Aucun projet actuel n'a encore de chemin vérifié : C5 reste `UNVERIFIED` pour eux.
+- Huitième round : l'enregistrement web doit être lié à une adresse IP.
+
 ## 2026-10-08 — W3 F.2 clôture
 
 - `TB-W3-F-03` DONE : PR #261 fusionnée, déployée et attestée ; le runtime de projet est provisionnable via la surface consentie (inerte sans cible S1). Limites connues : issue #262.

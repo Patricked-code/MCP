@@ -1,3 +1,4 @@
+import type { ServerId } from '../config/servers.js';
 import { readFile } from 'node:fs/promises';
 
 import type {
@@ -13,6 +14,7 @@ import type {
 } from './types.js';
 import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
 import { readGitRegistryProjectEvidence } from '../github/registry.js';
+import { collectServedDomainInventories } from './servedDomains.js';
 import { collectProvisionedRuntimes } from './provisionedRuntime.js';
 import { collectTargetProjectObservation } from './targetProject.js';
 import { LIVE_STATE_SERVER_ID } from './runtimeObservation.js';
@@ -393,6 +395,11 @@ export async function collectGithubObservation(): Promise<GithubLiveObservation>
   }
 }
 
+async function runServerReadOnly(serverId: ServerId, command: string) {
+  const { runReadOnlyCommand } = await import('../ssh/client.js');
+  return runReadOnlyCommand(serverId, command);
+}
+
 async function runS1ReadOnly(command: string) {
   const { runReadOnlyCommand } = await import('../ssh/client.js');
   return runReadOnlyCommand(LIVE_STATE_SERVER_ID, command);
@@ -460,7 +467,8 @@ export async function collectDocumentationObservation(
 }
 
 export async function collectLiveStateObservations(): Promise<LiveStateObservations> {
-  const [github, s1, runtime, inventory, targetProject] = await Promise.all([
+  // Every source is read concurrently, so none ages behind another before reconciliation.
+  const [github, s1, runtime, inventory, targetProject, servedDomains] = await Promise.all([
     collectGithubObservation(),
     collectS1Observation(),
     collectRuntimeObservation(),
@@ -473,7 +481,8 @@ export async function collectLiveStateObservations(): Promise<LiveStateObservati
         projectIds: [],
         reasonCodes: ['TARGET_PROJECT_COLLECTION_FAILED']
       }
-    }))
+    })),
+    collectServedDomainInventories({ runReadOnly: runServerReadOnly, now: () => new Date() }).catch(() => undefined)
   ]);
   const documentation = await collectDocumentationObservation(github.head, s1.head);
   const provisionedRuntimes = await collectProvisionedRuntimes({
@@ -513,6 +522,7 @@ export async function collectLiveStateObservations(): Promise<LiveStateObservati
     repository: REPOSITORY,
     ...targetProject,
     ...(provisionedRuntimes ? { provisionedRuntimes } : {}),
+    ...(servedDomains ? { servedDomains } : {}),
     github, s1, runtime, documentation,
     capabilities, governance, auditBaseline, inventory
   };

@@ -387,3 +387,15 @@ test('GWC-8 preserves compatibility with V2 mappings that omit optional componen
     [{ role: 'FRONTEND', domain: 'app.example.com' }]
   );
 });
+
+test('F-04: a Unicode declaration compares in the Punycode form servers report', async () => {
+  const { resolveDomain } = await domainResolver();
+  const resolved = resolveDomain(input({
+    registry: registryEvidence({
+      projects: [{ projectId: 'example.platform', publicDomain: 'пример.рф', publicApi: null, historicalVhosts: [] }],
+      mappings: []
+    }),
+    observation: observation({ domains: [{ domain: 'xn--e1afmkfd.xn--p1ai', verified: true, evidenceRef: 'vhost:idn' }] })
+  }));
+  assert.equal(resolved.status, 'RESOLVED');
+});

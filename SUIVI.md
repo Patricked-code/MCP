@@ -1,5 +1,56 @@
 # SUIVI.md
 
+## 2026-10-08 — W3 `TB-W3-F-04` Domain binding, incrément 1 (observe-binding) — GREEN candidate
+
+- **Reprise depuis `main@bc1d986`.** Les intakes ont été réobservées : aucune nouvelle `[PROGRAM INTAKE]` depuis #235/#236, et l'issue #262 reste ouverte. Les Governed Sessions, claims et verrous runtime sont `UNKNOWN` depuis cette session : le proxy GitHub refuse les artefacts, et le bridge n'est pas requis (GitHub-first). Aucun claim n'est pris ni repris.
+- **Sélection `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.** `TB-W3-A3-02` reste réservé : il demande un claim runtime et entre en collision avec la PR #207 (`mcp/w3-a3-oauth-continuity`) d'un autre agent. Le lot suivant compatible est donc `TB-W3-F-04`.
+- **Livré (incrément 1, étape `observe-binding` du contrat `DOMAIN_BINDING`).**
+  - `src/liveState/servedDomains.ts` : Live State fait un inventaire en lecture seule et borné (1000 entrées) des domaines Plesk de chaque serveur géré. Il en tire l'observation de domaine C5.
+    - Une lecture en échec, malformée ou hors borne reste indisponible ; elle ne devient jamais une absence.
+    - Un serveur non géré n'obtient aucune observation.
+    - Un vhost prouve un binding sur le serveur, ni le DNS ni un certificat.
+  - `src/governedContext/github.ts` : `readDomainObservation` lit par défaut l'observation de Live State. C5 peut donc conclure `RESOLVED` ou `DOMAIN_NONE_CONFIRMED` au lieu de toujours rester `UNVERIFIED`.
+  - Tests : `tests/servedDomainObservation.test.ts`. RED : module absent. GREEN : 5/5. La chaîne CI locale passe (typecheck, build, docs:check, governance, gwc:verify, readonly-safety à 1006 tests).
+- **Revue Codex de la PR #267 (cinq constats, tous vérifiés et corrigés).**
+  - L'inventaire lit le niveau par domaine de Plesk (d'abord `/var/www/vhosts/system/<domaine>`, puis ses enregistrements au troisième round) : les domaines imbriqués sous une souscription sont vus.
+  - La commande n'a plus de pipe : un `find` en échec fait échouer la lecture au lieu de passer pour une absence.
+  - Toute entrée qui n'est pas un domaine (marqueur de troncature compris) rend l'inventaire indisponible.
+  - Un inventaire par serveur géré (S1 et S2) : un projet résolu sur S2 obtient aussi son observation.
+  - L'observation est restreinte aux domaines que GitRegistry déclare pour le projet sélectionné sur ce serveur : un autre locataire du serveur ne passe plus pour non déclaré.
+  - RED : 5 tests sur 6 échouent sur l'ancien source. GREEN : 6/6. La chaîne CI locale passe (1007 tests).
+- **Second round Codex (quatre constats).**
+  - Corrigés :
+    - le nom brut est validé avant toute normalisation ;
+    - les entrées wildcard sont exclues et ne sont plus prises pour une corruption ;
+    - un projet qui ne déclare aucun domaine n'obtient aucune observation (`UNKNOWN`) : l'inventaire n'établit aucune propriété, donc aucun `DOMAIN_NONE_CONFIRMED` supposé.
+  - Les alias Plesk n'étaient pas inventoriés ; c'est résolu au troisième round.
+- **Troisième round Codex (deux constats, corrigés).**
+  - Un site suspendu ou désactivé garde son répertoire `system/<domaine>` : la présence du répertoire ne prouve pas qu'il est servi. L'inventaire lit désormais les enregistrements Plesk (`plesk db`) : domaines au statut actif (`status = 0`) avec un service web (`htype <> 'none'`), et alias web actifs. Cela couvre aussi les alias du round précédent. Les sous-domaines wildcard (`*.`) sont exclus.
+  - Les noms internationalisés sont acceptés sous leur forme Punycode, TLD Punycode compris (`xn--…`).
+  - **À vérifier** sur S1 et S2 après le déploiement : que `plesk db` est disponible pour l'utilisateur SSH en lecture seule. Sinon l'inventaire est `UNAVAILABLE` et C5 reste `UNVERIFIED`, comme avant cette PR (échec fermé).
+- **Quatrième round Codex (quatre constats).**
+  - Corrigés :
+    - un domaine n'est servi que si son abonnement l'est aussi (`webspace_status = 0`) ; un alias seulement si son domaine l'est ;
+    - les labels Punycode sont validés par aller-retour IDNA (`domainToUnicode`/`domainToASCII`), et un faux label rend l'inventaire indisponible ;
+    - chaque inventaire vieillit depuis sa propre lecture (`observedAt`), pas depuis la réconciliation du snapshot.
+  - **Limite connue** : l'alias `www.` généré par Plesk n'est pas inventorié. Une déclaration `www.<domaine>` reste `DOMAIN_DECLARATION_UNOBSERVED`, donc `UNVERIFIED` : un faux négatif fermé, jamais un faux positif.
+- **Cinquième round Codex (un constat, corrigé).** Filtrer l'observation sur les seuls noms déclarés masquait un nom actif non déclaré servi par l'abonnement du projet : GW-09 pouvait conclure `RESOLVED` au lieu de `DOMAIN_OBSERVATION_UNDECLARED`. L'inventaire porte désormais l'abonnement Plesk de chaque nom (`webspace_id`). L'observation garde tous les noms actifs des abonnements qui servent un domaine déclaré du projet ; les autres abonnements sont exclus. Un nom sans abonnement lisible rend l'observation indisponible.
+- **Sixième round Codex (cinq constats, corrigés).**
+  - **Propriété** : un abonnement n'est plus attribué au projet parce qu'il sert un nom déclaré, car un nom rattaché par erreur à l'abonnement d'un autre client aurait suffi à `RESOLVED`. La propriété vient désormais du `serverPath` revu de chaque mapping GitRegistry (`/var/www/vhosts/<domaine principal>`), et l'inventaire porte le domaine principal de l'abonnement de chaque nom. Sans un tel binding, l'observation est indisponible.
+  - La requête est plafonnée à 1001 lignes : un inventaire trop grand est détecté sans être lu entièrement.
+  - Les inventaires de domaines sont collectés en même temps que les autres sources de Live State, sans retarder l'horodatage commun.
+  - GW-09 compare les déclarations Unicode sous leur forme Punycode (`domainToASCII`).
+  - `.mcp/provisioning-contracts.json` décrit l'observation livrée (preuve d'absence, étape `observe-binding`). L'étape reste portée par `TB-W3-F-04` jusqu'au déploiement attesté.
+  - RED : 6 tests sur 18 échouent sur l'ancien source. GREEN : 18/18. Chaîne CI locale : 1008 tests.
+- **Septième round Codex (trois constats, corrigés en échec fermé).**
+  - La propriété exige un `realPath` vérifié (`realPathVerified=true`) sous `/var/www/vhosts/<domaine principal>` : un `serverPath` seulement déclaré n'est pas une preuve.
+  - Un abonnement vérifié pour plusieurs projets du registre ne peut pas être découpé par cet inventaire : l'observation est indisponible pour chacun.
+  - Un nom n'est servi qu'avec son enregistrement `DomainServices` web actif ; une ligne incohérente n'est pas certifiée.
+  - **Effet actuel** : aucun mapping du registre (`data/mcp-git-registry.json`) n'a encore de `realPath` vérifié, et AfricaFunds et Stablecoin partagent l'abonnement `chainsolutions.fr` sur S2. L'observation est donc indisponible pour tous les projets actuels : C5 reste `UNVERIFIED`, comme avant cette PR. Le mécanisme devient effectif dès qu'un chemin réel est vérifié pour un abonnement non partagé.
+- **Huitième round Codex (un constat, corrigé).** L'enregistrement web `DomainServices` actif doit aussi être lié à une adresse IP (`IpAddressesCollections` puis `IP_Addresses`, comme la requête d'inventaire de Plesk) ; sans IP, le site ne peut pas être servi. Les colonnes Plesk lues restent **à vérifier** sur S1 et S2 ; une requête en échec rend l'inventaire `UNAVAILABLE`.
+- **Aucune écriture S1** : aucun binding, certificat ou DNS n'est créé ou modifié.
+- **NEXT_ACTION** : PR draft, CI verte, revue, fusion, Governed Deploy et attestation ; ensuite l'incrément 2 de F-04 (backup et bind-domain consentis).
+
 ## 2026-10-08 — W3 F.2 Project runtime provisioning — clôture `TB-W3-F-03` (DONE)
 
 - **Incrément 3 livré.** PR #261 fusionnée au merge `6576b5287f23566684005adf6032734e2ecdea50` (head `d0bc1ee`, CI PR #2309 `37817615298`, 1001 tests). CI main #2310 `37817792888` verte.

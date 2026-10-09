@@ -1,5 +1,18 @@
 # DECISIONS_LOG.md
 
+## 2026-10-08 — F-04 incrément 1 : l'observation des domaines servis vient de Live State
+
+Décision technique, déduite selon #221. Sources : l'étape `observe-binding` du contrat `DOMAIN_BINDING` (`.mcp/provisioning-contracts.json`), le motif C4 (`liveStateRuntimeObservation`) et l'interdiction d'autorité parallèle.
+
+- **WRAP de l'existant.** L'observation enveloppe le listage read-only des vhosts (`list_domains_s1`) dans le cycle de Live State. Aucun nouveau store ni collecteur autonome n'est créé, et la fraîcheur est celle du snapshot.
+- **Échec fermé.** Au-delà de 1000 entrées, en cas d'échec ou de sortie illisible, l'observation est indisponible : jamais une absence partielle.
+- **Portée.** L'observation ne vaut que pour un serveur géré (voir la révision après revue ci-dessous). Un vhost prouve le binding côté serveur, pas le DNS ni le certificat, qui restent du ressort des étapes suivantes.
+- **Après revue (PR #267).** L'inventaire couvre chaque serveur géré (S1 et S2) au niveau `system/<domaine>` de Plesk. L'observation transmise à C5 est restreinte aux domaines que GitRegistry déclare pour le projet sélectionné : un serveur partagé sert d'autres projets, dont les domaines ne sont ni des preuves ni des contradictions pour celui-ci.
+- **Source de l'inventaire (troisième round).** Les enregistrements Plesk remplacent les répertoires de vhost : un répertoire survit à la suspension d'un site et un alias n'en a pas. Seul le statut actif prouve qu'un nom est servi. C'est un écart assumé par rapport à « envelopper `list_domains_s1/s2` » du contrat `DOMAIN_BINDING` : ces outils listent des répertoires, qui ne suffisent pas à prouver un service actif. Un projet sans domaine déclaré n'obtient aucune observation, car l'inventaire n'établit pas qui possède un nom.
+- **Portée par abonnement (cinquième round).** La propriété d'un nom sur un serveur partagé est celle de son abonnement Plesk. L'observation transmise à C5 couvre les abonnements qui servent au moins un domaine déclaré du projet : un nom non déclaré de ces abonnements est une contradiction à signaler, un nom d'un autre abonnement n'en est pas une.
+- **Preuve de propriété (sixième round).** Servir un nom déclaré ne prouve pas qu'un abonnement appartient au projet. La preuve retenue est le `serverPath` revu des mappings GitRegistry, qui nomme la racine de l'abonnement Plesk. Sans elle, l'observation reste indisponible.
+- **Preuve vérifiée seulement (septième round).** Le `serverPath` déclaré cède la place au `realPath` vérifié, et un abonnement partagé entre projets du registre n'est pas découpé. Conséquence assumée : tant qu'aucun chemin n'est vérifié, l'observation est indisponible pour tous les projets. Mieux vaut un `UNVERIFIED` qu'un `RESOLVED` sans preuve.
+
 ## 2026-10-07 — F.2 incrément 3 : surface consentie et câblage du provisioning d'un runtime de projet
 
 Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME` et le consentement E3 de `.mcp/provisioning-contracts.json`, l'admission du Governed Deploy, `EXISTING_MCP_EXPOSURE_FIRST` (#236), et les invariants `NO_RESOURCE_CREATION_WITHOUT_EXPLICIT_CONSENT` et `NO_IMPLICIT_ACTIVATION`.
