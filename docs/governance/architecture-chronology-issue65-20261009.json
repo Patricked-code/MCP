@@ -4,8 +4,8 @@
   "repository": "Patricked-code/MCP",
   "observedMainSha": "3df9778dc44202b0e20fb56ce020a089f3a6ea2a",
   "asOf": "2026-10-09",
-  "status": "DISCOVERY_CHECKPOINT_NOT_TERMINAL_AUDIT",
-  "scope": "all GitHub issues and pull requests numbered >=65 visible to REST pagination, with selected authoritative comment threads; not every PR review comment or commit comment has been examined",
+  "status": "ISSUE_AND_PR_CONVERSATION_COMMENTS_CAPTURED_REVIEW_THREADS_AND_BLUEPRINT_CODE_AUDIT_PENDING",
+  "scope": "All issue/PR entries #65+ and issue-conversation-comment bodies across 6 batches plus selected anchors; does not cover inline PR reviews, code review threads, commit comments or subsequent GitHub updates",
   "authorityOrder": [
     "CLAUDE.md",
     "SUIVI.md",
@@ -100,8 +100,8 @@
       "kind": "supervision",
       "title": "Resolve complete issue/PR/comment provenance",
       "input": "All index entries >=65; comment index selected only",
-      "acceptance": "Fetch full issue/PR timeline, review threads and comment bodies for unexamined entries; store source links and factual classification; no historical rewrite",
-      "status": "PARTIAL"
+      "acceptance": "Issue/PR conversation comments archived in batch01..06 and selectedIssueComments; still inspect PR review submissions, inline review threads, metadata drift, and classify authoritative decisions vs automated noise",
+      "status": "ISSUE_CONVERSATION_CAPTURE_COMPLETE_PR_REVIEW_THREADS_TODO"
     },
     {
       "order": 2,
@@ -166,11 +166,14 @@
       262,
       268
     ],
-    "uninspectedCommentThreadsCount": 99,
+    "uninspectedCommentThreadsCount": 0,
     "liveRuntimeTasks": "UNKNOWN",
     "liveSessions": "UNKNOWN",
     "liveLocks": "UNKNOWN",
-    "programBlueprintCountLastObserved": 94
+    "programBlueprintCountLastObserved": 94,
+    "issuePrConversationThreadsFetched": 110,
+    "inlineReviewThreads": "NOT_YET_AUDITED",
+    "all94BlueprintImplementationProof": "NOT_YET_AUDITED"
   },
   "index": [
     {
@@ -2773,5 +2776,13 @@
       }
     ]
   },
-  "handoff": "On every new agent connection: read CLAUDE.md §7, SUIVI head, this index and source issue anchors, Program Backlog, live GitHub and runtime necessary. Continue audit from uninspected comment threads; apply FIRST_COLLISION_FREE_IN_PROGRAM_ORDER; persist evidence and checkpoint. File is a derived audit, not an authority or task assignment."
+  "handoff": "On every new agent connection: read CLAUDE.md §7, SUIVI head, this index and source issue anchors, Program Backlog, live GitHub and runtime necessary. Continue audit from uninspected comment threads; apply FIRST_COLLISION_FREE_IN_PROGRAM_ORDER; persist evidence and checkpoint. File is a derived audit, not an authority or task assignment.",
+  "commentBatchPaths": [
+    "docs/governance/architecture-comments-batch01-20261009.json",
+    "docs/governance/architecture-comments-batch02-20261009.json",
+    "docs/governance/architecture-comments-batch03-20261009.json",
+    "docs/governance/architecture-comments-batch04-20261009.json",
+    "docs/governance/architecture-comments-batch05-20261009.json",
+    "docs/governance/architecture-comments-batch06-20261009.json"
+  ]
 }
