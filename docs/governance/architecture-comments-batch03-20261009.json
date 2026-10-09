@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "scope": "Issue/PR conversation comments only",
+  "repo": "Patricked-code/MCP",
+  "baseline": "3df9778dc44202b0e20fb56ce020a089f3a6ea2a",
+  "records": [
+    {
+      "number": 131,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/131#issuecomment-5780615339",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=af10-18-24-27-git-20260922-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35757943186\nartifact=mcp-readonly-evidence-af10-18-24-27-git-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/131#issuecomment-5780636575",
+          "body": "AF-10/AF-18/AF-24/AF-27 final S1 attestation:\n\n- GitHub main = `9b190a940d700f9b070bf5a9a8c0c8400337e53c`\n- S1 branch = `main`\n- S1 head = `9b190a940d700f9b070bf5a9a8c0c8400337e53c`\n- working_tree_changes = `0`\n- origin_fetch = `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`\n- origin_push = `disabled://mcp-s1-read-only`\n- evidence run = `35757943186`\n- artifact digest = `sha256:0613b1fdf6c5470d4dd674da4afa9576955bafbab50840013f9528bf0a309687`\n- mutationAllowed = `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 132,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/132#issuecomment-5780615485",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=af10-18-24-27-docker-20260922-001\ntarget=s1\nprobe=docker_status\nrunId=35757955482\nartifact=mcp-readonly-evidence-af10-18-24-27-docker-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/132#issuecomment-5780637875",
+          "body": "AF-10/AF-18/AF-24/AF-27 final Docker attestation:\n\n- container = `wealthtech_mcp_ssh_bridge`\n- status = `Up ... (healthy)`\n- evidence run = `35757955482`\n- artifact digest = `sha256:cbe648ffcb802161049d538307bce22650c8e9bf9404dd79cf310362792c2456`\n- mutationAllowed = `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 134,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/134#issuecomment-5780754236",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=afgov-docs-git-20260922-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35759072874\nartifact=mcp-readonly-evidence-afgov-docs-git-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/134#issuecomment-5782697255",
+          "body": "Final post-PR#133 S1 attestation:\n\n- GitHub main = `b5d3b2a2c99643c9c6a853570b9f7b417fb1d7b2`\n- S1 branch = `main`\n- S1 head = `b5d3b2a2c99643c9c6a853570b9f7b417fb1d7b2`\n- working_tree_changes = `0`\n- origin_fetch = `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`\n- origin_push = `disabled://mcp-s1-read-only`\n- workflow run = `35759072874`\n- artifact digest = `sha256:703f57f9ab9573bc5e1deef9ce61c477fd2310579803b75714a7dcf3e3c5926d`\n- output digest = `sha256:480bf5188f540064d50283740e784e20df88778b3b282377aad03a4d8d079f93`\n- transport = `github_oidc_mcp_readonly`\n- mutationAllowed = `false`\n\nVerdict: GitHub main and S1 are exactly aligned."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 135,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/135#issuecomment-5780754803",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=afgov-docs-docker-20260922-001\ntarget=s1\nprobe=docker_status\nrunId=35759084606\nartifact=mcp-readonly-evidence-afgov-docs-docker-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/135#issuecomment-5782697941",
+          "body": "Final post-PR#133 Docker attestation:\n\n- container = `wealthtech_mcp_ssh_bridge`\n- status = `Up ... (healthy)`\n- port = `127.0.0.1:8787->8787/tcp`\n- workflow run = `35759084606`\n- artifact digest = `sha256:bd624ebb586faec797f636f3a67c85e3e0322cd9b96955c40d5a00d0303f7187`\n- output digest = `sha256:0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af`\n- transport = `github_oidc_mcp_readonly`\n- mutationAllowed = `false`\n\nVerdict: MCP runtime container is healthy after the docs-only merge."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 137,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/137#issuecomment-5783007181",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=af23-git-20260922-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35776386000\nartifact=mcp-readonly-evidence-af23-git-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/137#issuecomment-5783055354",
+          "body": "AF-23 final S1 attestation:\n\n- GitHub main = `21cb4860e9ab16ff7d98b294a0398fdcec409879`\n- S1 branch/head = `main@21cb4860e9ab16ff7d98b294a0398fdcec409879`\n- working_tree_changes = `0`\n- origin_fetch = `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`\n- origin_push = `disabled://mcp-s1-read-only`\n- workflow run = `35776386000`\n- artifact digest = `sha256:955f695478c1328ad0a06ea54c45974e40cea68be7750ae50d996618525ae309`\n- output digest = `sha256:139d5a97539c8a0f513e0ca28f80f20d5089528584029192f9f6d85411f9146d`\n- transport = `github_oidc_mcp_readonly`\n- mutationAllowed = `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 138,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/138#issuecomment-5783009164",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=af23-docker-20260922-001\ntarget=s1\nprobe=docker_status\nrunId=35776391291\nartifact=mcp-readonly-evidence-af23-docker-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/138#issuecomment-5783056361",
+          "body": "AF-23 final Docker attestation:\n\n- container = `wealthtech_mcp_ssh_bridge`\n- status = `Up ... (healthy)`\n- port = `127.0.0.1:8787->8787/tcp`\n- workflow run = `35776391291`\n- artifact digest = `sha256:da9fbefea869dbfb2244072f498be597bcec3335c4348c3cb58dcb281013b7c1`\n- output digest = `sha256:0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af`\n- transport = `github_oidc_mcp_readonly`\n- mutationAllowed = `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 140,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/140#issuecomment-5783371270",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=corrected-findings-git-20260922-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35778584809\nartifact=mcp-readonly-evidence-corrected-findings-git-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/140#issuecomment-5783413029",
+          "body": "Corrected-findings final S1 attestation:\n\n- GitHub main = `2495647c3ccf3f676aa979bbe3e8337d9dbf12bf`\n- S1 `main` = `2495647c3ccf3f676aa979bbe3e8337d9dbf12bf`\n- working_tree_changes = `0`\n- origin_fetch = `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`\n- origin_push = `disabled://mcp-s1-read-only`\n- run = `35778584809`\n- artifact digest = `sha256:bd5acdbfcc72bcaf19ce245252b61132e6dc3d69350f8907beb1bb43d4af2e45`\n- output digest = `sha256:dc2c9ae026e24a6db12946de99552825fff369adede0280950a2343ffa3a03bf`\n- mutationAllowed = `false`\n\nVerdict: GitHub and S1 are exactly aligned."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 141,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/141#issuecomment-5783373096",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=corrected-findings-docker-20260922-001\ntarget=s1\nprobe=docker_status\nrunId=35778603552\nartifact=mcp-readonly-evidence-corrected-findings-docker-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/141#issuecomment-5783414947",
+          "body": "Corrected-findings final Docker attestation:\n\n- container = `wealthtech_mcp_ssh_bridge`\n- status = `Up ... (healthy)`\n- run = `35778603552`\n- artifact digest = `sha256:b9a506d75bf654bba0b2410d496ba88cf9ffefd619868695f73f43743487c28c`\n- output digest = `sha256:0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af`\n- mutationAllowed = `false`\n\nVerdict: MCP runtime container is healthy."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 143,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/143#issuecomment-5783567323",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=corrected-findings-docs-final-git-20260922-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35780016409\nartifact=mcp-readonly-evidence-corrected-findings-docs-final-git-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/143#issuecomment-5783597626",
+          "body": "Final docs-only descendant S1 attestation:\n\n- GitHub main = `87deb6311e13a37f09f6570a78c2f502df12a240`\n- S1 main = `87deb6311e13a37f09f6570a78c2f502df12a240`\n- working_tree_changes = `0`\n- origin_fetch = `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`\n- origin_push = `disabled://mcp-s1-read-only`\n- run = `35780016409`\n- artifact digest = `sha256:ab7cbeee48dee67ea73279752f39823cd24743d31dbdf6963675bfaefeadaee9`\n- output digest = `sha256:a0cbd99bed75e6ad69c42bf986acce0d1e347924ddae66f79b6262c109238830`\n- mutationAllowed = `false`\n\nVerdict: exact GitHub/S1 alignment after the docs-only descendant merge."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 144,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/144#issuecomment-5783567588",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=corrected-findings-docs-final-docker-20260922-001\ntarget=s1\nprobe=docker_status\nrunId=35780024298\nartifact=mcp-readonly-evidence-corrected-findings-docs-final-docker-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/144#issuecomment-5783598810",
+          "body": "Final docs-only descendant Docker attestation:\n\n- container = `wealthtech_mcp_ssh_bridge`\n- status = `Up ... (healthy)`\n- run = `35780024298`\n- artifact digest = `sha256:ab96c2316acbbddabdb3a3acfc01ce427e3c77cd9cabb7f9d962388d0f77377f`\n- output digest = `sha256:0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af`\n- mutationAllowed = `false`\n\nVerdict: MCP container healthy after the docs-only descendant merge."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 147,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/147#issuecomment-5784815913",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=historical-candidate-handoff-git-20260922-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35789394632\nartifact=mcp-readonly-evidence-historical-candidate-handoff-git-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/147#issuecomment-5784838644",
+          "body": "Attestation finale PR #146 / historical candidate handoff.\n\n- main/S1 exact SHA: `38f7ab60b4fa30db50536278d2b34ddbcfe2c204`\n- branch: `main`\n- working_tree_changes: `0`\n- origin fetch: `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`\n- origin push: `disabled://mcp-s1-read-only`\n- evidence run: `35789394632`\n- artifact digest: `sha256:21a656b89e48a9dbfe816a5ccd1404265701e547f5be9852b7a08835703dd9b4`\n- output digest: `sha256:643eda0a7ca7bcac609ad0608e0bb85d2a5dc6baa1738c56e4c0225b6ce6c236`\n- transport: `github_oidc_mcp_readonly`\n- mutationAllowed: `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 148,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/148#issuecomment-5784817452",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=historical-candidate-handoff-docker-20260922-001\ntarget=s1\nprobe=docker_status\nrunId=35789399187\nartifact=mcp-readonly-evidence-historical-candidate-handoff-docker-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/148#issuecomment-5784839056",
+          "body": "Attestation finale PR #146 / historical candidate handoff.\n\n- workflow SHA: `38f7ab60b4fa30db50536278d2b34ddbcfe2c204`\n- container: `wealthtech_mcp_ssh_bridge`\n- status: `Up ... (healthy)`\n- port: `127.0.0.1:8787->8787/tcp`\n- evidence run: `35789399187`\n- artifact digest: `sha256:695a2932ce1d57cec4d73b3f750dda6702d2100cf4d4571d697766aff82cc354`\n- output digest: `sha256:0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af`\n- transport: `github_oidc_mcp_readonly`\n- mutationAllowed: `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 149,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/149#issuecomment-5784929009",
+          "body": "Post-merge closure evidence:\n- merge `3933852cdb40b05b59b06460faa9116715d597a9`\n- MCP CI #1727 / run `35789919009` SUCCESS\n- Governed Deploy #64 / run `35789919030` SUCCESS, exact-main deploy step SUCCESS\n- final S1 OIDC run `35790116600`: exact docs descendant, clean tree, push disabled\n- final Docker OIDC run `35790119730`: healthy\n- no additional PRODUCTION_STATE rewrite: functional baseline remains the already-attested `38f7ab60...`; `3933852c...` is its docs/state descendant."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 150,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/150#issuecomment-5784916161",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=historical-candidate-handoff-docs-git-20260922-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35790116600\nartifact=mcp-readonly-evidence-historical-candidate-handoff-docs-git-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/150#issuecomment-5784928316",
+          "body": "Final docs-descendant attestation after PR #149.\n\n- workflow/main SHA: `3933852cdb40b05b59b06460faa9116715d597a9`\n- S1 branch: `main`\n- S1 head: `3933852cdb40b05b59b06460faa9116715d597a9`\n- working tree changes: `0`\n- fetch: `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`\n- push: `disabled://mcp-s1-read-only`\n- run: `35790116600`\n- artifact digest: `sha256:fd031d1d265ea6a9a15ffe1d4b100c809313f3813ebc5b97e904439b493b3629`\n- output digest: `sha256:b05bb1f2b08cc128eb791c6c87076b1ff73f9a56e2b5cc2e613a631759aed526`\n- mutationAllowed: `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 151,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/151#issuecomment-5784915969",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=historical-candidate-handoff-docs-docker-20260922-001\ntarget=s1\nprobe=docker_status\nrunId=35790119730\nartifact=mcp-readonly-evidence-historical-candidate-handoff-docs-docker-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/151#issuecomment-5784928634",
+          "body": "Final docs-descendant Docker attestation after PR #149.\n\n- workflow/main SHA: `3933852cdb40b05b59b06460faa9116715d597a9`\n- container: `wealthtech_mcp_ssh_bridge`\n- status: `healthy`\n- port: `127.0.0.1:8787->8787/tcp`\n- run: `35790119730`\n- artifact digest: `sha256:dbad288e3ffc7fa4e1622de244be1994511159a8d1d39f84da3a4899c57cff0a`\n- output digest: `sha256:6a1bee1fe20af3cdc7453b2d68927576dd55c659eb0c4de22d678678bbf8d641`\n- mutationAllowed: `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 152,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/152#issuecomment-5785021924",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=legacy-intent-reconciliation-final-git-20260922-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35790874094\nartifact=mcp-readonly-evidence-legacy-intent-reconciliation-final-git-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/152#issuecomment-5785033461",
+          "body": "Final attestation after PR #145.\n- main/S1 exact SHA: `cda7610e1dcd5bc56511f0b42f372f68058ca2fb`\n- branch: `main`\n- working tree changes: `0`\n- fetch: `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`\n- push: `disabled://mcp-s1-read-only`\n- run: `35790874094`\n- artifact digest: `sha256:f832b6eeb61ebb1473e8980e29ab3619eabc8d6101923e0fa23aeb021c739f83`\n- output digest: `sha256:88792fdf585ff1bf9192b211f26142d83de6140ca990541357b440db2c2337ea`\n- transport: `github_oidc_mcp_readonly`\n- mutationAllowed: `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 153,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/153#issuecomment-5785023025",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=legacy-intent-reconciliation-final-docker-20260922-001\ntarget=s1\nprobe=docker_status\nrunId=35790878259\nartifact=mcp-readonly-evidence-legacy-intent-reconciliation-final-docker-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/153#issuecomment-5785033921",
+          "body": "Final Docker attestation after PR #145.\n- workflow/main SHA: `cda7610e1dcd5bc56511f0b42f372f68058ca2fb`\n- container: `wealthtech_mcp_ssh_bridge`\n- status: `healthy`\n- port: `127.0.0.1:8787->8787/tcp`\n- run: `35790878259`\n- artifact digest: `sha256:257dcc22a69873f6ce83e65f06cc5c7c8a0ccf83b7e3d1b1514091dc79e71d1a`\n- output digest: `sha256:c083f9286ac6b326e6f88a1e3ce168c0beb9fa4c550950e83e5de71deab41cba`\n- transport: `github_oidc_mcp_readonly`\n- mutationAllowed: `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 154,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/154#issuecomment-5786329078",
+          "body": "BACKLOG CONVERGENCE HANDOFF — PR #159 merged\n\nCurrent main is now `84bbe9b1684f5f6be73eaf2d6aa21063fb62697a`.\n\nPR #159 added the derived, non-executable program backlog convergence and machine guard:\n- 34 current-first workstreams;\n- coverage of 40 unchecked TODOs, 33 executable roadmap lots, GWC-0..17, AF-01..36, OD-01..12, static task-registry records, historical PR intents, and PR #154/UAC-01..24;\n- no duplicate Integration Slot;\n- no new Task Queue/Operational Memory/session/claim/lock authority.\n\nPR #154 remains the single ACTIVE owner of `coordination.universal`. Do not duplicate its UAC work elsewhere.\n\nBefore the next mutation on #154:\n1. reobserve main;\n2. merge/reconcile current main into the existing #154 branch (no force-push);\n3. preserve the current #154 code and UAC plan;\n4. reconcile its SUIVI checkpoint against the new backlog convergence;\n5. continue UAC existing-first from the exact reconciled head.\n\nNo automatic claim release or ownership transfer is implied by this comment."
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/154#issuecomment-5818320001",
+          "body": "UAC TERMINAL HANDOFF — 2026-09-24\n\nUniversal Agent Coordination UAC-01..24 is complete.\n\nFunctional merge:\n- PR #154 candidate head: `9100ab750472124d0a7b696f37b1f56e687f63ca`\n- PR #154 merge/main functional baseline: `ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4`\n- MCP CI #1852 / run `36028205563`: SUCCESS\n- Governed Deploy #68 / run `36028205582`: SUCCESS\n- OIDC read-only evidence issues #166/#167: SUCCESS; SSH fallback skipped; mutationAllowed=false\n\nTerminal docs-only reconciliation:\n- PR #168 merged as `ebc7443513627450643d46c8e676b795cc3aa03a`\n- MCP CI #1858 / run `36029300112`: SUCCESS\n- Governed Deploy #69 / run `36029300151`: SUCCESS\n- issues #169/#170 → runs `36029508971` / `36029512674`: OIDC SUCCESS, SSH fallback skipped, mutationAllowed=false\n- S1: `main@ebc7443513627450643d46c8e676b795cc3aa03a`, worktree clean, fetch read-only, push disabled\n- Docker: `wealthtech_mcp_ssh_bridge` healthy\n\nNo UAC runtime TASK-*, Governed Session, claim or Governed Lock was created by this GitHub-driven program, so no runtime UAC ownership/lock cleanup is pending.\nHistorical PRECODE remains provenance only. Heartbeat/liveness never releases or transfers ownership.\nThe historical Live State block is intentionally not promoted without a direct approved GitHub-first Live State probe; exact Git/S1/runtime/deploy evidence is recorded separately.\n\nResume future work from current `main`, current authorities and current backlog. Do not reopen or duplicate `coordination.universal` unless a new requirement exists."
+        }
+      ],
+      "error": null
+    }
+  ]
+}

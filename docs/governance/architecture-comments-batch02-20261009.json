@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "scope": "Issue/PR conversation comments only",
+  "repo": "Patricked-code/MCP",
+  "baseline": "3df9778dc44202b0e20fb56ce020a089f3a6ea2a",
+  "records": [
+    {
+      "number": 106,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/106#issuecomment-5752123700",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-backend-20260920-001\nrunId=35532578410\nstatus=BLOCKED\nreason=oidc_endpoint_failed_and_ssh_fallback_unavailable\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 107,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/107#issuecomment-5752123685",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-runtime-20260920-001\nrunId=35532579686\nstatus=BLOCKED\nreason=oidc_endpoint_failed_and_ssh_fallback_unavailable\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 109,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/109#issuecomment-5752176926",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-backend-20260920-002\nrunId=35533051047\nstatus=BLOCKED\nreason=oidc_endpoint_failed_and_ssh_fallback_unavailable\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 110,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/110#issuecomment-5752177013",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-runtime-20260920-002\nrunId=35533053488\nstatus=BLOCKED\nreason=oidc_endpoint_failed_and_ssh_fallback_unavailable\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 112,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/112#issuecomment-5752246573",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=mcp-s1-after-deploy53-20260920-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35533666870\nartifact=mcp-readonly-evidence-mcp-s1-after-deploy53-20260920-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 113,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/113#issuecomment-5752248367",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-backend-diagnostic-20260920-003\ntarget=s2\nprobe=stablecoin_backend_git_status\nrunId=35533714750\nartifact=mcp-readonly-evidence-stablecoin-s2-backend-diagnostic-20260920-003\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 114,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/114#issuecomment-5752254398",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-runtime-20260920-003\ntarget=s2\nprobe=stablecoin_runtime_status\nrunId=35533765848\nartifact=mcp-readonly-evidence-stablecoin-s2-runtime-20260920-003\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 115,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/115#issuecomment-5752296141",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-preflight-after-checkpoint-20260920-001\nrunId=35534119572\nstatus=BLOCKED\nreason=oidc_endpoint_failed_and_ssh_fallback_unavailable\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/115#issuecomment-5752299517",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-preflight-after-checkpoint-20260920-001\ntarget=s2\nprobe=stablecoin_frontend_git_status\nrunId=35534119572\nartifact=mcp-readonly-evidence-stablecoin-s2-preflight-after-checkpoint-20260920-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 116,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/116#issuecomment-5756290596",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-runtime-write-preflight-20260921-001\ntarget=s2\nprobe=stablecoin_frontend_git_status\nrunId=35568492676\nartifact=mcp-readonly-evidence-stablecoin-s2-runtime-write-preflight-20260921-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 118,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/118#issuecomment-5756465159",
+          "body": "MCP_STABLECOIN_FAST_FORWARD_RESULT\nrequestId=stablecoin-s2-fast-forward-20260921-001\nstatus=SUCCESS\nserverBefore=6216755d318677ed9a56c36731a57531d02bf751\nserverAfter=4e946bd523acfbef3d08d9ff7b0b3dd3f074c3a3\ntargetSha=4e946bd523acfbef3d08d9ff7b0b3dd3f074c3a3\nchangedFiles=16\napplicationFiles=0\nfrontendHttp=200\napiRootHttp=401\napiHealthHttp=401"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 119,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/119#issuecomment-5756471631",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-post-fast-forward-git-20260921-001\ntarget=s2\nprobe=stablecoin_frontend_git_status\nrunId=35569778860\nartifact=mcp-readonly-evidence-stablecoin-s2-post-fast-forward-git-20260921-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 120,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/120#issuecomment-5756471951",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-post-fast-forward-runtime-20260921-001\ntarget=s2\nprobe=stablecoin_runtime_status\nrunId=35569783346\nartifact=mcp-readonly-evidence-stablecoin-s2-post-fast-forward-runtime-20260921-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 121,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/121#issuecomment-5756519940",
+          "body": "MCP_STABLECOIN_FAST_FORWARD_RESULT\nrequestId=stablecoin-s2-final-docs-fast-forward-20260921-001\nstatus=SUCCESS\nserverBefore=4e946bd523acfbef3d08d9ff7b0b3dd3f074c3a3\nserverAfter=2a8be8219689e6213ce20f13d69b6b45f3693dfe\ntargetSha=2a8be8219689e6213ce20f13d69b6b45f3693dfe\nchangedFiles=5\napplicationFiles=0\nfrontendHttp=200\napiRootHttp=401\napiHealthHttp=401"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 122,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/122#issuecomment-5756525789",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-terminal-git-20260921-001\ntarget=s2\nprobe=stablecoin_frontend_git_status\nrunId=35570202343\nartifact=mcp-readonly-evidence-stablecoin-s2-terminal-git-20260921-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 123,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/123#issuecomment-5756527107",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-terminal-runtime-20260921-001\ntarget=s2\nprobe=stablecoin_runtime_status\nrunId=35570208278\nartifact=mcp-readonly-evidence-stablecoin-s2-terminal-runtime-20260921-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 125,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/125#issuecomment-5765395768",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-front-20260921-001\ntarget=s2\nprobe=stablecoin_frontend_git_status\nrunId=35637855476\nartifact=mcp-readonly-evidence-stablecoin-front-20260921-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/125#issuecomment-5765417331",
+          "body": "Stablecoin frontend read-only evidence classification:\n\n- GitHub `Patricked-code/Stablecoin/main` = `2a8be8219689e6213ce20f13d69b6b45f3693dfe`\n- S2 frontend `main` = `2a8be8219689e6213ce20f13d69b6b45f3693dfe`\n- working tree changes = `0`\n- origin fetch/push = `https://github.com/Patricked-code/Stablecoin.git`\n- evidence run = `35637855476`\n- transport = `github_oidc_mcp_readonly`\n- mutationAllowed = `false`\n- artifact digest = `sha256:1238329e3e48f97084890f94e8e8f5297ccb49cdf719d4ce3fa9cdb2014358c7`\n\nVerdict: GitHub Stablecoin and S2 frontend are aligned; no fast-forward/deploy mutation is required from this evidence."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 128,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/128#issuecomment-5780377055",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=af09-mcp-git-20260922-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35756125439\nartifact=mcp-readonly-evidence-af09-mcp-git-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/128#issuecomment-5780420623",
+          "body": "AF-09 final read-only S1 attestation:\n\n- GitHub main = `161db894eb5a864eebb5b79e01e76446d6ef7af1`\n- S1 branch = `main`\n- S1 head = `161db894eb5a864eebb5b79e01e76446d6ef7af1`\n- working_tree_changes = `0`\n- origin_fetch = `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`\n- origin_push = `disabled://mcp-s1-read-only`\n- workflow run = `35756125439`\n- artifact digest = `sha256:bef115cfc4dc597576aa07aea036853f45b2cfef0d4519f03c6ad5e642ff0121`\n- transport = `github_oidc_mcp_readonly`\n- mutationAllowed = `false`\n\nVerdict: GitHub and S1 are aligned on the docs-only merge SHA."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 129,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/129#issuecomment-5780388243",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=af09-docker-20260922-001\ntarget=s1\nprobe=docker_status\nrunId=35756129988\nartifact=mcp-readonly-evidence-af09-docker-20260922-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/129#issuecomment-5780421834",
+          "body": "AF-09 final read-only Docker attestation:\n\n- container = `wealthtech_mcp_ssh_bridge`\n- status = `Up ... (healthy)`\n- port = `127.0.0.1:8787->8787/tcp`\n- workflow run = `35756129988`\n- artifact digest = `sha256:a55b8566da3482593f2740ceb55a5cc17fb16be5149215cdd643c48423ba25fd`\n- transport = `github_oidc_mcp_readonly`\n- mutationAllowed = `false`\n\nVerdict: the MCP container is running and healthy after Governed Deploy #57."
+        }
+      ],
+      "error": null
+    }
+  ]
+}

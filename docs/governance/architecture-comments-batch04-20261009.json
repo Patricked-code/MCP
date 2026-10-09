@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "scope": "Issue/PR conversation comments only",
+  "repo": "Patricked-code/MCP",
+  "baseline": "3df9778dc44202b0e20fb56ce020a089f3a6ea2a",
+  "records": [
+    {
+      "number": 155,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/155#issuecomment-5785508412",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=mcp-s1-current-20260923-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35794171128\nartifact=mcp-readonly-evidence-mcp-s1-current-20260923-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 156,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/156#issuecomment-5785511401",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-frontend-current-20260923-001\ntarget=s2\nprobe=stablecoin_frontend_git_status\nrunId=35794187803\nartifact=mcp-readonly-evidence-stablecoin-s2-frontend-current-20260923-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 157,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/157#issuecomment-5785510005",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-backend-current-20260923-001\ntarget=s2\nprobe=stablecoin_backend_git_status\nrunId=35794181381\nartifact=mcp-readonly-evidence-stablecoin-s2-backend-current-20260923-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 158,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/158#issuecomment-5785515016",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-runtime-current-20260923-001\ntarget=s2\nprobe=stablecoin_runtime_status\nrunId=35794212028\nartifact=mcp-readonly-evidence-stablecoin-s2-runtime-current-20260923-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 159,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/159#issuecomment-5786356341",
+          "body": "Post-merge closure:\n- merge `84bbe9b1684f5f6be73eaf2d6aa21063fb62697a`\n- MCP CI #1769 / run `35798761258` SUCCESS\n- Governed Deploy #66 / run `35798761237` SUCCESS; exact-main deploy step SUCCESS\n- S1 OIDC run `35798940369`: exact SHA, clean worktree, push disabled\n- Docker OIDC run `35798942659`: healthy\n- PR #154 remains ACTIVE owner of `coordination.universal`; handoff comment added requiring current-main reconciliation before its next mutation."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 160,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/160#issuecomment-5786340122",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=program-backlog-convergence-git-20260923-001\ntarget=s1\nprobe=mcp_git_status\nrunId=35798940369\nartifact=mcp-readonly-evidence-program-backlog-convergence-git-20260923-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/160#issuecomment-5786355127",
+          "body": "Final backlog-convergence S1 attestation.\n\n- main/S1 exact SHA: `84bbe9b1684f5f6be73eaf2d6aa21063fb62697a`\n- branch: `main`\n- working_tree_changes: `0`\n- origin fetch: `git@github.com-mcp-patricked-ro:Patricked-code/MCP.git`\n- origin push: `disabled://mcp-s1-read-only`\n- run: `35798940369`\n- artifact digest: `sha256:1ca2f32335e725e27775c33634cc30f6a4d7615bf818166f4c0a219eb5dde76e`\n- output digest: `sha256:2b2150559fb5efd91da32ff46753580305c49dd0ecc529cbef15b780eda94a49`\n- transport: `github_oidc_mcp_readonly`\n- mutationAllowed: `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 161,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/161#issuecomment-5786341544",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=program-backlog-convergence-docker-20260923-001\ntarget=s1\nprobe=docker_status\nrunId=35798942659\nartifact=mcp-readonly-evidence-program-backlog-convergence-docker-20260923-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/161#issuecomment-5786355609",
+          "body": "Final backlog-convergence Docker attestation.\n\n- workflow/main SHA: `84bbe9b1684f5f6be73eaf2d6aa21063fb62697a`\n- container: `wealthtech_mcp_ssh_bridge`\n- status: `healthy`\n- port: `127.0.0.1:8787->8787/tcp`\n- run: `35798942659`\n- artifact digest: `sha256:6569ed662c0a5c67930141ca485255173603ff67b2b1ed6f3697cd90feaeea9b`\n- output digest: `sha256:0d0b953efad7db2095c8f0c557b4b9159ae436edc496c4f75ff0e539f3a507af`\n- transport: `github_oidc_mcp_readonly`\n- mutationAllowed: `false`"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 162,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/162#issuecomment-5786621408",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=uac154-s1git-20260923\ntarget=s1\nprobe=mcp_git_status\nrunId=35800800997\nartifact=mcp-readonly-evidence-uac154-s1git-20260923\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 163,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/163#issuecomment-5786621991",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=uac154-docker-20260923\ntarget=s1\nprobe=docker_status\nrunId=35800806867\nartifact=mcp-readonly-evidence-uac154-docker-20260923\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 165,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/165#issuecomment-5787076601",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=stablecoin-s2-backend-inventory-20260923-001\ntarget=s2\nprobe=stablecoin_backend_inventory\nrunId=35803784710\nartifact=mcp-readonly-evidence-stablecoin-s2-backend-inventory-20260923-001\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 166,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/166#issuecomment-5818167595",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=uac154-postmerge-git-20260924\ntarget=s1\nprobe=mcp_git_status\nrunId=36028435204\nartifact=mcp-readonly-evidence-uac154-postmerge-git-20260924\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 167,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/167#issuecomment-5818167696",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=uac154-postmerge-docker-20260924\ntarget=s1\nprobe=docker_status\nrunId=36028438729\nartifact=mcp-readonly-evidence-uac154-postmerge-docker-20260924\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 169,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/169#issuecomment-5818303652",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=uac-terminal-git-20260924\ntarget=s1\nprobe=mcp_git_status\nrunId=36029508971\nartifact=mcp-readonly-evidence-uac-terminal-git-20260924\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 170,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/170#issuecomment-5818305398",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=uac-terminal-docker-20260924\ntarget=s1\nprobe=docker_status\nrunId=36029512674\nartifact=mcp-readonly-evidence-uac-terminal-docker-20260924\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 171,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/171#issuecomment-5818777528",
+          "body": "PROGRAM BACKLOG V2 — TERMINAL HANDOFF — 2026-09-24\n\nPR #171 is merged and the planning program is now the versioned post-UAC execution map.\n\nExact delivery evidence:\n- reviewed head: `930724163176d8d050e1ec73d2a45b8f77f48866`\n- merge/main: `d30b06f4c8b72b4888f32397be207798a56b8bb8`\n- MCP CI main #1867 / run `36032772266`: SUCCESS\n- Governed Deploy #70 / run `36032772198`: SUCCESS\n- issue #172 / run `36033010867`: `mcp_git_status` OIDC SUCCESS, SSH fallback skipped, mutationAllowed=false\n- S1: `main@d30b06f4c8b72b4888f32397be207798a56b8bb8`, worktree clean, fetch read-only, push disabled\n- issue #173 / run `36033024534`: `docker_status` OIDC SUCCESS, SSH fallback skipped, mutationAllowed=false\n- Docker `wealthtech_mcp_ssh_bridge`: healthy\n\nProgram shape:\n- 53 planning-only Task Blueprints\n- W1 Program State Convergence\n- W2 GitHub READ R1\n- W3 connection/resolution/governance/context/provisioning\n- W4 presence/tracing/monitoring/certification\n- maintenance and conditional/deferred capabilities explicitly separated\n- dependency graph: 0 unknown dependencies, 0 cycles\n\nAuthority boundary:\n- Task Blueprints are NOT GovernedTaskRecords\n- `createsRuntimeTask=false` for every blueprint\n- Governed Task Queue remains runtime task authority\n- Governed Session / Governed Lock Service / UAC remain runtime coordination authorities\n- heartbeat STALE/UNKNOWN never releases or transfers ownership\n\nNEXT_ACTION:\n- reobserve current main and live runtime authorities\n- load Program Backlog V2\n- `TB-W1-01` is the only planning-ready blueprint\n- before runtime materialization: reobserve Task Queue/Session/locks, check collision domains and governance\n- do not skip W1 to start W2/W3/W4 from stale planning text"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 172,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/172#issuecomment-5818755993",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=program-backlog-v2-git-20260924\ntarget=s1\nprobe=mcp_git_status\nrunId=36033010867\nartifact=mcp-readonly-evidence-program-backlog-v2-git-20260924\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 173,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/173#issuecomment-5818748461",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=program-backlog-v2-docker-20260924\ntarget=s1\nprobe=docker_status\nrunId=36033024534\nartifact=mcp-readonly-evidence-program-backlog-v2-docker-20260924\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 174,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/174#issuecomment-5821182518",
+          "body": "W1 exact-head self-review complete.\n\n- reviewed head: `95dd18b60280b3cddaaf15e42fbede47eda70f47`\n- MCP CI #1901 / run `36051014510`: SUCCESS\n- review threads: 0 unresolved\n- W1 remains governance/projection/test reconciliation; no `src/**` runtime implementation added\n- `TB-W1-01..07 = DONE`; only `TB-W2-01/02/03 = READY`; W3 remains blocked\n- no runtime Task, Governed Session, or runtime Lock materialized by W1\n\nNo blocking finding identified. Merge remains exact-head guarded."
+        }
+      ],
+      "error": null
+    }
+  ]
+}
