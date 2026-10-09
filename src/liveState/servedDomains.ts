@@ -162,7 +162,7 @@ export function projectSubscriptions(
     const pathParts = binding.realPath.split('/');
     if (!binding.realPath.startsWith('/var/www/vhosts/')
       || pathParts.some((part, index) => index > 0 && (
-        part === '.' || part === '..' || part.includes('\\\\') || /%(?:2e|2f|5c)/i.test(part)
+        part === '.' || part === '..' || part.includes('\\') || /%(?:2e|2f|5c)/i.test(part)
         || (part === '' && index !== pathParts.length - 1)
       ))) continue;
     const root = VHOSTS_ROOT.exec(binding.realPath);
