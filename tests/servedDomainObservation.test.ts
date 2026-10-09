@@ -174,6 +174,20 @@ test('F-04 observe-binding: the observation is scoped to the subscriptions verif
   const shared = projectSubscriptions([...bindings, binding('delta', 's1', '/var/www/vhosts/alpha.example.com/delta', true)] as any, 'alpha', 's1');
   assert.equal(shared.shared, true);
   assert.equal((scopeDomainObservation(observation, inventory, shared) as any).available, false);
+  // A verified flag does not authorize malformed or escaping paths.
+  // A path with dot segments is not a trustworthy vhost ownership boundary.
+  const unsafePaths = [
+    '/var/www/vhosts/alpha.example.com/../beta.example.com/httpdocs',
+    '/var/www/vhosts/alpha.example.com/./httpdocs',
+    '/var/www/vhosts/alpha.example.com//httpdocs',
+    '/var/www/vhosts/alpha.example.com/%2e%2e/beta',
+    '/var/www/vhosts/alpha.example.com/\\\\beta'
+  ];
+  for (const realPath of unsafePaths) {
+    const unsafe = projectSubscriptions([binding('epsilon', 's1', realPath, true)] as any, 'epsilon', 's1');
+    assert.equal(unsafe.owned.size, 0, `accepted unsafe verified path: ${realPath}`);
+    assert.equal((scopeDomainObservation(observation, inventory, unsafe) as any).available, false);
+  }
   // Without the inventory's ownership evidence, nothing is scoped.
   assert.equal((scopeDomainObservation(observation, undefined, ownership) as any).available, false);
   // Nothing to scope in an unavailable or absent observation.
