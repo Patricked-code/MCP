@@ -333,3 +333,27 @@ test('DISPATCH: two distinct sessions can claim disjoint ready scopes without du
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('DISPATCH parallel CAS: simultaneous stale-revision claims never double-assign one task', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    const baseline = await queue.listVisibleTasks();
+    const attempts = await Promise.allSettled([
+      queue.claimNextTask(SESSION, baseline.storeRevision),
+      queue.claimNextTask(OTHER_SESSION, baseline.storeRevision)
+    ]);
+    const winners = attempts.filter((result) => result.status === 'fulfilled');
+    const rejected = attempts.filter((result) => result.status === 'rejected');
+    assert.equal(winners.length, 1);
+    assert.equal(rejected.length, 1);
+    assert.match(String((rejected[0] as PromiseRejectedResult).reason), /TASK_STORE_REVISION_MISMATCH/);
+    const ownedTask = (winners[0] as PromiseFulfilledResult<Awaited<ReturnType<typeof queue.claimNextTask>>>).value;
+    assert.equal(ownedTask?.taskId, 'TASK-20260822-001');
+    const after = await queue.listVisibleTasks();
+    assert.equal(after.storeRevision, baseline.storeRevision + 1);
+    assert.equal(after.tasks.filter((task) => task.taskId === ownedTask?.taskId && task.status === 'CLAIMED').length, 1);
+    assert.equal(after.tasks.find((task) => task.taskId === ownedTask?.taskId)?.ownerGovernedSessionId, ownedTask?.ownerGovernedSessionId);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
