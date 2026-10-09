@@ -1,5 +1,19 @@
 # SUIVI.md
 
+## 2026-10-09 — W3 `TB-W3-F-04` Domain binding, incrément 1 (observe-binding) — fusionné, déployé, attesté
+
+- **Fusion.** PR #267 fusionnée au head exact `6e7417f`, après accord du propriétaire, en `5b631eb5520ed06c52bf18169a38dd22171ba90e`. Neuf rounds de revue Codex.
+- **CI main** #2322 `37893614504` : verte.
+- **Governed Deploy** #138 `37893614512` : SUCCESS ; « Deployment attested for exact SHA 5b631eb5520ed06c52bf18169a38dd22171ba90e ». Le déploiement est parti de Git, sans action manuelle sur S1.
+- **Sondes OIDC en lecture seule sur S1** : toutes en succès (#199 à #203, runs `37893837541`, `37893840236`, `37893843227`, `37893845928`, `37893848542`). Elles couvrent `mcp_git_status`, `docker_status`, `mcp_governed_tasks`, `mcp_governed_sessions` et `mcp_governed_locks`. Le contenu des artefacts n'est pas téléchargeable via le proxy GitHub de cette session : Tasks, Sessions et Locks restent `UNKNOWN` en contenu.
+- **Décisions du propriétaire.**
+  - Pas de `www.` sur ce Plesk : les projets sont servis en `<domaine>.<ext>` (l'abonnement) ou `<sous-domaine>.<domaine>.<ext>`.
+  - L'horodatage commun de Live State est accepté comme limite connue.
+- **Limites connues** : issue #268 (horodatage commun, portée par sous-domaine, `realPath` non vérifiés, schéma Plesk à confirmer sur S1/S2).
+- **Effet actuel.** Aucun mapping n'a de `realPath` vérifié : C5 reste `UNVERIFIED` pour tous les projets. Aucune écriture S1.
+- **`TB-W3-F-04` n'est pas DONE.** Les étapes `backup`, `bind-domain`, `certificate`, `activate`, `health` et `rollback` restent à livrer.
+- **NEXT_ACTION.** Incrément 2 de F-04 : portée par sous-domaine (`/var/www/vhosts/<domaine>/<sous-domaine>/…`), puis vérification des `realPath` du registre, avant les étapes de binding consenties.
+
 ## 2026-10-08 — W3 `TB-W3-F-04` Domain binding, incrément 1 (observe-binding) — GREEN candidate
 
 - **Reprise depuis `main@bc1d986`.** Les intakes ont été réobservées : aucune nouvelle `[PROGRAM INTAKE]` depuis #235/#236, et l'issue #262 reste ouverte. Les Governed Sessions, claims et verrous runtime sont `UNKNOWN` depuis cette session : le proxy GitHub refuse les artefacts, et le bridge n'est pas requis (GitHub-first). Aucun claim n'est pris ni repris.
