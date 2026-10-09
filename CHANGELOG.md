@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 2026-10-09 — W3 `TB-W3-F-04` incrément 1 déployé
+
+- PR #267 fusionnée (`5b631eb`), Governed Deploy #138 attesté pour le SHA exact. Limites connues : issue #268.
+
 ## 2026-10-08 — W3 `TB-W3-F-04` Domain binding, incrément 1 (candidate)
 
 - Live State inventorie en lecture seule les domaines servis par S1 et S2 (`src/liveState/servedDomains.ts`). La résolution de domaine C5 consomme cette observation par défaut : un domaine déclaré et servi se résout, et une absence observée devient `DOMAIN_NONE_CONFIRMED`. Une lecture indisponible reste `UNVERIFIED`.
