@@ -156,6 +156,15 @@ export function projectSubscriptions(
   for (const binding of bindings) {
     if (binding.serverId.toLowerCase() !== serverId.toLowerCase()) continue;
     if (binding.realPathVerified !== true || typeof binding.realPath !== 'string') continue;
+    // A verified realPath still needs a canonical, unambiguous vhost boundary.
+    // Do not infer ownership from paths containing traversal, empty segments or
+    // URL-encoded separators; the registry may originate outside the server.
+    const pathParts = binding.realPath.split('/');
+    if (!binding.realPath.startsWith('/var/www/vhosts/')
+      || pathParts.some((part, index) => index > 0 && (
+        part === '.' || part === '..' || part.includes('\\\\') || /%(?:2e|2f|5c)/i.test(part)
+        || (part === '' && index !== pathParts.length - 1)
+      ))) continue;
     const root = VHOSTS_ROOT.exec(binding.realPath);
     const subscription = root?.[1]?.toLowerCase();
     if (!subscription || !validDomain(subscription)) continue;
