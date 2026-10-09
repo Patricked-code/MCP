@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "id": "GWB-AUDIT-CONTINUITY-20261009-01",
+  "kind": "NON_AUTHORITATIVE_GOVERNED_WORKBLOCK_PROJECTION",
+  "repo": "Patricked-code/MCP",
+  "baselineMain": "765eecf8c9dc86280a51a41cbb888432037bfeeb",
+  "canonical": [
+    "CLAUDE.md §7",
+    "docs/governance/program-backlog-convergence.json",
+    "Governed Task Queue/Session/Lock runtime",
+    "nextWork",
+    "ARCHITECTURE.md",
+    "SUIVI.md"
+  ],
+  "purpose": "Complete architecture/issue #65+ audit, reconcile existing backlog and auto-continue toward GLOBAL_MCP_COMPLETE without duplicate planning queue",
+  "policy": {
+    "selection": "FIRST_COLLISION_FREE_IN_PROGRAM_ORDER",
+    "algorithm": "REOBSERVE -> RECONCILE -> DERIVE_READY -> CHECK_OWNERSHIP_LOCKS -> RESUME_OR_GOVERNED_MATERIALIZE -> CLAIM -> EXECUTE -> VERIFY -> CHECKPOINT -> RECOMPUTE",
+    "parallel": "Only independent read/evidence and non-overlapping resource scopes; serialized governed mutations",
+    "stop": "Governed blocker only, local blockers skip",
+    "authority": "This file never creates or claims Tasks, changes permissions, or marks blueprints DONE"
+  },
+  "tasks": [
+    {
+      "ordinal": 0,
+      "id": "GWB-00",
+      "title": "Diagnose failed exact-SHA Governed Deploy",
+      "mode": "READ_ONLY_EVIDENCE",
+      "dependsOn": [],
+      "work": "Inspect run 37975655618 failure, approved OIDC git/docker probes, isolate recoverable error; never assert deployed until exact-sha success and health",
+      "acceptance": "deployment diagnosis, root cause, immutable evidence links",
+      "guard": "S1 live read-only; deploy authority for fix",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 1,
+      "id": "GWB-01",
+      "title": "Reobserve authorities and resume",
+      "mode": "GITHUB_ONLY",
+      "dependsOn": [
+        "GWB-00 observation may overlap"
+      ],
+      "work": "Read CLAUDE.md, SUIVI.md, CURRENT, Program Backlog, GitHub main open PRs and program intakes; read runtime queue/session/locks via authorized OIDC",
+      "acceptance": "up-to-date exact head and potential ownership blockers",
+      "guard": "runtime unknown must remain unknown",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 2,
+      "id": "GWB-02",
+      "title": "Complete GitHub issue/PR review corpus",
+      "mode": "GITHUB_ONLY",
+      "dependsOn": [
+        "GWB-01"
+      ],
+      "work": "All PR #65+ inline threads, review submissions, commit comments; reconcile archived issue conversation comments",
+      "acceptance": "cross-linked auditable corpus with coverage manifest and unresolved findings",
+      "guard": "do not rewrite historic discussions",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 3,
+      "id": "GWB-03",
+      "title": "Classify decisions and checkpoints",
+      "mode": "GITHUB_ONLY",
+      "dependsOn": [
+        "GWB-02"
+      ],
+      "work": "Extract architecturally normative decisions, superseded claims, branch/PR/commit SHA and actual handoffs; classify evidence vs opinion",
+      "acceptance": "dated authority chain with exact source links",
+      "guard": "avoid guessed runtime state",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 4,
+      "id": "GWB-04",
+      "title": "Map 94 blueprints to code, tests and evidence",
+      "mode": "GITHUB_ONLY",
+      "dependsOn": [
+        "GWB-01"
+      ],
+      "work": "For each blueprint integrate slot to tracked source/test/CI/PR/commit/attestation; classify DONE_PROVEN / PARTIAL / UNKNOWN / GAP",
+      "acceptance": "94-row verified traceability and gaps",
+      "guard": "do not auto-mark DONE",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 5,
+      "id": "GWB-05",
+      "title": "Reconcile non-regression architecture gaps",
+      "mode": "GITHUB_ONLY",
+      "dependsOn": [
+        "GWB-03",
+        "GWB-04"
+      ],
+      "work": "Crosswalk target control plane, GWC/UAC, Bootstrap, Task Queue, Live State, Project Reality, GitHub capabilities, F-04, cockpit, OAuth and client certification",
+      "acceptance": "architecture-gap work packets scoped to existing integration slots",
+      "guard": "no new authorities",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 6,
+      "id": "GWB-06",
+      "title": "Recompute program readiness, first collision-free",
+      "mode": "RUNTIME_IF_MUTATION",
+      "dependsOn": [
+        "GWB-01",
+        "GWB-05"
+      ],
+      "work": "Use program:readiness / program:next, nextWork; check existing intent/claims/locks before governed materialization; preserve existing #207 ownership",
+      "acceptance": "accepted task choice with exact collision/permission evidence",
+      "guard": "never materialize from audit file directly",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 7,
+      "id": "GWB-07",
+      "title": "Execute admissible engineering increments",
+      "mode": "GITHUB_THEN_GOVERNED_RUNTIME",
+      "dependsOn": [
+        "GWB-06"
+      ],
+      "work": "bounded RED/GREEN, regression, PR, exact-head CI/review/merge, governed deploy, health, rollback evidence; resume next work",
+      "acceptance": "delivered increment with durable checkpoint",
+      "guard": "local blockers skip, global only on valid stop",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 8,
+      "id": "GWB-08",
+      "title": "Certify live autonomous agent handoff",
+      "mode": "RUNTIME_REQUIRED",
+      "dependsOn": [
+        "GWB-06"
+      ],
+      "work": "Prove connected authorized agent arrival, bootstrap receipt, owner resume, queue materialization idempotence, CAS claims, two independent sessions, liveness semantics",
+      "acceptance": "real E2E receipts, audit events, no collision",
+      "guard": "no simulated sessions/provider ID",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 9,
+      "id": "GWB-09",
+      "title": "Recompute and iterate to global terminal acceptance",
+      "mode": "GOVERNED_CONTINUATION",
+      "dependsOn": [
+        "GWB-07",
+        "GWB-08"
+      ],
+      "work": "Repeat latest readiness and eligible tasks, review required acceptance dimensions in #235/#236, record blockers, produce globalStopReport only under legitimate stop",
+      "acceptance": "GLOBAL_MCP_COMPLETE only on all exact authority evidence",
+      "guard": "conditional/deferred not auto-promoted",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    }
+  ],
+  "anchors": {
+    "masterIssue": "https://github.com/Patricked-code/MCP/issues/235",
+    "dispatch": "https://github.com/Patricked-code/MCP/issues/222",
+    "cockpit": "https://github.com/Patricked-code/MCP/issues/236",
+    "auditMerged": "https://github.com/Patricked-code/MCP/pull/273",
+    "reviewsPending": "https://github.com/Patricked-code/MCP/pull/274",
+    "deployFailure": "https://github.com/Patricked-code/MCP/actions/runs/37975655618"
+  },
+  "nextCheckpoint": "Diagnose failed deploy, inspect live task/session/lock evidence by GitHub OIDC probes; report exact head drift; review #274 CI then continue."
+}
