@@ -303,3 +303,33 @@ test('task collision evidence is bounded and excludes free-form task text', asyn
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('DISPATCH: two distinct sessions can claim disjoint ready scopes without duplicate ownership', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    const added = await queue.reconcileIntent({
+      repository: 'Patricked-code/MCP',
+      intentKey: 'parallel-disjoint-scope',
+      title: 'Independent parallel task',
+      summary: 'A distinct scope should be claimable by another executor.',
+      priority: 40,
+      dependencies: [],
+      resourceScopes: ['resource:parallel-independent']
+    }, OTHER_SESSION);
+    assert.equal(added.classification, 'NEW_TASK');
+    const before = await queue.listVisibleTasks();
+    const first = await queue.claimNextTask(SESSION, before.storeRevision);
+    assert.equal(first?.taskId, 'TASK-20260822-001');
+    assert.equal(first?.ownerGovernedSessionId, SESSION);
+    const afterFirst = await queue.listVisibleTasks();
+    const second = await queue.claimNextTask(OTHER_SESSION, afterFirst.storeRevision);
+    assert.equal(second?.taskId, added.task?.taskId);
+    assert.equal(second?.ownerGovernedSessionId, OTHER_SESSION);
+    assert.notEqual(first?.taskId, second?.taskId);
+    const afterSecond = await queue.listVisibleTasks();
+    assert.equal(afterSecond.tasks.find((task) => task.taskId === first?.taskId)?.ownerGovernedSessionId, SESSION);
+    assert.equal(afterSecond.tasks.find((task) => task.taskId === second?.taskId)?.ownerGovernedSessionId, OTHER_SESSION);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
