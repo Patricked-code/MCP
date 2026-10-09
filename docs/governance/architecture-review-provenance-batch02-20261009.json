@@ -1,0 +1,3097 @@
+{
+  "schemaVersion": 1,
+  "kind": "PARTIAL_REVIEW_PROVENANCE_INDEX_NOT_AUDIT_CLOSURE",
+  "repo": "Patricked-code/MCP",
+  "baselineMain": "765eecf8c9dc86280a51a41cbb888432037bfeeb",
+  "basePr": 274,
+  "observedBranchHead": "65dd866577325d68e9df8713b1e11157f3066600",
+  "scope": [
+    261,
+    267,
+    271,
+    272,
+    273,
+    274,
+    275
+  ],
+  "coverage": {
+    "threads": 99,
+    "unresolved": 2,
+    "reviewSubmissions": 130,
+    "fullCommentsArchivedHere": false,
+    "source": "GitHub GraphQL review thread and review submission read APIs",
+    "remaining": "Other historical PR review submissions/inline threads and commit comments; source/test/CI/live evidence crosswalk not complete"
+  },
+  "findings": [
+    {
+      "pr": 261,
+      "threadId": "PRRT_kwDOTJ-y6M6qe-ew",
+      "path": "src/provisioning/composePolicy.ts",
+      "firstCommentUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222289799",
+      "classification": "UNRESOLVED_REVIEW_THREAD_NOT_VALIDATED_REGRESSION"
+    },
+    {
+      "pr": 261,
+      "threadId": "PRRT_kwDOTJ-y6M6qe-e4",
+      "path": "src/provisioning/routes.ts",
+      "firstCommentUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222289810",
+      "classification": "UNRESOLVED_REVIEW_THREAD_NOT_VALIDATED_REGRESSION"
+    }
+  ],
+  "groups": [
+    {
+      "pr": 261,
+      "threadCount": 73,
+      "unresolvedCount": 2,
+      "reviewSubmissionCount": 92,
+      "threadRefs": [
+        {
+          "id": "PRRT_kwDOTJ-y6M6p-c3s",
+          "path": "src/provisioning/consent.ts",
+          "line": null,
+          "originalLine": 44,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4208798248,
+              "createdAt": "2026-10-07T15:35:05Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798248"
+            },
+            {
+              "id": 4210753385,
+              "createdAt": "2026-10-07T18:54:47Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210753385"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6p-c3x",
+          "path": "src/provisioning/revisionAdmission.ts",
+          "line": null,
+          "originalLine": 70,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4208798258,
+              "createdAt": "2026-10-07T15:35:05Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798258"
+            },
+            {
+              "id": 4210753703,
+              "createdAt": "2026-10-07T18:54:49Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210753703"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6p-c3-",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 426,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4208798277,
+              "createdAt": "2026-10-07T15:35:05Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798277"
+            },
+            {
+              "id": 4210754195,
+              "createdAt": "2026-10-07T18:54:53Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210754195"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6p-c4H",
+          "path": "src/provisioning/wiring.ts",
+          "line": 155,
+          "originalLine": 134,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4208798290,
+              "createdAt": "2026-10-07T15:35:05Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798290"
+            },
+            {
+              "id": 4210754494,
+              "createdAt": "2026-10-07T18:54:55Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210754494"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6p-c4O",
+          "path": "src/provisioning/wiring.ts",
+          "line": 155,
+          "originalLine": 134,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4208798297,
+              "createdAt": "2026-10-07T15:35:05Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798297"
+            },
+            {
+              "id": 4210754936,
+              "createdAt": "2026-10-07T18:54:58Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210754936"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qDawW",
+          "path": "src/server.ts",
+          "line": 538,
+          "originalLine": 522,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4210848082,
+              "createdAt": "2026-10-07T19:04:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848082"
+            },
+            {
+              "id": 4210998507,
+              "createdAt": "2026-10-07T19:19:40Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210998507"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qDawi",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 490,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4210848099,
+              "createdAt": "2026-10-07T19:04:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848099"
+            },
+            {
+              "id": 4210999103,
+              "createdAt": "2026-10-07T19:19:43Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210999103"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qDawr",
+          "path": "src/server.ts",
+          "line": 530,
+          "originalLine": 514,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4210848110,
+              "createdAt": "2026-10-07T19:04:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848110"
+            },
+            {
+              "id": 4210999507,
+              "createdAt": "2026-10-07T19:19:46Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210999507"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qDawx",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 67,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4210848119,
+              "createdAt": "2026-10-07T19:04:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848119"
+            },
+            {
+              "id": 4211000103,
+              "createdAt": "2026-10-07T19:19:49Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211000103"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qDaxB",
+          "path": "src/provisioning/wiring.ts",
+          "line": 131,
+          "originalLine": 115,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4210848136,
+              "createdAt": "2026-10-07T19:04:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848136"
+            },
+            {
+              "id": 4211000583,
+              "createdAt": "2026-10-07T19:19:53Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211000583"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qDaxN",
+          "path": "src/provisioning/routes.ts",
+          "line": null,
+          "originalLine": 190,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4210848153,
+              "createdAt": "2026-10-07T19:04:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848153"
+            },
+            {
+              "id": 4211000856,
+              "createdAt": "2026-10-07T19:19:54Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211000856"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qDaxU",
+          "path": "src/github/connection.ts",
+          "line": 238,
+          "originalLine": 238,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4210848164,
+              "createdAt": "2026-10-07T19:04:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848164"
+            },
+            {
+              "id": 4211001357,
+              "createdAt": "2026-10-07T19:19:57Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211001357"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qDaxd",
+          "path": "src/provisioning/routes.ts",
+          "line": 306,
+          "originalLine": 301,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4210848175,
+              "createdAt": "2026-10-07T19:04:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848175"
+            },
+            {
+              "id": 4211001847,
+              "createdAt": "2026-10-07T19:20:00Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211001847"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qD9Sd",
+          "path": "src/server.ts",
+          "line": 530,
+          "originalLine": 530,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4211071205,
+              "createdAt": "2026-10-07T19:27:21Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211071205"
+            },
+            {
+              "id": 4211420971,
+              "createdAt": "2026-10-07T20:05:04Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211420971"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qD9Sp",
+          "path": "src/server.ts",
+          "line": 530,
+          "originalLine": 530,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4211071222,
+              "createdAt": "2026-10-07T19:27:21Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211071222"
+            },
+            {
+              "id": 4211421761,
+              "createdAt": "2026-10-07T20:05:09Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211421761"
+            },
+            {
+              "id": 4211474080,
+              "createdAt": "2026-10-07T20:11:00Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211474080"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qD9S1",
+          "path": "src/server.ts",
+          "line": 530,
+          "originalLine": 530,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4211071241,
+              "createdAt": "2026-10-07T19:27:21Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211071241"
+            },
+            {
+              "id": 4211422177,
+              "createdAt": "2026-10-07T20:05:13Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211422177"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qFLXf",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": null,
+          "originalLine": 87,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4211575344,
+              "createdAt": "2026-10-07T20:22:04Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211575344"
+            },
+            {
+              "id": 4213142693,
+              "createdAt": "2026-10-07T23:42:49Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213142693"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qFLXp",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 74,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4211575360,
+              "createdAt": "2026-10-07T20:22:04Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211575360"
+            },
+            {
+              "id": 4213142862,
+              "createdAt": "2026-10-07T23:42:51Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213142862"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qFLXt",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 518,
+          "originalLine": 404,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4211575369,
+              "createdAt": "2026-10-07T20:22:04Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211575369"
+            },
+            {
+              "id": 4213142488,
+              "createdAt": "2026-10-07T23:42:47Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213142488"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJCoF",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": 99,
+          "originalLine": 81,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213204474,
+              "createdAt": "2026-10-07T23:53:34Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204474"
+            },
+            {
+              "id": 4213218387,
+              "createdAt": "2026-10-07T23:56:04Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213218387"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJCoK",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 74,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4213204482,
+              "createdAt": "2026-10-07T23:53:34Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204482"
+            },
+            {
+              "id": 4213219075,
+              "createdAt": "2026-10-07T23:56:11Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213219075"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJCoO",
+          "path": "src/provisioning/projectRuntime.ts",
+          "line": 655,
+          "originalLine": 583,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213204487,
+              "createdAt": "2026-10-07T23:53:34Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204487"
+            },
+            {
+              "id": 4213218618,
+              "createdAt": "2026-10-07T23:56:06Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213218618"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJCoR",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": 96,
+          "originalLine": 78,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213204491,
+              "createdAt": "2026-10-07T23:53:35Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204491"
+            },
+            {
+              "id": 4213218918,
+              "createdAt": "2026-10-07T23:56:09Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213218918"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJN-X",
+          "path": "src/provisioning/projectRuntime.ts",
+          "line": 181,
+          "originalLine": 164,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213278799,
+              "createdAt": "2026-10-08T00:07:16Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278799"
+            },
+            {
+              "id": 4213302163,
+              "createdAt": "2026-10-08T00:10:50Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213302163"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJN-Z",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": 315,
+          "originalLine": 241,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213278807,
+              "createdAt": "2026-10-08T00:07:16Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278807"
+            },
+            {
+              "id": 4213303382,
+              "createdAt": "2026-10-08T00:11:03Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213303382"
+            },
+            {
+              "id": 4216654305,
+              "createdAt": "2026-10-08T08:23:30Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216654305"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJN-c",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 308,
+          "originalLine": 223,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213278810,
+              "createdAt": "2026-10-08T00:07:16Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278810"
+            },
+            {
+              "id": 4213302363,
+              "createdAt": "2026-10-08T00:10:52Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213302363"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJN-e",
+          "path": "src/provisioning/projectRuntime.ts",
+          "line": null,
+          "originalLine": 624,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4213278811,
+              "createdAt": "2026-10-08T00:07:16Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278811"
+            },
+            {
+              "id": 4213302554,
+              "createdAt": "2026-10-08T00:10:54Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213302554"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJN-g",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 1064,
+          "originalLine": 743,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213278815,
+              "createdAt": "2026-10-08T00:07:16Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278815"
+            },
+            {
+              "id": 4213303005,
+              "createdAt": "2026-10-08T00:10:59Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213303005"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJN-j",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": 343,
+          "originalLine": 269,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213278817,
+              "createdAt": "2026-10-08T00:07:16Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278817"
+            },
+            {
+              "id": 4213302728,
+              "createdAt": "2026-10-08T00:10:56Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213302728"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJZ13",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 518,
+          "originalLine": 419,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213356767,
+              "createdAt": "2026-10-08T00:20:24Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356767"
+            },
+            {
+              "id": 4213382172,
+              "createdAt": "2026-10-08T00:24:38Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213382172"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJZ1-",
+          "path": "src/provisioning/projectRuntime.ts",
+          "line": 182,
+          "originalLine": 167,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213356774,
+              "createdAt": "2026-10-08T00:20:24Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356774"
+            },
+            {
+              "id": 4213382434,
+              "createdAt": "2026-10-08T00:24:41Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213382434"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJZ2D",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": 98,
+          "originalLine": 84,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213356779,
+              "createdAt": "2026-10-08T00:20:24Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356779"
+            },
+            {
+              "id": 4213382676,
+              "createdAt": "2026-10-08T00:24:44Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213382676"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJZ2J",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 302,
+          "originalLine": 231,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213356785,
+              "createdAt": "2026-10-08T00:20:24Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356785"
+            },
+            {
+              "id": 4213381954,
+              "createdAt": "2026-10-08T00:24:36Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213381954"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJZ2Q",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 465,
+          "originalLine": 383,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213356794,
+              "createdAt": "2026-10-08T00:20:24Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356794"
+            },
+            {
+              "id": 4213383005,
+              "createdAt": "2026-10-08T00:24:47Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213383005"
+            },
+            {
+              "id": 4216654773,
+              "createdAt": "2026-10-08T08:23:33Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216654773"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJnNu",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 688,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4213445674,
+              "createdAt": "2026-10-08T00:36:29Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445674"
+            },
+            {
+              "id": 4213511264,
+              "createdAt": "2026-10-08T00:49:09Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213511264"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJnNz",
+          "path": "src/provisioning/projectRuntime.ts",
+          "line": 181,
+          "originalLine": 167,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213445684,
+              "createdAt": "2026-10-08T00:36:29Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445684"
+            },
+            {
+              "id": 4213511487,
+              "createdAt": "2026-10-08T00:49:12Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213511487"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJnN3",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 265,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4213445692,
+              "createdAt": "2026-10-08T00:36:29Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445692"
+            },
+            {
+              "id": 4213511655,
+              "createdAt": "2026-10-08T00:49:14Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213511655"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJnN8",
+          "path": "src/provisioning/revisionAdmission.ts",
+          "line": null,
+          "originalLine": 66,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4213445701,
+              "createdAt": "2026-10-08T00:36:30Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445701"
+            },
+            {
+              "id": 4213511783,
+              "createdAt": "2026-10-08T00:49:16Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213511783"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJ5o6",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 473,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4213568170,
+              "createdAt": "2026-10-08T01:00:26Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568170"
+            },
+            {
+              "id": 4213590178,
+              "createdAt": "2026-10-08T01:04:57Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213590178"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJ5o7",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 1144,
+          "originalLine": 934,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213568175,
+              "createdAt": "2026-10-08T01:00:26Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568175"
+            },
+            {
+              "id": 4213589967,
+              "createdAt": "2026-10-08T01:04:54Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213589967"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJ5pA",
+          "path": "src/provisioning/projectRuntime.ts",
+          "line": 181,
+          "originalLine": 170,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213568181,
+              "createdAt": "2026-10-08T01:00:26Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568181"
+            },
+            {
+              "id": 4213590390,
+              "createdAt": "2026-10-08T01:05:00Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213590390"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qJ5pF",
+          "path": "src/provisioning/projectRuntime.ts",
+          "line": 209,
+          "originalLine": 195,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213568187,
+              "createdAt": "2026-10-08T01:00:26Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568187"
+            },
+            {
+              "id": 4213590608,
+              "createdAt": "2026-10-08T01:05:03Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213590608"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qKFIl",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 450,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4213644008,
+              "createdAt": "2026-10-08T01:15:54Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644008"
+            },
+            {
+              "id": 4213664343,
+              "createdAt": "2026-10-08T01:20:09Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213664343"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qKFIo",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 489,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4213644011,
+              "createdAt": "2026-10-08T01:15:54Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644011"
+            },
+            {
+              "id": 4213664095,
+              "createdAt": "2026-10-08T01:20:06Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213664095"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qKFIt",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 1045,
+          "originalLine": 881,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213644019,
+              "createdAt": "2026-10-08T01:15:54Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644019"
+            },
+            {
+              "id": 4213664858,
+              "createdAt": "2026-10-08T01:20:15Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213664858"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qKFIw",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 1041,
+          "originalLine": 877,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213644023,
+              "createdAt": "2026-10-08T01:15:54Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644023"
+            },
+            {
+              "id": 4213665089,
+              "createdAt": "2026-10-08T01:20:18Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213665089"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qKFIz",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": 400,
+          "originalLine": 345,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4213644027,
+              "createdAt": "2026-10-08T01:15:54Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644027"
+            },
+            {
+              "id": 4213664590,
+              "createdAt": "2026-10-08T01:20:12Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213664590"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qReht",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 472,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4216769963,
+              "createdAt": "2026-10-08T08:36:38Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769963"
+            },
+            {
+              "id": 4216801707,
+              "createdAt": "2026-10-08T08:40:25Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216801707"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qRehw",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 975,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4216769973,
+              "createdAt": "2026-10-08T08:36:38Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769973"
+            },
+            {
+              "id": 4216802716,
+              "createdAt": "2026-10-08T08:40:32Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216802716"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qReh1",
+          "path": "src/provisioning/dockerfilePolicy.ts",
+          "line": null,
+          "originalLine": 56,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4216769980,
+              "createdAt": "2026-10-08T08:36:38Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769980"
+            },
+            {
+              "id": 4216802212,
+              "createdAt": "2026-10-08T08:40:29Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216802212"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qReh5",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 465,
+          "originalLine": 460,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4216769986,
+              "createdAt": "2026-10-08T08:36:38Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769986"
+            },
+            {
+              "id": 4216803166,
+              "createdAt": "2026-10-08T08:40:35Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216803166"
+            },
+            {
+              "id": 4222200348,
+              "createdAt": "2026-10-08T17:34:53Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222200348"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qRxQB",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 1099,
+          "originalLine": 1036,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4216890720,
+              "createdAt": "2026-10-08T08:50:01Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890720"
+            },
+            {
+              "id": 4216920927,
+              "createdAt": "2026-10-08T08:53:26Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216920927"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qRxQG",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": 244,
+          "originalLine": 230,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4216890728,
+              "createdAt": "2026-10-08T08:50:01Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890728"
+            },
+            {
+              "id": 4216923243,
+              "createdAt": "2026-10-08T08:53:40Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216923243"
+            },
+            {
+              "id": 4222200924,
+              "createdAt": "2026-10-08T17:34:57Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222200924"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qRxQP",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 1154,
+          "originalLine": 1077,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4216890738,
+              "createdAt": "2026-10-08T08:50:01Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890738"
+            },
+            {
+              "id": 4216921508,
+              "createdAt": "2026-10-08T08:53:29Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216921508"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qRxQT",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 472,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4216890746,
+              "createdAt": "2026-10-08T08:50:01Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890746"
+            },
+            {
+              "id": 4216922003,
+              "createdAt": "2026-10-08T08:53:33Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216922003"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qRxQX",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 1033,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4216890752,
+              "createdAt": "2026-10-08T08:50:01Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890752"
+            },
+            {
+              "id": 4216922650,
+              "createdAt": "2026-10-08T08:53:37Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216922650"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qSJ2L",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": null,
+          "originalLine": 223,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4217047792,
+              "createdAt": "2026-10-08T09:07:15Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047792"
+            },
+            {
+              "id": 4217080914,
+              "createdAt": "2026-10-08T09:11:06Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217080914"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qSJ2X",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": 349,
+          "originalLine": 334,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4217047807,
+              "createdAt": "2026-10-08T09:07:15Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047807"
+            },
+            {
+              "id": 4217081469,
+              "createdAt": "2026-10-08T09:11:10Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217081469"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qSJ2c",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": null,
+          "originalLine": 111,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4217047816,
+              "createdAt": "2026-10-08T09:07:15Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047816"
+            },
+            {
+              "id": 4217081979,
+              "createdAt": "2026-10-08T09:11:14Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217081979"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qSJ2k",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 1109,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4217047826,
+              "createdAt": "2026-10-08T09:07:15Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047826"
+            },
+            {
+              "id": 4217082480,
+              "createdAt": "2026-10-08T09:11:17Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217082480"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qSJ2r",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 777,
+          "originalLine": 769,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4217047834,
+              "createdAt": "2026-10-08T09:07:15Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047834"
+            },
+            {
+              "id": 4217082921,
+              "createdAt": "2026-10-08T09:11:20Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217082921"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qSJ2w",
+          "path": "src/provisioning/projectRuntime.ts",
+          "line": 180,
+          "originalLine": 177,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4217047841,
+              "createdAt": "2026-10-08T09:07:15Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047841"
+            },
+            {
+              "id": 4217083430,
+              "createdAt": "2026-10-08T09:11:23Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217083430"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qSelp",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 1145,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4217179879,
+              "createdAt": "2026-10-08T09:22:15Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217179879"
+            },
+            {
+              "id": 4217209820,
+              "createdAt": "2026-10-08T09:25:38Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217209820"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qSelv",
+          "path": "src/provisioning/projectRuntime.ts",
+          "line": 659,
+          "originalLine": 645,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4217179889,
+              "createdAt": "2026-10-08T09:22:15Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217179889"
+            },
+            {
+              "id": 4217210371,
+              "createdAt": "2026-10-08T09:25:42Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217210371"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qSel4",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 860,
+          "originalLine": 855,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4217179904,
+              "createdAt": "2026-10-08T09:22:15Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217179904"
+            },
+            {
+              "id": 4217209352,
+              "createdAt": "2026-10-08T09:25:35Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217209352"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qS0BV",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": 244,
+          "originalLine": 234,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4217316098,
+              "createdAt": "2026-10-08T09:37:37Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316098"
+            },
+            {
+              "id": 4222199938,
+              "createdAt": "2026-10-08T17:34:50Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222199938"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qS0BY",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": 1063,
+          "originalLine": 1055,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4217316105,
+              "createdAt": "2026-10-08T09:37:37Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316105"
+            },
+            {
+              "id": 4222197316,
+              "createdAt": "2026-10-08T17:34:33Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222197316"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qS0Bi",
+          "path": "src/provisioning/runtimeExecutor.ts",
+          "line": null,
+          "originalLine": 1103,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4217316122,
+              "createdAt": "2026-10-08T09:37:37Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316122"
+            },
+            {
+              "id": 4222198377,
+              "createdAt": "2026-10-08T17:34:40Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222198377"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qS0Bs",
+          "path": "src/provisioning/projectRuntime.ts",
+          "line": 181,
+          "originalLine": 180,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4217316137,
+              "createdAt": "2026-10-08T09:37:37Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316137"
+            },
+            {
+              "id": 4222197835,
+              "createdAt": "2026-10-08T17:34:37Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222197835"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qS0Bz",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": 101,
+          "originalLine": 100,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4217316144,
+              "createdAt": "2026-10-08T09:37:37Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316144"
+            },
+            {
+              "id": 4222199481,
+              "createdAt": "2026-10-08T17:34:47Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222199481"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qS0B9",
+          "path": "src/provisioning/projectRuntime.ts",
+          "line": 664,
+          "originalLine": 663,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4217316157,
+              "createdAt": "2026-10-08T09:37:37Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316157"
+            },
+            {
+              "id": 4222198960,
+              "createdAt": "2026-10-08T17:34:44Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222198960"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qe-ew",
+          "path": "src/provisioning/composePolicy.ts",
+          "line": 233,
+          "originalLine": 233,
+          "resolved": false,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4222289799,
+              "createdAt": "2026-10-08T17:44:29Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222289799"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qe-e4",
+          "path": "src/provisioning/routes.ts",
+          "line": 259,
+          "originalLine": 259,
+          "resolved": false,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4222289810,
+              "createdAt": "2026-10-08T17:44:29Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222289810"
+            }
+          ]
+        }
+      ],
+      "reviewRefs": [
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRIYTrQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T15:35:05Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRKk8iQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T18:54:47Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRKk9yA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T18:54:49Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRKlAFw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T18:54:53Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRKlBgg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T18:54:55Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRKlDiw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T18:54:58Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRKrsrQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T19:04:39Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRK2uoA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T19:19:40Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRK2xSQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T19:19:43Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRK2zTA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T19:19:46Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRK22Tg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T19:19:49Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRK24fg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T19:19:53Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRK25kA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T19:19:54Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRK27rA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T19:19:57Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRK290g",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T19:20:00Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRK73WA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T19:27:20Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRLVBVQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T20:05:04Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRLVFsA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T20:05:10Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRLVH3g",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T20:05:13Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRLY8SA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T20:11:00Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRLgMmA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T20:22:04Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNQo9w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T23:42:47Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNQpwQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T23:42:49Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNQqmA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T23:42:51Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNUoxA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T23:53:34Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNVjnA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T23:56:04Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNVkvw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T23:56:06Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNVl-Q",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T23:56:09Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNVmmw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-07T23:56:11Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNZg3A",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:07:16Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNbFbw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:10:50Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNbGRw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:10:52Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNbHJA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:10:54Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNbH7g",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:10:56Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNbI7w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:10:59Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNbKhQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:11:03Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNeuiQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:20:24Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNge-A",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:24:36Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNgf3g",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:24:38Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNgg6w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:24:41Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNgh6w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:24:44Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNgjSg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:24:47Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNlBhg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:36:29Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNpevA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:49:09Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNpfnQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:49:12Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNpgWQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:49:14Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNpg9Q",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T00:49:16Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNtNbA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T01:00:26Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNurSA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T01:04:55Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNusKA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T01:04:57Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNutGg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T01:05:00Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNuuAg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T01:05:03Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNyWjQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T01:15:53Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNzrOQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T01:20:06Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNzsNQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T01:20:09Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNztPQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T01:20:12Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNzuTg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T01:20:15Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRNzvIw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T01:20:18Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRHo3w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:23:30Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRHrAw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:23:33Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRQJYw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:36:38Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRSgdg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:40:25Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRSi9A",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:40:29Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRSl1w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:40:32Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRSoEA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:40:35Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRZtPg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:50:01Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRb9fg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:53:26Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRcAWQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:53:29Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRcC7A",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:53:33Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRcGAA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:53:37Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRcI4A",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T08:53:40Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRliag",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:07:14Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRoC7g",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:11:06Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRoFvQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:11:10Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRoISQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:11:14Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRoKpQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:11:17Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRoMwg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:11:20Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRoPBQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:11:24Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRveCw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:22:15Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRxlxA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:25:35Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRxoMg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:25:39Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRRxq2w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:25:42Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRR5rCA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T09:37:36Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRXm28w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T17:34:33Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRXm5lA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T17:34:37Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRXm8Lg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T17:34:40Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRXm-vw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T17:34:44Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRXnBIQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T17:34:47Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRXnDGA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T17:34:50Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRXnFBw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T17:34:53Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRXnHcA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T17:34:57Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRXte7Q",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T17:44:29Z",
+          "author": "chatgpt-codex-connector"
+        }
+      ]
+    },
+    {
+      "pr": 267,
+      "threadCount": 26,
+      "unresolvedCount": 0,
+      "reviewSubmissionCount": 38,
+      "threadRefs": [
+        {
+          "id": "PRRT_kwDOTJ-y6M6qgyhC",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 14,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223040575,
+              "createdAt": "2026-10-08T19:04:53Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040575"
+            },
+            {
+              "id": 4223070431,
+              "createdAt": "2026-10-08T19:08:10Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223070431"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qgyhK",
+          "path": "src/liveState/servedDomains.ts",
+          "line": 136,
+          "originalLine": 76,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4223040593,
+              "createdAt": "2026-10-08T19:04:53Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040593"
+            },
+            {
+              "id": 4223069902,
+              "createdAt": "2026-10-08T19:08:06Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223069902"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qgyhN",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 38,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223040598,
+              "createdAt": "2026-10-08T19:04:53Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040598"
+            },
+            {
+              "id": 4223070231,
+              "createdAt": "2026-10-08T19:08:08Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223070231"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qgyhR",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 14,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223040603,
+              "createdAt": "2026-10-08T19:04:53Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040603"
+            },
+            {
+              "id": 4223070943,
+              "createdAt": "2026-10-08T19:08:13Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223070943"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qgyhU",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 63,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223040611,
+              "createdAt": "2026-10-08T19:04:53Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040611"
+            },
+            {
+              "id": 4223070675,
+              "createdAt": "2026-10-08T19:08:11Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223070675"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhDEt",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 146,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223150064,
+              "createdAt": "2026-10-08T19:15:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150064"
+            },
+            {
+              "id": 4223168104,
+              "createdAt": "2026-10-08T19:17:32Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223168104"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhDE8",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 38,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223150092,
+              "createdAt": "2026-10-08T19:15:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150092"
+            },
+            {
+              "id": 4223167673,
+              "createdAt": "2026-10-08T19:17:29Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223167673"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhDFF",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 18,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223150104,
+              "createdAt": "2026-10-08T19:15:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150104"
+            },
+            {
+              "id": 4223168295,
+              "createdAt": "2026-10-08T19:17:33Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223168295"
+            },
+            {
+              "id": 4223233722,
+              "createdAt": "2026-10-08T19:24:28Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223233722"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhDFN",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 21,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223150119,
+              "createdAt": "2026-10-08T19:15:40Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150119"
+            },
+            {
+              "id": 4223167863,
+              "createdAt": "2026-10-08T19:17:30Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223167863"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhNIs",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 18,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223215946,
+              "createdAt": "2026-10-08T19:22:31Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223215946"
+            },
+            {
+              "id": 4223233302,
+              "createdAt": "2026-10-08T19:24:26Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223233302"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhNIw",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 21,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223215955,
+              "createdAt": "2026-10-08T19:22:31Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223215955"
+            },
+            {
+              "id": 4223233535,
+              "createdAt": "2026-10-08T19:24:27Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223233535"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhXjH",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 19,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223283738,
+              "createdAt": "2026-10-08T19:29:56Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283738"
+            },
+            {
+              "id": 4223299694,
+              "createdAt": "2026-10-08T19:31:41Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223299694"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhXjO",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 19,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223283749,
+              "createdAt": "2026-10-08T19:29:56Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283749"
+            },
+            {
+              "id": 4223300335,
+              "createdAt": "2026-10-08T19:31:45Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223300335"
+            },
+            {
+              "id": 4227281168,
+              "createdAt": "2026-10-09T06:27:14Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4227281168"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhXjW",
+          "path": "src/liveState/servedDomains.ts",
+          "line": 32,
+          "originalLine": 23,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4223283758,
+              "createdAt": "2026-10-08T19:29:56Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283758"
+            },
+            {
+              "id": 4223299929,
+              "createdAt": "2026-10-08T19:31:43Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223299929"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhXja",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 97,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223283764,
+              "createdAt": "2026-10-08T19:29:57Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283764"
+            },
+            {
+              "id": 4223300143,
+              "createdAt": "2026-10-08T19:31:44Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223300143"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhe6B",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 170,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223332548,
+              "createdAt": "2026-10-08T19:35:24Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223332548"
+            },
+            {
+              "id": 4223354329,
+              "createdAt": "2026-10-08T19:37:38Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223354329"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhqfm",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 185,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223408699,
+              "createdAt": "2026-10-08T19:43:37Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408699"
+            },
+            {
+              "id": 4223436511,
+              "createdAt": "2026-10-08T19:46:43Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223436511"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhqfv",
+          "path": "src/liveState/collect.ts",
+          "line": null,
+          "originalLine": 493,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223408713,
+              "createdAt": "2026-10-08T19:43:37Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408713"
+            },
+            {
+              "id": 4223436682,
+              "createdAt": "2026-10-08T19:46:44Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223436682"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhqf0",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 23,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223408720,
+              "createdAt": "2026-10-08T19:43:37Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408720"
+            },
+            {
+              "id": 4223436908,
+              "createdAt": "2026-10-08T19:46:46Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223436908"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhqf9",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 148,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223408732,
+              "createdAt": "2026-10-08T19:43:37Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408732"
+            },
+            {
+              "id": 4223437127,
+              "createdAt": "2026-10-08T19:46:47Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223437127"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhqgF",
+          "path": "src/github/domainResolution.ts",
+          "line": 17,
+          "originalLine": 17,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4223408744,
+              "createdAt": "2026-10-08T19:43:37Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408744"
+            },
+            {
+              "id": 4223437330,
+              "createdAt": "2026-10-08T19:46:48Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223437330"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qh2E2",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 154,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223483353,
+              "createdAt": "2026-10-08T19:52:00Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483353"
+            },
+            {
+              "id": 4223500444,
+              "createdAt": "2026-10-08T19:53:53Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223500444"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qh2E5",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 25,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223483364,
+              "createdAt": "2026-10-08T19:52:00Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483364"
+            },
+            {
+              "id": 4223500627,
+              "createdAt": "2026-10-08T19:53:55Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223500627"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qh2E9",
+          "path": "src/liveState/servedDomains.ts",
+          "line": 198,
+          "originalLine": 179,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4223483370,
+              "createdAt": "2026-10-08T19:52:00Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483370"
+            },
+            {
+              "id": 4223500816,
+              "createdAt": "2026-10-08T19:53:56Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223500816"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qiB4Z",
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "originalLine": 24,
+          "resolved": true,
+          "outdated": true,
+          "commentRefs": [
+            {
+              "id": 4223561079,
+              "createdAt": "2026-10-08T20:00:47Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223561079"
+            },
+            {
+              "id": 4223573935,
+              "createdAt": "2026-10-08T20:02:15Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223573935"
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qiK95",
+          "path": "src/liveState/collect.ts",
+          "line": 471,
+          "originalLine": 471,
+          "resolved": true,
+          "outdated": false,
+          "commentRefs": [
+            {
+              "id": 4223621173,
+              "createdAt": "2026-10-08T20:07:43Z",
+              "author": "chatgpt-codex-connector",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223621173"
+            },
+            {
+              "id": 4223812923,
+              "createdAt": "2026-10-08T20:29:21Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223812923"
+            },
+            {
+              "id": 4227281270,
+              "createdAt": "2026-10-09T06:27:15Z",
+              "author": "Wealthtechinnovations",
+              "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4227281270"
+            }
+          ]
+        }
+      ],
+      "reviewRefs": [
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYjRDg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:04:53Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYlU9w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:08:06Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYlWXw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:08:08Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYlXXw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:08:10Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYlYVQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:08:11Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYlZew",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:08:13Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYrU7A",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:15:40Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYsqDg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:17:29Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYsq9g",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:17:30Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYsr_g",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:17:32Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYss4w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:17:33Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYwNog",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:22:31Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYxbUg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:24:26Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYxcQw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:24:27Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRYxdCA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:24:28Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRY0_6A",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:29:56Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRY2LUw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:31:41Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRY2MXA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:31:43Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRY2NTA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:31:44Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRY2OOA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:31:46Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRY4jKA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:35:24Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRY6K4A",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:37:38Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRY-Q2A",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:43:37Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZAMlg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:46:43Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZANYQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:46:44Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZAOSw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:46:46Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZAPQQ",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:46:47Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZAQGg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:46:48Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZDg7w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:52:00Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZErcw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:53:54Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZEsVA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:53:55Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZEtVg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T19:53:56Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZI_tg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T20:00:47Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZJ6SA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T20:02:16Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZNTnA",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T20:07:43Z",
+          "author": "chatgpt-codex-connector"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRZbNwg",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-08T20:29:21Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRdR7Dw",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-09T06:27:14Z",
+          "author": "Wealthtechinnovations"
+        },
+        {
+          "id": "PRR_kwDOTJ-y6M8AAAABRdR72w",
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-09T06:27:15Z",
+          "author": "Wealthtechinnovations"
+        }
+      ]
+    },
+    {
+      "pr": 271,
+      "threadCount": 0,
+      "unresolvedCount": 0,
+      "reviewSubmissionCount": 0,
+      "threadRefs": [],
+      "reviewRefs": []
+    },
+    {
+      "pr": 272,
+      "threadCount": 0,
+      "unresolvedCount": 0,
+      "reviewSubmissionCount": 0,
+      "threadRefs": [],
+      "reviewRefs": []
+    },
+    {
+      "pr": 273,
+      "threadCount": 0,
+      "unresolvedCount": 0,
+      "reviewSubmissionCount": 0,
+      "threadRefs": [],
+      "reviewRefs": []
+    },
+    {
+      "pr": 274,
+      "threadCount": 0,
+      "unresolvedCount": 0,
+      "reviewSubmissionCount": 0,
+      "threadRefs": [],
+      "reviewRefs": []
+    },
+    {
+      "pr": 275,
+      "threadCount": 0,
+      "unresolvedCount": 0,
+      "reviewSubmissionCount": 0,
+      "threadRefs": [],
+      "reviewRefs": []
+    }
+  ]
+}
