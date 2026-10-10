@@ -39,9 +39,7 @@
       "id": "GWB-01",
       "title": "Reobserve authorities and resume",
       "mode": "GITHUB_ONLY",
-      "dependsOn": [
-        "GWB-00 observation may overlap"
-      ],
+      "dependsOn": [],
       "work": "Read CLAUDE.md, SUIVI.md, CURRENT, Program Backlog, GitHub main open PRs and program intakes; read runtime queue/session/locks via authorized OIDC",
       "acceptance": "up-to-date exact head and potential ownership blockers",
       "guard": "runtime unknown must remain unknown",
