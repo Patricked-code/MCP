@@ -6,8 +6,8 @@
   "workItemId": "PB-H",
   "observedMainSha": "765eecf8c9dc86280a51a41cbb888432037bfeeb",
   "branch": "mcp/w4-h01-trace-evidence-inventory-20261010",
-  "observationDate": "2026-10-10",
-  "status": "IN_PROGRESS_PR_CREATION_BLOCKED_NEW_EXACT_HEAD_CI_REQUIRED",
+  "observationDate": "2026-10-11",
+  "status": "IN_PROGRESS_EXACT_HEAD_PUSH_CI_GREEN_PR_CREATION_BLOCKED",
   "planningOnly": true,
   "createsRuntimeTask": false,
   "materializesClaim": false,
@@ -93,31 +93,31 @@
     "tasks": "UNKNOWN",
     "sessions": "UNKNOWN",
     "locks": "UNKNOWN",
-    "source": "GitHub read-only historical OIDC evidence insufficient for current ownership"
+    "source": "Historical OIDC read-only runs have no currently accessible artifacts (workflow retention 1 day); new evidence issue creation denied by connector safety checks. No claim permitted."
   },
   "validation": {
     "sourceSignalsChecked": "8/8 source files, 13/13 signals present on observed main",
-    "targetedTests": "3/3 tests committed; push CI #38074009527 SUCCESS on prior head 200aba13ae2de30e8d62f86795c93a9eef1100b6. New checkpoint commit requires fresh exact-head CI.",
-    "review": "PENDING_PR_CREATION_CONNECTOR_SAFETY_REFUSAL",
+    "targetedTests": "3/3 tests committed; exact-head push CI #38085782750 SUCCESS on 9b52055dd34160db9b89ebb70292e1e99124ec7d (validate job green). PR CI/review still pending.",
+    "review": "PENDING_DRAFT_PR_CREATION_CONNECTOR_SAFETY_REFUSAL",
     "merge": "NOT_ATTEMPTED",
     "governedDeploy": "NOT_ATTEMPTED",
     "ciEvidence": {
-      "runId": 38074009527,
-      "headSha": "200aba13ae2de30e8d62f86795c93a9eef1100b6",
+      "runId": 38085782750,
+      "headSha": "9b52055dd34160db9b89ebb70292e1e99124ec7d",
       "conclusion": "success",
       "event": "push",
-      "note": "Previous head only; does not attest the new checkpoint commit."
+      "note": "Exact-head CI passed for prior branch head. Any later checkpoint commit requires its own CI."
     }
   },
   "h01Done": false,
-  "nextAction": "Reobserve branch HEAD, verify fresh CI, create H-01 Draft PR, obtain review and reconcile SUIVI/NEXT_ACTION without collision.",
+  "nextAction": "Create H-01 Draft PR when GitHub connector permits, obtain exact PR CI and independent review, reconcile SUIVI/NEXT_ACTION without OAuth collision; reobserve runtime authorities only before any runtime materialization or claim.",
   "checkpoint": {
-    "observationDate": "2026-10-10",
+    "observationDate": "2026-10-11",
     "observedMainSha": "765eecf8c9dc86280a51a41cbb888432037bfeeb",
-    "observedPreviousBranchSha": "200aba13ae2de30e8d62f86795c93a9eef1100b6",
-    "observedCiRunId": 38074009527,
+    "observedPreviousBranchSha": "9b52055dd34160db9b89ebb70292e1e99124ec7d",
+    "observedCiRunId": 38085782750,
     "observedCiConclusion": "success",
-    "branchComparison": "ahead 4, behind 0; two new files only before checkpoint",
+    "branchComparison": "ahead 5, behind 0; two new files only",
     "pullRequestCreation": "BLOCKED_BY_CONNECTOR_SAFETY_CHECKS",
     "runtimeAuthorities": {
       "tasks": "UNKNOWN",
@@ -127,9 +127,10 @@
     "pr272": "MERGED",
     "pr274": "DRAFT_NO_REVIEWS",
     "pr275": "DRAFT_NO_REVIEWS",
-    "f04": "READY_NOT_DONE",
+    "f04": "READY_NOT_DONE_ISSUE_268_OPEN",
     "governedDeployCurrentMain": "NOT_ATTESTED_SUCCESS_HTTP_502_RUN_37975655618",
     "writesToRuntime": false,
-    "nextAction": "Reobserve branch HEAD, verify fresh CI, create H-01 Draft PR, obtain review and reconcile SUIVI/NEXT_ACTION without collision."
+    "nextAction": "Create H-01 Draft PR when GitHub connector permits, obtain exact PR CI and independent review, reconcile SUIVI/NEXT_ACTION without OAuth collision; reobserve runtime authorities only before any runtime materialization or claim.",
+    "readOnlyEvidenceIssueCreation": "BLOCKED_BY_CONNECTOR_SAFETY_CHECKS"
   }
 }
