@@ -96,7 +96,7 @@
     "source": "GitHub read-only historical OIDC evidence insufficient for current ownership"
   },
   "validation": {
-    "sourceSignalsChecked": "8/8 source files, 14/14 signals present on observed main",
+    "sourceSignalsChecked": "8/8 source files, 13/13 signals present on observed main",
     "targetedTests": "PENDING_CI",
     "review": "PENDING",
     "merge": "NOT_ATTEMPTED",
