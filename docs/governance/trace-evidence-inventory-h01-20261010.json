@@ -7,7 +7,7 @@
   "observedMainSha": "765eecf8c9dc86280a51a41cbb888432037bfeeb",
   "branch": "mcp/w4-h01-trace-evidence-inventory-20261010",
   "observationDate": "2026-10-10",
-  "status": "IN_PROGRESS_CI_GREEN_PR_CREATION_BLOCKED",
+  "status": "IN_PROGRESS_PR_CREATION_BLOCKED_NEW_EXACT_HEAD_CI_REQUIRED",
   "planningOnly": true,
   "createsRuntimeTask": false,
   "materializesClaim": false,
@@ -97,17 +97,39 @@
   },
   "validation": {
     "sourceSignalsChecked": "8/8 source files, 13/13 signals present on observed main",
-    "targetedTests": "3/3 added; exact-head MCP CI #38069724268 SUCCESS (2026-10-10T16:58:23Z)",
-    "review": "PENDING_PR_CREATION",
+    "targetedTests": "3/3 tests committed; push CI #38074009527 SUCCESS on prior head 200aba13ae2de30e8d62f86795c93a9eef1100b6. New checkpoint commit requires fresh exact-head CI.",
+    "review": "PENDING_PR_CREATION_CONNECTOR_SAFETY_REFUSAL",
     "merge": "NOT_ATTEMPTED",
     "governedDeploy": "NOT_ATTEMPTED",
     "ciEvidence": {
-      "runId": 38069724268,
-      "headSha": "b86ba6c8a7329c882e18b807939e1accc695c57e",
+      "runId": 38074009527,
+      "headSha": "200aba13ae2de30e8d62f86795c93a9eef1100b6",
       "conclusion": "success",
-      "event": "push"
+      "event": "push",
+      "note": "Previous head only; does not attest the new checkpoint commit."
     }
   },
   "h01Done": false,
-  "nextAction": "Open H-01 draft PR on existing branch (connector write currently blocked), obtain PR CI and independent review, reconcile SUIVI/NEXT_ACTION; do not claim, merge, or deploy without applicable gates."
+  "nextAction": "Reobserve branch HEAD, verify fresh CI, create H-01 Draft PR, obtain review and reconcile SUIVI/NEXT_ACTION without collision.",
+  "checkpoint": {
+    "observationDate": "2026-10-10",
+    "observedMainSha": "765eecf8c9dc86280a51a41cbb888432037bfeeb",
+    "observedPreviousBranchSha": "200aba13ae2de30e8d62f86795c93a9eef1100b6",
+    "observedCiRunId": 38074009527,
+    "observedCiConclusion": "success",
+    "branchComparison": "ahead 4, behind 0; two new files only before checkpoint",
+    "pullRequestCreation": "BLOCKED_BY_CONNECTOR_SAFETY_CHECKS",
+    "runtimeAuthorities": {
+      "tasks": "UNKNOWN",
+      "sessions": "UNKNOWN",
+      "locks": "UNKNOWN"
+    },
+    "pr272": "MERGED",
+    "pr274": "DRAFT_NO_REVIEWS",
+    "pr275": "DRAFT_NO_REVIEWS",
+    "f04": "READY_NOT_DONE",
+    "governedDeployCurrentMain": "NOT_ATTESTED_SUCCESS_HTTP_502_RUN_37975655618",
+    "writesToRuntime": false,
+    "nextAction": "Reobserve branch HEAD, verify fresh CI, create H-01 Draft PR, obtain review and reconcile SUIVI/NEXT_ACTION without collision."
+  }
 }
