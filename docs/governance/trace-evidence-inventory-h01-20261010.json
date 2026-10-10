@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "kind": "GITHUB_ONLY_TRACE_EVIDENCE_INVENTORY",
+  "repository": "Patricked-code/MCP",
+  "blueprintId": "TB-W4-H-01",
+  "workItemId": "PB-H",
+  "observedMainSha": "765eecf8c9dc86280a51a41cbb888432037bfeeb",
+  "branch": "mcp/w4-h01-trace-evidence-inventory-20261010",
+  "observationDate": "2026-10-10",
+  "status": "IN_PROGRESS_PENDING_CI_REVIEW",
+  "planningOnly": true,
+  "createsRuntimeTask": false,
+  "materializesClaim": false,
+  "runtimeMutationAuthorized": false,
+  "existingAuthority": "Operational Event Journal",
+  "sourceEvidence": [
+    {
+      "path": "src/operationalMemory/eventJournal.ts",
+      "signals": [
+        "eventId",
+        "processSequence",
+        "governedSessionId",
+        "redactSensitiveValue"
+      ]
+    },
+    {
+      "path": "src/operationalMemory/operationalAudit.ts",
+      "signals": [
+        "checkpointEventIds",
+        "governedSessionId"
+      ]
+    },
+    {
+      "path": "src/operationalMemory/transportBindings.ts",
+      "signals": [
+        "fingerprintTransport",
+        "governedSessionId"
+      ]
+    },
+    {
+      "path": "src/operationalMemory/clientPresence.ts",
+      "signals": [
+        "oauth_authenticated_mcp_request"
+      ]
+    },
+    {
+      "path": "src/logger.ts",
+      "signals": [
+        "LOGGER_REDACT_PATHS"
+      ]
+    },
+    {
+      "path": "src/oauth.ts",
+      "signals": [
+        "inspectOauthAccessToken"
+      ]
+    },
+    {
+      "path": "src/ssh/client.ts",
+      "signals": [
+        "logger.info"
+      ]
+    },
+    {
+      "path": "docs/governance/oauth-correlation-inventory-20260928.json",
+      "signals": [
+        "NO_END_TO_END_OAUTH_ATTEMPT_CORRELATION"
+      ]
+    }
+  ],
+  "correlationVerdict": "OAUTH_MCP_SSH_END_TO_END_TRACE_NOT_DEMONSTRATED",
+  "evidenceLimits": [
+    "Static source inspection proves only cited identifier presence, not live propagation or production liveness.",
+    "No global absence claim about traceId/spanId outside inspected files.",
+    "Existing OAuth inventory must be reused, not duplicated.",
+    "No raw identity, token, transport session ID or upstream secret is captured."
+  ],
+  "collisionCheck": {
+    "status": "NO_DIRECT_FILE_OVERLAP_OBSERVED",
+    "knownAdjacentPullRequest": 207,
+    "excludedScope": [
+      "src/oauth.ts",
+      "src/logger.ts",
+      "src/auth.ts",
+      "src/operationalMemory/connectionContext.ts",
+      "src/operationalMemory/sessionService.ts",
+      "SUIVI.md",
+      "docs/governance/program-backlog-convergence.json"
+    ],
+    "remainingRisk": "Review branch scope again before PR and after HEAD movement."
+  },
+  "liveAuthorities": {
+    "tasks": "UNKNOWN",
+    "sessions": "UNKNOWN",
+    "locks": "UNKNOWN",
+    "source": "GitHub read-only historical OIDC evidence insufficient for current ownership"
+  },
+  "validation": {
+    "sourceSignalsChecked": "8/8 source files, 14/14 signals present on observed main",
+    "targetedTests": "PENDING_CI",
+    "review": "PENDING",
+    "merge": "NOT_ATTEMPTED",
+    "governedDeploy": "NOT_ATTEMPTED"
+  },
+  "h01Done": false,
+  "nextAction": "Run exact-head CI on inventory tests, obtain review, reconcile SUIVI/NEXT_ACTION, and recompute readiness; do not claim or deploy without fresh runtime evidence."
+}
