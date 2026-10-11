@@ -1,0 +1,1543 @@
+{
+  "schemaVersion": 1,
+  "kind": "PARTIAL_REVIEW_THREAD_EVIDENCE",
+  "baselineMain": "765eecf8c9dc86280a51a41cbb888432037bfeeb",
+  "scope": [
+    65,
+    68,
+    71,
+    267,
+    272,
+    273
+  ],
+  "remaining": "Other PR review threads and submissions/commit comments",
+  "rows": [
+    {
+      "number": 65,
+      "result": "fulfilled",
+      "threads": [],
+      "error": null
+    },
+    {
+      "number": 68,
+      "result": "fulfilled",
+      "threads": [
+        {
+          "id": "PRRT_kwDOTJ-y6M6d_SmE",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/operationalMemory/sessionService.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": "RIGHT",
+          "original_line": 284,
+          "original_start_line": 279,
+          "resolved_by": {
+            "login": "Patricked-code",
+            "name": "Patricked-code",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/270385782?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M7oiK2a",
+              "database_id": 3901271450,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Unbind the transport when context validation fails**\n\nWhen an authenticated OAuth client uses a `client_id` rejected by the new schema, such as whitespace-only or more than 256 characters, `createConnectionContext()` throws here after `bindings.bind()` has installed the mapping but before the cleanup `try` block begins. This is reachable because `src/oauth.ts` accepts any nonempty `client_id`; no session is persisted, yet another open attempt on the same transport fails with `TRANSPORT_BINDING_CONFLICT`. Construct and validate the context before binding, or include record construction in the cleanup block.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-01T06:12:55Z",
+              "updated_at": "2026-09-01T06:12:55Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M7oiT83",
+              "database_id": 3901308727,
+              "body": "Fixed on exact head `81832e1b702a8dfe10cda5634d6092fb3a177142` with the minimal side-effect ordering change: `createConnectionContext(...)` is now constructed/validated before `TransportBindings.bind(...)`, so malformed OAuth client metadata fails before any transport mutation. A dedicated regression test was added and registered in the existing read-only safety suite. TDD evidence: RED on head `f3b4bacd1d8a6975d33c949372cda6f1d1d2d523` / MCP CI #711 showed exactly 271/272 passing with the leaked binding as the sole failure; GREEN on head `81832e1b702a8dfe10cda5634d6092fb3a177142` / MCP CI #713 now passes 272/272, including `openSession releases the transport binding when ConnectionContext validation fails`, plus typecheck, build, docs/governance, secret scan and whitespace checks. No parallel cleanup mechanism or authority was added.",
+              "created_at": "2026-09-01T06:19:57Z",
+              "updated_at": "2026-09-01T06:19:57Z",
+              "author": {
+                "login": "Patricked-code",
+                "name": "Patricked-code",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/270385782?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 71,
+      "result": "fulfilled",
+      "threads": [
+        {
+          "id": "PRRT_kwDOTJ-y6M6eTXc-",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "SUIVI.md",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": 21,
+          "start_diff_side": null,
+          "original_line": 20,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Patricked-code",
+            "name": "Patricked-code",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/270385782?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M7pACVy",
+              "database_id": 3909100914,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Put the closure merge SHA first in SUIVI**\n\nAfter this documentation commit is merged and deployed, `buildDocumentationLiveStateCommand()` reads the first 40-character SHA in `SUIVI.md` as `declaredGithubSha`, so this line selects the PR #68 head `81832e1...`, while the first `S1 HEAD` line declares `c87598d...`. Because `parseDocumentationObservation()` exempts a docs-only descendant from the S1 mismatch only when both declared SHAs are equal, the newly deployed S1 SHA will be reported as `DOCUMENTATION_DRIFT`, preventing the intended `FULLY_ALIGNED` closure. Place `c87598d...` before the PR head evidence, as the previous checkpoint did, so both declarations use the same ancestor.\n\nAGENTS.md reference: [AGENTS.md:L63-L75](https://github.com/Patricked-code/MCP/blob/cd8f681800603ff518f08c8b1c82dfaa8a861cc2/AGENTS.md#L63-L75)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-01T22:49:48Z",
+              "updated_at": "2026-09-01T22:49:48Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M7pBya4",
+              "database_id": 3909559992,
+              "body": "Addressed at exact head `770bd7e18933a6508de24f070bba3eb9549cb3ee`: the PR #70 closure merge `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4` is now the first 40-character SHA in the current checkpoint, before historical PR #68 head `81832e1b702a8dfe10cda5634d6092fb3a177142`. Commit diff changes only the ordering of those two SUIVI lines. MCP CI #751 completed successfully on this exact head, including typecheck, build, docs check, governance tests, secret scan, read-only safety tests and whitespace diff. Exact-head Codex re-review has been requested; leaving this thread unresolved until that independent re-review completes.",
+              "created_at": "2026-09-02T00:06:36Z",
+              "updated_at": "2026-09-02T00:06:36Z",
+              "author": {
+                "login": "Patricked-code",
+                "name": "Patricked-code",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/270385782?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M7pjTgh",
+              "database_id": 3918346273,
+              "body": "Resolved at exact head `9732c65b4bd4e01885f098a34de121b720ffdd99`. `SUIVI.md` now places merge `c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4` before historical heads `59de…` and `81832e1…`. MCP CI #753 is fully green. Independent exact-head review recomputed `declaredGithubSha=c87598dd…`, `declaredS1Sha=c87598dd…`, descendant scope `docs_only`, `explicitGithubMismatch=false`, `explicitS1Mismatch=false`, and final `drift=false`; no P0-P3 findings remain.",
+              "created_at": "2026-09-02T20:28:14Z",
+              "updated_at": "2026-09-02T20:28:14Z",
+              "author": {
+                "login": "Patricked-code",
+                "name": "Patricked-code",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/270385782?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 267,
+      "result": "fulfilled",
+      "threads": [
+        {
+          "id": "PRRT_kwDOTJ-y6M6qgyhC",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 14,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77tnw_",
+              "database_id": 4223040575,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Propagate `find` failures through the pipeline**\n\nWhen `/var/www/vhosts` is missing or unreadable, or `find` otherwise fails during traversal, stderr is discarded and the pipeline returns `head`'s successful exit status because pipefail is not enabled. `collectServedDomains()` therefore treats the resulting empty or partial output as `CURRENT`, which can incorrectly produce `DOMAIN_NONE_CONFIRMED`; make the producer's failure propagate before accepting the inventory.\n\nAGENTS.md reference: [AGENTS.md:L30-L33](https://github.com/Patricked-code/MCP/blob/202e7e0ed866e65827b4841fc8c114d47ef1ac37/AGENTS.md#L30-L33)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:04:53Z",
+              "updated_at": "2026-10-08T19:04:53Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77tvDf",
+              "database_id": 4223070431,
+              "body": "Confirmed. Fixed in `469dd79` (not yet pushed): the command no longer pipes or discards stderr, so a missing or unreadable directory fails `find` itself and the read is `UNAVAILABLE`; sorting and the 1000-entry bound moved into the parser.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:08:10Z",
+              "updated_at": "2026-10-08T19:08:10Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qgyhK",
+          "is_resolved": true,
+          "is_outdated": false,
+          "path": "src/liveState/servedDomains.ts",
+          "line": 136,
+          "diff_side": "RIGHT",
+          "start_line": 136,
+          "start_diff_side": null,
+          "original_line": 76,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77tnxR",
+              "database_id": 4223040593,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Scope the observation to the selected project**\n\nOn a multi-tenant S1, this passes every valid Plesk vhost to GW-09 for whichever single project is currently resolved. `resolveDomain()` compares those entries with only that project's declarations and returns `DOMAIN_OBSERVATION_UNDECLARED` as soon as another project's domain is present, so no selected project can reach `RESOLVED` or confirmed `NONE` on a shared server; the observation must be scoped to the target project, or the resolver must exclude domains belonging to other registry projects.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:04:53Z",
+              "updated_at": "2026-10-08T19:04:53Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77tu7O",
+              "database_id": 4223069902,
+              "body": "Confirmed. Fixed in `469dd79` (not yet pushed): the default C5 reader now scopes the Live State observation to the domains GitRegistry declares for the selected project on that server (`declaredProjectDomains` + `scopeDomainObservation`), so another tenant's vhost no longer reads as `DOMAIN_OBSERVATION_UNDECLARED`. Test: `the observation is scoped to the selected project on a shared server`.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:08:06Z",
+              "updated_at": "2026-10-08T19:08:07Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qgyhN",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": "RIGHT",
+          "original_line": 38,
+          "original_start_line": 34,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77tnxW",
+              "database_id": 4223040598,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Reject unknown malformed inventory entries**\n\nWhen the directory listing contains an unexpected non-domain entry, the parser silently drops it and still reports the inventory as `CURRENT`. If the selected project explicitly declares no public surface, that hidden entry can turn an uncertain inventory into `DOMAIN_NONE_CONFIRMED`; only known Plesk system directories should be skipped, while any other malformed entry should make the inventory unavailable as the module contract states.\n\nAGENTS.md reference: [AGENTS.md:L30-L33](https://github.com/Patricked-code/MCP/blob/202e7e0ed866e65827b4841fc8c114d47ef1ac37/AGENTS.md#L30-L33)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:04:53Z",
+              "updated_at": "2026-10-08T19:04:53Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77tvAX",
+              "database_id": 4223070231,
+              "body": "Confirmed. Fixed in `469dd79` (not yet pushed): with the inventory now read at `/var/www/vhosts/system`, every entry must be a domain; any other entry (a truncation marker included) makes the inventory `UNAVAILABLE`.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:08:08Z",
+              "updated_at": "2026-10-08T19:08:08Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qgyhR",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 14,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77tnxb",
+              "database_id": 4223040603,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Inventory nested Plesk domain directories**\n\nThe repository's existing S1 layout places many actual domains below a subscription directory, for example `/var/www/vhosts/wealthtechinnovations.com/api.sadiaaf.wealthtechinnovations.com` in `src/tools/legacyVhostsScoped.ts`. With both `-mindepth 1` and `-maxdepth 1`, this command emits only `wealthtechinnovations.com` and never the nested domain, so a matching declaration is reported as `DOMAIN_DECLARATION_UNOBSERVED`; inventory the authoritative per-domain level (such as Plesk's `system` entries) rather than only top-level subscription directories.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:04:53Z",
+              "updated_at": "2026-10-08T19:04:53Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77tvLf",
+              "database_id": 4223070943,
+              "body": "Confirmed. Fixed in `469dd79` (not yet pushed): the inventory reads Plesk's per-domain level `/var/www/vhosts/system/<domain>`, so nested subscription domains such as `api.sadiaaf.…` are observed.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:08:13Z",
+              "updated_at": "2026-10-08T19:08:13Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qgyhU",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 63,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77tnxj",
+              "database_id": 4223040611,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Provide observations for resolved S2 projects**\n\nWhen C3 resolves a project to S2, this unconditional server check returns `null`, so the new default collector still produces `DOMAIN_OBSERVATION_UNAVAILABLE` for existing S2 projects such as AfricaFunds. The DOMAIN_BINDING contract explicitly identifies both `list_domains_s1` and `list_domains_s2` as the existing inventories to wrap, and the governed resolver already supports S2; store/project an inventory per server rather than making the observe-binding implementation S1-only.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:04:53Z",
+              "updated_at": "2026-10-08T19:04:53Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77tvHT",
+              "database_id": 4223070675,
+              "body": "Confirmed. Fixed in `469dd79` (not yet pushed): Live State now holds one inventory per managed server (`servedDomains.s1` / `servedDomains.s2`), and the projection answers for either; an unmanaged server still gets none.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:08:11Z",
+              "updated_at": "2026-10-08T19:08:11Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhDEt",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": "RIGHT",
+          "original_line": 146,
+          "original_start_line": 144,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77uCfw",
+              "database_id": 4223150064,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep observation evidence independent of declarations**\n\nFresh evidence after the earlier shared-server correction: because every retained entry must satisfy `declared.has(...)`, the default reader can never deliver an undeclared entry to GW-09. In particular, a project declaring no domains produces an available empty observation and `DOMAIN_NONE_CONFIRMED`, even though collection only observed an unscoped shared-server inventory and established no project ownership; this also makes `DOMAIN_OBSERVATION_UNDECLARED` unreachable through the default path. Scope using independent Plesk project/subscription evidence, or leave the observation unavailable when ownership cannot be established.\n\nAGENTS.md reference: [AGENTS.md:L32-L32](https://github.com/Patricked-code/MCP/blob/469dd79db123a7f48bc31196348d3d49bb4a5124/AGENTS.md#L32-L32)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:15:40Z",
+              "updated_at": "2026-10-08T19:15:40Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77uG5o",
+              "database_id": 4223168104,
+              "body": "Confirmed. Fixed in `b601c43` (not yet pushed): when the selected project declares no domain, the scoped observation is unavailable (`UNKNOWN`), so `DOMAIN_NONE_CONFIRMED` is no longer reachable from an unowned inventory. With declarations, filtering to them stays: the inventory carries no ownership, so an unrelated domain cannot be attributed to this project as undeclared.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:17:32Z",
+              "updated_at": "2026-10-08T19:17:32Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhDE8",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 38,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77uCgM",
+              "database_id": 4223150092,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Validate raw inventory names before trimming**\n\nFresh evidence after the earlier malformed-inventory fix: trimming before validation accepts a directory basename such as ` example.com` as `example.com`, while a whitespace-only basename is silently discarded. If such an unexpected entry exists under `/var/www/vhosts/system`, the inventory remains `CURRENT` instead of becoming `UNAVAILABLE`; with no other entries, that can incorrectly support `DOMAIN_NONE_CONFIRMED`. Validate the exact basename before any normalization.\n\nAGENTS.md reference: [AGENTS.md:L32-L32](https://github.com/Patricked-code/MCP/blob/469dd79db123a7f48bc31196348d3d49bb4a5124/AGENTS.md#L32-L32)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:15:40Z",
+              "updated_at": "2026-10-08T19:15:40Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77uGy5",
+              "database_id": 4223167673,
+              "body": "Confirmed. Fixed in `b601c43` (not yet pushed): the exact basename is validated before any normalization; padding or an empty name makes the inventory `UNAVAILABLE`.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:17:29Z",
+              "updated_at": "2026-10-08T19:17:29Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhDFF",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 18,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77uCgY",
+              "database_id": 4223150104,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Include names served as aliases in the inventory**\n\nWhen a declared public domain is a Plesk alias, listing only `system/<directory>` basenames can miss a binding that is actively served by another vhost, causing GW-09 to return `DOMAIN_DECLARATION_UNOBSERVED`. Plesk documents that [domain aliases point multiple names to the same website](https://docs.plesk.com/en-US/obsidian/administrator-guide/website-management/websites-and-domains/domains-and-dns/adding-domain-aliases.65286/) and its [vhost example serves `www.domainXX.tst` through `ServerAlias`](https://docs.plesk.com/en-US/obsidian/advanced-administration-guide-linux/virtual-hosts-configuration/virtual-hosts-and-hosting-types.68694/), so directory names alone are not a complete served-name inventory; include bounded alias data from Plesk or the active webserver configuration.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:15:40Z",
+              "updated_at": "2026-10-08T19:15:40Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77uG8n",
+              "database_id": 4223168295,
+              "body": "Valid gap, not fixed in this PR. The failure is closed: a declared domain served only as a Plesk alias reads `DOMAIN_DECLARATION_UNOBSERVED`, which is `UNVERIFIED` — a false negative, never a false positive `RESOLVED`/`NONE`. Inventorying aliases means parsing per-vhost webserver configuration (`server_name`/`ServerAlias`), a broader read I'd rather add as its own F-04 increment than widen this one. Recorded as a known limit in SUIVI.md.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:17:33Z",
+              "updated_at": "2026-10-08T19:17:33Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77uW66",
+              "database_id": 4223233722,
+              "body": "Update: resolved by `1162f85` (not yet pushed). The inventory now reads Plesk's active web aliases from its records, so a declared domain served only as an alias is observed.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:24:28Z",
+              "updated_at": "2026-10-08T19:24:28Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhDFN",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 21,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77uCgn",
+              "database_id": 4223150119,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Recognize Plesk wildcard vhost directories**\n\nFresh evidence after the malformed-entry correction: Plesk's documented configuration hierarchy uses [`/var/www/vhosts/system/_<domain_name>` for wildcard virtual hosts](https://docs.plesk.com/en-US/obsidian/administrator-guide/web-servers/apache-and-nginx-web-servers-linux/apache-and-nginx-configuration-files.68678/). The leading underscore fails this regex, so one legitimate wildcard configuration makes the entire server inventory `UNAVAILABLE` and blocks C5 resolution for unrelated projects on that shared server; recognize this bounded Plesk entry form or deliberately exclude it instead of treating it as corruption.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:15:40Z",
+              "updated_at": "2026-10-08T19:15:40Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77uG13",
+              "database_id": 4223167863,
+              "body": "Confirmed. Fixed in `b601c43` (not yet pushed): a `_<domain>` wildcard directory is recognized and deliberately excluded (it configures a wildcard, not one served name); a malformed underscore entry still makes the inventory unavailable.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:17:30Z",
+              "updated_at": "2026-10-08T19:17:30Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhNIs",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 18,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77uSlK",
+              "database_id": 4223215946,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Check Plesk status before certifying a served domain**\n\nWhen a declared domain is suspended or disabled in Plesk, this directory scan can still return its basename even though it is no longer an active served vhost: Plesk documents that changing website status does not remove the related server content, while active nginx vhosts are represented separately by include links into the `system/<domain>/conf` tree ([website status](https://docs.plesk.com/en-US/obsidian/administrator-guide/website-management/websites-and-domains/hosting-settings/general-settings/website-status.72339/), [configuration hierarchy](https://docs.plesk.com/en-US/obsidian/administrator-guide/web-servers/apache-and-nginx-web-servers-linux/apache-and-nginx-configuration-files.68678/)). Directory presence alone therefore cannot prove active status, yet the result is later marked `verified: true`, allowing GW-09 to return `RESOLVED` from retained administrative files; inventory active includes or query Plesk status and fail closed otherwise.\n\nAGENTS.md reference: [AGENTS.md:L30-L33](https://github.com/Patricked-code/MCP/blob/b601c430b20b85130641a34f2b19f5d7eb08ce8e/AGENTS.md#L30-L33)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:22:31Z",
+              "updated_at": "2026-10-08T19:22:31Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77uW0W",
+              "database_id": 4223233302,
+              "body": "Confirmed. Fixed in `1162f85` (not yet pushed): the inventory no longer reads directories. It reads Plesk's records of active served names (`domains` with `status = 0` and `htype <> 'none'`, plus `domain_aliases` with `status = 0` and `web = 'true'`), so a suspended or disabled site is not certified. A failing read stays unavailable, never an absence.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:24:26Z",
+              "updated_at": "2026-10-08T19:24:26Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhNIw",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 21,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77uSlT",
+              "database_id": 4223215955,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Accept Punycode top-level domains in the inventory**\n\nWhen either managed server hosts an internationalized domain whose ASCII form has a Punycode TLD, such as `example.xn--p1ai`, this regex rejects the valid directory name because the final label permits letters only. Plesk explicitly represents internationalized site names in Punycode ([Plesk hosting-description variables](https://docs.plesk.com/en-US/obsidian/migration-guide/migrating-from-custom-hosting/editing-the-hosting-description-file.75609/)); because one rejected entry makes the entire inventory `UNAVAILABLE`, that single domain prevents C5 observations for every project on the shared server. Validate labels with an IDNA-aware domain parser or permit valid `xn--` TLDs.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:22:31Z",
+              "updated_at": "2026-10-08T19:22:31Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77uW3_",
+              "database_id": 4223233535,
+              "body": "Confirmed. Fixed in `1162f85` (not yet pushed): the final label also accepts a Punycode TLD (`xn--…`); test covers `example.xn--p1ai`.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:24:27Z",
+              "updated_at": "2026-10-08T19:24:27Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhXjH",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 19,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77ujIa",
+              "database_id": 4223283738,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Check subscription status before certifying domains**\n\nFresh evidence after the earlier status correction: Plesk documents a state where `domains.status` is `0` while `webspace_status` is `2`, meaning the subscription remains suspended ([Plesk support](https://support.plesk.com/hc/en-us/articles/12377793935767-Unable-to-activate-suspended-customer-or-subscription-in-Plesk-The-subscription-is-suspended-because-its-subscriber-was-suspended)). This query nevertheless inventories the domain and it is later emitted with `verified: true`, so a matching registry declaration can become `RESOLVED` even though the website is offline; require the webspace/subscription status to be active before certifying the name.\n\nAGENTS.md reference: [AGENTS.md:L32-L32](https://github.com/Patricked-code/MCP/blob/1162f853e42400873b52b16e7a3ac4d0f7f3048a/AGENTS.md#L32-L32)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:29:56Z",
+              "updated_at": "2026-10-08T19:29:57Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77unBu",
+              "database_id": 4223299694,
+              "body": "Confirmed. Fixed in `ded65b3` (not yet pushed): domains require `d.webspace_status = 0` as well as `d.status = 0`, and an alias is joined to its domain and served only while that domain and its subscription are active.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:31:41Z",
+              "updated_at": "2026-10-08T19:31:41Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhXjO",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 19,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77ujIl",
+              "database_id": 4223283749,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include enabled www hostnames in the inventory**\n\nWhen a Plesk site has its `www` prefix enabled, this query returns only the stored base domain, so a registry declaration such as `www.example.com` is scoped to an empty observation and ends as `DOMAIN_DECLARATION_UNOBSERVED` even though that hostname is served. Plesk's [`site` CLI documentation](https://docs.plesk.com/en-US/onyx/cli-linux/using-command-line-utilities/site-sites.67067/) states that `-www` is enabled by default; include that active hostname or inventory the generated web aliases/configuration.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:29:56Z",
+              "updated_at": "2026-10-08T19:29:57Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77unLv",
+              "database_id": 4223300335,
+              "body": "Valid gap, not fixed here. The failure is closed: a `www.<domain>` declaration without an inventoried name reads `DOMAIN_DECLARATION_UNOBSERVED` (`UNVERIFIED`), never a false `RESOLVED`/`NONE`. Plesk does not store the generated `www` alias as a row in `domains`/`domain_aliases`; inferring it from a setting I cannot verify against the live schema risks a query that fails the whole inventory. Recorded as a known limit in SUIVI.md; declarations should name the base domain.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:31:45Z",
+              "updated_at": "2026-10-08T19:31:46Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M779zEQ",
+              "database_id": 4227281168,
+              "body": "Owner decision: not applicable. This Plesk setup publishes no `www.` names: projects are served as `<domain>.<ext>` (the subscription) or `<subdomain>.<domain>.<ext>`.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-09T06:27:14Z",
+              "updated_at": "2026-10-09T06:27:14Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhXjW",
+          "is_resolved": true,
+          "is_outdated": false,
+          "path": "src/liveState/servedDomains.ts",
+          "line": 32,
+          "diff_side": "RIGHT",
+          "start_line": 32,
+          "start_diff_side": null,
+          "original_line": 23,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77ujIu",
+              "database_id": 4223283758,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Validate Punycode labels instead of matching their prefix**\n\nWhen the Plesk output contains a fake A-label such as `example.xn--a` or `example.xn--foo-`, this regex accepts it and the parser returns a `CURRENT` inventory; if GitRegistry contains the same malformed value, it can consequently be emitted as a verified resolved domain. [RFC 5890](https://www.rfc-editor.org/rfc/rfc5890.html#section-2.3.2.1) requires the suffix after `xn--` to be valid Punycode convertible to a valid U-label and forbids a trailing hyphen, so validate every Punycode label with an IDNA-aware parser and make conversion failures unavailable.\n\nAGENTS.md reference: [AGENTS.md:L32-L32](https://github.com/Patricked-code/MCP/blob/1162f853e42400873b52b16e7a3ac4d0f7f3048a/AGENTS.md#L32-L32)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:29:56Z",
+              "updated_at": "2026-10-08T19:29:57Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77unFZ",
+              "database_id": 4223299929,
+              "body": "Confirmed. Fixed in `ded65b3` (not yet pushed): any name with an `xn--` label must round-trip through IDNA (`domainToUnicode` then `domainToASCII` returns it unchanged); `example.xn--a` and `example.xn--foo-` now make the inventory unavailable.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:31:43Z",
+              "updated_at": "2026-10-08T19:31:43Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhXja",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": "RIGHT",
+          "original_line": 97,
+          "original_start_line": 95,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77ujI0",
+              "database_id": 4223283764,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Age each inventory from its own observation time**\n\nWhen one server's query completes quickly but the other server's parallel SSH query stalls, the first inventory was observed at the timestamp recorded by `collectServedDomains`, yet this projection replaces it with the later snapshot reconciliation time and calculates freshness from that later time. With a 30-second SSH timeout and a 60-second freshness window, the first server's evidence can therefore remain labeled `CURRENT` for roughly 30 seconds after it is actually stale, allowing C5 to keep returning `RESOLVED`; retain `inventory.observedAt` and calculate this observation's age from it.\n\nAGENTS.md reference: [AGENTS.md:L32-L32](https://github.com/Patricked-code/MCP/blob/1162f853e42400873b52b16e7a3ac4d0f7f3048a/AGENTS.md#L32-L32)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:29:57Z",
+              "updated_at": "2026-10-08T19:29:57Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77unIv",
+              "database_id": 4223300143,
+              "body": "Confirmed. Fixed in `ded65b3` (not yet pushed): the projection keeps `inventory.observedAt` and computes this observation's age from it against the snapshot's `maxAgeSeconds`; a later reconciliation no longer refreshes an older read. Test added.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:31:44Z",
+              "updated_at": "2026-10-08T19:31:44Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhe6B",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": "RIGHT",
+          "original_line": 170,
+          "original_start_line": 168,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77uvDE",
+              "database_id": 4223332548,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Preserve undeclared domains in scoped evidence**\n\nFresh evidence after the no-declaration correction: when the selected project has at least one declaration, this filter still removes every other active hostname before GW-09 evaluates it. If the project's Plesk subscription serves declared `alpha.example.com` plus an undeclared legacy hostname, only the declared name reaches the resolver and it incorrectly returns `RESOLVED` instead of `DOMAIN_OBSERVATION_UNDECLARED`; scope using independent Plesk subscription/ownership evidence, or keep the observation unavailable when that ownership cannot be established.\n\nAGENTS.md reference: [AGENTS.md:L32-L32](https://github.com/Patricked-code/MCP/blob/ded65b3f1a9ca39a0c0dbe7ad8aff8f78bc9268c/AGENTS.md#L32-L32)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:35:24Z",
+              "updated_at": "2026-10-08T19:35:24Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77u0XZ",
+              "database_id": 4223354329,
+              "body": "Confirmed. Fixed in `1b5c307` (not yet pushed): the inventory now records each name's Plesk subscription (`IF(d.webspace_id = 0, d.id, d.webspace_id)`), and the observation keeps every active name of the subscriptions that serve a declared domain. An undeclared hostname in the project's own subscription now reaches GW-09 (`DOMAIN_OBSERVATION_UNDECLARED`); other subscriptions are excluded, and a name without readable ownership makes the observation unavailable.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:37:38Z",
+              "updated_at": "2026-10-08T19:37:38Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhqfm",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": "RIGHT",
+          "original_line": 185,
+          "original_start_line": 183,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77vBo7",
+              "database_id": 4223408699,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Do not infer project ownership from a declared hostname**\n\nFresh evidence after the subscription-scoping fix: these lines label a Plesk subscription as owned by the selected project solely because it serves a hostname declared by that project. If that hostname is mistakenly or maliciously bound under another customer's subscription—especially when it is that subscription's only served name—the scoped observation exactly matches the registry and GW-09 returns `RESOLVED`, even though no evidence ties the subscription to the project. Require an independent project-to-subscription mapping, or keep the observation unavailable when ownership cannot be established.\n\nAGENTS.md reference: [AGENTS.md:L32-L32](https://github.com/Patricked-code/MCP/blob/1b5c307a95620901a5045f257c762e8f8c69c89e/AGENTS.md#L32-L32)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:43:37Z",
+              "updated_at": "2026-10-08T19:43:37Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77vIbf",
+              "database_id": 4223436511,
+              "body": "Confirmed. Fixed in `67823c3` (not yet pushed): ownership no longer comes from a served declared name. The inventory reports each name's subscription main domain, and the owned subscriptions are those named by the reviewed GitRegistry `serverPath` of the project's mappings on that server (`/var/www/vhosts/<main domain>`). A declared name bound under another customer's subscription is excluded; with no such binding the observation is unavailable. Test covers the misbound case.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:46:43Z",
+              "updated_at": "2026-10-08T19:46:43Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhqfv",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/collect.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": "RIGHT",
+          "original_line": 493,
+          "original_start_line": 492,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77vBpJ",
+              "database_id": 4223408713,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve timestamps for observations collected before this wait**\n\nWhen either new server query consumes its 30-second SSH timeout, the GitHub, S1, runtime, and documentation observations above were already collected, but reconciliation timestamps the resulting snapshot only after this await completes. Sources such as `liveStateRuntimeObservation()` age their evidence from that later `lastReconciledAt`, so an old healthy/runtime or clean-worktree observation can remain `CURRENT` for roughly 30 seconds beyond the 60-second freshness window. Collect this concurrently with the other sources or retain and age every source from its actual observation time.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:43:37Z",
+              "updated_at": "2026-10-08T19:43:37Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77vIeK",
+              "database_id": 4223436682,
+              "body": "Confirmed. Fixed in `67823c3` (not yet pushed): the served-domain inventories now run inside the same `Promise.all` as the GitHub, S1, runtime and target reads, so they no longer delay the shared reconciliation timestamp.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:46:44Z",
+              "updated_at": "2026-10-08T19:46:44Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhqf0",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 23,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77vBpQ",
+              "database_id": 4223408720,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Bound the Plesk query before streaming its output**\n\nOn a Plesk server with more than 1000 active names, this SQL statement still materializes and streams every matching domain and alias on every Live State cycle. `parseServedDomainInventory()` rejects an over-limit result and the SSH client caps retained bytes, but neither stops MySQL or the SSH channel from producing the remaining rows, so a deliberately bounded inventory can consume unbounded database, network, and callback work until the 30-second timeout. Cap the SQL result at 1001 rows so the parser can detect overflow without reading the full inventory.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:43:37Z",
+              "updated_at": "2026-10-08T19:43:37Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77vIhs",
+              "database_id": 4223436908,
+              "body": "Confirmed. Fixed in `67823c3` (not yet pushed): the union is wrapped and capped with `LIMIT 1001`, so the parser detects overflow without the full result being produced.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:46:46Z",
+              "updated_at": "2026-10-08T19:46:46Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhqf9",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 148,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77vBpc",
+              "database_id": 4223408732,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Canonicalize Unicode domain declarations to Punycode**\n\nAfter adding Punycode inventory support, a valid Unicode `publicDomain` such as `пример.рф` still cannot resolve: GitRegistry accepts that value, Plesk reports the corresponding ASCII A-labels, but this normalization leaves the declaration in Unicode, so the subscription lookup misses it and GW-09 returns `DOMAIN_DECLARATION_UNOBSERVED`. Convert and validate project and mapping declarations with `domainToASCII` before comparing them with the Plesk inventory.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:43:37Z",
+              "updated_at": "2026-10-08T19:43:37Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77vIlH",
+              "database_id": 4223437127,
+              "body": "Confirmed. Fixed in `67823c3` (not yet pushed): GW-09's `normalizeDomain` converts non-ASCII names with `domainToASCII` (an invalid name stays as written and so never matches). Test: `пример.рф` resolves against `xn--e1afmkfd.xn--p1ai`.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:46:47Z",
+              "updated_at": "2026-10-08T19:46:47Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qhqgF",
+          "is_resolved": true,
+          "is_outdated": false,
+          "path": "src/github/domainResolution.ts",
+          "line": 17,
+          "diff_side": "RIGHT",
+          "start_line": 16,
+          "start_diff_side": "RIGHT",
+          "original_line": 17,
+          "original_start_line": 16,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77vBpo",
+              "database_id": 4223408744,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile the delivered authority with the canonical contract**\n\nThis change installs and advertises a Live State C5 observation authority, but `.mcp/provisioning-contracts.json` still states both that absence cannot be proven because no authority exists and that `observe-binding` remains a gap for the same reason. Consumers of the versioned contract therefore continue to see the old capability model even while runtime resolution can return `RESOLVED`; update the canonical contract's absence proof and observe-binding step alongside this implementation.\n\nAGENTS.md reference: [AGENTS.md:L42-L42](https://github.com/Patricked-code/MCP/blob/1b5c307a95620901a5045f257c762e8f8c69c89e/AGENTS.md#L42-L42)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:43:37Z",
+              "updated_at": "2026-10-08T19:43:37Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77vIoS",
+              "database_id": 4223437330,
+              "body": "Confirmed. Fixed in `67823c3` (not yet pushed): the `DOMAIN_BINDING` absence proof, the `observe-binding` gap reason/reuse and the `list_domains_s1/s2` notes now describe the Live State observation. The step keeps its carriers (`TB-W3-F-04`, `TB-W4-I1-01`) until the increment is deployed and attested.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:46:48Z",
+              "updated_at": "2026-10-08T19:46:48Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qh2E2",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": "RIGHT",
+          "original_line": 154,
+          "original_start_line": 152,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77vT3Z",
+              "database_id": 4223483353,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Require verified paths before deriving subscription ownership**\n\nFresh evidence after the earlier ownership correction: `GitRegistryServerBindingEvidence` explicitly treats `serverPath` as declared and only `realPath` with `realPathVerified=true` as verified, yet this loop accepts every mapping—including migrated/proposed mappings with `realPathVerified=false`—as proof that the project owns the extracted Plesk subscription. If such an unverified path points at another customer's subscription serving a hostname declared by this project, the scoped observation can match the declaration and GW-09 returns `RESOLVED`; reject unverified mappings (and derive the root from verified path evidence) or leave the observation unavailable.\n\nAGENTS.md reference: [AGENTS.md:L30-L33](https://github.com/Patricked-code/MCP/blob/67823c3adf3d2271ba3dd3567bf2ae20bd90ce13/AGENTS.md#L30-L33)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:52:00Z",
+              "updated_at": "2026-10-08T19:52:00Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77vYCc",
+              "database_id": 4223500444,
+              "body": "Confirmed. Fixed in `54d6a42` (not yet pushed): ownership is derived only from `realPath` with `realPathVerified=true`; a declared `serverPath` is ignored. No current registry mapping has a verified path, so the observation is unavailable for every current project (C5 stays `UNVERIFIED`) until one is verified.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:53:53Z",
+              "updated_at": "2026-10-08T19:53:54Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qh2E5",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": "RIGHT",
+          "original_line": 25,
+          "original_start_line": 23,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77vT3k",
+              "database_id": 4223483364,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Verify Plesk web-service records before certifying names**\n\nWhen Plesk has an inconsistent hosted `domains` row whose `DomainServices` web record is missing, this query still emits the name based only on `status`, `webspace_status`, and `htype`, and the projection later marks it `verified: true`. Plesk documents that this state produces “Domain Service Web not exists” and requires recreating the missing `DomainServices(type='web')` record ([Plesk support](https://support.plesk.com/hc/en-us/articles/12377671428631-Unable-to-access-Plesk-Internal-error-Domain-Service-Web-not-exists)); therefore the database row does not prove an active web binding, but GW-09 can incorrectly return `RESOLVED`. Validate the active web-service record and make an inconsistent inventory unavailable rather than certifying the name.\n\nAGENTS.md reference: [AGENTS.md:L30-L33](https://github.com/Patricked-code/MCP/blob/67823c3adf3d2271ba3dd3567bf2ae20bd90ce13/AGENTS.md#L30-L33)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:52:00Z",
+              "updated_at": "2026-10-08T19:52:00Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77vYFT",
+              "database_id": 4223500627,
+              "body": "Confirmed. Fixed in `54d6a42` (not yet pushed): both branches of the query now require `EXISTS (SELECT 1 FROM DomainServices s WHERE s.dom_id = d.id AND s.type = 'web' AND s.status = 0)`, so an inconsistent hosted row is not certified.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:53:55Z",
+              "updated_at": "2026-10-08T19:53:55Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qh2E9",
+          "is_resolved": true,
+          "is_outdated": false,
+          "path": "src/liveState/servedDomains.ts",
+          "line": 198,
+          "diff_side": "RIGHT",
+          "start_line": 195,
+          "start_diff_side": "RIGHT",
+          "original_line": 179,
+          "original_start_line": 176,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77vT3q",
+              "database_id": 4223483370,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Separate projects that share one Plesk subscription**\n\nFresh evidence after the subscription-scoping correction: the checked-in registry maps both AfricaFunds components through `/var/www/vhosts/chainsolutions.fr/...` (`data/mcp-git-registry.json:114-143`) and Stablecoin through the same subscription root (`data/mcp-git-registry.json:146-159`), while their declared surfaces differ (`data/mcp-git-registry.json:253-254` and `301-302`). Consequently both projects get `owned = {'chainsolutions.fr'}`, and this filter sends every active AfricaFunds, Stablecoin, and other `chainsolutions.fr` hostname to each project's resolver; each then returns `DOMAIN_OBSERVATION_UNDECLARED` instead of `RESOLVED`. Scope below the shared subscription using independent project/component ownership evidence, or keep the observation unavailable when a subscription is shared by multiple registry projects.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T19:52:00Z",
+              "updated_at": "2026-10-08T19:52:00Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77vYIQ",
+              "database_id": 4223500816,
+              "body": "Confirmed. Fixed in `54d6a42` (not yet pushed): `projectSubscriptions` reports a subscription verified for more than one registry project as shared, and the scoped observation is then unavailable for each of them rather than mixing their names. Splitting below a shared subscription needs per-component evidence this inventory does not carry.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T19:53:56Z",
+              "updated_at": "2026-10-08T19:53:56Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qiB4Z",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "src/liveState/servedDomains.ts",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 24,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77vm13",
+              "database_id": 4223561079,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Require a valid IP binding before certifying the domain**\n\nFresh evidence after the earlier `DomainServices` correction: if an active `DomainServices(type='web', status=0)` row points to an empty `ipCollectionId`, this `EXISTS` predicate passes and the domain is later emitted with `verified: true`, although Plesk documents that exact status-0 state as one where the web service cannot operate ([Plesk diagnostic](https://support.plesk.com/hc/en-us/articles/17046773461783-Unable-to-access-domain-page-in-Plesk-GUI-Unable-to-find-service-node-for-ip-address-with-id)); Plesk's cross-platform inventory query therefore joins through `IpAddressesCollections` and `IP_Addresses` ([Plesk domain/IP inventory](https://support.plesk.com/hc/en-us/articles/12377934313239-How-to-get-a-list-of-customers-domains-and-their-IP-addresses-from-the-Plesk-database)). A matching registry declaration can otherwise become `RESOLVED` without a usable web-service IP binding, so require that association or make the inventory unavailable.\n\nAGENTS.md reference: [AGENTS.md:L32-L32](https://github.com/Patricked-code/MCP/blob/54d6a428694034e358503be75126f8391d69c669/AGENTS.md#L32-L32)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T20:00:47Z",
+              "updated_at": "2026-10-08T20:00:47Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77vp-v",
+              "database_id": 4223573935,
+              "body": "Confirmed. Fixed in `6e7417f` (not yet pushed): the web-service `EXISTS` now joins `DomainServices` through `IpAddressesCollections` to `IP_Addresses`, as Plesk's own domain/IP inventory query does, so a web record without a usable IP binding no longer certifies the name.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T20:02:15Z",
+              "updated_at": "2026-10-08T20:02:16Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOTJ-y6M6qiK95",
+          "is_resolved": true,
+          "is_outdated": false,
+          "path": "src/liveState/collect.ts",
+          "line": 471,
+          "diff_side": "RIGHT",
+          "start_line": 471,
+          "start_diff_side": null,
+          "original_line": 471,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Wealthtechinnovations",
+            "name": "Wealthtechinnovations",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOTJ-y6M77v1g1",
+              "database_id": 4223621173,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Timestamp each source at observation time**\n\nFresh evidence after the earlier concurrency correction: when either new served-domain SSH read consumes its 30-second timeout while the GitHub, S1, or runtime read finishes promptly, `Promise.all` still waits for that timeout and reconciliation assigns every source the later `lastReconciledAt`; those source types have no individual timestamp, and consumers such as `liveStateRuntimeObservation()` age them from that later value, so stale evidence can remain `CURRENT` for roughly 30 extra seconds. Concurrency limits total collection time but does not preserve observation time; retain timestamps per source or reconcile freshness from the earliest completed observation.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-08T20:07:43Z",
+              "updated_at": "2026-10-08T20:07:43Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M77wkU7",
+              "database_id": 4223812923,
+              "body": "Traced, not changed in this PR. Live State has always stamped every source with the one `lastReconciledAt`: the existing S1 head, runtime and current-state inventory reads already go through `runReadOnlyCommand` with the same 30 s SSH timeout inside the same `Promise.all`, so a slow existing read already delays the stamp by up to 30 s. The served-domain reads run concurrently with them and use the same bound, so they do not raise that worst case. Per-source observation timestamps would change Live State's snapshot model for every consumer, which is a separate change; the served-domain observation itself already ages from its own `observedAt`. Leaving this open for the owner's call.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-08T20:29:21Z",
+              "updated_at": "2026-10-08T20:29:21Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            },
+            {
+              "id": "PRRC_kwDOTJ-y6M779zF2",
+              "database_id": 4227281270,
+              "body": "Owner decision: accepted as a known limit and tracked in #268 (per-source timestamps in the Live State snapshot model).\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_",
+              "created_at": "2026-10-09T06:27:15Z",
+              "updated_at": "2026-10-09T06:27:15Z",
+              "author": {
+                "login": "Wealthtechinnovations",
+                "name": "Wealthtechinnovations",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/94637590?v=4",
+                "id": null
+              },
+              "viewer_did_author": true
+            }
+          ]
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 272,
+      "result": "fulfilled",
+      "threads": [],
+      "error": null
+    },
+    {
+      "number": 273,
+      "result": "fulfilled",
+      "threads": [],
+      "error": null
+    }
+  ]
+}
