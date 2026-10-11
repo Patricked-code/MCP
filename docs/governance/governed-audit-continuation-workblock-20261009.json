@@ -179,5 +179,42 @@
     "reviewsPending": "https://github.com/Patricked-code/MCP/pull/274",
     "deployFailure": "https://github.com/Patricked-code/MCP/actions/runs/37975655618"
   },
-  "nextCheckpoint": "Diagnose failed deploy, inspect live task/session/lock evidence by GitHub OIDC probes; report exact head drift; review #274 CI then continue."
+  "nextCheckpoint": "Diagnose failed deploy, inspect live task/session/lock evidence by GitHub OIDC probes; report exact head drift; review #274 CI then continue.",
+  "observedContinuation": {
+    "date": "2026-10-11",
+    "gitHubMainAtObservation": "c91c1a1191f40f20a6de841914947e94356658df",
+    "workblockBranchMergedMainAt": "ebd087063cd7bd0fc8ad99dc4656f4473484c49e",
+    "workblockBranchCIRun": "Must verify current SHA after SUIVI/CHANGELOG/workblock changes before merge",
+    "deploy": {
+      "workflowRun": 38158118349,
+      "ciRun": 38158118306,
+      "requestedSha": "c91c1a1191f40f20a6de841914947e94356658df",
+      "status": "FAILURE",
+      "httpCode": 502,
+      "stage": "POST /deploy/github/s1/start",
+      "rootCause": "UNVERIFIED",
+      "internalSourceRoute": "src/deploy/routes.ts: returns 502 s1_deploy_start_failed on runWrite throw/nonzero; cannot distinguish upstream from application without sanitized HTTP error body or server logs"
+    },
+    "readonly": {
+      "issueNumbers": [
+        276,
+        277,
+        278,
+        279,
+        280
+      ],
+      "transport": "github_oidc_mcp_readonly",
+      "probeRunsRecorded": true,
+      "contentFrom": "https://github.com/Patricked-code/MCP/pull/275#issuecomment-6112019731",
+      "s1GitShaReported": "3df9778dc44202b0e20fb56ce020a089f3a6ea2a",
+      "gitWorkspaceReported": "CLEAN",
+      "containerReported": "HEALTHY",
+      "runtimeTasksReported": "2 READY UNOWNED, revision 243",
+      "sessionsReported": "0 ACTIVE (2 EXPIRED), revision 803",
+      "locksReported": "0 ACTIVE, revision 301",
+      "freshness": "Snapshot, not live authoritative indefinitely"
+    },
+    "nextAction": "Diagnose 502 via allowed, redacted status/body and write transport/server logs without bypass; reobserve live runtime and branch CI before governed merge/deploy; then first collision-free planning READY",
+    "runtimeMutationPerformed": false
+  }
 }
