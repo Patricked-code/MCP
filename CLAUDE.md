@@ -1,5 +1,10 @@
 # CLAUDE.md — Porte d’entrée Claude Code
 
+## Carte de priorité avant toute nouvelle implémentation
+
+Après lecture de cette porte d'entrée et de `SUIVI.md`, consulter **`docs/governance/mcp-priority-convergence-map-20261015.json`** et son index `docs/governance/README.md` (15 jalons PCM-00..14, 94 blueprints, dépendances, anti-collision et preuves). Cette carte complète le **Program Backlog V2 existant** et le workblock GWB-00..09, sans être une autorité d'exécution : reprise OWNED_FIRST, `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`, Queue/Session/Locks live puis seulement write gouverné. Les vérifications GWB-03/GWB-04 peuvent se faire en parallèle des tâches indépendantes déjà admissibles ; ne jamais transformer l'audit en gate globale nouvelle. Maintenir le scope OAuth de PR #207 réservé à son détenteur. Toute arrivée doit laisser dans le canal déjà existant son checkpoint et `NEXT_ACTION` ; n'inventer ni Task runtime ni receipt.
+
+
 ## 1. Rôle du fichier
 
 Ce fichier indique à Claude Code comment intervenir sur le dépôt MCP sans régression, sans action aveugle et sans écriture de secrets.
