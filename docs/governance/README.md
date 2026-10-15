@@ -1,5 +1,10 @@
 # Gouvernance documentaire MCP
 
+### GWB03-02 — PR #267, observations F-04 et limites de preuve
+
+Analyse [GWB03-02](gwb03-pr267-domain-evidence-20261015.json) : 26 constats historiques (15 P1 / 11 P2), 18 rapprochés de lignes code/test, 8 non examinés individuellement. Les quatre limites documentées par l'[issue #268](https://github.com/Patricked-code/MCP/issues/268) restent à traiter sous leur propriétaire : fraîcheur des observations, abonnement Plesk partagé, `realPathVerified` historiquement absent et schéma SQL S1/S2 non attesté. Aucun constat déclaré résolu ni cible S1/S2 modifiée. Pour tout futur correctif : preuve read-only et contrôle d'ownership runtime obligatoire.
+
+
 ### GWB03-01 — Première réconciliation vérifiable de PR #261 (2026-10-15)
 
 La première tranche d'analyse est dans [`gwb03-pr261-source-policy-evidence-20261015.json`](gwb03-pr261-source-policy-evidence-20261015.json) : **73 remarques historiques** (54 P1 / 19 P2), dont **17 comparées à des ancres de code source et de tests** au SHA `0817f340dcd57f59b348b8a023082efd472342e3`. Les 73 états de résolution restent `UNKNOWN` en attente d'une validation suffisante. Deux limites de politique Compose sont signalées : plafonds de ressources déjà connus dans [issue #262](https://github.com/Patricked-code/MCP/issues/262), et plafonds de rotation des logs (`max-size` / `max-file`) présents dans l'historique PR #261 mais non testés négativement aux extrêmes. Ce fichier ne crée pas de Task ni ne permet l'activation d'une cible S1. Prochaine action : tests négatifs par le propriétaire F-03, puis poursuite de la réconciliation de 56 remarques non examinées individuellement et GWB03-02 (#267).

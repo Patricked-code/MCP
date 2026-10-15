@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 2026-10-15 — GWB03-02 : domaine F-04, 26 revues et limites connues
+
+- Archive documentaire et test de traçabilité sur 26 constats de PR #267, 18 liens source/test, sans statut DONE induit.
+- Quatre limites déjà répertoriées issue #268 restent attachées à la gouvernance existante, aucune écriture serveur ou code de résolution des domaines.
+
+
 ## 2026-10-15 — GWB03-01 : réconciliation bornée des constats F-03 de PR #261
 
 - Ajout d'une preuve documentaire source/test pour 17 des 73 constats historiques de PR #261 (54 P1 / 19 P2), chaque verdict runtime restant `UNKNOWN` ; contrôle automatisé de non-surinterprétation.

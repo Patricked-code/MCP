@@ -1,0 +1,510 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB03_02_PR267_SOURCE_AND_RUNTIME_LIMITS_NON_AUTHORITATIVE",
+  "repository": "Patricked-code/MCP",
+  "baselineMainSha": "773abe5542b3cd209943a648e750e2ec863b1e62",
+  "sourceHistoricalPr": 267,
+  "historicalMerge": "5b631eb5520ed06c52bf18169a38dd22171ba90e",
+  "date": "2026-10-15",
+  "scope": {
+    "P1": 15,
+    "P2": 11,
+    "total": 26,
+    "sourceTestAnchorChecks": 18,
+    "unreviewed": 8,
+    "perFindingRuntimeCertifications": 0,
+    "recordedKnownLimits": 4
+  },
+  "sources": [
+    "docs/governance/gwb03-pr-review-findings-triage-20261015.json",
+    "https://github.com/Patricked-code/MCP/issues/268"
+  ],
+  "checks": [
+    {
+      "reviewCommentId": 4223040575,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040575",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 91,
+      "sourceAnchor": "if (result.code !== 0)",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 89,
+      "testTitle": "test('F-04 observe-binding: a failed or throwing read stays unavailable, per server', async () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223040593,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040593",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 150,
+      "sourceAnchor": "export function projectSubscriptions",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 140,
+      "testTitle": "test('F-04 observe-binding: the observation is scoped to the subscriptions verified for the project', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223040598,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040598",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 63,
+      "sourceAnchor": "return unavailableServedDomainInventory",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 55,
+      "testTitle": "test('F-04 observe-binding: parsing normalizes domains; any other entry makes the inventory unavailable', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223040603,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040603",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 28,
+      "sourceAnchor": "export const SERVED_DOMAINS_COMMAND",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 38,
+      "testTitle": "test('F-04 observe-binding: the inventory reads Plesk records of active served names, read-only', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223150064,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150064",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 194,
+      "sourceAnchor": "scopeDomainObservation(",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 140,
+      "testTitle": "test('F-04 observe-binding: the observation is scoped to the subscriptions verified for the project', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223150104,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150104",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 28,
+      "sourceAnchor": "domain_aliases a",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 38,
+      "testTitle": "test('F-04 observe-binding: the inventory reads Plesk records of active served names, read-only', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223215946,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223215946",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 26,
+      "sourceAnchor": "d.status = 0",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 38,
+      "testTitle": "test('F-04 observe-binding: the inventory reads Plesk records of active served names, read-only', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223283738,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283738",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 26,
+      "sourceAnchor": "d.webspace_status = 0",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 38,
+      "testTitle": "test('F-04 observe-binding: the inventory reads Plesk records of active served names, read-only', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223408699,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408699",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 144,
+      "sourceAnchor": "realPathVerified",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 140,
+      "testTitle": "test('F-04 observe-binding: the observation is scoped to the subscriptions verified for the project', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223483353,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483353",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 144,
+      "sourceAnchor": "realPathVerified",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 140,
+      "testTitle": "test('F-04 observe-binding: the observation is scoped to the subscriptions verified for the project', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223483364,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483364",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 25,
+      "sourceAnchor": "DomainServices s",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 38,
+      "testTitle": "test('F-04 observe-binding: the inventory reads Plesk records of active served names, read-only', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223483370,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483370",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 202,
+      "sourceAnchor": "ownership.shared",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 140,
+      "testTitle": "test('F-04 observe-binding: the observation is scoped to the subscriptions verified for the project', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223561079,
+      "priority": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223561079",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 25,
+      "sourceAnchor": "IpAddressesCollections",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 38,
+      "testTitle": "test('F-04 observe-binding: the inventory reads Plesk records of active served names, read-only', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223040611,
+      "priority": "P2",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040611",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 29,
+      "sourceAnchor": "SERVED_DOMAIN_SERVERS",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 140,
+      "testTitle": "test('F-04 observe-binding: the observation is scoped to the subscriptions verified for the project', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223150092,
+      "priority": "P2",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150092",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 62,
+      "sourceAnchor": "parseServedDomainInventory",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 55,
+      "testTitle": "test('F-04 observe-binding: parsing normalizes domains; any other entry makes the inventory unavailable', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223215955,
+      "priority": "P2",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223215955",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 1,
+      "sourceAnchor": "domainToUnicode",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 55,
+      "testTitle": "test('F-04 observe-binding: parsing normalizes domains; any other entry makes the inventory unavailable', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223283758,
+      "priority": "P2",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283758",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 1,
+      "sourceAnchor": "domainToASCII",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 55,
+      "testTitle": "test('F-04 observe-binding: parsing normalizes domains; any other entry makes the inventory unavailable', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223408720,
+      "priority": "P2",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408720",
+      "sourcePath": "src/liveState/servedDomains.ts",
+      "sourceLine": 28,
+      "sourceAnchor": "SERVED_DOMAINS_MAX + 1",
+      "testPath": "tests/servedDomainObservation.test.ts",
+      "testLine": 82,
+      "testTitle": "test('F-04 observe-binding: an inventory over the bound is unavailable, never a partial absence', () => {",
+      "classification": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    }
+  ],
+  "knownLimitations": [
+    {
+      "id": "F04-C1",
+      "source": "issue #268:1",
+      "summary": "Common Live State lastReconciledAt vs per-source timestamps",
+      "codeObservation": "servedDomains.ts collectServedDomains obtains now() per server; liveStateDomainObservation uses snapshot timestamp for freshness",
+      "status": "OWNER_RECORDED_KNOWN_LIMIT_NOT_RUNTIME_VERIFIED",
+      "next": "Review observation time semantics and freshness tests, no blanket timestamp guarantee"
+    },
+    {
+      "id": "F04-C2",
+      "source": "issue #268:2",
+      "summary": "Shared Plesk subscription does not identify distinct subdomain project ownership",
+      "codeObservation": "projectSubscriptions scopes by verified subscription and marks shared; returns UNAVAILABLE, not an independently verified subdomain",
+      "status": "OWNER_RECORDED_SCOPE_GAP",
+      "next": "Extend verified binding provenance at subdomain-level only under F-04 governance and runtime evidence"
+    },
+    {
+      "id": "F04-C3",
+      "source": "issue #268:3",
+      "summary": "No registry mapping had realPathVerified=true at historic issue date",
+      "codeObservation": "projectSubscriptions requires realPathVerified; never infer current registry data from dated issue",
+      "status": "HISTORICAL_RUNTIME_FACT_REOBSERVATION_REQUIRED",
+      "next": "Read only current registry bindings via GitHub+OIDC allowed probe or native canonical authority"
+    },
+    {
+      "id": "F04-C4",
+      "source": "issue #268:4",
+      "summary": "Plesk SQL schema of DomainServices/IpAddressesCollections/IP_Addresses to verify on S1/S2",
+      "codeObservation": "servedDomains.ts SQL uses Plesk DB; failure yields UNAVAILABLE and not absence",
+      "status": "LIVE_S1_S2_SCHEMAS_UNVERIFIED",
+      "next": "Use approved read-only S1/S2 evidence, never raw arbitrary SQL from a user session"
+    }
+  ],
+  "allHistoricalFindings": [
+    {
+      "reviewCommentId": 4223040575,
+      "priority": "P1",
+      "subject": "Propagate `find` failures through the pipeline",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040575",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223040593,
+      "priority": "P1",
+      "subject": "Scope the observation to the selected project",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040593",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223040598,
+      "priority": "P1",
+      "subject": "Reject unknown malformed inventory entries",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040598",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223040603,
+      "priority": "P1",
+      "subject": "Inventory nested Plesk domain directories",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040603",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223150064,
+      "priority": "P1",
+      "subject": "Keep observation evidence independent of declarations",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150064",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223150104,
+      "priority": "P1",
+      "subject": "Include names served as aliases in the inventory",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150104",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223150119,
+      "priority": "P1",
+      "subject": "Recognize Plesk wildcard vhost directories",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150119",
+      "spotcheck": "NOT_INDIVIDUALLY_SPOTCHECKED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223215946,
+      "priority": "P1",
+      "subject": "Check Plesk status before certifying a served domain",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223215946",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223283738,
+      "priority": "P1",
+      "subject": "Check subscription status before certifying domains",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283738",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223332548,
+      "priority": "P1",
+      "subject": "Preserve undeclared domains in scoped evidence",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223332548",
+      "spotcheck": "NOT_INDIVIDUALLY_SPOTCHECKED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223408699,
+      "priority": "P1",
+      "subject": "Do not infer project ownership from a declared hostname",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408699",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223483353,
+      "priority": "P1",
+      "subject": "Require verified paths before deriving subscription ownership",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483353",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223483364,
+      "priority": "P1",
+      "subject": "Verify Plesk web-service records before certifying names",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483364",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223483370,
+      "priority": "P1",
+      "subject": "Separate projects that share one Plesk subscription",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483370",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223561079,
+      "priority": "P1",
+      "subject": "Require a valid IP binding before certifying the domain",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223561079",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223040611,
+      "priority": "P2",
+      "subject": "Provide observations for resolved S2 projects",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040611",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223150092,
+      "priority": "P2",
+      "subject": "Validate raw inventory names before trimming",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150092",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223215955,
+      "priority": "P2",
+      "subject": "Accept Punycode top-level domains in the inventory",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223215955",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223283749,
+      "priority": "P2",
+      "subject": "Include enabled www hostnames in the inventory",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283749",
+      "spotcheck": "NOT_INDIVIDUALLY_SPOTCHECKED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223283758,
+      "priority": "P2",
+      "subject": "Validate Punycode labels instead of matching their prefix",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283758",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223283764,
+      "priority": "P2",
+      "subject": "Age each inventory from its own observation time",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283764",
+      "spotcheck": "NOT_INDIVIDUALLY_SPOTCHECKED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223408713,
+      "priority": "P2",
+      "subject": "Preserve timestamps for observations collected before this wait",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408713",
+      "spotcheck": "NOT_INDIVIDUALLY_SPOTCHECKED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223408720,
+      "priority": "P2",
+      "subject": "Bound the Plesk query before streaming its output",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408720",
+      "spotcheck": "SOURCE_AND_TEST_ANCHOR_PRESENT_RUNTIME_NOT_CERTIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223408732,
+      "priority": "P2",
+      "subject": "Canonicalize Unicode domain declarations to Punycode",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408732",
+      "spotcheck": "NOT_INDIVIDUALLY_SPOTCHECKED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223408744,
+      "priority": "P2",
+      "subject": "Reconcile the delivered authority with the canonical contract",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408744",
+      "spotcheck": "NOT_INDIVIDUALLY_SPOTCHECKED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4223621173,
+      "priority": "P2",
+      "subject": "Timestamp each source at observation time",
+      "url": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223621173",
+      "spotcheck": "NOT_INDIVIDUALLY_SPOTCHECKED",
+      "resolved": "UNKNOWN"
+    }
+  ],
+  "limitations": [
+    "A source/test anchor does not mean behavior E2E passed or runtime C5 accepted",
+    "Plesk SQL schema and S1/S2 connectivity must be reobserved, not borrowed from 2026-10-08 issue #268",
+    "Project association based on unverified realPath remains unavailable; never infer ownership from hostname",
+    "No runtime Task/Session/Lock/permissions or new issue/queue from this audit",
+    "Do not overwrite owner's F-04 scope or OAuth #207 branch"
+  ],
+  "nextAction": "Reconcile current registry binding realPath evidence and approved Plesk read-only probe; then code/test with owner F-04 only where new defect is proven. Remaining eight individual review annotations and live C5 need verification. Continue GWB04 independent source/test acceptance."
+}
