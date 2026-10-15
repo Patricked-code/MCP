@@ -1,5 +1,15 @@
 # AGENTS.md — Registre synthétique des agents
 
+
+## Reprise de l'audit / handoff inter-agents (2026-10-15)
+
+Tout nouvel agent autorisé doit lire `CLAUDE.md`, `SUIVI.md` (premier checkpoint), puis l'[index de reprise](docs/governance/README.md), le Program Backlog V2, le workblock GWB-00..09 et l'issue maîtresse [#235](https://github.com/Patricked-code/MCP/issues/235). **Cette lecture permet de retrouver le plan sans dépendre d'une session ChatGPT**, mais ne constitue ni une identité runtime ni une permission de mutation.
+
+Avant de commencer : comparer les références documentaires au `main` live, reconstituer les PR et les preuves, privilégier le travail possédé par sa session puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`; vérifier les autorités Task Queue, Session, Claim et Lock uniquement lorsqu'elles sont nécessaires. Le calcul read-only `nextWork` ne claim ni ne matérialise automatiquement. Un agent sans accès GitHub ou sans autorisation ne peut pas récupérer ces documents par hypothèse.
+
+Chaque modification laisse un commit/PR, un contrôle CI et, selon le périmètre, `SUIVI.md`, `CHANGELOG.md`, `DECISIONS_LOG.md`, les checkpoints et l'attestation de déploiement ; **ne jamais inventer une trace absente** ni exposer de secrets. Un événement de lecture ne crée pas à lui seul une preuve runtime.
+
+
 ## 1. Rôle du fichier
 
 Ce fichier liste les agents humains/IA/MCP, leurs responsabilités et leurs limites d’action.
