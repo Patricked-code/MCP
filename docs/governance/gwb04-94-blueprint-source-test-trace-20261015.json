@@ -9,15 +9,13 @@
     "total": 94,
     "slots": 56,
     "hasVerifiedPath": 94,
-    "hasExistingTest": 89,
+    "hasExistingTest": 94,
     "directAuthorityPathCount": 16,
-    "missingRecommendations": [
-      "tests/clientPresence.test.ts",
-      "tests/toolSurfaceAttestation.test.ts"
-    ]
+    "missingRecommendations": []
   },
   "methodology": "For each integrationSlot assign plausible source/test paths manually; existence verified against GitHub main tree, but no claim symbol or behavior verified. Declared readAuthorities are preserved separately. Mark every blueprint implementationStatus UNVERIFIED_PENDING_SOURCE_REVIEW even when Program Backlog says DONE.",
   "nextActions": [
+    "Where source/test paths were inferred by integrationSlot, inspect symbols and exact tests before treating them as implementation evidence.",
     "Review implementation symbols and test assertions for all 18 READY blueprints and every DONE completionEvidence.",
     "Resolve missingSuggestedPaths by code inspection, not inventing modules.",
     "Cross-link relevant exact commit/PR/CI/deploy receipts to completion evidence.",
@@ -370,11 +368,10 @@
         "RequestIdentity"
       ],
       "verifiedExistingPaths": [
-        "src/operationalMemory/clientPresence.ts"
+        "src/operationalMemory/clientPresence.ts",
+        "tests/clientEvidenceInventory.test.ts"
       ],
-      "missingSuggestedPaths": [
-        "tests/clientPresence.test.ts"
-      ],
+      "missingSuggestedPaths": [],
       "existingDeclaredPaths": [],
       "dependsOn": [
         "TB-W2-01",
@@ -399,11 +396,10 @@
         "RequestIdentity"
       ],
       "verifiedExistingPaths": [
-        "src/operationalMemory/clientPresence.ts"
+        "src/operationalMemory/clientPresence.ts",
+        "tests/clientEvidenceInventory.test.ts"
       ],
-      "missingSuggestedPaths": [
-        "tests/clientPresence.test.ts"
-      ],
+      "missingSuggestedPaths": [],
       "existingDeclaredPaths": [],
       "dependsOn": [
         "TB-W3-A22-01"
@@ -2084,11 +2080,10 @@
         "Operational Event Journal"
       ],
       "verifiedExistingPaths": [
-        "src/operationalMemory/clientPresence.ts"
+        "src/operationalMemory/clientPresence.ts",
+        "tests/clientPresenceTwoClock.test.ts"
       ],
-      "missingSuggestedPaths": [
-        "tests/clientPresence.test.ts"
-      ],
+      "missingSuggestedPaths": [],
       "existingDeclaredPaths": [],
       "dependsOn": [
         "TB-W3-A22-02"
@@ -2152,11 +2147,10 @@
         "Operational Event Journal"
       ],
       "verifiedExistingPaths": [
-        "src/operationalMemory/clientPresence.ts"
+        "src/operationalMemory/clientPresence.ts",
+        "tests/clientPresenceTwoClock.test.ts"
       ],
-      "missingSuggestedPaths": [
-        "tests/clientPresence.test.ts"
-      ],
+      "missingSuggestedPaths": [],
       "existingDeclaredPaths": [],
       "dependsOn": [
         "TB-W4-G1-01"
@@ -2220,11 +2214,10 @@
         "client-observed evidence"
       ],
       "verifiedExistingPaths": [
-        "src/governance/toolSurfaceAttestation.ts"
+        "src/governance/toolSurfaceAttestation.ts",
+        "tests/clientToolSurfaceAttestation.test.ts"
       ],
-      "missingSuggestedPaths": [
-        "tests/toolSurfaceAttestation.test.ts"
-      ],
+      "missingSuggestedPaths": [],
       "existingDeclaredPaths": [],
       "dependsOn": [
         "TB-W4-G2-01"
