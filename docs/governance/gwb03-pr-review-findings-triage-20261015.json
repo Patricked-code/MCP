@@ -851,7 +851,8 @@
       ],
       "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
       "resolved": "UNKNOWN",
-      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix.",
+      "spotCheckStatus": "CURRENT_CODE_AND_TEST_ASSERTIONS_PRESENT_RUNTIME_NOT_ATTESTED"
     },
     {
       "prNumber": 261,
@@ -3401,6 +3402,23 @@
       "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
       "resolved": "UNKNOWN",
       "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    }
+  ],
+  "sourceSpotChecks": [
+    {
+      "reviewCommentId": 4208798248,
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798248",
+      "archivedFinding": "Bind consent to resolved deployment target",
+      "codeFile": "src/provisioning/consent.ts",
+      "codeFunction": "provisioningConsentBinding",
+      "observedOnMain": "dec94d9892a1fe56af91845bde4a85f3327f90cb",
+      "codeEvidence": "Binding serializes web session, S1, projectId, mappingId, revision, repositoryId, serverPath and composeProject",
+      "testFile": "tests/projectRuntimeSurface.test.ts",
+      "testEvidence": "Test 'the provisioning consent is explicit, same-origin and bound to the session and the exact target' changes each session/revision/project/mapping/repository/serverPath/composeProject and asserts binding differs; rejects wrong origin and invalid ticket",
+      "status": "CORRESPONDING_CODE_AND_NEGATIVE_TEST_ASSERTIONS_OBSERVED",
+      "runEvidence": "Main CI 38788507126 SUCCESS for same SHA, but individual named test output not independently extracted",
+      "limits": "This narrows one historic P1 but is not independent runtime certificate or proof of every endpoint callsite; leave resolved UNKNOWN pending callsite and authorization review.",
+      "nextAction": "Inspect server route callsites and actual consent ticket binding use; then decide if historic finding fully resolved without duplicate code."
     }
   ]
 }
