@@ -1,5 +1,14 @@
 # SUIVI.md
 
+## 2026-10-15 — Transport prioritaire GitHub/OIDC ; OAuth interactif toujours en échec, continuité conservée
+
+- **Décision du propriétaire / règle réutilisée** : le client doit **préférer GitHub + GitHub Actions OIDC** à la reconnexion interactive de `wealthtech_ssh_bridge` lorsque le périmètre dispose d'un fallback GitHub approuvé. Source canonique déjà existante : `.mcp/github-first-operational-policy.json` ; aucune nouvelle autorité ou queue.
+- **Incident OAuth (preuve utilisateur, 15/10)** : après saisie du token, `/oauth/authorize` renvoie `403 access_denied` « La décision d'autorisation doit provenir de la page de consentement. ». Dans `src/oauth.ts` ce message est émis par `isSameOriginSubmission`; la cause réelle (en-têtes du POST, `MCP_WEB_BASE_URL`, redirections, contexte du navigateur) est **à vérifier**. Conserver les protections CSRF et l'ownership de la PR [#207](https://github.com/Patricked-code/MCP/pull/207), ne récupérer aucun secret du navigateur.
+- **Chemin de repli opérationnel** : issue [#282](https://github.com/Patricked-code/MCP/issues/282), [run OIDC 38782659781](https://github.com/Patricked-code/MCP/actions/runs/38782659781), SUCCESS ; issue [#283](https://github.com/Patricked-code/MCP/issues/283), [run 38783515289](https://github.com/Patricked-code/MCP/actions/runs/38783515289), SUCCESS (disque relevé à 96 %, 3,6 Go libres à ce moment-là) ; [#284–#288](https://github.com/Patricked-code/MCP/issues/284) : observations post-déploiement Git/Docker/Task Queue/Sessions/Locks, SUCCESS et `mutationAllowed=false`. Rapports OIDC horodatés, non substituables à des claims runtime.
+- **Réparation de livraison** : PR [#275](https://github.com/Patricked-code/MCP/pull/275) fusionnée dans `main@54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2` ; [CI #38783796158](https://github.com/Patricked-code/MCP/actions/runs/38783796158) **success** et [Governed Deploy #38783796272](https://github.com/Patricked-code/MCP/actions/runs/38783796272) **success avec attestation SHA exact**. L'échec historique HTTP 502 ne prouve pas la cause racine et reste documenté comme incident rétabli, cause exacte indéterminée.
+- **NEXT_ACTION** : avancer GWB-02/GWB-04 (audit des revues et crosswalk code/tests 94 blueprints) par GitHub ; poursuivre l'analyse OAuth dans #207 sans claim concurrent ; lire les autorités Task Queue, Sessions, Locks via sondes OIDC avant sélection puis seulement utiliser les mutations autorisées ; ne pas déclarer `GLOBAL_MCP_COMPLETE` prématurément.
+
+
 ## 2026-10-11 — Reprise gouvernée GWB-00/GWB-01, incident déploiement et S1 read-only
 
 - **Source** : [PR #275](https://github.com/Patricked-code/MCP/pull/275), bloc `docs/governance/governed-audit-continuation-workblock-20261009.json`; ce bloc est une projection de planification, non une Task Queue ni un claim.
