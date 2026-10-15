@@ -2033,5 +2033,21 @@
       "unobserved runtime changes"
     ]
   },
-  "globalStopRule": "GLOBAL_MCP_COMPLETE requires documented terminal acceptance dimensions, not plan completion or a PR merge."
+  "globalStopRule": "GLOBAL_MCP_COMPLETE requires documented terminal acceptance dimensions, not plan completion or a PR merge.",
+  "sharedCoordination": {
+    "purpose": "Each arriving agent can discover work in progress, its boundaries, checkpoints and next permitted action without claiming someone else's identity.",
+    "durableGitHubChannel": "https://github.com/Patricked-code/MCP/issues/235",
+    "perWorkChannel": "Existing PR/issue for exact blueprint/task/scope; do not funnel source-level work into an invented global chat bus",
+    "runtimeTruth": "Operational Memory / Governed Sessions / Governed Task Queue / Locks / Bootstrap Receipts remain the only live ownership authorities",
+    "presenceProtocol": [
+      "Read issue #235 latest checkpoint and live open PR list",
+      "If runtime work: identify agent principal/session/lease via existing bootstrap/ConnectionContext; do not borrow historic IDs",
+      "Check existing owner/claimed Task/current locks and collision domains before announcing intent",
+      "Record in existing issue or PR a concise intake containing source HEAD, stage/blueprint, scope, dependencies, intended read/write, actual session/Task refs if observed, blockers and NEXT_ACTION",
+      "Do not treat a GitHub comment as a lock or claim; perform authorized runtime claim/CAS separately",
+      "Update same channel at checkpoints/complete/blocked with CI/Deploy evidence and clear handoff; never assume other conversations monitor comments in real time"
+    ],
+    "traceabilityBoundary": "GitHub issues/PR/commits and runtime receipts are shared durable records, but not a push notification bus to every chat; connected agents must poll/read them on admission and at checkpoints.",
+    "collisionResolution": "Same scope or Task means do not write; coordinate through existing owner/authority, or select a different READY candidate in canonical program order."
+  }
 }
