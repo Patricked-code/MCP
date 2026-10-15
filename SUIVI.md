@@ -1,5 +1,13 @@
 # SUIVI.md
 
+## 2026-10-16 — INTAKE commun : publication de la reprise inter-agents et du point d'arrêt réel
+
+- **Directive publiée immédiatement** : [issue #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094) ; elle s'appuie sur les autorités existantes. Intervention GitHub directe uniquement, pas de Codex, de mutation S1/S2, de session ou de Task claim.
+- **Baseline recontrôlée** : `main@cc31ce12bea236b4cfb31d99ecee700c543f0c17`, PR #300 MERGED, CI principale #38812707495 SUCCESS, Governed Deploy #38812707629 SUCCESS exact SHA. Les 18 READY ne sont pas automatiquement certifiés ; matrice `docs/governance/gwb04-ready-ownership-20261015.json`.
+- **Snapshot runtime récent** : GitHub Actions/OIDC read-only issues #301, #302, #303, vers 00h35 CEST : Governed Sessions révision 803 (0 ACTIVE, 2 EXPIRED), Queue révision 243 (2 READY unowned), Locks révision 301 (0 actifs). Ces valeurs ne sont pas des droits courants et doivent être reobservées pour toute mutation.
+- **Amélioration documentaire proposée en PR** : pointer les agents vers un protocole vérifiable depuis `README.md`, `AGENTS.md`, `CLAUDE.md` et `docs/governance/README.md`, sans nouveau mécanisme de dispatch ni modif du programme existant. Vérifier CI exact-head avant toute fusion/déploiement.
+- **NEXT_ACTION** : reprise à froid vérifiable par un nouvel agent ; poursuite PCM-03/GWB-04 des vérifications `TB-W4-H-01` puis `TB-W4-K-01` ; activités indépendantes selon `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`, sans réapproprier PR #207, #88..90 ou les issues #262/#268 ; puis checkpoint.
+
 ## 2026-10-15 — PCM-03/GWB04 : candidats READY, scopes et autorités runtime vérifiés
 
 - Cartographie `docs/governance/gwb04-ready-ownership-20261015.json` : 18 READY en ordre officiel du Program Backlog, 15 avec chevauchement possible de PR anciennes, 3 sans PR candidate identifiée (cette donnée n'est pas un état d'ownership).
