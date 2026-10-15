@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-10-15 — GWB03-01 : réconciliation bornée des constats F-03 de PR #261
+
+- Ajout d'une preuve documentaire source/test pour 17 des 73 constats historiques de PR #261 (54 P1 / 19 P2), chaque verdict runtime restant `UNKNOWN` ; contrôle automatisé de non-surinterprétation.
+- Mise en évidence de deux politiques de ressources à vérifier (maxima CPU/RAM/PID et rotation de logs) sans modifier le provisioning ni la queue officielle ; rattachement à l'issue existante #262.
+- Réemploi du chemin GitHub direct / PR / CI, sans Codex ni write serveur.
+
+
 ## 2026-10-15 — Carte de priorité et protocole commun multi-agents
 
 - Création de `docs/governance/mcp-priority-convergence-map-20261015.json` : quinze jalons PCM-00..14, planification liée aux 94 blueprints réellement existants, dépendances, sorties probantes, protocoles d'arrivée/ownership/collisions/checkpoint.
