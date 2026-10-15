@@ -1,5 +1,32 @@
 # Gouvernance documentaire MCP
 
+## PRIORITÉ D'ENTRÉE — Carte chronologique de convergence du MCP (2026-10-15)
+
+**Avant d'écrire du code, lire la [carte de priorité machine](mcp-priority-convergence-map-20261015.json).** Cette carte comprend les 15 jalons PCM-00..14, la totalité des 94 blueprints en ordre de programme, les dépendances, domaines de collision, preuves à produire et règles de reprise. Elle **n'est pas** une nouvelle Governed Task Queue ni une autorisation de claims ou d'écriture.
+
+| Ordre de coordination | Travail requis | Reprise et compatibilité |
+|---|---|---|
+| PCM-00 | Entrée agent, pacte, HEAD, session/ownership/locks si runtime | Obligatoire avant toute mutation |
+| PCM-01 | Compléter les traces et deltas de l'audit historique | Lecture indépendante |
+| PCM-02 | Vérifier les P1 de PR #261 puis #267, autres P1/P2 | GWB-03, pas 158 bugs supposés |
+| PCM-03 | Examiner vraiment sources, assertions et preuves des 94 blueprints | GWB-04, lecture parallèle par slot |
+| PCM-04 | Confronter les écarts prouvés à l'architecture et au Backlog | GWB-05, un seul writer de synthèse |
+| PCM-05 | Clôturer proprement le volet audit avec résidus et handoff | Ne bloque pas les tâches indépendantes |
+| PCM-06 | Diagnostiquer le 403 OAuth de consentement sans affaiblir CSRF | Voie parallèle, propriétaire existant PR #207 |
+| PCM-07 | Intégrer les refresh tokens de PR #207 sans régression | Après preuve de la cause OAuth |
+| PCM-08 | Certifier Claude et ChatGPT réellement connectés, refresh compris | Preuves clients distinctes |
+| PCM-09 | Observer readiness + Queue/Session/Locks, sélectionner nextWork | Dès PCM-00 pour le travail déjà admissible, **sans attendre tout l'audit** |
+| PCM-10 | Exécuter W3 par ordre canonique, PR/CI/Deploy/checkpoint | Un writer par collision domain |
+| PCM-11 | Construire observabilité et traces de bout en bout | W4 en parallèle si autorisé |
+| PCM-12 | Construire et certifier le Super Admin Cockpit existant | W4, aucune permission UI implicite |
+| PCM-13 | Certifier dispatch automatique multi-agents, échecs et reprise | Sessions et claims réellement distincts |
+| PCM-14 | Valider backend + clients + cockpit ; éventuellement GLOBAL_MCP_COMPLETE | Uniquement avec preuves terminales |
+
+**Gouvernance de l'ordre :** la liste est un ordre logique des objectifs, **pas une sérialisation artificielle des travaux indépendants**. L'agent reprend d'abord sa tâche déjà possédée, sinon déduit le premier candidat compatible `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` du **Program Backlog live** et vérifie les autorités Task/Session/Lock avant toute mutation. Toute collision se résout par arrêt du write concerné et choix d'un autre scope compatible, non par reprise forcée. Les données de la carte sont un snapshot ; lire `SUIVI.md` et [issue #235](https://github.com/Patricked-code/MCP/issues/235) pour les checkpoints et réobserver GitHub avant d'agir.
+
+**NEXT_ACTION d'audit au 15 octobre :** PCM-02 / GWB03-01 sur les constats de la PR #261, puis #267. En parallèle, PCM-03 peut progresser par slots indépendants, PCM-06 reste au propriétaire OAuth #207, et PCM-09 reprend tout travail runtime déjà possédé/autorisé sans attendre l'audit complet.
+
+
 
 ## Index de reprise — audit, programme et traçabilité (observation du 2026-10-15)
 

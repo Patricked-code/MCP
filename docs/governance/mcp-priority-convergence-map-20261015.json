@@ -1,0 +1,2053 @@
+{
+  "schemaVersion": 1,
+  "id": "MCP-PRIORITY-CONVERGENCE-MAP-20261015-01",
+  "kind": "NON_AUTHORITATIVE_PROGRAM_NAVIGATION_AND_HANDOFF_MAP",
+  "repository": "Patricked-code/MCP",
+  "createdAt": "2026-10-15",
+  "baselineObservedMainSha": "92f4e51c1e7e3489b5d6e5c78369dcf0249e8703",
+  "purpose": "Une carte d'orientation chronologique exhaustive et testable pour les agents entrants, après l'audit historique, sans queue, owner, permission ou task runtime parallèle.",
+  "authorityPrecedence": [
+    "GitHub live code/PR/CI and governed Deploy",
+    "S1 Docker / Live State exact-head for runtime",
+    "Governed Task Queue, Governed Sessions, Locks and Receipts for mutable work",
+    "docs/governance/program-backlog-convergence.json for versioned planning and readiness",
+    "CLAUDE.md / AGENTS.md / ARCHITECTURE.md and .mcp versioned governance",
+    "This map is a dated navigation-only projection"
+  ],
+  "firstRead": [
+    "CLAUDE.md",
+    "AGENTS.md",
+    "SUIVI.md",
+    "docs/governance/README.md",
+    "docs/governance/mcp-priority-convergence-map-20261015.json",
+    "docs/governance/governed-audit-continuation-workblock-20261009.json",
+    "docs/governance/program-backlog-convergence.json",
+    "issue:235"
+  ],
+  "executionInvariants": [
+    "NO_SECOND_TASK_QUEUE_OR_DISPATCHER",
+    "NO_NEW_IDENTITY_OR_SESSION_FROM_MAP",
+    "NO_RUNTIME_CLAIM_OR_LOCK_FROM_PLANNING",
+    "READ_EXISTING_OWNED_TASK_FIRST",
+    "FIRST_COLLISION_FREE_IN_PROGRAM_ORDER",
+    "LIVE_HEAD_AND_RUNTIME_REOBSERVATION",
+    "GITHUB_DIRECT_THEN_APPROVED_ACTIONS_OIDC",
+    "NO_DIRECT_SERVER_CODE_WRITE",
+    "NO_CROSS_SCOPE_MUTATION_OR_TAKEOVER",
+    "NO_FAKE_HUMAN_GATE",
+    "NO_AUTOMATIC_DONE_OR_GLOBAL_MCP_COMPLETE",
+    "NO_TOKENS_COOKIES_SECRETS_IN_LOGS"
+  ],
+  "agentArrivalProtocol": {
+    "classification": [
+      "CONTINUE_VALID_OWN_SESSION",
+      "NEW_INDEPENDENT_AGENT_IF_PROVED",
+      "UNRESOLVED_STOP_MUTATION"
+    ],
+    "steps": [
+      "Read cold-start sources and latest issue #235 checkpoint; derive exact-Git HEAD and existing own work",
+      "Resolve agent/client/connection through existing bootstrap authority where runtime action requires it; never borrow another agent's identity",
+      "Check existing Task claim + non-expired session/lease and locks; stale does not authorize takeover",
+      "Select workload from program:next in program order after dependencies and collision check; repository-only work may continue with GitHub direct if no runtime Task authority is needed",
+      "Record before-action evidence, then scoped PR/CI/Deploy and after-action attestation, checkpoint and NEXT_ACTION",
+      "Reobserve and recompute after terminal state; local blocker skips incompatible candidate and never freezes whole program"
+    ],
+    "onCollision": "STOP_MUTATION → verify authoritative owner and scope → coordinate via existing Task/PR/issue/receipts → choose a disjoint candidate or record explicit blocker; never force push or self-assign someone else's claim",
+    "onHeadMoved": "STOP_WRITE → REOBSERVE → RECONCILE → VERIFY → WRITE",
+    "onOAuthFailure": "continue Github bounded work through Actions/OIDC if allowed; do not bypass consent/CSRF; reserve PR #207 to its existing owner"
+  },
+  "currentCheckpoint": {
+    "date": "2026-10-15",
+    "repositorySha": "92f4e51c1e7e3489b5d6e5c78369dcf0249e8703",
+    "CI": {
+      "runId": 38806396589,
+      "conclusion": "success"
+    },
+    "governedDeploy": {
+      "runId": 38806396431,
+      "conclusion": "success"
+    },
+    "observedStatus": "SOURCE_SNAPSHOT_NOT_PERPETUAL_LIVE",
+    "auditReceipts": {
+      "issueIndex": 208,
+      "reviewInlineComments": 282,
+      "reviewSubmissions": 215,
+      "PRsWithReviewRetrieval": 135,
+      "historicalP1P2": 158,
+      "targetedSpotChecks": 3,
+      "blueprintPathMappings": 94
+    },
+    "nextRecommendedAuditAction": "PCM-02/GWB03-01: PR #261 historical high-priority findings vs current source/tests/final PR/CI and deployed reality; then #267; in parallel PCM-03 scoped blueprint verification and PCM-06 only with OAuth owner.; in parallel, PCM-09 may resume eligible bounded Program Backlog work immediately after PCM-00 without an artificial audit-wide gate."
+  },
+  "workflowModel": {
+    "serial": "Prerequisite DAG and release of overlapping mutable collision domains",
+    "parallel": "Independent read-only audits and disjoint governed code scopes; OAuth only with existing claim/owner PCM-09/10 peuvent s'exécuter en même temps que PCM-01..05 si les autorités et scopes réels le permettent.",
+    "advanceRule": "At each checkpoint recompute live readiness, recheck claims/locks and perform next compatible action automatically if authorized",
+    "blockingRule": "Local blocker applies only to that candidate, not other disjoint tasks",
+    "runtimeAuthority": "GOVERNED_TASK_QUEUE_ONLY"
+  },
+  "stages": [
+    {
+      "id": "PCM-00",
+      "order": 0,
+      "title": "Admission et reprise sûre de chaque agent",
+      "lane": "ALL_AGENTS",
+      "dependsOn": [],
+      "mapsTo": [
+        "GWB-01"
+      ],
+      "blueprints": [],
+      "scope": "agent-onboarding/read-only",
+      "goal": "Reconstituer la continuité, le pacte et les autorités avant toute écriture",
+      "actions": [
+        "Lire CLAUDE.md, AGENTS.md, SUIVI.md, docs/governance/README.md, cette carte, le bloc GWB et le Program Backlog V2",
+        "Vérifier le HEAD exact de main, les PR/issues déjà ouvertes, les décisions de #235 et le dernier checkpoint ; classifier les anciens snapshots comme historiques",
+        "Reprendre en priorité le travail déjà possédé par sa propre session ; pour toute action runtime réobserver Session, Task Queue et Lock, et confirmer receipt/identité/lease/droits effectifs",
+        "Déterminer le plus petit scope admissible ; lecture GitHub directe d'abord, puis Actions/OIDC read-only et write borné seulement si autorisé"
+      ],
+      "exitCriteria": [
+        "HEAD et sources d'autorité clairement identifiés et horodatés",
+        "Aucun claim, task, identité ou permission déduits du seul document",
+        "NEXT_ACTION et scope éligible, ou blocker exact, enregistrés dans checkpoint"
+      ],
+      "evidence": [
+        "GitHub exact SHA, PR/CI and issue links",
+        "runtime session/queue/lock receipts only if actually observed"
+      ],
+      "mode": "ALWAYS_REQUIRED_BEFORE_MUTATION",
+      "parallel": "Each agent may read independently; no concurrent mutations of the same authority",
+      "snapshotState": "INVARIANT_PROTOCOL"
+    },
+    {
+      "id": "PCM-01",
+      "order": 1,
+      "title": "Réconciliation du périmètre historique et des traces de l'audit",
+      "lane": "AUDIT_PROVENANCE",
+      "dependsOn": [
+        "PCM-00"
+      ],
+      "mapsTo": [
+        "GWB-02",
+        "GWB-03"
+      ],
+      "blueprints": [],
+      "scope": "audit:archive:history",
+      "goal": "Assurer couverture historique complète sans relire inutilement les mêmes archives",
+      "actions": [
+        "Réutiliser les 208 entrées initiales (#65+) et les corpus #290/#291/#292 sans reconstruire les 282 commentaires ni les 215 soumissions",
+        "Comparer l'index à la liste live des nouvelles issues/PR et enregistrer un delta seulement",
+        "Classer les commentaires sur commits non vérifiés et le degré de résolution des discussions ; ne pas convertir des revues en bugs actifs",
+        "Maintenir provenance exacte (lien, SHA, date, objet, état UNKNOWN quand approprié)"
+      ],
+      "exitCriteria": [
+        "Manifeste de couverture et delta nouvelles issues/PR",
+        "Historique sans double comptage, lacunes restant explicitement UNKNOWN"
+      ],
+      "evidence": [
+        "docs/governance/architecture-chronology-issue65-20261009.json",
+        "docs/governance/gwb02-review-coverage-manifest-20261015.json",
+        "PR #273, #291, #292"
+      ],
+      "mode": "READ_ONLY_EVIDENCE",
+      "parallel": "Possible avec PCM-02/03 et OAuth si dossiers et fichiers propres séparés",
+      "snapshotState": "PARTIAL_COVERAGE_DELIVERED"
+    },
+    {
+      "id": "PCM-02",
+      "order": 2,
+      "title": "Classer les constats historiques contre le code actuel",
+      "lane": "AUDIT_FINDINGS",
+      "dependsOn": [
+        "PCM-00",
+        "PCM-01"
+      ],
+      "mapsTo": [
+        "GWB-03"
+      ],
+      "blueprints": [],
+      "scope": "audit:review:findings",
+      "goal": "Décider pour chaque remarque si déjà corrigée, encore applicable ou indéterminée",
+      "actions": [
+        "GWB03-01 : examiner en premier les P1 de PR #261 sur provisioning et consentement contre le HEAD, le diff final, les tests et le déploiement ; préserver les trois spot-checks déjà faits",
+        "GWB03-02 : poursuivre sur PR #267, chemins domain/binding, Plesk fail-closed et isolation de projets",
+        "Parcourir ensuite les autres P1 puis P2, regroupés par périmètre et impact plutôt que par nombre de commentaires",
+        "Produire pour chaque constat un verdict avec sources/tests/receipts et séparation CURRENT_DEFECT / FIXED_WITH_EVIDENCE / SUPERSEDED / UNVERIFIED",
+        "N'ouvrir un correctif que si le résidu est démontré et absent du backlog/Task Queue ou PR existants"
+      ],
+      "exitCriteria": [
+        "158 constats historiques P1/P2 classifiés sans prétendre que 158 défauts actuels existent",
+        "Pour tout défaut résiduel : localisation, preuve, impact, tests RED et domaine de collision",
+        "Unverified explicites : raisons et prochaine sonde, sans faux DONE"
+      ],
+      "evidence": [
+        "docs/governance/gwb03-pr-review-findings-triage-20261015.json",
+        "PR #261 and #267 review comments",
+        "targeted source/test/CI evidence"
+      ],
+      "mode": "AUDIT_FIRST_NO_CODE_WRITE",
+      "parallel": "Équipes de lecture par sous-périmètres indépendants ; seul writer gouverné par domaine",
+      "snapshotState": "3_SPOT_CHECKS_ONLY"
+    },
+    {
+      "id": "PCM-03",
+      "order": 3,
+      "title": "Certifier les 94 blueprints et leurs véritables preuves",
+      "lane": "AUDIT_BLUEPRINTS",
+      "dependsOn": [
+        "PCM-00"
+      ],
+      "mapsTo": [
+        "GWB-04"
+      ],
+      "blueprints": [],
+      "scope": "audit:blueprints:code-test",
+      "goal": "Passer des chemins existants à la vérification de comportements, tests et acceptation",
+      "actions": [
+        "Inspecter les 18 READY dans l'ordre du Program Backlog, sans les déclarer exécutables avant contrôles runtime",
+        "Vérifier les 36 DONE projetés : code fonctionnel, assertions, provenance PR, CI et déploiement, sans rejouer un DONE déjà prouvé",
+        "Classer les 28 BLOCKED, 5 CONDITIONAL et 7 DEFERRED par dépendances ou conditions, sans promotion fictive",
+        "Pour chaque blueprint réunir ID canonique, source, symboles, tests exacts, critères d'acceptation, receipts et verdict vérifié ou UNKNOWN",
+        "Distinguer coverage de fichiers (PR #290) et comportement réellement exécuté"
+      ],
+      "exitCriteria": [
+        "Matrice 94 lignes avec statut de preuve justifié, pas uniquement chemin source",
+        "Écarts, contradictions et dependencies manquantes signalés",
+        "Aucun changement de readiness/version sans mécanisme program:readiness + revue"
+      ],
+      "evidence": [
+        "docs/governance/gwb04-94-blueprint-source-test-trace-20261015.json",
+        "docs/governance/program-backlog-convergence.json",
+        "PR/CI/exact-head deploy receipts"
+      ],
+      "mode": "READ_ONLY_UNTIL_VERIFIED_GAPS",
+      "parallel": "Streams de lecture par integrationSlot indépendants ; éviter de modifier simultanément le Backlog commun",
+      "snapshotState": "94_PATHS_MAPPED_FUNCTION_UNVERIFIED"
+    },
+    {
+      "id": "PCM-04",
+      "order": 4,
+      "title": "Synthèse unique des écarts et de la cible sans régression",
+      "lane": "ARCHITECTURE",
+      "dependsOn": [
+        "PCM-02",
+        "PCM-03"
+      ],
+      "mapsTo": [
+        "GWB-05"
+      ],
+      "blueprints": [],
+      "scope": "governance:gap-reconciliation",
+      "goal": "Transformer l'audit en écarts vérifiés et rattacher chacun aux autorités existantes",
+      "actions": [
+        "Comparer les constats vérifiés à ARCHITECTURE.md, ROADMAP.md, CLAUDE.md et Program Backlog V2",
+        "Pour chaque écart vérifier s'il est déjà couvert par une PR, Task, blueprint ou décision avant toute création",
+        "Appliquer REUSE → COMPOSE → WRAP → EXPOSE → GENERALIZE → EXTEND → NEW ; garder une seule autorité par domaine",
+        "Produire un delta d'architecture et un catalogue de travaux candidables, avec critères RED/GREEN/régression et rollback éventuel",
+        "N'ajouter de gate humaine que si une autorité préexistante l'exige réellement"
+      ],
+      "exitCriteria": [
+        "Chaque écart a un owner historique observé ou UNASSIGNED non prétendu",
+        "Aucune seconde queue, second scheduler, second Live State ou chemin serveur parallèle",
+        "Ordre de correction fondé sur les dépendances réelles et les collision domains"
+      ],
+      "evidence": [
+        "ARCHITECTURE.md",
+        "docs/governance/program-backlog-convergence.json",
+        "DECISIONS_LOG.md / issue #235"
+      ],
+      "mode": "PLAN_RECONCILIATION",
+      "parallel": "Un seul writer sur la synthèse commune ; codeurs sur scopes indépendants peuvent suivre une Task autorisée",
+      "snapshotState": "PENDING"
+    },
+    {
+      "id": "PCM-05",
+      "order": 5,
+      "title": "Sortie contrôlée de l'audit et programme de réalisation",
+      "lane": "SUPERVISION",
+      "dependsOn": [
+        "PCM-04"
+      ],
+      "mapsTo": [
+        "GWB-05",
+        "GWB-06"
+      ],
+      "blueprints": [],
+      "scope": "governance:audit-exit",
+      "goal": "Arrêter l'audit documentaire comme boucle infinie et reprendre le programme actif",
+      "actions": [
+        "Vérifier que les constats connus ont un verdict ou une limite documentée, pas que tous les UNKNOWN soient magiquement résolus",
+        "Publier dans #235 la matrice des écarts, risques, dépendances, candidates et preuves de l'audit",
+        "Distinguer audit CLOSED_WITH_RESIDUALS et completion du PROGRAMME global encore OPEN",
+        "Recalculer readiness par outils existants et passer au premier travail admissible ; continuer l'audit technique seulement sur des lacunes significatives"
+      ],
+      "exitCriteria": [
+        "Checkpoint d'audit avec verdicts, résidus, responsabilités dynamiques et prochaine action",
+        "Pas de gate humaine artificielle : passage automatique à PCM-09 dès qu'un candidat permis existe"
+      ],
+      "evidence": [
+        "Issue #235 checkpoint",
+        "SUIVI.md, TASKS.md, CHANGELOG.md",
+        "program:readiness and program:next results"
+      ],
+      "mode": "NO_FAKE_RUNTIME_GATES",
+      "parallel": "Ne doit pas interrompre les tâches indépendantes déjà autorisées",
+      "snapshotState": "PENDING"
+    },
+    {
+      "id": "PCM-06",
+      "order": 6,
+      "title": "Diagnostic ciblé du consentement OAuth Claude/ChatGPT",
+      "lane": "OAUTH_EXISTING_OWNER",
+      "dependsOn": [
+        "PCM-00"
+      ],
+      "mapsTo": [
+        "GWB-05",
+        "GWB-07"
+      ],
+      "blueprints": [
+        "TB-W3-A3-02"
+      ],
+      "scope": "connection:oauth-attempt-correlation",
+      "goal": "Réparer le 403 de consentement sans modifier le fonctionnement existant sécurisé",
+      "actions": [
+        "Ne pas reprendre PR #207 ni TASK-20260929-001 sans autorité de reprise runtime",
+        "Reproduire Login → GET consent → POST /oauth/authorize → retour client, identifier catégoriellement Origin / Sec-Fetch-Site et issuer effectif sans enregistrer cookies/tokens",
+        "Vérifier MCP_WEB_BASE_URL, canonical host, redirects et proxy ; corriger la cause vérifiée uniquement",
+        "Produire tests RED puis GREEN pour ChatGPT et Claude, en conservant PKCE, consent ticket et refus CSRF cross-site"
+      ],
+      "exitCriteria": [
+        "Connaissance de la cause prouvée, pas devinée",
+        "Même origine autorisée passe, origine illégitime est refusée",
+        "PR owner/claim préservé et diff anti-régression validé"
+      ],
+      "evidence": [
+        "PR #207",
+        "src/oauth.ts and tests/oauthAuthorizeConsent.test.ts",
+        "sanitized HTTP metadata and CI"
+      ],
+      "mode": "PARALLEL_EXISTING_OWNER_ONLY",
+      "parallel": "Travail OAuth peut avancer parallèlement à PCM-01..04, avec un seul writer propriétaire",
+      "snapshotState": "INTERACTIVE_OAUTH_BLOCKED"
+    },
+    {
+      "id": "PCM-07",
+      "order": 7,
+      "title": "Intégrer la continuité des refresh tokens déjà développée",
+      "lane": "OAUTH_EXISTING_OWNER",
+      "dependsOn": [
+        "PCM-06"
+      ],
+      "mapsTo": [
+        "GWB-07"
+      ],
+      "blueprints": [
+        "TB-W3-A3-02"
+      ],
+      "scope": "connection:oauth-token-continuity",
+      "goal": "Réutiliser le candidat PR #207 sans écraser le code de consentement de main",
+      "actions": [
+        "Lire/diff PR #207 (ancienne branche DRAFT en conflit), documenter rotation, hash, TTL, replay/révocation et chemins couverts",
+        "Réconcilier additivement le candidat refresh-token sur main courant, sans force push ni perte de PKCE/page consentement",
+        "Tester access token expiry → refresh/rotation → refus replay/révocation → gestion de panne ; vérifier compatibilité web clients",
+        "Gouverner PR/CI/merge/deploy exact SHA via owner et règles du repository"
+      ],
+      "exitCriteria": [
+        "Tokens renouvelés de manière bornée et sécurisée, expirations contrôlées",
+        "Aucune régression du consentement, Bearer existant ou refus CSRF",
+        "Tests + CI + déploiement attesté et checkpoint"
+      ],
+      "evidence": [
+        "PR #207 diff, current main src/oauth.ts",
+        "src/oauthRefreshTokens.ts candidate",
+        "CI/Deploy exact SHA and client E2E"
+      ],
+      "mode": "PARALLEL_EXISTING_OWNER_ONLY",
+      "parallel": "Ne pas empiéter sur un autre agent qui possède le claim OAuth",
+      "snapshotState": "CANDIDATE_NOT_MERGED"
+    },
+    {
+      "id": "PCM-08",
+      "order": 8,
+      "title": "Certifier connexion et renouvellement dans Claude et ChatGPT",
+      "lane": "CLIENT_VALIDATION",
+      "dependsOn": [
+        "PCM-07"
+      ],
+      "mapsTo": [
+        "GWB-08"
+      ],
+      "blueprints": [
+        "TB-W4-J1-01",
+        "TB-W4-J2-01"
+      ],
+      "scope": "clients:oauth-e2e",
+      "goal": "Prouver client réel, callback, reprise et refresh sous gouvernance",
+      "actions": [
+        "Exécuter les parcours OAuth/PKCE/consent avec Claude et ChatGPT réellement connectés, sans partage d'identités client",
+        "Vérifier session réutilisée ou créée conformément aux règles et protection contre double claim",
+        "Certifier token expiré, refresh, rotation, revocation, re-login et erreurs cross-site",
+        "Journaliser verdict et preuve non secrète distincts par client"
+      ],
+      "exitCriteria": [
+        "Client Claude E2E certifié ou blocker exact documenté",
+        "Client ChatGPT E2E certifié ou blocker exact documenté",
+        "Aucune certification simulée ou inventée"
+      ],
+      "evidence": [
+        "TB-W4-J1-01 and TB-W4-J2-01 evidence",
+        "runtime non-secret client receipts",
+        "CI/attested S1 SHA"
+      ],
+      "mode": "REQUIRES_REAL_CLIENTS",
+      "parallel": "Validations read-only de clients séparées ; aucun claim runtime partagé",
+      "snapshotState": "PENDING"
+    },
+    {
+      "id": "PCM-09",
+      "order": 9,
+      "title": "Recalculer readiness et observer l'autorité des agents/tâches",
+      "lane": "DISPATCH_GOVERNANCE",
+      "dependsOn": [
+        "PCM-00"
+      ],
+      "mapsTo": [
+        "GWB-06"
+      ],
+      "blueprints": [
+        "TB-W3-DISPATCH-01",
+        "TB-W3-DISPATCH-02",
+        "TB-W3-DISPATCH-03"
+      ],
+      "scope": "coordination:program-next",
+      "goal": "Utiliser le dispatch existant au lieu d'une nouvelle file de tâches",
+      "actions": [
+        "Ne jamais attendre la clôture totale de l'audit GWB-03/GWB-04 pour poursuivre un travail de programme déjà READY, compatible, possédé ou admissible : une lacune d'audit bloque seulement le scope concerné.",
+        "Reobserver currentState, nextWork, Task Queue revision, Governed Session/Lease, Locks et GitHub branch/HEAD",
+        "Exécuter npm run program:readiness puis program:next sur le HEAD vérifié ; appliquer FIRST_COLLISION_FREE_IN_PROGRAM_ORDER",
+        "Reprendre en priorité un travail possédé ; sinon sélectionner premier blueprint READY compatible ; skip blockers locaux non globaux",
+        "Ne matérialiser/claim une Task que depuis un outil runtime préautorisé et seulement avec session/permissions/receipt/expectedRevision/contrôle anti-collision"
+      ],
+      "exitCriteria": [
+        "Premier travail admissible identifié avec dépendances et collision domains vérifiés",
+        "Absence de takeover ou claim fictif ; blocked local saute au candidat suivant",
+        "Autorité runtime conservée et preuve du choix horodatée"
+      ],
+      "evidence": [
+        "docs/governance/program-backlog-convergence.json",
+        "Operational Memory task queue/session/locks live",
+        "nextWork/receipt and GitHub exact SHA"
+      ],
+      "mode": "RUNTIME_CHECK_REQUIRED_FOR_CLAIM",
+      "parallel": "Lecture concurrente admissible ; claims via CAS + lock, un writer/domaine",
+      "snapshotState": "DISPATCH_MODULES_DONE_E2E_UNPROVEN"
+    },
+    {
+      "id": "PCM-10",
+      "order": 10,
+      "title": "Exécuter les lots W3 admissibles par ordre de programme",
+      "lane": "ENGINEERING_W3",
+      "dependsOn": [
+        "PCM-09"
+      ],
+      "mapsTo": [
+        "GWB-07"
+      ],
+      "blueprints": [],
+      "scope": "program:w3",
+      "goal": "Achever les travaux du contrôle GitHub, provisioning, security et Git sans collisions",
+      "actions": [
+        "Utiliser l'ordre des 18 READY et autres futurs READY issu du Program Backlog live, jamais une liste figée comme ordonnance d'exécution",
+        "Identifier avant chaque action les PR DRAFT déjà ouvertes #207, #90, #89, #88, #86 et #85 et vérifier leur périmètre/ownership, plutôt que recréer le travail",
+        "Pour chaque Task admissible : claim gouverné → tests RED/GREEN/régression → branche/PR → exact HEAD/CI/review → Deploy/attest si applicable → checkpoint/terminal/release",
+        "Traiter en particulier F-04, GGCC Git/GitHub, PR-write, repository admin, OAuth write-scope et provisioning avec leurs gates réelles"
+      ],
+      "exitCriteria": [
+        "Chaque Task W3 achevée/blocked porte un état runtime justifié",
+        "Tous les travaux obligatoires W3 ont preuves code/tests/CI/deploy et gouvernance",
+        "Aucune destruction/permission élargie hors autorité"
+      ],
+      "evidence": [
+        "Task Queue and Program Backlog V2",
+        "PR/CI/Deploy and S1 attestation",
+        "SUIVI.md and DECISIONS_LOG.md"
+      ],
+      "mode": "GOVERNED_IMPLEMENTATION",
+      "parallel": "Permis seulement sur collisionDomains disjoints, claims + locks contrôlés",
+      "snapshotState": "PARTIAL_W3_ACTIVE"
+    },
+    {
+      "id": "PCM-11",
+      "order": 11,
+      "title": "Observabilité et preuves opérationnelles W4",
+      "lane": "ENGINEERING_W4_OBSERVABILITY",
+      "dependsOn": [
+        "PCM-09"
+      ],
+      "mapsTo": [
+        "GWB-07",
+        "GWB-08"
+      ],
+      "blueprints": [
+        "TB-W4-H-01"
+      ],
+      "scope": "observability:tracing:inventory",
+      "goal": "Tracer chaque agent, tâche, permission, action et résultat sans fausse autorité",
+      "actions": [
+        "Inventorier traces, événements, métriques, échecs, warnings, recettes et preuves via les modules existants",
+        "Couvrir reconnect/stale/expired/HEAD_MOVED, task claim, checkpoints, CI et déploiement",
+        "Compléter GWB-08 : prouver deux clients indépendants, ownership CAS et passage à la tâche suivante",
+        "Ne pas prétendre que chaque lecture produit automatiquement une trace runtime si elle n'est pas instrumentée"
+      ],
+      "exitCriteria": [
+        "Événements critiques traçables aux autorités sans secrets",
+        "Reprise et collisions multi-agents évaluées selon tests de conditions positives et négatives",
+        "Absence de boucle autonome fantôme"
+      ],
+      "evidence": [
+        "TB-W4-H-01 and descendants",
+        "Operational Memory and audit event receipts",
+        "end-to-end agent reconnection test"
+      ],
+      "mode": "GOVERNED_IMPLEMENTATION",
+      "parallel": "Observabilité en scope isolé ; éviter collision avec les autres writers",
+      "snapshotState": "PLANNING_READY_H01"
+    },
+    {
+      "id": "PCM-12",
+      "order": 12,
+      "title": "Construire et certifier Super Admin Cockpit gouverné",
+      "lane": "ENGINEERING_W4_COCKPIT",
+      "dependsOn": [
+        "PCM-09"
+      ],
+      "mapsTo": [
+        "GWB-07",
+        "GWB-09"
+      ],
+      "blueprints": [
+        "TB-W4-K-01",
+        "TB-W4-K-12"
+      ],
+      "scope": "cockpit:shell",
+      "goal": "Prouver la surface de supervision et d'action sans bypass des autorités",
+      "actions": [
+        "Suivre TB-W4-K-01 puis les lots K descendants en respectant les readiness/dépendances actuelles",
+        "Réutiliser Express/MCP existant, aucun nouveau domaine/serveur non prouvé",
+        "Séparer visibilité, callable, authorized et safe_now ; mutation contrôlée côté serveur",
+        "Certifier l'acceptance de TB-W4-K-12 avec tests de sécurité, droits et preuves"
+      ],
+      "exitCriteria": [
+        "Cockpit acceptance prouvée et non seulement une maquette",
+        "Aucune mutation autorisée par seule session web ou via accès admin implicite",
+        "Tous les critères K obligatoires traités"
+      ],
+      "evidence": [
+        "Issue #236",
+        "TB-W4-K-01 and TB-W4-K-12",
+        "GitHub review/CI and runtime security tests"
+      ],
+      "mode": "GOVERNED_IMPLEMENTATION",
+      "parallel": "W4 cockpit indépendant du core si scopes/code files distincts",
+      "snapshotState": "W4_K01_READY"
+    },
+    {
+      "id": "PCM-13",
+      "order": 13,
+      "title": "Certifier l'enchaînement autonome multi-agents",
+      "lane": "MULTI_AGENT_E2E",
+      "dependsOn": [
+        "PCM-09",
+        "PCM-10",
+        "PCM-11",
+        "PCM-08"
+      ],
+      "mapsTo": [
+        "GWB-08"
+      ],
+      "blueprints": [],
+      "scope": "coordination:e2e",
+      "goal": "Démontrer wake-up/reprise/nextWork/claim/checkpoint sans collision et sans intervention humaine fictive",
+      "actions": [
+        "Tester simultanément deux agents indépendants et une seule Governed Task Queue",
+        "Démontrer arrivée → bootstrap → identité/capabilities → resume_OWNED_FIRST ou first collision-free → guarded claim/CAS/lock → travail → receipt → terminal → recompute nextWork",
+        "Tester erreurs et sorties : stale, conflit, no-capability, denial, renouvellement OAuth, HEAD_MOVED, deploy fail et rollback",
+        "Mesurer les traces réelles de l'arrivée à la tâche suivante et leur accessibilité à un agent repreneur"
+      ],
+      "exitCriteria": [
+        "Test multi-agent réel reproductible et attesté",
+        "Aucun double claim/lease fantôme ; états d'échec fail-closed",
+        "Autorités et clients certifiés indépendamment"
+      ],
+      "evidence": [
+        "Runtime task/session/lock receipts",
+        "UAC integration tests and real-client certified evidence",
+        "Issue #235 checkpoint"
+      ],
+      "mode": "RUNTIME_E2E_REQUIRED",
+      "parallel": "Tests concurrentiels isolés par session/agent propre ; même Task jamais doublement claimée",
+      "snapshotState": "NOT_CERTIFIED"
+    },
+    {
+      "id": "PCM-14",
+      "order": 14,
+      "title": "Convergence globale et déclaration conditionnelle de complétude",
+      "lane": "SUPERVISOR_TERMINAL",
+      "dependsOn": [
+        "PCM-05",
+        "PCM-10",
+        "PCM-12",
+        "PCM-13"
+      ],
+      "mapsTo": [
+        "GWB-09"
+      ],
+      "blueprints": [
+        "TB-W4-MCP-FINAL-ACCEPTANCE"
+      ],
+      "scope": "program:terminal",
+      "goal": "Atteindre GLOBAL_MCP_COMPLETE seulement lorsque les dimensions requises sont réellement prouvées",
+      "actions": [
+        "Recalculer le Program Backlog et les dependants jusqu'à absence de READY obligatoire non traités",
+        "Évaluer BACKEND_CONTROL_PLANE_ACCEPTANCE, CLIENT_CERTIFICATIONS, COCKPIT_ACCEPTANCE et la cohérence globale",
+        "Contrôler absence de divergence GitHub/S1/runtime, claims/locks/tasks orphelins, gaps de sécurité et tests E2E manquants",
+        "Obtenir CI/merge/Deploy exact SHA et attestations runtime ; produire globalStopReport uniquement sur critère autorisé",
+        "Si une dimension manque, en consigner preuve/blocker et continuer le premier travail compatible"
+      ],
+      "exitCriteria": [
+        "Tous mandatory blueprints DONE avec preuve et garded items explicitement classifiés",
+        "Client Claude et ChatGPT, backend/control plane et cockpit acceptés",
+        "GLOBAL_MCP_COMPLETE déclarable sans hypothèse ; sinon état exact + NEXT_ACTION"
+      ],
+      "evidence": [
+        "Program Backlog executionModel.terminalCondition",
+        "last exact SHA CI/Deploy/LiveState",
+        "Task Queue/Session/Lock consistency report",
+        "issue #235 and SUIVI checkpoint"
+      ],
+      "mode": "NO_AUTOMATIC_TERMINAL_DECLARATION",
+      "parallel": "Supervision seule tranche l'acceptation sur les preuves existantes ; aucun bypass",
+      "snapshotState": "NOT_COMPLETE"
+    }
+  ],
+  "planningSnapshot": {
+    "snapshotType": "READ_ONLY_COPY_OF_PROGRAM_BACKLOG_ORDER_NOT_RUNTIME_QUEUE",
+    "observedMainSha": "92f4e51c1e7e3489b5d6e5c78369dcf0249e8703",
+    "total": 94,
+    "counts": {
+      "DONE": 36,
+      "READY": 18,
+      "BLOCKED": 28,
+      "DEFERRED": 7,
+      "CONDITIONAL": 5
+    },
+    "allBlueprintsInExistingProgramOrder": [
+      {
+        "programOrdinal": 0,
+        "id": "TB-W1-01",
+        "title": "Freeze post-UAC reconciliation baseline",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [],
+        "collisionDomains": [
+          "planning:program-baseline"
+        ],
+        "integrationSlot": "governance.gwc-blueprint-convergence"
+      },
+      {
+        "programOrdinal": 1,
+        "id": "TB-W1-02",
+        "title": "Reconcile GWC-0..17 implementation state",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W1-01"
+        ],
+        "collisionDomains": [
+          "planning:gwc-blueprints"
+        ],
+        "integrationSlot": "governance.gwc-blueprint-convergence"
+      },
+      {
+        "programOrdinal": 2,
+        "id": "TB-W1-03",
+        "title": "Reconcile AF-01..36 findings",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W1-02"
+        ],
+        "collisionDomains": [
+          "planning:gwc-findings"
+        ],
+        "integrationSlot": "governance.gwc-findings-reconciliation"
+      },
+      {
+        "programOrdinal": 3,
+        "id": "TB-W1-04",
+        "title": "Reconcile OD-01..12 decisions",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W1-02"
+        ],
+        "collisionDomains": [
+          "planning:open-decisions"
+        ],
+        "integrationSlot": "governance.open-decisions-reconciliation"
+      },
+      {
+        "programOrdinal": 4,
+        "id": "TB-W1-05",
+        "title": "Reconcile static task-registry drift",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W1-01"
+        ],
+        "collisionDomains": [
+          "planning:task-registry"
+        ],
+        "integrationSlot": "governance.task-registry-reconciliation"
+      },
+      {
+        "programOrdinal": 5,
+        "id": "TB-W1-06",
+        "title": "Reconcile ROADMAP/TODO/TASKS/backlog projections",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W1-02",
+          "TB-W1-03",
+          "TB-W1-04",
+          "TB-W1-05"
+        ],
+        "collisionDomains": [
+          "planning:canonical-docs"
+        ],
+        "integrationSlot": "governance.gwc-blueprint-convergence"
+      },
+      {
+        "programOrdinal": 6,
+        "id": "TB-W1-07",
+        "title": "Publish W1 readiness handoff",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W1-06"
+        ],
+        "collisionDomains": [
+          "planning:readiness-gate"
+        ],
+        "integrationSlot": "governance.gwc-blueprint-convergence"
+      },
+      {
+        "programOrdinal": 7,
+        "id": "TB-W2-01",
+        "title": "Add github_get_commits",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W1-07"
+        ],
+        "collisionDomains": [
+          "github:read:commits"
+        ],
+        "integrationSlot": "github.control-plane.read-complements"
+      },
+      {
+        "programOrdinal": 8,
+        "id": "TB-W2-02",
+        "title": "Add github_get_tree",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W1-07"
+        ],
+        "collisionDomains": [
+          "github:read:tree"
+        ],
+        "integrationSlot": "github.control-plane.read-complements"
+      },
+      {
+        "programOrdinal": 9,
+        "id": "TB-W2-03",
+        "title": "Add github_get_required_checks",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W1-07"
+        ],
+        "collisionDomains": [
+          "github:read:required-checks"
+        ],
+        "integrationSlot": "github.control-plane.read-complements"
+      },
+      {
+        "programOrdinal": 10,
+        "id": "TB-W3-A22-01",
+        "title": "Inventory verifiable client evidence",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W2-01",
+          "TB-W2-02",
+          "TB-W2-03"
+        ],
+        "collisionDomains": [
+          "connection:client-evidence:inventory"
+        ],
+        "integrationSlot": "connection.client-evidence"
+      },
+      {
+        "programOrdinal": 11,
+        "id": "TB-W3-A22-02",
+        "title": "Extend ConnectionContext with bounded client evidence",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-A22-01"
+        ],
+        "collisionDomains": [
+          "connection:client-evidence"
+        ],
+        "integrationSlot": "connection.client-evidence"
+      },
+      {
+        "programOrdinal": 12,
+        "id": "TB-W3-A3-01",
+        "title": "Inventory OAuth correlation surfaces",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W2-01",
+          "TB-W2-02",
+          "TB-W2-03"
+        ],
+        "collisionDomains": [
+          "connection:oauth-correlation:inventory"
+        ],
+        "integrationSlot": "connection.oauth-attempt-correlation"
+      },
+      {
+        "programOrdinal": 13,
+        "id": "TB-W3-A3-02",
+        "title": "Add bounded OAuth attempt correlation",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-A3-01"
+        ],
+        "collisionDomains": [
+          "connection:oauth-attempt-correlation"
+        ],
+        "integrationSlot": "connection.oauth-attempt-correlation"
+      },
+      {
+        "programOrdinal": 14,
+        "id": "TB-W3-B3-01",
+        "title": "Reconcile remaining MCP-only target consumers",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W2-01",
+          "TB-W2-02",
+          "TB-W2-03"
+        ],
+        "collisionDomains": [
+          "context:multi-repository:inventory"
+        ],
+        "integrationSlot": "context.multi-repository"
+      },
+      {
+        "programOrdinal": 15,
+        "id": "TB-W3-B3-02",
+        "title": "Operator-configured server target project and TargetScope propagation",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-B3-01"
+        ],
+        "collisionDomains": [
+          "context:multi-repository"
+        ],
+        "integrationSlot": "context.multi-repository"
+      },
+      {
+        "programOrdinal": 16,
+        "id": "TB-W3-DISPATCH-01",
+        "title": "Blueprint-bound governed materialization gate",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-B3-02"
+        ],
+        "collisionDomains": [
+          "orchestration:task-dispatch"
+        ],
+        "integrationSlot": "orchestration.autonomous-dispatch-loop"
+      },
+      {
+        "programOrdinal": 17,
+        "id": "TB-W3-DISPATCH-02",
+        "title": "Resume-owned-first governed claim",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-DISPATCH-01"
+        ],
+        "collisionDomains": [
+          "orchestration:task-dispatch"
+        ],
+        "integrationSlot": "orchestration.autonomous-dispatch-loop"
+      },
+      {
+        "programOrdinal": 18,
+        "id": "TB-W3-DISPATCH-03",
+        "title": "Connected-agent next-work projection and terminal recompute",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-DISPATCH-02"
+        ],
+        "collisionDomains": [
+          "orchestration:task-dispatch"
+        ],
+        "integrationSlot": "orchestration.autonomous-dispatch-loop"
+      },
+      {
+        "programOrdinal": 19,
+        "id": "TB-W3-C1-01",
+        "title": "Refresh GitRegistry V2 verification evidence",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W2-01",
+          "TB-W2-02",
+          "TB-W2-03"
+        ],
+        "collisionDomains": [
+          "project:gitregistry-verification"
+        ],
+        "integrationSlot": "project.gitregistry-verification"
+      },
+      {
+        "programOrdinal": 20,
+        "id": "TB-W3-C3-01",
+        "title": "Integrate Server Resolution",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-B3-02",
+          "TB-W3-C1-01"
+        ],
+        "collisionDomains": [
+          "project:server-resolution"
+        ],
+        "integrationSlot": "project.server-runtime-domain-resolution"
+      },
+      {
+        "programOrdinal": 21,
+        "id": "TB-W3-C4-01",
+        "title": "Integrate Runtime/Container/Proxy Resolution",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-C3-01"
+        ],
+        "collisionDomains": [
+          "project:runtime-resolution"
+        ],
+        "integrationSlot": "project.server-runtime-domain-resolution"
+      },
+      {
+        "programOrdinal": 22,
+        "id": "TB-W3-C5-01",
+        "title": "Integrate Domain Resolution",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-C3-01"
+        ],
+        "collisionDomains": [
+          "project:domain-resolution"
+        ],
+        "integrationSlot": "project.server-runtime-domain-resolution"
+      },
+      {
+        "programOrdinal": 23,
+        "id": "TB-W3-C345-02",
+        "title": "Project reality acceptance",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-C4-01",
+          "TB-W3-C5-01"
+        ],
+        "collisionDomains": [
+          "project:reality-e2e"
+        ],
+        "integrationSlot": "project.server-runtime-domain-resolution"
+      },
+      {
+        "programOrdinal": 24,
+        "id": "TB-W3-D1-01",
+        "title": "Existing Governance Inheritance",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-C345-02"
+        ],
+        "collisionDomains": [
+          "governance:inheritance"
+        ],
+        "integrationSlot": "governance.inheritance"
+      },
+      {
+        "programOrdinal": 25,
+        "id": "TB-W3-D2-01",
+        "title": "Effective Capabilities",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-D1-01"
+        ],
+        "collisionDomains": [
+          "governance:effective-capabilities"
+        ],
+        "integrationSlot": "governance.effective-capabilities"
+      },
+      {
+        "programOrdinal": 26,
+        "id": "TB-W3-D3-01",
+        "title": "Bootstrap Receipt Enrichment",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "bootstrap:receipt-enrichment"
+        ],
+        "integrationSlot": "bootstrap.receipt-enrichment"
+      },
+      {
+        "programOrdinal": 27,
+        "id": "TB-W3-E1-01",
+        "title": "Missing-context Detection",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-D3-01"
+        ],
+        "collisionDomains": [
+          "context:guided-completion:detection"
+        ],
+        "integrationSlot": "context.guided-completion"
+      },
+      {
+        "programOrdinal": 28,
+        "id": "TB-W3-E2-01",
+        "title": "Context Completion Wizard",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-E1-01"
+        ],
+        "collisionDomains": [
+          "context:guided-completion:wizard"
+        ],
+        "integrationSlot": "context.guided-completion"
+      },
+      {
+        "programOrdinal": 29,
+        "id": "TB-W3-E3-01",
+        "title": "Consent and Validation",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-E2-01"
+        ],
+        "collisionDomains": [
+          "context:guided-completion:consent"
+        ],
+        "integrationSlot": "context.guided-completion"
+      },
+      {
+        "programOrdinal": 30,
+        "id": "TB-W3-F-01",
+        "title": "Provisioning capability decomposition",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-E3-01",
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "provisioning:design"
+        ],
+        "integrationSlot": "provisioning.governed"
+      },
+      {
+        "programOrdinal": 31,
+        "id": "TB-W3-F-02",
+        "title": "Repository provisioning",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W3-F-01",
+          "TB-W3-ADMIN-01"
+        ],
+        "collisionDomains": [
+          "provisioning:repository"
+        ],
+        "integrationSlot": "provisioning.governed"
+      },
+      {
+        "programOrdinal": 32,
+        "id": "TB-W3-F-03",
+        "title": "Project/runtime provisioning",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-F-01"
+        ],
+        "collisionDomains": [
+          "provisioning:project-runtime"
+        ],
+        "integrationSlot": "provisioning.governed"
+      },
+      {
+        "programOrdinal": 33,
+        "id": "TB-W3-F-04",
+        "title": "Domain/binding provisioning",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-F-01"
+        ],
+        "collisionDomains": [
+          "provisioning:domain-binding"
+        ],
+        "integrationSlot": "provisioning.governed"
+      },
+      {
+        "programOrdinal": 34,
+        "id": "TB-W3-F-05",
+        "title": "Provisioning acceptance and rollback",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W3-F-02",
+          "TB-W3-F-03",
+          "TB-W3-F-04"
+        ],
+        "collisionDomains": [
+          "provisioning:e2e"
+        ],
+        "integrationSlot": "provisioning.governed"
+      },
+      {
+        "programOrdinal": 35,
+        "id": "TB-W3-PRW-01",
+        "title": "Exact-head request-review",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "github:pr-write:review-request"
+        ],
+        "integrationSlot": "github.pr-write.extensions"
+      },
+      {
+        "programOrdinal": 36,
+        "id": "TB-W3-PRW-02",
+        "title": "Reduced PR metadata update",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "github:pr-write:metadata"
+        ],
+        "integrationSlot": "github.pr-write.extensions"
+      },
+      {
+        "programOrdinal": 37,
+        "id": "TB-W3-ADMIN-01",
+        "title": "Governed private repository creation",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-F-01",
+          "TB-W3-D2-01",
+          "TB-W3-E3-01"
+        ],
+        "collisionDomains": [
+          "github:admin:create-repository"
+        ],
+        "integrationSlot": "github.admin.create-repository"
+      },
+      {
+        "programOrdinal": 38,
+        "id": "TB-W4-G1-01",
+        "title": "Client Presence",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-A22-02"
+        ],
+        "collisionDomains": [
+          "presence:client-observation"
+        ],
+        "integrationSlot": "presence.client-two-clock"
+      },
+      {
+        "programOrdinal": 39,
+        "id": "TB-W4-G2-01",
+        "title": "Two-clock Presence",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W4-G1-01"
+        ],
+        "collisionDomains": [
+          "presence:two-clock"
+        ],
+        "integrationSlot": "presence.client-two-clock"
+      },
+      {
+        "programOrdinal": 40,
+        "id": "TB-W4-G3-01",
+        "title": "Tool Surface Attestation residual",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W4-G2-01"
+        ],
+        "collisionDomains": [
+          "attestation:tool-surface"
+        ],
+        "integrationSlot": "attestation.tool-surface"
+      },
+      {
+        "programOrdinal": 41,
+        "id": "TB-W4-H-01",
+        "title": "Trace evidence inventory",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D3-01"
+        ],
+        "collisionDomains": [
+          "observability:tracing:inventory"
+        ],
+        "integrationSlot": "observability.end-to-end-tracing"
+      },
+      {
+        "programOrdinal": 42,
+        "id": "TB-W4-H-02",
+        "title": "Bounded trace context",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-H-01"
+        ],
+        "collisionDomains": [
+          "observability:tracing:context"
+        ],
+        "integrationSlot": "observability.end-to-end-tracing"
+      },
+      {
+        "programOrdinal": 43,
+        "id": "TB-W4-H-03",
+        "title": "Event Journal trace integration",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-H-02"
+        ],
+        "collisionDomains": [
+          "observability:end-to-end-tracing"
+        ],
+        "integrationSlot": "observability.end-to-end-tracing"
+      },
+      {
+        "programOrdinal": 44,
+        "id": "TB-W4-I1-01",
+        "title": "Synthetic Monitor",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-H-03",
+          "TB-W4-G2-01",
+          "TB-W4-G3-01"
+        ],
+        "collisionDomains": [
+          "observability:synthetic-monitoring"
+        ],
+        "integrationSlot": "observability.synthetic-monitoring"
+      },
+      {
+        "programOrdinal": 45,
+        "id": "TB-W4-I2-01",
+        "title": "Connection-chain Dashboard",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-I1-01"
+        ],
+        "collisionDomains": [
+          "observability:connection-dashboard"
+        ],
+        "integrationSlot": "observability.synthetic-monitoring"
+      },
+      {
+        "programOrdinal": 46,
+        "id": "TB-W4-I3-01",
+        "title": "Layer-specific Alerts",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-I2-01"
+        ],
+        "collisionDomains": [
+          "observability:alerts"
+        ],
+        "integrationSlot": "observability.synthetic-monitoring"
+      },
+      {
+        "programOrdinal": 47,
+        "id": "TB-W4-J1-01",
+        "title": "Claude certification",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-I3-01",
+          "TB-W4-G3-01"
+        ],
+        "collisionDomains": [
+          "certification:claude"
+        ],
+        "integrationSlot": "certification.clients"
+      },
+      {
+        "programOrdinal": 48,
+        "id": "TB-W4-J2-01",
+        "title": "ChatGPT certification",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-I3-01",
+          "TB-W4-G3-01"
+        ],
+        "collisionDomains": [
+          "certification:chatgpt"
+        ],
+        "integrationSlot": "certification.clients"
+      },
+      {
+        "programOrdinal": 49,
+        "id": "TB-W4-K-01",
+        "title": "Cockpit shell, design system, security baseline and read-only Command Center",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-DISPATCH-03",
+          "TB-W4-G3-01"
+        ],
+        "collisionDomains": [
+          "cockpit:shell"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 50,
+        "id": "TB-W4-K-02",
+        "title": "Program, Sessions, Tasks/nextWork and Claims & Locks explorers with global search (read-only)",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-K-01"
+        ],
+        "collisionDomains": [
+          "cockpit:program-work"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 51,
+        "id": "TB-W4-K-03",
+        "title": "Agents & Clients and Tool Catalogue/Inspector (read-only)",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-K-01"
+        ],
+        "collisionDomains": [
+          "cockpit:agents-tools"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 52,
+        "id": "TB-W4-K-04",
+        "title": "Pull Request and CI/Checks operations center (read-only)",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-K-01"
+        ],
+        "collisionDomains": [
+          "cockpit:pr-ci"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 53,
+        "id": "TB-W4-K-05",
+        "title": "Project Reality Explorer and Repository/Git workspace (read-only)",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-K-01",
+          "TB-W3-C345-02",
+          "TB-W3-GGCC-GIT-READ"
+        ],
+        "collisionDomains": [
+          "cockpit:project-reality"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 54,
+        "id": "TB-W4-K-06",
+        "title": "Deployments, runtime and Evidence/Receipts center (read-only)",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-K-01",
+          "TB-W3-C4-01"
+        ],
+        "collisionDomains": [
+          "cockpit:deploy-evidence"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 55,
+        "id": "TB-W4-K-07",
+        "title": "Identity/OAuth, Capability Reality matrix, Governance center and System configuration (read-only)",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-K-01",
+          "TB-W3-D2-01",
+          "TB-W3-A3-02",
+          "TB-W3-OAUTH-WRITE-SCOPE-01"
+        ],
+        "collisionDomains": [
+          "cockpit:identity-governance"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 56,
+        "id": "TB-W4-K-08",
+        "title": "Governed action pipeline and PR/CI actions",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-K-07",
+          "TB-W4-K-04",
+          "TB-W3-PRW-01",
+          "TB-W3-PRW-02",
+          "TB-W3-GGCC-GH-PR-REVIEW",
+          "TB-W3-GGCC-GH-ACTIONS"
+        ],
+        "collisionDomains": [
+          "cockpit:governed-actions"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 57,
+        "id": "TB-W4-K-09",
+        "title": "GitHub control plane, Git and deployment/runtime governed actions",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-K-08",
+          "TB-W4-K-05",
+          "TB-W4-K-06",
+          "TB-W4-GGCC-E2E"
+        ],
+        "collisionDomains": [
+          "cockpit:control-plane-actions"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 58,
+        "id": "TB-W4-K-10",
+        "title": "Provisioning Center",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-K-08",
+          "TB-W3-E3-01",
+          "TB-W3-F-05"
+        ],
+        "collisionDomains": [
+          "cockpit:provisioning"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 59,
+        "id": "TB-W4-K-11",
+        "title": "Events/Tracing, Monitoring, Alerts/Incidents and Audit/Drift explorers",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-K-01",
+          "TB-W4-H-03",
+          "TB-W4-I3-01",
+          "TB-W4-GGCC-AUDIT"
+        ],
+        "collisionDomains": [
+          "cockpit:observability"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 60,
+        "id": "TB-W4-K-12",
+        "title": "Cockpit E2E acceptance, browser certification and operational documentation",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-K-02",
+          "TB-W4-K-03",
+          "TB-W4-K-04",
+          "TB-W4-K-05",
+          "TB-W4-K-06",
+          "TB-W4-K-07",
+          "TB-W4-K-08",
+          "TB-W4-K-09",
+          "TB-W4-K-10",
+          "TB-W4-K-11"
+        ],
+        "collisionDomains": [
+          "cockpit:acceptance"
+        ],
+        "integrationSlot": "cockpit.super-admin"
+      },
+      {
+        "programOrdinal": 61,
+        "id": "TB-M-01",
+        "title": "GitHub Actions Node 24 maintenance",
+        "planningStateAsObserved": "DEFERRED",
+        "dependsOn": [],
+        "collisionDomains": [
+          "maintenance:github-actions-node24"
+        ],
+        "integrationSlot": "maintenance.github-actions-node24"
+      },
+      {
+        "programOrdinal": 62,
+        "id": "TB-COND-C1-ACTIVATE",
+        "title": "GitRegistry V2 validated→active transition",
+        "planningStateAsObserved": "CONDITIONAL",
+        "dependsOn": [
+          "TB-W3-C1-01",
+          "TB-W3-C345-02"
+        ],
+        "collisionDomains": [
+          "project:gitregistry-activation"
+        ],
+        "integrationSlot": "project.gitregistry-verification"
+      },
+      {
+        "programOrdinal": 63,
+        "id": "TB-COND-J4",
+        "title": "WRITE gate shadow→enforce",
+        "planningStateAsObserved": "CONDITIONAL",
+        "dependsOn": [
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "governance:write-gate-enforcement"
+        ],
+        "integrationSlot": "governance.write-gate-enforcement"
+      },
+      {
+        "programOrdinal": 64,
+        "id": "TB-COND-SSH",
+        "title": "Optional read-only SSH fallback selection",
+        "planningStateAsObserved": "DEFERRED",
+        "dependsOn": [
+          "TB-W1-07"
+        ],
+        "collisionDomains": [
+          "github-first:readonly-fallback"
+        ],
+        "integrationSlot": "github-first.optional-readonly-fallbacks"
+      },
+      {
+        "programOrdinal": 65,
+        "id": "TB-COND-SERVER-WRITE",
+        "title": "Additional bounded server WRITE transport",
+        "planningStateAsObserved": "DEFERRED",
+        "dependsOn": [
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "github-first:server-write"
+        ],
+        "integrationSlot": "github-first.server-write-extensions"
+      },
+      {
+        "programOrdinal": 66,
+        "id": "TB-COND-GH-DELETE",
+        "title": "Destructive GitHub operations",
+        "planningStateAsObserved": "DEFERRED",
+        "dependsOn": [
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "github:destructive-writes"
+        ],
+        "integrationSlot": "github.destructive-writes"
+      },
+      {
+        "programOrdinal": 67,
+        "id": "TB-COND-STABLECOIN-DEPLOY",
+        "title": "Stablecoin application-changing deploy",
+        "planningStateAsObserved": "CONDITIONAL",
+        "dependsOn": [],
+        "collisionDomains": [
+          "deployment:stablecoin-application"
+        ],
+        "integrationSlot": "deployment.stablecoin-application"
+      },
+      {
+        "programOrdinal": 68,
+        "id": "TB-COND-OD08",
+        "title": "Distributed Operational Memory concurrency",
+        "planningStateAsObserved": "DEFERRED",
+        "dependsOn": [
+          "TB-W1-04"
+        ],
+        "collisionDomains": [
+          "operational-memory:distributed-concurrency"
+        ],
+        "integrationSlot": "operational-memory.distributed-concurrency"
+      },
+      {
+        "programOrdinal": 69,
+        "id": "TB-COND-OD09",
+        "title": "Contract/Graph incompatible schema migration",
+        "planningStateAsObserved": "DEFERRED",
+        "dependsOn": [
+          "TB-W1-04"
+        ],
+        "collisionDomains": [
+          "governed-workflow:schema-migration"
+        ],
+        "integrationSlot": "governed-workflow.schema-migration"
+      },
+      {
+        "programOrdinal": 70,
+        "id": "TB-W3-GGCC-GIT-READ",
+        "title": "Generic governed Git READ capability layer",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-B3-02",
+          "TB-W3-C1-01"
+        ],
+        "collisionDomains": [
+          "integration:git.capability.read"
+        ],
+        "integrationSlot": "git.capability.read"
+      },
+      {
+        "programOrdinal": 71,
+        "id": "TB-W3-GGCC-GIT-SYNC",
+        "title": "Governed Git SYNC capability layer",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W3-GGCC-GIT-READ",
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "integration:git.capability.sync"
+        ],
+        "integrationSlot": "git.capability.sync"
+      },
+      {
+        "programOrdinal": 72,
+        "id": "TB-W3-GGCC-GIT-BRANCH-COMMIT",
+        "title": "Governed Git branch/commit/state capability layer",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W3-GGCC-GIT-READ",
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "integration:git.capability.branch-commit"
+        ],
+        "integrationSlot": "git.capability.branch-commit"
+      },
+      {
+        "programOrdinal": 73,
+        "id": "TB-W3-GGCC-GIT-INTEGRATION-RECOVERY",
+        "title": "Governed Git integration/recovery capability layer",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W3-GGCC-GIT-BRANCH-COMMIT",
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "integration:git.capability.integration-recovery"
+        ],
+        "integrationSlot": "git.capability.integration-recovery"
+      },
+      {
+        "programOrdinal": 74,
+        "id": "TB-W3-GGCC-GIT-REMOTE-WORKTREE",
+        "title": "Governed Git remote/worktree capability layer",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W3-GGCC-GIT-READ",
+          "TB-W3-C345-02",
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "integration:git.capability.remote-worktree"
+        ],
+        "integrationSlot": "git.capability.remote-worktree"
+      },
+      {
+        "programOrdinal": 75,
+        "id": "TB-W3-GGCC-GH-REPO-BRANCH",
+        "title": "GitHub repository/branch capability completion",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "integration:github.control-plane.repository-branch"
+        ],
+        "integrationSlot": "github.control-plane.repository-branch"
+      },
+      {
+        "programOrdinal": 76,
+        "id": "TB-W3-GGCC-GH-COMMIT-FILE",
+        "title": "GitHub commit/file/tree capability completion",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01",
+          "TB-W2-02"
+        ],
+        "collisionDomains": [
+          "integration:github.control-plane.commit-file-tree"
+        ],
+        "integrationSlot": "github.control-plane.commit-file-tree"
+      },
+      {
+        "programOrdinal": 77,
+        "id": "TB-W3-GGCC-GH-PR-REVIEW",
+        "title": "GitHub PR/review capability completion",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "integration:github.pr-review"
+        ],
+        "integrationSlot": "github.pr-review"
+      },
+      {
+        "programOrdinal": 78,
+        "id": "TB-W3-GGCC-GH-ACTIONS",
+        "title": "GitHub Actions/checks capability completion",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01",
+          "TB-W2-03"
+        ],
+        "collisionDomains": [
+          "integration:github.actions-checks"
+        ],
+        "integrationSlot": "github.actions-checks"
+      },
+      {
+        "programOrdinal": 79,
+        "id": "TB-W3-GGCC-GH-RULESETS",
+        "title": "GitHub rulesets/protections capability completion",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01",
+          "TB-W3-E3-01"
+        ],
+        "collisionDomains": [
+          "integration:github.rulesets-protection"
+        ],
+        "integrationSlot": "github.rulesets-protection"
+      },
+      {
+        "programOrdinal": 80,
+        "id": "TB-W3-GGCC-GH-WEBHOOKS",
+        "title": "GitHub webhook capability completion",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01",
+          "TB-W3-E3-01"
+        ],
+        "collisionDomains": [
+          "integration:github.webhooks"
+        ],
+        "integrationSlot": "github.webhooks"
+      },
+      {
+        "programOrdinal": 81,
+        "id": "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
+        "title": "GitHub environments/variables/secrets capability completion",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01",
+          "TB-W3-E3-01"
+        ],
+        "collisionDomains": [
+          "integration:github.environments-variables-secrets"
+        ],
+        "integrationSlot": "github.environments-variables-secrets"
+      },
+      {
+        "programOrdinal": 82,
+        "id": "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
+        "title": "GitHub releases/deployments capability completion",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01",
+          "TB-W3-C345-02"
+        ],
+        "collisionDomains": [
+          "integration:github.releases-deployments"
+        ],
+        "integrationSlot": "github.releases-deployments"
+      },
+      {
+        "programOrdinal": 83,
+        "id": "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+        "title": "GitHub issues/projects capability completion",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "integration:github.issues-projects"
+        ],
+        "integrationSlot": "github.issues-projects"
+      },
+      {
+        "programOrdinal": 84,
+        "id": "TB-W3-GGCC-GH-ORG",
+        "title": "GitHub organization capability completion",
+        "planningStateAsObserved": "READY",
+        "dependsOn": [
+          "TB-W3-D2-01",
+          "TB-W3-E3-01"
+        ],
+        "collisionDomains": [
+          "integration:github.organization"
+        ],
+        "integrationSlot": "github.organization"
+      },
+      {
+        "programOrdinal": 85,
+        "id": "TB-W4-GGCC-AUDIT",
+        "title": "GitHub audit/governance-state projection",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-H-03",
+          "TB-W3-GGCC-GH-REPO-BRANCH",
+          "TB-W3-GGCC-GH-ACTIONS",
+          "TB-W3-GGCC-GH-RULESETS",
+          "TB-W3-GGCC-GH-WEBHOOKS",
+          "TB-W3-GGCC-GH-ORG"
+        ],
+        "collisionDomains": [
+          "integration:github.audit-governance-state"
+        ],
+        "integrationSlot": "github.audit-governance-state"
+      },
+      {
+        "programOrdinal": 86,
+        "id": "TB-W4-GGCC-E2E",
+        "title": "E2E autonomous Git/GitHub acceptance",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W4-GGCC-AUDIT",
+          "TB-W3-GGCC-GIT-SYNC",
+          "TB-W3-GGCC-GIT-INTEGRATION-RECOVERY",
+          "TB-W3-GGCC-GIT-REMOTE-WORKTREE",
+          "TB-W3-GGCC-GH-COMMIT-FILE",
+          "TB-W3-GGCC-GH-PR-REVIEW",
+          "TB-W3-GGCC-GH-ACTIONS",
+          "TB-W3-GGCC-GH-RULESETS",
+          "TB-W3-GGCC-GH-WEBHOOKS",
+          "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
+          "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
+          "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+          "TB-W3-GGCC-GH-ORG",
+          "TB-W3-ADMIN-01",
+          "TB-W3-PRW-01",
+          "TB-W3-PRW-02"
+        ],
+        "collisionDomains": [
+          "integration:control-plane.git-github-e2e"
+        ],
+        "integrationSlot": "control-plane.git-github-e2e"
+      },
+      {
+        "programOrdinal": 87,
+        "id": "TB-M-GGCC-GIT-MAINTENANCE",
+        "title": "Git maintenance diagnostics",
+        "planningStateAsObserved": "DEFERRED",
+        "dependsOn": [
+          "TB-W3-GGCC-GIT-READ"
+        ],
+        "collisionDomains": [
+          "integration:maintenance.git-capabilities"
+        ],
+        "integrationSlot": "maintenance.git-capabilities"
+      },
+      {
+        "programOrdinal": 88,
+        "id": "TB-COND-GIT-HISTORY-REWRITE",
+        "title": "Git history rewrite capabilities",
+        "planningStateAsObserved": "CONDITIONAL",
+        "dependsOn": [
+          "TB-W3-GGCC-GIT-BRANCH-COMMIT",
+          "TB-W3-D2-01"
+        ],
+        "collisionDomains": [
+          "integration:git.capability.history-rewrite"
+        ],
+        "integrationSlot": "git.capability.history-rewrite"
+      },
+      {
+        "programOrdinal": 89,
+        "id": "TB-COND-GIT-DESTRUCTIVE",
+        "title": "Destructive local Git lifecycle operations",
+        "planningStateAsObserved": "CONDITIONAL",
+        "dependsOn": [
+          "TB-W3-D2-01",
+          "TB-W3-GGCC-GIT-READ"
+        ],
+        "collisionDomains": [
+          "integration:git.capability.destructive"
+        ],
+        "integrationSlot": "git.capability.destructive"
+      },
+      {
+        "programOrdinal": 90,
+        "id": "TB-W3-SSH-ACCESS-01",
+        "title": "Governed repository ephemeral SSH certificate transport",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W2-01",
+          "TB-W2-02",
+          "TB-W2-03"
+        ],
+        "collisionDomains": [
+          "transport:repository-ssh",
+          "path:src/ssh/repositoryAccess",
+          "path:src/ssh/repositoryCertificate",
+          "path:src/deploy/githubOidc"
+        ],
+        "integrationSlot": "transport.repository-ssh"
+      },
+      {
+        "programOrdinal": 91,
+        "id": "TB-W3-OAUTH-CONSENT-01",
+        "title": "Explicit operator consent before OAuth code issuance",
+        "planningStateAsObserved": "DONE",
+        "dependsOn": [
+          "TB-W3-A3-01"
+        ],
+        "collisionDomains": [
+          "connection:oauth-authorization-consent"
+        ],
+        "integrationSlot": "connection.oauth-authorization-consent"
+      },
+      {
+        "programOrdinal": 92,
+        "id": "TB-W3-OAUTH-WRITE-SCOPE-01",
+        "title": "Enforce mcp:write after a token-scope inventory",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W3-A3-02"
+        ],
+        "collisionDomains": [
+          "connection:oauth-write-scope"
+        ],
+        "integrationSlot": "connection.oauth-write-scope-enforcement"
+      },
+      {
+        "programOrdinal": 93,
+        "id": "TB-W4-MCP-FINAL-ACCEPTANCE",
+        "title": "Global MCP terminal acceptance (GLOBAL_MCP_COMPLETE)",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W3-F-05",
+          "TB-W4-I3-01",
+          "TB-W4-J1-01",
+          "TB-W4-J2-01",
+          "TB-W4-K-12",
+          "TB-W4-GGCC-E2E",
+          "TB-W3-OAUTH-WRITE-SCOPE-01"
+        ],
+        "collisionDomains": [
+          "program:global-acceptance"
+        ],
+        "integrationSlot": "program.global-terminal-acceptance"
+      }
+    ],
+    "readyCandidateIdsInProgramOrder": [
+      "TB-W3-A3-02",
+      "TB-W3-F-04",
+      "TB-W3-PRW-01",
+      "TB-W3-PRW-02",
+      "TB-W3-ADMIN-01",
+      "TB-W4-H-01",
+      "TB-W4-K-01",
+      "TB-W3-GGCC-GIT-READ",
+      "TB-W3-GGCC-GH-REPO-BRANCH",
+      "TB-W3-GGCC-GH-COMMIT-FILE",
+      "TB-W3-GGCC-GH-PR-REVIEW",
+      "TB-W3-GGCC-GH-ACTIONS",
+      "TB-W3-GGCC-GH-RULESETS",
+      "TB-W3-GGCC-GH-WEBHOOKS",
+      "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
+      "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
+      "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+      "TB-W3-GGCC-GH-ORG"
+    ],
+    "instruction": "Never claim directly from this snapshot: re-read Program Backlog live and Task/Session/Lock authorities before any mutation"
+  },
+  "links": {
+    "ownerIntake": "https://github.com/Patricked-code/MCP/issues/235",
+    "oauthPR": "https://github.com/Patricked-code/MCP/pull/207",
+    "auditPRs": [
+      273,
+      275,
+      290,
+      291,
+      292,
+      293
+    ],
+    "files": [
+      "ARCHITECTURE.md",
+      "ROADMAP.md",
+      "CLAUDE.md",
+      "AGENTS.md",
+      "SUIVI.md",
+      "TASKS.md",
+      "DECISIONS_LOG.md",
+      "CHANGELOG.md",
+      "docs/governance/README.md",
+      "docs/governance/gwb03-pr-review-findings-triage-20261015.json",
+      "docs/governance/gwb04-94-blueprint-source-test-trace-20261015.json"
+    ]
+  },
+  "reconciliationCheckpointContract": {
+    "mustContain": [
+      "observedAt",
+      "exactGitSha",
+      "sourcesRead",
+      "scope",
+      "agentIdentityIfActuallyAuthenticated",
+      "runtimeSessionAndTaskRefsIfActuallyEstablished",
+      "collisionCheckResult",
+      "workCompletedWithEvidence",
+      "testsAndCI",
+      "deployAndRuntimeAttestationIfApplicable",
+      "unresolvedRisks",
+      "nextAction",
+      "authorityAndOwnerOfNextWork"
+    ],
+    "writeTargets": [
+      "Existing issue/PR comments and SUIVI.md",
+      "CHANGELOG.md for actual changes",
+      "DECISIONS_LOG.md for actual new decisions",
+      "Runtime session/task receipts only by authorized runtime actions"
+    ],
+    "neverClaimFullTraceFor": [
+      "simple reads without instrumentation",
+      "offline human conversations not written",
+      "unobserved runtime changes"
+    ]
+  },
+  "globalStopRule": "GLOBAL_MCP_COMPLETE requires documented terminal acceptance dimensions, not plan completion or a PR merge.",
+  "sharedCoordination": {
+    "purpose": "Each arriving agent can discover work in progress, its boundaries, checkpoints and next permitted action without claiming someone else's identity.",
+    "durableGitHubChannel": "https://github.com/Patricked-code/MCP/issues/235",
+    "perWorkChannel": "Existing PR/issue for exact blueprint/task/scope; do not funnel source-level work into an invented global chat bus",
+    "runtimeTruth": "Operational Memory / Governed Sessions / Governed Task Queue / Locks / Bootstrap Receipts remain the only live ownership authorities",
+    "presenceProtocol": [
+      "Read issue #235 latest checkpoint and live open PR list",
+      "If runtime work: identify agent principal/session/lease via existing bootstrap/ConnectionContext; do not borrow historic IDs",
+      "Check existing owner/claimed Task/current locks and collision domains before announcing intent",
+      "Record in existing issue or PR a concise intake containing source HEAD, stage/blueprint, scope, dependencies, intended read/write, actual session/Task refs if observed, blockers and NEXT_ACTION",
+      "Do not treat a GitHub comment as a lock or claim; perform authorized runtime claim/CAS separately",
+      "Update same channel at checkpoints/complete/blocked with CI/Deploy evidence and clear handoff; never assume other conversations monitor comments in real time"
+    ],
+    "traceabilityBoundary": "GitHub issues/PR/commits and runtime receipts are shared durable records, but not a push notification bus to every chat; connected agents must poll/read them on admission and at checkpoints.",
+    "collisionResolution": "Same scope or Task means do not write; coordinate through existing owner/authority, or select a different READY candidate in canonical program order."
+  }
+}

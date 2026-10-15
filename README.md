@@ -1,5 +1,10 @@
 # WealthTech MCP SSH Bridge
 
+## Démarrage prioritaire des agents MCP
+
+**La feuille de route d'exécution commune est [la carte de priorité et de convergence](docs/governance/mcp-priority-convergence-map-20261015.json)**, expliquée dans l'[index des 15 jalons](docs/governance/README.md). Avant toute écriture, lire `CLAUDE.md`, `AGENTS.md`, `SUIVI.md`, puis la carte et le Program Backlog V2. Elle permet de reprendre le programme sans dépendre d'une conversation, tout en respectant les Task/Session/Locks existants. Les étapes sont liées chronologiquement mais les scopes indépendants peuvent avancer en parallèle sous contrôle de collision.
+
+
 
 ## Reprendre l'audit et le programme gouverné (point d'entrée des nouveaux agents)
 
