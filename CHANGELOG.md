@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-10-15 — Reconnaissance des 18 READY et anti-collision de reprise
+
+- Matrice GitHub + Program Backlog + sondes OIDC des 18 READY, chevauchements possibles de PR et absence actuelle de Session ACTIVE ; test de cohérence sans modification fonctionnelle ni runtime.
+
+
 ## 2026-10-15 — GWB03-02 : domaine F-04, 26 revues et limites connues
 
 - Archive documentaire et test de traçabilité sur 26 constats de PR #267, 18 liens source/test, sans statut DONE induit.
