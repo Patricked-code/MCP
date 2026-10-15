@@ -1881,7 +1881,8 @@
       ],
       "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
       "resolved": "UNKNOWN",
-      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix.",
+      "spotCheckStatus": "SOURCE_AND_NEGATIVE_TEST_ASSERTIONS_OBSERVED_OLD_FIND_PIPELINE_REMOVED"
     },
     {
       "prNumber": 267,
@@ -1900,7 +1901,8 @@
       ],
       "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
       "resolved": "UNKNOWN",
-      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix.",
+      "spotCheckStatus": "CURRENT_SOURCE_AND_TARGETED_TEST_PRESENT_RUNTIME_OWNERSHIP_UNVERIFIED"
     },
     {
       "prNumber": 267,
@@ -3421,6 +3423,30 @@
       "nextAction": "Compare current runtime state and exact tested code effect; establish no bypass through alternate entrypoints before marking historic finding resolved.",
       "routeFile": "src/provisioning/routes.ts",
       "routeEvidence": "GET/POST provisioning routes call provisioningConsentBinding(deps.consentSession(req), request, target), and POST verifies ticket through deps.verifyTicket(PROVISIONING_CONSENT_PURPOSE, body.consent_ticket, binding(req, request, target)) before invoking execution"
+    },
+    {
+      "reviewCommentId": 4223040575,
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040575",
+      "archivedFinding": "Propagate find failures through pipeline; incomplete inventory must never become confirmed absence",
+      "codeFile": "src/liveState/servedDomains.ts",
+      "codeEvidence": "SERVED_DOMAINS_COMMAND uses one Plesk SQL query rather than a find | head pipeline. collectServedDomains returns UNAVAILABLE on nonzero code or thrown error.",
+      "testFile": "tests/servedDomainObservation.test.ts",
+      "testEvidence": "Test 'F-04 observe-binding: a failed or throwing read stays unavailable, per server' and parser malformed/overflow fail-closed tests",
+      "status": "SOURCE_AND_NEGATIVE_TEST_ASSERTIONS_OBSERVED_OLD_FIND_PIPELINE_REMOVED",
+      "limits": "Plesk SQL runtime availability/shell exit behavior on live S1/S2 and all deployed config not separately certified; historical finding not declared fully resolved.",
+      "nextAction": "Verify Plesk read-only SQL command works on each live server, track fail-closed C5 result and ownership."
+    },
+    {
+      "reviewCommentId": 4223040593,
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040593",
+      "archivedFinding": "Scope domain observation to selected project on multi-tenant Plesk host",
+      "codeFile": "src/liveState/servedDomains.ts",
+      "codeEvidence": "projectSubscriptions requires realPathVerified, canonical /var/www/vhosts path, and tracks shared subscription; scopeDomainObservation filters by owned subscription and fails unavailable on shared/unknown ownership.",
+      "testFile": "tests/servedDomainObservation.test.ts",
+      "testEvidence": "Test 'F-04 observe-binding: the observation is scoped to the subscriptions verified for the project'",
+      "status": "CURRENT_SOURCE_AND_TARGETED_TEST_PRESENT_RUNTIME_OWNERSHIP_UNVERIFIED",
+      "limits": "No proof realPathVerified is set for live projects or that SQL schema yields correct subscription names at S1/S2; C5 may remain UNVERIFIED.",
+      "nextAction": "Verify registry realPath binding provenance and Plesk subscription inventory via approved read-only probe before completing F-04."
     }
   ]
 }
