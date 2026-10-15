@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 2026-10-15 — GWB-02/GWB-04 sources historiques et triage GWB-03
+
+- [PR #290](https://github.com/Patricked-code/MCP/pull/290) : 94 blueprints rapprochés de la présence réelle des chemins code/tests ; aucune certification implicite.
+- [PR #291](https://github.com/Patricked-code/MCP/pull/291) : 282 commentaires de revue et 215 reviews archivés ; manifeste portant sur 135 PR. Dépôt de preuve, sans changement runtime.
+- [PR #292](https://github.com/Patricked-code/MCP/pull/292) : triage de 158 constats historiques P1/P2, avec liens vers les discussions et actions de vérification ; tous restent `UNKNOWN` concernant leur correction actuelle.
+- Références à la suite conservées dans `TASKS.md` et `SUIVI.md`. Aucun nouveau registre Task/Claim/Lock ni autorisation S1.
+
+
 ## 2026-10-15 — Priorité opérationnelle GitHub Actions/OIDC et reprise du déploiement MCP
 
 - Rappel documentaire de la source canonique `.mcp/github-first-operational-policy.json` : GitHub direct puis GitHub Actions/OIDC ; bridge interactif réservé aux capacités runtime sans fallback autorisé.
