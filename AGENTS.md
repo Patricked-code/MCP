@@ -1,5 +1,9 @@
 # AGENTS.md — Registre synthétique des agents
 
+## Fil d'Ariane audit obligatoire — mémoire historique sans perte
+
+À chaque arrivée, reprise, fin de lot et handoff, lire et maintenir par **liens de preuves** le [fil d'Ariane historique MCP](docs/governance/agent-historical-continuity-breadcrumbs-20261016.md). Ce document n'est pas une mémoire concurrente : il pointe la chronologie issue #65+, GWB-02/03/04, les quinze jalons PCM, les 94 blueprints du backlog et les checkpoints du bus documentaire existant #235. **Chaque intervenant laisse origine/parent, baseline datée et SHA, faits et états non prouvés, décisions/écarts, propriétaire réellement vérifié et collision domain, preuves exact-head, `NEXT_ACTION` et critère d'acceptation.** Conserver les anciens checkpoints comme historiques en les reliant à leurs successeurs. Ne jamais marquer `AUDIT_CONSOLIDATED` ou `GLOBAL_MCP_COMPLETE` sans couvertures et preuves requises ; ne pas déclarer exécuté ce qui est seulement planifié. Ne pas modifier les documents partagés dans une PR parallèle sur le même périmètre : réconcilier d'abord le HEAD et les domaines de collision.
+
 ## Protocole vérifiable d'entrée et de reprise — INTAKE du 16 octobre 2026
 
 **Application à toute arrivée et à toute reprise autorisée, quelle que soit la plateforme de l'agent.** Lire la [directive déposée dans l'issue maîtresse #235](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094) avant de commencer un nouveau lot. Ce protocole précise les instructions déjà présentes ; il n'ajoute aucune autorité, file, rôle runtime ou permission.
