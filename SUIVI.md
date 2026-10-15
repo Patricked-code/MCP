@@ -1,5 +1,13 @@
 # SUIVI.md
 
+## 2026-10-15 — PCM-02 / GWB03-02 : audit borné des domaines F-04
+
+- Baseline GitHub `main@773abe5542b3cd209943a648e750e2ec863b1e62` ; PR #267 fusionnée historiquement, issue #268 ouverte. GWB03-02 documente **26** constats P1/P2, **18** ancres code/test, **8** non vérifiés individuellement ; aucun certificat runtime.
+- Quatre limites existantes (timestamps, abonnements Plesk partagés, `realPathVerified`, schéma SQL) restent des sujets de l'issue #268, sans tâche concurrente. C5 doit demeurer UNVERIFIED si observation/propriété indisponible.
+- Sources : `src/liveState/servedDomains.ts`, `tests/servedDomainObservation.test.ts`; archive `docs/governance/gwb03-pr267-domain-evidence-20261015.json` ; test invariant `tests/gwb03Pr267DomainAudit.test.ts`.
+- NEXT_ACTION : après exact-head CI et merge de ce dossier, avancer GWB03 autres P1 et GWB04 acceptation comportementale ; vérifier ownership et données live via GitHub/OIDC avant de toucher F-04.
+
+
 ## 2026-10-15 — PCM-02 / GWB03-01 : 73 constats PR #261, deux limites de politique à confirmer
 
 - Base GitHub `main@0817f340dcd57f59b348b8a023082efd472342e3`, CI `38808611902` et Governed Deploy `38808612012` réussis. Les six PR ouvertes #207/#90/#89/#88/#86/#85 restent des scopes historiques indépendants, aucune modification dans leurs branches.
