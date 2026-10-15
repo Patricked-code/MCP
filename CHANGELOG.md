@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-10-15 — Carte de priorité et protocole commun multi-agents
+
+- Création de `docs/governance/mcp-priority-convergence-map-20261015.json` : quinze jalons PCM-00..14, planification liée aux 94 blueprints réellement existants, dépendances, sorties probantes, protocoles d'arrivée/ownership/collisions/checkpoint.
+- Navigation depuis `README.md`, `AGENTS.md`, `CLAUDE.md`, `TASKS.md` et `docs/governance/README.md` ; intégration au `SUIVI.md` et contrôles de non-régression.
+- Pas de seconde autorité de tâches, pas de branch/PR codage sans scope autorisé, pas de nouveau moteur de dispatch, pas de mutation OAuth ou serveur ; les travaux indépendants peuvent avancer sans gate artificielle.
+
+
 ## 2026-10-15 — Reprise froide des agents et synchronisation documentaire de l'audit
 
 - Ajout de la navigation vers le pacte, le Program Backlog V2, les archives GWB-00..09, les preuves #290..292 et l'issue maîtresse #235 depuis les entrées `README.md`, `AGENTS.md` et `docs/governance/README.md`.
