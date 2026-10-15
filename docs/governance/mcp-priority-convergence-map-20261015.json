@@ -77,11 +77,11 @@
       "targetedSpotChecks": 3,
       "blueprintPathMappings": 94
     },
-    "nextRecommendedAuditAction": "PCM-02/GWB03-01: PR #261 historical high-priority findings vs current source/tests/final PR/CI and deployed reality; then #267; in parallel PCM-03 scoped blueprint verification and PCM-06 only with OAuth owner."
+    "nextRecommendedAuditAction": "PCM-02/GWB03-01: PR #261 historical high-priority findings vs current source/tests/final PR/CI and deployed reality; then #267; in parallel PCM-03 scoped blueprint verification and PCM-06 only with OAuth owner.; in parallel, PCM-09 may resume eligible bounded Program Backlog work immediately after PCM-00 without an artificial audit-wide gate."
   },
   "workflowModel": {
     "serial": "Prerequisite DAG and release of overlapping mutable collision domains",
-    "parallel": "Independent read-only audits and disjoint governed code scopes; OAuth only with existing claim/owner",
+    "parallel": "Independent read-only audits and disjoint governed code scopes; OAuth only with existing claim/owner PCM-09/10 peuvent s'exécuter en même temps que PCM-01..05 si les autorités et scopes réels le permettent.",
     "advanceRule": "At each checkpoint recompute live readiness, recheck claims/locks and perform next compatible action automatically if authorized",
     "blockingRule": "Local blocker applies only to that candidate, not other disjoint tasks",
     "runtimeAuthority": "GOVERNED_TASK_QUEUE_ONLY"
@@ -409,8 +409,7 @@
       "title": "Recalculer readiness et observer l'autorité des agents/tâches",
       "lane": "DISPATCH_GOVERNANCE",
       "dependsOn": [
-        "PCM-00",
-        "PCM-04"
+        "PCM-00"
       ],
       "mapsTo": [
         "GWB-06"
@@ -423,6 +422,7 @@
       "scope": "coordination:program-next",
       "goal": "Utiliser le dispatch existant au lieu d'une nouvelle file de tâches",
       "actions": [
+        "Ne jamais attendre la clôture totale de l'audit GWB-03/GWB-04 pour poursuivre un travail de programme déjà READY, compatible, possédé ou admissible : une lacune d'audit bloque seulement le scope concerné.",
         "Reobserver currentState, nextWork, Task Queue revision, Governed Session/Lease, Locks et GitHub branch/HEAD",
         "Exécuter npm run program:readiness puis program:next sur le HEAD vérifié ; appliquer FIRST_COLLISION_FREE_IN_PROGRAM_ORDER",
         "Reprendre en priorité un travail possédé ; sinon sélectionner premier blueprint READY compatible ; skip blockers locaux non globaux",
