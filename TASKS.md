@@ -1,5 +1,12 @@
 # TASKS.md
 
+## Carte de priorité exécutable par les autorités existantes — 2026-10-15
+
+**La carte chronologique [PCM-00..14](docs/governance/mcp-priority-convergence-map-20261015.json) est le point d'entrée obligatoire pour comprendre les 15 phases et les 94 blueprints**. Elle est une projection documentaire (NON_AUTHORITATIVE), pas une seconde Task Queue. Pour sélectionner réellement un travail : reprendre OWNED_FIRST, réobserver `program:readiness` et `program:next`, puis Queue/Session/Locks live, scope/permissions, HEAD exact et collisions. Aucun statut de la carte ne matérialise de Task ni ne valide une PR.
+
+**NEXT_ACTION audit :** PCM-02 → GWB03-01 (PR #261), puis #267 ; PCM-03 certifie les blueprints en parallèle ; PCM-06 OAuth suit le propriétaire de PR #207. **NEXT_ACTION développement :** PCM-09 peut reprendre dès maintenant un candidat live déjà admissible dans un scope indépendant, sans gate inventée jusqu'à la fin de l'audit. PCM-04/05 consolideront les écarts vérifiés pour PCM-10..14. Toutes les opérations mutantes demeurent gouvernées par les autorités existantes.
+
+
 ## Audit gouverné de continuité GWB (projection non autoritaire, 2026-10-15)
 
 Le bloc de référence reste `docs/governance/governed-audit-continuation-workblock-20261009.json` (PR #275 fusionnée) : il ne crée **aucune** `TASK-*` runtime. La sélection exécutable reste celle du Program Backlog V2 et de la Governed Task Queue/Session/Locks, pas celle de cette liste documentaire.
