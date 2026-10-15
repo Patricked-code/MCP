@@ -3415,10 +3415,12 @@
       "codeEvidence": "Binding serializes web session, S1, projectId, mappingId, revision, repositoryId, serverPath and composeProject",
       "testFile": "tests/projectRuntimeSurface.test.ts",
       "testEvidence": "Test 'the provisioning consent is explicit, same-origin and bound to the session and the exact target' changes each session/revision/project/mapping/repository/serverPath/composeProject and asserts binding differs; rejects wrong origin and invalid ticket",
-      "status": "CORRESPONDING_CODE_AND_NEGATIVE_TEST_ASSERTIONS_OBSERVED",
+      "status": "CURRENT_SOURCE_ROUTING_AND_NEGATIVE_TESTS_VERIFIED_FUNCTIONAL_CODE_CERTIFICATION_PARTIAL",
       "runEvidence": "Main CI 38788507126 SUCCESS for same SHA, but individual named test output not independently extracted",
       "limits": "This narrows one historic P1 but is not independent runtime certificate or proof of every endpoint callsite; leave resolved UNKNOWN pending callsite and authorization review.",
-      "nextAction": "Inspect server route callsites and actual consent ticket binding use; then decide if historic finding fully resolved without duplicate code."
+      "nextAction": "Compare current runtime state and exact tested code effect; establish no bypass through alternate entrypoints before marking historic finding resolved.",
+      "routeFile": "src/provisioning/routes.ts",
+      "routeEvidence": "GET/POST provisioning routes call provisioningConsentBinding(deps.consentSession(req), request, target), and POST verifies ticket through deps.verifyTicket(PROVISIONING_CONSENT_PURPOSE, body.consent_ticket, binding(req, request, target)) before invoking execution"
     }
   ]
 }
