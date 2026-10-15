@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-10-11 — Audit gouverné et checkpoint de déploiement (PR #275)
+
+- Fusion sans suppression de la PR #274 dans la branche du bloc GWB-00..09 ; seuls les deux fichiers propres au workblock restent dans son delta initial par rapport à `main`. Revalidation CI sur le HEAD actualisé exigée.
+- `SUIVI.md` consigne les preuves OIDC read-only S1 (#276–#280), le drift GitHub/S1, l'échec de Governed Deploy sur `main@c91c1a` (`HTTP 502` sur `/deploy/github/s1/start`), ainsi que l'analyse bornée `src/deploy/routes.ts` : erreur interne `runWrite` possible mais non confirmée sans réponse et logs serveur.
+- Les travaux restent non autoritaires : aucun Task runtime, claim, lock, fusion ni déploiement ne résulte du workblock lui-même.
+
+
 ## 2026-10-09 — W3 `TB-W3-F-04` incrément 1 déployé
 
 - PR #267 fusionnée (`5b631eb`), Governed Deploy #138 attesté pour le SHA exact. Limites connues : issue #268.

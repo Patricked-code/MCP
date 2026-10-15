@@ -1,5 +1,16 @@
 # SUIVI.md
 
+## 2026-10-11 — Reprise gouvernée GWB-00/GWB-01, incident déploiement et S1 read-only
+
+- **Source** : [PR #275](https://github.com/Patricked-code/MCP/pull/275), bloc `docs/governance/governed-audit-continuation-workblock-20261009.json`; ce bloc est une projection de planification, non une Task Queue ni un claim.
+- **GitHub** : `main@c91c1a1191f40f20a6de841914947e94356658df` (PR #274 fusionnée) ; branche de PR #275 initialement `e66025f...` puis fusion gouvernée non destructive de `main` dans sa branche, nouvel HEAD `ebd087063cd7bd0fc8ad99dc4656f4473484c49e` avant rédaction du présent checkpoint. Les seuls écarts de la branche face à `main` sont le bloc et son test ; recontrôler HEAD, CI et politiques avant fusion.
+- **GWB-00, constat exact** : Governed Deploy [run 38158118349](https://github.com/Patricked-code/MCP/actions/runs/38158118349) sur `main@c91c1a...` FAIL ; CI [run 38158118306](https://github.com/Patricked-code/MCP/actions/runs/38158118306) SUCCESS. Journal du job : `curl: (22) The requested URL returned error: 502` à l'appel `/deploy/github/s1/start`, code de sortie 22. `src/deploy/routes.ts` retourne lui-même 502 `s1_deploy_start_failed` si `runWrite` échoue ou a un code non nul ; cela constitue une hypothèse ciblée, pas une preuve de provenance HTTP sans corps de réponse. Aucun accès direct ni mutation S1.
+- **GWB-01, sources live** : issues [#276](https://github.com/Patricked-code/MCP/issues/276) à [#280](https://github.com/Patricked-code/MCP/issues/280) : GitHub Actions OIDC read-only SUCCESS et artefacts attestant `mutationAllowed=false`. Le commentaire de preuve [PR #275](https://github.com/Patricked-code/MCP/pull/275#issuecomment-6112019731) rapporte S1 checkout propre `3df9778...`, Docker healthy, Task Queue revision 243 avec deux READY non attribuées, Sessions revision 803 avec deux expirées et aucune active dans la projection, Locks revision 301 zéro lock ; revalider contenu et fraîcheur avant toute attribution. S1 ≠ GitHub `main`.
+- **NON VALIDÉ** : cause racine HTTP 502 ; autorisation de déploiement actuel, SHA runtime exact et journal server-side ; existence de sessions runtime utilisables ; finalisation F-04 / `GLOBAL_MCP_COMPLETE`.
+- **Contrôle concurrent** : aucun claim runtime créé ; ne pas réattribuer tâches ni sessions. Ne pas contourner le CI ou le Deploy. La PR #275 doit passer les contrôles sur son HEAD mis à jour.
+- **NEXT_ACTION** : extraire de manière redacted et bornée le statut/corps d'erreur du endpoint de déploiement ainsi que la provenance serveur du `runWrite` via les canaux d'observation autorisés ; corriger seulement après preuve, tests RED/GREEN et approbation gouvernée applicable ; recontrôler CI PR #275 puis fusion éventuelle ; sélectionner ensuite le premier candidat `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` avec contrôles runtime.
+
+
 ## 2026-10-09 — W3 `TB-W3-F-04` Domain binding, incrément 1 (observe-binding) — fusionné, déployé, attesté
 
 - **Fusion.** PR #267 fusionnée au head exact `6e7417f`, après accord du propriétaire, en `5b631eb5520ed06c52bf18169a38dd22171ba90e`. Neuf rounds de revue Codex.

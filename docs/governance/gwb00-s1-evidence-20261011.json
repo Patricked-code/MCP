@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "kind": "READ_ONLY_LIVE_S1_EVIDENCE_CHECKPOINT_NON_AUTHORITATIVE",
+  "repository": "Patricked-code/MCP",
+  "logicalWorkblockId": "GWB-AUDIT-CONTINUITY-20261009-01",
+  "workItemId": "GWB-00",
+  "scope": "S1 git, Docker and operational memory probes",
+  "observedGithubMain": "c91c1a1191f40f20a6de841914947e94356658df",
+  "hashChecks": "output.txt SHA-256 equals metadata.json outputSha256 for each of five downloaded GitHub Actions artifacts",
+  "artifacts": [
+    {
+      "issue": 276,
+      "runId": 38158030407,
+      "artifactId": 11709267339,
+      "probe": "mcp_git_status",
+      "observedAt": "2026-10-11T17:03:39.533Z",
+      "outputSha256": "56989e63ac3bd8fa04b56cedfd40db9e34e5265f9a869916a47daa45ac1e2af5",
+      "mutationAllowed": false,
+      "sourceUrl": "https://github.com/Patricked-code/MCP/actions/runs/38158030407"
+    },
+    {
+      "issue": 277,
+      "runId": 38161060923,
+      "artifactId": 11710456751,
+      "probe": "docker_status",
+      "observedAt": "2026-10-11T17:46:56.258Z",
+      "outputSha256": "2d4c752a9b1767c7942c468319b51992a8389d93672ce8e94a24a346f61d4607",
+      "mutationAllowed": false,
+      "sourceUrl": "https://github.com/Patricked-code/MCP/actions/runs/38161060923"
+    },
+    {
+      "issue": 278,
+      "runId": 38161062498,
+      "artifactId": 11710950389,
+      "probe": "mcp_governed_tasks",
+      "observedAt": "2026-10-11T17:46:56.266Z",
+      "outputSha256": "a138dac45465c679af00e6841ecfa53e9e74b065146aa4321ea734eedaffa829",
+      "mutationAllowed": false,
+      "sourceUrl": "https://github.com/Patricked-code/MCP/actions/runs/38161062498"
+    },
+    {
+      "issue": 279,
+      "runId": 38161064772,
+      "artifactId": 11710007427,
+      "probe": "mcp_governed_sessions",
+      "observedAt": "2026-10-11T17:46:58.102Z",
+      "outputSha256": "3097d5b80bd7ceda800ecf6b0bdd800486c3aeaf0c72796bb83b53388dc39fe5",
+      "mutationAllowed": false,
+      "sourceUrl": "https://github.com/Patricked-code/MCP/actions/runs/38161064772"
+    },
+    {
+      "issue": 280,
+      "runId": 38161066440,
+      "artifactId": 11710960558,
+      "probe": "mcp_governed_locks",
+      "observedAt": "2026-10-11T17:47:00.120Z",
+      "outputSha256": "24f3d93473aace5f9d57a7fb695712e7b312ffeaf10efd1917be14fdbb66f864",
+      "mutationAllowed": false,
+      "sourceUrl": "https://github.com/Patricked-code/MCP/actions/runs/38161066440"
+    }
+  ],
+  "verifiedObservations": {
+    "s1Git": {
+      "branch": "main",
+      "head": "3df9778dc44202b0e20fb56ce020a089f3a6ea2a",
+      "workingTreeChanges": 0,
+      "fetchRemote": "github.com-mcp-patricked-ro",
+      "pushRemote": "disabled://mcp-s1-read-only",
+      "githubMainAligned": false
+    },
+    "docker": {
+      "container": "wealthtech_mcp_ssh_bridge",
+      "status": "Up 2 days (healthy)",
+      "localBind": "127.0.0.1:8787",
+      "exactImageShaVerified": false
+    },
+    "governedTaskQueue": {
+      "authority": "Governed Task Queue",
+      "revision": 243,
+      "totalNonTerminal": 2,
+      "truncated": false,
+      "readyUnowned": [
+        {
+          "taskId": "TASK-20260920-003",
+          "scopeSummary": "Stablecoin/S2"
+        },
+        {
+          "taskId": "TASK-20260929-001",
+          "scopeSummary": "OAuth attempt correlation"
+        }
+      ]
+    },
+    "governedSessions": {
+      "authority": "Governed Session",
+      "revision": 803,
+      "totalNonClosed": 2,
+      "expired": 2,
+      "active": 0,
+      "truncated": false
+    },
+    "governedLocks": {
+      "authority": "Governed Lock Service",
+      "revision": 301,
+      "totalActive": 0,
+      "truncated": false
+    }
+  },
+  "deployIncident": {
+    "mainWorkflowRunId": 38158118349,
+    "mainCiRunId": 38158118306,
+    "requestedSha": "c91c1a1191f40f20a6de841914947e94356658df",
+    "conclusion": "failure",
+    "stage": "Deploy exact main SHA through MCP",
+    "httpStatus": 502,
+    "firstFail": "POST /deploy/github/s1/start",
+    "applicationPossibleReason": "src/deploy/routes.ts maps rejected or throwing runWrite to 502/s1_deploy_start_failed",
+    "serverTransportRootCause": "UNKNOWN",
+    "recoveryAuthorization": "NOT ESTABLISHED"
+  },
+  "limitations": [
+    "Artifacts attest observations only at recorded timestamps, not present ownership or liveness",
+    "No runtime Task/Claim/Lock was created by this audit",
+    "No unrestricted server access",
+    "No claim that server is aligned with GitHub main or that the failure was resolved",
+    "No claim that a generic 502 uniquely identifies the application layer"
+  ],
+  "nextAction": "Investigate backend runWrite transport with authorized non-sensitive logs or bounded error-code capture; prove cause before guarded remediation and deployment. Reobserve server state before any runtime claim.",
+  "notes": "Derived audit evidence only; canonical runtime authority remains Governed Task Queue, Sessions and Lock Service."
+}
