@@ -1,5 +1,16 @@
 # SUIVI.md
 
+## 2026-10-15 — Audit : reprise inter-agents vérifiée, navigation et checkpoint GWB corrigés
+
+- **Vérification de reprise froide** depuis GitHub, sans conversation : lecture des points d'entrée `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/governance/README.md`, de `MASTER_RESUME_MEMORY.md`, du bloc `GWB-00..09`, de `Program Backlog V2`, des résultats d'audit et de l'issue #235. Constat : les informations étaient persistées mais les références racine n'orientaient pas suffisamment vers les nouvelles archives ; le checkpoint GWB et le résumé du 5 octobre étaient anciens.
+- **Correctif documentaire non régressif** : ajout de l'index de reprise dans `docs/governance/README.md`, pointeurs depuis les entrées `README.md` / `AGENTS.md`, avertissement de fraîcheur dans `MASTER_RESUME_MEMORY.md`, conservation de l'ancien `currentCheckpoint` GWB sous `checkpointHistory` et nouveau `currentCheckpoint` fondé sur les preuves du 15 octobre ; aucune tâche documentaire GWB promue comme tâche runtime.
+- **Baseline observée, pas vérité éternelle** : GitHub `main@b187953de89d8f6529e2af97abc1de4570c53146`, CI run `38789597872` SUCCESS et Governed Deploy run `38789597877` SUCCESS ; Program Backlog V2 : 94 blueprints, 36 DONE, 18 READY, 28 BLOCKED, 5 CONDITIONAL, 7 DEFERRED.
+- **Audit partiellement réalisé** : GWB-02 corpus livrable PR #291, GWB-04 cartographie des chemins PR #290, GWB-03 triage PR #292 avec trois contrôles sources/tests sur 158 constats historiques, sans certification de résolution. Les commentaires sur commits, la revue complète des symboles/assertions et les tests end-to-end restent à prouver.
+- **Pacte conservé** : prioriser GitHub direct et GitHub Actions/OIDC selon la politique existante ; aucune écriture directe S1, aucun nouveau dispatcher, queue, identité, session, Task, Claim, Lock ou gate humaine artificielle. La PR OAuth #207 et son propriétaire restent inchangés ; préserver la page de consentement actuelle en rapprochant l'existant refresh tokens.
+- **Traçabilité** : cette PR documentaire, son exact HEAD/CI, l'issue maîtresse #235, `SUIVI.md`, `CHANGELOG.md` et les checkpoints versionnés sont des traces vérifiables. Les lectures simples et actions non instrumentées ne sont pas automatiquement enregistrées comme événements runtime ; aucune preuve non observée n'est inventée.
+- **NEXT_ACTION unique** : `GWB03-01` — reconstituer les résolutions réelles des P1 de la PR #261 contre code du HEAD, tests et attestations ; puis `GWB03-02` (#267), certification fonctionnelle GWB-04, réconciliation GWB-05..09 via les seules autorités existantes. Réobserver GitHub et Queue/Session/Locks avant toute mutation.
+
+
 ## 2026-10-15 — GWB-02/GWB-04 : archives de revue et traçabilité 94 blueprints, GWB-03 repris
 
 - **Contexte canoniquement admis** : GitHub main `dec94d9892a1fe56af91845bde4a85f3327f90cb` après [PR #290](https://github.com/Patricked-code/MCP/pull/290) et [PR #291](https://github.com/Patricked-code/MCP/pull/291) ; reobserver HEAD/CI/deploy à chaque reprise. Ne pas présumer l'alignement S1 sans attestation exact-SHA.
