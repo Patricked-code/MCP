@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB02_PR_REVIEW_SUBMISSION_BATCH",
+  "baselineMain": "f9aeaf9c0b6f1e97866c131833fd32ade58031a9",
+  "batch": 6,
+  "indexStart": 75,
+  "indexEnd": 89,
+  "totalPrsInOriginalIndex": 130,
+  "source": "GET /pulls/{prNumber}/reviews?per_page=100",
+  "reviewSubmissionCoverage": "BATCH_ONLY",
+  "records": [
+    {
+      "prNumber": 208,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 209,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 210,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 211,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 212,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 213,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 214,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 215,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 216,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 217,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 218,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 219,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 223,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 224,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 225,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    }
+  ]
+}

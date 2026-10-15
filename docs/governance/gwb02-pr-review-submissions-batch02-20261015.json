@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB02_PR_REVIEW_SUBMISSION_BATCH",
+  "baselineMain": "f9aeaf9c0b6f1e97866c131833fd32ade58031a9",
+  "batch": 2,
+  "indexStart": 15,
+  "indexEnd": 29,
+  "totalPrsInOriginalIndex": 130,
+  "source": "GET /pulls/{prNumber}/reviews?per_page=100",
+  "reviewSubmissionCoverage": "BATCH_ONLY",
+  "records": [
+    {
+      "prNumber": 80,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 81,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5190626391,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-13T12:03:48Z",
+          "commitId": "29bb7fd35ca7b428541439bb49116ee6764576c4",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/81#pullrequestreview-5190626391",
+          "body": "Auto-revue documentaire du head exact 29bb7fd35ca7b428541439bb49116ee6764576c4 (pas une approbation indépendante). Diff relu: uniquement six projections canoniques; preuves PR80/CI841/842/Deploy34 conformes aux autorités, historique marqué, aucune clôture DONE anticipée ni changement fonctionnel. Finding CI845 TODO.md EOF corrigé minimalement; CI du nouveau head requise avant merge. Aucun autre finding."
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 82,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5191639249,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-13T17:50:00Z",
+          "commitId": "beea82c94795c9661e2d1f9aebecad8268b674b5",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/82#pullrequestreview-5191639249",
+          "body": "Auto-revue du head exact beea82c94795c9661e2d1f9aebecad8268b674b5, explicitement sans approbation indépendante. Diff intégral relu: un seul déplacement de ligne dans SUIVI.md, aucun changement de texte ni code. Le collecteur existant sélectionne désormais la baseline de merge attestée1eac93 pour GitHub et S1; les descendants restent docs-only. Correction conforme à l'autorisation utilisateur et au finding Live State210. Aucun finding supplémentaire. CI exacte requise avant merge."
+        },
+        {
+          "id": 5191646028,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-13T17:52:16Z",
+          "commitId": "beea82c94795c9661e2d1f9aebecad8268b674b5",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/82#pullrequestreview-5191646028",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `beea82c947`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 83,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5192058923,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-13T19:59:52Z",
+          "commitId": "424508e244763fa00705b207daf834e7e2bdd1f0",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/83#pullrequestreview-5192058923",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `424508e244`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 84,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 85,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 86,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 87,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5204331302,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-15T00:37:28Z",
+          "commitId": "ae7bec13331d50414d3723855cb38888a0476725",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/87#pullrequestreview-5204331302",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `ae7bec1333`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        },
+        {
+          "id": 5204627381,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-15T01:39:50Z",
+          "commitId": "289b3b71c8352738395bf290bc1ae10dc405ee15",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/87#pullrequestreview-5204627381",
+          "body": ""
+        },
+        {
+          "id": 5204628431,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-15T01:40:04Z",
+          "commitId": "289b3b71c8352738395bf290bc1ae10dc405ee15",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/87#pullrequestreview-5204628431",
+          "body": ""
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 88,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 89,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 90,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 91,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 92,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 93,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 94,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    }
+  ]
+}
