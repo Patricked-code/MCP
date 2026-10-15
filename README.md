@@ -1,5 +1,9 @@
 # WealthTech MCP SSH Bridge
 
+## Reprise immédiate : consigne INTAKE du 16 octobre 2026
+
+**Tout agent qui arrive ou reprend doit lire [la directive de coordination dans l'issue #235](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094)**, puis appliquer la section « Protocole vérifiable d'entrée et de reprise » de [AGENTS.md](AGENTS.md). Ne pas confondre la PR #300 livrée avec la fin du programme : le prochain contrôle GWB04 porte sur `TB-W4-H-01` et `TB-W4-K-01`, sous réserve de relecture de l'état live et des propriétaires. Aucun commentaire GitHub ne réveille automatiquement un agent, ne crée une Task runtime ni n'autorise une mutation.
+
 ## Démarrage prioritaire des agents MCP
 
 **La feuille de route d'exécution commune est [la carte de priorité et de convergence](docs/governance/mcp-priority-convergence-map-20261015.json)**, expliquée dans l'[index des 15 jalons](docs/governance/README.md). Avant toute écriture, lire `CLAUDE.md`, `AGENTS.md`, `SUIVI.md`, puis la carte et le Program Backlog V2. Elle permet de reprendre le programme sans dépendre d'une conversation, tout en respectant les Task/Session/Locks existants. Les étapes sont liées chronologiquement mais les scopes indépendants peuvent avancer en parallèle sous contrôle de collision.

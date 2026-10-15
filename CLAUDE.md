@@ -1,5 +1,9 @@
 # CLAUDE.md — Porte d’entrée Claude Code
 
+## Coordination inter-agents et reprise à froid — directive du 16 octobre 2026
+
+Avant une nouvelle implémentation ou une reprise, suivre le **protocole commun du fichier [AGENTS.md](AGENTS.md)** et lire la [directive de coordination de l'issue maîtresse #235](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094). La PR #300 et son déploiement ont été validés, **pas** les tests fonctionnels GWB-04 ni l'ensemble du MCP. Point de reprise PCM-03/GWB-04 : `TB-W4-H-01` puis `TB-W4-K-01`, après relecture du HEAD et des preuves ; travaux indépendants admissibles possibles en parallèle. GitHub-first / Actions OIDC ; aucun claim/session/ownership fictif et aucune reprise automatique d'une conversation existante.
+
 ## Carte de priorité avant toute nouvelle implémentation
 
 Après lecture de cette porte d'entrée et de `SUIVI.md`, consulter **`docs/governance/mcp-priority-convergence-map-20261015.json`** et son index `docs/governance/README.md` (15 jalons PCM-00..14, 94 blueprints, dépendances, anti-collision et preuves). Cette carte complète le **Program Backlog V2 existant** et le workblock GWB-00..09, sans être une autorité d'exécution : reprise OWNED_FIRST, `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`, Queue/Session/Locks live puis seulement write gouverné. Les vérifications GWB-03/GWB-04 peuvent se faire en parallèle des tâches indépendantes déjà admissibles ; ne jamais transformer l'audit en gate globale nouvelle. Maintenir le scope OAuth de PR #207 réservé à son détenteur. Toute arrivée doit laisser dans le canal déjà existant son checkpoint et `NEXT_ACTION` ; n'inventer ni Task runtime ni receipt.
