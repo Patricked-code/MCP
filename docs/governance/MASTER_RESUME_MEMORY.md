@@ -1,5 +1,15 @@
 # Mémoire maître de reprise — MCP WealthTech
 
+
+## Avertissement de fraîcheur et reprise vérifiée — 2026-10-15
+
+**Le contenu antérieur ci-dessous (notamment « état au 2026-10-05 » et son `NEXT_ACTION`) est un snapshot historique, pas l'autorité de reprise actuelle.** Il est conservé pour traçabilité sans être supprimé ni réécrit.
+
+Reprise actuelle : [index des preuves et actions de l'audit](README.md), `CLAUDE.md §7.1–7.5`, `SUIVI.md`, `TASKS.md`, `docs/governance/governed-audit-continuation-workblock-20261009.json` et [issue #235](https://github.com/Patricked-code/MCP/issues/235). Sur `main@b187953de89d8f6529e2af97abc1de4570c53146`, le Program Backlog V2 contient 36 DONE, 18 READY, 28 BLOCKED, 5 CONDITIONAL et 7 DEFERRED. Les PR #290, #291 et #292 sont fusionnées, avec CI/Governed Deploy exact SHA réussis. Le lot GWB-02 est archivé ; les constats GWB-03 et la certification de code/tests GWB-04 restent partiels ; les phases GWB-05..09 restent à exécuter selon les dépendances et les autorités runtime.
+
+**Ne pas inférer une tâche, une session, un claim, un lock ou un statut serveur live à partir de cette projection.** Reobserver GitHub, le Program Backlog et, si nécessaire, Live State/Queue/Sessions/Locks par les sondes GitHub Actions/OIDC autorisées. Les travaux OAuth de la PR #207 et leur propriété doivent être préservés, sans régression du consentement existant.
+
+
 Lecture intégrale observée le 2026-10-02 sur `main@52f6129d519ba637e0073443275f0f5e74cb5fbd` (599 fichiers suivis) ; section 1 mise à jour le 2026-10-05 après la clôture de F.0.
 
 > Ce document est une **projection de reprise**. Il n'a aucune autorité. Il oriente la lecture et ne remplace aucune source. En cas d'écart, la source citée l'emporte, et l'état live doit toujours être réobservé : GitHub, S1, Live State, Task Queue, sessions et locks. Les mentions « À vérifier » désignent des données non confirmées par cette lecture.
