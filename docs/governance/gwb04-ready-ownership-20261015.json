@@ -1,0 +1,1022 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB04_18_READY_BLUEPRINTS_WORK_OWNERSHIP_RECONCILIATION_NON_AUTHORITATIVE",
+  "repository": "Patricked-code/MCP",
+  "observedMainSha": "c7d33d4477db5c6a974a97e4280ab1056efcc5c9",
+  "observedDate": "2026-10-15",
+  "source": [
+    "docs/governance/program-backlog-convergence.json",
+    "docs/governance/gwb04-94-blueprint-source-test-trace-20261015.json",
+    "open GitHub PR metadata",
+    "GitHub OIDC read-only evidence issues #297–#299"
+  ],
+  "runtimeSnapshot": {
+    "observedAtTasks": "2026-10-15T21:40:21.252Z",
+    "tasksStoreRevision": 243,
+    "taskCount": 2,
+    "taskIds": [
+      "TASK-20260920-003",
+      "TASK-20260929-001"
+    ],
+    "tasksReadyUnowned": 2,
+    "observedAtSessions": "2026-10-15T21:40:28.358Z",
+    "sessionsStoreRevision": 803,
+    "activeSessions": 0,
+    "expiredSessions": 2,
+    "observedAtLocks": "2026-10-15T21:40:32.871Z",
+    "locksStoreRevision": 301,
+    "activeLocks": 0,
+    "mutationsAllowed": false,
+    "evidenceRunIds": [
+      38811607555,
+      38811620644,
+      38811630253
+    ],
+    "limitations": "Snapshot. Does not grant runtime authority, create or claim Task. Refresh before use."
+  },
+  "scope": {
+    "totalReady": 18,
+    "withPotentialOpenPROverlap": 15,
+    "withoutPotentialPROverlap": 3,
+    "backendRuntimeCertified": 0,
+    "ownershipClaimedByThisReport": 0
+  },
+  "cautions": [
+    "Draft PR links are code candidates, not proof of current runtime owner; no TAKEOVER of PR #207, #88, #89 or #90",
+    "Only two nonterminal Task IDs were observed; planning READY does not mean runtime Task created",
+    "No current session active in observed snapshot; no runtime materialization/claim should be faked",
+    "Issue #268 F-04 runtime limits remain, no hostname-based ownership assumption",
+    "Cockpit #236 has distinct route/auth/security requirements, do not create new public exposure by default",
+    "Do not mark any of the 18 DONE on mere source/test path presence"
+  ],
+  "nextActions": [
+    "Review TB-W4-H-01 and TB-W4-K-01 source/test behavioral acceptance in independent read-only scopes, then other READY by program order",
+    "Reconcile old candidate PR #88→#89→#90 as a stack against current main; do not merge dirty or take over ownership",
+    "For TB-W3-F-04 preserve issue #268 and read-only S1/S2 evidence; for TB-W3-A3-02 respect existing PR #207 and OAuth issue",
+    "To execute a real Task, first restore own authorized Governed Session through existing bootstrap and reobserve expected revision and collision domains; no new queue"
+  ],
+  "readyInExistingProgramOrder": [
+    {
+      "programOrdinal": 13,
+      "id": "TB-W3-A3-02",
+      "title": "Add bounded OAuth attempt correlation",
+      "slot": "connection.oauth-attempt-correlation",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-A3-01"
+      ],
+      "collisionDomains": [
+        "connection:oauth-attempt-correlation"
+      ],
+      "readAuthorities": [
+        "OAuth flow",
+        "Governed Session bootstrap",
+        "Operational Event Journal"
+      ],
+      "proposedReviewInputs": [
+        "src/oauth.ts",
+        "src/operationalMemory/connectionContext.ts",
+        "tests/oauthAuthorizeConsent.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 2,
+      "firstAcceptanceCriteria": [
+        "A3.2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual delta for A3.2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "executableRuntimeTaskId": "TASK-20260929-001",
+      "taskEvidenceAtTime": "READY_UNOWNED_SNAPSHOT_ONLY",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 207,
+          "open": true,
+          "draft": true,
+          "head": "253d23c42423ab52a4ea0d042abec5dafa17d3fc",
+          "link": "https://github.com/Patricked-code/MCP/pull/207",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [
+        "https://github.com/Patricked-code/MCP/issues/207"
+      ],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 33,
+      "id": "TB-W3-F-04",
+      "title": "Domain/binding provisioning",
+      "slot": "provisioning.governed",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-F-01"
+      ],
+      "collisionDomains": [
+        "provisioning:domain-binding"
+      ],
+      "readAuthorities": [
+        "Scoped WRITE Gate",
+        "GitHub lifecycle writes",
+        "GitRegistry V2",
+        "deployment governance"
+      ],
+      "proposedReviewInputs": [
+        "src/provisioning/projectRuntime.ts",
+        "src/provisioning/routes.ts",
+        "src/liveState/servedDomains.ts",
+        "tests/servedDomainObservation.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 3,
+      "firstAcceptanceCriteria": [
+        "F.3 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual delta for F.3 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [],
+      "issueRefs": [
+        "https://github.com/Patricked-code/MCP/issues/268"
+      ],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 35,
+      "id": "TB-W3-PRW-01",
+      "title": "Exact-head request-review",
+      "slot": "github.pr-write.extensions",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "collisionDomains": [
+        "github:pr-write:review-request"
+      ],
+      "readAuthorities": [
+        "githubLifecycle.ts",
+        "Scoped WRITE Gate"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "src/governance/scopedWriteGate.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 2,
+      "firstAcceptanceCriteria": [
+        "GH.PR.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual delta for GH.PR.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 90,
+          "open": true,
+          "draft": true,
+          "head": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+          "link": "https://github.com/Patricked-code/MCP/pull/90",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 36,
+      "id": "TB-W3-PRW-02",
+      "title": "Reduced PR metadata update",
+      "slot": "github.pr-write.extensions",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "collisionDomains": [
+        "github:pr-write:metadata"
+      ],
+      "readAuthorities": [
+        "githubLifecycle.ts",
+        "Scoped WRITE Gate"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "src/governance/scopedWriteGate.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 2,
+      "firstAcceptanceCriteria": [
+        "GH.PR.2 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual delta for GH.PR.2 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 90,
+          "open": true,
+          "draft": true,
+          "head": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+          "link": "https://github.com/Patricked-code/MCP/pull/90",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 37,
+      "id": "TB-W3-ADMIN-01",
+      "title": "Governed private repository creation",
+      "slot": "github.admin.create-repository",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-F-01",
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "collisionDomains": [
+        "github:admin:create-repository"
+      ],
+      "readAuthorities": [
+        "GitHub lifecycle transport",
+        "Scoped WRITE Gate"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "src/governance/scopedWriteGate.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 3,
+      "firstAcceptanceCriteria": [
+        "GH.ADMIN.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual delta for GH.ADMIN.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 88,
+          "open": true,
+          "draft": true,
+          "head": "d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993",
+          "link": "https://github.com/Patricked-code/MCP/pull/88",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 41,
+      "id": "TB-W4-H-01",
+      "title": "Trace evidence inventory",
+      "slot": "observability.end-to-end-tracing",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D3-01"
+      ],
+      "collisionDomains": [
+        "observability:tracing:inventory"
+      ],
+      "readAuthorities": [
+        "Operational Event Journal",
+        "request/tool audit",
+        "upstream clients"
+      ],
+      "proposedReviewInputs": [
+        "src/operationalMemory/operationalAudit.ts",
+        "src/operationalMemory/eventJournal.ts",
+        "tests/governedObservability.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 2,
+      "firstAcceptanceCriteria": [
+        "H.1 satisfies its bounded objective using existing authorities first.",
+        "No parallel authority, hidden permission widening or stale-evidence mutation is introduced."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual delta for H.1 is absent or incomplete on the exact observed head without weakening acquired behavior."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 49,
+      "id": "TB-W4-K-01",
+      "title": "Cockpit shell, design system, security baseline and read-only Command Center",
+      "slot": "cockpit.super-admin",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-DISPATCH-03",
+        "TB-W4-G3-01"
+      ],
+      "collisionDomains": [
+        "cockpit:shell"
+      ],
+      "readAuthorities": [
+        "Express web server, login and web session (src/server.ts)",
+        "Governed dashboard projection (src/governedContext/dashboard.ts)",
+        "Current State inventory and nextWork projection (src/currentState/service.ts)",
+        "Program Backlog V2 derived readiness",
+        "Client presence two-clock and tool surface attestation (G1-G3)"
+      ],
+      "proposedReviewInputs": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 9,
+      "firstAcceptanceCriteria": [
+        "Cockpit routes reuse the existing Express server and web session; no frontend framework, bundler or second backend is introduced, and /dashboard keeps working.",
+        "Every rendered value goes through one shared escaping helper; tests neutralize XSS payloads in every rendered field."
+      ],
+      "redTestCriteria": [
+        "RED proves no cockpit shell, navigation or Command Center route exists on the exact observed head.",
+        "RED proves the duplicated HTML escaping helpers have no shared tested implementation and dashboard pages send no Content-Security-Policy.",
+        "RED proves an unavailable projection is not rendered as an explicit UNAVAILABLE/UNKNOWN state.",
+        "RED proves the exposure inventory (observed public MCP domain, DNS, TLS, reverse proxy, existing public routes and authentication boundary) and the regression tests of the existing public MCP endpoints are absent on the exact observed head."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates",
+        "existing /dashboard, /git, /github and OAuth web routes keep their behaviour"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [],
+      "issueRefs": [
+        "https://github.com/Patricked-code/MCP/issues/236"
+      ],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 70,
+      "id": "TB-W3-GGCC-GIT-READ",
+      "title": "Generic governed Git READ capability layer",
+      "slot": "git.capability.read",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-B3-02",
+        "TB-W3-C1-01"
+      ],
+      "collisionDomains": [
+        "integration:git.capability.read"
+      ],
+      "readAuthorities": [
+        "governed repository observation"
+      ],
+      "proposedReviewInputs": [
+        "src/ssh/client.ts",
+        "src/github/connection.ts",
+        "tests/githubConnectionObservation.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 4,
+      "firstAcceptanceCriteria": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual GGCC-1 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 89,
+          "open": true,
+          "draft": true,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "link": "https://github.com/Patricked-code/MCP/pull/89",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 75,
+      "id": "TB-W3-GGCC-GH-REPO-BRANCH",
+      "title": "GitHub repository/branch capability completion",
+      "slot": "github.control-plane.repository-branch",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "collisionDomains": [
+        "integration:github.control-plane.repository-branch"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "proposedReviewInputs": [
+        "src/github/repositoryResolution.ts",
+        "src/github/connection.ts",
+        "tests/githubRepositoryResolution.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 5,
+      "firstAcceptanceCriteria": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual GGCC-6 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 89,
+          "open": true,
+          "draft": true,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "link": "https://github.com/Patricked-code/MCP/pull/89",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        },
+        {
+          "prNumber": 90,
+          "open": true,
+          "draft": true,
+          "head": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+          "link": "https://github.com/Patricked-code/MCP/pull/90",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 76,
+      "id": "TB-W3-GGCC-GH-COMMIT-FILE",
+      "title": "GitHub commit/file/tree capability completion",
+      "slot": "github.control-plane.commit-file-tree",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W2-02"
+      ],
+      "collisionDomains": [
+        "integration:github.control-plane.commit-file-tree"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "tests/githubControlPlaneReadComplements.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 3,
+      "firstAcceptanceCriteria": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual GGCC-7 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 89,
+          "open": true,
+          "draft": true,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "link": "https://github.com/Patricked-code/MCP/pull/89",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        },
+        {
+          "prNumber": 90,
+          "open": true,
+          "draft": true,
+          "head": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+          "link": "https://github.com/Patricked-code/MCP/pull/90",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 77,
+      "id": "TB-W3-GGCC-GH-PR-REVIEW",
+      "title": "GitHub PR/review capability completion",
+      "slot": "github.pr-review",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "collisionDomains": [
+        "integration:github.pr-review"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 3,
+      "firstAcceptanceCriteria": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual GGCC-8 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 89,
+          "open": true,
+          "draft": true,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "link": "https://github.com/Patricked-code/MCP/pull/89",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        },
+        {
+          "prNumber": 90,
+          "open": true,
+          "draft": true,
+          "head": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+          "link": "https://github.com/Patricked-code/MCP/pull/90",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 78,
+      "id": "TB-W3-GGCC-GH-ACTIONS",
+      "title": "GitHub Actions/checks capability completion",
+      "slot": "github.actions-checks",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W2-03"
+      ],
+      "collisionDomains": [
+        "integration:github.actions-checks"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "tests/githubControlPlaneReadComplements.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 3,
+      "firstAcceptanceCriteria": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual GGCC-9 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 89,
+          "open": true,
+          "draft": true,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "link": "https://github.com/Patricked-code/MCP/pull/89",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        },
+        {
+          "prNumber": 90,
+          "open": true,
+          "draft": true,
+          "head": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+          "link": "https://github.com/Patricked-code/MCP/pull/90",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 79,
+      "id": "TB-W3-GGCC-GH-RULESETS",
+      "title": "GitHub rulesets/protections capability completion",
+      "slot": "github.rulesets-protection",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "collisionDomains": [
+        "integration:github.rulesets-protection"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 4,
+      "firstAcceptanceCriteria": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual GGCC-10 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 89,
+          "open": true,
+          "draft": true,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "link": "https://github.com/Patricked-code/MCP/pull/89",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 80,
+      "id": "TB-W3-GGCC-GH-WEBHOOKS",
+      "title": "GitHub webhook capability completion",
+      "slot": "github.webhooks",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "collisionDomains": [
+        "integration:github.webhooks"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 3,
+      "firstAcceptanceCriteria": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual GGCC-11 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 89,
+          "open": true,
+          "draft": true,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "link": "https://github.com/Patricked-code/MCP/pull/89",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 81,
+      "id": "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
+      "title": "GitHub environments/variables/secrets capability completion",
+      "slot": "github.environments-variables-secrets",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "collisionDomains": [
+        "integration:github.environments-variables-secrets"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 3,
+      "firstAcceptanceCriteria": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual GGCC-12 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 89,
+          "open": true,
+          "draft": true,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "link": "https://github.com/Patricked-code/MCP/pull/89",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 82,
+      "id": "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
+      "title": "GitHub releases/deployments capability completion",
+      "slot": "github.releases-deployments",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W3-C345-02"
+      ],
+      "collisionDomains": [
+        "integration:github.releases-deployments"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "src/deploy/githubOidc.ts",
+        "tests/githubOidc.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 4,
+      "firstAcceptanceCriteria": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual GGCC-13 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 89,
+          "open": true,
+          "draft": true,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "link": "https://github.com/Patricked-code/MCP/pull/89",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 83,
+      "id": "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+      "title": "GitHub issues/projects capability completion",
+      "slot": "github.issues-projects",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01"
+      ],
+      "collisionDomains": [
+        "integration:github.issues-projects"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 3,
+      "firstAcceptanceCriteria": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual GGCC-14 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 89,
+          "open": true,
+          "draft": true,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "link": "https://github.com/Patricked-code/MCP/pull/89",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    },
+    {
+      "programOrdinal": 84,
+      "id": "TB-W3-GGCC-GH-ORG",
+      "title": "GitHub organization capability completion",
+      "slot": "github.organization",
+      "planningState": "READY",
+      "dependsOn": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "collisionDomains": [
+        "integration:github.organization"
+      ],
+      "readAuthorities": [
+        "GitHub current READ authority"
+      ],
+      "proposedReviewInputs": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "programAcceptanceCriteriaCount": 3,
+      "firstAcceptanceCriteria": [
+        "Existing tools/authorities are reused or wrapped before extension.",
+        "Typed bounded capability exposes only the scoped behavior classified by intake #177."
+      ],
+      "redTestCriteria": [
+        "RED proves the residual GGCC-15 capability delta is not already satisfied by current main.",
+        "RED proves arbitrary shell/raw API escape hatches remain impossible."
+      ],
+      "regressionSuiteHints": [
+        "targeted RED/GREEN",
+        "full MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace"
+      ],
+      "executableRuntimeTaskId": null,
+      "taskEvidenceAtTime": "NO_MATCHING_RUNTIME_TASK_IN_THE_TWO_OBSERVED_NONTERMINAL_TASKS",
+      "openPRCandidateOverlaps": [
+        {
+          "prNumber": 89,
+          "open": true,
+          "draft": true,
+          "head": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "link": "https://github.com/Patricked-code/MCP/pull/89",
+          "relationship": "CANDIDATE_SCOPE_OVERLAP_ONLY_NOT_RUNTIME_OWNER"
+        }
+      ],
+      "issueRefs": [],
+      "currentCodeAndAssertionsVerified": false,
+      "backendRuntimeCertified": false,
+      "readinessClaim": "PLANNING_READY_NOT_PERMISSION",
+      "nextProof": "Read exact current behavior and complete regression assertions; reconcile related draft PR/issue, then reobserve Task Queue/Session/Lock under authorized bootstrap before mutation."
+    }
+  ]
+}

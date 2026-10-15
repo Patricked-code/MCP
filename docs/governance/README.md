@@ -1,5 +1,10 @@
 # Gouvernance documentaire MCP
 
+### GWB-04 — Les 18 blueprints READY et les conflits potentiels de reprise (2026-10-15)
+
+[Matrice READY / PR / preuve runtime](gwb04-ready-ownership-20261015.json) : 18 candidats dans l'ordre officiel du Backlog, dont 15 ont des chevauchements possibles avec les PR DRAFT #207, #88, #89, #90 ; trois n'ont pas de candidat PR connu dans cette recherche. Snapshot OIDC #297–#299 : 2 Tasks READY sans propriétaire, 0 Session active, 0 Lock actif. Une PR candidate n'est pas un propriétaire runtime ; un READY planning n'est ni une Task, ni un claim. Prochaine étape : tests fonctionnels précis et admission autonome autorisée, jamais prise de contrôle d'une branche existante.
+
+
 ### GWB03-02 — PR #267, observations F-04 et limites de preuve
 
 Analyse [GWB03-02](gwb03-pr267-domain-evidence-20261015.json) : 26 constats historiques (15 P1 / 11 P2), 18 rapprochés de lignes code/test, 8 non examinés individuellement. Les quatre limites documentées par l'[issue #268](https://github.com/Patricked-code/MCP/issues/268) restent à traiter sous leur propriétaire : fraîcheur des observations, abonnement Plesk partagé, `realPathVerified` historiquement absent et schéma SQL S1/S2 non attesté. Aucun constat déclaré résolu ni cible S1/S2 modifiée. Pour tout futur correctif : preuve read-only et contrôle d'ownership runtime obligatoire.
