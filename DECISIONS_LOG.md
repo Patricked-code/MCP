@@ -1,5 +1,12 @@
 # DECISIONS_LOG.md
 
+## 2026-10-15 — Directive propriétaire : priorité à la continuité et au dispatch gouverné sans dispersion
+
+**Décision enregistrée (projection de coordination, aucune nouvelle autorité)** : avant de poursuivre le développement MCP, fournir une carte chronologique accessible à chaque agent qui présente toutes les étapes, les travaux déjà existants, les dépendances, la voie d'exécution, les contrôles anti-collision et les traces à laisser. Mise en œuvre dans `docs/governance/mcp-priority-convergence-map-20261015.json` ; préserve `docs/governance/program-backlog-convergence.json`, la Governed Task Queue, les sessions, locks, et le workblock GWB-00..09 existants.
+
+L'entrée agent lit la carte après `CLAUDE.md` / `AGENTS.md` / `SUIVI.md`. Reprise OWNED_FIRST, puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` après vérification live, un seul writer par collision domain et checkpoint obligatoire avec preuve et NEXT_ACTION. Une carte documentaire ne crée ni Task, claim, permission, lease ni gate humaine. L'audit et les tâches de développement admissibles sur d'autres scopes peuvent avancer parallèlement ; le chantier OAuth #207 conserve son propriétaire. `GLOBAL_MCP_COMPLETE` uniquement sur acceptation démontrée backend + clients + cockpit.
+
+
 ## 2026-10-15 — Exécution GitHub-first/OIDC prioritaire malgré une défaillance OAuth interactive
 
 **Décision d'exploitation du propriétaire**, conforme à l'autorité déjà existante `.mcp/github-first-operational-policy.json` : l'échec de la reconnexion `wealthtech_ssh_bridge` ne doit pas interrompre les opérations compatibles avec GitHub direct et les workflows GitHub Actions/OIDC approuvés. Il s'agit d'un rappel d'ordre d'accès, **pas d'une nouvelle permission d'écriture S1 ni d'un contournement OAuth**.
