@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-10-15 — Reprise froide des agents et synchronisation documentaire de l'audit
+
+- Ajout de la navigation vers le pacte, le Program Backlog V2, les archives GWB-00..09, les preuves #290..292 et l'issue maîtresse #235 depuis les entrées `README.md`, `AGENTS.md` et `docs/governance/README.md`.
+- `MASTER_RESUME_MEMORY.md` signale explicitement son état du 5 octobre comme historique ; `governed-audit-continuation-workblock-20261009.json` conserve le checkpoint antérieur en historique et publie la progression documentaire observée sur `main@b187953de89d8f6529e2af97abc1de4570c53146`.
+- Aucun code fonctionnel, schéma runtime, permission, Task/Session/Lock/Claim, OAuth ni serveur modifié. Le changement est une projection de découverte/handoff, soumise à CI puis PR selon la gouvernance.
+
+
 ## 2026-10-15 — GWB-02/GWB-04 sources historiques et triage GWB-03
 
 - [PR #290](https://github.com/Patricked-code/MCP/pull/290) : 94 blueprints rapprochés de la présence réelle des chemins code/tests ; aucune certification implicite.
