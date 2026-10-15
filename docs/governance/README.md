@@ -1,5 +1,10 @@
 # Gouvernance documentaire MCP
 
+### GWB03-01 — Première réconciliation vérifiable de PR #261 (2026-10-15)
+
+La première tranche d'analyse est dans [`gwb03-pr261-source-policy-evidence-20261015.json`](gwb03-pr261-source-policy-evidence-20261015.json) : **73 remarques historiques** (54 P1 / 19 P2), dont **17 comparées à des ancres de code source et de tests** au SHA `0817f340dcd57f59b348b8a023082efd472342e3`. Les 73 états de résolution restent `UNKNOWN` en attente d'une validation suffisante. Deux limites de politique Compose sont signalées : plafonds de ressources déjà connus dans [issue #262](https://github.com/Patricked-code/MCP/issues/262), et plafonds de rotation des logs (`max-size` / `max-file`) présents dans l'historique PR #261 mais non testés négativement aux extrêmes. Ce fichier ne crée pas de Task ni ne permet l'activation d'une cible S1. Prochaine action : tests négatifs par le propriétaire F-03, puis poursuite de la réconciliation de 56 remarques non examinées individuellement et GWB03-02 (#267).
+
+
 ## PRIORITÉ D'ENTRÉE — Carte chronologique de convergence du MCP (2026-10-15)
 
 **Avant d'écrire du code, lire la [carte de priorité machine](mcp-priority-convergence-map-20261015.json).** Cette carte comprend les 15 jalons PCM-00..14, la totalité des 94 blueprints en ordre de programme, les dépendances, domaines de collision, preuves à produire et règles de reprise. Elle **n'est pas** une nouvelle Governed Task Queue ni une autorisation de claims ou d'écriture.
