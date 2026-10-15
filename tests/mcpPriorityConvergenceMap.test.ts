@@ -82,4 +82,8 @@ test('GWB anchors, entrypoints and owner/collision handoff remain discoverable o
   assert.ok(map.reconciliationCheckpointContract.mustContain.includes('nextAction'));
   assert.ok(map.reconciliationCheckpointContract.mustContain.includes('exactGitSha'));
   assert.match(map.globalStopRule, /terminal acceptance/i);
+  assert.match(map.sharedCoordination.durableGitHubChannel, /issues\/235$/);
+  assert.match(map.sharedCoordination.runtimeTruth, /Governed Task Queue/);
+  assert.match(map.sharedCoordination.traceabilityBoundary, /not a push notification bus/);
+  assert.ok(map.sharedCoordination.presenceProtocol.length >= 5);
 });
