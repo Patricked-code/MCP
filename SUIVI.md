@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-10-15 — GWB-02/GWB-04 : archives de revue et traçabilité 94 blueprints, GWB-03 repris
+
+- **Contexte canoniquement admis** : GitHub main `dec94d9892a1fe56af91845bde4a85f3327f90cb` après [PR #290](https://github.com/Patricked-code/MCP/pull/290) et [PR #291](https://github.com/Patricked-code/MCP/pull/291) ; reobserver HEAD/CI/deploy à chaque reprise. Ne pas présumer l'alignement S1 sans attestation exact-SHA.
+- **GWB-04** : PR #290 fusionnée `b3454eab0cdac60332365dc0edabbd93bde514ae`, CI main `38787800931` SUCCESS, Governed Deploy `38787800896` SUCCESS. `docs/governance/gwb04-94-blueprint-source-test-trace-20261015.json` documente les 94 slots et fichiers existants. **C'est une correspondance de chemins, pas une preuve de fonctionnalité ni de tests GREEN** : les 94 implémentations restent `UNVERIFIED_PENDING_SOURCE_REVIEW` dans ce document dérivé.
+- **GWB-02** : PR #291 fusionnée `dec94d9892a1fe56af91845bde4a85f3327f90cb`, deux CI PR `38788010095` / `38787999086` SUCCESS. Sources archivées dans `docs/governance/gwb02-*` : 282 commentaires inline, 215 reviews soumises sur 135 PR. Manifest de couverture conservé ; **commentaires directs sur commits non certifiés (endpoint non accessible)**. CI/deploy du merge sont à réobserver avant toute déclaration de déploiement.
+- **GWB-03** : [PR #292](https://github.com/Patricked-code/MCP/pull/292) candidate d'analyse des constats historiques : 158 labels de gravité (89 P1, 69 P2). Les comptes n'impliquent pas l'existence de défauts actuels. Les groupes prioritaires proviennent des PR #261 (provisioning) et #267 (F-04), mais aucune correction n'est attribuée sans examen du code courant, des tests et des permissions.
+- **Parallélisme gouverné** : revue des PR #261/#267 et vérification exacte des 18 blueprints planning-READY indépendantes en lecture GitHub ; toute écriture exige `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`, Session/Task/Lock/consentement réobservés. La PR OAuth #207 conserve ses propriétaires et sa Task, sans reprise.
+- **NEXT_ACTION** : après validation/fusion de #292, GWB03-01 vérifier les P1 de #261 et leurs tests réels ; GWB03-02 vérifier #267 et F-04 ; poursuivre GWB04 inspection code/test ligne à ligne, puis réconcilier uniquement les résidus prouvés dans le Program Backlog et la Governed Task Queue existants. Pas de nouveau dispatcher ni tâche runtime inventée.
+
+
 ## 2026-10-15 — Transport prioritaire GitHub/OIDC ; OAuth interactif toujours en échec, continuité conservée
 
 - **Décision du propriétaire / règle réutilisée** : le client doit **préférer GitHub + GitHub Actions OIDC** à la reconnexion interactive de `wealthtech_ssh_bridge` lorsque le périmètre dispose d'un fallback GitHub approuvé. Source canonique déjà existante : `.mcp/github-first-operational-policy.json` ; aucune nouvelle autorité ou queue.
