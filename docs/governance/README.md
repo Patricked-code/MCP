@@ -1,5 +1,11 @@
 # Gouvernance documentaire MCP
 
+## Point d'entrée commun — INTAKE et reprise à froid (16 octobre 2026)
+
+**Directive de coordination immédiatement disponible : [issue maîtresse #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094).** Elle complète, sans remplacer, les autorités déjà en place et le [protocole d'entrée de AGENTS.md](../../AGENTS.md). Un agent nouvellement connecté reconstruit l'état depuis GitHub, vérifie le HEAD, les PR et la CI/deploy, puis seulement les autorités runtime nécessaires. Ne jamais déduire la présence active d'un agent, son ownership ou ses permissions d'un commentaire ou d'un snapshot.
+
+**Checkpoint confirmé :** PR #300 fusionnée à `cc31ce12bea236b4cfb31d99ecee700c543f0c17` ; CI principale #38812707495 et Governed Deploy #38812707629 `SUCCESS` sur cet SHA. **Travail restant :** PCM-03/GWB-04 sur `TB-W4-H-01` et `TB-W4-K-01` puis autres READY avec acceptation comportementale, F-03/#262 et F-04/#268 par leurs détenteurs, GWB05..09 et acceptation finale. La matrice [gwb04-ready-ownership-20261015.json](gwb04-ready-ownership-20261015.json) est un inventaire de candidats et non une autorité de Task. La date des sondes OIDC #301–#303 rend leurs résultats historiques pour toute mutation ultérieure.
+
 ### GWB-04 — Les 18 blueprints READY et les conflits potentiels de reprise (2026-10-15)
 
 [Matrice READY / PR / preuve runtime](gwb04-ready-ownership-20261015.json) : 18 candidats dans l'ordre officiel du Backlog, dont 15 ont des chevauchements possibles avec les PR DRAFT #207, #88, #89, #90 ; trois n'ont pas de candidat PR connu dans cette recherche. Snapshot OIDC #297–#299 : 2 Tasks READY sans propriétaire, 0 Session active, 0 Lock actif. Une PR candidate n'est pas un propriétaire runtime ; un READY planning n'est ni une Task, ni un claim. Prochaine étape : tests fonctionnels précis et admission autonome autorisée, jamais prise de contrôle d'une branche existante.
