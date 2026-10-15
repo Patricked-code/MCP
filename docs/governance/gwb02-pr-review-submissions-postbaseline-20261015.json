@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB02_NEW_POST_BASELINE_PR_REVIEWS",
+  "baselineRange": "273..290 as of 2026-10-15",
+  "scope": [
+    273,
+    274,
+    275,
+    289,
+    290
+  ],
+  "records": [
+    {
+      "prNumber": 273,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 274,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 275,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 289,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 290,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB02_PR_REVIEW_SUBMISSION_BATCH",
+  "baselineMain": "f9aeaf9c0b6f1e97866c131833fd32ade58031a9",
+  "batch": 7,
+  "indexStart": 90,
+  "indexEnd": 104,
+  "totalPrsInOriginalIndex": 130,
+  "source": "GET /pulls/{prNumber}/reviews?per_page=100",
+  "reviewSubmissionCoverage": "BATCH_ONLY",
+  "records": [
+    {
+      "prNumber": 226,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 227,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 228,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 229,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5407389859,
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-04T17:44:36Z",
+          "commitId": "95783727c9c18ee48846a02d4a4d1a1b1aad8af3",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/229#pullrequestreview-5407389859",
+          "body": "\n### 💡 Codex Review\n\nhttps://github.com/Patricked-code/MCP/blob/95783727c9c18ee48846a02d4a4d1a1b1aad8af3/src/operationalMemory/taskQueue.ts#L409\n**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Reject foreign-owned READY tasks before claiming**\n\nWhen session A transitions a `CLAIMED` task back to `READY`—an explicitly allowed transition—`transitionTask` preserves `ownerGovernedSessionId`. The new selection path can still return that task for session B because eligibility only checks TargetScope, after which the claim overwrites A's ownership. This violates the advertised no-stealing guarantee and can transfer active work between sessions; exclude candidates owned by another session (or clear ownership as part of the transition that requeues them).\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 230,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 231,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 232,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 233,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5407622381,
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-04T18:41:24Z",
+          "commitId": "eaacf048f50ab9ecbaec252b55b0492a43ff0629",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/233#pullrequestreview-5407622381",
+          "body": "\n### 💡 Codex Review\n\nhttps://github.com/Patricked-code/MCP/blob/eaacf048f50ab9ecbaec252b55b0492a43ff0629/src/github/serverResolution.ts#L47-L50\n**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reject malformed server-map entries before resolving**\n\nWhen `.mcp/server-map.json` parses but contains an invalid entry such as `{\"servers\":{\"S1\":null}}`, this function examines only the key, returns `s1` as canonical, and allows valid registry evidence to produce a `RESOLVED` server. That turns a malformed authority into confirmed server identity instead of failing closed; validate the map schema and each server entry before intersecting its IDs with `managedServerIds`.\n\nAGENTS.md reference: [AGENTS.md:L32-L32](https://github.com/Patricked-code/MCP/blob/eaacf048f50ab9ecbaec252b55b0492a43ff0629/AGENTS.md#L32-L32)\n\n---\n\nhttps://github.com/Patricked-code/MCP/blob/eaacf048f50ab9ecbaec252b55b0492a43ff0629/src/governedContext/github.ts#L1363-L1365\n**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Expose C3 resolution to non-MCP sessions**\n\nWhen a governed session targets any repository other than `Patricked-code/MCP`, `compose()` in `src/governedContext/service.ts` takes its `session.repository !== HISTORICAL_REPOSITORY` fallback and never invokes this collector, so the newly added `serverResolution` is absent for every multi-repository target session. This leaves C3 usable only for the historical MCP repository rather than the project-scoped sessions introduced by B3.2; preserve the unavailable MCP work-state projection while still running or attaching the identity/project/server-resolution chain for the target repository.\n\n---\n\nhttps://github.com/Patricked-code/MCP/blob/eaacf048f50ab9ecbaec252b55b0492a43ff0629/src/github/registry.ts#L225-L226\n**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reject verified bindings without a real path**\n\nFor a schema-V2 registry mapping with `realPath: null` and `realPathVerified: true`, the existing registry schema accepts the record and these new projection fields preserve the contradiction; `ServerBindingSchema` also accepts it, so C3 can return `RESOLVED` with a binding claiming verification but containing no real path. Treat this cross-field combination as invalid registry evidence, or require a non-null absolute `realPath` whenever `realPathVerified` is true.\n\nAGENTS.md reference: [AGENTS.md:L32-L32](https://github.com/Patricked-code/MCP/blob/eaacf048f50ab9ecbaec252b55b0492a43ff0629/AGENTS.md#L32-L32)\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 234,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 237,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 238,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 239,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 240,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 241,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 242,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    }
+  ]
+}
