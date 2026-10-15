@@ -1,5 +1,14 @@
 # SUIVI.md
 
+## 2026-10-15 — PCM-02 / GWB03-01 : 73 constats PR #261, deux limites de politique à confirmer
+
+- Base GitHub `main@0817f340dcd57f59b348b8a023082efd472342e3`, CI `38808611902` et Governed Deploy `38808612012` réussis. Les six PR ouvertes #207/#90/#89/#88/#86/#85 restent des scopes historiques indépendants, aucune modification dans leurs branches.
+- Analyse additive : `docs/governance/gwb03-pr261-source-policy-evidence-20261015.json` et test `tests/gwb03Pr261AuditEvidence.test.ts`. Les **73** constats de PR #261 ont un référent d'origine ; **17** ont une ancre code/test retrouvée ; **56** restent sans spotcheck individuel et **0** sont déclarés certifiés runtime.
+- Risque source **#4216890728** : les limites CPU/RAM/PID exigent des valeurs positives sans maxima adaptés à S1. Ce point est déjà recensé dans l'issue F-03 #262 ; ne pas créer un deuxième lot concurrent.
+- Risque source **#4222289799** : la politique `json-file` teste la présence de `max-size` et `max-file` sans plafonner la rétention ; les options `local` ne sont pas bornées par cette condition. Tests RED de politique pure à préparer dans le scope F-03 possédé, sous autorité et sans accès serveur direct.
+- Pas de claim/task/session/lock inventé, pas de modification code applicatif, pas de régression OAuth ; la preuve de l'existence d'un contrôle dans le code n'est pas encore la résolution d'un constat. **NEXT_ACTION :** valider par tests négatifs les deux limitations via propriétaire F-03 ; reprendre les P1 de PR #261 par sous-périmètre et GWB03-02 PR #267, puis GWB04. Après chaque PR exact-head CI, checkpoint et recalcul `program:next` sous autorité.
+
+
 ## 2026-10-15 — PRIORITÉ FONDATRICE : carte PCM-00..14 pour ne plus perdre la continuité
 
 - Directive propriétaire : organiser le retour à l'objectif initial par **15 jalons chronologiques** et la liste complète des **94 blueprints** ; toute nouvelle arrivée doit voir immédiatement les tâches, dépendances, résultats, owners réels et scopes de collision, avec preuves de checkpoint avant et après.
