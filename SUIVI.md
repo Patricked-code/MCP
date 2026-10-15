@@ -1,5 +1,14 @@
 # SUIVI.md
 
+## 2026-10-15 — PRIORITÉ FONDATRICE : carte PCM-00..14 pour ne plus perdre la continuité
+
+- Directive propriétaire : organiser le retour à l'objectif initial par **15 jalons chronologiques** et la liste complète des **94 blueprints** ; toute nouvelle arrivée doit voir immédiatement les tâches, dépendances, résultats, owners réels et scopes de collision, avec preuves de checkpoint avant et après.
+- Artefact : `docs/governance/mcp-priority-convergence-map-20261015.json` (machine-readable, NON_AUTHORITATIVE, 15 jalons PCM-00..14 ; 94 blueprints dans l'ordre du Program Backlog à `main@92f4e51c1e7e3489b5d6e5c78369dcf0249e8703`). Index humain dans `docs/governance/README.md` ; liens obligatoires dans `README.md`, `AGENTS.md`, `CLAUDE.md`, `TASKS.md`.
+- Priorité d'audit sans répétition : GWB03-01 PR #261 → GWB03-02 PR #267 → autres P1/P2, GWB04 validation fonctionnelle des 94, GWB05 convergence des résidus prouvés ; ne pas comptabiliser automatiquement 158 constats comme bugs actuels.
+- Priorité d'exécution parallèle : le parcours OAuth PR #207 et les tâches W3/W4 déjà admissibles ont leurs propres droits. `PCM-09` reprend la queue live dès PCM-00 sans attendre l'audit complet, uniquement si Task/Session/Lock et permissions sont établis. Aucune appropriation du travail d'autrui, ni second dispatcher.
+- **NEXT_ACTION** : finaliser la PR gouvernée de cette carte avec tests de DAG, liens et 94 IDs ; vérifier CI exacte, merge/deploy autorisés, puis reobserver readiness/Queue/Locks avant démarrage des chantiers. Ne pas inventer un état runtime de l'agent.
+
+
 ## 2026-10-15 — Audit : reprise inter-agents vérifiée, navigation et checkpoint GWB corrigés
 
 - **Vérification de reprise froide** depuis GitHub, sans conversation : lecture des points d'entrée `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/governance/README.md`, de `MASTER_RESUME_MEMORY.md`, du bloc `GWB-00..09`, de `Program Backlog V2`, des résultats d'audit et de l'issue #235. Constat : les informations étaient persistées mais les références racine n'orientaient pas suffisamment vers les nouvelles archives ; le checkpoint GWB et le résumé du 5 octobre étaient anciens.
