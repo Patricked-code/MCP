@@ -1,5 +1,9 @@
 # WealthTech MCP SSH Bridge
 
+## Fil d'Ariane historique permanent du programme MCP
+
+**À toute arrivée, avant de choisir du travail, lire [le fil d'Ariane historique MCP](docs/governance/agent-historical-continuity-breadcrumbs-20261016.md)** : origine de l'audit depuis l'issue #65, jalons des PR, constats historiques, acquis attestés, lacunes non certifiées, dépendances et contrat de checkpoint commun. Ce document renvoie aux sources existantes et ne devient ni une autorité runtime ni une seconde Task Queue. Un nouvel agent doit pouvoir retrouver le passé et le `NEXT_ACTION` sans cette conversation ; réobserver GitHub et les autorités live avant toute mutation.
+
 ## Reprise immédiate : consigne INTAKE du 16 octobre 2026
 
 **Tout agent qui arrive ou reprend doit lire [la directive de coordination dans l'issue #235](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094)**, puis appliquer la section « Protocole vérifiable d'entrée et de reprise » de [AGENTS.md](AGENTS.md). Ne pas confondre la PR #300 livrée avec la fin du programme : le prochain contrôle GWB04 porte sur `TB-W4-H-01` et `TB-W4-K-01`, sous réserve de relecture de l'état live et des propriétaires. Aucun commentaire GitHub ne réveille automatiquement un agent, ne crée une Task runtime ni n'autorise une mutation.
