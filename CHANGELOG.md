@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 2026-10-16 — Entrée commune des agents et handoff PCM-03/GWB-04
+
+- Directive de coordination ajoutée dans le canal GitHub existant : [issue #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094). Entrées `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/governance/README.md` renforcées par une marche à suivre testable de reprise à froid.
+- Distinction explicite : PR #300/CI/Deploy terminés au SHA `cc31ce12bea236b4cfb31d99ecee700c543f0c17`, mais GWB04 H-01/K-01 et GWB05..09 non certifiés. Vérification live requise avant tout write ; les snapshots OIDC sont datés.
+- Seulement de la documentation et un test de découverte. Pas de nouvelle Task/Session/Claim/Lock, pas de permission nouvelle, pas de code fonctionnel ou de changement de serveur.
+
 ## 2026-10-15 — Reconnaissance des 18 READY et anti-collision de reprise
 
 - Matrice GitHub + Program Backlog + sondes OIDC des 18 READY, chevauchements possibles de PR et absence actuelle de Session ACTIVE ; test de cohérence sans modification fonctionnelle ni runtime.
