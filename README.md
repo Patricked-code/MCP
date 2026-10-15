@@ -1,5 +1,15 @@
 # WealthTech MCP SSH Bridge
 
+
+## Reprendre l'audit et le programme gouverné (point d'entrée des nouveaux agents)
+
+Pour reprendre **le projet MCP uniquement** (ne pas confondre avec `Governed-Repository-Template`), lire d'abord `CLAUDE.md` et `AGENTS.md`, puis l'[index de reprise de la gouvernance](docs/governance/README.md). Cet index renvoie à l'architecture cible, au pacte, au bloc des dix travaux GWB-00..09, aux archives d'audit, au Program Backlog V2 et à l'[issue maîtresse #235](https://github.com/Patricked-code/MCP/issues/235).
+
+**Ne pas lire un ancien checkpoint comme l'état live :** réobserver le `main` actuel, les PR, les CI/déploiements et, quand nécessaire, les autorités Governed Task Queue / Sessions / Locks via des moyens autorisés. Les 94 blueprints sont de la planification et le workblock GWB ne crée aucune Task. Ordre de reprise : `READ → REOBSERVE → RECONCILE → RESUME_OWNED_FIRST → FIRST_COLLISION_FREE_IN_PROGRAM_ORDER → EXECUTE/VERIFY → CHECKPOINT → NEXT`.
+
+Pour les opérations réalisables depuis GitHub, appliquer `.mcp/github-first-operational-policy.json` et GitHub Actions/OIDC. La correction de consentement OAuth et la continuité des refresh tokens restent dans la PR #207, sans fusion régressive ni réattribution de son claim.
+
+
 Serveur MCP Node.js/TypeScript destiné à exposer à ChatGPT/Codex des outils contrôlés pour inventorier, documenter et préparer les opérations sur les serveurs WealthTech.
 
 ## Objectif
