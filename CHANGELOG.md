@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## 2026-10-15 — Priorité opérationnelle GitHub Actions/OIDC et reprise du déploiement MCP
+
+- Rappel documentaire de la source canonique `.mcp/github-first-operational-policy.json` : GitHub direct puis GitHub Actions/OIDC ; bridge interactif réservé aux capacités runtime sans fallback autorisé.
+- Les captures du propriétaire montrent le refus `403 access_denied` sur `/oauth/authorize`, sans cause exacte prouvée ; suivi de correction conservé dans PR #207 sans empiéter sur son claim.
+- PR #275 fusionnée à `54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2` : CI #38783796158 et Governed Deploy #38783796272 **SUCCESS**. Sondes GitHub Actions/OIDC #282–#288 enregistrées. Aucun nouveau mécanisme de tâches ou d'autorité.
+
+
 ## 2026-10-11 — Audit gouverné et checkpoint de déploiement (PR #275)
 
 - Fusion sans suppression de la PR #274 dans la branche du bloc GWB-00..09 ; seuls les deux fichiers propres au workblock restent dans son delta initial par rapport à `main`. Revalidation CI sur le HEAD actualisé exigée.

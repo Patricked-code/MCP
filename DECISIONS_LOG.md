@@ -1,5 +1,15 @@
 # DECISIONS_LOG.md
 
+## 2026-10-15 — Exécution GitHub-first/OIDC prioritaire malgré une défaillance OAuth interactive
+
+**Décision d'exploitation du propriétaire**, conforme à l'autorité déjà existante `.mcp/github-first-operational-policy.json` : l'échec de la reconnexion `wealthtech_ssh_bridge` ne doit pas interrompre les opérations compatibles avec GitHub direct et les workflows GitHub Actions/OIDC approuvés. Il s'agit d'un rappel d'ordre d'accès, **pas d'une nouvelle permission d'écriture S1 ni d'un contournement OAuth**.
+
+- `GITHUB_ONLY → GITHUB_ACTION_READONLY_EVIDENCE → GITHUB_ACTION_BOUNDED_WRITE (seulement scope pré-autorisé) → RUNTIME_REQUIRED` ; preserve `GITHUB_AUTH_IS_CONTINUITY_NOT_RUNTIME_AUTHORITY`, `NO_ARBITRARY_SHELL`, `FAIL_CLOSED`, `NO_SERVER_TO_GITHUB_PUSH`.
+- Les cinq sondes #284–#288 et le Governed Deploy [#38783796272](https://github.com/Patricked-code/MCP/actions/runs/38783796272) montrent que l'accès OIDC et le déploiement restent opérants, indépendamment de la connexion web OAuth qui affiche un refus de provenance.
+- **Sécurité OAuth** : ne pas assouplir la validation `Sec-Fetch-Site` / `Origin` sans preuve et tests. Le diagnostic et le code correctif restent rattachés à la PR #207 et à la Task A3.2 existante. Aucune récupération de token, cookie, code ou consent_ticket.
+- **Règle des agents** : s'appuyer sur `CLAUDE.md §7.5`, `SUIVI.md`, l'intake #235 et le bloc GWB existant ; observer un SHA exact et des preuves horodatées avant d'écrire ou déclarer une capacité disponible. L'accès OIDC read-only ne donne jamais l'autorité d'attribuer une Task, de posséder un lock ou d'agir sur un serveur hors workflow allowlisté.
+
+
 ## 2026-10-08 — F-04 incrément 1 : l'observation des domaines servis vient de Live State
 
 Décision technique, déduite selon #221. Sources : l'étape `observe-binding` du contrat `DOMAIN_BINDING` (`.mcp/provisioning-contracts.json`), le motif C4 (`liveStateRuntimeObservation`) et l'interdiction d'autorité parallèle.
