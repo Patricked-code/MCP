@@ -1,5 +1,13 @@
 # SUIVI.md
 
+## 2026-10-15 — PCM-03/GWB04 : candidats READY, scopes et autorités runtime vérifiés
+
+- Cartographie `docs/governance/gwb04-ready-ownership-20261015.json` : 18 READY en ordre officiel du Program Backlog, 15 avec chevauchement possible de PR anciennes, 3 sans PR candidate identifiée (cette donnée n'est pas un état d'ownership).
+- Sources : GitHub `main@c7d33d4477db5c6a974a97e4280ab1056efcc5c9`, archives GWB04, six PR ouvertes, sondes GitHub OIDC #297–299 : Queue révision 243, deux Tasks READY sans propriétaire ; Session révision 803, aucune ACTIVE ; Locks révision 301, zéro actif. Hash SHA-256 des trois sorties vérifié. Les capacités runtime de claim restent non disponibles sans propre session autorisée.
+- Le chantier OAuth PR #207 conserve son périmètre ; la pile #88→#89→#90 conserve ses PR d'origine et leurs dépendances. Aucun des 18 READY n'est certifié DONE par existence de chemins.
+- NEXT_ACTION : vérifier les assertions fonctionnelles W4-H-01, K-01 et les autres READY par programme ; pour toute mutation, reprise/claim sous autorité réelle, pas seulement un commentaire GitHub. Après CI/Deploy du dossier, reobserver la queue avant toute tâche exécutée.
+
+
 ## 2026-10-15 — PCM-02 / GWB03-02 : audit borné des domaines F-04
 
 - Baseline GitHub `main@773abe5542b3cd209943a648e750e2ec863b1e62` ; PR #267 fusionnée historiquement, issue #268 ouverte. GWB03-02 documente **26** constats P1/P2, **18** ancres code/test, **8** non vérifiés individuellement ; aucun certificat runtime.
