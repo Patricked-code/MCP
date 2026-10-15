@@ -219,58 +219,135 @@
   },
   "currentCheckpoint": {
     "date": "2026-10-15",
-    "kind": "NON_AUTHORITATIVE_SUPERVISOR_RESUME",
-    "githubMainSha": "54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2",
-    "transportPriorityAuthority": ".mcp/github-first-operational-policy.json",
-    "preferredSequence": [
-      "GITHUB_ONLY",
-      "GITHUB_ACTION_READONLY_EVIDENCE",
-      "GITHUB_ACTION_BOUNDED_WRITE_WITH_PRIOR_AUTHORITY",
-      "RUNTIME_REQUIRED_ONLY_IF_NO_APPROVED_FALLBACK"
-    ],
-    "oauthInteractive": {
-      "status": "BLOCKED_USER_OBSERVED",
-      "route": "POST /oauth/authorize",
-      "error": "access_denied",
-      "check": "isSameOriginSubmission (sec-fetch-site and origin)",
-      "realHeaders": "UNKNOWN",
-      "issuerRuntime": "UNKNOWN",
-      "protectedPr": 207,
-      "ownerClaim": "UNTOUCHED",
-      "safeNext": "Investigate actual non-secret headers/issuer + tests, do not bypass CSRF"
-    },
+    "kind": "NON_AUTHORITATIVE_AUDIT_CONTINUATION_SNAPSHOT",
+    "observedGitHubMain": "b187953de89d8f6529e2af97abc1de4570c53146",
     "ci": {
-      "runId": 38783796158,
+      "runId": 38789597872,
       "conclusion": "success",
-      "sha": "54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2"
+      "exactSha": "b187953de89d8f6529e2af97abc1de4570c53146"
     },
     "deploy": {
-      "runId": 38783796272,
+      "runId": 38789597877,
       "conclusion": "success",
-      "attestedExactSha": "54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2",
-      "historical502RootCause": "UNDETERMINED"
+      "exactSha": "b187953de89d8f6529e2af97abc1de4570c53146",
+      "runtimeObservation": "See governed deploy attestation; do not treat as perpetual live state"
     },
-    "s1ReadOnly": {
-      "issues": [
-        282,
-        283,
-        284,
-        285,
-        286,
-        287,
-        288
+    "auditProgress": {
+      "GWB00": "DEPLOY_RECOVERED_HISTORICAL_502_ROOT_CAUSE_UNVERIFIED",
+      "GWB01": "S1_EVIDENCE_OBSERVED_OIDC_REOBSERVE_WHEN_NEEDED",
+      "GWB02": "PR_REVIEW_CORPUS_DELIVERED_PR291_COMMIT_DISCUSSION_COMMENTS_UNVERIFIED",
+      "GWB03": "HISTORICAL_FINDINGS_TRIAGED_PR292_3_OF_158_SOURCE_SPOTCHECKS_NOT_TERMINAL_VERDICTS",
+      "GWB04": "PATH_LEVEL_CROSSWALK_DELIVERED_PR290_FUNCTIONAL_AND_TEST_PROOF_PENDING",
+      "GWB05": "PENDING_VERIFIED_GAP_RECONCILIATION",
+      "GWB06": "PENDING_LIVE_GOVERNED_READINESS_COLLISION_CHECK",
+      "GWB07": "PENDING_AUTHORIZED_INCREMENTAL_WORK",
+      "GWB08": "PENDING_E2E_MULTI_AGENT_RUNTIME_CERTIFICATION",
+      "GWB09": "PENDING_GLOBAL_MCP_COMPLETE_TERMINAL_EVIDENCE"
+    },
+    "programBacklogPlanningSnapshot": {
+      "total": 94,
+      "DONE": 36,
+      "READY": 18,
+      "BLOCKED": 28,
+      "CONDITIONAL": 5,
+      "DEFERRED": 7,
+      "authority": "docs/governance/program-backlog-convergence.json; planning only, rederive"
+    },
+    "evidence": [
+      {
+        "pr": 290,
+        "purpose": "94-blueprint path existence; not functional certification"
+      },
+      {
+        "pr": 291,
+        "purpose": "282 inline comments, 215 submitted reviews, 135 PR"
+      },
+      {
+        "pr": 292,
+        "purpose": "158 historical P1/P2 labels and 3 partial source/test spotchecks"
+      }
+    ],
+    "readerEntrypoints": [
+      "README.md",
+      "AGENTS.md",
+      "CLAUDE.md",
+      "docs/governance/README.md",
+      "docs/governance/MASTER_RESUME_MEMORY.md",
+      "SUIVI.md",
+      "TASKS.md",
+      "issue:235"
+    ],
+    "oauth": {
+      "pr": 207,
+      "state": "DRAFT_CONFLICT",
+      "owner": "EXISTING_UNCHANGED",
+      "action": "Diagnose observed same-origin consent failure, preserve current security, integrate existing refresh token work without takeover"
+    },
+    "nextAction": "GWB03-01: classify PR #261 historical P1s against current source, final accepted diff, targeted tests and deployed runtime; reconcile verified residuals only, then GWB03-02 #267 and GWB04 functional evidence.",
+    "limits": [
+      "Never promote PLANNED_NOT_RUNTIME_TASK to a Governed Task",
+      "All dated observations require reobservation for live decisions",
+      "No new Task/Claim/Lock, OAuth takeover or direct S1 mutation",
+      "Any unverified code behavior remains UNVERIFIED",
+      "This checkpoint is a navigation projection, not authoritative execution state"
+    ]
+  },
+  "checkpointHistory": [
+    {
+      "date": "2026-10-15",
+      "kind": "NON_AUTHORITATIVE_SUPERVISOR_RESUME",
+      "githubMainSha": "54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2",
+      "transportPriorityAuthority": ".mcp/github-first-operational-policy.json",
+      "preferredSequence": [
+        "GITHUB_ONLY",
+        "GITHUB_ACTION_READONLY_EVIDENCE",
+        "GITHUB_ACTION_BOUNDED_WRITE_WITH_PRIOR_AUTHORITY",
+        "RUNTIME_REQUIRED_ONLY_IF_NO_APPROVED_FALLBACK"
       ],
-      "transport": "GITHUB_ACTION_READONLY_EVIDENCE",
-      "results": "SUCCESS",
-      "mutationAllowed": false,
-      "githubMainAlignedAtLastSnapshot": true
-    },
-    "workblockStatus": {
-      "GWB00": "DEPLOY_PATH_RECOVERED_HISTORICAL_CAUSE_UNPROVEN",
-      "GWB01": "EVIDENCE_OBSERVED_AS_OF_LAST_SNAPSHOT",
-      "GWB02": "PENDING_FULL_PR_REVIEWS",
-      "GWB04": "PENDING_EXACT_SOURCE_AND_TEST_CROSSWALK"
-    },
-    "nextAction": "GWB02 and GWB04 via GitHub direct in collision-free scopes; OAuth investigation reserved for PR207 owner. Reobserve Task Queue/Session/Locks before runtime tasks. No bypass, no automatic DONE declaration."
-  }
+      "oauthInteractive": {
+        "status": "BLOCKED_USER_OBSERVED",
+        "route": "POST /oauth/authorize",
+        "error": "access_denied",
+        "check": "isSameOriginSubmission (sec-fetch-site and origin)",
+        "realHeaders": "UNKNOWN",
+        "issuerRuntime": "UNKNOWN",
+        "protectedPr": 207,
+        "ownerClaim": "UNTOUCHED",
+        "safeNext": "Investigate actual non-secret headers/issuer + tests, do not bypass CSRF"
+      },
+      "ci": {
+        "runId": 38783796158,
+        "conclusion": "success",
+        "sha": "54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2"
+      },
+      "deploy": {
+        "runId": 38783796272,
+        "conclusion": "success",
+        "attestedExactSha": "54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2",
+        "historical502RootCause": "UNDETERMINED"
+      },
+      "s1ReadOnly": {
+        "issues": [
+          282,
+          283,
+          284,
+          285,
+          286,
+          287,
+          288
+        ],
+        "transport": "GITHUB_ACTION_READONLY_EVIDENCE",
+        "results": "SUCCESS",
+        "mutationAllowed": false,
+        "githubMainAlignedAtLastSnapshot": true
+      },
+      "workblockStatus": {
+        "GWB00": "DEPLOY_PATH_RECOVERED_HISTORICAL_CAUSE_UNPROVEN",
+        "GWB01": "EVIDENCE_OBSERVED_AS_OF_LAST_SNAPSHOT",
+        "GWB02": "PENDING_FULL_PR_REVIEWS",
+        "GWB04": "PENDING_EXACT_SOURCE_AND_TEST_CROSSWALK"
+      },
+      "nextAction": "GWB02 and GWB04 via GitHub direct in collision-free scopes; OAuth investigation reserved for PR207 owner. Reobserve Task Queue/Session/Locks before runtime tasks. No bypass, no automatic DONE declaration."
+    }
+  ]
 }

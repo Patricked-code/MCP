@@ -62,3 +62,33 @@ test('workblock cannot be promoted into a runtime task authority', async () => {
   claimed.tasks[0].owner = 'invented-agent';
   assert.throws(() => validateWorkblock(claimed));
 });
+
+
+test('cold-start audit entrypoints discover the full non-authoritative handoff', async () => {
+  const root = await readFile('README.md', 'utf8');
+  const agents = await readFile('AGENTS.md', 'utf8');
+  const index = await readFile('docs/governance/README.md', 'utf8');
+  const memory = await readFile('docs/governance/MASTER_RESUME_MEMORY.md', 'utf8');
+  const workblock = await load();
+
+  assert.match(root, /docs\/governance\/README\.md/);
+  assert.match(agents, /docs\/governance\/README\.md/);
+  for (const reference of [
+    'architecture-chronology-issue65-20261009.json',
+    'gwb02-review-coverage-manifest-20261015.json',
+    'gwb03-pr-review-findings-triage-20261015.json',
+    'gwb04-94-blueprint-source-test-trace-20261015.json',
+    'governed-audit-continuation-workblock-20261009.json',
+    'program-backlog-convergence.json',
+    'MASTER_RESUME_MEMORY.md'
+  ]) {
+    assert.ok(index.includes(reference), 'missing cold-start evidence link: ' + reference);
+  }
+
+  assert.match(memory, /snapshot historique/);
+  assert.equal(workblock.currentCheckpoint.kind, 'NON_AUTHORITATIVE_AUDIT_CONTINUATION_SNAPSHOT');
+  assert.ok(Array.isArray(workblock.checkpointHistory) && workblock.checkpointHistory.length >= 1);
+  assert.equal(workblock.currentCheckpoint.auditProgress.GWB02.includes('PR291'), true);
+  assert.equal(workblock.currentCheckpoint.auditProgress.GWB04.includes('PR290'), true);
+  validateWorkblock(workblock);
+});
