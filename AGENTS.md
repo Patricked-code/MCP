@@ -1,5 +1,10 @@
 # AGENTS.md — Registre synthétique des agents
 
+## Carte de priorité obligatoire pour les agents entrants
+
+Lire la [carte de convergence PCM-00..14](docs/governance/mcp-priority-convergence-map-20261015.json) et l'[index gouverné](docs/governance/README.md) **avant de proposer une nouvelle tâche, branche ou implémentation**. Les 94 blueprints y figurent comme un snapshot en ordre de planification ; seul `program:next` et la Governed Task Queue live déterminent ce qui est aujourd'hui exécutable. Priorité à la propre Task déjà possédée ; aucune reprise du claim d'un autre agent. Signaler son scope/Task/PR et ses dépendances dans les canaux de gouvernance existants, vérifier les collisions puis checkpoint avec `NEXT_ACTION` après chaque étape. Les agents avec tâches indépendantes peuvent travailler simultanément. Aucune nouvelle file, identité, permission ou gate humaine n'est créée par cette carte.
+
+
 
 ## Reprise de l'audit / handoff inter-agents (2026-10-15)
 
