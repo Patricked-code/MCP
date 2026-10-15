@@ -1,0 +1,3406 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB03_REVIEW_FINDING_PRE_TRIAGE_NON_AUTHORITATIVE",
+  "repo": "Patricked-code/MCP",
+  "mainObserved": "b3454eab0cdac60332365dc0edabbd93bde514ae",
+  "reviewSource": "docs/governance/gwb02-inline-pr-review-comments-20261015.json on PR #291 (awaiting merge)",
+  "sourceCoverage": {
+    "allInlineComments": 282,
+    "leadFindingsWithP1P2": 158,
+    "P1": 89,
+    "P2": 69,
+    "linksToReviewReplies": 122,
+    "sourcePathStillExists": 158,
+    "sourcePathMissing": 0,
+    "automatedSeverityOnly": true,
+    "resolutionVerified": 0
+  },
+  "limitations": [
+    "P1 and P2 are labels in historical inline reviewer comments, not evidence of current vulnerabilities.",
+    "A reviewer reply or closed PR is not proof the defect has been fixed; code and tests must be checked.",
+    "Do not duplicate claims or override owner of PR #207 and TASK-20260929-001.",
+    "No new runtime Tasks, locks, grants, approvals or DONE statuses; source file existence is only a triage hint."
+  ],
+  "workPackets": [
+    {
+      "id": "GWB03-01",
+      "order": 1,
+      "scope": "PR #261",
+      "task": "Verify archived P1 provisioning findings against exact src/provisioning and CI/deploy of shipped F-03; compare final accepted commit and tests, preserve any residual under existing F-03/F-04 owner.",
+      "dependsOn": [
+        "GWB02_READ_CORPUS"
+      ]
+    },
+    {
+      "id": "GWB03-02",
+      "order": 2,
+      "scope": "PR #267",
+      "task": "Verify F-04 domain ownership and fail-closed Plesk/inventory findings against src/liveState/servedDomains.ts tests and issue #268.",
+      "dependsOn": [
+        "GWB02_READ_CORPUS"
+      ]
+    },
+    {
+      "id": "GWB03-03",
+      "order": 3,
+      "scope": "Other P1",
+      "task": "Reconcile other historical P1 review comments to current HEAD and precise fix/CI attestations, higher operational impact first.",
+      "dependsOn": [
+        "GWB02_READ_CORPUS"
+      ]
+    },
+    {
+      "id": "GWB03-04",
+      "order": 4,
+      "scope": "All P2",
+      "task": "Inspect P2 findings under independent read-only streams; record current code proof or bounded coding instructions.",
+      "dependsOn": [
+        "GWB03-01",
+        "GWB03-02"
+      ]
+    },
+    {
+      "id": "GWB03-05",
+      "order": 5,
+      "scope": "Program Backlog/Task Queue",
+      "task": "Map verified residual defects into canonical existing tasks or proposed intake, never write an independent queue or assign without owned runtime session.",
+      "dependsOn": [
+        "GWB03-01",
+        "GWB03-02",
+        "GWB03-03",
+        "GWB03-04"
+      ]
+    }
+  ],
+  "prGroups": [
+    {
+      "prNumber": 261,
+      "P1": 54,
+      "P2": 19,
+      "reviewFindingIds": [
+        4208798248,
+        4208798277,
+        4208798297,
+        4210848082,
+        4210848099,
+        4210848110,
+        4210848119,
+        4210848136,
+        4211071205,
+        4211071222,
+        4211575344,
+        4211575360,
+        4211575369,
+        4213204474,
+        4213204482,
+        4213204487,
+        4213204491,
+        4213278799,
+        4213278807,
+        4213278810,
+        4213278817,
+        4213356767,
+        4213356774,
+        4213356785,
+        4213356794,
+        4213445674,
+        4213445684,
+        4213445701,
+        4213568170,
+        4213568175,
+        4213568181,
+        4213644008,
+        4213644011,
+        4213644023,
+        4213644027,
+        4216769963,
+        4216769980,
+        4216769986,
+        4216890720,
+        4216890728,
+        4216890738,
+        4216890752,
+        4217047792,
+        4217047807,
+        4217047834,
+        4217179879,
+        4217179889,
+        4217179904,
+        4217316098,
+        4217316105,
+        4217316137,
+        4217316144,
+        4217316157,
+        4222289799,
+        4208798258,
+        4208798290,
+        4210848153,
+        4210848164,
+        4210848175,
+        4211071241,
+        4213278811,
+        4213278815,
+        4213356779,
+        4213445692,
+        4213568187,
+        4213644019,
+        4216769973,
+        4216890746,
+        4217047816,
+        4217047826,
+        4217047841,
+        4217316122,
+        4222289810
+      ],
+      "scope": "PROVISIONING_F03_CERTIFICATION"
+    },
+    {
+      "prNumber": 267,
+      "P1": 15,
+      "P2": 11,
+      "reviewFindingIds": [
+        4223040575,
+        4223040593,
+        4223040598,
+        4223040603,
+        4223150064,
+        4223150104,
+        4223150119,
+        4223215946,
+        4223283738,
+        4223332548,
+        4223408699,
+        4223483353,
+        4223483364,
+        4223483370,
+        4223561079,
+        4223040611,
+        4223150092,
+        4223215955,
+        4223283749,
+        4223283758,
+        4223283764,
+        4223408713,
+        4223408720,
+        4223408732,
+        4223408744,
+        4223621173
+      ],
+      "scope": "F04_DOMAIN_BINDING"
+    },
+    {
+      "prNumber": 95,
+      "P1": 2,
+      "P2": 3,
+      "reviewFindingIds": [
+        4057111449,
+        4057140297,
+        4057111455,
+        4057140299,
+        4057140302
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 188,
+      "P1": 2,
+      "P2": 3,
+      "reviewFindingIds": [
+        4103937576,
+        4103937581,
+        4103981290,
+        4104023541,
+        4104023553
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 70,
+      "P1": 2,
+      "P2": 2,
+      "reviewFindingIds": [
+        3906942892,
+        3906942904,
+        3906980224,
+        3907013491
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 189,
+      "P1": 2,
+      "P2": 0,
+      "reviewFindingIds": [
+        4104069476,
+        4104069491
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 96,
+      "P1": 1,
+      "P2": 1,
+      "reviewFindingIds": [
+        4057392527,
+        4057392529
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 102,
+      "P1": 1,
+      "P2": 1,
+      "reviewFindingIds": [
+        4057787639,
+        4057787640
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 133,
+      "P1": 1,
+      "P2": 1,
+      "reviewFindingIds": [
+        4074337418,
+        4074337425
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 139,
+      "P1": 1,
+      "P2": 1,
+      "reviewFindingIds": [
+        4076007310,
+        4076007324
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 66,
+      "P1": 1,
+      "P2": 0,
+      "reviewFindingIds": [
+        3899542049
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 71,
+      "P1": 1,
+      "P2": 0,
+      "reviewFindingIds": [
+        3909100914
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 77,
+      "P1": 1,
+      "P2": 0,
+      "reviewFindingIds": [
+        3994540854
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 82,
+      "P1": 1,
+      "P2": 0,
+      "reviewFindingIds": [
+        4000371612
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 124,
+      "P1": 1,
+      "P2": 0,
+      "reviewFindingIds": [
+        4065060500
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 126,
+      "P1": 1,
+      "P2": 0,
+      "reviewFindingIds": [
+        4065231115
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 142,
+      "P1": 1,
+      "P2": 0,
+      "reviewFindingIds": [
+        4076112712
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 149,
+      "P1": 1,
+      "P2": 0,
+      "reviewFindingIds": [
+        4076977551
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 168,
+      "P1": 0,
+      "P2": 4,
+      "reviewFindingIds": [
+        4096109783,
+        4096109797,
+        4096109805,
+        4096109811
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 176,
+      "P1": 0,
+      "P2": 4,
+      "reviewFindingIds": [
+        4101130530,
+        4101130538,
+        4101130544,
+        4101130548
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 73,
+      "P1": 0,
+      "P2": 3,
+      "reviewFindingIds": [
+        3961128036,
+        3961128049,
+        3965370237
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 83,
+      "P1": 0,
+      "P2": 3,
+      "reviewFindingIds": [
+        4000720246,
+        4000720250,
+        4000720255
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 136,
+      "P1": 0,
+      "P2": 3,
+      "reviewFindingIds": [
+        4075788759,
+        4075788768,
+        4075788775
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 75,
+      "P1": 0,
+      "P2": 2,
+      "reviewFindingIds": [
+        3994244405,
+        3994244409
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 87,
+      "P1": 0,
+      "P2": 2,
+      "reviewFindingIds": [
+        4010868864,
+        4010868870
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 68,
+      "P1": 0,
+      "P2": 1,
+      "reviewFindingIds": [
+        3901271450
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 74,
+      "P1": 0,
+      "P2": 1,
+      "reviewFindingIds": [
+        3965510821
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 76,
+      "P1": 0,
+      "P2": 1,
+      "reviewFindingIds": [
+        3994289898
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 79,
+      "P1": 0,
+      "P2": 1,
+      "reviewFindingIds": [
+        3995271105
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 97,
+      "P1": 0,
+      "P2": 1,
+      "reviewFindingIds": [
+        4057453669
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    },
+    {
+      "prNumber": 145,
+      "P1": 0,
+      "P2": 1,
+      "reviewFindingIds": [
+        4077048549
+      ],
+      "scope": "HISTORICAL_REVIEW_RECONCILIATION"
+    }
+  ],
+  "findings": [
+    {
+      "prNumber": 66,
+      "reviewCommentId": 3899542049,
+      "severityLabel": "P1",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "5ef6da355060ef2b3dfd6df6ecc64c83f778a50a",
+      "originalCommit": "5ef6da355060ef2b3dfd6df6ecc64c83f778a50a",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/66#discussion_r3899542049",
+      "createdAt": "2026-09-01T00:01:04Z",
+      "title": "Record the reconciliation task in the required logs",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 70,
+      "reviewCommentId": 3906942892,
+      "severityLabel": "P1",
+      "originalPath": "ROADMAP.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d385a152bffe655654299146a68b788ab7529b0e",
+      "originalCommit": "7c14f4404cdaeebe3a9476aaa48c7b1da3c9b936",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906942892",
+      "createdAt": "2026-09-01T18:05:25Z",
+      "title": "Defer LIVRÉ until reconciliation is attested",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906977582"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 70,
+      "reviewCommentId": 3906942904,
+      "severityLabel": "P1",
+      "originalPath": "TASKS.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "6cbc8a593d71e0518387e914e3f6554343e2cb47",
+      "originalCommit": "7c14f4404cdaeebe3a9476aaa48c7b1da3c9b936",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906942904",
+      "createdAt": "2026-09-01T18:05:25Z",
+      "title": "Reconcile the task scope before assigning later lots",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906977781"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 71,
+      "reviewCommentId": 3909100914,
+      "severityLabel": "P1",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "cd8f681800603ff518f08c8b1c82dfaa8a861cc2",
+      "originalCommit": "cd8f681800603ff518f08c8b1c82dfaa8a861cc2",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/71#discussion_r3909100914",
+      "createdAt": "2026-09-01T22:49:48Z",
+      "title": "Put the closure merge SHA first in SUIVI",
+      "replyCount": 2,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/71#discussion_r3909559992",
+        "https://github.com/Patricked-code/MCP/pull/71#discussion_r3918346273"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 77,
+      "reviewCommentId": 3994540854,
+      "severityLabel": "P1",
+      "originalPath": "TODO.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "17de4af98c0b66a3cf32c219c762febd1880c0e5",
+      "originalCommit": "17de4af98c0b66a3cf32c219c762febd1880c0e5",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/77#discussion_r3994540854",
+      "createdAt": "2026-09-12T01:11:14Z",
+      "title": "Record the requeued task in TASKS.md",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 82,
+      "reviewCommentId": 4000371612,
+      "severityLabel": "P1",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "beea82c94795c9661e2d1f9aebecad8268b674b5",
+      "originalCommit": "beea82c94795c9661e2d1f9aebecad8268b674b5",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/82#discussion_r4000371612",
+      "createdAt": "2026-09-13T17:52:16Z",
+      "title": "Record the live-state correction in the required logs",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 95,
+      "reviewCommentId": 4057111449,
+      "severityLabel": "P1",
+      "originalPath": "src/deploy/s1Deploy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+      "originalCommit": "938a7f01b4404c7980711b372746d08c3861f6f7",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/95#discussion_r4057111449",
+      "createdAt": "2026-09-20T13:58:23Z",
+      "title": "Restore the closing brace in the deploy worker",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/95#discussion_r4057134270"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 95,
+      "reviewCommentId": 4057140297,
+      "severityLabel": "P1",
+      "originalPath": "src/governedWorkflow/review/index.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+      "originalCommit": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/95#discussion_r4057140297",
+      "createdAt": "2026-09-20T14:11:27Z",
+      "title": "Emit the registered PR tool's input shape",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 96,
+      "reviewCommentId": 4057392527,
+      "severityLabel": "P1",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d112358d1f13757fdace7e1d3fd73b8d7922cadb",
+      "originalCommit": "d112358d1f13757fdace7e1d3fd73b8d7922cadb",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/96#discussion_r4057392527",
+      "createdAt": "2026-09-20T16:13:57Z",
+      "title": "Add the active PR95 task to TASKS.md",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 102,
+      "reviewCommentId": 4057787639,
+      "severityLabel": "P1",
+      "originalPath": "CHANGELOG.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "844f042de95ef8aa103095770139b3258184b3c6",
+      "originalCommit": "844f042de95ef8aa103095770139b3258184b3c6",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/102#discussion_r4057787639",
+      "createdAt": "2026-09-20T19:03:56Z",
+      "title": "Record the transport change in SUIVI",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 124,
+      "reviewCommentId": 4065060500,
+      "severityLabel": "P1",
+      "originalPath": ".mcp/github-first-operational-policy.json",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "da57f520948272b409abc1d89f564577abd94f2c",
+      "originalCommit": "da57f520948272b409abc1d89f564577abd94f2c",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/124#discussion_r4065060500",
+      "createdAt": "2026-09-21T18:14:21Z",
+      "title": "Route approved bounded writes through the resolver",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 126,
+      "reviewCommentId": 4065231115,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/collect.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "0a51b09b13febdda9fbcdd4324de61ab22140363",
+      "originalCommit": "0a51b09b13febdda9fbcdd4324de61ab22140363",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/126#discussion_r4065231115",
+      "createdAt": "2026-09-21T18:36:35Z",
+      "title": "Fail closed when structured SHA declarations are unreadable",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 133,
+      "reviewCommentId": 4074337418,
+      "severityLabel": "P1",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "cf77ebe30de0c4dd961a89faefe282a70de5367d",
+      "originalCommit": "cf77ebe30de0c4dd961a89faefe282a70de5367d",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/133#discussion_r4074337418",
+      "createdAt": "2026-09-22T17:11:27Z",
+      "title": "Track the reconciliation next action in TASKS.md",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 139,
+      "reviewCommentId": 4076007310,
+      "severityLabel": "P1",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d614b4833704f030c23668d16d8cefbcf6452a0b",
+      "originalCommit": "d614b4833704f030c23668d16d8cefbcf6452a0b",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/139#discussion_r4076007310",
+      "createdAt": "2026-09-22T20:11:21Z",
+      "title": "Link the executable follow-up in TASKS.md",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 142,
+      "reviewCommentId": 4076112712,
+      "severityLabel": "P1",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "c7f7a026b2a140971988313dabf3e0407e6d422c",
+      "originalCommit": "c7f7a026b2a140971988313dabf3e0407e6d422c",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/142#discussion_r4076112712",
+      "createdAt": "2026-09-22T20:23:36Z",
+      "title": "Link the executable follow-up to TASKS.md",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 149,
+      "reviewCommentId": 4076977551,
+      "severityLabel": "P1",
+      "originalPath": "PRODUCTION_STATE.json",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1ba84589adbaa478babebd2c8aa1e63438820dcd",
+      "originalCommit": "1ba84589adbaa478babebd2c8aa1e63438820dcd",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/149#discussion_r4076977551",
+      "createdAt": "2026-09-22T22:02:31Z",
+      "title": "Record the handoff in the required operational journals",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 188,
+      "reviewCommentId": 4103937576,
+      "severityLabel": "P1",
+      "originalPath": "scripts/governed-repository-ssh-gateway.sh",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "ce8bc23af4b322bda46a48740a50173350c35f30",
+      "originalCommit": "ce8bc23af4b322bda46a48740a50173350c35f30",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/188#discussion_r4103937576",
+      "createdAt": "2026-09-25T11:12:16Z",
+      "title": "Invoke the gateway from the emitted dist/src path",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/188#discussion_r4103975663"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 188,
+      "reviewCommentId": 4103937581,
+      "severityLabel": "P1",
+      "originalPath": "src/ssh/repositoryCertificate.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "bd4126de400fe5f894643b4a2939c382bc760385",
+      "originalCommit": "ce8bc23af4b322bda46a48740a50173350c35f30",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/188#discussion_r4103937581",
+      "createdAt": "2026-09-25T11:12:16Z",
+      "title": "Install ssh-keygen in the broker runtime",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/188#discussion_r4103976117"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 189,
+      "reviewCommentId": 4104069476,
+      "severityLabel": "P1",
+      "originalPath": ".github/workflows/repository-ssh-ca-bootstrap.yml",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "b97b0d807ff12794108d10cd6806d888ecc8dfea",
+      "originalCommit": "813741eb7793fad869bf7241ff776918a92e06ae",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/189#discussion_r4104069476",
+      "createdAt": "2026-09-25T11:30:55Z",
+      "title": "Require write permission for issue-triggered bootstrap",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 189,
+      "reviewCommentId": 4104069491,
+      "severityLabel": "P1",
+      "originalPath": ".github/workflows/repository-ssh-ca-bootstrap.yml",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "b97b0d807ff12794108d10cd6806d888ecc8dfea",
+      "originalCommit": "813741eb7793fad869bf7241ff776918a92e06ae",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/189#discussion_r4104069491",
+      "createdAt": "2026-09-25T11:30:55Z",
+      "title": "Update the operational records for the issue trigger",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4208798248,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/consent.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "0155d5ae5e29874155f66a12eff3e133fcbfcbe5",
+      "originalCommit": "0155d5ae5e29874155f66a12eff3e133fcbfcbe5",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798248",
+      "createdAt": "2026-10-07T15:35:05Z",
+      "title": "Bind consent to the resolved deployment target",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210753385"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4208798277,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1268e1b7073cef641b1b3c5af67d574afa4a85ed",
+      "originalCommit": "0155d5ae5e29874155f66a12eff3e133fcbfcbe5",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798277",
+      "createdAt": "2026-10-07T15:35:05Z",
+      "title": "Verify the created checkout before later activation",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210754195"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4208798297,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/wiring.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "0155d5ae5e29874155f66a12eff3e133fcbfcbe5",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798297",
+      "createdAt": "2026-10-07T15:35:05Z",
+      "title": "Keep component runtimes distinct for shared repositories",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210754936"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4210848082,
+      "severityLabel": "P1",
+      "originalPath": "src/server.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "deab8727f3b66d91fb41c8a3c36e52403f10be6f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848082",
+      "createdAt": "2026-10-07T19:04:40Z",
+      "title": "Gate web provisioning through runtime and UAC authorities",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210998507"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4210848099,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1268e1b7073cef641b1b3c5af67d574afa4a85ed",
+      "originalCommit": "deab8727f3b66d91fb41c8a3c36e52403f10be6f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848099",
+      "createdAt": "2026-10-07T19:04:40Z",
+      "title": "Enforce GitRegistry deployment bans before activation",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210999103"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4210848110,
+      "severityLabel": "P1",
+      "originalPath": "src/server.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "deab8727f3b66d91fb41c8a3c36e52403f10be6f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848110",
+      "createdAt": "2026-10-07T19:04:40Z",
+      "title": "Reject named volumes that bind host paths",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210999507"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4210848119,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "deab8727f3b66d91fb41c8a3c36e52403f10be6f",
+      "originalCommit": "deab8727f3b66d91fb41c8a3c36e52403f10be6f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848119",
+      "createdAt": "2026-10-07T19:04:40Z",
+      "title": "Propagate file-read failures from the tree digest",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211000103"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4210848136,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/wiring.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "deab8727f3b66d91fb41c8a3c36e52403f10be6f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848136",
+      "createdAt": "2026-10-07T19:04:40Z",
+      "title": "Bound the extracted archive, not only the download",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211000583"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4211071205,
+      "severityLabel": "P1",
+      "originalPath": "src/server.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "3f1098b299ef0937d162ad57ffa8163d755d54a9",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211071205",
+      "createdAt": "2026-10-07T19:27:21Z",
+      "title": "Reject Compose API-socket delegation",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211420971"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4211071222,
+      "severityLabel": "P1",
+      "originalPath": "src/server.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "3f1098b299ef0937d162ad57ffa8163d755d54a9",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211071222",
+      "createdAt": "2026-10-07T19:27:21Z",
+      "title": "Parse Compose before blocking host file inputs",
+      "replyCount": 2,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211421761",
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211474080"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4211575344,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "372d5f316adb6fff31edd2b2f30bb0ea6702fc13",
+      "originalCommit": "372d5f316adb6fff31edd2b2f30bb0ea6702fc13",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211575344",
+      "createdAt": "2026-10-07T20:22:04Z",
+      "title": "Exclude foreign image tags from builds",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213142693"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4211575360,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "372d5f316adb6fff31edd2b2f30bb0ea6702fc13",
+      "originalCommit": "372d5f316adb6fff31edd2b2f30bb0ea6702fc13",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211575360",
+      "createdAt": "2026-10-07T20:22:04Z",
+      "title": "Hash the complete executable mode",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213142862"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4211575369,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "372d5f316adb6fff31edd2b2f30bb0ea6702fc13",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211575369",
+      "createdAt": "2026-10-07T20:22:04Z",
+      "title": "Treat retained volumes as existing runtime state",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213142488"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213204474,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "dd7746ec18f0240d0df25739f703327e26507bd0",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204474",
+      "createdAt": "2026-10-07T23:53:34Z",
+      "title": "Bound Compose service replication",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213218387"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213204482,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "dd7746ec18f0240d0df25739f703327e26507bd0",
+      "originalCommit": "dd7746ec18f0240d0df25739f703327e26507bd0",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204482",
+      "createdAt": "2026-10-07T23:53:34Z",
+      "title": "Include ownership in the checkout digest",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213219075"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213204487,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/projectRuntime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "dd7746ec18f0240d0df25739f703327e26507bd0",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204487",
+      "createdAt": "2026-10-07T23:53:34Z",
+      "title": "Rehash running checkouts before returning NO_OP",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213218618"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213204491,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "dd7746ec18f0240d0df25739f703327e26507bd0",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204491",
+      "createdAt": "2026-10-07T23:53:35Z",
+      "title": "Pin external images before activation",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213218918"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213278799,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/projectRuntime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "c6f8921355914c6b45b5b9e38f74135a98a9a935",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278799",
+      "createdAt": "2026-10-08T00:07:16Z",
+      "title": "Store the trusted tree digest outside the writable checkout",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213302163"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213278807,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "c6f8921355914c6b45b5b9e38f74135a98a9a935",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278807",
+      "createdAt": "2026-10-08T00:07:16Z",
+      "title": "Pin every input used by built services",
+      "replyCount": 2,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213303382",
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216654305"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213278810,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "c6f8921355914c6b45b5b9e38f74135a98a9a935",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278810",
+      "createdAt": "2026-10-08T00:07:16Z",
+      "title": "Block creation when the Compose network survives rollback",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213302363"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213278817,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "c6f8921355914c6b45b5b9e38f74135a98a9a935",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278817",
+      "createdAt": "2026-10-08T00:07:16Z",
+      "title": "Reject custom IPAM drivers and options",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213302728"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213356767,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "cbd93f9f86b2f7d707a3c4039393254d956eaa80",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356767",
+      "createdAt": "2026-10-08T00:20:24Z",
+      "title": "Revalidate Compose before rollback",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213382172"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213356774,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/projectRuntime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "cbd93f9f86b2f7d707a3c4039393254d956eaa80",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356774",
+      "createdAt": "2026-10-08T00:20:24Z",
+      "title": "Include special filesystem entries in the tree digest",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213382434"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213356785,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "cbd93f9f86b2f7d707a3c4039393254d956eaa80",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356785",
+      "createdAt": "2026-10-08T00:20:24Z",
+      "title": "Resolve target parents before writing",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213381954"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213356794,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "cbd93f9f86b2f7d707a3c4039393254d956eaa80",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356794",
+      "createdAt": "2026-10-08T00:20:24Z",
+      "title": "Bound Docker build storage consumption",
+      "replyCount": 2,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213383005",
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216654773"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213445674,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1268e1b7073cef641b1b3c5af67d574afa4a85ed",
+      "originalCommit": "1268e1b7073cef641b1b3c5af67d574afa4a85ed",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445674",
+      "createdAt": "2026-10-08T00:36:29Z",
+      "title": "Hold coordination authority through the first host write",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213511264"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213445684,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/projectRuntime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "1268e1b7073cef641b1b3c5af67d574afa4a85ed",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445684",
+      "createdAt": "2026-10-08T00:36:29Z",
+      "title": "Record hard-link topology in the checkout digest",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213511487"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213445701,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/revisionAdmission.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1268e1b7073cef641b1b3c5af67d574afa4a85ed",
+      "originalCommit": "1268e1b7073cef641b1b3c5af67d574afa4a85ed",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445701",
+      "createdAt": "2026-10-08T00:36:30Z",
+      "title": "Admit revisions from the mapping's official branch",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213511783"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213568170,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "80cd60e227cf5e8e2bd537b7bac41992f60d2789",
+      "originalCommit": "80cd60e227cf5e8e2bd537b7bac41992f60d2789",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568170",
+      "createdAt": "2026-10-08T01:00:26Z",
+      "title": "Neutralize restart policies in fallback rollback",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213590178"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213568175,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "80cd60e227cf5e8e2bd537b7bac41992f60d2789",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568175",
+      "createdAt": "2026-10-08T01:00:26Z",
+      "title": "Recheck coordination before executing rollback writes",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213589967"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213568181,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/projectRuntime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "80cd60e227cf5e8e2bd537b7bac41992f60d2789",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568181",
+      "createdAt": "2026-10-08T01:00:26Z",
+      "title": "Include extended attributes in the checkout digest",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213590390"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213644008,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "341192e76af67efed9069fd717c6396a46b26edf",
+      "originalCommit": "341192e76af67efed9069fd717c6396a46b26edf",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644008",
+      "createdAt": "2026-10-08T01:15:54Z",
+      "title": "Require health status before declaring success",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213664343"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213644011,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "341192e76af67efed9069fd717c6396a46b26edf",
+      "originalCommit": "341192e76af67efed9069fd717c6396a46b26edf",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644011",
+      "createdAt": "2026-10-08T01:15:54Z",
+      "title": "Include stopped containers in fallback rollback",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213664095"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213644023,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "341192e76af67efed9069fd717c6396a46b26edf",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644023",
+      "createdAt": "2026-10-08T01:15:54Z",
+      "title": "Revalidate revision admission after downloading",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213665089"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213644027,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "341192e76af67efed9069fd717c6396a46b26edf",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644027",
+      "createdAt": "2026-10-08T01:15:54Z",
+      "title": "Enforce runtime resource ceilings",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213664590"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4216769963,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "99a4578822970414ea45d344c31a895a9cc4348f",
+      "originalCommit": "6665fe4ac54adc3637f3c35f3c6cecb2d11fc506",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769963",
+      "createdAt": "2026-10-08T08:36:38Z",
+      "title": "Verify image IDs before returning NO_OP",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216801707"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4216769980,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/dockerfilePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "6665fe4ac54adc3637f3c35f3c6cecb2d11fc506",
+      "originalCommit": "6665fe4ac54adc3637f3c35f3c6cecb2d11fc506",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769980",
+      "createdAt": "2026-10-08T08:36:38Z",
+      "title": "Allow only validated Dockerfile frontends",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216802212"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4216769986,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "6665fe4ac54adc3637f3c35f3c6cecb2d11fc506",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769986",
+      "createdAt": "2026-10-08T08:36:38Z",
+      "title": "Bound resources consumed by image builds",
+      "replyCount": 2,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216803166",
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222200348"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4216890720,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "99a4578822970414ea45d344c31a895a9cc4348f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890720",
+      "createdAt": "2026-10-08T08:50:01Z",
+      "title": "Re-admit the revision before each later write",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216920927"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4216890728,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "99a4578822970414ea45d344c31a895a9cc4348f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890728",
+      "createdAt": "2026-10-08T08:50:01Z",
+      "title": "Enforce safe upper bounds on resource limits",
+      "replyCount": 2,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216923243",
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222200924"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4216890738,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "99a4578822970414ea45d344c31a895a9cc4348f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890738",
+      "createdAt": "2026-10-08T08:50:01Z",
+      "title": "Rehash the checkout after the health gate",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216921508"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4216890752,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "99a4578822970414ea45d344c31a895a9cc4348f",
+      "originalCommit": "99a4578822970414ea45d344c31a895a9cc4348f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890752",
+      "createdAt": "2026-10-08T08:50:01Z",
+      "title": "Do not mutate the host after detecting a coordination collision",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216922650"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217047792,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "3328900a44dffac2ee2777bfc59e6076066656a7",
+      "originalCommit": "3328900a44dffac2ee2777bfc59e6076066656a7",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047792",
+      "createdAt": "2026-10-08T09:07:15Z",
+      "title": "Require bounded container logging",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217080914"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217047807,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "3328900a44dffac2ee2777bfc59e6076066656a7",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047807",
+      "createdAt": "2026-10-08T09:07:15Z",
+      "title": "Reject unapproved custom IPAM address pools",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217081469"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217047834,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "3328900a44dffac2ee2777bfc59e6076066656a7",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047834",
+      "createdAt": "2026-10-08T09:07:15Z",
+      "title": "Replan against live target and runtime state before each write",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217082921"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217179879,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "b7e2cdbc809549164c9cbc1c016e6043271d00f3",
+      "originalCommit": "b7e2cdbc809549164c9cbc1c016e6043271d00f3",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217179879",
+      "createdAt": "2026-10-08T09:22:15Z",
+      "title": "Compare replacement images with the existing record",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217209820"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217179889,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/projectRuntime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "b7e2cdbc809549164c9cbc1c016e6043271d00f3",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217179889",
+      "createdAt": "2026-10-08T09:22:15Z",
+      "title": "Verify live container limits before returning NO_OP",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217210371"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217179904,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "b7e2cdbc809549164c9cbc1c016e6043271d00f3",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217179904",
+      "createdAt": "2026-10-08T09:22:15Z",
+      "title": "Re-read the mapping's official branch before each write",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217209352"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217316098,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "853e10ee6008c53869e40444ad4472ef1f1f1665",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316098",
+      "createdAt": "2026-10-08T09:37:37Z",
+      "title": "Bound writable storage for every admitted service",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222199938"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217316105,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "853e10ee6008c53869e40444ad4472ef1f1f1665",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316105",
+      "createdAt": "2026-10-08T09:37:37Z",
+      "title": "Recheck coordination before every discard write",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222197316"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217316137,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/projectRuntime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "853e10ee6008c53869e40444ad4472ef1f1f1665",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316137",
+      "createdAt": "2026-10-08T09:37:37Z",
+      "title": "Reject newline-bearing paths in the tree digest",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222197835"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217316144,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "853e10ee6008c53869e40444ad4472ef1f1f1665",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316144",
+      "createdAt": "2026-10-08T09:37:37Z",
+      "title": "Bound stop grace periods below the rollback timeout",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222199481"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217316157,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/projectRuntime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "853e10ee6008c53869e40444ad4472ef1f1f1665",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316157",
+      "createdAt": "2026-10-08T09:37:37Z",
+      "title": "Preserve the service-to-image mapping in runtime attestations",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222198960"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4222289799,
+      "severityLabel": "P1",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222289799",
+      "createdAt": "2026-10-08T17:44:29Z",
+      "title": "Enforce upper bounds on logging rotation",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223040575,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "202e7e0ed866e65827b4841fc8c114d47ef1ac37",
+      "originalCommit": "202e7e0ed866e65827b4841fc8c114d47ef1ac37",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040575",
+      "createdAt": "2026-10-08T19:04:53Z",
+      "title": "Propagate `find` failures through the pipeline",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223070431"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223040593,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "6e7417fa989d09a90be87cde01294743b58710f4",
+      "originalCommit": "202e7e0ed866e65827b4841fc8c114d47ef1ac37",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040593",
+      "createdAt": "2026-10-08T19:04:53Z",
+      "title": "Scope the observation to the selected project",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223069902"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223040598,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "ded65b3f1a9ca39a0c0dbe7ad8aff8f78bc9268c",
+      "originalCommit": "202e7e0ed866e65827b4841fc8c114d47ef1ac37",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040598",
+      "createdAt": "2026-10-08T19:04:53Z",
+      "title": "Reject unknown malformed inventory entries",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223070231"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223040603,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "202e7e0ed866e65827b4841fc8c114d47ef1ac37",
+      "originalCommit": "202e7e0ed866e65827b4841fc8c114d47ef1ac37",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040603",
+      "createdAt": "2026-10-08T19:04:53Z",
+      "title": "Inventory nested Plesk domain directories",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223070943"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223150064,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "ded65b3f1a9ca39a0c0dbe7ad8aff8f78bc9268c",
+      "originalCommit": "469dd79db123a7f48bc31196348d3d49bb4a5124",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150064",
+      "createdAt": "2026-10-08T19:15:40Z",
+      "title": "Keep observation evidence independent of declarations",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223168104"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223150104,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "b601c430b20b85130641a34f2b19f5d7eb08ce8e",
+      "originalCommit": "469dd79db123a7f48bc31196348d3d49bb4a5124",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150104",
+      "createdAt": "2026-10-08T19:15:40Z",
+      "title": "Include names served as aliases in the inventory",
+      "replyCount": 2,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223168295",
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223233722"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223150119,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "b601c430b20b85130641a34f2b19f5d7eb08ce8e",
+      "originalCommit": "469dd79db123a7f48bc31196348d3d49bb4a5124",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150119",
+      "createdAt": "2026-10-08T19:15:40Z",
+      "title": "Recognize Plesk wildcard vhost directories",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223167863"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223215946,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "b601c430b20b85130641a34f2b19f5d7eb08ce8e",
+      "originalCommit": "b601c430b20b85130641a34f2b19f5d7eb08ce8e",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223215946",
+      "createdAt": "2026-10-08T19:22:31Z",
+      "title": "Check Plesk status before certifying a served domain",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223233302"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223283738,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1162f853e42400873b52b16e7a3ac4d0f7f3048a",
+      "originalCommit": "1162f853e42400873b52b16e7a3ac4d0f7f3048a",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283738",
+      "createdAt": "2026-10-08T19:29:56Z",
+      "title": "Check subscription status before certifying domains",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223299694"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223332548,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "ded65b3f1a9ca39a0c0dbe7ad8aff8f78bc9268c",
+      "originalCommit": "ded65b3f1a9ca39a0c0dbe7ad8aff8f78bc9268c",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223332548",
+      "createdAt": "2026-10-08T19:35:24Z",
+      "title": "Preserve undeclared domains in scoped evidence",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223354329"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223408699,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1b5c307a95620901a5045f257c762e8f8c69c89e",
+      "originalCommit": "1b5c307a95620901a5045f257c762e8f8c69c89e",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408699",
+      "createdAt": "2026-10-08T19:43:37Z",
+      "title": "Do not infer project ownership from a declared hostname",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223436511"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223483353,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "67823c3adf3d2271ba3dd3567bf2ae20bd90ce13",
+      "originalCommit": "67823c3adf3d2271ba3dd3567bf2ae20bd90ce13",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483353",
+      "createdAt": "2026-10-08T19:52:00Z",
+      "title": "Require verified paths before deriving subscription ownership",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223500444"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223483364,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "67823c3adf3d2271ba3dd3567bf2ae20bd90ce13",
+      "originalCommit": "67823c3adf3d2271ba3dd3567bf2ae20bd90ce13",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483364",
+      "createdAt": "2026-10-08T19:52:00Z",
+      "title": "Verify Plesk web-service records before certifying names",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223500627"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223483370,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "6e7417fa989d09a90be87cde01294743b58710f4",
+      "originalCommit": "67823c3adf3d2271ba3dd3567bf2ae20bd90ce13",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223483370",
+      "createdAt": "2026-10-08T19:52:00Z",
+      "title": "Separate projects that share one Plesk subscription",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223500816"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223561079,
+      "severityLabel": "P1",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "54d6a428694034e358503be75126f8391d69c669",
+      "originalCommit": "54d6a428694034e358503be75126f8391d69c669",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223561079",
+      "createdAt": "2026-10-08T20:00:47Z",
+      "title": "Require a valid IP binding before certifying the domain",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223573935"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 68,
+      "reviewCommentId": 3901271450,
+      "severityLabel": "P2",
+      "originalPath": "src/operationalMemory/sessionService.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "f3b4bacd1d8a6975d33c949372cda6f1d1d2d523",
+      "originalCommit": "33384bf03752bc16d5317658822741067b3cd729",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/68#discussion_r3901271450",
+      "createdAt": "2026-09-01T06:12:55Z",
+      "title": "Unbind the transport when context validation fails",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/68#discussion_r3901308727"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 70,
+      "reviewCommentId": 3906980224,
+      "severityLabel": "P2",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "59de3687bf1b2439a24f092257236fb3f559feee",
+      "originalCommit": "fcf8b16e7fd05b2026ad512e71659d37ffc9387e",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906980224",
+      "createdAt": "2026-09-01T18:10:29Z",
+      "title": "Demote the obsolete current checkpoint",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906997793"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 70,
+      "reviewCommentId": 3907013491,
+      "severityLabel": "P2",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "8cc72937617ff3be42edbd02c799b674f7c8e80e",
+      "originalCommit": "8cc72937617ff3be42edbd02c799b674f7c8e80e",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3907013491",
+      "createdAt": "2026-09-01T18:14:53Z",
+      "title": "Keep the restart orientation within A2.1",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/70#discussion_r3908977759"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 73,
+      "reviewCommentId": 3961128036,
+      "severityLabel": "P2",
+      "originalPath": "src/tools/durableAccounts.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "631b5070f201950d2cdcc73363df8004d4ab5fec",
+      "originalCommit": "eca6d5b79f7fcc5f2aff94541bb763431271b629",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/73#discussion_r3961128036",
+      "createdAt": "2026-09-08T18:41:57Z",
+      "title": "Verify organization membership before marking it accessible",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/73#discussion_r3965342651"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 73,
+      "reviewCommentId": 3961128049,
+      "severityLabel": "P2",
+      "originalPath": "src/github/identityResolution.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "631b5070f201950d2cdcc73363df8004d4ab5fec",
+      "originalCommit": "eca6d5b79f7fcc5f2aff94541bb763431271b629",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/73#discussion_r3961128049",
+      "createdAt": "2026-09-08T18:41:57Z",
+      "title": "Restrict accessible contexts to the selected credential",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/73#discussion_r3965342777"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 73,
+      "reviewCommentId": 3965370237,
+      "severityLabel": "P2",
+      "originalPath": "src/github/identityResolution.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "9b1a572ab0362aeefa5e13f425225e1f510704b7",
+      "originalCommit": "9b1a572ab0362aeefa5e13f425225e1f510704b7",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/73#discussion_r3965370237",
+      "createdAt": "2026-09-09T06:39:35Z",
+      "title": "Compare OAuth principal IDs exactly",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 74,
+      "reviewCommentId": 3965510821,
+      "severityLabel": "P2",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "0e037ceeae05dc342f99ba2ae58761dc8e892f7e",
+      "originalCommit": "53ffd1209a2976bb4f536d5cfe6a2c6cc05a5789",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/74#discussion_r3965510821",
+      "createdAt": "2026-09-09T06:57:29Z",
+      "title": "Reconcile the stale B1 delivery status",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/74#discussion_r3972605218"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 75,
+      "reviewCommentId": 3994244405,
+      "severityLabel": "P2",
+      "originalPath": "src/github/registry.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+      "originalCommit": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/75#discussion_r3994244405",
+      "createdAt": "2026-09-11T23:43:29Z",
+      "title": "Reject malformed repository identifiers before reporting NONE",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 75,
+      "reviewCommentId": 3994244409,
+      "severityLabel": "P2",
+      "originalPath": "tests/githubRepositoryResolution.test.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+      "originalCommit": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/75#discussion_r3994244409",
+      "createdAt": "2026-09-11T23:43:29Z",
+      "title": "Run the new repository test suites in CI",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 76,
+      "reviewCommentId": 3994289898,
+      "severityLabel": "P2",
+      "originalPath": "TODO.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "f72e95879f0a1f1c6813f1042677e01c5a306be6",
+      "originalCommit": "f72e95879f0a1f1c6813f1042677e01c5a306be6",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/76#discussion_r3994289898",
+      "createdAt": "2026-09-11T23:55:35Z",
+      "title": "Restore session closure to the B2 checklist",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/76#discussion_r3994541043"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 79,
+      "reviewCommentId": 3995271105,
+      "severityLabel": "P2",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "ced6e4d374eb75dabfaa958650f9b26ac2dd3d5f",
+      "originalCommit": "ced6e4d374eb75dabfaa958650f9b26ac2dd3d5f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/79#discussion_r3995271105",
+      "createdAt": "2026-09-12T05:33:41Z",
+      "title": "Update the stale current-task projections",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 83,
+      "reviewCommentId": 4000720246,
+      "severityLabel": "P2",
+      "originalPath": "src/github/registryV2.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "424508e244763fa00705b207daf834e7e2bdd1f0",
+      "originalCommit": "424508e244763fa00705b207daf834e7e2bdd1f0",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/83#discussion_r4000720246",
+      "createdAt": "2026-09-13T19:59:53Z",
+      "title": "Require current credential evidence before returning READY",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 83,
+      "reviewCommentId": 4000720250,
+      "severityLabel": "P2",
+      "originalPath": "src/github/registryV2.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "424508e244763fa00705b207daf834e7e2bdd1f0",
+      "originalCommit": "424508e244763fa00705b207daf834e7e2bdd1f0",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/83#discussion_r4000720250",
+      "createdAt": "2026-09-13T19:59:53Z",
+      "title": "Reject ambiguous connections instead of selecting the first",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 83,
+      "reviewCommentId": 4000720255,
+      "severityLabel": "P2",
+      "originalPath": "src/github/registryV2.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "424508e244763fa00705b207daf834e7e2bdd1f0",
+      "originalCommit": "424508e244763fa00705b207daf834e7e2bdd1f0",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/83#discussion_r4000720255",
+      "createdAt": "2026-09-13T19:59:53Z",
+      "title": "Require successful health-check evidence before READY",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 87,
+      "reviewCommentId": 4010868864,
+      "severityLabel": "P2",
+      "originalPath": "src/operationalMemory/types.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "289b3b71c8352738395bf290bc1ae10dc405ee15",
+      "originalCommit": "ae7bec13331d50414d3723855cb38888a0476725",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/87#discussion_r4010868864",
+      "createdAt": "2026-09-15T00:37:28Z",
+      "title": "Bind the attestation to its containing session",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/87#discussion_r4011143197"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 87,
+      "reviewCommentId": 4010868870,
+      "severityLabel": "P2",
+      "originalPath": "src/operationalMemory/types.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "289b3b71c8352738395bf290bc1ae10dc405ee15",
+      "originalCommit": "ae7bec13331d50414d3723855cb38888a0476725",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/87#discussion_r4010868870",
+      "createdAt": "2026-09-15T00:37:28Z",
+      "title": "Bound the attestation validity interval",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/87#discussion_r4011144248"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 95,
+      "reviewCommentId": 4057111455,
+      "severityLabel": "P2",
+      "originalPath": "src/tools/githubLifecycle.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "e176e63230d45f4d7c2cfcc185d9ede780f4c9ef",
+      "originalCommit": "938a7f01b4404c7980711b372746d08c3861f6f7",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/95#discussion_r4057111455",
+      "createdAt": "2026-09-20T13:58:23Z",
+      "title": "Preserve existing Git modes when replacing files",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/95#discussion_r4057134392"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 95,
+      "reviewCommentId": 4057140299,
+      "severityLabel": "P2",
+      "originalPath": "src/governedContext/github.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+      "originalCommit": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/95#discussion_r4057140299",
+      "createdAt": "2026-09-20T14:11:27Z",
+      "title": "Exclude dismissed reviews from exact-head calculation",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 95,
+      "reviewCommentId": 4057140302,
+      "severityLabel": "P2",
+      "originalPath": "src/governedWorkflow/resolvers/runtime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+      "originalCommit": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/95#discussion_r4057140302",
+      "createdAt": "2026-09-20T14:11:27Z",
+      "title": "Deduplicate runtime identities before deriving cardinality",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 96,
+      "reviewCommentId": 4057392529,
+      "severityLabel": "P2",
+      "originalPath": "PRODUCTION_STATE.json",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d112358d1f13757fdace7e1d3fd73b8d7922cadb",
+      "originalCommit": "d112358d1f13757fdace7e1d3fd73b8d7922cadb",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/96#discussion_r4057392529",
+      "createdAt": "2026-09-20T16:13:57Z",
+      "title": "Refresh the Markdown inventory with the current snapshot",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 97,
+      "reviewCommentId": 4057453669,
+      "severityLabel": "P2",
+      "originalPath": "docs/gwc/canonical-memory/current.json",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "18d93abf2d576d93a985b8c004d820d43f304090",
+      "originalCommit": "18d93abf2d576d93a985b8c004d820d43f304090",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/97#discussion_r4057453669",
+      "createdAt": "2026-09-20T16:41:51Z",
+      "title": "Reconcile the required GWC bootstrap guide",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 102,
+      "reviewCommentId": 4057787640,
+      "severityLabel": "P2",
+      "originalPath": ".github/workflows/mcp-readonly-evidence.yml",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "844f042de95ef8aa103095770139b3258184b3c6",
+      "originalCommit": "844f042de95ef8aa103095770139b3258184b3c6",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/102#discussion_r4057787640",
+      "createdAt": "2026-09-20T19:03:56Z",
+      "title": "Accept the server's bounded truncation result",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 133,
+      "reviewCommentId": 4074337425,
+      "severityLabel": "P2",
+      "originalPath": "PRODUCTION_STATE.json",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "cf77ebe30de0c4dd961a89faefe282a70de5367d",
+      "originalCommit": "cf77ebe30de0c4dd961a89faefe282a70de5367d",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/133#discussion_r4074337425",
+      "createdAt": "2026-09-22T17:11:27Z",
+      "title": "Keep the AF-09 status fields consistent",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 136,
+      "reviewCommentId": 4075788759,
+      "severityLabel": "P2",
+      "originalPath": "src/operationalMemory/operationalAudit.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "68f2305f11e312fc67c71bc68ccc917d958b5d5a",
+      "originalCommit": "68f2305f11e312fc67c71bc68ccc917d958b5d5a",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/136#discussion_r4075788759",
+      "createdAt": "2026-09-22T19:50:15Z",
+      "title": "Rebuild checkpoint windows after process restart",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 136,
+      "reviewCommentId": 4075788768,
+      "severityLabel": "P2",
+      "originalPath": "src/operationalMemory/operationalAudit.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "68f2305f11e312fc67c71bc68ccc917d958b5d5a",
+      "originalCommit": "68f2305f11e312fc67c71bc68ccc917d958b5d5a",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/136#discussion_r4075788768",
+      "createdAt": "2026-09-22T19:50:15Z",
+      "title": "Make checkpoint snapshot and clearing atomic",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 136,
+      "reviewCommentId": 4075788775,
+      "severityLabel": "P2",
+      "originalPath": "src/operationalMemory/operationalAudit.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "68f2305f11e312fc67c71bc68ccc917d958b5d5a",
+      "originalCommit": "68f2305f11e312fc67c71bc68ccc917d958b5d5a",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/136#discussion_r4075788775",
+      "createdAt": "2026-09-22T19:50:15Z",
+      "title": "Evict event windows for terminal sessions",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 139,
+      "reviewCommentId": 4076007324,
+      "severityLabel": "P2",
+      "originalPath": "PRODUCTION_STATE.json",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d614b4833704f030c23668d16d8cefbcf6452a0b",
+      "originalCommit": "d614b4833704f030c23668d16d8cefbcf6452a0b",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/139#discussion_r4076007324",
+      "createdAt": "2026-09-22T20:11:21Z",
+      "title": "Reconcile the duplicate governance-consistency status",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 145,
+      "reviewCommentId": 4077048549,
+      "severityLabel": "P2",
+      "originalPath": "docs/audits/2026-09-22-deferred-github-capability-overlap.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "217443b16920b09a792b3bdf44883bcc6868115f",
+      "originalCommit": "217443b16920b09a792b3bdf44883bcc6868115f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/145#discussion_r4077048549",
+      "createdAt": "2026-09-22T22:11:53Z",
+      "title": "Keep commit-diff support for root commits",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 168,
+      "reviewCommentId": 4096109783,
+      "severityLabel": "P2",
+      "originalPath": "docs/governance/universal-agent-coordination-plan.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "65649a101cfed2eabe67a3779db76abc57cf7ebc",
+      "originalCommit": "65649a101cfed2eabe67a3779db76abc57cf7ebc",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/168#discussion_r4096109783",
+      "createdAt": "2026-09-24T16:43:29Z",
+      "title": "Reconcile the backlog before declaring UAC complete",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 168,
+      "reviewCommentId": 4096109797,
+      "severityLabel": "P2",
+      "originalPath": "PRODUCTION_STATE.json",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "65649a101cfed2eabe67a3779db76abc57cf7ebc",
+      "originalCommit": "65649a101cfed2eabe67a3779db76abc57cf7ebc",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/168#discussion_r4096109797",
+      "createdAt": "2026-09-24T16:43:30Z",
+      "title": "Do not refresh unverified origin/main state",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 168,
+      "reviewCommentId": 4096109805,
+      "severityLabel": "P2",
+      "originalPath": "PRODUCTION_STATE.json",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "65649a101cfed2eabe67a3779db76abc57cf7ebc",
+      "originalCommit": "65649a101cfed2eabe67a3779db76abc57cf7ebc",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/168#discussion_r4096109805",
+      "createdAt": "2026-09-24T16:43:30Z",
+      "title": "Demote the unobserved Live State snapshot",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 168,
+      "reviewCommentId": 4096109811,
+      "severityLabel": "P2",
+      "originalPath": "SUIVI.md",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "65649a101cfed2eabe67a3779db76abc57cf7ebc",
+      "originalCommit": "65649a101cfed2eabe67a3779db76abc57cf7ebc",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/168#discussion_r4096109811",
+      "createdAt": "2026-09-24T16:43:30Z",
+      "title": "Record the terminal action in DECISIONS_LOG",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 176,
+      "reviewCommentId": 4101130530,
+      "severityLabel": "P2",
+      "originalPath": "src/tools/githubControlPlaneRead.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "ed3428148d9199240f04818ed6307129ff27d965",
+      "originalCommit": "ed3428148d9199240f04818ed6307129ff27d965",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/176#discussion_r4101130530",
+      "createdAt": "2026-09-25T04:35:23Z",
+      "title": "Include classic branch-protection requirements",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 176,
+      "reviewCommentId": 4101130538,
+      "severityLabel": "P2",
+      "originalPath": "src/tools/githubControlPlaneRead.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "ed3428148d9199240f04818ed6307129ff27d965",
+      "originalCommit": "ed3428148d9199240f04818ed6307129ff27d965",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/176#discussion_r4101130538",
+      "createdAt": "2026-09-25T04:35:23Z",
+      "title": "Preserve required-check integration bindings",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 176,
+      "reviewCommentId": 4101130544,
+      "severityLabel": "P2",
+      "originalPath": "src/tools/githubControlPlaneRead.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "ed3428148d9199240f04818ed6307129ff27d965",
+      "originalCommit": "ed3428148d9199240f04818ed6307129ff27d965",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/176#discussion_r4101130544",
+      "createdAt": "2026-09-25T04:35:23Z",
+      "title": "Include legacy commit statuses in required-check evaluation",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 176,
+      "reviewCommentId": 4101130548,
+      "severityLabel": "P2",
+      "originalPath": "src/tools/githubControlPlaneRead.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "ed3428148d9199240f04818ed6307129ff27d965",
+      "originalCommit": "ed3428148d9199240f04818ed6307129ff27d965",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/176#discussion_r4101130548",
+      "createdAt": "2026-09-25T04:35:23Z",
+      "title": "Do not silently discard rulesets after the twentieth",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 188,
+      "reviewCommentId": 4103981290,
+      "severityLabel": "P2",
+      "originalPath": "src/deploy/githubOidc.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "bd4126de400fe5f894643b4a2939c382bc760385",
+      "originalCommit": "cafccd204cbdc4b6d614bea97b48a874e03a19a6",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/188#discussion_r4103981290",
+      "createdAt": "2026-09-25T11:18:52Z",
+      "title": "Pin governed owners to immutable GitHub IDs",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 188,
+      "reviewCommentId": 4104023541,
+      "severityLabel": "P2",
+      "originalPath": "src/ssh/repositoryCertificate.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "bd4126de400fe5f894643b4a2939c382bc760385",
+      "originalCommit": "bd4126de400fe5f894643b4a2939c382bc760385",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/188#discussion_r4104023541",
+      "createdAt": "2026-09-25T11:24:05Z",
+      "title": "Keep the certificate validity interval within ten minutes",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 188,
+      "reviewCommentId": 4104023553,
+      "severityLabel": "P2",
+      "originalPath": "src/ssh/repositoryCertificate.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "bd4126de400fe5f894643b4a2939c382bc760385",
+      "originalCommit": "bd4126de400fe5f894643b4a2939c382bc760385",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/188#discussion_r4104023553",
+      "createdAt": "2026-09-25T11:24:05Z",
+      "title": "Return the username authorized by the certificate",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4208798258,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/revisionAdmission.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "0155d5ae5e29874155f66a12eff3e133fcbfcbe5",
+      "originalCommit": "0155d5ae5e29874155f66a12eff3e133fcbfcbe5",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798258",
+      "createdAt": "2026-10-07T15:35:05Z",
+      "title": "Encode slash-bearing branch names as one path parameter",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210753703"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4208798290,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/wiring.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "0155d5ae5e29874155f66a12eff3e133fcbfcbe5",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798290",
+      "createdAt": "2026-10-07T15:35:05Z",
+      "title": "Preserve unavailable target evidence in the listing",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210754494"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4210848153,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/routes.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "deab8727f3b66d91fb41c8a3c36e52403f10be6f",
+      "originalCommit": "deab8727f3b66d91fb41c8a3c36e52403f10be6f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848153",
+      "createdAt": "2026-10-07T19:04:40Z",
+      "title": "Do not report unwritten attestations as successful",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211000856"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4210848164,
+      "severityLabel": "P2",
+      "originalPath": "src/github/connection.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "deab8727f3b66d91fb41c8a3c36e52403f10be6f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848164",
+      "createdAt": "2026-10-07T19:04:40Z",
+      "title": "Preserve configured GitHub API paths for archive downloads",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211001357"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4210848175,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/routes.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "deab8727f3b66d91fb41c8a3c36e52403f10be6f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848175",
+      "createdAt": "2026-10-07T19:04:40Z",
+      "title": "Require the complete Compose service set before NO_OP",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211001847"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4211071241,
+      "severityLabel": "P2",
+      "originalPath": "src/server.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "3f1098b299ef0937d162ad57ffa8163d755d54a9",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211071241",
+      "createdAt": "2026-10-07T19:27:21Z",
+      "title": "Reject the engine-wide default bridge network",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211422177"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213278811,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/projectRuntime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "c6f8921355914c6b45b5b9e38f74135a98a9a935",
+      "originalCommit": "c6f8921355914c6b45b5b9e38f74135a98a9a935",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278811",
+      "createdAt": "2026-10-08T00:07:16Z",
+      "title": "Track expected container counts, not just service names",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213302554"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213278815,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "c6f8921355914c6b45b5b9e38f74135a98a9a935",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278815",
+      "createdAt": "2026-10-08T00:07:16Z",
+      "title": "Bound retained artifacts before accepting repeat submissions",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213303005"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213356779,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "cbd93f9f86b2f7d707a3c4039393254d956eaa80",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356779",
+      "createdAt": "2026-10-08T00:20:24Z",
+      "title": "Reject or activate profiled services",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213382676"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213445692,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1268e1b7073cef641b1b3c5af67d574afa4a85ed",
+      "originalCommit": "1268e1b7073cef641b1b3c5af67d574afa4a85ed",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445692",
+      "createdAt": "2026-10-08T00:36:29Z",
+      "title": "Check capacity on the target filesystem",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213511655"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213568187,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/projectRuntime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "80cd60e227cf5e8e2bd537b7bac41992f60d2789",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568187",
+      "createdAt": "2026-10-08T01:00:26Z",
+      "title": "Materialize bind sources before recording the tree digest",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213590608"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4213644019,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "341192e76af67efed9069fd717c6396a46b26edf",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644019",
+      "createdAt": "2026-10-08T01:15:54Z",
+      "title": "Run retention and capacity checks before downloading",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213664858"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4216769973,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "99a4578822970414ea45d344c31a895a9cc4348f",
+      "originalCommit": "6665fe4ac54adc3637f3c35f3c6cecb2d11fc506",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769973",
+      "createdAt": "2026-10-08T08:36:38Z",
+      "title": "Attest the final revision admission",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216802716"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4216890746,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "99a4578822970414ea45d344c31a895a9cc4348f",
+      "originalCommit": "99a4578822970414ea45d344c31a895a9cc4348f",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890746",
+      "createdAt": "2026-10-08T08:50:01Z",
+      "title": "Fail activation when image inspection is incomplete",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216922003"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217047816,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/composePolicy.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "3328900a44dffac2ee2777bfc59e6076066656a7",
+      "originalCommit": "3328900a44dffac2ee2777bfc59e6076066656a7",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047816",
+      "createdAt": "2026-10-08T09:07:15Z",
+      "title": "Reject disabling no-new-privileges",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217081979"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217047826,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "3328900a44dffac2ee2777bfc59e6076066656a7",
+      "originalCommit": "3328900a44dffac2ee2777bfc59e6076066656a7",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047826",
+      "createdAt": "2026-10-08T09:07:15Z",
+      "title": "Fail activation when the image record cannot be written",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217082480"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217047841,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/projectRuntime.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "3328900a44dffac2ee2777bfc59e6076066656a7",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047841",
+      "createdAt": "2026-10-08T09:07:15Z",
+      "title": "Revalidate the marker after the health gate",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217083430"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4217316122,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/runtimeExecutor.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "853e10ee6008c53869e40444ad4472ef1f1f1665",
+      "originalCommit": "853e10ee6008c53869e40444ad4472ef1f1f1665",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316122",
+      "createdAt": "2026-10-08T09:37:37Z",
+      "title": "Fail activation when the trusted marker record is unreadable",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222198377"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 261,
+      "reviewCommentId": 4222289810,
+      "severityLabel": "P2",
+      "originalPath": "src/provisioning/routes.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "originalCommit": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222289810",
+      "createdAt": "2026-10-08T17:44:29Z",
+      "title": "Propagate the completed job status from the polling route",
+      "replyCount": 0,
+      "replyUrls": [],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223040611,
+      "severityLabel": "P2",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "202e7e0ed866e65827b4841fc8c114d47ef1ac37",
+      "originalCommit": "202e7e0ed866e65827b4841fc8c114d47ef1ac37",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223040611",
+      "createdAt": "2026-10-08T19:04:53Z",
+      "title": "Provide observations for resolved S2 projects",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223070675"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223150092,
+      "severityLabel": "P2",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "469dd79db123a7f48bc31196348d3d49bb4a5124",
+      "originalCommit": "469dd79db123a7f48bc31196348d3d49bb4a5124",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223150092",
+      "createdAt": "2026-10-08T19:15:40Z",
+      "title": "Validate raw inventory names before trimming",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223167673"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223215955,
+      "severityLabel": "P2",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "b601c430b20b85130641a34f2b19f5d7eb08ce8e",
+      "originalCommit": "b601c430b20b85130641a34f2b19f5d7eb08ce8e",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223215955",
+      "createdAt": "2026-10-08T19:22:31Z",
+      "title": "Accept Punycode top-level domains in the inventory",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223233535"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223283749,
+      "severityLabel": "P2",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1162f853e42400873b52b16e7a3ac4d0f7f3048a",
+      "originalCommit": "1162f853e42400873b52b16e7a3ac4d0f7f3048a",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283749",
+      "createdAt": "2026-10-08T19:29:56Z",
+      "title": "Include enabled www hostnames in the inventory",
+      "replyCount": 2,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223300335",
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4227281168"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223283758,
+      "severityLabel": "P2",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "6e7417fa989d09a90be87cde01294743b58710f4",
+      "originalCommit": "1162f853e42400873b52b16e7a3ac4d0f7f3048a",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283758",
+      "createdAt": "2026-10-08T19:29:56Z",
+      "title": "Validate Punycode labels instead of matching their prefix",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223299929"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223283764,
+      "severityLabel": "P2",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1162f853e42400873b52b16e7a3ac4d0f7f3048a",
+      "originalCommit": "1162f853e42400873b52b16e7a3ac4d0f7f3048a",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223283764",
+      "createdAt": "2026-10-08T19:29:57Z",
+      "title": "Age each inventory from its own observation time",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223300143"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223408713,
+      "severityLabel": "P2",
+      "originalPath": "src/liveState/collect.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1b5c307a95620901a5045f257c762e8f8c69c89e",
+      "originalCommit": "1b5c307a95620901a5045f257c762e8f8c69c89e",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408713",
+      "createdAt": "2026-10-08T19:43:37Z",
+      "title": "Preserve timestamps for observations collected before this wait",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223436682"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223408720,
+      "severityLabel": "P2",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1b5c307a95620901a5045f257c762e8f8c69c89e",
+      "originalCommit": "1b5c307a95620901a5045f257c762e8f8c69c89e",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408720",
+      "createdAt": "2026-10-08T19:43:37Z",
+      "title": "Bound the Plesk query before streaming its output",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223436908"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223408732,
+      "severityLabel": "P2",
+      "originalPath": "src/liveState/servedDomains.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "1b5c307a95620901a5045f257c762e8f8c69c89e",
+      "originalCommit": "1b5c307a95620901a5045f257c762e8f8c69c89e",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408732",
+      "createdAt": "2026-10-08T19:43:37Z",
+      "title": "Canonicalize Unicode domain declarations to Punycode",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223437127"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223408744,
+      "severityLabel": "P2",
+      "originalPath": "src/github/domainResolution.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "6e7417fa989d09a90be87cde01294743b58710f4",
+      "originalCommit": "1b5c307a95620901a5045f257c762e8f8c69c89e",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223408744",
+      "createdAt": "2026-10-08T19:43:37Z",
+      "title": "Reconcile the delivered authority with the canonical contract",
+      "replyCount": 1,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223437330"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    },
+    {
+      "prNumber": 267,
+      "reviewCommentId": 4223621173,
+      "severityLabel": "P2",
+      "originalPath": "src/liveState/collect.ts",
+      "pathExistsOnCurrentMain": true,
+      "reviewedCommit": "6e7417fa989d09a90be87cde01294743b58710f4",
+      "originalCommit": "6e7417fa989d09a90be87cde01294743b58710f4",
+      "sourceUrl": "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223621173",
+      "createdAt": "2026-10-08T20:07:43Z",
+      "title": "Timestamp each source at observation time",
+      "replyCount": 2,
+      "replyUrls": [
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4223812923",
+        "https://github.com/Patricked-code/MCP/pull/267#discussion_r4227281270"
+      ],
+      "classification": "HISTORICAL_REVIEW_FINDING_NOT_RECHECKED",
+      "resolved": "UNKNOWN",
+      "nextVerification": "Read exact current module and targeted tests, compare review final PR commit and deploy evidence; do not auto-open duplicate bug or replay closed fix."
+    }
+  ]
+}
