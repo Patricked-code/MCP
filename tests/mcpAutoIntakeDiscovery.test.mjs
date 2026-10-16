@@ -4,7 +4,7 @@ import {
   CANONICAL_REPOSITORY,
   classifyEvent,
   decideReceipt,
-  isOwnerPermission,
+  isIntakeSubmitterPermission,
   programIntakeStatus,
   receiptMarker,
   renderReceipt
@@ -34,14 +34,15 @@ test('owner-created program issue detected; full body hashed but not republished
   assert.match(result.body, /Ni Task runtime/);
 });
 
-test('maintain allowed; write/triage/read/none cannot trigger owner intake', () => {
-  assert.equal(isOwnerPermission('admin'), true);
-  assert.equal(isOwnerPermission('maintain'), true);
-  for (const level of ['write', 'triage', 'read', 'none', '', null]) {
-    assert.equal(isOwnerPermission(level), false);
+test('admin/maintain/write can submit a discovery candidate, with no runtime grant', () => {
+  assert.equal(isIntakeSubmitterPermission('admin'), true);
+  assert.equal(isIntakeSubmitterPermission('maintain'), true);
+  assert.equal(isIntakeSubmitterPermission('write'), true);
+  for (const level of ['triage', 'read', 'none', '', null]) {
+    assert.equal(isIntakeSubmitterPermission(level), false);
     const candidate = classifyEvent(event, 'issues', repo, actor);
     assert.deepEqual(decideReceipt({ candidate, permission: level, program: sampleProgram }),
-      { action: 'IGNORE', reason: 'NOT_OWNER_AUTHORIZED' });
+      { action: 'IGNORE', reason: 'NOT_GITHUB_SUBMITTER_AUTHORIZED' });
   }
 });
 
