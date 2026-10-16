@@ -366,6 +366,11 @@ export function createOperationalAudit(
           }
         }
       } catch {
+        // The store closed the session whether or not the journal recorded it: its window can
+        // never be released by a checkpoint either way.
+        if (input.type === 'session.closed' && event.governedSessionId) {
+          pendingEventIds.delete(event.governedSessionId);
+        }
         try { onError?.(input.type); } catch { /* audit failure remains isolated */ }
       }
     }
