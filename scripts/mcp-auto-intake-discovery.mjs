@@ -73,8 +73,9 @@ export function classifyEvent(event, eventName, repository, actor) {
   };
 }
 
-export function isOwnerPermission(permission) {
-  return permission === 'admin' || permission === 'maintain';
+export function isIntakeSubmitterPermission(permission) {
+  // GitHub WRITE authorizes proposing an intake, never executing it.
+  return permission === 'admin' || permission === 'maintain' || permission === 'write';
 }
 
 export function programIntakeStatus(program, source) {
@@ -101,7 +102,7 @@ export function renderReceipt(source, intake) {
     '',
     '- **Source :** ' + source.sourceUrl,
     '- **Événement GitHub :** ' + source.action,
-    '- **Soumis par :** \`' + source.actor + '\` (permission \`admin/maintain\` vérifiée à l’exécution)',
+    '- **Soumis par :** \`' + source.actor + '\` (permission de contribution GitHub \`write|maintain|admin\` vérifiée ; aucun droit runtime accordé)',
     '- **Intitulé :** ' + cleanTitle,
     '- **Empreinte SHA-256 du contenu :** \`' + source.digest + '\`',
     '- **Backlog V2 :** \`' + intake.status + '\`',
@@ -121,7 +122,7 @@ export function renderReceipt(source, intake) {
 
 export function decideReceipt({ candidate, permission, program }) {
   if (!candidate) return { action: 'IGNORE', reason: 'NOT_ALLOWLISTED_EVENT' };
-  if (!isOwnerPermission(permission)) return { action: 'IGNORE', reason: 'NOT_OWNER_AUTHORIZED' };
+  if (!isIntakeSubmitterPermission(permission)) return { action: 'IGNORE', reason: 'NOT_GITHUB_SUBMITTER_AUTHORIZED' };
   const intake = programIntakeStatus(program, candidate);
   return { action: 'UPSERT_RECEIPT', intake, body: renderReceipt(candidate, intake) };
 }
