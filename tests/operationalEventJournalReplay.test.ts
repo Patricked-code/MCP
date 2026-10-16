@@ -1,0 +1,126 @@
+import assert from 'node:assert/strict';
+import { constants } from 'node:fs';
+import { mkdtemp, rm, writeFile, readFile, symlink } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import test from 'node:test';
+import { createOperationalEventJournal } from '../src/operationalMemory/eventJournal.js';
+import { readSessionJournalPage, readSessionEventsSince } from '../src/operationalMemory/eventJournalReader.js';
+
+const A = '11111111-1111-4111-8111-111111111111';
+const B = '22222222-2222-4222-8222-222222222222';
+
+async function fixture(maxBytes = 100_000, archives = 3) {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-bus-journal-reader-'));
+  const filePath = join(directory, 'events.jsonl');
+  const writer = createOperationalEventJournal({ filePath, maxBytes, archives });
+  return {
+    writer, filePath, archives, directory,
+    cleanup: () => rm(directory, { recursive: true, force: true }),
+    options: (session = A) => ({ filePath, archives, governedSessionId: session, maxSegmentBytes: 1024 * 1024 })
+  };
+}
+
+test('RED BUS replay: cursor is eventId, filtered by session, ordered and bounded across sessions', async () => {
+  const f = await fixture();
+  try {
+    const anchor = await f.writer.append({ type: 'session.opened', governedSessionId: A, metadata: { status: 'ACTIVE' } });
+    await f.writer.append({ type: 'session.opened', governedSessionId: B, metadata: { status: 'ACTIVE' } });
+    const first = await f.writer.append({ type: 'session.heartbeat', governedSessionId: A, metadata: { status: 'ACTIVE' } });
+    await f.writer.append({ type: 'session.heartbeat', governedSessionId: B, metadata: { status: 'ACTIVE' } });
+    const second = await f.writer.append({ type: 'session.paused', governedSessionId: A, metadata: { status: 'PAUSED' } });
+    const page = await readSessionJournalPage({ ...f.options(), afterEventId: anchor.eventId, maxEvents: 1 });
+    assert.deepEqual(page, { status: 'OK', eventIds: [first.eventId], nextCursor: first.eventId, hasMore: true, complete: false });
+    const next = await readSessionJournalPage({ ...f.options(), afterEventId: page.nextCursor!, maxEvents: 1 });
+    assert.deepEqual(next, { status: 'OK', eventIds: [second.eventId], nextCursor: second.eventId, hasMore: false, complete: true });
+  } finally { await f.cleanup(); }
+});
+
+test('RED BUS replay: missing cursor and cross-session cursor fail closed without event leakage', async () => {
+  const f = await fixture();
+  try {
+    const event = await f.writer.append({ type: 'session.opened', governedSessionId: B, metadata: { status: 'OPEN' } });
+    assert.deepEqual(await readSessionJournalPage({ ...f.options(), afterEventId: event.eventId }), {
+      status: 'CURSOR_UNAVAILABLE', eventIds: [], nextCursor: null, hasMore: false, complete: false
+    });
+    assert.deepEqual(await readSessionJournalPage({ ...f.options(), afterEventId: '99999999-9999-4999-8999-999999999999' }), {
+      status: 'CURSOR_UNAVAILABLE', eventIds: [], nextCursor: null, hasMore: false, complete: false
+    });
+  } finally { await f.cleanup(); }
+});
+
+test('RED BUS replay: R44 interface replays only session events after last retained checkpoint', async () => {
+  const f = await fixture();
+  try {
+    await f.writer.append({ type: 'session.opened', governedSessionId: A, metadata: { status: 'ACTIVE' } });
+    const checkpoint = await f.writer.append({ type: 'checkpoint.created', governedSessionId: A, metadata: { checkpointId: B } });
+    const one = await f.writer.append({ type: 'session.heartbeat', governedSessionId: A, metadata: { status: 'ACTIVE' } });
+    await f.writer.append({ type: 'session.heartbeat', governedSessionId: B, metadata: { status: 'ACTIVE' } });
+    const two = await f.writer.append({ type: 'task.discovered', governedSessionId: A, metadata: { taskId: 'TASK-20261016-001' } });
+    const page = await readSessionJournalPage({ ...f.options(), afterEventId: checkpoint.eventId });
+    assert.deepEqual(page.eventIds, [one.eventId, two.eventId]);
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT'), { eventIds: [one.eventId, two.eventId], complete: true, reason: 'OK' });
+  } finally { await f.cleanup(); }
+});
+
+test('RED BUS replay: R44 never silently fabricates a complete window without retained checkpoint', async () => {
+  const f = await fixture();
+  try {
+    await f.writer.append({ type: 'session.opened', governedSessionId: A, metadata: { status: 'OPEN' } });
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT'), {
+      eventIds: [], complete: false, reason: 'CURSOR_UNAVAILABLE'
+    });
+  } finally { await f.cleanup(); }
+});
+
+test('RED BUS replay: rotation discards old cursors and reports unavailability instead of skipped events', async () => {
+  const f = await fixture(300, 2);
+  try {
+    const anchor = await f.writer.append({ type: 'session.opened', governedSessionId: A, metadata: { status: 'ACTIVE' } });
+    for (let i = 0; i < 15; i++) {
+      await f.writer.append({ type: 'session.heartbeat', governedSessionId: A, metadata: { sessionRevision: i } });
+    }
+    assert.deepEqual(await readSessionJournalPage({ ...f.options(), afterEventId: anchor.eventId }), {
+      status: 'CURSOR_UNAVAILABLE', eventIds: [], nextCursor: null, hasMore: false, complete: false
+    });
+  } finally { await f.cleanup(); }
+});
+
+test('RED BUS replay: symlink journal is rejected (no symlink traversal)', async () => {
+  const f = await fixture();
+  try {
+    const target = join(f.directory, 'target.jsonl');
+    await writeFile(target, '[]\n', { mode: 0o600 });
+    await symlink(target, f.filePath);
+    await assert.rejects(readSessionJournalPage({ ...f.options(), afterEventId: A }), /SYMLINK|UNSAFE_JOURNAL/);
+  } finally { await f.cleanup(); }
+});
+
+test('RED BUS replay: corrupt JSONL is rejected, never interpreted as empty or complete', async () => {
+  const f = await fixture();
+  try {
+    await writeFile(f.filePath, '{not valid}\n', { mode: 0o600 });
+    await assert.rejects(readSessionJournalPage({ ...f.options(), afterEventId: A }), /CORRUPT|INVALID/);
+  } finally { await f.cleanup(); }
+});
+
+test('RED BUS replay: a partial checkpoint window beyond 64 returns an explicit incomplete status', async () => {
+  const f = await fixture(100_000);
+  try {
+    await f.writer.append({ type: 'checkpoint.created', governedSessionId: A, metadata: { checkpointId: B } });
+    for (let i = 0; i < 66; i++) {
+      await f.writer.append({ type: 'session.heartbeat', governedSessionId: A, metadata: { sessionRevision: i } });
+    }
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT'), {
+      eventIds: [], complete: false, reason: 'CURSOR_UNAVAILABLE'
+    });
+  } finally { await f.cleanup(); }
+});
+
+test('RED BUS replay: reject a segment larger than its strict read bound', async () => {
+  const f = await fixture(100_000);
+  try {
+    const anchor = await f.writer.append({ type: 'session.opened', governedSessionId: A, metadata: { status: 'OPEN' } });
+    await assert.rejects(readSessionJournalPage({ ...f.options(), afterEventId: anchor.eventId, maxSegmentBytes: 5 }), /BOUNDED|LIMIT/);
+  } finally { await f.cleanup(); }
+});
