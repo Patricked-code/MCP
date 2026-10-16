@@ -86,7 +86,7 @@ function assertInput(input: JournalReplayOptions): { maxEvents: number; maxSegme
 function checkFile(st: Awaited<ReturnType<typeof lstat>>, maxSegmentBytes: number): void {
   if (st.isSymbolicLink()) invalid('BUS_JOURNAL_SYMLINK');
   if (!st.isFile()) invalid('BUS_UNSAFE_JOURNAL_FILE');
-  if ((st.mode & 0o077) !== 0) invalid('BUS_UNSAFE_JOURNAL_PERMISSIONS');
+  if ((Number(st.mode) & 0o077) !== 0) invalid('BUS_UNSAFE_JOURNAL_PERMISSIONS');
   if (st.size > maxSegmentBytes) invalid('BUS_JOURNAL_READ_LIMIT_EXCEEDED');
 }
 
@@ -195,7 +195,7 @@ async function retainedEvents(options: JournalReplayOptions): Promise<Operationa
     }
   }
   const final = await Promise.all(paths.map(p => inspect(p, maxSegmentBytes)));
-  if (initial.some((snapshot, i) => !sameSnapshot(snapshot, final[i]))) {
+  if (initial.some((snapshot, i) => !sameSnapshot(snapshot, final[i] ?? null))) {
     invalid('BUS_JOURNAL_CHANGED_DURING_READ');
   }
   return entries;
@@ -220,7 +220,7 @@ function pageFromEvents(
   return {
     status: 'OK',
     eventIds,
-    nextCursor: eventIds.length ? eventIds[eventIds.length - 1] : anchorId,
+    nextCursor: eventIds.at(-1) ?? anchorId,
     hasMore,
     complete: !hasMore
   };
