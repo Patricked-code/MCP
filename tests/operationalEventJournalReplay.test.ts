@@ -124,3 +124,64 @@ test('RED BUS replay: reject a segment larger than its strict read bound', async
     await assert.rejects(readSessionJournalPage({ ...f.options(), afterEventId: anchor.eventId, maxSegmentBytes: 5 }), /BOUNDED|LIMIT/);
   } finally { await f.cleanup(); }
 });
+
+
+test('BUS replay accepts valid segments above 1 MiB, matching default production writer limits', async () => {
+  const f = await fixture(10_485_760, 5);
+  try {
+    const records = Array.from({ length: 10_000 }, (_, i) => JSON.stringify({
+      schemaVersion: 1,
+      eventId: '77777777-7777-4777-8777-' + String(i).padStart(12, '0'),
+      processSequence: i + 1,
+      occurredAt: '2026-10-16T20:00:00.000Z',
+      type: 'context.read',
+      governedSessionId: A,
+      metadata: { stateVersion: i }
+    }) + '\n').join('');
+    assert.ok(Buffer.byteLength(records) > 1024 * 1024);
+    await writeFile(f.filePath, records, { mode: 0o600 });
+    const page = await readSessionJournalPage({
+      filePath: f.filePath, archives: 5, governedSessionId: A,
+      afterEventId: '77777777-7777-4777-8777-000000000000', maxEvents: 2
+    });
+    assert.equal(page.status, 'OK');
+    assert.deepEqual(page.eventIds, [
+      '77777777-7777-4777-8777-000000000001',
+      '77777777-7777-4777-8777-000000000002'
+    ]);
+    assert.equal(page.hasMore, true);
+    assert.equal(page.complete, false);
+  } finally { await f.cleanup(); }
+});
+
+test('BUS replay refuses an archive symlink rather than following its contents', async () => {
+  const f = await fixture();
+  try {
+    const anchor = await f.writer.append({
+      type: 'session.opened', governedSessionId: A, metadata: { status: 'OPEN' }
+    });
+    const target = join(f.directory, 'older.jsonl');
+    await writeFile(target, 'not a trusted archive\n', { mode: 0o600 });
+    await symlink(target, f.filePath + '.1');
+    await assert.rejects(
+      readSessionJournalPage({ ...f.options(), afterEventId: anchor.eventId }),
+      /SYMLINK|UNSAFE_JOURNAL/
+    );
+  } finally { await f.cleanup(); }
+});
+
+test('BUS replay rejects an archived-only window lacking its active journal', async () => {
+  const f = await fixture();
+  try {
+    const anchor = await f.writer.append({
+      type: 'session.opened', governedSessionId: A, metadata: { status: 'OPEN' }
+    });
+    const snapshot = await readFile(f.filePath);
+    await writeFile(f.filePath + '.1', snapshot, { mode: 0o600 });
+    await rm(f.filePath);
+    await assert.rejects(
+      readSessionJournalPage({ ...f.options(), afterEventId: anchor.eventId }),
+      /SEGMENT_GAP/
+    );
+  } finally { await f.cleanup(); }
+});
