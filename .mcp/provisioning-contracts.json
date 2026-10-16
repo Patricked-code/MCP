@@ -241,6 +241,12 @@
       ]
     },
     {
+      "name": "mcp-auto-intake-discovery.yml",
+      "kind": "WORKFLOW",
+      "class": "NOT_PROVISIONING",
+      "note": "GitHub-only owner-verified mission discovery and idempotent issue receipt; no Task Queue, session, claim, provisioning, or deployment mutation."
+    },
+    {
       "name": "amf_registry_native_export",
       "kind": "MCP_TOOL",
       "class": "PROJECT_BOUND"
