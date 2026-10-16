@@ -176,6 +176,8 @@ async function retainedEvents(options: JournalReplayOptions): Promise<Operationa
     options.filePath + '.' + String(options.archives - k)
   ).concat(options.filePath);
   const initial = await Promise.all(paths.map(p => inspect(p, maxSegmentBytes)));
+  // A vanished active file during rotation is not a complete retained history.
+  if (!initial.at(-1) && initial.some(Boolean)) invalid('BUS_JOURNAL_SEGMENT_GAP');
   let totalBytes = 0;
   const entries: OperationalEvent[] = [];
   const eventIds = new Set<string>();
