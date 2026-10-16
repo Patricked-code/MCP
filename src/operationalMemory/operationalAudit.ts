@@ -350,6 +350,13 @@ export function createOperationalAudit(
               .filter((eventId) => !covered.has(eventId));
             if (remaining.length > 0) pendingEventIds.set(appended.governedSessionId, remaining);
             else pendingEventIds.delete(appended.governedSessionId);
+          } else if (
+            input.type === 'session.closed'
+            || (input.type === 'transport.unbound' && input.reasonCode === 'session_closed')
+          ) {
+            // A closed session never creates another checkpoint, so its window could never be
+            // released: drop it, and do not reopen one for the unbind that follows the close.
+            pendingEventIds.delete(appended.governedSessionId);
           } else {
             const current = pendingEventIds.get(appended.governedSessionId) ?? [];
             pendingEventIds.set(
