@@ -47,9 +47,13 @@ type SnapshotFile = {
 };
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const MAX_TOTAL_BYTES = 16 * 1024 * 1024;
-const DEFAULT_SEGMENT_BYTES = 1024 * 1024;
-const MAX_SEGMENT_BYTES = 2 * 1024 * 1024;
+// Align with src/config/env.ts: default journal segment 10 MiB, max 50 MiB.
+// A single line may exceed maxBytes after rotation on an empty file.
+const DEFAULT_SEGMENT_BYTES = 10_485_760 + 32 * 1024;
+const MAX_SEGMENT_BYTES = 52_428_800 + 32 * 1024;
+// This first bounded reader deliberately refuses larger cumulative snapshots;
+// streaming pagination is required before certifying larger retention windows.
+const MAX_TOTAL_BYTES = 96 * 1024 * 1024;
 const DEFAULT_PAGE_SIZE = 64;
 const MAX_LINE_BYTES = 32 * 1024;
 const MAX_META_KEYS = 16;
