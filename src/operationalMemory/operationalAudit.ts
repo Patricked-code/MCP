@@ -343,7 +343,13 @@ export function createOperationalAudit(
         const appended = await journal.append({ type: input.type, ...event });
         if (appended.governedSessionId) {
           if (input.type === 'checkpoint.created') {
-            pendingEventIds.delete(appended.governedSessionId);
+            // Release only what the checkpoint references: an event appended while it was being
+            // created is not in its snapshot and stays pending for the next checkpoint.
+            const covered = new Set(input.checkpoint.eventIds);
+            const remaining = (pendingEventIds.get(appended.governedSessionId) ?? [])
+              .filter((eventId) => !covered.has(eventId));
+            if (remaining.length > 0) pendingEventIds.set(appended.governedSessionId, remaining);
+            else pendingEventIds.delete(appended.governedSessionId);
           } else {
             const current = pendingEventIds.get(appended.governedSessionId) ?? [];
             pendingEventIds.set(
