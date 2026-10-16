@@ -343,6 +343,19 @@ export function createOperationalAudit(
         const appended = await journal.append({ type: input.type, ...event });
         if (appended.governedSessionId) {
           if (input.type === 'checkpoint.created') {
+            // Release only what the checkpoint references: an event appended while it was being
+            // created is not in its snapshot and stays pending for the next checkpoint.
+            const covered = new Set(input.checkpoint.eventIds);
+            const remaining = (pendingEventIds.get(appended.governedSessionId) ?? [])
+              .filter((eventId) => !covered.has(eventId));
+            if (remaining.length > 0) pendingEventIds.set(appended.governedSessionId, remaining);
+            else pendingEventIds.delete(appended.governedSessionId);
+          } else if (
+            input.type === 'session.closed'
+            || (input.type === 'transport.unbound' && input.reasonCode === 'session_closed')
+          ) {
+            // A closed session never creates another checkpoint, so its window could never be
+            // released: drop it, and do not reopen one for the unbind that follows the close.
             pendingEventIds.delete(appended.governedSessionId);
           } else {
             const current = pendingEventIds.get(appended.governedSessionId) ?? [];
@@ -353,6 +366,11 @@ export function createOperationalAudit(
           }
         }
       } catch {
+        // The store closed the session whether or not the journal recorded it: its window can
+        // never be released by a checkpoint either way.
+        if (input.type === 'session.closed' && event.governedSessionId) {
+          pendingEventIds.delete(event.governedSessionId);
+        }
         try { onError?.(input.type); } catch { /* audit failure remains isolated */ }
       }
     }
