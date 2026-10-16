@@ -95,3 +95,39 @@ test('R46: many sessions that open, work and close leave no window behind', asyn
     assert.ok(ids.every((id) => (audit.checkpointEventIds?.(id) ?? []).length === 0));
   });
 });
+
+function failingOn(journal: OperationalEventJournal, failing: ReadonlySet<string>): OperationalEventJournal {
+  return {
+    ...journal,
+    append: async (event) => {
+      if (failing.has(event.type)) throw new Error('journal unavailable');
+      return journal.append(event);
+    }
+  };
+}
+
+test('R46: a close whose journal append fails still evicts the window, since the session is closed in its store', async () => {
+  await withJournal(async (journal) => {
+    const failures: string[] = [];
+    const audit = createOperationalAudit(failingOn(journal, new Set(['session.closed'])), (type) => failures.push(type));
+    await audit.record(reconcile(SESSION_A, 1));
+    // A session closed without a bound transport: closeSession() records no unbind after it.
+    await audit.record(closeSequence(SESSION_A)[0]!);
+
+    assert.deepEqual(failures, ['session.closed']);
+    assert.deepEqual(audit.checkpointEventIds?.(SESSION_A), []);
+  });
+});
+
+test('R46: an expiry whose journal append fails keeps the window of the still resumable session', async () => {
+  await withJournal(async (journal) => {
+    const failures: string[] = [];
+    const audit = createOperationalAudit(failingOn(journal, new Set(['session.expired'])), (type) => failures.push(type));
+    await audit.record(reconcile(SESSION_A, 1));
+    const window = audit.checkpointEventIds?.(SESSION_A) ?? [];
+    await audit.record({ type: 'session.expired', session: session(SESSION_A, 'EXPIRED', 3), reasonCode: 'idle_ttl' });
+
+    assert.deepEqual(failures, ['session.expired']);
+    assert.deepEqual(audit.checkpointEventIds?.(SESSION_A), window);
+  });
+});
