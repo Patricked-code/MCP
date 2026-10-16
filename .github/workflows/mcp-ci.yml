@@ -47,6 +47,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Auto-intake discovery safety tests
+        run: node --test tests/mcpAutoIntakeDiscovery.test.mjs
+
       - name: Docs check
         run: npm run docs:check
 

@@ -1,0 +1,40 @@
+name: MCP Program Intake Discovery
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+  issue_comment:
+    types: [created]
+
+# The GitHub-only discovery receipt never creates a runtime Task/claim or starts an agent.
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: mcp-auto-intake-${{ github.event.issue.number || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    if: github.repository == 'Patricked-code/MCP'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout canonical program without persistent credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Prepare Node runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify discovery safety tests
+        run: node --test tests/mcpAutoIntakeDiscovery.test.mjs
+
+      - name: Verify owner and create or update durable receipt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/mcp-auto-intake-discovery.mjs
