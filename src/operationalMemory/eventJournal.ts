@@ -111,6 +111,14 @@ const ALLOWED_METADATA_KEYS: Record<OperationalEventType, ReadonlySet<string>> =
   'client.tool_surface_attested': new Set(['attestationId', 'surface', 'capabilityCount', 'sessionRevision'])
 };
 
+/**
+ * Runtime type guard backed by the journal writer's single canonical allowlist.
+ * The read-only BUS projection uses this rather than maintaining a second catalog.
+ */
+export function isOperationalEventType(value: unknown): value is OperationalEventType {
+  return typeof value === 'string' && Object.prototype.hasOwnProperty.call(ALLOWED_METADATA_KEYS, value);
+}
+
 const OPAQUE_METADATA_KEYS: Partial<Record<OperationalEventType, ReadonlySet<string>>> = {
   'session.opened': new Set(['taskScope', 'agentIdentity']),
   'session.resumed': new Set(['taskScope']),
