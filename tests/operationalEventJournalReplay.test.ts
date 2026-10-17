@@ -6,6 +6,8 @@ import { join } from 'node:path';
 import test from 'node:test';
 import { createOperationalEventJournal } from '../src/operationalMemory/eventJournal.js';
 import { readSessionJournalPage, readSessionEventsSince } from '../src/operationalMemory/eventJournalReader.js';
+import { createOperationalAudit } from '../src/operationalMemory/operationalAudit.js';
+import type { GovernedCheckpoint } from '../src/operationalMemory/types.js';
 
 const A = '11111111-1111-4111-8111-111111111111';
 const B = '22222222-2222-4222-8222-222222222222';
@@ -235,5 +237,43 @@ test('BUS RED: reject event type outside the canonical writer allowlist', async 
     const broken = { ...e1, eventId: '99999999-9999-4999-8999-999999999999', type: 'session.heartbeet' };
     await writeFile(f.filePath, JSON.stringify(e1) + '\n' + JSON.stringify(broken) + '\n', { mode: 0o600 });
     await assert.rejects(readSessionJournalPage({ ...f.options(), afterEventId: e1.eventId }), /CORRUPT_SCHEMA/);
+  } finally { await f.cleanup(); }
+});
+
+
+test('R44 integration: real OperationalAudit snapshot e1, event e2, checkpoint marker, restart and recover e2', async () => {
+  const f = await fixture();
+  try {
+    const audit = createOperationalAudit(f.writer);
+    await audit.record({ type: 'reconcile.requested', governedSessionId: A, stateVersion: 1 });
+    const lastCheckpointEventIds = audit.checkpointEventIds?.(A) ?? [];
+    assert.equal(lastCheckpointEventIds.length, 1);
+    // The real sessionService.createCheckpoint contract persists this snapshot
+    // before it later appends checkpoint.created through the audit.
+    await audit.record({ type: 'reconcile.requested', governedSessionId: A, stateVersion: 2 });
+    const checkpoint: GovernedCheckpoint = {
+      checkpointId: B,
+      governedSessionId: A,
+      createdAt: '2026-10-17T00:00:00.000Z',
+      taskScope: 'BUS-R44-TEST',
+      workBranch: 'mcp/bus-existing-event-journal-replay-20261016',
+      pullRequestNumber: 320,
+      observedHeadSha: null,
+      acknowledgedStateVersion: 1,
+      completedAction: 'snapshot',
+      resultCode: 'R44_TEST',
+      blockers: [],
+      nextAction: 'recover',
+      eventIds: lastCheckpointEventIds,
+      sessionRevision: 2
+    };
+    await audit.record({ type: 'checkpoint.created', checkpoint });
+    // A fresh audit reader after restart has no pending in-memory window.
+    const restarted = createOperationalAudit(f.writer);
+    assert.deepEqual(restarted.checkpointEventIds?.(A), []);
+    const raw = (await readFile(f.filePath, 'utf8')).trim().split('\n').map(l => JSON.parse(l));
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT', checkpoint.eventIds), {
+      eventIds: [raw[1].eventId], complete: true, reason: 'OK'
+    });
   } finally { await f.cleanup(); }
 });
