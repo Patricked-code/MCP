@@ -13,7 +13,7 @@
 import { constants } from 'node:fs';
 import { lstat, open } from 'node:fs/promises';
 import { isAbsolute } from 'node:path';
-import type { OperationalEvent } from './eventJournal.js';
+import { isOperationalEventType, type OperationalEvent } from './eventJournal.js';
 
 export type JournalReplayOptions = {
   filePath: string;
@@ -120,7 +120,7 @@ function isEvent(value: unknown): value is OperationalEvent {
   ].sort().join(',')) return false;
   if (x.schemaVersion !== 1 || !validUuid(x.eventId)
     || (x.governedSessionId !== null && !validUuid(x.governedSessionId))
-    || typeof x.type !== 'string' || !/^[a-z][a-z_.]{1,79}$/.test(x.type)
+    || !isOperationalEventType(x.type)
     || !Number.isInteger(x.processSequence) || (x.processSequence as number) < 1
     || typeof x.occurredAt !== 'string' || !Number.isFinite(Date.parse(x.occurredAt))) return false;
   if (typeof x.metadata !== 'object' || x.metadata === null || Array.isArray(x.metadata)) return false;
@@ -146,7 +146,17 @@ async function readStableFile(
       path: snapshot.path, size: before.size, dev: before.dev,
       ino: before.ino, mtimeMs: before.mtimeMs
     })) invalid('BUS_JOURNAL_CHANGED_DURING_READ');
-    text = await handle.readFile({ encoding: 'utf8' });
+    // Read at most the inspected bytes plus one: concurrent growth cannot
+    // allocate beyond this bound before we detect an inconsistent snapshot.
+    const bytes = Buffer.alloc(snapshot.size + 1);
+    let read = 0;
+    while (read < bytes.length) {
+      const { bytesRead } = await handle.read(bytes, read, bytes.length - read, read);
+      if (bytesRead === 0) break;
+      read += bytesRead;
+    }
+    if (read !== snapshot.size) invalid('BUS_JOURNAL_CHANGED_DURING_READ');
+    text = bytes.subarray(0, read).toString('utf8');
     const after = await handle.stat();
     if (after.size !== before.size || after.mtimeMs !== before.mtimeMs) {
       invalid('BUS_JOURNAL_CHANGED_DURING_READ');
@@ -243,25 +253,59 @@ export async function readSessionJournalPage(
 }
 
 /**
- * R44 adapter boundary ONLY. A missing last checkpoint is UNKNOWN, not empty.
- * >64 events also fail closed rather than silently truncating a checkpoint.
- * This does NOT wire or modify createOperationalAudit/sessionService.
+ * R44 adapter, internal only. The consumer MUST supply the eventIds from the
+ * last checkpoint PERSISTED in the existing Governed Session store. A physical
+ * checkpoint.created journal marker is NOT the boundary: its append happens
+ * after checkpoint persistence, allowing intervening events.
+ *
+ * Conservative policy: empty/incomplete/purged snapshot evidence returns
+ * CURSOR_UNAVAILABLE. In particular an empty persisted checkpoint window
+ * requires a stronger durable boundary to be added before completion can be
+ * proven, not an unsafe guess from the physical marker.
+ *
+ * This function neither registers a tool nor changes the canonical session,
+ * journal or Task Queue. A caller must independently authorize session scope.
  */
 export async function readSessionEventsSince(
   options: Omit<JournalReplayOptions, 'afterEventId'>,
-  boundary: 'LAST_CHECKPOINT'
+  boundary: 'LAST_CHECKPOINT',
+  persistedCheckpointEventIds?: readonly string[]
 ): Promise<SessionCheckpointWindow> {
   assertInput(options);
   if (boundary !== 'LAST_CHECKPOINT') invalid('BUS_REPLAY_INVALID_BOUNDARY');
-  const events = await retainedEvents(options);
-  const checkpoint = [...events].reverse().find(event =>
-    event.governedSessionId === options.governedSessionId
-      && event.type === 'checkpoint.created'
-  );
-  if (!checkpoint) return { eventIds: [], complete: false, reason: 'CURSOR_UNAVAILABLE' };
-  const page = pageFromEvents(events, options.governedSessionId, checkpoint.eventId, DEFAULT_PAGE_SIZE);
-  if (page.status !== 'OK' || !page.complete) {
-    return { eventIds: [], complete: false, reason: 'CURSOR_UNAVAILABLE' };
+  const unavailable: SessionCheckpointWindow = {
+    eventIds: [], complete: false, reason: 'CURSOR_UNAVAILABLE'
+  };
+  if (!persistedCheckpointEventIds || !Array.isArray(persistedCheckpointEventIds)
+    || persistedCheckpointEventIds.length === 0
+    || persistedCheckpointEventIds.length > DEFAULT_PAGE_SIZE
+    || persistedCheckpointEventIds.some(id => !validUuid(id))
+    || new Set(persistedCheckpointEventIds).size !== persistedCheckpointEventIds.length) {
+    return unavailable;
   }
-  return { eventIds: page.eventIds, complete: true, reason: 'OK' };
+
+  const events = await retainedEvents(options);
+  const positions: number[] = [];
+  for (const id of persistedCheckpointEventIds) {
+    const index = events.findIndex(e => e.eventId === id
+      && e.governedSessionId === options.governedSessionId);
+    if (index < 0 || (positions.length > 0 && index <= positions[positions.length - 1]!)) {
+      return unavailable;
+    }
+    positions.push(index);
+  }
+  const lastCoveredIndex = positions.at(-1)!;
+  const outstanding = events.slice(lastCoveredIndex + 1).filter(e =>
+    e.governedSessionId === options.governedSessionId
+      && e.type !== 'checkpoint.created'
+  );
+  if (outstanding.some(e => e.type === 'session.closed')
+    || outstanding.length > DEFAULT_PAGE_SIZE) {
+    return unavailable;
+  }
+  return {
+    eventIds: outstanding.map(e => e.eventId),
+    complete: true,
+    reason: 'OK'
+  };
 }
