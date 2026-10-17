@@ -59,7 +59,7 @@ test('RED BUS replay: R44 interface replays only session events after last retai
     const two = await f.writer.append({ type: 'task.discovered', governedSessionId: A, metadata: { taskId: 'TASK-20261016-001' } });
     const page = await readSessionJournalPage({ ...f.options(), afterEventId: checkpoint.eventId });
     assert.deepEqual(page.eventIds, [one.eventId, two.eventId]);
-    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT'), { eventIds: [one.eventId, two.eventId], complete: true, reason: 'OK' });
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT', [checkpoint.eventId]), { eventIds: [one.eventId, two.eventId], complete: true, reason: 'OK' });
   } finally { await f.cleanup(); }
 });
 
@@ -67,7 +67,7 @@ test('RED BUS replay: R44 never silently fabricates a complete window without re
   const f = await fixture();
   try {
     await f.writer.append({ type: 'session.opened', governedSessionId: A, metadata: { status: 'OPEN' } });
-    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT'), {
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT', []), {
       eventIds: [], complete: false, reason: 'CURSOR_UNAVAILABLE'
     });
   } finally { await f.cleanup(); }
@@ -111,7 +111,7 @@ test('RED BUS replay: a partial checkpoint window beyond 64 returns an explicit 
     for (let i = 0; i < 66; i++) {
       await f.writer.append({ type: 'session.heartbeat', governedSessionId: A, metadata: { sessionRevision: i } });
     }
-    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT'), {
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT', []), {
       eventIds: [], complete: false, reason: 'CURSOR_UNAVAILABLE'
     });
   } finally { await f.cleanup(); }
@@ -183,5 +183,57 @@ test('BUS replay rejects an archived-only window lacking its active journal', as
       readSessionJournalPage({ ...f.options(), afterEventId: anchor.eventId }),
       /SEGMENT_GAP/
     );
+  } finally { await f.cleanup(); }
+});
+
+
+test('R44 RED: persisted snapshot boundary recovers e2 appended before physical checkpoint marker', async () => {
+  const f = await fixture();
+  try {
+    const e1 = await f.writer.append({ type: 'reconcile.requested', governedSessionId: A, metadata: { stateVersion: 1 } });
+    // A real checkpoint first persists eventIds=[e1], while more events may be appended.
+    const e2 = await f.writer.append({ type: 'reconcile.requested', governedSessionId: A, metadata: { stateVersion: 2 } });
+    await f.writer.append({ type: 'checkpoint.created', governedSessionId: A, metadata: { checkpointId: B, eventCount: 1 } });
+    // A new reader after process restart must recover e2, not declare empty/complete.
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT', [e1.eventId]), {
+      eventIds: [e2.eventId], complete: true, reason: 'OK'
+    });
+  } finally { await f.cleanup(); }
+});
+
+test('R44 RED: snapshot reconstruction works even if checkpoint marker append failed', async () => {
+  const f = await fixture();
+  try {
+    const e1 = await f.writer.append({ type: 'reconcile.requested', governedSessionId: A, metadata: { stateVersion: 1 } });
+    const e2 = await f.writer.append({ type: 'reconcile.requested', governedSessionId: A, metadata: { stateVersion: 2 } });
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT', [e1.eventId]), {
+      eventIds: [e2.eventId], complete: true, reason: 'OK'
+    });
+  } finally { await f.cleanup(); }
+});
+
+test('R44 RED: no persisted snapshot boundary or a partial retained anchor fails closed', async () => {
+  const f = await fixture();
+  try {
+    const e1 = await f.writer.append({ type: 'reconcile.requested', governedSessionId: A, metadata: { stateVersion: 1 } });
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT'), {
+      eventIds: [], complete: false, reason: 'CURSOR_UNAVAILABLE'
+    });
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT', []), {
+      eventIds: [], complete: false, reason: 'CURSOR_UNAVAILABLE'
+    });
+    assert.deepEqual(await readSessionEventsSince(f.options(), 'LAST_CHECKPOINT', [
+      '99999999-9999-4999-8999-999999999999', e1.eventId
+    ]), { eventIds: [], complete: false, reason: 'CURSOR_UNAVAILABLE' });
+  } finally { await f.cleanup(); }
+});
+
+test('BUS RED: reject event type outside the canonical writer allowlist', async () => {
+  const f = await fixture();
+  try {
+    const e1 = await f.writer.append({ type: 'session.opened', governedSessionId: A, metadata: { status: 'OPEN' } });
+    const broken = { ...e1, eventId: '99999999-9999-4999-8999-999999999999', type: 'session.heartbeet' };
+    await writeFile(f.filePath, JSON.stringify(e1) + '\n' + JSON.stringify(broken) + '\n', { mode: 0o600 });
+    await assert.rejects(readSessionJournalPage({ ...f.options(), afterEventId: e1.eventId }), /CORRUPT_SCHEMA/);
   } finally { await f.cleanup(); }
 });
