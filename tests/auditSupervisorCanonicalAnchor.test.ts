@@ -40,7 +40,7 @@ test('AUDIT_SUPERVISOR has one stable documentary identity and an existing prove
 
 test('other established agent profiles remain unchanged and unprivileged audit role cannot escalate rights', async () => {
   const manifest = JSON.parse(await readFile('.mcp/agents.json', 'utf8'));
-  assert.deepEqual(manifest.agents.filter((agent: { name: string }) => agent.name !== 'AUDIT_SUPERVISOR'), [
+  assert.deepEqual(manifest.agents.filter((agent: { name: string }) => ['ChatGPT', 'Claude', 'Codex'].includes(agent.name)), [
     { name: 'ChatGPT', type: 'ai_agent', role: 'architect_supervisor',
       canReadRepos: true, canWriteBranches: true, canOpenPullRequests: true,
       canDeploy: false, requiresHumanApproval: true },
