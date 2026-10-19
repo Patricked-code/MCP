@@ -13,7 +13,7 @@
 import { constants } from 'node:fs';
 import { lstat, open } from 'node:fs/promises';
 import { isAbsolute } from 'node:path';
-import { isOperationalEventType, type OperationalEvent } from './eventJournal.js';
+import { isOperationalEventType, isCanonicalOperationalEventMetadata, type OperationalEvent } from './eventJournal.js';
 
 export type JournalReplayOptions = {
   filePath: string;
@@ -126,11 +126,7 @@ function isEvent(value: unknown): value is OperationalEvent {
   if (typeof x.metadata !== 'object' || x.metadata === null || Array.isArray(x.metadata)) return false;
   const metadata = Object.entries(x.metadata);
   if (metadata.length > MAX_META_KEYS) return false;
-  return metadata.every(([name, val]) => /^[a-zA-Z][a-zA-Z0-9]{0,79}$/.test(name)
-    && (val === null
-      || (typeof val === 'string' && val.length <= 512)
-      || typeof val === 'boolean'
-      || (typeof val === 'number' && Number.isFinite(val))));
+  return isCanonicalOperationalEventMetadata(x.type, x.metadata);
 }
 
 async function readStableFile(
