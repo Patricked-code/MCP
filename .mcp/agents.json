@@ -30,6 +30,32 @@
       "canOpenPullRequests": true,
       "canDeploy": false,
       "requiresHumanApproval": true
+    },
+    {
+      "agentId": "MCP-AGENT-AUDIT-SUPERVISOR-001",
+      "name": "AUDIT_SUPERVISOR",
+      "type": "ai_agent",
+      "role": "audit_supervisor",
+      "provider": "chatgpt",
+      "canReadRepos": true,
+      "canWriteBranches": false,
+      "canOpenPullRequests": false,
+      "canDeploy": false,
+      "requiresHumanApproval": true,
+      "identityScope": "VERSIONED_DOCUMENTARY_PROFILE_ONLY",
+      "permissionAuthority": "GITHUB_AND_EXISTING_GOVERNED_RUNTIME_AUTHORITIES",
+      "continuity": {
+        "repository": "Patricked-code/MCP",
+        "anchorIssueUrl": "https://github.com/Patricked-code/MCP/issues/235",
+        "canonicalCheckpointUrl": "https://github.com/Patricked-code/MCP/issues/235#issuecomment-6273965804",
+        "coordinationIssueUrl": "https://github.com/Patricked-code/MCP/issues/313",
+        "historicalProvenanceIndex": "docs/governance/agent-historical-continuity-breadcrumbs-20261016.md",
+        "programMap": "docs/governance/mcp-priority-convergence-map-20261015.json",
+        "governedSessionBinding": "RESOLVE_AND_AUTHORIZE_AT_RUNTIME",
+        "checkpointPolicy": "PUBLISH_VERIFIED_GITHUB_CHECKPOINT_PER_SIGNIFICANT_INTERVENTION",
+        "privateConversationArchive": "NOT_AUTOMATICALLY_CAPTURED",
+        "authorityClaimed": false
+      }
     }
   ]
 }
