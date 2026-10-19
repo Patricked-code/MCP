@@ -56,6 +56,48 @@
         "privateConversationArchive": "NOT_AUTOMATICALLY_CAPTURED",
         "authorityClaimed": false
       }
+    },
+    {
+      "agentId": "MCP-AGENT-AUTO-INTAKE-BUS-001",
+      "name": "AUTO-INTAKE/BUS",
+      "aliases": [
+        "AUTO/BUS"
+      ],
+      "type": "ai_agent",
+      "role": "auto_intake_bus_integrator",
+      "provider": "other",
+      "clientBinding": "UNATTESTED_RESOLVE_PER_REQUEST",
+      "canReadRepos": true,
+      "canWriteBranches": false,
+      "canOpenPullRequests": false,
+      "canDeploy": false,
+      "requiresHumanApproval": true,
+      "identityScope": "VERSIONED_DOCUMENTARY_PROFILE_ONLY",
+      "permissionAuthority": "GITHUB_AND_EXISTING_GOVERNED_RUNTIME_AUTHORITIES",
+      "responsibilities": [
+        "AUTO-01..AUTO-06: governed intake, discovery, dispatch, worker, communication, E2E verification",
+        "BUS-00..BUS-04: single journal, reader R44, transport, authz, ACK, replay, E2E independent clients",
+        "Preserve existing owners of OAuth #207, H-01 #305, R45/R46 #319, Git/GitHub #88-90",
+        "Record owner decisions, permissions scope, evidence and checkpoints with provenance"
+      ],
+      "continuity": {
+        "repository": "Patricked-code/MCP",
+        "anchorIssueUrl": "https://github.com/Patricked-code/MCP/issues/313",
+        "canonicalCheckpointUrl": "https://github.com/Patricked-code/MCP/issues/313#issuecomment-6275857601",
+        "coordinationIssueUrl": "https://github.com/Patricked-code/MCP/issues/235",
+        "historicalOriginUrl": "https://github.com/Patricked-code/MCP/issues/235#issuecomment-6219204801",
+        "firstAutoIntakeCheckpointUrl": "https://github.com/Patricked-code/MCP/issues/313#issuecomment-6222985252",
+        "baselineAuto02ReceiptUrl": "https://github.com/Patricked-code/MCP/issues/313#issuecomment-6223115593",
+        "baselineAuto02DeploymentUrl": "https://github.com/Patricked-code/MCP/issues/313#issuecomment-6223160268",
+        "latestCheckpointResolution": "REOBSERVE_ISSUE_313_APPEND_ONLY_COMMENT_CHAIN",
+        "historicalProvenanceIndex": "docs/governance/agent-historical-continuity-breadcrumbs-20261016.md",
+        "programMap": "docs/governance/mcp-priority-convergence-map-20261015.json",
+        "governedSessionBinding": "RESOLVE_AND_AUTHORIZE_AT_RUNTIME",
+        "checkpointPolicy": "PUBLISH_VERIFIED_GITHUB_CHECKPOINT_PER_SIGNIFICANT_INTERVENTION",
+        "privateConversationArchive": "NOT_AUTOMATICALLY_CAPTURED",
+        "busCanonicalRootBinding": "NOT_YET_IMPLEMENTED",
+        "authorityClaimed": false
+      }
     }
   ]
 }
