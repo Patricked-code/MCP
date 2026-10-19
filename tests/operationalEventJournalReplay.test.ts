@@ -277,3 +277,27 @@ test('R44 integration: real OperationalAudit snapshot e1, event e2, checkpoint m
     });
   } finally { await f.cleanup(); }
 });
+
+
+test('BUS replay rejects metadata not permitted for its canonical event type', async () => {
+  const f = await fixture();
+  try {
+    const first = await f.writer.append({
+      type: 'session.opened', governedSessionId: A, metadata: { status: 'ACTIVE' }
+    });
+    const malformed = {
+      schemaVersion: 1,
+      eventId: '99999999-9999-4999-8999-999999999999',
+      processSequence: 2,
+      occurredAt: '2026-10-17T01:00:00.000Z',
+      type: 'session.heartbeat',
+      governedSessionId: A,
+      metadata: { bogus: 1 }
+    };
+    await writeFile(f.filePath, (await readFile(f.filePath, 'utf8')) + JSON.stringify(malformed) + '\n', { mode: 0o600 });
+    await assert.rejects(
+      readSessionJournalPage({ ...f.options(), afterEventId: first.eventId }),
+      /BUS_JOURNAL_CORRUPT_SCHEMA/
+    );
+  } finally { await f.cleanup(); }
+});
