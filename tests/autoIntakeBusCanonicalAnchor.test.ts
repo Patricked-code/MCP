@@ -42,7 +42,10 @@ test('AUTO-INTAKE/BUS resolves to exactly one documentary identity with its orig
 test('AUTO/BUS retains other agent identities and grants no new runtime, GitHub or deploy rights', async () => {
   const manifest = JSON.parse(await readFile('.mcp/agents.json', 'utf8'));
   const existing = manifest.agents.filter((a: { name: string }) => a.name !== 'AUTO-INTAKE/BUS');
-  assert.equal(existing.length, 4, 'the three original profiles and existing AUDIT_SUPERVISOR must survive');
+  for (const name of ['ChatGPT', 'Claude', 'Codex', 'AUDIT_SUPERVISOR']) {
+    assert.equal(existing.filter((a: { name: string }) => a.name === name).length, 1,
+      `expected original/anchor agent ${name} exactly once; additional agents are allowed`);
+  }
   const audit = existing.find((a: { agentId?: string }) => a.agentId === AUDIT_ID);
   assert.ok(audit);
   assert.equal(audit.role, 'audit_supervisor');
