@@ -58,6 +58,7 @@ import {
   verifyGithubRepositorySshCaBootstrapOidcToken
 } from './deploy/githubOidc.js';
 import { createGithubReadonlyEvidenceRouter } from './evidence/githubReadonlyRoutes.js';
+import { getOauthConsentProvenanceEvidence } from './oauth.js';
 import { projectGitRegistryReadinessEvidence } from './evidence/gitRegistryReadinessProbe.js';
 import { createStablecoinFastForwardRouter } from './stablecoin/githubFastForward.js';
 import { createGithubRepositorySshAccessRouter } from './ssh/githubRepositoryAccessRoutes.js';
@@ -439,6 +440,9 @@ export async function startHttpServer(): Promise<void> {
       projectGitRegistryReadinessEvidence(await readGitRegistryProjectEvidence())
     ),
     runOperationalRead: async (probe) => {
+      if (probe === 'mcp_oauth_consent_provenance') {
+        return getOauthConsentProvenanceEvidence();
+      }
       if (!operationalMemoryConfig.enabled) {
         return JSON.stringify({
           schemaVersion: 1,

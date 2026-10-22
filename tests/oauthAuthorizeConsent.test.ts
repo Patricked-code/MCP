@@ -11,7 +11,7 @@ process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
 process.env.S2_HOST ??= '127.0.0.1';
 process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
 
-const { registerOauthRoutes, inspectOauthAccessToken, oauthIssuer } = await import('../src/oauth.js');
+const { registerOauthRoutes, inspectOauthAccessToken, oauthIssuer, consentOriginRejectionReason, getOauthConsentProvenanceEvidence } = await import('../src/oauth.js');
 
 const REDIRECT_URI = 'https://client.example/callback';
 
@@ -279,4 +279,33 @@ test('invalid authorization requests still fail before any consent page', async 
       assert.equal(body.error, 'invalid_request');
     }
   });
+});
+
+test('OAuth consent provenance diagnostics expose bounded reason codes only', () => {
+  const classify = (headers: Record<string, string>) => {
+    const request = {
+      header(name: string) { return headers[name.toLowerCase()]; }
+    } as Parameters<typeof consentOriginRejectionReason>[0];
+    return consentOriginRejectionReason(request);
+  };
+  assert.equal(classify({}), null);
+  assert.equal(classify({ 'sec-fetch-site': 'same-origin', origin: new URL(oauthIssuer()).origin }), null);
+  assert.equal(classify({ 'sec-fetch-site': 'cross-site', origin: 'https://attacker.example' }), 'fetch_site_mismatch');
+  assert.equal(classify({ 'sec-fetch-site': 'same-site' }), 'fetch_site_mismatch');
+  assert.equal(classify({ 'sec-fetch-site': 'same-origin', origin: 'https://attacker.example' }), 'origin_mismatch');
+  assert.equal(classify({ origin: new URL(oauthIssuer()).origin }), null);
+});
+
+test('OAuth consent OIDC evidence contains only bounded aggregate categories', () => {
+  const evidence = JSON.parse(getOauthConsentProvenanceEvidence());
+  assert.equal(evidence.schemaVersion, 1);
+  assert.equal(evidence.scope, 'current_process_since_start');
+  assert.equal(evidence.persistent, false);
+  assert.equal(evidence.mutationAllowed, false);
+  assert.deepEqual(Object.keys(evidence.counts).sort(), ['fetch_site_mismatch', 'origin_mismatch']);
+  for (const value of Object.values(evidence.counts)) {
+    assert.equal(typeof value, 'number');
+    assert.ok(Number.isSafeInteger(value));
+  }
+  assert.doesNotMatch(JSON.stringify(evidence), /client_id|cookie|authorization|refresh_token|sec-fetch-site|origin:|bearer/i);
 });

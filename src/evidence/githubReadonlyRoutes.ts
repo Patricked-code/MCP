@@ -19,17 +19,20 @@ export type GithubReadonlyEvidenceProbe =
   | 'mcp_governed_tasks'
   | 'mcp_governed_sessions'
   | 'mcp_governed_locks'
-  | 'mcp_git_registry_readiness';
+  | 'mcp_git_registry_readiness'
+  | 'mcp_oauth_consent_provenance';
 
 export type GithubOperationalAuthorityProbe =
   | 'mcp_governed_tasks'
   | 'mcp_governed_sessions'
-  | 'mcp_governed_locks';
+  | 'mcp_governed_locks'
+  | 'mcp_oauth_consent_provenance';
 
 const OPERATIONAL_AUTHORITY_PROBES = new Set<GithubReadonlyEvidenceProbe>([
   'mcp_governed_tasks',
   'mcp_governed_sessions',
-  'mcp_governed_locks'
+  'mcp_governed_locks',
+  'mcp_oauth_consent_provenance'
 ]);
 
 export function isGithubOperationalAuthorityProbe(
@@ -90,6 +93,7 @@ function exactRequest(value: unknown): {
     && probe !== 'mcp_governed_sessions'
     && probe !== 'mcp_governed_locks'
     && probe !== 'mcp_git_registry_readiness'
+    && probe !== 'mcp_oauth_consent_provenance'
   ) return null;
   if (typeof requestId !== 'string' || !REQUEST_ID_PATTERN.test(requestId)) return null;
   if (probe === 'mcp_git_status' && target !== 's1') return null;
@@ -99,6 +103,7 @@ function exactRequest(value: unknown): {
       || probe === 'mcp_governed_sessions'
       || probe === 'mcp_governed_locks'
       || probe === 'mcp_git_registry_readiness'
+      || probe === 'mcp_oauth_consent_provenance'
     )
     && target !== 's1'
   ) return null;

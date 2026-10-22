@@ -396,14 +396,42 @@ export function verifyWebConsentTicket(purpose: string, ticket: unknown, binding
   return safeEqualString(signature, webConsentSignature(purpose, binding, expiresAt));
 }
 
-export function isSameOriginSubmission(req: Request): boolean {
+/**
+ * Return only bounded reason codes. Never include header values, cookies,
+ * OAuth parameters, client identifiers, or tokens in operational evidence.
+ */
+// Process-local, bounded aggregate; reset on restart. No request identifiers or headers.
+const oauthConsentProvenanceCounts = {
+  fetch_site_mismatch: 0,
+  origin_mismatch: 0
+};
+
+export function getOauthConsentProvenanceEvidence(): string {
+  return JSON.stringify({
+    schemaVersion: 1,
+    authority: 'OAuth Consent Provenance',
+    scope: 'current_process_since_start',
+    persistent: false,
+    mutationAllowed: false,
+    counts: { ...oauthConsentProvenanceCounts }
+  });
+}
+
+export function consentOriginRejectionReason(req: Request): 'fetch_site_mismatch' | 'origin_mismatch' | null {
   const fetchSite = req.header('sec-fetch-site');
   if (fetchSite !== undefined && fetchSite !== 'same-origin') {
-    return false;
+    return 'fetch_site_mismatch';
   }
 
   const origin = req.header('origin');
-  return origin === undefined || origin === new URL(oauthIssuer()).origin;
+  if (origin !== undefined && origin !== new URL(oauthIssuer()).origin) {
+    return 'origin_mismatch';
+  }
+  return null;
+}
+
+export function isSameOriginSubmission(req: Request): boolean {
+  return consentOriginRejectionReason(req) === null;
 }
 
 function renderAuthorizationConsent(res: Response, request: AuthorizationConsentRequest): void {
@@ -491,7 +519,13 @@ function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (
     return;
   }
 
-  if (!isSameOriginSubmission(req)) {
+  const consentOriginReason = consentOriginRejectionReason(req);
+  if (consentOriginReason !== null) {
+    oauthConsentProvenanceCounts[consentOriginReason] = Math.min(
+      Number.MAX_SAFE_INTEGER,
+      oauthConsentProvenanceCounts[consentOriginReason] + 1
+    );
+    logger.warn({ reasonCode: consentOriginReason }, 'Décision OAuth refusée par le contrôle de provenance');
     sendOAuthError(res, 403, 'access_denied', "La décision d'autorisation doit provenir de la page de consentement.");
     return;
   }
