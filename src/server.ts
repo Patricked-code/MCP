@@ -60,6 +60,7 @@ import {
 } from './deploy/githubOidc.js';
 import { createGithubReadonlyEvidenceRouter } from './evidence/githubReadonlyRoutes.js';
 import { createGithubGovernedTaskClaimRouter } from './governance/githubGovernedTaskClaimRoutes.js';
+import { liveStateEngine } from './liveState/engine.js';
 import { projectGitRegistryReadinessEvidence } from './evidence/gitRegistryReadinessProbe.js';
 import { createStablecoinFastForwardRouter } from './stablecoin/githubFastForward.js';
 import { createGithubRepositorySshAccessRouter } from './ssh/githubRepositoryAccessRoutes.js';
