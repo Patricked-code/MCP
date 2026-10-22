@@ -554,7 +554,7 @@ function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (
   // Other origins (including cross-site null Origin) remain rejected.
   const opaqueSameOriginForm = req.header('origin') === 'null'
     && req.header('sec-fetch-site') === 'same-origin'
-    && req.is('application/x-www-form-urlencoded') !== false;
+    && req.is('application/x-www-form-urlencoded') === 'application/x-www-form-urlencoded';
   const opaqueConsentRequest: AuthorizationConsentRequest | null = opaqueSameOriginForm
     ? {
         responseType: getSingleBodyParam(req, 'response_type') ?? '',
