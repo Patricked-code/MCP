@@ -213,7 +213,7 @@ test('workflow, policy and server wire the registry readiness probe without an S
   assert.match(workflow, /- mcp_git_registry_readiness\n/);
   assert.match(workflow, /'mcp_governed_locks','mcp_git_registry_readiness','mcp_oauth_consent_provenance'\]\.includes\(request\.probe\)/);
   assert.match(workflow, /\['mcp_governed_tasks','mcp_governed_sessions','mcp_governed_locks','mcp_git_registry_readiness','mcp_oauth_consent_provenance'\]\.includes\(request\.probe\) && request\.target !== 's1'/);
-  assert.match(workflow, /mcp_governed_tasks\|mcp_governed_sessions\|mcp_governed_locks\|mcp_git_registry_readiness\)/);
+  assert.match(workflow, /mcp_governed_tasks\|mcp_governed_sessions\|mcp_governed_locks\|mcp_git_registry_readiness\|mcp_oauth_consent_provenance\)/);
   assert.doesNotMatch(workflow, /mcp-git-registry\.json/);
 
   assert.deepEqual(mode.registryEvidenceProbes, [PROBE]);
