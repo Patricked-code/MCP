@@ -400,6 +400,23 @@ export function verifyWebConsentTicket(purpose: string, ticket: unknown, binding
  * Return only bounded reason codes. Never include header values, cookies,
  * OAuth parameters, client identifiers, or tokens in operational evidence.
  */
+// Process-local, bounded aggregate; reset on restart. No request identifiers or headers.
+const oauthConsentProvenanceCounts = {
+  fetch_site_mismatch: 0,
+  origin_mismatch: 0
+};
+
+export function getOauthConsentProvenanceEvidence(): string {
+  return JSON.stringify({
+    schemaVersion: 1,
+    authority: 'OAuth Consent Provenance',
+    scope: 'current_process_since_start',
+    persistent: false,
+    mutationAllowed: false,
+    counts: { ...oauthConsentProvenanceCounts }
+  });
+}
+
 export function consentOriginRejectionReason(req: Request): 'fetch_site_mismatch' | 'origin_mismatch' | null {
   const fetchSite = req.header('sec-fetch-site');
   if (fetchSite !== undefined && fetchSite !== 'same-origin') {
@@ -504,6 +521,10 @@ function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (
 
   const consentOriginReason = consentOriginRejectionReason(req);
   if (consentOriginReason !== null) {
+    oauthConsentProvenanceCounts[consentOriginReason] = Math.min(
+      Number.MAX_SAFE_INTEGER,
+      oauthConsentProvenanceCounts[consentOriginReason] + 1
+    );
     logger.warn({ reasonCode: consentOriginReason }, 'Décision OAuth refusée par le contrôle de provenance');
     sendOAuthError(res, 403, 'access_denied', "La décision d'autorisation doit provenir de la page de consentement.");
     return;
