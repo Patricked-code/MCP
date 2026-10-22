@@ -357,3 +357,60 @@ test('DISPATCH parallel CAS: simultaneous stale-revision claims never double-ass
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+
+test('targeted claim selects only the requested task and enforces task/store CAS', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    const created = await queue.reconcileIntent({
+      repository: 'Patricked-code/MCP', intentKey: 'targeted', title: 'Targeted',
+      summary: 'Independent exact target.', priority: 10, dependencies: [],
+      resourceScopes: ['resource:targeted']
+    }, SESSION);
+    assert.ok(created.task);
+    const before = await queue.listVisibleTasks();
+    const target = created.task;
+    await assert.rejects(queue.claimTaskById(SESSION, target.taskId, target.taskRevision + 1, before.storeRevision), /TASK_REVISION_MISMATCH/);
+    await assert.rejects(queue.claimTaskById(SESSION, 'TASK-20990101-999', 1, before.storeRevision), /TASK_NOT_FOUND/);
+    assert.deepEqual(await queue.listVisibleTasks(), before);
+    const claimed = await queue.claimTaskById(SESSION, target.taskId, target.taskRevision, before.storeRevision);
+    assert.equal(claimed.taskId, target.taskId);
+    assert.equal(claimed.ownerGovernedSessionId, SESSION);
+    assert.equal((await queue.getVisibleTask('TASK-20260822-001'))?.status, 'READY');
+    await assert.rejects(queue.claimTaskById(OTHER_SESSION, 'TASK-20260822-001', 1, before.storeRevision), /TASK_STORE_REVISION_MISMATCH/);
+    const after = await queue.listVisibleTasks();
+    await assert.rejects(queue.claimTaskById(SESSION, 'TASK-20260822-001', 1, after.storeRevision), /TASK_SESSION_ALREADY_OWNS_OTHER_TASK/);
+    assert.deepEqual(await queue.listVisibleTasks(), after);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('targeted claim respects foreign locks and does not fall back to a different task', async () => {
+  const { directory, queue } = await fixture([{ scope: 'resource:existing', governedSessionId: OTHER_SESSION }]);
+  try {
+    const before = await queue.listVisibleTasks();
+    await assert.rejects(queue.claimTaskById(SESSION, 'TASK-20260822-001', 1, before.storeRevision), /TASK_LOCK_CONFLICT/);
+    assert.deepEqual(await queue.listVisibleTasks(), before);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('targeted parallel claims use the same atomic revision guard', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    const before = await queue.listVisibleTasks();
+    const attempts = await Promise.allSettled([
+      queue.claimTaskById(SESSION, 'TASK-20260822-001', 1, before.storeRevision),
+      queue.claimTaskById(OTHER_SESSION, 'TASK-20260822-001', 1, before.storeRevision)
+    ]);
+    assert.equal(attempts.filter((result) => result.status === 'fulfilled').length, 1);
+    assert.equal(attempts.filter((result) => result.status === 'rejected').length, 1);
+    const after = await queue.listVisibleTasks();
+    assert.equal(after.storeRevision, before.storeRevision + 1);
+    assert.equal(after.tasks.filter((task) => task.status === 'CLAIMED').length, 1);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
