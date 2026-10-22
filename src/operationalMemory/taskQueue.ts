@@ -463,6 +463,7 @@ export function createGovernedTaskQueue(
         if (targeted && !target) fail('TASK_NOT_FOUND');
         if (targeted && target!.taskRevision !== options?.expectedTaskRevision) fail('TASK_REVISION_MISMATCH');
         if (targeted && !taskEligibleForSession(target!, options)) fail('TASK_SCOPE_MISMATCH');
+        if (targeted && target!.ownerGovernedSessionId && target!.ownerGovernedSessionId !== governedSessionId) fail('TASK_OWNED_BY_OTHER_SESSION');
         const owned = ownedResumableTask(document.tasks, governedSessionId);
         if (owned && targeted && owned.taskId !== options?.expectedTaskId) fail('TASK_SESSION_ALREADY_OWNS_OTHER_TASK');
         if (owned) {
