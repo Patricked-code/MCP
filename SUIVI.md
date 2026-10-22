@@ -1,5 +1,14 @@
 # SUIVI.md
 
+## 2026-10-22 — PR #329 : primitive de claim ciblé (GitHub-only, non déployée)
+
+- **Portée** : branche `fix/governed-targeted-task-claim-20261022`, PR #329 ; ajout de `claimTaskById` à la Governed Task Queue existante, sans seconde queue, sans nouvelle identité ni session, sans écriture directe sur S1, sans modification de `main` ni de la PR OAuth #207.
+- **Sécurité** : taskId exact et compare-and-swap des révisions task/store ; préservation des dépendances, TargetScope, verrous, collisions, ownership de session et de la reprise en lecture seule du même propriétaire. Aucun endpoint OIDC ni acquisition runtime par GitHub Actions à ce stade.
+- **Tests** : `tests/governedTaskQueue.test.ts` (révisions périmées, mauvais identifiant, locks, concurrence, propriétaire étranger et reprise idempotente) désormais exécuté explicitement par `.github/workflows/mcp-ci.yml`.
+- **Preuves** : GitHub Actions #39726267487 SUCCESS au SHA `d234f48eefb19240dc3d6e6b26a18a83cf39e695` ; le renforcement propriétaire `3ffb84b68fc1029a523dd9e899601b7d2abab935` attend encore son verdict CI exact-head. Une CI verte ne constitue pas une autorisation runtime.
+- **NEXT_ACTION** : confirmer CI sur le HEAD final, revue indépendante, corriger les remarques, puis seulement examiner l'admission OIDC bornée par autorités existantes. Ne pas fusionner/déployer sans ces preuves.
+
+
 ## 2026-10-16 — INTAKE commun : publication de la reprise inter-agents et du point d'arrêt réel
 
 - **Directive publiée immédiatement** : [issue #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094) ; elle s'appuie sur les autorités existantes. Intervention GitHub directe uniquement, pas de Codex, de mutation S1/S2, de session ou de Task claim.
