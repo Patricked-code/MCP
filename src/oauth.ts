@@ -405,6 +405,27 @@ const oauthConsentProvenanceCounts = {
   fetch_site_mismatch: 0,
   origin_mismatch: 0
 };
+const oauthOriginMismatchClasses = {
+  public_origin_with_nonpublic_issuer: 0,
+  origin_missing_or_invalid: 0,
+  other_origin: 0
+};
+const oauthIssuerPublicOriginMatch = () => {
+  try { return new URL(oauthIssuer()).origin === new URL(DEFAULT_ISSUER).origin; }
+  catch { return false; }
+};
+function classifyRejectedOrigin(req: Request): keyof typeof oauthOriginMismatchClasses {
+  const origin = req.header('origin');
+  if (!origin) return 'origin_missing_or_invalid';
+  try {
+    const parsed = new URL(origin);
+    if (parsed.origin !== origin) return 'origin_missing_or_invalid';
+    if (parsed.origin === new URL(DEFAULT_ISSUER).origin && !oauthIssuerPublicOriginMatch()) {
+      return 'public_origin_with_nonpublic_issuer';
+    }
+  } catch { return 'origin_missing_or_invalid'; }
+  return 'other_origin';
+}
 
 export function getOauthConsentProvenanceEvidence(): string {
   return JSON.stringify({
@@ -413,7 +434,9 @@ export function getOauthConsentProvenanceEvidence(): string {
     scope: 'current_process_since_start',
     persistent: false,
     mutationAllowed: false,
-    counts: { ...oauthConsentProvenanceCounts }
+    counts: { ...oauthConsentProvenanceCounts },
+    issuerMatchesPublicOrigin: oauthIssuerPublicOriginMatch(),
+    originMismatchClasses: { ...oauthOriginMismatchClasses }
   });
 }
 
@@ -525,6 +548,12 @@ function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (
       Number.MAX_SAFE_INTEGER,
       oauthConsentProvenanceCounts[consentOriginReason] + 1
     );
+    if (consentOriginReason === 'origin_mismatch') {
+      const classification = classifyRejectedOrigin(req);
+      oauthOriginMismatchClasses[classification] = Math.min(
+        Number.MAX_SAFE_INTEGER, oauthOriginMismatchClasses[classification] + 1
+      );
+    }
     logger.warn({ reasonCode: consentOriginReason }, 'Décision OAuth refusée par le contrôle de provenance');
     sendOAuthError(res, 403, 'access_denied', "La décision d'autorisation doit provenir de la page de consentement.");
     return;
