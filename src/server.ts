@@ -53,11 +53,14 @@ import { createGithubDeployRouter } from './deploy/routes.js';
 import {
   verifyGithubOidcToken,
   verifyGithubReadonlyEvidenceOidcToken,
+  verifyGithubGovernedTaskClaimOidcToken,
   verifyGithubStablecoinFastForwardOidcToken,
   verifyGithubRepositorySshOidcToken,
   verifyGithubRepositorySshCaBootstrapOidcToken
 } from './deploy/githubOidc.js';
 import { createGithubReadonlyEvidenceRouter } from './evidence/githubReadonlyRoutes.js';
+import { createGithubGovernedTaskClaimRouter } from './governance/githubGovernedTaskClaimRoutes.js';
+import { liveStateEngine } from './liveState/engine.js';
 import { projectGitRegistryReadinessEvidence } from './evidence/gitRegistryReadinessProbe.js';
 import { createStablecoinFastForwardRouter } from './stablecoin/githubFastForward.js';
 import { createGithubRepositorySshAccessRouter } from './ssh/githubRepositoryAccessRoutes.js';
@@ -472,6 +475,18 @@ export async function startHttpServer(): Promise<void> {
         ...(await operational.locks.readCollisionState())
       });
     }
+  }));
+  app.use(createGithubGovernedTaskClaimRouter({
+    verifyOidc: verifyGithubGovernedTaskClaimOidcToken,
+    sessions: getGovernedSessionToolDependencies().sessions,
+    queue: getGovernedTaskToolDependencies().queue,
+    lifecycle: getGovernedTaskToolDependencies().lifecycle,
+    ready: getGovernedTaskToolDependencies().ready,
+    currentState: () => liveStateEngine.getCurrent(),
+    writeEnabled: () => env.ENABLE_WRITE_TOOLS && operationalMemoryConfig.enabled,
+    // No trusted mapping from a GitHub workflow run to an existing OAuth
+    // principal is configured. Deny every claim until that authority exists.
+    resolveAuthorizedPrincipal: async () => null
   }));
   app.use(createGithubRepositorySshCaBootstrapRouter({
     verifyOidc: verifyGithubRepositorySshCaBootstrapOidcToken,

@@ -45,6 +45,19 @@ export const GITHUB_READONLY_EVIDENCE_OIDC_POLICY: GithubOidcPolicy = Object.fre
   allowedEvents: Object.freeze(['issues', 'workflow_dispatch'] as const)
 });
 
+/** Dedicated bounded task-claim authority: never shares the read-only/deploy audience. */
+export const GITHUB_GOVERNED_TASK_CLAIM_OIDC_POLICY: GithubOidcPolicy = Object.freeze({
+  issuer: 'https://token.actions.githubusercontent.com',
+  audience: 'https://mcp.wealthtechinnovations.com/governance/github/task-claim',
+  repository: 'Patricked-code/MCP',
+  repositoryId: '1285534440',
+  owner: 'Patricked-code',
+  ownerId: '270385782',
+  ref: 'refs/heads/main',
+  workflowRef: 'Patricked-code/MCP/.github/workflows/mcp-governed-task-claim.yml@refs/heads/main',
+  allowedEvents: Object.freeze(['workflow_dispatch'] as const)
+});
+
 export const GITHUB_STABLECOIN_FAST_FORWARD_OIDC_POLICY: GithubOidcPolicy = Object.freeze({
   issuer: 'https://token.actions.githubusercontent.com',
   audience: 'https://mcp.wealthtechinnovations.com/deploy/github/stablecoin/s2',
@@ -386,6 +399,14 @@ export async function verifyGithubReadonlyEvidenceOidcToken(
     GITHUB_READONLY_EVIDENCE_OIDC_POLICY,
     options
   );
+}
+
+export async function verifyGithubGovernedTaskClaimOidcToken(
+  token: string,
+  requestedShaInput: string,
+  options: VerifyGithubOidcOptions = {}
+): Promise<GithubOidcClaims> {
+  return verifyGithubOidcTokenWithPolicy(token, requestedShaInput, GITHUB_GOVERNED_TASK_CLAIM_OIDC_POLICY, options);
 }
 
 export async function verifyGithubStablecoinFastForwardOidcToken(

@@ -111,6 +111,11 @@
       "path": "src/governance/programBlueprintMaterialization.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Added by TB-W3-DISPATCH-01: Program Backlog V2 is the MCP repository's own program, so its blueprints materialize MCP-repository tasks only."
+    },
+    {
+      "path": "src/governance/githubGovernedTaskClaimRoutes.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Endpoint OIDC de claim gouverné limité au dépôt Patricked-code/MCP ; admission ciblée d'une tâche existante, sans autorité multi-repository implicite."
     }
   ],
   "resolvedConsumers": [
