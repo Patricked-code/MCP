@@ -309,3 +309,16 @@ test('OAuth consent OIDC evidence contains only bounded aggregate categories', (
   }
   assert.doesNotMatch(JSON.stringify(evidence), /client_id|cookie|authorization|refresh_token|sec-fetch-site|origin:|bearer/i);
 });
+
+test('OAuth evidence classifies issuer/public origin alignment without leaking URLs', () => {
+  const evidence = JSON.parse(getOauthConsentProvenanceEvidence());
+  assert.equal(typeof evidence.issuerMatchesPublicOrigin, 'boolean');
+  assert.deepEqual(Object.keys(evidence.originMismatchClasses).sort(), [
+    'origin_missing_or_invalid', 'other_origin', 'public_origin_with_nonpublic_issuer'
+  ]);
+  for (const count of Object.values(evidence.originMismatchClasses)) {
+    assert.ok(Number.isSafeInteger(count));
+  }
+  assert.equal(JSON.stringify(evidence).includes('https://'), false);
+  assert.equal(JSON.stringify(evidence).includes('http://'), false);
+});
