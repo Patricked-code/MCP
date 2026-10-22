@@ -334,3 +334,47 @@ test('OAuth evidence exposes only bounded opaque-Origin classification without r
   }
   assert.equal(JSON.stringify(evidence).includes('https://'), false);
 });
+
+test('opaque Origin with same-origin Fetch Metadata and signed consent completes OAuth', async () => {
+  const { challenge } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const response = await submitConsent(baseUrl, fields, 'approve', {
+      origin: 'null', 'sec-fetch-site': 'same-origin'
+    });
+    assert.equal(response.status, 302);
+    assert.ok(new URL(response.headers.get('location')!).searchParams.get('code'));
+  });
+});
+
+test('opaque Origin without a valid signed ticket is rejected', async () => {
+  const { challenge } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    fields.set('consent_ticket', 'forged');
+    const response = await submitConsent(baseUrl, fields, 'approve', {
+      origin: 'null', 'sec-fetch-site': 'same-origin'
+    });
+    assert.equal(response.status, 403);
+  });
+});
+
+test('opaque Origin from cross-site context is rejected even with a valid ticket', async () => {
+  const { challenge } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const response = await submitConsent(baseUrl, fields, 'approve', {
+      origin: 'null', 'sec-fetch-site': 'cross-site'
+    });
+    assert.equal(response.status, 403);
+  });
+});
+
+test('opaque Origin without Fetch Metadata is rejected', async () => {
+  const { challenge } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const response = await submitConsent(baseUrl, fields, 'approve', { origin: 'null' });
+    assert.equal(response.status, 403);
+  });
+});
