@@ -414,3 +414,23 @@ test('targeted parallel claims use the same atomic revision guard', async () => 
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+
+test('targeted claim cannot take over another session and same-owner resume is read-only', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    const before = await queue.listVisibleTasks();
+    const first = await queue.claimTaskById(SESSION, 'TASK-20260822-001', 1, before.storeRevision);
+    const after = await queue.listVisibleTasks();
+    await assert.rejects(
+      queue.claimTaskById(OTHER_SESSION, first.taskId, first.taskRevision, after.storeRevision),
+      /TASK_OWNED_BY_OTHER_SESSION/
+    );
+    assert.deepEqual(await queue.listVisibleTasks(), after);
+    const resumed = await queue.claimTaskById(SESSION, first.taskId, first.taskRevision, after.storeRevision);
+    assert.deepEqual(resumed, first);
+    assert.deepEqual(await queue.listVisibleTasks(), after);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
