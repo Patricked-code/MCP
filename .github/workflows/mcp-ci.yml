@@ -50,6 +50,9 @@ jobs:
       - name: Auto-intake discovery safety tests
         run: node --test tests/mcpAutoIntakeDiscovery.test.mjs
 
+      - name: Governed task queue targeted claim tests
+        run: npx tsx --test tests/governedTaskQueue.test.ts
+
       - name: Docs check
         run: npm run docs:check
 
