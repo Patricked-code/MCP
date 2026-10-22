@@ -322,3 +322,15 @@ test('OAuth evidence classifies issuer/public origin alignment without leaking U
   assert.equal(JSON.stringify(evidence).includes('https://'), false);
   assert.equal(JSON.stringify(evidence).includes('http://'), false);
 });
+
+test('OAuth evidence exposes only bounded opaque-Origin classification without raw header values', () => {
+  const evidence = JSON.parse(getOauthConsentProvenanceEvidence());
+  assert.deepEqual(Object.keys(evidence.originWireClasses).sort(), [
+    'malformed_or_missing', 'noncanonical_valid', 'opaque_null'
+  ]);
+  for (const count of Object.values(evidence.originWireClasses)) {
+    assert.ok(Number.isSafeInteger(count));
+    assert.ok((count as number) >= 0);
+  }
+  assert.equal(JSON.stringify(evidence).includes('https://'), false);
+});
