@@ -548,7 +548,31 @@ function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (
     return;
   }
 
-  const consentOriginReason = consentOriginRejectionReason(req);
+  // Some embedded browsers submit the server-rendered form with an opaque
+  // Origin. Permit that narrowly only when Fetch Metadata proves same-origin
+  // navigation and the exact OAuth request carries a valid signed consent ticket.
+  // Other origins (including cross-site null Origin) remain rejected.
+  const opaqueSameOriginForm = req.header('origin') === 'null'
+    && req.header('sec-fetch-site') === 'same-origin'
+    && req.is('application/x-www-form-urlencoded') !== false;
+  const opaqueConsentRequest: AuthorizationConsentRequest | null = opaqueSameOriginForm
+    ? {
+        responseType: getSingleBodyParam(req, 'response_type') ?? '',
+        clientId: getSingleBodyParam(req, 'client_id') ?? '',
+        redirectUri: getSingleBodyParam(req, 'redirect_uri') ?? '',
+        state: getSingleBodyParam(req, 'state'),
+        scope: normalizeScopeString(getSingleBodyParam(req, 'scope')),
+        resource: normalizeResourceAlias(getSingleBodyParam(req, 'resource') || oauthIssuer()),
+        codeChallenge: getSingleBodyParam(req, 'code_challenge') ?? '',
+        codeChallengeMethod: getSingleBodyParam(req, 'code_challenge_method') ?? ''
+      }
+    : null;
+  const validOpaqueConsent = opaqueConsentRequest !== null
+    && opaqueConsentRequest.responseType === 'code'
+    && Boolean(opaqueConsentRequest.clientId && opaqueConsentRequest.redirectUri && opaqueConsentRequest.codeChallenge)
+    && opaqueConsentRequest.codeChallengeMethod === 'S256'
+    && verifyConsentTicket(opaqueConsentRequest, getSingleBodyParam(req, 'consent_ticket'));
+  const consentOriginReason = validOpaqueConsent ? null : consentOriginRejectionReason(req);
   if (consentOriginReason !== null) {
     oauthConsentProvenanceCounts[consentOriginReason] = Math.min(
       Number.MAX_SAFE_INTEGER,
