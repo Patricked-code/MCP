@@ -53,6 +53,9 @@ jobs:
       - name: Governed task queue targeted claim tests
         run: npx tsx --test tests/governedTaskQueue.test.ts
 
+      - name: Governed OIDC admission security tests
+        run: npx tsx --test tests/githubGovernedTaskClaimRoutes.test.ts
+
       - name: Docs check
         run: npm run docs:check
 
