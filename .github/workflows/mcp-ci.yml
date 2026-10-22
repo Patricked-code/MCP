@@ -53,6 +53,9 @@ jobs:
       - name: Governed task queue targeted claim tests
         run: npx tsx --test tests/governedTaskQueue.test.ts
 
+      - name: OAuth consent and PKCE regression tests
+        run: npx tsx --test tests/oauthAuthorizeConsent.test.ts
+
       - name: Docs check
         run: npm run docs:check
 
