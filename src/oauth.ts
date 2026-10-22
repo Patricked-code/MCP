@@ -410,6 +410,11 @@ const oauthOriginMismatchClasses = {
   origin_missing_or_invalid: 0,
   other_origin: 0
 };
+const oauthOriginWireClasses = {
+  opaque_null: 0,
+  malformed_or_missing: 0,
+  noncanonical_valid: 0
+};
 const oauthIssuerPublicOriginMatch = () => {
   try { return new URL(oauthIssuer()).origin === new URL(DEFAULT_ISSUER).origin; }
   catch { return false; }
@@ -436,7 +441,8 @@ export function getOauthConsentProvenanceEvidence(): string {
     mutationAllowed: false,
     counts: { ...oauthConsentProvenanceCounts },
     issuerMatchesPublicOrigin: oauthIssuerPublicOriginMatch(),
-    originMismatchClasses: { ...oauthOriginMismatchClasses }
+    originMismatchClasses: { ...oauthOriginMismatchClasses },
+    originWireClasses: { ...oauthOriginWireClasses }
   });
 }
 
@@ -552,6 +558,14 @@ function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (
       const classification = classifyRejectedOrigin(req);
       oauthOriginMismatchClasses[classification] = Math.min(
         Number.MAX_SAFE_INTEGER, oauthOriginMismatchClasses[classification] + 1
+      );
+      const wireClass = req.header('origin') === 'null'
+        ? 'opaque_null'
+        : classification === 'origin_missing_or_invalid'
+          ? 'malformed_or_missing'
+          : 'noncanonical_valid';
+      oauthOriginWireClasses[wireClass] = Math.min(
+        Number.MAX_SAFE_INTEGER, oauthOriginWireClasses[wireClass] + 1
       );
     }
     logger.warn({ reasonCode: consentOriginReason }, 'Décision OAuth refusée par le contrôle de provenance');
