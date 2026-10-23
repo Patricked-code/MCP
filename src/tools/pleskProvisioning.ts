@@ -16,8 +16,23 @@ const SubdomainRequest = {
 };
 
 /** RED: strict config parser will be implemented without changing existing server map. */
-export function parseAllowedPleskParents(_raw: string): PleskPolicy['allowedParents'] {
-  throw new Error('NOT_IMPLEMENTED');
+export function parseAllowedPleskParents(raw: string): PleskPolicy['allowedParents'] {
+  const result: Record<PleskServerId, string[]> = { s1: [], s2: [] };
+  if (raw === '') return result;
+  if (raw.length > 2048) throw new Error('PLESK_ALLOWED_PARENTS_INVALID');
+  for (const entry of raw.split(',')) {
+    const components = entry.split(':');
+    if (components.length !== 2) throw new Error('PLESK_ALLOWED_PARENTS_INVALID');
+    const [serverId, domain] = components;
+    if ((serverId !== 's1' && serverId !== 's2')
+      || typeof domain !== 'string'
+      || !/^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$/.test(domain)
+      || result[serverId].includes(domain)) {
+      throw new Error('PLESK_ALLOWED_PARENTS_INVALID');
+    }
+    result[serverId].push(domain);
+  }
+  return result;
 }
 
 const port: PleskRemotePort = {
