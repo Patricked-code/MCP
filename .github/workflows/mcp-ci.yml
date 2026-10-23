@@ -66,6 +66,11 @@ jobs:
       - name: Generate function cartography candidate artifact
         run: npm run cartography:write
 
+      # Temporary log transport to reconstruct the generated JSON through GitHub's reviewed API.
+      - name: Emit generated cartography candidate as bounded log chunks
+        run: |
+          node -e 'const fs=require("fs"); const s=JSON.stringify(JSON.parse(fs.readFileSync(".mcp/function-cartography.json","utf8"))); for(let i=0;i<s.length;i+=1000) console.log("CARTO_CHUNK:"+s.slice(i,i+1000));'
+
       - name: Upload function cartography candidate artifact
         uses: actions/upload-artifact@v4
         with:
