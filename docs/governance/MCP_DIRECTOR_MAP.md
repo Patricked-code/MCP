@@ -117,3 +117,32 @@ Cette carte est **une navigation**, pas un nouveau schéma d'implémentation. Le
 **Contrôles restant à faire :** (a) lire commentaires/reviews/fils/commits de #40–63 ; (b) identifier les décisions, objections et corrections non visibles dans les corps ; (c) rapprocher les attestations exact-SHA et le HEAD courant ; (d) prolonger la classification aux PR #64+, sans ré-extraire les lots déjà archivés ; (e) rapprocher les audits historiques de la matrice GWB et des 94 blueprints. Chaque UNKNOWN reste explicite.
 
 **Trace de publication :** issue #235, sous l'ancrage #6352010236. Ce registre reste une proposition de la PR #348 tant que celle-ci n'est pas fusionnée.
+
+
+## 8. Registre des reviews et corrections — échantillon vérifié #44/#45/#49/#55/#60 (23/10/2026)
+
+> Collecte directe des timelines GitHub de PR #44 (10 entrées), #45 (10), #49 (10), #52 (0), #55 (21), #59 (0), #60 (5), #61 (2) : **58 entrées normalisées** (commentaires de conversation, inline et soumissions de revue). Les entrées automatiques de revue ne sont pas assimilées à des constats supplémentaires. Cette collecte n'est pas l'exhaustivité des 24 PR #40–63. Les résolutions ci-dessous sont **déclarations documentées historiquement**, non validation du HEAD courant.
+
+| Origine et finding | Impact historique | Correction / preuve historique | Vérification actuelle |
+|---|---|---|---|
+| [#44 P1 sessions](https://github.com/Patricked-code/MCP/pull/44#discussion_r3773882530) | 1 000 sessions historiques saturent le store | [#45 réponse](https://github.com/Patricked-code/MCP/pull/44#discussion_r3790243915), rétention déterministe | UNKNOWN |
+| [#44 P1 locks](https://github.com/Patricked-code/MCP/pull/44#discussion_r3773882539) | 2 000 locks historiques bloquent l'acquisition | [#45 réponse](https://github.com/Patricked-code/MCP/pull/44#discussion_r3790244006) | UNKNOWN |
+| [#44 P2 fermeture](https://github.com/Patricked-code/MCP/pull/44#discussion_r3773882550) | lock actif orphelin après fermeture de session | [#45 réponse](https://github.com/Patricked-code/MCP/pull/44#discussion_r3790244061) | UNKNOWN |
+| [#45 P1 grâce reprise](https://github.com/Patricked-code/MCP/pull/45#discussion_r3790243613) | session EXPIRED encore reprenable supprimée | [#47 réponse](https://github.com/Patricked-code/MCP/pull/45#discussion_r3834269463) | UNKNOWN |
+| [#45 P1 exception docs S1](https://github.com/Patricked-code/MCP/pull/45#discussion_r3790243614) | Live State ne peut atteindre FULLY_ALIGNED après descendant docs-only | [#47 réponse](https://github.com/Patricked-code/MCP/pull/45#discussion_r3834269207) | UNKNOWN |
+| [#45 P2 lock TTL](https://github.com/Patricked-code/MCP/pull/45#discussion_r3790243616) | lock expiré logiquement bloque rétention à capacité | [#47 réponse](https://github.com/Patricked-code/MCP/pull/45#discussion_r3834269341) | UNKNOWN |
+| [#49 P1 task owner terminal](https://github.com/Patricked-code/MCP/pull/49#discussion_r3835756530) | tâche CLAIMED inaccessible après session terminale | [#52 réponse](https://github.com/Patricked-code/MCP/pull/49#discussion_r3884320674), suite 234/234 historique | UNKNOWN |
+| [#49 P2 currentTask](https://github.com/Patricked-code/MCP/pull/49#discussion_r3835756533) | tâche d'une autre session ou terminée sélectionnée | [#52 réponse](https://github.com/Patricked-code/MCP/pull/49#discussion_r3884320585) | UNKNOWN |
+| [#49 P2 evidenceHead](https://github.com/Patricked-code/MCP/pull/49#discussion_r3835756536) | preuves working-tree attribuées à tort au SHA HEAD | [#52 réponse](https://github.com/Patricked-code/MCP/pull/49#discussion_r3884320786) | UNKNOWN |
+| [#55 P1 exact-head checks](https://github.com/Patricked-code/MCP/pull/55#discussion_r3885879622) | head_sha lu sur mauvaise structure API | [correction](https://github.com/Patricked-code/MCP/pull/55#discussion_r3886764738), CI #577 historique | UNKNOWN |
+| [#55 P1 déploiement tâche](https://github.com/Patricked-code/MCP/pull/55#discussion_r3885879624) | déploiement d'une autre tâche peut certifier celle-ci | [correction](https://github.com/Patricked-code/MCP/pull/55#discussion_r3886764992) | UNKNOWN |
+| [#55 P1 règles cumulées](https://github.com/Patricked-code/MCP/pull/55#discussion_r3886743714) | règles applicables à main omises | [correction](https://github.com/Patricked-code/MCP/pull/55#discussion_r3886765233) | UNKNOWN |
+| [#55 P2 approvals](https://github.com/Patricked-code/MCP/pull/55#discussion_r3886743720) | compte minimal d'approbations ignoré | [correction](https://github.com/Patricked-code/MCP/pull/55#discussion_r3886765547) | UNKNOWN |
+| [#55 P1 integration_id](https://github.com/Patricked-code/MCP/pull/55#discussion_r3886769822) | check d'une autre GitHub App accepté à tort | correction ultérieure à identifier | UNKNOWN |
+| [#55 P2 code owners](https://github.com/Patricked-code/MCP/pull/55#discussion_r3886769824) | contrainte code-owner ignorée | correction ultérieure à identifier | UNKNOWN |
+| [#55 P2 optional checks](https://github.com/Patricked-code/MCP/pull/55#discussion_r3886769828) | échec check facultatif bloque faussement Task Reality | correction ultérieure à identifier | UNKNOWN |
+| [#60 P1 documentation bootstrap](https://github.com/Patricked-code/MCP/pull/60#discussion_r3897408270) | comportement auto-resume non documenté dans autorités canoniques | [réponse #62/#63](https://github.com/Patricked-code/MCP/pull/60#discussion_r3898746098), attestation historique Live State 66 | UNKNOWN |
+
+**Attention à #55 :** le fil contient des corrections intermédiaires suivies de **trois nouveaux constats tardifs** ; ne jamais marquer l'ensemble des findings comme clos sur la seule base de CI #577. À rapprocher des PR successeures, GWB-02/GWB-03, tests et code actuel.
+
+**NEXT_ACTION :** terminer les autres timelines #40–63 ; extraire la résolution précise des trois findings tardifs #55 ; vérifier les commits et tests des PR #45/#47/#52/#55/#62/#63 ; publier le lot suivant sur #235 ; poursuivre #64–98 et #99–273 par deltas.
