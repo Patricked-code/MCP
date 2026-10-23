@@ -559,6 +559,9 @@ export async function startHttpServer(): Promise<void> {
       allowedParents: parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)
     }),
     writeEnabled: () => env.ENABLE_WRITE_TOOLS && env.MCP_PLESK_PROVISIONING_ENABLED,
+    // Fail closed until the existing Governed Session/Task Queue/Locks/receipt
+    // admission can be enforced for new domain scopes. No raw web-consent bypass.
+    authorizeRuntimeWrite: async () => false,
     io: {
       readonly: async (serverId, command) => runReadOnlyCommand(serverId, command),
       guarded: async (serverId, command) => runGuardedCommand(serverId, command, {
