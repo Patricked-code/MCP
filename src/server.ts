@@ -68,6 +68,8 @@ import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
 import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js';
 import { readServerMapConfiguration } from './liveState/targetProject.js';
 import { createProjectRuntimeProvisioningRouter } from './provisioning/routes.js';
+import { createPleskSubdomainRouter } from './provisioning/pleskWebRoutes.js';
+import { parseAllowedPleskParents } from './tools/pleskProvisioning.js';
 import { executeProjectRuntimeProvisioning } from './provisioning/runtimeExecutor.js';
 import { createProjectRuntimeExecutionDependencies } from './provisioning/wiring.js';
 import { isActiveGovernedTaskStatus } from './operationalMemory/taskQueue.js';
@@ -540,6 +542,29 @@ export async function startHttpServer(): Promise<void> {
     listTargets: projectRuntimeProvisioning.listTargets,
     preview: projectRuntimeProvisioning.preview,
     execute: (input) => executeProjectRuntimeProvisioning(input, projectRuntimeProvisioning)
+  }));
+
+  // Optional S1/S2 Plesk provisioning: reuse operator web session, signed E3 ticket,
+  // same-origin consent and existing bounded SSH channels. Disabled until explicit scope.
+  app.use(createPleskSubdomainRouter({
+    requireLogin: requireWebLogin,
+    session: webConsentBinding,
+    sameOrigin: isSameOriginSubmission,
+    issueTicket: issueWebConsentTicket,
+    verifyTicket: verifyWebConsentTicket,
+    policy: () => ({
+      enabled: env.MCP_PLESK_PROVISIONING_ENABLED,
+      allowedParents: parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)
+    }),
+    writeEnabled: () => env.ENABLE_WRITE_TOOLS && env.MCP_PLESK_PROVISIONING_ENABLED,
+    io: {
+      readonly: async (serverId, command) => runReadOnlyCommand(serverId, command),
+      guarded: async (serverId, command) => runGuardedCommand(serverId, command, {
+        intent: 'plesk_subdomain_web_signed_consent',
+        timeoutMs: 120_000,
+        maxOutputBytes: 16_384
+      })
+    }
   }));
 
   const syntheticProbeClock = getDefaultSyntheticProbeClock();
