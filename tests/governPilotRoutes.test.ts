@@ -5,7 +5,7 @@ import type { AddressInfo } from 'node:net';
 import {createGovernPilotRouter} from '../src/provisioning/governPilotRoutes.js';
 import {GOUVERN_SHA,GOUVERN_SOURCE} from '../src/provisioning/governPilot.js';
 
-async function fixture(f:(base:string,counts:{writes:number},ticket:string)=>Promise<void>){
+async function fixture(f:(base:string,counts:{writes:number},ticket:string)=>Promise<void>, runtimeAuthorized=true){
  const app=express();app.use(express.urlencoded({extended:false}));
  const counts={writes:0};const ticket='signed-govern-pilot-ticket';
  app.use(createGovernPilotRouter({
@@ -15,6 +15,7 @@ async function fixture(f:(base:string,counts:{writes:number},ticket:string)=>Pro
   issueTicket:()=>ticket,
   verifyTicket:(_purpose,value)=>value===ticket,
   enabled:()=>true,writeEnabled:()=>true,
+  authorizeRuntimeWrite:async()=>runtimeAuthorized,
   read:async()=>null,
   stage:async()=>{counts.writes++;return{status:'STAGED',reason:'PRIVATE_GITHUB_SNAPSHOT_READY',revision:GOUVERN_SHA}}
  }));
@@ -46,3 +47,10 @@ test('GRT route RED: valid signed same-origin targeted consent stages only pinne
  const r=await fetch(base+'/gouvern/deploy',{method:'POST',headers:{'x-test-login':'yes','x-test-origin':'same','content-type':'application/x-www-form-urlencoded'},body});
  assert.equal(r.status,201);assert.equal((await r.json()).status,'STAGED');assert.equal(x.writes,1);
 }));
+
+test('GRT runtime RED: valid web consent cannot stage without governed runtime admission',async()=>fixture(async(base,x,ticket)=>{
+ const body=new URLSearchParams({source:GOUVERN_SOURCE,revision:GOUVERN_SHA,confirmation:'DEPLOY_GOUVERN',consent_ticket:ticket});
+ const r=await fetch(base+'/gouvern/deploy',{method:'POST',headers:{'x-test-login':'yes','x-test-origin':'same','content-type':'application/x-www-form-urlencoded'},body});
+ assert.equal(r.status,403);
+ assert.equal(x.writes,0);
+},false));
