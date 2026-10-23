@@ -23,8 +23,8 @@ type Snapshot = { revision:string; sha256:string; bytes:number };
 function archiveName():string { return 'source-'+GOUVERN_SHA+'.tar.gz'; }
 function trustedDirectory(info:Awaited<ReturnType<typeof lstat>>):boolean {
   return info.isDirectory() && !info.isSymbolicLink()
-    && info.uid === process.getuid?.()
-    && (info.mode & 0o077) === 0;
+    && Number(info.uid) === process.getuid?.()
+    && (Number(info.mode) & 0o077) === 0;
 }
 async function digestFile(path:string, maxBytes:number):Promise<{sha256:string;bytes:number}> {
   const hash=createHash('sha256');
