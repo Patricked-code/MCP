@@ -1,4 +1,12 @@
 # DECISIONS_LOG.md
+
+## 2026-10-23 — Regulatory sous-chemin S1, sans nouveau système de déploiement
+
+- Décision opérateur : `chainsolutions-wealthtech/Regulatory` sur **S1**, publiable à `https://wealthtechinnovations.com/regulatory` sous **sous-chemin**, et non via nouveau domaine ou sous-domaine. Source et droits Regulatory distincts de `Patricked-code/MCP` ; Regulatory conserve sa branche canonique `main` et interdit la création d'une nouvelle branche.
+- Dossier applicatif privé proposé : `/opt/apps/regulatory`, sous la racine gouvernée déjà supportée. L'exposition HTTPS `/regulatory` sera un raccordement ingress distinct, nécessitant preuve d'absence de conflit et rollback ; ne pas mélanger avec le document root public du vhost ni avec `/opt/apps/wealthtech-mcp-ssh-bridge`.
+- Les tests d'un plan pur ne suffisent pas à autoriser un déploiement : admission session/claim/lock, mapping GitRegistry, configuration Next.js basePath et certificats/routage doivent être attestés avant toute écriture S1. Protéger toutes les routes de production déjà existantes.
+- Issue d'autorité : #349 commentaire #6355773248 ; code MCP dans une PR séparée de la PR #351/GRT, sans modification directe de `main` ni S1.
+
 ## 2026-10-23 — Extension additive et GRT /gouvern, sans nouvelle autorité
 
 - Décision : conserver le MCP, ses sessions, Task Queue, locks, consentement E3 et chaîne GitHub → S1. Pas de migration, pas de nouveau dispatcher, ni accès libre à Plesk.

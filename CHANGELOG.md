@@ -1,4 +1,11 @@
 # CHANGELOG.md
+
+## 2026-10-23 — Regulatory S1 /regulatory (branche non fusionnée)
+
+- Ajout du contrat exact de publication sous-chemin Regulatory à S1 dans `src/provisioning/regulatorySubpath.ts` et d'une suite RED/GREEN dans `tests/regulatorySubpath.test.ts` / CI.
+- Préserve `PROJECT_RUNTIME`, GitRegistry V2, la chaîne GitHub → S1 et les contrôles de consentement. N'ajoute aucun outil d'écriture sans autorité ni modification du vhost en production.
+- Le déploiement reste conditionné au mapping, aux preuves Plesk/realpath/ingress, au `basePath` Next.js et au rollback. Issue #349 commentaire #6355773248.
+
 ## 2026-10-23 — PR #350 : pilote GRT /gouvern et Plesk S1/S2 (non déployés)
 
 - Ajouts sans migration : prévisualisation Plesk, portail GRT authentifié, archive privée épinglée et fournisseur GitHub App optionnel.
