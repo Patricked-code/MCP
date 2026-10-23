@@ -399,3 +399,99 @@ Cette carte est **une navigation**, pas un nouveau schéma d'implémentation. Le
 **Important :** les PR #305/#312/#319/#320/#321/#330/#348/#350 non fusionnées ne prouvent aucune livraison. Leur état OPEN/CLOSED exact doit être confirmé séparément ; « NON MERGED » ne signifie pas automatiquement abandonné. Les travaux #317/#318 et #329 sont des implémentations historiques fusionnées, à distinguer des intentions encore en cours. Les PR #334/#337/#342/#345 ne permettent pas à elles seules de conclure à une connexion OAuth opérationnelle aujourd'hui.
 
 **NEXT_ACTION :** passer des index de métadonnées aux analyses de contenu et de résolution : lire les reviews/comments des PR #290–296, #305, #317–321, #329–345 ; relier les issues #235/#236/#297+ et les autres numéros non PR ; réconcilier 94 blueprints/GWB et l'architecture cible vs livrée. Publier checkpoint de lot subordonné à #235. Ne pas toucher au runtime ni à la PR #207.
+
+
+## 12. Index de première passe PR #176–273 (23/10/2026)
+
+**Portée :** interrogation du point GitHub PR sur les numéros #176–273, statut et titre. Les numéros qui ne répondent pas comme PR sont potentiellement des issues, et ne sont pas réputés absents. Les commentaires, diffs, commits, reviews, CI et runtime ne sont pas certifiés par cet index.
+
+### Tranche #176–215
+
+| PR | État | Objet attesté par titre GitHub |
+|---|---|---|
+| [#176](https://github.com/Patricked-code/MCP/pull/176) | MERGED | W2 bounded GitHub read complements |
+| [#178](https://github.com/Patricked-code/MCP/pull/178) | MERGED | Intake issue #177 → Program Backlog V2 |
+| [#181](https://github.com/Patricked-code/MCP/pull/181) | MERGED | Automatisation de continuation Program Backlog |
+| [#184](https://github.com/Patricked-code/MCP/pull/184) | MERGED | Clôture documentaire handoff auto-continuation |
+| [#187](https://github.com/Patricked-code/MCP/pull/187) | MERGED | W3 A2.2.1 inventaire preuves client |
+| [#188](https://github.com/Patricked-code/MCP/pull/188) | MERGED | Certificats SSH éphémères gouvernés |
+| [#189](https://github.com/Patricked-code/MCP/pull/189) | MERGED | Déclenchement gouverné bootstrap CA via issue |
+| [#191](https://github.com/Patricked-code/MCP/pull/191) | MERGED | Réconciliation intake OIDC repository_dispatch #192 |
+| [#193](https://github.com/Patricked-code/MCP/pull/193) | MERGED | Clôture documentaire workstream SSH après attestation E2E historique |
+| [#194](https://github.com/Patricked-code/MCP/pull/194) | MERGED | W3 A2.2.2 projection bornée preuves client |
+| [#195](https://github.com/Patricked-code/MCP/pull/195) | MERGED | Clôture documentaire A2.2.2 |
+| [#196](https://github.com/Patricked-code/MCP/pull/196) | MERGED | W3 A3.1 inventaire corrélation OAuth |
+| [#199](https://github.com/Patricked-code/MCP/pull/199) | MERGED | Checkpoint A3 post-merge |
+| [#200](https://github.com/Patricked-code/MCP/pull/200) | MERGED | Preuves d'autorités runtime read-only A3.2 |
+| [#202](https://github.com/Patricked-code/MCP/pull/202) | MERGED | Checkpoint blocage TLS A3.2 |
+| [#203](https://github.com/Patricked-code/MCP/pull/203) | MERGED | Intake TLS #201 → server-write borné |
+| [#207](https://github.com/Patricked-code/MCP/pull/207) | OPEN/CLOSED non fusionnée | OAuth refresh-token continuity ; ownership protégé, ne pas déclarer livré |
+| [#208](https://github.com/Patricked-code/MCP/pull/208) | MERGED | Consentement explicite avant code OAuth |
+| [#209](https://github.com/Patricked-code/MCP/pull/209) | MERGED | Clôture documentaire consentement OAuth |
+| [#210](https://github.com/Patricked-code/MCP/pull/210) | MERGED | W3 B3.1 inventaire résiduel multi-repo |
+| [#211](https://github.com/Patricked-code/MCP/pull/211) | MERGED | C1.1 readiness GitRegistry via OIDC readonly |
+| [#212](https://github.com/Patricked-code/MCP/pull/212) | MERGED | Clôture C1.1 |
+| [#213](https://github.com/Patricked-code/MCP/pull/213) | MERGED | Présence client réelle distincte heartbeat/health |
+| [#214](https://github.com/Patricked-code/MCP/pull/214) | MERGED | Clôture G1 |
+| [#215](https://github.com/Patricked-code/MCP/pull/215) | MERGED | Présence client à deux horloges |
+
+Numéros non trouvés comme PR : #177, #179–180, #182–183, #185–186, #190, #192, #197–198, #201, #204–206. Rechercher comme issues.
+
+### Tranche #216–273
+
+| PR | État | Objet attesté par titre GitHub |
+|---|---|---|
+| [#216](https://github.com/Patricked-code/MCP/pull/216) | MERGED | Clôture G2 et PB-G12 |
+| [#217](https://github.com/Patricked-code/MCP/pull/217) | MERGED | B3.2 suspendu à décision propriétaire target project |
+| [#218](https://github.com/Patricked-code/MCP/pull/218) | MERGED | G3 attestation surface outils client |
+| [#219](https://github.com/Patricked-code/MCP/pull/219) | MERGED | Clôture G3 |
+| [#223](https://github.com/Patricked-code/MCP/pull/223) | MERGED | MASTER_RESUME_MEMORY, mémoire historique à dater |
+| [#224](https://github.com/Patricked-code/MCP/pull/224) | MERGED | Intakes #220–222, gate humain/dispatch |
+| [#225](https://github.com/Patricked-code/MCP/pull/225) | MERGED | B3.2 TargetScope et projet cible configuré |
+| [#226](https://github.com/Patricked-code/MCP/pull/226) | MERGED | Clôture B3.2 |
+| [#227](https://github.com/Patricked-code/MCP/pull/227) | MERGED | DISPATCH-01 matérialisation tâche gouvernée liée blueprint |
+| [#228](https://github.com/Patricked-code/MCP/pull/228) | MERGED | Clôture DISPATCH-01 |
+| [#229](https://github.com/Patricked-code/MCP/pull/229) | MERGED | DISPATCH-02 claim resume-owned-first |
+| [#230](https://github.com/Patricked-code/MCP/pull/230) | MERGED | Clôture DISPATCH-02 |
+| [#231](https://github.com/Patricked-code/MCP/pull/231) | MERGED | DISPATCH-03 projection prochain travail agent connecté |
+| [#232](https://github.com/Patricked-code/MCP/pull/232) | MERGED | Clôture DISPATCH-03 |
+| [#233](https://github.com/Patricked-code/MCP/pull/233) | MERGED | C3 résolution serveur GW-07 |
+| [#234](https://github.com/Patricked-code/MCP/pull/234) | MERGED | Clôture C3 |
+| [#237](https://github.com/Patricked-code/MCP/pull/237) | MERGED | Intakes issues #235/#236, complete-to-terminal / cockpit |
+| [#238](https://github.com/Patricked-code/MCP/pull/238) | MERGED | C4 résolution runtime GW-08 |
+| [#239](https://github.com/Patricked-code/MCP/pull/239) | MERGED | Clôture C4 |
+| [#240](https://github.com/Patricked-code/MCP/pull/240) | MERGED | C5 résolution domaine GW-09 |
+| [#241](https://github.com/Patricked-code/MCP/pull/241) | MERGED | Clôture C5 |
+| [#242](https://github.com/Patricked-code/MCP/pull/242) | MERGED | C345 acceptance réalité projet |
+| [#243](https://github.com/Patricked-code/MCP/pull/243) | MERGED | Clôture C345 |
+| [#244](https://github.com/Patricked-code/MCP/pull/244) | MERGED | D1 héritage gouvernance projet |
+| [#245](https://github.com/Patricked-code/MCP/pull/245) | MERGED | Clôture D1 |
+| [#246](https://github.com/Patricked-code/MCP/pull/246) | MERGED | D2 capacités effectives projet |
+| [#247](https://github.com/Patricked-code/MCP/pull/247) | MERGED | Clôture D2 |
+| [#248](https://github.com/Patricked-code/MCP/pull/248) | MERGED | D3 références prouvées bootstrap receipt |
+| [#249](https://github.com/Patricked-code/MCP/pull/249) | MERGED | Clôture D3 |
+| [#250](https://github.com/Patricked-code/MCP/pull/250) | MERGED | Décision propriétaire #236 EXISTING_MCP_EXPOSURE_FIRST |
+| [#251](https://github.com/Patricked-code/MCP/pull/251) | MERGED | E1 détection contexte manquant |
+| [#252](https://github.com/Patricked-code/MCP/pull/252) | MERGED | Clôture E1 |
+| [#253](https://github.com/Patricked-code/MCP/pull/253) | MERGED | E2 wizard complétion contexte sur surfaces existantes |
+| [#254](https://github.com/Patricked-code/MCP/pull/254) | MERGED | Clôture E2 |
+| [#255](https://github.com/Patricked-code/MCP/pull/255) | MERGED | E3 consentement avant mutations |
+| [#256](https://github.com/Patricked-code/MCP/pull/256) | MERGED | Clôture E3 |
+| [#257](https://github.com/Patricked-code/MCP/pull/257) | MERGED | F-01 décomposition capacité provisioning |
+| [#258](https://github.com/Patricked-code/MCP/pull/258) | MERGED | Clôture F-01 |
+| [#259](https://github.com/Patricked-code/MCP/pull/259) | MERGED | F-03 incrément 1 : preuve absence et plan |
+| [#260](https://github.com/Patricked-code/MCP/pull/260) | MERGED | F-03 incrément 2 : exécuteur borné cible |
+| [#261](https://github.com/Patricked-code/MCP/pull/261) | MERGED | F-03 incrément 3 : consentement et wiring |
+| [#263](https://github.com/Patricked-code/MCP/pull/263) | MERGED | Clôture F-03 avec preuves historiques |
+| [#267](https://github.com/Patricked-code/MCP/pull/267) | MERGED | F-04 observation Live State served-domain |
+| [#269](https://github.com/Patricked-code/MCP/pull/269) | MERGED | Attestation merge/deploy F-04 |
+| [#270](https://github.com/Patricked-code/MCP/pull/270) | MERGED | Récupération F-04 et preuves dispatch parallèle |
+| [#271](https://github.com/Patricked-code/MCP/pull/271) | MERGED | Refus ownership ambigu Plesk realPath |
+| [#272](https://github.com/Patricked-code/MCP/pull/272) | MERGED | Test claims CAS concurrents, propriété unique |
+| [#273](https://github.com/Patricked-code/MCP/pull/273) | MERGED | Chronologie architecture indexée depuis issue #65 |
+
+Numéros non trouvés comme PR : #220–222, #235–236, #262, #264–266, #268. Rechercher comme issues.
+
+**Invariants de lecture :** le « merged » n'atteste pas le déploiement actuel ; les PR documentaires de clôture ne sont pas une seconde implémentation ; #207 n'est pas fusionnée et reste un périmètre propriétaire distinct ; #235 est l'issue directrice de ce chantier documentaire, pas une PR.
+
+**NEXT_ACTION :** auditer les issues sur numéros sans PR ; reviews/commentaires/commits #176–273, surtout #207/#223/#261/#267/#271/#272/#273 ; relier les findings GWB-02/03 et les 94 blueprints ; poursuivre PR #274–348. Publier checkpoint et préserver les UNKNOWN.
