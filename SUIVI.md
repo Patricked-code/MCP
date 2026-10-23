@@ -1,4 +1,14 @@
 # SUIVI.md
+## 2026-10-23 — PR #350 : pilote GRT /gouvern et provisioning S1/S2, non fusionnés
+
+- Mandat : étendre sans migration le MCP existant, point d'ancrage issue #349 et PR #350. Baseline main/S1 `a3df3b0`, GRT `eb74f16b6c8bbe63658666095f6c97fb32aaa303`. Aucun déploiement S1 effectué.
+- Implémentation additive : planificateur Plesk S1/S2, aperçu MCP read-only, consentement web signé, portail privé `/gouvern`, staging GRT sous `/app/data/gouvern` (0700/0600, SHA-256 vérifié, exclusion concurrente), fournisseur de jetons GitHub App optionnel.
+- Gouvernance : Plesk et GRT n'acceptent pas d'écritures sans admission runtime session/claim/locks attestée ; câblage actuel `authorizeRuntimeWrite: async () => false`. Aucune création Plesk, archive ni changement de production n'a eu lieu. OAuth #346/#207 inchangé.
+- Tests : RED → GREEN, CI et analyses de sécurité dans PR #350, notamment refus du consentement non autorisé, concurrence, intégrité et rejet des chemins dangereux. L'approbation ancienne ne certifie pas automatiquement le HEAD nouveau. Les fils et la CI finale restent à recontrôler.
+- Traçabilité complémentaire `docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md` ; décision associée `DECISIONS_LOG.md` et changements `CHANGELOG.md`.
+- NEXT_ACTION : résoudre les fils de revue, actualiser l'approbation du HEAD, obtenir la CI verte, fusionner seulement si le ruleset GitHub l'admet, vérifier Governed Deploy exact SHA, puis préparer l'activation cible avec autorité runtime valide et tests HTTPS /mcp /gouvern.
+
+
 
 ## 2026-10-22 — PR #329 : primitive de claim ciblé (GitHub-only, non déployée)
 
