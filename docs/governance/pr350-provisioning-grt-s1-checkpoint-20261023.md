@@ -20,7 +20,7 @@ GRT est un dépôt de gouvernance documentaire, pas une application web : on n'e
 - Ancien HEAD candidat `098afae18a54a32527a924ea6be2df23bee35c26` : CI #39880062814 et #39880068075 SUCCESS. Approbation de `Wealthtechinnovations` le 23/10 à 01:00:26 UTC ; six remarques de revue restaient ouvertes sur cet état.
 - Suite de tests RED/GREEN : planification/exécution Plesk, web E3, installation GitHub App et pilote GRT ; renforcements ultérieurs sur concurrence, empreinte, permissions, anti-clickjacking et barrière de gouvernance.
 - Ce document ne prétend **pas** qu'un répertoire a été créé sur S1 ni qu'un déploiement a été effectué. Les CI, fils de revue et le HEAD doivent être réobservés après ce commit.
-- Écart de documentation : `SUIVI.md`, `CHANGELOG.md` et `DECISIONS_LOG.md` ne sont pas encore actualisés dans cette PR ; l'actualisation de ces gros fichiers doit être validée avant fusion. Ce checkpoint et les issues sont des compléments, pas des substituts aux autorités canoniques.
+- Documentation canonique : `SUIVI.md`, `CHANGELOG.md` et `DECISIONS_LOG.md` ont été actualisés de façon additive dans cette PR après le checkpoint initial, sans suppression de l'historique. Ce checkpoint et les issues restent des compléments, pas des substituts aux autorités canoniques.
 
 ## Revue additionnelle du 23 octobre — admission runtime GRT
 
