@@ -65,6 +65,9 @@ jobs:
       - name: GRT source GitHub App optional RED-GREEN tests
         run: npx tsx --test tests/governPilotArchiveSource.test.ts
 
+      - name: GRT pilot governed runtime authority RED-GREEN
+        run: npx tsx --test tests/governPilotAdmission.test.ts
+
       - name: OAuth consent and PKCE regression tests
         run: npx tsx --test tests/oauthAuthorizeConsent.test.ts
 
