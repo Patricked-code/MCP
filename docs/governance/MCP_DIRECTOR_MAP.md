@@ -363,7 +363,7 @@ Cette carte est **une navigation**, pas un nouveau schéma d'implémentation. Le
 
 ## 13. Index PR #274–353 — première passe de provenance (23/10/2026)
 
-**Portée :** 80 numéros interrogés sur GitHub PR, 29 PR identifiées (18 fusionnées, 11 non fusionnées), 51 numéros sans PR accessible (à examiner comme issues). Vérification titre et fusion ; ne pas assimiler à un audit des commentaires/reviews/commits ni à un verdict runtime.
+**Portée :** 80 numéros interrogés sur GitHub PR, 28 PR identifiées (20 fusionnées, 8 non fusionnées), 52 numéros sans PR accessible (à examiner comme issues). Vérification titre et fusion ; ne pas assimiler à un audit des commentaires/reviews/commits ni à un verdict runtime.
 
 | PR | État | Nature historique / relation |
 |---|---|---|
