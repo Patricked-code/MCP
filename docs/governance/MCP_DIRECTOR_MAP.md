@@ -264,3 +264,98 @@ Cette carte est **une navigation**, pas un nouveau schéma d'implémentation. Le
 **Point de contrôle :** l'ensemble #96–175 est indexé au niveau PR existence/fusion ; aucun statut d'issue ni résolution de review ne peut être inféré de l'absence de PR. La mémoire GWC #97 et le graphe de planification #171 sont des sources de nature différente de l'état runtime actuel.
 
 **NEXT_ACTION :** lectures issues et timelines #96–175 ; index PR #176–215 puis #216–273 ; croisement des constats GWB-02/GWB-03 et des 94 blueprints ; publier traces subordonnées à la racine issue #235.
+
+
+## 12. Registre des PR #176–273 — première passe intégrale de numéros (23/10/2026)
+
+**Méthode :** 98 numéros #176–273 interrogés un par un sur le point GitHub PR, en distinguant PR vérifiées et numéros qui ne sont pas accessibles comme PR. Couverture ici = existence, titre et fusion, **pas** commentaires/reviews/diff/commits exhaustifs. Chaque PR ci-dessous est **MERGED**, sauf #207 **NON MERGED**. Les numéros non listés ne sont pas des PR accessibles dans cette passe et doivent être recherchés comme issues.
+
+### #176–215 — W2/W3, transport SSH, OAuth, preuves et présence client
+
+| PR | Observation / type |
+|---|---|
+| [#176](https://github.com/Patricked-code/MCP/pull/176) | W2 GitHub READ complémentaires |
+| [#178](https://github.com/Patricked-code/MCP/pull/178) | Intake #177 → Program Backlog V2 |
+| [#181](https://github.com/Patricked-code/MCP/pull/181) | Automatisation de continuation Program Backlog |
+| [#184](https://github.com/Patricked-code/MCP/pull/184) | Handoff documentaire auto-continuation |
+| [#187](https://github.com/Patricked-code/MCP/pull/187) | W3 A2.2.1 inventaire preuves client |
+| [#188](https://github.com/Patricked-code/MCP/pull/188) | Certificats SSH éphémères gouvernés |
+| [#189](https://github.com/Patricked-code/MCP/pull/189) | Trigger issue pour bootstrap CA SSH |
+| [#191](https://github.com/Patricked-code/MCP/pull/191) | Correction intake repository_dispatch OIDC #192 |
+| [#193](https://github.com/Patricked-code/MCP/pull/193) | Clôture flux SSH après attestation E2E historique |
+| [#194](https://github.com/Patricked-code/MCP/pull/194) | W3 A2.2.2 projection bornée preuves client |
+| [#195](https://github.com/Patricked-code/MCP/pull/195) | Clôture A2.2.2 après attestation historique |
+| [#196](https://github.com/Patricked-code/MCP/pull/196) | W3 A3.1 inventaire corrélation OAuth |
+| [#199](https://github.com/Patricked-code/MCP/pull/199) | Checkpoint gate runtime A3 |
+| [#200](https://github.com/Patricked-code/MCP/pull/200) | A3.2 preuve lecture seule autorités runtime |
+| [#202](https://github.com/Patricked-code/MCP/pull/202) | Blocage TLS A3.2 |
+| [#203](https://github.com/Patricked-code/MCP/pull/203) | Intake TLS #201 → écriture serveur bornée |
+| [#207](https://github.com/Patricked-code/MCP/pull/207) | **NON MERGED** — continuité OAuth refresh token, ownership à respecter, pas preuve de livraison |
+| [#208](https://github.com/Patricked-code/MCP/pull/208) | Consentement opérateur explicite avant émission de code OAuth |
+| [#209](https://github.com/Patricked-code/MCP/pull/209) | Clôture documentaire consentement OAuth |
+| [#210](https://github.com/Patricked-code/MCP/pull/210) | W3 B3.1 inventaire résiduel multi-repo |
+| [#211](https://github.com/Patricked-code/MCP/pull/211) | Probe readiness C1.1 GitRegistry V2 via OIDC lecture seule |
+| [#212](https://github.com/Patricked-code/MCP/pull/212) | Clôture documentaire C1.1 |
+| [#213](https://github.com/Patricked-code/MCP/pull/213) | Journal présence client réelle distinct heartbeat/health |
+| [#214](https://github.com/Patricked-code/MCP/pull/214) | Clôture documentaire G1 |
+| [#215](https://github.com/Patricked-code/MCP/pull/215) | G2 présence client à deux horloges |
+
+### #216–255 — G2/G3, TargetScope, dispatch, GW-07..09, capacités, consentement
+
+| PR | Observation / type |
+|---|---|
+| [#216](https://github.com/Patricked-code/MCP/pull/216) | Clôture G2 / PB-G12 |
+| [#217](https://github.com/Patricked-code/MCP/pull/217) | B3.2 suspendu à décision propriétaire |
+| [#218](https://github.com/Patricked-code/MCP/pull/218) | G3 attestation surface outils client |
+| [#219](https://github.com/Patricked-code/MCP/pull/219) | Clôture G3 |
+| [#223](https://github.com/Patricked-code/MCP/pull/223) | MASTER_RESUME_MEMORY : mémoire de reprise historique |
+| [#224](https://github.com/Patricked-code/MCP/pull/224) | Intakes #220–222 → B3.2, human gate, dispatch |
+| [#225](https://github.com/Patricked-code/MCP/pull/225) | B3.2 sélection cible opérateur / TargetScope |
+| [#226](https://github.com/Patricked-code/MCP/pull/226) | Clôture B3.2 |
+| [#227](https://github.com/Patricked-code/MCP/pull/227) | Dispatch-01 matérialisation tâches liée blueprint |
+| [#228](https://github.com/Patricked-code/MCP/pull/228) | Clôture Dispatch-01 |
+| [#229](https://github.com/Patricked-code/MCP/pull/229) | Dispatch-02 claim gouverné resume-owned-first |
+| [#230](https://github.com/Patricked-code/MCP/pull/230) | Clôture Dispatch-02 |
+| [#231](https://github.com/Patricked-code/MCP/pull/231) | Dispatch-03 projection next-work agents connectés |
+| [#232](https://github.com/Patricked-code/MCP/pull/232) | Clôture Dispatch-03 |
+| [#233](https://github.com/Patricked-code/MCP/pull/233) | C3 GW-07 résolution serveur après projet |
+| [#234](https://github.com/Patricked-code/MCP/pull/234) | Clôture C3 |
+| [#237](https://github.com/Patricked-code/MCP/pull/237) | Intakes #235/#236 → programme, Super Admin Cockpit |
+| [#238](https://github.com/Patricked-code/MCP/pull/238) | C4 GW-08 résolution runtime après serveur |
+| [#239](https://github.com/Patricked-code/MCP/pull/239) | Clôture C4 |
+| [#240](https://github.com/Patricked-code/MCP/pull/240) | C5 GW-09 résolution domaine après serveur |
+| [#241](https://github.com/Patricked-code/MCP/pull/241) | Clôture C5 |
+| [#242](https://github.com/Patricked-code/MCP/pull/242) | C345 acceptation de réalité projet |
+| [#243](https://github.com/Patricked-code/MCP/pull/243) | Clôture C345 |
+| [#244](https://github.com/Patricked-code/MCP/pull/244) | D1 héritage gouvernance projet |
+| [#245](https://github.com/Patricked-code/MCP/pull/245) | Clôture D1 |
+| [#246](https://github.com/Patricked-code/MCP/pull/246) | D2 capacités effectives par projet |
+| [#247](https://github.com/Patricked-code/MCP/pull/247) | Clôture D2 |
+| [#248](https://github.com/Patricked-code/MCP/pull/248) | D3 références prouvées bootstrap receipt |
+| [#249](https://github.com/Patricked-code/MCP/pull/249) | Clôture D3 |
+| [#250](https://github.com/Patricked-code/MCP/pull/250) | Clarification #236 EXISTING_MCP_EXPOSURE_FIRST |
+| [#251](https://github.com/Patricked-code/MCP/pull/251) | E1 détection contexte manquant |
+| [#252](https://github.com/Patricked-code/MCP/pull/252) | Clôture E1 |
+| [#253](https://github.com/Patricked-code/MCP/pull/253) | E2 wizard complétion contexte surfaces existantes |
+| [#254](https://github.com/Patricked-code/MCP/pull/254) | Clôture E2 |
+| [#255](https://github.com/Patricked-code/MCP/pull/255) | E3 consentement explicite avant mutation |
+
+### #256–273 — provisioning, F-04, collisions et audit
+
+| PR | Observation / type |
+|---|---|
+| [#256](https://github.com/Patricked-code/MCP/pull/256) | Clôture E3/PB-E |
+| [#257](https://github.com/Patricked-code/MCP/pull/257) | F-01 décomposition capacités provisioning |
+| [#258](https://github.com/Patricked-code/MCP/pull/258) | Clôture F-01 |
+| [#259](https://github.com/Patricked-code/MCP/pull/259) | F-03 incrément 1 : preuve absence/plan |
+| [#260](https://github.com/Patricked-code/MCP/pull/260) | F-03 incrément 2 : exécuteur borné cible |
+| [#261](https://github.com/Patricked-code/MCP/pull/261) | F-03 incrément 3 : consentement et wiring |
+| [#263](https://github.com/Patricked-code/MCP/pull/263) | Clôture F-03 avec preuves |
+| [#267](https://github.com/Patricked-code/MCP/pull/267) | F-04 incrément 1 : observation domaine servi Live State |
+| [#269](https://github.com/Patricked-code/MCP/pull/269) | Attestation fusion/deploy F-04 |
+| [#270](https://github.com/Patricked-code/MCP/pull/270) | F-04 reprise et preuves dispatch parallèle |
+| [#271](https://github.com/Patricked-code/MCP/pull/271) | F-04 correction propriété Plesk realPath ambiguë |
+| [#272](https://github.com/Patricked-code/MCP/pull/272) | Test claims CAS concurrents, unicité propriétaire |
+| [#273](https://github.com/Patricked-code/MCP/pull/273) | Chronologie architecture indexée à partir de #65 |
+
+**NEXT_ACTION :** lire commentaires/reviews/commits des PR les plus structurantes (#181, #207, #223, #227–232, #259–263, #267–273), confronter leurs affirmations aux audits GWB et aux 94 blueprints ; interroger les issues correspondant aux numéros non PR ; poursuivre PR #274+ et publier checkpoints sur #235. Ce registre n'est pas une certification d'exhaustivité des discussions ou de l'état runtime.
