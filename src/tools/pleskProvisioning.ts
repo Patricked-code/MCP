@@ -2,9 +2,9 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
 import { env } from '../config/env.js';
-import { runReadOnlyCommand, runGuardedCommand } from '../ssh/client.js';
+import { runReadOnlyCommand } from '../ssh/client.js';
 import { asText } from './format.js';
-import { observePleskSubdomain, createPleskSubdomainOnServer } from '../provisioning/pleskSshAdapter.js';
+import { observePleskSubdomain } from '../provisioning/pleskSshAdapter.js';
 import type { PleskSubdomainInput, PleskServerId } from '../provisioning/pleskSite.js';
 import type { PleskRemotePort, PleskPolicy } from '../provisioning/pleskSshAdapter.js';
 
@@ -40,13 +40,7 @@ const port: PleskRemotePort = {
     const r = await runReadOnlyCommand(server, command);
     return { code: r.code, stdout: r.stdout, stderr: r.stderr };
   },
-  guarded: async (server, command) => {
-    const r = await runGuardedCommand(server, command, {
-      intent: 'plesk_create_subdomain',
-      timeoutMs: 120_000, maxOutputBytes: 16_384
-    });
-    return { code: r.code, stdout: r.stdout, stderr: r.stderr };
-  }
+  guarded: async () => { throw new Error('PLESK_PREVIEW_READ_ONLY'); }
 };
 
 function policy(): PleskPolicy {
@@ -79,21 +73,3 @@ export function registerPleskPreviewTool(server: McpServer): void {
   );
 }
 
-export function registerPleskCreateTool(server: McpServer): void {
-  server.tool('plesk_subdomain_create_s1s2',
-    'Crée un sous-domaine Plesk autorisé avec préflight frais, consentement fqdn, et vérification post-création. Désactivé par défaut.',
-    {
-      ...SubdomainRequest,
-      allowWrite: z.literal(true),
-      confirmFqdn: z.string().min(4).max(320)
-    },
-    async (args) => {
-      const input = request(args);
-      const fqdn = input.label + '.' + input.parentDomain;
-      const admitted = env.ENABLE_WRITE_TOOLS && env.MCP_PLESK_PROVISIONING_ENABLED
-        && args.allowWrite === true && args.confirmFqdn === fqdn;
-      const result = await createPleskSubdomainOnServer(input, policy(), admitted, port);
-      return asText(JSON.stringify({ fqdn, serverId: input.serverId, ...result }));
-    }
-  );
-}
