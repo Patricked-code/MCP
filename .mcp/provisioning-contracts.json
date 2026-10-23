@@ -656,6 +656,23 @@
       "kind": "WORKFLOW",
       "class": "NOT_PROVISIONING",
       "note": "Repository SSH certificate authority bootstrap."
+    },
+    {
+      "name": "POST /provisioning/plesk-subdomain",
+      "kind": "HTTP_ROUTE",
+      "class": "COMPOSABLE",
+      "resourceTypes": [
+        "DOMAIN_BINDING"
+      ],
+      "guards": [
+        "Authenticated operator web session and signed, expiring E3 ticket bound to purpose, session and exact server/domain/path",
+        "same-origin submission and explicit CREATE_SUBDOMAIN confirmation of exact FQDN",
+        "ENABLE_WRITE_TOOLS and MCP_PLESK_PROVISIONING_ENABLED server gates, never considered consent",
+        "MCP_PLESK_ALLOWED_PARENTS explicit server-and-subscription allowlist",
+        "fresh Plesk subscription and path preflight, unknown evidence fails closed, existing unrelated target blocks",
+        "bounded SSH/Plesk CLI only, post-create Plesk and path proof; no deletion or implicit DNS/TLS success"
+      ],
+      "note": "Additive S1/S2 Plesk subdomain creation using existing web-consent and SSH facilities. No approval by an agent instruction or a bare allow_write flag."
     }
   ],
   "contracts": [
