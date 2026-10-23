@@ -12,6 +12,7 @@ export type GovernPilotWebDeps = {
   verifyTicket: (purpose:string,ticket:unknown,binding:string)=>boolean;
   enabled:()=>boolean;
   writeEnabled:()=>boolean;
+  authorizeRuntimeWrite:()=>Promise<boolean>;
   read:()=>Promise<{revision:string;sha256:string;bytes:number}|null>;
   stage:()=>Promise<PilotStage>;
 };
@@ -72,6 +73,10 @@ export function createGovernPilotRouter(deps:GovernPilotWebDeps):Router {
       res.status(403).json({status:'BLOCKED',reason:'GRT_WEB_CONSENT_REQUIRED'});return;
     }
     try {
+      if (!await deps.authorizeRuntimeWrite()) {
+        res.status(403).json({status:'BLOCKED',reason:'GOVERNED_RUNTIME_AUTHORITY_REQUIRED'});
+        return;
+      }
       const result=await deps.stage();
       res.status(result.status==='STAGED'?201:result.status==='NO_OP'?200:
         result.status==='BLOCKED'?403:503).json(result);
