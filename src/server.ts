@@ -69,6 +69,8 @@ import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js
 import { readServerMapConfiguration } from './liveState/targetProject.js';
 import { createProjectRuntimeProvisioningRouter } from './provisioning/routes.js';
 import { createPleskSubdomainRouter } from './provisioning/pleskWebRoutes.js';
+import { createGovernPilotRouter } from './provisioning/governPilotRoutes.js';
+import { stageGovernPilot, readGovernPilot, GOUVERN_RUNTIME_ROOT, GOUVERN_SHA } from './provisioning/governPilot.js';
 import { parseAllowedPleskParents } from './tools/pleskProvisioning.js';
 import { executeProjectRuntimeProvisioning } from './provisioning/runtimeExecutor.js';
 import { createProjectRuntimeExecutionDependencies } from './provisioning/wiring.js';
@@ -565,6 +567,23 @@ export async function startHttpServer(): Promise<void> {
         maxOutputBytes: 16_384
       })
     }
+  }));
+
+  // S1 isolated GRT archive pilot: this is NOT a public git tree or a second runtime.
+  // Reuses the authenticated E3 operator session; opt-in storage only under /app/data.
+  app.use(createGovernPilotRouter({
+    requireLogin: requireWebLogin,
+    session: webConsentBinding,
+    sameOrigin: isSameOriginSubmission,
+    issueTicket: issueWebConsentTicket,
+    verifyTicket: verifyWebConsentTicket,
+    enabled: () => env.MCP_GOUVERN_PILOT_ENABLED,
+    writeEnabled: () => env.ENABLE_WRITE_TOOLS,
+    read: () => readGovernPilot(GOUVERN_RUNTIME_ROOT),
+    stage: () => stageGovernPilot(
+      {root:GOUVERN_RUNTIME_ROOT,approved:true,revision:GOUVERN_SHA},
+      downloadGithubArchiveWithServerCredential
+    )
   }));
 
   const syntheticProbeClock = getDefaultSyntheticProbeClock();
