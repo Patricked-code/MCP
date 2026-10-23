@@ -85,3 +85,15 @@ test('Plesk SSH RED: failed CLI creation cannot be attested as success', async (
   assert.equal((await createPleskSubdomainOnServer(target, allowed, true, f.io)).status,'FAILED');
   assert.equal(f.writes.length, 1);
 });
+
+test('Plesk SSH RED: reject nested or mismatched roots without inspecting unknown ancestors', async () => {
+  for (const documentRoot of ['/nested/tdd-safe', '/another-site']) {
+    const f = fake();
+    const result = await createPleskSubdomainOnServer(
+      { ...target, documentRoot }, allowed, true, f.io
+    );
+    assert.equal(result.status, 'BLOCKED');
+    assert.equal(f.commands.length, 0);
+    assert.equal(f.writes.length, 0);
+  }
+});
