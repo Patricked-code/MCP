@@ -29,6 +29,12 @@ GRT est un dépôt de gouvernance documentaire, pas une application web : on n'e
 - Conséquence opérationnelle : une fusion du code **n'autorisera pas encore** la création du répertoire privé sur S1 ; l'activation du flag n'est pas une admission de tâche runtime. Raccorder l'autorité existante avant tout staging réel ; ne jamais contourner par écriture SSH ad hoc.
 - Fournisseur GitHub App : module de mint de jetons sous-scope présent mais non raccordé au téléchargement GRT ; la visibilité de ce dépôt par credential S1 a été vérifiée séparément. Extension multi-comptes conservée comme prochain périmètre de #349, non prétendue opérationnelle.
 
+## Intégration GitHub App optionnelle après revue P2
+
+Le pilote utilise par défaut `downloadGithubArchiveWithServerCredential` déjà fonctionnel pour le dépôt GRT vérifié sur S1. En complément, une configuration optionnelle `MCP_GRT_GITHUB_APP_ID`, `MCP_GRT_GITHUB_INSTALLATION_ID`, `MCP_GRT_GITHUB_APP_KEY_FILE` active l'émission d'un jeton d'installation GitHub App court et limité au dépôt et à `contents:read`, via `mintGithubAppRepoToken`. La clé privée est exclusivement lue sous `/app/secrets/` avec permissions privées. Les erreurs d'authentification de cette voie choisie ne basculent jamais silencieusement vers un PAT. Aucun secret n'est présent dans Git et la présence d'une clé privée sur S1 n'est pas attestée à ce stade.
+
+TDD : CI RED sur le stub du fournisseur de source, puis même série de tests en GREEN. La CI complète sur le HEAD intégrant le montage runtime doit être observée avant toute fusion. Cette intégration ne modifie pas OAuth ni les installations GitHub existantes.
+
 ## NEXT_ACTION
 
 Vérifier CI au HEAD final, faire relire et résoudre les six fils de sécurité sans les masquer, synchroniser les trois journaux historiques, vérifier les règles de protection `main`, puis fusionner seulement si GitHub admet la PR et qu'une revue indépendante couvre la version finale. Après fusion : vérifier `MCP Governed Deploy` sur SHA exact, activer de manière ciblée /gouvern par un canal de configuration autorisé, demander le consentement opérateur pour le premier archivage et attester `/health`, `/mcp`, OAuth, login, `/gouvern` et la santé Docker. Aucun accès SSH libre ni écriture directe au code versionné sur S1.
