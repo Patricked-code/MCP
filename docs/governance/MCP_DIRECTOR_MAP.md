@@ -146,3 +146,64 @@ Cette carte est **une navigation**, pas un nouveau schéma d'implémentation. Le
 **Attention à #55 :** le fil contient des corrections intermédiaires suivies de **trois nouveaux constats tardifs** ; ne jamais marquer l'ensemble des findings comme clos sur la seule base de CI #577. À rapprocher des PR successeures, GWB-02/GWB-03, tests et code actuel.
 
 **NEXT_ACTION :** terminer les autres timelines #40–63 ; extraire la résolution précise des trois findings tardifs #55 ; vérifier les commits et tests des PR #45/#47/#52/#55/#62/#63 ; publier le lot suivant sur #235 ; poursuivre #64–98 et #99–273 par deltas.
+
+
+## 9. Reprise PR #64–95 et compléments de reviews #40–63 (23/10/2026)
+
+**Couverture attestée :** métadonnées, titres, statuts de fusion et débuts de corps des **32 PR #64–95** ; les descriptions complètes de chaque PR, les commits et reviews de ce lot restent à relire. Sur les 24 PR #40–63, les timelines des 16 PR restantes ont été interrogées ; ensemble les 24 PR ont une première passe de commentaires/reviews via GitHub. Cette première passe n'est pas une certification d'exhaustivité des fils, commits, pages de commentaires ni de leur résolution.
+
+### PR #64–95 — index individuel
+
+| PR | État de fusion vérifié | Objet et relation de provenance |
+|---|---|---|
+| [#64](https://github.com/Patricked-code/MCP/pull/64) | MERGED | ROADMAP/TODO/TASKS, planification documentaire gouvernée |
+| [#65](https://github.com/Patricked-code/MCP/pull/65) | MERGED | Stabilisation checkpoint SUIVI sans SHA autoréférentiel |
+| [#66](https://github.com/Patricked-code/MCP/pull/66) | MERGED | Réconciliation baseline GitHub/S1/runtime |
+| [#67](https://github.com/Patricked-code/MCP/pull/67) | CLOSED_UNMERGED | Carrier draft Governed Connection Context, remplacé par #68 |
+| [#68](https://github.com/Patricked-code/MCP/pull/68) | MERGED | Minimal Governed Connection Context, même branche que #67 |
+| [#69](https://github.com/Patricked-code/MCP/pull/69) | CLOSED_UNMERGED | Carrier docs-only #68, remplacé par #70 |
+| [#70](https://github.com/Patricked-code/MCP/pull/70) | MERGED | Réconciliation A2.1, même branche que #69 |
+| [#71](https://github.com/Patricked-code/MCP/pull/71) | CLOSED_UNMERGED | Carrier draft clôture A2.1, remplacé par #72 |
+| [#72](https://github.com/Patricked-code/MCP/pull/72) | MERGED | Clôture documentaire A2.1, même branche/head que #71 |
+| [#73](https://github.com/Patricked-code/MCP/pull/73) | MERGED | Résolution du principal GitHub contextualisé |
+| [#74](https://github.com/Patricked-code/MCP/pull/74) | MERGED | Attestation documentaire livraison B1 / #73 |
+| [#75](https://github.com/Patricked-code/MCP/pull/75) | MERGED | Résolution dépôt GitHub fail-closed B2 |
+| [#76](https://github.com/Patricked-code/MCP/pull/76) | MERGED | Réconciliation documentaire B2 / #75 |
+| [#77](https://github.com/Patricked-code/MCP/pull/77) | MERGED | Correction tardive fermeture session gouvernée B2 |
+| [#78](https://github.com/Patricked-code/MCP/pull/78) | MERGED | Fondation de compatibilité projet GitRegistry |
+| [#79](https://github.com/Patricked-code/MCP/pull/79) | MERGED | Réconciliation AfricaFunds phase 1 / #78 |
+| [#80](https://github.com/Patricked-code/MCP/pull/80) | MERGED | Mapping des composants AfricaFunds dans registre existant |
+| [#81](https://github.com/Patricked-code/MCP/pull/81) | MERGED | Réconciliation terminale AfricaFunds phase 2 / #80 |
+| [#82](https://github.com/Patricked-code/MCP/pull/82) | MERGED | Correction ordre des baselines SUIVI |
+| [#83](https://github.com/Patricked-code/MCP/pull/83) | MERGED | C1 readiness d'activation GitRegistry V2 fail-closed |
+| [#84](https://github.com/Patricked-code/MCP/pull/84) | MERGED | Réconciliation documentaire C1 / #83 |
+| [#85](https://github.com/Patricked-code/MCP/pull/85) | CLOSED_UNMERGED | Projet transport GitHub Actions→SSH, intention historique non activée |
+| [#86](https://github.com/Patricked-code/MCP/pull/86) | CLOSED_UNMERGED | Candidat sync/deploy S2 Stablecoin, intention non livrée par cette PR |
+| [#87](https://github.com/Patricked-code/MCP/pull/87) | MERGED | Test RED d'attestation de surface client G3 |
+| [#88](https://github.com/Patricked-code/MCP/pull/88) | CLOSED_UNMERGED | Candidat création repo organisation, intention historique |
+| [#89](https://github.com/Patricked-code/MCP/pull/89) | CLOSED_UNMERGED | Candidat fondation Git/GitHub Control Plane empilé sur #88 |
+| [#90](https://github.com/Patricked-code/MCP/pull/90) | CLOSED_UNMERGED | Candidat cycle de vie GitHub empilé sur #89 |
+| [#91](https://github.com/Patricked-code/MCP/pull/91) | MERGED | Réconciliation G3 après merge |
+| [#92](https://github.com/Patricked-code/MCP/pull/92) | MERGED | C2 Repository→Project Resolution |
+| [#93](https://github.com/Patricked-code/MCP/pull/93) | MERGED | Réconciliation terminale C2 |
+| [#94](https://github.com/Patricked-code/MCP/pull/94) | MERGED | Fondation design-only Governed Workflow Contract, 73 GW IDs |
+| [#95](https://github.com/Patricked-code/MCP/pull/95) | MERGED | Dossier canonique GWC R3, 18 blueprints GWC-0..17 ; voir section dédiée et PR #96 |
+
+**Ne pas confondre :** les PR #85/#86/#88/#89/#90 sont des intentions historiques fermées sans fusion ; leur fonctionnalité peut avoir été livrée par d'autres PR mais ce statut ne le prouve pas. Les #67/#69/#71 sont des carriers remplacés, pas des livraisons indépendantes.
+
+### Findings additionnels #40–63 identifiés dans les timelines
+
+| Source | Constat historique | Suivi |
+|---|---|---|
+| [#41 P2](https://github.com/Patricked-code/MCP/pull/41#discussion_r3767942148) | readiness après recréation Docker | [réponse #42](https://github.com/Patricked-code/MCP/pull/41#discussion_r3771730004) |
+| [#42 P1](https://github.com/Patricked-code/MCP/pull/42#discussion_r3771723869) | déploiements push concurrents non sérialisés | correction exacte à vérifier |
+| [#47 P1](https://github.com/Patricked-code/MCP/pull/47#discussion_r3790278796) | logs de gouvernance non mis à jour avec rétention | [réponse](https://github.com/Patricked-code/MCP/pull/47#discussion_r3790284890) |
+| [#47 P1](https://github.com/Patricked-code/MCP/pull/47#discussion_r3790289781) | TASKS.md contradictoire sur tâche rouverte | [réponse](https://github.com/Patricked-code/MCP/pull/47#discussion_r3790294841) |
+| [#51 P2a](https://github.com/Patricked-code/MCP/pull/51#discussion_r3835771028) | drift Live State vs PRODUCTION_STATE.json | résolution à vérifier |
+| [#51 P2b](https://github.com/Patricked-code/MCP/pull/51#discussion_r3835771031) | DEPLOYMENT_PRODUCTION.md périmé | résolution à vérifier |
+| [#54 P2](https://github.com/Patricked-code/MCP/pull/54#discussion_r3884615036) | comptage erroné #50 comme fusionnée | [réponse](https://github.com/Patricked-code/MCP/pull/54#discussion_r3884818950) |
+| [#58 P1](https://github.com/Patricked-code/MCP/pull/58#discussion_r3886818109) | état gouverné non réconcilié dans tous les fichiers | résolution à vérifier |
+| [#62 P2](https://github.com/Patricked-code/MCP/pull/62#discussion_r3898673175) | reprise durable de sessions dépassant idle TTL | résolution à vérifier |
+| [#63 P2](https://github.com/Patricked-code/MCP/pull/63#discussion_r3898735626) | outcome `IN_USE` inexistant dans contrat | résolution à vérifier |
+
+**NEXT_ACTION :** revue complète des timelines/commits #64–95, puis #96–128, avec priorité #94/#95/#96 et filiations GWC ; rechercher résolutions P1/P2 ouvertes dans la carte ; publier checkpoint lié à #235 et mettre à jour les mêmes registres. Aucune affirmation de résolution sur le HEAD actuel sans preuve.
