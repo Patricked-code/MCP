@@ -14,6 +14,7 @@ export type PleskWebDependencies = {
   policy: () => PleskPolicy;
   io: PleskRemotePort;
   writeEnabled: () => boolean;
+  authorizeRuntimeWrite: (input: PleskSubdomainInput) => Promise<boolean>;
 };
 
 const PURPOSE = 'plesk-create-subdomain';
@@ -52,6 +53,9 @@ function binding(req: Request, p: z.infer<typeof Params>, deps: PleskWebDependen
 export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
   const router = express.Router();
   router.get('/provisioning/plesk-subdomain', deps.requireLogin, async (req, res) => {
+    res.setHeader('Cache-Control','no-store');
+    res.setHeader('X-Frame-Options','DENY');
+    res.setHeader('Content-Security-Policy',"default-src 'none'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
     const request = Params.safeParse(req.query);
     if (!request.success) { res.status(400).send('INVALID_PLESK_TARGET'); return; }
     const p = request.data;
@@ -92,6 +96,12 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
       return;
     }
     try {
+      // E3 web consent is necessary but never grants runtime authority by itself.
+      // A fresh governed session/claim/lock check must explicitly authorize this target.
+      if (!await deps.authorizeRuntimeWrite(toInput(p))) {
+        res.status(403).json({status:'BLOCKED',reason:'GOVERNED_RUNTIME_AUTHORITY_REQUIRED'});
+        return;
+      }
       const outcome = await createPleskSubdomainOnServer(toInput(p),deps.policy(),true,deps.io);
       const code = outcome.status === 'CREATED' ? 201 : outcome.status === 'NO_OP' ? 200
         : outcome.status === 'BLOCKED' ? 403 : 503;
