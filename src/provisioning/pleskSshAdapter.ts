@@ -43,6 +43,7 @@ function verifiedTarget(input: PleskSubdomainInput): boolean {
     targetOwnedByProvisioner: false
   };
   return planPleskSubdomain({ ...input, evidence: syntheticEvidence }).decision === 'READY'
+    && input.documentRoot === '/' + input.label
     && input.documentRoot.split('/').slice(1).every((s) => safeSegment.test(s));
 }
 function absenceReported(result: PleskRemoteResult): boolean {
