@@ -79,3 +79,41 @@ Cette carte est **une navigation**, pas un nouveau schéma d'implémentation. Le
 6. Après collecte, appliquer PCM-02..14 via **les autorités existantes**, avec revue, CI et attestations exact-SHA ; ne pas déclarer d'exécution sans preuve.
 
 **Point d'arrêt de cette édition** : la carte est une **proposition documentaire sur branche**, non encore fusionnée ; son contenu n'est pas une validation de l'architecture cible complète ni une certification de l'état courant. **NEXT_ACTION :** revue indépendante de la carte et de ses liens, vérification CI, puis fusion gouvernée éventuelle ; continuer la collecte PR #40–64 sans collision documentaire.
+
+
+## 7. Registre de provenance — PR #40–63 (lecture du 23/10/2026)
+
+> **Portée et limites :** métadonnées et corps des 24 PR #40 à #63 relus directement via GitHub ; commentaires, reviews, fils inline, commits et état runtime présent **non exhaustivement vérifiés**. La mention « fusionnée » atteste seulement la fusion GitHub. Ne pas réutiliser les attestations historiques comme preuves live.
+
+| PR | Classification documentaire et observation | Lien / successeur |
+|---|---|---|
+| [#40](https://github.com/Patricked-code/MCP/pull/40) | MERGED — état S1 bootstrap bloqué, divergence GitHub/S1 documentée ; pas d'alignement déclaré | #41–43 |
+| [#41](https://github.com/Patricked-code/MCP/pull/41) | MERGED — force-recreate Docker, contrôle /health fail-closed | #42 |
+| [#42](https://github.com/Patricked-code/MCP/pull/42) | MERGED — activation autodeploy, readiness polling borné | #43 |
+| [#43](https://github.com/Patricked-code/MCP/pull/43) | MERGED — preuves du premier déploiement automatique ; attestation historique | #39–42 |
+| [#44](https://github.com/Patricked-code/MCP/pull/44) | MERGED — Governed Session Continuity / Operational Memory V1 | #45 |
+| [#45](https://github.com/Patricked-code/MCP/pull/45) | MERGED — corrections de rétention sessions/locks | #46–48 |
+| [#46](https://github.com/Patricked-code/MCP/pull/46) | MERGED — réconciliation documentaire production PR #45 | #45 |
+| [#47](https://github.com/Patricked-code/MCP/pull/47) | MERGED — correctifs tardifs sur expiration sessions/locks et cohérence S1 | #48 |
+| [#48](https://github.com/Patricked-code/MCP/pull/48) | MERGED — réconciliation documentaire PR #47 | #47 |
+| [#49](https://github.com/Patricked-code/MCP/pull/49) | MERGED — bootstrap agent obligatoire et orchestration, sans seconde autorité | #50 DUPLICATE |
+| [#50](https://github.com/Patricked-code/MCP/pull/50) | CLOSED_UNMERGED — doublon exact de #49, ne pas compter comme livraison | #49 |
+| [#51](https://github.com/Patricked-code/MCP/pull/51) | MERGED — attestation documentaire post-déploiement #49 | #49 |
+| [#52](https://github.com/Patricked-code/MCP/pull/52) | MERGED — durcissement cycle de vie des tâches gouvernées | #53→#54 |
+| [#53](https://github.com/Patricked-code/MCP/pull/53) | CLOSED_UNMERGED — candidat documentaire non livré, ascendance à ne pas reprendre | #54 |
+| [#54](https://github.com/Patricked-code/MCP/pull/54) | MERGED — réconciliation documentaire propre après #52 | #53 remplacée |
+| [#55](https://github.com/Patricked-code/MCP/pull/55) | MERGED — Unified Operational Work State, composition des autorités existantes | #56/#57→#58 |
+| [#56](https://github.com/Patricked-code/MCP/pull/56) | CLOSED_UNMERGED — tentative documentaire de réconciliation, pas livraison | #58 |
+| [#57](https://github.com/Patricked-code/MCP/pull/57) | CLOSED_UNMERGED — carrier documentaire remplacé sans nouveau périmètre fonctionnel | #58 |
+| [#58](https://github.com/Patricked-code/MCP/pull/58) | MERGED — réconciliation documentaire de #55 | #56/#57 |
+| [#59](https://github.com/Patricked-code/MCP/pull/59) | CLOSED_UNMERGED — carrier draft bootstrap, problème de mutation GraphQL Draft→Ready | #60 |
+| [#60](https://github.com/Patricked-code/MCP/pull/60) | MERGED — automatic governed connection session binding, continuité du même candidat | #59 |
+| [#61](https://github.com/Patricked-code/MCP/pull/61) | CLOSED_UNMERGED — carrier draft correctif transport/session revision | #62 |
+| [#62](https://github.com/Patricked-code/MCP/pull/62) | MERGED — préservation révisions optimistes à travers changements de transport | #61 |
+| [#63](https://github.com/Patricked-code/MCP/pull/63) | MERGED — réconciliation documentaire après déploiement bootstrap | #62 |
+
+**Synthèse de provenance :** chaîne #40–43 (bootstrap/déploiement) → #44–48 (Operational Memory + rétention) → #49–54 (agent bootstrap / tâche gouvernée) → #55–58 (état opérationnel unifié) → #59–63 (connexion/session/transport). Cette chaîne est une **trajectoire documentaire**, pas une dépendance technique démontrée entre toutes les PR.
+
+**Contrôles restant à faire :** (a) lire commentaires/reviews/fils/commits de #40–63 ; (b) identifier les décisions, objections et corrections non visibles dans les corps ; (c) rapprocher les attestations exact-SHA et le HEAD courant ; (d) prolonger la classification aux PR #64+, sans ré-extraire les lots déjà archivés ; (e) rapprocher les audits historiques de la matrice GWB et des 94 blueprints. Chaque UNKNOWN reste explicite.
+
+**Trace de publication :** issue #235, sous l'ancrage #6352010236. Ce registre reste une proposition de la PR #348 tant que celle-ci n'est pas fusionnée.
