@@ -5,7 +5,7 @@ import type { AddressInfo } from 'node:net';
 import type { PleskRemotePort } from '../src/provisioning/pleskSshAdapter.js';
 import { createPleskSubdomainRouter } from '../src/provisioning/pleskWebRoutes.js';
 
-function fixture() {
+function fixture(runtimeAuthorized = true) {
   const commands:string[]=[];
   const writes:string[]=[];
   let created=false;
@@ -33,12 +33,13 @@ function fixture() {
     issueTicket,verifyTicket,
     policy:()=>({enabled:true,allowedParents:{s2:['chainsolutions.fr']}}),
     io,
-    writeEnabled:()=>true
+    writeEnabled:()=>true,
+    authorizeRuntimeWrite: async () => runtimeAuthorized
   }));
   return {app,commands,writes,issueTicket};
 }
-async function withServer(f:(base:string,x:ReturnType<typeof fixture>)=>Promise<void>){
-  const x=fixture();
+async function withServer(f:(base:string,x:ReturnType<typeof fixture>)=>Promise<void>,runtimeAuthorized=true){
+  const x=fixture(runtimeAuthorized);
   const s=x.app.listen(0,'127.0.0.1');
   await new Promise<void>(resolve=>s.once('listening',()=>resolve()));
   try{await f('http://127.0.0.1:'+(s.address() as AddressInfo).port,x)}finally{await new Promise<void>(resolve=>s.close(()=>resolve()))}
@@ -75,4 +76,23 @@ test('Plesk web RED: verified consent and exact target executes once',async()=>{
     const result=await r.json();
     assert.equal(result.status,'CREATED');
   });
+});
+
+test('Plesk review RED: consent response prevents framing and caching',async()=>{
+ await withServer(async(base)=>{
+  const r=await fetch(base+'/provisioning/plesk-subdomain?'+query);
+  assert.equal(r.status,200);
+  assert.match(r.headers.get('content-security-policy')||'',/frame-ancestors 'none'/);
+  assert.equal(r.headers.get('x-frame-options'),'DENY');
+  assert.equal(r.headers.get('cache-control'),'no-store');
+ });
+});
+test('Plesk review RED: signed consent cannot bypass absent runtime governance authority',async()=>{
+ await withServer(async(base,x)=>{
+  const bind=JSON.stringify(['fixed-test-session','s2','chainsolutions.fr','tdd-safe','/tdd-safe']);
+  const ticket=x.issueTicket('plesk-create-subdomain',bind);
+  const r=await fetch(base+'/provisioning/plesk-subdomain',{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({...fields,consent_creation:'CREATE_SUBDOMAIN',confirm_fqdn:'tdd-safe.chainsolutions.fr',consent_ticket:ticket})});
+  assert.equal(r.status,403);
+  assert.equal(x.writes.length,0);
+ },false);
 });
