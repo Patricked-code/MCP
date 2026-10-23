@@ -582,6 +582,8 @@ export async function startHttpServer(): Promise<void> {
     verifyTicket: verifyWebConsentTicket,
     enabled: () => env.MCP_GOUVERN_PILOT_ENABLED,
     writeEnabled: () => env.ENABLE_WRITE_TOOLS,
+    // Fail closed until the existing session/claim/lock gate attests this new scope.
+    authorizeRuntimeWrite: async () => false,
     read: () => readGovernPilot(GOUVERN_RUNTIME_ROOT),
     stage: () => stageGovernPilot(
       {root:GOUVERN_RUNTIME_ROOT,approved:true,revision:GOUVERN_SHA},
