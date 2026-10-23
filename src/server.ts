@@ -1,4 +1,5 @@
 import express from 'express';
+import { readFile, stat } from 'node:fs/promises';
 import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
@@ -70,6 +71,9 @@ import { readServerMapConfiguration } from './liveState/targetProject.js';
 import { createProjectRuntimeProvisioningRouter } from './provisioning/routes.js';
 import { createPleskSubdomainRouter } from './provisioning/pleskWebRoutes.js';
 import { createGovernPilotRouter } from './provisioning/governPilotRoutes.js';
+import { mintGithubAppRepoToken } from './github/appInstallationToken.js';
+import { downloadGovernPilotArchive } from './github/governPilotArchiveSource.js';
+import { downloadGithubArchive } from './provisioning/sourceArchive.js';
 import { stageGovernPilot, readGovernPilot, GOUVERN_RUNTIME_ROOT, GOUVERN_SHA } from './provisioning/governPilot.js';
 import { parseAllowedPleskParents } from './tools/pleskProvisioning.js';
 import { executeProjectRuntimeProvisioning } from './provisioning/runtimeExecutor.js';
@@ -587,7 +591,48 @@ export async function startHttpServer(): Promise<void> {
     read: () => readGovernPilot(GOUVERN_RUNTIME_ROOT),
     stage: () => stageGovernPilot(
       {root:GOUVERN_RUNTIME_ROOT,approved:true,revision:GOUVERN_SHA},
-      downloadGithubArchiveWithServerCredential
+      async (request) => {
+        const entries = [
+          env.MCP_GRT_GITHUB_APP_ID,
+          env.MCP_GRT_GITHUB_INSTALLATION_ID,
+          env.MCP_GRT_GITHUB_APP_KEY_FILE
+        ];
+        const app = entries.every((entry) => entry === '') ? null : {
+          appId: env.MCP_GRT_GITHUB_APP_ID,
+          installationId: Number(env.MCP_GRT_GITHUB_INSTALLATION_ID),
+          privateKeyFile: env.MCP_GRT_GITHUB_APP_KEY_FILE
+        };
+        return downloadGovernPilotArchive(request, app, {
+          legacy: downloadGithubArchiveWithServerCredential,
+          mint: async (input) => {
+            const file = env.MCP_GRT_GITHUB_APP_KEY_FILE;
+            if (!file.startsWith('/app/secrets/')) {
+              throw new Error('GITHUB_APP_KEY_SCOPE_INVALID');
+            }
+            const info = await stat(file);
+            if (!info.isFile() || (info.mode & 0o077) !== 0) {
+              throw new Error('GITHUB_APP_KEY_PERMISSIONS_INVALID');
+            }
+            const issued = await mintGithubAppRepoToken({
+              installation: {
+                appId: input.appId,
+                installationId: input.installationId,
+                accountLogin: 'chainsolutions-wealthtech'
+              },
+              repository: input.repository,
+              contentsPermission: 'read'
+            }, {
+              readPrivateKey: () => readFile(file,'utf8'),
+              fetchImpl: fetch,
+              now: () => new Date()
+            });
+            return issued.token;
+          },
+          download: async (input) => downloadGithubArchive({
+            ...input,apiBase:'https://api.github.com'
+          })
+        });
+      }
     )
   }));
 
