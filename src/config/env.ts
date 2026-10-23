@@ -31,6 +31,7 @@ const EnvSchema = z.object({
   ENABLE_WRITE_TOOLS: EnvBooleanSchema.default(false),
   MCP_PLESK_PROVISIONING_ENABLED: EnvBooleanSchema.default(false),
   MCP_PLESK_ALLOWED_PARENTS: z.string().default(''),
+  MCP_GOUVERN_PILOT_ENABLED: EnvBooleanSchema.default(false),
   OPCVM_DB_NAME: z.string().min(1).default('fund_opcvm'),
   GITHUB_ORG: z.string().default(''),
   GITHUB_TOKEN_FILE: z.string().default(''),
