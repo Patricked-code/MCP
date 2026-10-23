@@ -72,4 +72,3 @@ export function registerPleskPreviewTool(server: McpServer): void {
     }))
   );
 }
-
