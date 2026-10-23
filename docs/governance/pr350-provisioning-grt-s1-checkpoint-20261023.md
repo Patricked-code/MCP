@@ -22,6 +22,13 @@ GRT est un dépôt de gouvernance documentaire, pas une application web : on n'e
 - Ce document ne prétend **pas** qu'un répertoire a été créé sur S1 ni qu'un déploiement a été effectué. Les CI, fils de revue et le HEAD doivent être réobservés après ce commit.
 - Écart de documentation : `SUIVI.md`, `CHANGELOG.md` et `DECISIONS_LOG.md` ne sont pas encore actualisés dans cette PR ; l'actualisation de ces gros fichiers doit être validée avant fusion. Ce checkpoint et les issues sont des compléments, pas des substituts aux autorités canoniques.
 
+## Revue additionnelle du 23 octobre — admission runtime GRT
+
+- Nouveau constat P1 après l'approbation initiale : le POST `/gouvern/deploy` ne doit pas fonctionner sur seule présentation du ticket web signé. Ajout de `authorizeRuntimeWrite` à la route et garde d'exécution **fail-closed** sur S1 : `authorizeRuntimeWrite: async () => false`, comme pour Plesk, tant que les autorités runtime existantes ne peuvent attester session/claim/locks de ce scope.
+- Nouveau test RED puis implémentation GREEN sur le refus d'un consentement web valide sans admission runtime ; la suite CI exacte du dernier commit doit être vérifiée avant revue.
+- Conséquence opérationnelle : une fusion du code **n'autorisera pas encore** la création du répertoire privé sur S1 ; l'activation du flag n'est pas une admission de tâche runtime. Raccorder l'autorité existante avant tout staging réel ; ne jamais contourner par écriture SSH ad hoc.
+- Fournisseur GitHub App : module de mint de jetons sous-scope présent mais non raccordé au téléchargement GRT ; la visibilité de ce dépôt par credential S1 a été vérifiée séparément. Extension multi-comptes conservée comme prochain périmètre de #349, non prétendue opérationnelle.
+
 ## NEXT_ACTION
 
 Vérifier CI au HEAD final, faire relire et résoudre les six fils de sécurité sans les masquer, synchroniser les trois journaux historiques, vérifier les règles de protection `main`, puis fusionner seulement si GitHub admet la PR et qu'une revue indépendante couvre la version finale. Après fusion : vérifier `MCP Governed Deploy` sur SHA exact, activer de manière ciblée /gouvern par un canal de configuration autorisé, demander le consentement opérateur pour le premier archivage et attester `/health`, `/mcp`, OAuth, login, `/gouvern` et la santé Docker. Aucun accès SSH libre ni écriture directe au code versionné sur S1.
