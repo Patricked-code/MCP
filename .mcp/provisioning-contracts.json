@@ -673,6 +673,22 @@
         "bounded SSH/Plesk CLI only, post-create Plesk and path proof; no deletion or implicit DNS/TLS success"
       ],
       "note": "Additive S1/S2 Plesk subdomain creation using existing web-consent and SSH facilities. No approval by an agent instruction or a bare allow_write flag."
+    },
+    {
+      "name": "POST /gouvern/deploy",
+      "kind": "HTTP_ROUTE",
+      "class": "COMPOSABLE",
+      "resourceTypes": [
+        "PROJECT_RUNTIME"
+      ],
+      "guards": [
+        "Authenticated MCP web operator session; same-origin provenance and signed, expiring E3 purpose/session/exact-repository/exact-SHA ticket required",
+        "Explicit DEPLOY_GOUVERN confirmation, MCP_GOUVERN_PILOT_ENABLED and ENABLE_WRITE_TOOLS required; neither environment flag is consent",
+        "Pinned exact GitHub repository chainsolutions-wealthtech/Governed-Repository-Template at observed full SHA; no arbitrary GitHub source or revision",
+        "Private /app/data/gouvern non-symlink destination only; exclusive creation, bounded archive download, digest/size manifest, immutable NO_OP on replay",
+        "No automatic execution or public serving of GitHub archive or private governance files; no modification of existing MCP or GRT source repository"
+      ],
+      "note": "Optional GRT pilot snapshot, not a new governance runtime or generic hosting permission. No data copied before authenticated signed consent."
     }
   ],
   "contracts": [
