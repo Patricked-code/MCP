@@ -1,4 +1,11 @@
 # CHANGELOG.md
+## 2026-10-23 — PR #350 : pilote GRT /gouvern et Plesk S1/S2 (non déployés)
+
+- Ajouts sans migration : prévisualisation Plesk, portail GRT authentifié, archive privée épinglée et fournisseur GitHub App optionnel.
+- Autorités runtime des nouvelles écritures Plesk et GRT refusées par défaut jusqu'aux preuves session/claim/locks existantes. Aucune écriture sur S1/S2 ni fusion main.
+- Tests RED/GREEN de concurrence, SHA256, permissions et consentement ; CI/revue exact-HEAD avant déploiement.
+- Source : issue #349, PR #350, checkpoint docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md.
+
 
 ## 2026-10-16 — Entrée commune des agents et handoff PCM-03/GWB-04
 

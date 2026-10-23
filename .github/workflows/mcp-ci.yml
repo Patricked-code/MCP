@@ -53,6 +53,18 @@ jobs:
       - name: Governed task queue targeted claim tests
         run: npx tsx --test tests/governedTaskQueue.test.ts
 
+      - name: Plesk provisioning RED-GREEN safety tests
+        run: npx tsx --test tests/pleskSiteProvisioning.test.ts tests/pleskSiteExecution.test.ts tests/pleskSshAdapter.test.ts tests/pleskToolPolicy.test.ts tests/pleskWebConsent.test.ts
+
+      - name: Existing GitHub App installation tokens RED-GREEN
+        run: npx tsx --test tests/githubAppInstallationToken.test.ts
+
+      - name: GRT S1 governed pilot RED-GREEN tests
+        run: npx tsx --test tests/governPilot.test.ts tests/governPilotRoutes.test.ts
+
+      - name: GRT source GitHub App optional RED-GREEN tests
+        run: npx tsx --test tests/governPilotArchiveSource.test.ts
+
       - name: OAuth consent and PKCE regression tests
         run: npx tsx --test tests/oauthAuthorizeConsent.test.ts
 
