@@ -26,7 +26,7 @@ export function parseAllowedPleskParents(raw: string): PleskPolicy['allowedParen
     const [serverId, domain] = components;
     if ((serverId !== 's1' && serverId !== 's2')
       || typeof domain !== 'string'
-      || !/^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$/.test(domain)
+      || !/^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(domain)
       || result[serverId].includes(domain)) {
       throw new Error('PLESK_ALLOWED_PARENTS_INVALID');
     }
