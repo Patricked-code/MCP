@@ -359,3 +359,43 @@ Cette carte est **une navigation**, pas un nouveau schéma d'implémentation. Le
 | [#273](https://github.com/Patricked-code/MCP/pull/273) | Chronologie architecture indexée à partir de #65 |
 
 **NEXT_ACTION :** lire commentaires/reviews/commits des PR les plus structurantes (#181, #207, #223, #227–232, #259–263, #267–273), confronter leurs affirmations aux audits GWB et aux 94 blueprints ; interroger les issues correspondant aux numéros non PR ; poursuivre PR #274+ et publier checkpoints sur #235. Ce registre n'est pas une certification d'exhaustivité des discussions ou de l'état runtime.
+
+
+## 13. Index PR #274–353 — première passe de provenance (23/10/2026)
+
+**Portée :** 80 numéros interrogés sur GitHub PR, 29 PR identifiées (18 fusionnées, 11 non fusionnées), 51 numéros sans PR accessible (à examiner comme issues). Vérification titre et fusion ; ne pas assimiler à un audit des commentaires/reviews/commits ni à un verdict runtime.
+
+| PR | État | Nature historique / relation |
+|---|---|---|
+| [#274](https://github.com/Patricked-code/MCP/pull/274) | MERGED | Préservation initiale des fils de reviews inline |
+| [#275](https://github.com/Patricked-code/MCP/pull/275) | MERGED | Workblock audit→terminal et barrières de collision |
+| [#289](https://github.com/Patricked-code/MCP/pull/289) | MERGED | Continuité OIDC-first en panne OAuth |
+| [#290](https://github.com/Patricked-code/MCP/pull/290) | MERGED | GWB-04 traçabilité source/tests 94 blueprints |
+| [#291](https://github.com/Patricked-code/MCP/pull/291) | MERGED | GWB-02 provenance reviews PR #65+ |
+| [#292](https://github.com/Patricked-code/MCP/pull/292) | MERGED | GWB-03 triage findings P1/P2 |
+| [#293](https://github.com/Patricked-code/MCP/pull/293) | MERGED | Reprise audit et checkpoints |
+| [#294](https://github.com/Patricked-code/MCP/pull/294) | MERGED | Carte de priorité 15 étapes et handoff |
+| [#295](https://github.com/Patricked-code/MCP/pull/295) | MERGED | GWB03-01 gaps politique F-03 / PR #261 |
+| [#296](https://github.com/Patricked-code/MCP/pull/296) | MERGED | GWB03-02 revue F-04 et limites de preuves live |
+| [#300](https://github.com/Patricked-code/MCP/pull/300) | MERGED | Réconciliation 18 blueprints READY / overlaps PR / autorité OIDC |
+| [#304](https://github.com/Patricked-code/MCP/pull/304) | MERGED | Découverte immédiate reprise agent |
+| [#305](https://github.com/Patricked-code/MCP/pull/305) | NON MERGED | GWB04 H.1 inventaire trace IDs / gaps inter-hops |
+| [#311](https://github.com/Patricked-code/MCP/pull/311) | MERGED | Breadcrumbs historiques et handoffs obligatoires |
+| [#312](https://github.com/Patricked-code/MCP/pull/312) | NON MERGED | Checkpoint mandat A+B, BUS inventory / TB-W4-H-01 |
+| [#317](https://github.com/Patricked-code/MCP/pull/317) | MERGED | AUTO-INTAKE GitHub owner-verified et reçus idempotents |
+| [#318](https://github.com/Patricked-code/MCP/pull/318) | MERGED | Correctif autorisation collaborateurs write |
+| [#319](https://github.com/Patricked-code/MCP/pull/319) | NON MERGED | Operational Memory checkpoint window / retention |
+| [#320](https://github.com/Patricked-code/MCP/pull/320) | NON MERGED | BUS eventId replay reader sur journal existant |
+| [#321](https://github.com/Patricked-code/MCP/pull/321) | NON MERGED | Ancrage AUDIT_SUPERVISOR et AUTO-INTAKE/BUS |
+| [#329](https://github.com/Patricked-code/MCP/pull/329) | MERGED | Claim exact-ID gouverné pour continuité OIDC |
+| [#330](https://github.com/Patricked-code/MCP/pull/330) | NON MERGED | Adaptateur OIDC ciblé fail-closed ; non livré par cette PR |
+| [#334](https://github.com/Patricked-code/MCP/pull/334) | MERGED | Diagnostic provenance consentement OAuth P0 |
+| [#337](https://github.com/Patricked-code/MCP/pull/337) | MERGED | Diagnostic écart d'origine en production |
+| [#342](https://github.com/Patricked-code/MCP/pull/342) | MERGED | Diagnostic Origin opaque sur S1 |
+| [#345](https://github.com/Patricked-code/MCP/pull/345) | MERGED | Acceptation bornée Origin opaque avec consentement même origine signé |
+| [#348](https://github.com/Patricked-code/MCP/pull/348) | NON MERGED | **Notre PR documentaire DRAFT**, sans autorité de production |
+| [#350](https://github.com/Patricked-code/MCP/pull/350) | NON MERGED | Candidat planner/exécuteur Plesk S1/S2 avec consentement |
+
+**Important :** les PR #305/#312/#319/#320/#321/#330/#348/#350 non fusionnées ne prouvent aucune livraison. Leur état OPEN/CLOSED exact doit être confirmé séparément ; « NON MERGED » ne signifie pas automatiquement abandonné. Les travaux #317/#318 et #329 sont des implémentations historiques fusionnées, à distinguer des intentions encore en cours. Les PR #334/#337/#342/#345 ne permettent pas à elles seules de conclure à une connexion OAuth opérationnelle aujourd'hui.
+
+**NEXT_ACTION :** passer des index de métadonnées aux analyses de contenu et de résolution : lire les reviews/comments des PR #290–296, #305, #317–321, #329–345 ; relier les issues #235/#236/#297+ et les autres numéros non PR ; réconcilier 94 blueprints/GWB et l'architecture cible vs livrée. Publier checkpoint de lot subordonné à #235. Ne pas toucher au runtime ni à la PR #207.
