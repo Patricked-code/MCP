@@ -26,11 +26,11 @@ test('GRT RED: exact authorized SHA is copied once into a private archive direct
    assert.equal(input.revision,GOUVERN_SHA);assert.ok(input.maxBytes<=50_000_000);
    const {writeFile}=await import('node:fs/promises');
    await writeFile(input.destination,Buffer.from('fake-test-archive'));
-   return {ok:true as const,sha256:'a'.repeat(64),bytes:17};
+   return {ok:true as const,sha256:createHash('sha256').update(Buffer.from('fake-test-archive')).digest('hex'),bytes:17};
   };
   const x=await stageGovernPilot({root,approved:true,revision:GOUVERN_SHA},downloaded);
   assert.equal(x.status,'STAGED');assert.equal(files.length,1);
-  assert.deepEqual(await readGovernPilot(root),{revision:GOUVERN_SHA,sha256:'a'.repeat(64),bytes:17});
+  assert.deepEqual(await readGovernPilot(root),{revision:GOUVERN_SHA,sha256:createHash('sha256').update(Buffer.from('fake-test-archive')).digest('hex'),bytes:17});
   const folder=await readdir(root);assert.ok(folder.includes('source-'+GOUVERN_SHA+'.tar.gz'));
   assert.ok(!folder.includes('AGENTS.md'));assert.ok(!folder.includes('secrets'));
   assert.equal((await stageGovernPilot({root,approved:true,revision:GOUVERN_SHA},downloaded)).status,'NO_OP');
