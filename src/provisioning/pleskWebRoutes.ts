@@ -51,7 +51,7 @@ function binding(req: Request, p: z.infer<typeof Params>, deps: PleskWebDependen
  */
 export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
   const router = express.Router();
-  router.get(PATH, deps.requireLogin, async (req, res) => {
+  router.get('/provisioning/plesk-subdomain', deps.requireLogin, async (req, res) => {
     const request = Params.safeParse(req.query);
     if (!request.success) { res.status(400).send('INVALID_PLESK_TARGET'); return; }
     const p = request.data;
@@ -80,7 +80,7 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
       res.status(503).send('PLESK_PREFLIGHT_UNAVAILABLE');
     }
   });
-  router.post(PATH, deps.requireLogin, async (req, res) => {
+  router.post('/provisioning/plesk-subdomain', deps.requireLogin, async (req, res) => {
     const parsed = ConsentForm.safeParse(req.body);
     if (!parsed.success) { res.status(403).json({status:'BLOCKED',reason:'CONSENT_INVALID'}); return; }
     const {consent_ticket,confirm_fqdn,consent_creation: _consentCreation,...p} = parsed.data;
