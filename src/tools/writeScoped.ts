@@ -8,6 +8,7 @@ import { registerLegacyVhostsScopedTools } from './legacyVhostsScoped.js';
 import { registerAmfRegistryTools } from './amfRegistry.js';
 import { registerSadiaafScopedTools } from './sadiaafScoped.js';
 import { registerGithubLifecycleWriteTools } from './githubLifecycle.js';
+import { registerPleskCreateTool, registerPleskPreviewTool } from './pleskProvisioning.js';
 import {
   assertScopedWriteToolsEnabled,
   assertSelectOnlyQuery,
@@ -289,6 +290,7 @@ fi`;
 }
 
 export function registerScopedReadOnlyTools(server: McpServer): void {
+  registerPleskPreviewTool(server);
   server.tool('get_write_tools_context', 'Liste les projets et opérations d’écriture contrôlées disponibles. Aucun secret n’est exposé.', {}, async () => asText(JSON.stringify({
     mode: 'scoped-write-tools',
     free_shell: false,
@@ -434,6 +436,7 @@ node ${shellQuote(script)} ${quotedArgs}`;
     return runS2(buildDeployCommand('brvmchainsolution'), 'deploy_brvm_s2', 900_000);
   });
 
+  registerPleskCreateTool(server);
   registerGithubLifecycleWriteTools(server);
   registerSadiaafScopedTools(server);
   registerLegacyVhostsScopedTools(server);
