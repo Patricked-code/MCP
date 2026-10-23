@@ -62,23 +62,6 @@ jobs:
       - name: OAuth consent and PKCE regression tests
         run: npx tsx --test tests/oauthAuthorizeConsent.test.ts
 
-      # Temporary candidate generation for reviewed .mcp/function-cartography.json update.
-      - name: Generate function cartography candidate artifact
-        run: npm run cartography:write
-
-      # Temporary log transport to reconstruct the generated JSON through GitHub's reviewed API.
-      - name: Emit generated cartography candidate as bounded log chunks
-        run: |
-          node -e 'const fs=require("fs"); const s=JSON.stringify(JSON.parse(fs.readFileSync(".mcp/function-cartography.json","utf8"))); for(let i=0;i<s.length;i+=1000) console.log("CARTO_CHUNK:"+s.slice(i,i+1000));'
-
-      - name: Upload function cartography candidate artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: mcp-function-cartography-candidate
-          path: .mcp/function-cartography.json
-          if-no-files-found: error
-          retention-days: 1
-
       - name: Docs check
         run: npm run docs:check
 
