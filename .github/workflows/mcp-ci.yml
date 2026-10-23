@@ -54,7 +54,7 @@ jobs:
         run: npx tsx --test tests/governedTaskQueue.test.ts
 
       - name: Plesk provisioning RED-GREEN safety tests
-        run: npx tsx --test tests/pleskSiteProvisioning.test.ts tests/pleskSiteExecution.test.ts
+        run: npx tsx --test tests/pleskSiteProvisioning.test.ts tests/pleskSiteExecution.test.ts tests/pleskSshAdapter.test.ts
 
       - name: Existing GitHub App installation tokens RED-GREEN
         run: npx tsx --test tests/githubAppInstallationToken.test.ts
