@@ -1,5 +1,6 @@
 export const READ_ONLY_SCOPED_TOOL_NAMES = new Set<string>([
   'get_write_tools_context',
+  'plesk_subdomain_preview_s1s2',
   'run_sql_readonly_s2',
   'git_status_project_s2'
 ]);
