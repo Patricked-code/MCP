@@ -207,3 +207,34 @@ Cette carte est **une navigation**, pas un nouveau schéma d'implémentation. Le
 | [#63 P2](https://github.com/Patricked-code/MCP/pull/63#discussion_r3898735626) | outcome `IN_USE` inexistant dans contrat | résolution à vérifier |
 
 **NEXT_ACTION :** revue complète des timelines/commits #64–95, puis #96–128, avec priorité #94/#95/#96 et filiations GWC ; rechercher résolutions P1/P2 ouvertes dans la carte ; publier checkpoint lié à #235 et mettre à jour les mêmes registres. Aucune affirmation de résolution sur le HEAD actuel sans preuve.
+
+
+## 10. Index des PR #96–135 — numérotation partagée issues/PR (23/10/2026)
+
+**Méthode :** interrogation individuelle du point de lecture GitHub PR pour chacun des 40 numéros #96–135 ; **19 PR trouvées**, **21 réponses 404 au point PR**. 404 signifie uniquement « pas de pull request accessible à ce numéro avec ce compte », **pas** « issue inexistante ». Première passe : titre, fusion, début du corps ; reviews, commits, diff et runtime non exhaustifs.
+
+| PR vérifiée | Fusion | Résultat documentaire |
+|---|---|---|
+| [#96](https://github.com/Patricked-code/MCP/pull/96) | OUI | Réconciliation historique de la production GWC #95 ; SHA exact documenté, pas live actuel |
+| [#97](https://github.com/Patricked-code/MCP/pull/97) | OUI | Handoff mémoire canonique GWC post-intégration, `docs/gwc/canonical-memory/current.json` |
+| [#98](https://github.com/Patricked-code/MCP/pull/98) | OUI | Correction de dérive du handoff terminal GWC ; description vide, inspecter diff |
+| [#99](https://github.com/Patricked-code/MCP/pull/99) | OUI | Stablecoin S2 : cartographie gouvernée lecture seule, distincte du candidat non fusionné #86 |
+| [#100](https://github.com/Patricked-code/MCP/pull/100) | OUI | GitHub-first continuité opérationnelle et fallback de preuve lecture seule |
+| [#102](https://github.com/Patricked-code/MCP/pull/102) | OUI | GitHub Actions OIDC → endpoint evidence readonly → commandes bornées S1/S2 |
+| [#104](https://github.com/Patricked-code/MCP/pull/104) | OUI | Probes S2 Stablecoin backend/runtime lecture seule |
+| [#108](https://github.com/Patricked-code/MCP/pull/108) | OUI | Diagnostics fail-soft probes S2 après erreurs HTTP 502 |
+| [#111](https://github.com/Patricked-code/MCP/pull/111) | OUI | Diagnostics bornés d'échecs evidence GitHub-first sans fuite de corps/stderr |
+| [#117](https://github.com/Patricked-code/MCP/pull/117) | OUI | Fast-forward Stablecoin S2 borné et gouverné via GitHub |
+| [#124](https://github.com/Patricked-code/MCP/pull/124) | OUI | Préservation de la surface client @GitHub avant escalade bridge |
+| [#126](https://github.com/Patricked-code/MCP/pull/126) | OUI | AF-09 : source des SHA documentaires depuis état de production structuré, non premier SHA de SUIVI |
+| [#127](https://github.com/Patricked-code/MCP/pull/127) | OUI | Réconciliation post-merge AF-09 |
+| [#130](https://github.com/Patricked-code/MCP/pull/130) | OUI | Corrections existant-first AF-10, AF-18, AF-24, AF-27 |
+| [#133](https://github.com/Patricked-code/MCP/pull/133) | OUI | Réconciliation baseline production des quatre AF de #130 |
+
+**Rectification du décompte :** 15 PR trouvées et 25 réponses 404 sur la plage #96–135 (40 numéros). Ne pas confondre « numéro 404 au point PR » et absence d'issue.
+
+**Numéros non résolus comme PR lors de cette passe :** #101, #103, #105–107, #109–110, #112–116, #118–123, #125, #128–129, #131–132, #134–135. Ils devront être examinés par l'API *issues*, non déclarés manquants.
+
+**Chaînes :** #94→#95→#96→#97→#98 (GWC mémoire et handoff) ; #100→#102→#111 (GitHub-first / evidence OIDC) ; #99→#104→#108 (Stablecoin S2 observation) ; #126→#127 (AF-09), #130→#133 (AF-10/18/24/27). Une filiation thématique n'est pas preuve de dépendance code.
+
+**NEXT_ACTION :** examiner issues portant les numéros sans PR, corps complets et reviews des 15 PR trouvées ; lire le diff #98 et les documents GWC ; poursuivre #136–175 et publier les deltas liés à l'issue #235. Aucune autorité runtime créée.
