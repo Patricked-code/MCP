@@ -238,3 +238,29 @@ Cette carte est **une navigation**, pas un nouveau schéma d'implémentation. Le
 **Chaînes :** #94→#95→#96→#97→#98 (GWC mémoire et handoff) ; #100→#102→#111 (GitHub-first / evidence OIDC) ; #99→#104→#108 (Stablecoin S2 observation) ; #126→#127 (AF-09), #130→#133 (AF-10/18/24/27). Une filiation thématique n'est pas preuve de dépendance code.
 
 **NEXT_ACTION :** examiner issues portant les numéros sans PR, corps complets et reviews des 15 PR trouvées ; lire le diff #98 et les documents GWC ; poursuivre #136–175 et publier les deltas liés à l'issue #235. Aucune autorité runtime créée.
+
+
+## 11. Index PR #136–175 — première passe GitHub (23/10/2026)
+
+**Couverture :** 40 numéros vérifiés individuellement au point GitHub PR ; **12 PR identifiées, toutes fusionnées** ; **28 numéros non trouvés comme PR**, à rechercher séparément comme issues. Première passe de titres/statuts uniquement pour ce lot ; ne pas déclarer les reviews/diffs/commits audités.
+
+| PR | Observation vérifiée | Filiation / vigilance |
+|---|---|---|
+| [#136](https://github.com/Patricked-code/MCP/pull/136) | AF-23 : lier checkpoints Operational Memory aux événements journal | #139 |
+| [#139](https://github.com/Patricked-code/MCP/pull/139) | Réconciliation findings corrigés et baseline AF-23 | #136 |
+| [#142](https://github.com/Patricked-code/MCP/pull/142) | Clôture documentaire de baseline des findings corrigés | #139 |
+| [#145](https://github.com/Patricked-code/MCP/pull/145) | Réconciliation des intentions PR historiques ouvertes | #85/#86/#88/#89/#90 |
+| [#146](https://github.com/Patricked-code/MCP/pull/146) | Handoff vers main de candidats historiques fusionnés | #149 |
+| [#149](https://github.com/Patricked-code/MCP/pull/149) | Baseline documentaire du handoff des candidats | #146 |
+| [#154](https://github.com/Patricked-code/MCP/pull/154) | Généralisation heartbeat agents et observabilité claims | #168 |
+| [#159](https://github.com/Patricked-code/MCP/pull/159) | Convergence du backlog programme exhaustif, projection non exécutable | #171 |
+| [#164](https://github.com/Patricked-code/MCP/pull/164) | Probe bornée inventaire métadonnées backend Stablecoin | #99/#104/#108 |
+| [#168](https://github.com/Patricked-code/MCP/pull/168) | Réconciliation terminale déploiement UAC | #154 |
+| [#171](https://github.com/Patricked-code/MCP/pull/171) | Program Backlog V2, graphe de planification sans seconde Task Queue | #159→#174 |
+| [#174](https://github.com/Patricked-code/MCP/pull/174) | W1 convergence d'état du programme | #171 |
+
+**Non trouvés comme PR :** #137–138, #140–141, #143–144, #147–148, #150–153, #155–158, #160–163, #165–167, #169–170, #172–173, #175. L'API issues reste à examiner.
+
+**Point de contrôle :** l'ensemble #96–175 est indexé au niveau PR existence/fusion ; aucun statut d'issue ni résolution de review ne peut être inféré de l'absence de PR. La mémoire GWC #97 et le graphe de planification #171 sont des sources de nature différente de l'état runtime actuel.
+
+**NEXT_ACTION :** lectures issues et timelines #96–175 ; index PR #176–215 puis #216–273 ; croisement des constats GWB-02/GWB-03 et des 94 blueprints ; publier traces subordonnées à la racine issue #235.
