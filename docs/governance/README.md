@@ -1,5 +1,10 @@
 # Gouvernance documentaire MCP
 
+### PCM-03 / GWB-04 — Inventaire comportemental H.1 (16 octobre 2026)
+
+L'[inventaire H.1](gwb04-h01-trace-evidence-inventory-20261016.json) décrit sept points de passage client→OAuth→MCP→tool→gouvernance→upstream→réponse, les identifiants déjà présents dans l'Event Journal et quatre lacunes de corrélation à vérifier. Il cite six autorités/code/tests et distingue présence des mécanismes, absence de preuve E2E et décisions d'implémentation futures. **`TB-W4-H-01` reste READY de planification, sans claim ni preuve runtime certifiée.** Tests invariants : `tests/gwb04H01TraceInventory.test.ts`. La prochaine étape est la validation H.1 par le flux gouverné et l'analyse K.1 (exposition/autorisations), sans créer de nouveaux collecteurs ni routes spéculatives.
+
+
 ## Point d'entrée commun — INTAKE et reprise à froid (16 octobre 2026)
 
 **Directive de coordination immédiatement disponible : [issue maîtresse #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094).** Elle complète, sans remplacer, les autorités déjà en place et le [protocole d'entrée de AGENTS.md](../../AGENTS.md). Un agent nouvellement connecté reconstruit l'état depuis GitHub, vérifie le HEAD, les PR et la CI/deploy, puis seulement les autorités runtime nécessaires. Ne jamais déduire la présence active d'un agent, son ownership ou ses permissions d'un commentaire ou d'un snapshot.

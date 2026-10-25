@@ -19,6 +19,15 @@
 - **NEXT_ACTION** : confirmer CI sur le HEAD final, revue indépendante, corriger les remarques, puis seulement examiner l'admission OIDC bornée par autorités existantes. Ne pas fusionner/déployer sans ces preuves.
 
 
+## 2026-10-16 — PCM-03 / GWB-04 : inventaire H.1 des traces sans second journal
+
+- Réconciliation du travail déjà fusionné : PR #296 GWB03-02 et PR #300 18 READY puis PR #304 intake, main observé `cdae63af7140c10b411ed43a9ddfacc039c731eb` ; CI main #38819930332 et Governed Deploy #38819930312 SUCCESS sur ce SHA.
+- Nouveau dossier de preuve **H.1** `docs/governance/gwb04-h01-trace-evidence-inventory-20261016.json` : sept points de passage, Event Journal existant (`eventId`, `processSequence`, `governedSessionId`), audit de sessions/Tasks/Locks, ConnectionContext et tests de confidentialité ; quatre gaps de corrélation/propagation/failures/client evidence, non certifiés comme defects runtime.
+- `tests/gwb04H01TraceInventory.test.ts` : cohérence du blueprint et des ancres sources/tests, interdiction de déclarer H.1 DONE, et rappel des contraintes sur les secrets et les doubles stores.
+- Aucun nouveau Task, claim, lock, session, permission, OAuth change, route, service ni direct write S1/S2 ; la carte PCM, le Program Backlog V2 et les autorités live restent prioritaires.
+- **NEXT_ACTION** : valider cette PR sous exact-head CI, puis commencer l'inventaire comportemental `TB-W4-K-01` des surfaces, routes/auth et preuves d'exposition existantes (issue #236) dans un scope distinct ; ne pas implémenter K.1 sans autorité runtime et décision d'exposition existante.
+
+
 ## 2026-10-16 — INTAKE commun : publication de la reprise inter-agents et du point d'arrêt réel
 
 - **Directive publiée immédiatement** : [issue #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094) ; elle s'appuie sur les autorités existantes. Intervention GitHub directe uniquement, pas de Codex, de mutation S1/S2, de session ou de Task claim.

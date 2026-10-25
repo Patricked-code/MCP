@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB04_H01_TRACE_EVIDENCE_INVENTORY_NON_AUTHORITATIVE",
+  "repository": "Patricked-code/MCP",
+  "blueprintId": "TB-W4-H-01",
+  "programSlot": "observability.end-to-end-tracing",
+  "scope": "observability:tracing:inventory",
+  "observedMainSha": "cdae63af7140c10b411ed43a9ddfacc039c731eb",
+  "date": "2026-10-16",
+  "intent": "Inventory already-existing tracing/correlation identifiers across client→OAuth→MCP→tool→governance→upstream→response, identify only observed gaps; never invent a second tracing store or runtime admission.",
+  "programPosition": {
+    "readiness": "READY_PLANNING_ONLY",
+    "runtimeRequired": false,
+    "githubOnlyPossible": true,
+    "dependsOn": [
+      "TB-W3-D3-01"
+    ],
+    "historicalTaskStatus": "NOT_INFERRED",
+    "owner": "NOT_INFERRED_FROM_PR_OR_DOCUMENT"
+  },
+  "priorEvidence": [
+    "docs/governance/oauth-correlation-inventory-20260928.json",
+    "tests/operationalEventJournal.test.ts",
+    "tests/governedObservability.test.ts",
+    "docs/governance/gwb04-ready-ownership-20261015.json"
+  ],
+  "existingAuthorities": [
+    {
+      "system": "Operational Event Journal",
+      "file": "src/operationalMemory/eventJournal.ts",
+      "anchors": [
+        "export type OperationalEvent = {",
+        "eventId: string;",
+        "processSequence: number;",
+        "governedSessionId: string | null;",
+        "const FORBIDDEN_METADATA_KEYS = new Set(["
+      ],
+      "observed": "Event records have eventId/processSequence/occurredAt/type/governedSessionId plus allowlisted metadata; secrets and raw transport identifiers are rejected.",
+      "coverage": "CODE_AND_NEGATIVE_TEST_PRESENT",
+      "test": "tests/operationalEventJournal.test.ts",
+      "testAnchors": [
+        "append produit du JSONL 0600 avec IDs et séquence monotone",
+        "les clés sensibles ou hors allowlist sont refusées avant écriture",
+        "AF-23 audit links successful session events to the next checkpoint"
+      ]
+    },
+    {
+      "system": "Operational audit integration",
+      "file": "src/operationalMemory/operationalAudit.ts",
+      "anchors": [
+        "export type OperationalAudit = {",
+        "checkpointEventIds?(governedSessionId: string): string[];",
+        "export function createOperationalAudit("
+      ],
+      "observed": "Record session/task/lock/reconciliation/checkpoint events via existing journal; event IDs for a governed session are associated with checkpoints.",
+      "coverage": "CODE_AND_TEST_PRESENT_FOR_CHECKPOINT_ASSOCIATION",
+      "test": "tests/operationalEventJournal.test.ts",
+      "testAnchors": [
+        "AF-23 audit links successful session events to the next checkpoint"
+      ]
+    },
+    {
+      "system": "ConnectionContext",
+      "file": "src/operationalMemory/connectionContext.ts",
+      "anchors": [
+        "connectionContextId: z.string().uuid()",
+        "governedSessionId: z.string().uuid()",
+        "clientClassification: z.literal('UNRESOLVED')"
+      ],
+      "observed": "OAuth-assured context links context UUID and governed session UUID; class of client remains UNRESOLVED until independently verifiable.",
+      "coverage": "CODE_PRESENT_CLIENT_CLASSIFICATION_NOT_INFERRED",
+      "test": "tests/connectionContext.test.ts",
+      "testAnchors": []
+    },
+    {
+      "system": "MCP HTTP boundary",
+      "file": "src/server.ts",
+      "anchors": [
+        "app.use('/mcp', requireBearerToken);",
+        "getDefaultOperationalEventJournal({"
+      ],
+      "observed": "MCP traffic passes bearer middleware and existing operational journal is wired; an event linkage to all upstream requests has not been established by this inventory.",
+      "coverage": "BOUNDARY_AND_WIRING_OBSERVED_NOT_GLOBAL_TRACE_CERTIFIED",
+      "test": "tests/governedObservability.test.ts",
+      "testAnchors": [
+        "observability derives bounded capability task GitHub and governance metrics"
+      ]
+    },
+    {
+      "system": "Governed observability projection",
+      "file": "tests/governedObservability.test.ts",
+      "anchors": [
+        "observability derives bounded capability task GitHub and governance metrics",
+        "dashboard renders the same bounded reality projection without new collectors"
+      ],
+      "observed": "Tests verify bounded capability/task/governance dashboard projections without adding a collector; not an end-to-end request trace.",
+      "coverage": "TEST_ASSERTIONS_OBSERVED",
+      "test": "tests/governedObservability.test.ts",
+      "testAnchors": [
+        "dashboard renders the same bounded reality projection without new collectors"
+      ]
+    },
+    {
+      "system": "OAuth historical correlation review",
+      "file": "docs/governance/oauth-correlation-inventory-20260928.json",
+      "anchors": [
+        "\"status\": \"PASS_WITH_EVIDENCE\"",
+        "\"statePropagatedToToken\": false",
+        "\"oauthAttemptCorrelationPresent\": false"
+      ],
+      "observed": "Sept. 28 snapshot explicitly says OAuth state is not propagated to access token/AuthInfo/governed session; recheck on future HEAD and do not treat dated snapshot as live certificate.",
+      "coverage": "HISTORICAL_SNAPSHOT_ONLY",
+      "test": "tests/oauthCorrelationInventory.test.ts",
+      "testAnchors": []
+    }
+  ],
+  "hopInventory": [
+    {
+      "hop": 1,
+      "name": "client → authorization",
+      "currentAnchors": [
+        "src/oauth.ts",
+        "docs/governance/oauth-correlation-inventory-20260928.json"
+      ],
+      "ids": [
+        "OAuth state (request/redirect)",
+        "clientId"
+      ],
+      "confidence": "HISTORICAL_PLUS_SOURCE_EXISTENCE",
+      "gap": "No proven durable opaque attempt correlation across token/transport; preserve PKCE and CSRF."
+    },
+    {
+      "hop": 2,
+      "name": "authorization → OAuth token",
+      "currentAnchors": [
+        "src/oauth.ts"
+      ],
+      "ids": [
+        "authorization code (short-lived)",
+        "access token jti"
+      ],
+      "confidence": "SOURCE_EXISTENCE_ONLY",
+      "gap": "No proven link from OAuth attemptId to issued AuthInfo in current test suite; no token material in logs."
+    },
+    {
+      "hop": 3,
+      "name": "OAuth subject → MCP transport",
+      "currentAnchors": [
+        "src/operationalMemory/connectionContext.ts",
+        "src/server.ts"
+      ],
+      "ids": [
+        "connectionContextId",
+        "governedSessionId",
+        "principalId"
+      ],
+      "confidence": "CODE_ANCHOR_PRESENT",
+      "gap": "The transport ID must remain private and not be inserted into audit metadata."
+    },
+    {
+      "hop": 4,
+      "name": "MCP invocation → governed tool",
+      "currentAnchors": [
+        "src/server.ts",
+        "src/operationalMemory/operationalAudit.ts"
+      ],
+      "ids": [
+        "governedSessionId",
+        "eventId"
+      ],
+      "confidence": "PARTIAL_CODE_ANCHORS",
+      "gap": "No generic requestId/traceId/spanId asserted to accompany all tool calls."
+    },
+    {
+      "hop": 5,
+      "name": "governance decision → host/upstream",
+      "currentAnchors": [
+        "src/operationalMemory/operationalAudit.ts"
+      ],
+      "ids": [
+        "eventId",
+        "task ID in allowed event metadata"
+      ],
+      "confidence": "PARTIAL_GOVERNANCE_AUDIT",
+      "gap": "No universal causal span across tool→GitHub/SSH/upstream invocation has been certified."
+    },
+    {
+      "hop": 6,
+      "name": "upstream result → MCP response",
+      "currentAnchors": [
+        "src/server.ts"
+      ],
+      "ids": [],
+      "confidence": "NOT_CERTIFIED_BY_H01_INVENTORY",
+      "gap": "No proven response trace projection with layered failure classification, without secrets."
+    },
+    {
+      "hop": 7,
+      "name": "session → checkpoint → next work",
+      "currentAnchors": [
+        "src/operationalMemory/operationalAudit.ts",
+        "tests/operationalEventJournal.test.ts"
+      ],
+      "ids": [
+        "eventId",
+        "governedSessionId"
+      ],
+      "confidence": "TARGETED_TEST_PRESENT",
+      "gap": "Checkpoint-linked event IDs exist; universal request trace across preceding hops remains unverified."
+    }
+  ],
+  "identifiedGaps": [
+    {
+      "id": "H01-GAP-01",
+      "category": "CAUSAL_CORRELATION",
+      "observation": "OperationalEvent has eventId, processSequence and governedSessionId, not explicit traceId/requestId/spanId fields.",
+      "proof": "src/operationalMemory/eventJournal.ts OperationalEvent definition",
+      "neededFor": "Trace end-to-end without retaining OAuth state, JWT, Authorization header or transport IDs"
+    },
+    {
+      "id": "H01-GAP-02",
+      "category": "SPAN_PROPAGATION",
+      "observation": "No end-to-end test was identified that proves a trace across all seven hops and upstream response.",
+      "proof": "Targeted tests operationalEventJournal/governedObservability exercise journal, checkpoint and projection only",
+      "neededFor": "H follow-on implementation acceptance, not a second journal"
+    },
+    {
+      "id": "H01-GAP-03",
+      "category": "ERROR_LAYER_CLASSIFICATION",
+      "observation": "Existing reason codes are present in governance tests, but a unified end-to-end trace failure-layer taxonomy is not proven.",
+      "proof": "tests/governedObservability.test.ts bounded context assertions",
+      "neededFor": "Connection/auth/tool/governance/upstream/response failure attribution"
+    },
+    {
+      "id": "H01-GAP-04",
+      "category": "CLIENT_EVIDENCE",
+      "observation": "Client classification remains UNRESOLVED unless verified; a trace cannot infer Claude/ChatGPT from untrusted client ID.",
+      "proof": "src/operationalMemory/connectionContext.ts",
+      "neededFor": "Honest per-client tracing without false identity claims"
+    }
+  ],
+  "sensitiveDataPolicy": [
+    "NEVER_LOG_ACCESS_OR_REFRESH_TOKEN",
+    "NEVER_LOG_OAUTH_CODE_OR_PKCE_VERIFIER",
+    "NEVER_LOG_COOKIE_OR_AUTHORIZATION_HEADER",
+    "NEVER_LOG_TRANSPORT_SESSION_ID_RAW",
+    "ALLOWLIST_AND_REDACT_EXISTING_EVENT_JOURNAL",
+    "NO_SECOND_EVENT_STORE_OR_TELEMETRY_AUTHORITY"
+  ],
+  "acceptance": {
+    "H01Inventory": "THIS DOCUMENT PROVIDES AN AUDIT INVENTORY AND PROPOSED GAP MAP; MUST BE REVIEWED AGAINST CURRENT SOURCE AND TESTS",
+    "blueprintState": "REMAINS_READY_UNTIL_CANONICAL_PROOF_AND_ACCEPTANCE",
+    "redCase": "Assert absent or incomplete cross-hop correlation from exact-current executable test, without weakening existing behavior",
+    "greenCase": "Deliver accepted inventory first, extend existing Event Journal/operational audit if scoped blueprint authorizes and evidence shows real gap",
+    "e2e": "Trace client→auth→MCP→tool→governance→upstream→response and make failure layer attributable with no sensitive payloads; no owner/Task inferred"
+  },
+  "nextAction": "Review this bounded H01 inventory and current source/tests under authoritative owner; if accepted, checkpoint H.1 in existing Task/Program flow, derive H.2 next gap; in parallel inventory TB-W4-K-01 exposure/auth prerequisites but do not add cockpit routes without #236 evidence.",
+  "noRuntimeMutations": true,
+  "noTaskClaims": true,
+  "noSecondQueue": true,
+  "ownerCommentaryChannel": "https://github.com/Patricked-code/MCP/issues/235"
+}
