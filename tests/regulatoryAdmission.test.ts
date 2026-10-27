@@ -37,7 +37,7 @@ test('Regulatory admission refuses absent or invalid runtime evidence without SS
 });
 
 test('Regulatory admission rejects sibling domains, alternate server and roots', () => {
-  assert.equal(isRegulatoryAdmissionValid(target, valid), true);
+  assert.equal(isRegulatoryAdmissionValid(target, valid), false);
   for (const changed of [
     { ...target, serverId: 's2' as const },
     { ...target, label: 'other' },
@@ -54,6 +54,19 @@ test('Regulatory admission still respects server-side Plesk policy', async () =>
   };
   const result = await executeRegulatoryPleskAdmission(target, valid,
     { enabled: false, allowedParents: { s1: ['wealthtechinnovations.com'] } }, io);
+  assert.equal(result.status, 'BLOCKED');
+  assert.equal(calls, 0);
+});
+
+
+test('forged positive flags never grant Regulatory SSH access', async () => {
+  let calls = 0;
+  const io: PleskRemotePort = {
+    readonly: async () => { calls++; throw new Error('unexpected read'); },
+    guarded: async () => { calls++; throw new Error('unexpected write'); }
+  };
+  const result = await executeRegulatoryPleskAdmission(target, valid,
+    { enabled: true, allowedParents: { s1: ['wealthtechinnovations.com'] } }, io);
   assert.equal(result.status, 'BLOCKED');
   assert.equal(calls, 0);
 });
