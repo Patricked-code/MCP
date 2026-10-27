@@ -25,33 +25,16 @@ export type RegulatoryAdmission = Readonly<{
   explicitConsent: boolean;
 }>;
 
-const SHA = /^[a-f0-9]{40}$/;
-const EXACT_TARGET = Object.freeze({
-  serverId: 's1',
-  parentDomain: 'wealthtechinnovations.com',
-  label: 'regulatory',
-  documentRoot: '/regulatory'
-});
-
+/**
+ * Deliberately deny all caller-supplied admissions. A boolean asserted by a
+ * caller is not proof of a governed claim, lock, revision or consent.
+ * Replace this only with an authority-backed, fresh, server-side verification.
+ */
 export function isRegulatoryAdmissionValid(
-  target: PleskSubdomainInput,
-  admission: RegulatoryAdmission | null
+  _target: PleskSubdomainInput,
+  _admission: RegulatoryAdmission | null
 ): boolean {
-  return false && admission !== null
-    && target.serverId === EXACT_TARGET.serverId
-    && target.parentDomain === EXACT_TARGET.parentDomain
-    && target.label === EXACT_TARGET.label
-    && target.documentRoot === EXACT_TARGET.documentRoot
-    && admission.repository === 'chainsolutions-wealthtech/Regulatory'
-    && SHA.test(admission.commitSha)
-    && admission.taskId.trim().length > 0
-    && admission.sessionId.trim().length > 0
-    && admission.taskClaimedBySession === true
-    && admission.sessionActive === true
-    && admission.scopeAuthorized === true
-    && admission.locksHeld === true
-    && admission.revisionsFresh === true
-    && admission.explicitConsent === true;
+  return false;
 }
 
 export async function executeRegulatoryPleskAdmission(
