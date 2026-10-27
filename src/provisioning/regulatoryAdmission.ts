@@ -8,6 +8,8 @@ import type { PleskCreationOutcome } from './pleskExecute.js';
  * from the existing live governed Task/Session/Lock authorities; this module
  * deliberately cannot manufacture a session, task, lock or approval.
  *
+ * Until an authoritative server-side resolver is wired, caller-provided booleans
+ * are not evidence. All execution remains blocked, including forged positives.
  * This is not registered as a remotely callable MCP write tool.
  */
 export type RegulatoryAdmission = Readonly<{
@@ -35,7 +37,7 @@ export function isRegulatoryAdmissionValid(
   target: PleskSubdomainInput,
   admission: RegulatoryAdmission | null
 ): boolean {
-  return admission !== null
+  return false && admission !== null
     && target.serverId === EXACT_TARGET.serverId
     && target.parentDomain === EXACT_TARGET.parentDomain
     && target.label === EXACT_TARGET.label
