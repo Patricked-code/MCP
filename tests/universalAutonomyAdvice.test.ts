@@ -39,7 +39,7 @@ const subdomain: PleskSubdomainInput = {
 };
 const base = (): UniversalAutonomyAdviceInput => ({
   at: now,
-  candidate,
+  candidate: structuredClone(candidate),
   github: {
     request: { repository: 'chainsolutions-wealthtech/Regulatory', operation: 'repository.write' as const, now },
     observation: githubObservation
