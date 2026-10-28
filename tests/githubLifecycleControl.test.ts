@@ -68,7 +68,8 @@ test('GWC-12 RED: materializes only C-90.1/C-90.2 selected surface', async () =>
     'github_merge_pull_request',
     'github_reply_review_thread',
     'github_request_pull_request_review',
-    'github_resolve_review_thread'
+    'github_resolve_review_thread',
+    'github_update_pull_request_metadata'
   ]);
   for (const forbidden of [
     'github_create_repository',

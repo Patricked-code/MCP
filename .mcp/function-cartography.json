@@ -1632,6 +1632,32 @@
       "contractDigest": "pending-generation"
     },
     {
+      "name": "github_update_pull_request_metadata",
+      "title": null,
+      "description": "Met à jour les métadonnées sûres d'une pull request (titre, body, labels) après validation du head exact. N'expose ni state, ni base, ni close.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": { "type": "string", "minLength": 1, "maxLength": 120, "pattern": "^[A-Za-z0-9_.-]+$" },
+          "repository": { "type": "string", "minLength": 1, "maxLength": 100, "pattern": "^[A-Za-z0-9_.-]+$" },
+          "pullRequestNumber": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+          "expectedHeadSha": { "type": "string", "minLength": 40, "maxLength": 40, "pattern": "^[0-9a-fA-F]{40}$" },
+          "title": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "body": { "type": "string", "maxLength": 65000 },
+          "labels": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 100 }, "maxItems": 30 }
+        },
+        "required": [ "organization", "repository", "pullRequestNumber", "expectedHeadSha" ],
+        "additionalProperties": false
+      },
+      "contractDigest": "pending-generation"
+    },
+    {
       "name": "github_org_inventory",
       "title": null,
       "description": "Liste les dépôts GitHub visibles pour l’organisation configurée ou fournie, sans écrire, sans cloner et sans supprimer.",

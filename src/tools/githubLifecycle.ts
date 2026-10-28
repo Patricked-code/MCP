@@ -725,4 +725,52 @@ export function registerGithubLifecycleWriteTools(
       });
     }
   );
+
+  server.tool(
+    'github_update_pull_request_metadata',
+    'Met à jour les métadonnées sûres d\'une pull request (titre, body, labels) après validation du head exact. N\'expose ni state, ni base, ni close.',
+    {
+      organization: OrganizationSchema,
+      repository: RepositorySchema,
+      pullRequestNumber: PullRequestSchema,
+      expectedHeadSha: ShaSchema,
+      title: z.string().min(1).max(256).optional(),
+      body: BodySchema.optional(),
+      labels: z.array(z.string().min(1).max(100)).max(30).optional()
+    },
+    async ({
+      organization, repository, pullRequestNumber, expectedHeadSha, title, body, labels
+    }, extra) => {
+      await requireWrite(dependencies, extra as GovernanceExtra);
+      const org = assertOrg(organization, dependencies.configuredOrg);
+      const projection = await readPullRequest(
+        dependencies, org, repository, pullRequestNumber
+      );
+      const expected = assertExpectedPrHead(projection, expectedHeadSha);
+      if (!title && body === undefined && !labels) {
+        throw new Error('GITHUB_PR_METADATA_NO_FIELDS');
+      }
+      const jsonBody: Record<string, unknown> = {};
+      if (title) jsonBody.title = title;
+      if (body !== undefined) jsonBody.body = body;
+      const raw = object(await expect(
+        dependencies,
+        `${repoEndpoint(org, repository)}/pulls/${pullRequestNumber}`,
+        { method: 'PATCH', jsonBody }
+      ));
+      if (labels) {
+        await expect(
+          dependencies,
+          `${repoEndpoint(org, repository)}/issues/${pullRequestNumber}/labels`,
+          { method: 'PUT', jsonBody: { labels } }
+        );
+      }
+      return respond({
+        pullRequestNumber,
+        headSha: expected,
+        title: string(raw?.title),
+        updatedAt: string(raw?.updated_at)
+      });
+    }
+  );
 }

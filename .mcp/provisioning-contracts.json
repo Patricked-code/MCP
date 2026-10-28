@@ -158,6 +158,20 @@
       ]
     },
     {
+      "name": "github_update_pull_request_metadata",
+      "kind": "MCP_TOOL",
+      "class": "COMPOSABLE",
+      "resourceTypes": [
+        "REPOSITORY"
+      ],
+      "guards": [
+        "organization equal to the configured GITHUB_ORG",
+        "exact head SHA re-read before the write",
+        "ENABLE_WRITE_TOOLS and a shadow_ready Scoped WRITE Gate verdict",
+        "metadata-only: no state, base or close mutation"
+      ]
+    },
+    {
       "name": "github_get_repository_state",
       "kind": "MCP_TOOL",
       "class": "OBSERVE",
