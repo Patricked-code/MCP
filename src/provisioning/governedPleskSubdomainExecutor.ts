@@ -127,7 +127,7 @@ export async function executeGovernedPleskSubdomain(
  * Plesk target: no remote command supplied by the external caller can mutate
  * anything else. The implementation reuses ssh/client and its safety checks.
  */
-export function buildExistingPleskSshExecutionPort(target:PleskSubdomainInput):PleskRemotePort{
+function buildExistingPleskSshExecutionPort(target:PleskSubdomainInput):PleskRemotePort{
   const synthetic={
     parentExists:true,targetExists:false,documentRootExists:false,
     subscriptionAuthorized:true,documentRootSafe:true,targetOwnedByProvisioner:false
@@ -157,4 +157,39 @@ export function buildExistingPleskSshExecutionPort(target:PleskSubdomainInput):P
       return {code:r.code,stdout:r.stdout,stderr:r.stderr};
     }
   };
+}
+
+/**
+ * The public production entry never exports an unguarded privileged SSH
+ * handle. All remote mutations are behind verified runtime admission.
+ * No direct server execution occurs without admission from existing MCP stores.
+ */
+export async function executeGovernedPleskSubdomainOnExistingSsh(
+  req:GovernedPleskSubdomainRequest,
+  readExistingAuthority:()=>Promise<GovernedPleskAuthoritySnapshot>
+):Promise<GovernedPleskSubdomainOutcome>{
+  // Validate the exact intended SSH target before even constructing the port.
+  const port=buildExistingPleskSshExecutionPort(req.target);
+  return executeGovernedPleskSubdomain(req,{
+    readExistingAuthority,
+    remote:port
+  });
+}
+
+/** A pure helper for contract tests; it NEVER performs an SSH request. */
+export function isAllowlistedPleskCreateCommand(
+  target:PleskSubdomainInput,
+  server:string,
+  command:string
+):boolean {
+  const synthetic={
+    parentExists:true,targetExists:false,documentRootExists:false,
+    subscriptionAuthorized:true,documentRootSafe:true,targetOwnedByProvisioner:false
+  } as const;
+  if(planPleskSubdomain({...target,evidence:synthetic}).decision!=='READY'
+    ||target.documentRoot!=='/'+target.label)return false;
+  return server===target.serverId
+    && command==="plesk bin subdomain --create '"+target.label
+      +"' -domain '"+target.parentDomain
+      +"' -www-root '"+target.documentRoot+"'";
 }
