@@ -219,6 +219,15 @@
       "tests": "tests/pleskWebOauthBridge.test.ts",
       "runtimeToolRegistration": "NOT_REGISTERED",
       "noProductionRightsGranted": true
+    },
+    {
+      "id": "GD-U-02D-B2",
+      "title": "Unique owned OAuth Plesk Task/Session/Lock resolution from existing stores, no browser IDs",
+      "status": "CODED_PENDING_CI",
+      "code": "src/provisioning/pleskOwnedWebSession.ts",
+      "tests": "tests/pleskOwnedWebSession.test.ts",
+      "runtimeToolRegistration": "NOT_REGISTERED",
+      "noWritePossible": true
     }
   ],
   "acceptance": [
@@ -230,7 +239,7 @@
     "no runtime mutation without existing task/session/claim/locks/consent",
     "Regulatory remains real integration pilot, not special-case architecture"
   ],
-  "nextAction": "GD-U-02D-B2: implement server-derived OAuth-web session binding (not a client-supplied session id) and trustworthy independent CI/review attestation, with comprehensive tests. Wire existing Plesk web router authorizeRuntimeWrite only after authority actually verifies every check; leave fail-closed default until all gates and review pass.",
+  "nextAction": "GD-U-02D-B3: design and validate authenticated single-use web OAuth-to-governed-session linkage and independent review/CI evidence using existing E3 web route; only after approval connect authorizeRuntimeWrite without disabling safeguards. Coordinate any tool registration with GWC PR #354.",
   "intelligenceAutonomyRoadmap": {
     "kind": "NON_EXECUTABLE_PROGRAM_ADDENDUM",
     "existingFirst": [
@@ -703,6 +712,23 @@
     "greenCommit": "67da90a48838864aa53ce0a4e44627cbfb58b0ae",
     "strictNoRegression": true,
     "concurrency": "Did not change server.ts, pleskWebRoutes.ts, PR #354 cartography, PR #353 Regulatory, or prior programs",
-    "nextAction": "GD-U-02D-B2: implement server-derived OAuth-web session binding (not a client-supplied session id) and trustworthy independent CI/review attestation, with comprehensive tests. Wire existing Plesk web router authorizeRuntimeWrite only after authority actually verifies every check; leave fail-closed default until all gates and review pass."
+    "nextAction": "GD-U-02D-B2: implement server-derived OAuth-web session binding (not a client-supplied session id) and trustworthy independent CI/review attestation, with comprehensive tests. Wire existing Plesk web router authorizeRuntimeWrite only after authority actually verifies every check; leave fail-closed default until all gates and review pass.",
+    "ownedSessionResolution": {
+      "id": "GD-U-02D-B2",
+      "status": "CODED_PENDING_CI_FINAL",
+      "code": "src/provisioning/pleskOwnedWebSession.ts",
+      "tests": "tests/pleskOwnedWebSession.test.ts",
+      "redCommit": "315c157e02848fa82e4ff954b66c3560a503a31c",
+      "greenCommit": "bdc61b708c27deceead03d35fb932bf60728fc10",
+      "method": "Server-side read-only reconciliation of the exact OAuth principal (from verified mcp:write token) against existing sessions.listVisibleSessions, tasks.listVisibleTasks and locks.listActiveLocks, plus exact healthy Live State. A candidate is returned ONLY if unique owned IN_PROGRESS Task, ACTIVE session, correct unexpired normalized Plesk resource lock and exact GitHub/S1/runtime SHA.",
+      "antiCollision": [
+        "No browser-supplied taskId or sessionId; task/session IDs derived from persisted runtime records",
+        "Ambiguous multiple same-principal tasks are BLOCKED",
+        "Foreign, expired, missing lock or stale/altered sha BLOCKED",
+        "No Task Queue seed, claim, session mutation or new store"
+      ],
+      "limitation": "Unique owned candidate is NOT a durable web-transport linkage, independent CI/review, E3/Task/Lock write grant or SSH permission. output runtimeWriteAuthorized=false always.",
+      "nextAction": "GD-U-02D-B3: design and validate authenticated single-use web OAuth-to-governed-session linkage and independent review/CI evidence using existing E3 web route; only after approval connect authorizeRuntimeWrite without disabling safeguards. Coordinate any tool registration with GWC PR #354."
+    }
   }
 }
