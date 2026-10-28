@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { executeGovernedPleskSubdomain, buildExistingPleskSshExecutionPort } from '../src/provisioning/governedPleskSubdomainExecutor.js';
+import { executeGovernedPleskSubdomain, isAllowlistedPleskCreateCommand } from '../src/provisioning/governedPleskSubdomainExecutor.js';
 import type { PleskSubdomainInput } from '../src/provisioning/pleskSite.js';
 import type { PleskRemotePort } from '../src/provisioning/pleskSshAdapter.js';
 import type { GovernedPleskAuthoritySnapshot } from '../src/provisioning/governedPleskSubdomainExecutor.js';
@@ -133,11 +133,12 @@ test('RED: no generalized shell, no cross-server or cross-account authorization'
   }
 });
 
-test('bounded production Plesk SSH port refuses arbitrary shell or a different server before I/O',async()=>{
-  const port=buildExistingPleskSshExecutionPort(request);
-  await assert.rejects(()=>port.guarded('s1','echo hi; rm -rf /'),/PLESK_GOVERNED_COMMAND_NOT_ALLOWLISTED/);
-  await assert.rejects(()=>port.guarded('s2',"plesk bin subdomain --create 'test-gd' -domain 'wealthtechinnovations.com' -www-root '/test-gd'"),/PLESK_GOVERNED_COMMAND_NOT_ALLOWLISTED/);
-  assert.throws(()=>buildExistingPleskSshExecutionPort({...request,documentRoot:'/other'}),/PLESK_GOVERNED_TARGET_INVALID/);
+test('bounded production Plesk SSH contract forbids shell and cross-server operations',()=>{
+  const exact="plesk bin subdomain --create 'test-gd' -domain 'wealthtechinnovations.com' -www-root '/test-gd'";
+  assert.equal(isAllowlistedPleskCreateCommand(request,'s1',exact),true);
+  assert.equal(isAllowlistedPleskCreateCommand(request,'s1','echo hi; rm -rf /'),false);
+  assert.equal(isAllowlistedPleskCreateCommand(request,'s2',exact),false);
+  assert.equal(isAllowlistedPleskCreateCommand({...request,documentRoot:'/other'},'s1',exact),false);
 });
 
 test('the read and write transport never takes arbitrary argv from a caller to bypass consent',async()=>{
@@ -204,4 +205,10 @@ test('GREEN: an existing unowned Plesk target is never touched',async()=>{
   });
   assert.equal(out.status,'BLOCKED');
   assert.equal(calls.filter(x=>x.startsWith('W:')).length,0);
+});
+
+test('the SSH write transport factory is private and not a public bypass surface',async()=>{
+  const module = await import('../src/provisioning/governedPleskSubdomainExecutor.js');
+  assert.equal('buildExistingPleskSshExecutionPort' in module,false);
+  assert.equal(typeof module.executeGovernedPleskSubdomainOnExistingSsh,'function');
 });
