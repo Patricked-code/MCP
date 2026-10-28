@@ -11,11 +11,7 @@ import {
   probeDelegatedGithubRepositoryPermissions,
   type GithubRepositoryPermissionEvidence
 } from '../github/delegatedRepositoryPermissions.js';
-import {
-  githubJsonRequestWithServerCredential,
-  type GitHubJsonResponse
-} from '../github/connection.js';
-import { runReadOnlyCommand } from '../ssh/client.js';
+import type { GitHubJsonResponse } from '../github/connection.js';
 
 type ServerId = 's1'|'s2';
 type Response = Pick<GitHubJsonResponse,'ok'|'status'|'json'>;
@@ -58,10 +54,16 @@ const TOOLS= ['id -u','plesk version'] as const;
 export function defaultDelegatedLiveProbeDependencies():DelegatedLiveProbeDependencies {
   return {
     now:()=>new Date(),
-    githubGet:async endpoint=>githubJsonRequestWithServerCredential(endpoint,{
-      method:'GET',timeoutMs:2_500
-    }),
-    remoteRead:async (server,command)=>runReadOnlyCommand(server,command,2_500,2_048),
+    githubGet:async endpoint=>{
+      // Import only when actually making an authenticated provider call;
+      // isolated pure tests must not require production SSH env secrets.
+      const {githubJsonRequestWithServerCredential}=await import('../github/connection.js');
+      return githubJsonRequestWithServerCredential(endpoint,{method:'GET',timeoutMs:2_500});
+    },
+    remoteRead:async (server,command)=>{
+      const {runReadOnlyCommand}=await import('../ssh/client.js');
+      return runReadOnlyCommand(server,command,2_500,2_048);
+    },
     canonicalRepository:async()=>{
       try{
         const raw=JSON.parse(await readFile(new URL('../../package.json',import.meta.url),'utf8')) as {
