@@ -47,8 +47,8 @@ test('current read-only tool registration reuses existing get_project_context, w
   const text = readFileSync('src/tools/readOnly.ts','utf8');
   assert.match(text,/server\.tool\('get_project_context'/);
   assert.match(text,/extendProjectContextWithUniversalCapabilities\(/);
-  assert.match(text,/getCurrentToolCatalog\\(\\)\\.tools/);
-  assert.match(text,/probeExistingAdminReadCapabilities\\(\\)/);
+  assert.ok(text.includes('getCurrentToolCatalog().tools'));
+  assert.ok(text.includes('probeExistingAdminReadCapabilities()'));
   assert.doesNotMatch(text,/server\.tool\('github_admin_root'/);
 });
 
