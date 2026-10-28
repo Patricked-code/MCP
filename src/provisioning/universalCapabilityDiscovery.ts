@@ -124,3 +124,23 @@ export function buildUniversalCapabilityDiscovery(
     operationsExecuted:false
   };
 }
+
+/**
+ * Preserve historical get_project_context fields byte-for-byte as values.
+ * Additional targets are a new property, never a replacement for the MCP
+ * runtime tool catalogue or existing project/servers metadata.
+ */
+export function extendProjectContextWithUniversalCapabilities<T extends Record<string, unknown>>(
+  existingContext: T,
+  registeredToolNames: readonly string[]
+): T & { universalCapabilities: UniversalCapabilityDiscovery } {
+  if (Object.prototype.hasOwnProperty.call(existingContext,'universalCapabilities')) {
+    throw new Error('CAPABILITY_DISCOVERY_CONTEXT_COLLISION');
+  }
+  return {
+    ...existingContext,
+    universalCapabilities: buildUniversalCapabilityDiscovery({
+      existingToolNames: registeredToolNames,offset:0,limit:200
+    })
+  };
+}
