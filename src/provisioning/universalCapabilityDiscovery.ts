@@ -59,7 +59,12 @@ export type UniversalDiscoveredCapability = Readonly<{
   plane: AdminPlane;
   risk: AdminRisk;
   implementationHint: 'existing' | 'adapter';
-  exposure: 'TARGET_ONLY_NOT_REGISTERED_TOOL';
+  exposure: 'TARGET_ONLY_NOT_REGISTERED_TOOL' | 'REGISTERED_READ_ONLY'
+    | 'REGISTERED_GOVERNED_WRITE' | 'REGISTERED_PREFLIGHT_ONLY';
+  /** A real tool handler exists in the CURRENT runtime cartography. */
+  registeredToolName: string | null;
+  /** Callable handler; write authority remains distinct and unverified. */
+  runtimeHandlerRegistered: boolean;
   executionReady: false;
   requiresEffectiveDelegation: true;
   runtimeWriteAuthorized: false;
@@ -126,12 +131,22 @@ export function buildUniversalCapabilityDiscovery(
     },
     existingRegisteredToolNames:[...input.existingToolNames],
     executableBindings,
-    capabilities:page.map(c=>({
-      id:c.id,plane:c.plane,risk:c.risk,implementationHint:c.existing,
-      exposure:'TARGET_ONLY_NOT_REGISTERED_TOOL',
-      executionReady:false,requiresEffectiveDelegation:true,
-      runtimeWriteAuthorized:false
-    })),
+    capabilities:page.map(c=>{
+      const binding=executableBindings.bindings.find(b=>b.id===c.id);
+      const exposure = !binding ? 'TARGET_ONLY_NOT_REGISTERED_TOOL'
+        : binding.executionMode==='READ_ONLY' ? 'REGISTERED_READ_ONLY'
+        : binding.executionMode==='GOVERNED_WRITE' ? 'REGISTERED_GOVERNED_WRITE'
+        : 'REGISTERED_PREFLIGHT_ONLY';
+      return {
+        id:c.id,plane:c.plane,risk:c.risk,implementationHint:c.existing,
+        exposure,
+        registeredToolName:binding?.toolName??null,
+        runtimeHandlerRegistered:Boolean(binding),
+        // "Handler registered" NEVER means effective provider rights or E3 admission.
+        executionReady:false,requiresEffectiveDelegation:true,
+        runtimeWriteAuthorized:false
+      };
+    }),
     nextOffset:input.offset+input.limit<filtered.length
       ? input.offset+input.limit:null,
     method:UNIVERSAL_CAPABILITY_DELIVERY_METHOD,
