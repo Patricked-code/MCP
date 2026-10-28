@@ -118,7 +118,7 @@ export function buildUniversalDeploymentBlueprint(input: UniversalDeploymentBlue
     const scope = s.capability.startsWith('github.') ? 'github:'+input.sourceRepository
       : s.capability.startsWith('plesk.') ? 'plesk:'+input.serverId+':'+input.domain
         : s.capability.startsWith('server.') ? 'server:'+input.serverId
-          : 'runtime:Patricked-code/MCP';
+          : 'runtime:'+input.mcpRepository;
     const assessment = assessDelegatedAdminCapability({
       id:s.capability,expectedScope:scope,observedAt:input.at,
       evidence:input.evidenceByCapability[s.capability] ?? null
