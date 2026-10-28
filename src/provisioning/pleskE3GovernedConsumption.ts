@@ -52,26 +52,36 @@ export async function consumeGovernedPleskE3ForExistingRoute(
     ||signed.governedSessionId!==evidence.sessionId){
     return blocked('CROSS_PROOF_MISMATCH');
   }
-  let observed;
-  try{
-    observed=await assessPleskGovernedRelease(evidence,{
+  // B3g: evidence.at is an observation timestamp, NOT the trusted clock.
+  // The release gate checks snapshot age, heartbeat, lock expiry and review
+  // freshness relative to its 'at' field. Use the server-owned clock, and
+  // recheck inside the existing single-use consumer immediately before its
+  // exclusive-create receipt. This prevents burning a valid E3 ticket on a
+  // stale or already-expired governed lock after a slow provider call.
+  const releaseStillCurrent=async():Promise<boolean>=>{
+    const instant=ports.now();
+    if(!Number.isSafeInteger(instant)||instant<0)return false;
+    const observed=await assessPleskGovernedRelease({
+      ...evidence,at:new Date(instant).toISOString()
+    },{
       readTrustedReleaseAttestation:ports.readTrustedReleaseAttestation
     });
+    return observed.disposition==='HOLD'
+      &&observed.blockers.length===1
+      &&observed.blockers[0]==='SINGLE_USE_E3_CONSUMPTION_MISSING'
+      &&observed.trustedGithubObservationPresent;
+  };
+  try{
+    if(!await releaseStillCurrent())
+      return blocked('RELEASE_PRECONDITIONS_NOT_ATTESTED');
   }catch{return blocked('RELEASE_PRECONDITIONS_NOT_ATTESTED');}
-  if(observed.disposition!=='HOLD'
-    ||observed.blockers.length!==1
-    ||observed.blockers[0]!=='SINGLE_USE_E3_CONSUMPTION_MISSING'
-    ||!observed.trustedGithubObservationPresent){
-    return blocked('RELEASE_PRECONDITIONS_NOT_ATTESTED');
-  }
-  // The above gate has verified E3/OAuth/Task/Session/Lock/transport,
-  // exact SHAs and independent PR+CI evidence for this exact request.
-  // The E3 HMAC and expiry must still be reverified at consumption time.
+  // A consumed receipt is still not runtime write authorization or SSH.
+  // The underlying E3 consumer independently re-verifies HMAC and expiry.
   const outcome=await consumeSignedPleskE3Once(signed,{
     directory:ports.receiptDirectory,
     now:ports.now,
     verifyTicket:ports.verifyTicket,
-    verifyPreAdmission:async()=>true
+    verifyPreAdmission:releaseStillCurrent
   });
   if(outcome.status!=='CONSUMED')return blocked('E3_CONSUMPTION_DENIED');
   return {
