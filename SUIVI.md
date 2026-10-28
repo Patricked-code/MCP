@@ -1,4 +1,14 @@
 # SUIVI.md
+## 2026-10-28 — TB-W3-PRW-01 : Exact-head request-review (PASS_WITH_EVIDENCE)
+
+- **Blueprint** : TB-W3-PRW-01, Program Backlog V2, wave W3, collision domain `github:pr-write:review-request`.
+- **Branche** : `claude/ecstatic-edison-v1dyt1`, HEAD `e2006c8`.
+- **Objectif** : ajouter un outil gouverné de demande de review avec reobservation du head exact et cibles de reviewers explicites.
+- **Résultat** : outil `github_request_pull_request_review` implémenté dans `src/tools/githubLifecycle.ts`, suit le pattern write existant (requireWrite → assertOrg → readPullRequest → assertExpectedPrHead → REST POST /requested_reviewers).
+- **Fichiers modifiés** : `src/tools/githubLifecycle.ts`, `src/tools/registrationPolicy.ts`, `.mcp/function-cartography.json`, `.mcp/provisioning-contracts.json`, `tests/githubRequestReview.test.ts` (7/7 GREEN), `tests/githubLifecycleControl.test.ts`, `tests/gwcGithubCapabilitySplit.test.ts`.
+- **Régression** : 6 échecs pré-existants (yaml manquant, dockerfile, etc.), 0 nouvelle régression introduite.
+- **NEXT_ACTION** : pousser, puis sélectionner le prochain blueprint READY via `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.
+
 ## 2026-10-28 — TB-W4-H-01 : Trace evidence inventory (PASS_WITH_EVIDENCE)
 
 - **Blueprint** : TB-W4-H-01, Program Backlog V2, wave W4, lot H.1.
