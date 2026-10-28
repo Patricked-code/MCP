@@ -75,6 +75,9 @@ export async function observeGithubReviewAndCi(
     // Only the latest review from each user is authoritative; a later
     // CHANGES_REQUESTED, COMMENTED or DISMISSED state revokes earlier approval.
     const latest=new Map<string,{state:string;commit:string;submittedAt:number;actorType:string|null}>();
+    // GitHub review timestamps have finite precision. Conflicting states at
+    // the same instant are ambiguous, regardless of API array ordering.
+    const ambiguousReviewers=new Set<string>();
     for(const item of rawReviews){
       const review=obj(item);
       const reviewer=name(review?.user);
@@ -83,12 +86,17 @@ export async function observeGithubReviewAndCi(
       const timestamp=Date.parse(String(review?.submitted_at??''));
       if(!reviewer||!Number.isFinite(timestamp)
         ||typeof state!=='string')return blocked();
-      const old=latest.get(reviewer.toLowerCase());
-      if(!old||timestamp>=old.submittedAt)latest.set(reviewer.toLowerCase(),{
-        state,
-        commit:String(review?.commit_id??''),
-        submittedAt:timestamp,
-        actorType:typeof actorType==='string'?actorType:null
+      const key=reviewer.toLowerCase();
+      const old=latest.get(key);
+      const commit=String(review?.commit_id??'');
+      const type=typeof actorType==='string'?actorType:null;
+      if(old&&timestamp===old.submittedAt
+        &&(state!==old.state||commit!==old.commit||type!==old.actorType))
+        ambiguousReviewers.add(key);
+      // A strictly newer review resolves an earlier same-time ambiguity.
+      if(old&&timestamp>old.submittedAt)ambiguousReviewers.delete(key);
+      if(!old||timestamp>=old.submittedAt)latest.set(key,{
+        state,commit,submittedAt:timestamp,actorType:type
       });
     }
     // A GitHub API review object is not a valid independent approval by itself.
@@ -96,6 +104,7 @@ export async function observeGithubReviewAndCi(
     // release gate. Reuse GitHub's current effective repository permission.
     const approvedCandidates=[...latest.entries()].filter(([reviewer,r])=>
       reviewer!==author.toLowerCase()
+      &&!ambiguousReviewers.has(reviewer)
       &&r.actorType==='User'
       &&r.state==='APPROVED'
       &&r.commit===input.expectedHeadSha
