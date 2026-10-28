@@ -6,6 +6,11 @@
  * Existing guarded GitHub request and SSH transports are reused. The result
  * discloses only typed status/identity; never remote output or credentials.
  */
+import { readFile } from 'node:fs/promises';
+import {
+  probeDelegatedGithubRepositoryPermissions,
+  type GithubRepositoryPermissionEvidence
+} from '../github/delegatedRepositoryPermissions.js';
 import {
   githubJsonRequestWithServerCredential,
   type GitHubJsonResponse
@@ -20,12 +25,15 @@ export type DelegatedLiveProbeDependencies = Readonly<{
   now:()=>Date;
   githubGet:(endpoint:string)=>Promise<Response>;
   remoteRead:(server:ServerId,command:'id -u'|'plesk version')=>Promise<ReadResult>;
+  canonicalRepository?:()=>Promise<string|null>;
 }>;
 
 export type DelegatedLiveProviderResult = Readonly<{
   observedAt:string;
   liveProviderCallsExecuted:true;
   allowedCommands:readonly ['id -u','plesk version'];
+  /** Repository-scoped provider permissions when a canonical target can be resolved. */
+  githubRepository:GithubRepositoryPermissionEvidence|null;
   github:Readonly<{
     status:'AUTHENTICATED'|'BLOCKED';
     principal:string|null;
@@ -53,7 +61,16 @@ export function defaultDelegatedLiveProbeDependencies():DelegatedLiveProbeDepend
     githubGet:async endpoint=>githubJsonRequestWithServerCredential(endpoint,{
       method:'GET',timeoutMs:2_500
     }),
-    remoteRead:async (server,command)=>runReadOnlyCommand(server,command,2_500,2_048)
+    remoteRead:async (server,command)=>runReadOnlyCommand(server,command,2_500,2_048),
+    canonicalRepository:async()=>{
+      try{
+        const raw=JSON.parse(await readFile(new URL('../../package.json',import.meta.url),'utf8')) as {
+          mcpValidationProfile?:{repository?:unknown}
+        };
+        return typeof raw.mcpValidationProfile?.repository==='string'
+          ?raw.mcpValidationProfile.repository:null;
+      }catch{return null;}
+    }
   };
 }
 
@@ -70,13 +87,23 @@ export async function probeExistingAdminReadCapabilities(
     deps.remoteRead('s1','id -u'),
     deps.remoteRead('s1','plesk version'),
     deps.remoteRead('s2','id -u'),
-    deps.remoteRead('s2','plesk version')
+    deps.remoteRead('s2','plesk version'),
+    deps.canonicalRepository ? deps.canonicalRepository():Promise.resolve(null)
   ]);
   const good=<T>(index:number):T|null=>{
     const result=attempts[index];
     return result?.status==='fulfilled' ? result.value as T : null;
   };
   const user=good<Response>(0);
+  const canonicalRepository=good<string|null>(5);
+  let githubRepository:GithubRepositoryPermissionEvidence|null=null;
+  if(canonicalRepository){
+    try{
+      githubRepository=await probeDelegatedGithubRepositoryPermissions(
+        canonicalRepository,deps.githubGet
+      );
+    }catch{ /* No guessing cross-account repository authority. */ }
+  }
   const obj=user?.json && typeof user.json==='object' && !Array.isArray(user.json)
     ? user.json as Record<string,unknown>:null;
   const login=typeof obj?.login==='string' && LOGIN.test(obj.login)?obj.login:null;
@@ -98,6 +125,7 @@ export async function probeExistingAdminReadCapabilities(
     observedAt:at,
     liveProviderCallsExecuted:true,
     allowedCommands:TOOLS,
+    githubRepository,
     github:{
       status:authenticated?'AUTHENTICATED':'BLOCKED',
       principal:authenticated?login:null,
