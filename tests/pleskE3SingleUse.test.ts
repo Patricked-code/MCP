@@ -16,6 +16,14 @@ async function sandbox(fn:(dir:string)=>Promise<void>) {
   try { await fn(join(root,'receipts')); } finally { await rm(root,{recursive:true,force:true}); }
 }
 
+async function receiptsOrEmpty(directory:string):Promise<string[]>{
+  try{return await readdir(directory);}
+  catch(e){
+    if(e&&typeof e==='object'&&'code' in e&&e.code==='ENOENT')return[];
+    throw e;
+  }
+}
+
 test('RED: only one concurrent signed ticket succeeds across multiple instances using same directory',async()=>{
   await sandbox(async dir=>{
     const results=await Promise.all(Array.from({length:12},()=>consumeSignedPleskE3Once(context,{
@@ -24,7 +32,7 @@ test('RED: only one concurrent signed ticket succeeds across multiple instances 
     assert.equal(results.filter(r=>r.status==='CONSUMED').length,1);
     assert.equal(results.filter(r=>r.reason==='ALREADY_CONSUMED').length,11);
     assert.ok(results.every(r=>r.runtimeWriteAuthorized===false));
-    const names=await readdir(dir);
+    const names=await receiptsOrEmpty(dir);
     assert.equal(names.length,1);
     assert.match(names[0],/^[0-9a-f]{64}\.json$/);
     const payload=await readFile(join(dir,names[0]),'utf8');
@@ -54,7 +62,7 @@ test('RED: wrong binding, invalid/expired signature or malformed ticket cannot c
     }
     const expired=await consumeSignedPleskE3Once(context,{directory:dir,verifyTicket:verify,verifyPreAdmission:async()=>true,now:()=>now+600001});
     assert.equal(expired.status,'BLOCKED');
-    assert.deepEqual(await readdir(dir),[]);
+    assert.deepEqual(await receiptsOrEmpty(dir),[]);
   });
 });
 
@@ -68,7 +76,7 @@ test('RED: if trusted pre-admission rejects, no ticket is burned',async()=>{
     assert.equal(denied.status,'BLOCKED');
     assert.equal(denied.reason,'GOVERNED_ADMISSION_NOT_ATTESTED');
     assert.equal(count,1);
-    assert.deepEqual(await readdir(dir),[]);
+    assert.deepEqual(await receiptsOrEmpty(dir),[]);
   });
 });
 
@@ -91,7 +99,7 @@ test('GREEN: a missing governed preadmission callback can never consume a signed
     } as never);
     assert.equal(result.status,'BLOCKED');
     assert.equal(result.reason,'GOVERNED_ADMISSION_NOT_ATTESTED');
-    assert.deepEqual(await readdir(dir),[]);
+    assert.deepEqual(await receiptsOrEmpty(dir),[]);
   });
 });
 
@@ -104,6 +112,6 @@ test('GREEN: consent expiring during async governance check is rejected before a
     });
     assert.equal(r.status,'BLOCKED');
     assert.equal(r.reason,'INVALID_TARGET_OR_TICKET');
-    assert.deepEqual(await readdir(dir),[]);
+    assert.deepEqual(await receiptsOrEmpty(dir),[]);
   });
 });
