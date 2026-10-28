@@ -19,7 +19,7 @@ import { registerCurrentStateTools } from './currentState.js';
 import { registerGithubControlPlaneReadTools } from './githubControlPlaneRead.js';
 import { registerGithubLifecycleReadTools } from './githubLifecycle.js';
 import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
-import { buildUniversalCapabilityDiscovery } from '../provisioning/universalCapabilityDiscovery.js';
+import { extendProjectContextWithUniversalCapabilities } from '../provisioning/universalCapabilityDiscovery.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -29,18 +29,14 @@ async function run(serverId: ServerId, command: string) {
 export function registerReadOnlyTools(server: McpServer): void {
   server.tool('ping', 'Vérifie que le MCP WealthTech SSH Bridge répond.', {}, async () => asText('wealthtech_ssh_bridge_ok'));
 
-  server.tool('get_project_context', 'Retourne le contexte projet, les serveurs et les domaines protégés.', {}, async () => asText(JSON.stringify({
-    name: 'wealthtech_ssh_bridge',
-    mode: 'read-only-first',
-    servers: managedServers,
-    // Additive discovery, not a parallel execution API: existing tools remain intact.
-    // Targets without a registered executor are explicitly TARGET_ONLY.
-    universalCapabilities: buildUniversalCapabilityDiscovery({
-      existingToolNames: getCurrentToolCatalog().tools.map(tool => tool.name),
-      offset: 0,
-      limit: 200
-    })
-  }, null, 2)));
+  server.tool('get_project_context', 'Retourne le contexte projet, les serveurs et les domaines protégés.', {}, async () => asText(JSON.stringify(
+    extendProjectContextWithUniversalCapabilities({
+      name: 'wealthtech_ssh_bridge',
+      mode: 'read-only-first',
+      servers: managedServers
+    }, getCurrentToolCatalog().tools.map(tool => tool.name)),
+    null, 2
+  )));
 
   server.tool('check_disk_s1', 'Affiche df -h sur S1.', {}, async () => run('s1', 'df -h'));
   server.tool('check_disk_s2', 'Affiche df -h sur S2.', {}, async () => run('s2', 'df -h'));
