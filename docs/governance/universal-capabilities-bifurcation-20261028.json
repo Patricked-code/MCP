@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "id": "MCP-GD-UNIVERSAL-CAPABILITIES-BIFURCATION-20261028",
+  "kind": "ADDITIVE_NON_AUTHORITATIVE_WORKSTREAM_CHECKPOINT",
+  "repository": "Patricked-code/MCP",
+  "parentIssue": 349,
+  "branch": "mcp/universal-github-plesk-server-capabilities-20261028",
+  "forkedFromMainSha": "48a529889517aa1c11974802d23acc3f35e0f187",
+  "date": "2026-10-28",
+  "purpose": "Extend the existing MCP with maximum officially delegable GitHub, Plesk, S1/S2 and cross-plane life-cycle capabilities. Reuse existing runtime/project/queue/registry/consent/transport/CI. Never create parallel authority or assume owner/root privileges.",
+  "governance": {
+    "transport": "GITHUB_ONLY_BIFURCATION",
+    "runtimeClaimOrSessionCreated": false,
+    "productionWritePerformed": false,
+    "sourceOfTruth": "GitHub PR/CI plus existing MCP governed authority",
+    "mutationAuthority": "EXISTING_MCP_GOVERNED_SESSIONS_TASK_QUEUE_CLAIMS_LOCKS_E3_AND_GITHUB_RULESETS",
+    "branchOwnership": "Dedicated ChatGPT GitHub connector branch; no other PR, main or S1/S2 writes",
+    "existingPrReservations": [
+      "#207 OAuth",
+      "#319 BUS",
+      "#351 GRT admission",
+      "#352 Regulatory subpath",
+      "#353 Regulatory admission",
+      "#354 GWC"
+    ],
+    "sharedCanonicalDocsDeferredToAdmittedReconciliation": true
+  },
+  "existingFoundations": [
+    "src/github/registryV2.ts",
+    "src/github/connection.ts",
+    "src/github/appInstallationToken.ts",
+    "src/provisioning/pleskSite.ts",
+    "src/provisioning/pleskExecute.ts",
+    "src/provisioning/pleskSshAdapter.ts",
+    "src/tools/pleskProvisioning.ts",
+    "src/tools/registrationPolicy.ts",
+    ".mcp/github-first-operational-policy.json",
+    "Governed Sessions / Task Queue / Locks / E3 existing",
+    "MCP Governed Deploy GitHub -> S1"
+  ],
+  "deliveredSlice": {
+    "id": "GD-U-01",
+    "description": "Pure read-only GitHub App installation capability assessment; no tokens, API calls or runtime writes.",
+    "code": "src/github/installationCapabilityReadiness.ts",
+    "tests": "tests/githubInstallationCapabilityReadiness.test.ts",
+    "operations": [
+      "repository.read",
+      "repository.write",
+      "pull_request.create",
+      "pull_request.merge",
+      "actions.dispatch",
+      "repository.admin"
+    ],
+    "contract": "PERMISSION_OBSERVED means only a fresh repository/installation-scoped permission observation, never runtime write admission.",
+    "redCommit": "067985c6aaa00b156ae2deff51e80d689d47f8dc",
+    "greenCommit": "bb105d043c98a17611ae2fc2980f9489da84c5ae",
+    "ciStatus": "NOT_YET_ATTESTED"
+  },
+  "program": [
+    {
+      "id": "GD-U-01",
+      "title": "GitHub App capability preflight",
+      "status": "IMPLEMENTED_PENDING_CI",
+      "proof": "new standalone pure function and tests"
+    },
+    {
+      "id": "GD-U-02",
+      "title": "GitHub multi-account installations/permission inventory",
+      "status": "NEXT",
+      "reuse": [
+        "src/github/connection.ts",
+        "src/github/registryV2.ts",
+        "src/github/appInstallationToken.ts"
+      ],
+      "gate": "real installation, selected repositories, effective permission observation and credential on S1"
+    },
+    {
+      "id": "GD-U-03",
+      "title": "Plesk API/MCP/CLI interface inventory and safe adapter composition",
+      "status": "NOT_STARTED",
+      "reuse": [
+        "src/provisioning/pleskSite.ts",
+        "src/provisioning/pleskSshAdapter.ts"
+      ],
+      "gate": "S1/S2 admin or subscription delegated permissions, read-only discovery before writes"
+    },
+    {
+      "id": "GD-U-04",
+      "title": "Server operations evidence and bounded privileged ports",
+      "status": "NOT_STARTED",
+      "reuse": [
+        "src/ssh/client.ts",
+        "existing PROJECT_RUNTIME"
+      ],
+      "gate": "no arbitrary shell, verified resource identity, existing runtime authority"
+    },
+    {
+      "id": "GD-U-05",
+      "title": "Universal target modes: subdomain, existing-host subpath, dedicated domain, private service",
+      "status": "NOT_STARTED",
+      "reuse": [
+        "src/github/registryV2.ts",
+        "src/provisioning/pleskSite.ts"
+      ],
+      "gate": "avoid overlap #352/#353, never reinterpret Regulatory subpath as subdomain"
+    },
+    {
+      "id": "GD-U-06",
+      "title": "GitHub to host mapping and deployment attestation",
+      "status": "NOT_STARTED",
+      "reuse": [
+        "GitRegistry V2",
+        "MCP Governed Deploy"
+      ],
+      "gate": "SHA exact, CI, rollback, health, permissions and scope"
+    },
+    {
+      "id": "GD-U-07",
+      "title": "Continuous operation and failure recovery",
+      "status": "NOT_STARTED",
+      "reuse": [
+        "Task Queue",
+        "Governed Sessions",
+        "Locks",
+        "Operational Memory"
+      ],
+      "gate": "idempotent, checkpoints, no collisions, rollback"
+    }
+  ],
+  "acceptance": [
+    "no direct main/S1/S2/other-PR writes",
+    "no credentials in Git or logs",
+    "fail closed on stale/missing permission evidence and selected repo membership",
+    "no ambient admin privileges inferred from GitHub App",
+    "CI exact PR HEAD and independent review before merge",
+    "no runtime mutation without existing task/session/claim/locks/consent",
+    "Regulatory remains real integration pilot, not special-case architecture"
+  ],
+  "nextAction": "Open a draft PR linked to #349, verify exact-head CI and tests including new file; then implement GD-U-02 after revalidating anti-collision scopes. No merge or deploy until review/acceptance."
+}
