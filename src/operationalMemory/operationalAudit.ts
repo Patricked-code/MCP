@@ -108,14 +108,35 @@ export type OperationalAuditInput =
       storeRevision: number;
     };
 
+/**
+ * The range a checkpoint taken now must cover. `eventIds` is the bounded projection it can link
+ * (the last 64 unlinked events). `lastEventId` is the newest event recorded for the session: the
+ * replay anchor, kept once every event is linked. `firstEventId` starts the range at the oldest
+ * unlinked event, or is null when there is none. The range may span events that earlier
+ * checkpoints already linked, but it never leaves out an unlinked one; `eventCount` counts every
+ * event the window recorded from `firstEventId` through `lastEventId`.
+ */
+export type CheckpointCoverage = {
+  eventIds: string[];
+  firstEventId: string | null;
+  lastEventId: string | null;
+  eventCount: number;
+};
+
 export type OperationalAudit = {
   record(input: OperationalAuditInput): Promise<void>;
   checkpointEventIds?(governedSessionId: string): string[];
+  checkpointCoverage?(governedSessionId: string): CheckpointCoverage;
 };
+
+function emptyCoverage(): CheckpointCoverage {
+  return { eventIds: [], firstEventId: null, lastEventId: null, eventCount: 0 };
+}
 
 export const NOOP_OPERATIONAL_AUDIT: OperationalAudit = Object.freeze({
   async record() {},
-  checkpointEventIds() { return []; }
+  checkpointEventIds() { return []; },
+  checkpointCoverage: emptyCoverage
 });
 
 function auditText(value: string, maxLength = 200): string {
@@ -326,15 +347,41 @@ function metadataForAuditEvent(input: OperationalAuditInput): {
   }
 }
 
+type PendingEvent = { eventId: string; ordinal: number };
+
+type PendingWindow = {
+  // The last 64 events no checkpoint has linked, in journal order: what a checkpoint can link.
+  events: PendingEvent[];
+  // The last 64 unlinked events that left that projection, in journal order: a checkpoint whose
+  // snapshot was taken before they left can still link them.
+  dropped: PendingEvent[];
+  // The range start: the oldest unlinked event while `dropped` or `events` still holds it, else a
+  // conservative start that may precede events already linked. Null once every event is linked.
+  first: PendingEvent | null;
+  // The newest event recorded for the session; ordinals count the session's events.
+  last: PendingEvent;
+};
+
 export function createOperationalAudit(
   journal: OperationalEventJournal,
   onError?: (eventType: OperationalEventType) => void
 ): OperationalAudit {
-  const pendingEventIds = new Map<string, string[]>();
+  const pendingWindows = new Map<string, PendingWindow>();
 
   return {
     checkpointEventIds(governedSessionId) {
-      return [...(pendingEventIds.get(governedSessionId) ?? [])];
+      return (pendingWindows.get(governedSessionId)?.events ?? []).map((pending) => pending.eventId);
+    },
+
+    checkpointCoverage(governedSessionId) {
+      const window = pendingWindows.get(governedSessionId);
+      if (!window) return emptyCoverage();
+      return {
+        eventIds: window.events.map((pending) => pending.eventId),
+        firstEventId: window.first?.eventId ?? null,
+        lastEventId: window.last.eventId,
+        eventCount: window.first ? window.last.ordinal - window.first.ordinal + 1 : 0
+      };
     },
 
     async record(input) {
@@ -343,16 +390,50 @@ export function createOperationalAudit(
         const appended = await journal.append({ type: input.type, ...event });
         if (appended.governedSessionId) {
           if (input.type === 'checkpoint.created') {
-            pendingEventIds.delete(appended.governedSessionId);
+            // Release only what the checkpoint references: an event appended while it was being
+            // created is not in its snapshot and stays pending for the next checkpoint.
+            const window = pendingWindows.get(appended.governedSessionId);
+            if (window) {
+              const covered = new Set(input.checkpoint.eventIds);
+              const events = window.events.filter((pending) => !covered.has(pending.eventId));
+              const dropped = window.dropped.filter((pending) => !covered.has(pending.eventId));
+              // While the start is still held, every unlinked event since it is held too, so the
+              // oldest one left is the exact new start. Once it is not, this checkpoint may have
+              // linked events no longer held, and the start stays where it is.
+              const start = window.first;
+              const startHeld = start !== null
+                && (window.dropped[0] ?? window.events[0])?.eventId === start.eventId;
+              const first = startHeld && covered.has(start.eventId)
+                ? dropped[0] ?? events[0] ?? null
+                : start;
+              // The window outlives a full release: its last event stays the replay anchor.
+              pendingWindows.set(appended.governedSessionId, { events, dropped, first, last: window.last });
+            }
+          } else if (
+            input.type === 'session.closed'
+            || (input.type === 'transport.unbound' && input.reasonCode === 'session_closed')
+          ) {
+            // A closed session never creates another checkpoint, so its window could never be
+            // released: drop it, and do not reopen one for the unbind that follows the close.
+            pendingWindows.delete(appended.governedSessionId);
           } else {
-            const current = pendingEventIds.get(appended.governedSessionId) ?? [];
-            pendingEventIds.set(
-              appended.governedSessionId,
-              [...current, appended.eventId].slice(-64)
-            );
+            const window = pendingWindows.get(appended.governedSessionId);
+            const pending = { eventId: appended.eventId, ordinal: (window?.last.ordinal ?? 0) + 1 };
+            const events = [...(window?.events ?? []), pending];
+            pendingWindows.set(appended.governedSessionId, {
+              events: events.slice(-64),
+              dropped: [...(window?.dropped ?? []), ...events.slice(0, -64)].slice(-64),
+              first: window?.first ?? pending,
+              last: pending
+            });
           }
         }
       } catch {
+        // The store closed the session whether or not the journal recorded it: its window can
+        // never be released by a checkpoint either way.
+        if (input.type === 'session.closed' && event.governedSessionId) {
+          pendingWindows.delete(event.governedSessionId);
+        }
         try { onError?.(input.type); } catch { /* audit failure remains isolated */ }
       }
     }
