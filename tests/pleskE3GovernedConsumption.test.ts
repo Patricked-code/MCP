@@ -94,3 +94,51 @@ test('RED: cross-task, foreign principal, or scope mismatch never burns ticket',
   }
  });
 });
+
+test('RED B3g: signed E3 must not be consumed after its governed lock has expired',async()=>{
+ await testDirectory(async dir=>{
+  const r=await consumeGovernedPleskE3ForExistingRoute(evidence(),{
+   ticket,binding,scope,principalId:owner,governedSessionId:session,taskId:task
+  },{...ports(dir,true),now:()=>now+180_000});
+  assert.equal(r.status,'BLOCKED');
+  assert.equal(r.reason,'RELEASE_PRECONDITIONS_NOT_ATTESTED');
+  assert.equal(r.runtimeWriteAuthorized,false);
+  assert.equal(r.operationExecuted,false);
+  const {readdir}=await import('node:fs/promises');
+  const entries=await readdir(dir).catch((e:NodeJS.ErrnoException)=>{
+   if(e.code==='ENOENT')return [];throw e;
+  });
+  assert.deepEqual(entries,[]);
+ });
+});
+
+test('RED B3g: stale runtime snapshot (>30s) cannot burn valid signed E3 ticket',async()=>{
+ await testDirectory(async dir=>{
+  const r=await consumeGovernedPleskE3ForExistingRoute(evidence(),{
+   ticket,binding,scope,principalId:owner,governedSessionId:session,taskId:task
+  },{...ports(dir,true),now:()=>now+31_000});
+  assert.equal(r.status,'BLOCKED');
+  assert.equal(r.reason,'RELEASE_PRECONDITIONS_NOT_ATTESTED');
+  const {readdir}=await import('node:fs/promises');
+  const entries=await readdir(dir).catch((e:NodeJS.ErrnoException)=>{
+   if(e.code==='ENOENT')return [];throw e;
+  });
+  assert.deepEqual(entries,[]);
+ });
+});
+
+test('RED B3g: expiry during async E3 preadmission recheck cannot consume',async()=>{
+ await testDirectory(async dir=>{
+  let ticks=0;
+  const r=await consumeGovernedPleskE3ForExistingRoute(evidence(),{
+   ticket,binding,scope,principalId:owner,governedSessionId:session,taskId:task
+  },{...ports(dir,true),now:()=>++ticks===1?now:now+180_000});
+  assert.equal(r.status,'BLOCKED');
+  assert.equal(r.runtimeWriteAuthorized,false);
+  const {readdir}=await import('node:fs/promises');
+  const entries=await readdir(dir).catch((e:NodeJS.ErrnoException)=>{
+   if(e.code==='ENOENT')return [];throw e;
+  });
+  assert.deepEqual(entries,[]);
+ });
+});
