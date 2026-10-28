@@ -116,15 +116,51 @@ test('S1: a checkpoint moves the range to the event appended after its snapshot 
   });
 });
 
-test('S1: a checkpoint that links its whole window leaves no range', async () => {
-  await withJournal(async (journal) => {
+test('S1: a checkpoint that links its whole window leaves an empty range anchored at the last event', async () => {
+  await withJournal(async (journal, file) => {
     const audit = createOperationalAudit(journal);
     assert.deepEqual(audit.checkpointCoverage?.(SESSION_A), EMPTY);
     for (let version = 1; version <= 3; version += 1) await audit.record(reconcile(SESSION_A, version));
     const snapshot = audit.checkpointEventIds?.(SESSION_A) ?? [];
     await audit.record({ type: 'checkpoint.created', checkpoint: checkpoint(SESSION_A, snapshot) });
+    const ids = await sessionEventIds(file, SESSION_A);
 
-    assert.deepEqual(audit.checkpointCoverage?.(SESSION_A), EMPTY);
+    // #313 6459995666: a checkpoint with no new event must not lose the replay anchor.
+    const anchored = { eventIds: [], firstEventId: null, lastEventId: ids[2], eventCount: 0 };
+    assert.deepEqual(audit.checkpointCoverage?.(SESSION_A), anchored);
+    await audit.record({ type: 'checkpoint.created', checkpoint: checkpoint(SESSION_A, []) });
+    assert.deepEqual(audit.checkpointCoverage?.(SESSION_A), anchored);
+  });
+});
+
+test('S1: one event between a full snapshot and its checkpoint does not keep the linked start', async () => {
+  await withJournal(async (journal, file) => {
+    const audit = createOperationalAudit(journal);
+    for (let version = 1; version <= 64; version += 1) await audit.record(reconcile(SESSION_A, version));
+    const snapshot = audit.checkpointEventIds?.(SESSION_A) ?? [];
+    // #313 6460741647: event 65 pushes event 1 out of the 64-ID projection before the marker.
+    await audit.record(reconcile(SESSION_A, 65));
+    await audit.record({ type: 'checkpoint.created', checkpoint: checkpoint(SESSION_A, snapshot) });
+    const ids = await sessionEventIds(file, SESSION_A);
+
+    assert.deepEqual(audit.checkpointCoverage?.(SESSION_A), {
+      eventIds: [ids[64]], firstEventId: ids[64], lastEventId: ids[64], eventCount: 1
+    });
+  });
+});
+
+test('S1: up to 64 events between a full snapshot and its checkpoint keep the range exact', async () => {
+  await withJournal(async (journal, file) => {
+    const audit = createOperationalAudit(journal);
+    for (let version = 1; version <= 64; version += 1) await audit.record(reconcile(SESSION_A, version));
+    const snapshot = audit.checkpointEventIds?.(SESSION_A) ?? [];
+    for (let version = 65; version <= 128; version += 1) await audit.record(reconcile(SESSION_A, version));
+    await audit.record({ type: 'checkpoint.created', checkpoint: checkpoint(SESSION_A, snapshot) });
+    const ids = await sessionEventIds(file, SESSION_A);
+
+    assert.deepEqual(audit.checkpointCoverage?.(SESSION_A), {
+      eventIds: ids.slice(64), firstEventId: ids[64], lastEventId: ids[127], eventCount: 64
+    });
   });
 });
 
@@ -148,7 +184,7 @@ test('S1: after a saturated checkpoint the next range still starts at the first 
   });
 });
 
-test('S1: more than 64 events between the snapshot and the checkpoint never lose the range start', async () => {
+test('S1: more than 64 events between the snapshot and the checkpoint keep a conservative range start', async () => {
   await withJournal(async (journal, file) => {
     const audit = createOperationalAudit(journal);
     for (let version = 1; version <= 64; version += 1) await audit.record(reconcile(SESSION_A, version));
@@ -158,6 +194,8 @@ test('S1: more than 64 events between the snapshot and the checkpoint never lose
     const ids = await sessionEventIds(file, SESSION_A);
 
     // Events 65 to 70 left the 64-ID window before the checkpoint arrived and were never linked.
+    // More than 64 events left it, so the audit no longer knows which ones the checkpoint linked:
+    // the range keeps its start and also spans events 1 to 64, already linked, rather than lose any.
     assert.deepEqual(audit.checkpointEventIds?.(SESSION_A), ids.slice(70));
     assert.deepEqual(audit.checkpointCoverage?.(SESSION_A), {
       eventIds: ids.slice(70),
