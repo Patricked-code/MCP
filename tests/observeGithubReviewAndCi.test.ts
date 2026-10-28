@@ -175,3 +175,20 @@ test('B3h: current maintain/admin reviewer permissions are valid as read-only ob
    assert.equal(r.runtimeWriteAuthorized,false);
  }
 });
+
+// B3i: GitHub timestamps can collide at one-second precision. The order of
+// equally dated contradictory reviews must never decide a privileged gate.
+test('RED B3i: conflicting reviews at the same instant cannot be approved by array ordering',async()=>{
+  const approved={...reviews[0],id:8001};
+  const revoked={...reviews[0],id:8002,state:'CHANGES_REQUESTED'};
+  for(const pair of [[revoked,approved],[approved,revoked]]){
+    const c=client({reviews:pair});
+    const result=await observeGithubReviewAndCi({
+      repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+      expectedWorkflow:'MCP CI',now:()=>new Date('2026-10-28T06:15:00Z'),request:c.request
+    });
+    assert.equal(result.status,'BLOCKED');
+    assert.equal(result.attestation,null);
+    assert.equal(result.runtimeWriteAuthorized,false);
+  }
+});
