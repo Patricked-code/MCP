@@ -187,7 +187,7 @@
     "no runtime mutation without existing task/session/claim/locks/consent",
     "Regulatory remains real integration pilot, not special-case architecture"
   ],
-  "nextAction": "Observe exact HEAD CI for all 165-capability catalogue, cross-plane planner and continuity resume tests; fix regressions on PR #355 only, then independent security review. Future implementation must bind provider evidence and privileged ports through existing runtime without altering #353 or S1/S2. Validate endpoint-specific maximum permissions and use narrow task tokens.",
+  "nextAction": "Verify CI final exact HEAD of GD-U-EXPOSE, preserve existing tool catalog and all tests, record RED/GREEN outcome honestly, then implement provider-specific read-only effective-permission discovery adapters in independent scope. Do not merge/deploy without independent review.",
   "intelligenceAutonomyRoadmap": {
     "kind": "NON_EXECUTABLE_PROGRAM_ADDENDUM",
     "existingFirst": [
@@ -323,5 +323,103 @@
     "reviewed": false,
     "merged": false,
     "deployed": false
+  },
+  "workingMethodology": {
+    "version": "GD-U-METHOD-20261028-01",
+    "binding": "MANDATORY_FOR_ALL_FUTURE_GD_U_SLICES",
+    "parentIssue": 349,
+    "pullRequest": 355,
+    "principles": [
+      {
+        "id": "GITHUB_FIRST",
+        "rule": "Code only through GitHub branch and PR, CI on exact HEAD, governed merge/deploy; no manual modification of running S1/S2 code.",
+        "acceptance": [
+          "PR preserves main",
+          "Exact commit SHA recorded",
+          "CI and independent review before merge",
+          "Post-deploy verified only after governed merge"
+        ]
+      },
+      {
+        "id": "NO_REGRESSION",
+        "rule": "All existing runtime tools, MCP permissions, memories, sessions, Task Queue, claims, locks, Plesk/GitHub/SSH adapters, governance and external project owners are kept; enrich/compose/wrap, never silently replace.",
+        "acceptance": [
+          "Old runtime tools remain registered",
+          "No changes to other active PR scopes",
+          "New code does not grant authority by default",
+          "Historical tests pass"
+        ]
+      },
+      {
+        "id": "INDEPENDENT_SLICES",
+        "rule": "Use bounded, independently reviewable tranches with explicit ownership, dependency edges, acceptance criteria, tests, proof and persistent handoff. Avoid competing agents and shared-file edits.",
+        "acceptance": [
+          "Unique owner/branch/scopes",
+          "RED and GREEN commits recorded",
+          "Each slice has CI evidence",
+          "NEXT_ACTION and blockade persisted"
+        ]
+      },
+      {
+        "id": "RED_GREEN_REGRESSION",
+        "rule": "Prove missing behavior with tests (RED); implement missing code (GREEN); execute full historical regression suite; keep CI proof on exact SHA.",
+        "acceptance": [
+          "RED proof or explicitly identified unverified RED",
+          "GREEN implementation linked",
+          "Full CI after final commit",
+          "Security, privilege and failure-path tests pass"
+        ]
+      }
+    ],
+    "executionModel": [
+      "READ_ONLY_DISCOVERY",
+      "FRESH_PROVIDER_PERMISSION_EVIDENCE",
+      "EXISTING_TASK_AND_SESSION_ADMISSION",
+      "EXACT_SCOPED_CLAIM_AND_LOCK",
+      "EXPLICIT_CONSENT_WHERE_REQUIRED",
+      "PR_AND_CI_AND_REVIEW",
+      "AUTHORIZED_OPERATION",
+      "POSTCONDITION_AND_ROLLBACK_PROOF",
+      "DURABLE_CHECKPOINT_AND_HANDOFF"
+    ],
+    "exposurePolicy": {
+      "existingTools": "Retain every registered runtime tool; no handler or schema removed.",
+      "additiveDiscovery": "Expose 165 target capabilities through get_project_context in addition to legacy name/mode/servers fields.",
+      "metadataNotExecution": "TARGET_ONLY_NOT_REGISTERED_TOOL != callable. A capability requires typed adapter, verified effective delegation, runtime registration and cartography update to become executable.",
+      "separationOfRoles": "GitHub App installation/admin does not imply Plesk administrator or Unix root.",
+      "exposeOnlyWhenImplemented": "Do not register 165 placeholder tools or claim complete administrator rights from metadata."
+    }
+  },
+  "exposureSlice": {
+    "id": "GD-U-EXPOSE",
+    "status": "CODED_PENDING_EXACT_HEAD_CI",
+    "existingReadTool": "get_project_context",
+    "existingFieldsPreserved": [
+      "name",
+      "mode",
+      "servers"
+    ],
+    "newProperty": "universalCapabilities",
+    "totalTargets": 165,
+    "capabilitiesAreNotRegisteredTools": true,
+    "code": [
+      "src/provisioning/universalCapabilityDiscovery.ts",
+      "src/tools/readOnly.ts"
+    ],
+    "tests": [
+      "tests/universalCapabilityDiscovery.test.ts",
+      "tests/universalCapabilityContextIntegration.test.ts"
+    ],
+    "sourceOfRuntimeToolNames": "getCurrentToolCatalog() via existing runtime registration",
+    "noNewToolSchemaOrCartographyMutation": true,
+    "redCommit": "83be411d3b71ac443361caa167a90a8c529952f4",
+    "redCiEvidence": "PENDING_NOT_ATTESTED",
+    "greenCodeCommits": [
+      "9e223a760c325acc52cf9cafd2e91093db2aeab2",
+      "6266b68158502d9c762fa7ebe3998ff1e3ecacde",
+      "4347fc5d101ea2f6ecd4e5fbb8e76a1afee3c3a3",
+      "07c66ec62c4b45f005a11d9917a01094342c6853"
+    ],
+    "notes": "No service registration added; existing tool callback augmented. No runtime permission or provider credentials changed. Does not affect GWC PR #354 shared cartography file."
   }
 }
