@@ -11,7 +11,8 @@ const session='11111111-1111-4111-8111-111111111111';
 const task='TASK-20261028-555';
 function evidence():PleskGovernedReleaseEvidence {
   return {
-    at:now,
+    at:now,mcpRepository:'Patricked-code/MCP',pullRequestNumber:355,
+    proposedHeadSha:'c'.repeat(40),
     scope,principalId:principal,sessionId:session,taskId:task,
     sha,
     signedConsent:{status:'E3_AND_OAUTH_OBSERVED',principalId:principal,
@@ -51,10 +52,10 @@ test('RED B3b: even plausible trusted CI/review evidence cannot claim E3 consume
   const r=await assessPleskGovernedRelease(x,{
     readTrustedReleaseAttestation:async()=>({
       source:'SERVER_VALIDATED_GITHUB_API',
-      at:now,repository:'Patricked-code/MCP',pr:355,headSha:sha,
+      at:now,repository:'Patricked-code/MCP',pr:355,headSha:'c'.repeat(40),
       workflowConcludedSuccess:true,independentReviewApproved:true,
       reviewer:'security-reviewer',prAuthor:'maintainer',
-      approvalHeadSha:sha
+      approvalHeadSha:'c'.repeat(40)
     })
   });
   assert.equal(r.disposition,'HOLD');
