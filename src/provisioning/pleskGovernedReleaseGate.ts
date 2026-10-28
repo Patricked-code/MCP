@@ -29,6 +29,9 @@ export type TrustedPleskReleaseAttestation=Readonly<{
 }>;
 export type PleskGovernedReleaseEvidence=Readonly<{
   at:string;
+  mcpRepository:string;
+  pullRequestNumber:number;
+  proposedHeadSha:string;
   scope:string;
   principalId:string;
   taskId:string;
@@ -75,6 +78,10 @@ export async function assessPleskGovernedRelease(
   const crossProofValid=Number.isFinite(now)
     &&SCOPE.test(evidence.scope)
     &&SHA.test(evidence.sha)
+    &&SHA.test(evidence.proposedHeadSha)
+    &&REPO.test(evidence.mcpRepository)
+    &&Number.isSafeInteger(evidence.pullRequestNumber)
+    &&evidence.pullRequestNumber>0
     &&evidence.taskId.length>0&&evidence.sessionId.length>0
     &&evidence.principalId.startsWith('oauth:')
     &&c.status==='E3_AND_OAUTH_OBSERVED'
@@ -114,10 +121,10 @@ export async function assessPleskGovernedRelease(
   catch{ /* Fail closed; no raw provider errors or tokens returned. */ }
   const attestationValid=attestation?.source==='SERVER_VALIDATED_GITHUB_API'
     &&REPO.test(attestation.repository)
-    &&attestation.repository==='Patricked-code/MCP'
-    &&attestation.pr===355
-    &&attestation.headSha===evidence.sha
-    &&attestation.approvalHeadSha===evidence.sha
+    &&attestation.repository===evidence.mcpRepository
+    &&attestation.pr===evidence.pullRequestNumber
+    &&attestation.headSha===evidence.proposedHeadSha
+    &&attestation.approvalHeadSha===evidence.proposedHeadSha
     &&attestation.workflowConcludedSuccess===true
     &&attestation.independentReviewApproved===true
     &&typeof attestation.reviewer==='string'&&attestation.reviewer.length>0
