@@ -203,7 +203,7 @@
     "no runtime mutation without existing task/session/claim/locks/consent",
     "Regulatory remains real integration pilot, not special-case architecture"
   ],
-  "nextAction": "Verify RED run on missing GD-U-02A adapter and full exact-HEAD CI; verify original 138 tool registrations and the real mapped executor links; review new on-demand provider probe's latency and privilege reporting; then independent security review before merge. For any missing admin function, implement actual provider-specific executor and its authorization in isolated RED/GREEN slices.",
+  "nextAction": "Obtain SUCCESS CI on latest exact HEAD after GD-U-02B and historical suite; independent review; coordinate any future registered tool/cartography changes with PR #354. Then implement Plesk/S1/S2 privileged executor with already existing governed task/session/claims/locks/E3 and real provider delegation, not by assuming root from id -u.",
   "intelligenceAutonomyRoadmap": {
     "kind": "NON_EXECUTABLE_PROGRAM_ADDENDUM",
     "existingFirst": [
@@ -441,7 +441,7 @@
   "gdU02LiveExecution": {
     "stage": "GD-U-02A",
     "title": "Raccordement réel des exécuteurs MCP et observations de délégations GitHub/Plesk/S1/S2",
-    "status": "CODED_PENDING_EXACT_HEAD_CI",
+    "status": "CODED_GD_U_02A_02B_PENDING_CI",
     "existingRuntimeToolCountBaseline": 138,
     "catalogTargetCount": 165,
     "operationDelegationCreated": false,
@@ -475,7 +475,8 @@
       "RUNTIME_HANDLER_REGISTERED_GOVERNED_WRITE",
       "RUNTIME_PREFLIGHT_ONLY_NOT_MUTATION",
       "DELEGATED_PROVIDER_ACCESS_VERIFIED",
-      "RUNTIME_ADMISSION_GRANTED_FOR_TARGETED_ACTION"
+      "RUNTIME_ADMISSION_GRANTED_FOR_TARGETED_ACTION",
+      "GITHUB_REPO_PULL_PUSH_ADMIN_PERMISSION_OBSERVED_FROM_API"
     ],
     "factualDistinctions": {
       "realBackendExistsForMappedHandlers": true,
@@ -494,6 +495,41 @@
       "GD-U-03+ genuine runtime registration per batch, regenerate cartography and coordinate GWC PR #354 before touching shared files",
       "GD-U-04+ full deployment pilots with postconditions, failure restoration, CI regression, independent review and governed promotion"
     ],
-    "safety": "Do not misrepresent target labels as executable; registered tool itself remains subject to enabled runtime surfaces, provider permission and per-task mandate."
+    "safety": "Do not misrepresent target labels as executable; registered tool itself remains subject to enabled runtime surfaces, provider permission and per-task mandate.",
+    "extension": {
+      "id": "GD-U-02B",
+      "state": "CODED_PENDING_EXACT_HEAD_CI",
+      "actualAuthenticatedCalls": [
+        "GET /user over existing bounded MCP GitHub credential",
+        "GET /repos/{owner}/{repo} for repository declared in package mcpValidationProfile, with exact full_name validation and explicit pull/push/admin boolean observations",
+        "id -u and plesk version over existing S1/S2 readonly SSH transport"
+      ],
+      "delegatedPrivilegeNotes": "GitHub repo admin:true is observation from GitHub API only. It is not GitHub App owner-equivalent permission, authorization to manage another repository/account or runtime write admission; Linux uid 0 and Plesk version are observations only.",
+      "code": [
+        "src/github/delegatedRepositoryPermissions.ts",
+        "src/provisioning/universalAdminLiveProbe.ts"
+      ],
+      "tests": [
+        "tests/delegatedRepositoryPermissions.test.ts",
+        "tests/universalAdminLiveProbe.test.ts"
+      ],
+      "redProof": {
+        "commit": "0801afe517b8577cf5ddf391f27feb60f9b9b7c3",
+        "run": 40635937761,
+        "outcome": "failure",
+        "reason": "missing delegatedRepositoryPermissions module"
+      },
+      "previousCi": {
+        "run": 40635834120,
+        "outcome": "failure",
+        "diagnosis": "two new tests failed: import-time env validation and brittle regex assertion",
+        "fixCommits": [
+          "706f9fda9b8c36c023df3d188316c743564d18bb",
+          "ef7b79bb0199e6a266e5b681466bce60e277a35a"
+        ]
+      },
+      "independentReview": "NOT_YET_PERFORMED",
+      "liveProductionExecution": "NOT_DEPLOYED"
+    }
   }
 }
