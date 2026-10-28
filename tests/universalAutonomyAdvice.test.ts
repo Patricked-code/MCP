@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { composeUniversalAutonomyAdvice } from '../src/provisioning/universalAutonomyAdvice.js';
+import { composeUniversalAutonomyAdvice, type UniversalAutonomyAdviceInput } from '../src/provisioning/universalAutonomyAdvice.js';
 import type { CandidateDispatchInput } from '../src/governedContext/candidateContinuity.js';
 import type { GithubInstallationObservation } from '../src/github/installationCapabilityReadiness.js';
 import type { PleskSubdomainInput } from '../src/provisioning/pleskSite.js';
@@ -37,7 +37,7 @@ const subdomain: PleskSubdomainInput = {
     documentRootSafe: true, targetOwnedByProvisioner: false
   }
 };
-const base = () => ({
+const base = (): UniversalAutonomyAdviceInput => ({
   at: now,
   candidate,
   github: {
