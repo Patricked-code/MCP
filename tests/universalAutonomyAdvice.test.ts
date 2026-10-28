@@ -91,8 +91,9 @@ test('RED autonomy: unknown or outdated permission observation blocks autonomy',
   for (const obs of [null, {...githubObservation, observedAt: '2026-10-27T04:00:00.000Z'},
     {...githubObservation, permissions: { contents: 'read' as const }}]) {
     const input = base();
-    input.github.observation = obs;
-    const advice = composeUniversalAutonomyAdvice(input);
+    const advice = composeUniversalAutonomyAdvice({
+      ...input, github: { ...input.github, observation: obs }
+    });
     assert.equal(advice.disposition, 'HOLD');
     assert.ok(advice.reasonCodes.includes('GITHUB_PERMISSION_NOT_ATTESTED'));
   }
