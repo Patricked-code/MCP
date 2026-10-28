@@ -654,6 +654,16 @@
       "RED_GREEN_REGRESSION"
     ],
     "verification": "PENDING_FINAL_EXACT_HEAD_CI",
-    "nextAction": "Establish a real signed Plesk-specific E3 consent ticket bound to exact owner/task/session/server/domain/revision plus independent CI/review evidence, in cooperation with existing E3 control plane, then register bounded write tool under session/claim/lock enforcement in a non-colliding PR scope; no generic root SSH endpoint."
+    "nextAction": "Establish a real signed Plesk-specific E3 consent ticket bound to exact owner/task/session/server/domain/revision plus independent CI/review evidence, in cooperation with existing E3 control plane, then register bounded write tool under session/claim/lock enforcement in a non-colliding PR scope; no generic root SSH endpoint.",
+    "existingWebE3": {
+      "route": "src/provisioning/pleskWebRoutes.ts",
+      "configuredBy": "src/server.ts:createPleskSubdomainRouter",
+      "signedTicket": true,
+      "sameOriginCheck": true,
+      "exactTargetConfirmation": true,
+      "currentAuthorizeRuntimeWrite": "async () => false",
+      "missingBridge": "Web E3 consent is not a durable owned Governed Session/Task/Lock grant; authenticate and bind exact principal and resource to both authorities. Never replace the signed web E3 or infer it from a Task Queue checkpoint.",
+      "nextAction": "GD-U-02D-B: compose existing Plesk web E3 signed target consent with OAuth governed session/claim/lock/CI proofs in server-owned scoped admission, then independent review and RED/GREEN/REGRESSION. Do not expose a generic SSH or owner/root action."
+    }
   }
 }
