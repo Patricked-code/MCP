@@ -94,3 +94,16 @@ test('GREEN: a missing governed preadmission callback can never consume a signed
     assert.deepEqual(await readdir(dir),[]);
   });
 });
+
+test('GREEN: consent expiring during async governance check is rejected before atomic claim',async()=>{
+  await sandbox(async dir=>{
+    let current=now;
+    const r=await consumeSignedPleskE3Once(context,{
+      directory:dir,verifyTicket:verify,now:()=>current,
+      verifyPreAdmission:async()=>{current=now+600001;return true;}
+    });
+    assert.equal(r.status,'BLOCKED');
+    assert.equal(r.reason,'INVALID_TARGET_OR_TICKET');
+    assert.deepEqual(await readdir(dir),[]);
+  });
+});
