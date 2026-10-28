@@ -101,6 +101,14 @@ export async function consumeSignedPleskE3Once(
     if(!await ports.verifyPreAdmission())
       return blocked('GOVERNED_ADMISSION_NOT_ATTESTED');
   }catch{return blocked('GOVERNED_ADMISSION_NOT_ATTESTED');}
+  // A lengthy provider/admission call cannot extend a signed ticket's life.
+  const afterAdmission=ports.now();
+  if(!Number.isSafeInteger(afterAdmission)||expiry<=afterAdmission
+    ||expiry>afterAdmission+E3_TTL_MS)return blocked('INVALID_TARGET_OR_TICKET');
+  try{
+    if(!ports.verifyTicket(PURPOSE,input.ticket,input.binding,afterAdmission))
+      return blocked('INVALID_TARGET_OR_TICKET');
+  }catch{return blocked('INVALID_TARGET_OR_TICKET');}
   const directory=ports.directory;
   if(typeof directory!=='string'||directory.length<3
     ||directory.length>512||!isAbsolute(directory)||directory==='/'||directory.includes('\0')){
