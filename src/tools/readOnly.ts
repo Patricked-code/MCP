@@ -18,6 +18,8 @@ import { registerGovernedContextTools } from './governedContext.js';
 import { registerCurrentStateTools } from './currentState.js';
 import { registerGithubControlPlaneReadTools } from './githubControlPlaneRead.js';
 import { registerGithubLifecycleReadTools } from './githubLifecycle.js';
+import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
+import { buildUniversalCapabilityDiscovery } from '../provisioning/universalCapabilityDiscovery.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -30,7 +32,14 @@ export function registerReadOnlyTools(server: McpServer): void {
   server.tool('get_project_context', 'Retourne le contexte projet, les serveurs et les domaines protégés.', {}, async () => asText(JSON.stringify({
     name: 'wealthtech_ssh_bridge',
     mode: 'read-only-first',
-    servers: managedServers
+    servers: managedServers,
+    // Additive discovery, not a parallel execution API: existing tools remain intact.
+    // Targets without a registered executor are explicitly TARGET_ONLY.
+    universalCapabilities: buildUniversalCapabilityDiscovery({
+      existingToolNames: getCurrentToolCatalog().tools.map(tool => tool.name),
+      offset: 0,
+      limit: 200
+    })
   }, null, 2)));
 
   server.tool('check_disk_s1', 'Affiche df -h sur S1.', {}, async () => run('s1', 'df -h'));
