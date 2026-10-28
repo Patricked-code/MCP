@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "continuationId": "GD-U-02D-B3D-E3-SINGLE-USE-20261028",
+  "canonicalIssue": 349,
+  "branch": "mcp/universal-github-plesk-server-capabilities-20261028",
+  "pr": 355,
+  "scope": "MCP Governed Deploy universal additive Plesk single-use E3 without separate OAuth/E3/governance authority",
+  "baseline": {
+    "main": "48a529889517aa1c11974802d23acc3f35e0f187",
+    "priorPRHead": "fe431147351d92c9b1f1126fb9a39c8ccca4fd3f",
+    "mainRebaseRequired": false
+  },
+  "newCode": [
+    {
+      "file": "src/provisioning/pleskE3SingleUse.ts",
+      "role": "Consumes exactly one existing signed web E3 ticket using exclusive O_EXCL/O_NOFOLLOW creation in a server-owned 0700 receipt directory, 0600 digest-only receipts, file+directory fsync and SHA256 ticket digest; denies replays across processes on the same local filesystem and across ordinary restarts. Rechecks expiry after async preadmission; never grants Plesk rights."
+    },
+    {
+      "file": "src/provisioning/pleskE3GovernedConsumption.ts",
+      "role": "Composes prior B3b release gate with atomic E3 one-use consumption; requires all other exact-task/scope/session/lock/OAuth/transport/review/CI proofs from existing authorities before attempting consumption; returns pending further runtime write authorization."
+    }
+  ],
+  "tests": [
+    "tests/pleskE3SingleUse.test.ts",
+    "tests/pleskE3GovernedConsumption.test.ts"
+  ],
+  "method": [
+    "GITHUB_FIRST: new code on existing dedicated #355 branch, no direct S1/main mutation",
+    "NO_REGRESSION: no changes to existing OAuth ticket signatures, web route, runtime server, historic registration/cartography, Task Queue, Sessions or Locks",
+    "INDEPENDENT_SLICES: bounded new modules+tests, no collisions with GWC #354 or Regulatory #353",
+    "RED_GREEN_REGRESSION: RED tests committed before modules, GREEN implementation and final exact-head full CI required"
+  ],
+  "security": {
+    "originalTicketIssuer": "src/oauth.ts:issueWebConsentTicket",
+    "originalTicketVerifier": "src/oauth.ts:verifyWebConsentTicket",
+    "runtimeGate": "src/provisioning/pleskGovernedReleaseGate.ts",
+    "actualWritePath": "src/provisioning/pleskWebRoutes.ts existing guarded E3 + runtime authorization",
+    "existingWriteGateStatus": "src/server.ts authorizeRuntimeWrite async false remains unchanged",
+    "receiptStoresRawSecrets": false,
+    "receiptDirectoryConfiguration": "server-owned and inaccessible to request body; installation and permissions must be authorized before enabling",
+    "singleUseStorageAssumption": "filesystem implements atomic O_EXCL and durability of fsync for files+directories; multi-host deployments must share a correctly locked filesystem or use an existing transactional shared-store authority",
+    "noNewRuntimeTool": true,
+    "noNewSessionOrTaskStore": true,
+    "noRootGrant": true,
+    "noPleskMutation": true,
+    "noOwnerPermissionInferred": true
+  },
+  "remainingBlockingGates": [
+    "Independent exact PR HEAD security review APPROVED",
+    "Server-owned persistent secure receipt directory configured and checked on runtime S1",
+    "Authenticated web E3 session bound to the actual MCP governed transport principal",
+    "Bridge from fully verified E3 consumption receipt to scoped current runtime authorizer; reobserve task/lock/lease/HEAD before mutation",
+    "Register bounded Plesk tool only after coordination with GWC #354 and function cartography",
+    "Governed merge→deploy→postconditions→rollback proof before first production test"
+  ],
+  "status": "CODED_PENDING_EXACT_HEAD_CI_AND_SECURITY_REVIEW",
+  "nextAction": "Verify latest CI HEAD and fix all tests; obtain independent security review. Then wire this bounded consumption to the existing Plesk web E3 path and governed runtime stores, without weakening fail-closed authorizeRuntimeWrite or adding a second orchestration engine."
+}
