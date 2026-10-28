@@ -148,3 +148,60 @@ test('the read and write transport never takes arbitrary argv from a caller to b
   assert.equal(out.status,'BLOCKED');
   assert.equal(calls.length,0);
 });
+
+test('GREEN: Plesk create performs one bounded write and returns CREATED only after independent postcheck',async()=>{
+  let created=false;
+  let mutations=0;
+  const io:PleskRemotePort={
+    readonly:async(_server,command)=>{
+      if(command.startsWith('plesk bin subscription --info'))return{code:0,stdout:'ok',stderr:''};
+      if(command.startsWith('plesk bin subdomain --info'))return created
+        ?{code:0,stdout:'exists',stderr:''}
+        :{code:1,stdout:'',stderr:'Specified subdomain does not exist'};
+      if(command.startsWith('test -d ')&&command.includes('/test-gd'))return{code:created?0:1,stdout:''};
+      if(command.startsWith('test -d '))return{code:0,stdout:''};
+      if(command.startsWith('test -L '))return{code:1,stdout:''};
+      if(command.startsWith('test -e '))return{code:1,stdout:''};
+      return{code:1,stdout:'',stderr:'unverified'};
+    },
+    guarded:async(_server,command)=>{
+      assert.match(command,/^plesk bin subdomain --create /);
+      mutations++;
+      created=true;
+      return{code:0,stdout:'',stderr:''};
+    }
+  };
+  const out=await executeGovernedPleskSubdomain(input,{
+    readExistingAuthority:async()=>authority(),remote:io
+  });
+  assert.equal(out.status,'CREATED');
+  assert.equal(out.reason,'POST_CREATE_ATTESTED');
+  assert.equal(mutations,1);
+});
+
+test('GREEN: non-zero Plesk CLI exit never claims completed creation',async()=>{
+  const {io,calls}=remote();
+  const out=await executeGovernedPleskSubdomain(input,{
+    readExistingAuthority:async()=>authority(),
+    remote:{...io,guarded:async (server,command)=>{
+      calls.push('W:'+command);
+      return{code:1,stdout:'',stderr:'failed'};
+    }}
+  });
+  assert.equal(out.status,'FAILED');
+  assert.equal(out.reason,'PLESK_CREATE_FAILED');
+  assert.equal(calls.filter(x=>x.startsWith('W:')).length,1);
+});
+
+test('GREEN: an existing unowned Plesk target is never touched',async()=>{
+  const {io,calls}=remote();
+  const out=await executeGovernedPleskSubdomain(input,{
+    readExistingAuthority:async()=>authority(),
+    remote:{...io,readonly:async (server,command)=>{
+      if(command.startsWith('plesk bin subdomain --info'))return{code:0,stdout:'exists',stderr:''};
+      return io.readonly(server,command);
+    }}
+  });
+  assert.equal(out.status,'BLOCKED');
+  assert.equal(calls.filter(x=>x.startsWith('W:')).length,0);
+});
