@@ -210,6 +210,15 @@
       "tests": "tests/existingPleskAuthorityReader.test.ts",
       "runtimeToolRegistration": "BLOCKED_PENDING_E3_AND_REVIEW",
       "existingCapabilityPreserved": true
+    },
+    {
+      "id": "GD-U-02D-B1",
+      "title": "Signed Plesk web E3 + real OAuth mcp:write identity attestation",
+      "status": "CODED_PENDING_CI",
+      "code": "src/provisioning/pleskWebOauthBridge.ts",
+      "tests": "tests/pleskWebOauthBridge.test.ts",
+      "runtimeToolRegistration": "NOT_REGISTERED",
+      "noProductionRightsGranted": true
     }
   ],
   "acceptance": [
@@ -221,7 +230,7 @@
     "no runtime mutation without existing task/session/claim/locks/consent",
     "Regulatory remains real integration pilot, not special-case architecture"
   ],
-  "nextAction": "Validate latest PR #355 exact HEAD CI after GD-U-02D-A changes; if GREEN, write additive issue #349/PR #355 checkpoints; GD-U-02D-B implement Plesk-scoped E3+CI verified attestation from existing control plane, then independent review and only then runtime tool registration in coordination with GWC #354. No direct main/S1/S2 mutation.",
+  "nextAction": "GD-U-02D-B2: implement server-derived OAuth-web session binding (not a client-supplied session id) and trustworthy independent CI/review attestation, with comprehensive tests. Wire existing Plesk web router authorizeRuntimeWrite only after authority actually verifies every check; leave fail-closed default until all gates and review pass.",
   "intelligenceAutonomyRoadmap": {
     "kind": "NON_EXECUTABLE_PROGRAM_ADDENDUM",
     "existingFirst": [
@@ -665,5 +674,35 @@
       "missingBridge": "Web E3 consent is not a durable owned Governed Session/Task/Lock grant; authenticate and bind exact principal and resource to both authorities. Never replace the signed web E3 or infer it from a Task Queue checkpoint.",
       "nextAction": "GD-U-02D-B: compose existing Plesk web E3 signed target consent with OAuth governed session/claim/lock/CI proofs in server-owned scoped admission, then independent review and RED/GREEN/REGRESSION. Do not expose a generic SSH or owner/root action."
     }
+  },
+  "gdU02ScopedWebOauthBridge": {
+    "id": "GD-U-02D-B1",
+    "status": "CODED_PENDING_FINAL_EXACT_HEAD_CI",
+    "purpose": "Validate the existing signed Plesk Web E3 ticket and independently verified OAuth mcp:write principal for the exact web session and target. This is a strictly read-only pre-admission check, not permission to mutate.",
+    "code": "src/provisioning/pleskWebOauthBridge.ts",
+    "tests": "tests/pleskWebOauthBridge.test.ts",
+    "mandatoryExistingAuthorities": [
+      "src/oauth.ts:verifyWebConsentTicket('plesk-create-subdomain',ticket,webSession+target)",
+      "src/oauth.ts:inspectOauthAccessToken(token,'mcp:write')",
+      "src/provisioning/pleskWebRoutes.ts:requireLogin/sameOrigin/confirm_fqdn",
+      "src/operationalMemory/sessionService.ts:actual OAuth principal and bound transport session",
+      "src/operationalMemory/taskQueue.ts:owned IN_PROGRESS task",
+      "src/operationalMemory/lockService.ts:resource:plesk:<server>:<parentDomain>",
+      "independent exact HEAD CI and code review proof"
+    ],
+    "implemented": "Cryptographically verified signed E3 web ticket and OAuth write scope can be composed via actual existing verifiers. No new credential, token issuer or governance store. The module never returns runtimeWriteAuthorized=true.",
+    "notImplemented": [
+      "Authenticated server-side association of the HTTP web session cookie to the concrete OAuth transport and its governed session",
+      "Task/Session/Lock/CI/review E3 admission upgrade",
+      "MCP tool registration and deployment",
+      "Plesk live subdomain creation"
+    ],
+    "existingRouteKeptUnchanged": true,
+    "existingProductionGate": "src/server.ts still has authorizeRuntimeWrite: async () => false",
+    "redCommit": "52dcc6636d208ca7d7ac2cffc39956d8ac6e825d",
+    "greenCommit": "67da90a48838864aa53ce0a4e44627cbfb58b0ae",
+    "strictNoRegression": true,
+    "concurrency": "Did not change server.ts, pleskWebRoutes.ts, PR #354 cartography, PR #353 Regulatory, or prior programs",
+    "nextAction": "GD-U-02D-B2: implement server-derived OAuth-web session binding (not a client-supplied session id) and trustworthy independent CI/review attestation, with comprehensive tests. Wire existing Plesk web router authorizeRuntimeWrite only after authority actually verifies every check; leave fail-closed default until all gates and review pass."
   }
 }
