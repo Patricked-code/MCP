@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { inspectExistingPleskAuthority } from '../src/provisioning/existingPleskAuthorityReader.js';
 import type { ExistingPleskAuthorityPorts } from '../src/provisioning/existingPleskAuthorityReader.js';
-import type { GovernedPleskSubdomainRequest } from '../src/provisioning/governedPleskSubdomainExecutor.js';
+import { executeGovernedPleskSubdomain, type GovernedPleskSubdomainRequest } from '../src/provisioning/governedPleskSubdomainExecutor.js';
 import type { SessionRequest } from '../src/operationalMemory/sessionService.js';
 
 const sha='48a529889517aa1c11974802d23acc3f35e0f187';
@@ -130,4 +130,20 @@ test('RED: operational store read failures cannot expose exception text',async()
   assert.equal(r.snapshot.source,'UNVERIFIED');
   assert.ok(r.blockers.includes('RUNTIME_SOURCE_UNAVAILABLE'));
   assert.doesNotMatch(JSON.stringify(r),/SECRET_/);
+});
+
+test('GD-U-02D: real owned task+lock still cannot call SSH without signed E3/CI approval',async()=>{
+  const observed=await inspectExistingPleskAuthority(request,identity,ports());
+  assert.equal(observed.snapshot.source,'EXISTING_GOVERNED_RUNTIME');
+  let sshCalls=0;
+  const outcome=await executeGovernedPleskSubdomain(request,{
+    readExistingAuthority:async()=>observed.snapshot,
+    remote:{
+      readonly:async()=>{sshCalls++;throw Error('SSH_MUST_NOT_BE_CALLED');},
+      guarded:async()=>{sshCalls++;throw Error('SSH_MUST_NOT_BE_CALLED');}
+    }
+  });
+  assert.equal(outcome.status,'BLOCKED');
+  assert.equal(outcome.reason,'GOVERNED_ADMISSION_NOT_ATTESTED');
+  assert.equal(sshCalls,0);
 });
