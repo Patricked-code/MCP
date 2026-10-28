@@ -17,6 +17,8 @@ export type UniversalResumeInput = Readonly<{
   at: string;
   actorPrincipalId: string;
   expectedStoreRevision: number;
+  /** Mandatory exact task identity for proposing a new claim; null forbids generic pickup. */
+  candidateTaskId: string | null;
   store: Pick<TaskStoreDocument,'storeRevision'|'tasks'>;
   session: Pick<GovernedSessionRecord,
     'governedSessionId'|'status'|'ownerPrincipalId'|'lastHeartbeatAt'|'lastCheckpoint'> | null;
@@ -106,7 +108,7 @@ export function deriveUniversalResumeAdvice(input: UniversalResumeInput): Univer
   }
   // Always target a specific, collision-free task. Never call claimNextTask
   // without expectedTaskId (could accidentally claim a higher-priority OAuth task).
-  const eligible=executableTaskCandidates(input.store.tasks);
+  const eligible=executableTaskCandidates(input.store.tasks).filter(t=>input.candidateTaskId!==null && t.taskId===input.candidateTaskId);
   const candidate=eligible.find(t=>!taskClaimConflict(
     input.store.tasks,t,input.activeLocks,session.governedSessionId))??null;
   if (!candidate) return {
