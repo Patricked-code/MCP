@@ -1,4 +1,23 @@
 # SUIVI.md
+## 2026-10-28 — TB-W3-ADMIN-01 : Governed private repository creation (PASS_WITH_EVIDENCE)
+
+- **Blueprint** : TB-W3-ADMIN-01, Program Backlog V2, wave W3, collision domain `github:admin:create-repository`.
+- **Branche** : `claude/ecstatic-edison-v1dyt1`, HEAD `4f77f0b`.
+- **Objectif** : implémenter la création de dépôt privé, bornée à l'org, idempotente, sans effets de bord implicites.
+- **Résultat** : outil `github_create_repository` — POST `/orgs/{org}/repos`, privé forcé, 422 traité comme existence idempotente, aucun webhook/team/secret/deploy key/ruleset.
+- **Fichiers** : `src/tools/githubLifecycle.ts`, registrationPolicy, cartography, provisioning, `tests/githubCreateRepository.test.ts` (7/7 GREEN).
+- **Régression** : 6 échecs pré-existants, 0 nouvelle régression.
+- **NEXT_ACTION** : pousser, puis sélectionner le prochain blueprint READY.
+
+## 2026-10-28 — TB-W3-PRW-02 : Reduced PR metadata update (PASS_WITH_EVIDENCE)
+
+- **Blueprint** : TB-W3-PRW-02, Program Backlog V2, wave W3, collision domain `github:pr-write:metadata`.
+- **Branche** : `claude/ecstatic-edison-v1dyt1`, HEAD `31a9994`.
+- **Objectif** : séparer la mise à jour sûre des métadonnées PR des mutations dangereuses (state/base/close).
+- **Résultat** : outil `github_update_pull_request_metadata` — PATCH title/body + PUT labels, exact-head, aucune mutation state/base.
+- **Fichiers** : `src/tools/githubLifecycle.ts`, registrationPolicy, cartography, provisioning, `tests/githubPrMetadataUpdate.test.ts` (8/8 GREEN).
+- **Régression** : 6 échecs pré-existants, 0 nouvelle régression.
+
 ## 2026-10-28 — TB-W3-PRW-01 : Exact-head request-review (PASS_WITH_EVIDENCE)
 
 - **Blueprint** : TB-W3-PRW-01, Program Backlog V2, wave W3, collision domain `github:pr-write:review-request`.
