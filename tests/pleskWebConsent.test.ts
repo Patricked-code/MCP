@@ -146,3 +146,36 @@ test('B3e: existing Plesk router denies a second E3 consumption, with no second 
     assert.equal(writes.length,1);
   }finally{await new Promise<void>(resolve=>server.close(()=>resolve()));}
 });
+
+test('RED B3f: when production single-use policy is required, no missing consumer can reach Plesk SSH',async()=>{
+  let writes=0;
+  const app=express();
+  app.use(express.urlencoded({extended:false}));
+  app.use(createPleskSubdomainRouter({
+    requireLogin:(_req,_res,next)=>next(),
+    session:()=> 'server-issued-cookie',
+    sameOrigin:()=>true,
+    issueTicket:()=> 'fixture-signed',
+    verifyTicket:(_purpose,ticket)=>ticket==='fixture-signed',
+    policy:()=>({enabled:true,allowedParents:{s2:['chainsolutions.fr']}}),
+    io:{
+      readonly:async()=>({code:0,stdout:'OK'}),
+      guarded:async()=>{writes++;return {code:0,stdout:'unexpected'};}
+    },
+    writeEnabled:()=>true,
+    authorizeRuntimeWrite:async()=>true,
+    requireSingleUseConsent:true
+  }));
+  const server=app.listen(0,'127.0.0.1');
+  await new Promise<void>(resolve=>server.once('listening',resolve));
+  try{
+    const endpoint='http://127.0.0.1:'+(server.address() as AddressInfo).port+'/provisioning/plesk-subdomain';
+    const body=new URLSearchParams({...fields,
+      consent_creation:'CREATE_SUBDOMAIN',confirm_fqdn:'tdd-safe.chainsolutions.fr',
+      consent_ticket:'fixture-signed'});
+    const response=await fetch(endpoint,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body});
+    assert.equal(response.status,403);
+    assert.equal((await response.json()).reason,'E3_SINGLE_USE_CONSUMPTION_REQUIRED');
+    assert.equal(writes,0);
+  }finally{await new Promise<void>(resolve=>server.close(()=>resolve()));}
+});
