@@ -108,9 +108,23 @@ export type OperationalAuditInput =
       storeRevision: number;
     };
 
+/**
+ * The range of session events no checkpoint has linked yet. `eventIds` is the bounded projection
+ * a checkpoint can link (the last 64); the range itself runs from `firstEventId` through
+ * `lastEventId` and counts every session event the window recorded in between, so events that
+ * left the 64-ID projection are still accounted for.
+ */
+export type CheckpointCoverage = {
+  eventIds: string[];
+  firstEventId: string | null;
+  lastEventId: string | null;
+  eventCount: number;
+};
+
 export type OperationalAudit = {
   record(input: OperationalAuditInput): Promise<void>;
   checkpointEventIds?(governedSessionId: string): string[];
+  checkpointCoverage?(governedSessionId: string): CheckpointCoverage;
 };
 
 export const NOOP_OPERATIONAL_AUDIT: OperationalAudit = Object.freeze({
