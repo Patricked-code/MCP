@@ -86,6 +86,9 @@ export type ClaimNextTaskOptions = {
    * historical, scope-agnostic selection for internal callers.
    */
   sessionTargetScope?: TargetScope | null;
+  /** Restrict selection to this exact task, without fallback to another candidate. */
+  expectedTaskId?: string;
+  expectedTaskRevision?: number;
 };
 
 export type TransitionTaskInput = {
@@ -132,6 +135,7 @@ export type GovernedTaskQueue = {
     expectedStoreRevision: number,
     options?: ClaimNextTaskOptions
   ): Promise<GovernedTaskRecord | null>;
+  claimTaskById(governedSessionId: string, taskId: string, expectedTaskRevision: number, expectedStoreRevision: number, options?: ClaimNextTaskOptions): Promise<GovernedTaskRecord>;
   transitionTask(input: TransitionTaskInput): Promise<GovernedTaskRecord>;
   requeueTerminalSessionTasks(): Promise<number>;
   readCollisionState(): Promise<GovernedTaskCollisionState>;
@@ -454,12 +458,20 @@ export function createGovernedTaskQueue(
         if (document.storeRevision !== expectedStoreRevision) fail('TASK_STORE_REVISION_MISMATCH');
         // DISPATCH-02: the session's own active work comes first; resuming it
         // is a read, never a new claim.
+        const targeted = options?.expectedTaskId !== undefined;
+        const target = targeted ? document.tasks.find((task) => task.taskId === options.expectedTaskId) : undefined;
+        if (targeted && !target) fail('TASK_NOT_FOUND');
+        if (targeted && target!.taskRevision !== options?.expectedTaskRevision) fail('TASK_REVISION_MISMATCH');
+        if (targeted && !taskEligibleForSession(target!, options)) fail('TASK_SCOPE_MISMATCH');
+        if (targeted && target!.ownerGovernedSessionId && target!.ownerGovernedSessionId !== governedSessionId) fail('TASK_OWNED_BY_OTHER_SESSION');
         const owned = ownedResumableTask(document.tasks, governedSessionId);
+        if (owned && targeted && owned.taskId !== options?.expectedTaskId) fail('TASK_SESSION_ALREADY_OWNS_OTHER_TASK');
         if (owned) {
           resumed = owned;
           return document;
         }
-        const candidates = executableTaskCandidates(document.tasks, (task) => taskEligibleForSession(task, options));
+        const candidates = executableTaskCandidates(document.tasks, (task) => taskEligibleForSession(task, options) && (!targeted || task.taskId === options?.expectedTaskId));
+        if (targeted && candidates.length === 0) fail('TASK_NOT_EXECUTABLE');
         if (candidates.length === 0) return document;
         // DISPATCH-03: a locally blocked candidate (resource scope or foreign
         // lock) is skipped when a compatible one exists; with none, the first
@@ -499,6 +511,14 @@ export function createGovernedTaskQueue(
         });
       }
       return claimed;
+    },
+
+    async claimTaskById(governedSessionId, taskId, expectedTaskRevision, expectedStoreRevision, options) {
+      const result = await this.claimNextTask(governedSessionId, expectedStoreRevision, {
+        ...options, expectedTaskId: taskId, expectedTaskRevision
+      });
+      if (!result || result.taskId !== taskId) fail('TASK_TARGET_CLAIM_FAILED');
+      return result;
     },
 
     async transitionTask(input) {

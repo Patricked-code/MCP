@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "07d94665f35ae4150207146e0a040c58593de95408da1bbd3e0709b5ed0b31e1",
-  "registeredToolCount": 137,
-  "readOnlyToolCount": 85,
+  "catalogueDigest": "0ee5618bcd41bdc89bf0c10e1dd1e84b3620a4a64ec678775f5a937bb75dae05",
+  "registeredToolCount": 138,
+  "readOnlyToolCount": 86,
   "writeToolCount": 52,
   "resourceCount": 2,
   "tools": [
@@ -4121,6 +4121,52 @@
         "additionalProperties": false
       },
       "contractDigest": "1896e5f6e4998a517bf8cebc31925d30e2d9adc373bc1f2190501be1c56f8dcc"
+    },
+    {
+      "name": "plesk_subdomain_preview_s1s2",
+      "title": null,
+      "description": "Prévisualise sans écriture la création Plesk d’un sous-domaine S1/S2 dans une subscription explicitement autorisée.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "enum": [
+              "s1",
+              "s2"
+            ]
+          },
+          "parentDomain": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 253
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 63
+          },
+          "documentRoot": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 150
+          }
+        },
+        "required": [
+          "serverId",
+          "parentDomain",
+          "label",
+          "documentRoot"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "390178812be843e92000238201d832012c9d9280828d8f5380d23792927a6a70"
     },
     {
       "name": "pm2_status_s1",

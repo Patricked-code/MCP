@@ -1,4 +1,13 @@
 # DECISIONS_LOG.md
+## 2026-10-23 — Extension additive et GRT /gouvern, sans nouvelle autorité
+
+- Décision : conserver le MCP, ses sessions, Task Queue, locks, consentement E3 et chaîne GitHub → S1. Pas de migration, pas de nouveau dispatcher, ni accès libre à Plesk.
+- Périmètre #349/#350 : préparation Plesk S1/S2 et pilote du dépôt `chainsolutions-wealthtech/Governed-Repository-Template` épinglé à `eb74f16b6c8bbe63658666095f6c97fb32aaa303`. Portail protégé `/gouvern` et archive privée sous `/app/data/gouvern`, pas d'exécution GRT.
+- Les routes d'écriture Plesk et GRT restent **bloquées par défaut** par une admission runtime indépendante (`authorizeRuntimeWrite` false) en attendant un claim/lease/locks attestés. Un ticket de consentement n'autorise jamais seul une écriture.
+- Un fournisseur optionnel GitHub App émet des jetons d'installation courts lorsque les identifiants privés sont disponibles sur S1 ; le credential GitHub existant reste le chemin par défaut. Aucune clé privée ChatGPT extraite ou copiée.
+- Preuves : tests RED/GREEN et CI exact-HEAD consignés dans PR #350 ; README checkpoint `docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md`. Aucune fusion ou modification de S1 attestée à cette étape. NEXT_ACTION : revue des fils, CI complète, fusion contrôlée puis Governed Deploy et recette.
+
+
 
 ## 2026-10-15 — Directive propriétaire : priorité à la continuité et au dispatch gouverné sans dispersion
 

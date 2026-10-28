@@ -1,4 +1,23 @@
 # SUIVI.md
+## 2026-10-23 — PR #350 : pilote GRT /gouvern et provisioning S1/S2, non fusionnés
+
+- Mandat : étendre sans migration le MCP existant, point d'ancrage issue #349 et PR #350. Baseline main/S1 `a3df3b0`, GRT `eb74f16b6c8bbe63658666095f6c97fb32aaa303`. Aucun déploiement S1 effectué.
+- Implémentation additive : planificateur Plesk S1/S2, aperçu MCP read-only, consentement web signé, portail privé `/gouvern`, staging GRT sous `/app/data/gouvern` (0700/0600, SHA-256 vérifié, exclusion concurrente), fournisseur de jetons GitHub App optionnel.
+- Gouvernance : Plesk et GRT n'acceptent pas d'écritures sans admission runtime session/claim/locks attestée ; câblage actuel `authorizeRuntimeWrite: async () => false`. Aucune création Plesk, archive ni changement de production n'a eu lieu. OAuth #346/#207 inchangé.
+- Tests : RED → GREEN, CI et analyses de sécurité dans PR #350, notamment refus du consentement non autorisé, concurrence, intégrité et rejet des chemins dangereux. L'approbation ancienne ne certifie pas automatiquement le HEAD nouveau. Les fils et la CI finale restent à recontrôler.
+- Traçabilité complémentaire `docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md` ; décision associée `DECISIONS_LOG.md` et changements `CHANGELOG.md`.
+- NEXT_ACTION : résoudre les fils de revue, actualiser l'approbation du HEAD, obtenir la CI verte, fusionner seulement si le ruleset GitHub l'admet, vérifier Governed Deploy exact SHA, puis préparer l'activation cible avec autorité runtime valide et tests HTTPS /mcp /gouvern.
+
+
+
+## 2026-10-22 — PR #329 : primitive de claim ciblé (GitHub-only, non déployée)
+
+- **Portée** : branche `fix/governed-targeted-task-claim-20261022`, PR #329 ; ajout de `claimTaskById` à la Governed Task Queue existante, sans seconde queue, sans nouvelle identité ni session, sans écriture directe sur S1, sans modification de `main` ni de la PR OAuth #207.
+- **Sécurité** : taskId exact et compare-and-swap des révisions task/store ; préservation des dépendances, TargetScope, verrous, collisions, ownership de session et de la reprise en lecture seule du même propriétaire. Aucun endpoint OIDC ni acquisition runtime par GitHub Actions à ce stade.
+- **Tests** : `tests/governedTaskQueue.test.ts` (révisions périmées, mauvais identifiant, locks, concurrence, propriétaire étranger et reprise idempotente) désormais exécuté explicitement par `.github/workflows/mcp-ci.yml`.
+- **Preuves** : GitHub Actions #39726267487 SUCCESS au SHA `d234f48eefb19240dc3d6e6b26a18a83cf39e695` ; le renforcement propriétaire `3ffb84b68fc1029a523dd9e899601b7d2abab935` attend encore son verdict CI exact-head. Une CI verte ne constitue pas une autorisation runtime.
+- **NEXT_ACTION** : confirmer CI sur le HEAD final, revue indépendante, corriger les remarques, puis seulement examiner l'admission OIDC bornée par autorités existantes. Ne pas fusionner/déployer sans ces preuves.
+
 
 ## 2026-10-16 — INTAKE commun : publication de la reprise inter-agents et du point d'arrêt réel
 

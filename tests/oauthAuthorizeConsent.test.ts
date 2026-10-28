@@ -11,7 +11,7 @@ process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
 process.env.S2_HOST ??= '127.0.0.1';
 process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
 
-const { registerOauthRoutes, inspectOauthAccessToken, oauthIssuer } = await import('../src/oauth.js');
+const { registerOauthRoutes, inspectOauthAccessToken, oauthIssuer, consentOriginRejectionReason, getOauthConsentProvenanceEvidence } = await import('../src/oauth.js');
 
 const REDIRECT_URI = 'https://client.example/callback';
 
@@ -278,5 +278,103 @@ test('invalid authorization requests still fail before any consent page', async 
       const body = await response.json() as { error: string };
       assert.equal(body.error, 'invalid_request');
     }
+  });
+});
+
+test('OAuth consent provenance diagnostics expose bounded reason codes only', () => {
+  const classify = (headers: Record<string, string>) => {
+    const request = {
+      header(name: string) { return headers[name.toLowerCase()]; }
+    } as Parameters<typeof consentOriginRejectionReason>[0];
+    return consentOriginRejectionReason(request);
+  };
+  assert.equal(classify({}), null);
+  assert.equal(classify({ 'sec-fetch-site': 'same-origin', origin: new URL(oauthIssuer()).origin }), null);
+  assert.equal(classify({ 'sec-fetch-site': 'cross-site', origin: 'https://attacker.example' }), 'fetch_site_mismatch');
+  assert.equal(classify({ 'sec-fetch-site': 'same-site' }), 'fetch_site_mismatch');
+  assert.equal(classify({ 'sec-fetch-site': 'same-origin', origin: 'https://attacker.example' }), 'origin_mismatch');
+  assert.equal(classify({ origin: new URL(oauthIssuer()).origin }), null);
+});
+
+test('OAuth consent OIDC evidence contains only bounded aggregate categories', () => {
+  const evidence = JSON.parse(getOauthConsentProvenanceEvidence());
+  assert.equal(evidence.schemaVersion, 1);
+  assert.equal(evidence.scope, 'current_process_since_start');
+  assert.equal(evidence.persistent, false);
+  assert.equal(evidence.mutationAllowed, false);
+  assert.deepEqual(Object.keys(evidence.counts).sort(), ['fetch_site_mismatch', 'origin_mismatch']);
+  for (const value of Object.values(evidence.counts)) {
+    assert.equal(typeof value, 'number');
+    assert.ok(Number.isSafeInteger(value));
+  }
+  assert.doesNotMatch(JSON.stringify(evidence), /client_id|cookie|authorization|refresh_token|sec-fetch-site|origin:|bearer/i);
+});
+
+test('OAuth evidence classifies issuer/public origin alignment without leaking URLs', () => {
+  const evidence = JSON.parse(getOauthConsentProvenanceEvidence());
+  assert.equal(typeof evidence.issuerMatchesPublicOrigin, 'boolean');
+  assert.deepEqual(Object.keys(evidence.originMismatchClasses).sort(), [
+    'origin_missing_or_invalid', 'other_origin', 'public_origin_with_nonpublic_issuer'
+  ]);
+  for (const count of Object.values(evidence.originMismatchClasses)) {
+    assert.ok(Number.isSafeInteger(count));
+  }
+  assert.equal(JSON.stringify(evidence).includes('https://'), false);
+  assert.equal(JSON.stringify(evidence).includes('http://'), false);
+});
+
+test('OAuth evidence exposes only bounded opaque-Origin classification without raw header values', () => {
+  const evidence = JSON.parse(getOauthConsentProvenanceEvidence());
+  assert.deepEqual(Object.keys(evidence.originWireClasses).sort(), [
+    'malformed_or_missing', 'noncanonical_valid', 'opaque_null'
+  ]);
+  for (const count of Object.values(evidence.originWireClasses)) {
+    assert.ok(Number.isSafeInteger(count));
+    assert.ok((count as number) >= 0);
+  }
+  assert.equal(JSON.stringify(evidence).includes('https://'), false);
+});
+
+test('opaque Origin with same-origin Fetch Metadata and signed consent completes OAuth', async () => {
+  const { challenge } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const response = await submitConsent(baseUrl, fields, 'approve', {
+      origin: 'null', 'sec-fetch-site': 'same-origin'
+    });
+    assert.equal(response.status, 302);
+    assert.ok(new URL(response.headers.get('location')!).searchParams.get('code'));
+  });
+});
+
+test('opaque Origin without a valid signed ticket is rejected', async () => {
+  const { challenge } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    fields.set('consent_ticket', 'forged');
+    const response = await submitConsent(baseUrl, fields, 'approve', {
+      origin: 'null', 'sec-fetch-site': 'same-origin'
+    });
+    assert.equal(response.status, 403);
+  });
+});
+
+test('opaque Origin from cross-site context is rejected even with a valid ticket', async () => {
+  const { challenge } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const response = await submitConsent(baseUrl, fields, 'approve', {
+      origin: 'null', 'sec-fetch-site': 'cross-site'
+    });
+    assert.equal(response.status, 403);
+  });
+});
+
+test('opaque Origin without Fetch Metadata is rejected', async () => {
+  const { challenge } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const response = await submitConsent(baseUrl, fields, 'approve', { origin: 'null' });
+    assert.equal(response.status, 403);
   });
 });

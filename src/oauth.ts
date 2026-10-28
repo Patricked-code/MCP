@@ -396,14 +396,71 @@ export function verifyWebConsentTicket(purpose: string, ticket: unknown, binding
   return safeEqualString(signature, webConsentSignature(purpose, binding, expiresAt));
 }
 
-export function isSameOriginSubmission(req: Request): boolean {
+/**
+ * Return only bounded reason codes. Never include header values, cookies,
+ * OAuth parameters, client identifiers, or tokens in operational evidence.
+ */
+// Process-local, bounded aggregate; reset on restart. No request identifiers or headers.
+const oauthConsentProvenanceCounts = {
+  fetch_site_mismatch: 0,
+  origin_mismatch: 0
+};
+const oauthOriginMismatchClasses = {
+  public_origin_with_nonpublic_issuer: 0,
+  origin_missing_or_invalid: 0,
+  other_origin: 0
+};
+const oauthOriginWireClasses = {
+  opaque_null: 0,
+  malformed_or_missing: 0,
+  noncanonical_valid: 0
+};
+const oauthIssuerPublicOriginMatch = () => {
+  try { return new URL(oauthIssuer()).origin === new URL(DEFAULT_ISSUER).origin; }
+  catch { return false; }
+};
+function classifyRejectedOrigin(req: Request): keyof typeof oauthOriginMismatchClasses {
+  const origin = req.header('origin');
+  if (!origin) return 'origin_missing_or_invalid';
+  try {
+    const parsed = new URL(origin);
+    if (parsed.origin !== origin) return 'origin_missing_or_invalid';
+    if (parsed.origin === new URL(DEFAULT_ISSUER).origin && !oauthIssuerPublicOriginMatch()) {
+      return 'public_origin_with_nonpublic_issuer';
+    }
+  } catch { return 'origin_missing_or_invalid'; }
+  return 'other_origin';
+}
+
+export function getOauthConsentProvenanceEvidence(): string {
+  return JSON.stringify({
+    schemaVersion: 1,
+    authority: 'OAuth Consent Provenance',
+    scope: 'current_process_since_start',
+    persistent: false,
+    mutationAllowed: false,
+    counts: { ...oauthConsentProvenanceCounts },
+    issuerMatchesPublicOrigin: oauthIssuerPublicOriginMatch(),
+    originMismatchClasses: { ...oauthOriginMismatchClasses },
+    originWireClasses: { ...oauthOriginWireClasses }
+  });
+}
+
+export function consentOriginRejectionReason(req: Request): 'fetch_site_mismatch' | 'origin_mismatch' | null {
   const fetchSite = req.header('sec-fetch-site');
   if (fetchSite !== undefined && fetchSite !== 'same-origin') {
-    return false;
+    return 'fetch_site_mismatch';
   }
 
   const origin = req.header('origin');
-  return origin === undefined || origin === new URL(oauthIssuer()).origin;
+  if (origin !== undefined && origin !== new URL(oauthIssuer()).origin) {
+    return 'origin_mismatch';
+  }
+  return null;
+}
+
+export function isSameOriginSubmission(req: Request): boolean {
+  return consentOriginRejectionReason(req) === null;
 }
 
 function renderAuthorizationConsent(res: Response, request: AuthorizationConsentRequest): void {
@@ -491,7 +548,51 @@ function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (
     return;
   }
 
-  if (!isSameOriginSubmission(req)) {
+  // Some embedded browsers submit the server-rendered form with an opaque
+  // Origin. Permit that narrowly only when Fetch Metadata proves same-origin
+  // navigation and the exact OAuth request carries a valid signed consent ticket.
+  // Other origins (including cross-site null Origin) remain rejected.
+  const opaqueSameOriginForm = req.header('origin') === 'null'
+    && req.header('sec-fetch-site') === 'same-origin'
+    && req.is('application/x-www-form-urlencoded') === 'application/x-www-form-urlencoded';
+  const opaqueConsentRequest: AuthorizationConsentRequest | null = opaqueSameOriginForm
+    ? {
+        responseType: getSingleBodyParam(req, 'response_type') ?? '',
+        clientId: getSingleBodyParam(req, 'client_id') ?? '',
+        redirectUri: getSingleBodyParam(req, 'redirect_uri') ?? '',
+        state: getSingleBodyParam(req, 'state'),
+        scope: normalizeScopeString(getSingleBodyParam(req, 'scope')),
+        resource: normalizeResourceAlias(getSingleBodyParam(req, 'resource') || oauthIssuer()),
+        codeChallenge: getSingleBodyParam(req, 'code_challenge') ?? '',
+        codeChallengeMethod: getSingleBodyParam(req, 'code_challenge_method') ?? ''
+      }
+    : null;
+  const validOpaqueConsent = opaqueConsentRequest !== null
+    && opaqueConsentRequest.responseType === 'code'
+    && Boolean(opaqueConsentRequest.clientId && opaqueConsentRequest.redirectUri && opaqueConsentRequest.codeChallenge)
+    && opaqueConsentRequest.codeChallengeMethod === 'S256'
+    && verifyConsentTicket(opaqueConsentRequest, getSingleBodyParam(req, 'consent_ticket'));
+  const consentOriginReason = validOpaqueConsent ? null : consentOriginRejectionReason(req);
+  if (consentOriginReason !== null) {
+    oauthConsentProvenanceCounts[consentOriginReason] = Math.min(
+      Number.MAX_SAFE_INTEGER,
+      oauthConsentProvenanceCounts[consentOriginReason] + 1
+    );
+    if (consentOriginReason === 'origin_mismatch') {
+      const classification = classifyRejectedOrigin(req);
+      oauthOriginMismatchClasses[classification] = Math.min(
+        Number.MAX_SAFE_INTEGER, oauthOriginMismatchClasses[classification] + 1
+      );
+      const wireClass = req.header('origin') === 'null'
+        ? 'opaque_null'
+        : classification === 'origin_missing_or_invalid'
+          ? 'malformed_or_missing'
+          : 'noncanonical_valid';
+      oauthOriginWireClasses[wireClass] = Math.min(
+        Number.MAX_SAFE_INTEGER, oauthOriginWireClasses[wireClass] + 1
+      );
+    }
+    logger.warn({ reasonCode: consentOriginReason }, 'Décision OAuth refusée par le contrôle de provenance');
     sendOAuthError(res, 403, 'access_denied', "La décision d'autorisation doit provenir de la page de consentement.");
     return;
   }

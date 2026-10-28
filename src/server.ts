@@ -1,4 +1,5 @@
 import express from 'express';
+import { readFile, stat } from 'node:fs/promises';
 import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
@@ -58,6 +59,7 @@ import {
   verifyGithubRepositorySshCaBootstrapOidcToken
 } from './deploy/githubOidc.js';
 import { createGithubReadonlyEvidenceRouter } from './evidence/githubReadonlyRoutes.js';
+import { getOauthConsentProvenanceEvidence } from './oauth.js';
 import { projectGitRegistryReadinessEvidence } from './evidence/gitRegistryReadinessProbe.js';
 import { createStablecoinFastForwardRouter } from './stablecoin/githubFastForward.js';
 import { createGithubRepositorySshAccessRouter } from './ssh/githubRepositoryAccessRoutes.js';
@@ -67,6 +69,13 @@ import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
 import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js';
 import { readServerMapConfiguration } from './liveState/targetProject.js';
 import { createProjectRuntimeProvisioningRouter } from './provisioning/routes.js';
+import { createPleskSubdomainRouter } from './provisioning/pleskWebRoutes.js';
+import { createGovernPilotRouter } from './provisioning/governPilotRoutes.js';
+import { mintGithubAppRepoToken } from './github/appInstallationToken.js';
+import { downloadGovernPilotArchive } from './github/governPilotArchiveSource.js';
+import { downloadGithubArchive } from './provisioning/sourceArchive.js';
+import { stageGovernPilot, readGovernPilot, GOUVERN_RUNTIME_ROOT, GOUVERN_SHA } from './provisioning/governPilot.js';
+import { parseAllowedPleskParents } from './tools/pleskProvisioning.js';
 import { executeProjectRuntimeProvisioning } from './provisioning/runtimeExecutor.js';
 import { createProjectRuntimeExecutionDependencies } from './provisioning/wiring.js';
 import { isActiveGovernedTaskStatus } from './operationalMemory/taskQueue.js';
@@ -439,6 +448,9 @@ export async function startHttpServer(): Promise<void> {
       projectGitRegistryReadinessEvidence(await readGitRegistryProjectEvidence())
     ),
     runOperationalRead: async (probe) => {
+      if (probe === 'mcp_oauth_consent_provenance') {
+        return getOauthConsentProvenanceEvidence();
+      }
       if (!operationalMemoryConfig.enabled) {
         return JSON.stringify({
           schemaVersion: 1,
@@ -536,6 +548,92 @@ export async function startHttpServer(): Promise<void> {
     listTargets: projectRuntimeProvisioning.listTargets,
     preview: projectRuntimeProvisioning.preview,
     execute: (input) => executeProjectRuntimeProvisioning(input, projectRuntimeProvisioning)
+  }));
+
+  // Optional S1/S2 Plesk provisioning: reuse operator web session, signed E3 ticket,
+  // same-origin consent and existing bounded SSH channels. Disabled until explicit scope.
+  app.use(createPleskSubdomainRouter({
+    requireLogin: requireWebLogin,
+    session: webConsentBinding,
+    sameOrigin: isSameOriginSubmission,
+    issueTicket: issueWebConsentTicket,
+    verifyTicket: verifyWebConsentTicket,
+    policy: () => ({
+      enabled: env.MCP_PLESK_PROVISIONING_ENABLED,
+      allowedParents: parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)
+    }),
+    writeEnabled: () => env.ENABLE_WRITE_TOOLS && env.MCP_PLESK_PROVISIONING_ENABLED,
+    // Fail closed until the existing Governed Session/Task Queue/Locks/receipt
+    // admission can be enforced for new domain scopes. No raw web-consent bypass.
+    authorizeRuntimeWrite: async () => false,
+    io: {
+      readonly: async (serverId, command) => runReadOnlyCommand(serverId, command),
+      guarded: async (serverId, command) => runGuardedCommand(serverId, command, {
+        intent: 'plesk_subdomain_web_signed_consent',
+        timeoutMs: 120_000,
+        maxOutputBytes: 16_384
+      })
+    }
+  }));
+
+  // S1 isolated GRT archive pilot: this is NOT a public git tree or a second runtime.
+  // Reuses the authenticated E3 operator session; opt-in storage only under /app/data.
+  app.use(createGovernPilotRouter({
+    requireLogin: requireWebLogin,
+    session: webConsentBinding,
+    sameOrigin: isSameOriginSubmission,
+    issueTicket: issueWebConsentTicket,
+    verifyTicket: verifyWebConsentTicket,
+    enabled: () => env.MCP_GOUVERN_PILOT_ENABLED,
+    writeEnabled: () => env.ENABLE_WRITE_TOOLS,
+    // Fail closed until the existing session/claim/lock gate attests this new scope.
+    authorizeRuntimeWrite: async () => false,
+    read: () => readGovernPilot(GOUVERN_RUNTIME_ROOT),
+    stage: () => stageGovernPilot(
+      {root:GOUVERN_RUNTIME_ROOT,approved:true,revision:GOUVERN_SHA},
+      async (request) => {
+        const entries = [
+          env.MCP_GRT_GITHUB_APP_ID,
+          env.MCP_GRT_GITHUB_INSTALLATION_ID,
+          env.MCP_GRT_GITHUB_APP_KEY_FILE
+        ];
+        const app = entries.every((entry) => entry === '') ? null : {
+          appId: env.MCP_GRT_GITHUB_APP_ID,
+          installationId: Number(env.MCP_GRT_GITHUB_INSTALLATION_ID),
+          privateKeyFile: env.MCP_GRT_GITHUB_APP_KEY_FILE
+        };
+        return downloadGovernPilotArchive(request, app, {
+          legacy: downloadGithubArchiveWithServerCredential,
+          mint: async (input) => {
+            const file = env.MCP_GRT_GITHUB_APP_KEY_FILE;
+            if (!file.startsWith('/app/secrets/')) {
+              throw new Error('GITHUB_APP_KEY_SCOPE_INVALID');
+            }
+            const info = await stat(file);
+            if (!info.isFile() || (info.mode & 0o077) !== 0) {
+              throw new Error('GITHUB_APP_KEY_PERMISSIONS_INVALID');
+            }
+            const issued = await mintGithubAppRepoToken({
+              installation: {
+                appId: input.appId,
+                installationId: input.installationId,
+                accountLogin: 'chainsolutions-wealthtech'
+              },
+              repository: input.repository,
+              contentsPermission: 'read'
+            }, {
+              readPrivateKey: () => readFile(file,'utf8'),
+              fetchImpl: fetch,
+              now: () => new Date()
+            });
+            return issued.token;
+          },
+          download: async (input) => downloadGithubArchive({
+            ...input,apiBase:'https://api.github.com'
+          })
+        });
+      }
+    )
   }));
 
   const syntheticProbeClock = getDefaultSyntheticProbeClock();
