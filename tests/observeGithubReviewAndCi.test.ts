@@ -5,13 +5,14 @@ import { observeGithubReviewAndCi } from '../src/github/observeGithubReviewAndCi
 const head='c'.repeat(40);
 const path='/repos/Patricked-code/MCP';
 const pr={state:'open',draft:false,head:{sha:head},user:{login:'developer'}};
-const reviews=[{state:'APPROVED',commit_id:head,user:{login:'security-reviewer'},submitted_at:'2026-10-28T06:10:00Z'}];
+const reviews=[{state:'APPROVED',commit_id:head,user:{login:'security-reviewer',type:'User'},submitted_at:'2026-10-28T06:10:00Z'}];
 const runs={workflow_runs:[{name:'MCP CI',head_sha:head,status:'completed',conclusion:'success',event:'pull_request',run_number:450}]};
 function client(patch:Record<string,unknown>={}){
   const seen:string[]=[];
   return{seen,request:async(route:string)=>{
     seen.push(route);
-    return{ok:true,status:200,json:route.includes('/reviews')?(patch.reviews??reviews)
+    return{ok:true,status:200,json:route.includes('/collaborators/')?{permission:'write'}
+      :route.includes('/reviews')?(patch.reviews??reviews)
       :route.includes('/actions/runs')?(patch.runs??runs):(patch.pr??pr)};
   }};
 }
@@ -27,7 +28,8 @@ test('RED B3c: real GitHub PR, exact-head review and latest CI are independently
   assert.equal(result.attestation?.independentReviewApproved,true);
   assert.equal(result.attestation?.workflowConcludedSuccess,true);
   assert.deepEqual(c.seen,[path+'/pulls/355',path+'/pulls/355/reviews?per_page=100',
-    path+'/actions/runs?head_sha='+head+'&per_page=100']);
+    path+'/actions/runs?head_sha='+head+'&per_page=100',
+    path+'/collaborators/security-reviewer/permission',path+'/pulls/355']);
   assert.equal(result.runtimeWriteAuthorized,false);
 });
 test('RED B3c: no reviews, draft, stale approval or failed latest run never authorize',async()=>{
@@ -131,4 +133,45 @@ test('RED B3h: changing PR HEAD after review/CI checks invalidates attestation',
   assert.equal(prReads,2);
   assert.equal(r.status,'BLOCKED');
   assert.equal(r.runtimeWriteAuthorized,false);
+});
+
+test('B3h: no confirmed human type, unknown GitHub permission, and provider denial fail closed',async()=>{
+ for(const sample of [
+   {reviewUser:{login:'security-reviewer'},permission:'write'},
+   {reviewUser:{login:'security-reviewer',type:'User'},permission:'triage'},
+   {reviewUser:{login:'security-reviewer',type:'User'},permission:'read'},
+   {reviewUser:{login:'security-reviewer',type:'User'},permission:'none'}
+ ]){
+   const r=await observeGithubReviewAndCi({
+     repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+     expectedWorkflow:'MCP CI',now:()=>new Date('2026-10-28T06:15:00Z'),
+     request:async route=>({ok:true,status:200,json:
+       route.includes('/collaborators/')?{permission:sample.permission}
+         :route.includes('/reviews')?[{...reviews[0],user:sample.reviewUser}]
+         :route.includes('/actions/runs')?runs:pr})
+   });
+   assert.equal(r.status,'BLOCKED',JSON.stringify(sample));
+   assert.equal(r.attestation,null);
+ }
+ const denied=await observeGithubReviewAndCi({
+   repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+   expectedWorkflow:'MCP CI',now:()=>new Date('2026-10-28T06:15:00Z'),
+   request:async route=>route.includes('/collaborators/')
+    ?{ok:false,status:403,json:null}
+    :{ok:true,status:200,json:route.includes('/reviews')?reviews:route.includes('/actions/runs')?runs:pr}
+ });
+ assert.equal(denied.status,'BLOCKED');
+});
+
+test('B3h: current maintain/admin reviewer permissions are valid as read-only observations',async()=>{
+ for(const permission of ['maintain','admin'] as const){
+   const r=await observeGithubReviewAndCi({
+     repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+     expectedWorkflow:'MCP CI',now:()=>new Date('2026-10-28T06:15:00Z'),
+     request:async route=>({ok:true,status:200,json:route.includes('/collaborators/')
+       ?{permission}:route.includes('/reviews')?reviews:route.includes('/actions/runs')?runs:pr})
+   });
+   assert.equal(r.status,'PROVIDER_APPROVED');
+   assert.equal(r.runtimeWriteAuthorized,false);
+ }
 });
