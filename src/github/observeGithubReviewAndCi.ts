@@ -1,0 +1,135 @@
+/**
+ * GD-U-02D-B3c — actual authenticated GitHub PR/review/CI observations.
+ * Read-only, exact PR head and current independent approvals only.
+ *
+ * This is evidence for the EXISTING governed review gate, not a
+ * merge decision, privileged grant, Plesk authorization or CI bypass.
+ */
+import type { TrustedPleskReleaseAttestation } from '../provisioning/pleskGovernedReleaseGate.js';
+import type { GitHubJsonResponse } from './connection.js';
+
+type Response=Pick<GitHubJsonResponse,'ok'|'status'|'json'>;
+export type GithubReviewCiProbeInput=Readonly<{
+  repository:string;
+  pullRequestNumber:number;
+  expectedHeadSha:string;
+  expectedWorkflow:string;
+  now:()=>Date;
+  request:(endpoint:string)=>Promise<Response>;
+}>;
+export type GithubReviewCiProbeResult=Readonly<{
+  status:'PROVIDER_APPROVED'|'BLOCKED';
+  attestation:TrustedPleskReleaseAttestation|null;
+  runtimeWriteAuthorized:false;
+  operationExecuted:false;
+}>;
+const SHA=/^[a-f0-9]{40}$/;
+const OWNER=/^[a-z0-9](?:[a-z0-9-]{0,38})$/i;
+const REPO=/^[a-z0-9_.-]{1,100}$/i;
+const blocked=():GithubReviewCiProbeResult=>({
+  status:'BLOCKED',attestation:null,runtimeWriteAuthorized:false,
+  operationExecuted:false
+});
+const obj=(value:unknown):Record<string,unknown>|null=>
+  value!==null&&typeof value==='object'&&!Array.isArray(value)
+    ?value as Record<string,unknown>:null;
+const name=(value:unknown):string|null=>{
+  const login=obj(value)?.login;
+  return typeof login==='string'&&/^[a-z0-9-]{1,39}$/i.test(login)?login:null;
+};
+
+export async function observeGithubReviewAndCi(
+  input:GithubReviewCiProbeInput
+):Promise<GithubReviewCiProbeResult>{
+  const parts=input.repository?.split('/')??[];
+  if(parts.length!==2||!OWNER.test(parts[0]!)||!REPO.test(parts[1]!)
+      ||parts[1]==='.'||parts[1]==='..'
+      ||!SHA.test(input.expectedHeadSha)
+      ||!Number.isSafeInteger(input.pullRequestNumber)
+      ||input.pullRequestNumber<1
+      ||!input.expectedWorkflow||input.expectedWorkflow.length>100
+      ||!/^[a-zA-Z0-9 _.-]+$/.test(input.expectedWorkflow))return blocked();
+
+  const prefix='/repos/'+parts.map(encodeURIComponent).join('/');
+  const prPath=prefix+'/pulls/'+input.pullRequestNumber;
+  const reviewsPath=prPath+'/reviews?per_page=100';
+  const workflowsPath=prefix+'/actions/runs?head_sha='+input.expectedHeadSha+'&per_page=100';
+  try{
+    const prResponse=await input.request(prPath);
+    const pr=obj(prResponse.json);
+    const head=obj(pr?.head);
+    const author=name(pr?.user);
+    if(!prResponse.ok||prResponse.status!==200
+      ||pr?.state!=='open'||pr?.draft!==false
+      ||head?.sha!==input.expectedHeadSha||!author)return blocked();
+
+    const reviewsResponse=await input.request(reviewsPath);
+    const workflowsResponse=await input.request(workflowsPath);
+    const rawReviews=reviewsResponse.json;
+    const rawRuns=obj(workflowsResponse.json)?.workflow_runs;
+    if(!reviewsResponse.ok||reviewsResponse.status!==200
+      ||!workflowsResponse.ok||workflowsResponse.status!==200
+      ||!Array.isArray(rawReviews)||rawReviews.length>=100
+      ||!Array.isArray(rawRuns)||rawRuns.length>=100)return blocked();
+
+    // Only the latest review from each user is authoritative; a later
+    // CHANGES_REQUESTED, COMMENTED or DISMISSED state revokes earlier approval.
+    const latest=new Map<string,{state:string;commit:string;submittedAt:number}>();
+    for(const item of rawReviews){
+      const review=obj(item);
+      const reviewer=name(review?.user);
+      const state=review?.state;
+      const timestamp=Date.parse(String(review?.submitted_at??''));
+      if(!reviewer||!Number.isFinite(timestamp)
+        ||typeof state!=='string')return blocked();
+      const old=latest.get(reviewer.toLowerCase());
+      if(!old||timestamp>=old.submittedAt)latest.set(reviewer.toLowerCase(),{
+        state,
+        commit:String(review?.commit_id??''),
+        submittedAt:timestamp
+      });
+    }
+    const approved=[...latest.entries()].find(([reviewer,r])=>reviewer!==author.toLowerCase()
+      &&r.state==='APPROVED'&&r.commit===input.expectedHeadSha);
+    if(!approved)return blocked();
+
+    // Choose latest matching workflow run, never an older successful run
+    // after a newer failure on the same PR head.
+    const matches=rawRuns.map(item=>obj(item)).filter((x):x is Record<string,unknown>=>x!==null)
+      .filter(x=>x.head_sha===input.expectedHeadSha
+        &&x.name===input.expectedWorkflow&&x.event==='pull_request');
+    if(matches.length===0)return blocked();
+    const ordered=matches.sort((a,b)=>Number(b.run_number)-Number(a.run_number));
+    const latestRun=ordered[0];
+    if(!latestRun||!Number.isSafeInteger(latestRun.run_number)
+      ||latestRun.status!=='completed'||latestRun.conclusion!=='success')return blocked();
+    const at=input.now().toISOString();
+    return {
+      status:'PROVIDER_APPROVED',
+      attestation:{
+        source:'SERVER_VALIDATED_GITHUB_API',
+        at,repository:input.repository,pr:input.pullRequestNumber,
+        headSha:input.expectedHeadSha,
+        workflowConcludedSuccess:true,
+        independentReviewApproved:true,
+        reviewer:approved[0],
+        prAuthor:author,
+        approvalHeadSha:input.expectedHeadSha
+      },
+      runtimeWriteAuthorized:false,
+      operationExecuted:false
+    };
+  }catch{return blocked();}
+}
+
+/** Existing authenticated GitHub connector, no new credentials or tokens. */
+export async function observeGithubReviewAndCiUsingExistingCredential(
+  args:Omit<GithubReviewCiProbeInput,'request'|'now'>
+):Promise<GithubReviewCiProbeResult>{
+  const {githubJsonRequestWithServerCredential}=await import('./connection.js');
+  return observeGithubReviewAndCi({
+    ...args,
+    now:()=>new Date(),
+    request:path=>githubJsonRequestWithServerCredential(path,{method:'GET',timeoutMs:5_000})
+  });
+}
