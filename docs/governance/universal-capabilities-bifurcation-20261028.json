@@ -201,6 +201,15 @@
       "tests": "tests/governedPleskSubdomainExecutor.test.ts",
       "runtimeToolRegistration": "NOT_WIRED",
       "noDirectS1Mutation": true
+    },
+    {
+      "id": "GD-U-02D-A",
+      "title": "Trusted Plesk governance reader + real resource lock normalization; consent and CI fail closed",
+      "status": "CODED_PENDING_CI",
+      "code": "src/provisioning/existingPleskAuthorityReader.ts",
+      "tests": "tests/existingPleskAuthorityReader.test.ts",
+      "runtimeToolRegistration": "BLOCKED_PENDING_E3_AND_REVIEW",
+      "existingCapabilityPreserved": true
     }
   ],
   "acceptance": [
@@ -212,7 +221,7 @@
     "no runtime mutation without existing task/session/claim/locks/consent",
     "Regulatory remains real integration pilot, not special-case architecture"
   ],
-  "nextAction": "Verify exact final docs HEAD CI GREEN for GD-U-02C; publish checkpoints to #349/#355. Future GD-U-02D requires trusted runtime authority source and real E3/CI evidence, followed by bounded tool registration in coordination with GWC #354 and 165 target inventory, no main/S1 edits before review/CI.",
+  "nextAction": "Validate latest PR #355 exact HEAD CI after GD-U-02D-A changes; if GREEN, write additive issue #349/PR #355 checkpoints; GD-U-02D-B implement Plesk-scoped E3+CI verified attestation from existing control plane, then independent review and only then runtime tool registration in coordination with GWC #354. No direct main/S1/S2 mutation.",
   "intelligenceAutonomyRoadmap": {
     "kind": "NON_EXECUTABLE_PROGRAM_ADDENDUM",
     "existingFirst": [
@@ -612,5 +621,39 @@
     },
     "lastHardeningCommit": "052e6be85a00b992381308d35c775cd4450ce313",
     "followUp": "Build a trusted actual runtime readExistingAuthority port using the existing TaskQueue.getVisibleTask, SessionService.getVisibleSession and LockService.listActiveLocks with explicit E3/CI attestation; do not register until independently reviewed and coordinated with PR #354."
+  },
+  "gdU02TrustedAuthorityReader": {
+    "id": "GD-U-02D-A",
+    "status": "CODED_CI_PENDING",
+    "objective": "Bridge the existing persisted Task Queue, OAuth-owned Governed Session, normalized resource LockService and Live State into the Plesk executor. Never manufacture E3 consent or CI review.",
+    "code": "src/provisioning/existingPleskAuthorityReader.ts",
+    "tests": "tests/existingPleskAuthorityReader.test.ts",
+    "codeChanges": [
+      "src/provisioning/governedPleskSubdomainExecutor.ts",
+      "tests/governedPleskSubdomainExecutor.test.ts"
+    ],
+    "targetLockExample": "resource:plesk:s1:wealthtechinnovations.com",
+    "reusedAuthorityAPIs": [
+      "getGovernedTaskToolDependencies().queue.getVisibleTask(taskId)",
+      "getGovernedSessionToolDependencies().sessions.getVisibleSession(sessionId,oauthTransportRequest)",
+      "getGovernedSessionToolDependencies().locks.listActiveLocks()",
+      "liveStateEngine.getCurrent()",
+      "normalizeLockScope({type:'resource',key})"
+    ],
+    "defaultConsent": null,
+    "independentCiReviewObserved": false,
+    "note": "Task/Session/Lock/LiveState records do not persist Plesk-specific E3 create consent or independent PR+CI approval. A checkpoint is not consent. Reader always returns consent:null and reviewAndCiApproved:false, so adapter blocks before SSH even on valid scopes.",
+    "executableStatus": "REAL_BACKEND_WRITER_PRESENT_BUT_NOT_REGISTERED_OR_ADMITTED",
+    "codeInProduction": false,
+    "sshWritePerformed": false,
+    "scopeCollision": "No changes to PR #354 runtime tool cartography, PR #353 Regulatory or other agents",
+    "method": [
+      "GITHUB_FIRST",
+      "NO_REGRESSION",
+      "INDEPENDENT_SLICES",
+      "RED_GREEN_REGRESSION"
+    ],
+    "verification": "PENDING_FINAL_EXACT_HEAD_CI",
+    "nextAction": "Establish a real signed Plesk-specific E3 consent ticket bound to exact owner/task/session/server/domain/revision plus independent CI/review evidence, in cooperation with existing E3 control plane, then register bounded write tool under session/claim/lock enforcement in a non-colliding PR scope; no generic root SSH endpoint."
   }
 }
