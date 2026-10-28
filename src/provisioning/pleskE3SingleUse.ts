@@ -143,6 +143,12 @@ export async function consumeSignedPleskE3Once(
       // Conservatively leave any existing receipt, even if partially written.
       return blocked('CONSUMPTION_STORAGE_UNAVAILABLE');
     }finally{await fd.close().catch(()=>undefined);}
+    // Persist the directory entry too: a file fsync alone does not attest
+    // the exclusive-create name survived a sudden host restart.
+    try {
+      const dirFd=await open(directory,constants.O_RDONLY|constants.O_DIRECTORY);
+      try{await dirFd.sync();}finally{await dirFd.close();}
+    }catch{return blocked('CONSUMPTION_STORAGE_UNAVAILABLE');}
     return {status:'CONSUMED',reason:'CONSUMED_ATOMICALLY',
       runtimeWriteAuthorized:false,operationExecuted:false};
   }catch{return blocked('CONSUMPTION_STORAGE_UNAVAILABLE');}
