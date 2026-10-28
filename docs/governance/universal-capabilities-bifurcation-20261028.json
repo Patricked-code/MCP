@@ -176,6 +176,22 @@
       "code": "src/provisioning/universalResumeAdvice.ts",
       "tests": "tests/universalResumeAdvice.test.ts",
       "kind": "NON_EXECUTABLE"
+    },
+    {
+      "id": "GD-U-02A",
+      "title": "Real existing MCP executor binding and bounded GitHub/Plesk/Linux read probes",
+      "status": "CODED_PENDING_EXACT_HEAD_CI",
+      "files": [
+        "src/provisioning/universalExecutableBindings.ts",
+        "src/provisioning/universalAdminLiveProbe.ts",
+        "src/provisioning/universalCapabilityDiscovery.ts",
+        "src/tools/readOnly.ts"
+      ],
+      "tests": [
+        "tests/universalExecutableBindings.test.ts",
+        "tests/universalAdminLiveProbe.test.ts"
+      ],
+      "runtimeToolRegistrationsAdded": 0
     }
   ],
   "acceptance": [
@@ -187,7 +203,7 @@
     "no runtime mutation without existing task/session/claim/locks/consent",
     "Regulatory remains real integration pilot, not special-case architecture"
   ],
-  "nextAction": "Verify CI final exact HEAD of GD-U-EXPOSE, preserve existing tool catalog and all tests, record RED/GREEN outcome honestly, then implement provider-specific read-only effective-permission discovery adapters in independent scope. Do not merge/deploy without independent review.",
+  "nextAction": "Verify RED run on missing GD-U-02A adapter and full exact-HEAD CI; verify original 138 tool registrations and the real mapped executor links; review new on-demand provider probe's latency and privilege reporting; then independent security review before merge. For any missing admin function, implement actual provider-specific executor and its authorization in isolated RED/GREEN slices.",
   "intelligenceAutonomyRoadmap": {
     "kind": "NON_EXECUTABLE_PROGRAM_ADDENDUM",
     "existingFirst": [
@@ -421,5 +437,63 @@
       "07c66ec62c4b45f005a11d9917a01094342c6853"
     ],
     "notes": "No service registration added; existing tool callback augmented. No runtime permission or provider credentials changed. Does not affect GWC PR #354 shared cartography file."
+  },
+  "gdU02LiveExecution": {
+    "stage": "GD-U-02A",
+    "title": "Raccordement réel des exécuteurs MCP et observations de délégations GitHub/Plesk/S1/S2",
+    "status": "CODED_PENDING_EXACT_HEAD_CI",
+    "existingRuntimeToolCountBaseline": 138,
+    "catalogTargetCount": 165,
+    "operationDelegationCreated": false,
+    "activeProviderAdminRightsGranted": false,
+    "newlyRegisteredMcpTools": 0,
+    "additions": [
+      {
+        "code": "src/provisioning/universalExecutableBindings.ts",
+        "tests": "tests/universalExecutableBindings.test.ts",
+        "role": "Map capability IDs to real registered runtime tools (read, scoped-write or preflight) with explicit limitations; never labels unregistered features runnable",
+        "target": "13 mapped handlers if all registered in runtime"
+      },
+      {
+        "code": "src/provisioning/universalAdminLiveProbe.ts",
+        "tests": "tests/universalAdminLiveProbe.test.ts",
+        "role": "Real provider GET /user through existing GitHub credential and SSH id -u/Plesk version on both servers, without mutations or exposing stdout/secrets",
+        "target": "Four remote read commands plus one GitHub request per on-demand execution"
+      },
+      {
+        "code": "src/provisioning/universalCapabilityDiscovery.ts",
+        "role": "Expose executable bindings and live provider observations without altering legacy fields, while preserving all 165 target entries"
+      },
+      {
+        "code": "src/tools/readOnly.ts",
+        "role": "Execute live read probes when get_project_context is called, preserve existing tool registration and input schema"
+      }
+    ],
+    "targetStates": [
+      "CATALOGUED_NOT_IMPLEMENTED",
+      "RUNTIME_HANDLER_REGISTERED_READ_ONLY",
+      "RUNTIME_HANDLER_REGISTERED_GOVERNED_WRITE",
+      "RUNTIME_PREFLIGHT_ONLY_NOT_MUTATION",
+      "DELEGATED_PROVIDER_ACCESS_VERIFIED",
+      "RUNTIME_ADMISSION_GRANTED_FOR_TARGETED_ACTION"
+    ],
+    "factualDistinctions": {
+      "realBackendExistsForMappedHandlers": true,
+      "codeInProduction": false,
+      "successfulLiveProviderRunOnS1OrS2": false,
+      "adminOrRootPrivilegesGrantedByThisCode": false,
+      "all165Executable": false,
+      "githubAppMultiAccountFullAuthorization": false,
+      "pleskAdminWriteAdmission": false,
+      "serverRootWriteAdmission": false
+    },
+    "followUpMilestones": [
+      "GD-U-02B provider-specific effective repository permissions per actual owner/installation; never infer from OAuth scopes or GitHub App permission hint",
+      "GD-U-02C Plesk REST/MCP/CLI method discovery with delegated subscription and safe typed execution ports, from real S1/S2 observations",
+      "GD-U-02D specific bounded privileged system functions through existing governed Task Queue/Session/locks/consent, not arbitrary shell",
+      "GD-U-03+ genuine runtime registration per batch, regenerate cartography and coordinate GWC PR #354 before touching shared files",
+      "GD-U-04+ full deployment pilots with postconditions, failure restoration, CI regression, independent review and governed promotion"
+    ],
+    "safety": "Do not misrepresent target labels as executable; registered tool itself remains subject to enabled runtime surfaces, provider permission and per-task mandate."
   }
 }
