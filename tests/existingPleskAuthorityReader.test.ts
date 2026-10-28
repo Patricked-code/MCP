@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 import { inspectExistingPleskAuthority } from '../src/provisioning/existingPleskAuthorityReader.js';
 import type { ExistingPleskAuthorityPorts } from '../src/provisioning/existingPleskAuthorityReader.js';
 import { executeGovernedPleskSubdomain, type GovernedPleskSubdomainRequest } from '../src/provisioning/governedPleskSubdomainExecutor.js';
@@ -146,4 +147,12 @@ test('GD-U-02D: real owned task+lock still cannot call SSH without signed E3/CI 
   assert.equal(outcome.status,'BLOCKED');
   assert.equal(outcome.reason,'GOVERNED_ADMISSION_NOT_ATTESTED');
   assert.equal(sshCalls,0);
+});
+
+test('GD-U-02D: authority reader must not initialize/seeding Task Queue on its read path',()=>{
+  const source=readFileSync('src/provisioning/existingPleskAuthorityReader.ts','utf8');
+  assert.doesNotMatch(source,/await\s+taskDeps\.ready\(\)/);
+  assert.match(source,/getVisibleTask\(id\)/);
+  assert.match(source,/listActiveLocks\(\)/);
+  assert.match(source,/getVisibleSession\(id,auth\)/);
 });
