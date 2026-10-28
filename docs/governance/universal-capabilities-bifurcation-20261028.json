@@ -54,13 +54,20 @@
     "contract": "PERMISSION_OBSERVED means only a fresh repository/installation-scoped permission observation, never runtime write admission.",
     "redCommit": "067985c6aaa00b156ae2deff51e80d689d47f8dc",
     "greenCommit": "bb105d043c98a17611ae2fc2980f9489da84c5ae",
-    "ciStatus": "NOT_YET_ATTESTED"
+    "ciStatus": "SUCCESS",
+    "ciEvidence": {
+      "runId": 40632447512,
+      "headSha": "2371d222975ed35de46a348d4918a75012d0421a",
+      "job": "validate",
+      "conclusion": "success",
+      "note": "Exact HEAD evidence for GD-U-01 only; new autonomy slice requires its own CI."
+    }
   },
   "program": [
     {
       "id": "GD-U-01",
       "title": "GitHub App capability preflight",
-      "status": "IMPLEMENTED_PENDING_CI",
+      "status": "IMPLEMENTED_CI_GREEN",
       "proof": "new standalone pure function and tests"
     },
     {
@@ -125,6 +132,26 @@
         "Operational Memory"
       ],
       "gate": "idempotent, checkpoints, no collisions, rollback"
+    },
+    {
+      "id": "GD-U-A1",
+      "title": "Read-only autonomy advisory composing existing candidate dispatcher, GitHub permission preflight and Plesk subdomain planner",
+      "status": "IMPLEMENTED_PENDING_CI",
+      "code": "src/provisioning/universalAutonomyAdvice.ts",
+      "tests": "tests/universalAutonomyAdvice.test.ts",
+      "reuse": [
+        "src/governedContext/candidateContinuity.ts dispatchCandidateWork",
+        "src/github/installationCapabilityReadiness.ts",
+        "src/provisioning/pleskSite.ts"
+      ],
+      "gates": [
+        "MCP live Task/Session/Claim/Locks is authoritative; candidate dispatcher only non-authoritative",
+        "E3 consent and GitHub rulesets independent",
+        "Exact main/S1/runtime SHA comparison",
+        "Real permission and Plesk observations",
+        "No subpath-to-subdomain fallback"
+      ],
+      "antiCollision": "No modifications in src/governedContext, task queue, PR352/353, GitHub workflow or S1/S2."
     }
   ],
   "acceptance": [
@@ -136,5 +163,74 @@
     "no runtime mutation without existing task/session/claim/locks/consent",
     "Regulatory remains real integration pilot, not special-case architecture"
   ],
-  "nextAction": "Open a draft PR linked to #349, verify exact-head CI and tests including new file; then implement GD-U-02 after revalidating anti-collision scopes. No merge or deploy until review/acceptance."
+  "nextAction": "Verify exact HEAD CI of PR #355 including new autonomy advisor tests; correct any regression on this owned branch; independent security review; integrate INT-04/05 via existing Operational Memory with no new authority.",
+  "intelligenceAutonomyRoadmap": {
+    "kind": "NON_EXECUTABLE_PROGRAM_ADDENDUM",
+    "existingFirst": [
+      "REUSE",
+      "COMPOSE",
+      "WRAP",
+      "GENERALIZE",
+      "EXTEND",
+      "NEW"
+    ],
+    "capabilities": [
+      {
+        "id": "INT-01",
+        "name": "Dynamic capability/permission discovery",
+        "status": "PARTIAL",
+        "reuse": "GitHub auth/registry and Plesk preview"
+      },
+      {
+        "id": "INT-02",
+        "name": "Dependency-aware plans and candidate prioritization",
+        "status": "COMPOSED_PROJECTION",
+        "reuse": "dispatchCandidateWork / program:next"
+      },
+      {
+        "id": "INT-03",
+        "name": "Multi-agent collision detection and work allocation",
+        "status": "EXISTING_RUNTIME_AUTHORITIES_NOT_REPLACED",
+        "reuse": "Task Queue, Sessions, claims, locks, BUS when admitted"
+      },
+      {
+        "id": "INT-04",
+        "name": "Checkpoint-based restart and idempotent completion proof",
+        "status": "TO_INTEGRATE",
+        "reuse": "Operational Memory and checkpoints"
+      },
+      {
+        "id": "INT-05",
+        "name": "GitHub-to-S1/S2/Plesk drift reconciliation",
+        "status": "PARTIAL_READONLY_ADVICE",
+        "reuse": "Live State exact HEAD"
+      },
+      {
+        "id": "INT-06",
+        "name": "Policy-compliant fallback route selection",
+        "status": "TO_INTEGRATE",
+        "reuse": "GitHub-first operational policy, existing adapters"
+      },
+      {
+        "id": "INT-07",
+        "name": "Runtime health/rollback/safe recovery plans",
+        "status": "TO_INTEGRATE",
+        "reuse": "Existing Governed Deploy and health/rollback"
+      },
+      {
+        "id": "INT-08",
+        "name": "Evidence feedback into versioned capabilities and heuristics",
+        "status": "TO_INTEGRATE",
+        "reuse": "Existing Operational Memory, PR/CI/checkpoints"
+      }
+    ],
+    "autonomyNeverImplies": [
+      "ownership without live claim",
+      "readiness without current observations",
+      "human consent bypass",
+      "privilege escalation",
+      "cross-domain or cross-account installation",
+      "production mutation on draft branch"
+    ]
+  }
 }
