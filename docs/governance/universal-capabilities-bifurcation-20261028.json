@@ -212,7 +212,7 @@
     "no runtime mutation without existing task/session/claim/locks/consent",
     "Regulatory remains real integration pilot, not special-case architecture"
   ],
-  "nextAction": "Verify exact HEAD full CI on PR #355 for GD-U-02C, fix failures, then connect readExistingAuthority to actual existing persisted Task Queue/Session/Lock/consent/review evidence, coordinate shared cartography/registration with GWC #354. No merge/deploy or task claim in this slice without independent review.",
+  "nextAction": "Verify exact final docs HEAD CI GREEN for GD-U-02C; publish checkpoints to #349/#355. Future GD-U-02D requires trusted runtime authority source and real E3/CI evidence, followed by bounded tool registration in coordination with GWC #354 and 165 target inventory, no main/S1 edits before review/CI.",
   "intelligenceAutonomyRoadmap": {
     "kind": "NON_EXECUTABLE_PROGRAM_ADDENDUM",
     "existingFirst": [
@@ -543,7 +543,7 @@
   },
   "gdU02PrivilegedPleskSlice": {
     "id": "GD-U-02C",
-    "status": "CODED_PENDING_CI_NOT_RUNTIME_REGISTERED",
+    "status": "CODED_GREEN_AT_PREVIOUS_HEAD_PENDING_FINAL_CI",
     "parent": "GD-U-02B",
     "implementedFiles": [
       "src/provisioning/governedPleskSubdomainExecutor.ts",
@@ -577,7 +577,7 @@
     "redProof": {
       "sha": "07ce84b020633d9a84697c650c1dc506a5b7ab6f",
       "run": 40636818226,
-      "result": "CI failure before module created"
+      "result": "failure before module created"
     },
     "expectedGreenHead": "PENDING_AT_DOC_COMMIT",
     "workMethod": [
@@ -585,6 +585,32 @@
       "NO_REGRESSION",
       "INDEPENDENT_SLICES",
       "RED_GREEN_REGRESSION"
-    ]
+    ],
+    "securityHardening": "The privileged SSH port constructor is PRIVATE (not exported). Public on-server entry executeGovernedPleskSubdomainOnExistingSsh requires the same trusted authority callback and runs full plan, authorization, Plesk observation, bounded command and postcondition.",
+    "publicFunctions": [
+      "executeGovernedPleskSubdomain (injected, gated, testable)",
+      "executeGovernedPleskSubdomainOnExistingSsh (production SSH transport, admission REQUIRED)",
+      "isAllowlistedPleskCreateCommand (pure boolean, no IO)"
+    ],
+    "exactCommand": "plesk bin subdomain --create '<validated label>' -domain '<validated parent>' -www-root '/<validated label>'",
+    "securityTestCoverage": [
+      "wrong task, session, owner, lock, missing/expired proof",
+      "no GitHub/S1/runtime exact HEAD",
+      "no review+CI or exact consent",
+      "unlisted Plesk subscription",
+      "reject SSH shell and cross-server target",
+      "Plesk CLI nonzero exit never counts as CREATED",
+      "post-create Plesk and filesystem proof required",
+      "existing unowned subdomain cannot be taken over",
+      "SSH privileged factory not exported"
+    ],
+    "regressiveChangeToExistingTools": false,
+    "earlierGreen": {
+      "sha": "f5c924c98190be3f0f1a4218e289d37a9286de1c",
+      "run": 40637058702,
+      "result": "success"
+    },
+    "lastHardeningCommit": "052e6be85a00b992381308d35c775cd4450ce313",
+    "followUp": "Build a trusted actual runtime readExistingAuthority port using the existing TaskQueue.getVisibleTask, SessionService.getVisibleSession and LockService.listActiveLocks with explicit E3/CI attestation; do not register until independently reviewed and coordinated with PR #354."
   }
 }
