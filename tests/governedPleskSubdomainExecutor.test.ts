@@ -24,7 +24,7 @@ const authority = ():GovernedPleskAuthoritySnapshot=>({
   taskResourceScopes:['plesk:s1:wealthtechinnovations.com'],
   sessionId:session,sessionStatus:'ACTIVE',sessionOwnerPrincipalId:'oauth:admin',
   sessionLastHeartbeatAt:now,
-  lockOwnerSessionId:session,lockScope:'plesk:s1:wealthtechinnovations.com',
+  lockOwnerSessionId:session,lockScope:'resource:plesk:s1:wealthtechinnovations.com',
   lockExpiresAt:'2026-10-28T07:32:00.000Z',
   consent:'CREATE_SUBDOMAIN',
   githubMainSha:sha,serverCheckoutSha:sha,runtimeRevisionSha:sha,
