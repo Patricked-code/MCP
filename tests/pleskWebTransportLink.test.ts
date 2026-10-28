@@ -51,7 +51,7 @@ test('RED B3a: foreign or missing bound transport blocks even with valid E3 and 
 test('RED B3a: caller principal, assurance and missing authenticated transport fail closed',()=>{
   for(const bad of [
     {...transport,identity:{...transport.identity,principalId:'oauth:other'}},
-    {...transport,identity:{...transport.identity,assurance:'anonymous' as const}},
+    {...transport,identity:{...transport.identity,assurance:'shared_credential' as const}},
     {...transport,transportSessionId:''}
   ]){
     assert.equal(inspectPleskWebTransportLink(consent,candidate,bad,{
