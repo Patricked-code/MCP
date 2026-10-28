@@ -96,3 +96,53 @@ test('Plesk review RED: signed consent cannot bypass absent runtime governance a
   assert.equal(x.writes.length,0);
  },false);
 });
+
+test('B3e: existing Plesk router denies a second E3 consumption, with no second SSH write',async()=>{
+  const writes:string[]=[];
+  let consumed=false;
+  const app=express();
+  app.use(express.urlencoded({extended:false}));
+  const ticket='signed-for-fixture';
+  app.use(createPleskSubdomainRouter({
+    requireLogin:(_req,_res,next)=>next(),
+    session:()=> 'web-session-fixture',
+    sameOrigin:()=>true,
+    issueTicket:()=>ticket,
+    verifyTicket:(_purpose,value)=>value===ticket,
+    policy:()=>({enabled:true,allowedParents:{s2:['chainsolutions.fr']}}),
+    writeEnabled:()=>true,
+    authorizeRuntimeWrite:async()=>true,
+    consumeGovernedConsent:async(_req,input,proof)=>{
+      assert.equal(input.serverId,'s2');
+      assert.equal(proof.ticket,ticket);
+      assert.equal(proof.binding,JSON.stringify([
+        'web-session-fixture','s2','chainsolutions.fr','tdd-safe','/tdd-safe'
+      ]));
+      if(consumed)return false;
+      consumed=true;
+      return true;
+    },
+    io:{
+      readonly:async(_s,command)=>{
+        if(command.startsWith('plesk bin subscription'))return {code:0,stdout:'OK'};
+        if(command.startsWith('plesk bin subdomain --info'))return {code:1,stdout:'',stderr:'Specified subdomain does not exist'};
+        if(command.startsWith('test -L')||command.startsWith('test -e'))return {code:1,stdout:''};
+        return {code:0,stdout:''};
+      },
+      guarded:async(_s,command)=>{writes.push(command);return {code:0,stdout:'OK'};}
+    }
+  }));
+  const server=app.listen(0,'127.0.0.1');
+  await new Promise<void>(resolve=>server.once('listening',resolve));
+  try{
+    const url='http://127.0.0.1:'+(server.address() as AddressInfo).port+'/provisioning/plesk-subdomain';
+    const form=new URLSearchParams({...fields,consent_creation:'CREATE_SUBDOMAIN',
+      confirm_fqdn:'tdd-safe.chainsolutions.fr',consent_ticket:ticket});
+    const first=await fetch(url,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:form});
+    assert.equal(first.status,503); // Plesk postcondition still not attested in this mock.
+    const second=await fetch(url,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:form});
+    assert.equal(second.status,403);
+    assert.equal((await second.json()).reason,'E3_SINGLE_USE_CONSUMPTION_REQUIRED');
+    assert.equal(writes.length,1);
+  }finally{await new Promise<void>(resolve=>server.close(()=>resolve()));}
+});
