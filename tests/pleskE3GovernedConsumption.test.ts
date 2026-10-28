@@ -32,7 +32,7 @@ function evidence():PleskGovernedReleaseEvidence{
     independentCiReviewVerified:false,runtimeWriteAuthorized:false,operationExecuted:false},
   runtimeAuthority:{source:'EXISTING_GOVERNED_RUNTIME',observedAt:at,taskId:task,
     taskStatus:'IN_PROGRESS',taskOwnerSessionId:session,
-    taskResourceScopes:['plesk:s1:example.com'],sessionId:session,status:'ACTIVE' as never,
+    taskResourceScopes:['plesk:s1:example.com'],sessionId:session,
     sessionStatus:'ACTIVE',sessionOwnerPrincipalId:owner,sessionLastHeartbeatAt:at,
     lockOwnerSessionId:session,lockScope:scope,
     lockExpiresAt:'2026-10-28T07:02:00.000Z',consent:null,
