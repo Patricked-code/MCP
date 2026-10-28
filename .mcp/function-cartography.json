@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "0ee5618bcd41bdc89bf0c10e1dd1e84b3620a4a64ec678775f5a937bb75dae05",
-  "registeredToolCount": 138,
+  "catalogueDigest": "1d2862b864bf52dcb1e223b181ac3896f2ff21b3ea2cadfbf9679441d9584fcb",
+  "registeredToolCount": 141,
   "readOnlyToolCount": 86,
-  "writeToolCount": 52,
+  "writeToolCount": 55,
   "resourceCount": 2,
   "tools": [
     {
@@ -755,29 +755,6 @@
       "contractDigest": "28b39f6f610629d018a47301fd2b301821187c0762ca88d23167c54410f7ad69"
     },
     {
-      "name": "github_create_repository",
-      "title": null,
-      "description": "Crée un dépôt privé dans l'organisation configurée. Idempotent : un nom déjà pris est existence, pas un écrasement.",
-      "surface": "scoped-write",
-      "annotations": {
-        "readOnlyHint": null,
-        "destructiveHint": null
-      },
-      "inputSchema": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "organization": { "type": "string", "minLength": 1, "maxLength": 120, "pattern": "^[A-Za-z0-9_.-]+$" },
-          "name": { "type": "string", "minLength": 1, "maxLength": 100, "pattern": "^[A-Za-z0-9._-]+$" },
-          "description": { "type": "string", "maxLength": 1000, "default": "" },
-          "autoInit": { "type": "boolean", "default": false }
-        },
-        "required": [ "organization", "name" ],
-        "additionalProperties": false
-      },
-      "contractDigest": "pending-generation"
-    },
-    {
       "name": "github_create_pull_request",
       "title": null,
       "description": "Crée une pull request gouvernée après relecture du SHA exact de sa branche head.",
@@ -848,6 +825,51 @@
         "additionalProperties": false
       },
       "contractDigest": "d79bcb45bfd0d644c956cbd43872dacea085df802346a5ab2f9067a96ca0a7a4"
+    },
+    {
+      "name": "github_create_repository",
+      "title": null,
+      "description": "Crée un dépôt privé dans l'organisation configurée. Idempotent : un nom déjà pris est existence, pas un écrasement. Aucun webhook, team, secret, deploy key ni ruleset implicite.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9._-]+$"
+          },
+          "description": {
+            "default": "",
+            "type": "string",
+            "maxLength": 1000
+          },
+          "autoInit": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "organization",
+          "name",
+          "description",
+          "autoInit"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "0eb06b4e2813f92d0e33e37142dd98a4f73f77af00008fcfdf480145e60634b3"
     },
     {
       "name": "github_durable_accounts_inventory",
@@ -1585,102 +1607,6 @@
       "contractDigest": "6bf4b63b7c62143397c0e7aac4ddcd609b9657dc0156ab010a89ac02ac1fe212"
     },
     {
-      "name": "github_request_pull_request_review",
-      "title": null,
-      "description": "Demande une review sur une pull request après validation du head exact. Cible des reviewers explicites.",
-      "surface": "scoped-write",
-      "annotations": {
-        "readOnlyHint": null,
-        "destructiveHint": null
-      },
-      "inputSchema": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "organization": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 120,
-            "pattern": "^[A-Za-z0-9_.-]+$"
-          },
-          "repository": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 100,
-            "pattern": "^[A-Za-z0-9_.-]+$"
-          },
-          "pullRequestNumber": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 9007199254740991
-          },
-          "expectedHeadSha": {
-            "type": "string",
-            "minLength": 40,
-            "maxLength": 40,
-            "pattern": "^[0-9a-fA-F]{40}$"
-          },
-          "reviewers": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 120,
-              "pattern": "^[A-Za-z0-9_.-]+$"
-            },
-            "minItems": 1,
-            "maxItems": 15
-          },
-          "teamReviewers": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 120,
-              "pattern": "^[A-Za-z0-9_.-]+$"
-            },
-            "maxItems": 10,
-            "default": []
-          }
-        },
-        "required": [
-          "organization",
-          "repository",
-          "pullRequestNumber",
-          "expectedHeadSha",
-          "reviewers"
-        ],
-        "additionalProperties": false
-      },
-      "contractDigest": "pending-generation"
-    },
-    {
-      "name": "github_update_pull_request_metadata",
-      "title": null,
-      "description": "Met à jour les métadonnées sûres d'une pull request (titre, body, labels) après validation du head exact. N'expose ni state, ni base, ni close.",
-      "surface": "scoped-write",
-      "annotations": {
-        "readOnlyHint": null,
-        "destructiveHint": null
-      },
-      "inputSchema": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {
-          "organization": { "type": "string", "minLength": 1, "maxLength": 120, "pattern": "^[A-Za-z0-9_.-]+$" },
-          "repository": { "type": "string", "minLength": 1, "maxLength": 100, "pattern": "^[A-Za-z0-9_.-]+$" },
-          "pullRequestNumber": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
-          "expectedHeadSha": { "type": "string", "minLength": 40, "maxLength": 40, "pattern": "^[0-9a-fA-F]{40}$" },
-          "title": { "type": "string", "minLength": 1, "maxLength": 256 },
-          "body": { "type": "string", "maxLength": 65000 },
-          "labels": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 100 }, "maxItems": 30 }
-        },
-        "required": [ "organization", "repository", "pullRequestNumber", "expectedHeadSha" ],
-        "additionalProperties": false
-      },
-      "contractDigest": "pending-generation"
-    },
-    {
       "name": "github_org_inventory",
       "title": null,
       "description": "Liste les dépôts GitHub visibles pour l’organisation configurée ou fournie, sans écrire, sans cloner et sans supprimer.",
@@ -1848,6 +1774,77 @@
       "contractDigest": "b1d8fdfae09f7fcaa9a723a5dc2d8c93e162b7bc44ee42ef8bd0664517ea9064"
     },
     {
+      "name": "github_request_pull_request_review",
+      "title": null,
+      "description": "Demande une review sur une pull request après validation du head exact. Cible des reviewers explicites.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "pullRequestNumber": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "expectedHeadSha": {
+            "type": "string",
+            "minLength": 40,
+            "maxLength": 40,
+            "pattern": "^[0-9a-fA-F]{40}$"
+          },
+          "reviewers": {
+            "minItems": 1,
+            "maxItems": 15,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120,
+              "pattern": "^[A-Za-z0-9_.-]+$"
+            }
+          },
+          "teamReviewers": {
+            "default": [],
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120,
+              "pattern": "^[A-Za-z0-9_.-]+$"
+            }
+          }
+        },
+        "required": [
+          "organization",
+          "repository",
+          "pullRequestNumber",
+          "expectedHeadSha",
+          "reviewers",
+          "teamReviewers"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "aafae0ae36079c1d7424c97c25849719056a2bf711f7bf9e56fb3cbb0ca64d56"
+    },
+    {
       "name": "github_resolve_review_thread",
       "title": null,
       "description": "Résout un review thread précis après validation du head exact de la pull request.",
@@ -1900,6 +1897,71 @@
         "additionalProperties": false
       },
       "contractDigest": "2ba7fe37f97330db52be16afe35c1c9ac7cd96f3a036c74ca5d5e956fb8810de"
+    },
+    {
+      "name": "github_update_pull_request_metadata",
+      "title": null,
+      "description": "Met à jour les métadonnées sûres d'une pull request (titre, body, labels) après validation du head exact. N'expose ni state, ni base, ni close.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "pullRequestNumber": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "expectedHeadSha": {
+            "type": "string",
+            "minLength": 40,
+            "maxLength": 40,
+            "pattern": "^[0-9a-fA-F]{40}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 65000
+          },
+          "labels": {
+            "maxItems": 30,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          }
+        },
+        "required": [
+          "organization",
+          "repository",
+          "pullRequestNumber",
+          "expectedHeadSha"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "0acd01cacf68d77e1bc606abd61d834e7c07fe1cafe241420c9dc1480805d01b"
     },
     {
       "name": "inspect_sadiaaf_s1",
