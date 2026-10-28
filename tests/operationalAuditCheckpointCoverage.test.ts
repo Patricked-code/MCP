@@ -118,7 +118,8 @@ test('S1: a checkpoint moves the range to the event appended after its snapshot 
 
 test('S1: a checkpoint that links its whole window leaves an empty range anchored at the last event', async () => {
   await withJournal(async (journal, file) => {
-    const audit = createOperationalAudit(journal);
+    const failures: string[] = [];
+    const audit = createOperationalAudit(journal, (type) => failures.push(type));
     assert.deepEqual(audit.checkpointCoverage?.(SESSION_A), EMPTY);
     for (let version = 1; version <= 3; version += 1) await audit.record(reconcile(SESSION_A, version));
     const snapshot = audit.checkpointEventIds?.(SESSION_A) ?? [];
@@ -130,6 +131,7 @@ test('S1: a checkpoint that links its whole window leaves an empty range anchore
     assert.deepEqual(audit.checkpointCoverage?.(SESSION_A), anchored);
     await audit.record({ type: 'checkpoint.created', checkpoint: checkpoint(SESSION_A, []) });
     assert.deepEqual(audit.checkpointCoverage?.(SESSION_A), anchored);
+    assert.deepEqual(failures, []);
   });
 });
 

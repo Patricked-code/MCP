@@ -109,10 +109,12 @@ export type OperationalAuditInput =
     };
 
 /**
- * The range of session events no checkpoint has linked yet. `eventIds` is the bounded projection
- * a checkpoint can link (the last 64); the range itself runs from `firstEventId` through
- * `lastEventId` and counts every session event the window recorded in between, so events that
- * left the 64-ID projection are still accounted for.
+ * The range a checkpoint taken now must cover. `eventIds` is the bounded projection it can link
+ * (the last 64 unlinked events). `lastEventId` is the newest event recorded for the session: the
+ * replay anchor, kept once every event is linked. `firstEventId` starts the range at the oldest
+ * unlinked event, or is null when there is none. The range may span events that earlier
+ * checkpoints already linked, but it never leaves out an unlinked one; `eventCount` counts every
+ * event the window recorded from `firstEventId` through `lastEventId`.
  */
 export type CheckpointCoverage = {
   eventIds: string[];
@@ -350,8 +352,12 @@ type PendingEvent = { eventId: string; ordinal: number };
 type PendingWindow = {
   // The last 64 events no checkpoint has linked, in journal order: what a checkpoint can link.
   events: PendingEvent[];
-  // The oldest event no checkpoint has linked, kept after it leaves the 64-event projection.
-  first: PendingEvent;
+  // The last 64 unlinked events that left that projection, in journal order: a checkpoint whose
+  // snapshot was taken before they left can still link them.
+  dropped: PendingEvent[];
+  // The range start: the oldest unlinked event while `dropped` or `events` still holds it, else a
+  // conservative start that may precede events already linked. Null once every event is linked.
+  first: PendingEvent | null;
   // The newest event recorded for the session; ordinals count the session's events.
   last: PendingEvent;
 };
@@ -372,9 +378,9 @@ export function createOperationalAudit(
       if (!window) return emptyCoverage();
       return {
         eventIds: window.events.map((pending) => pending.eventId),
-        firstEventId: window.first.eventId,
+        firstEventId: window.first?.eventId ?? null,
         lastEventId: window.last.eventId,
-        eventCount: window.last.ordinal - window.first.ordinal + 1
+        eventCount: window.first ? window.last.ordinal - window.first.ordinal + 1 : 0
       };
     },
 
@@ -390,19 +396,18 @@ export function createOperationalAudit(
             if (window) {
               const covered = new Set(input.checkpoint.eventIds);
               const events = window.events.filter((pending) => !covered.has(pending.eventId));
-              // The range start moves only while it is still in the projection: every unlinked
-              // event is then in the projection too, so the oldest one left is the new start.
-              // Once the start has left the projection, the events between it and the projection
-              // were linked by no checkpoint, and the range keeps them.
-              const startLinked = window.events[0]?.eventId === window.first.eventId
-                && covered.has(window.first.eventId);
-              if (!startLinked) {
-                pendingWindows.set(appended.governedSessionId, { ...window, events });
-              } else if (events.length > 0) {
-                pendingWindows.set(appended.governedSessionId, { ...window, events, first: events[0]! });
-              } else {
-                pendingWindows.delete(appended.governedSessionId);
-              }
+              const dropped = window.dropped.filter((pending) => !covered.has(pending.eventId));
+              // While the start is still held, every unlinked event since it is held too, so the
+              // oldest one left is the exact new start. Once it is not, this checkpoint may have
+              // linked events no longer held, and the start stays where it is.
+              const start = window.first;
+              const startHeld = start !== null
+                && (window.dropped[0] ?? window.events[0])?.eventId === start.eventId;
+              const first = startHeld && covered.has(start.eventId)
+                ? dropped[0] ?? events[0] ?? null
+                : start;
+              // The window outlives a full release: its last event stays the replay anchor.
+              pendingWindows.set(appended.governedSessionId, { events, dropped, first, last: window.last });
             }
           } else if (
             input.type === 'session.closed'
@@ -414,8 +419,10 @@ export function createOperationalAudit(
           } else {
             const window = pendingWindows.get(appended.governedSessionId);
             const pending = { eventId: appended.eventId, ordinal: (window?.last.ordinal ?? 0) + 1 };
+            const events = [...(window?.events ?? []), pending];
             pendingWindows.set(appended.governedSessionId, {
-              events: [...(window?.events ?? []), pending].slice(-64),
+              events: events.slice(-64),
+              dropped: [...(window?.dropped ?? []), ...events.slice(0, -64)].slice(-64),
               first: window?.first ?? pending,
               last: pending
             });
