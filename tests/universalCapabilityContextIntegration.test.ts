@@ -67,3 +67,32 @@ test('canonical work instructions persist all four mandatory principles and acce
   assert.equal(plan.workingMethodology.exposurePolicy.capabilitiesAreNotRegisteredTools,undefined);
   assert.equal(plan.exposureSlice.capabilitiesAreNotRegisteredTools,true);
 });
+
+test('GD-U-02: genuine registered handlers are shown as registered but never as privileged',()=>{
+  const result=extendProjectContextWithUniversalCapabilities(
+    {name:'wealthtech_ssh_bridge',mode:'read-only-first',servers:{}},
+    ['github_get_repository_state','github_create_branch','plesk_subdomain_preview_s1s2','ping'],
+    [
+      {name:'github_get_repository_state',surface:'read'},
+      {name:'github_create_branch',surface:'scoped-write'},
+      {name:'plesk_subdomain_preview_s1s2',surface:'read'},
+      {name:'ping',surface:'read'}
+    ]
+  );
+  const list=result.universalCapabilities.capabilities;
+  const repo=list.find(c=>c.id==='github.repository.inspect');
+  const branch=list.find(c=>c.id==='github.branch.create');
+  const plesk=list.find(c=>c.id==='plesk.subdomain.create');
+  const deletion=list.find(c=>c.id==='github.repository.delete');
+  assert.equal(repo?.exposure,'REGISTERED_READ_ONLY');
+  assert.equal(repo?.registeredToolName,'github_get_repository_state');
+  assert.equal(branch?.exposure,'REGISTERED_GOVERNED_WRITE');
+  assert.equal(branch?.registeredToolName,'github_create_branch');
+  assert.equal(plesk?.exposure,'REGISTERED_PREFLIGHT_ONLY');
+  assert.equal(deletion?.exposure,'TARGET_ONLY_NOT_REGISTERED_TOOL');
+  assert.equal(deletion?.registeredToolName,null);
+  assert.equal(repo?.runtimeHandlerRegistered,true);
+  assert.equal(branch?.runtimeWriteAuthorized,false);
+  assert.equal(branch?.executionReady,false);
+  assert.equal(result.universalCapabilities.executableBindings.anyAdminRightGranted,false);
+});
