@@ -7,6 +7,12 @@
  * Task Queue / session / claim / locks / consent / exact-HEAD authorities.
  */
 import {
+  resolveExecutableUniversalBindings,
+  type RegisteredToolWitness,
+  type ExecutableUniversalBindings
+} from './universalExecutableBindings.js';
+import type { DelegatedLiveProviderResult } from './universalAdminLiveProbe.js';
+import {
   UNIVERSAL_ADMIN_CAPABILITIES,
   type AdminPlane,
   type AdminRisk
@@ -14,6 +20,7 @@ import {
 
 export type UniversalCapabilityDiscoveryInput = Readonly<{
   existingToolNames: readonly string[];
+  registeredTools?: readonly RegisteredToolWitness[];
   plane?: AdminPlane;
   offset: number;
   limit: number;
@@ -67,6 +74,7 @@ export type UniversalCapabilityDiscovery = Readonly<{
     filteredTargets: number;
   }>;
   existingRegisteredToolNames: readonly string[];
+  executableBindings: ExecutableUniversalBindings;
   capabilities: readonly UniversalDiscoveredCapability[];
   nextOffset: number | null;
   method: typeof UNIVERSAL_CAPABILITY_DELIVERY_METHOD;
@@ -97,6 +105,13 @@ export function buildUniversalCapabilityDiscovery(
       || !Number.isSafeInteger(input.limit) || input.limit<1 || input.limit>200) {
     throw new Error('CAPABILITY_DISCOVERY_PAGE_INVALID');
   }
+  // Reconcile the actual runtime registration names/surfaces. Never infer
+  // that a catalog target is callable from its string description alone.
+  const actualTools = input.registeredTools ?? [];
+  if (actualTools.some(t=>!input.existingToolNames.includes(t.name))) {
+    throw new Error('CAPABILITY_DISCOVERY_UNRECONCILED_REGISTRY');
+  }
+  const executableBindings = resolveExecutableUniversalBindings(actualTools);
   const filtered = input.plane
     ? UNIVERSAL_ADMIN_CAPABILITIES.filter(c=>c.plane===input.plane)
     : UNIVERSAL_ADMIN_CAPABILITIES;
@@ -110,6 +125,7 @@ export function buildUniversalCapabilityDiscovery(
       filteredTargets:filtered.length
     },
     existingRegisteredToolNames:[...input.existingToolNames],
+    executableBindings,
     capabilities:page.map(c=>({
       id:c.id,plane:c.plane,risk:c.risk,implementationHint:c.existing,
       exposure:'TARGET_ONLY_NOT_REGISTERED_TOOL',
@@ -132,15 +148,22 @@ export function buildUniversalCapabilityDiscovery(
  */
 export function extendProjectContextWithUniversalCapabilities<T extends Record<string, unknown>>(
   existingContext: T,
-  registeredToolNames: readonly string[]
-): T & { universalCapabilities: UniversalCapabilityDiscovery } {
+  registeredToolNames: readonly string[],
+  registeredToolContracts: readonly RegisteredToolWitness[] = [],
+  liveEvidence?: DelegatedLiveProviderResult
+): T & {
+  universalCapabilities: UniversalCapabilityDiscovery;
+  delegatedProviderProbes?: DelegatedLiveProviderResult
+} {
   if (Object.prototype.hasOwnProperty.call(existingContext,'universalCapabilities')) {
     throw new Error('CAPABILITY_DISCOVERY_CONTEXT_COLLISION');
   }
   return {
     ...existingContext,
     universalCapabilities: buildUniversalCapabilityDiscovery({
-      existingToolNames: registeredToolNames,offset:0,limit:200
-    })
+      existingToolNames: registeredToolNames,registeredTools:registeredToolContracts,
+      offset:0,limit:200
+    }),
+    ...(liveEvidence ? { delegatedProviderProbes: liveEvidence } : {})
   };
 }
