@@ -18,6 +18,8 @@ import {
 export type DeploymentTargetMode = 'EXISTING_HOST_SUBPATH' | 'SUBDOMAIN' | 'DEDICATED_DOMAIN';
 export type UniversalDeploymentBlueprintInput = Readonly<{
   sourceRepository: string;
+  /** Authoritative MCP repository provided by the current governed context, never hard-coded. */
+  mcpRepository: string;
   sourceSha: string;
   serverId: 's1' | 's2';
   domain: string;
@@ -68,7 +70,7 @@ const TEMPLATE: readonly RawStep[] = [
 export function buildUniversalDeploymentBlueprint(input: UniversalDeploymentBlueprintInput): UniversalDeploymentBlueprint {
   const bad: string[] = [];
   const parts = input.sourceRepository.split('/');
-  if (!REPOSITORY.test(input.sourceRepository)
+  if (!REPOSITORY.test(input.sourceRepository) || !REPOSITORY.test(input.mcpRepository)
       || parts.some(part=>part==='.'||part==='..')
       || !SHA.test(input.sourceSha)) bad.push('SOURCE_NOT_ATTESTED');
   if (!DOMAIN.test(input.domain) || (input.serverId !== 's1' && input.serverId !== 's2')) {
