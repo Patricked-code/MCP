@@ -755,6 +755,29 @@
       "contractDigest": "28b39f6f610629d018a47301fd2b301821187c0762ca88d23167c54410f7ad69"
     },
     {
+      "name": "github_create_repository",
+      "title": null,
+      "description": "Crée un dépôt privé dans l'organisation configurée. Idempotent : un nom déjà pris est existence, pas un écrasement.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": { "type": "string", "minLength": 1, "maxLength": 120, "pattern": "^[A-Za-z0-9_.-]+$" },
+          "name": { "type": "string", "minLength": 1, "maxLength": 100, "pattern": "^[A-Za-z0-9._-]+$" },
+          "description": { "type": "string", "maxLength": 1000, "default": "" },
+          "autoInit": { "type": "boolean", "default": false }
+        },
+        "required": [ "organization", "name" ],
+        "additionalProperties": false
+      },
+      "contractDigest": "pending-generation"
+    },
+    {
       "name": "github_create_pull_request",
       "title": null,
       "description": "Crée une pull request gouvernée après relecture du SHA exact de sa branche head.",

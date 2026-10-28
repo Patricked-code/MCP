@@ -144,6 +144,21 @@
       ]
     },
     {
+      "name": "github_create_repository",
+      "kind": "MCP_TOOL",
+      "class": "COMPOSABLE",
+      "resourceTypes": [
+        "REPOSITORY"
+      ],
+      "guards": [
+        "organization equal to the configured GITHUB_ORG",
+        "ENABLE_WRITE_TOOLS and a shadow_ready Scoped WRITE Gate verdict",
+        "private-only visibility enforced",
+        "idempotent: existing name is existence not overwrite",
+        "no implicit webhook, team, secret, deploy key or ruleset"
+      ]
+    },
+    {
       "name": "github_request_pull_request_review",
       "kind": "MCP_TOOL",
       "class": "COMPOSABLE",

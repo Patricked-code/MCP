@@ -23,6 +23,7 @@ export const WRITE_SCOPED_TOOL_NAMES = new Set<string>([
   'github_create_commit',
   'github_create_or_update_file',
   'github_create_pull_request',
+  'github_create_repository',
   'github_mark_pr_ready',
   'github_merge_pull_request',
   'github_reply_review_thread',

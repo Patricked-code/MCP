@@ -773,4 +773,57 @@ export function registerGithubLifecycleWriteTools(
       });
     }
   );
+
+  server.tool(
+    'github_create_repository',
+    'Crée un dépôt privé dans l\'organisation configurée. Idempotent : un nom déjà pris est existence, pas un écrasement. Aucun webhook, team, secret, deploy key ni ruleset implicite.',
+    {
+      organization: OrganizationSchema,
+      name: z.string().min(1).max(100).regex(/^[A-Za-z0-9._-]+$/),
+      description: z.string().max(1000).default(''),
+      autoInit: z.boolean().default(false)
+    },
+    async ({ organization, name, description, autoInit }, extra) => {
+      await requireWrite(dependencies, extra as GovernanceExtra);
+      const org = assertOrg(organization, dependencies.configuredOrg);
+      try {
+        const raw = object(await expect(
+          dependencies,
+          `/orgs/${org}/repos`,
+          {
+            method: 'POST',
+            jsonBody: {
+              name,
+              description,
+              private: true,
+              auto_init: autoInit,
+              has_issues: true,
+              has_projects: false,
+              has_wiki: false
+            }
+          }
+        ));
+        return respond({
+          name: string(raw?.name),
+          fullName: string(raw?.full_name),
+          private: boolean(raw?.private),
+          htmlUrl: string(raw?.html_url),
+          created: true,
+          already_exists: false
+        });
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        if (message.includes('422') || message.includes('already_exists') || message.includes('name already exists')) {
+          return respond({
+            name,
+            fullName: `${org}/${name}`,
+            private: true,
+            created: false,
+            already_exists: true
+          });
+        }
+        throw err;
+      }
+    }
+  );
 }

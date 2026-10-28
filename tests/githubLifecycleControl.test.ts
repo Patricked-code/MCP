@@ -64,6 +64,7 @@ test('GWC-12 RED: materializes only C-90.1/C-90.2 selected surface', async () =>
     'github_create_commit',
     'github_create_or_update_file',
     'github_create_pull_request',
+    'github_create_repository',
     'github_mark_pr_ready',
     'github_merge_pull_request',
     'github_reply_review_thread',
@@ -72,7 +73,6 @@ test('GWC-12 RED: materializes only C-90.1/C-90.2 selected surface', async () =>
     'github_update_pull_request_metadata'
   ]);
   for (const forbidden of [
-    'github_create_repository',
     'github_delete_branch',
     'github_delete_file',
     'github_request_review',
