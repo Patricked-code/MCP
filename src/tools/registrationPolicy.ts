@@ -25,6 +25,7 @@ export const WRITE_SCOPED_TOOL_NAMES = new Set<string>([
   'github_create_pull_request',
   'github_mark_pr_ready',
   'github_merge_pull_request',
+  'github_request_pull_request_review',
   'github_reply_review_thread',
   'github_resolve_review_thread',
   'legacy_vhost_commit_push_s1',

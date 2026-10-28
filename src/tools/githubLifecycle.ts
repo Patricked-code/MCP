@@ -689,4 +689,40 @@ export function registerGithubLifecycleWriteTools(
       });
     }
   );
+
+  server.tool(
+    'github_request_pull_request_review',
+    'Demande une review sur une pull request après validation du head exact. Cible des reviewers explicites.',
+    {
+      organization: OrganizationSchema,
+      repository: RepositorySchema,
+      pullRequestNumber: PullRequestSchema,
+      expectedHeadSha: ShaSchema,
+      reviewers: z.array(z.string().min(1).max(120).regex(/^[A-Za-z0-9_.-]+$/)).min(1).max(15),
+      teamReviewers: z.array(z.string().min(1).max(120).regex(/^[A-Za-z0-9_.-]+$/)).max(10).default([])
+    },
+    async ({
+      organization, repository, pullRequestNumber, expectedHeadSha, reviewers, teamReviewers
+    }, extra) => {
+      await requireWrite(dependencies, extra as GovernanceExtra);
+      const org = assertOrg(organization, dependencies.configuredOrg);
+      const projection = await readPullRequest(
+        dependencies, org, repository, pullRequestNumber
+      );
+      const expected = assertExpectedPrHead(projection, expectedHeadSha);
+      const jsonBody: Record<string, string[]> = { reviewers };
+      if (teamReviewers.length > 0) jsonBody.team_reviewers = teamReviewers;
+      const raw = object(await expect(
+        dependencies,
+        `${repoEndpoint(org, repository)}/pulls/${pullRequestNumber}/requested_reviewers`,
+        { method: 'POST', jsonBody }
+      ));
+      return respond({
+        pullRequestNumber,
+        headSha: expected,
+        requestedReviewers: array(raw?.requested_reviewers).map((r) => string(object(r)?.login)).filter(Boolean),
+        requestedTeams: array(raw?.requested_teams).map((t) => string(object(t)?.slug)).filter(Boolean)
+      });
+    }
+  );
 }

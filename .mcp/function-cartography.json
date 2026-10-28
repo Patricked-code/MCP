@@ -1562,6 +1562,76 @@
       "contractDigest": "6bf4b63b7c62143397c0e7aac4ddcd609b9657dc0156ab010a89ac02ac1fe212"
     },
     {
+      "name": "github_request_pull_request_review",
+      "title": null,
+      "description": "Demande une review sur une pull request après validation du head exact. Cible des reviewers explicites.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "pullRequestNumber": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "expectedHeadSha": {
+            "type": "string",
+            "minLength": 40,
+            "maxLength": 40,
+            "pattern": "^[0-9a-fA-F]{40}$"
+          },
+          "reviewers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120,
+              "pattern": "^[A-Za-z0-9_.-]+$"
+            },
+            "minItems": 1,
+            "maxItems": 15
+          },
+          "teamReviewers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120,
+              "pattern": "^[A-Za-z0-9_.-]+$"
+            },
+            "maxItems": 10,
+            "default": []
+          }
+        },
+        "required": [
+          "organization",
+          "repository",
+          "pullRequestNumber",
+          "expectedHeadSha",
+          "reviewers"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "pending-generation"
+    },
+    {
       "name": "github_org_inventory",
       "title": null,
       "description": "Liste les dépôts GitHub visibles pour l’organisation configurée ou fournie, sans écrire, sans cloner et sans supprimer.",
