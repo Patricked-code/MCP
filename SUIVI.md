@@ -1,4 +1,16 @@
 # SUIVI.md
+## 2026-10-28 — TB-W4-H-01 : Trace evidence inventory (PASS_WITH_EVIDENCE)
+
+- **Blueprint** : TB-W4-H-01, Program Backlog V2, wave W4, lot H.1.
+- **Branche** : `claude/ecstatic-edison-v1dyt1`, HEAD `8214fe1` (rebased from main `48a5298`).
+- **Objectif** : inventorier les identifiants de traçabilité/audit/corrélation existants et cartographier les lacunes sans créer de second store.
+- **Résultat** : 15 identifiants inventoriés (12 propagés, 3 non-propagés), 11 points d'audit, 10 lacunes identifiées (2 HIGH, 4 MEDIUM, 4 LOW), 5 recommandations.
+- **Lacunes principales** : GAP-01 (pas d'operationId par requête MCP), GAP-09 (pas de trace ID end-to-end requête→journal→réponse).
+- **Fichiers** : `docs/audits/trace-evidence-inventory.json` (inventaire), `tests/traceEvidenceInventory.test.ts` (8/8 GREEN).
+- **Régression** : 55/55 tests GREEN (8 inventory + 14 happyPath + 34 candidateContinuity + 5 contractSubstrate - some counted in suites).
+- **PR** : #354 (draft, CI green, mergeable_state clean).
+- **NEXT_ACTION** : committer TB-W4-H-01, pousser, puis sélectionner le prochain blueprint READY via `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.
+
 ## 2026-10-23 — PR #350 : pilote GRT /gouvern et provisioning S1/S2, non fusionnés
 
 - Mandat : étendre sans migration le MCP existant, point d'ancrage issue #349 et PR #350. Baseline main/S1 `a3df3b0`, GRT `eb74f16b6c8bbe63658666095f6c97fb32aaa303`. Aucun déploiement S1 effectué.
