@@ -167,7 +167,8 @@ export async function readExistingPleskAuthorityFromRuntime(
   ]);
   const taskDeps=tasks.getGovernedTaskToolDependencies();
   const sessionDeps=operational.getGovernedSessionToolDependencies();
-  await taskDeps.ready();
+  // Pure observation: do not initialize/seed the Task Queue on an admission
+  // read. Missing records must block; reads must never mutate existing stores.
   return inspectExistingPleskAuthority(request,transport,{
     now:()=>new Date(),
     getTask:id=>taskDeps.queue.getVisibleTask(id),
