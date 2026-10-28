@@ -192,6 +192,15 @@
         "tests/universalAdminLiveProbe.test.ts"
       ],
       "runtimeToolRegistrationsAdded": 0
+    },
+    {
+      "id": "GD-U-02C",
+      "title": "Real narrowly scoped Plesk subdomain execution adapter gated by existing runtime authority",
+      "status": "CODED_PENDING_CI",
+      "code": "src/provisioning/governedPleskSubdomainExecutor.ts",
+      "tests": "tests/governedPleskSubdomainExecutor.test.ts",
+      "runtimeToolRegistration": "NOT_WIRED",
+      "noDirectS1Mutation": true
     }
   ],
   "acceptance": [
@@ -203,7 +212,7 @@
     "no runtime mutation without existing task/session/claim/locks/consent",
     "Regulatory remains real integration pilot, not special-case architecture"
   ],
-  "nextAction": "Obtain SUCCESS CI on latest exact HEAD after GD-U-02B and historical suite; independent review; coordinate any future registered tool/cartography changes with PR #354. Then implement Plesk/S1/S2 privileged executor with already existing governed task/session/claims/locks/E3 and real provider delegation, not by assuming root from id -u.",
+  "nextAction": "Verify exact HEAD full CI on PR #355 for GD-U-02C, fix failures, then connect readExistingAuthority to actual existing persisted Task Queue/Session/Lock/consent/review evidence, coordinate shared cartography/registration with GWC #354. No merge/deploy or task claim in this slice without independent review.",
   "intelligenceAutonomyRoadmap": {
     "kind": "NON_EXECUTABLE_PROGRAM_ADDENDUM",
     "existingFirst": [
@@ -531,5 +540,51 @@
       "independentReview": "NOT_YET_PERFORMED",
       "liveProductionExecution": "NOT_DEPLOYED"
     }
+  },
+  "gdU02PrivilegedPleskSlice": {
+    "id": "GD-U-02C",
+    "status": "CODED_PENDING_CI_NOT_RUNTIME_REGISTERED",
+    "parent": "GD-U-02B",
+    "implementedFiles": [
+      "src/provisioning/governedPleskSubdomainExecutor.ts",
+      "tests/governedPleskSubdomainExecutor.test.ts"
+    ],
+    "purpose": "Executable, bounded Plesk subdomain creation via existing Plesk/SSH TDD engine; direct runtime admission intentionally not wired pending independent governance owner.",
+    "existingReused": [
+      "src/provisioning/pleskExecute.ts",
+      "src/provisioning/pleskSshAdapter.ts",
+      "src/provisioning/pleskSite.ts",
+      "src/ssh/client.ts"
+    ],
+    "requiredInExistingRuntime": [
+      "fresh trusted Task Queue status IN_PROGRESS, exact task ID and claimed owner session",
+      "active session with exact principal and fresh heartbeat",
+      "active target resource lock owned by session and not expired",
+      "precise CREATE_SUBDOMAIN consent from trusted runtime admission",
+      "fully successful independent review and exact HEAD CI",
+      "same exact HEAD observed GitHub main, S1 checkout and runtime",
+      "Plesk subscription allowlist and fresh filesystem/Plesk observation",
+      "post-create verification; no silent rollback or deletion"
+    ],
+    "actualExecutionTransport": "buildExistingPleskSshExecutionPort (lazy import of existing runReadOnlyCommand/runGuardedCommand; fixed exact Plesk creation command and exact target server)",
+    "functionalEntry": "executeGovernedPleskSubdomain()",
+    "callableBackendFunctionExists": true,
+    "runnableByExistingMcpClient": false,
+    "mcpToolRegistered": false,
+    "newGithubOrServerPrivilegeGranted": false,
+    "sourceOfAuthority": "readExistingAuthority dependency MUST be wired by the existing MCP server to its persisted Task Queue/Session/Lock/Consent/CI; caller assertions do not constitute authority.",
+    "nextImplementation": "Build and independently review trusted runtime admission binding using existing session/task/locks and consent verifier, coordinate with PR #354 before registering a new MCP write tool or changing function-cartography.",
+    "redProof": {
+      "sha": "07ce84b020633d9a84697c650c1dc506a5b7ab6f",
+      "run": 40636818226,
+      "result": "CI failure before module created"
+    },
+    "expectedGreenHead": "PENDING_AT_DOC_COMMIT",
+    "workMethod": [
+      "GITHUB_FIRST",
+      "NO_REGRESSION",
+      "INDEPENDENT_SLICES",
+      "RED_GREEN_REGRESSION"
+    ]
   }
 }
