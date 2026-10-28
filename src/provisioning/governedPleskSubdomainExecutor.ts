@@ -10,6 +10,7 @@
 import { createPleskSubdomainOnServer, type PleskPolicy, type PleskRemotePort } from './pleskSshAdapter.js';
 import { planPleskSubdomain, type PleskSubdomainInput } from './pleskSite.js';
 import type { PleskCreationOutcome } from './pleskExecute.js';
+import { normalizeLockScope } from '../operationalMemory/lockService.js';
 
 type SessionStatus='ACTIVE'|'PAUSED'|'CLOSED'|'EXPIRED';
 type TaskStatus='CLAIMED'|'IN_PROGRESS'|'READY'|'BLOCKED'|'DONE';
@@ -62,6 +63,7 @@ function ageMs(time:string,now:string):number|null{
 }
 function admitted(req:GovernedPleskSubdomainRequest,a:GovernedPleskAuthoritySnapshot):boolean{
   const expectedScope='plesk:'+req.target.serverId+':'+req.target.parentDomain;
+  const expectedLockScope=normalizeLockScope({type:'resource',key:expectedScope});
   const age=ageMs(a.observedAt,req.now);
   const heartbeat=ageMs(a.sessionLastHeartbeatAt,req.now);
   const expiry=ageMs(a.lockExpiresAt,req.now);
@@ -73,7 +75,7 @@ function admitted(req:GovernedPleskSubdomainRequest,a:GovernedPleskAuthoritySnap
     && a.sessionId===req.expectedSessionId
     && a.sessionStatus==='ACTIVE'
     && a.sessionOwnerPrincipalId===req.expectedPrincipalId
-    && a.lockScope===expectedScope
+    && a.lockScope===expectedLockScope
     && a.lockOwnerSessionId===req.expectedSessionId
     && a.consent==='CREATE_SUBDOMAIN'
     && a.reviewAndCiApproved===true
