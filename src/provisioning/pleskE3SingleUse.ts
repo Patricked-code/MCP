@@ -38,7 +38,7 @@ export type PleskE3ConsumptionPorts=Readonly<{
   verifyTicket:(purpose:string,ticket:string,binding:string,now:number)=>boolean;
   now:()=>number;
   /** Trusted Task/Session/Lock/transport/CI pre-admission; if supplied, cannot be skipped. */
-  verifyPreAdmission?:()=>Promise<boolean>;
+  verifyPreAdmission:()=>Promise<boolean>;
 }>;
 export type PleskE3ConsumptionResult=Readonly<{
   status:'CONSUMED'|'BLOCKED';
@@ -95,12 +95,12 @@ export async function consumeSignedPleskE3Once(
     if(!ports.verifyTicket(PURPOSE,input.ticket,input.binding,now))
       return blocked('INVALID_TARGET_OR_TICKET');
   }catch{return blocked('INVALID_TARGET_OR_TICKET');}
-  if(ports.verifyPreAdmission){
-    try{
-      if(!await ports.verifyPreAdmission())
-        return blocked('GOVERNED_ADMISSION_NOT_ATTESTED');
-    }catch{return blocked('GOVERNED_ADMISSION_NOT_ATTESTED');}
-  }
+  if(typeof ports.verifyPreAdmission!=='function')
+    return blocked('GOVERNED_ADMISSION_NOT_ATTESTED');
+  try{
+    if(!await ports.verifyPreAdmission())
+      return blocked('GOVERNED_ADMISSION_NOT_ATTESTED');
+  }catch{return blocked('GOVERNED_ADMISSION_NOT_ATTESTED');}
   const directory=ports.directory;
   if(typeof directory!=='string'||directory.length<3
     ||directory.length>512||!isAbsolute(directory)||directory==='/'||directory.includes('\0')){
