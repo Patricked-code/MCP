@@ -78,3 +78,57 @@ test('RED B3c: provider exceptions are redacted, no fake approvals',async()=>{
   assert.equal(r.status,'BLOCKED');
   assert.doesNotMatch(JSON.stringify(r),/SECRET_TOKEN_LEAK/);
 });
+
+test('RED B3h: a bot-approved review with a plausible login is never independent human approval',async()=>{
+  const result=await observeGithubReviewAndCi({
+    repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+    expectedWorkflow:'MCP CI',now:()=>new Date('2026-10-28T06:15:00Z'),
+    request:async route=>({
+      ok:true,status:200,
+      json:route.includes('/reviews')
+        ?[{...reviews[0],user:{login:'security-reviewer',type:'Bot'}}]
+        :route.includes('/actions/runs')?runs:pr
+    })
+  });
+  assert.equal(result.status,'BLOCKED');
+  assert.equal(result.runtimeWriteAuthorized,false);
+});
+
+test('RED B3h: outsider with read-only reviewer permission is not an independent approver',async()=>{
+  const calls:string[]=[];
+  const result=await observeGithubReviewAndCi({
+    repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+    expectedWorkflow:'MCP CI',now:()=>new Date('2026-10-28T06:15:00Z'),
+    request:async route=>{
+      calls.push(route);
+      return {ok:true,status:200,json:
+        route.includes('/collaborators/')
+          ?{permission:'read'}
+          :route.includes('/reviews')?[{...reviews[0],user:{login:'security-reviewer',type:'User'}}]
+          :route.includes('/actions/runs')?runs:pr};
+    }
+  });
+  assert.equal(result.status,'BLOCKED');
+  assert.ok(calls.includes(path+'/collaborators/security-reviewer/permission'));
+  assert.equal(result.attestation,null);
+});
+
+test('RED B3h: changing PR HEAD after review/CI checks invalidates attestation',async()=>{
+  let prReads=0;
+  const r=await observeGithubReviewAndCi({
+    repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+    expectedWorkflow:'MCP CI',now:()=>new Date('2026-10-28T06:15:00Z'),
+    request:async route=>{
+      if(route.includes('/pulls/355')&&!route.includes('/reviews')){
+        prReads++;
+        return {ok:true,status:200,json:prReads===1?pr:{...pr,head:{sha:'f'.repeat(40)}}};
+      }
+      if(route.includes('/collaborators/'))return {ok:true,status:200,json:{permission:'write'}};
+      return {ok:true,status:200,json:route.includes('/reviews')
+        ?[{...reviews[0],user:{login:'security-reviewer',type:'User'}}]:runs};
+    }
+  });
+  assert.equal(prReads,2);
+  assert.equal(r.status,'BLOCKED');
+  assert.equal(r.runtimeWriteAuthorized,false);
+});
