@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "GD-U-02D-B3i-GITHUB-REVIEW-TIMESTAMP-AMBIGUITY-20261028",
+  "kind": "ADDITIVE_NON_AUTHORITATIVE_SECURITY_CHECKPOINT",
+  "date": "2026-10-28",
+  "repository": "Patricked-code/MCP",
+  "issue": 349,
+  "pr": 355,
+  "branch": "mcp/universal-github-plesk-server-capabilities-20261028",
+  "scope": "Only PR #355 GitHub review/CI read-only probe; no OAuth/BUS/Regulatory/GWC changes.",
+  "finding": "When GitHub reviews have equal submitted_at timestamps but contradictory states, choosing the last array item could produce PROVIDER_APPROVED based on API ordering rather than a deterministic review authority.",
+  "change": "Treat conflicting state, commit_id or actor type at an identical timestamp as ambiguous and fail closed for that reviewer. A strictly later timestamp clears prior ambiguity. No extra GitHub privileges or runtime writes.",
+  "code": "src/github/observeGithubReviewAndCi.ts",
+  "tests": "tests/observeGithubReviewAndCi.test.ts",
+  "red": {
+    "sha": "1e019273a68ba89362b9b950ed9857c85b8530c7",
+    "runId": 40653239640,
+    "conclusion": "failure",
+    "assertion": "expected BLOCKED, got PROVIDER_APPROVED"
+  },
+  "green": {
+    "sha": "0261d44fff8dda244de9bbc607dad95dc190e9b6",
+    "runId": 40653359717,
+    "conclusion": "PENDING_AT_DOCUMENT_CREATION"
+  },
+  "production": {
+    "writeAuthorized": false,
+    "executed": false,
+    "pleskProvisioned": false,
+    "mainOrS1Changed": false
+  },
+  "mcpLiveObservation": "UNAVAILABLE_THIS_RUN_REQUIRES_INTERACTIVE_CONNECTOR_AUTHORIZATION; historical live observations must not be represented as fresh.",
+  "nextAction": "Check exact-head CI, review independence, Task Queue/Session/Claim/Lock through authorized live MCP connection. Continue server-owned web E3 to trusted MCP transport binding in an isolated approved scope; preserve fail-closed Plesk write guard. No merge/deploy before independent approval and runtime authority."
+}
