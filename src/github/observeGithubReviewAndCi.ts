@@ -74,10 +74,11 @@ export async function observeGithubReviewAndCi(
 
     // Only the latest review from each user is authoritative; a later
     // CHANGES_REQUESTED, COMMENTED or DISMISSED state revokes earlier approval.
-    const latest=new Map<string,{state:string;commit:string;submittedAt:number}>();
+    const latest=new Map<string,{state:string;commit:string;submittedAt:number;actorType:string|null}>();
     for(const item of rawReviews){
       const review=obj(item);
       const reviewer=name(review?.user);
+      const actorType=obj(review?.user)?.type;
       const state=review?.state;
       const timestamp=Date.parse(String(review?.submitted_at??''));
       if(!reviewer||!Number.isFinite(timestamp)
@@ -86,12 +87,33 @@ export async function observeGithubReviewAndCi(
       if(!old||timestamp>=old.submittedAt)latest.set(reviewer.toLowerCase(),{
         state,
         commit:String(review?.commit_id??''),
-        submittedAt:timestamp
+        submittedAt:timestamp,
+        actorType:typeof actorType==='string'?actorType:null
       });
     }
-    const approved=[...latest.entries()].find(([reviewer,r])=>reviewer!==author.toLowerCase()
-      &&r.state==='APPROVED'&&r.commit===input.expectedHeadSha);
-    if(!approved)return blocked();
+    // A GitHub API review object is not a valid independent approval by itself.
+    // Bots, outsiders, and read-only accounts must never satisfy an admin
+    // release gate. Reuse GitHub's current effective repository permission.
+    const approvedCandidates=[...latest.entries()].filter(([reviewer,r])=>
+      reviewer!==author.toLowerCase()
+      &&r.actorType==='User'
+      &&r.state==='APPROVED'
+      &&r.commit===input.expectedHeadSha
+    );
+    let approvedReviewer:string|null=null;
+    for(const [reviewer] of approvedCandidates){
+      const permissionPath=prefix+'/collaborators/'+encodeURIComponent(reviewer)+'/permission';
+      const response=await input.request(permissionPath);
+      const effectivePermission=obj(response.json)?.permission;
+      if(response.ok&&response.status===200
+        &&(effectivePermission==='write'
+          ||effectivePermission==='maintain'
+          ||effectivePermission==='admin')){
+        approvedReviewer=reviewer;
+        break;
+      }
+    }
+    if(!approvedReviewer)return blocked();
 
     // Choose latest matching workflow run, never an older successful run
     // after a newer failure on the same PR head.
@@ -103,6 +125,16 @@ export async function observeGithubReviewAndCi(
     const latestRun=ordered[0];
     if(!latestRun||!Number.isSafeInteger(latestRun.run_number)
       ||latestRun.status!=='completed'||latestRun.conclusion!=='success')return blocked();
+
+    // TOCTOU: the PR may have changed between the first HEAD read and the
+    // review/CI/permission observations. Re-observe its exact HEAD before
+    // producing even a read-only attestation.
+    const finalPrResponse=await input.request(prPath);
+    const finalPr=obj(finalPrResponse.json);
+    if(!finalPrResponse.ok||finalPrResponse.status!==200
+      ||finalPr?.state!=='open'||finalPr?.draft!==false
+      ||obj(finalPr?.head)?.sha!==input.expectedHeadSha
+      ||name(finalPr?.user)!==author)return blocked();
     const at=input.now().toISOString();
     return {
       status:'PROVIDER_APPROVED',
@@ -112,7 +144,7 @@ export async function observeGithubReviewAndCi(
         headSha:input.expectedHeadSha,
         workflowConcludedSuccess:true,
         independentReviewApproved:true,
-        reviewer:approved[0],
+        reviewer:approvedReviewer,
         prAuthor:author,
         approvalHeadSha:input.expectedHeadSha
       },
