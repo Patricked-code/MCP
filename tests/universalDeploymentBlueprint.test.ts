@@ -32,7 +32,7 @@ const autonomy = ():UniversalAutonomyAdviceInput=>({
   target:{mode:'NO_INFRA_CHANGE'}
 });
 const base=()=>({
-  sourceRepository:repository,sourceSha:sha,serverId:'s1' as const,
+  sourceRepository:repository,mcpRepository:'Patricked-code/MCP',sourceSha:sha,serverId:'s1' as const,
   domain:'wealthtechinnovations.com',mode:'DEDICATED_DOMAIN' as const,path:null,at,
   existingAutonomy:autonomy(),
   evidenceByCapability:{} as Record<string,DelegatedCapabilityEvidence|null>
