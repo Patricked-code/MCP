@@ -137,7 +137,12 @@ export async function observeGithubReviewAndCi(
     // after a newer failure on the same PR head.
     const matches=rawRuns.map(item=>obj(item)).filter((x):x is Record<string,unknown>=>x!==null)
       .filter(x=>x.head_sha===input.expectedHeadSha
-        &&x.name===input.expectedWorkflow&&x.event==='pull_request');
+        &&x.name===input.expectedWorkflow&&x.event==='pull_request'
+        // A successful run on the same SHA may belong to a DIFFERENT PR
+        // with another merge context. Never trust SHA alone for release.
+        &&Array.isArray(x.pull_requests)
+        &&x.pull_requests.some((associated:unknown)=>
+          obj(associated)?.number===input.pullRequestNumber));
     if(matches.length===0)return blocked();
     const ordered=matches.sort((a,b)=>Number(b.run_number)-Number(a.run_number));
     const latestRun=ordered[0];
