@@ -192,3 +192,25 @@ test('RED B3i: conflicting reviews at the same instant cannot be approved by arr
     assert.equal(result.runtimeWriteAuthorized,false);
   }
 });
+
+
+test('FINDING-06: an outstanding CHANGES_REQUESTED from a second reviewer blocks even if another approved',async()=>{
+  const denied=await observeGithubReviewAndCi({
+    repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+    expectedWorkflow:'MCP CI',now:()=>new Date('2026-10-28T06:15:00Z'),
+    request:client({reviews:[...reviews,{
+      state:'CHANGES_REQUESTED',commit_id:head,user:{login:'reviewer-two',type:'User'},
+      submitted_at:'2026-10-28T06:11:00Z'
+    }]}).request
+  });
+  assert.equal(denied.status,'BLOCKED');
+  assert.equal(denied.attestation,null);
+});
+test('OUTDATED REVIEW REGRESSION: a later COMMENTED review does not revoke an existing approval',async()=>{
+ const r=await observeGithubReviewAndCi({
+   repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+   expectedWorkflow:'MCP CI',now:()=>new Date('2026-10-28T06:15:00Z'),
+   request:client({reviews:[...reviews,{...reviews[0],state:'COMMENTED',submitted_at:'2026-10-28T06:12:00Z'}]}).request
+ });
+ assert.equal(r.status,'PROVIDER_APPROVED');
+});
