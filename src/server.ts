@@ -563,9 +563,36 @@ export async function startHttpServer(): Promise<void> {
       allowedParents: parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)
     }),
     writeEnabled: () => env.ENABLE_WRITE_TOOLS && env.MCP_PLESK_PROVISIONING_ENABLED,
-    // Fail closed until the existing Governed Session/Task Queue/Locks/receipt
-    // admission can be enforced for new domain scopes. No raw web-consent bypass.
-    authorizeRuntimeWrite: async () => false,
+    // B3i: no browser cookie/HTTP header may impersonate a server-authenticated
+    // MCP transport. The existing read-only authority reader is composed here,
+    // deliberately without inventing a transport from request input. Therefore
+    // it MUST return BLOCKED until a server-owned, authenticated association is
+    // supplied through the existing governed MCP transport/session service.
+    authorizeRuntimeWrite: async (input) => {
+      const { inspectPleskHttpToMcpAdmissionFromRuntime } = await import(
+        './provisioning/pleskHttpToMcpAdmission.js'
+      );
+      const observed = await inspectPleskHttpToMcpAdmissionFromRuntime({
+        target: {
+          serverId: input.serverId,
+          parentDomain: input.parentDomain,
+          label: input.label,
+          documentRoot: input.documentRoot
+        },
+        webSessionBinding: '',
+        consentTicket: '',
+        confirmFqdn: input.label + '.' + input.parentDomain,
+        explicitConsent: null,
+        sameOrigin: false,
+        oauthAuthorization: '',
+        trustedMcpTransport: null
+      });
+      return observed.runtimeWriteAuthorized;
+    },
+    // Defensive B3i: the signed E3 ticket is never consumable on this HTTP
+    // route until there is a genuinely owned MCP transport and Task/Lock
+    // admission. This is NOT a grant; it closes the optional B3e callback.
+    consumeGovernedConsent: async () => false,
     io: {
       readonly: async (serverId, command) => runReadOnlyCommand(serverId, command),
       guarded: async (serverId, command) => runGuardedCommand(serverId, command, {
