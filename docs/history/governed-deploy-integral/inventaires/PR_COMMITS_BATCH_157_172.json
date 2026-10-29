@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "positions": [
+    157,
+    172
+  ],
+  "items": [
+    {
+      "pr": 234,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b55267a1e9715a3302c112cc1ac23f0a3fd3acba",
+          "date": "2026-10-04T18:38:26Z",
+          "parents": [
+            "dbc5a5062716ae2fd186d36c4f54e97204ede9a3"
+          ],
+          "subject": "test(c3): RED terminal evidence for TB-W3-C3-01",
+          "url": "https://github.com/Patricked-code/MCP/commit/b55267a1e9715a3302c112cc1ac23f0a3fd3acba"
+        },
+        {
+          "sha": "152fa2420f5429adb46aa304258bdb405e9cbeb8",
+          "date": "2026-10-04T22:22:20Z",
+          "parents": [
+            "b55267a1e9715a3302c112cc1ac23f0a3fd3acba"
+          ],
+          "subject": "docs(c3): close TB-W3-C3-01 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/152fa2420f5429adb46aa304258bdb405e9cbeb8"
+        }
+      ]
+    },
+    {
+      "pr": 237,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "cfc922cbf89eedf13e25d38e69623074b844c6d8",
+          "date": "2026-10-04T22:39:29Z",
+          "parents": [
+            "0ac9ecf70adab117f2175ef2451fc62fe15abac7"
+          ],
+          "subject": "test(program): RED convergence of intakes #235 and #236",
+          "url": "https://github.com/Patricked-code/MCP/commit/cfc922cbf89eedf13e25d38e69623074b844c6d8"
+        },
+        {
+          "sha": "924536daa124ba0612b5d3f8433604a9b2db1405",
+          "date": "2026-10-04T22:50:34Z",
+          "parents": [
+            "cfc922cbf89eedf13e25d38e69623074b844c6d8"
+          ],
+          "subject": "feat(program): converge intakes #235 and #236 into Program Backlog V2",
+          "url": "https://github.com/Patricked-code/MCP/commit/924536daa124ba0612b5d3f8433604a9b2db1405"
+        }
+      ]
+    },
+    {
+      "pr": 238,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "5957c6977d7bbb5b825bc27590399b45f85416bb",
+          "date": "2026-10-04T23:01:01Z",
+          "parents": [
+            "e6ea0d853e03f3100c0cd13fad297650f688e936"
+          ],
+          "subject": "test(c4): RED runtime resolution after server resolution",
+          "url": "https://github.com/Patricked-code/MCP/commit/5957c6977d7bbb5b825bc27590399b45f85416bb"
+        },
+        {
+          "sha": "130a839d94eeacd521b9dde41ac75fba19c9215f",
+          "date": "2026-10-04T23:07:37Z",
+          "parents": [
+            "5957c6977d7bbb5b825bc27590399b45f85416bb"
+          ],
+          "subject": "feat(c4): GW-08 runtime resolution chained after server resolution",
+          "url": "https://github.com/Patricked-code/MCP/commit/130a839d94eeacd521b9dde41ac75fba19c9215f"
+        }
+      ]
+    },
+    {
+      "pr": 239,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "18a704907da69bbaffb37e0b6d294bed2f32ea41",
+          "date": "2026-10-04T23:12:09Z",
+          "parents": [
+            "4654c9edb57e37806eb9783f2b5d863301b50d01"
+          ],
+          "subject": "test(c4): RED terminal evidence for TB-W3-C4-01",
+          "url": "https://github.com/Patricked-code/MCP/commit/18a704907da69bbaffb37e0b6d294bed2f32ea41"
+        },
+        {
+          "sha": "e5ca85f62be79c802b65caf57489ac47f47dcded",
+          "date": "2026-10-04T23:14:36Z",
+          "parents": [
+            "18a704907da69bbaffb37e0b6d294bed2f32ea41"
+          ],
+          "subject": "docs(c4): close TB-W3-C4-01 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/e5ca85f62be79c802b65caf57489ac47f47dcded"
+        }
+      ]
+    },
+    {
+      "pr": 240,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b02b58e03b8c6ad6f7cf91cb102d43678f74aa83",
+          "date": "2026-10-04T23:19:01Z",
+          "parents": [
+            "538394a290c6f461f3d6c87a173ef87d08751f56"
+          ],
+          "subject": "test(c5): RED domain resolution after server resolution",
+          "url": "https://github.com/Patricked-code/MCP/commit/b02b58e03b8c6ad6f7cf91cb102d43678f74aa83"
+        },
+        {
+          "sha": "12dda80aa3bbb6f3097a9aa1be3a4f5ba8b932ba",
+          "date": "2026-10-05T03:22:39Z",
+          "parents": [
+            "b02b58e03b8c6ad6f7cf91cb102d43678f74aa83"
+          ],
+          "subject": "feat(c5): GW-09 domain resolution chained after server resolution",
+          "url": "https://github.com/Patricked-code/MCP/commit/12dda80aa3bbb6f3097a9aa1be3a4f5ba8b932ba"
+        }
+      ]
+    },
+    {
+      "pr": 241,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "ad3363e654b60207b1830843c10321869bb573f6",
+          "date": "2026-10-05T03:27:24Z",
+          "parents": [
+            "9131bd8c2983377a62afbdb559bc3cf2392f1b5d"
+          ],
+          "subject": "test(c5): RED terminal evidence for TB-W3-C5-01",
+          "url": "https://github.com/Patricked-code/MCP/commit/ad3363e654b60207b1830843c10321869bb573f6"
+        },
+        {
+          "sha": "846e2e5aa16fb8d8b89b11ad7205fe76e6112f53",
+          "date": "2026-10-05T03:29:41Z",
+          "parents": [
+            "ad3363e654b60207b1830843c10321869bb573f6"
+          ],
+          "subject": "docs(c5): close TB-W3-C5-01 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/846e2e5aa16fb8d8b89b11ad7205fe76e6112f53"
+        }
+      ]
+    },
+    {
+      "pr": 242,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "1556dfa82cdd330fc530d761da0b49ae7cbcf8a4",
+          "date": "2026-10-05T03:48:01Z",
+          "parents": [
+            "9afadd753e9c4d4cf882ad5fc7e0d4154cb4a25d"
+          ],
+          "subject": "test(c345): RED project reality acceptance",
+          "url": "https://github.com/Patricked-code/MCP/commit/1556dfa82cdd330fc530d761da0b49ae7cbcf8a4"
+        },
+        {
+          "sha": "9baa2da768c7f904a67bf74fe812092111045659",
+          "date": "2026-10-05T03:53:41Z",
+          "parents": [
+            "1556dfa82cdd330fc530d761da0b49ae7cbcf8a4"
+          ],
+          "subject": "feat(c345): project reality composed in the governed context",
+          "url": "https://github.com/Patricked-code/MCP/commit/9baa2da768c7f904a67bf74fe812092111045659"
+        }
+      ]
+    },
+    {
+      "pr": 243,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "78411bfc0b523e1849d6770487321db462df3ed7",
+          "date": "2026-10-05T03:58:14Z",
+          "parents": [
+            "d4a98988b6e5327cb1b802a3d2099f634d29b82d"
+          ],
+          "subject": "test(c345): RED terminal evidence for TB-W3-C345-02",
+          "url": "https://github.com/Patricked-code/MCP/commit/78411bfc0b523e1849d6770487321db462df3ed7"
+        },
+        {
+          "sha": "63002b4b88fc16013815c9557d71350c3c6834d8",
+          "date": "2026-10-05T04:00:26Z",
+          "parents": [
+            "78411bfc0b523e1849d6770487321db462df3ed7"
+          ],
+          "subject": "docs(c345): close TB-W3-C345-02 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/63002b4b88fc16013815c9557d71350c3c6834d8"
+        }
+      ]
+    },
+    {
+      "pr": 244,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "15c0f88dd623f8d2af0918dc4c6edbbe0bcb5235",
+          "date": "2026-10-05T04:10:03Z",
+          "parents": [
+            "c4fb286efb38bb084013b62c6bdce533725021aa"
+          ],
+          "subject": "test(d1): RED project-scoped governance inheritance",
+          "url": "https://github.com/Patricked-code/MCP/commit/15c0f88dd623f8d2af0918dc4c6edbbe0bcb5235"
+        },
+        {
+          "sha": "57a5ef852c9412a8bb3447f3991b8921be7c8abf",
+          "date": "2026-10-05T08:27:44Z",
+          "parents": [
+            "15c0f88dd623f8d2af0918dc4c6edbbe0bcb5235"
+          ],
+          "subject": "feat(d1): project-scoped governance inheritance",
+          "url": "https://github.com/Patricked-code/MCP/commit/57a5ef852c9412a8bb3447f3991b8921be7c8abf"
+        }
+      ]
+    },
+    {
+      "pr": 245,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "485515e7ae4b32426be39d17bf7556faf9492068",
+          "date": "2026-10-05T08:32:51Z",
+          "parents": [
+            "87109f4153cea8d208c861e7ba456e617e3e4d24"
+          ],
+          "subject": "test(d1): RED closure of TB-W3-D1-01 governance inheritance",
+          "url": "https://github.com/Patricked-code/MCP/commit/485515e7ae4b32426be39d17bf7556faf9492068"
+        },
+        {
+          "sha": "ff8da23c8d6a27c69a60277660246d27682fe8a7",
+          "date": "2026-10-05T08:35:38Z",
+          "parents": [
+            "485515e7ae4b32426be39d17bf7556faf9492068"
+          ],
+          "subject": "docs(d1): close TB-W3-D1-01 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/ff8da23c8d6a27c69a60277660246d27682fe8a7"
+        }
+      ]
+    },
+    {
+      "pr": 246,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "699aaadffa0ab8dd43a076c9c79c3c089e8b1221",
+          "date": "2026-10-05T08:51:31Z",
+          "parents": [
+            "9936325c773de58c9e1114f0094b2e477a6fde12"
+          ],
+          "subject": "test(d2): RED project-scoped effective capabilities",
+          "url": "https://github.com/Patricked-code/MCP/commit/699aaadffa0ab8dd43a076c9c79c3c089e8b1221"
+        },
+        {
+          "sha": "28c1e0ca82892c20db731c050f68f1d8be2a50f8",
+          "date": "2026-10-05T08:55:59Z",
+          "parents": [
+            "699aaadffa0ab8dd43a076c9c79c3c089e8b1221"
+          ],
+          "subject": "feat(d2): project-scoped effective capabilities",
+          "url": "https://github.com/Patricked-code/MCP/commit/28c1e0ca82892c20db731c050f68f1d8be2a50f8"
+        }
+      ]
+    },
+    {
+      "pr": 247,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "03f665d62a869d62755e7a86aab854165f77f1e9",
+          "date": "2026-10-05T09:00:15Z",
+          "parents": [
+            "1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a"
+          ],
+          "subject": "test(d2): RED closure of TB-W3-D2-01 effective capabilities",
+          "url": "https://github.com/Patricked-code/MCP/commit/03f665d62a869d62755e7a86aab854165f77f1e9"
+        },
+        {
+          "sha": "f64637689af13f2a4a782c4887f3044f8f427e0e",
+          "date": "2026-10-05T09:02:42Z",
+          "parents": [
+            "03f665d62a869d62755e7a86aab854165f77f1e9"
+          ],
+          "subject": "docs(d2): close TB-W3-D2-01 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/f64637689af13f2a4a782c4887f3044f8f427e0e"
+        }
+      ]
+    },
+    {
+      "pr": 248,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "fbcb140418968e173168094cf7d5fe75c8bd769c",
+          "date": "2026-10-05T09:08:20Z",
+          "parents": [
+            "a22293fc78212e0375569c628af9964de2a28960"
+          ],
+          "subject": "test(d3): RED proven references in the bootstrap receipt",
+          "url": "https://github.com/Patricked-code/MCP/commit/fbcb140418968e173168094cf7d5fe75c8bd769c"
+        },
+        {
+          "sha": "884414ff68b7e4b381f99252cab55f9cdaad7011",
+          "date": "2026-10-05T13:25:49Z",
+          "parents": [
+            "fbcb140418968e173168094cf7d5fe75c8bd769c"
+          ],
+          "subject": "feat(d3): proven references in the bootstrap receipt",
+          "url": "https://github.com/Patricked-code/MCP/commit/884414ff68b7e4b381f99252cab55f9cdaad7011"
+        }
+      ]
+    },
+    {
+      "pr": 249,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "ecdd5fc6e576ad6a13a48585974659b86432edcb",
+          "date": "2026-10-05T13:30:33Z",
+          "parents": [
+            "7c9331695b034dea1c9f1fecfab775ff0e328358"
+          ],
+          "subject": "test(d3): RED closure of TB-W3-D3-01 receipt references",
+          "url": "https://github.com/Patricked-code/MCP/commit/ecdd5fc6e576ad6a13a48585974659b86432edcb"
+        },
+        {
+          "sha": "b20f628bb3e001b50bccb0d1b3678006c711a984",
+          "date": "2026-10-05T13:32:37Z",
+          "parents": [
+            "ecdd5fc6e576ad6a13a48585974659b86432edcb"
+          ],
+          "subject": "docs(d3): close TB-W3-D3-01 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/b20f628bb3e001b50bccb0d1b3678006c711a984"
+        }
+      ]
+    },
+    {
+      "pr": 250,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "17b8640d8e7e5526ab1e67048ad51d7770df1ccb",
+          "date": "2026-10-05T13:36:06Z",
+          "parents": [
+            "121fba9c4ff7ddfb7526a00673ca67b253c9cd4b"
+          ],
+          "subject": "test(intake-236): RED owner clarification EXISTING_MCP_EXPOSURE_FIRST",
+          "url": "https://github.com/Patricked-code/MCP/commit/17b8640d8e7e5526ab1e67048ad51d7770df1ccb"
+        },
+        {
+          "sha": "d742ea7144756cf284ae56d975601c144a8e0e77",
+          "date": "2026-10-05T13:37:28Z",
+          "parents": [
+            "17b8640d8e7e5526ab1e67048ad51d7770df1ccb"
+          ],
+          "subject": "docs(intake-236): converge the EXISTING_MCP_EXPOSURE_FIRST clarification",
+          "url": "https://github.com/Patricked-code/MCP/commit/d742ea7144756cf284ae56d975601c144a8e0e77"
+        }
+      ]
+    },
+    {
+      "pr": 251,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b08dca3bec321eac3c8713433a37b8d366d6aadf",
+          "date": "2026-10-05T13:53:41Z",
+          "parents": [
+            "df4a99e5e3b953a595a7c3defc33471538b0dc57"
+          ],
+          "subject": "test(e1): RED missing-context detection (TB-W3-E1-01)",
+          "url": "https://github.com/Patricked-code/MCP/commit/b08dca3bec321eac3c8713433a37b8d366d6aadf"
+        },
+        {
+          "sha": "33803ec191dbbe92fca726017cb7ffc1b2c9f3d6",
+          "date": "2026-10-05T14:00:50Z",
+          "parents": [
+            "b08dca3bec321eac3c8713433a37b8d366d6aadf"
+          ],
+          "subject": "feat(e1): missing-context detection in the governed context",
+          "url": "https://github.com/Patricked-code/MCP/commit/33803ec191dbbe92fca726017cb7ffc1b2c9f3d6"
+        }
+      ]
+    }
+  ]
+}
