@@ -212,7 +212,9 @@ async function pairedExecutorCase(withExecutor:boolean){
   const writes:string[]=[];
   const app=express();
   app.use(express.urlencoded({extended:false}));
-  const deps:Parameters<typeof createPleskSubdomainRouter>[0]={
+  const deps:Parameters<typeof createPleskSubdomainRouter>[0] & {
+    executeGovernedCreate?:(_req:express.Request,input:{serverId:string})=>Promise<{status:'CREATED';reason:string}>;
+  }={
     requireLogin:(_req,_res,next)=>next(),
     session:()=> 'paired-existing-session',
     sameOrigin:()=>true,
