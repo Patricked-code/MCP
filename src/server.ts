@@ -9,6 +9,7 @@ import { requireBearerToken } from './auth.js';
 import {
   isSameOriginSubmission,
   issueWebConsentTicket,
+  inspectOauthAccessToken,
   registerOauthRoutes,
   verifyWebConsentTicket
 } from './oauth.js';
@@ -70,6 +71,11 @@ import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js
 import { readServerMapConfiguration } from './liveState/targetProject.js';
 import { createProjectRuntimeProvisioningRouter } from './provisioning/routes.js';
 import { createPleskSubdomainRouter } from './provisioning/pleskWebRoutes.js';
+import {
+  createPleskWebTransportPairing,
+  type PleskWebTransportPairing
+} from './provisioning/pleskWebTransportPairing.js';
+import { registerPleskWebMcpPairingTool } from './provisioning/pleskMcpPairingTool.js';
 import { createGovernPilotRouter } from './provisioning/governPilotRoutes.js';
 import { mintGithubAppRepoToken } from './github/appInstallationToken.js';
 import { downloadGovernPilotArchive } from './github/governPilotArchiveSource.js';
@@ -344,7 +350,7 @@ function renderAccountPage(account: string, githubPageHtml: string): string {
   );
 }
 
-export function buildMcpServer(): McpServer {
+export function buildMcpServer(pairing?:PleskWebTransportPairing): McpServer {
   const server = new McpServer({
     name: 'wealthtech_ssh_bridge',
     version: '0.1.0'
@@ -353,6 +359,10 @@ export function buildMcpServer(): McpServer {
   });
 
   registerReadOnlyTools(decorateRegistrationCatalogServer(server, 'read'));
+  if(pairing){
+    // Authenticated ToolExtra, not a browser field, is the only transport source.
+    registerPleskWebMcpPairingTool(server,pairing);
+  }
   const taskDependencies = getGovernedTaskToolDependencies();
   registerGovernedTaskReadTools(
     decorateRegistrationCatalogServer(server, 'read'),
@@ -428,6 +438,11 @@ export async function startHttpServer(): Promise<void> {
     await getGovernedTaskToolDependencies().ready();
   }
   startGovernedOperationalMemoryMaintenance();
+  const pairing=createPleskWebTransportPairing({
+    now:()=>Date.now(),
+    lookupSessionId:id=>getGovernedSessionToolDependencies().sessions.lookupGovernedSessionId(id),
+    inspectOauth:inspectOauthAccessToken
+  });
   const app = express();
   app.use(createGithubDeployRouter({
     verifyOidc: verifyGithubOidcToken,
@@ -563,35 +578,42 @@ export async function startHttpServer(): Promise<void> {
       allowedParents: parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)
     }),
     writeEnabled: () => env.ENABLE_WRITE_TOOLS && env.MCP_PLESK_PROVISIONING_ENABLED,
-    // B3i: no browser cookie/HTTP header may impersonate a server-authenticated
-    // MCP transport. The existing read-only authority reader is composed here,
-    // deliberately without inventing a transport from request input. Therefore
-    // it MUST return BLOCKED until a server-owned, authenticated association is
-    // supplied through the existing governed MCP transport/session service.
-    authorizeRuntimeWrite: async (input) => {
-      const { inspectPleskHttpToMcpAdmissionFromRuntime } = await import(
+    requireMcpPairing:true,
+    // The one-use proof is issued through the authenticated MCP transport.
+    // Its opaque value comes from the form but identity/session/lock never do.
+    authorizeRuntimeWrite:async(input,context)=>{
+      if(!context||!isValidWebSession(webConsentBinding(context.req)))return false;
+      const linked=pairing.redeem({
+        proof:context.pairingProof,
+        target:{
+          serverId:input.serverId,parentDomain:input.parentDomain,
+          label:input.label,documentRoot:input.documentRoot
+        },
+        webSessionBinding:webConsentBinding(context.req)
+      });
+      if(!linked)return false;
+      const {inspectPleskHttpToMcpAdmissionFromRuntime}=await import(
         './provisioning/pleskHttpToMcpAdmission.js'
       );
-      const observed = await inspectPleskHttpToMcpAdmissionFromRuntime({
-        target: {
-          serverId: input.serverId,
-          parentDomain: input.parentDomain,
-          label: input.label,
-          documentRoot: input.documentRoot
+      const observed=await inspectPleskHttpToMcpAdmissionFromRuntime({
+        target:{
+          serverId:input.serverId,parentDomain:input.parentDomain,
+          label:input.label,documentRoot:input.documentRoot
         },
-        webSessionBinding: '',
-        consentTicket: '',
-        confirmFqdn: input.label + '.' + input.parentDomain,
-        explicitConsent: null,
-        sameOrigin: false,
-        oauthAuthorization: '',
-        trustedMcpTransport: null
+        webSessionBinding:webConsentBinding(context.req),
+        consentTicket:context.consentTicket,
+        confirmFqdn:input.label+'.'+input.parentDomain,
+        explicitConsent:'CREATE_SUBDOMAIN',
+        sameOrigin:isSameOriginSubmission(context.req),
+        oauthAuthorization:linked.oauthAuthorization,
+        trustedMcpTransport:linked.transport
       });
+      // Existing B3f is intentionally read-only: no false permission is
+      // inferred from an otherwise valid web/MCP pairing.
       return observed.runtimeWriteAuthorized;
     },
-    // Defensive B3i: the signed E3 ticket is never consumable on this HTTP
-    // route until there is a genuinely owned MCP transport and Task/Lock
-    // admission. This is NOT a grant; it closes the optional B3e callback.
+    // E3 atomic single-use receipts and full runtime release gate must be
+    // installed and independently verified before any Plesk write.
     consumeGovernedConsent: async () => false,
     io: {
       readonly: async (serverId, command) => runReadOnlyCommand(serverId, command),
@@ -920,7 +942,7 @@ export async function startHttpServer(): Promise<void> {
           }
         };
 
-        const mcpServer = buildMcpServer();
+        const mcpServer = buildMcpServer(pairing);
         await mcpServer.connect(transport);
       } else {
         res.status(400).json({ error: 'Invalid or missing MCP session' });
