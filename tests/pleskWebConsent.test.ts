@@ -207,3 +207,58 @@ test('GD-U B3i P0: unreadable Plesk subscription is NOT evidence of authorizatio
   assert.equal(evidence.subscriptionAuthorized,false);
   assert.equal(evidence.parentExists,null);
 });
+
+async function pairedExecutorCase(withExecutor:boolean){
+  const writes:string[]=[];
+  const app=express();
+  app.use(express.urlencoded({extended:false}));
+  const deps:Parameters<typeof createPleskSubdomainRouter>[0]={
+    requireLogin:(_req,_res,next)=>next(),
+    session:()=> 'paired-existing-session',
+    sameOrigin:()=>true,
+    issueTicket:()=> 'signed-ticket',
+    verifyTicket:()=>true,
+    policy:()=>({enabled:true,allowedParents:{s2:['chainsolutions.fr']}}),
+    writeEnabled:()=>true,
+    requireMcpPairing:true,
+    authorizeRuntimeWrite:async()=>true,
+    consumeGovernedConsent:async()=>true,
+    io:{
+      readonly:async(_s,cmd)=>{
+        if(cmd.startsWith('plesk bin subscription'))return{code:0,stdout:'ok'};
+        if(cmd.startsWith('plesk bin subdomain --info'))return{code:1,stdout:'',stderr:'Specified subdomain does not exist'};
+        if(cmd.startsWith('test -L')||cmd.startsWith('test -e'))return{code:1,stdout:''};
+        return{code:0,stdout:''};
+      },
+      guarded:async(_s,cmd)=>{writes.push('raw:'+cmd);return{code:0,stdout:'ok'};}
+    }
+  };
+  if(withExecutor)deps.executeGovernedCreate=async(_req,input)=>{
+    assert.equal(input.serverId,'s2');
+    writes.push('governed');
+    return{status:'CREATED',reason:'POST_CREATE_ATTESTED'};
+  };
+  app.use(createPleskSubdomainRouter(deps));
+  const server=app.listen(0,'127.0.0.1');
+  await new Promise<void>(resolve=>server.once('listening',resolve));
+  try{
+    const url='http://127.0.0.1:'+(server.address() as AddressInfo).port+'/provisioning/plesk-subdomain';
+    const form=new URLSearchParams({...fields,consent_creation:'CREATE_SUBDOMAIN',
+      confirm_fqdn:'tdd-safe.chainsolutions.fr',consent_ticket:'signed-ticket',
+      mcp_pair_proof:'server-issued-proof'});
+    const result=await fetch(url,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:form});
+    return{result,body:await result.json(),writes};
+  }finally{await new Promise<void>(resolve=>server.close(()=>resolve()));}
+}
+test('GD-U B3i P0: paired Plesk route blocks absent trusted governed executor even after E3',async()=>{
+  const {result,body,writes}=await pairedExecutorCase(false);
+  assert.equal(result.status,403);
+  assert.equal(body.reason,'GOVERNED_EXECUTOR_NOT_BOUND');
+  assert.deepEqual(writes,[]);
+});
+test('GD-U B3i P0: paired Plesk route calls ONLY trusted governed executor, never generic SSH',async()=>{
+  const {result,body,writes}=await pairedExecutorCase(true);
+  assert.equal(result.status,201);
+  assert.equal(body.status,'CREATED');
+  assert.deepEqual(writes,['governed']);
+});
