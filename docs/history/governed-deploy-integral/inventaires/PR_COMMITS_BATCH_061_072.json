@@ -1,0 +1,1180 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "positions": [
+    61,
+    72
+  ],
+  "items": [
+    {
+      "pr": 67,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "ca376015936881949190dad9517c17c191275627",
+          "date": "2026-09-01T00:16:25Z",
+          "parents": [
+            "184107d5705248427d322922077d18f51e133c15"
+          ],
+          "subject": "docs(spec): define minimal governed connection context",
+          "url": "https://github.com/Patricked-code/MCP/commit/ca376015936881949190dad9517c17c191275627"
+        },
+        {
+          "sha": "3c01f0f4d06431de0490475d95b1f58cf827d789",
+          "date": "2026-09-01T00:16:55Z",
+          "parents": [
+            "ca376015936881949190dad9517c17c191275627"
+          ],
+          "subject": "docs(spec): make connection context constraints explicit",
+          "url": "https://github.com/Patricked-code/MCP/commit/3c01f0f4d06431de0490475d95b1f58cf827d789"
+        },
+        {
+          "sha": "0d5df154d61933347a2acd57a7b062b1f7424bbf",
+          "date": "2026-09-01T00:17:30Z",
+          "parents": [
+            "3c01f0f4d06431de0490475d95b1f58cf827d789"
+          ],
+          "subject": "docs(governance): record Connection Context design in SUIVI.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/0d5df154d61933347a2acd57a7b062b1f7424bbf"
+        },
+        {
+          "sha": "dca7a02feab30d7adc7353a249dbf07f9d7b8a3c",
+          "date": "2026-09-01T00:17:32Z",
+          "parents": [
+            "0d5df154d61933347a2acd57a7b062b1f7424bbf"
+          ],
+          "subject": "docs(governance): record Connection Context design in CHANGELOG.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/dca7a02feab30d7adc7353a249dbf07f9d7b8a3c"
+        },
+        {
+          "sha": "8e3266594b545884ef73556ba413c108cac2106f",
+          "date": "2026-09-01T00:17:34Z",
+          "parents": [
+            "dca7a02feab30d7adc7353a249dbf07f9d7b8a3c"
+          ],
+          "subject": "docs(governance): record Connection Context design in DECISIONS_LOG.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/8e3266594b545884ef73556ba413c108cac2106f"
+        },
+        {
+          "sha": "d6faca00e19bb916735f22fd988282b43c3ed552",
+          "date": "2026-09-01T00:28:12Z",
+          "parents": [
+            "8e3266594b545884ef73556ba413c108cac2106f"
+          ],
+          "subject": "docs(plan): define connection context TDD implementation",
+          "url": "https://github.com/Patricked-code/MCP/commit/d6faca00e19bb916735f22fd988282b43c3ed552"
+        },
+        {
+          "sha": "afff8a73d1a1036ab382230daf02a40019dba641",
+          "date": "2026-09-01T00:29:21Z",
+          "parents": [
+            "d6faca00e19bb916735f22fd988282b43c3ed552"
+          ],
+          "subject": "test(governance): define connection context contract RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/afff8a73d1a1036ab382230daf02a40019dba641"
+        },
+        {
+          "sha": "73b6b5012f896ebe91e00984efa02fc4c0b2993b",
+          "date": "2026-09-01T00:30:56Z",
+          "parents": [
+            "afff8a73d1a1036ab382230daf02a40019dba641"
+          ],
+          "subject": "docs(governance): register connection context design artifacts",
+          "url": "https://github.com/Patricked-code/MCP/commit/73b6b5012f896ebe91e00984efa02fc4c0b2993b"
+        },
+        {
+          "sha": "7335e3fdb0812402d4ed3cd570e9909beb74c475",
+          "date": "2026-09-01T00:31:05Z",
+          "parents": [
+            "73b6b5012f896ebe91e00984efa02fc4c0b2993b"
+          ],
+          "subject": "test(governance): include connection context contract in safety suite",
+          "url": "https://github.com/Patricked-code/MCP/commit/7335e3fdb0812402d4ed3cd570e9909beb74c475"
+        },
+        {
+          "sha": "a6b526b85b488dc2c4d7012eac5d31d510a1c5b9",
+          "date": "2026-09-01T00:32:54Z",
+          "parents": [
+            "7335e3fdb0812402d4ed3cd570e9909beb74c475"
+          ],
+          "subject": "feat(governance): define minimal connection context",
+          "url": "https://github.com/Patricked-code/MCP/commit/a6b526b85b488dc2c4d7012eac5d31d510a1c5b9"
+        },
+        {
+          "sha": "28b3bf45c903f43f56bd8b90921a34236f707f03",
+          "date": "2026-09-01T00:34:26Z",
+          "parents": [
+            "a6b526b85b488dc2c4d7012eac5d31d510a1c5b9"
+          ],
+          "subject": "test(governance): require session connection context binding RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/28b3bf45c903f43f56bd8b90921a34236f707f03"
+        },
+        {
+          "sha": "994b71de97beeb14b48cbd8ad501f9844b145764",
+          "date": "2026-09-01T00:35:40Z",
+          "parents": [
+            "28b3bf45c903f43f56bd8b90921a34236f707f03"
+          ],
+          "subject": "feat(governance): bind connection context to governed session",
+          "url": "https://github.com/Patricked-code/MCP/commit/994b71de97beeb14b48cbd8ad501f9844b145764"
+        },
+        {
+          "sha": "6088a707c8a2e580cc0467adbae06873c73f4265",
+          "date": "2026-09-01T00:37:18Z",
+          "parents": [
+            "994b71de97beeb14b48cbd8ad501f9844b145764"
+          ],
+          "subject": "test(governance): preserve connection context across session continuity",
+          "url": "https://github.com/Patricked-code/MCP/commit/6088a707c8a2e580cc0467adbae06873c73f4265"
+        },
+        {
+          "sha": "2f9d752e5c2c9c4eff98138b67a3bd96b6561656",
+          "date": "2026-09-01T00:38:43Z",
+          "parents": [
+            "6088a707c8a2e580cc0467adbae06873c73f4265"
+          ],
+          "subject": "test(governance): expose sanitized context through session surfaces",
+          "url": "https://github.com/Patricked-code/MCP/commit/2f9d752e5c2c9c4eff98138b67a3bd96b6561656"
+        },
+        {
+          "sha": "dcb731a74939f1e5b8624c42565837346718bc0a",
+          "date": "2026-09-01T00:40:51Z",
+          "parents": [
+            "2f9d752e5c2c9c4eff98138b67a3bd96b6561656"
+          ],
+          "subject": "docs(governance): attest connection context implementation",
+          "url": "https://github.com/Patricked-code/MCP/commit/dcb731a74939f1e5b8624c42565837346718bc0a"
+        },
+        {
+          "sha": "c7b216103141d8a97337008b12418fd86ca1610d",
+          "date": "2026-09-01T00:42:40Z",
+          "parents": [
+            "dcb731a74939f1e5b8624c42565837346718bc0a"
+          ],
+          "subject": "docs(governance): minimize connection context inventory diff",
+          "url": "https://github.com/Patricked-code/MCP/commit/c7b216103141d8a97337008b12418fd86ca1610d"
+        },
+        {
+          "sha": "ecefbd8886584745283005f274818d1220d859fe",
+          "date": "2026-09-01T00:44:19Z",
+          "parents": [
+            "c7b216103141d8a97337008b12418fd86ca1610d"
+          ],
+          "subject": "docs(spec): remove trailing whitespace",
+          "url": "https://github.com/Patricked-code/MCP/commit/ecefbd8886584745283005f274818d1220d859fe"
+        },
+        {
+          "sha": "33384bf03752bc16d5317658822741067b3cd729",
+          "date": "2026-09-01T05:53:45Z",
+          "parents": [
+            "ecefbd8886584745283005f274818d1220d859fe"
+          ],
+          "subject": "docs(roadmap): decompose governed connection context",
+          "url": "https://github.com/Patricked-code/MCP/commit/33384bf03752bc16d5317658822741067b3cd729"
+        }
+      ]
+    },
+    {
+      "pr": 68,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "ca376015936881949190dad9517c17c191275627",
+          "date": "2026-09-01T00:16:25Z",
+          "parents": [
+            "184107d5705248427d322922077d18f51e133c15"
+          ],
+          "subject": "docs(spec): define minimal governed connection context",
+          "url": "https://github.com/Patricked-code/MCP/commit/ca376015936881949190dad9517c17c191275627"
+        },
+        {
+          "sha": "3c01f0f4d06431de0490475d95b1f58cf827d789",
+          "date": "2026-09-01T00:16:55Z",
+          "parents": [
+            "ca376015936881949190dad9517c17c191275627"
+          ],
+          "subject": "docs(spec): make connection context constraints explicit",
+          "url": "https://github.com/Patricked-code/MCP/commit/3c01f0f4d06431de0490475d95b1f58cf827d789"
+        },
+        {
+          "sha": "0d5df154d61933347a2acd57a7b062b1f7424bbf",
+          "date": "2026-09-01T00:17:30Z",
+          "parents": [
+            "3c01f0f4d06431de0490475d95b1f58cf827d789"
+          ],
+          "subject": "docs(governance): record Connection Context design in SUIVI.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/0d5df154d61933347a2acd57a7b062b1f7424bbf"
+        },
+        {
+          "sha": "dca7a02feab30d7adc7353a249dbf07f9d7b8a3c",
+          "date": "2026-09-01T00:17:32Z",
+          "parents": [
+            "0d5df154d61933347a2acd57a7b062b1f7424bbf"
+          ],
+          "subject": "docs(governance): record Connection Context design in CHANGELOG.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/dca7a02feab30d7adc7353a249dbf07f9d7b8a3c"
+        },
+        {
+          "sha": "8e3266594b545884ef73556ba413c108cac2106f",
+          "date": "2026-09-01T00:17:34Z",
+          "parents": [
+            "dca7a02feab30d7adc7353a249dbf07f9d7b8a3c"
+          ],
+          "subject": "docs(governance): record Connection Context design in DECISIONS_LOG.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/8e3266594b545884ef73556ba413c108cac2106f"
+        },
+        {
+          "sha": "d6faca00e19bb916735f22fd988282b43c3ed552",
+          "date": "2026-09-01T00:28:12Z",
+          "parents": [
+            "8e3266594b545884ef73556ba413c108cac2106f"
+          ],
+          "subject": "docs(plan): define connection context TDD implementation",
+          "url": "https://github.com/Patricked-code/MCP/commit/d6faca00e19bb916735f22fd988282b43c3ed552"
+        },
+        {
+          "sha": "afff8a73d1a1036ab382230daf02a40019dba641",
+          "date": "2026-09-01T00:29:21Z",
+          "parents": [
+            "d6faca00e19bb916735f22fd988282b43c3ed552"
+          ],
+          "subject": "test(governance): define connection context contract RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/afff8a73d1a1036ab382230daf02a40019dba641"
+        },
+        {
+          "sha": "73b6b5012f896ebe91e00984efa02fc4c0b2993b",
+          "date": "2026-09-01T00:30:56Z",
+          "parents": [
+            "afff8a73d1a1036ab382230daf02a40019dba641"
+          ],
+          "subject": "docs(governance): register connection context design artifacts",
+          "url": "https://github.com/Patricked-code/MCP/commit/73b6b5012f896ebe91e00984efa02fc4c0b2993b"
+        },
+        {
+          "sha": "7335e3fdb0812402d4ed3cd570e9909beb74c475",
+          "date": "2026-09-01T00:31:05Z",
+          "parents": [
+            "73b6b5012f896ebe91e00984efa02fc4c0b2993b"
+          ],
+          "subject": "test(governance): include connection context contract in safety suite",
+          "url": "https://github.com/Patricked-code/MCP/commit/7335e3fdb0812402d4ed3cd570e9909beb74c475"
+        },
+        {
+          "sha": "a6b526b85b488dc2c4d7012eac5d31d510a1c5b9",
+          "date": "2026-09-01T00:32:54Z",
+          "parents": [
+            "7335e3fdb0812402d4ed3cd570e9909beb74c475"
+          ],
+          "subject": "feat(governance): define minimal connection context",
+          "url": "https://github.com/Patricked-code/MCP/commit/a6b526b85b488dc2c4d7012eac5d31d510a1c5b9"
+        },
+        {
+          "sha": "28b3bf45c903f43f56bd8b90921a34236f707f03",
+          "date": "2026-09-01T00:34:26Z",
+          "parents": [
+            "a6b526b85b488dc2c4d7012eac5d31d510a1c5b9"
+          ],
+          "subject": "test(governance): require session connection context binding RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/28b3bf45c903f43f56bd8b90921a34236f707f03"
+        },
+        {
+          "sha": "994b71de97beeb14b48cbd8ad501f9844b145764",
+          "date": "2026-09-01T00:35:40Z",
+          "parents": [
+            "28b3bf45c903f43f56bd8b90921a34236f707f03"
+          ],
+          "subject": "feat(governance): bind connection context to governed session",
+          "url": "https://github.com/Patricked-code/MCP/commit/994b71de97beeb14b48cbd8ad501f9844b145764"
+        },
+        {
+          "sha": "6088a707c8a2e580cc0467adbae06873c73f4265",
+          "date": "2026-09-01T00:37:18Z",
+          "parents": [
+            "994b71de97beeb14b48cbd8ad501f9844b145764"
+          ],
+          "subject": "test(governance): preserve connection context across session continuity",
+          "url": "https://github.com/Patricked-code/MCP/commit/6088a707c8a2e580cc0467adbae06873c73f4265"
+        },
+        {
+          "sha": "2f9d752e5c2c9c4eff98138b67a3bd96b6561656",
+          "date": "2026-09-01T00:38:43Z",
+          "parents": [
+            "6088a707c8a2e580cc0467adbae06873c73f4265"
+          ],
+          "subject": "test(governance): expose sanitized context through session surfaces",
+          "url": "https://github.com/Patricked-code/MCP/commit/2f9d752e5c2c9c4eff98138b67a3bd96b6561656"
+        },
+        {
+          "sha": "dcb731a74939f1e5b8624c42565837346718bc0a",
+          "date": "2026-09-01T00:40:51Z",
+          "parents": [
+            "2f9d752e5c2c9c4eff98138b67a3bd96b6561656"
+          ],
+          "subject": "docs(governance): attest connection context implementation",
+          "url": "https://github.com/Patricked-code/MCP/commit/dcb731a74939f1e5b8624c42565837346718bc0a"
+        },
+        {
+          "sha": "c7b216103141d8a97337008b12418fd86ca1610d",
+          "date": "2026-09-01T00:42:40Z",
+          "parents": [
+            "dcb731a74939f1e5b8624c42565837346718bc0a"
+          ],
+          "subject": "docs(governance): minimize connection context inventory diff",
+          "url": "https://github.com/Patricked-code/MCP/commit/c7b216103141d8a97337008b12418fd86ca1610d"
+        },
+        {
+          "sha": "ecefbd8886584745283005f274818d1220d859fe",
+          "date": "2026-09-01T00:44:19Z",
+          "parents": [
+            "c7b216103141d8a97337008b12418fd86ca1610d"
+          ],
+          "subject": "docs(spec): remove trailing whitespace",
+          "url": "https://github.com/Patricked-code/MCP/commit/ecefbd8886584745283005f274818d1220d859fe"
+        },
+        {
+          "sha": "33384bf03752bc16d5317658822741067b3cd729",
+          "date": "2026-09-01T05:53:45Z",
+          "parents": [
+            "ecefbd8886584745283005f274818d1220d859fe"
+          ],
+          "subject": "docs(roadmap): decompose governed connection context",
+          "url": "https://github.com/Patricked-code/MCP/commit/33384bf03752bc16d5317658822741067b3cd729"
+        },
+        {
+          "sha": "6a7c3341410c6cd651204f43b5e9493a168c0a7d",
+          "date": "2026-09-01T06:14:55Z",
+          "parents": [
+            "33384bf03752bc16d5317658822741067b3cd729"
+          ],
+          "subject": "test(governance): reproduce connection context binding leak",
+          "url": "https://github.com/Patricked-code/MCP/commit/6a7c3341410c6cd651204f43b5e9493a168c0a7d"
+        },
+        {
+          "sha": "f3b4bacd1d8a6975d33c949372cda6f1d1d2d523",
+          "date": "2026-09-01T06:15:11Z",
+          "parents": [
+            "6a7c3341410c6cd651204f43b5e9493a168c0a7d"
+          ],
+          "subject": "test(governance): run connection context binding regression",
+          "url": "https://github.com/Patricked-code/MCP/commit/f3b4bacd1d8a6975d33c949372cda6f1d1d2d523"
+        },
+        {
+          "sha": "81832e1b702a8dfe10cda5634d6092fb3a177142",
+          "date": "2026-09-01T06:18:42Z",
+          "parents": [
+            "f3b4bacd1d8a6975d33c949372cda6f1d1d2d523"
+          ],
+          "subject": "fix(governance): validate connection context before transport binding",
+          "url": "https://github.com/Patricked-code/MCP/commit/81832e1b702a8dfe10cda5634d6092fb3a177142"
+        }
+      ]
+    },
+    {
+      "pr": 69,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "fdfac5b3d8a61de7963387dd878ece3cfa0e3e46",
+          "date": "2026-09-01T17:59:19Z",
+          "parents": [
+            "024f6ad4c047614bdfaea0e317f371b789f60136"
+          ],
+          "subject": "docs(governance): reconcile SUIVI.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/fdfac5b3d8a61de7963387dd878ece3cfa0e3e46"
+        },
+        {
+          "sha": "a89b6c26065367feb4051985903c88028fa7c689",
+          "date": "2026-09-01T17:59:20Z",
+          "parents": [
+            "fdfac5b3d8a61de7963387dd878ece3cfa0e3e46"
+          ],
+          "subject": "docs(governance): reconcile TASKS.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/a89b6c26065367feb4051985903c88028fa7c689"
+        },
+        {
+          "sha": "add57b0980fb55143c58c327852f715b9c2cb8ca",
+          "date": "2026-09-01T17:59:21Z",
+          "parents": [
+            "a89b6c26065367feb4051985903c88028fa7c689"
+          ],
+          "subject": "docs(governance): reconcile TODO.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/add57b0980fb55143c58c327852f715b9c2cb8ca"
+        },
+        {
+          "sha": "b5ad8d15926425e29b5478f51c4066d625f14691",
+          "date": "2026-09-01T17:59:22Z",
+          "parents": [
+            "add57b0980fb55143c58c327852f715b9c2cb8ca"
+          ],
+          "subject": "docs(governance): reconcile ROADMAP.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/b5ad8d15926425e29b5478f51c4066d625f14691"
+        },
+        {
+          "sha": "1f648a994f301cf58ccf06e065d0c3a9a771a39d",
+          "date": "2026-09-01T17:59:24Z",
+          "parents": [
+            "b5ad8d15926425e29b5478f51c4066d625f14691"
+          ],
+          "subject": "docs(governance): reconcile CHANGELOG.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/1f648a994f301cf58ccf06e065d0c3a9a771a39d"
+        },
+        {
+          "sha": "7c14f4404cdaeebe3a9476aaa48c7b1da3c9b936",
+          "date": "2026-09-01T17:59:25Z",
+          "parents": [
+            "1f648a994f301cf58ccf06e065d0c3a9a771a39d"
+          ],
+          "subject": "docs(governance): reconcile DECISIONS_LOG.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/7c14f4404cdaeebe3a9476aaa48c7b1da3c9b936"
+        }
+      ]
+    },
+    {
+      "pr": 70,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "fdfac5b3d8a61de7963387dd878ece3cfa0e3e46",
+          "date": "2026-09-01T17:59:19Z",
+          "parents": [
+            "024f6ad4c047614bdfaea0e317f371b789f60136"
+          ],
+          "subject": "docs(governance): reconcile SUIVI.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/fdfac5b3d8a61de7963387dd878ece3cfa0e3e46"
+        },
+        {
+          "sha": "a89b6c26065367feb4051985903c88028fa7c689",
+          "date": "2026-09-01T17:59:20Z",
+          "parents": [
+            "fdfac5b3d8a61de7963387dd878ece3cfa0e3e46"
+          ],
+          "subject": "docs(governance): reconcile TASKS.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/a89b6c26065367feb4051985903c88028fa7c689"
+        },
+        {
+          "sha": "add57b0980fb55143c58c327852f715b9c2cb8ca",
+          "date": "2026-09-01T17:59:21Z",
+          "parents": [
+            "a89b6c26065367feb4051985903c88028fa7c689"
+          ],
+          "subject": "docs(governance): reconcile TODO.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/add57b0980fb55143c58c327852f715b9c2cb8ca"
+        },
+        {
+          "sha": "b5ad8d15926425e29b5478f51c4066d625f14691",
+          "date": "2026-09-01T17:59:22Z",
+          "parents": [
+            "add57b0980fb55143c58c327852f715b9c2cb8ca"
+          ],
+          "subject": "docs(governance): reconcile ROADMAP.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/b5ad8d15926425e29b5478f51c4066d625f14691"
+        },
+        {
+          "sha": "1f648a994f301cf58ccf06e065d0c3a9a771a39d",
+          "date": "2026-09-01T17:59:24Z",
+          "parents": [
+            "b5ad8d15926425e29b5478f51c4066d625f14691"
+          ],
+          "subject": "docs(governance): reconcile CHANGELOG.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/1f648a994f301cf58ccf06e065d0c3a9a771a39d"
+        },
+        {
+          "sha": "7c14f4404cdaeebe3a9476aaa48c7b1da3c9b936",
+          "date": "2026-09-01T17:59:25Z",
+          "parents": [
+            "1f648a994f301cf58ccf06e065d0c3a9a771a39d"
+          ],
+          "subject": "docs(governance): reconcile DECISIONS_LOG.md after PR #68",
+          "url": "https://github.com/Patricked-code/MCP/commit/7c14f4404cdaeebe3a9476aaa48c7b1da3c9b936"
+        },
+        {
+          "sha": "66fbf65217c551c0a6a41605a598b9aac6b0901d",
+          "date": "2026-09-01T18:04:28Z",
+          "parents": [
+            "7c14f4404cdaeebe3a9476aaa48c7b1da3c9b936"
+          ],
+          "subject": "docs(suivi): make A2.1 checkpoint post-merge stable",
+          "url": "https://github.com/Patricked-code/MCP/commit/66fbf65217c551c0a6a41605a598b9aac6b0901d"
+        },
+        {
+          "sha": "6cbc8a593d71e0518387e914e3f6554343e2cb47",
+          "date": "2026-09-01T18:07:10Z",
+          "parents": [
+            "66fbf65217c551c0a6a41605a598b9aac6b0901d"
+          ],
+          "subject": "docs(governance): resolve PR70 scope and attestation review",
+          "url": "https://github.com/Patricked-code/MCP/commit/6cbc8a593d71e0518387e914e3f6554343e2cb47"
+        },
+        {
+          "sha": "b2b1577f9e1bedd9710e3c2af4dadd9a1bc20cee",
+          "date": "2026-09-01T18:07:51Z",
+          "parents": [
+            "6cbc8a593d71e0518387e914e3f6554343e2cb47"
+          ],
+          "subject": "docs(tasks): keep B1 outside the A2.1 governed task",
+          "url": "https://github.com/Patricked-code/MCP/commit/b2b1577f9e1bedd9710e3c2af4dadd9a1bc20cee"
+        },
+        {
+          "sha": "d385a152bffe655654299146a68b788ab7529b0e",
+          "date": "2026-09-01T18:08:04Z",
+          "parents": [
+            "b2b1577f9e1bedd9710e3c2af4dadd9a1bc20cee"
+          ],
+          "subject": "docs(todo): separate A2.1 closure from future tasks",
+          "url": "https://github.com/Patricked-code/MCP/commit/d385a152bffe655654299146a68b788ab7529b0e"
+        },
+        {
+          "sha": "311564c62e9149f2ab0dd21c28fdc777b2c8f480",
+          "date": "2026-09-01T18:08:17Z",
+          "parents": [
+            "d385a152bffe655654299146a68b788ab7529b0e"
+          ],
+          "subject": "docs(roadmap): defer A2.1 delivered status until attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/311564c62e9149f2ab0dd21c28fdc777b2c8f480"
+        },
+        {
+          "sha": "0ae134f9496953bfd3b96f73660e83e59d5ac73a",
+          "date": "2026-09-01T18:08:26Z",
+          "parents": [
+            "311564c62e9149f2ab0dd21c28fdc777b2c8f480"
+          ],
+          "subject": "docs(changelog): record the A2.1 task boundary",
+          "url": "https://github.com/Patricked-code/MCP/commit/0ae134f9496953bfd3b96f73660e83e59d5ac73a"
+        },
+        {
+          "sha": "fcf8b16e7fd05b2026ad512e71659d37ffc9387e",
+          "date": "2026-09-01T18:08:38Z",
+          "parents": [
+            "0ae134f9496953bfd3b96f73660e83e59d5ac73a"
+          ],
+          "subject": "docs(decisions): preserve the approved A2.1 stop condition",
+          "url": "https://github.com/Patricked-code/MCP/commit/fcf8b16e7fd05b2026ad512e71659d37ffc9387e"
+        },
+        {
+          "sha": "8cc72937617ff3be42edbd02c799b674f7c8e80e",
+          "date": "2026-09-01T18:10:58Z",
+          "parents": [
+            "fcf8b16e7fd05b2026ad512e71659d37ffc9387e"
+          ],
+          "subject": "docs(suivi): demote the obsolete reconciliation checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/8cc72937617ff3be42edbd02c799b674f7c8e80e"
+        },
+        {
+          "sha": "59de3687bf1b2439a24f092257236fb3f559feee",
+          "date": "2026-09-01T18:15:52Z",
+          "parents": [
+            "8cc72937617ff3be42edbd02c799b674f7c8e80e"
+          ],
+          "subject": "docs(suivi): bound restart orientation to A2.1",
+          "url": "https://github.com/Patricked-code/MCP/commit/59de3687bf1b2439a24f092257236fb3f559feee"
+        }
+      ]
+    },
+    {
+      "pr": 71,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "cd8f681800603ff518f08c8b1c82dfaa8a861cc2",
+          "date": "2026-09-01T22:45:18Z",
+          "parents": [
+            "c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4"
+          ],
+          "subject": "docs(governance): attest final A2.1 closure",
+          "url": "https://github.com/Patricked-code/MCP/commit/cd8f681800603ff518f08c8b1c82dfaa8a861cc2"
+        },
+        {
+          "sha": "770bd7e18933a6508de24f070bba3eb9549cb3ee",
+          "date": "2026-09-02T00:04:35Z",
+          "parents": [
+            "cd8f681800603ff518f08c8b1c82dfaa8a861cc2"
+          ],
+          "subject": "docs(suivi): put closure merge SHA first",
+          "url": "https://github.com/Patricked-code/MCP/commit/770bd7e18933a6508de24f070bba3eb9549cb3ee"
+        },
+        {
+          "sha": "9732c65b4bd4e01885f098a34de121b720ffdd99",
+          "date": "2026-09-02T20:25:12Z",
+          "parents": [
+            "770bd7e18933a6508de24f070bba3eb9549cb3ee"
+          ],
+          "subject": "docs(suivi): declare closure merge before historical heads",
+          "url": "https://github.com/Patricked-code/MCP/commit/9732c65b4bd4e01885f098a34de121b720ffdd99"
+        }
+      ]
+    },
+    {
+      "pr": 72,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "cd8f681800603ff518f08c8b1c82dfaa8a861cc2",
+          "date": "2026-09-01T22:45:18Z",
+          "parents": [
+            "c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4"
+          ],
+          "subject": "docs(governance): attest final A2.1 closure",
+          "url": "https://github.com/Patricked-code/MCP/commit/cd8f681800603ff518f08c8b1c82dfaa8a861cc2"
+        },
+        {
+          "sha": "770bd7e18933a6508de24f070bba3eb9549cb3ee",
+          "date": "2026-09-02T00:04:35Z",
+          "parents": [
+            "cd8f681800603ff518f08c8b1c82dfaa8a861cc2"
+          ],
+          "subject": "docs(suivi): put closure merge SHA first",
+          "url": "https://github.com/Patricked-code/MCP/commit/770bd7e18933a6508de24f070bba3eb9549cb3ee"
+        },
+        {
+          "sha": "9732c65b4bd4e01885f098a34de121b720ffdd99",
+          "date": "2026-09-02T20:25:12Z",
+          "parents": [
+            "770bd7e18933a6508de24f070bba3eb9549cb3ee"
+          ],
+          "subject": "docs(suivi): declare closure merge before historical heads",
+          "url": "https://github.com/Patricked-code/MCP/commit/9732c65b4bd4e01885f098a34de121b720ffdd99"
+        }
+      ]
+    },
+    {
+      "pr": 73,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "1d25fbcf4331f87ee4d0283db5ab2efe358562d3",
+          "date": "2026-09-07T19:39:40Z",
+          "parents": [
+            "aa57b07cd3ba514df7b1ceb8cc60ab1587e15620"
+          ],
+          "subject": "docs(b1): record approved GitHub identity design",
+          "url": "https://github.com/Patricked-code/MCP/commit/1d25fbcf4331f87ee4d0283db5ab2efe358562d3"
+        },
+        {
+          "sha": "50028339c970741bec102f93efeefa99c17dd6dd",
+          "date": "2026-09-07T19:43:13Z",
+          "parents": [
+            "1d25fbcf4331f87ee4d0283db5ab2efe358562d3"
+          ],
+          "subject": "docs(b1): reconcile runtime policy packaging",
+          "url": "https://github.com/Patricked-code/MCP/commit/50028339c970741bec102f93efeefa99c17dd6dd"
+        },
+        {
+          "sha": "1f3753e67212f91cf6f5ab5552dacf2a1225a590",
+          "date": "2026-09-07T19:48:37Z",
+          "parents": [
+            "50028339c970741bec102f93efeefa99c17dd6dd"
+          ],
+          "subject": "docs(b1): add executable TDD plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/1f3753e67212f91cf6f5ab5552dacf2a1225a590"
+        },
+        {
+          "sha": "8c570f96a94a492846b5df618f6b7383ba36a510",
+          "date": "2026-09-07T19:57:47Z",
+          "parents": [
+            "1f3753e67212f91cf6f5ab5552dacf2a1225a590"
+          ],
+          "subject": "test(b1): define GitHub identity resolution contracts",
+          "url": "https://github.com/Patricked-code/MCP/commit/8c570f96a94a492846b5df618f6b7383ba36a510"
+        },
+        {
+          "sha": "bbec96d87c46b9bea398ef5594ba278bfd48142d",
+          "date": "2026-09-07T20:50:19Z",
+          "parents": [
+            "8c570f96a94a492846b5df618f6b7383ba36a510"
+          ],
+          "subject": "feat(b1): add additive identity policy resolver",
+          "url": "https://github.com/Patricked-code/MCP/commit/bbec96d87c46b9bea398ef5594ba278bfd48142d"
+        },
+        {
+          "sha": "476e0b26d1eeadac30afdee1ec73b5781516c320",
+          "date": "2026-09-08T17:56:19Z",
+          "parents": [
+            "bbec96d87c46b9bea398ef5594ba278bfd48142d"
+          ],
+          "subject": "test(b1): define governed identity integration",
+          "url": "https://github.com/Patricked-code/MCP/commit/476e0b26d1eeadac30afdee1ec73b5781516c320"
+        },
+        {
+          "sha": "7830fb5ad0fdc385332259439600df357ea8ed13",
+          "date": "2026-09-08T18:09:27Z",
+          "parents": [
+            "476e0b26d1eeadac30afdee1ec73b5781516c320"
+          ],
+          "subject": "feat(b1): integrate contextual GitHub identity",
+          "url": "https://github.com/Patricked-code/MCP/commit/7830fb5ad0fdc385332259439600df357ea8ed13"
+        },
+        {
+          "sha": "e9e3ef5d66985d0f40ac0608d6239b89a742a569",
+          "date": "2026-09-08T18:25:34Z",
+          "parents": [
+            "7830fb5ad0fdc385332259439600df357ea8ed13"
+          ],
+          "subject": "docs(identity): reconcile B1 governed delivery",
+          "url": "https://github.com/Patricked-code/MCP/commit/e9e3ef5d66985d0f40ac0608d6239b89a742a569"
+        },
+        {
+          "sha": "a9a0131ae3ce68f1b234448de242d314c8f202df",
+          "date": "2026-09-08T18:29:58Z",
+          "parents": [
+            "e9e3ef5d66985d0f40ac0608d6239b89a742a569"
+          ],
+          "subject": "test(identity): reject unverified account contexts",
+          "url": "https://github.com/Patricked-code/MCP/commit/a9a0131ae3ce68f1b234448de242d314c8f202df"
+        },
+        {
+          "sha": "eca6d5b79f7fcc5f2aff94541bb763431271b629",
+          "date": "2026-09-08T18:33:52Z",
+          "parents": [
+            "a9a0131ae3ce68f1b234448de242d314c8f202df"
+          ],
+          "subject": "fix(identity): reject unverified account contexts",
+          "url": "https://github.com/Patricked-code/MCP/commit/eca6d5b79f7fcc5f2aff94541bb763431271b629"
+        },
+        {
+          "sha": "631b5070f201950d2cdcc73363df8004d4ab5fec",
+          "date": "2026-09-09T06:31:00Z",
+          "parents": [
+            "eca6d5b79f7fcc5f2aff94541bb763431271b629"
+          ],
+          "subject": "test(github): expose credential-scoping review gaps",
+          "url": "https://github.com/Patricked-code/MCP/commit/631b5070f201950d2cdcc73363df8004d4ab5fec"
+        },
+        {
+          "sha": "9b1a572ab0362aeefa5e13f425225e1f510704b7",
+          "date": "2026-09-09T06:33:49Z",
+          "parents": [
+            "631b5070f201950d2cdcc73363df8004d4ab5fec"
+          ],
+          "subject": "fix(github): scope identity evidence to authenticated context",
+          "url": "https://github.com/Patricked-code/MCP/commit/9b1a572ab0362aeefa5e13f425225e1f510704b7"
+        }
+      ]
+    },
+    {
+      "pr": 74,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "53ffd1209a2976bb4f536d5cfe6a2c6cc05a5789",
+          "date": "2026-09-09T06:53:01Z",
+          "parents": [
+            "208b8744810a23e48a4282450786805e7ff18845"
+          ],
+          "subject": "docs(governance): attest B1 functional delivery",
+          "url": "https://github.com/Patricked-code/MCP/commit/53ffd1209a2976bb4f536d5cfe6a2c6cc05a5789"
+        },
+        {
+          "sha": "0e037ceeae05dc342f99ba2ae58761dc8e892f7e",
+          "date": "2026-09-09T20:13:09Z",
+          "parents": [
+            "53ffd1209a2976bb4f536d5cfe6a2c6cc05a5789"
+          ],
+          "subject": "docs(suivi): distinguish B1 delivery from closure",
+          "url": "https://github.com/Patricked-code/MCP/commit/0e037ceeae05dc342f99ba2ae58761dc8e892f7e"
+        }
+      ]
+    },
+    {
+      "pr": 75,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "6f2993f598aa3b4222adb460df08e97dbe464763",
+          "date": "2026-09-10T01:30:52Z",
+          "parents": [
+            "efb09ce7eeba85122b01c7fa48d99e967b7cdb7c"
+          ],
+          "subject": "docs(design): persist approved B2 repository routing design",
+          "url": "https://github.com/Patricked-code/MCP/commit/6f2993f598aa3b4222adb460df08e97dbe464763"
+        },
+        {
+          "sha": "19b1d61e33312a430796fa8759a9cbf9d28506d1",
+          "date": "2026-09-10T01:32:30Z",
+          "parents": [
+            "6f2993f598aa3b4222adb460df08e97dbe464763"
+          ],
+          "subject": "docs(plan): add B2 repository routing TDD plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/19b1d61e33312a430796fa8759a9cbf9d28506d1"
+        },
+        {
+          "sha": "2042f88536f58147ef58a617a2205128d7d4cf33",
+          "date": "2026-09-10T01:36:09Z",
+          "parents": [
+            "19b1d61e33312a430796fa8759a9cbf9d28506d1"
+          ],
+          "subject": "test(red): require Identity Policy V3 routing contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/2042f88536f58147ef58a617a2205128d7d4cf33"
+        },
+        {
+          "sha": "1a6916e2fec0f0767eb8e995786c48b92e0b1d98",
+          "date": "2026-09-10T01:36:32Z",
+          "parents": [
+            "2042f88536f58147ef58a617a2205128d7d4cf33"
+          ],
+          "subject": "test(red): run Identity Policy V3 routing contract in CI",
+          "url": "https://github.com/Patricked-code/MCP/commit/1a6916e2fec0f0767eb8e995786c48b92e0b1d98"
+        },
+        {
+          "sha": "8fa60ecb28a4342f42d27f439284cceb181da938",
+          "date": "2026-09-10T01:41:12Z",
+          "parents": [
+            "1a6916e2fec0f0767eb8e995786c48b92e0b1d98"
+          ],
+          "subject": "docs(governance): classify B2 design and plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/8fa60ecb28a4342f42d27f439284cceb181da938"
+        },
+        {
+          "sha": "ba6add9eecde3a236b36e0a598036618dc873453",
+          "date": "2026-09-10T01:43:38Z",
+          "parents": [
+            "8fa60ecb28a4342f42d27f439284cceb181da938"
+          ],
+          "subject": "feat(green): support Identity Policy V3 routing schema",
+          "url": "https://github.com/Patricked-code/MCP/commit/ba6add9eecde3a236b36e0a598036618dc873453"
+        },
+        {
+          "sha": "c23b60f42285799255c03952603aea4ae020ef7d",
+          "date": "2026-09-10T01:44:03Z",
+          "parents": [
+            "ba6add9eecde3a236b36e0a598036618dc873453"
+          ],
+          "subject": "feat(green): preserve B1 identity resolution under Policy V3",
+          "url": "https://github.com/Patricked-code/MCP/commit/c23b60f42285799255c03952603aea4ae020ef7d"
+        },
+        {
+          "sha": "66fcfcbfd20e0f1c1d903a411c1829b53dbfaa4b",
+          "date": "2026-09-10T01:45:43Z",
+          "parents": [
+            "c23b60f42285799255c03952603aea4ae020ef7d"
+          ],
+          "subject": "test(red): define exact repository routing contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/66fcfcbfd20e0f1c1d903a411c1829b53dbfaa4b"
+        },
+        {
+          "sha": "96699fcfe4abc9c60deb82435a25d15c3ceb9f7d",
+          "date": "2026-09-10T01:46:08Z",
+          "parents": [
+            "66fcfcbfd20e0f1c1d903a411c1829b53dbfaa4b"
+          ],
+          "subject": "test(red): run repository routing contract in CI",
+          "url": "https://github.com/Patricked-code/MCP/commit/96699fcfe4abc9c60deb82435a25d15c3ceb9f7d"
+        },
+        {
+          "sha": "f22befa0f8832c241b1e16ca700f94bfc5d394ec",
+          "date": "2026-09-10T01:47:55Z",
+          "parents": [
+            "96699fcfe4abc9c60deb82435a25d15c3ceb9f7d"
+          ],
+          "subject": "feat(green): add pure exact repository resolver",
+          "url": "https://github.com/Patricked-code/MCP/commit/f22befa0f8832c241b1e16ca700f94bfc5d394ec"
+        },
+        {
+          "sha": "98ffb3e45d0a4a67d90172e0fa719f7286e30519",
+          "date": "2026-09-10T02:31:27Z",
+          "parents": [
+            "f22befa0f8832c241b1e16ca700f94bfc5d394ec"
+          ],
+          "subject": "test(red): require live multi-account repository routing",
+          "url": "https://github.com/Patricked-code/MCP/commit/98ffb3e45d0a4a67d90172e0fa719f7286e30519"
+        },
+        {
+          "sha": "3409d5c0c66411f2b07429759bd9b02549dac5bb",
+          "date": "2026-09-10T02:31:46Z",
+          "parents": [
+            "98ffb3e45d0a4a67d90172e0fa719f7286e30519"
+          ],
+          "subject": "test(red): run live repository routing contract in CI",
+          "url": "https://github.com/Patricked-code/MCP/commit/3409d5c0c66411f2b07429759bd9b02549dac5bb"
+        },
+        {
+          "sha": "85e39c00514b0af32992041e9db9085768000f6c",
+          "date": "2026-09-10T02:33:29Z",
+          "parents": [
+            "3409d5c0c66411f2b07429759bd9b02549dac5bb"
+          ],
+          "subject": "feat(green): add live multi-account repository routing service",
+          "url": "https://github.com/Patricked-code/MCP/commit/85e39c00514b0af32992041e9db9085768000f6c"
+        },
+        {
+          "sha": "25326f3047ed7d9ae5b292e6bca6c539743ac3d5",
+          "date": "2026-09-10T02:36:00Z",
+          "parents": [
+            "85e39c00514b0af32992041e9db9085768000f6c"
+          ],
+          "subject": "fix(green): keep repository routing imports environment-neutral",
+          "url": "https://github.com/Patricked-code/MCP/commit/25326f3047ed7d9ae5b292e6bca6c539743ac3d5"
+        },
+        {
+          "sha": "c90a8810e567e2d47bb07d68ea65e49c61aa95b1",
+          "date": "2026-09-10T02:37:32Z",
+          "parents": [
+            "25326f3047ed7d9ae5b292e6bca6c539743ac3d5"
+          ],
+          "subject": "test(red): require explicit B2 governed-context projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/c90a8810e567e2d47bb07d68ea65e49c61aa95b1"
+        },
+        {
+          "sha": "836a51d2536a44a23c85731e0725d8834c8f455f",
+          "date": "2026-09-10T02:37:54Z",
+          "parents": [
+            "c90a8810e567e2d47bb07d68ea65e49c61aa95b1"
+          ],
+          "subject": "test(red): run governed-context B2 projection contract in CI",
+          "url": "https://github.com/Patricked-code/MCP/commit/836a51d2536a44a23c85731e0725d8834c8f455f"
+        },
+        {
+          "sha": "bcd839b6d33e4b42ca0c90369efb76bc7989c66c",
+          "date": "2026-09-10T02:40:33Z",
+          "parents": [
+            "836a51d2536a44a23c85731e0725d8834c8f455f"
+          ],
+          "subject": "feat(green): add optional B2 governed-context projection type",
+          "url": "https://github.com/Patricked-code/MCP/commit/bcd839b6d33e4b42ca0c90369efb76bc7989c66c"
+        },
+        {
+          "sha": "a98b50e29d481200bcc6ff8a8f895a2aa74aa960",
+          "date": "2026-09-10T02:41:37Z",
+          "parents": [
+            "bcd839b6d33e4b42ca0c90369efb76bc7989c66c"
+          ],
+          "subject": "feat(green): project explicit B2 repository resolution in governed context",
+          "url": "https://github.com/Patricked-code/MCP/commit/a98b50e29d481200bcc6ff8a8f895a2aa74aa960"
+        },
+        {
+          "sha": "05c33808adc326f693aacfe0ab762f3c22f75035",
+          "date": "2026-09-10T02:42:06Z",
+          "parents": [
+            "a98b50e29d481200bcc6ff8a8f895a2aa74aa960"
+          ],
+          "subject": "feat(green): expose explicit repository target on governed reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/05c33808adc326f693aacfe0ab762f3c22f75035"
+        },
+        {
+          "sha": "a20b3e614d8548056b6b2380b5bda16b384581a0",
+          "date": "2026-09-10T02:49:14Z",
+          "parents": [
+            "05c33808adc326f693aacfe0ab762f3c22f75035"
+          ],
+          "subject": "chore(ci): emit B2 cartography candidate without weakening drift check",
+          "url": "https://github.com/Patricked-code/MCP/commit/a20b3e614d8548056b6b2380b5bda16b384581a0"
+        },
+        {
+          "sha": "a37f5cf775490ab105a6b22a922ed049de51de07",
+          "date": "2026-09-10T02:51:02Z",
+          "parents": [
+            "a20b3e614d8548056b6b2380b5bda16b384581a0"
+          ],
+          "subject": "chore(ci): commit guarded B2 cartography candidate on branch",
+          "url": "https://github.com/Patricked-code/MCP/commit/a37f5cf775490ab105a6b22a922ed049de51de07"
+        },
+        {
+          "sha": "f445f7ef70d0c6135273e24a4d5b228747f6d517",
+          "date": "2026-09-10T02:52:03Z",
+          "parents": [
+            "a37f5cf775490ab105a6b22a922ed049de51de07"
+          ],
+          "subject": "docs: regenerate B2 function cartography",
+          "url": "https://github.com/Patricked-code/MCP/commit/f445f7ef70d0c6135273e24a4d5b228747f6d517"
+        },
+        {
+          "sha": "edd15f9c7202031b5583fc1970fd9a6e2ebdac06",
+          "date": "2026-09-10T02:52:55Z",
+          "parents": [
+            "f445f7ef70d0c6135273e24a4d5b228747f6d517"
+          ],
+          "subject": "chore(ci): restore standard MCP CI after cartography regeneration",
+          "url": "https://github.com/Patricked-code/MCP/commit/edd15f9c7202031b5583fc1970fd9a6e2ebdac06"
+        },
+        {
+          "sha": "e14795a0760d374795bc56d3fd796555689406de",
+          "date": "2026-09-10T02:54:45Z",
+          "parents": [
+            "edd15f9c7202031b5583fc1970fd9a6e2ebdac06"
+          ],
+          "subject": "test(red): require versioned V3 three-account routing policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/e14795a0760d374795bc56d3fd796555689406de"
+        },
+        {
+          "sha": "3bad842b1bfe8bdcd7289201f6a696fb84168e34",
+          "date": "2026-09-10T03:29:24Z",
+          "parents": [
+            "e14795a0760d374795bc56d3fd796555689406de"
+          ],
+          "subject": "revert(b2): restore approved pre-B2 authority boundary",
+          "url": "https://github.com/Patricked-code/MCP/commit/3bad842b1bfe8bdcd7289201f6a696fb84168e34"
+        },
+        {
+          "sha": "313be5fc38e0b8d7dc2219bd3d324bd459bd5808",
+          "date": "2026-09-11T23:34:04Z",
+          "parents": [
+            "3bad842b1bfe8bdcd7289201f6a696fb84168e34"
+          ],
+          "subject": "docs(b2): record approved repository resolution design",
+          "url": "https://github.com/Patricked-code/MCP/commit/313be5fc38e0b8d7dc2219bd3d324bd459bd5808"
+        },
+        {
+          "sha": "278a6b030fdb0838a9b85244d463eb459d86b579",
+          "date": "2026-09-11T23:35:10Z",
+          "parents": [
+            "313be5fc38e0b8d7dc2219bd3d324bd459bd5808"
+          ],
+          "subject": "feat(b2): add fail-closed repository resolution",
+          "url": "https://github.com/Patricked-code/MCP/commit/278a6b030fdb0838a9b85244d463eb459d86b579"
+        },
+        {
+          "sha": "fd95b5bb42056a20320133cb187d8d58407c8cb5",
+          "date": "2026-09-11T23:35:14Z",
+          "parents": [
+            "278a6b030fdb0838a9b85244d463eb459d86b579"
+          ],
+          "subject": "refactor(b2): share durable GitHub observations",
+          "url": "https://github.com/Patricked-code/MCP/commit/fd95b5bb42056a20320133cb187d8d58407c8cb5"
+        },
+        {
+          "sha": "d8f656cf807d1a4d352b96363c9c938730147c65",
+          "date": "2026-09-11T23:35:25Z",
+          "parents": [
+            "fd95b5bb42056a20320133cb187d8d58407c8cb5"
+          ],
+          "subject": "feat(b2): project repository identity in governed context",
+          "url": "https://github.com/Patricked-code/MCP/commit/d8f656cf807d1a4d352b96363c9c938730147c65"
+        },
+        {
+          "sha": "5a95bec5c4bc656f03502254c2d89f5de0895a3c",
+          "date": "2026-09-11T23:35:32Z",
+          "parents": [
+            "d8f656cf807d1a4d352b96363c9c938730147c65"
+          ],
+          "subject": "feat(b2): expose governed repository evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/5a95bec5c4bc656f03502254c2d89f5de0895a3c"
+        },
+        {
+          "sha": "e5231bcd803dd4a4bdec927ea4cf1a2e5fc38619",
+          "date": "2026-09-11T23:35:36Z",
+          "parents": [
+            "5a95bec5c4bc656f03502254c2d89f5de0895a3c"
+          ],
+          "subject": "test(b2): strengthen bounded repository evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/e5231bcd803dd4a4bdec927ea4cf1a2e5fc38619"
+        },
+        {
+          "sha": "a0b1ee364f03491829b39b7dfe0eb1119a2e5d3c",
+          "date": "2026-09-11T23:35:47Z",
+          "parents": [
+            "e5231bcd803dd4a4bdec927ea4cf1a2e5fc38619"
+          ],
+          "subject": "docs(b2): reconcile repository resolution slot",
+          "url": "https://github.com/Patricked-code/MCP/commit/a0b1ee364f03491829b39b7dfe0eb1119a2e5d3c"
+        },
+        {
+          "sha": "0e28ddb0aa22bfabf95510c737a9e4e0d6f40eb1",
+          "date": "2026-09-11T23:35:51Z",
+          "parents": [
+            "a0b1ee364f03491829b39b7dfe0eb1119a2e5d3c"
+          ],
+          "subject": "fix(b2): preserve bounded missing-auth evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/0e28ddb0aa22bfabf95510c737a9e4e0d6f40eb1"
+        },
+        {
+          "sha": "066caf8415e561168a42274f8ad8d60dfed7774e",
+          "date": "2026-09-11T23:35:54Z",
+          "parents": [
+            "0e28ddb0aa22bfabf95510c737a9e4e0d6f40eb1"
+          ],
+          "subject": "docs(b2): record final local verification",
+          "url": "https://github.com/Patricked-code/MCP/commit/066caf8415e561168a42274f8ad8d60dfed7774e"
+        },
+        {
+          "sha": "ab82e250fd62f4d1a4308ddb5af80aa0fe1f73e2",
+          "date": "2026-09-11T23:35:59Z",
+          "parents": [
+            "066caf8415e561168a42274f8ad8d60dfed7774e"
+          ],
+          "subject": "test(b2): reproduce cache and input-bound review findings",
+          "url": "https://github.com/Patricked-code/MCP/commit/ab82e250fd62f4d1a4308ddb5af80aa0fe1f73e2"
+        },
+        {
+          "sha": "17e5c0037b7ca33c3abdbdf0c85a1f994bcc3a00",
+          "date": "2026-09-11T23:36:04Z",
+          "parents": [
+            "ab82e250fd62f4d1a4308ddb5af80aa0fe1f73e2"
+          ],
+          "subject": "fix(b2): isolate cache and bound registry evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/17e5c0037b7ca33c3abdbdf0c85a1f994bcc3a00"
+        },
+        {
+          "sha": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+          "date": "2026-09-11T23:36:11Z",
+          "parents": [
+            "17e5c0037b7ca33c3abdbdf0c85a1f994bcc3a00"
+          ],
+          "subject": "docs(b2): record independent review corrections",
+          "url": "https://github.com/Patricked-code/MCP/commit/dd2a9a7894f928aa5dac886c79dc269ea3838a7b"
+        }
+      ]
+    },
+    {
+      "pr": 76,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "fd5314e711cd0e9c8469c4f43679b666e2aa2afe",
+          "date": "2026-09-11T23:47:37Z",
+          "parents": [
+            "f2c90902a627ee9209d805403e584f3123a0453a"
+          ],
+          "subject": "docs(b2): reconcile exact deployed delivery",
+          "url": "https://github.com/Patricked-code/MCP/commit/fd5314e711cd0e9c8469c4f43679b666e2aa2afe"
+        },
+        {
+          "sha": "4a75a865f1468dba7d75d052a71e0f0823069ce3",
+          "date": "2026-09-11T23:49:52Z",
+          "parents": [
+            "fd5314e711cd0e9c8469c4f43679b666e2aa2afe"
+          ],
+          "subject": "docs(b2): record final reconciliation phase",
+          "url": "https://github.com/Patricked-code/MCP/commit/4a75a865f1468dba7d75d052a71e0f0823069ce3"
+        },
+        {
+          "sha": "f72e95879f0a1f1c6813f1042677e01c5a306be6",
+          "date": "2026-09-11T23:51:49Z",
+          "parents": [
+            "4a75a865f1468dba7d75d052a71e0f0823069ce3"
+          ],
+          "subject": "docs(b2): attest resolved production projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/f72e95879f0a1f1c6813f1042677e01c5a306be6"
+        }
+      ]
+    },
+    {
+      "pr": 77,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "17de4af98c0b66a3cf32c219c762febd1880c0e5",
+          "date": "2026-09-12T01:05:10Z",
+          "parents": [
+            "f72e95879f0a1f1c6813f1042677e01c5a306be6"
+          ],
+          "subject": "docs(b2): restore governed session closure",
+          "url": "https://github.com/Patricked-code/MCP/commit/17de4af98c0b66a3cf32c219c762febd1880c0e5"
+        }
+      ]
+    },
+    {
+      "pr": 78,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "f7800966119601e336c480da6f2f98eafe6e6e70",
+          "date": "2026-09-12T05:07:48Z",
+          "parents": [
+            "fa563c6e21d6fa07bf5b33a58626ceae1cdedc13"
+          ],
+          "subject": "feat(registry): add project compatibility foundation",
+          "url": "https://github.com/Patricked-code/MCP/commit/f7800966119601e336c480da6f2f98eafe6e6e70"
+        }
+      ]
+    }
+  ]
+}
