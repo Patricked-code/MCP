@@ -59,7 +59,9 @@ const DOMAIN_MAP: Record<string, { blueprintId: string; tools: string[] }> = {
     blueprintId: 'TB-W3-GGCC-GH-ACTIONS',
     tools: [
       'github_get_workflow_runs',
-      'github_get_commit_checks'
+      'github_get_commit_checks',
+      'github_get_workflow_jobs',
+      'github_get_workflow_run_logs'
     ]
   },
   'rulesets': {
@@ -96,6 +98,13 @@ const DOMAIN_MAP: Record<string, { blueprintId: string; tools: string[] }> = {
     tools: [
       'github_get_organization_state',
       'github_get_organization_members'
+    ]
+  },
+  'issues-projects': {
+    blueprintId: 'TB-W3-GGCC-GH-ISSUES-PROJECTS',
+    tools: [
+      'github_get_issues',
+      'github_get_issue_state'
     ]
   }
 };
@@ -172,7 +181,11 @@ test('read-only tools in each domain are NOT in WRITE_SCOPED_TOOL_NAMES', () => 
     'github_get_releases',
     'github_get_deployments',
     'github_get_organization_state',
-    'github_get_organization_members'
+    'github_get_organization_members',
+    'github_get_issues',
+    'github_get_issue_state',
+    'github_get_workflow_jobs',
+    'github_get_workflow_run_logs'
   ];
   for (const name of KNOWN_READ) {
     assert.ok(!WRITE_SCOPED_TOOL_NAMES.has(name), `${name} should NOT be write-scoped`);

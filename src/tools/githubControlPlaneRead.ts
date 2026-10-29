@@ -23,6 +23,7 @@ const RefSchema = z.string().min(1).max(240).regex(/^[A-Za-z0-9._\/-]+$/);
 const PullRequestSchema = z.number().int().min(1);
 const CommitReadLimitSchema = z.number().int().min(1).max(300).optional();
 const TreeReadLimitSchema = z.number().int().min(1).max(1000).optional();
+const RunIdSchema = z.number().int().min(1);
 
 export type GithubControlPlaneReadDependencies = {
   configuredOrg: string;
@@ -514,6 +515,57 @@ export function registerGithubControlPlaneReadTools(
     return respond({ totalCount: number(raw?.total_count), runs });
   });
 
+  server.tool('github_get_workflow_jobs', "Retourne en lecture les jobs d'une exécution GitHub Actions.", {
+    ...repoSchema,
+    runId: RunIdSchema
+  }, async ({ organization, repository, runId }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const raw = object(await get(dependencies, `${endpointRepo(org, repository)}/actions/runs/${runId}/jobs?per_page=100`));
+    const jobs = array(raw?.jobs).slice(0, 200).map((entry) => {
+      const j = object(entry);
+      return {
+        id: number(j?.id),
+        name: string(j?.name),
+        status: string(j?.status),
+        conclusion: string(j?.conclusion),
+        startedAt: string(j?.started_at),
+        completedAt: string(j?.completed_at),
+        runnerName: string(j?.runner_name),
+        steps: array(j?.steps).slice(0, 100).map((s) => {
+          const step = object(s);
+          return {
+            name: string(step?.name),
+            status: string(step?.status),
+            conclusion: string(step?.conclusion),
+            number: number(step?.number),
+            startedAt: string(step?.started_at),
+            completedAt: string(step?.completed_at)
+          };
+        })
+      };
+    });
+    return respond({ totalCount: number(raw?.total_count), jobs });
+  });
+
+  server.tool('github_get_workflow_run_logs', "Retourne en lecture les logs texte bornés d'un job GitHub Actions.", {
+    ...repoSchema,
+    jobId: RunIdSchema
+  }, async ({ organization, repository, jobId }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const endpoint = `${endpointRepo(org, repository)}/actions/jobs/${jobId}/logs`;
+    const response = await dependencies.request(endpoint, { accept: 'text/plain' });
+    if (!response.ok) throw new Error(`GITHUB_CONTROL_READ_FAILED:${response.status ?? 'NETWORK'}`);
+    const rawText = typeof response.json === 'string' ? response.json : JSON.stringify(response.json);
+    const LOG_MAX = 100000;
+    const truncated = rawText.length > LOG_MAX;
+    return respond({
+      jobId,
+      logText: truncated ? rawText.slice(0, LOG_MAX) : rawText,
+      truncated,
+      totalLength: rawText.length
+    });
+  });
+
   server.tool('github_get_rulesets', 'Retourne en lecture les rulesets du repository sans mutation.', repoSchema, async ({ organization, repository }) => {
     const org = assertOrg(organization, dependencies.configuredOrg);
     const raw = await get(dependencies, `${endpointRepo(org, repository)}/rulesets?includes_parents=true&per_page=100`);
@@ -623,5 +675,62 @@ export function registerGithubControlPlaneReadTools(
         updatedAt: string(d?.updated_at)
       };
     }));
+  });
+
+  const IssueNumberSchema = z.number().int().min(1);
+
+  server.tool('github_get_issues', 'Retourne en lecture la liste bornée des issues d\'un repository (projection, ne remplace jamais la Governed Task Queue).', {
+    ...repoSchema,
+    state: z.enum(['open', 'closed', 'all']).optional(),
+    per_page: z.number().int().min(1).max(100).optional()
+  }, async ({ organization, repository, state, per_page }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const params = new URLSearchParams();
+    if (state) params.set('state', state);
+    params.set('per_page', String(per_page ?? 30));
+    const raw = await get(dependencies, `${endpointRepo(org, repository)}/issues?${params.toString()}`);
+    return respond({
+      issues: listProjection(raw, (entry) => {
+        const i = object(entry);
+        return {
+          number: number(i?.number),
+          title: string(i?.title),
+          state: string(i?.state),
+          author: actor(i?.user),
+          labels: array(i?.labels).map((l) => string(object(l)?.name)).filter(Boolean),
+          createdAt: string(i?.created_at),
+          updatedAt: string(i?.updated_at),
+          htmlUrl: string(i?.html_url),
+          isPullRequest: !!(i?.pull_request)
+        };
+      })
+    });
+  });
+
+  server.tool('github_get_issue_state', 'Lecture bornée de l\'état d\'une issue GitHub (projection, ne remplace jamais la Governed Task Queue).', {
+    ...repoSchema,
+    issueNumber: IssueNumberSchema
+  }, async ({ organization, repository, issueNumber }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const raw = await get(dependencies, `${endpointRepo(org, repository)}/issues/${issueNumber}`);
+    const i = object(raw);
+    if (!i) throw new Error('GITHUB_CONTROL_RESPONSE_INVALID');
+    const milestone = object(i.milestone);
+    return respond({
+      number: number(i.number),
+      title: string(i.title),
+      state: string(i.state),
+      body: string(i.body),
+      author: actor(i.user),
+      labels: array(i.labels).map((l) => string(object(l)?.name)).filter(Boolean),
+      assignees: array(i.assignees).map((a) => actor(a)).filter(Boolean),
+      milestone: milestone ? { title: string(milestone.title), number: number(milestone.number) } : null,
+      createdAt: string(i.created_at),
+      updatedAt: string(i.updated_at),
+      closedAt: string(i.closed_at),
+      htmlUrl: string(i.html_url),
+      isPullRequest: !!(i.pull_request),
+      commentCount: number(i.comments)
+    });
   });
 }
