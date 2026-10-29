@@ -72,8 +72,9 @@ export async function observeGithubReviewAndCi(
       ||!Array.isArray(rawReviews)||rawReviews.length>=100
       ||!Array.isArray(rawRuns)||rawRuns.length>=100)return blocked();
 
-    // Only the latest review from each user is authoritative; a later
-    // CHANGES_REQUESTED, COMMENTED or DISMISSED state revokes earlier approval.
+    // Only decisive review states supersede a previous review: later
+    // COMMENTED/PENDING states do not revoke an approval, whereas
+    // CHANGES_REQUESTED and DISMISSED are decisive. Ties fail closed.
     const latest=new Map<string,{state:string;commit:string;submittedAt:number;actorType:string|null}>();
     // GitHub review timestamps have finite precision. Conflicting states at
     // the same instant are ambiguous, regardless of API array ordering.
@@ -83,6 +84,7 @@ export async function observeGithubReviewAndCi(
       const reviewer=name(review?.user);
       const actorType=obj(review?.user)?.type;
       const state=review?.state;
+      if(state==='COMMENTED'||state==='PENDING')continue;
       const timestamp=Date.parse(String(review?.submitted_at??''));
       if(!reviewer||!Number.isFinite(timestamp)
         ||typeof state!=='string')return blocked();
@@ -99,6 +101,13 @@ export async function observeGithubReviewAndCi(
         state,commit,submittedAt:timestamp,actorType:type
       });
     }
+    // A distinct reviewer with an outstanding CHANGES_REQUESTED blocks release
+    // irrespective of any other successful approval or CI.
+    if([...latest.entries()].some(([reviewer,r])=>
+      reviewer!==author.toLowerCase()
+      &&(r.state==='CHANGES_REQUESTED'||ambiguousReviewers.has(reviewer))
+    ))return blocked();
+
     // A GitHub API review object is not a valid independent approval by itself.
     // Bots, outsiders, and read-only accounts must never satisfy an admin
     // release gate. Reuse GitHub's current effective repository permission.
