@@ -37,6 +37,15 @@ export type PleskHttpToMcpAdmissionPorts=Readonly<{
     input:PleskHttpToMcpAdmissionInput
   )=>Promise<ExistingPleskAuthorityInspection>;
   now:()=>Date;
+  /** Private server-side handoff, never serialized into HTTP response. */
+  onVerifiedProof?:(proof:PleskVerifiedMcpAuthorityProof)=>void;
+}>;
+export type PleskVerifiedMcpAuthorityProof=Readonly<{
+  consent:SignedWebOauthConsentObservation;
+  candidate:PleskOwnedWebSessionProjection;
+  transportLink:PleskWebTransportLinkObservation;
+  authority:ExistingPleskAuthorityInspection;
+  transport:SessionRequest;
 }>;
 export type PleskHttpToMcpAdmissionObservation=Readonly<{
   status:'BLOCKED'|'READ_ONLY_PROOFS_OBSERVED';
@@ -120,6 +129,10 @@ export async function inspectPleskHttpToMcpAdmission(
       &&Date.parse(a.lockExpiresAt)-now<=HEARTBEAT
       &&inspection.blockers.every(x=>x==='E3_AND_CI_ATTESTATION_UNAVAILABLE');
     if(!valid)return reject('RUNTIME_SCOPE_NOT_ATTESTED');
+    // A callback only receives evidence after every existing runtime authority
+    // passes. The ordinary observation remains redacted and read-only.
+    ports.onVerifiedProof?.({consent,candidate:owned,transportLink:linked,
+      authority:inspection,transport:t});
 
     // E3 single-use consumption, GitHub independent review and exact-head
     // CI are NOT represented by the read-only runtime authority. Never
@@ -139,10 +152,11 @@ export async function inspectPleskHttpToMcpAdmission(
  * MUST pass an actually authenticated MCP transport, not an HTTP supplied ID.
  */
 export async function inspectPleskHttpToMcpAdmissionFromRuntime(
-  input:PleskHttpToMcpAdmissionInput
+  input:PleskHttpToMcpAdmissionInput,
+  onVerifiedProof?:(proof:PleskVerifiedMcpAuthorityProof)=>void
 ):Promise<PleskHttpToMcpAdmissionObservation>{
   return inspectPleskHttpToMcpAdmission(input,{
-    now:()=>new Date(),
+    now:()=>new Date(),onVerifiedProof,
     inspectSignedOauth:async i=>{
       const {inspectPleskConsentUsingExistingServerVerifiers}=await import('./pleskWebOauthBridge.js');
       return inspectPleskConsentUsingExistingServerVerifiers(i);
