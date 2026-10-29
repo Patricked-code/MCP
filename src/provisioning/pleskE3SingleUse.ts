@@ -82,8 +82,7 @@ export async function consumeSignedPleskE3Once(
 ):Promise<PleskE3ConsumptionResult>{
   if(!input||!ports||!validTarget(input)
     ||typeof input.ticket!=='string'||input.ticket.length>500
-    ||!/^\d{13}\.[a-fA-F0-9]{12,}$/.test(input.ticket)
-       &&!/^\d{13}\.signed-test-opaque$/.test(input.ticket)){
+    ||!/^\d{13}\.[A-Za-z0-9_-]{43}$/.test(input.ticket)){
     return blocked('INVALID_TARGET_OR_TICKET');
   }
   const [expiryRaw]=input.ticket.split('.');
