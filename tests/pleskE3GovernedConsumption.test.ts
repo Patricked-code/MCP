@@ -142,3 +142,19 @@ test('RED B3g: expiry during async E3 preadmission recheck cannot consume',async
   assert.deepEqual(entries,[]);
  });
 });
+
+
+test('FINDING-05: Github attestation created after async provider fetch is not rejected as future',async()=>{
+  await testDirectory(async dir=>{
+    let clock=now;
+    const p=ports(dir,true);
+    const result=await consumeGovernedPleskE3ForExistingRoute(evidence(),
+      {ticket,binding,scope,principalId:owner,governedSessionId:session,taskId:task},
+      {...p,now:()=>clock,readTrustedReleaseAttestation:async()=>{
+        clock+=10;
+        return {...(await p.readTrustedReleaseAttestation())!,at:new Date(clock).toISOString()};
+      }});
+    assert.equal(result.status,'E3_CONSUMED_PENDING_RUNTIME_GATE');
+    assert.equal(result.runtimeWriteAuthorized,false);
+  });
+});
