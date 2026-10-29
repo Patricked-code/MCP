@@ -21,6 +21,8 @@ export type GithubInstallationObservation = Readonly<{
   source: 'GITHUB_API' | 'UNVERIFIED';
   installationId: number;
   accountLogin: string;
+  /** Exact repository for which repositoryIncluded/accessibility were observed. */
+  repository?: string;
   repositorySelection: 'all' | 'selected' | 'unknown';
   /** Must be true for a selected-repository installation. */
   repositoryIncluded: boolean | null;
@@ -126,7 +128,9 @@ export function assessGithubInstallationCapability(
       && observation.accountLogin.toLowerCase() !== request.repository.split('/')[0]!.toLowerCase()) {
       reasons.push('ACCOUNT_MISMATCH');
     }
-    if (observation.repositoryAccessible !== true
+    if (!validRepository(observation.repository??'')
+      || observation.repository?.toLowerCase()!==request.repository.toLowerCase()
+      || observation.repositoryAccessible !== true
       || (observation.repositorySelection !== 'all' && observation.repositorySelection !== 'selected')
       || (observation.repositorySelection === 'selected' && observation.repositoryIncluded !== true)) {
       reasons.push('REPOSITORY_NOT_ATTESTED');
