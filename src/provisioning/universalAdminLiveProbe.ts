@@ -12,6 +12,10 @@ import {
   type GithubRepositoryPermissionEvidence
 } from '../github/delegatedRepositoryPermissions.js';
 import type { GitHubJsonResponse } from '../github/connection.js';
+import {
+  probeAllowlistedPleskSubscriptionRead,
+  type PleskSubscriptionReadObservation
+} from './pleskSubscriptionReadProbe.js';
 
 type ServerId = 's1'|'s2';
 type Response = Pick<GitHubJsonResponse,'ok'|'status'|'json'>;
@@ -20,8 +24,10 @@ type ReadResult = Readonly<{code:number|null;stdout:string;stderr:string}>;
 export type DelegatedLiveProbeDependencies = Readonly<{
   now:()=>Date;
   githubGet:(endpoint:string)=>Promise<Response>;
-  remoteRead:(server:ServerId,command:'id -u'|'plesk version')=>Promise<ReadResult>;
+  remoteRead:(server:ServerId,command:'id -u'|'plesk version'|`plesk bin subscription --info '${string}'`)=>Promise<ReadResult>;
   canonicalRepository?:()=>Promise<string|null>;
+  /** Exact Plesk parent-domain allowlist from the existing server configuration. */
+  allowedParents?:()=>Promise<Readonly<Partial<Record<ServerId,readonly string[]>>>>;
 }>;
 
 export type DelegatedLiveProviderResult = Readonly<{
@@ -30,6 +36,12 @@ export type DelegatedLiveProviderResult = Readonly<{
   allowedCommands:readonly ['id -u','plesk version'];
   /** Repository-scoped provider permissions when a canonical target can be resolved. */
   githubRepository:GithubRepositoryPermissionEvidence|null;
+  pleskSubscriptions:Readonly<{
+    status:'CHECKED'|'NOT_CONFIGURED'|'BLOCKED';
+    observations:readonly PleskSubscriptionReadObservation[];
+    pleskAdminWritePermissionVerified:false;
+    mutationExecuted:false;
+  }>;
   github:Readonly<{
     status:'AUTHENTICATED'|'BLOCKED';
     principal:string|null;
@@ -85,7 +97,13 @@ export function defaultDelegatedLiveProbeDependencies():DelegatedLiveProbeDepend
       const {runReadOnlyCommand}=await import('../ssh/client.js');
       return runReadOnlyCommand(server,command,2_500,2_048);
     },
-    canonicalRepository:()=>readCanonicalRepositoryFromModuleManifest(import.meta.url)
+    canonicalRepository:()=>readCanonicalRepositoryFromModuleManifest(import.meta.url),
+    allowedParents:async()=>{
+      const [{parseAllowedPleskParents},{env}]=await Promise.all([
+        import('../tools/pleskProvisioning.js'),import('../config/env.js')
+      ]);
+      return parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS);
+    }
   };
 }
 
@@ -119,6 +137,21 @@ export async function probeExistingAdminReadCapabilities(
       );
     }catch{ /* No guessing cross-account repository authority. */ }
   }
+  let pleskSubscriptions:DelegatedLiveProviderResult['pleskSubscriptions']={
+    status:'NOT_CONFIGURED',observations:[],
+    pleskAdminWritePermissionVerified:false,mutationExecuted:false
+  };
+  if(deps.allowedParents){
+    try{
+      const allowed=await deps.allowedParents();
+      const observations=await probeAllowlistedPleskSubscriptionRead(allowed,deps.remoteRead);
+      pleskSubscriptions={
+        status:observations.length?'CHECKED':'NOT_CONFIGURED',
+        observations,pleskAdminWritePermissionVerified:false,mutationExecuted:false
+      };
+    }catch{pleskSubscriptions={status:'BLOCKED',observations:[],
+      pleskAdminWritePermissionVerified:false,mutationExecuted:false};}
+  }
   const obj=user?.json && typeof user.json==='object' && !Array.isArray(user.json)
     ? user.json as Record<string,unknown>:null;
   const login=typeof obj?.login==='string' && LOGIN.test(obj.login)?obj.login:null;
@@ -141,6 +174,7 @@ export async function probeExistingAdminReadCapabilities(
     liveProviderCallsExecuted:true,
     allowedCommands:TOOLS,
     githubRepository,
+    pleskSubscriptions,
     github:{
       status:authenticated?'AUTHENTICATED':'BLOCKED',
       principal:authenticated?login:null,
