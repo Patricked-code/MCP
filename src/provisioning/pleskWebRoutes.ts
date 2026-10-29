@@ -3,6 +3,7 @@ import type { Request, RequestHandler, Router } from 'express';
 import { z } from 'zod';
 import { planPleskSubdomain, type PleskSubdomainInput } from './pleskSite.js';
 import { observePleskSubdomain, createPleskSubdomainOnServer } from './pleskSshAdapter.js';
+import type { PleskCreationOutcome } from './pleskExecute.js';
 import type { PleskPolicy, PleskRemotePort } from './pleskSshAdapter.js';
 
 export type PleskWebDependencies = {
@@ -29,6 +30,9 @@ export type PleskWebDependencies = {
    */
   consumeGovernedConsent?: (req: Request, input: PleskSubdomainInput,
     signed: Readonly<{ ticket: string; binding: string }>) => Promise<boolean>;
+  /** The existing governed executor, bound to server-authenticated Task/Session/Lock/E3/CI.
+   * Mandatory for every MCP-paired write. Never accept an untrusted SSH port. */
+  executeGovernedCreate?: (req: Request,input: PleskSubdomainInput) => Promise<PleskCreationOutcome>;
 };
 
 const PURPOSE = 'plesk-create-subdomain';
@@ -129,15 +133,26 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
       // reject replays before the existing Plesk executor sees any write.
       // No consumer is installed in production yet; authorizeRuntimeWrite
       // remains fail-closed there.
-      if ((deps.requireMcpPairing === true && !deps.consumeGovernedConsent)
-        || (deps.consumeGovernedConsent
-        && !await deps.consumeGovernedConsent(req,toInput(p),{
-          ticket:consent_ticket,binding:binding(req,p,deps)
-        }))) {
+      if (deps.requireMcpPairing === true && !deps.consumeGovernedConsent) {
         res.status(403).json({status:'BLOCKED',reason:'E3_SINGLE_USE_CONSUMPTION_REQUIRED'});
         return;
       }
-      const outcome = await createPleskSubdomainOnServer(toInput(p),deps.policy(),true,deps.io);
+      // A paired OAuth transport must NEVER fall through to the generic SSH
+      // adapter. Check the trusted executor before burning the single-use E3.
+      if (deps.requireMcpPairing === true && !deps.executeGovernedCreate) {
+        res.status(403).json({status:'BLOCKED',reason:'GOVERNED_EXECUTOR_NOT_BOUND'});
+        return;
+      }
+      if (deps.consumeGovernedConsent
+        && !await deps.consumeGovernedConsent(req,toInput(p),{
+          ticket:consent_ticket,binding:binding(req,p,deps)
+        })) {
+        res.status(403).json({status:'BLOCKED',reason:'E3_SINGLE_USE_CONSUMPTION_REQUIRED'});
+        return;
+      }
+      const outcome = deps.requireMcpPairing === true
+        ? await deps.executeGovernedCreate!(req,toInput(p))
+        : await createPleskSubdomainOnServer(toInput(p),deps.policy(),true,deps.io);
       const code = outcome.status === 'CREATED' ? 201 : outcome.status === 'NO_OP' ? 200
         : outcome.status === 'BLOCKED' ? 403 : 503;
       res.status(code).json({ fqdn, serverId:p.serverId,...outcome });
