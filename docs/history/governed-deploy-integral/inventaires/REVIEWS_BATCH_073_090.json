@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{pr}/reviews",
+  "positions": [
+    73,
+    90
+  ],
+  "items": [
+    {
+      "pr": 79,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5185420115,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-12T05:32:01Z",
+          "commit_id": "ced6e4d374eb75dabfaa958650f9b26ac2dd3d5f",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/79#pullrequestreview-5185420115",
+          "body_length": 474
+        },
+        {
+          "id": 5185425299,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-12T05:33:41Z",
+          "commit_id": "ced6e4d374eb75dabfaa958650f9b26ac2dd3d5f",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/79#pullrequestreview-5185425299",
+          "body_length": 623
+        }
+      ]
+    },
+    {
+      "pr": 80,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 81,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5190626391,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-13T12:03:48Z",
+          "commit_id": "29bb7fd35ca7b428541439bb49116ee6764576c4",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/81#pullrequestreview-5190626391",
+          "body_length": 406
+        }
+      ]
+    },
+    {
+      "pr": 82,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5191639249,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-13T17:50:00Z",
+          "commit_id": "beea82c94795c9661e2d1f9aebecad8268b674b5",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/82#pullrequestreview-5191639249",
+          "body_length": 484
+        },
+        {
+          "id": 5191646028,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-13T17:52:16Z",
+          "commit_id": "beea82c94795c9661e2d1f9aebecad8268b674b5",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/82#pullrequestreview-5191646028",
+          "body_length": 623
+        }
+      ]
+    },
+    {
+      "pr": 83,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5192058923,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-13T19:59:52Z",
+          "commit_id": "424508e244763fa00705b207daf834e7e2bdd1f0",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/83#pullrequestreview-5192058923",
+          "body_length": 623
+        }
+      ]
+    },
+    {
+      "pr": 84,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 85,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 86,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 87,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5204331302,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-15T00:37:28Z",
+          "commit_id": "ae7bec13331d50414d3723855cb38888a0476725",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/87#pullrequestreview-5204331302",
+          "body_length": 623
+        },
+        {
+          "id": 5204627381,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-15T01:39:50Z",
+          "commit_id": "289b3b71c8352738395bf290bc1ae10dc405ee15",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/87#pullrequestreview-5204627381",
+          "body_length": 0
+        },
+        {
+          "id": 5204628431,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-15T01:40:04Z",
+          "commit_id": "289b3b71c8352738395bf290bc1ae10dc405ee15",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/87#pullrequestreview-5204628431",
+          "body_length": 0
+        }
+      ]
+    },
+    {
+      "pr": 88,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 89,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 90,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 91,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 92,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 93,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 94,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 95,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5260747207,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-20T13:55:08Z",
+          "commit_id": "938a7f01b4404c7980711b372746d08c3861f6f7",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/95#pullrequestreview-5260747207",
+          "body_length": 495
+        },
+        {
+          "id": 5260755505,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-20T13:58:23Z",
+          "commit_id": "938a7f01b4404c7980711b372746d08c3861f6f7",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/95#pullrequestreview-5260755505",
+          "body_length": 623
+        },
+        {
+          "id": 5260779913,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-20T14:08:36Z",
+          "commit_id": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/95#pullrequestreview-5260779913",
+          "body_length": 0
+        },
+        {
+          "id": 5260780166,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-20T14:08:40Z",
+          "commit_id": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/95#pullrequestreview-5260780166",
+          "body_length": 0
+        },
+        {
+          "id": 5260786042,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-20T14:11:27Z",
+          "commit_id": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/95#pullrequestreview-5260786042",
+          "body_length": 623
+        }
+      ]
+    },
+    {
+      "pr": 96,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5261023259,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-20T16:10:56Z",
+          "commit_id": "d112358d1f13757fdace7e1d3fd73b8d7922cadb",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/96#pullrequestreview-5261023259",
+          "body_length": 674
+        },
+        {
+          "id": 5261029442,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-20T16:13:57Z",
+          "commit_id": "d112358d1f13757fdace7e1d3fd73b8d7922cadb",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/96#pullrequestreview-5261029442",
+          "body_length": 623
+        }
+      ]
+    }
+  ]
+}
