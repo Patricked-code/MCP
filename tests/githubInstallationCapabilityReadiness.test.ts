@@ -76,3 +76,14 @@ test('RED: malformed repository, unknown operation and forged permission never y
   assert.equal(assessGithubInstallationCapability(request('unknown' as GithubCapabilityRequest['operation']), verified).status, 'BLOCKED');
   assert.equal(assessGithubInstallationCapability(request('repository.admin'), { ...verified, permissions: {administration:'admin' as never} }).status, 'BLOCKED');
 });
+
+
+test('FINDING-02: selected GitHub installation evidence cannot be reused for another repo on same account',()=>{
+  const selected={...verified,repositorySelection:'selected' as const,
+    repositoryIncluded:true,repository:'chainsolutions-wealthtech/Regulatory'};
+  assert.equal(assessGithubInstallationCapability(request('repository.read'),selected).status,'PERMISSION_OBSERVED');
+  const forged=assessGithubInstallationCapability(request('repository.write','chainsolutions-wealthtech/Other'),selected);
+  assert.equal(forged.status,'BLOCKED');
+  assert.ok(forged.reasonCodes.includes('REPOSITORY_NOT_ATTESTED'));
+  assert.equal(assessGithubInstallationCapability(request('repository.read'),{...selected,repository:''}).status,'BLOCKED');
+});
