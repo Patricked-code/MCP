@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "positions": [
+    141,
+    156
+  ],
+  "items": [
+    {
+      "pr": 215,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b543c9e3f320b7df37b7c1ebf396b8f18de2fcf3",
+          "date": "2026-10-01T23:04:51Z",
+          "parents": [
+            "261d2976bf373a097a080becda48f5df1c97c84d"
+          ],
+          "subject": "test(g2): RED two-clock client presence",
+          "url": "https://github.com/Patricked-code/MCP/commit/b543c9e3f320b7df37b7c1ebf396b8f18de2fcf3"
+        },
+        {
+          "sha": "15320ecc925aae36fafd56ee19d6a16cd6ad3a82",
+          "date": "2026-10-01T23:04:52Z",
+          "parents": [
+            "b543c9e3f320b7df37b7c1ebf396b8f18de2fcf3"
+          ],
+          "subject": "feat(g2): two-clock client presence with bounded read-only states",
+          "url": "https://github.com/Patricked-code/MCP/commit/15320ecc925aae36fafd56ee19d6a16cd6ad3a82"
+        }
+      ]
+    },
+    {
+      "pr": 216,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "63cd9d5d69d4b065c47c1fff934ace6aa0d18759",
+          "date": "2026-10-01T23:11:00Z",
+          "parents": [
+            "e21320990a4e8534f4c261b3bec6021417b4efb6"
+          ],
+          "subject": "test(g2): RED terminal evidence for TB-W4-G2-01",
+          "url": "https://github.com/Patricked-code/MCP/commit/63cd9d5d69d4b065c47c1fff934ace6aa0d18759"
+        },
+        {
+          "sha": "837ab916466d20a22d71446bf4b939f2514894f3",
+          "date": "2026-10-01T23:11:00Z",
+          "parents": [
+            "63cd9d5d69d4b065c47c1fff934ace6aa0d18759"
+          ],
+          "subject": "docs(g2): close TB-W4-G2-01 and PB-G12 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/837ab916466d20a22d71446bf4b939f2514894f3"
+        }
+      ]
+    },
+    {
+      "pr": 217,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b182901cd8d00bc9f8ed24515e5730ec708fd36c",
+          "date": "2026-10-01T23:19:02Z",
+          "parents": [
+            "18e227fa08178272c0f5d678379351377425af0a"
+          ],
+          "subject": "test(b3.2): RED owner gate for target project selection",
+          "url": "https://github.com/Patricked-code/MCP/commit/b182901cd8d00bc9f8ed24515e5730ec708fd36c"
+        },
+        {
+          "sha": "e78f4c790a4c23227220a68c7a261f478a4b37cc",
+          "date": "2026-10-01T23:19:03Z",
+          "parents": [
+            "b182901cd8d00bc9f8ed24515e5730ec708fd36c"
+          ],
+          "subject": "docs(b3.2): guard TB-W3-B3-02 behind an owner decision on target project selection",
+          "url": "https://github.com/Patricked-code/MCP/commit/e78f4c790a4c23227220a68c7a261f478a4b37cc"
+        }
+      ]
+    },
+    {
+      "pr": 218,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "3d457e21751fc22288787e704cc2f650ae935d2d",
+          "date": "2026-10-01T23:29:10Z",
+          "parents": [
+            "ba950c51462e7e2076afaafe412429860ff744ae"
+          ],
+          "subject": "test(g3): RED client tool surface attestation residual",
+          "url": "https://github.com/Patricked-code/MCP/commit/3d457e21751fc22288787e704cc2f650ae935d2d"
+        },
+        {
+          "sha": "603bd4810902402da408aa4ffb736a814da26cb5",
+          "date": "2026-10-01T23:29:10Z",
+          "parents": [
+            "3d457e21751fc22288787e704cc2f650ae935d2d"
+          ],
+          "subject": "feat(g3): governed client tool surface attestation and server-vs-client projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/603bd4810902402da408aa4ffb736a814da26cb5"
+        }
+      ]
+    },
+    {
+      "pr": 219,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "40e7e9ad44304004ceb2602355788e20e619ac33",
+          "date": "2026-10-01T23:35:20Z",
+          "parents": [
+            "02f2da91741da4ff36eea3f138b00155ff49bad7"
+          ],
+          "subject": "test(g3): RED terminal evidence for TB-W4-G3-01",
+          "url": "https://github.com/Patricked-code/MCP/commit/40e7e9ad44304004ceb2602355788e20e619ac33"
+        },
+        {
+          "sha": "441612668b52eedc3aa8f7c9e1e2ea9f0ce8a141",
+          "date": "2026-10-01T23:35:20Z",
+          "parents": [
+            "40e7e9ad44304004ceb2602355788e20e619ac33"
+          ],
+          "subject": "docs(g3): close TB-W4-G3-01 and PB-G3 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/441612668b52eedc3aa8f7c9e1e2ea9f0ce8a141"
+        }
+      ]
+    },
+    {
+      "pr": 223,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "ea52beb638bc5bca4c57dc9132f75912b0a71257",
+          "date": "2026-10-02T00:26:13Z",
+          "parents": [
+            "52f6129d519ba637e0073443275f0f5e74cb5fbd"
+          ],
+          "subject": "docs(governance): master resume memory from full read-only repository pass",
+          "url": "https://github.com/Patricked-code/MCP/commit/ea52beb638bc5bca4c57dc9132f75912b0a71257"
+        }
+      ]
+    },
+    {
+      "pr": 224,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "eaf0c230c7ec48868e2db9a28b7ad158cd34b919",
+          "date": "2026-10-04T16:42:06Z",
+          "parents": [
+            "0f8ceebbae386832f66028fd9163e81871e746f0"
+          ],
+          "subject": "test(program): RED convergence of intakes #220-#222 and #219 supervision",
+          "url": "https://github.com/Patricked-code/MCP/commit/eaf0c230c7ec48868e2db9a28b7ad158cd34b919"
+        },
+        {
+          "sha": "cc5445db65b62f49f5097941302f9f786499284a",
+          "date": "2026-10-04T16:49:22Z",
+          "parents": [
+            "eaf0c230c7ec48868e2db9a28b7ad158cd34b919"
+          ],
+          "subject": "docs(program): converge intakes #220-#222 and #219 supervision",
+          "url": "https://github.com/Patricked-code/MCP/commit/cc5445db65b62f49f5097941302f9f786499284a"
+        },
+        {
+          "sha": "ece4e0eeaf14cc628c65c6c419e8d3ec0c6af801",
+          "date": "2026-10-04T16:52:17Z",
+          "parents": [
+            "cc5445db65b62f49f5097941302f9f786499284a"
+          ],
+          "subject": "test(program): keep intake convergence assertions valid as the program advances",
+          "url": "https://github.com/Patricked-code/MCP/commit/ece4e0eeaf14cc628c65c6c419e8d3ec0c6af801"
+        }
+      ]
+    },
+    {
+      "pr": 225,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "5f14005b6cb5cb99f3f0dddc30e63730a666c428",
+          "date": "2026-10-04T17:01:26Z",
+          "parents": [
+            "5bf4b799e2feefd4ddff82d525177d04b9e3fe8c"
+          ],
+          "subject": "test(b3.2): RED operator-configured server target and TargetScope tool surface",
+          "url": "https://github.com/Patricked-code/MCP/commit/5f14005b6cb5cb99f3f0dddc30e63730a666c428"
+        },
+        {
+          "sha": "2d3d6ab4cae9ba65d80bab52066da2f8ddd84f14",
+          "date": "2026-10-04T17:09:52Z",
+          "parents": [
+            "5f14005b6cb5cb99f3f0dddc30e63730a666c428"
+          ],
+          "subject": "feat(b3.2): operator-configured server target and server-built TargetScope surface",
+          "url": "https://github.com/Patricked-code/MCP/commit/2d3d6ab4cae9ba65d80bab52066da2f8ddd84f14"
+        }
+      ]
+    },
+    {
+      "pr": 226,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "6f01451fead05c0d3f1cf67776d326c8a0370fe9",
+          "date": "2026-10-04T17:14:50Z",
+          "parents": [
+            "93d631e5dbc61354047f0847b96d23d5cb23ba21"
+          ],
+          "subject": "test(b3.2): RED terminal evidence for TB-W3-B3-02",
+          "url": "https://github.com/Patricked-code/MCP/commit/6f01451fead05c0d3f1cf67776d326c8a0370fe9"
+        },
+        {
+          "sha": "8fc230c6c299b9ba2d52823569af964d74a6ac5f",
+          "date": "2026-10-04T17:18:15Z",
+          "parents": [
+            "6f01451fead05c0d3f1cf67776d326c8a0370fe9"
+          ],
+          "subject": "docs(b3.2): close TB-W3-B3-02 and PB-B3 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/8fc230c6c299b9ba2d52823569af964d74a6ac5f"
+        }
+      ]
+    },
+    {
+      "pr": 227,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "63ebe385c263dd8b1e6720a7bd3f325833271b5d",
+          "date": "2026-10-04T17:22:41Z",
+          "parents": [
+            "21dc3e43984fd684f5013991dc4de57885b9fd4e"
+          ],
+          "subject": "test(dispatch-01): RED blueprint-bound governed materialization",
+          "url": "https://github.com/Patricked-code/MCP/commit/63ebe385c263dd8b1e6720a7bd3f325833271b5d"
+        },
+        {
+          "sha": "66bd5b768296217a195fc5119e3b778e87a2f348",
+          "date": "2026-10-04T17:28:11Z",
+          "parents": [
+            "63ebe385c263dd8b1e6720a7bd3f325833271b5d"
+          ],
+          "subject": "feat(dispatch-01): blueprint-bound governed task materialization",
+          "url": "https://github.com/Patricked-code/MCP/commit/66bd5b768296217a195fc5119e3b778e87a2f348"
+        }
+      ]
+    },
+    {
+      "pr": 228,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "bdd170885cf3b7ae3257e8f01bd22adae4cc983c",
+          "date": "2026-10-04T17:32:53Z",
+          "parents": [
+            "c5fc1d78ea4213791fa38ba67f3fcf4b7ed535d0"
+          ],
+          "subject": "test(dispatch-01): RED terminal evidence for TB-W3-DISPATCH-01",
+          "url": "https://github.com/Patricked-code/MCP/commit/bdd170885cf3b7ae3257e8f01bd22adae4cc983c"
+        },
+        {
+          "sha": "e217280b6f87f9ff038589b1a0d08e6decdf2a02",
+          "date": "2026-10-04T17:34:35Z",
+          "parents": [
+            "bdd170885cf3b7ae3257e8f01bd22adae4cc983c"
+          ],
+          "subject": "docs(dispatch-01): close TB-W3-DISPATCH-01 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/e217280b6f87f9ff038589b1a0d08e6decdf2a02"
+        }
+      ]
+    },
+    {
+      "pr": 229,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "fd1bfdd507b0a60954f8bfd2063a7d02561f2c9b",
+          "date": "2026-10-04T17:36:58Z",
+          "parents": [
+            "ef22f55ed715c664154f1b9ee550888a82654f00"
+          ],
+          "subject": "test(dispatch-02): RED resume-owned-first governed claim",
+          "url": "https://github.com/Patricked-code/MCP/commit/fd1bfdd507b0a60954f8bfd2063a7d02561f2c9b"
+        },
+        {
+          "sha": "95783727c9c18ee48846a02d4a4d1a1b1aad8af3",
+          "date": "2026-10-04T17:39:42Z",
+          "parents": [
+            "fd1bfdd507b0a60954f8bfd2063a7d02561f2c9b"
+          ],
+          "subject": "feat(dispatch-02): resume-owned-first governed claim with TargetScope eligibility",
+          "url": "https://github.com/Patricked-code/MCP/commit/95783727c9c18ee48846a02d4a4d1a1b1aad8af3"
+        }
+      ]
+    },
+    {
+      "pr": 230,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b6035529a91de85510eac91e6aa144bf789bc22f",
+          "date": "2026-10-04T17:44:45Z",
+          "parents": [
+            "870305fc814773d8fb10f0a4fc2480a74885e46f"
+          ],
+          "subject": "test(dispatch-02): RED terminal evidence for TB-W3-DISPATCH-02",
+          "url": "https://github.com/Patricked-code/MCP/commit/b6035529a91de85510eac91e6aa144bf789bc22f"
+        },
+        {
+          "sha": "85931c0c5d67fc3c23741a72c9e6d2a22910d4e9",
+          "date": "2026-10-04T17:46:31Z",
+          "parents": [
+            "b6035529a91de85510eac91e6aa144bf789bc22f"
+          ],
+          "subject": "docs(dispatch-02): close TB-W3-DISPATCH-02 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/85931c0c5d67fc3c23741a72c9e6d2a22910d4e9"
+        }
+      ]
+    },
+    {
+      "pr": 231,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "8e772a9976686c63fd8e9382b9dc2896118be1b7",
+          "date": "2026-10-04T17:58:07Z",
+          "parents": [
+            "3177919faabc2fe4615746651d1ab26de9b62682"
+          ],
+          "subject": "test(dispatch-03): RED connected-agent next-work projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/8e772a9976686c63fd8e9382b9dc2896118be1b7"
+        },
+        {
+          "sha": "ed100d68e7d8204c5c66761f5efe3c8055f86099",
+          "date": "2026-10-04T18:08:51Z",
+          "parents": [
+            "8e772a9976686c63fd8e9382b9dc2896118be1b7"
+          ],
+          "subject": "feat(dispatch-03): connected-agent next-work projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/ed100d68e7d8204c5c66761f5efe3c8055f86099"
+        }
+      ]
+    },
+    {
+      "pr": 232,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "cd7b813a525d4a5096223119bea0488b31d7dc58",
+          "date": "2026-10-04T18:14:34Z",
+          "parents": [
+            "6df23b91551a97cdf10968c22071036d5942f11b"
+          ],
+          "subject": "test(dispatch-03): RED terminal evidence for TB-W3-DISPATCH-03",
+          "url": "https://github.com/Patricked-code/MCP/commit/cd7b813a525d4a5096223119bea0488b31d7dc58"
+        },
+        {
+          "sha": "71062182bb83fa0d2f4eee2bb67d5bb85f759bfd",
+          "date": "2026-10-04T18:16:21Z",
+          "parents": [
+            "cd7b813a525d4a5096223119bea0488b31d7dc58"
+          ],
+          "subject": "docs(dispatch-03): close TB-W3-DISPATCH-03 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/71062182bb83fa0d2f4eee2bb67d5bb85f759bfd"
+        }
+      ]
+    },
+    {
+      "pr": 233,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "a8b86709754b7838aed97f97a30eb50d8632f70d",
+          "date": "2026-10-04T18:28:36Z",
+          "parents": [
+            "9a79c7a1b822e5717f2931c069369516f94a241a"
+          ],
+          "subject": "test(c3): RED server resolution integrated after project resolution",
+          "url": "https://github.com/Patricked-code/MCP/commit/a8b86709754b7838aed97f97a30eb50d8632f70d"
+        },
+        {
+          "sha": "eaacf048f50ab9ecbaec252b55b0492a43ff0629",
+          "date": "2026-10-04T18:33:51Z",
+          "parents": [
+            "a8b86709754b7838aed97f97a30eb50d8632f70d"
+          ],
+          "subject": "feat(c3): GW-07 server resolution chained after project resolution",
+          "url": "https://github.com/Patricked-code/MCP/commit/eaacf048f50ab9ecbaec252b55b0492a43ff0629"
+        }
+      ]
+    }
+  ]
+}
