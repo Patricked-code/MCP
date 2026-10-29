@@ -61,7 +61,7 @@ test('RED: a verified own session/task/lock/consent and exact HEAD admits the ex
   const {io,calls}=remote();
   // Post-create verification will fail (no target reported), never falsely claim CREATED.
   const out=await executeGovernedPleskSubdomain(input,{
-    readExistingAuthority:async()=>authority(),remote:io
+    now:()=>Date.parse(now),readExistingAuthority:async()=>authority(),remote:io
   });
   assert.equal(out.status,'UNVERIFIED');
   assert.equal(out.reason,'POST_CREATE_NOT_ATTESTED');
@@ -89,7 +89,7 @@ test('RED: no owner or exact session admission means no SSH write',async()=>{
   ]){
     const {io,calls}=remote();
     const out=await executeGovernedPleskSubdomain(input,{
-      readExistingAuthority:async()=>({...authority(),...change}),remote:io
+      now:()=>Date.parse(now),readExistingAuthority:async()=>({...authority(),...change}),remote:io
     });
     assert.equal(out.status,'BLOCKED',JSON.stringify(change));
     assert.equal(calls.filter(c=>c.startsWith('W:')).length,0);
@@ -99,7 +99,7 @@ test('RED: no owner or exact session admission means no SSH write',async()=>{
 test('RED: true but caller-supplied consent never bypasses a failed trusted authority read',async()=>{
   const {io,calls}=remote();
   const out=await executeGovernedPleskSubdomain(input,{
-    readExistingAuthority:async()=>{throw new Error('private credential');},remote:io
+    now:()=>Date.parse(now),readExistingAuthority:async()=>{throw new Error('private credential');},remote:io
   });
   assert.equal(out.status,'BLOCKED');
   assert.equal(out.reason,'GOVERNED_AUTHORITY_UNAVAILABLE');
@@ -111,7 +111,7 @@ test('RED: unlisted parent/disabled policy forbids any server command even on pr
   for(const pol of [{...policy,enabled:false},{...policy,allowedParents:{s1:[],s2:[]}}]){
     const {io,calls}=remote();
     const out=await executeGovernedPleskSubdomain({...input,policy:pol},{
-      readExistingAuthority:async()=>authority(),remote:io
+      now:()=>Date.parse(now),readExistingAuthority:async()=>authority(),remote:io
     });
     assert.equal(out.status,'BLOCKED');
     assert.equal(calls.filter(x=>x.startsWith('W:')).length,0);
@@ -126,7 +126,7 @@ test('RED: no generalized shell, no cross-server or cross-account authorization'
   ]){
     const {io,calls}=remote();
     const out=await executeGovernedPleskSubdomain(changed,{
-      readExistingAuthority:async()=>authority(),remote:io
+      now:()=>Date.parse(now),readExistingAuthority:async()=>authority(),remote:io
     });
     assert.equal(out.status,'BLOCKED');
     assert.ok(!calls.some(x=>x.startsWith('W:')));
@@ -144,7 +144,7 @@ test('bounded production Plesk SSH contract forbids shell and cross-server opera
 test('the read and write transport never takes arbitrary argv from a caller to bypass consent',async()=>{
   const {io,calls}=remote();
   const out=await executeGovernedPleskSubdomain({...input,expectedTaskId:'different-task'},{
-    readExistingAuthority:async()=>authority(),remote:io
+    now:()=>Date.parse(now),readExistingAuthority:async()=>authority(),remote:io
   });
   assert.equal(out.status,'BLOCKED');
   assert.equal(calls.length,0);
@@ -173,7 +173,7 @@ test('GREEN: Plesk create performs one bounded write and returns CREATED only af
     }
   };
   const out=await executeGovernedPleskSubdomain(input,{
-    readExistingAuthority:async()=>authority(),remote:io
+    now:()=>Date.parse(now),readExistingAuthority:async()=>authority(),remote:io
   });
   assert.equal(out.status,'CREATED');
   assert.equal(out.reason,'POST_CREATE_ATTESTED');
@@ -183,7 +183,7 @@ test('GREEN: Plesk create performs one bounded write and returns CREATED only af
 test('GREEN: non-zero Plesk CLI exit never claims completed creation',async()=>{
   const {io,calls}=remote();
   const out=await executeGovernedPleskSubdomain(input,{
-    readExistingAuthority:async()=>authority(),
+    now:()=>Date.parse(now),readExistingAuthority:async()=>authority(),
     remote:{...io,guarded:async (server,command)=>{
       calls.push('W:'+command);
       return{code:1,stdout:'',stderr:'failed'};
@@ -197,7 +197,7 @@ test('GREEN: non-zero Plesk CLI exit never claims completed creation',async()=>{
 test('GREEN: an existing unowned Plesk target is never touched',async()=>{
   const {io,calls}=remote();
   const out=await executeGovernedPleskSubdomain(input,{
-    readExistingAuthority:async()=>authority(),
+    now:()=>Date.parse(now),readExistingAuthority:async()=>authority(),
     remote:{...io,readonly:async (server,command)=>{
       if(command.startsWith('plesk bin subdomain --info'))return{code:0,stdout:'exists',stderr:''};
       return io.readonly(server,command);
@@ -245,6 +245,6 @@ test('RED GD-U B3i-b CLOCK: expire lease during SSH preflight before guarded wri
   };
   const deps={readExistingAuthority:async()=>authority(),remote:io,now:()=>serverNow};
   const out=await executeGovernedPleskSubdomain(input,deps);
-  assert.equal(out.status,'FAILED');
+  assert.equal(out.status,'BLOCKED');
   assert.equal(base.calls.filter(x=>x.startsWith('W:')).length,0);
 });

@@ -49,6 +49,8 @@ export type GovernedPleskSubdomainDependencies=Readonly<{
   /** MUST re-read existing MCP runtime authorities, never a client payload. */
   readExistingAuthority:()=>Promise<GovernedPleskAuthoritySnapshot>;
   remote:PleskRemotePort;
+  /** Server-owned monotonic-enough wall-clock observation; never from req.now. */
+  now?:()=>number;
 }>;
 export type GovernedPleskSubdomainOutcome=PleskCreationOutcome&Readonly<{
   operation:'PLESK_SUBDOMAIN_CREATE';
@@ -61,12 +63,21 @@ function ageMs(time:string,now:string):number|null{
   const diff=Date.parse(now)-Date.parse(time);
   return Number.isFinite(diff)?diff:null;
 }
-function admitted(req:GovernedPleskSubdomainRequest,a:GovernedPleskAuthoritySnapshot):boolean{
+/** The optional clock is injected by trusted server wiring or deterministic tests. */
+function trustedInstant(deps:GovernedPleskSubdomainDependencies):string|null{
+  try{
+    const millis=(deps.now??Date.now)();
+    if(!Number.isSafeInteger(millis)||millis<0||millis>8_640_000_000_000_000)return null;
+    const time=new Date(millis);
+    return Number.isFinite(time.getTime())?time.toISOString():null;
+  }catch{return null;}
+}
+function admitted(req:GovernedPleskSubdomainRequest,a:GovernedPleskAuthoritySnapshot,serverNow:string):boolean{
   const expectedScope='plesk:'+req.target.serverId+':'+req.target.parentDomain;
   const expectedLockScope=normalizeLockScope({type:'resource',key:expectedScope});
-  const age=ageMs(a.observedAt,req.now);
-  const heartbeat=ageMs(a.sessionLastHeartbeatAt,req.now);
-  const expiry=ageMs(a.lockExpiresAt,req.now);
+  const age=ageMs(a.observedAt,serverNow);
+  const heartbeat=ageMs(a.sessionLastHeartbeatAt,serverNow);
+  const expiry=ageMs(a.lockExpiresAt,serverNow);
   return a.source==='EXISTING_GOVERNED_RUNTIME'
     && a.taskId===req.expectedTaskId
     && a.taskStatus==='IN_PROGRESS'
@@ -117,10 +128,36 @@ export async function executeGovernedPleskSubdomain(
   let authority:GovernedPleskAuthoritySnapshot;
   try{authority=await deps.readExistingAuthority();}
   catch{return blocked('GOVERNED_AUTHORITY_UNAVAILABLE');}
-  if(!authority||!admitted(req,authority))return blocked('GOVERNED_ADMISSION_NOT_ATTESTED');
-  // Reuse the original TDD Plesk adapter's fresh subscription/path observation,
-  // fixed argv, narrowly consented guarded call and post-create reobservation.
-  const result=await createPleskSubdomainOnServer(req.target,req.policy,true,deps.remote);
+  // A request's timestamp is NOT authority. Sample the server clock only
+  // after the asynchronous authoritative read, avoiding future-dated snapshots.
+  const observedNow=trustedInstant(deps);
+  if(!authority||!observedNow||!admitted(req,authority,observedNow))
+    return blocked('GOVERNED_ADMISSION_NOT_ATTESTED');
+
+  // The existing adapter performs an asynchronous SSH preflight. Re-read the
+  // same Task/Session/Lock/CI authority and trusted clock at the last bounded
+  // guarded-write boundary, not only before the preflight. No new authority.
+  let deniedBeforeWrite=false;
+  const guardedRemote:PleskRemotePort={
+    ...deps.remote,
+    guarded:async(serverId,command)=>{
+      let latest:GovernedPleskAuthoritySnapshot;
+      try{latest=await deps.readExistingAuthority();}
+      catch{
+        deniedBeforeWrite=true;
+        return {code:1,stdout:'',stderr:''};
+      }
+      const executionNow=trustedInstant(deps);
+      if(!latest||!executionNow||!admitted(req,latest,executionNow)){
+        deniedBeforeWrite=true;
+        return {code:1,stdout:'',stderr:''};
+      }
+      // No awaited operation between last clock/authority check and call.
+      return deps.remote.guarded(serverId,command);
+    }
+  };
+  const result=await createPleskSubdomainOnServer(req.target,req.policy,true,guardedRemote);
+  if(deniedBeforeWrite)return blocked('GOVERNED_AUTHORITY_EXPIRED_BEFORE_WRITE');
   return {...result,operation:'PLESK_SUBDOMAIN_CREATE',executionPath:'EXISTING_PLESK_SSH_ADAPTER'};
 }
 
