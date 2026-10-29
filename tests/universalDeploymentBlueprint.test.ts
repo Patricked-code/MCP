@@ -134,3 +134,30 @@ test('cross-plane witness missing one critical Plesk permission blocks the entir
   assert.equal(p.disposition,'HOLD');
   assert.equal(p.steps.find(s=>s.capabilityId==='plesk.tls.certificate.manage')?.status,'BLOCKED');
 });
+
+
+test('FINDING-07: foreign Plesk subdomain preflight cannot authorize a different target blueprint',()=>{
+  const input=base();
+  const proof=allPermissions();
+  const c=findUniversalAdminCapability('plesk.subdomain.create')!;
+  proof['plesk.subdomain.create']={source:'PLESK_API',principalId:'delegated-identity',
+    scope:'plesk:s1:wealthtechinnovations.com',observedAt:at,
+    resourceAccessible:true,availablePermissionHints:[c.permissionHint]};
+  const real={
+    mode:'SUBDOMAIN' as const,evidenceSource:'LIVE_PLESK_AND_FILESYSTEM' as const,observedAt:at,
+    input:{serverId:'s1' as const,parentDomain:'wealthtechinnovations.com',
+      label:'demo',documentRoot:'/demo',evidence:{
+        parentExists:true,targetExists:false,documentRootExists:false,
+        subscriptionAuthorized:true,documentRootSafe:true,targetOwnedByProvisioner:false
+      }}
+  };
+  const ok=buildUniversalDeploymentBlueprint({...input,mode:'SUBDOMAIN',domain:'wealthtechinnovations.com',
+    existingAutonomy:{...input.existingAutonomy,target:real},evidenceByCapability:proof});
+  assert.equal(ok.disposition,'PROPOSE_FOR_EXISTING_ADMISSION');
+  const mismatch=buildUniversalDeploymentBlueprint({...input,mode:'SUBDOMAIN',domain:'wealthtechinnovations.com',
+    existingAutonomy:{...input.existingAutonomy,target:{...real,input:{...real.input,serverId:'s2',
+      parentDomain:'another.org'}}},evidenceByCapability:proof});
+  assert.equal(mismatch.disposition,'HOLD');
+  assert.ok(mismatch.reasonCodes.includes('TARGET_STRATEGY_MISMATCH'));
+  assert.equal(mismatch.runtimeWriteAuthorized,false);
+});
