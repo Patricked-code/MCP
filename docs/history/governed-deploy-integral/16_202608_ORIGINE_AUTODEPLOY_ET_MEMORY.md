@@ -185,3 +185,10 @@ PR #61 fermée pour bug Draft→Ready du connecteur ; #62 réutilise le même HE
 ## Lacunes / distinction des niveaux de preuve
 
 La PR #58 n'a pas pu être consultée dans ce passage (erreur de connexion GitHub). Les CI et attestations indiquées ci-dessus sont les événements **déclarés dans les corps des PR** ; vérifier individuellement leurs runs et résolutions avant certification. Chaque date de création, commit, merge et déploiement constitue un événement distinct. La chronologie commence avant #39, mais les **premières attestations explicites du mécanisme Governed Deploy historique** étudiées ici sont #42/#43 ; elles ne prouvent ni le premier commit absolu du repo, ni la première capacité de déployer des apps externes.
+
+
+## Complément append-only : PR #58 retrouvée après une erreur de lecture transitoire
+
+**2026-08-29T14:24:11Z — PR #58** https://github.com/Patricked-code/MCP/pull/58 — `docs(governance): reconcile PR 55 deployment state`.
+
+Le premier essai d'interrogation avait échoué sur un problème de connexion ; un nouvel appel GitHub a fourni le corps exact. #58 reprend **la même branche et le même HEAD documentaire** que la PR draft #57 fermée sans fusion à cause du bug `Repository.fullDatabaseId` : `mcp/reconcile-unified-operational-work-state-20260829@62c95ec406b6653ef07337d04d4a79244a568732`, base `2c2dde2bffe62b2685bf2fad94530571762470c8`. CI documentaire `33257428471`, job `99113481222`, SUCCESS déclarée ; `protect-main` rapportait alors PR et `validate` obligatoires, résolution des fils et zéro approbation obligatoire. **La fermeture de #57 n'a donc pas effacé le travail ni créé une autre tâche** : la succession canonique est #55 → #57 (draft non fusionnée) → #58 (même HEAD). Ce complément remplace uniquement l'état « non consultable » de la première collecte, sans altérer la vérité de l'erreur transitoire à ce moment.
