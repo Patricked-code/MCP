@@ -62,7 +62,7 @@ export async function readCanonicalRepositoryFromModuleManifest(moduleUrl: strin
         mcpValidationProfile?:{repository?:unknown}
       };
       const repo=raw.mcpValidationProfile?.repository;
-      return typeof repo==='string' && /^[A-Za-z0-9-]+\\/[A-Za-z0-9_.-]+$/.test(repo)
+      return typeof repo==='string' && /^[A-Za-z0-9-]+[/][A-Za-z0-9_.-]+$/.test(repo)
         ?repo:null;
     }catch(e){
       if(e && typeof e==='object' && 'code' in e && e.code==='ENOENT')continue;
