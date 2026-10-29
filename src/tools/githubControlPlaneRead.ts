@@ -553,7 +553,7 @@ export function registerGithubControlPlaneReadTools(
   }, async ({ organization, repository, jobId }) => {
     const org = assertOrg(organization, dependencies.configuredOrg);
     const endpoint = `${endpointRepo(org, repository)}/actions/jobs/${jobId}/logs`;
-    const response = await dependencies.request(endpoint, { accept: 'text/plain' });
+    const response = await dependencies.request(endpoint);
     if (!response.ok) throw new Error(`GITHUB_CONTROL_READ_FAILED:${response.status ?? 'NETWORK'}`);
     const rawText = typeof response.json === 'string' ? response.json : JSON.stringify(response.json);
     const LOG_MAX = 100000;
