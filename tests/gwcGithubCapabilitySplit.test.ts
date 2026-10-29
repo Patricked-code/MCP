@@ -55,8 +55,11 @@ const C90_SPLIT_AFTER_GWC9 = [
 
 const W2_READ_R1 = [
   'github_get_commits',
+  'github_get_environments',
   'github_get_issue_state',
   'github_get_issues',
+  'github_get_repo_secrets',
+  'github_get_repo_variables',
   'github_get_required_checks',
   'github_get_tree',
   'github_get_workflow_jobs',
@@ -143,9 +146,9 @@ test('GWC-12 materializes the planned C-90 split only after the GWC-9 AF-32 gate
 
 test('the C-90 partition remains exact and exhaustive after W2 READ R1 materializes', () => {
   const all = [...C90_SPLIT_AFTER_GWC9, ...W2_READ_R1, ...C90_DEFERRED];
-  assert.equal(all.length, 25);
-  assert.equal(new Set(all).size, 25);
+  assert.equal(all.length, 28);
+  assert.equal(new Set(all).size, 28);
   assert.equal(C90_SPLIT_AFTER_GWC9.length, 12);
-  assert.equal(W2_READ_R1.length, 7);
+  assert.equal(W2_READ_R1.length, 10);
   assert.equal(C90_DEFERRED.length, 6);
 });

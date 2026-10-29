@@ -733,4 +733,58 @@ export function registerGithubControlPlaneReadTools(
       commentCount: number(i.comments)
     });
   });
+
+  server.tool('github_get_environments', 'Retourne en lecture les environnements de déploiement d\'un repository.', repoSchema, async ({ organization, repository }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const raw = await get(dependencies, `${endpointRepo(org, repository)}/environments`);
+    const data = object(raw);
+    return respond({
+      totalCount: number(data?.total_count),
+      environments: listProjection(array(data?.environments), (entry) => {
+        const e = object(entry);
+        return {
+          id: number(e?.id),
+          name: string(e?.name),
+          htmlUrl: string(e?.html_url),
+          createdAt: string(e?.created_at),
+          updatedAt: string(e?.updated_at)
+        };
+      })
+    });
+  });
+
+  server.tool('github_get_repo_secrets', 'Retourne en lecture les noms des secrets d\'un repository (jamais les valeurs).', repoSchema, async ({ organization, repository }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const raw = await get(dependencies, `${endpointRepo(org, repository)}/actions/secrets?per_page=100`);
+    const data = object(raw);
+    return respond({
+      totalCount: number(data?.total_count),
+      secrets: listProjection(array(data?.secrets), (entry) => {
+        const s = object(entry);
+        return {
+          name: string(s?.name),
+          createdAt: string(s?.created_at),
+          updatedAt: string(s?.updated_at)
+        };
+      })
+    });
+  });
+
+  server.tool('github_get_repo_variables', 'Retourne en lecture les variables d\'un repository.', repoSchema, async ({ organization, repository }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const raw = await get(dependencies, `${endpointRepo(org, repository)}/actions/variables?per_page=100`);
+    const data = object(raw);
+    return respond({
+      totalCount: number(data?.total_count),
+      variables: listProjection(array(data?.variables), (entry) => {
+        const v = object(entry);
+        return {
+          name: string(v?.name),
+          value: string(v?.value),
+          createdAt: string(v?.created_at),
+          updatedAt: string(v?.updated_at)
+        };
+      })
+    });
+  });
 }

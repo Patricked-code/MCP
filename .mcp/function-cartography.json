@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "268ed3e6335d6f6ee656cd1bf1fcca41d1ec20497e1e12f3270e635b567c74f2",
-  "registeredToolCount": 148,
-  "readOnlyToolCount": 93,
+  "catalogueDigest": "62a0f69f1b60041f7892daaf21e666dc5c1dcbcac81dd23bbd5224d1a0dd7f31",
+  "registeredToolCount": 151,
+  "readOnlyToolCount": 96,
   "writeToolCount": 55,
   "resourceCount": 2,
   "tools": [
@@ -1159,6 +1159,40 @@
       "contractDigest": "c1eeb443309f76307bbbe656b26bacc6ae76bcb98fc93138312eebe4bbfe5b26"
     },
     {
+      "name": "github_get_environments",
+      "title": null,
+      "description": "Retourne en lecture les environnements de déploiement d'un repository.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          }
+        },
+        "required": [
+          "organization",
+          "repository"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "9e1d887fe87ecdef3d4e98884b894077f14cf598b8876e5ea59e3aba7e8b09ac"
+    },
+    {
       "name": "github_get_issue_state",
       "title": null,
       "description": "Lecture bornée de l'état d'une issue GitHub (projection, ne remplace jamais la Governed Task Queue).",
@@ -1412,6 +1446,74 @@
         "additionalProperties": false
       },
       "contractDigest": "ea1edfb5f0bc09b0314d370ee223fd644f25b09c4bb6e3578e36e1363c5bb5b8"
+    },
+    {
+      "name": "github_get_repo_secrets",
+      "title": null,
+      "description": "Retourne en lecture les noms des secrets d'un repository (jamais les valeurs).",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          }
+        },
+        "required": [
+          "organization",
+          "repository"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "cc9175677659b7679c59a209cc6abbf1987891fd232e586466395e8b4398f1b1"
+    },
+    {
+      "name": "github_get_repo_variables",
+      "title": null,
+      "description": "Retourne en lecture les variables d'un repository.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          }
+        },
+        "required": [
+          "organization",
+          "repository"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "3bdb7c021d3503f156d6d88861bf7f295c291da3593a81d5b03b6cf4e9f72f87"
     },
     {
       "name": "github_get_repository_state",
