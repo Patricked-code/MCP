@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{pr}/reviews",
+  "positions": [
+    19,
+    36
+  ],
+  "items": [
+    {
+      "pr": 22,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 23,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 25,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 26,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 27,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 28,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 30,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 31,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 33,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 34,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 35,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 36,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 37,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 38,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 39,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 40,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 41,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 4918385566,
+          "state": "COMMENTED",
+          "submitted_at": "2026-08-12T15:41:14Z",
+          "commit_id": "06b77fd8bc5f6fb2b976169c78599d6e1b513260",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/41#pullrequestreview-4918385566",
+          "body_length": 623
+        },
+        {
+          "id": 4922676050,
+          "state": "COMMENTED",
+          "submitted_at": "2026-08-13T01:43:29Z",
+          "commit_id": "06b77fd8bc5f6fb2b976169c78599d6e1b513260",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/41#pullrequestreview-4922676050",
+          "body_length": 0
+        }
+      ]
+    },
+    {
+      "pr": 42,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 4922669265,
+          "state": "COMMENTED",
+          "submitted_at": "2026-08-13T01:41:44Z",
+          "commit_id": "077485b457f01943bda88209a07076ba40461df3",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/42#pullrequestreview-4922669265",
+          "body_length": 623
+        }
+      ]
+    }
+  ]
+}
