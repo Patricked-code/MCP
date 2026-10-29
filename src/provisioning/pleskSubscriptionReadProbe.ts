@@ -13,7 +13,7 @@ export type PleskSubscriptionReadObservation=Readonly<{
   pleskAdminWritePermissionVerified:false;
   mutationExecuted:false;
 }>;
-const DOMAIN=/^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$/;
+const DOMAIN=/^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/;
 export async function probeAllowlistedPleskSubscriptionRead(
   parents:Readonly<Partial<Record<ServerId,readonly string[]>>>,
   read:(server:ServerId,command:`plesk bin subscription --info '${string}'`)=>Promise<ReadResult>
