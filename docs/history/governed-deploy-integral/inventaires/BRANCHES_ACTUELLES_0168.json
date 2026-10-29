@@ -1,0 +1,1022 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/branches?per_page=100&page=1..3",
+  "snapshotDate": "2026-10-29",
+  "count": 168,
+  "pageLengths": [
+    100,
+    68,
+    0
+  ],
+  "scope": "Existing branch refs at snapshot; deleted PR branches are NOT included",
+  "items": [
+    {
+      "name": "chatgpt/w3-a3-oauth-correlation-inventory-20260928",
+      "sha": "54b400b48f0a053471550c07ee6d600b1f389da7",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/chatgpt%2Fw3-a3-oauth-correlation-inventory-20260928"
+    },
+    {
+      "name": "claude/ecstatic-edison-v1dyt1",
+      "sha": "c4bd277495176de8adfb7c436a54f4b009968e68",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/claude%2Fecstatic-edison-v1dyt1"
+    },
+    {
+      "name": "claude/trusting-ride-knf5tu",
+      "sha": "2cadba36a5e9271d155deb83b0aa021e3347c569",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/claude%2Ftrusting-ride-knf5tu"
+    },
+    {
+      "name": "claude/zealous-volta-jm7jj6",
+      "sha": "32b5fca039a023b397aa7e4d07760fff05c298be",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/claude%2Fzealous-volta-jm7jj6"
+    },
+    {
+      "name": "docs/governed-deploy-integral-history-20261029",
+      "sha": "cf23e4c4e100590ef30c1b8c1022a2fb92171244",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/docs%2Fgoverned-deploy-integral-history-20261029"
+    },
+    {
+      "name": "docs/mcp-memory-bootstrap",
+      "sha": "0feb5a25585e83077985cb4a2ccfa4d3b1f8addf",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/docs%2Fmcp-memory-bootstrap"
+    },
+    {
+      "name": "docs/single-root-architecture-map-20261023",
+      "sha": "4b440785e0a02024ee614d68c6ab68f0200d19fe",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/docs%2Fsingle-root-architecture-map-20261023"
+    },
+    {
+      "name": "fix/governed-targeted-task-claim-20261022",
+      "sha": "9f5468c2f53d6656b75a5e77682bb030d6307b61",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/fix%2Fgoverned-targeted-task-claim-20261022"
+    },
+    {
+      "name": "fix/oauth-opaque-origin-diagnostics-20261022",
+      "sha": "6a515f2856c78f9312eb05bcadf0841cc35c711b",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/fix%2Foauth-opaque-origin-diagnostics-20261022"
+    },
+    {
+      "name": "fix/oauth-opaque-origin-signed-consent-20261022",
+      "sha": "ecf989c1aca1d11d5655713c29af88eb63184a6d",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/fix%2Foauth-opaque-origin-signed-consent-20261022"
+    },
+    {
+      "name": "fix/oauth-origin-runtime-classification-20261022",
+      "sha": "89f11d57b2e4eea397c15ff3647896bb525a7ca4",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/fix%2Foauth-origin-runtime-classification-20261022"
+    },
+    {
+      "name": "fix/p0-oauth-consent-diagnostics-20261022",
+      "sha": "4a257942559e2f1f80dad5cc7ac127acae9c3034",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/fix%2Fp0-oauth-consent-diagnostics-20261022"
+    },
+    {
+      "name": "main",
+      "sha": "48a529889517aa1c11974802d23acc3f35e0f187",
+      "protected": true,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/main"
+    },
+    {
+      "name": "mcp/af09-production-state-reconcile-20260921",
+      "sha": "e8eafc3282e022d5c1a9fe0817899fbd6debc615",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Faf09-production-state-reconcile-20260921"
+    },
+    {
+      "name": "mcp/af09-structured-documentation-state-20260921",
+      "sha": "0a51b09b13febdda9fbcdd4324de61ab22140363",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Faf09-structured-documentation-state-20260921"
+    },
+    {
+      "name": "mcp/af10-af18-af24-af27-governance-consistency-20260922",
+      "sha": "e378cca954c7760dd62ac994c79c9a2e3b56840e",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Faf10-af18-af24-af27-governance-consistency-20260922"
+    },
+    {
+      "name": "mcp/af10-af18-af24-af27-production-state-20260922",
+      "sha": "cf77ebe30de0c4dd961a89faefe282a70de5367d",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Faf10-af18-af24-af27-production-state-20260922"
+    },
+    {
+      "name": "mcp/af21-canonical-json-authority-20260922",
+      "sha": "3f1238a4165ed112a9e8161635c6b1b7ff089030",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Faf21-canonical-json-authority-20260922"
+    },
+    {
+      "name": "mcp/af23-checkpoint-event-links-20260922",
+      "sha": "68f2305f11e312fc67c71bc68ccc917d958b5d5a",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Faf23-checkpoint-event-links-20260922"
+    },
+    {
+      "name": "mcp/africafunds-phase1-documentation-20260912",
+      "sha": "ced6e4d374eb75dabfaa958650f9b26ac2dd3d5f",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fafricafunds-phase1-documentation-20260912"
+    },
+    {
+      "name": "mcp/africafunds-registry-phase1-20260912",
+      "sha": "f7800966119601e336c480da6f2f98eafe6e6e70",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fafricafunds-registry-phase1-20260912"
+    },
+    {
+      "name": "mcp/africafunds-registry-phase2-20260912",
+      "sha": "18355de8d4892685ee4f68b11d1542fb249e838a",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fafricafunds-registry-phase2-20260912"
+    },
+    {
+      "name": "mcp/africafunds-suivi-baseline-order-20260913",
+      "sha": "beea82c94795c9661e2d1f9aebecad8268b674b5",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fafricafunds-suivi-baseline-order-20260913"
+    },
+    {
+      "name": "mcp/africafunds-terminal-documentation-20260913",
+      "sha": "29bb7fd35ca7b428541439bb49116ee6764576c4",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fafricafunds-terminal-documentation-20260913"
+    },
+    {
+      "name": "mcp/alignment-recovery-20260805",
+      "sha": "68088ef2b4330db1eaf14bbb6ede6ef99ee25323",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Falignment-recovery-20260805"
+    },
+    {
+      "name": "mcp/architecture-chronology-recovery-20261009",
+      "sha": "e8477395fd28750ea7865f8bcb0ea3335afe7338",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Farchitecture-chronology-recovery-20261009"
+    },
+    {
+      "name": "mcp/audit-continuity-entrypoint-20261015",
+      "sha": "355921a24c8642080a9a5016579fb5e35c90e262",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Faudit-continuity-entrypoint-20261015"
+    },
+    {
+      "name": "mcp/audit-historical-breadcrumbs-20261016",
+      "sha": "a7c059cd1b0eaf2191d89b8c5dbc7e5758c1112b",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Faudit-historical-breadcrumbs-20261016"
+    },
+    {
+      "name": "mcp/audit-recovery-20260805",
+      "sha": "feb9d61729453f7e956f6d063c38495242d2e2d3",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Faudit-recovery-20260805"
+    },
+    {
+      "name": "mcp/audit-review-threads-checkpoint-20261009",
+      "sha": "9d6725babc4c75e6c36eee3dacfdd40aa6671483",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Faudit-review-threads-checkpoint-20261009"
+    },
+    {
+      "name": "mcp/audit-supervisor-canonical-anchor-20261019",
+      "sha": "4e81a6482d1d304f536f25095a97a3e385cbb2ee",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Faudit-supervisor-canonical-anchor-20261019"
+    },
+    {
+      "name": "mcp/auto-intake-discovery-v1-20261016",
+      "sha": "ad018ba9a5ba33cfce0a980a9bf22a5d289f33ca",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fauto-intake-discovery-v1-20261016"
+    },
+    {
+      "name": "mcp/auto-intake-submitter-permission-20261016",
+      "sha": "58b89bb43a72f73ea12b1c269ea2ab236a092d16",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fauto-intake-submitter-permission-20261016"
+    },
+    {
+      "name": "mcp/automatic-governed-connection-bootstrap-20260829",
+      "sha": "c3e374eea7b64087ee7ef21e30a89710ff099bcc",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fautomatic-governed-connection-bootstrap-20260829"
+    },
+    {
+      "name": "mcp/b1-final-documentation-20260909",
+      "sha": "0e037ceeae05dc342f99ba2ae58761dc8e892f7e",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fb1-final-documentation-20260909"
+    },
+    {
+      "name": "mcp/b2-final-documentation-20260911",
+      "sha": "17de4af98c0b66a3cf32c219c762febd1880c0e5",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fb2-final-documentation-20260911"
+    },
+    {
+      "name": "mcp/b2-repository-resolution-20260909",
+      "sha": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fb2-repository-resolution-20260909"
+    },
+    {
+      "name": "mcp/bus-existing-event-journal-replay-20261016",
+      "sha": "05db818aa8d785c57e968ebe39d3d9e44bf7959c",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fbus-existing-event-journal-replay-20261016"
+    },
+    {
+      "name": "mcp/c1-gitregistry-v2-verification-20260913",
+      "sha": "f62c7c0da2286f8041f67afbd183378501c98c7a",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fc1-gitregistry-v2-verification-20260913"
+    },
+    {
+      "name": "mcp/c2-repository-project-resolution-20260915",
+      "sha": "8b71f14f9a4884d57699e093853f4ccfb84080ef",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fc2-repository-project-resolution-20260915"
+    },
+    {
+      "name": "mcp/c2-terminal-documentation-20260915",
+      "sha": "d124587f5c57c7941c7937a0d7b316a6f2e54e75",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fc2-terminal-documentation-20260915"
+    },
+    {
+      "name": "mcp/canonical-memory-verifier-20260917",
+      "sha": "f030561d8a26d4bb24b4da97b48e5a4be21854a2",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fcanonical-memory-verifier-20260917"
+    },
+    {
+      "name": "mcp/corrected-findings-final-baseline-20260922",
+      "sha": "c7f7a026b2a140971988313dabf3e0407e6d422c",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fcorrected-findings-final-baseline-20260922"
+    },
+    {
+      "name": "mcp/dispatch-concurrent-cas-regression-20261009",
+      "sha": "b88e835efc9336455c175e7427e8b1f2ede40693",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fdispatch-concurrent-cas-regression-20261009"
+    },
+    {
+      "name": "mcp/docker-image-attestation-readonly-20260805",
+      "sha": "1fc26c979244a946d7a66d7dd0966a2801fed3e9",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fdocker-image-attestation-readonly-20260805"
+    },
+    {
+      "name": "mcp/docs-historical-candidate-handoff-baseline-20260922",
+      "sha": "1ba84589adbaa478babebd2c8aa1e63438820dcd",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fdocs-historical-candidate-handoff-baseline-20260922"
+    },
+    {
+      "name": "mcp/document-s1-bootstrap-blocker-20260812",
+      "sha": "84d4555fe7dacef63c07f6a75276ea58b64415e1",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fdocument-s1-bootstrap-blocker-20260812"
+    },
+    {
+      "name": "mcp/documentation-bootstrap-20260713",
+      "sha": "750d010733191363abb275d8d31a1c0a8aee6ec9",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fdocumentation-bootstrap-20260713"
+    },
+    {
+      "name": "mcp/documentation-hub-conversations-cartography-20260713",
+      "sha": "8c7f0be63de853703446acb4f27bcb9ac0846c73",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fdocumentation-hub-conversations-cartography-20260713"
+    },
+    {
+      "name": "mcp/f04-dispatch-continuity-audit-20261009",
+      "sha": "9381cb94ad89d8425d99463c3aab1ee9581e11dd",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Ff04-dispatch-continuity-audit-20261009"
+    },
+    {
+      "name": "mcp/f04-subdomain-ownership-safety-20261009",
+      "sha": "d236a7ddf06120173be883601aa1cd344df0ac5f",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Ff04-subdomain-ownership-safety-20261009"
+    },
+    {
+      "name": "mcp/finalize-governed-autodeploy-20260813",
+      "sha": "077485b457f01943bda88209a07076ba40461df3",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Ffinalize-governed-autodeploy-20260813"
+    },
+    {
+      "name": "mcp/fix-late-retention-review-20260815",
+      "sha": "8dddc5656aa959f4c392d0f1816b5ee0e25709a0",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Ffix-late-retention-review-20260815"
+    },
+    {
+      "name": "mcp/fix-mandatory-bootstrap-review-20260822",
+      "sha": "dedca6e6ffb928498e37dc09c467b835eae569df",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Ffix-mandatory-bootstrap-review-20260822"
+    },
+    {
+      "name": "mcp/fix-restart-force-recreate-20260812",
+      "sha": "06b77fd8bc5f6fb2b976169c78599d6e1b513260",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Ffix-restart-force-recreate-20260812"
+    },
+    {
+      "name": "mcp/forensic-state-docs-20260805",
+      "sha": "916ae0397703b30184142cc80553d7452336338b",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fforensic-state-docs-20260805"
+    },
+    {
+      "name": "mcp/foundations-final-state-20260805",
+      "sha": "c6c732bbfa58e2171e214198929ed4eb5a5dbe4f",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Ffoundations-final-state-20260805"
+    },
+    {
+      "name": "mcp/foundations-integration-preview-20260805",
+      "sha": "19ba6888792b092051d1bc31d90de56a2395263d",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Ffoundations-integration-preview-20260805"
+    },
+    {
+      "name": "mcp/g3-canonical-documentation-reconciliation-20260915",
+      "sha": "4dd5fdeb6d43e56e835fc24572a9736ccb3eaf1b",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fg3-canonical-documentation-reconciliation-20260915"
+    },
+    {
+      "name": "mcp/g3-client-tool-surface-attestation-20260914",
+      "sha": "289b3b71c8352738395bf290bc1ae10dc405ee15",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fg3-client-tool-surface-attestation-20260914"
+    },
+    {
+      "name": "mcp/git-github-control-plane-foundation-20260915",
+      "sha": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgit-github-control-plane-foundation-20260915"
+    },
+    {
+      "name": "mcp/git-registry-v2-foundation-20260805",
+      "sha": "9a99c943bf07483836b5c39405abbe3b6f480bcd",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgit-registry-v2-foundation-20260805"
+    },
+    {
+      "name": "mcp/git-registry-v2-foundation-rebased-20260805",
+      "sha": "0d2098183afa4d32e3b3cc873be08ca42e1b242d",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgit-registry-v2-foundation-rebased-20260805"
+    },
+    {
+      "name": "mcp/github-admin-repository-create-20260915",
+      "sha": "d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-admin-repository-create-20260915"
+    },
+    {
+      "name": "mcp/github-administration-control-20260915",
+      "sha": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-administration-control-20260915"
+    },
+    {
+      "name": "mcp/github-first-operational-continuity-20260920",
+      "sha": "cd0443f9e483d498fd6dc2af30c78f74ccae074b",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-first-operational-continuity-20260920"
+    },
+    {
+      "name": "mcp/github-identity-resolution-20260907",
+      "sha": "9b1a572ab0362aeefa5e13f425225e1f510704b7",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-identity-resolution-20260907"
+    },
+    {
+      "name": "mcp/github-lifecycle-control-20260915",
+      "sha": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-lifecycle-control-20260915"
+    },
+    {
+      "name": "mcp/github-oidc-first-continuity-20261015",
+      "sha": "9fefbfb4d1fe72b489a1d0f7153cf68f6399fe06",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-oidc-first-continuity-20261015"
+    },
+    {
+      "name": "mcp/github-oidc-readonly-evidence-20260920",
+      "sha": "844f042de95ef8aa103095770139b3258184b3c6",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-oidc-readonly-evidence-20260920"
+    },
+    {
+      "name": "mcp/github-pr-auth-diagnostics-20260805",
+      "sha": "a648fdf8094fa5285b66af773aab5be16bf75bef",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-pr-auth-diagnostics-20260805"
+    },
+    {
+      "name": "mcp/github-pr-auth-diagnostics-rebased-20260805",
+      "sha": "9ebdb59506975a9b16a137052d2d24d679123bc2",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-pr-auth-diagnostics-rebased-20260805"
+    },
+    {
+      "name": "mcp/github-surface-preservation-rule-20260921",
+      "sha": "da57f520948272b409abc1d89f564577abd94f2c",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-surface-preservation-rule-20260921"
+    },
+    {
+      "name": "mcp/github-tools-after-governance",
+      "sha": "8fb7f578e706ee1f3995b4e1a4e5f4e11dc754c0",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-tools-after-governance"
+    },
+    {
+      "name": "mcp/github-tools-implementation",
+      "sha": "f375a25654d314d7dc18a285c23bf23e5652ca03",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgithub-tools-implementation"
+    },
+    {
+      "name": "mcp/governance-anti-dispersion-manual",
+      "sha": "ff854bfef9f23b67b40747a49d254bbaf92e9430",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgovernance-anti-dispersion-manual"
+    },
+    {
+      "name": "mcp/governed-autodeploy-v1-20260809",
+      "sha": "cac79821cfdb29b2f4b43c3dfb4ffa11eab82022",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgoverned-autodeploy-v1-20260809"
+    },
+    {
+      "name": "mcp/governed-successive-audit-workblock-20261009",
+      "sha": "484d6e2d9ff8dcc8aaf1dcafddc093569583ad87",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgoverned-successive-audit-workblock-20261009"
+    },
+    {
+      "name": "mcp/grt-runtime-admission-tdd-20261023",
+      "sha": "58bcf5764e79f16c69301ec923b691e2a844953e",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgrt-runtime-admission-tdd-20261023"
+    },
+    {
+      "name": "mcp/gwb02-inline-review-corpus-20261015",
+      "sha": "92d892301d8bbd55d4dbcf7c04e15e909a23aee9",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgwb02-inline-review-corpus-20261015"
+    },
+    {
+      "name": "mcp/gwb03-pr261-policy-evidence-20261015",
+      "sha": "eb7d4b812a23b03ec04b51723e5191620e37025a",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgwb03-pr261-policy-evidence-20261015"
+    },
+    {
+      "name": "mcp/gwb03-pr267-domain-evidence-20261015",
+      "sha": "1d288a48e03768a71aff86b022b08c92f572a457",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgwb03-pr267-domain-evidence-20261015"
+    },
+    {
+      "name": "mcp/gwb03-review-findings-triage-20261015",
+      "sha": "5af5439e377229bdfe4423771d5588cf1048ebb3",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgwb03-review-findings-triage-20261015"
+    },
+    {
+      "name": "mcp/gwb04-blueprint-code-trace-20261015",
+      "sha": "22e9875ad746c077cb7f856ad1ab51ebf62b7cec",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgwb04-blueprint-code-trace-20261015"
+    },
+    {
+      "name": "mcp/gwb04-h01-trace-inventory-20261016",
+      "sha": "0d4b0d513e05ceb89b3b5eeb3e701bf9acde28e4",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgwb04-h01-trace-inventory-20261016"
+    },
+    {
+      "name": "mcp/gwb04-ready-ownership-reconcile-20261015",
+      "sha": "144248a0497c9d9c7c9895bcc0f8670e82d47d70",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgwb04-ready-ownership-reconcile-20261015"
+    },
+    {
+      "name": "mcp/gwc-documentation-reconciliation-20260920",
+      "sha": "d112358d1f13757fdace7e1d3fd73b8d7922cadb",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgwc-documentation-reconciliation-20260920"
+    },
+    {
+      "name": "mcp/gwc-handoff-terminal-docs-20260920",
+      "sha": "dce9d0b00af301d83d16ac7470e6c96c2e9f531d",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgwc-handoff-terminal-docs-20260920"
+    },
+    {
+      "name": "mcp/gwc-post-integration-canonical-handoff-20260920",
+      "sha": "18d93abf2d576d93a985b8c004d820d43f304090",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgwc-post-integration-canonical-handoff-20260920"
+    },
+    {
+      "name": "mcp/gwc-v1-design-20260915",
+      "sha": "590cc5a1a99f219be10e79a678fdd0e9cbdb2f4f",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fgwc-v1-design-20260915"
+    },
+    {
+      "name": "mcp/harden-operational-memory-retention-20260815",
+      "sha": "e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fharden-operational-memory-retention-20260815"
+    },
+    {
+      "name": "mcp/hardening-readonly-ci-state-20260711",
+      "sha": "55ca32a25ea02e1763f30455e7c773194848030a",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fhardening-readonly-ci-state-20260711"
+    },
+    {
+      "name": "mcp/historical-candidate-post-integration-handoff-20260922",
+      "sha": "8ab1bb9d354e601ba59f76cc83d234ca15232624",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fhistorical-candidate-post-integration-handoff-20260922"
+    },
+    {
+      "name": "mcp/import-conversation-serveur-plus",
+      "sha": "cd9593e8c2db0adae5251398bb551a3c064f09cd",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fimport-conversation-serveur-plus"
+    },
+    {
+      "name": "mcp/intake-177-capability-convergence-20260925",
+      "sha": "b3f3176eb87c8789ca27975f159673502bed67a1",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fintake-177-capability-convergence-20260925"
+    },
+    {
+      "name": "mcp/intake-201-tls-recovery-convergence-20260929",
+      "sha": "696dff1b02c422bb9afaf333ee65e814f1cbbb3e",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fintake-201-tls-recovery-convergence-20260929"
+    },
+    {
+      "name": "mcp/intake-coldstart-handoff-20261016",
+      "sha": "778f6e76b3a871733964e1fbb298d98f1a531a6d",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fintake-coldstart-handoff-20261016"
+    },
+    {
+      "name": "mcp/live-state-v1-20260809",
+      "sha": "ae3302338345ea8b2e355f099eea24a8b8e27d79",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Flive-state-v1-20260809"
+    },
+    {
+      "name": "mcp/mandatory-agent-bootstrap-v1-20260822",
+      "sha": "1c9297d663624e5c348fba687051b649ca3e2a22",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fmandatory-agent-bootstrap-v1-20260822"
+    },
+    {
+      "name": "mcp/migration-governance-setup",
+      "sha": "61ae926f0216a718f8c238fec840d54fe7acd249",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fmigration-governance-setup"
+    },
+    {
+      "name": "mcp/oauth-log-redaction-20260805",
+      "sha": "959144c90520b464a415069dc53ccbbe185ac76b",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Foauth-log-redaction-20260805"
+    },
+    {
+      "name": "mcp/oidc-governed-target-claim-20261022",
+      "sha": "cccbece4f3af3dd12cb7d1f7004f9a381538f381",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Foidc-governed-target-claim-20261022"
+    },
+    {
+      "name": "mcp/onboarding-engine-spec-20260708",
+      "sha": "c4baaddf8da02bee2e8c5a8f4a58334b11658df3",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fonboarding-engine-spec-20260708"
+    },
+    {
+      "name": "mcp/plan-governed-actions-ssh-transport-20260914",
+      "sha": "490d58597e4df0b133effd1825ababaa92f6463a",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fplan-governed-actions-ssh-transport-20260914"
+    },
+    {
+      "name": "mcp/plesk-provisioning-tdd-20261023",
+      "sha": "5e8e48d5d3d1886c6bb8996577446413589103cd",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fplesk-provisioning-tdd-20261023"
+    },
+    {
+      "name": "mcp/pr-unification-audit",
+      "sha": "d38c7f1bbb1db2ae83f0e7a2132467fd3da451b3",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fpr-unification-audit"
+    },
+    {
+      "name": "mcp/pr-unification-audit-summary",
+      "sha": "be6f16a908cd7a216a3042b9ba21418fb8fcb950",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fpr-unification-audit-summary"
+    },
+    {
+      "name": "mcp/pr-unification-audit-summary-issues",
+      "sha": "6bbce6e53bc7494c8c8cdf93f1e8cb4814e7fa0b",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fpr-unification-audit-summary-issues"
+    },
+    {
+      "name": "mcp/priority-convergence-map-20261015",
+      "sha": "c161b900f04605caaa4a7790ea626ceda75be302",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fpriority-convergence-map-20261015"
+    },
+    {
+      "name": "mcp/program-auto-continuation-20260925",
+      "sha": "eb2aff8ef30ed349cc8d477cb23e7e364ae088df",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fprogram-auto-continuation-20260925"
+    },
+    {
+      "name": "mcp/program-auto-continuation-terminal-20260925",
+      "sha": "8eba9d4edf2cef52061697e5daf97619e9193738",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fprogram-auto-continuation-terminal-20260925"
+    },
+    {
+      "name": "mcp/program-backlog-convergence-20260923",
+      "sha": "91f5313d6d8f5b6bb6d8a92fa58bbeba3158f677",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fprogram-backlog-convergence-20260923"
+    },
+    {
+      "name": "mcp/program-backlog-v2-20260924",
+      "sha": "930724163176d8d050e1ec73d2a45b8f77f48866",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fprogram-backlog-v2-20260924"
+    },
+    {
+      "name": "mcp/project-context-resolution-20260901",
+      "sha": "59de3687bf1b2439a24f092257236fb3f559feee",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fproject-context-resolution-20260901"
+    },
+    {
+      "name": "mcp/project-context-resolution-docs-20260901",
+      "sha": "8812506fd7508344bf305b1161f8024c64eb0036",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fproject-context-resolution-docs-20260901"
+    },
+    {
+      "name": "mcp/read-write-foundation-20260805",
+      "sha": "7fa892d5ca7bf02cd509dd7c5a9341e007470902",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fread-write-foundation-20260805"
+    },
+    {
+      "name": "mcp/read-write-foundation-rebased-20260805",
+      "sha": "839e811816b7155806d1d89a8daca228eafc3895",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fread-write-foundation-rebased-20260805"
+    },
+    {
+      "name": "mcp/readonly-evidence-bounded-diagnostics-20260920",
+      "sha": "ce1a3a58d2ca20d1f43627b8eba411ea3bf751f7",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freadonly-evidence-bounded-diagnostics-20260920"
+    },
+    {
+      "name": "mcp/reconcile-a21-final-documentation-20260901",
+      "sha": "9732c65b4bd4e01885f098a34de121b720ffdd99",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freconcile-a21-final-documentation-20260901"
+    },
+    {
+      "name": "mcp/reconcile-canonical-documentation-20260831",
+      "sha": "5ef6da355060ef2b3dfd6df6ecc64c83f778a50a",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freconcile-canonical-documentation-20260831"
+    },
+    {
+      "name": "mcp/reconcile-corrected-findings-20260922",
+      "sha": "d614b4833704f030c23668d16d8cefbcf6452a0b",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freconcile-corrected-findings-20260922"
+    },
+    {
+      "name": "mcp/reconcile-late-retention-20260822",
+      "sha": "78e836ff167e460d6e10fb69194d5d0f202fa9cb",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freconcile-late-retention-20260822"
+    },
+    {
+      "name": "mcp/reconcile-legacy-open-pr-intents-20260922",
+      "sha": "217443b16920b09a792b3bdf44883bcc6868115f",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freconcile-legacy-open-pr-intents-20260922"
+    },
+    {
+      "name": "mcp/reconcile-mandatory-bootstrap-docs-20260822",
+      "sha": "87b6230718ecc8ac086053082a013c550b70f470",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freconcile-mandatory-bootstrap-docs-20260822"
+    },
+    {
+      "name": "mcp/reconcile-mandatory-bootstrap-review-20260828",
+      "sha": "258a9f2643a6efe7149e424823589138a7b1f76b",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freconcile-mandatory-bootstrap-review-20260828"
+    },
+    {
+      "name": "mcp/reconcile-operational-memory-20260815",
+      "sha": "0f91e3dd678decc931dabc4c65ae8095be9ea1ac",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freconcile-operational-memory-20260815"
+    },
+    {
+      "name": "mcp/reconcile-s1-20260805T101753Z",
+      "sha": "70415531d326fb34701e169d6498f776f0fdf2d8",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freconcile-s1-20260805T101753Z"
+    },
+    {
+      "name": "mcp/reconcile-unified-operational-work-state-20260829",
+      "sha": "62c95ec406b6653ef07337d04d4a79244a568732",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freconcile-unified-operational-work-state-20260829"
+    },
+    {
+      "name": "mcp/reconcile-unified-work-state-20260829",
+      "sha": "219dd0c64b8a9b74162221c8e71454f389f95a9f",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Freconcile-unified-work-state-20260829"
+    },
+    {
+      "name": "mcp/record-first-automatic-deploy-20260813",
+      "sha": "2307292ef44ff50de36d851fe4f162272a3897cd",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Frecord-first-automatic-deploy-20260813"
+    },
+    {
+      "name": "mcp/recover-runtime-drift-20260805",
+      "sha": "7c8d9f782ae3195197345257f38fbc400504a848",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Frecover-runtime-drift-20260805"
+    },
+    {
+      "name": "mcp/recovery-candidate-preparation-20260805",
+      "sha": "dbb89f3d65e1bb6ac81e39e9911f9a7241233e06",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Frecovery-candidate-preparation-20260805"
+    },
+    {
+      "name": "mcp/regulatory-s1-governed-admission-20261023",
+      "sha": "0234a2ae3708d92993a2dc9b798b0ac95633ced1",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fregulatory-s1-governed-admission-20261023"
+    },
+    {
+      "name": "mcp/regulatory-s1-subpath-20261023",
+      "sha": "ed8bc5f0463a52b87b3b7e90e9fc2f5548894760",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fregulatory-s1-subpath-20261023"
+    },
+    {
+      "name": "mcp/repository-oidc-discovery-v1",
+      "sha": "b121b867c948c4981912a3b79e57252514e88467",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Frepository-oidc-discovery-v1"
+    },
+    {
+      "name": "mcp/repository-ssh-access-provisioning-20260925",
+      "sha": "bd4126de400fe5f894643b4a2939c382bc760385",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Frepository-ssh-access-provisioning-20260925"
+    },
+    {
+      "name": "mcp/repository-ssh-ca-issue-trigger-20260925",
+      "sha": "b97b0d807ff12794108d10cd6806d888ecc8dfea",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Frepository-ssh-ca-issue-trigger-20260925"
+    },
+    {
+      "name": "mcp/repository-ssh-terminal-20260926",
+      "sha": "0d8569f3dc94ae26a693b188e9d9ac1a3a866380",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Frepository-ssh-terminal-20260926"
+    },
+    {
+      "name": "mcp/s1-git-sync-tool-20260713",
+      "sha": "feef2ea8ca2d895a4629d1eb856ebd11255bb316",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fs1-git-sync-tool-20260713"
+    },
+    {
+      "name": "mcp/s1-readonly-deploy-identity-20260809",
+      "sha": "e667006cb64f607ec466054152b74fb0e9d014bd",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fs1-readonly-deploy-identity-20260809"
+    },
+    {
+      "name": "mcp/session-continuity-v1-20260813",
+      "sha": "bba56ac802ac952bf8a6211dc982a6eced732f44",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fsession-continuity-v1-20260813"
+    },
+    {
+      "name": "mcp/ssh-coordination-readonly-evidence-20260925",
+      "sha": "7bcbbc721b709898f9b969b67c8c161775f2ea2e",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fssh-coordination-readonly-evidence-20260925"
+    },
+    {
+      "name": "mcp/stabilize-governed-program-roadmap-20260901",
+      "sha": "db290d85ab4e5ccafe351a5e1fbf1d7d6578b2db",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fstabilize-governed-program-roadmap-20260901"
+    },
+    {
+      "name": "mcp/stabilize-suivi-dynamic-baseline-20260901",
+      "sha": "fb4b476b6867b0c39fbdd978d9f3b419d04f1a0d",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fstabilize-suivi-dynamic-baseline-20260901"
+    },
+    {
+      "name": "mcp/stablecoin-backend-inventory-readonly-20260923",
+      "sha": "30ea504e5a43e9ed6cd22d69daf7d9fd78fd16f2",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fstablecoin-backend-inventory-readonly-20260923"
+    },
+    {
+      "name": "mcp/stablecoin-backend-runtime-ownership-readonly-20260923",
+      "sha": "fdcdb684ca1bb3758e3831bfa1553142c483b478",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fstablecoin-backend-runtime-ownership-readonly-20260923"
+    },
+    {
+      "name": "mcp/stablecoin-github-first-fast-forward-20260921",
+      "sha": "57d6933a815fd67c29ebceb1ec5092b8e579bf7a",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fstablecoin-github-first-fast-forward-20260921"
+    },
+    {
+      "name": "mcp/stablecoin-probes-failsoft-20260920",
+      "sha": "ba0dba033c93f6a75f2b354c84592f4b69008755",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fstablecoin-probes-failsoft-20260920"
+    },
+    {
+      "name": "mcp/stablecoin-project-aware-s2-20260920",
+      "sha": "9d8a3df91c1d53619e24f4fc630f6a938b088639",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fstablecoin-project-aware-s2-20260920"
+    },
+    {
+      "name": "mcp/stablecoin-readonly-reconciliation-probes-20260920",
+      "sha": "160506ee60906ead8a3c04c25e49d449023cb1d0",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fstablecoin-readonly-reconciliation-probes-20260920"
+    },
+    {
+      "name": "mcp/stablecoin-s2-governed-ssh-20260915",
+      "sha": "5f54b78c87ae3a5e8a402ac80af42355a7f4ec08",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fstablecoin-s2-governed-ssh-20260915"
+    },
+    {
+      "name": "mcp/strict-read-write-separation-20260805",
+      "sha": "41e276ec61442571d4b936e2a31244a4d0be3470",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fstrict-read-write-separation-20260805"
+    },
+    {
+      "name": "mcp/uac-terminal-reconciliation-20260924",
+      "sha": "d576f1552708055701999b83f0a72b8635c7b146",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fuac-terminal-reconciliation-20260924"
+    },
+    {
+      "name": "mcp/unified-operational-work-state-20260829",
+      "sha": "de0030b0df42a693d2e96c87f008c9ffd1c2ce04",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Funified-operational-work-state-20260829"
+    },
+    {
+      "name": "mcp/universal-agent-coordination-20260923",
+      "sha": "9100ab750472124d0a7b696f37b1f56e687f63ca",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Funiversal-agent-coordination-20260923"
+    },
+    {
+      "name": "mcp/universal-github-plesk-server-capabilities-20261028",
+      "sha": "c3ee0bc7db43555f40edf48465cfbb0d7354ddb7",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Funiversal-github-plesk-server-capabilities-20261028"
+    },
+    {
+      "name": "mcp/w1-program-state-convergence-20260924",
+      "sha": "95dd18b60280b3cddaaf15e42fbede47eda70f47",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fw1-program-state-convergence-20260924"
+    },
+    {
+      "name": "mcp/w2-github-read-r1-20260924",
+      "sha": "ed3428148d9199240f04818ed6307129ff27d965",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fw2-github-read-r1-20260924"
+    },
+    {
+      "name": "mcp/w3-a3-oauth-continuity-20260930",
+      "sha": "253d23c42423ab52a4ea0d042abec5dafa17d3fc",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fw3-a3-oauth-continuity-20260930"
+    },
+    {
+      "name": "mcp/w3-a3-postmerge-handoff-20260928",
+      "sha": "84296aee9fc8ed50552cc1f42dd0252ab003f8d1",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fw3-a3-postmerge-handoff-20260928"
+    },
+    {
+      "name": "mcp/w3-a3-runtime-authority-evidence-20260929",
+      "sha": "34e265430ba152f595f22b92ddbc11edd3f46468",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fw3-a3-runtime-authority-evidence-20260929"
+    },
+    {
+      "name": "mcp/w3-a3-tls-blocker-checkpoint-20260929",
+      "sha": "36ba412bbec6fd9451cf0b93573aa8e3444afe30",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fw3-a3-tls-blocker-checkpoint-20260929"
+    },
+    {
+      "name": "mcp/w3-a22-client-evidence-inventory-20260925",
+      "sha": "1cc660ae5f54ccb660d199c1043501fd69a6e1f2",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fw3-a22-client-evidence-inventory-20260925"
+    },
+    {
+      "name": "mcp/w4-h01-trace-evidence-inventory-20261010",
+      "sha": "6c1be281e1ed1a13879608b4274d0c0598156c18",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/mcp%2Fw4-h01-trace-evidence-inventory-20261010"
+    },
+    {
+      "name": "security/fix-hono-node-server-20260806",
+      "sha": "65f24ee509836c2a420ca2a61a5fd194fab39efe",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/security%2Ffix-hono-node-server-20260806"
+    },
+    {
+      "name": "security/refresh-production-dependencies-20260806T130850Z",
+      "sha": "55ed557af3efd4cad1ab1c3ed3df766122ff2eb5",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/security%2Frefresh-production-dependencies-20260806T130850Z"
+    },
+    {
+      "name": "test-branch",
+      "sha": "181a7e8f3b80f4d63ed2d915279a79698551a0f5",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/test-branch"
+    },
+    {
+      "name": "test-branch-created-by-mistake-cleanup-needed",
+      "sha": "181a7e8f3b80f4d63ed2d915279a79698551a0f5",
+      "protected": false,
+      "html_url": "https://github.com/Patricked-code/MCP/tree/test-branch-created-by-mistake-cleanup-needed"
+    }
+  ]
+}
