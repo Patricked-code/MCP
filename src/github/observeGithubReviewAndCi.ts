@@ -13,6 +13,8 @@ export type GithubReviewCiProbeInput=Readonly<{
   repository:string;
   pullRequestNumber:number;
   expectedHeadSha:string;
+  /** Exact merged deployment SHA; set by trusted server runtime, never browser input. */
+  expectedDeployedSha?:string;
   expectedWorkflow:string;
   now:()=>Date;
   request:(endpoint:string)=>Promise<Response>;
@@ -54,14 +56,28 @@ export async function observeGithubReviewAndCi(
   const prPath=prefix+'/pulls/'+input.pullRequestNumber;
   const reviewsPath=prPath+'/reviews?per_page=100';
   const workflowsPath=prefix+'/actions/runs?head_sha='+input.expectedHeadSha+'&per_page=100';
+  // A merged PR is closed by design. The deployed main revision must equal
+  // its exact GitHub merge/squash commit; a merely closed PR cannot pass.
+  const releaseStateAccepted=async(value:Record<string,unknown>|null):Promise<boolean>=>{
+    if(!value||value.draft!==false)return false;
+    if(value.state==='open')return true;
+    if(value.state!=='closed'||value.merged!==true
+      ||!SHA.test(input.expectedDeployedSha??'')
+      ||value.merge_commit_sha!==input.expectedDeployedSha
+      ||obj(value.base)?.ref!=='main')return false;
+    const main=await input.request(prefix+'/git/ref/heads/main');
+    return main.ok&&main.status===200
+      &&obj(main.json)?.ref==='refs/heads/main'
+      &&obj(obj(main.json)?.object)?.sha===input.expectedDeployedSha;
+  };
   try{
     const prResponse=await input.request(prPath);
     const pr=obj(prResponse.json);
     const head=obj(pr?.head);
     const author=name(pr?.user);
     if(!prResponse.ok||prResponse.status!==200
-      ||pr?.state!=='open'||pr?.draft!==false
-      ||head?.sha!==input.expectedHeadSha||!author)return blocked();
+      ||head?.sha!==input.expectedHeadSha||!author
+      ||!await releaseStateAccepted(pr))return blocked();
 
     const reviewsResponse=await input.request(reviewsPath);
     const workflowsResponse=await input.request(workflowsPath);
@@ -155,9 +171,9 @@ export async function observeGithubReviewAndCi(
     const finalPrResponse=await input.request(prPath);
     const finalPr=obj(finalPrResponse.json);
     if(!finalPrResponse.ok||finalPrResponse.status!==200
-      ||finalPr?.state!=='open'||finalPr?.draft!==false
       ||obj(finalPr?.head)?.sha!==input.expectedHeadSha
-      ||name(finalPr?.user)!==author)return blocked();
+      ||name(finalPr?.user)!==author
+      ||!await releaseStateAccepted(finalPr))return blocked();
     const at=input.now().toISOString();
     return {
       status:'PROVIDER_APPROVED',
