@@ -362,7 +362,10 @@ export function buildMcpServer(pairing?:PleskWebTransportPairing): McpServer {
   if(pairing){
     // Authenticated ToolExtra, not a browser field, is the only transport source.
     registerPleskWebMcpPairingTool(
-      decorateRegistrationCatalogServer(server, 'read'),pairing
+      decorateScopedWriteServer(
+        decorateRegistrationCatalogServer(server, 'operational-write'),
+        getDefaultScopedWriteGateDependencies()
+      ),pairing
     );
   }
   const taskDependencies = getGovernedTaskToolDependencies();
