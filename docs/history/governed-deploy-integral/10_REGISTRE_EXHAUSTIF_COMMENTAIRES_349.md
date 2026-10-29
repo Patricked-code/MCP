@@ -66,3 +66,11 @@ Inventaire issu de la réponse GitHub du 29 octobre 2026. Les 57 **commentaires 
 
 ## Règle de consultation
 Ouvrir chaque lien pour consulter **le texte intégral sans résumé**, y compris les amendements et constats contradictoires. Les dossiers chronologiques liés dans l'index général établissent des filiations documentées, sans transformer ces commentaires en attestations de runtime. Toute correction doit être append-only dans une nouvelle pièce datée et sourcée.
+
+## Compléments append-only observés après l'inventaire initial
+Les commentaires suivants ont été publiés pendant la constitution du dossier. Leur présence ne remplace ni les 57 pièces précédemment référencées ni leurs conclusions historiques.
+
+| Rang d'observation | Texte complet original | Rubrique déclarée | Taille |
+|---:|---|---|---:|
+| 58 | [#6508271503](https://github.com/Patricked-code/MCP/issues/349#issuecomment-6508271503) | GD-U-02D / B3i-b — deuxième checkpoint RED→GREEN, contrôle Plesk fail-closed — 2026-10-29 | 4322 caractères |
+| 59 | [#6508299718](https://github.com/Patricked-code/MCP/issues/349#issuecomment-6508299718) | GD-U-02D — complément de découverte S1/S2 en lecture seule — 2026-10-29 | 2659 caractères |
