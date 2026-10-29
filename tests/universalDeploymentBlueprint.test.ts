@@ -23,7 +23,7 @@ const autonomy = ():UniversalAutonomyAdviceInput=>({
     request:{repository,operation:'repository.read',now:at},
     observation:{
       source:'GITHUB_API',installationId:123,
-      accountLogin:'chainsolutions-wealthtech',repositorySelection:'all',
+      accountLogin:'chainsolutions-wealthtech',repository,repositorySelection:'all',
       repositoryIncluded:null,repositoryAccessible:true,
       permissions:{contents:'read'},observedAt:at
     }
