@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 223,
+  "trackedCount": 245,
   "categories": {
     "canonical": 7,
     "documentation": 72,
     "engineering-plan": 8,
     "engineering-spec": 10,
-    "history": 1,
+    "history": 23,
     "memory": 61,
     "migration-history": 7,
     "root-documentation": 50,
@@ -520,6 +520,94 @@
     },
     {
       "path": "docs/history/SUIVI_PRE_FOUNDATIONS_20260805.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/00_ARBRE_HIERARCHIQUE.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/01_PROVENANCE_ET_REGLES.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/02_202607_ANTECEDENTS_ORIGINES.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/02_202608_FONDATIONS.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/03_202608_RECONCILIATION_FORENSIQUE_ET_DEPLOIEMENTS.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/03_202609_GOUVERNANCE_GITHUB.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/04_202609_FIL_INTERDEPENDANCES_ET_DEPLOIEMENTS.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/04_202610_TB_W3_F.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/05_202610_ISSUE349_PLESK.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/06_PILOTES_GRT_REGULATORY.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/07_GD_U_B3I.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/08_REGISTRE_PREUVES.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/09_PROCEDURE_EXHAUSTIVITE.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/10_REGISTRE_EXHAUSTIF_COMMENTAIRES_349.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/11_REF_TECHNIQUES_ISSUE349_TRANCHE_1.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/11_REF_TECHNIQUES_ISSUE349_TRANCHE_2.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/11_REF_TECHNIQUES_ISSUE349_TRANCHE_3.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/12_20261028_JALONS_GD_U_ET_MANDATS.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/13_20261029_EXECUTION_B3I_CONTINUITE.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/14_COUVERTURE_ET_LACUNES_CERTIFICATION.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/15_NAVIGATION_COMPLEMENTAIRE.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/README.md",
       "category": "history"
     },
     {
