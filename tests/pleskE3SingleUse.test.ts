@@ -128,7 +128,7 @@ test('FINDING-03: authentically issued E3 base64url ticket is consumable once, n
   const {issueWebConsentTicket,verifyWebConsentTicket}=await import('../src/oauth.js');
   await sandbox(async dir=>{
     const valid=issueWebConsentTicket('plesk-create-subdomain',binding,now);
-    assert.match(valid,/^\\d{13}\\.[A-Za-z0-9_-]{43}$/);
+    assert.match(valid,/^\d{13}\.[A-Za-z0-9_-]{43}$/);
     assert.ok(verifyWebConsentTicket('plesk-create-subdomain',valid,binding,now));
     const signed={...context,ticket:valid};
     const ports={directory:dir,verifyTicket:verifyWebConsentTicket,verifyPreAdmission:async()=>true,now:()=>now};
