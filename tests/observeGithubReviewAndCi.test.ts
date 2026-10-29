@@ -6,7 +6,7 @@ const head='c'.repeat(40);
 const path='/repos/Patricked-code/MCP';
 const pr={state:'open',draft:false,head:{sha:head},user:{login:'developer'}};
 const reviews=[{state:'APPROVED',commit_id:head,user:{login:'security-reviewer',type:'User'},submitted_at:'2026-10-28T06:10:00Z'}];
-const runs={workflow_runs:[{name:'MCP CI',head_sha:head,status:'completed',conclusion:'success',event:'pull_request',run_number:450}]};
+const runs={workflow_runs:[{name:'MCP CI',head_sha:head,status:'completed',conclusion:'success',event:'pull_request',run_number:450,pull_requests:[{number:355}]}]};
 function client(patch:Record<string,unknown>={}){
   const seen:string[]=[];
   return{seen,request:async(route:string)=>{
@@ -213,4 +213,25 @@ test('OUTDATED REVIEW REGRESSION: a later COMMENTED review does not revoke an ex
    request:client({reviews:[...reviews,{...reviews[0],state:'COMMENTED',submitted_at:'2026-10-28T06:12:00Z'}]}).request
  });
  assert.equal(r.status,'PROVIDER_APPROVED');
+});
+
+test('RED GD-U B3i-b: CI for a different PR at the same SHA cannot attest this PR',async()=>{
+  const ownFailed={...runs.workflow_runs[0],run_number:450,conclusion:'failure',pull_requests:[{number:355}]};
+  const otherSucceeded={...runs.workflow_runs[0],run_number:451,conclusion:'success',pull_requests:[{number:356}]};
+  const result=await observeGithubReviewAndCi({
+    repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+    expectedWorkflow:'MCP CI',now:()=>new Date('2026-10-28T06:15:00Z'),
+    request:client({runs:{workflow_runs:[ownFailed,otherSucceeded]}}).request
+  });
+  assert.equal(result.status,'BLOCKED');
+  assert.equal(result.attestation,null);
+});
+
+test('RED GD-U B3i-b: CI without verifiable pull_requests association fails closed',async()=>{
+  const r=await observeGithubReviewAndCi({
+    repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+    expectedWorkflow:'MCP CI',now:()=>new Date('2026-10-28T06:15:00Z'),
+    request:client({runs:{workflow_runs:[{...runs.workflow_runs[0],pull_requests:undefined}]}}).request
+  });
+  assert.equal(r.status,'BLOCKED');
 });
