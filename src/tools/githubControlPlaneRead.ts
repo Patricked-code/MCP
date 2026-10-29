@@ -135,6 +135,39 @@ function commitState(raw: unknown) {
   };
 }
 
+const PATCH_MAX_LENGTH = 50000;
+
+function commitDiffState(raw: unknown) {
+  const r = object(raw);
+  const commit = object(r?.commit);
+  const stats = object(r?.stats);
+  return {
+    sha: string(r?.sha),
+    htmlUrl: string(r?.html_url),
+    message: string(commit?.message),
+    parents: array(r?.parents).map((entry) => string(object(entry)?.sha)).filter(Boolean),
+    stats: {
+      total: number(stats?.total),
+      additions: number(stats?.additions),
+      deletions: number(stats?.deletions)
+    },
+    files: array(r?.files).slice(0, 300).map((entry) => {
+      const f = object(entry);
+      const rawPatch = string(f?.patch) ?? '';
+      const patchTruncated = rawPatch.length > PATCH_MAX_LENGTH;
+      return {
+        filename: string(f?.filename),
+        status: string(f?.status),
+        additions: number(f?.additions),
+        deletions: number(f?.deletions),
+        changes: number(f?.changes),
+        patch: patchTruncated ? rawPatch.slice(0, PATCH_MAX_LENGTH) : rawPatch,
+        patchTruncated
+      };
+    })
+  };
+}
+
 function pullRequestState(raw: unknown) {
   const r = object(raw);
   const head = object(r?.head);
@@ -217,6 +250,15 @@ export function registerGithubControlPlaneReadTools(
     const org = assertOrg(organization, dependencies.configuredOrg);
     const safeRef = assertSafeRef(ref);
     return respond(commitState(await get(dependencies, `${endpointRepo(org, repository)}/commits/${encodeURIComponent(safeRef)}`)));
+  });
+
+  server.tool('github_get_commit_diff', "Lecture bornée du diff d'un commit GitHub avec patches fichier par fichier.", {
+    ...repoSchema,
+    ref: RefSchema
+  }, async ({ organization, repository, ref }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const safeRef = assertSafeRef(ref);
+    return respond(commitDiffState(await get(dependencies, `${endpointRepo(org, repository)}/commits/${encodeURIComponent(safeRef)}`)));
   });
 
   server.tool('github_compare_refs', 'Compare en lecture deux références GitHub et retourne les écarts sans patch brut.', {
@@ -522,6 +564,47 @@ export function registerGithubControlPlaneReadTools(
         htmlUrl: string(r?.html_url)
       };
     }));
+  });
+
+  server.tool('github_get_organization_state', 'Lecture bornée de l\'état d\'une organisation GitHub configurée.', {
+    organization: OrganizationSchema
+  }, async ({ organization }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const raw = object(await get(dependencies, `/orgs/${encodeURIComponent(org)}`));
+    return respond({
+      login: string(raw?.login),
+      id: number(raw?.id),
+      name: string(raw?.name),
+      type: string(raw?.type),
+      description: string(raw?.description),
+      publicRepos: number(raw?.public_repos),
+      totalPrivateRepos: number(raw?.total_private_repos),
+      ownedPrivateRepos: number(raw?.owned_private_repos),
+      defaultRepositoryPermission: string(raw?.default_repository_permission),
+      membersCanCreateRepositories: boolean(raw?.members_can_create_repositories),
+      twoFactorEnforced: boolean(raw?.two_factor_requirement_enforced),
+      hasOrganizationProjects: boolean(raw?.has_organization_projects),
+      createdAt: string(raw?.created_at),
+      updatedAt: string(raw?.updated_at)
+    });
+  });
+
+  server.tool('github_get_organization_members', 'Retourne en lecture la liste des membres d\'une organisation GitHub configurée.', {
+    organization: OrganizationSchema
+  }, async ({ organization }) => {
+    const org = assertOrg(organization, dependencies.configuredOrg);
+    const raw = await get(dependencies, `/orgs/${encodeURIComponent(org)}/members?per_page=100`);
+    return respond({
+      members: listProjection(raw, (entry) => {
+        const m = object(entry);
+        return {
+          login: string(m?.login),
+          id: number(m?.id),
+          type: string(m?.type),
+          siteAdmin: boolean(m?.site_admin)
+        };
+      })
+    });
   });
 
   server.tool('github_get_deployments', 'Retourne en lecture les deployments du repository.', repoSchema, async ({ organization, repository }) => {

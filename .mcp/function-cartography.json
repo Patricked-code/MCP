@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "1d2862b864bf52dcb1e223b181ac3896f2ff21b3ea2cadfbf9679441d9584fcb",
-  "registeredToolCount": 141,
-  "readOnlyToolCount": 86,
+  "catalogueDigest": "e2c82edc426f05bf687fa8f095af9403dcca9f648466caccb79d65045bc7a3ed",
+  "registeredToolCount": 144,
+  "readOnlyToolCount": 89,
   "writeToolCount": 55,
   "resourceCount": 2,
   "tools": [
@@ -998,6 +998,47 @@
       "contractDigest": "b00691a419bf5adc92a8fa9933d5ebdbad0a84d13b4dc620ef4bfddce4dd6ffa"
     },
     {
+      "name": "github_get_commit_diff",
+      "title": null,
+      "description": "Lecture bornée du diff d'un commit GitHub avec patches fichier par fichier.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240,
+            "pattern": "^[A-Za-z0-9._\\/-]+$"
+          }
+        },
+        "required": [
+          "organization",
+          "repository",
+          "ref"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "98df3810f659ed72a2285b4e3afee1cf21e1f7da1e2ea0d5acd5c7251f788e0e"
+    },
+    {
       "name": "github_get_commit_state",
       "title": null,
       "description": "Lecture bornée d’un commit GitHub.",
@@ -1116,6 +1157,60 @@
         "additionalProperties": false
       },
       "contractDigest": "c1eeb443309f76307bbbe656b26bacc6ae76bcb98fc93138312eebe4bbfe5b26"
+    },
+    {
+      "name": "github_get_organization_members",
+      "title": null,
+      "description": "Retourne en lecture la liste des membres d'une organisation GitHub configurée.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          }
+        },
+        "required": [
+          "organization"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "c6a37c2ed6dc3804ada29965b59da6d540b1f4bb6de1c5f56d07cd16833202d4"
+    },
+    {
+      "name": "github_get_organization_state",
+      "title": null,
+      "description": "Lecture bornée de l'état d'une organisation GitHub configurée.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          }
+        },
+        "required": [
+          "organization"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "2624004be89f5dbb6166251b690bb997180f4e6d6e18bc216c1ae14d975fd94e"
     },
     {
       "name": "github_get_pull_request_reviews",
