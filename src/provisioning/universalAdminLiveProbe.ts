@@ -51,6 +51,27 @@ export type DelegatedLiveProviderResult = Readonly<{
 const LOGIN=/^[a-z0-9](?:[a-z0-9-]{0,38})$/i;
 const TOOLS= ['id -u','plesk version'] as const;
 
+/** Read the canonical manifest from either src/ or Docker dist/src/ layout.
+ * The Docker image copies package.json to /app/package.json, not /app/dist.
+ * Absence or malformed evidence must fail closed rather than infer a repo.
+ */
+export async function readCanonicalRepositoryFromModuleManifest(moduleUrl: string):Promise<string|null>{
+  for(const relative of ['../../package.json','../../../package.json']){
+    try{
+      const raw=JSON.parse(await readFile(new URL(relative,moduleUrl),'utf8')) as {
+        mcpValidationProfile?:{repository?:unknown}
+      };
+      const repo=raw.mcpValidationProfile?.repository;
+      return typeof repo==='string' && /^[A-Za-z0-9-]+\\/[A-Za-z0-9_.-]+$/.test(repo)
+        ?repo:null;
+    }catch(e){
+      if(e && typeof e==='object' && 'code' in e && e.code==='ENOENT')continue;
+      return null;
+    }
+  }
+  return null;
+}
+
 export function defaultDelegatedLiveProbeDependencies():DelegatedLiveProbeDependencies {
   return {
     now:()=>new Date(),
@@ -64,15 +85,7 @@ export function defaultDelegatedLiveProbeDependencies():DelegatedLiveProbeDepend
       const {runReadOnlyCommand}=await import('../ssh/client.js');
       return runReadOnlyCommand(server,command,2_500,2_048);
     },
-    canonicalRepository:async()=>{
-      try{
-        const raw=JSON.parse(await readFile(new URL('../../package.json',import.meta.url),'utf8')) as {
-          mcpValidationProfile?:{repository?:unknown}
-        };
-        return typeof raw.mcpValidationProfile?.repository==='string'
-          ?raw.mcpValidationProfile.repository:null;
-      }catch{return null;}
-    }
+    canonicalRepository:()=>readCanonicalRepositoryFromModuleManifest(import.meta.url)
   };
 }
 
