@@ -1,0 +1,591 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{pr}/comments",
+  "positions": [
+    55,
+    72
+  ],
+  "items": [
+    {
+      "pr": 61,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 62,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3898673175,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-08-31T21:47:43Z",
+          "updated_at": "2026-08-31T21:47:43Z",
+          "commit_id": "2e8fa683296f4f1bf53b9875104598696ba9c6e2",
+          "original_commit_id": "2e8fa683296f4f1bf53b9875104598696ba9c6e2",
+          "path": "src/operationalMemory/sessionService.ts",
+          "line": 421,
+          "original_line": 421,
+          "side": "RIGHT",
+          "pull_request_review_id": 5071598737,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/62#discussion_r3898673175",
+          "body_length": 747
+        }
+      ]
+    },
+    {
+      "pr": 63,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3898735626,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-08-31T21:56:50Z",
+          "updated_at": "2026-08-31T21:56:50Z",
+          "commit_id": "c3e374eea7b64087ee7ef21e30a89710ff099bcc",
+          "original_commit_id": "c3e374eea7b64087ee7ef21e30a89710ff099bcc",
+          "path": "DECISIONS_LOG.md",
+          "line": 12,
+          "original_line": 12,
+          "side": "RIGHT",
+          "pull_request_review_id": 5071677612,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/63#discussion_r3898735626",
+          "body_length": 860
+        }
+      ]
+    },
+    {
+      "pr": 64,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 65,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 66,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3899542049,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-01T00:01:04Z",
+          "updated_at": "2026-09-01T00:01:04Z",
+          "commit_id": "5ef6da355060ef2b3dfd6df6ecc64c83f778a50a",
+          "original_commit_id": "5ef6da355060ef2b3dfd6df6ecc64c83f778a50a",
+          "path": "SUIVI.md",
+          "line": 23,
+          "original_line": 23,
+          "side": "RIGHT",
+          "pull_request_review_id": 5072662295,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/66#discussion_r3899542049",
+          "body_length": 706
+        }
+      ]
+    },
+    {
+      "pr": 67,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 68,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3901271450,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-01T06:12:55Z",
+          "updated_at": "2026-09-01T06:12:55Z",
+          "commit_id": "f3b4bacd1d8a6975d33c949372cda6f1d1d2d523",
+          "original_commit_id": "33384bf03752bc16d5317658822741067b3cd729",
+          "path": "src/operationalMemory/sessionService.ts",
+          "line": null,
+          "original_line": 284,
+          "side": "RIGHT",
+          "pull_request_review_id": 5074563624,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/68#discussion_r3901271450",
+          "body_length": 730
+        },
+        {
+          "id": 3901308727,
+          "author": "Patricked-code",
+          "created_at": "2026-09-01T06:19:57Z",
+          "updated_at": "2026-09-01T06:19:57Z",
+          "commit_id": "f3b4bacd1d8a6975d33c949372cda6f1d1d2d523",
+          "original_commit_id": "33384bf03752bc16d5317658822741067b3cd729",
+          "path": "src/operationalMemory/sessionService.ts",
+          "line": null,
+          "original_line": 284,
+          "side": "RIGHT",
+          "pull_request_review_id": 5074605558,
+          "in_reply_to_id": 3901271450,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/68#discussion_r3901308727",
+          "body_length": 846
+        }
+      ]
+    },
+    {
+      "pr": 69,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 70,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3906942892,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-01T18:05:25Z",
+          "updated_at": "2026-09-01T18:05:25Z",
+          "commit_id": "d385a152bffe655654299146a68b788ab7529b0e",
+          "original_commit_id": "7c14f4404cdaeebe3a9476aaa48c7b1da3c9b936",
+          "path": "ROADMAP.md",
+          "line": null,
+          "original_line": 136,
+          "side": "RIGHT",
+          "pull_request_review_id": 5081396232,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906942892",
+          "body_length": 754
+        },
+        {
+          "id": 3906942904,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-01T18:05:25Z",
+          "updated_at": "2026-09-01T18:05:25Z",
+          "commit_id": "6cbc8a593d71e0518387e914e3f6554343e2cb47",
+          "original_commit_id": "7c14f4404cdaeebe3a9476aaa48c7b1da3c9b936",
+          "path": "TASKS.md",
+          "line": null,
+          "original_line": 127,
+          "side": "RIGHT",
+          "pull_request_review_id": 5081396232,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906942904",
+          "body_length": 906
+        },
+        {
+          "id": 3906977582,
+          "author": "Patricked-code",
+          "created_at": "2026-09-01T18:10:05Z",
+          "updated_at": "2026-09-01T18:10:05Z",
+          "commit_id": "d385a152bffe655654299146a68b788ab7529b0e",
+          "original_commit_id": "7c14f4404cdaeebe3a9476aaa48c7b1da3c9b936",
+          "path": "ROADMAP.md",
+          "line": null,
+          "original_line": 136,
+          "side": "RIGHT",
+          "pull_request_review_id": 5081436448,
+          "in_reply_to_id": 3906942892,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906977582",
+          "body_length": 431
+        },
+        {
+          "id": 3906977781,
+          "author": "Patricked-code",
+          "created_at": "2026-09-01T18:10:07Z",
+          "updated_at": "2026-09-01T18:10:07Z",
+          "commit_id": "6cbc8a593d71e0518387e914e3f6554343e2cb47",
+          "original_commit_id": "7c14f4404cdaeebe3a9476aaa48c7b1da3c9b936",
+          "path": "TASKS.md",
+          "line": null,
+          "original_line": 127,
+          "side": "RIGHT",
+          "pull_request_review_id": 5081436647,
+          "in_reply_to_id": 3906942904,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906977781",
+          "body_length": 502
+        },
+        {
+          "id": 3906980224,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-01T18:10:29Z",
+          "updated_at": "2026-09-01T18:10:29Z",
+          "commit_id": "59de3687bf1b2439a24f092257236fb3f559feee",
+          "original_commit_id": "fcf8b16e7fd05b2026ad512e71659d37ffc9387e",
+          "path": "SUIVI.md",
+          "line": 18,
+          "original_line": 18,
+          "side": "RIGHT",
+          "pull_request_review_id": 5081439492,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906980224",
+          "body_length": 718
+        },
+        {
+          "id": 3906997793,
+          "author": "Patricked-code",
+          "created_at": "2026-09-01T18:12:51Z",
+          "updated_at": "2026-09-01T18:12:51Z",
+          "commit_id": "59de3687bf1b2439a24f092257236fb3f559feee",
+          "original_commit_id": "fcf8b16e7fd05b2026ad512e71659d37ffc9387e",
+          "path": "SUIVI.md",
+          "line": 18,
+          "original_line": 18,
+          "side": "RIGHT",
+          "pull_request_review_id": 5081458851,
+          "in_reply_to_id": 3906980224,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3906997793",
+          "body_length": 381
+        },
+        {
+          "id": 3907013491,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-01T18:14:53Z",
+          "updated_at": "2026-09-01T18:14:53Z",
+          "commit_id": "8cc72937617ff3be42edbd02c799b674f7c8e80e",
+          "original_commit_id": "8cc72937617ff3be42edbd02c799b674f7c8e80e",
+          "path": "SUIVI.md",
+          "line": null,
+          "original_line": 85,
+          "side": "RIGHT",
+          "pull_request_review_id": 5081476416,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3907013491",
+          "body_length": 901
+        },
+        {
+          "id": 3908977759,
+          "author": "Patricked-code",
+          "created_at": "2026-09-01T22:28:17Z",
+          "updated_at": "2026-09-01T22:28:17Z",
+          "commit_id": "8cc72937617ff3be42edbd02c799b674f7c8e80e",
+          "original_commit_id": "8cc72937617ff3be42edbd02c799b674f7c8e80e",
+          "path": "SUIVI.md",
+          "line": null,
+          "original_line": 85,
+          "side": "RIGHT",
+          "pull_request_review_id": 5083684992,
+          "in_reply_to_id": 3907013491,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/70#discussion_r3908977759",
+          "body_length": 304
+        }
+      ]
+    },
+    {
+      "pr": 71,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3909100914,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-01T22:49:48Z",
+          "updated_at": "2026-09-01T22:49:48Z",
+          "commit_id": "cd8f681800603ff518f08c8b1c82dfaa8a861cc2",
+          "original_commit_id": "cd8f681800603ff518f08c8b1c82dfaa8a861cc2",
+          "path": "SUIVI.md",
+          "line": null,
+          "original_line": 20,
+          "side": "RIGHT",
+          "pull_request_review_id": 5083813762,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/71#discussion_r3909100914",
+          "body_length": 952
+        },
+        {
+          "id": 3909559992,
+          "author": "Patricked-code",
+          "created_at": "2026-09-02T00:06:36Z",
+          "updated_at": "2026-09-02T00:06:36Z",
+          "commit_id": "cd8f681800603ff518f08c8b1c82dfaa8a861cc2",
+          "original_commit_id": "cd8f681800603ff518f08c8b1c82dfaa8a861cc2",
+          "path": "SUIVI.md",
+          "line": null,
+          "original_line": 20,
+          "side": "RIGHT",
+          "pull_request_review_id": 5084338915,
+          "in_reply_to_id": 3909100914,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/71#discussion_r3909559992",
+          "body_length": 626
+        },
+        {
+          "id": 3918346273,
+          "author": "Patricked-code",
+          "created_at": "2026-09-02T20:28:14Z",
+          "updated_at": "2026-09-02T20:28:14Z",
+          "commit_id": "cd8f681800603ff518f08c8b1c82dfaa8a861cc2",
+          "original_commit_id": "cd8f681800603ff518f08c8b1c82dfaa8a861cc2",
+          "path": "SUIVI.md",
+          "line": null,
+          "original_line": 20,
+          "side": "RIGHT",
+          "pull_request_review_id": 5094742079,
+          "in_reply_to_id": 3909100914,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/71#discussion_r3918346273",
+          "body_length": 453
+        }
+      ]
+    },
+    {
+      "pr": 72,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 73,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3961024836,
+          "author": "Wealthtechinnovations",
+          "created_at": "2026-09-08T18:29:09Z",
+          "updated_at": "2026-09-08T18:29:09Z",
+          "commit_id": "9b1a572ab0362aeefa5e13f425225e1f510704b7",
+          "original_commit_id": "e9e3ef5d66985d0f40ac0608d6239b89a742a569",
+          "path": "src/github/identityResolution.ts",
+          "line": 165,
+          "original_line": 157,
+          "side": "RIGHT",
+          "pull_request_review_id": 5145537768,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/73#discussion_r3961024836",
+          "body_length": 401
+        },
+        {
+          "id": 3961077841,
+          "author": "Wealthtechinnovations",
+          "created_at": "2026-09-08T18:35:37Z",
+          "updated_at": "2026-09-08T18:35:38Z",
+          "commit_id": "9b1a572ab0362aeefa5e13f425225e1f510704b7",
+          "original_commit_id": "e9e3ef5d66985d0f40ac0608d6239b89a742a569",
+          "path": "src/github/identityResolution.ts",
+          "line": 165,
+          "original_line": 157,
+          "side": "RIGHT",
+          "pull_request_review_id": 5145616191,
+          "in_reply_to_id": 3961024836,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/73#discussion_r3961077841",
+          "body_length": 421
+        },
+        {
+          "id": 3961128036,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-08T18:41:57Z",
+          "updated_at": "2026-09-08T18:41:58Z",
+          "commit_id": "631b5070f201950d2cdcc73363df8004d4ab5fec",
+          "original_commit_id": "eca6d5b79f7fcc5f2aff94541bb763431271b629",
+          "path": "src/tools/durableAccounts.ts",
+          "line": null,
+          "original_line": 100,
+          "side": "RIGHT",
+          "pull_request_review_id": 5145686287,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/73#discussion_r3961128036",
+          "body_length": 795
+        },
+        {
+          "id": 3961128049,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-08T18:41:57Z",
+          "updated_at": "2026-09-08T18:41:58Z",
+          "commit_id": "631b5070f201950d2cdcc73363df8004d4ab5fec",
+          "original_commit_id": "eca6d5b79f7fcc5f2aff94541bb763431271b629",
+          "path": "src/github/identityResolution.ts",
+          "line": null,
+          "original_line": 201,
+          "side": "RIGHT",
+          "pull_request_review_id": 5145686287,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/73#discussion_r3961128049",
+          "body_length": 763
+        },
+        {
+          "id": 3965342651,
+          "author": "Wealthtechinnovations",
+          "created_at": "2026-09-09T06:35:41Z",
+          "updated_at": "2026-09-09T06:35:41Z",
+          "commit_id": "631b5070f201950d2cdcc73363df8004d4ab5fec",
+          "original_commit_id": "eca6d5b79f7fcc5f2aff94541bb763431271b629",
+          "path": "src/tools/durableAccounts.ts",
+          "line": null,
+          "original_line": 100,
+          "side": "RIGHT",
+          "pull_request_review_id": 5150606485,
+          "in_reply_to_id": 3961128036,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/73#discussion_r3965342651",
+          "body_length": 517
+        },
+        {
+          "id": 3965342777,
+          "author": "Wealthtechinnovations",
+          "created_at": "2026-09-09T06:35:43Z",
+          "updated_at": "2026-09-09T06:35:43Z",
+          "commit_id": "631b5070f201950d2cdcc73363df8004d4ab5fec",
+          "original_commit_id": "eca6d5b79f7fcc5f2aff94541bb763431271b629",
+          "path": "src/github/identityResolution.ts",
+          "line": null,
+          "original_line": 201,
+          "side": "RIGHT",
+          "pull_request_review_id": 5150606674,
+          "in_reply_to_id": 3961128049,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/73#discussion_r3965342777",
+          "body_length": 560
+        },
+        {
+          "id": 3965370237,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-09T06:39:35Z",
+          "updated_at": "2026-09-09T06:39:35Z",
+          "commit_id": "9b1a572ab0362aeefa5e13f425225e1f510704b7",
+          "original_commit_id": "9b1a572ab0362aeefa5e13f425225e1f510704b7",
+          "path": "src/github/identityResolution.ts",
+          "line": 134,
+          "original_line": 134,
+          "side": "RIGHT",
+          "pull_request_review_id": 5150642355,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/73#discussion_r3965370237",
+          "body_length": 653
+        }
+      ]
+    },
+    {
+      "pr": 74,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3965510821,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-09T06:57:29Z",
+          "updated_at": "2026-09-09T06:57:29Z",
+          "commit_id": "0e037ceeae05dc342f99ba2ae58761dc8e892f7e",
+          "original_commit_id": "53ffd1209a2976bb4f536d5cfe6a2c6cc05a5789",
+          "path": "SUIVI.md",
+          "line": 28,
+          "original_line": 28,
+          "side": "RIGHT",
+          "pull_request_review_id": 5150811951,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/74#discussion_r3965510821",
+          "body_length": 800
+        },
+        {
+          "id": 3972605218,
+          "author": "Wealthtechinnovations",
+          "created_at": "2026-09-09T20:14:07Z",
+          "updated_at": "2026-09-09T20:14:07Z",
+          "commit_id": "0e037ceeae05dc342f99ba2ae58761dc8e892f7e",
+          "original_commit_id": "53ffd1209a2976bb4f536d5cfe6a2c6cc05a5789",
+          "path": "SUIVI.md",
+          "line": 28,
+          "original_line": 28,
+          "side": "RIGHT",
+          "pull_request_review_id": 5159392868,
+          "in_reply_to_id": 3965510821,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/74#discussion_r3972605218",
+          "body_length": 536
+        }
+      ]
+    },
+    {
+      "pr": 75,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3994244405,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-11T23:43:29Z",
+          "updated_at": "2026-09-11T23:43:29Z",
+          "commit_id": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+          "original_commit_id": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+          "path": "src/github/registry.ts",
+          "line": 98,
+          "original_line": 98,
+          "side": "RIGHT",
+          "pull_request_review_id": 5184277495,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/75#discussion_r3994244405",
+          "body_length": 911
+        },
+        {
+          "id": 3994244409,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-11T23:43:29Z",
+          "updated_at": "2026-09-11T23:43:29Z",
+          "commit_id": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+          "original_commit_id": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+          "path": "tests/githubRepositoryResolution.test.ts",
+          "line": 1,
+          "original_line": 1,
+          "side": "RIGHT",
+          "pull_request_review_id": 5184277495,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/75#discussion_r3994244409",
+          "body_length": 625
+        }
+      ]
+    },
+    {
+      "pr": 76,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3994289898,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-11T23:55:35Z",
+          "updated_at": "2026-09-11T23:55:35Z",
+          "commit_id": "f72e95879f0a1f1c6813f1042677e01c5a306be6",
+          "original_commit_id": "f72e95879f0a1f1c6813f1042677e01c5a306be6",
+          "path": "TODO.md",
+          "line": 138,
+          "original_line": 138,
+          "side": "RIGHT",
+          "pull_request_review_id": 5184321737,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/76#discussion_r3994289898",
+          "body_length": 798
+        },
+        {
+          "id": 3994541043,
+          "author": "Wealthtechinnovations",
+          "created_at": "2026-09-12T01:11:18Z",
+          "updated_at": "2026-09-12T01:11:18Z",
+          "commit_id": "f72e95879f0a1f1c6813f1042677e01c5a306be6",
+          "original_commit_id": "f72e95879f0a1f1c6813f1042677e01c5a306be6",
+          "path": "TODO.md",
+          "line": 138,
+          "original_line": 138,
+          "side": "RIGHT",
+          "pull_request_review_id": 5184580679,
+          "in_reply_to_id": 3994289898,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/76#discussion_r3994541043",
+          "body_length": 500
+        }
+      ]
+    },
+    {
+      "pr": 77,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3994540854,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-09-12T01:11:14Z",
+          "updated_at": "2026-09-12T01:11:14Z",
+          "commit_id": "17de4af98c0b66a3cf32c219c762febd1880c0e5",
+          "original_commit_id": "17de4af98c0b66a3cf32c219c762febd1880c0e5",
+          "path": "TODO.md",
+          "line": 138,
+          "original_line": 138,
+          "side": "RIGHT",
+          "pull_request_review_id": 5184580351,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/77#discussion_r3994540854",
+          "body_length": 748
+        }
+      ]
+    },
+    {
+      "pr": 78,
+      "status": "COMPLETE",
+      "comments": []
+    }
+  ]
+}
