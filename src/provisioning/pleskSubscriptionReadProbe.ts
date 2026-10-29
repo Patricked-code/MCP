@@ -1,4 +1,4 @@
-/** 
+/**
  * GD-U-02D B3j — bounded Plesk subscription read observation.
  * Provider identity and an accessible subscription info query are NOT proof
  * of admin write rights. No dynamic shell and no mutation are permitted.
