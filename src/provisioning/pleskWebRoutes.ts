@@ -129,10 +129,11 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
       // reject replays before the existing Plesk executor sees any write.
       // No consumer is installed in production yet; authorizeRuntimeWrite
       // remains fail-closed there.
-      if (deps.consumeGovernedConsent
+      if ((deps.requireMcpPairing === true && !deps.consumeGovernedConsent)
+        || (deps.consumeGovernedConsent
         && !await deps.consumeGovernedConsent(req,toInput(p),{
           ticket:consent_ticket,binding:binding(req,p,deps)
-        })) {
+        }))) {
         res.status(403).json({status:'BLOCKED',reason:'E3_SINGLE_USE_CONSUMPTION_REQUIRED'});
         return;
       }
