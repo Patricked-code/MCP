@@ -70,7 +70,7 @@ test('RED: if trusted pre-admission rejects, no ticket is burned',async()=>{
   await sandbox(async dir=>{
     let count=0;
     const denied=await consumeSignedPleskE3Once(context,{
-      directory:dir,verifyTicket:verify,verifyPreAdmission:async()=>true,now:()=>now,
+      directory:dir,verifyTicket:verify,now:()=>now,
       verifyPreAdmission:async()=>{count++;return false;}
     });
     assert.equal(denied.status,'BLOCKED');
@@ -118,6 +118,13 @@ test('GREEN: consent expiring during async governance check is rejected before a
 
 
 test('FINDING-03: authentically issued E3 base64url ticket is consumable once, not hex-only',async()=>{
+  // Reuse the exact non-secret test configuration of oauthAuthorizeConsent.
+  // The production OAuth issuer must be exercised, never mocked here.
+  process.env.MCP_AUTH_TOKEN ??= 'mcp-unit-test-value-20260805-abcdef';
+  process.env.S1_HOST ??= '127.0.0.1';
+  process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
+  process.env.S2_HOST ??= '127.0.0.1';
+  process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
   const {issueWebConsentTicket,verifyWebConsentTicket}=await import('../src/oauth.js');
   await sandbox(async dir=>{
     const valid=issueWebConsentTicket('plesk-create-subdomain',binding,now);
