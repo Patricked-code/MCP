@@ -9,7 +9,7 @@
  *
  * Process-local only: restart / alternate host means DENY, never fallback.
  */
-import {createHash,randomBytes} from 'node:crypto';
+import {createHash,createCipheriv,createDecipheriv,randomBytes} from 'node:crypto';
 import type {SessionRequest} from '../operationalMemory/sessionService.js';
 import type {VerifiedOauthIdentity} from '../oauth.js';
 
@@ -23,7 +23,8 @@ export type PleskPairingPorts=Readonly<{
 }>;
 type RecordEntry=Readonly<{
   targetKey:string;expiresAt:number;governedSessionId:string;
-  transport:SessionRequest;oauthToken:string;
+  transport:SessionRequest;
+  oauthCiphertext:string;oauthNonce:string;oauthTag:string;
 }>;
 export type PleskPairingIssue=Readonly<{
   status:'ISSUED'|'BLOCKED';
@@ -57,6 +58,29 @@ const blocked=():PleskPairingIssue=>({status:'BLOCKED',runtimeWriteAuthorized:fa
 
 export function createPleskWebTransportPairing(ports:PleskPairingPorts){
   const entries=new Map<string,RecordEntry>();
+  // Ephemeral process-local AES-GCM key. Never persist or log the bearer.
+  // A restart destroys all outstanding proofs; failure is always CLOSED.
+  const encryptionKey=randomBytes(32);
+  const encrypt=(token:string)=>{
+    const nonce=randomBytes(12);
+    const cipher=createCipheriv('aes-256-gcm',encryptionKey,nonce);
+    const ciphertext=Buffer.concat([cipher.update(token,'utf8'),cipher.final()]);
+    return {
+      oauthCiphertext:ciphertext.toString('base64url'),
+      oauthNonce:nonce.toString('base64url'),
+      oauthTag:cipher.getAuthTag().toString('base64url')
+    };
+  };
+  const decrypt=(entry:RecordEntry)=>{
+    const decipher=createDecipheriv(
+      'aes-256-gcm',encryptionKey,Buffer.from(entry.oauthNonce,'base64url')
+    );
+    decipher.setAuthTag(Buffer.from(entry.oauthTag,'base64url'));
+    return Buffer.concat([
+      decipher.update(Buffer.from(entry.oauthCiphertext,'base64url')),
+      decipher.final()
+    ]).toString('utf8');
+  };
   function prune(now:number):void{
     for(const [key,value] of entries){
       if(value.expiresAt<=now)entries.delete(key);
@@ -96,7 +120,7 @@ export function createPleskWebTransportPairing(ports:PleskPairingPorts){
         entries.set(key,{transport:{
           transportSessionId:t.transportSessionId,
           identity:{...t.identity}
-        },oauthToken:input.oauthToken,governedSessionId:sessionId,
+        },...encrypt(input.oauthToken),governedSessionId:sessionId,
           targetKey:targetKey(input.target),expiresAt:Math.min(now+TTL,verified.expiresAt*1000)});
         return {status:'ISSUED',proof,expiresAt:Math.min(now+TTL,verified.expiresAt*1000),
           runtimeWriteAuthorized:false};
@@ -125,7 +149,8 @@ export function createPleskWebTransportPairing(ports:PleskPairingPorts){
         if(entry.expiresAt<=now||entry.targetKey!==targetKey(input.target)
           ||ports.lookupSessionId(entry.transport.transportSessionId)!==entry.governedSessionId)
           return null;
-        const verified=ports.inspectOauth(entry.oauthToken,'mcp:write');
+        const oauthToken=decrypt(entry);
+        const verified=ports.inspectOauth(oauthToken,'mcp:write');
         if(!verified||!verified.scopes.includes('mcp:write')
           ||verified.expiresAt<=Math.floor(now/1000)
           ||'oauth:'+verified.subject!==entry.transport.identity.principalId
@@ -133,7 +158,7 @@ export function createPleskWebTransportPairing(ports:PleskPairingPorts){
         return {
           governedSessionId:entry.governedSessionId,
           transport:entry.transport,
-          oauthAuthorization:'Bearer '+entry.oauthToken
+          oauthAuthorization:'Bearer '+oauthToken
         };
       }catch{return null;}
     }
