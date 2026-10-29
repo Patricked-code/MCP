@@ -361,7 +361,9 @@ export function buildMcpServer(pairing?:PleskWebTransportPairing): McpServer {
   registerReadOnlyTools(decorateRegistrationCatalogServer(server, 'read'));
   if(pairing){
     // Authenticated ToolExtra, not a browser field, is the only transport source.
-    registerPleskWebMcpPairingTool(server,pairing);
+    registerPleskWebMcpPairingTool(
+      decorateRegistrationCatalogServer(server, 'read'),pairing
+    );
   }
   const taskDependencies = getGovernedTaskToolDependencies();
   registerGovernedTaskReadTools(
