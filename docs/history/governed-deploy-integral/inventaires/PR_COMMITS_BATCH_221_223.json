@@ -1,0 +1,2107 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "positions": [
+    221,
+    223
+  ],
+  "items": [
+    {
+      "pr": 354,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "8214fe19a621619c376e4c4574d1d720830e38ae",
+          "date": "2026-10-27T20:09:55Z",
+          "parents": [
+            "48a529889517aa1c11974802d23acc3f35e0f187"
+          ],
+          "subject": "test(GWC-PRE-F-02): add full candidate happy path end-to-end test",
+          "url": "https://github.com/Patricked-code/MCP/commit/8214fe19a621619c376e4c4574d1d720830e38ae"
+        },
+        {
+          "sha": "a91737adbf04d0d101fd9cc7ea6b081124a15ae5",
+          "date": "2026-10-28T00:17:12Z",
+          "parents": [
+            "8214fe19a621619c376e4c4574d1d720830e38ae"
+          ],
+          "subject": "audit(TB-W4-H-01): trace evidence inventory — 15 identifiers, 10 gaps, 5 recommendations",
+          "url": "https://github.com/Patricked-code/MCP/commit/a91737adbf04d0d101fd9cc7ea6b081124a15ae5"
+        },
+        {
+          "sha": "e2006c805afb1504848bf310bb85652e63173a08",
+          "date": "2026-10-28T00:29:48Z",
+          "parents": [
+            "a91737adbf04d0d101fd9cc7ea6b081124a15ae5"
+          ],
+          "subject": "feat(TB-W3-PRW-01): add github_request_pull_request_review governed write tool",
+          "url": "https://github.com/Patricked-code/MCP/commit/e2006c805afb1504848bf310bb85652e63173a08"
+        },
+        {
+          "sha": "4785ede5649f5f2024992c4279ec8f7b4344ebf4",
+          "date": "2026-10-28T00:30:04Z",
+          "parents": [
+            "e2006c805afb1504848bf310bb85652e63173a08"
+          ],
+          "subject": "docs: checkpoint TB-W3-PRW-01 in SUIVI.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/4785ede5649f5f2024992c4279ec8f7b4344ebf4"
+        },
+        {
+          "sha": "31a999491e2329415a242162631b94110aa2f4b3",
+          "date": "2026-10-28T00:33:09Z",
+          "parents": [
+            "4785ede5649f5f2024992c4279ec8f7b4344ebf4"
+          ],
+          "subject": "feat(TB-W3-PRW-02): add github_update_pull_request_metadata governed write tool",
+          "url": "https://github.com/Patricked-code/MCP/commit/31a999491e2329415a242162631b94110aa2f4b3"
+        },
+        {
+          "sha": "4f77f0b26f70fcd2241afcd7722a5279ac5be043",
+          "date": "2026-10-28T00:37:11Z",
+          "parents": [
+            "31a999491e2329415a242162631b94110aa2f4b3"
+          ],
+          "subject": "feat(TB-W3-ADMIN-01): add github_create_repository governed write tool",
+          "url": "https://github.com/Patricked-code/MCP/commit/4f77f0b26f70fcd2241afcd7722a5279ac5be043"
+        },
+        {
+          "sha": "ac77d1c26b386494ff242b5b3f89f5f8f41791b7",
+          "date": "2026-10-28T00:37:28Z",
+          "parents": [
+            "4f77f0b26f70fcd2241afcd7722a5279ac5be043"
+          ],
+          "subject": "docs: checkpoint TB-W3-ADMIN-01 and TB-W3-PRW-02 in SUIVI.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/ac77d1c26b386494ff242b5b3f89f5f8f41791b7"
+        },
+        {
+          "sha": "c8284c375437cb1c29055118e6d237315750022f",
+          "date": "2026-10-28T00:40:45Z",
+          "parents": [
+            "ac77d1c26b386494ff242b5b3f89f5f8f41791b7"
+          ],
+          "subject": "fix: regenerate function-cartography.json from runtime registrations",
+          "url": "https://github.com/Patricked-code/MCP/commit/c8284c375437cb1c29055118e6d237315750022f"
+        },
+        {
+          "sha": "1fc6b677d0da8aa26c0fddc3ca7595e72f939695",
+          "date": "2026-10-29T18:11:54Z",
+          "parents": [
+            "c8284c375437cb1c29055118e6d237315750022f"
+          ],
+          "subject": "feat(GGCC-6): implement target-scope repository observation",
+          "url": "https://github.com/Patricked-code/MCP/commit/1fc6b677d0da8aa26c0fddc3ca7595e72f939695"
+        },
+        {
+          "sha": "1a5aaea069f29e9b3ddbaebc40fed0119931e59c",
+          "date": "2026-10-29T18:16:07Z",
+          "parents": [
+            "1fc6b677d0da8aa26c0fddc3ca7595e72f939695"
+          ],
+          "subject": "test(GGCC): add domain completion tests for all GitHub capability blueprints",
+          "url": "https://github.com/Patricked-code/MCP/commit/1a5aaea069f29e9b3ddbaebc40fed0119931e59c"
+        },
+        {
+          "sha": "0ef78f772b7e06328567afc01733189b8b36df4b",
+          "date": "2026-10-29T18:22:25Z",
+          "parents": [
+            "1a5aaea069f29e9b3ddbaebc40fed0119931e59c"
+          ],
+          "subject": "feat(GGCC): add org read tools, commit diff tool and domain completion updates",
+          "url": "https://github.com/Patricked-code/MCP/commit/0ef78f772b7e06328567afc01733189b8b36df4b"
+        },
+        {
+          "sha": "e581d85c8b7b45e05b831b95bb6b918b871f690c",
+          "date": "2026-10-29T21:56:01Z",
+          "parents": [
+            "0ef78f772b7e06328567afc01733189b8b36df4b"
+          ],
+          "subject": "feat(GGCC): add bounded issue read tools and fix capability split coverage",
+          "url": "https://github.com/Patricked-code/MCP/commit/e581d85c8b7b45e05b831b95bb6b918b871f690c"
+        },
+        {
+          "sha": "e4122aa68c59e894653e1efa494a13009ede34cb",
+          "date": "2026-10-29T21:58:47Z",
+          "parents": [
+            "e581d85c8b7b45e05b831b95bb6b918b871f690c"
+          ],
+          "subject": "feat(GGCC): add environment, secrets and variables read tools (BP-81)",
+          "url": "https://github.com/Patricked-code/MCP/commit/e4122aa68c59e894653e1efa494a13009ede34cb"
+        },
+        {
+          "sha": "77e80a335e91eaa2601d3d79974268f569260cfe",
+          "date": "2026-10-29T21:59:07Z",
+          "parents": [
+            "e4122aa68c59e894653e1efa494a13009ede34cb"
+          ],
+          "subject": "test(GGCC): add workflow jobs and logs read tool tests",
+          "url": "https://github.com/Patricked-code/MCP/commit/77e80a335e91eaa2601d3d79974268f569260cfe"
+        },
+        {
+          "sha": "c4bd277495176de8adfb7c436a54f4b009968e68",
+          "date": "2026-10-29T22:00:37Z",
+          "parents": [
+            "77e80a335e91eaa2601d3d79974268f569260cfe"
+          ],
+          "subject": "fix: remove invalid accept option from workflow run logs tool",
+          "url": "https://github.com/Patricked-code/MCP/commit/c4bd277495176de8adfb7c436a54f4b009968e68"
+        }
+      ]
+    },
+    {
+      "pr": 355,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "73c1b93f4ea9048986baeb79220397ec8ffa5921",
+          "date": "2026-10-28T04:26:16Z",
+          "parents": [
+            "48a529889517aa1c11974802d23acc3f35e0f187"
+          ],
+          "subject": "test(github): RED safe stub for installation permission preflight",
+          "url": "https://github.com/Patricked-code/MCP/commit/73c1b93f4ea9048986baeb79220397ec8ffa5921"
+        },
+        {
+          "sha": "067985c6aaa00b156ae2deff51e80d689d47f8dc",
+          "date": "2026-10-28T04:26:18Z",
+          "parents": [
+            "73c1b93f4ea9048986baeb79220397ec8ffa5921"
+          ],
+          "subject": "test(github): RED coverage and fail-closed cases for installation permissions",
+          "url": "https://github.com/Patricked-code/MCP/commit/067985c6aaa00b156ae2deff51e80d689d47f8dc"
+        },
+        {
+          "sha": "bb105d043c98a17611ae2fc2980f9489da84c5ae",
+          "date": "2026-10-28T04:26:47Z",
+          "parents": [
+            "067985c6aaa00b156ae2deff51e80d689d47f8dc"
+          ],
+          "subject": "feat(github): GREEN scoped installation permission preflight without runtime authority",
+          "url": "https://github.com/Patricked-code/MCP/commit/bb105d043c98a17611ae2fc2980f9489da84c5ae"
+        },
+        {
+          "sha": "2371d222975ed35de46a348d4918a75012d0421a",
+          "date": "2026-10-28T04:27:22Z",
+          "parents": [
+            "bb105d043c98a17611ae2fc2980f9489da84c5ae"
+          ],
+          "subject": "docs(governance): additive #349 universal capabilities roadmap and evidence checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/2371d222975ed35de46a348d4918a75012d0421a"
+        },
+        {
+          "sha": "a37216d45dece872f8f9e5b415710dff3862caf2",
+          "date": "2026-10-28T04:31:49Z",
+          "parents": [
+            "2371d222975ed35de46a348d4918a75012d0421a"
+          ],
+          "subject": "test(autonomy): RED integration cases for candidate scheduling, GitHub and Plesk evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/a37216d45dece872f8f9e5b415710dff3862caf2"
+        },
+        {
+          "sha": "5f1f71353280e82b2af775fca0167453d323f42a",
+          "date": "2026-10-28T04:32:02Z",
+          "parents": [
+            "a37216d45dece872f8f9e5b415710dff3862caf2"
+          ],
+          "subject": "test(autonomy): type realistic nullable observation fixture",
+          "url": "https://github.com/Patricked-code/MCP/commit/5f1f71353280e82b2af775fca0167453d323f42a"
+        },
+        {
+          "sha": "9eb8e9aad1ea84e28ce95cf37fa9863fb0bf698c",
+          "date": "2026-10-28T04:32:25Z",
+          "parents": [
+            "5f1f71353280e82b2af775fca0167453d323f42a"
+          ],
+          "subject": "feat(autonomy): compose existing candidate dispatcher with GitHub and Plesk preflights",
+          "url": "https://github.com/Patricked-code/MCP/commit/9eb8e9aad1ea84e28ce95cf37fa9863fb0bf698c"
+        },
+        {
+          "sha": "1609a3d77f002b4e3fa20a4721dbcb05b389caae",
+          "date": "2026-10-28T04:32:40Z",
+          "parents": [
+            "9eb8e9aad1ea84e28ce95cf37fa9863fb0bf698c"
+          ],
+          "subject": "test(autonomy): preserve immutable GitHub observation input contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/1609a3d77f002b4e3fa20a4721dbcb05b389caae"
+        },
+        {
+          "sha": "3c2edae0e557e4035e08b0dfe4c1cc953757a2e0",
+          "date": "2026-10-28T04:32:56Z",
+          "parents": [
+            "1609a3d77f002b4e3fa20a4721dbcb05b389caae"
+          ],
+          "subject": "docs(governance): add intelligence and autonomy roadmap to #355 without replacing earlier scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/3c2edae0e557e4035e08b0dfe4c1cc953757a2e0"
+        },
+        {
+          "sha": "66be34dfeb882f92aebfea9dcbef60872220250a",
+          "date": "2026-10-28T04:34:37Z",
+          "parents": [
+            "3c2edae0e557e4035e08b0dfe4c1cc953757a2e0"
+          ],
+          "subject": "test(autonomy): isolate fixture claims and work state between scenarios",
+          "url": "https://github.com/Patricked-code/MCP/commit/66be34dfeb882f92aebfea9dcbef60872220250a"
+        },
+        {
+          "sha": "1f4bf0fbf3f042666762ae6f7c16262cfde15535",
+          "date": "2026-10-28T04:40:50Z",
+          "parents": [
+            "66be34dfeb882f92aebfea9dcbef60872220250a"
+          ],
+          "subject": "feat(admin): additive four-plane 170+ delegable capability target catalogue with fail-closed evidence assessment",
+          "url": "https://github.com/Patricked-code/MCP/commit/1f4bf0fbf3f042666762ae6f7c16262cfde15535"
+        },
+        {
+          "sha": "ce66c82eecc8915136b269d76f7f20b37e1348f4",
+          "date": "2026-10-28T04:41:16Z",
+          "parents": [
+            "1f4bf0fbf3f042666762ae6f7c16262cfde15535"
+          ],
+          "subject": "test(admin): full target inventory and strict cross-plane permission evidence fail-closed",
+          "url": "https://github.com/Patricked-code/MCP/commit/ce66c82eecc8915136b269d76f7f20b37e1348f4"
+        },
+        {
+          "sha": "5622a9c39ebb169407b40ff24cc1e5a0e1eb2d04",
+          "date": "2026-10-28T04:41:40Z",
+          "parents": [
+            "ce66c82eecc8915136b269d76f7f20b37e1348f4"
+          ],
+          "subject": "feat(deploy): compose GitHub, Plesk and S1/S2 capability stages as read-only governed blueprint",
+          "url": "https://github.com/Patricked-code/MCP/commit/5622a9c39ebb169407b40ff24cc1e5a0e1eb2d04"
+        },
+        {
+          "sha": "1121ab0059ad10d1bfaff7a38f799302b6385eae",
+          "date": "2026-10-28T04:42:14Z",
+          "parents": [
+            "5622a9c39ebb169407b40ff24cc1e5a0e1eb2d04"
+          ],
+          "subject": "feat(continuity): reuse existing Task Queue and checkpoints for collision-safe resume advice",
+          "url": "https://github.com/Patricked-code/MCP/commit/1121ab0059ad10d1bfaff7a38f799302b6385eae"
+        },
+        {
+          "sha": "2904f81f3dbf8b754b83d4e77bfb727ecdd5c8eb",
+          "date": "2026-10-28T04:42:37Z",
+          "parents": [
+            "1121ab0059ad10d1bfaff7a38f799302b6385eae"
+          ],
+          "subject": "test(deploy): governed GitHub/Plesk/S1 blueprint dependency order and strict holds",
+          "url": "https://github.com/Patricked-code/MCP/commit/2904f81f3dbf8b754b83d4e77bfb727ecdd5c8eb"
+        },
+        {
+          "sha": "ef198cd957dae567f4a7ed29064fbfe9f78aa5a8",
+          "date": "2026-10-28T04:42:51Z",
+          "parents": [
+            "2904f81f3dbf8b754b83d4e77bfb727ecdd5c8eb"
+          ],
+          "subject": "fix(deploy): remove unused target matcher and keep strict bounded target validation",
+          "url": "https://github.com/Patricked-code/MCP/commit/ef198cd957dae567f4a7ed29064fbfe9f78aa5a8"
+        },
+        {
+          "sha": "d6da1a22b2571640e03d5047d240d7fec805d26e",
+          "date": "2026-10-28T04:42:54Z",
+          "parents": [
+            "ef198cd957dae567f4a7ed29064fbfe9f78aa5a8"
+          ],
+          "subject": "fix(continuity): scope any prospective claim to exact task identity, never pick OAuth implicitly",
+          "url": "https://github.com/Patricked-code/MCP/commit/d6da1a22b2571640e03d5047d240d7fec805d26e"
+        },
+        {
+          "sha": "459b9eec4049733c6121cd720b6c3925866a819e",
+          "date": "2026-10-28T04:43:15Z",
+          "parents": [
+            "d6da1a22b2571640e03d5047d240d7fec805d26e"
+          ],
+          "subject": "test(continuity): exact task scoped checkpoint resume and no cross-agent claim",
+          "url": "https://github.com/Patricked-code/MCP/commit/459b9eec4049733c6121cd720b6c3925866a819e"
+        },
+        {
+          "sha": "b5dbc5f2613bd3a471f8e8dd3ec9124383e8379d",
+          "date": "2026-10-28T04:43:38Z",
+          "parents": [
+            "459b9eec4049733c6121cd720b6c3925866a819e"
+          ],
+          "subject": "docs(governance): map all 165 admin targets, cross-plane composition and governed recovery slice without claims of granted root/admin",
+          "url": "https://github.com/Patricked-code/MCP/commit/b5dbc5f2613bd3a471f8e8dd3ec9124383e8379d"
+        },
+        {
+          "sha": "3e92deab561a23156f37f6918169d203e479df49",
+          "date": "2026-10-28T04:45:16Z",
+          "parents": [
+            "b5dbc5f2613bd3a471f8e8dd3ec9124383e8379d"
+          ],
+          "subject": "fix(deploy): derive MCP runtime scope from explicit governed context, never hardcode repository",
+          "url": "https://github.com/Patricked-code/MCP/commit/3e92deab561a23156f37f6918169d203e479df49"
+        },
+        {
+          "sha": "42f193e9c914ea71cee95c21e429149e868ac067",
+          "date": "2026-10-28T04:45:19Z",
+          "parents": [
+            "3e92deab561a23156f37f6918169d203e479df49"
+          ],
+          "subject": "test(deploy): supply explicit MCP repository context to universal blueprint",
+          "url": "https://github.com/Patricked-code/MCP/commit/42f193e9c914ea71cee95c21e429149e868ac067"
+        },
+        {
+          "sha": "d45c15f4ca9f6013ce6414273da3a6dde506dd82",
+          "date": "2026-10-28T04:47:09Z",
+          "parents": [
+            "42f193e9c914ea71cee95c21e429149e868ac067"
+          ],
+          "subject": "fix(governance): eliminate hard-coded MCP repository literal from deployment planner",
+          "url": "https://github.com/Patricked-code/MCP/commit/d45c15f4ca9f6013ce6414273da3a6dde506dd82"
+        },
+        {
+          "sha": "83be411d3b71ac443361caa167a90a8c529952f4",
+          "date": "2026-10-28T04:51:56Z",
+          "parents": [
+            "d45c15f4ca9f6013ce6414273da3a6dde506dd82"
+          ],
+          "subject": "test(capabilities): RED additive discovery of 165 goals alongside all existing tools and four mandatory delivery principles",
+          "url": "https://github.com/Patricked-code/MCP/commit/83be411d3b71ac443361caa167a90a8c529952f4"
+        },
+        {
+          "sha": "9e223a760c325acc52cf9cafd2e91093db2aeab2",
+          "date": "2026-10-28T04:52:20Z",
+          "parents": [
+            "83be411d3b71ac443361caa167a90a8c529952f4"
+          ],
+          "subject": "feat(capabilities): GREEN additive read-only discovery preserving all registered MCP tools and methodology",
+          "url": "https://github.com/Patricked-code/MCP/commit/9e223a760c325acc52cf9cafd2e91093db2aeab2"
+        },
+        {
+          "sha": "6266b68158502d9c762fa7ebe3998ff1e3ecacde",
+          "date": "2026-10-28T04:52:34Z",
+          "parents": [
+            "9e223a760c325acc52cf9cafd2e91093db2aeab2"
+          ],
+          "subject": "feat(mcp): expose additive universal capability target catalogue through existing get_project_context read tool",
+          "url": "https://github.com/Patricked-code/MCP/commit/6266b68158502d9c762fa7ebe3998ff1e3ecacde"
+        },
+        {
+          "sha": "4347fc5d101ea2f6ecd4e5fbb8e76a1afee3c3a3",
+          "date": "2026-10-28T04:52:52Z",
+          "parents": [
+            "6266b68158502d9c762fa7ebe3998ff1e3ecacde"
+          ],
+          "subject": "feat(capabilities): non-mutating additive project-context enrichment contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/4347fc5d101ea2f6ecd4e5fbb8e76a1afee3c3a3"
+        },
+        {
+          "sha": "07c66ec62c4b45f005a11d9917a01094342c6853",
+          "date": "2026-10-28T04:53:00Z",
+          "parents": [
+            "4347fc5d101ea2f6ecd4e5fbb8e76a1afee3c3a3"
+          ],
+          "subject": "refactor(mcp): reuse pure additive context projection preserving original fields",
+          "url": "https://github.com/Patricked-code/MCP/commit/07c66ec62c4b45f005a11d9917a01094342c6853"
+        },
+        {
+          "sha": "f495b5ae578281dfa1e64d7be4500372a1661e11",
+          "date": "2026-10-28T04:53:23Z",
+          "parents": [
+            "07c66ec62c4b45f005a11d9917a01094342c6853"
+          ],
+          "subject": "docs(governance): permanently record user's four mandatory work principles, additive exposure and acceptance gates",
+          "url": "https://github.com/Patricked-code/MCP/commit/f495b5ae578281dfa1e64d7be4500372a1661e11"
+        },
+        {
+          "sha": "3e6c3592d7e0402dad5fc48a35d69f626b946147",
+          "date": "2026-10-28T04:53:36Z",
+          "parents": [
+            "f495b5ae578281dfa1e64d7be4500372a1661e11"
+          ],
+          "subject": "test(mcp): preserve original get_project_context fields and method acceptance with all 165 targets",
+          "url": "https://github.com/Patricked-code/MCP/commit/3e6c3592d7e0402dad5fc48a35d69f626b946147"
+        },
+        {
+          "sha": "fcaf3f30f2b257b93cea0b6784612a4815864a42",
+          "date": "2026-10-28T05:00:05Z",
+          "parents": [
+            "3e6c3592d7e0402dad5fc48a35d69f626b946147"
+          ],
+          "subject": "test(GD-U-02): RED real MCP handler binding and strict registered/gated semantics",
+          "url": "https://github.com/Patricked-code/MCP/commit/fcaf3f30f2b257b93cea0b6784612a4815864a42"
+        },
+        {
+          "sha": "efef998e1cbefb76f4873cae380119a542b76462",
+          "date": "2026-10-28T05:00:31Z",
+          "parents": [
+            "fcaf3f30f2b257b93cea0b6784612a4815864a42"
+          ],
+          "subject": "feat(GD-U-02): GREEN bind existing registered MCP executors to catalog without fake admin capability",
+          "url": "https://github.com/Patricked-code/MCP/commit/efef998e1cbefb76f4873cae380119a542b76462"
+        },
+        {
+          "sha": "8d8fb7123b9fe93a8d241cb65d5312a9f6f0c472",
+          "date": "2026-10-28T05:00:58Z",
+          "parents": [
+            "efef998e1cbefb76f4873cae380119a542b76462"
+          ],
+          "subject": "test(GD-U-02): RED actual read-only GitHub/Plesk/Linux delegate probes with safe failure",
+          "url": "https://github.com/Patricked-code/MCP/commit/8d8fb7123b9fe93a8d241cb65d5312a9f6f0c472"
+        },
+        {
+          "sha": "69e77fec8529f39bdbb3f83a34237f61a397ab47",
+          "date": "2026-10-28T05:01:16Z",
+          "parents": [
+            "8d8fb7123b9fe93a8d241cb65d5312a9f6f0c472"
+          ],
+          "subject": "feat(GD-U-02): GREEN real bounded read-only GitHub API and SSH Plesk/Linux evidence probes",
+          "url": "https://github.com/Patricked-code/MCP/commit/69e77fec8529f39bdbb3f83a34237f61a397ab47"
+        },
+        {
+          "sha": "9a0bb3d0ccb57d8548c08f8e976144b9740f77af",
+          "date": "2026-10-28T05:01:40Z",
+          "parents": [
+            "69e77fec8529f39bdbb3f83a34237f61a397ab47"
+          ],
+          "subject": "feat(GD-U-02): expose only real registered executors and optional live provider checks additively",
+          "url": "https://github.com/Patricked-code/MCP/commit/9a0bb3d0ccb57d8548c08f8e976144b9740f77af"
+        },
+        {
+          "sha": "21a507af65cd80d028babe41226d39b5cf396e6e",
+          "date": "2026-10-28T05:01:49Z",
+          "parents": [
+            "9a0bb3d0ccb57d8548c08f8e976144b9740f77af"
+          ],
+          "subject": "feat(GD-U-02): execute bounded GitHub and S1/S2 Plesk read probes through existing MCP context tool",
+          "url": "https://github.com/Patricked-code/MCP/commit/21a507af65cd80d028babe41226d39b5cf396e6e"
+        },
+        {
+          "sha": "7dc30094834a2ca23ce2b3f2ee5f976be3e8eff4",
+          "date": "2026-10-28T05:02:06Z",
+          "parents": [
+            "21a507af65cd80d028babe41226d39b5cf396e6e"
+          ],
+          "subject": "test(GD-U-02): assert reused runtime catalog and on-demand read-only provider probes",
+          "url": "https://github.com/Patricked-code/MCP/commit/7dc30094834a2ca23ce2b3f2ee5f976be3e8eff4"
+        },
+        {
+          "sha": "3f9630946bba0aa31de42d27c558c9f3a8c403e3",
+          "date": "2026-10-28T05:02:53Z",
+          "parents": [
+            "7dc30094834a2ca23ce2b3f2ee5f976be3e8eff4"
+          ],
+          "subject": "docs(GD-U-02): document real provider probe execution, 13 handler bindings and remaining gated admin scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/3f9630946bba0aa31de42d27c558c9f3a8c403e3"
+        },
+        {
+          "sha": "a8af40c709522828d018d69db4578df4003b0c95",
+          "date": "2026-10-28T05:04:00Z",
+          "parents": [
+            "3f9630946bba0aa31de42d27c558c9f3a8c403e3"
+          ],
+          "subject": "feat(GD-U-02): display actual registered read/write/preflight executors per capability without inventing access",
+          "url": "https://github.com/Patricked-code/MCP/commit/a8af40c709522828d018d69db4578df4003b0c95"
+        },
+        {
+          "sha": "4e33e4052c4dd15a447a4ce1c57903832ffcafab",
+          "date": "2026-10-28T05:04:10Z",
+          "parents": [
+            "a8af40c709522828d018d69db4578df4003b0c95"
+          ],
+          "subject": "test(GD-U-02): show real registered executable handlers vs target-only and gated writes",
+          "url": "https://github.com/Patricked-code/MCP/commit/4e33e4052c4dd15a447a4ce1c57903832ffcafab"
+        },
+        {
+          "sha": "0801afe517b8577cf5ddf391f27feb60f9b9b7c3",
+          "date": "2026-10-28T05:05:14Z",
+          "parents": [
+            "4e33e4052c4dd15a447a4ce1c57903832ffcafab"
+          ],
+          "subject": "test(GD-U-02B): RED live repository scoped GitHub push/admin permissions without runtime authorization",
+          "url": "https://github.com/Patricked-code/MCP/commit/0801afe517b8577cf5ddf391f27feb60f9b9b7c3"
+        },
+        {
+          "sha": "450ea9de92a4ba291f5760d60dca6d5e8bf49786",
+          "date": "2026-10-28T05:05:28Z",
+          "parents": [
+            "0801afe517b8577cf5ddf391f27feb60f9b9b7c3"
+          ],
+          "subject": "feat(GD-U-02B): GREEN real per-repo GitHub API permission attestation via existing authenticated request",
+          "url": "https://github.com/Patricked-code/MCP/commit/450ea9de92a4ba291f5760d60dca6d5e8bf49786"
+        },
+        {
+          "sha": "c6ef212d6a3549431901d0a0274856bb38cf9afd",
+          "date": "2026-10-28T05:05:42Z",
+          "parents": [
+            "450ea9de92a4ba291f5760d60dca6d5e8bf49786"
+          ],
+          "subject": "feat(GD-U-02B): run real scoped GET repository permission probe from configured project metadata",
+          "url": "https://github.com/Patricked-code/MCP/commit/c6ef212d6a3549431901d0a0274856bb38cf9afd"
+        },
+        {
+          "sha": "8351708ce9a8bcb4876e727e1991ec5205fca712",
+          "date": "2026-10-28T05:05:55Z",
+          "parents": [
+            "c6ef212d6a3549431901d0a0274856bb38cf9afd"
+          ],
+          "subject": "test(GD-U-02B): prove canonical exact repository permission GET and no runtime admin admission",
+          "url": "https://github.com/Patricked-code/MCP/commit/8351708ce9a8bcb4876e727e1991ec5205fca712"
+        },
+        {
+          "sha": "706f9fda9b8c36c023df3d188316c743564d18bb",
+          "date": "2026-10-28T05:06:31Z",
+          "parents": [
+            "8351708ce9a8bcb4876e727e1991ec5205fca712"
+          ],
+          "subject": "fix(GD-U-02): lazy-load GitHub/SSH adapters only when live probe runs; keep isolated RED/GREEN tests environment-free",
+          "url": "https://github.com/Patricked-code/MCP/commit/706f9fda9b8c36c023df3d188316c743564d18bb"
+        },
+        {
+          "sha": "ef7b79bb0199e6a266e5b681466bce60e277a35a",
+          "date": "2026-10-28T05:06:42Z",
+          "parents": [
+            "706f9fda9b8c36c023df3d188316c743564d18bb"
+          ],
+          "subject": "fix(GD-U-02): robust integration assertions for live probe and preserved tool registry",
+          "url": "https://github.com/Patricked-code/MCP/commit/ef7b79bb0199e6a266e5b681466bce60e277a35a"
+        },
+        {
+          "sha": "a68c5a7662f25fc5340cf0792a34bc7c2c2e11d6",
+          "date": "2026-10-28T05:07:18Z",
+          "parents": [
+            "ef7b79bb0199e6a266e5b681466bce60e277a35a"
+          ],
+          "subject": "docs(GD-U-02B): record real repo-scoped GitHub API permission probes, RED evidence and backend safety boundaries",
+          "url": "https://github.com/Patricked-code/MCP/commit/a68c5a7662f25fc5340cf0792a34bc7c2c2e11d6"
+        },
+        {
+          "sha": "07ce84b020633d9a84697c650c1dc506a5b7ab6f",
+          "date": "2026-10-28T05:14:23Z",
+          "parents": [
+            "a68c5a7662f25fc5340cf0792a34bc7c2c2e11d6"
+          ],
+          "subject": "test(GD-U-02C): RED gated Plesk CLI write with real existing executor and protected task/session/lock/consent",
+          "url": "https://github.com/Patricked-code/MCP/commit/07ce84b020633d9a84697c650c1dc506a5b7ab6f"
+        },
+        {
+          "sha": "6cbc7675a83c05898516bb25abcb0e0d370d4254",
+          "date": "2026-10-28T05:14:57Z",
+          "parents": [
+            "07ce84b020633d9a84697c650c1dc506a5b7ab6f"
+          ],
+          "subject": "feat(GD-U-02C): GREEN executable bounded Plesk subdomain creation via existing SSH adapter and session/task/lock/consent verification",
+          "url": "https://github.com/Patricked-code/MCP/commit/6cbc7675a83c05898516bb25abcb0e0d370d4254"
+        },
+        {
+          "sha": "e0df1c79695ca058efced8750d0bf888702c7c13",
+          "date": "2026-10-28T05:15:36Z",
+          "parents": [
+            "6cbc7675a83c05898516bb25abcb0e0d370d4254"
+          ],
+          "subject": "test(GD-U-02C): reject arbitrary SSH commands, wrong server and unauthorized task before remote calls",
+          "url": "https://github.com/Patricked-code/MCP/commit/e0df1c79695ca058efced8750d0bf888702c7c13"
+        },
+        {
+          "sha": "ce76f430a49b25222b2d2674402e4e54b87841fd",
+          "date": "2026-10-28T05:16:20Z",
+          "parents": [
+            "e0df1c79695ca058efced8750d0bf888702c7c13"
+          ],
+          "subject": "docs(GD-U-02C): preserve bounded Plesk executable slice, RED/CI proof and real runtime admission blocker",
+          "url": "https://github.com/Patricked-code/MCP/commit/ce76f430a49b25222b2d2674402e4e54b87841fd"
+        },
+        {
+          "sha": "f5c924c98190be3f0f1a4218e289d37a9286de1c",
+          "date": "2026-10-28T05:16:44Z",
+          "parents": [
+            "ce76f430a49b25222b2d2674402e4e54b87841fd"
+          ],
+          "subject": "test(GD-U-02C): attest successful Plesk creation, failed exit and unowned-target collision",
+          "url": "https://github.com/Patricked-code/MCP/commit/f5c924c98190be3f0f1a4218e289d37a9286de1c"
+        },
+        {
+          "sha": "da55639cf58f61cd8232d06a6372b2b174f56231",
+          "date": "2026-10-28T05:18:15Z",
+          "parents": [
+            "f5c924c98190be3f0f1a4218e289d37a9286de1c"
+          ],
+          "subject": "security(GD-U-02C): keep privileged SSH port private; expose governed execution entry only",
+          "url": "https://github.com/Patricked-code/MCP/commit/da55639cf58f61cd8232d06a6372b2b174f56231"
+        },
+        {
+          "sha": "052e6be85a00b992381308d35c775cd4450ce313",
+          "date": "2026-10-28T05:18:27Z",
+          "parents": [
+            "da55639cf58f61cd8232d06a6372b2b174f56231"
+          ],
+          "subject": "test(security): assert no exported privileged SSH handle, only admitted guarded Plesk entry",
+          "url": "https://github.com/Patricked-code/MCP/commit/052e6be85a00b992381308d35c775cd4450ce313"
+        },
+        {
+          "sha": "5768089cccf3a5dc325f553abbcfcc91d1e9775d",
+          "date": "2026-10-28T05:19:46Z",
+          "parents": [
+            "052e6be85a00b992381308d35c775cd4450ce313"
+          ],
+          "subject": "docs(governance): GD-U-02C hardened private SSH transport, proven RED-GREEN and next trusted admission port",
+          "url": "https://github.com/Patricked-code/MCP/commit/5768089cccf3a5dc325f553abbcfcc91d1e9775d"
+        },
+        {
+          "sha": "e867139402274706618976bd64d8ff74c3813480",
+          "date": "2026-10-28T05:30:33Z",
+          "parents": [
+            "5768089cccf3a5dc325f553abbcfcc91d1e9775d"
+          ],
+          "subject": "test(GD-U-02D): RED trusted Task/Session/Lock reader with real normalized Plesk resource lock and fail-closed E3",
+          "url": "https://github.com/Patricked-code/MCP/commit/e867139402274706618976bd64d8ff74c3813480"
+        },
+        {
+          "sha": "4799560abd32c3f858e932828a1ba9b130053ce9",
+          "date": "2026-10-28T05:31:11Z",
+          "parents": [
+            "e867139402274706618976bd64d8ff74c3813480"
+          ],
+          "subject": "feat(GD-U-02D): GREEN read actual TaskQueue/Session/Lock/LiveState with normalized Plesk lock, fail-closed missing E3",
+          "url": "https://github.com/Patricked-code/MCP/commit/4799560abd32c3f858e932828a1ba9b130053ce9"
+        },
+        {
+          "sha": "ea0d211193052961d926c98a75ce5a17ac95e703",
+          "date": "2026-10-28T05:31:22Z",
+          "parents": [
+            "4799560abd32c3f858e932828a1ba9b130053ce9"
+          ],
+          "subject": "fix(GD-U-02D): match resource lock using existing lockService normalization",
+          "url": "https://github.com/Patricked-code/MCP/commit/ea0d211193052961d926c98a75ce5a17ac95e703"
+        },
+        {
+          "sha": "04c29e4d763a343d1fee1a46cb5d64454eaeb51c",
+          "date": "2026-10-28T05:31:26Z",
+          "parents": [
+            "ea0d211193052961d926c98a75ce5a17ac95e703"
+          ],
+          "subject": "test(GD-U-02D): test real normalized resource lock instead of impossible raw Plesk scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/04c29e4d763a343d1fee1a46cb5d64454eaeb51c"
+        },
+        {
+          "sha": "9b5bbd74430fce8ec629bcf0dc35253364e9521f",
+          "date": "2026-10-28T05:31:52Z",
+          "parents": [
+            "04c29e4d763a343d1fee1a46cb5d64454eaeb51c"
+          ],
+          "subject": "test(GD-U-02D): prove valid runtime task/session/lock cannot write Plesk absent independent E3+CI",
+          "url": "https://github.com/Patricked-code/MCP/commit/9b5bbd74430fce8ec629bcf0dc35253364e9521f"
+        },
+        {
+          "sha": "9e5efd48e538b02cd9d1cc865e4cf22d2085bc8e",
+          "date": "2026-10-28T05:32:17Z",
+          "parents": [
+            "9b5bbd74430fce8ec629bcf0dc35253364e9521f"
+          ],
+          "subject": "docs(GD-U-02D): record real Task/Session/Lock runtime read, normalized lock scope and missing E3 admission gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/9e5efd48e538b02cd9d1cc865e4cf22d2085bc8e"
+        },
+        {
+          "sha": "3e5868b32bf54688210abee7e8d0a664a76ff5d5",
+          "date": "2026-10-28T05:33:50Z",
+          "parents": [
+            "9e5efd48e538b02cd9d1cc865e4cf22d2085bc8e"
+          ],
+          "subject": "docs(GD-U-02D): preserve existing signed Plesk web E3 route and specify missing OAuth session admission bridge",
+          "url": "https://github.com/Patricked-code/MCP/commit/3e5868b32bf54688210abee7e8d0a664a76ff5d5"
+        },
+        {
+          "sha": "ca87a0d49a133af26e97277b9f3b676cecff834f",
+          "date": "2026-10-28T05:34:09Z",
+          "parents": [
+            "3e5868b32bf54688210abee7e8d0a664a76ff5d5"
+          ],
+          "subject": "fix(GD-U-02D): prevent task seed writes during read-only authority inspection",
+          "url": "https://github.com/Patricked-code/MCP/commit/ca87a0d49a133af26e97277b9f3b676cecff834f"
+        },
+        {
+          "sha": "2dc213bde354bc4db0b151a20bd12b5cbc5be021",
+          "date": "2026-10-28T05:34:18Z",
+          "parents": [
+            "ca87a0d49a133af26e97277b9f3b676cecff834f"
+          ],
+          "subject": "test(GD-U-02D): assert read-only admission never seeds or mutates Task Queue",
+          "url": "https://github.com/Patricked-code/MCP/commit/2dc213bde354bc4db0b151a20bd12b5cbc5be021"
+        },
+        {
+          "sha": "52dcc6636d208ca7d7ac2cffc39956d8ac6e825d",
+          "date": "2026-10-28T05:41:06Z",
+          "parents": [
+            "2dc213bde354bc4db0b151a20bd12b5cbc5be021"
+          ],
+          "subject": "test(GD-U-02D-B): RED existing signed Plesk E3 plus OAuth write-scope join without fabricating task/lock admission",
+          "url": "https://github.com/Patricked-code/MCP/commit/52dcc6636d208ca7d7ac2cffc39956d8ac6e825d"
+        },
+        {
+          "sha": "67da90a48838864aa53ce0a4e44627cbfb58b0ae",
+          "date": "2026-10-28T05:41:26Z",
+          "parents": [
+            "52dcc6636d208ca7d7ac2cffc39956d8ac6e825d"
+          ],
+          "subject": "feat(GD-U-02D-B): GREEN real existing signed Plesk web consent and OAuth mcp:write verification, fail-closed before runtime admission",
+          "url": "https://github.com/Patricked-code/MCP/commit/67da90a48838864aa53ce0a4e44627cbfb58b0ae"
+        },
+        {
+          "sha": "3556811c8cded9273dbfdc1534fbe02956dd8f55",
+          "date": "2026-10-28T05:42:19Z",
+          "parents": [
+            "67da90a48838864aa53ce0a4e44627cbfb58b0ae"
+          ],
+          "subject": "docs(GD-U-02D-B1): record E3-signed Plesk target + OAuth write scope execution boundary and missing session-link gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/3556811c8cded9273dbfdc1534fbe02956dd8f55"
+        },
+        {
+          "sha": "315c157e02848fa82e4ff954b66c3560a503a31c",
+          "date": "2026-10-28T05:43:50Z",
+          "parents": [
+            "3556811c8cded9273dbfdc1534fbe02956dd8f55"
+          ],
+          "subject": "test(GD-U-02D-B2): RED unique runtime OAuth principal Task/Session/Lock/Plesk scope resolution, no client-supplied IDs",
+          "url": "https://github.com/Patricked-code/MCP/commit/315c157e02848fa82e4ff954b66c3560a503a31c"
+        },
+        {
+          "sha": "bdc61b708c27deceead03d35fb932bf60728fc10",
+          "date": "2026-10-28T05:44:21Z",
+          "parents": [
+            "315c157e02848fa82e4ff954b66c3560a503a31c"
+          ],
+          "subject": "feat(GD-U-02D-B2): resolve unique OAuth-owned Plesk Task/Session/Lock from existing runtime without client-supplied IDs",
+          "url": "https://github.com/Patricked-code/MCP/commit/bdc61b708c27deceead03d35fb932bf60728fc10"
+        },
+        {
+          "sha": "29c4a6ac2628398bb59b3f4b6460fd29655307d4",
+          "date": "2026-10-28T05:45:10Z",
+          "parents": [
+            "bdc61b708c27deceead03d35fb932bf60728fc10"
+          ],
+          "subject": "docs(GD-U-02D-B2): record genuine unique OAuth Task/Session/Lock resolution and remaining trusted web binding gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/29c4a6ac2628398bb59b3f4b6460fd29655307d4"
+        },
+        {
+          "sha": "241938709a329adfd4e30399a3acbd554e9a2aaf",
+          "date": "2026-10-28T06:00:40Z",
+          "parents": [
+            "29c4a6ac2628398bb59b3f4b6460fd29655307d4"
+          ],
+          "subject": "test(gd-u-02d-b3a): RED authenticated existing transport/session binding fails closed",
+          "url": "https://github.com/Patricked-code/MCP/commit/241938709a329adfd4e30399a3acbd554e9a2aaf"
+        },
+        {
+          "sha": "b9ad6149c420392b513666aa88ef680059c67cd3",
+          "date": "2026-10-28T06:00:57Z",
+          "parents": [
+            "241938709a329adfd4e30399a3acbd554e9a2aaf"
+          ],
+          "subject": "feat(gd-u-02d-b3a): GREEN read-only existing MCP transport/session binding adapter",
+          "url": "https://github.com/Patricked-code/MCP/commit/b9ad6149c420392b513666aa88ef680059c67cd3"
+        },
+        {
+          "sha": "da310c4b95d203273b2c7e3979009a250d694b1a",
+          "date": "2026-10-28T06:01:13Z",
+          "parents": [
+            "b9ad6149c420392b513666aa88ef680059c67cd3"
+          ],
+          "subject": "test(gd-u-02d-b3a): use valid untrusted assurance variant in refusal test",
+          "url": "https://github.com/Patricked-code/MCP/commit/da310c4b95d203273b2c7e3979009a250d694b1a"
+        },
+        {
+          "sha": "29a1aeb7289fece3cf9b6450e84d0ac57f1abecb",
+          "date": "2026-10-28T06:08:22Z",
+          "parents": [
+            "da310c4b95d203273b2c7e3979009a250d694b1a"
+          ],
+          "subject": "test(GD-U-02D-B3b): RED exact-scope E3 OAuth transport task/lock and independent PR CI review release gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/29a1aeb7289fece3cf9b6450e84d0ac57f1abecb"
+        },
+        {
+          "sha": "15b84f577830fb6ec4943cc9808888b57a8a8d90",
+          "date": "2026-10-28T06:08:52Z",
+          "parents": [
+            "29a1aeb7289fece3cf9b6450e84d0ac57f1abecb"
+          ],
+          "subject": "feat(GD-U-02D-B3b): GREEN cross-proof E3 OAuth Task/Session/Lock/transport and independent GitHub review gate, fail closed before any write",
+          "url": "https://github.com/Patricked-code/MCP/commit/15b84f577830fb6ec4943cc9808888b57a8a8d90"
+        },
+        {
+          "sha": "eedef2dae60cca593f1829c844bb95db2428e346",
+          "date": "2026-10-28T06:09:24Z",
+          "parents": [
+            "15b84f577830fb6ec4943cc9808888b57a8a8d90"
+          ],
+          "subject": "fix(GD-U-02D-B3b): separate proposed PR HEAD from deployed SHA, resolve MCP repository dynamically",
+          "url": "https://github.com/Patricked-code/MCP/commit/eedef2dae60cca593f1829c844bb95db2428e346"
+        },
+        {
+          "sha": "1ee63f47a463e308fddd12e8d39ef7f081f95630",
+          "date": "2026-10-28T06:09:27Z",
+          "parents": [
+            "eedef2dae60cca593f1829c844bb95db2428e346"
+          ],
+          "subject": "test(GD-U-02D-B3b): PR review HEAD is distinct from runtime deployment SHA",
+          "url": "https://github.com/Patricked-code/MCP/commit/1ee63f47a463e308fddd12e8d39ef7f081f95630"
+        },
+        {
+          "sha": "8d3923151c74756d5c289588b754f2c52c7e1ec9",
+          "date": "2026-10-28T06:10:17Z",
+          "parents": [
+            "1ee63f47a463e308fddd12e8d39ef7f081f95630"
+          ],
+          "subject": "test(GD-U-02D-B3c): RED provider-verified review and CI on exact PR head before governed merge",
+          "url": "https://github.com/Patricked-code/MCP/commit/8d3923151c74756d5c289588b754f2c52c7e1ec9"
+        },
+        {
+          "sha": "398c3e0bdfeab9be6f2259bf06400ecd0b4a0bbf",
+          "date": "2026-10-28T06:10:45Z",
+          "parents": [
+            "8d3923151c74756d5c289588b754f2c52c7e1ec9"
+          ],
+          "subject": "feat(GD-U-02D-B3c): GREEN live GitHub PR independent review and latest exact-head CI validation for governed merge",
+          "url": "https://github.com/Patricked-code/MCP/commit/398c3e0bdfeab9be6f2259bf06400ecd0b4a0bbf"
+        },
+        {
+          "sha": "fe431147351d92c9b1f1126fb9a39c8ccca4fd3f",
+          "date": "2026-10-28T06:12:18Z",
+          "parents": [
+            "398c3e0bdfeab9be6f2259bf06400ecd0b4a0bbf"
+          ],
+          "subject": "docs(governance): additive B3b/B3c proofs and exact-head CI/review/merge gates, preserve all existing authorities",
+          "url": "https://github.com/Patricked-code/MCP/commit/fe431147351d92c9b1f1126fb9a39c8ccca4fd3f"
+        },
+        {
+          "sha": "cbb5fe920e634a4775a0471aa5f5045f799f311b",
+          "date": "2026-10-28T06:20:52Z",
+          "parents": [
+            "fe431147351d92c9b1f1126fb9a39c8ccca4fd3f"
+          ],
+          "subject": "test(GD-U-02D-B3d): RED durable atomic one-time signed Plesk E3 ticket consumption, replay and fail-closed admission",
+          "url": "https://github.com/Patricked-code/MCP/commit/cbb5fe920e634a4775a0471aa5f5045f799f311b"
+        },
+        {
+          "sha": "bee0075f06930e89b613be7429edcb7e1d7b5b18",
+          "date": "2026-10-28T06:21:31Z",
+          "parents": [
+            "cbb5fe920e634a4775a0471aa5f5045f799f311b"
+          ],
+          "subject": "feat(GD-U-02D-B3d): GREEN atomic durable one-use existing signed E3 ticket replay protection without admin grant",
+          "url": "https://github.com/Patricked-code/MCP/commit/bee0075f06930e89b613be7429edcb7e1d7b5b18"
+        },
+        {
+          "sha": "c6824a756b9396acf12d4b68e35666aeabcf3ba8",
+          "date": "2026-10-28T06:22:06Z",
+          "parents": [
+            "bee0075f06930e89b613be7429edcb7e1d7b5b18"
+          ],
+          "subject": "security(GD-U-02D-B3d): require governed preadmission and exact existing OAuth base64url HMAC ticket format",
+          "url": "https://github.com/Patricked-code/MCP/commit/c6824a756b9396acf12d4b68e35666aeabcf3ba8"
+        },
+        {
+          "sha": "ac032ad52b53c593c7e61c04db49dcf6cc804239",
+          "date": "2026-10-28T06:22:28Z",
+          "parents": [
+            "c6824a756b9396acf12d4b68e35666aeabcf3ba8"
+          ],
+          "subject": "test(GD-U-02D-B3d): enforce signed ticket shape and mandatory trusted preadmission before atomic consume",
+          "url": "https://github.com/Patricked-code/MCP/commit/ac032ad52b53c593c7e61c04db49dcf6cc804239"
+        },
+        {
+          "sha": "5e1d7746524dd58bfb4175616c3d3633b7b13a41",
+          "date": "2026-10-28T06:23:48Z",
+          "parents": [
+            "ac032ad52b53c593c7e61c04db49dcf6cc804239"
+          ],
+          "subject": "security(GD-U-02D-B3d): reverify E3 signature and expiry immediately after asynchronous governed admission",
+          "url": "https://github.com/Patricked-code/MCP/commit/5e1d7746524dd58bfb4175616c3d3633b7b13a41"
+        },
+        {
+          "sha": "b3513c5a945cc49b0e56310756507c9eddec6af0",
+          "date": "2026-10-28T06:24:00Z",
+          "parents": [
+            "5e1d7746524dd58bfb4175616c3d3633b7b13a41"
+          ],
+          "subject": "test(GD-U-02D-B3d): deny ticket expired during asynchronous runtime admission, no E3 receipt created",
+          "url": "https://github.com/Patricked-code/MCP/commit/b3513c5a945cc49b0e56310756507c9eddec6af0"
+        },
+        {
+          "sha": "1b1915feee5bb8df888b84ec2dbb4d11c4800856",
+          "date": "2026-10-28T06:24:21Z",
+          "parents": [
+            "b3513c5a945cc49b0e56310756507c9eddec6af0"
+          ],
+          "subject": "security(GD-U-02D-B3d): fsync exclusive-create receipt and its directory before attesting durable E3 consumption",
+          "url": "https://github.com/Patricked-code/MCP/commit/1b1915feee5bb8df888b84ec2dbb4d11c4800856"
+        },
+        {
+          "sha": "e21b0aa59edc91ddf256f2db9af21b3379c2d0eb",
+          "date": "2026-10-28T06:24:51Z",
+          "parents": [
+            "1b1915feee5bb8df888b84ec2dbb4d11c4800856"
+          ],
+          "subject": "fix(test): absence of E3 receipt directory is expected on fail-closed paths, not a test error",
+          "url": "https://github.com/Patricked-code/MCP/commit/e21b0aa59edc91ddf256f2db9af21b3379c2d0eb"
+        },
+        {
+          "sha": "f7f17202e57d018d9c647836037f8e6c5e3415d6",
+          "date": "2026-10-28T06:25:39Z",
+          "parents": [
+            "e21b0aa59edc91ddf256f2db9af21b3379c2d0eb"
+          ],
+          "subject": "test(GD-U-02D-B3d): RED compose signed E3 single-use with real governed release evidence, no SSH grants",
+          "url": "https://github.com/Patricked-code/MCP/commit/f7f17202e57d018d9c647836037f8e6c5e3415d6"
+        },
+        {
+          "sha": "76fb90af317faf908104637daea4439541a4aaf1",
+          "date": "2026-10-28T06:26:01Z",
+          "parents": [
+            "f7f17202e57d018d9c647836037f8e6c5e3415d6"
+          ],
+          "subject": "feat(GD-U-02D-B3d): gate existing E3 atomic single-use receipt behind verified release/transport/lock/CI proofs",
+          "url": "https://github.com/Patricked-code/MCP/commit/76fb90af317faf908104637daea4439541a4aaf1"
+        },
+        {
+          "sha": "5d047b50a21f021bfeabd3829400dbe34a01daae",
+          "date": "2026-10-28T06:26:16Z",
+          "parents": [
+            "76fb90af317faf908104637daea4439541a4aaf1"
+          ],
+          "subject": "test(GD-U-02D-B3d): match canonical GovernedPleskAuthoritySnapshot type without extraneous field",
+          "url": "https://github.com/Patricked-code/MCP/commit/5d047b50a21f021bfeabd3829400dbe34a01daae"
+        },
+        {
+          "sha": "4eede105bfe34fff2e97dd884cd6cc588cc61bd2",
+          "date": "2026-10-28T06:26:52Z",
+          "parents": [
+            "5d047b50a21f021bfeabd3829400dbe34a01daae"
+          ],
+          "subject": "docs(GD-U-02D-B3d): canonical additive single-use E3 security and release limits, no false production authorization",
+          "url": "https://github.com/Patricked-code/MCP/commit/4eede105bfe34fff2e97dd884cd6cc588cc61bd2"
+        },
+        {
+          "sha": "f33612eb0044af8dfbfeaeb8d877abeac5f0ac43",
+          "date": "2026-10-28T06:37:52Z",
+          "parents": [
+            "4eede105bfe34fff2e97dd884cd6cc588cc61bd2"
+          ],
+          "subject": "feat(GD-U-02D-B3e): additive optional signed E3 one-use gate in existing Plesk router after governed admission; production remains fail-closed",
+          "url": "https://github.com/Patricked-code/MCP/commit/f33612eb0044af8dfbfeaeb8d877abeac5f0ac43"
+        },
+        {
+          "sha": "f95fdbeadac6ac0856725a7407639b143eaf75f2",
+          "date": "2026-10-28T06:38:12Z",
+          "parents": [
+            "f33612eb0044af8dfbfeaeb8d877abeac5f0ac43"
+          ],
+          "subject": "test(GD-U-02D-B3e): existing route admits one E3 consumption only and blocks replay before SSH",
+          "url": "https://github.com/Patricked-code/MCP/commit/f95fdbeadac6ac0856725a7407639b143eaf75f2"
+        },
+        {
+          "sha": "c813593c688ef98a6473833d1359694aac40717c",
+          "date": "2026-10-28T06:44:06Z",
+          "parents": [
+            "f95fdbeadac6ac0856725a7407639b143eaf75f2"
+          ],
+          "subject": "test(GD-U-02D-B3f): RED real web E3 to authenticated MCP transport admission, deny cookie-as-principal and fail closed",
+          "url": "https://github.com/Patricked-code/MCP/commit/c813593c688ef98a6473833d1359694aac40717c"
+        },
+        {
+          "sha": "9dd1440571aba79c94f091179bea32b02af143b8",
+          "date": "2026-10-28T06:44:51Z",
+          "parents": [
+            "c813593c688ef98a6473833d1359694aac40717c"
+          ],
+          "subject": "feat(GD-U-02D-B3f): GREEN genuine read-only Plesk HTTP OAuth to owned MCP transport/session/task/lock admission, never infer transport from cookie",
+          "url": "https://github.com/Patricked-code/MCP/commit/9dd1440571aba79c94f091179bea32b02af143b8"
+        },
+        {
+          "sha": "a75d561665decb67aa87e50e979a558ff947cfa2",
+          "date": "2026-10-28T06:45:57Z",
+          "parents": [
+            "9dd1440571aba79c94f091179bea32b02af143b8"
+          ],
+          "subject": "test(GD-U-02D-B3f): RED production requires E3 single-use consumer even if another runtime gate enables write",
+          "url": "https://github.com/Patricked-code/MCP/commit/a75d561665decb67aa87e50e979a558ff947cfa2"
+        },
+        {
+          "sha": "3d2cc5cd9c070268f5f5fc8fa15e007f35d960c6",
+          "date": "2026-10-28T06:46:47Z",
+          "parents": [
+            "a75d561665decb67aa87e50e979a558ff947cfa2"
+          ],
+          "subject": "test(GD-U-02D-B3f): remove pending router change test; keep current fail-closed production gate unmodified",
+          "url": "https://github.com/Patricked-code/MCP/commit/3d2cc5cd9c070268f5f5fc8fa15e007f35d960c6"
+        },
+        {
+          "sha": "e9d1f7d5c79408e86b64bc178be5e5776efbef26",
+          "date": "2026-10-28T06:47:19Z",
+          "parents": [
+            "3d2cc5cd9c070268f5f5fc8fa15e007f35d960c6"
+          ],
+          "subject": "docs(GD-U-02D-B3f): record actual OAuth/E3-to-MCP read-only admission, exact CI proof and prohibited web privilege inference",
+          "url": "https://github.com/Patricked-code/MCP/commit/e9d1f7d5c79408e86b64bc178be5e5776efbef26"
+        },
+        {
+          "sha": "d474f3f42da3d251186baa53ed3cba6b033a4b31",
+          "date": "2026-10-28T06:54:42Z",
+          "parents": [
+            "e9d1f7d5c79408e86b64bc178be5e5776efbef26"
+          ],
+          "subject": "test(GD-U-02D-B3g): RED prove stale lock, stale runtime snapshot and admission-time drift must not consume E3",
+          "url": "https://github.com/Patricked-code/MCP/commit/d474f3f42da3d251186baa53ed3cba6b033a4b31"
+        },
+        {
+          "sha": "a0fe00d140b727a2a699ca30195e7d350c3f2298",
+          "date": "2026-10-28T06:56:49Z",
+          "parents": [
+            "d474f3f42da3d251186baa53ed3cba6b033a4b31"
+          ],
+          "subject": "fix(GD-U-02D-B3g): GREEN revalidate governed lock, snapshot and review at trusted consumption clock before atomic E3 receipt",
+          "url": "https://github.com/Patricked-code/MCP/commit/a0fe00d140b727a2a699ca30195e7d350c3f2298"
+        },
+        {
+          "sha": "b990e594e0fdf9a372adc6910b62038116d3f1de",
+          "date": "2026-10-28T06:59:12Z",
+          "parents": [
+            "a0fe00d140b727a2a699ca30195e7d350c3f2298"
+          ],
+          "subject": "docs(GD-U-02D-B3g): additive trusted-clock E3 gate RED/GREEN evidence, limits and governed NEXT_ACTION",
+          "url": "https://github.com/Patricked-code/MCP/commit/b990e594e0fdf9a372adc6910b62038116d3f1de"
+        },
+        {
+          "sha": "9992b4672910bbfc8e62943c99d12ec3a6e29a96",
+          "date": "2026-10-28T07:12:17Z",
+          "parents": [
+            "b990e594e0fdf9a372adc6910b62038116d3f1de"
+          ],
+          "subject": "test(GD-U-02D-B3h): RED human authorized reviewer check and final PR HEAD revalidation before release attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/9992b4672910bbfc8e62943c99d12ec3a6e29a96"
+        },
+        {
+          "sha": "3e48e51d4abeb7be42089b925c82a38e873950b0",
+          "date": "2026-10-28T07:12:53Z",
+          "parents": [
+            "9992b4672910bbfc8e62943c99d12ec3a6e29a96"
+          ],
+          "subject": "security(GD-U-02D-B3h): verify human reviewer current GitHub write permission and re-read exact PR HEAD before attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/3e48e51d4abeb7be42089b925c82a38e873950b0"
+        },
+        {
+          "sha": "f946cf97593e676553442b7c4d2b3549d713c6dc",
+          "date": "2026-10-28T07:13:20Z",
+          "parents": [
+            "3e48e51d4abeb7be42089b925c82a38e873950b0"
+          ],
+          "subject": "test(GD-U-02D-B3h): GREEN update legacy CI/review fixtures for human write permission, final HEAD and deny external/bot reviewers",
+          "url": "https://github.com/Patricked-code/MCP/commit/f946cf97593e676553442b7c4d2b3549d713c6dc"
+        },
+        {
+          "sha": "66c116f4013784f9bf475db6d1cc3a4ee0005ed7",
+          "date": "2026-10-28T07:15:15Z",
+          "parents": [
+            "f946cf97593e676553442b7c4d2b3549d713c6dc"
+          ],
+          "subject": "docs(GD-U-02D-B3h): preserve RED GREEN proof, human reviewer permission and PR HEAD double-check release gates",
+          "url": "https://github.com/Patricked-code/MCP/commit/66c116f4013784f9bf475db6d1cc3a4ee0005ed7"
+        },
+        {
+          "sha": "1e019273a68ba89362b9b950ed9857c85b8530c7",
+          "date": "2026-10-28T07:55:37Z",
+          "parents": [
+            "66c116f4013784f9bf475db6d1cc3a4ee0005ed7"
+          ],
+          "subject": "test(gd-u-02d): RED ambiguous same-time GitHub reviews fail closed",
+          "url": "https://github.com/Patricked-code/MCP/commit/1e019273a68ba89362b9b950ed9857c85b8530c7"
+        },
+        {
+          "sha": "0261d44fff8dda244de9bbc607dad95dc190e9b6",
+          "date": "2026-10-28T07:56:45Z",
+          "parents": [
+            "1e019273a68ba89362b9b950ed9857c85b8530c7"
+          ],
+          "subject": "fix(gd-u-02d): fail closed on ambiguous same-time GitHub reviews",
+          "url": "https://github.com/Patricked-code/MCP/commit/0261d44fff8dda244de9bbc607dad95dc190e9b6"
+        },
+        {
+          "sha": "f797e5b363ed949860358e45315a90f74aae3108",
+          "date": "2026-10-28T07:58:35Z",
+          "parents": [
+            "0261d44fff8dda244de9bbc607dad95dc190e9b6"
+          ],
+          "subject": "docs(gd-u-02d): checkpoint B3i review timestamp ambiguity",
+          "url": "https://github.com/Patricked-code/MCP/commit/f797e5b363ed949860358e45315a90f74aae3108"
+        },
+        {
+          "sha": "f1ae2aeadae5db62b72d4646205ee7b158bc58ce",
+          "date": "2026-10-29T19:02:56Z",
+          "parents": [
+            "f797e5b363ed949860358e45315a90f74aae3108"
+          ],
+          "subject": "test(GD-U-02D): RED add reviewed regression cases in tests/githubInstallationCapabilityReadiness.test.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/f1ae2aeadae5db62b72d4646205ee7b158bc58ce"
+        },
+        {
+          "sha": "b385e05da00e5fe3c9d1073bb2ab5f4590107507",
+          "date": "2026-10-29T19:03:03Z",
+          "parents": [
+            "f1ae2aeadae5db62b72d4646205ee7b158bc58ce"
+          ],
+          "subject": "test(GD-U-02D): RED add reviewed regression cases in tests/pleskE3SingleUse.test.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/b385e05da00e5fe3c9d1073bb2ab5f4590107507"
+        },
+        {
+          "sha": "2e2d98947950d10a4218e923b6b7cb77cef22214",
+          "date": "2026-10-29T19:03:10Z",
+          "parents": [
+            "b385e05da00e5fe3c9d1073bb2ab5f4590107507"
+          ],
+          "subject": "test(GD-U-02D): RED add reviewed regression cases in tests/pleskE3GovernedConsumption.test.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/2e2d98947950d10a4218e923b6b7cb77cef22214"
+        },
+        {
+          "sha": "2da478c629b5c663095ec445b30ca64aade6cf25",
+          "date": "2026-10-29T19:03:17Z",
+          "parents": [
+            "2e2d98947950d10a4218e923b6b7cb77cef22214"
+          ],
+          "subject": "test(GD-U-02D): RED add reviewed regression cases in tests/observeGithubReviewAndCi.test.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/2da478c629b5c663095ec445b30ca64aade6cf25"
+        },
+        {
+          "sha": "c757fb5ff35d26f2e33e61ad86199c2dc1db63ba",
+          "date": "2026-10-29T19:03:24Z",
+          "parents": [
+            "2da478c629b5c663095ec445b30ca64aade6cf25"
+          ],
+          "subject": "test(GD-U-02D): RED add reviewed regression cases in tests/universalDeploymentBlueprint.test.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/c757fb5ff35d26f2e33e61ad86199c2dc1db63ba"
+        },
+        {
+          "sha": "2e7388b13386f4340e16201592927a7920df8bab",
+          "date": "2026-10-29T19:03:44Z",
+          "parents": [
+            "c757fb5ff35d26f2e33e61ad86199c2dc1db63ba"
+          ],
+          "subject": "test(GD-U-02D): RED manifest canonical repository resolution from Docker dist/src and source layouts",
+          "url": "https://github.com/Patricked-code/MCP/commit/2e7388b13386f4340e16201592927a7920df8bab"
+        },
+        {
+          "sha": "d6470390c54c290364cec1577e72552274a21acc",
+          "date": "2026-10-29T19:04:45Z",
+          "parents": [
+            "2e7388b13386f4340e16201592927a7920df8bab"
+          ],
+          "subject": "fix(GD-U-02D): resolve exact resource/review/E3 finding in src/provisioning/universalAdminLiveProbe.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/d6470390c54c290364cec1577e72552274a21acc"
+        },
+        {
+          "sha": "ed565cc0fea1a175865902000bf6607021a7bae5",
+          "date": "2026-10-29T19:04:51Z",
+          "parents": [
+            "d6470390c54c290364cec1577e72552274a21acc"
+          ],
+          "subject": "fix(GD-U-02D): resolve exact resource/review/E3 finding in src/github/installationCapabilityReadiness.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/ed565cc0fea1a175865902000bf6607021a7bae5"
+        },
+        {
+          "sha": "02b1c8493beeb535ce419309711a7ed1a0e1eea0",
+          "date": "2026-10-29T19:05:47Z",
+          "parents": [
+            "ed565cc0fea1a175865902000bf6607021a7bae5"
+          ],
+          "subject": "fix(GD-U-02D): fail-closed provider, consent and exact-target evidence review src/provisioning/universalAdminLiveProbe.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/02b1c8493beeb535ce419309711a7ed1a0e1eea0"
+        },
+        {
+          "sha": "510d1740b6604239fa40c52b6f2b74ab62f972ca",
+          "date": "2026-10-29T19:05:53Z",
+          "parents": [
+            "02b1c8493beeb535ce419309711a7ed1a0e1eea0"
+          ],
+          "subject": "fix(GD-U-02D): fail-closed provider, consent and exact-target evidence review src/provisioning/pleskE3SingleUse.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/510d1740b6604239fa40c52b6f2b74ab62f972ca"
+        },
+        {
+          "sha": "a875d1516dd306f5b5e6954d53ae234b0b829cc5",
+          "date": "2026-10-29T19:06:00Z",
+          "parents": [
+            "510d1740b6604239fa40c52b6f2b74ab62f972ca"
+          ],
+          "subject": "fix(GD-U-02D): fail-closed provider, consent and exact-target evidence review src/provisioning/pleskE3GovernedConsumption.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/a875d1516dd306f5b5e6954d53ae234b0b829cc5"
+        },
+        {
+          "sha": "6e2efad339c49b84e5913b0ecaff306280dc8619",
+          "date": "2026-10-29T19:06:09Z",
+          "parents": [
+            "a875d1516dd306f5b5e6954d53ae234b0b829cc5"
+          ],
+          "subject": "fix(GD-U-02D): fail-closed provider, consent and exact-target evidence review src/github/observeGithubReviewAndCi.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/6e2efad339c49b84e5913b0ecaff306280dc8619"
+        },
+        {
+          "sha": "c916cc0f14e7ed0de4310d45e379fbba332ecca9",
+          "date": "2026-10-29T19:06:16Z",
+          "parents": [
+            "6e2efad339c49b84e5913b0ecaff306280dc8619"
+          ],
+          "subject": "fix(GD-U-02D): fail-closed provider, consent and exact-target evidence review src/provisioning/universalDeploymentBlueprint.ts",
+          "url": "https://github.com/Patricked-code/MCP/commit/c916cc0f14e7ed0de4310d45e379fbba332ecca9"
+        },
+        {
+          "sha": "59885ddd9c0a53b936d120eec315d59acc0fd359",
+          "date": "2026-10-29T19:06:38Z",
+          "parents": [
+            "c916cc0f14e7ed0de4310d45e379fbba332ecca9"
+          ],
+          "subject": "test(GD-U-02D): require exact GitHub repository identity in existing valid installation fixtures",
+          "url": "https://github.com/Patricked-code/MCP/commit/59885ddd9c0a53b936d120eec315d59acc0fd359"
+        },
+        {
+          "sha": "747362ad8331dd54e552da51ed781dafc751ac29",
+          "date": "2026-10-29T19:06:45Z",
+          "parents": [
+            "59885ddd9c0a53b936d120eec315d59acc0fd359"
+          ],
+          "subject": "test(GD-U-02D): require exact GitHub repository identity in existing valid installation fixtures",
+          "url": "https://github.com/Patricked-code/MCP/commit/747362ad8331dd54e552da51ed781dafc751ac29"
+        },
+        {
+          "sha": "ecaf8d7acb511043b99766ff7487f80a43f0b850",
+          "date": "2026-10-29T19:07:03Z",
+          "parents": [
+            "747362ad8331dd54e552da51ed781dafc751ac29"
+          ],
+          "subject": "test(GD-U-02D): bind universal deployment fixture to observed repository identity",
+          "url": "https://github.com/Patricked-code/MCP/commit/ecaf8d7acb511043b99766ff7487f80a43f0b850"
+        },
+        {
+          "sha": "0eaa5bea763380d1553192e2bac84c38b8d2e808",
+          "date": "2026-10-29T19:10:00Z",
+          "parents": [
+            "ecaf8d7acb511043b99766ff7487f80a43f0b850"
+          ],
+          "subject": "test(GD-U-02D): real signed E3 issuer uses isolated valid test env, no secrets or production settings",
+          "url": "https://github.com/Patricked-code/MCP/commit/0eaa5bea763380d1553192e2bac84c38b8d2e808"
+        },
+        {
+          "sha": "7b427c3c25a57289d94d3a8a64aa9e30a9573146",
+          "date": "2026-10-29T19:12:05Z",
+          "parents": [
+            "0eaa5bea763380d1553192e2bac84c38b8d2e808"
+          ],
+          "subject": "test(GD-U-02D): correct test regex escaping; assert actual signed OAuth E3 base64url format",
+          "url": "https://github.com/Patricked-code/MCP/commit/7b427c3c25a57289d94d3a8a64aa9e30a9573146"
+        },
+        {
+          "sha": "8248fc86679a2e4cacb4a81168513d7f349b11c5",
+          "date": "2026-10-29T19:26:57Z",
+          "parents": [
+            "7b427c3c25a57289d94d3a8a64aa9e30a9573146"
+          ],
+          "subject": "security(GD-U-02D-B3i): compose real read-only runtime admission on existing Plesk HTTP route, deny unbound web transport and E3 single-use by default",
+          "url": "https://github.com/Patricked-code/MCP/commit/8248fc86679a2e4cacb4a81168513d7f349b11c5"
+        },
+        {
+          "sha": "3da7a572cb4d5bb9e58525642d7ff2a12584d46d",
+          "date": "2026-10-29T19:44:54Z",
+          "parents": [
+            "8248fc86679a2e4cacb4a81168513d7f349b11c5"
+          ],
+          "subject": "test(GD-U-02D-B3i): RED OAuth MCP transport to E3 browser one-use pairing; reject replay, unowned scope and expiry",
+          "url": "https://github.com/Patricked-code/MCP/commit/3da7a572cb4d5bb9e58525642d7ff2a12584d46d"
+        },
+        {
+          "sha": "3eea8a63a47501bdc5884a0ce4640118d2301992",
+          "date": "2026-10-29T19:45:36Z",
+          "parents": [
+            "3da7a572cb4d5bb9e58525642d7ff2a12584d46d"
+          ],
+          "subject": "feat(GD-U-02D-B3i): short-lived server-authenticated OAuth MCP pairing proof for existing E3 web path, one-use fail-closed",
+          "url": "https://github.com/Patricked-code/MCP/commit/3eea8a63a47501bdc5884a0ce4640118d2301992"
+        },
+        {
+          "sha": "f3ae81785866a28ab3e7c6776e9defafb7b1d913",
+          "date": "2026-10-29T19:46:15Z",
+          "parents": [
+            "3eea8a63a47501bdc5884a0ce4640118d2301992"
+          ],
+          "subject": "test(GD-U-02D-B3i): isolate each foreign-target attempt and assert one-use proof remains sound",
+          "url": "https://github.com/Patricked-code/MCP/commit/f3ae81785866a28ab3e7c6776e9defafb7b1d913"
+        },
+        {
+          "sha": "c93d4f223c2b91e2b426f9ec4b367c1d7bad3b9f",
+          "date": "2026-10-29T19:46:32Z",
+          "parents": [
+            "f3ae81785866a28ab3e7c6776e9defafb7b1d913"
+          ],
+          "subject": "feat(GD-U-02D-B3i): non-executable MCP OAuth transport E3 pairing proof tool uses verified ToolExtra",
+          "url": "https://github.com/Patricked-code/MCP/commit/c93d4f223c2b91e2b426f9ec4b367c1d7bad3b9f"
+        },
+        {
+          "sha": "b7dbfad5e3ec64d0eb642a94fd7ce7ee7eeb8dc2",
+          "date": "2026-10-29T19:46:57Z",
+          "parents": [
+            "c93d4f223c2b91e2b426f9ec4b367c1d7bad3b9f"
+          ],
+          "subject": "feat(GD-U-02D-B3i): add one-use MCP pairing proof to original signed Plesk E3 form and context guard; preserve legacy route tests",
+          "url": "https://github.com/Patricked-code/MCP/commit/b7dbfad5e3ec64d0eb642a94fd7ce7ee7eeb8dc2"
+        },
+        {
+          "sha": "c417688282fd307b050233c8426badb4893e01ef",
+          "date": "2026-10-29T19:47:24Z",
+          "parents": [
+            "b7dbfad5e3ec64d0eb642a94fd7ce7ee7eeb8dc2"
+          ],
+          "subject": "feat(GD-U-02D-B3i): wire authenticated MCP-issued pairing proof through existing E3 browser handler into real governed read-only admission",
+          "url": "https://github.com/Patricked-code/MCP/commit/c417688282fd307b050233c8426badb4893e01ef"
+        },
+        {
+          "sha": "0b2d7315bfcf4c05f55cde4fde8e3cfe2fee71cd",
+          "date": "2026-10-29T19:48:47Z",
+          "parents": [
+            "c417688282fd307b050233c8426badb4893e01ef"
+          ],
+          "subject": "test(GD-U-02D-B3i): signed E3 HTTP integration requires exact one-use verified MCP pairing, cannot invoke Plesk write",
+          "url": "https://github.com/Patricked-code/MCP/commit/0b2d7315bfcf4c05f55cde4fde8e3cfe2fee71cd"
+        },
+        {
+          "sha": "e7d6ecf23f0caac2c3ff4dc939413c755895c21b",
+          "date": "2026-10-29T19:52:06Z",
+          "parents": [
+            "0b2d7315bfcf4c05f55cde4fde8e3cfe2fee71cd"
+          ],
+          "subject": "security(GD-U-02D-B3i): encrypt short-lived OAuth bearer at rest in process-local pairing store, preserve one-use fail-closed semantics",
+          "url": "https://github.com/Patricked-code/MCP/commit/e7d6ecf23f0caac2c3ff4dc939413c755895c21b"
+        },
+        {
+          "sha": "0924047a34fb3ddba5994ed51972e3fbbeeb8f40",
+          "date": "2026-10-29T19:52:41Z",
+          "parents": [
+            "e7d6ecf23f0caac2c3ff4dc939413c755895c21b"
+          ],
+          "subject": "chore(GD-U-02D-B3i): include bounded non-executable MCP transport pairing proof in existing tool catalog",
+          "url": "https://github.com/Patricked-code/MCP/commit/0924047a34fb3ddba5994ed51972e3fbbeeb8f40"
+        },
+        {
+          "sha": "69a139d02c122d43ded683af6bb6150251e1ec89",
+          "date": "2026-10-29T19:54:15Z",
+          "parents": [
+            "0924047a34fb3ddba5994ed51972e3fbbeeb8f40"
+          ],
+          "subject": "docs(GD-U-02D-B3i): canonical owner mandate, authenticated web/MCP pairing evidence, independent counter-review and fail-closed release boundaries",
+          "url": "https://github.com/Patricked-code/MCP/commit/69a139d02c122d43ded683af6bb6150251e1ec89"
+        },
+        {
+          "sha": "917dd5cd2148a23f87d56f63d99da253534aefef",
+          "date": "2026-10-29T19:55:06Z",
+          "parents": [
+            "69a139d02c122d43ded683af6bb6150251e1ec89"
+          ],
+          "subject": "security(GD-U-02D-B3i): classify transient MCP pairing credential as governed operational-write with existing shadow gate and catalog",
+          "url": "https://github.com/Patricked-code/MCP/commit/917dd5cd2148a23f87d56f63d99da253534aefef"
+        },
+        {
+          "sha": "a9e94a597e3e4ff7dcaada97ddd0cf41ceec5de9",
+          "date": "2026-10-29T20:51:58Z",
+          "parents": [
+            "917dd5cd2148a23f87d56f63d99da253534aefef"
+          ],
+          "subject": "test(gd-u-b3i): RED bind GitHub CI evidence to the exact pull request",
+          "url": "https://github.com/Patricked-code/MCP/commit/a9e94a597e3e4ff7dcaada97ddd0cf41ceec5de9"
+        },
+        {
+          "sha": "583791dfafa1f2adc5be81060f175916336dcbbe",
+          "date": "2026-10-29T20:53:45Z",
+          "parents": [
+            "a9e94a597e3e4ff7dcaada97ddd0cf41ceec5de9"
+          ],
+          "subject": "fix(gd-u-b3i): GREEN validate CI workflow association to exact PR",
+          "url": "https://github.com/Patricked-code/MCP/commit/583791dfafa1f2adc5be81060f175916336dcbbe"
+        },
+        {
+          "sha": "b03dc60030b2f14dc310d1c9ff5579367aa107a6",
+          "date": "2026-10-29T20:57:19Z",
+          "parents": [
+            "583791dfafa1f2adc5be81060f175916336dcbbe"
+          ],
+          "subject": "test(gd-u-b3i): RED trusted Plesk clock and pre-mutation lease recheck",
+          "url": "https://github.com/Patricked-code/MCP/commit/b03dc60030b2f14dc310d1c9ff5579367aa107a6"
+        },
+        {
+          "sha": "01b8ef55b328df1d111f81bf3b1ee02a8cb012ba",
+          "date": "2026-10-29T21:00:23Z",
+          "parents": [
+            "b03dc60030b2f14dc310d1c9ff5579367aa107a6"
+          ],
+          "subject": "fix(gd-u-b3i): GREEN enforce trusted server clock and prewrite Plesk lease recheck",
+          "url": "https://github.com/Patricked-code/MCP/commit/01b8ef55b328df1d111f81bf3b1ee02a8cb012ba"
+        },
+        {
+          "sha": "8d84d1a9f0f6f7942c5fc1cddc1ba5859463bab9",
+          "date": "2026-10-29T21:24:08Z",
+          "parents": [
+            "01b8ef55b328df1d111f81bf3b1ee02a8cb012ba"
+          ],
+          "subject": "test(plesk): RED mandatory atomic E3 on paired route and deny unverified subscription rights",
+          "url": "https://github.com/Patricked-code/MCP/commit/8d84d1a9f0f6f7942c5fc1cddc1ba5859463bab9"
+        },
+        {
+          "sha": "86833f0ab2555efe6fd1a16726d98032d26d4f5e",
+          "date": "2026-10-29T21:24:29Z",
+          "parents": [
+            "8d84d1a9f0f6f7942c5fc1cddc1ba5859463bab9"
+          ],
+          "subject": "fix(plesk): fail closed on missing E3 consumer or failed Plesk subscription inspection",
+          "url": "https://github.com/Patricked-code/MCP/commit/86833f0ab2555efe6fd1a16726d98032d26d4f5e"
+        },
+        {
+          "sha": "c2ed1d05cce50e219bcb9b2c5a1dfe5570adb79f",
+          "date": "2026-10-29T21:24:32Z",
+          "parents": [
+            "86833f0ab2555efe6fd1a16726d98032d26d4f5e"
+          ],
+          "subject": "fix(plesk): fail closed on missing E3 consumer or failed Plesk subscription inspection",
+          "url": "https://github.com/Patricked-code/MCP/commit/c2ed1d05cce50e219bcb9b2c5a1dfe5570adb79f"
+        },
+        {
+          "sha": "61493aa8336e974d8d2fe2195d8e5be75427e8c6",
+          "date": "2026-10-29T21:28:42Z",
+          "parents": [
+            "c2ed1d05cce50e219bcb9b2c5a1dfe5570adb79f"
+          ],
+          "subject": "test(plesk): RED paired route must invoke only existing governed executor, not raw SSH",
+          "url": "https://github.com/Patricked-code/MCP/commit/61493aa8336e974d8d2fe2195d8e5be75427e8c6"
+        },
+        {
+          "sha": "b016c34481de257d9483a32cfa628fc1c6e9b9e9",
+          "date": "2026-10-29T21:29:08Z",
+          "parents": [
+            "61493aa8336e974d8d2fe2195d8e5be75427e8c6"
+          ],
+          "subject": "test(plesk): keep RED governed executor scenario structurally typed",
+          "url": "https://github.com/Patricked-code/MCP/commit/b016c34481de257d9483a32cfa628fc1c6e9b9e9"
+        },
+        {
+          "sha": "9d6bc105be8d6f1df9dd9af07799f1cdd19dd546",
+          "date": "2026-10-29T21:29:42Z",
+          "parents": [
+            "b016c34481de257d9483a32cfa628fc1c6e9b9e9"
+          ],
+          "subject": "fix(plesk): require trusted governed executor on every paired OAuth/E3 write",
+          "url": "https://github.com/Patricked-code/MCP/commit/9d6bc105be8d6f1df9dd9af07799f1cdd19dd546"
+        },
+        {
+          "sha": "24b010d898fdf00afb4ef7257e2fda2a12eaec6f",
+          "date": "2026-10-29T21:42:18Z",
+          "parents": [
+            "9d6bc105be8d6f1df9dd9af07799f1cdd19dd546"
+          ],
+          "subject": "test(plesk): RED private authenticated MCP handoff for E3 release pipeline",
+          "url": "https://github.com/Patricked-code/MCP/commit/24b010d898fdf00afb4ef7257e2fda2a12eaec6f"
+        },
+        {
+          "sha": "070bf3e340b5aab4183fc2227a82736e3f1ffefa",
+          "date": "2026-10-29T21:42:34Z",
+          "parents": [
+            "24b010d898fdf00afb4ef7257e2fda2a12eaec6f"
+          ],
+          "subject": "feat(plesk): GREEN private verified OAuth runtime evidence handoff without HTTP leak",
+          "url": "https://github.com/Patricked-code/MCP/commit/070bf3e340b5aab4183fc2227a82736e3f1ffefa"
+        },
+        {
+          "sha": "df23f1455834e903e9f3ceef414f82113eea3174",
+          "date": "2026-10-29T21:44:10Z",
+          "parents": [
+            "070bf3e340b5aab4183fc2227a82736e3f1ffefa"
+          ],
+          "subject": "test(plesk): RED authenticated web request bridge and E3 single-use executor sequence",
+          "url": "https://github.com/Patricked-code/MCP/commit/df23f1455834e903e9f3ceef414f82113eea3174"
+        },
+        {
+          "sha": "2f06e69261ef6fbc9f30cead1aa66d629b912e7f",
+          "date": "2026-10-29T21:44:30Z",
+          "parents": [
+            "df23f1455834e903e9f3ceef414f82113eea3174"
+          ],
+          "subject": "feat(plesk): GREEN bind authenticated OAuth preparation, E3 receipt and governed executor per request",
+          "url": "https://github.com/Patricked-code/MCP/commit/2f06e69261ef6fbc9f30cead1aa66d629b912e7f"
+        },
+        {
+          "sha": "4eb513209c6e7d2df5f28bc25f6ae3cddc48c821",
+          "date": "2026-10-29T21:45:49Z",
+          "parents": [
+            "2f06e69261ef6fbc9f30cead1aa66d629b912e7f"
+          ],
+          "subject": "feat(plesk): wire real server OAuth admission, atomic E3, provider review and governed SSH executor",
+          "url": "https://github.com/Patricked-code/MCP/commit/4eb513209c6e7d2df5f28bc25f6ae3cddc48c821"
+        },
+        {
+          "sha": "60614ae4235d38682eb692c92b49a211ff7d0ae3",
+          "date": "2026-10-29T21:49:33Z",
+          "parents": [
+            "4eb513209c6e7d2df5f28bc25f6ae3cddc48c821"
+          ],
+          "subject": "test(provisioning): RED existing Git mapping reuse vs absent mapping Plesk discovery",
+          "url": "https://github.com/Patricked-code/MCP/commit/60614ae4235d38682eb692c92b49a211ff7d0ae3"
+        },
+        {
+          "sha": "4424cc3cf217f676c462bb39d4b93b79d3a20e1b",
+          "date": "2026-10-29T21:49:56Z",
+          "parents": [
+            "60614ae4235d38682eb692c92b49a211ff7d0ae3"
+          ],
+          "subject": "feat(provisioning): GREEN classify verified server mapping vs governed Plesk discovery",
+          "url": "https://github.com/Patricked-code/MCP/commit/4424cc3cf217f676c462bb39d4b93b79d3a20e1b"
+        },
+        {
+          "sha": "c3ee0bc7db43555f40edf48465cfbb0d7354ddb7",
+          "date": "2026-10-29T22:05:15Z",
+          "parents": [
+            "4424cc3cf217f676c462bb39d4b93b79d3a20e1b"
+          ],
+          "subject": "docs(governance): index GD-U-01/02 lineage and anchor B3i continuity in #349 history",
+          "url": "https://github.com/Patricked-code/MCP/commit/c3ee0bc7db43555f40edf48465cfbb0d7354ddb7"
+        }
+      ]
+    },
+    {
+      "pr": 356,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "23fdc631a7623bd19579ffe65aac8789408d21f0",
+          "date": "2026-10-29T20:32:23Z",
+          "parents": [
+            "48a529889517aa1c11974802d23acc3f35e0f187"
+          ],
+          "subject": "docs(history): add sourced README.md to governed deploy historical archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/23fdc631a7623bd19579ffe65aac8789408d21f0"
+        },
+        {
+          "sha": "abbcb993f1fbe7c5e7969a43e5716c1733dea146",
+          "date": "2026-10-29T20:32:26Z",
+          "parents": [
+            "23fdc631a7623bd19579ffe65aac8789408d21f0"
+          ],
+          "subject": "docs(history): add sourced 00_ARBRE_HIERARCHIQUE.md to governed deploy historical archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/abbcb993f1fbe7c5e7969a43e5716c1733dea146"
+        },
+        {
+          "sha": "0b2a530caf51fbddeb4c53d0e4cfa37033b81dcf",
+          "date": "2026-10-29T20:32:28Z",
+          "parents": [
+            "abbcb993f1fbe7c5e7969a43e5716c1733dea146"
+          ],
+          "subject": "docs(history): add sourced 01_PROVENANCE_ET_REGLES.md to governed deploy historical archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/0b2a530caf51fbddeb4c53d0e4cfa37033b81dcf"
+        },
+        {
+          "sha": "8ff9937c7906a7b9d1c7325ba92d4cb4773703ee",
+          "date": "2026-10-29T20:32:31Z",
+          "parents": [
+            "0b2a530caf51fbddeb4c53d0e4cfa37033b81dcf"
+          ],
+          "subject": "docs(history): add sourced 02_202608_FONDATIONS.md to governed deploy historical archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/8ff9937c7906a7b9d1c7325ba92d4cb4773703ee"
+        },
+        {
+          "sha": "3a8281cc5c2e587da46b68e9a528bc633dffff06",
+          "date": "2026-10-29T20:32:34Z",
+          "parents": [
+            "8ff9937c7906a7b9d1c7325ba92d4cb4773703ee"
+          ],
+          "subject": "docs(history): add sourced 03_202609_GOUVERNANCE_GITHUB.md to governed deploy historical archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/3a8281cc5c2e587da46b68e9a528bc633dffff06"
+        },
+        {
+          "sha": "3607175b4f2bf03cbff1904632ef1d31ac74d154",
+          "date": "2026-10-29T20:32:37Z",
+          "parents": [
+            "3a8281cc5c2e587da46b68e9a528bc633dffff06"
+          ],
+          "subject": "docs(history): add sourced 04_202610_TB_W3_F.md to governed deploy historical archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/3607175b4f2bf03cbff1904632ef1d31ac74d154"
+        },
+        {
+          "sha": "128f76553d07bf11565ca1cdf2cf56984f2948fe",
+          "date": "2026-10-29T20:32:39Z",
+          "parents": [
+            "3607175b4f2bf03cbff1904632ef1d31ac74d154"
+          ],
+          "subject": "docs(history): add sourced 05_202610_ISSUE349_PLESK.md to governed deploy historical archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/128f76553d07bf11565ca1cdf2cf56984f2948fe"
+        },
+        {
+          "sha": "bfda524f6b25738b8d336b908769253c49a1dd74",
+          "date": "2026-10-29T20:32:42Z",
+          "parents": [
+            "128f76553d07bf11565ca1cdf2cf56984f2948fe"
+          ],
+          "subject": "docs(history): add sourced 06_PILOTES_GRT_REGULATORY.md to governed deploy historical archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/bfda524f6b25738b8d336b908769253c49a1dd74"
+        },
+        {
+          "sha": "1183d6fb9d9b6d2107365429284c5ef696a0aa85",
+          "date": "2026-10-29T20:32:44Z",
+          "parents": [
+            "bfda524f6b25738b8d336b908769253c49a1dd74"
+          ],
+          "subject": "docs(history): add sourced 07_GD_U_B3I.md to governed deploy historical archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/1183d6fb9d9b6d2107365429284c5ef696a0aa85"
+        },
+        {
+          "sha": "d73c8e8362a21b725113540da3de691a5e43b251",
+          "date": "2026-10-29T20:32:47Z",
+          "parents": [
+            "1183d6fb9d9b6d2107365429284c5ef696a0aa85"
+          ],
+          "subject": "docs(history): add sourced 08_REGISTRE_PREUVES.md to governed deploy historical archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/d73c8e8362a21b725113540da3de691a5e43b251"
+        },
+        {
+          "sha": "63b25d00d2a882f82519ada43e4e75aee4cb696a",
+          "date": "2026-10-29T20:32:49Z",
+          "parents": [
+            "d73c8e8362a21b725113540da3de691a5e43b251"
+          ],
+          "subject": "docs(history): add sourced 09_PROCEDURE_EXHAUSTIVITE.md to governed deploy historical archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/63b25d00d2a882f82519ada43e4e75aee4cb696a"
+        },
+        {
+          "sha": "6e22dd38b6b4f6c7f0da6479e9d974668e59dea1",
+          "date": "2026-10-29T21:00:18Z",
+          "parents": [
+            "63b25d00d2a882f82519ada43e4e75aee4cb696a"
+          ],
+          "subject": "docs(history): index all 57 canonical issue 349 comments with original full-text links",
+          "url": "https://github.com/Patricked-code/MCP/commit/6e22dd38b6b4f6c7f0da6479e9d974668e59dea1"
+        },
+        {
+          "sha": "bec3bb59365e7c1e0888ca42f5d1ff9a291ff80d",
+          "date": "2026-10-29T21:02:56Z",
+          "parents": [
+            "6e22dd38b6b4f6c7f0da6479e9d974668e59dea1"
+          ],
+          "subject": "docs(history): add verified July 2026 origin lineage PR 1-14 and issue 2-3",
+          "url": "https://github.com/Patricked-code/MCP/commit/bec3bb59365e7c1e0888ca42f5d1ff9a291ff80d"
+        },
+        {
+          "sha": "ef8e07e0ac1ed0fba46d30eee629c22d46b4172b",
+          "date": "2026-10-29T21:04:47Z",
+          "parents": [
+            "bec3bb59365e7c1e0888ca42f5d1ff9a291ff80d"
+          ],
+          "subject": "docs(history): record August forensic branches, supersessions and exact-sha deploy evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/ef8e07e0ac1ed0fba46d30eee629c22d46b4172b"
+        },
+        {
+          "sha": "5982c011801ffb76c56c7dca6be293a1d052e338",
+          "date": "2026-10-29T21:06:06Z",
+          "parents": [
+            "ef8e07e0ac1ed0fba46d30eee629c22d46b4172b"
+          ],
+          "subject": "docs(history): add September 2026 governed deploy GitHub resolution and SSH lineage",
+          "url": "https://github.com/Patricked-code/MCP/commit/5982c011801ffb76c56c7dca6be293a1d052e338"
+        },
+        {
+          "sha": "b704dec26ee1ecf96d215e73790465570ea2587e",
+          "date": "2026-10-29T21:06:40Z",
+          "parents": [
+            "5982c011801ffb76c56c7dca6be293a1d052e338"
+          ],
+          "subject": "docs(history): index source-anchored commits, runs and cross-references for issue 349 slice 1",
+          "url": "https://github.com/Patricked-code/MCP/commit/b704dec26ee1ecf96d215e73790465570ea2587e"
+        },
+        {
+          "sha": "b9be70064b5100870ad026457f2964b416c5cfee",
+          "date": "2026-10-29T21:06:43Z",
+          "parents": [
+            "b704dec26ee1ecf96d215e73790465570ea2587e"
+          ],
+          "subject": "docs(history): index source-anchored commits, runs and cross-references for issue 349 slice 2",
+          "url": "https://github.com/Patricked-code/MCP/commit/b9be70064b5100870ad026457f2964b416c5cfee"
+        },
+        {
+          "sha": "54b038251664e4c19a549b026d943a9a2d10aa98",
+          "date": "2026-10-29T21:06:46Z",
+          "parents": [
+            "b9be70064b5100870ad026457f2964b416c5cfee"
+          ],
+          "subject": "docs(history): index source-anchored commits, runs and cross-references for issue 349 slice 3",
+          "url": "https://github.com/Patricked-code/MCP/commit/54b038251664e4c19a549b026d943a9a2d10aa98"
+        },
+        {
+          "sha": "9e81bc551dc06ef7ee2a221e84e91032f3856a9e",
+          "date": "2026-10-29T21:07:19Z",
+          "parents": [
+            "54b038251664e4c19a549b026d943a9a2d10aa98"
+          ],
+          "subject": "docs(history): append new issue 349 checkpoints observed during archive build",
+          "url": "https://github.com/Patricked-code/MCP/commit/9e81bc551dc06ef7ee2a221e84e91032f3856a9e"
+        },
+        {
+          "sha": "206bd4897bfc265ec8c7b65f667f60e3017d9c74",
+          "date": "2026-10-29T21:08:23Z",
+          "parents": [
+            "9e81bc551dc06ef7ee2a221e84e91032f3856a9e"
+          ],
+          "subject": "docs(history): record each Oct 28 universal capability checkpoint and fail-closed gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/206bd4897bfc265ec8c7b65f667f60e3017d9c74"
+        },
+        {
+          "sha": "d291a4d3b52357e0b6225d35fe1eeebb681c7d9c",
+          "date": "2026-10-29T21:09:22Z",
+          "parents": [
+            "206bd4897bfc265ec8c7b65f667f60e3017d9c74"
+          ],
+          "subject": "docs(history): preserve Oct 29 GD-U pairing, CI fixes, exact-head and HOLD_WRITE lineage",
+          "url": "https://github.com/Patricked-code/MCP/commit/d291a4d3b52357e0b6225d35fe1eeebb681c7d9c"
+        },
+        {
+          "sha": "bcb7dfa5df03b0e508deaf8fafc9fe45013a7d69",
+          "date": "2026-10-29T21:10:01Z",
+          "parents": [
+            "d291a4d3b52357e0b6225d35fe1eeebb681c7d9c"
+          ],
+          "subject": "docs(history): record inspected source coverage, live comment additions and certification gaps",
+          "url": "https://github.com/Patricked-code/MCP/commit/bcb7dfa5df03b0e508deaf8fafc9fe45013a7d69"
+        },
+        {
+          "sha": "fedd49972523774b1b63d72c5b95d2648e961fea",
+          "date": "2026-10-29T21:11:08Z",
+          "parents": [
+            "bcb7dfa5df03b0e508deaf8fafc9fe45013a7d69"
+          ],
+          "subject": "docs(history): add expanded chronological navigation without modifying original indexes",
+          "url": "https://github.com/Patricked-code/MCP/commit/fedd49972523774b1b63d72c5b95d2648e961fea"
+        },
+        {
+          "sha": "b5ed7300f33f1f1812c4a978fc5f9855db6edb99",
+          "date": "2026-10-29T21:13:31Z",
+          "parents": [
+            "fedd49972523774b1b63d72c5b95d2648e961fea"
+          ],
+          "subject": "docs(governance): register 22 additive governed deploy history Markdown files in tracked inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/b5ed7300f33f1f1812c4a978fc5f9855db6edb99"
+        },
+        {
+          "sha": "677da398cc43425c2451f7b62b13946329950d42",
+          "date": "2026-10-29T21:14:04Z",
+          "parents": [
+            "b5ed7300f33f1f1812c4a978fc5f9855db6edb99"
+          ],
+          "subject": "docs(history): append navigation to expanded July–October chronological archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/677da398cc43425c2451f7b62b13946329950d42"
+        },
+        {
+          "sha": "55d0be3a54f99cec8d6c720f252407efb0725da6",
+          "date": "2026-10-29T21:17:47Z",
+          "parents": [
+            "677da398cc43425c2451f7b62b13946329950d42"
+          ],
+          "subject": "docs(history): source exact origins of MCP Governed Deploy PR39 and first automatic deploy PR43",
+          "url": "https://github.com/Patricked-code/MCP/commit/55d0be3a54f99cec8d6c720f252407efb0725da6"
+        },
+        {
+          "sha": "90a735e930038626982ac27e00fcd8dce2a3c113",
+          "date": "2026-10-29T21:18:00Z",
+          "parents": [
+            "55d0be3a54f99cec8d6c720f252407efb0725da6"
+          ],
+          "subject": "docs(governance): register documented exact-SHA autodeploy origin in Markdown inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/90a735e930038626982ac27e00fcd8dce2a3c113"
+        },
+        {
+          "sha": "933671430e99d406c2b88092c78ab9b8c604012d",
+          "date": "2026-10-29T21:18:11Z",
+          "parents": [
+            "90a735e930038626982ac27e00fcd8dce2a3c113"
+          ],
+          "subject": "docs(history): link verified initial MCP governed autodeploy milestones",
+          "url": "https://github.com/Patricked-code/MCP/commit/933671430e99d406c2b88092c78ab9b8c604012d"
+        },
+        {
+          "sha": "fb02b0b44fa10a2ca52e52856405bcb6000093ff",
+          "date": "2026-10-29T21:19:01Z",
+          "parents": [
+            "933671430e99d406c2b88092c78ab9b8c604012d"
+          ],
+          "subject": "docs(history): append verified PR58 same-head recovery after GitHub transient read failure",
+          "url": "https://github.com/Patricked-code/MCP/commit/fb02b0b44fa10a2ca52e52856405bcb6000093ff"
+        },
+        {
+          "sha": "25ad942eba8f4126ddf1dfb30ac0d8bb00edc5c4",
+          "date": "2026-10-29T22:17:02Z",
+          "parents": [
+            "fb02b0b44fa10a2ca52e52856405bcb6000093ff"
+          ],
+          "subject": "docs(history): inventory main commit ancestry positions 1-500 at exact SHAs",
+          "url": "https://github.com/Patricked-code/MCP/commit/25ad942eba8f4126ddf1dfb30ac0d8bb00edc5c4"
+        },
+        {
+          "sha": "0b3e477c656a1d368c10c6d19e046145314e0c4b",
+          "date": "2026-10-29T22:17:26Z",
+          "parents": [
+            "25ad942eba8f4126ddf1dfb30ac0d8bb00edc5c4"
+          ],
+          "subject": "docs(history): inventory main commits 501-1000",
+          "url": "https://github.com/Patricked-code/MCP/commit/0b3e477c656a1d368c10c6d19e046145314e0c4b"
+        },
+        {
+          "sha": "c80a21b400f09189bf46867dc376b8bbad0b7d0e",
+          "date": "2026-10-29T22:17:48Z",
+          "parents": [
+            "0b3e477c656a1d368c10c6d19e046145314e0c4b"
+          ],
+          "subject": "docs(history): inventory main commits 1001-1500",
+          "url": "https://github.com/Patricked-code/MCP/commit/c80a21b400f09189bf46867dc376b8bbad0b7d0e"
+        },
+        {
+          "sha": "27aaee43b7e23e34decb922e80e26bdf9cec2b0f",
+          "date": "2026-10-29T22:18:30Z",
+          "parents": [
+            "c80a21b400f09189bf46867dc376b8bbad0b7d0e"
+          ],
+          "subject": "docs(history): inventory final 431 main commits and attest end of pagination",
+          "url": "https://github.com/Patricked-code/MCP/commit/27aaee43b7e23e34decb922e80e26bdf9cec2b0f"
+        },
+        {
+          "sha": "cf23e4c4e100590ef30c1b8c1022a2fb92171244",
+          "date": "2026-10-29T22:19:27Z",
+          "parents": [
+            "27aaee43b7e23e34decb922e80e26bdf9cec2b0f"
+          ],
+          "subject": "docs(history): preserve all 223 PR metadata including exact heads, merge SHAs and branches",
+          "url": "https://github.com/Patricked-code/MCP/commit/cf23e4c4e100590ef30c1b8c1022a2fb92171244"
+        },
+        {
+          "sha": "3841280699a1eec46c96ed3e86f2836c48c524ff",
+          "date": "2026-10-29T22:19:51Z",
+          "parents": [
+            "cf23e4c4e100590ef30c1b8c1022a2fb92171244"
+          ],
+          "subject": "docs(history): capture 168 current branch refs and exact heads",
+          "url": "https://github.com/Patricked-code/MCP/commit/3841280699a1eec46c96ed3e86f2836c48c524ff"
+        },
+        {
+          "sha": "666a63bed86ca01ff97f6e4ed647f4547906921e",
+          "date": "2026-10-29T22:20:43Z",
+          "parents": [
+            "3841280699a1eec46c96ed3e86f2836c48c524ff"
+          ],
+          "subject": "docs(history): preserve all 8 GitHub Actions runs RUNS_202607",
+          "url": "https://github.com/Patricked-code/MCP/commit/666a63bed86ca01ff97f6e4ed647f4547906921e"
+        },
+        {
+          "sha": "48d8a839811dead4a364d63baeca57e7f81e2830",
+          "date": "2026-10-29T22:21:02Z",
+          "parents": [
+            "666a63bed86ca01ff97f6e4ed647f4547906921e"
+          ],
+          "subject": "docs(history): preserve all 686 GitHub Actions runs RUNS_202608",
+          "url": "https://github.com/Patricked-code/MCP/commit/48d8a839811dead4a364d63baeca57e7f81e2830"
+        },
+        {
+          "sha": "5eb09460087981abaa379ca86f1979b8ed47889f",
+          "date": "2026-10-29T22:21:38Z",
+          "parents": [
+            "48d8a839811dead4a364d63baeca57e7f81e2830"
+          ],
+          "subject": "docs(history): inventory first 800 September 2026 action runs",
+          "url": "https://github.com/Patricked-code/MCP/commit/5eb09460087981abaa379ca86f1979b8ed47889f"
+        },
+        {
+          "sha": "3c06465fc995394aed7878c73e3d93064faba66d",
+          "date": "2026-10-29T22:23:07Z",
+          "parents": [
+            "5eb09460087981abaa379ca86f1979b8ed47889f"
+          ],
+          "subject": "docs(history): exhaustive September 1-19 GitHub Actions runs via bounded date filter",
+          "url": "https://github.com/Patricked-code/MCP/commit/3c06465fc995394aed7878c73e3d93064faba66d"
+        },
+        {
+          "sha": "b1e015f63296bfe1384f9fe9f5e59c4ba2d697a3",
+          "date": "2026-10-29T22:23:54Z",
+          "parents": [
+            "3c06465fc995394aed7878c73e3d93064faba66d"
+          ],
+          "subject": "docs(history): exhaustive September 20-30 GitHub Actions run index",
+          "url": "https://github.com/Patricked-code/MCP/commit/b1e015f63296bfe1384f9fe9f5e59c4ba2d697a3"
+        },
+        {
+          "sha": "10f793e918ad28a81847a9f3a6314eefa331fde3",
+          "date": "2026-10-29T22:24:31Z",
+          "parents": [
+            "b1e015f63296bfe1384f9fe9f5e59c4ba2d697a3"
+          ],
+          "subject": "docs(history): inventory all 464 runs in 2026-10-01..2026-10-14",
+          "url": "https://github.com/Patricked-code/MCP/commit/10f793e918ad28a81847a9f3a6314eefa331fde3"
+        },
+        {
+          "sha": "1d0b66298330ef62f557ac0855621b775bf8d2d9",
+          "date": "2026-10-29T22:24:47Z",
+          "parents": [
+            "10f793e918ad28a81847a9f3a6314eefa331fde3"
+          ],
+          "subject": "docs(history): inventory all 328 runs in 2026-10-15..2026-10-21",
+          "url": "https://github.com/Patricked-code/MCP/commit/1d0b66298330ef62f557ac0855621b775bf8d2d9"
+        },
+        {
+          "sha": "edac1f8bf92d1b08178cba3142ffa1d21883e837",
+          "date": "2026-10-29T22:25:17Z",
+          "parents": [
+            "1d0b66298330ef62f557ac0855621b775bf8d2d9"
+          ],
+          "subject": "docs(history): inventory all 722 Oct 22-28 GitHub Actions runs",
+          "url": "https://github.com/Patricked-code/MCP/commit/edac1f8bf92d1b08178cba3142ffa1d21883e837"
+        },
+        {
+          "sha": "b02a1b5036f6b7de38d2049ea5ab769ba3be9e17",
+          "date": "2026-10-29T22:25:36Z",
+          "parents": [
+            "edac1f8bf92d1b08178cba3142ffa1d21883e837"
+          ],
+          "subject": "docs(history): audit 157 Oct29 GitHub Actions runs before fixed UTC cutoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/b02a1b5036f6b7de38d2049ea5ab769ba3be9e17"
+        },
+        {
+          "sha": "c05893e50a74ad39f7dd39814bda3eca8c40456d",
+          "date": "2026-10-29T22:27:57Z",
+          "parents": [
+            "b02a1b5036f6b7de38d2049ea5ab769ba3be9e17"
+          ],
+          "subject": "docs(history): preserve PR-specific commit evidence batch 1-12",
+          "url": "https://github.com/Patricked-code/MCP/commit/c05893e50a74ad39f7dd39814bda3eca8c40456d"
+        },
+        {
+          "sha": "58cbf16fba94e3ffe83b1ecceb4b8de4bf655742",
+          "date": "2026-10-29T22:28:43Z",
+          "parents": [
+            "c05893e50a74ad39f7dd39814bda3eca8c40456d"
+          ],
+          "subject": "docs(history): preserve PR commits batch 13-24",
+          "url": "https://github.com/Patricked-code/MCP/commit/58cbf16fba94e3ffe83b1ecceb4b8de4bf655742"
+        },
+        {
+          "sha": "03b407ecb1e2af2fc37a33b3fec03cf0cf5ce3eb",
+          "date": "2026-10-29T22:29:13Z",
+          "parents": [
+            "58cbf16fba94e3ffe83b1ecceb4b8de4bf655742"
+          ],
+          "subject": "docs(history): preserve PR commits batch 25-36",
+          "url": "https://github.com/Patricked-code/MCP/commit/03b407ecb1e2af2fc37a33b3fec03cf0cf5ce3eb"
+        },
+        {
+          "sha": "2d59bd6232af46a0af138eb6cb55e13d18d12ef3",
+          "date": "2026-10-29T22:29:49Z",
+          "parents": [
+            "03b407ecb1e2af2fc37a33b3fec03cf0cf5ce3eb"
+          ],
+          "subject": "docs(history): preserve PR commits batch 37-48",
+          "url": "https://github.com/Patricked-code/MCP/commit/2d59bd6232af46a0af138eb6cb55e13d18d12ef3"
+        },
+        {
+          "sha": "b9d6b3179932c291bc8314a4292851001f52b98c",
+          "date": "2026-10-29T22:30:29Z",
+          "parents": [
+            "2d59bd6232af46a0af138eb6cb55e13d18d12ef3"
+          ],
+          "subject": "docs(history): PR commits inventory 49-60",
+          "url": "https://github.com/Patricked-code/MCP/commit/b9d6b3179932c291bc8314a4292851001f52b98c"
+        },
+        {
+          "sha": "9dc6f45c3b9fdb0f02a661f399b2cc384e3b25c1",
+          "date": "2026-10-29T22:31:03Z",
+          "parents": [
+            "b9d6b3179932c291bc8314a4292851001f52b98c"
+          ],
+          "subject": "docs(history): PR commits inventory 61-72",
+          "url": "https://github.com/Patricked-code/MCP/commit/9dc6f45c3b9fdb0f02a661f399b2cc384e3b25c1"
+        },
+        {
+          "sha": "d0822e7004329d0b28b495f56952ce10f3fc9e87",
+          "date": "2026-10-29T22:31:46Z",
+          "parents": [
+            "9dc6f45c3b9fdb0f02a661f399b2cc384e3b25c1"
+          ],
+          "subject": "docs(history): PR commits inventory 73-84",
+          "url": "https://github.com/Patricked-code/MCP/commit/d0822e7004329d0b28b495f56952ce10f3fc9e87"
+        },
+        {
+          "sha": "8543b2a8578e60dcf76b32855b99e45b118850ca",
+          "date": "2026-10-29T22:32:22Z",
+          "parents": [
+            "d0822e7004329d0b28b495f56952ce10f3fc9e87"
+          ],
+          "subject": "docs(history): PR commits inventory 85-96",
+          "url": "https://github.com/Patricked-code/MCP/commit/8543b2a8578e60dcf76b32855b99e45b118850ca"
+        },
+        {
+          "sha": "505b9109a6f07f23ddef221bb0d1f63861b85b8d",
+          "date": "2026-10-29T22:33:00Z",
+          "parents": [
+            "8543b2a8578e60dcf76b32855b99e45b118850ca"
+          ],
+          "subject": "docs(history): PR commits inventory 97-108",
+          "url": "https://github.com/Patricked-code/MCP/commit/505b9109a6f07f23ddef221bb0d1f63861b85b8d"
+        },
+        {
+          "sha": "53302770421cd8b3ceccc9a817ac4e0c267552fd",
+          "date": "2026-10-29T22:33:33Z",
+          "parents": [
+            "505b9109a6f07f23ddef221bb0d1f63861b85b8d"
+          ],
+          "subject": "docs(history): PR commits inventory 109-124",
+          "url": "https://github.com/Patricked-code/MCP/commit/53302770421cd8b3ceccc9a817ac4e0c267552fd"
+        },
+        {
+          "sha": "7b93795ba59f0936d8329c66b28831de9d0b3d74",
+          "date": "2026-10-29T22:34:20Z",
+          "parents": [
+            "53302770421cd8b3ceccc9a817ac4e0c267552fd"
+          ],
+          "subject": "docs(history): PR commits inventory 125-140",
+          "url": "https://github.com/Patricked-code/MCP/commit/7b93795ba59f0936d8329c66b28831de9d0b3d74"
+        },
+        {
+          "sha": "9dc70c13727169667eb5369230868d173a187dda",
+          "date": "2026-10-29T22:35:00Z",
+          "parents": [
+            "7b93795ba59f0936d8329c66b28831de9d0b3d74"
+          ],
+          "subject": "docs(history): PR commits inventory 141-156",
+          "url": "https://github.com/Patricked-code/MCP/commit/9dc70c13727169667eb5369230868d173a187dda"
+        },
+        {
+          "sha": "d9c116fcd78b200a925405b448a6493d0264002c",
+          "date": "2026-10-29T22:35:42Z",
+          "parents": [
+            "9dc70c13727169667eb5369230868d173a187dda"
+          ],
+          "subject": "docs(history): PR commits inventory 157-172",
+          "url": "https://github.com/Patricked-code/MCP/commit/d9c116fcd78b200a925405b448a6493d0264002c"
+        },
+        {
+          "sha": "5db07e9e604d8fd5530b7021eaf2c8f1d9d2a512",
+          "date": "2026-10-29T22:36:19Z",
+          "parents": [
+            "d9c116fcd78b200a925405b448a6493d0264002c"
+          ],
+          "subject": "docs(history): PR commits inventory 173-188",
+          "url": "https://github.com/Patricked-code/MCP/commit/5db07e9e604d8fd5530b7021eaf2c8f1d9d2a512"
+        },
+        {
+          "sha": "88bb6e9de52b364bea70a7e0b2f0a8e842eae53c",
+          "date": "2026-10-29T22:36:57Z",
+          "parents": [
+            "5db07e9e604d8fd5530b7021eaf2c8f1d9d2a512"
+          ],
+          "subject": "docs(history): PR commits inventory 189-204",
+          "url": "https://github.com/Patricked-code/MCP/commit/88bb6e9de52b364bea70a7e0b2f0a8e842eae53c"
+        },
+        {
+          "sha": "f211dd5d66a9bdc87aad04ac07da11c5aec9ebc8",
+          "date": "2026-10-29T22:37:43Z",
+          "parents": [
+            "88bb6e9de52b364bea70a7e0b2f0a8e842eae53c"
+          ],
+          "subject": "docs(history): PR commits inventory 205-220",
+          "url": "https://github.com/Patricked-code/MCP/commit/f211dd5d66a9bdc87aad04ac07da11c5aec9ebc8"
+        }
+      ]
+    }
+  ]
+}
