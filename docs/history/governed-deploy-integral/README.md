@@ -24,3 +24,19 @@ Statut: dossier documentaire additif, en cours de vérification. Ce dossier ne r
 10. [Protocole d'exhaustivité](09_PROCEDURE_EXHAUSTIVITE.md)
 
 Les documents contiennent des événements individuels et liens primaires. **Ce n'est pas encore une archive exhaustive de tous les commits, CI, commentaires et checkpoints** : les lacunes sont conservées explicitement plutôt que comblées par supposition.
+
+
+## Complément append-only : antécédents remontant à juillet 2026
+
+La première collecte commençait en août ; une seconde collecte GitHub a retrouvé les premiers mandats dès le 4 juillet 2026. Le contenu initial est préservé et les nouvelles pièces sont rangées sur **la même branche et la même PR #356**.
+
+- [Navigation chronologique complète de l'archive](15_NAVIGATION_COMPLEMENTAIRE.md)
+- [Origines juillet (PR #1–#14)](02_202607_ANTECEDENTS_ORIGINES.md)
+- [Août — récupération forensique et Governed Deploy](03_202608_RECONCILIATION_FORENSIQUE_ET_DEPLOIEMENTS.md)
+- [Septembre — GitRegistry, identité, OAuth, transport et pilotes](04_202609_FIL_INTERDEPENDANCES_ET_DEPLOIEMENTS.md)
+- [Registre des commentaires de #349, 59 pièces consultables en texte intégral à leur URL GitHub](10_REGISTRE_EXHAUSTIF_COMMENTAIRES_349.md)
+- [28 octobre — jalons universels](12_20261028_JALONS_GD_U_ET_MANDATS.md)
+- [29 octobre — B3i et correctifs CI/sécurité](13_20261029_EXECUTION_B3I_CONTINUITE.md)
+- [Couverture, preuves à réconcilier et limites](14_COUVERTURE_ET_LACUNES_CERTIFICATION.md)
+
+Le registre de suivi Markdown `docs/governance/markdown-inventory.json` est maintenu additivement pour les nouveaux fichiers afin de respecter la CI documentaire sans désactiver ses gardes. Cette archive n'autorise aucune action sur S1/S2 ni aucune fusion de PR de production.
