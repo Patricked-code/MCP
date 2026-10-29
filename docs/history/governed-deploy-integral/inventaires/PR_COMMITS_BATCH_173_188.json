@@ -1,0 +1,727 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "positions": [
+    173,
+    188
+  ],
+  "items": [
+    {
+      "pr": 252,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "75812e6d10f38ad981fd226d6465e8a9472fa2f9",
+          "date": "2026-10-05T14:04:29Z",
+          "parents": [
+            "4dcc90d4296e380574acd0da68001b586992d5b5"
+          ],
+          "subject": "test(e1): RED closure of TB-W3-E1-01 missing-context detection",
+          "url": "https://github.com/Patricked-code/MCP/commit/75812e6d10f38ad981fd226d6465e8a9472fa2f9"
+        },
+        {
+          "sha": "8753326b739713045b36e3e0d852e126574a700f",
+          "date": "2026-10-05T18:22:10Z",
+          "parents": [
+            "75812e6d10f38ad981fd226d6465e8a9472fa2f9"
+          ],
+          "subject": "docs(e1): close TB-W3-E1-01 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/8753326b739713045b36e3e0d852e126574a700f"
+        }
+      ]
+    },
+    {
+      "pr": 253,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "a5e018614be21ed1db348c6ecb0eee2bcae45f54",
+          "date": "2026-10-05T18:32:39Z",
+          "parents": [
+            "59d02d590b0baeca8f5d5f75f90c9131e46aeff0"
+          ],
+          "subject": "test(e2): RED context completion wizard (TB-W3-E2-01)",
+          "url": "https://github.com/Patricked-code/MCP/commit/a5e018614be21ed1db348c6ecb0eee2bcae45f54"
+        },
+        {
+          "sha": "ec6f47342d9b7bd7b5c83f56478f112c6bb795b6",
+          "date": "2026-10-05T18:40:12Z",
+          "parents": [
+            "a5e018614be21ed1db348c6ecb0eee2bcae45f54"
+          ],
+          "subject": "feat(e2): context completion wizard on the existing surfaces",
+          "url": "https://github.com/Patricked-code/MCP/commit/ec6f47342d9b7bd7b5c83f56478f112c6bb795b6"
+        }
+      ]
+    },
+    {
+      "pr": 254,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "67132e86c7aaad395aea7103f02e30de10917795",
+          "date": "2026-10-05T18:42:43Z",
+          "parents": [
+            "e51e9958b211186560b2054595fe7bc3fc564d19"
+          ],
+          "subject": "test(e2): RED closure of TB-W3-E2-01 context completion",
+          "url": "https://github.com/Patricked-code/MCP/commit/67132e86c7aaad395aea7103f02e30de10917795"
+        },
+        {
+          "sha": "d944a759e4675f848706904f212bab3a3f53fbdb",
+          "date": "2026-10-05T18:46:50Z",
+          "parents": [
+            "67132e86c7aaad395aea7103f02e30de10917795"
+          ],
+          "subject": "docs(e2): close TB-W3-E2-01 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/d944a759e4675f848706904f212bab3a3f53fbdb"
+        }
+      ]
+    },
+    {
+      "pr": 255,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "3444400f3f1b0acf4201402c84e9f59b1003e2d7",
+          "date": "2026-10-05T18:50:20Z",
+          "parents": [
+            "fecbb6fe178ef1ffd74416b565081ef1f299678e"
+          ],
+          "subject": "test(e3): RED explicit consent before completion mutations (TB-W3-E3-01)",
+          "url": "https://github.com/Patricked-code/MCP/commit/3444400f3f1b0acf4201402c84e9f59b1003e2d7"
+        },
+        {
+          "sha": "855e2954a912d98ad136f5ab0c6e229eda6c56a5",
+          "date": "2026-10-05T18:53:25Z",
+          "parents": [
+            "3444400f3f1b0acf4201402c84e9f59b1003e2d7"
+          ],
+          "subject": "feat(e3): explicit, server-validated consent before completion mutations",
+          "url": "https://github.com/Patricked-code/MCP/commit/855e2954a912d98ad136f5ab0c6e229eda6c56a5"
+        }
+      ]
+    },
+    {
+      "pr": 256,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "c2b4506e174b80f47a95ff5fd939efbad68c0476",
+          "date": "2026-10-05T18:55:29Z",
+          "parents": [
+            "61b90a1eca532b088ec213b7ae6ad9e2241eece4"
+          ],
+          "subject": "test(e3): RED closure of TB-W3-E3-01 consent",
+          "url": "https://github.com/Patricked-code/MCP/commit/c2b4506e174b80f47a95ff5fd939efbad68c0476"
+        },
+        {
+          "sha": "30c121f20978734c464407367553c8e07e7f5b5d",
+          "date": "2026-10-05T19:01:28Z",
+          "parents": [
+            "c2b4506e174b80f47a95ff5fd939efbad68c0476"
+          ],
+          "subject": "docs(e3): close TB-W3-E3-01 and PB-E after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/30c121f20978734c464407367553c8e07e7f5b5d"
+        }
+      ]
+    },
+    {
+      "pr": 257,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "5d8b93c71dc1cc4f54402e396d4ae77cac1ffcdd",
+          "date": "2026-10-05T23:37:59Z",
+          "parents": [
+            "bf7312e6e8f52e660f2743b8ba40c779e98fe8d0"
+          ],
+          "subject": "test(f01): RED provisioning capability decomposition",
+          "url": "https://github.com/Patricked-code/MCP/commit/5d8b93c71dc1cc4f54402e396d4ae77cac1ffcdd"
+        },
+        {
+          "sha": "fe7b3024b5f00bc946b1bd6886edd1d24e3597f3",
+          "date": "2026-10-05T23:45:01Z",
+          "parents": [
+            "5d8b93c71dc1cc4f54402e396d4ae77cac1ffcdd"
+          ],
+          "subject": "feat(f01): provisioning capability decomposition into contracts",
+          "url": "https://github.com/Patricked-code/MCP/commit/fe7b3024b5f00bc946b1bd6886edd1d24e3597f3"
+        }
+      ]
+    },
+    {
+      "pr": 258,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "d27274470c8ee62aa46297ee5460bf4c43d5c484",
+          "date": "2026-10-05T23:47:34Z",
+          "parents": [
+            "d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1"
+          ],
+          "subject": "test(f01): RED closure of TB-W3-F-01 provisioning decomposition",
+          "url": "https://github.com/Patricked-code/MCP/commit/d27274470c8ee62aa46297ee5460bf4c43d5c484"
+        },
+        {
+          "sha": "3420fe3115f8697476326d730deb116d03ba9ba0",
+          "date": "2026-10-05T23:52:34Z",
+          "parents": [
+            "d27274470c8ee62aa46297ee5460bf4c43d5c484"
+          ],
+          "subject": "docs(f01): close TB-W3-F-01 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/3420fe3115f8697476326d730deb116d03ba9ba0"
+        }
+      ]
+    },
+    {
+      "pr": 259,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "86e8d1e6ff32bc578e6f7be70bbc8403dcc54639",
+          "date": "2026-10-06T00:03:05Z",
+          "parents": [
+            "3700bcb48188c1134d948d03504e94e6e905134c"
+          ],
+          "subject": "test(f03): RED absence proof and plan of project runtime provisioning",
+          "url": "https://github.com/Patricked-code/MCP/commit/86e8d1e6ff32bc578e6f7be70bbc8403dcc54639"
+        },
+        {
+          "sha": "ecacd5b91858baa858866213203ad3aeddfab8ec",
+          "date": "2026-10-06T00:08:49Z",
+          "parents": [
+            "86e8d1e6ff32bc578e6f7be70bbc8403dcc54639"
+          ],
+          "subject": "feat(f03): absence proof and plan of project runtime provisioning",
+          "url": "https://github.com/Patricked-code/MCP/commit/ecacd5b91858baa858866213203ad3aeddfab8ec"
+        }
+      ]
+    },
+    {
+      "pr": 260,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "0882f8295ba3e62549012fe9cb2ce136b22e5be2",
+          "date": "2026-10-06T04:28:39Z",
+          "parents": [
+            "0d4f3d429026cc84dff340fada64bd3a5aec2b61"
+          ],
+          "subject": "test(f03): RED target-bounded executor of project runtime provisioning",
+          "url": "https://github.com/Patricked-code/MCP/commit/0882f8295ba3e62549012fe9cb2ce136b22e5be2"
+        },
+        {
+          "sha": "89ca1d404ed7a4d51bd53d528d382b4be141dc06",
+          "date": "2026-10-06T04:35:56Z",
+          "parents": [
+            "0882f8295ba3e62549012fe9cb2ce136b22e5be2"
+          ],
+          "subject": "feat(f03): target-bounded executor of project runtime provisioning",
+          "url": "https://github.com/Patricked-code/MCP/commit/89ca1d404ed7a4d51bd53d528d382b4be141dc06"
+        }
+      ]
+    },
+    {
+      "pr": 261,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "85a23153915081d35342aeb0753ccf267975a622",
+          "date": "2026-10-07T15:15:20Z",
+          "parents": [
+            "73bd0ff908ce53e2f177e1bc246cc62050b47a05"
+          ],
+          "subject": "test(f03): RED consented surface and wiring of project runtime provisioning",
+          "url": "https://github.com/Patricked-code/MCP/commit/85a23153915081d35342aeb0753ccf267975a622"
+        },
+        {
+          "sha": "0155d5ae5e29874155f66a12eff3e133fcbfcbe5",
+          "date": "2026-10-07T15:25:57Z",
+          "parents": [
+            "85a23153915081d35342aeb0753ccf267975a622"
+          ],
+          "subject": "feat(f03): consented surface and wiring of project runtime provisioning",
+          "url": "https://github.com/Patricked-code/MCP/commit/0155d5ae5e29874155f66a12eff3e133fcbfcbe5"
+        },
+        {
+          "sha": "deab8727f3b66d91fb41c8a3c36e52403f10be6f",
+          "date": "2026-10-07T18:54:33Z",
+          "parents": [
+            "0155d5ae5e29874155f66a12eff3e133fcbfcbe5"
+          ],
+          "subject": "fix(f03): bind consent to the resolved target and verify the checkout",
+          "url": "https://github.com/Patricked-code/MCP/commit/deab8727f3b66d91fb41c8a3c36e52403f10be6f"
+        },
+        {
+          "sha": "3f1098b299ef0937d162ad57ffa8163d755d54a9",
+          "date": "2026-10-07T19:19:21Z",
+          "parents": [
+            "deab8727f3b66d91fb41c8a3c36e52403f10be6f"
+          ],
+          "subject": "fix(f03): coordination, registry deploy rule and runtime integrity",
+          "url": "https://github.com/Patricked-code/MCP/commit/3f1098b299ef0937d162ad57ffa8163d755d54a9"
+        },
+        {
+          "sha": "8e36322c20d02b604f5e6762ccb82ee62088253c",
+          "date": "2026-10-07T19:53:26Z",
+          "parents": [
+            "3f1098b299ef0937d162ad57ffa8163d755d54a9"
+          ],
+          "subject": "test(f03): RED compose source parsed before Compose, key allowlists, shared networks",
+          "url": "https://github.com/Patricked-code/MCP/commit/8e36322c20d02b604f5e6762ccb82ee62088253c"
+        },
+        {
+          "sha": "3321dde996394917f6c3dad31c29143c49784f26",
+          "date": "2026-10-07T20:04:36Z",
+          "parents": [
+            "8e36322c20d02b604f5e6762ccb82ee62088253c"
+          ],
+          "subject": "fix(f03): parse the compose source before Compose, reviewed keys only",
+          "url": "https://github.com/Patricked-code/MCP/commit/3321dde996394917f6c3dad31c29143c49784f26"
+        },
+        {
+          "sha": "372d5f316adb6fff31edd2b2f30bb0ea6702fc13",
+          "date": "2026-10-07T20:10:51Z",
+          "parents": [
+            "3321dde996394917f6c3dad31c29143c49784f26"
+          ],
+          "subject": "fix(f03): treat --no-env-resolution as a second guard, never a gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/372d5f316adb6fff31edd2b2f30bb0ea6702fc13"
+        },
+        {
+          "sha": "e963b15f0a00357db8b25c5e4995b406a7d6d172",
+          "date": "2026-10-07T23:41:40Z",
+          "parents": [
+            "372d5f316adb6fff31edd2b2f30bb0ea6702fc13"
+          ],
+          "subject": "test(f03): RED retained volumes, build image names, full file modes",
+          "url": "https://github.com/Patricked-code/MCP/commit/e963b15f0a00357db8b25c5e4995b406a7d6d172"
+        },
+        {
+          "sha": "dd7746ec18f0240d0df25739f703327e26507bd0",
+          "date": "2026-10-07T23:42:38Z",
+          "parents": [
+            "e963b15f0a00357db8b25c5e4995b406a7d6d172"
+          ],
+          "subject": "fix(f03): retained volumes, build image names and full modes",
+          "url": "https://github.com/Patricked-code/MCP/commit/dd7746ec18f0240d0df25739f703327e26507bd0"
+        },
+        {
+          "sha": "186bc78d6f5ecb3765073aba977c6d6183d01247",
+          "date": "2026-10-07T23:54:59Z",
+          "parents": [
+            "dd7746ec18f0240d0df25739f703327e26507bd0"
+          ],
+          "subject": "test(f03): RED replicas, pinned images, ownership and checked NO_OP",
+          "url": "https://github.com/Patricked-code/MCP/commit/186bc78d6f5ecb3765073aba977c6d6183d01247"
+        },
+        {
+          "sha": "c6f8921355914c6b45b5b9e38f74135a98a9a935",
+          "date": "2026-10-07T23:55:57Z",
+          "parents": [
+            "186bc78d6f5ecb3765073aba977c6d6183d01247"
+          ],
+          "subject": "fix(f03): bounded replicas, pinned images, checked NO_OP, owners digested",
+          "url": "https://github.com/Patricked-code/MCP/commit/c6f8921355914c6b45b5b9e38f74135a98a9a935"
+        },
+        {
+          "sha": "bf2b1c8808b5c71ba164306ae0bc1fa8ecacc2e8",
+          "date": "2026-10-08T00:09:10Z",
+          "parents": [
+            "c6f8921355914c6b45b5b9e38f74135a98a9a935"
+          ],
+          "subject": "test(f03): RED trusted marker record, retained networks, replicas, IPAM, capacity",
+          "url": "https://github.com/Patricked-code/MCP/commit/bf2b1c8808b5c71ba164306ae0bc1fa8ecacc2e8"
+        },
+        {
+          "sha": "cbd93f9f86b2f7d707a3c4039393254d956eaa80",
+          "date": "2026-10-08T00:10:43Z",
+          "parents": [
+            "bf2b1c8808b5c71ba164306ae0bc1fa8ecacc2e8"
+          ],
+          "subject": "fix(f03): trusted marker record, retained networks, replica counts, IPAM, capacity",
+          "url": "https://github.com/Patricked-code/MCP/commit/cbd93f9f86b2f7d707a3c4039393254d956eaa80"
+        },
+        {
+          "sha": "a64a00dabf3095d9f21c807509451251e4cf865e",
+          "date": "2026-10-08T00:23:00Z",
+          "parents": [
+            "cbd93f9f86b2f7d707a3c4039393254d956eaa80"
+          ],
+          "subject": "test(f03): RED reserved names, parent links, special files, safe rollback, build room",
+          "url": "https://github.com/Patricked-code/MCP/commit/a64a00dabf3095d9f21c807509451251e4cf865e"
+        },
+        {
+          "sha": "1268e1b7073cef641b1b3c5af67d574afa4a85ed",
+          "date": "2026-10-08T00:24:25Z",
+          "parents": [
+            "a64a00dabf3095d9f21c807509451251e4cf865e"
+          ],
+          "subject": "fix(f03): reserved names, parent links, safe rollback, special files, build room",
+          "url": "https://github.com/Patricked-code/MCP/commit/1268e1b7073cef641b1b3c5af67d574afa4a85ed"
+        },
+        {
+          "sha": "f7f3296353f8a722821d8dbfea1f599e3367f6a5",
+          "date": "2026-10-08T00:43:16Z",
+          "parents": [
+            "1268e1b7073cef641b1b3c5af67d574afa4a85ed"
+          ],
+          "subject": "test(f03): RED coordination before each write, hard links, target filesystems, official branch",
+          "url": "https://github.com/Patricked-code/MCP/commit/f7f3296353f8a722821d8dbfea1f599e3367f6a5"
+        },
+        {
+          "sha": "80cd60e227cf5e8e2bd537b7bac41992f60d2789",
+          "date": "2026-10-08T00:48:41Z",
+          "parents": [
+            "f7f3296353f8a722821d8dbfea1f599e3367f6a5"
+          ],
+          "subject": "fix(f03): coordination before each write, official branch, hard links, target filesystems",
+          "url": "https://github.com/Patricked-code/MCP/commit/80cd60e227cf5e8e2bd537b7bac41992f60d2789"
+        },
+        {
+          "sha": "b38475388e110b39729386a472d4267e022ac6ed",
+          "date": "2026-10-08T01:02:19Z",
+          "parents": [
+            "80cd60e227cf5e8e2bd537b7bac41992f60d2789"
+          ],
+          "subject": "test(f03): RED rollback coordination, restart policies, capabilities and ACLs, bind sources",
+          "url": "https://github.com/Patricked-code/MCP/commit/b38475388e110b39729386a472d4267e022ac6ed"
+        },
+        {
+          "sha": "341192e76af67efed9069fd717c6396a46b26edf",
+          "date": "2026-10-08T01:04:42Z",
+          "parents": [
+            "b38475388e110b39729386a472d4267e022ac6ed"
+          ],
+          "subject": "fix(f03): rollback coordination, restart policies, capabilities and ACLs, bind sources",
+          "url": "https://github.com/Patricked-code/MCP/commit/341192e76af67efed9069fd717c6396a46b26edf"
+        },
+        {
+          "sha": "cc4845d6cdce695927f3ad10509d3a08728af9ca",
+          "date": "2026-10-08T01:17:05Z",
+          "parents": [
+            "341192e76af67efed9069fd717c6396a46b26edf"
+          ],
+          "subject": "test(f03): RED stopped containers, required health, resource ceilings, preflight, re-admission",
+          "url": "https://github.com/Patricked-code/MCP/commit/cc4845d6cdce695927f3ad10509d3a08728af9ca"
+        },
+        {
+          "sha": "603b4c92fe627ead7637cdb85edac2a7dc6fa738",
+          "date": "2026-10-08T01:19:54Z",
+          "parents": [
+            "cc4845d6cdce695927f3ad10509d3a08728af9ca"
+          ],
+          "subject": "fix(f03): stopped containers, required health, resource ceilings, preflight, re-admission",
+          "url": "https://github.com/Patricked-code/MCP/commit/603b4c92fe627ead7637cdb85edac2a7dc6fa738"
+        },
+        {
+          "sha": "590b90a6cda934127af56f3c90f82fc14fbdc986",
+          "date": "2026-10-08T08:19:24Z",
+          "parents": [
+            "603b4c92fe627ead7637cdb85edac2a7dc6fa738"
+          ],
+          "subject": "test(f03): RED pinned build inputs and attested built images",
+          "url": "https://github.com/Patricked-code/MCP/commit/590b90a6cda934127af56f3c90f82fc14fbdc986"
+        },
+        {
+          "sha": "6665fe4ac54adc3637f3c35f3c6cecb2d11fc506",
+          "date": "2026-10-08T08:23:19Z",
+          "parents": [
+            "590b90a6cda934127af56f3c90f82fc14fbdc986"
+          ],
+          "subject": "feat(f03): pinned build inputs and attested images (owner decision)",
+          "url": "https://github.com/Patricked-code/MCP/commit/6665fe4ac54adc3637f3c35f3c6cecb2d11fc506"
+        },
+        {
+          "sha": "decd94f2e9c0fa6a31f0d399482f5b4f7a215895",
+          "date": "2026-10-08T08:38:21Z",
+          "parents": [
+            "6665fe4ac54adc3637f3c35f3c6cecb2d11fc506"
+          ],
+          "subject": "test(f03): RED image record for NO_OP, Dockerfile frontend allowlist, final admission attested",
+          "url": "https://github.com/Patricked-code/MCP/commit/decd94f2e9c0fa6a31f0d399482f5b4f7a215895"
+        },
+        {
+          "sha": "99a4578822970414ea45d344c31a895a9cc4348f",
+          "date": "2026-10-08T08:40:21Z",
+          "parents": [
+            "decd94f2e9c0fa6a31f0d399482f5b4f7a215895"
+          ],
+          "subject": "fix(f03): image record for NO_OP, Dockerfile frontend allowlist, final admission attested",
+          "url": "https://github.com/Patricked-code/MCP/commit/99a4578822970414ea45d344c31a895a9cc4348f"
+        },
+        {
+          "sha": "a9477408288cc7219417af1a7577377863afddc1",
+          "date": "2026-10-08T08:51:10Z",
+          "parents": [
+            "99a4578822970414ea45d344c31a895a9cc4348f"
+          ],
+          "subject": "test(f03): RED re-admission before each write, rehash after health, complete images, no write after collision",
+          "url": "https://github.com/Patricked-code/MCP/commit/a9477408288cc7219417af1a7577377863afddc1"
+        },
+        {
+          "sha": "3328900a44dffac2ee2777bfc59e6076066656a7",
+          "date": "2026-10-08T08:53:13Z",
+          "parents": [
+            "a9477408288cc7219417af1a7577377863afddc1"
+          ],
+          "subject": "fix(f03): re-admission before each write, rehash after health, complete images, no write after collision",
+          "url": "https://github.com/Patricked-code/MCP/commit/3328900a44dffac2ee2777bfc59e6076066656a7"
+        },
+        {
+          "sha": "281b9354651842e5a7a5fb9612a5c76ee9c6ad1d",
+          "date": "2026-10-08T09:08:20Z",
+          "parents": [
+            "3328900a44dffac2ee2777bfc59e6076066656a7"
+          ],
+          "subject": "test(f03): RED bounded logs, default address pools, no-new-privileges, image record, marker after health, replan",
+          "url": "https://github.com/Patricked-code/MCP/commit/281b9354651842e5a7a5fb9612a5c76ee9c6ad1d"
+        },
+        {
+          "sha": "b7e2cdbc809549164c9cbc1c016e6043271d00f3",
+          "date": "2026-10-08T09:11:02Z",
+          "parents": [
+            "281b9354651842e5a7a5fb9612a5c76ee9c6ad1d"
+          ],
+          "subject": "fix(f03): bounded logs, default address pools, image record required, marker after health, replan",
+          "url": "https://github.com/Patricked-code/MCP/commit/b7e2cdbc809549164c9cbc1c016e6043271d00f3"
+        },
+        {
+          "sha": "46b1dcf55f86302fe1a48187e64237db75f6050e",
+          "date": "2026-10-08T09:23:23Z",
+          "parents": [
+            "b7e2cdbc809549164c9cbc1c016e6043271d00f3"
+          ],
+          "subject": "test(f03): RED official branch change, identical reactivation images, live container limits",
+          "url": "https://github.com/Patricked-code/MCP/commit/46b1dcf55f86302fe1a48187e64237db75f6050e"
+        },
+        {
+          "sha": "853e10ee6008c53869e40444ad4472ef1f1f1665",
+          "date": "2026-10-08T09:25:31Z",
+          "parents": [
+            "46b1dcf55f86302fe1a48187e64237db75f6050e"
+          ],
+          "subject": "fix(f03): official branch re-read, identical reactivation images, live container limits",
+          "url": "https://github.com/Patricked-code/MCP/commit/853e10ee6008c53869e40444ad4472ef1f1f1665"
+        },
+        {
+          "sha": "fed1eeb2cfde423c250a4d395ab5d2d531de2544",
+          "date": "2026-10-08T17:32:41Z",
+          "parents": [
+            "853e10ee6008c53869e40444ad4472ef1f1f1665"
+          ],
+          "subject": "test(f03): RED per-service images, grace period, newline paths, marker record, discard after collision",
+          "url": "https://github.com/Patricked-code/MCP/commit/fed1eeb2cfde423c250a4d395ab5d2d531de2544"
+        },
+        {
+          "sha": "d0bc1eeefb75f728f57e4d96ca3cca9370906a4d",
+          "date": "2026-10-08T17:34:17Z",
+          "parents": [
+            "fed1eeb2cfde423c250a4d395ab5d2d531de2544"
+          ],
+          "subject": "fix(f03): per-service images, grace period, newline paths, marker record, guarded discard",
+          "url": "https://github.com/Patricked-code/MCP/commit/d0bc1eeefb75f728f57e4d96ca3cca9370906a4d"
+        }
+      ]
+    },
+    {
+      "pr": 263,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "011ebfeed9ceeefb9f0a4d567b0eb6a6ee395c6a",
+          "date": "2026-10-08T17:41:04Z",
+          "parents": [
+            "6576b5287f23566684005adf6032734e2ecdea50"
+          ],
+          "subject": "docs(f03): close TB-W3-F-03 with exact-head, deploy and attestation evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/011ebfeed9ceeefb9f0a4d567b0eb6a6ee395c6a"
+        }
+      ]
+    },
+    {
+      "pr": 267,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "202e7e0ed866e65827b4841fc8c114d47ef1ac37",
+          "date": "2026-10-08T18:22:15Z",
+          "parents": [
+            "bc1d9865d11cc296447ff239ae08012829beb6d5"
+          ],
+          "subject": "F-04 increment 1: Live State served-domain observation for C5 (observe-binding)",
+          "url": "https://github.com/Patricked-code/MCP/commit/202e7e0ed866e65827b4841fc8c114d47ef1ac37"
+        },
+        {
+          "sha": "469dd79db123a7f48bc31196348d3d49bb4a5124",
+          "date": "2026-10-08T19:07:58Z",
+          "parents": [
+            "202e7e0ed866e65827b4841fc8c114d47ef1ac37"
+          ],
+          "subject": "F-04: address Codex review on PR #267 (served-domain observation)",
+          "url": "https://github.com/Patricked-code/MCP/commit/469dd79db123a7f48bc31196348d3d49bb4a5124"
+        },
+        {
+          "sha": "b601c430b20b85130641a34f2b19f5d7eb08ce8e",
+          "date": "2026-10-08T19:17:28Z",
+          "parents": [
+            "469dd79db123a7f48bc31196348d3d49bb4a5124"
+          ],
+          "subject": "F-04: address second Codex round on PR #267",
+          "url": "https://github.com/Patricked-code/MCP/commit/b601c430b20b85130641a34f2b19f5d7eb08ce8e"
+        },
+        {
+          "sha": "1162f853e42400873b52b16e7a3ac4d0f7f3048a",
+          "date": "2026-10-08T19:24:25Z",
+          "parents": [
+            "b601c430b20b85130641a34f2b19f5d7eb08ce8e"
+          ],
+          "subject": "F-04: read Plesk records of active served names (third Codex round on PR #267)",
+          "url": "https://github.com/Patricked-code/MCP/commit/1162f853e42400873b52b16e7a3ac4d0f7f3048a"
+        },
+        {
+          "sha": "ded65b3f1a9ca39a0c0dbe7ad8aff8f78bc9268c",
+          "date": "2026-10-08T19:31:40Z",
+          "parents": [
+            "1162f853e42400873b52b16e7a3ac4d0f7f3048a"
+          ],
+          "subject": "F-04: fourth Codex round on PR #267",
+          "url": "https://github.com/Patricked-code/MCP/commit/ded65b3f1a9ca39a0c0dbe7ad8aff8f78bc9268c"
+        },
+        {
+          "sha": "1b5c307a95620901a5045f257c762e8f8c69c89e",
+          "date": "2026-10-08T19:37:37Z",
+          "parents": [
+            "ded65b3f1a9ca39a0c0dbe7ad8aff8f78bc9268c"
+          ],
+          "subject": "F-04: scope the C5 observation by Plesk subscription (fifth Codex round on PR #267)",
+          "url": "https://github.com/Patricked-code/MCP/commit/1b5c307a95620901a5045f257c762e8f8c69c89e"
+        },
+        {
+          "sha": "67823c3adf3d2271ba3dd3567bf2ae20bd90ce13",
+          "date": "2026-10-08T19:46:42Z",
+          "parents": [
+            "1b5c307a95620901a5045f257c762e8f8c69c89e"
+          ],
+          "subject": "F-04: sixth Codex round on PR #267",
+          "url": "https://github.com/Patricked-code/MCP/commit/67823c3adf3d2271ba3dd3567bf2ae20bd90ce13"
+        },
+        {
+          "sha": "54d6a428694034e358503be75126f8391d69c669",
+          "date": "2026-10-08T19:53:53Z",
+          "parents": [
+            "67823c3adf3d2271ba3dd3567bf2ae20bd90ce13"
+          ],
+          "subject": "F-04: seventh Codex round on PR #267 (fail closed on ownership)",
+          "url": "https://github.com/Patricked-code/MCP/commit/54d6a428694034e358503be75126f8391d69c669"
+        },
+        {
+          "sha": "6e7417fa989d09a90be87cde01294743b58710f4",
+          "date": "2026-10-08T20:02:15Z",
+          "parents": [
+            "54d6a428694034e358503be75126f8391d69c669"
+          ],
+          "subject": "F-04: require an IP-bound web service record (eighth Codex round on PR #267)",
+          "url": "https://github.com/Patricked-code/MCP/commit/6e7417fa989d09a90be87cde01294743b58710f4"
+        }
+      ]
+    },
+    {
+      "pr": 269,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "226e3ed8325bf7b118355c7ada1f7f672574c8e7",
+          "date": "2026-10-09T06:31:07Z",
+          "parents": [
+            "5b631eb5520ed06c52bf18169a38dd22171ba90e"
+          ],
+          "subject": "F-04 increment 1: record merge, governed deploy and attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/226e3ed8325bf7b118355c7ada1f7f672574c8e7"
+        }
+      ]
+    },
+    {
+      "pr": 270,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "d1dd23cdf30f0fab348e14d6eafe1b7a5c0b3e5c",
+          "date": "2026-10-09T16:30:38Z",
+          "parents": [
+            "44c4bdf671f9b07aedb4e9b2aa45c72fe46edf9a"
+          ],
+          "subject": "docs(governance): preserve F-04 and parallel dispatch recovery evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/d1dd23cdf30f0fab348e14d6eafe1b7a5c0b3e5c"
+        },
+        {
+          "sha": "38fadca31cb4463df97f724e42b66f61b495c0a6",
+          "date": "2026-10-09T16:37:21Z",
+          "parents": [
+            "d1dd23cdf30f0fab348e14d6eafe1b7a5c0b3e5c"
+          ],
+          "subject": "fix(governance): register F-04 recovery checkpoint in Markdown inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/38fadca31cb4463df97f724e42b66f61b495c0a6"
+        },
+        {
+          "sha": "9381cb94ad89d8425d99463c3aab1ee9581e11dd",
+          "date": "2026-10-09T16:37:59Z",
+          "parents": [
+            "38fadca31cb4463df97f724e42b66f61b495c0a6"
+          ],
+          "subject": "test(dispatch): verify independent sessions can claim disjoint ready tasks",
+          "url": "https://github.com/Patricked-code/MCP/commit/9381cb94ad89d8425d99463c3aab1ee9581e11dd"
+        }
+      ]
+    },
+    {
+      "pr": 271,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "ada30216052b6878d045ab0bc5827dd12c9c2fd5",
+          "date": "2026-10-09T17:22:16Z",
+          "parents": [
+            "4cd2a60b5d13600a76def29d15a41af87428bb03"
+          ],
+          "subject": "test(f04): RED path boundary validation for verified Plesk ownership",
+          "url": "https://github.com/Patricked-code/MCP/commit/ada30216052b6878d045ab0bc5827dd12c9c2fd5"
+        },
+        {
+          "sha": "dab04a4f9a3d60acd1da60dbd038a34e51c2ac63",
+          "date": "2026-10-09T17:22:26Z",
+          "parents": [
+            "ada30216052b6878d045ab0bc5827dd12c9c2fd5"
+          ],
+          "subject": "fix(f04): fail closed on ambiguous verified vhost paths",
+          "url": "https://github.com/Patricked-code/MCP/commit/dab04a4f9a3d60acd1da60dbd038a34e51c2ac63"
+        },
+        {
+          "sha": "d236a7ddf06120173be883601aa1cd344df0ac5f",
+          "date": "2026-10-09T17:23:09Z",
+          "parents": [
+            "dab04a4f9a3d60acd1da60dbd038a34e51c2ac63"
+          ],
+          "subject": "fix(f04): reject single backslash in verified Plesk paths",
+          "url": "https://github.com/Patricked-code/MCP/commit/d236a7ddf06120173be883601aa1cd344df0ac5f"
+        }
+      ]
+    },
+    {
+      "pr": 272,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b88e835efc9336455c175e7427e8b1f2ede40693",
+          "date": "2026-10-09T17:56:59Z",
+          "parents": [
+            "05cb448159e16c2e4b17696ca246c760107be005"
+          ],
+          "subject": "test(dispatch): assert concurrent claims enforce atomic revision and single ownership",
+          "url": "https://github.com/Patricked-code/MCP/commit/b88e835efc9336455c175e7427e8b1f2ede40693"
+        }
+      ]
+    }
+  ]
+}
