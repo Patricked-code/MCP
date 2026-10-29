@@ -118,3 +118,41 @@ test('FINDING-01: package manifest is found from both source and Docker dist/src
     }
   }finally{await rm(root,{recursive:true,force:true});}
 });
+
+test('GD-U B3j: existing project context probe reads allowlisted Plesk subscriptions, without admin grant',async()=>{
+  const commands:string[]=[];
+  const out=await probeExistingAdminReadCapabilities({
+    now:()=>new Date(now),
+    githubGet:async()=>({ok:false,status:403,json:null}),
+    canonicalRepository:async()=>null,
+    allowedParents:async()=>({s1:['wealthtechinnovations.com'],s2:['chainsolutions.fr']}),
+    remoteRead:async(server,command)=>{
+      commands.push(server+':'+command);
+      return{code:0,stdout:command==='id -u'?'0': 'Plesk subscription info',stderr:''};
+    }
+  });
+  assert.deepEqual(commands.filter(x=>x.includes('subscription --info')),[ 
+    "s1:plesk bin subscription --info 'wealthtechinnovations.com'",
+    "s2:plesk bin subscription --info 'chainsolutions.fr'"
+  ]);
+  assert.equal(out.pleskSubscriptions.status,'CHECKED');
+  assert.equal(out.pleskSubscriptions.observations.length,2);
+  assert.ok(out.pleskSubscriptions.observations.every(x=>x.readPermissionObserved));
+  assert.equal(out.pleskSubscriptions.pleskAdminWritePermissionVerified,false);
+  assert.equal(out.adminWriteAuthorized,false);
+});
+test('GD-U B3j: invalid subscription configuration fails closed, without SSH diagnostic leak',async()=>{
+  const out=await probeExistingAdminReadCapabilities({
+    now:()=>new Date(now),
+    githubGet:async()=>({ok:false,status:403,json:null}),
+    canonicalRepository:async()=>null,
+    allowedParents:async()=>({s1:["wealthtechinnovations.com'; command"]}),
+    remoteRead:async(_,command)=>{
+      if(command.includes('subscription'))throw Error('SECRET');
+      return{code:0,stdout:command==='id -u'?'0':'Plesk',stderr:''};
+    }
+  });
+  assert.equal(out.pleskSubscriptions.status,'BLOCKED');
+  assert.deepEqual(out.pleskSubscriptions.observations,[]);
+  assert.doesNotMatch(JSON.stringify(out),/SECRET/);
+});
