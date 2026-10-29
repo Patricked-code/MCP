@@ -146,3 +146,64 @@ test('B3e: existing Plesk router denies a second E3 consumption, with no second 
     assert.equal(writes.length,1);
   }finally{await new Promise<void>(resolve=>server.close(()=>resolve()));}
 });
+
+test('GD-U B3i P0: paired MCP web creation MUST fail closed if single-use E3 consumer is absent',async()=>{
+  const writes:string[]=[];
+  const app=express();
+  app.use(express.urlencoded({extended:false}));
+  app.use(createPleskSubdomainRouter({
+    requireLogin:(_req,_res,next)=>next(),
+    session:()=> 'paired-session',
+    sameOrigin:()=>true,
+    issueTicket:()=> 'signed-ticket',
+    verifyTicket:()=>true,
+    policy:()=>({enabled:true,allowedParents:{s2:['chainsolutions.fr']}}),
+    writeEnabled:()=>true,
+    requireMcpPairing:true,
+    authorizeRuntimeWrite:async()=>true, // simulated valid transport; no E3 consumer!
+    io:{
+      readonly:async(_s,cmd)=>{
+        if(cmd.startsWith('plesk bin subscription'))return{code:0,stdout:'OK'};
+        if(cmd.startsWith('plesk bin subdomain --info'))return{code:1,stdout:'',stderr:'Specified subdomain does not exist'};
+        if(cmd.startsWith('test -L')||cmd.startsWith('test -e'))return{code:1,stdout:''};
+        return{code:0,stdout:''};
+      },
+      guarded:async(_s,cmd)=>{writes.push(cmd);return{code:0,stdout:'OK'};}
+    }
+  }));
+  const server=app.listen(0,'127.0.0.1');
+  await new Promise<void>(resolve=>server.once('listening',resolve));
+  try{
+    const url='http://127.0.0.1:'+(server.address() as AddressInfo).port+'/provisioning/plesk-subdomain';
+    const form=new URLSearchParams({...fields,consent_creation:'CREATE_SUBDOMAIN',
+      confirm_fqdn:'tdd-safe.chainsolutions.fr',consent_ticket:'signed-ticket',
+      mcp_pair_proof:'mock-transport-binding'});
+    const response=await fetch(url,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:form});
+    assert.equal(response.status,403);
+    assert.equal((await response.json()).reason,'E3_SINGLE_USE_CONSUMPTION_REQUIRED');
+    assert.equal(writes.length,0);
+  }finally{await new Promise<void>(resolve=>server.close(()=>resolve()));}
+});
+
+test('GD-U B3i P0: unreadable Plesk subscription is NOT evidence of authorization',async()=>{
+  const {observePleskSubdomain}=await import('../src/provisioning/pleskSshAdapter.js');
+  let readCount=0;
+  const io:PleskRemotePort={
+    readonly:async(_server,command)=>{
+      readCount++;
+      assert.match(command,/^plesk bin subscription --info /);
+      return{code:13,stdout:'',stderr:'Permission denied'};
+    },
+    guarded:async()=>{throw Error('no write');}
+  };
+  const evidence=await observePleskSubdomain({
+    serverId:'s2',parentDomain:'chainsolutions.fr',label:'tdd-safe',
+    documentRoot:'/tdd-safe',evidence:{
+      parentExists:null,targetExists:null,documentRootExists:null,
+      subscriptionAuthorized:null,documentRootSafe:null,targetOwnedByProvisioner:null
+    }
+  },{enabled:true,allowedParents:{s2:['chainsolutions.fr']}},io);
+  assert.equal(readCount,1);
+  assert.equal(evidence.subscriptionAuthorized,false);
+  assert.equal(evidence.parentExists,null);
+});
