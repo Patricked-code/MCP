@@ -73,7 +73,8 @@ export async function observePleskSubdomain(
   const sitePath = root + input.documentRoot;
   try {
     const subscription = await read(io, server, 'plesk bin subscription --info ' + quote(input.parentDomain));
-    if (subscription.code !== 0) return emptyEvidence(true);
+    // A failed or unauthorized provider call is NOT proof of subscription rights.
+    if (subscription.code !== 0) return emptyEvidence(false);
 
     const subdomain = await read(io, server, 'plesk bin subdomain --info ' + quote(input.label + '.' + input.parentDomain));
     const targetExists = subdomain.code === 0 ? true : absenceReported(subdomain) ? false : null;
@@ -99,7 +100,7 @@ export async function observePleskSubdomain(
       targetOwnedByProvisioner: false
     };
   } catch {
-    return emptyEvidence(true);
+    return emptyEvidence(false);
   }
 }
 
