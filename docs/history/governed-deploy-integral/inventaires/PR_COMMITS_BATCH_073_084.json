@@ -1,0 +1,604 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "positions": [
+    73,
+    84
+  ],
+  "items": [
+    {
+      "pr": 79,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "ced6e4d374eb75dabfaa958650f9b26ac2dd3d5f",
+          "date": "2026-09-12T05:30:03Z",
+          "parents": [
+            "b747dfc7f67786a40c19c285dbcdb3a07b78d5c0"
+          ],
+          "subject": "docs(africafunds): reconcile phase 1 delivery",
+          "url": "https://github.com/Patricked-code/MCP/commit/ced6e4d374eb75dabfaa958650f9b26ac2dd3d5f"
+        }
+      ]
+    },
+    {
+      "pr": 80,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "5cedc7ac4b32d71ead8c8574c001669f3ff86f4e",
+          "date": "2026-09-13T09:04:01Z",
+          "parents": [
+            "740e62a248a804ed73babedc7b3869b3a28ef612"
+          ],
+          "subject": "test(registry): define AfricaFunds phase 2 mapping",
+          "url": "https://github.com/Patricked-code/MCP/commit/5cedc7ac4b32d71ead8c8574c001669f3ff86f4e"
+        },
+        {
+          "sha": "b1cfc460cedfdc566f16290c4767e3e577ba75f5",
+          "date": "2026-09-13T09:06:35Z",
+          "parents": [
+            "5cedc7ac4b32d71ead8c8574c001669f3ff86f4e"
+          ],
+          "subject": "feat(registry): map AfricaFunds project components",
+          "url": "https://github.com/Patricked-code/MCP/commit/b1cfc460cedfdc566f16290c4767e3e577ba75f5"
+        },
+        {
+          "sha": "5b296e48b7140e0205a4921a8f9d3e8a35700477",
+          "date": "2026-09-13T09:09:56Z",
+          "parents": [
+            "b1cfc460cedfdc566f16290c4767e3e577ba75f5"
+          ],
+          "subject": "test(registry): reconcile AfricaFunds candidate counts",
+          "url": "https://github.com/Patricked-code/MCP/commit/5b296e48b7140e0205a4921a8f9d3e8a35700477"
+        },
+        {
+          "sha": "cdc4f7db7fba4a7d26fe42abdbb71c517cdccfc6",
+          "date": "2026-09-13T09:11:58Z",
+          "parents": [
+            "5b296e48b7140e0205a4921a8f9d3e8a35700477"
+          ],
+          "subject": "docs(africafunds): reconcile phase 2 functional state",
+          "url": "https://github.com/Patricked-code/MCP/commit/cdc4f7db7fba4a7d26fe42abdbb71c517cdccfc6"
+        },
+        {
+          "sha": "ebbf1b1e98b6711ccc3a304811787765b78cc02f",
+          "date": "2026-09-13T09:12:18Z",
+          "parents": [
+            "cdc4f7db7fba4a7d26fe42abdbb71c517cdccfc6"
+          ],
+          "subject": "docs(africafunds): reconcile phase 2 functional state",
+          "url": "https://github.com/Patricked-code/MCP/commit/ebbf1b1e98b6711ccc3a304811787765b78cc02f"
+        },
+        {
+          "sha": "e66ae587a6b6927de51080798b92903a397b39c0",
+          "date": "2026-09-13T09:12:20Z",
+          "parents": [
+            "ebbf1b1e98b6711ccc3a304811787765b78cc02f"
+          ],
+          "subject": "docs(africafunds): reconcile phase 2 functional state",
+          "url": "https://github.com/Patricked-code/MCP/commit/e66ae587a6b6927de51080798b92903a397b39c0"
+        },
+        {
+          "sha": "66fe2f88501c889884acb1cef48e5c2c0dc560dd",
+          "date": "2026-09-13T09:12:57Z",
+          "parents": [
+            "e66ae587a6b6927de51080798b92903a397b39c0"
+          ],
+          "subject": "docs(africafunds): complete phase 2 remaining gates",
+          "url": "https://github.com/Patricked-code/MCP/commit/66fe2f88501c889884acb1cef48e5c2c0dc560dd"
+        },
+        {
+          "sha": "abc5e25dcc62d913e1cc557a7fbdca2067d90acb",
+          "date": "2026-09-13T09:13:01Z",
+          "parents": [
+            "66fe2f88501c889884acb1cef48e5c2c0dc560dd"
+          ],
+          "subject": "docs(africafunds): record phase 2 functional mapping",
+          "url": "https://github.com/Patricked-code/MCP/commit/abc5e25dcc62d913e1cc557a7fbdca2067d90acb"
+        },
+        {
+          "sha": "b6ad5d6571c2e526baa3590fb531a00fc42ef86c",
+          "date": "2026-09-13T09:13:03Z",
+          "parents": [
+            "abc5e25dcc62d913e1cc557a7fbdca2067d90acb"
+          ],
+          "subject": "docs(africafunds): record phase 2 safety decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/b6ad5d6571c2e526baa3590fb531a00fc42ef86c"
+        },
+        {
+          "sha": "18355de8d4892685ee4f68b11d1542fb249e838a",
+          "date": "2026-09-13T09:13:07Z",
+          "parents": [
+            "b6ad5d6571c2e526baa3590fb531a00fc42ef86c"
+          ],
+          "subject": "docs(africafunds): update phase 2 roadmap position",
+          "url": "https://github.com/Patricked-code/MCP/commit/18355de8d4892685ee4f68b11d1542fb249e838a"
+        }
+      ]
+    },
+    {
+      "pr": 81,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "7c2d093a0c3e71bab9844cd00da8d4231e4e9be5",
+          "date": "2026-09-13T11:59:41Z",
+          "parents": [
+            "1eac93f631fcf7843d7e768bba7a4125ed00bdbb"
+          ],
+          "subject": "docs(africafunds): reconcile terminal Phase 2 delivery evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/7c2d093a0c3e71bab9844cd00da8d4231e4e9be5"
+        },
+        {
+          "sha": "29bb7fd35ca7b428541439bb49116ee6764576c4",
+          "date": "2026-09-13T12:03:16Z",
+          "parents": [
+            "7c2d093a0c3e71bab9844cd00da8d4231e4e9be5"
+          ],
+          "subject": "docs(africafunds): remove extra TODO trailing blank line",
+          "url": "https://github.com/Patricked-code/MCP/commit/29bb7fd35ca7b428541439bb49116ee6764576c4"
+        }
+      ]
+    },
+    {
+      "pr": 82,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "beea82c94795c9661e2d1f9aebecad8268b674b5",
+          "date": "2026-09-13T17:49:19Z",
+          "parents": [
+            "8d350c31ebd57ab73d81f66b20064b72989e6084"
+          ],
+          "subject": "docs(africafunds): present attested baseline before PR head",
+          "url": "https://github.com/Patricked-code/MCP/commit/beea82c94795c9661e2d1f9aebecad8268b674b5"
+        }
+      ]
+    },
+    {
+      "pr": 83,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "af4ee0f7387cbc52fa6005bbcf4c962a8ec2fa59",
+          "date": "2026-09-13T19:47:05Z",
+          "parents": [
+            "52c8aab7cefc7fb1ed56cb259c49f24ff2586581"
+          ],
+          "subject": "test(registry): define C1 activation readiness gates",
+          "url": "https://github.com/Patricked-code/MCP/commit/af4ee0f7387cbc52fa6005bbcf4c962a8ec2fa59"
+        },
+        {
+          "sha": "db7034540e0fcdb033ec7a35a9db7cc1c5566b7d",
+          "date": "2026-09-13T19:49:41Z",
+          "parents": [
+            "af4ee0f7387cbc52fa6005bbcf4c962a8ec2fa59"
+          ],
+          "subject": "feat(registry): add fail-closed C1 activation readiness",
+          "url": "https://github.com/Patricked-code/MCP/commit/db7034540e0fcdb033ec7a35a9db7cc1c5566b7d"
+        },
+        {
+          "sha": "424508e244763fa00705b207daf834e7e2bdd1f0",
+          "date": "2026-09-13T19:53:16Z",
+          "parents": [
+            "db7034540e0fcdb033ec7a35a9db7cc1c5566b7d"
+          ],
+          "subject": "docs(registry): record C1 verification gates",
+          "url": "https://github.com/Patricked-code/MCP/commit/424508e244763fa00705b207daf834e7e2bdd1f0"
+        }
+      ]
+    },
+    {
+      "pr": 84,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "f62c7c0da2286f8041f67afbd183378501c98c7a",
+          "date": "2026-09-13T20:01:17Z",
+          "parents": [
+            "1a3af33054dc4b5429b0e36de4ee25efc3a9f88e"
+          ],
+          "subject": "docs(registry): reconcile deployed C1 verification gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/f62c7c0da2286f8041f67afbd183378501c98c7a"
+        }
+      ]
+    },
+    {
+      "pr": 85,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "490d58597e4df0b133effd1825ababaa92f6463a",
+          "date": "2026-09-14T20:41:27Z",
+          "parents": [
+            "555a51d0648ef796eba4868282942055a2f67a65"
+          ],
+          "subject": "docs(governance): plan governed Actions SSH transport",
+          "url": "https://github.com/Patricked-code/MCP/commit/490d58597e4df0b133effd1825ababaa92f6463a"
+        }
+      ]
+    },
+    {
+      "pr": 86,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "ab479022b0b9261dd8fb28a348c17e6d2e67b38a",
+          "date": "2026-09-14T23:06:14Z",
+          "parents": [
+            "555a51d0648ef796eba4868282942055a2f67a65"
+          ],
+          "subject": "feat(stablecoin): add governed S2 sync and deploy recipe",
+          "url": "https://github.com/Patricked-code/MCP/commit/ab479022b0b9261dd8fb28a348c17e6d2e67b38a"
+        },
+        {
+          "sha": "0530d18c99b08c97a1faea4477dc16dda91e4107",
+          "date": "2026-09-14T23:06:31Z",
+          "parents": [
+            "ab479022b0b9261dd8fb28a348c17e6d2e67b38a"
+          ],
+          "subject": "fix(stablecoin): clean Passenger restart marker after health checks",
+          "url": "https://github.com/Patricked-code/MCP/commit/0530d18c99b08c97a1faea4477dc16dda91e4107"
+        },
+        {
+          "sha": "11f5268d1ea771dfd56d1a699beae67bc7798bf6",
+          "date": "2026-09-14T23:06:40Z",
+          "parents": [
+            "0530d18c99b08c97a1faea4477dc16dda91e4107"
+          ],
+          "subject": "test(stablecoin): cover governed S2 sync and deploy recipe",
+          "url": "https://github.com/Patricked-code/MCP/commit/11f5268d1ea771dfd56d1a699beae67bc7798bf6"
+        },
+        {
+          "sha": "5fb9c8dbec52f6fcc706d895300c0ca3c1d38434",
+          "date": "2026-09-14T23:06:42Z",
+          "parents": [
+            "11f5268d1ea771dfd56d1a699beae67bc7798bf6"
+          ],
+          "subject": "test(stablecoin): include scoped SSH regression tests",
+          "url": "https://github.com/Patricked-code/MCP/commit/5fb9c8dbec52f6fcc706d895300c0ca3c1d38434"
+        },
+        {
+          "sha": "2876a9b107296557733fc1ac9d5201a001c512c2",
+          "date": "2026-09-14T23:06:49Z",
+          "parents": [
+            "5fb9c8dbec52f6fcc706d895300c0ca3c1d38434"
+          ],
+          "subject": "test(contracts): register Stablecoin scoped project option",
+          "url": "https://github.com/Patricked-code/MCP/commit/2876a9b107296557733fc1ac9d5201a001c512c2"
+        },
+        {
+          "sha": "bf779654c8afff0c33982442853775ecad1c5d0e",
+          "date": "2026-09-14T23:06:58Z",
+          "parents": [
+            "2876a9b107296557733fc1ac9d5201a001c512c2"
+          ],
+          "subject": "feat(registry): map Stablecoin frontend to governed S2 SSH",
+          "url": "https://github.com/Patricked-code/MCP/commit/bf779654c8afff0c33982442853775ecad1c5d0e"
+        },
+        {
+          "sha": "35e701a28787f2a7fbc5ab2f2d296f7d333dc62d",
+          "date": "2026-09-14T23:07:29Z",
+          "parents": [
+            "bf779654c8afff0c33982442853775ecad1c5d0e"
+          ],
+          "subject": "test(registry): account for Stablecoin governed mapping",
+          "url": "https://github.com/Patricked-code/MCP/commit/35e701a28787f2a7fbc5ab2f2d296f7d333dc62d"
+        },
+        {
+          "sha": "094db67c6217326f1991f353636e3c838cff675d",
+          "date": "2026-09-14T23:07:31Z",
+          "parents": [
+            "35e701a28787f2a7fbc5ab2f2d296f7d333dc62d"
+          ],
+          "subject": "test(registry): validate Stablecoin S2 project mapping",
+          "url": "https://github.com/Patricked-code/MCP/commit/094db67c6217326f1991f353636e3c838cff675d"
+        },
+        {
+          "sha": "d3e6c999659840bc2e4d4fc8bfe16e9cc698240b",
+          "date": "2026-09-14T23:07:51Z",
+          "parents": [
+            "094db67c6217326f1991f353636e3c838cff675d"
+          ],
+          "subject": "docs(todo): track governed Stablecoin S2 SSH candidate",
+          "url": "https://github.com/Patricked-code/MCP/commit/d3e6c999659840bc2e4d4fc8bfe16e9cc698240b"
+        },
+        {
+          "sha": "3d68fb530b0fb309e6803bc78da556f907c40dff",
+          "date": "2026-09-14T23:07:53Z",
+          "parents": [
+            "d3e6c999659840bc2e4d4fc8bfe16e9cc698240b"
+          ],
+          "subject": "docs(changelog): record Stablecoin governed SSH candidate",
+          "url": "https://github.com/Patricked-code/MCP/commit/3d68fb530b0fb309e6803bc78da556f907c40dff"
+        },
+        {
+          "sha": "494ad470b96f99ab3d04abdcc783fe8b0c8df3eb",
+          "date": "2026-09-14T23:08:47Z",
+          "parents": [
+            "3d68fb530b0fb309e6803bc78da556f907c40dff"
+          ],
+          "subject": "fix(stablecoin): rebuild scoped recipe from clean main baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/494ad470b96f99ab3d04abdcc783fe8b0c8df3eb"
+        },
+        {
+          "sha": "3aabe496f86479a5b0c02fc7600d518223364b30",
+          "date": "2026-09-14T23:11:03Z",
+          "parents": [
+            "494ad470b96f99ab3d04abdcc783fe8b0c8df3eb"
+          ],
+          "subject": "fix(stablecoin): keep repo-script execution outside Stablecoin scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/3aabe496f86479a5b0c02fc7600d518223364b30"
+        },
+        {
+          "sha": "44e3eca3b15471af956c9f62e97faa5521b38134",
+          "date": "2026-09-14T23:11:40Z",
+          "parents": [
+            "3aabe496f86479a5b0c02fc7600d518223364b30"
+          ],
+          "subject": "docs(cartography): refresh Stablecoin scoped tool contracts",
+          "url": "https://github.com/Patricked-code/MCP/commit/44e3eca3b15471af956c9f62e97faa5521b38134"
+        },
+        {
+          "sha": "55f27f8d5f5b2c804f7efe1ad9538457b9b07136",
+          "date": "2026-09-14T23:12:47Z",
+          "parents": [
+            "44e3eca3b15471af956c9f62e97faa5521b38134"
+          ],
+          "subject": "test(stablecoin): provide bounded env for scoped recipe tests",
+          "url": "https://github.com/Patricked-code/MCP/commit/55f27f8d5f5b2c804f7efe1ad9538457b9b07136"
+        },
+        {
+          "sha": "9cc78149c69b74c0466cf572ddd5d2683a8abe74",
+          "date": "2026-09-14T23:14:12Z",
+          "parents": [
+            "55f27f8d5f5b2c804f7efe1ad9538457b9b07136"
+          ],
+          "subject": "test(stablecoin): satisfy bounded auth token schema",
+          "url": "https://github.com/Patricked-code/MCP/commit/9cc78149c69b74c0466cf572ddd5d2683a8abe74"
+        },
+        {
+          "sha": "6f0eaa76f80310cd4c31d36b663f6205b9735885",
+          "date": "2026-09-14T23:15:40Z",
+          "parents": [
+            "9cc78149c69b74c0466cf572ddd5d2683a8abe74"
+          ],
+          "subject": "fix(stablecoin): keep status read-only and route sync to fail-closed recipe",
+          "url": "https://github.com/Patricked-code/MCP/commit/6f0eaa76f80310cd4c31d36b663f6205b9735885"
+        },
+        {
+          "sha": "34e479626fc133f12a180c8a50738c0c2fe2132c",
+          "date": "2026-09-14T23:15:51Z",
+          "parents": [
+            "6f0eaa76f80310cd4c31d36b663f6205b9735885"
+          ],
+          "subject": "testability(stablecoin): export read-only status command builder",
+          "url": "https://github.com/Patricked-code/MCP/commit/34e479626fc133f12a180c8a50738c0c2fe2132c"
+        },
+        {
+          "sha": "5f54b78c87ae3a5e8a402ac80af42355a7f4ec08",
+          "date": "2026-09-14T23:15:54Z",
+          "parents": [
+            "34e479626fc133f12a180c8a50738c0c2fe2132c"
+          ],
+          "subject": "test(stablecoin): prove status path cannot mutate S2",
+          "url": "https://github.com/Patricked-code/MCP/commit/5f54b78c87ae3a5e8a402ac80af42355a7f4ec08"
+        }
+      ]
+    },
+    {
+      "pr": 87,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "f87baa4ee4fcafaf71775c41732257cfd04fb80b",
+          "date": "2026-09-14T23:52:33Z",
+          "parents": [
+            "555a51d0648ef796eba4868282942055a2f67a65"
+          ],
+          "subject": "test(g3): add RED client tool surface attestation contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/f87baa4ee4fcafaf71775c41732257cfd04fb80b"
+        },
+        {
+          "sha": "ae7bec13331d50414d3723855cb38888a0476725",
+          "date": "2026-09-15T00:20:21Z",
+          "parents": [
+            "f87baa4ee4fcafaf71775c41732257cfd04fb80b"
+          ],
+          "subject": "feat(g3): add bounded client tool surface attestation slot",
+          "url": "https://github.com/Patricked-code/MCP/commit/ae7bec13331d50414d3723855cb38888a0476725"
+        },
+        {
+          "sha": "b2955874590b9655aa7a77a94fe5a6a51ec249f9",
+          "date": "2026-09-15T00:53:22Z",
+          "parents": [
+            "ae7bec13331d50414d3723855cb38888a0476725"
+          ],
+          "subject": "test(g3): add RED regressions for P2 attestation bounds",
+          "url": "https://github.com/Patricked-code/MCP/commit/b2955874590b9655aa7a77a94fe5a6a51ec249f9"
+        },
+        {
+          "sha": "289b3b71c8352738395bf290bc1ae10dc405ee15",
+          "date": "2026-09-15T01:37:48Z",
+          "parents": [
+            "b2955874590b9655aa7a77a94fe5a6a51ec249f9"
+          ],
+          "subject": "fix(g3): bind attestation to its session and bound its validity",
+          "url": "https://github.com/Patricked-code/MCP/commit/289b3b71c8352738395bf290bc1ae10dc405ee15"
+        }
+      ]
+    },
+    {
+      "pr": 88,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "8e9ef1d975642904490f2972b4cb45d95e6a729a",
+          "date": "2026-09-15T01:32:25Z",
+          "parents": [
+            "555a51d0648ef796eba4868282942055a2f67a65"
+          ],
+          "subject": "test(github): add RED governed repository creation contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/8e9ef1d975642904490f2972b4cb45d95e6a729a"
+        },
+        {
+          "sha": "cf9b937294da067a7a192198b8d8d8b1e0a438dd",
+          "date": "2026-09-15T01:36:39Z",
+          "parents": [
+            "8e9ef1d975642904490f2972b4cb45d95e6a729a"
+          ],
+          "subject": "feat(github): add governed private repository creation",
+          "url": "https://github.com/Patricked-code/MCP/commit/cf9b937294da067a7a192198b8d8d8b1e0a438dd"
+        },
+        {
+          "sha": "8cba4dfa8dc94f492a7de4952855f9267df80362",
+          "date": "2026-09-15T01:38:42Z",
+          "parents": [
+            "cf9b937294da067a7a192198b8d8d8b1e0a438dd"
+          ],
+          "subject": "docs(github): reconcile governed repository creation surface",
+          "url": "https://github.com/Patricked-code/MCP/commit/8cba4dfa8dc94f492a7de4952855f9267df80362"
+        },
+        {
+          "sha": "d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993",
+          "date": "2026-09-15T01:40:11Z",
+          "parents": [
+            "8cba4dfa8dc94f492a7de4952855f9267df80362"
+          ],
+          "subject": "test(github): register new scoped write contract fixture",
+          "url": "https://github.com/Patricked-code/MCP/commit/d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993"
+        }
+      ]
+    },
+    {
+      "pr": 89,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "5449bbe4e730ddff55f3131c30c7b04f7e794b19",
+          "date": "2026-09-15T01:48:44Z",
+          "parents": [
+            "d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993"
+          ],
+          "subject": "test(control-plane): add RED complete Git/GitHub capability contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/5449bbe4e730ddff55f3131c30c7b04f7e794b19"
+        },
+        {
+          "sha": "55289673808b229929f004f89fc542225c5f8c29",
+          "date": "2026-09-15T01:50:33Z",
+          "parents": [
+            "5449bbe4e730ddff55f3131c30c7b04f7e794b19"
+          ],
+          "subject": "feat(control-plane): add complete capability manifest and GitHub read foundation",
+          "url": "https://github.com/Patricked-code/MCP/commit/55289673808b229929f004f89fc542225c5f8c29"
+        },
+        {
+          "sha": "15810c2a8c26fda1bd2bb6f36c06a64fcb17dabb",
+          "date": "2026-09-15T01:52:05Z",
+          "parents": [
+            "55289673808b229929f004f89fc542225c5f8c29"
+          ],
+          "subject": "docs(governance): register Git/GitHub control plane plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/15810c2a8c26fda1bd2bb6f36c06a64fcb17dabb"
+        },
+        {
+          "sha": "4a8e87ab3bcaac54b9c960959f9cba65a6c20eec",
+          "date": "2026-09-15T01:53:35Z",
+          "parents": [
+            "15810c2a8c26fda1bd2bb6f36c06a64fcb17dabb"
+          ],
+          "subject": "docs(governance): classify control plane plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/4a8e87ab3bcaac54b9c960959f9cba65a6c20eec"
+        },
+        {
+          "sha": "d6eee876a6d5059ba1f8a2fb69dacf50dfdcb704",
+          "date": "2026-09-15T01:55:31Z",
+          "parents": [
+            "4a8e87ab3bcaac54b9c960959f9cba65a6c20eec"
+          ],
+          "subject": "docs(control-plane): reconcile GitHub read tool cartography",
+          "url": "https://github.com/Patricked-code/MCP/commit/d6eee876a6d5059ba1f8a2fb69dacf50dfdcb704"
+        },
+        {
+          "sha": "d181d2358344f973546aabb863f971d26fcad00a",
+          "date": "2026-09-15T01:57:07Z",
+          "parents": [
+            "d6eee876a6d5059ba1f8a2fb69dacf50dfdcb704"
+          ],
+          "subject": "test(control-plane): expose bounded cartography mismatch diagnostics",
+          "url": "https://github.com/Patricked-code/MCP/commit/d181d2358344f973546aabb863f971d26fcad00a"
+        },
+        {
+          "sha": "0571b175df91069c76e989328d6fc47f27178f3a",
+          "date": "2026-09-15T01:58:29Z",
+          "parents": [
+            "d181d2358344f973546aabb863f971d26fcad00a"
+          ],
+          "subject": "fix(control-plane): align generated read contracts and remove diagnostic",
+          "url": "https://github.com/Patricked-code/MCP/commit/0571b175df91069c76e989328d6fc47f27178f3a"
+        },
+        {
+          "sha": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+          "date": "2026-09-15T02:00:06Z",
+          "parents": [
+            "0571b175df91069c76e989328d6fc47f27178f3a"
+          ],
+          "subject": "docs(control-plane): record complete capability foundation",
+          "url": "https://github.com/Patricked-code/MCP/commit/5bc82c175311a76c2b70ec1b55ecc659ac692549"
+        }
+      ]
+    },
+    {
+      "pr": 90,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "5136feadbd1e7b48216e5de8d93593423a4d9678",
+          "date": "2026-09-15T02:02:41Z",
+          "parents": [
+            "5bc82c175311a76c2b70ec1b55ecc659ac692549"
+          ],
+          "subject": "test(github): add RED lifecycle control contracts",
+          "url": "https://github.com/Patricked-code/MCP/commit/5136feadbd1e7b48216e5de8d93593423a4d9678"
+        },
+        {
+          "sha": "052957a483ee57caa57de81547049d2d97bc25b8",
+          "date": "2026-09-15T02:05:08Z",
+          "parents": [
+            "5136feadbd1e7b48216e5de8d93593423a4d9678"
+          ],
+          "subject": "feat(github): add governed lifecycle controls",
+          "url": "https://github.com/Patricked-code/MCP/commit/052957a483ee57caa57de81547049d2d97bc25b8"
+        },
+        {
+          "sha": "a7a55d476b0327d4d272e80740e79f5df30aa36b",
+          "date": "2026-09-15T02:07:28Z",
+          "parents": [
+            "052957a483ee57caa57de81547049d2d97bc25b8"
+          ],
+          "subject": "test(github): expose bounded lifecycle cartography mismatch",
+          "url": "https://github.com/Patricked-code/MCP/commit/a7a55d476b0327d4d272e80740e79f5df30aa36b"
+        },
+        {
+          "sha": "64d48f3e9fd3d852297d1f213c625eb7494d8425",
+          "date": "2026-09-15T02:09:14Z",
+          "parents": [
+            "a7a55d476b0327d4d272e80740e79f5df30aa36b"
+          ],
+          "subject": "test(github): reconcile lifecycle contracts and regression fixture",
+          "url": "https://github.com/Patricked-code/MCP/commit/64d48f3e9fd3d852297d1f213c625eb7494d8425"
+        },
+        {
+          "sha": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+          "date": "2026-09-15T02:10:39Z",
+          "parents": [
+            "64d48f3e9fd3d852297d1f213c625eb7494d8425"
+          ],
+          "subject": "docs(github): record lifecycle control checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/b18f419a7b00ee5ccdd7688a6654ed9ac4330478"
+        }
+      ]
+    }
+  ]
+}
