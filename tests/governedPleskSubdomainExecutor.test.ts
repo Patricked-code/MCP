@@ -212,3 +212,39 @@ test('the SSH write transport factory is private and not a public bypass surface
   assert.equal('buildExistingPleskSshExecutionPort' in module,false);
   assert.equal(typeof module.executeGovernedPleskSubdomainOnExistingSsh,'function');
 });
+
+test('RED GD-U B3i-b CLOCK: authority observed after caller timestamp is valid against server clock',async()=>{
+  const serverNow=Date.parse(now)+10;
+  const snap={...authority(),observedAt:new Date(serverNow).toISOString()};
+  const {io,calls}=remote();
+  const deps={readExistingAuthority:async()=>snap,remote:io,now:()=>serverNow};
+  const out=await executeGovernedPleskSubdomain(input,deps);
+  assert.equal(out.status,'UNVERIFIED');
+  assert.equal(calls.filter(x=>x.startsWith('W:')).length,1);
+});
+
+test('RED GD-U B3i-b CLOCK: old request clock cannot make a currently expired lock valid',async()=>{
+  const serverNow=Date.parse(now)+180_000;
+  const {io,calls}=remote();
+  const deps={readExistingAuthority:async()=>authority(),remote:io,now:()=>serverNow};
+  const out=await executeGovernedPleskSubdomain(input,deps);
+  assert.equal(out.status,'BLOCKED');
+  assert.equal(calls.filter(x=>x.startsWith('W:')).length,0);
+});
+
+test('RED GD-U B3i-b CLOCK: expire lease during SSH preflight before guarded write',async()=>{
+  let serverNow=Date.parse(now);
+  const base=remote();
+  const io:PleskRemotePort={
+    readonly:async(server,command)=>{
+      const result=await base.io.readonly(server,command);
+      serverNow=Date.parse(now)+120_001;
+      return result;
+    },
+    guarded:base.io.guarded
+  };
+  const deps={readExistingAuthority:async()=>authority(),remote:io,now:()=>serverNow};
+  const out=await executeGovernedPleskSubdomain(input,deps);
+  assert.equal(out.status,'FAILED');
+  assert.equal(base.calls.filter(x=>x.startsWith('W:')).length,0);
+});
