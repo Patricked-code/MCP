@@ -235,3 +235,51 @@ test('RED GD-U B3i-b: CI without verifiable pull_requests association fails clos
   });
   assert.equal(r.status,'BLOCKED');
 });
+
+test('B3k RED: once release PR is merged, attest exact deployed main SHA with original approved PR HEAD',async()=>{
+ const deployed='d'.repeat(40);
+ const merged={...pr,state:'closed',merged:true,merge_commit_sha:deployed,base:{ref:'main'}};
+ const routes:string[]=[];
+ const result=await observeGithubReviewAndCi({
+   repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+   expectedDeployedSha:deployed,expectedWorkflow:'MCP CI',
+   now:()=>new Date('2026-10-28T06:15:00Z'),
+   request:async route=>{
+     routes.push(route);
+     return {ok:true,status:200,json:
+       route.includes('/git/ref/heads/main')?{ref:'refs/heads/main',object:{sha:deployed}}
+       :route.includes('/collaborators/')?{permission:'write'}
+       :route.includes('/reviews')?reviews
+       :route.includes('/actions/runs')?runs:merged};
+   }
+ });
+ assert.equal(result.status,'PROVIDER_APPROVED');
+ assert.equal(result.attestation?.headSha,head);
+ assert.equal(result.attestation?.workflowConcludedSuccess,true);
+ assert.ok(routes.includes(path+'/git/ref/heads/main'));
+ assert.equal(result.runtimeWriteAuthorized,false);
+});
+test('B3k RED: merged release denied for wrong main SHA, unmerged closed PR, unknown merge SHA or wrong base',async()=>{
+ const deployed='d'.repeat(40);
+ const merged={...pr,state:'closed',merged:true,merge_commit_sha:deployed,base:{ref:'main'}};
+ for(const entry of [
+  {one:{...merged,merged:false},ref:deployed},
+  {one:{...merged,merge_commit_sha:'e'.repeat(40)},ref:deployed},
+  {one:{...merged,base:{ref:'staging'}},ref:deployed},
+  {one:merged,ref:'f'.repeat(40)},
+  {one:{...merged,head:{sha:'b'.repeat(40)}},ref:deployed}
+ ]){
+   const res=await observeGithubReviewAndCi({
+     repository:'Patricked-code/MCP',pullRequestNumber:355,expectedHeadSha:head,
+     expectedDeployedSha:deployed,expectedWorkflow:'MCP CI',
+     now:()=>new Date('2026-10-28T06:15:00Z'),
+     request:async route=>({ok:true,status:200,json:
+       route.includes('/git/ref/heads/main')?{ref:'refs/heads/main',object:{sha:entry.ref}}
+       :route.includes('/collaborators/')?{permission:'write'}
+       :route.includes('/reviews')?reviews
+       :route.includes('/actions/runs')?runs:entry.one})
+   });
+   assert.equal(res.status,'BLOCKED',JSON.stringify(entry));
+   assert.equal(res.attestation,null);
+ }
+});
