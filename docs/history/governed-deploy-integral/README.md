@@ -40,3 +40,10 @@ La première collecte commençait en août ; une seconde collecte GitHub a retro
 - [Couverture, preuves à réconcilier et limites](14_COUVERTURE_ET_LACUNES_CERTIFICATION.md)
 
 Le registre de suivi Markdown `docs/governance/markdown-inventory.json` est maintenu additivement pour les nouveaux fichiers afin de respecter la CI documentaire sans désactiver ses gardes. Cette archive n'autorise aucune action sur S1/S2 ni aucune fusion de PR de production.
+
+
+## Preuve d'origine historique retrouvée : Governed Deploy du MCP lui-même
+
+[Chronologie détaillée du premier autodeploy gouverné, Live State, sessions et Task Queue (août 2026)](16_202608_ORIGINE_AUTODEPLOY_ET_MEMORY.md).
+
+La PR #39 (9 août) contient la première construction explicite de l'autodeploy MCP exact-SHA retrouvée dans ce corpus. La PR #42 documente un bootstrap manuel réussi ; la PR #43 (13 août) atteste le **premier push automatique** avec la CI `31658327373`, le workflow de déploiement `31658327435` et le merge SHA `9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7`. Cette filiation est antérieure aux lots de provisioning `TB-W3-F` d'octobre et ne prouve pas le déploiement universel d'applications.
