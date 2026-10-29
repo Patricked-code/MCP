@@ -12,6 +12,7 @@ const verified: GithubInstallationObservation = {
   source: 'GITHUB_API',
   installationId: 173915815,
   accountLogin: 'chainsolutions-wealthtech',
+  repository: repository,
   repositorySelection: 'all',
   repositoryIncluded: null,
   repositoryAccessible: true,
